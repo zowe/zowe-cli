@@ -635,8 +635,9 @@ export class ConvertV1Profiles {
      * @returns True if plugin is installed. False otherwise.
      */
     private static isPluginInstalled(pluginName: string): boolean {
-        const pluginsFileNm = path.join(ImperativeConfig.instance.cliHome, "plugins", "plugins.json");
+        let pluginsFileNm: string;
         try {
+            pluginsFileNm = path.join(ImperativeConfig.instance.cliHome, "plugins", "plugins.json");
             const pluginsFileJson = readFileSync(pluginsFileNm);
             if (Object.hasOwn(pluginsFileJson, pluginName)) {
                 return true;

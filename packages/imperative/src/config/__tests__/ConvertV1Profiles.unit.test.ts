@@ -9,10 +9,12 @@
 *
 */
 
+jest.mock("jsonfile");
+
 import * as fs from "fs";
+import * as path from "path";
 import * as fsExtra from "fs-extra";
-import { PluginIssues } from "../../imperative/src/plugins/utilities/PluginIssues";
-import { OverridesLoader } from "../../imperative/src/OverridesLoader";
+import * as jsonfile from "jsonfile";
 import { CredentialManagerFactory } from "../..";
 import { ConvertV1Profiles } from "../";
 import { ConvertMsgFmt } from "../src/doc/IConvertV1Profiles";
@@ -21,14 +23,16 @@ import { ImperativeError } from "../../error/src/ImperativeError";
 import { keyring } from "@zowe/secrets-for-zowe-sdk";
 import { Logger } from "../../logger/src/Logger";
 import { V1ProfileRead } from "../../profiles";
-import { Config } from "../../config/src/Config";
 import { ConfigSchema } from "../../config/src/ConfigSchema";
 import { AppSettings } from "../../settings/src/AppSettings";
 import { CredentialManagerOverride } from "../../security/src/CredentialManagerOverride";
+import { ProfileInfo } from "../src/ProfileInfo";
+import { OverridesLoader } from "../../imperative/src/OverridesLoader";
 
 jest.mock("../../imperative/src/OverridesLoader");
 
 describe("ConvertV1Profiles tests", () => {
+    const oldScsPluginNm = "@zowe/secure-credential-store-for-zowe-cli";
 
     beforeAll(() => {
         // do not attempt to actually log any errors
@@ -39,15 +43,17 @@ describe("ConvertV1Profiles tests", () => {
 
     describe("convert", () => {
         let isConversionNeededSpy: any;
+        let replaceOldCredMgrOverrideSpy: any;
+        let initCredMgrSpy: any;
         let moveV1ProfilesToConfigFileSpy: any;
-        let removeOldOverridesSpy: any;
         let deleteV1ProfilesSpy: any;
 
         beforeAll(() => {
             // use "any" so that we can call private functions
             isConversionNeededSpy = jest.spyOn(ConvertV1Profiles as any, "isConversionNeeded");
+            replaceOldCredMgrOverrideSpy = jest.spyOn(ConvertV1Profiles as any, "replaceOldCredMgrOverride");
+            initCredMgrSpy = jest.spyOn(ConvertV1Profiles as any, "initCredMgr");
             moveV1ProfilesToConfigFileSpy = jest.spyOn(ConvertV1Profiles as any, "moveV1ProfilesToConfigFile");
-            removeOldOverridesSpy = jest.spyOn(ConvertV1Profiles as any, "removeOldOverrides");
             deleteV1ProfilesSpy = jest.spyOn(ConvertV1Profiles as any, "deleteV1Profiles");
 
             // cliHome is a getter property, so mock the property.
@@ -59,15 +65,20 @@ describe("ConvertV1Profiles tests", () => {
             });
         });
 
+        beforeEach(() => {
+            // functions called by convert which we just want to confirm have been called.
+            replaceOldCredMgrOverrideSpy.mockReturnValue(void 0);
+            initCredMgrSpy.mockResolvedValue(Promise.resolve());
+            moveV1ProfilesToConfigFileSpy.mockResolvedValue(Promise.resolve());
+            deleteV1ProfilesSpy.mockResolvedValue(Promise.resolve());
+        });
+
         afterEach(() => {
             jest.clearAllMocks();   // clear our spies usage counts
         });
 
         it("should complete a conversion when all utility functions work", async () => {
             isConversionNeededSpy.mockReturnValueOnce(true);
-            moveV1ProfilesToConfigFileSpy.mockResolvedValue(Promise.resolve());
-            removeOldOverridesSpy.mockImplementation(() => { });
-            deleteV1ProfilesSpy.mockResolvedValue(Promise.resolve());
 
             // call the function that we want to test
             await ConvertV1Profiles.convert({
@@ -75,16 +86,57 @@ describe("ConvertV1Profiles tests", () => {
             });
 
             expect(isConversionNeededSpy).toHaveBeenCalled();
+            expect(replaceOldCredMgrOverrideSpy).toHaveBeenCalled();
+            expect(initCredMgrSpy).toHaveBeenCalled();
             expect(moveV1ProfilesToConfigFileSpy).toHaveBeenCalled();
-            expect(removeOldOverridesSpy).toHaveBeenCalled();
             expect(deleteV1ProfilesSpy).toHaveBeenCalled();
+        });
+
+        it("should report that CLI must uninstall plugin when called with ProfileInfo", async () => {
+            isConversionNeededSpy.mockReturnValueOnce(true);
+
+            // Ensure that the old SCS plugin name is populated in the convert result
+            replaceOldCredMgrOverrideSpy.mockImplementation(() => {
+                ConvertV1Profiles["convertResult"].v1ScsPluginName = oldScsPluginNm;
+            });
+
+            // call the function that we want to test
+            const profInfo = new ProfileInfo("zowe");
+            await ConvertV1Profiles.convert({
+                deleteV1Profs: true,
+                profileInfo : profInfo
+            });
+
+            expect(isConversionNeededSpy).toHaveBeenCalled();
+            expect(replaceOldCredMgrOverrideSpy).toHaveBeenCalled();
+            expect(initCredMgrSpy).toHaveBeenCalled();
+            expect(moveV1ProfilesToConfigFileSpy).toHaveBeenCalled();
+            expect(deleteV1ProfilesSpy).toHaveBeenCalled();
+
+            /* The following line is a swell debug tool when a code block,
+             * which is trying to match lines of result messages (like the block below),
+             * does not get the results that it expects.
+             *
+            console.log("convertResult:\n " + JSON.stringify(ConvertV1Profiles["convertResult"], null, 2));
+            */
+
+            let numMsgsFound = 0;
+            for (const nextMsg of ConvertV1Profiles["convertResult"].msgs) {
+                if (nextMsg.msgFormat & ConvertMsgFmt.REPORT_LINE &&
+                    nextMsg.msgText.includes(
+                        `The obsolete plug-in ${oldScsPluginNm} should be uninstalled because the SCS is now ` +
+                        `embedded within the Zowe clients. Zowe CLI plugins can only be uninstalled by the CLI. ` +
+                        `Use the command 'zowe plugins uninstall ${oldScsPluginNm}'.`
+                    )
+                ) {
+                    numMsgsFound++;
+                }
+            }
+            expect(numMsgsFound).toEqual(1);
         });
 
         it("should not delete profiles when asked not to delete", async () => {
             isConversionNeededSpy.mockReturnValueOnce(true);
-            moveV1ProfilesToConfigFileSpy.mockResolvedValue(Promise.resolve());
-            removeOldOverridesSpy.mockImplementation(() => { });
-            deleteV1ProfilesSpy.mockResolvedValue(Promise.resolve());
 
             // call the function that we want to test
             await ConvertV1Profiles.convert({
@@ -92,16 +144,14 @@ describe("ConvertV1Profiles tests", () => {
             });
 
             expect(isConversionNeededSpy).toHaveBeenCalled();
+            expect(replaceOldCredMgrOverrideSpy).toHaveBeenCalled();
+            expect(initCredMgrSpy).toHaveBeenCalled();
             expect(moveV1ProfilesToConfigFileSpy).toHaveBeenCalled();
-            expect(removeOldOverridesSpy).toHaveBeenCalled();
             expect(deleteV1ProfilesSpy).not.toHaveBeenCalled();
         });
 
         it("should skip conversion and not delete profiles", async () => {
             isConversionNeededSpy.mockReturnValueOnce(false);
-            moveV1ProfilesToConfigFileSpy.mockResolvedValue(Promise.resolve());
-            removeOldOverridesSpy.mockImplementation(() => { });
-            deleteV1ProfilesSpy.mockResolvedValue(Promise.resolve());
 
             // call the function that we want to test
             await ConvertV1Profiles.convert({
@@ -109,16 +159,14 @@ describe("ConvertV1Profiles tests", () => {
             });
 
             expect(isConversionNeededSpy).toHaveBeenCalled();
+            expect(replaceOldCredMgrOverrideSpy).not.toHaveBeenCalled();
+            expect(initCredMgrSpy).not.toHaveBeenCalled();
             expect(moveV1ProfilesToConfigFileSpy).not.toHaveBeenCalled();
-            expect(removeOldOverridesSpy).not.toHaveBeenCalled();
             expect(deleteV1ProfilesSpy).not.toHaveBeenCalled();
         });
 
         it("should skip conversion but still delete profiles", async () => {
             isConversionNeededSpy.mockReturnValueOnce(false);
-            moveV1ProfilesToConfigFileSpy.mockResolvedValue(Promise.resolve());
-            removeOldOverridesSpy.mockImplementation(() => { });
-            deleteV1ProfilesSpy.mockResolvedValue(Promise.resolve());
 
             // call the function that we want to test
             await ConvertV1Profiles.convert({
@@ -126,8 +174,9 @@ describe("ConvertV1Profiles tests", () => {
             });
 
             expect(isConversionNeededSpy).toHaveBeenCalled();
+            expect(replaceOldCredMgrOverrideSpy).not.toHaveBeenCalled();
+            expect(initCredMgrSpy).not.toHaveBeenCalled();
             expect(moveV1ProfilesToConfigFileSpy).not.toHaveBeenCalled();
-            expect(removeOldOverridesSpy).not.toHaveBeenCalled();
             expect(deleteV1ProfilesSpy).toHaveBeenCalled();
         });
 
@@ -136,9 +185,6 @@ describe("ConvertV1Profiles tests", () => {
             isConversionNeededSpy.mockImplementation(() => {
                 throw new Error(fakeErrMsg);
             });
-            moveV1ProfilesToConfigFileSpy.mockResolvedValue(Promise.resolve());
-            removeOldOverridesSpy.mockImplementation(() => { });
-            deleteV1ProfilesSpy.mockResolvedValue(Promise.resolve());
 
             // call the function that we want to test
             await ConvertV1Profiles.convert({
@@ -146,16 +192,10 @@ describe("ConvertV1Profiles tests", () => {
             });
 
             expect(isConversionNeededSpy).toHaveBeenCalled();
+            expect(replaceOldCredMgrOverrideSpy).not.toHaveBeenCalled();
+            expect(initCredMgrSpy).not.toHaveBeenCalled();
             expect(moveV1ProfilesToConfigFileSpy).not.toHaveBeenCalled();
-            expect(removeOldOverridesSpy).not.toHaveBeenCalled();
             expect(deleteV1ProfilesSpy).not.toHaveBeenCalled();
-
-            /* The following line is a swell debug tool when a code block,
-             * which is trying to match lines of result messages (like the block below),
-             * does not get the results that it expects.
-             *
-            console.log("convertResult:\n " + JSON.stringify(ConvertV1Profiles["convertResult"], null, 2));
-            */
 
             let numErrMsgsFound = 0;
             for (const nextMsg of ConvertV1Profiles["convertResult"].msgs) {
@@ -166,11 +206,12 @@ describe("ConvertV1Profiles tests", () => {
                     numErrMsgsFound++;
                 }
             }
-            expect(numErrMsgsFound).toEqual(2);
+            expect(numErrMsgsFound).toEqual(3);
         });
     }); // end convert
 
     describe("private functions", () => {
+        let loggerSpy: any;
         let mockSecureLoad: any;
         function setCredMgrState(desiredState: string): void {
             if (desiredState == "works") {
@@ -188,7 +229,7 @@ describe("ConvertV1Profiles tests", () => {
             jest.restoreAllMocks(); // put spies back to original app implementation
 
             // do not attempt to actually log any errors
-            jest.spyOn(Logger, "getImperativeLogger").mockReturnValue({
+            loggerSpy = jest.spyOn(Logger, "getImperativeLogger").mockReturnValue({
                 error: jest.fn()
             } as any);
         });
@@ -198,7 +239,7 @@ describe("ConvertV1Profiles tests", () => {
             ConvertV1Profiles["convertResult"] = {
                 msgs: [],
                 v1ScsPluginName: null,
-                reInitCredMgr: false,
+                credsWereMigrated: true,
                 cfgFilePathNm: ConvertV1Profiles["noCfgFilePathNm"],
                 numProfilesFound: 0,
                 profilesConverted: {},
@@ -211,7 +252,7 @@ describe("ConvertV1Profiles tests", () => {
         });
 
         describe("isConversionNeeded", () => {
-            it("should return false if a client config exists", () => {
+            it("should return false if a client config exists", async () => {
                 // Pretend that we have a zowe config.
                 Object.defineProperty(ImperativeConfig.instance, "config", {
                     configurable: true,
@@ -224,7 +265,7 @@ describe("ConvertV1Profiles tests", () => {
 
                 // call the function that we want to test
                 // using class["name"] notation because it is a private static function
-                const convNeeded = ConvertV1Profiles["isConversionNeeded"]();
+                const convNeeded = await ConvertV1Profiles["isConversionNeeded"]();
 
                 expect(convNeeded).toEqual(false);
                 let numErrMsgsFound = 0;
@@ -240,7 +281,7 @@ describe("ConvertV1Profiles tests", () => {
                 expect(numErrMsgsFound).toEqual(1);
             });
 
-            it("should return false if we find no V1 profiles", () => {
+            it("should return false if we find no V1 profiles", async () => {
                 // Pretend that we have no zowe config.
                 Object.defineProperty(ImperativeConfig.instance, "config", {
                     configurable: true,
@@ -257,7 +298,7 @@ describe("ConvertV1Profiles tests", () => {
                     .mockReturnValueOnce(0);
 
                 // call the function that we want to test
-                const convNeeded = ConvertV1Profiles["isConversionNeeded"]();
+                const convNeeded = await ConvertV1Profiles["isConversionNeeded"]();
 
                 expect(getOldProfileCountSpy).toHaveBeenCalled();
                 expect(convNeeded).toEqual(false);
@@ -273,7 +314,7 @@ describe("ConvertV1Profiles tests", () => {
                 expect(numErrMsgsFound).toEqual(1);
             });
 
-            it("should return false if no profiles directory exists", () => {
+            it("should return false if no profiles directory exists", async () => {
                 // Pretend that we have no zowe config.
                 Object.defineProperty(ImperativeConfig.instance, "config", {
                     configurable: true,
@@ -294,24 +335,24 @@ describe("ConvertV1Profiles tests", () => {
                     .mockImplementationOnce(() => { throw noDirError; });
 
                 // call the function that we want to test
-                const convNeeded = ConvertV1Profiles["isConversionNeeded"]();
+                const convNeeded = await ConvertV1Profiles["isConversionNeeded"]();
 
                 expect(getOldProfileCountSpy).toHaveBeenCalled();
                 expect(convNeeded).toEqual(false);
 
-                let numErrMsgsFound = 0;
+                let numMsgsFound = 0;
                 for (const nextMsg of ConvertV1Profiles["convertResult"].msgs) {
                     if (nextMsg.msgFormat & ConvertMsgFmt.REPORT_LINE &&
                         nextMsg.msgText.includes(`Did not convert any V1 profiles because ` +
-                        `no V1 profiles were found at "${profileDir}"`)
+                        `no V1 profiles were found at ${profileDir}`)
                     ) {
-                        numErrMsgsFound++;
+                        numMsgsFound++;
                     }
                 }
-                expect(numErrMsgsFound).toEqual(1);
+                expect(numMsgsFound).toEqual(1);
             });
 
-            it("should return false if an IO error occurs while reading profiles", () => {
+            it("should return false if an IO error occurs while reading profiles", async () => {
                 // Pretend that we have no zowe config.
                 Object.defineProperty(ImperativeConfig.instance, "config", {
                     configurable: true,
@@ -333,7 +374,7 @@ describe("ConvertV1Profiles tests", () => {
                     .mockImplementationOnce(() => { throw ioError; });
 
                 // call the function that we want to test
-                const convNeeded = ConvertV1Profiles["isConversionNeeded"]();
+                const convNeeded = await ConvertV1Profiles["isConversionNeeded"]();
 
                 expect(getOldProfileCountSpy).toHaveBeenCalled();
                 expect(convNeeded).toEqual(false);
@@ -352,7 +393,7 @@ describe("ConvertV1Profiles tests", () => {
                 expect(numErrMsgsFound).toEqual(2);
             });
 
-            it("should return true if we find some V1 profiles", () => {
+            it("should return true if we find some V1 profiles", async () => {
                 // Pretend that we have no zowe config.
                 Object.defineProperty(ImperativeConfig.instance, "config", {
                     configurable: true,
@@ -369,7 +410,7 @@ describe("ConvertV1Profiles tests", () => {
                     .mockReturnValueOnce(6);
 
                 // call the function that we want to test
-                const convNeeded = ConvertV1Profiles["isConversionNeeded"]();
+                const convNeeded = await ConvertV1Profiles["isConversionNeeded"]();
 
                 expect(getOldProfileCountSpy).toHaveBeenCalled();
                 expect(convNeeded).toEqual(true);
@@ -521,6 +562,7 @@ describe("ConvertV1Profiles tests", () => {
                 autoStore: true
             };
 
+            let loadV1SchemasSpy:any;
             let activateSpy: any;
             let mergeSpy: any;
             let saveSpy: any;
@@ -542,8 +584,8 @@ describe("ConvertV1Profiles tests", () => {
                     properties: null as any,
                 });
 
-                updateSchemaSpy = jest.spyOn(ConfigSchema, "updateSchema")
-                    .mockReturnValue(0 as any);
+                loadV1SchemasSpy = jest.spyOn(ConvertV1Profiles as any, "loadV1Schemas").mockReturnValue(void 0);
+                updateSchemaSpy = jest.spyOn(ConfigSchema, "updateSchema").mockReturnValue(0 as any);
 
                 jest.spyOn(ImperativeConfig.instance, "config", "get").mockReturnValue({
                     api: {
@@ -572,6 +614,7 @@ describe("ConvertV1Profiles tests", () => {
 
                 expect(activateSpy).toHaveBeenCalled();
                 expect(mergeSpy).toHaveBeenCalled();
+                expect(loadV1SchemasSpy).toHaveBeenCalled();
                 expect(updateSchemaSpy).toHaveBeenCalled();
                 expect(saveSpy).toHaveBeenCalled();
                 expect(renameSpy).toHaveBeenCalled();
@@ -579,11 +622,11 @@ describe("ConvertV1Profiles tests", () => {
                 let numMsgsFound = 0;
                 for (const nextMsg of ConvertV1Profiles["convertResult"].msgs) {
                     if (nextMsg.msgFormat & ConvertMsgFmt.REPORT_LINE) {
-                        if (nextMsg.msgText.includes("Your old V1 profiles have been moved") &&
-                             nextMsg.msgText.includes("Delete them by re-running this operation and requesting deletion")
+                        if ((nextMsg.msgText.includes("Your old V1 profiles have been moved") &&
+                             nextMsg.msgText.includes("Delete them by re-running this operation and requesting deletion"))
                             ||
-                            nextMsg.msgText.includes("Your new profiles have been saved") &&
-                            nextMsg.msgText.includes("To change your configuration, update that file in your text editor")
+                            (nextMsg.msgText.includes("Your new profiles have been saved") &&
+                            nextMsg.msgText.includes("To change your configuration, update that file in your text editor"))
                         ) {
                             numMsgsFound++;
                         }
@@ -607,6 +650,7 @@ describe("ConvertV1Profiles tests", () => {
 
                 expect(activateSpy).toHaveBeenCalled();
                 expect(mergeSpy).toHaveBeenCalled();
+                expect(loadV1SchemasSpy).toHaveBeenCalled();
                 expect(updateSchemaSpy).toHaveBeenCalled();
                 expect(saveSpy).toHaveBeenCalled();
                 expect(renameSpy).toHaveBeenCalled();
@@ -649,6 +693,7 @@ describe("ConvertV1Profiles tests", () => {
                 expect(caughtErr).not.toBeDefined();
                 expect(activateSpy).toHaveBeenCalled();
                 expect(mergeSpy).toHaveBeenCalled();
+                expect(loadV1SchemasSpy).toHaveBeenCalled();
                 expect(updateSchemaSpy).toHaveBeenCalled();
                 expect(saveSpy).toHaveBeenCalled();
                 expect(renameSpy).toHaveBeenCalled();
@@ -663,13 +708,14 @@ describe("ConvertV1Profiles tests", () => {
                         }
                     } else {
                         if (nextMsg.msgText.includes("Failed to rename profiles directory") ||
-                            nextMsg.msgText.includes(renameError)
+                            nextMsg.msgText.includes(`Reason: ${renameError}`) ||
+                            nextMsg.msgText.includes(`Error: ${renameError}`)
                         ) {
                             numMsgsFound++;
                         }
                     }
                 }
-                expect(numMsgsFound).toEqual(3);
+                expect(numMsgsFound).toEqual(4);
             });
         }); // end createNewConfigFile
 
@@ -730,7 +776,7 @@ describe("ConvertV1Profiles tests", () => {
                 let numMsgsFound = 0;
                 for (const nextMsg of ConvertV1Profiles["convertResult"].msgs) {
                     if (nextMsg.msgFormat & ConvertMsgFmt.REPORT_LINE) {
-                        if (nextMsg.msgText.includes(`Deleted the old profiles directory '${oldProfileDir}'`)) {
+                        if (nextMsg.msgText.includes(`Deleted the old profiles directory ${oldProfileDir}`)) {
                             numMsgsFound++;
                         }
                     }
@@ -756,7 +802,7 @@ describe("ConvertV1Profiles tests", () => {
                 let numMsgsFound = 0;
                 for (const nextMsg of ConvertV1Profiles["convertResult"].msgs) {
                     if (nextMsg.msgFormat & ConvertMsgFmt.REPORT_LINE) {
-                        if (nextMsg.msgText.includes(`The old profiles directory '${oldProfileDir}' did not exist.`)) {
+                        if (nextMsg.msgText.includes(`The old profiles directory ${oldProfileDir} did not exist.`)) {
                             numMsgsFound++;
                         }
                     }
@@ -803,12 +849,13 @@ describe("ConvertV1Profiles tests", () => {
 
             it("should also delete credentials stored by old SCS plugin", async () => {
                 // pretend that the zowe keyring is available
-                jest.spyOn(ConvertV1Profiles as any, "checkZoweKeyRingAvailable")
+                jest.spyOn(ConvertV1Profiles as any, "isZoweKeyRingAvailable")
                     .mockResolvedValue(Promise.resolve(true));
 
                 // pretend that we found secure property names under one old-school service
                 jest.spyOn(ConvertV1Profiles as any, "findOldSecureProps")
-                    .mockResolvedValueOnce(Promise.resolve(["secureUser", "securePassword"]));
+                    .mockResolvedValueOnce(Promise.resolve(["secureUser", "securePassword"]))
+                    .mockResolvedValue(Promise.resolve([]));
 
                 jest.spyOn(ConvertV1Profiles as any, "deleteOldSecureProps")
                     .mockResolvedValue(Promise.resolve(true));
@@ -826,7 +873,7 @@ describe("ConvertV1Profiles tests", () => {
                 let numMsgsFound = 0;
                 for (const nextMsg of ConvertV1Profiles["convertResult"].msgs) {
                     if (nextMsg.msgFormat & ConvertMsgFmt.REPORT_LINE) {
-                        if (nextMsg.msgText.includes("Deleted secure value for ") &&
+                        if (nextMsg.msgText.includes("Deleted obsolete secure value ") &&
                             (
                                 nextMsg.msgText.includes("secureUser") ||
                                 nextMsg.msgText.includes("securePassword")
@@ -841,12 +888,13 @@ describe("ConvertV1Profiles tests", () => {
 
             it("should report an error when we fail to delete secure credentials", async () => {
                 // pretend that the zowe keyring is available
-                jest.spyOn(ConvertV1Profiles as any, "checkZoweKeyRingAvailable")
+                jest.spyOn(ConvertV1Profiles as any, "isZoweKeyRingAvailable")
                     .mockResolvedValue(Promise.resolve(true));
 
                 // pretend that we found secure property names under one old-school service
                 jest.spyOn(ConvertV1Profiles as any, "findOldSecureProps")
-                    .mockResolvedValueOnce(Promise.resolve(["secureUser", "securePassword"]));
+                    .mockResolvedValueOnce(Promise.resolve(["secureUser", "securePassword"]))
+                    .mockResolvedValue(Promise.resolve([]));
 
                 // pretend that secure credential deletion failed
                 jest.spyOn(ConvertV1Profiles as any, "deleteOldSecureProps")
@@ -864,7 +912,7 @@ describe("ConvertV1Profiles tests", () => {
                 let numMsgsFound = 0;
                 for (const nextMsg of ConvertV1Profiles["convertResult"].msgs) {
                     if (nextMsg.msgFormat & ConvertMsgFmt.ERROR_LINE) {
-                        if (nextMsg.msgText.includes("Failed to delete secure value") &&
+                        if (nextMsg.msgText.includes("Failed to delete obsolete secure value") &&
                             (
                                 nextMsg.msgText.includes("secureUser") ||
                                 nextMsg.msgText.includes("securePassword")
@@ -877,9 +925,9 @@ describe("ConvertV1Profiles tests", () => {
                 expect(numMsgsFound).toEqual(2);
             });
 
-            it("should report an error when the zowe keyring is unavailable", async () => {
+            it("should only report directory deletion when zowe keyring is unavailable", async () => {
                 // pretend that the zowe keyring is unavailable
-                const checkKeyRingSpy = jest.spyOn(ConvertV1Profiles as any, "checkZoweKeyRingAvailable")
+                const checkKeyRingSpy = jest.spyOn(ConvertV1Profiles as any, "isZoweKeyRingAvailable")
                     .mockResolvedValue(Promise.resolve(false));
 
                 // pretend that the profiles directory exists
@@ -892,22 +940,20 @@ describe("ConvertV1Profiles tests", () => {
                 await ConvertV1Profiles["deleteV1Profiles"]();
 
                 expect(removeSyncSpy).toHaveBeenCalled();
-                let numMsgsFound = 0;
+                let numDirDelMsgs = 0;
+                let numCredDelMsgs = 0;
                 for (const nextMsg of ConvertV1Profiles["convertResult"].msgs) {
-                    if (nextMsg.msgFormat & ConvertMsgFmt.ERROR_LINE) {
-                        if (nextMsg.msgText.includes(
-                            "Zowe keyring or the credential vault are unavailable. Unable to delete old secure values"))
-                        {
-                            numMsgsFound++;
-                        }
+                    if (nextMsg.msgText.includes(`Deleted the old profiles directory ${oldProfileDir}`)) {
+                        numDirDelMsgs++;
                     }
                 }
-                expect(numMsgsFound).toEqual(1);
+                expect(ConvertV1Profiles["convertResult"].msgs.length).toEqual(1);
+                expect(numDirDelMsgs).toEqual(1);
                 checkKeyRingSpy.mockRestore();  // restore original app implementation
             });
         }); // end deleteV1Profiles
 
-        describe("removeOldOverrides", () => {
+        describe("replaceOldCredMgrOverride", () => {
 
             it("should do nothing if there are no overrides", () => {
                 // pretend that no overrides exist
@@ -919,7 +965,7 @@ describe("ConvertV1Profiles tests", () => {
                 // call the function that we want to test
                 let caughtErr: any;
                 try {
-                    ConvertV1Profiles["removeOldOverrides"]();
+                    ConvertV1Profiles["replaceOldCredMgrOverride"]();
                 } catch (err) {
                     caughtErr = err;
                 }
@@ -948,29 +994,10 @@ describe("ConvertV1Profiles tests", () => {
                     }
                 } as any);
 
-                // mock getter properties, so that we avoid real ImperativeConfig actions
-                Object.defineProperty(ImperativeConfig.instance, "cliHome", {
-                    configurable: true,
-                    get: jest.fn(() => {
-                        return "/fake/cliHome";
-                    })
-                });
-                Object.defineProperty(ImperativeConfig.instance, "config", {
-                    configurable: true,
-                    set: jest.fn()
-                });
-
-                // avoid running the real Config.load and OverridesLoader.load
-                const configLoadSpy = jest.spyOn(Config, "load").mockResolvedValue(Config.empty() as any);
-                const overridesLoaderLoadSpy = jest.spyOn(OverridesLoader, "load").mockResolvedValue(Promise.resolve());
-
-                // Avoid using the real secure credMgr. Pretend it works.
-                setCredMgrState("works");
-
                 // call the function that we want to test
                 let caughtErr: any;
                 try {
-                    await ConvertV1Profiles["removeOldOverrides"]();
+                    await ConvertV1Profiles["replaceOldCredMgrOverride"]();
                 } catch (err) {
                     caughtErr = err;
                 }
@@ -979,61 +1006,30 @@ describe("ConvertV1Profiles tests", () => {
                 expect(appSettingsSetSpy).toHaveBeenCalledWith(
                     "overrides", "CredentialManager", CredentialManagerOverride.DEFAULT_CRED_MGR_NAME
                 );
-                expect(configLoadSpy).toHaveBeenCalled();
-                expect(overridesLoaderLoadSpy).toHaveBeenCalled();
                 expect(ConvertV1Profiles["convertResult"].v1ScsPluginName).toEqual(fakeV1ScsPlugin);
-                expect(ConvertV1Profiles["convertResult"].reInitCredMgr).toEqual(false);
+                expect(ConvertV1Profiles["convertResult"].credsWereMigrated).toEqual(true);
             });
 
-            it("should report when credMgr must be re-initialized", async () => {
+            it("should catch and report an error thrown by AppSettings.instance.set", () => {
                 // pretend that we found an old credential manager
                 const fakeV1ScsPlugin = "FakeScsPlugin";
                 jest.spyOn(ConvertV1Profiles as any, "getOldPluginInfo").mockReturnValueOnce(
                     { plugins: [fakeV1ScsPlugin], overrides: ["CredentialManager"] }
                 );
 
-                // pretend that we set the credMgr
-                const appSettingsSetSpy = jest.fn();
+                // pretend that AppSettings.set() throws an exception
+                const appSettingsCrashErrMsg = "A fake exception from AppSettings.instance.set";
+                const appSettingsSetSpy = jest.fn().mockImplementation(() => {
+                    throw new Error(appSettingsCrashErrMsg);
+                });
                 jest.spyOn(AppSettings, "instance", "get").mockReturnValue({
                     set: appSettingsSetSpy
                 } as any);
 
-                // pretend that our loadedConfig has a credMgr override
-                jest.spyOn(ImperativeConfig.instance, "loadedConfig", "get").mockReturnValue({
-                    overrides: {
-                        CredentialManager: "CfgMgrOverride"
-                    }
-                } as any);
-
-                // mock getter properties, so that we avoid real ImperativeConfig actions
-                Object.defineProperty(ImperativeConfig.instance, "cliHome", {
-                    configurable: true,
-                    get: jest.fn(() => {
-                        return "/fake/cliHome";
-                    })
-                });
-                Object.defineProperty(ImperativeConfig.instance, "config", {
-                    configurable: true,
-                    set: jest.fn()
-                });
-
-                // avoid running the real Config.load and OverridesLoader.load
-                const configLoadSpy = jest.spyOn(Config, "load").mockResolvedValue(Config.empty() as any);
-                const overridesLoaderLoadSpy = jest.spyOn(OverridesLoader, "load").mockResolvedValue(Promise.resolve());
-
-                // Avoid using the real secure credMgr. Pretend it works.
-                setCredMgrState("works");
-
-                // pretend that the CredMgr has been initialized
-                Object.defineProperty(CredentialManagerFactory, "initialized", {
-                    configurable: true,
-                    get: jest.fn(() => true)
-                });
-
                 // call the function that we want to test
                 let caughtErr: any;
                 try {
-                    await ConvertV1Profiles["removeOldOverrides"]();
+                    ConvertV1Profiles["replaceOldCredMgrOverride"]();
                 } catch (err) {
                     caughtErr = err;
                 }
@@ -1043,64 +1039,32 @@ describe("ConvertV1Profiles tests", () => {
                     "overrides", "CredentialManager", CredentialManagerOverride.DEFAULT_CRED_MGR_NAME
                 );
                 expect(ConvertV1Profiles["convertResult"].v1ScsPluginName).toEqual(fakeV1ScsPlugin);
-                expect(configLoadSpy).not.toHaveBeenCalled();
-                expect(overridesLoaderLoadSpy).not.toHaveBeenCalled();
-                expect(ConvertV1Profiles["convertResult"].reInitCredMgr).toEqual(true);
-                let numMsgsFound = 0;
-                for (const nextMsg of ConvertV1Profiles["convertResult"].msgs) {
-                    if (nextMsg.msgFormat & ConvertMsgFmt.REPORT_LINE) {
-                        if (nextMsg.msgText.includes(
-                            "The following plug-ins will be removed because they are now part of the core CLI and are no longer needed") ||
-                            fakeV1ScsPlugin
-                        ) {
-                            numMsgsFound++;
-                        }
-                    }
-                }
-                expect(numMsgsFound).toEqual(2);
-            });
-
-            it("should catch and report an error thrown by AppSettings.instance.set", () => {
-                // pretend that we found an old credential manager
-                jest.spyOn(ConvertV1Profiles as any, "getOldPluginInfo").mockReturnValueOnce(
-                    { plugins: [], overrides: ["CredentialManager"] }
-                );
-
-                // pretend that AppSettings.instance.set throws an exception
-                const fakeErrMsg = "A fake exception from AppSettings.instance.set";
-                const appSettingsSetSpy = jest.fn().mockImplementation(() => {
-                    throw new Error(fakeErrMsg);
-                });
-                jest.spyOn(AppSettings, "instance", "get").mockReturnValue({
-                    set: appSettingsSetSpy
-                } as any);
-
-                // call the function that we want to test
-                let caughtErr: any;
-                try {
-                    ConvertV1Profiles["removeOldOverrides"]();
-                } catch (err) {
-                    caughtErr = err;
-                }
-
-                expect(appSettingsSetSpy).toHaveBeenCalled();
-                expect(caughtErr).not.toBeDefined();
-
+                expect(ConvertV1Profiles["convertResult"].credsWereMigrated).toEqual(false);
                 let numMsgsFound = 0;
                 for (const nextMsg of ConvertV1Profiles["convertResult"].msgs) {
                     if (nextMsg.msgFormat & ConvertMsgFmt.ERROR_LINE) {
                         if (nextMsg.msgText.includes("Failed to replace credential manager override setting") ||
-                            nextMsg.msgText.includes(fakeErrMsg)
+                            nextMsg.msgText.includes(`Reason: ${appSettingsCrashErrMsg}`) ||
+                            nextMsg.msgText.includes(`Error: ${appSettingsCrashErrMsg}`)
                         ) {
                             numMsgsFound++;
                         }
                     }
                 }
-                expect(numMsgsFound).toEqual(2);
+                expect(numMsgsFound).toEqual(3);
             });
-        }); // end removeOldOverrides
+        }); // end replaceOldCredMgrOverride
 
         describe("getOldPluginInfo", () => {
+            let isPluginInstalledSpy: any;
+
+            beforeEach(() => {
+                isPluginInstalledSpy = jest.spyOn(ConvertV1Profiles as any, "isPluginInstalled");
+            });
+
+            afterAll(() => {
+                isPluginInstalledSpy.mockRestore();  // restore original app implementation
+            });
 
             it("should retrieve old credMgr override and old plugin", () => {
                 // pretend that we find the old SCS CredMgr name
@@ -1110,14 +1074,8 @@ describe("ConvertV1Profiles tests", () => {
                     get: appSettingsGetSpy
                 } as any);
 
-                // pretend that PluginIssues.instance.getInstalledPlugins returns the name of the old SCS
-                const getPluginsSpy = jest.fn().mockReturnValue({
-                    [oldScsName]: {},
-                    "AnIrrelevantPluginName": {}
-                } as any);
-                jest.spyOn(PluginIssues, "instance", "get").mockReturnValue({
-                    getInstalledPlugins: getPluginsSpy
-                } as any);
+                // pretend that the old zowe SCS plugin is installed
+                isPluginInstalledSpy.mockReturnValue(true);
 
                 // call the function that we want to test
                 let pluginInfo: any;
@@ -1130,7 +1088,6 @@ describe("ConvertV1Profiles tests", () => {
 
                 expect(caughtErr).not.toBeDefined();
                 expect(appSettingsGetSpy).toHaveBeenCalled();
-                expect(getPluginsSpy).toHaveBeenCalled();
 
                 let numItemsFound = 0;
                 for (const nextOverride of pluginInfo.overrides) {
@@ -1159,11 +1116,8 @@ describe("ConvertV1Profiles tests", () => {
                     get: appSettingsGetSpy
                 } as any);
 
-                // pretend that PluginIssues.instance.getInstalledPlugins returns no plugins
-                const getPluginsSpy = jest.fn().mockReturnValue({} as any);
-                jest.spyOn(PluginIssues, "instance", "get").mockReturnValue({
-                    getInstalledPlugins: getPluginsSpy
-                } as any);
+                // pretend that the old zowe SCS plugin is installed
+                isPluginInstalledSpy.mockReturnValue(true);
 
                 // call the function that we want to test
                 let pluginInfo: any;
@@ -1176,75 +1130,135 @@ describe("ConvertV1Profiles tests", () => {
 
                 expect(caughtErr).not.toBeDefined();
                 expect(appSettingsGetSpy).toHaveBeenCalled();
-                expect(getPluginsSpy).toHaveBeenCalled();
                 expect(pluginInfo.overrides.length).toEqual(0);
-                expect(pluginInfo.plugins.length).toEqual(0);
+                expect(pluginInfo.plugins.length).toEqual(1);
 
                 let numMsgsFound = 0;
                 for (const nextMsg of ConvertV1Profiles["convertResult"].msgs) {
                     if (nextMsg.msgFormat & ConvertMsgFmt.ERROR_LINE) {
                         if (nextMsg.msgText.includes("Failed trying to read 'CredentialManager' overrides.") ||
-                            nextMsg.msgText.includes(fakeErrMsg)
+                            nextMsg.msgText.includes(`Reason: ${fakeErrMsg}`) ||
+                            nextMsg.msgText.includes(`Error: ${fakeErrMsg}`)
                         ) {
                             numMsgsFound++;
                         }
                     }
                 }
-                expect(numMsgsFound).toEqual(2);
+                expect(numMsgsFound).toEqual(3);
+            });
+        }); // end getOldPluginInfo
+
+        describe("isPluginInstalled", () => {
+            const readFileSyncSpy = jest.spyOn(jsonfile, "readFileSync");
+
+            beforeAll(() => {
+                // cliHome is a getter property, so mock the property.
+                Object.defineProperty(ImperativeConfig.instance, "cliHome", {
+                    configurable: true,
+                    get: jest.fn(() => {
+                        return "/fake/cliHome";
+                    })
+                });
             });
 
-            it("should catch exception from PluginIssues.instance.getInstalledPlugins and record error", () => {
-                // pretend that we find the old SCS CredMgr name
-                const oldScsName = "@zowe/secure-credential-store-for-zowe-cli";
-                const appSettingsGetSpy = jest.fn().mockReturnValue(oldScsName);
-                jest.spyOn(AppSettings, "instance", "get").mockReturnValue({
-                    get: appSettingsGetSpy
-                } as any);
+            afterEach(() => {
+                readFileSyncSpy.mockRestore();  // restore original app implementation
+            });
 
-                // pretend that PluginIssues.instance.getInstalledPlugins crashes
-                const fakeErrMsg = "A fake exception from PluginIssues.instance.getInstalledPlugins";
-                const getPluginsSpy = jest.fn().mockImplementation(() => {
-                    throw new Error(fakeErrMsg);
+            it("should return true if plugin name is in the plugins file", () => {
+                // make readFileSync return some fake data
+                const pluginName = "FakePluginName";
+                const fakePluginsJson = JSON.parse(`{
+                    "@zowe/secure-credential-store-for-zowe-cli": {
+                        "package": "@zowe/secure-credential-store-for-zowe-cli@zowe-v1-lts",
+                        "registry": "https://registry.npmjs.org/",
+                        "version": "4.1.12"
+                    },
+                    "@zowe/cics-for-zowe-cli": {
+                        "package": "@zowe/cics-for-zowe-cli@zowe-v1-lts",
+                        "registry": "https://registry.npmjs.org/",
+                        "version": "4.0.11"
+                    },
+                    "${pluginName}": {
+                        "package": "@zowe/${pluginName}-for-zowe-cli@zowe-v1-lts",
+                        "registry": "https://registry.npmjs.org/",
+                        "version": "1.2.3"
+                    }
+                }`);
+                readFileSyncSpy.mockImplementation(() => {
+                    return fakePluginsJson;
                 });
-                jest.spyOn(PluginIssues, "instance", "get").mockReturnValue({
-                    getInstalledPlugins: getPluginsSpy
-                } as any);
 
                 // call the function that we want to test
-                let pluginInfo: any;
+                let pluginInstResult: boolean = ConvertV1Profiles["isPluginInstalled"](pluginName);
+                expect(pluginInstResult).toEqual(true);
+            });
+
+            it("should return false if plugin name is NOT in the plugins file", () => {
+                // make readFileSync return some fake data
+                const fakePluginsJson = JSON.parse(`{
+                    "@zowe/secure-credential-store-for-zowe-cli": {
+                        "package": "@zowe/secure-credential-store-for-zowe-cli@zowe-v1-lts",
+                        "registry": "https://registry.npmjs.org/",
+                        "version": "4.1.12"
+                    },
+                    "@zowe/cics-for-zowe-cli": {
+                        "package": "@zowe/cics-for-zowe-cli@zowe-v1-lts",
+                        "registry": "https://registry.npmjs.org/",
+                        "version": "4.0.11"
+                    },
+                    "@zowe/not-your-plugin": {
+                        "package": "@zowe/these-are-not-the-droids-you-are-looking-for@zowe-v2-lts",
+                        "registry": "https://registry.npmjs.org/",
+                        "version": "4.0.11"
+                    }
+                }`);
+                readFileSyncSpy.mockImplementation(() => {
+                    return fakePluginsJson;
+                });
+
+                // call the function that we want to test
+                let pluginInstResult: boolean = ConvertV1Profiles["isPluginInstalled"]("PluginNameNotInstalled");
+                expect(pluginInstResult).toEqual(false);
+            });
+
+
+            it("should catch exception from readFileSync and record error", () => {
+                // pretend that readFileSync throws an error
+                const readFileErrMsg = "readFileSync threw some horrible exception";
+                readFileSyncSpy.mockImplementation(jest.fn(() => {
+                    throw new Error(readFileErrMsg);
+                }));
+
+                // call the function that we want to test
+                const pluginName = "FakePluginName";
+                let pluginInstResult: boolean = false;
                 let caughtErr: any;
                 try {
-                    pluginInfo = ConvertV1Profiles["getOldPluginInfo"]();
+                    pluginInstResult = ConvertV1Profiles["isPluginInstalled"](pluginName);
                 } catch (err) {
                     caughtErr = err;
                 }
 
                 expect(caughtErr).not.toBeDefined();
-                expect(appSettingsGetSpy).toHaveBeenCalled();
-                expect(getPluginsSpy).toHaveBeenCalled();
-                expect(pluginInfo.plugins.length).toEqual(0);
+                expect(pluginInstResult).toEqual(false);
 
-                let numItemsFound = 0;
-                for (const nextOverride of pluginInfo.overrides) {
-                    if (nextOverride === "CredentialManager") {
-                        numItemsFound++;
-                    }
-                }
-                expect(numItemsFound).toEqual(1);
-
-                numItemsFound = 0;
+                let numMsgsFound = 0;
                 for (const nextMsg of ConvertV1Profiles["convertResult"].msgs) {
                     if (nextMsg.msgFormat & ConvertMsgFmt.ERROR_LINE) {
-                        if (nextMsg.msgText.includes("Failed trying to get the set of installed plugins") ||
-                            nextMsg.msgText.includes(fakeErrMsg)
+                        if (nextMsg.msgText.includes("Cannot read plugins file") && nextMsg.msgText.includes("plugins.json") ) {
+                            numMsgsFound++;
+                        }
+                        if ((nextMsg.msgText.includes("Reason: ") || nextMsg.msgText.includes("Error: ")) &&
+                            nextMsg.msgText.includes(readFileErrMsg)
                         ) {
-                            numItemsFound++;
+                            numMsgsFound++;
                         }
                     }
                 }
-                expect(numItemsFound).toEqual(2);
+                expect(numMsgsFound).toEqual(3);
             });
-        }); // end getOldPluginInfo
+        }); // end isPluginInstalled
 
         describe("getOldProfileCount", () => {
 
@@ -1265,7 +1279,142 @@ describe("ConvertV1Profiles tests", () => {
             });
         }); // end getOldProfileCount
 
-        describe("checkZoweKeyRingAvailable", () => {
+        describe("initCredMgr", () => {
+            let logMsg: string;
+
+            beforeAll(() => {
+                // change logger spy to record the message
+                loggerSpy = jest.spyOn(Logger, "getImperativeLogger").mockImplementation(() => {
+                    return {
+                        error: jest.fn((errMsg) => {
+                            logMsg = errMsg;
+                        })
+                    } as any;
+                });
+            });
+
+            beforeEach(() => {
+                // Reset the messages that have been logged or reported
+                logMsg = "Nothing logged";
+                ConvertV1Profiles["convertResult"].msgs = [];
+            });
+
+            afterEach(() => {
+                jest.clearAllMocks(); // clear the mock counters
+            });
+
+            afterAll(() => {
+                // restore the logger spy back to doing nothing
+                loggerSpy = jest.spyOn(Logger, "getImperativeLogger").mockReturnValue({
+                    error: jest.fn()
+                } as any);
+            });
+
+            it("should detect when credMgr has already been initialized", async () => {
+                // pretend that credMgr has been initialized.
+                let initializedWasCalled = false;
+                Object.defineProperty(CredentialManagerFactory, "initialized", {
+                    configurable: true,
+                    get: jest.fn(() => {
+                        initializedWasCalled = true;
+                        return true;
+                    })
+                });
+
+                // pretend that the SCS plugin was configured as the credMgr
+                ConvertV1Profiles["oldScsPluginWasConfigured"] = true;
+
+                // call the function that we want to test
+                await ConvertV1Profiles["initCredMgr"]();
+
+                expect(initializedWasCalled).toEqual(true);
+                expect(logMsg).toContain(
+                    `Credential manager has already been initialized with the old SCS plugin ${oldScsPluginNm}. ` +
+                    `Old credentials cannot be migrated`
+                );
+            });
+
+            it("should read profiles from disk when ProfileInfo is supplied", async () => {
+                // pretend that credMgr has NOT been initialized.
+                Object.defineProperty(CredentialManagerFactory, "initialized", {
+                    configurable: true,
+                    get: jest.fn(() => {
+                        return false;
+                    })
+                });
+
+                // do not actually read any ProfileInfo from disk
+                ConvertV1Profiles["profileInfo"] = new ProfileInfo("zowe");
+                const readFromDiskSpy = jest.spyOn(ConvertV1Profiles["profileInfo"], "readProfilesFromDisk")
+                    .mockResolvedValue(Promise.resolve());
+
+                // call the function that we want to test
+                await ConvertV1Profiles["initCredMgr"]();
+                expect(readFromDiskSpy).toHaveBeenCalled();
+            });
+
+            it("should call overridesLoader when ProfileInfo is NOT supplied", async () => {
+                // pretend that credMgr has NOT been initialized.
+                Object.defineProperty(CredentialManagerFactory, "initialized", {
+                    configurable: true,
+                    get: jest.fn(() => {
+                        return false;
+                    })
+                });
+
+                // do not actually load the overrides
+                ConvertV1Profiles["profileInfo"] = null as any;
+                const overridesLoaderSpy = jest.spyOn(OverridesLoader, "load");
+
+                // call the function that we want to test
+                await ConvertV1Profiles["initCredMgr"]();
+                expect(overridesLoaderSpy).toHaveBeenCalled();
+            });
+
+            it("should catch an exception and report the error", async () => {
+                // pretend that credMgr has NOT been initialized.
+                Object.defineProperty(CredentialManagerFactory, "initialized", {
+                    configurable: true,
+                    get: jest.fn(() => {
+                        return false;
+                    })
+                });
+
+                // do not actually read any ProfileInfo from disk
+                ConvertV1Profiles["profileInfo"] = new ProfileInfo("zowe");
+                const fakeErrMsg = "A fake exception from findCredentials";
+                const readFromDiskSpy = jest.spyOn(ConvertV1Profiles["profileInfo"], "readProfilesFromDisk")
+                    .mockImplementation(() => {
+                        throw new Error(fakeErrMsg);
+                    });
+
+                // call the function that we want to test
+                let caughtErr: any;
+                try {
+                    await ConvertV1Profiles["initCredMgr"]();
+                } catch (err) {
+                    caughtErr = err;
+                }
+
+                expect(readFromDiskSpy).toHaveBeenCalled();
+                expect(caughtErr).not.toBeDefined();
+
+                let numMsgsFound = 0;
+                for (const nextMsg of ConvertV1Profiles["convertResult"].msgs) {
+                    if (nextMsg.msgFormat & ConvertMsgFmt.ERROR_LINE) {
+                        if (nextMsg.msgText.includes(`Failed to initialize CredentialManager`) ||
+                            nextMsg.msgText.includes(`Reason: ${fakeErrMsg}`) ||
+                            nextMsg.msgText.includes(`Error: ${fakeErrMsg}`)
+                        ) {
+                            numMsgsFound++;
+                        }
+                    }
+                }
+                expect(numMsgsFound).toEqual(3);
+            });
+        }); // end initCredMgr
+
+        describe("isZoweKeyRingAvailable", () => {
 
             it("should return true if it finds credentials in the vault", async () => {
                 // pretend that findCredentials found a bunch of accounts and passwords
@@ -1281,7 +1430,7 @@ describe("ConvertV1Profiles tests", () => {
                 } as any;
 
                 // call the function that we want to test
-                const result = await ConvertV1Profiles["checkZoweKeyRingAvailable"]();
+                const result = await ConvertV1Profiles["isZoweKeyRingAvailable"]();
 
                 ConvertV1Profiles["zoweKeyRing"] = origZoweKeyRing;
                 expect(findCredentialsSpy).toHaveBeenCalledWith("@zowe/cli");
@@ -1303,7 +1452,7 @@ describe("ConvertV1Profiles tests", () => {
                 let caughtErr: any;
                 let checkKeyRingResult: boolean = true;
                 try {
-                    checkKeyRingResult = await ConvertV1Profiles["checkZoweKeyRingAvailable"]();
+                    checkKeyRingResult = await ConvertV1Profiles["isZoweKeyRingAvailable"]();
                 } catch (err) {
                     caughtErr = err;
                 }
@@ -1313,7 +1462,7 @@ describe("ConvertV1Profiles tests", () => {
                 expect(caughtErr).not.toBeDefined();
                 expect(checkKeyRingResult).toEqual(false);
             });
-        }); // end checkZoweKeyRingAvailable
+        }); // end isZoweKeyRingAvailable
 
         describe("findOldSecureProps", () => {
 
@@ -1366,15 +1515,15 @@ describe("ConvertV1Profiles tests", () => {
                 for (const nextMsg of ConvertV1Profiles["convertResult"].msgs) {
                     if (nextMsg.msgFormat & ConvertMsgFmt.ERROR_LINE) {
                         if (nextMsg.msgText.includes(`Encountered an error while gathering secure properties ` +
-                            `for service '${fakeServiceName}':`)
-                            ||
-                            nextMsg.msgText.includes(fakeFindCredError)
+                            `for service '${fakeServiceName}':`) ||
+                            nextMsg.msgText.includes(`Reason: ${fakeFindCredError}`) ||
+                            nextMsg.msgText.includes(`Error: ${fakeFindCredError}`)
                         ) {
                             numMsgsFound++;
                         }
                     }
                 }
-                expect(numMsgsFound).toEqual(2);
+                expect(numMsgsFound).toEqual(3);
                 ConvertV1Profiles["zoweKeyRing"] = origZoweKeyRing;
             });
         }); // end findOldSecureProps
@@ -1421,15 +1570,15 @@ describe("ConvertV1Profiles tests", () => {
                     if (nextMsg.msgFormat & ConvertMsgFmt.ERROR_LINE) {
                         if (nextMsg.msgText.includes(
                             `Encountered an error while deleting secure data for ` +
-                            `service '${fakeAcct}/${fakeProp}':`)
-                            ||
-                            nextMsg.msgText.includes(fakeDelPassError)
+                            `service '${fakeAcct}/${fakeProp}':`) ||
+                            nextMsg.msgText.includes(`Reason: ${fakeDelPassError}`) ||
+                            nextMsg.msgText.includes(`Error: ${fakeDelPassError}`)
                         ) {
                             numMsgsFound++;
                         }
                     }
                 }
-                expect(numMsgsFound).toEqual(2);
+                expect(numMsgsFound).toEqual(3);
                 ConvertV1Profiles["zoweKeyRing"] = origZoweKeyRing;
             });
         }); // end deleteOldSecureProps
