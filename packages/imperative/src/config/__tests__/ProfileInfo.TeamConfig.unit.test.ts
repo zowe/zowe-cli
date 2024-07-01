@@ -480,6 +480,9 @@ describe("TeamConfig ProfileInfo tests", () => {
     });
 
     describe("mergeArgsForProfile", () => {
+        beforeEach(() => {
+            (ImperativeConfig as any).mInstance = null;
+        });
         afterEach(() => {
             delete process.env[envHost];
             delete process.env[envPort];
@@ -860,11 +863,6 @@ describe("TeamConfig ProfileInfo tests", () => {
             process.env[testEnvPrefix + "_CLI_HOME"] = nestedTeamProjDir;
             await profInfo.readProfilesFromDisk();
             const profiles = profInfo.getAllProfiles();
-            // expect(ImperativeConfig.instance.loadedConfig).toBeUndefined();
-
-            // TODO(zFernand0): investigate why global layer profiles are not loaded
-            expect(profiles).toEqual([]); // This should prove the above statement
-
             const desiredProfile = "TEST001.first";
             const profAttrs = profiles.find(p => p.profName === desiredProfile);
             let mergedArgs;

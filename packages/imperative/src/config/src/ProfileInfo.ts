@@ -1599,9 +1599,12 @@ export class ProfileInfo {
      */
     private overrideWithEnv(mergedArgs: IProfMergedArg, profSchema?: IProfileSchema) {
         if (!this.mOverrideWithEnv) return; // Don't do anything
-
+        
+        // const envPrefix = ImperativeConfig.instance.envVariablePrefix;
+        const envPrefix = this.mAppName.toUpperCase();
+        // Do we expect to always read "ZOWE_OPT_" environmental variables or "APPNAME_OPT_"?
+        
         // Populate any missing options
-        const envPrefix = ImperativeConfig.instance.loadedConfig.envVariablePrefix;
         const envStart = envPrefix + "_OPT_";
         for (const key in process.env) {
             if (key.startsWith(envStart)) {
