@@ -31,9 +31,9 @@ import { IProcessorTypes } from "./doc/IEventInstanceTypes";
  * - **Managing Event Subscriptions**: Mapping subscribed events and their corresponding callbacks, ensuring that events are properly handled and dispatched.
  *
  * ### Understanding Event Types
- * - **Zowe User Events**: Zowe events that when triggered, notify all subscribed users.
- * - **Zowe Shared Events**: Zowe events that are specific to only one user.
- * - **Custom Events**: Applications can define their own shared and user events.
+ * - **Predefined Zowe Events**: Zowe provides a set of predefined shared and user events that can be watched.
+ * - **Custom Events**: Applications can define their own shared and user events, allowing for custom event-driven behavior.
+ *
  *
  * @export
  * @class EventProcessor
