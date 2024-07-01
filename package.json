@@ -42,16 +42,16 @@
     "package": "node scripts/bundleCliTgz.js"
   },
   "devDependencies": {
-    "@lerna-lite/changed": "^3.3.0",
-    "@lerna-lite/cli": "^3.3.0",
-    "@lerna-lite/list": "^3.3.0",
-    "@lerna-lite/run": "^3.3.0",
-    "@lerna-lite/version": "^3.3.0",
+    "@lerna-lite/changed": "^3.6.0",
+    "@lerna-lite/cli": "^3.6.0",
+    "@lerna-lite/list": "^3.6.0",
+    "@lerna-lite/run": "^3.6.0",
+    "@lerna-lite/version": "^3.6.0",
     "@types/jest": "^29.5.12",
     "@types/node": "^18.19.17",
-    "@types/which": "^3.0.3",
-    "@typescript-eslint/eslint-plugin": "^7.0.0",
-    "@typescript-eslint/parser": "^7.0.0",
+    "@types/which": "^3.0.4",
+    "@typescript-eslint/eslint-plugin": "^7.14.1",
+    "@typescript-eslint/parser": "^7.14.1",
     "ansi-colors": "^4.1.2",
     "chalk": "^4.1.0",
     "env-cmd": "^10.1.0",
@@ -75,10 +75,10 @@
     "npm-lockfile": "^3.0.7",
     "rimraf": "^5.0.0",
     "symlink-dir": "^5.2.1",
-    "ts-jest": "^29.1.2",
+    "ts-jest": "^29.1.5",
     "ts-node": "^7.0.1",
-    "typedoc": "^0.25.8",
-    "typescript": "^5.3.3"
+    "typedoc": "^0.26.3",
+    "typescript": "^5.5.2"
   },
   "jestSonar": {
     "reportPath": "__tests__/__results__/jest-sonar"

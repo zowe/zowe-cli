@@ -160,7 +160,7 @@ export class WebHelpGenerator {
             { commandDefinition: uniqueDefinitions, fullCommandTree: uniqueDefinitions, skipTextWrap: true });
         rootHelpContent += this.renderMarkdown(this.buildChildrenSummaryTables(helpGen, rootCommandName) + "\n\n" +
             helpGen.buildCommandOptionsSection() + helpGen.buildGlobalOptionsSection());
-        this.singlePageHtml = rootHelpContent.replace(/<h4>Groups.+?<\/ul>/s, "");
+        this.singlePageHtml = rootHelpContent.replace(/<h4>Groups[^]+?<\/ul>/, "");
         rootHelpContent += this.genDocsFooter();
         fs.writeFileSync(rootHelpHtmlPath, rootHelpContent);
         cmdResponse.console.log(Buffer.from("."));
