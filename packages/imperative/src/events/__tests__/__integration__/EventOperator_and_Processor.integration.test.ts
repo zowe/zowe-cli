@@ -20,9 +20,15 @@ const sampleApps = ["firstApp", "secondApp"];
 let zoweCliHome: string;
 
 /**
+ * ## Understanding Event Files
  * |  Zowe Event Dir  | <...>/.zowe/.events/Zowe/<zoweEventName>
  * | Custom Event Dir | <...>/.zowe/.events/custApp/<custEventName>
- */
+ *
+ * ## Understanding Event Types
+ * - **Shared Events**: Zowe events that when triggered, notify all subscribed users.
+ * - **User Events**: Zowe events that are specific to a particular user or session.
+ * - **Custom Events**: Applications can define their own shared and user events.
+*/
 describe("Event Operator and Processor", () => {
     const sharedZoweEvent = ZoweSharedEvents.ON_CREDENTIAL_MANAGER_CHANGED;
     const customUserEvent = "onCustomUserEvent";

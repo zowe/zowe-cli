@@ -21,8 +21,18 @@ import { IEventDisposable } from "./doc";
 import { IProcessorTypes } from "./doc/IEventInstanceTypes";
 
 /**
- * Manages event subscriptions and emissions for a specific application.
+ * ## Overview
+ * The `EventProcessor` class manages event subscriptions and emissions for a specific application.
  *
+ * An `EventProcessor` handles three main functionalities:
+ * - **Subscribing to Events**: Registration of a callback function that will be executed when that event occurs.
+ * - **Emitting Events**: Notifying other applications or parts of the same application about certain actions or changes.
+ * - **Managing Event Subscriptions**: Mapping subscribed events and their corresponding callbacks, ensuring that events are properly handled and dispatched.
+ *
+ * ### Understanding Event Types
+ * - **Shared Events**: Zowe events that when triggered, notify all subscribed users.
+ * - **User Events**: Zowe events that are specific to only one user.
+ * - **Custom Events**: Applications can define their own shared and user events.
  * @export
  * @class EventProcessor
  */
@@ -48,7 +58,7 @@ export class EventProcessor {
         this.appName = appName;
         this.processorType = type;
 
-        // Ensure we have correct environmental conditions to setup a custom logger,
+        // Ensure correct environmental conditions to setup a custom logger,
         // otherwise use default logger
         if (ImperativeConfig.instance.loadedConfig == null || LoggerManager.instance.isLoggerInit === false) {
             ConfigUtils.initImpUtils("zowe");
@@ -57,12 +67,12 @@ export class EventProcessor {
     }
 
     /**
-     * Subscribes to shared events by creating and managing a new subscription.
+     * Subscription to an event that will notify all subscribed users.
      *
      * @param {string} eventName - The name of the event to subscribe to.
      * @param {EventCallback[] | EventCallback} callbacks - Callback functions to handle the event.
-     * @returns {IEventDisposable} - Object allowing management of the subscription.
-     */
+     * @returns {IEventDisposable} - Object allowing management/cleanup of the subscription.
+    */
     public subscribeShared(eventName: string, callbacks: EventCallback[] | EventCallback): IEventDisposable {
         if (this.processorType === IProcessorTypes.EMITTER) {
             throw new ImperativeError({ msg: `Processor does not have correct permissions: ${eventName}` });
@@ -75,11 +85,11 @@ export class EventProcessor {
     }
 
     /**
-    * Subscribes to user-specific events by creating and managing a new subscription.
-    *
+     * Subscription to an event that will notify a single user.
+     *
     * @param {string} eventName - The name of the event to subscribe to.
     * @param {EventCallback[] | EventCallback} callbacks - Callback functions to handle the event.
-    * @returns {IEventDisposable} - Object allowing management of the subscription.
+    * @returns {IEventDisposable} - Object allowing management/cleanup of the subscription.
     */
     public subscribeUser(eventName: string, callbacks: EventCallback[] | EventCallback): IEventDisposable {
         if (this.processorType === IProcessorTypes.EMITTER) {

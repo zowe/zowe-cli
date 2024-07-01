@@ -22,10 +22,9 @@ interface IZoweProcessor extends IEmitterAndWatcher {
 
 /**
  * ## Overview
- * The `EventOperator` is the central point for managing event processors within an application.
- * It allows different parts of an application to subscribe to, emit, and watch events in a structured manner.
+ * The `EventOperator` manages event processors and sets limits on their behavior.
  *
- * An `EventOperator` manages three types of event processors:
+ * An `EventOperator` categorizes processors into 3 types:
  * - **Watcher**: Listens for events and triggers callbacks when events occur.
  * - **Emitter**: Emits events that other applications listen for.
  * - **EmitterAndWatcher**: Combines the functionalities of both watcher and emitter.
@@ -34,21 +33,12 @@ interface IZoweProcessor extends IEmitterAndWatcher {
  * For example, an application might use a watcher to react to user actions and an emitter to notify other
  * components of state changes.
  *
- * ### Application Use Cases
- * - **Getting a Processor for Emitting**: Use this when your application needs to emit events.
- *   For example, a data service might emit events whenever data is updated.
- * - **Getting a Processor for Watching**: Use this when your application needs to react to events.
- *   For example, a UI component might watch for data update events to refresh its display.
- * - **Managing Event Subscriptions**: Applications can subscribe to predefined Zowe events or define
- *   custom events. This flexibility allows applications to integrate with the Zowe ecosystem or
- *   create their own event-driven functionality.
- *
  * ### App Names and Processors
  * Processors are tied to application names to prevent event collisions and to maintain a clear separation
  * of event domains. Valid app names are defined in the list of extenders (formal plugin names or ZE extender names).
  *
  * ### Predefined and Custom Events
- * - **Predefined Zowe Events**: Zowe provides a set of predefined events that can be watched.
+ *  - **Predefined Zowe Events**: Zowe provides a set of predefined events that can be watched.
  *   These events are well-defined and documented within the Zowe ecosystem.
  * - **Custom Events**: Applications can define their own events, allowing for custom event-driven behavior.
  *
