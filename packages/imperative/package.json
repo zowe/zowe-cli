@@ -91,7 +91,7 @@
     "@types/npm-package-arg": "^6.1.4",
     "@types/pacote": "^11.1.8",
     "@types/progress": "^2.0.7",
-    "@types/stack-trace": "^0.0.29",
+    "@types/stack-trace": "^0.0.33",
     "@zowe/secrets-for-zowe-sdk": "8.0.0-next.202406201950",
     "concurrently": "^8.0.0",
     "cowsay": "^1.6.0",
@@ -99,7 +99,7 @@
     "get-function-arguments": "^1.0.0",
     "serve": "^14.2.3",
     "stream-to-string": "^1.2.0",
-    "uuid": "^9.0.1",
+    "uuid": "^10.0.0",
     "web-help": "file:web-help",
     "yargs-parser": "^21.1.1"
   },
