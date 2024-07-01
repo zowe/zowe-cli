@@ -21,6 +21,7 @@ import { ImperativeConfig } from "../../utilities/src/ImperativeConfig";
 import { ImperativeError } from "../../error/src/ImperativeError";
 import { keyring } from "@zowe/secrets-for-zowe-sdk";
 import { Logger } from "../../logger/src/Logger";
+import { LoggingConfigurer } from "../../imperative/src/LoggingConfigurer";
 import { V1ProfileRead } from "../../profiles";
 import { ConfigSchema } from "../../config/src/ConfigSchema";
 import { AppSettings } from "../../settings/src/AppSettings";
@@ -1416,6 +1417,9 @@ describe("ConvertV1Profiles tests", () => {
                         })
                     } as any;
                 });
+
+                // do not attempt to do any logging configuration
+                LoggingConfigurer.configureLogger = jest.fn();
             });
 
             beforeEach(() => {

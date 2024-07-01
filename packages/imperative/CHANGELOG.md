@@ -6,7 +6,6 @@ All notable changes to the Imperative package will be documented in this file.
 
 - BugFix: V3 Breaking: Modified the ConvertV1Profiles.convert API to accept a new ProfileInfo option and initialize components sufficiently to enable VSCode apps to convert V1 profiles. [#2170](https://github.com/zowe/zowe-cli/issues/2170)
 
-
 ## `8.0.0-next.202406201950`
 
 - Enhancement: Added `ProfileInfo.profileManagerWillLoad` function to verify the credential manager can load. [#2111](https://github.com/zowe/zowe-cli/issues/2111)
