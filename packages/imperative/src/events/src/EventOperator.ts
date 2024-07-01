@@ -37,9 +37,8 @@ interface IZoweProcessor extends IEmitterAndWatcher {
  * Processors are tied to application names to prevent event collisions and to maintain a clear separation
  * of event domains. Valid app names are defined in the list of extenders (formal plugin names or ZE extender names).
  *
- * ### Predefined and Custom Events
- *  - **Predefined Zowe Events**: Zowe provides a set of predefined events that can be watched.
- *   These events are well-defined and documented within the Zowe ecosystem.
+ * ### Understanding Event Types
+ * - **Predefined Zowe Events**: Zowe provides a set of predefined shared and user events that can be watched.
  * - **Custom Events**: Applications can define their own events, allowing for custom event-driven behavior.
  *
  * @export
@@ -72,7 +71,7 @@ export class EventOperator {
      * Retrieves a Zowe-specific event processor. The purpose of this method is for internal
      * Imperative APIs to get a properly initialized processor. This processor will be used
      * when applications (like Zowe Explorer) call Imperative APIs that trigger events. For
-     * example, when the user updates credentials from Zowe Explorer, this processor will be
+     * example, when the user updates credentials from Zowe Explorer, this processor could be
      * used to emit an `OnVaultChanged` event.
      *
      * @internal Not meant to be called by application developers

@@ -22,7 +22,8 @@ import { IProcessorTypes } from "./doc/IEventInstanceTypes";
 
 /**
  * ## Overview
- * The `EventProcessor` class manages event subscriptions and emissions for a specific application.
+ * Each EventProcessor manages its own subscriptions, handling the addition, emission, and removal of events.
+ * It uses a map where event names are keys, and values are Event objects that hold detailed event information and subscriptions.
  *
  * An `EventProcessor` handles three main functionalities:
  * - **Subscribing to Events**: Registration of a callback function that will be executed when that event occurs.
@@ -30,9 +31,10 @@ import { IProcessorTypes } from "./doc/IEventInstanceTypes";
  * - **Managing Event Subscriptions**: Mapping subscribed events and their corresponding callbacks, ensuring that events are properly handled and dispatched.
  *
  * ### Understanding Event Types
- * - **Shared Events**: Zowe events that when triggered, notify all subscribed users.
- * - **User Events**: Zowe events that are specific to only one user.
+ * - **Zowe User Events**: Zowe events that when triggered, notify all subscribed users.
+ * - **Zowe Shared Events**: Zowe events that are specific to only one user.
  * - **Custom Events**: Applications can define their own shared and user events.
+ *
  * @export
  * @class EventProcessor
  */
