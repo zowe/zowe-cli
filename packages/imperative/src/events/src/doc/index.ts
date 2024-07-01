@@ -9,7 +9,6 @@
 *
 */
 
-export * from "./IImperativeEventEmitterOpts";
-export * from "./IImperativeEventParms";
-export * from "./IImperativeRegisteredAction";
-export * from "./IImperativeEventJson";
+export * from "./IEventDisposable";
+export * from "./IEventInstanceTypes";
+export * from "./IEventJson";

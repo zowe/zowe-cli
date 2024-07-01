@@ -27,7 +27,6 @@ import { OverridesLoader } from "../../../../src/OverridesLoader";
 import { ConfigUtils, ImperativeError } from "../../../../..";
 
 jest.mock("fs");
-jest.mock("../../../../../events/src/ImperativeEventEmitter");
 
 const getIHandlerParametersObject = (): IHandlerParameters => {
     const x: any = {

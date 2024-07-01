@@ -26,8 +26,8 @@ describe("cmd-cli nested first-group", () => {
 
     it("should display both groups and commands in the help", () => {
         const response = runCliScript(__dirname + "/__scripts__/first-group/first_group_help.sh", TEST_ENVIRONMENT.workingDir);
-        expect(response.status).toBe(0);
         expect(response.stderr.toString()).toBe("");
+        expect(response.status).toBe(0);
         expect(response.stdout.toString()).toMatchSnapshot();
     });
 });

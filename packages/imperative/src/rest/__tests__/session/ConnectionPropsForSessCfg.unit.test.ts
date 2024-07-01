@@ -10,7 +10,6 @@
 */
 
 jest.mock("../../../logger/src/LoggerUtils");
-jest.mock("../../../events/src/ImperativeEventEmitter");
 
 import { ConnectionPropsForSessCfg } from "../../src/session/ConnectionPropsForSessCfg";
 import { CliUtils } from "../../../utilities/src/CliUtils";

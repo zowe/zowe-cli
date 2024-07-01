@@ -25,8 +25,8 @@ describe("cmd-cli nested", () => {
 
     it("should display both groups and commands in the help", () => {
         const response = runCliScript(__dirname + "/__scripts__/nested/nested_help.sh", TEST_ENVIRONMENT.workingDir);
-        expect(response.status).toBe(0);
         expect(response.stderr.toString()).toBe("");
+        expect(response.status).toBe(0);
         expect(response.stdout.toString()).toMatchSnapshot();
     });
 });

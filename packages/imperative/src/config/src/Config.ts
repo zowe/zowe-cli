@@ -31,8 +31,6 @@ import { ConfigUtils } from "./ConfigUtils";
 import { IConfigSchemaInfo } from "./doc/IConfigSchema";
 import { JsUtils } from "../../utilities/src/JsUtils";
 import { IConfigMergeOpts } from "./doc/IConfigMergeOpts";
-import { ImperativeEventEmitter } from "../../events";
-import { Logger } from "../../logger";
 
 /**
  * Enum used by Config class to maintain order of config layers
@@ -155,8 +153,6 @@ export class Config {
         myNewConfig.mVault = opts.vault;
         myNewConfig.mSecure = {};
 
-        ImperativeEventEmitter.initialize(app, { logger:Logger.getAppLogger() });
-
         // Populate configuration file layers
         await myNewConfig.reload(opts);
 
@@ -247,7 +243,7 @@ export class Config {
      * Get absolute file path for a config layer.
      * For project config files, We search up from our current directory and
      * ignore the Zowe hone directory (in case our current directory is under
-     * Zowe home.). For golbal config files we only retrieve config files
+     * Zowe home.). For global config files we only retrieve config files
      * from the Zowe home directory.
      *
      * @internal

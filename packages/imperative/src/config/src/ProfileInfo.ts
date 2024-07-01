@@ -10,8 +10,6 @@
 */
 
 import * as fs from "fs";
-import * as os from "os";
-import * as path from "path";
 import * as url from "url";
 import * as jsonfile from "jsonfile";
 import * as lodash from "lodash";
@@ -731,17 +729,10 @@ export class ProfileInfo {
      * Retrieves the Zowe CLI home directory. In the situation Imperative has
      * not initialized it we use a default value.
      * @returns {string} - Returns the Zowe home directory
+     * @deprecated Use ConfigUtils.getZoweDir()
      */
     public static getZoweDir(): string {
-        const defaultHome = path.join(os.homedir(), ".zowe");
-        if (ImperativeConfig.instance.loadedConfig?.defaultHome !== defaultHome) {
-            ImperativeConfig.instance.loadedConfig = {
-                name: "zowe",
-                defaultHome,
-                envVariablePrefix: "ZOWE"
-            };
-        }
-        return ImperativeConfig.instance.cliHome;
+        return ConfigUtils.getZoweDir();
     }
 
     /**
@@ -838,7 +829,7 @@ export class ProfileInfo {
             });
         }
 
-        this.mExtendersJson = ProfileInfo.readExtendersJsonFromDisk();
+        this.mExtendersJson = ConfigUtils.readExtendersJson();
         this.loadAllSchemas();
     }
 
@@ -1036,33 +1027,20 @@ export class ProfileInfo {
      * Reads the `extenders.json` file from the CLI home directory.
      * Called once in `readProfilesFromDisk` and cached to minimize I/O operations.
      * @internal
+     * @deprecated Please use `ConfigUtils.readExtendersJson` instead
      */
     public static readExtendersJsonFromDisk(): IExtendersJsonOpts {
-        const extenderJsonPath = path.join(ImperativeConfig.instance.cliHome, "extenders.json");
-        if (!fs.existsSync(extenderJsonPath)) {
-            jsonfile.writeFileSync(extenderJsonPath, {
-                profileTypes: {}
-            }, { spaces: 4 });
-            return { profileTypes: {} };
-        } else {
-            return jsonfile.readFileSync(extenderJsonPath);
-        }
+        return ConfigUtils.readExtendersJson();
     }
 
     /**
      * Attempts to write to the `extenders.json` file in the CLI home directory.
      * @returns `true` if written successfully; `false` otherwise
      * @internal
+     * @deprecated Please use `ConfigUtils.writeExtendersJson` instead
      */
     public static writeExtendersJson(obj: IExtendersJsonOpts): boolean {
-        try {
-            const extenderJsonPath = path.join(ImperativeConfig.instance.cliHome, "extenders.json");
-            jsonfile.writeFileSync(extenderJsonPath, obj, { spaces: 4 });
-        } catch (err) {
-            return false;
-        }
-
-        return true;
+        return ConfigUtils.writeExtendersJson(obj);
     }
 
     /**
@@ -1284,7 +1262,7 @@ export class ProfileInfo {
 
         // Update contents of extenders.json if it has changed
         if (wasGlobalUpdated && !lodash.isEqual(oldExtendersJson, this.mExtendersJson)) {
-            if (!ProfileInfo.writeExtendersJson(this.mExtendersJson)) {
+            if (!ConfigUtils.writeExtendersJson(this.mExtendersJson)) {
                 return {
                     success: true,
                     // Even if we failed to update extenders.json, it was technically added to the schema cache.
@@ -1608,7 +1586,7 @@ export class ProfileInfo {
     // _______________________________________________________________________
     /**
      * Override values in a merged argument object with values found in
-     * environment variables. The choice to override enviroment variables is
+     * environment variables. The choice to override environment variables is
      * controlled by an option on the ProfileInfo constructor.
      *
      * @param mergedArgs
@@ -1622,8 +1600,10 @@ export class ProfileInfo {
     private overrideWithEnv(mergedArgs: IProfMergedArg, profSchema?: IProfileSchema) {
         if (!this.mOverrideWithEnv) return; // Don't do anything
 
+        const envPrefix = this.mAppName.toUpperCase();
+        // Do we expect to always read "ZOWE_OPT_" environmental variables or "APPNAME_OPT_"?
+
         // Populate any missing options
-        const envPrefix = ImperativeConfig.instance.loadedConfig.envVariablePrefix;
         const envStart = envPrefix + "_OPT_";
         for (const key in process.env) {
             if (key.startsWith(envStart)) {
