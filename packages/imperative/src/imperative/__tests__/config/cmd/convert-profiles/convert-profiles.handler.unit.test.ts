@@ -59,7 +59,7 @@ describe("Configuration Convert Profiles command handler", () => {
             { msgFormat: 2, msgText: "Error Msg 2" }
         ],
         v1ScsPluginName: null as any,
-        reInitCredMgr: false,
+        credsWereMigrated: true,
         cfgFilePathNm: ConvertV1Profiles["noCfgFilePathNm"],
         numProfilesFound: 0,
         profilesConverted: {
@@ -160,7 +160,7 @@ describe("Configuration Convert Profiles command handler", () => {
         expect(uninstallSpy).toHaveBeenCalled();
         expect(stdout).toContain("Report Msg 1");
         expect(stdout).toContain("Report Msg 2");
-        expect(stdout).toContain('Uninstalled plug-in "fakeScsPluginName"');
+        expect(stdout).toContain('Successfully uninstalled plug-in fakeScsPluginName');
         expect(stderr).toContain("Error Msg 1");
         expect(stderr).toContain("Error Msg 2");
     });
@@ -186,7 +186,7 @@ describe("Configuration Convert Profiles command handler", () => {
         expect(stdout).toContain("Report Msg 2");
         expect(stderr).toContain("Error Msg 1");
         expect(stderr).toContain("Error Msg 2");
-        expect(stderr).toContain('Failed to uninstall plug-in "fakeScsPluginName"');
+        expect(stderr).toContain('Failed to uninstall plug-in fakeScsPluginName');
         expect(stderr).toContain(fakeUninstallErr);
     });
 });
