@@ -1419,6 +1419,7 @@ describe("ConvertV1Profiles tests", () => {
                 });
 
                 // do not attempt to do any logging configuration
+                Logger.initLogger = jest.fn();
                 LoggingConfigurer.configureLogger = jest.fn();
             });
 
