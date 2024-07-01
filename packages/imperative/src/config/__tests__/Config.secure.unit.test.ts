@@ -46,8 +46,6 @@ describe("Config secure tests", () => {
     });
 
     beforeEach(() => {
-        // jest.spyOn(EventOperator, "getZoweProcessor").mockReturnValue({emitZoweEvent: jest.fn()} as any);
-
         mockSecureLoad = jest.fn();
         mockSecureSave = jest.fn();
         mockVault = {

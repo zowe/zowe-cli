@@ -39,7 +39,7 @@ interface IZoweProcessor extends IEmitterAndWatcher {
  *
  * ### Understanding Event Types
  * - **Predefined Zowe Events**: Zowe provides a set of predefined shared and user events that can be watched.
- * - **Custom Events**: Applications can define their own events, allowing for custom event-driven behavior.
+ * - **Custom Events**: Applications can define their own shared/user events, allowing for custom event-driven behavior.
  *
  * @export
  * @class EventOperator

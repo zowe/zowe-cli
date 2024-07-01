@@ -27,9 +27,6 @@ import * as fs from "fs";
 import { setupConfigToLoad } from "../../../../../../__tests__/src/TestUtil";
 import { EventOperator, EventUtils } from "../../../../../events";
 
-// jest.mock("../../../../../events/src/ImperativeEventEmitter");
-
-
 const getIHandlerParametersObject = (): IHandlerParameters => {
     const x: any = {
         response: {

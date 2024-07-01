@@ -34,7 +34,6 @@ import { IProcessorTypes } from "./doc/IEventInstanceTypes";
  * - **Predefined Zowe Events**: Zowe provides a set of predefined shared and user events that can be watched.
  * - **Custom Events**: Applications can define their own shared and user events, allowing for custom event-driven behavior.
  *
- *
  * @export
  * @class EventProcessor
  */

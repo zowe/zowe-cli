@@ -1586,7 +1586,7 @@ export class ProfileInfo {
     // _______________________________________________________________________
     /**
      * Override values in a merged argument object with values found in
-     * environment variables. The choice to override enviroment variables is
+     * environment variables. The choice to override environment variables is
      * controlled by an option on the ProfileInfo constructor.
      *
      * @param mergedArgs
@@ -1599,11 +1599,10 @@ export class ProfileInfo {
      */
     private overrideWithEnv(mergedArgs: IProfMergedArg, profSchema?: IProfileSchema) {
         if (!this.mOverrideWithEnv) return; // Don't do anything
-        
-        // const envPrefix = ImperativeConfig.instance.envVariablePrefix;
+
         const envPrefix = this.mAppName.toUpperCase();
         // Do we expect to always read "ZOWE_OPT_" environmental variables or "APPNAME_OPT_"?
-        
+
         // Populate any missing options
         const envStart = envPrefix + "_OPT_";
         for (const key in process.env) {
