@@ -137,5 +137,13 @@ describe("NpmFunctions", () => {
         });
 
 
+        it("getScopeRegistry() should return registry for 'test' scope", async () => {
+            let spawnSpy: any;
+            spawnSpy = jest.spyOn(ExecUtils, "spawnAndGetOutput");
+            spawnSpy.mockReturnValueOnce("https://test123.com");
+            const result = npmFunctions.getScopeRegistry("broadcom");
+            expect(result).toBe("https://test123.com");
+        });
+
     });
 });
