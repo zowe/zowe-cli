@@ -15,6 +15,8 @@ import * as npmPackageArg from "npm-package-arg";
 import * as pacote from "pacote";
 import * as npmFunctions from "../../../src/plugins/utilities/NpmFunctions";
 import { PMFConstants } from "../../../src/plugins/utilities/PMFConstants";
+import { ExecUtils } from "../../../../utilities";
+import { IO } from "../../../../io";
 
 jest.mock("cross-spawn");
 jest.mock("jsonfile");
@@ -133,6 +135,14 @@ describe("NpmFunctions", () => {
             const actualInfo = await npmFunctions.getPackageInfo(pkgSpec);
             expect(actualInfo).toBe(expectedInfo);
             expect(pacote.manifest).toHaveBeenCalledTimes(1);
+        });
+
+        it("getScopeRegistry() should return registry for 'test' scope", async () => {
+            let spawnSpy: any;
+            spawnSpy = jest.spyOn(ExecUtils, "spawnAndGetOutput");
+            spawnSpy.mockReturnValueOnce("https://test123.com");
+            let result = npmFunctions.getScopeRegistry("test")
+            expect(result).toBe("https://test123.com");
         });
     });
 });
