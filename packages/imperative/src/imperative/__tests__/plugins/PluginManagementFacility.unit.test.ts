@@ -234,8 +234,8 @@ describe("Plugin Management Facility", () => {
         const knownOverridePluginNm = CredentialManagerOverride.getKnownCredMgrs()[1].credMgrPluginName as string;
 
         const mockInstalledPlugins: IPluginJson = {
-            firstPlugin: {package: "1", registry: "1", version: "1"},
-            secondPlugin: {package: "2", registry: "2", version: "2"}
+            firstPlugin: {package: "1", location: "1", version: "1"},
+            secondPlugin: {package: "2", location: "2", version: "2"}
         };
         const loadPluginCfgPropsReal: any = PMF.loadPluginCfgProps;
         const loadPluginCfgPropsMock = jest.fn();

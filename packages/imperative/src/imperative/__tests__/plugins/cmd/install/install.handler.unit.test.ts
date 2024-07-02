@@ -51,8 +51,9 @@ import { Logger } from "../../../../../logger";
 import { readFileSync, writeFileSync } from "jsonfile";
 import { PMFConstants } from "../../../../src/plugins/utilities/PMFConstants";
 import { TextUtils } from "../../../../../utilities";
-import { getRegistry, npmLogin } from "../../../../src/plugins/utilities/NpmFunctions";
+import { getRegistry, getScopeRegistry, npmLogin } from "../../../../src/plugins/utilities/NpmFunctions";
 import * as spawn from "cross-spawn";
+import { IO } from "../../../../../io";
 
 describe("Plugin Management Facility install handler", () => {
 
@@ -60,10 +61,11 @@ describe("Plugin Management Facility install handler", () => {
     const mocks = {
         npmLogin: npmLogin as Mock<typeof npmLogin>,
         getRegistry: getRegistry as unknown as Mock<typeof getRegistry>,
+        getScopeRegistry: getScopeRegistry as unknown as Mock<typeof getScopeRegistry>,
         readFileSync: readFileSync as Mock<typeof readFileSync>,
         writeFileSync: writeFileSync as Mock<typeof writeFileSync>,
         install: install as unknown as Mock<typeof install>,
-        runValidatePlugin: runValidatePlugin as unknown as Mock<typeof runValidatePlugin>
+        runValidatePlugin: runValidatePlugin as unknown as Mock<typeof runValidatePlugin>,
     };
 
     // two plugin set of values
@@ -180,12 +182,12 @@ describe("Plugin Management Facility install handler", () => {
         const fileJson: IPluginJson = {
             a: {
                 package: packageName,
-                registry: "",
+                location: "",
                 version: packageVersion
             },
             plugin2: {
                 package: packageName2,
-                registry: packageRegistry2,
+                location: packageRegistry2,
                 version: packageVersion2
             }
         };
@@ -378,6 +380,91 @@ describe("Plugin Management Facility install handler", () => {
         expect(expectedError).toBeInstanceOf(ImperativeError);
         expect(expectedError.additionalDetails).toContain("Command failed");
         expect(expectedError.additionalDetails).toContain("npm");
+    });
+    it("should handle installed plugins via public scope", async () => {
+        const handler = new InstallHandler();
+
+        const params = getIHandlerParametersObject();
+        params.arguments.plugin = ["@public/sample1"];
+
+        mocks.getScopeRegistry.mockReturnValueOnce("publicRegistryUrl" as any);
+
+        try {
+            await handler.process(params);
+        } catch (e) {
+            expect(e).toBeUndefined();
+        }
+
+        expect(mocks.install).toHaveBeenCalledWith("@public/sample1","publicRegistryUrl");
+    });
+    it("should handle installed plugins via private scope", async () => {
+        const handler = new InstallHandler();
+
+        const params = getIHandlerParametersObject();
+        params.arguments.plugin = ["@private/sample1"];
+
+        mocks.getScopeRegistry.mockReturnValueOnce("privateRegistryUrl" as any);
+
+        try{
+            await handler.process(params);
+        }
+        catch(e){
+            expect(e).toBeUndefined();
+        }
+
+        expect(mocks.install).toHaveBeenCalledWith("@private/sample1","privateRegistryUrl")
+    });
+    it("should handle installed plugins via project/directory", async () => {
+        const handler = new InstallHandler();
+
+        const params = getIHandlerParametersObject();
+        params.arguments.plugin = ["path/to/dir"];
+        jest.spyOn(IO, 'isDir').mockReturnValue(true);
+
+        try{
+            await handler.process(params);
+        }
+        catch(e){
+            expect(e).toBeUndefined();
+        }
+
+        expect(mocks.install).toHaveBeenCalledWith("path/to/dir","path/to/dir");
+    });
+    it("should handle installed plugins via tarball file", async () => {
+        const handler = new InstallHandler();
+
+        const params = getIHandlerParametersObject();
+        params.arguments.plugin = ["path/to/dir/file.tgz"];
+
+        try{
+            await handler.process(params);
+        }
+        catch(e){
+            expect(e).toBeUndefined();
+        }
+
+        expect(mocks.install).toHaveBeenCalledWith("path/to/dir/file.tgz","path/to/dir/file.tgz");
+    });
+    it("should handle multiple installed plugins via tarball, director, public registry, and private registry", async () => {
+        const handler = new InstallHandler();
+
+        const params = getIHandlerParametersObject();
+        params.arguments.plugin = ["@public/sample1","@private/sample1","path/to/dir","path/to/dir/file.tgz"];
+        mocks.getScopeRegistry.mockReturnValueOnce("publicRegistryUrl" as any);
+        mocks.getScopeRegistry.mockReturnValueOnce("privateRegistryUrl" as any);
+        jest.spyOn(IO, 'isDir').mockReturnValue(true);
+
+        try{
+            await handler.process(params);
+        }
+        catch(e){
+            expect(e).toBeUndefined();
+        }
+        
+        expect(mocks.install).toHaveBeenCalledWith("@public/sample1","publicRegistryUrl");
+        expect(mocks.install).toHaveBeenCalledWith("@private/sample1","privateRegistryUrl");
+        expect(mocks.install).toHaveBeenCalledWith("path/to/dir","path/to/dir");
+        expect(mocks.install).toHaveBeenCalledWith("path/to/dir/file.tgz","path/to/dir/file.tgz");
     });
 });
 

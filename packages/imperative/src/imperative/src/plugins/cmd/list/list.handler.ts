@@ -61,8 +61,8 @@ export default class ListHandler implements ICommandHandler {
                         `${chalk.red.bold(installedPlugins[pluginName].package)} \n`;
                     listOutput = listOutput + `${chalk.yellow.bold(" -- version: ")}` +
                         `${chalk.red.bold(installedPlugins[pluginName].version)} \n`;
-                    listOutput = listOutput + `${chalk.yellow.bold(" -- registry: ")}` +
-                        installedPlugins[pluginName].registry + "\n\n";
+                    listOutput = listOutput + `${chalk.yellow.bold(" -- location: ")}` +
+                        installedPlugins[pluginName].location + "\n\n";
                 } else {
                     listOutput += `${chalk.yellow(pluginName)}@${installedPlugins[pluginName].version}\n`;
                 }
@@ -77,7 +77,7 @@ export default class ListHandler implements ICommandHandler {
                 this.log.simple("    pluginName: " + pluginName);
                 this.log.simple("    package: " + installedPlugins[pluginName].package);
                 this.log.simple("    version: " + installedPlugins[pluginName].version);
-                this.log.simple("    registry: " + installedPlugins[pluginName].registry);
+                this.log.simple("    registry: " + installedPlugins[pluginName].location);
                 this.log.simple(" ");
             }
         }

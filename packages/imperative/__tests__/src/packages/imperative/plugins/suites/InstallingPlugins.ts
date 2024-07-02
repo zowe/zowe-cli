@@ -83,7 +83,7 @@ describe("Installing Plugins", () => {
             name: "override-plugin",
             usage: "override-plugin"
         },
-        registry: {
+        location: {
             location: "imperative-sample-plugin",
             name: "imperative-sample-plugin",
             usage: "sample-plugin"
@@ -618,7 +618,7 @@ describe("Installing Plugins", () => {
                 },
                 [plugins.normal2.name]: {
                     package: plugins.normal2.location,
-                    registry: TEST_REGISTRY,
+                    location: TEST_REGISTRY,
                     version: "1.0.2"
                 },
             };
@@ -667,7 +667,7 @@ describe("Installing Plugins", () => {
             const savedPluginJson = readFileSync(pluginJsonLocation);
             const expectedContent: IPluginJson = fileContent as IPluginJson;
 
-            expectedContent[plugins.normal.name].registry = envNpmRegistry;
+            expectedContent[plugins.normal.name].location = envNpmRegistry;
 
             expect(savedPluginJson).toEqual(expectedContent);
         });
@@ -735,12 +735,12 @@ describe("Installing Plugins", () => {
             const actualJson = readFileSync(pluginJsonLocation);
 
             // Add missing registry to expected
-            expectedJson[plugins.normal.name].registry = envNpmRegistry;
+            expectedJson[plugins.normal.name].location = envNpmRegistry;
 
             // Add missing normal2 plugin not present in before each
             expectedJson[plugins.normal3.name] = {
                 package: plugins.normal3.location,
-                registry: TEST_REGISTRY,
+                location: TEST_REGISTRY,
                 version: "1.0.3"
             };
 

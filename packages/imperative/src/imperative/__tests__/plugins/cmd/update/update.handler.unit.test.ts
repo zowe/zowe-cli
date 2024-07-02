@@ -137,12 +137,12 @@ describe("Plugin Management Facility update handler", () => {
         const fileJson: IPluginJson = {
             "imperative-sample-plugin": {
                 package: packageName,
-                registry: packageRegistry,
+                location: packageRegistry,
                 version: packageVersion
             },
             "plugin1": {
                 package: packageName2,
-                registry: packageRegistry2,
+                location: packageRegistry2,
                 version: packageVersion2
             }
         };
@@ -173,7 +173,7 @@ describe("Plugin Management Facility update handler", () => {
         const fileJson: IPluginJson = {
             "imperative-sample-plugin": {
                 package: resolveVal,
-                registry: packageRegistry,
+                location: packageRegistry,
                 version: "1.0.1"
             }
         };

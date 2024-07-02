@@ -87,10 +87,10 @@ describe("PMF: Uninstall Interface", () => {
      */
     const wasWriteFileSyncCallValid = () => {
         // Create the object that should be sent to the command.
-        const expectedObject = {
+        const expectedObject: IPluginJson = {
             plugin2: {
                 package: "plugin1",
-                registry: packageRegistry,
+                location: packageRegistry,
                 version: "1.2.3"
             }
         };
@@ -117,12 +117,12 @@ describe("PMF: Uninstall Interface", () => {
             const pluginJsonFile: IPluginJson = {
                 a: {
                     package: "a",
-                    registry: packageRegistry,
+                    location: packageRegistry,
                     version: "3.2.1"
                 },
                 plugin2: {
                     package: "plugin1",
-                    registry: packageRegistry,
+                    location: packageRegistry,
                     version: "1.2.3"
                 }
             };
@@ -141,12 +141,12 @@ describe("PMF: Uninstall Interface", () => {
             const pluginJsonFile: IPluginJson = {
                 "imperative-sample-plugin": {
                     package: "C:\\test\\imperative-plugins",
-                    registry: packageRegistry,
+                    location: packageRegistry,
                     version: "1.0.1"
                 },
                 "plugin2": {
                     package: "plugin1",
-                    registry: packageRegistry,
+                    location: packageRegistry,
                     version: "1.2.3"
                 }
             };
@@ -187,7 +187,7 @@ describe("PMF: Uninstall Interface", () => {
             const pluginJsonFile: IPluginJson = {
                 a: {
                     package: "a",
-                    registry: packageRegistry,
+                    location: packageRegistry,
                     version: "3.2.1"
                 }
             };
@@ -234,12 +234,12 @@ describe("PMF: Uninstall Interface", () => {
             const pluginJsonFile: IPluginJson = {
                 a: {
                     package: "a",
-                    registry: packageRegistry,
+                    location: packageRegistry,
                     version: "3.2.1"
                 },
                 plugin2: {
                     package: "plugin1",
-                    registry: packageRegistry,
+                    location: packageRegistry,
                     version: "1.2.3"
                 }
             };

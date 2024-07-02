@@ -150,7 +150,7 @@ export async function install(packageLocation: string, registry: string, install
 
         const newPlugin: IPluginJsonObject = {
             package: npmPackage,
-            registry,
+            location: registry,
             version: packageVersion
         };
         iConsole.debug("Updating the current configuration with new plugin:\n" +
