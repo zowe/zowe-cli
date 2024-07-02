@@ -50,6 +50,7 @@ export class EventProcessor {
      * @param {string} appName - The application's name.
      * @param {IProcessorTypes} type - The type of processor (Emitter, Watcher, or Both).
      * @param {Logger} [logger] - Optional logger for recording events and errors.
+     * @throws {ImperativeError} If the application name is not recognized.
      */
     public constructor(appName: string, type: IProcessorTypes, logger?: Logger) {
         EventUtils.validateAppName(appName);
@@ -67,46 +68,51 @@ export class EventProcessor {
         this.logger = logger ?? Logger.getImperativeLogger();
     }
 
+    private _subscribe(type: 'user' | 'shared', eventName: string, callbacks: EventCallback[] | EventCallback): IEventDisposable {
+        if (this.processorType === IProcessorTypes.EMITTER) {
+            throw new ImperativeError({ msg: `Processor does not have correct permissions: ${eventName}` });
+        }
+
+        let eventType;
+        if (type === "shared") {
+            eventType = EventUtils.isSharedEvent(eventName) ? EventTypes.ZoweSharedEvents : EventTypes.SharedEvents;
+        } else if (type === "user") {
+            eventType = EventUtils.isUserEvent(eventName) ? EventTypes.ZoweUserEvents : EventTypes.UserEvents;
+        }        
+        
+        const disposable = EventUtils.createSubscription(this, eventName, eventType);
+        EventUtils.setupWatcher(this, eventName, callbacks);
+        return disposable;
+    }
     /**
      * Subscription to an event that will notify all subscribed users.
      *
      * @param {string} eventName - The name of the event to subscribe to.
      * @param {EventCallback[] | EventCallback} callbacks - Callback functions to handle the event.
      * @returns {IEventDisposable} - Object allowing management/cleanup of the subscription.
-    */
+     * @throws {ImperativeError} If the processor does not have the correct permissions to perform this action.
+     */
     public subscribeShared(eventName: string, callbacks: EventCallback[] | EventCallback): IEventDisposable {
-        if (this.processorType === IProcessorTypes.EMITTER) {
-            throw new ImperativeError({ msg: `Processor does not have correct permissions: ${eventName}` });
-        }
-        const isZoweEvent = EventUtils.isSharedEvent(eventName);
-        const eventType = isZoweEvent ? EventTypes.ZoweSharedEvents : EventTypes.SharedEvents;
-        const disposable = EventUtils.createSubscription(this, eventName, eventType);
-        EventUtils.setupWatcher(this, eventName, callbacks);
-        return disposable;
+        return this._subscribe("shared", eventName, callbacks);
     }
 
     /**
      * Subscription to an event that will notify a single user.
      *
-    * @param {string} eventName - The name of the event to subscribe to.
-    * @param {EventCallback[] | EventCallback} callbacks - Callback functions to handle the event.
-    * @returns {IEventDisposable} - Object allowing management/cleanup of the subscription.
-    */
+     * @param {string} eventName - The name of the event to subscribe to.
+     * @param {EventCallback[] | EventCallback} callbacks - Callback functions to handle the event.
+     * @returns {IEventDisposable} - Object allowing management/cleanup of the subscription.
+     * @throws {ImperativeError} If the processor does not have the correct permissions to perform this action.
+     */
     public subscribeUser(eventName: string, callbacks: EventCallback[] | EventCallback): IEventDisposable {
-        if (this.processorType === IProcessorTypes.EMITTER) {
-            throw new ImperativeError({ msg: `Processor does not have correct permissions: ${eventName}` });
-        }
-        const isZoweEvent = EventUtils.isUserEvent(eventName);
-        const eventType = isZoweEvent ? EventTypes.ZoweUserEvents : EventTypes.UserEvents;
-        const disposable = EventUtils.createSubscription(this, eventName, eventType);
-        EventUtils.setupWatcher(this, eventName, callbacks);
-        return disposable;
+        return this._subscribe("user", eventName, callbacks);
     }
 
     /**
      * Private method to emit the event
      * @private
      * @param eventName Event to be emitted
+     * @throws {ImperativeError} - If the event cannot be emitted.
      */
     private emit(eventName: string) {
         try {
@@ -122,6 +128,7 @@ export class EventProcessor {
      * Emits an event by updating its timestamp and writing event data.
      *
      * @param {string} eventName - The name of the event to emit.
+     * @throws {ImperativeError} If the processor does not have the correct permissions to perform this action.
      * @throws {ImperativeError} - If the event cannot be emitted.
      */
     public emitEvent(eventName: string): void {
@@ -139,6 +146,7 @@ export class EventProcessor {
      *
      * @internal Internal Zowe emitter method
      * @param {string} eventName - The name of the Zowe event to emit.
+     * @throws {ImperativeError} If the processor does not have the correct permissions to perform this action.
      * @throws {ImperativeError} - If the event cannot be emitted.
      */
     public emitZoweEvent(eventName: string): void {
@@ -155,6 +163,7 @@ export class EventProcessor {
      * Unsubscribes from an event, closing file watchers and cleaning up resources.
      *
      * @param {string} eventName - The name of the event to unsubscribe from.
+     * @throws {ImperativeError} If the processor does not have the correct permissions to perform this action.
      * @throws {ImperativeError} - If unsubscribing fails.
      */
     public unsubscribe(eventName: string): void {

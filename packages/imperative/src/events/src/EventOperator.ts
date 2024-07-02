@@ -77,6 +77,7 @@ export class EventOperator {
      * @internal Not meant to be called by application developers
      * @static
      * @returns {IZoweProcessor} The Zowe event processor instance.
+     * @throws {ImperativeError} If the application name is not recognized.
      */
     public static getZoweProcessor(): IZoweProcessor {
         return this.createProcessor("Zowe", IProcessorTypes.BOTH, Logger.getAppLogger());
@@ -89,6 +90,7 @@ export class EventOperator {
      * @param {string} appName - The application name.
      * @param {Logger} [logger] - Optional logger for the processor.
      * @returns {IEmitterAndWatcher} An event processor capable of both emitting and watching.
+     * @throws {ImperativeError} If the application name is not recognized.
      */
     public static getProcessor(appName: string, logger?: Logger): IEmitterAndWatcher {
         return this.createProcessor(appName, IProcessorTypes.BOTH, logger);
@@ -101,6 +103,7 @@ export class EventOperator {
      * @param {string} appName - The application name, defaults to "Zowe" if not specified.
      * @param {Logger} [logger] - Optional logger for the processor.
      * @returns {IWatcher} A watcher-only event processor.
+     * @throws {ImperativeError} If the application name is not recognized.
      */
     public static getWatcher(appName: string = "Zowe", logger?: Logger): IWatcher {
         return this.createProcessor(appName, IProcessorTypes.WATCHER, logger);
@@ -113,6 +116,7 @@ export class EventOperator {
      * @param {string} appName - The application name.
      * @param {Logger} [logger] - Optional logger for the processor.
      * @returns {IEmitter} An emitter-only event processor.
+     * @throws {ImperativeError} If the application name is not recognized.
      */
     public static getEmitter(appName: string, logger?: Logger): IEmitter {
         return this.createProcessor(appName, IProcessorTypes.EMITTER, logger);

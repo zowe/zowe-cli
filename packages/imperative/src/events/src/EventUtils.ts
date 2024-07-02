@@ -32,6 +32,8 @@ export class EventUtils {
      *
      * @static
      * @returns {string[]} List of application names.
+     * @throws If the extenders.json file cannot be created when it does not exist.
+     * @throws If the extenders.json file cannot be read.
      */
     public static getListOfApps(): string[] {
         const extendersJson = ConfigUtils.readExtendersJson();
@@ -43,6 +45,7 @@ export class EventUtils {
      *
      * @static
      * @param {string} appName - The name of the application.
+     * @throws {ImperativeError} If the application name is not recognized.
      */
     public static validateAppName(appName: string): void {
         const appList = this.getListOfApps();
@@ -81,6 +84,7 @@ export class EventUtils {
      * @internal This is not intended for application developers
      * @param eventFilePath The path to the event file
      * @returns The object representing the Event
+     * @throws {ImperativeError} If the contents of the event cannot be retrieved.
      */
     public static getEventContents(eventFilePath: string): IEventJson {
         try {
@@ -95,6 +99,7 @@ export class EventUtils {
      *
      * @param {string} appName - The name of the application.
      * @return {string} The directory path.
+     * @throws {ImperativeError} If the application name is not recognized.
      */
     public static getEventDir(appName: string): string {
         this.validateAppName(appName);
@@ -105,11 +110,12 @@ export class EventUtils {
      * Ensures that the specified directory for storing event files exists, creating it if necessary.
      *
      * @param {string} directoryPath - The path to the directory.
+     * @throws {ImperativeError} If we are unable to create the '.events' directory.
      */
     public static ensureEventsDirExists(directoryPath: string) {
         try {
             if (!fs.existsSync(directoryPath)) {
-                fs.mkdirSync(directoryPath, {mode: 0o750, recursive: true}); // user read/write/exec, group read/exec
+                fs.mkdirSync(directoryPath, { mode: 0o750, recursive: true }); // user read/write/exec, group read/exec
             }
         } catch (err) {
             throw new ImperativeError({ msg: `Unable to create '.events' directory. Path: ${directoryPath}`, causeErrors: err });
@@ -120,13 +126,14 @@ export class EventUtils {
      * Ensures that the specified file path for storing event data exists, creating it if necessary.
      *
      * @param {string} filePath - The path to the file.
+     * @throws {ImperativeError} If we are unable to create the event file required for event emission.
      */
     public static ensureFileExists(filePath: string) {
         try {
             const fd = fs.openSync(filePath, fs.constants.O_CREAT | fs.constants.O_EXCL | fs.constants.O_RDWR, 0o640);
             fs.closeSync(fd);
         } catch (err) {
-            if (err.code!=='EEXIST'){
+            if (err.code !== 'EEXIST') {
                 throw new ImperativeError({ msg: `Unable to create event file. Path: ${filePath}`, causeErrors: err });
             }
         }
@@ -139,6 +146,9 @@ export class EventUtils {
      * @param eventName The name of the event.
      * @param appName The name of the application.
      * @returns The created event
+     * @throws {ImperativeError} If the application name is not recognized.
+     * @throws {ImperativeError} If we are unable to create the '.events' directory.
+     * @throws {ImperativeError} If we are unable to create the event file required for event emission.
      */
     public static createEvent(eventName: string, appName: string): Event {
         const zoweDir = ConfigUtils.getZoweDir();
@@ -164,6 +174,9 @@ export class EventUtils {
      * @param {string} eventName - The name of the event.
      * @param {EventTypes} eventType - The type of event.
      * @return {IEventDisposable} An interface for managing the subscription.
+     * @throws {ImperativeError} If the application name is not recognized.
+     * @throws {ImperativeError} If we are unable to create the '.events' directory.
+     * @throws {ImperativeError} If we are unable to create the event file required for event emission.
      */
     public static createSubscription(eeInst: EventProcessor, eventName: string, eventType: EventTypes): IEventDisposable {
         const newEvent = EventUtils.createEvent(eventName, eeInst.appName);
@@ -181,6 +194,8 @@ export class EventUtils {
      * @param {string} eventName - The name of the event.
      * @param {EventCallback[] | EventCallback} callbacks - A single callback or an array of callbacks to execute.
      * @return {fs.FSWatcher} A file system watcher.
+     * @throws {ImperativeError} If the event to be watched does not have an existing file to watch.
+     * @throws {ImperativeError} Callbacks will fail if the contents of the event cannot be retrieved.
      */
     public static setupWatcher(eeInst: EventProcessor, eventName: string, callbacks: EventCallback[] | EventCallback): fs.FSWatcher {
         const event = eeInst.subscribedEvents.get(eventName);

@@ -46,6 +46,8 @@ export class ConfigUtils {
      * Reads the `extenders.json` file from the CLI home directory.
      * Called once in `readProfilesFromDisk` and cached to minimize I/O operations.
      * @internal
+     * @throws If the extenders.json file cannot be created when it does not exist.
+     * @throws If the extenders.json file cannot be read.
      */
     public static readExtendersJson(): IExtendersJsonOpts {
         const extenderJsonPath = pathJoin(ConfigUtils.getZoweDir(), "extenders.json");
