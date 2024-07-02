@@ -130,6 +130,7 @@ export class EventUtils {
      */
     public static ensureFileExists(filePath: string) {
         try {
+            // eslint-disable-next-line @typescript-eslint/no-magic-numbers
             const fd = fs.openSync(filePath, fs.constants.O_CREAT | fs.constants.O_EXCL | fs.constants.O_RDWR, 0o640);
             fs.closeSync(fd);
         } catch (err) {

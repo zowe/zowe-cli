@@ -26,13 +26,18 @@ import { IProcessorTypes } from "./doc/IEventInstanceTypes";
  * It uses a map where event names are keys, and values are Event objects that hold detailed event information and subscriptions.
  *
  * An `EventProcessor` handles three main functionalities:
- * - **Subscribing to Events**: Registration of a callback function that will be executed when that event occurs.
- * - **Emitting Events**: Notifying other applications or parts of the same application about certain actions or changes.
- * - **Managing Event Subscriptions**: Mapping subscribed events and their corresponding callbacks, ensuring that events are properly handled and dispatched.
+ * - **Subscribing to Events**:
+ *      Registration of a callback function that will be executed when that event occurs.
+ * - **Emitting Events**:
+ *      Notifying other applications or parts of the same application about certain actions or changes.
+ * - **Managing Event Subscriptions**:
+ *      Mapping subscribed events and their corresponding callbacks, ensuring that events are properly handled and dispatched.
  *
  * ### Understanding Event Types
- * - **Predefined Zowe Events**: Zowe provides a set of predefined shared and user events that can be watched.
- * - **Custom Events**: Applications can define their own shared and user events, allowing for custom event-driven behavior.
+ * - **Predefined Zowe Events**:
+ *      Zowe provides a set of predefined shared and user events that can be watched.
+ * - **Custom Events**:
+ *      Applications can define their own shared and user events, allowing for custom event-driven behavior.
  *
  * @export
  * @class EventProcessor
@@ -78,8 +83,8 @@ export class EventProcessor {
             eventType = EventUtils.isSharedEvent(eventName) ? EventTypes.ZoweSharedEvents : EventTypes.SharedEvents;
         } else if (type === "user") {
             eventType = EventUtils.isUserEvent(eventName) ? EventTypes.ZoweUserEvents : EventTypes.UserEvents;
-        }        
-        
+        }
+
         const disposable = EventUtils.createSubscription(this, eventName, eventType);
         EventUtils.setupWatcher(this, eventName, callbacks);
         return disposable;

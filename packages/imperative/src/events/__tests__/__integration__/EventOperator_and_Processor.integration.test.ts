@@ -39,7 +39,7 @@ describe("Event Operator and Processor", () => {
         });
         // have to reset because test environment doesn't add .zowe to ZOWE_CLI_HOME :(
         process.env.ZOWE_CLI_HOME = path.join(process.env.ZOWE_CLI_HOME || '', ".zowe");
-        zoweCliHome  = process.env.ZOWE_CLI_HOME;
+        zoweCliHome = process.env.ZOWE_CLI_HOME;
         EventUtils.ensureEventsDirExists(zoweCliHome);
         const extJson: IExtendersJsonOpts = ConfigUtils.readExtendersJson();
         sampleApps.forEach(app => extJson.profileTypes[app] = { from: [app] });
@@ -148,30 +148,31 @@ describe("Event Operator and Processor", () => {
     });
 
     describe("Custom Events", () => {
-        it("should create an event file upon first subscription if file does not exist - specific to CustomUserEvent directory structure", async () => {
-            const setupWatcherSpy = jest.spyOn(EventUtils, "setupWatcher");
-            const callback = jest.fn();
-            const Watcher = EventOperator.getWatcher(sampleApps[1]);
-            const Emitter = EventOperator.getEmitter(sampleApps[1]);
-            const eventDir = path.join(zoweCliHome, ".events", sampleApps[1]); //corresponds to emitter's event file
+        it("should create an event file upon first subscription if file does not exist - specific to CustomUserEvent directory structure",
+            async () => {
+                const setupWatcherSpy = jest.spyOn(EventUtils, "setupWatcher");
+                const callback = jest.fn();
+                const Watcher = EventOperator.getWatcher(sampleApps[1]);
+                const Emitter = EventOperator.getEmitter(sampleApps[1]);
+                const eventDir = path.join(zoweCliHome, ".events", sampleApps[1]); //corresponds to emitter's event file
 
-            expect((Watcher as EventProcessor).subscribedEvents.get(customUserEvent)).toBeFalsy();
+                expect((Watcher as EventProcessor).subscribedEvents.get(customUserEvent)).toBeFalsy();
 
-            // Subscribe to event
-            Watcher.subscribeUser(customUserEvent, callback);
-            const eventDetails: IEventJson = (Watcher as any).subscribedEvents.get(customUserEvent).toJson();
-            expect(callback).not.toHaveBeenCalled();
-            expect(fs.existsSync(eventDetails.eventFilePath)).toBeTruthy();
+                // Subscribe to event
+                Watcher.subscribeUser(customUserEvent, callback);
+                const eventDetails: IEventJson = (Watcher as any).subscribedEvents.get(customUserEvent).toJson();
+                expect(callback).not.toHaveBeenCalled();
+                expect(fs.existsSync(eventDetails.eventFilePath)).toBeTruthy();
 
-            // Emit event and trigger callback
-            Emitter.emitEvent(customUserEvent);
-            setupWatcherSpy.mock.calls.forEach(call => (call[2] as Function)());
+                // Emit event and trigger callback
+                Emitter.emitEvent(customUserEvent);
+                setupWatcherSpy.mock.calls.forEach(call => (call[2] as Function)());
 
-            expect(eventDetails.eventName).toEqual(customUserEvent);
-            expect(eventDetails.eventFilePath).toContain(eventDir);
-            expect(callback).toHaveBeenCalled();
-            expect(EventUtils.isUserEvent(eventDetails.eventName)).toBeFalsy(); //ensuring this custom event isnt a Zowe event
-            EventOperator.deleteProcessor(sampleApps[1]);
-        });
+                expect(eventDetails.eventName).toEqual(customUserEvent);
+                expect(eventDetails.eventFilePath).toContain(eventDir);
+                expect(callback).toHaveBeenCalled();
+                expect(EventUtils.isUserEvent(eventDetails.eventName)).toBeFalsy(); //ensuring this custom event isnt a Zowe event
+                EventOperator.deleteProcessor(sampleApps[1]);
+            });
     });
 });
