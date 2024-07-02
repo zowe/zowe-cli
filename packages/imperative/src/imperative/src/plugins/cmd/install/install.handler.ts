@@ -13,7 +13,6 @@ import { ICommandHandler, IHandlerParameters } from "../../../../../cmd";
 import { Logger } from "../../../../../logger/";
 import { PMFConstants } from "../../utilities/PMFConstants";
 import { resolve } from "path";
-import { statSync } from "fs";
 import { install } from "../../utilities/npm-interface";
 import { IPluginJson } from "../../doc/IPluginJson";
 import { IPluginJsonObject } from "../../doc/IPluginJsonObject";
