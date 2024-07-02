@@ -16,7 +16,6 @@ import * as pacote from "pacote";
 import * as npmFunctions from "../../../src/plugins/utilities/NpmFunctions";
 import { PMFConstants } from "../../../src/plugins/utilities/PMFConstants";
 import { ExecUtils } from "../../../../utilities";
-import { IO } from "../../../../io";
 
 jest.mock("cross-spawn");
 jest.mock("jsonfile");
