@@ -5,6 +5,7 @@ All notable changes to the Imperative package will be documented in this file.
 ## Recent Changes
 
 - BugFix: Updated dependencies for technical currency [#2188](https://github.com/zowe/zowe-cli/pull/2188)
+- Update: See `5.25.0` for details
 
 ## `8.0.0-next.202406201950`
 
@@ -392,6 +393,15 @@ All notable changes to the Imperative package will be documented in this file.
 ## `8.0.0-next.202311132045`
 
 - Major: First major version bump for V3
+
+## `5.25.0`
+
+- Enhancement: Added `ProfileInfo.profileManagerWillLoad` function to verify the credential manager can load. [#2111](https://github.com/zowe/zowe-cli/issues/2111)
+- Enhancement: Added support for proxy servers using a proxy http agent. Supports the usage of the environment variables HTTP_PROXY, HTTPS_PROXY (not case sensitive).
+  - If any of these environment variables is set and depending how the Zowe session is configured for http or https, the REST client instantiates an appropriate http agent.
+  - If the z/OS system uses self-signed certificates then the proxy server must be configured to accept them.
+  - If the proxy server itself is configured with self-signed certificates then the user needs to either import these certificates on their workstation, use rejectUnauthorized in their Zowe profile, or use the (not recommended) nodejs variable NODE_TLS_REJECT_UNAUTHORIZED=0.
+  - Zowe also looks for the environment variable NO_PROXY. These work with a simple comma separated list of hostnames that need to match with the hostname of the Zowe profile.
 
 ## `5.24.0`
 
