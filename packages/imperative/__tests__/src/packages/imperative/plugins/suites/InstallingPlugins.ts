@@ -751,7 +751,7 @@ describe("Installing Plugins", () => {
         it("should error when a package and --file is specified", function () {
             expect(
                 T.stripNewLines(
-                    executeCommandString(this, `${pluginGroup} install ${plugins.registry.location} --file ${testFile}`).stderr
+                    executeCommandString(this, `${pluginGroup} install ${plugins.location.location} --file ${testFile}`).stderr
                 )
             ).toContain("Option --file can not be specified if positional package... is as well. They are mutually exclusive.");
         });
@@ -760,7 +760,7 @@ describe("Installing Plugins", () => {
             expect(
                 T.stripNewLines(
                     executeCommandString(this,
-                        `${pluginGroup} install ${plugins.registry.location} --file ${testFile} --registry ${TEST_REGISTRY}`).stderr
+                        `${pluginGroup} install ${plugins.location.location} --file ${testFile} --registry ${TEST_REGISTRY}`).stderr
                 )
             ).toContain("The following options conflict (mutually exclusive)");
         });
