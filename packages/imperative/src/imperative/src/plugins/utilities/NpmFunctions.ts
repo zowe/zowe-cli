@@ -66,6 +66,11 @@ export function getRegistry(): string {
     return execOutput.toString();
 }
 
+export function getScopeRegistry(scope: string): string {
+    const execOutput = ExecUtils.spawnAndGetOutput(npmCmd, [ "config", "get", `@${scope}:registry` ]);
+    return execOutput.toString();
+}
+
 /**
  * NPM login to be able to install from secure registry
  * @param {string} registry The npm registry to install from.

@@ -18,8 +18,6 @@ exports[`IO tests should get an error for no input on deleteFile 1`] = `"Expect 
 
 exports[`IO tests should get an error for no input on existsSync 1`] = `"Expect Error: Required parameter 'file' must not be blank"`;
 
-exports[`IO tests should get an error for no input on isDir 1`] = `"Expect Error: Required parameter 'dirOrFile' must not be blank"`;
-
 exports[`IO tests should get an error for no input on mkdirp 1`] = `"Expect Error: Required parameter 'dir' must not be blank"`;
 
 exports[`IO tests should get an error for no input on processNewlines 1`] = `"Expect Error: Required parameter 'original' must not be null or undefined"`;

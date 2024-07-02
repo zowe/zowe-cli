@@ -90,12 +90,12 @@ describe("Plugin Management Facility list handler", () => {
         const fileJson: IPluginJson = {
             plugin1: {
                 package: packageName2,
-                registry: packageRegistry2,
+                location: packageRegistry2,
                 version: packageVersion2
             },
             a: {
                 package: packageName,
-                registry: packageRegistry,
+                location: packageRegistry,
                 version: packageVersion
             }
         };
@@ -119,12 +119,12 @@ describe("Plugin Management Facility list handler", () => {
         const fileJson: IPluginJson = {
             plugin1: {
                 package: packageName2,
-                registry: packageRegistry2,
+                location: packageRegistry2,
                 version: packageVersion2
             },
             a: {
                 package: packageName,
-                registry: packageRegistry,
+                location: packageRegistry,
                 version: packageVersion
             }
         };
