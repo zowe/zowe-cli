@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
+## `8.0.0-next.202407021516`
+
+- BugFix: Updated dependencies for technical currency [#2188](https://github.com/zowe/zowe-cli/pull/2188)
+
 ## `8.0.0-next.202406111958`
 
 - LTS Breaking: Modified the zos-files SDK. [#2083](https://github.com/zowe/zowe-cli/issues/2083)
