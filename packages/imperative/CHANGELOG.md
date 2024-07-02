@@ -4,6 +4,11 @@ All notable changes to the Imperative package will be documented in this file.
 
 ## Recent Changes
 
+- BugFix: Resolved bug that resulted in each plugin to have identical public registries regardless of actual installation location/reference
+- BugFix: Resolved bug that resulted in every plugin to have the same registry as the first if multiple were installed in the same command
+
+## Recent Changes
+
 - Update: See `5.25.0` for details
 
 ## `8.0.0-next.202406201950`
