@@ -37,18 +37,24 @@ describe("ConvertV1Profiles tests", () => {
     const appName = "zowe";
 
     beforeAll(() => {
-        // do not attempt to actually log any errors
+        // do not attempt to do any logging configuration
+        Logger.initLogger = jest.fn();
+        LoggingConfigurer.configureLogger = jest.fn();
+    });
+
+    beforeEach(() => {
+        // do not actually log any errors
         jest.spyOn(Logger, "getImperativeLogger").mockReturnValue({
             error: jest.fn()
         } as any);
     });
 
     describe("convert", () => {
-        let isConversionNeededSpy: any;
-        let replaceOldCredMgrOverrideSpy: any;
-        let initCredMgrSpy: any;
-        let moveV1ProfilesToConfigFileSpy: any;
-        let deleteV1ProfilesSpy: any;
+        let isConversionNeededSpy: any = jest.fn();
+        let replaceOldCredMgrOverrideSpy: any = jest.fn();
+        let initCredMgrSpy: any = jest.fn();
+        let moveV1ProfilesToConfigFileSpy: any = jest.fn();
+        let deleteV1ProfilesSpy: any = jest.fn();
 
         beforeAll(() => {
             // use "any" so that we can call private functions
@@ -77,6 +83,15 @@ describe("ConvertV1Profiles tests", () => {
 
         afterEach(() => {
             jest.clearAllMocks();   // clear our spies usage counts
+        });
+
+        afterAll(() => {
+            // restore original app implementations
+            isConversionNeededSpy.mockRestore();
+            replaceOldCredMgrOverrideSpy.mockRestore();
+            initCredMgrSpy.mockRestore();
+            moveV1ProfilesToConfigFileSpy.mockRestore();
+            deleteV1ProfilesSpy.mockRestore();
         });
 
         it("should complete a conversion when all utility functions work", async () => {
@@ -213,7 +228,6 @@ describe("ConvertV1Profiles tests", () => {
     }); // end convert
 
     describe("private functions", () => {
-        let loggerSpy: any;
         let mockSecureLoad: any;
         function setCredMgrState(desiredState: string): void {
             if (desiredState == "works") {
@@ -226,15 +240,6 @@ describe("ConvertV1Profiles tests", () => {
                 load: mockSecureLoad
             } as any);
         }
-
-        beforeAll(() => {
-            jest.restoreAllMocks(); // put spies back to original app implementation
-
-            // do not attempt to actually log any errors
-            loggerSpy = jest.spyOn(Logger, "getImperativeLogger").mockReturnValue({
-                error: jest.fn()
-            } as any);
-        });
 
         beforeEach(() => {
             // create the result normally created by the public function convert()
@@ -254,6 +259,12 @@ describe("ConvertV1Profiles tests", () => {
         });
 
         describe("isConversionNeeded", () => {
+            let getOldProfileCountSpy: any;
+
+            afterAll(() => {
+                getOldProfileCountSpy.mockRestore();    // restore original app implementation
+            });
+
             it("should return false if a client config exists", async () => {
                 // Pretend that we have a zowe config.
                 Object.defineProperty(ImperativeConfig.instance, "config", {
@@ -295,7 +306,7 @@ describe("ConvertV1Profiles tests", () => {
                 });
 
                 // pretend that we have no old V1 profiles
-                const getOldProfileCountSpy = jest.spyOn(
+                getOldProfileCountSpy = jest.spyOn(
                     ConvertV1Profiles as any, "getOldProfileCount")
                     .mockReturnValueOnce(0);
 
@@ -332,7 +343,7 @@ describe("ConvertV1Profiles tests", () => {
                 const noDirError = new ImperativeError({
                     additionalDetails: { code: 'ENOENT' }
                 } as any);
-                const getOldProfileCountSpy = jest.spyOn(ConvertV1Profiles as any, "getOldProfileCount")
+                getOldProfileCountSpy = jest.spyOn(ConvertV1Profiles as any, "getOldProfileCount")
                     .mockImplementationOnce(() => { throw noDirError; });
 
                 // call the function that we want to test
@@ -370,7 +381,7 @@ describe("ConvertV1Profiles tests", () => {
                 const ioError = new ImperativeError({
                     msg: ioErrMsg
                 });
-                const getOldProfileCountSpy = jest.spyOn(ConvertV1Profiles as any, "getOldProfileCount")
+                getOldProfileCountSpy = jest.spyOn(ConvertV1Profiles as any, "getOldProfileCount")
                     .mockImplementationOnce(() => { throw ioError; });
 
                 // call the function that we want to test
@@ -405,7 +416,7 @@ describe("ConvertV1Profiles tests", () => {
                 });
 
                 // pretend that we have 6 old V1 profiles
-                const getOldProfileCountSpy = jest.spyOn(
+                getOldProfileCountSpy = jest.spyOn(
                     ConvertV1Profiles as any, "getOldProfileCount")
                     .mockReturnValueOnce(6);
 
@@ -418,6 +429,14 @@ describe("ConvertV1Profiles tests", () => {
         }); // end isConversionNeeded
 
         describe("moveV1ProfilesToConfigFile", () => {
+            let convertPropNamesSpy: any = jest.fn();
+            let createNewConfigFileSpy: any = jest.fn();
+
+            afterAll(() => {
+                // restore original app implementations
+                convertPropNamesSpy.mockRestore();
+                createNewConfigFileSpy.mockRestore();
+            });
 
             it("should successfully move multiple v1 profiles to a config file", async () => {
                 jest.spyOn(V1ProfileRead, "getAllProfileDirectories").mockReturnValueOnce(["fruit", "nut"]);
@@ -434,9 +453,9 @@ describe("ConvertV1Profiles tests", () => {
                     .mockReturnValueOnce({ unitPrice: 1 })
                     .mockReturnValueOnce({ unitPrice: 5 })
                     .mockReturnValueOnce({ unitPrice: 2 });
-                jest.spyOn(ConvertV1Profiles as any, "convertPropNames")
+                convertPropNamesSpy = jest.spyOn(ConvertV1Profiles as any, "convertPropNames")
                     .mockImplementation(jest.fn());
-                jest.spyOn(ConvertV1Profiles as any, "createNewConfigFile")
+                createNewConfigFileSpy = jest.spyOn(ConvertV1Profiles as any, "createNewConfigFile")
                     .mockImplementation(jest.fn());
 
                 // Avoid using the real secure credMgr. Pretend it works.
@@ -474,9 +493,9 @@ describe("ConvertV1Profiles tests", () => {
                     .mockImplementationOnce(() => ({ color: "green", secret: "managed by A" }))
                     .mockImplementationOnce(() => { throw profileError; })
                     .mockImplementationOnce(() => ({ color: "brown", secret: "managed by C" }));
-                jest.spyOn(ConvertV1Profiles as any, "convertPropNames")
+                convertPropNamesSpy = jest.spyOn(ConvertV1Profiles as any, "convertPropNames")
                     .mockImplementation(jest.fn());
-                jest.spyOn(ConvertV1Profiles as any, "createNewConfigFile")
+                createNewConfigFileSpy = jest.spyOn(ConvertV1Profiles as any, "createNewConfigFile")
                     .mockImplementation(jest.fn());
 
                 // Avoid using the real secure credMgr. Pretend it fails.
@@ -529,7 +548,6 @@ describe("ConvertV1Profiles tests", () => {
                     },
                     autoStore: true
                 };
-                jest.restoreAllMocks(); // put spies back to original app implementation
 
                 // call the function that we want to test
                 ConvertV1Profiles["convertPropNames"](testConfig);
@@ -562,16 +580,14 @@ describe("ConvertV1Profiles tests", () => {
                 autoStore: true
             };
 
-            let loadV1SchemasSpy:any;
+            let loadV1SchemasSpy: any = jest.fn();
+            let updateSchemaSpy: any = jest.fn();
             let activateSpy: any;
             let mergeSpy: any;
             let saveSpy: any;
-            let updateSchemaSpy: any;
             let layerActiveSpy: any;
 
             beforeAll(() => {
-                jest.restoreAllMocks(); // put spies back to original app implementation
-
                 // Pretend that our utility functions work.
                 activateSpy = jest.fn();
                 mergeSpy = jest.fn();
@@ -800,6 +816,17 @@ describe("ConvertV1Profiles tests", () => {
         }); // end putCfgFileNmInResult
 
         describe("deleteV1Profiles", () => {
+            let isZoweKeyRingAvailableSpy: any = jest.fn();
+            let findOldSecurePropsSpy: any = jest.fn();
+            let deleteOldSecurePropsSpy: any = jest.fn();
+
+            afterAll(() => {
+                // restore original app implementations
+                isZoweKeyRingAvailableSpy.mockRestore();
+                findOldSecurePropsSpy.mockRestore();
+                deleteOldSecurePropsSpy.mockRestore();
+            });
+
             const oldProfileDir = "/fake/path/to/profiles-old";
             let existsSyncSpy: any;
             let removeSyncSpy: any;
@@ -827,7 +854,7 @@ describe("ConvertV1Profiles tests", () => {
 
             it("should delete the old v1 profiles directory", async () => {
                 // pretend that we found no secure property names under any old-school service
-                jest.spyOn(ConvertV1Profiles as any, "findOldSecureProps")
+                findOldSecurePropsSpy = jest.spyOn(ConvertV1Profiles as any, "findOldSecureProps")
                     .mockResolvedValue(Promise.resolve([]));
 
                 // pretend that the profiles directory exists
@@ -850,7 +877,7 @@ describe("ConvertV1Profiles tests", () => {
 
             it("should report that the old v1 profiles directory does not exist", async () => {
                 // pretend that we found no secure property names under any old-school service
-                jest.spyOn(ConvertV1Profiles as any, "findOldSecureProps")
+                findOldSecurePropsSpy = jest.spyOn(ConvertV1Profiles as any, "findOldSecureProps")
                     .mockResolvedValue(Promise.resolve([]));
 
                 // pretend that the profiles directory not exist
@@ -873,7 +900,7 @@ describe("ConvertV1Profiles tests", () => {
 
             it("should catch and report a problem when remove throws an error", async () => {
                 // pretend that we found no secure property names under any old-school service
-                jest.spyOn(ConvertV1Profiles as any, "findOldSecureProps")
+                findOldSecurePropsSpy = jest.spyOn(ConvertV1Profiles as any, "findOldSecureProps")
                     .mockResolvedValue(Promise.resolve([]));
 
                 // pretend that the profiles directory exists
@@ -910,15 +937,15 @@ describe("ConvertV1Profiles tests", () => {
 
             it("should also delete credentials stored by old SCS plugin", async () => {
                 // pretend that the zowe keyring is available
-                jest.spyOn(ConvertV1Profiles as any, "isZoweKeyRingAvailable")
+                isZoweKeyRingAvailableSpy = jest.spyOn(ConvertV1Profiles as any, "isZoweKeyRingAvailable")
                     .mockResolvedValue(Promise.resolve(true));
 
                 // pretend that we found secure property names under one old-school service
-                jest.spyOn(ConvertV1Profiles as any, "findOldSecureProps")
+                findOldSecurePropsSpy = jest.spyOn(ConvertV1Profiles as any, "findOldSecureProps")
                     .mockResolvedValueOnce(Promise.resolve(["secureUser", "securePassword"]))
                     .mockResolvedValue(Promise.resolve([]));
 
-                jest.spyOn(ConvertV1Profiles as any, "deleteOldSecureProps")
+                deleteOldSecurePropsSpy = jest.spyOn(ConvertV1Profiles as any, "deleteOldSecureProps")
                     .mockResolvedValue(Promise.resolve(true));
 
                 // pretend that the profiles directory exists
@@ -946,16 +973,16 @@ describe("ConvertV1Profiles tests", () => {
 
             it("should report an error when we fail to delete secure credentials", async () => {
                 // pretend that the zowe keyring is available
-                jest.spyOn(ConvertV1Profiles as any, "isZoweKeyRingAvailable")
+                isZoweKeyRingAvailableSpy = jest.spyOn(ConvertV1Profiles as any, "isZoweKeyRingAvailable")
                     .mockResolvedValue(Promise.resolve(true));
 
                 // pretend that we found secure property names under one old-school service
-                jest.spyOn(ConvertV1Profiles as any, "findOldSecureProps")
+                findOldSecurePropsSpy = jest.spyOn(ConvertV1Profiles as any, "findOldSecureProps")
                     .mockResolvedValueOnce(Promise.resolve(["secureUser", "securePassword"]))
                     .mockResolvedValue(Promise.resolve([]));
 
                 // pretend that secure credential deletion failed
-                jest.spyOn(ConvertV1Profiles as any, "deleteOldSecureProps")
+                deleteOldSecurePropsSpy = jest.spyOn(ConvertV1Profiles as any, "deleteOldSecureProps")
                     .mockResolvedValue(Promise.resolve(false));
 
                 // pretend that the profiles directory exists
@@ -982,7 +1009,7 @@ describe("ConvertV1Profiles tests", () => {
 
             it("should only report directory deletion when zowe keyring is unavailable", async () => {
                 // pretend that the zowe keyring is unavailable
-                const checkKeyRingSpy = jest.spyOn(ConvertV1Profiles as any, "isZoweKeyRingAvailable")
+                isZoweKeyRingAvailableSpy = jest.spyOn(ConvertV1Profiles as any, "isZoweKeyRingAvailable")
                     .mockResolvedValue(Promise.resolve(false));
 
                 // pretend that the profiles directory exists
@@ -1000,7 +1027,6 @@ describe("ConvertV1Profiles tests", () => {
                 }
                 expect(ConvertV1Profiles["convertResult"].msgs.length).toEqual(1);
                 expect(numDirDelMsgs).toEqual(1);
-                checkKeyRingSpy.mockRestore();  // restore original app implementation
             });
         }); // end deleteV1Profiles
 
@@ -1444,26 +1470,10 @@ describe("ConvertV1Profiles tests", () => {
         }); // end getOldProfileCount
 
         describe("initCredMgr", () => {
-            let logMsg: string;
-
-            beforeAll(() => {
-                // change logger spy to record the message
-                loggerSpy = jest.spyOn(Logger, "getImperativeLogger").mockImplementation(() => {
-                    return {
-                        error: jest.fn((errMsg) => {
-                            logMsg = errMsg;
-                        })
-                    } as any;
-                });
-
-                // do not attempt to do any logging configuration
-                Logger.initLogger = jest.fn();
-                LoggingConfigurer.configureLogger = jest.fn();
-            });
+            let readProfilesFromDiskSpy: any = jest.fn();
 
             beforeEach(() => {
-                // Reset the messages that have been logged or reported
-                logMsg = "Nothing logged";
+                // Reset the messages that have been reported
                 ConvertV1Profiles["convertResult"].msgs = [];
             });
 
@@ -1472,13 +1482,21 @@ describe("ConvertV1Profiles tests", () => {
             });
 
             afterAll(() => {
-                // restore the logger spy back to doing nothing
-                loggerSpy = jest.spyOn(Logger, "getImperativeLogger").mockReturnValue({
-                    error: jest.fn()
-                } as any);
+                // restore original app implementations
+                readProfilesFromDiskSpy.mockRestore();
             });
 
             it("should detect when credMgr has already been initialized", async () => {
+                // change logger spy to record the message
+                let logMsg: string = "Nothing logged";
+                jest.spyOn(Logger, "getImperativeLogger").mockImplementation(() => {
+                    return {
+                        error: jest.fn((errMsg) => {
+                            logMsg = errMsg;
+                        })
+                    } as any;
+                });
+
                 // pretend that credMgr has been initialized.
                 let initializedWasCalled = false;
                 Object.defineProperty(CredentialManagerFactory, "initialized", {
@@ -1511,14 +1529,19 @@ describe("ConvertV1Profiles tests", () => {
                     })
                 });
 
-                // do not actually read any ProfileInfo from disk
+                // pretend that the SCS plugin was configured as the credMgr
+                ConvertV1Profiles["oldScsPluginWasConfigured"] = true;
+
+                // pretend that our caller supplied ProfileInfo
                 ConvertV1Profiles["profileInfo"] = new ProfileInfo(appName);
-                const readFromDiskSpy = jest.spyOn(ConvertV1Profiles["profileInfo"], "readProfilesFromDisk")
-                    .mockResolvedValue(Promise.resolve());
+
+                // do not actually read any ProfileInfo from disk
+                readProfilesFromDiskSpy = jest.spyOn(ConvertV1Profiles["profileInfo"],
+                    "readProfilesFromDisk").mockResolvedValue(Promise.resolve());
 
                 // call the function that we want to test
                 await ConvertV1Profiles["initCredMgr"]();
-                expect(readFromDiskSpy).toHaveBeenCalled();
+                expect(readProfilesFromDiskSpy).toHaveBeenCalled();
             });
 
             it("should call overridesLoader when ProfileInfo is NOT supplied", async () => {
@@ -1551,7 +1574,7 @@ describe("ConvertV1Profiles tests", () => {
                 // do not actually read any ProfileInfo from disk
                 ConvertV1Profiles["profileInfo"] = new ProfileInfo(appName);
                 const fakeErrMsg = "A fake exception from findCredentials";
-                const readFromDiskSpy = jest.spyOn(ConvertV1Profiles["profileInfo"], "readProfilesFromDisk")
+                readProfilesFromDiskSpy = jest.spyOn(ConvertV1Profiles["profileInfo"], "readProfilesFromDisk")
                     .mockImplementation(() => {
                         throw new Error(fakeErrMsg);
                     });
@@ -1564,7 +1587,7 @@ describe("ConvertV1Profiles tests", () => {
                     caughtErr = err;
                 }
 
-                expect(readFromDiskSpy).toHaveBeenCalled();
+                expect(readProfilesFromDiskSpy).toHaveBeenCalled();
                 expect(caughtErr).not.toBeDefined();
 
                 let numMsgsFound = 0;
@@ -1722,10 +1745,6 @@ describe("ConvertV1Profiles tests", () => {
 
         describe("findOldSecureProps", () => {
 
-            beforeEach(() => {
-                jest.restoreAllMocks(); // put spies back to original app implementation
-            });
-
             it("should find old secure properties", async () => {
                 // pretend that findCredentials found a bunch of accounts and passwords
                 const origZoweKeyRing = ConvertV1Profiles["zoweKeyRing"];
@@ -1785,10 +1804,6 @@ describe("ConvertV1Profiles tests", () => {
         }); // end findOldSecureProps
 
         describe("deleteOldSecureProps", () => {
-
-            beforeEach(() => {
-                jest.restoreAllMocks(); // put spies back to original app implementation
-            });
 
             it("should delete the specified secure property", async () => {
                 // pretend that we successfully deleted the secure property
