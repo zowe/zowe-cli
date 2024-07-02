@@ -644,7 +644,12 @@ export class ConvertV1Profiles {
             }
         }
         catch (ioErr) {
-            ConvertV1Profiles.addExceptionToConvertMsgs(`Cannot read plugins file ${pluginsFileNm}`, ioErr);
+            // A VSCode extension may legitimately not have any plugins directory.
+            // However, something is wrong if the CLI does not have the plugins
+            // directory and file, so display the error.
+            if (!ConvertV1Profiles.profileInfo) {
+                ConvertV1Profiles.addExceptionToConvertMsgs(`Cannot read plugins file ${pluginsFileNm}`, ioErr);
+            }
         }
         return false;
     }

@@ -1348,8 +1348,7 @@ describe("ConvertV1Profiles tests", () => {
                 expect(pluginInstResult).toEqual(false);
             });
 
-
-            it("should catch exception from readFileSync and record error", () => {
+            it("should catch exception from readFileSync and record error for CLI", () => {
                 // pretend that readFileSync throws an error
                 const readFileErrMsg = "readFileSync threw some horrible exception";
                 readFileSyncSpy.mockImplementation(jest.fn(() => {
@@ -1383,6 +1382,45 @@ describe("ConvertV1Profiles tests", () => {
                     }
                 }
                 expect(numMsgsFound).toEqual(3);
+            });
+
+            it("should catch exception from readFileSync but not record error for VSCode app", () => {
+                // pretend that readFileSync throws an error
+                const readFileErrMsg = "readFileSync threw some horrible exception";
+                readFileSyncSpy.mockImplementation(jest.fn(() => {
+                    throw new Error(readFileErrMsg);
+                }));
+
+                // pretend that we were called by a VSCode app
+                ConvertV1Profiles["profileInfo"] = new ProfileInfo(appName);
+
+                // call the function that we want to test
+                const pluginName = "FakePluginName";
+                let pluginInstResult: boolean = false;
+                let caughtErr: any;
+                try {
+                    pluginInstResult = ConvertV1Profiles["isPluginInstalled"](pluginName);
+                } catch (err) {
+                    caughtErr = err;
+                }
+
+                expect(caughtErr).not.toBeDefined();
+                expect(pluginInstResult).toEqual(false);
+
+                let numMsgsFound = 0;
+                for (const nextMsg of ConvertV1Profiles["convertResult"].msgs) {
+                    if (nextMsg.msgFormat & ConvertMsgFmt.ERROR_LINE) {
+                        if (nextMsg.msgText.includes("Cannot read plugins file") && nextMsg.msgText.includes("plugins.json")) {
+                            numMsgsFound++;
+                        }
+                        if ((nextMsg.msgText.includes("Reason: ") || nextMsg.msgText.includes("Error: ")) &&
+                            nextMsg.msgText.includes(readFileErrMsg)
+                        ) {
+                            numMsgsFound++;
+                        }
+                    }
+                }
+                expect(numMsgsFound).toEqual(0);
             });
         }); // end isPluginInstalled
 
