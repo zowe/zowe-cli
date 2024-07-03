@@ -138,6 +138,27 @@ import { IO } from "../../../../../io";
                                 packageInfo.location = installRegistry;
                             }
 
+                            let isDirTest: boolean;
+
+                            try{
+                                isDirTest = IO.isDir(packageInfo.package)
+                            }
+                            catch(e){
+                                isDirTest = false;
+                            }
+
+                            if (packageInfo.package.startsWith("@")) {
+                                installRegistry = getScopeRegistry(
+                                    packageInfo.package.split("/")[0].substring(1)
+                                ).replace("\n", "");
+                            } else if (
+                                packageInfo.package.substring(packageInfo.package.lastIndexOf(".") + 1) ===
+                                    "tgz" ||
+                                isDirTest
+                            ) {
+                                installRegistry = packageInfo.package;
+                            }
+
                             this.console.debug(
                                 `Installing plugin: ${packageName}`
                             );
@@ -161,6 +182,16 @@ import { IO } from "../../../../../io";
                             this.console.debug(`Package: ${packageArgument}`);
 
                             params.response.console.log(
+                                "Plug-ins within the Imperative CLI Framework can legitimately gain\n" +
+                                    `control of the ${ImperativeConfig.instance.rootCommandName} CLI application ` +
+                                    "during the execution of every command.\n" +
+                                    "Install 3rd party plug-ins at your own risk.\n"
+                            );
+                            params.response.console.log(
+                                "Location = " + installRegistry
+                            );
+
+                            params.response.console.log(
                                 "\n_______________________________________________________________"
                             );
                             const pluginName = await install(
@@ -178,9 +209,19 @@ import { IO } from "../../../../../io";
                     }
                 }
 
-                for (const plugin of params.arguments.plugin) {
+                for (const plugin of params.arguments.plugin ?? []) {
                     // Get the registry to install to
                     if (typeof params.arguments.registry === "undefined") {
+
+                        let isDirTest: boolean;
+
+                        try{
+                            isDirTest = IO.isDir(plugin)
+                        }
+                        catch(e){
+                            isDirTest = false;
+                        }
+
                         if (plugin.startsWith("@")) {
                             installRegistry = getScopeRegistry(
                                 plugin.split("/")[0].substring(1)
@@ -188,7 +229,7 @@ import { IO } from "../../../../../io";
                         } else if (
                             plugin.substring(plugin.lastIndexOf(".") + 1) ===
                                 "tgz" ||
-                            IO.isDir(plugin)
+                            isDirTest
                         ) {
                             installRegistry = plugin;
                         }

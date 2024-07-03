@@ -32,9 +32,14 @@ describe("IO tests", () => {
         existsSyncSpy?.mockRestore();
     });
 
-    it("should return false when no input is given for isDir()", () => {
-        const result = IO.isDir("   ");
-        expect(result).toBeFalsy();
+    it("should get an error for no input on isDir", () => {
+        let error;
+        try {
+            IO.isDir("   ");
+        } catch (thrownError) {
+            error = thrownError;
+        }
+        expect(error.message).toMatchSnapshot();
     });
 
     it("should return true for fs.stats says input is directory", () => {

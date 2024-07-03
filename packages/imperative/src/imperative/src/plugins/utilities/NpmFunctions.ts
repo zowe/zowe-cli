@@ -48,8 +48,16 @@ export function installPackages(prefix: string, registry: string, npmPackage: st
         "--prefix", prefix,
         "-g"
     ];
+    let isDirTest: boolean;
     
-    if (!(registry.substring(registry.lastIndexOf(".") + 1) === "tgz") && !(IO.isDir(registry))) {
+    try{
+        isDirTest = IO.isDir(registry)
+    }
+    catch(e){
+        isDirTest = false;
+    }
+
+    if (!(registry.substring(registry.lastIndexOf(".") + 1) === "tgz") && !isDirTest) {
         args.push("--registry",registry);
     }
 
