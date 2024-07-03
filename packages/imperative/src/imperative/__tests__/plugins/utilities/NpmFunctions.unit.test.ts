@@ -139,12 +139,10 @@ describe("NpmFunctions", () => {
         it("getScopeRegistry() should return registry for 'test' scope", async () => {
             const spawnSpy = jest.spyOn(ExecUtils, "spawnAndGetOutput");
             spawnSpy.mockReturnValueOnce("https://test123.com");
-            const result = await npmFunctions.getScopeRegistry("broadcom");
+            const result = await npmFunctions.getScopeRegistry("test");
             expect(result).toBe("https://test123.com");
             expect(spawnSpy).toHaveBeenCalledTimes(1);
         });
-        
-
 
     });
 });

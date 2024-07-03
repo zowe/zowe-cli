@@ -28,7 +28,7 @@ describe("List plugin", () => {
         expect(result.stdout).toContain(`pluginName: ${pluginName}`);
         expect(result.stdout).toContain(`package:`);
         expect(result.stdout).toContain(`version:`);
-        expect(result.stdout).toContain(`registry:`);
+        expect(result.stdout).toContain(`location:`);
     });
 
     it("should display proper message when no plugin is installed", () => {

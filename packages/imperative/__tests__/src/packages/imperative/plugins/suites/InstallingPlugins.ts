@@ -256,7 +256,7 @@ describe("Installing Plugins", () => {
         }
 
         const strippedOutput = T.stripNewLines(result.stdout);
-        expect(strippedOutput).toContain("Registry = " + envNpmRegistry);
+        expect(strippedOutput).toContain("Location = " + envNpmRegistry);
         expect(strippedOutput).toContain(`Installed plugin name = '${plugins.normal.name}'`);
 
         // Now verify that it got added to the tree
@@ -387,7 +387,7 @@ describe("Installing Plugins", () => {
         setCurrCredMgr(defaultCredMgrDisplayNm);
 
         const strippedOutput = T.stripNewLines(result.stdout);
-        expect(strippedOutput).toContain("Registry = " + envNpmRegistry);
+        expect(strippedOutput).toContain("Location = " + envNpmRegistry);
         expect(strippedOutput).toContain(`Installed plugin name = '${plugins.override.name}'`);
 
         // confirm it was installed
@@ -417,7 +417,7 @@ describe("Installing Plugins", () => {
         }
 
         const strippedOutput = T.stripNewLines(result.stdout);
-        expect(strippedOutput).toContain("Registry = " + TEST_REGISTRY);
+        expect(strippedOutput).toContain("Location = " + TEST_REGISTRY);
         expect(strippedOutput).toContain(`Installed plugin name = '${plugins.normal.name}'`);
         expect(strippedOutput).toContain(`Installed plugin name = '${plugins.normal2.name}'`);
 
@@ -443,7 +443,7 @@ describe("Installing Plugins", () => {
         }
 
         let strippedOutput = T.stripNewLines(result.stdout);
-        expect(strippedOutput).toContain("Registry = " + envNpmRegistry);
+        expect(strippedOutput).toContain("Location = " + envNpmRegistry);
         expect(strippedOutput).toContain(`Installed plugin name = '${plugins.normal.name}'`);
 
         const afterInstall = executeCommandString(this, "--help");
@@ -466,7 +466,7 @@ describe("Installing Plugins", () => {
         }
 
         strippedOutput = T.stripNewLines(result.stdout);
-        expect(strippedOutput).toContain("Registry = " + envNpmRegistry);
+        expect(strippedOutput).toContain("Location = " + envNpmRegistry);
         expect(strippedOutput).toContain(`Installed plugin name = '${plugins.normal.name}'`);
 
         result = executeCommandString(this, "--help");
@@ -492,7 +492,7 @@ describe("Installing Plugins", () => {
         }
 
         const strippedOutput = T.stripNewLines(result.stdout);
-        expect(strippedOutput).toContain("Registry = " + envNpmRegistry);
+        expect(strippedOutput).toContain("Location = " + envNpmRegistry);
         expect(strippedOutput).toContain(`Installed plugin name = '${plugins.space_in_path.name}'`);
 
         // Now verify that it got added to the tree
