@@ -82,11 +82,11 @@ export class ImperativeConfig {
     private mConfig: Config;
 
     /**
-     * Gets a single instance of the PluginIssues. On the first call of
-     * ImperativeConfig.instance, a new Plugin Issues object is initialized and returned.
+     * Gets a single instance of the ImperativeConfig. On the first call of
+     * ImperativeConfig.instance, a new ImperativeConfig object is initialized and returned.
      * Every subsequent call will use the one that was first created.
      *
-     * @returns {ImperativeConfig} The newly initialized PMF object.
+     * @returns {ImperativeConfig} The newly initialized ImperativeConfig object.
      */
     public static get instance(): ImperativeConfig {
         if (this.mInstance == null) {
