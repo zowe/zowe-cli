@@ -45,7 +45,7 @@ describe("zos-jobs list jobs command", () => {
 
         ACCOUNT = systemProps.tso.account;
         const JOB_LENGTH = 6;
-        JOB_NAME = REAL_SESSION.ISession.user.substr(0, JOB_LENGTH).toUpperCase() + "SF";
+        JOB_NAME = REAL_SESSION.ISession.user.substring(0, JOB_LENGTH).toUpperCase() + "SF";
         NON_HELD_JOBCLASS = TEST_ENVIRONMENT.systemTestProperties.zosjobs.jobclass;
     });
 

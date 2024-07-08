@@ -68,7 +68,7 @@ export class ConfigProfiles extends ConfigApi {
      * @returns True if a profile exists. False otherwise.
      */
     public exists(path: string): boolean {
-        return (this.findProfile(path, this.mConfig.mProperties.profiles) != null);
+        return this.findProfile(path, this.mConfig.mProperties.profiles) != null;
     }
 
     // _______________________________________________________________________

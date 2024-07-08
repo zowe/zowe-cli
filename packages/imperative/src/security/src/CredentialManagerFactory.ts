@@ -82,13 +82,13 @@ export class CredentialManagerFactory {
         }
 
         // If the display name is not passed, use the cli name
-        const displayName = (params.displayName == null) ? params.service : params.displayName;
+        const displayName = params.displayName == null ? params.service : params.displayName;
 
         // If a manager override was not passed, use the default keytar manager
-        const Manager = (params.Manager == null) ? DefaultCredentialManager : params.Manager;
+        const Manager = params.Manager == null ? DefaultCredentialManager : params.Manager;
 
         // Default invalid on failure to false if not specified
-        params.invalidOnFailure = (params.invalidOnFailure == null) ? false : params.invalidOnFailure;
+        params.invalidOnFailure = params.invalidOnFailure == null ? false : params.invalidOnFailure;
 
         if (this.mManager != null) {
             // Something tried to change the already existing credential manager, we should stop this.
@@ -117,7 +117,7 @@ export class CredentialManagerFactory {
             if (manager instanceof AbstractCredentialManager) {
                 this.mManager = manager;
             } else {
-                const message = (typeof Manager === "string") ?
+                const message = typeof Manager === "string" ?
                     `The manager provided at ${Manager} does not extend AbstractCredentialManager properly!` :
                     "A bad object was provided to the CredentialManagerFactory.initialize() method. This could be " +
                     "due to a bad plugin.";

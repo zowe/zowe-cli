@@ -91,7 +91,7 @@ export class Create {
 
                 const tPrimary = tempOptions.size.toString().match(/[0-9]+/g);
                 if (!(tPrimary === null || tPrimary === undefined)) {
-                    tempOptions.primary = +(tPrimary.join(""));
+                    tempOptions.primary = +tPrimary.join("");
 
                     if (tempOptions.secondary === null || tempOptions.secondary === undefined) {
                         const TEN_PERCENT = 0.10;
@@ -153,7 +153,7 @@ export class Create {
             headers.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
         }
 
-        const tempOptions = JSON.parse(JSON.stringify({ like: likeDataSetName, ...(options || {}) }));
+        const tempOptions = JSON.parse(JSON.stringify({ like: likeDataSetName, ...options || {} }));
         Create.dataSetValidateOptions(tempOptions);
 
         /*
@@ -687,7 +687,7 @@ export class Create {
 
                     case "perms": {
                         const maxPerm = 777;
-                        if ((options.perms < 0) || (options.perms > maxPerm)) {
+                        if (options.perms < 0 || options.perms > maxPerm) {
                             throw new ImperativeError({
                                 msg: ZosFilesMessages.invalidPermsOption.message + options.perms
                             });

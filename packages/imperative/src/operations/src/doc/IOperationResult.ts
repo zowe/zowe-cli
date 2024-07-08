@@ -9,6 +9,7 @@
 *
 */
 
+/* eslint-disable deprecation/deprecation */
 import { Operation } from "../Operation";
 
 export interface IOperationResult<T> {

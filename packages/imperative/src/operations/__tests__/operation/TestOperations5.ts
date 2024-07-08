@@ -9,6 +9,7 @@
 *
 */
 
+/* eslint-disable deprecation/deprecation */
 import { TestOperations1 } from "./TestOperations1";
 import { TestSubOpDiverge } from "./subops/TestSubOpDiverge";
 import { Operations } from "../../../index";

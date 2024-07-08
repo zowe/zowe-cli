@@ -9,6 +9,7 @@
 *
 */
 
+/* eslint-disable deprecation/deprecation */
 import { IOperationCompleted, IOperationUndoCompleted, Operation } from "../../../../index";
 
 export class TestSubOp2 extends Operation<any> {

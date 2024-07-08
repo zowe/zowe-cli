@@ -15,7 +15,7 @@ import { runCliScript } from "../../../../../../src/TestUtil";
 import { SetupTestEnvironment } from "../../../../../../__src__/environment/SetupTestEnvironment";
 import { ITestEnvironment } from "../../../../../../__src__/environment/doc/response/ITestEnvironment";
 import { TestLogger } from "../../../../../../src/TestLogger";
-import { LoggerConfigBuilder } from "../../../../../../../src";
+import { LoggerConfigBuilder } from "../../../../../../../src/logger/src/LoggerConfigBuilder";
 
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment;

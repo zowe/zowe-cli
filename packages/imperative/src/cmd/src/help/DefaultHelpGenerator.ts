@@ -133,7 +133,7 @@ export class DefaultHelpGenerator extends AbstractHelpGenerator {
         if (!this.mProduceMarkdown && this.mCommandDefinition.name != null &&
             this.mCommandDefinition.name.length > 0) {
             helpText += "\n" + this.buildHeader("COMMAND NAME");
-            helpText += (DefaultHelpGenerator.HELP_INDENT + this.mCommandDefinition.name);
+            helpText += DefaultHelpGenerator.HELP_INDENT + this.mCommandDefinition.name;
             if (this.mCommandDefinition.aliases != null && this.mCommandDefinition.aliases.length > 0) {
                 helpText += " | " + this.mCommandDefinition.aliases.join(" | ");
             }
@@ -270,7 +270,7 @@ export class DefaultHelpGenerator extends AbstractHelpGenerator {
             // Place the positional parameters.
             if (this.mCommandDefinition.positionals != null) {
                 for (const positional of this.mCommandDefinition.positionals) {
-                    usage += " " + ((positional.required) ? "<" + positional.name + ">" : "[" + positional.name + "]");
+                    usage += " " + (positional.required ? "<" + positional.name + ">" : "[" + positional.name + "]");
                 }
             }
             // Append the options segment
@@ -393,9 +393,9 @@ export class DefaultHelpGenerator extends AbstractHelpGenerator {
                     this.dimGrey("{{italic}}(" + this.explainType(positional.type) + "){{italic}}");
                 let fullDescription = positional.description;
                 if (positional.regex) {
-                    fullDescription += (DefaultHelpGenerator.HELP_INDENT +
+                    fullDescription += DefaultHelpGenerator.HELP_INDENT +
                         DefaultHelpGenerator.HELP_INDENT + "Must match regular expression: {{codeBegin}}"
-                        + positional.regex + "{{codeEnd}}\n\n");
+                        + positional.regex + "{{codeEnd}}\n\n";
                 }
                 positionalsHelpText += this.buildOptionText(positionalString, fullDescription);
             }
@@ -501,7 +501,7 @@ export class DefaultHelpGenerator extends AbstractHelpGenerator {
             examplesText = this.mCommandDefinition.examples.map((example) => {
                 const prefix = example.prefix != null ? example.prefix + "{{space}} " : "";
                 const exampleHyphen = this.mProduceMarkdown ? "" : "-";
-                const options = (example.options.length > 0) ? ` ${example.options}` : "";
+                const options = example.options.length > 0 ? ` ${example.options}` : "";
                 const description = this.mProduceMarkdown ? this.escapeMarkdown(example.description) : example.description;
                 let exampleText = "{{bullet}}" + exampleHyphen + " {{space}}" + description + ":\n\n";
                 if (this.skipTextWrap) {

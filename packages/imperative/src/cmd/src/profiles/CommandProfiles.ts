@@ -51,7 +51,7 @@ export class CommandProfiles {
         // Ensure the correctness of each map entry
         map.forEach((value, key) => {
             ImperativeExpect.toBeAnArray(value, `${err} The "profiles" supplied for type "${key}" is NOT an array.`);
-            ImperativeExpect.toBeEqual((value.length > 0), true, `${err} No profiles supplied for type "${key}".`);
+            ImperativeExpect.toBeEqual(value.length > 0, true, `${err} No profiles supplied for type "${key}".`);
         });
         this.mMap = map;
 
@@ -75,7 +75,7 @@ export class CommandProfiles {
         // Ensure the correctness of each map entry
         map.forEach((value, key) => {
             ImperativeExpect.toBeAnArray(value, `${err} The "profiles" supplied for type "${key}" is NOT an array.`);
-            ImperativeExpect.toBeEqual((value.length > 0), true, `${err} No profiles supplied for type "${key}".`);
+            ImperativeExpect.toBeEqual(value.length > 0, true, `${err} No profiles supplied for type "${key}".`);
         });
         this.mMetaMap = map;
     }

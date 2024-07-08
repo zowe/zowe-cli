@@ -110,8 +110,8 @@ describe("CredentialManagerFactory", () => {
 
         beforeEach(async () => {
             // Generate a random name so we can verify that different names work
-            emulated.pluginName = generateRandomAlphaNumericString(Math.floor((Math.random() * nameMaxLength) + 1));
-            emulated.cliName = generateRandomAlphaNumericString(Math.floor((Math.random() * nameMaxLength) + 1));
+            emulated.pluginName = generateRandomAlphaNumericString(Math.floor(Math.random() * nameMaxLength + 1));
+            emulated.cliName = generateRandomAlphaNumericString(Math.floor(Math.random() * nameMaxLength + 1));
         });
 
         afterEach(() => {

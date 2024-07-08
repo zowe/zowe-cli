@@ -13,9 +13,10 @@
 import { TextUtils } from "../../../../utilities";
 
 jest.mock("../../../../imperative/src/Imperative");
-import { inspect, isNullOrUndefined } from "util";
+import { inspect } from "util";
 import { TestLogger } from "../../../../../__tests__/src/TestLogger";
-import { CommandResponse, ICommandDefinition, ICommandValidatorResponse } from "../../../";
+import { ICommandValidatorResponse } from "../../doc/response/response/ICommandValidatorResponse";
+import { CommandResponse, ICommandDefinition } from "../../../";
 import { ValidationTestCommand } from "../../../../../__tests__/src/packages/cmd/ValidationTestCommand";
 import { SyntaxValidator } from "../SyntaxValidator";
 import { Constants } from "../../../../constants";
@@ -52,7 +53,7 @@ describe("Imperative should provide advanced syntax validation rules", () => {
                     } else {
                         expect(validationResponse.valid).toEqual(false);
                     }
-                    if (!isNullOrUndefined(expectedText) && expectedText.length > 0) {
+                    if (!(expectedText == null) && expectedText.length > 0) {
                         const fullText = response.buildJsonResponse().stdout.toString() + response.buildJsonResponse().stderr.toString();
                         for (const text of expectedText) {
                             expect(fullText).toContain(text);

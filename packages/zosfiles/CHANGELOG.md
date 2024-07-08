@@ -2,6 +2,21 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
+## `8.0.0-next.202407021516`
+
+- BugFix: Updated dependencies for technical currency [#2188](https://github.com/zowe/zowe-cli/pull/2188)
+
+## `8.0.0-next.202406111958`
+
+- LTS Breaking: Modified the zos-files SDK. [#2083](https://github.com/zowe/zowe-cli/issues/2083)
+  - Deprecated the following interfaces:
+    - IOptionsFullResponse - use `IOptionsFullResponse` from `@zowe/imperative`.
+    - IRestClientResponse - use `IRestClientResponse` from `@zowe/imperative`.
+
+## `8.0.0-next.202406111728`
+
+- BugFix: Fixed error where `Get.dataSet` and `Get.USSFile` methods could silently fail when downloading large data sets or files. [#2167](https://github.com/zowe/zowe-cli/pull/2167)
+
 ## `8.0.0-next.202405202020`
 
 - BugFix: Fixed a bug where a data set search would not return a search term if it was at the beginning of a line. [#2147](https://github.com/zowe/zowe-cli/pull/2147)
@@ -50,6 +65,14 @@ All notable changes to the Zowe z/OS files SDK package will be documented in thi
 ## `8.0.0-next.202311132045`
 
 - Major: First major version bump for V3
+
+## `7.26.1`
+
+- BugFix: Fixed `Get.dataSet` and `Get.USSFile` methods so that they return an empty buffer instead of null for empty files. [#2173](https://github.com/zowe/zowe-cli/pull/2173)
+
+## `7.26.0`
+
+- BugFix: Fixed error where `Get.dataSet` and `Get.USSFile` methods could silently fail when downloading large data sets or files. [#2167](https://github.com/zowe/zowe-cli/pull/2167)
 
 ## `7.24.0`
 

@@ -39,7 +39,8 @@ import { IProfileLoaded, IProfileProperty, IProfileSchema } from "../../profiles
 // for imperative operations
 import { CliUtils, ImperativeConfig } from "../../utilities";
 import { ImperativeExpect } from "../../expect";
-import { Logger, LoggerUtils } from "../../logger";
+import { Logger } from "../../logger";
+import { LoggerUtils } from "../../logger/src/LoggerUtils";
 import {
     IOptionsForAddConnProps, ISession, Session, SessConstants, ConnectionPropsForSessCfg
 } from "../../rest";
@@ -196,7 +197,7 @@ export class ProfileInfo {
 
         const mergedArgs = this.mergeArgsForProfile(desiredProfile, { getSecureVals: false });
         if (options.forceUpdate) {
-            const knownProperty = mergedArgs.knownArgs.find((v => v.argName === options.property));
+            const knownProperty = mergedArgs.knownArgs.find(v => v.argName === options.property);
             if (knownProperty != null) {
                 const profPath = this.getTeamConfig().api.profiles.getProfilePathFromName(options.profileName);
                 if (!ConfigUtils.jsonPathMatches(knownProperty.argLoc.jsonLoc, profPath)) {
@@ -204,7 +205,7 @@ export class ProfileInfo {
                 }
             }
         }
-        if (!(await this.updateKnownProperty({ ...options, mergedArgs, osLocInfo: this.getOsLocInfo(desiredProfile)?.[0] }))) {
+        if (!await this.updateKnownProperty({ ...options, mergedArgs, osLocInfo: this.getOsLocInfo(desiredProfile)?.[0] })) {
             // Check to see if loadedConfig already contains the schema for the specified profile type
             if (ImperativeConfig.instance.loadedConfig?.profiles?.find(p => p.type === options.profileType)?.schema == null ||
                 ImperativeConfig.instance.loadedConfig?.baseProfile?.schema == null) {
@@ -244,10 +245,10 @@ export class ProfileInfo {
      */
     public async updateKnownProperty(options: IProfInfoUpdateKnownPropOpts): Promise<boolean> {
         this.ensureReadFromDisk();
-        const toUpdate = options.mergedArgs.knownArgs.find((v => v.argName === options.property)) ||
-            options.mergedArgs.missingArgs.find((v => v.argName === options.property));
+        const toUpdate = options.mergedArgs.knownArgs.find(v => v.argName === options.property) ||
+            options.mergedArgs.missingArgs.find(v => v.argName === options.property);
 
-        if (toUpdate == null || (toUpdate.argLoc.locType === ProfLocType.TEAM_CONFIG && !this.getTeamConfig().mProperties.autoStore)) {
+        if (toUpdate == null || toUpdate.argLoc.locType === ProfLocType.TEAM_CONFIG && !this.getTeamConfig().mProperties.autoStore) {
             return false;
         }
 
@@ -839,6 +840,25 @@ export class ProfileInfo {
 
         this.mExtendersJson = ProfileInfo.readExtendersJsonFromDisk();
         this.loadAllSchemas();
+    }
+
+    //_________________________________________________________________________
+    /**
+     * Function to ensure the credential manager will load successfully
+     * Returns true if it will load, or the credentials are not secured. Returns false if it will not load.
+     */
+    public async profileManagerWillLoad(): Promise<boolean> {
+        if (this.mCredentials.isSecured) {
+            try {
+                await this.mCredentials.loadManager();
+                return true;
+            } catch (err) {
+                this.mImpLogger.warn("Failed to initialize secure credential manager: " + err.message);
+                return false;
+            }
+        } else {
+            return true;
+        }
     }
 
     /**
@@ -1522,7 +1542,7 @@ export class ProfileInfo {
             // Drop segment from end of path if property not found
             segments.pop();
         }
-        const jsonPath = (segments.length > 0) ? buildPath(segments, opts.propName) : undefined;
+        const jsonPath = segments.length > 0 ? buildPath(segments, opts.propName) : undefined;
         if (jsonPath == null) {
             throw new ProfInfoErr({
                 errorCode: ProfInfoErr.PROP_NOT_IN_PROFILE,
@@ -1533,7 +1553,7 @@ export class ProfileInfo {
         const foundInSecureArray = secFields.indexOf(buildPath(segments, opts.propName)) >= 0;
         const _isPropInLayer = (properties: IConfig) => {
             return properties && (lodash.get(properties, jsonPath) !== undefined ||
-                (foundInSecureArray && lodash.get(properties, jsonPath.split(`.properties.${opts.propName}`)[0]) !== undefined));
+                foundInSecureArray && lodash.get(properties, jsonPath.split(`.properties.${opts.propName}`)[0]) !== undefined);
         };
 
         let filePath: string;
@@ -1624,7 +1644,7 @@ export class ProfileInfo {
                 if (profSchema == null || !argNameFound) {
                     if (argValue.toUpperCase() === "TRUE" || argValue.toUpperCase() === "FALSE") {
                         dataType = "boolean";
-                    } else if (!isNaN(+(argValue))) {
+                    } else if (!isNaN(+argValue)) {
                         dataType = "number";
                     }
                     // TODO: Look for option definition for argName to check if it's an array
@@ -1633,7 +1653,7 @@ export class ProfileInfo {
                 if (dataType === "boolean") {
                     argValue = argValue.toUpperCase() === "TRUE";
                 } else if (dataType === "number") {
-                    argValue = +(argValue);
+                    argValue = +argValue;
                 } else if (dataType === "array") {
                     argValue = CliUtils.extractArrayFromEnvValue(argValue);
                 }

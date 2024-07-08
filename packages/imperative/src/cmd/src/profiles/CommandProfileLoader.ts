@@ -63,7 +63,7 @@ export class CommandProfileLoader {
         const err: string = "Could not construct the profile loader.";
         ImperativeExpect.toNotBeNullOrUndefined(commandDefinition, `${err} No command definition supplied.`);
         this.mCommandDefinition = commandDefinition;
-        ImperativeExpect.toBeEqual((logger instanceof Logger), true, `${err} The "logger" supplied is not of type Logger.`);
+        ImperativeExpect.toBeEqual(logger instanceof Logger, true, `${err} The "logger" supplied is not of type Logger.`);
         this.mLog = logger;
         this.log.trace(`Profile loader created for command: ${commandDefinition.name}`);
     }

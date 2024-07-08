@@ -186,7 +186,7 @@ export class CommandProcessor {
         ImperativeExpect.toNotBeNullOrUndefined(params, `${CommandProcessor.ERROR_TAG} No parameters supplied to constructor.`);
         this.mDefinition = params.definition;
         ImperativeExpect.toNotBeNullOrUndefined(this.mDefinition, `${CommandProcessor.ERROR_TAG} No command definition supplied.`);
-        this.mFullDefinition = (params.fullDefinition == null) ? this.mDefinition : params.fullDefinition;
+        this.mFullDefinition = params.fullDefinition == null ? this.mDefinition : params.fullDefinition;
         this.mHelpGenerator = params.helpGenerator;
         ImperativeExpect.toNotBeNullOrUndefined(this.mHelpGenerator, `${CommandProcessor.ERROR_TAG} No help generator supplied.`);
         if (this.mDefinition.type === "command" && this.mDefinition.chainedHandlers == null) {
@@ -347,7 +347,7 @@ export class CommandProcessor {
             `${CommandProcessor.ERROR_TAG} invoke(): No parameters supplied.`);
         ImperativeExpect.toNotBeNullOrUndefined(params.arguments,
             `${CommandProcessor.ERROR_TAG} invoke(): No command arguments supplied.`);
-        params.responseFormat = (params.responseFormat == null) ? "default" : params.responseFormat;
+        params.responseFormat = params.responseFormat == null ? "default" : params.responseFormat;
         const responseOptions: string[] = ["default", "json"];
         ImperativeExpect.toBeOneOf(params.responseFormat, responseOptions,
             `${CommandProcessor.ERROR_TAG} invoke(): Response format must be one of the following: ${responseOptions.join(",")}`);
@@ -502,11 +502,11 @@ export class CommandProcessor {
                             }
                             // array processing
                             else {
-                                if ((prepared.args[positionalName] != null &&
-                                    (Array.isArray(prepared.args[positionalName])) &&
+                                if (prepared.args[positionalName] != null &&
+                                    Array.isArray(prepared.args[positionalName]) &&
                                     prepared.args[positionalName][0] != null &&
                                     typeof prepared.args[positionalName][0] === "string" &&
-                                    (prepared.args[positionalName][0].toUpperCase() === this.promptPhrase.toUpperCase()))) {
+                                    prepared.args[positionalName][0].toUpperCase() === this.promptPhrase.toUpperCase()) {
                                     // prompt has been requested for a positional
                                     this.log.debug("Prompting for positional %s which was requested by passing the value %s",
                                         prepared.args[positionalName][0], this.promptPhrase);
@@ -549,10 +549,10 @@ export class CommandProcessor {
                             }
                             // array processing
                             else {
-                                if (((Array.isArray(prepared.args[option.name])) &&
+                                if (Array.isArray(prepared.args[option.name]) &&
                                     prepared.args[option.name][0] != null &&
                                     typeof prepared.args[option.name][0] === "string" &&
-                                    (prepared.args[option.name][0].toUpperCase() === this.promptPhrase.toUpperCase()))) {
+                                    prepared.args[option.name][0].toUpperCase() === this.promptPhrase.toUpperCase()) {
                                     // prompt has been requested for an --option
                                     this.log.debug("Prompting for option %s which was requested by passing the value %s",
                                         option.name, this.promptPhrase);
@@ -889,8 +889,8 @@ export class CommandProcessor {
         // changes made to Yargs
         let args: ICommandArguments = CliUtils.buildBaseArgs(commandArguments);
         this.log.trace(`Base set of arguments from Yargs parse:\n${inspect(args)}`);
-        let allOpts = (this.definition.options != null) ? this.definition.options : [];
-        allOpts = (this.definition.positionals != null) ? allOpts.concat(this.definition.positionals) : allOpts;
+        let allOpts = this.definition.options != null ? this.definition.options : [];
+        allOpts = this.definition.positionals != null ? allOpts.concat(this.definition.positionals) : allOpts;
         this.log.trace(`Set of options and positionals defined on the command:\n${inspect(allOpts)}`);
 
         // Extract options supplied via environment variables - we must do this before we load profiles to
@@ -956,11 +956,11 @@ export class CommandProcessor {
 
                 // If both case properties are present in the profile, use the one that matches
                 // the option name explicitly
-                const value = (profileKebab !== undefined && profileCamel !== undefined) ?
-                    ((opt.name === cases.kebabCase) ? profileKebab : profileCamel) :
-                    ((profileKebab !== undefined) ? profileKebab : profileCamel);
+                const value = profileKebab !== undefined && profileCamel !== undefined ?
+                    opt.name === cases.kebabCase ? profileKebab : profileCamel :
+                    profileKebab !== undefined ? profileKebab : profileCamel;
                 const keys = CliUtils.setOptionValue(opt.name,
-                    ("aliases" in opt) ? opt.aliases : [],
+                    "aliases" in opt ? opt.aliases : [],
                     value
                 );
                 fromCnfg = { ...fromCnfg, ...keys };
@@ -1007,7 +1007,7 @@ export class CommandProcessor {
         for (const option of allOpts) {
             if (option.defaultValue != null && args[option.name] == null && !args[Constants.DISABLE_DEFAULTS_OPTION]) {
                 const defaultedArgs = CliUtils.setOptionValue(option.name,
-                    ("aliases" in option) ? option.aliases : [],
+                    "aliases" in option ? option.aliases : [],
                     option.defaultValue
                 );
                 args = CliUtils.mergeArguments(args, defaultedArgs);
@@ -1047,7 +1047,7 @@ export class CommandProcessor {
         return new CommandResponse({
             definition: this.definition,
             args: params.arguments,
-            silent: (params.silent == null) ? false : params.silent,
+            silent: params.silent == null ? false : params.silent,
             responseFormat: params.responseFormat,
             stream: ImperativeConfig.instance.daemonContext?.stream
         });

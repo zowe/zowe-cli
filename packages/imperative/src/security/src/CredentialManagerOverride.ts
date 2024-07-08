@@ -222,7 +222,7 @@ export class CredentialManagerOverride {
                 "\nReason: " + error.message
             });
         }
-        if ( typeof(settings.json?.overrides?.CredentialManager) === "undefined") {
+        if ( typeof settings.json?.overrides?.CredentialManager === "undefined") {
             throw new ImperativeError({
                 msg: "The property key 'overrides.CredentialManager' does not exist in settings file = " +
                 settings.fileName

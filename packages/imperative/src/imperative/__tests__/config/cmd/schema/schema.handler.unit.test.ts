@@ -103,7 +103,7 @@ describe("Configuration Schema command handler", () => {
             profiles: testProfileConfiguration
         });
 
-        await (new SchemaHandler()).process(handlerParms);
+        await new SchemaHandler().process(handlerParms);
         expect(errorText).toBeNull();
         expect(dataObj).toMatchObject(expectedSchemaObj);
         expect(JSON.parse(logText)).toMatchObject(dataObj);
@@ -112,7 +112,7 @@ describe("Configuration Schema command handler", () => {
     it("should fail when Imperative config not loaded", async () => {
         loadedConfigMock.mockReturnValueOnce(undefined);
 
-        await (new SchemaHandler()).process(handlerParms);
+        await new SchemaHandler().process(handlerParms);
         expect(errorText).toBe("Failed to load profile schemas");
         expect(logText).toBeNull();
     });
