@@ -82,13 +82,13 @@ export class CredentialManagerFactory {
         }
 
         // If the display name is not passed, use the cli name
-        const displayName = params.displayName == null ? params.service : params.displayName;
+        const displayName = params.displayName ?? params.service;
 
         // If a manager override was not passed, use the default keytar manager
-        const Manager = params.Manager == null ? DefaultCredentialManager : params.Manager;
+        const Manager = params.Manager ?? DefaultCredentialManager;
 
         // Default invalid on failure to false if not specified
-        params.invalidOnFailure = params.invalidOnFailure == null ? false : params.invalidOnFailure;
+        params.invalidOnFailure = params.invalidOnFailure ?? false;
 
         if (this.mManager != null) {
             // Something tried to change the already existing credential manager, we should stop this.

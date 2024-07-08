@@ -892,7 +892,7 @@ export class PluginManagementFacility {
                     const punctuation = 8;
                     overrideErrMsg += "\n";
                     for (let indent: number = 0; indent <
-                        settingNm.length + knownCredMgrs[credMgrInx].credMgrDisplayName.length + punctuation;
+                        settingNm.length + (knownCredMgrs[credMgrInx].credMgrDisplayName as string).length + punctuation;
                         indent++ )
                     {
                         overrideErrMsg += " ";
