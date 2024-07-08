@@ -93,7 +93,7 @@ import { IO } from "../../../../../io";
             });
         } else {
             try {
-                let installRegistry = getRegistry().replace("\n", "");
+                let installRegistry = params.arguments.registry ?? getRegistry().replace("\n", "");
 
                 // This section determines which npm logic needs to take place
                 if (
