@@ -63,16 +63,14 @@ const credentialManager: ICredentialManagerInit = {
 
 const fakeConfig = config as IImperativeConfig;
 const fakeProjPath = path.join(__dirname, "fakeapp.config.json");
-const fakeSchemaPath = path.join(__dirname, "fakeapp.schema.json");
 const fakeProjUserPath = path.join(__dirname, "fakeapp.config.user.json");
-const fakeGblProjPath = path.join(__dirname, ".fakeapp", "fakeapp.config.json");
-const fakeGblSchemaPath = path.join(__dirname, ".fakeapp", "fakeapp.schema.json");
-const fakeGblProjUserPath = path.join(__dirname, ".fakeapp", "fakeapp.config.user.json");
+const fakeGlobalPath = path.join(__dirname, ".fakeapp", "fakeapp.config.json");
+const fakeGlobalUserPath = path.join(__dirname, ".fakeapp", "fakeapp.config.user.json");
 const fakeUnrelatedPath = path.join(__dirname, "anotherapp.config.json");
 
 const fakeSecureDataJson: any = {};
 fakeSecureDataJson[fakeProjPath] = {"profiles.project_base.properties.secret": "fakeSecureValue"};
-fakeSecureDataJson[fakeGblProjPath] = {"profiles.global_base.properties.secret": "fakeSecureValue"};
+fakeSecureDataJson[fakeGlobalPath] = {"profiles.global_base.properties.secret": "fakeSecureValue"};
 
 const fakeSecureData = Buffer.from(JSON.stringify(fakeSecureDataJson)).toString("base64");
 
@@ -281,7 +279,7 @@ describe("Configuration Set command handler", () => {
         existsSyncSpy.mockReturnValueOnce(false).mockReturnValueOnce(false).mockReturnValueOnce(false)
             .mockReturnValueOnce(true).mockReturnValue(false); // Only the global project config exists
         writeFileSyncSpy.mockImplementation();
-        searchSpy.mockReturnValueOnce(fakeProjUserPath).mockReturnValueOnce(fakeProjPath); // Give search something to return
+        searchSpy.mockReturnValueOnce(fakeGlobalUserPath).mockReturnValueOnce(fakeGlobalPath); // Give search something to return
 
         await setupConfigToLoad(undefined, configOpts); // Setup the config
 
@@ -296,8 +294,8 @@ describe("Configuration Set command handler", () => {
         await handler.process(params);
 
         const fakeSecureDataExpectedJson: { [key: string]: any} = lodash.cloneDeep(fakeSecureDataJson);
-        delete fakeSecureDataExpectedJson[fakeGblProjPath];
-        fakeSecureDataExpectedJson[fakeGblProjPath] = {
+        delete fakeSecureDataExpectedJson[fakeGlobalPath];
+        fakeSecureDataExpectedJson[fakeGlobalPath] = {
             "profiles.secured.properties.testProperty": "aSecuredTestProperty",
             "profiles.global_base.properties.secret": "fakeSecureValue"
         };
@@ -319,7 +317,7 @@ describe("Configuration Set command handler", () => {
         expect(keytarSetPasswordSpy).toHaveBeenCalledTimes(1);
         expect(keytarSetPasswordSpy).toHaveBeenCalledWith("Zowe", "secure_config_props", fakeSecureDataExpected);
         expect(writeFileSyncSpy).toHaveBeenCalledTimes(1);
-        expect(writeFileSyncSpy).toHaveBeenNthCalledWith(1, fakeGblProjPath, JSON.stringify(compObj, null, 4)); // Config
+        expect(writeFileSyncSpy).toHaveBeenNthCalledWith(1, fakeGlobalPath, JSON.stringify(compObj, null, 4)); // Config
     });
 
     it("should secure a property and add it to the global user configuration", async () => {
@@ -348,7 +346,7 @@ describe("Configuration Set command handler", () => {
         existsSyncSpy.mockReturnValueOnce(false).mockReturnValueOnce(false)
             .mockReturnValueOnce(true).mockReturnValue(false); // Only the global user project config exists
         writeFileSyncSpy.mockImplementation();
-        searchSpy.mockReturnValueOnce(fakeProjUserPath).mockReturnValueOnce(fakeProjPath); // Give search something to return
+        searchSpy.mockReturnValueOnce(fakeGlobalUserPath).mockReturnValueOnce(fakeGlobalPath); // Give search something to return
 
         await setupConfigToLoad(undefined, configOpts); // Setup the config
 
@@ -363,7 +361,7 @@ describe("Configuration Set command handler", () => {
         await handler.process(params);
 
         const fakeSecureDataExpectedJson: { [key: string]: any} = lodash.cloneDeep(fakeSecureDataJson);
-        fakeSecureDataExpectedJson[fakeGblProjUserPath] = {
+        fakeSecureDataExpectedJson[fakeGlobalUserPath] = {
             "profiles.secured.properties.testProperty": "aSecuredTestProperty"
         };
         const fakeSecureDataExpected = Buffer.from(JSON.stringify(fakeSecureDataExpectedJson)).toString("base64");
@@ -384,7 +382,7 @@ describe("Configuration Set command handler", () => {
         expect(keytarSetPasswordSpy).toHaveBeenCalledTimes(1);
         expect(keytarSetPasswordSpy).toHaveBeenCalledWith("Zowe", "secure_config_props", fakeSecureDataExpected);
         expect(writeFileSyncSpy).toHaveBeenCalledTimes(1);
-        expect(writeFileSyncSpy).toHaveBeenNthCalledWith(1, fakeGblProjUserPath, JSON.stringify(compObj, null, 4)); // Config
+        expect(writeFileSyncSpy).toHaveBeenNthCalledWith(1, fakeGlobalUserPath, JSON.stringify(compObj, null, 4)); // Config
     });
 
     it("should allow you to define an insecure property and add it to the project configuration", async () => {
@@ -472,7 +470,7 @@ describe("Configuration Set command handler", () => {
         readFileSyncSpy.mockReturnValueOnce(JSON.stringify(eco));
         existsSyncSpy.mockReturnValueOnce(true).mockReturnValue(false); // Only the global user project config exists
         writeFileSyncSpy.mockImplementation();
-        searchSpy.mockReturnValueOnce(fakeProjUserPath).mockReturnValueOnce(fakeProjPath); // Give search something to return
+        searchSpy.mockReturnValueOnce(fakeGlobalUserPath).mockReturnValueOnce(fakeGlobalPath); // Give search something to return
 
         await setupConfigToLoad(undefined, configOpts); // Setup the config
 
@@ -503,7 +501,7 @@ describe("Configuration Set command handler", () => {
         expect(keytarSetPasswordSpy).toHaveBeenCalledTimes(1);
         expect(keytarSetPasswordSpy).toHaveBeenCalledWith("Zowe", "secure_config_props", fakeSecureDataExpected);
         expect(writeFileSyncSpy).toHaveBeenCalledTimes(1);
-        expect(writeFileSyncSpy).toHaveBeenNthCalledWith(1, fakeProjUserPath, JSON.stringify(compObj, null, 4)); // Config
+        expect(writeFileSyncSpy).toHaveBeenNthCalledWith(1, fakeGlobalUserPath, JSON.stringify(compObj, null, 4)); // Config
     });
 
     it("should allow you to define an insecure property and add it to the global configuration", async () => {
@@ -532,7 +530,7 @@ describe("Configuration Set command handler", () => {
         existsSyncSpy.mockReturnValueOnce(false).mockReturnValueOnce(false).mockReturnValueOnce(false)
             .mockReturnValueOnce(true).mockReturnValue(false); // Only the global project config exists
         writeFileSyncSpy.mockImplementation();
-        searchSpy.mockReturnValueOnce(fakeProjUserPath).mockReturnValueOnce(fakeProjPath); // Give search something to return
+        searchSpy.mockReturnValueOnce(fakeGlobalUserPath).mockReturnValueOnce(fakeGlobalPath); // Give search something to return
 
         await setupConfigToLoad(undefined, configOpts); // Setup the config
 
@@ -547,7 +545,7 @@ describe("Configuration Set command handler", () => {
         await handler.process(params);
 
         const fakeSecureDataExpectedJson: { [key: string]: any} = lodash.cloneDeep(fakeSecureDataJson);
-        delete fakeSecureDataExpectedJson[fakeGblProjPath];
+        delete fakeSecureDataExpectedJson[fakeGlobalPath];
         const fakeSecureDataExpected = Buffer.from(JSON.stringify(fakeSecureDataExpectedJson)).toString("base64");
 
         const compObj: any = {};
@@ -564,7 +562,7 @@ describe("Configuration Set command handler", () => {
         expect(keytarSetPasswordSpy).toHaveBeenCalledTimes(1);
         expect(keytarSetPasswordSpy).toHaveBeenCalledWith("Zowe", "secure_config_props", fakeSecureDataExpected);
         expect(writeFileSyncSpy).toHaveBeenCalledTimes(1);
-        expect(writeFileSyncSpy).toHaveBeenNthCalledWith(1, fakeGblProjPath, JSON.stringify(compObj, null, 4)); // Config
+        expect(writeFileSyncSpy).toHaveBeenNthCalledWith(1, fakeGlobalPath, JSON.stringify(compObj, null, 4)); // Config
     });
 
     it("should allow you to define an insecure property and add it to the global user configuration", async () => {
@@ -593,7 +591,7 @@ describe("Configuration Set command handler", () => {
         existsSyncSpy.mockReturnValueOnce(false).mockReturnValueOnce(false)
             .mockReturnValueOnce(true).mockReturnValue(false); // Only the global user project config exists
         writeFileSyncSpy.mockImplementation();
-        searchSpy.mockReturnValueOnce(fakeProjUserPath).mockReturnValueOnce(fakeProjPath); // Give search something to return
+        searchSpy.mockReturnValueOnce(fakeGlobalUserPath).mockReturnValueOnce(fakeGlobalPath); // Give search something to return
 
         await setupConfigToLoad(undefined, configOpts); // Setup the config
 
@@ -624,7 +622,7 @@ describe("Configuration Set command handler", () => {
         expect(keytarSetPasswordSpy).toHaveBeenCalledTimes(1);
         expect(keytarSetPasswordSpy).toHaveBeenCalledWith("Zowe", "secure_config_props", fakeSecureDataExpected);
         expect(writeFileSyncSpy).toHaveBeenCalledTimes(1);
-        expect(writeFileSyncSpy).toHaveBeenNthCalledWith(1, fakeGblProjUserPath, JSON.stringify(compObj, null, 4)); // Config
+        expect(writeFileSyncSpy).toHaveBeenNthCalledWith(1, fakeGlobalUserPath, JSON.stringify(compObj, null, 4)); // Config
     });
 
     it("should allow you to define an insecure property and add it to the project configuration while keeping other secure props", async () => {
