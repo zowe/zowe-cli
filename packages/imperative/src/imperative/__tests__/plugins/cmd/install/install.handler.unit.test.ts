@@ -412,7 +412,7 @@ describe("Plugin Management Facility install handler", () => {
             expect(e).toBeUndefined();
         }
 
-        expect(mocks.install).toHaveBeenCalledWith("@private/sample1","privateRegistryUrl")
+        expect(mocks.install).toHaveBeenCalledWith("@private/sample1","privateRegistryUrl");
     });
     it("should handle installed plugins via project/directory", async () => {
         const handler = new InstallHandler();
@@ -460,7 +460,7 @@ describe("Plugin Management Facility install handler", () => {
         catch(e){
             expect(e).toBeUndefined();
         }
-        
+
         expect(mocks.install).toHaveBeenCalledWith("@public/sample1","publicRegistryUrl");
         expect(mocks.install).toHaveBeenCalledWith("@private/sample1","privateRegistryUrl");
         expect(mocks.install).toHaveBeenCalledWith("path/to/dir","path/to/dir");

@@ -216,7 +216,7 @@ import { IO } from "../../../../../io";
                         let isDirTest: boolean;
 
                         try{
-                            isDirTest = IO.isDir(plugin)
+                            isDirTest = IO.isDir(plugin);
                         }
                         catch(e){
                             isDirTest = false;

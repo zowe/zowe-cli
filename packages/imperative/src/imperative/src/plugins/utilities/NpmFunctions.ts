@@ -42,16 +42,16 @@ export function findNpmOnPath(): string {
  */
 export function installPackages(prefix: string, registry: string, npmPackage: string): string {
     const pipe: StdioOptions = ["pipe", "pipe", process.stderr];
-    
+
     const args = [
         "install", npmPackage,
         "--prefix", prefix,
         "-g"
     ];
     let isDirTest: boolean;
-    
+
     try{
-        isDirTest = IO.isDir(registry)
+        isDirTest = IO.isDir(registry);
     }
     catch(e){
         isDirTest = false;

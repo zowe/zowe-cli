@@ -73,9 +73,9 @@ export class IO {
      * @memberof IO
      */
     public static isDir(dirOrFile: string): boolean {
-            ImperativeExpect.toBeDefinedAndNonBlank(dirOrFile, "dirOrFile");
-            const stat = fs.statSync(dirOrFile);
-            return stat.isDirectory();
+        ImperativeExpect.toBeDefinedAndNonBlank(dirOrFile, "dirOrFile");
+        const stat = fs.statSync(dirOrFile);
+        return stat.isDirectory();
     }
 
     /**
