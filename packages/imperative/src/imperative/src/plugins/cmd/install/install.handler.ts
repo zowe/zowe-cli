@@ -141,7 +141,7 @@ import { IO } from "../../../../../io";
                             let isDirTest: boolean;
 
                             try{
-                                isDirTest = IO.isDir(packageInfo.package)
+                                isDirTest = IO.isDir(packageInfo.package);
                             }
                             catch(e){
                                 isDirTest = false;
