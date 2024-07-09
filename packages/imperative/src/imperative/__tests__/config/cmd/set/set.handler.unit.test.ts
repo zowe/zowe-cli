@@ -445,14 +445,14 @@ describe("Configuration Set command handler", () => {
         expect(writeFileSyncSpy).toHaveBeenNthCalledWith(1, fakeProjPath, JSON.stringify(compObj, null, 4)); // Config
     });
 
-    it("should allow you to define an insecure property and add it to the global user configuration", async () => {
+    it("should allow you to define an insecure property and add it to the project user configuration", async () => {
         const handler = new SetHandler();
         const params = getIHandlerParametersObject();
 
         params.arguments.userConfig = true;
         params.arguments.globalConfig = false;
         params.arguments.secure = false;
-        params.arguments.property = "profiles.global_base.properties.secret";
+        params.arguments.property = "profiles.project_base.properties.secret";
         params.arguments.value = "anUnsecuredTestProperty";
 
         // Start doing fs mocks
@@ -464,7 +464,7 @@ describe("Configuration Set command handler", () => {
         writeFileSyncSpy = jest.spyOn(fs, "writeFileSync");
         existsSyncSpy = jest.spyOn(fs, "existsSync");
 
-        const eco = lodash.cloneDeep(expectedGlobalUserConfigObject);
+        const eco = lodash.cloneDeep(expectedProjectUserConfigObject);
         eco.$schema = "./fakeapp.schema.json";
 
         readFileSyncSpy.mockReturnValueOnce(JSON.stringify(eco));
