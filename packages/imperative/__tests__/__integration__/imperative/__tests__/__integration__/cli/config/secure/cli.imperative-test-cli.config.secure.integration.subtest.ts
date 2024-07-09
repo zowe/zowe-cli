@@ -39,6 +39,7 @@ describe("imperative-test-cli config secure", () => {
 
     const expectedGlobalUserConfig = lodash.cloneDeep(expectedGlobalUserConfigObject);
     delete expectedGlobalUserConfig.$schema;
+    expectedGlobalUserConfig.profiles.global_base.secure = []; // config-init creates user base profiles with an empty secure array
 
     const expectedProjectConfig = lodash.cloneDeep(expectedProjectConfigObject);
     delete expectedProjectConfig.$schema;
@@ -47,6 +48,7 @@ describe("imperative-test-cli config secure", () => {
 
     const expectedProjectUserConfig = lodash.cloneDeep(expectedProjectUserConfigObject);
     delete expectedProjectUserConfig.$schema;
+    expectedProjectUserConfig.profiles.project_base.secure = []; // config-init creates user base profiles with an empty secure array
 
     // Create the test environment
     beforeAll(async () => {
