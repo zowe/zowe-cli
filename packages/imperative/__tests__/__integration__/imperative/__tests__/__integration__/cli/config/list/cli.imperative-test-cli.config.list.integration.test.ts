@@ -126,10 +126,18 @@ describe("imperative-test-cli config list", () => {
         const expectedResponse = {
             data: {} as any
         };
+
+        // config-init of a user config creates no entries in the properties object or in the secure array.
+        // So, empty the secure arrays in the user configs.
         expectedResponse.data[expectedProjectUserConfigLocation] = expectedProjectUserConfigObject;
+        expectedResponse.data[expectedProjectUserConfigLocation].profiles.project_base.secure = [];
+
         expectedResponse.data[expectedGlobalUserConfigLocation] = expectedGlobalUserConfigObject;
-        expectedResponse.data[expectedGlobalConfigLocation] = expectedGlobalConfigObject;
+        expectedResponse.data[expectedGlobalUserConfigLocation].profiles.global_base.secure = [];
+
         expectedResponse.data[expectedProjectConfigLocation] = expectedProjectConfigObject;
+        expectedResponse.data[expectedGlobalConfigLocation] = expectedGlobalConfigObject;
+
         expect(parsedResponse.success).toEqual(true);
         expect(parsedResponse.stderr).toEqual("");
         expect(parsedResponse.exitCode).toEqual(0);
