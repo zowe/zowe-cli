@@ -19,12 +19,19 @@ import {
 } from "../__resources__/expectedObjects";
 import * as fs from "fs";
 import * as path from "path";
-
+import * as lodash from "lodash";
 
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment;
 
 describe("imperative-test-cli config init", () => {
+    // config-init creates user base profiles with an empty secure array
+    const expectedGlobalUserJson = lodash.cloneDeep(expectedGlobalUserConfigObject);
+    expectedGlobalUserJson.profiles.global_base.secure = [];
+
+    const expectedProjectUserJson = lodash.cloneDeep(expectedProjectUserConfigObject);
+    expectedProjectUserJson.profiles.project_base.secure = [];
+
     // Create the test environment
     beforeAll(async () => {
         TEST_ENVIRONMENT = await SetupTestEnvironment.createTestEnv({
@@ -65,7 +72,7 @@ describe("imperative-test-cli config init", () => {
         expect(JSON.parse(fs.readFileSync(expectedSchemaLocation).toString())).toEqual(expectedSchemaObject);
 
     });
-    it("should initialize a user project config", () => {
+    it("should initialize a project user config", () => {
         const response = runCliScript(__dirname + "/__scripts__/init_config.sh",
             TEST_ENVIRONMENT.workingDir, ["--user-config --prompt false"]);
         const expectedProjectUserConfigLocation = path.join(TEST_ENVIRONMENT.workingDir, "test", "imperative-test-cli.config.user.json");
@@ -74,7 +81,7 @@ describe("imperative-test-cli config init", () => {
         expect(response.output.toString()).toContain(expectedProjectUserConfigLocation);
         expect(fs.existsSync(expectedProjectUserConfigLocation)).toEqual(true);
         expect(fs.existsSync(expectedSchemaLocation)).toEqual(true);
-        expect(JSON.parse(fs.readFileSync(expectedProjectUserConfigLocation).toString())).toEqual(expectedProjectUserConfigObject);
+        expect(JSON.parse(fs.readFileSync(expectedProjectUserConfigLocation).toString())).toEqual(expectedProjectUserJson);
         expect(JSON.parse(fs.readFileSync(expectedSchemaLocation).toString())).toEqual(expectedSchemaObject);
     });
     it("should initialize a global config", () => {
@@ -98,7 +105,7 @@ describe("imperative-test-cli config init", () => {
         expect(response.output.toString()).toContain(expectedGlobalUserConfigLocation);
         expect(fs.existsSync(expectedGlobalUserConfigLocation)).toEqual(true);
         expect(fs.existsSync(expectedGlobalUserConfigLocation)).toEqual(true);
-        expect(JSON.parse(fs.readFileSync(expectedGlobalUserConfigLocation).toString())).toEqual(expectedGlobalUserConfigObject);
+        expect(JSON.parse(fs.readFileSync(expectedGlobalUserConfigLocation).toString())).toEqual(expectedGlobalUserJson);
         expect(JSON.parse(fs.readFileSync(expectedSchemaLocation).toString())).toEqual(expectedSchemaObject);
     });
     it("should initialize a project config with prompting", () => {
@@ -114,7 +121,7 @@ describe("imperative-test-cli config init", () => {
         expect(JSON.parse(fs.readFileSync(expectedProjectConfigLocation).toString())).toEqual(expectedProjectConfigObject);
         expect(JSON.parse(fs.readFileSync(expectedSchemaLocation).toString())).toEqual(expectedSchemaObject);
     });
-    it("should initialize a user project config with prompting", () => {
+    it("should initialize a project user config with prompting", () => {
         const response = runCliScript(__dirname + "/__scripts__/init_config_prompt.sh",
             TEST_ENVIRONMENT.workingDir, ["--user-config"]);
         const expectedProjectUserConfigLocation = path.join(TEST_ENVIRONMENT.workingDir, "test", "imperative-test-cli.config.user.json");
@@ -124,7 +131,7 @@ describe("imperative-test-cli config init", () => {
         expect(response.output.toString()).toContain(expectedProjectUserConfigLocation);
         expect(fs.existsSync(expectedProjectUserConfigLocation)).toEqual(true);
         expect(fs.existsSync(expectedSchemaLocation)).toEqual(true);
-        expect(JSON.parse(fs.readFileSync(expectedProjectUserConfigLocation).toString())).toEqual(expectedProjectUserConfigObject);
+        expect(JSON.parse(fs.readFileSync(expectedProjectUserConfigLocation).toString())).toEqual(expectedProjectUserJson);
         expect(JSON.parse(fs.readFileSync(expectedSchemaLocation).toString())).toEqual(expectedSchemaObject);
     });
     it("should initialize a global config with prompting", () => {
@@ -150,7 +157,7 @@ describe("imperative-test-cli config init", () => {
         expect(response.output.toString()).toContain(expectedGlobalUserConfigLocation);
         expect(fs.existsSync(expectedGlobalUserConfigLocation)).toEqual(true);
         expect(fs.existsSync(expectedSchemaLocation)).toEqual(true);
-        expect(JSON.parse(fs.readFileSync(expectedGlobalUserConfigLocation).toString())).toEqual(expectedGlobalUserConfigObject);
+        expect(JSON.parse(fs.readFileSync(expectedGlobalUserConfigLocation).toString())).toEqual(expectedGlobalUserJson);
         expect(JSON.parse(fs.readFileSync(expectedSchemaLocation).toString())).toEqual(expectedSchemaObject);
     });
 });
