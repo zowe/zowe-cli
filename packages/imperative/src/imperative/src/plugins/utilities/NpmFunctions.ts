@@ -84,6 +84,7 @@ export function getRegistry(): string {
 
 export function getScopeRegistry(scope: string): string {
     const execOutput = ExecUtils.spawnAndGetOutput(npmCmd, [ "config", "get", `@${scope}:registry` ]);
+    if(execOutput.toString().trim() === 'undefined') return getRegistry();
     return execOutput.toString();
 }
 
