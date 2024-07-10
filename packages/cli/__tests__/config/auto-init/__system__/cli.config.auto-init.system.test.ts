@@ -93,7 +93,7 @@ describe("config auto-init without profile", () => {
         let config = fs.readFileSync(path.join(TEST_ENVIRONMENT.workingDir, "zowe.config.json")).toString();
         // Typecasting because of this issue: https://github.com/kaelzhang/node-comment-json/issues/42
         const configJson = JSONC.parse(config) as any;
-        configJson.profiles.base.properties = {};
+        configJson.profiles.project_base.properties = {};
         config = JSONC.stringify(configJson, null, 4);
         fs.writeFileSync(path.join(TEST_ENVIRONMENT.workingDir, "zowe.config.json"), config);
 
@@ -239,8 +239,8 @@ describe("config auto-init without profile and with certificates", () => {
             let config = fs.readFileSync(path.join(TEST_ENVIRONMENT.workingDir, "zowe.config.json")).toString();
             // Typecasting because of this issue: https://github.com/kaelzhang/node-comment-json/issues/42
             const configJson = JSONC.parse(config) as any;
-            configJson.profiles.base.properties = {};
-            configJson.profiles.base.secure = [];
+            configJson.profiles.project_base.properties = {};
+            configJson.profiles.project_base.secure = [];
             config = JSONC.stringify(configJson, null, 4);
             fs.writeFileSync(path.join(TEST_ENVIRONMENT.workingDir, "zowe.config.json"), config);
 
