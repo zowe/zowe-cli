@@ -1,13 +1,13 @@
 /*
-* This program and the accompanying materials are made available under the terms of the
-* Eclipse Public License v2.0 which accompanies this distribution, and is available at
-* https://www.eclipse.org/legal/epl-v20.html
-*
-* SPDX-License-Identifier: EPL-2.0
-*
-* Copyright Contributors to the Zowe Project.
-*
-*/
+ * This program and the accompanying materials are made available under the terms of the
+ * Eclipse Public License v2.0 which accompanies this distribution, and is available at
+ * https://www.eclipse.org/legal/epl-v20.html
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Copyright Contributors to the Zowe Project.
+ *
+ */
 
 import { ICommandHandler, IHandlerParameters } from "../../../../../cmd";
 import { Logger } from "../../../../../logger/";
@@ -72,6 +72,29 @@ import { IO } from "../../../../../io";
      *
      * @throws {ImperativeError}
      */
+
+    private locationTypeTest(plugin: string){
+        let isDirTest: boolean;
+        let installRegistry = getRegistry();
+        try {
+            isDirTest = IO.isDir(plugin);
+        } catch (e) {
+            isDirTest = false;
+        }
+
+        if (plugin.startsWith("@")) {
+            installRegistry = getScopeRegistry(
+                plugin.split("/")[0].substring(1)
+            ).replace("\n", "");
+        } else if (
+            plugin.substring(plugin.lastIndexOf(".") + 1) === "tgz" ||
+            isDirTest
+        ) {
+            installRegistry = plugin;
+        }
+        return installRegistry;
+    }
+
     public async process(params: IHandlerParameters): Promise<void> {
         const chalk = TextUtils.chalk;
         this.console.debug(
@@ -93,7 +116,9 @@ import { IO } from "../../../../../io";
             });
         } else {
             try {
-                let installRegistry = params.arguments.registry ?? getRegistry().replace("\n", "");
+                let installRegistry =
+                    params.arguments.registry ??
+                    getRegistry().replace("\n", "");
 
                 // This section determines which npm logic needs to take place
                 if (
@@ -138,26 +163,7 @@ import { IO } from "../../../../../io";
                                 packageInfo.location = installRegistry;
                             }
 
-                            let isDirTest: boolean;
-
-                            try{
-                                isDirTest = IO.isDir(packageInfo.package);
-                            }
-                            catch(e){
-                                isDirTest = false;
-                            }
-
-                            if (packageInfo.package.startsWith("@")) {
-                                installRegistry = getScopeRegistry(
-                                    packageInfo.package.split("/")[0].substring(1)
-                                ).replace("\n", "");
-                            } else if (
-                                packageInfo.package.substring(packageInfo.package.lastIndexOf(".") + 1) ===
-                                    "tgz" ||
-                                isDirTest
-                            ) {
-                                installRegistry = packageInfo.package;
-                            }
+                            installRegistry = this.locationTypeTest(packageInfo.location);
 
                             this.console.debug(
                                 `Installing plugin: ${packageName}`
@@ -212,27 +218,7 @@ import { IO } from "../../../../../io";
                 for (const plugin of params.arguments.plugin ?? []) {
                     // Get the registry to install to
                     if (typeof params.arguments.registry === "undefined") {
-
-                        let isDirTest: boolean;
-
-                        try{
-                            isDirTest = IO.isDir(plugin);
-                        }
-                        catch(e){
-                            isDirTest = false;
-                        }
-
-                        if (plugin.startsWith("@")) {
-                            installRegistry = getScopeRegistry(
-                                plugin.split("/")[0].substring(1)
-                            ).replace("\n", "");
-                        } else if (
-                            plugin.substring(plugin.lastIndexOf(".") + 1) ===
-                                "tgz" ||
-                            isDirTest
-                        ) {
-                            installRegistry = plugin;
-                        }
+                        installRegistry = this.locationTypeTest(plugin);
                     } else {
                         installRegistry = params.arguments.registry;
                         if (params.arguments.login) {

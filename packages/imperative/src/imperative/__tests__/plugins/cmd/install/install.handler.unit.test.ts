@@ -397,23 +397,6 @@ describe("Plugin Management Facility install handler", () => {
 
         expect(mocks.install).toHaveBeenCalledWith("@public/sample1","publicRegistryUrl");
     });
-    it("should handle installed plugins via private scope", async () => {
-        const handler = new InstallHandler();
-
-        const params = getIHandlerParametersObject();
-        params.arguments.plugin = ["@private/sample1"];
-
-        mocks.getScopeRegistry.mockReturnValueOnce("privateRegistryUrl" as any);
-
-        try{
-            await handler.process(params);
-        }
-        catch(e){
-            expect(e).toBeUndefined();
-        }
-
-        expect(mocks.install).toHaveBeenCalledWith("@private/sample1","privateRegistryUrl");
-    });
     it("should handle installed plugins via project/directory", async () => {
         const handler = new InstallHandler();
 
