@@ -9,18 +9,21 @@
 *
 */
 
-export enum ImperativeUserEvents {
+
+export enum ZoweUserEvents {
     ON_VAULT_CHANGED = "onVaultChanged"
 }
-export enum ImperativeSharedEvents {
+
+export enum ZoweSharedEvents {
     ON_CREDENTIAL_MANAGER_CHANGED = "onCredentialManagerChanged"
 }
 
-export type ImperativeEventType = ImperativeUserEvents | ImperativeSharedEvents;
+export enum EventTypes { ZoweUserEvents, ZoweSharedEvents, SharedEvents, UserEvents }
+
+export type EventCallback = () => void | PromiseLike<void>;
 
 /**
- * TODO:
- * The following list of event types will only be implemented upon request
+ * EXPECTED EVENT LOCATIONS:
  *
  * Shared events:
  *   Global:

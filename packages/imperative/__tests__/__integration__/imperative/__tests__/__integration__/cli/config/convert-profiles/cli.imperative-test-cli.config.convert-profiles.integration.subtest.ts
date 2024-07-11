@@ -30,6 +30,7 @@ describe("imperative-test-cli config convert-profiles", () => {
             testName: "imperative_test_cli_test_config_convert_profiles_command"
         });
         configJsonPath = path.join(process.env.IMPERATIVE_TEST_CLI_CLI_HOME as string, "imperative-test-cli.config.json");
+        // jest.spyOn(EventOperator, "getZoweProcessor").mockReturnValue({emitZoweEvent: jest.fn()} as any);
     });
 
     beforeEach(() => {
