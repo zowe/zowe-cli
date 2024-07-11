@@ -1360,7 +1360,9 @@ describe("TeamConfig ProfileInfo tests", () => {
                 { name: profAttrs.profName, path: profAttrs.profLoc.osLoc?.[0], user: false, global: false },
                 // TODO(zFernand0): Investigate why only the team project is present in the osLoc array
                 //      Possible reason: global layer not loaded by getAllProfiles()
-                // { name: profAttrs.profName, path: profAttrs.profLoc.osLoc?.[0], user: false, global: true }
+                //      ----
+                //      Reseting the loaded configuration in `getZoweDir` may be the root cause.
+                { name: profAttrs.profName, path: profAttrs.profLoc.osLoc?.[0], user: false, global: true }
             ];
             expect(osLocInfo).toBeDefined();
             expect(osLocInfo.length).toBe(expectedObjs.length);

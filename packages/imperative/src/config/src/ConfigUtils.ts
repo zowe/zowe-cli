@@ -50,7 +50,8 @@ export class ConfigUtils {
      * @throws If the extenders.json file cannot be read.
      */
     public static readExtendersJson(): IExtendersJsonOpts {
-        const extenderJsonPath = pathJoin(ConfigUtils.getZoweDir(), "extenders.json");
+        const cliHome = ImperativeConfig.instance.loadedConfig != null ? ImperativeConfig.instance.cliHome : ConfigUtils.getZoweDir();
+        const extenderJsonPath = pathJoin(cliHome, "extenders.json");
         if (!fsExistsSync(extenderJsonPath)) {
             jsonfile.writeFileSync(extenderJsonPath, {
                 profileTypes: {}

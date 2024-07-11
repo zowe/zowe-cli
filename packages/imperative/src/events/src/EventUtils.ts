@@ -17,6 +17,7 @@ import { ConfigUtils } from "../../config/src/ConfigUtils";
 import { IEventDisposable, IEventJson } from "./doc";
 import { Event } from "./Event";
 import { EventProcessor } from "./EventProcessor";
+import { ImperativeConfig } from "../../utilities/src/ImperativeConfig";
 
 /**
  * A collection of helper functions related to event processing, including:
@@ -152,7 +153,7 @@ export class EventUtils {
      * @throws {ImperativeError} If we are unable to create the event file required for event emission.
      */
     public static createEvent(eventName: string, appName: string): Event {
-        const zoweDir = ConfigUtils.getZoweDir();
+        const zoweDir = ImperativeConfig.instance.loadedConfig != null ? ImperativeConfig.instance.cliHome : ConfigUtils.getZoweDir();
         const dir = join(zoweDir, EventUtils.getEventDir(appName));
         this.ensureEventsDirExists(dir);
 
