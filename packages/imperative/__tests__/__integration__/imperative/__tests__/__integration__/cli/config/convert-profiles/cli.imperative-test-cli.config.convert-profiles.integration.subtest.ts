@@ -34,6 +34,7 @@ describe("imperative-test-cli config convert-profiles", () => {
 
     beforeEach(() => {
         fsExtra.copySync(__dirname + "/../../config/__resources__/profiles_secured_and_base", TEST_ENVIRONMENT.workingDir + "/profiles");
+        fsExtra.copySync(__dirname + "/../../config/__resources__/plugins", TEST_ENVIRONMENT.workingDir + "/plugins");
     });
 
     afterEach(() => {

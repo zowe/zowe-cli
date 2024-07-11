@@ -7,6 +7,10 @@ All notable changes to the Imperative package will be documented in this file.
 - BugFix: Resolved bug that resulted in each plug-in to have identical public registries regardless of actual installation location/reference. [#2189](https://github.com/zowe/zowe-cli/pull/2189)
 - BugFix: Resolved bug that resulted in every plug-in to have the same registry location field as the first if multiple plugins were installed in the same command. [#2189](https://github.com/zowe/zowe-cli/pull/2189)
 
+## `8.0.0-next.202407051717`
+
+- BugFix: V3 Breaking: Modified the ConvertV1Profiles.convert API to accept a new ProfileInfo option and initialize components sufficiently to enable VSCode apps to convert V1 profiles. [#2170](https://github.com/zowe/zowe-cli/issues/2170)
+
 ## `8.0.0-next.202407021516`
 
 - BugFix: Updated dependencies for technical currency [#2188](https://github.com/zowe/zowe-cli/pull/2188)
