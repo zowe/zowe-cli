@@ -220,6 +220,16 @@ exports[`zos-jobs submit data-set command should display the help 1`] = `
 exports[`zos-jobs submit data-set command syntax errors should occur if both --wait-for-active and --directory is specified 1`] = `
 "
 Syntax Error:
+No value specified for option:
+--host
+
+This option requires a value of type:
+string
+
+Option Description:
+The z/OSMF server host name.
+
+Syntax Error:
 The following options conflict (mutually exclusive):
 --wait-for-active
 --directory
@@ -236,6 +246,16 @@ Use \\"zowe zos-jobs submit data-set --help\\" to view command description, usag
 
 exports[`zos-jobs submit data-set command syntax errors should occur if both --wait-for-active and --vasc is specified 1`] = `
 "
+Syntax Error:
+No value specified for option:
+--host
+
+This option requires a value of type:
+string
+
+Option Description:
+The z/OSMF server host name.
+
 Syntax Error:
 The following options conflict (mutually exclusive):
 --wait-for-active
@@ -254,6 +274,16 @@ Use \\"zowe zos-jobs submit data-set --help\\" to view command description, usag
 exports[`zos-jobs submit data-set command syntax errors should occur if the data set name is missing 1`] = `
 "
 Syntax Error:
+No value specified for option:
+--host
+
+This option requires a value of type:
+string
+
+Option Description:
+The z/OSMF server host name.
+
+Syntax Error:
 Missing Positional Argument: dataset
 Argument Description: The z/OS data set containing the JCL to submit. You can specify a physical
 sequential data set (for example, \\"DATA.SET\\") or a partitioned data set
@@ -271,6 +301,16 @@ Use \\"zowe zos-jobs submit data-set --help\\" to view command description, usag
 
 exports[`zos-jobs submit data-set command syntax errors should throw an error if extension option passed while directory option wasn't 1`] = `
 "
+Syntax Error:
+No value specified for option:
+--host
+
+This option requires a value of type:
+string
+
+Option Description:
+The z/OSMF server host name.
+
 Syntax Error:
 If you specify the following option:
 --extension

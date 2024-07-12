@@ -49,6 +49,7 @@ export default class ListHandler implements ICommandHandler {
 
         for (const pluginName of Object.keys(installedPlugins).sort((a, b) => a.localeCompare(b))) {
             if (Object.prototype.hasOwnProperty.call(installedPlugins, pluginName)) {
+
                 // Build the console output
                 if (!params.arguments.short) {
                     if (firstTime) {
@@ -61,8 +62,19 @@ export default class ListHandler implements ICommandHandler {
                         `${chalk.red.bold(installedPlugins[pluginName].package)} \n`;
                     listOutput = listOutput + `${chalk.yellow.bold(" -- version: ")}` +
                         `${chalk.red.bold(installedPlugins[pluginName].version)} \n`;
-                    listOutput = listOutput + `${chalk.yellow.bold(" -- location: ")}` +
-                        installedPlugins[pluginName].location + "\n\n";
+
+                    if((installedPlugins[pluginName] as any).registry)
+                    {
+                        listOutput = listOutput + `${chalk.yellow.bold(" -- registry: ")}` +
+                        `${chalk.red.bold((installedPlugins[pluginName] as any).registry)}` + "\n" + `${chalk.red.bold(" -- WARNING: ")}` +
+                        `${chalk.yellow.bold("Above plugin may be invalid or out of date, reinstalling the plugin may be necessary")}`
+                        + "\n\n";
+                    }
+                    else
+                    {
+                        listOutput = listOutput + `${chalk.yellow.bold(" -- location: ")}` +
+                        `${chalk.red.bold(installedPlugins[pluginName].location)}` + "\n\n";
+                    }
                 } else {
                     listOutput += `${chalk.yellow(pluginName)}@${installedPlugins[pluginName].version}\n`;
                 }

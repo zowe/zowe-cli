@@ -212,6 +212,16 @@ exports[`zos-jobs submit uss-file command should display the help 1`] = `
 exports[`zos-jobs submit uss-file command syntax errors should occur if both --wait-for-active and --directory is specified 1`] = `
 "
 Syntax Error:
+No value specified for option:
+--host
+
+This option requires a value of type:
+string
+
+Option Description:
+The z/OSMF server host name.
+
+Syntax Error:
 The following options conflict (mutually exclusive):
 --wait-for-active
 --directory
@@ -228,6 +238,16 @@ Use \\"zowe zos-jobs submit uss-file --help\\" to view command description, usag
 
 exports[`zos-jobs submit uss-file command syntax errors should occur if both --wait-for-active and --vasc is specified 1`] = `
 "
+Syntax Error:
+No value specified for option:
+--host
+
+This option requires a value of type:
+string
+
+Option Description:
+The z/OSMF server host name.
+
 Syntax Error:
 The following options conflict (mutually exclusive):
 --wait-for-active
@@ -246,6 +266,16 @@ Use \\"zowe zos-jobs submit uss-file --help\\" to view command description, usag
 exports[`zos-jobs submit uss-file command syntax errors should occur if the uss file name is missing 1`] = `
 "
 Syntax Error:
+No value specified for option:
+--host
+
+This option requires a value of type:
+string
+
+Option Description:
+The z/OSMF server host name.
+
+Syntax Error:
 Missing Positional Argument: file
 Argument Description: Path to the USS file that contains the JCL to submit.
 
@@ -261,6 +291,16 @@ Use \\"zowe zos-jobs submit uss-file --help\\" to view command description, usag
 
 exports[`zos-jobs submit uss-file command syntax errors should throw an error if extension option passed while directory option wasn't 1`] = `
 "
+Syntax Error:
+No value specified for option:
+--host
+
+This option requires a value of type:
+string
+
+Option Description:
+The z/OSMF server host name.
+
 Syntax Error:
 If you specify the following option:
 --extension

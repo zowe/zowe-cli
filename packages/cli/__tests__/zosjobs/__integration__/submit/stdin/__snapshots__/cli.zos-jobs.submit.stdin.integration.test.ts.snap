@@ -3,6 +3,16 @@
 exports[`zos-jobs submit command Syntax errors should occur if --wfa and --directory are both specified 1`] = `
 "
 Syntax Error:
+No value specified for option:
+--host
+
+This option requires a value of type:
+string
+
+Option Description:
+The z/OSMF server host name.
+
+Syntax Error:
 The following options conflict (mutually exclusive):
 --wait-for-active
 --directory
@@ -19,6 +29,16 @@ Use \\"zowe zos-jobs submit stdin --help\\" to view command description, usage, 
 
 exports[`zos-jobs submit command Syntax errors should occur if --wfa and --vasc are both specified 1`] = `
 "
+Syntax Error:
+No value specified for option:
+--host
+
+This option requires a value of type:
+string
+
+Option Description:
+The z/OSMF server host name.
+
 Syntax Error:
 The following options conflict (mutually exclusive):
 --wait-for-active
