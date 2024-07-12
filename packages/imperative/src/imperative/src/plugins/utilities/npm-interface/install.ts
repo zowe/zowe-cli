@@ -26,7 +26,7 @@ import { UpdateImpConfig } from "../../../UpdateImpConfig";
 import { CredentialManagerOverride, ICredentialManagerNameMap } from "../../../../../security";
 import { IProfileTypeConfiguration } from "../../../../../profiles";
 import * as semver from "semver";
-import { ProfileInfo } from "../../../../../config";
+import { ConfigUtils } from "../../../../../config";
 import { IExtendersJsonOpts } from "../../../../../config/src/doc/IExtenderOpts";
 
 // Helper function to update extenders.json object during plugin install.
@@ -188,7 +188,7 @@ export async function install(packageLocation: string, registry: string, install
                     // Only update global schema if we were able to load it from disk
                     if (loadedSchema != null) {
                         const existingTypes = loadedSchema.map((obj) => obj.type);
-                        const extendersJson = ProfileInfo.readExtendersJsonFromDisk();
+                        const extendersJson = ConfigUtils.readExtendersJson();
 
                         // Determine new profile types to add to schema
                         let shouldUpdate = false;
@@ -212,7 +212,7 @@ export async function install(packageLocation: string, registry: string, install
 
                         if (shouldUpdate) {
                             // Update extenders.json (if necessary) after installing the plugin
-                            ProfileInfo.writeExtendersJson(extendersJson);
+                            ConfigUtils.writeExtendersJson(extendersJson);
                         }
                         const schema = ConfigSchema.buildSchema(loadedSchema);
                         ConfigSchema.updateSchema({ layer: "global", schema });
