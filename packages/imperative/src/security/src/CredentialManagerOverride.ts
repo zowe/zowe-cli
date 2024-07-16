@@ -16,7 +16,8 @@ import { ICredentialManagerNameMap } from "./doc/ICredentialManagerNameMap";
 import { ImperativeConfig } from "../../utilities";
 import { ImperativeError } from "../../error";
 import { ISettingsFile } from "../../settings/src/doc/ISettingsFile";
-import { ImperativeEventEmitter, ImperativeSharedEvents } from "../../events";
+import { ZoweSharedEvents } from "../../events";
+import { EventOperator } from "../../events/src/EventOperator";
 
 /**
  * This class provides access to the known set of credential manager overrides
@@ -148,7 +149,7 @@ export class CredentialManagerOverride {
         settings.json.overrides.CredentialManager = newCredMgrName;
         try {
             writeJsonSync(settings.fileName, settings.json, {spaces: 2});
-            ImperativeEventEmitter.instance.emitEvent(ImperativeSharedEvents.ON_CREDENTIAL_MANAGER_CHANGED);
+            EventOperator.getZoweProcessor().emitZoweEvent(ZoweSharedEvents.ON_CREDENTIAL_MANAGER_CHANGED);
         } catch (error) {
             throw new ImperativeError({
                 msg: "Unable to write settings file = " + settings.fileName +
@@ -203,7 +204,7 @@ export class CredentialManagerOverride {
         settings.json.overrides.CredentialManager = this.DEFAULT_CRED_MGR_NAME;
         try {
             writeJsonSync(settings.fileName, settings.json, {spaces: 2});
-            ImperativeEventEmitter.instance.emitEvent(ImperativeSharedEvents.ON_CREDENTIAL_MANAGER_CHANGED);
+            EventOperator.getZoweProcessor().emitZoweEvent(ZoweSharedEvents.ON_CREDENTIAL_MANAGER_CHANGED);
         } catch (error) {
             throw new ImperativeError({
                 msg: "Unable to write settings file = " + settings.fileName +

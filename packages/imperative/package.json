@@ -1,6 +1,6 @@
 {
   "name": "@zowe/imperative",
-  "version": "8.0.0-next.202407051717",
+  "version": "8.0.0-next.202407112150",
   "description": "framework for building configurable CLIs",
   "author": "Zowe",
   "license": "EPL-2.0",
@@ -94,7 +94,7 @@
     "@types/pacote": "^11.1.8",
     "@types/progress": "^2.0.7",
     "@types/stack-trace": "^0.0.33",
-    "@zowe/secrets-for-zowe-sdk": "8.0.0-next.202407051717",
+    "@zowe/secrets-for-zowe-sdk": "8.0.0-next.202407112150",
     "concurrently": "^8.0.0",
     "cowsay": "^1.6.0",
     "deep-diff": "^1.0.0",

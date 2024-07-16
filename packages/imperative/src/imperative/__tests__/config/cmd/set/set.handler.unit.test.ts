@@ -9,7 +9,7 @@
 *
 */
 
-import { IHandlerParameters, ImperativeEventEmitter } from "../../../../..";
+import { IHandlerParameters } from "../../../../../cmd";
 import { Config } from "../../../../../config/src/Config";
 import { IConfigOpts } from "../../../../../config";
 import { ImperativeConfig } from "../../../../../utilities";
@@ -25,9 +25,7 @@ import * as path from "path";
 import * as lodash from "lodash";
 import * as fs from "fs";
 import { setupConfigToLoad } from "../../../../../../__tests__/src/TestUtil";
-
-jest.mock("../../../../../events/src/ImperativeEventEmitter");
-
+import { EventOperator, EventUtils } from "../../../../../events";
 
 const getIHandlerParametersObject = (): IHandlerParameters => {
     const x: any = {
@@ -98,7 +96,6 @@ describe("Configuration Set command handler", () => {
     };
 
     beforeAll( async() => {
-        Object.defineProperty(ImperativeEventEmitter, "instance", { value: { emitEvent: jest.fn() }, configurable: true});
         keytarGetPasswordSpy = jest.spyOn(keytar, "getPassword");
         keytarSetPasswordSpy = jest.spyOn(keytar, "setPassword");
         keytarDeletePasswordSpy = jest.spyOn(keytar, "deletePassword");
@@ -119,6 +116,9 @@ describe("Configuration Set command handler", () => {
         keytarGetPasswordSpy = jest.spyOn(keytar, "getPassword");
         keytarSetPasswordSpy = jest.spyOn(keytar, "setPassword");
         keytarDeletePasswordSpy = jest.spyOn(keytar, "deletePassword");
+
+        jest.spyOn(EventUtils, "validateAppName").mockImplementation(jest.fn());
+        jest.spyOn(EventOperator, "getZoweProcessor").mockReturnValue({emitZoweEvent: jest.fn()} as any);
     });
 
     afterEach( () => {
@@ -623,8 +623,8 @@ describe("Configuration Set command handler", () => {
         expect(keytarGetPasswordSpy).toHaveBeenCalledTimes(1); // No pre-existing secure values, only the combine
         expect(keytarSetPasswordSpy).toHaveBeenCalledTimes(1);
         expect(keytarSetPasswordSpy).toHaveBeenCalledWith("Zowe", "secure_config_props", fakeSecureDataExpected);
-        expect(writeFileSyncSpy).toHaveBeenCalledTimes(1);
         expect(writeFileSyncSpy).toHaveBeenNthCalledWith(1, fakeGblProjUserPath, JSON.stringify(compObj, null, 4)); // Config
+        expect(writeFileSyncSpy).toHaveBeenCalledTimes(1);
     });
 
     it("should allow you to define an insecure property and add it to the project configuration while keeping other secure props", async () => {

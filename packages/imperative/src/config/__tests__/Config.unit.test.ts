@@ -20,8 +20,6 @@ import * as JSONC from "comment-json";
 import { ConfigLayers, ConfigSecure } from "../src/api";
 
 
-jest.mock("../../events/src/ImperativeEventEmitter");
-
 const MY_APP = "my_app";
 
 describe("Config tests", () => {
