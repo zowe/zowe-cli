@@ -131,7 +131,7 @@ export class ConfigAutoStore {
     public static async _storeSessCfgProps(opts: IConfigAutoStoreStoreSessCfgPropsOpts): Promise<void> {
         const config = opts.config || ImperativeConfig.instance.config;
         // TODO Which autoStore value should take priority if it conflicts between layers
-        if (opts.propsToStore.length == 0 || !config?.exists || !config.properties.autoStore) {
+        if (opts.propsToStore.length == 0 || !config?.exists || config.properties.autoStore === false) {
             return;
         }
 
