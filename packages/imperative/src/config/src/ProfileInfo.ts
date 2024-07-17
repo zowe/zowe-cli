@@ -218,7 +218,8 @@ export class ProfileInfo {
                 }
             }
             updated = await this.updateKnownProperty({ ...options, mergedArgs, osLocInfo: this.getOsLocInfo(desiredProfile)?.[0] });
-        } else if (!(this.usingTeamConfig && options.profileType == null && this.getTeamConfig().api.profiles.exists(options.profileName))) {
+        } else if (!(this.usingTeamConfig && options.profileType == null &&
+            (options.forceUpdate || this.getTeamConfig().api.profiles.exists(options.profileName)))) {
             throw new ProfInfoErr({
                 errorCode: ProfInfoErr.PROF_NOT_FOUND,
                 msg: `Failed to find profile ${options.profileName} of type ${options.profileType}`

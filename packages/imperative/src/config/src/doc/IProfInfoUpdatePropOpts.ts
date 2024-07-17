@@ -20,7 +20,7 @@ export interface IProfInfoUpdatePropOpts extends IProfInfoUpdatePropCommonOpts {
     /**
      * Type of the active profile
      */
-    profileType: string;
+    profileType: string | null;
 
     /**
      * Name of the active profile

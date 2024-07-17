@@ -541,8 +541,7 @@ describe("ConfigAutoStore tests", () => {
         it("should do nothing if no active profile is found", async () => {
             await setupConfigToLoad({
                 profiles: {},
-                defaults: {},
-                autoStore: true
+                defaults: {}
             });
             ImperativeConfig.instance.config.save = jest.fn();
 
