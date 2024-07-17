@@ -173,16 +173,6 @@ exports[`zos-jobs list spool-files-by-jobid command should display the help 1`] 
 exports[`zos-jobs list spool-files-by-jobid command syntax should detect a missing jobid 1`] = `
 "
 Syntax Error:
-No value specified for option:
---host
-
-This option requires a value of type:
-string
-
-Option Description:
-The z/OSMF server host name.
-
-Syntax Error:
 Missing Positional Argument: jobid
 Argument Description: The z/OS JOBID of the job with the spool files you want to list. No
 pre-validation of the JOBID is performed.

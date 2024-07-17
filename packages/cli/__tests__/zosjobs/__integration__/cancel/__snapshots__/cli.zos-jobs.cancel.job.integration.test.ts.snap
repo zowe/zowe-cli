@@ -3,16 +3,6 @@
 exports[`zos-jobs cancel job command should display an error when jobid is missing 1`] = `
 "
 Syntax Error:
-No value specified for option:
---host
-
-This option requires a value of type:
-string
-
-Option Description:
-The z/OSMF server host name.
-
-Syntax Error:
 Missing Positional Argument: jobid
 Argument Description: The job ID (e.g. JOB00123) of the job. Job ID is a unique identifier for z/OS
 batch jobs -- no two jobs on one system can have the same ID. Note: z/OS allows

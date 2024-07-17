@@ -5,14 +5,13 @@ exports[`imperative-test-cli config list should list the configuration 1`] = `
   secured: 
     type:       secured
     properties: 
-      info: 
     secure: 
       (empty array)
   base: 
     type:       base
     properties: 
     secure: 
-      - secret
+      (empty array)
 defaults: 
   secured: secured
   base:    base
@@ -22,18 +21,16 @@ autoStore: true
 
 exports[`imperative-test-cli config list should list the configuration without showing secure values 1`] = `
 "profiles: 
+  base: 
+    properties: 
+    secure: 
+      - secret
+    type:       base
   secured: 
     type:       secured
     properties: 
-      info: 
     secure: 
       (empty array)
-  base: 
-    type:       base
-    properties: 
-      secret: (secure value)
-    secure: 
-      - secret
 defaults: 
   secured: secured
   base:    base
@@ -51,14 +48,13 @@ exports[`imperative-test-cli config list should list the profiles configuration 
 "secured: 
   type:       secured
   properties: 
-    info: 
   secure: 
     (empty array)
 base: 
   type:       base
   properties: 
   secure: 
-    - secret
+    (empty array)
 "
 `;
 

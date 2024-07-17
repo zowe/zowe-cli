@@ -13,16 +13,6 @@ Option Description:
 Only delete jobs with job names that match this prefix. Defaults to deleting all
 jobs owned by your user ID that are in output status.
 
-Syntax Error:
-No value specified for option:
---host
-
-This option requires a value of type:
-string
-
-Option Description:
-The z/OSMF server host name.
-
 Example:
 
  - Delete all of your jobs in output status with a job name starting with

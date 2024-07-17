@@ -3,16 +3,6 @@
 exports[`zos-jobs download output command should display an error when binary and record are both specified 1`] = `
 "
 Syntax Error:
-No value specified for option:
---host
-
-This option requires a value of type:
-string
-
-Option Description:
-The z/OSMF server host name.
-
-Syntax Error:
 The following options conflict (mutually exclusive):
 --record
 --binary
@@ -30,16 +20,6 @@ Use \\"zowe zos-jobs download output --help\\" to view command description, usag
 
 exports[`zos-jobs download output command should display an error when jobid is missing 1`] = `
 "
-Syntax Error:
-No value specified for option:
---host
-
-This option requires a value of type:
-string
-
-Option Description:
-The z/OSMF server host name.
-
 Syntax Error:
 Missing Positional Argument: jobid
 Argument Description: The z/OS JOBID of the job containing the spool files you want to view. No
