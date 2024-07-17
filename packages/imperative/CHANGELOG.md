@@ -6,6 +6,16 @@ All notable changes to the Imperative package will be documented in this file.
 
 - Enhancement: Added the function ConfigUtils.formGlobOrProjProfileNm and modified the function ConfigBuilder.build so that the 'zowe config init' command now generates a base profile name of 'global_base' or 'project_base', depending on whether a global or project configuration file is being generated. Related to Zowe Explorer issue https://github.com/zowe/zowe-explorer-vscode/issues/2682.
 
+## `8.0.0-next.202407112150`
+
+- Enhancement: Add client-side custom-event handling capabilities. [#2136](https://github.com/zowe/zowe-cli/pull/2136)
+- Next-Breaking: Refactored the Imperative Event Emitter class. [#2136](https://github.com/zowe/zowe-cli/pull/2136)
+  - Removed the `ImperativeEventEmitter` class.
+  - Added an `EventProcessor` class to handle event listening and emitting.
+  - Added an `EventOperator` class to handle creation and deletion of `EventProcessors`.
+  - Added an `EventUtils` class to contain all common utility methods for the Client Event Handling capabilities.
+  - Added `IEmitter`, `IWatcher`, and `IEmitterAndWatcher` interfaces to expose what application developers should see.
+
 ## `8.0.0-next.202407051717`
 
 - BugFix: V3 Breaking: Modified the ConvertV1Profiles.convert API to accept a new ProfileInfo option and initialize components sufficiently to enable VSCode apps to convert V1 profiles. [#2170](https://github.com/zowe/zowe-cli/issues/2170)
@@ -84,7 +94,7 @@ All notable changes to the Imperative package will be documented in this file.
 
 ## `8.0.0-next.202405151329`
 
-- Enhancement: Add client-side event handling capabilities. [#1987](https://github.com/zowe/zowe-cli/pull/1987)
+- Enhancement: Add client-side event handling capabilities. [#1987](https://github.com/zowe/zowe-cli/issues/1987)
 
 ## `8.0.0-next.202405061946`
 

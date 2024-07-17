@@ -10,12 +10,20 @@
 */
 
 import * as fs from "fs";
-
+import * as path from "path";
+import * as os from "os";
+import * as jsonfile from "jsonfile";
 import { ConfigUtils } from "../../config/src/ConfigUtils";
 import { CredentialManagerFactory } from "../../security";
 import { ImperativeConfig } from "../../utilities";
+import { EnvironmentalVariableSettings } from "../../imperative/src/env/EnvironmentalVariableSettings";
+import { IExtendersJsonOpts } from "../src/doc/IExtenderOpts";
 
 describe("Config Utils", () => {
+    afterEach(() => {
+        jest.restoreAllMocks();
+    });
+
     describe("coercePropValue", () => {
         it("should parse value when type is boolean", () => {
             expect(ConfigUtils.coercePropValue("false", "boolean")).toBe(false);
@@ -248,6 +256,114 @@ describe("Config Utils", () => {
 
             const baseProfileName = ConfigUtils.formGlobOrProjProfileNm("base");
             expect(baseProfileName).toEqual("project_base");
+        });
+    });
+
+    describe("getZoweDir", () => {
+        const expectedLoadedConfig = {
+            name: "zowe",
+            defaultHome: path.join("z", "zowe"),
+            envVariablePrefix: "ZOWE"
+        };
+        let defaultHome: string;
+        let envReadSpy: any;
+        let homeDirSpy: any;
+        let loadedConfigOrig: any;
+
+        beforeAll(() => {
+            loadedConfigOrig = ImperativeConfig.instance.loadedConfig;
+        });
+
+        beforeEach(() => {
+            envReadSpy = jest.spyOn(EnvironmentalVariableSettings, "read").mockReturnValue({
+                cliHome: { value: null }
+            } as any);
+            homeDirSpy = jest.spyOn(os, "homedir").mockReturnValue(expectedLoadedConfig.defaultHome);
+            ImperativeConfig.instance.loadedConfig = undefined as any;
+            defaultHome = path.join(expectedLoadedConfig.defaultHome, ".zowe");
+        });
+
+        afterAll(() => {
+            ImperativeConfig.instance.loadedConfig = loadedConfigOrig;
+            envReadSpy.mockRestore();
+            homeDirSpy.mockRestore();
+        });
+
+        it("should return the ENV cliHome even if loadedConfig is set in the process", () => {
+            jest.spyOn(EnvironmentalVariableSettings, "read").mockReturnValue({ cliHome: { value: "test" } } as any);
+            expect(ImperativeConfig.instance.loadedConfig).toBeUndefined();
+            expect(ConfigUtils.getZoweDir()).toEqual("test");
+            expect(ImperativeConfig.instance.loadedConfig).toEqual({ ...expectedLoadedConfig, defaultHome });
+        });
+
+        it("should return the defaultHome and set loadedConfig if undefined", () => {
+            expect(ImperativeConfig.instance.loadedConfig).toBeUndefined();
+            expect(ConfigUtils.getZoweDir()).toEqual(defaultHome);
+            expect(ImperativeConfig.instance.loadedConfig).toEqual({ ...expectedLoadedConfig, defaultHome });
+        });
+
+        it("should return the defaultHome and reset loadedConfig if defaultHome changes", () => {
+            expect(ImperativeConfig.instance.loadedConfig).toBeUndefined();
+            ImperativeConfig.instance.loadedConfig = { ...expectedLoadedConfig, defaultHome: "test" };
+            expect(ImperativeConfig.instance.loadedConfig?.defaultHome).toEqual("test");
+            expect(ConfigUtils.getZoweDir()).toEqual(defaultHome);
+            expect(ImperativeConfig.instance.loadedConfig).toEqual({ ...expectedLoadedConfig, defaultHome });
+        });
+
+        it("should return the defaultHome without resetting loadedConfig", () => {
+            expect(ImperativeConfig.instance.loadedConfig).toBeUndefined();
+            ImperativeConfig.instance.loadedConfig = expectedLoadedConfig;
+            expect(ConfigUtils.getZoweDir()).toEqual(defaultHome);
+            expect(ImperativeConfig.instance.loadedConfig).toEqual({ ...expectedLoadedConfig, defaultHome });
+        });
+    });
+
+    const dummyExtJson: IExtendersJsonOpts = {
+        profileTypes: {
+            "test": {
+                from: ["Zowe Client App"]
+            }
+        }
+    };
+    describe("readExtendersJsonFromDisk", () => {
+        // case 1: the JSON file doesn't exist at time of read
+        it("writes an empty extenders.json file if it doesn't exist on disk", async () => {
+            const writeFileSyncMock = jest.spyOn(jsonfile, "writeFileSync").mockImplementation();
+            jest.spyOn(fs, "existsSync").mockReturnValueOnce(false);
+            ConfigUtils.readExtendersJson();
+            expect(writeFileSyncMock).toHaveBeenCalled();
+        });
+
+        // case 2: JSON file exists on-disk at time of read
+        it("reads extenders.json from disk if it exists", async () => {
+            const readFileSyncMock = jest.spyOn(jsonfile, "readFileSync").mockReturnValueOnce(dummyExtJson);
+            jest.spyOn(fs, "existsSync").mockReturnValueOnce(true);
+            const result = ConfigUtils.readExtendersJson();
+            expect(readFileSyncMock).toHaveBeenCalled();
+            expect(result).toEqual({
+                profileTypes: {
+                    "test": {
+                        from: ["Zowe Client App"]
+                    }
+                }
+            });
+        });
+    });
+
+    describe("writeExtendersJson", () => {
+        // case 1: Write operation is successful
+        it("returns true if written to disk successfully", async () => {
+            const writeFileSyncMock = jest.spyOn(jsonfile, "writeFileSync").mockImplementation();
+            expect(ConfigUtils.writeExtendersJson(dummyExtJson)).toBe(true);
+            expect(writeFileSyncMock).toHaveBeenCalled();
+        });
+
+        // case 2: Write operation is unsuccessful
+        it("returns false if it couldn't write to disk", async () => {
+            const writeFileSyncMock = jest.spyOn(jsonfile, "writeFileSync").mockImplementation();
+            writeFileSyncMock.mockImplementation(() => { throw new Error(); });
+            expect(ConfigUtils.writeExtendersJson(dummyExtJson)).toBe(false);
+            expect(writeFileSyncMock).toHaveBeenCalled();
         });
     });
 });

@@ -12,6 +12,7 @@
 import { homedir as osHomedir } from "os";
 import { normalize as pathNormalize, join as pathJoin } from "path";
 import { existsSync as fsExistsSync } from "fs";
+import * as jsonfile from "jsonfile";
 
 import { CredentialManagerFactory } from "../../security/src/CredentialManagerFactory";
 import { ICommandArguments } from "../../cmd";
@@ -22,9 +23,62 @@ import { LoggingConfigurer } from "../../imperative/src/LoggingConfigurer";
 import { Logger } from "../../logger/src/Logger";
 import { EnvironmentalVariableSettings } from "../../imperative/src/env/EnvironmentalVariableSettings";
 import { IConfigProfile } from "./doc/IConfigProfile";
-
+import { IExtendersJsonOpts } from "./doc/IExtenderOpts";
 
 export class ConfigUtils {
+    /**
+     * Retrieves the Zowe CLI home directory. In the situation Imperative has
+     * not initialized it we use a default value.
+     * @returns {string} - Returns the Zowe home directory
+     */
+    public static getZoweDir(): string {
+        const defaultHome = pathJoin(osHomedir(), ".zowe");
+        if (ImperativeConfig.instance.loadedConfig?.defaultHome !== defaultHome) {
+            ImperativeConfig.instance.loadedConfig = {
+                name: "zowe",
+                defaultHome,
+                envVariablePrefix: "ZOWE"
+            };
+        }
+        return ImperativeConfig.instance.cliHome;
+    }
+
+    /**
+     * Reads the `extenders.json` file from the CLI home directory.
+     * Called once in `readProfilesFromDisk` and cached to minimize I/O operations.
+     * @internal
+     * @throws If the extenders.json file cannot be created when it does not exist.
+     * @throws If the extenders.json file cannot be read.
+     */
+    public static readExtendersJson(): IExtendersJsonOpts {
+        const cliHome = ImperativeConfig.instance.loadedConfig != null ? ImperativeConfig.instance.cliHome : ConfigUtils.getZoweDir();
+        const extenderJsonPath = pathJoin(cliHome, "extenders.json");
+        if (!fsExistsSync(extenderJsonPath)) {
+            jsonfile.writeFileSync(extenderJsonPath, {
+                profileTypes: {}
+            }, { spaces: 4 });
+            return { profileTypes: {} };
+        } else {
+            return jsonfile.readFileSync(extenderJsonPath);
+        }
+    }
+
+    /**
+     * Attempts to write to the `extenders.json` file in the CLI home directory.
+     * @returns `true` if written successfully; `false` otherwise
+     * @internal
+     */
+    public static writeExtendersJson(obj: IExtendersJsonOpts): boolean {
+        try {
+            const extenderJsonPath = pathJoin(ConfigUtils.getZoweDir(), "extenders.json");
+            jsonfile.writeFileSync(extenderJsonPath, obj, { spaces: 4 });
+        } catch (err) {
+            return false;
+        }
+
+        return true;
+    }
+
     /**
      * Coerces string property value to a boolean or number type.
      * @param value String value
