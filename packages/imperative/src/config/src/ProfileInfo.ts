@@ -203,25 +203,29 @@ export class ProfileInfo {
      */
     public async updateProperty(options: IProfInfoUpdatePropOpts): Promise<void> {
         this.ensureReadFromDisk();
-        const desiredProfile = this.getAllProfiles(options.profileType).find(v => v.profName === options.profileName);
-        if (desiredProfile == null) {
+        const desiredProfile = options.profileType != null ?
+            this.getAllProfiles(options.profileType).find(v => v.profName === options.profileName) : null;
+        let updated = false;
+        if (desiredProfile != null) {
+            const mergedArgs = this.mergeArgsForProfile(desiredProfile, { getSecureVals: false });
+            if (options.forceUpdate && this.usingTeamConfig) {
+                const knownProperty = mergedArgs.knownArgs.find((v => v.argName === options.property));
+                if (knownProperty != null) {
+                    const profPath = this.getTeamConfig().api.profiles.getProfilePathFromName(options.profileName);
+                    if (!ConfigUtils.jsonPathMatches(knownProperty.argLoc.jsonLoc, profPath)) {
+                        knownProperty.argLoc.jsonLoc = `${profPath}.properties.${options.property}`;
+                    }
+                }
+            }
+            updated = await this.updateKnownProperty({ ...options, mergedArgs, osLocInfo: this.getOsLocInfo(desiredProfile)?.[0] });
+        } else if (!(this.usingTeamConfig && options.profileType == null && this.getTeamConfig().api.profiles.exists(options.profileName))) {
             throw new ProfInfoErr({
                 errorCode: ProfInfoErr.PROF_NOT_FOUND,
                 msg: `Failed to find profile ${options.profileName} of type ${options.profileType}`
             });
         }
 
-        const mergedArgs = this.mergeArgsForProfile(desiredProfile, { getSecureVals: false });
-        if (options.forceUpdate && this.usingTeamConfig) {
-            const knownProperty = mergedArgs.knownArgs.find((v => v.argName === options.property));
-            if (knownProperty != null) {
-                const profPath = this.getTeamConfig().api.profiles.getProfilePathFromName(options.profileName);
-                if (!ConfigUtils.jsonPathMatches(knownProperty.argLoc.jsonLoc, profPath)) {
-                    knownProperty.argLoc.jsonLoc = `${profPath}.properties.${options.property}`;
-                }
-            }
-        }
-        if (!(await this.updateKnownProperty({ ...options, mergedArgs, osLocInfo: this.getOsLocInfo(desiredProfile)?.[0] }))) {
+        if (!updated) {
             if (this.usingTeamConfig) {
                 // Check to see if loadedConfig already contains the schema for the specified profile type
                 if (ImperativeConfig.instance.loadedConfig?.profiles?.find(p => p.type === options.profileType)?.schema == null ||
