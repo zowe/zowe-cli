@@ -994,8 +994,7 @@ describe("ConnectionPropsForSessCfg tests", () => {
                     secure: ["host"]
                 }
             },
-            defaults: { fruit: "mango" },
-            autoStore: false
+            defaults: { fruit: "mango" }
         });
 
         const sessCfgWithConnProps: ISession = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
@@ -1063,8 +1062,7 @@ describe("ConnectionPropsForSessCfg tests", () => {
                     secure: ["host"]
                 }
             },
-            defaults: { fruit: "mango", base: "fruit" },
-            autoStore: false
+            defaults: { fruit: "mango", base: "fruit" }
         });
 
         const sessCfgWithConnProps: ISession = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
