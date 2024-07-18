@@ -8,14 +8,19 @@ exports[`imperative-test-cli config list should list the configuration 1`] = `
       info: 
     secure: 
       (empty array)
-  base: 
+  project_base: 
+    type:       base
+    properties: 
+    secure: 
+      - secret
+  global_base: 
     type:       base
     properties: 
     secure: 
       - secret
 defaults: 
   secured: secured
-  base:    base
+  base:    project_base
 autoStore: true
 "
 `;
@@ -28,22 +33,27 @@ exports[`imperative-test-cli config list should list the configuration without s
       info: 
     secure: 
       (empty array)
-  base: 
+  project_base: 
     type:       base
     properties: 
       secret: (secure value)
     secure: 
       - secret
+  global_base: 
+    type:       base
+    properties: 
+    secure: 
+      - secret
 defaults: 
   secured: secured
-  base:    base
+  base:    project_base
 autoStore: true
 "
 `;
 
 exports[`imperative-test-cli config list should list the defaults configuration property 1`] = `
 "secured: secured
-base:    base
+base:    project_base
 "
 `;
 
@@ -54,7 +64,12 @@ exports[`imperative-test-cli config list should list the profiles configuration 
     info: 
   secure: 
     (empty array)
-base: 
+project_base: 
+  type:       base
+  properties: 
+  secure: 
+    - secret
+global_base: 
   type:       base
   properties: 
   secure: 

@@ -2,6 +2,7 @@
 
 exports[`Imperative Secure Tests imperative-test-cli config profiles should list profiles 1`] = `
 "secured
-base
+project_base
+global_base
 "
 `;

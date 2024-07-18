@@ -158,6 +158,107 @@ describe("Config Utils", () => {
         });
     });
 
+    describe("formGlobOrProjProfileNm", () => {
+        afterEach(() => {
+            /* zzz
+            jest.restoreAllMocks(); // restore spies
+            jest.clearAllMocks();   // set counts back to zero
+            */
+        });
+
+        it("should return the type name if the type is not base", () => {
+            const baseProfileName = ConfigUtils.formGlobOrProjProfileNm("zosmf", false);
+            expect(baseProfileName).toEqual("zosmf");
+        });
+
+        it("should return a project base profile name when asked", () => {
+            const baseProfileName = ConfigUtils.formGlobOrProjProfileNm("base", false);
+            expect(baseProfileName).toEqual("project_base");
+        });
+
+        it("should return a global base profile name when asked", () => {
+            const baseProfileName = ConfigUtils.formGlobOrProjProfileNm("base", true);
+            expect(baseProfileName).toEqual("global_base");
+        });
+
+        it("should return a global base profile name when no project layer exists", () => {
+            jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({
+                config: {
+                    exists: true,
+                    layers: [
+                        {
+                            path: "fakePath",
+                            exists: true,
+                            properties: {},
+                            global: true,
+                            user: false
+                        }
+                    ]
+                }
+            } as any);
+
+            const baseProfileName = ConfigUtils.formGlobOrProjProfileNm("base");
+            expect(baseProfileName).toEqual("global_base");
+        });
+
+        it("should return a global base profile name when no base type in nested profiles", () => {
+            jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({
+                config: {
+                    exists: true,
+                    layers: [
+                        {
+                            path: "fakePath",
+                            exists: true,
+                            properties: {},
+                            global: false,
+                            user: false
+                        }
+                    ],
+                    layerProfiles: jest.fn(() => {
+                        return {
+                            properties: {}
+                        };
+                    })
+                }
+            } as any);
+
+            const baseProfileName = ConfigUtils.formGlobOrProjProfileNm("base");
+            expect(baseProfileName).toEqual("global_base");
+        });
+
+        it("should return a project base profile name when found in nested profiles", () => {
+            jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({
+                config: {
+                    exists: true,
+                    layers: [
+                        {
+                            path: "fakePath",
+                            exists: true,
+                            properties: {},
+                            global: false,
+                            user: false
+                        }
+                    ],
+                    layerProfiles: jest.fn(() => {
+                        return {
+                            properties: {
+                                profiles: {
+                                    profiles: {
+                                        properties: {},
+                                        type: "base"
+                                    }
+                                }
+                            }
+                        };
+                    })
+                }
+            } as any);
+
+            const baseProfileName = ConfigUtils.formGlobOrProjProfileNm("base");
+            expect(baseProfileName).toEqual("project_base");
+        });
+    });
+
     describe("getZoweDir", () => {
         const expectedLoadedConfig = {
             name: "zowe",

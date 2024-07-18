@@ -12,9 +12,12 @@
 import { ITestEnvironment } from "../../../../../../../__src__/environment/doc/response/ITestEnvironment";
 import { SetupTestEnvironment } from "../../../../../../../__src__/environment/SetupTestEnvironment";
 import { runCliScript } from "../../../../../../../src/TestUtil";
-import { expectedConfigObject, expectedUserConfigObject } from "../__resources__/expectedObjects";
+import {
+    expectedGlobalConfigObject, expectedGlobalUserConfigObject,
+    expectedProjectConfigObject, expectedProjectUserConfigObject
+} from "../__resources__/expectedObjects";
 import * as fs from "fs";
-import { keyring as keytar } from "@zowe/secrets-for-zowe-sdk";
+import { keyring } from "@zowe/secrets-for-zowe-sdk";
 import * as path from "path";
 import * as lodash from "lodash";
 import { IConfigProfile } from "../../../../../../../../src";
@@ -24,18 +27,28 @@ let TEST_ENVIRONMENT: ITestEnvironment;
 
 describe("imperative-test-cli config secure", () => {
     const service = "imperative-test-cli";
-    let expectedProjectConfigLocation: string;
-    let expectedUserConfigLocation: string;
-    let expectedGlobalProjectConfigLocation: string;
+    let expectedGlobalConfigLocation: string;
     let expectedGlobalUserConfigLocation: string;
+    let expectedProjectConfigLocation: string;
+    let expectedProjectUserConfigLocation: string;
 
-    const expectedJson = lodash.cloneDeep(expectedConfigObject);
-    delete expectedJson.$schema;
-    expectedJson.profiles.base.properties.secret = "(secure value)";
-    expectedJson.profiles.base.secure = ["secret"];
+    const expectedGlobalConfig = lodash.cloneDeep(expectedGlobalConfigObject);
+    delete expectedGlobalConfig.$schema;
+    expectedGlobalConfig.profiles.global_base.properties.secret = "(secure value)";
+    expectedGlobalConfig.profiles.global_base.secure = ["secret"];
 
-    const expectedUserJson = lodash.cloneDeep(expectedUserConfigObject);
-    delete expectedUserJson.$schema;
+    const expectedGlobalUserConfig = lodash.cloneDeep(expectedGlobalUserConfigObject);
+    delete expectedGlobalUserConfig.$schema;
+    expectedGlobalUserConfig.profiles.global_base.secure = []; // config-init creates user base profiles with an empty secure array
+
+    const expectedProjectConfig = lodash.cloneDeep(expectedProjectConfigObject);
+    delete expectedProjectConfig.$schema;
+    expectedProjectConfig.profiles.project_base.properties.secret = "(secure value)";
+    expectedProjectConfig.profiles.project_base.secure = ["secret"];
+
+    const expectedProjectUserConfig = lodash.cloneDeep(expectedProjectUserConfigObject);
+    delete expectedProjectUserConfig.$schema;
+    expectedProjectUserConfig.profiles.project_base.secure = []; // config-init creates user base profiles with an empty secure array
 
     // Create the test environment
     beforeAll(async () => {
@@ -44,15 +57,15 @@ describe("imperative-test-cli config secure", () => {
             testName: "imperative_test_cli_test_config_secure_command"
         });
         expectedGlobalUserConfigLocation = path.join(TEST_ENVIRONMENT.workingDir, "imperative-test-cli.config.user.json");
-        expectedGlobalProjectConfigLocation = path.join(TEST_ENVIRONMENT.workingDir, "imperative-test-cli.config.json");
-        expectedUserConfigLocation = path.join(TEST_ENVIRONMENT.workingDir, "test", "imperative-test-cli.config.user.json");
+        expectedGlobalConfigLocation = path.join(TEST_ENVIRONMENT.workingDir, "imperative-test-cli.config.json");
+        expectedProjectUserConfigLocation = path.join(TEST_ENVIRONMENT.workingDir, "test", "imperative-test-cli.config.user.json");
         expectedProjectConfigLocation = path.join(TEST_ENVIRONMENT.workingDir, "test", "imperative-test-cli.config.json");
     });
 
     afterEach(async () => {
         runCliScript(__dirname + "/../__scripts__/delete_configs.sh", TEST_ENVIRONMENT.workingDir,
             ["-rf imperative-test-cli.config.user.json imperative-test-cli.config.json test schema.json"]);
-        await keytar.deletePassword(service, "secure_config_props");
+        await keyring.deletePassword(service, "secure_config_props");
     });
 
     afterAll(() => {
@@ -71,62 +84,62 @@ describe("imperative-test-cli config secure", () => {
         const fileContents = JSON.parse(fs.readFileSync(expectedProjectConfigLocation).toString());
         const config = runCliScript(__dirname + "/../list/__scripts__/list_config.sh", TEST_ENVIRONMENT.workingDir, ["--rfj"]).stdout.toString();
         const configJson = JSON.parse(config);
-        const securedValue = await keytar.getPassword(service, "secure_config_props");
+        const securedValue = await keyring.getPassword(service, "secure_config_props");
         const securedValueJson = JSON.parse(Buffer.from(securedValue, "base64").toString());
         const expectedSecuredValueJson: any = {};
         expectedSecuredValueJson[expectedProjectConfigLocation] = {
-            "profiles.base.properties.secret": "anotherFakeValue"
+            "profiles.project_base.properties.secret": "anotherFakeValue"
         };
 
         expect(response.stderr.toString()).toEqual("");
         expect(response.status).toEqual(0);
-        expect(configJson.data).toEqual(expectedJson);
+        expect(configJson.data).toEqual(expectedProjectConfig);
         // Should not contain human readable credentials
-        expect(fileContents.profiles.base.secure).toEqual(["secret"]);
-        expect(fileContents.profiles.base.properties).not.toEqual({secret: "anotherFakeValue"});
+        expect(fileContents.profiles.project_base.secure).toEqual(["secret"]);
+        expect(fileContents.profiles.project_base.properties).not.toEqual({secret: "anotherFakeValue"});
         // Check the securely stored JSON
         expect(securedValueJson).toEqual(expectedSecuredValueJson);
     });
 
-    it("should secure the user config", async () => {
+    it("should secure the project user config", async () => {
         runCliScript(__dirname + "/../init/__scripts__/init_config_prompt.sh", TEST_ENVIRONMENT.workingDir, ["--user-config"]);
         const response = runCliScript(__dirname + "/__scripts__/secure_prompt.sh", TEST_ENVIRONMENT.workingDir, ["--user-config"]);
-        const fileContents = JSON.parse(fs.readFileSync(expectedUserConfigLocation).toString());
+        const fileContents = JSON.parse(fs.readFileSync(expectedProjectUserConfigLocation).toString());
         const config = runCliScript(__dirname + "/../list/__scripts__/list_config.sh", TEST_ENVIRONMENT.workingDir, ["--rfj"]).stdout.toString();
         const configJson = JSON.parse(config);
-        const securedValue = await keytar.getPassword(service, "secure_config_props");
+        const securedValue = await keyring.getPassword(service, "secure_config_props");
         const securedValueJson = securedValue == null ? null : JSON.parse(Buffer.from(securedValue, "base64").toString());
         const expectedSecuredValueJson: any = null;
 
         expect(response.stderr.toString()).toEqual("");
         expect(response.status).toEqual(0);
-        expect(configJson.data).toEqual(expectedUserJson);
+        expect(configJson.data).toEqual(expectedProjectUserConfig);
         // Should not contain human readable credentials
-        expect(fileContents.profiles.base.secure).not.toEqual(["secret"]);
-        expect(fileContents.profiles.base.properties).not.toEqual({secret: "anotherFakeValue"});
+        expect(fileContents.profiles.project_base.secure).not.toEqual(["secret"]);
+        expect(fileContents.profiles.project_base.properties).not.toEqual({secret: "anotherFakeValue"});
         // Check the securely stored JSON
         expect(securedValueJson).toEqual(expectedSecuredValueJson);
     });
 
-    it("should secure the global project config", async () => {
+    it("should secure the global config", async () => {
         runCliScript(__dirname + "/../init/__scripts__/init_config_prompt.sh", TEST_ENVIRONMENT.workingDir, ["--global-config"]);
         const response = runCliScript(__dirname + "/__scripts__/secure_prompt.sh", TEST_ENVIRONMENT.workingDir, ["--global-config"]);
-        const fileContents = JSON.parse(fs.readFileSync(expectedGlobalProjectConfigLocation).toString());
+        const fileContents = JSON.parse(fs.readFileSync(expectedGlobalConfigLocation).toString());
         const config = runCliScript(__dirname + "/../list/__scripts__/list_config.sh", TEST_ENVIRONMENT.workingDir, ["--rfj"]).stdout.toString();
         const configJson = JSON.parse(config);
-        const securedValue = await keytar.getPassword(service, "secure_config_props");
+        const securedValue = await keyring.getPassword(service, "secure_config_props");
         const securedValueJson = JSON.parse(Buffer.from(securedValue, "base64").toString());
         const expectedSecuredValueJson: any = {};
-        expectedSecuredValueJson[expectedGlobalProjectConfigLocation] = {
-            "profiles.base.properties.secret": "anotherFakeValue"
+        expectedSecuredValueJson[expectedGlobalConfigLocation] = {
+            "profiles.global_base.properties.secret": "anotherFakeValue"
         };
 
         expect(response.stderr.toString()).toEqual("");
         expect(response.status).toEqual(0);
-        expect(configJson.data).toEqual(expectedJson);
+        expect(configJson.data).toEqual(expectedGlobalConfig);
         // Should not contain human readable credentials
-        expect(fileContents.profiles.base.secure).toEqual(["secret"]);
-        expect(fileContents.profiles.base.properties).not.toEqual({secret: "anotherFakeValue"});
+        expect(fileContents.profiles.global_base.secure).toEqual(["secret"]);
+        expect(fileContents.profiles.global_base.properties).not.toEqual({secret: "anotherFakeValue"});
         // Check the securely stored JSON
         expect(securedValueJson).toEqual(expectedSecuredValueJson);
     });
@@ -137,16 +150,16 @@ describe("imperative-test-cli config secure", () => {
         const fileContents = JSON.parse(fs.readFileSync(expectedGlobalUserConfigLocation).toString());
         const config = runCliScript(__dirname + "/../list/__scripts__/list_config.sh", TEST_ENVIRONMENT.workingDir, ["--rfj"]).stdout.toString();
         const configJson = JSON.parse(config);
-        const securedValue = await keytar.getPassword(service, "secure_config_props");
+        const securedValue = await keyring.getPassword(service, "secure_config_props");
         const securedValueJson = securedValue == null ? null : JSON.parse(Buffer.from(securedValue, "base64").toString());
         const expectedSecuredValueJson: any = null;
 
         expect(response.stderr.toString()).toEqual("");
         expect(response.status).toEqual(0);
-        expect(configJson.data).toEqual(expectedUserJson);
+        expect(configJson.data).toEqual(expectedGlobalUserConfig);
         // Should not contain human readable credentials
-        expect(fileContents.profiles.base.secure).not.toEqual(["secret"]);
-        expect(fileContents.profiles.base.properties).not.toEqual({secret: "anotherFakeValue"});
+        expect(fileContents.profiles.global_base.secure).not.toEqual(["secret"]);
+        expect(fileContents.profiles.global_base.properties).not.toEqual({secret: "anotherFakeValue"});
         // Check the securely stored JSON
         expect(securedValueJson).toEqual(expectedSecuredValueJson);
     });
@@ -166,27 +179,27 @@ describe("imperative-test-cli config secure", () => {
             ]
         };
         runCliScript(__dirname + "/../set/__scripts__/set.sh", TEST_ENVIRONMENT.workingDir,
-            ["profiles", JSON.stringify({ base: baseProfile }), "--json"]);
+            ["profiles", JSON.stringify({ project_base: baseProfile }), "--json"]);
         const response = runCliScript(__dirname + "/__scripts__/secure_prompt.sh", TEST_ENVIRONMENT.workingDir);
         const fileContents = JSON.parse(fs.readFileSync(expectedProjectConfigLocation).toString());
         const config = runCliScript(__dirname + "/../list/__scripts__/list_config.sh", TEST_ENVIRONMENT.workingDir, ["--rfj"]).stdout.toString();
         const configJson = JSON.parse(config);
-        const expectedJsonWithToken = lodash.cloneDeep(expectedJson);
-        expectedJsonWithToken.profiles = { base: baseProfile };
-        expectedJsonWithToken.profiles.base.properties.tokenValue = "(secure value)";
-        const securedValue = await keytar.getPassword(service, "secure_config_props");
+        const expectedJsonWithToken = lodash.cloneDeep(expectedProjectConfig);
+        expectedJsonWithToken.profiles = { project_base: baseProfile };
+        expectedJsonWithToken.profiles.project_base.properties.tokenValue = "(secure value)";
+        const securedValue = await keyring.getPassword(service, "secure_config_props");
         const securedValueJson = JSON.parse(Buffer.from(securedValue, "base64").toString());
         const expectedSecuredValueJson: any = {};
         expectedSecuredValueJson[expectedProjectConfigLocation] = {
-            "profiles.base.properties.tokenValue": "fakeUser:anotherFakeValue@fakeToken"
+            "profiles.project_base.properties.tokenValue": "fakeUser:anotherFakeValue@fakeToken"
         };
 
         expect(response.stderr.toString()).toEqual("");
         expect(response.status).toEqual(0);
         expect(configJson.data).toEqual(expectedJsonWithToken);
         // Should not contain human readable credentials
-        expect(fileContents.profiles.base.secure).toEqual(["tokenValue"]);
-        expect(fileContents.profiles.base.properties.tokenValue).toBeUndefined();
+        expect(fileContents.profiles.project_base.secure).toEqual(["tokenValue"]);
+        expect(fileContents.profiles.project_base.properties.tokenValue).toBeUndefined();
         // Check the securely stored JSON
         expect(securedValueJson).toEqual(expectedSecuredValueJson);
     });
