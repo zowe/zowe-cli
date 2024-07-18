@@ -2,6 +2,11 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Resolved bug that resulted in each plug-in to have identical public registries regardless of actual installation location/reference. [#2189](https://github.com/zowe/zowe-cli/pull/2189)
+- BugFix: Resolved bug that resulted in every plug-in to have the same registry location field as the first if multiple plugins were installed in the same command. [#2189](https://github.com/zowe/zowe-cli/pull/2189)
+
 ## `8.0.0-next.202407112150`
 
 - Enhancement: Add client-side custom-event handling capabilities. [#2136](https://github.com/zowe/zowe-cli/pull/2136)
@@ -19,6 +24,7 @@ All notable changes to the Imperative package will be documented in this file.
 ## `8.0.0-next.202407021516`
 
 - BugFix: Updated dependencies for technical currency [#2188](https://github.com/zowe/zowe-cli/pull/2188)
+
 - Update: See `5.25.0` for details
 
 ## `8.0.0-next.202406201950`
