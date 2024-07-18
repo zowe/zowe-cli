@@ -2,7 +2,7 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
-## Recent Changes
+## `8.0.0-next.202407181255`
 
 - BugFix: Resolved bug that resulted in each plug-in to have identical public registries regardless of actual installation location/reference. [#2189](https://github.com/zowe/zowe-cli/pull/2189)
 - BugFix: Resolved bug that resulted in every plug-in to have the same registry location field as the first if multiple plugins were installed in the same command. [#2189](https://github.com/zowe/zowe-cli/pull/2189)
