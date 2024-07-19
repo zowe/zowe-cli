@@ -19,13 +19,13 @@ import { IHandlerParameters } from "../../../../../cmd";
 import { Config, ConfigConstants, IConfig } from "../../../../../config";
 import { ISession, RestClient } from "../../../../../rest";
 import { ImperativeConfig } from "../../../../..";
-import { expectedConfigObject, expectedSchemaObject } from
+import { expectedProjectConfigObject, expectedSchemaObject } from
     "../../../../../../__tests__/__integration__/imperative/__tests__/__integration__/cli/config/__resources__/expectedObjects";
 
 jest.mock("fs");
 
-const expectedConfigText = JSONC.stringify(expectedConfigObject, null, ConfigConstants.INDENT);
-const expectedConfigObjectWithoutSchema = lodash.omit(expectedConfigObject, "$schema");
+const expectedConfigText = JSONC.stringify(expectedProjectConfigObject, null, ConfigConstants.INDENT);
+const expectedConfigObjectWithoutSchema = lodash.omit(expectedProjectConfigObject, "$schema");
 const expectedConfigTextWithoutSchema = JSONC.stringify(expectedConfigObjectWithoutSchema, null, ConfigConstants.INDENT);
 const expectedSchemaText = JSONC.stringify(expectedSchemaObject, null, ConfigConstants.INDENT);
 
@@ -134,7 +134,7 @@ describe("Configuration Import command handler", () => {
         it("should import config with schema from web address", async () => {
             jest.spyOn(fs, "existsSync").mockReturnValueOnce(false);
             writeFileSyncSpy.mockReturnValueOnce();
-            fetchConfigSpy.mockResolvedValueOnce(expectedConfigObject);
+            fetchConfigSpy.mockResolvedValueOnce(expectedProjectConfigObject);
 
             const params: IHandlerParameters = getIHandlerParametersObject();
             params.arguments.location = "http://example.com/downloads/fakeapp.config.json";
@@ -199,7 +199,7 @@ describe("Configuration Import command handler", () => {
 
             expect(config.profiles).toBeDefined();
             expect(config.defaults).toBeDefined();
-            expect(config).toMatchObject(expectedConfigObject);
+            expect(config).toMatchObject(expectedProjectConfigObject);
         });
 
         it("should throw error when config file is not valid JSON", async () => {

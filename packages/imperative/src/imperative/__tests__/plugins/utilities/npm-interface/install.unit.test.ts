@@ -198,7 +198,7 @@ describe("PMF: Install Interface", () => {
             wasNpmInstallCallValid(packageName, packageRegistry);
             wasWriteFileSyncCallValid({}, packageName, {
                 package: packageName,
-                registry: packageRegistry,
+                location: packageRegistry,
                 version: packageVersion
             });
         });
@@ -214,7 +214,7 @@ describe("PMF: Install Interface", () => {
             wasNpmInstallCallValid(rootFile, packageRegistry);
             wasWriteFileSyncCallValid({}, packageName, {
                 package: rootFile,
-                registry: packageRegistry,
+                location: packageRegistry,
                 version: packageVersion
             });
         });
@@ -230,7 +230,7 @@ describe("PMF: Install Interface", () => {
             wasNpmInstallCallValid(rootFile, packageRegistry);
             wasWriteFileSyncCallValid({}, packageName, {
                 package: rootFile,
-                registry: packageRegistry,
+                location: packageRegistry,
                 version: packageVersion
             });
         });
@@ -257,7 +257,7 @@ describe("PMF: Install Interface", () => {
                 wasNpmInstallCallValid(absolutePath, packageRegistry);
                 wasWriteFileSyncCallValid({}, packageName, {
                     package: absolutePath,
-                    registry: packageRegistry,
+                    location: packageRegistry,
                     version: packageVersion
                 });
             });
@@ -274,7 +274,7 @@ describe("PMF: Install Interface", () => {
             wasNpmInstallCallValid(installUrl, packageRegistry);
             wasWriteFileSyncCallValid({}, packageName, {
                 package: installUrl,
-                registry: packageRegistry,
+                location: packageRegistry,
                 version: packageVersion
             });
         });
@@ -288,7 +288,7 @@ describe("PMF: Install Interface", () => {
             wasNpmInstallCallValid(packageName, packageRegistry, false);
             wasWriteFileSyncCallValid({}, packageName, {
                 package: packageName,
-                registry: packageRegistry,
+                location: packageRegistry,
                 version: packageVersion
             });
         });
@@ -339,7 +339,7 @@ describe("PMF: Install Interface", () => {
             wasNpmInstallCallValid(semverPackage, packageRegistry);
             wasWriteFileSyncCallValid({}, packageName, {
                 package: packageName,
-                registry: packageRegistry,
+                location: packageRegistry,
                 version: semverVersion
             });
         });
@@ -349,7 +349,7 @@ describe("PMF: Install Interface", () => {
             const oneOldPlugin: IPluginJson = {
                 plugin1: {
                     package: "plugin1",
-                    registry: packageRegistry,
+                    location: packageRegistry,
                     version: "1.2.3"
                 }
             };
@@ -368,7 +368,7 @@ describe("PMF: Install Interface", () => {
             wasNpmInstallCallValid(packageName, packageRegistry);
             wasWriteFileSyncCallValid(oneOldPlugin, packageName, {
                 package: packageName,
-                registry: packageRegistry,
+                location: packageRegistry,
                 version: packageVersion
             });
         });
@@ -383,7 +383,7 @@ describe("PMF: Install Interface", () => {
                 const oneOldPlugin: IPluginJson = {
                     plugin1: {
                         package: "plugin1",
-                        registry: packageRegistry,
+                        location: packageRegistry,
                         version: "1.2.3"
                     }
                 };

@@ -55,7 +55,10 @@ const getIHandlerParametersObject = (): IHandlerParameters => {
 };
 
 const fakeConfig = config as IImperativeConfig;
-fakeConfig.profiles.push(fakeConfig.baseProfile); // Add base profile to profiles array to mimic Imperative init
+if (fakeConfig.profiles && fakeConfig.baseProfile) {
+    // Add base profile to profiles array to mimic Imperative init
+    fakeConfig.profiles.push(fakeConfig.baseProfile);
+}
 const fakeProjPath = path.join(__dirname, "fakeapp.config.json");
 const fakeSchemaPath = path.join(__dirname, "fakeapp.schema.json");
 const fakeProjUserPath = path.join(__dirname, "fakeapp.config.user.json");
@@ -118,6 +121,13 @@ describe("Configuration Initialization command handler", () => {
 
     // Run tests for all the config layers
     testLayers.forEach(({ name, user, global, configPath, schemaPath }) => describe(`${name} layer`, () => {
+        let baseProfName: string;
+        if (global) {
+            baseProfName = "global_base";
+        } else {
+            baseProfName = "project_base";
+        }
+
         it("should attempt to initialize the configuration", async () => {
             const handler = new InitHandler();
             const params = getIHandlerParametersObject();
@@ -140,12 +150,12 @@ describe("Configuration Initialization command handler", () => {
             (params.response.console as any).prompt = readPromptSpy;
             writeFileSyncSpy.mockImplementation(); // Don't actually write files
 
-            if (!global) jest.spyOn(process, "cwd").mockReturnValueOnce(null);
+            if (!global) jest.spyOn(process, "cwd").mockReturnValueOnce(null as unknown as string);
             await handler.process(params as IHandlerParameters);
 
             const compObj: any = { $schema: "./fakeapp.schema.json" }; // Fill in the name of the schema file, and make it first
             lodash.merge(compObj, ImperativeConfig.instance.config.properties); // Add the properties from the config
-            if (!user) delete compObj.profiles.base.properties.secret; // Delete the secret
+            if (!user) delete compObj.profiles[baseProfName].properties.secret; // Delete the secret
 
             expect(ensureCredMgrSpy).toHaveBeenCalledTimes(1);
             expect(setSchemaSpy).toHaveBeenCalledTimes(1);
@@ -162,7 +172,7 @@ describe("Configuration Initialization command handler", () => {
             expect(writeFileSyncSpy).toHaveBeenNthCalledWith(2, configPath, JSON.stringify(compObj, null, ConfigConstants.INDENT));
 
             // Secure value supplied during prompting should be on properties
-            if (!user) expect(ImperativeConfig.instance.config.properties.profiles.base.properties.secret).toEqual("fakeValue");
+            if (!user) expect(ImperativeConfig.instance.config.properties.profiles[baseProfName].properties.secret).toEqual("fakeValue");
         });
 
         it("should attempt to do a dry run of initializing the configuration", async () => {
@@ -191,7 +201,7 @@ describe("Configuration Initialization command handler", () => {
             // initForDryRun
             const initForDryRunSpy = jest.spyOn(handler as any, "initForDryRun");
 
-            if (!global) jest.spyOn(process, "cwd").mockReturnValueOnce(null);
+            if (!global) jest.spyOn(process, "cwd").mockReturnValueOnce(null as unknown as string);
             await handler.process(params as IHandlerParameters);
 
             expect(ensureCredMgrSpy).toHaveBeenCalledTimes(1);
@@ -199,7 +209,9 @@ describe("Configuration Initialization command handler", () => {
             expect(readPromptSpy).toHaveBeenCalledTimes(0); // Dry run mode - no prompting should occur
 
             expect(initForDryRunSpy).toHaveBeenCalledTimes(1);
-            expect(initForDryRunSpy).toHaveBeenCalledWith(ImperativeConfig.instance.config, params.arguments.userConfig);
+            expect(initForDryRunSpy).toHaveBeenCalledWith(ImperativeConfig.instance.config,
+                params.arguments.userConfig, params.arguments.globalConfig
+            );
 
             expect(writeFileSyncSpy).not.toHaveBeenCalled();
         });
@@ -229,12 +241,12 @@ describe("Configuration Initialization command handler", () => {
             (params.response.console as any).prompt = readPromptSpy;
             writeFileSyncSpy.mockImplementation(); // Don't actually write files
 
-            if (!global) jest.spyOn(process, "cwd").mockReturnValueOnce(null);
+            if (!global) jest.spyOn(process, "cwd").mockReturnValueOnce(null as unknown as string);
             await handler.process(params as IHandlerParameters);
 
             const compObj: any = { $schema: "./fakeapp.schema.json" }; // Fill in the name of the schema file, and make it first
             lodash.merge(compObj, ImperativeConfig.instance.config.properties); // Add the properties from the config
-            if (!user) delete compObj.profiles.base.properties.secret; // Delete the secret
+            if (!user) delete compObj.profiles[baseProfName].properties.secret; // Delete the secret
 
             expect(ensureCredMgrSpy).toHaveBeenCalledTimes(1);
             expect(setSchemaSpy).toHaveBeenCalledTimes(1);
@@ -247,12 +259,12 @@ describe("Configuration Initialization command handler", () => {
             expect(writeFileSyncSpy).toHaveBeenCalledTimes(2);
 
             // Secure value supplied during prompting should be on properties
-            if (!user) expect(ImperativeConfig.instance.config.properties.profiles.base.properties.secret).toEqual("fakeValue");
+            if (!user) expect(ImperativeConfig.instance.config.properties.profiles[baseProfName].properties.secret).toEqual("fakeValue");
 
             // initWithSchema called with the correct parameters
             expect(initWithSchemaSpy).toHaveBeenCalledTimes(1);
             expect(initWithSchemaSpy).toHaveBeenCalledWith(ImperativeConfig.instance.config, params.arguments.userConfig,
-                params.arguments.overwrite && params.arguments.forSure);
+                params.arguments.globalConfig, params.arguments.overwrite && params.arguments.forSure);
         });
 
         it("should attempt to initialize the configuration with prompting disabled", async () => {
@@ -277,7 +289,7 @@ describe("Configuration Initialization command handler", () => {
             (params.response.console as any).prompt = readPromptSpy;
             writeFileSyncSpy.mockImplementation(); // Don't actually write files
 
-            if (!global) jest.spyOn(process, "cwd").mockReturnValueOnce(null);
+            if (!global) jest.spyOn(process, "cwd").mockReturnValueOnce(null as unknown as string);
             await handler.process(params as IHandlerParameters);
 
             const compObj: any = { $schema: "./fakeapp.schema.json" }; // Fill in the name of the schema file, and make it first
@@ -319,7 +331,7 @@ describe("Configuration Initialization command handler", () => {
             (params.response.console as any).prompt = readPromptSpy;
             writeFileSyncSpy.mockImplementation(); // Don't actually write files
 
-            if (!global) jest.spyOn(process, "cwd").mockReturnValueOnce(null);
+            if (!global) jest.spyOn(process, "cwd").mockReturnValueOnce(null as unknown as string);
             await handler.process(params as IHandlerParameters);
 
             const compObj: any = { $schema: "./fakeapp.schema.json" }; // Fill in the name of the schema file, and make it first
@@ -335,7 +347,7 @@ describe("Configuration Initialization command handler", () => {
             // initWithSchema called with the correct parameters
             expect(initWithSchemaSpy).toHaveBeenCalledTimes(1);
             expect(initWithSchemaSpy).toHaveBeenCalledWith(ImperativeConfig.instance.config, params.arguments.userConfig,
-                params.arguments.overwrite && params.arguments.forSure);
+                params.arguments.globalConfig, params.arguments.overwrite && params.arguments.forSure);
         });
 
         it("should attempt to do a dry run of initializing the configuration and handle no changes", async () => {
@@ -358,7 +370,7 @@ describe("Configuration Initialization command handler", () => {
             (params.response.console as any).prompt = readPromptSpy;
             writeFileSyncSpy.mockImplementation(); // Don't actually write files
 
-            if (!global) jest.spyOn(process, "cwd").mockReturnValueOnce(null);
+            if (!global) jest.spyOn(process, "cwd").mockReturnValueOnce(null as unknown as string);
             await handler.process(params as IHandlerParameters);
 
             const compObj: any = { $schema: "./fakeapp.schema.json" }; // Fill in the name of the schema file, and make it first
@@ -370,11 +382,13 @@ describe("Configuration Initialization command handler", () => {
             const jsonDataSpy = jest.spyOn(params.response.data, "setObj");
             params.arguments.dryRun = true;
 
-            if (!global) jest.spyOn(process, "cwd").mockReturnValueOnce(null);
+            if (!global) jest.spyOn(process, "cwd").mockReturnValueOnce(null as unknown as string);
             await handler.process(params as IHandlerParameters);
 
             expect(initForDryRunSpy).toHaveBeenCalledTimes(1);
-            expect(initForDryRunSpy).toHaveBeenCalledWith(ImperativeConfig.instance.config, params.arguments.userConfig);
+            expect(initForDryRunSpy).toHaveBeenCalledWith(ImperativeConfig.instance.config,
+                params.arguments.userConfig, params.arguments.globalConfig
+            );
 
             expect(jsonDataSpy).toHaveBeenCalledTimes(1);
             // console.log(jsonDataSpy.mock.calls[0][0]);
@@ -404,7 +418,7 @@ describe("Configuration Initialization command handler", () => {
             (params.response.console as any).prompt = readPromptSpy;
             writeFileSyncSpy.mockImplementation(); // Don't actually write files
 
-            if (!global) jest.spyOn(process, "cwd").mockReturnValueOnce(null);
+            if (!global) jest.spyOn(process, "cwd").mockReturnValueOnce(null as unknown as string);
             await handler.process(params as IHandlerParameters);
 
             expect(ensureCredMgrSpy).toHaveBeenCalledTimes(1);
@@ -413,7 +427,7 @@ describe("Configuration Initialization command handler", () => {
             expect(editFileSpy).toHaveBeenCalledWith(ImperativeConfig.instance.config.layerActive().path, undefined);
             expect(writeFileSyncSpy).toHaveBeenCalledTimes(2);
 
-            if (!user) expect(ImperativeConfig.instance.config.properties.profiles.base.properties.secret).toEqual("fakeValue");
+            if (!user) expect(ImperativeConfig.instance.config.properties.profiles[baseProfName].properties.secret).toEqual("fakeValue");
         });
     }));
 
@@ -422,6 +436,7 @@ describe("Configuration Initialization command handler", () => {
         const params = getIHandlerParametersObject();
         params.arguments.userConfig = false;
         params.arguments.globalConfig = false;
+        const baseProfName = "project_base";
 
         existsSyncSpy.mockReturnValue(false); // No files exist
         searchSpy.mockReturnValueOnce(fakeProjUserPath).mockReturnValueOnce(fakeProjPath); // Give search something to return
@@ -438,12 +453,12 @@ describe("Configuration Initialization command handler", () => {
         (params.response.console as any).prompt = readPromptSpy;
         writeFileSyncSpy.mockImplementation(); // Don't actually write files
 
-        jest.spyOn(process, "cwd").mockReturnValueOnce(null);
+        jest.spyOn(process, "cwd").mockReturnValueOnce(null as unknown as string);
         await handler.process(params as IHandlerParameters);
 
         const compObj: any = { $schema: "./fakeapp.schema.json" }; // Fill in the name of the schema file, and make it first
         lodash.merge(compObj, ImperativeConfig.instance.config.properties); // Add the properties from the config
-        delete compObj.profiles.base.properties.secret; // Delete the secret
+        delete compObj.profiles[baseProfName].properties.secret; // Delete the secret
 
         expect(setSchemaSpy).toHaveBeenCalledTimes(1);
         expect(setSchemaSpy).toHaveBeenCalledWith(expectedSchemaObject);
@@ -458,7 +473,7 @@ describe("Configuration Initialization command handler", () => {
         expect(writeFileSyncSpy).toHaveBeenNthCalledWith(2, fakeProjPath, JSON.stringify(compObj, null, ConfigConstants.INDENT));
 
         // Secure value supplied during prompting should be on properties
-        expect(ImperativeConfig.instance.config.properties.profiles.base.properties.secret).toEqual(true);
+        expect(ImperativeConfig.instance.config.properties.profiles[baseProfName].properties.secret).toEqual(true);
     });
 
     it("should attempt to initialize the project configuration and use boolean false for the prompt", async () => {
@@ -466,6 +481,7 @@ describe("Configuration Initialization command handler", () => {
         const params = getIHandlerParametersObject();
         params.arguments.userConfig = false;
         params.arguments.globalConfig = false;
+        const baseProfName = "project_base";
 
         existsSyncSpy.mockReturnValue(false); // No files exist
         searchSpy.mockReturnValueOnce(fakeProjUserPath).mockReturnValueOnce(fakeProjPath); // Give search something to return
@@ -482,12 +498,12 @@ describe("Configuration Initialization command handler", () => {
         (params.response.console as any).prompt = readPromptSpy;
         writeFileSyncSpy.mockImplementation(); // Don't actually write files
 
-        jest.spyOn(process, "cwd").mockReturnValueOnce(null);
+        jest.spyOn(process, "cwd").mockReturnValueOnce(null as unknown as string);
         await handler.process(params as IHandlerParameters);
 
         const compObj: any = { $schema: "./fakeapp.schema.json" }; // Fill in the name of the schema file, and make it first
         lodash.merge(compObj, ImperativeConfig.instance.config.properties); // Add the properties from the config
-        delete compObj.profiles.base.properties.secret; // Delete the secret
+        delete compObj.profiles[baseProfName].properties.secret; // Delete the secret
 
         expect(setSchemaSpy).toHaveBeenCalledTimes(1);
         expect(setSchemaSpy).toHaveBeenCalledWith(expectedSchemaObject);
@@ -502,7 +518,7 @@ describe("Configuration Initialization command handler", () => {
         expect(writeFileSyncSpy).toHaveBeenNthCalledWith(2, fakeProjPath, JSON.stringify(compObj, null, ConfigConstants.INDENT));
 
         // Secure value supplied during prompting should be on properties
-        expect(ImperativeConfig.instance.config.properties.profiles.base.properties.secret).toEqual(false);
+        expect(ImperativeConfig.instance.config.properties.profiles[baseProfName].properties.secret).toEqual(false);
     });
 
     it("should attempt to initialize the project configuration and use a number for the prompt", async () => {
@@ -510,6 +526,7 @@ describe("Configuration Initialization command handler", () => {
         const params = getIHandlerParametersObject();
         params.arguments.userConfig = false;
         params.arguments.globalConfig = false;
+        const baseProfName = "project_base";
 
         existsSyncSpy.mockReturnValue(false); // No files exist
         searchSpy.mockReturnValueOnce(fakeProjUserPath).mockReturnValueOnce(fakeProjPath); // Give search something to return
@@ -528,12 +545,12 @@ describe("Configuration Initialization command handler", () => {
         (params.response.console as any).prompt = readPromptSpy;
         writeFileSyncSpy.mockImplementation(); // Don't actually write files
 
-        jest.spyOn(process, "cwd").mockReturnValueOnce(null);
+        jest.spyOn(process, "cwd").mockReturnValueOnce(null as unknown as string);
         await handler.process(params as IHandlerParameters);
 
         const compObj: any = { $schema: "./fakeapp.schema.json" }; // Fill in the name of the schema file, and make it first
         lodash.merge(compObj, ImperativeConfig.instance.config.properties); // Add the properties from the config
-        delete compObj.profiles.base.properties.secret; // Delete the secret
+        delete compObj.profiles[baseProfName].properties.secret; // Delete the secret
 
         expect(setSchemaSpy).toHaveBeenCalledTimes(1);
         expect(setSchemaSpy).toHaveBeenCalledWith(expectedSchemaObject);
@@ -548,7 +565,7 @@ describe("Configuration Initialization command handler", () => {
         expect(writeFileSyncSpy).toHaveBeenNthCalledWith(2, fakeProjPath, JSON.stringify(compObj, null, ConfigConstants.INDENT));
 
         // Secure value supplied during prompting should be on properties
-        expect(ImperativeConfig.instance.config.properties.profiles.base.properties.secret).toEqual(randomValueNumber);
+        expect(ImperativeConfig.instance.config.properties.profiles[baseProfName].properties.secret).toEqual(randomValueNumber);
     });
 
     it("should attempt to initialize the project configuration and handle getting nothing from the prompt", async () => {
@@ -556,6 +573,7 @@ describe("Configuration Initialization command handler", () => {
         const params = getIHandlerParametersObject();
         params.arguments.userConfig = false;
         params.arguments.globalConfig = false;
+        const baseProfName = "project_base";
 
         existsSyncSpy.mockReturnValue(false); // No files exist
         searchSpy.mockReturnValueOnce(fakeProjUserPath).mockReturnValueOnce(fakeProjPath); // Give search something to return
@@ -572,12 +590,12 @@ describe("Configuration Initialization command handler", () => {
         (params.response.console as any).prompt = readPromptSpy;
         writeFileSyncSpy.mockImplementation(); // Don't actually write files
 
-        jest.spyOn(process, "cwd").mockReturnValueOnce(null);
+        jest.spyOn(process, "cwd").mockReturnValueOnce(null as unknown as string);
         await handler.process(params as IHandlerParameters);
 
         const compObj: any = { $schema: "./fakeapp.schema.json" }; // Fill in the name of the schema file, and make it first
         lodash.merge(compObj, ImperativeConfig.instance.config.properties); // Add the properties from the config
-        delete compObj.profiles.base.properties.secret; // Delete the secret
+        delete compObj.profiles[baseProfName].properties.secret; // Delete the secret
 
         expect(setSchemaSpy).toHaveBeenCalledTimes(1);
         expect(setSchemaSpy).toHaveBeenCalledWith(expectedSchemaObject);
@@ -592,7 +610,7 @@ describe("Configuration Initialization command handler", () => {
         expect(writeFileSyncSpy).toHaveBeenNthCalledWith(2, fakeProjPath, JSON.stringify(compObj, null, ConfigConstants.INDENT));
 
         // Secure value supplied during prompting should be on properties
-        expect(ImperativeConfig.instance.config.properties.profiles.base.properties.secret).toEqual(undefined);
+        expect(ImperativeConfig.instance.config.properties.profiles[baseProfName].properties.secret).toEqual(undefined);
     });
 
     it("should attempt to initialize the project configuration and overwrite empty value with prompt", async () => {
@@ -600,12 +618,13 @@ describe("Configuration Initialization command handler", () => {
         const params = getIHandlerParametersObject();
         params.arguments.userConfig = false;
         params.arguments.globalConfig = false;
+        const baseProfName = "project_base";
 
         existsSyncSpy.mockReturnValueOnce(false).mockReturnValueOnce(true).mockReturnValue(false); // Project config exists
         searchSpy.mockReturnValueOnce(fakeProjUserPath).mockReturnValueOnce(fakeProjPath); // Give search something to return
         jest.spyOn(fs, "readFileSync").mockReturnValueOnce(JSON.stringify({
             profiles: {
-                base: {
+                project_base: {
                     properties: {
                         secret: ""
                     }
@@ -626,12 +645,12 @@ describe("Configuration Initialization command handler", () => {
         (params.response.console as any).prompt = readPromptSpy;
         writeFileSyncSpy.mockImplementation(); // Don't actually write files
 
-        jest.spyOn(process, "cwd").mockReturnValueOnce(null);
+        jest.spyOn(process, "cwd").mockReturnValueOnce(null as unknown as string);
         await handler.process(params as IHandlerParameters);
 
         const compObj: any = { $schema: "./fakeapp.schema.json" }; // Fill in the name of the schema file, and make it first
         lodash.merge(compObj, ImperativeConfig.instance.config.properties); // Add the properties from the config
-        delete compObj.profiles.base.properties.secret; // Delete the secret
+        delete compObj.profiles[baseProfName].properties.secret; // Delete the secret
 
         expect(setSchemaSpy).toHaveBeenCalledTimes(1);
         expect(setSchemaSpy).toHaveBeenCalledWith(expectedSchemaObject);
@@ -646,7 +665,7 @@ describe("Configuration Initialization command handler", () => {
         expect(writeFileSyncSpy).toHaveBeenNthCalledWith(2, fakeProjPath, JSON.stringify(compObj, null, ConfigConstants.INDENT));
 
         // Secure value supplied during prompting should be on properties
-        expect(ImperativeConfig.instance.config.properties.profiles.base.properties.secret).toEqual("area51");
+        expect(ImperativeConfig.instance.config.properties.profiles[baseProfName].properties.secret).toEqual("area51");
     });
 
     it("should attempt to initialize the project configuration and overwrite non-empty value with prompt", async () => {
@@ -654,12 +673,13 @@ describe("Configuration Initialization command handler", () => {
         const params = getIHandlerParametersObject();
         params.arguments.userConfig = false;
         params.arguments.globalConfig = false;
+        const baseProfName = "project_base";
 
         existsSyncSpy.mockReturnValueOnce(false).mockReturnValueOnce(true).mockReturnValue(false); // Project config exists
         searchSpy.mockReturnValueOnce(fakeProjUserPath).mockReturnValueOnce(fakeProjPath); // Give search something to return
         jest.spyOn(fs, "readFileSync").mockReturnValueOnce(JSON.stringify({
             profiles: {
-                base: {
+                project_base: {
                     properties: {
                         secret: "expired"
                     }
@@ -680,12 +700,12 @@ describe("Configuration Initialization command handler", () => {
         (params.response.console as any).prompt = readPromptSpy;
         writeFileSyncSpy.mockImplementation(); // Don't actually write files
 
-        jest.spyOn(process, "cwd").mockReturnValueOnce(null);
+        jest.spyOn(process, "cwd").mockReturnValueOnce(null as unknown as string);
         await handler.process(params as IHandlerParameters);
 
         const compObj: any = { $schema: "./fakeapp.schema.json" }; // Fill in the name of the schema file, and make it first
         lodash.merge(compObj, ImperativeConfig.instance.config.properties); // Add the properties from the config
-        delete compObj.profiles.base.properties.secret; // Delete the secret
+        delete compObj.profiles[baseProfName].properties.secret; // Delete the secret
 
         expect(setSchemaSpy).toHaveBeenCalledTimes(1);
         expect(setSchemaSpy).toHaveBeenCalledWith(expectedSchemaObject);
@@ -700,7 +720,7 @@ describe("Configuration Initialization command handler", () => {
         expect(writeFileSyncSpy).toHaveBeenNthCalledWith(2, fakeProjPath, JSON.stringify(compObj, null, ConfigConstants.INDENT));
 
         // Secure value supplied during prompting should be on properties
-        expect(ImperativeConfig.instance.config.properties.profiles.base.properties.secret).toEqual("area51");
+        expect(ImperativeConfig.instance.config.properties.profiles[baseProfName].properties.secret).toEqual("area51");
     });
 
     it("should attempt to initialize the project configuration and not overwrite value when prompt is skipped", async () => {
@@ -708,12 +728,13 @@ describe("Configuration Initialization command handler", () => {
         const params = getIHandlerParametersObject();
         params.arguments.userConfig = false;
         params.arguments.globalConfig = false;
+        const baseProfName = "project_base";
 
         existsSyncSpy.mockReturnValueOnce(false).mockReturnValueOnce(true).mockReturnValue(false); // Project config exists
         searchSpy.mockReturnValueOnce(fakeProjUserPath).mockReturnValueOnce(fakeProjPath); // Give search something to return
         jest.spyOn(fs, "readFileSync").mockReturnValueOnce(JSON.stringify({
             profiles: {
-                base: {
+                project_base: {
                     properties: {
                         info: "fakeValue",
                         secret: "area51"
@@ -736,12 +757,12 @@ describe("Configuration Initialization command handler", () => {
         (params.response.console as any).prompt = readPromptSpy;
         writeFileSyncSpy.mockImplementation(); // Don't actually write files
 
-        jest.spyOn(process, "cwd").mockReturnValueOnce(null);
+        jest.spyOn(process, "cwd").mockReturnValueOnce(null as unknown as string);
         await handler.process(params as IHandlerParameters);
 
         const compObj: any = { $schema: "./fakeapp.schema.json" }; // Fill in the name of the schema file, and make it first
         lodash.merge(compObj, ImperativeConfig.instance.config.properties); // Add the properties from the config
-        delete compObj.profiles.base.properties.secret; // Delete the secret
+        delete compObj.profiles[baseProfName].properties.secret; // Delete the secret
 
         expect(setSchemaSpy).toHaveBeenCalledTimes(1);
         expect(setSchemaSpy).toHaveBeenCalledWith(expectedSchemaObject);
@@ -756,8 +777,8 @@ describe("Configuration Initialization command handler", () => {
         expect(writeFileSyncSpy).toHaveBeenNthCalledWith(2, fakeProjPath, JSON.stringify(compObj, null, ConfigConstants.INDENT));
 
         // Secure value supplied during prompting should be on properties
-        expect(ImperativeConfig.instance.config.properties.profiles.base.properties.info).toEqual("fakeValue");
-        expect(ImperativeConfig.instance.config.properties.profiles.base.properties.secret).toEqual("area51");
+        expect(ImperativeConfig.instance.config.properties.profiles[baseProfName].properties.info).toEqual("fakeValue");
+        expect(ImperativeConfig.instance.config.properties.profiles[baseProfName].properties.secret).toEqual("area51");
     });
 
     it("should display warning if unable to securely save credentials", async () => {
@@ -765,6 +786,7 @@ describe("Configuration Initialization command handler", () => {
         const params = getIHandlerParametersObject();
         params.arguments.userConfig = false;
         params.arguments.globalConfig = false;
+        const baseProfName = "project_base";
 
         existsSyncSpy.mockReturnValue(false); // No files exist
         searchSpy.mockReturnValueOnce(fakeProjUserPath).mockReturnValueOnce(fakeProjPath); // Give search something to return
@@ -783,12 +805,12 @@ describe("Configuration Initialization command handler", () => {
         jest.spyOn(CredentialManagerFactory, "initialized", "get").mockReturnValue(false);
         jest.spyOn(CredentialManagerFactory, "manager", "get").mockReturnValue({ secureErrorDetails: jest.fn() } as any);
 
-        jest.spyOn(process, "cwd").mockReturnValueOnce(null);
+        jest.spyOn(process, "cwd").mockReturnValueOnce(null as unknown as string);
         await handler.process(params as IHandlerParameters);
 
         const compObj: any = { $schema: "./fakeapp.schema.json" }; // Fill in the name of the schema file, and make it first
         lodash.merge(compObj, ImperativeConfig.instance.config.properties); // Add the properties from the config
-        delete compObj.profiles.base.properties.secret; // Delete the secret
+        delete compObj.profiles[baseProfName].properties.secret; // Delete the secret
 
         expect(readPromptSpy).toHaveBeenCalledTimes(0);
         expect(writeFileSyncSpy).toHaveBeenCalledTimes(2);
@@ -819,7 +841,7 @@ describe("Configuration Initialization command handler", () => {
         jest.spyOn(CredentialManagerFactory, "initialized", "get").mockReturnValue(false);
         jest.spyOn(CredentialManagerFactory, "manager", "get").mockReturnValue({ secureErrorDetails: jest.fn() } as any);
 
-        jest.spyOn(process, "cwd").mockReturnValueOnce(null);
+        jest.spyOn(process, "cwd").mockReturnValueOnce(null as unknown as string);
 
         // Mocking for logical branch intended to evaluate
         const secureSaveErrorSpy = jest.spyOn(ConfigUtils, "secureSaveError");
@@ -861,7 +883,7 @@ describe("Configuration Initialization command handler", () => {
         jest.spyOn(CredentialManagerFactory, "initialized", "get").mockReturnValue(false);
         jest.spyOn(CredentialManagerFactory, "manager", "get").mockReturnValue({ secureErrorDetails: jest.fn() } as any);
 
-        jest.spyOn(process, "cwd").mockReturnValueOnce(null);
+        jest.spyOn(process, "cwd").mockReturnValueOnce(null as unknown as string);
 
         // Mocking for logical branch intended to evaluate
         const secureSaveErrorSpy = jest.spyOn(ConfigUtils, "secureSaveError");

@@ -17,6 +17,7 @@ import { readFileSync } from "jsonfile";
 import * as npmPackageArg from "npm-package-arg";
 import * as pacote from "pacote";
 import { ExecUtils } from "../../../../utilities";
+import { IO } from "../../../../io";
 const npmCmd = findNpmOnPath();
 
 /**
@@ -41,20 +42,35 @@ export function findNpmOnPath(): string {
  */
 export function installPackages(prefix: string, registry: string, npmPackage: string): string {
     const pipe: StdioOptions = ["pipe", "pipe", process.stderr];
-    const execOutput = ExecUtils.spawnAndGetOutput(npmCmd,
-        [
-            "install", npmPackage,
-            "--prefix", prefix,
-            "-g",
-            "--registry", registry,
-            "--legacy-peer-deps"
-        ], {
-            cwd: PMFConstants.instance.PMF_ROOT,
-            stdio: pipe
-        }
-    );
+
+    const args = [
+        "install", npmPackage,
+        "--prefix", prefix,
+        "-g"
+    ];
+    let isDirTest: boolean;
+
+    try{
+        isDirTest = IO.isDir(registry);
+    }
+    catch(e){
+        isDirTest = false;
+    }
+
+    if (!(registry.substring(registry.lastIndexOf(".") + 1) === "tgz") && !isDirTest) {
+        args.push("--registry",registry);
+    }
+
+    args.push("--legacy-peer-deps");
+
+    const execOutput = ExecUtils.spawnAndGetOutput(npmCmd, args, {
+        cwd: PMFConstants.instance.PMF_ROOT,
+        stdio: pipe
+    });
+
     return execOutput.toString();
 }
+
 
 /**
  * Get the registry to install to.
@@ -63,6 +79,12 @@ export function installPackages(prefix: string, registry: string, npmPackage: st
  */
 export function getRegistry(): string {
     const execOutput = ExecUtils.spawnAndGetOutput(npmCmd, [ "config", "get", "registry" ]);
+    return execOutput.toString();
+}
+
+export function getScopeRegistry(scope: string): string {
+    const execOutput = ExecUtils.spawnAndGetOutput(npmCmd, [ "config", "get", `@${scope}:registry` ]);
+    if(execOutput.toString().trim() === 'undefined') return getRegistry();
     return execOutput.toString();
 }
 
