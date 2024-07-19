@@ -77,11 +77,11 @@ export default class UpdateHandler implements ICommandHandler {
                     // folder location.  Example: plugin 'imperative-sample-plugin' installed from ../imperative-plugins
                     packageName = installedPlugins[pluginName].package;
                     if (registry === undefined) {
-                        registry = installedPlugins[pluginName].registry;
+                        registry = installedPlugins[pluginName].location;
                     }
                     // Call update which returns the plugin's version so plugins.json can be updated
                     installedPlugins[pluginName].version = await update(packageName, registry);
-                    installedPlugins[pluginName].registry = registry; // update in case it changed
+                    installedPlugins[pluginName].location = registry; // update in case it changed
 
                     writeFileSync(PMFConstants.instance.PLUGIN_JSON, installedPlugins, {
                         spaces: 2

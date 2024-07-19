@@ -76,7 +76,7 @@ describe("PMF: update Interface", () => {
             const oneOldPlugin: IPluginJson = {
                 plugin1: {
                     package: packageName,
-                    registry: packageRegistry,
+                    location: packageRegistry,
                     version: packageVersion
                 }
             };
@@ -97,7 +97,7 @@ describe("PMF: update Interface", () => {
         const oneOldPlugin: IPluginJson = {
             plugin1: {
                 package: packageName,
-                registry: packageRegistry,
+                location: packageRegistry,
                 version: packageVersion
             }
         };
