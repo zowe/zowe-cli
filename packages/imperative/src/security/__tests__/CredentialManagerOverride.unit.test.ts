@@ -79,7 +79,7 @@ describe("CredentialManagerOverride", () => {
         });
         it("should return the default credential manager if settings file does not exist", () => {
             const getSettingsFileJsonSpy = jest.spyOn(CredentialManagerOverride as any, "getSettingsFileJson");
-            getSettingsFileJsonSpy.mockImplementation(() => {throw "test"});
+            getSettingsFileJsonSpy.mockImplementation(() => {throw "test";});
             const current = CredentialManagerOverride.getCurrentCredMgr();
             expect(current).toEqual(CredentialManagerOverride.DEFAULT_CRED_MGR_NAME);
         });

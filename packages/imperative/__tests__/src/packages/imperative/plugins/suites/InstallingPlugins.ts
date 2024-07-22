@@ -83,7 +83,7 @@ describe("Installing Plugins", () => {
             name: "override-plugin",
             usage: "override-plugin"
         },
-        registry: {
+        location: {
             location: "imperative-sample-plugin",
             name: "imperative-sample-plugin",
             usage: "sample-plugin"
@@ -256,7 +256,7 @@ describe("Installing Plugins", () => {
         }
 
         const strippedOutput = T.stripNewLines(result.stdout);
-        expect(strippedOutput).toContain("Registry = " + envNpmRegistry);
+        expect(strippedOutput).toContain("Location = " + plugins.normal.location);
         expect(strippedOutput).toContain(`Installed plugin name = '${plugins.normal.name}'`);
 
         // Now verify that it got added to the tree
@@ -387,7 +387,7 @@ describe("Installing Plugins", () => {
         setCurrCredMgr(defaultCredMgrDisplayNm);
 
         const strippedOutput = T.stripNewLines(result.stdout);
-        expect(strippedOutput).toContain("Registry = " + envNpmRegistry);
+        expect(strippedOutput).toContain("Location = " + plugins.override.location);
         expect(strippedOutput).toContain(`Installed plugin name = '${plugins.override.name}'`);
 
         // confirm it was installed
@@ -417,7 +417,7 @@ describe("Installing Plugins", () => {
         }
 
         const strippedOutput = T.stripNewLines(result.stdout);
-        expect(strippedOutput).toContain("Registry = " + TEST_REGISTRY);
+        expect(strippedOutput).toContain("Location = " + TEST_REGISTRY);
         expect(strippedOutput).toContain(`Installed plugin name = '${plugins.normal.name}'`);
         expect(strippedOutput).toContain(`Installed plugin name = '${plugins.normal2.name}'`);
 
@@ -443,7 +443,7 @@ describe("Installing Plugins", () => {
         }
 
         let strippedOutput = T.stripNewLines(result.stdout);
-        expect(strippedOutput).toContain("Registry = " + envNpmRegistry);
+        expect(strippedOutput).toContain("Location = " + plugins.normal.location);
         expect(strippedOutput).toContain(`Installed plugin name = '${plugins.normal.name}'`);
 
         const afterInstall = executeCommandString(this, "--help");
@@ -466,7 +466,7 @@ describe("Installing Plugins", () => {
         }
 
         strippedOutput = T.stripNewLines(result.stdout);
-        expect(strippedOutput).toContain("Registry = " + envNpmRegistry);
+        expect(strippedOutput).toContain("Location = " + plugins.normal.location);
         expect(strippedOutput).toContain(`Installed plugin name = '${plugins.normal.name}'`);
 
         result = executeCommandString(this, "--help");
@@ -492,7 +492,7 @@ describe("Installing Plugins", () => {
         }
 
         const strippedOutput = T.stripNewLines(result.stdout);
-        expect(strippedOutput).toContain("Registry = " + envNpmRegistry);
+        expect(strippedOutput).toContain("Location = " + plugins.space_in_path.location);
         expect(strippedOutput).toContain(`Installed plugin name = '${plugins.space_in_path.name}'`);
 
         // Now verify that it got added to the tree
@@ -618,7 +618,7 @@ describe("Installing Plugins", () => {
                 },
                 [plugins.normal2.name]: {
                     package: plugins.normal2.location,
-                    registry: TEST_REGISTRY,
+                    location: TEST_REGISTRY,
                     version: "1.0.2"
                 },
             };
@@ -667,7 +667,7 @@ describe("Installing Plugins", () => {
             const savedPluginJson = readFileSync(pluginJsonLocation);
             const expectedContent: IPluginJson = fileContent as IPluginJson;
 
-            expectedContent[plugins.normal.name].registry = envNpmRegistry;
+            expectedContent[plugins.normal.name].location = envNpmRegistry;
 
             expect(savedPluginJson).toEqual(expectedContent);
         });
@@ -735,12 +735,12 @@ describe("Installing Plugins", () => {
             const actualJson = readFileSync(pluginJsonLocation);
 
             // Add missing registry to expected
-            expectedJson[plugins.normal.name].registry = envNpmRegistry;
+            expectedJson[plugins.normal.name].location = envNpmRegistry;
 
             // Add missing normal2 plugin not present in before each
             expectedJson[plugins.normal3.name] = {
                 package: plugins.normal3.location,
-                registry: TEST_REGISTRY,
+                location: TEST_REGISTRY,
                 version: "1.0.3"
             };
 
@@ -751,7 +751,7 @@ describe("Installing Plugins", () => {
         it("should error when a package and --file is specified", function () {
             expect(
                 T.stripNewLines(
-                    executeCommandString(this, `${pluginGroup} install ${plugins.registry.location} --file ${testFile}`).stderr
+                    executeCommandString(this, `${pluginGroup} install ${plugins.location.location} --file ${testFile}`).stderr
                 )
             ).toContain("Option --file can not be specified if positional package... is as well. They are mutually exclusive.");
         });
@@ -760,7 +760,7 @@ describe("Installing Plugins", () => {
             expect(
                 T.stripNewLines(
                     executeCommandString(this,
-                        `${pluginGroup} install ${plugins.registry.location} --file ${testFile} --registry ${TEST_REGISTRY}`).stderr
+                        `${pluginGroup} install ${plugins.location.location} --file ${testFile} --registry ${TEST_REGISTRY}`).stderr
                 )
             ).toContain("The following options conflict (mutually exclusive)");
         });

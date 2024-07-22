@@ -114,12 +114,12 @@ describe("Plugin Management Facility uninstall handler", () => {
         const fileJson: IPluginJson = {
             a: {
                 package: packageName,
-                registry: "",
+                location: "",
                 version: packageVersion
             },
             plugin1: {
                 package: packageName2,
-                registry: packageRegistry2,
+                location: packageRegistry2,
                 version: packageVersion2
             }
         };

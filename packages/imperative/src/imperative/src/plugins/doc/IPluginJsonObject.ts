@@ -23,11 +23,11 @@ export interface IPluginJsonObject {
     package: string;
 
     /**
-     *  The npm registry to install from.
+     *  The npm location to install from.
      *
      *  @type {string}
      */
-    registry: string;
+    location: string;
 
     /**
      * The version of the installed plugin.
