@@ -88,7 +88,7 @@ export class CredentialManagerFactory {
         const Manager = params.Manager ?? DefaultCredentialManager;
 
         // Default invalid on failure to false if not specified
-        params.invalidOnFailure = params.invalidOnFailure ?? false;
+        params.invalidOnFailure ??= false;
 
         if (this.mManager != null) {
             // Something tried to change the already existing credential manager, we should stop this.
