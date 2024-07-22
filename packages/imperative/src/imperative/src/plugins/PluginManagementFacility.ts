@@ -280,7 +280,7 @@ export class PluginManagementFacility {
                      * We must find the plugin name from within our known credMgr overrides.
                      */
                     const credMgrInfo = CredentialManagerOverride.getCredMgrInfoByDisplayName(overrideDispNm);
-                    if ( credMgrInfo === null) {
+                    if (credMgrInfo === null) {
                         credMgrIsUnknown = true;
                     } else {
                         // record the known plugin name that we found for this display name
@@ -624,9 +624,8 @@ export class PluginManagementFacility {
          */
         if (pluginGroupNm.toLowerCase() === cmdTreeDef.name.toLowerCase()) {
             const conflictMessage = this.impLogger.error("The plugin named '%s' attempted to add a group of commands" +
-                " with the name '%s'" +
-                ". Your base application already contains a group with the name '%s'.", pluginGroupNm, pluginGroupDefinition.name,
-            cmdTreeDef.name);
+                " with the name '%s'. Your base application already contains a group with the name '%s'.",
+            pluginGroupNm, pluginGroupDefinition.name, cmdTreeDef.name);
             return { hasConflict: true, message: conflictMessage };
         }
 
@@ -634,9 +633,8 @@ export class PluginManagementFacility {
             for (const pluginAlias of pluginGroupDefinition.aliases) {
                 if (pluginAlias.toLowerCase() === cmdTreeDef.name.toLowerCase()) {
                     const conflictMessage = this.impLogger.error("The plugin named '%s' attempted to add a group of commands" +
-                        " with the alias '%s' " +
-                        ". Your base application already contains a group with the name '%s'.", pluginGroupNm, pluginAlias,
-                    cmdTreeDef.name);
+                        " with the alias '%s' . Your base application already contains a group with the name '%s'.",
+                    pluginGroupNm, pluginAlias, cmdTreeDef.name);
                     return { hasConflict: true, message: conflictMessage };
                 }
             }
@@ -649,8 +647,8 @@ export class PluginManagementFacility {
                 // if the plugin name matches an alias of the definition tree
                 if (pluginGroupNm.toLowerCase() === nextAliasToTest.toLowerCase()) {
                     const conflictMessage = this.impLogger.error("The plugin attempted to add a group of commands with the name '%s' " +
-                        ". Your base application already contains a group with an alias '%s'.", pluginGroupNm, nextAliasToTest,
-                    cmdTreeDef.name);
+                        ". Your base application already contains a group with an alias '%s'.",
+                    pluginGroupNm, nextAliasToTest, cmdTreeDef.name);
                     return { hasConflict: true, message: conflictMessage };
                 }
                 if (pluginGroupDefinition.aliases != null) {
@@ -658,9 +656,8 @@ export class PluginManagementFacility {
                         // if an alias of the plugin matches an alias of hte definition tree
                         if (pluginAlias.toLowerCase() === nextAliasToTest.toLowerCase()) {
                             const conflictMessage = this.impLogger.error("The plugin named '%s' attempted to add a " +
-                                "group of command with the alias '%s', which conflicts with " +
-                                "another alias of the same name for group '%s'.", pluginGroupDefinition.name, pluginAlias,
-                            cmdTreeDef.name);
+                                "group of command with the alias '%s', which conflicts with another alias of the same name for group '%s'.",
+                            pluginGroupDefinition.name, pluginAlias, cmdTreeDef.name);
                             return { hasConflict: true, message: conflictMessage };
                         }
                     }
@@ -882,19 +879,17 @@ export class PluginManagementFacility {
              */
             const knownCredMgrs: ICredentialManagerNameMap[] = CredentialManagerOverride.getKnownCredMgrs();
             overrideErrMsg += `"${settingNm}": "${CredentialManagerOverride.DEFAULT_CRED_MGR_NAME}" (default)`;
-            for ( let credMgrInx = 1; credMgrInx < knownCredMgrs.length; credMgrInx++) {
+            for (let credMgrInx = 1; credMgrInx < knownCredMgrs.length; credMgrInx++) {
                 overrideErrMsg += `\n"${settingNm}": "${knownCredMgrs[credMgrInx].credMgrDisplayName}" `;
 
-                if ( typeof knownCredMgrs[credMgrInx].credMgrPluginName !== "undefined") {
+                if (typeof knownCredMgrs[credMgrInx].credMgrPluginName !== "undefined") {
                     overrideErrMsg += `(supplied in CLI plugin ${knownCredMgrs[credMgrInx].credMgrPluginName}`;
                 }
-                if ( typeof knownCredMgrs[credMgrInx].credMgrZEName !== "undefined") {
+                if (typeof knownCredMgrs[credMgrInx].credMgrZEName !== "undefined") {
                     const punctuation = 8;
                     overrideErrMsg += "\n";
-                    for (let indent: number = 0; indent <
-                        settingNm.length + (knownCredMgrs[credMgrInx].credMgrDisplayName as string).length + punctuation;
-                        indent++ )
-                    {
+                    const indentLength = settingNm.length + `${knownCredMgrs[credMgrInx].credMgrDisplayName}`.length + punctuation;
+                    for (let indent: number = 0; indent < indentLength; indent++) {
                         overrideErrMsg += " ";
                     }
                     overrideErrMsg += `and in ZE extension ${knownCredMgrs[credMgrInx].credMgrZEName}`;
