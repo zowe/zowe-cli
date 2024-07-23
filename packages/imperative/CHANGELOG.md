@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Updated `ProfileInfo.updateProperty` function to support updating properties in typeless profiles. [#2196](https://github.com/zowe/zowe-cli/issues/2196)
+
 ## `8.0.0-next.202407181904`
 
 - Enhancement: Added the function ConfigUtils.formGlobOrProjProfileNm and modified the function ConfigBuilder.build so that the 'zowe config init' command now generates a base profile name of 'global_base' or 'project_base', depending on whether a global or project configuration file is being generated. Related to Zowe Explorer issue https://github.com/zowe/zowe-explorer-vscode/issues/2682.
@@ -417,6 +421,10 @@ All notable changes to the Imperative package will be documented in this file.
 ## `8.0.0-next.202311132045`
 
 - Major: First major version bump for V3
+
+## `5.26.0`
+
+- Enhancement: Updated `ProfileInfo.updateProperty` function to support updating properties in typeless profiles. [#2196](https://github.com/zowe/zowe-cli/issues/2196)
 
 ## `5.25.0`
 
