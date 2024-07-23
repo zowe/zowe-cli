@@ -5,6 +5,7 @@ All notable changes to the Imperative package will be documented in this file.
 ## Recent Changes
 
 - Enhancement: Allowed boolean value (`false`) to be provided to the Credential Manager related function. [zowe-explorer-vscode#2622](https://github.com/zowe/zowe-explorer-vscode/issues/2622)
+- Update: See `5.26.0` for details
 
 ## `8.0.0-next.202407181904`
 
@@ -32,7 +33,6 @@ All notable changes to the Imperative package will be documented in this file.
 ## `8.0.0-next.202407021516`
 
 - BugFix: Updated dependencies for technical currency [#2188](https://github.com/zowe/zowe-cli/pull/2188)
-
 - Update: See `5.25.0` for details
 
 ## `8.0.0-next.202406201950`
@@ -421,6 +421,10 @@ All notable changes to the Imperative package will be documented in this file.
 ## `8.0.0-next.202311132045`
 
 - Major: First major version bump for V3
+
+## `5.26.0`
+
+- Enhancement: Updated `ProfileInfo.updateProperty` function to support updating properties in typeless profiles. [#2196](https://github.com/zowe/zowe-cli/issues/2196)
 
 ## `5.25.0`
 
