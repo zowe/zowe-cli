@@ -191,7 +191,7 @@ export class ProfileInfo {
         if (desiredProfile != null) {
             const mergedArgs = this.mergeArgsForProfile(desiredProfile, { getSecureVals: false });
             if (options.forceUpdate) {
-                const knownProperty = mergedArgs.knownArgs.find((v => v.argName === options.property));
+                const knownProperty = mergedArgs.knownArgs.find(v => v.argName === options.property);
                 if (knownProperty != null) {
                     const profPath = this.getTeamConfig().api.profiles.getProfilePathFromName(options.profileName);
                     if (!ConfigUtils.jsonPathMatches(knownProperty.argLoc.jsonLoc, profPath)) {
