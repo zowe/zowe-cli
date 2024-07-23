@@ -1014,7 +1014,7 @@ describe("TeamConfig ProfileInfo tests", () => {
     });
 
     describe("updateProperty", () => {
-        it("should throw and error if the desired profile is not found", async () => {
+        it("should throw an error if the desired profile is not found", async () => {
             const profInfo = createNewProfInfo(teamProjDir);
             await profInfo.readProfilesFromDisk();
             jest.spyOn(profInfo as any, "getAllProfiles").mockReturnValue([]);
@@ -1157,6 +1157,76 @@ describe("TeamConfig ProfileInfo tests", () => {
                 propsToStore: ["host"],
                 profileName: "LPAR4",
                 profileType: "dummy"
+            });
+        });
+
+        it("should succeed storing property in typeless profile if profile exists", async () => {
+            const profInfo = createNewProfInfo(teamProjDir);
+            await profInfo.readProfilesFromDisk();
+            const storeSpy = jest.spyOn(ConfigAutoStore, "_storeSessCfgProps").mockImplementation(jest.fn());
+            const profileOptions: IProfInfoUpdatePropOpts = {
+                profileName: "typeless",
+                profileType: null,
+                property: "areBirdsReal",
+                value: true
+            };
+            let caughtError;
+            try {
+                await profInfo.updateProperty(profileOptions);
+            } catch (error) {
+                caughtError = error;
+            }
+            expect(caughtError).toBeUndefined();
+            expect(storeSpy).toHaveBeenCalledWith({
+                config: profInfo.getTeamConfig(), profileName: "typeless", profileType: null,
+                defaultBaseProfileName: "base_glob",
+                propsToStore: [ "areBirdsReal" ], sessCfg: { "areBirdsReal": true }, setSecure : undefined,
+            });
+        });
+
+        it("should fail to store property in typeless profile if profile doesn't exist", async () => {
+            const profInfo = createNewProfInfo(teamProjDir);
+            await profInfo.readProfilesFromDisk();
+            const profileOptions: IProfInfoUpdatePropOpts = {
+                profileName: "typeless_new",
+                profileType: null,
+                property: "areBirdsReal",
+                value: true
+            };
+            let caughtError;
+            try {
+                await profInfo.updateProperty(profileOptions);
+            } catch (error) {
+                caughtError = error;
+            }
+
+            expect(caughtError).toBeDefined();
+            expect(caughtError.errorCode).toBe(ProfInfoErr.PROF_NOT_FOUND);
+            expect(caughtError.message).toContain("Failed to find profile");
+        });
+
+        it("should succeed storing property in typeless profile if profile doesn't exist and forceUpdate is true", async () => {
+            const profInfo = createNewProfInfo(teamProjDir);
+            await profInfo.readProfilesFromDisk();
+            const storeSpy = jest.spyOn(ConfigAutoStore, "_storeSessCfgProps").mockImplementation(jest.fn());
+            const profileOptions: IProfInfoUpdatePropOpts = {
+                profileName: "typeless_new",
+                profileType: null,
+                property: "areBirdsReal",
+                value: true,
+                forceUpdate: true
+            };
+            let caughtError;
+            try {
+                await profInfo.updateProperty(profileOptions);
+            } catch (error) {
+                caughtError = error;
+            }
+            expect(caughtError).toBeUndefined();
+            expect(storeSpy).toHaveBeenCalledWith({
+                config: profInfo.getTeamConfig(), profileName: "typeless_new", profileType: null,
+                defaultBaseProfileName: "base_glob",
+                propsToStore: [ "areBirdsReal" ], sessCfg: { "areBirdsReal": true }, setSecure : undefined,
             });
         });
     });

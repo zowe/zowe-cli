@@ -132,6 +132,7 @@ export class ConfigAutoStore {
         const config = opts.config || ImperativeConfig.instance.config;
         // TODO Which autoStore value should take priority if it conflicts between layers
         if (opts.propsToStore.length == 0 || !config?.exists || !config.properties.autoStore) {
+            Logger.getAppLogger().info("Skipping update of profile properties. Check that config file exists and autoStore is true.");
             return;
         }
 

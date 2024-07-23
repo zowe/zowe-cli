@@ -18,9 +18,10 @@ import { IProfMergedArg } from "./IProfMergedArg";
  */
 export interface IProfInfoUpdatePropOpts extends IProfInfoUpdatePropCommonOpts {
     /**
-     * Type of the active profile
+     * Type of the active profile.
+     * Specify `null` to update a typeless profile.
      */
-    profileType: string;
+    profileType: string | null;
 
     /**
      * Name of the active profile
@@ -28,7 +29,7 @@ export interface IProfInfoUpdatePropOpts extends IProfInfoUpdatePropCommonOpts {
     profileName: string;
 
     /**
-     * Force the update to the profile specified even if the property comes from somehwere else
+     * Force the update to the profile specified even if the property comes from somewhere else
      * @example Token Value could be in the base profile (not in the service profile specified)
      *          and the programmer has the intention of storing the token in the service profile
      * @default false When the property is not specified, the updateProperty method follows current
