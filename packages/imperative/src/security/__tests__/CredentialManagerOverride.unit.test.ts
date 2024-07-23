@@ -57,7 +57,10 @@ describe("CredentialManagerOverride", () => {
                     "credMgrDisplayName": "Secrets for Kubernetes",
                     "credMgrPluginName": "@zowe/secrets-for-kubernetes-for-zowe-cli",
                     "credMgrZEName": "Zowe.secrets-for-kubernetes"
-                }
+                },
+                {
+                    "credMgrDisplayName": false
+                },
             ];
             const receivedCredMgrs = CredentialManagerOverride.getKnownCredMgrs();
             expect(receivedCredMgrs).toEqual(expectedCredMgrs);
