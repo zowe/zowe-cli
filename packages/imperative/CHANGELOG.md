@@ -4,6 +4,7 @@ All notable changes to the Imperative package will be documented in this file.
 
 ## Recent Changes
 
+- Enhancement: Allowed boolean value (`false`) to be provided to the Credential Manager related function. [zowe-explorer-vscode#2622](https://github.com/zowe/zowe-explorer-vscode/issues/2622)
 - Update: See `5.26.0` for details
 
 ## `8.0.0-next.202407181904`
