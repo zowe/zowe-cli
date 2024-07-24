@@ -27,6 +27,7 @@ import { setupConfigToLoad } from "../../../__tests__/src/TestUtil";
 import { EnvFileUtils, NextVerFeatures } from "../../utilities";
 import { join } from "path";
 import { Config } from "../../config";
+import { LoggerUtils } from "../..";
 
 jest.mock("../src/syntax/SyntaxValidator");
 jest.mock("../src/utils/SharedOptions");
@@ -1832,17 +1833,17 @@ describe("Command Processor", () => {
         expect(commandResponse.stderr.toString()).toContain(`Some inputs are not displayed`);
     });
 
-    it("should mask input value for a user-defined secure parm when --show-inputs-only flag is set", async () => {
+    it.each(LoggerUtils.SECURE_PROMPT_OPTIONS)("should mask input value for secure parm %s when --show-inputs-only flag is set", async (propName) => {
 
         // values to test
-        const parm1Key = `token-value`;
+        const parm1Key = CliUtils.getOptionFormat(propName).kebabCase;
         const parm1Value = `secret`;
         const secure = `(secure value)`;
         jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({
             config: {
                 api: {
                     secure: {
-                        securePropsForProfile: jest.fn(() => ["tokenValue"])
+                        securePropsForProfile: jest.fn(() => [propName])
                     }
                 },
                 layers: [{ exists: true, path: "zowe.config.json" }],
