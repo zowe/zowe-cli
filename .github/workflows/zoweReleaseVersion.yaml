@@ -72,7 +72,7 @@ jobs:
       - name: Create Pull Request
         run: |
           pr_title="Update CLI version to ${{ env.new_version }}"
-          base_branch="${{ env.defaultBranch }}"
+          base_branch="${{ github.ref_name }}"
           gh pr create -t "$pr_title" -b "$base_branch" --head "$branch_name" --body "Updating Zowe CLI version to ${{ env.new_version }}" --reviewer zFernand0,t1m0thyj,awharn,gejohnston,traeok,jace-roell,ATorrise
         env:
           GH_TOKEN: ${{ secrets.ZOWE_ROBOT_TOKEN }}
