@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## `7.28.1`
+
+- Bugfix: Export new Proxy class from Zowe imperative package.
+
 ## `5.26.0`
 
 - Enhancement: Updated `ProfileInfo.updateProperty` function to support updating properties in typeless profiles. [#2196](https://github.com/zowe/zowe-cli/issues/2196)
