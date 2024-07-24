@@ -2,7 +2,7 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
-## Recent Changes
+## `5.26.1`
 
 - Bugfix: Export new Proxy class from Zowe imperative package. [#2205](https://github.com/zowe/zowe-cli/pull/2205)
 
