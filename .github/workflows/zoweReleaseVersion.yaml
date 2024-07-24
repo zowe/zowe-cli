@@ -21,10 +21,6 @@ jobs:
     steps:
       - name: Checkout CLI Repo
         uses: actions/checkout@v4
-        with:
-          repository: 'zowe/zowe-cli'
-          ref: ${{ env.defaultBranch }}
-          token: ${{ secrets.ZOWE_ROBOT_TOKEN }}
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
