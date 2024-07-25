@@ -10,7 +10,7 @@
 */
 
 import * as fs from "fs";
-import { spawnSync, SpawnSyncReturns } from "child_process";
+import { spawnSync, SpawnSyncReturns, ExecFileException } from "child_process";
 import { ITestEnvironment } from "./environment/doc/response/ITestEnvironment";
 import { CommandProfiles, ICommandDefinition, IHandlerParameters } from "@zowe/imperative";
 
@@ -37,11 +37,16 @@ export function runCliScript(scriptPath: string, testEnvironment: ITestEnvironme
 
         if (process.platform === "win32") {
             // Execute the command synchronously
-            return spawnSync("sh", [`${scriptPath}`].concat(args), {
+            const response = spawnSync("sh", [scriptPath].concat(args), {
                 cwd: testEnvironment.workingDir,
-                env: childEnv,
-                encoding: "buffer"
+                encoding: "buffer",
+                env: childEnv
             });
+            if ((response.error as ExecFileException)?.code === "ENOENT") {
+                throw new Error(`"sh" is missing from your PATH. Check that Git Bash is installed with the option to ` +
+                    `"Use Git and Unix Tools from Windows Command Prompt".`);
+            }
+            return response;
         }
 
         // Check to see if the file is executable
