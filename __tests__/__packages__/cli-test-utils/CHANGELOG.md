@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI test utils package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Improved the error message shown on Windows when `runCliScript` method cannot find `sh` executable on PATH. [#2208](https://github.com/zowe/zowe-cli/issues/2208)
+
 ## `7.18.11`
 
 - BugFix: Fix types error from an incorrect jstree type during compilation
