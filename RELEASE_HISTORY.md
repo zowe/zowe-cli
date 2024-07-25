@@ -17,7 +17,7 @@ Zowe follows a regular release schedule with major versions released every two y
 
 - **Active**: Each major version remains in this phase for 2 years, receiving regular updates and new features.
 - **Maintenance**: Following the Active phase, each major version remains in this phase for an additional 2.5 years, receiving only critical fixes and security patches.
-- **Under Development**: The pre-Active phase where the next major version is prepared. This phase varies in length and is not available for general consumption.
+- **Under Development**: The pre-Active phase when the next major version is prepared. This phase varies in length and the version is not available for general consumption.
 
 ### Guarantees
 
