@@ -49,9 +49,9 @@ jobs:
 
       - name: Update Zowe Version in cli/package.json
         run: |
-          jq ".zoweVersion = \"V$new_version\"" ${{ env.PACKAGE_JSON_PATH }} > package.tmp.json && mv package.tmp.json ${{ env.PACKAGE_JSON_PATH }}
+          jq ".zoweVersion = \"v$new_version\"" ${{ env.PACKAGE_JSON_PATH }} > package.tmp.json && mv package.tmp.json ${{ env.PACKAGE_JSON_PATH }}
 
-      - name: Run update script
+      - name: Update RELEASE_HISTORY.md
         run: node ".github/updateReleaseMarkdown.js"
         env:
           NEW_VERSION: ${{ env.new_version }}
