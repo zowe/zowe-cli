@@ -31,7 +31,7 @@ jobs:
         id: get_zowe_versions
         run: |
           current_version=$(jq -r '.zoweVersion' packages/cli/package.json)
-          current_version="${current_version#V}"  # Strip the 'V' prefix
+          current_version="${current_version#v}"  # Strip the 'v' prefix
           echo "current_version=$current_version" >> $GITHUB_ENV
           new_version="${{ github.event.inputs.major_version }}.${{ github.event.inputs.minor_version }}.${{ github.event.inputs.patch_version }}"
           echo "new_version=$new_version" >> $GITHUB_ENV
@@ -43,7 +43,7 @@ jobs:
 
       - name: Create Branch
         run: |
-          branch_name="update-version-V${{ env.new_version }}"
+          branch_name="update-version-v${{ env.new_version }}"
           echo "branch_name=$branch_name" >> $GITHUB_ENV
           git checkout -b "$branch_name"
 
