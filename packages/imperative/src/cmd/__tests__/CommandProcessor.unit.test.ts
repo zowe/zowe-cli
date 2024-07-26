@@ -26,7 +26,7 @@ import { setupConfigToLoad } from "../../../__tests__/src/TestUtil";
 import { EnvFileUtils } from "../../utilities";
 import { join } from "path";
 import { Config } from "../../config";
-import { LoggerUtils } from "../..";
+import { LoggerUtils } from "../../logger/src/LoggerUtils";
 
 jest.mock("../src/syntax/SyntaxValidator");
 jest.mock("../src/utils/SharedOptions");
