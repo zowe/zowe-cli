@@ -1481,7 +1481,7 @@ describe("Command Processor", () => {
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy",
-            config:  ImperativeConfig.instance.config
+            config: ImperativeConfig.instance.config
         });
 
         // Mock the profile loader
@@ -1592,7 +1592,7 @@ describe("Command Processor", () => {
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy",
-            config:  ImperativeConfig.instance.config
+            config: ImperativeConfig.instance.config
         });
 
         // Mock the profile loader
@@ -1661,11 +1661,24 @@ describe("Command Processor", () => {
                 }
             },
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy",
             config: ImperativeConfig.instance.config
+        });
+
+        // Mock the profile loader
+        (CommandProfileLoader.loader as any) = jest.fn((args) => {
+            return {
+                loadProfiles: (profArgs: any) => {
+                    return;
+                }
+            };
+        });
+
+        // return the "fake" args object with values from profile
+        CliUtils.getOptValueFromProfiles = jest.fn((cmdProfiles, profileDef, allOpts) => {
+            return {};
         });
 
         const parms: any = {
