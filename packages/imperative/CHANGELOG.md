@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- Update: See `5.26.1` for details
+
 ## `8.0.0-next.202407232256`
 
 - Enhancement: Allowed boolean value (`false`) to be provided to the Credential Manager related function. [zowe-explorer-vscode#2622](https://github.com/zowe/zowe-explorer-vscode/issues/2622)
@@ -421,6 +425,10 @@ All notable changes to the Imperative package will be documented in this file.
 ## `8.0.0-next.202311132045`
 
 - Major: First major version bump for V3
+
+## `5.26.1`
+
+- BugFix: Fixed missing export for `Proxy` class in Imperative package. [#2205](https://github.com/zowe/zowe-cli/pull/2205)
 
 ## `5.26.0`
 
