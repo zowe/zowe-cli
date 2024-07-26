@@ -25,6 +25,8 @@ import { ImperativeConfig } from "../../utilities/src/ImperativeConfig";
 import { setupConfigToLoad } from "../../../__tests__/src/TestUtil";
 import { EnvFileUtils } from "../../utilities";
 import { join } from "path";
+import { Config } from "../../config";
+import { LoggerUtils } from "../..";
 
 jest.mock("../src/syntax/SyntaxValidator");
 jest.mock("../src/utils/SharedOptions");
@@ -1506,7 +1508,8 @@ describe("Command Processor", () => {
         expect(commandResponse.data.optionalProfiles[0]).toBe(`banana`);
         expect(commandResponse.data.requiredProfiles).toBeUndefined();
     });
-    it("should mask input value for a secure parm when --show-inputs-only flag is set", async () => {
+
+    it("should mask input value for a default secure parm when --show-inputs-only flag is set", async () => {
 
         // values to test
         const secretParmKey = `brownSpots`;
@@ -1617,6 +1620,67 @@ describe("Command Processor", () => {
         expect(commandResponse.data.optionalProfiles[0]).toBe(`banana`);
         expect(commandResponse.data.commandValues[secretParmKey]).toBe(secure);
         expect(commandResponse.data.requiredProfiles).toBeUndefined();
+    });
+
+    it.each(LoggerUtils.SECURE_PROMPT_OPTIONS)("should mask input value for secure parm %s when --show-inputs-only flag is set", async (propName) => {
+
+        // values to test
+        const parm1Key = CliUtils.getOptionFormat(propName).kebabCase;
+        const parm1Value = `secret`;
+        const secure = `(secure value)`;
+        jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({
+            config: {
+                api: {
+                    secure: {
+                        securePropsForProfile: jest.fn(() => [propName])
+                    }
+                },
+                layers: [{ exists: true, path: "zowe.config.json" }],
+                properties: Config.empty()
+            }
+        } as any);
+
+        // Allocate the command processor
+        const processor: CommandProcessor = new CommandProcessor({
+            envVariablePrefix: ENV_VAR_PREFIX,
+            fullDefinition: SAMPLE_COMPLEX_COMMAND, // `group action`
+            definition: { // `object`
+                name: "banana",
+                description: "The banana command",
+                type: "command",
+                handler: __dirname + "/__model__/TestCmdHandler",
+                options: [
+                    {
+                        name: parm1Key,
+                        type: "string",
+                        description: "The first parameter",
+                    }
+                ],
+                profile: {
+                    optional: ["fruit"]
+                }
+            },
+            helpGenerator: FAKE_HELP_GENERATOR,
+            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
+            rootCommandName: SAMPLE_ROOT_COMMAND,
+            commandLine: "",
+            promptPhrase: "dummydummy",
+            config: ImperativeConfig.instance.config
+        });
+
+        const parms: any = {
+            arguments: {
+                _: ["check", "for", "banana"],
+                $0: "",
+                [parm1Key]: parm1Value,
+                valid: true,
+                showInputsOnly: true,
+            },
+            silent: true
+        };
+        const commandResponse: ICommandResponse = await processor.invoke(parms);
+        expect(commandResponse.data.commandValues[parm1Key]).toBe(secure);
+        expect(commandResponse.stderr.toString()).toContain(`Some inputs are not displayed`);
     });
 
     it("should not mask input value for a secure parm when --show-inputs-only flag is set with env setting", async () => {

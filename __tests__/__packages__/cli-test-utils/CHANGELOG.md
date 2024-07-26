@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI test utils package will be documented in this file.
 
+## Recent Changes
+
+- Update: See `7.28.2` for details
+
 ## `8.0.0-next.202407021516`
 
 - BugFix: Updated dependencies for technical currency [#2188](https://github.com/zowe/zowe-cli/pull/2188)
@@ -13,6 +17,10 @@ All notable changes to the Zowe CLI test utils package will be documented in thi
 ## `8.0.0-next.202311132045`
 
 - Major: First major version bump for V3
+
+## `7.28.2`
+
+- BugFix: Improved the error message shown on Windows when `runCliScript` method cannot find `sh` executable on PATH. [#2208](https://github.com/zowe/zowe-cli/issues/2208)
 
 ## `7.18.11`
 
