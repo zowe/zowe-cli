@@ -9,7 +9,7 @@
 *
 */
 
-import { SessConstants } from "../../..";
+import { ISession, SessConstants } from "../../..";
 import { IHandlerParameters } from "../../../../cmd";
 import { AUTH_TYPE_CHOICES } from "../SessConstants";
 import { IOverridePromptConnProps } from "./IOverridePromptConnProps";
@@ -19,8 +19,7 @@ import { IOverridePromptConnProps } from "./IOverridePromptConnProps";
  * @export
  * @interface ISession
  */
-export interface IOptionsForAddConnProps {
-
+export interface IOptionsForAddConnProps<SessCfgType extends ISession=ISession> {
     /**
      * Indicates that we want to generate a token.
      * When true, we use the user and password for the operation
@@ -51,7 +50,14 @@ export interface IOptionsForAddConnProps {
      * Specifies a list of authentication properties, and what they should override.
      * If one of these properties is available on the session, do not prompt for the other property.
      */
-    propertyOverrides?: IOverridePromptConnProps[];
+    propertyOverrides?: IOverridePromptConnProps<SessCfgType>[];
+
+    propsToPromptFor?:
+    {
+        name: keyof SessCfgType,
+        secure?: boolean,
+        description?: string
+    }[];
 
     /**
      * Specifies the functionality that external applications will use for prompting.

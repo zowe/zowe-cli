@@ -20,6 +20,9 @@ import { ISession } from "./doc/ISession";
 import { IProfileProperty } from "../../../profiles";
 import { ConfigAutoStore } from "../../../config/src/ConfigAutoStore";
 import { ConfigUtils } from "../../../config/src/ConfigUtils";
+import { utils } from "ssh2";
+import * as fs from "fs";
+
 
 /**
  * Extend options for IPromptOptions for internal wrapper method
@@ -97,7 +100,7 @@ export class ConnectionPropsForSessCfg {
     public static async addPropsOrPrompt<SessCfgType extends ISession>(
         initialSessCfg: SessCfgType,
         cmdArgs: ICommandArguments,
-        connOpts: IOptionsForAddConnProps = {}
+        connOpts: IOptionsForAddConnProps <SessCfgType> = {}
     ): Promise<SessCfgType> {
         const impLogger = Logger.getImperativeLogger();
 
@@ -127,11 +130,21 @@ export class ConnectionPropsForSessCfg {
                     if (cmdArgs[argName] != null) { (sessCfgToUse as any)[override.propertyName] = cmdArgs[argName]; }
                     for (const prop of override.propertiesOverridden) {
                         // Make sure we do not prompt for the overridden property.
-                        if (!doNotPromptForValues.includes(prop)) { doNotPromptForValues.push(prop); }
+                        if (!doNotPromptForValues.includes(prop as any)) { doNotPromptForValues.push(prop as any); }
                         if (prop in sessCfgToUse) { (sessCfgToUse as any)[prop] = undefined; }
                     }
                 }
             }
+        }
+
+        if(connOpts.propsToPromptFor?.length > 0)
+        {
+            connOpts.propsToPromptFor.forEach(obj => {
+                if(obj.secure == null) obj.secure = true;
+                if(obj.secure) this.secureSessCfgProps.add(obj.name.toString());
+                promptForValues.push(obj.name as keyof ISession);
+                this.promptTextForValues[obj.name.toString()] = obj.description;
+            });
         }
 
         // check what properties are needed to be prompted
@@ -161,12 +174,18 @@ export class ConnectionPropsForSessCfg {
         this.loadSecureSessCfgProps(connOptsToUse.parms, promptForValues);
 
         if (connOptsToUse.getValuesBack == null && connOptsToUse.doPrompting) {
-            connOptsToUse.getValuesBack = this.getValuesBack(connOptsToUse);
+            connOptsToUse.getValuesBack = this.getValuesBack(connOptsToUse as any);
         }
 
         if (connOptsToUse.getValuesBack != null) {
             // put all the needed properties in an array and call the external function
             const answers = await connOptsToUse.getValuesBack(promptForValues);
+
+            // Attempt to validate keypassPhrase/privateKey
+            let saveKP: boolean = true;
+            let result = utils.parseKey(fs.readFileSync((sessCfgToUse as any)["privateKey"]),(answers as any)["keyPassphrase"]);
+            try{saveKP = !result.message.includes("no passphrase given") && !result.message.includes("bad passphrase");}
+            catch(e){}
 
             // validate what values are given back and move it to sessCfgToUse
             for (const value of promptForValues) {
@@ -175,8 +194,12 @@ export class ConnectionPropsForSessCfg {
                 }
             }
 
+            let propsToStore = promptForValues;
+            let valuesToRemove: string[] = ["keyPassphrase"];
+            if(!saveKP) propsToStore = propsToStore.filter(item => !valuesToRemove.includes(item));
+
             if (connOptsToUse.autoStore !== false && connOptsToUse.parms != null) {
-                await ConfigAutoStore.storeSessCfgProps(connOptsToUse.parms, sessCfgToUse, promptForValues);
+                await ConfigAutoStore.storeSessCfgProps(connOptsToUse.parms, sessCfgToUse, propsToStore);
             }
         }
 
@@ -216,7 +239,7 @@ export class ConnectionPropsForSessCfg {
     public static resolveSessCfgProps<SessCfgType extends ISession>(
         sessCfg: SessCfgType,
         cmdArgs: ICommandArguments = { $0: "", _: [] },
-        connOpts: IOptionsForAddConnProps = {}
+        connOpts: IOptionsForAddConnProps <SessCfgType> = {}
     ) {
         const impLogger = Logger.getImperativeLogger();
 
@@ -307,7 +330,7 @@ export class ConnectionPropsForSessCfg {
             impLogger.debug("Using basic authentication");
             sessCfg.type = SessConstants.AUTH_TYPE_BASIC;
         }
-        ConnectionPropsForSessCfg.setTypeForTokenRequest(sessCfg, connOpts, cmdArgs.tokenType);
+        ConnectionPropsForSessCfg.setTypeForTokenRequest(sessCfg, connOpts as any, cmdArgs.tokenType);
         ConnectionPropsForSessCfg.logSessCfg(sessCfg);
     }
 
@@ -392,7 +415,7 @@ export class ConnectionPropsForSessCfg {
                 let answer;
                 while (answer === undefined) {
                     const hideText = profileSchema[value]?.secure || this.secureSessCfgProps.has(value);
-                    let promptText = `${this.promptTextForValues[value]} ${serviceDescription}`;
+                    let promptText = `${this.promptTextForValues[value] ?? `Enter your ${value} for`} ${serviceDescription}`;
                     if (hideText) {
                         promptText += " (will be hidden)";
                     }

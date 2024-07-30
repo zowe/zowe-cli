@@ -58,12 +58,12 @@ export abstract class SshBaseHandler implements ICommandHandler {
     public async process(commandParameters: IHandlerParameters) {
         this.mHandlerParams = commandParameters;
 
-        const sshSessCfgOverride: IOverridePromptConnProps[] = [{
+        let sshSessCfgOverride: IOverridePromptConnProps[] = [{
             propertyName: "privateKey",
-            propertiesOverridden: ["password", "tokenType", "tokenValue", "cert", "certKey", "passphrase"]
+            propertiesOverridden: ["password", "tokenType", "tokenValue", "cert", "certKey"]
         }];
-        const sshSessCfg: ISshSession = SshSession.createSshSessCfgFromArgs(commandParameters.arguments);
-        const sshSessCfgWithCreds = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISshSession>(
+        let sshSessCfg: ISshSession = SshSession.createSshSessCfgFromArgs(commandParameters.arguments);
+        let sshSessCfgWithCreds = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISshSession>(
             sshSessCfg, commandParameters.arguments, {
                 parms: commandParameters,
                 propertyOverrides: sshSessCfgOverride,
@@ -73,7 +73,53 @@ export abstract class SshBaseHandler implements ICommandHandler {
         this.mSession = new SshSession(sshSessCfgWithCreds);
 
         this.mArguments = commandParameters.arguments;
-        await this.processCmd(commandParameters);
+        let maxAttempts = 3;
+        let attempt = 0;
+        let success = false;
+        
+        try {
+            await this.processCmd(commandParameters);
+        } catch (e) {
+            console.log("Initial key passphrase authentication failed!");
+        
+            if (e.message.includes("bad passphrase?")) {
+                throw e;
+            }
+        
+            if (e.message.includes("but no passphrase given")) {
+                let maxAttempts = 3;
+                let attempt = 0;
+                let success = false;
+        
+                while (attempt < maxAttempts && !success) {
+                    try {
+                        let sshSessCfg = SshSession.createSshSessCfgFromArgs(commandParameters.arguments);
+                        let sshSessCfgWithCreds = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISshSession>(
+                            sshSessCfg, commandParameters.arguments, {
+                                parms: commandParameters,
+                                propertyOverrides: sshSessCfgOverride,
+                                supportedAuthTypes: [SessConstants.AUTH_TYPE_BASIC],
+                                propsToPromptFor: [
+                                    {
+                                        name: "keyPassphrase"
+                                    }
+                                ],
+                            }
+                        );
+                        this.mSession = new SshSession(sshSessCfgWithCreds);
+                        await this.processCmd(commandParameters);
+                        success = true;
+                    } catch (retryError) {
+                        console.log(`Retry attempt ${attempt + 1} failed!`);
+                        attempt++;
+        
+                        if (attempt >= maxAttempts) {
+                            throw new Error("Maximum retry attempts reached. Authentication failed.");
+                        }
+                    }
+                }
+            }
+        }
     }
 
     /**
