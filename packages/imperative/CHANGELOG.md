@@ -2,6 +2,11 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Resolved bug that resulted in user not being prompted for a keyPassphrase if in the secure array of ssh profile. [#1770](https://github.com/zowe/zowe-cli/issues/1770)
+- Enhancement: SshBaseHandler will now prompt user up to 3 times to enter the correct keyPassphrase in the case that the stored value is incorrect or no value is stored. [#1770](https://github.com/zowe/zowe-cli/issues/1770)
+
 ## `8.0.0-next.202407181255`
 
 - BugFix: Resolved bug that resulted in each plug-in to have identical public registries regardless of actual installation location/reference. [#2189](https://github.com/zowe/zowe-cli/pull/2189)

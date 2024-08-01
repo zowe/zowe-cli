@@ -20,9 +20,6 @@ import { ISession } from "./doc/ISession";
 import { IProfileProperty } from "../../../profiles";
 import { ConfigAutoStore } from "../../../config/src/ConfigAutoStore";
 import { ConfigUtils } from "../../../config/src/ConfigUtils";
-import { utils } from "ssh2";
-import * as fs from "fs";
-
 
 /**
  * Extend options for IPromptOptions for internal wrapper method
@@ -116,7 +113,7 @@ export class ConnectionPropsForSessCfg {
         );
 
         // This function will provide all the needed properties in one array
-        const promptForValues: (keyof ISession)[] = [];
+        let promptForValues: (keyof ISession)[] = [];
         const doNotPromptForValues: (keyof ISession)[] = [];
 
         /* Add the override properties to the session object.
@@ -137,6 +134,7 @@ export class ConnectionPropsForSessCfg {
             }
         }
 
+        // Set default values on propsToPromptFor
         if(connOpts.propsToPromptFor?.length > 0)
         {
             connOpts.propsToPromptFor.forEach(obj => {
@@ -181,11 +179,15 @@ export class ConnectionPropsForSessCfg {
             // put all the needed properties in an array and call the external function
             const answers = await connOptsToUse.getValuesBack(promptForValues);
 
-            // Attempt to validate keypassPhrase/privateKey
-            let saveKP: boolean = true;
-            let result = utils.parseKey(fs.readFileSync((sessCfgToUse as any)["privateKey"]),(answers as any)["keyPassphrase"]);
-            try{saveKP = !result.message.includes("no passphrase given") && !result.message.includes("bad passphrase");}
-            catch(e){}
+            if(connOpts.propsToPromptFor?.length > 0)
+            {
+                connOpts.propsToPromptFor.forEach(obj => {
+                    if(obj.isGivenValueValid != null)
+                    {
+                        if(!obj.isGivenValueValid(answers)) promptForValues = promptForValues.filter(item => obj.name !== item);
+                    }
+                });
+            }
 
             // validate what values are given back and move it to sessCfgToUse
             for (const value of promptForValues) {
@@ -194,12 +196,9 @@ export class ConnectionPropsForSessCfg {
                 }
             }
 
-            let propsToStore = promptForValues;
-            let valuesToRemove: string[] = ["keyPassphrase"];
-            if(!saveKP) propsToStore = propsToStore.filter(item => !valuesToRemove.includes(item));
-
+            //
             if (connOptsToUse.autoStore !== false && connOptsToUse.parms != null) {
-                await ConfigAutoStore.storeSessCfgProps(connOptsToUse.parms, sessCfgToUse, propsToStore);
+                await ConfigAutoStore.storeSessCfgProps(connOptsToUse.parms, sessCfgToUse, promptForValues);
             }
         }
 

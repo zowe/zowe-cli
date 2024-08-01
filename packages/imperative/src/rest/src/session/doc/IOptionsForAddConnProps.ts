@@ -56,7 +56,8 @@ export interface IOptionsForAddConnProps<SessCfgType extends ISession=ISession> 
     {
         name: keyof SessCfgType,
         secure?: boolean,
-        description?: string
+        description?: string,
+        isGivenValueValid?: (givenValue: {[key: string]: any}) => boolean
     }[];
 
     /**

@@ -1,13 +1,13 @@
 /*
-* This program and the accompanying materials are made available under the terms of the
-* Eclipse Public License v2.0 which accompanies this distribution, and is available at
-* https://www.eclipse.org/legal/epl-v20.html
-*
-* SPDX-License-Identifier: EPL-2.0
-*
-* Copyright Contributors to the Zowe Project.
-*
-*/
+ * This program and the accompanying materials are made available under the terms of the
+ * Eclipse Public License v2.0 which accompanies this distribution, and is available at
+ * https://www.eclipse.org/legal/epl-v20.html
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Copyright Contributors to the Zowe Project.
+ *
+ */
 
 import {
     // AbstractSession,
@@ -22,16 +22,17 @@ import {
     IImperativeError,
     ImperativeError,
     ConnectionPropsForSessCfg,
-    SessConstants
+    SessConstants,
 } from "@zowe/imperative";
 import { SshSession } from "./SshSession";
 import { ISshSession } from "./doc/ISshSession";
+import { utils } from "ssh2";
+import * as fs from "fs";
 
 /**
  * This class is used by the various handlers in the project as the base class for their implementation.
  */
 export abstract class SshBaseHandler implements ICommandHandler {
-
     /**
      * The session creating from the command line arguments / profile
      */
@@ -58,63 +59,103 @@ export abstract class SshBaseHandler implements ICommandHandler {
     public async process(commandParameters: IHandlerParameters) {
         this.mHandlerParams = commandParameters;
 
-        let sshSessCfgOverride: IOverridePromptConnProps[] = [{
-            propertyName: "privateKey",
-            propertiesOverridden: ["password", "tokenType", "tokenValue", "cert", "certKey"]
-        }];
-        let sshSessCfg: ISshSession = SshSession.createSshSessCfgFromArgs(commandParameters.arguments);
-        let sshSessCfgWithCreds = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISshSession>(
-            sshSessCfg, commandParameters.arguments, {
-                parms: commandParameters,
-                propertyOverrides: sshSessCfgOverride,
-                supportedAuthTypes: [SessConstants.AUTH_TYPE_BASIC]
-            }
+        const sshSessCfgOverride: IOverridePromptConnProps[] = [
+            {
+                propertyName: "privateKey",
+                propertiesOverridden: [
+                    "password",
+                    "tokenType",
+                    "tokenValue",
+                    "cert",
+                    "certKey",
+                ],
+            },
+        ];
+        const sshSessCfg: ISshSession = SshSession.createSshSessCfgFromArgs(
+            commandParameters.arguments
         );
+        let sshSessCfgWithCreds =
+            await ConnectionPropsForSessCfg.addPropsOrPrompt<ISshSession>(
+                sshSessCfg,
+                commandParameters.arguments,
+                {
+                    parms: commandParameters,
+                    propertyOverrides: sshSessCfgOverride,
+                    supportedAuthTypes: [SessConstants.AUTH_TYPE_BASIC],
+                }
+            );
         this.mSession = new SshSession(sshSessCfgWithCreds);
 
         this.mArguments = commandParameters.arguments;
-        let maxAttempts = 3;
-        let attempt = 0;
-        let success = false;
-        
+
         try {
             await this.processCmd(commandParameters);
         } catch (e) {
-            console.log("Initial key passphrase authentication failed!");
-        
-            if (e.message.includes("bad passphrase?")) {
-                throw e;
-            }
-        
-            if (e.message.includes("but no passphrase given")) {
-                let maxAttempts = 3;
+            commandParameters.response.console.log("Initial key passphrase authentication failed!" + "\n");
+            if (
+                e.message.includes("but no passphrase given") ||
+                e.message.includes("bad passphrase?")
+            ) {
+                const maxAttempts = 3;
                 let attempt = 0;
                 let success = false;
-        
                 while (attempt < maxAttempts && !success) {
                     try {
-                        let sshSessCfg = SshSession.createSshSessCfgFromArgs(commandParameters.arguments);
-                        let sshSessCfgWithCreds = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISshSession>(
-                            sshSessCfg, commandParameters.arguments, {
-                                parms: commandParameters,
-                                propertyOverrides: sshSessCfgOverride,
-                                supportedAuthTypes: [SessConstants.AUTH_TYPE_BASIC],
-                                propsToPromptFor: [
-                                    {
-                                        name: "keyPassphrase"
-                                    }
-                                ],
-                            }
-                        );
+                        sshSessCfgWithCreds =
+                            await ConnectionPropsForSessCfg.addPropsOrPrompt<ISshSession>(
+                                sshSessCfgWithCreds,
+                                commandParameters.arguments,
+                                {
+                                    parms: commandParameters,
+                                    propertyOverrides: sshSessCfgOverride,
+                                    supportedAuthTypes: [
+                                        SessConstants.AUTH_TYPE_BASIC,
+                                    ],
+                                    propsToPromptFor: [
+                                        {
+                                            name: "keyPassphrase",
+                                            isGivenValueValid: (givenValue: {
+                                                [key: string]: any;
+                                            }) => {
+                                                let saveKP: boolean = true;
+                                                const result = utils.parseKey(
+                                                    fs.readFileSync(
+                                                        sshSessCfgWithCreds[
+                                                            "privateKey"
+                                                        ]
+                                                    ),
+                                                    givenValue.keyPassphrase
+                                                );
+                                                if (result instanceof Error)
+                                                    saveKP =
+                                                        !result.message.includes(
+                                                            "no passphrase given"
+                                                        ) &&
+                                                        !result.message.includes(
+                                                            "bad passphrase"
+                                                        );
+                                                return saveKP;
+                                            },
+                                        },
+                                    ],
+                                }
+                            );
                         this.mSession = new SshSession(sshSessCfgWithCreds);
                         await this.processCmd(commandParameters);
                         success = true;
                     } catch (retryError) {
-                        console.log(`Retry attempt ${attempt + 1} failed!`);
+                        commandParameters.response.console.log(
+                            "\n" +
+                                `Key passphrase authentication failed! (${
+                                    attempt + 1
+                                }/${maxAttempts})` +
+                                "\n"
+                        );
                         attempt++;
-        
                         if (attempt >= maxAttempts) {
-                            throw new Error("Maximum retry attempts reached. Authentication failed.");
+                            throw new Error(
+                                "Maximum retry attempts reached. Authentication failed."
+                            );
                         }
                     }
                 }
@@ -168,5 +209,7 @@ export abstract class SshBaseHandler implements ICommandHandler {
      * @param {IHandlerParameters} commandParameters Command parameters sent to the handler.
      *
      */
-    public abstract processCmd(commandParameters: IHandlerParameters): Promise<void>;
+    public abstract processCmd(
+        commandParameters: IHandlerParameters
+    ): Promise<void>;
 }
