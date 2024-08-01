@@ -34,7 +34,6 @@ import { IRestOptions } from "./doc/IRestOptions";
 import * as SessConstants from "../session/SessConstants";
 import { CompressionUtils } from "./CompressionUtils";
 import { Proxy } from "./Proxy";
-import { ProxyVariables } from "../session/doc/ProxyVariables";
 
 export type RestClientResolve = (data: string) => void;
 
