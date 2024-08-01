@@ -10,6 +10,7 @@
 */
 
 import * as SessConstants from "../SessConstants";
+import { ProxyVariables } from "./ProxyVariables";
 
 /**
  * Session interface for maintaining cookie and protocol information
@@ -163,6 +164,14 @@ export interface ISession {
      */
     secureProtocol?: string;
     // TODO: Investigate - this does not seem to do anything, and Node defaults to TLS_method w/ TLS 1.3 support
+
+    /**
+     * Default is empty values, ie. string or string[]
+     * Set by extenders that use values other than OS environment variables
+     * @type {string}
+     * @memberof ISession
+     */
+    proxy?: ProxyVariables;
 
     /**
      * Decide whether or not to store a returned cookie.

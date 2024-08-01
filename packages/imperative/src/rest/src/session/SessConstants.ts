@@ -9,6 +9,8 @@
 *
 */
 
+import { ProxyVariables } from "./doc/ProxyVariables";
+
 /* We were unable to export constants and types from a class and use
  * those constants or types within the definition of a property in an interface.
  * So we declared simple constants and types and exported them from this module.
@@ -101,3 +103,12 @@ export const ALL_TOKEN_TYPES = [
 export type TOKEN_TYPE_CHOICES =
     typeof TOKEN_TYPE_LTPA | typeof TOKEN_TYPE_JWT |
     typeof TOKEN_TYPE_APIML;
+
+/**
+ * Default object for proxy variables
+ */
+export const PROXY_VARIABLES: ProxyVariables = {
+    no_proxy: [],
+    http_proxy: "",
+    https_proxy: ""
+};
