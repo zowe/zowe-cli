@@ -22,6 +22,7 @@ import { LoggerManager } from "../../logger/src/LoggerManager";
 import { LoggingConfigurer } from "../../imperative/src/LoggingConfigurer";
 import { Logger } from "../../logger/src/Logger";
 import { EnvironmentalVariableSettings } from "../../imperative/src/env/EnvironmentalVariableSettings";
+import { IConfigProfile } from "./doc/IConfigProfile";
 import { IExtendersJsonOpts } from "./doc/IExtenderOpts";
 
 export class ConfigUtils {
@@ -175,7 +176,6 @@ export class ConfigUtils {
         });
     }
 
-
     // _______________________________________________________________________
     /**
      * Perform a rudimentary initialization of some Imperative utilities.
@@ -213,4 +213,86 @@ export class ConfigUtils {
         return Logger.getImperativeLogger();
     }
 
+    // _______________________________________________________________________
+    /**
+     * Form a profile name of a given profile type to be used as a default
+     * profile name. The name can vary based on whether the configuration to
+     * contain the profile is a global config or a project config.
+     *
+     * Currently, we only form a different global/project profile name for
+     * a base profile. The profile name for any other profile type is currently
+     * set to the profile type string.
+     *
+     * @param profileType
+     *      The profile type for which we will form a name.
+     *
+     * @param globalConfig
+     *      Indicator that the caller knows that the profile name will be
+     *      for a globalConfig (true) or project config (false).
+     *      If globalConfig is not supplied, we interrogate any existing
+     *      Config object to determine whether to form a global or project
+     *      profile name.
+     *
+     * @returns
+     *      A string to be used as the profile name for the specified profile type.
+     */
+    public static formGlobOrProjProfileNm(profileType: string, globalConfig: boolean = null): string {
+        if (profileType !== "base") {
+            // everything except base profiles use profile type as the profile name
+            return profileType;
+        }
+
+        // were we told that this is for a global or project config?
+        if (globalConfig === true) {
+            return `global_${profileType}`;
+
+        } else if (globalConfig === false) {
+            return `project_${profileType}`;
+
+        } else {
+            // determine from existing config whether the profile is intended for a project config
+            const existingConfig = ImperativeConfig.instance.config;
+            for (const nextLayer of existingConfig.layers) {
+                // if desired profile type exists in the project layer, it wins
+                if (nextLayer.global === false) {
+                    if (ConfigUtils.findProfTypeInNestedProfiles(profileType, existingConfig.layerProfiles(nextLayer))) {
+                        return `project_${profileType}`;
+                    }
+                }
+            }
+        }
+        // since we did not find the profile type at the project layers, return a global name
+        return `global_${profileType}`;
+    }
+
+    // _______________________________________________________________________
+    /**
+     * Find the specified profile type in the specified (or nested) profiles.
+     *
+     * @param profileType
+     *      The profile type to search for.
+     *
+     * @param profilesObj
+     *      The profile object in which we should search.
+     *
+     * @returns
+     *      True if we find the profile type. False otherwise.
+     */
+    private static findProfTypeInNestedProfiles(
+        profileType: string,
+        profilesObj: { [key: string]: IConfigProfile }
+    ): boolean {
+        for (const nextProfileObj of Object.values(profilesObj)) {
+            if (nextProfileObj?.type === profileType) {
+                return true;
+            }
+            // The specified type was not in nextProfileObj. Recursively look in its nested profiles.
+            if (nextProfileObj?.profiles) {
+                if (ConfigUtils.findProfTypeInNestedProfiles(profileType, nextProfileObj.profiles)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }

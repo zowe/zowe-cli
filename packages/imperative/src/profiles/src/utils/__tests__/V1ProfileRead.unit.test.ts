@@ -12,7 +12,6 @@
 jest.mock("fs");
 jest.mock("../../../../io/src/IO");
 jest.mock("js-yaml");
-jest.mock("yamljs");
 jest.mock("../../../../utilities/src/ImperativeConfig");
 
 import * as fs from "fs";
@@ -29,13 +28,11 @@ import { IProfile } from "../../../../index";
 import { ImperativeConfig } from "../../../../utilities";
 
 const readYaml = require("js-yaml");
-const writeYaml = require("yamljs");
 
 const mocks = {
     createDirsSync: jest.spyOn(IO, "createDirsSync"),
     safeLoad: jest.spyOn(readYaml, "load"),
     writeFileSync: jest.spyOn(fs, "writeFileSync"),
-    yamlStringify: jest.spyOn(writeYaml, "stringify"),
     unlinkSync: jest.spyOn(fs, "unlinkSync"),
     existsSync: jest.spyOn(fs, "existsSync"),
     readdirSync: jest.spyOn(fs, "readdirSync"),

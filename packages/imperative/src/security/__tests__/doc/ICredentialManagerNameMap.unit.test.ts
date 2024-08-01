@@ -18,7 +18,7 @@ describe("ICredentialManagerNameMap", () => {
             join(__dirname, "../../src/doc/ICredentialManagerNameMap.ts"),
             "utf8"
         );
-        expect(nameMap).toContain("credMgrDisplayName: string;");
+        expect(nameMap).toContain("credMgrDisplayName: string | false;");
         expect(nameMap).toContain("credMgrPluginName?: string;");
         expect(nameMap).toContain("credMgrZEName?: string;");
     });

@@ -7,6 +7,19 @@ All notable changes to the Imperative package will be documented in this file.
 - BugFix: Resolved bug that resulted in user not being prompted for a keyPassphrase if in the secure array of ssh profile. [#1770](https://github.com/zowe/zowe-cli/issues/1770)
 - Enhancement: SshBaseHandler will now prompt user up to 3 times to enter the correct keyPassphrase in the case that the stored value is incorrect or no value is stored. [#1770](https://github.com/zowe/zowe-cli/issues/1770)
 
+## `8.0.0-next.202407262216`
+
+- Update: See `5.26.1` for details
+
+## `8.0.0-next.202407232256`
+
+- Enhancement: Allowed boolean value (`false`) to be provided to the Credential Manager related function. [zowe-explorer-vscode#2622](https://github.com/zowe/zowe-explorer-vscode/issues/2622)
+- Update: See `5.26.0` for details
+
+## `8.0.0-next.202407181904`
+
+- Enhancement: Added the function ConfigUtils.formGlobOrProjProfileNm and modified the function ConfigBuilder.build so that the 'zowe config init' command now generates a base profile name of 'global_base' or 'project_base', depending on whether a global or project configuration file is being generated. Related to Zowe Explorer issue https://github.com/zowe/zowe-explorer-vscode/issues/2682.
+
 ## `8.0.0-next.202407181255`
 
 - BugFix: Resolved bug that resulted in each plug-in to have identical public registries regardless of actual installation location/reference. [#2189](https://github.com/zowe/zowe-cli/pull/2189)
@@ -29,7 +42,6 @@ All notable changes to the Imperative package will be documented in this file.
 ## `8.0.0-next.202407021516`
 
 - BugFix: Updated dependencies for technical currency [#2188](https://github.com/zowe/zowe-cli/pull/2188)
-
 - Update: See `5.25.0` for details
 
 ## `8.0.0-next.202406201950`
@@ -418,6 +430,14 @@ All notable changes to the Imperative package will be documented in this file.
 ## `8.0.0-next.202311132045`
 
 - Major: First major version bump for V3
+
+## `5.26.1`
+
+- BugFix: Fixed missing export for `Proxy` class in Imperative package. [#2205](https://github.com/zowe/zowe-cli/pull/2205)
+
+## `5.26.0`
+
+- Enhancement: Updated `ProfileInfo.updateProperty` function to support updating properties in typeless profiles. [#2196](https://github.com/zowe/zowe-cli/issues/2196)
 
 ## `5.25.0`
 

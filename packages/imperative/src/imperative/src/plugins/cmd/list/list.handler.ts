@@ -98,8 +98,7 @@ export default class ListHandler implements ICommandHandler {
 
         if(containsLegacyPlugin)
         {
-            listOutput = listOutput + `${chalk.yellow.bold("Plug-ins marked with (?) may be invalid or out of date, and might need to be reinstalled.")}`;
-            listOutput = listOutput + "\n";
+            listOutput += chalk.yellow.bold("Plug-ins marked with (?) may be invalid or out of date, and might need to be reinstalled.") + "\n";
         }
 
         if (listOutput === "") {
