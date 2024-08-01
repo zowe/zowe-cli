@@ -215,14 +215,6 @@ export abstract class AbstractRestClient {
     protected mDecode: boolean = true;
 
     /**
-     * Proxy variable object
-     * @private
-     * @type {ProxyVariables}
-     * @memberof AbstractRestClient
-     */
-    protected mProxyVariables: ProxyVariables;
-
-    /**
      * Last byte received when response is being streamed
      * @private
      * @type {number}
@@ -283,8 +275,6 @@ export abstract class AbstractRestClient {
             this.mNormalizeRequestNewlines = options.normalizeRequestNewLines;
             this.mNormalizeResponseNewlines = options.normalizeResponseNewLines;
             this.mTask = options.task;
-            // save proxy variables if passed
-            this.mProxyVariables = this.session.ISession.proxy;
 
             // got a new promise
             this.mResolve = resolve;
