@@ -40,6 +40,13 @@ const UNIT_TEST_SSH_PROF_OPTS_PRIVATE_KEY_WITH_PASSPHRASE = {
     privateKey: normalize(join(__dirname, "..", "..", "..", "..", "..", "..", "zosuss", "__tests__", "__unit__", "__resources__", "fake_id_rsa")),
     keyPassPhrase: "dummyPassPhrase123"
 };
+const UNIT_TEST_SSH_PROF_OPTS_PRIVATE_KEY_WITH_PASSPHRASE_NO_USER = {
+    host: "somewhere.com",
+    port: "22",
+    privateKey: normalize(join(__dirname, "..", "..", "..", "..", "..", "..", "zosuss", "__tests__", "__unit__", "__resources__", "fake_id_rsa")),
+    keyPassPhrase: "dummyPassPhrase123"
+};
+
 
 // A mocked profile map with ssh profile
 const UNIT_TEST_PROFILE_MAP = new Map<string, IProfile[]>();
@@ -68,9 +75,19 @@ UNIT_TEST_PROFILE_MAP_PRIVATE_KEY_WITH_PASSPHRASE.set(
         ...UNIT_TEST_SSH_PROF_OPTS_PRIVATE_KEY_WITH_PASSPHRASE
     }]
 );
+const UNIT_TEST_PROFILE_MAP_PRIVATE_KEY_WITH_PASSPHRASE_NO_USER = new Map<string, IProfile[]>();
+UNIT_TEST_PROFILE_MAP_PRIVATE_KEY_WITH_PASSPHRASE.set(
+    "ssh", [{
+        name: "ssh",
+        type: "ssh",
+        ...UNIT_TEST_SSH_PROF_OPTS_PRIVATE_KEY_WITH_PASSPHRASE_NO_USER
+    }]
+);
 
 const UNIT_TEST_PROFILES_SSH_PRIVATE_KEY = new CommandProfiles(UNIT_TEST_PROFILE_MAP_PRIVATE_KEY);
 const UNIT_TEST_PROFILES_SSH_PRIVATE_KEY_WITH_PASSPHRASE = new CommandProfiles(UNIT_TEST_PROFILE_MAP_PRIVATE_KEY_WITH_PASSPHRASE);
+const UNIT_TEST_PROFILES_SSH_PRIVATE_KEY_WITH_PASSPHRASE_NO_USER = new CommandProfiles(UNIT_TEST_PROFILE_MAP_PRIVATE_KEY_WITH_PASSPHRASE_NO_USER);
+
 // Mocked parameters for the unit tests
 const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
     arguments: UNIT_TEST_SSH_PROF_OPTS,
@@ -91,6 +108,12 @@ const DEFAULT_PARAMETERS_KEY_PASSPHRASE: IHandlerParameters = mockHandlerParamet
     positionals: ["zos-uss", "issue", "ssh"],
     definition: SshDefinition.SshDefinition,
     profiles: UNIT_TEST_PROFILES_SSH_PRIVATE_KEY_WITH_PASSPHRASE,
+});
+const DEFAULT_PARAMETERS_KEY_PASSPHRASE_NO_USER: IHandlerParameters = mockHandlerParameters({
+    arguments: UNIT_TEST_SSH_PROF_OPTS_PRIVATE_KEY_WITH_PASSPHRASE_NO_USER,
+    positionals: ["zos-uss", "issue", "ssh"],
+    definition: SshDefinition.SshDefinition,
+    profiles: UNIT_TEST_PROFILES_SSH_PRIVATE_KEY_WITH_PASSPHRASE_NO_USER,
 });
 
 const testOutput = "TEST OUTPUT";
@@ -167,6 +190,22 @@ describe("issue ssh handler tests", () => {
         });
         await expect(handler.process(params)).rejects.toThrow("Maximum retry attempts reached. Authentication failed.");
         expect(handler.processCmd).toHaveBeenCalledTimes(4);
+        expect(testOutput).toMatchSnapshot();
+    });
+    it("should prompt for user and keyPassphrase if neither is stored", async () => {
+        const testOutput = "test";
+        Shell.executeSsh = jest.fn(async (session, command, stdoutHandler) => {
+            stdoutHandler(testOutput);
+        });
+        const handler = new SshHandler.default();
+        const params = { ...DEFAULT_PARAMETERS_KEY_PASSPHRASE_NO_USER };
+        params.arguments.command = "echo test";
+        jest.spyOn(ConnectionPropsForSessCfg as any,"getValuesBack").mockReturnValue(() => ({
+            user: "someone",
+            keyPassphrase: "validPassword"
+        }));
+        await handler.process(params);
+        expect(Shell.executeSsh).toHaveBeenCalledTimes(1);
         expect(testOutput).toMatchSnapshot();
     });
     it("should be able to get stdout with privateKey", async () => {
