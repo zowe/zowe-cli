@@ -106,8 +106,6 @@ export abstract class AbstractSession {
     public static readonly DEFAULT_SECURE_PROTOCOL = "SSLv23_method";
     // TODO: Investigate - this does not seem to do anything, and Node defaults to TLS_method w/ TLS 1.3 support
 
-    public static readonly DEFAULT_PROXY_VARIABLES = SessConstants.PROXY_VARIABLES;
-
     /**
      * Regex to extract basic from base64 encoded auth
      * @static
@@ -323,11 +321,6 @@ export abstract class AbstractSession {
                     populatedSession.password = AbstractSession.getPasswordFromAuth(populatedSession.base64EncodedAuth);
                 }
             }
-        }
-
-        // set proxy object if not set, environment variable settings will be updated later
-        if (populatedSession.proxy === undefined || populatedSession.proxy === null) {
-            populatedSession.proxy = AbstractSession.DEFAULT_PROXY_VARIABLES;
         }
 
         return populatedSession;
