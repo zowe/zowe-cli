@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`issue ssh handler tests should be able to get stdout 1`] = `"TEST OUTPUT"`;
+
+exports[`issue ssh handler tests should be able to get stdout 2`] = `"TEST OUTPUT"`;
+
+exports[`issue ssh handler tests should be able to get stdout with private key and key passphrase 1`] = `"TEST OUTPUT"`;
+
+exports[`issue ssh handler tests should be able to get stdout with privateKey 1`] = `"TEST OUTPUT"`;
+
+exports[`issue ssh handler tests should fail if user fails to enter incorrect key passphrase in 3 attempts 1`] = `"Maximum retry attempts reached. Authentication failed."`;
+
+exports[`issue ssh handler tests should prompt for user and keyPassphrase if neither is stored 1`] = `"test"`;
+
+exports[`issue ssh handler tests should prompt user for keyPassphrase if none is stored and privateKey requires one 1`] = `"TEST OUTPUT"`;
+
+exports[`issue ssh handler tests should reprompt user for keyPassphrase up to 3 times if stored passphrase failed 1`] = `"TEST OUTPUT"`;

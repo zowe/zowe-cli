@@ -36,5 +36,9 @@ export interface IOverridePromptConnProps<SessCfgType extends ISession=ISession>
      */
     propertiesOverridden: (keyof SessCfgType)[];
 
+    /**
+     * Allows for passing for additional properties to prompt for.
+     * Utilized in the case of a incorrect/not stored key passphrase.
+     */
     propsToPromptFor?: (keyof SessCfgType)[];
 }
