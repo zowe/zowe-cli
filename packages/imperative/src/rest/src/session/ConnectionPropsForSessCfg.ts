@@ -184,7 +184,7 @@ export class ConnectionPropsForSessCfg {
                 connOpts.propsToPromptFor.forEach(obj => {
                     if(obj.isGivenValueValid != null)
                     {
-                        if(!obj.isGivenValueValid(answers)) promptForValues = promptForValues.filter(item => obj.name !== item);
+                        if(!obj.isGivenValueValid(answers.keyPassphrase)) promptForValues = promptForValues.filter(item => obj.name !== item);
                     }
                 });
             }
