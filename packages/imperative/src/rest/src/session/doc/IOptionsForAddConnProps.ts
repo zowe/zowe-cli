@@ -58,7 +58,7 @@ export interface IOptionsForAddConnProps<SessCfgType extends ISession=ISession> 
      */
     propsToPromptFor?:
     {
-        name: keyof SessCfgType,
+        name: keyof SessCfgType & string,
         secure?: boolean,
         description?: string,
         isGivenValueValid?: (givenValue: string) => boolean
