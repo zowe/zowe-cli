@@ -34,11 +34,11 @@ export interface IOverridePromptConnProps<SessCfgType extends ISession=ISession>
      * Prompting logic is only in place for host, port, user, and password, but cert, certKey, tokenType, and tokenValue may also need
      * to be overridden.
      */
-    propertiesOverridden: (keyof SessCfgType)[];
+    propertiesOverridden: (keyof SessCfgType & string)[];
 
     /**
      * Allows for passing for additional properties to prompt for.
      * Utilized in the case of a incorrect/not stored key passphrase.
      */
-    propsToPromptFor?: (keyof SessCfgType)[];
+    propsToPromptFor?: (keyof SessCfgType & string)[];
 }

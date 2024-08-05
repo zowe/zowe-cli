@@ -113,8 +113,8 @@ export class ConnectionPropsForSessCfg {
         );
 
         // This function will provide all the needed properties in one array
-        let promptForValues: (keyof ISession)[] = [];
-        const doNotPromptForValues: (keyof ISession)[] = [];
+        let promptForValues: (keyof SessCfgType & string)[] = [];
+        const doNotPromptForValues: (keyof SessCfgType & string)[] = [];
 
         /* Add the override properties to the session object.
          */
@@ -127,7 +127,7 @@ export class ConnectionPropsForSessCfg {
                     if (cmdArgs[argName] != null) { (sessCfgToUse as any)[override.propertyName] = cmdArgs[argName]; }
                     for (const prop of override.propertiesOverridden) {
                         // Make sure we do not prompt for the overridden property.
-                        if (!doNotPromptForValues.includes(prop as any)) { doNotPromptForValues.push(prop as any); }
+                        if (!doNotPromptForValues.includes(prop)) { doNotPromptForValues.push(prop); }
                         if (prop in sessCfgToUse) { (sessCfgToUse as any)[prop] = undefined; }
                     }
                 }
@@ -172,7 +172,7 @@ export class ConnectionPropsForSessCfg {
         this.loadSecureSessCfgProps(connOptsToUse.parms, promptForValues);
 
         if (connOptsToUse.getValuesBack == null && connOptsToUse.doPrompting) {
-            connOptsToUse.getValuesBack = this.getValuesBack(connOptsToUse as any);
+            connOptsToUse.getValuesBack = this.getValuesBack(connOptsToUse);
         }
 
         if (connOptsToUse.getValuesBack != null) {
@@ -380,7 +380,7 @@ export class ConnectionPropsForSessCfg {
      * @param connOpts Options for adding connection properties
      * @returns Name-value pairs of connection properties
      */
-    private static getValuesBack(connOpts: IOptionsForAddConnProps): (properties: string[]) => Promise<{ [key: string]: any }> {
+    private static getValuesBack<SessCfgType extends ISession=ISession>(connOpts: IOptionsForAddConnProps<SessCfgType>): (properties: string[]) => Promise<{ [key: string]: any }> {
         return async (promptForValues: string[]) => {
             /* The check for console.log in the following 'if' statement is only needed for tests
              * which do not create a mock for the connOpts.parms.response.console.log property.

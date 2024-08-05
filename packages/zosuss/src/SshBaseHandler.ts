@@ -1,13 +1,13 @@
 /*
- * This program and the accompanying materials are made available under the terms of the
- * Eclipse Public License v2.0 which accompanies this distribution, and is available at
- * https://www.eclipse.org/legal/epl-v20.html
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Copyright Contributors to the Zowe Project.
- *
- */
+* This program and the accompanying materials are made available under the terms of the
+* Eclipse Public License v2.0 which accompanies this distribution, and is available at
+* https://www.eclipse.org/legal/epl-v20.html
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Copyright Contributors to the Zowe Project.
+*
+*/
 
 import {
     // AbstractSession,
@@ -120,9 +120,7 @@ export abstract class SshBaseHandler implements ICommandHandler {
                                                 let saveKP: boolean = true;
                                                 const result = utils.parseKey(
                                                     fs.readFileSync(
-                                                        sshSessCfgWithCreds[
-                                                            "privateKey"
-                                                        ]
+                                                        sshSessCfgWithCreds.privateKey
                                                     ),
                                                     givenValue.keyPassphrase
                                                 );
@@ -147,11 +145,10 @@ export abstract class SshBaseHandler implements ICommandHandler {
                         this.console.log(
                             "\n" +
                                 `Key passphrase authentication failed! (${
-                                    attempt + 1
+                                    ++attempt
                                 }/${maxAttempts})` +
                                 "\n"
                         );
-                        attempt++;
                         if (attempt >= maxAttempts) {
                             throw new Error(
                                 "Maximum retry attempts reached. Authentication failed."
