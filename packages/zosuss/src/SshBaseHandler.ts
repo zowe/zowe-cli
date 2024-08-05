@@ -114,15 +114,13 @@ export abstract class SshBaseHandler implements ICommandHandler {
                                     propsToPromptFor: [
                                         {
                                             name: "keyPassphrase",
-                                            isGivenValueValid: (givenValue: {
-                                                [key: string]: any;
-                                            }) => {
+                                            isGivenValueValid: (givenValue: string) => {
                                                 let saveKP: boolean = true;
                                                 const result = utils.parseKey(
                                                     fs.readFileSync(
                                                         sshSessCfgWithCreds.privateKey
                                                     ),
-                                                    givenValue.keyPassphrase
+                                                    givenValue
                                                 );
                                                 if (result instanceof Error)
                                                     saveKP =
