@@ -422,7 +422,7 @@ export abstract class Operation<T> implements ITaskWithStatus {
             if (saveFileNameForUndo) {
                 this.mFilesForUndo.push(filePath);
             }
-        } catch (error) {
+        } catch (_error) {
             const msg: string = "An error occurred creating file: " + filePath +
                 " during operation: " + this.operationResult.operationName;
             this.log.error(message);

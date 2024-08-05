@@ -331,7 +331,7 @@ export default class EnableDaemonHandler implements ICommandHandler {
      * @returns {string} An informational message to display to the user after
      *          successful completion of the operation.
      */
-    private addZoweBinOnPosix(pathToZoweBin: string): string {
+    private addZoweBinOnPosix(_pathToZoweBin: string): string {
         // Todo: Implement addZoweBinOnPosix
         const userInfoMsg: string = "";
         return userInfoMsg;

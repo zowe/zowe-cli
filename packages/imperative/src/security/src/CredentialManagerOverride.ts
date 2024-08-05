@@ -106,7 +106,7 @@ export class CredentialManagerOverride {
         try {
             const settings = this.getSettingsFileJson();
             return settings.json.overrides.CredentialManager;
-        } catch (err) {
+        } catch (_err) {
             return this.DEFAULT_CRED_MGR_NAME;
         }
     }

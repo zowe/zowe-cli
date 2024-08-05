@@ -22,7 +22,6 @@ import { GroupCommandYargs } from "./GroupCommandYargs";
 import { IHelpGeneratorFactory } from "../help/doc/IHelpGeneratorFactory";
 import { CommandResponse } from "../response/CommandResponse";
 import { ICommandResponse } from "../../src/doc/response/response/ICommandResponse";
-import { ICommandExampleDefinition } from "../..";
 import { ImperativeConfig } from "../../../utilities/src/ImperativeConfig";
 
 /**
@@ -358,11 +357,11 @@ export abstract class AbstractCommandYargs {
                 }
 
                 if(tempDescPath === tempOpPath ) {
-                    let commandExamples: ICommandExampleDefinition;
-                    tempPre && tempDescPath === tempPrePath ?
-                        commandDefinition.examples[commandDefinition.examples.length - 1].prefix = tempPre
-                        :commandExamples = {description: tempDesc, options: tempOp};
-                    if(commandExamples) {commandDefinition.examples.push(commandExamples);}
+                    if (tempPre && tempDescPath === tempPrePath) {
+                        commandDefinition.examples[commandDefinition.examples.length - 1].prefix = tempPre;
+                    } else {
+                        commandDefinition.examples.push({description: tempDesc, options: tempOp});
+                    }
                 }
             }
         });

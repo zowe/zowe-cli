@@ -19,7 +19,7 @@ import { CompareBaseHandler } from "../CompareBase.handler";
  * @export
  */
 export default class LocalfileSpoolddHandler extends CompareBaseHandler {
-    public async getFile1(session: AbstractSession, args: ICommandArguments, helper: CompareBaseHelper): Promise<string | Buffer> {
+    public async getFile1(_session: AbstractSession, args: ICommandArguments, helper: CompareBaseHelper): Promise<string | Buffer> {
         return helper.prepareLocalFile(args.localFilePath);
     }
     public async getFile2(session: AbstractSession, args: ICommandArguments, helper: CompareBaseHelper): Promise<string | Buffer> {

@@ -164,7 +164,7 @@ export class DaemonClient {
         if (jsonData.user != null) {
             try {
                 requestUser = Buffer.from(jsonData.user, 'base64').toString();
-            } catch (err) {
+            } catch (_err) {
                 Imperative.api.appLogger.error("The user field on a daemon request was malformed.");
             }
         }

@@ -17,13 +17,13 @@ import { IHandlerFormatOutputApi } from "../../doc/response/api/handler/IHandler
 
 export class HandlerResponse implements IHandlerResponseApi {
     public console: IHandlerResponseConsoleApi = {
-        log: jest.fn((message: string | Buffer, ...values: any[]) => {
+        log: jest.fn((message: string | Buffer, ..._values: any[]) => {
             return message + "\n";
         }),
-        error: jest.fn((message: string | Buffer, ...values: any[]) => {
+        error: jest.fn((message: string | Buffer, ..._values: any[]) => {
             return message + "\n";
         }),
-        errorHeader: jest.fn((message: string, delimeter?: string) => {
+        errorHeader: jest.fn((message: string, _delimiter?: string) => {
             return message + ":\n";
         }),
         prompt: jest.fn(),

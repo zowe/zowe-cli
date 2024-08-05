@@ -613,7 +613,7 @@ export class PluginManagementFacility {
      *                                message: the message describing the conflict
      */
     private conflictingNameOrAlias(
-        pluginName: string,
+        _pluginName: string,
         pluginGroupDefinition: ICommandDefinition,
         cmdTreeDef: ICommandDefinition
     ): { hasConflict: boolean, message: string } {

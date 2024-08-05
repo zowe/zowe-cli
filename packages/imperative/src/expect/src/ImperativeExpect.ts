@@ -263,15 +263,16 @@ export class ImperativeExpect {
      * Expect a set of keys to be of a certain type.
      * @static
      * @param {{ [key: string]: any }} obj - The input object
-     * @param {string} type - The type to check for (only primatives - uses "typeof")
+     * @param {string} type - The type to check for (only primitives - uses "typeof")
      * @param {...string[]} keys - A list of keys to check in the object
      * @param {string} [msg] - The message to throw - overrides the default message
      * @memberof ImperativeExpect
      */
-    public static keysToBeOfType(obj: { [key: string]: any } | any, type: string, keys: string[], msg?: string) {
+    public static keysToBeOfType(obj: { [key: string]: any } | any, type: string, keys: string[], _msg?: string) {
         ImperativeExpect.keysToBeDefined(obj, keys);
         const objParser = new DataObjectParser(obj);
         keys.forEach((key) => {
+            // biome-ignore lint/suspicious/useValidTypeof:
             if (typeof objParser.get(key) !== type) {
                 throw new ImperativeError({msg: "Object key '" + key + "' must be of type '" + type + "'"},
                     {tag: ImperativeExpect.ERROR_TAG});

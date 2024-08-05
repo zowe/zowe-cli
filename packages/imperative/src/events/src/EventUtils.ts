@@ -90,7 +90,7 @@ export class EventUtils {
     public static getEventContents(eventFilePath: string): IEventJson {
         try {
             return JSON.parse(fs.readFileSync(eventFilePath).toString());
-        } catch (err) {
+        } catch (_err) {
             throw new ImperativeError({ msg: `Unable to retrieve event contents: Path: ${eventFilePath}` });
         }
     }

@@ -311,7 +311,8 @@ export class Imperative {
                 }
                 if (!(error instanceof ImperativeError)) {
                     const oldError = error;
-                    error = new ImperativeError({  // eslint-disable-line no-ex-assign
+                    // biome-ignore lint/suspicious/noCatchAssign:
+                    error = new ImperativeError({
                         msg: "Unexpected Error Encountered",
                         causeErrors: error
                     });
@@ -553,7 +554,7 @@ export class Imperative {
 
         for (const child of preparedHostCliCmdTree.children) {
             definer.define(child,
-                (args: yargs.Arguments, response: IYargsResponse) => {
+                (_args: yargs.Arguments, response: IYargsResponse) => {
                     if (response.success) {
                         if (response.exitCode == null) {
                             response.exitCode = 0;

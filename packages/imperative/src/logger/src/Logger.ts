@@ -360,7 +360,7 @@ export class Logger {
             const filename = path.basename(frame[callerStackIndex].getFileName());
             const lineNumber = frame[callerStackIndex].getLineNumber();
             return format("[%s:%s] ", filename, lineNumber);
-        } catch(e) {
+        } catch(_e) {
             return "[<unknown>] ";
         }
     }

@@ -38,7 +38,7 @@ export default class ActiveWorkflowDetails extends ZosmfBaseHandler {
 
         let workflowKey: string;
         let response: IWorkflowInfo;
-        let requireSteps: boolean;
+        const requireSteps = this.arguments.listSteps || this.arguments.stepsSummaryOnly;
         let stepSummaries: IStepSummary[] = [];
         let error: any;
 
@@ -53,8 +53,6 @@ export default class ActiveWorkflowDetails extends ZosmfBaseHandler {
                 });
             }
         }
-
-        this.arguments.listSteps || this.arguments.stepsSummaryOnly ? requireSteps = true : requireSteps = false;
 
         try {
             response = await PropertiesWorkflow.getWorkflowProperties(this.mSession, workflowKey, undefined,

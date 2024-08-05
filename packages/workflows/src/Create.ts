@@ -166,9 +166,7 @@ export class CreateWorkflow{
         if (!keepFiles){
             resp.failedToDelete = [await CreateWorkflow.deleteTempFile(session, tempDefinitionFile)];
             if (VariableInputFile){
-                !resp.failedToDelete[0]?
-                    resp.failedToDelete = [await CreateWorkflow.deleteTempFile(session, tempVariableInputFile)]:
-                    resp.failedToDelete.push(await CreateWorkflow.deleteTempFile(session, tempVariableInputFile));
+                resp.failedToDelete = [...resp.failedToDelete.filter(Boolean), await CreateWorkflow.deleteTempFile(session, tempVariableInputFile)];
             }
         } else {
             resp.filesKept = [tempDefinitionFile];
@@ -221,10 +219,9 @@ export class CreateWorkflow{
      */
     public static async deleteTempFile(session: AbstractSession, ussFileName: string): Promise<string>{
         try{
-            let deletableLocation: string;
-            ussFileName.startsWith("/") ? deletableLocation = ussFileName.slice(1) : deletableLocation = ussFileName;
+            const deletableLocation = ussFileName.startsWith("/") ? ussFileName.slice(1) : ussFileName;
             await Delete.ussFile(session, deletableLocation);
-        } catch (error){
+        } catch (_error){
             return ussFileName;
         }
         return;

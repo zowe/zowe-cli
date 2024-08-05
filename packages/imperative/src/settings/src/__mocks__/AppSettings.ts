@@ -27,7 +27,7 @@ function MockAppSettings() {
 
     // Enforces that the type matches that of the calling class
     const setFn: typeof AppSettingsModule.AppSettings.prototype.set = (
-        namespace: keyof ISettingsFile,
+        _namespace: keyof ISettingsFile,
         override: keyof ISettingsFile["overrides"],
         value: string | false
     ) => {
@@ -39,7 +39,7 @@ function MockAppSettings() {
     this.set = jest.fn(setFn);
 
     const getFn: typeof AppSettingsModule.AppSettings.prototype.get = (
-        namespace: keyof ISettingsFile,
+        _namespace: keyof ISettingsFile,
         override: keyof ISettingsFile["overrides"]
     ) => {
         return this.settings.overrides[override];

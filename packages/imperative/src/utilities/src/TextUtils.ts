@@ -283,7 +283,7 @@ export class TextUtils {
                 try {
                     JSON.parse(value as string);
                     isJson = true;
-                } catch (e) {
+                } catch (_e) {
                     // not json
                 }
                 return typeof value === 'string' || typeof value === 'number' || isJson;

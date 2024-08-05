@@ -76,7 +76,7 @@ export default class ArchiveHandler extends ZosmfBaseHandler {
                     try {
                         resp = await ArchiveWorkflow.archiveWorkflowByKey(this.mSession, element.workflowKey);
                         successWfs.push(element);
-                    } catch (err) {
+                    } catch (_err) {
                         failedWfs.push(element);
                     }
                 }

@@ -130,7 +130,7 @@ export class TestEnvironment {
      * @returns {ITestPropertiesSchema} - The parsed test properties.
      * @memberof TestEnvironment
      */
-    protected static loadSystemTestProperties<T>(filePath: string | null = null, testDirectory: string): T {
+    protected static loadSystemTestProperties<T>(_filePath: string | null = null, testDirectory: string): T {
         const logger: Logger = this.getMockFileLogger(testDirectory);
         // For now, I'm leaving the option for env specified properties in code. This will not be documented.
         const propfilename: string = process.env.propfile || TestEnvironment.DEFAULT_PROPERTIES;
@@ -202,7 +202,7 @@ export class TestEnvironment {
      * @returns {Logger} - a logger that can be used for test environment clean up and set up
      */
     protected static getMockFileLogger(workingDir: string): Logger {
-        const logFile = workingDir += "/TestEnvironment.log";
+        const logFile = workingDir + "/TestEnvironment.log";
         const logFn = (tag: string, message: string, ...args: any[]) => {
             message = TextUtils.formatMessage(message, ...args);
             fs.appendFileSync(logFile, tag + " " + message + "\n");

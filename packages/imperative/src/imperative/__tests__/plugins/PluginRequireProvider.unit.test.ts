@@ -172,13 +172,14 @@ describe("PluginRequireProvider", () => {
             main: NodeModule['require']['main'];
         };
 
-        return Module.prototype.require = jest.fn(function(...args: any[]) {
+        Module.prototype.require = jest.fn(function(...args: any[]) {
             if (args[1] === testRequireIndicator) {
                 return this;
             } else {
                 return originalRequire.apply(this, args);
             }
         }) as any | MockedRequire;
+        return Module.prototype.require;
     };
 
     // Gets a reference to the original require before each test

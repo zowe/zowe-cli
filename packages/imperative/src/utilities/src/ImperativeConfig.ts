@@ -298,8 +298,11 @@ export class ImperativeConfig {
      */
     public get profileSchemas(): { [key: string]: ICommandProfileSchema } {
         const schemas: any = {};
-        if (ImperativeConfig.instance.loadedConfig.profiles != null)
-            ImperativeConfig.instance.loadedConfig.profiles.forEach(profile => schemas[profile.type] = profile.schema);
+        if (ImperativeConfig.instance.loadedConfig.profiles != null) {
+            ImperativeConfig.instance.loadedConfig.profiles.forEach(profile => {
+                schemas[profile.type] = profile.schema
+            });
+        }
         return schemas;
     }
 }

@@ -27,9 +27,9 @@ describe("ProcessUtils tests", () => {
 
             let animal = chicken;
 
-            const setCat = () => animal = cat;
-            const setDog = () => animal = dog;
-            const setPig = () => animal = pig;
+            const setCat = () => { animal = cat };
+            const setDog = () => { animal = dog };
+            const setPig = () => { animal = pig };
 
             await ProcessUtils.nextTick(setCat);
             expect(animal).toBe(cat);

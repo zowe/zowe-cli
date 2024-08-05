@@ -572,7 +572,7 @@ export class ConvertV1Profiles {
         try {
             // have AppSettings been initialized?
             AppSettings.instance;
-        } catch (error) {
+        } catch (_error) {
             let settingsFile: string = "NotSetYet";
             try {
                 // A VSCode extension will not have initialized AppSettings, so initialize it now

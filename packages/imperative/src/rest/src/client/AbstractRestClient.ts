@@ -33,7 +33,7 @@ import { TextUtils } from "../../../utilities";
 import { IRestOptions } from "./doc/IRestOptions";
 import * as SessConstants from "../session/SessConstants";
 import { CompressionUtils } from "./CompressionUtils";
-import { Proxy } from "./Proxy";
+import { RestProxy } from "./RestProxy";
 
 export type RestClientResolve = (data: string) => void;
 
@@ -421,7 +421,7 @@ export abstract class AbstractRestClient {
      * @memberof AbstractRestClient
      * @returns {IImperativeError} processedError - the error with the fields set the way you want them
      */
-    protected processError(error: IImperativeError): IImperativeError {
+    protected processError(_error: IImperativeError): IImperativeError {
         this.log.debug("Default stub for processError was called for rest client %s - processError was not overwritten",
             this.constructor.name);
         return undefined; // do nothing by default
@@ -461,13 +461,13 @@ export abstract class AbstractRestClient {
         // NOTE(Kelosky): This cannot be set for http requests
         // options.agent = new https.Agent({secureProtocol: this.session.ISession.secureProtocol});
 
-        const proxyUrl = Proxy.getSystemProxyUrl(this.session.ISession);
+        const proxyUrl = RestProxy.getSystemProxyUrl(this.session.ISession);
         if (proxyUrl) {
-            if (Proxy.matchesNoProxySettings(this.session.ISession)) {
+            if (RestProxy.matchesNoProxySettings(this.session.ISession)) {
                 this.mLogger.info(`Proxy setting "${proxyUrl.href}" will not be used as hostname was found listed under "no_proxy" setting.`);
             } else {
                 this.mLogger.info(`Using the following proxy setting for the request: ${proxyUrl.href}`);
-                options.agent = Proxy.getProxyAgent(this.session.ISession);
+                options.agent = RestProxy.getProxyAgent(this.session.ISession);
             }
         }
 

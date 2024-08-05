@@ -31,11 +31,11 @@ export class Config {
         };
     }
 
-    constructor(opts?: IConfigOpts) {
+    constructor(_opts?: IConfigOpts) {
         /* Do nothing */
     }
 
-    public static load(app: string, opts?: IConfigOpts) {
+    public static load(_app: string, opts?: IConfigOpts) {
         opts = opts ?? {};
 
         const config = new Config(opts);

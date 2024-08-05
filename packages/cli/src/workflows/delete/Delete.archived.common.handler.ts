@@ -75,11 +75,11 @@ export default class DeleteArchivedCommonHandler extends ZosmfBaseHandler {
                 let normalized: string;
                 const successWfs: IWorkflowsInfo[] = [];
                 const failedWfs: IWorkflowsInfo[] = [];
-                this.arguments.workflowName.includes(".*")
-                    ? normalized = this.arguments.workflowName
-                        .split(".*")
-                        .join("*")
-                    : wildCard = false;
+                if (this.arguments.workflowName.includes(".*")) {
+                    normalized = this.arguments.workflowName.split(".*").join("*");
+                } else {
+                    wildCard = false;
+                }
 
                 listWorkflows = await ListArchivedWorkflows.listArchivedWorkflows(
                     this.mSession
@@ -90,16 +90,9 @@ export default class DeleteArchivedCommonHandler extends ZosmfBaseHandler {
                     i >= 0;
                     i--
                 ) {
-                // Swap between checks to avoid "glob pattern string required" error.
-                    wildCard
-                        ? check = minimatch(
-                            listWorkflows.archivedWorkflows[i].workflowName,
-                            normalized
-                        )
-                        : check =
-                              listWorkflows.archivedWorkflows[i]
-                                  .workflowName ===
-                              this.arguments.workflowName;
+                    // Swap between checks to avoid "glob pattern string required" error.
+                    check = wildCard ? minimatch(listWorkflows.archivedWorkflows[i].workflowName, normalized) :
+                        listWorkflows.archivedWorkflows[i].workflowName === this.arguments.workflowName;
 
                     if (check) {
                         try {
@@ -108,7 +101,7 @@ export default class DeleteArchivedCommonHandler extends ZosmfBaseHandler {
                                 listWorkflows.archivedWorkflows[i].workflowKey
                             );
                             successWfs.push(listWorkflows.archivedWorkflows[i]);
-                        } catch (err) {
+                        } catch (_err) {
                             failedWfs.push(listWorkflows.archivedWorkflows[i]);
                         }
                     } else {

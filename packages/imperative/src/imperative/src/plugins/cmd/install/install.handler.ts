@@ -78,7 +78,7 @@ import { IO } from "../../../../../io";
         let installRegistry = getRegistry();
         try {
             isDirTest = IO.isDir(plugin);
-        } catch (e) {
+        } catch (_e) {
             isDirTest = false;
         }
 

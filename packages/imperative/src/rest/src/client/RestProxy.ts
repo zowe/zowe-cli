@@ -32,7 +32,7 @@ import { ISession } from '../session/doc/ISession';
  * variables NO_PROXY or no_proxy. These work with a simple comma separated list of hostnames that need
  * to match with the hostname of the Zowe profile.
  */
-export class Proxy {
+export class RestProxy {
 
     /**
      * Retrieve an appropriate http.agent instance if proxy environment variables can be found.

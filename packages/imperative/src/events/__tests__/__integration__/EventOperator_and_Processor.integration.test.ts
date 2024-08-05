@@ -42,7 +42,9 @@ describe("Event Operator and Processor", () => {
         zoweCliHome = process.env.ZOWE_CLI_HOME;
         EventUtils.ensureEventsDirExists(zoweCliHome);
         const extJson: IExtendersJsonOpts = ConfigUtils.readExtendersJson();
-        sampleApps.forEach(app => extJson.profileTypes[app] = { from: [app] });
+        sampleApps.forEach(app => {
+            extJson.profileTypes[app] = { from: [app] };
+        });
         ConfigUtils.writeExtendersJson(extJson);
     });
 

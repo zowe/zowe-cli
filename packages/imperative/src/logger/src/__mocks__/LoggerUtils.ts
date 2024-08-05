@@ -14,7 +14,7 @@ const LoggerUtils: any =
 
 const loggerUtilsRequire = (jest as any).requireActual("../LoggerUtils").LoggerUtils;
 
-LoggerUtils.censorRawData.mockImplementation((data: string, category: string = "") => {
+LoggerUtils.censorRawData.mockImplementation((data: string, _category: string = "") => {
     return data;
 });
 

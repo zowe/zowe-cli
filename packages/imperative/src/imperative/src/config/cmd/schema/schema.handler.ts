@@ -28,7 +28,7 @@ export default class SchemaHandler implements ICommandHandler {
         let profileConfigs: ICommandProfileTypeConfiguration[];
         try {
             profileConfigs = ImperativeConfig.instance.loadedConfig.profiles;
-        } catch (err) {
+        } catch (_err) {
             params.response.console.error("Failed to load profile schemas");
             return;
         }

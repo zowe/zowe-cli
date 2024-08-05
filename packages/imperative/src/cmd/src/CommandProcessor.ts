@@ -1177,7 +1177,7 @@ export class CommandProcessor {
                     const causeErrorsJson = JSON.parse(handlerErr.causeErrors);
                     response.console.error("\n" + TextUtils.chalk.bold.yellow(responseTitle));
                     response.console.error(TextUtils.prettyJson(causeErrorsJson, undefined, false, ""));
-                } catch (parseErr) {
+                } catch (_parseErr) {
                     // causeErrors was not JSON.
                     const causeErrString: string = handlerErr.causeErrors.toString();
                     if (causeErrString.length > 0) {

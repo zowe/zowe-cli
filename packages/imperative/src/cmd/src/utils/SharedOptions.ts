@@ -55,7 +55,7 @@ export class SharedOptions {
      * @param {() => void} done - callback for when stdin reading is done. attemptedStdinRead: whether we tried to read standard in
      *                            based on the arguments and command definition
      */
-    private static readStdin(args: Arguments, response: CommandResponse, commandType: ICommandNodeType, stream = process.stdin,
+    private static readStdin(args: Arguments, _response: CommandResponse, commandType: ICommandNodeType, stream = process.stdin,
         done: (readErr: IImperativeError, attemptedStdinRead: boolean) => void): void {
 
         /**

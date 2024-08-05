@@ -9,8 +9,6 @@
 *
 */
 
-import Mock = jest.Mock;
-
 jest.mock("fs");
 jest.mock("path");
 import * as fs from "fs";

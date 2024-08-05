@@ -74,7 +74,7 @@ export default class DeleteCommonHandler extends ZosmfBaseHandler {
                     try {
                         await DeleteWorkflow.deleteWorkflow(this.mSession, element.workflowKey);
                         successWfs.push(element);
-                    } catch (err) {
+                    } catch (_err) {
                         failedWfs.push(element);
                     }
                 }

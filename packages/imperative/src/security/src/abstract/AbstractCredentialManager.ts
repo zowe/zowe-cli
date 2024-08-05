@@ -9,7 +9,6 @@
 *
 */
 
-/* eslint-disable @typescript-eslint/no-unsafe-declaration-merging */
 import { ImperativeError } from "../../../error";
 /**
  * String credential
@@ -60,6 +59,7 @@ export interface AbstractCredentialManager {
  * @see {@link IImperativeOverrides.CredentialManager}
  *
  */
+// biome-ignore lint/suspicious/noUnsafeDeclarationMerging:
 export abstract class AbstractCredentialManager {
     /**
      * This class can not be directly instantiated so the constructor is protected. All extending classes must make a call

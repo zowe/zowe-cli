@@ -72,7 +72,7 @@ export class ConfigUtils {
         try {
             const extenderJsonPath = pathJoin(ConfigUtils.getZoweDir(), "extenders.json");
             jsonfile.writeFileSync(extenderJsonPath, obj, { spaces: 4 });
-        } catch (err) {
+        } catch (_err) {
             return false;
         }
 

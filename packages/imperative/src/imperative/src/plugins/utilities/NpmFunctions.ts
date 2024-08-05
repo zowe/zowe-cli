@@ -53,7 +53,7 @@ export function installPackages(prefix: string, registry: string, npmPackage: st
     try{
         isDirTest = IO.isDir(registry);
     }
-    catch(e){
+    catch(_e){
         isDirTest = false;
     }
 

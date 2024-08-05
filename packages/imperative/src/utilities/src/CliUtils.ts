@@ -586,7 +586,7 @@ export class CliUtils {
      */
     public static getOptionFormat(key: string): IOptionFormat {
         return {
-            camelCase: key.replace(/(-+\w?)/g, (match, p1) => {
+            camelCase: key.replace(/(-+\w?)/g, (_match, p1) => {
                 /*
                  * Regular expression checks for 1 or more "-" characters followed by 0 or 1 word character
                  * The last character in each match is converted to upper case and returned only if it
@@ -602,7 +602,7 @@ export class CliUtils {
                 const returnChar = p1.substr(-1).toUpperCase();
                 return returnChar !== "-" ? returnChar : "";
             }),
-            kebabCase: key.replace(/(-*[A-Z]|-{2,}|-$)/g, (match, p1, offset, inputString) => {
+            kebabCase: key.replace(/(-*[A-Z]|-{2,}|-$)/g, (_match, p1, offset, inputString) => {
                 /*
                  * Regular expression matches the following:
                  *

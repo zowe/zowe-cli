@@ -103,7 +103,7 @@ export class Search {
                         if (item.member != undefined) { searchItems.push({dsn: pds, member: item.member}); }
                     }
                 }
-            } catch (err) {
+            } catch (_err) {
                 failedDatasets.push(pds);
             }
         }
@@ -176,7 +176,7 @@ export class Search {
                 const searchLen = searchOptions.searchString.length;
 
                 for (const {line, column, contents} of entry.matchList) {
-                    // eslint-disable-next-line no-control-regex
+                    // biome-ignore lint/suspicious/noControlCharactersInRegex:
                     let localContents = contents.replace(/[\u0000-\u001F\u007F-\u009F]/g, "\uFFFD");
                     const beforeString = chalk.grey(localContents.substring(0, column - 1));
                     const selectedString = chalk.white.bold(localContents.substring(column - 1, column - 1 + searchLen));
@@ -241,7 +241,7 @@ export class Search {
                 let getResponseBuffer: Buffer;
                 try {
                     getResponseBuffer = await Get.dataSet(session, dsn, {...searchOptions.getOptions, queryParams});
-                } catch (err) {
+                } catch (_err) {
                     failures.push(dsn);
                     complete++;
                     return;
@@ -302,7 +302,7 @@ export class Search {
                 let getResponseBuffer: Buffer;
                 try {
                     getResponseBuffer = await Get.dataSet(session, dsn, searchOptions.getOptions);
-                } catch (err) {
+                } catch (_err) {
                     failures.push(dsn);
                     complete++;
                     return;

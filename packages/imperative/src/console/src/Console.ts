@@ -25,7 +25,7 @@ export class Console implements IConsole {
     public static readonly LEVELS = ["trace", "debug", "info", "warn", "error", "fatal", "off"];
     public static readonly LEVEL_DEFAULT = "warn";
 
-    public static getConsole(category: string) {
+    public static getConsole(_category: string) {
         return new Console();
     }
 
@@ -55,11 +55,11 @@ export class Console implements IConsole {
         Console.validateLevel(this.mLevel);
     }
 
-    public addContext(key: string, value: any) {
+    public addContext(_key: string, _value: any) {
         // do nothing
     }
 
-    public removeContext(key: string) {
+    public removeContext(_key: string) {
         // do nothing
     }
 

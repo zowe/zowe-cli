@@ -50,8 +50,8 @@ export default class LogsHandler extends ZosmfBaseHandler {
 
             // remove control characters, except \u000A(\n) and \u000D(\r)
             for (const logItem of logItems) {
-                logItem.message = logItem.message.
-                    replace(/[\u0000-\u0009\u000B\u000C\u000E-\u001F\u007F-\u009F]/g, "");  // eslint-disable-line no-control-regex
+                // biome-ignore lint/suspicious/noControlCharactersInRegex:
+                logItem.message = logItem.message.replace(/[\u0000-\u0009\u000B\u000C\u000E-\u001F\u007F-\u009F]/g, "");
             }
 
             // Return as an object in the response 'data' field when using --response-format-json

@@ -311,7 +311,7 @@ export class Copy {
     /**
      *  Private function to convert the ALC value from the format returned by the Get() call in to the format used by the Create() call
      */
-    private static convertAlcTozOSMF( zosmfValue: string): string {
+    private static convertAlcTozOSMF(_zosmfValue: string): string {
         /**
          *  Create dataset only accepts tracks or cylinders as allocation units.
          *  When the get() call retreives the dataset info, it will convert size

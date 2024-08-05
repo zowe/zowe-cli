@@ -9,8 +9,6 @@
 *
 */
 
-import Mock = jest.MockedFunction;
-
 jest.mock("fs");
 jest.mock("jsonfile");
 jest.mock("../../src/plugins/utilities/PMFConstants");
@@ -259,7 +257,8 @@ describe("Plugin Management Facility", () => {
 
             // force logged errors into loggedErrText so that errors can be easily tested
             const loggerErrorSpy = jest.spyOn(Logger.prototype, "error").mockImplementation((newText) => {
-                return loggedErrText += newText + "\n";
+                loggedErrText += newText + "\n";
+                return loggedErrText;
             });
         });
 
@@ -441,7 +440,8 @@ describe("Plugin Management Facility", () => {
             // collect our logged warning text
             let loggedWarnText: string = "";
             const loggerWarnSpy = jest.spyOn(Logger.prototype, "warn").mockImplementation((newText) => {
-                return loggedWarnText += newText + "\n";
+                loggedWarnText += newText + "\n";
+                return loggedWarnText;
             });
 
             // call the function that we want to test

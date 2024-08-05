@@ -729,8 +729,8 @@ describe("ConvertV1Profiles tests", () => {
                     get: jest.fn(() => {
                         return {
                             configurable: true,
-                            load: jest.fn(() => { }),
-                            save: jest.fn(() => { })
+                            load: jest.fn(),
+                            save: jest.fn()
                         };
                     })
                 });

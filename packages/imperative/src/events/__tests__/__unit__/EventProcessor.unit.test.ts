@@ -31,9 +31,9 @@ describe('EventProcessor Unit Tests', () => {
         setupWatcherSpy = jest.spyOn(EventUtils, 'setupWatcher').mockImplementation(jest.fn());
 
         jest.spyOn(EventUtils, "getListOfApps").mockReturnValue(["Zowe", appName]);
-        const subs = EventProcessor.prototype.subscribedEvents = new Map();
+        EventProcessor.prototype.subscribedEvents = new Map();
         const dummyEvent: any = { subscriptions: [ { removeAllListeners: jest.fn().mockReturnValue({close: jest.fn()})} as any] } ;
-        subs.set("Zowe", dummyEvent);
+        EventProcessor.prototype.subscribedEvents.set("Zowe", dummyEvent);
     });
     afterEach(() => {
         EventOperator.deleteProcessor(appName);
@@ -55,12 +55,12 @@ describe('EventProcessor Unit Tests', () => {
     describe('Subscription Methods', () => {
         it('"subscribeShared" throws error for emitter-only processor', () => {
             const emitter = new EventProcessor(appName, IProcessorTypes.EMITTER);
-            expect(() => emitter.subscribeShared('fakeEventToSubscribeTo', () => {})).toThrow(ImperativeError);
+            expect(() => emitter.subscribeShared('fakeEventToSubscribeTo', jest.fn())).toThrow(ImperativeError);
         });
 
         it('"subscribeUser" throws error for emitter-only processor', () => {
             const emitter = new EventProcessor(appName, IProcessorTypes.EMITTER);
-            expect(() => emitter.subscribeUser('fakeEventToSubscribeTo', () => {})).toThrow(ImperativeError);
+            expect(() => emitter.subscribeUser('fakeEventToSubscribeTo', jest.fn())).toThrow(ImperativeError);
         });
 
         it('"subscribeShared" correctly subscribes to shared events', () => {

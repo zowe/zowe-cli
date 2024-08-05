@@ -61,7 +61,7 @@ function readFileSync(filePath: string, encoding?: string) {
 
 // A custom version of `lstatSync` that reads from the special mocked out
 // file list set via __setMockFiles
-function lstatSync(filePath: string) {
+function lstatSync(_filePath: string) {
     return {
         isFile: () => false
     };

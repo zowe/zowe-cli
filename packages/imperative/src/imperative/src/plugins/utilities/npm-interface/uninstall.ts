@@ -139,7 +139,7 @@ export function uninstall(packageName: string): void {
                     try {
                         // load schema from disk to prevent removal of profile types from other applications
                         loadedSchema = ConfigSchema.loadSchema(readFileSync(schemaInfo.resolved));
-                    } catch (err) {
+                    } catch (_err) {
                         iConsole.error("Error when removing profile type for plugin %s: failed to parse schema", npmPackage);
                     }
                     // update extenders.json with any removed types - function returns the list of types to remove

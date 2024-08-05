@@ -267,7 +267,7 @@ function onDocsPageChanged(e: any) {
 /**
  * Load command tree components
  */
-/* eslint-disable unused-imports/no-unused-vars */
+// biome-ignore lint/correctness/noUnusedVariables:
 function loadTree() {
     /* eslint-enable */
     // Set header and footer strings
@@ -314,7 +314,7 @@ function loadTree() {
  * Toggle visibility of command tree
  * @param splitter - Split.js object
  */
-/* eslint-disable unused-imports/no-unused-vars */
+// biome-ignore lint/correctness/noUnusedVariables:
 function toggleTree(splitter: any) {
     /* eslint-enable */
     if ($("#panel-left").is(":visible")) {
@@ -336,7 +336,7 @@ function toggleTree(splitter: any) {
  * Change display mode of page
  * @param newMode - 0 = Tree View, 1 = Flat View
  */
-/* eslint-disable unused-imports/no-unused-vars */
+// biome-ignore lint/correctness/noUnusedVariables:
 function changeView(newMode: number) {
     /* eslint-enable */
     if (newMode === currentView) {

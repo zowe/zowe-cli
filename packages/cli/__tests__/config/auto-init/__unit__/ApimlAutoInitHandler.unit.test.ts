@@ -1000,7 +1000,7 @@ describe("ApimlAutoInitHandler", () => {
                 }
             }));
             let output: string = "";
-            const mockConsoleLog = jest.fn((s: string) => output += stripAnsi(s));
+            const mockConsoleLog = jest.fn((s: string) => { output += stripAnsi(s) });
             (handler as any).displayAutoInitChanges({
                 console: { log: mockConsoleLog }
             });

@@ -14,7 +14,7 @@ import { Arguments } from "yargs";
 import { ICommandValidatorResponse } from "../../../src/doc/response/response/ICommandValidatorResponse";
 
 export class SyntaxValidator {
-    public validate(responseObject: CommandResponse, commandArguments: Arguments): Promise<ICommandValidatorResponse> {
+    public validate(_responseObject: CommandResponse, commandArguments: Arguments): Promise<ICommandValidatorResponse> {
         return new Promise<ICommandValidatorResponse>((validationComplete) => {
             if (commandArguments.syntaxThrow === true) {
                 throw new Error("Syntax validation error!");

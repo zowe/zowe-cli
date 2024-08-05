@@ -158,9 +158,9 @@ export class PluginRequireProvider {
          * we are requiring some-test-module-from-npm. Without the slash, that
          * module is incorrectly matched and injected.
          */
-        const regex = this.regex = new RegExp(`^(${internalModules.join("|")})(?:\\/.*)?$`, "gm");
-        const origRequire = this.origRequire = Module.prototype.require;
-        const origMain = this.origRequire.main;
+        this.regex = new RegExp(`^(${internalModules.join("|")})(?:\\/.*)?$`, "gm");
+        this.origRequire = Module.prototype.require;
+        const [regex, origRequire, origMain] = [this.regex, this.origRequire, this.origRequire.main];
 
         // Timerify the function if needed
         // Gave it a name so that we can more easily track it

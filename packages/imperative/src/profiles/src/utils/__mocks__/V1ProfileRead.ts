@@ -165,7 +165,7 @@ export class V1ProfileRead {
      * @returns {string[]}
      * @memberof V1ProfileRead
      */
-    public static getAllProfileNames(profileTypeDir: string, ext: string, metaNameForType: string): string[] {
+    public static getAllProfileNames(profileTypeDir: string, _ext: string, _metaNameForType: string): string[] {
         if (profileTypeDir.indexOf("apple") >= 0) {
             return ["good_apple", "tasty_apples"];
         }
@@ -185,7 +185,7 @@ export class V1ProfileRead {
      * @returns {IProfile}
      * @memberof V1ProfileRead
      */
-    public static readProfileFile(filePath: string, type: string): IProfile {
+    public static readProfileFile(filePath: string, _type: string): IProfile {
 
         if (filePath.indexOf("prof_banana") >= 0) {
             return {

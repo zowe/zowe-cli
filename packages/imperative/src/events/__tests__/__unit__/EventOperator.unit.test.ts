@@ -27,9 +27,9 @@ describe("EventOperator Unit Tests", () => {
     beforeEach(() => {
         jest.clearAllMocks();
         jest.spyOn(EventUtils, "getListOfApps").mockReturnValue(["Zowe", appName]);
-        const subs = EventProcessor.prototype.subscribedEvents = new Map();
+        EventProcessor.prototype.subscribedEvents = new Map();
         const dummyEvent: any = { subscriptions: [ { removeAllListeners: jest.fn().mockReturnValue({close: jest.fn()})} as any] } ;
-        subs.set("Zowe", dummyEvent);
+        EventProcessor.prototype.subscribedEvents.set("Zowe", dummyEvent);
     });
     afterEach(() => {
         EventOperator.deleteProcessor("Zowe");

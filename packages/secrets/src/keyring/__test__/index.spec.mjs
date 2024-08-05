@@ -195,6 +195,7 @@ test.serial("findPassword for CJK symbols", async (t) => {
 });
 
 test("deletePassword deletes all test credentials", async (t) => {
+    // biome-ignore lint/suspicious/noConsoleLog:
     console.log(
         "\nThe deletePassword test is running. There is an intended delay of 5 seconds to wait for the keyring to update."
     );
@@ -223,7 +224,6 @@ if (process.platform === "win32") {
     test.serial(
         "setPassword fails when blob exceeds CRED_MAX_CREDENTIAL_BLOB_SIZE",
         async (t) => {
-            console.log("win32: platform-specific tests for WinAPI");
             const CRED_MAX_CREDENTIAL_BLOB_SIZE = 5 * 512;
             const str = randomAsciiString(CRED_MAX_CREDENTIAL_BLOB_SIZE + 1);
             try {
@@ -287,7 +287,7 @@ if (process.platform === "win32") {
                     "FakeAccount"
                 );
                 t.is(errorTest, null);
-            } catch (err) {
+            } catch (_err) {
                 t.fail(
                     "getPassword should not throw an exception when no credentials are found (win32)"
                 );
@@ -300,7 +300,7 @@ if (process.platform === "win32") {
         async (t) => {
             try {
                 await deletePassword("TestKeyringWindowsInvalidService", "FakeAccount");
-            } catch (err) {
+            } catch (_err) {
                 t.fail(
                     "deletePassword should not throw an exception for a credential that doesn't exist (win32)"
                 );

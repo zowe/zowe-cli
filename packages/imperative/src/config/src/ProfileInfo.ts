@@ -1062,7 +1062,7 @@ export class ProfileInfo {
         const profileSchema = [...this.getTeamConfig().mLayers].reverse()
             .reduce((prev: IProfileSchema, cfgLayer) => {
                 const cachedSchema = [...this.mProfileSchemaCache.entries()]
-                    .filter(([typeWithPath, schema]) => typeWithPath.includes(`${cfgLayer.path}:${profileType}`))[0];
+                    .filter(([typeWithPath, _schema]) => typeWithPath.includes(`${cfgLayer.path}:${profileType}`))[0];
                 if (cachedSchema != null) {
                     prev = cachedSchema[1];
                 }
@@ -1306,7 +1306,7 @@ export class ProfileInfo {
 
         let schemaEntries = Object.entries(finalSchema);
         if (sources?.length > 0) {
-            schemaEntries = schemaEntries.filter(([typ, sch]) => {
+            schemaEntries = schemaEntries.filter(([typ, _sch]) => {
                 if (!(typ in this.mExtendersJson.profileTypes)) {
                     return false;
                 }
@@ -1375,7 +1375,7 @@ export class ProfileInfo {
         let finalSchema: IProfileSchema = undefined;
         for (let i = this.getTeamConfig().mLayers.length - 1; i > 0; i--) {
             const layer = this.getTeamConfig().mLayers[i];
-            const profileTypesFromLayer = [...this.mProfileSchemaCache.entries()].filter(([key, value]) => key.includes(`${layer.path}:`));
+            const profileTypesFromLayer = [...this.mProfileSchemaCache.entries()].filter(([key, _value]) => key.includes(`${layer.path}:`));
             for (const [layerType, schema] of profileTypesFromLayer) {
                 const type = layerType.split(":").pop();
                 if (type !== profileType) {

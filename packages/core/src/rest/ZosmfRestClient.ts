@@ -73,7 +73,7 @@ export class ZosmfRestClient extends RestClient {
                     original.causeErrors = JSON.stringify(causeErrorsJson, null);
                 }
             }
-        } catch (e) {
+        } catch (_e) {
             // if there's an error, the causeErrors text is not JSON
             this.log.debug("Encountered an error trying to parse causeErrors as JSON  - causeErrors is likely not JSON format");
         }

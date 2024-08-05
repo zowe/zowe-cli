@@ -22,7 +22,7 @@ export class CommandResponse implements ICommandResponseApi {
     public succeeded(): void {
         throw new Error("Method not implemented.");
     }
-    public setError(details: IImperativeError): void {
+    public setError(_details: IImperativeError): void {
         throw new Error("Method not implemented.");
     }
     public buildJsonResponse(): ICommandResponse {

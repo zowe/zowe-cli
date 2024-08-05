@@ -11,8 +11,8 @@
 
 import { AbstractSession } from "../../src/session/AbstractSession";
 export class RestClient {
-    public static getExpectString(session: AbstractSession, resource: string, reqHeaders?: any[]) {
-        return new Promise((resolve, reject) => {
+    public static getExpectString(_session: AbstractSession, _resource: string, _reqHeaders?: any[]) {
+        return new Promise((resolve, _reject) => {
             process.nextTick(
                 () => {
                     resolve("hey man");

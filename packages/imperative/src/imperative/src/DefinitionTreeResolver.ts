@@ -36,7 +36,7 @@ export class DefinitionTreeResolver {
     public static resolve(rootCommandDescription: string,
         displayName: string,
         callerDir: string,
-        errorLogger: Logger,
+        _errorLogger: Logger,
         childrenDefinitions?: ICommandDefinition[],
         childrenModuleGlobs?: string[],
         addBaseProfile?: boolean): ICommandDefinition {

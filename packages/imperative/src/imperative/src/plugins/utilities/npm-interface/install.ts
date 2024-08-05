@@ -181,7 +181,7 @@ export async function install(packageLocation: string, registry: string, install
                     try {
                         // load schema from disk to prevent removal of profile types from other applications
                         loadedSchema = ConfigSchema.loadSchema(readFileSync(schemaInfo.resolved));
-                    } catch (err) {
+                    } catch (_err) {
                         iConsole.error("Error when adding new profile type for plugin %s: failed to parse schema", newPlugin.package);
                     }
 
