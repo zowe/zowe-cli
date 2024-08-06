@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe provisioning SDK package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Refactored code to reduce the use of deprecated functions to prepare for Node 22 support. [#2191](https://github.com/zowe/zowe-cli/issues/2191)
+
 ## `7.6.2`
 
 - BugFix: Updated `js-yaml` dependency for technical currency.
