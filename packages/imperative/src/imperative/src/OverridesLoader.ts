@@ -82,6 +82,7 @@ export class OverridesLoader {
         if (overrides.CredentialManager != null || this.shouldUseKeytar(packageJson, useTeamConfig)) {
             let Manager = overrides.CredentialManager;
             if (typeof overrides.CredentialManager === "string" && !isAbsolute(overrides.CredentialManager)) {
+                // eslint-disable-next-line deprecation/deprecation
                 Manager = resolve(process.mainModule.filename, "../", overrides.CredentialManager);
             }
 

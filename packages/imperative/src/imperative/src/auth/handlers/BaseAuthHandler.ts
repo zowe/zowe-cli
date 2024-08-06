@@ -288,6 +288,7 @@ export abstract class BaseAuthHandler extends AbstractAuthHandler {
 
     /* Methods for old-school profiles below */
     private async processLoginOld(params: IHandlerParameters, tokenValue: string) {
+        // eslint-disable-next-line deprecation/deprecation
         const loadedProfile = params.profiles.getMeta(this.mProfileType, false);
         let profileWithToken: string = null;
 
@@ -345,6 +346,7 @@ export abstract class BaseAuthHandler extends AbstractAuthHandler {
     }
 
     private async processLogoutOld(params: IHandlerParameters) {
+        // eslint-disable-next-line deprecation/deprecation
         const loadedProfile = params.profiles.getMeta(this.mProfileType, false);
 
         // If you specified a token on the command line, then don't delete the one in the profile if it doesn't match

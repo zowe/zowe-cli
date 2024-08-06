@@ -9,7 +9,6 @@
 *
 */
 
-import { isNullOrUndefined } from "util";
 import { IHelpGenerator,
     HelpGeneratorFactory,
     IHelpGeneratorParms,
@@ -57,7 +56,7 @@ export class ImperativeHelpGeneratorFactory extends AbstractHelpGeneratorFactory
             fullCommandTree: parms.fullCommandTree,
             experimentalCommandsDescription: parms.experimentalCommandsDescription
         };
-        if (isNullOrUndefined(this.config)) {
+        if (this.config == null) {
             return new HelpGeneratorFactory({
                 produceMarkdown: this.produceMarkdown,
                 primaryHighlightColor: this.primaryHighlightColor,

@@ -304,6 +304,7 @@ describe("ProcessUtils tests", () => {
             const options: any = { cwd: __dirname };
             const stdoutBuffer = Buffer.from(message + "\n");
             const spawnSpy = jest.spyOn(ExecUtils, "spawnAndGetOutput").mockReturnValueOnce(stdoutBuffer as any);
+            // eslint-disable-next-line deprecation/deprecation
             const execOutput = ProcessUtils.execAndCheckOutput("echo", [message], options);
             expect(spawnSpy).toHaveBeenCalledWith("echo", [message], options);
             expect(execOutput).toBe(stdoutBuffer);

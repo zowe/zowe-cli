@@ -21,6 +21,7 @@ import * as yargs from "yargs";
 import { ImperativeError } from "../../error/src/ImperativeError";
 
 describe("Imperative", () => {
+    // eslint-disable-next-line deprecation/deprecation
     const mainModule = process.mainModule;
 
     const loadImperative = () => {
@@ -133,6 +134,7 @@ describe("Imperative", () => {
     };
 
     beforeEach(() => {
+        // eslint-disable-next-line deprecation/deprecation
         (process.mainModule as any) = {
             filename: __filename
         };
@@ -151,6 +153,7 @@ describe("Imperative", () => {
     });
 
     afterEach(() => {
+        // eslint-disable-next-line deprecation/deprecation
         process.mainModule = mainModule;
     });
 

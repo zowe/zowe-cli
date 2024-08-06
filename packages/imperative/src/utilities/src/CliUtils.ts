@@ -133,6 +133,7 @@ export class CliUtils {
         profileOrder.forEach((profileType: string) => {
 
             // Get the first profile loaded - for now, we won't worry about profiles and double-type loading for dependencies
+            // eslint-disable-next-line deprecation/deprecation
             const profile: IProfile = profiles.get(profileType, false);
             if (profile == null && definitions.required != null && definitions.required.indexOf(profileType) >= 0) {
                 throw new ImperativeError({

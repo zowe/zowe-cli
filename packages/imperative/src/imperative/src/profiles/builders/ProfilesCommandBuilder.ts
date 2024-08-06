@@ -10,7 +10,6 @@
 */
 
 import { AbstractCommandBuilder } from "../../../../cmd/src/builders/AbstractCommandBuilder";
-import { isNullOrUndefined } from "util";
 import { ICommandDefinition, ICommandOptionDefinition, ICommandProfileTypeConfiguration } from "../../../../cmd";
 import { Logger } from "../../../../logger";
 import { IProfileSchema, ProfileUtils } from "../../../../profiles";
@@ -37,7 +36,7 @@ export abstract class ProfilesCommandBuilder implements AbstractCommandBuilder {
         protected mProfileConfig: ICommandProfileTypeConfiguration) {
 
         this.mSchema = mProfileConfig.schema;
-        if (isNullOrUndefined(this.mSchema)) {
+        if (this.mSchema == null) {
             throw new Error(`Profile Builder Error: No profile schema was supplied.`);
         }
     }
@@ -81,10 +80,10 @@ export abstract class ProfilesCommandBuilder implements AbstractCommandBuilder {
             // helper to recursively add any nested option definitions
             const findAndAddOptions = (propertiesObject: any, propertyName: string) => {
                 const field: ICommandProfileProperty = propertiesObject[propertyName];
-                if (!isNullOrUndefined(field.optionDefinition)) {
+                if (!(field.optionDefinition == null)) {
                     options.push(field.optionDefinition);
                 }
-                if (!isNullOrUndefined(field.optionDefinitions)) {
+                if (!(field.optionDefinitions == null)) {
                     options = options.concat(field.optionDefinitions);
                 }
                 if (field.properties != null) {
@@ -95,7 +94,7 @@ export abstract class ProfilesCommandBuilder implements AbstractCommandBuilder {
             };
             findAndAddOptions(properties, propName);
         }
-        if (!isNullOrUndefined(this.mProfileConfig.dependencies)) {
+        if (!(this.mProfileConfig.dependencies == null)) {
             for (const dependency of this.mProfileConfig.dependencies) {
                 const description = dependency.description ||
                     "The name of a " + dependency.type + " profile to associate with this profile.";

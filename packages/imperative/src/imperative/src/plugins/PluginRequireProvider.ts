@@ -180,6 +180,7 @@ export class PluginRequireProvider {
                 }
 
                 // Inject it from the main module dependencies
+                // eslint-disable-next-line deprecation/deprecation
                 return origRequire.apply(process.mainModule, args);
             } else {
                 // Otherwise use the package dependencies

@@ -10,7 +10,6 @@
 */
 
 import { ImperativeError } from "../../../error";
-import { isNullOrUndefined } from "util";
 
 /**
  * String credential
@@ -121,7 +120,7 @@ export abstract class AbstractCredentialManager {
      */
     public async save(account: string, secureValue: string): Promise<void> {
     // Check both username and password are set and are not empty strings. Ah, the magic of JavaScript
-        if (!isNullOrUndefined(secureValue) && secureValue !== "") {
+        if (!(secureValue == null) && secureValue !== "") {
             const encodedString = Buffer.from(`${secureValue}`).toString("base64");
             await this.saveCredentials(account, encodedString);
         } else {

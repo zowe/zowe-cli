@@ -14,7 +14,7 @@ import { ICommandDefinition } from "../doc/ICommandDefinition";
 import { IProfile, IProfileLoaded, IProfileManagerFactory, ProfileUtils } from "../../../profiles";
 import { ICommandProfileTypeConfiguration } from "../doc/profiles/definition/ICommandProfileTypeConfiguration";
 import { CommandProfiles } from "./CommandProfiles";
-import { inspect, isNullOrUndefined } from "util";
+import { inspect } from "util";
 import { ICommandLoadProfile } from "../doc/profiles/parms/ICommandLoadProfile";
 import { ICommandProfileLoaderParms } from "../doc/profiles/parms/ICommandProfileLoaderParms";
 import { Logger } from "../../../logger";
@@ -116,7 +116,7 @@ export class CommandProfileLoader {
 
         // If there are no profile specifications on this command definition document node, then
         // we can immediately exit with an empty map
-        if (!isNullOrUndefined(this.definition.profile)) {
+        if (!(this.definition.profile == null)) {
             this.log.trace(`Loading profiles for command: ${this.definition.name}...`);
             const loadList: ICommandLoadProfile[] = this.constructLoadList(commandArguments);
             const responses: IProfileLoaded[] = await this.loadAll(loadList);
@@ -141,7 +141,7 @@ export class CommandProfileLoader {
     private buildCommandMap(responses: IProfileLoaded[], map: Map<string, IProfile[]>) {
         for (const resp of responses) {
             if (resp.profile) {
-                if (isNullOrUndefined(map.get(resp.type))) {
+                if (map.get(resp.type) == null) {
                     this.log.trace(`Adding first profile "${resp.name}" of type "${resp.type}" to the map.`);
                     map.set(resp.type, [resp.profile]);
                 } else {
@@ -165,7 +165,7 @@ export class CommandProfileLoader {
     private buildCommandMetaMap(responses: IProfileLoaded[], map: Map<string, IProfileLoaded[]>) {
         for (const resp of responses) {
             if (resp.profile) {
-                if (isNullOrUndefined(map.get(resp.type))) {
+                if (map.get(resp.type) == null) {
                     this.log.trace(`Adding first profile "${resp.name}" of type "${resp.type}" to the map.`);
                     map.set(resp.type, [resp]);
                 } else {
@@ -205,7 +205,7 @@ export class CommandProfileLoader {
      */
     private buildLoad(optional: boolean, types: string[], commandArguments: Arguments): ICommandLoadProfile[] {
         const loadProfiles: ICommandLoadProfile[] = [];
-        if (!isNullOrUndefined(types)) {
+        if (!(types == null)) {
             // Construct the load control parameters for each required type
             types.forEach((type) => {
 
@@ -221,7 +221,7 @@ export class CommandProfileLoader {
                 // If the argument is specified, indicate that this is a user specified load and if not
                 // assume that the default should be loaded (but still required on the command)
                 const profOpt = ProfileUtils.getProfileOptionAndAlias(type)[0];
-                if (!isNullOrUndefined(commandArguments[profOpt])) {
+                if (!(commandArguments[profOpt] == null)) {
                     load.userSpecified = true;
                     load.name = commandArguments[profOpt] as string;
                 } else {
@@ -260,7 +260,7 @@ export class CommandProfileLoader {
 
             // This is an exceptional case - the manager did not do it's job properly, but we will ensure
             // that if a profile was required (not optional), that it was loaded.
-            if (!load.optional && (isNullOrUndefined(response) || isNullOrUndefined(response.profile))) {
+            if (!load.optional && (response == null || response.profile == null)) {
                 throw new ImperativeError({
                     msg: `Unexpected internal load error: The profile ` +
                     `"${(load.loadDefault) ? "default requested" : load.name}" was not loaded by the profile manager.`

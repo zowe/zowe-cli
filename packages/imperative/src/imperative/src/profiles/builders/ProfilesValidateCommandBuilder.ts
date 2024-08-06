@@ -15,7 +15,6 @@ import { Constants } from "../../../../constants";
 import { deleteProfileNameDesc, validateProfileCommandDesc } from "../../../../messages";
 import { ImperativeConfig, TextUtils } from "../../../../utilities";
 import { Logger } from "../../../../logger/index";
-import { isNullOrUndefined } from "util";
 import { ProfilesConstants, ProfileUtils, ProfileValidator } from "../../../../profiles";
 
 /**
@@ -55,7 +54,7 @@ export class ProfilesValidateCommandBuilder extends ProfilesCommandBuilder {
      * @return {ICommandDefinition}
      */
     protected buildProfileSegmentFromSchema(): ICommandDefinition {
-        if (isNullOrUndefined(this.mProfileConfig.validationPlanModule)) {
+        if (this.mProfileConfig.validationPlanModule == null) {
             return undefined;
         }
         const profileCommand: ICommandDefinition = {

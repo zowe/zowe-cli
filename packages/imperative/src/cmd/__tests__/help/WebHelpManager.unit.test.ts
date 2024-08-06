@@ -41,6 +41,7 @@ describe("WebHelpManager", () => {
         const webHelpDirNm = path.join(mockCliHome, "web-help");
         const impCfg: ImperativeConfig = ImperativeConfig.instance;
         const cmdReponse = new CommandResponse({ silent: false });
+        // eslint-disable-next-line deprecation/deprecation
         const mainModule = process.mainModule;
         let opener: any;
         let instPluginsFileNm: string;
@@ -55,6 +56,7 @@ describe("WebHelpManager", () => {
             /* getResolvedCmdTree calls getCallerLocation, and we need it to return some string.
              * getCallerLocation is a getter of a property, so we mock the property.
              */
+            // eslint-disable-next-line deprecation/deprecation
             (process.mainModule as any) = {
                 filename: "FakeCli"
             };
@@ -81,6 +83,7 @@ describe("WebHelpManager", () => {
         });
 
         afterAll(() => {
+            // eslint-disable-next-line deprecation/deprecation
             process.mainModule = mainModule;
             rimraf.sync(mockCliHome);
         });

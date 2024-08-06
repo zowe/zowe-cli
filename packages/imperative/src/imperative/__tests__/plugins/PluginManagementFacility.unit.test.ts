@@ -738,6 +738,7 @@ describe("Plugin Management Facility", () => {
             it("should not record warning if pluginHealthCheck property does not exist", () => {
                 // remove pluginHealthCheck property from config
                 badPluginConfig = JSON.parse(JSON.stringify(basePluginConfig));
+                // eslint-disable-next-line deprecation/deprecation
                 delete badPluginConfig.pluginHealthCheck;
                 badPluginCfgProps = JSON.parse(JSON.stringify(basePluginCfgProps));
                 badPluginCfgProps.impConfig = badPluginConfig;
@@ -759,6 +760,7 @@ describe("Plugin Management Facility", () => {
             it("should not record error if pluginHealthCheck file does not exist", () => {
                 // set pluginHealthCheck property to a bogus file
                 badPluginConfig = JSON.parse(JSON.stringify(basePluginConfig));
+                // eslint-disable-next-line deprecation/deprecation
                 badPluginConfig.pluginHealthCheck = "./This/File/Does/Not/Exist";
                 badPluginCfgProps = JSON.parse(JSON.stringify(basePluginCfgProps));
                 badPluginCfgProps.impConfig = badPluginConfig;

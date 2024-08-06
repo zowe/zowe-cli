@@ -9,7 +9,7 @@
 *
 */
 
-import { format, isArray, isNullOrUndefined, isNumber, isString } from "util";
+import { format } from "util";
 
 /**
  * Interface of an explanation map object
@@ -39,7 +39,7 @@ export class TextUtils {
     public static getRecommendedWidth(preferredWidth: number = TextUtils.DEFAULT_WRAP_WIDTH): number {
         const widthSafeGuard = 8; // prevent partial words from continuing over lines
         const yargs = require("yargs");
-        const maxWidth = !isNullOrUndefined(yargs.terminalWidth() && yargs.terminalWidth() > 0) ?
+        const maxWidth = !((yargs.terminalWidth() && yargs.terminalWidth() > 0) == null) ?
             (yargs.terminalWidth() - widthSafeGuard) : preferredWidth;
         return Math.min(preferredWidth, maxWidth);
     }
@@ -66,11 +66,11 @@ export class TextUtils {
         includeUnexplainedKeys: boolean = true): any {
 
         // no object to explain, return null
-        if (isNullOrUndefined(original)) {
+        if (original == null) {
             return null;
         }
         // no explanation map, return original
-        if (isNullOrUndefined(explanationMap)) {
+        if (explanationMap == null) {
             return original;
         }
 
@@ -163,7 +163,7 @@ export class TextUtils {
         if (!headers) {
             headers = this.buildHeaders(objects);
         }
-        if (isNullOrUndefined(maxColumnWidth)) {
+        if (maxColumnWidth == null) {
             maxColumnWidth = this.getRecommendedWidth() / headers.length;
         }
         const borderChars = includeBorders ?
@@ -274,7 +274,7 @@ export class TextUtils {
      * @returns {string} - a formatted string with the variables inserted
      */
     public static formatMessage(message: string, ...values: any[]): string {
-        if (!isNullOrUndefined(values)) {
+        if (!(values == null)) {
             const isPrintfValue = (value: any) => {
                 let isJson = false;
                 try {
@@ -283,9 +283,9 @@ export class TextUtils {
                 } catch (e) {
                     // not json
                 }
-                return isString(value) || isNumber(value) || isJson;
+                return (typeof value === 'string') || (typeof value === 'number') || isJson;
             };
-            if (isArray(values) && values.filter(isPrintfValue).length === values.length) {
+            if (Array.isArray(values) && values.filter(isPrintfValue).length === values.length) {
                 message = format.apply(this, [message].concat(values));
             }
             else {
