@@ -89,7 +89,8 @@ describe("Command Utils", () => {
     });
 
     it("We should be able to flatten a nested command tree with aliases for display and searching purposes", () => {
-        const flatten: ICommandTreeEntry[] = CommandUtils.flattenCommandTree(COMPLEX_COMMAND_WITH_ALIASES);
+        // eslint-disable-next-line deprecation/deprecation
+        const flatten: ICommandTreeEntry[] = CommandUtils.flattenCommandTreeWithAliases(COMPLEX_COMMAND_WITH_ALIASES);
         TestLogger.info("Flattened Command Tree:\n" + inspect(flatten));
         expect(flatten).toMatchSnapshot();
     });

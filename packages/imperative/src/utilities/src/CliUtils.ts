@@ -703,7 +703,7 @@ export class CliUtils {
                  * - hello--------world -> helloWorld
                  * - hello-World-       -> helloWorld
                  */
-                const returnChar = p1.substring(-1).toUpperCase();
+                const returnChar = p1.slice(-1).toUpperCase();
                 return returnChar !== "-" ? returnChar : "";
             }),
             kebabCase: key.replace(/(-*[A-Z]|-{2,}|-$)/g, (match, p1, offset, inputString) => {
@@ -748,7 +748,7 @@ export class CliUtils {
                         return "-" + p1.toLowerCase();
                     }
                 } else {                                                        // 2
-                    const returnChar = p1.substring(-1); // Get the last character of the sequence
+                    const returnChar = p1.slice(-1); // Get the last character of the sequence
 
                     if (returnChar === "-") {                                   // 2.1
                         if (offset + p1.length === inputString.length) {        // 2.1.1
