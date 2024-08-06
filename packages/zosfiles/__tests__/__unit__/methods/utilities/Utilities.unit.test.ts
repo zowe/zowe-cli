@@ -179,8 +179,6 @@ describe("Utilities.putUSSPayload", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(filename.substring(1)));
-
             expect(response).toBeUndefined();
             expect(caughtError).toBeDefined();
 
