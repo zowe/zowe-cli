@@ -228,4 +228,15 @@ describe("issue ssh handler tests", () => {
         expect(Shell.executeSsh).toHaveBeenCalledTimes(1);
         expect(testOutput).toMatchSnapshot();
     });
+    it("should be able to get stdout with privateKey", async () => {
+        Shell.executeSsh = jest.fn(async (session, command, stdoutHandler) => {
+            stdoutHandler(testOutput);
+        });
+        const handler = new myHandler();
+        const params = Object.assign({}, ...[DEFAULT_PARAMETERS_PRIVATE_KEY]);
+        params.arguments.command = "pwd";
+        await handler.process(params);
+        expect(Shell.executeSsh).toHaveBeenCalledTimes(1);
+        expect(testOutput).toMatchSnapshot();
+    });
 });
