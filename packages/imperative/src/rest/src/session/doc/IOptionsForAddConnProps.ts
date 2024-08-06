@@ -52,9 +52,9 @@ export interface IOptionsForAddConnProps<SessCfgType extends ISession=ISession> 
      */
     propertyOverrides?: IOverridePromptConnProps<SessCfgType>[];
 
-     /**
-     * Allows for passing for additional properties to prompt for.
-     * Utilized in the case of a incorrect/not stored key passphrase. s
+    /**
+     * Allows passing additional properties for which to prompt.
+     * Used in cases of an incorrect or missing key passphrase.
      */
     propsToPromptFor?:
     {
