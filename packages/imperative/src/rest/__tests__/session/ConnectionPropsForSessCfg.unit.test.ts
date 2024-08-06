@@ -1690,7 +1690,7 @@ describe("ConnectionPropsForSessCfg tests", () => {
                     parms: parms as any,
                 }
             );
-        expect(ConnectionPropsForSessCfg.secureSessCfgProps).toContain("keyPassphrase");
+        expect((ConnectionPropsForSessCfg as any).secureSessCfgProps).toContain("keyPassphrase");
     });
     describe("getValuesBack private function", () => {
         // pretend that console.log works, but put data into a variable
