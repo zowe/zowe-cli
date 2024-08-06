@@ -11,16 +11,14 @@
 
 import * as fs from "fs";
 import * as nodePath from "path";
-
 import * as yaml from "js-yaml";
 import { v4 as uuidv4 } from "uuid";
 import { ImperativeError, ImperativeExpect, IO, Logger, LoggingConfigurer, TextUtils } from "@zowe/imperative";
-
 import { ISetupEnvironmentParms } from "./doc/parms/ISetupEnvironmentParms";
 import { ITestEnvironment } from "./doc/response/ITestEnvironment";
 import { TempTestProfiles } from "./TempTestProfiles";
 import { PROJECT_ROOT_DIR, TEST_RESOURCE_DIR, TEST_RESULT_DATA_DIR, TEST_USING_WORKSPACE } from "../TestConstants";
-import { runCliScript } from "../TestUtils";
+import { runCliScript, deleteFiles, deleteJob, deleteDataset } from "../TestUtils";
 
 /**
  * Use the utility methods here to setup the test environment for running APIs
@@ -66,7 +64,12 @@ export class TestEnvironment {
         const result: ITestEnvironment<any> = {
             workingDir: testDirectory,
             systemTestProperties: systemProps,
-            env
+            env,
+            resources: {
+                files: [],
+                jobs: [],
+                datasets: []
+            }
         };
 
         if (params.installPlugin) {
@@ -101,6 +104,17 @@ export class TestEnvironment {
         if (testEnvironment.pluginInstalled) {
             const pluginDir = testEnvironment.workingDir + "/plugins";
             require("rimraf").sync(pluginDir);
+        }
+
+        // Clean up resources
+        for (const file of testEnvironment.resources.files) {
+            deleteFiles(file);
+        }
+        for (const job of testEnvironment.resources.jobs) {
+            deleteJob(job);
+        }
+        for (const dataset of testEnvironment.resources.datasets) {
+            deleteDataset(dataset);
         }
     }
 

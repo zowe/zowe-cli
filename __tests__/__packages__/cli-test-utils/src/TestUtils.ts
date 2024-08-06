@@ -10,9 +10,37 @@
 */
 
 import * as fs from "fs";
-import { spawnSync, SpawnSyncReturns, ExecFileException } from "child_process";
+import { spawnSync, SpawnSyncReturns, ExecFileException, execSync } from "child_process";
 import { ITestEnvironment } from "./environment/doc/response/ITestEnvironment";
 import { CommandProfiles, ICommandDefinition, IHandlerParameters } from "@zowe/imperative";
+
+/**
+ * Delete a uss file from the mainframe
+ * @param {string} filePath - The USS path to the file
+ */
+export function deleteFiles(filePath: string): void {
+    if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+    }
+    execSync(`zowe zos-files delete uss-file "${filePath}" -f`);
+
+}
+
+/**
+ * Delete a job by job ID
+ * @param {string} jobId - The ID of the job
+ */
+export function deleteJob(jobId: string): void {
+    execSync(`zowe zos-jobs delete job ${jobId}`);
+}
+
+/**
+ * Delete a dataset by name
+ * @param {string} datasetName - The name of the dataset
+ */
+export function deleteDataset(datasetName: string): void {
+    execSync(`zowe zos-files delete data-set "${datasetName}" -f`);
+}
 
 /**
  * Execute a CLI script

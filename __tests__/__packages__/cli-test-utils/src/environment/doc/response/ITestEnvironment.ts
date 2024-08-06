@@ -15,6 +15,11 @@
  * @interface ITestEnvironment
  */
 export interface ITestEnvironment<TestPropertiesSchema> {
+    resources: {
+        files: string[];
+        jobs: string[];
+        datasets: string[];
+    };
     /**
      * The working directory for your test environment. It is a unique (uuid) area where your tests can create
      * their home folders (for imperative, etc.) and you can use the area as scratch for any files, etc. that
