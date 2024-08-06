@@ -349,9 +349,9 @@ describe("PluginRequireProvider", () => {
                     modules: randomModuleMaxLength,
                     shouldRequireDirectly: [
                         "./anything/goes/here",
-                        randomModuleMaxLength[0].substr(15),
-                        randomModuleMaxLength[1].substr(200),
-                        randomModuleMaxLength[2].substr(59)
+                        randomModuleMaxLength[0].substring(15),
+                        randomModuleMaxLength[1].substring(200),
+                        randomModuleMaxLength[2].substring(59)
                     ]
                 },
                 "1 module with periods": {

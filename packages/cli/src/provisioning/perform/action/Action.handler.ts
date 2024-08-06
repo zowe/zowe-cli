@@ -17,7 +17,6 @@ import {
     IProvisionedInstance,
     ListRegistryInstances
 } from "@zowe/provisioning-for-zowe-sdk";
-import { isNullOrUndefined } from "util";
 import { ZosmfBaseHandler } from "@zowe/zosmf-for-zowe-sdk";
 
 /**
@@ -35,7 +34,7 @@ export default class ActionHandler extends ZosmfBaseHandler {
             commandParameters.arguments.name
         );
         const instances: IProvisionedInstance[] = registry["scr-list"];
-        if (isNullOrUndefined(instances)) {
+        if (instances == null) {
             commandParameters.response.console.error(
                 "No instance with name " +
                     commandParameters.arguments.name +

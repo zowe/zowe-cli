@@ -155,6 +155,7 @@ export function mockHandlerParameters(params: PartialHandlerParameters): IHandle
             ...(params.arguments || {})
         },
         positionals: params.positionals || [],
+        // eslint-disable-next-line deprecation/deprecation
         profiles: params.profiles || new CommandProfiles(new Map()),
         definition: params.definition,
         fullDefinition: params.definition,

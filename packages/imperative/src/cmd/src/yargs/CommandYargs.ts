@@ -180,7 +180,7 @@ export class CommandYargs extends AbstractCommandYargs {
             this.definition.positionals.forEach((positional) => {
                 yargPositionalSyntax += ("[" + positional.name + "] ");
             });
-            const posString: string = yargPositionalSyntax.substr(0, yargPositionalSyntax.lastIndexOf(" "));
+            const posString: string = yargPositionalSyntax.substring(0, yargPositionalSyntax.lastIndexOf(" "));
             this.log.debug("Positional String: " + posString);
             return posString;
         } else {

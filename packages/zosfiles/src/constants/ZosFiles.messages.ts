@@ -212,6 +212,7 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
      * @type {IMessageDefinition}
      * @deprecated
      */
+    // eslint-disable-next-line deprecation/deprecation
     datasetsDownloadedSuccessfully: {
         message: "Data sets matching pattern downloaded successfully.\nDestination: %s"
     },
@@ -413,6 +414,7 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
      * @type {IMessageDefinition}
      * @deprecated
      */
+    // eslint-disable-next-line deprecation/deprecation
     allDataSetsArchived: {
         message: "All data sets matching the selected pattern(s) were archived."
     },
@@ -422,6 +424,7 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
      * @type {IMessageDefinition}
      * @deprecated
      */
+    // eslint-disable-next-line deprecation/deprecation
     noDataSetsInList: {
         message: "No data sets left after excluded pattern(s) were filtered out."
     },
@@ -439,6 +442,7 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
      * @type {IMessageDefinition}
      * @deprecated
      */
+    // eslint-disable-next-line deprecation/deprecation
     noDataSetsMatchingPatternRemain: {
         message: "After filtering out the archived files and files that match the exclusion-parameters, no data sets matching" +
         " the supported organization type remain."
@@ -449,6 +453,7 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
      * @type {IMessageDefinition}
      * @deprecated
      */
+    // eslint-disable-next-line deprecation/deprecation
     onlyEmptyPartitionedDataSets: {
         message: "Only empty partitioned data sets match the provided patterns."
     },

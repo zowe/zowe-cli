@@ -175,7 +175,7 @@ export class PluginRequireProvider {
                     if (request === ImperativeConfig.instance.hostPackageName) {
                         args[0] = "./";
                     } else {
-                        args[0] = `${hostPackageRoot}${request.substr(hostPackageNameLength)}`;
+                        args[0] = `${hostPackageRoot}${request.substring(hostPackageNameLength)}`;
                     }
                 }
 

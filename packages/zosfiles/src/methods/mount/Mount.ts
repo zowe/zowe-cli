@@ -12,7 +12,6 @@
 import { AbstractSession, ImperativeExpect, ImperativeError } from "@zowe/imperative";
 
 import { IMountFsOptions } from "./doc/IMountFsOptions";
-import { isNullOrUndefined } from "util";
 import { ZosmfRestClient, ZosmfHeaders } from "@zowe/core-for-zowe-sdk";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
@@ -48,7 +47,7 @@ export class Mount {
         ImperativeExpect.toBeDefinedAndNonBlank(mountPoint, ZosFilesMessages.missingMountPoint.message);
 
         // Removes undefined properties
-        const tempOptions = !isNullOrUndefined(options) ? JSON.parse(JSON.stringify(options)) : {};
+        const tempOptions = !(options == null) ? JSON.parse(JSON.stringify(options)) : {};
 
         this.fsValidateOptions(tempOptions);
         tempOptions.action = "mount";
