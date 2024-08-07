@@ -116,7 +116,7 @@ describe("Plugin validate command handler", () => {
                 TextUtils.chalk.red(
                     "The specified plugin 'NonExistentPluginName' has not been installed into your CLI application."
                 ));
-            expect(error).not.toBeDefined();
+            expect(error).toBeDefined();
         });
 
         it("should validate with non-existent plugin name and error", async () => {
