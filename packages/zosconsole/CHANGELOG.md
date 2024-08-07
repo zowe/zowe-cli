@@ -4,7 +4,7 @@ All notable changes to the Zowe z/OS console SDK package will be documented in t
 
 ## Recent Changes
 
-- BugFix: Refactored code to reduce the use of deprecated functions to prepare for Node 22 support. [#2191](https://github.com/zowe/zowe-cli/issues/2191)
+- BugFix: Refactored code to reduce the use of deprecated functions to prepare for upcoming Node.js 22 support. [#2191](https://github.com/zowe/zowe-cli/issues/2191)
 
 ## `7.0.0`
 
