@@ -42,7 +42,7 @@ export const validateDefinition: ICommandDefinition = {
             type: "boolean",
             description: "Enables throwing an error and setting an error code if plugin validation detects an error",
             required: false,
-            defaultValue: false
+            defaultValue: true
         },
         {
             name: "fail-on-warning",
