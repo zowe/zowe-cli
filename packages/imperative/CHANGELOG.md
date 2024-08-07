@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Resolved `zowe plugin validate <pluginName>` to return code 1 by default when an error occurs. (--fail-on-error flag is now default behavior). [#1299](https://github.com/zowe/zowe-cli/issues/1299)
+
 ## `4.18.25`
 
 - BugFix: Fixed error in REST client that when using stream could cause small data sets to download with incomplete contents. [#744](https://github.com/zowe/zowe-cli/issues/744)
