@@ -13,7 +13,7 @@ import { ISession, SessConstants } from "../../..";
 import { IHandlerParameters } from "../../../../cmd";
 import { AUTH_TYPE_CHOICES } from "../SessConstants";
 import { IOverridePromptConnProps } from "./IOverridePromptConnProps";
-
+import { IPropsToPromptFor } from "../doc/IPropsToPromptFor";
 /**
  * Interface for options supplied to ConnectionPropsForSessCfg.addPropsOrPrompt()
  * @export
@@ -56,13 +56,7 @@ export interface IOptionsForAddConnProps<SessCfgType extends ISession=ISession> 
      * Allows passing additional properties for which to prompt.
      * Used in cases of an incorrect or missing key passphrase.
      */
-    propsToPromptFor?:
-    {
-        name: keyof SessCfgType & string,
-        secure?: boolean,
-        description?: string,
-        isGivenValueValid?: (givenValue: string) => boolean
-    }[];
+    propsToPromptFor?: IPropsToPromptFor<SessCfgType>[];
 
     /**
      * Specifies the functionality that external applications will use for prompting.

@@ -329,7 +329,7 @@ export class ConnectionPropsForSessCfg {
             impLogger.debug("Using basic authentication");
             sessCfg.type = SessConstants.AUTH_TYPE_BASIC;
         }
-        ConnectionPropsForSessCfg.setTypeForTokenRequest(sessCfg, connOpts as any, cmdArgs.tokenType);
+        ConnectionPropsForSessCfg.setTypeForTokenRequest<SessCfgType>(sessCfg, connOpts, cmdArgs.tokenType);
         ConnectionPropsForSessCfg.logSessCfg(sessCfg);
     }
 
@@ -468,9 +468,9 @@ export class ConnectionPropsForSessCfg {
      * @param tokenType
      *       The type of token that we expect to receive.
      */
-    private static setTypeForTokenRequest(
-        sessCfg: any,
-        options: IOptionsForAddConnProps,
+    private static setTypeForTokenRequest<SessCfgType extends ISession=ISession>(
+        sessCfg: SessCfgType,
+        options: IOptionsForAddConnProps<SessCfgType>,
         tokenType: SessConstants.TOKEN_TYPE_CHOICES
     ) {
         const impLogger = Logger.getImperativeLogger();
