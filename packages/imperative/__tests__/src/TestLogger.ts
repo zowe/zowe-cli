@@ -11,7 +11,6 @@
 
 import { LoggerConfigBuilder } from "../../src/logger/src/LoggerConfigBuilder";
 import { Logger } from "../../src/logger/src/Logger";
-import { isNullOrUndefined } from "util";
 import { IConfigLogging } from "../../src/logger/src/doc/IConfigLogging";
 import * as path from "path";
 
@@ -82,10 +81,10 @@ export class TestLogger {
      * @memberof TestLogger
      */
     public static getTestLogger(loggerFileName = TestLogger.getCallersFile()): Logger {
-        if (!isNullOrUndefined(TestLogger.testLogger)) {
+        if (!(TestLogger.testLogger == null)) {
             const categoryLogger: Logger = Logger.getLoggerCategory(loggerFileName);
             categoryLogger.level = "trace";
-            if (isNullOrUndefined(categoryLogger)) {
+            if (categoryLogger == null) {
                 const logFile: string = TestLogger.constructTestLogFile(loggerFileName);
                 LoggerConfigBuilder.addFileAppender(LoggerConfigBuilder.getDefaultIConfigLogging(),
                     loggerFileName, loggerFileName, logFile);

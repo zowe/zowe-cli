@@ -15,15 +15,18 @@ import { EnvironmentalVariableSettings,
     Imperative } from "../../../../../../../src";
 
 describe("environmental variable integration", () => {
+    // eslint-disable-next-line deprecation/deprecation
     const mainModule = process.mainModule;
 
     beforeEach(() => {
+        // eslint-disable-next-line deprecation/deprecation
         (process.mainModule as any) = {
             filename: __filename
         };
     });
 
     afterEach(() => {
+        // eslint-disable-next-line deprecation/deprecation
         process.mainModule = mainModule;
     });
 

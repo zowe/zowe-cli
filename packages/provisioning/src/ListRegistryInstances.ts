@@ -9,7 +9,6 @@
 *
 */
 
-import { isNullOrUndefined } from "util";
 import { ZosmfRestClient, nozOSMFVersion } from "@zowe/core-for-zowe-sdk";
 import { AbstractSession } from "@zowe/imperative";
 import { ProvisioningValidator } from "./ProvisioningValidator";
@@ -65,10 +64,10 @@ export class ListRegistryInstances {
      */
     public static getResourcesQuery(zOSMFVersion: string, type?: string, externalName?: string) {
         let query = `${ProvisioningConstants.RESOURCE}/${zOSMFVersion}/${ProvisioningConstants.INSTANCES_RESOURCE}`;
-        if (!isNullOrUndefined(type)) {
+        if (!(type == null)) {
             query += `?${ProvisioningConstants.RESOURCE_TYPE}=${type}`;
         }
-        if (!isNullOrUndefined(externalName)) {
+        if (!(externalName == null)) {
             query += type ? "&" : "?";
             query += `${ProvisioningConstants.RESOURCE_EXTERNAL_NAME}=${externalName}`;
         }

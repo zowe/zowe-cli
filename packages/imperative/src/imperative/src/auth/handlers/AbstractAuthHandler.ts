@@ -68,6 +68,7 @@ export abstract class AbstractAuthHandler implements ICommandHandler {
      *  - Options for adding connection properties
      *  - The login handler
      */
+    // eslint-disable-next-line deprecation/deprecation
     public abstract getPromptParams(): [IOptionsForAddConnProps, (session: AbstractSession) => Promise<string>];
 
     /**

@@ -13,6 +13,7 @@ import { ICommandHandler, IHandlerParameters } from "../../../../../src/cmd";
 
 export default class OptionalProfileCHandler implements ICommandHandler {
     public async process(params: IHandlerParameters) {
+        // eslint-disable-next-line deprecation/deprecation
         const profile = params.profiles.get("profile-c", false);
         params.response.console.log(`Profile Cs loaded: ${profile}`);
     }

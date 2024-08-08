@@ -13,8 +13,10 @@ import { ICommandHandler, IHandlerParameters } from "../../../../../src/cmd";
 
 export default class UseDependentProfile implements ICommandHandler {
     public async process(params: IHandlerParameters) {
+        // eslint-disable-next-line deprecation/deprecation
         const dependencyProfile = params.profiles.get("profile-a");
         params.response.console.log("Loaded profile dependency of type profile-a");
+        // eslint-disable-next-line deprecation/deprecation
         const mainProfile = params.profiles.get("profile-with-dependency");
         params.response.console.log("Loaded main profile of type profile-with-dependency");
     }

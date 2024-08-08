@@ -10,7 +10,7 @@
 */
 
 import { TextUtils } from "../../../../utilities";
-import { format, isNullOrUndefined } from "util";
+import { format } from "util";
 import { ImperativeError } from "../../../../error/src/ImperativeError";
 import { Logger } from "../../../../logger/src/Logger";
 import { IHelpGeneratorParms } from "../doc/IHelpGeneratorParms";
@@ -33,7 +33,7 @@ export abstract class AbstractHelpGenerator implements IHelpGenerator {
      * @returns {string} the formatted/colored header
      */
     public static formatHelpHeader(header: string, indent: string = " ", color: string): string {
-        if (isNullOrUndefined(header) || header.trim().length === 0) {
+        if (header == null || header.trim().length === 0) {
             throw new ImperativeError({
                 msg: "Null or empty header provided; could not be formatted."
             });
@@ -102,7 +102,7 @@ export abstract class AbstractHelpGenerator implements IHelpGenerator {
 
     // TODO - rework these parameter (and possible the help generator scheme)
     constructor(defaultParms: IHelpGeneratorFactoryParms, commandParms: IHelpGeneratorParms) {
-        if (isNullOrUndefined(commandParms.commandDefinition) || isNullOrUndefined(commandParms.fullCommandTree)) {
+        if (commandParms.commandDefinition == null || commandParms.fullCommandTree == null) {
             throw new ImperativeError({
                 msg: "Error initializing help generator. The command definition or command definition tree was null or undefined.",
                 additionalDetails: JSON.stringify(commandParms.commandDefinition) + "\n\n" + JSON.stringify(commandParms.fullCommandTree)
@@ -124,13 +124,13 @@ export abstract class AbstractHelpGenerator implements IHelpGenerator {
 
     public getOptionAndAliasesString(option: ICommandOptionDefinition, caseSensitive?: boolean): string {
         let aliasString = "";
-        if (!isNullOrUndefined(option.aliases) && option.aliases.length > 0 &&
+        if (!(option.aliases == null) && option.aliases.length > 0 &&
             (option.aliases.join("").trim().length !== 0)) {
 
             const formattedOptAliases = [];
             aliasString += " | ";
             for (const alias of option.aliases) {
-                if (!isNullOrUndefined(alias) && alias.length > 0) {
+                if (!(alias == null) && alias.length > 0) {
                     formattedOptAliases.push("{{codeBegin}}" +
                         (alias.length === 1 ? "-" : "--") + alias + "{{codeEnd}}");
                 }
@@ -160,7 +160,7 @@ export abstract class AbstractHelpGenerator implements IHelpGenerator {
         this.groupToOption = {};
         this.optionToDescription = {};
 
-        if (isNullOrUndefined(this.mCommandDefinition.options)) {
+        if (this.mCommandDefinition.options == null) {
             return;
         }
         for (const option of this.mCommandDefinition.options.filter(opt => !opt.hidden)) {
@@ -188,9 +188,9 @@ export abstract class AbstractHelpGenerator implements IHelpGenerator {
     }
 
     protected getCaseSensitiveFlagByOptionName(optionName: string): boolean {
-        if (!isNullOrUndefined(this.mCommandDefinition.customize) &&
-            !isNullOrUndefined(this.mCommandDefinition.customize.commandStatement) &&
-            !isNullOrUndefined(this.mCommandDefinition.customize.commandStatement.children)) {
+        if (!(this.mCommandDefinition.customize == null) &&
+            !(this.mCommandDefinition.customize.commandStatement == null) &&
+            !(this.mCommandDefinition.customize.commandStatement.children == null)) {
             for (const child of this.mCommandDefinition.customize.commandStatement.children) {
                 if (child.name.toUpperCase() === optionName.toUpperCase()) {
                     return child.caseSensitive;
@@ -201,7 +201,7 @@ export abstract class AbstractHelpGenerator implements IHelpGenerator {
     }
 
     protected renderHelp(help: string): string {
-        if (isNullOrUndefined(help)) {
+        if (help == null) {
             throw new ImperativeError({
                 msg: "Help unable to be rendered - the supplied help text was null or undefined."
             });

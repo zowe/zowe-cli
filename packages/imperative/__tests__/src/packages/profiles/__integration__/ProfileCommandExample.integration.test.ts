@@ -15,7 +15,6 @@ import * as yargs from "yargs";
 import { Constants } from "../../../../../src/constants";
 import { CommandProcessor, ICommandDefinition, ICommandProfileTypeConfiguration, ICommandResponse } from "../../../../../src/cmd";
 import { ICommandProcessorParms } from "../../../../../src/cmd/src/doc/processor/ICommandProcessorParms";
-import { isNullOrUndefined } from "util";
 import { TestLogger } from "../../../../src/TestLogger";
 import { AbstractHelpGenerator } from "../../../../../src/cmd/src/help/abstract/AbstractHelpGenerator";
 import { DefaultHelpGenerator } from "../../../../../src/cmd/src/help/DefaultHelpGenerator";
@@ -117,7 +116,7 @@ describe("Imperative should allow CLI implementations to configure their own pro
                     // "Command should have failed"
                     expect(completedResponse.success).toEqual(false);
                 }
-                if (!isNullOrUndefined(expectedText) && expectedText.length > 0) {
+                if (!(expectedText == null) && expectedText.length > 0) {
                     const fullText = completedResponse.stdout.toString() +
                         completedResponse.stderr.toString();
                     for (const text of expectedText) {

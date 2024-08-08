@@ -69,9 +69,13 @@ describe("Command Profiles", () => {
             age: 2
         }]);
         const profiles = new CommandProfiles(map);
+        // eslint-disable-next-line deprecation/deprecation
         expect(profiles.getAll(BANANA_PROFILE_TYPE)).toMatchSnapshot();
+        // eslint-disable-next-line deprecation/deprecation
         expect(profiles.getAll(STRAWBERRY_PROFILE_TYPE)).toMatchSnapshot();
+        // eslint-disable-next-line deprecation/deprecation
         expect(profiles.get(STRAWBERRY_PROFILE_TYPE)).toMatchSnapshot();
+        // eslint-disable-next-line deprecation/deprecation
         expect(profiles.get(BANANA_PROFILE_TYPE)).toMatchSnapshot();
     });
 
@@ -85,6 +89,7 @@ describe("Command Profiles", () => {
         let error;
         try {
             const profiles = new CommandProfiles(map);
+            // eslint-disable-next-line deprecation/deprecation
             profiles.get(STRAWBERRY_PROFILE_TYPE);
         } catch (e) {
             error = e;
@@ -106,6 +111,7 @@ describe("Command Profiles", () => {
         let response;
         try {
             const profiles = new CommandProfiles(map);
+            // eslint-disable-next-line deprecation/deprecation
             response = profiles.get(STRAWBERRY_PROFILE_TYPE, false);
         } catch (e) {
             error = e;
@@ -126,6 +132,7 @@ describe("Command Profiles", () => {
             age: 2
         }]);
         const profiles = new CommandProfiles(map);
+        // eslint-disable-next-line deprecation/deprecation
         const awesome = profiles.get(STRAWBERRY_PROFILE_TYPE, true, "awesome");
         expect(awesome).toMatchSnapshot();
     });
@@ -161,6 +168,7 @@ describe("Command Profiles", () => {
             failNotFound: false
         }]);
         const profiles = new CommandProfiles(map, metaMap);
+        // eslint-disable-next-line deprecation/deprecation
         const awesome = profiles.getMeta(STRAWBERRY_PROFILE_TYPE, false, "great");
         expect(awesome).toMatchSnapshot();
     });
@@ -196,6 +204,7 @@ describe("Command Profiles", () => {
             failNotFound: false
         }]);
         const profiles = new CommandProfiles(map, metaMap);
+        // eslint-disable-next-line deprecation/deprecation
         const awesome = profiles.getMeta(STRAWBERRY_PROFILE_TYPE, false, null);
         expect(awesome).toMatchSnapshot();
     });
@@ -234,6 +243,7 @@ describe("Command Profiles", () => {
 
         let err;
         try {
+            // eslint-disable-next-line deprecation/deprecation
             const awesome = profiles.getMeta("unknown", true, "tasty");
         } catch (thrownError) {
             err = thrownError;

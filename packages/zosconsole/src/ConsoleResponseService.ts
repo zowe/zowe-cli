@@ -10,7 +10,7 @@
 */
 
 import { ImperativeError, Logger, TextUtils } from "@zowe/imperative";
-import { inspect, isNullOrUndefined } from "util";
+import { inspect } from "util";
 import { IZosmfIssueResponse } from "./doc/zosmf/IZosmfIssueResponse";
 import { IConsoleResponse } from "./doc/IConsoleResponse";
 import { displayError, displayResponse } from "./ConsoleConstants";
@@ -44,13 +44,13 @@ export class ConsoleResponseService {
         response.success = true;
 
         // If this request specified a solicited keyword, indicate if the keyword was found in the console response.
-        if (!isNullOrUndefined(zosmfResponse["sol-key-detected"])) {
+        if (!(zosmfResponse["sol-key-detected"] == null)) {
             response.keywordDetected = zosmfResponse["sol-key-detected"];
         }
 
         // Append the command response string to the console response.
-        if (!isNullOrUndefined(zosmfResponse["cmd-response"]) && zosmfResponse["cmd-response"].length > 0
-            && (isNullOrUndefined(processResponses) || processResponses !== false)) {
+        if (!(zosmfResponse["cmd-response"] == null) && zosmfResponse["cmd-response"].length > 0
+            && (processResponses == null || processResponses !== false)) {
             // the IBM responses sometimes have \r and sometimes \r\n, we will process them our here and hopefully
             // return them with just \n.
             response.commandResponse += zosmfResponse["cmd-response"].replace(/\r\n/g, "\n").replace(/\r/g, "\n");
@@ -64,12 +64,12 @@ export class ConsoleResponseService {
         }
 
         // If the response key is present, set the last response key value in the response.
-        if (!isNullOrUndefined(zosmfResponse["cmd-response-key"])) {
+        if (!(zosmfResponse["cmd-response-key"] == null)) {
             response.lastResponseKey = zosmfResponse["cmd-response-key"];
         }
 
         // Collect the response url.
-        if (!isNullOrUndefined(zosmfResponse["cmd-response-url"])) {
+        if (!(zosmfResponse["cmd-response-url"] == null)) {
             response.cmdResponseUrl = zosmfResponse["cmd-response-url"];
         }
 
@@ -120,9 +120,9 @@ export class ConsoleResponseService {
      */
     public static isLastZosmfResponseEmpty(response: IConsoleResponse): boolean {
         let result: boolean = true;
-        if (!isNullOrUndefined(response) && response.zosmfResponse.length > 0) {
+        if (!(response == null) && response.zosmfResponse.length > 0) {
             const lastResponse: IZosmfIssueResponse = response.zosmfResponse[response.zosmfResponse.length - 1];
-            result = isNullOrUndefined(lastResponse["cmd-response"]) || lastResponse["cmd-response"] === "";
+            result = lastResponse["cmd-response"] == null || lastResponse["cmd-response"] === "";
         }
         return result;
     }

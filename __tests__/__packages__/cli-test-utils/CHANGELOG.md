@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI test utils package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Refactored code to reduce the use of deprecated functions to prepare for upcoming Node.js 22 support. [#2191](https://github.com/zowe/zowe-cli/issues/2191)
+
 ## `7.28.2`
 
 - BugFix: Improved the error message shown on Windows when `runCliScript` method cannot find `sh` executable on PATH. [#2208](https://github.com/zowe/zowe-cli/issues/2208)

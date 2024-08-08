@@ -9,7 +9,6 @@
 *
 */
 
-import { isNullOrUndefined } from "util";
 import { RestClient } from "../../../src/client/RestClient";
 import { Headers } from "../../../src/client/Headers";
 
@@ -29,7 +28,7 @@ export class CustomRestClient extends RestClient {
      * @memberof ZosmfRestClient
      */
     protected appendHeaders(headers: any[] | undefined): any[] {
-        if (isNullOrUndefined(headers)) {
+        if (headers == null) {
             return [Headers.APPLICATION_JSON];
         } else {
             headers.push(Headers.APPLICATION_JSON);
