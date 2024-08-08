@@ -42,7 +42,7 @@ export class TextUtils {
         const widthSafeGuard = 8; // prevent partial words from continuing over lines
         const yargs = require("yargs");
         // eslint-disable-next-line no-extra-parens
-        const maxWidth = (!(yargs.terminalWidth() == null) && yargs.terminalWidth() > 0) ?
+        const maxWidth = (yargs.terminalWidth() != null && yargs.terminalWidth() > 0) ?
             yargs.terminalWidth() - widthSafeGuard : preferredWidth;
         return Math.min(preferredWidth, maxWidth);
     }

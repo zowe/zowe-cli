@@ -530,7 +530,7 @@ export abstract class AbstractRestClient {
         /* There is probably a better way report this kind of problem and a better message,
          * but we do it this way to maintain backward compatibility.
          */
-        if (!credsAreSet) {
+        if (!credsAreSet && this.session.ISession.type !== SessConstants.AUTH_TYPE_NONE) {
             throw new ImperativeError({ msg: "No credentials for a BASIC or TOKEN type of session." });
         }
 

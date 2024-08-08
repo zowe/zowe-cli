@@ -357,8 +357,8 @@ export function compareJsonObjects(actual: any, expected: any, parms?: ICompareP
     if (parms) {
         diffs.forEach((difference: any) => {
             const path = difference.path.join(".");
-            if (parms.ignorePaths == undefined || parms.ignorePaths.indexOf(path) < 0) {
-                if (!(parms.pathRegex == undefined)) {
+            if (parms.ignorePaths == null || parms.ignorePaths.indexOf(path) < 0) {
+                if (parms.pathRegex != null) {
                     let regexPathMatch: boolean = false;
                     for (const reg of parms.pathRegex) {
                         if (path === reg.path) {
@@ -386,7 +386,7 @@ export function compareJsonObjects(actual: any, expected: any, parms?: ICompareP
             }
         });
     } else {
-        if (!(diffs == undefined)) {
+        if (diffs != null) {
             returnDiffs = returnDiffs.concat(diffs);
         }
     }

@@ -40,11 +40,13 @@ export abstract class ZosmfBaseHandler implements ICommandHandler {
 
     /**
      * Loaded z/OSMF profile if needed
+     * @deprecated
      */
     protected mZosmfProfile: IProfile;
 
     /**
      * Loaded z/OSMF profile with meta information
+     * @deprecated
      */
     protected mZosmfLoadedProfile: IProfileLoaded;
 
