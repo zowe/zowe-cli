@@ -39,18 +39,6 @@ export abstract class ZosmfBaseHandler implements ICommandHandler {
     protected mSession: AbstractSession;
 
     /**
-     * Loaded z/OSMF profile if needed
-     * @deprecated
-     */
-    protected mZosmfProfile: IProfile;
-
-    /**
-     * Loaded z/OSMF profile with meta information
-     * @deprecated
-     */
-    protected mZosmfLoadedProfile: IProfileLoaded;
-
-    /**
      * Command line arguments passed
      */
     protected mArguments: ICommandArguments;
