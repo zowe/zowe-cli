@@ -19,10 +19,17 @@
     "include": [
         "**/*.test.ts",
         "**/*.subtest.ts",
-        "**/__tests__/**/*"
+        "**/__tests__/**/*",
+        "../**/*.test.ts",
+        "../**/*.subtest.ts",
+        "../**/__tests__/**/*"
     ],
     "exclude": [
         "lib",
         "node_modules"
-    ]
+    ],
+    "files": [
+        "../../__types__/wontache.d.ts"
+    ],
+    "allowJs": true
 }
