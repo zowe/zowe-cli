@@ -380,7 +380,8 @@ export class ConnectionPropsForSessCfg {
      * @param connOpts Options for adding connection properties
      * @returns Name-value pairs of connection properties
      */
-    private static getValuesBack<SessCfgType extends ISession=ISession>(connOpts: IOptionsForAddConnProps<SessCfgType>): (properties: string[]) => Promise<{ [key: string]: any }> {
+    private static getValuesBack<SessCfgType extends ISession=ISession>(connOpts: IOptionsForAddConnProps<SessCfgType>):
+    (properties: string[]) => Promise<{ [key: string]: any }> {
         return async (promptForValues: string[]) => {
             /* The check for console.log in the following 'if' statement is only needed for tests
              * which do not create a mock for the connOpts.parms.response.console.log property.

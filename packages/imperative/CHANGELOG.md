@@ -4,7 +4,7 @@ All notable changes to the Imperative package will be documented in this file.
 
 ## Recent Changes
 
-- BugFix: Resolved bug that resulted in user not being prompted for a keyPassphrase if in the secure array of ssh profile. [#1770](https://github.com/zowe/zowe-cli/issues/1770)
+- BugFix: Resolved bug that resulted in user not being prompted for a key passphrase if it is located in the secure creditial array of the ssh profile. [#1770](https://github.com/zowe/zowe-cli/issues/1770)
 
 ## `8.0.0-next.202407262216`
 
