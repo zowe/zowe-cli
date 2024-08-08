@@ -4,6 +4,7 @@ All notable changes to the Imperative package will be documented in this file.
 
 ## Recent Changes
 
+- BugFix: Refactored code to reduce the use of deprecated functions to prepare for upcoming Node.js 22 support. [#2191](https://github.com/zowe/zowe-cli/issues/2191)
 - BugFix: Fixed error in REST client when making requests with session type of `SessConstants.AUTH_TYPE_NONE`. [#2219](https://github.com/zowe/zowe-cli/issues/2219)
 
 ## `5.26.1`

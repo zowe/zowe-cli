@@ -131,6 +131,7 @@ describe("CliUtils", () => {
             (prompt as any).question = jest.fn(() => {
                 return mockedPromptValue;
             });
+            // eslint-disable-next-line deprecation/deprecation
             const value = CliUtils.promptForInput("my message goes here:");
             expect(value).toEqual(mockedPromptValue);
         });
@@ -188,17 +189,20 @@ describe("CliUtils", () => {
         });
 
         it("should return the user's answer", async () => {
+            // eslint-disable-next-line deprecation/deprecation
             const answer = await CliUtils.promptWithTimeout("Question to be asked: ");
             expect(answer).toEqual(mockedAnswer);
         });
 
         it("should accept a hideText parameter", async () => {
+            // eslint-disable-next-line deprecation/deprecation
             const answer = await CliUtils.promptWithTimeout("Should we hide your answer: ", true);
             expect(answer).toEqual(mockedAnswer);
         });
 
         it("should accept a secToWait parameter", async () => {
             const secToWait = 15;
+            // eslint-disable-next-line deprecation/deprecation
             const answer = await CliUtils.promptWithTimeout("Should wait your amount of time: ",
                 false, secToWait
             );
@@ -207,6 +211,7 @@ describe("CliUtils", () => {
 
         it("should limit to a max secToWait", async () => {
             const tooLong = 1000;
+            // eslint-disable-next-line deprecation/deprecation
             const answer = await CliUtils.promptWithTimeout("Should wait your amount of time: ",
                 false, tooLong
             );

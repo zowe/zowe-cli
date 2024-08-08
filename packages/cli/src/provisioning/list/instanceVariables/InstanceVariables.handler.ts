@@ -9,7 +9,6 @@
 *
 */
 
-import { isNullOrUndefined } from "util";
 import { IHandlerParameters } from "@zowe/imperative";
 import {
     ListInstanceVariables,
@@ -35,7 +34,7 @@ export default class InstanceVariablesHandler extends ZosmfBaseHandler {
             commandParameters.arguments.name
         );
         const instances: IProvisionedInstance[] = registry["scr-list"];
-        if (isNullOrUndefined(instances)) {
+        if (instances == null) {
             commandParameters.response.console.error(
                 "No instance with name " +
                     commandParameters.arguments.name +

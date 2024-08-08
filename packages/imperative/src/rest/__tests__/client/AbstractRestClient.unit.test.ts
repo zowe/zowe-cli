@@ -1050,7 +1050,7 @@ describe("AbstractRestClient tests", () => {
                     callback(newEmit);
 
                     await ProcessUtils.nextTick(() => {
-                        newEmit.emit("data", gzipBuffer.slice(0, -10));
+                        newEmit.emit("data", gzipBuffer.subarray(0, -10));
                     });
 
                     await ProcessUtils.nextTick(() => {
@@ -1158,7 +1158,7 @@ describe("AbstractRestClient tests", () => {
                     callback(newEmit);
 
                     await ProcessUtils.nextTick(() => {
-                        newEmit.emit("data", gzipBuffer.slice(0, -10));
+                        newEmit.emit("data", gzipBuffer.subarray(0, -10));
                     });
 
                     await ProcessUtils.nextTick(() => {

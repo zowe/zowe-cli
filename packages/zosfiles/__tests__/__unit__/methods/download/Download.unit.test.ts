@@ -1844,7 +1844,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substr(1)));
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -1878,7 +1878,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substr(1)));
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -1916,7 +1916,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substr(1)));
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -1954,7 +1954,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substr(1)));
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -1995,7 +1995,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substr(1)));
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -2031,7 +2031,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substr(1)));
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -2064,7 +2064,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substr(1)));
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -2100,7 +2100,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substr(1)));
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -2134,7 +2134,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substr(1)));
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({

@@ -76,7 +76,9 @@ describe("DefaultCredentialManager", () => {
                 // Jest doesn't let us mock require.resolve, so instead we purposely
                 // fail the import and look for module path in the error message
                 const fakeCliPath = "/root/fakeCli";
+                // eslint-disable-next-line deprecation/deprecation
                 const mainModule = process.mainModule;
+                // eslint-disable-next-line deprecation/deprecation
                 process.mainModule = { filename: fakeCliPath } as any;
                 const resolveSpy = jest.spyOn(path, "resolve").mockReturnValue(fakeCliPath);
 
@@ -95,13 +97,16 @@ describe("DefaultCredentialManager", () => {
                     expect(error.message).toContain("Cannot resolve module");
                     expect(error.message).toContain(fakeCliPath);
                 } finally {
+                    // eslint-disable-next-line deprecation/deprecation
                     process.mainModule = mainModule;
                     resolveSpy.mockRestore();
                 }
             });
 
             it("should look for keytar in local node_modules folder", async () => {
+                // eslint-disable-next-line deprecation/deprecation
                 const mainModule = process.mainModule;
+                // eslint-disable-next-line deprecation/deprecation
                 process.mainModule = { filename: "/root/fakeCli" } as any;
 
                 // Force enter the try catch
@@ -118,6 +123,7 @@ describe("DefaultCredentialManager", () => {
                     expect(error).toBeDefined();
                     expect(error.message).toContain("Cannot assign to read only property");
                 } finally {
+                    // eslint-disable-next-line deprecation/deprecation
                     process.mainModule = mainModule;
                 }
             });

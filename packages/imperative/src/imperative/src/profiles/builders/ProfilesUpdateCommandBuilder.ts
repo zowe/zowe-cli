@@ -10,7 +10,6 @@
 */
 
 import { ProfilesCommandBuilder } from "./ProfilesCommandBuilder";
-import { isNullOrUndefined } from "util";
 import { Constants } from "../../../../constants";
 import { ICommandDefinition } from "../../../../cmd";
 import { createProfileOptionDesc, updateProfileCommandDesc } from "../../../../messages";
@@ -55,14 +54,14 @@ export class ProfilesUpdateCommandBuilder extends ProfilesCommandBuilder {
             // optional in case the user does not wish to update them)
             const processFieldsForUpdate = (properties: any, propertyName: string) => {
                 const field: ICommandProfileProperty = properties[propertyName];
-                if (!isNullOrUndefined(field.optionDefinition)) {
+                if (!(field.optionDefinition == null)) {
                     field.optionDefinition.required = false;
                     field.optionDefinition.absenceImplications = null;
                     field.optionDefinition.implies = null;
                 }
-                if (!isNullOrUndefined(field.optionDefinitions)) {
+                if (!(field.optionDefinitions == null)) {
                     for (const anOption of field.optionDefinitions) {
-                        if (!isNullOrUndefined(anOption.required)) {
+                        if (!(anOption.required == null)) {
                             anOption.required = false;
                             anOption.absenceImplications = null;
                             anOption.implies = null;

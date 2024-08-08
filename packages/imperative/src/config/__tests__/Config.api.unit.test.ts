@@ -220,11 +220,13 @@ describe("Config API tests", () => {
             it("should expand a short proeprty path", async () => {
                 const config = await Config.load(MY_APP);
                 const profilePath = "lpar1.zosmf";
+                // eslint-disable-next-line deprecation/deprecation
                 expect(config.api.profiles.expandPath(profilePath)).toEqual("profiles.lpar1.profiles.zosmf");
             });
             it("should expand a path with the keyword profiles", async () => {
                 const config = await Config.load(MY_APP);
                 const profilePath = "profiles.zosmf";
+                // eslint-disable-next-line deprecation/deprecation
                 expect(config.api.profiles.expandPath(profilePath)).toEqual("profiles.profiles.profiles.zosmf");
             });
         });

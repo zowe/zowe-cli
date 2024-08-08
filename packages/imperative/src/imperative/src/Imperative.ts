@@ -133,6 +133,7 @@ export class Imperative {
             /**
              * Identify caller's location on the system
              */
+            // eslint-disable-next-line deprecation/deprecation
             ImperativeConfig.instance.callerLocation = process.mainModule.filename;
 
             /**

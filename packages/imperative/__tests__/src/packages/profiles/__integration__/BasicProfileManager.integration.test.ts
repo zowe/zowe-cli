@@ -16,6 +16,7 @@ import { ProfileUtils } from "../../../../../src/profiles";
 import { BANANA_AGE, getConfig, PROFILE_TYPE } from "../src/constants/BasicProfileManagerTestConstants";
 
 describe("Imperative should allow CLI implementations to configure their own profiles and types", function () {
+    // eslint-disable-next-line deprecation/deprecation
     const mainModule = process.mainModule;
     const loadChangingDependencies = () => {
         return {
@@ -34,12 +35,14 @@ describe("Imperative should allow CLI implementations to configure their own pro
     });
 
     beforeAll(() => {
+        // eslint-disable-next-line deprecation/deprecation
         (process.mainModule as any) = {
             filename: __filename
         };
     });
 
     afterAll(() => {
+        // eslint-disable-next-line deprecation/deprecation
         process.mainModule = mainModule;
     });
 

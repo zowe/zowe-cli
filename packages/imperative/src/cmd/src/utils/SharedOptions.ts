@@ -13,7 +13,6 @@ import { Arguments } from "yargs";
 import { ICommandNodeType } from "../doc/ICommandDefinition";
 import { IImperativeError, ImperativeError } from "../../../error";
 import { Constants } from "../../../constants";
-import { isNullOrUndefined } from "util";
 import { CommandResponse } from "../response/CommandResponse";
 import { Logger } from "../../../logger";
 
@@ -97,7 +96,7 @@ export class SharedOptions {
             const stdinReadError: IImperativeError = {
                 msg: "Error encountered while reading from stdin",
                 causeErrors: error,
-                additionalDetails: (isNullOrUndefined(error)) ? undefined : error.message
+                additionalDetails: (error == null) ? undefined : error.message
             };
             done(stdinReadError, true);
             // don't call done, we don't want to continue on an error

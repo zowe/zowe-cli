@@ -10,13 +10,13 @@
 */
 
 import { ICommandHandler, IHandlerParameters } from "../../../../../../src/cmd";
-import { isNullOrUndefined } from "util";
 import { ImperativeError } from "../../../../../../src/error";
 
 export default class SampleHandler implements ICommandHandler {
     public async process(commandParameters: IHandlerParameters) {
+        // eslint-disable-next-line deprecation/deprecation
         const profile: any = commandParameters.profiles.get("banana");
-        if (isNullOrUndefined(profile)) {
+        if (profile == null) {
             const errMsg = commandParameters.response.console.error("Failed to load a profile of type banana");
             throw new ImperativeError({msg: errMsg});
         }

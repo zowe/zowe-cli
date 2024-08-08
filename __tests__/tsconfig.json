@@ -4,13 +4,8 @@
       "node",
       "jest"
     ],
-    "lib": [
-      "esnext"
-    ],
-    "experimentalDecorators": true,
     "target": "es2015",
     "module": "commonjs",
-    "noEmit": true,
     "declaration": true,
     "moduleResolution": "node",
     "noImplicitAny": true,
@@ -21,19 +16,18 @@
     "sourceMap": true,
     "newLine": "lf"
   },
-  "typeRoots": [
-    "./node_modules/@types"
-  ],
   "include": [
-    "**/__tests__/*"
+    "**/*.test.ts",
+    "**/*.subtest.ts",
+    "**/__tests__/**/*"
+  ],
+  "files": [
+    "../__types__/wontache.d.ts"
   ],
   "exclude": [
     "lib",
-    "node_modules",
-    "**/__mocks__/*"
-  ],
-  "files": [
-    "../../__types__/wontache.d.ts"
-  ],
-  "allowJs": true
+    "__results__/",
+    "__snapshots__",
+    "node_modules"
+  ]
 }

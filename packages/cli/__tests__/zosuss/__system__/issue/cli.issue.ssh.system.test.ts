@@ -16,7 +16,7 @@ import { TestEnvironment } from "../../../../../../__tests__/__src__/environment
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { ZosFilesConstants } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
-import { startCmdFlag } from "@zowe/zos-uss-for-zowe-sdk";
+import { Shell } from "@zowe/zos-uss-for-zowe-sdk";
 
 
 // Test environment will be populated in the "beforeAll"
@@ -35,7 +35,7 @@ let keyPassphrase: string;
 function checkResponse(response: any, expectStatus: number) {
     expect(response.stderr.toString()).toBe("");
     expect(response.status).toBe(expectStatus);
-    expect(response.stdout.toString()).not.toMatch(startCmdFlag);
+    expect(response.stdout.toString()).not.toMatch(Shell.startCmdFlag);
 }
 
 function generateRandomString(j: number) {

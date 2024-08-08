@@ -78,7 +78,7 @@ describe("System Tests - Monitor Jobs", () => {
 
         ACCOUNT = defaultSystem.tso.account;
         const JOB_LENGTH = 6;
-        MONITOR_JOB_NAME = REAL_SESSION.ISession.user.substr(0, JOB_LENGTH).toUpperCase() + "MJ";
+        MONITOR_JOB_NAME = REAL_SESSION.ISession.user.substring(0, JOB_LENGTH).toUpperCase() + "MJ";
 
         JOBCLASS = testEnvironment.systemTestProperties.zosjobs.jobclass;
         SYSAFF = testEnvironment.systemTestProperties.zosjobs.sysaff;
@@ -687,7 +687,7 @@ describe("System Tests - Monitor Jobs - Encoded", () => {
 
         ACCOUNT = defaultSystem.tso.account;
         const JOB_LENGTH = 5;
-        MONITOR_JOB_NAME = REAL_SESSION.ISession.user?.substr(0, JOB_LENGTH).toUpperCase() + "#MJ";
+        MONITOR_JOB_NAME = REAL_SESSION.ISession.user?.substring(0, JOB_LENGTH).toUpperCase() + "#MJ";
 
         JOBCLASS = testEnvironment.systemTestProperties.zosjobs.jobclass;
         SYSAFF = testEnvironment.systemTestProperties.zosjobs.sysaff;

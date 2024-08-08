@@ -98,6 +98,7 @@ describe("TargetProfileHandler", () => {
             password: "password2",
             port: 123
         });
+        // eslint-disable-next-line deprecation/deprecation
         commandParameters.profiles.get = getProfileMock;
         jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({
             config: { exists: false }

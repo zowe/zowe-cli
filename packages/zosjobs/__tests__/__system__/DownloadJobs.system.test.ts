@@ -68,7 +68,7 @@ describe("Download Jobs - System tests", () => {
 
         ACCOUNT = defaultSystem.tso.account;
         const JOB_LENGTH = 6;
-        DOWNLOAD_JOB_NAME = REAL_SESSION.ISession.user?.substr(0, JOB_LENGTH).toUpperCase() + "DJ";
+        DOWNLOAD_JOB_NAME = REAL_SESSION.ISession.user?.substring(0, JOB_LENGTH).toUpperCase() + "DJ";
         JOBCLASS = testEnvironment.systemTestProperties.zosjobs.jobclass;
         SYSAFF = testEnvironment.systemTestProperties.zosjobs.sysaff;
     });
@@ -105,7 +105,7 @@ describe("Download Jobs - System tests", () => {
 
             ACCOUNT = defaultSystem.tso.account;
             const JOB_LENGTH = 6;
-            DOWNLOAD_JOB_NAME = REAL_SESSION.ISession.user?.substr(0, JOB_LENGTH).toUpperCase() + "DJ";
+            DOWNLOAD_JOB_NAME = REAL_SESSION.ISession.user?.substring(0, JOB_LENGTH).toUpperCase() + "DJ";
             JOBCLASS = testEnvironment.systemTestProperties.zosjobs.jobclass;
             SYSAFF = testEnvironment.systemTestProperties.zosjobs.sysaff;
         });
@@ -118,6 +118,7 @@ describe("Download Jobs - System tests", () => {
                 encoding: "IBM-037"
             });
 
+            // eslint-disable-next-line deprecation/deprecation
             const expectedFile = DownloadJobs.getSpoolDownloadFile(alteredjesJCLJobFile, false, downloadDir);
             expect(IO.existsSync(expectedFile)).toEqual(true);
             expect(IO.readFileSync(expectedFile).toString()).toContain("¬");
@@ -134,6 +135,7 @@ describe("Download Jobs - System tests", () => {
             });
 
             for (const file of alteredjobFiles) {
+                // eslint-disable-next-line deprecation/deprecation
                 const expectedFile = DownloadJobs.getSpoolDownloadFile(file, false, downloadDir);
                 expect(IO.existsSync(expectedFile)).toEqual(true);
                 if (file.ddname === "JESJCL") {
@@ -153,6 +155,7 @@ describe("Download Jobs - System tests", () => {
                 jobFile: jesJCLJobFile
             });
             expect(IO.existsSync(downloadDir)).toEqual(true);
+            // eslint-disable-next-line deprecation/deprecation
             const expectedFile = DownloadJobs.getSpoolDownloadFile(jesJCLJobFile, false, downloadDir);
             expect(IO.existsSync(expectedFile)).toEqual(true);
             expect(IO.readFileSync(expectedFile).toString()).toContain("EXEC PGM=IEFBR14");
@@ -162,6 +165,7 @@ describe("Download Jobs - System tests", () => {
             await DownloadJobs.downloadSpoolContent(REAL_SESSION,
                 jesJCLJobFile
             );
+            // eslint-disable-next-line deprecation/deprecation
             const expectedFile = DownloadJobs.getSpoolDownloadFile(jesJCLJobFile, false);
             expect(IO.existsSync(expectedFile)).toEqual(true);
             expect(IO.readFileSync(expectedFile).toString()).toContain("EXEC PGM=IEFBR14");
@@ -176,6 +180,7 @@ describe("Download Jobs - System tests", () => {
             });
 
             for (const file of jobFiles) {
+                // eslint-disable-next-line deprecation/deprecation
                 const expectedFile = DownloadJobs.getSpoolDownloadFile(file, false, downloadDir);
                 expect(IO.existsSync(expectedFile)).toEqual(true);
             }
@@ -191,6 +196,7 @@ describe("Download Jobs - System tests", () => {
             });
 
             for (const file of jobFiles) {
+                // eslint-disable-next-line deprecation/deprecation
                 const expectedFile = DownloadJobs.getSpoolDownloadFile(file, false, downloadDir);
                 expect(IO.existsSync(expectedFile)).toEqual(true);
                 if (file.ddname === "JESJCL") {
@@ -212,6 +218,7 @@ describe("Download Jobs - System tests", () => {
             });
 
             for (const file of jobFiles) {
+                // eslint-disable-next-line deprecation/deprecation
                 const expectedFile = DownloadJobs.getSpoolDownloadFile(file, false, downloadDir);
                 expect(IO.existsSync(expectedFile)).toEqual(true);
                 if (file.ddname === "JESJCL") {
@@ -242,6 +249,7 @@ describe("Download Jobs - System tests", () => {
 
             const expectedExt = DownloadJobs.DEFAULT_JOBS_OUTPUT_FILE_EXT;
             for (const file of await GetJobs.getSpoolFilesForJob(REAL_SESSION, job)) {
+                // eslint-disable-next-line deprecation/deprecation
                 const expectedFile = DownloadJobs.getSpoolDownloadFile(file, false, downloadDir);
                 expect(IO.existsSync(expectedFile)).toEqual(true);
 
@@ -350,7 +358,7 @@ describe("Download Jobs - System tests - Encoded", () => {
         }
 
         const JOB_LENGTH = 5;
-        DOWNLOAD_JOB_NAME = REAL_SESSION.ISession.user?.substr(0, JOB_LENGTH).toUpperCase() + "#DJ";
+        DOWNLOAD_JOB_NAME = REAL_SESSION.ISession.user?.substring(0, JOB_LENGTH).toUpperCase() + "#DJ";
         JOBCLASS = testEnvironment.systemTestProperties.zosjobs.jobclass;
         SYSAFF = testEnvironment.systemTestProperties.zosjobs.sysaff;
     });
@@ -374,6 +382,7 @@ describe("Download Jobs - System tests - Encoded", () => {
                 jobFile: jesJCLJobFile
             });
             expect(IO.existsSync(downloadDir)).toEqual(true);
+            // eslint-disable-next-line deprecation/deprecation
             const expectedFile = DownloadJobs.getSpoolDownloadFile(jesJCLJobFile, false, downloadDir);
             expect(IO.existsSync(expectedFile)).toEqual(true);
             expect(IO.readFileSync(expectedFile).toString()).toContain("EXEC PGM=IEFBR14");
@@ -383,6 +392,7 @@ describe("Download Jobs - System tests - Encoded", () => {
             await DownloadJobs.downloadSpoolContent(REAL_SESSION,
                 jesJCLJobFile
             );
+            // eslint-disable-next-line deprecation/deprecation
             const expectedFile = DownloadJobs.getSpoolDownloadFile(jesJCLJobFile, false);
             expect(IO.existsSync(expectedFile)).toEqual(true);
             expect(IO.readFileSync(expectedFile).toString()).toContain("EXEC PGM=IEFBR14");
@@ -397,6 +407,7 @@ describe("Download Jobs - System tests - Encoded", () => {
             });
 
             for (const file of jobFiles) {
+                // eslint-disable-next-line deprecation/deprecation
                 const expectedFile = DownloadJobs.getSpoolDownloadFile(file, false, downloadDir);
                 expect(IO.existsSync(expectedFile)).toEqual(true);
             }
@@ -412,6 +423,7 @@ describe("Download Jobs - System tests - Encoded", () => {
             });
 
             for (const file of jobFiles) {
+                // eslint-disable-next-line deprecation/deprecation
                 const expectedFile = DownloadJobs.getSpoolDownloadFile(file, false, downloadDir);
                 expect(IO.existsSync(expectedFile)).toEqual(true);
                 if (file.ddname === "JESJCL") {
@@ -433,6 +445,7 @@ describe("Download Jobs - System tests - Encoded", () => {
             });
 
             for (const file of jobFiles) {
+                // eslint-disable-next-line deprecation/deprecation
                 const expectedFile = DownloadJobs.getSpoolDownloadFile(file, false, downloadDir);
                 expect(IO.existsSync(expectedFile)).toEqual(true);
                 if (file.ddname === "JESJCL") {
@@ -463,6 +476,7 @@ describe("Download Jobs - System tests - Encoded", () => {
 
             const expectedExt = DownloadJobs.DEFAULT_JOBS_OUTPUT_FILE_EXT;
             for (const file of await GetJobs.getSpoolFilesForJob(REAL_SESSION, job)) {
+                // eslint-disable-next-line deprecation/deprecation
                 const expectedFile = DownloadJobs.getSpoolDownloadFile(file, false, downloadDir);
                 expect(IO.existsSync(expectedFile)).toEqual(true);
 

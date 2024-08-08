@@ -10,7 +10,7 @@
 */
 
 import { ImperativeExpect } from "../../../expect";
-import { inspect, isNullOrUndefined, isString } from "util";
+import { inspect } from "util";
 import { Logger } from "../../../logger";
 import { ImperativeError } from "../../../error";
 import * as nodePath from "path";
@@ -200,12 +200,12 @@ export abstract class AbstractProfileManager<T extends IProfileTypeConfiguration
         if (parms.loadCounter != null) {
             this.mLoadCounter = parms.loadCounter;
         }
-        this.mLogger = isNullOrUndefined(parms.logger) ? this.mLogger : parms.logger;
+        this.mLogger = parms.logger == null ? this.mLogger : parms.logger;
         this.mProfileType = parms.type;
         this.mProfileRootDirectory = parms.profileRootDirectory;
         this.mProfileTypeConfigurations = parms.typeConfigurations;
         this.mProductDisplayName = parms.productDisplayName;
-        if (isNullOrUndefined(this.profileTypeConfigurations) || this.profileTypeConfigurations.length === 0) {
+        if (this.profileTypeConfigurations == null || this.profileTypeConfigurations.length === 0) {
             try {
                 this.mProfileTypeConfigurations = this.collectAllConfigurations();
                 if (this.mProfileTypeConfigurations.length === 0) {
@@ -378,7 +378,7 @@ export abstract class AbstractProfileManager<T extends IProfileTypeConfiguration
      * @memberof AbstractProfileManager
      */
     public get configurations(): IProfileTypeConfiguration[] {
-        return JSON.parse(JSON.stringify(isNullOrUndefined(this.profileTypeConfigurations) ? [] : this.profileTypeConfigurations));
+        return JSON.parse(JSON.stringify(this.profileTypeConfigurations == null ? [] : this.profileTypeConfigurations));
     }
 
     /**
@@ -418,7 +418,7 @@ export abstract class AbstractProfileManager<T extends IProfileTypeConfiguration
         // Invoke the implementation
         this.log.trace(`Invoking save profile of implementation...`);
         const response = await this.saveProfile(parms);
-        if (isNullOrUndefined(response)) {
+        if (response == null) {
             throw new ImperativeError({msg: `The profile manager implementation did NOT return a profile save response.`},
                 {tag: `Internal Profile Management Error`});
         }
@@ -427,11 +427,11 @@ export abstract class AbstractProfileManager<T extends IProfileTypeConfiguration
         // happen after the profile environment is initialized for the first time.
         if (this.locateExistingProfile(this.constructMetaName())) {
             const meta = this.readMeta(this.constructFullProfilePath(this.constructMetaName()));
-            if (isNullOrUndefined(meta.defaultProfile)) {
+            if (meta.defaultProfile == null) {
                 this.log.debug(`Setting "${parms.name}" of type "${parms.type}" as the default profile.`);
                 this.setDefault(parms.name);
             }
-        } else if (parms.updateDefault || isNullOrUndefined(this.locateExistingProfile(this.constructMetaName()))) {
+        } else if (parms.updateDefault || this.locateExistingProfile(this.constructMetaName()) == null) {
             this.log.debug(`Setting "${parms.name}" of type "${parms.type}" as the default profile.`);
             this.setDefault(parms.name);
         }
@@ -556,7 +556,7 @@ export abstract class AbstractProfileManager<T extends IProfileTypeConfiguration
         this.log.trace(`Invoking the profile validation implementation for profile "${parms.name}" of type "${this.profileType}".`);
 
         const response = await this.validateProfile(validateParms);
-        if (isNullOrUndefined(response)) {
+        if (response == null) {
             throw new ImperativeError({msg: `The profile manager implementation did NOT return a profile validate response.`},
                 {tag: `Internal Profile Management Error`});
         }
@@ -581,7 +581,7 @@ export abstract class AbstractProfileManager<T extends IProfileTypeConfiguration
         // update one of the dependencies, and keep dependencies of other types
         // so we will allow merging of the dependencies field
         // but will double check that no duplicates have been created
-        if (!isNullOrUndefined(mergedProfile.dependencies) && !isNullOrUndefined(newProfile.dependencies)
+        if (!(mergedProfile.dependencies == null) && !(newProfile.dependencies == null)
                 && newProfile.dependencies.length > 0) {
             const markForDeletionKey = "markedForDelete";
             for (const newDependency of newProfile.dependencies) {
@@ -606,16 +606,16 @@ export abstract class AbstractProfileManager<T extends IProfileTypeConfiguration
         // we'll use this helper to search through
         const DataObjectParser = require("dataobject-parser");
         const findArrayFields = (property: any, propertyPath: string) => {
-            if (Array.isArray(property) && !isString(property)) {
+            if (Array.isArray(property) && !(typeof property === 'string')) {
                 const newProfileProperty = new DataObjectParser(newProfile).get(propertyPath);
 
                 // does the array type property appear on the newer profile
-                if (!isNullOrUndefined(newProfileProperty)) {
+                if (!(newProfileProperty == null)) {
                     // if so, wipe out the merged array with the value from the newer profile
                     this.log.debug("Replacing array type profile field \"%s\" with new value", propertyPath);
                     new DataObjectParser(mergedProfile).set(propertyPath, newProfileProperty);
                 }
-            } else if (!isString(property)) {
+            } else if (!(typeof property === 'string')) {
                 for (const childPropertyName of Object.keys(property)) {
                     // object.keys returns array indices as well,
                     // so we won't recursively call our helper if
@@ -654,13 +654,13 @@ export abstract class AbstractProfileManager<T extends IProfileTypeConfiguration
             `A delete was requested for profile type "${this.profileType}", but the name specified is undefined or blank.`);
 
         // Ensure defaults are set
-        parms.rejectIfDependency = (isNullOrUndefined(parms.rejectIfDependency)) ? true : parms.rejectIfDependency;
+        parms.rejectIfDependency = (parms.rejectIfDependency == null) ? true : parms.rejectIfDependency;
 
         // Log the API call
         this.log.info(`Deleting profile "${parms.name}" of type "${this.profileType}"...`);
 
         // Check if the profile exists before continuing
-        if (isNullOrUndefined(this.locateExistingProfile(parms.name))) {
+        if (this.locateExistingProfile(parms.name) == null) {
             const msg: string = `Profile "${parms.name}" of type "${this.profileType}" does not exist.`;
             this.log.error(msg);
             throw new ImperativeError({msg});
@@ -687,7 +687,7 @@ export abstract class AbstractProfileManager<T extends IProfileTypeConfiguration
 
         this.log.trace(`Invoking implementation to delete profile "${parms.name}" of type "${this.profileType}".`);
         const response = await this.deleteProfile(parms);
-        if (isNullOrUndefined(response)) {
+        if (response == null) {
             throw new ImperativeError({msg: `The profile manager implementation did NOT return a profile delete response.`},
                 {tag: `Internal Profile Management Error`});
         }
@@ -727,7 +727,7 @@ export abstract class AbstractProfileManager<T extends IProfileTypeConfiguration
         // Invoke the implementation
         this.log.trace(`Invoking update profile implementation for profile "${parms.name}" of type "${this.profileType}".`);
         const response = await this.updateProfile(parms);
-        if (isNullOrUndefined(response)) {
+        if (response == null) {
             throw new ImperativeError({msg: `The profile manager implementation did NOT return a profile update response.`},
                 {tag: `Internal Profile Management Error`});
         }
@@ -828,7 +828,7 @@ export abstract class AbstractProfileManager<T extends IProfileTypeConfiguration
     public getDefaultProfileName(): string {
         const metaFile: string = this.locateExistingProfile(this.constructMetaName());
         let defaultName: string;
-        if (isNullOrUndefined(metaFile)) {
+        if (metaFile == null) {
             return undefined;
         }
 
@@ -961,7 +961,7 @@ export abstract class AbstractProfileManager<T extends IProfileTypeConfiguration
 
 
         // Validate the dependencies specification
-        if (!isNullOrUndefined(profile.dependencies)) {
+        if (!(profile.dependencies == null)) {
             ImperativeExpect.keysToBeAnArray(profile, false, ["dependencies"], `The profile passed ` +
                 `(name "${name}" of type "${type}") has dependencies as a property, ` +
                 `but it is NOT an array (ill-formed)`);
@@ -1021,7 +1021,7 @@ export abstract class AbstractProfileManager<T extends IProfileTypeConfiguration
         // If strict mode is requested, then we will remove name and type (because they are inserted by the manager) and
         // set the additional properties flag false, which, according to the JSON schema specification, indicates that
         // no unknown properties should be present on the document.
-        if (strict || (!isNullOrUndefined(schemaWithDependencies.additionalProperties) && schemaWithDependencies.additionalProperties === false)) {
+        if (strict || (!(schemaWithDependencies.additionalProperties == null) && schemaWithDependencies.additionalProperties === false)) {
             schemaWithDependencies.additionalProperties = false;
         }
 
@@ -1110,12 +1110,12 @@ export abstract class AbstractProfileManager<T extends IProfileTypeConfiguration
         const profileFilePath: string = this.locateExistingProfile(name);
 
         // If it doesn't exist and fail not found is false
-        if (isNullOrUndefined(profileFilePath) && !failNotFound) {
+        if (profileFilePath == null && !failNotFound) {
             return this.failNotFoundDefaultResponse(name);
         }
 
         // Throw an error indicating that the load failed
-        if (isNullOrUndefined(profileFilePath)) {
+        if (profileFilePath == null) {
             this.loadFailed(name);
         }
 
@@ -1148,7 +1148,7 @@ export abstract class AbstractProfileManager<T extends IProfileTypeConfiguration
         // If requested, load the profile's dependencies
         if (loadDependencies) {
             const loadDependenciesResponse = await this.loadDependencies(name, profileContents, failNotFound);
-            if (!isNullOrUndefined(loadDependenciesResponse) && loadDependenciesResponse.length > 0) {
+            if (!(loadDependenciesResponse == null) && loadDependenciesResponse.length > 0) {
                 loadResponse.dependenciesLoaded = true;
                 loadResponse.dependencyLoadResponses = loadDependenciesResponse;
             }
@@ -1166,7 +1166,7 @@ export abstract class AbstractProfileManager<T extends IProfileTypeConfiguration
      * @memberof AbstractProfileManager
      */
     protected validateRequiredDependenciesAreSpecified(profile: IProfile) {
-        if (!isNullOrUndefined(this.profileTypeConfiguration.dependencies) && this.profileTypeConfiguration.dependencies.length > 0) {
+        if (!(this.profileTypeConfiguration.dependencies == null) && this.profileTypeConfiguration.dependencies.length > 0) {
             const specifiedDependencies = profile.dependencies || [];
             for (const dependencyConfig of this.profileTypeConfiguration.dependencies) {
                 // are required dependencies present in the profile?
@@ -1202,7 +1202,7 @@ export abstract class AbstractProfileManager<T extends IProfileTypeConfiguration
     private isDependencyOf(profilesToSearch: IProfileLoaded[], name: string): IProfile[] {
         const foundAsDependencyIn: IProfile[] = [];
         for (const prof of profilesToSearch) {
-            if (!isNullOrUndefined(prof.profile.dependencies)) {
+            if (!(prof.profile.dependencies == null)) {
                 for (const dep of prof.profile.dependencies) {
                     if (name === dep.name && this.profileType === dep.type) {
                         foundAsDependencyIn.push(prof);
@@ -1222,7 +1222,7 @@ export abstract class AbstractProfileManager<T extends IProfileTypeConfiguration
      */
     private protectAgainstOverwrite(name: string, overwrite: boolean) {
         const file: string = this.locateExistingProfile(name);
-        if (!isNullOrUndefined(file)) {
+        if (!(file == null)) {
             if (!overwrite) {
                 const errMsg: string = `Profile "${name}" of type "${this.profileType}" already ` +
                     `exists and overwrite was NOT specified.`;
@@ -1334,7 +1334,7 @@ export abstract class AbstractProfileManager<T extends IProfileTypeConfiguration
         ImperativeExpect.keysToBeDefined(typeConfiguration, ["schema"], `The profile type configuration document for ` +
             `"${typeConfiguration.type}" does NOT contain a schema.`);
         this.validateSchema(typeConfiguration.schema, typeConfiguration.type);
-        if (!isNullOrUndefined(typeConfiguration.dependencies)) {
+        if (!(typeConfiguration.dependencies == null)) {
             ImperativeExpect.toBeAnArray(typeConfiguration.dependencies,
                 `The profile type configuration for "${typeConfiguration.type}" contains a "dependencies" property, ` +
                 `but it is not an array (ill-formed)`);

@@ -36,6 +36,7 @@ export const ZosFilesCreateExtraOptions: { [key: string]: ICommandOptionDefiniti
      * @type {ICommandOptionDefinition}
      * @deprecated
      */
+    // eslint-disable-next-line deprecation/deprecation
     showAttributes: {
         name: "show-attributes",
         aliases: ["pa"],
