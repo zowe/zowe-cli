@@ -377,20 +377,26 @@ export class CliUtils {
      * @memberof CliUtils
      */
     public static showMsgWhenDeprecated(handlerParms: IHandlerParameters) {
-        if (handlerParms.definition.deprecatedReplacement) {
+        let oldCmd: string | number;
+        if (handlerParms.definition.deprecatedReplacement || handlerParms.definition.deprecatedReplacement === "") {
             // form the command that is deprecated
-            let oldCmd: string | number;
-            if (handlerParms.positionals.length >= 1) {
-                oldCmd = handlerParms.positionals[0];
+            if(handlerParms.definition.deprecatedReplacement === "")
+            {
+                handlerParms.response.console.error("\nObsolete component. No replacement exists");
             }
-            if (handlerParms.positionals.length >= 2) {
-                oldCmd = oldCmd + " " + handlerParms.positionals[1];
-            }
-
-            // display the message
+            else
+            {
+                if (handlerParms.positionals.length >= 1) {
+                    oldCmd = handlerParms.positionals[0];
+                }
+                if (handlerParms.positionals.length >= 2) {
+                    oldCmd = oldCmd + " " + handlerParms.positionals[1];
+                }
+                            // display the message
             handlerParms.response.console.error("\nWarning: The command '" + oldCmd + "' is deprecated.");
             handlerParms.response.console.error("Recommended replacement: " +
                 handlerParms.definition.deprecatedReplacement);
+            }
         }
     }
 

@@ -187,7 +187,7 @@ describe("CliUtils", () => {
         let responseErrText: string = notSetYet;
 
         // create a fake set of command handler parameters
-        const handlerParms: any = {
+        let handlerParms: any = {
             definition: {
                 deprecatedReplacement: "Something must be better"
             },
@@ -233,6 +233,13 @@ describe("CliUtils", () => {
             delete handlerParms.definition.deprecatedReplacement;
             CliUtils.showMsgWhenDeprecated(handlerParms);
             expect(responseErrText).toEqual(notSetYet);
+        });
+
+        it("should produce alternative text when deprecatedReplacement is an empty string", () => {
+            responseErrText = notSetYet;
+            handlerParms.definition.deprecatedReplacement = "";
+            CliUtils.showMsgWhenDeprecated(handlerParms);
+            expect(responseErrText).toContain("Obsolete component. No replacement exists");
         });
     });
 
