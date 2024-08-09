@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Modified showMsgWhenDeprecated() to allow an empty string as a paramter when no replacement is availible for deprecated command to print an alternative message. [#2041](https://github.com/zowe/zowe-cli/issues/2041)
+
 ## `5.26.2`
 
 - BugFix: Refactored code to reduce the use of deprecated functions to prepare for upcoming Node.js 22 support. [#2191](https://github.com/zowe/zowe-cli/issues/2191)
