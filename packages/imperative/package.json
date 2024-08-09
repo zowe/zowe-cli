@@ -99,7 +99,7 @@
     "@types/readline-sync": "^1.4.3",
     "@types/rimraf": "^3.0.2",
     "@types/stack-trace": "^0.0.29",
-    "@zowe/secrets-for-zowe-sdk": "^7.28.3",
+    "@zowe/secrets-for-zowe-sdk": "^7.18.0",
     "concurrently": "^7.5.0",
     "cowsay": "^1.2.1",
     "deep-diff": "^0.3.8",
