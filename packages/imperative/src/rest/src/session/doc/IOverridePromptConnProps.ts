@@ -16,7 +16,7 @@ import { ISession } from "./ISession";
  * @export
  * @interface IOverridePromptConnProps
  */
-export interface IOverridePromptConnProps {
+export interface IOverridePromptConnProps<SessCfgType extends ISession=ISession> {
     /**
      * Indicates the session property that should be considered in the prompting logic.
      */
@@ -34,5 +34,11 @@ export interface IOverridePromptConnProps {
      * Prompting logic is only in place for host, port, user, and password, but cert, certKey, tokenType, and tokenValue may also need
      * to be overridden.
      */
-    propertiesOverridden: (keyof ISession)[];
+    propertiesOverridden: (keyof SessCfgType & string)[];
+
+    /**
+     * Allows passing additional properties for which to prompt.
+     * Used in cases of an incorrect or missing key passphrase.
+     */
+    propsToPromptFor?: (keyof SessCfgType & string)[];
 }

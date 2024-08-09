@@ -22,16 +22,17 @@ import {
     IImperativeError,
     ImperativeError,
     ConnectionPropsForSessCfg,
-    SessConstants
+    SessConstants,
 } from "@zowe/imperative";
 import { SshSession } from "./SshSession";
 import { ISshSession } from "./doc/ISshSession";
+import { utils } from "ssh2";
+import * as fs from "fs";
 
 /**
  * This class is used by the various handlers in the project as the base class for their implementation.
  */
 export abstract class SshBaseHandler implements ICommandHandler {
-
     /**
      * The session creating from the command line arguments / profile
      */
@@ -58,22 +59,107 @@ export abstract class SshBaseHandler implements ICommandHandler {
     public async process(commandParameters: IHandlerParameters) {
         this.mHandlerParams = commandParameters;
 
-        const sshSessCfgOverride: IOverridePromptConnProps[] = [{
-            propertyName: "privateKey",
-            propertiesOverridden: ["password", "tokenType", "tokenValue", "cert", "certKey", "passphrase"]
-        }];
-        const sshSessCfg: ISshSession = SshSession.createSshSessCfgFromArgs(commandParameters.arguments);
-        const sshSessCfgWithCreds = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISshSession>(
-            sshSessCfg, commandParameters.arguments, {
-                parms: commandParameters,
-                propertyOverrides: sshSessCfgOverride,
-                supportedAuthTypes: [SessConstants.AUTH_TYPE_BASIC]
-            }
+        const sshSessCfgOverride: IOverridePromptConnProps[] = [
+            {
+                propertyName: "privateKey",
+                propertiesOverridden: [
+                    "password",
+                    "tokenType",
+                    "tokenValue",
+                    "cert",
+                    "certKey",
+                ],
+            },
+        ];
+        const sshSessCfg: ISshSession = SshSession.createSshSessCfgFromArgs(
+            commandParameters.arguments
         );
+        let sshSessCfgWithCreds =
+            await ConnectionPropsForSessCfg.addPropsOrPrompt<ISshSession>(
+                sshSessCfg,
+                commandParameters.arguments,
+                {
+                    parms: commandParameters,
+                    propertyOverrides: sshSessCfgOverride,
+                    supportedAuthTypes: [SessConstants.AUTH_TYPE_BASIC],
+                }
+            );
         this.mSession = new SshSession(sshSessCfgWithCreds);
 
         this.mArguments = commandParameters.arguments;
-        await this.processCmd(commandParameters);
+
+        try {
+            await this.processCmd(commandParameters);
+        } catch (e) {
+            if (
+                e.message.includes("but no passphrase given") ||
+                e.message.includes("bad passphrase?")
+            ) {
+                this.console.log("Initial key passphrase authentication failed!" + "\n");
+                const maxAttempts = 3;
+                let attempt = 0;
+                let success = false;
+                while (attempt < maxAttempts && !success) {
+                    try {
+                        sshSessCfgWithCreds =
+                            await ConnectionPropsForSessCfg.addPropsOrPrompt<ISshSession>(
+                                sshSessCfgWithCreds,
+                                commandParameters.arguments,
+                                {
+                                    parms: commandParameters,
+                                    propertyOverrides: sshSessCfgOverride,
+                                    supportedAuthTypes: [
+                                        SessConstants.AUTH_TYPE_BASIC,
+                                    ],
+                                    propsToPromptFor: [
+                                        {
+                                            name: "keyPassphrase",
+                                            isGivenValueValid: (givenValue: string) => {
+                                                let saveKP: boolean = true;
+                                                const result = utils.parseKey(
+                                                    fs.readFileSync(
+                                                        sshSessCfgWithCreds.privateKey
+                                                    ),
+                                                    givenValue
+                                                );
+                                                if (result instanceof Error)
+                                                    saveKP =
+                                                        !result.message.includes(
+                                                            "no passphrase given"
+                                                        ) &&
+                                                        !result.message.includes(
+                                                            "bad passphrase"
+                                                        );
+                                                return saveKP;
+                                            },
+                                        },
+                                    ],
+                                }
+                            );
+                        this.mSession = new SshSession(sshSessCfgWithCreds);
+                        await this.processCmd(commandParameters);
+                        success = true;
+                    } catch (retryError) {
+                        this.console.log(
+                            "\n" +
+                                `Key passphrase authentication failed! (${
+                                    ++attempt
+                                }/${maxAttempts})` +
+                                "\n"
+                        );
+                        if (attempt >= maxAttempts) {
+                            throw new Error(
+                                "Maximum retry attempts reached. Authentication failed."
+                            );
+                        }
+                    }
+                }
+            }
+            else
+            {
+                throw e;
+            }
+        }
     }
 
     /**
@@ -122,5 +208,7 @@ export abstract class SshBaseHandler implements ICommandHandler {
      * @param {IHandlerParameters} commandParameters Command parameters sent to the handler.
      *
      */
-    public abstract processCmd(commandParameters: IHandlerParameters): Promise<void>;
+    public abstract processCmd(
+        commandParameters: IHandlerParameters
+    ): Promise<void>;
 }
