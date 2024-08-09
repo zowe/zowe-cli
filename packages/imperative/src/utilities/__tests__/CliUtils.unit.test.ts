@@ -320,6 +320,13 @@ describe("CliUtils", () => {
             CliUtils.showMsgWhenDeprecated(handlerParms);
             expect(responseErrText).toEqual(notSetYet);
         });
+
+        it("should produce alternative text when deprecatedReplacement is an empty string", () => {
+            responseErrText = notSetYet;
+            handlerParms.definition.deprecatedReplacement = "";
+            CliUtils.showMsgWhenDeprecated(handlerParms);
+            expect(responseErrText).toContain("Obsolete component. No replacement exists");
+        });
     });
 
     describe("buildBaseArgs", () => {
