@@ -8,6 +8,7 @@
 * Copyright Contributors to the Zowe Project.
 *
 */
+
 describe("Cmd CLI Secure Tests", () => {
     require("./Cmd.cli.auth.login.fruit.integration.subtest");
     require("./Cmd.cli.auth.logout.fruit.integration.subtest");
