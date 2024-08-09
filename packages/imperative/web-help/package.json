@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc --build ./tsconfig.json",
-    "watch": "tsc --build ./tsconfig.json -w"
+    "watch": "tsc --build ./tsconfig.json -w",
+    "prepare": "node ../../../scripts/rewriteShrinkwrap.js package-lock.json"
   },
   "keywords": [],
   "author": "",
