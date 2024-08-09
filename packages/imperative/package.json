@@ -1,6 +1,6 @@
 {
   "name": "@zowe/imperative",
-  "version": "5.26.1",
+  "version": "5.26.2",
   "description": "framework for building configurable CLIs",
   "author": "Zowe",
   "license": "EPL-2.0",
@@ -31,8 +31,8 @@
   "scripts": {
     "build:packages": "tsc --pretty",
     "build": "npm run build:packages && npm run build:webHelp",
-    "lint": "eslint \"packages/**/*.ts\" \"**/__tests__/**/*.ts\"",
-    "lint:packages": "eslint \"packages/**/*.ts\" --ignore-pattern \"**/__tests__/**/*.ts\"",
+    "lint": "eslint \"src/**/*.ts\" \"**/__tests__/**/*.ts\" --ignore-pattern \"**/__mocks__/*.ts\"",
+    "lint:packages": "eslint \"src/**/*.ts\" --ignore-pattern \"**/__tests__/**/*.ts\" --ignore-pattern \"**/__mocks__/*.ts\"",
     "lint:tests": "eslint \"**/__tests__/**/*.ts\"",
     "circularDependencyCheck": "madge -c lib",
     "watch": "concurrently \"tsc --pretty --watch\" \"npm run watch:webHelp\"",
@@ -99,7 +99,7 @@
     "@types/readline-sync": "^1.4.3",
     "@types/rimraf": "^3.0.2",
     "@types/stack-trace": "^0.0.29",
-    "@zowe/secrets-for-zowe-sdk": "^7.18.0",
+    "@zowe/secrets-for-zowe-sdk": "^7.28.3",
     "concurrently": "^7.5.0",
     "cowsay": "^1.2.1",
     "deep-diff": "^0.3.8",

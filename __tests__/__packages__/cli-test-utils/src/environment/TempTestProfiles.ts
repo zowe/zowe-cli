@@ -216,6 +216,7 @@ export class TempTestProfiles {
         config.api.layers.activate(false, true);
 
         // Remove profile from config JSON
+        // eslint-disable-next-line deprecation/deprecation
         config.delete(config.api.profiles.expandPath(profileName));
         if (config.api.layers.get().properties.defaults[profileType] === profileName) {
             config.delete(`defaults.${profileType}`);

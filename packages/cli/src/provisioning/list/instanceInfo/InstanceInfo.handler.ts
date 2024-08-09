@@ -21,7 +21,6 @@ import {
     ProvisioningConstants,
     ListInstanceInfo
 } from "@zowe/provisioning-for-zowe-sdk";
-import { isNullOrUndefined } from "util";
 import { ZosmfBaseHandler } from "@zowe/zosmf-for-zowe-sdk";
 
 /**
@@ -36,7 +35,7 @@ export default class InstanceInfoHandler extends ZosmfBaseHandler {
         const registry = await ListRegistryInstances.listFilteredRegistry(this.mSession, ProvisioningConstants.ZOSMF_VERSION, null,
             commandParameters.arguments.name);
         const instances: IProvisionedInstance[] = registry["scr-list"];
-        if (isNullOrUndefined(instances)) {
+        if (instances == null) {
             commandParameters.response.console.error("No instance with name " + commandParameters.arguments.name + " was found");
         } else if (instances.length === 1) {
             const id = instances.pop()["object-id"];
@@ -57,7 +56,7 @@ export default class InstanceInfoHandler extends ZosmfBaseHandler {
     private formatProvisionedInstanceSummaryOutput(instance: IProvisionedInstance, option: string): any[] {
 
         let prettifiedInstance: any = {};
-        option = isNullOrUndefined(option) ? "ACTIONS" : option.toUpperCase();
+        option = option == null ? "ACTIONS" : option.toUpperCase();
 
         // Prettify the output
         switch (option) {

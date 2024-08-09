@@ -29,7 +29,6 @@ import {
 } from "./doc";
 
 import { ImperativeExpect } from "../../expect";
-import { isNullOrUndefined } from "util";
 import { ImperativeError } from "../../error";
 import { ProfileIO } from "./utils";
 
@@ -83,7 +82,7 @@ export class BasicProfileManager<T extends IProfileTypeConfiguration> extends Ab
         );
 
         // Set any defaults
-        parms.reinitialize = (isNullOrUndefined(parms.reinitialize)) ? false : parms.reinitialize;
+        parms.reinitialize = (parms.reinitialize == null) ? false : parms.reinitialize;
 
         // Create the profile root directory (if necessary)
         ProfileIO.createProfileDirs(parms.profileRootDirectory);
@@ -190,7 +189,7 @@ export class BasicProfileManager<T extends IProfileTypeConfiguration> extends Ab
             // Construct a list of promises to load all profiles
             const promises: Array<Promise<IProfileLoaded>> = [];
             const responses: IProfileLoaded[] = [];
-            if (!isNullOrUndefined(profile.dependencies)) {
+            if (!(profile.dependencies == null)) {
                 this.log.debug(`Loading dependencies for profile of "${this.profileType}".`);
                 let list: string = "";
                 for (const dependency of profile.dependencies) {

@@ -7,9 +7,14 @@ All notable changes to the Imperative package will be documented in this file.
 - BugFix: Fixed issue in local web help with highlighted sidebar item getting out of sync. [#2215](https://github.com/zowe/zowe-cli/pull/2215)
 - BugFix: Updated web help dependencies for technical currency. [#2215](https://github.com/zowe/zowe-cli/pull/2215)
 
+## `5.26.2`
+
+- BugFix: Refactored code to reduce the use of deprecated functions to prepare for upcoming Node.js 22 support. [#2191](https://github.com/zowe/zowe-cli/issues/2191)
+- BugFix: Fixed error in REST client when making requests with session type of `SessConstants.AUTH_TYPE_NONE`. [#2219](https://github.com/zowe/zowe-cli/issues/2219)
+
 ## `5.26.1`
 
-- BugFix: Export new Proxy class from Zowe imperative package. [#2205](https://github.com/zowe/zowe-cli/pull/2205)
+- BugFix: Fixed missing export for `Proxy` class in Imperative package. [#2205](https://github.com/zowe/zowe-cli/pull/2205)
 
 ## `5.26.0`
 

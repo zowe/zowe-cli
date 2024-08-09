@@ -171,7 +171,7 @@ export class ZosFilesUtils {
         memberName = memberName.replace(/[\d]/gy, "");
 
         // Trunkage lenght to max lenght allowed
-        memberName = memberName.substr(0, this.MAX_MEMBER_LENGTH);
+        memberName = memberName.substring(0, this.MAX_MEMBER_LENGTH);
 
         return memberName;
     }

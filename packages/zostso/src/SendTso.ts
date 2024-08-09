@@ -12,7 +12,6 @@
 import { AbstractSession, Headers } from "@zowe/imperative";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 
-import { isNullOrUndefined } from "util";
 import { TsoValidator } from "./TsoValidator";
 import { noDataInput, noServletKeyInput, TsoConstants } from "./TsoConstants";
 import { ISendTsoParms } from "./doc/input/ISendTsoParms";
@@ -88,7 +87,7 @@ export class SendTso {
         tsos.push(tso);
         let messages: string = "";
         while (!done) {
-            if (!isNullOrUndefined(tso.tsoData)) {
+            if (!(tso.tsoData == null)) {
                 tso.tsoData.forEach((data) => {
                     if (data[TsoConstants.TSO_MESSAGE]) {
                         messages += (data[TsoConstants.TSO_MESSAGE].DATA + "\n");

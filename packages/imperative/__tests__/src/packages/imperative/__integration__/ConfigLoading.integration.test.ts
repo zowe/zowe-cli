@@ -16,16 +16,19 @@ import { ImperativeConfig } from "../../../../../src/utilities";
 describe("Imperative should validate config provided by the consumer", function () {
     const testDir = T.createUniqueTestDataDir("config-loading");
     const packageJsonPath = testDir + "/package.json";
+    // eslint-disable-next-line deprecation/deprecation
     const mainModule = process.mainModule;
 
     beforeAll(() => {
         // Temporarily change the main module filename so that the test can work.
+        // eslint-disable-next-line deprecation/deprecation
         (process.mainModule as any) = {
             filename: packageJsonPath
         };
     });
 
     afterAll(() => {
+        // eslint-disable-next-line deprecation/deprecation
         process.mainModule = mainModule;
         T.unlinkSync(packageJsonPath);
     });

@@ -259,7 +259,9 @@ export default class ConvertProfilesHandler implements ICommandHandler {
     private async checkKeytarAvailable(): Promise<boolean> {
         let success: boolean = false;
         const requireOpts: any = {};
+        // eslint-disable-next-line deprecation/deprecation
         if (process.mainModule?.filename != null) {
+            // eslint-disable-next-line deprecation/deprecation
             requireOpts.paths = [process.mainModule.filename];
         }
         try {

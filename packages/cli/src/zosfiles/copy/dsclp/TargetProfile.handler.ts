@@ -31,6 +31,7 @@ export default class TargetProfileHandler extends ZosFilesBaseHandler {
                 if (ImperativeConfig.instance.config?.exists) {
                     targetCmdArgs = ImperativeConfig.instance.config.api.profiles.get(targetProfileName);
                 } else {
+                    // eslint-disable-next-line deprecation/deprecation
                     targetCmdArgs = params.profiles.get("zosmf", false, targetProfileName);
                 }
             }

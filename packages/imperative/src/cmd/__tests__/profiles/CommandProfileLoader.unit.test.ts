@@ -221,6 +221,7 @@ describe("Command Profile Loader", () => {
             logger: TestLogger.getTestLogger()
         })
             .loadProfiles({ _: undefined as any, $0: undefined as any });
+        // eslint-disable-next-line deprecation/deprecation
         expect(response.get(PROFILE_BANANA_TYPE)).toMatchSnapshot();
     });
 
@@ -333,6 +334,7 @@ describe("Command Profile Loader", () => {
             logger: TestLogger.getTestLogger()
         })
             .loadProfiles({"_": undefined as any, "$0": undefined as any, "banana-profile": "tasty"});
+        // eslint-disable-next-line deprecation/deprecation
         expect(response.get(PROFILE_BANANA_TYPE)).toMatchSnapshot();
     });
 
@@ -375,7 +377,9 @@ describe("Command Profile Loader", () => {
             logger: TestLogger.getTestLogger()
         })
             .loadProfiles({"_": undefined as any, "$0": undefined as any, "banana-profile": "tasty"});
+        // eslint-disable-next-line deprecation/deprecation
         expect(response.get(PROFILE_BANANA_TYPE)).toMatchSnapshot();
+        // eslint-disable-next-line deprecation/deprecation
         expect(response.get(STRAWBERRY_PROFILE_TYPE)).toMatchSnapshot();
     });
 
@@ -426,7 +430,9 @@ describe("Command Profile Loader", () => {
             logger: TestLogger.getTestLogger()
         })
             .loadProfiles({"_": undefined as any, "$0": undefined as any, "banana-profile": "tasty", "strawberry-profile": "red"});
+        // eslint-disable-next-line deprecation/deprecation
         expect(response.get(PROFILE_BANANA_TYPE)).toMatchSnapshot();
+        // eslint-disable-next-line deprecation/deprecation
         expect(response.get(STRAWBERRY_PROFILE_TYPE)).toMatchSnapshot();
     });
 
@@ -535,10 +541,15 @@ describe("Command Profile Loader", () => {
             profileManagerFactory: manager, logger:
         TestLogger.getTestLogger()
         }).loadProfiles({"_": undefined as any, "$0": undefined as any, "banana-profile": "tasty"});
+        // eslint-disable-next-line deprecation/deprecation
         expect(response.getAll(PROFILE_BANANA_TYPE)[0]).toMatchSnapshot();
+        // eslint-disable-next-line deprecation/deprecation
         expect(response.getAll(PROFILE_BANANA_TYPE)[1]).toMatchSnapshot();
+        // eslint-disable-next-line deprecation/deprecation
         expect(response.getAll(PROFILE_BANANA_TYPE)[2]).toMatchSnapshot();
+        // eslint-disable-next-line deprecation/deprecation
         expect(response.get(PROFILE_BANANA_TYPE)).toMatchSnapshot();
+        // eslint-disable-next-line deprecation/deprecation
         expect(response.getAll(PROFILE_BANANA_TYPE)).toMatchSnapshot();
     });
 
@@ -589,7 +600,9 @@ describe("Command Profile Loader", () => {
             profileManagerFactory: manager, logger:
         TestLogger.getTestLogger()
         }).loadProfiles({"_": undefined as any, "$0": undefined as any, "banana-profile": "tasty", "strawberry-profile": "red"});
+        // eslint-disable-next-line deprecation/deprecation
         expect(response.get(PROFILE_BANANA_TYPE)).toMatchSnapshot();
+        // eslint-disable-next-line deprecation/deprecation
         expect(response.get(STRAWBERRY_PROFILE_TYPE)).toMatchSnapshot();
     });
 });

@@ -10,7 +10,6 @@
 */
 
 import { ImperativeError } from "../../error";
-import { isNullOrUndefined } from "util";
 
 /**
  * JSON utility to wrap and throw ImperativeErrors
@@ -30,7 +29,7 @@ export class JSONUtils {
      * @throws {ImperativeError} When there was a failure trying to parse a non-zero length data string.
      */
     public static parse<T extends object>(data: string, failMessage?: string): T {
-        if (isNullOrUndefined(failMessage)) {
+        if (failMessage == null) {
             failMessage = "Parse of " + data + " failed";
         }
         try {

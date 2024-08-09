@@ -10,7 +10,6 @@
 */
 
 /* eslint-disable jest/expect-expect */
-import { isNullOrUndefined } from "util";
 import { CommandProcessor, ICommandDefinition, ICommandResponse } from "../../../../../src/cmd/index";
 import { ValidationTestCommand } from "../ValidationTestCommand";
 import { Constants } from "../../../../../src/constants/index";
@@ -44,9 +43,11 @@ const DUMMY_PROFILE_TYPE_CONFIG: IProfileTypeConfiguration[] = [
 ];
 describe("Imperative should provide advanced syntax validation rules", function () {
     const home = __dirname + "/validationtests";
+    // eslint-disable-next-line deprecation/deprecation
     const mainModule = process.mainModule;
 
     beforeAll(function () {
+        // eslint-disable-next-line deprecation/deprecation
         (process.mainModule as any) = {
             filename: __filename
         };
@@ -61,6 +62,7 @@ describe("Imperative should provide advanced syntax validation rules", function 
         });
     });
     afterAll(() => {
+        // eslint-disable-next-line deprecation/deprecation
         process.mainModule = mainModule;
         rimraf(home);
     });
@@ -106,7 +108,7 @@ describe("Imperative should provide advanced syntax validation rules", function 
                         } else {
                             expect(completedResponse.success).toEqual(false);
                         }
-                        if (!isNullOrUndefined(expectedText) && expectedText.length > 0) {
+                        if (!(expectedText == null) && expectedText.length > 0) {
                             (completedResponse.stderr as any) = completedResponse.stderr.toString();
                             (completedResponse.stdout as any) = completedResponse.stdout.toString();
                             for (const text of expectedText) {

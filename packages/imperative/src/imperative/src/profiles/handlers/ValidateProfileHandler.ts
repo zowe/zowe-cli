@@ -9,7 +9,6 @@
 *
 */
 
-import { isNullOrUndefined } from "util";
 import { CliProfileManager, ICommandHandler, IHandlerParameters } from "../../../../cmd";
 import { IImperativeError, ImperativeError } from "../../../../error";
 import { Imperative } from "../../../index";
@@ -85,7 +84,7 @@ export default class ValidateProfileHandler implements ICommandHandler {
 
             const cleanTaskForJSONOutput = (task: IProfileValidationTask) => {
                 delete task.taskFunction;
-                if (!isNullOrUndefined(task.dependentTasks)) {
+                if (!(task.dependentTasks == null)) {
                     for (const dependent of task.dependentTasks) {
                         cleanTaskForJSONOutput(dependent);
                     }

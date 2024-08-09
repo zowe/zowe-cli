@@ -190,6 +190,7 @@ export class ProfileInfo {
             this.mOverrideWithEnv = profInfoOpts.overrideWithEnv;
         }
 
+        // eslint-disable-next-line deprecation/deprecation
         this.mCredentials = new ProfileCredentials(this, profInfoOpts?.requireKeytar ?? profInfoOpts);
 
         // do enough Imperative stuff to let imperative utilities work

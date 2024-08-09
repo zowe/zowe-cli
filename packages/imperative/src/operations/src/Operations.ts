@@ -11,7 +11,6 @@
 
 import { IOperationResultReady, Operation } from "./Operation";
 import { IOperationResult } from "./doc/IOperationResult";
-import { isNullOrUndefined } from "util";
 import { TextUtils } from "../../utilities";
 import { TaskProgress } from "./TaskProgress";
 
@@ -109,7 +108,7 @@ export abstract class Operations<T> extends Operation<any> {
     }
 
     public get statusMessage(): string {
-        if (isNullOrUndefined(this.mOverallStatusMessage)) {
+        if (this.mOverallStatusMessage == null) {
             return this.mOperationList[this.mCurrentOperation].statusMessage;
         }
         else {
@@ -124,7 +123,7 @@ export abstract class Operations<T> extends Operation<any> {
      */
     public get percentComplete(): number {
         const percentPerOp: number = (TaskProgress.ONE_HUNDRED_PERCENT / this.mOperationList.length);
-        const currentOpPercentComplete = isNullOrUndefined(this.mOperationList[this.mCurrentOperation].percentComplete)
+        const currentOpPercentComplete = this.mOperationList[this.mCurrentOperation].percentComplete == null
             ? 0 : this.mOperationList[this.mCurrentOperation].percentComplete;
 
         return Math.ceil(percentPerOp * this.mCurrentOperation + // how many operations completed so far (each 100%)
@@ -269,7 +268,7 @@ export abstract class Operations<T> extends Operation<any> {
     private prepareForUndo(): void {
         this.log.debug("Building list of undo operation actions");
         let currentOperationResult: IOperationResult<any> = this.mOperationResults;
-        while (!isNullOrUndefined(currentOperationResult)) {
+        while (!(currentOperationResult == null)) {
             if (currentOperationResult.operationUndoPossible && !currentOperationResult.operationUndoAttempted) {
                 this.log.debug("Adding operation (" + currentOperationResult.operationName +
                     ") to undo list.");
