@@ -91,11 +91,11 @@ export abstract class SshBaseHandler implements ICommandHandler {
         try {
             await this.processCmd(commandParameters);
         } catch (e) {
-            this.console.log("Initial key passphrase authentication failed!" + "\n");
             if (
                 e.message.includes("but no passphrase given") ||
                 e.message.includes("bad passphrase?")
             ) {
+                this.console.log("Initial key passphrase authentication failed!" + "\n");
                 const maxAttempts = 3;
                 let attempt = 0;
                 let success = false;
@@ -154,6 +154,10 @@ export abstract class SshBaseHandler implements ICommandHandler {
                         }
                     }
                 }
+            }
+            else
+            {
+                throw e;
             }
         }
     }
