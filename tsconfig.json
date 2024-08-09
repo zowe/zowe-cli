@@ -10,6 +10,7 @@
     "target": "es2015",
     "module": "commonjs",
     "declaration": true,
+    "declarationMap": true,
     "moduleResolution": "node",
     "noImplicitAny": true,
     "preserveConstEnums": true,
