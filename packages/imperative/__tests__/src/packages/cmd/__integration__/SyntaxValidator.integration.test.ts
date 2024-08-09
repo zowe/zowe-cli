@@ -101,7 +101,7 @@ describe("Imperative should provide advanced syntax validation rules", function 
                         } else {
                             expect(completedResponse.success).toEqual(false);
                         }
-                        if (!(expectedText == undefined) && expectedText.length > 0) {
+                        if (expectedText != null && expectedText.length > 0) {
                             (completedResponse.stderr as any) = completedResponse.stderr.toString();
                             (completedResponse.stdout as any) = completedResponse.stdout.toString();
                             for (const text of expectedText) {

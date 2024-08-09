@@ -13,6 +13,7 @@ import { ICommandHandler, IHandlerParameters } from "../../../../../src/cmd";
 
 export default class UseProfileAHandler implements ICommandHandler {
     public async process(params: IHandlerParameters): Promise<void> {
+        // eslint-disable-next-line deprecation/deprecation
         const profile = params.profiles.get("profile-b");
         params.response.console.log("Loaded profile {{name}} of type {{type}}",
             {name: profile.name, type: profile.type});

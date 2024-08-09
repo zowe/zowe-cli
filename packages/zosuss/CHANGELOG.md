@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS USS SDK package will be documented in this file.
 
+## Recent Changes
+
+- Update: See `7.28.3` for details
+
 ## `8.0.0-next.202403132009`
 
 - Enhancement: Provide more legible errors to user when they are missing user/password credentials while
@@ -37,6 +41,10 @@ running `zowe zos-uss issue ssh` commands. [#2081](https://github.com/zowe/zowe-
 ## `8.0.0-next.202311132045`
 
 - Major: First major version bump for V3
+
+## `7.28.3`
+
+- BugFix: Refactored code to reduce the use of deprecated functions to prepare for upcoming Node.js 22 support. [#2191](https://github.com/zowe/zowe-cli/issues/2191)
 
 ## `7.24.0`
 

@@ -14,7 +14,7 @@ import * as https from "https";
 import * as http from "http";
 import { Session } from "../../src/session/Session";
 import {
-    AUTH_TYPE_BASIC, AUTH_TYPE_BEARER, AUTH_TYPE_CERT_PEM, AUTH_TYPE_TOKEN
+    AUTH_TYPE_BASIC, AUTH_TYPE_BEARER, AUTH_TYPE_CERT_PEM, AUTH_TYPE_NONE, AUTH_TYPE_TOKEN
 } from "../../src/session/SessConstants";
 import { RestClient } from "../../src/client/RestClient";
 import { Headers } from "../../src/client/Headers";
@@ -78,21 +78,65 @@ describe("AbstractRestClient tests", () => {
         expect(error.message).toMatchSnapshot();
     });
 
-    it("should throw an error when when no creds are in the session", async () => {
+    it("should throw an error when session type is basic and no creds are in the session", async () => {
         // restore setPasswordAuth spy to its original implementation
         setPasswordAuthSpy.mockRestore();
 
         let caughtError;
         try {
-            await RestClient.getExpectString(new Session({
-                hostname: "test"
-            }), "/resource");
+            const sessWithoutCreds = new Session({
+                hostname: "test",
+                type: AUTH_TYPE_BASIC,
+                base64EncodedAuth: "FakeBase64EncodedCred"
+            });
+            delete sessWithoutCreds.ISession.base64EncodedAuth;
+            await RestClient.getExpectString(sessWithoutCreds, "/resource");
         } catch (error) {
             caughtError = error;
         }
 
         expect(caughtError instanceof ImperativeError).toBe(true);
         expect(caughtError.message).toContain("No credentials for a BASIC or TOKEN type of session");
+    });
+
+    it("should not error when session type is none and no creds are in the session", async () => {
+        const emitter = new MockHttpRequestResponse();
+        const requestFnc = jest.fn((options, callback) => {
+            ProcessUtils.nextTick(async () => {
+
+                const newEmit = new MockHttpRequestResponse();
+                callback(newEmit);
+
+                await ProcessUtils.nextTick(() => {
+                    newEmit.emit("data", Buffer.from("{\"newData\":", "utf8"));
+                });
+
+                await ProcessUtils.nextTick(() => {
+                    newEmit.emit("data", Buffer.from("\"response data\"}", "utf8"));
+                });
+
+                await ProcessUtils.nextTick(() => {
+                    newEmit.emit("end");
+                });
+            });
+
+            return emitter;
+        });
+
+        (https.request as any) = requestFnc;
+
+        let caughtError;
+        try {
+            await RestClient.getExpectString(new Session({
+                hostname: "test",
+                type: AUTH_TYPE_NONE
+            }), "/resource");
+        } catch (error) {
+            caughtError = error;
+        }
+
+        expect(caughtError).toBeUndefined();
+        expect(requestFnc).toHaveBeenCalledTimes(1);
     });
 
     it("should not error when chunking data and payload data are present in outgoing request", async () => {

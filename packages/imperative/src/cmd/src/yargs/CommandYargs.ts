@@ -32,7 +32,7 @@ export class CommandYargs extends AbstractCommandYargs {
      * @param {ICommandOptionDefinition[]} zoweOptions: The option definition document array.
      */
     public static defineOptionsToYargs(yargsInstance: Argv, zoweOptions: ICommandOptionDefinition[]): void {
-        if (!(zoweOptions == null)) {
+        if (zoweOptions != null) {
             for (const option of zoweOptions) {
                 const definition: Options = {
                     alias: option.aliases,

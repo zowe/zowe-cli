@@ -1,6 +1,113 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Imperative Secure Tests imperative-test-cli config profiles should list profiles 1`] = `
+exports[`Imperative Secure Tests Imperative Test CLI Secure Tests imperative-test-cli config import failure scenarios should fail to import if location is not specified 1`] = `
+"
+Syntax Error:
+Missing Positional Argument: location
+Argument Description: File path or URL to import from.
+
+Example:
+
+ - Import config from local file on disk:
+
+      $ imperative-test-cli config import ~/Downloads/zowe.config.json
+
+Use \\"imperative-test-cli config import --help\\" to view command description, usage, and options.
+"
+`;
+
+exports[`Imperative Secure Tests Imperative Test CLI Secure Tests imperative-test-cli config list should list the configuration 1`] = `
+"profiles: 
+  secured: 
+    type:       secured
+    properties: 
+      info: 
+    secure: 
+      (empty array)
+  project_base: 
+    type:       base
+    properties: 
+    secure: 
+      - secret
+  global_base: 
+    type:       base
+    properties: 
+    secure: 
+      - secret
+defaults: 
+  secured: secured
+  base:    project_base
+autoStore: true
+"
+`;
+
+exports[`Imperative Secure Tests Imperative Test CLI Secure Tests imperative-test-cli config list should list the configuration without showing secure values 1`] = `
+"profiles: 
+  secured: 
+    type:       secured
+    properties: 
+      info: 
+    secure: 
+      (empty array)
+  project_base: 
+    type:       base
+    properties: 
+      secret: (secure value)
+    secure: 
+      - secret
+  global_base: 
+    type:       base
+    properties: 
+    secure: 
+      - secret
+defaults: 
+  secured: secured
+  base:    project_base
+autoStore: true
+"
+`;
+
+exports[`Imperative Secure Tests Imperative Test CLI Secure Tests imperative-test-cli config list should list the defaults configuration property 1`] = `
+"secured: secured
+base:    project_base
+"
+`;
+
+exports[`Imperative Secure Tests Imperative Test CLI Secure Tests imperative-test-cli config list should list the profiles configuration property 1`] = `
+"secured: 
+  type:       secured
+  properties: 
+    info: 
+  secure: 
+    (empty array)
+project_base: 
+  type:       base
+  properties: 
+  secure: 
+    - secret
+global_base: 
+  type:       base
+  properties: 
+  secure: 
+    - secret
+"
+`;
+
+exports[`Imperative Secure Tests Imperative Test CLI Secure Tests imperative-test-cli config list should list the root level property names only 1 1`] = `
+"profiles
+defaults
+autoStore
+"
+`;
+
+exports[`Imperative Secure Tests Imperative Test CLI Secure Tests imperative-test-cli config list should list the root level property names only 2 1`] = `
+"profiles
+defaults
+autoStore
+"
+`;
+
+exports[`Imperative Secure Tests Imperative Test CLI Secure Tests imperative-test-cli config profiles should list profiles 1`] = `
 "secured
 project_base
 global_base

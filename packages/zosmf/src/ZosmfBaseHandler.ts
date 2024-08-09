@@ -14,14 +14,12 @@ import {
     ICommandArguments,
     ICommandHandler,
     IHandlerParameters,
-    IProfile,
     IHandlerResponseConsoleApi,
     IHandlerFormatOutputApi,
     IHandlerResponseDataApi,
     IHandlerProgressApi,
     IImperativeError,
     ImperativeError,
-    IProfileLoaded,
     ISession,
     Session,
     ConnectionPropsForSessCfg
@@ -37,16 +35,6 @@ export abstract class ZosmfBaseHandler implements ICommandHandler {
      * The session creating from the command line arguments / profile
      */
     protected mSession: AbstractSession;
-
-    /**
-     * Loaded z/OSMF profile if needed
-     */
-    protected mZosmfProfile: IProfile;
-
-    /**
-     * Loaded z/OSMF profile with meta information
-     */
-    protected mZosmfLoadedProfile: IProfileLoaded;
 
     /**
      * Command line arguments passed

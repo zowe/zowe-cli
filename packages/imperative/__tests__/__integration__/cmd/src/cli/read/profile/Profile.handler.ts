@@ -13,6 +13,7 @@ import { IHandlerParameters, ICommandHandler, TextUtils } from "../../../../../.
 
 export default class FirstGroupCommandOneHandler implements ICommandHandler {
     public async process(params: IHandlerParameters): Promise<void> {
+        // eslint-disable-next-line deprecation/deprecation
         const prof = params.profiles.get("insecure");
         params.response.console.log(TextUtils.prettyJson(prof));
     }
