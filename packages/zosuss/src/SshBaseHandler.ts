@@ -15,6 +15,7 @@ import {
     ICommandHandler,
     IOverridePromptConnProps,
     IHandlerParameters,
+    IProfile,
     IHandlerResponseConsoleApi,
     IHandlerFormatOutputApi,
     IHandlerResponseDataApi,
@@ -22,12 +23,10 @@ import {
     IImperativeError,
     ImperativeError,
     ConnectionPropsForSessCfg,
-    SessConstants,
+    SessConstants
 } from "@zowe/imperative";
 import { SshSession } from "./SshSession";
 import { ISshSession } from "./doc/ISshSession";
-import { utils } from "ssh2";
-import * as fs from "fs";
 
 /**
  * This class is used by the various handlers in the project as the base class for their implementation.
@@ -37,6 +36,12 @@ export abstract class SshBaseHandler implements ICommandHandler {
      * The session creating from the command line arguments / profile
      */
     protected mSession: SshSession;
+
+    /**
+     * Loaded z/OS SSH profile if needed
+     * @deprecated
+     */
+    protected mSshProfile: IProfile;
 
     /**
      * Command line arguments passed
@@ -58,6 +63,9 @@ export abstract class SshBaseHandler implements ICommandHandler {
      */
     public async process(commandParameters: IHandlerParameters) {
         this.mHandlerParams = commandParameters;
+        // Why is this here? NOTHING uses it, but I suppose an extender MIGHT be... -awharn
+        // eslint-disable-next-line deprecation/deprecation
+        this.mSshProfile = commandParameters.profiles.get("ssh", false);
 
         const sshSessCfgOverride: IOverridePromptConnProps[] = [
             {
