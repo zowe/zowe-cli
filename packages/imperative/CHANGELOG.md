@@ -2,9 +2,15 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+
 ## Recent Changes
 
 - BugFix: Modified showMsgWhenDeprecated() to allow an empty string as a paramter when no replacement is availible for deprecated command to print an alternative message. [#2041](https://github.com/zowe/zowe-cli/issues/2041)
+
+## `5.26.3`
+
+- BugFix: Fixed issue in local web help with highlighted sidebar item getting out of sync. [#2215](https://github.com/zowe/zowe-cli/pull/2215)
+- BugFix: Updated web help dependencies for technical currency. [#2215](https://github.com/zowe/zowe-cli/pull/2215)
 
 ## `5.26.2`
 

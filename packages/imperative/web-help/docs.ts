@@ -25,6 +25,7 @@ function arrayFrom(items: any): any[] {
 
 const isInIframe: boolean = window.location !== window.parent.location;
 const links: any = arrayFrom(document.getElementsByTagName("a"));
+const sameOrigin: string = window.location.protocol !== "file:" ? window.location.origin : "*";
 
 // Process all <a> tags on page
 links.forEach((link: any) => {
@@ -36,7 +37,10 @@ links.forEach((link: any) => {
         link.setAttribute("target", "_blank");
     } else if (isInIframe) {
         // If link is relative and page is inside an iframe, then send signal to command tree when link is clicked to make it update selected node
-        link.setAttribute("onclick", "window.parent.postMessage(this.href, '*'); return true;");
+        link.onclick = (e: any) => {
+            window.parent.postMessage(e.target.href, sameOrigin);
+            return true;
+        };
     }
 });
 
@@ -89,9 +93,9 @@ function findCurrentCmdAnchor() {
 if (isInIframe && window.location.href.indexOf("/all.html") !== -1) {
     let currentCmdName: string;
     window.onscroll = (_: any) => {
-        const cmdName = findCurrentCmdAnchor().getAttribute("name");
+        const cmdName = findCurrentCmdAnchor()?.getAttribute("name");
         if (cmdName != null && cmdName !== currentCmdName) {
-            window.parent.postMessage(cmdName + ".html", window.location.origin);
+            window.parent.postMessage(cmdName + ".html", sameOrigin);
             currentCmdName = cmdName;
         }
     };
