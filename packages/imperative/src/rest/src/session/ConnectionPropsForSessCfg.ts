@@ -97,7 +97,7 @@ export class ConnectionPropsForSessCfg {
     public static async addPropsOrPrompt<SessCfgType extends ISession>(
         initialSessCfg: SessCfgType,
         cmdArgs: ICommandArguments,
-        connOpts: IOptionsForAddConnProps = {}
+        connOpts: IOptionsForAddConnProps <SessCfgType> = {}
     ): Promise<SessCfgType> {
         const impLogger = Logger.getImperativeLogger();
 
@@ -113,8 +113,8 @@ export class ConnectionPropsForSessCfg {
         );
 
         // This function will provide all the needed properties in one array
-        const promptForValues: (keyof ISession)[] = [];
-        const doNotPromptForValues: (keyof ISession)[] = [];
+        let promptForValues: (keyof SessCfgType & string)[] = [];
+        const doNotPromptForValues: (keyof SessCfgType & string)[] = [];
 
         /* Add the override properties to the session object.
          */
@@ -134,6 +134,16 @@ export class ConnectionPropsForSessCfg {
             }
         }
 
+        // Set default values on propsToPromptFor
+        if(connOpts.propsToPromptFor?.length > 0)
+            {
+                connOpts.propsToPromptFor.forEach(obj => {
+                if(obj.secure == null) obj.secure = true;
+                if(obj.secure) this.secureSessCfgProps.add(obj.name.toString());
+                promptForValues.push(obj.name as keyof ISession);
+                this.promptTextForValues[obj.name.toString()] = obj.description;
+            });
+        }
         // check what properties are needed to be prompted
         if (ConnectionPropsForSessCfg.propHasValue(sessCfgToUse.hostname) === false && !doNotPromptForValues.includes("hostname")) {
             promptForValues.push("hostname");
@@ -166,6 +176,15 @@ export class ConnectionPropsForSessCfg {
             // put all the needed properties in an array and call the external function
             const answers = await connOptsToUse.getValuesBack(promptForValues);
 
+            if(connOpts.propsToPromptFor?.length > 0)
+            {
+                connOpts.propsToPromptFor.forEach(obj => {
+                    if(obj.isGivenValueValid != null)
+                    {
+                        if(!obj.isGivenValueValid(answers[obj.name])) promptForValues = promptForValues.filter(item => obj.name !== item);
+                    }
+                });
+            }
             // validate what values are given back and move it to sessCfgToUse
             for (const value of promptForValues) {
                 if (ConnectionPropsForSessCfg.propHasValue(answers[value])) {
@@ -214,7 +233,7 @@ export class ConnectionPropsForSessCfg {
     public static resolveSessCfgProps<SessCfgType extends ISession>(
         sessCfg: SessCfgType,
         cmdArgs: ICommandArguments = { $0: "", _: [] },
-        connOpts: IOptionsForAddConnProps = {}
+        connOpts: IOptionsForAddConnProps <SessCfgType> = {}
     ) {
         const impLogger = Logger.getImperativeLogger();
 
@@ -305,7 +324,7 @@ export class ConnectionPropsForSessCfg {
             impLogger.debug("Using basic authentication");
             sessCfg.type = SessConstants.AUTH_TYPE_BASIC;
         }
-        ConnectionPropsForSessCfg.setTypeForTokenRequest(sessCfg, connOpts, cmdArgs.tokenType);
+        ConnectionPropsForSessCfg.setTypeForTokenRequest<SessCfgType>(sessCfg, connOpts, cmdArgs.tokenType);
         ConnectionPropsForSessCfg.logSessCfg(sessCfg);
     }
 
@@ -356,7 +375,8 @@ export class ConnectionPropsForSessCfg {
      * @param connOpts Options for adding connection properties
      * @returns Name-value pairs of connection properties
      */
-    private static getValuesBack(connOpts: IOptionsForAddConnProps): (properties: string[]) => Promise<{ [key: string]: any }> {
+    private static getValuesBack<SessCfgType extends ISession=ISession>(connOpts: IOptionsForAddConnProps<SessCfgType>):
+    (properties: string[]) => Promise<{ [key: string]: any }> {
         return async (promptForValues: string[]) => {
             const answers: { [key: string]: any } = {};
             const profileSchema = this.loadSchemaForSessCfgProps(connOpts.parms, promptForValues);
@@ -366,7 +386,7 @@ export class ConnectionPropsForSessCfg {
                 let answer;
                 while (answer === undefined) {
                     const hideText = profileSchema[value]?.secure || this.secureSessCfgProps.has(value);
-                    let promptText = `${this.promptTextForValues[value]} ${serviceDescription}`;
+                    let promptText = `${this.promptTextForValues[value] ?? `Enter your ${value} for`} ${serviceDescription}`;
                     if (hideText) {
                         promptText += " (will be hidden)";
                     }
@@ -420,11 +440,11 @@ export class ConnectionPropsForSessCfg {
      * @param tokenType
      *       The type of token that we expect to receive.
      */
-    private static setTypeForTokenRequest(
-        sessCfg: any,
-        options: IOptionsForAddConnProps,
+    private static setTypeForTokenRequest<SessCfgType extends ISession=ISession>(
+        sessCfg: SessCfgType,
+        options: IOptionsForAddConnProps<SessCfgType>,
         tokenType: SessConstants.TOKEN_TYPE_CHOICES
-    ) {
+    )  {
         const impLogger = Logger.getImperativeLogger();
         if (options.requestToken) {
             impLogger.debug("Requesting a token");
