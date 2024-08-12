@@ -5,7 +5,7 @@ All notable changes to the Imperative package will be documented in this file.
 
 ## Recent Changes
 
-- BugFix: Modified showMsgWhenDeprecated() to allow an empty string as a paramter when no replacement is availible for deprecated command to print an alternative message. [#2041](https://github.com/zowe/zowe-cli/issues/2041)
+- BugFix: Modified showMsgWhenDeprecated() function to allow an empty string as a parameter when no replacement is availible for the deprecated command. When no replacement is availible an alternative message will be printed. [#2041](https://github.com/zowe/zowe-cli/issues/2041)
 
 ## `5.26.3`
 
