@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc --build ./tsconfig.json",
     "watch": "tsc --build ./tsconfig.json -w",
-    "prepare": "node ../../../scripts/rewriteShrinkwrap.js package-lock.json"
+    "deps:lockfile": "node ../../../scripts/rewriteShrinkwrap.js package-lock.json"
   },
   "keywords": [],
   "author": "",
