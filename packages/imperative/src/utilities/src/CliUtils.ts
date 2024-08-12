@@ -387,15 +387,15 @@ export class CliUtils {
             }
             else
             {
-            if (handlerParms.positionals.length >= 1) {
-                oldCmd = handlerParms.positionals[0];
-            }
-            if (handlerParms.positionals.length >= 2) {
-                oldCmd = oldCmd + " " + handlerParms.positionals[1];
-            }
-            // display the message
-            handlerParms.response.console.error("\nWarning: The command '" + oldCmd + "' is deprecated.");
-            handlerParms.response.console.error("Recommended replacement: " +
+                if (handlerParms.positionals.length >= 1) {
+                    oldCmd = handlerParms.positionals[0];
+                }
+                if (handlerParms.positionals.length >= 2) {
+                    oldCmd = oldCmd + " " + handlerParms.positionals[1];
+                }
+                // display the message
+                handlerParms.response.console.error("\nWarning: The command '" + oldCmd + "' is deprecated.");
+                handlerParms.response.console.error("Recommended replacement: " +
                 handlerParms.definition.deprecatedReplacement);
             }
         }
