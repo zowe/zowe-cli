@@ -386,7 +386,8 @@ export class ConnectionPropsForSessCfg {
                 let answer;
                 while (answer === undefined) {
                     const hideText = profileSchema[value]?.secure || this.secureSessCfgProps.has(value);
-                    let promptText = `${this.promptTextForValues[value] ?? `Enter your ${value} for`} ${serviceDescription}`;
+                    const valuePrompt = this.promptTextForValues[value] ?? `Enter your ${value} for`;
+                    let promptText = `${valuePrompt} ${serviceDescription}`;
                     if (hideText) {
                         promptText += " (will be hidden)";
                     }
