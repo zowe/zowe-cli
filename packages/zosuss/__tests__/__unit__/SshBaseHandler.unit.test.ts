@@ -9,14 +9,12 @@
 *
 */
 
-jest.mock("../../../../../../zosuss/lib/Shell");
-
 import { IHandlerParameters, IProfile, CommandProfiles, ConnectionPropsForSessCfg } from "@zowe/imperative";
-import SshHandler from "../../../../../src/zosuss/issue/ssh/Ssh.handler";
-import * as SshDefinition from "../../../../../src/zosuss/issue/ssh/Ssh.definition";
-import { Shell } from "@zowe/zos-uss-for-zowe-sdk";
 import { mockHandlerParameters } from "@zowe/cli-test-utils";
 import { join, normalize } from "path";
+import { Shell } from "../../src/Shell";
+import { SshBaseHandler } from "../../src/SshBaseHandler";
+import * as fs from "fs";
 
 process.env.FORCE_COLOR = "0";
 
@@ -92,30 +90,39 @@ const UNIT_TEST_PROFILES_SSH_PRIVATE_KEY_WITH_PASSPHRASE_NO_USER = new CommandPr
 const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
     arguments: UNIT_TEST_SSH_PROF_OPTS,
     positionals: ["zos-uss", "issue", "ssh"],
-    definition: SshDefinition.SshDefinition,
+    definition: {} as any,
     profiles: UNIT_TEST_PROFILES_SSH
 });
 
 const DEFAULT_PARAMETERS_PRIVATE_KEY: IHandlerParameters = mockHandlerParameters({
     arguments: UNIT_TEST_SSH_PROF_OPTS_PRIVATE_KEY,
     positionals: ["zos-uss", "issue", "ssh"],
-    definition: SshDefinition.SshDefinition,
+    definition: {} as any,
     profiles: UNIT_TEST_PROFILES_SSH_PRIVATE_KEY
 });
 
 const DEFAULT_PARAMETERS_KEY_PASSPHRASE: IHandlerParameters = mockHandlerParameters({
     arguments: UNIT_TEST_SSH_PROF_OPTS_PRIVATE_KEY_WITH_PASSPHRASE,
     positionals: ["zos-uss", "issue", "ssh"],
-    definition: SshDefinition.SshDefinition,
+    definition: {} as any,
     profiles: UNIT_TEST_PROFILES_SSH_PRIVATE_KEY_WITH_PASSPHRASE,
 });
 const DEFAULT_PARAMETERS_KEY_PASSPHRASE_NO_USER: IHandlerParameters = mockHandlerParameters({
     arguments: UNIT_TEST_SSH_PROF_OPTS_PRIVATE_KEY_WITH_PASSPHRASE_NO_USER,
     positionals: ["zos-uss", "issue", "ssh"],
-    definition: SshDefinition.SshDefinition,
+    definition: {} as any,
     profiles: UNIT_TEST_PROFILES_SSH_PRIVATE_KEY_WITH_PASSPHRASE_NO_USER,
 });
 
+class myHandler extends SshBaseHandler {
+    public async processCmd(commandParameters: IHandlerParameters): Promise<void> {
+        return await Shell.executeSsh(
+            this.mSession,
+            commandParameters.arguments.command,
+            (data: any) => commandParameters.response.console.log(Buffer.from(data))
+        );
+    }
+}
 const testOutput = "TEST OUTPUT";
 
 describe("issue ssh handler tests", () => {
@@ -128,7 +135,7 @@ describe("issue ssh handler tests", () => {
         Shell.executeSsh = jest.fn(async (session, command, stdoutHandler) => {
             stdoutHandler(testOutput);
         });
-        const handler = new SshHandler();
+        const handler = new myHandler();
         const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
         params.arguments.command = "pwd";
         await handler.process(params);
@@ -140,7 +147,7 @@ describe("issue ssh handler tests", () => {
         Shell.executeSsh = jest.fn(async (session, command, stdoutHandler) => {
             stdoutHandler(testOutput);
         });
-        const handler = new SshHandler();
+        const handler = new myHandler();
         const params = Object.assign({}, ...[DEFAULT_PARAMETERS_KEY_PASSPHRASE]);
         params.arguments.command = "echo test";
         await handler.process(params);
@@ -151,10 +158,11 @@ describe("issue ssh handler tests", () => {
         Shell.executeSsh = jest.fn(async (session, command, stdoutHandler) => {
             stdoutHandler(testOutput);
         });
-        const handler = new SshHandler();
+        jest.spyOn(fs,"readFileSync").mockReturnValue("dummyPrivateKey");
+        const handler = new myHandler();
+        jest.spyOn(handler,"processCmd").mockImplementationOnce(() => {throw new Error("but no passphrase given");});
         const params = Object.assign({}, ...[DEFAULT_PARAMETERS_KEY_PASSPHRASE]);
         params.arguments.command = "echo test";
-        jest.spyOn(handler,"processCmd").mockImplementationOnce(() => {throw new Error("but no passphrase given");});
         jest.spyOn(ConnectionPropsForSessCfg as any,"getValuesBack").mockReturnValue(() => ({
             keyPassphrase: "validPassword"
         }));
@@ -166,7 +174,8 @@ describe("issue ssh handler tests", () => {
         Shell.executeSsh = jest.fn(async (session, command, stdoutHandler) => {
             stdoutHandler(testOutput);
         });
-        const handler = new SshHandler();
+        jest.spyOn(fs,"readFileSync").mockReturnValue("dummyPrivateKey");
+        const handler = new myHandler();
         const params = Object.assign({}, ...[DEFAULT_PARAMETERS_KEY_PASSPHRASE]);
         params.arguments.command = "echo test";
         jest.spyOn(handler,"processCmd").mockImplementationOnce(() => {throw new Error("bad passphrase?");});
@@ -182,7 +191,7 @@ describe("issue ssh handler tests", () => {
         Shell.executeSsh = jest.fn(async (session, command, stdoutHandler) => {
             stdoutHandler(testOutput);
         });
-        const handler = new SshHandler();
+        const handler = new myHandler();
         const params = { ...DEFAULT_PARAMETERS_KEY_PASSPHRASE };
         params.arguments.command = "echo test";
         jest.spyOn(handler, "processCmd").mockImplementation(() => {
@@ -197,7 +206,7 @@ describe("issue ssh handler tests", () => {
         Shell.executeSsh = jest.fn(async (session, command, stdoutHandler) => {
             stdoutHandler(testOutput);
         });
-        const handler = new SshHandler();
+        const handler = new myHandler();
         const params = { ...DEFAULT_PARAMETERS_KEY_PASSPHRASE_NO_USER };
         params.arguments.command = "echo test";
         jest.spyOn(ConnectionPropsForSessCfg as any,"getValuesBack").mockReturnValue(() => ({
@@ -212,23 +221,11 @@ describe("issue ssh handler tests", () => {
         Shell.executeSsh = jest.fn(async (session, command, stdoutHandler) => {
             stdoutHandler(testOutput);
         });
-        const handler = new SshHandler();
+        const handler = new myHandler();
         const params = Object.assign({}, ...[DEFAULT_PARAMETERS_PRIVATE_KEY]);
         params.arguments.command = "pwd";
         await handler.process(params);
         expect(Shell.executeSsh).toHaveBeenCalledTimes(1);
-        expect(testOutput).toMatchSnapshot();
-    });
-    it("should be able to get stdout with cwd option", async () => {
-        Shell.executeSshCwd = jest.fn(async (session, command, cwd, stdoutHandler) => {
-            stdoutHandler(testOutput);
-        });
-        const handler = new SshHandler();
-        const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
-        params.arguments.command = "pwd";
-        params.arguments.cwd = "/user/home";
-        await handler.process(params);
-        expect(Shell.executeSshCwd).toHaveBeenCalledTimes(1);
         expect(testOutput).toMatchSnapshot();
     });
 });
