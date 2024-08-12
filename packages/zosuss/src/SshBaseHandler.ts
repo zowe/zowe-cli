@@ -15,7 +15,6 @@ import {
     ICommandHandler,
     IOverridePromptConnProps,
     IHandlerParameters,
-    IProfile,
     IHandlerResponseConsoleApi,
     IHandlerFormatOutputApi,
     IHandlerResponseDataApi,
@@ -23,10 +22,13 @@ import {
     IImperativeError,
     ImperativeError,
     ConnectionPropsForSessCfg,
-    SessConstants
+    SessConstants,
+    IProfile
 } from "@zowe/imperative";
 import { SshSession } from "./SshSession";
 import { ISshSession } from "./doc/ISshSession";
+import { utils } from "ssh2";
+import * as fs from "fs";
 
 /**
  * This class is used by the various handlers in the project as the base class for their implementation.
