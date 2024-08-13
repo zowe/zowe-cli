@@ -47,7 +47,7 @@ export class ProfileUtils {
         let flatten: IProfileLoaded[] = [];
         if (!(dependencyResponses == null)) {
             for (const response of dependencyResponses) {
-                const moreDependencies = !(response.dependencyLoadResponses == null) ?
+                const moreDependencies = response.dependencyLoadResponses != null ?
                     JSON.parse(JSON.stringify(response.dependencyLoadResponses)) : [];
                 flatten.push(response);
                 delete response.dependencyLoadResponses;

@@ -57,7 +57,7 @@ export default class Handler extends ZosmfBaseHandler {
                     responseKey: response.lastResponseKey,
                     cmdResponseUrl: response.cmdResponseUrl || undefined,
                     keywordDetected: response.keywordDetected ||
-                        (!(commandParameters.arguments["solicited-keyword"] == null) ? false : undefined)
+                        (commandParameters.arguments["solicited-keyword"] != null ? false : undefined)
                 };
                 commandParameters.response.console.log("Additional details:");
                 commandParameters.response.console.log("-------------------");
