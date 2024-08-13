@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe z/OSMF SDK package will be documented in this file.
 
-## Recent Changes
+## `8.0.0-next.202408131445`
 
 - Update: See `7.28.3` for details
 - LTS Breaking: Removed the following obsolete V1 profile attributes from ZosmfBaseHandler:
