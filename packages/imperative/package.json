@@ -19,7 +19,8 @@
   ],
   "files": [
     "lib",
-    "web-help/dist"
+    "web-help/dist",
+    "web-help/package*.json"
   ],
   "publishConfig": {
     "registry": "https://zowe.jfrog.io/zowe/api/npm/npm-local-release/"
@@ -40,7 +41,8 @@
     "build": "npm run build:packages && npm run build:webHelp",
     "build:packages": "tsc --pretty",
     "watch": "concurrently \"tsc --pretty --watch\" \"npm run watch:webHelp\"",
-    "postbuild": "gulp build:install-all-cli-dependencies && gulp build:all-clis"
+    "postbuild": "gulp build:install-all-cli-dependencies && gulp build:all-clis",
+    "prepublishOnly": "cd web-help && npm run deps:lockfile"
   },
   "dependencies": {
     "@types/yargs": "13.0.4",
