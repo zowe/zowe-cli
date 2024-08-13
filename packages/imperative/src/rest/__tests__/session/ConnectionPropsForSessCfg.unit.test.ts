@@ -20,14 +20,41 @@ import { join } from "path";
 import { ConfigAutoStore } from "../../../config/src/ConfigAutoStore";
 import { setupConfigToLoad } from "../../../../__tests__/src/TestUtil";
 import { IOverridePromptConnProps } from "../../src/session/doc/IOverridePromptConnProps";
-
-const certFilePath = join(__dirname, "..", "..", "..", "..", "__tests__", "__integration__", "cmd",
-    "__tests__", "integration", "cli", "auth", "__resources__", "fakeCert.cert");
-const certKeyFilePath = join(__dirname, "..", "..", "..", "..", "__tests__", "__integration__", "cmd",
-    "__tests__", "integration", "cli", "auth", "__resources__", "fakeKey.key");
-
+import { ISshSession } from "../../../../../zosuss/lib/doc/ISshSession";
+const certFilePath = join(
+    __dirname,
+    "..",
+    "..",
+    "..",
+    "..",
+    "__tests__",
+    "__integration__",
+    "cmd",
+    "__tests__",
+    "integration",
+    "cli",
+    "auth",
+    "__resources__",
+    "fakeCert.cert"
+);
+const certKeyFilePath = join(
+    __dirname,
+    "..",
+    "..",
+    "..",
+    "..",
+    "__tests__",
+    "__integration__",
+    "cmd",
+    "__tests__",
+    "integration",
+    "cli",
+    "auth",
+    "__resources__",
+    "fakeKey.key"
+);
 interface extendedSession extends ISession {
-    someKey?: string
+    someKey?: string;
 }
 
 describe("ConnectionPropsForSessCfg tests", () => {
@@ -1372,5 +1399,69 @@ describe("ConnectionPropsForSessCfg tests", () => {
         expect(sessCfgWithConnProps.tokenType).toBeUndefined();
         expect(sessCfgWithConnProps.cert).toBeUndefined();
         expect(sessCfgWithConnProps.certKey).toBeUndefined();
+    });
+    it("should set default values for elements of propsToPromptFor()", async () => {
+        jest.spyOn(ConfigAutoStore, "findActiveProfile").mockReturnValueOnce([
+            "fruit",
+            "mango",
+        ]);
+        await setupConfigToLoad({
+            profiles: {
+                mango: {
+                    type: "fruit",
+                    properties: {},
+                    secure: ["host"],
+                },
+            },
+            defaults: { fruit: "mango" },
+        });
+        const overrides: IOverridePromptConnProps[] = [
+            {
+                propertyName: "someKey",
+                argumentName: "someKeyOther",
+                propertiesOverridden: [
+                    "password",
+                    "tokenType",
+                    "tokenValue",
+                    "cert",
+                    "certKey",
+                ],
+            },
+        ];
+        const passFromPrompt = "somePass";
+        const initialSessCfg: extendedSession = {
+            hostname: "SomeHost",
+            port: 20,
+            user: "FakeUser",
+            rejectUnauthorized: true,
+        };
+        const args = {
+            $0: "zowe",
+            _: [""],
+            someKey: "somekeyvalue",
+        };
+
+        const commandHandlerPrompt = jest.fn(() => {
+            return Promise.resolve(passFromPrompt);
+        });
+        const parms = {
+            response: {
+                console: {
+                    prompt: commandHandlerPrompt,
+                },
+            },
+        };
+        const sessCfgWithConnProps: ISshSession =
+            await ConnectionPropsForSessCfg.addPropsOrPrompt<ISshSession>(
+                initialSessCfg,
+                args,
+                {
+                    doPrompting: true,
+                    propertyOverrides: overrides,
+                    propsToPromptFor: [{name: "keyPassphrase",isGivenValueValid: string => true}],
+                    parms: parms as any,
+                }
+            );
+        expect((ConnectionPropsForSessCfg as any).secureSessCfgProps).toContain("keyPassphrase");
     });
 });
