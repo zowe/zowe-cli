@@ -381,22 +381,22 @@ export class CliUtils {
         let oldCmd: string;
         if (handlerParms.definition.deprecatedReplacement || handlerParms.definition.deprecatedReplacement === "") {
             // form the command that is deprecated
+            if (handlerParms.positionals.length >= 1) {
+                oldCmd = handlerParms.positionals[0];
+            }
+            if (handlerParms.positionals.length >= 2) {
+                oldCmd = oldCmd + " " + handlerParms.positionals[1];
+            }
+            // display the message
+            handlerParms.response.console.error("\nWarning: The command '" + oldCmd + "' is deprecated.");
             if(handlerParms.definition.deprecatedReplacement === "")
             {
-                handlerParms.response.console.error("\nObsolete component. No replacement exists");
+                handlerParms.response.console.error("Obsolete component. No replacement exists");
             }
             else
             {
-                if (handlerParms.positionals.length >= 1) {
-                    oldCmd = handlerParms.positionals[0];
-                }
-                if (handlerParms.positionals.length >= 2) {
-                    oldCmd = oldCmd + " " + handlerParms.positionals[1];
-                }
-                // display the message
-                handlerParms.response.console.error("\nWarning: The command '" + oldCmd + "' is deprecated.");
                 handlerParms.response.console.error("Recommended replacement: " +
-                handlerParms.definition.deprecatedReplacement);
+                    handlerParms.definition.deprecatedReplacement);
             }
         }
     }
