@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe z/OS USS SDK package will be documented in this file.
 
-## `7.28.4`
+## Recent Changes
 
 - BugFix: Resolved bug that resulted in user not being prompted for a key passphrase if it is located in the secure credential array of the ssh profile. [#1770](https://github.com/zowe/zowe-cli/issues/1770)
 - Enhancement: `SshBaseHandler` command processor will now prompt user up to 3 times to enter the correct keyPassphrase in the case that the stored value is incorrect or no value is stored. [#1770](https://github.com/zowe/zowe-cli/issues/1770)
