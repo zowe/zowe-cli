@@ -2,7 +2,7 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
-## Recent Changes
+## `4.18.26`
 
 - BugFix: modified `plugins validate` command to default to fail when an error occurs. `zowe plugins validate <plugin-name>` command now behaves as the command `zowe plugins validate <plugin-name> --fail-on-error` [#2221](https://github.com/zowe/zowe-cli/pull/2221)
 
