@@ -359,10 +359,18 @@ export class DefaultHelpGenerator extends AbstractHelpGenerator {
             || this.mCommandDefinition.summary;
 
         // we place the deprecated message in the DESCRIPTION help section
-        if (this.mCommandDefinition.deprecatedReplacement) {
+        if (this.mCommandDefinition.deprecatedReplacement != null) {
             const noNewlineInText = this.mCommandDefinition.deprecatedReplacement.replace(/\n/g, " ");
             description += this.grey("\n\nWarning: This " + this.mCommandDefinition.type +
-                " has been deprecated.\nRecommended replacement: " + noNewlineInText);
+                " has been deprecated.\n");
+            if(this.mCommandDefinition.deprecatedReplacement === "")
+            {
+                description += this.grey("Obsolete component. No replacement exists");
+            }
+            else
+            {
+                description += this.grey("Recommended replacement: " + noNewlineInText);
+            }
         }
         if (this.mProduceMarkdown) {
             description = this.escapeMarkdown(description);  // escape Markdown special characters
