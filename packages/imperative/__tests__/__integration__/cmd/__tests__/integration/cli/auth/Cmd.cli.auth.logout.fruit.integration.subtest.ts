@@ -33,7 +33,7 @@ describe("cmd-cli auth logout", () => {
     it("should have auth logout command that loads values from base profile and removes the token with alias", () => {
         let response = runCliScript(__dirname + "/__scripts__/base_profile_and_auth_li.sh",
             TEST_ENVIRONMENT.workingDir, ["fakeUser", "fakePass"]);
-        expect(response.stderr.toString()).toContain("command 'profiles create' is deprecated");
+        expect(response.stderr.toString()).toContain("command 'profiles create base-profile' is deprecated");
         expect(response.status).toBe(0);
 
         // the output of the command should include token value
@@ -42,7 +42,7 @@ describe("cmd-cli auth logout", () => {
 
         response = runCliScript(__dirname + "/__scripts__/base_profile_and_auth_lo.sh",
             TEST_ENVIRONMENT.workingDir);
-        expect(response.stderr.toString()).toContain("command 'profiles list' is deprecated");
+        expect(response.stderr.toString()).toContain("command 'profiles list base-profiles' is deprecated");
         expect(response.status).toBe(0);
 
         // the output of the command should include token value
@@ -53,7 +53,7 @@ describe("cmd-cli auth logout", () => {
     it("should have auth logout command that loads values from base profile and removes the token", () => {
         let response = runCliScript(__dirname + "/__scripts__/base_profile_and_auth_login.sh",
             TEST_ENVIRONMENT.workingDir, ["fakeUser", "fakePass"]);
-        expect(response.stderr.toString()).toContain("command 'profiles create' is deprecated");
+        expect(response.stderr.toString()).toContain("command 'profiles create base-profile' is deprecated");
         expect(response.status).toBe(0);
 
         // the output of the command should include token value
@@ -62,7 +62,7 @@ describe("cmd-cli auth logout", () => {
 
         response = runCliScript(__dirname + "/__scripts__/base_profile_and_auth_logout.sh",
             TEST_ENVIRONMENT.workingDir);
-        expect(response.stderr.toString()).toContain("command 'profiles list' is deprecated");
+        expect(response.stderr.toString()).toContain("command 'profiles list base-profiles' is deprecated");
         expect(response.status).toBe(0);
 
         // the output of the command should include token value
@@ -73,8 +73,8 @@ describe("cmd-cli auth logout", () => {
     it("should have auth logout command that invalidates another token", () => {
         let response = runCliScript(__dirname + "/__scripts__/base_profile_and_auth_login.sh",
             TEST_ENVIRONMENT.workingDir, ["fakeUser", "fakePass"]);
-        expect(response.stderr.toString()).toContain("command 'profiles create' is deprecated");
-        expect(response.stderr.toString()).toContain("command 'profiles list' is deprecated");
+        expect(response.stderr.toString()).toContain("command 'profiles create base-profile' is deprecated");
+        expect(response.stderr.toString()).toContain("command 'profiles list base-profiles' is deprecated");
         expect(response.status).toBe(0);
 
         // the output of the command should include token value
@@ -83,7 +83,7 @@ describe("cmd-cli auth logout", () => {
 
         response = runCliScript(__dirname + "/__scripts__/base_profile_and_auth_logout_specify_token.sh",
             TEST_ENVIRONMENT.workingDir, ["fakeToken:fakeToken@fakeToken"]);
-        expect(response.stderr.toString()).toContain("command 'profiles list' is deprecated");
+        expect(response.stderr.toString()).toContain("command 'profiles list base-profiles' is deprecated");
         expect(response.status).toBe(0);
 
         // the output of the command should include token value

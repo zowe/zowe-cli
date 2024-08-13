@@ -35,7 +35,7 @@ describe("cmd-cli profile mapping", () => {
         const moldType = "none";
         const response = runCliScript(__dirname + "/__scripts__/profiles/map_banana_to_options.sh",
             TEST_ENVIRONMENT.workingDir, [color, description, moldType]);
-        expect(response.stderr.toString()).toContain("The command 'profiles create' is deprecated.");
+        expect(response.stderr.toString()).toContain("The command 'profiles create banana-profile' is deprecated.");
         expect(response.status).toBe(0);
 
         // the output of the command should use the profile values
@@ -55,7 +55,7 @@ describe("cmd-cli profile mapping", () => {
         const cliMoldType = "no mold at all";
         const response = runCliScript(__dirname + "/__scripts__/profiles/banana_profile_and_specify_cli.sh",
             TEST_ENVIRONMENT.workingDir, [color, description, moldType, cliColor, cliDescription, cliMoldType]);
-        expect(response.stderr.toString()).toContain("The command 'profiles create' is deprecated.");
+        expect(response.stderr.toString()).toContain("The command 'profiles create banana-profile' is deprecated.");
         expect(response.status).toBe(0);
 
         // the output of the command should use the CLI arguments
@@ -75,7 +75,7 @@ describe("cmd-cli profile mapping", () => {
         const envMoldType = "no mold at all";
         const response = runCliScript(__dirname + "/__scripts__/profiles/banana_profile_and_specify_env.sh",
             TEST_ENVIRONMENT.workingDir, [color, description, moldType, envColor, envDescription, envMoldType]);
-        expect(response.stderr.toString()).toContain("The command 'profiles create' is deprecated.");
+        expect(response.stderr.toString()).toContain("The command 'profiles create banana-profile' is deprecated.");
         expect(response.status).toBe(0);
 
         // the output of the command should use the env variable values
@@ -102,7 +102,7 @@ describe("cmd-cli profile mapping", () => {
         const response = runCliScript(__dirname + "/__scripts__/profiles/banana_profile_and_specify_env_and_cli.sh",
             TEST_ENVIRONMENT.workingDir, [color, description, moldType, envColor, envDescription, envMoldType,
                 cliColor, cliDescription, cliMoldType]);
-        expect(response.stderr.toString()).toContain("The command 'profiles create' is deprecated.");
+        expect(response.stderr.toString()).toContain("The command 'profiles create banana-profile' is deprecated.");
         expect(response.status).toBe(0);
 
         // the output of the command should use the CLI arguments
@@ -140,7 +140,7 @@ describe("cmd-cli profile mapping", () => {
         const kiwiAmount = 1000;
         const response = runCliScript(__dirname + "/__scripts__/profiles/base_and_kiwi_profile.sh",
             TEST_ENVIRONMENT.workingDir, [baseAmount, basePrice, kiwiAmount]);
-        expect(response.stderr.toString()).toContain("The command 'profiles create' is deprecated.");
+        expect(response.stderr.toString()).toContain("The command 'profiles create kiwi-profile' is deprecated.");
         expect(response.status).toBe(0);
 
         // the output of the command should use the base profile values
@@ -171,7 +171,7 @@ describe("cmd-cli profile mapping", () => {
         const moldType = "none";
         const response = runCliScript(__dirname + "/__scripts__/profiles/map_banana_to_positionals.sh",
             TEST_ENVIRONMENT.workingDir, [color, description, moldType]);
-        expect(response.stderr.toString()).toContain("The command 'profiles create' is deprecated.");
+        expect(response.stderr.toString()).toContain("The command 'profiles create banana-profile' is deprecated.");
         expect(response.status).toBe(0);
 
         // the output of the command should use the profile values
@@ -296,7 +296,7 @@ describe("cmd-cli profile mapping", () => {
         const moldType = "none";
         const response = runCliScript(__dirname + "/__scripts__/profiles/name_type_undefined.sh",
             TEST_ENVIRONMENT.workingDir, [color, description, moldType]);
-        expect(response.stderr.toString()).toContain("The command 'profiles create' is deprecated.");
+        expect(response.stderr.toString()).toContain("The command 'profiles create banana-profile' is deprecated.");
         expect(response.status).toBe(0);
         // name and type should be undefined since we did not specify them via command line
         expect(response.stdout.toString()).toContain("Name: undefined");
@@ -311,7 +311,7 @@ describe("cmd-cli profile mapping", () => {
         const cliType = "Big";
         const response = runCliScript(__dirname + "/__scripts__/profiles/name_type_specify.sh",
             TEST_ENVIRONMENT.workingDir, [color, description, moldType, cliName, cliType]);
-        expect(response.stderr.toString()).toContain("The command 'profiles create' is deprecated.");
+        expect(response.stderr.toString()).toContain("The command 'profiles create banana-profile' is deprecated.");
         expect(response.status).toBe(0);
         // name and type should be undefined since we did not specify them via command line
         expect(response.stdout.toString()).toContain("Name: " + cliName);

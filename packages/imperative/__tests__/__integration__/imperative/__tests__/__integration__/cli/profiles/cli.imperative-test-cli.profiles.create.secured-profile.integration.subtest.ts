@@ -31,8 +31,8 @@ describe("imperative-test-cli profiles create secured-profile", () => {
         const profileName: string = "my_secret";
         const response = runCliScript(__dirname + "/__scripts__/secured-profile/create_and_list.sh", TEST_ENVIRONMENT.workingDir,
             [secret, profileName]);
-        expect(response.stderr.toString()).toContain("command 'profiles create' is deprecated");
-        expect(response.stderr.toString()).toContain("command 'profiles list' is deprecated");
+        expect(response.stderr.toString()).toContain("command 'profiles create secured-profile' is deprecated");
+        expect(response.stderr.toString()).toContain("command 'profiles list secured-profiles' is deprecated");
         expect(response.status).toBe(0);
         expect(response.stdout.toString()).not.toContain(secret);
         expect(response.stdout.toString()).toContain(profileName);

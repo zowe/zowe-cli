@@ -28,7 +28,7 @@ describe("cmd-cli profiles create banana", () => {
         // Create a few profiles of multiple types
         const response = runCliScript(__dirname + "/__scripts__/profiles/create_some_profiles.sh", TEST_ENVIRONMENT.workingDir);
         expect(response.status).toBe(0);
-        expect(response.stderr.toString()).toContain("command 'profiles create' is deprecated");
+        expect(response.stderr.toString()).toContain("command 'profiles create banana-profile' is deprecated");
         expect(response.stdout.toString()).toContain("test_banana");
         expect(response.stdout.toString()).toContain("test_strawberry");
         expect(response.stdout.toString()).toContain("test_kiwi");
@@ -38,7 +38,7 @@ describe("cmd-cli profiles create banana", () => {
         const listBananaResponse = runCliScript(__dirname + "/__scripts__/profiles/list_profiles_of_type.sh", TEST_ENVIRONMENT.workingDir,
             ["banana"]);
         expect(listBananaResponse.status).toBe(0);
-        expect(listBananaResponse.stderr.toString()).toContain("command 'profiles list' is deprecated");
+        expect(listBananaResponse.stderr.toString()).toContain("command 'profiles list banana-profiles' is deprecated");
         expect(listBananaResponse.stdout.toString()).not.toContain("strawberry");
         expect(listBananaResponse.stdout.toString()).toMatchSnapshot();
 
@@ -46,14 +46,14 @@ describe("cmd-cli profiles create banana", () => {
         const listStrawberryResponse = runCliScript(__dirname + "/__scripts__/profiles/list_profiles_of_type.sh", TEST_ENVIRONMENT.workingDir,
             ["strawberry"]);
         expect(listStrawberryResponse.status).toBe(0);
-        expect(listStrawberryResponse.stderr.toString()).toContain("command 'profiles list' is deprecated");
+        expect(listStrawberryResponse.stderr.toString()).toContain("command 'profiles list strawberry-profiles' is deprecated");
         expect(listStrawberryResponse.stdout.toString()).toMatchSnapshot();
         expect((listStrawberryResponse.stdout.toString().match(/default/g) || []).length).toBe(1);
 
         // List the profiles for kiwi
         const listKiwiResponse = runCliScript(__dirname + "/__scripts__/profiles/list_profiles_of_type.sh", TEST_ENVIRONMENT.workingDir, ["kiwi"]);
         expect(listKiwiResponse.status).toBe(0);
-        expect(listKiwiResponse.stderr.toString()).toContain("command 'profiles list' is deprecated");
+        expect(listKiwiResponse.stderr.toString()).toContain("command 'profiles list kiwi-profiles' is deprecated");
         expect(listKiwiResponse.stdout.toString()).not.toContain("kiwiSecret");
         expect(listKiwiResponse.stdout.toString()).toMatchSnapshot();
     });

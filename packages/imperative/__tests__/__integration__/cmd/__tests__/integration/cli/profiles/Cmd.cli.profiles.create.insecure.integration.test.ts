@@ -25,8 +25,8 @@ describe("cmd-cli profiles create insecure", () => {
 
     it("should create a profile with a field marked as secure in plain text if the cli does not mark keytar as a dependency", () => {
         const response = runCliScript(__dirname + "/__scripts__/profiles/create_insecure_profile.sh", TEST_ENVIRONMENT.workingDir);
-        expect(response.stderr.toString()).toContain("command 'profiles create' is deprecated");
-        expect(response.stderr.toString()).toContain("command 'profiles list' is deprecated");
+        expect(response.stderr.toString()).toContain("command 'profiles create insecure' is deprecated");
+        expect(response.stderr.toString()).toContain("command 'profiles list insecure' is deprecated");
         expect(response.stdout.toString()).toContain("not so secret info");
         expect(response.stdout.toString()).not.toContain("managed by");
         expect(response.status).toBe(0);
