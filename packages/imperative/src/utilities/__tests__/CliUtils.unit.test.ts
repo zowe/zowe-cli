@@ -312,6 +312,7 @@ describe("CliUtils", () => {
             CliUtils.showMsgWhenDeprecated(handlerParms);
             expect(responseErrText).toEqual("Recommended replacement: " +
                 handlerParms.definition.deprecatedReplacement);
+            expect(responseErrText).not.toContain("Obsolete component. No replacement exists");
         });
 
         it("should not produce a deprecated message when not deprecated", () => {
@@ -319,6 +320,14 @@ describe("CliUtils", () => {
             delete handlerParms.definition.deprecatedReplacement;
             CliUtils.showMsgWhenDeprecated(handlerParms);
             expect(responseErrText).toEqual(notSetYet);
+            expect(responseErrText).not.toContain("Obsolete component. No replacement exists");
+        });
+
+        it("should produce alternative text when deprecatedReplacement is an empty string", () => {
+            responseErrText = notSetYet;
+            handlerParms.definition.deprecatedReplacement = "";
+            CliUtils.showMsgWhenDeprecated(handlerParms);
+            expect(responseErrText).toContain("Obsolete component. No replacement exists");
         });
     });
 

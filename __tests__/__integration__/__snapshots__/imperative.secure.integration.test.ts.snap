@@ -28,7 +28,7 @@ To set a new default profile, run \\"zowe profiles set-default username-password
 
 exports[`Imperative Secure Tests Cli Profile Manager Default Credential Management Generic Success Scenarios should update a password 1`] = `
 "
-Warning: The command 'profiles update' is deprecated.
+Warning: The command 'profiles update username-password-profile' is deprecated.
 Recommended replacement: The 'config set' command
 "
 `;

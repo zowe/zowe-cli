@@ -151,14 +151,14 @@ describe("Using a Plugin", () => {
 
         cmd = "profiles create foo myFooProfile --duration 5";
         result = T.executeTestCLICommand(cliBin, this, cmd.split(" "));
-        expect(result.stderr).toContain("command 'profiles create' is deprecated");
+        expect(result.stderr).toContain("command 'profiles create foo' is deprecated");
         expect(result.stdout).toContain("Profile created successfully!");
         expect(result.stdout.replace(/\s+/g, " ")).toContain("size: small");
         expect(result.stdout.replace(/\s+/g, " ")).toContain("duration: 5");
 
         cmd = "profiles validate foo-profile";
         result = T.executeTestCLICommand(cliBin, this, cmd.split(" "));
-        expect(result.stderr).toContain("command 'profiles validate' is deprecated");
+        expect(result.stderr).toContain("command 'profiles validate foo-profile' is deprecated");
         expect(result.stdout).toContain("Check the size of the Foo");
         expect(result.stdout).toContain("Repair in time");
         expect(result.stdout).toContain("Of 2 tests, 2 succeeded, 0 failed, and 0 had warnings or undetermined results.");
@@ -300,7 +300,7 @@ describe("Using a Plugin", () => {
         // Create a zosmf profile. That will trigger the CredMgr.
         cmd = "profiles create secure-pass-profile TestProfileName --password 'AnyPass' --overwrite";
         result = T.executeTestCLICommand(cliBin, this, cmd.split(" "));
-        expect(result.stderr).toContain("command 'profiles create' is deprecated");
+        expect(result.stderr).toContain("command 'profiles create secure-pass-profile' is deprecated");
         expect(result.stdout).toContain("CredentialManager in sample-plugin is saving these creds:");
         expect(result.stdout).toContain(`password: managed by ${knownOverridePluginNm}`);
 
