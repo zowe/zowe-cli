@@ -3,7 +3,7 @@
 All notable changes to the Imperative package will be documented in this file.
 
 
-## Recent Changes
+## `5.27.0`
 
 - BugFix: Modified `showMsgWhenDeprecated` function to allow an empty string as a parameter when no replacement is available for the deprecated command. When no replacement is available an alternative message will be printed. [#2041](https://github.com/zowe/zowe-cli/issues/2041)
 - BugFix: Resolved bug that resulted in user not being prompted for a key passphrase if it is located in the secure credential array of the ssh profile. [#1770](https://github.com/zowe/zowe-cli/issues/1770)
