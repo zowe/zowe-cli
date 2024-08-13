@@ -378,7 +378,7 @@ export class CliUtils {
      * @memberof CliUtils
      */
     public static showMsgWhenDeprecated(handlerParms: IHandlerParameters) {
-        let oldCmd: string | number;
+        let oldCmd: string;
         if (handlerParms.definition.deprecatedReplacement || handlerParms.definition.deprecatedReplacement === "") {
             // form the command that is deprecated
             if(handlerParms.definition.deprecatedReplacement === "")

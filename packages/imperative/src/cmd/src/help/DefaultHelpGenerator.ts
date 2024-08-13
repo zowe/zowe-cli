@@ -222,7 +222,7 @@ export class DefaultHelpGenerator extends AbstractHelpGenerator {
                 let summaryText: string = "";
                 summaryText += command.summary || command.description;
 
-                if (command.deprecatedReplacement) {
+                if (command.deprecatedReplacement != null) {
                     // Mark with the deprecated tag
                     summaryText += this.grey(" (deprecated)");
                 } else if (command.experimental) {
