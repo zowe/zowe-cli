@@ -9,6 +9,9 @@
 *
 */
 
+import { AbstractSession } from "@zowe/imperative";
+import { IJob } from "@zowe/zos-jobs-for-zowe-sdk";
+
 /**
  * The test environment for your test.
  * @export
@@ -17,8 +20,9 @@
 export interface ITestEnvironment<TestPropertiesSchema> {
     resources: {
         files: string[];
-        jobs: string[];
+        jobs: IJob[];
         datasets: string[];
+        session?: AbstractSession;
     };
     /**
      * The working directory for your test environment. It is a unique (uuid) area where your tests can create

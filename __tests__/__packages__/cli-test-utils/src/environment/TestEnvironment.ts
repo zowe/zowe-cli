@@ -13,7 +13,7 @@ import * as fs from "fs";
 import * as nodePath from "path";
 import * as yaml from "js-yaml";
 import { v4 as uuidv4 } from "uuid";
-import { ImperativeError, ImperativeExpect, IO, Logger, LoggingConfigurer, TextUtils } from "@zowe/imperative";
+import { AbstractSession, ImperativeError, ImperativeExpect, IO, Logger, LoggingConfigurer, ProfileInfo, Session, TextUtils } from "@zowe/imperative";
 import { ISetupEnvironmentParms } from "./doc/parms/ISetupEnvironmentParms";
 import { ITestEnvironment } from "./doc/response/ITestEnvironment";
 import { TempTestProfiles } from "./TempTestProfiles";
@@ -41,7 +41,7 @@ export class TestEnvironment {
      * @returns {Promise<ITestEnvironment>}
      * @memberof TestEnvironment
      */
-    public static async setUp(params: ISetupEnvironmentParms): Promise<ITestEnvironment<any>> {
+    public static async setUp(params: ISetupEnvironmentParms, session?: AbstractSession): Promise<ITestEnvironment<any>> {
         // Validate the input parameters
         ImperativeExpect.toNotBeNullOrUndefined(params,
             `${TestEnvironment.ERROR_TAG} createTestEnv(): No parameters supplied.`);
@@ -68,7 +68,8 @@ export class TestEnvironment {
             resources: {
                 files: [],
                 jobs: [],
-                datasets: []
+                datasets: [],
+                ...(session && { session })  // Only include session if it is passed in
             }
         };
 
@@ -86,6 +87,24 @@ export class TestEnvironment {
 
         // Return the test environment including working directory that the tests should be using
         return result;
+    }
+
+    /**
+     * Create a session using the default z/OSMF profile (if a session has not been added to test)
+     * @returns {Promise<ISession>} - A promise that resolves to the created session object
+     * @throws Will throw an error if reading profiles or creating the session fails
+     * @memberof TestEnvironment
+     */
+    public static async createSession(): Promise<AbstractSession> {
+        // Load connection info from default z/OSMF profile
+        const profInfo = new ProfileInfo("zowe");
+        await profInfo.readProfilesFromDisk();
+        const zosmfProfAttrs = profInfo.getDefaultProfile("zosmf");
+        if (!zosmfProfAttrs) {
+            throw new Error("Default z/OSMF profile not found.");
+        }
+        const zosmfMergedArgs = profInfo.mergeArgsForProfile(zosmfProfAttrs, { getSecureVals: true });
+        return ProfileInfo.createSession(zosmfMergedArgs.knownArgs);
     }
 
     /**
@@ -107,11 +126,14 @@ export class TestEnvironment {
         }
 
         // Clean up resources
+        // Check if session exists; if not, create one
+        const session = testEnvironment.resources.session || await TestEnvironment.createSession();
+
         for (const file of testEnvironment.resources.files) {
             deleteFiles(file);
         }
         for (const job of testEnvironment.resources.jobs) {
-            deleteJob(job);
+            deleteJob(session, job);
         }
         for (const dataset of testEnvironment.resources.datasets) {
             deleteDataset(dataset);

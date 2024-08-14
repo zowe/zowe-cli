@@ -11,8 +11,7 @@
 
 import { DeleteJobs, DownloadJobs, GetJobs, IJobFile, SubmitJobs } from "../../src";
 import { ImperativeError, IO, Session, TextUtils } from "@zowe/imperative";
-import { ITestEnvironment } from "@zowe/cli-test-utils";
-import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
+import { ITestEnvironment, TestEnvironment } from "@zowe/cli-test-utils";
 import { ITestPropertiesSchema } from "../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { Get } from "@zowe/zos-files-for-zowe-sdk";
 import { MonitorJobs } from "../../src/MonitorJobs";
@@ -43,11 +42,10 @@ describe("Download Jobs - System tests", () => {
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({
             testName: "zos_download_jobs"
-        });
+        }, REAL_SESSION = await TestEnvironment.createSession());
+
         outputDirectory = testEnvironment.workingDir + "/output";
         defaultSystem = testEnvironment.systemTestProperties;
-
-        REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
 
         // download the valid IEFBR14 from the data set specified in the properties file
         iefbr14DataSet = testEnvironment.systemTestProperties.zosjobs.iefbr14Member;
@@ -56,6 +54,7 @@ describe("Download Jobs - System tests", () => {
         const job = await SubmitJobs.submitJclNotifyCommon(REAL_SESSION, {
             jcl: iefbr14JCL
         });
+        testEnvironment.resources.jobs.push(job);
         jobid = job.jobid;
         jobname = job.jobname;
         jobFiles = await GetJobs.getSpoolFiles(REAL_SESSION, jobname, jobid);
@@ -79,6 +78,7 @@ describe("Download Jobs - System tests", () => {
 
     afterAll(async () => {
         await DeleteJobs.deleteJob(REAL_SESSION, jobname, jobid);
+        await TestEnvironment.cleanUp(testEnvironment);
     });
 
     describe("Special Positive tests", () => {
@@ -91,6 +91,7 @@ describe("Download Jobs - System tests", () => {
             const job = await SubmitJobs.submitJclNotifyCommon(REAL_SESSION, {
                 jcl: iefbr14JCLAltered
             });
+            testEnvironment.resources.jobs.push(job);
             alteredjobid = job.jobid;
             alteredjobname = job.jobname;
             alteredjobFiles = await GetJobs.getSpoolFiles(REAL_SESSION, alteredjobname, alteredjobid);
@@ -259,6 +260,8 @@ describe("Download Jobs - System tests", () => {
 
             const job: IJob = await SubmitJobs.submitJcl(REAL_SESSION, renderedJcl);
 
+            testEnvironment.resources.jobs.push(job);
+
             await MonitorJobs.waitForJobOutputStatus(REAL_SESSION, job);
 
             await DownloadJobs.downloadAllSpoolContentCommon(REAL_SESSION, {
@@ -352,11 +355,11 @@ describe("Download Jobs - System tests - Encoded", () => {
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({
             testName: "zos_download_jobs_encoded"
-        });
+        }, REAL_SESSION = await TestEnvironment.createSession());
+
         outputDirectory = testEnvironment.workingDir + "/output";
         defaultSystem = testEnvironment.systemTestProperties;
 
-        REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
         const ACCOUNT = defaultSystem.tso.account;
 
         const iefbr14JCL = JobTestsUtils.getIefbr14JCL(REAL_SESSION.ISession.user, ACCOUNT, defaultSystem.zosjobs.jobclass, 1, true);
@@ -364,6 +367,7 @@ describe("Download Jobs - System tests - Encoded", () => {
         const job = await SubmitJobs.submitJclNotifyCommon(REAL_SESSION, {
             jcl: iefbr14JCL
         });
+        testEnvironment.resources.jobs.push(job);
         jobid = job.jobid;
         jobname = job.jobname;
         jobFiles = await GetJobs.getSpoolFiles(REAL_SESSION, jobname, jobid);
@@ -386,6 +390,7 @@ describe("Download Jobs - System tests - Encoded", () => {
 
     afterAll(async () => {
         await DeleteJobs.deleteJob(REAL_SESSION, jobname, jobid);
+        await TestEnvironment.cleanUp(testEnvironment);
     });
 
     describe("Positive tests", () => {
@@ -498,6 +503,7 @@ describe("Download Jobs - System tests - Encoded", () => {
                 {JOBNAME: DOWNLOAD_JOB_NAME, ACCOUNT, JOBCLASS, TYPERUNPARM: "", SYSAFF});
 
             const job: IJob = await SubmitJobs.submitJcl(REAL_SESSION, renderedJcl);
+            testEnvironment.resources.jobs.push(job);
 
             await MonitorJobs.waitForJobOutputStatus(REAL_SESSION, job);
 

@@ -12,7 +12,8 @@
 import * as fs from "fs";
 import { spawnSync, SpawnSyncReturns, ExecFileException, execSync } from "child_process";
 import { ITestEnvironment } from "./environment/doc/response/ITestEnvironment";
-import { CommandProfiles, ICommandDefinition, IHandlerParameters } from "@zowe/imperative";
+import { AbstractSession, CommandProfiles, ICommandDefinition, IHandlerParameters } from "@zowe/imperative";
+import { DeleteJobs, IDeleteJobParms, IJob } from "@zowe/zos-jobs-for-zowe-sdk";
 
 /**
  * Delete a uss file from the mainframe
@@ -27,11 +28,26 @@ export function deleteFiles(filePath: string): void {
 }
 
 /**
- * Delete a job by job ID
- * @param {string} jobId - The ID of the job
+ * Delete a job from the mainframe using Zowe SDKs - IJob
+ * @param {AbstractSession} session - z/OSMF connection info
+ * @param {IJob} job - the job that you want to delete
  */
-export function deleteJob(jobId: string): void {
-    execSync(`zowe zos-jobs delete job ${jobId}`);
+export function deleteJob(session: AbstractSession, job: IJob): void {
+    DeleteJobs.deleteJobForJob(session, job);
+}
+
+/**
+ * Delete a job from the mainframe using Zowe SDKs - jobid, jobname
+ * @param {AbstractSession} session - z/OSMF connection info
+ * @param {jobName} string - jobname for job to delete
+ * @param {jobId} string - jobid for job to delete
+ */
+export function deleteJobCommon(session: AbstractSession, job: IJob): void {
+    const parms: IDeleteJobParms = {
+        jobid: job.jobid,  // job ID
+        jobname: job.jobname,  // job name
+    };
+    DeleteJobs.deleteJobCommon(session, parms);
 }
 
 /**
