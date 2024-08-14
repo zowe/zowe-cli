@@ -4486,7 +4486,9 @@
       }
     },
     "node_modules/@types/jquery": {
-      "version": "3.5.19",
+      "version": "3.5.30",
+      "resolved": "https://registry.npmjs.org/@types/jquery/-/jquery-3.5.30.tgz",
+      "integrity": "sha512-nbWKkkyb919DOUxjmRVk8vwtDb0/k8FKncmUKFi+NY+QXqWltooxTrswvz4LspQwxvLdvzBN1TImr6cw3aQx2A==",
       "dev": true,
       "license": "MIT",
       "dependencies": {
@@ -4512,7 +4514,9 @@
       }
     },
     "node_modules/@types/jstree": {
-      "version": "3.3.44",
+      "version": "3.3.46",
+      "resolved": "https://registry.npmjs.org/@types/jstree/-/jstree-3.3.46.tgz",
+      "integrity": "sha512-Xj+lbRetEsI1TkP2cmQuCDSCT7qD3OUUCtok/8q2f2hx4PCXkBdjRO7AnS8CNj/tKsqjjZ0Pq6cNfyRcqDumsw==",
       "dev": true,
       "license": "MIT",
       "dependencies": {
@@ -5902,13 +5906,21 @@
       "license": "MIT"
     },
     "node_modules/bootstrap": {
-      "version": "4.6.1",
+      "version": "5.3.3",
+      "resolved": "https://registry.npmjs.org/bootstrap/-/bootstrap-5.3.3.tgz",
+      "integrity": "sha512-8HLCdWgyoMguSO9o+aH+iuZ+aht+mzW0u3HIMzVu7Srrpv7EBBxTnrFlSCskwdY1+EOFQSm7uMJhNQHkdPcmjg==",
       "dev": true,
+      "funding": [
+        {
+          "type": "github",
+          "url": "https://github.com/sponsors/twbs"
+        },
+        {
+          "type": "opencollective",
+          "url": "https://opencollective.com/bootstrap"
+        }
+      ],
       "license": "MIT",
-      "funding": {
-        "type": "opencollective",
-        "url": "https://opencollective.com/bootstrap"
-      },
       "peerDependencies": {
         "@popperjs/core": "^2.11.8"
       }
@@ -8798,9 +8810,14 @@
       }
     },
     "node_modules/github-markdown-css": {
-      "version": "5.2.0",
+      "version": "5.6.1",
+      "resolved": "https://registry.npmjs.org/github-markdown-css/-/github-markdown-css-5.6.1.tgz",
+      "integrity": "sha512-DItLFgHd+s7HQmk63YN4/TdvLeRqk1QP7pPKTTPrDTYoI5x7f/luJWSOZxesmuxBI2srHp8RDyoZd+9WF+WK8Q==",
       "dev": true,
       "license": "MIT",
+      "engines": {
+        "node": ">=10"
+      },
       "funding": {
         "url": "https://github.com/sponsors/sindresorhus"
       }
@@ -10744,24 +10761,6 @@
         "node": ">=6.0.0"
       }
     },
-    "node_modules/jest-stare/node_modules/bootstrap": {
-      "version": "5.3.3",
-      "dev": true,
-      "funding": [
-        {
-          "type": "github",
-          "url": "https://github.com/sponsors/twbs"
-        },
-        {
-          "type": "opencollective",
-          "url": "https://opencollective.com/bootstrap"
-        }
-      ],
-      "license": "MIT",
-      "peerDependencies": {
-        "@popperjs/core": "^2.11.8"
-      }
-    },
     "node_modules/jest-stare/node_modules/find-up": {
       "version": "3.0.0",
       "dev": true,
@@ -10864,7 +10863,9 @@
       }
     },
     "node_modules/jquery": {
-      "version": "3.6.0",
+      "version": "3.7.1",
+      "resolved": "https://registry.npmjs.org/jquery/-/jquery-3.7.1.tgz",
+      "integrity": "sha512-m4avr8yL8kmFN8psrbFFFmB/If14iN5o9nw/NgnnM+kybDJpRsAynV2BsfpTYrTRysYUdADVD7CkUUizgkpLfg==",
       "dev": true,
       "license": "MIT"
     },
@@ -13567,7 +13568,9 @@
       }
     },
     "node_modules/picocolors": {
-      "version": "1.0.0",
+      "version": "1.0.1",
+      "resolved": "https://registry.npmjs.org/picocolors/-/picocolors-1.0.1.tgz",
+      "integrity": "sha512-anP1Z8qwhkbmu7MFP5iTt+wQKXgwzf7zTyGlcdzabySa9vd0Xt392U0rVmz9poOaBj0uHJKyyo9/upk0HrEQew==",
       "dev": true,
       "license": "ISC"
     },
@@ -13680,7 +13683,9 @@
       }
     },
     "node_modules/postcss": {
-      "version": "8.4.35",
+      "version": "8.4.41",
+      "resolved": "https://registry.npmjs.org/postcss/-/postcss-8.4.41.tgz",
+      "integrity": "sha512-TesUflQ0WKZqAvg52PWL6kHgLKP6xB6heTOdoYM0Wt2UHyxNa4K25EZZMgKns3BH1RLVbZCREPpLY0rhnNoHVQ==",
       "dev": true,
       "funding": [
         {
@@ -14808,7 +14813,9 @@
       }
     },
     "node_modules/source-map-js": {
-      "version": "1.0.2",
+      "version": "1.2.0",
+      "resolved": "https://registry.npmjs.org/source-map-js/-/source-map-js-1.2.0.tgz",
+      "integrity": "sha512-itJW8lvSA0TXEphiRoawsCksnlf8SyvmFzIhltqAHluXd88pkCd+cXJVHTDwdCr0IzwptSm035IHQktUu1QUMg==",
       "dev": true,
       "license": "BSD-3-Clause",
       "engines": {
@@ -16589,14 +16596,6 @@
       "license": "ISC",
       "engines": {
         "node": ">=16"
-      }
-    },
-    "packages/imperative/node_modules/scroll-into-view-if-needed": {
-      "version": "2.2.22",
-      "dev": true,
-      "license": "MIT",
-      "dependencies": {
-        "compute-scroll-into-view": "^1.0.12"
       }
     },
     "packages/imperative/node_modules/uuid": {
