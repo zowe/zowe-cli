@@ -434,6 +434,16 @@ All notable changes to the Imperative package will be documented in this file.
 
 - Major: First major version bump for V3
 
+## `5.27.0`
+
+- BugFix: Modified `showMsgWhenDeprecated` function to allow an empty string as a parameter when no replacement is available for the deprecated command. When no replacement is available an alternative message will be printed. [#2041](https://github.com/zowe/zowe-cli/issues/2041)
+- BugFix: Resolved bug that resulted in user not being prompted for a key passphrase if it is located in the secure credential array of the ssh profile. [#1770](https://github.com/zowe/zowe-cli/issues/1770)
+
+## `5.26.3`
+
+- BugFix: Fixed issue in local web help with highlighted sidebar item getting out of sync. [#2215](https://github.com/zowe/zowe-cli/pull/2215)
+- BugFix: Updated web help dependencies for technical currency. [#2215](https://github.com/zowe/zowe-cli/pull/2215)
+
 ## `5.26.2`
 
 - BugFix: Refactored code to reduce the use of deprecated functions to prepare for upcoming Node.js 22 support. [#2191](https://github.com/zowe/zowe-cli/issues/2191)

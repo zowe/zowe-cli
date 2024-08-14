@@ -144,7 +144,6 @@ export class ConnectionPropsForSessCfg {
                 this.promptTextForValues[obj.name.toString()] = obj.description;
             });
         }
-
         // check what properties are needed to be prompted
         if (ConnectionPropsForSessCfg.propHasValue(sessCfgToUse.hostname) === false && !doNotPromptForValues.includes("hostname")) {
             promptForValues.push("hostname");
@@ -188,7 +187,6 @@ export class ConnectionPropsForSessCfg {
                     }
                 });
             }
-
             // validate what values are given back and move it to sessCfgToUse
             for (const value of promptForValues) {
                 if (ConnectionPropsForSessCfg.propHasValue(answers[value])) {
@@ -415,7 +413,8 @@ export class ConnectionPropsForSessCfg {
                 let answer;
                 while (answer === undefined) {
                     const hideText = profileSchema[value]?.secure || this.secureSessCfgProps.has(value);
-                    let promptText = `${this.promptTextForValues[value] ?? `Enter your ${value} for`} ${serviceDescription}`;
+                    const valuePrompt = this.promptTextForValues[value] ?? `Enter your ${value} for`;
+                    let promptText = `${valuePrompt} ${serviceDescription}`;
                     if (hideText) {
                         promptText += " (will be hidden)";
                     }
@@ -473,7 +472,7 @@ export class ConnectionPropsForSessCfg {
         sessCfg: SessCfgType,
         options: IOptionsForAddConnProps<SessCfgType>,
         tokenType: SessConstants.TOKEN_TYPE_CHOICES
-    ) {
+    )  {
         const impLogger = Logger.getImperativeLogger();
         if (options.requestToken) {
             impLogger.debug("Requesting a token");
