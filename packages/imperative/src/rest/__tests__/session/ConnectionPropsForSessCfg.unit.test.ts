@@ -1753,6 +1753,41 @@ describe("ConnectionPropsForSessCfg tests", () => {
             );
         });
 
+        it("should state that V1 profiles are not supported", async () => {
+            // Pretend that we do not have a zowe config.
+            Object.defineProperty(ImperativeConfig.instance, "config", {
+                configurable: true,
+                get: jest.fn(() => {
+                    return {
+                        exists: false,
+                    };
+                }),
+            });
+
+            /* Pretend that we only have V1 profiles.
+             * onlyV1ProfilesExist is a getter property, so mock the property.
+             */
+            Object.defineProperty(ConfigUtils, "onlyV1ProfilesExist", {
+                configurable: true,
+                get: jest.fn(() => {
+                    return true;
+                }),
+            });
+
+            // call the function that we want to test
+            await getValuesCallBack(["hostname"]);
+
+            expect(consoleMsgs).toContain(
+                "Only V1 profiles exist. V1 profiles are no longer supported. You should convert"
+            );
+            expect(consoleMsgs).toContain(
+                "your V1 profiles to a newer Zowe client configuration. Therefore, you will be"
+            );
+            expect(consoleMsgs).toContain(
+                "asked for the connection properties that are required to complete your command."
+            );
+        });
+        
         it("should state that connection properties are missing from config", async () => {
             // Pretend that we have a zowe config.
             Object.defineProperty(ImperativeConfig.instance, "config", {
