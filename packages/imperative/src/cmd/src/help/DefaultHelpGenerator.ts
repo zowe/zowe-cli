@@ -19,6 +19,7 @@ import { IHelpGeneratorParms } from "./doc/IHelpGeneratorParms";
 import { IHelpGeneratorFactoryParms } from "./doc/IHelpGeneratorFactoryParms";
 import { compareCommands, ICommandDefinition } from "../../src/doc/ICommandDefinition";
 import stripAnsi = require("strip-ansi");
+import { CliUtils } from "../../../utilities/src/CliUtils"
 
 /**
  * Imperative default help generator. Accepts the command definitions and constructs
@@ -355,25 +356,11 @@ export class DefaultHelpGenerator extends AbstractHelpGenerator {
         if (!this.mProduceMarkdown) {
             descriptionForHelp += this.buildHeader("DESCRIPTION");
         }
-        let description = this.mCommandDefinition.description
-            || this.mCommandDefinition.summary;
-
-        // we place the deprecated message in the DESCRIPTION help section
-        if (this.mCommandDefinition.deprecatedReplacement != null) {
-            const noNewlineInText = this.mCommandDefinition.deprecatedReplacement.replace(/\n/g, " ");
-            description += this.grey("\n\nWarning: This " + this.mCommandDefinition.type +
-                " has been deprecated.\n");
-            if(this.mCommandDefinition.deprecatedReplacement === "")
-            {
-                description += this.grey("Obsolete component. No replacement exists");
-            }
-            else
-            {
-                description += this.grey("Recommended replacement: " + noNewlineInText);
-            }
-        }
+        let description = this.mCommandDefinition.description || this.mCommandDefinition.summary;
+        // Use consolidated deprecated message logic
+        description += this.grey(CliUtils.generateDeprecatedMessage(this.mCommandDefinition.deprecatedReplacement, this.mCommandDefinition.type, true));
         if (this.mProduceMarkdown) {
-            description = this.escapeMarkdown(description);  // escape Markdown special characters
+            description = this.escapeMarkdown(description);
         }
         if (this.skipTextWrap) {
             descriptionForHelp += TextUtils.indentLines(description, this.mProduceMarkdown ? "" : DefaultHelpGenerator.HELP_INDENT);

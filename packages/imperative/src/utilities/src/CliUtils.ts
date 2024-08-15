@@ -22,7 +22,6 @@ import { IProfile } from "../../profiles";
 import { IPromptOptions } from "../../cmd/src/doc/response/api/handler/IPromptOptions";
 import { read } from "read";
 
-
 /**
  * Cli Utils contains a set of static methods/helpers that are CLI related (forming options, censoring args, etc.)
  * @export
@@ -370,6 +369,20 @@ export class CliUtils {
         return TextUtils.chalk[color](headerText);
     }
 
+    public static generateDeprecatedMessage(deprecatedReplacement: string | null, commandType: string, commandWarning?: boolean): string {
+        let message = "";
+        if (deprecatedReplacement != null) {
+            const noNewlineInText = deprecatedReplacement.replace(/\n/g, " ");
+            if(commandWarning) message += ("\n\nWarning: This " + commandType + " has been deprecated.\n");
+            if (deprecatedReplacement === "") {
+                message += "Obsolete component. No replacement exists";
+            } else {
+                message += "Recommended replacement: " + noNewlineInText;
+            }
+        }
+        return message;
+    }
+
     /**
      * Display a message when the command is deprecated.
      * @static
@@ -383,15 +396,9 @@ export class CliUtils {
             const oldCmd = handlerParms.positionals.join(" ");
             // display the message
             handlerParms.response.console.error("\nWarning: The command '" + oldCmd + "' is deprecated.");
-            if(handlerParms.definition.deprecatedReplacement === "")
-            {
-                handlerParms.response.console.error("Obsolete component. No replacement exists");
-            }
-            else
-            {
-                handlerParms.response.console.error("Recommended replacement: " +
-                    handlerParms.definition.deprecatedReplacement);
-            }
+            // Use consolidated deprecated message logic
+            const deprecatedMessage = CliUtils.generateDeprecatedMessage(handlerParms.definition.deprecatedReplacement, handlerParms.definition.type);
+            handlerParms.response.console.error(deprecatedMessage);
         }
     }
 

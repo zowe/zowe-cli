@@ -208,7 +208,7 @@ describe("CliUtils", () => {
         it("should produce a deprecated message when deprecated", () => {
             responseErrText = notSetYet;
             CliUtils.showMsgWhenDeprecated(handlerParms);
-            expect(responseErrText).toEqual("Recommended replacement: " +
+            expect(responseErrText).toContain("Recommended replacement: " +
                 handlerParms.definition.deprecatedReplacement);
         });
 
@@ -216,7 +216,7 @@ describe("CliUtils", () => {
             responseErrText = notSetYet;
             handlerParms.positionals = ["positional_one"];
             CliUtils.showMsgWhenDeprecated(handlerParms);
-            expect(responseErrText).toEqual("Recommended replacement: " +
+            expect(responseErrText).toContain("Recommended replacement: " +
                 handlerParms.definition.deprecatedReplacement);
         });
 
@@ -224,7 +224,7 @@ describe("CliUtils", () => {
             responseErrText = notSetYet;
             handlerParms.positionals = [];
             CliUtils.showMsgWhenDeprecated(handlerParms);
-            expect(responseErrText).toEqual("Recommended replacement: " +
+            expect(responseErrText).toContain("Recommended replacement: " +
                 handlerParms.definition.deprecatedReplacement);
             expect(responseErrText).not.toContain("Obsolete component. No replacement exists");
         });

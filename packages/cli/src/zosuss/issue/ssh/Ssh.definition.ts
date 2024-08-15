@@ -38,5 +38,6 @@ export const SshDefinition: ICommandDefinition = {
     examples: [{
         description: "Issue a simple command, giving the working directory",
         options: "\"npm install express\" --cwd /u/cicprov/mnt/CICPY01I/bundles/myapp "
-    }]
+    }],
+    deprecatedReplacement: "aaa"
 };
