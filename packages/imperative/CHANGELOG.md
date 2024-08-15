@@ -2,6 +2,14 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## `8.0.0-next.202408131445`
+
+- Update: See `5.26.2` for details
+
+## `8.0.0-next.202408092029`
+
+- BugFix: Resolved bug that resulted in user not being prompted for a key passphrase if it is located in the secure credential array of the ssh profile. [#1770](https://github.com/zowe/zowe-cli/issues/1770)
+
 ## `8.0.0-next.202407262216`
 
 - Update: See `5.26.1` for details
@@ -425,6 +433,11 @@ All notable changes to the Imperative package will be documented in this file.
 ## `8.0.0-next.202311132045`
 
 - Major: First major version bump for V3
+
+## `5.26.2`
+
+- BugFix: Refactored code to reduce the use of deprecated functions to prepare for upcoming Node.js 22 support. [#2191](https://github.com/zowe/zowe-cli/issues/2191)
+- BugFix: Fixed error in REST client when making requests with session type of `SessConstants.AUTH_TYPE_NONE`. [#2219](https://github.com/zowe/zowe-cli/issues/2219)
 
 ## `5.26.1`
 

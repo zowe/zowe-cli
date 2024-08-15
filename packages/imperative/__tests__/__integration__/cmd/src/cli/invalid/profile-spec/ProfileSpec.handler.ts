@@ -13,6 +13,7 @@ import { ICommandHandler, IHandlerParameters } from "../../../../../../../lib";
 
 export default class ProfileSpecHandler implements ICommandHandler {
     public async process(params: IHandlerParameters): Promise<void> {
+        // eslint-disable-next-line deprecation/deprecation
         params.profiles.get("blah");
     }
 }

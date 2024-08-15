@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## `8.0.0-next.202408131445`
+
+- Update: See `7.28.3` for details
+
 ## `8.0.0-next.202407181904`
 
 - Enhancement: The 'zowe config auto-init' command now generates a base profile name of 'global_base' or 'project_base', depending on whether a global or project configuration file is being generated. Related to Zowe Explorer issue https://github.com/zowe/zowe-explorer-vscode/issues/2682.
@@ -142,6 +146,10 @@ LTS Breaking: Removed the following previously deprecated items: [#1981](https:/
 ## `8.0.0-next.202311132045`
 
 - Major: First major version bump for V3
+
+## `7.28.3`
+
+- BugFix: Refactored code to reduce the use of deprecated functions to prepare for upcoming Node.js 22 support. [#2191](https://github.com/zowe/zowe-cli/issues/2191)
 
 ## `7.25.1`
 
