@@ -19,7 +19,7 @@ import { IHelpGeneratorParms } from "./doc/IHelpGeneratorParms";
 import { IHelpGeneratorFactoryParms } from "./doc/IHelpGeneratorFactoryParms";
 import { compareCommands, ICommandDefinition } from "../../src/doc/ICommandDefinition";
 import stripAnsi = require("strip-ansi");
-import { CliUtils } from "../../../utilities/src/CliUtils"
+import { CliUtils } from "../../../utilities/src/CliUtils";
 
 /**
  * Imperative default help generator. Accepts the command definitions and constructs
@@ -358,7 +358,8 @@ export class DefaultHelpGenerator extends AbstractHelpGenerator {
         }
         let description = this.mCommandDefinition.description || this.mCommandDefinition.summary;
         // Use consolidated deprecated message logic
-        description += this.grey(CliUtils.generateDeprecatedMessage(this.mCommandDefinition.deprecatedReplacement, this.mCommandDefinition.type, true));
+        description +=
+            this.grey(CliUtils.generateDeprecatedMessage(this.mCommandDefinition.deprecatedReplacement, this.mCommandDefinition.type, true));
         if (this.mProduceMarkdown) {
             description = this.escapeMarkdown(description);
         }

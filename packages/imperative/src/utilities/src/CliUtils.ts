@@ -373,7 +373,7 @@ export class CliUtils {
         let message = "";
         if (deprecatedReplacement != null) {
             const noNewlineInText = deprecatedReplacement.replace(/\n/g, " ");
-            if(commandWarning) message += ("\n\nWarning: This " + commandType + " has been deprecated.\n");
+            if(commandWarning) message += "\n\nWarning: This " + commandType + " has been deprecated.\n";
             if (deprecatedReplacement === "") {
                 message += "Obsolete component. No replacement exists";
             } else {

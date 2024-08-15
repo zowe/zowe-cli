@@ -1787,7 +1787,7 @@ describe("ConnectionPropsForSessCfg tests", () => {
                 "asked for the connection properties that are required to complete your command."
             );
         });
-        
+
         it("should state that connection properties are missing from config", async () => {
             // Pretend that we have a zowe config.
             Object.defineProperty(ImperativeConfig.instance, "config", {
