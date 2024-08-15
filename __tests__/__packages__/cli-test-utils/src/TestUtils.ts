@@ -10,21 +10,28 @@
 */
 
 import * as fs from "fs";
-import { spawnSync, SpawnSyncReturns, ExecFileException, execSync } from "child_process";
+import { spawnSync, SpawnSyncReturns, ExecFileException } from "child_process";
 import { ITestEnvironment } from "./environment/doc/response/ITestEnvironment";
 import { AbstractSession, CommandProfiles, ICommandDefinition, IHandlerParameters } from "@zowe/imperative";
 import { DeleteJobs, IDeleteJobParms, IJob } from "@zowe/zos-jobs-for-zowe-sdk";
+import { Delete } from "@zowe/zos-files-for-zowe-sdk"
 
 /**
  * Delete a uss file from the mainframe
- * @param {string} filePath - The USS path to the file
+ * @param {AbstractSession} session - z/OSMF connection info
+ * @param {string} fileName - The name of the USS file
  */
-export function deleteFiles(filePath: string): void {
-    if (fs.existsSync(filePath)) {
-        fs.unlinkSync(filePath);
-    }
-    execSync(`zowe zos-files delete uss-file "${filePath}" -f`);
+export function deleteFiles(session: AbstractSession, fileName: string): void {
+    Delete.ussFile(session, fileName)
+}
 
+/**
+ * Delete a dataset from the mainframe
+ * @param {AbstractSession} session - z/OSMF connection info
+ * @param {string} datasetName - The name of the dataset
+ */
+export function deleteDataset(session: AbstractSession, dataSetName: string): void {
+    Delete.dataSet(session, dataSetName);
 }
 
 /**
@@ -50,13 +57,6 @@ export function deleteJobCommon(session: AbstractSession, job: IJob): void {
     DeleteJobs.deleteJobCommon(session, parms);
 }
 
-/**
- * Delete a dataset by name
- * @param {string} datasetName - The name of the dataset
- */
-export function deleteDataset(datasetName: string): void {
-    execSync(`zowe zos-files delete data-set "${datasetName}" -f`);
-}
 
 /**
  * Execute a CLI script

@@ -11,8 +11,7 @@
 
 import { ImperativeError, Session } from "@zowe/imperative";
 import { IJob, SubmitJobs, ModifyJobs, CancelJobs } from "../../src";
-import { ITestEnvironment } from "@zowe/cli-test-utils";
-import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
+import { ITestEnvironment, TestEnvironment } from "@zowe/cli-test-utils";
 import { ITestPropertiesSchema } from "../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { JobTestsUtils } from "./JobTestsUtils";
 
@@ -31,9 +30,9 @@ describe("Modify Jobs - System Tests", () => {
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({
             testName: "zos_modify_jobs"
-        });
+        }, REAL_SESSION = await TestEnvironment.createSession());
+
         systemProps = testEnvironment.systemTestProperties;
-        REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
         account = systemProps.tso.account;
         jobclass = testEnvironment.systemTestProperties.zosjobs.jobclass;
         modifiedJobClass = testEnvironment.systemTestProperties.zosjobs.modifiedJobclass;
@@ -56,6 +55,7 @@ describe("Modify Jobs - System Tests", () => {
             );
             expect(job.jobid).toMatch(iefbr14Job.jobid);
             expect(job.message).toContain("Request was successful");
+            testEnvironment.resources.jobs.push(job);
         });
 
         it("should return a success message once hold has been added to job", async () => {
@@ -66,6 +66,7 @@ describe("Modify Jobs - System Tests", () => {
             );
             expect(job.jobid).toMatch(iefbr14Job.jobid);
             expect(job.message).toContain("Request was successful");
+            testEnvironment.resources.jobs.push(job);
         });
 
         it("should return a success message once job has been released", async () => {
@@ -76,6 +77,7 @@ describe("Modify Jobs - System Tests", () => {
             );
             expect(job.jobid).toMatch(iefbr14Job.jobid);
             expect(job.message).toContain("Request was successful");
+            testEnvironment.resources.jobs.push(job);
         });
     });
 
@@ -104,9 +106,9 @@ describe("Modify Jobs - System Tests - Encoded", () => {
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({
             testName: "zos_modify_jobs_encoded"
-        });
+        }, REAL_SESSION = await TestEnvironment.createSession());
+
         systemProps = testEnvironment.systemTestProperties;
-        REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
         account = systemProps.tso.account;
         jobclass = testEnvironment.systemTestProperties.zosjobs.jobclass;
         modifiedJobClass = testEnvironment.systemTestProperties.zosjobs.modifiedJobclass;
@@ -129,6 +131,7 @@ describe("Modify Jobs - System Tests - Encoded", () => {
             );
             expect(job.jobid).toMatch(sleepJCLJob.jobid);
             expect(job.message).toContain("Request was successful");
+            testEnvironment.resources.jobs.push(job);
         });
 
         it("should return a success message once hold has been added to job", async () => {
@@ -139,6 +142,7 @@ describe("Modify Jobs - System Tests - Encoded", () => {
             );
             expect(job.jobid).toMatch(sleepJCLJob.jobid);
             expect(job.message).toContain("Request was successful");
+            testEnvironment.resources.jobs.push(job);
         });
 
         it("should return a success message once job has been released", async () => {
@@ -149,6 +153,7 @@ describe("Modify Jobs - System Tests - Encoded", () => {
             );
             expect(job.jobid).toMatch(sleepJCLJob.jobid);
             expect(job.message).toContain("Request was successful");
+            testEnvironment.resources.jobs.push(job);
         });
     });
 });
