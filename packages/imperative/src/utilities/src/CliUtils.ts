@@ -21,7 +21,7 @@ import { ICommandArguments } from "../../cmd/src/doc/args/ICommandArguments";
 import { IProfile } from "../../profiles";
 import { IPromptOptions } from "../../cmd/src/doc/response/api/handler/IPromptOptions";
 import { read } from "read";
-
+import { ICommandDefinition } from "../../cmd";
 /**
  * Cli Utils contains a set of static methods/helpers that are CLI related (forming options, censoring args, etc.)
  * @export
@@ -369,12 +369,13 @@ export class CliUtils {
         return TextUtils.chalk[color](headerText);
     }
 
-    public static generateDeprecatedMessage(deprecatedReplacement: string | null, commandType: string, commandWarning?: boolean): string {
+    public static generateDeprecatedMessage(cmdDefinition: ICommandDefinition, showWarning?: boolean): string {
+
         let message = "";
-        if (deprecatedReplacement != null) {
-            const noNewlineInText = deprecatedReplacement.replace(/\n/g, " ");
-            if(commandWarning) message += "\n\nWarning: This " + commandType + " has been deprecated.\n";
-            if (deprecatedReplacement === "") {
+        if (cmdDefinition.deprecatedReplacement != null) {
+            const noNewlineInText = cmdDefinition.deprecatedReplacement.replace(/\n/g, " ");
+            if(showWarning) message += "\n\nWarning: This " + cmdDefinition.type + " has been deprecated.\n";
+            if (cmdDefinition.deprecatedReplacement === "") {
                 message += "Obsolete component. No replacement exists";
             } else {
                 message += "Recommended replacement: " + noNewlineInText;
@@ -397,7 +398,7 @@ export class CliUtils {
             // display the message
             handlerParms.response.console.error("\nWarning: The command '" + oldCmd + "' is deprecated.");
             // Use consolidated deprecated message logic
-            const deprecatedMessage = CliUtils.generateDeprecatedMessage(handlerParms.definition.deprecatedReplacement, handlerParms.definition.type);
+            const deprecatedMessage = CliUtils.generateDeprecatedMessage(handlerParms.definition);
             handlerParms.response.console.error(deprecatedMessage);
         }
     }

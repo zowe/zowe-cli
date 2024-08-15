@@ -359,7 +359,7 @@ export class DefaultHelpGenerator extends AbstractHelpGenerator {
         let description = this.mCommandDefinition.description || this.mCommandDefinition.summary;
         // Use consolidated deprecated message logic
         description +=
-            this.grey(CliUtils.generateDeprecatedMessage(this.mCommandDefinition.deprecatedReplacement, this.mCommandDefinition.type, true));
+            this.grey(CliUtils.generateDeprecatedMessage(this.mCommandDefinition, true));
         if (this.mProduceMarkdown) {
             description = this.escapeMarkdown(description);
         }
