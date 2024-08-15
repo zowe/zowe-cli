@@ -11,8 +11,7 @@
 
 import { ImperativeError, Session } from "@zowe/imperative";
 import { DeleteJobs, GetJobs, IJob, SearchJobs } from "../../src";
-import { ITestEnvironment } from "@zowe/cli-test-utils";
-import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
+import { ITestEnvironment, TestEnvironment } from "@zowe/cli-test-utils";
 import { ITestPropertiesSchema } from "../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 
 /**********************************************************************************/
@@ -57,10 +56,8 @@ describe("Search Jobs - System Tests", () => {
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({
             testName: "zos_search_jobs"
-        });
+        }, REAL_SESSION = await TestEnvironment.createSession());
         defaultSystem = testEnvironment.systemTestProperties;
-
-        REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
 
         INVALID_SESSION = new Session({
             user: "fakeuser",
@@ -82,6 +79,10 @@ describe("Search Jobs - System Tests", () => {
         JCL =
             "//" + MONITOR_JOB_NAME + " JOB '" + ACCOUNT + "',CLASS=" + JOBCLASS + "\n" +
             "//IEFBR14 EXEC PGM=IEFBR14"; // GetJobs
+    });
+s
+    afterAll(async () => {
+        await TestEnvironment.cleanUp(testEnvironment);
     });
 
     // Cleanup before & after each test - this will ensure that hopefully no jobs are left outstanding (or are currently
