@@ -2,6 +2,11 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Fixed issue in local web help with highlighted sidebar item getting out of sync. [#2234](https://github.com/zowe/zowe-cli/pull/2234)
+- BugFix: Updated web help dependencies for technical currency. [#2234](https://github.com/zowe/zowe-cli/pull/2234)
+
 ## `4.18.26`
 
 - BugFix: modified `plugins validate` command to default to fail when an error occurs. `zowe plugins validate <plugin-name>` command now behaves as the command `zowe plugins validate <plugin-name> --fail-on-error` [#2221](https://github.com/zowe/zowe-cli/pull/2221)
