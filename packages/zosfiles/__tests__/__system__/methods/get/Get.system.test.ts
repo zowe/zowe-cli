@@ -11,8 +11,7 @@
 
 import { Create, CreateDataSetTypeEnum, Delete, Get, IGetOptions, List, ZosFilesConstants } from "../../../../src";
 import { Imperative, Session } from "@zowe/imperative";
-import { ITestEnvironment } from "@zowe/cli-test-utils";
-import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
+import { ITestEnvironment, TestEnvironment } from "@zowe/cli-test-utils";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { getRandomBytes, getUniqueDatasetName, stripNewLines } from "../../../../../../__tests__/__src__/TestUtils";
 import { ZosmfRestClient, ZosmfHeaders } from "@zowe/core-for-zowe-sdk";
@@ -29,11 +28,9 @@ describe("Get", () => {
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({
             testName: "zos_file_view"
-        });
+        }, REAL_SESSION = await TestEnvironment.createSession());
+
         defaultSystem = testEnvironment.systemTestProperties;
-
-        REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
-
         dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.VIEW`);
         Imperative.console.info("Using dsname:" + dsname);
 
@@ -354,6 +351,7 @@ describe("Get", () => {
                 expect(response).toBeFalsy();
                 expect(error).toBeTruthy();
                 expect(stripNewLines(error.message)).toContain("Unsupported data type 'record' specified for USS file operation.");
+                testEnvironment.resources.files.push(ussname);
             });
         });
     });
@@ -365,11 +363,9 @@ describe("Get - encoded", () => {
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({
             testName: "zos_file_view"
-        });
+        }, REAL_SESSION = await TestEnvironment.createSession());
+
         defaultSystem = testEnvironment.systemTestProperties;
-
-        REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
-
         dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.VIEW`, true);
         Imperative.console.info("Using dsname:" + dsname);
 

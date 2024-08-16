@@ -15,8 +15,7 @@ import { ImperativeError, Session, TextUtils } from "@zowe/imperative";
 import * as fs from "fs";
 import { join } from "path";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
-import { ITestEnvironment } from "@zowe/cli-test-utils";
-import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
+import { ITestEnvironment, TestEnvironment } from "@zowe/cli-test-utils";
 import { ITestPropertiesSchema } from "../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 
 // long running test timeout
@@ -67,1113 +66,1118 @@ const trimMessage = (message: string) => {
 };
 
 describe("System Tests - Monitor Jobs", () => {
+    describe("Unencoded", () => {
 
-    beforeAll(async () => {
-        testEnvironment = await TestEnvironment.setUp({
-            testName: "zos_monitor_jobs"
-        });
-        defaultSystem = testEnvironment.systemTestProperties;
+        beforeAll(async () => {
+            testEnvironment = await TestEnvironment.setUp({
+                testName: "zos_monitor_jobs"
+            }, REAL_SESSION = await TestEnvironment.createSession());
 
-        REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
+            defaultSystem = testEnvironment.systemTestProperties;
+            ACCOUNT = defaultSystem.tso.account;
+            const JOB_LENGTH = 6;
+            MONITOR_JOB_NAME = REAL_SESSION.ISession.user.substring(0, JOB_LENGTH).toUpperCase() + "MJ";
 
-        ACCOUNT = defaultSystem.tso.account;
-        const JOB_LENGTH = 6;
-        MONITOR_JOB_NAME = REAL_SESSION.ISession.user.substring(0, JOB_LENGTH).toUpperCase() + "MJ";
-
-        JOBCLASS = testEnvironment.systemTestProperties.zosjobs.jobclass;
-        SYSAFF = testEnvironment.systemTestProperties.zosjobs.sysaff;
-    });
-
-    // Cleanup before & after each test - this will ensure that hopefully no jobs are left outstanding (or are currently
-    // outstanding) when the tests run
-    beforeEach(async () => {
-        GetJobs.getStatusCommon = ORIG_JOBS_STATUS;
-        await cleanTestJobs();
-    });
-    afterEach(async () => {
-        GetJobs.getStatusCommon = ORIG_JOBS_STATUS;
-        await cleanTestJobs();
-    });
-
-    /**********************************************/
-    // API method "waitForOutputStatus" system tests
-    describe("api method wait for output status", () => {
-
-        // Single error situation - the majority are tested via the common method (which this method invokes)
-        describe("invalid request error handling", () => {
-            it("should detect and surface an error if the job requested is not found", async () => {
-                let error;
-                try {
-                    const response = await MonitorJobs.waitForOutputStatus(REAL_SESSION, "JOB1", "JOB123");
-                } catch (e) {
-                    error = e;
-                }
-                expect(error).toBeDefined();
-                expect(error instanceof ImperativeError).toBe(true);
-                // const regex: RegExp = new RegExp(fs.readFileSync(TEST_REGEX_DIR + "/not_found_job.regex").toString(), "g");
-                // expect(regex.test(error.message)).toBe(true);
-                const trimmedErrorMessage = trimMessage(error.message);
-                const jsonCauseErrors = JSON.parse(error.causeErrors);
-                expect(trimmedErrorMessage).toContain("Error obtaining status for jobname \"JOB1\" jobid \"JOB123\"");
-                expect(jsonCauseErrors.category).toEqual(6);
-                expect(jsonCauseErrors.reason).toEqual(10);
-                expect(jsonCauseErrors.rc).toEqual(4);
-                expect(trimmedErrorMessage).toContain("status 400");
-                expect(trimmedErrorMessage).toContain("No job found for reference");
-            });
+            JOBCLASS = testEnvironment.systemTestProperties.zosjobs.jobclass;
+            SYSAFF = testEnvironment.systemTestProperties.zosjobs.sysaff;
         });
 
-        // Single polling situation - the majority are tested via the common method (which this method invokes)
-        describe("polling/transitions", () => {
-            // eslint-disable-next-line jest/no-done-callback
-            it("should detect when a job transitions from INPUT to OUTPUT", (done) => {
-                // Construct the JCL
-                const iefbr14Jcl = fs.readFileSync(join(TEST_RESOURCES_DIR, "jcl/instream_rexx_delay.jcl")).toString();
-                const renderedJcl = TextUtils.renderWithMustache(iefbr14Jcl,
-                    {JOBNAME: MONITOR_JOB_NAME, ACCOUNT, JOBCLASS, TYPERUNPARM: TYPE_RUN_HOLD, SYSAFF});
+        afterAll(async () => {
+            await TestEnvironment.cleanUp(testEnvironment);
+        });
+        // Cleanup before & after each test - this will ensure that hopefully no jobs are left outstanding (or are currently
+        // outstanding) when the tests run
+        beforeEach(async () => {
+            GetJobs.getStatusCommon = ORIG_JOBS_STATUS;
+            await cleanTestJobs();
+        });
+        afterEach(async () => {
+            GetJobs.getStatusCommon = ORIG_JOBS_STATUS;
+            await cleanTestJobs();
+        });
 
-                // submit the job
-                SubmitJobs.submitJcl(REAL_SESSION, renderedJcl).then((jobInfo) => {
+        /**********************************************/
+        // API method "waitForOutputStatus" system tests
+        describe("api method wait for output status", () => {
 
-                    // Initial status should be input because of HELD jobclass
-                    expect(jobInfo.status).toBe("INPUT");
-
-                    // start checking the job status
-                    let doneCalled: boolean = false;
-                    MonitorJobs.waitForOutputStatus(REAL_SESSION, jobInfo.jobname, jobInfo.jobid).then((status) => {
-                        expect(status.jobid).toEqual(jobInfo.jobid);
-                        expect(status.jobname).toEqual(jobInfo.jobname);
-                        expect(status.status).toBe("OUTPUT");
-                        done();
-                    }).catch((error) => {
-                        if (!doneCalled) {
-                            doneCalled = true;
-                            done(`wait for status error: ${error.message}`);
-                        }
-                    });
-
-                    // Change the jobclass after a period of time
-                    setTimeout(() => {
-                        new ZosmfRestClient(REAL_SESSION).request({
-                            resource: `/zosmf/restjobs/jobs/${encodeURIComponent(jobInfo.jobname)}/${encodeURIComponent(jobInfo.jobid)}`,
-                            request: "PUT",
-                            reqHeaders: [{"Content-Type": "application/json"}],
-                            writeData: {
-                                request: "release",
-                                version: "2.0"
-                            }
-                        }).then((response) => {
-                            // Nothing to do here
-                        }).catch((releaseErr) => {
-                            if (!doneCalled) {
-                                doneCalled = true;
-                                done(`Release error: ${releaseErr.message}`);
-                            }
-                        });
-                    }, TIMEOUT_TEST_CHECK);
-
-                }).catch((submitErr) => {
-                    done(`Job submission error: ${submitErr.message}`);
+            // Single error situation - the majority are tested via the common method (which this method invokes)
+            describe("invalid request error handling", () => {
+                it("should detect and surface an error if the job requested is not found", async () => {
+                    let error;
+                    try {
+                        const response = await MonitorJobs.waitForOutputStatus(REAL_SESSION, "JOB1", "JOB123");
+                    } catch (e) {
+                        error = e;
+                    }
+                    expect(error).toBeDefined();
+                    expect(error instanceof ImperativeError).toBe(true);
+                    // const regex: RegExp = new RegExp(fs.readFileSync(TEST_REGEX_DIR + "/not_found_job.regex").toString(), "g");
+                    // expect(regex.test(error.message)).toBe(true);
+                    const trimmedErrorMessage = trimMessage(error.message);
+                    const jsonCauseErrors = JSON.parse(error.causeErrors);
+                    expect(trimmedErrorMessage).toContain("Error obtaining status for jobname \"JOB1\" jobid \"JOB123\"");
+                    expect(jsonCauseErrors.category).toEqual(6);
+                    expect(jsonCauseErrors.reason).toEqual(10);
+                    expect(jsonCauseErrors.rc).toEqual(4);
+                    expect(trimmedErrorMessage).toContain("status 400");
+                    expect(trimmedErrorMessage).toContain("No job found for reference");
                 });
-            }, LONG_TIMEOUT);
-        });
-    });
-
-    /**********************************************/
-    // API method "waitForJobOutputStatus" system tests
-    describe("api method wait for job output status", () => {
-
-        // Single error situation - the majority are tested via the common method (which this method invokes)
-        describe("invalid request error handling", () => {
-            it("should detect and surface an error if the job requested is not found", async () => {
-                let error;
-                try {
-                    const params: any = {jobname: "JOB1", jobid: "JOB123"};
-                    const response = await MonitorJobs.waitForJobOutputStatus(REAL_SESSION, params);
-                } catch (e) {
-                    error = e;
-                }
-                expect(error).toBeDefined();
-                expect(error instanceof ImperativeError).toBe(true);
-                // const regex: RegExp = new RegExp(fs.readFileSync(TEST_REGEX_DIR + "/not_found_job.regex").toString(), "g");
-                // expect(regex.test(error.message)).toBe(true);
-                const trimmedErrorMessage = trimMessage(error.message);
-                const jsonCauseErrors = JSON.parse(error.causeErrors);
-                expect(trimmedErrorMessage).toContain("Error obtaining status for jobname \"JOB1\" jobid \"JOB123\"");
-                expect(jsonCauseErrors.category).toEqual(6);
-                expect(jsonCauseErrors.reason).toEqual(10);
-                expect(jsonCauseErrors.rc).toEqual(4);
-                expect(trimmedErrorMessage).toContain("status 400");
-                expect(trimmedErrorMessage).toContain("No job found for reference");
-            });
-        });
-
-        // Single polling situation - the majority are tested via the common method (which this method invokes)
-        describe("polling/transitions", () => {
-            // eslint-disable-next-line jest/no-done-callback
-            it("should detect when the job submitted transitions from INPUT to OUTPUT", (done) => {
-                // Construct the JCL
-                const iefbr14Jcl = fs.readFileSync(join(TEST_RESOURCES_DIR, "jcl/instream_rexx_delay.jcl")).toString();
-                const renderedJcl = TextUtils.renderWithMustache(iefbr14Jcl,
-                    {JOBNAME: MONITOR_JOB_NAME, ACCOUNT, JOBCLASS, TYPERUNPARM: TYPE_RUN_HOLD, SYSAFF});
-
-                // submit the job
-                SubmitJobs.submitJcl(REAL_SESSION, renderedJcl).then((jobInfo) => {
-
-                    // Initial status should be input because of HELD jobclass
-                    expect(jobInfo.status).toBe("INPUT");
-
-                    // start checking the job status
-                    let doneCalled: boolean = false;
-                    MonitorJobs.waitForJobOutputStatus(REAL_SESSION, jobInfo).then((status) => {
-                        expect(status.jobid).toEqual(jobInfo.jobid);
-                        expect(status.jobname).toEqual(jobInfo.jobname);
-                        expect(status.status).toBe("OUTPUT");
-                        done();
-                    }).catch((error) => {
-                        if (!doneCalled) {
-                            doneCalled = true;
-                            done(`wait for status error: ${error.message}`);
-                        }
-                    });
-
-                    // Release the job
-                    setTimeout(() => {
-                        new ZosmfRestClient(REAL_SESSION).request({
-                            resource: `/zosmf/restjobs/jobs/${encodeURIComponent(jobInfo.jobname)}/${encodeURIComponent(jobInfo.jobid)}`,
-                            request: "PUT",
-                            reqHeaders: [{"Content-Type": "application/json"}],
-                            writeData: {
-                                request: "release",
-                                version: "2.0"
-                            }
-                        }).then((response) => {
-                            // Nothing to do here
-                        }).catch((releaseErr) => {
-                            if (!doneCalled) {
-                                doneCalled = true;
-                                done(`Release error: ${releaseErr.message}`);
-                            }
-                        });
-                    }, TIMEOUT_TEST_CHECK);
-
-                }).catch((submitErr) => {
-                    done(`Job submission error: ${submitErr.message}`);
-                });
-            }, LONG_TIMEOUT);
-        });
-    });
-
-    /**********************************************/
-    // API method "waitForStatusCommon" system tests
-    describe("api method wait for output status common", () => {
-
-        // All error situations/scenarios - negative system
-        describe("invalid request error handling", () => {
-            it("should detect and surface an error message if an invalid jobname is specified", async () => {
-                let error;
-                try {
-                    const response = await MonitorJobs.waitForStatusCommon(REAL_SESSION, {jobid: "JOB123", jobname: "((((("});
-                } catch (e) {
-                    error = e;
-                }
-                expect(error).toBeDefined();
-                expect(error instanceof ImperativeError).toBe(true);
-                // const regex: RegExp = new RegExp(fs.readFileSync(TEST_REGEX_DIR + "/invalid_jobname.regex").toString(), "g");
-                // expect(regex.test(error.message)).toBe(true);
-                const trimmedErrorMessage = trimMessage(error.message);
-                const jsonCauseErrors = JSON.parse(error.causeErrors);
-                expect(trimmedErrorMessage).toContain("Error obtaining status for jobname \"(((((\" jobid \"JOB123\"");
-                expect(jsonCauseErrors.category).toEqual(6);
-                expect(jsonCauseErrors.reason).toEqual(7);
-                expect(jsonCauseErrors.rc).toEqual(4);
-                expect(trimmedErrorMessage).toContain("status 400");
-                expect(trimmedErrorMessage).toContain("No match for method GET and pathInfo");
             });
 
-            it("should detect and surface an error message if an invalid jobid is specified", async () => {
-                let error;
-                try {
-                    const response = await MonitorJobs.waitForStatusCommon(REAL_SESSION, {jobid: "(", jobname: "JOB1"});
-                } catch (e) {
-                    error = e;
-                }
-                expect(error).toBeDefined();
-                expect(error instanceof ImperativeError).toBe(true);
-                // const regex: RegExp = new RegExp(fs.readFileSync(TEST_REGEX_DIR + "/invalid_jobid.regex").toString(), "g");
-                // expect(regex.test(error.message)).toBe(true);
-                const trimmedErrorMessage = trimMessage(error.message);
-                const jsonCauseErrors = JSON.parse(error.causeErrors);
-                expect(trimmedErrorMessage).toContain("Error obtaining status for jobname \"JOB1\" jobid \"(\"");
-                expect(jsonCauseErrors.category).toEqual(6);
-                expect(jsonCauseErrors.reason).toEqual(7);
-                expect(jsonCauseErrors.rc).toEqual(4);
-                expect(trimmedErrorMessage).toContain("status 400");
-                expect(trimmedErrorMessage).toContain("No match for method GET and pathInfo");
-            });
+            // Single polling situation - the majority are tested via the common method (which this method invokes)
+            describe("polling/transitions", () => {
+                // eslint-disable-next-line jest/no-done-callback
+                it("should detect when a job transitions from INPUT to OUTPUT", (done) => {
+                    // Construct the JCL
+                    const iefbr14Jcl = fs.readFileSync(join(TEST_RESOURCES_DIR, "jcl/instream_rexx_delay.jcl")).toString();
+                    const renderedJcl = TextUtils.renderWithMustache(iefbr14Jcl,
+                        {JOBNAME: MONITOR_JOB_NAME, ACCOUNT, JOBCLASS, TYPERUNPARM: TYPE_RUN_HOLD, SYSAFF});
 
-            it("should detect and surface an error if the job requested is not found", async () => {
-                let error;
-                try {
-                    const response = await MonitorJobs.waitForStatusCommon(REAL_SESSION, {jobid: "JOB123", jobname: "JOB1"});
-                } catch (e) {
-                    error = e;
-                }
-                expect(error).toBeDefined();
-                expect(error instanceof ImperativeError).toBe(true);
-                // const regex: RegExp = new RegExp(fs.readFileSync(TEST_REGEX_DIR + "/not_found_job.regex").toString(), "g");
-                // expect(regex.test(error.message)).toBe(true);
-                const trimmedErrorMessage = trimMessage(error.message);
-                const jsonCauseErrors = JSON.parse(error.causeErrors);
-                expect(trimmedErrorMessage).toContain("Error obtaining status for jobname \"JOB1\" jobid \"JOB123\"");
-                expect(jsonCauseErrors.category).toEqual(6);
-                expect(jsonCauseErrors.reason).toEqual(10);
-                expect(jsonCauseErrors.rc).toEqual(4);
-                expect(trimmedErrorMessage).toContain("status 400");
-                expect(trimmedErrorMessage).toContain("No job found for reference");
-            });
-        });
+                    // submit the job
+                    SubmitJobs.submitJcl(REAL_SESSION, renderedJcl).then((jobInfo) => {
 
-        // Tests that do not initiate polling - should return immediately from a request
-        describe("initial status checks", () => {
-            it("should detect that a job is in INPUT status", async () => {
-                // Construct the JCL
-                const iefbr14Jcl = fs.readFileSync(join(TEST_RESOURCES_DIR, "jcl/iefbr14.jcl")).toString();
-                const renderedJcl = TextUtils.renderWithMustache(iefbr14Jcl,
-                    {JOBNAME: MONITOR_JOB_NAME, ACCOUNT, JOBCLASS, TYPERUNPARM: TYPE_RUN_HOLD, SYSAFF});
+                        // Initial status should be input because of HELD jobclass
+                        expect(jobInfo.status).toBe("INPUT");
 
-                // submit the job
-                const jobInfo = await SubmitJobs.submitJcl(REAL_SESSION, renderedJcl);
-                expect(jobInfo.status).toBe("INPUT");
-
-                // "Mock" the function - which just invokes the actual function
-                const mockedGetJobs = jest.fn(async (session, parms) => {
-                    return ORIG_JOBS_STATUS(session, parms);
-                });
-                GetJobs.getStatusCommon = mockedGetJobs;
-
-                // check that the status is input
-                const status = await MonitorJobs.waitForStatusCommon(REAL_SESSION,
-                    {
-                        jobname: jobInfo.jobname,
-                        jobid: jobInfo.jobid,
-                        status: "INPUT"
-                    });
-
-                // verify that the status and info is correct
-                expect(status.jobid).toEqual(jobInfo.jobid);
-                expect(status.jobname).toEqual(jobInfo.jobname);
-                expect(status.status).toBe("INPUT");
-                expect(mockedGetJobs).toHaveBeenCalledTimes(1);
-            });
-
-            it("should detect that a job is in ACTIVE status", async () => {
-                // Construct the JCL
-                const iefbr14Jcl = fs.readFileSync(join(TEST_RESOURCES_DIR, "jcl/instream_rexx_forever_loop.jcl")).toString();
-                const renderedJcl = TextUtils.renderWithMustache(iefbr14Jcl,
-                    {JOBNAME: MONITOR_JOB_NAME, ACCOUNT, JOBCLASS, TYPERUNPARM: "", SYSAFF});
-
-                // submit the job
-                const jobInfo = await SubmitJobs.submitJcl(REAL_SESSION, renderedJcl);
-
-                // Wait for the job to become active indefinitely - jest timeout will occur eventually
-                let jobCheck: IJob;
-                do {
-                    jobCheck = await GetJobs.getStatusCommon(REAL_SESSION, {jobname: jobInfo.jobname, jobid: jobInfo.jobid});
-                } while (jobCheck.status !== "ACTIVE");
-
-                // "Mock" the function - which just invokes the actual function
-                const mockedGetJobs = jest.fn(async (session, parms) => {
-                    return ORIG_JOBS_STATUS(session, parms);
-                });
-                GetJobs.getStatusCommon = mockedGetJobs;
-
-                // check that the status is active
-                const status = await MonitorJobs.waitForStatusCommon(REAL_SESSION,
-                    {
-                        jobname: jobInfo.jobname,
-                        jobid: jobInfo.jobid,
-                        status: "ACTIVE"
-                    });
-
-                // verify that the status and info is correct
-                expect(status.jobid).toEqual(jobInfo.jobid);
-                expect(status.jobname).toEqual(jobInfo.jobname);
-                expect(status.status).toBe("ACTIVE");
-                expect(mockedGetJobs).toHaveBeenCalledTimes(1);
-            }, LONG_TIMEOUT);
-
-            it("should detect that a job is in OUTPUT status", async () => {
-                // Construct the JCL
-                const iefbr14Jcl = fs.readFileSync(join(TEST_RESOURCES_DIR, "jcl/iefbr14.jcl")).toString();
-                const renderedJcl = TextUtils.renderWithMustache(iefbr14Jcl,
-                    {JOBNAME: MONITOR_JOB_NAME, ACCOUNT, JOBCLASS, TYPERUNPARM: "", SYSAFF});
-
-                // submit the job
-                const jobInfo = await SubmitJobs.submitJcl(REAL_SESSION, renderedJcl);
-
-                // Wait for the job to become active indefinitely - jest timeout will occur eventually
-                let jobCheck: IJob;
-                do {
-                    jobCheck = await GetJobs.getStatusCommon(REAL_SESSION, {jobname: jobInfo.jobname, jobid: jobInfo.jobid});
-                } while (jobCheck.status !== "OUTPUT");
-
-                // "Mock" the function - which just invokes the actual function
-                const mockedGetJobs = jest.fn(async (session, parms) => {
-                    return ORIG_JOBS_STATUS(session, parms);
-                });
-                GetJobs.getStatusCommon = mockedGetJobs;
-
-                // check that the status is output
-                const status = await MonitorJobs.waitForStatusCommon(REAL_SESSION,
-                    {
-                        jobname: jobInfo.jobname,
-                        jobid: jobInfo.jobid,
-                        status: "OUTPUT"
-                    });
-
-                // verify that the status and info is correct
-                expect(status.jobid).toEqual(jobInfo.jobid);
-                expect(status.jobname).toEqual(jobInfo.jobname);
-                expect(status.status).toBe("OUTPUT");
-                expect(mockedGetJobs).toHaveBeenCalledTimes(1);
-            }, LONG_TIMEOUT);
-        });
-
-        // All tests that perform polling, etc to eventually obtain the status
-        describe("polling/transitions", () => {
-            /* eslint-disable jest/no-done-callback */
-            it("should detect and surface an error if the job is purged/deleted while waiting for status", (done) => {
-                // Construct the JCL
-                const iefbr14Jcl = fs.readFileSync(join(TEST_RESOURCES_DIR, "jcl/instream_rexx_forever_loop.jcl")).toString();
-                const renderedJcl = TextUtils.renderWithMustache(iefbr14Jcl,
-                    {JOBNAME: MONITOR_JOB_NAME, ACCOUNT, JOBCLASS, TYPERUNPARM: "", SYSAFF});
-
-                // "Mock" the function - which just invokes the actual function
-                const mockedGetJobs = jest.fn(async (session, parms) => {
-                    return ORIG_JOBS_STATUS(session, parms);
-                });
-                GetJobs.getStatusCommon = mockedGetJobs;
-
-                // submit the job
-                SubmitJobs.submitJcl(REAL_SESSION, renderedJcl).then((jobInfo) => {
-
-                    // start checking the job status
-                    let doneCalled: boolean = false;
-                    MonitorJobs.waitForStatusCommon(REAL_SESSION, {
-                        jobname: jobInfo.jobname, jobid: jobInfo.jobid, status: "OUTPUT"
-                    }).then((status) => {
-                        if (!doneCalled) {
-                            doneCalled = true;
-                            done(`Error - we should not have received a status of OUTPUT`);
-                        }
-                    }).catch((error) => {
-                        // const regex: RegExp = new RegExp(fs.readFileSync(TEST_REGEX_DIR + "/polling_job_deleted.regex").toString(), "g");
-                        // expect(regex.test(error.message)).toBe(true);
-                        const trimmedErrorMessage = trimMessage(error.message);
-                        const jsonCauseErrors = JSON.parse(error.causeErrors);
-                        expect(trimmedErrorMessage).toContain("Error obtaining status for jobname");
-                        expect(jsonCauseErrors.category).toEqual(6);
-                        expect(jsonCauseErrors.reason).toEqual(10);
-                        expect(jsonCauseErrors.rc).toEqual(4);
-                        expect(trimmedErrorMessage).toContain("status 400");
-                        expect(trimmedErrorMessage).toContain("No job found for reference");
-                        if (!doneCalled) {
-                            doneCalled = true;
+                        // start checking the job status
+                        let doneCalled: boolean = false;
+                        MonitorJobs.waitForOutputStatus(REAL_SESSION, jobInfo.jobname, jobInfo.jobid).then((status) => {
+                            expect(status.jobid).toEqual(jobInfo.jobid);
+                            expect(status.jobname).toEqual(jobInfo.jobname);
+                            expect(status.status).toBe("OUTPUT");
                             done();
-                        }
-                    });
-
-                    // Cancel and purge the job after a period of time
-                    setTimeout(() => {
-                        DeleteJobs.deleteJob(REAL_SESSION, jobInfo.jobname, jobInfo.jobid).catch((error) => {
+                        }).catch((error) => {
                             if (!doneCalled) {
                                 doneCalled = true;
-                                done(`Error deleting the job: ${error.message}`);
+                                done(`wait for status error: ${error.message}`);
                             }
                         });
-                    }, TIMEOUT_TEST_CHECK);
 
-                }).catch((submitErr) => {
-                    done(`Job submission error: ${submitErr.message}`);
-                });
-            }, LONG_TIMEOUT);
+                        // Change the jobclass after a period of time
+                        setTimeout(() => {
+                            new ZosmfRestClient(REAL_SESSION).request({
+                                resource: `/zosmf/restjobs/jobs/${encodeURIComponent(jobInfo.jobname)}/${encodeURIComponent(jobInfo.jobid)}`,
+                                request: "PUT",
+                                reqHeaders: [{"Content-Type": "application/json"}],
+                                writeData: {
+                                    request: "release",
+                                    version: "2.0"
+                                }
+                            }).then((response) => {
+                                // Nothing to do here
+                            }).catch((releaseErr) => {
+                                if (!doneCalled) {
+                                    doneCalled = true;
+                                    done(`Release error: ${releaseErr.message}`);
+                                }
+                            });
+                        }, TIMEOUT_TEST_CHECK);
 
-            it("should detect and surface an error if the max poll attempts are exceeded", (done) => {
-                // Attempts
-                const ATTEMPTS = 3;
-
-                // Construct the JCL
-                const iefbr14Jcl = fs.readFileSync(join(TEST_RESOURCES_DIR, "jcl/instream_rexx_forever_loop.jcl")).toString();
-                const renderedJcl = TextUtils.renderWithMustache(iefbr14Jcl,
-                    {JOBNAME: MONITOR_JOB_NAME, ACCOUNT, JOBCLASS, TYPERUNPARM: "", SYSAFF});
-
-                // "Mock" the function - which just invokes the actual function
-                const mockedGetJobs = jest.fn(async (session, parms) => {
-                    return ORIG_JOBS_STATUS(session, parms);
-                });
-                GetJobs.getStatusCommon = mockedGetJobs;
-
-                // submit the job
-                SubmitJobs.submitJcl(REAL_SESSION, renderedJcl).then((jobInfo) => {
-
-                    // start checking the job status
-                    MonitorJobs.waitForStatusCommon(REAL_SESSION, {
-                        jobname: jobInfo.jobname, jobid: jobInfo.jobid, status: "OUTPUT", attempts: ATTEMPTS
-                    }).then((status) => {
-                        done(`Error - we should not have received a status of OUTPUT`);
-                    }).catch((error) => {
-                        expect(error instanceof ImperativeError).toBe(true);
-                        expect(error.message).toContain("Error obtaining status for jobname");
-                        expect(error.message).toContain("Error Details: Reached max poll attempts of \"3\"");
-                        expect(mockedGetJobs).toHaveBeenCalledTimes(ATTEMPTS);
-                        done();
+                    }).catch((submitErr) => {
+                        done(`Job submission error: ${submitErr.message}`);
                     });
+                }, LONG_TIMEOUT);
+            });
+        });
 
-                }).catch((submitErr) => {
-                    done(`Job submission error: ${submitErr.message}`);
+        /**********************************************/
+        // API method "waitForJobOutputStatus" system tests
+        describe("api method wait for job output status", () => {
+
+            // Single error situation - the majority are tested via the common method (which this method invokes)
+            describe("invalid request error handling", () => {
+                it("should detect and surface an error if the job requested is not found", async () => {
+                    let error;
+                    try {
+                        const params: any = {jobname: "JOB1", jobid: "JOB123"};
+                        const response = await MonitorJobs.waitForJobOutputStatus(REAL_SESSION, params);
+                    } catch (e) {
+                        error = e;
+                    }
+                    expect(error).toBeDefined();
+                    expect(error instanceof ImperativeError).toBe(true);
+                    // const regex: RegExp = new RegExp(fs.readFileSync(TEST_REGEX_DIR + "/not_found_job.regex").toString(), "g");
+                    // expect(regex.test(error.message)).toBe(true);
+                    const trimmedErrorMessage = trimMessage(error.message);
+                    const jsonCauseErrors = JSON.parse(error.causeErrors);
+                    expect(trimmedErrorMessage).toContain("Error obtaining status for jobname \"JOB1\" jobid \"JOB123\"");
+                    expect(jsonCauseErrors.category).toEqual(6);
+                    expect(jsonCauseErrors.reason).toEqual(10);
+                    expect(jsonCauseErrors.rc).toEqual(4);
+                    expect(trimmedErrorMessage).toContain("status 400");
+                    expect(trimmedErrorMessage).toContain("No job found for reference");
                 });
-            }, LONG_TIMEOUT);
+            });
 
-            it("should detect when a job transitions from INPUT to ACTIVE", (done) => {
-                // Construct the JCL
-                const iefbr14Jcl = fs.readFileSync(join(TEST_RESOURCES_DIR, "jcl/instream_rexx_forever_loop.jcl")).toString();
-                const renderedJcl = TextUtils.renderWithMustache(iefbr14Jcl,
-                    {JOBNAME: MONITOR_JOB_NAME, ACCOUNT, JOBCLASS, TYPERUNPARM: TYPE_RUN_HOLD, SYSAFF});
+            // Single polling situation - the majority are tested via the common method (which this method invokes)
+            describe("polling/transitions", () => {
+                // eslint-disable-next-line jest/no-done-callback
+                it("should detect when the job submitted transitions from INPUT to OUTPUT", (done) => {
+                    // Construct the JCL
+                    const iefbr14Jcl = fs.readFileSync(join(TEST_RESOURCES_DIR, "jcl/instream_rexx_delay.jcl")).toString();
+                    const renderedJcl = TextUtils.renderWithMustache(iefbr14Jcl,
+                        {JOBNAME: MONITOR_JOB_NAME, ACCOUNT, JOBCLASS, TYPERUNPARM: TYPE_RUN_HOLD, SYSAFF});
 
-                // submit the job
-                SubmitJobs.submitJcl(REAL_SESSION, renderedJcl).then((jobInfo) => {
+                    // submit the job
+                    SubmitJobs.submitJcl(REAL_SESSION, renderedJcl).then((jobInfo) => {
 
-                    // Initial status should be input because of HELD jobclass
+                        // Initial status should be input because of HELD jobclass
+                        expect(jobInfo.status).toBe("INPUT");
+
+                        // start checking the job status
+                        let doneCalled: boolean = false;
+                        MonitorJobs.waitForJobOutputStatus(REAL_SESSION, jobInfo).then((status) => {
+                            expect(status.jobid).toEqual(jobInfo.jobid);
+                            expect(status.jobname).toEqual(jobInfo.jobname);
+                            expect(status.status).toBe("OUTPUT");
+                            done();
+                        }).catch((error) => {
+                            if (!doneCalled) {
+                                doneCalled = true;
+                                done(`wait for status error: ${error.message}`);
+                            }
+                        });
+
+                        // Release the job
+                        setTimeout(() => {
+                            new ZosmfRestClient(REAL_SESSION).request({
+                                resource: `/zosmf/restjobs/jobs/${encodeURIComponent(jobInfo.jobname)}/${encodeURIComponent(jobInfo.jobid)}`,
+                                request: "PUT",
+                                reqHeaders: [{"Content-Type": "application/json"}],
+                                writeData: {
+                                    request: "release",
+                                    version: "2.0"
+                                }
+                            }).then((response) => {
+                                // Nothing to do here
+                            }).catch((releaseErr) => {
+                                if (!doneCalled) {
+                                    doneCalled = true;
+                                    done(`Release error: ${releaseErr.message}`);
+                                }
+                            });
+                        }, TIMEOUT_TEST_CHECK);
+
+                    }).catch((submitErr) => {
+                        done(`Job submission error: ${submitErr.message}`);
+                    });
+                }, LONG_TIMEOUT);
+            });
+        });
+
+        /**********************************************/
+        // API method "waitForStatusCommon" system tests
+        describe("api method wait for output status common", () => {
+
+            // All error situations/scenarios - negative system
+            describe("invalid request error handling", () => {
+                it("should detect and surface an error message if an invalid jobname is specified", async () => {
+                    let error;
+                    try {
+                        const response = await MonitorJobs.waitForStatusCommon(REAL_SESSION, {jobid: "JOB123", jobname: "((((("});
+                    } catch (e) {
+                        error = e;
+                    }
+                    expect(error).toBeDefined();
+                    expect(error instanceof ImperativeError).toBe(true);
+                    // const regex: RegExp = new RegExp(fs.readFileSync(TEST_REGEX_DIR + "/invalid_jobname.regex").toString(), "g");
+                    // expect(regex.test(error.message)).toBe(true);
+                    const trimmedErrorMessage = trimMessage(error.message);
+                    const jsonCauseErrors = JSON.parse(error.causeErrors);
+                    expect(trimmedErrorMessage).toContain("Error obtaining status for jobname \"(((((\" jobid \"JOB123\"");
+                    expect(jsonCauseErrors.category).toEqual(6);
+                    expect(jsonCauseErrors.reason).toEqual(7);
+                    expect(jsonCauseErrors.rc).toEqual(4);
+                    expect(trimmedErrorMessage).toContain("status 400");
+                    expect(trimmedErrorMessage).toContain("No match for method GET and pathInfo");
+                });
+
+                it("should detect and surface an error message if an invalid jobid is specified", async () => {
+                    let error;
+                    try {
+                        const response = await MonitorJobs.waitForStatusCommon(REAL_SESSION, {jobid: "(", jobname: "JOB1"});
+                    } catch (e) {
+                        error = e;
+                    }
+                    expect(error).toBeDefined();
+                    expect(error instanceof ImperativeError).toBe(true);
+                    // const regex: RegExp = new RegExp(fs.readFileSync(TEST_REGEX_DIR + "/invalid_jobid.regex").toString(), "g");
+                    // expect(regex.test(error.message)).toBe(true);
+                    const trimmedErrorMessage = trimMessage(error.message);
+                    const jsonCauseErrors = JSON.parse(error.causeErrors);
+                    expect(trimmedErrorMessage).toContain("Error obtaining status for jobname \"JOB1\" jobid \"(\"");
+                    expect(jsonCauseErrors.category).toEqual(6);
+                    expect(jsonCauseErrors.reason).toEqual(7);
+                    expect(jsonCauseErrors.rc).toEqual(4);
+                    expect(trimmedErrorMessage).toContain("status 400");
+                    expect(trimmedErrorMessage).toContain("No match for method GET and pathInfo");
+                });
+
+                it("should detect and surface an error if the job requested is not found", async () => {
+                    let error;
+                    try {
+                        const response = await MonitorJobs.waitForStatusCommon(REAL_SESSION, {jobid: "JOB123", jobname: "JOB1"});
+                    } catch (e) {
+                        error = e;
+                    }
+                    expect(error).toBeDefined();
+                    expect(error instanceof ImperativeError).toBe(true);
+                    // const regex: RegExp = new RegExp(fs.readFileSync(TEST_REGEX_DIR + "/not_found_job.regex").toString(), "g");
+                    // expect(regex.test(error.message)).toBe(true);
+                    const trimmedErrorMessage = trimMessage(error.message);
+                    const jsonCauseErrors = JSON.parse(error.causeErrors);
+                    expect(trimmedErrorMessage).toContain("Error obtaining status for jobname \"JOB1\" jobid \"JOB123\"");
+                    expect(jsonCauseErrors.category).toEqual(6);
+                    expect(jsonCauseErrors.reason).toEqual(10);
+                    expect(jsonCauseErrors.rc).toEqual(4);
+                    expect(trimmedErrorMessage).toContain("status 400");
+                    expect(trimmedErrorMessage).toContain("No job found for reference");
+                });
+            });
+
+            // Tests that do not initiate polling - should return immediately from a request
+            describe("initial status checks", () => {
+                it("should detect that a job is in INPUT status", async () => {
+                    // Construct the JCL
+                    const iefbr14Jcl = fs.readFileSync(join(TEST_RESOURCES_DIR, "jcl/iefbr14.jcl")).toString();
+                    const renderedJcl = TextUtils.renderWithMustache(iefbr14Jcl,
+                        {JOBNAME: MONITOR_JOB_NAME, ACCOUNT, JOBCLASS, TYPERUNPARM: TYPE_RUN_HOLD, SYSAFF});
+
+                    // submit the job
+                    const jobInfo = await SubmitJobs.submitJcl(REAL_SESSION, renderedJcl);
                     expect(jobInfo.status).toBe("INPUT");
 
-                    // start checking the job status
-                    let doneCalled: boolean = false;
-                    MonitorJobs.waitForStatusCommon(REAL_SESSION, {
-                        jobname: jobInfo.jobname, jobid: jobInfo.jobid, status: "ACTIVE"
-                    }).then((status) => {
-                        expect(status.jobid).toEqual(jobInfo.jobid);
-                        expect(status.jobname).toEqual(jobInfo.jobname);
-                        expect(status.status).toBe("ACTIVE");
-                        done();
-                    }).catch((error) => {
-                        if (!doneCalled) {
-                            doneCalled = true;
-                            done(`wait for status error: ${error.message}`);
-                        }
+                    // "Mock" the function - which just invokes the actual function
+                    const mockedGetJobs = jest.fn(async (session, parms) => {
+                        return ORIG_JOBS_STATUS(session, parms);
                     });
+                    GetJobs.getStatusCommon = mockedGetJobs;
 
-                    // Change the jobclass after a period of time
-                    setTimeout(() => {
-                        new ZosmfRestClient(REAL_SESSION).request({
-                            resource: `/zosmf/restjobs/jobs/${encodeURIComponent(jobInfo.jobname)}/${encodeURIComponent(jobInfo.jobid)}`,
-                            request: "PUT",
-                            reqHeaders: [{"Content-Type": "application/json"}],
-                            writeData: {
-                                request: "release",
-                                version: "2.0"
-                            }
-                        }).then((response) => {
-                            // Nothing to do here
-                        }).catch((releaseErr) => {
-                            if (!doneCalled) {
-                                doneCalled = true;
-                                done(`Release error: ${releaseErr.message}`);
-                            }
+                    // check that the status is input
+                    const status = await MonitorJobs.waitForStatusCommon(REAL_SESSION,
+                        {
+                            jobname: jobInfo.jobname,
+                            jobid: jobInfo.jobid,
+                            status: "INPUT"
                         });
-                    }, TIMEOUT_TEST_CHECK);
 
-                }).catch((submitErr) => {
-                    done(`Job submission error: ${submitErr.message}`);
+                    // verify that the status and info is correct
+                    expect(status.jobid).toEqual(jobInfo.jobid);
+                    expect(status.jobname).toEqual(jobInfo.jobname);
+                    expect(status.status).toBe("INPUT");
+                    expect(mockedGetJobs).toHaveBeenCalledTimes(1);
                 });
-            }, LONG_TIMEOUT);
 
-            it("should detect when a job transitions from INPUT to OUTPUT", (done) => {
-                // Construct the JCL
-                const iefbr14Jcl = fs.readFileSync(join(TEST_RESOURCES_DIR, "jcl/instream_rexx_delay.jcl")).toString();
-                const renderedJcl = TextUtils.renderWithMustache(iefbr14Jcl,
-                    {JOBNAME: MONITOR_JOB_NAME, ACCOUNT, JOBCLASS, TYPERUNPARM: TYPE_RUN_HOLD, SYSAFF});
+                it("should detect that a job is in ACTIVE status", async () => {
+                    // Construct the JCL
+                    const iefbr14Jcl = fs.readFileSync(join(TEST_RESOURCES_DIR, "jcl/instream_rexx_forever_loop.jcl")).toString();
+                    const renderedJcl = TextUtils.renderWithMustache(iefbr14Jcl,
+                        {JOBNAME: MONITOR_JOB_NAME, ACCOUNT, JOBCLASS, TYPERUNPARM: "", SYSAFF});
 
-                // submit the job
-                SubmitJobs.submitJcl(REAL_SESSION, renderedJcl).then((jobInfo) => {
+                    // submit the job
+                    const jobInfo = await SubmitJobs.submitJcl(REAL_SESSION, renderedJcl);
 
-                    // Initial status should be input because of HELD jobclass
-                    expect(jobInfo.status).toBe("INPUT");
+                    // Wait for the job to become active indefinitely - jest timeout will occur eventually
+                    let jobCheck: IJob;
+                    do {
+                        jobCheck = await GetJobs.getStatusCommon(REAL_SESSION, {jobname: jobInfo.jobname, jobid: jobInfo.jobid});
+                    } while (jobCheck.status !== "ACTIVE");
 
-                    // start checking the job status
-                    let doneCalled: boolean = false;
-                    MonitorJobs.waitForStatusCommon(REAL_SESSION, {
-                        jobname: jobInfo.jobname, jobid: jobInfo.jobid, status: "OUTPUT"
-                    }).then((status) => {
-                        expect(status.jobid).toEqual(jobInfo.jobid);
-                        expect(status.jobname).toEqual(jobInfo.jobname);
-                        expect(status.status).toBe("OUTPUT");
-                        done();
-                    }).catch((error) => {
-                        if (!doneCalled) {
-                            doneCalled = true;
-                            done(`wait for status error: ${error.message}`);
-                        }
+                    // "Mock" the function - which just invokes the actual function
+                    const mockedGetJobs = jest.fn(async (session, parms) => {
+                        return ORIG_JOBS_STATUS(session, parms);
                     });
+                    GetJobs.getStatusCommon = mockedGetJobs;
 
-                    // Change the jobclass after a period of time
-                    setTimeout(() => {
-                        new ZosmfRestClient(REAL_SESSION).request({
-                            resource: `/zosmf/restjobs/jobs/${encodeURIComponent(jobInfo.jobname)}/${encodeURIComponent(jobInfo.jobid)}`,
-                            request: "PUT",
-                            reqHeaders: [{"Content-Type": "application/json"}],
-                            writeData: {
-                                request: "release",
-                                version: "2.0"
-                            }
-                        }).then((response) => {
-                            // Nothing to do here
-                        }).catch((releaseErr) => {
-                            if (!doneCalled) {
-                                doneCalled = true;
-                                done(`Release error: ${releaseErr.message}`);
-                            }
+                    // check that the status is active
+                    const status = await MonitorJobs.waitForStatusCommon(REAL_SESSION,
+                        {
+                            jobname: jobInfo.jobname,
+                            jobid: jobInfo.jobid,
+                            status: "ACTIVE"
                         });
-                    }, TIMEOUT_TEST_CHECK);
 
-                }).catch((submitErr) => {
-                    done(`Job submission error: ${submitErr.message}`);
-                });
-            }, LONG_TIMEOUT);
+                    // verify that the status and info is correct
+                    expect(status.jobid).toEqual(jobInfo.jobid);
+                    expect(status.jobname).toEqual(jobInfo.jobname);
+                    expect(status.status).toBe("ACTIVE");
+                    expect(mockedGetJobs).toHaveBeenCalledTimes(1);
+                }, LONG_TIMEOUT);
 
-            it("should detect when a job transitions from INPUT to ACTIVE to OUTPUT", (done) => {
-                // Construct the JCL
-                const iefbr14Jcl = fs.readFileSync(join(TEST_RESOURCES_DIR, "jcl/instream_rexx_delay.jcl")).toString();
-                const renderedJcl = TextUtils.renderWithMustache(iefbr14Jcl,
-                    {JOBNAME: MONITOR_JOB_NAME, ACCOUNT, JOBCLASS, TYPERUNPARM: "", SYSAFF});
+                it("should detect that a job is in OUTPUT status", async () => {
+                    // Construct the JCL
+                    const iefbr14Jcl = fs.readFileSync(join(TEST_RESOURCES_DIR, "jcl/iefbr14.jcl")).toString();
+                    const renderedJcl = TextUtils.renderWithMustache(iefbr14Jcl,
+                        {JOBNAME: MONITOR_JOB_NAME, ACCOUNT, JOBCLASS, TYPERUNPARM: "", SYSAFF});
 
-                // submit the job
-                SubmitJobs.submitJcl(REAL_SESSION, renderedJcl).then((jobInfo) => {
+                    // submit the job
+                    const jobInfo = await SubmitJobs.submitJcl(REAL_SESSION, renderedJcl);
 
-                    // Wait for the status to be active
-                    MonitorJobs.waitForStatusCommon(REAL_SESSION, {
-                        jobname: jobInfo.jobname, jobid: jobInfo.jobid, status: "ACTIVE"
-                    }).then((status) => {
-                        expect(status.jobid).toEqual(jobInfo.jobid);
-                        expect(status.jobname).toEqual(jobInfo.jobname);
-                        expect(status.status).toBe("ACTIVE");
+                    // Wait for the job to become active indefinitely - jest timeout will occur eventually
+                    let jobCheck: IJob;
+                    do {
+                        jobCheck = await GetJobs.getStatusCommon(REAL_SESSION, {jobname: jobInfo.jobname, jobid: jobInfo.jobid});
+                    } while (jobCheck.status !== "OUTPUT");
 
-                        // Wait for the status to be output
+                    // "Mock" the function - which just invokes the actual function
+                    const mockedGetJobs = jest.fn(async (session, parms) => {
+                        return ORIG_JOBS_STATUS(session, parms);
+                    });
+                    GetJobs.getStatusCommon = mockedGetJobs;
+
+                    // check that the status is output
+                    const status = await MonitorJobs.waitForStatusCommon(REAL_SESSION,
+                        {
+                            jobname: jobInfo.jobname,
+                            jobid: jobInfo.jobid,
+                            status: "OUTPUT"
+                        });
+
+                    // verify that the status and info is correct
+                    expect(status.jobid).toEqual(jobInfo.jobid);
+                    expect(status.jobname).toEqual(jobInfo.jobname);
+                    expect(status.status).toBe("OUTPUT");
+                    expect(mockedGetJobs).toHaveBeenCalledTimes(1);
+                }, LONG_TIMEOUT);
+            });
+
+            // All tests that perform polling, etc to eventually obtain the status
+            describe("polling/transitions", () => {
+                /* eslint-disable jest/no-done-callback */
+                it("should detect and surface an error if the job is purged/deleted while waiting for status", (done) => {
+                    // Construct the JCL
+                    const iefbr14Jcl = fs.readFileSync(join(TEST_RESOURCES_DIR, "jcl/instream_rexx_forever_loop.jcl")).toString();
+                    const renderedJcl = TextUtils.renderWithMustache(iefbr14Jcl,
+                        {JOBNAME: MONITOR_JOB_NAME, ACCOUNT, JOBCLASS, TYPERUNPARM: "", SYSAFF});
+
+                    // "Mock" the function - which just invokes the actual function
+                    const mockedGetJobs = jest.fn(async (session, parms) => {
+                        return ORIG_JOBS_STATUS(session, parms);
+                    });
+                    GetJobs.getStatusCommon = mockedGetJobs;
+
+                    // submit the job
+                    SubmitJobs.submitJcl(REAL_SESSION, renderedJcl).then((jobInfo) => {
+
+                        // start checking the job status
+                        let doneCalled: boolean = false;
                         MonitorJobs.waitForStatusCommon(REAL_SESSION, {
                             jobname: jobInfo.jobname, jobid: jobInfo.jobid, status: "OUTPUT"
-                        }).then((nextStatus) => {
-                            expect(nextStatus.jobid).toEqual(jobInfo.jobid);
-                            expect(nextStatus.jobname).toEqual(jobInfo.jobname);
-                            expect(nextStatus.status).toBe("OUTPUT");
+                        }).then((status) => {
+                            if (!doneCalled) {
+                                doneCalled = true;
+                                done(`Error - we should not have received a status of OUTPUT`);
+                            }
+                        }).catch((error) => {
+                            // const regex: RegExp = new RegExp(fs.readFileSync(TEST_REGEX_DIR + "/polling_job_deleted.regex").toString(), "g");
+                            // expect(regex.test(error.message)).toBe(true);
+                            const trimmedErrorMessage = trimMessage(error.message);
+                            const jsonCauseErrors = JSON.parse(error.causeErrors);
+                            expect(trimmedErrorMessage).toContain("Error obtaining status for jobname");
+                            expect(jsonCauseErrors.category).toEqual(6);
+                            expect(jsonCauseErrors.reason).toEqual(10);
+                            expect(jsonCauseErrors.rc).toEqual(4);
+                            expect(trimmedErrorMessage).toContain("status 400");
+                            expect(trimmedErrorMessage).toContain("No job found for reference");
+                            if (!doneCalled) {
+                                doneCalled = true;
+                                done();
+                            }
+                        });
+
+                        // Cancel and purge the job after a period of time
+                        setTimeout(() => {
+                            DeleteJobs.deleteJob(REAL_SESSION, jobInfo.jobname, jobInfo.jobid).catch((error) => {
+                                if (!doneCalled) {
+                                    doneCalled = true;
+                                    done(`Error deleting the job: ${error.message}`);
+                                }
+                            });
+                        }, TIMEOUT_TEST_CHECK);
+
+                    }).catch((submitErr) => {
+                        done(`Job submission error: ${submitErr.message}`);
+                    });
+                }, LONG_TIMEOUT);
+
+                it("should detect and surface an error if the max poll attempts are exceeded", (done) => {
+                    // Attempts
+                    const ATTEMPTS = 3;
+
+                    // Construct the JCL
+                    const iefbr14Jcl = fs.readFileSync(join(TEST_RESOURCES_DIR, "jcl/instream_rexx_forever_loop.jcl")).toString();
+                    const renderedJcl = TextUtils.renderWithMustache(iefbr14Jcl,
+                        {JOBNAME: MONITOR_JOB_NAME, ACCOUNT, JOBCLASS, TYPERUNPARM: "", SYSAFF});
+
+                    // "Mock" the function - which just invokes the actual function
+                    const mockedGetJobs = jest.fn(async (session, parms) => {
+                        return ORIG_JOBS_STATUS(session, parms);
+                    });
+                    GetJobs.getStatusCommon = mockedGetJobs;
+
+                    // submit the job
+                    SubmitJobs.submitJcl(REAL_SESSION, renderedJcl).then((jobInfo) => {
+
+                        // start checking the job status
+                        MonitorJobs.waitForStatusCommon(REAL_SESSION, {
+                            jobname: jobInfo.jobname, jobid: jobInfo.jobid, status: "OUTPUT", attempts: ATTEMPTS
+                        }).then((status) => {
+                            done(`Error - we should not have received a status of OUTPUT`);
+                        }).catch((error) => {
+                            expect(error instanceof ImperativeError).toBe(true);
+                            expect(error.message).toContain("Error obtaining status for jobname");
+                            expect(error.message).toContain("Error Details: Reached max poll attempts of \"3\"");
+                            expect(mockedGetJobs).toHaveBeenCalledTimes(ATTEMPTS);
                             done();
+                        });
+
+                    }).catch((submitErr) => {
+                        done(`Job submission error: ${submitErr.message}`);
+                    });
+                }, LONG_TIMEOUT);
+
+                it("should detect when a job transitions from INPUT to ACTIVE", (done) => {
+                    // Construct the JCL
+                    const iefbr14Jcl = fs.readFileSync(join(TEST_RESOURCES_DIR, "jcl/instream_rexx_forever_loop.jcl")).toString();
+                    const renderedJcl = TextUtils.renderWithMustache(iefbr14Jcl,
+                        {JOBNAME: MONITOR_JOB_NAME, ACCOUNT, JOBCLASS, TYPERUNPARM: TYPE_RUN_HOLD, SYSAFF});
+
+                    // submit the job
+                    SubmitJobs.submitJcl(REAL_SESSION, renderedJcl).then((jobInfo) => {
+
+                        // Initial status should be input because of HELD jobclass
+                        expect(jobInfo.status).toBe("INPUT");
+
+                        // start checking the job status
+                        let doneCalled: boolean = false;
+                        MonitorJobs.waitForStatusCommon(REAL_SESSION, {
+                            jobname: jobInfo.jobname, jobid: jobInfo.jobid, status: "ACTIVE"
+                        }).then((status) => {
+                            expect(status.jobid).toEqual(jobInfo.jobid);
+                            expect(status.jobname).toEqual(jobInfo.jobname);
+                            expect(status.status).toBe("ACTIVE");
+                            done();
+                        }).catch((error) => {
+                            if (!doneCalled) {
+                                doneCalled = true;
+                                done(`wait for status error: ${error.message}`);
+                            }
+                        });
+
+                        // Change the jobclass after a period of time
+                        setTimeout(() => {
+                            new ZosmfRestClient(REAL_SESSION).request({
+                                resource: `/zosmf/restjobs/jobs/${encodeURIComponent(jobInfo.jobname)}/${encodeURIComponent(jobInfo.jobid)}`,
+                                request: "PUT",
+                                reqHeaders: [{"Content-Type": "application/json"}],
+                                writeData: {
+                                    request: "release",
+                                    version: "2.0"
+                                }
+                            }).then((response) => {
+                                // Nothing to do here
+                            }).catch((releaseErr) => {
+                                if (!doneCalled) {
+                                    doneCalled = true;
+                                    done(`Release error: ${releaseErr.message}`);
+                                }
+                            });
+                        }, TIMEOUT_TEST_CHECK);
+
+                    }).catch((submitErr) => {
+                        done(`Job submission error: ${submitErr.message}`);
+                    });
+                }, LONG_TIMEOUT);
+
+                it("should detect when a job transitions from INPUT to OUTPUT", (done) => {
+                    // Construct the JCL
+                    const iefbr14Jcl = fs.readFileSync(join(TEST_RESOURCES_DIR, "jcl/instream_rexx_delay.jcl")).toString();
+                    const renderedJcl = TextUtils.renderWithMustache(iefbr14Jcl,
+                        {JOBNAME: MONITOR_JOB_NAME, ACCOUNT, JOBCLASS, TYPERUNPARM: TYPE_RUN_HOLD, SYSAFF});
+
+                    // submit the job
+                    SubmitJobs.submitJcl(REAL_SESSION, renderedJcl).then((jobInfo) => {
+
+                        // Initial status should be input because of HELD jobclass
+                        expect(jobInfo.status).toBe("INPUT");
+
+                        // start checking the job status
+                        let doneCalled: boolean = false;
+                        MonitorJobs.waitForStatusCommon(REAL_SESSION, {
+                            jobname: jobInfo.jobname, jobid: jobInfo.jobid, status: "OUTPUT"
+                        }).then((status) => {
+                            expect(status.jobid).toEqual(jobInfo.jobid);
+                            expect(status.jobname).toEqual(jobInfo.jobname);
+                            expect(status.status).toBe("OUTPUT");
+                            done();
+                        }).catch((error) => {
+                            if (!doneCalled) {
+                                doneCalled = true;
+                                done(`wait for status error: ${error.message}`);
+                            }
+                        });
+
+                        // Change the jobclass after a period of time
+                        setTimeout(() => {
+                            new ZosmfRestClient(REAL_SESSION).request({
+                                resource: `/zosmf/restjobs/jobs/${encodeURIComponent(jobInfo.jobname)}/${encodeURIComponent(jobInfo.jobid)}`,
+                                request: "PUT",
+                                reqHeaders: [{"Content-Type": "application/json"}],
+                                writeData: {
+                                    request: "release",
+                                    version: "2.0"
+                                }
+                            }).then((response) => {
+                                // Nothing to do here
+                            }).catch((releaseErr) => {
+                                if (!doneCalled) {
+                                    doneCalled = true;
+                                    done(`Release error: ${releaseErr.message}`);
+                                }
+                            });
+                        }, TIMEOUT_TEST_CHECK);
+
+                    }).catch((submitErr) => {
+                        done(`Job submission error: ${submitErr.message}`);
+                    });
+                }, LONG_TIMEOUT);
+
+                it("should detect when a job transitions from INPUT to ACTIVE to OUTPUT", (done) => {
+                    // Construct the JCL
+                    const iefbr14Jcl = fs.readFileSync(join(TEST_RESOURCES_DIR, "jcl/instream_rexx_delay.jcl")).toString();
+                    const renderedJcl = TextUtils.renderWithMustache(iefbr14Jcl,
+                        {JOBNAME: MONITOR_JOB_NAME, ACCOUNT, JOBCLASS, TYPERUNPARM: "", SYSAFF});
+
+                    // submit the job
+                    SubmitJobs.submitJcl(REAL_SESSION, renderedJcl).then((jobInfo) => {
+
+                        // Wait for the status to be active
+                        MonitorJobs.waitForStatusCommon(REAL_SESSION, {
+                            jobname: jobInfo.jobname, jobid: jobInfo.jobid, status: "ACTIVE"
+                        }).then((status) => {
+                            expect(status.jobid).toEqual(jobInfo.jobid);
+                            expect(status.jobname).toEqual(jobInfo.jobname);
+                            expect(status.status).toBe("ACTIVE");
+
+                            // Wait for the status to be output
+                            MonitorJobs.waitForStatusCommon(REAL_SESSION, {
+                                jobname: jobInfo.jobname, jobid: jobInfo.jobid, status: "OUTPUT"
+                            }).then((nextStatus) => {
+                                expect(nextStatus.jobid).toEqual(jobInfo.jobid);
+                                expect(nextStatus.jobname).toEqual(jobInfo.jobname);
+                                expect(nextStatus.status).toBe("OUTPUT");
+                                done();
+                            }).catch((error) => {
+                                done(`wait for status error: ${error.message}`);
+                            });
                         }).catch((error) => {
                             done(`wait for status error: ${error.message}`);
                         });
-                    }).catch((error) => {
-                        done(`wait for status error: ${error.message}`);
+                    }).catch((submitErr) => {
+                        done(`Job submission error: ${submitErr.message}`);
                     });
-                }).catch((submitErr) => {
-                    done(`Job submission error: ${submitErr.message}`);
-                });
-            }, LONG_TIMEOUT);
-            /* eslint-enable jest/no-done-callback */
+                }, LONG_TIMEOUT);
+                /* eslint-enable jest/no-done-callback */
+            });
         });
     });
-});
 
-describe("System Tests - Monitor Jobs - Encoded", () => {
+    describe("Encoded", () => {
 
-    beforeAll(async () => {
-        testEnvironment = await TestEnvironment.setUp({
-            testName: "zos_monitor_jobs_encoded"
+        beforeAll(async () => {
+            testEnvironment = await TestEnvironment.setUp({
+                testName: "zos_monitor_jobs_encoded"
+            }, REAL_SESSION = await TestEnvironment.createSession());
+
+            defaultSystem = testEnvironment.systemTestProperties;
+            ACCOUNT = defaultSystem.tso.account;
+            const JOB_LENGTH = 5;
+            MONITOR_JOB_NAME = REAL_SESSION.ISession.user?.substring(0, JOB_LENGTH).toUpperCase() + "#MJ";
+
+            JOBCLASS = testEnvironment.systemTestProperties.zosjobs.jobclass;
+            SYSAFF = testEnvironment.systemTestProperties.zosjobs.sysaff;
         });
-        defaultSystem = testEnvironment.systemTestProperties;
 
-        REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
+        afterAll(async () => {
+            await TestEnvironment.cleanUp(testEnvironment);
+        });
 
-        ACCOUNT = defaultSystem.tso.account;
-        const JOB_LENGTH = 5;
-        MONITOR_JOB_NAME = REAL_SESSION.ISession.user?.substring(0, JOB_LENGTH).toUpperCase() + "#MJ";
+        // Cleanup before & after each test - this will ensure that hopefully no jobs are left outstanding (or are currently
+        // outstanding) when the tests run
+        beforeEach(async () => {
+            GetJobs.getStatusCommon = ORIG_JOBS_STATUS;
+            await cleanTestJobs();
+        });
+        afterEach(async () => {
+            GetJobs.getStatusCommon = ORIG_JOBS_STATUS;
+            await cleanTestJobs();
+        });
 
-        JOBCLASS = testEnvironment.systemTestProperties.zosjobs.jobclass;
-        SYSAFF = testEnvironment.systemTestProperties.zosjobs.sysaff;
-    });
+        /**********************************************/
+        // API method "waitForOutputStatus" system tests
+        describe("api method wait for output status", () => {
+            // Single polling situation - the majority are tested via the common method (which this method invokes)
+            describe("polling/transitions", () => {
+                // eslint-disable-next-line jest/no-done-callback
+                it("should detect when a job transitions from INPUT to OUTPUT", (done) => {
+                    // Construct the JCL
+                    const iefbr14Jcl = fs.readFileSync(join(TEST_RESOURCES_DIR, "jcl/instream_rexx_delay.jcl")).toString();
+                    const renderedJcl = TextUtils.renderWithMustache(iefbr14Jcl,
+                        {JOBNAME: MONITOR_JOB_NAME, ACCOUNT, JOBCLASS, TYPERUNPARM: TYPE_RUN_HOLD, SYSAFF});
 
-    // Cleanup before & after each test - this will ensure that hopefully no jobs are left outstanding (or are currently
-    // outstanding) when the tests run
-    beforeEach(async () => {
-        GetJobs.getStatusCommon = ORIG_JOBS_STATUS;
-        await cleanTestJobs();
-    });
-    afterEach(async () => {
-        GetJobs.getStatusCommon = ORIG_JOBS_STATUS;
-        await cleanTestJobs();
-    });
+                    // submit the job
+                    SubmitJobs.submitJcl(REAL_SESSION, renderedJcl).then((jobInfo) => {
 
-    /**********************************************/
-    // API method "waitForOutputStatus" system tests
-    describe("api method wait for output status", () => {
-        // Single polling situation - the majority are tested via the common method (which this method invokes)
-        describe("polling/transitions", () => {
-            // eslint-disable-next-line jest/no-done-callback
-            it("should detect when a job transitions from INPUT to OUTPUT", (done) => {
-                // Construct the JCL
-                const iefbr14Jcl = fs.readFileSync(join(TEST_RESOURCES_DIR, "jcl/instream_rexx_delay.jcl")).toString();
-                const renderedJcl = TextUtils.renderWithMustache(iefbr14Jcl,
-                    {JOBNAME: MONITOR_JOB_NAME, ACCOUNT, JOBCLASS, TYPERUNPARM: TYPE_RUN_HOLD, SYSAFF});
+                        // Initial status should be input because of HELD jobclass
+                        expect(jobInfo.status).toBe("INPUT");
 
-                // submit the job
-                SubmitJobs.submitJcl(REAL_SESSION, renderedJcl).then((jobInfo) => {
-
-                    // Initial status should be input because of HELD jobclass
-                    expect(jobInfo.status).toBe("INPUT");
-
-                    // start checking the job status
-                    let doneCalled: boolean = false;
-                    MonitorJobs.waitForOutputStatus(REAL_SESSION, jobInfo.jobname, jobInfo.jobid).then((status) => {
-                        expect(status.jobid).toEqual(jobInfo.jobid);
-                        expect(status.jobname).toEqual(jobInfo.jobname);
-                        expect(status.status).toBe("OUTPUT");
-                        done();
-                    }).catch((error) => {
-                        if (!doneCalled) {
-                            doneCalled = true;
-                            done(`wait for status error: ${error.message}`);
-                        }
-                    });
-
-                    // Change the jobclass after a period of time
-                    setTimeout(() => {
-                        new ZosmfRestClient(REAL_SESSION).request({
-                            resource: `/zosmf/restjobs/jobs/${encodeURIComponent(jobInfo.jobname)}/${encodeURIComponent(jobInfo.jobid)}`,
-                            request: "PUT",
-                            reqHeaders: [{"Content-Type": "application/json"}],
-                            writeData: {
-                                request: "release",
-                                version: "2.0"
-                            }
-                        }).then((response) => {
-                            // Nothing to do here
-                        }).catch((releaseErr) => {
+                        // start checking the job status
+                        let doneCalled: boolean = false;
+                        MonitorJobs.waitForOutputStatus(REAL_SESSION, jobInfo.jobname, jobInfo.jobid).then((status) => {
+                            expect(status.jobid).toEqual(jobInfo.jobid);
+                            expect(status.jobname).toEqual(jobInfo.jobname);
+                            expect(status.status).toBe("OUTPUT");
+                            done();
+                        }).catch((error) => {
                             if (!doneCalled) {
                                 doneCalled = true;
-                                done(`Release error: ${releaseErr.message}`);
+                                done(`wait for status error: ${error.message}`);
                             }
                         });
-                    }, TIMEOUT_TEST_CHECK);
 
-                }).catch((submitErr) => {
-                    done(`Job submission error: ${submitErr.message}`);
-                });
-            }, LONG_TIMEOUT);
-        });
-    });
+                        // Change the jobclass after a period of time
+                        setTimeout(() => {
+                            new ZosmfRestClient(REAL_SESSION).request({
+                                resource: `/zosmf/restjobs/jobs/${encodeURIComponent(jobInfo.jobname)}/${encodeURIComponent(jobInfo.jobid)}`,
+                                request: "PUT",
+                                reqHeaders: [{"Content-Type": "application/json"}],
+                                writeData: {
+                                    request: "release",
+                                    version: "2.0"
+                                }
+                            }).then((response) => {
+                                // Nothing to do here
+                            }).catch((releaseErr) => {
+                                if (!doneCalled) {
+                                    doneCalled = true;
+                                    done(`Release error: ${releaseErr.message}`);
+                                }
+                            });
+                        }, TIMEOUT_TEST_CHECK);
 
-    /**********************************************/
-    // API method "waitForJobOutputStatus" system tests
-    describe("api method wait for job output status", () => {
-        // Single polling situation - the majority are tested via the common method (which this method invokes)
-        describe("polling/transitions", () => {
-            // eslint-disable-next-line jest/no-done-callback
-            it("should detect when the job submitted transitions from INPUT to OUTPUT", (done) => {
-                // Construct the JCL
-                const iefbr14Jcl = fs.readFileSync(join(TEST_RESOURCES_DIR, "jcl/instream_rexx_delay.jcl")).toString();
-                const renderedJcl = TextUtils.renderWithMustache(iefbr14Jcl,
-                    {JOBNAME: MONITOR_JOB_NAME, ACCOUNT, JOBCLASS, TYPERUNPARM: TYPE_RUN_HOLD, SYSAFF});
-
-                // submit the job
-                SubmitJobs.submitJcl(REAL_SESSION, renderedJcl).then((jobInfo) => {
-
-                    // Initial status should be input because of HELD jobclass
-                    expect(jobInfo.status).toBe("INPUT");
-
-                    // start checking the job status
-                    let doneCalled: boolean = false;
-                    MonitorJobs.waitForJobOutputStatus(REAL_SESSION, jobInfo).then((status) => {
-                        expect(status.jobid).toEqual(jobInfo.jobid);
-                        expect(status.jobname).toEqual(jobInfo.jobname);
-                        expect(status.status).toBe("OUTPUT");
-                        done();
-                    }).catch((error) => {
-                        if (!doneCalled) {
-                            doneCalled = true;
-                            done(`wait for status error: ${error.message}`);
-                        }
+                    }).catch((submitErr) => {
+                        done(`Job submission error: ${submitErr.message}`);
                     });
+                }, LONG_TIMEOUT);
+            });
+        });
 
-                    // Release the job
-                    setTimeout(() => {
-                        new ZosmfRestClient(REAL_SESSION).request({
-                            resource: `/zosmf/restjobs/jobs/${encodeURIComponent(jobInfo.jobname)}/${encodeURIComponent(jobInfo.jobid)}`,
-                            request: "PUT",
-                            reqHeaders: [{"Content-Type": "application/json"}],
-                            writeData: {
-                                request: "release",
-                                version: "2.0"
-                            }
-                        }).then((response) => {
-                            // Nothing to do here
-                        }).catch((releaseErr) => {
+        /**********************************************/
+        // API method "waitForJobOutputStatus" system tests
+        describe("api method wait for job output status", () => {
+            // Single polling situation - the majority are tested via the common method (which this method invokes)
+            describe("polling/transitions", () => {
+                // eslint-disable-next-line jest/no-done-callback
+                it("should detect when the job submitted transitions from INPUT to OUTPUT", (done) => {
+                    // Construct the JCL
+                    const iefbr14Jcl = fs.readFileSync(join(TEST_RESOURCES_DIR, "jcl/instream_rexx_delay.jcl")).toString();
+                    const renderedJcl = TextUtils.renderWithMustache(iefbr14Jcl,
+                        {JOBNAME: MONITOR_JOB_NAME, ACCOUNT, JOBCLASS, TYPERUNPARM: TYPE_RUN_HOLD, SYSAFF});
+
+                    // submit the job
+                    SubmitJobs.submitJcl(REAL_SESSION, renderedJcl).then((jobInfo) => {
+
+                        // Initial status should be input because of HELD jobclass
+                        expect(jobInfo.status).toBe("INPUT");
+
+                        // start checking the job status
+                        let doneCalled: boolean = false;
+                        MonitorJobs.waitForJobOutputStatus(REAL_SESSION, jobInfo).then((status) => {
+                            expect(status.jobid).toEqual(jobInfo.jobid);
+                            expect(status.jobname).toEqual(jobInfo.jobname);
+                            expect(status.status).toBe("OUTPUT");
+                            done();
+                        }).catch((error) => {
                             if (!doneCalled) {
                                 doneCalled = true;
-                                done(`Release error: ${releaseErr.message}`);
+                                done(`wait for status error: ${error.message}`);
                             }
                         });
-                    }, TIMEOUT_TEST_CHECK);
 
-                }).catch((submitErr) => {
-                    done(`Job submission error: ${submitErr.message}`);
-                });
-            }, LONG_TIMEOUT);
-        });
-    });
+                        // Release the job
+                        setTimeout(() => {
+                            new ZosmfRestClient(REAL_SESSION).request({
+                                resource: `/zosmf/restjobs/jobs/${encodeURIComponent(jobInfo.jobname)}/${encodeURIComponent(jobInfo.jobid)}`,
+                                request: "PUT",
+                                reqHeaders: [{"Content-Type": "application/json"}],
+                                writeData: {
+                                    request: "release",
+                                    version: "2.0"
+                                }
+                            }).then((response) => {
+                                // Nothing to do here
+                            }).catch((releaseErr) => {
+                                if (!doneCalled) {
+                                    doneCalled = true;
+                                    done(`Release error: ${releaseErr.message}`);
+                                }
+                            });
+                        }, TIMEOUT_TEST_CHECK);
 
-    /**********************************************/
-    // API method "waitForStatusCommon" system tests
-    describe("api method wait for output status common", () => {
-        // Tests that do not initiate polling - should return immediately from a request
-        describe("initial status checks", () => {
-            it("should detect that a job is in INPUT status", async () => {
-                // Construct the JCL
-                const iefbr14Jcl = fs.readFileSync(join(TEST_RESOURCES_DIR, "jcl/iefbr14.jcl")).toString();
-                const renderedJcl = TextUtils.renderWithMustache(iefbr14Jcl,
-                    {JOBNAME: MONITOR_JOB_NAME, ACCOUNT, JOBCLASS, TYPERUNPARM: TYPE_RUN_HOLD, SYSAFF});
-
-                // submit the job
-                const jobInfo = await SubmitJobs.submitJcl(REAL_SESSION, renderedJcl);
-                expect(jobInfo.status).toBe("INPUT");
-
-                // "Mock" the function - which just invokes the actual function
-                const mockedGetJobs = jest.fn(async (session, parms) => {
-                    return ORIG_JOBS_STATUS(session, parms);
-                });
-                GetJobs.getStatusCommon = mockedGetJobs;
-
-                // check that the status is input
-                const status = await MonitorJobs.waitForStatusCommon(REAL_SESSION,
-                    {
-                        jobname: jobInfo.jobname,
-                        jobid: jobInfo.jobid,
-                        status: "INPUT"
+                    }).catch((submitErr) => {
+                        done(`Job submission error: ${submitErr.message}`);
                     });
+                }, LONG_TIMEOUT);
+            });
+        });
 
-                // verify that the status and info is correct
-                expect(status.jobid).toEqual(jobInfo.jobid);
-                expect(status.jobname).toEqual(jobInfo.jobname);
-                expect(status.status).toBe("INPUT");
-                expect(mockedGetJobs).toHaveBeenCalledTimes(1);
+        /**********************************************/
+        // API method "waitForStatusCommon" system tests
+        describe("api method wait for output status common", () => {
+            // Tests that do not initiate polling - should return immediately from a request
+            describe("initial status checks", () => {
+                it("should detect that a job is in INPUT status", async () => {
+                    // Construct the JCL
+                    const iefbr14Jcl = fs.readFileSync(join(TEST_RESOURCES_DIR, "jcl/iefbr14.jcl")).toString();
+                    const renderedJcl = TextUtils.renderWithMustache(iefbr14Jcl,
+                        {JOBNAME: MONITOR_JOB_NAME, ACCOUNT, JOBCLASS, TYPERUNPARM: TYPE_RUN_HOLD, SYSAFF});
+
+                    // submit the job
+                    const jobInfo = await SubmitJobs.submitJcl(REAL_SESSION, renderedJcl);
+                    expect(jobInfo.status).toBe("INPUT");
+
+                    // "Mock" the function - which just invokes the actual function
+                    const mockedGetJobs = jest.fn(async (session, parms) => {
+                        return ORIG_JOBS_STATUS(session, parms);
+                    });
+                    GetJobs.getStatusCommon = mockedGetJobs;
+
+                    // check that the status is input
+                    const status = await MonitorJobs.waitForStatusCommon(REAL_SESSION,
+                        {
+                            jobname: jobInfo.jobname,
+                            jobid: jobInfo.jobid,
+                            status: "INPUT"
+                        });
+
+                    // verify that the status and info is correct
+                    expect(status.jobid).toEqual(jobInfo.jobid);
+                    expect(status.jobname).toEqual(jobInfo.jobname);
+                    expect(status.status).toBe("INPUT");
+                    expect(mockedGetJobs).toHaveBeenCalledTimes(1);
+                });
+
+                it("should detect that a job is in ACTIVE status", async () => {
+                    // Construct the JCL
+                    const iefbr14Jcl = fs.readFileSync(join(TEST_RESOURCES_DIR, "jcl/instream_rexx_forever_loop.jcl")).toString();
+                    const renderedJcl = TextUtils.renderWithMustache(iefbr14Jcl,
+                        {JOBNAME: MONITOR_JOB_NAME, ACCOUNT, JOBCLASS, TYPERUNPARM: "", SYSAFF});
+
+                    // submit the job
+                    const jobInfo = await SubmitJobs.submitJcl(REAL_SESSION, renderedJcl);
+
+                    // Wait for the job to become active indefinitely - jest timeout will occur eventually
+                    let jobCheck: IJob;
+                    do {
+                        jobCheck = await GetJobs.getStatusCommon(REAL_SESSION, {jobname: jobInfo.jobname, jobid: jobInfo.jobid});
+                    } while (jobCheck.status !== "ACTIVE");
+
+                    // "Mock" the function - which just invokes the actual function
+                    const mockedGetJobs = jest.fn(async (session, parms) => {
+                        return ORIG_JOBS_STATUS(session, parms);
+                    });
+                    GetJobs.getStatusCommon = mockedGetJobs;
+
+                    // check that the status is active
+                    const status = await MonitorJobs.waitForStatusCommon(REAL_SESSION,
+                        {
+                            jobname: jobInfo.jobname,
+                            jobid: jobInfo.jobid,
+                            status: "ACTIVE"
+                        });
+
+                    // verify that the status and info is correct
+                    expect(status.jobid).toEqual(jobInfo.jobid);
+                    expect(status.jobname).toEqual(jobInfo.jobname);
+                    expect(status.status).toBe("ACTIVE");
+                    expect(mockedGetJobs).toHaveBeenCalledTimes(1);
+                }, LONG_TIMEOUT);
+
+                it("should detect that a job is in OUTPUT status", async () => {
+                    // Construct the JCL
+                    const iefbr14Jcl = fs.readFileSync(join(TEST_RESOURCES_DIR, "jcl/iefbr14.jcl")).toString();
+                    const renderedJcl = TextUtils.renderWithMustache(iefbr14Jcl,
+                        {JOBNAME: MONITOR_JOB_NAME, ACCOUNT, JOBCLASS, TYPERUNPARM: "", SYSAFF});
+
+                    // submit the job
+                    const jobInfo = await SubmitJobs.submitJcl(REAL_SESSION, renderedJcl);
+
+                    // Wait for the job to become active indefinitely - jest timeout will occur eventually
+                    let jobCheck: IJob;
+                    do {
+                        jobCheck = await GetJobs.getStatusCommon(REAL_SESSION, {jobname: jobInfo.jobname, jobid: jobInfo.jobid});
+                    } while (jobCheck.status !== "OUTPUT");
+
+                    // "Mock" the function - which just invokes the actual function
+                    const mockedGetJobs = jest.fn(async (session, parms) => {
+                        return ORIG_JOBS_STATUS(session, parms);
+                    });
+                    GetJobs.getStatusCommon = mockedGetJobs;
+
+                    // check that the status is output
+                    const status = await MonitorJobs.waitForStatusCommon(REAL_SESSION,
+                        {
+                            jobname: jobInfo.jobname,
+                            jobid: jobInfo.jobid,
+                            status: "OUTPUT"
+                        });
+
+                    // verify that the status and info is correct
+                    expect(status.jobid).toEqual(jobInfo.jobid);
+                    expect(status.jobname).toEqual(jobInfo.jobname);
+                    expect(status.status).toBe("OUTPUT");
+                    expect(mockedGetJobs).toHaveBeenCalledTimes(1);
+                }, LONG_TIMEOUT);
             });
 
-            it("should detect that a job is in ACTIVE status", async () => {
-                // Construct the JCL
-                const iefbr14Jcl = fs.readFileSync(join(TEST_RESOURCES_DIR, "jcl/instream_rexx_forever_loop.jcl")).toString();
-                const renderedJcl = TextUtils.renderWithMustache(iefbr14Jcl,
-                    {JOBNAME: MONITOR_JOB_NAME, ACCOUNT, JOBCLASS, TYPERUNPARM: "", SYSAFF});
+            // All tests that perform polling, etc to eventually obtain the status
+            describe("polling/transitions", () => {
+                /* eslint-disable jest/no-done-callback */
+                it("should detect and surface an error if the job is purged/deleted while waiting for status", (done) => {
+                    // Construct the JCL
+                    const iefbr14Jcl = fs.readFileSync(join(TEST_RESOURCES_DIR, "jcl/instream_rexx_forever_loop.jcl")).toString();
+                    const renderedJcl = TextUtils.renderWithMustache(iefbr14Jcl,
+                        {JOBNAME: MONITOR_JOB_NAME, ACCOUNT, JOBCLASS, TYPERUNPARM: "", SYSAFF});
 
-                // submit the job
-                const jobInfo = await SubmitJobs.submitJcl(REAL_SESSION, renderedJcl);
-
-                // Wait for the job to become active indefinitely - jest timeout will occur eventually
-                let jobCheck: IJob;
-                do {
-                    jobCheck = await GetJobs.getStatusCommon(REAL_SESSION, {jobname: jobInfo.jobname, jobid: jobInfo.jobid});
-                } while (jobCheck.status !== "ACTIVE");
-
-                // "Mock" the function - which just invokes the actual function
-                const mockedGetJobs = jest.fn(async (session, parms) => {
-                    return ORIG_JOBS_STATUS(session, parms);
-                });
-                GetJobs.getStatusCommon = mockedGetJobs;
-
-                // check that the status is active
-                const status = await MonitorJobs.waitForStatusCommon(REAL_SESSION,
-                    {
-                        jobname: jobInfo.jobname,
-                        jobid: jobInfo.jobid,
-                        status: "ACTIVE"
+                    // "Mock" the function - which just invokes the actual function
+                    const mockedGetJobs = jest.fn(async (session, parms) => {
+                        return ORIG_JOBS_STATUS(session, parms);
                     });
+                    GetJobs.getStatusCommon = mockedGetJobs;
 
-                // verify that the status and info is correct
-                expect(status.jobid).toEqual(jobInfo.jobid);
-                expect(status.jobname).toEqual(jobInfo.jobname);
-                expect(status.status).toBe("ACTIVE");
-                expect(mockedGetJobs).toHaveBeenCalledTimes(1);
-            }, LONG_TIMEOUT);
+                    // submit the job
+                    SubmitJobs.submitJcl(REAL_SESSION, renderedJcl).then((jobInfo) => {
 
-            it("should detect that a job is in OUTPUT status", async () => {
-                // Construct the JCL
-                const iefbr14Jcl = fs.readFileSync(join(TEST_RESOURCES_DIR, "jcl/iefbr14.jcl")).toString();
-                const renderedJcl = TextUtils.renderWithMustache(iefbr14Jcl,
-                    {JOBNAME: MONITOR_JOB_NAME, ACCOUNT, JOBCLASS, TYPERUNPARM: "", SYSAFF});
-
-                // submit the job
-                const jobInfo = await SubmitJobs.submitJcl(REAL_SESSION, renderedJcl);
-
-                // Wait for the job to become active indefinitely - jest timeout will occur eventually
-                let jobCheck: IJob;
-                do {
-                    jobCheck = await GetJobs.getStatusCommon(REAL_SESSION, {jobname: jobInfo.jobname, jobid: jobInfo.jobid});
-                } while (jobCheck.status !== "OUTPUT");
-
-                // "Mock" the function - which just invokes the actual function
-                const mockedGetJobs = jest.fn(async (session, parms) => {
-                    return ORIG_JOBS_STATUS(session, parms);
-                });
-                GetJobs.getStatusCommon = mockedGetJobs;
-
-                // check that the status is output
-                const status = await MonitorJobs.waitForStatusCommon(REAL_SESSION,
-                    {
-                        jobname: jobInfo.jobname,
-                        jobid: jobInfo.jobid,
-                        status: "OUTPUT"
-                    });
-
-                // verify that the status and info is correct
-                expect(status.jobid).toEqual(jobInfo.jobid);
-                expect(status.jobname).toEqual(jobInfo.jobname);
-                expect(status.status).toBe("OUTPUT");
-                expect(mockedGetJobs).toHaveBeenCalledTimes(1);
-            }, LONG_TIMEOUT);
-        });
-
-        // All tests that perform polling, etc to eventually obtain the status
-        describe("polling/transitions", () => {
-            /* eslint-disable jest/no-done-callback */
-            it("should detect and surface an error if the job is purged/deleted while waiting for status", (done) => {
-                // Construct the JCL
-                const iefbr14Jcl = fs.readFileSync(join(TEST_RESOURCES_DIR, "jcl/instream_rexx_forever_loop.jcl")).toString();
-                const renderedJcl = TextUtils.renderWithMustache(iefbr14Jcl,
-                    {JOBNAME: MONITOR_JOB_NAME, ACCOUNT, JOBCLASS, TYPERUNPARM: "", SYSAFF});
-
-                // "Mock" the function - which just invokes the actual function
-                const mockedGetJobs = jest.fn(async (session, parms) => {
-                    return ORIG_JOBS_STATUS(session, parms);
-                });
-                GetJobs.getStatusCommon = mockedGetJobs;
-
-                // submit the job
-                SubmitJobs.submitJcl(REAL_SESSION, renderedJcl).then((jobInfo) => {
-
-                    // start checking the job status
-                    let doneCalled: boolean = false;
-                    MonitorJobs.waitForStatusCommon(REAL_SESSION, {
-                        jobname: jobInfo.jobname, jobid: jobInfo.jobid, status: "OUTPUT"
-                    }).then((status) => {
-                        if (!doneCalled) {
-                            doneCalled = true;
-                            done(`Error - we should not have received a status of OUTPUT`);
-                        }
-                    }).catch((error) => {
-                        // const regex: RegExp = new RegExp(fs.readFileSync(TEST_REGEX_DIR + "/polling_job_deleted.regex").toString(), "g");
-                        // expect(regex.test(error.message)).toBe(true);
-                        const trimmedErrorMessage = trimMessage(error.message);
-                        const jsonCauseErrors = JSON.parse(error.causeErrors);
-                        expect(trimmedErrorMessage).toContain("Error obtaining status for jobname");
-                        expect(jsonCauseErrors.category).toEqual(6);
-                        expect(jsonCauseErrors.reason).toEqual(10);
-                        expect(jsonCauseErrors.rc).toEqual(4);
-                        expect(trimmedErrorMessage).toContain("status 400");
-                        expect(trimmedErrorMessage).toContain("No job found for reference");
-                        if (!doneCalled) {
-                            doneCalled = true;
-                            done();
-                        }
-                    });
-
-                    // Cancel and purge the job after a period of time
-                    setTimeout(() => {
-                        DeleteJobs.deleteJob(REAL_SESSION, jobInfo.jobname, jobInfo.jobid).catch((error) => {
-                            if (!doneCalled) {
-                                doneCalled = true;
-                                done(`Error deleting the job: ${error.message}`);
-                            }
-                        });
-                    }, TIMEOUT_TEST_CHECK);
-
-                }).catch((submitErr) => {
-                    done(`Job submission error: ${submitErr.message}`);
-                });
-            }, LONG_TIMEOUT);
-
-            it("should detect and surface an error if the max poll attempts are exceeded", (done) => {
-                // Attempts
-                const ATTEMPTS = 3;
-
-                // Construct the JCL
-                const iefbr14Jcl = fs.readFileSync(join(TEST_RESOURCES_DIR, "jcl/instream_rexx_forever_loop.jcl")).toString();
-                const renderedJcl = TextUtils.renderWithMustache(iefbr14Jcl,
-                    {JOBNAME: MONITOR_JOB_NAME, ACCOUNT, JOBCLASS, TYPERUNPARM: "", SYSAFF});
-
-                // "Mock" the function - which just invokes the actual function
-                const mockedGetJobs = jest.fn(async (session, parms) => {
-                    return ORIG_JOBS_STATUS(session, parms);
-                });
-                GetJobs.getStatusCommon = mockedGetJobs;
-
-                // submit the job
-                SubmitJobs.submitJcl(REAL_SESSION, renderedJcl).then((jobInfo) => {
-
-                    // start checking the job status
-                    MonitorJobs.waitForStatusCommon(REAL_SESSION, {
-                        jobname: jobInfo.jobname, jobid: jobInfo.jobid, status: "OUTPUT", attempts: ATTEMPTS
-                    }).then((status) => {
-                        done(`Error - we should not have received a status of OUTPUT`);
-                    }).catch((error) => {
-                        expect(error instanceof ImperativeError).toBe(true);
-                        expect(error.message).toContain("Error obtaining status for jobname");
-                        expect(error.message).toContain("Error Details: Reached max poll attempts of \"3\"");
-                        expect(mockedGetJobs).toHaveBeenCalledTimes(ATTEMPTS);
-                        done();
-                    });
-
-                }).catch((submitErr) => {
-                    done(`Job submission error: ${submitErr.message}`);
-                });
-            }, LONG_TIMEOUT);
-
-            it("should detect when a job transitions from INPUT to ACTIVE", (done) => {
-                // Construct the JCL
-                const iefbr14Jcl = fs.readFileSync(join(TEST_RESOURCES_DIR, "jcl/instream_rexx_forever_loop.jcl")).toString();
-                const renderedJcl = TextUtils.renderWithMustache(iefbr14Jcl,
-                    {JOBNAME: MONITOR_JOB_NAME, ACCOUNT, JOBCLASS, TYPERUNPARM: TYPE_RUN_HOLD, SYSAFF});
-
-                // submit the job
-                SubmitJobs.submitJcl(REAL_SESSION, renderedJcl).then((jobInfo) => {
-
-                    // Initial status should be input because of HELD jobclass
-                    expect(jobInfo.status).toBe("INPUT");
-
-                    // start checking the job status
-                    let doneCalled: boolean = false;
-                    MonitorJobs.waitForStatusCommon(REAL_SESSION, {
-                        jobname: jobInfo.jobname, jobid: jobInfo.jobid, status: "ACTIVE"
-                    }).then((status) => {
-                        expect(status.jobid).toEqual(jobInfo.jobid);
-                        expect(status.jobname).toEqual(jobInfo.jobname);
-                        expect(status.status).toBe("ACTIVE");
-                        done();
-                    }).catch((error) => {
-                        if (!doneCalled) {
-                            doneCalled = true;
-                            done(`wait for status error: ${error.message}`);
-                        }
-                    });
-
-                    // Change the jobclass after a period of time
-                    setTimeout(() => {
-                        new ZosmfRestClient(REAL_SESSION).request({
-                            resource: `/zosmf/restjobs/jobs/${encodeURIComponent(jobInfo.jobname)}/${encodeURIComponent(jobInfo.jobid)}`,
-                            request: "PUT",
-                            reqHeaders: [{"Content-Type": "application/json"}],
-                            writeData: {
-                                request: "release",
-                                version: "2.0"
-                            }
-                        }).then((response) => {
-                            // Nothing to do here
-                        }).catch((releaseErr) => {
-                            if (!doneCalled) {
-                                doneCalled = true;
-                                done(`Release error: ${releaseErr.message}`);
-                            }
-                        });
-                    }, TIMEOUT_TEST_CHECK);
-
-                }).catch((submitErr) => {
-                    done(`Job submission error: ${submitErr.message}`);
-                });
-            }, LONG_TIMEOUT);
-
-            it("should detect when a job transitions from INPUT to OUTPUT", (done) => {
-                // Construct the JCL
-                const iefbr14Jcl = fs.readFileSync(join(TEST_RESOURCES_DIR, "jcl/instream_rexx_delay.jcl")).toString();
-                const renderedJcl = TextUtils.renderWithMustache(iefbr14Jcl,
-                    {JOBNAME: MONITOR_JOB_NAME, ACCOUNT, JOBCLASS, TYPERUNPARM: TYPE_RUN_HOLD, SYSAFF});
-
-                // submit the job
-                SubmitJobs.submitJcl(REAL_SESSION, renderedJcl).then((jobInfo) => {
-
-                    // Initial status should be input because of HELD jobclass
-                    expect(jobInfo.status).toBe("INPUT");
-
-                    // start checking the job status
-                    let doneCalled: boolean = false;
-                    MonitorJobs.waitForStatusCommon(REAL_SESSION, {
-                        jobname: jobInfo.jobname, jobid: jobInfo.jobid, status: "OUTPUT"
-                    }).then((status) => {
-                        expect(status.jobid).toEqual(jobInfo.jobid);
-                        expect(status.jobname).toEqual(jobInfo.jobname);
-                        expect(status.status).toBe("OUTPUT");
-                        done();
-                    }).catch((error) => {
-                        if (!doneCalled) {
-                            doneCalled = true;
-                            done(`wait for status error: ${error.message}`);
-                        }
-                    });
-
-                    // Change the jobclass after a period of time
-                    setTimeout(() => {
-                        new ZosmfRestClient(REAL_SESSION).request({
-                            resource: `/zosmf/restjobs/jobs/${encodeURIComponent(jobInfo.jobname)}/${encodeURIComponent(jobInfo.jobid)}`,
-                            request: "PUT",
-                            reqHeaders: [{"Content-Type": "application/json"}],
-                            writeData: {
-                                request: "release",
-                                version: "2.0"
-                            }
-                        }).then((response) => {
-                            // Nothing to do here
-                        }).catch((releaseErr) => {
-                            if (!doneCalled) {
-                                doneCalled = true;
-                                done(`Release error: ${releaseErr.message}`);
-                            }
-                        });
-                    }, TIMEOUT_TEST_CHECK);
-
-                }).catch((submitErr) => {
-                    done(`Job submission error: ${submitErr.message}`);
-                });
-            }, LONG_TIMEOUT);
-
-            it("should detect when a job transitions from INPUT to ACTIVE to OUTPUT", (done) => {
-                // Construct the JCL
-                const iefbr14Jcl = fs.readFileSync(join(TEST_RESOURCES_DIR, "jcl/instream_rexx_delay.jcl")).toString();
-                const renderedJcl = TextUtils.renderWithMustache(iefbr14Jcl,
-                    {JOBNAME: MONITOR_JOB_NAME, ACCOUNT, JOBCLASS, TYPERUNPARM: "", SYSAFF});
-
-                // submit the job
-                SubmitJobs.submitJcl(REAL_SESSION, renderedJcl).then((jobInfo) => {
-
-                    // Wait for the status to be active
-                    MonitorJobs.waitForStatusCommon(REAL_SESSION, {
-                        jobname: jobInfo.jobname, jobid: jobInfo.jobid, status: "ACTIVE"
-                    }).then((status) => {
-                        expect(status.jobid).toEqual(jobInfo.jobid);
-                        expect(status.jobname).toEqual(jobInfo.jobname);
-                        expect(status.status).toBe("ACTIVE");
-
-                        // Wait for the status to be output
+                        // start checking the job status
+                        let doneCalled: boolean = false;
                         MonitorJobs.waitForStatusCommon(REAL_SESSION, {
                             jobname: jobInfo.jobname, jobid: jobInfo.jobid, status: "OUTPUT"
-                        }).then((nextStatus) => {
-                            expect(nextStatus.jobid).toEqual(jobInfo.jobid);
-                            expect(nextStatus.jobname).toEqual(jobInfo.jobname);
-                            expect(nextStatus.status).toBe("OUTPUT");
+                        }).then((status) => {
+                            if (!doneCalled) {
+                                doneCalled = true;
+                                done(`Error - we should not have received a status of OUTPUT`);
+                            }
+                        }).catch((error) => {
+                            // const regex: RegExp = new RegExp(fs.readFileSync(TEST_REGEX_DIR + "/polling_job_deleted.regex").toString(), "g");
+                            // expect(regex.test(error.message)).toBe(true);
+                            const trimmedErrorMessage = trimMessage(error.message);
+                            const jsonCauseErrors = JSON.parse(error.causeErrors);
+                            expect(trimmedErrorMessage).toContain("Error obtaining status for jobname");
+                            expect(jsonCauseErrors.category).toEqual(6);
+                            expect(jsonCauseErrors.reason).toEqual(10);
+                            expect(jsonCauseErrors.rc).toEqual(4);
+                            expect(trimmedErrorMessage).toContain("status 400");
+                            expect(trimmedErrorMessage).toContain("No job found for reference");
+                            if (!doneCalled) {
+                                doneCalled = true;
+                                done();
+                            }
+                        });
+
+                        // Cancel and purge the job after a period of time
+                        setTimeout(() => {
+                            DeleteJobs.deleteJob(REAL_SESSION, jobInfo.jobname, jobInfo.jobid).catch((error) => {
+                                if (!doneCalled) {
+                                    doneCalled = true;
+                                    done(`Error deleting the job: ${error.message}`);
+                                }
+                            });
+                        }, TIMEOUT_TEST_CHECK);
+
+                    }).catch((submitErr) => {
+                        done(`Job submission error: ${submitErr.message}`);
+                    });
+                }, LONG_TIMEOUT);
+
+                it("should detect and surface an error if the max poll attempts are exceeded", (done) => {
+                    // Attempts
+                    const ATTEMPTS = 3;
+
+                    // Construct the JCL
+                    const iefbr14Jcl = fs.readFileSync(join(TEST_RESOURCES_DIR, "jcl/instream_rexx_forever_loop.jcl")).toString();
+                    const renderedJcl = TextUtils.renderWithMustache(iefbr14Jcl,
+                        {JOBNAME: MONITOR_JOB_NAME, ACCOUNT, JOBCLASS, TYPERUNPARM: "", SYSAFF});
+
+                    // "Mock" the function - which just invokes the actual function
+                    const mockedGetJobs = jest.fn(async (session, parms) => {
+                        return ORIG_JOBS_STATUS(session, parms);
+                    });
+                    GetJobs.getStatusCommon = mockedGetJobs;
+
+                    // submit the job
+                    SubmitJobs.submitJcl(REAL_SESSION, renderedJcl).then((jobInfo) => {
+
+                        // start checking the job status
+                        MonitorJobs.waitForStatusCommon(REAL_SESSION, {
+                            jobname: jobInfo.jobname, jobid: jobInfo.jobid, status: "OUTPUT", attempts: ATTEMPTS
+                        }).then((status) => {
+                            done(`Error - we should not have received a status of OUTPUT`);
+                        }).catch((error) => {
+                            expect(error instanceof ImperativeError).toBe(true);
+                            expect(error.message).toContain("Error obtaining status for jobname");
+                            expect(error.message).toContain("Error Details: Reached max poll attempts of \"3\"");
+                            expect(mockedGetJobs).toHaveBeenCalledTimes(ATTEMPTS);
                             done();
+                        });
+
+                    }).catch((submitErr) => {
+                        done(`Job submission error: ${submitErr.message}`);
+                    });
+                }, LONG_TIMEOUT);
+
+                it("should detect when a job transitions from INPUT to ACTIVE", (done) => {
+                    // Construct the JCL
+                    const iefbr14Jcl = fs.readFileSync(join(TEST_RESOURCES_DIR, "jcl/instream_rexx_forever_loop.jcl")).toString();
+                    const renderedJcl = TextUtils.renderWithMustache(iefbr14Jcl,
+                        {JOBNAME: MONITOR_JOB_NAME, ACCOUNT, JOBCLASS, TYPERUNPARM: TYPE_RUN_HOLD, SYSAFF});
+
+                    // submit the job
+                    SubmitJobs.submitJcl(REAL_SESSION, renderedJcl).then((jobInfo) => {
+
+                        // Initial status should be input because of HELD jobclass
+                        expect(jobInfo.status).toBe("INPUT");
+
+                        // start checking the job status
+                        let doneCalled: boolean = false;
+                        MonitorJobs.waitForStatusCommon(REAL_SESSION, {
+                            jobname: jobInfo.jobname, jobid: jobInfo.jobid, status: "ACTIVE"
+                        }).then((status) => {
+                            expect(status.jobid).toEqual(jobInfo.jobid);
+                            expect(status.jobname).toEqual(jobInfo.jobname);
+                            expect(status.status).toBe("ACTIVE");
+                            done();
+                        }).catch((error) => {
+                            if (!doneCalled) {
+                                doneCalled = true;
+                                done(`wait for status error: ${error.message}`);
+                            }
+                        });
+
+                        // Change the jobclass after a period of time
+                        setTimeout(() => {
+                            new ZosmfRestClient(REAL_SESSION).request({
+                                resource: `/zosmf/restjobs/jobs/${encodeURIComponent(jobInfo.jobname)}/${encodeURIComponent(jobInfo.jobid)}`,
+                                request: "PUT",
+                                reqHeaders: [{"Content-Type": "application/json"}],
+                                writeData: {
+                                    request: "release",
+                                    version: "2.0"
+                                }
+                            }).then((response) => {
+                                // Nothing to do here
+                            }).catch((releaseErr) => {
+                                if (!doneCalled) {
+                                    doneCalled = true;
+                                    done(`Release error: ${releaseErr.message}`);
+                                }
+                            });
+                        }, TIMEOUT_TEST_CHECK);
+
+                    }).catch((submitErr) => {
+                        done(`Job submission error: ${submitErr.message}`);
+                    });
+                }, LONG_TIMEOUT);
+
+                it("should detect when a job transitions from INPUT to OUTPUT", (done) => {
+                    // Construct the JCL
+                    const iefbr14Jcl = fs.readFileSync(join(TEST_RESOURCES_DIR, "jcl/instream_rexx_delay.jcl")).toString();
+                    const renderedJcl = TextUtils.renderWithMustache(iefbr14Jcl,
+                        {JOBNAME: MONITOR_JOB_NAME, ACCOUNT, JOBCLASS, TYPERUNPARM: TYPE_RUN_HOLD, SYSAFF});
+
+                    // submit the job
+                    SubmitJobs.submitJcl(REAL_SESSION, renderedJcl).then((jobInfo) => {
+
+                        // Initial status should be input because of HELD jobclass
+                        expect(jobInfo.status).toBe("INPUT");
+
+                        // start checking the job status
+                        let doneCalled: boolean = false;
+                        MonitorJobs.waitForStatusCommon(REAL_SESSION, {
+                            jobname: jobInfo.jobname, jobid: jobInfo.jobid, status: "OUTPUT"
+                        }).then((status) => {
+                            expect(status.jobid).toEqual(jobInfo.jobid);
+                            expect(status.jobname).toEqual(jobInfo.jobname);
+                            expect(status.status).toBe("OUTPUT");
+                            done();
+                        }).catch((error) => {
+                            if (!doneCalled) {
+                                doneCalled = true;
+                                done(`wait for status error: ${error.message}`);
+                            }
+                        });
+
+                        // Change the jobclass after a period of time
+                        setTimeout(() => {
+                            new ZosmfRestClient(REAL_SESSION).request({
+                                resource: `/zosmf/restjobs/jobs/${encodeURIComponent(jobInfo.jobname)}/${encodeURIComponent(jobInfo.jobid)}`,
+                                request: "PUT",
+                                reqHeaders: [{"Content-Type": "application/json"}],
+                                writeData: {
+                                    request: "release",
+                                    version: "2.0"
+                                }
+                            }).then((response) => {
+                                // Nothing to do here
+                            }).catch((releaseErr) => {
+                                if (!doneCalled) {
+                                    doneCalled = true;
+                                    done(`Release error: ${releaseErr.message}`);
+                                }
+                            });
+                        }, TIMEOUT_TEST_CHECK);
+
+                    }).catch((submitErr) => {
+                        done(`Job submission error: ${submitErr.message}`);
+                    });
+                }, LONG_TIMEOUT);
+
+                it("should detect when a job transitions from INPUT to ACTIVE to OUTPUT", (done) => {
+                    // Construct the JCL
+                    const iefbr14Jcl = fs.readFileSync(join(TEST_RESOURCES_DIR, "jcl/instream_rexx_delay.jcl")).toString();
+                    const renderedJcl = TextUtils.renderWithMustache(iefbr14Jcl,
+                        {JOBNAME: MONITOR_JOB_NAME, ACCOUNT, JOBCLASS, TYPERUNPARM: "", SYSAFF});
+
+                    // submit the job
+                    SubmitJobs.submitJcl(REAL_SESSION, renderedJcl).then((jobInfo) => {
+
+                        // Wait for the status to be active
+                        MonitorJobs.waitForStatusCommon(REAL_SESSION, {
+                            jobname: jobInfo.jobname, jobid: jobInfo.jobid, status: "ACTIVE"
+                        }).then((status) => {
+                            expect(status.jobid).toEqual(jobInfo.jobid);
+                            expect(status.jobname).toEqual(jobInfo.jobname);
+                            expect(status.status).toBe("ACTIVE");
+
+                            // Wait for the status to be output
+                            MonitorJobs.waitForStatusCommon(REAL_SESSION, {
+                                jobname: jobInfo.jobname, jobid: jobInfo.jobid, status: "OUTPUT"
+                            }).then((nextStatus) => {
+                                expect(nextStatus.jobid).toEqual(jobInfo.jobid);
+                                expect(nextStatus.jobname).toEqual(jobInfo.jobname);
+                                expect(nextStatus.status).toBe("OUTPUT");
+                                done();
+                            }).catch((error) => {
+                                done(`wait for status error: ${error.message}`);
+                            });
                         }).catch((error) => {
                             done(`wait for status error: ${error.message}`);
                         });
-                    }).catch((error) => {
-                        done(`wait for status error: ${error.message}`);
+                    }).catch((submitErr) => {
+                        done(`Job submission error: ${submitErr.message}`);
                     });
-                }).catch((submitErr) => {
-                    done(`Job submission error: ${submitErr.message}`);
-                });
-            }, LONG_TIMEOUT);
-            /* eslint-enable jest/no-done-callback */
+                }, LONG_TIMEOUT);
+                /* eslint-enable jest/no-done-callback */
+            });
         });
     });
 });

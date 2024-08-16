@@ -38,8 +38,8 @@ describe("Submit Jobs - System Tests", () => {
         testEnvironment = await TestEnvironment.setUp({
             testName: "zos_submit_jobs"
         }, REAL_SESSION = await TestEnvironment.createSession());
-        systemProps = testEnvironment.systemTestProperties;
 
+        systemProps = testEnvironment.systemTestProperties;
         account = systemProps.tso.account;
         jobDataSet = testEnvironment.systemTestProperties.zosjobs.iefbr14PSDataSet;
         jobUSSFile = testEnvironment.systemTestProperties.zosjobs.iefbr14USSFile;
