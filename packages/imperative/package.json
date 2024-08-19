@@ -20,6 +20,7 @@
   "files": [
     "lib",
     "web-help/dist",
+    "web-help/package*.json",
     "web-diff"
   ],
   "publishConfig": {
@@ -40,7 +41,8 @@
     "typedoc": "typedoc --options ./typedoc.json ./src/",
     "typedocSpecifySrc": "typedoc --options ./typedoc.json",
     "prepack": "node ../../scripts/prepareLicenses.js",
-    "clean": "rimraf lib tsconfig.tsbuildinfo"
+    "clean": "rimraf lib tsconfig.tsbuildinfo",
+    "prepublishOnly": "cd web-help && npm run deps:lockfile"
   },
   "dependencies": {
     "@types/yargs": "^17.0.32",

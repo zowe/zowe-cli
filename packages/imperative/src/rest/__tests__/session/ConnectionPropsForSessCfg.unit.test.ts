@@ -25,6 +25,7 @@ import { IOptionsForAddConnProps } from "../../src/session/doc/IOptionsForAddCon
 import { ImperativeConfig } from "../../../utilities";
 import { ConfigUtils } from "../../../config/src/ConfigUtils";
 import { ISshSession } from "../../../../../zosuss/lib/doc/ISshSession";
+
 const certFilePath = join(
     __dirname,
     "..",
@@ -57,7 +58,6 @@ const certKeyFilePath = join(
     "__resources__",
     "fakeKey.key"
 );
-
 interface extendedSession extends ISession {
     someKey?: string;
 }

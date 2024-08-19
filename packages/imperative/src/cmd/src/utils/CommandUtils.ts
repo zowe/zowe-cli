@@ -66,8 +66,7 @@ export class CommandUtils {
             if (CommandUtils.optionWasSpecified(option, commandDefinition, commandArguments)) {
                 // don't print "true" for boolean options
                 command += " " + CliUtils.getDashFormOfOption(option) + " ";
-                command += CommandUtils.getOptionDefinitionFromName(option, commandDefinition).type
-                === "boolean" ? "" : commandArguments[option];
+                command += CommandUtils.getOptionDefinitionFromName(option, commandDefinition)?.type === "boolean" ? "" : commandArguments[option];
             }
         }
         return command.trim();
