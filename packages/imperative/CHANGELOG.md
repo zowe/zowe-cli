@@ -2,7 +2,7 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
-## Recent Changes
+## `8.0.0-next.202408191401`
 
 - Update: See `5.26.3` and `5.27.0` for details
 
