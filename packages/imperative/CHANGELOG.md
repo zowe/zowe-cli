@@ -2,7 +2,7 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
-## Recent Changes
+## `4.18.27`
 
 - BugFix: Fixed issue in local web help with highlighted sidebar item getting out of sync. [#2234](https://github.com/zowe/zowe-cli/pull/2234)
 - BugFix: Updated web help dependencies for technical currency. [#2234](https://github.com/zowe/zowe-cli/pull/2234)
