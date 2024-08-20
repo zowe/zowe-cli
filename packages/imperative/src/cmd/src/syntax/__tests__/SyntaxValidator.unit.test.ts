@@ -385,6 +385,24 @@ describe("Imperative should provide advanced syntax validation rules", () => {
             expect(svResponse.valid).toEqual(true);
         });
 
+        it("should validate that typed numbers are numbers, and convert strings that are numbers that are floats", async () => {
+            const options = yargsParser(minValidOptions + " --should-be-number 3.1415926", configuration);
+            options._ = ["test", "validation-test"].concat(options._ || []); // fake out command structure
+            options[Constants.JSON_OPTION] = true;
+            delete options["--"]; // delete extra yargs parse field
+            logger.debug("Executing test syntax command with arguments: " + inspect(options));
+            const response = new CommandResponse({responseFormat: "json"});
+            const fakeParent: ICommandDefinition = {
+                name: undefined,
+                description: "", type: "group",
+                children: [ValidationTestCommand]
+            };
+            const svResponse = await new SyntaxValidator(ValidationTestCommand, fakeParent).validate(response, options);
+            expect(options["should-be-number"]).toBe(3.1415926);
+            expect(options["should-be-number"]).not.toBe("3.1415926");
+            expect(svResponse.valid).toEqual(true);
+        });
+
         it("should validate that typed strings are strings and not numbers", async () => {
             const options = yargsParser(minValidOptions + " --fluffy 9001", configuration);
             options._ = ["test", "validation-test"].concat(options._ || []); // fake out command structure

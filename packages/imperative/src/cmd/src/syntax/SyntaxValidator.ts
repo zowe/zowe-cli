@@ -235,7 +235,7 @@ export class SyntaxValidator {
                     if (positional.type === "number") {
                         valid = this.validateNumeric(commandArguments[positional.name], positional, responseObject, true) && valid;
                         // Convert to number for backwards compatability
-                        if (valid) { commandArguments[positional.name] = parseInt(commandArguments[positional.name]); }
+                        if (valid) { commandArguments[positional.name] = parseFloat(commandArguments[positional.name]); }
                     }
 
                     if (!(positional.stringLengthRange == null) &&
@@ -379,7 +379,7 @@ export class SyntaxValidator {
                 } else if (optionDef.type === "number") {
                     valid = this.validateNumeric(commandArguments[optionDef.name], optionDef, responseObject) && valid;
                     // Convert to numbers for backwards compatibility
-                    if (valid) { commandArguments[optionDef.name] = parseInt(commandArguments[optionDef.name]); }
+                    if (valid) { commandArguments[optionDef.name] = parseFloat(commandArguments[optionDef.name]); }
                 }
                 /**
                  * Validate that the option's value is valid json.
