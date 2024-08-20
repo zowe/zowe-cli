@@ -20,10 +20,14 @@ import { CommandResponse, ICommandDefinition } from "../../../";
 import { ValidationTestCommand } from "../../../../../__tests__/src/packages/cmd/ValidationTestCommand";
 import { SyntaxValidator } from "../SyntaxValidator";
 import { Constants } from "../../../../constants";
+import { YargsConfigurer } from "../../yargs/YargsConfigurer";
 
 
 describe("Imperative should provide advanced syntax validation rules", () => {
     const logger = TestLogger.getTestLogger();
+    const configuration = {
+        configuration: YargsConfigurer.yargsConfiguration
+    };
 
     describe("Advanced syntax validation for commands using a test command", () => {
         const yargsParser = require("yargs-parser");
@@ -33,7 +37,7 @@ describe("Imperative should provide advanced syntax validation rules", () => {
 
         function tryOptions(optionString: string, shouldSucceed: boolean, expectedText?: string[]) {
 
-            const options = yargsParser(optionString);
+            const options = yargsParser(optionString, configuration);
             options._ = ["test", "validation-test"].concat(options._ || []); // fake out command structure
             options[Constants.JSON_OPTION] = true;
             delete options["--"]; // delete extra yargs parse field
@@ -362,6 +366,43 @@ describe("Imperative should provide advanced syntax validation rules", () => {
                 minValidOptions + "--always-required-string hello",
                 false, ["multiple", "--always-required-string"])();
         });
+
+        it("should validate that typed numbers are numbers, and convert strings that are numbers", async () => {
+            const options = yargsParser(minValidOptions + " --should-be-number 4", configuration);
+            options._ = ["test", "validation-test"].concat(options._ || []); // fake out command structure
+            options[Constants.JSON_OPTION] = true;
+            delete options["--"]; // delete extra yargs parse field
+            logger.debug("Executing test syntax command with arguments: " + inspect(options));
+            const response = new CommandResponse({responseFormat: "json"});
+            const fakeParent: ICommandDefinition = {
+                name: undefined,
+                description: "", type: "group",
+                children: [ValidationTestCommand]
+            };
+            const svResponse = await new SyntaxValidator(ValidationTestCommand, fakeParent).validate(response, options);
+            expect(options["should-be-number"]).toBe(4);
+            expect(options["should-be-number"]).not.toBe("4");
+            expect(svResponse.valid).toEqual(true);
+        });
+
+        it("should validate that typed strings are strings and not numbers", async () => {
+            const options = yargsParser(minValidOptions + " --fluffy 9001", configuration);
+            options._ = ["test", "validation-test"].concat(options._ || []); // fake out command structure
+            options[Constants.JSON_OPTION] = true;
+            delete options["--"]; // delete extra yargs parse field
+            logger.debug("Executing test syntax command with arguments: " + inspect(options));
+            const response = new CommandResponse({responseFormat: "json"});
+            const fakeParent: ICommandDefinition = {
+                name: undefined,
+                description: "", type: "group",
+                children: [ValidationTestCommand]
+            };
+            const svResponse = await new SyntaxValidator(ValidationTestCommand, fakeParent).validate(response, options);
+            expect(options["fluffy"]).toBe("9001");
+            expect(options["fluffy"]).not.toBe(9001);
+            expect(svResponse.valid).toEqual(true);
+        });
+
         describe("We should be able to validate positional arguments of type 'number'", () => {
             const numberCommand: ICommandDefinition = {
                 name: "gimme-number", aliases: [],

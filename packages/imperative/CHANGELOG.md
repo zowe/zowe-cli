@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- LTS Breaking: Fixed command parsing error where `string` typed options would be converted into `number`s if the value provided by the user consists only of numeric characters. [#1881](https://github.com/zowe/zowe-cli/issues/1881)  
+
 ## `8.0.0-next.202408191401`
 
 - Update: See `5.26.3` and `5.27.0` for details
