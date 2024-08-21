@@ -10,15 +10,15 @@
 */
 
 import * as fs from "fs";
-import { Imperative, Session, TextUtils } from "@zowe/imperative";
+import { Imperative, IO, Session, TextUtils } from "@zowe/imperative";
 import { inspect } from "util";
 
-import { ITestEnvironment } from "@zowe/cli-test-utils";
-import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
+import { ITestEnvironment, TestEnvironment } from "@zowe/cli-test-utils";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { ZosFilesMessages } from "../../../../src/constants/ZosFiles.messages";
 import { Invoke } from "../../../../src/methods/invoke/Invoke";
 import { getUniqueDatasetName } from "../../../../../../__tests__/__src__/TestUtils";
+import { posix } from "path";
 
 let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 let systemProps: ITestPropertiesSchema;
@@ -32,11 +32,9 @@ describe("Invoke AMS", () => {
         testEnvironment = await TestEnvironment.setUp({
             tempProfileTypes: ["zosmf"],
             testName: "zos_create_VSAM_dataset"
-        });
+        }, REAL_SESSION = await TestEnvironment.createSession());
+
         systemProps = testEnvironment.systemTestProperties;
-
-        REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
-
         dsname = getUniqueDatasetName(`${systemProps.zosmf.user}.ZOSFILE.VSAM`);
         volume = systemProps.datasets.vol.toUpperCase();
     });
@@ -76,7 +74,7 @@ describe("Invoke AMS", () => {
         expect(response.commandResponse).toContain(ZosFilesMessages.amsCommandExecutedSuccessfully.message);
 
         // Delete the temp file
-        fs.unlinkSync(controlStatementFile);
+        IO.deleteFile(posix.basename(controlStatementFile));
 
         // create a temporary file from the template file that has the proper high level qualifier to delete the VSAM file
         controlStatementFile =
@@ -96,8 +94,8 @@ describe("Invoke AMS", () => {
         expect(response.success).toBe(true);
         expect(response.commandResponse).toContain(ZosFilesMessages.amsCommandExecutedSuccessfully.message);
 
-        // Delete the temp file
-        fs.unlinkSync(controlStatementFile);
+        // Delete created temp local file
+        IO.deleteFile(posix.basename(controlStatementFile));
     });
 
     it("should create and delete a VSAM data set from command statement in files with response timeout", async () => {
@@ -210,11 +208,9 @@ describe("Invoke AMS - encoded", () => {
         testEnvironment = await TestEnvironment.setUp({
             tempProfileTypes: ["zosmf"],
             testName: "zos_create_VSAM_dataset"
-        });
+        }, REAL_SESSION = await TestEnvironment.createSession());
+
         systemProps = testEnvironment.systemTestProperties;
-
-        REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
-
         dsname = getUniqueDatasetName(`${systemProps.zosmf.user}.ZOSFILE.ENCO#ED.VSAM`);
         volume = systemProps.datasets.vol.toUpperCase();
     });

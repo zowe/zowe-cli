@@ -10,67 +10,70 @@
 */
 
 import { posix } from "path";
-import { ITestEnvironment } from "@zowe/cli-test-utils";
-import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
+import { ITestEnvironment, TestEnvironment } from "@zowe/cli-test-utils";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { AbstractSession, Imperative, IO } from "@zowe/imperative";
-import { Utilities, Tag, Upload, Create, Download, Delete } from "../../../../src";
+import { Utilities, Tag, Upload, Create, Download } from "../../../../src";
 import { getUniqueDatasetName, getTag } from "../../../../../../__tests__/__src__/TestUtils";
 
 let REAL_SESSION: AbstractSession;
 let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 
 describe("USS Utilities", () => {
-
     const localfile = __dirname + "/__data__/tagfile.txt";
     let ussname: string;
+
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({
             tempProfileTypes: ["zosmf"],
             testName: "zos_files_utilities"
-        });
+        }, REAL_SESSION = await TestEnvironment.createSession());
+
         const defaultSystem = testEnvironment.systemTestProperties;
         let dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.UPLOAD`);
         dsname = dsname.replace(/\./g, "");
         ussname = `${defaultSystem.unix.testdir}/${dsname}`;
         Imperative.console.info("Using ussDir:" + ussname);
-
-        REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
-
     });
+
     afterAll(async () => {
-        await Delete.ussFile(REAL_SESSION, ussname);
         await TestEnvironment.cleanUp(testEnvironment);
     });
 
     it("should tag a binary file", async () => {
-        await Upload.fileToUssFile(REAL_SESSION, localfile, ussname);
+        const fileResponse = await Upload.fileToUssFile(REAL_SESSION, localfile, ussname);
+        const fileName = fileResponse.apiResponse.to;
         await Utilities.chtag(REAL_SESSION, ussname, Tag.BINARY);
         const tag = await getTag(REAL_SESSION, ussname);
         expect(tag).toMatch("b binary");
 
         const isBin = await Utilities.isFileTagBinOrAscii(REAL_SESSION, ussname);
         expect(isBin).toBe(true);
+        testEnvironment.resources.files.push(fileName);
     });
 
     it("should tag a text file", async () => {
-        await Upload.fileToUssFile(REAL_SESSION, localfile, ussname);
+        const fileResponse = await Upload.fileToUssFile(REAL_SESSION, localfile, ussname);
+        const fileName = fileResponse.apiResponse.to;
         await Utilities.chtag(REAL_SESSION, ussname, Tag.TEXT, "ISO8859-1");
         const tag = await getTag(REAL_SESSION, ussname);
         expect(tag).toMatch("t ISO8859-1");
 
         const isBin = await Utilities.isFileTagBinOrAscii(REAL_SESSION, ussname);
         expect(isBin).toBe(true);
+        testEnvironment.resources.files.push(fileName);
     });
 
     it("should flag an EBCDIC file as text", async () => {
-        await Upload.fileToUssFile(REAL_SESSION, localfile, ussname);
+        const fileResponse = await Upload.fileToUssFile(REAL_SESSION, localfile, ussname);
+        const fileName = fileResponse.apiResponse.to;
         await Utilities.chtag(REAL_SESSION, ussname, Tag.TEXT, "IBM-1047");
         const tag = await getTag(REAL_SESSION, ussname);
         expect(tag).toMatch("t IBM-1047");
 
         const isBin = await Utilities.isFileTagBinOrAscii(REAL_SESSION, ussname);
         expect(isBin).toBe(false);
+        testEnvironment.resources.files.push(fileName);
     });
 
     it("should rename USS file", async () => {
@@ -93,6 +96,7 @@ describe("USS Utilities", () => {
 
         // Delete created local file
         IO.deleteFile(posix.basename(newName));
+        testEnvironment.resources.files.push(newName);
     });
 
     it("should rename USS file - encoded", async () => {
@@ -115,11 +119,18 @@ describe("USS Utilities", () => {
 
         // Delete created local file
         IO.deleteFile(posix.basename(newName));
+        testEnvironment.resources.files.push(newName);
     });
 
     describe("applyTaggedEncoding", () => {
+        let fileName: string;
         beforeAll(async () => {
-            await Upload.fileToUssFile(REAL_SESSION, localfile, ussname);
+            const fileResponse = await Upload.fileToUssFile(REAL_SESSION, localfile, ussname);
+            fileName = fileResponse.apiResponse.to;
+        });
+
+        afterAll(async () => {
+            testEnvironment.resources.files.push(fileName);
         });
 
         it("should set binary property if file is tagged as binary", async () => {

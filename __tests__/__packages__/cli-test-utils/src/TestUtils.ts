@@ -12,9 +12,27 @@
 import * as fs from "fs";
 import { spawnSync, SpawnSyncReturns, ExecFileException } from "child_process";
 import { ITestEnvironment } from "./environment/doc/response/ITestEnvironment";
-import { AbstractSession, CommandProfiles, ICommandDefinition, IHandlerParameters } from "@zowe/imperative";
+import { AbstractSession, CommandProfiles, ICommandDefinition, IHandlerParameters, IO } from "@zowe/imperative";
 import { DeleteJobs, IDeleteJobParms, IJob } from "@zowe/zos-jobs-for-zowe-sdk";
 import { Delete } from "@zowe/zos-files-for-zowe-sdk"
+import { posix } from "path";
+
+/**
+ * Delete a local testing file after use
+ * @param {string} filePath - File path of temporary file
+ */
+export function deleteLocalFile(filePath: string): void {
+    try {
+        fs.unlinkSync(filePath);
+    } catch {
+        // If fs.unlinkSync fails, try to delete it with IO.deleteFile
+        try {
+            IO.deleteFile(posix.basename(filePath));
+        } catch {
+            throw new Error(`Error deleting local file: ${filePath}`);
+        }
+    }
+}
 
 /**
  * Delete a uss file from the mainframe

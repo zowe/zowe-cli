@@ -18,7 +18,7 @@ import { ISetupEnvironmentParms } from "./doc/parms/ISetupEnvironmentParms";
 import { ITestEnvironment } from "./doc/response/ITestEnvironment";
 import { TempTestProfiles } from "./TempTestProfiles";
 import { PROJECT_ROOT_DIR, TEST_RESOURCE_DIR, TEST_RESULT_DATA_DIR, TEST_USING_WORKSPACE } from "../TestConstants";
-import { runCliScript, deleteFiles, deleteJob, deleteDataset } from "../TestUtils";
+import { runCliScript, deleteFiles, deleteJob, deleteDataset, deleteLocalFile } from "../TestUtils";
 
 /**
  * Use the utility methods here to setup the test environment for running APIs
@@ -66,6 +66,7 @@ export class TestEnvironment {
             systemTestProperties: systemProps,
             env,
             resources: {
+                localFiles: [],
                 files: [],
                 jobs: [],
                 datasets: [],
@@ -126,17 +127,19 @@ export class TestEnvironment {
         }
 
         // Clean up resources
+        for (const file of testEnvironment.resources.localFiles) {
+            deleteLocalFile(file);
+        }
         // Check if session exists; if not, create one
         const session = testEnvironment.resources.session || await TestEnvironment.createSession();
-
         for (const file of testEnvironment.resources.files) {
-            deleteFiles(file);
+            deleteFiles(session, file);
         }
         for (const job of testEnvironment.resources.jobs) {
             deleteJob(session, job);
         }
         for (const dataset of testEnvironment.resources.datasets) {
-            deleteDataset(dataset);
+            deleteDataset(session, dataset);
         }
     }
 

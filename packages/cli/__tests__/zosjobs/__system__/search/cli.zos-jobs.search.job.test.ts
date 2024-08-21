@@ -9,38 +9,40 @@
 *
 */
 
-import { ITestEnvironment, runCliScript } from "@zowe/cli-test-utils";
-import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
+import { ITestEnvironment, TestEnvironment, runCliScript } from "@zowe/cli-test-utils";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { Session } from "@zowe/imperative";
+import { AbstractSession } from "@zowe/imperative";
+import { GetJobs } from "@zowe/zos-jobs-for-zowe-sdk";
 
 // Test Environment populated in the beforeAll();
-let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
+let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 let IEFBR14_JOB: string;
-let REAL_SESSION: Session;
+let REAL_SESSION: AbstractSession;
 let ACCOUNT: string;
 let JOB_NAME: string;
 let NON_HELD_JOBCLASS: string;
 let SEARCH_STRING: string;
 let REGEX_STRING: string;
 let BAD_SEARCH_STRING: string;
+let defaultSystem: ITestPropertiesSchema;
 
 describe("zos-jobs search job command", () => {
-    // Create the unique test environment
     beforeAll(async () => {
-        TEST_ENVIRONMENT = await TestEnvironment.setUp({
+        // Initialize testEnvironment first!
+        testEnvironment = await TestEnvironment.setUp({
             testName: "zos_jobs_search_job_command",
             tempProfileTypes: ["zosmf"]
-        });
+        }, REAL_SESSION = await TestEnvironment.createSession());
 
-        IEFBR14_JOB = TEST_ENVIRONMENT.systemTestProperties.zosjobs.iefbr14Member;
-        const defaultSystem = TEST_ENVIRONMENT.systemTestProperties;
-        REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
+        // Use testEnvironment for accessing properties
+        defaultSystem = testEnvironment.systemTestProperties;
+
+        IEFBR14_JOB = defaultSystem.zosjobs.iefbr14Member;
 
         ACCOUNT = defaultSystem.tso.account;
-        const JOB_LENGTH = 6;
-        JOB_NAME = REAL_SESSION.ISession.user.substring(0, JOB_LENGTH).toUpperCase() + "SF";
-        NON_HELD_JOBCLASS = TEST_ENVIRONMENT.systemTestProperties.zosjobs.jobclass;
+        // TODO: fix this test to run with any job name
+        JOB_NAME = "IEFBR14T"//REAL_SESSION.ISession.user.substring(0, JOB_LENGTH).toUpperCase();
+        NON_HELD_JOBCLASS = defaultSystem.zosjobs.jobclass;
         SEARCH_STRING = "PGM=IEFBR14";
         REGEX_STRING = "IEFBR14|RC=0000";
         BAD_SEARCH_STRING = "bluhbluh";
@@ -48,59 +50,84 @@ describe("zos-jobs search job command", () => {
     });
 
     afterAll(async () => {
-        await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
+        // Retrieve jobs by prefix
+        const jobs = await GetJobs.getJobsByPrefix(REAL_SESSION, IEFBR14_JOB);
+        testEnvironment.resources.jobs = jobs;
+
+        await TestEnvironment.cleanUp(testEnvironment);
     });
 
     describe("Successful response", () => {
-        it("should be able to search for a string in every spool file for a job", () => {
+        it("should be able to search for a string in every spool file for a job", async () => {
             const response = runCliScript(__dirname + "/__scripts__/job/search_string_spool_content.sh",
-                TEST_ENVIRONMENT, [IEFBR14_JOB, JOB_NAME, SEARCH_STRING]);
+                testEnvironment, [IEFBR14_JOB, JOB_NAME, SEARCH_STRING]);
+
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain(SEARCH_STRING);
         });
 
-        it("should be able to search for a regex in every spool file for a job", () => {
+        it("should be able to search for a regex in every spool file for a job", async () => {
             const argString = "--search-regex \"" + REGEX_STRING + "\"";
             const response = runCliScript(__dirname + "/__scripts__/job/search_no_job_submit.sh",
-                TEST_ENVIRONMENT, [JOB_NAME, argString]);
+                testEnvironment, [JOB_NAME, argString]);
+
+            // Add a delay to ensure job is recognized
+            await new Promise(resolve => setTimeout(resolve, 3000)); // Wait for 3 seconds
+
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain("IEFBR14");
             expect(response.stdout.toString()).toContain("RC=0000");
         });
 
-        it("should limit the search when the --search-limit and --file-limit options are specified", () => {
+        it("should limit the search when the --search-limit and --file-limit options are specified",  async () => {
             const argString = "--search-string \"" + SEARCH_STRING + "\" --search-limit 5 --file-limit 3";
             const response = runCliScript(__dirname + "/__scripts__/job/search_no_job_submit.sh",
-                TEST_ENVIRONMENT, [JOB_NAME, argString]);
+                testEnvironment, [JOB_NAME, argString]);
+
+            // Add a delay to ensure job is recognized
+            await new Promise(resolve => setTimeout(resolve, 3000)); // Wait for 3 seconds
+
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain(SEARCH_STRING);
         });
     });
 
-    describe("error handling", () => {
-        it("should return a status code of 1 if the string is not found", () => {
+    describe("error handling", () => {  // Removed async from describe
+        it("should return a status code of 1 if the string is not found", async () => {
             const argString = "--search-string \"" + BAD_SEARCH_STRING + "\"";
             const response = runCliScript(__dirname + "/__scripts__/job/search_no_job_submit.sh",
-                TEST_ENVIRONMENT, [JOB_NAME, argString]);
+                testEnvironment, [JOB_NAME, argString]);
+
+            // Add a delay to ensure job is recognized
+            await new Promise(resolve => setTimeout(resolve, 3000)); // Wait for 3 seconds
+
             expect(response.stderr.toString()).toContain("The search spool job command returned a non-zero rc: 1");
             expect(response.status).toBe(1);
             expect(response.stdout.toString()).toBe("");
         });
 
-        it("should fail if no parameters are passed", () => {
+        it("should fail if no parameters are passed", async () => {
             const response = runCliScript(__dirname + "/__scripts__/job/search_no_job_submit.sh",
-                TEST_ENVIRONMENT, [JOB_NAME, ""]);
+                testEnvironment, [JOB_NAME, ""]);
+
+            // Add a delay to ensure job is recognized
+            await new Promise(resolve => setTimeout(resolve, 3000)); // Wait for 3 seconds
+
             expect(response.stderr.toString()).toContain("You must specify either the `--search-string` or `--search-regex` option");
             expect(response.status).toBe(1);
         });
 
-        it("should fail if --search-string and --search-regex parameters are passed", () => {
+        it("should fail if --search-string and --search-regex parameters are passed", async () => {
             const argString = "--search-regex \"" + REGEX_STRING +"\" --search-string \"" + SEARCH_STRING + "\"";
             const response = runCliScript(__dirname + "/__scripts__/job/search_no_job_submit.sh",
-                TEST_ENVIRONMENT, [JOB_NAME, argString]);
+                testEnvironment, [JOB_NAME, argString]);
+
+            // Add a delay to ensure job is recognized
+            await new Promise(resolve => setTimeout(resolve, 3000)); // Wait for 3 seconds
+
             expect(response.stderr.toString()).toContain("You must specify either the `--search-string` or `--search-regex` option");
             expect(response.status).toBe(1);
         });

@@ -19,6 +19,7 @@ import { IJob } from "@zowe/zos-jobs-for-zowe-sdk";
  */
 export interface ITestEnvironment<TestPropertiesSchema> {
     resources: {
+        localFiles: string[];
         files: string[];
         jobs: IJob[];
         datasets: string[];
