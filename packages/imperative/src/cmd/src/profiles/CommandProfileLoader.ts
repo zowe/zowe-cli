@@ -24,6 +24,7 @@ import { ImperativeExpect } from "../../../expect";
  * command handlers usage).
  * @internal
  * @class CommandProfileLoader
+ * @deprecated Use the `V1ProfileRead` class if you still need to read V1 profiles
  */
 export class CommandProfileLoader {
     /**
@@ -34,6 +35,7 @@ export class CommandProfileLoader {
      * @memberof CommandProfileLoader
      */
     public static loader(parms: ICommandProfileLoaderParms) {
+        // eslint-disable-next-line deprecation/deprecation
         return new CommandProfileLoader(parms.commandDefinition, parms.logger || Logger.getImperativeLogger());
     }
 
@@ -76,6 +78,7 @@ export class CommandProfileLoader {
      * Imperative error
      * @memberof CommandProfileLoader
      */
+    // eslint-disable-next-line deprecation/deprecation
     public async loadProfiles(commandArguments: Arguments): Promise<CommandProfiles> {
         // Validate parms
         ImperativeExpect.toNotBeNullOrUndefined(commandArguments, `Could not load profiles. No command arguments supplied.`);
@@ -89,6 +92,7 @@ export class CommandProfileLoader {
         const profileMetaMap: Map<string, IProfileLoaded[]> = new Map<string, IProfileLoaded[]>();
 
         // We no longer read V1 profile files, so just return empty maps
+        // eslint-disable-next-line deprecation/deprecation
         return new CommandProfiles(profileMap, profileMetaMap);
     }
 

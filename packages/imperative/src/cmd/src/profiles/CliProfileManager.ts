@@ -27,6 +27,7 @@ import {
  *
  * The Profile Manager no longer reads V1 profile from disk. It only processes profile information from a
  * command's definition. The Config class now handles reading profiles from disk stored in a zowe.config.json file.
+ * @deprecated Use the `V1ProfileRead` class if you still need to read V1 profiles
  */
 export class CliProfileManager {
     /**

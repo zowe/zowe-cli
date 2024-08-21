@@ -294,6 +294,7 @@ describe("CliUtils", () => {
             let error;
             try {
                 const args = CliUtils.getOptValueFromProfiles(
+                    // eslint-disable-next-line deprecation/deprecation
                     new CommandProfiles(new Map<string, IProfile[]>()),
                     { required: ["banana"] },
                     FAKE_OPTS);
@@ -307,6 +308,7 @@ describe("CliUtils", () => {
 
         it("should return nothing if a profile was optional and not loaded", () => {
             const args = CliUtils.getOptValueFromProfiles(
+                // eslint-disable-next-line deprecation/deprecation
                 new CommandProfiles(new Map<string, IProfile[]>()),
                 { optional: ["banana"] },
                 FAKE_OPTS);
@@ -317,6 +319,7 @@ describe("CliUtils", () => {
             const map = new Map<string, IProfile[]>();
             map.set("banana", [{ type: "banana", name: "fakebanana", nohyphen: "specified in profile" }]);
             const args = CliUtils.getOptValueFromProfiles(
+                // eslint-disable-next-line deprecation/deprecation
                 new CommandProfiles(map),
                 { optional: ["banana"] },
                 FAKE_OPTS);
@@ -332,6 +335,7 @@ describe("CliUtils", () => {
                 "could-be-either": "should not be me"
             }]);
             const args = CliUtils.getOptValueFromProfiles(
+                // eslint-disable-next-line deprecation/deprecation
                 new CommandProfiles(map),
                 { optional: ["banana"] },
                 FAKE_OPTS);
@@ -347,6 +351,7 @@ describe("CliUtils", () => {
                 "fake-string-opt": "should be me"
             }]);
             const args = CliUtils.getOptValueFromProfiles(
+                // eslint-disable-next-line deprecation/deprecation
                 new CommandProfiles(map),
                 { optional: ["banana"] },
                 FAKE_OPTS);
@@ -361,6 +366,7 @@ describe("CliUtils", () => {
                 "could-be-either": "should be me"
             }]);
             const args = CliUtils.getOptValueFromProfiles(
+                // eslint-disable-next-line deprecation/deprecation
                 new CommandProfiles(map),
                 { optional: ["banana"] },
                 FAKE_OPTS);
@@ -375,6 +381,7 @@ describe("CliUtils", () => {
                 fakeStringOpt: "should be me"
             }]);
             const args = CliUtils.getOptValueFromProfiles(
+                // eslint-disable-next-line deprecation/deprecation
                 new CommandProfiles(map),
                 { optional: ["banana"] },
                 FAKE_OPTS);
@@ -389,6 +396,7 @@ describe("CliUtils", () => {
                 withAlias: "should have 'w' on args object too"
             }]);
             const args = CliUtils.getOptValueFromProfiles(
+                // eslint-disable-next-line deprecation/deprecation
                 new CommandProfiles(map),
                 { optional: ["banana"] },
                 FAKE_OPTS);
@@ -403,6 +411,7 @@ describe("CliUtils", () => {
                 username: "fake"
             }]);
             const args = CliUtils.getOptValueFromProfiles(
+                // eslint-disable-next-line deprecation/deprecation
                 new CommandProfiles(map),
                 { optional: ["banana"] },
                 FAKE_OPTS);

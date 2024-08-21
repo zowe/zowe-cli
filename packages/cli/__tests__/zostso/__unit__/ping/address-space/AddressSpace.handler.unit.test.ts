@@ -16,17 +16,13 @@ import { PingTso } from "@zowe/zos-tso-for-zowe-sdk";
 import { IHandlerParameters, ImperativeError } from "@zowe/imperative";
 import * as PingAddressSpaceHandler from "../../../../../src/zostso/ping/address_space/PingAddressSpace.handler";
 import { PingAddressSpaceCommandDefinition } from "../../../../../src/zostso/ping/address_space/PingAddressSpace.definition";
-import {
-    UNIT_TEST_ZOSMF_PROF_OPTS,
-    UNIT_TEST_PROFILES_ZOSMF
-} from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
+import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../../__tests__/__src__/TestConstants";
 import { mockHandlerParameters } from "@zowe/cli-test-utils";
 
 const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
     arguments: UNIT_TEST_ZOSMF_PROF_OPTS,
     positionals: ["zos-tso", "ping", "address-space"],
-    definition: PingAddressSpaceCommandDefinition,
-    profiles: UNIT_TEST_PROFILES_ZOSMF
+    definition: PingAddressSpaceCommandDefinition
 });
 
 describe("ping address-space handler tests", () => {

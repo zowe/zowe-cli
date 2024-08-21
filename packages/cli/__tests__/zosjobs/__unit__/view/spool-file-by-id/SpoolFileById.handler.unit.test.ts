@@ -17,7 +17,7 @@ import { SpoolFilesByJobidDefinition } from "../../../../../src/zosjobs/list/spo
 import * as SpoolFileByIdHandler from "../../../../../src/zosjobs/view/spool-file-by-id/SpoolFileById.handler";
 import * as fs from "fs";
 import { ZosmfSession } from "@zowe/zosmf-for-zowe-sdk";
-import { UNIT_TEST_ZOSMF_PROF_OPTS, UNIT_TEST_PROFILES_ZOSMF } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
+import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../../__tests__/__src__/TestConstants";
 import { mockHandlerParameters } from "@zowe/cli-test-utils";
 import { cloneDeep } from "lodash";
 
@@ -28,8 +28,7 @@ const TEST_RESOURCES_DIR = __dirname + "/../../../__resources__";
 const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
     arguments: UNIT_TEST_ZOSMF_PROF_OPTS,
     positionals: ["zos-jobs", "view", "spool-file-by-id"],
-    definition: SpoolFilesByJobidDefinition,
-    profiles: UNIT_TEST_PROFILES_ZOSMF
+    definition: SpoolFilesByJobidDefinition
 });
 
 describe("zos-jobs view spool-file-by-id handler", () => {

@@ -15,17 +15,13 @@ import { StopTsoData } from "../../../__resources__/StopTsoData";
 import { IHandlerParameters, ImperativeError } from "@zowe/imperative";
 import * as AddressSpaceHandler from "../../../../../src/zostso/stop/address-space/AddressSpace.handler";
 import * as AddressSpaceDefinition from "../../../../../src/zostso/stop/address-space/AddressSpace.definition";
-import {
-    UNIT_TEST_ZOSMF_PROF_OPTS,
-    UNIT_TEST_PROFILES_ZOSMF
-} from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
+import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../../__tests__/__src__/TestConstants";
 import { mockHandlerParameters } from "@zowe/cli-test-utils";
 
 const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
     arguments: UNIT_TEST_ZOSMF_PROF_OPTS,
     positionals: ["zos-tso", "stop", "address-space"],
-    definition: AddressSpaceDefinition.AddressSpaceDefinition,
-    profiles: UNIT_TEST_PROFILES_ZOSMF
+    definition: AddressSpaceDefinition.AddressSpaceDefinition
 });
 
 describe("stop address-space handler tests", () => {

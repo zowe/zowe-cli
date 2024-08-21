@@ -196,11 +196,6 @@ cmd-cli invalid no-handler
 
 	This will never get invoked. No handler specified on this definition.
 
-cmd-cli invalid profile-spec
-
-	Command handler attempts to load a profile that wasn't specified on the command
-	definition
-
 cmd-cli invoke exit-143
 
 	Test handler that exits with status code 143
@@ -259,10 +254,6 @@ cmd-cli profile mapping-name-type
 cmd-cli profile mapping-positional
 
 	Tests Imperative's profile to CLI mapping capabilities.
-
-cmd-cli read profile
-
-	Read some profiles
 
 cmd-cli respond with-data-array
 

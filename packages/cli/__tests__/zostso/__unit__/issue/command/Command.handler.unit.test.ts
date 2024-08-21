@@ -15,11 +15,7 @@ import { IHandlerParameters, ImperativeError } from "@zowe/imperative";
 import * as Command from "../../../../../src/zostso/issue/command/Command.handler";
 import { CommandDefinition } from "../../../../../src/zostso/issue/command/Command.definition";
 import { StartTsoData } from "../../../__resources__/StartTsoData";
-import {
-    UNIT_TEST_ZOSMF_PROF_OPTS,
-    UNIT_TEST_PROFILES_ZOSMF_TSO,
-    UNIT_TEST_TSO_PROF_OPTS
-} from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
+import { UNIT_TEST_ZOSMF_PROF_OPTS, UNIT_TEST_TSO_PROF_OPTS } from "../../../../../../../__tests__/__src__/TestConstants";
 import { mockHandlerParameters } from "@zowe/cli-test-utils";
 
 const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
@@ -28,8 +24,7 @@ const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
         ...UNIT_TEST_TSO_PROF_OPTS
     },
     positionals: ["zos-tso", "issue", "address-space"],
-    definition: CommandDefinition,
-    profiles: UNIT_TEST_PROFILES_ZOSMF_TSO
+    definition: CommandDefinition
 });
 
 describe("issue command handler tests", () => {
