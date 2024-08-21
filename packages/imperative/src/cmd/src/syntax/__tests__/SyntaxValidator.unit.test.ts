@@ -27,7 +27,7 @@ describe("Imperative should provide advanced syntax validation rules", () => {
     const logger = TestLogger.getTestLogger();
     const aliases: Record<string, string[]> = {};
     // We define ValidationTestCommand. Options is always defined.
-    for (const option of ValidationTestCommand.options) {
+    for (const option of ValidationTestCommand.options!) {
         if (option.aliases) {
             aliases[option.name] = option.aliases;
         }
