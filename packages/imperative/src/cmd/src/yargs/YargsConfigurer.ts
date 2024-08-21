@@ -40,7 +40,7 @@ export class YargsConfigurer {
     ) {
     }
 
-    public static yargsConfiguration: Record<string, boolean> = {
+    public static readonly yargsConfiguration: Record<string, boolean> = {
         "parse-numbers": false,
         "parse-positional-numbers": false
     };
