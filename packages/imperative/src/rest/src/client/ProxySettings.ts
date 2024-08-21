@@ -32,7 +32,7 @@ import { ISession } from '../session/doc/ISession';
  * variables NO_PROXY or no_proxy. These work with a simple comma separated list of hostnames that need
  * to match with the hostname of the Zowe profile.
  */
-export class Proxy {
+export class ProxySettings {
 
     /**
      * Retrieve an appropriate http.agent instance if proxy environment variables can be found.
@@ -41,7 +41,7 @@ export class Proxy {
      *                Uses the session's `rejectUnauthorized` also for the proxy connection.
      * @returns an instance of an appropriate subclass of node's https.agent if proxy
      *          settings were found. Returns `undefined` if no proxy settings are found.
-     * @memberof Proxy
+     * @memberof ProxySettings
      */
     public static getProxyAgent(session: ISession): Agent | undefined {
         const proxySetting = this.getProxySettings(session);
@@ -60,7 +60,7 @@ export class Proxy {
      * @static
      * @param session Zowe `ISession` containing the hostname for the http request.
      * @returns `URL` to proxy server
-     * @memberof Proxy
+     * @memberof ProxySettings
      */
     public static getSystemProxyUrl(session: ISession): URL | undefined {
         return this.getProxySettings(session)?.proxyUrl;
@@ -75,7 +75,7 @@ export class Proxy {
      * @param session Zowe `ISession` containing the hostname for the http request.
      * @returns `true` if the Zowe session host matches an entry in the comma separated
      *          list of hostnames in the environment variable. `false` otherwise.
-     * @memberof Proxy
+     * @memberof ProxySettings
      */
     public static matchesNoProxySettings(session: ISession): boolean {
         const noProxyValues = this.getNoProxyEnvVariables();
@@ -94,7 +94,7 @@ export class Proxy {
      * @static
      * @param session Zowe `ISession` containing the hostname for the http request.
      * @returns instance of private `ProxySetting` or `undefined`
-     * @memberof Proxy
+     * @memberof ProxySettings
      */
     private static getProxySettings(session: ISession): ProxySetting | undefined {
         if (this.matchesNoProxySettings(session)) {
@@ -119,7 +119,7 @@ export class Proxy {
      * @private
      * @static
      * @returns `string` if valid variable is found or undefined.
-     * @memberof Proxy
+     * @memberof ProxySettings
      */
     private static getHttpEnvVariables(): string | undefined {
         return env.HTTP_PROXY ?? env.http_proxy;
@@ -130,7 +130,7 @@ export class Proxy {
      * @private
      * @static
      * @returns `string` if valid variable is found or undefined.
-     * @memberof Proxy
+     * @memberof ProxySettings
      */
     private static getHttpsEnvVariables(): string | undefined {
         return env.HTTPS_PROXY ?? env.https_proxy ?? this.getHttpEnvVariables();
@@ -142,7 +142,7 @@ export class Proxy {
      * @static
      * @returns `string[]` of all hostnames found in the comma separated list
      *          in lowercase without white spaces.
-     * @memberof Proxy
+     * @memberof ProxySettings
      */
     private static getNoProxyEnvVariables(): string[] | undefined {
         const noProxyValue = env.NO_PROXY ?? env.no_proxy;
