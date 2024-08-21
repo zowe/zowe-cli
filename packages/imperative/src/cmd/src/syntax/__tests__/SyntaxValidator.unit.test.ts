@@ -25,8 +25,16 @@ import { YargsConfigurer } from "../../yargs/YargsConfigurer";
 
 describe("Imperative should provide advanced syntax validation rules", () => {
     const logger = TestLogger.getTestLogger();
+    const aliases: Record<string, string[]> = {};
+    // We define ValidationTestCommand. Options is always defined.
+    for (const option of ValidationTestCommand.options) {
+        if (option.aliases) {
+            aliases[option.name] = option.aliases;
+        }
+    }
     const configuration = {
-        configuration: YargsConfigurer.yargsConfiguration
+        configuration: YargsConfigurer.yargsConfiguration,
+        alias: aliases
     };
 
     describe("Advanced syntax validation for commands using a test command", () => {
@@ -37,7 +45,7 @@ describe("Imperative should provide advanced syntax validation rules", () => {
 
         function tryOptions(optionString: string, shouldSucceed: boolean, expectedText?: string[]) {
 
-            const options = yargsParser(optionString, configuration);
+            const options = yargsParser.detailed(optionString, configuration).argv;
             options._ = ["test", "validation-test"].concat(options._ || []); // fake out command structure
             options[Constants.JSON_OPTION] = true;
             delete options["--"]; // delete extra yargs parse field
@@ -367,8 +375,8 @@ describe("Imperative should provide advanced syntax validation rules", () => {
                 false, ["multiple", "--always-required-string"])();
         });
 
-        it("should validate that typed numbers are numbers, and convert strings that are numbers", async () => {
-            const options = yargsParser(minValidOptions + " --should-be-number 4", configuration);
+        it("should validate that typed numbers are numbers, and convert strings that are numbers 1", async () => {
+            const options = yargsParser.detailed(minValidOptions + " --should-be-number 4", configuration).argv;
             options._ = ["test", "validation-test"].concat(options._ || []); // fake out command structure
             options[Constants.JSON_OPTION] = true;
             delete options["--"]; // delete extra yargs parse field
@@ -381,12 +389,60 @@ describe("Imperative should provide advanced syntax validation rules", () => {
             };
             const svResponse = await new SyntaxValidator(ValidationTestCommand, fakeParent).validate(response, options);
             expect(options["should-be-number"]).toBe(4);
+            expect(options["shouldBeNumber"]).toBe(4);
+            expect(options["sbn"]).toBe(4);
             expect(options["should-be-number"]).not.toBe("4");
+            expect(options["shouldBeNumber"]).not.toBe("4");
+            expect(options["sbn"]).not.toBe("4");
             expect(svResponse.valid).toEqual(true);
         });
 
-        it("should validate that typed numbers are numbers, and convert strings that are numbers that are floats", async () => {
-            const options = yargsParser(minValidOptions + " --should-be-number 3.1415926", configuration);
+        it("should validate that typed numbers are numbers, and convert strings that are numbers 2", async () => {
+            const options = yargsParser.detailed(minValidOptions + " --shouldBeNumber 4", configuration).argv;
+            options._ = ["test", "validation-test"].concat(options._ || []); // fake out command structure
+            options[Constants.JSON_OPTION] = true;
+            delete options["--"]; // delete extra yargs parse field
+            logger.debug("Executing test syntax command with arguments: " + inspect(options));
+            const response = new CommandResponse({responseFormat: "json"});
+            const fakeParent: ICommandDefinition = {
+                name: undefined,
+                description: "", type: "group",
+                children: [ValidationTestCommand]
+            };
+            const svResponse = await new SyntaxValidator(ValidationTestCommand, fakeParent).validate(response, options);
+            expect(options["should-be-number"]).toBe(4);
+            expect(options["shouldBeNumber"]).toBe(4);
+            expect(options["sbn"]).toBe(4);
+            expect(options["should-be-number"]).not.toBe("4");
+            expect(options["shouldBeNumber"]).not.toBe("4");
+            expect(options["sbn"]).not.toBe("4");
+            expect(svResponse.valid).toEqual(true);
+        });
+
+        it("should validate that typed numbers are numbers, and convert strings that are numbers 3", async () => {
+            const options = yargsParser.detailed(minValidOptions + " --sbn 4", configuration).argv;
+            options._ = ["test", "validation-test"].concat(options._ || []); // fake out command structure
+            options[Constants.JSON_OPTION] = true;
+            delete options["--"]; // delete extra yargs parse field
+            logger.debug("Executing test syntax command with arguments: " + inspect(options));
+            const response = new CommandResponse({responseFormat: "json"});
+            const fakeParent: ICommandDefinition = {
+                name: undefined,
+                description: "", type: "group",
+                children: [ValidationTestCommand]
+            };
+            const svResponse = await new SyntaxValidator(ValidationTestCommand, fakeParent).validate(response, options);
+            expect(options["should-be-number"]).toBe(4);
+            expect(options["shouldBeNumber"]).toBe(4);
+            expect(options["sbn"]).toBe(4);
+            expect(options["should-be-number"]).not.toBe("4");
+            expect(options["shouldBeNumber"]).not.toBe("4");
+            expect(options["sbn"]).not.toBe("4");
+            expect(svResponse.valid).toEqual(true);
+        });
+
+        it("should validate that typed numbers are numbers, and convert strings that are numbers that are floats 1", async () => {
+            const options = yargsParser.detailed(minValidOptions + " --should-be-number 3.1415926", configuration).argv;
             options._ = ["test", "validation-test"].concat(options._ || []); // fake out command structure
             options[Constants.JSON_OPTION] = true;
             delete options["--"]; // delete extra yargs parse field
@@ -399,12 +455,60 @@ describe("Imperative should provide advanced syntax validation rules", () => {
             };
             const svResponse = await new SyntaxValidator(ValidationTestCommand, fakeParent).validate(response, options);
             expect(options["should-be-number"]).toBe(3.1415926);
+            expect(options["shouldBeNumber"]).toBe(3.1415926);
+            expect(options["sbn"]).toBe(3.1415926);
             expect(options["should-be-number"]).not.toBe("3.1415926");
+            expect(options["shouldBeNumber"]).not.toBe("3.1415926");
+            expect(options["sbn"]).not.toBe("3.1415926");
+            expect(svResponse.valid).toEqual(true);
+        });
+
+        it("should validate that typed numbers are numbers, and convert strings that are numbers that are floats 2", async () => {
+            const options = yargsParser.detailed(minValidOptions + " --shouldBeNumber 3.1415926", configuration).argv;
+            options._ = ["test", "validation-test"].concat(options._ || []); // fake out command structure
+            options[Constants.JSON_OPTION] = true;
+            delete options["--"]; // delete extra yargs parse field
+            logger.debug("Executing test syntax command with arguments: " + inspect(options));
+            const response = new CommandResponse({responseFormat: "json"});
+            const fakeParent: ICommandDefinition = {
+                name: undefined,
+                description: "", type: "group",
+                children: [ValidationTestCommand]
+            };
+            const svResponse = await new SyntaxValidator(ValidationTestCommand, fakeParent).validate(response, options);
+            expect(options["should-be-number"]).toBe(3.1415926);
+            expect(options["shouldBeNumber"]).toBe(3.1415926);
+            expect(options["sbn"]).toBe(3.1415926);
+            expect(options["should-be-number"]).not.toBe("3.1415926");
+            expect(options["shouldBeNumber"]).not.toBe("3.1415926");
+            expect(options["sbn"]).not.toBe("3.1415926");
+            expect(svResponse.valid).toEqual(true);
+        });
+
+        it("should validate that typed numbers are numbers, and convert strings that are numbers that are floats 3", async () => {
+            const options = yargsParser.detailed(minValidOptions + " --sbn 3.1415926", configuration).argv;
+            options._ = ["test", "validation-test"].concat(options._ || []); // fake out command structure
+            options[Constants.JSON_OPTION] = true;
+            delete options["--"]; // delete extra yargs parse field
+            logger.debug("Executing test syntax command with arguments: " + inspect(options));
+            const response = new CommandResponse({responseFormat: "json"});
+            const fakeParent: ICommandDefinition = {
+                name: undefined,
+                description: "", type: "group",
+                children: [ValidationTestCommand]
+            };
+            const svResponse = await new SyntaxValidator(ValidationTestCommand, fakeParent).validate(response, options);
+            expect(options["should-be-number"]).toBe(3.1415926);
+            expect(options["shouldBeNumber"]).toBe(3.1415926);
+            expect(options["sbn"]).toBe(3.1415926);
+            expect(options["should-be-number"]).not.toBe("3.1415926");
+            expect(options["shouldBeNumber"]).not.toBe("3.1415926");
+            expect(options["sbn"]).not.toBe("3.1415926");
             expect(svResponse.valid).toEqual(true);
         });
 
         it("should validate that typed strings are strings and not numbers", async () => {
-            const options = yargsParser(minValidOptions + " --fluffy 9001", configuration);
+            const options = yargsParser.detailed(minValidOptions + " --fluffy 9001", configuration).argv;
             options._ = ["test", "validation-test"].concat(options._ || []); // fake out command structure
             options[Constants.JSON_OPTION] = true;
             delete options["--"]; // delete extra yargs parse field
