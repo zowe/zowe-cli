@@ -12,6 +12,7 @@
 export * from "./constants/ZosTso.constants";
 export * from "./constants/ZosTso.profile";
 
+export * from "./doc/input/IIssueTsoCmdParms";
 export * from "./doc/input/IIssueTsoParms";
 export * from "./doc/input/ISendTsoParms";
 export * from "./doc/input/IStartTsoParms";
@@ -28,6 +29,7 @@ export * from "./doc/zosmf/IZosmfPingResponse";
 export * from "./doc/zosmf/IZosmfTsoResponse";
 
 export * from "./doc/ICollectedResponses";
+export * from "./doc/IIssueTsoCmdResponse";
 export * from "./doc/IIssueResponse";
 export * from "./doc/IPingResponse";
 export * from "./doc/ISendResponse";

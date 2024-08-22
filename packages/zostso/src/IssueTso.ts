@@ -9,15 +9,19 @@
 *
 */
 
-import { AbstractSession, ImperativeError } from "@zowe/imperative";
+import { AbstractSession, Headers, ImperativeError } from "@zowe/imperative";
 import { IStartTsoParms } from "./doc/input/IStartTsoParms";
-import { noAccountNumber, noCommandInput } from "./TsoConstants";
+import { noAccountNumber, noCommandInput, TsoConstants } from "./TsoConstants";
 import { SendTso } from "./SendTso";
 import { StartTso } from "./StartTso";
 import { IIssueResponse } from "./doc/IIssueResponse";
 import { StopTso } from "./StopTso";
 import { TsoValidator } from "./TsoValidator";
 import { IIssueTsoParms } from "./doc/input/IIssueTsoParms";
+import { CheckStatus, ZosmfConstants } from "@zowe/zosmf-for-zowe-sdk";
+import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
+import { IIssueTsoCmdResponse } from "./doc/IIssueTsoCmdResponse";
+import { IIssueTsoCmdParms } from "./doc/input/IIssueTsoCmdParms";
 
 /**
  * Class to handle issue command to TSO
@@ -25,7 +29,59 @@ import { IIssueTsoParms } from "./doc/input/IIssueTsoParms";
  */
 export class IssueTso {
 
+    public static async issueTsoCmd(session: AbstractSession, commandInfo: string | IIssueTsoCmdParms, addressSpaceOptions?: IStartTsoParms):
+        Promise<IIssueTsoCmdResponse | IIssueResponse> {
+
+        const command = typeof commandInfo === "string" ? commandInfo : commandInfo.command;
+        const version = typeof commandInfo === "string" ? "v1" : commandInfo.version ?? "v1";
+        const isStateful = typeof commandInfo === "string" ? false : commandInfo.isStateful ?? false;
+
+        if (addressSpaceOptions == null && await CheckStatus.isZosVersionGreaterThan(session, ZosmfConstants.VERSIONS.V2R4)) {
+            // use new api
+            const endpoint = TsoConstants.RESOURCE + "/" + version + "/" + TsoConstants.RES_START_TSO;
+            const response = await ZosmfRestClient.putExpectJSON<IIssueTsoCmdResponse>(session, endpoint, [Headers.APPLICATION_JSON], {
+                "tsoCmd": command,
+                "cmdState": isStateful ? "stateful" : "stateless"
+            });
+
+            return response;
+
+        } else if (addressSpaceOptions != null) {
+            // use old behavior
+            TsoValidator.validateSession(session);
+            TsoValidator.validateNotEmptyString(addressSpaceOptions.account, noAccountNumber.message);
+            TsoValidator.validateNotEmptyString(command, noCommandInput.message);
+
+            const response: IIssueResponse = {
+                success: false,
+                startResponse: null,
+                startReady: false,
+                zosmfResponse: null,
+                commandResponse: null,
+                stopResponse: null
+            };
+            response.startResponse = await StartTso.start(session, addressSpaceOptions.account, addressSpaceOptions || {});
+
+            if (!response.startResponse.success) {
+                throw new ImperativeError({
+                    msg: `TSO address space failed to start.`,
+                    additionalDetails: response.startResponse.failureResponse?.message
+                });
+            }
+
+            const sendResponse = await SendTso.sendDataToTSOCollect(session, response.startResponse.servletKey, command);
+            response.success = sendResponse.success;
+            response.zosmfResponse = sendResponse.zosmfResponse;
+            response.commandResponse = sendResponse.commandResponse;
+            response.stopResponse = await StopTso.stop(session, response.startResponse.servletKey);
+            return response;
+        } else {
+            throw "ERROR";
+        }
+    }
+
     /**
+     * @deprecated Use issueTsoCmd instead
      * API method to start a TSO address space, issue a command, collect responses until prompt is reached, and terminate the address space.
      * @param {AbstractSession} session - z/OSMF connection info
      * @param {string} accountNumber - accounting info for Jobs
@@ -34,50 +90,23 @@ export class IssueTso {
      * @returns {Promise<IIssueResponse>} IssueTso response object, @see {IIssueResponse}
      * @memberof IssueTso
      */
-    public static async issueTsoCommand(session: AbstractSession, accountNumber: string, command: string, startParams?: IStartTsoParms) {
+    public static async issueTsoCommand(session: AbstractSession, accountNumber: string, command: string, startParams?: IStartTsoParms): Promise<IIssueResponse> {
+        return await IssueTso.issueTsoCmd(session, command, { ...startParams, account: accountNumber }) as IIssueResponse;
 
-        TsoValidator.validateSession(session);
-        TsoValidator.validateNotEmptyString(accountNumber, noAccountNumber.message);
-        TsoValidator.validateNotEmptyString(command, noCommandInput.message);
-
-        const response: IIssueResponse = {
-            success: false,
-            startResponse: null,
-            startReady: false,
-            zosmfResponse: null,
-            commandResponse: null,
-            stopResponse: null
-        };
-        response.startResponse = await StartTso.start(session, accountNumber, startParams || {});
-
-        if (!response.startResponse.success) {
-            throw new ImperativeError({
-                msg: `TSO address space failed to start.`,
-                additionalDetails: response.startResponse.failureResponse?.message
-            });
-        }
-
-        const sendResponse = await SendTso.sendDataToTSOCollect(session, response.startResponse.servletKey, command);
-        response.success = sendResponse.success;
-        response.zosmfResponse = sendResponse.zosmfResponse;
-        response.commandResponse = sendResponse.commandResponse;
-        response.stopResponse = await StopTso.stop(session, response.startResponse.servletKey);
-        return response;
     }
 
     /**
+     * @deprecated use issueTsoCmd instead
      * API method to start a TSO address space with provided parameters, issue a command,
      * collect responses until prompt is reached, and terminate the address space.
      * @param {AbstractSession} session - z/OSMF connection info
      * @param {IIssueTsoParms} commandParms - object with required parameters, @see {IIssueTsoParms}
      * @returns {Promise<IIssueResponse>}
      */
-    public static async issueTsoCommandCommon(session: AbstractSession, commandParms: IIssueTsoParms) {
-
-        TsoValidator.validateSession(session);
-        TsoValidator.validateIssueParams(commandParms);
-        TsoValidator.validateNotEmptyString(commandParms.command, noCommandInput.message);
-        return IssueTso.issueTsoCommand(session, commandParms.accountNumber, commandParms.command, commandParms.startParams);
+    public static async issueTsoCommandCommon(session: AbstractSession, commandParms: IIssueTsoParms): Promise<IIssueResponse> {
+        return await IssueTso.issueTsoCmd(session, commandParms.command, {
+            ...commandParms.startParams, account: commandParms.accountNumber
+        }) as IIssueResponse;
     }
 
 }
