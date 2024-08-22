@@ -9,15 +9,15 @@
 *
 */
 
-import { ITestEnvironment, runCliScript } from "@zowe/cli-test-utils";
-import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
+import { ITestEnvironment, TestEnvironment, runCliScript } from "@zowe/cli-test-utils";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { Session } from "@zowe/imperative";
+import { AbstractSession } from "@zowe/imperative";
+import { IJob, GetJobs } from "@zowe/zos-jobs-for-zowe-sdk";
 
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
 let IEFBR14_JOB: string;
-let REAL_SESSION: Session;
+let REAL_SESSION: AbstractSession;
 let ACCOUNT: string;
 let JOB_NAME: string;
 let NON_HELD_JOBCLASS;
@@ -38,10 +38,10 @@ describe("zos-jobs list jobs command", () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
             testName: "zos_jobs_list_jobs_command",
             tempProfileTypes: ["zosmf"]
-        });
+        }, REAL_SESSION = await TestEnvironment.createSession());
+
         const systemProps = TEST_ENVIRONMENT.systemTestProperties;
         IEFBR14_JOB = systemProps.zosjobs.iefbr14Member;
-        REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
 
         ACCOUNT = systemProps.tso.account;
         const JOB_LENGTH = 6;
@@ -55,24 +55,54 @@ describe("zos-jobs list jobs command", () => {
 
     describe("positive tests", () => {
 
-        it("should be able to submit two jobs and then find both in the output",
-            () => {
-                const response = runCliScript(scriptDir + "/submit_and_list_jobs.sh", TEST_ENVIRONMENT,
-                    [TEST_ENVIRONMENT.systemTestProperties.zosjobs.iefbr14Member]);
-                expect(response.stderr.toString()).toBe("");
-                expect(response.status).toBe(0);
-                expect(response.stdout.toString()).toContain("found");
-            });
+        it("should be able to submit two jobs and then find both in the output", async () => {
+            const response = runCliScript(scriptDir + "/submit_and_list_jobs.sh", TEST_ENVIRONMENT,
+                [TEST_ENVIRONMENT.systemTestProperties.zosjobs.iefbr14Member]);
 
-        it("should be able to submit one job and then not see the job if we list jobs for a different user",
-            () => {
-                // note: this test could fail if your user Id starts with "FAKE"
-                const response = runCliScript(scriptDir + "/submit_and_list_jobs_no_match.sh", TEST_ENVIRONMENT,
-                    [TEST_ENVIRONMENT.systemTestProperties.zosjobs.iefbr14Member]);
-                expect(response.stderr.toString()).toBe("");
-                expect(response.status).toBe(0);
-                expect(response.stdout.toString()).toContain("test passed");
-            });
+            // Regex to extract both JOBIDs
+            const jobidRegex = /(?:First|Second) job ID (JOB\d+) found/g;
+
+            // Extract all matching job IDs
+            const jobIds = [...response.stdout.toString().matchAll(jobidRegex)].map(match => match[1]);
+
+            // Ensure both job IDs were captured correctly
+            expect(jobIds.length).toBe(2);
+            const [job1Id, job2Id] = jobIds;
+
+            // Retrieve job details using the Zowe SDK
+            const job1: IJob = await GetJobs.getJob(REAL_SESSION, job1Id);
+            const job2: IJob = await GetJobs.getJob(REAL_SESSION, job2Id);
+
+            expect(job1 && job2).toBeDefined();
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toContain("found");
+
+            TEST_ENVIRONMENT.resources.jobs.push(job1, job2);
+        });
+
+        it("should be able to submit one job and then not see the job if we list jobs for a different user", async () => {
+            // note: this test could fail if your user Id starts with "FAKE"
+            const response = runCliScript(scriptDir + "/submit_and_list_jobs_no_match.sh", TEST_ENVIRONMENT,
+                [TEST_ENVIRONMENT.systemTestProperties.zosjobs.iefbr14Member]);
+
+            // Regex to extract the JOBID
+            const jobidRegex = /Submitted job: (JOB\d+)/;
+            const match = response.stdout.toString().match(jobidRegex);
+            const jobId = match ? match[1] : null;
+
+            expect(jobId).not.toBeNull();
+
+            // Retrieve job details using the Zowe SDK
+            const job: IJob = await GetJobs.getJob(REAL_SESSION, jobId);
+            expect(job).toBeDefined();
+
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toContain("test passed");
+
+            TEST_ENVIRONMENT.resources.jobs.push(job);
+        });
 
         describe("without profiles", () => {
 
@@ -83,7 +113,8 @@ describe("zos-jobs list jobs command", () => {
             beforeAll(async () => {
                 TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
                     testName: "zos_jobs_list_job_without_profiles"
-                });
+                }, REAL_SESSION = await TestEnvironment.createSession());
+
                 SYSTEM_PROPS = TEST_ENVIRONMENT_NO_PROF.systemTestProperties;
             });
 
@@ -109,9 +140,27 @@ describe("zos-jobs list jobs command", () => {
                         SYSTEM_PROPS.zosmf.user,
                         SYSTEM_PROPS.zosmf.password,
                     ]);
+
+                // Regex to extract both JOBIDs
+                const jobidRegex = /(?:First|Second) job ID (JOB\d+) found/g;
+
+                // Extract all matching job IDs
+                const jobIds = [...response.stdout.toString().matchAll(jobidRegex)].map(match => match[1]);
+
+                // Ensure both job IDs were captured correctly
+                expect(jobIds.length).toBe(2);
+                const [job1Id, job2Id] = jobIds;
+
+                // Retrieve job details using the Zowe SDK
+                const job1: IJob = await GetJobs.getJob(REAL_SESSION, job1Id);
+                const job2: IJob = await GetJobs.getJob(REAL_SESSION, job2Id);
+
+                expect(job1 && job2).toBeDefined();
                 expect(response.stderr.toString()).toBe("");
                 expect(response.status).toBe(0);
                 expect(response.stdout.toString()).toContain("found");
+
+                TEST_ENVIRONMENT_NO_PROF.resources.jobs.push(job1, job2);
             });
         });
     });

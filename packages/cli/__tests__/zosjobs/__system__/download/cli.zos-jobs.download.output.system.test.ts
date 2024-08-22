@@ -11,7 +11,7 @@
 
 import { ITestEnvironment, TestEnvironment, runCliScript } from "@zowe/cli-test-utils";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { AbstractSession, IO } from "@zowe/imperative";
+import { AbstractSession } from "@zowe/imperative";
 import * as fs from "fs";
 import { GetJobs, IJob } from "@zowe/zos-jobs-for-zowe-sdk";
 
