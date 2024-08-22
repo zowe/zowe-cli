@@ -51,7 +51,7 @@ describe("zos-jobs search job command", () => {
 
     afterAll(async () => {
         // Retrieve jobs by prefix
-        const jobs = await GetJobs.getJobsByPrefix(REAL_SESSION, IEFBR14_JOB);
+        const jobs = await GetJobs.getJobsByPrefix(REAL_SESSION, JOB_NAME);
         testEnvironment.resources.jobs = jobs;
 
         await TestEnvironment.cleanUp(testEnvironment);

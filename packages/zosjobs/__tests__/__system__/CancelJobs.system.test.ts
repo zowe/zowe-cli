@@ -9,13 +9,13 @@
 *
 */
 
-import { ImperativeError, Session, RestClientError } from "@zowe/imperative";
+import { ImperativeError, RestClientError, AbstractSession } from "@zowe/imperative";
 import { CancelJobs, SubmitJobs, IJob } from "../../src";
 import { ITestPropertiesSchema } from "../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { JobTestsUtils } from "./JobTestsUtils";
 import { ITestEnvironment, TestEnvironment } from "@zowe/cli-test-utils";
 
-let REAL_SESSION: Session;
+let REAL_SESSION: AbstractSession;
 let sleepJCL: string;
 
 let systemProps: ITestPropertiesSchema;

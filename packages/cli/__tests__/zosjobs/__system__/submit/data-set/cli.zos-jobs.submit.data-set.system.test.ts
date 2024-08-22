@@ -9,43 +9,51 @@
 *
 */
 
-import { ITestEnvironment, runCliScript } from "@zowe/cli-test-utils";
-import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
+import { ITestEnvironment, TestEnvironment, runCliScript } from "@zowe/cli-test-utils";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { List } from "../../../../../../zosfiles/src/methods/list";
-import { Session } from "@zowe/imperative";
+import { AbstractSession } from "@zowe/imperative";
+import { GetJobs } from "@zowe/zos-jobs-for-zowe-sdk/lib/GetJobs";
 
 process.env.FORCE_COLOR = "0";
 
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
+let REAL_SESSION: AbstractSession;
+let JOB_NAME: string;
 
 let account: string;
 let jclMember: string;
 let psJclDataSet: string;
-let REAL_SESSION: Session;
 describe("zos-jobs submit data-set command", () => {
     // Create the unique test environment
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
             testName: "zos_jobs_submit_command",
             tempProfileTypes: ["zosmf"]
-        });
+        }, REAL_SESSION = await TestEnvironment.createSession());
 
-        REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
         account = TEST_ENVIRONMENT.systemTestProperties.tso.account;
         jclMember = TEST_ENVIRONMENT.systemTestProperties.zosjobs.iefbr14Member;
         psJclDataSet = TEST_ENVIRONMENT.systemTestProperties.zosjobs.iefbr14PSDataSet;
     });
 
     afterAll(async () => {
+        // Retrieve jobs by prefix
+        const jobs = await GetJobs.getJobsByPrefix(REAL_SESSION, JOB_NAME);
+        TEST_ENVIRONMENT.resources.jobs = jobs;
+
         await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
     });
-
     describe("Live system tests", () => {
         it("should submit a job in an existing valid data set from a PDS member", async () => {
             const response = runCliScript(__dirname + "/__scripts__/submit_valid_data_set.sh",
                 TEST_ENVIRONMENT, [jclMember]);
+
+            const jobidRegex = /jobname: (\w+)/;
+            const match = response.stdout.toString().match(jobidRegex);
+            JOB_NAME = match ? match[1] : null;
+
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain("jobname");
@@ -134,13 +142,17 @@ describe("zos-jobs submit data-set command", () => {
             beforeAll(async () => {
                 TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
                     testName: "zos_jobs_submit_data_set_without_profiles"
-                });
+                }, REAL_SESSION = await TestEnvironment.createSession());
 
                 SYSTEM_PROPS = TEST_ENVIRONMENT_NO_PROF.systemTestProperties;
             });
 
             afterAll(async () => {
-                await TestEnvironment.cleanUp(TEST_ENVIRONMENT_NO_PROF);
+                // Retrieve jobs by prefix
+                const jobs = await GetJobs.getJobsByPrefix(REAL_SESSION, JOB_NAME);
+                TEST_ENVIRONMENT.resources.jobs = jobs;
+
+                await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
             });
 
             it("should submit a job in an existing valid data set from a PDS member", async () => {
