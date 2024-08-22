@@ -46,6 +46,7 @@ export interface IProfileTypeConfiguration {
      *
      * @type {IProfileDependency[]}
      * @memberof IProfileTypeConfiguration
+     * @deprecated
      */
     dependencies?: IProfileDependency[];
     /**

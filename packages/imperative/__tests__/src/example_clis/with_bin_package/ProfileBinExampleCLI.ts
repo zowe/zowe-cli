@@ -1,3 +1,4 @@
+#!/usr/bin/env ts-node
 /*
 * This program and the accompanying materials are made available under the terms of the
 * Eclipse Public License v2.0 which accompanies this distribution, and is available at
@@ -16,4 +17,3 @@ Imperative.init({configurationModule: __dirname + "/ProfileBinExampleConfigurati
 }).catch((error) => {
     process.stderr.write(`An error occurred parsing or initing: ${error.message}`);
 });
-

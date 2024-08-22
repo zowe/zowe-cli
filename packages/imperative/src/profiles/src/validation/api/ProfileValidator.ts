@@ -29,6 +29,7 @@ import { CliUtils } from "../../../../utilities/src/CliUtils";
  * API for going through the full validation test for a Zowe CLI profile
  * and producing validation report
  * @internal
+ * @deprecated
  */
 export class ProfileValidator {
 

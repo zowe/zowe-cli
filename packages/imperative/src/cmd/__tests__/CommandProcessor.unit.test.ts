@@ -1513,7 +1513,7 @@ describe("Command Processor", () => {
         });
 
         // return the "fake" args object with values from profile
-        CliUtils.getOptValuesFromConfig = jest.fn().mockReturnValue({});
+        jest.spyOn(CliUtils, "getOptValuesFromConfig").mockReturnValueOnce({});
 
         const parms: any = {
             arguments: {
@@ -1712,7 +1712,7 @@ describe("Command Processor", () => {
         });
 
         // return the "fake" args object with values from profile
-        CliUtils.getOptValuesFromConfig = jest.fn().mockReturnValue({ color: "yellow" });
+        const getOptValuesSpy = jest.spyOn(CliUtils, "getOptValuesFromConfig").mockReturnValueOnce({ color: "yellow" });
 
         const parms: any = {
             arguments: {
@@ -1724,7 +1724,7 @@ describe("Command Processor", () => {
         };
 
         const commandResponse: ICommandResponse = await processor.invoke(parms);
-        expect(CliUtils.getOptValuesFromConfig).toHaveBeenCalledTimes(1);
+        expect(getOptValuesSpy).toHaveBeenCalledTimes(1);
         expect(commandResponse.stdout.toString()).toMatchSnapshot();
         expect(commandResponse).toBeDefined();
         expect(commandResponse).toMatchSnapshot();
@@ -1747,7 +1747,7 @@ describe("Command Processor", () => {
         });
 
         // return the "fake" args object with values from profile
-        CliUtils.getOptValuesFromConfig = jest.fn().mockReturnValue({});
+        jest.spyOn(CliUtils, "getOptValuesFromConfig").mockReturnValueOnce({});
 
         const parms: any = {
             arguments: {
@@ -1782,7 +1782,7 @@ describe("Command Processor", () => {
         });
 
         // return the "fake" args object with values from profile
-        CliUtils.getOptValuesFromConfig = jest.fn().mockReturnValue({ color: "yellow" });
+        const getOptValuesSpy = jest.spyOn(CliUtils, "getOptValuesFromConfig").mockReturnValueOnce({ color: "yellow" });
 
         const parms: any = {
             arguments: {
@@ -1794,7 +1794,7 @@ describe("Command Processor", () => {
         };
 
         const commandResponse: ICommandResponse = await processor.invoke(parms);
-        expect(CliUtils.getOptValuesFromConfig).toHaveBeenCalledTimes(1);
+        expect(getOptValuesSpy).toHaveBeenCalledTimes(1);
         expect(commandResponse.stdout.toString()).toMatchSnapshot();
         expect(commandResponse).toBeDefined();
         expect(commandResponse).toMatchSnapshot();
@@ -1818,7 +1818,7 @@ describe("Command Processor", () => {
         });
 
         // return the "fake" args object with values from profile
-        CliUtils.getOptValuesFromConfig = jest.fn().mockReturnValue({ color: "yellow" });
+        const getOptValuesSpy = jest.spyOn(CliUtils, "getOptValuesFromConfig").mockReturnValueOnce({ color: "yellow" });
 
         const parms: any = {
             arguments: {
@@ -1831,7 +1831,7 @@ describe("Command Processor", () => {
         };
 
         const commandResponse: ICommandResponse = await processor.invoke(parms);
-        expect(CliUtils.getOptValuesFromConfig).toHaveBeenCalledTimes(1);
+        expect(getOptValuesSpy).toHaveBeenCalledTimes(1);
         expect(commandResponse.stdout.toString()).toMatchSnapshot();
         expect(commandResponse).toBeDefined();
         expect(commandResponse).toMatchSnapshot();
@@ -1855,7 +1855,7 @@ describe("Command Processor", () => {
         });
 
         // return the "fake" args object with values from profile
-        CliUtils.getOptValuesFromConfig = jest.fn().mockReturnValue({ color: "yellow" });
+        const getOptValuesSpy = jest.spyOn(CliUtils, "getOptValuesFromConfig").mockReturnValueOnce({ color: "yellow" });
 
         const parms: any = {
             arguments: {
@@ -1868,7 +1868,7 @@ describe("Command Processor", () => {
         };
 
         const commandResponse: ICommandResponse = await processor.invoke(parms);
-        expect(CliUtils.getOptValuesFromConfig).toHaveBeenCalledTimes(1);
+        expect(getOptValuesSpy).toHaveBeenCalledTimes(1);
         expect(commandResponse.stdout.toString()).toMatchSnapshot();
         expect(commandResponse).toBeDefined();
         expect(commandResponse).toMatchSnapshot();
