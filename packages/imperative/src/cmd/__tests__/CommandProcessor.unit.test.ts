@@ -192,6 +192,11 @@ const FAKE_HELP_GENERATOR: IHelpGenerator = {
 const ENV_VAR_PREFIX: string = "UNIT_TEST";
 
 describe("Command Processor", () => {
+    beforeEach(() => {
+        // Mock read stdin
+        jest.spyOn(SharedOptions, "readStdinIfRequested").mockResolvedValueOnce(false);
+    });
+
     // Restore everything after each test
     afterEach(() => {
         process.stdout.write = ORIGINAL_STDOUT_WRITE;
@@ -800,11 +805,6 @@ describe("Command Processor", () => {
             promptPhrase: "dummydummy"
         });
 
-        // Mock read stdin
-        (SharedOptions.readStdinIfRequested as any) = jest.fn((args, response, type) => {
-            // Nothing to do
-        });
-
         const parms: any = {
             arguments: {
                 _: ["check", "for", "banana"],
@@ -845,11 +845,6 @@ describe("Command Processor", () => {
             promptPhrase: "dummydummy"
         });
 
-        // Mock read stdin
-        (SharedOptions.readStdinIfRequested as any) = jest.fn((args, response, type) => {
-            // Nothing to do
-        });
-
         const parms: any = {
             arguments: {
                 _: ["check", "for", "banana"],
@@ -885,11 +880,6 @@ describe("Command Processor", () => {
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
-        });
-
-        // Mock read stdin
-        (SharedOptions.readStdinIfRequested as any) = jest.fn((args, response, type) => {
-            // Nothing to do
         });
 
         const parms: any = {
@@ -938,11 +928,6 @@ describe("Command Processor", () => {
             promptPhrase: "dummydummy"
         });
 
-        // Mock read stdin
-        (SharedOptions.readStdinIfRequested as any) = jest.fn((args, response, type) => {
-            // Nothing to do
-        });
-
         const parms: any = {
             arguments: {
                 _: ["check", "for", "banana"],
@@ -969,11 +954,6 @@ describe("Command Processor", () => {
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
-        });
-
-        // Mock read stdin
-        (SharedOptions.readStdinIfRequested as any) = jest.fn((args, response, type) => {
-            // Nothing to do
         });
 
         const parms: any = {
@@ -1012,11 +992,6 @@ describe("Command Processor", () => {
             promptPhrase: "dummydummy"
         });
 
-        // Mock read stdin
-        (SharedOptions.readStdinIfRequested as any) = jest.fn((args, response, type) => {
-            // Nothing to do
-        });
-
         const parms: any = {
             arguments: {
                 _: ["check", "for", "banana"],
@@ -1053,11 +1028,6 @@ describe("Command Processor", () => {
             promptPhrase: "dummydummy"
         });
 
-        // Mock read stdin
-        (SharedOptions.readStdinIfRequested as any) = jest.fn((args, response, type) => {
-            // Nothing to do
-        });
-
         const parms: any = {
             arguments: {
                 _: ["check", "for", "banana"],
@@ -1092,11 +1062,6 @@ describe("Command Processor", () => {
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
-        });
-
-        // Mock read stdin
-        (SharedOptions.readStdinIfRequested as any) = jest.fn((args, response, type) => {
-            // Nothing to do
         });
 
         const parms: any = {
@@ -1138,11 +1103,6 @@ describe("Command Processor", () => {
             promptPhrase: "dummydummy"
         });
 
-        // Mock read stdin
-        (SharedOptions.readStdinIfRequested as any) = jest.fn((args, response, type) => {
-            // Nothing to do
-        });
-
         const parms: any = {
             arguments: {
                 _: ["check", "for", "banana"],
@@ -1177,11 +1137,6 @@ describe("Command Processor", () => {
             promptPhrase: "dummydummy"
         });
 
-        // Mock read stdin
-        (SharedOptions.readStdinIfRequested as any) = jest.fn((args, response, type) => {
-            // Nothing to do
-        });
-
         const parms: any = {
             arguments: {
                 _: ["check", "for", "banana"],
@@ -1207,11 +1162,6 @@ describe("Command Processor", () => {
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
-        });
-
-        // Mock read stdin
-        (SharedOptions.readStdinIfRequested as any) = jest.fn((args, response, type) => {
-            // Nothing to do
         });
 
         const parms: any = {
@@ -1596,11 +1546,6 @@ describe("Command Processor", () => {
             }
         });
 
-        // Mock read stdin
-        (SharedOptions.readStdinIfRequested as any) = jest.fn((args, response, type) => {
-            // Nothing to do
-        });
-
         jest.spyOn(process, "chdir");
         const mockConfigReload = jest.fn();
         jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({
@@ -1653,11 +1598,6 @@ describe("Command Processor", () => {
             }
         });
 
-        // Mock read stdin
-        (SharedOptions.readStdinIfRequested as any) = jest.fn((args, response, type) => {
-            // Nothing to do
-        });
-
         jest.spyOn(process, "chdir");
         const mockConfigReload = jest.fn();
         jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({
@@ -1706,11 +1646,6 @@ describe("Command Processor", () => {
             config: ImperativeConfig.instance.config
         });
 
-        // Mock read stdin
-        (SharedOptions.readStdinIfRequested as any) = jest.fn((args, response, type) => {
-            // Nothing to do
-        });
-
         // return the "fake" args object with values from profile
         const getOptValuesSpy = jest.spyOn(CliUtils, "getOptValuesFromConfig").mockReturnValueOnce({ color: "yellow" });
 
@@ -1741,11 +1676,6 @@ describe("Command Processor", () => {
             promptPhrase: "dummydummy"
         });
 
-        // Mock read stdin
-        (SharedOptions.readStdinIfRequested as any) = jest.fn((args, response, type) => {
-            // Nothing to do
-        });
-
         // return the "fake" args object with values from profile
         jest.spyOn(CliUtils, "getOptValuesFromConfig").mockReturnValueOnce({});
 
@@ -1774,11 +1704,6 @@ describe("Command Processor", () => {
             commandLine: "",
             promptPhrase: "dummydummy",
             config: ImperativeConfig.instance.config
-        });
-
-        // Mock read stdin
-        (SharedOptions.readStdinIfRequested as any) = jest.fn((args, response, type) => {
-            // Nothing to do
         });
 
         // return the "fake" args object with values from profile
@@ -1812,11 +1737,6 @@ describe("Command Processor", () => {
             config: ImperativeConfig.instance.config
         });
 
-        // Mock read stdin
-        (SharedOptions.readStdinIfRequested as any) = jest.fn((args, response, type) => {
-            // Nothing to do
-        });
-
         // return the "fake" args object with values from profile
         const getOptValuesSpy = jest.spyOn(CliUtils, "getOptValuesFromConfig").mockReturnValueOnce({ color: "yellow" });
 
@@ -1847,11 +1767,6 @@ describe("Command Processor", () => {
             commandLine: "",
             promptPhrase: "dummydummy",
             config: ImperativeConfig.instance.config
-        });
-
-        // Mock read stdin
-        (SharedOptions.readStdinIfRequested as any) = jest.fn((args, response, type) => {
-            // Nothing to do
         });
 
         // return the "fake" args object with values from profile
@@ -1923,11 +1838,6 @@ describe("Command Processor", () => {
             promptPhrase: "dummydummy"
         });
 
-        // Mock read stdin
-        (SharedOptions.readStdinIfRequested as any) = jest.fn((args, response, type) => {
-            // Nothing to do
-        });
-
         const parms: any = {
             arguments: {
                 _: [],
@@ -1956,11 +1866,6 @@ describe("Command Processor", () => {
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
-        });
-
-        // Mock read stdin
-        (SharedOptions.readStdinIfRequested as any) = jest.fn((args, response, type) => {
-            // Nothing to do
         });
 
         const parms: any = {
@@ -2174,6 +2079,116 @@ describe("Command Processor", () => {
         it("should find default profile that matches type", async () => {
             const preparedArgs = await (processor as any).prepare(null, {});
             expect(preparedArgs.color).toBe("green");
+        });
+    });
+
+    describe("prompting", () => {
+        const invokeParms: any = {
+            arguments: {
+                _: ["check", "for", "banana"],
+                $0: "",
+                valid: true
+            },
+            silent: true
+        };
+        function buildProcessor(definition: ICommandDefinition): CommandProcessor {
+            return new CommandProcessor({
+                envVariablePrefix: ENV_VAR_PREFIX,
+                fullDefinition: SAMPLE_CMD_WITH_OPTS_AND_PROF,
+                definition,
+                helpGenerator: FAKE_HELP_GENERATOR,
+                rootCommandName: SAMPLE_ROOT_COMMAND,
+                commandLine: "",
+                promptPhrase: "please"
+            });
+        }
+
+        it("should prompt for missing positional with string type", async () => {
+            // Allocate the command processor
+            const processor = buildProcessor(SAMPLE_COMMAND_REAL_HANDLER_WITH_POS_OPT);
+
+            const promptMock = jest.fn().mockResolvedValue("yellow");
+            jest.spyOn(CommandResponse.prototype, "console", "get").mockReturnValueOnce({
+                prompt: promptMock
+            } as any);
+
+            invokeParms.arguments.color = "please";
+            const commandResponse: ICommandResponse = await processor.invoke(invokeParms);
+            expect(commandResponse).toBeDefined();
+            expect(promptMock).toHaveBeenCalledTimes(1);
+            expect(promptMock.mock.calls[0][0]).toContain(`Please enter "color"`);
+            expect(invokeParms.arguments.color).toBe("yellow");
+        });
+
+        it("should prompt for missing positional with array type", async () => {
+            // Allocate the command processor
+            const processor = buildProcessor({
+                ...SAMPLE_COMMAND_REAL_HANDLER_WITH_POS_OPT,
+                positionals: [
+                    {
+                        name: "color",
+                        type: "array",
+                        description: "The banana colors.",
+                        required: true
+                    }
+                ],
+            });
+
+            const promptMock = jest.fn().mockResolvedValue("yellow brown");
+            jest.spyOn(CommandResponse.prototype, "console", "get").mockReturnValueOnce({
+                prompt: promptMock
+            } as any);
+
+            invokeParms.arguments.color = ["please"];
+            const commandResponse: ICommandResponse = await processor.invoke(invokeParms);
+            expect(commandResponse).toBeDefined();
+            expect(promptMock).toHaveBeenCalledTimes(1);
+            expect(promptMock.mock.calls[0][0]).toContain(`Please enter "color"`);
+            expect(invokeParms.arguments.color).toEqual(["yellow", "brown"]);
+        });
+
+        it("should prompt for missing option with string type", async () => {
+            // Allocate the command processor
+            const processor = buildProcessor(SAMPLE_COMMAND_REAL_HANDLER_WITH_OPT);
+
+            const promptMock = jest.fn().mockResolvedValue("yellow");
+            jest.spyOn(CommandResponse.prototype, "console", "get").mockReturnValueOnce({
+                prompt: promptMock
+            } as any);
+
+            invokeParms.arguments.color = "please";
+            const commandResponse: ICommandResponse = await processor.invoke(invokeParms);
+            expect(commandResponse).toBeDefined();
+            expect(promptMock).toHaveBeenCalledTimes(1);
+            expect(promptMock.mock.calls[0][0]).toContain(`Please enter "color"`);
+            expect(invokeParms.arguments.color).toBe("yellow");
+        });
+
+        it("should prompt for missing option with array type", async () => {
+            // Allocate the command processor
+            const processor = buildProcessor({
+                ...SAMPLE_COMMAND_REAL_HANDLER_WITH_OPT,
+                options: [
+                    {
+                        name: "color",
+                        type: "array",
+                        description: "The banana colors.",
+                        required: true
+                    }
+                ],
+            });
+
+            const promptMock = jest.fn().mockResolvedValue("yellow brown");
+            jest.spyOn(CommandResponse.prototype, "console", "get").mockReturnValueOnce({
+                prompt: promptMock
+            } as any);
+
+            invokeParms.arguments.color = ["please"];
+            const commandResponse: ICommandResponse = await processor.invoke(invokeParms);
+            expect(commandResponse).toBeDefined();
+            expect(promptMock).toHaveBeenCalledTimes(1);
+            expect(promptMock.mock.calls[0][0]).toContain(`Please enter "color"`);
+            expect(invokeParms.arguments.color).toEqual(["yellow", "brown"]);
         });
     });
 });
