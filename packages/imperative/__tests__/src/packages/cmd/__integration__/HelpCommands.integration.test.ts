@@ -13,9 +13,9 @@ import * as T from "../../../TestUtil";
 import { IImperativeConfig } from "../../../../../src/imperative/index";
 
 describe("Imperative help should be available for a range of definitions", function () {
-    const cliWithBin = Object.keys(require(__dirname + "/../package.json").bin)[0];
-    const cliWithoutBin = __dirname + "/../../with_profiles/ProfileExampleCLI.ts";
-    const config: IImperativeConfig = require(__dirname + "/../ProfileBinExampleConfiguration");
+    const cliWithBin = __dirname + "/../../../example_clis/with_bin_package";
+    const cliWithoutBin = __dirname + "/../../../example_clis/with_profiles/ProfileExampleCLI.ts";
+    const config: IImperativeConfig = require(__dirname + "/../../../example_clis/with_bin_package/ProfileBinExampleConfiguration");
     /**
      * Clean up the home directory before and after each test.
      */
@@ -26,22 +26,16 @@ describe("Imperative help should be available for a range of definitions", funct
         T.rimraf(T.TEST_HOME);
     });
 
-    it("We should be able to get --help for our example CLI - without bin script", function () {
+    it("We should be able to get --help for our example CLI - no bin specified in package", function () {
         T.findExpectedOutputInCommand(cliWithoutBin, ["--help"],
             [config.productDisplayName, "log"], "stdout", true,
-            this, T.CMD_TYPE.INTERACTIVE, undefined, undefined, {
-                IMPERATIVE_CALLER_LOCATION: T.TEST_HOME
-            });
+            this, T.CMD_TYPE.INTERACTIVE);
         T.findExpectedOutputInCommand(cliWithoutBin, ["log", "--help"],
             ["ProfileExampleCLI.ts", "Log example messages", "messages"], "stdout", true,
-            this, T.CMD_TYPE.INTERACTIVE, undefined, undefined, {
-                IMPERATIVE_CALLER_LOCATION: T.TEST_HOME
-            });
+            this, T.CMD_TYPE.INTERACTIVE);
         T.findExpectedOutputInCommand(cliWithoutBin, ["log", "messages", "--help"],
             ["ProfileExampleCLI.ts", "Log example messages", "messages", "level"], "stdout", true,
-            this, T.CMD_TYPE.INTERACTIVE, undefined, undefined, {
-                IMPERATIVE_CALLER_LOCATION: T.TEST_HOME
-            });
+            this, T.CMD_TYPE.INTERACTIVE);
     });
 
     it("should display --version in the root help", function () {
@@ -50,7 +44,7 @@ describe("Imperative help should be available for a range of definitions", funct
             this, T.CMD_TYPE.INTERACTIVE);
     });
 
-    it("We should be able to get --help for our example CLI - with bin script", function () {
+    it("We should be able to get --help for our example CLI - with bin in package", function () {
         T.findExpectedOutputInCommand(cliWithBin, ["--help"],
             [config.productDisplayName, "ape", "bat", "cat"], "stdout", true,
             this, T.CMD_TYPE.INTERACTIVE);
