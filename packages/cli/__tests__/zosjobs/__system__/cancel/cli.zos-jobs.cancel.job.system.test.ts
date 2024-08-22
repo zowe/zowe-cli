@@ -58,7 +58,7 @@ describe("zos-jobs cancel job command", () => {
             const [, jobname, jobid] = response.stdout.toString().match(jobDataRegex) || [];
             TEST_ENVIRONMENT.resources.jobData.push({ jobname, jobid });
 
-            // Calculate the previous job ID (one less)
+            // Calculate the previous job ID (one less) - jobid created by test before, inaccessible until now
             const jobidNumber = parseInt(jobid.replace('JOB', ''), 10); //Extract the numeric part of the job ID
             const previousJobid = 'JOB' + String(jobidNumber - 1).padStart(5, '0'); // then decrement by 1, assuming 5 digits in the job ID
             TEST_ENVIRONMENT.resources.jobData.push({ jobname, jobid: previousJobid } );
