@@ -9,12 +9,14 @@
 *
 */
 
-import { ITestEnvironment, runCliScript } from "@zowe/cli-test-utils";
-import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
+import { ITestEnvironment, TestEnvironment, runCliScript } from "@zowe/cli-test-utils";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
+import { AbstractSession, IO } from "@zowe/imperative";
 import * as fs from "fs";
+import { GetJobs, IJob } from "@zowe/zos-jobs-for-zowe-sdk";
 
 // Test Environment populated in the beforeAll();
+let REAL_SESSION: AbstractSession;
 let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
 let IEFBR14_JCL: string;
 
@@ -24,8 +26,13 @@ describe("zos-jobs download output command", () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
             testName: "zos_jobs_download_output_command",
             tempProfileTypes: ["zosmf"]
-        });
+        }, REAL_SESSION = await TestEnvironment.createSession());
+
         IEFBR14_JCL = TEST_ENVIRONMENT.systemTestProperties.zosjobs.iefbr14Member;
+    });
+
+    afterAll(async () => {
+        await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
     });
 
     describe("error handling", () => {
@@ -39,16 +46,29 @@ describe("zos-jobs download output command", () => {
     });
 
     describe("output", () => {
-        it("should download all spool files of a job", () => {
+        it("should download all spool files of a job", async () => {
             const outdir: string = TEST_ENVIRONMENT.workingDir + "/output/JES2";
             const response = runCliScript(__dirname + "/__scripts__/download-output/download.sh",
                 TEST_ENVIRONMENT, [IEFBR14_JCL]);
+
+            // Extract the JOBID from the response output
+            const jobidRegex = /Submitted job ID: (JOB\d+)/;
+            const match = response.stdout.toString().match(jobidRegex);
+            const jobid = match ? match[1] : null;
+
+            // Ensure the job ID was captured correctly
+            expect(jobid).not.toBeNull();
+
+            const job: IJob = await GetJobs.getJob(REAL_SESSION, jobid);
+
             expect(response.status).toBe(0);
             expect(response.stderr.toString()).toBe("");
             expect(fs.existsSync(`${outdir}/JESMSGLG.txt`)).toBeTruthy();
             expect(fs.existsSync(`${outdir}/JESJCL.txt`)).toBeTruthy();
             expect(fs.existsSync(`${outdir}/JESYSMSG.txt`)).toBeTruthy();
             expect(response.stdout.toString()).toContain("Successfully downloaded");
+
+            TEST_ENVIRONMENT.resources.jobs.push(job);
         });
 
         describe("without profiles", () => {
@@ -60,7 +80,7 @@ describe("zos-jobs download output command", () => {
             beforeAll(async () => {
                 TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
                     testName: "zos_jobs_download_output_without_profiles"
-                });
+                }, REAL_SESSION = await TestEnvironment.createSession());
 
                 DEFAULT_SYSTEM_PROPS = TEST_ENVIRONMENT_NO_PROF.systemTestProperties;
             });
@@ -88,12 +108,25 @@ describe("zos-jobs download output command", () => {
                         DEFAULT_SYSTEM_PROPS.zosmf.user,
                         DEFAULT_SYSTEM_PROPS.zosmf.password,
                     ]);
+
+                // Extract the JOBID from the response output
+                const jobidRegex = /Submitted job ID: (JOB\d+)/;
+                const match = response.stdout.toString().match(jobidRegex);
+                const jobid = match ? match[1] : null;
+
+                // Ensure the job ID was captured correctly
+                expect(jobid).not.toBeNull();
+
+                const job: IJob = await GetJobs.getJob(REAL_SESSION, jobid);
+
                 expect(response.stderr.toString()).toBe("");
                 expect(response.status).toBe(0);
                 expect(fs.existsSync(`${outdir}/JESMSGLG.txt`)).toBeTruthy();
                 expect(fs.existsSync(`${outdir}/JESJCL.txt`)).toBeTruthy();
                 expect(fs.existsSync(`${outdir}/JESYSMSG.txt`)).toBeTruthy();
                 expect(response.stdout.toString()).toContain("Successfully downloaded");
+
+                TEST_ENVIRONMENT.resources.jobs.push(job);
             });
         });
     });
