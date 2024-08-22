@@ -10,7 +10,7 @@
 */
 
 import { AbstractSession } from "@zowe/imperative";
-import { IJob } from "@zowe/zos-jobs-for-zowe-sdk";
+import { ICommonJobParms, IJob } from "@zowe/zos-jobs-for-zowe-sdk";
 
 /**
  * The test environment for your test.
@@ -22,6 +22,7 @@ export interface ITestEnvironment<TestPropertiesSchema> {
         localFiles: string[];
         files: string[];
         jobs: IJob[];
+        jobData: ICommonJobParms[]; // Contains jobname and jobid
         datasets: string[];
         session?: AbstractSession;
     };

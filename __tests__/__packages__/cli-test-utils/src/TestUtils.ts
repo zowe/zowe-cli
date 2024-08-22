@@ -13,7 +13,7 @@ import * as fs from "fs";
 import { spawnSync, SpawnSyncReturns, ExecFileException } from "child_process";
 import { ITestEnvironment } from "./environment/doc/response/ITestEnvironment";
 import { AbstractSession, CommandProfiles, ICommandDefinition, IHandlerParameters, IO } from "@zowe/imperative";
-import { DeleteJobs, IDeleteJobParms, IJob } from "@zowe/zos-jobs-for-zowe-sdk";
+import { DeleteJobs, ICommonJobParms, IDeleteJobParms, IJob } from "@zowe/zos-jobs-for-zowe-sdk";
 import { Delete } from "@zowe/zos-files-for-zowe-sdk"
 import { posix } from "path";
 
@@ -64,15 +64,10 @@ export function deleteJob(session: AbstractSession, job: IJob): void {
 /**
  * Delete a job from the mainframe using Zowe SDKs - jobid, jobname
  * @param {AbstractSession} session - z/OSMF connection info
- * @param {jobName} string - jobname for job to delete
- * @param {jobId} string - jobid for job to delete
+ * @param {params} ICommonJobParms - constains jobname and jobid for job to delete
  */
-export function deleteJobCommon(session: AbstractSession, job: IJob): void {
-    const parms: IDeleteJobParms = {
-        jobid: job.jobid,  // job ID
-        jobname: job.jobname,  // job name
-    };
-    DeleteJobs.deleteJobCommon(session, parms);
+export function deleteJobCommon(session: AbstractSession, params: ICommonJobParms): void {
+    DeleteJobs.deleteJobCommon(session, params as IDeleteJobParms);
 }
 
 

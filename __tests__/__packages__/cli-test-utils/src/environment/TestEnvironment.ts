@@ -18,7 +18,7 @@ import { ISetupEnvironmentParms } from "./doc/parms/ISetupEnvironmentParms";
 import { ITestEnvironment } from "./doc/response/ITestEnvironment";
 import { TempTestProfiles } from "./TempTestProfiles";
 import { PROJECT_ROOT_DIR, TEST_RESOURCE_DIR, TEST_RESULT_DATA_DIR, TEST_USING_WORKSPACE } from "../TestConstants";
-import { runCliScript, deleteFiles, deleteJob, deleteDataset, deleteLocalFile } from "../TestUtils";
+import { runCliScript, deleteFiles, deleteJob, deleteDataset, deleteLocalFile, deleteJobCommon } from "../TestUtils";
 
 /**
  * Use the utility methods here to setup the test environment for running APIs
@@ -68,9 +68,10 @@ export class TestEnvironment {
             resources: {
                 localFiles: [],
                 files: [],
-                jobs: [],
+                jobs: [], // Array of IJob objects
+                jobData: [], // Array of objects with jobid and jobname
                 datasets: [],
-                ...(session && { session })  // Only include session if it is passed in
+                ...(session && { session }) // Only include session if it is passed in
             }
         };
 
@@ -137,6 +138,13 @@ export class TestEnvironment {
         }
         for (const job of testEnvironment.resources.jobs) {
             deleteJob(session, job);
+        }
+        for (const jobData of testEnvironment.resources.jobData) {
+            if (jobData.jobname && jobData.jobid) {
+                deleteJobCommon(session, jobData);
+            } else {
+                console.error('Error: Missing jobname or jobid for jobData:', jobData);
+            }
         }
         for (const dataset of testEnvironment.resources.datasets) {
             deleteDataset(session, dataset);
