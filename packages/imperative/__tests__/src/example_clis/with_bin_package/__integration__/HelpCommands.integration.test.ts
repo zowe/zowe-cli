@@ -9,7 +9,6 @@
 *
 */
 
-import * as fs from "fs";
 import * as T from "../../../TestUtil";
 import { IImperativeConfig } from "../../../../../src/imperative/index";
 

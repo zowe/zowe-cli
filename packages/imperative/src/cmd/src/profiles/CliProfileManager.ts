@@ -177,10 +177,13 @@ export class CliProfileManager {
         ImperativeExpect.keysToBeDefined(typeConfiguration, ["schema"], `The profile type configuration document for ` +
             `"${typeConfiguration.type}" does NOT contain a schema.`);
         this.validateSchema(typeConfiguration.schema, typeConfiguration.type);
+        // eslint-disable-next-line deprecation/deprecation
         if (!(typeConfiguration.dependencies == null)) {
+            // eslint-disable-next-line deprecation/deprecation
             ImperativeExpect.toBeAnArray(typeConfiguration.dependencies,
                 `The profile type configuration for "${typeConfiguration.type}" contains a "dependencies" property, ` +
                 `but it is not an array (ill-formed)`);
+            // eslint-disable-next-line deprecation/deprecation
             for (const dep of typeConfiguration.dependencies) {
                 ImperativeExpect.keysToBeDefinedAndNonBlank(dep, ["type"], "A dependency specified for the " +
                     "profile definitions did not contain a type.");

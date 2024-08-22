@@ -8,6 +8,7 @@
 * Copyright Contributors to the Zowe Project.
 *
 */
+/* eslint-disable deprecation/deprecation */
 
 import { inspect } from "util";
 import { TestLogger } from "../../../../../__tests__/src/TestLogger";

@@ -70,7 +70,9 @@ export class ImperativeApi {
      * @internal
      * @deprecated Use the `V1ProfileRead` class if you still need to read V1 profiles
      */
+    // eslint-disable-next-line deprecation/deprecation
     public profileManager(type: string): CliProfileManager {
+        // eslint-disable-next-line deprecation/deprecation
         return new CliProfileManager({
             type,
             typeConfigurations: this.mConfig.profiles,
