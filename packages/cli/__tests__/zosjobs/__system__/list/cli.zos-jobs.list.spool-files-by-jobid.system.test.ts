@@ -9,19 +9,18 @@
 *
 */
 
-import { ITestEnvironment, runCliScript } from "@zowe/cli-test-utils";
-import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
+import { ITestEnvironment, TestEnvironment, runCliScript } from "@zowe/cli-test-utils";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
+import { AbstractSession, TextUtils } from "@zowe/imperative";
+import { IJob, GetJobs, SubmitJobs } from "@zowe/zos-jobs-for-zowe-sdk";
 import * as fs from "fs";
-import { Session, TextUtils } from "@zowe/imperative";
-import { IJob, SubmitJobs } from "@zowe/zos-jobs-for-zowe-sdk";
-import { TEST_RESOURCES_DIR } from "../../../../../../packages/zosjobs/__tests__/__src__/ZosJobsTestConstants";
 import { join } from "path";
+import { TEST_RESOURCES_DIR } from "@zowe/zos-jobs-for-zowe-sdk/__tests__/__src__/ZosJobsTestConstants";
 
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
 let IEFBR14_JOB: string;
-let REAL_SESSION: Session;
+let REAL_SESSION: AbstractSession;
 let ACCOUNT: string;
 let JOB_NAME: string;
 let NON_HELD_JOBCLASS: string;
@@ -31,7 +30,6 @@ const LONG_TIMEOUT = 100000;
 
 const trimMessage = (message: string) => {
     // don't use more than one space or tab when checking error details
-    // this allows us to expect things like "reason: 6" regardless of how prettyjson aligns the text
     return message.replace(/( {2,})|\t/g, " ");
 };
 
@@ -41,11 +39,10 @@ describe("zos-jobs list spool-files-by-jobid command", () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
             testName: "zos_jobs_list_spool_files_by_jobid_command",
             tempProfileTypes: ["zosmf"]
-        });
+        }, REAL_SESSION = await TestEnvironment.createSession());
+
         IEFBR14_JOB = TEST_ENVIRONMENT.systemTestProperties.zosjobs.iefbr14Member;
         const defaultSystem = TEST_ENVIRONMENT.systemTestProperties;
-
-        REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
 
         ACCOUNT = defaultSystem.tso.account;
         const JOB_LENGTH = 6;
@@ -82,19 +79,29 @@ describe("zos-jobs list spool-files-by-jobid command", () => {
     });
 
     describe("response", () => {
-        it("should display the ddnames for a job", () => {
+        it("should display the ddnames for a job", async () => {
             const response = runCliScript(__dirname + "/__scripts__/spool-files-by-jobid/submit_and_list_dds.sh",
                 TEST_ENVIRONMENT, [IEFBR14_JOB]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
 
-            // TODO: Hopefully these DDs are deterministic on all of our test systems.
-            // TODO: Once available, we can submit from a local file via command
-            // TODO: with certain DDs (wanted this test to be entirely script driven
-            // TODO: to capture a "real world" scenario)
+            // Extract the JOBID using regex
+            const jobidRegex = /Submitted job ID: (JOB\d+)/;
+            const match = response.stdout.toString().match(jobidRegex);
+            const jobId = match ? match[1] : null;
+
+            // Ensure the JOBID was captured correctly
+            expect(jobId).not.toBeNull();
+
+            // Retrieve job details using the Zowe SDK
+            const job: IJob = await GetJobs.getJob(REAL_SESSION, jobId);
+
+            // Validate DDs and output
             expect(response.stdout.toString()).toContain("JESMSGLG");
             expect(response.stdout.toString()).toContain("JESJCL");
             expect(response.stdout.toString()).toContain("JESYSMSG");
+
+            TEST_ENVIRONMENT.resources.jobs.push(job);
         });
 
         it("should display the the procnames and ddnames for a job", async () => {
@@ -116,6 +123,8 @@ describe("zos-jobs list spool-files-by-jobid command", () => {
             expect(response.stdout.toString()).toContain("SYSTSPRT");
             expect(response.stdout.toString()).toContain("TSOSTEP1");
             expect(response.stdout.toString()).toContain("TSOSTEP2");
+
+            TEST_ENVIRONMENT.resources.jobs.push(job);
         }, LONG_TIMEOUT);
 
         describe("without profiles", () => {
@@ -127,7 +136,7 @@ describe("zos-jobs list spool-files-by-jobid command", () => {
             beforeAll(async () => {
                 TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
                     testName: "zos_jobs_list_spool_files_by_jobid_without_profiles"
-                });
+                }, REAL_SESSION = await TestEnvironment.createSession());
 
                 SYSTEM_PROPS = TEST_ENVIRONMENT_NO_PROF.systemTestProperties;
             });
@@ -156,9 +165,24 @@ describe("zos-jobs list spool-files-by-jobid command", () => {
                     ]);
                 expect(response.stderr.toString()).toBe("");
                 expect(response.status).toBe(0);
+
+                // Extract the JOBID using regex
+                const jobidRegex = /Submitted job ID: (JOB\d+)/;
+                const match = response.stdout.toString().match(jobidRegex);
+                const jobId = match ? match[1] : null;
+
+                // Ensure the JOBID was captured correctly
+                expect(jobId).not.toBeNull();
+
+                // Retrieve job details using the Zowe SDK
+                const job: IJob = await GetJobs.getJob(REAL_SESSION, jobId);
+
+                // Validate DDs and output
                 expect(response.stdout.toString()).toContain("JESMSGLG");
                 expect(response.stdout.toString()).toContain("JESJCL");
                 expect(response.stdout.toString()).toContain("JESYSMSG");
+
+                TEST_ENVIRONMENT_NO_PROF.resources.jobs.push(job);
             }, LONG_TIMEOUT);
         });
     });
