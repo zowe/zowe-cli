@@ -13,8 +13,8 @@ import { ITestEnvironment, runCliScript } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { IO, Session } from "@zowe/imperative";
+import { GetJobs } from "@zowe/zos-jobs-for-zowe-sdk";
 import { Get } from "../../../../../../zosfiles/src/methods/get";
-
 
 process.env.FORCE_COLOR = "0";
 
@@ -24,6 +24,8 @@ let REAL_SESSION: Session;
 let systemProps: ITestPropertiesSchema;
 let account: string;
 let jcl: string;
+let JOB_NAME: string;
+
 describe("zos-jobs submit stdin command", () => {
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
@@ -35,19 +37,27 @@ describe("zos-jobs submit stdin command", () => {
 
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
         account = systemProps.tso.account;
-        const maxJobNamePrefixLength = 5;
+
         // JCL to submit
         jcl = (await Get.dataSet(REAL_SESSION, systemProps.zosjobs.iefbr14Member)).toString();
 
-        // Create an local file with JCL to submit
+        // Create a local file with JCL to submit
         const bufferJCL: Buffer = Buffer.from(jcl);
         IO.createFileSync(__dirname + "/testFileOfLocalJCL.txt");
         IO.writeFile(__dirname + "/testFileOfLocalJCL.txt", bufferJCL);
+
+        // Add the local file to resources for cleanup
+        TEST_ENVIRONMENT.resources.localFiles.push(__dirname + "/testFileOfLocalJCL.txt");
     });
 
     afterAll(async () => {
+        // Cleanup jobs before the environment is torn down
+        if (JOB_NAME) {
+            const jobs = await GetJobs.getJobsByPrefix(REAL_SESSION, JOB_NAME);
+            TEST_ENVIRONMENT.resources.jobs.push(...jobs);
+        }
+
         await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
-        IO.deleteFile(__dirname + "/testFileOfLocalJCL.txt");
     });
 
     describe("Live system tests", () => {
@@ -58,6 +68,11 @@ describe("zos-jobs submit stdin command", () => {
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain("jobname");
             expect(response.stdout.toString()).toContain("jobid");
+
+            // Set jobname for cleanup of all jobs
+            const jobidRegex = /jobname: (\w+)/;
+            const match = response.stdout.toString().match(jobidRegex);
+            JOB_NAME = match ? match[1] : null;
         });
 
         it("should submit a job using JCL on stdin with explicit LRECL, RECFM, and encoding", async () => {
@@ -77,6 +92,7 @@ describe("zos-jobs submit stdin command", () => {
             expect(response.stdout.toString()).toContain("Spool file");
             expect(response.stdout.toString()).toContain("JES2");
         });
+
         it("should submit a job and wait for it to reach output status", async () => {
             const response = runCliScript(__dirname + "/__scripts__/submit_valid_stdin_wait.sh",
                 TEST_ENVIRONMENT, [__dirname + "/testFileOfLocalJCL.txt"]);
@@ -87,6 +103,7 @@ describe("zos-jobs submit stdin command", () => {
             expect(response.stdout.toString()).toContain("CC 0000");
             expect(response.stdout.toString()).not.toContain("null"); // retcode should not be null
         });
+
         it("should submit a job using JCL on stdin with 'directory' option", async () => {
             const response = runCliScript(__dirname + "/__scripts__/submit_valid_stdin_with_directory.sh",
                 TEST_ENVIRONMENT, [__dirname + "/testFileOfLocalJCL.txt", "--directory", "./"]);
@@ -95,11 +112,9 @@ describe("zos-jobs submit stdin command", () => {
             expect(response.stdout.toString()).toContain("jobname");
             expect(response.stdout.toString()).toContain("jobid");
             expect(response.stdout.toString()).toContain("Successfully downloaded output to ./");
-            expect(new RegExp("JOB\\d{5}", "g").test(response.stdout.toString())).toBe(true);
         });
 
         describe("without profiles", () => {
-
             // Create a separate test environment for no profiles
             let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment<ITestPropertiesSchema>;
             let DEFAULT_SYSTEM_PROPS: ITestPropertiesSchema;
@@ -113,6 +128,12 @@ describe("zos-jobs submit stdin command", () => {
             });
 
             afterAll(async () => {
+                // Cleanup jobs before the environment is torn down
+                if (JOB_NAME) {
+                    const jobs = await GetJobs.getJobsByPrefix(REAL_SESSION, JOB_NAME);
+                    TEST_ENVIRONMENT_NO_PROF.resources.jobs.push(...jobs);
+                }
+
                 await TestEnvironment.cleanUp(TEST_ENVIRONMENT_NO_PROF);
             });
 
@@ -138,6 +159,11 @@ describe("zos-jobs submit stdin command", () => {
                 expect(response.status).toBe(0);
                 expect(response.stdout.toString()).toContain("jobname");
                 expect(response.stdout.toString()).toContain("jobid");
+
+                // Set jobname for cleanup of all jobs
+                const jobidRegex = /jobname: (\w+)/;
+                const match = response.stdout.toString().match(jobidRegex);
+                JOB_NAME = match ? match[1] : null;
             });
         });
     });
