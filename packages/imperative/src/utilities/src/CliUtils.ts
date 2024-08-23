@@ -108,6 +108,8 @@ export class CliUtils {
     /**
      * Accepts the full set of loaded profiles and attempts to match the option names supplied with profile keys.
      *
+     * @deprecated Use `getOptValuesFromConfig` instead to load from team config
+     *
      * @param {Map<string, IProfile[]>} profiles - the map of type to loaded profiles. The key is the profile type
      * and the value is an array of profiles loaded for that type.
      *
@@ -214,7 +216,6 @@ export class CliUtils {
         }
 
         // Build an object that contains all the options loaded from config
-        const fulfilled: string[] = [];
         let fromCnfg: any = {};
         for (const profileType of allTypes) {
             const opt = ProfileUtils.getProfileOptionAndAlias(profileType)[0];
@@ -224,16 +225,13 @@ export class CliUtils {
             const profileTypePrefix = profileType + "_";
             let p: any = {};
             if (args[opt] != null && config.api.profiles.exists(args[opt])) {
-                fulfilled.push(profileType);
                 p = config.api.profiles.get(args[opt]);
             } else if (args[opt] != null && !args[opt].startsWith(profileTypePrefix) &&
                 config.api.profiles.exists(profileTypePrefix + args[opt])) {
-                fulfilled.push(profileType);
                 p = config.api.profiles.get(profileTypePrefix + args[opt]);
             } else if (args[opt] == null &&
                 config.properties.defaults[profileType] != null &&
                 config.api.profiles.exists(config.properties.defaults[profileType])) {
-                fulfilled.push(profileType);
                 p = config.api.profiles.defaultGet(profileType);
             }
             fromCnfg = { ...p, ...fromCnfg };
@@ -247,14 +245,13 @@ export class CliUtils {
             const profileCamel = fromCnfg[cases.camelCase];
 
             if ((profileCamel !== undefined || profileKebab !== undefined) &&
-                (!Object.prototype.hasOwnProperty.call(args, cases.kebabCase) &&
-                 !Object.prototype.hasOwnProperty.call(args, cases.camelCase))) {
+                (!Object.hasOwn(args, cases.kebabCase) && !Object.hasOwn(args, cases.camelCase))) {
 
                 // If both case properties are present in the profile, use the one that matches
                 // the option name explicitly
-                const value = profileKebab !== undefined && profileCamel !== undefined ?
-                    opt.name === cases.kebabCase ? profileKebab : profileCamel :
-                    profileKebab !== undefined ? profileKebab : profileCamel;
+                const shouldUseKebab = profileKebab !== undefined && profileCamel !== undefined ?
+                    opt.name === cases.kebabCase : profileKebab !== undefined;
+                const value = shouldUseKebab ? profileKebab : profileCamel;
                 const keys = CliUtils.setOptionValue(opt.name,
                     "aliases" in opt ? opt.aliases : [],
                     value
