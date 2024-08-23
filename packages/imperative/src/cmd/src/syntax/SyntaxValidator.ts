@@ -234,6 +234,14 @@ export class SyntaxValidator {
                     }
                     if (positional.type === "number") {
                         valid = this.validateNumeric(commandArguments[positional.name], positional, responseObject, true) && valid;
+                        // Convert to number for backwards compatability
+                        if (valid) {
+                            const changedOptions: ICommandArguments = CliUtils.setOptionValue(positional.name,
+                                [], parseFloat(commandArguments[positional.name]));
+                            for (const [k, v] of Object.entries(changedOptions)) {
+                                commandArguments[k] = v;
+                            }
+                        }
                     }
 
                     if (!(positional.stringLengthRange == null) &&
@@ -373,11 +381,17 @@ export class SyntaxValidator {
                             commandArguments[optionDef.name]);
                     }
                 } else if (optionDef.type === "boolean") {
-                    valid = this.validateBoolean(commandArguments[optionDef.name], optionDef,
-                        responseObject) && valid;
+                    valid = this.validateBoolean(commandArguments[optionDef.name], optionDef, responseObject) && valid;
                 } else if (optionDef.type === "number") {
-                    valid = this.validateNumeric(commandArguments[optionDef.name], optionDef,
-                        responseObject) && valid;
+                    valid = this.validateNumeric(commandArguments[optionDef.name], optionDef, responseObject) && valid;
+                    // Convert to numbers for backwards compatibility - sets all possible values
+                    if (valid) {
+                        const changedOptions: ICommandArguments = CliUtils.setOptionValue(optionDef.name,
+                            optionDef.aliases ?? [], parseFloat(commandArguments[optionDef.name]));
+                        for (const [k, v] of Object.entries(changedOptions)) {
+                            commandArguments[k] = v;
+                        }
+                    }
                 }
                 /**
                  * Validate that the option's value is valid json.

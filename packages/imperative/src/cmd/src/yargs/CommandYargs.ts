@@ -41,11 +41,10 @@ export class CommandYargs extends AbstractCommandYargs {
                 if (!(option.type == null)) {
                     // don't let yargs handle any types that we are validating ourselves
                     // and don't use custom types as the yargs type since yargs won't understand
-                    if (option.type !== "number" &&
-                        option.type !== "json") {
-                        definition.type = option.type as any;
-                    } else if (option.type === "json") {
+                    if (option.type === "json" || option.type === "number") {
                         definition.type = "string";
+                    } else {
+                        definition.type = option.type as any;
                     }
                 }
                 // If this is a boolean type option, default it to undefined so that we can distinguish
