@@ -21,6 +21,7 @@ process.env.FORCE_COLOR = "0";
 let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
 let REAL_SESSION: AbstractSession;
 let JOB_NAME: string;
+const jobNameRegex = /jobname: (\w+)/;
 
 let account: string;
 let jclMember: string;
@@ -51,8 +52,7 @@ describe("zos-jobs submit data-set command", () => {
                 TEST_ENVIRONMENT, [jclMember]);
 
             // Set jobname for cleanup of all jobs
-            const jobidRegex = /jobname: (\w+)/;
-            const match = response.stdout.toString().match(jobidRegex);
+            const match = response.stdout.toString().match(jobNameRegex);
             JOB_NAME = match ? match[1] : null;
 
             expect(response.stderr.toString()).toBe("");

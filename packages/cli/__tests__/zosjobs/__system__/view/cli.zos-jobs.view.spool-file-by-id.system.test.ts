@@ -14,17 +14,20 @@ import { TestEnvironment } from "../../../../../../__tests__/__src__/environment
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { Session, TextUtils } from "@zowe/imperative";
 import * as fs from "fs";
-import { IJob, SubmitJobs } from "@zowe/zos-jobs-for-zowe-sdk";
+import { IJob, SubmitJobs, GetJobs } from "@zowe/zos-jobs-for-zowe-sdk";
 import { TEST_RESOURCES_DIR } from "../../../../../../packages/zosjobs/__tests__/__src__/ZosJobsTestConstants";
 import { join } from "path";
 
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
-let IEFBR14_JOB: string;
 let REAL_SESSION: Session;
+let IEFBR14_JOB: string;
 let ACCOUNT: string;
 let JOB_NAME: string;
 let NON_HELD_JOBCLASS: string;
+
+// Regex to match any job name that starts with "IEFBR14"
+const jobNameRegex = /IEFBR14\w*/;
 
 describe("zos-jobs view spool-file-by-id command", () => {
     // Create the unique test environment
@@ -34,10 +37,9 @@ describe("zos-jobs view spool-file-by-id command", () => {
             tempProfileTypes: ["zosmf"]
         });
 
+        REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
         IEFBR14_JOB = TEST_ENVIRONMENT.systemTestProperties.zosjobs.iefbr14Member;
         const defaultSystem = TEST_ENVIRONMENT.systemTestProperties;
-        REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
-
         ACCOUNT = defaultSystem.tso.account;
         const JOB_LENGTH = 6;
         JOB_NAME = REAL_SESSION.ISession.user.substring(0, JOB_LENGTH).toUpperCase() + "SF";
@@ -45,6 +47,11 @@ describe("zos-jobs view spool-file-by-id command", () => {
     });
 
     afterAll(async () => {
+        if (JOB_NAME) {
+            const jobs = await GetJobs.getJobsByPrefix(REAL_SESSION, JOB_NAME);
+            TEST_ENVIRONMENT.resources.jobs.push(...jobs);
+        }
+
         await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
     });
 
@@ -56,13 +63,17 @@ describe("zos-jobs view spool-file-by-id command", () => {
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain("!!!SPOOL FILE");
             expect(response.stdout.toString()).toContain("PGM=IEFBR14");
+
+            // Set jobname for cleanup of all jobs
+            const match = response.stdout.toString().match(jobNameRegex);
+            JOB_NAME = match ? match[0] : null;
         });
 
         it("should be able to view the contents of the requested DD", async () => {
             // Construct the JCL
             const iefbr14Jcl = fs.readFileSync(join(TEST_RESOURCES_DIR, "jcl/multiple_procs.jcl")).toString();
             const renderedJcl = TextUtils.renderWithMustache(iefbr14Jcl,
-                {JOBNAME: JOB_NAME, ACCOUNT, JOBCLASS: NON_HELD_JOBCLASS});
+                { JOBNAME: JOB_NAME, ACCOUNT, JOBCLASS: NON_HELD_JOBCLASS });
 
             // Submit the job
             const job: IJob = await SubmitJobs.submitJclNotify(REAL_SESSION, renderedJcl);
@@ -92,6 +103,11 @@ describe("zos-jobs view spool-file-by-id command", () => {
             });
 
             afterAll(async () => {
+                if (JOB_NAME) {
+                    const jobs = await GetJobs.getJobsByPrefix(REAL_SESSION, JOB_NAME);
+                    TEST_ENVIRONMENT_NO_PROF.resources.jobs.push(...jobs);
+                }
+
                 await TestEnvironment.cleanUp(TEST_ENVIRONMENT_NO_PROF);
             });
 
@@ -117,6 +133,10 @@ describe("zos-jobs view spool-file-by-id command", () => {
                 expect(response.status).toBe(0);
                 expect(response.stdout.toString()).toContain("!!!SPOOL FILE");
                 expect(response.stdout.toString()).toContain("PGM=IEFBR14");
+
+                // Set jobname for cleanup of all jobs
+                const match = response.stdout.toString().match(jobNameRegex);
+                JOB_NAME = match ? match[0] : null;
             });
         });
     });

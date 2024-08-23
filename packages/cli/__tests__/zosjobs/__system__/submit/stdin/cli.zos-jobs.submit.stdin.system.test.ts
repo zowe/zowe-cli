@@ -25,7 +25,8 @@ let systemProps: ITestPropertiesSchema;
 let account: string;
 let jcl: string;
 let JOB_NAME: string;
-
+const jobNameRegex = /jobname: (\w+)/;
+s
 describe("zos-jobs submit stdin command", () => {
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
@@ -70,8 +71,7 @@ describe("zos-jobs submit stdin command", () => {
             expect(response.stdout.toString()).toContain("jobid");
 
             // Set jobname for cleanup of all jobs
-            const jobidRegex = /jobname: (\w+)/;
-            const match = response.stdout.toString().match(jobidRegex);
+            const match = response.stdout.toString().match(jobNameRegex);
             JOB_NAME = match ? match[1] : null;
         });
 
@@ -161,8 +161,7 @@ describe("zos-jobs submit stdin command", () => {
                 expect(response.stdout.toString()).toContain("jobid");
 
                 // Set jobname for cleanup of all jobs
-                const jobidRegex = /jobname: (\w+)/;
-                const match = response.stdout.toString().match(jobidRegex);
+                const match = response.stdout.toString().match(jobNameRegex);
                 JOB_NAME = match ? match[1] : null;
             });
         });
