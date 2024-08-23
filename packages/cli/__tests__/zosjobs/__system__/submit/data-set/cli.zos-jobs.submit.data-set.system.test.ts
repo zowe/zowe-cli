@@ -50,6 +50,7 @@ describe("zos-jobs submit data-set command", () => {
             const response = runCliScript(__dirname + "/__scripts__/submit_valid_data_set.sh",
                 TEST_ENVIRONMENT, [jclMember]);
 
+            // Set jobname for cleanup of all jobs
             const jobidRegex = /jobname: (\w+)/;
             const match = response.stdout.toString().match(jobidRegex);
             JOB_NAME = match ? match[1] : null;

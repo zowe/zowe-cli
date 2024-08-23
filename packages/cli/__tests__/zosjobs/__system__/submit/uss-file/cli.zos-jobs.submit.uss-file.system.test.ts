@@ -13,16 +13,20 @@ import { ITestEnvironment, runCliScript } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { Session } from "@zowe/imperative";
+import * as path from "path";  // Import path module for path handling
+import { GetJobs } from "@zowe/zos-jobs-for-zowe-sdk";
 
 process.env.FORCE_COLOR = "0";
 
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
+let REAL_SESSION: Session;
+let JOB_NAME: string;
 
 let account: string;
 let jclMember: string;
 let ussFile: string;
-let REAL_SESSION: Session;
+
 describe("zos-jobs submit uss-file command", () => {
     // Create the unique test environment
     beforeAll(async () => {
@@ -34,9 +38,18 @@ describe("zos-jobs submit uss-file command", () => {
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
         account = TEST_ENVIRONMENT.systemTestProperties.tso.account;
         ussFile = TEST_ENVIRONMENT.systemTestProperties.zosjobs.iefbr14USSFile;
+
+        // Convert the USS file path to the correct format for Unix if needed
+        ussFile = path.posix.resolve(ussFile);
     });
 
     afterAll(async () => {
+        // Retrieve jobs by prefix and clean them up
+        if (JOB_NAME) {
+            const jobs = await GetJobs.getJobsByPrefix(REAL_SESSION, JOB_NAME);
+            TEST_ENVIRONMENT.resources.jobs = jobs;
+        }
+
         await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
     });
 
@@ -44,6 +57,12 @@ describe("zos-jobs submit uss-file command", () => {
         it("should submit a job in an existing valid uss file", async () => {
             const response = runCliScript(__dirname + "/__scripts__/submit_valid_uss_file.sh",
                 TEST_ENVIRONMENT, [ussFile]);
+
+            // Set jobname for cleanup of all jobs
+            const jobidRegex = /jobname: (\w+)/;
+            const match = response.stdout.toString().match(jobidRegex);
+            JOB_NAME = match ? match[1] : null;
+
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain("jobname");
@@ -116,6 +135,12 @@ describe("zos-jobs submit uss-file command", () => {
             });
 
             afterAll(async () => {
+                // Retrieve jobs by prefix and clean them up
+                if (JOB_NAME) {
+                    const jobs = await GetJobs.getJobsByPrefix(REAL_SESSION, JOB_NAME);
+                    TEST_ENVIRONMENT_NO_PROF.resources.jobs = jobs;
+                }
+
                 await TestEnvironment.cleanUp(TEST_ENVIRONMENT_NO_PROF);
             });
 
@@ -137,6 +162,12 @@ describe("zos-jobs submit uss-file command", () => {
                         SYSTEM_PROPS.zosmf.user,
                         SYSTEM_PROPS.zosmf.password,
                     ]);
+
+                // Set jobname for cleanup of all jobs
+                const jobidRegex = /jobname: (\w+)/;
+                const match = response.stdout.toString().match(jobidRegex);
+                JOB_NAME = match ? match[1] : null;
+
                 expect(response.stderr.toString()).toBe("");
                 expect(response.status).toBe(0);
                 expect(response.stdout.toString()).toContain("jobname");
