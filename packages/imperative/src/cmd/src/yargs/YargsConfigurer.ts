@@ -40,6 +40,11 @@ export class YargsConfigurer {
     ) {
     }
 
+    public static readonly yargsConfiguration: Readonly<Record<string, boolean>> = {
+        "parse-numbers": false,
+        "parse-positional-numbers": false
+    };
+
     public configure() {
 
         /**
@@ -50,6 +55,7 @@ export class YargsConfigurer {
         this.yargs.help(false);
         this.yargs.version(false);
         this.yargs.showHelpOnFail(false);
+        this.yargs.parserConfiguration(YargsConfigurer.yargsConfiguration);
         // finally, catch any undefined commands
         this.yargs.command({
             command: "*",
