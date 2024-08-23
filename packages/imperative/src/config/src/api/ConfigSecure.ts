@@ -22,6 +22,7 @@ import { CredentialManagerFactory } from "../../../security";
 import { ConfigUtils } from "../ConfigUtils";
 import { ZoweUserEvents } from "../../../events/src/EventConstants";
 import { EventOperator } from "../../../events/src/EventOperator";
+import { IConfigLayer } from "../doc/IConfigLayer";
 
 /**
  * API Class for manipulating config layers.
@@ -240,6 +241,17 @@ export class ConfigSecure extends ConfigApi {
             }
         }
         return secureProps;
+    }
+
+    /**
+     * Retrieve secure properties for a givne layer path
+     *
+     * @param layerPath Path of the layer to get secure properties for
+     * @returns the secure properties for the given layer
+     */
+    public getSecureFieldsForLayer(layerPath: string): IConfigSecureProperties {
+        const secureLayer = Object.keys(this.mConfig.mSecure).find(osLocation => osLocation === layerPath);
+        return secureLayer ? { [secureLayer] : this.mConfig.mSecure[secureLayer] } : null;
     }
 
     /**

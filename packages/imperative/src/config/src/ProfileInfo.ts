@@ -16,7 +16,7 @@ import * as lodash from "lodash";
 import * as semver from "semver";
 
 // for ProfileInfo structures
-import { IProfArgAttrs } from "./doc/IProfArgAttrs";
+import { IProfArgAttrs, IProfDataType } from "./doc/IProfArgAttrs";
 import { IProfAttrs } from "./doc/IProfAttrs";
 import { IArgTeamConfigLoc, IProfLoc, IProfLocOsLoc, IProfLocOsLocLayer, ProfLocType } from "./doc/IProfLoc";
 import { IProfMergeArgOpts } from "./doc/IProfMergeArgOpts";
@@ -50,7 +50,7 @@ import { IProfInfoRemoveKnownPropOpts } from "./doc/IProfInfoRemoveKnownPropOpts
 import { ConfigUtils } from "./ConfigUtils";
 import { ConfigBuilder } from "./ConfigBuilder";
 import { IAddProfTypeResult, IExtenderTypeInfo, IExtendersJsonOpts } from "./doc/IExtenderOpts";
-import { IConfigLayer } from "..";
+import { IConfigLayer, ISecureFieldDetails } from "..";
 import { Constants } from "../../constants";
 
 /**
@@ -1387,6 +1387,57 @@ export class ProfileInfo {
 
         return finalSchema;
     }
+
+    // _______________________________________________________________________
+    /**
+     * List of secure properties with more details, like value, location, and type
+     *
+     * @param opts The user and global flags that specify one of the four
+     *             config files (aka layers).
+     * @returns Array of secure property details
+     */
+    public secureFieldsWithDetails(opts?: { user: boolean; global: boolean }): ISecureFieldDetails[] {
+        const config = this.getTeamConfig();
+        const layer = opts ? config.findLayer(opts.user, opts.global) : config.layerActive();
+        const fields = config.api.secure.findSecure(layer.properties.profiles, "profiles");
+        const vault = config.api.secure.getSecureFieldsForLayer(layer.path);
+
+        const response: ISecureFieldDetails[] = [];
+
+        // Search the vault for each secure field
+        fields.forEach(fieldPath => {
+            // Scan the cached contents of the vault
+            for (const [loc, val] of Object.entries(vault)) {
+                // Search inside the secure fields for this layer
+                Object.entries(val).map(([propPath, propValue]) => {
+                    if (propPath === fieldPath) {
+                        response.push({
+                            path: fieldPath,
+                            name: fieldPath.split(".properties.")[1],
+                            type: this.argDataType(typeof propValue),
+                            value: propValue as IProfDataType,
+                            loc,
+                        });
+                    }
+                });
+            }
+        });
+
+        fields.forEach(fieldPath => {
+            if (response.find(details => details.path === fieldPath) == null) {
+                response.push({
+                    path: fieldPath,
+                    name: fieldPath.split(".properties.")[1],
+                    type: undefined,
+                    value: undefined,
+                    loc: undefined
+                });
+            }
+        });
+
+        return response;
+    }
+
 
     // _______________________________________________________________________
     /**

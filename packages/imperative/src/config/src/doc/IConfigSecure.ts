@@ -9,6 +9,16 @@
 *
 */
 
+import { IProfArgValue, IProfDataType } from "./IProfArgAttrs";
+
 export type IConfigSecureProperties = { [key: string]: any };
 
 export type IConfigSecure = { [path: string]: IConfigSecureProperties };
+
+export interface ISecureFieldDetails {
+    path: string;
+    name: string;
+    type: IProfDataType;
+    value: IProfArgValue;
+    loc: string;
+}
