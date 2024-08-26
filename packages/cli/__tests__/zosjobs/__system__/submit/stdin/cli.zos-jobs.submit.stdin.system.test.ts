@@ -26,7 +26,7 @@ let account: string;
 let jcl: string;
 let JOB_NAME: string;
 const jobNameRegex = /jobname: (\w+)/
-s
+
 describe("zos-jobs submit stdin command", () => {
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
