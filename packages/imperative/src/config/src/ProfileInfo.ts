@@ -1400,7 +1400,7 @@ export class ProfileInfo {
         const config = this.getTeamConfig();
         const layer = opts ? config.findLayer(opts.user, opts.global) : config.layerActive();
         const fields = config.api.secure.findSecure(layer.properties.profiles, "profiles");
-        const vault = config.api.secure.getSecureFieldsForLayer(layer.path);
+        const vault = config.api.secure.secureFieldsForLayer(layer.path);
 
         const response: IProfArgAttrs[] = [];
 

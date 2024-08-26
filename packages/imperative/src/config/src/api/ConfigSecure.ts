@@ -248,7 +248,7 @@ export class ConfigSecure extends ConfigApi {
      * @param layerPath Path of the layer to get secure properties for
      * @returns the secure properties for the given layer, or null if not found
      */
-    public getSecureFieldsForLayer(layerPath: string): IConfigSecureProperties {
+    public secureFieldsForLayer(layerPath: string): IConfigSecureProperties {
         const secureLayer = Object.keys(this.mConfig.mSecure).find(osLocation => osLocation === layerPath);
         return secureLayer ? { [secureLayer] : this.mConfig.mSecure[secureLayer] } : null;
     }

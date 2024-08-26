@@ -80,7 +80,7 @@ describe("Config secure tests", () => {
         config.mLayers = [
             {
                 path: "fake fakety fake",
-                properties: { profiles: {fake: { secure: ["fake"], properties: {fake: "fake"}}}}
+                properties: { profiles: { fake: { secure: ["fake"], properties: { fake: "fake" } } } }
             }
         ];
         config.mVault = mockVault;
@@ -137,10 +137,10 @@ describe("Config secure tests", () => {
         jest.spyOn(fs, "readFileSync");
         let secureError: any;
         const vault: IConfigVault = {
-            load: jest.fn().mockRejectedValue(new ImperativeError({msg: "The vault failed"})),
+            load: jest.fn().mockRejectedValue(new ImperativeError({ msg: "The vault failed" })),
             save: jest.fn()
         };
-        const config = await Config.load(MY_APP, {noLoad: true, vault: vault});
+        const config = await Config.load(MY_APP, { noLoad: true, vault: vault });
         config.mVault = vault;
         try {
             await config.api.secure.load(vault);
@@ -165,6 +165,21 @@ describe("Config secure tests", () => {
             "profiles.fruit.properties.secret",
             "profiles.fruit.profiles.grape.properties.secret2"
         ]);
+    });
+
+    it("should list all secure fields for a layer", async () => {
+        jest.spyOn(Config, "search").mockReturnValue(projectConfigPath);
+        jest.spyOn(fs, "existsSync")
+            .mockReturnValueOnce(false)     // Project user layer
+            .mockReturnValueOnce(true)      // Project layer
+            .mockReturnValueOnce(false)     // User layer
+            .mockReturnValueOnce(false);    // Global layer
+        jest.spyOn(fs, "readFileSync");
+        const config = await Config.load(MY_APP);
+        config.mSecure = secureConfigs;
+        expect(config.api.secure.secureFieldsForLayer(projectConfigPath)).toEqual({ [projectConfigPath]: { [securePropPath]: "area51" } });
+        expect(config.api.secure.secureFieldsForLayer(projectUserConfigPath)).toEqual(null);
+        config.mSecure = {};
     });
 
     it("should list all secure fields for a profile", async () => {
@@ -282,7 +297,7 @@ describe("Config secure tests", () => {
 
     it("rmUnusedProps should delete properties for files that do not exist", () => {
         const config = new (Config as any)();
-        config.mSecure = {...secureConfigs};
+        config.mSecure = { ...secureConfigs };
         jest.spyOn(fs, "existsSync").mockReturnValueOnce(true).mockReturnValueOnce(false);
         const prunedFiles = config.api.secure.rmUnusedProps();
         expect(prunedFiles).toEqual(["fakePath"]);
