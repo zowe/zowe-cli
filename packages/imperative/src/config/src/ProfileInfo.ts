@@ -50,7 +50,7 @@ import { IProfInfoRemoveKnownPropOpts } from "./doc/IProfInfoRemoveKnownPropOpts
 import { ConfigUtils } from "./ConfigUtils";
 import { ConfigBuilder } from "./ConfigBuilder";
 import { IAddProfTypeResult, IExtenderTypeInfo, IExtendersJsonOpts } from "./doc/IExtenderOpts";
-import { IConfigLayer, ISecureFieldDetails } from "..";
+import { IConfigLayer } from "..";
 import { Constants } from "../../constants";
 
 /**
@@ -1396,13 +1396,13 @@ export class ProfileInfo {
      *             config files (aka layers).
      * @returns Array of secure property details
      */
-    public secureFieldsWithDetails(opts?: { user: boolean; global: boolean }): ISecureFieldDetails[] {
+    public secureFieldsWithDetails(opts?: { user: boolean; global: boolean }): IProfArgAttrs[] {
         const config = this.getTeamConfig();
         const layer = opts ? config.findLayer(opts.user, opts.global) : config.layerActive();
         const fields = config.api.secure.findSecure(layer.properties.profiles, "profiles");
         const vault = config.api.secure.getSecureFieldsForLayer(layer.path);
 
-        const response: ISecureFieldDetails[] = [];
+        const response: IProfArgAttrs[] = [];
 
         // Search the vault for each secure field
         fields.forEach(fieldPath => {
@@ -1412,11 +1412,15 @@ export class ProfileInfo {
                 Object.entries(val).map(([propPath, propValue]) => {
                     if (propPath === fieldPath) {
                         response.push({
-                            path: fieldPath,
-                            name: fieldPath.split(".properties.")[1],
-                            type: this.argDataType(typeof propValue),
-                            value: propValue as IProfDataType,
-                            loc,
+                            argName: fieldPath.split(".properties.")[1],
+                            // name: ,
+                            dataType: this.argDataType(typeof propValue),
+                            argValue: propValue as IProfDataType,
+                            argLoc: {
+                                locType: ProfLocType.TEAM_CONFIG,
+                                osLoc: [loc],
+                                jsonLoc: fieldPath
+                            },
                         });
                     }
                 });
@@ -1424,13 +1428,16 @@ export class ProfileInfo {
         });
 
         fields.forEach(fieldPath => {
-            if (response.find(details => details.path === fieldPath) == null) {
+            if (response.find(details => details.argLoc.jsonLoc === fieldPath) == null) {
                 response.push({
-                    path: fieldPath,
-                    name: fieldPath.split(".properties.")[1],
-                    type: undefined,
-                    value: undefined,
-                    loc: undefined
+                    argName: fieldPath.split(".properties.")[1],
+                    dataType: undefined,
+                    argValue: undefined,
+                    argLoc: {
+                        locType: ProfLocType.TEAM_CONFIG,
+                        osLoc: [],
+                        jsonLoc: fieldPath
+                    }
                 });
             }
         });
