@@ -6,6 +6,8 @@ All notable changes to the Imperative package will be documented in this file.
 
 - LTS Breaking: Fixed command parsing error where `string` typed options would be converted into `number`s if the value provided by the user consists only of numeric characters. [#1881](https://github.com/zowe/zowe-cli/issues/1881)
 - LTS Breaking: Renamed `Proxy` class to `ProxySettings` to avoid name conflict with JS built-in `Proxy` object. [#2230](https://github.com/zowe/zowe-cli/issues/2230)
+- Enhancement: Added a new SDK method (`ConfigSecure.getSecureFieldsForLayer`) to allow developers to get vault content in the context of the specified layer. [#2206](https://github.com/zowe/zowe-cli/issues/2206)
+- Enhancement: Added a new SDK method (`ProfileInfo.secureFieldsWithDetails`) to allow developers to the more details regarding the securely stored properties. [#2206](https://github.com/zowe/zowe-cli/issues/2206)
 
 ## `8.0.0-next.202408191401`
 
