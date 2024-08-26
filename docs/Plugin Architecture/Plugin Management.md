@@ -155,12 +155,6 @@ cli plugin list
 
 No arguments are sent to this command as it is meant to list all installed plugins and their status. That is good enough for now and could be built upon later.
 
-#### Health Command
-
-The health command will list the health of all plugins or the plugins specified when sent to the command. This is useful as a first step in troubleshooting a plugin or base CLI as things such as missing methods and classes. Plugins also will need to implement a health check method that provides further diagnostic information about the plugin.
-
-This type of command is needed because it is feasible that a user could be using a plugin for some amount of time with no problem and then some kind of hiccup happens on their machine which breaks the plugin. The health check would be able to help the user quickly find the problem in their environment / plugin to get a quicker resolution to their problem. The information returned by this command could also be used in a bug report to the base CLI or plugin developer.
-
 ##### Command Usage
 ```commandline
 cli plugin health [plugin...]
@@ -180,20 +174,6 @@ cli plugin version <plugin>
 ```
 
 - `<plugin>` is the name of an installed plugin. If this plugin isn't installed, the command will report an error.
-
-#### Repair Command
-
-This command will attempt to repair a plugin.
-
-It could be feasible that their might be some scenarios where a plugin might become corrupt or broken over time due to unforseen circumstances. Thus it would be ideal if there was a command that existed to easily fix a plugin.
-
-***NOTE:** This is not expected to be part of the first iteration.*
-
-Plugins would have to implement a corresponding `fix` method if they have the ability to repair themselves. One example of how this could be useful:
-
-Assume that a plugin didn't properly install a node_module or somehow one became missing. The plugin could implement a fix method, which could call it's health check to determine what the problem is. After determining that a required module isn't installed, the plugin could attempt to install all missing modules. 
-
-This could also have been done by uninstalling and reinstalling the plugin but that could be considered a painfull process depending on the plugin. The repair command would make this process a bit easier.
 
 ##### Command Usage
 ```commandline

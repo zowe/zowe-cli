@@ -34,6 +34,7 @@ The Zowe CLI monorepo contains:
     * `@zowe/zos-console-for-zowe-sdk`
     * `@zowe/zos-files-for-zowe-sdk`
     * `@zowe/zos-jobs-for-zowe-sdk`
+    * `@zowe/zos-logs-for-zowe-sdk`
     * `@zowe/zosmf-for-zowe-sdk`
     * `@zowe/zos-tso-for-zowe-sdk`
     * `@zowe/zos-uss-for-zowe-sdk`
@@ -47,6 +48,8 @@ The Zowe CLI monorepo contains:
 A CLI plugin monorepo should contain only two packages:
 * One CLI package (e.g., `@zowe/cics-for-zowe-cli`)
 * One SDK package (e.g., `@zowe/cics-for-zowe-sdk`)
+
+A CLI plugin monorepo may also contain a VSCode Extension.
 
 ## Package Versioning
 

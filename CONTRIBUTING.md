@@ -4,6 +4,7 @@ This document is a living summary of conventions and best practices for developm
   - [SIGN ALL OF YOUR GIT COMMITS](#sign-all-of-your-git-commits)
   - [Understanding Packages and Plug-ins](#understanding-packages-and-plug-ins)
   - [Pull Requests](#pull-requests)
+  - [Dependencies](#dependencies)
   - [Contributing to Core Functionality](#contributing-to-core-functionality)
   - [General Guidelines](#general-guidelines)
   - [Changelog Update Guidelines](#changelog-update-guidelines)
@@ -61,7 +62,7 @@ For more information and guidelines for setting up your project, see [Packages a
 
 Determine if the infrastructure enhancement applies to Zowe CLI or Imperative CLI Framework, or if it is best suited as a plug-in to the core.
 
-Zowe CLI is built on [Imperative CLI Framework](https://github.com/zowe/imperative/wiki). Most Zowe CLI core functionality is contained within the framework. Work in, or submit issues to, the Imperative CLI Framework repository when you want to enhance the following core functionalities:
+Zowe CLI is built on [Imperative CLI Framework](https://github.com/zowe/zowe-cli/wiki). Most Zowe CLI core functionality is contained within the framework, such as:
 
   - REST client
   - Logging
@@ -75,8 +76,17 @@ Zowe CLI is built on [Imperative CLI Framework](https://github.com/zowe/imperati
 Consider the following when you interact with pull requests:
 
 - Pull request reviewers should be assigned to a same-team member.
-- Pull requests should remain open for at least 24 hours, or until close of business next business day (accounting for weekends and holidays).
+- Pull requests should have at least 2 reviews before merging.
 - Anyone can comment on a pull request to request delay on merging or to get questions answered.
+
+## Dependencies
+
+The CLI and Zowe Plug-ins use strict version numbers for dependencies.
+Any SDKs should not pin dependencies unless it is absolutely required in order to function.
+  - ^ should be used to specify any dependency with the same major version.
+  - ~ should be used to specify any dependency with the same minor version.
+
+For Zowe organization repositories, all dependencies must be compatible with the EPL-2.0 license.
 
 ## General Guidelines
 
@@ -89,13 +99,17 @@ The following list describes general conventions for contributing to Zowe CLI:
 - Throw ImperativeError (or perhaps a wrapping of these) instead of throwing Error objects for automatic logging and node-report captures.
 - Provide adequate logging to diagnose problems that happen at external customer sites.
 - Avoid using/referencing to `zowe` or `Zowe CLI` within help, source file names, and errors - this name is subject to change. For example use `cli` instead.
-- Keep "packages" small and independent without cross dependencies (e.g. `zosjobs` logically should not depend on `zosfiles` package)
+- Keep "packages" small and independent, without cross dependencies whenever possible (e.g. `zosjobs` logically should not depend on `zosfiles` package, but may rely on `core` for core z/OSMF functionality)
   - When a package is dependent on another package, import the through the dependent package's interface (`index.ts`)
   e.g. `packages/zosjobs/src/GetJobs.ts` will import the `rest` package via:
     ```typescript
-       import { ZosmfRestClient } from "../../../rest";
+       import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
     ```
       NOT via:
+    ```typescript
+    import { ZosmfRestClient } from   "../../../rest";
+     ```
+      OR via:
     ```typescript
     import { ZosmfRestClient } from   "../../../rest/src/ZosmfRestClient";
      ```
@@ -195,9 +209,9 @@ Open an issue in the [docs-site repository](https://github.com/zowe/docs-site) i
 
   - End-user documentation on the Zowe Doc Site so that users can learn about your plug-in. Use existing plug-in topics as a model.
 
-  - A readme.md file within the plug-in repository that contains information for developers (overview, how to build from source, and how to run tests, at minimum). For example, see [the CICS plug-in readme](https://github.com/zowe/zowe-cli-cics-plugin#zowe-cli-plug-in-for-ibm-cics).
+  - A readme.md file within the plug-in repository that contains information for developers (overview, how to build from source, and how to run tests, at minimum). For example, see [the CICS plug-in readme](https://github.com/zowe/cics-for-zowe-client/tree/main/packages/cli#IBM-CICS-Plug-in-for-Zowe-CLI).
 
-  - a CONTRIBUTING.md file within the plug-in repository that lists specific considerations for contributing code to your plug-in (if any), and also links to the core CLI contribution guidelines. For an example, see [the CICS plug-in contribution guidelines](https://github.com/zowe/zowe-cli-cics-plugin/blob/master/CONTRIBUTING.md).
+  - a CONTRIBUTING.md file within the plug-in repository that lists specific considerations for contributing code to your plug-in (if any), and also links to the core CLI contribution guidelines. For an example, see [the CICS plug-in contribution guidelines](https://github.com/zowe/cics-for-zowe-client/blob/main/CONTRIBUTING.md).
 
 - When contributing **code/functionality to the core CLI**, we recommend that you provide the following:
 
@@ -207,7 +221,7 @@ In addition to external documentation, please thoroughly comment your code for f
 
  ### JS Documentation
 
-- Use jsdoc annotations - [document this](https://marketplace.visualstudio.com/items?itemName=joelday.docthis) makes extensive use of jsdoc tags.
+- Use jsdoc annotations
   - Common tags to use, `@static`, `@memberof`, `@returns`, `@params`, `@class`, `@exports`, `@interface`, `@types`, `@throws`, `@link`
 - CLI auto-generated documentation is created via command definitions
 - [tsdoc](https://typedoc.org/) is used to generate html documentation

@@ -52,15 +52,21 @@ We tag various releases of our product in an NPM registry. End users install the
 
    This tag points to the "Active Development" version of the CLI. Breaking changes can be introduced to this version at any time.
 
-* **`zowe-v1-lts`**
+* **`zowe-v2-lts`**
 
    This tag points to the current Long Term Support (LTS) version of the product.
 
    **Note:** This version (what the tag points to) will be updated to introduce backward-compatible enhancements and bug fixes, but *not* breaking changes.
 
-* **`lts-incremental`**
+* **`zowe-v1-lts`**
 
-   This tag points to a a previous Long Term Support (LTS) version of the product.
+   This tag points to the stable Long Term Support (LTS) version of the product.
+
+   **Note:** This version (what the tag points to) will be updated to introduce backward-compatible bug fixes, but *not* enhancements or breaking changes.
+
+* **`lts-incremental` *DEPRECATED***
+
+   This tag points to a previous Long Term Support (LTS) version of the product.
 
    **Note:** This version (what the tag points to) will only be updated to provide bug fixes.
 
@@ -79,148 +85,38 @@ See the [example timeline](#example-timeline) for examples that show how the abo
 Our versioning scheme has the following requirements:
 
 * New features are not introduced for bug fixes.
-* Support two stable releases: `@zowe-v1-lts` and `@lts-incremental`
+* Support two stable releases: `@zowe-v2-lts` and `@zowe-v1-lts`
 * Each release must be supported for a minimum of one calendar year.
 
 ## Tentative Release Schedule
 
-The following table shows a tentative Zowe CLI release schedule:
-
-| Zowe CLI Version | Validation Begin | Validation End | Begin Support | End Support |
-| ------------- | ----------- | ----------- | ----------- | ----------- |
-| 1.0.x         | n/a         | n/a         | 05-30-2018  | *05-31-2019 |
-| 2.x.x         | n/a         | 01-21-2019  | 01-22-2019  | 01-22-2020  |
-| `<MAJOR>`.x.x | *01-22-2019 | *01-21-2020 | *01-22-2020 | *01-22-2020 |
-
-**Notes:**
-* The Date format is `MM-DD-YYYY`.
-* This release schedule is subject to change.
-* **`*`** This is a rough calculation.
-* **`<MAJOR>`** The BreakingChange number validated when support begins.
+See the [Zowe Community Release Schedule](https://github.com/zowe/community/blob/master/Project%20Management/Schedule/Zowe%20PI%20%26%20Sprint%20Cadence.md#Releases)
 
 ## Tag Usage
 
 The following is a list of commands that users issue to install product versions:
 
-* To obtain the most current community edition version:
+* To obtain the most current version:
 
   `npm install -g @zowe/cli` OR `npm install -g @zowe/cli@latest`
 
 * To obtain the supported incremental version:
 
-  `npm install -g @zowe/cli@zowe-v1-lts`
+  `npm install -g @zowe/cli@zowe-v2-lts`
 
 * To obtain the supported stable version:
 
-  `npm install -g @brightside/core@lts-incremental`
-
-
-## Example timeline
-
-The version numbering below is not an exact sequence; it just represents possible sequences to help illustrate how this versioning process works.
-
-In this scenario, the following versions were released before this versioning scheme was implemented. The newest patches would have previously been labeled LTS-stable.
-
-```
-- 1.0.0
-    - 1.0.1
-    - 1.0.2
-    - ...
-    - 1.0.10  @lts-stable
-```
-
-A breaking change is a trigger for a new LTS release. Thereafter, the newest non-breaking enhancement or bug fix would have been tagged with LTS-incremental.
-
-```
-- 2.0.0
-    - 2.0.1
-- 2.1.0
-    - 2.1.1
-    - 2.1.2
-    - 2.1.3
-- 2.2.0
-    - 2.2.1
-    - 2.2.2
-    - 2.2.3
-    - 2.2.4  @lts-incremental
-```
-
-Product Management (and the passing of another calendar year) determined that 1.0 should be decommissioned. Version 2.3.0 became LTS-incremental. Version 2.2.2 could have been tagged as LTS-stable. Thereafter, the LTS-stable tag would have moved forward with the newest 2.2.x patch above, and the LTS-incremental tag would have moved forward with the newest 2.x.x version below.
-
-```
-- 2.2.0
-    - 2.2.1
-    - 2.2.2
-    - 2.2.3
-    - 2.2.4  @lts-stable
-- 2.3.0
-    - 2.3.1
-    - 2.3.2
-- 2.4.0
-- 2.5.0      @lts-incremental
-```
-
-Assume that the following example is our current point in time. Assume that 2.x has been decommissioned, and the 3.2.0 release is tagged as LTS-stable. Only patches (3.2.x) will be delivered for this LTS release. The LTS-stable tag will move to each such new patch release.
-
-```
-- 3.0.0
-    - 3.0.1
-    - 3.0.2
-- 3.1.0
-    - 3.1.1
-    - 3.1.2
-- 3.2.0      @LTS-stable
-```
-
-When 4.0.0 was delivered, it was tagged as LTS-incremental. Thereafter, each new non-breaking enhancement or bug fix was tagged as LTS-incremental. At this point in time, the 4.1.3 version is tagged as LTS-incremental. Additional non-breaking enhancements and bug fixes may be introduced in the future, and LTS-incremental will move to that new version.
-
-```
-- 4.0.0
-    - 4.0.1
-- 4.1.0
-    - 4.1.1
-    - 4.1.2
-    - 4.1.3   @lts-incremental
-```
-
-As we move forward in this scenario, development is also in progress on a 5.x feature-set which includes breaking changes. With each merge to our master branch, a new alpha version with a pre-release string is published. For example `5.4.0-alpha.201912301259`. It will be tagged as `@daily` to prevent NPM from automatically moving the latest tag to this new version.
-
-To provide an opportunity for validation of that new beta release, we wait for one sprint. At the end of each sprint, we republish the previous beta release with no pre-release string (5.6.0 in the example below) and label that release as `@latest`. We then move the `@beta` label to the newest pre-release produced in the recently completed sprint.
-
-```
-- 5.0.0
-    - Numerous pre-releases
-- 5.1.0
-    - Numerous pre-releases
-    - 5.1.1
-- 5.2.0
-    - Numerous pre-releases
-- 5.3.0
-    - Numerous pre-releases
-- 5.4.0
-    - Numerous pre-releases
-- 5.5.0                         @latest - Was assigned at the end of sprint N.
-- 5.6.0-FirstDateInSprintN
-- 5.6.0-SecondDateInSprintN
-- 5.6.0-DateAtEndOfSprintN      @beta - Was assigned at end of sprint N.
-- 5.7.0-FirstDateInSprintN+1
-- 5.7.0-SecondDateInSprintN+1
-- 5.7.0-DateAtEndOfSprintN+1    Now move @beta to 5.7.0-DateAtEndOfSprintN+1
-- 5.6.0                         Version 5.6.0 is published at the end of sprint N+1
-                                Now move @latest to 5.6.0
-```
+  `npm install -g @zowe/cli@zowe-v1-lts`
 
 ## Specifying Compatible Versions in package.json Files
 
-NPM packages typically depend on multiple other NPM packages. For example, Zowe CLI depends on our Imperative CLI Framework (@brightside/imperative). Similarly, Zowe CLI plug-ins depend on both Zowe CLI and Imperative CLI Framework (@brightside/core and @brightside/imperative).
+NPM packages typically depend on multiple other NPM packages. For example, Zowe CLI depends on our Imperative CLI Framework (@zowe/imperative). Similarly, Zowe CLI plug-ins can depend on both Zowe CLI and Imperative CLI Frameworks (@zowe/core-for-zowe-sdk and @zowe/imperative).
 
 For each NPM package on which Zowe depends, an application specifies the version number with which it is compatible. The version specifier can be one specific version number (for example, `1.2.3`), but it does not have to be specific. If the version is too specific, application developers can be burdened with frequent updates to their package.json file to stay up-to-date with every patch produced by the dependent package. If the version is too broad, applications might be paired with a version of the dependent package that has new changes, which can break the application.
 
 ## Versions for Zowe CLI Dependencies within Plug-ins
 
-In the peerDependencies property of a plug-in's package.json file, the plug-in specifies the versions of Zowe CLI and Imperative CLI Framework with which it is compatible.
-
-**Note:** `peerDependencies` will not be a requirement after **[issue 99](https://github.com/zowe/imperative/issues/99)** is resolved.
+In the peerDependencies property of a plug-in's package.json file, the plug-in specifies the versions of the Imperative CLI Framework with which it is compatible.
 
 When you install a plug-in into Zowe CLI, the plug-in always uses the version of Zowe CLI APIs that are part of the installed application. It also uses the version of Imperative APIs that were installed as part of the Zowe CLI application. Plug-ins never get a different version of Zowe CLI or Imperative, regardless of the versions specified by the plug-in. However, the Zowe CLI plug-in installation program compares the versions specified by the plug-in with the actual versions of Zowe CLI and Imperative. It will issue warnings when incompatible versions were specified. This notifies the end user and the plug-in developer that corrective action is required to ensure that the plug-in works reliably with Zowe CLI.
 
@@ -230,7 +126,7 @@ We recommend the following scheme for specifying Zowe CLI dependencies within pl
 
 ## Recommendation for Supported Versions of Plug-ins
 
-In a supported release, a plug-in should specify that it wants versions of Zowe CLI and Imperative that remain backward-compatible with the versions that were in use when the plug-in reached its supported state. This can be expressed using the following format for both Zowe CLI and Imperative:
+In a supported release, a plug-in should specify that it wants versions of Imperative that remain backward-compatible with the versions that were in use when the plug-in reached its supported state. This can be expressed using the following format for Imperative:
 
 ```
 BreakingChangeUpdate.x OR BreakingChangeUpdate.Enhancement.x
@@ -242,7 +138,7 @@ BreakingChangeUpdate.x OR BreakingChangeUpdate.Enhancement.x
 2.x OR 2.2.x
 ```
 
-At the time that this document was published, Zowe CLI was at version `1.0.7` and Imperative was at `1.0.8`. Both packages' peerDependencies versions in a supported plug-in can be specified as `1.x`. This indicates that we anticipate that the plug-in will work with all upcoming bug fixes and with all new features that do not break backward-compatibility, such as `1.1.0`, or `1.4.6`, but not with `2.0.0` or greater). By specifying a version of `1.x`, the plug-in does not have to update its version string and republish frequently just to avoid compatibility warnings when patches and backward-compatible enhancements of Zowe CLI or Imperative are published. For a supported plug-in, this ties the plug-in to a reasonable range of non-breaking changes in Zowe CLI and Imperative. By the time that the next feature release of the plug-in be published, either Zowe CLI or Imperative might be specified as `2.x` and you would lock in that level of releases for the life of that supported version of the plug-in.
+At the time that this document was published, Imperative was at version `1.0.8`. Imperative's peerDependencies version in a supported plug-in can be specified as `1.x`. This indicates that we anticipate that the plug-in will work with all upcoming bug fixes and with all new features that do not break backward-compatibility, such as `1.1.0`, or `1.4.6`, but not with `2.0.0` or greater). By specifying a version of `1.x`, the plug-in does not have to update its version string and republish frequently just to avoid compatibility warnings when patches and backward-compatible enhancements of Imperative are published. For a supported plug-in, this ties the plug-in to a reasonable range of non-breaking changes in Zowe CLI and Imperative. By the time that the next feature release of the plug-in be published, Imperative might be specified as `2.x` and you would lock in that level of releases for the life of that supported version of the plug-in.
 
 ## Recommendation for Pre-release Versions of plug-ins
 
@@ -269,7 +165,7 @@ You can specify pre-release versions for plug-ins using one of the following met
     **Example:**
 
     ```
-    @brightside/imperative": "1.1.0-next.201808241438"
+    @zowe/imperative": "1.1.0-next.201808241438"
     ```
 
     Such a version matches only this one snapshot of the Zowe CLI or Imperative pre-release. The plug-in will have to change the version string with each new pre-release snapshot. This requires frequent updates to the plug-in's package.json file, but helps to ensure that the plug-in will never be accidentally compatible with a later stable version of that dependency.
@@ -279,7 +175,7 @@ You can specify pre-release versions for plug-ins using one of the following met
     **Example:**
 
     ```
-    @brightside/imperative": ">=1.1.0-0
+    @zowe/imperative": ">=1.1.0-0
     ```
 
     Such a version matches every pre-release snapshot of `1.1.0`. However, it also matches every new feature release of the dependency (for example, `1.2.0`, `2.5.3`, `14.3.8`, and so on). A plug-in developer never has to change that version string during the pre-release development stage of the plug-in. However, the plug-in developer must remember to change the dependency version to a string such as `1.x` before publishing the supported release of the plug-in to avoid unintended compatibility with future versions of the dependent package.

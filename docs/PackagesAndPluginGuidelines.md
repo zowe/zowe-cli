@@ -11,7 +11,8 @@ Plug-ins should use the [Zowe CLI Plug-in Starter Project](https://github.com/zo
 
 ## Plug-in Repositories
 
-Name plug-in repositories according to the Zowe CLI `[group]` name. For example, the `cics` plug-in repository name is `/zowe-cli-cics-plugin`.
+Name plug-in repositories according to the Zowe CLI `[group]` name. For example, the `cics` plug-in repository name is `zowe-cli-cics-plugin`.
+Plug-in repositories may also have a different name for monorepos, such as `cics-for-zowe-clients`.
 
 **Note:** See [Command Format Standards](CommandFormatStandards.md) for details about `[group]`.
 
@@ -25,6 +26,8 @@ The following directories and files are required in packages and plug-ins:
   - Do NOT place additional `.definition` files in this directory. 
 - A `README.md` for instructions about building, testing, etc... For more information, see [Documentation Guidelines](../CONTRIBUTING.md#documentation-guidelines).
 - An `index.ts` for exports from your package or plug-in.
+
+These directories may be under a subpath, such as `packages/cli`.
 
 ### Package Directories
 
@@ -62,9 +65,10 @@ packages
     |   └── __system__
     |       ├── api 
     |       └── cli
-    └── index.ts
+    ├── index.ts
     └── README.md
 ```
+
 
 ### Example Plug-in Structure
 The following diagram illustrates the plug-in directory structure
@@ -109,7 +113,7 @@ cli
 └── Group.definition.ts
 ```
 
-## Profiles 
+## Profiles & Team Configuration
 Define profile types on the base imperative configuration document (found in the root `imperative/` directory). Packages and plug-ins can define their own profile type, or, they can take advantage of a previously defined profile type. For example, the `zos-files` and `zos-console` share a `zosmf` profile because both profile types use z/OSMF APIs.
 
-For more information, see [Profile Guidelines](ProfileGuidelines.md).
+For more information, see [Profile Guidelines](ProfileGuidelines.md) and [Using Team Configuration](./Using%20Team%20Configuration.md).
