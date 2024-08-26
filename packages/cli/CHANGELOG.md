@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated `micromatch` dependency for technical currency. [#2242](https://github.com/zowe/zowe-cli/pull/2242)
+
 ## `6.40.28`
 
 - BugFix: Resolved technical currency by updating `tar` transitive dependency. [#2110](https://github.com/zowe/zowe-cli/pull/2110)
