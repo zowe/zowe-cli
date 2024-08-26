@@ -301,7 +301,6 @@ describe("cmd-cli profile mapping", () => {
         const moldType = "none";
         const response = runCliScript(__dirname + "/__scripts__/profiles/name_type_undefined.sh",
             TEST_ENVIRONMENT.workingDir, [color, description, moldType]);
-
         // name and type should be undefined since we did not specify them via command line
         expect(response.stderr.toString()).toBe("");
         expect(response.stdout.toString()).toContain("Name: undefined");
@@ -317,7 +316,6 @@ describe("cmd-cli profile mapping", () => {
         const cliType = "Big";
         const response = runCliScript(__dirname + "/__scripts__/profiles/name_type_specify.sh",
             TEST_ENVIRONMENT.workingDir, [color, description, moldType, cliName, cliType]);
-
         // name and type should be undefined since we did not specify them via command line
         expect(response.stderr.toString()).toBe("");
         expect(response.stdout.toString()).toContain("Name: " + cliName);

@@ -68,6 +68,7 @@ export const ValidationTestCommand: ICommandDefinition = {
                 name: "should-be-number",
                 description: "should be a numerical value",
                 type: "number",
+                aliases: ["sbn"]
             },
             {
                 name: "dog-type",

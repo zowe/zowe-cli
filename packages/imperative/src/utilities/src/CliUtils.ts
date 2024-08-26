@@ -21,8 +21,7 @@ import { ICommandArguments } from "../../cmd/src/doc/args/ICommandArguments";
 import { IProfile } from "../../profiles";
 import { IPromptOptions } from "../../cmd/src/doc/response/api/handler/IPromptOptions";
 import { read } from "read";
-
-
+import { ICommandDefinition } from "../../cmd";
 /**
  * Cli Utils contains a set of static methods/helpers that are CLI related (forming options, censoring args, etc.)
  * @export
@@ -370,6 +369,21 @@ export class CliUtils {
         return TextUtils.chalk[color](headerText);
     }
 
+    public static generateDeprecatedMessage(cmdDefinition: ICommandDefinition, showWarning?: boolean): string {
+
+        let message = "";
+        if (cmdDefinition.deprecatedReplacement != null) {
+            const noNewlineInText = cmdDefinition.deprecatedReplacement.replace(/\n/g, " ");
+            if(showWarning) message += "\n\nWarning: This " + cmdDefinition.type + " has been deprecated.\n";
+            if (cmdDefinition.deprecatedReplacement === "") {
+                message += "Obsolete component. No replacement exists";
+            } else {
+                message += "Recommended replacement: " + noNewlineInText;
+            }
+        }
+        return message;
+    }
+
     /**
      * Display a message when the command is deprecated.
      * @static
@@ -378,20 +392,14 @@ export class CliUtils {
      * @memberof CliUtils
      */
     public static showMsgWhenDeprecated(handlerParms: IHandlerParameters) {
-        if (handlerParms.definition.deprecatedReplacement) {
+        if (handlerParms.definition.deprecatedReplacement || handlerParms.definition.deprecatedReplacement === "") {
             // form the command that is deprecated
-            let oldCmd: string | number;
-            if (handlerParms.positionals.length >= 1) {
-                oldCmd = handlerParms.positionals[0];
-            }
-            if (handlerParms.positionals.length >= 2) {
-                oldCmd = oldCmd + " " + handlerParms.positionals[1];
-            }
-
+            const oldCmd = handlerParms.positionals.join(" ");
             // display the message
             handlerParms.response.console.error("\nWarning: The command '" + oldCmd + "' is deprecated.");
-            handlerParms.response.console.error("Recommended replacement: " +
-                handlerParms.definition.deprecatedReplacement);
+            // Use consolidated deprecated message logic
+            const deprecatedMessage = CliUtils.generateDeprecatedMessage(handlerParms.definition);
+            handlerParms.response.console.error(deprecatedMessage);
         }
     }
 

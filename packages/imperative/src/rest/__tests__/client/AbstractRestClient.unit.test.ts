@@ -31,7 +31,7 @@ import { AbstractRestClient } from "../../src/client/AbstractRestClient";
 import * as os from "os";
 import { join } from "path";
 import { IO } from "../../../io";
-import { Proxy } from "../../src/client/Proxy";
+import { ProxySettings } from "../../src/client/ProxySettings";
 import { HttpsProxyAgent } from "https-proxy-agent";
 
 /**
@@ -1436,8 +1436,8 @@ describe("AbstractRestClient tests", () => {
 
             beforeEach(() => {
                 jest.clearAllMocks();
-                getSystemProxyUrlSpy = jest.spyOn(Proxy, "getSystemProxyUrl");
-                getProxyAgentSpy = jest.spyOn(Proxy, "getProxyAgent");
+                getSystemProxyUrlSpy = jest.spyOn(ProxySettings, "getSystemProxyUrl");
+                getProxyAgentSpy = jest.spyOn(ProxySettings, "getProxyAgent");
                 setCertPemAuthSpy = jest.spyOn(privateRestClient, "setCertPemAuth");
             });
 

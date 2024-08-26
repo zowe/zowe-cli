@@ -26,7 +26,9 @@ jobs:
       uses: dtolnay/rust-toolchain@stable
 
     - name: Check Node Vulnerabilities
-      run: npm audit --production --audit-level=moderate
+      run: |
+        npm install --package-lock-only --ignore-scripts --no-audit --save-prod --workspace=packages/imperative ./packages/imperative/web-help
+        npm audit --production --audit-level=moderate
 
     # TODO Consider using actions-rs/audit-check after https://github.com/actions-rs/audit-check/issues/116 is fixed
     - name: Check Daemon Vulnerabilities
