@@ -1,3 +1,4 @@
+
 /*
 * This program and the accompanying materials are made available under the terms of the
 * Eclipse Public License v2.0 which accompanies this distribution, and is available at
@@ -9,7 +10,7 @@
 *
 */
 
-import { Session } from "@zowe/imperative";
+import { Imperative, Session } from "@zowe/imperative";
 import { ITestEnvironment, runCliScript } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
@@ -40,12 +41,15 @@ describe("Mount and unmount file system", () => {
 
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
         fsname = getUniqueDatasetName(defaultSystem.zosmf.user);
+        TEST_ENVIRONMENT.resources.datasets.push(fsname); // Track the dataset for cleanup
 
         const dirname = getUniqueDatasetName(defaultSystem.zosmf.user).split(".")[1];
         mountPoint = "//tmp/" + dirname;
+        TEST_ENVIRONMENT.resources.files.push(mountPoint); // Track the USS directory for cleanup
+
         const sshCommand = "mkdir " + mountPoint;
 
-        const response = runCliScript(__dirname + "/__scripts__/command/command_setup.sh",
+        runCliScript(__dirname + "/__scripts__/command/command_setup.sh",
             TEST_ENVIRONMENT, [sshCommand, fsname,
                 defaultSystem.ssh.host,
                 defaultSystem.ssh.port,
@@ -54,14 +58,19 @@ describe("Mount and unmount file system", () => {
     });
 
     afterAll(async () => {
-        const sshCommand = "rmdir " + mountPoint;
-        const response = runCliScript(__dirname + "/__scripts__/command/command_teardown.sh",
-            TEST_ENVIRONMENT, [sshCommand, fsname,
-                defaultSystem.ssh.host,
-                defaultSystem.ssh.port,
-                defaultSystem.ssh.user,
-                defaultSystem.ssh.password]);
+        try {
+            const sshCommand = "rmdir " + mountPoint;
+            runCliScript(__dirname + "/__scripts__/command/command_teardown.sh",
+                TEST_ENVIRONMENT, [sshCommand, fsname,
+                    defaultSystem.ssh.host,
+                    defaultSystem.ssh.port,
+                    defaultSystem.ssh.user,
+                    defaultSystem.ssh.password]);
+        } catch (err) {
+            Imperative.console.info(`Error cleaning up USS directory: ${err}`);
+        }
 
+        // Clean up any resources tracked by the test environment
         await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
     });
 
