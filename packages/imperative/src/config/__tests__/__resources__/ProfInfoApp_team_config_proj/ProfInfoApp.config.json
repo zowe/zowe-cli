@@ -72,6 +72,11 @@
         },
         "typeless": {
             "properties": {}
+        },
+        "LPAR007": {
+            "type": "zosmf",
+            "properties": {},
+            "secure": ["string", "boolean", "number", "missing", "host", "port", "responseFormatHeader"]
         }
     },
     "defaults": {

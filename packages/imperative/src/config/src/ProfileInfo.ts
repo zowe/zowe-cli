@@ -1406,25 +1406,21 @@ export class ProfileInfo {
 
         // Search the vault for each secure field
         fields.forEach(fieldPath => {
-            // Scan the cached contents of the vault
-            for (const [loc, val] of Object.entries(vault)) {
-                // Search inside the secure fields for this layer
-                Object.entries(val).map(([propPath, propValue]) => {
-                    if (propPath === fieldPath) {
-                        response.push({
-                            argName: fieldPath.split(".properties.")[1],
-                            // name: ,
-                            dataType: this.argDataType(typeof propValue),
-                            argValue: propValue as IProfDataType,
-                            argLoc: {
-                                locType: ProfLocType.TEAM_CONFIG,
-                                osLoc: [loc],
-                                jsonLoc: fieldPath
-                            },
-                        });
-                    }
-                });
-            }
+            // Search inside the secure fields for this layer
+            Object.entries(vault).map(([propPath, propValue]) => {
+                if (propPath === fieldPath) {
+                    response.push({
+                        argName: fieldPath.split(".properties.")[1],
+                        dataType: this.argDataType(typeof propValue),
+                        argValue: propValue as IProfDataType,
+                        argLoc: {
+                            locType: ProfLocType.TEAM_CONFIG,
+                            osLoc: [layer.path],
+                            jsonLoc: fieldPath
+                        },
+                    });
+                }
+            });
         });
 
         fields.forEach(fieldPath => {
@@ -1435,7 +1431,7 @@ export class ProfileInfo {
                     argValue: undefined,
                     argLoc: {
                         locType: ProfLocType.TEAM_CONFIG,
-                        osLoc: [],
+                        osLoc: [layer.path],
                         jsonLoc: fieldPath
                     }
                 });

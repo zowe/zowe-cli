@@ -177,7 +177,7 @@ describe("Config secure tests", () => {
         jest.spyOn(fs, "readFileSync");
         const config = await Config.load(MY_APP);
         config.mSecure = secureConfigs;
-        expect(config.api.secure.secureFieldsForLayer(projectConfigPath)).toEqual({ [projectConfigPath]: { [securePropPath]: "area51" } });
+        expect(config.api.secure.secureFieldsForLayer(projectConfigPath)).toEqual({ [securePropPath]: "area51" });
         expect(config.api.secure.secureFieldsForLayer(projectUserConfigPath)).toEqual(null);
         config.mSecure = {};
     });
