@@ -376,7 +376,7 @@ describe("TeamConfig ProfileInfo tests", () => {
             // Project Team dos exist, but has no secure properties
             expect(profInfo.secureFieldsWithDetails({ user: false, global: false })).toEqual([]);
         });
-        fit("should return secure fields for the active layer even if they have no secure values stored in the vault", async () => {
+        it("should return secure fields for the active layer even if they have no secure values stored in the vault", async () => {
             const profInfo = createNewProfInfo(teamProjDir);
             await profInfo.readProfilesFromDisk();
 
