@@ -370,12 +370,16 @@ describe("TeamConfig ProfileInfo tests", () => {
             const profInfo = createNewProfInfo(teamProjDir);
             await profInfo.readProfilesFromDisk();
 
+            // Temporarily assume that there are no secure properties for this test only
+            profInfo.getTeamConfig().mLayers[1].properties.profiles["LPAR007"].secure = [];
+
             // Project User does not exist
             expect(profInfo.secureFieldsWithDetails({ user: true, global: false })).toEqual([]);
 
             // Project Team dos exist, but has no secure properties
             expect(profInfo.secureFieldsWithDetails({ user: false, global: false })).toEqual([]);
         });
+
         it("should return secure fields for the active layer even if they have no secure values stored in the vault", async () => {
             const profInfo = createNewProfInfo(teamProjDir);
             await profInfo.readProfilesFromDisk();
@@ -401,10 +405,10 @@ describe("TeamConfig ProfileInfo tests", () => {
                 getPropAttr("string", "area51"),
                 getPropAttr("boolean", true),
                 getPropAttr("number", 1234),
-                getPropAttr("missing", undefined, null),
+                getPropAttr("missing-after-this", undefined, null),
                 getPropAttr("host", undefined, "string"),
                 getPropAttr("port", undefined, "number"),
-                getPropAttr("responseFormatHeader", undefined, "boolean"),
+                getPropAttr("rejectUnauthorized", undefined, "boolean"),
             ]);
 
             profInfo.getTeamConfig().mSecure = {};
@@ -420,7 +424,7 @@ describe("TeamConfig ProfileInfo tests", () => {
             const expectedDefaultProfileNameDummy = "LPAR4";
             let actualDefaultProfiles = 0;
             let expectedProfileNames = ["LPAR1", "LPAR2", "LPAR3", "LPAR1.tsoProfName", "LPAR1.tsoProfName.tsoSubProfName",
-                "base_glob", "LPAR4", "LPAR5"];
+                "base_glob", "LPAR4", "LPAR5", "LPAR007"];
 
             const profInfo = createNewProfInfo(teamProjDir);
             await profInfo.readProfilesFromDisk();
@@ -460,7 +464,7 @@ describe("TeamConfig ProfileInfo tests", () => {
             const desiredProfType = "zosmf";
             const expectedName = "LPAR1";
             const expectedDefaultProfiles = 1;
-            let expectedProfileNames = ["LPAR1", "LPAR2", "LPAR3", "LPAR2_home", "LPAR5"];
+            let expectedProfileNames = ["LPAR1", "LPAR2", "LPAR3", "LPAR2_home", "LPAR5", "LPAR007"];
             let actualDefaultProfiles = 0;
 
             const profInfo = createNewProfInfo(teamProjDir);
@@ -494,7 +498,7 @@ describe("TeamConfig ProfileInfo tests", () => {
             const desiredProfType = "zosmf";
             const expectedName = "LPAR1";
             const expectedDefaultProfiles = 1;
-            let expectedProfileNames = ["LPAR1", "LPAR2", "LPAR3", "LPAR5"];
+            let expectedProfileNames = ["LPAR1", "LPAR2", "LPAR3", "LPAR5", "LPAR007"];
             let actualDefaultProfiles = 0;
 
             const profInfo = createNewProfInfo(teamProjDir);

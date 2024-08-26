@@ -1170,7 +1170,7 @@ export class ProfileInfo {
                         if (semver.major(typeInfo.schema.version) != semver.major(prevTypeVersion)) {
                             // Warn user if new major schema version is specified
                             infoMsg =
-                            `Profile type ${profileType} was updated from schema version ${prevTypeVersion} to ${typeInfo.schema.version}.\n` +
+                                `Profile type ${profileType} was updated from schema version ${prevTypeVersion} to ${typeInfo.schema.version}.\n` +
                                 `The following applications may be affected: ${typeMetadata.from.filter((src) => src !== typeInfo.sourceApp)}`;
                         }
                     } else if (semver.major(prevTypeVersion) > semver.major(typeInfo.schema.version)) {
@@ -1405,29 +1405,34 @@ export class ProfileInfo {
         const response: IProfArgAttrs[] = [];
 
         // Search the vault for each secure field
-        fields.forEach(fieldPath => {
-            // Search inside the secure fields for this layer
-            Object.entries(vault).map(([propPath, propValue]) => {
-                if (propPath === fieldPath) {
-                    response.push({
-                        argName: fieldPath.split(".properties.")[1],
-                        dataType: this.argDataType(typeof propValue),
-                        argValue: propValue as IProfDataType,
-                        argLoc: {
-                            locType: ProfLocType.TEAM_CONFIG,
-                            osLoc: [layer.path],
-                            jsonLoc: fieldPath
-                        },
-                    });
-                }
+        if (vault) {
+            fields.forEach(fieldPath => {
+                // Search inside the secure fields for this layer
+                Object.entries(vault).map(([propPath, propValue]) => {
+                    if (propPath === fieldPath) {
+                        const dataType = ConfigSchema.findPropertyType(fieldPath, layer.properties, this.buildSchema([], layer)) as IProfDataType;
+
+                        response.push({
+                            argName: fieldPath.split(".properties.")[1],
+                            dataType: dataType ?? this.argDataType(typeof propValue),
+                            argValue: propValue as IProfDataType,
+                            argLoc: {
+                                locType: ProfLocType.TEAM_CONFIG,
+                                osLoc: [layer.path],
+                                jsonLoc: fieldPath
+                            },
+                        });
+                    }
+                });
             });
-        });
+        }
 
         fields.forEach(fieldPath => {
             if (response.find(details => details.argLoc.jsonLoc === fieldPath) == null) {
+                const dataType = ConfigSchema.findPropertyType(fieldPath, layer.properties, this.buildSchema([], layer)) as IProfDataType ?? null;
                 response.push({
                     argName: fieldPath.split(".properties.")[1],
-                    dataType: undefined,
+                    dataType,
                     argValue: undefined,
                     argLoc: {
                         locType: ProfLocType.TEAM_CONFIG,

@@ -76,7 +76,15 @@
         "LPAR007": {
             "type": "zosmf",
             "properties": {},
-            "secure": ["string", "boolean", "number", "missing", "host", "port", "responseFormatHeader"]
+            "secure": [
+                "string",
+                "boolean",
+                "number",
+                "missing-after-this",
+                "host",
+                "port",
+                "rejectUnauthorized"
+            ]
         }
     },
     "defaults": {
