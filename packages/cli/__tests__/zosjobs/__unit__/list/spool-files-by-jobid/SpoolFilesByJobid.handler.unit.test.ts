@@ -15,10 +15,7 @@ import { GetJobs } from "@zowe/zos-jobs-for-zowe-sdk";
 import { GetJobsData } from "../../../__resources__/GetJobsData";
 import { SpoolFilesByJobidDefinition } from "../../../../../src/zosjobs/list/spool-files-by-jobid/SpoolFilesByJobid.definition";
 import * as SpoolFilesHandler from "../../../../../src/zosjobs/list/spool-files-by-jobid/SpoolFilesByJobid.handler";
-import {
-    UNIT_TEST_PROFILES_ZOSMF,
-    UNIT_TEST_ZOSMF_PROF_OPTS
-} from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
+import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../../__tests__/__src__/TestConstants";
 import { mockHandlerParameters } from "@zowe/cli-test-utils";
 
 // Disable coloring for the snapshots
@@ -27,8 +24,7 @@ process.env.FORCE_COLOR = "0";
 const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
     arguments: UNIT_TEST_ZOSMF_PROF_OPTS,
     positionals: ["zos-jobs", "list", "spool-files"],
-    definition: SpoolFilesByJobidDefinition,
-    profiles: UNIT_TEST_PROFILES_ZOSMF
+    definition: SpoolFilesByJobidDefinition
 });
 
 describe("zos-jobs list spool-files-by-jobid handler", () => {

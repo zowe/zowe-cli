@@ -15,17 +15,13 @@ import { ListDefinedSystems } from "@zowe/zosmf-for-zowe-sdk";
 import { ICommandHandler, IHandlerParameters } from "@zowe/imperative";
 import CmdHandler from "../../../../../src/zosmf/list/systems/Systems.handler";
 import * as cmdDef from "../../../../../src/zosmf/list/systems/Systems.definition";
-import {
-    UNIT_TEST_ZOSMF_PROF_OPTS,
-    UNIT_TEST_PROFILES_ZOSMF
-} from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
+import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../../__tests__/__src__/TestConstants";
 import { mockHandlerParameters } from "@zowe/cli-test-utils";
 
 const goodCmdParms: IHandlerParameters = mockHandlerParameters({
     arguments: UNIT_TEST_ZOSMF_PROF_OPTS,
     positionals: ["zosmf", "check", "status"],
-    definition: cmdDef.SystemsDefinition,
-    profiles: UNIT_TEST_PROFILES_ZOSMF
+    definition: cmdDef.SystemsDefinition
 });
 
 let listSystemsHandler: ICommandHandler = null;

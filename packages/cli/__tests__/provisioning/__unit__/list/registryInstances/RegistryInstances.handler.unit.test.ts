@@ -13,10 +13,7 @@ import { ListRegistryInstances } from "@zowe/provisioning-for-zowe-sdk";
 import { IHandlerParameters } from "@zowe/imperative";
 import * as Handler from "../../../../../src/provisioning/list/registry/RegistryInstances.handler";
 import { registryInstances } from "../../../../../src/provisioning/list/registry/RegistryInstances.definition";
-import {
-    UNIT_TEST_ZOSMF_PROF_OPTS,
-    UNIT_TEST_PROFILES_ZOSMF
-} from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
+import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../../__tests__/__src__/TestConstants";
 import { mockHandlerParameters } from "@zowe/cli-test-utils";
 
 jest.mock("@zowe/provisioning-for-zowe-sdk");
@@ -24,8 +21,7 @@ jest.mock("@zowe/provisioning-for-zowe-sdk");
 const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
     arguments: UNIT_TEST_ZOSMF_PROF_OPTS,
     positionals: ["provisioning", "list", "catalog-templates"],
-    definition: registryInstances,
-    profiles: UNIT_TEST_PROFILES_ZOSMF
+    definition: registryInstances
 });
 
 describe("list registry instances handler tests", () => {

@@ -15,10 +15,7 @@ import { IHandlerParameters, ImperativeError, Session, Imperative } from "@zowe/
 import * as LogsHandler from "../../../../../src/zoslogs/list/logs/Logs.handler";
 import * as LogsDefinition from "../../../../../src/zoslogs/list/logs/Logs.definition";
 import { GetZosLog, IZosLogParms } from "@zowe/zos-logs-for-zowe-sdk";
-import {
-    UNIT_TEST_ZOSMF_PROF_OPTS,
-    UNIT_TEST_PROFILES_ZOSMF
-} from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
+import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../../__tests__/__src__/TestConstants";
 import { mockHandlerParameters } from "@zowe/cli-test-utils";
 
 process.env.FORCE_COLOR = "0";
@@ -29,8 +26,7 @@ const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
         ...UNIT_TEST_ZOSMF_PROF_OPTS
     },
     positionals: ["zos-logs", "list", "logs"],
-    definition: LogsDefinition.LogsDefinition,
-    profiles: UNIT_TEST_PROFILES_ZOSMF
+    definition: LogsDefinition.LogsDefinition
 });
 
 describe("get logs handler tests", () => {

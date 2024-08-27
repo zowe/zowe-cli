@@ -9,6 +9,8 @@
 *
 */
 
+/* eslint-disable deprecation/deprecation */
+
 import * as TestUtil from "../../../TestUtil";
 import { TestLogger } from "../../../../src/TestLogger";
 import { CliProfileManager } from "../../../../../src/cmd/src/profiles/CliProfileManager";

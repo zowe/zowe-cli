@@ -293,7 +293,9 @@ describe("CliUtils", () => {
         it("should throw an imperative error if a required profile is not present", () => {
             let error;
             try {
+                // eslint-disable-next-line deprecation/deprecation
                 const args = CliUtils.getOptValueFromProfiles(
+                    // eslint-disable-next-line deprecation/deprecation
                     new CommandProfiles(new Map<string, IProfile[]>()),
                     { required: ["banana"] },
                     FAKE_OPTS);
@@ -306,7 +308,9 @@ describe("CliUtils", () => {
         });
 
         it("should return nothing if a profile was optional and not loaded", () => {
+            // eslint-disable-next-line deprecation/deprecation
             const args = CliUtils.getOptValueFromProfiles(
+                // eslint-disable-next-line deprecation/deprecation
                 new CommandProfiles(new Map<string, IProfile[]>()),
                 { optional: ["banana"] },
                 FAKE_OPTS);
@@ -316,7 +320,9 @@ describe("CliUtils", () => {
         it("should return args (from definitions with no hyphen in name) extracted from loaded profile", () => {
             const map = new Map<string, IProfile[]>();
             map.set("banana", [{ type: "banana", name: "fakebanana", nohyphen: "specified in profile" }]);
+            // eslint-disable-next-line deprecation/deprecation
             const args = CliUtils.getOptValueFromProfiles(
+                // eslint-disable-next-line deprecation/deprecation
                 new CommandProfiles(map),
                 { optional: ["banana"] },
                 FAKE_OPTS);
@@ -331,7 +337,9 @@ describe("CliUtils", () => {
                 "couldBeEither": "should be me",
                 "could-be-either": "should not be me"
             }]);
+            // eslint-disable-next-line deprecation/deprecation
             const args = CliUtils.getOptValueFromProfiles(
+                // eslint-disable-next-line deprecation/deprecation
                 new CommandProfiles(map),
                 { optional: ["banana"] },
                 FAKE_OPTS);
@@ -346,7 +354,9 @@ describe("CliUtils", () => {
                 "fakeStringOpt": "should not be me",
                 "fake-string-opt": "should be me"
             }]);
+            // eslint-disable-next-line deprecation/deprecation
             const args = CliUtils.getOptValueFromProfiles(
+                // eslint-disable-next-line deprecation/deprecation
                 new CommandProfiles(map),
                 { optional: ["banana"] },
                 FAKE_OPTS);
@@ -360,7 +370,9 @@ describe("CliUtils", () => {
                 "name": "fakebanana",
                 "could-be-either": "should be me"
             }]);
+            // eslint-disable-next-line deprecation/deprecation
             const args = CliUtils.getOptValueFromProfiles(
+                // eslint-disable-next-line deprecation/deprecation
                 new CommandProfiles(map),
                 { optional: ["banana"] },
                 FAKE_OPTS);
@@ -374,7 +386,9 @@ describe("CliUtils", () => {
                 name: "fakebanana",
                 fakeStringOpt: "should be me"
             }]);
+            // eslint-disable-next-line deprecation/deprecation
             const args = CliUtils.getOptValueFromProfiles(
+                // eslint-disable-next-line deprecation/deprecation
                 new CommandProfiles(map),
                 { optional: ["banana"] },
                 FAKE_OPTS);
@@ -388,7 +402,9 @@ describe("CliUtils", () => {
                 name: "fakebanana",
                 withAlias: "should have 'w' on args object too"
             }]);
+            // eslint-disable-next-line deprecation/deprecation
             const args = CliUtils.getOptValueFromProfiles(
+                // eslint-disable-next-line deprecation/deprecation
                 new CommandProfiles(map),
                 { optional: ["banana"] },
                 FAKE_OPTS);
@@ -402,7 +418,9 @@ describe("CliUtils", () => {
                 name: "fakebanana",
                 username: "fake"
             }]);
+            // eslint-disable-next-line deprecation/deprecation
             const args = CliUtils.getOptValueFromProfiles(
+                // eslint-disable-next-line deprecation/deprecation
                 new CommandProfiles(map),
                 { optional: ["banana"] },
                 FAKE_OPTS);

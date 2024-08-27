@@ -9,6 +9,8 @@
 *
 */
 
+/* eslint-disable deprecation/deprecation */
+
 import { IProfile, IProfileLoaded } from "../../../profiles";
 import { CommandProfiles } from "../../src/profiles/CommandProfiles";
 import { ImperativeError } from "../../../error";

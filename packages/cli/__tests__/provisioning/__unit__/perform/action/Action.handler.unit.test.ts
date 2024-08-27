@@ -20,17 +20,13 @@ import {
 import { IHandlerParameters } from "@zowe/imperative";
 import * as ActionHandler from "../../../../../src/provisioning/perform/action/Action.handler";
 import * as ActionDefinition from "../../../../../src/provisioning/perform/action/Action.definition";
-import {
-    UNIT_TEST_ZOSMF_PROF_OPTS,
-    UNIT_TEST_PROFILES_ZOSMF
-} from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
+import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../../__tests__/__src__/TestConstants";
 import { mockHandlerParameters } from "@zowe/cli-test-utils";
 
 const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
     arguments: UNIT_TEST_ZOSMF_PROF_OPTS,
     positionals: ["provisioning", "perform", "action"],
-    definition: ActionDefinition.ActionDefinition,
-    profiles: UNIT_TEST_PROFILES_ZOSMF
+    definition: ActionDefinition.ActionDefinition
 });
 
 describe("perform action handler tests", () => {

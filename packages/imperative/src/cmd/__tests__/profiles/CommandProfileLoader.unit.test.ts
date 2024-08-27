@@ -9,6 +9,8 @@
 *
 */
 
+/* eslint-disable deprecation/deprecation */
+
 import { CommandProfileLoader } from "../../src/profiles/CommandProfileLoader";
 import { ICommandDefinition } from "../../src/doc/ICommandDefinition";
 import { TestLogger } from "../../../../__tests__/src/TestLogger";
