@@ -22,45 +22,58 @@ import { CheckStatus, ZosmfConstants } from "@zowe/zosmf-for-zowe-sdk";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { IIssueTsoCmdResponse } from "./doc/IIssueTsoCmdResponse";
 import { IIssueTsoCmdParms } from "./doc/input/IIssueTsoCmdParms";
-
+const { ProfileInfo } = require("@zowe/imperative");
 /**
  * Class to handle issue command to TSO
  * @class IssueTso
  */
 export class IssueTso {
 
-    public static async issueTsoCmd(session: AbstractSession, commandInfo: string | IIssueTsoCmdParms, addressSpaceOptions?: IStartTsoParms):
-        Promise<IIssueTsoCmdResponse | IIssueResponse> {
-
-        const command = typeof commandInfo === "string" ? commandInfo : commandInfo.command;
-        const version = typeof commandInfo === "string" ? "v1" : commandInfo.version ?? "v1";
-        const isStateful = typeof commandInfo === "string" ? false : commandInfo.isStateful ?? false;
-
+    public static async issueTsoCmd(
+        session: AbstractSession,
+        commandInfo: string | IIssueTsoCmdParms,
+        addressSpaceOptions?: IStartTsoParms
+    ): Promise<IIssueTsoCmdResponse | IIssueResponse> {
+        let command: string | IIssueTsoCmdParms;
+        let version: string;
+        let isStateful: boolean;
+        const useNewApi = addressSpaceOptions == null && await CheckStatus.isZosVersionGreaterThan(session, ZosmfConstants.VERSIONS.V2R4);
+        let newApiFailureOverride: boolean = false;
         if (addressSpaceOptions == null && await CheckStatus.isZosVersionGreaterThan(session, ZosmfConstants.VERSIONS.V2R4)) {
-            // use new api
-            const endpoint = TsoConstants.RESOURCE + "/" + version + "/" + TsoConstants.RES_START_TSO;
-            const response = await ZosmfRestClient.putExpectJSON<IIssueTsoCmdResponse>(session, endpoint, [Headers.APPLICATION_JSON], {
-                "tsoCmd": command,
-                "cmdState": isStateful ? "stateful" : "stateless"
-            });
+            command = commandInfo;
+            version = "v1";
+            isStateful = false;
+            try {
+                const endpoint = `${TsoConstants.RESOURCE}/${version}/${TsoConstants.RES_START_TSO}`;
+                return await ZosmfRestClient.putExpectJSON<IIssueTsoCmdResponse>(session, endpoint, [Headers.APPLICATION_JSON], {
+                    "tsoCmd": command,
+                    "cmdState": isStateful ? "stateful" : "stateless"
+                });
+            } catch {
+                newApiFailureOverride = true;
+                const profInfo = new ProfileInfo("zowe");
+                await profInfo.readProfilesFromDisk();
+                addressSpaceOptions = profInfo.getTeamConfig().api.profiles.defaultGet("tso");
+            }
+        }
 
-            return response;
-
-        } else if (addressSpaceOptions != null) {
-            // use old behavior
+        // Old behavior
+        if ((addressSpaceOptions != null || !useNewApi) || newApiFailureOverride) {
+            command = typeof commandInfo === "string" ? commandInfo : commandInfo.command;
+            version = typeof commandInfo === "string" ? "v1" : commandInfo.version ?? "v1";
+            isStateful = typeof commandInfo === "string" ? false : commandInfo.isStateful ?? false;
             TsoValidator.validateSession(session);
-            TsoValidator.validateNotEmptyString(addressSpaceOptions.account, noAccountNumber.message);
-            TsoValidator.validateNotEmptyString(command, noCommandInput.message);
+            TsoValidator.validateNotEmptyString(addressSpaceOptions?.account, noAccountNumber.message);
+            TsoValidator.validateNotEmptyString(command as string, noCommandInput.message);
 
             const response: IIssueResponse = {
                 success: false,
-                startResponse: null,
+                startResponse: await StartTso.start(session, addressSpaceOptions?.account, addressSpaceOptions || {}),
                 startReady: false,
                 zosmfResponse: null,
                 commandResponse: null,
                 stopResponse: null
             };
-            response.startResponse = await StartTso.start(session, addressSpaceOptions.account, addressSpaceOptions || {});
 
             if (!response.startResponse.success) {
                 throw new ImperativeError({
@@ -69,7 +82,7 @@ export class IssueTso {
                 });
             }
 
-            const sendResponse = await SendTso.sendDataToTSOCollect(session, response.startResponse.servletKey, command);
+            const sendResponse = await SendTso.sendDataToTSOCollect(session, response.startResponse.servletKey, command as string);
             response.success = sendResponse.success;
             response.zosmfResponse = sendResponse.zosmfResponse;
             response.commandResponse = sendResponse.commandResponse;
@@ -92,7 +105,6 @@ export class IssueTso {
      */
     public static async issueTsoCommand(session: AbstractSession, accountNumber: string, command: string, startParams?: IStartTsoParms): Promise<IIssueResponse> {
         return await IssueTso.issueTsoCmd(session, command, { ...startParams, account: accountNumber }) as IIssueResponse;
-
     }
 
     /**
