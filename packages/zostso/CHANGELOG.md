@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS TSO SDK package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Deprecated `IssueTsoCommand()` function and replaced with `IssueTsoCmd()` for compatibility with z/Os version 2.5. [#2240](https://github.com/zowe/zowe-cli/pull/2240)
+
 ## `8.0.0-next.202408131445`
 
 - Update: See `7.28.3` for details
