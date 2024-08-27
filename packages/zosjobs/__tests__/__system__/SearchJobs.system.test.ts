@@ -80,7 +80,7 @@ describe("Search Jobs - System Tests", () => {
             "//" + MONITOR_JOB_NAME + " JOB '" + ACCOUNT + "',CLASS=" + JOBCLASS + "\n" +
             "//IEFBR14 EXEC PGM=IEFBR14"; // GetJobs
     });
-s
+
     afterAll(async () => {
         await TestEnvironment.cleanUp(testEnvironment);
     });

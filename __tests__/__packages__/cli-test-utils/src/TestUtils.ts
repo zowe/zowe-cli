@@ -14,7 +14,7 @@ import { spawnSync, SpawnSyncReturns, ExecFileException } from "child_process";
 import { ITestEnvironment } from "./environment/doc/response/ITestEnvironment";
 import { AbstractSession, CommandProfiles, ICommandDefinition, IHandlerParameters, IO } from "@zowe/imperative";
 import { DeleteJobs, ICommonJobParms, IDeleteJobParms, IJob } from "@zowe/zos-jobs-for-zowe-sdk";
-import { Delete } from "@zowe/zos-files-for-zowe-sdk"
+import { Delete } from "@zowe/zos-files-for-zowe-sdk";
 import { posix } from "path";
 
 /**
@@ -40,7 +40,7 @@ export function deleteLocalFile(filePath: string): void {
  * @param {string} fileName - The name of the USS file
  */
 export function deleteFiles(session: AbstractSession, fileName: string): void {
-    Delete.ussFile(session, fileName)
+    Delete.ussFile(session, fileName);
 }
 
 /**

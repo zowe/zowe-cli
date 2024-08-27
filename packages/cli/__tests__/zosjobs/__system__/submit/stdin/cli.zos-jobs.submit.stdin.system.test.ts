@@ -25,7 +25,7 @@ let systemProps: ITestPropertiesSchema;
 let account: string;
 let jcl: string;
 let JOB_NAME: string;
-const jobNameRegex = /jobname: (\w+)/
+const jobNameRegex = /jobname: (\w+)/;
 
 describe("zos-jobs submit stdin command", () => {
     beforeAll(async () => {

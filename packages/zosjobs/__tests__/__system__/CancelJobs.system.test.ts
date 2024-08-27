@@ -188,7 +188,7 @@ describe("CancelJobs System tests - encoded", () => {
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({
             testName: "zos_cancel_jobs_encoded"
-            }, REAL_SESSION = await TestEnvironment.createSession());
+        }, REAL_SESSION = await TestEnvironment.createSession());
         systemProps = testEnvironment.systemTestProperties;
 
         const ACCOUNT = systemProps.tso.account;

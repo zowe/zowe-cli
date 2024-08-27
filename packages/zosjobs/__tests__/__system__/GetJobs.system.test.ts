@@ -238,7 +238,7 @@ describe("Get Jobs System Tests", () => {
                 }, LONG_TIMEOUT);
             });
         });
-                /**********************************************/
+        /**********************************************/
         // API methods "getJobs..." system tests
         describe("Get Jobs APIs", () => {
 
@@ -443,7 +443,7 @@ describe("Get Jobs System Tests", () => {
             });
         });
 
-         /**********************************************/
+        /**********************************************/
         // API methods "getStatus..." system tests
         describe("Get Status APIs", () => {
 
@@ -1330,7 +1330,7 @@ describe("Get Jobs System Tests", () => {
                         const jobRender = iefbr14JclTemplate;
                         const renderedJcl = TextUtils.renderWithMustache(jobRender,
                             {JOBNAME: MONITOR_JOB_NAME, ACCOUNT, JOBCLASS, TYPERUNPARM: "", SYSAFF});
-    
+
                         // Submit the job
                         const job = await SubmitJobs.submitJcl(REAL_SESSION, renderedJcl);
 

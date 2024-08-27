@@ -13,7 +13,8 @@ import * as fs from "fs";
 import * as nodePath from "path";
 import * as yaml from "js-yaml";
 import { v4 as uuidv4 } from "uuid";
-import { AbstractSession, ImperativeError, ImperativeExpect, IO, Logger, LoggingConfigurer, ProfileInfo, TextUtils } from "@zowe/imperative";
+import { AbstractSession, Imperative, ImperativeError,
+    ImperativeExpect, IO, Logger, LoggingConfigurer, ProfileInfo, TextUtils } from "@zowe/imperative";
 import { ISetupEnvironmentParms } from "./doc/parms/ISetupEnvironmentParms";
 import { ITestEnvironment } from "./doc/response/ITestEnvironment";
 import { TempTestProfiles } from "./TempTestProfiles";
@@ -71,7 +72,7 @@ export class TestEnvironment {
                 jobs: [], // Array of IJob objects
                 jobData: [], // Array of objects with jobid and jobname
                 datasets: [],
-                ...(session && { session }) // Only include session if it is passed in
+                ...session && { session } // Only include session if it is passed in
             }
         };
 
@@ -143,7 +144,7 @@ export class TestEnvironment {
             if (jobData.jobname && jobData.jobid) {
                 deleteJobCommon(session, jobData);
             } else {
-                console.error('Error: Missing jobname or jobid for jobData:', jobData);
+                Imperative.console.info('Error: Missing jobname or jobid for jobData:', jobData);
             }
         }
         for (const dataset of testEnvironment.resources.datasets) {

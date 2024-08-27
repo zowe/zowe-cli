@@ -41,7 +41,7 @@ describe("zos-jobs search job command", () => {
 
         ACCOUNT = defaultSystem.tso.account;
         // TODO: fix this test to run with any job name
-        JOB_NAME = "IEFBR14T"//REAL_SESSION.ISession.user.substring(0, JOB_LENGTH).toUpperCase();
+        JOB_NAME = "IEFBR14T"; //REAL_SESSION.ISession.user.substring(0, JOB_LENGTH).toUpperCase()
         NON_HELD_JOBCLASS = defaultSystem.zosjobs.jobclass;
         SEARCH_STRING = "PGM=IEFBR14";
         REGEX_STRING = "IEFBR14|RC=0000";

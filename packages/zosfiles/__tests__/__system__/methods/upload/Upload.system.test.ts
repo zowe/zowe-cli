@@ -12,7 +12,6 @@
 import { Create, CreateDataSetTypeEnum, Delete, IUploadOptions, IZosFilesResponse,
     Upload, ZosFilesMessages, Download, Get, ZosFilesConstants, IUploadMap, Utilities } from "../../../../src";
 import { Imperative, Session } from "@zowe/imperative";
-import { inspect } from "util";
 import { ITestEnvironment, TestEnvironment } from "@zowe/cli-test-utils";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { getUniqueDatasetName, stripNewLines, delay } from "../../../../../../__tests__/__src__/TestUtils";
@@ -72,7 +71,9 @@ describe("All Upload Tests", () => {
 
             // longline/longline.txt
             const longlineFilePath = `${localDir}/longline/longline.txt`;
-            fs.writeFileSync(longlineFilePath, "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz");
+            fs.writeFileSync(longlineFilePath,
+                "abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrs"+
+                "tuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz");
             testEnvironment.resources.localFiles.push(longlineFilePath);
 
             // space dir/file4.txt
@@ -96,7 +97,7 @@ describe("All Upload Tests", () => {
             // main.exe is too complex to build from scratch
 
         } catch (err) {
-            console.error("Error setting up test files and directories:", err);
+            Imperative.console.info("Error setting up test files and directories:", err);
         }
     });
 
@@ -111,7 +112,7 @@ describe("All Upload Tests", () => {
                     fs.rmdirSync(dir, { recursive: true });
                 }
             } catch (err) {
-                console.error(`Error deleting directory: ${dir}`, err);
+                Imperative.console.info(`Error deleting directory: ${dir}`, err);
             }
         });
     });
