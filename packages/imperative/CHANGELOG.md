@@ -4,6 +4,14 @@ All notable changes to the Imperative package will be documented in this file.
 
 ## Recent Changes
 
+- LTS Breaking: [#2231](https://github.com/zowe/zowe-cli/issues/2231)
+  - Removed the obsolete V1 `profiles` property from `IHandlerParameters` interface
+  - Deprecated the following obsolete V1 profile interfaces:
+    - `IProfileTypeConfiguration.dependencies` - For team config, use nested profiles instead
+    - `IProfileTypeConfiguration.validationPlanModule` - For team config, validate with JSON schema instead
+  - Deprecated the following obsolete V1 profile classes/functions:
+    - `CliUtils.getOptValueFromProfiles` - Use `getOptValuesFromConfig` instead to load from team config
+    - `CommandProfiles` - Use the `V1ProfileRead` class if you still need to read V1 profiles
 - Enhancement: Added a new SDK method (`ConfigSecure.secureFieldsForLayer`) to allow developers to get vault content in the context of the specified layer. [#2206](https://github.com/zowe/zowe-cli/issues/2206)
 - Enhancement: Added a new SDK method (`ProfileInfo.secureFieldsWithDetails`) to allow developers to the more details regarding the securely stored properties. [#2206](https://github.com/zowe/zowe-cli/issues/2206)
 

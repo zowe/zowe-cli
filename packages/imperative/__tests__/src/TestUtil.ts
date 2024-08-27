@@ -170,10 +170,17 @@ export function executeTestCLICommand(cliBinModule: string, testContext: any, ar
     execDir?: string, pipeContent?: string | Buffer,
     env: { [key: string]: string } = process.env): SpawnSyncReturns<string> {
     const testLogger = TestLogger.getTestLogger();
-    const nodeCommand = "node";
-    // run the command with ts-node/register
-    const starterArguments = ["--require", "ts-node/register", cliBinModule];
-    args = starterArguments.concat(args);
+    const isLocalFile = fs.existsSync(cliBinModule) && fs.statSync(cliBinModule).isFile();
+    const nodeCommand = isLocalFile ? "node" : "npx";
+    if (isLocalFile) {
+        // run the command with ts-node/register if local file specified
+        const starterArguments = ["--require", "ts-node/register", cliBinModule];
+        args = starterArguments.concat(args);
+    } else {
+        // run the command with package bin script if directory specified
+        args.unshift(Object.keys(require(cliBinModule + "/package.json").bin).pop());
+        execDir ??= cliBinModule;
+    }
 
     const commandExecutionMessage = "Executing " + nodeCommand + " " + args.join(" ");
 

@@ -9,6 +9,8 @@
 *
 */
 
+/* eslint-disable deprecation/deprecation */
+
 import { inspect } from "util";
 import { TestLogger } from "../../../../../__tests__/src/TestLogger";
 import { IProfile } from "../../doc/definition/IProfile";

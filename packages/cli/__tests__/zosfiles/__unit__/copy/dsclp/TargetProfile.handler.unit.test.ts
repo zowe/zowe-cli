@@ -12,17 +12,13 @@
 import { IHandlerParameters, ImperativeConfig, ImperativeError } from "@zowe/imperative";
 import TargetProfileHandler from "../../../../../src/zosfiles/copy/dsclp/TargetProfile.handler";
 import { DsclpDefinition } from "../../../../../src/zosfiles/copy/dsclp/Dsclp.definition";
-import {
-    UNIT_TEST_ZOSMF_PROF_OPTS,
-    UNIT_TEST_PROFILES_ZOSMF
-} from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
+import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../../__tests__/__src__/TestConstants";
 import { mockHandlerParameters } from "@zowe/cli-test-utils";
 
 const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
     arguments: UNIT_TEST_ZOSMF_PROF_OPTS,
     positionals: ["files", "copy", "data-set-cross-lpar"],
-    definition: DsclpDefinition,
-    profiles: UNIT_TEST_PROFILES_ZOSMF
+    definition: DsclpDefinition
 });
 
 describe("TargetProfileHandler", () => {

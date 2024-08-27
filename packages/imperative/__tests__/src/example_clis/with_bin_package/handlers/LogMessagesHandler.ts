@@ -13,7 +13,7 @@ import { ICommandHandler, IHandlerParameters } from "../../../../../src/cmd";
 import { Imperative } from "../../../../../src/imperative";
 
 
-class ProduceLogMessagesHandler implements ICommandHandler {
+export default class ProduceLogMessagesHandler implements ICommandHandler {
     public async process(params: IHandlerParameters): Promise<void> {
         Imperative.api.appLogger.level = params.arguments.level;
         Imperative.api.appLogger.trace("This is a trace message");
@@ -25,5 +25,3 @@ class ProduceLogMessagesHandler implements ICommandHandler {
         params.response.console.log("Log messages were written");
     }
 }
-
-module.exports = ProduceLogMessagesHandler;

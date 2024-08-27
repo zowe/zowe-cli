@@ -16,10 +16,7 @@ jest.mock("@zowe/zos-jobs-for-zowe-sdk");
 import { IHandlerParameters, ImperativeError, Session } from "@zowe/imperative";
 import * as JobsHandler from "../../../../../src/zosjobs/list/jobs/Jobs.handler";
 import * as JobsDefinition from "../../../../../src/zosjobs/list/jobs/Jobs.definition";
-import {
-    UNIT_TEST_ZOSMF_PROF_OPTS,
-    UNIT_TEST_PROFILES_ZOSMF
-} from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
+import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../../__tests__/__src__/TestConstants";
 import { mockHandlerParameters } from "@zowe/cli-test-utils";
 
 process.env.FORCE_COLOR = "0";
@@ -27,8 +24,7 @@ process.env.FORCE_COLOR = "0";
 const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
     arguments: UNIT_TEST_ZOSMF_PROF_OPTS,
     positionals: ["zos-jobs", "view", "job"],
-    definition: JobsDefinition.JobsDefinition,
-    profiles: UNIT_TEST_PROFILES_ZOSMF
+    definition: JobsDefinition.JobsDefinition
 });
 
 describe("list jobs handler tests", () => {

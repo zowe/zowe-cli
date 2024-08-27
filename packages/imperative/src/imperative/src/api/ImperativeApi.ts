@@ -68,8 +68,11 @@ export class ImperativeApi {
      * Return an instance of a profile manager for a given profile type
      * See ProfileManager.ts for more details
      * @internal
+     * @deprecated Use the `V1ProfileRead` class if you still need to read V1 profiles
      */
+    // eslint-disable-next-line deprecation/deprecation
     public profileManager(type: string): CliProfileManager {
+        // eslint-disable-next-line deprecation/deprecation
         return new CliProfileManager({
             type,
             typeConfigurations: this.mConfig.profiles,

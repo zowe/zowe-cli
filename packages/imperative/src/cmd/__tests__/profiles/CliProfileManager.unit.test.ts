@@ -9,6 +9,8 @@
 *
 */
 
+/* eslint-disable deprecation/deprecation */
+
 import { ImperativeError } from "../../../error";
 import { TestLogger } from "../../../../__tests__/src/TestLogger";
 import { APPLE_PROFILE_TYPE, ONLY_APPLE } from "./TestConstants";

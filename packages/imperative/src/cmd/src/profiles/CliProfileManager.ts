@@ -27,6 +27,7 @@ import {
  *
  * The Profile Manager no longer reads V1 profile from disk. It only processes profile information from a
  * command's definition. The Config class now handles reading profiles from disk stored in a zowe.config.json file.
+ * @deprecated Use the `V1ProfileRead` class if you still need to read V1 profiles
  */
 export class CliProfileManager {
     /**
@@ -176,10 +177,13 @@ export class CliProfileManager {
         ImperativeExpect.keysToBeDefined(typeConfiguration, ["schema"], `The profile type configuration document for ` +
             `"${typeConfiguration.type}" does NOT contain a schema.`);
         this.validateSchema(typeConfiguration.schema, typeConfiguration.type);
+        // eslint-disable-next-line deprecation/deprecation
         if (!(typeConfiguration.dependencies == null)) {
+            // eslint-disable-next-line deprecation/deprecation
             ImperativeExpect.toBeAnArray(typeConfiguration.dependencies,
                 `The profile type configuration for "${typeConfiguration.type}" contains a "dependencies" property, ` +
                 `but it is not an array (ill-formed)`);
+            // eslint-disable-next-line deprecation/deprecation
             for (const dep of typeConfiguration.dependencies) {
                 ImperativeExpect.keysToBeDefinedAndNonBlank(dep, ["type"], "A dependency specified for the " +
                     "profile definitions did not contain a type.");

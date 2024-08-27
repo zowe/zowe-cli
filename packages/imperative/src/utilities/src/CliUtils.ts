@@ -18,10 +18,13 @@ import { CommandProfiles, ICommandOptionDefinition, ICommandPositionalDefinition
     ICommandProfile, IHandlerParameters
 } from "../../cmd";
 import { ICommandArguments } from "../../cmd/src/doc/args/ICommandArguments";
-import { IProfile } from "../../profiles";
+import { IProfile } from "../../profiles/src/doc/definition/IProfile";
+import { ProfileUtils } from "../../profiles/src/utils/ProfileUtils";
 import { IPromptOptions } from "../../cmd/src/doc/response/api/handler/IPromptOptions";
 import { read } from "read";
 import { ICommandDefinition } from "../../cmd";
+import { Config } from "../../config";
+
 /**
  * Cli Utils contains a set of static methods/helpers that are CLI related (forming options, censoring args, etc.)
  * @export
@@ -105,6 +108,8 @@ export class CliUtils {
     /**
      * Accepts the full set of loaded profiles and attempts to match the option names supplied with profile keys.
      *
+     * @deprecated Use `getOptValuesFromConfig` instead to load from team config
+     *
      * @param {Map<string, IProfile[]>} profiles - the map of type to loaded profiles. The key is the profile type
      * and the value is an array of profiles loaded for that type.
      *
@@ -117,6 +122,7 @@ export class CliUtils {
      *
      * @memberof CliUtils
      */
+    // eslint-disable-next-line deprecation/deprecation
     public static getOptValueFromProfiles(profiles: CommandProfiles, definitions: ICommandProfile,
         options: Array<ICommandOptionDefinition | ICommandPositionalDefinition>): any {
         let args: any = {};
@@ -183,6 +189,77 @@ export class CliUtils {
             }
         });
         return args;
+    }
+
+    /**
+     * Searches properties in team configuration and attempts to match the option names supplied with profile keys.
+     * @param {Config} config - Team config API
+     * @param {ICommandDefinition} definition - Definition of invoked command
+     * @param {ICommandArguments} args - Arguments from command line and environment
+     * @param {(Array<ICommandOptionDefinition | ICommandPositionalDefinition>)} allOpts - the full set of command options
+     * for the command being processed
+     *
+     * @returns {*}
+     *
+     * @memberof CliUtils
+     */
+    public static getOptValuesFromConfig(config: Config, definition: ICommandDefinition, args: ICommandArguments,
+        allOpts: Array<ICommandOptionDefinition | ICommandPositionalDefinition>): any {
+        // Build a list of all profile types - this will help us search the CLI
+        // options for profiles specified by the user
+        let allTypes: string[] = [];
+        if (definition.profile != null) {
+            if (definition.profile.required != null)
+                allTypes = allTypes.concat(definition.profile.required);
+            if (definition.profile.optional != null)
+                allTypes = allTypes.concat(definition.profile.optional);
+        }
+
+        // Build an object that contains all the options loaded from config
+        let fromCnfg: any = {};
+        for (const profileType of allTypes) {
+            const opt = ProfileUtils.getProfileOptionAndAlias(profileType)[0];
+            // If the config contains the requested profiles, then "remember"
+            // that this type has been fulfilled - so that we do NOT load from
+            // the traditional profile location
+            const profileTypePrefix = profileType + "_";
+            let p: any = {};
+            if (args[opt] != null && config.api.profiles.exists(args[opt])) {
+                p = config.api.profiles.get(args[opt]);
+            } else if (args[opt] != null && !args[opt].startsWith(profileTypePrefix) &&
+                config.api.profiles.exists(profileTypePrefix + args[opt])) {
+                p = config.api.profiles.get(profileTypePrefix + args[opt]);
+            } else if (args[opt] == null &&
+                config.properties.defaults[profileType] != null &&
+                config.api.profiles.exists(config.properties.defaults[profileType])) {
+                p = config.api.profiles.defaultGet(profileType);
+            }
+            fromCnfg = { ...p, ...fromCnfg };
+        }
+
+        // Convert each property extracted from the config to the correct yargs
+        // style cases for the command handler (kebab and camel)
+        allOpts.forEach((opt) => {
+            const cases = CliUtils.getOptionFormat(opt.name);
+            const profileKebab = fromCnfg[cases.kebabCase];
+            const profileCamel = fromCnfg[cases.camelCase];
+
+            if ((profileCamel !== undefined || profileKebab !== undefined) &&
+                (!Object.hasOwn(args, cases.kebabCase) && !Object.hasOwn(args, cases.camelCase))) {
+
+                // If both case properties are present in the profile, use the one that matches
+                // the option name explicitly
+                const shouldUseKebab = profileKebab !== undefined && profileCamel !== undefined ?
+                    opt.name === cases.kebabCase : profileKebab !== undefined;
+                const value = shouldUseKebab ? profileKebab : profileCamel;
+                const keys = CliUtils.setOptionValue(opt.name,
+                    "aliases" in opt ? opt.aliases : [],
+                    value
+                );
+                fromCnfg = { ...fromCnfg, ...keys };
+            }
+        });
+        return fromCnfg;
     }
 
     /**

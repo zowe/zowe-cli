@@ -12,7 +12,7 @@
 import * as fs from "fs";
 import { spawnSync, SpawnSyncReturns, ExecFileException } from "child_process";
 import { ITestEnvironment } from "./environment/doc/response/ITestEnvironment";
-import { CommandProfiles, ICommandDefinition, IHandlerParameters } from "@zowe/imperative";
+import { ICommandDefinition, IHandlerParameters } from "@zowe/imperative";
 
 /**
  * Execute a CLI script
@@ -135,8 +135,6 @@ export function mockHandlerParameters(params: PartialHandlerParameters): IHandle
             ...params.arguments || {}
         },
         positionals: params.positionals || [],
-        // eslint-disable-next-line deprecation/deprecation
-        profiles: params.profiles || new CommandProfiles(new Map()),
         definition: params.definition,
         fullDefinition: params.definition,
         stdin: process.stdin,

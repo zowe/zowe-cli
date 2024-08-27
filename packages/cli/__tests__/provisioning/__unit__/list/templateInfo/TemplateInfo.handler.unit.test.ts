@@ -14,17 +14,13 @@ import { ListTemplateInfo } from "@zowe/provisioning-for-zowe-sdk";
 import { IHandlerParameters } from "@zowe/imperative";
 import * as Handler from "../../../../../src/provisioning/list/templateInfo/TemplateInfo.handler";
 import { templateInfo } from "../../../../../src/provisioning/list/templateInfo/TemplateInfo.definition";
-import {
-    UNIT_TEST_ZOSMF_PROF_OPTS,
-    UNIT_TEST_PROFILES_ZOSMF
-} from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
+import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../../__tests__/__src__/TestConstants";
 import { mockHandlerParameters } from "@zowe/cli-test-utils";
 
 const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
     arguments: UNIT_TEST_ZOSMF_PROF_OPTS,
     positionals: ["provisioning", "list", "catalog-templates"],
-    definition: templateInfo,
-    profiles: UNIT_TEST_PROFILES_ZOSMF
+    definition: templateInfo
 });
 
 describe("list template info handler tests", () => {

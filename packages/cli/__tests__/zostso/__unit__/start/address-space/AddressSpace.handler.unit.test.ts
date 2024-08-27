@@ -11,22 +11,11 @@
 
 import { StartTso } from "@zowe/zos-tso-for-zowe-sdk";
 import { StartTsoData } from "../../../__resources__/StartTsoData";
-import { CommandProfiles, IHandlerParameters, ImperativeError, IProfile } from "@zowe/imperative";
+import { IHandlerParameters, ImperativeError } from "@zowe/imperative";
 import * as AddressSpaceHandler from "../../../../../src/zostso/start/address-space/AddressSpace.handler";
 import * as AddressSpaceDefinition from "../../../../../src/zostso/start/address-space/AddressSpace.definition";
-import {
-    UNIT_TEST_ZOSMF_PROF_OPTS
-} from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
+import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../../__tests__/__src__/TestConstants";
 import { mockHandlerParameters } from "@zowe/cli-test-utils";
-
-const PROFILE_MAP = new Map<string, IProfile[]>();
-PROFILE_MAP.set(
-    "zosmf", [{
-        name: "zosmf",
-        type: "zosmf",
-        ...UNIT_TEST_ZOSMF_PROF_OPTS
-    }]
-);
 
 const TSO_PROF_OPTS = {
     logonProcedure: "IZUFPROC",
@@ -38,21 +27,10 @@ const TSO_PROF_OPTS = {
     account: "DEFAULT"
 };
 
-PROFILE_MAP.set(
-    "tso", [{
-        name: "tso",
-        type: "tso",
-        ...TSO_PROF_OPTS
-    }]
-);
-
-const PROFILES: CommandProfiles = new CommandProfiles(PROFILE_MAP);
-
 const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
     arguments: UNIT_TEST_ZOSMF_PROF_OPTS,
     positionals: ["zos-tso", "start", "address-space"],
-    definition: AddressSpaceDefinition.AddressSpaceDefinition,
-    profiles: PROFILES
+    definition: AddressSpaceDefinition.AddressSpaceDefinition
 });
 
 describe("start address-space handler tests", () => {
