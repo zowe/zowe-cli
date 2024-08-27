@@ -2,7 +2,7 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
-## Recent Changes
+## `8.0.0-next.202408271330`
 
 - LTS Breaking: [#2231](https://github.com/zowe/zowe-cli/issues/2231)
   - Removed the obsolete V1 `profiles` property from `IHandlerParameters` interface
