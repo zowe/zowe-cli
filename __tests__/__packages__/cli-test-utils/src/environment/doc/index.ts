@@ -11,3 +11,4 @@
 
 export * from "./parms/ISetupEnvironmentParms";
 export * from "./response/ITestEnvironment";
+export * from "./response/ITestEnvironmentResources";

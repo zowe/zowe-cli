@@ -9,8 +9,7 @@
 *
 */
 
-import { AbstractSession } from "@zowe/imperative";
-import { ICommonJobParms, IJob } from "@zowe/zos-jobs-for-zowe-sdk";
+import { ITestEnvironmentResources } from "./ITestEnvironmentResources";
 
 /**
  * The test environment for your test.
@@ -18,14 +17,12 @@ import { ICommonJobParms, IJob } from "@zowe/zos-jobs-for-zowe-sdk";
  * @interface ITestEnvironment
  */
 export interface ITestEnvironment<TestPropertiesSchema> {
-    resources: {
-        localFiles: string[];
-        files: string[];
-        jobs: IJob[];
-        jobData: ICommonJobParms[]; // Contains jobname and jobid
-        datasets: string[];
-        session?: AbstractSession;
-    };
+    /**
+     * A collection of resources used within the test environment that need to be cleaned up once test finishes.
+     * @type {ITestEnvironmentResources}
+     * @memberof ITestEnvironment
+     */
+    resources: ITestEnvironmentResources;
     /**
      * The working directory for your test environment. It is a unique (uuid) area where your tests can create
      * their home folders (for imperative, etc.) and you can use the area as scratch for any files, etc. that

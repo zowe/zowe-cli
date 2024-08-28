@@ -12,7 +12,7 @@
 import * as fs from "fs";
 import { spawnSync, SpawnSyncReturns, ExecFileException } from "child_process";
 import { ITestEnvironment } from "./environment/doc/response/ITestEnvironment";
-import { AbstractSession, CommandProfiles, ICommandDefinition, IHandlerParameters, IO } from "@zowe/imperative";
+import { AbstractSession, ICommandDefinition, IHandlerParameters, IO } from "@zowe/imperative";
 import { DeleteJobs, ICommonJobParms, IDeleteJobParms, IJob } from "@zowe/zos-jobs-for-zowe-sdk";
 import { Delete } from "@zowe/zos-files-for-zowe-sdk";
 import { posix } from "path";
@@ -192,8 +192,6 @@ export function mockHandlerParameters(params: PartialHandlerParameters): IHandle
             ...params.arguments || {}
         },
         positionals: params.positionals || [],
-        // eslint-disable-next-line deprecation/deprecation
-        profiles: params.profiles || new CommandProfiles(new Map()),
         definition: params.definition,
         fullDefinition: params.definition,
         stdin: process.stdin,
