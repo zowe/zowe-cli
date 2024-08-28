@@ -10,9 +10,65 @@
 */
 
 import { randomBytes } from "crypto";
-import { ZosFilesConstants } from "../../packages/zosfiles/src";
-import { Imperative, Headers, AbstractSession } from "@zowe/imperative";
+import * as fs from "fs";
+import { Imperative, Headers, AbstractSession, IO } from "@zowe/imperative";
 import { ZosmfRestClient } from "../../packages/core/src";
+import { ZosFilesConstants, Delete } from "../../packages/zosfiles/src";
+import { DeleteJobs, ICommonJobParms, IDeleteJobParms, IJob } from "../../packages/zosjobs/src";
+import { posix } from "path";
+
+/**
+ * Delete a local testing file after use
+ * @param {string} filePath - File path of temporary file
+ */
+export function deleteLocalFile(filePath: string): void {
+    try {
+        fs.unlinkSync(filePath);
+    } catch {
+        // If fs.unlinkSync fails, try to delete it with IO.deleteFile
+        try {
+            IO.deleteFile(posix.basename(filePath));
+        } catch {
+            throw new Error(`Error deleting local file: ${filePath}`);
+        }
+    }
+}
+
+/**
+ * Delete a uss file from the mainframe
+ * @param {AbstractSession} session - z/OSMF connection info
+ * @param {string} fileName - The name of the USS file
+ */
+export function deleteFiles(session: AbstractSession, fileName: string): void {
+    Delete.ussFile(session, fileName);
+}
+
+/**
+ * Delete a dataset from the mainframe
+ * @param {AbstractSession} session - z/OSMF connection info
+ * @param {string} datasetName - The name of the dataset
+ */
+export function deleteDataset(session: AbstractSession, dataSetName: string): void {
+    Delete.dataSet(session, dataSetName);
+}
+
+/**
+ * Delete a job from the mainframe using Zowe SDKs - IJob
+ * @param {AbstractSession} session - z/OSMF connection info
+ * @param {IJob} job - the job that you want to delete
+ */
+export function deleteJob(session: AbstractSession, job: IJob): void {
+    DeleteJobs.deleteJobForJob(session, job);
+}
+
+/**
+ * Delete a job from the mainframe using Zowe SDKs - jobid, jobname
+ * @param {AbstractSession} session - z/OSMF connection info
+ * @param {params} ICommonJobParms - constains jobname and jobid for job to delete
+ */
+export function deleteJobCommon(session: AbstractSession, params: ICommonJobParms): void {
+    DeleteJobs.deleteJobCommon(session, params as IDeleteJobParms);
+}
 
 /**
  * This function strips any new lines out of the string passed.

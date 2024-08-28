@@ -13,13 +13,13 @@ import * as fs from "fs";
 import * as nodePath from "path";
 import * as yaml from "js-yaml";
 import { v4 as uuidv4 } from "uuid";
-import { AbstractSession, Imperative, ImperativeError,
-    ImperativeExpect, IO, Logger, LoggingConfigurer, ProfileInfo, TextUtils } from "@zowe/imperative";
+import { AbstractSession, ImperativeError, ImperativeExpect,
+    IO, Logger, LoggingConfigurer, ProfileInfo, TextUtils } from "@zowe/imperative";
 import { ISetupEnvironmentParms } from "./doc/parms/ISetupEnvironmentParms";
 import { ITestEnvironment } from "./doc/response/ITestEnvironment";
 import { TempTestProfiles } from "./TempTestProfiles";
 import { PROJECT_ROOT_DIR, TEST_RESOURCE_DIR, TEST_RESULT_DATA_DIR, TEST_USING_WORKSPACE } from "../TestConstants";
-import { runCliScript, deleteFiles, deleteJob, deleteDataset, deleteLocalFile, deleteJobCommon } from "../TestUtils";
+import { runCliScript } from "../TestUtils";
 
 /**
  * Use the utility methods here to setup the test environment for running APIs
@@ -108,48 +108,6 @@ export class TestEnvironment {
         }
         const zosmfMergedArgs = profInfo.mergeArgsForProfile(zosmfProfAttrs, { getSecureVals: true });
         return ProfileInfo.createSession(zosmfMergedArgs.knownArgs);
-    }
-
-    /**
-     * Clean up your test environment.
-     * Deletes any temporary profiles that have been created
-     * @params {ITestEnvironment} testEnvironment - the test environment returned by createTestEnv
-     *
-     * @returns {Promise<void>} - promise fulfilled when cleanup is complete
-     * @throws errors if profiles fail to delete
-     * @memberof TestEnvironment
-     */
-    public static async cleanUp(testEnvironment: ITestEnvironment<any>) {
-        if (testEnvironment.tempProfiles != null) {
-            await TempTestProfiles.deleteProfiles(testEnvironment);
-        }
-        if (testEnvironment.pluginInstalled) {
-            const pluginDir = testEnvironment.workingDir + "/plugins";
-            require("rimraf").sync(pluginDir);
-        }
-
-        // Clean up resources
-        for (const file of testEnvironment.resources.localFiles) {
-            deleteLocalFile(file);
-        }
-        // Check if session exists; if not, create one
-        const session = testEnvironment.resources.session || await TestEnvironment.createSession();
-        for (const file of testEnvironment.resources.files) {
-            deleteFiles(session, file);
-        }
-        for (const job of testEnvironment.resources.jobs) {
-            deleteJob(session, job);
-        }
-        for (const jobData of testEnvironment.resources.jobData) {
-            if (jobData.jobname && jobData.jobid) {
-                deleteJobCommon(session, jobData);
-            } else {
-                Imperative.console.info('Error: Missing jobname or jobid for jobData:', jobData);
-            }
-        }
-        for (const dataset of testEnvironment.resources.datasets) {
-            deleteDataset(session, dataset);
-        }
     }
 
     /**
