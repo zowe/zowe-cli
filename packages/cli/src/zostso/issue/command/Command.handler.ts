@@ -10,7 +10,7 @@
 */
 
 import { IHandlerParameters } from "@zowe/imperative";
-import { IIssueResponse, IssueTso, ZosTsoBaseHandler } from "@zowe/zos-tso-for-zowe-sdk";
+import { IIssueResponse, IIssueTsoCmdResponse, IssueTso, ZosTsoBaseHandler } from "@zowe/zos-tso-for-zowe-sdk";
 
 /**
  * Handler to issue command to TSO address space
@@ -24,17 +24,13 @@ export default class Handler extends ZosTsoBaseHandler {
     public async processCmd(params: IHandlerParameters) {
 
         // Issue the TSO command
-        const response: IIssueResponse = await IssueTso.issueTsoCommand(
-            this.mSession,
-            params.arguments.account,
-            params.arguments.commandText,
-            this.mTsoStart);
+        const response: IIssueResponse = await IssueTso.issueTsoCmd(this.mSession,params.arguments.commandText);
 
         // If requested, suppress the startup
-        if (!params.arguments.suppressStartupMessages) {
-            this.console.log(response.startResponse.messages);
+        if (!params.arguments.suppressStartupMessages && response.startResponse != null) {
+            this.console.log((response as any).startResponse.messages);
         }
-        this.console.log(response.commandResponse);
+        this.console.log((response as any).commandResponse);
         // Return as an object when using --response-format-json
         this.data.setObj(response);
     }

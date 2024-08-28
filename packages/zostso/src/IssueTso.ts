@@ -23,6 +23,7 @@ import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { IIssueTsoCmdResponse } from "./doc/IIssueTsoCmdResponse";
 import { IIssueTsoCmdParms } from "./doc/input/IIssueTsoCmdParms";
 const { ProfileInfo } = require("@zowe/imperative");
+
 /**
  * Class to handle issue command to TSO
  * @class IssueTso
@@ -32,7 +33,7 @@ export class IssueTso {
         session: AbstractSession,
         commandInfo: string | IIssueTsoCmdParms,
         addressSpaceOptions?: IStartTsoParms
-    ): Promise<IIssueTsoCmdResponse | IIssueResponse> {
+    ): Promise<IIssueResponse> {
         let command: string | IIssueTsoCmdParms;
         let version: string;
         let isStateful: boolean;
@@ -49,7 +50,7 @@ export class IssueTso {
             isStateful = false;
             try {
                 const endpoint = `${TsoConstants.RESOURCE}/${version}/${TsoConstants.RES_START_TSO}`;
-                return await ZosmfRestClient.putExpectJSON<IIssueTsoCmdResponse>(
+                const apiResponse = await ZosmfRestClient.putExpectJSON<IIssueTsoCmdResponse>(
                     session,
                     endpoint,
                     [Headers.APPLICATION_JSON],
@@ -58,7 +59,15 @@ export class IssueTso {
                         cmdState: isStateful ? "stateful" : "stateless",
                     }
                 );
-            } catch {
+                const response: IIssueResponse = {
+                    success: apiResponse.tsoPromptReceived === 'Y',
+                    startReady: apiResponse.cmdResponse[apiResponse.cmdResponse.length - 1].message.trim() === 'READY',
+                    zosmfResponse: apiResponse as any,
+                    commandResponse: apiResponse.cmdResponse.map(item => item.message).join(', ')
+                };
+                return response;
+            } catch(e) {
+                if(!e.mMessage.includes("status 404")) throw e;
                 newApiFailureOverride = true;
                 const profInfo = new ProfileInfo("zowe");
                 await profInfo.readProfilesFromDisk();
@@ -68,7 +77,7 @@ export class IssueTso {
             }
         }
 
-        // Deprecated API Behavior [formerly issueTsoCommand()]
+        // Deprecated API Behavior [former issueTsoCommand() behavior]
         if (
             addressSpaceOptions != null ||
             !useNewApi ||

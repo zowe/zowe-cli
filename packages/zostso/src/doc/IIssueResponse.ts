@@ -30,7 +30,7 @@ export interface IIssueResponse {
      * @type {IStartStopResponse}
      * @memberof ISendResponse
      */
-    startResponse: IStartStopResponses;
+    startResponse?: IStartStopResponses;
 
     /**
      * Indicates if started TSO containes "READY " message
@@ -44,7 +44,7 @@ export interface IIssueResponse {
      * @type {IStartStopResponse}
      * @memberof IIssueResponse
      */
-    stopResponse: IStartStopResponse;
+    stopResponse?: IStartStopResponse;
     /**
      * The list of zOSMF send API responses. May issue multiple requests or
      * to ensure that all messages are collected. Each individual response is placed here.
