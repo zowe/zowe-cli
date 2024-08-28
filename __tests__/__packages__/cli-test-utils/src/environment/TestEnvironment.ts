@@ -65,15 +65,7 @@ export class TestEnvironment {
         const result: ITestEnvironment<any> = {
             workingDir: testDirectory,
             systemTestProperties: systemProps,
-            env,
-            resources: {
-                localFiles: [],
-                files: [],
-                jobs: [], // Array of IJob objects
-                jobData: [], // Array of objects with jobid and jobname
-                datasets: [],
-                ...session && { session } // Only include session if it is passed in
-            }
+            env
         };
 
         if (params.installPlugin) {

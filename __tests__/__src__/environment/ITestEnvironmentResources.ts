@@ -10,7 +10,7 @@
 */
 
 import { AbstractSession } from "@zowe/imperative";
-import { ICommonJobParms, IJob } from "@zowe/zos-jobs-for-zowe-sdk";
+import { ICommonJobParms, IJob } from "../../../packages/zosjobs";
 
 /**
  * Represents the resources used within the test environment.

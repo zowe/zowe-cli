@@ -14,7 +14,8 @@ import * as nodePath from "path";
 import { AbstractSession, Imperative, Session } from "@zowe/imperative";
 
 import { ITestPropertiesSchema } from "../properties/ITestPropertiesSchema";
-import { ISetupEnvironmentParms, ITestEnvironment, TestEnvironment as BaseTestEnvironment, TempTestProfiles } from "../../__packages__/cli-test-utils";
+import { ISetupEnvironmentParms, TestEnvironment as BaseTestEnvironment, TempTestProfiles } from "../../__packages__/cli-test-utils";
+import { ITestEnvironment } from "./ITestEnvironment";
 import { SshSession } from "../../../packages/zosuss/src/SshSession";
 import { deleteFiles, deleteJob, deleteDataset, deleteLocalFile, deleteJobCommon } from "../TestUtils";
 
@@ -36,8 +37,16 @@ export class TestEnvironment extends BaseTestEnvironment {
      * @returns {Promise<ITestEnvironment>}
      * @memberof TestEnvironment
      */
-    public static async setUp(params: ISetupEnvironmentParms): Promise<ITestEnvironment<ITestPropertiesSchema>> {
-        const result = await super.setUp(params);
+    public static async setUp(params: ISetupEnvironmentParms, session?: AbstractSession): Promise<ITestEnvironment<ITestPropertiesSchema>> {
+        const result : ITestEnvironment<ITestPropertiesSchema> = await super.setUp(params, session);
+        result.resources = {
+            localFiles: [],
+            files: [],
+            jobs: [], // Array of IJob objects
+            jobData: [], // Array of objects with jobid and jobname
+            datasets: [],
+            ...session && { session } // Only include session if it is passed in
+        }
 
         // Ensure correct path separator for windows or linux like systems.
         const separator = process.platform === "win32" ? ";" : ":";

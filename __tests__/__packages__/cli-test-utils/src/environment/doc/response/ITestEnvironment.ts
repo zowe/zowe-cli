@@ -9,20 +9,12 @@
 *
 */
 
-import { ITestEnvironmentResources } from "./ITestEnvironmentResources";
-
 /**
  * The test environment for your test.
  * @export
  * @interface ITestEnvironment
  */
 export interface ITestEnvironment<TestPropertiesSchema> {
-    /**
-     * A collection of resources used within the test environment that need to be cleaned up once test finishes.
-     * @type {ITestEnvironmentResources}
-     * @memberof ITestEnvironment
-     */
-    resources: ITestEnvironmentResources;
     /**
      * The working directory for your test environment. It is a unique (uuid) area where your tests can create
      * their home folders (for imperative, etc.) and you can use the area as scratch for any files, etc. that
