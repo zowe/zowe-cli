@@ -11,8 +11,32 @@
 
 import { IImperativeConfig } from "../../../../src/imperative";
 
-const binConfig: IImperativeConfig = {
-    commandModuleGlobs: ["definitions/*/*Definition.ts"],
+const config: IImperativeConfig = {
+    definitions: [
+        {
+            name: "log",
+            description: "Log example messages",
+            type: "group",
+            children: [
+                {
+                    name: "messages",
+                    description: "Log example messages",
+                    type: "command",
+                    handler: __dirname + "/handlers/LogMessagesHandler",
+                    options: [
+                        {
+                            name: "level",
+                            allowableValues: {values: ["trace", "debug", "info", "warn", "error", "fatal"]},
+                            type: "string",
+                            description: "The level to log messages at.",
+                            required: true
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    commandModuleGlobs: ["../with_bin_package/definitions/*/*Definition.ts"],
     rootCommandDescription: "Sample command line interface",
     defaultHome: __dirname + "/../../../__results__/.examplewithprofiles",
     // defaultHome: createUniqueTestDataDir(),
@@ -40,4 +64,4 @@ const binConfig: IImperativeConfig = {
     }]
 };
 
-module.exports = binConfig;
+module.exports = config;

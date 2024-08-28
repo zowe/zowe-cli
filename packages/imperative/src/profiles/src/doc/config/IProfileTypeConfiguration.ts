@@ -46,6 +46,7 @@ export interface IProfileTypeConfiguration {
      *
      * @type {IProfileDependency[]}
      * @memberof IProfileTypeConfiguration
+     * @deprecated Only applies to V1 profiles. For team config, use nested profiles instead.
      */
     dependencies?: IProfileDependency[];
     /**
@@ -55,6 +56,7 @@ export interface IProfileTypeConfiguration {
      *
      * @type {string}
      * @memberof IProfileTypeConfiguration
+     * @deprecated Only applies to V1 profiles. For team config, validate with JSON schema instead.
      */
     validationPlanModule?: string;
 }

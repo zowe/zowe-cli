@@ -9,14 +9,12 @@
 *
 */
 
-import { IImperativeConfig } from "../../../../../src/imperative";
 import * as T from "../../../TestUtil";
 
 describe("We should provide the ability to define commands through Javascript objects passed through the config " +
     "or globs that match modules locally, " +
     "tested through an example CLI", function () {
-    const cliBin = __dirname + "/../ProfileExampleCLI.ts";
-    const config: IImperativeConfig = require(__dirname + "/../ProfileExampleConfiguration");
+    const cliBin = __dirname + "/../ProfileBinExampleCLI.ts";
 
     it("All commands defined through module globs should be accurately defined, " +
         "and a definition module in the same directory that does not ",

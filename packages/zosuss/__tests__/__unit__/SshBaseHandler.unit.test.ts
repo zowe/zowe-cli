@@ -9,7 +9,7 @@
 *
 */
 
-import { IHandlerParameters, IProfile, CommandProfiles, ConnectionPropsForSessCfg } from "@zowe/imperative";
+import { IHandlerParameters, ConnectionPropsForSessCfg } from "@zowe/imperative";
 import { mockHandlerParameters } from "@zowe/cli-test-utils";
 import { join, normalize } from "path";
 import { Shell } from "../../src/Shell";
@@ -45,73 +45,28 @@ const UNIT_TEST_SSH_PROF_OPTS_PRIVATE_KEY_WITH_PASSPHRASE_NO_USER = {
     keyPassPhrase: "dummyPassPhrase123"
 };
 
-
-// A mocked profile map with ssh profile
-const UNIT_TEST_PROFILE_MAP = new Map<string, IProfile[]>();
-UNIT_TEST_PROFILE_MAP.set(
-    "ssh", [{
-        name: "ssh",
-        type: "ssh",
-        ...UNIT_TEST_SSH_PROF_OPTS
-    }]
-);
-const UNIT_TEST_PROFILES_SSH = new CommandProfiles(UNIT_TEST_PROFILE_MAP);
-
-const UNIT_TEST_PROFILE_MAP_PRIVATE_KEY = new Map<string, IProfile[]>();
-UNIT_TEST_PROFILE_MAP_PRIVATE_KEY.set(
-    "ssh", [{
-        name: "ssh",
-        type: "ssh",
-        ...UNIT_TEST_SSH_PROF_OPTS_PRIVATE_KEY
-    }]
-);
-const UNIT_TEST_PROFILE_MAP_PRIVATE_KEY_WITH_PASSPHRASE = new Map<string, IProfile[]>();
-UNIT_TEST_PROFILE_MAP_PRIVATE_KEY_WITH_PASSPHRASE.set(
-    "ssh", [{
-        name: "ssh",
-        type: "ssh",
-        ...UNIT_TEST_SSH_PROF_OPTS_PRIVATE_KEY_WITH_PASSPHRASE
-    }]
-);
-const UNIT_TEST_PROFILE_MAP_PRIVATE_KEY_WITH_PASSPHRASE_NO_USER = new Map<string, IProfile[]>();
-UNIT_TEST_PROFILE_MAP_PRIVATE_KEY_WITH_PASSPHRASE.set(
-    "ssh", [{
-        name: "ssh",
-        type: "ssh",
-        ...UNIT_TEST_SSH_PROF_OPTS_PRIVATE_KEY_WITH_PASSPHRASE_NO_USER
-    }]
-);
-
-const UNIT_TEST_PROFILES_SSH_PRIVATE_KEY = new CommandProfiles(UNIT_TEST_PROFILE_MAP_PRIVATE_KEY);
-const UNIT_TEST_PROFILES_SSH_PRIVATE_KEY_WITH_PASSPHRASE = new CommandProfiles(UNIT_TEST_PROFILE_MAP_PRIVATE_KEY_WITH_PASSPHRASE);
-const UNIT_TEST_PROFILES_SSH_PRIVATE_KEY_WITH_PASSPHRASE_NO_USER = new CommandProfiles(UNIT_TEST_PROFILE_MAP_PRIVATE_KEY_WITH_PASSPHRASE_NO_USER);
-
 // Mocked parameters for the unit tests
 const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
     arguments: UNIT_TEST_SSH_PROF_OPTS,
     positionals: ["zos-uss", "issue", "ssh"],
-    definition: {} as any,
-    profiles: UNIT_TEST_PROFILES_SSH
+    definition: {} as any
 });
 
 const DEFAULT_PARAMETERS_PRIVATE_KEY: IHandlerParameters = mockHandlerParameters({
     arguments: UNIT_TEST_SSH_PROF_OPTS_PRIVATE_KEY,
     positionals: ["zos-uss", "issue", "ssh"],
-    definition: {} as any,
-    profiles: UNIT_TEST_PROFILES_SSH_PRIVATE_KEY
+    definition: {} as any
 });
 
 const DEFAULT_PARAMETERS_KEY_PASSPHRASE: IHandlerParameters = mockHandlerParameters({
     arguments: UNIT_TEST_SSH_PROF_OPTS_PRIVATE_KEY_WITH_PASSPHRASE,
     positionals: ["zos-uss", "issue", "ssh"],
-    definition: {} as any,
-    profiles: UNIT_TEST_PROFILES_SSH_PRIVATE_KEY_WITH_PASSPHRASE,
+    definition: {} as any
 });
 const DEFAULT_PARAMETERS_KEY_PASSPHRASE_NO_USER: IHandlerParameters = mockHandlerParameters({
     arguments: UNIT_TEST_SSH_PROF_OPTS_PRIVATE_KEY_WITH_PASSPHRASE_NO_USER,
     positionals: ["zos-uss", "issue", "ssh"],
-    definition: {} as any,
-    profiles: UNIT_TEST_PROFILES_SSH_PRIVATE_KEY_WITH_PASSPHRASE_NO_USER,
+    definition: {} as any
 });
 
 class myHandler extends SshBaseHandler {

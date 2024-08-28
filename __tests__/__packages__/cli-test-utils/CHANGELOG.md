@@ -6,6 +6,10 @@ All notable changes to the Zowe CLI test utils package will be documented in thi
 
 Updating `TestEnvironment`, `ITestEnvironment`, and `TestUtils` to simplify and automate the cleanup of test resources, such as datasets, USS files, jobs, and local files created during system tests.
 
+## `8.0.0-next.202408271330`
+
+- BugFix: Removed obsolete V1 `profiles` property from the parameters object returned by `mockHandlerParameters` method.
+
 ## `8.0.0-next.202408131445`
 
 - Update: See `7.28.3` for details

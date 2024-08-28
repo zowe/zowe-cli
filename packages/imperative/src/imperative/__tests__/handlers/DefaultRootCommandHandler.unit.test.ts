@@ -116,7 +116,6 @@ describe("Default Root Command Handler", () => {
             arguments: {_: [], $0: ""},
             definition: prepared.children?.[0].children?.[0] as any,
             fullDefinition: prepared,
-            profiles: undefined as any,
             positionals: [],
             stdin: process.stdin
         });
@@ -136,7 +135,6 @@ describe("Default Root Command Handler", () => {
             arguments: {_: [], $0: "", availableCommands: true},
             definition: MULTIPLE_GROUPS,
             fullDefinition: MULTIPLE_GROUPS,
-            profiles: undefined as any,
             positionals: [],
             stdin: process.stdin
         });
@@ -159,7 +157,6 @@ describe("Default Root Command Handler", () => {
             arguments: {_: [], $0: "", version: true},
             definition: MULTIPLE_GROUPS.children?.[0].children?.[0] as any,
             fullDefinition: MULTIPLE_GROUPS,
-            profiles: undefined as any,
             positionals: [],
             stdin: process.stdin
         });

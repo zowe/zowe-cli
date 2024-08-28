@@ -11,7 +11,7 @@
 
 import { mockHandlerParameters } from "@zowe/cli-test-utils";
 import { AbstractSession, CliUtils, GuiResult, IHandlerParameters, ImperativeError, ProcessUtils } from "@zowe/imperative";
-import { UNIT_TEST_ZOSMF_PROF_OPTS, UNIT_TEST_PROFILES_ZOSMF } from "../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
+import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../__tests__/__src__/TestConstants";
 import { EditDefinition } from "../../../../src/zosfiles/edit/Edit.definition";
 import { EditUtilities, ILocalFile, Prompt } from "../../../../src/zosfiles/edit/Edit.utils";
 import { cloneDeep } from "lodash";
@@ -26,15 +26,13 @@ describe("Files Edit Utilities", () => {
     const commandParametersDs: IHandlerParameters = mockHandlerParameters({
         arguments: UNIT_TEST_ZOSMF_PROF_OPTS,
         positionals: ["zos-files", "edit", "ds"],
-        definition: EditDefinition,
-        profiles: UNIT_TEST_PROFILES_ZOSMF
+        definition: EditDefinition
     });
 
     const commandParametersUss: IHandlerParameters = mockHandlerParameters({
         arguments: UNIT_TEST_ZOSMF_PROF_OPTS,
         positionals: ["zos-files", "edit", "uss"],
-        definition: EditDefinition,
-        profiles: UNIT_TEST_PROFILES_ZOSMF
+        definition: EditDefinition
     });
 
     commandParametersDs.arguments["dataSetName"] =  commandParametersUss.arguments["file"] = 'fake';

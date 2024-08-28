@@ -18,17 +18,13 @@ import { ProvisionTemplateData } from "../../../__resources__/ProvisionTemplateD
 import { IHandlerParameters, ImperativeError } from "@zowe/imperative";
 import * as TemplateHandler from "../../../../../src/provisioning/provision/template/Template.handler";
 import * as TemplateDefinition from "../../../../../src/provisioning/provision/template/Template.definition";
-import {
-    UNIT_TEST_ZOSMF_PROF_OPTS,
-    UNIT_TEST_PROFILES_ZOSMF
-} from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
+import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../../__tests__/__src__/TestConstants";
 import { mockHandlerParameters } from "@zowe/cli-test-utils";
 
 const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
     arguments: UNIT_TEST_ZOSMF_PROF_OPTS,
     positionals: ["provisioning", "provision", "template"],
-    definition: TemplateDefinition.TemplateDefinition,
-    profiles: UNIT_TEST_PROFILES_ZOSMF
+    definition: TemplateDefinition.TemplateDefinition
 });
 
 describe("provision template handler tests", () => {

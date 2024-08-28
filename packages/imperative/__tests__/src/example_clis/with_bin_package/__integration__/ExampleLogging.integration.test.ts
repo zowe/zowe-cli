@@ -15,8 +15,8 @@ import { IImperativeConfig } from "../../../../../src/imperative";
 
 describe("We should provide the ability to create, manage, and use profiles, " +
     "tested through an example CLI", function () {
-    const cliBin = __dirname + "/../ProfileExampleCLI.ts";
-    const config: IImperativeConfig = require(__dirname + "/../ProfileExampleConfiguration");
+    const cliBin = __dirname + "/../ProfileBinExampleCLI.ts";
+    const config: IImperativeConfig = require(__dirname + "/../ProfileBinExampleConfiguration");
     const logFile = path.join(config.defaultHome as string, "logs", config.name + ".log");
 
     afterEach(function () {

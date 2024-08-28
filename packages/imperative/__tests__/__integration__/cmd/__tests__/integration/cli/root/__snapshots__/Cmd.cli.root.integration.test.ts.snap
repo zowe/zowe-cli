@@ -26,7 +26,6 @@ exports[`cmd-cli should display the help 1`] = `
    invoke      Invoke handlers to test promise reject/fulfill
    nested      Test a complex structure                      
    profile     Validate profile mapping                      
-   read        Read some profiles                            
    respond     Invoke handlers that will produce messages    
    validate    Validate syntax checking                      
 
@@ -81,7 +80,6 @@ exports[`cmd-cli should display the help 1`] = `
    invoke      Invoke handlers to test promise reject/fulfill
    nested      Test a complex structure                      
    profile     Validate profile mapping                      
-   read        Read some profiles                            
    respond     Invoke handlers that will produce messages    
    validate    Validate syntax checking                      
 
@@ -116,7 +114,7 @@ exports[`cmd-cli should display the help 1`] = `
   \\"success\\": true,
   \\"exitCode\\": 0,
   \\"message\\": \\"\\",
-  \\"stdout\\": \\"\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   A test CLI for the 'cmd' imperative package\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   cmd-cli <group>\\\\n\\\\n   Where <group> is one of the following:\\\\n\\\\n GROUPS\\\\n ------\\\\n\\\\n   auth        Connect to token-based authentication services\\\\n   auto-format Invoke handlers to test auto-format           \\\\n   chained     chained handler test commands                 \\\\n   gen-help    Commands to test help generator               \\\\n   invalid     Invalid definitions                           \\\\n   invoke      Invoke handlers to test promise reject/fulfill\\\\n   nested      Test a complex structure                      \\\\n   profile     Validate profile mapping                      \\\\n   read        Read some profiles                            \\\\n   respond     Invoke handlers that will produce messages    \\\\n   validate    Validate syntax checking                      \\\\n\\\\n OPTIONS\\\\n -------\\\\n\\\\n   --version | -V (boolean)\\\\n\\\\n      Display the current version of Cmd Package CLI\\\\n\\\\n   --available-commands | --ac (boolean)\\\\n\\\\n      Displays a list of available commands\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n   --help-web | --hw (boolean)\\\\n\\\\n      Display HTML help in browser\\\\n\\\\n\\",
+  \\"stdout\\": \\"\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   A test CLI for the 'cmd' imperative package\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   cmd-cli <group>\\\\n\\\\n   Where <group> is one of the following:\\\\n\\\\n GROUPS\\\\n ------\\\\n\\\\n   auth        Connect to token-based authentication services\\\\n   auto-format Invoke handlers to test auto-format           \\\\n   chained     chained handler test commands                 \\\\n   gen-help    Commands to test help generator               \\\\n   invalid     Invalid definitions                           \\\\n   invoke      Invoke handlers to test promise reject/fulfill\\\\n   nested      Test a complex structure                      \\\\n   profile     Validate profile mapping                      \\\\n   respond     Invoke handlers that will produce messages    \\\\n   validate    Validate syntax checking                      \\\\n\\\\n OPTIONS\\\\n -------\\\\n\\\\n   --version | -V (boolean)\\\\n\\\\n      Display the current version of Cmd Package CLI\\\\n\\\\n   --available-commands | --ac (boolean)\\\\n\\\\n      Displays a list of available commands\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --response-format-json | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n   --help-web | --hw (boolean)\\\\n\\\\n      Display HTML help in browser\\\\n\\\\n\\",
   \\"stderr\\": \\"\\",
   \\"data\\": {}
 }"
@@ -196,11 +194,6 @@ cmd-cli invalid no-handler
 
 	This will never get invoked. No handler specified on this definition.
 
-cmd-cli invalid profile-spec
-
-	Command handler attempts to load a profile that wasn't specified on the command
-	definition
-
 cmd-cli invoke exit-143
 
 	Test handler that exits with status code 143
@@ -259,10 +252,6 @@ cmd-cli profile mapping-name-type
 cmd-cli profile mapping-positional
 
 	Tests Imperative's profile to CLI mapping capabilities.
-
-cmd-cli read profile
-
-	Read some profiles
 
 cmd-cli respond with-data-array
 

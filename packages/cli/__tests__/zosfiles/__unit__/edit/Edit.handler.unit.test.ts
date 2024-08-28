@@ -15,7 +15,7 @@ import {ILocalFile,
 import { mockHandlerParameters } from "@zowe/cli-test-utils";
 import { EditDefinition } from "../../../../src/zosfiles/edit/Edit.definition";
 import EditHandler from "../../../../src/zosfiles/edit/Edit.handler";
-import { UNIT_TEST_PROFILES_ZOSMF, UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
+import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../__tests__/__src__/TestConstants";
 import stripAnsi = require("strip-ansi");
 
 describe("Files Edit Group Handler", () => {
@@ -27,8 +27,7 @@ describe("Files Edit Group Handler", () => {
         const commandParameters: IHandlerParameters = mockHandlerParameters({
             arguments: UNIT_TEST_ZOSMF_PROF_OPTS,
             positionals: ["zos-files", "edit", "ds"],
-            definition: EditDefinition,
-            profiles: UNIT_TEST_PROFILES_ZOSMF
+            definition: EditDefinition
         });
 
         const localFile: ILocalFile = {

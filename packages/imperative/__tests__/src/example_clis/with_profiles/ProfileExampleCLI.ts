@@ -11,10 +11,9 @@
 
 import { Imperative } from "../../../../src/imperative";
 
-
-process.on("unhandledRejection", (err) => {
-    process.stderr.write("Err: " + err + "\n");
+// Reuse "with_bin_package" configuration without bin script
+Imperative.init({configurationModule: __dirname + "/../with_bin_package/ProfileBinExampleConfiguration.ts"}).then(() => {
+    Imperative.parse();
+}).catch((error) => {
+    process.stderr.write(`An error occurred parsing or initing: ${error.message}`);
 });
-
-Imperative.init({configurationModule: __dirname + "/ProfileExampleConfiguration.ts"}).then(() => Imperative.parse());
-// Imperative.parse();
