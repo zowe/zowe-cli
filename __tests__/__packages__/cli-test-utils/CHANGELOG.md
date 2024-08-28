@@ -4,7 +4,7 @@ All notable changes to the Zowe CLI test utils package will be documented in thi
 
 ## Recent Changes
 
-Updating `TestEnvironment`, `ITestEnvironment`, and `TestUtils` to simplify and automate the cleanup of test resources, such as datasets, USS files, jobs, and local files created during system tests.
+- Updated `TestEnvironment`, `ITestEnvironment`, and `TestUtils` to simplify and automate the cleanup of test resources, such as datasets, USS files, jobs, and local files created during system tests.
 
 ## `8.0.0-next.202408271330`
 
