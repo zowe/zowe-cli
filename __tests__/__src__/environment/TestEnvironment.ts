@@ -74,23 +74,25 @@ export class TestEnvironment extends BaseTestEnvironment {
         for (const file of testEnvironment.resources.localFiles) {
             deleteLocalFile(file);
         }
-        // Check if session exists; if not, create one
-        const session = testEnvironment.resources.session || await TestEnvironment.createSession();
-        for (const file of testEnvironment.resources.files) {
-            deleteFiles(session, file);
-        }
-        for (const job of testEnvironment.resources.jobs) {
-            deleteJob(session, job);
-        }
-        for (const jobData of testEnvironment.resources.jobData) {
-            if (jobData.jobname && jobData.jobid) {
-                deleteJobCommon(session, jobData);
-            } else {
-                Imperative.console.info('Error: Missing jobname or jobid for jobData:', jobData);
+        // Check if session exists before deleting resources
+        const session = testEnvironment.resources.session;
+        if (session) {
+            for (const file of testEnvironment.resources.files) {
+                deleteFiles(session, file);
             }
-        }
-        for (const dataset of testEnvironment.resources.datasets) {
-            deleteDataset(session, dataset);
+            for (const job of testEnvironment.resources.jobs) {
+                deleteJob(session, job);
+            }
+            for (const jobData of testEnvironment.resources.jobData) {
+                if (jobData.jobname && jobData.jobid) {
+                    deleteJobCommon(session, jobData);
+                } else {
+                    Imperative.console.info('Error: Missing jobname or jobid for jobData:', jobData);
+                }
+            }
+            for (const dataset of testEnvironment.resources.datasets) {
+                deleteDataset(session, dataset);
+            }
         }
     }
 
