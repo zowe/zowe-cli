@@ -76,7 +76,7 @@ Zowe CLI is built on [Imperative CLI Framework](https://github.com/zowe/zowe-cli
 Consider the following when you interact with pull requests:
 
 - Pull request reviewers should be assigned to a same-team member.
-- Pull requests should have at least 2 reviews before merging.
+- Pull requests should have at least 2 approving reviews before merging.
 - Anyone can comment on a pull request to request delay on merging or to get questions answered.
 
 ## Dependencies

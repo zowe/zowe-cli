@@ -100,7 +100,7 @@ The following is a list of commands that users issue to install product versions
 
   `npm install -g @zowe/cli` OR `npm install -g @zowe/cli@latest`
 
-* To obtain the supported incremental version:
+* To obtain the supported active LTS version:
 
   `npm install -g @zowe/cli@zowe-v2-lts`
 

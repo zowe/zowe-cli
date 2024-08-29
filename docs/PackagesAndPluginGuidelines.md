@@ -11,8 +11,8 @@ Plug-ins should use the [Zowe CLI Plug-in Starter Project](https://github.com/zo
 
 ## Plug-in Repositories
 
-Name plug-in repositories according to the Zowe CLI `[group]` name. For example, the `cics` plug-in repository name is `zowe-cli-cics-plugin`.
-Plug-in repositories may also have a different name for monorepos, such as `cics-for-zowe-clients`.
+Name plug-in repositories according to the Zowe CLI `[group]` name. For example, the `ftp` plug-in repository name is `zowe-cli-ftp-plugin`.
+Plug-in repositories may also have a different name for monorepos, such as `cics-for-zowe-client`.
 
 **Note:** See [Command Format Standards](CommandFormatStandards.md) for details about `[group]`.
 
