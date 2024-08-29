@@ -151,7 +151,7 @@ export class CliUtils {
                         `Command preparation was attempting to extract option values from this profile.`
                 });
             }
-            fromCnfg = { ...(p ?? {}), ...fromCnfg };
+            fromCnfg = { ...p ?? {}, ...fromCnfg };
         }
 
         // Convert each property extracted from the config to the correct yargs
