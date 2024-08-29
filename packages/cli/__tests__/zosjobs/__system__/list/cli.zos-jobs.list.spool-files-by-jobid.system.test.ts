@@ -9,7 +9,9 @@
 *
 */
 
-import { ITestEnvironment, TestEnvironment, runCliScript } from "@zowe/cli-test-utils";
+import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
+import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/ITestEnvironment";
+import { runCliScript } from "../../../../../../__tests__/__src__/TestUtils"
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { AbstractSession, TextUtils } from "@zowe/imperative";
 import { IJob, GetJobs, SubmitJobs } from "@zowe/zos-jobs-for-zowe-sdk";
@@ -39,8 +41,8 @@ describe("zos-jobs list spool-files-by-jobid command", () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
             testName: "zos_jobs_list_spool_files_by_jobid_command",
             tempProfileTypes: ["zosmf"]
-        }, REAL_SESSION = await TestEnvironment.createSession());
-
+        });
+        REAL_SESSION = await TestEnvironment.createSession();
         IEFBR14_JOB = TEST_ENVIRONMENT.systemTestProperties.zosjobs.iefbr14Member;
         const defaultSystem = TEST_ENVIRONMENT.systemTestProperties;
 
@@ -136,8 +138,8 @@ describe("zos-jobs list spool-files-by-jobid command", () => {
             beforeAll(async () => {
                 TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
                     testName: "zos_jobs_list_spool_files_by_jobid_without_profiles"
-                }, REAL_SESSION = await TestEnvironment.createSession());
-
+                });
+                REAL_SESSION = await TestEnvironment.createSession();
                 SYSTEM_PROPS = TEST_ENVIRONMENT_NO_PROF.systemTestProperties;
             });
 

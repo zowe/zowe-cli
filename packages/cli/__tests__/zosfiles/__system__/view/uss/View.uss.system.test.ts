@@ -13,11 +13,10 @@
 import { Imperative, Session } from "@zowe/imperative";
 import * as path from "path";
 import { ZosFilesConstants, ZosmfRestClient, ZosmfHeaders, Upload } from "@zowe/cli";
-import {ITestEnvironment, runCliScript} from "@zowe/cli-test-utils";
-import {TestEnvironment} from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
-import { getRandomBytes } from "../../../../../../../__tests__/__src__/TestUtils";
-import {ITestPropertiesSchema} from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { getUniqueDatasetName} from "../../../../../../../__tests__/__src__/TestUtils";
+import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/ITestEnvironment";
+import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
+import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
+import { getUniqueDatasetName, runCliScript } from "../../../../../../../__tests__/__src__/TestUtils";
 
 let REAL_SESSION: Session;
 let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;

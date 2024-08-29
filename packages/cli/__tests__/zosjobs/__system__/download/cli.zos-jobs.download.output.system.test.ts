@@ -9,7 +9,9 @@
 *
 */
 
-import { ITestEnvironment, TestEnvironment, runCliScript } from "@zowe/cli-test-utils";
+import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
+import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/ITestEnvironment";
+import { runCliScript } from "../../../../../../__tests__/__src__/TestUtils"
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { AbstractSession } from "@zowe/imperative";
 import * as fs from "fs";
@@ -26,7 +28,8 @@ describe("zos-jobs download output command", () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
             testName: "zos_jobs_download_output_command",
             tempProfileTypes: ["zosmf"]
-        }, REAL_SESSION = await TestEnvironment.createSession());
+        });
+        REAL_SESSION = await TestEnvironment.createSession();
 
         IEFBR14_JCL = TEST_ENVIRONMENT.systemTestProperties.zosjobs.iefbr14Member;
     });
@@ -80,7 +83,8 @@ describe("zos-jobs download output command", () => {
             beforeAll(async () => {
                 TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
                     testName: "zos_jobs_download_output_without_profiles"
-                }, REAL_SESSION = await TestEnvironment.createSession());
+                });
+                REAL_SESSION = await TestEnvironment.createSession();
 
                 DEFAULT_SYSTEM_PROPS = TEST_ENVIRONMENT_NO_PROF.systemTestProperties;
             });

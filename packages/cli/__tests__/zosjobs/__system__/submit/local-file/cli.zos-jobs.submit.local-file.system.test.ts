@@ -9,8 +9,9 @@
 *
 */
 
-import { ITestEnvironment, runCliScript } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
+import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/ITestEnvironment";
+import { runCliScript } from "../../../../../../../__tests__/__src__/TestUtils"
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { IO, Session } from "@zowe/imperative";
 import { GetJobs } from "@zowe/zos-jobs-for-zowe-sdk";
@@ -34,9 +35,8 @@ describe("zos-jobs submit local-file command", () => {
             testName: "zos_jobs_submit_local_file_command",
             tempProfileTypes: ["zosmf"]
         });
-
+        REAL_SESSION = await TestEnvironment.createSession();
         systemProps = TEST_ENVIRONMENT.systemTestProperties;
-        REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
         account = systemProps.tso.account;
 
         // JCL to submit

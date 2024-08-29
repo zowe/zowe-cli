@@ -16,6 +16,8 @@ import { ZosmfRestClient } from "../../packages/core/src";
 import { ZosFilesConstants, Delete } from "../../packages/zosfiles/src";
 import { DeleteJobs, ICommonJobParms, IDeleteJobParms, IJob } from "../../packages/zosjobs/src";
 import { posix } from "path";
+import { spawnSync, SpawnSyncReturns, ExecFileException } from "child_process";
+import { ITestEnvironment } from "./environment/ITestEnvironment";
 
 /**
  * Delete a local testing file after use
@@ -169,4 +171,57 @@ export const delTime = 500;
  */
 export function inspect(obj: any) : string {
     return JSON.stringify(Object.keys(obj).reduce((newObj, key) => ({...newObj, [key]: obj[key]}), {}));
+}
+
+/**
+ * Execute a CLI script
+ * @export
+ * @param  scriptPath - the path to the script
+ * @param  testEnvironment - the test environment with env
+ * @param [args=[]] - set of script args (optional)
+ * @returns  node.js details about the results of
+ *           executing the script, including exit code and output
+ */
+export function runCliScript(scriptPath: string, testEnvironment: ITestEnvironment<any>, args: any[] = []): SpawnSyncReturns<Buffer> {
+    if (fs.existsSync(scriptPath)) {
+
+        // We force the color off to prevent any oddities in the snapshots or expected values
+        // Color can vary OS/terminal
+        const childEnv = JSON.parse(JSON.stringify(process.env));
+        childEnv.FORCE_COLOR = "0";
+        for (const key of Object.keys(testEnvironment.env)) {
+            // copy the values from the env
+            childEnv[key] = testEnvironment.env[key];
+        }
+
+        if (process.platform === "win32") {
+            // Execute the command synchronously
+            const response = spawnSync("sh", [scriptPath].concat(args), {
+                cwd: testEnvironment.workingDir,
+                encoding: "buffer",
+                env: childEnv
+            });
+            if ((response.error as ExecFileException)?.code === "ENOENT") {
+                throw new Error(`"sh" is missing from your PATH. Check that Git Bash is installed with the option to ` +
+                    `"Use Git and Unix Tools from Windows Command Prompt".`);
+            }
+            return response;
+        }
+
+        // Check to see if the file is executable
+        try {
+            fs.accessSync(scriptPath, fs.constants.X_OK);
+        } catch {
+            fs.chmodSync(scriptPath, "755");
+        }
+        return spawnSync(scriptPath, args, {
+            cwd: testEnvironment.workingDir,
+            env: childEnv,
+            encoding: "buffer"
+        });
+
+    } else {
+        throw new Error(`The script file ${scriptPath} doesn't exist`);
+
+    }
 }

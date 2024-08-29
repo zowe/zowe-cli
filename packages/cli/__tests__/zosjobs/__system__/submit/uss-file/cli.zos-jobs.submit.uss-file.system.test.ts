@@ -9,8 +9,9 @@
 *
 */
 
-import { ITestEnvironment, runCliScript } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
+import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/ITestEnvironment";
+import { runCliScript } from "../../../../../../../__tests__/__src__/TestUtils"
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { Session } from "@zowe/imperative";
 import * as path from "path";  // Import path module for path handling
@@ -35,7 +36,6 @@ describe("zos-jobs submit uss-file command", () => {
             testName: "zos_jobs_submit_command",
             tempProfileTypes: ["zosmf"]
         });
-
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
         account = TEST_ENVIRONMENT.systemTestProperties.tso.account;
         ussFile = TEST_ENVIRONMENT.systemTestProperties.zosjobs.iefbr14USSFile;

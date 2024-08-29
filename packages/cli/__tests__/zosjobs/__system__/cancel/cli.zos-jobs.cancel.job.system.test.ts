@@ -9,7 +9,9 @@
 *
 */
 
-import { ITestEnvironment, runCliScript, TestEnvironment } from "@zowe/cli-test-utils";
+import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
+import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/ITestEnvironment";
+import { runCliScript } from "../../../../../../__tests__/__src__/TestUtils"
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { JobTestsUtils } from "../../../../../zosjobs/__tests__/__system__/JobTestsUtils";
 import { AbstractSession, IO } from "@zowe/imperative";
@@ -27,8 +29,8 @@ describe("zos-jobs cancel job command", () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
             testName: "zos_jobs_cancel_job_command",
             tempProfileTypes: ["zosmf"]
-        }, REAL_SESSION = await TestEnvironment.createSession());
-
+        });
+        REAL_SESSION = await TestEnvironment.createSession();
         const systemProps = TEST_ENVIRONMENT.systemTestProperties;
         const jcl = JobTestsUtils.getSleepJCL(systemProps.zosmf.user, systemProps.tso.account, systemProps.zosjobs.jobclass);
         const bufferJCL: Buffer = Buffer.from(jcl);
@@ -117,7 +119,8 @@ describe("zos-jobs cancel job command", () => {
             beforeAll(async () => {
                 TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
                     testName: "zos_jobs_cancel_job_without_profiles"
-                }, REAL_SESSION = await TestEnvironment.createSession());
+                });
+                REAL_SESSION = await TestEnvironment.createSession();
 
                 DEFAULT_SYSTEM_PROPS = TEST_ENVIRONMENT_NO_PROF.systemTestProperties;
             });

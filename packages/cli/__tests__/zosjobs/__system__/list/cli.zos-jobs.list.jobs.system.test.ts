@@ -9,7 +9,9 @@
 *
 */
 
-import { ITestEnvironment, TestEnvironment, runCliScript } from "@zowe/cli-test-utils";
+import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
+import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/ITestEnvironment";
+import { runCliScript } from "../../../../../../__tests__/__src__/TestUtils"
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { AbstractSession } from "@zowe/imperative";
 import { IJob, GetJobs } from "@zowe/zos-jobs-for-zowe-sdk";
@@ -38,7 +40,8 @@ describe("zos-jobs list jobs command", () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
             testName: "zos_jobs_list_jobs_command",
             tempProfileTypes: ["zosmf"]
-        }, REAL_SESSION = await TestEnvironment.createSession());
+        });
+        REAL_SESSION = await TestEnvironment.createSession();
 
         const systemProps = TEST_ENVIRONMENT.systemTestProperties;
         IEFBR14_JOB = systemProps.zosjobs.iefbr14Member;
@@ -113,7 +116,8 @@ describe("zos-jobs list jobs command", () => {
             beforeAll(async () => {
                 TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
                     testName: "zos_jobs_list_job_without_profiles"
-                }, REAL_SESSION = await TestEnvironment.createSession());
+                });
+                REAL_SESSION = await TestEnvironment.createSession();
 
                 SYSTEM_PROPS = TEST_ENVIRONMENT_NO_PROF.systemTestProperties;
             });

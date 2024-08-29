@@ -9,7 +9,9 @@
 *
 */
 
-import { ITestEnvironment, TestEnvironment, runCliScript } from "@zowe/cli-test-utils";
+import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
+import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/ITestEnvironment";
+import { runCliScript } from "../../../../../../__tests__/__src__/TestUtils"
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { AbstractSession } from "@zowe/imperative";
 import { GetJobs } from "@zowe/zos-jobs-for-zowe-sdk";
@@ -32,8 +34,8 @@ describe("zos-jobs search job command", () => {
         testEnvironment = await TestEnvironment.setUp({
             testName: "zos_jobs_search_job_command",
             tempProfileTypes: ["zosmf"]
-        }, REAL_SESSION = await TestEnvironment.createSession());
-
+        });
+        REAL_SESSION = await TestEnvironment.createSession();
         // Use testEnvironment for accessing properties
         defaultSystem = testEnvironment.systemTestProperties;
 
