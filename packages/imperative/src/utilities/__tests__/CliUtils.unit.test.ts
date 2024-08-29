@@ -11,9 +11,9 @@
 
 import * as stream from "stream";
 import { CliUtils } from "../src/CliUtils";
-import { CommandProfiles, ICommandOptionDefinition } from "../../cmd";
-import { IProfile } from "../../profiles";
+import { ICommandOptionDefinition } from "../../cmd";
 import { ImperativeError } from "../../error";
+import { Config, IConfig } from "../../config";
 
 const TEST_PREFIX = "TEST_CLI_PREFIX";
 const boolEnv = TEST_PREFIX + "_OPT_FAKE_BOOL_OPT";
@@ -21,6 +21,31 @@ const stringEnv = TEST_PREFIX + "_OPT_FAKE_STRING_OPT";
 const stringAliasEnv = TEST_PREFIX + "_OPT_FAKE_STRING_OPT_WITH_ALIASES";
 const numberEnv = TEST_PREFIX + "_OPT_FAKE_NUMBER_OPT";
 const arrayEnv = TEST_PREFIX + "_OPT_FAKE_ARRAY_OPT";
+
+function mockConfigApi(properties: IConfig | undefined): any {
+    properties = properties || Config.empty();
+    return {
+        api: {
+            layers: {
+                get: () => ({
+                    exists: true,
+                    path: "fakePath",
+                    properties
+                })
+            },
+            profiles: {
+                defaultGet: jest.fn().mockReturnValue(properties.profiles[properties.defaults.banana]?.properties),
+                exists: () => properties.defaults.banana != null,
+                getProfilePathFromName: (name: string) => `profiles.${name}`
+            },
+            secure: {
+                securePropsForProfile: jest.fn().mockReturnValue([])
+            }
+        },
+        exists: true,
+        properties
+    };
+}
 
 describe("CliUtils", () => {
     describe("extractEnvForOptions", () => {
@@ -262,7 +287,7 @@ describe("CliUtils", () => {
         });
     });
 
-    describe("getOptValueFromProfiles", () => {
+    describe("getOptValuesFromConfig", () => {
 
         const FAKE_OPTS: ICommandOptionDefinition[] = [{
             name: "fake-string-opt",
@@ -293,12 +318,8 @@ describe("CliUtils", () => {
         it("should throw an imperative error if a required profile is not present", () => {
             let error;
             try {
-                // eslint-disable-next-line deprecation/deprecation
-                const args = CliUtils.getOptValueFromProfiles(
-                    // eslint-disable-next-line deprecation/deprecation
-                    new CommandProfiles(new Map<string, IProfile[]>()),
-                    { required: ["banana"] },
-                    FAKE_OPTS);
+                const args = CliUtils.getOptValuesFromConfig(mockConfigApi(undefined),
+                    { required: ["banana"] } as any, {} as any, FAKE_OPTS);
             } catch (e) {
                 error = e;
             }
@@ -308,122 +329,129 @@ describe("CliUtils", () => {
         });
 
         it("should return nothing if a profile was optional and not loaded", () => {
-            // eslint-disable-next-line deprecation/deprecation
-            const args = CliUtils.getOptValueFromProfiles(
-                // eslint-disable-next-line deprecation/deprecation
-                new CommandProfiles(new Map<string, IProfile[]>()),
-                { optional: ["banana"] },
-                FAKE_OPTS);
+            const args = CliUtils.getOptValuesFromConfig(mockConfigApi(undefined),
+                { optional: ["banana"] }, {} as any, FAKE_OPTS);
             expect(Object.keys(args).length).toBe(0);
         });
 
         it("should return args (from definitions with no hyphen in name) extracted from loaded profile", () => {
-            const map = new Map<string, IProfile[]>();
-            map.set("banana", [{ type: "banana", name: "fakebanana", nohyphen: "specified in profile" }]);
-            // eslint-disable-next-line deprecation/deprecation
-            const args = CliUtils.getOptValueFromProfiles(
-                // eslint-disable-next-line deprecation/deprecation
-                new CommandProfiles(map),
-                { optional: ["banana"] },
-                FAKE_OPTS);
+            const args = CliUtils.getOptValuesFromConfig(
+                mockConfigApi({
+                    profiles: {
+                        fakebanana: {
+                            type: "banana",
+                            properties: {
+                                nohyphen: "specified in profile"
+                            }
+                        }
+                    },
+                    defaults: { banana: "fakebanana" }
+                }),
+                { optional: ["banana"] }, {} as any, FAKE_OPTS);
             expect(args).toMatchSnapshot();
         });
 
         it("should return args (with both cases) extracted from loaded profile, preferring the camel case", () => {
-            const map = new Map<string, IProfile[]>();
-            map.set("banana", [{
-                "type": "banana",
-                "name": "fakebanana",
-                "couldBeEither": "should be me",
-                "could-be-either": "should not be me"
-            }]);
-            // eslint-disable-next-line deprecation/deprecation
-            const args = CliUtils.getOptValueFromProfiles(
-                // eslint-disable-next-line deprecation/deprecation
-                new CommandProfiles(map),
-                { optional: ["banana"] },
-                FAKE_OPTS);
+            const args = CliUtils.getOptValuesFromConfig(
+                mockConfigApi({
+                    profiles: {
+                        fakebanana: {
+                            type: "banana",
+                            properties: {
+                                couldBeEither: "should be me",
+                                "could-be-either": "should not be me"
+                            }
+                        }
+                    },
+                    defaults: { banana: "fakebanana" }
+                }),
+                { optional: ["banana"] }, {} as any, FAKE_OPTS);
             expect(args).toMatchSnapshot();
         });
 
         it("should return args (with both cases) extracted from loaded profile, preferring the kebab case", () => {
-            const map = new Map<string, IProfile[]>();
-            map.set("banana", [{
-                "type": "banana",
-                "name": "fakebanana",
-                "fakeStringOpt": "should not be me",
-                "fake-string-opt": "should be me"
-            }]);
-            // eslint-disable-next-line deprecation/deprecation
-            const args = CliUtils.getOptValueFromProfiles(
-                // eslint-disable-next-line deprecation/deprecation
-                new CommandProfiles(map),
-                { optional: ["banana"] },
-                FAKE_OPTS);
+            const args = CliUtils.getOptValuesFromConfig(
+                mockConfigApi({
+                    profiles: {
+                        fakebanana: {
+                            type: "banana",
+                            properties: {
+                                fakeStringOpt: "should not be me",
+                                "fake-string-opt": "should be me"
+                            }
+                        }
+                    },
+                    defaults: { banana: "fakebanana" }
+                }),
+                { optional: ["banana"] }, {} as any, FAKE_OPTS);
             expect(args).toMatchSnapshot();
         });
 
         it("should return args with both cases, if the option is camel and the profile is kebab", () => {
-            const map = new Map<string, IProfile[]>();
-            map.set("banana", [{
-                "type": "banana",
-                "name": "fakebanana",
-                "could-be-either": "should be me"
-            }]);
-            // eslint-disable-next-line deprecation/deprecation
-            const args = CliUtils.getOptValueFromProfiles(
-                // eslint-disable-next-line deprecation/deprecation
-                new CommandProfiles(map),
-                { optional: ["banana"] },
-                FAKE_OPTS);
+            const args = CliUtils.getOptValuesFromConfig(
+                mockConfigApi({
+                    profiles: {
+                        fakebanana: {
+                            type: "banana",
+                            properties: {
+                                "could-be-either": "should be me"
+                            }
+                        }
+                    },
+                    defaults: { banana: "fakebanana" }
+                }),
+                { optional: ["banana"] }, {} as any, FAKE_OPTS);
             expect(args).toMatchSnapshot();
         });
 
         it("should return args with both cases, if the option is kebab and the profile is camel", () => {
-            const map = new Map<string, IProfile[]>();
-            map.set("banana", [{
-                type: "banana",
-                name: "fakebanana",
-                fakeStringOpt: "should be me"
-            }]);
-            // eslint-disable-next-line deprecation/deprecation
-            const args = CliUtils.getOptValueFromProfiles(
-                // eslint-disable-next-line deprecation/deprecation
-                new CommandProfiles(map),
-                { optional: ["banana"] },
-                FAKE_OPTS);
+            const args = CliUtils.getOptValuesFromConfig(
+                mockConfigApi({
+                    profiles: {
+                        fakebanana: {
+                            type: "banana",
+                            properties: {
+                                fakeStringOpt: "should be me"
+                            }
+                        }
+                    },
+                    defaults: { banana: "fakebanana" }
+                }),
+                { optional: ["banana"] }, {} as any, FAKE_OPTS);
             expect(args).toMatchSnapshot();
         });
 
         it("should return args with aliases if extracted option from a profile", () => {
-            const map = new Map<string, IProfile[]>();
-            map.set("banana", [{
-                type: "banana",
-                name: "fakebanana",
-                withAlias: "should have 'w' on args object too"
-            }]);
-            // eslint-disable-next-line deprecation/deprecation
-            const args = CliUtils.getOptValueFromProfiles(
-                // eslint-disable-next-line deprecation/deprecation
-                new CommandProfiles(map),
-                { optional: ["banana"] },
-                FAKE_OPTS);
+            const args = CliUtils.getOptValuesFromConfig(
+                mockConfigApi({
+                    profiles: {
+                        fakebanana: {
+                            type: "banana",
+                            properties: {
+                                withAlias: "should have 'w' on args object too"
+                            }
+                        }
+                    },
+                    defaults: { banana: "fakebanana" }
+                }),
+                { optional: ["banana"] }, {} as any, FAKE_OPTS);
             expect(args).toMatchSnapshot();
         });
 
         it("should return args if extracted option from a profile is only available as an alias", () => {
-            const map = new Map<string, IProfile[]>();
-            map.set("banana", [{
-                type: "banana",
-                name: "fakebanana",
-                username: "fake"
-            }]);
-            // eslint-disable-next-line deprecation/deprecation
-            const args = CliUtils.getOptValueFromProfiles(
-                // eslint-disable-next-line deprecation/deprecation
-                new CommandProfiles(map),
-                { optional: ["banana"] },
-                FAKE_OPTS);
+            const args = CliUtils.getOptValuesFromConfig(
+                mockConfigApi({
+                    profiles: {
+                        fakebanana: {
+                            type: "banana",
+                            properties: {
+                                username: "fake"
+                            }
+                        }
+                    },
+                    defaults: { banana: "fakebanana" }
+                }),
+                { optional: ["banana"] }, {} as any, FAKE_OPTS);
             expect(args).toEqual({ user: "fake", username: "fake" });
         });
     });

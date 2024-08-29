@@ -2,6 +2,13 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- LTS Breaking: Removed the following obsolete V1 profile classes/functions:
+  - `CliProfileManager`, `CommandProfiles`, `ProfileValidator` - Use the `V1ProfileRead` class if you still need to read V1 profiles
+  - `CliUtils.getOptValueFromProfiles` - Use `getOptValuesFromConfig` instead to load from team config
+- Next Breaking: Changed 2nd parameter of `CliUtils.getOptValuesFromConfig` method from type `ICommandDefinition` to `ICommandProfile`.
+
 ## `8.0.0-next.202408271330`
 
 - LTS Breaking: [#2231](https://github.com/zowe/zowe-cli/issues/2231)
@@ -10,8 +17,8 @@ All notable changes to the Imperative package will be documented in this file.
     - `IProfileTypeConfiguration.dependencies` - For team config, use nested profiles instead
     - `IProfileTypeConfiguration.validationPlanModule` - For team config, validate with JSON schema instead
   - Deprecated the following obsolete V1 profile classes/functions:
+    - `CliProfileManager`, `CommandProfiles`, `ProfileValidator` - Use the `V1ProfileRead` class if you still need to read V1 profiles
     - `CliUtils.getOptValueFromProfiles` - Use `getOptValuesFromConfig` instead to load from team config
-    - `CommandProfiles` - Use the `V1ProfileRead` class if you still need to read V1 profiles
 
 ## `8.0.0-next.202408231832`
 

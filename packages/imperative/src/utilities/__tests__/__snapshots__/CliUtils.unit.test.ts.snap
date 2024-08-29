@@ -98,27 +98,27 @@ Object {
 }
 `;
 
-exports[`CliUtils getOptValueFromProfiles should return args (from definitions with no hyphen in name) extracted from loaded profile 1`] = `
+exports[`CliUtils getOptValuesFromConfig should return args (from definitions with no hyphen in name) extracted from loaded profile 1`] = `
 Object {
   "nohyphen": "specified in profile",
 }
 `;
 
-exports[`CliUtils getOptValueFromProfiles should return args (with both cases) extracted from loaded profile, preferring the camel case 1`] = `
+exports[`CliUtils getOptValuesFromConfig should return args (with both cases) extracted from loaded profile, preferring the camel case 1`] = `
 Object {
   "could-be-either": "should be me",
   "couldBeEither": "should be me",
 }
 `;
 
-exports[`CliUtils getOptValueFromProfiles should return args (with both cases) extracted from loaded profile, preferring the kebab case 1`] = `
+exports[`CliUtils getOptValuesFromConfig should return args (with both cases) extracted from loaded profile, preferring the kebab case 1`] = `
 Object {
   "fake-string-opt": "should be me",
   "fakeStringOpt": "should be me",
 }
 `;
 
-exports[`CliUtils getOptValueFromProfiles should return args with aliases if extracted option from a profile 1`] = `
+exports[`CliUtils getOptValuesFromConfig should return args with aliases if extracted option from a profile 1`] = `
 Object {
   "w": "should have 'w' on args object too",
   "with-alias": "should have 'w' on args object too",
@@ -126,21 +126,21 @@ Object {
 }
 `;
 
-exports[`CliUtils getOptValueFromProfiles should return args with both cases, if the option is camel and the profile is kebab 1`] = `
+exports[`CliUtils getOptValuesFromConfig should return args with both cases, if the option is camel and the profile is kebab 1`] = `
 Object {
   "could-be-either": "should be me",
   "couldBeEither": "should be me",
 }
 `;
 
-exports[`CliUtils getOptValueFromProfiles should return args with both cases, if the option is kebab and the profile is camel 1`] = `
+exports[`CliUtils getOptValuesFromConfig should return args with both cases, if the option is kebab and the profile is camel 1`] = `
 Object {
   "fake-string-opt": "should be me",
   "fakeStringOpt": "should be me",
 }
 `;
 
-exports[`CliUtils getOptValueFromProfiles should throw an imperative error if a required profile is not present 1`] = `"Profile of type \\"banana\\" does not exist within the loaded profiles for the command and it is marked as required."`;
+exports[`CliUtils getOptValuesFromConfig should throw an imperative error if a required profile is not present 1`] = `"Profile of type \\"banana\\" does not exist within the loaded profiles for the command and it is marked as required."`;
 
 exports[`CliUtils setOptionValue should include aliases in the returned args object 1`] = `
 Object {
