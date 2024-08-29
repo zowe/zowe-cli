@@ -32,22 +32,25 @@ export class IssueTso {
     public static async issueTsoCmd(
         session: AbstractSession,
         commandInfo: string | IIssueTsoCmdParms,
-        addressSpaceOptions?: IStartTsoParms
+        addressSpaceOptions?: IStartTsoParms,
+        isStateful?: boolean,
+        suppressStartupMessage?: boolean,
     ): Promise<IIssueResponse> {
         let command: string | IIssueTsoCmdParms;
         let version: string;
-        let isStateful: boolean;
+        if(!isStateful) isStateful = false;
+        if(!suppressStartupMessage) suppressStartupMessage = true;
+
         const useNewApi =
             addressSpaceOptions == null &&
             await CheckStatus.isZosVersionGreaterThan(
                 session,
                 ZosmfConstants.VERSIONS.V2R4
-            );
+            ) && isStateful === true;
         let newApiFailureOverride: boolean = false;
         if (useNewApi) {
             command = commandInfo;
             version = "v1";
-            isStateful = false;
             try {
                 const endpoint = `${TsoConstants.RESOURCE}/${version}/${TsoConstants.RES_START_TSO}`;
                 const apiResponse = await ZosmfRestClient.putExpectJSON<IIssueTsoCmdResponse>(
@@ -60,7 +63,7 @@ export class IssueTso {
                     }
                 );
                 const response: IIssueResponse = {
-                    success: apiResponse.tsoPromptReceived === 'Y',
+                    success: true,
                     startReady: apiResponse.cmdResponse[apiResponse.cmdResponse.length - 1].message.trim() === 'READY',
                     zosmfResponse: apiResponse as any,
                     commandResponse: apiResponse.cmdResponse.map(item => item.message).join(', ')
@@ -69,20 +72,21 @@ export class IssueTso {
             } catch(e) {
                 if(!e.mMessage.includes("status 404")) throw e;
                 newApiFailureOverride = true;
-                const profInfo = new ProfileInfo("zowe");
-                await profInfo.readProfilesFromDisk();
-                addressSpaceOptions = profInfo
-                    .getTeamConfig()
-                    .api.profiles.defaultGet("tso");
+
+
             }
         }
-
         // Deprecated API Behavior [former issueTsoCommand() behavior]
         if (
             addressSpaceOptions != null ||
             !useNewApi ||
             newApiFailureOverride
         ) {
+            const profInfo = new ProfileInfo("zowe");
+            await profInfo.readProfilesFromDisk();
+            addressSpaceOptions = profInfo
+            .getTeamConfig()
+            .api.profiles.defaultGet("tso");
             command =
                 typeof commandInfo === "string"
                     ? commandInfo

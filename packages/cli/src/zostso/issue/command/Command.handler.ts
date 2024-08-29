@@ -24,8 +24,7 @@ export default class Handler extends ZosTsoBaseHandler {
     public async processCmd(params: IHandlerParameters) {
 
         // Issue the TSO command
-        const response: IIssueResponse = await IssueTso.issueTsoCmd(this.mSession,params.arguments.commandText);
-
+        const response: IIssueResponse = await IssueTso.issueTsoCmd(this.mSession,params.arguments.commandText,params.arguments.stateful,params.arguments.ssm);
         // If requested, suppress the startup
         if (!params.arguments.suppressStartupMessages && response.startResponse != null) {
             this.console.log((response as any).startResponse.messages);

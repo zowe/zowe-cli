@@ -37,7 +37,15 @@ export const CommandDefinition: ICommandDefinition = {
             name: "suppress-startup-messages",
             aliases: ["ssm"],
             type: "boolean",
-            description: "Suppress console messages from start of address space."
+            description: "Suppress console messages from start of address space.",
+            defaultValue: true
+        },
+        {
+            name: "stateful",
+            aliases: ["sf"],
+            type: "boolean",
+            description: "Statefulness of address space created for TSO Command.",
+            defaultValue: false
         }
     ] as ICommandOptionDefinition[]).concat(TsoProfileConstants.TSO_PROFILE_OPTIONS),
     examples: [
