@@ -14,7 +14,7 @@ import { TestEnvironment } from "../../../../../../../__tests__/__src__/environm
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/ITestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { runCliScript} from "../../../../../../../__tests__/__src__/TestUtils";
-import { stripNewLines, delay, delTime } from "../../../../../../../__tests__/__src__/TestUtils";
+import { stripNewLines, wait, waitTime } from "../../../../../../../__tests__/__src__/TestUtils";
 import { Delete } from "@zowe/zos-files-for-zowe-sdk";
 
 const ZOWE_OPT_BASE_PATH = "ZOWE_OPT_BASE_PATH";
@@ -69,7 +69,7 @@ describe("Create Partitioned Data Set", () => {
         afterEach(async () => {
             // use DELETE APIs
             if (dsnameSuffix !== "") {
-                await delay(delTime);
+                await wait(waitTime); //wait 2 seconds
                 const response = await Delete.dataSet(REAL_SESSION, dsname + "." + dsnameSuffix);
             }
         });
@@ -105,7 +105,7 @@ describe("Create Partitioned Data Set", () => {
         afterEach(async () => {
             // use DELETE APIs
             if (dsnameSuffix !== "") {
-                await delay(delTime);
+                await wait(waitTime); //wait 2 seconds
                 const response = await Delete.dataSet(REAL_SESSION, dsname + "." + dsnameSuffix);
             }
         });

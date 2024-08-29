@@ -17,13 +17,14 @@ import { TestEnvironment } from "../../../../../../__tests__/__src__/environment
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import * as fs from "fs";
+import { getUniqueDatasetName, deleteLocalDirectories, inspect,
+    stripNewLines, wait, waitTime } from "../../../../../../__tests__/__src__/TestUtils";
 
 let REAL_SESSION: Session;
 let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 let defaultSystem: ITestPropertiesSchema;
 let dsname: string;
 let ussname: string;
-const delayTime = 2000;
 const inputfile = __dirname + "/testfiles/upload.txt";
 const testdata = "abcdefghijklmnopqrstuvwxyz";
 const uploadOptions: IUploadOptions = {} as any;
@@ -104,17 +105,9 @@ describe("All Upload Tests", () => {
     afterAll(async () => {
         await TestEnvironment.cleanUp(testEnvironment);
 
-        // Delete directories
+        // Delete directories using the utility function
         const dirsToDelete = [localDir, localDirWithSpaces];
-        dirsToDelete.forEach((dir) => {
-            try {
-                if (fs.existsSync(dir)) {
-                    fs.rmdirSync(dir, { recursive: true });
-                }
-            } catch (err) {
-                Imperative.console.info(`Error deleting directory: ${dir}`, err);
-            }
-        });
+        deleteLocalDirectories(dirsToDelete);
     });
 
     describe("Upload Data Set", () => {
@@ -1037,7 +1030,7 @@ describe("All Upload Tests", () => {
                 const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + encodeURIComponent(ussname);
                 try {
                     await ZosmfRestClient.deleteExpectString(REAL_SESSION, endpoint, [{"X-IBM-Option": "recursive"}]);
-                    await delay(delayTime);
+                    await wait(waitTime); //wait 2 seconds
                 } catch (err) {
                     error = err;
                 }
@@ -1049,7 +1042,7 @@ describe("All Upload Tests", () => {
                 let isDirectoryExist: boolean;
                 try {
                     uploadResponse = await Upload.dirToUSSDir(REAL_SESSION, localDir, ussname);
-                    await delay(delayTime);
+                    await wait(waitTime); //wait 2 seconds
                     Imperative.console.info(`THIS IS USS ${ussname}/testfiles`);
                     isDirectoryExist = await Upload.isDirectoryExist(REAL_SESSION, ussname);
                 } catch (err) {
@@ -1072,7 +1065,7 @@ describe("All Upload Tests", () => {
                 try {
                     tempUssname = ussname + " space dir";
                     uploadResponse = await Upload.dirToUSSDir(REAL_SESSION, localDirWithSpaces, tempUssname);
-                    await delay(delayTime);
+                    await wait(waitTime); //wait 2 seconds
                     Imperative.console.info(`THIS IS USS ${tempUssname}`);
                     isDirectoryExist = await Upload.isDirectoryExist(REAL_SESSION, tempUssname);
                 } catch (err) {
@@ -1093,7 +1086,7 @@ describe("All Upload Tests", () => {
                 let isDirectoryExist: any;
                 try {
                     uploadResponse = await Upload.dirToUSSDirRecursive(REAL_SESSION, localDir, ussname, {binary: false});
-                    await delay(delayTime);
+                    await wait(waitTime); //wait 2 seconds
                     isDirectoryExist = await Upload.isDirectoryExist(REAL_SESSION, `${ussname}/longline`);
                 } catch (err) {
                     error = err;
@@ -1114,7 +1107,7 @@ describe("All Upload Tests", () => {
                 let getResponse;
                 try {
                     uploadResponse = await Upload.dirToUSSDir(REAL_SESSION, localDir, ussname, {binary: true});
-                    await delay(delayTime);
+                    await wait(waitTime); //wait 2 seconds
                     isDirectoryExist = await Upload.isDirectoryExist(REAL_SESSION, ussname);
                     getResponse = await Get.USSFile(REAL_SESSION, `${ussname}/file1.txt`, {binary: true});
                 } catch (err) {
@@ -1139,7 +1132,7 @@ describe("All Upload Tests", () => {
                 let longResponse: string = "";
                 try {
                     uploadResponse = await Upload.dirToUSSDirRecursive(REAL_SESSION, localDir, ussname, {binary: true});
-                    await delay(delayTime);
+                    await wait(waitTime); //wait 2 seconds
                     isDirectoryExist = await Upload.isDirectoryExist(REAL_SESSION, ussname);
                     getResponse = await Get.USSFile(REAL_SESSION, `${ussname}/longline/longline.txt`, {binary: true});
                     for (let i = 0; i < magicNum; i++) {
@@ -1170,7 +1163,7 @@ describe("All Upload Tests", () => {
                 const fileMap: IUploadMap = {binary: true, fileNames: ["file3.txt", "longline.txt"]};
                 try {
                     uploadResponse = await Upload.dirToUSSDirRecursive(REAL_SESSION, localDir, ussname, {binary: false, filesMap: fileMap});
-                    await delay(delayTime);
+                    await wait(waitTime); //wait 2 seconds
                     isDirectoryExist = await Upload.isDirectoryExist(REAL_SESSION, `${ussname}/longline`);
                     // file3.txt should be binary as it is mentioned in filesMap
                     getResponseFile3 = await Get.USSFile(REAL_SESSION, `${ussname}/file3.txt`, {binary: true});
@@ -1208,7 +1201,7 @@ describe("All Upload Tests", () => {
                 const filesMap: IUploadMap = {binary: false, fileNames: ["file3.txt", "longline.txt"]};
                 try {
                     uploadResponse = await Upload.dirToUSSDirRecursive(REAL_SESSION, localDir, ussname, {binary: true, filesMap});
-                    await delay(delayTime);
+                    await wait(waitTime); //wait 2 seconds
                     isDirectoryExist = await Upload.isDirectoryExist(REAL_SESSION, `${ussname}/longline`);
                     // file3.txt should be ASCII as it is mentioned in filesMap
                     getResponseFile3 = await Get.USSFile(REAL_SESSION, `${ussname}/file3.txt`, {binary: false});
@@ -1400,7 +1393,7 @@ describe("All Upload Tests", () => {
                 const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + encodeURIComponent(ussname);
                 try {
                     await ZosmfRestClient.deleteExpectString(REAL_SESSION, endpoint, [{"X-IBM-Option": "recursive"}]);
-                    await delay(delayTime);
+                    await wait(waitTime); //wait 2 seconds
                 } catch (err) {
                     // Do nothing
                 }
@@ -1412,7 +1405,7 @@ describe("All Upload Tests", () => {
                 let isDirectoryExist: boolean;
                 try {
                     uploadResponse = await Upload.dirToUSSDir(REAL_SESSION, localDir, ussname);
-                    await delay(delayTime);
+                    await wait(waitTime); //wait 2 seconds
                     Imperative.console.info(`THIS IS USS ${ussname}/testfiles`);
                     isDirectoryExist = await Upload.isDirectoryExist(REAL_SESSION, ussname);
                 } catch (err) {
@@ -1435,7 +1428,7 @@ describe("All Upload Tests", () => {
                 try {
                     tempUssname = ussname + " space dir";
                     uploadResponse = await Upload.dirToUSSDir(REAL_SESSION, localDirWithSpaces, tempUssname);
-                    await delay(delayTime);
+                    await wait(waitTime); //wait 2 seconds
                     Imperative.console.info(`THIS IS USS ${tempUssname}`);
                     isDirectoryExist = await Upload.isDirectoryExist(REAL_SESSION, tempUssname);
                 } catch (err) {
@@ -1456,7 +1449,7 @@ describe("All Upload Tests", () => {
                 let isDirectoryExist: any;
                 try {
                     uploadResponse = await Upload.dirToUSSDirRecursive(REAL_SESSION, localDir, ussname, {binary: false});
-                    await delay(delayTime);
+                    await wait(waitTime); //wait 2 seconds
                     isDirectoryExist = await Upload.isDirectoryExist(REAL_SESSION, `${ussname}/longline`);
                 } catch (err) {
                     error = err;

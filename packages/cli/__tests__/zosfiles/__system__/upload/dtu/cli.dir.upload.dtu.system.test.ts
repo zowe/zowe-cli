@@ -15,7 +15,7 @@ import * as fs from "fs";
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/ITestEnvironment";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { getUniqueDatasetName, runCliScript } from "../../../../../../../__tests__/__src__/TestUtils";
+import { getTag, getUniqueDatasetName, runCliScript } from "../../../../../../../__tests__/__src__/TestUtils";
 import { Get, ZosFilesConstants, ZosFilesUtils, Delete } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 
@@ -87,7 +87,7 @@ describe("Upload directory to USS", () => {
                 const ussEndpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussname;
                 await ZosmfRestClient.deleteExpectString(REAL_SESSION, ussEndpoint, [{"X-IBM-Option": "recursive"}]);
             } catch (err) {
-                Imperative.console.info(`Error cleaning up USS directory: ${inspect(err)}`);
+                Imperative.console.info(`Error cleaning up USS directory: ${err}`);
             }
 
             await TestEnvironment.cleanUp(TEST_ENVIRONMENT_NO_PROF);
@@ -127,7 +127,7 @@ describe("Upload directory to USS", () => {
                 const ussEndpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussname;
                 await ZosmfRestClient.deleteExpectString(REAL_SESSION, ussEndpoint, [{"X-IBM-Option": "recursive"}]);
             } catch (err) {
-                Imperative.console.info(`Error cleaning up USS directory: ${inspect(err)}`);
+                Imperative.console.info(`Error cleaning up USS directory: ${err}`);
             }
         });
 

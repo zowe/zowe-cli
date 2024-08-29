@@ -11,6 +11,7 @@
 
 import { ImperativeError, Session, TaskStage } from "@zowe/imperative";
 import { Get, ISearchItem, ISearchOptions, IZosFilesResponse, List, Search } from "../../../../src";
+import { wait, waitTime } from "../../../../../../__tests__/__src__/TestUtils";
 
 describe("Search", () => {
 
@@ -118,7 +119,6 @@ describe("Search", () => {
         const listDataSetsMatchingPatternSpy = jest.spyOn(List, "dataSetsMatchingPattern");
         const listAllMembersSpy = jest.spyOn(List, "allMembers");
 
-        function delay(ms: number) { jest.advanceTimersByTime(ms); }
         function regenerateMockImplementations() {
             searchOnMainframeSpy.mockImplementation(async (session, searchOptions, searchItems: ISearchItem[]) => {
                 if ((Search as any).timerExpired != true) {
@@ -575,7 +575,7 @@ describe("Search", () => {
 
         it("Should handle timing out 1", async () => {
             searchLocalSpy.mockImplementation(async (session, searchOptions, searchItems: ISearchItem[]) => {
-                delay(1100);
+                await wait(waitTime); //wait 2 seconds
                 if ((Search as any).timerExpired != true) {
                     const searchItemArray: ISearchItem[] = [];
                     for (const searchItem of searchItems) {
@@ -622,7 +622,7 @@ describe("Search", () => {
 
         it("Should handle timing out 2", async () => {
             searchOnMainframeSpy.mockImplementation(async (session, searchOptions, searchItems: ISearchItem[]) => {
-                delay(1100);
+                await wait(waitTime); //wait 2 seconds
                 if ((Search as any).timerExpired != true) {
                     return {
                         responses: searchItems,
@@ -666,7 +666,7 @@ describe("Search", () => {
 
         it("Should handle timing out 3", async () => {
             listAllMembersSpy.mockImplementation(async (session, dsn, options) => {
-                delay(1100);
+                await wait(waitTime); //wait 2 seconds
                 return {
                     success: true,
                     commandResponse: "",
@@ -703,7 +703,7 @@ describe("Search", () => {
 
         it("Should handle timing out 4", async () => {
             listDataSetsMatchingPatternSpy.mockImplementation(async (session, patterns, options) => {
-                delay(1100);
+                await wait(waitTime); //wait 2 seconds
                 return {
                     success: true,
                     commandResponse: "",

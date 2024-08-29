@@ -13,8 +13,7 @@ import { Session } from "@zowe/imperative";
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/ITestEnvironment";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { runCliScript } from "../../../../../../../__tests__/__src__/TestUtils";
-import { delay } from "../../../../../../../__tests__/__src__/TestUtils";
+import { wait, waitTime, runCliScript } from "../../../../../../../__tests__/__src__/TestUtils";
 import { Delete, Create, CreateDataSetTypeEnum, Upload, Get } from "@zowe/zos-files-for-zowe-sdk";
 import { join } from "path";
 
@@ -25,7 +24,6 @@ let beforeDataSetName: string;
 let afterDataSetName: string;
 let user: string;
 const memberName = "mem";
-const delayTime = 2000;
 
 describe("Rename data set", () => {
     beforeAll(async () => {
@@ -68,7 +66,7 @@ describe("Rename data set", () => {
                         TEST_ENVIRONMENT,
                         [beforeDataSetName, afterDataSetName]
                     );
-                    await delay(delayTime);
+                    await wait(waitTime); //wait 2 seconds
                     contents = await Get.dataSet(REAL_SESSION, afterDataSetName);
                 } catch(err) {
                     error = err;
@@ -90,7 +88,7 @@ describe("Rename data set", () => {
                         TEST_ENVIRONMENT,
                         [beforeDataSetName, afterDataSetName, "--responseTimeout 5"]
                     );
-                    await delay(delayTime);
+                    await wait(waitTime); //wait 2 seconds
                     contents = await Get.dataSet(REAL_SESSION, afterDataSetName);
                 } catch(err) {
                     error = err;
@@ -118,7 +116,7 @@ describe("Rename data set", () => {
                         TEST_ENVIRONMENT,
                         [beforeDataSetName, afterDataSetName]
                     );
-                    await delay(delayTime);
+                    await wait(waitTime); //wait 2 seconds
                     contents = await Get.dataSet(REAL_SESSION, `${afterDataSetName}(${memberName})`);
                 } catch(err) {
                     error = err;
@@ -140,7 +138,7 @@ describe("Rename data set", () => {
                         TEST_ENVIRONMENT,
                         [beforeDataSetName, afterDataSetName, "--responseTimeout 5"]
                     );
-                    await delay(delayTime);
+                    await wait(waitTime); //wait 2 seconds
                     contents = await Get.dataSet(REAL_SESSION, `${afterDataSetName}(${memberName})`);
                 } catch(err) {
                     error = err;

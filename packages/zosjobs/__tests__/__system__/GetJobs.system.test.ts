@@ -13,12 +13,13 @@ import { JOB_STATUS } from "./../../src/types/JobStatus";
 import { AbstractSession, ImperativeError, Session, TextUtils } from "@zowe/imperative";
 import * as fs from "fs";
 import { join } from "path";
-import { ITestEnvironment, TestEnvironment } from "@zowe/cli-test-utils";
+import { ITestEnvironment } from "../../../../__tests__/__src__/environment/ITestEnvironment";
+import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { TEST_RESOURCES_DIR } from "../__src__/ZosJobsTestConstants";
 import { GetJobs, DeleteJobs, IJob, JOB_STATUS_ORDER, SubmitJobs } from "@zowe/zos-jobs-for-zowe-sdk";
+import { wait, waitTime } from "../../../../__tests__/__src__/TestUtils";
 
-/**********************************************************************************/
 let ACCOUNT: string;
 
 let JOBCLASS: string;
@@ -59,11 +60,10 @@ const LONG_TIMEOUT = 200000;
 describe("Get Jobs System Tests", () => {
     describe("Non-Encoded System Tests", () => {
         beforeAll(async () => {
-            REAL_SESSION = await TestEnvironment.createSession();
-
             testEnvironment = await TestEnvironment.setUp({
                 testName: "get_jobs_system_test"
-            }, REAL_SESSION);
+            });
+            REAL_SESSION = await TestEnvironment.createSession();
 
             defaultSystem = testEnvironment.systemTestProperties;
 
@@ -159,8 +159,7 @@ describe("Get Jobs System Tests", () => {
                         testEnvironment.resources.jobs.push(job);
                     }
 
-                    // Add a delay to ensure job is recognized
-                    await new Promise(resolve => setTimeout(resolve, 3000)); // Wait for 3 seconds
+                    await wait(waitTime); // Waits for 2 seconds
 
                     // Obtain the three jobs submitted
                     const allJobs: IJob[] = await GetJobs.getJobsByPrefix(REAL_SESSION, MONITOR_JOB_NAME + "*");
@@ -217,8 +216,7 @@ describe("Get Jobs System Tests", () => {
                         testEnvironment.resources.jobs.push(job);
                     }
 
-                    // Add a delay to ensure job is recognized
-                    await new Promise(resolve => setTimeout(resolve, 3000)); // Wait for 3 seconds
+                    await wait(waitTime); // Waits for 2 seconds
 
                     // Obtain the three jobs submitted
                     const allJobs: IJob[] = await GetJobs.getJobsByPrefix(REAL_SESSION, TEST_JOB_NAME + "*");
@@ -281,8 +279,7 @@ describe("Get Jobs System Tests", () => {
                             jobs.push(job);
                             testEnvironment.resources.jobs.push(job);
                         }
-                        // Add a delay to ensure job is recognized
-                        await new Promise(resolve => setTimeout(resolve, 3000)); // Wait for 3 seconds
+                        await wait(waitTime); // Waits for 2 seconds
 
                         // Obtain all jobs for the user
                         const allJobs: IJob[] = await GetJobs.getJobs(REAL_SESSION);
@@ -316,8 +313,7 @@ describe("Get Jobs System Tests", () => {
                         expect(job.status).toEqual("OUTPUT");
                         expect(job.retcode).toEqual("CC 0000");
 
-                        // Add a delay to ensure job is recognized
-                        await new Promise(resolve => setTimeout(resolve, 3000)); // Wait for 3 seconds
+                        await wait(waitTime); // Waits for 2 seconds
 
                         // Search all jobs returned for each of the submitted jobs
                         const foundJob = await GetJobs.getJob(REAL_SESSION, job.jobid);
@@ -343,8 +339,7 @@ describe("Get Jobs System Tests", () => {
                     expect(job.status).toEqual("OUTPUT");
                     expect(job.retcode).toEqual("CC 0000");
 
-                    // Add a delay to ensure job is recognized
-                    await new Promise(resolve => setTimeout(resolve, 3000)); // Wait for 3 seconds
+                    await wait(waitTime); // Waits for 2 seconds
 
                     // Search all jobs returned for each of the submitted jobs
                     const foundJobs = await GetJobs.getJobsCommon(REAL_SESSION, {jobid: job.jobid});
@@ -421,8 +416,7 @@ describe("Get Jobs System Tests", () => {
                         testEnvironment.resources.jobs.push(job);
                     }
 
-                    // Add a delay to ensure job is recognized
-                    await new Promise(resolve => setTimeout(resolve, 3000)); // Wait for 3 seconds
+                    await wait(waitTime); // Waits for 2 seconds
 
                     // Obtain all jobs for ***REMOVED***
                     const allJobs: IJob[] = await GetJobs.getJobsByOwner(REAL_SESSION, REAL_SESSION.ISession.user);
@@ -719,8 +713,7 @@ describe("Get Jobs System Tests", () => {
 
                         await DeleteJobs.deleteJobForJob(REAL_SESSION, job);
 
-                        // Add a delay to ensure job deletion is recognized
-                        await new Promise(resolve => setTimeout(resolve, 3000)); // Wait for 3 seconds
+                        await wait(3000); //Wait for 3 seconds
 
                         let error;
                         try {
@@ -853,8 +846,7 @@ describe("Get Jobs System Tests", () => {
 
                     await DeleteJobs.deleteJobForJob(REAL_SESSION, job);
 
-                    // Add a delay to ensure job deletion is recognized
-                    await new Promise(resolve => setTimeout(resolve, 3000)); // Wait for 3 seconds
+                    await wait(3000); //Wait for 3 seconds
 
                     let error;
                     try {
@@ -990,8 +982,7 @@ describe("Get Jobs System Tests", () => {
 
                     await DeleteJobs.deleteJobForJob(REAL_SESSION, job);
 
-                    // Add a delay to ensure job deletion is recognized
-                    await new Promise(resolve => setTimeout(resolve, 3000)); // Wait for 3 seconds
+                    await wait(3000); //Wait for 3 seconds
 
                     let error;
                     try {
@@ -1022,12 +1013,11 @@ describe("Get Jobs System Tests", () => {
     describe("Encoded System Tests", () => {
 
         beforeAll(async () => {
-            const REAL_SESSION = await TestEnvironment.createSession();
 
             testEnvironment = await TestEnvironment.setUp({
                 testName: "zos_get_jobs_encoded"
-            }, REAL_SESSION);
-            defaultSystem = testEnvironment.systemTestProperties;
+            });
+            REAL_SESSION = await TestEnvironment.createSession();
 
             INVALID_SESSION = new Session({
                 user: "fakeuser",
@@ -1083,8 +1073,7 @@ describe("Get Jobs System Tests", () => {
                             testEnvironment.resources.jobs.push(job);
                         }
 
-                        // Add a delay to ensure job is recognized
-                        await new Promise(resolve => setTimeout(resolve, 3000)); // Wait for 3 seconds
+                        await wait(waitTime); // Waits for 2 seconds
 
                         // Obtain all jobs for the user
                         const allJobs: IJob[] = await GetJobs.getJobs(REAL_SESSION);
@@ -1118,8 +1107,7 @@ describe("Get Jobs System Tests", () => {
                         expect(job.status).toEqual("OUTPUT");
                         expect(job.retcode).toEqual("CC 0000");
 
-                        // Add a delay to ensure job is recognized
-                        await new Promise(resolve => setTimeout(resolve, 3000)); // Wait for 3 seconds
+                        await wait(waitTime); // Waits for 2 seconds
 
                         // Search all jobs returned for each of the submitted jobs
                         const foundJob = await GetJobs.getJob(REAL_SESSION, job.jobid);
@@ -1145,8 +1133,7 @@ describe("Get Jobs System Tests", () => {
                     expect(job.status).toEqual("OUTPUT");
                     expect(job.retcode).toEqual("CC 0000");
 
-                    // Add a delay to ensure job is recognized
-                    await new Promise(resolve => setTimeout(resolve, 3000)); // Wait for 3 seconds
+                    await wait(waitTime); // Waits for 2 seconds
 
                     // Search all jobs returned for each of the submitted jobs
                     const foundJobs = await GetJobs.getJobsCommon(REAL_SESSION, {jobid: job.jobid});
@@ -1185,8 +1172,7 @@ describe("Get Jobs System Tests", () => {
                         testEnvironment.resources.jobs.push(job);
                     }
 
-                    // Add a delay to ensure job is recognized
-                    await new Promise(resolve => setTimeout(resolve, 3000)); // Wait for 3 seconds
+                    await wait(waitTime); // Waits for 2 seconds
 
                     // Obtain the three jobs submitted
                     const allJobs: IJob[] = await GetJobs.getJobsByPrefix(REAL_SESSION, MONITOR_JOB_NAME + "*");
@@ -1243,8 +1229,7 @@ describe("Get Jobs System Tests", () => {
                         testEnvironment.resources.jobs.push(job);
                     }
 
-                    // Add a delay to ensure job is recognized
-                    await new Promise(resolve => setTimeout(resolve, 3000)); // Wait for 3 seconds
+                    await wait(waitTime); // Waits for 2 seconds
 
                     // Obtain the three jobs submitted
                     const allJobs: IJob[] = await GetJobs.getJobsByPrefix(REAL_SESSION, TEST_JOB_NAME + "*");
@@ -1297,8 +1282,7 @@ describe("Get Jobs System Tests", () => {
                         testEnvironment.resources.jobs.push(job);
                     }
 
-                    // Add a delay to ensure job is recognized
-                    await new Promise(resolve => setTimeout(resolve, 3000)); // Wait for 3 seconds
+                    await wait(waitTime); // Waits for 2 seconds
 
                     // Obtain all jobs for ***REMOVED***
                     const allJobs: IJob[] = await GetJobs.getJobsByOwner(REAL_SESSION, REAL_SESSION.ISession.user);

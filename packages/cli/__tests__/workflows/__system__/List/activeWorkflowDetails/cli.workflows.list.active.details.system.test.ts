@@ -11,10 +11,10 @@
 
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { Session } from "@zowe/imperative";
-import { ITestEnvironment, runCliScript } from "@zowe/cli-test-utils";
+import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/ITestEnvironment";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { getUniqueDatasetName, delay } from "../../../../../../../__tests__/__src__/TestUtils";
+import { getUniqueDatasetName, wait, waitTime, runCliScript } from "../../../../../../../__tests__/__src__/TestUtils";
 import { CreateWorkflow, DeleteWorkflow } from "@zowe/zos-workflows-for-zowe-sdk";
 import { Upload, ZosFilesConstants } from "@zowe/zos-files-for-zowe-sdk";
 import { join } from "path";
@@ -29,7 +29,6 @@ let system: string;
 let owner: string;
 let wfName: string;
 const workflow = join(__dirname, "../../../../../../workflows/__tests__/__system__/testfiles/demo.xml");
-const delayTime = 2000;
 
 describe("List active workflow details cli system tests", () => {
     beforeAll(async () => {
@@ -45,7 +44,7 @@ describe("List active workflow details cli system tests", () => {
         fakeDefFile = definitionFile + "fakefile";
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
-        await delay(delayTime);
+        await wait(waitTime); //wait 2 seconds
     });
 
     afterAll(async () => {
@@ -58,14 +57,14 @@ describe("List active workflow details cli system tests", () => {
             // Upload files only for successful scenarios
             try {
                 await Upload.fileToUssFile(REAL_SESSION, workflow, definitionFile, { binary: true });
-                await delay(delayTime);
+                await wait(waitTime); //wait 2 seconds
             } catch (err) {
                 error = err;
             }
 
             // Create a workflow instance in zOS/MF to list
             const response = await CreateWorkflow.createWorkflow(REAL_SESSION, wfName, definitionFile, system, owner);
-            await delay(delayTime);
+            await wait(waitTime); //wait 2 seconds
             wfKey = response.workflowKey;
         });
         afterAll(async () => {

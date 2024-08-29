@@ -13,7 +13,7 @@ import { Session } from "@zowe/imperative";
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/ITestEnvironment";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { delay, runCliScript } from "../../../../../../../__tests__/__src__/TestUtils";
+import { wait, waitTime, runCliScript } from "../../../../../../../__tests__/__src__/TestUtils";
 import { Delete, Create, CreateDataSetTypeEnum, Upload, Get } from "@zowe/zos-files-for-zowe-sdk";
 import { join } from "path";
 
@@ -24,7 +24,6 @@ let dataSetName: string;
 let user: string;
 const beforeMemberName = "mem1";
 const afterMemberName = "mem2";
-const delayTime = 2000;
 
 describe("Rename data set member", () => {
     beforeAll(async () => {
@@ -61,7 +60,7 @@ describe("Rename data set member", () => {
                         TEST_ENVIRONMENT,
                         [dataSetName, beforeMemberName, afterMemberName]
                     );
-                    await delay(delayTime);
+                    await wait(waitTime); //wait 2 seconds
                     contents = await Get.dataSet(REAL_SESSION, `${dataSetName}(${afterMemberName})`);
                 } catch(err) {
                     error = err;
@@ -83,7 +82,7 @@ describe("Rename data set member", () => {
                         TEST_ENVIRONMENT,
                         [dataSetName, beforeMemberName, afterMemberName, "--responseTimeout 5"]
                     );
-                    await delay(delayTime);
+                    await wait(waitTime); //wait 2 seconds
                     contents = await Get.dataSet(REAL_SESSION, `${dataSetName}(${afterMemberName})`);
                 } catch(err) {
                     error = err;

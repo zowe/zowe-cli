@@ -18,6 +18,7 @@ import { DeleteJobs, ICommonJobParms, IDeleteJobParms, IJob } from "../../packag
 import { posix } from "path";
 import { spawnSync, SpawnSyncReturns, ExecFileException } from "child_process";
 import { ITestEnvironment } from "./environment/ITestEnvironment";
+import { promisify } from "util";
 
 /**
  * Delete a local testing file after use
@@ -36,6 +37,21 @@ export function deleteLocalFile(filePath: string): void {
     }
 }
 
+/**
+ * Delete local directories after use
+ * @param {string[]} directories - Array of directories to delete
+ */
+export function deleteLocalDirectories(directories: string[]): void {
+    directories.forEach((dir) => {
+        try {
+            if (fs.existsSync(dir)) {
+                fs.rmdirSync(dir, { recursive: true });
+            }
+        } catch (err) {
+            throw new Error(`Error deleting directory: ${dir}`);
+        }
+    });
+}
 /**
  * Delete a uss file from the mainframe
  * @param {AbstractSession} session - z/OSMF connection info
@@ -158,11 +174,13 @@ export async function getTag(session: AbstractSession, ussPath: string) {
     return response.stdout[0];
 }
 
-export function delay(ms: number) {
-    return new Promise((resolve) => setTimeout(resolve, ms) );
-}
-
-export const delTime = 500;
+/**
+ * Pauses execution for a given number of milliseconds.
+ * @param {number} ms - Number of milliseconds to wait
+ * @returns {Promise<void>} - Resolves after the specified time has passed
+ */
+export const wait = promisify(setTimeout);
+export const waitTime = 2000; //wait 2 seconds
 
 /**
  * Use instead of `util.inspect` to get consistently formatted output that can be used in snapshots.

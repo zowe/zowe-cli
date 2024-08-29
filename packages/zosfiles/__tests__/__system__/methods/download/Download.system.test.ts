@@ -32,7 +32,7 @@ import { inspect } from "util";
 import { ITestEnvironment } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { getUniqueDatasetName, stripNewLines, delay } from "../../../../../../__tests__/__src__/TestUtils";
+import { getUniqueDatasetName, stripNewLines, wait, waitTime } from "../../../../../../__tests__/__src__/TestUtils";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import * as fs from "fs";
 import { posix } from "path";
@@ -41,7 +41,6 @@ import { PassThrough } from "stream";
 import { text } from "stream/consumers";
 
 const rimraf = require("rimraf").sync;
-const delayTime = 2000;
 const testData = "abcdefghijklmnopqrstuvwxyz";
 
 let REAL_SESSION: Session;
@@ -86,7 +85,7 @@ describe("Download Data Set", () => {
 
                 try {
                     response = await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dsname);
-                    await delay(delayTime);
+                    await wait(waitTime); //wait 2 seconds
                 } catch (err) {
                     error = err;
                 }
@@ -98,7 +97,7 @@ describe("Download Data Set", () => {
 
                 try {
                     response = await Delete.dataSet(REAL_SESSION, dsname);
-                    await delay(delayTime);
+                    await wait(waitTime); //wait 2 seconds
                 } catch (err) {
                     error = err;
                 }
@@ -118,7 +117,7 @@ describe("Download Data Set", () => {
 
                 // upload data to the newly created data set
                 await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname);
-                await delay(delayTime);
+                await wait(waitTime); //wait 2 seconds
 
                 try {
                     response = await Download.dataSet(REAL_SESSION, dsname);
@@ -147,7 +146,7 @@ describe("Download Data Set", () => {
                 let response: IZosFilesResponse;
 
                 await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname);
-                await delay(delayTime);
+                await wait(waitTime); //wait 2 seconds
 
                 try {
                     response = await Download.dataSet(REAL_SESSION, dsname, {responseTimeout: 5});
@@ -177,7 +176,7 @@ describe("Download Data Set", () => {
 
                 // upload data to the newly created data set
                 await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname);
-                await delay(delayTime);
+                await wait(waitTime); //wait 2 seconds
 
                 try {
                     response = await Download.dataSet(REAL_SESSION, dsname, { preserveOriginalLetterCase: true });
@@ -266,7 +265,7 @@ describe("Download Data Set", () => {
                 let response: IZosFilesResponse;
 
                 await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname);
-                await delay(delayTime);
+                await wait(waitTime); //wait 2 seconds
 
                 const options: IDownloadOptions = {
                     returnEtag: true
@@ -306,7 +305,7 @@ describe("Download Data Set", () => {
 
                 // upload data to the newly created data set
                 await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname);
-                await delay(delayTime);
+                await wait(waitTime); //wait 2 seconds
 
                 try {
                     response = await Download.dataSet(REAL_SESSION, dsname, options);
@@ -337,7 +336,7 @@ describe("Download Data Set", () => {
 
                 // upload data to the newly created data set
                 await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname);
-                await delay(delayTime);
+                await wait(waitTime); //wait 2 seconds
 
                 try {
                     response = await Download.dataSet(REAL_SESSION, dsname, { stream: responseStream });
@@ -366,7 +365,7 @@ describe("Download Data Set", () => {
 
                 try {
                     response = await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname);
-                    await delay(delayTime);
+                    await wait(waitTime); //wait 2 seconds
                 } catch (err) {
                     error = err;
                 }
@@ -378,7 +377,7 @@ describe("Download Data Set", () => {
 
                 try {
                     response = await Delete.dataSet(REAL_SESSION, dsname);
-                    await delay(delayTime);
+                    await wait(waitTime); //wait 2 seconds
                 } catch (err) {
                     error = err;
                 }
@@ -394,7 +393,7 @@ describe("Download Data Set", () => {
 
                 // upload data to the newly created data set
                 await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname + "(member)");
-                await delay(delayTime);
+                await wait(waitTime); //wait 2 seconds
 
                 try {
                     response = await Download.allMembers(REAL_SESSION, dsname);
@@ -424,7 +423,7 @@ describe("Download Data Set", () => {
 
                 // upload data to the newly created data set
                 await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname + "(member)");
-                await delay(delayTime);
+                await wait(waitTime); //wait 2 seconds
 
                 try {
                     response = await Download.allMembers(REAL_SESSION, dsname, {responseTimeout: 5});
@@ -454,7 +453,7 @@ describe("Download Data Set", () => {
 
                 // upload data to the newly created data set
                 await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname + "(member)");
-                await delay(delayTime);
+                await wait(waitTime); //wait 2 seconds
 
                 try {
                     response = await Download.allMembers(REAL_SESSION, dsname, { preserveOriginalLetterCase: true });
@@ -491,7 +490,7 @@ describe("Download Data Set", () => {
 
                 // upload data to the newly created data set
                 await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname + "(member)");
-                await delay(delayTime);
+                await wait(waitTime); //wait 2 seconds
 
                 const options: IDownloadOptions = {
                     binary: true
@@ -521,7 +520,7 @@ describe("Download Data Set", () => {
 
                 // upload data to the newly created data set
                 await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname + "(member)");
-                await delay(delayTime);
+                await wait(waitTime); //wait 2 seconds
 
                 const options: IDownloadOptions = {
                     record: true
@@ -551,7 +550,7 @@ describe("Download Data Set", () => {
 
                 // upload data to the newly created data set
                 await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname + "(member)");
-                await delay(delayTime);
+                await wait(waitTime); //wait 2 seconds
 
                 const options: IDownloadOptions = {
                     extension: "dat"
@@ -584,7 +583,7 @@ describe("Download Data Set", () => {
 
                 try {
                     response = await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname);
-                    await delay(delayTime);
+                    await wait(waitTime); //wait 2 seconds
                 } catch (err) {
                     error = err;
                 }
@@ -596,7 +595,7 @@ describe("Download Data Set", () => {
 
                 try {
                     response = await Delete.dataSet(REAL_SESSION, dsname);
-                    await delay(delayTime);
+                    await wait(waitTime); //wait 2 seconds
                 } catch (err) {
                     error = err;
                     Imperative.console.info("Error: " + inspect(error));
@@ -766,7 +765,7 @@ describe("Download Data Set", () => {
 
                 try {
                     response = await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dsname);
-                    await delay(delayTime);
+                    await wait(waitTime); //wait 2 seconds
                 } catch (err) {
                     error = err;
                 }
@@ -778,7 +777,7 @@ describe("Download Data Set", () => {
 
                 try {
                     response = await Delete.dataSet(REAL_SESSION, dsname);
-                    await delay(delayTime);
+                    await wait(waitTime); //wait 2 seconds
                 } catch (err) {
                     error = err;
                 }
@@ -1007,7 +1006,7 @@ describe("Download Data Set", () => {
 
             try {
                 await ZosmfRestClient.deleteExpectString(REAL_SESSION, endpoint);
-                await delay(delayTime);
+                await wait(waitTime); //wait 2 seconds
             } catch (err) {
                 Imperative.console.error(err);
             }
@@ -1022,7 +1021,7 @@ describe("Download Data Set", () => {
                 let response: IZosFilesResponse;
 
                 await Upload.bufferToUssFile(REAL_SESSION, ussname, Buffer.from(testData));
-                await delay(delayTime);
+                await wait(waitTime); //wait 2 seconds
 
                 try {
                     response = await Download.ussFile(REAL_SESSION, ussname);
@@ -1043,7 +1042,7 @@ describe("Download Data Set", () => {
                 let response: IZosFilesResponse;
 
                 await Upload.bufferToUssFile(REAL_SESSION, ussname, Buffer.from(testData));
-                await delay(delayTime);
+                await wait(waitTime); //wait 2 seconds
 
                 try {
                     response = await Download.ussFile(REAL_SESSION, ussname, {responseTimeout: 5});
@@ -1064,7 +1063,7 @@ describe("Download Data Set", () => {
                 let response: IZosFilesResponse;
 
                 await Upload.bufferToUssFile(REAL_SESSION, ussname, Buffer.from(testData));
-                await delay(delayTime);
+                await wait(waitTime); //wait 2 seconds
 
                 const options: IDownloadOptions = {
                     returnEtag: true
@@ -1096,7 +1095,7 @@ describe("Download Data Set", () => {
                 const data = Buffer.from(buffer);
 
                 await Upload.bufferToUssFile(REAL_SESSION, ussname, data);
-                await delay(delayTime);
+                await wait(waitTime); //wait 2 seconds
 
                 const options: IDownloadOptions = {
                     returnEtag: true
@@ -1122,7 +1121,7 @@ describe("Download Data Set", () => {
                 };
 
                 await Upload.bufferToUssFile(REAL_SESSION, ussname, Buffer.from(testData), { binary: true });
-                await delay(delayTime);
+                await wait(waitTime); //wait 2 seconds
 
                 try {
                     response = await Download.ussFile(REAL_SESSION, ussname, options);
@@ -1145,7 +1144,7 @@ describe("Download Data Set", () => {
 
                 await Upload.bufferToUssFile(REAL_SESSION, ussname, Buffer.from(testData), { binary: true });
                 await Utilities.chtag(REAL_SESSION, ussname, Tag.TEXT, "ISO8859-1");
-                await delay(delayTime);
+                await wait(waitTime); //wait 2 seconds
 
                 try {
                     response = await Download.ussFile(REAL_SESSION, ussname, options);
@@ -1169,7 +1168,7 @@ describe("Download Data Set", () => {
                 const data: string = "Hello, world¤";
                 await Upload.bufferToUssFile(REAL_SESSION, ussname, Buffer.from(data));
                 await Utilities.chtag(REAL_SESSION, ussname, Tag.TEXT, "IBM-1147");
-                await delay(delayTime);
+                await wait(waitTime); //wait 2 seconds
 
                 try {
                     response = await Download.ussFile(REAL_SESSION, ussname, options);
@@ -1193,7 +1192,7 @@ describe("Download Data Set", () => {
                 const options: IDownloadOptions = {file: `test1.txt`};
 
                 await Upload.bufferToUssFile(REAL_SESSION, ussname, Buffer.from(testData));
-                await delay(delayTime);
+                await wait(waitTime); //wait 2 seconds
 
                 try {
                     response = await Download.ussFile(REAL_SESSION, ussname, options);
@@ -1217,7 +1216,7 @@ describe("Download Data Set", () => {
                 const responseStream = new PassThrough();
 
                 await Upload.bufferToUssFile(REAL_SESSION, ussname, Buffer.from(testData));
-                await delay(delayTime);
+                await wait(waitTime); //wait 2 seconds
 
                 try {
                     response = await Download.ussFile(REAL_SESSION, ussname, { stream: responseStream });
@@ -1544,7 +1543,7 @@ describe("Download Data Set - encoded", () => {
                 let error;
                 try {
                     await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dsname);
-                    await delay(delayTime);
+                    await wait(waitTime); //wait 2 seconds
                 } catch (err) {
                     // Do nothing, sometimes the files are not created.
                     error = err;
@@ -1556,7 +1555,7 @@ describe("Download Data Set - encoded", () => {
                 let error;
                 try {
                     await Delete.dataSet(REAL_SESSION, dsname);
-                    await delay(delayTime);
+                    await wait(waitTime); //wait 2 seconds
                 } catch (err) {
                     // Do nothing, sometimes the files are not created.
                     error = err;
@@ -1576,7 +1575,7 @@ describe("Download Data Set - encoded", () => {
 
                 // upload data to the newly created data set
                 await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname);
-                await delay(delayTime);
+                await wait(waitTime); //wait 2 seconds
 
                 try {
                     response = await Download.dataSet(REAL_SESSION, dsname);
@@ -1606,7 +1605,7 @@ describe("Download Data Set - encoded", () => {
                 let error;
                 try {
                     await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname);
-                    await delay(delayTime);
+                    await wait(waitTime); //wait 2 seconds
                 } catch (err) {
                     // Do nothing, sometimes the files are not created.
                     error = err;
@@ -1618,7 +1617,7 @@ describe("Download Data Set - encoded", () => {
                 let error;
                 try {
                     await Delete.dataSet(REAL_SESSION, dsname);
-                    await delay(delayTime);
+                    await wait(waitTime); //wait 2 seconds
                 } catch (err) {
                     // Do nothing, sometimes the files are not created.
                     error = err;
@@ -1636,7 +1635,7 @@ describe("Download Data Set - encoded", () => {
 
                 // upload data to the newly created data set
                 await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname + "(member)");
-                await delay(delayTime);
+                await wait(waitTime); //wait 2 seconds
 
                 try {
                     response = await Download.allMembers(REAL_SESSION, dsname);
@@ -1668,7 +1667,7 @@ describe("Download Data Set - encoded", () => {
                 let error;
                 try {
                     await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname);
-                    await delay(delayTime);
+                    await wait(waitTime); //wait 2 seconds
                 } catch (err) {
                     // Do nothing, sometimes the files are not created.
                     error = err;
@@ -1681,7 +1680,7 @@ describe("Download Data Set - encoded", () => {
 
                 try {
                     await Delete.dataSet(REAL_SESSION, dsname);
-                    await delay(delayTime);
+                    await wait(waitTime); //wait 2 seconds
                 } catch (err) {
                     // Do nothing, sometimes the files are not created.
                     error = err;
@@ -1734,7 +1733,7 @@ describe("Download Data Set - encoded", () => {
                 let error;
                 try {
                     await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dsname);
-                    await delay(delayTime);
+                    await wait(waitTime); //wait 2 seconds
                 } catch (err) {
                     // Do nothing, sometimes the files are not created.
                     error = err;
@@ -1746,7 +1745,7 @@ describe("Download Data Set - encoded", () => {
                 let error;
                 try {
                     await Delete.dataSet(REAL_SESSION, dsname);
-                    await delay(delayTime);
+                    await wait(waitTime); //wait 2 seconds
                 } catch (err) {
                     // Do nothing, sometimes the files are not created.
                     error = err;
@@ -1794,7 +1793,7 @@ describe("Download Data Set - encoded", () => {
 
             try {
                 await ZosmfRestClient.deleteExpectString(REAL_SESSION, endpoint);
-                await delay(delayTime);
+                await wait(waitTime); //wait 2 seconds
             } catch (err) {
                 Imperative.console.error(err);
             }
@@ -1809,7 +1808,7 @@ describe("Download Data Set - encoded", () => {
                 let response: IZosFilesResponse;
 
                 await Upload.bufferToUssFile(REAL_SESSION, ussname, Buffer.from(testData));
-                await delay(delayTime);
+                await wait(waitTime); //wait 2 seconds
 
                 try {
                     response = await Download.ussFile(REAL_SESSION, ussname);
@@ -1833,7 +1832,7 @@ describe("Download Data Set - encoded", () => {
                 const options: IDownloadOptions = {file: `test1.txt`};
 
                 await Upload.bufferToUssFile(REAL_SESSION, ussname, Buffer.from(testData));
-                await delay(delayTime);
+                await wait(waitTime); //wait 2 seconds
 
                 try {
                     response = await Download.ussFile(REAL_SESSION, ussname, options);

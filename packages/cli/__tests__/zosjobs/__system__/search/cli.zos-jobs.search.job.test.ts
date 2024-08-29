@@ -13,8 +13,10 @@ import { TestEnvironment } from "../../../../../../__tests__/__src__/environment
 import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/ITestEnvironment";
 import { runCliScript } from "../../../../../../__tests__/__src__/TestUtils"
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
+import { wait, waitTime } from "../../../../../../__tests__/__src__/TestUtils";
 import { AbstractSession } from "@zowe/imperative";
 import { GetJobs } from "@zowe/zos-jobs-for-zowe-sdk";
+import { promisify } from 'util';
 
 // Test Environment populated in the beforeAll();
 let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
@@ -74,8 +76,7 @@ describe("zos-jobs search job command", () => {
             const response = runCliScript(__dirname + "/__scripts__/job/search_no_job_submit.sh",
                 testEnvironment, [JOB_NAME, argString]);
 
-            // Add a delay to ensure job is recognized
-            await new Promise(resolve => setTimeout(resolve, 3000)); // Wait for 3 seconds
+            await wait(waitTime); // Waits for 2 seconds
 
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
@@ -88,8 +89,7 @@ describe("zos-jobs search job command", () => {
             const response = runCliScript(__dirname + "/__scripts__/job/search_no_job_submit.sh",
                 testEnvironment, [JOB_NAME, argString]);
 
-            // Add a delay to ensure job is recognized
-            await new Promise(resolve => setTimeout(resolve, 3000)); // Wait for 3 seconds
+            await wait(waitTime); // Waits for 2 seconds
 
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
@@ -103,8 +103,7 @@ describe("zos-jobs search job command", () => {
             const response = runCliScript(__dirname + "/__scripts__/job/search_no_job_submit.sh",
                 testEnvironment, [JOB_NAME, argString]);
 
-            // Add a delay to ensure job is recognized
-            await new Promise(resolve => setTimeout(resolve, 3000)); // Wait for 3 seconds
+            await wait(waitTime); // Waits for 2 seconds
 
             expect(response.stderr.toString()).toContain("The search spool job command returned a non-zero rc: 1");
             expect(response.status).toBe(1);
@@ -115,8 +114,7 @@ describe("zos-jobs search job command", () => {
             const response = runCliScript(__dirname + "/__scripts__/job/search_no_job_submit.sh",
                 testEnvironment, [JOB_NAME, ""]);
 
-            // Add a delay to ensure job is recognized
-            await new Promise(resolve => setTimeout(resolve, 3000)); // Wait for 3 seconds
+            await wait(waitTime); // Waits for 2 seconds
 
             expect(response.stderr.toString()).toContain("You must specify either the `--search-string` or `--search-regex` option");
             expect(response.status).toBe(1);
@@ -127,8 +125,7 @@ describe("zos-jobs search job command", () => {
             const response = runCliScript(__dirname + "/__scripts__/job/search_no_job_submit.sh",
                 testEnvironment, [JOB_NAME, argString]);
 
-            // Add a delay to ensure job is recognized
-            await new Promise(resolve => setTimeout(resolve, 3000)); // Wait for 3 seconds
+            await wait(waitTime); // Waits for 2 seconds
 
             expect(response.stderr.toString()).toContain("You must specify either the `--search-string` or `--search-regex` option");
             expect(response.status).toBe(1);
