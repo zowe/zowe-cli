@@ -16,7 +16,7 @@ import * as lodash from "lodash";
 import * as semver from "semver";
 
 // for ProfileInfo structures
-import { IProfArgAttrs } from "./doc/IProfArgAttrs";
+import { IProfArgAttrs, IProfDataType } from "./doc/IProfArgAttrs";
 import { IProfAttrs } from "./doc/IProfAttrs";
 import { IArgTeamConfigLoc, IProfLoc, IProfLocOsLoc, IProfLocOsLocLayer, ProfLocType } from "./doc/IProfLoc";
 import { IProfMergeArgOpts } from "./doc/IProfMergeArgOpts";
@@ -1170,7 +1170,7 @@ export class ProfileInfo {
                         if (semver.major(typeInfo.schema.version) != semver.major(prevTypeVersion)) {
                             // Warn user if new major schema version is specified
                             infoMsg =
-                            `Profile type ${profileType} was updated from schema version ${prevTypeVersion} to ${typeInfo.schema.version}.\n` +
+                                `Profile type ${profileType} was updated from schema version ${prevTypeVersion} to ${typeInfo.schema.version}.\n` +
                                 `The following applications may be affected: ${typeMetadata.from.filter((src) => src !== typeInfo.sourceApp)}`;
                         }
                     } else if (semver.major(prevTypeVersion) > semver.major(typeInfo.schema.version)) {
@@ -1387,6 +1387,65 @@ export class ProfileInfo {
 
         return finalSchema;
     }
+
+    // _______________________________________________________________________
+    /**
+     * List of secure properties with more details, like value, location, and type
+     *
+     * @param opts The user and global flags that specify one of the four
+     *             config files (aka layers).
+     * @returns Array of secure property details
+     */
+    public secureFieldsWithDetails(opts?: { user: boolean; global: boolean }): IProfArgAttrs[] {
+        const config = this.getTeamConfig();
+        const layer = opts ? config.findLayer(opts.user, opts.global) : config.layerActive();
+        const fields = config.api.secure.findSecure(layer.properties.profiles, "profiles");
+        const vault = config.api.secure.secureFieldsForLayer(layer.path);
+
+        const response: IProfArgAttrs[] = [];
+
+        // Search the vault for each secure field
+        if (vault) {
+            fields.forEach(fieldPath => {
+                // Search inside the secure fields for this layer
+                Object.entries(vault).map(([propPath, propValue]) => {
+                    if (propPath === fieldPath) {
+                        const dataType = ConfigSchema.findPropertyType(fieldPath, layer.properties, this.buildSchema([], layer)) as IProfDataType;
+
+                        response.push({
+                            argName: fieldPath.split(".properties.")[1],
+                            dataType: dataType ?? this.argDataType(typeof propValue),
+                            argValue: propValue as IProfDataType,
+                            argLoc: {
+                                locType: ProfLocType.TEAM_CONFIG,
+                                osLoc: [layer.path],
+                                jsonLoc: fieldPath
+                            },
+                        });
+                    }
+                });
+            });
+        }
+
+        fields.forEach(fieldPath => {
+            if (response.find(details => details.argLoc.jsonLoc === fieldPath) == null) {
+                const dataType = ConfigSchema.findPropertyType(fieldPath, layer.properties, this.buildSchema([], layer)) as IProfDataType ?? null;
+                response.push({
+                    argName: fieldPath.split(".properties.")[1],
+                    dataType,
+                    argValue: undefined,
+                    argLoc: {
+                        locType: ProfLocType.TEAM_CONFIG,
+                        osLoc: [layer.path],
+                        jsonLoc: fieldPath
+                    }
+                });
+            }
+        });
+
+        return response;
+    }
+
 
     // _______________________________________________________________________
     /**
