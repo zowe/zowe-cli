@@ -11,9 +11,10 @@
 
 import { ImperativeError, RestClientError, AbstractSession } from "@zowe/imperative";
 import { CancelJobs, SubmitJobs, IJob } from "../../src";
-import { ITestPropertiesSchema } from "../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { JobTestsUtils } from "./JobTestsUtils";
-import { ITestEnvironment, TestEnvironment } from "@zowe/cli-test-utils";
+import { ITestEnvironment } from "../../../../__tests__/__src__/environment/ITestEnvironment";
+import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
+import { ITestPropertiesSchema } from "../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 
 let REAL_SESSION: AbstractSession;
 let sleepJCL: string;
@@ -27,9 +28,9 @@ describe("CancelJobs System tests", () => {
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({
             testName: "zos_cancel_jobs"
-        }, REAL_SESSION = await TestEnvironment.createSession());
+        });
+        REAL_SESSION = await TestEnvironment.createSession();
         systemProps = testEnvironment.systemTestProperties;
-
         const ACCOUNT = systemProps.tso.account;
         const maxStepNum = 6;  // Use lots of steps to make the job stay in INPUT status longer
 
@@ -188,9 +189,9 @@ describe("CancelJobs System tests - encoded", () => {
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({
             testName: "zos_cancel_jobs_encoded"
-        }, REAL_SESSION = await TestEnvironment.createSession());
+        });
+        REAL_SESSION = await TestEnvironment.createSession();
         systemProps = testEnvironment.systemTestProperties;
-
         const ACCOUNT = systemProps.tso.account;
         const maxStepNum = 6;  // Use lots of steps to make the job stay in INPUT status longer
 

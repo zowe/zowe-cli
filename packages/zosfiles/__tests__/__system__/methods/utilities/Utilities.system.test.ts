@@ -10,7 +10,8 @@
 */
 
 import { posix } from "path";
-import { ITestEnvironment, TestEnvironment } from "@zowe/cli-test-utils";
+import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/ITestEnvironment";
+import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { AbstractSession, Imperative, IO } from "@zowe/imperative";
 import { Utilities, Tag, Upload, Create, Download } from "../../../../src";
@@ -27,8 +28,8 @@ describe("USS Utilities", () => {
         testEnvironment = await TestEnvironment.setUp({
             tempProfileTypes: ["zosmf"],
             testName: "zos_files_utilities"
-        }, REAL_SESSION = await TestEnvironment.createSession());
-
+        });
+        REAL_SESSION = await TestEnvironment.createSession();
         const defaultSystem = testEnvironment.systemTestProperties;
         let dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.UPLOAD`);
         dsname = dsname.replace(/\./g, "");

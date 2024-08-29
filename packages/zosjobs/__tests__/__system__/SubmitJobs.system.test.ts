@@ -11,7 +11,8 @@
 
 import { ImperativeError, Session } from "@zowe/imperative";
 import { GetJobs, IJob, ISpoolFile, SubmitJobs } from "../../src";
-import { ITestEnvironment, TestEnvironment } from "@zowe/cli-test-utils";
+import { ITestEnvironment } from "../../../../__tests__/__src__/environment/ITestEnvironment";
+import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { existsSync } from "fs";
 import { ZosJobsMessages } from "../../src/JobsMessages";
@@ -37,8 +38,8 @@ describe("Submit Jobs - System Tests", () => {
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({
             testName: "zos_submit_jobs"
-        }, REAL_SESSION = await TestEnvironment.createSession());
-
+        });
+        REAL_SESSION = await TestEnvironment.createSession();
         systemProps = testEnvironment.systemTestProperties;
         account = systemProps.tso.account;
         jobDataSet = testEnvironment.systemTestProperties.zosjobs.iefbr14PSDataSet;

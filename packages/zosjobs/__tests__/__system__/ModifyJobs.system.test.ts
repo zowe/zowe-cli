@@ -11,7 +11,8 @@
 
 import { ImperativeError, Session } from "@zowe/imperative";
 import { IJob, SubmitJobs, ModifyJobs, CancelJobs } from "../../src";
-import { ITestEnvironment, TestEnvironment } from "@zowe/cli-test-utils";
+import { ITestEnvironment } from "../../../../__tests__/__src__/environment/ITestEnvironment";
+import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { JobTestsUtils } from "./JobTestsUtils";
 
@@ -30,8 +31,8 @@ describe("Modify Jobs - System Tests", () => {
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({
             testName: "zos_modify_jobs"
-        }, REAL_SESSION = await TestEnvironment.createSession());
-
+        });
+        REAL_SESSION = await TestEnvironment.createSession();
         systemProps = testEnvironment.systemTestProperties;
         account = systemProps.tso.account;
         jobclass = testEnvironment.systemTestProperties.zosjobs.jobclass;
@@ -106,8 +107,8 @@ describe("Modify Jobs - System Tests - Encoded", () => {
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({
             testName: "zos_modify_jobs_encoded"
-        }, REAL_SESSION = await TestEnvironment.createSession());
-
+        });
+        REAL_SESSION = await TestEnvironment.createSession();
         systemProps = testEnvironment.systemTestProperties;
         account = systemProps.tso.account;
         jobclass = testEnvironment.systemTestProperties.zosjobs.jobclass;

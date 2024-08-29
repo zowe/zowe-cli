@@ -11,7 +11,8 @@
 
 import { Create, CreateDataSetTypeEnum, Delete, Get, IGetOptions, List, ZosFilesConstants } from "../../../../src";
 import { Imperative, Session } from "@zowe/imperative";
-import { ITestEnvironment, TestEnvironment } from "@zowe/cli-test-utils";
+import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/ITestEnvironment";
+import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { getRandomBytes, getUniqueDatasetName, stripNewLines } from "../../../../../../__tests__/__src__/TestUtils";
 import { ZosmfRestClient, ZosmfHeaders } from "@zowe/core-for-zowe-sdk";
@@ -28,8 +29,8 @@ describe("Get", () => {
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({
             testName: "zos_file_view"
-        }, REAL_SESSION = await TestEnvironment.createSession());
-
+        });
+        REAL_SESSION = await TestEnvironment.createSession();
         defaultSystem = testEnvironment.systemTestProperties;
         dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.VIEW`);
         Imperative.console.info("Using dsname:" + dsname);
@@ -363,8 +364,8 @@ describe("Get - encoded", () => {
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({
             testName: "zos_file_view"
-        }, REAL_SESSION = await TestEnvironment.createSession());
-
+        });
+        REAL_SESSION = await TestEnvironment.createSession();
         defaultSystem = testEnvironment.systemTestProperties;
         dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.VIEW`, true);
         Imperative.console.info("Using dsname:" + dsname);

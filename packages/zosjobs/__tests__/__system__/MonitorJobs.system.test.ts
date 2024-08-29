@@ -15,7 +15,8 @@ import { ImperativeError, Session, TextUtils } from "@zowe/imperative";
 import * as fs from "fs";
 import { join } from "path";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
-import { ITestEnvironment, TestEnvironment } from "@zowe/cli-test-utils";
+import { ITestEnvironment } from "../../../../__tests__/__src__/environment/ITestEnvironment";
+import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 
 // long running test timeout
@@ -71,8 +72,8 @@ describe("System Tests - Monitor Jobs", () => {
         beforeAll(async () => {
             testEnvironment = await TestEnvironment.setUp({
                 testName: "zos_monitor_jobs"
-            }, REAL_SESSION = await TestEnvironment.createSession());
-
+            });
+            REAL_SESSION = await TestEnvironment.createSession();
             defaultSystem = testEnvironment.systemTestProperties;
             ACCOUNT = defaultSystem.tso.account;
             const JOB_LENGTH = 6;
@@ -687,8 +688,8 @@ describe("System Tests - Monitor Jobs", () => {
         beforeAll(async () => {
             testEnvironment = await TestEnvironment.setUp({
                 testName: "zos_monitor_jobs_encoded"
-            }, REAL_SESSION = await TestEnvironment.createSession());
-
+            });
+            REAL_SESSION = await TestEnvironment.createSession();
             defaultSystem = testEnvironment.systemTestProperties;
             ACCOUNT = defaultSystem.tso.account;
             const JOB_LENGTH = 5;

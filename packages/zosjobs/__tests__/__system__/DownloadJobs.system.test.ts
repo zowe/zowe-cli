@@ -11,7 +11,8 @@
 
 import { DeleteJobs, DownloadJobs, GetJobs, IJobFile, SubmitJobs } from "../../src";
 import { ImperativeError, IO, Session, TextUtils } from "@zowe/imperative";
-import { ITestEnvironment, TestEnvironment } from "@zowe/cli-test-utils";
+import { ITestEnvironment } from "../../../../__tests__/__src__/environment/ITestEnvironment";
+import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { Get } from "@zowe/zos-files-for-zowe-sdk";
 import { MonitorJobs } from "../../src/MonitorJobs";
@@ -42,8 +43,8 @@ describe("Download Jobs - System tests", () => {
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({
             testName: "zos_download_jobs"
-        }, REAL_SESSION = await TestEnvironment.createSession());
-
+        });
+        REAL_SESSION = await TestEnvironment.createSession();
         outputDirectory = testEnvironment.workingDir + "/output";
         defaultSystem = testEnvironment.systemTestProperties;
 
@@ -355,8 +356,8 @@ describe("Download Jobs - System tests - Encoded", () => {
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({
             testName: "zos_download_jobs_encoded"
-        }, REAL_SESSION = await TestEnvironment.createSession());
-
+        });
+        REAL_SESSION = await TestEnvironment.createSession();
         outputDirectory = testEnvironment.workingDir + "/output";
         defaultSystem = testEnvironment.systemTestProperties;
 

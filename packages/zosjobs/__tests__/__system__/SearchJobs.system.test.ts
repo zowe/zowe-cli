@@ -11,7 +11,8 @@
 
 import { ImperativeError, Session } from "@zowe/imperative";
 import { DeleteJobs, GetJobs, IJob, SearchJobs } from "../../src";
-import { ITestEnvironment, TestEnvironment } from "@zowe/cli-test-utils";
+import { ITestEnvironment } from "../../../../__tests__/__src__/environment/ITestEnvironment";
+import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 
 /**********************************************************************************/
@@ -56,7 +57,8 @@ describe("Search Jobs - System Tests", () => {
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({
             testName: "zos_search_jobs"
-        }, REAL_SESSION = await TestEnvironment.createSession());
+        });
+        REAL_SESSION = await TestEnvironment.createSession();
         defaultSystem = testEnvironment.systemTestProperties;
 
         INVALID_SESSION = new Session({

@@ -13,7 +13,8 @@ import * as fs from "fs";
 import { Imperative, IO, Session, TextUtils } from "@zowe/imperative";
 import { inspect } from "util";
 
-import { ITestEnvironment, TestEnvironment } from "@zowe/cli-test-utils";
+import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/ITestEnvironment";
+import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { ZosFilesMessages } from "../../../../src/constants/ZosFiles.messages";
 import { Invoke } from "../../../../src/methods/invoke/Invoke";
@@ -32,8 +33,8 @@ describe("Invoke AMS", () => {
         testEnvironment = await TestEnvironment.setUp({
             tempProfileTypes: ["zosmf"],
             testName: "zos_create_VSAM_dataset"
-        }, REAL_SESSION = await TestEnvironment.createSession());
-
+        });
+        REAL_SESSION = await TestEnvironment.createSession();
         systemProps = testEnvironment.systemTestProperties;
         dsname = getUniqueDatasetName(`${systemProps.zosmf.user}.ZOSFILE.VSAM`);
         volume = systemProps.datasets.vol.toUpperCase();
@@ -208,8 +209,8 @@ describe("Invoke AMS - encoded", () => {
         testEnvironment = await TestEnvironment.setUp({
             tempProfileTypes: ["zosmf"],
             testName: "zos_create_VSAM_dataset"
-        }, REAL_SESSION = await TestEnvironment.createSession());
-
+        });
+        REAL_SESSION = await TestEnvironment.createSession();
         systemProps = testEnvironment.systemTestProperties;
         dsname = getUniqueDatasetName(`${systemProps.zosmf.user}.ZOSFILE.ENCO#ED.VSAM`);
         volume = systemProps.datasets.vol.toUpperCase();
