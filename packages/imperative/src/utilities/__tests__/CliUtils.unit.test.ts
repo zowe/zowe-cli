@@ -318,7 +318,7 @@ describe("CliUtils", () => {
         it("should throw an imperative error if a required profile is not present", () => {
             let error;
             try {
-                const args = CliUtils.getOptValuesFromConfig(mockConfigApi(undefined),
+                CliUtils.getOptValuesFromConfig(mockConfigApi(undefined),
                     { required: ["banana"] } as any, {} as any, FAKE_OPTS);
             } catch (e) {
                 error = e;
