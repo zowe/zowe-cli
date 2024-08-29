@@ -14,7 +14,7 @@
  * @export
  * @interface ITestEnvironment
  */
-export interface ITestEnvironment<TestPropertiesSchema> {
+export interface ITestEnvironment<ITestPropertiesSchema> {
     /**
      * The working directory for your test environment. It is a unique (uuid) area where your tests can create
      * their home folders (for imperative, etc.) and you can use the area as scratch for any files, etc. that
@@ -29,10 +29,10 @@ export interface ITestEnvironment<TestPropertiesSchema> {
      * in the case that no system test properties were configured or could be loaded.
      *
      * Not present if skipProperties is specified on ISetupEnvironmentParms
-     * @type {TestPropertiesSchema}
+     * @type {ITestPropertiesSchema}
      * @memberof ITestEnvironment
      */
-    systemTestProperties: TestPropertiesSchema;
+    systemTestProperties: ITestPropertiesSchema;
 
     /**
      * Set of environmental variables (such as profile/logging home directory)
