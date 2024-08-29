@@ -103,6 +103,25 @@ export class TestEnvironment {
     }
 
     /**
+     * Clean up your test environment.
+     * Deletes any temporary profiles that have been created
+     * @params {ITestEnvironment} testEnvironment - the test environment returned by createTestEnv
+     *
+     * @returns {Promise<void>} - promise fulfilled when cleanup is complete
+     * @throws errors if profiles fail to delete
+     * @memberof TestEnvironment
+     */
+    public static async cleanUp(testEnvironment: ITestEnvironment<any>) {
+        if (testEnvironment.tempProfiles != null) {
+            await TempTestProfiles.deleteProfiles(testEnvironment);
+        }
+        if (testEnvironment.pluginInstalled) {
+            const pluginDir = testEnvironment.workingDir + "/plugins";
+            require("rimraf").sync(pluginDir);
+        }
+    }
+
+    /**
      * Creates a unique test data directory for a test to work with in isolation.
      * @static
      * @param {string} testName - Adds the test name to the directory name for ease of identification.
