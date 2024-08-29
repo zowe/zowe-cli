@@ -8,6 +8,7 @@ All notable changes to the Imperative package will be documented in this file.
   - `CliProfileManager`, `CommandProfiles`, `ProfileValidator` - Use the `V1ProfileRead` class if you still need to read V1 profiles
   - `CliUtils.getOptValueFromProfiles` - Use `getOptValuesFromConfig` instead to load from team config
 - Next Breaking: Changed 2nd parameter of `CliUtils.getOptValuesFromConfig` method from type `ICommandDefinition` to `ICommandProfile`.
+- Next Breaking: Renamed `ConfigSecure.secureFieldsForLayer` method to `securePropsForLayer`.
 
 ## `8.0.0-next.202408291544`
 
