@@ -71,8 +71,8 @@ export class TestEnvironment extends BaseTestEnvironment {
         }
 
         // Check if session exists before deleting resources
-        const session = testEnvironment.resources.session;
-        if (session) {
+        if (testEnvironment?.resources?.session) {
+            const session = testEnvironment.resources.session;
             for (const file of testEnvironment.resources.localFiles) {
                 deleteLocalFile(file);
             }
