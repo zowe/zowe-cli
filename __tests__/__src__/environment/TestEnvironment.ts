@@ -70,13 +70,12 @@ export class TestEnvironment extends BaseTestEnvironment {
             require("rimraf").sync(pluginDir);
         }
 
-        // Clean up resources
-        for (const file of testEnvironment.resources.localFiles) {
-            deleteLocalFile(file);
-        }
         // Check if session exists before deleting resources
         const session = testEnvironment.resources.session;
         if (session) {
+            for (const file of testEnvironment.resources.localFiles) {
+                deleteLocalFile(file);
+            }
             for (const file of testEnvironment.resources.files) {
                 deleteFiles(session, file);
             }
