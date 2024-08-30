@@ -2,7 +2,7 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
-## Recent Changes
+## `8.0.0-next.202408301809`
 
 - LTS Breaking: Removed the following obsolete V1 profile classes/functions:
   - `CliProfileManager`
