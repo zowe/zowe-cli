@@ -5,8 +5,12 @@ All notable changes to the Imperative package will be documented in this file.
 ## Recent Changes
 
 - LTS Breaking: Removed the following obsolete V1 profile classes/functions:
-  - `CliProfileManager`, `CommandProfiles`, `ProfileValidator` - Use the `V1ProfileRead` class if you still need to read V1 profiles
-  - `CliUtils.getOptValueFromProfiles` - Use `getOptValuesFromConfig` instead to load from team config
+  - `CliProfileManager`
+  - `CliUtils.getOptValueFromProfiles`
+  - `CommandProfiles`
+  - `ProfileValidator`
+
+  See [`8.0.0-next.202408271330`](#800-next202408271330) for replacements
 - Next Breaking: Changed 2nd parameter of `CliUtils.getOptValuesFromConfig` method from type `ICommandDefinition` to `ICommandProfile`.
 - Next Breaking: Renamed `ConfigSecure.secureFieldsForLayer` method to `securePropsForLayer`.
 
@@ -18,13 +22,15 @@ All notable changes to the Imperative package will be documented in this file.
 ## `8.0.0-next.202408271330`
 
 - LTS Breaking: [#2231](https://github.com/zowe/zowe-cli/issues/2231)
-  - Removed the obsolete V1 `profiles` property from `IHandlerParameters` interface
+  - Removed the obsolete V1 `profiles` property from `IHandlerParameters` interface - Use `IHandlerParameters.arguments` to access profile properties in a command handler
   - Deprecated the following obsolete V1 profile interfaces:
     - `IProfileTypeConfiguration.dependencies` - For team config, use nested profiles instead
     - `IProfileTypeConfiguration.validationPlanModule` - For team config, validate with JSON schema instead
   - Deprecated the following obsolete V1 profile classes/functions:
-    - `CliProfileManager`, `CommandProfiles`, `ProfileValidator` - Use the `V1ProfileRead` class if you still need to read V1 profiles
-    - `CliUtils.getOptValueFromProfiles` - Use `getOptValuesFromConfig` instead to load from team config
+    - `CliProfileManager` - Use `ProfileInfo` class to manage team config profiles
+    - `CliUtils.getOptValueFromProfiles` - Use `CliUtils.getOptValuesFromConfig` to load properties from team config
+    - `CommandProfiles` - Use `ImperativeConfig.instance.config.api.profiles` to load profiles from team config
+    - `ProfileValidator` - No direct replacement
 
 ## `8.0.0-next.202408231832`
 
