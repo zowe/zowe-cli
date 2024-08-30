@@ -212,13 +212,8 @@ describe("Submit Jobs - System Tests", () => {
         it("should return the job info of a submitted JCL string", async () => {
             const jobOrSpoolFiles = await SubmitJobs.submitJclString(REAL_SESSION, "//JOBNAME1 JOB", { jclSource: "stdin" });
 
-            // Check if the returned value is an array of spool files or a single job object
-            if (Array.isArray(jobOrSpoolFiles)) {
-                throw new Error("Expected a single job object, but received spool files.");
-            }
-
             // Now `jobOrSpoolFiles` is guaranteed to be of type `IJob`
-            const job: IJob = jobOrSpoolFiles;
+            const job: IJob = jobOrSpoolFiles as IJob;
 
             // Ensure jobid and jobname are defined before proceeding
             expect(job.jobid).toBeDefined();
@@ -275,13 +270,8 @@ describe("Submit Jobs - System Tests", () => {
                 directory: "./"
             });
 
-            // Check if the returned value is an array of spool files or a single job object
-            if (Array.isArray(jobOrSpoolFiles)) {
-                throw new Error("Expected a single job object, but received spool files.");
-            }
-
             // Now `jobOrSpoolFiles` is guaranteed to be of type `IJob`
-            const job: IJob = jobOrSpoolFiles;
+            const job: IJob = jobOrSpoolFiles as IJob;
 
             // Ensure jobid and jobname and file are defined before proceeding
             expect(job.jobid).toBeDefined();
