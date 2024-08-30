@@ -16,7 +16,6 @@ import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/prope
 import { wait, waitTime } from "../../../../../../__tests__/__src__/TestUtils";
 import { AbstractSession } from "@zowe/imperative";
 import { GetJobs } from "@zowe/zos-jobs-for-zowe-sdk";
-import { promisify } from 'util';
 
 // Test Environment populated in the beforeAll();
 let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;

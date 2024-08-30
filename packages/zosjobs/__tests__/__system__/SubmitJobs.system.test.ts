@@ -14,9 +14,9 @@ import { GetJobs, IJob, ISpoolFile, SubmitJobs } from "../../src";
 import { ITestEnvironment } from "../../../../__tests__/__src__/environment/ITestEnvironment";
 import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../__tests__/__src__/properties/ITestPropertiesSchema";
+import { wait } from "../../../../__tests__/__src__/TestUtils";
 import { existsSync } from "fs";
 import { ZosJobsMessages } from "../../src/JobsMessages";
-import { promisify } from 'util';
 
 let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 let systemProps: ITestPropertiesSchema;
@@ -28,10 +28,7 @@ let iefbr14JCL: string;
 const badJCL = "thIsIs BaDJCL!";
 const badDataSet = "DOES.NOT.EXIST(FAKE)";
 const badUSSFile = "/tmp/does/not/exist/fake.txt";
-
 const LONG_TIMEOUT = 100000; // 100 second timeout - jobs could take a while to complete due to system load
-
-const wait = promisify(setTimeout);
 
 describe("Submit Jobs - System Tests", () => {
 
