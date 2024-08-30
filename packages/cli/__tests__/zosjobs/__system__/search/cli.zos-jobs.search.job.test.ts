@@ -43,11 +43,14 @@ describe("zos-jobs search job command", () => {
         IEFBR14_JOB = defaultSystem.zosjobs.iefbr14Member;
 
         ACCOUNT = defaultSystem.tso.account;
-        // TODO: fix this test to run with any job name
-        JOB_NAME = "IEFBR14T"; //REAL_SESSION.ISession.user.substring(0, JOB_LENGTH).toUpperCase()
+
+        const JOB_LENGTH = 5; // 5 letters from the user's id
+        const userIdPart = REAL_SESSION.ISession.user.substring(0, JOB_LENGTH).toUpperCase();
+        JOB_NAME = `IEF${userIdPart}`;
+
         NON_HELD_JOBCLASS = defaultSystem.zosjobs.jobclass;
-        SEARCH_STRING = "PGM=IEFBR14";
-        REGEX_STRING = "IEFBR14|RC=0000";
+        SEARCH_STRING = `PGM=${JOB_NAME}`;
+        REGEX_STRING = `${JOB_NAME}|RC=0000`;
         BAD_SEARCH_STRING = "bluhbluh";
 
     });
@@ -79,7 +82,7 @@ describe("zos-jobs search job command", () => {
 
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
-            expect(response.stdout.toString()).toContain("IEFBR14");
+            expect(response.stdout.toString()).toContain(`${JOB_NAME}`);
             expect(response.stdout.toString()).toContain("RC=0000");
         });
 
