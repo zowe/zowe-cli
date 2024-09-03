@@ -34,42 +34,49 @@ export class IssueTso {
         commandInfo: string | IIssueTsoCmdParms,
         addressSpaceOptions?: IStartTsoParms,
         isStateful?: boolean,
-        suppressStartupMessage?: boolean,
+        suppressStartupMessage?: boolean
     ): Promise<IIssueResponse> {
         let command: string | IIssueTsoCmdParms;
         let version: string;
-        if(!isStateful) isStateful = false
-        if(!suppressStartupMessage) suppressStartupMessage = false;
+        if (!isStateful) isStateful = false;
+        if (!suppressStartupMessage) suppressStartupMessage = false;
 
         let useNewApi =
             addressSpaceOptions == null &&
-            await CheckStatus.isZosVersionGreaterThan(
+            (await CheckStatus.isZosVersionGreaterThan(
                 session,
                 ZosmfConstants.VERSIONS.V2R4
-            ) && suppressStartupMessage === true;
+            )) &&
+            suppressStartupMessage === true;
         if (useNewApi) {
             command = commandInfo;
             version = "v1";
             try {
                 const endpoint = `${TsoConstants.RESOURCE}/${version}/${TsoConstants.RES_START_TSO}`;
-                const apiResponse = await ZosmfRestClient.putExpectJSON<IIssueTsoCmdResponse>(
-                    session,
-                    endpoint,
-                    [Headers.APPLICATION_JSON],
-                    {
-                        tsoCmd: command,
-                        cmdState: isStateful ? "stateful" : "stateless",
-                    }
-                );
+                const apiResponse =
+                    await ZosmfRestClient.putExpectJSON<IIssueTsoCmdResponse>(
+                        session,
+                        endpoint,
+                        [Headers.APPLICATION_JSON],
+                        {
+                            tsoCmd: command,
+                            cmdState: isStateful ? "stateful" : "stateless",
+                        }
+                    );
                 const response: IIssueResponse = {
                     success: true,
-                    startReady: apiResponse.cmdResponse[apiResponse.cmdResponse.length - 1].message.trim() === 'READY',
+                    startReady:
+                        apiResponse.cmdResponse[
+                            apiResponse.cmdResponse.length - 1
+                        ].message.trim() === "READY",
                     zosmfResponse: apiResponse as any,
-                    commandResponse: apiResponse.cmdResponse.map(item => item.message).join('\n')
+                    commandResponse: apiResponse.cmdResponse
+                        .map((item) => item.message)
+                        .join("\n"),
                 };
                 return response;
-            } catch(e) {
-                if(!e.mMessage.includes("status 404")) throw e;
+            } catch (e) {
+                if (!e.mMessage.includes("status 404")) throw e;
                 useNewApi = false;
             }
         }
@@ -78,8 +85,8 @@ export class IssueTso {
             const profInfo = new ProfileInfo("zowe");
             await profInfo.readProfilesFromDisk();
             addressSpaceOptions = profInfo
-            .getTeamConfig()
-            .api.profiles.defaultGet("tso");
+                .getTeamConfig()
+                .api.profiles.defaultGet("tso");
             command =
                 typeof commandInfo === "string"
                     ? commandInfo

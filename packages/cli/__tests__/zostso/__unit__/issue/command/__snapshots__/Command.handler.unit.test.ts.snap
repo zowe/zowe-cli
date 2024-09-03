@@ -5,17 +5,7 @@ exports[`issue command handler tests should be able respond with error message 1
 with an active z/OS application session."
 `;
 
-exports[`issue command handler tests should issue command 1`] = `
-Object {
-  "account": "fake",
-  "characterSet": undefined,
-  "codePage": undefined,
-  "columns": undefined,
-  "logonProcedure": undefined,
-  "regionSize": undefined,
-  "rows": undefined,
-}
-`;
+exports[`issue command handler tests should issue command 1`] = `false`;
 
 exports[`issue command handler tests should issue command 2`] = `"messages from TSO"`;
 

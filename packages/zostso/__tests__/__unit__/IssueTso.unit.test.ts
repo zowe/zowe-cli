@@ -12,6 +12,7 @@
 import { ImperativeError, Session } from "@zowe/imperative";
 import { IIssueTsoParms, ISendResponse, IssueTso, IStartStopResponse, IStartTsoParms, IZosmfTsoResponse, SendTso,
     StartTso, StopTso } from "../../src";
+import { CheckStatus } from "@zowe/zosmf-for-zowe-sdk";
 
 const PRETEND_SESSION = new Session({
     user: "user",
@@ -19,7 +20,7 @@ const PRETEND_SESSION = new Session({
     hostname: "host.com",
     port: 443,
     type: "basic",
-    rejectUnauthorized: false
+    rejectUnauthorized: false,
 });
 const SEND_RESPONSE = {
     success: true,
@@ -129,7 +130,7 @@ describe("TsoIssue issueTsoCommand - failing scenarios", () => {
     });
 });
 
-describe("TsoIssue issueTsoCommand", () => {
+describe("TsoIssue issueTsoCommand - Deprecated API", () => {
     it("should succeed", async () => {
         (StartTso.start as any) = jest.fn(() => {
             return new Promise((resolve) => {
@@ -183,6 +184,70 @@ describe("TsoIssue issueTsoCommand", () => {
         let response: ISendResponse;
         try {
             response = await IssueTso.issueTsoCommandCommon(PRETEND_SESSION, PRETEND_ISSUE_PARMS);
+        } catch (thrownError) {
+            error = thrownError;
+        }
+        expect(error).not.toBeDefined();
+        expect(response).toBeDefined();
+    });
+});
+
+describe("TsoIssue issueTsoCmd - Revised API", () => {
+    it("should succeed", async () => {
+        (StartTso.start as any) = jest.fn(() => {
+            return new Promise((resolve) => {
+                process.nextTick(() => {
+                    resolve(START_RESPONSE);
+                });
+            });
+        });
+        (SendTso.getAllResponses as any) = jest.fn(() => {
+            return new Promise((resolve) => {
+                process.nextTick(() => {
+                    resolve({});
+                });
+            });
+        });
+        (SendTso.sendDataToTSOCollect as any) = jest.fn(() => {
+            return new Promise((resolve) => {
+                process.nextTick(() => {
+                    resolve(SEND_RESPONSE);
+                });
+            });
+        });
+        (StopTso.stop as any) = jest.fn(() => {
+            return new Promise((resolve) => {
+                process.nextTick(() => {
+                    resolve(null);
+                });
+            });
+        });
+
+        let error: ImperativeError;
+        let response: ISendResponse;
+        jest.spyOn(CheckStatus, "isZosVersionGreaterThan").mockReturnValue(Promise.resolve(true));
+        try {
+            response = await IssueTso.issueTsoCmd(PRETEND_SESSION, "TEST", undefined, true, false);
+        } catch (thrownError) {
+            error = thrownError;
+        }
+        expect(error).not.toBeDefined();
+        expect(response).toBeDefined();
+    });
+
+    it("should succeed (with params)", async () => {
+        (IssueTso.issueTsoCmd as any) = jest.fn(() => {
+            return new Promise((resolve) => {
+                process.nextTick(() => {
+                    resolve({});
+                });
+            });
+        });
+        let error: ImperativeError;
+        let response: ISendResponse;
+        jest.spyOn(CheckStatus, "isZosVersionGreaterThan").mockReturnValue(Promise.resolve(true));
+        try {
+            response = await IssueTso.issueTsoCmd(PRETEND_SESSION, "command", undefined, true, false);
         } catch (thrownError) {
             error = thrownError;
         }
