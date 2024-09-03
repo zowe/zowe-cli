@@ -91,14 +91,6 @@ export class IssueTso {
                 typeof commandInfo === "string"
                     ? commandInfo
                     : commandInfo.command;
-            version =
-                typeof commandInfo === "string"
-                    ? "v1"
-                    : commandInfo.version ?? "v1";
-            isStateful =
-                typeof commandInfo === "string"
-                    ? false
-                    : commandInfo.isStateful ?? false;
             TsoValidator.validateSession(session);
             TsoValidator.validateNotEmptyString(
                 addressSpaceOptions?.account,
