@@ -35,9 +35,9 @@ describe("issue command handler tests", () => {
     });
 
     it("should issue command", async () => {
-        IssueTso.issueTsoCommand = jest.fn((session, acc, cmd, prof) => {
-            expect(prof).toBeDefined();
-            expect(prof).toMatchSnapshot();
+        let response = IssueTso.issueTsoCmd = jest.fn((session, cmd, undefined) => {
+            expect(response).toBeDefined();
+            expect(response).toMatchSnapshot();
             return StartTsoData.SAMPLE_ISSUE_RESPONSE_WITH_MSG;
         });
         const handler = new Command.default();
@@ -45,14 +45,14 @@ describe("issue command handler tests", () => {
         params.arguments.acc = "acc";
         params.arguments.cmd = "time";
         await handler.process(params);
-        expect(IssueTso.issueTsoCommand).toHaveBeenCalledTimes(1);
+        expect(IssueTso.issueTsoCmd).toHaveBeenCalledTimes(1);
     });
 
     it("should be able respond with error message", async () => {
         const failMessage = "IZUG1126E: z/OSMF cannot correlate the request for key \"ZOSMFAD-SYS2-55-aaakaaac\"\n" +
             "with an active z/OS application session.";
         let error;
-        IssueTso.issueTsoCommand = jest.fn((session, servletKey) => {
+        IssueTso.issueTsoCmd = jest.fn((session, servletKey) => {
             throw new ImperativeError({msg: failMessage});
         });
         const handler = new Command.default();
@@ -64,7 +64,7 @@ describe("issue command handler tests", () => {
         } catch (thrownError) {
             error = thrownError;
         }
-        expect(IssueTso.issueTsoCommand).toHaveBeenCalledTimes(1);
+        expect(IssueTso.issueTsoCmd).toHaveBeenCalledTimes(1);
         expect(error).toBeDefined();
         expect(error instanceof ImperativeError).toBe(true);
         expect(error.message).toMatchSnapshot();
