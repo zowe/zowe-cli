@@ -38,16 +38,15 @@ export class IssueTso {
     ): Promise<IIssueResponse> {
         let command: string | IIssueTsoCmdParms;
         let version: string;
-        if(!isStateful) isStateful = false;
-        if(!suppressStartupMessage) suppressStartupMessage = true;
+        if(!isStateful) isStateful = false
+        if(!suppressStartupMessage) suppressStartupMessage = false;
 
-        const useNewApi =
+        let useNewApi =
             addressSpaceOptions == null &&
             await CheckStatus.isZosVersionGreaterThan(
                 session,
                 ZosmfConstants.VERSIONS.V2R4
-            ) && isStateful === true;
-        let newApiFailureOverride: boolean = false;
+            ) && suppressStartupMessage === true;
         if (useNewApi) {
             command = commandInfo;
             version = "v1";
@@ -66,22 +65,16 @@ export class IssueTso {
                     success: true,
                     startReady: apiResponse.cmdResponse[apiResponse.cmdResponse.length - 1].message.trim() === 'READY',
                     zosmfResponse: apiResponse as any,
-                    commandResponse: apiResponse.cmdResponse.map(item => item.message).join(', ')
+                    commandResponse: apiResponse.cmdResponse.map(item => item.message).join('\n')
                 };
                 return response;
             } catch(e) {
                 if(!e.mMessage.includes("status 404")) throw e;
-                newApiFailureOverride = true;
-
-
+                useNewApi = false;
             }
         }
         // Deprecated API Behavior [former issueTsoCommand() behavior]
-        if (
-            addressSpaceOptions != null ||
-            !useNewApi ||
-            newApiFailureOverride
-        ) {
+        if (addressSpaceOptions != null || !useNewApi) {
             const profInfo = new ProfileInfo("zowe");
             await profInfo.readProfilesFromDisk();
             addressSpaceOptions = profInfo

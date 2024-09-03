@@ -21,6 +21,7 @@ import {
     UNIT_TEST_TSO_PROF_OPTS
 } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
 import { mockHandlerParameters } from "@zowe/cli-test-utils";
+import { ZosmfBaseHandler } from "@zowe/zosmf-for-zowe-sdk";
 
 const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
     arguments: {
@@ -31,6 +32,11 @@ const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
     definition: CommandDefinition,
     profiles: UNIT_TEST_PROFILES_ZOSMF_TSO
 });
+let PARAMS_NO_SSM_STATEFUL = DEFAULT_PARAMETERS;
+PARAMS_NO_SSM_STATEFUL.positionals = ["zos-tso","issue","cmd","TIME","--sf","--no-ssm"];
+PARAMS_NO_SSM_STATEFUL.arguments.stateful = false;
+PARAMS_NO_SSM_STATEFUL.arguments.suppressStartupMessages = false;
+PARAMS_NO_SSM_STATEFUL.arguments.commandText = "TIME";
 
 describe("issue command handler tests", () => {
 
@@ -72,5 +78,28 @@ describe("issue command handler tests", () => {
         expect(error).toBeDefined();
         expect(error instanceof ImperativeError).toBe(true);
         expect(error.message).toMatchSnapshot();
+    });
+
+    it("should issue command with issueTsoCmd", async () => {
+        IssueTso.issueTsoCmd = jest.fn().mockReturnValue({
+                success: true,
+                startReady: true,
+                zosmfResponse: {
+                  cmdResponse: [
+                    {
+                      message: "IKJ56650I TIME-00:00:00 AM. CPU-00:00:00 SERVICE-554 SESSION-00:00:00 JANUARY 1,2024",
+                    },
+                    {
+                      message: "READY ",
+                    },
+                  ],
+                  tsoPromptReceived: "Y",
+                },
+                commandResponse: "IKJ56650I TIME-00:00:00 AM. CPU-00:00:00 SERVICE-554 SESSION-00:00:00 JANUARY 1,2024\nREADY ",
+        });
+        const handler = new Command.default();
+        const params = Object.assign({}, ...[PARAMS_NO_SSM_STATEFUL]);
+        await handler.process(params);
+        expect(IssueTso.issueTsoCmd).toHaveBeenCalledTimes(1);
     });
 });
