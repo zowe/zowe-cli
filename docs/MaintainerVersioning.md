@@ -165,19 +165,19 @@ You can specify pre-release versions for plug-ins using one of the following met
     **Example:**
 
     ```
-    @zowe/imperative": "1.1.0-next.201808241438"
+    @zowe/imperative": "8.0.0-next-202408131445"
     ```
 
     Such a version matches only this one snapshot of the Zowe CLI or Imperative pre-release. The plug-in will have to change the version string with each new pre-release snapshot. This requires frequent updates to the plug-in's package.json file, but helps to ensure that the plug-in will never be accidentally compatible with a later stable version of that dependency.
 
-* The plug-in can specify that it wants any version of the peerDependency starting with the earliest version of the current pre-release and any later version going forward.
+* The plug-in can specify that it wants any version of the peerDependency starting with the earliest version of the current pre-release and any later version going forward. This includes all GA versions of the peerDependency with the same major version, starting at 8.0.0:
 
     **Example:**
 
     ```
-    @zowe/imperative": ">=1.1.0-0
+    @zowe/imperative": ">=8.0.0-next-202408131445 <9.0.0"
     ```
 
-    Such a version matches every pre-release snapshot of `1.1.0`. However, it also matches every new feature release of the dependency (for example, `1.2.0`, `2.5.3`, `14.3.8`, and so on). A plug-in developer never has to change that version string during the pre-release development stage of the plug-in. However, the plug-in developer must remember to change the dependency version to a string such as `1.x` before publishing the supported release of the plug-in to avoid unintended compatibility with future versions of the dependent package.
+    Such a version matches every pre-release snapshot of `8.0.0`. However, it also matches every new feature release of the dependency (for example, `8.1.0`, `8.1.1`, and so on). A plug-in developer never has to change that version string during the pre-release development stage of the plug-in. However, the plug-in developer must remember to change the dependency version to a string such as `^8.0.0` before publishing the supported release of the plug-in to avoid unintended compatibility with future versions of the dependent package, or declared compatibility with a pre-release.
 
 In either of these methods, plug-in developers must change their desired version more frequently and at critical milestones, which is an acceptable approach because the plug-in itself is in pre-release mode. The plug-in should stay in lockstep with Zowe CLI until the plug-in pre-release becomes a supported release.
