@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OSMF SDK package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Created `isZosVersionsGreaterThan` function to allow for dynamic behavior based on z/OS version
+
 ## `8.0.0-next.202408131445`
 
 - Update: See `7.28.3` for details
