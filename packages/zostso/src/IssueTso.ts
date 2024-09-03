@@ -43,10 +43,10 @@ export class IssueTso {
 
         let useNewApi =
             addressSpaceOptions == null &&
-            (await CheckStatus.isZosVersionGreaterThan(
+            await CheckStatus.isZosVersionGreaterThan(
                 session,
                 ZosmfConstants.VERSIONS.V2R4
-            )) &&
+            ) &&
             suppressStartupMessage === true;
         if (useNewApi) {
             command = commandInfo;

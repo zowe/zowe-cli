@@ -9,6 +9,7 @@
 *
 */
 
+/* eslint-disable deprecation/deprecation */
 import { ImperativeError, Session } from "@zowe/imperative";
 import { IIssueTsoParms, ISendResponse, IssueTso, IStartStopResponse, IStartTsoParms, IZosmfTsoResponse, SendTso,
     StartTso, StopTso } from "../../src";
@@ -253,5 +254,32 @@ describe("TsoIssue issueTsoCmd - Revised API", () => {
         }
         expect(error).not.toBeDefined();
         expect(response).toBeDefined();
+    });
+});
+
+describe("TsoIssue issueTsoCmd - failing scenarios", () => {
+    it("should fail for null command text", async () => {
+        let error: ImperativeError;
+        let response: ISendResponse;
+        jest.spyOn(CheckStatus, "isZosVersionGreaterThan").mockReturnValue(Promise.resolve(true));
+        try {
+            response = await IssueTso.issueTsoCmd(PRETEND_SESSION, "fake_command", undefined, true, false);
+        } catch (thrownError) {
+            error = thrownError;
+        }
+        expect(response).not.toBeDefined();
+        expect(error).toBeDefined();
+    });
+    it("should fail for empty command text", async () => {
+        let error: ImperativeError;
+        let response: ISendResponse;
+        jest.spyOn(CheckStatus, "isZosVersionGreaterThan").mockReturnValue(Promise.resolve(true));
+        try {
+            response = await IssueTso.issueTsoCmd(PRETEND_SESSION, "", undefined, true, false);
+        } catch (thrownError) {
+            error = thrownError;
+        }
+        expect(response).not.toBeDefined();
+        expect(error).toBeDefined();
     });
 });

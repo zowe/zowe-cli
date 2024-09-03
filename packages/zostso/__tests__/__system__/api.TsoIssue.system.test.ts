@@ -9,6 +9,7 @@
 *
 */
 
+/* eslint-disable deprecation/deprecation */
 import { ImperativeError, Session } from "@zowe/imperative";
 import { IIssueResponse, IIssueTsoParms, IssueTso, IStartTsoParms } from "../../src";
 import * as fs from "fs";
