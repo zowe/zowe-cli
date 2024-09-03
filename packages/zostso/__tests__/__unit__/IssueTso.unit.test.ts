@@ -255,6 +255,47 @@ describe("TsoIssue issueTsoCmd - Revised API", () => {
         expect(error).not.toBeDefined();
         expect(response).toBeDefined();
     });
+
+    it("should utilize new API logic path", async () => {
+        (IssueTso.issueTsoCmd as any) = jest.fn(() => {
+            return new Promise((resolve) => {
+                process.nextTick(() => {
+                    resolve({});
+                });
+            });
+        });
+        let error: ImperativeError;
+        let response: ISendResponse;
+        jest.spyOn(CheckStatus, "isZosVersionGreaterThan").mockReturnValue(Promise.resolve(true));
+        try {
+            response = await IssueTso.issueTsoCmd(PRETEND_SESSION, "TIME", null, true, true);
+        } catch (thrownError) {
+            error = thrownError;
+        }
+        expect(error).not.toBeDefined();
+        expect(response).toBeDefined();
+    });
+
+    it("should throw and handle 404 error", async () => {
+        // Mock IssueTso.issueTsoCmd to throw an error
+        (IssueTso.issueTsoCmd as any) = jest.fn(() => {
+            return new Promise((_, reject) => {
+                process.nextTick(() => {
+                    reject(new Error("status 404"));
+                });
+            });
+        });
+        let error: ImperativeError;
+        let response: ISendResponse;
+        try {
+            response = await IssueTso.issueTsoCmd(PRETEND_SESSION, "TIME", null, true, true);
+        } catch (thrownError) {
+            error = thrownError;
+        }
+        expect(error).toBeDefined();
+        expect(error.message).toBe("status 404");
+        expect(response).not.toBeDefined();
+    });
 });
 
 describe("TsoIssue issueTsoCmd - failing scenarios", () => {
