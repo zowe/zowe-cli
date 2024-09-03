@@ -2,6 +2,11 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Deprecated `issueTsoCommand()` function and replaced with `issueTsoCmd()` to allow for dynamic behavior
+based on z/OS version to utilize 2.4 TSO command behavior. [#2240](https://github.com/zowe/zowe-cli/pull/2240)
+
 ## `8.0.0-next.202408261543`
 
 - BugFix: Updated `micromatch` dependency for technical currency. [#2242](https://github.com/zowe/zowe-cli/pull/2242)
