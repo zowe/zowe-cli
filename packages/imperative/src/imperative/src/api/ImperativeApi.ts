@@ -12,7 +12,6 @@
 import { IImperativeConfig } from "../doc/IImperativeConfig";
 import { IImperativeApi } from "./doc/IImperativeApi";
 import { Logger } from "../../../logger";
-import { CliProfileManager } from "../../../cmd";
 
 export class ImperativeApi {
     /**
@@ -62,19 +61,5 @@ export class ImperativeApi {
      */
     public addAdditionalLogger(name: string, logger: Logger): void {
         this.mCustomLoggerMap[name] = logger;
-    }
-
-    /**
-     * Return an instance of a profile manager for a given profile type
-     * See ProfileManager.ts for more details
-     * @internal
-     */
-    public profileManager(type: string): CliProfileManager {
-        return new CliProfileManager({
-            type,
-            typeConfigurations: this.mConfig.profiles,
-            logger: this.imperativeLogger,
-            productDisplayName: this.mConfig.productDisplayName
-        });
     }
 }

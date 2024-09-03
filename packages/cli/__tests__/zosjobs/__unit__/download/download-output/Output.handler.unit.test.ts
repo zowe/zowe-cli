@@ -16,10 +16,7 @@ jest.mock("@zowe/zos-jobs-for-zowe-sdk");
 import { IHandlerParameters, ImperativeError, Session } from "@zowe/imperative";
 import * as OutputHandler from "../../../../../src/zosjobs/download/download-output/Output.handler";
 import * as OutputDefinition from "../../../../../src/zosjobs/download/download-output/Output.definition";
-import {
-    UNIT_TEST_ZOSMF_PROF_OPTS,
-    UNIT_TEST_PROFILES_ZOSMF
-} from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
+import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../../__tests__/__src__/TestConstants";
 import { mockHandlerParameters } from "@zowe/cli-test-utils";
 
 process.env.FORCE_COLOR = "0";
@@ -27,8 +24,7 @@ process.env.FORCE_COLOR = "0";
 const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
     arguments: UNIT_TEST_ZOSMF_PROF_OPTS,
     positionals: ["zos-jobs", "download", "output"],
-    definition: OutputDefinition.OutputDefinition,
-    profiles: UNIT_TEST_PROFILES_ZOSMF
+    definition: OutputDefinition.OutputDefinition
 });
 
 describe("download output handler tests", () => {

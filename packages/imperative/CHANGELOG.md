@@ -2,6 +2,41 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## `8.0.0-next.202408301809`
+
+- LTS Breaking: Removed the following obsolete V1 profile classes/functions:
+  - `CliProfileManager`
+  - `CliUtils.getOptValueFromProfiles`
+  - `CommandProfiles`
+  - `ProfileValidator`
+
+  See [`8.0.0-next.202408271330`](#800-next202408271330) for replacements
+- Next Breaking: Changed 2nd parameter of `CliUtils.getOptValuesFromConfig` method from type `ICommandDefinition` to `ICommandProfile`.
+- Next Breaking: Renamed `ConfigSecure.secureFieldsForLayer` method to `securePropsForLayer`.
+
+## `8.0.0-next.202408291544`
+
+- Enhancement: Added a new SDK method (`ConfigSecure.secureFieldsForLayer`) to allow developers to get vault content in the context of the specified layer. [#2206](https://github.com/zowe/zowe-cli/issues/2206)
+- Enhancement: Added a new SDK method (`ProfileInfo.secureFieldsWithDetails`) to allow developers to the more details regarding the securely stored properties. [#2206](https://github.com/zowe/zowe-cli/issues/2206)
+
+## `8.0.0-next.202408271330`
+
+- LTS Breaking: [#2231](https://github.com/zowe/zowe-cli/issues/2231)
+  - Removed the obsolete V1 `profiles` property from `IHandlerParameters` interface - Use `IHandlerParameters.arguments` to access profile properties in a command handler
+  - Deprecated the following obsolete V1 profile interfaces:
+    - `IProfileTypeConfiguration.dependencies` - For team config, use nested profiles instead
+    - `IProfileTypeConfiguration.validationPlanModule` - For team config, validate with JSON schema instead
+  - Deprecated the following obsolete V1 profile classes/functions:
+    - `CliProfileManager` - Use `ProfileInfo` class to manage team config profiles
+    - `CliUtils.getOptValueFromProfiles` - Use `CliUtils.getOptValuesFromConfig` to load properties from team config
+    - `CommandProfiles` - Use `ImperativeConfig.instance.config.api.profiles` to load profiles from team config
+    - `ProfileValidator` - No direct replacement
+
+## `8.0.0-next.202408231832`
+
+- LTS Breaking: Fixed command parsing error where `string` typed options would be converted into `number`s if the value provided by the user consists only of numeric characters. [#1881](https://github.com/zowe/zowe-cli/issues/1881)
+- LTS Breaking: Renamed `Proxy` class to `ProxySettings` to avoid name conflict with JS built-in `Proxy` object. [#2230](https://github.com/zowe/zowe-cli/issues/2230)
+
 ## `8.0.0-next.202408191401`
 
 - Update: See `5.26.3` and `5.27.0` for details

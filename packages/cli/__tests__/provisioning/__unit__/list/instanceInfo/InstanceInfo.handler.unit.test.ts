@@ -18,17 +18,13 @@ import {
 import * as Handler from "../../../../../src/provisioning/list/instanceInfo/InstanceInfo.handler";
 import { instanceInfo } from "../../../../../src/provisioning/list/instanceInfo/InstanceInfo.definition";
 import { ProvisioningListMocks } from "../../../__resources__/ProvisioningListMocks";
-import {
-    UNIT_TEST_ZOSMF_PROF_OPTS,
-    UNIT_TEST_PROFILES_ZOSMF
-} from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
+import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../../__tests__/__src__/TestConstants";
 import { mockHandlerParameters } from "@zowe/cli-test-utils";
 
 const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
     arguments: UNIT_TEST_ZOSMF_PROF_OPTS,
     positionals: ["provisioning", "list", "instance-info"],
-    definition: instanceInfo,
-    profiles: UNIT_TEST_PROFILES_ZOSMF
+    definition: instanceInfo
 });
 
 describe("list instance info handler tests", () => {

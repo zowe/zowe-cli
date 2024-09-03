@@ -14,10 +14,7 @@ import { IHandlerParameters, ImperativeError } from "@zowe/imperative";
 import { SearchJobs } from "@zowe/zos-jobs-for-zowe-sdk";
 import * as JobHandler from "../../../../../src/zosjobs/search/job/Job.handler";
 import * as JobDefinition from "../../../../../src/zosjobs/search/job/Job.definition";
-import {
-    UNIT_TEST_ZOSMF_PROF_OPTS,
-    UNIT_TEST_PROFILES_ZOSMF
-} from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
+import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../../__tests__/__src__/TestConstants";
 import { mockHandlerParameters } from "@zowe/cli-test-utils";
 
 process.env.FORCE_COLOR = "0";
@@ -28,8 +25,7 @@ const mockSearchData: string = "This job contains RC=0000";
 const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
     arguments: UNIT_TEST_ZOSMF_PROF_OPTS,
     positionals: ["zos-jobs", "search", "job"],
-    definition: JobDefinition.JobDefinition,
-    profiles: UNIT_TEST_PROFILES_ZOSMF
+    definition: JobDefinition.JobDefinition
 });
 
 describe("search job handler tests", () => {

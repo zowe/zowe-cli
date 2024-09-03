@@ -11,7 +11,7 @@
 
 import * as process from "process";
 
-import { Proxy } from "../../src/client/Proxy";
+import { ProxySettings } from "../../src/client/ProxySettings";
 
 import { HTTPS_PROTOCOL, HTTP_PROTOCOL } from "../../src/session/SessConstants";
 import { HttpsProxyAgent } from "https-proxy-agent";
@@ -25,7 +25,7 @@ describe("Proxy tests", () => {
         port: 443,
         rejectUnauthorized: false
     } as ISession;
-    const privateProxy = Proxy as any;
+    const privateProxy = ProxySettings as any;
     const httpUrl = "http://www.zowe.com";
     const httpsUrl = "https://www.zowe.com";
     const noProxyList = "www.zowe.com, fake.com,ibm.com,broadcom.com   ";
@@ -44,7 +44,7 @@ describe("Proxy tests", () => {
                 proxyUrl: httpUrl,
                 protocol: HTTP_PROTOCOL
             });
-            expect(JSON.stringify(Proxy.getProxyAgent(session))).toEqual(JSON.stringify(expected));
+            expect(JSON.stringify(ProxySettings.getProxyAgent(session))).toEqual(JSON.stringify(expected));
         });
 
         it("Should retrieve the HTTPS proxy agent", () => {
@@ -53,7 +53,7 @@ describe("Proxy tests", () => {
                 proxyUrl: httpsUrl,
                 protocol: HTTPS_PROTOCOL
             });
-            expect(JSON.stringify(Proxy.getProxyAgent(session))).toEqual(JSON.stringify(expected));
+            expect(JSON.stringify(ProxySettings.getProxyAgent(session))).toEqual(JSON.stringify(expected));
         });
     });
 
@@ -68,7 +68,7 @@ describe("Proxy tests", () => {
                 proxyUrl: httpsUrl,
                 protocol: HTTPS_PROTOCOL
             });
-            expect(Proxy.getSystemProxyUrl(session)).toEqual(httpsUrl);
+            expect(ProxySettings.getSystemProxyUrl(session)).toEqual(httpsUrl);
         });
     });
 
@@ -84,7 +84,7 @@ describe("Proxy tests", () => {
                 protocol: HTTPS_PROTOCOL
             };
             checkUrlSpy.mockReturnValue(httpsUrl);
-            expect(Proxy["getProxySettings"](session)).toEqual(expected);
+            expect(ProxySettings["getProxySettings"](session)).toEqual(expected);
         });
     });
 
@@ -96,7 +96,7 @@ describe("Proxy tests", () => {
         it("Should return the HTTP environment variables if they exist", () => {
             const expected = httpUrl;
             process.env["HTTP_PROXY"] = expected;
-            expect(Proxy["getHttpEnvVariables"]()).toEqual(expected);
+            expect(ProxySettings["getHttpEnvVariables"]()).toEqual(expected);
             process.env["HTTP_PROXY"] = undefined;
         });
     });
@@ -105,7 +105,7 @@ describe("Proxy tests", () => {
         it("Should match session hostname with no_proxy",  () => {
             const expected = true;
             process.env["NO_PROXY"] = noProxyList;
-            expect(Proxy["matchesNoProxySettings"](session)).toEqual(expected);
+            expect(ProxySettings["matchesNoProxySettings"](session)).toEqual(expected);
             process.env["NO_PROXY"] = undefined;
         });
 
@@ -113,7 +113,7 @@ describe("Proxy tests", () => {
             const expected = false;
             process.env["NO_PROXY"] = noProxyList;
             session.hostname = "microsoft.com";
-            expect(Proxy["matchesNoProxySettings"](session)).toEqual(expected);
+            expect(ProxySettings["matchesNoProxySettings"](session)).toEqual(expected);
             process.env["NO_PROXY"] = undefined;
         });
     });

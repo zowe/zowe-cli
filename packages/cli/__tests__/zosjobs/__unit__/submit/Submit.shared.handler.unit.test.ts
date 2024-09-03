@@ -13,10 +13,7 @@ jest.mock("@zowe/zos-jobs-for-zowe-sdk");
 import { MonitorJobs, SubmitJobs, ISubmitJobUSSParms, ISubmitJobParms } from "@zowe/zos-jobs-for-zowe-sdk";
 import { IHandlerParameters, ImperativeError, IO } from "@zowe/imperative";
 import * as SubmitDefinition from "../../../../src/zosjobs/submit/Submit.definition";
-import {
-    UNIT_TEST_ZOSMF_PROF_OPTS,
-    UNIT_TEST_PROFILES_ZOSMF
-} from "../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
+import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../__tests__/__src__/TestConstants";
 import { mockHandlerParameters } from "@zowe/cli-test-utils";
 
 process.env.FORCE_COLOR = "0";
@@ -29,22 +26,19 @@ describe("submit shared handler", () => {
         DEFAULT_PARAMETERS = mockHandlerParameters({
             arguments: UNIT_TEST_ZOSMF_PROF_OPTS,
             positionals: ["zos-jobs", "submit", "data-set"],
-            definition: SubmitDefinition.SubmitDefinition,
-            profiles: UNIT_TEST_PROFILES_ZOSMF
+            definition: SubmitDefinition.SubmitDefinition
         });
 
         USSFILE_PARAMETERS = mockHandlerParameters({
             arguments: UNIT_TEST_ZOSMF_PROF_OPTS,
             positionals: ["zos-jobs", "submit", "uss-file"],
-            definition: SubmitDefinition.SubmitDefinition,
-            profiles: UNIT_TEST_PROFILES_ZOSMF
+            definition: SubmitDefinition.SubmitDefinition
         });
 
         LOCALFILE_PARAMETERS = mockHandlerParameters({
             arguments: UNIT_TEST_ZOSMF_PROF_OPTS,
             positionals: ["zos-jobs", "submit", "local-file"],
-            definition: SubmitDefinition.SubmitDefinition,
-            profiles: UNIT_TEST_PROFILES_ZOSMF
+            definition: SubmitDefinition.SubmitDefinition
         });
     });
 

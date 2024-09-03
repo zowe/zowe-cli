@@ -12,7 +12,7 @@
 jest.mock("fs");
 
 import { GetJobs } from "@zowe/zos-jobs-for-zowe-sdk";
-import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
+import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../../__tests__/__src__/TestConstants";
 import { DiffUtils, IDiffOptions, ImperativeError } from "@zowe/imperative";
 import * as fs from "fs";
 

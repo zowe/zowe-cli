@@ -15,10 +15,7 @@ import { GetJobs, DeleteJobs } from "@zowe/zos-jobs-for-zowe-sdk";
 import { GetJobsData } from "../../../__resources__/GetJobsData";
 import * as OldJobsHandler from "../../../../../src/zosjobs/delete/old-jobs/OldJobs.handler";
 import * as OldJobsDefinition from "../../../../../src/zosjobs/delete/old-jobs/OldJobs.definition";
-import {
-    UNIT_TEST_ZOSMF_PROF_OPTS,
-    UNIT_TEST_PROFILES_ZOSMF
-} from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
+import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../../__tests__/__src__/TestConstants";
 import { mockHandlerParameters } from "@zowe/cli-test-utils";
 
 process.env.FORCE_COLOR = "0";
@@ -26,8 +23,7 @@ process.env.FORCE_COLOR = "0";
 const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
     arguments: UNIT_TEST_ZOSMF_PROF_OPTS,
     positionals: ["zos-jobs", "delete", "old-jobs"],
-    definition: OldJobsDefinition.OldJobsDefinition,
-    profiles: UNIT_TEST_PROFILES_ZOSMF
+    definition: OldJobsDefinition.OldJobsDefinition
 });
 
 describe("delete old-jobs handler tests", () => {

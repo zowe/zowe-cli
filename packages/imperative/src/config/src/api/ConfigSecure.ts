@@ -243,6 +243,17 @@ export class ConfigSecure extends ConfigApi {
     }
 
     /**
+     * Retrieve secure properties for a given layer path
+     *
+     * @param layerPath Path of the layer to get secure properties for
+     * @returns the secure properties for the given layer, or null if not found
+     */
+    public securePropsForLayer(layerPath: string): IConfigSecureProperties {
+        const secureLayer = Object.keys(this.mConfig.mSecure).find(osLocation => osLocation === layerPath);
+        return secureLayer ? this.mConfig.mSecure[secureLayer] : null;
+    }
+
+    /**
      * Retrieve info that can be used to store a profile property securely.
      *
      * For example, to securely store "profiles.lpar1.properties.password", the

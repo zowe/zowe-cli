@@ -20,6 +20,7 @@ import {
     UNIT_TEST_PROFILES_ZOSMF_TSO,
     UNIT_TEST_TSO_PROF_OPTS,
 } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
+import { UNIT_TEST_ZOSMF_PROF_OPTS, UNIT_TEST_TSO_PROF_OPTS } from "../../../../../../../__tests__/__src__/TestConstants";
 import { mockHandlerParameters } from "@zowe/cli-test-utils";
 
 const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({

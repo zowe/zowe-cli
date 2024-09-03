@@ -16,17 +16,13 @@ import { SendTso } from "@zowe/zos-tso-for-zowe-sdk";
 import { IHandlerParameters, ImperativeError } from "@zowe/imperative";
 import * as SendToAddressSpace from "../../../../../src/zostso/send/address_space/SendToAddressSpace.handler";
 import { SendToAddressSpaceCommandDefinition } from "../../../../../src/zostso/send/address_space/SendToAddressSpace.definition";
-import {
-    UNIT_TEST_ZOSMF_PROF_OPTS,
-    UNIT_TEST_PROFILES_ZOSMF
-} from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
+import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../../__tests__/__src__/TestConstants";
 import { mockHandlerParameters } from "@zowe/cli-test-utils";
 
 const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
     arguments: UNIT_TEST_ZOSMF_PROF_OPTS,
     positionals: ["zos-tso", "send", "address-space"],
-    definition: SendToAddressSpaceCommandDefinition,
-    profiles: UNIT_TEST_PROFILES_ZOSMF
+    definition: SendToAddressSpaceCommandDefinition
 });
 
 describe("send address-space handler tests", () => {
