@@ -14,6 +14,7 @@ import { ImperativeError, Session } from "@zowe/imperative";
 import { IIssueTsoParms, ISendResponse, IssueTso, IStartStopResponse, IStartTsoParms, IZosmfTsoResponse, SendTso,
     StartTso, StopTso } from "../../src";
 import { CheckStatus } from "@zowe/zosmf-for-zowe-sdk";
+import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 
 const PRETEND_SESSION = new Session({
     user: "user",
@@ -257,13 +258,12 @@ describe("TsoIssue issueTsoCmd - Revised API", () => {
     });
 
     it("should utilize new API logic path", async () => {
-        (IssueTso.issueTsoCmd as any) = jest.fn(() => {
-            return new Promise((resolve) => {
-                process.nextTick(() => {
-                    resolve({});
-                });
-            });
-        });
+        const zosmfResponse = {
+            cmdResponse: [{message: 'IKJ56650I TIME-09:42:15 AM. CPU-00:00:00 SERVICE-555 SESSION-00:04:15 SEPTEMBER 4,2024'},
+                {message: 'READY '}],
+                tsoPromptReceived: 'Y'
+        };
+        jest.spyOn(ZosmfRestClient, "putExpectJSON").mockReturnValue(Promise.resolve(zosmfResponse));
         let error: ImperativeError;
         let response: ISendResponse;
         jest.spyOn(CheckStatus, "isZosVersionGreaterThan").mockReturnValue(Promise.resolve(true));
