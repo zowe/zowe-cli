@@ -9,7 +9,7 @@
 *
 */
 
-import { DeleteJobs, DownloadJobs, GetJobs, IJobFile, SubmitJobs } from "../../src";
+import { DeleteJobs, DownloadJobs, GetJobs, ICommonJobParms, IJobFile, SubmitJobs } from "../../src";
 import { ImperativeError, IO, Session, TextUtils } from "@zowe/imperative";
 import { ITestEnvironment } from "../../../../__tests__/__src__/environment/ITestEnvironment";
 import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
@@ -78,7 +78,7 @@ describe("Download Jobs - System tests", () => {
     });
 
     afterAll(async () => {
-        await DeleteJobs.deleteJob(REAL_SESSION, jobname, jobid);
+        testEnvironment.resources.jobData.push({ jobname: jobname, jobid: jobid } as ICommonJobParms);
         await TestEnvironment.cleanUp(testEnvironment);
     });
 

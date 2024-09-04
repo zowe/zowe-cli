@@ -93,6 +93,14 @@ export class TestEnvironment extends BaseTestEnvironment {
                 deleteDataset(session, dataset);
             }
         }
+        testEnvironment.resources = {
+            localFiles: [],
+            files: [],
+            jobs: [],
+            jobData: [],
+            datasets: [],
+            session: testEnvironment.resources.session //probably need to retain the session
+        };
     }
 
     /**
