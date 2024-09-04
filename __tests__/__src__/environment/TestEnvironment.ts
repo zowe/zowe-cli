@@ -92,15 +92,18 @@ export class TestEnvironment extends BaseTestEnvironment {
             for (const dataset of testEnvironment.resources.datasets) {
                 deleteDataset(session, dataset);
             }
+            testEnvironment.resources = {
+                localFiles: [],
+                files: [],
+                jobs: [],
+                jobData: [],
+                datasets: [],
+                session: null // initializing session as null
+            };
+
+            // Retaining session if exists
+            testEnvironment.resources.session = testEnvironment.resources.session || testEnvironment?.resources?.session || null;
         }
-        testEnvironment.resources = {
-            localFiles: [],
-            files: [],
-            jobs: [],
-            jobData: [],
-            datasets: [],
-            session: testEnvironment.resources.session //probably need to retain the session
-        };
     }
 
     /**
