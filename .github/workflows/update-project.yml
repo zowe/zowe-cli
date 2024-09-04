@@ -13,9 +13,11 @@ env:
   PR_STATUS_READY: 'Review/QA'
 
 permissions:
+  contents: write
   issues: write
   pull-requests: write
   repository-projects: write
+  statuses: write
 
 jobs:
   update-project:
