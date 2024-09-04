@@ -6,6 +6,7 @@
 * SPDX-License-Identifier: EPL-2.0
 *
 * Copyright Contributors to the Zowe Project.
+*
 */
 
 import { Imperative, Session } from "@zowe/imperative";
@@ -18,7 +19,6 @@ import { getTag, getUniqueDatasetName, runCliScript } from "../../../../../../..
 import { Get, ZosFilesUtils } from "@zowe/zos-files-for-zowe-sdk";
 
 let REAL_SESSION: Session;
-// Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
 let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment<ITestPropertiesSchema>;
 let defaultSystem: ITestPropertiesSchema;
@@ -36,9 +36,9 @@ describe("Upload directory to USS", () => {
             tempProfileTypes: ["zosmf"],
             testName: "zos_files_upload_directory_to_uss_with_profile"
         });
+        REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
 
         defaultSystem = TEST_ENVIRONMENT.systemTestProperties;
-        REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
         dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILES.UPLOAD`);
         dsname = dsname.replace(/\./g, "");
         ussname = `${defaultSystem.unix.testdir}/${dsname}`;

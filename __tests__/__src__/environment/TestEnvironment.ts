@@ -38,7 +38,7 @@ export class TestEnvironment extends BaseTestEnvironment {
      * @memberof TestEnvironment
      */
     public static async setUp(params: ISetupEnvironmentParms): Promise<ITestEnvironment<ITestPropertiesSchema>> {
-        const result = await super.setUp(params);
+        const result: ITestEnvironment<ITestPropertiesSchema> = await super.setUp(params);
 
         // Ensure correct path separator for windows or linux like systems.
         const separator = process.platform === "win32" ? ";" : ":";
@@ -47,7 +47,14 @@ export class TestEnvironment extends BaseTestEnvironment {
             nodePath.resolve(__dirname, "../../__resources__/application_instances"),
             process.env.PATH
         ].join(separator);
-
+        result.resources = {
+            localFiles: [],
+            files: [],
+            jobs: [],
+            jobData: [],
+            datasets: [],
+            session: result.resources?.session || null
+        };
         // Return the test environment including working directory that the tests should be using
         return result;
     }
@@ -98,11 +105,8 @@ export class TestEnvironment extends BaseTestEnvironment {
                 jobs: [],
                 jobData: [],
                 datasets: [],
-                session: null // initializing session as null
+                session: testEnvironment.resources.session
             };
-
-            // Retaining session if exists
-            testEnvironment.resources.session = testEnvironment.resources.session || testEnvironment?.resources?.session || null;
         }
     }
 

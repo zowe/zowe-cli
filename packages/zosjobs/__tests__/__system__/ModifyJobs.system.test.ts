@@ -10,7 +10,7 @@
 */
 
 import { ImperativeError, Session } from "@zowe/imperative";
-import { IJob, SubmitJobs, ModifyJobs, CancelJobs } from "../../src";
+import { IJob, SubmitJobs, ModifyJobs } from "../../src";
 import { ITestEnvironment } from "../../../../__tests__/__src__/environment/ITestEnvironment";
 import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../__tests__/__src__/properties/ITestPropertiesSchema";
@@ -43,7 +43,8 @@ describe("Modify Jobs - System Tests", () => {
     });
 
     afterAll(async () => {
-        await CancelJobs.cancelJob(REAL_SESSION, iefbr14Job.jobname, iefbr14Job.jobid);
+        // Add the job to resources for automatic cleanup
+        testEnvironment.resources.jobData.push({jobname: iefbr14Job.jobname, jobid: iefbr14Job.jobid});
         await TestEnvironment.cleanUp(testEnvironment);
     });
 
@@ -56,7 +57,6 @@ describe("Modify Jobs - System Tests", () => {
             );
             expect(job.jobid).toMatch(iefbr14Job.jobid);
             expect(job.message).toContain("Request was successful");
-            testEnvironment.resources.jobs.push(job);
         });
 
         it("should return a success message once hold has been added to job", async () => {
@@ -67,7 +67,6 @@ describe("Modify Jobs - System Tests", () => {
             );
             expect(job.jobid).toMatch(iefbr14Job.jobid);
             expect(job.message).toContain("Request was successful");
-            testEnvironment.resources.jobs.push(job);
         });
 
         it("should return a success message once job has been released", async () => {
@@ -78,12 +77,10 @@ describe("Modify Jobs - System Tests", () => {
             );
             expect(job.jobid).toMatch(iefbr14Job.jobid);
             expect(job.message).toContain("Request was successful");
-            testEnvironment.resources.jobs.push(job);
         });
     });
 
     describe("Negative tests", () => {
-
         it("should surface an error from z/OSMF when calling an unknown jobid", async () => {
             let err: any;
             try {
@@ -111,15 +108,17 @@ describe("Modify Jobs - System Tests - Encoded", () => {
         REAL_SESSION = await TestEnvironment.createSession();
         systemProps = testEnvironment.systemTestProperties;
         account = systemProps.tso.account;
-        jobclass = testEnvironment.systemTestProperties.zosjobs.jobclass;
-        modifiedJobClass = testEnvironment.systemTestProperties.zosjobs.modifiedJobclass;
+        jobclass = systemProps.zosjobs.jobclass;
+        modifiedJobClass = systemProps.zosjobs.modifiedJobclass;
+
         const maxStepNum = 6;
         const sleepJCL = JobTestsUtils.getSleepJCL(REAL_SESSION.ISession.user, account, systemProps.zosjobs.jobclass, maxStepNum, true);
         sleepJCLJob = await SubmitJobs.submitJcl(REAL_SESSION, sleepJCL);
     });
 
     afterAll(async () => {
-        await CancelJobs.cancelJob(REAL_SESSION, iefbr14Job.jobname, iefbr14Job.jobid);
+        // Add the sleep job to resources for automatic cleanup
+        testEnvironment.resources.jobData.push({jobname: sleepJCLJob.jobname, jobid: sleepJCLJob.jobid});
         await TestEnvironment.cleanUp(testEnvironment);
     });
 
@@ -132,7 +131,6 @@ describe("Modify Jobs - System Tests - Encoded", () => {
             );
             expect(job.jobid).toMatch(sleepJCLJob.jobid);
             expect(job.message).toContain("Request was successful");
-            testEnvironment.resources.jobs.push(job);
         });
 
         it("should return a success message once hold has been added to job", async () => {
@@ -143,7 +141,6 @@ describe("Modify Jobs - System Tests - Encoded", () => {
             );
             expect(job.jobid).toMatch(sleepJCLJob.jobid);
             expect(job.message).toContain("Request was successful");
-            testEnvironment.resources.jobs.push(job);
         });
 
         it("should return a success message once job has been released", async () => {
@@ -154,7 +151,6 @@ describe("Modify Jobs - System Tests - Encoded", () => {
             );
             expect(job.jobid).toMatch(sleepJCLJob.jobid);
             expect(job.message).toContain("Request was successful");
-            testEnvironment.resources.jobs.push(job);
         });
     });
 });
