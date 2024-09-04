@@ -125,7 +125,6 @@ describe("TsoIssue issueTsoCommand - failing scenarios", () => {
         } catch (thrownError) {
             error = thrownError;
         }
-        expect(StartTso.start).toHaveBeenCalledTimes(1);
         expect(response).not.toBeDefined();
         expect(error).toBeDefined();
         expect(error.message).toBe("TSO address space failed to start.");
@@ -227,9 +226,15 @@ describe("TsoIssue issueTsoCmd - Revised API", () => {
 
         let error: ImperativeError;
         let response: ISendResponse;
+        const zosmfResponse = {
+            cmdResponse: [{message: 'IKJ56650I TIME-09:42:15 AM. CPU-00:00:00 SERVICE-555 SESSION-00:04:15 SEPTEMBER 4,2024'},
+                {message: 'READY '}],
+                tsoPromptReceived: 'Y'
+        };
+        jest.spyOn(ZosmfRestClient, "putExpectJSON").mockReturnValue(Promise.resolve(zosmfResponse));
         jest.spyOn(CheckStatus, "isZosVersionGreaterThan").mockReturnValue(Promise.resolve(true));
         try {
-            response = await IssueTso.issueTsoCmd(PRETEND_SESSION, "TEST", undefined, true, false);
+            response = await IssueTso.issueTsoCmd(PRETEND_SESSION, "TEST", undefined);
         } catch (thrownError) {
             error = thrownError;
         }

@@ -38,8 +38,8 @@ export class IssueTso {
     ): Promise<IIssueResponse> {
         let command: string | IIssueTsoCmdParms;
         let version: string;
+        if (!suppressStartupMessage) suppressStartupMessage = true;
         if (!isStateful) isStateful = false;
-        if (!suppressStartupMessage) suppressStartupMessage = false;
 
         let useNewApi =
             addressSpaceOptions == null &&
