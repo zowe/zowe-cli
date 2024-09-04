@@ -16,13 +16,9 @@ jobs:
   update-project:
     permissions: 
       contents: write
-      metadata: read
-      project: read
-      repository-projects: read
-      packages: write
-      pull-requests: read
-      statuses: read
-      checks: read
+      issues: write
+      pull-requests: write
+      repository-projects: write
     name: Move project item
     runs-on: ubuntu-latest
     steps:
