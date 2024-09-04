@@ -15,8 +15,14 @@ env:
 jobs:
   update-project:
     permissions: 
-      contents: read
+      contents: write
       metadata: read
+      project: read
+      repository-projects: read
+      packages: write
+      pull-requests: read
+      statuses: read
+      checks: read
     name: Move project item
     runs-on: ubuntu-latest
     steps:
