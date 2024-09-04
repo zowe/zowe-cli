@@ -12,10 +12,10 @@ env:
   PR_STATUS_DRAFT: 'In Progress'
   PR_STATUS_READY: 'Review/QA'
 
-permissions: write-all
-
 jobs:
   update-project:
+    permissions: 
+      id-token: write
     name: Move project item
     runs-on: ubuntu-latest
     steps:
