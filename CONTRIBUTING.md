@@ -81,10 +81,10 @@ Consider the following when you interact with pull requests:
 
 ## Dependencies
 
-The CLI and Zowe Plug-ins use strict version numbers for dependencies.
+The CLI and Zowe plug-ins use strict version numbers for dependencies.
 Any SDKs should not pin dependencies unless it is absolutely required in order to function.
-  - ^ should be used to specify any dependency with the same major version.
-  - ~ should be used to specify any dependency with the same minor version.
+  - `^` should be used to specify any dependency with the same major version.
+  - `~` should be used to specify any dependency with the same minor version.
 
 For Zowe organization repositories, all dependencies must be compatible with the EPL-2.0 license.
 
@@ -207,11 +207,11 @@ Open an issue in the [docs-site repository](https://github.com/zowe/docs-site) i
 
 - When contributing **a plug-in**, we recommend that you provide the following:
 
-  - End-user documentation on the Zowe Doc Site so that users can learn about your plug-in. Use existing plug-in topics as a model.
+  - End-user documentation on the Zowe Docs site so that users can learn about your plug-in. Use existing plug-in topics as a model.
 
-  - A readme.md file within the plug-in repository that contains information for developers (overview, how to build from source, and how to run tests, at minimum). For example, see [the CICS plug-in readme](https://github.com/zowe/cics-for-zowe-client/tree/main/packages/cli#IBM-CICS-Plug-in-for-Zowe-CLI).
+  - A readme.md file within the plug-in repository that contains information for developers (overview, how to build from source, and how to run tests, at minimum). For an example, see [the CICS plug-in readme](https://github.com/zowe/cics-for-zowe-client/tree/main/packages/cli#IBM-CICS-Plug-in-for-Zowe-CLI).
 
-  - a CONTRIBUTING.md file within the plug-in repository that lists specific considerations for contributing code to your plug-in (if any), and also links to the core CLI contribution guidelines. For an example, see [the CICS plug-in contribution guidelines](https://github.com/zowe/cics-for-zowe-client/blob/main/CONTRIBUTING.md).
+  - A CONTRIBUTING.md file within the plug-in repository that lists specific considerations for contributing code to your plug-in (if any), and also links to the core CLI contribution guidelines. For an example, see [the CICS plug-in contribution guidelines](https://github.com/zowe/cics-for-zowe-client/blob/main/CONTRIBUTING.md).
 
 - When contributing **code/functionality to the core CLI**, we recommend that you provide the following:
 

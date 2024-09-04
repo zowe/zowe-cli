@@ -59,7 +59,7 @@ Refer to the following guidelines when writing descriptions for syntax segments 
 
 - The `summary` is a one line, short description. This appears in the list of sub-segments on online help pages (for example, Zowe root help lists the groups with their short descriptions. Zowe group help lists the actions with their descriptions.
    
-    - Do NOT include punctuation at the end of a summary for consistency.
+    - For consistency, do NOT include punctuation at the end of a summary.
 
 - The full `description` explains the purpose, intent, & usage of the group, action, object, or option. Ideally, include use cases that apply so that people understand the practical value. There is some tension between clarity and length. Extremely long descriptions can clutter the interface, but users want to know what they can accomplish with a given command. Some end users have indicated that they struggle to understand what the CLI is capable of and how they might use it, so good descriptions are essential.
 
@@ -93,7 +93,7 @@ Research and usability testing has revealed that examples are the single most im
 
 - Dependencies between options can exist (if you specify one, you must specify the other, for example). This can introduce usability problems. The dependencies with other options should be noted in the option description.
 
-- The arguments/values for an `option` can sometimes take wildcards (for example, a data-set name). The wildcard symbol is generally the asterisk (*) character. When building commands, consider using asterisk as the standard.
+- The arguments/values for an `option` can sometimes take wildcards (for example, a data set name). The wildcard symbol is generally the asterisk (*) character. When building commands, consider using asterisk as the standard.
 
 - The arguments/values can sometimes include quotes and can be a safer way to type the command. When writing examples, it is advisable to show arguments in quotes.
 

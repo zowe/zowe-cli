@@ -96,7 +96,7 @@ To prevent duplication, this definition has been moved [here][plugin.json format
 zowe plugins install [plugin...] [--registry <registry>] [--isLocalURI] [--isRemoteURI] [--use <config>]
 ```
 - `[plugin...]` is an npm package or a pointer to a URI (either local or remote). It is passed the same way it would be to npm install. 
-    - Semantic versioning should also be handled for each plugin much like how it is done in `npm install`. So versions for plugins could be specified like `zowe plugins install plugin@^1.0.0` and this would be saved in the plugin.json file so that the update command can respect this.
+    - Semantic versioning should also be handled for each plugin much like how it is done in `npm install`. So versions for plugins could be specified like `zowe plugins install plugin@^1.0.0` and this would be saved in the `plugin.json` file so that the update command can respect this.
         - In the instance that no version is specified, the latest version will be installed and prefixed with the same thing stored in npm's save-prefix. See [npm save prefix].
         - For information on npm's semantic versioning, see [npm semver].
     - Also like `npm install`, the ability to install multiple plugins in one command should be considered.

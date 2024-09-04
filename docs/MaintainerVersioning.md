@@ -116,7 +116,7 @@ For each NPM package on which Zowe depends, an application specifies the version
 
 ## Versions for Zowe CLI Dependencies within Plug-ins
 
-In the peerDependencies property of a plug-in's package.json file, the plug-in specifies the versions of the Imperative CLI Framework with which it is compatible.
+In the `peerDependencies` property of a plug-in's `package.json` file, the plug-in specifies the versions of the Imperative CLI Framework with which it is compatible.
 
 When you install a plug-in into Zowe CLI, the plug-in always uses the version of Zowe CLI APIs that are part of the installed application. It also uses the version of Imperative APIs that were installed as part of the Zowe CLI application. Plug-ins never get a different version of Zowe CLI or Imperative, regardless of the versions specified by the plug-in. However, the Zowe CLI plug-in installation program compares the versions specified by the plug-in with the actual versions of Zowe CLI and Imperative. It will issue warnings when incompatible versions were specified. This notifies the end user and the plug-in developer that corrective action is required to ensure that the plug-in works reliably with Zowe CLI.
 
@@ -138,7 +138,7 @@ BreakingChangeUpdate.x OR BreakingChangeUpdate.Enhancement.x
 2.x OR 2.2.x
 ```
 
-At the time that this document was published, Imperative was at version `1.0.8`. Imperative's peerDependencies version in a supported plug-in can be specified as `1.x`. This indicates that we anticipate that the plug-in will work with all upcoming bug fixes and with all new features that do not break backward-compatibility, such as `1.1.0`, or `1.4.6`, but not with `2.0.0` or greater). By specifying a version of `1.x`, the plug-in does not have to update its version string and republish frequently just to avoid compatibility warnings when patches and backward-compatible enhancements of Imperative are published. For a supported plug-in, this ties the plug-in to a reasonable range of non-breaking changes in Zowe CLI and Imperative. By the time that the next feature release of the plug-in be published, Imperative might be specified as `2.x` and you would lock in that level of releases for the life of that supported version of the plug-in.
+At the time that this document was published, Imperative was at version `1.0.8`. Imperative's `peerDependencies` version in a supported plug-in can be specified as `1.x`. This indicates that we anticipate that the plug-in will work with all upcoming bug fixes and with all new features that do not break backward-compatibility, such as `1.1.0`, or `1.4.6`, but not with `2.0.0` or greater. By specifying a version of `1.x`, the plug-in does not have to update its version string and republish frequently just to avoid compatibility warnings when patches and backward-compatible enhancements of Imperative are published. For a supported plug-in, this ties the plug-in to a reasonable range of non-breaking changes in Zowe CLI and Imperative. By the time that the next feature release of the plug-in is published, Imperative might be specified as `2.x` and you would lock in that level of releases for the life of that supported version of the plug-in.
 
 ## Recommendation for Pre-release Versions of plug-ins
 
@@ -170,7 +170,7 @@ You can specify pre-release versions for plug-ins using one of the following met
 
     Such a version matches only this one snapshot of the Zowe CLI or Imperative pre-release. The plug-in will have to change the version string with each new pre-release snapshot. This requires frequent updates to the plug-in's package.json file, but helps to ensure that the plug-in will never be accidentally compatible with a later stable version of that dependency.
 
-* The plug-in can specify that it wants any version of the peerDependency starting with the earliest version of the current pre-release and any later version going forward. This includes all GA versions of the peerDependency with the same major version, starting at 8.0.0:
+* The plug-in can specify that it wants any version of the `peerDependency` starting with the earliest version of the current pre-release and any later version going forward. This includes all GA versions of the `peerDependency` with the same major version, starting at 8.0.0:
 
     **Example:**
 
