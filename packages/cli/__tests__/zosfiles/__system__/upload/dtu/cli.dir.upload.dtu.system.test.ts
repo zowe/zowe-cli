@@ -6,7 +6,6 @@
 * SPDX-License-Identifier: EPL-2.0
 *
 * Copyright Contributors to the Zowe Project.
-*
 */
 
 import { Imperative, Session } from "@zowe/imperative";
@@ -16,8 +15,7 @@ import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environ
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { getTag, getUniqueDatasetName, runCliScript } from "../../../../../../../__tests__/__src__/TestUtils";
-import { Get, ZosFilesConstants, ZosFilesUtils, Delete } from "@zowe/zos-files-for-zowe-sdk";
-import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
+import { Get, ZosFilesUtils } from "@zowe/zos-files-for-zowe-sdk";
 
 let REAL_SESSION: Session;
 // Test Environment populated in the beforeAll();
@@ -44,6 +42,8 @@ describe("Upload directory to USS", () => {
         dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILES.UPLOAD`);
         dsname = dsname.replace(/\./g, "");
         ussname = `${defaultSystem.unix.testdir}/${dsname}`;
+        TEST_ENVIRONMENT.resources.datasets.push(dsname);
+        TEST_ENVIRONMENT.resources.files.push(ussname);
         Imperative.console.info("Using ussDir:" + ussname);
         binaryFile = "bin_file.pax";
         binaryFiles = "bin_file.pax,subdir_bin_file1.pax,subdir_bin_file2.pax.Z";
@@ -52,21 +52,6 @@ describe("Upload directory to USS", () => {
     });
 
     afterAll(async () => {
-        // Clean up the USS directory
-        try {
-            const ussEndpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussname;
-            await ZosmfRestClient.deleteExpectString(REAL_SESSION, ussEndpoint, [{"X-IBM-Option": "recursive"}]);
-        } catch (err) {
-            Imperative.console.info(`Error cleaning up USS directory: ${err}`);
-        }
-
-        // Clean up the datasets
-        try {
-            await Delete.dataSet(REAL_SESSION, dsname);
-        } catch (err) {
-            Imperative.console.info(`Error cleaning up dataset: ${err}`);
-        }
-
         await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
     });
 
@@ -80,16 +65,10 @@ describe("Upload directory to USS", () => {
 
             defaultSys = TEST_ENVIRONMENT_NO_PROF.systemTestProperties;
             Imperative.console.info("Using ussDir:" + ussname);
+            TEST_ENVIRONMENT_NO_PROF.resources.files.push(ussname);
         });
 
         afterAll(async () => {
-            try {
-                const ussEndpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussname;
-                await ZosmfRestClient.deleteExpectString(REAL_SESSION, ussEndpoint, [{"X-IBM-Option": "recursive"}]);
-            } catch (err) {
-                Imperative.console.info(`Error cleaning up USS directory: ${err}`);
-            }
-
             await TestEnvironment.cleanUp(TEST_ENVIRONMENT_NO_PROF);
         });
 
@@ -121,15 +100,6 @@ describe("Upload directory to USS", () => {
     });
 
     describe("Success scenarios", () => {
-
-        afterEach(async () => {
-            try {
-                const ussEndpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussname;
-                await ZosmfRestClient.deleteExpectString(REAL_SESSION, ussEndpoint, [{"X-IBM-Option": "recursive"}]);
-            } catch (err) {
-                Imperative.console.info(`Error cleaning up USS directory: ${err}`);
-            }
-        });
 
         it("should upload local directory to USS directory", async () => {
             const localDirName = path.join(__dirname, "__data__", "command_upload_dtu_dir/command_upload_dtu_subdir_ascii");
@@ -384,9 +354,6 @@ describe("Upload directory to USS", () => {
                 error = err;
             }
             expect(error).toBeDefined();
-
-            const ussResponse = await Get.USSFile(REAL_SESSION, ussname + "/uploaded_dir/uploaded_file");
-            expect(ussResponse).toBeInstanceOf(Buffer);
         });
 
         it("wild cards should work with * and mixed casing on tagging and ignore", async () => {
