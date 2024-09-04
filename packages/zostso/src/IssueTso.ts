@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, Headers, ImperativeError } from "@zowe/imperative";
+import { AbstractSession, Headers, ImperativeConfig, ImperativeError } from "@zowe/imperative";
 import { IStartTsoParms } from "./doc/input/IStartTsoParms";
 import { noAccountNumber, noCommandInput, TsoConstants } from "./TsoConstants";
 import { SendTso } from "./SendTso";
@@ -22,7 +22,6 @@ import { CheckStatus, ZosmfConstants } from "@zowe/zosmf-for-zowe-sdk";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { IIssueTsoCmdResponse } from "./doc/IIssueTsoCmdResponse";
 import { IIssueTsoCmdParms } from "./doc/input/IIssueTsoCmdParms";
-const { ProfileInfo } = require("@zowe/imperative");
 
 /**
  * Class to handle issue command to TSO
@@ -82,11 +81,8 @@ export class IssueTso {
         }
         // Deprecated API Behavior [former issueTsoCommand() behavior]
         if (addressSpaceOptions != null || !useNewApi) {
-            const profInfo = new ProfileInfo("zowe");
-            await profInfo.readProfilesFromDisk();
-            addressSpaceOptions = profInfo
-                .getTeamConfig()
-                .api.profiles.defaultGet("tso");
+            const profInfo = ImperativeConfig.instance.config.api.profiles.defaultGet("tso");
+            addressSpaceOptions = { ...addressSpaceOptions, ...profInfo};
             command =
                 typeof commandInfo === "string"
                     ? commandInfo

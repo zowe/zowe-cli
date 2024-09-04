@@ -1,20 +1,30 @@
 /*
-* This program and the accompanying materials are made available under the terms of the
-* Eclipse Public License v2.0 which accompanies this distribution, and is available at
-* https://www.eclipse.org/legal/epl-v20.html
-*
-* SPDX-License-Identifier: EPL-2.0
-*
-* Copyright Contributors to the Zowe Project.
-*
-*/
+ * This program and the accompanying materials are made available under the terms of the
+ * Eclipse Public License v2.0 which accompanies this distribution, and is available at
+ * https://www.eclipse.org/legal/epl-v20.html
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Copyright Contributors to the Zowe Project.
+ *
+ */
 
 /* eslint-disable deprecation/deprecation */
-import { ImperativeError, Session } from "@zowe/imperative";
-import { IIssueTsoParms, ISendResponse, IssueTso, IStartStopResponse, IStartTsoParms, IZosmfTsoResponse, SendTso,
-    StartTso, StopTso } from "../../src";
+import { ImperativeConfig, ImperativeError, Session } from "@zowe/imperative";
+import {
+    IIssueTsoParms,
+    ISendResponse,
+    IssueTso,
+    IStartStopResponse,
+    IStartTsoParms,
+    IZosmfTsoResponse,
+    SendTso,
+    StartTso,
+    StopTso,
+} from "../../src";
 import { CheckStatus } from "@zowe/zosmf-for-zowe-sdk";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
+const { ProfileInfo } = require("@zowe/imperative");
 
 const PRETEND_SESSION = new Session({
     user: "user",
@@ -27,7 +37,7 @@ const PRETEND_SESSION = new Session({
 const SEND_RESPONSE = {
     success: true,
     zosmfResponse: {},
-    commandResponse: "messages"
+    commandResponse: "messages",
 };
 const PRETEND_REQUIRED_PARMS: IStartTsoParms = {
     logonProcedure: "IZUFPROC",
@@ -36,12 +46,12 @@ const PRETEND_REQUIRED_PARMS: IStartTsoParms = {
     rows: "24",
     columns: "80",
     regionSize: "4096",
-    account: "DEFAULT"
+    account: "DEFAULT",
 };
 const PRETEND_ISSUE_PARMS: IIssueTsoParms = {
     startParams: PRETEND_REQUIRED_PARMS,
     command: "COMMAND",
-    accountNumber: "acc"
+    accountNumber: "acc",
 };
 const ZOSMF_RESPONSE: IZosmfTsoResponse = {
     servletKey: "ZOSMFAD-SYS2-55-aaakaaac",
@@ -50,28 +60,32 @@ const ZOSMF_RESPONSE: IZosmfTsoResponse = {
     reused: false,
     timeout: false,
     sessionID: "0x37",
-    tsoData: [{
-        "TSO MESSAGE": {
-            VERSION: "0100",
-            DATA: "ZOSMFAD LOGON IN PROGRESS AT 01:12:04 ON JULY 17, 2017"
-        }
-    }]
+    tsoData: [
+        {
+            "TSO MESSAGE": {
+                VERSION: "0100",
+                DATA: "ZOSMFAD LOGON IN PROGRESS AT 01:12:04 ON JULY 17, 2017",
+            },
+        },
+    ],
 };
 const START_RESPONSE: IStartStopResponse = {
     success: true,
     zosmfTsoResponse: ZOSMF_RESPONSE,
-    servletKey: ZOSMF_RESPONSE.servletKey
+    servletKey: ZOSMF_RESPONSE.servletKey,
 };
 
-
 describe("TsoIssue issueTsoCommand - failing scenarios", () => {
-
     it("should fail for null account number", async () => {
         let error: ImperativeError;
         let response: ISendResponse;
 
         try {
-            response = await IssueTso.issueTsoCommand(PRETEND_SESSION, null, "command");
+            response = await IssueTso.issueTsoCommand(
+                PRETEND_SESSION,
+                null,
+                "command"
+            );
         } catch (thrownError) {
             error = thrownError;
         }
@@ -83,7 +97,11 @@ describe("TsoIssue issueTsoCommand - failing scenarios", () => {
         let response: ISendResponse;
 
         try {
-            response = await IssueTso.issueTsoCommand(PRETEND_SESSION, "", "command");
+            response = await IssueTso.issueTsoCommand(
+                PRETEND_SESSION,
+                "",
+                "command"
+            );
         } catch (thrownError) {
             error = thrownError;
         }
@@ -95,7 +113,11 @@ describe("TsoIssue issueTsoCommand - failing scenarios", () => {
         let response: ISendResponse;
 
         try {
-            response = await IssueTso.issueTsoCommand(PRETEND_SESSION, "acc", null);
+            response = await IssueTso.issueTsoCommand(
+                PRETEND_SESSION,
+                "acc",
+                null
+            );
         } catch (thrownError) {
             error = thrownError;
         }
@@ -107,7 +129,11 @@ describe("TsoIssue issueTsoCommand - failing scenarios", () => {
         let response: ISendResponse;
 
         try {
-            response = await IssueTso.issueTsoCommand(PRETEND_SESSION, "acc", "");
+            response = await IssueTso.issueTsoCommand(
+                PRETEND_SESSION,
+                "acc",
+                ""
+            );
         } catch (thrownError) {
             error = thrownError;
         }
@@ -118,10 +144,20 @@ describe("TsoIssue issueTsoCommand - failing scenarios", () => {
         let error: ImperativeError;
         let response: ISendResponse;
 
-        jest.spyOn(StartTso, "start").mockResolvedValueOnce({ success: false } as any);
-
+        jest.spyOn(StartTso, "start").mockResolvedValueOnce({
+            success: false,
+        } as any);
+        jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({
+            config: {
+                api: { profiles: { defaultGet: () => ({ account: "acc" }) } },
+            },
+        } as any);
         try {
-            response = await IssueTso.issueTsoCommand(PRETEND_SESSION, "acc", "command");
+            response = await IssueTso.issueTsoCommand(
+                PRETEND_SESSION,
+                "acc",
+                "command"
+            );
         } catch (thrownError) {
             error = thrownError;
         }
@@ -161,11 +197,19 @@ describe("TsoIssue issueTsoCommand - Deprecated API", () => {
                 });
             });
         });
-
+        jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({
+            config: {
+                api: { profiles: { defaultGet: () => ({ account: "acc" }) } },
+            },
+        } as any);
         let error: ImperativeError;
         let response: ISendResponse;
         try {
-            response = await IssueTso.issueTsoCommand(PRETEND_SESSION, "acc", "command");
+            response = await IssueTso.issueTsoCommand(
+                PRETEND_SESSION,
+                "acc",
+                "command"
+            );
         } catch (thrownError) {
             error = thrownError;
         }
@@ -181,10 +225,18 @@ describe("TsoIssue issueTsoCommand - Deprecated API", () => {
                 });
             });
         });
+        jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({
+            config: {
+                api: { profiles: { defaultGet: () => ({ account: "acc" }) } },
+            },
+        } as any);
         let error: ImperativeError;
         let response: ISendResponse;
         try {
-            response = await IssueTso.issueTsoCommandCommon(PRETEND_SESSION, PRETEND_ISSUE_PARMS);
+            response = await IssueTso.issueTsoCommandCommon(
+                PRETEND_SESSION,
+                PRETEND_ISSUE_PARMS
+            );
         } catch (thrownError) {
             error = thrownError;
         }
@@ -227,14 +279,27 @@ describe("TsoIssue issueTsoCmd - Revised API", () => {
         let error: ImperativeError;
         let response: ISendResponse;
         const zosmfResponse = {
-            cmdResponse: [{message: 'IKJ56650I TIME-09:42:15 AM. CPU-00:00:00 SERVICE-555 SESSION-00:04:15 SEPTEMBER 4,2024'},
-                {message: 'READY '}],
-                tsoPromptReceived: 'Y'
+            cmdResponse: [
+                {
+                    message:
+                        "IKJ56650I TIME-09:42:15 AM. CPU-00:00:00 SERVICE-555 SESSION-00:04:15 SEPTEMBER 4,2024",
+                },
+                { message: "READY " },
+            ],
+            tsoPromptReceived: "Y",
         };
-        jest.spyOn(ZosmfRestClient, "putExpectJSON").mockReturnValue(Promise.resolve(zosmfResponse));
-        jest.spyOn(CheckStatus, "isZosVersionGreaterThan").mockReturnValue(Promise.resolve(true));
+        jest.spyOn(ZosmfRestClient, "putExpectJSON").mockReturnValue(
+            Promise.resolve(zosmfResponse)
+        );
+        jest.spyOn(CheckStatus, "isZosVersionGreaterThan").mockReturnValue(
+            Promise.resolve(true)
+        );
         try {
-            response = await IssueTso.issueTsoCmd(PRETEND_SESSION, "TEST", undefined);
+            response = await IssueTso.issueTsoCmd(
+                PRETEND_SESSION,
+                "TEST",
+                undefined
+            );
         } catch (thrownError) {
             error = thrownError;
         }
@@ -252,9 +317,17 @@ describe("TsoIssue issueTsoCmd - Revised API", () => {
         });
         let error: ImperativeError;
         let response: ISendResponse;
-        jest.spyOn(CheckStatus, "isZosVersionGreaterThan").mockReturnValue(Promise.resolve(true));
+        jest.spyOn(CheckStatus, "isZosVersionGreaterThan").mockReturnValue(
+            Promise.resolve(true)
+        );
         try {
-            response = await IssueTso.issueTsoCmd(PRETEND_SESSION, "command", undefined, true, false);
+            response = await IssueTso.issueTsoCmd(
+                PRETEND_SESSION,
+                "command",
+                undefined,
+                true,
+                false
+            );
         } catch (thrownError) {
             error = thrownError;
         }
@@ -264,16 +337,31 @@ describe("TsoIssue issueTsoCmd - Revised API", () => {
 
     it("should utilize new API logic path", async () => {
         const zosmfResponse = {
-            cmdResponse: [{message: 'IKJ56650I TIME-09:42:15 AM. CPU-00:00:00 SERVICE-555 SESSION-00:04:15 SEPTEMBER 4,2024'},
-                {message: 'READY '}],
-                tsoPromptReceived: 'Y'
+            cmdResponse: [
+                {
+                    message:
+                        "IKJ56650I TIME-09:42:15 AM. CPU-00:00:00 SERVICE-555 SESSION-00:04:15 SEPTEMBER 4,2024",
+                },
+                { message: "READY " },
+            ],
+            tsoPromptReceived: "Y",
         };
-        jest.spyOn(ZosmfRestClient, "putExpectJSON").mockReturnValue(Promise.resolve(zosmfResponse));
+        jest.spyOn(ZosmfRestClient, "putExpectJSON").mockReturnValue(
+            Promise.resolve(zosmfResponse)
+        );
         let error: ImperativeError;
         let response: ISendResponse;
-        jest.spyOn(CheckStatus, "isZosVersionGreaterThan").mockReturnValue(Promise.resolve(true));
+        jest.spyOn(CheckStatus, "isZosVersionGreaterThan").mockReturnValue(
+            Promise.resolve(true)
+        );
         try {
-            response = await IssueTso.issueTsoCmd(PRETEND_SESSION, "TIME", null, true, true);
+            response = await IssueTso.issueTsoCmd(
+                PRETEND_SESSION,
+                "TIME",
+                null,
+                true,
+                true
+            );
         } catch (thrownError) {
             error = thrownError;
         }
@@ -293,7 +381,13 @@ describe("TsoIssue issueTsoCmd - Revised API", () => {
         let error: ImperativeError;
         let response: ISendResponse;
         try {
-            response = await IssueTso.issueTsoCmd(PRETEND_SESSION, "TIME", null, true, true);
+            response = await IssueTso.issueTsoCmd(
+                PRETEND_SESSION,
+                "TIME",
+                null,
+                true,
+                true
+            );
         } catch (thrownError) {
             error = thrownError;
         }
@@ -307,9 +401,17 @@ describe("TsoIssue issueTsoCmd - failing scenarios", () => {
     it("should fail for null command text", async () => {
         let error: ImperativeError;
         let response: ISendResponse;
-        jest.spyOn(CheckStatus, "isZosVersionGreaterThan").mockReturnValue(Promise.resolve(true));
+        jest.spyOn(CheckStatus, "isZosVersionGreaterThan").mockReturnValue(
+            Promise.resolve(true)
+        );
         try {
-            response = await IssueTso.issueTsoCmd(PRETEND_SESSION, "fake_command", undefined, true, false);
+            response = await IssueTso.issueTsoCmd(
+                PRETEND_SESSION,
+                "fake_command",
+                undefined,
+                true,
+                false
+            );
         } catch (thrownError) {
             error = thrownError;
         }
@@ -319,9 +421,17 @@ describe("TsoIssue issueTsoCmd - failing scenarios", () => {
     it("should fail for empty command text", async () => {
         let error: ImperativeError;
         let response: ISendResponse;
-        jest.spyOn(CheckStatus, "isZosVersionGreaterThan").mockReturnValue(Promise.resolve(true));
+        jest.spyOn(CheckStatus, "isZosVersionGreaterThan").mockReturnValue(
+            Promise.resolve(true)
+        );
         try {
-            response = await IssueTso.issueTsoCmd(PRETEND_SESSION, "", undefined, true, false);
+            response = await IssueTso.issueTsoCmd(
+                PRETEND_SESSION,
+                "",
+                undefined,
+                true,
+                false
+            );
         } catch (thrownError) {
             error = thrownError;
         }
