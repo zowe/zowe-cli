@@ -15,9 +15,7 @@ env:
 jobs:
   update-project:
     permissions: 
-      actions: read
       contents: read
-      id-token: write
       metadata: read
     name: Move project item
     runs-on: ubuntu-latest
