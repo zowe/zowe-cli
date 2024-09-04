@@ -165,7 +165,7 @@ You can specify pre-release versions for plug-ins using one of the following met
     **Example:**
 
     ```
-    @zowe/imperative": "8.0.0-next-202408131445"
+    "@zowe/imperative": "8.0.0-next-202408131445"
     ```
 
     Such a version matches only this one snapshot of the Zowe CLI or Imperative pre-release. The plug-in will have to change the version string with each new pre-release snapshot. This requires frequent updates to the plug-in's package.json file, but helps to ensure that the plug-in will never be accidentally compatible with a later stable version of that dependency.
@@ -175,7 +175,7 @@ You can specify pre-release versions for plug-ins using one of the following met
     **Example:**
 
     ```
-    @zowe/imperative": ">=8.0.0-next-202408131445 <9.0.0"
+    "@zowe/imperative": ">=8.0.0-next-202408131445 <9.0.0"
     ```
 
     Such a version matches every pre-release snapshot of `8.0.0`. However, it also matches every new feature release of the dependency (for example, `8.1.0`, `8.1.1`, and so on). A plug-in developer never has to change that version string during the pre-release development stage of the plug-in. However, the plug-in developer must remember to change the dependency version to a string such as `^8.0.0` before publishing the supported release of the plug-in to avoid unintended compatibility with future versions of the dependent package, or declared compatibility with a pre-release.
