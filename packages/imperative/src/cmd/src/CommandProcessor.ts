@@ -898,7 +898,7 @@ export class CommandProcessor {
         // Build an object that contains all the options loaded from config
         if (this.mConfig != null) {
             // Merge the arguments from the config into the CLI args
-            const profArgs = CliUtils.getOptValuesFromConfig(this.mConfig, this.definition, args, allOpts);
+            const profArgs = CliUtils.getOptValuesFromConfig(this.mConfig, this.definition.profile, args, allOpts);
             this.log.trace(`Arguments extracted from the config:\n${inspect(profArgs)}`);
             args = CliUtils.mergeArguments(profArgs, args);
         }

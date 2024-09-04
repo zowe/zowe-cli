@@ -54,8 +54,6 @@ export * from "./src/help/WebHelpGenerator";
 export * from "./src/doc/profiles/definition/ICommandProfile";
 export * from "./src/doc/profiles/definition/ICommandProfileTypeConfiguration";
 
-export * from "./src/profiles/CliProfileManager";
-
 // export * from "./src/syntax/SyntaxValidator";
 
 // export * from "./src/utils/CommandUtils";
@@ -73,7 +71,6 @@ export * from "./src/profiles/CliProfileManager";
 // export * from "./src/CommandPreparer";
 // export * from "./src/CommandProcessor";
 
-export * from "./src/profiles/CommandProfiles";
 export * from "./src/response/CommandResponse";
 export * from "./src/response/HandlerResponse";
 

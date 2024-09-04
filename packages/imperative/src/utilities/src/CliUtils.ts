@@ -14,11 +14,8 @@ import { Constants } from "../../constants";
 import { Arguments } from "yargs";
 import { TextUtils } from "./TextUtils";
 import { IOptionFormat } from "./doc/IOptionFormat";
-import { CommandProfiles, ICommandOptionDefinition, ICommandPositionalDefinition,
-    ICommandProfile, IHandlerParameters
-} from "../../cmd";
+import { ICommandOptionDefinition, ICommandPositionalDefinition, ICommandProfile, IHandlerParameters } from "../../cmd";
 import { ICommandArguments } from "../../cmd/src/doc/args/ICommandArguments";
-import { IProfile } from "../../profiles/src/doc/definition/IProfile";
 import { ProfileUtils } from "../../profiles/src/utils/ProfileUtils";
 import { IPromptOptions } from "../../cmd/src/doc/response/api/handler/IPromptOptions";
 import { read } from "read";
@@ -104,17 +101,11 @@ export class CliUtils {
         return newArgs;
     }
 
-
     /**
-     * Accepts the full set of loaded profiles and attempts to match the option names supplied with profile keys.
-     *
-     * @deprecated Use `getOptValuesFromConfig` instead to load from team config
-     *
-     * @param {Map<string, IProfile[]>} profiles - the map of type to loaded profiles. The key is the profile type
-     * and the value is an array of profiles loaded for that type.
-     *
-     * @param {definitions} definitions - the profile definition on the command.
-     *
+     * Searches properties in team configuration and attempts to match the option names supplied with profile keys.
+     * @param {Config} config - Team config API
+     * @param {ICommandProfile} profileDef - Profile definition of invoked command
+     * @param {ICommandArguments} args - Arguments from command line and environment
      * @param {(Array<ICommandOptionDefinition | ICommandPositionalDefinition>)} options - the full set of command options
      * for the command being processed
      *
@@ -122,97 +113,16 @@ export class CliUtils {
      *
      * @memberof CliUtils
      */
-    // eslint-disable-next-line deprecation/deprecation
-    public static getOptValueFromProfiles(profiles: CommandProfiles, definitions: ICommandProfile,
+    public static getOptValuesFromConfig(config: Config, profileDef: ICommandProfile, args: ICommandArguments,
         options: Array<ICommandOptionDefinition | ICommandPositionalDefinition>): any {
-        let args: any = {};
-
-        // Construct the precedence order to iterate through the profiles
-        let profileOrder: any = definitions.required != null ? definitions.required : [];
-        if (definitions.optional != null) {
-            profileOrder = profileOrder.concat(definitions.optional);
-        }
-
-        // Iterate through the profiles in the order they appear in the list provided. For each profile found, we will
-        // attempt to match the option name to a profile property exactly - and extract the value from the profile.
-        profileOrder.forEach((profileType: string) => {
-
-            // Get the first profile loaded - for now, we won't worry about profiles and double-type loading for dependencies
-            // eslint-disable-next-line deprecation/deprecation
-            const profile: IProfile = profiles.get(profileType, false);
-            if (profile == null && definitions.required != null && definitions.required.indexOf(profileType) >= 0) {
-                throw new ImperativeError({
-                    msg: `Profile of type "${profileType}" does not exist within the loaded profiles for the command and it is marked as required.`,
-                    additionalDetails: `This is an internal imperative error. ` +
-                        `Command preparation was attempting to extract option values from this profile.`
-                });
-            } else if (profile != null) {
-                // For each option - extract the value if that exact property exists
-                options.forEach((opt) => {
-                    let cases;
-                    if (profile[opt.name] == null && "aliases" in opt) {
-                        // Use aliases for backwards compatibility
-                        // Search for first alias available in the profile
-                        const oldOption = opt.aliases.find(o => profile[o] != null);
-                        // Get the camel an kebab case
-                        if (oldOption) cases = CliUtils.getOptionFormat(oldOption);
-                    }
-
-                    if (cases == null) {
-                        cases = CliUtils.getOptionFormat(opt.name);
-                    }
-
-                    // We have to "deal" with the situation that the profile contains both cases - camel and kebab.
-                    // This is to support where the profile options have "-", but the properties are camel case in the
-                    // yaml file - which is currently how most imperative CLIs have it coded.
-                    const profileKebab = profile[cases.kebabCase];
-                    const profileCamel = profile[cases.camelCase];
-
-                    // If the profile has either type (or both specified) we'll add it to args if the args object
-                    // does NOT already contain the value in any case
-                    if ((profileCamel !== undefined || profileKebab !== undefined) &&
-                        (!Object.prototype.hasOwnProperty.call(args, cases.kebabCase) &&
-                         !Object.prototype.hasOwnProperty.call(args, cases.camelCase))) {
-
-                        // If both case properties are present in the profile, use the one that matches
-                        // the option name explicitly
-                        const value = profileKebab !== undefined && profileCamel !== undefined ?
-                            opt.name === cases.kebabCase ? profileKebab : profileCamel :
-                            profileKebab !== undefined ? profileKebab : profileCamel;
-                        const keys = CliUtils.setOptionValue(opt.name,
-                            "aliases" in opt ? (opt as ICommandOptionDefinition).aliases : [],
-                            value
-                        );
-                        args = {...args, ...keys};
-                    }
-                });
-            }
-        });
-        return args;
-    }
-
-    /**
-     * Searches properties in team configuration and attempts to match the option names supplied with profile keys.
-     * @param {Config} config - Team config API
-     * @param {ICommandDefinition} definition - Definition of invoked command
-     * @param {ICommandArguments} args - Arguments from command line and environment
-     * @param {(Array<ICommandOptionDefinition | ICommandPositionalDefinition>)} allOpts - the full set of command options
-     * for the command being processed
-     *
-     * @returns {*}
-     *
-     * @memberof CliUtils
-     */
-    public static getOptValuesFromConfig(config: Config, definition: ICommandDefinition, args: ICommandArguments,
-        allOpts: Array<ICommandOptionDefinition | ICommandPositionalDefinition>): any {
         // Build a list of all profile types - this will help us search the CLI
         // options for profiles specified by the user
         let allTypes: string[] = [];
-        if (definition.profile != null) {
-            if (definition.profile.required != null)
-                allTypes = allTypes.concat(definition.profile.required);
-            if (definition.profile.optional != null)
-                allTypes = allTypes.concat(definition.profile.optional);
+        if (profileDef != null) {
+            if (profileDef.required != null)
+                allTypes = allTypes.concat(profileDef.required);
+            if (profileDef.optional != null)
+                allTypes = allTypes.concat(profileDef.optional);
         }
 
         // Build an object that contains all the options loaded from config
@@ -223,7 +133,7 @@ export class CliUtils {
             // that this type has been fulfilled - so that we do NOT load from
             // the traditional profile location
             const profileTypePrefix = profileType + "_";
-            let p: any = {};
+            let p: any = null;
             if (args[opt] != null && config.api.profiles.exists(args[opt])) {
                 p = config.api.profiles.get(args[opt]);
             } else if (args[opt] != null && !args[opt].startsWith(profileTypePrefix) &&
@@ -234,13 +144,27 @@ export class CliUtils {
                 config.api.profiles.exists(config.properties.defaults[profileType])) {
                 p = config.api.profiles.defaultGet(profileType);
             }
-            fromCnfg = { ...p, ...fromCnfg };
+            if (p == null && profileDef.required != null && profileDef.required.indexOf(profileType) >= 0) {
+                throw new ImperativeError({
+                    msg: `Profile of type "${profileType}" does not exist within the loaded profiles for the command and it is marked as required.`,
+                    additionalDetails: `This is an internal imperative error. ` +
+                        `Command preparation was attempting to extract option values from this profile.`
+                });
+            }
+            fromCnfg = { ...p ?? {}, ...fromCnfg };
         }
 
         // Convert each property extracted from the config to the correct yargs
         // style cases for the command handler (kebab and camel)
-        allOpts.forEach((opt) => {
-            const cases = CliUtils.getOptionFormat(opt.name);
+        options.forEach((opt) => {
+            let cases = CliUtils.getOptionFormat(opt.name);
+            if (fromCnfg[opt.name] == null && "aliases" in opt) {
+                // Use aliases for backwards compatibility
+                // Search for first alias available in the profile
+                const oldOption = opt.aliases.find(o => fromCnfg[o] != null);
+                // Get the camel and kebab case
+                if (oldOption) cases = CliUtils.getOptionFormat(oldOption);
+            }
             const profileKebab = fromCnfg[cases.kebabCase];
             const profileCamel = fromCnfg[cases.camelCase];
 
@@ -252,10 +176,7 @@ export class CliUtils {
                 const shouldUseKebab = profileKebab !== undefined && profileCamel !== undefined ?
                     opt.name === cases.kebabCase : profileKebab !== undefined;
                 const value = shouldUseKebab ? profileKebab : profileCamel;
-                const keys = CliUtils.setOptionValue(opt.name,
-                    "aliases" in opt ? opt.aliases : [],
-                    value
-                );
+                const keys = CliUtils.setOptionValue(opt.name, "aliases" in opt ? opt.aliases : [], value);
                 fromCnfg = { ...fromCnfg, ...keys };
             }
         });
