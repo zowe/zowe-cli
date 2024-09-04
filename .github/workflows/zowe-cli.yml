@@ -161,6 +161,13 @@ jobs:
         token: ${{ secrets.CODECOV_TOKEN }}
 
   release:
+    permissions:
+      contents: write
+      deployments: write
+      issues: write
+      pull-requests: write
+      statuses: write
+      
     if: github.event_name == 'push' && github.ref_protected
     needs: test
     runs-on: ubuntu-latest
