@@ -23,7 +23,7 @@ import {
     BLUEBERRY_PROFILE_TYPE,
     BLUEBERRY_TYPE_SCHEMA,
     STRAWBERRY_PROFILE_TYPE
-} from "../../../../cmd/__tests__/profiles/TestConstants";
+} from "./TestConstants";
 import { IProfile } from "../../../../index";
 import { ImperativeConfig } from "../../../../utilities";
 
