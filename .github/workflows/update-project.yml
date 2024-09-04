@@ -14,11 +14,6 @@ env:
 
 jobs:
   update-project:
-    permissions: 
-      contents: write
-      issues: write
-      pull-requests: write
-      repository-projects: write
     name: Move project item
     runs-on: ubuntu-latest
     steps:
@@ -29,7 +24,7 @@ jobs:
         project-number: ${{ env.PROJECT_NUMBER }}
         project-token: ${{ secrets.ZOWE_ROBOT_TOKEN }}
 
-    - uses: zowe-actions/shared-actions/project-move-item@main
+    - uses: zowe-actions/shared-actions/project-move-item@fernando-fix-wf
       if: ${{ github.event.pull_request }}
       with:
         assign-author: true
