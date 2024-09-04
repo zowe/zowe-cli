@@ -17,7 +17,7 @@ jobs:
     name: Move project item
     runs-on: ubuntu-latest
     steps:
-    - uses: zowe-actions/shared-actions/project-move-item@main
+    - uses: zowe-actions/shared-actions/project-move-item@fernando-fix-wf
       if: ${{ github.event.issue && fromJSON(env.ISSUE_STATUSES)[github.event.label.name] }}
       with:
         item-status: ${{ fromJSON(env.ISSUE_STATUSES)[github.event.label.name] }}
