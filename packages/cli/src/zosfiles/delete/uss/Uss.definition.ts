@@ -54,6 +54,13 @@ export const UssDefinition: ICommandDefinition = {
             description: strings.OPTIONS.RECURSIVE,
             type: "boolean",
             required: false
+        },
+        {
+            name: "quiet",
+            aliases: ["q"],
+            description: strings.OPTIONS.QUIET,
+            type: "boolean",
+            required: false
         }
     ],
     examples: [
@@ -68,6 +75,10 @@ export const UssDefinition: ICommandDefinition = {
         {
             description: strings.EXAMPLES.EX3,
             options: `"/a/ibmuser/testcases" -rf`
+        },
+        {
+            description: strings.EXAMPLES.EX4,
+            options: `"/a/ibmuser/testcases" -q`
         }
     ]
 };

@@ -53,6 +53,13 @@ export const DsDefinition: ICommandDefinition = {
             aliases: ["vol"],
             description: strings.OPTIONS.VOLUME,
             type: "string"
+        },
+        {
+            name: "quiet",
+            aliases: ["q"],
+            description: strings.OPTIONS.QUIET,
+            type: "boolean",
+            required: false
         }
     ] as ICommandOptionDefinition[]).sort((a, b) => a.name.localeCompare(b.name)),
     examples: [
@@ -63,6 +70,10 @@ export const DsDefinition: ICommandDefinition = {
         {
             description: strings.EXAMPLES.EX2,
             options: `"ibmuser.cntl(mem)" -f`
+        },
+        {
+            description: strings.EXAMPLES.EX3,
+            options: `"ibmuser.cntl(mem)" -q`
         }
     ]
 };

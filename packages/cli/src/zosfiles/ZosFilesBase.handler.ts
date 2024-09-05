@@ -46,27 +46,47 @@ export abstract class ZosFilesBaseHandler implements ICommandHandler {
         const sessCfgWithCreds = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
             sessCfg, commandParameters.arguments, {parms: commandParameters}
         );
-
         const session = new Session(sessCfgWithCreds);
-        const response = await this.processWithSession(commandParameters, session);
+        try {
+            const response = await this.processWithSession(commandParameters, session);
 
-        commandParameters.response.progress.endBar(); // end any progress bars
-        // Print out the response
-        if (response.commandResponse) {
-            commandParameters.response.console.log(response.commandResponse);
+            commandParameters.response.progress.endBar(); // end any progress bars
+
+            // Print out the response
+            if (response.commandResponse) {
+                commandParameters.response.console.log(response.commandResponse);
+            }
+
+            // Return as an object when using --response-format-json
+            commandParameters.response.data.setObj(response);
+
+            // Ensure error gets thrown if request was unsuccessful
+            // Sometimes it is useful to delay throwing an error until the end of the handler is
+            // reached, for example the upload API needs to return an API response even when it fails.
+            if (!response.success && response.commandResponse) {
+                throw new ImperativeError({
+                    msg: response.errorMessage || response.commandResponse
+                });
+            }
+        } catch (error) {
+            // Check if --quiet flag is present
+            if (commandParameters.arguments.quiet && this.isFileNotFoundError(error)) {
+                // Suppress errors for missing files when --quiet is used
+                return;
+            }
+            // Re-throw the error for other cases
+            throw error;
         }
+    }
 
-        // Return as an object when using --response-format-json
-        commandParameters.response.data.setObj(response);
-
-        // Ensure error gets thrown if request was unsuccessful.
-        // Sometimes it is useful to delay throwing an error until the end of the handler is
-        // reached, for example the upload API needs to return an API response even when it fails.
-        if (!response.success && response.commandResponse) {
-            throw new ImperativeError({
-                msg: response.errorMessage || response.commandResponse
-            });
-        }
+    /**
+     * Helper method to check if an error is related to a file not being found (404)
+     *
+     * @param error The error object to check
+     * @returns {boolean} true if the error indicates the file was not found (404)
+     */
+    private isFileNotFoundError(error: any): boolean {
+        return error && error.response && error.response.status === 404;
     }
 
     /**
