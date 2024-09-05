@@ -22,7 +22,7 @@ import { CheckStatus, ZosmfConstants } from "@zowe/zosmf-for-zowe-sdk";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { IIssueTsoCmdResponse } from "./doc/IIssueTsoCmdResponse";
 import { IIssueTsoCmdParms } from "./doc/input/IIssueTsoCmdParms";
-
+import { IIssueTsoCmdOpts } from "./doc/input/IIssueTsoCmdOpts"
 /**
  * Class to handle issue command to TSO
  * @class IssueTso
@@ -31,22 +31,19 @@ export class IssueTso {
     public static async issueTsoCmd(
         session: AbstractSession,
         commandInfo: string | IIssueTsoCmdParms,
-        addressSpaceOptions?: IStartTsoParms,
-        isStateful?: boolean,
-        suppressStartupMessage?: boolean
+        opts?: IIssueTsoCmdOpts
     ): Promise<IIssueResponse> {
         let command: string | IIssueTsoCmdParms;
         let version: string;
-        if (!suppressStartupMessage) suppressStartupMessage = true;
-        if (!isStateful) isStateful = false;
+        opts = opts || {};
 
         let useNewApi =
-            addressSpaceOptions == null &&
+        opts.addressSpaceOptions == null &&
             await CheckStatus.isZosVersionGreaterThan(
                 session,
                 ZosmfConstants.VERSIONS.V2R4
             ) &&
-            suppressStartupMessage === true;
+            (opts.suppressStartupMessage ?? true);
         if (useNewApi) {
             command = commandInfo;
             version = "v1";
@@ -59,7 +56,7 @@ export class IssueTso {
                         [Headers.APPLICATION_JSON],
                         {
                             tsoCmd: command,
-                            cmdState: isStateful ? "stateful" : "stateless",
+                            cmdState: opts.isStateful ? "stateful" : "stateless",
                         }
                     );
                 const response: IIssueResponse = {
@@ -80,16 +77,16 @@ export class IssueTso {
             }
         }
         // Deprecated API Behavior [former issueTsoCommand() behavior]
-        if (addressSpaceOptions != null || !useNewApi) {
+        if (opts.addressSpaceOptions != null || !useNewApi) {
             const profInfo = ImperativeConfig.instance.config.api.profiles.defaultGet("tso");
-            addressSpaceOptions = { ...addressSpaceOptions, ...profInfo};
+            opts.addressSpaceOptions = { ...opts.addressSpaceOptions, ...profInfo};
             command =
                 typeof commandInfo === "string"
                     ? commandInfo
                     : commandInfo.command;
             TsoValidator.validateSession(session);
             TsoValidator.validateNotEmptyString(
-                addressSpaceOptions?.account,
+                opts.addressSpaceOptions?.account,
                 noAccountNumber.message
             );
             TsoValidator.validateNotEmptyString(
@@ -101,8 +98,8 @@ export class IssueTso {
                 success: false,
                 startResponse: await StartTso.start(
                     session,
-                    addressSpaceOptions?.account,
-                    addressSpaceOptions || {}
+                    opts.addressSpaceOptions?.account,
+                    opts.addressSpaceOptions || {}
                 ),
                 startReady: false,
                 zosmfResponse: null,
@@ -152,10 +149,7 @@ export class IssueTso {
         command: string,
         startParams?: IStartTsoParms
     ): Promise<IIssueResponse> {
-        return (await IssueTso.issueTsoCmd(session, command, {
-            ...startParams,
-            account: accountNumber,
-        })) as IIssueResponse;
+        return (await IssueTso.issueTsoCmd(session, command, { addressSpaceOptions: {...startParams, account: accountNumber}}));
     }
 
     /**
@@ -170,9 +164,6 @@ export class IssueTso {
         session: AbstractSession,
         commandParms: IIssueTsoParms
     ): Promise<IIssueResponse> {
-        return (await IssueTso.issueTsoCmd(session, commandParms.command, {
-            ...commandParms.startParams,
-            account: commandParms.accountNumber,
-        })) as IIssueResponse;
+        return (await IssueTso.issueTsoCmd(session, commandParms.command, { addressSpaceOptions: {...commandParms.startParams,account: commandParms.accountNumber}}));
     }
 }

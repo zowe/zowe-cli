@@ -24,7 +24,6 @@ import {
 } from "../../src";
 import { CheckStatus } from "@zowe/zosmf-for-zowe-sdk";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
-const { ProfileInfo } = require("@zowe/imperative");
 
 const PRETEND_SESSION = new Session({
     user: "user",
@@ -297,8 +296,7 @@ describe("TsoIssue issueTsoCmd - Revised API", () => {
         try {
             response = await IssueTso.issueTsoCmd(
                 PRETEND_SESSION,
-                "TEST",
-                undefined
+                "TEST"
             );
         } catch (thrownError) {
             error = thrownError;
@@ -321,13 +319,10 @@ describe("TsoIssue issueTsoCmd - Revised API", () => {
             Promise.resolve(true)
         );
         try {
-            response = await IssueTso.issueTsoCmd(
-                PRETEND_SESSION,
-                "command",
-                undefined,
-                true,
-                false
-            );
+            response = await IssueTso.issueTsoCmd(PRETEND_SESSION, "command", {
+                isStateful: true,
+                suppressStartupMessage: false,
+            });
         } catch (thrownError) {
             error = thrownError;
         }
@@ -355,13 +350,11 @@ describe("TsoIssue issueTsoCmd - Revised API", () => {
             Promise.resolve(true)
         );
         try {
-            response = await IssueTso.issueTsoCmd(
-                PRETEND_SESSION,
-                "TIME",
-                null,
-                true,
-                true
-            );
+            response = await IssueTso.issueTsoCmd(PRETEND_SESSION, "TIME", {
+                addressSpaceOptions: null,
+                isStateful: true,
+                suppressStartupMessage: true,
+            });
         } catch (thrownError) {
             error = thrownError;
         }
@@ -381,13 +374,11 @@ describe("TsoIssue issueTsoCmd - Revised API", () => {
         let error: ImperativeError;
         let response: ISendResponse;
         try {
-            response = await IssueTso.issueTsoCmd(
-                PRETEND_SESSION,
-                "TIME",
-                null,
-                true,
-                true
-            );
+            response = await IssueTso.issueTsoCmd(PRETEND_SESSION, "TIME", {
+                addressSpaceOptions: null,
+                isStateful: true,
+                suppressStartupMessage: true,
+            });
         } catch (thrownError) {
             error = thrownError;
         }
@@ -408,9 +399,10 @@ describe("TsoIssue issueTsoCmd - failing scenarios", () => {
             response = await IssueTso.issueTsoCmd(
                 PRETEND_SESSION,
                 "fake_command",
-                undefined,
-                true,
-                false
+                {
+                    isStateful: true,
+                    suppressStartupMessage: false,
+                }
             );
         } catch (thrownError) {
             error = thrownError;
@@ -425,13 +417,10 @@ describe("TsoIssue issueTsoCmd - failing scenarios", () => {
             Promise.resolve(true)
         );
         try {
-            response = await IssueTso.issueTsoCmd(
-                PRETEND_SESSION,
-                "",
-                undefined,
-                true,
-                false
-            );
+            response = await IssueTso.issueTsoCmd(PRETEND_SESSION, "", {
+                isStateful: true,
+                suppressStartupMessage: false,
+            });
         } catch (thrownError) {
             error = thrownError;
         }

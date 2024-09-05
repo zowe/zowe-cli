@@ -10,10 +10,24 @@
 */
 
 export interface IIssueTsoCmdParms {
-
+    /**
+     * command being ran on TSO address space
+     * @type {string}
+     * @memberof IIssueTsoCmdParms
+     */
     command: string;
 
+    /**
+     * z/OS >2.4 TSO Command statefulness of address space
+     * @type {boolean}
+     * @memberof IIssueTsoCmdParms
+     */
     isStateful?: boolean;
 
+    /**
+     * current version of z/OS connection
+     * @type {string}
+     * @memberof IIssueTsoCmdParms
+     */
     version?: string;
 }

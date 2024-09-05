@@ -35,9 +35,10 @@ exports[`issue command handler tests should issue command 1`] = `
         },
       },
       undefined,
-      undefined,
-      undefined,
-      undefined,
+      Object {
+        "isStateful": undefined,
+        "suppressStartupMessage": undefined,
+      },
     ],
   ],
   "results": Array [
