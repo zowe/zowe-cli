@@ -28,7 +28,8 @@ export interface IIssueTsoCmdResponse {
 
     /**
      * Unique identifier for the servlet entry.
-     * It maps to the TSO/E address space in which the TSO/E command is issued. servletKey is returned only when cmdState is stateful for z/OS 2.4 and above
+     * It maps to the TSO/E address space in which the TSO/E command is issued.
+     * servletKey is returned only when cmdState is stateful for z/OS 2.4 and above
      * @type {string}
      * @memberof IIssueTsoCmdResponse
      */

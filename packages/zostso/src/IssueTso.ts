@@ -22,7 +22,7 @@ import { CheckStatus, ZosmfConstants } from "@zowe/zosmf-for-zowe-sdk";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { IIssueTsoCmdResponse } from "./doc/IIssueTsoCmdResponse";
 import { IIssueTsoCmdParms } from "./doc/input/IIssueTsoCmdParms";
-import { IIssueTsoCmdOpts } from "./doc/input/IIssueTsoCmdOpts"
+import { IIssueTsoCmdOpts } from "./doc/input/IIssueTsoCmdOpts";
 /**
  * Class to handle issue command to TSO
  * @class IssueTso
@@ -149,7 +149,7 @@ export class IssueTso {
         command: string,
         startParams?: IStartTsoParms
     ): Promise<IIssueResponse> {
-        return (await IssueTso.issueTsoCmd(session, command, { addressSpaceOptions: {...startParams, account: accountNumber}}));
+        return await IssueTso.issueTsoCmd(session, command, { addressSpaceOptions: {...startParams, account: accountNumber}});
     }
 
     /**
@@ -164,6 +164,7 @@ export class IssueTso {
         session: AbstractSession,
         commandParms: IIssueTsoParms
     ): Promise<IIssueResponse> {
-        return (await IssueTso.issueTsoCmd(session, commandParms.command, { addressSpaceOptions: {...commandParms.startParams,account: commandParms.accountNumber}}));
+        return await IssueTso.issueTsoCmd(session, commandParms.command,
+            { addressSpaceOptions: {...commandParms.startParams,account: commandParms.accountNumber}});
     }
 }
