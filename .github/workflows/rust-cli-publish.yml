@@ -9,6 +9,9 @@ on:
     - 'zowex/**'
     - '.github/workflows/rust-cli*.yml'
 
+permissions:
+  contents: write
+
 jobs:
 
   release:
