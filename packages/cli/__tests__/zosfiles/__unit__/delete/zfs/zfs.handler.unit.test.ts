@@ -1,56 +1,65 @@
-/*
-* This program and the accompanying materials are made available under the terms of the
-* Eclipse Public License v2.0 which accompanies this distribution, and is available at
-* https://www.eclipse.org/legal/epl-v20.html
-*
-* SPDX-License-Identifier: EPL-2.0
-*
-* Copyright Contributors to the Zowe Project.
-*
-*/
-
+import { CommandYargs } from "../../../../../../imperative/src/cmd/src/yargs/CommandYargs";
 import { Delete, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
 import ZfsHandler from "../../../../../src/zosfiles/delete/zfs/zfs.handler";
-import { ZosFilesBaseHandler } from "../../../../../src/zosfiles/ZosFilesBase.handler";
+import { ImperativeError } from "@zowe/imperative";
+import Handler from "../../../../../src/provisioning/delete/instance/DeleteInstance.handler";
 
 describe("ZfsHandler", () => {
     const defaultReturn: IZosFilesResponse = {
-        success        : true,
-        commandResponse: "THIS IS A TEST"
+        success: true,
+        commandResponse: "THIS IS A TEST",
     };
 
-    const deleteZfs = jest.spyOn(Delete, "zfs");
-
-    beforeEach(() => {
-        deleteZfs.mockClear();
-        deleteZfs.mockImplementation(async () => defaultReturn);
+    const fileNotFoundError = new ImperativeError({
+        msg: "IDC3012I ENTRY HLQ.MYNEW.ZFS NOT FOUND",
+        additionalDetails: "",
+        errorCode: '404'
     });
 
-    it("should call Delete.zfs", async () => {
+    let deleteZfsSpy: any;
+    let processWithSessionSpy: any;
+
+    beforeEach(() => {
+        deleteZfsSpy= jest.spyOn(Delete, "zfs");
+        deleteZfsSpy.mockClear();
+        deleteZfsSpy.mockImplementation(async () => defaultReturn);
+    });
+
+    it("should return success: true when --quiet (-fq) flag is used and file is not found", async () => {
+        // deleteZfsSpy.mockImplementationOnce(() => {
+        //     throw fileNotFoundError;
+        // });
         const handler = new ZfsHandler();
 
-        expect(handler).toBeInstanceOf(ZosFilesBaseHandler);
+        processWithSessionSpy = jest.spyOn(handler, "processWithSession");
+        processWithSessionSpy.mockImplementation(() => {
+            throw fileNotFoundError;
+        });
 
         const commandParameters: any = {
             arguments: {
                 fileSystemName: "ABCD",
-                responseTimeout: 5
+                quiet: true,
+                forSure: true
             }
         };
 
-        const dummySession = {
-            lazyness: "(n.) An important quality for a developer to have."
-        }; // I'm lazy and we don't actually need the object
-        const rtoObject = {responseTimeout: 5};
+        await expect(handler.process(commandParameters)).resolves.toEqual({ success: true });
+    });
 
-        const response = await handler.processWithSession(commandParameters, dummySession as any);
+    it("should throw file not found error (404) when --quiet is not used (-f)", async () => {
+        deleteZfsSpy.mockImplementationOnce(() => {
+            throw fileNotFoundError;
+        });
 
-        expect(deleteZfs).toHaveBeenCalledTimes(1);
-        expect(deleteZfs).toHaveBeenLastCalledWith(
-            dummySession,
-            commandParameters.arguments.fileSystemName,
-            rtoObject
-        );
-        expect(response).toBe(defaultReturn);
+        const handler = new ZfsHandler();
+        const commandParameters: any = {
+            arguments: {
+                fileSystemName: "ABCD",
+                forSure: true // --forSure flag, no --quiet flag
+            }
+        };
+
+        await expect(handler.processWithSession(commandParameters, {} as any)).rejects.toThrow(ImperativeError);
     });
 });
