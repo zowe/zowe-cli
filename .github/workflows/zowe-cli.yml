@@ -164,6 +164,10 @@ jobs:
     if: github.event_name == 'push' && github.ref_protected
     needs: test
     runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      contents: write
+      pull-requests: write
 
     steps:
     - name: Checkout
