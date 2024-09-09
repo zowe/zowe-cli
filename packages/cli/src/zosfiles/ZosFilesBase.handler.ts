@@ -54,7 +54,7 @@ export abstract class ZosFilesBaseHandler implements ICommandHandler {
                 commandParameters.response.console.log(response.commandResponse);
             }
         } catch (error) {
-            if (commandParameters.arguments.quiet && error.errorCode==404) {
+            if (commandParameters.arguments.quiet && error.errorCode === '404') {
                 commandParameters.response.data.setObj({ success: true });
             } else {
                 throw new ImperativeError({
