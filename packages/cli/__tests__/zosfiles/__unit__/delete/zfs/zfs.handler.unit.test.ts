@@ -11,7 +11,8 @@
 
 import { Delete, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
 import ZfsHandler from "../../../../../src/zosfiles/delete/zfs/zfs.handler";
-import { AbstractSession, ConnectionPropsForSessCfg, ImperativeError } from "@zowe/imperative";
+import { ConnectionPropsForSessCfg, ImperativeError } from "@zowe/imperative";
+import { ZosFilesBaseHandler } from "../../../../../src/zosfiles/ZosFilesBase.handler";
 
 describe("ZfsHandler", () => {
     const defaultReturn: IZosFilesResponse = {
@@ -26,7 +27,6 @@ describe("ZfsHandler", () => {
     });
 
     let deleteZfsSpy: any;
-    // let processWithSessionSpy: any;
 
     beforeEach(() => {
         jest.spyOn(ConnectionPropsForSessCfg, "addPropsOrPrompt").mockResolvedValue({
@@ -35,6 +35,34 @@ describe("ZfsHandler", () => {
         deleteZfsSpy = jest.spyOn(Delete, "zfs");
         deleteZfsSpy.mockClear();
         deleteZfsSpy.mockImplementation(async () => defaultReturn);
+    });
+
+    it("should call Delete.zfs", async () => {
+        const handler = new ZfsHandler();
+
+        expect(handler).toBeInstanceOf(ZosFilesBaseHandler);
+
+        const commandParameters: any = {
+            arguments: {
+                fileSystemName: "ABCD",
+                responseTimeout: 5
+            }
+        };
+
+        const dummySession = {
+            lazyness: "(n.) An important quality for a developer to have."
+        }; // I'm lazy and we don't actually need the object
+        const rtoObject = {responseTimeout: 5};
+
+        const response = await handler.processWithSession(commandParameters, dummySession as any);
+
+        expect(deleteZfsSpy).toHaveBeenCalledTimes(1);
+        expect(deleteZfsSpy).toHaveBeenLastCalledWith(
+            dummySession,
+            commandParameters.arguments.fileSystemName,
+            rtoObject
+        );
+        expect(response).toBe(defaultReturn);
     });
 
     it("should return success: true when --quiet (-fq) flag is used and file is not found", async () => {
@@ -55,12 +83,7 @@ describe("ZfsHandler", () => {
             }
         };
 
-        // const error = new ImperativeError({msg: "IDC3012I ENTRY HLQ.MYNEW.ZFS NOT FOUND"});
-        // await expect(handler.processWithSession(commandParameters, {} as any)).rejects.toThrow(ImperativeError);
-        // await expect(handler.processWithSession(commandParameters, {} as any)).rejects.toThrow(error);
-        // await expect(handler.processWithSession(commandParameters, {} as any)).resolves.toEqual({ success: true });
         await expect(handler.process(commandParameters)).resolves.toBe(undefined);
-        // await expect(handler.process(commandParameters)).resolves.toEqual({ success: true });
     });
 
     it("should throw file not found error (404) when --quiet is not used (-f)", async () => {
@@ -77,7 +100,7 @@ describe("ZfsHandler", () => {
         };
 
         const error = new ImperativeError({ msg: "IDC3012I ENTRY HLQ.MYNEW.ZFS NOT FOUND" });
-        // await expect(handler.processWithSession(commandParameters, {} as any)).rejects.toThrow(ImperativeError);
+
         await expect(handler.processWithSession(commandParameters, {} as any)).rejects.toThrow(error);
     });
 });
