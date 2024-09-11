@@ -2,6 +2,9 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated `dataobject-parser` dependency for technical currency.
 
 ## `5.27.0`
 

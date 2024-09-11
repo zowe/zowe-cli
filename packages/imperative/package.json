@@ -50,7 +50,7 @@
     "cli-table3": "0.6.2",
     "comment-json": "4.1.1",
     "cross-spawn": "7.0.3",
-    "dataobject-parser": "1.2.1",
+    "dataobject-parser": "1.2.25",
     "deepmerge": "4.2.2",
     "diff": "5.1.0",
     "diff2html": "3.4.20-usewontache.1.60e7a2e",
