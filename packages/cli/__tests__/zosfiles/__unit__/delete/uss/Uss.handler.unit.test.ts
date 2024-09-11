@@ -11,23 +11,35 @@
 
 import { Delete, IZosFilesResponse, IZosFilesOptions } from "@zowe/zos-files-for-zowe-sdk";
 import UssHandler from "../../../../../src/zosfiles/delete/uss/Uss.handler";
+import { ImperativeError, ConnectionPropsForSessCfg } from "@zowe/imperative";
 import { ZosFilesBaseHandler } from "../../../../../src/zosfiles/ZosFilesBase.handler";
+
 describe("UssHandler", () => {
     const defaultReturn: IZosFilesResponse = {
         success        : true,
         commandResponse: "THIS IS A TEST"
     };
 
-    const deleteUssFileSpy = jest.spyOn(Delete, "ussFile");
+    const fileNotFoundError = new ImperativeError({
+        msg: "IDC3012I ENTRY HLQ.MYNEW.FILE NOT FOUND",
+        additionalDetails: "",
+        errorCode: '404'
+    });
+
+    let deleteUssFileSpy: any;
 
     beforeEach(() => {
+        jest.spyOn(ConnectionPropsForSessCfg, "addPropsOrPrompt").mockResolvedValue({
+            hostname: "example.com"
+        });
+        deleteUssFileSpy = jest.spyOn(Delete, "ussFile");
         deleteUssFileSpy.mockClear();
         deleteUssFileSpy.mockImplementation(async () => defaultReturn);
     });
 
     it("should call Delete.ussFile", async () => {
         const handler = new UssHandler();
-        const zosFilesOptions: IZosFilesOptions = {responseTimeout: undefined};
+        const zosFilesOptions: IZosFilesOptions = { responseTimeout: undefined };
 
         expect(handler).toBeInstanceOf(ZosFilesBaseHandler);
 
@@ -53,4 +65,40 @@ describe("UssHandler", () => {
         expect(response).toBe(defaultReturn);
     });
 
+    it("should return success: true when --quiet (-fq) flag is used and file is not found", async () => {
+        deleteUssFileSpy.mockImplementation(() => {
+            throw fileNotFoundError;
+        });
+
+        const handler = new UssHandler();
+        const commandParameters: any = {
+            arguments: {
+                fileName: "ABCD",
+                quiet: true,
+            },
+            response: {
+                progress: { endBar: jest.fn() },
+                data: { setObj: jest.fn() }
+            }
+        };
+
+        await expect(handler.process(commandParameters)).resolves.toBe(undefined);
+    });
+
+    it("should throw file not found error (404) when --quiet is not used (-f)", async () => {
+        deleteUssFileSpy.mockImplementation(() => {
+            throw fileNotFoundError;
+        });
+
+        const handler = new UssHandler();
+        const commandParameters: any = {
+            arguments: {
+                fileName: "ABCD"
+            }
+        };
+
+        const error = new ImperativeError({ msg: "IDC3012I ENTRY HLQ.MYNEW.FILE NOT FOUND" });
+
+        await expect(handler.processWithSession(commandParameters, {} as any)).rejects.toThrow(error);
+    });
 });

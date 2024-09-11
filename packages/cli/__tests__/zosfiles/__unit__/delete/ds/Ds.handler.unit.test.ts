@@ -12,6 +12,7 @@
 import { Delete, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
 import DsHandler from "../../../../../src/zosfiles/delete/ds/Ds.handler";
 import { ZosFilesBaseHandler } from "../../../../../src/zosfiles/ZosFilesBase.handler";
+import { ImperativeError, ConnectionPropsForSessCfg } from "@zowe/imperative";
 
 describe("DsHandler", () => {
     const defaultReturn: IZosFilesResponse = {
@@ -19,9 +20,19 @@ describe("DsHandler", () => {
         commandResponse: "THIS IS A TEST"
     };
 
-    const deleteDatasetSpy = jest.spyOn(Delete, "dataSet");
+    const fileNotFoundError = new ImperativeError({
+        msg: "IDC3012I ENTRY HLQ.MYNEW.DATASET NOT FOUND",
+        additionalDetails: "",
+        errorCode: '404'
+    });
+
+    let deleteDatasetSpy: any;
 
     beforeEach(() => {
+        jest.spyOn(ConnectionPropsForSessCfg, "addPropsOrPrompt").mockResolvedValue({
+            hostname: "example.com"
+        });
+        deleteDatasetSpy = jest.spyOn(Delete, "dataSet");
         deleteDatasetSpy.mockClear();
         deleteDatasetSpy.mockImplementation(async () => defaultReturn);
     });
@@ -79,5 +90,42 @@ describe("DsHandler", () => {
             }
         );
         expect(response).toBe(defaultReturn);
+    });
+
+    it("should return success: true when --quiet (-fq) flag is used and dataset is not found", async () => {
+        deleteDatasetSpy.mockImplementation(() => {
+            throw fileNotFoundError;
+        });
+
+        const handler = new DsHandler();
+        const commandParameters: any = {
+            arguments: {
+                dataSetName: "ABCD",
+                quiet: true,
+            },
+            response: {
+                progress: { endBar: jest.fn() },
+                data: { setObj: jest.fn() }
+            }
+        };
+
+        await expect(handler.process(commandParameters)).resolves.toBe(undefined);
+    });
+
+    it("should throw file not found error (404) when --quiet is not used (-f)", async () => {
+        deleteDatasetSpy.mockImplementation(() => {
+            throw fileNotFoundError;
+        });
+
+        const handler = new DsHandler();
+        const commandParameters: any = {
+            arguments: {
+                dataSetName: "ABCD"
+            }
+        };
+
+        const error = new ImperativeError({ msg: "IDC3012I ENTRY HLQ.MYNEW.DATASET NOT FOUND" });
+
+        await expect(handler.processWithSession(commandParameters, {} as any)).rejects.toThrow(error);
     });
 });

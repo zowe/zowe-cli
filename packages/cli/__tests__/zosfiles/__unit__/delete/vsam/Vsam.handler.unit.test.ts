@@ -11,6 +11,7 @@
 
 import { Delete, IDeleteVsamResponse } from "@zowe/zos-files-for-zowe-sdk";
 import VsamHandler from "../../../../../src/zosfiles/delete/vsam/Vsam.handler";
+import { ConnectionPropsForSessCfg, ImperativeError } from "@zowe/imperative";
 import { ZosFilesBaseHandler } from "../../../../../src/zosfiles/ZosFilesBase.handler";
 
 describe("VsamHandler", () => {
@@ -20,9 +21,19 @@ describe("VsamHandler", () => {
         apiResponse    : undefined as any
     };
 
-    const deleteVsamDatasetSpy = jest.spyOn(Delete, "vsam");
+    const fileNotFoundError = new ImperativeError({
+        msg: "IDC3012I ENTRY HLQ.MYNEW.VSAM NOT FOUND",
+        additionalDetails: "",
+        errorCode: '404'
+    });
+
+    let deleteVsamDatasetSpy: any;
 
     beforeEach(() => {
+        jest.spyOn(ConnectionPropsForSessCfg, "addPropsOrPrompt").mockResolvedValue({
+            hostname: "example.com"
+        });
+        deleteVsamDatasetSpy = jest.spyOn(Delete, "vsam");
         deleteVsamDatasetSpy.mockClear();
         deleteVsamDatasetSpy.mockImplementation(async () => defaultReturn);
     });
@@ -56,5 +67,46 @@ describe("VsamHandler", () => {
             }
         );
         expect(response).toBe(defaultReturn);
+    });
+
+    it("should return success: true when --quiet (-fq) flag is used and file is not found", async () => {
+        deleteVsamDatasetSpy.mockImplementation(() => {
+            throw fileNotFoundError;
+        });
+
+        const handler = new VsamHandler();
+        const commandParameters: any = {
+            arguments: {
+                dataSetName: "ABCD",
+                erase: true,
+                purge: false,
+                quiet: true,
+            },
+            response: {
+                progress: { endBar: jest.fn() },
+                data: { setObj: jest.fn() }
+            }
+        };
+
+        await expect(handler.process(commandParameters)).resolves.toBe(undefined);
+    });
+
+    it("should throw file not found error (404) when --quiet is not used (-f)", async () => {
+        deleteVsamDatasetSpy.mockImplementation(() => {
+            throw fileNotFoundError;
+        });
+
+        const handler = new VsamHandler();
+        const commandParameters: any = {
+            arguments: {
+                dataSetName: "ABCD",
+                erase: true,
+                purge: false // --erase and --purge flags, but no --quiet flag
+            }
+        };
+
+        const error = new ImperativeError({ msg: "IDC3012I ENTRY HLQ.MYNEW.VSAM NOT FOUND" });
+
+        await expect(handler.processWithSession(commandParameters, {} as any)).rejects.toThrow(error);
     });
 });

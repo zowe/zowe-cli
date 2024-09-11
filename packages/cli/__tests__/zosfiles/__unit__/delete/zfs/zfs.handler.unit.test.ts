@@ -11,8 +11,8 @@
 
 import { Delete, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
 import ZfsHandler from "../../../../../src/zosfiles/delete/zfs/zfs.handler";
-import { ConnectionPropsForSessCfg, ImperativeError } from "@zowe/imperative";
 import { ZosFilesBaseHandler } from "../../../../../src/zosfiles/ZosFilesBase.handler";
+import { ImperativeError, ConnectionPropsForSessCfg } from "@zowe/imperative";
 
 describe("ZfsHandler", () => {
     const defaultReturn: IZosFilesResponse = {
@@ -52,7 +52,7 @@ describe("ZfsHandler", () => {
         const dummySession = {
             lazyness: "(n.) An important quality for a developer to have."
         }; // I'm lazy and we don't actually need the object
-        const rtoObject = {responseTimeout: 5};
+        const rtoObject = { responseTimeout: 5 };
 
         const response = await handler.processWithSession(commandParameters, dummySession as any);
 
@@ -74,7 +74,6 @@ describe("ZfsHandler", () => {
         const commandParameters: any = {
             arguments: {
                 fileSystemName: "ABCD",
-                forSure: true,
                 quiet: true,
             },
             response: {
