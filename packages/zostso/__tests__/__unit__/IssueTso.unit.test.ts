@@ -73,364 +73,391 @@ const START_RESPONSE: IStartStopResponse = {
     zosmfTsoResponse: ZOSMF_RESPONSE,
     servletKey: ZOSMF_RESPONSE.servletKey,
 };
+describe("all tests", () => {
+    describe("TsoIssue issueTsoCommand - failing scenarios", () => {
+        it("should fail for null account number", async () => {
+            let error: ImperativeError;
+            let response: ISendResponse;
 
-describe("TsoIssue issueTsoCommand - failing scenarios", () => {
-    it("should fail for null account number", async () => {
-        let error: ImperativeError;
-        let response: ISendResponse;
+            try {
+                response = await IssueTso.issueTsoCommand(
+                    PRETEND_SESSION,
+                    null,
+                    "command"
+                );
+            } catch (thrownError) {
+                error = thrownError;
+            }
+            expect(response).not.toBeDefined();
+            expect(error).toBeDefined();
+        });
+        it("should fail for empty account number", async () => {
+            let error: ImperativeError;
+            let response: ISendResponse;
 
-        try {
-            response = await IssueTso.issueTsoCommand(
-                PRETEND_SESSION,
-                null,
-                "command"
+            try {
+                response = await IssueTso.issueTsoCommand(
+                    PRETEND_SESSION,
+                    "",
+                    "command"
+                );
+            } catch (thrownError) {
+                error = thrownError;
+            }
+            expect(response).not.toBeDefined();
+            expect(error).toBeDefined();
+        });
+        it("should fail for null command text", async () => {
+            let error: ImperativeError;
+            let response: ISendResponse;
+
+            try {
+                response = await IssueTso.issueTsoCommand(
+                    PRETEND_SESSION,
+                    "acc",
+                    null
+                );
+            } catch (thrownError) {
+                error = thrownError;
+            }
+            expect(response).not.toBeDefined();
+            expect(error).toBeDefined();
+        });
+        it("should fail for empty command text", async () => {
+            let error: ImperativeError;
+            let response: ISendResponse;
+
+            try {
+                response = await IssueTso.issueTsoCommand(
+                    PRETEND_SESSION,
+                    "acc",
+                    ""
+                );
+            } catch (thrownError) {
+                error = thrownError;
+            }
+            expect(response).not.toBeDefined();
+            expect(error).toBeDefined();
+        });
+        it("should fail when StartTSO fails", async () => {
+            jest.spyOn(CheckStatus, "isZosVersionGreaterThan").mockReturnValue(
+                Promise.resolve(false)
             );
-        } catch (thrownError) {
-            error = thrownError;
-        }
-        expect(response).not.toBeDefined();
-        expect(error).toBeDefined();
-    });
-    it("should fail for empty account number", async () => {
-        let error: ImperativeError;
-        let response: ISendResponse;
+            let error: ImperativeError;
+            let response: ISendResponse;
 
-        try {
-            response = await IssueTso.issueTsoCommand(
-                PRETEND_SESSION,
-                "",
-                "command"
-            );
-        } catch (thrownError) {
-            error = thrownError;
-        }
-        expect(response).not.toBeDefined();
-        expect(error).toBeDefined();
-    });
-    it("should fail for null command text", async () => {
-        let error: ImperativeError;
-        let response: ISendResponse;
-
-        try {
-            response = await IssueTso.issueTsoCommand(
-                PRETEND_SESSION,
-                "acc",
-                null
-            );
-        } catch (thrownError) {
-            error = thrownError;
-        }
-        expect(response).not.toBeDefined();
-        expect(error).toBeDefined();
-    });
-    it("should fail for empty command text", async () => {
-        let error: ImperativeError;
-        let response: ISendResponse;
-
-        try {
-            response = await IssueTso.issueTsoCommand(
-                PRETEND_SESSION,
-                "acc",
-                ""
-            );
-        } catch (thrownError) {
-            error = thrownError;
-        }
-        expect(response).not.toBeDefined();
-        expect(error).toBeDefined();
-    });
-    it("should fail when StartTSO fails", async () => {
-        jest.spyOn(CheckStatus, "isZosVersionGreaterThan").mockReturnValue(
-            Promise.resolve(false)
-        );
-        let error: ImperativeError;
-        let response: ISendResponse;
-
-        jest.spyOn(StartTso, "start").mockResolvedValueOnce({
-            success: false,
-        } as any);
-        jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({
-            config: {
-                api: { profiles: { defaultGet: () => ({ account: "acc" }) } },
-            },
-        } as any);
-        try {
-            response = await IssueTso.issueTsoCommand(
-                PRETEND_SESSION,
-                "acc",
-                "command"
-            );
-        } catch (thrownError) {
-            error = thrownError;
-        }
-        expect(response).not.toBeDefined();
-        expect(error).toBeDefined();
-        expect(error.message).toBe("TSO address space failed to start.");
-    });
-});
-
-describe("TsoIssue issueTsoCommand - Deprecated API", () => {
-    it("should succeed", async () => {
-        jest.spyOn(CheckStatus, "isZosVersionGreaterThan").mockReturnValue(
-            Promise.resolve(false)
-        );
-        (StartTso.start as any) = jest.fn(() => {
-            return new Promise((resolve) => {
-                process.nextTick(() => {
-                    resolve(START_RESPONSE);
-                });
-            });
-        });
-        (SendTso.getAllResponses as any) = jest.fn(() => {
-            return new Promise((resolve) => {
-                process.nextTick(() => {
-                    resolve({});
-                });
-            });
-        });
-        (SendTso.sendDataToTSOCollect as any) = jest.fn(() => {
-            return new Promise((resolve) => {
-                process.nextTick(() => {
-                    resolve(SEND_RESPONSE);
-                });
-            });
-        });
-        (StopTso.stop as any) = jest.fn(() => {
-            return new Promise((resolve) => {
-                process.nextTick(() => {
-                    resolve(null);
-                });
-            });
-        });
-        jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({
-            config: {
-                api: { profiles: { defaultGet: () => ({ account: "acc" }) } },
-            },
-        } as any);
-        let error: ImperativeError;
-        let response: ISendResponse;
-        try {
-            response = await IssueTso.issueTsoCommand(
-                PRETEND_SESSION,
-                "acc",
-                "command"
-            );
-        } catch (thrownError) {
-            error = thrownError;
-        }
-        expect(error).not.toBeDefined();
-        expect(response).toBeDefined();
-    });
-
-    it("should succeed (with params)", async () => {
-        (IssueTso.issueTsoCommand as any) = jest.fn(() => {
-            return new Promise((resolve) => {
-                process.nextTick(() => {
-                    resolve({});
-                });
-            });
-        });
-        jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({
-            config: {
-                api: { profiles: { defaultGet: () => ({ account: "acc" }) } },
-            },
-        } as any);
-        let error: ImperativeError;
-        let response: ISendResponse;
-        try {
-            response = await IssueTso.issueTsoCommandCommon(
-                PRETEND_SESSION,
-                PRETEND_ISSUE_PARMS
-            );
-        } catch (thrownError) {
-            error = thrownError;
-        }
-        expect(error).not.toBeDefined();
-        expect(response).toBeDefined();
-    });
-});
-
-describe("TsoIssue issueTsoCmd - Revised API", () => {
-    it("should succeed", async () => {
-        (StartTso.start as any) = jest.fn(() => {
-            return new Promise((resolve) => {
-                process.nextTick(() => {
-                    resolve(START_RESPONSE);
-                });
-            });
-        });
-        (SendTso.getAllResponses as any) = jest.fn(() => {
-            return new Promise((resolve) => {
-                process.nextTick(() => {
-                    resolve({});
-                });
-            });
-        });
-        (SendTso.sendDataToTSOCollect as any) = jest.fn(() => {
-            return new Promise((resolve) => {
-                process.nextTick(() => {
-                    resolve(SEND_RESPONSE);
-                });
-            });
-        });
-        (StopTso.stop as any) = jest.fn(() => {
-            return new Promise((resolve) => {
-                process.nextTick(() => {
-                    resolve(null);
-                });
-            });
-        });
-
-        let error: ImperativeError;
-        let response: ISendResponse;
-        const zosmfResponse = {
-            cmdResponse: [
-                {
-                    message:
-                        "IKJ56650I TIME-09:42:15 AM. CPU-00:00:00 SERVICE-555 SESSION-00:04:15 SEPTEMBER 4,2024",
+            jest.spyOn(StartTso, "start").mockResolvedValueOnce({
+                success: false,
+            } as any);
+            jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({
+                config: {
+                    api: {
+                        profiles: { defaultGet: () => ({ account: "acc" }) },
+                    },
                 },
-                { message: "READY " },
-            ],
-            tsoPromptReceived: "Y",
-        };
-        jest.spyOn(ZosmfRestClient, "putExpectJSON").mockReturnValue(
-            Promise.resolve(zosmfResponse)
-        );
-        jest.spyOn(CheckStatus, "isZosVersionGreaterThan").mockReturnValue(
-            Promise.resolve(true)
-        );
-        try {
-            response = await IssueTso.issueTsoCmd(
-                PRETEND_SESSION,
-                "TEST"
+            } as any);
+            try {
+                response = await IssueTso.issueTsoCommand(
+                    PRETEND_SESSION,
+                    "acc",
+                    "command"
+                );
+            } catch (thrownError) {
+                error = thrownError;
+            }
+            expect(response).not.toBeDefined();
+            expect(error).toBeDefined();
+            expect(error.message).toBe("TSO address space failed to start.");
+        });
+    });
+
+    describe("TsoIssue issueTsoCommand - Deprecated API", () => {
+        it("should succeed", async () => {
+            jest.spyOn(CheckStatus, "isZosVersionGreaterThan").mockReturnValue(
+                Promise.resolve(false)
             );
-        } catch (thrownError) {
-            error = thrownError;
-        }
-        expect(error).not.toBeDefined();
-        expect(response).toBeDefined();
-    });
-
-    it("should succeed (with params)", async () => {
-        (IssueTso.issueTsoCmd as any) = jest.fn(() => {
-            return new Promise((resolve) => {
-                process.nextTick(() => {
-                    resolve({});
+            (StartTso.start as any) = jest.fn(() => {
+                return new Promise((resolve) => {
+                    process.nextTick(() => {
+                        resolve(START_RESPONSE);
+                    });
                 });
             });
-        });
-        let error: ImperativeError;
-        let response: ISendResponse;
-        jest.spyOn(CheckStatus, "isZosVersionGreaterThan").mockReturnValue(
-            Promise.resolve(true)
-        );
-        try {
-            response = await IssueTso.issueTsoCmd(PRETEND_SESSION, "command", {
-                isStateful: true,
-                suppressStartupMessage: false,
+            (SendTso.getAllResponses as any) = jest.fn(() => {
+                return new Promise((resolve) => {
+                    process.nextTick(() => {
+                        resolve({});
+                    });
+                });
             });
-        } catch (thrownError) {
-            error = thrownError;
-        }
-        expect(error).not.toBeDefined();
-        expect(response).toBeDefined();
-    });
-
-    it("should utilize new API logic path", async () => {
-        const zosmfResponse = {
-            cmdResponse: [
-                {
-                    message:
-                        "IKJ56650I TIME-09:42:15 AM. CPU-00:00:00 SERVICE-555 SESSION-00:04:15 SEPTEMBER 4,2024",
+            (SendTso.sendDataToTSOCollect as any) = jest.fn(() => {
+                return new Promise((resolve) => {
+                    process.nextTick(() => {
+                        resolve(SEND_RESPONSE);
+                    });
+                });
+            });
+            (StopTso.stop as any) = jest.fn(() => {
+                return new Promise((resolve) => {
+                    process.nextTick(() => {
+                        resolve(null);
+                    });
+                });
+            });
+            jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({
+                config: {
+                    api: {
+                        profiles: { defaultGet: () => ({ account: "acc" }) },
+                    },
                 },
-                { message: "READY " },
-            ],
-            tsoPromptReceived: "Y",
-        };
-        jest.spyOn(ZosmfRestClient, "putExpectJSON").mockReturnValue(
-            Promise.resolve(zosmfResponse)
-        );
-        let error: ImperativeError;
-        let response: ISendResponse;
-        jest.spyOn(CheckStatus, "isZosVersionGreaterThan").mockReturnValue(
-            Promise.resolve(true)
-        );
-        try {
-            response = await IssueTso.issueTsoCmd(PRETEND_SESSION, "TIME", {
-                addressSpaceOptions: null,
-                isStateful: true,
-                suppressStartupMessage: true,
-            });
-        } catch (thrownError) {
-            error = thrownError;
-        }
-        expect(error).not.toBeDefined();
-        expect(response).toBeDefined();
-    });
+            } as any);
+            let error: ImperativeError;
+            let response: ISendResponse;
+            try {
+                response = await IssueTso.issueTsoCommand(
+                    PRETEND_SESSION,
+                    "acc",
+                    "command"
+                );
+            } catch (thrownError) {
+                error = thrownError;
+            }
+            expect(error).not.toBeDefined();
+            expect(response).toBeDefined();
+        });
 
-    it("should throw and handle 404 error", async () => {
-        // Mock IssueTso.issueTsoCmd to throw an error
-        (IssueTso.issueTsoCmd as any) = jest.fn(() => {
-            return new Promise((_, reject) => {
-                process.nextTick(() => {
-                    reject(new Error("status 404"));
+        it("should succeed (with params)", async () => {
+            (IssueTso.issueTsoCommand as any) = jest.fn(() => {
+                return new Promise((resolve) => {
+                    process.nextTick(() => {
+                        resolve({});
+                    });
                 });
             });
+            jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({
+                config: {
+                    api: {
+                        profiles: { defaultGet: () => ({ account: "acc" }) },
+                    },
+                },
+            } as any);
+            let error: ImperativeError;
+            let response: ISendResponse;
+            try {
+                response = await IssueTso.issueTsoCommandCommon(
+                    PRETEND_SESSION,
+                    PRETEND_ISSUE_PARMS
+                );
+            } catch (thrownError) {
+                error = thrownError;
+            }
+            expect(error).not.toBeDefined();
+            expect(response).toBeDefined();
         });
-        let error: ImperativeError;
-        let response: ISendResponse;
-        try {
-            response = await IssueTso.issueTsoCmd(PRETEND_SESSION, "TIME", {
-                addressSpaceOptions: null,
-                isStateful: true,
-                suppressStartupMessage: true,
-            });
-        } catch (thrownError) {
-            error = thrownError;
-        }
-        expect(error).toBeDefined();
-        expect(error.message).toBe("status 404");
-        expect(response).not.toBeDefined();
     });
-});
 
-describe("TsoIssue issueTsoCmd - failing scenarios", () => {
-    it("should fail for null command text", async () => {
-        let error: ImperativeError;
-        let response: ISendResponse;
-        jest.spyOn(CheckStatus, "isZosVersionGreaterThan").mockReturnValue(
-            Promise.resolve(true)
-        );
-        try {
-            response = await IssueTso.issueTsoCmd(
-                PRETEND_SESSION,
-                "fake_command",
-                {
+    describe("TsoIssue issueTsoCmd - Revised API", () => {
+        it("should succeed", async () => {
+            (StartTso.start as any) = jest.fn(() => {
+                return new Promise((resolve) => {
+                    process.nextTick(() => {
+                        resolve(START_RESPONSE);
+                    });
+                });
+            });
+            (SendTso.getAllResponses as any) = jest.fn(() => {
+                return new Promise((resolve) => {
+                    process.nextTick(() => {
+                        resolve({});
+                    });
+                });
+            });
+            (SendTso.sendDataToTSOCollect as any) = jest.fn(() => {
+                return new Promise((resolve) => {
+                    process.nextTick(() => {
+                        resolve(SEND_RESPONSE);
+                    });
+                });
+            });
+            (StopTso.stop as any) = jest.fn(() => {
+                return new Promise((resolve) => {
+                    process.nextTick(() => {
+                        resolve(null);
+                    });
+                });
+            });
+
+            let error: ImperativeError;
+            let response: ISendResponse;
+            const zosmfResponse = {
+                cmdResponse: [
+                    {
+                        message:
+                            "IKJ56650I TIME-09:42:15 AM. CPU-00:00:00 SERVICE-555 SESSION-00:04:15 SEPTEMBER 4,2024",
+                    },
+                    { message: "READY " },
+                ],
+                tsoPromptReceived: "Y",
+            };
+            jest.spyOn(ZosmfRestClient, "putExpectJSON").mockReturnValueOnce(
+                Promise.resolve(zosmfResponse)
+            );
+            jest.spyOn(CheckStatus, "isZosVersionGreaterThan").mockReturnValue(
+                Promise.resolve(true)
+            );
+            try {
+                response = await IssueTso.issueTsoCmd(PRETEND_SESSION, "TEST");
+            } catch (thrownError) {
+                error = thrownError;
+            }
+            expect(error).not.toBeDefined();
+            expect(response).toBeDefined();
+        });
+
+        it("should succeed (with params)", async () => {
+            let error: ImperativeError;
+            let response: ISendResponse;
+
+            // Mock the CheckStatus to simulate Z/OS version check
+            jest.spyOn(
+                CheckStatus,
+                "isZosVersionGreaterThan"
+            ).mockReturnValueOnce(Promise.resolve(true));
+            const zosmfResponse = {
+                cmdResponse: [
+                    {
+                        message:
+                            "IKJ56650I TIME-09:42:15 AM. CPU-00:00:00 SERVICE-555 SESSION-00:04:15 SEPTEMBER 4,2024",
+                    },
+                    { message: "READY " },
+                ],
+                tsoPromptReceived: "Y",
+            };
+            jest.spyOn(ZosmfRestClient, "putExpectJSON").mockReturnValueOnce(
+                Promise.resolve(zosmfResponse)
+            );
+            try {
+                response = await IssueTso.issueTsoCmd(
+                    PRETEND_SESSION,
+                    "command",
+                    {
+                        isStateful: true,
+                        suppressStartupMessage: false,
+                    }
+                );
+            } catch (thrownError) {
+                error = thrownError;
+            }
+
+            expect(error).not.toBeDefined();
+            expect(response).toBeDefined();
+        });
+
+        it("should utilize new API logic path", async () => {
+            const zosmfResponse = {
+                cmdResponse: [
+                    {
+                        message:
+                            "IKJ56650I TIME-09:42:15 AM. CPU-00:00:00 SERVICE-555 SESSION-00:04:15 SEPTEMBER 4,2024",
+                    },
+                    { message: "READY " },
+                ],
+                tsoPromptReceived: "Y",
+            };
+            jest.spyOn(ZosmfRestClient, "putExpectJSON").mockReturnValueOnce(
+                Promise.resolve(zosmfResponse)
+            );
+            let error: ImperativeError;
+            let response: ISendResponse;
+            jest.spyOn(CheckStatus, "isZosVersionGreaterThan").mockReturnValue(
+                Promise.resolve(true)
+            );
+            try {
+                response = await IssueTso.issueTsoCmd(PRETEND_SESSION, "TIME", {
+                    addressSpaceOptions: null,
+                    isStateful: true,
+                    suppressStartupMessage: true,
+                });
+            } catch (thrownError) {
+                error = thrownError;
+            }
+            expect(error).not.toBeDefined();
+            expect(response).toBeDefined();
+        });
+
+        it("should throw and handle non-404 error", async () => {
+
+            // Mock ZosmfRestClient to throw an error
+            jest.spyOn(ZosmfRestClient, "putExpectJSON").mockRejectedValueOnce(
+                new ImperativeError({
+                    msg: "status 403",
+                })
+            );
+
+            let error: ImperativeError;
+            let response: ISendResponse;
+
+            try {
+                response = await IssueTso.issueTsoCmd(PRETEND_SESSION, "TIME", {
+                    addressSpaceOptions: null,
+                    isStateful: true,
+                    suppressStartupMessage: true,
+                });
+            } catch (thrownError) {
+                error = thrownError;
+            }
+
+            expect(error).toBeDefined();
+            expect(error.message).toBe("status 403");
+            expect(response).not.toBeDefined();
+        });
+    });
+
+    describe("TsoIssue issueTsoCmd - failing scenarios", () => {
+        it("should fail for null command text", async () => {
+            let error: ImperativeError;
+            let response: ISendResponse;
+            jest.spyOn(CheckStatus, "isZosVersionGreaterThan").mockReturnValue(
+                Promise.resolve(true)
+            );
+            try {
+                response = await IssueTso.issueTsoCmd(
+                    PRETEND_SESSION,
+                    "fake_command",
+                    {
+                        isStateful: true,
+                        suppressStartupMessage: false,
+                    }
+                );
+            } catch (thrownError) {
+                error = thrownError;
+            }
+            expect(response).not.toBeDefined();
+            expect(error).toBeDefined();
+        });
+        it("should fail for empty command text", async () => {
+            jest.clearAllMocks();
+            let error: ImperativeError;
+            let response: ISendResponse;
+
+            jest.spyOn(ZosmfRestClient, "putExpectJSON").mockRejectedValueOnce(
+                new ImperativeError({
+                    msg: "status 403",
+                })
+            );
+            jest.spyOn(CheckStatus, "isZosVersionGreaterThan").mockReturnValue(
+                Promise.resolve(true)
+            );
+            try {
+                response = await IssueTso.issueTsoCmd(PRETEND_SESSION, "", {
                     isStateful: true,
                     suppressStartupMessage: false,
-                }
-            );
-        } catch (thrownError) {
-            error = thrownError;
-        }
-        expect(response).not.toBeDefined();
-        expect(error).toBeDefined();
-    });
-    it("should fail for empty command text", async () => {
-        let error: ImperativeError;
-        let response: ISendResponse;
-        jest.spyOn(CheckStatus, "isZosVersionGreaterThan").mockReturnValue(
-            Promise.resolve(true)
-        );
-        try {
-            response = await IssueTso.issueTsoCmd(PRETEND_SESSION, "", {
-                isStateful: true,
-                suppressStartupMessage: false,
-            });
-        } catch (thrownError) {
-            error = thrownError;
-        }
-        expect(response).not.toBeDefined();
-        expect(error).toBeDefined();
+                });
+            } catch (thrownError) {
+                error = thrownError;
+            }
+            expect(response).not.toBeDefined();
+            expect(error).toBeDefined();
+        });
     });
 });
