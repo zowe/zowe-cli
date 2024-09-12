@@ -50,7 +50,7 @@ export const ZfsDefinition: ICommandDefinition = {
         },
         {
             name: "ignore-not-found",
-            aliases: ["i", "ignore-nf"],
+            aliases: ["i", "inf"],
             description: strings.OPTIONS.IGNORE_NF,
             type: "boolean",
             required: false
