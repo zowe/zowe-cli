@@ -54,15 +54,15 @@ describe("IssueTso.issueTsoCommand", () => {
         };
         COMMAND_PARAMS = {
             command: "TIME"
-        }
+        };
         AS_OPTIONS = {
             addressSpaceOptions: START_PARAMS
-        }
+        };
     });
     afterAll(async () => {
         AS_OPTIONS = {
             addressSpaceOptions: START_PARAMS
-        }
+        };
     });
     it("should display time", async () => {
         let error: ImperativeError;
@@ -106,7 +106,7 @@ describe("IssueTso.issueTsoCommand", () => {
         expect(new RegExp(regex, "g").test(response.commandResponse.toString())).toBe(true);
     });
     it("should fail - issueTsoCmd() - 404 error", async () => {
-        REAL_SESSION.ISession.basePath = "/bad/path/to/nothing"
+        REAL_SESSION.ISession.basePath = "/bad/path/to/nothing";
         let error: ImperativeError;
         let response: IIssueResponse;
         try {
