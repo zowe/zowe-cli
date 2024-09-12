@@ -122,9 +122,18 @@ describe("Delete File", () => {
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toMatchSnapshot();
         });
+
         it("should delete a file with response timeout", async () => {
             const response = runCliScript(__dirname + "/__scripts__/command/command_delete_file.sh",
                 TEST_ENVIRONMENT, [ussname, "--for-sure", "--responseTimeout 5"]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toMatchSnapshot();
+        });
+
+        it("should delete a file with --quiet flag", async () => {
+            const response = runCliScript(__dirname + "/__scripts__/command/command_delete_file.sh",
+                TEST_ENVIRONMENT, [ussname, "--for-sure", "--quiet"]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toMatchSnapshot();

@@ -127,6 +127,16 @@ describe("Delete VSAM Data Set", () => {
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toMatchSnapshot();
         });
+
+        it("should successfully delete a VSAM data set with --quiet flag", async () => {
+            let response = runCliScript(__dirname + "/__scripts__/command/command_invoke_ams_define_statement.sh",
+                TEST_ENVIRONMENT, [dsname, volume]);
+            response = runCliScript(__dirname + "/__scripts__/command/command_delete_vsam_data_set.sh",
+                TEST_ENVIRONMENT, [dsname, "--for-sure", "--quiet"]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toMatchSnapshot();
+        });
     });
 
     describe("Expected failures", () => {
@@ -135,6 +145,15 @@ describe("Delete VSAM Data Set", () => {
                 TEST_ENVIRONMENT, [user + ".DOES.NOT.EXIST", "--for-sure"]);
             expect(response.status).toBe(1);
             expect(stripNewLines(response.stderr.toString())).toContain(`ENTRY ${user}.DOES.NOT.EXIST NOT DELETED`);
+        });
+        it("should fail deleting a non-existent data set without a --quiet flag", async () => {
+            // Attempt to delete a non-existent VSAM dataset without the --quiet flag
+            const response = runCliScript(__dirname + "/__scripts__/command/command_delete_vsam_data_set.sh",
+                TEST_ENVIRONMENT, [user + ".DOES.NOT.EXIST", "--for-sure"]);
+
+            // Check that stderr contains the expected error message about the dataset not being found
+            expect(response.status).toBe(1);
+            expect(stripNewLines(response.stderr.toString())).toContain(`ENTRY ${user}.DOES.NOT.EXIST NOT FOUND`);
         });
 
         it("should fail due to retention period not being exceeded", async () => {
