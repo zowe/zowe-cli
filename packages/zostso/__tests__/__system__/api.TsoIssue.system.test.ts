@@ -16,7 +16,8 @@ import * as fs from "fs";
 import { ITestEnvironment } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-
+import { IIssueTsoCmdParms } from "../../src";
+import { IIssueTsoCmdOpts } from "../../src/doc/input/IIssueTsoCmdOpts";
 let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 let systemProperties: ITestPropertiesSchema;
 let REAL_SESSION: Session;
@@ -24,7 +25,8 @@ let ACCOUNT_NUMBER: string;
 
 let START_PARAMS: IStartTsoParms;
 let ISSUE_PARAMS: IIssueTsoParms;
-
+let COMMAND_PARAMS: IIssueTsoCmdParms;
+let AS_OPTIONS: IIssueTsoCmdOpts;
 describe("IssueTso.issueTsoCommand", () => {
 
     beforeAll(async () => {
@@ -50,9 +52,18 @@ describe("IssueTso.issueTsoCommand", () => {
             accountNumber: ACCOUNT_NUMBER,
             startParams: START_PARAMS
         };
-
+        COMMAND_PARAMS = {
+            command: "TIME"
+        }
+        AS_OPTIONS = {
+            addressSpaceOptions: START_PARAMS
+        }
     });
-
+    afterAll(async () => {
+        AS_OPTIONS = {
+            addressSpaceOptions: START_PARAMS
+        }
+    });
     it("should display time", async () => {
         let error: ImperativeError;
         let response: IIssueResponse;
@@ -80,5 +91,30 @@ describe("IssueTso.issueTsoCommand", () => {
         expect(response).toBeDefined();
         const regex = fs.readFileSync(__dirname + "/__regex__/d_time.regex").toString();
         expect(new RegExp(regex, "g").test(response.commandResponse.toString())).toBe(true);
+    });
+    it("should display time - issueTsoCmd() - new API - pass", async () => {
+        let error: ImperativeError;
+        let response: IIssueResponse;
+        try {
+            response = await IssueTso.issueTsoCmd(REAL_SESSION, "TIME", AS_OPTIONS);
+        } catch (thrownError) {
+            error = thrownError;
+        }
+        expect(error).toBeUndefined();
+        expect(response).toBeDefined();
+        const regex = fs.readFileSync(__dirname + "/__regex__/d_time.regex").toString();
+        expect(new RegExp(regex, "g").test(response.commandResponse.toString())).toBe(true);
+    });
+    it("should fail - issueTsoCmd() - 404 error", async () => {
+        REAL_SESSION.ISession.basePath = "/bad/path/to/nothing"
+        let error: ImperativeError;
+        let response: IIssueResponse;
+        try {
+            response = await IssueTso.issueTsoCmd(REAL_SESSION, "TIME", AS_OPTIONS);
+        } catch (thrownError) {
+            error = thrownError;
+        }
+        expect(error).toBeDefined();
+        expect(response).toBeUndefined();
     });
 });

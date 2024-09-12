@@ -36,6 +36,15 @@ exports[`issue command handler tests should issue command 1`] = `
       },
       undefined,
       Object {
+        "addressSpaceOptions": Object {
+          "account": "fake",
+          "characterSet": undefined,
+          "codePage": undefined,
+          "columns": undefined,
+          "logonProcedure": undefined,
+          "regionSize": undefined,
+          "rows": undefined,
+        },
         "isStateful": undefined,
         "suppressStartupMessage": undefined,
       },

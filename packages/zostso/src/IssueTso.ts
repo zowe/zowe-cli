@@ -36,9 +36,8 @@ export class IssueTso {
         let command: string | IIssueTsoCmdParms;
         let version: string;
         opts = opts || {};
-
         let useNewApi =
-        opts.addressSpaceOptions == null &&
+        opts.addressSpaceOptions == null ||
             await CheckStatus.isZosVersionGreaterThan(
                 session,
                 ZosmfConstants.VERSIONS.V2R4
@@ -78,8 +77,6 @@ export class IssueTso {
         }
         // Deprecated API Behavior [former issueTsoCommand() behavior]
         if (opts.addressSpaceOptions != null || !useNewApi) {
-            const profInfo = ImperativeConfig.instance.config.api.profiles.defaultGet("tso");
-            opts.addressSpaceOptions = { ...opts.addressSpaceOptions, ...profInfo};
             command =
                 typeof commandInfo === "string"
                     ? commandInfo

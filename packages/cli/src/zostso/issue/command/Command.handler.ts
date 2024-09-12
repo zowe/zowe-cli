@@ -32,6 +32,7 @@ export default class Handler extends ZosTsoBaseHandler {
                 isStateful: params.arguments.stateful,
                 suppressStartupMessage:
                     params.arguments.suppressStartupMessages,
+                    addressSpaceOptions: this.mTsoStart
             }
         );
 

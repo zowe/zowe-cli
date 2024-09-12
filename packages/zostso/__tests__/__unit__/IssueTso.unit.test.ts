@@ -140,6 +140,9 @@ describe("TsoIssue issueTsoCommand - failing scenarios", () => {
         expect(error).toBeDefined();
     });
     it("should fail when StartTSO fails", async () => {
+        jest.spyOn(CheckStatus, "isZosVersionGreaterThan").mockReturnValue(
+            Promise.resolve(false)
+        );
         let error: ImperativeError;
         let response: ISendResponse;
 
@@ -168,6 +171,9 @@ describe("TsoIssue issueTsoCommand - failing scenarios", () => {
 
 describe("TsoIssue issueTsoCommand - Deprecated API", () => {
     it("should succeed", async () => {
+        jest.spyOn(CheckStatus, "isZosVersionGreaterThan").mockReturnValue(
+            Promise.resolve(false)
+        );
         (StartTso.start as any) = jest.fn(() => {
             return new Promise((resolve) => {
                 process.nextTick(() => {
