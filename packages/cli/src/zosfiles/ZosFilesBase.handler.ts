@@ -53,6 +53,7 @@ export abstract class ZosFilesBaseHandler implements ICommandHandler {
             if (response.commandResponse) {
                 commandParameters.response.console.log(response.commandResponse);
             }
+            commandParameters.response.data.setObj(response);
         } catch (error) {
             if (commandParameters.arguments.ignoreNotFound && (error.errorCode === '404' || error.toString().includes("IDC3012I "))) {
                 // The IDC3012I code is an IBM z/OS error message that indicates that the
