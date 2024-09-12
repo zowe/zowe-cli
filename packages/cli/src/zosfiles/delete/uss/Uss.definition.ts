@@ -78,7 +78,7 @@ export const UssDefinition: ICommandDefinition = {
         },
         {
             description: strings.EXAMPLES.EX4,
-            options: `"/a/ibmuser/testcases" -q`
+            options: `"/a/ibmuser/testcases" -fq`
         }
     ]
 };

@@ -89,7 +89,7 @@ export const VsamDefinition: ICommandDefinition = {
         },
         {
             description: strings.EXAMPLES.EX2,
-            options: `"ibmuser.cntl.vsam" -q`
+            options: `"ibmuser.cntl.vsam" -fq`
         },
     ]
 };

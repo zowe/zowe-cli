@@ -73,7 +73,7 @@ export const DsDefinition: ICommandDefinition = {
         },
         {
             description: strings.EXAMPLES.EX3,
-            options: `"ibmuser.cntl(mem)" -q`
+            options: `"ibmuser.cntl(mem)" -fq`
         }
     ]
 };

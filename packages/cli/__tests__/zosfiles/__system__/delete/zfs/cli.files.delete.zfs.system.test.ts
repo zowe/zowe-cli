@@ -116,11 +116,11 @@ describe("Delete z/OS File System", () => {
 
         it("should delete a ZFS with --quiet flag", async () => {
             // first create zfs
-            let createResponse = runCliScript(__dirname + "/__scripts__/command/command_create_zfs.sh",
+            const createResponse = runCliScript(__dirname + "/__scripts__/command/command_create_zfs.sh",
                 TEST_ENVIRONMENT, [fsname, volume]);
             expect(createResponse.status).toBe(0);
 
-            let deleteResponse = runCliScript(__dirname + "/__scripts__/command/command_delete_zfs.sh",
+            const deleteResponse = runCliScript(__dirname + "/__scripts__/command/command_delete_zfs.sh",
                 TEST_ENVIRONMENT, [fsname, "--for-sure", "--quiet"]);
             expect(deleteResponse.stderr.toString()).toBe("");
             expect(deleteResponse.status).toBe(0);
