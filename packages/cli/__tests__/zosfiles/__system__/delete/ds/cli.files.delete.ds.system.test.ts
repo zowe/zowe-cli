@@ -138,12 +138,14 @@ describe("Delete Data Set", () => {
         });
 
         it("should delete a data set with --quiet flag", async () => {
-            let response = runCliScript(__dirname + "/__scripts__/command/command_create_data_set.sh",
+            let createResponse = runCliScript(__dirname + '/__scripts__/command/command_create_data_set.sh',
                 TEST_ENVIRONMENT, [dsname]);
-            response = runCliScript(__dirname + "/__scripts__/command/command_delete_data_set.sh",
+            expect(createResponse.status).toBe(0);  // Ensure the data set is created successfully
+
+            // Now delete the data set, verify no output in quiet mode
+            let deleteResponse = runCliScript(__dirname + "/__scripts__/command/command_delete_data_set.sh",
                 TEST_ENVIRONMENT, [dsname, "--for-sure", "--quiet"]);
-            expect(response.stderr.toString()).toBe("");
-            expect(response.status).toBe(0);
+            expect(deleteResponse.stderr.toString()).toBe("");
         });
     });
 

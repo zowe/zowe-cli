@@ -119,8 +119,6 @@ describe("Delete VSAM Data Set", () => {
         });
 
         it("should delete a VSAM data set that has a retention period", async () => {
-            let response = runCliScript(__dirname + "/__scripts__/command/command_invoke_ams_define_for_statement.sh",
-                TEST_ENVIRONMENT, [dsname, volume]);
             response = runCliScript(__dirname + "/__scripts__/command/command_delete_vsam_data_set.sh",
                 TEST_ENVIRONMENT, [dsname, "--for-sure", "--purge"]);
             expect(response.stderr.toString()).toBe("");
@@ -129,13 +127,17 @@ describe("Delete VSAM Data Set", () => {
         });
 
         it("should successfully delete a VSAM data set with --quiet flag", async () => {
-            let response = runCliScript(__dirname + "/__scripts__/command/command_invoke_ams_define_statement.sh",
+            // create vsam
+            let createResponse = runCliScript(__dirname + "/__scripts__/command/command_invoke_ams_define_statement.sh",
                 TEST_ENVIRONMENT, [dsname, volume]);
-            response = runCliScript(__dirname + "/__scripts__/command/command_delete_vsam_data_set.sh",
+            expect(createResponse.status).toBe(0);
+
+            // now delete
+            let deleteResponse = runCliScript(__dirname + "/__scripts__/command/command_delete_vsam_data_set.sh",
                 TEST_ENVIRONMENT, [dsname, "--for-sure", "--quiet"]);
-            expect(response.stderr.toString()).toBe("");
-            expect(response.status).toBe(0);
-            expect(response.stdout.toString()).toMatchSnapshot();
+            expect(deleteResponse.stderr.toString()).toBe("");
+            expect(deleteResponse.status).toBe(0);
+            expect(deleteResponse.stdout.toString()).toMatchSnapshot();
         });
     });
 

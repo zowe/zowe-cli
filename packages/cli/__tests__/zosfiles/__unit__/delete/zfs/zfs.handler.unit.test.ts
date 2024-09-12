@@ -34,7 +34,7 @@ describe("ZfsHandler", () => {
         });
         deleteZfsSpy = jest.spyOn(Delete, "zfs");
         deleteZfsSpy.mockClear();
-        deleteZfsSpy.mockImplementation(async () => defaultReturn);
+        deleteZfsSpy.mockImplementationOnce(async () => defaultReturn);
     });
 
     it("should call Delete.zfs", async () => {
@@ -66,7 +66,7 @@ describe("ZfsHandler", () => {
     });
 
     it("should return success: true when --quiet (-fq) flag is used and file is not found", async () => {
-        deleteZfsSpy.mockImplementation(() => {
+        deleteZfsSpy.mockImplementationOnce(() => {
             throw fileNotFoundError;
         });
 
