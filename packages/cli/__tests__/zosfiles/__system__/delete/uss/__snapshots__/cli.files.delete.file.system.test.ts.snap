@@ -17,7 +17,7 @@ USS File or directory deleted successfully.
 "
 `;
 
-exports[`Delete File Success scenarios should delete a file with --quiet flag 1`] = `
+exports[`Delete File Success scenarios should delete a file with --ignore-not-found flag 1`] = `
 "================Z/OS FILES DELETE FILE===============
 USS File or directory deleted successfully.
 "

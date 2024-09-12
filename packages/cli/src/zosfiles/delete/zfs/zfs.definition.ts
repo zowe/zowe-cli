@@ -49,9 +49,9 @@ export const ZfsDefinition: ICommandDefinition = {
             required: true
         },
         {
-            name: "quiet",
-            aliases: ["q"],
-            description: strings.OPTIONS.QUIET,
+            name: "ignore-not-found",
+            aliases: ["i", "ignore-nf"],
+            description: strings.OPTIONS.IGNORE_NF,
             type: "boolean",
             required: false
         }
@@ -62,8 +62,8 @@ export const ZfsDefinition: ICommandDefinition = {
             options: `"HLQ.MYNEW.ZFS" -f`
         },
         {
-            description: strings.EXAMPLES.EX1,
-            options: `"HLQ.MYNEW.ZFS" -fq`
+            description: strings.EXAMPLES.EX2,
+            options: `"HLQ.MYNEW.ZFS" -fi`
         }
     ]
 };

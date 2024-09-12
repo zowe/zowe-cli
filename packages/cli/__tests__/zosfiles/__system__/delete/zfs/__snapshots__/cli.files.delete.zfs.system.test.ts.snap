@@ -6,7 +6,7 @@ z/OS file system deleted successfully.
 "
 `;
 
-exports[`Delete z/OS File System Success scenarios should delete a ZFS with --quiet flag 1`] = `
+exports[`Delete z/OS File System Success scenarios should delete a ZFS with --ignore-not-found flag 1`] = `
 "================Z/OS FILES DELETE Z/OS FILE SYSTEM===============
 z/OS file system deleted successfully.
 "

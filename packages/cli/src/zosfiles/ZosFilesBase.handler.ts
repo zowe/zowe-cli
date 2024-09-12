@@ -54,7 +54,7 @@ export abstract class ZosFilesBaseHandler implements ICommandHandler {
                 commandParameters.response.console.log(response.commandResponse);
             }
         } catch (error) {
-            if (commandParameters.arguments.quiet && (error.errorCode === '404' || error.toString().includes("IDC3012I "))) {
+            if (commandParameters.arguments.ignoreNotFound && (error.errorCode === '404' || error.toString().includes("IDC3012I "))) {
                 // The IDC3012I code is an IBM z/OS error message that indicates that the
                 // requested dataset or VSAM entry does not exist in the catalog
                 commandParameters.response.data.setObj({ success: true });

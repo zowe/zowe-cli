@@ -92,7 +92,7 @@ describe("DsHandler", () => {
         expect(response).toBe(defaultReturn);
     });
 
-    it("should return success: true when --quiet (-fq) flag is used and dataset is not found", async () => {
+    it("should return success: true when --ignore-not-found () flag is used and dataset is not found", async () => {
         deleteDatasetSpy.mockImplementation(() => {
             throw fileNotFoundError;
         });
@@ -101,7 +101,8 @@ describe("DsHandler", () => {
         const commandParameters: any = {
             arguments: {
                 dataSetName: "ABCD",
-                quiet: true,
+                forSure: true,
+                ignoreNotFound: true,
             },
             response: {
                 progress: { endBar: jest.fn() },
@@ -112,7 +113,7 @@ describe("DsHandler", () => {
         await expect(handler.process(commandParameters)).resolves.toBe(undefined);
     });
 
-    it("should throw file not found error (404) when --quiet is not used (-f)", async () => {
+    it("should throw file not found error (404) when --ignore-not-found is not used", async () => {
         deleteDatasetSpy.mockImplementation(() => {
             throw fileNotFoundError;
         });
@@ -120,7 +121,8 @@ describe("DsHandler", () => {
         const handler = new DsHandler();
         const commandParameters: any = {
             arguments: {
-                dataSetName: "ABCD"
+                dataSetName: "ABCD",
+                forSure: true
             }
         };
 

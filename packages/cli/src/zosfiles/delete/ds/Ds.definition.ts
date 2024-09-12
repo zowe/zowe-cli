@@ -55,9 +55,9 @@ export const DsDefinition: ICommandDefinition = {
             type: "string"
         },
         {
-            name: "quiet",
-            aliases: ["q"],
-            description: strings.OPTIONS.QUIET,
+            name: "ignore-not-found",
+            aliases: ["i", "ignore-nf"],
+            description: strings.OPTIONS.IGNORE_NF,
             type: "boolean",
             required: false
         }
@@ -73,7 +73,7 @@ export const DsDefinition: ICommandDefinition = {
         },
         {
             description: strings.EXAMPLES.EX3,
-            options: `"ibmuser.cntl(mem)" -fq`
+            options: `"ibmuser.cntl(mem)" -fi`
         }
     ]
 };

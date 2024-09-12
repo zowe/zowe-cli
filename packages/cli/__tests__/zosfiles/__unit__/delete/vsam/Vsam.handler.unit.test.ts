@@ -69,7 +69,7 @@ describe("VsamHandler", () => {
         expect(response).toBe(defaultReturn);
     });
 
-    it("should return success: true when --quiet (-fq) flag is used and file is not found", async () => {
+    it("should return success: true when --ignore-not-found flag is used and file is not found", async () => {
         deleteVsamDatasetSpy.mockImplementation(() => {
             throw fileNotFoundError;
         });
@@ -80,7 +80,8 @@ describe("VsamHandler", () => {
                 dataSetName: "ABCD",
                 erase: true,
                 purge: false,
-                quiet: true,
+                forSure: true,
+                ignoreNotFound: true,
             },
             response: {
                 progress: { endBar: jest.fn() },
@@ -91,7 +92,7 @@ describe("VsamHandler", () => {
         await expect(handler.process(commandParameters)).resolves.toBe(undefined);
     });
 
-    it("should throw file not found error (404) when --quiet is not used (-f)", async () => {
+    it("should throw file not found error (404) when --ignore-not-found is not used", async () => {
         deleteVsamDatasetSpy.mockImplementation(() => {
             throw fileNotFoundError;
         });
@@ -101,7 +102,8 @@ describe("VsamHandler", () => {
             arguments: {
                 dataSetName: "ABCD",
                 erase: true,
-                purge: false // --erase and --purge flags, but no --quiet flag
+                forSure: true,
+                purge: false
             }
         };
 

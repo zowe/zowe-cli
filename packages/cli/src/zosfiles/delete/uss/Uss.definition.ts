@@ -56,9 +56,9 @@ export const UssDefinition: ICommandDefinition = {
             required: false
         },
         {
-            name: "quiet",
-            aliases: ["q"],
-            description: strings.OPTIONS.QUIET,
+            name: "ignore-not-found",
+            aliases: ["i", "ignore-nf"],
+            description: strings.OPTIONS.IGNORE_NF,
             type: "boolean",
             required: false
         }
@@ -78,7 +78,7 @@ export const UssDefinition: ICommandDefinition = {
         },
         {
             description: strings.EXAMPLES.EX4,
-            options: `"/a/ibmuser/testcases" -fq`
+            options: `"/a/ibmuser/testcases" -fi`
         }
     ]
 };

@@ -252,7 +252,7 @@ export default {
                     VOLUME: "The volume serial (VOLSER) where the data set resides. The option is required only when the data set is not" +
                         " catalogued on the system.",
                     FOR_SURE: "Specify this option to confirm that you want to delete the data set permanently.",
-                    QUIET: "Suppress errors if the data set does not exist."
+                    IGNORE_NF: "Suppress errors if the data set does not exist."
                 },
                 EXAMPLES: {
                     EX1: "Delete the data set named 'ibmuser.cntl'",
@@ -286,11 +286,11 @@ export default {
                     ERASE: "Specify this option to overwrite the data component for the cluster with binary zeros. This " +
                         "option is ignored if the NOERASE attribute was specified when the cluster was defined or altered.",
                     PURGE: "Specify this option to delete the VSAM cluster regardless of its retention period or date.",
-                    QUIET: "Suppress errors if the VSAM data set does not exist."
+                    IGNORE_NF: "Suppress errors if the VSAM data set does not exist."
                 },
                 EXAMPLES: {
                     EX1: "Delete the VSAM data set named 'ibmuser.cntl.vsam'",
-                    EX2: "Delete all expired VSAM data sets that match 'ibmuser.AAA.**.FFF'",
+                    EX2: "Quietly delete all VSAM data sets that match 'ibmuser.AAA.**.FFF' ignoring not-found errors",
                     EX3: "Delete a non-expired VSAM data set named 'ibmuser.cntl.vsam'",
                     EX4: "Delete an expired VSAM data set named 'ibmuser.cntl.vsam' by overwriting the components with zeros",
                     EX5: "Quietly delete VSAM data set, suppressing errors if it doesn't exist"
@@ -305,7 +305,7 @@ export default {
                 OPTIONS: {
                     FOR_SURE: "Specify this option to confirm that you want to delete the file or directory permanently.",
                     RECURSIVE: "Delete directories recursively.",
-                    QUIET: "Suppress errors if the file does not exist."
+                    IGNORE_NF: "Suppress errors if the file does not exist."
                 },
                 EXAMPLES: {
                     EX1: "Delete the empty directory '/u/ibmuser/testcases'",
@@ -322,7 +322,7 @@ export default {
                 },
                 OPTIONS: {
                     FOR_SURE: "Specify this option to confirm that you want to delete the ZFS permanently.",
-                    QUIET: "Suppress errors if the z/OS file does not exist."
+                    IGNORE_NF: "Suppress errors if the z/OS file does not exist."
 
                 },
                 EXAMPLES: {

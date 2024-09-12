@@ -65,7 +65,7 @@ describe("ZfsHandler", () => {
         expect(response).toBe(defaultReturn);
     });
 
-    it("should return success: true when --quiet (-fq) flag is used and file is not found", async () => {
+    it("should return success: true when --ignore-not-found flag is used and file is not found", async () => {
         deleteZfsSpy.mockImplementationOnce(() => {
             throw fileNotFoundError;
         });
@@ -74,7 +74,8 @@ describe("ZfsHandler", () => {
         const commandParameters: any = {
             arguments: {
                 fileSystemName: "ABCD",
-                quiet: true,
+                forSure: true,
+                ignoreNotFound: true,
             },
             response: {
                 progress: { endBar: jest.fn() },
@@ -85,7 +86,7 @@ describe("ZfsHandler", () => {
         await expect(handler.process(commandParameters)).resolves.toBe(undefined);
     });
 
-    it("should throw file not found error (404) when --quiet is not used (-f)", async () => {
+    it("should throw file not found error (404) when --ignore-not-found is not used", async () => {
         deleteZfsSpy.mockImplementation(() => {
             throw fileNotFoundError;
         });
@@ -94,7 +95,7 @@ describe("ZfsHandler", () => {
         const commandParameters: any = {
             arguments: {
                 fileSystemName: "ABCD",
-                forSure: true // --forSure flag, no --quiet flag
+                forSure: true // --forSure flag, no --ignore-not-found flag
             }
         };
 

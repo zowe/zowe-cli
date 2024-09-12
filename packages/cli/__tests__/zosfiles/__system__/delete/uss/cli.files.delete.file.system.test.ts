@@ -131,9 +131,9 @@ describe("Delete File", () => {
             expect(response.stdout.toString()).toMatchSnapshot();
         });
 
-        it("should delete a file with --quiet flag", async () => {
+        it("should delete a file with --ignore-not-found flag", async () => {
             const response = runCliScript(__dirname + "/__scripts__/command/command_delete_file.sh",
-                TEST_ENVIRONMENT, [ussname, "--for-sure", "--quiet"]);
+                TEST_ENVIRONMENT, [ussname, "--for-sure", "--ignore-not-found"]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toMatchSnapshot();

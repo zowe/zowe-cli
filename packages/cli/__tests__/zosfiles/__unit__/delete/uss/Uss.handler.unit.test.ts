@@ -65,7 +65,7 @@ describe("UssHandler", () => {
         expect(response).toBe(defaultReturn);
     });
 
-    it("should return success: true when --quiet (-fq) flag is used and file is not found", async () => {
+    it("should return success: true when --ignore-not-found flag is used and file is not found", async () => {
         deleteUssFileSpy.mockImplementation(() => {
             throw fileNotFoundError;
         });
@@ -74,7 +74,8 @@ describe("UssHandler", () => {
         const commandParameters: any = {
             arguments: {
                 fileName: "ABCD",
-                quiet: true,
+                forSure: true,
+                ignoreNotFound: true,
             },
             response: {
                 progress: { endBar: jest.fn() },
@@ -85,7 +86,7 @@ describe("UssHandler", () => {
         await expect(handler.process(commandParameters)).resolves.toBe(undefined);
     });
 
-    it("should throw file not found error (404) when --quiet is not used (-f)", async () => {
+    it("should throw file not found error (404) when --ignore-not-found is not used", async () => {
         deleteUssFileSpy.mockImplementation(() => {
             throw fileNotFoundError;
         });
@@ -93,7 +94,8 @@ describe("UssHandler", () => {
         const handler = new UssHandler();
         const commandParameters: any = {
             arguments: {
-                fileName: "ABCD"
+                fileName: "ABCD",
+                forSure: true
             }
         };
 
