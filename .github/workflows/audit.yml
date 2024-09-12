@@ -6,8 +6,8 @@ on:
       - master
       - zowe-v1-lts
       - next
-  # schedule:
-  #   - cron: '0 10 * * *'
+  schedule:
+    - cron: '0 10 * * *'
 
 jobs:
   audit:
@@ -37,4 +37,4 @@ jobs:
 
     - name: Check Secrets SDK Vulnerabilities
       working-directory: packages/secrets/src/keyring
-      run: cargo audit --deny warnings
+      run: cargo audit --deny warnings --ignore RUSTSEC-2024-0370

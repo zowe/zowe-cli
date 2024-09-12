@@ -46,7 +46,7 @@ Package/Plugin integration tests are divided into two categories:
 - **CLI**: Issuing commands via script/exec and ensuring correctness of output (as a user at their terminal/console would).
 
 ### Integration Test Layout
-- Place integration tests under the packages `__tests__/__integration__` directory. 
+- Place integration tests under the package's `__tests__/__integration__` directory. 
   - Place **API** integration tests under `__tests__/__integration__/api`
   - Place **CLI** integration tests under `__tests__/__integration__/cli`
 - Arrange **API** & **CLI** integration test directories to match the structure of your **API** & **CLI** src directories.
@@ -89,9 +89,9 @@ beforeAll(async () => {
 
 ```
 
-Temporary profiles are created using a randomized profile name to avoid collision with any existing profiles you may be using. The Zowe CLI home environmental variable is automatically set to the temporary directory created in the TestEnvironment.setUp function. If you do request any temporary profiles being created, please be sure to call TestEnvironment.cleanUp in an afterAll block as shown in the example above.
+Temporary profiles are created using a randomized profile name to avoid collision with any existing profiles you may be using. The Zowe CLI home environmental variable is automatically set to the temporary directory created in the `TestEnvironment.setUp` function. If you do request any temporary profiles being created, please be sure to call `TestEnvironment.cleanUp` in an `afterAll` block as shown in the example above.
 
-If you run the tests and forgot to call TestEnvironment.cleanUp, killed the process before the afterAll jest hook could run, 
+If you run the tests and forgot to call `TestEnvironment.cleanUp`, killed the process before the `afterAll` jest hook could run, 
 or otherwise prevented the profiles from being deleted, you can clean up these stranded profiles by running the command `npm run test:cleanUpProfiles`.
 
 However, this script is dependent on the contents of the `__tests__/__results__/data`. If you have deleted that directory, you will have to clean up the credentials manually.
@@ -124,5 +124,5 @@ See `__tests__/__scripts__/clean_profiles.sh` for more information
 Inter-package integration tests should consist of "real-world" scenarios that involve multiple commands or APIs. For example, Creating a source data set, uploading an ASMPGM, compiling the ASMPGM, and running the ASMPGM.
 
 [jest]: https://facebook.github.io/jest/
-[Integration Tests]: ./packages/PackagesAndPluginGuidelines.md#integration-tests
-[PackagesAndPluginGuidelines.md]: ./packages/PackagesAndPluginGuidelines.md
+[Integration Tests]: ./PackagesAndPluginGuidelines.md#integration-tests
+[PackagesAndPluginGuidelines.md]: ./PackagesAndPluginGuidelines.md
