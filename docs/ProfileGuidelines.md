@@ -8,7 +8,7 @@ The basic use case for a profile is to persist "connection details" (i.e. host/p
 
 Profiles are ultimately for user convenience. Having to repetitively type (or retype) sets of configuration/options can be cumbersome for a user.
 
-See [Imperative CLI Framework documentation](https://github.com/zowe/imperative/wiki) about profiles for details on implementing profiles and the profile "type" concept.
+See [Imperative CLI Framework documentation](https://github.com/zowe/zowe-cli/wiki) about profiles for details on implementing profiles and the profile "type" concept.
 
 ### When You Use a Profile to Store Configuration Items
 Use a profile to store configuration items under the following conditions:

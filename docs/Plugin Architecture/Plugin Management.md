@@ -49,7 +49,7 @@ When enabling plugins, a group will automatically be added to the Base CLI by th
 From the command line this would look something like this:
 
 ```commandline
-cli plugin <command>
+zowe plugins <command>
 ```
 
 ### Commands
@@ -93,14 +93,14 @@ To prevent duplication, this definition has been moved [here][plugin.json format
 
 ##### Command Usage
 ```commandline
-cli plugin install [plugin...] [--registry <registry>] [--isLocalURI] [--isRemoteURI] [--use <config>]
+zowe plugins install [plugin...] [--registry <registry>] [--isLocalURI] [--isRemoteURI] [--use <config>]
 ```
 - `[plugin...]` is an npm package or a pointer to a URI (either local or remote). It is passed the same way it would be to npm install. 
-    - Semantic versioning should also be handled for each plugin much like how it is done in `npm install`. So versions for plugins could be specified like `cli plugin install plugin@^1.0.0` and this would be saved in the plugin.json file so that the update command can respect this.
+    - Semantic versioning should also be handled for each plugin much like how it is done in `npm install`. So versions for plugins could be specified like `zowe plugins install plugin@^1.0.0` and this would be saved in the `plugin.json` file so that the update command can respect this.
         - In the instance that no version is specified, the latest version will be installed and prefixed with the same thing stored in npm's save-prefix. See [npm save prefix].
         - For information on npm's semantic versioning, see [npm semver].
     - Also like `npm install`, the ability to install multiple plugins in one command should be considered.
-        - `cli plugin install plugin1 plugin2 plugin3` (consistent with npm)
+        - `zowe plugins install plugin1 plugin2 plugin3` (consistent with npm)
         - ***NOTE:** Assume this format for the rest of the document when referring to `plugin...` type arguments.*
     - This parameter has been marked as optional so that it works like an npm install would in a project. In the first iteration, this functionality probably doesn't exist. In the event that no parameters are passed, a plugin.json file will need to exist or be provided. All plugins in this file will be installed using the same concept that `npm install` uses with a package.json.
         - ***NOTE:** This is not part of the first iteration.*
@@ -117,7 +117,7 @@ This command is less complicated than the install command. Basically all this co
 
 ##### Command Usage
 ```commandline
-cli plugin uninstall <plugin...>
+zowe plugins uninstall <plugin...>
 ```
 
 - `<plugin...>` is a list of installed plugins to uninstall. This would be the value of one of the keys in plugins.json.
@@ -133,7 +133,7 @@ For instances where the update is done on an npm package at a given registry. Th
 ##### Command Usage
 
 ```commandline
-cli plugin update [plugin...] [--registry <registry>]
+zowe plugins update [plugin...] [--registry <registry>]
 ```
 
 - **[plugin...]** is a list of installed plugins to update. This would be the value of one of the keys in plugins.json. It should be noted that this parameter could be optional. If omitted, all plugins would be updated to the most current version (which is determined in the plugin.json file).
@@ -150,211 +150,10 @@ The list command will list all installed plugins to the Base CLI application. Th
 
 ##### Command Usage
 ```commandline
-cli plugin list
+zowe plugins list
 ```
 
 No arguments are sent to this command as it is meant to list all installed plugins and their status. That is good enough for now and could be built upon later.
-
-#### Health Command
-
-The health command will list the health of all plugins or the plugins specified when sent to the command. This is useful as a first step in troubleshooting a plugin or base CLI as things such as missing methods and classes. Plugins also will need to implement a health check method that provides further diagnostic information about the plugin.
-
-This type of command is needed because it is feasible that a user could be using a plugin for some amount of time with no problem and then some kind of hiccup happens on their machine which breaks the plugin. The health check would be able to help the user quickly find the problem in their environment / plugin to get a quicker resolution to their problem. The information returned by this command could also be used in a bug report to the base CLI or plugin developer.
-
-##### Command Usage
-```commandline
-cli plugin health [plugin...]
-```
-
-- `[plugin...]` is an optional list of plugins to perform a health check on. If no plugins are specified, then all plugins will be checked by this command.
-
-#### Version Command
-
-This command will print out the version of a plugin. 
-
-This could be used by an automation script in a development environment to ensure that proper versions of a plugin are installed acrossed team members' machines. For example, say that a team is using `cli` with `cli-plugin` version 1 but version 2 is released and some of the build processes now need functionality in version 2. A script could be written to check these versions and perform updates as needed.
-
-##### Command Usage
-```commandline
-cli plugin version <plugin>
-```
-
-- `<plugin>` is the name of an installed plugin. If this plugin isn't installed, the command will report an error.
-
-#### Repair Command
-
-This command will attempt to repair a plugin.
-
-It could be feasible that their might be some scenarios where a plugin might become corrupt or broken over time due to unforseen circumstances. Thus it would be ideal if there was a command that existed to easily fix a plugin.
-
-***NOTE:** This is not expected to be part of the first iteration.*
-
-Plugins would have to implement a corresponding `fix` method if they have the ability to repair themselves. One example of how this could be useful:
-
-Assume that a plugin didn't properly install a node_module or somehow one became missing. The plugin could implement a fix method, which could call it's health check to determine what the problem is. After determining that a required module isn't installed, the plugin could attempt to install all missing modules. 
-
-This could also have been done by uninstalling and reinstalling the plugin but that could be considered a painfull process depending on the plugin. The repair command would make this process a bit easier.
-
-##### Command Usage
-```commandline
-cli plugin repair <plugin>
-```
-
-- `<plugin>` is the name of an installed plugin. If the plugin is not broken, then nothing should happen. If the plugin is broken and the repair is successful, a simple success message will suffice. On a failed repair, a detailed message (and possible stack trace) should be printed to console.error.
-
-#### Help Command
-
-The help command would display additional plugin help. Some of these things could be:
-
-- Plain text to output in the console.
-- A local HTML/PDF/TXT/MD file that opens in an appropriate application
-- Some form of online help that is opened in the browser.
-    - GitHub
-    - Doc Site
-
-For this to be a good experience for plugin developers, some utility functions will need to be written to open up links or local files. Plugins will also need to implement a `help` function / variable that is called by the framework.
-
-##### Command Usage
-```commandline
-cli plugin help <plugin> [arg]
-```
-
-- `<plugin>` is the name of the plugin to display help for.
-- `[arg]` is an optional argument to send to the help function of a plugin. This could be used to open up more contextual help.
-
-#### Add Command
-
-The add command would add preinstalled plugins to the plugins.json file so that the base CLI can make use of them. 
-
-Imagine that a user went to their global install of a cli and started doing npm installs of plugins there, the add command could then be used to initialize the nessary config to use them. This could be extended at some point in the future to allow plugins to be installed via `npm install -g <plugin>` and then added with this command.
-
-##### Command Usage
-```commandline
-cli plugin add <plugin...>
-```
-
-- `<plugin...>` is a variable length list of plugins to be added to the base CLI.
-- Plugins listed are expected to be in the node_modules directory already. Could be achieved by the user manually doing an `npm install` in the install directory.
-    - This could be expanded to also try to look in the global node_modules.
-
-#### Clean Command
-
-The clean command could be used to completely blow away a single plugin or all plugins in the case that the plugin environment becomes broken or poluted. Files, installiation, global set options should be allowed to be selectivly blown away or done in bulk.
-
-Execution of this command should also require the user to confirm that they wish to perform this action since it could be considered to be destructive.
-
-##### Command Usage
-```commandline
-cli plugin clean [plugin...] [--config] [--files]
-```
-
-- `[plugin...]` is an optional variable length argument that points to an installed plugin.
-    - If this parameter is omitted, then the operation affects all plugins.
-- Operation flags
-    - Specifying no flags, will cause the clean operation to remove the package from node_modules and plugin.json. This also implies `--config` and `--files`.
-    - `--config` will cause the clean operation to remove any global configuration options that were set for the plugin. This does not remove the plugin and should be considered the first step in troubleshooting a plugin.
-    - `--files` will cause the clean operation to remove any files that were created by the plugin in the global CLI's storage location.
-        - This implies that we need to provide a way for plugins to create files in the CLI's storage folder (same location where profiles and config options are stored).
-        - This should also be a first step in troubleshooting a plugin or base CLI.
-
-***NOTE:** This doesn't need to be included in the first iteration as this isn't needed for an MVP plugin management facility. However, this is useful because it provides an easy way of cleaning up plugins besides the user of a CLI manually going in and deleting stuff. It also gives the ability to clean up config and files which could also be causing the problem, but would persist through a reinstall of a plugin.*
-
-
-## Config Group
-
-As discussed in the plugin group, and agreed on by the team, global plugin configuration will be handled through the `cli config` command. This command should be provided with the Imperative framework and should be customizable (to a certain extent) by application built in the framework.
-
-So assuming that this `config` group exists, we will need to extend the existing functionality to allow plugin global configurations to be modified. This could be done in one of two ways.
-
-### Using --plugin
-
-Under this method, a flag would be used to specify the plugin name a configuration option should be set for. The usage would look something like this:
-
-- `cli config get <variable> --plugin <plugin_name>`
-- `cli config set <variable> <value> --plugin <plugin_name>`
-
-Some things to note:
-- If `--plugin` is not specified, then the action is performed on the base CLI application.
-- There needs to be a way that all configuration for the base CLI can be gotten as well as all configuration for plugins as well. This could be achieved by simply assuming that omitting the variable name on the get means return everything.
-
-#### Pros
-- It is very easy to determine if you are configuring a plugin or the base CLI.
-- It keeps the syntax of the config get/set commands fairly clean
-
-#### Cons
-- This could lead to much longer commands for the user.
-- It would be really difficult for two plugins to share the same global configuration options.
-
-### Prefixing Variables
-
-The other alternative is to prefix the variables with either the plugin name or a configurable prefix set by the plugin developers. The usage could look something like this:
-
-- `cli config get <prefix>#<variable>`
-- `cli config set <prefix>#<variable> <value>`
-
-Now you may be wondering why the `#` symbol is being used, this is to help differentiate a plugin from a normal variable group that may exist. It could have been a `.` to be more familiar with JavaScript syntax (dot accessors), but that would have made this situation much harder to solve:
-
-Say that you have a global variable for your base CLI called `A.B` and you install a plugin that saves it's global configuration under the prefix `A`. Well then what would `cli config get A.B` do? Well in this scenario it could do one of two things:
-
-1. Gets the value of `A.B` in the base CLI
-1. Gets the value of `B` from the plugin A
-
-There is no good way to discern between either of these methods. Under the `#` syntax, it is real easy for us to determine which configuration to get and set. Below are examples on how to do both of previously listed possibilities for `cli config get A.B`:
-
-1. `cli config get A.B`
-1. `cli config get A#B`
-
-Now back to the prefixes. These could be defined by plugins and if not set it is defaulted to the plugin name. This gives some flexibility by plugin developers and could allow plugins to work together and build upon each other fairly easily.
-
-#### Pros
-- Shorter command syntax
-- Plugins could share prefixes
-    - Really good for plugins developed by the same vendor as there could be some overlapping options.
-- Similar to JavaDoc and JSDoc in the sense of members of a class can be denoted by **className#memberName**
-
-#### Cons
-- It could be a bit confusing to see something like this: `cli config get A#B.C.D`
-- It could cause plugins to not be compatible if they are using the same prefix and variable names.
-    - **Example:** Plugin **A** uses prefix `A` and plugin **Alpha** uses prefix `A` but the two plugins have not been developed to work together. If these two plugins have the same global variable B of different types between the two, then unpredictable things will happen.
-    - The above problem can be prevented by having plugins specify a well defined configuration structure. If two plugins are using the same `prefix#variable` structure, then the types better match or a problem could be listed during the plugin health check. 
-
-#### Dot Notation for Config
-
-So why bother talking about the dot notation for configuration? Well for starters it can already be seen in some CLIs, such as git's `user.name` and `user.email` but it also can relate to how configurations would be stored in JSON.
-
-Take the following two JSON files:
-
-###### /config/global.json
-```JSON
-{
-    "A": {
-        "B": "VALUE",
-        "C": 1,
-        "D": false,
-        "E": [
-            1,
-            2,
-            3
-        ]
-    }
-}
-```
-
-###### /config/plugin/A.JSON
-```JSON
-{
-    "B": 42
-}
-```
-
-Is it clearer how the dot notation plays into all of this? Below is the list of all the commands and output that can be seen from the get command:
-
-- `cli config get A.B` -> **VALUE**
-- `cli config get A.C` -> **1**
-- `cli config get A.D` -> **false**
-- `cli config get A.E` -> **1, 2, 3**
-- `cli config get A#B` -> **42**
-
 
 [Plugin Workflow]: ./High_Level_Plugin_Workflow.png
 [Config Group]: #config-group

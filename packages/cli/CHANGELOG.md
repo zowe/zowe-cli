@@ -154,6 +154,10 @@ LTS Breaking: Removed the following previously deprecated items: [#1981](https:/
 
 - Major: First major version bump for V3
 
+## `7.29.1`
+
+- BugFix: Updated `micromatch` dependency for technical currency. [#2242](https://github.com/zowe/zowe-cli/pull/2242)
+
 ## `7.28.3`
 
 - BugFix: Refactored code to reduce the use of deprecated functions to prepare for upcoming Node.js 22 support. [#2191](https://github.com/zowe/zowe-cli/issues/2191)

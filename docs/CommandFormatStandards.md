@@ -59,7 +59,7 @@ Refer to the following guidelines when writing descriptions for syntax segments 
 
 - The `summary` is a one line, short description. This appears in the list of sub-segments on online help pages (for example, Zowe root help lists the groups with their short descriptions. Zowe group help lists the actions with their descriptions.
    
-    - Do NOT include punctuation at the end of a summary description for consistency.
+    - For consistency, do NOT include punctuation at the end of a summary.
 
 - The full `description` explains the purpose, intent, & usage of the group, action, object, or option. Ideally, include use cases that apply so that people understand the practical value. There is some tension between clarity and length. Extremely long descriptions can clutter the interface, but users want to know what they can accomplish with a given command. Some end users have indicated that they struggle to understand what the CLI is capable of and how they might use it, so good descriptions are essential.
 
@@ -81,9 +81,9 @@ Research and usability testing has revealed that examples are the single most im
 
 - Positional arguments are a special kind of option. They are values/arguments entered that have an implicit option name and are usually entered immediately after the `object` (for example, the file name in the `zowe zos-files list dataset` command). These are usually required arguments. A single positional argument is most common but some commands have multiple positional arguments that are entered space-separated. We do not advise having multitple positional arguments because then the user must type several values in a row in the correct order, which can be error prone and hard to understand the proper syntax. Where there appears to be a need for multiple positional arguments, consider adding formal `option` names and make them required. 
 
-- Required options are listed under a Required Options section in the help. User research and usability testing have shown that statements explaining which options are required is among the most useful information in the online help pages, so it is important to write good descriptions and include these in the examples.
+- Required options are listed under a `Required Options` section in the help. User research and usability testing have shown that statements explaining which options are required is among the most useful information in the online help pages, so it is important to write good descriptions and include these in the examples.
 
-- Non-required options are listed under an Options section in the help.
+- Non-required options are listed under an `Options` section in the help.
 
 - The help may include other categories of options for connecting to a service such as z/OSMF (for example, `--password`), setting profiles, and global options (for example,`response-format-json`)
 
@@ -93,11 +93,11 @@ Research and usability testing has revealed that examples are the single most im
 
 - Dependencies between options can exist (if you specify one, you must specify the other, for example). This can introduce usability problems. The dependencies with other options should be noted in the option description.
 
-- The arguments/values for an `option`  can sometimes take wildcards (for example, a data-set name). The wildcard symbol is generally the asterisk * character. When building commands, consider using asterisk as the standard.
+- The arguments/values for an `option` can sometimes take wildcards (for example, a data set name). The wildcard symbol is generally the asterisk (*) character. When building commands, consider using asterisk as the standard.
 
 - The arguments/values can sometimes include quotes and can be a safer way to type the command. When writing examples, it is advisable to show arguments in quotes.
 
-- Some options take array values. The standard format is space separated. For more information, see [ICommandPositionalDefinition.ts](https://github.com/zowe/imperative/blob/master/packages/cmd/src/doc/option/ICommandPositionalDefinition.ts).
+- Some options take array values. The standard format is space separated. For more information, see [ICommandPositionalDefinition.ts](https://github.com/zowe/zowe-cli/blob/master/packages/imperative/src/cmd/src/doc/option/ICommandPositionalDefinition.ts).
 
 ## Abbreviated Command Structure 
 
