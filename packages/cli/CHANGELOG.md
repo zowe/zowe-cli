@@ -4,8 +4,8 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## Recent Changes
 
-- Enhancement: Deprecated `issueTsoCommand()` function and replaced with `issueTsoCmd()` to allow for dynamic system behavior
-based on the z/OS version in use to utilize 2.4 TSO command behavior. [#2240](https://github.com/zowe/zowe-cli/pull/2240)
+- Enhancement: Added `--stateful` flag to `zos-tso issue cmd` to allow declaring the statefulness of the address space being created.  [#2240](https://github.com/zowe/zowe-cli/pull/2240)
+- Enhancement: `--suppress-startup-messages` flag default value changed to `true`. [#2240](https://github.com/zowe/zowe-cli/pull/2240)
 
 ## `8.0.0-next.202408261543`
 

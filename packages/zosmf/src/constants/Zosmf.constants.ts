@@ -68,7 +68,7 @@ export const ZosmfConstants: { [key: string]: any } = {
          */
         UNABLE_TO_VERIFY_LEAF_SIGNATURE: "UNABLE_TO_VERIFY_LEAF_SIGNATURE"
     },
-
+    // https://www.ibm.com/docs/en/zos/2.5.0?topic=service-retrieve-zosmf-information
     VERSIONS: {
         V2R1: "24",
         V2R2: "25",
