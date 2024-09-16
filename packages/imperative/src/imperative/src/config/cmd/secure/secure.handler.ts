@@ -11,6 +11,7 @@
 
 import { ICommandArguments, ICommandHandler, IHandlerParameters } from "../../../../../cmd";
 import { Config, ConfigConstants, ConfigSchema } from "../../../../../config";
+import { ConfigProfiles } from "../../../../../config/src/api";
 import { ConfigAutoStore } from "../../../../../config/src/ConfigAutoStore";
 import { ConfigUtils } from "../../../../../config/src/ConfigUtils";
 import { ImperativeError } from "../../../../../error";
@@ -23,7 +24,6 @@ export default class SecureHandler implements ICommandHandler {
      * The parameters object passed to the command handler.
      */
     private params: IHandlerParameters;
-
     /**
      * Process the command and input.
      *
@@ -50,15 +50,26 @@ export default class SecureHandler implements ICommandHandler {
 
         // Create the config, load the secure values, and activate the desired layer
         config.api.layers.activate(params.arguments.userConfig, params.arguments.globalConfig);
-        const secureProps: string[] = config.api.secure.secureFields();
+        let secureProps: string[] = config.api.secure.secureFields();
 
         if (secureProps.length === 0) {
             params.response.console.log("No secure properties found in your config");
             return;
         }
-
+        if(params.arguments.profile)
+        {
+            let filteredSecureProps = secureProps.filter(prop => config.api.profiles.getProfileNameFromPath(prop).toLowerCase() === params.arguments.profile.toLowerCase());
+            if(filteredSecureProps.length === 0 && secureProps.length > 0)
+            {
+                params.response.console.log(`No secure properties from profile '${params.arguments.profile}' found.`);
+            }
+            else
+            {
+                secureProps = filteredSecureProps;
+            }
+        }
         // Prompt for values designated as secure
-        for (const propName of secureProps) {
+        for (const propName of secureProps){
             if (propName.endsWith(".tokenValue")) {
                 params.response.console.log(`Processing secure properties for profile: ${config.api.profiles.getProfileNameFromPath(propName)}`);
                 let propValue = await this.handlePromptForAuthToken(config, propName);
@@ -128,3 +139,7 @@ export default class SecureHandler implements ICommandHandler {
         }
     }
 }
+function getProfileNameFromPath(prop: string) {
+    throw new Error("Function not implemented.");
+}
+
