@@ -20,7 +20,7 @@ export class TsoProfileConstants {
         aliases: ["a"],
         description: "Your z/OS TSO/E accounting information.",
         type: "string",
-        required: true,
+        required: false,
         group: TsoProfileConstants.TSO_OPTION_GROUP
     };
 
