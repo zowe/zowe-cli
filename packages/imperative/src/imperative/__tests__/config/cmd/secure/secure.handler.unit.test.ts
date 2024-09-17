@@ -10,7 +10,7 @@
 */
 
 import { Logger } from "../../../../../logger";
-import { Config } from "../../../../../config/src/Config";
+import { Config, ConfigConstants, ConfigSchema } from "../../../../../config";
 import { IConfig, IConfigOpts, IConfigProfile } from "../../../../../config";
 import { ImperativeConfig } from "../../../../../utilities";
 import { IImperativeConfig } from "../../../../src/doc/IImperativeConfig";
@@ -28,6 +28,7 @@ import { SessConstants } from "../../../../../rest";
 import { setupConfigToLoad } from "../../../../../../__tests__/src/TestUtil";
 import { IHandlerParameters } from "../../../../../cmd";
 import { EventOperator, EventUtils } from "../../../../../events";
+import { ConfigProfiles } from "@zowe/imperative/lib/config/src/api";
 
 let readPromptSpy: any;
 const getIHandlerParametersObject = (): IHandlerParameters => {
@@ -791,6 +792,45 @@ describe("Configuration Secure command handler", () => {
             expect(mockAuthHandlerApi.sessionLogin).toHaveBeenCalledTimes(1);
             expect(keytarSetPasswordSpy).toHaveBeenCalledTimes(0);
             expect(writeFileSyncSpy).toHaveBeenCalledTimes(0);
+        });
+        it("should filter secure properties based on the provided profile", async () => {
+            const handler = new SecureHandler();
+            const params = getIHandlerParametersObject();
+    
+            params.arguments.userConfig = true;
+            params.arguments.globalConfig = true;
+            //params.arguments.profiles = "testProfiles";
+            // Start doing fs mocks
+            // And the prompting of the secure handler
+            keytarGetPasswordSpy.mockReturnValue(fakeSecureData);
+            keytarSetPasswordSpy.mockImplementation();
+            keytarDeletePasswordSpy.mockImplementation();
+            readFileSyncSpy = jest.spyOn(fs, "readFileSync");
+            writeFileSyncSpy = jest.spyOn(fs, "writeFileSync");
+            existsSyncSpy = jest.spyOn(fs, "existsSync");
+            
+            const eco = lodash.cloneDeep(expectedGlobalUserConfigObject);
+            eco.$schema = "./fakeapp.schema.json";
+    
+            readFileSyncSpy.mockReturnValueOnce(JSON.stringify(eco));
+            existsSyncSpy.mockReturnValueOnce(false).mockReturnValueOnce(false).mockReturnValueOnce(true)
+                .mockReturnValue(false); // Only the global user config exists
+            writeFileSyncSpy.mockImplementation();
+            searchSpy.mockReturnValueOnce(fakeProjUserPath).mockReturnValueOnce(fakeProjPath); // Give search something to return
+    
+            await setupConfigToLoad(undefined, configOpts); // Setup the config
+    
+            // We aren't testing the config initialization - clear the spies
+            searchSpy.mockClear();
+            writeFileSyncSpy.mockClear();
+            existsSyncSpy.mockClear();
+            readFileSyncSpy.mockClear();
+    
+            jest.spyOn(ImperativeConfig.instance.config.api.profiles, "getProfileNameFromPath").mockReturnValueOnce("testProfiles");
+    
+            await handler.process(params);
+        
+            expect(params.arguments.profiles.length).toBeDefined();
         });
     });
 });
