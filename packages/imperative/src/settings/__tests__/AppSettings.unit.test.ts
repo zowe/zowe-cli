@@ -54,7 +54,7 @@ const exposeAppSettingsInternal = (settings: AppSettings): IAppSettingsAllMethod
 describe("AppSettings", () => {
     const mocks = {
         existsSync: existsSync as unknown as Mock<typeof existsSync>,
-        writeFile: writeFile as Mock<typeof writeFile>,
+        writeFile: writeFile as unknown as Mock<typeof writeFile>,
         writeFileSync: writeFileSync as Mock<typeof writeFileSync>,
         readFileSync: readFileSync as Mock<typeof readFileSync>
     };
