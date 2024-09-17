@@ -799,7 +799,7 @@ describe("Configuration Secure command handler", () => {
     
             params.arguments.userConfig = true;
             params.arguments.globalConfig = true;
-            //params.arguments.profiles = "testProfiles";
+            params.arguments.profile = "GoodProfile";
             // Start doing fs mocks
             // And the prompting of the secure handler
             keytarGetPasswordSpy.mockReturnValue(fakeSecureData);
@@ -825,12 +825,15 @@ describe("Configuration Secure command handler", () => {
             writeFileSyncSpy.mockClear();
             existsSyncSpy.mockClear();
             readFileSyncSpy.mockClear();
-    
-            jest.spyOn(ImperativeConfig.instance.config.api.profiles, "getProfileNameFromPath").mockReturnValueOnce("testProfiles");
-    
-            await handler.process(params);
-        
-            expect(params.arguments.profiles.length).toBeDefined();
+            let caughtError;
+            jest.spyOn(ImperativeConfig.instance.config.api.secure,"secureFields").mockReturnValue(["profiles.noMatchProfile.properties.password","profiles.GoodProfile.properties.password"])
+            try {
+                await handler.process(params);
+            } catch (error) {
+                caughtError = error;
+            }
+            expect(caughtError).toBeUndefined();
+            expect(params.arguments.profile).toBeDefined();
         });
     });
 });
