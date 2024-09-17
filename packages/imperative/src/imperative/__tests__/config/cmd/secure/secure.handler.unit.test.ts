@@ -28,7 +28,6 @@ import { SessConstants } from "../../../../../rest";
 import { setupConfigToLoad } from "../../../../../../__tests__/src/TestUtil";
 import { IHandlerParameters } from "../../../../../cmd";
 import { EventOperator, EventUtils } from "../../../../../events";
-import { ConfigProfiles } from "@zowe/imperative/lib/config/src/api";
 
 let readPromptSpy: any;
 const getIHandlerParametersObject = (): IHandlerParameters => {
