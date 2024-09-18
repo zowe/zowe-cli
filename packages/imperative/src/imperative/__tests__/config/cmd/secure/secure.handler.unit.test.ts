@@ -792,219 +792,112 @@ describe("Configuration Secure command handler", () => {
             expect(keytarSetPasswordSpy).toHaveBeenCalledTimes(0);
             expect(writeFileSyncSpy).toHaveBeenCalledTimes(0);
         });
-        it("should only prompt for secure values that match the profile passed in through params", async () => {
-            const handler = new SecureHandler();
-            const params = getIHandlerParametersObject();
-
-            params.arguments.userConfig = true;
-            params.arguments.globalConfig = true;
-            params.arguments.profile = "GoodProfile";
-
-            // Start doing fs mocks
-            keytarGetPasswordSpy.mockReturnValue(fakeSecureData);
-            keytarSetPasswordSpy.mockImplementation();
-            keytarDeletePasswordSpy.mockImplementation();
-            readFileSyncSpy = jest.spyOn(fs, "readFileSync");
-            writeFileSyncSpy = jest.spyOn(fs, "writeFileSync");
-            existsSyncSpy = jest.spyOn(fs, "existsSync");
-
-            const eco = lodash.cloneDeep(expectedGlobalUserConfigObject);
-            eco.$schema = "./fakeapp.schema.json";
-
-            readFileSyncSpy.mockReturnValueOnce(JSON.stringify(eco));
-            existsSyncSpy.mockReturnValueOnce(false).mockReturnValueOnce(false).mockReturnValueOnce(true)
-                .mockReturnValue(false); // Only the global user config exists
-            writeFileSyncSpy.mockImplementation();
-            searchSpy.mockReturnValueOnce(fakeProjUserPath).mockReturnValueOnce(fakeProjPath);
-            await setupConfigToLoad(undefined, configOpts); // Setup the config
-            // Clear spies after config setup
-            searchSpy.mockClear();
-            writeFileSyncSpy.mockClear();
-            existsSyncSpy.mockClear();
-            readFileSyncSpy.mockClear();
-            jest.spyOn(ImperativeConfig.instance.config.api.secure, "secureFields").mockReturnValue([
-                "profiles.noMatchProfile.properties.tokenValue",
-                "profiles.GoodProfile.properties.tokenValue",
-                "profiles.abcdefg.properties.tokenValue",
-            ]);
-            // Mock the console prompt to return an empty string
-            const myPromptSpy = jest.spyOn(params.response.console, "prompt").mockResolvedValue("");
-            let caughtError;
-            try {
-                await handler.process(params);
-            } catch (error) {
-                caughtError = error;
-            }
-            // Verify that the prompt included "profiles.GoodProfile.properties.tokenValue"
-            expect(myPromptSpy.mock.calls[0][0].indexOf("profiles.GoodProfile.properties.tokenValue") >= 0).toBeTruthy();
-            expect(myPromptSpy).toHaveBeenCalledTimes(1);
-            expect(myPromptSpy).toHaveBeenCalledWith(
-                expect.stringContaining("profiles.GoodProfile.properties.tokenValue"),
-                {"hideText": true}
-            );
-            expect(caughtError).toBeUndefined();
+        describe("profile param tests", () => {
+            let handler: SecureHandler;
+            let params: any;
+            let myPromptSpy: jest.SpyInstance;
+        
+            beforeEach(() => {
+                handler = new SecureHandler();
+                params = getIHandlerParametersObject();
+        
+                params.arguments.userConfig = true;
+                params.arguments.globalConfig = true;
+        
+                // Mock the console prompt to return an empty string
+                myPromptSpy = jest.spyOn(params.response.console, "prompt").mockResolvedValue("");
+        
+                // Reset spies
+                keytarGetPasswordSpy.mockReturnValue(fakeSecureData);
+                keytarSetPasswordSpy.mockImplementation();
+                keytarDeletePasswordSpy.mockImplementation();
+                readFileSyncSpy = jest.spyOn(fs, "readFileSync");
+                writeFileSyncSpy = jest.spyOn(fs, "writeFileSync");
+                existsSyncSpy = jest.spyOn(fs, "existsSync");
+                writeFileSyncSpy.mockImplementation();
+            });
+        
+            const runTest = async (profile: string, secureFields: string[], expectedPromptTimes: number, expectedSecureField: string) => {
+                params.arguments.profile = profile;
+        
+                // Mock fs calls
+                const eco = lodash.cloneDeep(expectedGlobalUserConfigObject);
+                eco.$schema = "./fakeapp.schema.json";
+                readFileSyncSpy.mockReturnValueOnce(JSON.stringify(eco));
+                existsSyncSpy.mockReturnValueOnce(false).mockReturnValueOnce(false).mockReturnValueOnce(true).mockReturnValue(false);
+                searchSpy.mockReturnValueOnce(fakeProjUserPath).mockReturnValueOnce(fakeProjPath);
+                await setupConfigToLoad(undefined, configOpts);
+        
+                // Setup mock secure fields
+                jest.spyOn(ImperativeConfig.instance.config.api.secure, "secureFields").mockReturnValue(secureFields);
+        
+                let caughtError;
+                try {
+                    await handler.process(params);
+                } catch (error) {
+                    caughtError = error;
+                }
+        
+                // Verify prompt count and inclusion of expected secure fields
+                expect(myPromptSpy).toHaveBeenCalledTimes(expectedPromptTimes);
+                if (expectedPromptTimes > 0) {
+                    expect(myPromptSpy).toHaveBeenCalledWith(expect.stringContaining(expectedSecureField), { "hideText": true });
+                }
+                expect(caughtError).toBeUndefined();
+            };
+        
+            it("should only prompt for secure values that match the profile passed in through params", async () => {
+                await runTest(
+                    "GoodProfile",
+                    [
+                        "profiles.noMatchProfile.properties.tokenValue",
+                        "profiles.GoodProfile.properties.tokenValue",
+                        "profiles.abcdefg.properties.tokenValue"
+                    ],
+                    1,
+                    "profiles.GoodProfile.properties.tokenValue"
+                );
+            });
+        
+            it("should only prompt for secure values that match the profile passed in through params - nested profile", async () => {
+                await runTest(
+                    "lpar1.GoodProfile",
+                    [
+                        "profiles.noMatchProfile.properties.tokenValue",
+                        "profiles.lpar1.profiles.GoodProfile.properties.tokenValue",
+                        "profiles.abcdefg.properties.tokenValue"
+                    ],
+                    1,
+                    "profiles.lpar1.profiles.GoodProfile.properties.tokenValue"
+                );
+            });
+        
+            it("should only prompt for secure values that match the profile passed in through params - ignore casing", async () => {
+                await runTest(
+                    "gOODpROFILE",
+                    [
+                        "profiles.noMatchProfile.properties.tokenValue",
+                        "profiles.GoodProfile.properties.tokenValue",
+                        "profiles.abcdefg.properties.tokenValue"
+                    ],
+                    1,
+                    "profiles.GoodProfile.properties.tokenValue"
+                );
+            });
+        
+            it("should prompt for all secure values given a profile in which no secure profile value matches", async () => {
+                await runTest(
+                    "noMatchProfile",
+                    [
+                        "profiles.lpar1.profiles.test.properties.tokenValue",
+                        "profiles.GoodProfile.properties.tokenValue",
+                        "profiles.abcdefg.properties.tokenValue"
+                    ],
+                    3,
+                    "profiles.lpar1.profiles.test.properties.tokenValue"
+                );
+            });
         });
-        it("should only prompt for  secure values that match the profile passed in through params - nested profile", async () => {
-            const handler = new SecureHandler();
-            const params = getIHandlerParametersObject();
-
-            params.arguments.userConfig = true;
-            params.arguments.globalConfig = true;
-            params.arguments.profile = "lpar1.GoodProfile";
-
-            // Start doing fs mocks
-            keytarGetPasswordSpy.mockReturnValue(fakeSecureData);
-            keytarSetPasswordSpy.mockImplementation();
-            keytarDeletePasswordSpy.mockImplementation();
-            readFileSyncSpy = jest.spyOn(fs, "readFileSync");
-            writeFileSyncSpy = jest.spyOn(fs, "writeFileSync");
-            existsSyncSpy = jest.spyOn(fs, "existsSync");
-
-            const eco = lodash.cloneDeep(expectedGlobalUserConfigObject);
-            eco.$schema = "./fakeapp.schema.json";
-
-            readFileSyncSpy.mockReturnValueOnce(JSON.stringify(eco));
-            existsSyncSpy.mockReturnValueOnce(false).mockReturnValueOnce(false).mockReturnValueOnce(true)
-                .mockReturnValue(false); // Only the global user config exists
-            writeFileSyncSpy.mockImplementation();
-            searchSpy.mockReturnValueOnce(fakeProjUserPath).mockReturnValueOnce(fakeProjPath);
-            await setupConfigToLoad(undefined, configOpts); // Setup the config
-            // Clear spies after config setup
-            searchSpy.mockClear();
-            writeFileSyncSpy.mockClear();
-            existsSyncSpy.mockClear();
-            readFileSyncSpy.mockClear();
-            jest.spyOn(ImperativeConfig.instance.config.api.secure, "secureFields").mockReturnValue([
-                "profiles.noMatchProfile.properties.tokenValue",
-                "profiles.lpar1.profiles.GoodProfile.properties.tokenValue",
-                "profiles.abcdefg.properties.tokenValue",
-            ]);
-            // Mock the console prompt to return an empty string
-            const myPromptSpy = jest.spyOn(params.response.console, "prompt").mockResolvedValue("");
-            let caughtError;
-            try {
-                await handler.process(params);
-            } catch (error) {
-                caughtError = error;
-            }
-            // Verify that the prompt included "profiles.GoodProfile.properties.tokenValue"
-            expect(myPromptSpy.mock.calls[0][0].indexOf("profiles.GoodProfile.properties.tokenValue") >= 0).toBeTruthy();
-            expect(myPromptSpy).toHaveBeenCalledTimes(1);
-            expect(myPromptSpy).toHaveBeenCalledWith(
-                expect.stringContaining("profiles.lpar1.profiles.GoodProfile.properties.tokenValue"),
-                {"hideText": true}
-            );
-            expect(caughtError).toBeUndefined();
-        });
-        it("should only prompt for secure values that match the profile passed in through params - ignore casing", async () => {
-            const handler = new SecureHandler();
-            const params = getIHandlerParametersObject();
-
-            params.arguments.userConfig = true;
-            params.arguments.globalConfig = true;
-            params.arguments.profile = "gOODpROFILE";
-
-            // Start doing fs mocks
-            keytarGetPasswordSpy.mockReturnValue(fakeSecureData);
-            keytarSetPasswordSpy.mockImplementation();
-            keytarDeletePasswordSpy.mockImplementation();
-            readFileSyncSpy = jest.spyOn(fs, "readFileSync");
-            writeFileSyncSpy = jest.spyOn(fs, "writeFileSync");
-            existsSyncSpy = jest.spyOn(fs, "existsSync");
-
-            const eco = lodash.cloneDeep(expectedGlobalUserConfigObject);
-            eco.$schema = "./fakeapp.schema.json";
-
-            readFileSyncSpy.mockReturnValueOnce(JSON.stringify(eco));
-            existsSyncSpy.mockReturnValueOnce(false).mockReturnValueOnce(false).mockReturnValueOnce(true)
-                .mockReturnValue(false); // Only the global user config exists
-            writeFileSyncSpy.mockImplementation();
-            searchSpy.mockReturnValueOnce(fakeProjUserPath).mockReturnValueOnce(fakeProjPath);
-            await setupConfigToLoad(undefined, configOpts); // Setup the config
-            // Clear spies after config setup
-            searchSpy.mockClear();
-            writeFileSyncSpy.mockClear();
-            existsSyncSpy.mockClear();
-            readFileSyncSpy.mockClear();
-            jest.spyOn(ImperativeConfig.instance.config.api.secure, "secureFields").mockReturnValue([
-                "profiles.noMatchProfile.properties.tokenValue",
-                "profiles.GoodProfile.properties.tokenValue",
-                "profiles.abcdefg.properties.tokenValue",
-            ]);
-            // Mock the console prompt to return an empty string
-            const myPromptSpy = jest.spyOn(params.response.console, "prompt").mockResolvedValue("");
-            let caughtError;
-            try {
-                await handler.process(params);
-            } catch (error) {
-                caughtError = error;
-            }
-            // Verify that the prompt included "profiles.GoodProfile.properties.tokenValue"
-            expect(myPromptSpy.mock.calls[0][0].indexOf("profiles.GoodProfile.properties.tokenValue") >= 0).toBeTruthy();
-            expect(myPromptSpy).toHaveBeenCalledTimes(1);
-            expect(myPromptSpy).toHaveBeenCalledWith(
-                expect.stringContaining("profiles.GoodProfile.properties.tokenValue"),
-                {"hideText": true}
-            );
-            expect(caughtError).toBeUndefined();
-        });
-        it("should prompt for all secure values given a profile in which no secure profile value matches", async () => {
-            const handler = new SecureHandler();
-            const params = getIHandlerParametersObject();
-
-            params.arguments.userConfig = true;
-            params.arguments.globalConfig = true;
-            params.arguments.profile = "noMatchProfile";
-
-            // Start doing fs mocks
-            keytarGetPasswordSpy.mockReturnValue(fakeSecureData);
-            keytarSetPasswordSpy.mockImplementation();
-            keytarDeletePasswordSpy.mockImplementation();
-            readFileSyncSpy = jest.spyOn(fs, "readFileSync");
-            writeFileSyncSpy = jest.spyOn(fs, "writeFileSync");
-            existsSyncSpy = jest.spyOn(fs, "existsSync");
-
-            const eco = lodash.cloneDeep(expectedGlobalUserConfigObject);
-            eco.$schema = "./fakeapp.schema.json";
-
-            readFileSyncSpy.mockReturnValueOnce(JSON.stringify(eco));
-            existsSyncSpy.mockReturnValueOnce(false).mockReturnValueOnce(false).mockReturnValueOnce(true)
-                .mockReturnValue(false); // Only the global user config exists
-            writeFileSyncSpy.mockImplementation();
-            searchSpy.mockReturnValueOnce(fakeProjUserPath).mockReturnValueOnce(fakeProjPath);
-            await setupConfigToLoad(undefined, configOpts); // Setup the config
-            // Clear spies after config setup
-            searchSpy.mockClear();
-            writeFileSyncSpy.mockClear();
-            existsSyncSpy.mockClear();
-            readFileSyncSpy.mockClear();
-            jest.spyOn(ImperativeConfig.instance.config.api.secure, "secureFields").mockReturnValue([
-                "profiles.lpar1.profiles.test.properties.tokenValue",
-                "profiles.GoodProfile.properties.tokenValue",
-                "profiles.abcdefg.properties.tokenValue",
-            ]);
-            // Mock the console prompt to return an empty string
-            const myPromptSpy = jest.spyOn(params.response.console, "prompt").mockResolvedValue("");
-            let caughtError;
-            try {
-                await handler.process(params);
-            } catch (error) {
-                caughtError = error;
-            }
-            expect(myPromptSpy).toHaveBeenCalledTimes(3);
-            expect(myPromptSpy).toHaveBeenCalledWith(
-                expect.stringContaining("profiles.lpar1.profiles.test.properties.tokenValue"),
-                {"hideText": true}
-            );
-            expect(myPromptSpy).toHaveBeenCalledWith(
-                expect.stringContaining("profiles.GoodProfile.properties.tokenValue"),
-                {"hideText": true}
-            );
-            expect(myPromptSpy).toHaveBeenCalledWith(
-                expect.stringContaining("profiles.abcdefg.properties.tokenValue"),
-                {"hideText": true}
-            );
-            expect(caughtError).toBeUndefined();
-        });
+        
     });
 });
