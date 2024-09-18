@@ -39,7 +39,7 @@ Object {
       "description": "Your z/OS TSO/E accounting information.",
       "group": "TSO ADDRESS SPACE OPTIONS",
       "name": "account",
-      "required": false,
+      "required": true,
       "type": "string",
     },
     Object {
