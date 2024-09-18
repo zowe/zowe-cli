@@ -1,12 +1,13 @@
 module.exports = {
     branches: [
         {
-            name: "master",
-            level: "minor"
-        },
-        {
+            // This is a temporary change, in case we need to release a critical fix to the V2-lts line.
             name: "zowe-v?-lts",
             level: "patch"
+        },
+        {
+            name: "master",
+            level: "none"
         }
         // {
         //     name: "next",
