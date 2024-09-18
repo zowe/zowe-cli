@@ -36,5 +36,5 @@ export interface IIssueTsoCmdOpts {
      * @type {boolean}
      * @memberof IIssueTsoCmdOpts
      */
-    suppressStartupMessage?: boolean;
+    suppressStartupMessages?: boolean;
 }

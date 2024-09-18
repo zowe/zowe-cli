@@ -6,56 +6,18 @@ with an active z/OS application session."
 `;
 
 exports[`issue command handler tests should issue command 1`] = `
-[MockFunction] {
-  "calls": Array [
-    Array [
-      Session {
-        "mISession": Object {
-          "base64EncodedAuth": "c29tZW9uZTpmYWtl",
-          "basePath": "",
-          "hostname": "somewhere.com",
-          "password": "fake",
-          "port": "43443",
-          "protocol": "https",
-          "rejectUnauthorized": true,
-          "secureProtocol": "SSLv23_method",
-          "strictSSL": true,
-          "type": "basic",
-          "user": "someone",
-        },
-        "mLog": Logger {
-          "category": "imperative",
-          "initStatus": false,
-          "mJsLogger": Logger {
-            "callStackSkipIndex": 0,
-            "category": "imperative",
-            "context": Object {},
-            "parseCallStack": [Function],
-          },
-        },
-      },
-      undefined,
-      Object {
-        "addressSpaceOptions": Object {
-          "account": "fake",
-          "characterSet": undefined,
-          "codePage": undefined,
-          "columns": undefined,
-          "logonProcedure": undefined,
-          "regionSize": undefined,
-          "rows": undefined,
-        },
-        "isStateful": undefined,
-        "suppressStartupMessage": undefined,
-      },
-    ],
-  ],
-  "results": Array [
-    Object {
-      "type": "incomplete",
-      "value": undefined,
-    },
-  ],
+Object {
+  "base64EncodedAuth": "c29tZW9uZTpmYWtl",
+  "basePath": "",
+  "hostname": "somewhere.com",
+  "password": "fake",
+  "port": "43443",
+  "protocol": "https",
+  "rejectUnauthorized": true,
+  "secureProtocol": "SSLv23_method",
+  "strictSSL": true,
+  "type": "basic",
+  "user": "someone",
 }
 `;
 

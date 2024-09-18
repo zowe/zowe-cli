@@ -342,7 +342,7 @@ describe("all tests", () => {
                     "command",
                     {
                         isStateful: true,
-                        suppressStartupMessage: false,
+                        suppressStartupMessages: false,
                     }
                 );
             } catch (thrownError) {
@@ -376,7 +376,7 @@ describe("all tests", () => {
                 response = await IssueTso.issueTsoCmd(PRETEND_SESSION, "TIME", {
                     addressSpaceOptions: null,
                     isStateful: true,
-                    suppressStartupMessage: true,
+                    suppressStartupMessages: true,
                 });
             } catch (thrownError) {
                 error = thrownError;
@@ -401,7 +401,7 @@ describe("all tests", () => {
                 response = await IssueTso.issueTsoCmd(PRETEND_SESSION, "TIME", {
                     addressSpaceOptions: null,
                     isStateful: true,
-                    suppressStartupMessage: true,
+                    suppressStartupMessages: true,
                 });
             } catch (thrownError) {
                 error = thrownError;
@@ -426,7 +426,7 @@ describe("all tests", () => {
                     "fake_command",
                     {
                         isStateful: true,
-                        suppressStartupMessage: false,
+                        suppressStartupMessages: false,
                     }
                 );
             } catch (thrownError) {
@@ -451,7 +451,7 @@ describe("all tests", () => {
             try {
                 response = await IssueTso.issueTsoCmd(PRETEND_SESSION, "", {
                     isStateful: true,
-                    suppressStartupMessage: false,
+                    suppressStartupMessages: false,
                 });
             } catch (thrownError) {
                 error = thrownError;

@@ -42,7 +42,7 @@ export class IssueTso {
                 session,
                 ZosmfConstants.VERSIONS.V2R4
             ) &&
-            (opts.suppressStartupMessage ?? true);
+            (opts.suppressStartupMessages ?? true);
         if (useNewApi) {
             command = commandInfo;
             version = "v1";

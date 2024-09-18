@@ -36,9 +36,9 @@ describe("issue command handler tests", () => {
 
     it("should issue command", async () => {
         /* eslint-disable-next-line */
-        const response = IssueTso.issueTsoCmd = jest.fn((session, cmd, undefined) => {
-            expect(response).toBeDefined();
-            expect(response).toMatchSnapshot();
+        IssueTso.issueTsoCmd = jest.fn((session, cmd) => {
+            expect(session).toBeDefined();
+            expect(session.ISession).toMatchSnapshot();
             return StartTsoData.SAMPLE_ISSUE_RESPONSE_WITH_MSG;
         });
         const handler = new Command.default();
