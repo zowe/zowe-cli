@@ -15,7 +15,6 @@ import {
     IHandlerParameters,
 } from "../../../../../cmd";
 import { Config, ConfigConstants, ConfigSchema } from "../../../../../config";
-import { ConfigProfiles } from "../../../../../config/src/api";
 import { ConfigAutoStore } from "../../../../../config/src/ConfigAutoStore";
 import { ConfigUtils } from "../../../../../config/src/ConfigUtils";
 import { ImperativeError } from "../../../../../error";
