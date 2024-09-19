@@ -42,7 +42,7 @@ export const secureDefinition: ICommandDefinition = {
         },
         {
             name: "profile",
-            description: "Specify the profile in which you would like to configure the secure values for",
+            description: "Specify the profile for which you want to configure secure values.",
             type: "string",
             aliases: ["pf"],
             defaultValue: null
