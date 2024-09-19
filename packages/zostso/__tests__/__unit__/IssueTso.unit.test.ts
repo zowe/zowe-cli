@@ -140,7 +140,7 @@ describe("all tests", () => {
             expect(error).toBeDefined();
         });
         it("should fail when StartTSO fails", async () => {
-            jest.spyOn(CheckStatus, "isZosVersionGreaterThan").mockReturnValue(
+            jest.spyOn(CheckStatus, "isZosVersionAtLeast").mockReturnValue(
                 Promise.resolve(false)
             );
             let error: ImperativeError;
@@ -173,7 +173,7 @@ describe("all tests", () => {
 
     describe("TsoIssue issueTsoCommand - Deprecated API", () => {
         it("should succeed", async () => {
-            jest.spyOn(CheckStatus, "isZosVersionGreaterThan").mockReturnValue(
+            jest.spyOn(CheckStatus, "isZosVersionAtLeast").mockReturnValue(
                 Promise.resolve(false)
             );
             (StartTso.start as any) = jest.fn(() => {
@@ -302,7 +302,7 @@ describe("all tests", () => {
             jest.spyOn(ZosmfRestClient, "putExpectJSON").mockReturnValueOnce(
                 Promise.resolve(zosmfResponse)
             );
-            jest.spyOn(CheckStatus, "isZosVersionGreaterThan").mockReturnValue(
+            jest.spyOn(CheckStatus, "isZosVersionAtLeast").mockReturnValue(
                 Promise.resolve(true)
             );
             try {
@@ -321,7 +321,7 @@ describe("all tests", () => {
             // Mock the CheckStatus to simulate Z/OS version check
             jest.spyOn(
                 CheckStatus,
-                "isZosVersionGreaterThan"
+                "isZosVersionAtLeast"
             ).mockReturnValueOnce(Promise.resolve(true));
             const zosmfResponse = {
                 cmdResponse: [
@@ -369,7 +369,7 @@ describe("all tests", () => {
             );
             let error: ImperativeError;
             let response: ISendResponse;
-            jest.spyOn(CheckStatus, "isZosVersionGreaterThan").mockReturnValue(
+            jest.spyOn(CheckStatus, "isZosVersionAtLeast").mockReturnValue(
                 Promise.resolve(true)
             );
             try {
@@ -417,7 +417,7 @@ describe("all tests", () => {
         it("should fail for null command text", async () => {
             let error: ImperativeError;
             let response: ISendResponse;
-            jest.spyOn(CheckStatus, "isZosVersionGreaterThan").mockReturnValue(
+            jest.spyOn(CheckStatus, "isZosVersionAtLeast").mockReturnValue(
                 Promise.resolve(true)
             );
             try {
@@ -445,7 +445,7 @@ describe("all tests", () => {
                     msg: "status 403",
                 })
             );
-            jest.spyOn(CheckStatus, "isZosVersionGreaterThan").mockReturnValue(
+            jest.spyOn(CheckStatus, "isZosVersionAtLeast").mockReturnValue(
                 Promise.resolve(true)
             );
             try {

@@ -38,7 +38,7 @@ export class IssueTso {
         opts = opts || {};
         let useNewApi =
         opts.addressSpaceOptions == null ||
-            await CheckStatus.isZosVersionGreaterThan(
+            await CheckStatus.isZosVersionAtLeast(
                 session,
                 ZosmfConstants.VERSIONS.V2R4
             ) &&

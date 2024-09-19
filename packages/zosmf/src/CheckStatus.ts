@@ -36,7 +36,7 @@ export class CheckStatus {
         return ZosmfRestClient.getExpectJSON(session, infoEndpoint);
     }
 
-    public static async isZosVersionGreaterThan(session: AbstractSession, version: string): Promise<boolean> {
+    public static async isZosVersionAtLeast(session: AbstractSession, version: string): Promise<boolean> {
         return (await CheckStatus.getZosmfInfo(session)).zosmf_version >= version;
     }
 

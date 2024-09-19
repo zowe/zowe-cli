@@ -35,7 +35,6 @@ describe("issue command handler tests", () => {
     });
 
     it("should issue command", async () => {
-        /* eslint-disable-next-line */
         IssueTso.issueTsoCmd = jest.fn((session, cmd) => {
             expect(session).toBeDefined();
             expect(session.ISession).toMatchSnapshot();
