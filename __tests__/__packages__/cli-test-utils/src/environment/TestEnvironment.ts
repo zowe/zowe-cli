@@ -14,7 +14,7 @@ import * as nodePath from "path";
 import * as yaml from "js-yaml";
 import { v4 as uuidv4 } from "uuid";
 import { AbstractSession, ImperativeError, ImperativeExpect,
-    IO, Logger, LoggingConfigurer, Session, TextUtils } from "@zowe/imperative";
+    IO, Logger, LoggingConfigurer, TextUtils } from "@zowe/imperative";
 import { ISetupEnvironmentParms } from "./doc/parms/ISetupEnvironmentParms";
 import { ITestEnvironment } from "./doc/response/ITestEnvironment";
 import { TempTestProfiles } from "./TempTestProfiles";

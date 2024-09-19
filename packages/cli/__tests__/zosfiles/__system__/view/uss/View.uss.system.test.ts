@@ -16,7 +16,7 @@ import { ZosFilesConstants, ZosmfRestClient, ZosmfHeaders, Upload } from "@zowe/
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/ITestEnvironment";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { getUniqueDatasetName } from "../../../../../../../__tests__/__src__/TestUtils";
+import { getRandomBytes, getUniqueDatasetName } from "../../../../../../../__tests__/__src__/TestUtils";
 import { runCliScript } from "@zowe/cli-test-utils";
 
 let REAL_SESSION: Session;

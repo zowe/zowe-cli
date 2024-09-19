@@ -35,7 +35,7 @@ describe("zos-jobs submit local-file command", () => {
             testName: "zos_jobs_submit_local_file_command",
             tempProfileTypes: ["zosmf"]
         });
-        REAL_SESSION = await TestEnvironment.createZosmfSession();
+        REAL_SESSION = await TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
         systemProps = TEST_ENVIRONMENT.systemTestProperties;
         account = systemProps.tso.account;
 

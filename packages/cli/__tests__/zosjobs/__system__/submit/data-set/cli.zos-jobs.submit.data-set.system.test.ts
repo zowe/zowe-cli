@@ -35,7 +35,7 @@ describe("zos-jobs submit data-set command", () => {
             testName: "zos_jobs_submit_command",
             tempProfileTypes: ["zosmf"]
         });
-        REAL_SESSION = await TestEnvironment.createZosmfSession();
+        REAL_SESSION = await TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
         account = TEST_ENVIRONMENT.systemTestProperties.tso.account;
         jclMember = TEST_ENVIRONMENT.systemTestProperties.zosjobs.iefbr14Member;
         psJclDataSet = TEST_ENVIRONMENT.systemTestProperties.zosjobs.iefbr14PSDataSet;
@@ -146,7 +146,7 @@ describe("zos-jobs submit data-set command", () => {
                 TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
                     testName: "zos_jobs_submit_data_set_without_profiles"
                 });
-                REAL_SESSION = await TestEnvironment.createZosmfSession();
+                REAL_SESSION = await TestEnvironment.createZosmfSession(TEST_ENVIRONMENT_NO_PROF);
 
                 SYSTEM_PROPS = TEST_ENVIRONMENT_NO_PROF.systemTestProperties;
             });
