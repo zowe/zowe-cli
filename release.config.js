@@ -1,17 +1,18 @@
 module.exports = {
     branches: [
-        {
-            name: "master",
-            level: "minor"
-        },
+        // Temporarily put zowe-v2-lts branch first in the list.
+        // It should move down once latest becomes zowe-v3-lts.
         {
             name: "zowe-v?-lts",
             level: "patch"
         },
+        // Temporarily publish master branch as @next prerelease.
+        // When V3 goes live, remember to update alias tags below.
         {
-            name: "next",
+            name: "master",
             level: "none",
-            prerelease: true
+            prerelease: true,
+            channel: "next"
         }
     ],
     plugins: [
@@ -35,7 +36,8 @@ module.exports = {
         }],
         ["@octorelease/lerna", {
             aliasTags: {
-                "latest": ["zowe-v2-lts"]
+                "latest": ["zowe-v2-lts"],
+                "next": ["zowe-v3-lts"]
             },
             pruneShrinkwrap: ["@zowe/cli"],
             smokeTest: true
