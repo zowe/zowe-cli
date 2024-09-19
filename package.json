@@ -38,7 +38,7 @@
     "typedoc:packages": "lerna run --parallel typedoc",
     "audit:public": "npm audit --registry https://registry.npmjs.org/",
     "bundle:webHelp": "cd packages/imperative/web-help && node build.js",
-    "prepare": "husky install && npm run bundle:webHelp",
+    "prepare": "husky && npm run bundle:webHelp",
     "package": "node scripts/bundleCliTgz.js"
   },
   "devDependencies": {

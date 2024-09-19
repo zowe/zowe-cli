@@ -16,6 +16,7 @@ import { spawn } from "cross-spawn";
 import { ITestEnvironment } from "../../../../../../../__src__/environment/doc/response/ITestEnvironment";
 import { SetupTestEnvironment } from "../../../../../../../__src__/environment/SetupTestEnvironment";
 import { runCliScript } from "../../../../../../../src/TestUtil";
+const stripAnsi = require("strip-ansi");
 
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment;
@@ -35,7 +36,7 @@ describe("imperative-test-cli config import", () => {
 
     // Create the test environment
     beforeAll(async () => {
-        const serverAddressRegex = /(http.*)\s/;
+        const serverAddressRegex = /(http:.*)\s/;
 
         TEST_ENVIRONMENT = await SetupTestEnvironment.createTestEnv({
             cliHomeEnvVar: "IMPERATIVE_TEST_CLI_CLI_HOME",
@@ -44,14 +45,14 @@ describe("imperative-test-cli config import", () => {
 
         // Spawn a localhost HTTP file server with "npx serve" command
         pServer = spawn(process.platform === "win32" ? "npx.cmd" : "npx",
-            ["serve", __dirname + "/__resources__"]);
+            ["http-server", __dirname + "/__resources__"]);
 
         // Retrieve server URL from the end of first line printed to stdout
         localhostUrl = await new Promise((resolve, reject) => {
             pServer.stdout.on("data", (data: Buffer) => {
                 const match = data.toString().match(serverAddressRegex);
                 if(match != null) {
-                    resolve(match[1]);
+                    resolve(stripAnsi(match[1]));
                 }
             });
         });
