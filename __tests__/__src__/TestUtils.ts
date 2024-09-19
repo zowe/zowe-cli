@@ -52,40 +52,45 @@ export function deleteLocalDirectories(directories: string[]): void {
         }
     });
 }
+
 /**
- * Delete a uss file from the mainframe
- * @param {AbstractSession} session - z/OSMF connection info
- * @param {string} fileName - The name of the USS file
+ * Deletes a USS file from the mainframe
+ * @param {AbstractSession} session - The session object
+ * @param {string} fileName - The name of the file to delete
+ * @returns {Promise<void>} A promise that resolves when the file is deleted
  */
-export function deleteFiles(session: AbstractSession, fileName: string): void {
-    Delete.ussFile(session, fileName);
+export async function deleteFiles(session: AbstractSession, fileName: string): Promise<void> {
+    await Delete.ussFile(session, fileName);
 }
 
 /**
- * Delete a dataset from the mainframe
- * @param {AbstractSession} session - z/OSMF connection info
- * @param {string} datasetName - The name of the dataset
+ * Deletes a data set from the mainframe
+ * @param {AbstractSession} session - The session object
+ * @param {string} dataSetName - The name of the data set to delete.
+ * @returns {Promise<void>} A promise that resolves when the data set is deleted
  */
-export function deleteDataset(session: AbstractSession, dataSetName: string): void {
-    Delete.dataSet(session, dataSetName);
+export async function deleteDataset(session: AbstractSession, dataSetName: string): Promise<void> {
+    await Delete.dataSet(session, dataSetName);
 }
 
 /**
  * Delete a job from the mainframe using Zowe SDKs - IJob
  * @param {AbstractSession} session - z/OSMF connection info
  * @param {IJob} job - the job that you want to delete
+ * @returns {Promise<void>} A promise that resolves when the job is deleted.
  */
-export function deleteJob(session: AbstractSession, job: IJob): void {
-    DeleteJobs.deleteJobForJob(session, job);
+export async function deleteJob(session: AbstractSession, job: IJob): Promise<void> {
+    await DeleteJobs.deleteJobForJob(session, job);
 }
 
 /**
  * Delete a job from the mainframe using Zowe SDKs - jobid, jobname
  * @param {AbstractSession} session - z/OSMF connection info
  * @param {params} ICommonJobParms - constains jobname and jobid for job to delete
+ * @returns {Promise<void>} A promise that resolves when the job is deleted.
  */
-export function deleteJobCommon(session: AbstractSession, params: ICommonJobParms): void {
-    DeleteJobs.deleteJobCommon(session, params as IDeleteJobParms);
+export async function deleteJobCommon(session: AbstractSession, params: ICommonJobParms): Promise<void> {
+    await DeleteJobs.deleteJobCommon(session, params as IDeleteJobParms);
 }
 
 /**
@@ -189,57 +194,4 @@ export const waitTime = 2000; //wait 2 seconds
  */
 export function inspect(obj: any) : string {
     return JSON.stringify(Object.keys(obj).reduce((newObj, key) => ({...newObj, [key]: obj[key]}), {}));
-}
-
-/**
- * Execute a CLI script
- * @export
- * @param  scriptPath - the path to the script
- * @param  testEnvironment - the test environment with env
- * @param [args=[]] - set of script args (optional)
- * @returns  node.js details about the results of
- *           executing the script, including exit code and output
- */
-export function runCliScript(scriptPath: string, testEnvironment: ITestEnvironment<any>, args: any[] = []): SpawnSyncReturns<Buffer> {
-    if (fs.existsSync(scriptPath)) {
-
-        // We force the color off to prevent any oddities in the snapshots or expected values
-        // Color can vary OS/terminal
-        const childEnv = JSON.parse(JSON.stringify(process.env));
-        childEnv.FORCE_COLOR = "0";
-        for (const key of Object.keys(testEnvironment.env)) {
-            // copy the values from the env
-            childEnv[key] = testEnvironment.env[key];
-        }
-
-        if (process.platform === "win32") {
-            // Execute the command synchronously
-            const response = spawnSync("sh", [scriptPath].concat(args), {
-                cwd: testEnvironment.workingDir,
-                encoding: "buffer",
-                env: childEnv
-            });
-            if ((response.error as ExecFileException)?.code === "ENOENT") {
-                throw new Error(`"sh" is missing from your PATH. Check that Git Bash is installed with the option to ` +
-                    `"Use Git and Unix Tools from Windows Command Prompt".`);
-            }
-            return response;
-        }
-
-        // Check to see if the file is executable
-        try {
-            fs.accessSync(scriptPath, fs.constants.X_OK);
-        } catch {
-            fs.chmodSync(scriptPath, "755");
-        }
-        return spawnSync(scriptPath, args, {
-            cwd: testEnvironment.workingDir,
-            env: childEnv,
-            encoding: "buffer"
-        });
-
-    } else {
-        throw new Error(`The script file ${scriptPath} doesn't exist`);
-
-    }
 }

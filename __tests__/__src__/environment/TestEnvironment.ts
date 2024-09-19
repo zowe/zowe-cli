@@ -69,45 +69,8 @@ export class TestEnvironment extends BaseTestEnvironment {
      * @memberof TestEnvironment
      */
     public static async cleanUp(testEnvironment: ITestEnvironment<ITestPropertiesSchema>) {
-        if (testEnvironment.tempProfiles != null) {
-            await TempTestProfiles.deleteProfiles(testEnvironment);
-        }
-        if (testEnvironment.pluginInstalled) {
-            const pluginDir = testEnvironment.workingDir + "/plugins";
-            require("rimraf").sync(pluginDir);
-        }
-
-        // Check if session exists before deleting resources
-        if (testEnvironment?.resources?.session) {
-            const session = testEnvironment.resources.session;
-            for (const file of testEnvironment.resources.localFiles) {
-                deleteLocalFile(file);
-            }
-            for (const file of testEnvironment.resources.files) {
-                deleteFiles(session, file);
-            }
-            for (const job of testEnvironment.resources.jobs) {
-                deleteJob(session, job);
-            }
-            for (const jobData of testEnvironment.resources.jobData) {
-                if (jobData.jobname && jobData.jobid) {
-                    deleteJobCommon(session, jobData);
-                } else {
-                    Imperative.console.info('Error: Missing jobname or jobid for jobData:', jobData);
-                }
-            }
-            for (const dataset of testEnvironment.resources.datasets) {
-                deleteDataset(session, dataset);
-            }
-            testEnvironment.resources = {
-                localFiles: [],
-                files: [],
-                jobs: [],
-                jobData: [],
-                datasets: [],
-                session: testEnvironment.resources.session
-            };
-        }
+        // Invoke the superclass's cleanup method
+        await super.cleanUp(testEnvironment);
     }
 
     /**

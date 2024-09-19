@@ -14,7 +14,7 @@ import * as nodePath from "path";
 import * as yaml from "js-yaml";
 import { v4 as uuidv4 } from "uuid";
 import { AbstractSession, ImperativeError, ImperativeExpect,
-    IO, Logger, LoggingConfigurer, ProfileInfo, TextUtils } from "@zowe/imperative";
+    IO, Logger, LoggingConfigurer, ProfileInfo, Session, TextUtils } from "@zowe/imperative";
 import { ISetupEnvironmentParms } from "./doc/parms/ISetupEnvironmentParms";
 import { ITestEnvironment } from "./doc/response/ITestEnvironment";
 import { TempTestProfiles } from "./TempTestProfiles";
@@ -90,16 +90,17 @@ export class TestEnvironment {
      * @throws Will throw an error if reading profiles or creating the session fails
      * @memberof TestEnvironment
      */
-    public static async createSession(): Promise<AbstractSession> {
-        // Load connection info from default z/OSMF profile
-        const profInfo = new ProfileInfo("zowe");
-        await profInfo.readProfilesFromDisk();
-        const zosmfProfAttrs = profInfo.getDefaultProfile("zosmf");
-        if (!zosmfProfAttrs) {
-            throw new Error("Default z/OSMF profile not found.");
-        }
-        const zosmfMergedArgs = profInfo.mergeArgsForProfile(zosmfProfAttrs, { getSecureVals: true });
-        return ProfileInfo.createSession(zosmfMergedArgs.knownArgs);
+    public static async createSession(testEnvironment: any): Promise<AbstractSession> {
+        const SYSTEM_PROPS = testEnvironment.systemTestProperties.zosmf;
+        return new Session({
+            user: SYSTEM_PROPS.user,
+            password: SYSTEM_PROPS.password,
+            hostname: SYSTEM_PROPS.host,
+            port: SYSTEM_PROPS.port,
+            type: "basic",
+            rejectUnauthorized: SYSTEM_PROPS.rejectUnauthorized,
+            basePath: SYSTEM_PROPS.basePath
+        });
     }
 
     /**
