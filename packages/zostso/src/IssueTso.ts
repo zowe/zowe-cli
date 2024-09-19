@@ -21,7 +21,6 @@ import { IIssueTsoParms } from "./doc/input/IIssueTsoParms";
 import { CheckStatus, ZosmfConstants } from "@zowe/zosmf-for-zowe-sdk";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { IIssueTsoCmdResponse } from "./doc/IIssueTsoCmdResponse";
-import { IIssueTsoCmdParms } from "./doc/input/IIssueTsoCmdParms";
 import { IIssueTsoCmdOpts } from "./doc/input/IIssueTsoCmdOpts";
 /**
  * Class to handle issue command to TSO
@@ -30,10 +29,9 @@ import { IIssueTsoCmdOpts } from "./doc/input/IIssueTsoCmdOpts";
 export class IssueTso {
     public static async issueTsoCmd(
         session: AbstractSession,
-        commandInfo: string | IIssueTsoCmdParms,
+        command: string,
         opts?: IIssueTsoCmdOpts
     ): Promise<IIssueResponse> {
-        let command: string | IIssueTsoCmdParms;
         let version: string;
         opts = opts || {};
         let useNewApi =
@@ -44,7 +42,6 @@ export class IssueTso {
             ) &&
             (opts.suppressStartupMessages ?? true);
         if (useNewApi) {
-            command = commandInfo;
             version = "v1";
             try {
                 const endpoint = `${TsoConstants.RESOURCE}/${version}/${TsoConstants.RES_START_TSO}`;
@@ -77,10 +74,6 @@ export class IssueTso {
         }
         // Deprecated API Behavior [former issueTsoCommand() behavior]
         if (opts.addressSpaceOptions != null || !useNewApi) {
-            command =
-                typeof commandInfo === "string"
-                    ? commandInfo
-                    : commandInfo.command;
             TsoValidator.validateSession(session);
             TsoValidator.validateNotEmptyString(
                 opts.addressSpaceOptions?.account,
