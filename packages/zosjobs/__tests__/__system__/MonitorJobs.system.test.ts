@@ -73,7 +73,7 @@ describe("System Tests - Monitor Jobs", () => {
             testEnvironment = await TestEnvironment.setUp({
                 testName: "zos_monitor_jobs"
             });
-            REAL_SESSION = await TestEnvironment.createSession();
+            REAL_SESSION = await TestEnvironment.createZosmfSession();
             defaultSystem = testEnvironment.systemTestProperties;
             ACCOUNT = defaultSystem.tso.account;
             const JOB_LENGTH = 6;
@@ -689,7 +689,7 @@ describe("System Tests - Monitor Jobs", () => {
             testEnvironment = await TestEnvironment.setUp({
                 testName: "zos_monitor_jobs_encoded"
             });
-            REAL_SESSION = await TestEnvironment.createSession();
+            REAL_SESSION = await TestEnvironment.createZosmfSession();
             defaultSystem = testEnvironment.systemTestProperties;
             ACCOUNT = defaultSystem.tso.account;
             const JOB_LENGTH = 5;

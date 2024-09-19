@@ -11,7 +11,7 @@
 
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/ITestEnvironment";
-import { runCliScript } from "../../../../../../../__tests__/__src__/TestUtils"
+import { runCliScript } from "@zowe/cli-test-utils";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { Session } from "@zowe/imperative";
 import * as path from "path";  // Import path module for path handling

@@ -42,7 +42,7 @@ describe("zos-jobs list spool-files-by-jobid command", () => {
             testName: "zos_jobs_list_spool_files_by_jobid_command",
             tempProfileTypes: ["zosmf"]
         });
-        REAL_SESSION = await TestEnvironment.createSession();
+        REAL_SESSION = await TestEnvironment.createZosmfSession();
         IEFBR14_JOB = TEST_ENVIRONMENT.systemTestProperties.zosjobs.iefbr14Member;
         const defaultSystem = TEST_ENVIRONMENT.systemTestProperties;
 
@@ -139,7 +139,7 @@ describe("zos-jobs list spool-files-by-jobid command", () => {
                 TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
                     testName: "zos_jobs_list_spool_files_by_jobid_without_profiles"
                 });
-                REAL_SESSION = await TestEnvironment.createSession();
+                REAL_SESSION = await TestEnvironment.createZosmfSession();
                 SYSTEM_PROPS = TEST_ENVIRONMENT_NO_PROF.systemTestProperties;
             });
 

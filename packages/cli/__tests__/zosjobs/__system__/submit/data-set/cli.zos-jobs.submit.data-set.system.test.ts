@@ -11,7 +11,7 @@
 
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/ITestEnvironment";
-import { runCliScript } from "../../../../../../../__tests__/__src__/TestUtils"
+import { runCliScript } from "@zowe/cli-test-utils";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { List } from "../../../../../../zosfiles/src/methods/list";
 import { AbstractSession } from "@zowe/imperative";
@@ -35,7 +35,7 @@ describe("zos-jobs submit data-set command", () => {
             testName: "zos_jobs_submit_command",
             tempProfileTypes: ["zosmf"]
         });
-        REAL_SESSION = await TestEnvironment.createSession();
+        REAL_SESSION = await TestEnvironment.createZosmfSession();
         account = TEST_ENVIRONMENT.systemTestProperties.tso.account;
         jclMember = TEST_ENVIRONMENT.systemTestProperties.zosjobs.iefbr14Member;
         psJclDataSet = TEST_ENVIRONMENT.systemTestProperties.zosjobs.iefbr14PSDataSet;
@@ -146,7 +146,7 @@ describe("zos-jobs submit data-set command", () => {
                 TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
                     testName: "zos_jobs_submit_data_set_without_profiles"
                 });
-                REAL_SESSION = await TestEnvironment.createSession();
+                REAL_SESSION = await TestEnvironment.createZosmfSession();
 
                 SYSTEM_PROPS = TEST_ENVIRONMENT_NO_PROF.systemTestProperties;
             });

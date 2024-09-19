@@ -11,7 +11,7 @@
 
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/ITestEnvironment";
-import { runCliScript } from "../../../../../../../__tests__/__src__/TestUtils"
+import { runCliScript } from "@zowe/cli-test-utils";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { IO, Session } from "@zowe/imperative";
 import { GetJobs } from "@zowe/zos-jobs-for-zowe-sdk";
@@ -35,7 +35,7 @@ describe("zos-jobs submit local-file command", () => {
             testName: "zos_jobs_submit_local_file_command",
             tempProfileTypes: ["zosmf"]
         });
-        REAL_SESSION = await TestEnvironment.createSession();
+        REAL_SESSION = await TestEnvironment.createZosmfSession();
         systemProps = TEST_ENVIRONMENT.systemTestProperties;
         account = systemProps.tso.account;
 

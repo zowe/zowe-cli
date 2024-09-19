@@ -85,25 +85,6 @@ export class TestEnvironment {
     }
 
     /**
-     * Create a session using the default z/OSMF profile (if a session has not been added to test)
-     * @returns {Promise<ISession>} - A promise that resolves to the created session object
-     * @throws Will throw an error if reading profiles or creating the session fails
-     * @memberof TestEnvironment
-     */
-    public static async createSession(testEnvironment: any): Promise<AbstractSession> {
-        const SYSTEM_PROPS = testEnvironment.systemTestProperties.zosmf;
-        return new Session({
-            user: SYSTEM_PROPS.user,
-            password: SYSTEM_PROPS.password,
-            hostname: SYSTEM_PROPS.host,
-            port: SYSTEM_PROPS.port,
-            type: "basic",
-            rejectUnauthorized: SYSTEM_PROPS.rejectUnauthorized,
-            basePath: SYSTEM_PROPS.basePath
-        });
-    }
-
-    /**
      * Clean up your test environment.
      * Deletes any temporary profiles that have been created
      * @params {ITestEnvironment} testEnvironment - the test environment returned by createTestEnv

@@ -29,7 +29,7 @@ describe("USS Utilities", () => {
             tempProfileTypes: ["zosmf"],
             testName: "zos_files_utilities"
         });
-        REAL_SESSION = await TestEnvironment.createSession();
+        REAL_SESSION = await TestEnvironment.createZosmfSession();
         const defaultSystem = testEnvironment.systemTestProperties;
         let dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.UPLOAD`);
         dsname = dsname.replace(/\./g, "");

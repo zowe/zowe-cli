@@ -41,7 +41,7 @@ describe("zos-jobs list jobs command", () => {
             testName: "zos_jobs_list_jobs_command",
             tempProfileTypes: ["zosmf"]
         });
-        REAL_SESSION = await TestEnvironment.createSession();
+        REAL_SESSION = await TestEnvironment.createZosmfSession();
 
         const systemProps = TEST_ENVIRONMENT.systemTestProperties;
         IEFBR14_JOB = systemProps.zosjobs.iefbr14Member;
@@ -117,7 +117,7 @@ describe("zos-jobs list jobs command", () => {
                 TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
                     testName: "zos_jobs_list_job_without_profiles"
                 });
-                REAL_SESSION = await TestEnvironment.createSession();
+                REAL_SESSION = await TestEnvironment.createZosmfSession();
 
                 SYSTEM_PROPS = TEST_ENVIRONMENT_NO_PROF.systemTestProperties;
             });
