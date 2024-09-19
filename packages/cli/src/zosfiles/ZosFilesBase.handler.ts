@@ -48,16 +48,21 @@ export abstract class ZosFilesBaseHandler implements ICommandHandler {
         );
         const session = new Session(sessCfgWithCreds);
         commandParameters.response.progress.endBar(); // end any progress bars
+
         try {
             const response = await this.processWithSession(commandParameters, session);
+            if (!response.success && response.commandResponse) {
+                throw new ImperativeError({
+                    msg: response.errorMessage || response.commandResponse
+                });
+            }
             if (response.commandResponse) {
                 commandParameters.response.console.log(response.commandResponse);
             }
             commandParameters.response.data.setObj(response);
         } catch (error) {
             if (commandParameters.arguments.ignoreNotFound && (error.errorCode === '404' || error.toString().includes("IDC3012I "))) {
-                // The IDC3012I code is an IBM z/OS error message that indicates that the
-                // requested dataset or VSAM entry does not exist in the catalog
+                // The IDC3012I code is an IBM z/OS error indicating the DS/VSAM does not exist
                 commandParameters.response.data.setObj({ success: true });
             } else {
                 throw new ImperativeError({

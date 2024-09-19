@@ -20,7 +20,10 @@ exports[`Delete Data Set Success scenarios should delete a partitioned data set 
   \\"message\\": \\"\\",
   \\"stdout\\": \\"Data set deleted successfully.\\\\n\\",
   \\"stderr\\": \\"\\",
-  \\"data\\": {}
+  \\"data\\": {
+    \\"success\\": true,
+    \\"commandResponse\\": \\"Data set deleted successfully.\\"
+  }
 }"
 `;
 
@@ -32,7 +35,10 @@ exports[`Delete Data Set Success scenarios should delete a partitioned data set 
   \\"message\\": \\"\\",
   \\"stdout\\": \\"Data set deleted successfully.\\\\n\\",
   \\"stderr\\": \\"\\",
-  \\"data\\": {}
+  \\"data\\": {
+    \\"success\\": true,
+    \\"commandResponse\\": \\"Data set deleted successfully.\\"
+  }
 }"
 `;
 
