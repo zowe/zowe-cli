@@ -13,8 +13,9 @@ import { Session } from "@zowe/imperative";
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/ITestEnvironment";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { runCliScript, stripNewLines } from "../../../../../../../__tests__/__src__/TestUtils";
+import { stripNewLines } from "../../../../../../../__tests__/__src__/TestUtils";
 import { ZosFilesMessages } from "@zowe/zos-files-for-zowe-sdk";
+import { runCliScript } from "@zowe/cli-test-utils";
 
 let REAL_SESSION: Session;
 // Test Environment populated in the beforeAll();

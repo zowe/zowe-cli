@@ -15,7 +15,7 @@ import { inspect } from "util";
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/ITestEnvironment";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { runCliScript } from "../../../../../../../__tests__/__src__/TestUtils";
+import { runCliScript } from "@zowe/cli-test-utils";
 import { Delete, Create } from "@zowe/zos-files-for-zowe-sdk";
 
 let REAL_SESSION: Session;

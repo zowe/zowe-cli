@@ -13,9 +13,9 @@ import { Session } from "@zowe/imperative";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/ITestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { runCliScript} from "../../../../../../../__tests__/__src__/TestUtils";
 import { getUniqueDatasetName } from "../../../../../../../__tests__/__src__/TestUtils";
 import { Delete, IDeleteVsamOptions } from "@zowe/zos-files-for-zowe-sdk";
+import { runCliScript } from "@zowe/cli-test-utils";
 
 const ZOWE_OPT_BASE_PATH = "ZOWE_OPT_BASE_PATH";
 

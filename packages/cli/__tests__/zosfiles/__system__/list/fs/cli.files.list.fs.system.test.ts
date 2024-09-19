@@ -14,7 +14,8 @@ import * as path from "path";
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/ITestEnvironment";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { getUniqueDatasetName, runCliScript } from "../../../../../../../__tests__/__src__/TestUtils";
+import { getUniqueDatasetName } from "../../../../../../../__tests__/__src__/TestUtils";
+import { runCliScript } from "@zowe/cli-test-utils";
 
 let REAL_SESSION: Session;
 // Test Environment populated in the beforeAll();

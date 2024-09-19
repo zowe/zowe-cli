@@ -15,8 +15,9 @@ import * as fs from "fs";
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/ITestEnvironment";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { getTag, getUniqueDatasetName, runCliScript } from "../../../../../../../__tests__/__src__/TestUtils";
+import { getTag, getUniqueDatasetName } from "../../../../../../../__tests__/__src__/TestUtils";
 import { Get, ZosFilesUtils } from "@zowe/zos-files-for-zowe-sdk";
+import { runCliScript } from "@zowe/cli-test-utils";
 
 let REAL_SESSION: Session;
 let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;

@@ -12,7 +12,7 @@
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/ITestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { runCliScript} from "../../../../../../../__tests__/__src__/TestUtils";
+import { runCliScript } from "@zowe/cli-test-utils";
 import { join } from "path";
 import { Session, Imperative } from "@zowe/imperative";
 import { List, Delete, Create, CreateDataSetTypeEnum, IListOptions, IMigrateOptions } from "@zowe/zos-files-for-zowe-sdk";

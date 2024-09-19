@@ -14,10 +14,11 @@ import { Session } from "@zowe/imperative";
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/ITestEnvironment";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { getUniqueDatasetName, wait, waitTime, runCliScript } from "../../../../../../../__tests__/__src__/TestUtils";
+import { getUniqueDatasetName, wait, waitTime } from "../../../../../../../__tests__/__src__/TestUtils";
 import { CreateWorkflow, DeleteWorkflow } from "@zowe/zos-workflows-for-zowe-sdk";
 import { Upload, ZosFilesConstants } from "@zowe/zos-files-for-zowe-sdk";
 import { join } from "path";
+import { runCliScript } from "@zowe/cli-test-utils";
 
 let REAL_SESSION: Session;
 let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;

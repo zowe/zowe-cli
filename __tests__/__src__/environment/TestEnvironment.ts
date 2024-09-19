@@ -14,10 +14,10 @@ import * as nodePath from "path";
 import { AbstractSession, Imperative, Session } from "@zowe/imperative";
 
 import { ITestPropertiesSchema } from "../properties/ITestPropertiesSchema";
-import { ISetupEnvironmentParms, TestEnvironment as BaseTestEnvironment, TempTestProfiles } from "../../__packages__/cli-test-utils";
+import { ISetupEnvironmentParms, TestEnvironment as BaseTestEnvironment } from "../../__packages__/cli-test-utils";
 import { ITestEnvironment }  from "./ITestEnvironment";
-import { deleteLocalFile, deleteFiles, deleteJob, deleteJobCommon, deleteDataset } from "../TestUtils";
 import { SshSession } from "../../../packages/zosuss/src/SshSession";
+import { deleteLocalFile, deleteFiles, deleteJob, deleteJobCommon, deleteDataset } from "../TestUtils";
 
 /**
  * Use the utility methods here to setup the test environment for running APIs
@@ -69,8 +69,40 @@ export class TestEnvironment extends BaseTestEnvironment {
      * @memberof TestEnvironment
      */
     public static async cleanUp(testEnvironment: ITestEnvironment<ITestPropertiesSchema>) {
-        // Invoke the superclass's cleanup method
+        // Delete profiles and plugindir
         await super.cleanUp(testEnvironment);
+
+         // Deleting resources (if they exist)
+        if (testEnvironment?.resources?.session) {
+            const session = testEnvironment.resources.session;
+            for (const file of testEnvironment.resources.localFiles) {
+                deleteLocalFile(file);
+            }
+            for (const file of testEnvironment.resources.files) {
+                deleteFiles(session, file);
+            }
+            for (const job of testEnvironment.resources.jobs) {
+                deleteJob(session, job);
+            }
+            for (const jobData of testEnvironment.resources.jobData) {
+                if (jobData.jobname && jobData.jobid) {
+                    deleteJobCommon(session, jobData);
+                } else {
+                    Imperative.console.info('Error: Missing jobname or jobid for jobData:', jobData);
+                }
+            }
+            for (const dataset of testEnvironment.resources.datasets) {
+                deleteDataset(session, dataset);
+            }
+            testEnvironment.resources = {
+                localFiles: [],
+                files: [],
+                jobs: [],
+                jobData: [],
+                datasets: [],
+                session: testEnvironment.resources.session
+            };
+        }
     }
 
     /**

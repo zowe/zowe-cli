@@ -11,8 +11,8 @@
 
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/ITestEnvironment";
-import { runCliScript } from "../../../../../../__tests__/__src__/TestUtils"
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
+import { runCliScript } from "@zowe/cli-test-utils";
 
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;

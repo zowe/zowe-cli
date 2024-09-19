@@ -14,9 +14,10 @@ import * as path from "path";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/ITestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { getUniqueDatasetName, runCliScript} from "../../../../../../../__tests__/__src__/TestUtils";
+import { getUniqueDatasetName } from "../../../../../../../__tests__/__src__/TestUtils";
 import { ZosFilesConstants } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
+import { runCliScript } from "@zowe/cli-test-utils";
 
 let REAL_SESSION: Session;
 // Test Environment populated in the beforeAll();
