@@ -6,6 +6,12 @@ All notable changes to the Imperative package will be documented in this file.
 
 - Enhancement: Allows for profile specification on `zowe config secure` command to allow for exclusively prompting for a single profile's secure values. [#1890] https://github.com/zowe/zowe-cli/issues/1890
 
+## `8.0.0-next.202409191615`
+
+- Update: Final prerelease
+- Update: See `5.27.1` for details
+
+
 ## `8.0.0-next.202408301809`
 
 - LTS Breaking: Removed the following obsolete V1 profile classes/functions:
@@ -476,6 +482,11 @@ All notable changes to the Imperative package will be documented in this file.
 ## `8.0.0-next.202311132045`
 
 - Major: First major version bump for V3
+
+## `5.27.1`
+
+- BugFix: Updated `dataobject-parser` dependency for technical currency. [#2262](https://github.com/zowe/zowe-cli/pull/2262)
+- BugFix: Updated `fs-extra` and `jsonfile` dependencies for technical currency. [#2264](https://github.com/zowe/zowe-cli/pull/2264)
 
 ## `5.27.0`
 

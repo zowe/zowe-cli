@@ -135,8 +135,7 @@ export class ConnectionPropsForSessCfg {
         }
 
         // Set default values on propsToPromptFor
-        if(connOpts.propsToPromptFor?.length > 0)
-        {
+        if(connOpts.propsToPromptFor?.length > 0) {
             connOpts.propsToPromptFor.forEach(obj => {
                 if(obj.secure == null) obj.secure = true;
                 if(obj.secure) this.secureSessCfgProps.add(obj.name.toString());
