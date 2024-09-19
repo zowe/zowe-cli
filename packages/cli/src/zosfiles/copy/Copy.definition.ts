@@ -27,6 +27,7 @@ export const CopyDefinition: ICommandDefinition = {
     name: "copy",
     aliases: ["cp"],
     type: "group",
+    summary: strings.SUMMARY,
     description: strings.DESCRIPTION,
     children: [
         DsDefinition,

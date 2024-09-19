@@ -12,7 +12,7 @@
 import * as fs from "fs";
 import { spawnSync, SpawnSyncReturns, ExecFileException } from "child_process";
 import { ITestEnvironment } from "./environment/doc/response/ITestEnvironment";
-import { CommandProfiles, ICommandDefinition, IHandlerParameters } from "@zowe/imperative";
+import { ICommandDefinition, IHandlerParameters } from "@zowe/imperative";
 
 /**
  * Execute a CLI script
@@ -65,26 +65,6 @@ export function runCliScript(scriptPath: string, testEnvironment: ITestEnvironme
         throw new Error(`The script file ${scriptPath} doesn't exist`);
 
     }
-}
-
-/**
- * Check if stderr output is empty for profiles command. Ignores any message
- * about profiles being deprecated.
- * @deprecated Use `stripProfileDeprecationMessages`
- */
-export function isStderrEmptyForProfilesCommand(output: Buffer): boolean {
-    return stripProfileDeprecationMessages(output).length === 0;
-}
-
-/**
- * Strip v1 profile deprecation messages from stderr output.
- */
-export function stripProfileDeprecationMessages(stderr: Buffer | string): string {
-    return stderr.toString()
-        .replace(/Warning: The command 'profiles [a-z]+' is deprecated\./g, "")
-        .replace(/Recommended replacement: The 'config [a-z]+' command/g, "")
-        .replace(/Recommended replacement: Edit your Zowe V2 configuration\s+zowe\.config\.json/g, "")
-        .trim();
 }
 
 /**
@@ -152,11 +132,9 @@ export function mockHandlerParameters(params: PartialHandlerParameters): IHandle
         arguments: {
             $0: "zowe",
             _: params.positionals || [],
-            ...(params.arguments || {})
+            ...params.arguments || {}
         },
         positionals: params.positionals || [],
-        // eslint-disable-next-line deprecation/deprecation
-        profiles: params.profiles || new CommandProfiles(new Map()),
         definition: params.definition,
         fullDefinition: params.definition,
         stdin: process.stdin,

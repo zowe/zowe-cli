@@ -36,7 +36,7 @@ export const CreateCommonOptions: { [key: string]: ICommandOptionDefinition } = 
         name: "uss-file",
         aliases: ["uf"],
         type: "string",
-        description: "Uss file that contains workflow definition.",
+        description: "USS file that contains workflow definition.",
         required: true
     },
 
@@ -162,7 +162,7 @@ export const CreateCommonOptions: { [key: string]: ICommandOptionDefinition } = 
     remoteDirectory: {
         name: "remote-directory",
         aliases: ["rd"],
-        description: "The remote uss directory where the files are to be uploaded. The directory has to exist",
+        description: "The remote USS directory where the files are to be uploaded. The directory has to exist.",
         type: "string",
         required: false
     },

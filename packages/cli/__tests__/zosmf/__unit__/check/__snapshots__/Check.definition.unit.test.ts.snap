@@ -2,8 +2,9 @@
 
 exports[`zosmf check group definition should have the right command content 1`] = `
 Object {
-  "description": "Confirm that z/OSMF is running on a specified system and gather information about the z/OSMF server for diagnostic purposes. ",
+  "description": "Confirm that z/OSMF is running on a specified system and gather information about the z/OSMF server for diagnostic purposes.",
   "name": "check",
+  "summary": "Check z/OSMF status on a specified system",
   "type": "group",
 }
 `;

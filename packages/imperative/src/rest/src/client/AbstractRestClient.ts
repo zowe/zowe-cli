@@ -29,11 +29,11 @@ import { RestClientError } from "./RestClientError";
 import { Readable, Writable } from "stream";
 import { IO } from "../../../io";
 import { ITaskWithStatus, TaskProgress, TaskStage } from "../../../operations";
-import { NextVerFeatures, TextUtils } from "../../../utilities";
+import { TextUtils } from "../../../utilities";
 import { IRestOptions } from "./doc/IRestOptions";
 import * as SessConstants from "../session/SessConstants";
 import { CompressionUtils } from "./CompressionUtils";
-import { Proxy } from "./Proxy";
+import { ProxySettings } from "./ProxySettings";
 
 export type RestClientResolve = (data: string) => void;
 
@@ -330,16 +330,8 @@ export abstract class AbstractRestClient {
              * Invoke any onError method whenever an error occurs on writing
              */
             clientRequest.on("error", (errorResponse: any) => {
-                let errMsg: string;
-                // TODO:V3_ERR_FORMAT - Don't test for env variable in V3
-                if (NextVerFeatures.useV3ErrFormat()) {
-                    errMsg = "Failed to send an HTTP request.";
-                } else { // TODO:V3_ERR_FORMAT - Remove in V3
-                    errMsg = "http(s) request error event called";
-                }
-
                 reject(this.populateError({
-                    msg: errMsg,
+                    msg: "Failed to send an HTTP request.",
                     causeErrors: errorResponse,
                     source: "client"
                 }));
@@ -469,13 +461,13 @@ export abstract class AbstractRestClient {
         // NOTE(Kelosky): This cannot be set for http requests
         // options.agent = new https.Agent({secureProtocol: this.session.ISession.secureProtocol});
 
-        const proxyUrl = Proxy.getSystemProxyUrl(this.session.ISession);
+        const proxyUrl = ProxySettings.getSystemProxyUrl(this.session.ISession);
         if (proxyUrl) {
-            if (Proxy.matchesNoProxySettings(this.session.ISession)) {
+            if (ProxySettings.matchesNoProxySettings(this.session.ISession)) {
                 this.mLogger.info(`Proxy setting "${proxyUrl.href}" will not be used as hostname was found listed under "no_proxy" setting.`);
             } else {
                 this.mLogger.info(`Using the following proxy setting for the request: ${proxyUrl.href}`);
-                options.agent = Proxy.getProxyAgent(this.session.ISession);
+                options.agent = ProxySettings.getProxyAgent(this.session.ISession);
             }
         }
 
@@ -550,7 +542,7 @@ export abstract class AbstractRestClient {
         this.setTransferFlags(options.headers);
 
         const logResource = path.posix.join(path.posix.sep,
-            (this.session.ISession.basePath == null ? "" : this.session.ISession.basePath), resource);
+            this.session.ISession.basePath == null ? "" : this.session.ISession.basePath, resource);
         this.log.trace("Rest request: %s %s:%s%s %s", request, this.session.ISession.hostname, this.session.ISession.port,
             logResource, this.session.ISession.user ? "as user " + this.session.ISession.user : "");
 
@@ -605,7 +597,7 @@ export abstract class AbstractRestClient {
         {
             return false;
         }
-        if (! this.session.ISession.base64EncodedAuth &&
+        if (!this.session.ISession.base64EncodedAuth &&
             !(this.session.ISession.user && this.session.ISession.password))
         {
             return false;
@@ -614,7 +606,7 @@ export abstract class AbstractRestClient {
         this.log.trace("Using basic authentication");
         const headerKeys: string[] = Object.keys(Headers.BASIC_AUTHORIZATION);
         const authentication: string = AbstractSession.BASIC_PREFIX + (this.session.ISession.base64EncodedAuth ??
-            AbstractSession.getBase64Auth(this.session.ISession.user,  this.session.ISession.password));
+            AbstractSession.getBase64Auth(this.session.ISession.user, this.session.ISession.password));
         headerKeys.forEach((property) => {
             restOptionsToSet.headers[property] = authentication;
         });
@@ -883,8 +875,8 @@ export abstract class AbstractRestClient {
         finalError.host = this.mSession.ISession.hostname;
         finalError.basePath = this.mSession.ISession.basePath;
         finalError.httpStatus = httpStatus;
-        finalError.errno = (nodeClientError != null) ? nodeClientError.errno : undefined;
-        finalError.syscall = (nodeClientError != null) ? nodeClientError.syscall : undefined;
+        finalError.errno = nodeClientError != null ? nodeClientError.errno : undefined;
+        finalError.syscall = nodeClientError != null ? nodeClientError.syscall : undefined;
         finalError.payload = this.mWriteData;
         finalError.headers = this.mReqHeaders;
         finalError.resource = this.mResource;
@@ -897,41 +889,21 @@ export abstract class AbstractRestClient {
                 `HTTP(S) client encountered an error. Request could not be initiated to host.\n` +
                 `Review connection details (host, port) and ensure correctness.`;
         } else {
-            // TODO:V3_ERR_FORMAT - Don't test for env variable in V3
-            if (NextVerFeatures.useV3ErrFormat()) {
-                detailMessage =
-                    `Received HTTP(S) error ${finalError.httpStatus} = ${http.STATUS_CODES[finalError.httpStatus]}.`;
-            } else { // TODO:V3_ERR_FORMAT - Remove in V3
-                detailMessage =
-                    `HTTP(S) error status "${finalError.httpStatus}" received.\n` +
-                    `Review request details (resource, base path, credentials, payload) and ensure correctness.`;
-            }
+            detailMessage =
+                `Received HTTP(S) error ${finalError.httpStatus} = ${http.STATUS_CODES[finalError.httpStatus]}.`;
         }
 
-        // TODO:V3_ERR_FORMAT - Don't test for env variable in V3
-        if (NextVerFeatures.useV3ErrFormat()) {
-            detailMessage += "\n" +
-            "\nProtocol:          " + finalError.protocol +
-            "\nHost:              " + finalError.host +
-            "\nPort:              " + finalError.port +
-            "\nBase Path:         " + finalError.basePath +
-            "\nResource:          " + finalError.resource +
-            "\nRequest:           " + finalError.request +
-            "\nHeaders:           " + headerDetails +
-            "\nPayload:           " + payloadDetails +
-            "\nAuth type:         " + this.mSession.ISession.type +
-            "\nAllow Unauth Cert: " + !this.mSession.ISession.rejectUnauthorized;
-        } else { // TODO:V3_ERR_FORMAT - Remove in V3
-            detailMessage += "\n" +
-            "\nProtocol:  " + finalError.protocol +
-            "\nHost:      " + finalError.host +
-            "\nPort:      " + finalError.port +
-            "\nBase Path: " + finalError.basePath +
-            "\nResource:  " + finalError.resource +
-            "\nRequest:   " + finalError.request +
-            "\nHeaders:   " + headerDetails +
-            "\nPayload:   " + payloadDetails;
-        }
+        detailMessage += "\n" +
+        "\nProtocol:          " + finalError.protocol +
+        "\nHost:              " + finalError.host +
+        "\nPort:              " + finalError.port +
+        "\nBase Path:         " + finalError.basePath +
+        "\nResource:          " + finalError.resource +
+        "\nRequest:           " + finalError.request +
+        "\nHeaders:           " + headerDetails +
+        "\nPayload:           " + payloadDetails +
+        "\nAuth type:         " + this.mSession.ISession.type +
+        "\nAllow Unauth Cert: " + !this.mSession.ISession.rejectUnauthorized;
         finalError.additionalDetails = detailMessage;
 
         // Allow implementation to modify the error as necessary
@@ -976,7 +948,7 @@ export abstract class AbstractRestClient {
      * @memberof AbstractRestClient
      */
     private setTransferFlags(headers: http.OutgoingHttpHeaders) {
-        if ((headers[Headers.CONTENT_TYPE]) != null) {
+        if (headers[Headers.CONTENT_TYPE] != null) {
             const contentType = headers[Headers.CONTENT_TYPE];
             if (contentType === Headers.APPLICATION_JSON[Headers.CONTENT_TYPE]) {
                 this.mIsJson = true;
@@ -996,8 +968,8 @@ export abstract class AbstractRestClient {
         if (this.response == null) {
             return false;
         } else {
-            return (this.response.statusCode >= RestConstants.HTTP_STATUS_200 &&
-                this.response.statusCode < RestConstants.HTTP_STATUS_300);
+            return this.response.statusCode >= RestConstants.HTTP_STATUS_200 &&
+                this.response.statusCode < RestConstants.HTTP_STATUS_300;
         }
     }
 

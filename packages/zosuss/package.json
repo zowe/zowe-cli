@@ -1,6 +1,6 @@
 {
   "name": "@zowe/zos-uss-for-zowe-sdk",
-  "version": "7.29.2",
+  "version": "8.0.0-next.202409111528",
   "description": "Zowe SDK to interact with USS on z/OS",
   "author": "Zowe",
   "license": "EPL-2.0",
@@ -45,14 +45,17 @@
     "prepack": "node ../../scripts/prepareLicenses.js"
   },
   "dependencies": {
-    "ssh2": "1.15.0"
+    "ssh2": "^1.15.0"
   },
   "devDependencies": {
-    "@types/ssh2": "^1.11.0",
-    "@zowe/cli-test-utils": "7.29.2",
-    "@zowe/imperative": "5.27.1"
+    "@types/ssh2": "^1.11.19",
+    "@zowe/cli-test-utils": "8.0.0-next.202409111528",
+    "@zowe/imperative": "8.0.0-next.202409111528"
   },
   "peerDependencies": {
-    "@zowe/imperative": "^5.2.0"
+    "@zowe/imperative": "^8.0.0-next"
+  },
+  "engines": {
+    "node": ">=18.12.0"
   }
 }

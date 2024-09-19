@@ -7,7 +7,7 @@ Object {
   ],
   "description": "Deletes instance previously provisioned with z/OSMF cloud provisioning services.",
   "name": "delete",
-  "summary": "Delete instance.",
+  "summary": "Delete instance",
   "type": "group",
 }
 `;

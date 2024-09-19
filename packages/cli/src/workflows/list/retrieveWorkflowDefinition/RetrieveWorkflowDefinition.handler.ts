@@ -9,7 +9,7 @@
 *
 */
 
-import { IHandlerParameters } from "@zowe/imperative";
+import { IHandlerParameters, ImperativeError } from "@zowe/imperative";
 import { DefinitionWorkflow, IWorkflowDefinition } from "@zowe/zos-workflows-for-zowe-sdk";
 import { ZosmfBaseHandler } from "@zowe/zosmf-for-zowe-sdk";
 
@@ -41,7 +41,11 @@ export default class ListActiveWorkflowsHandler extends ZosmfBaseHandler {
                 this.mSession, undefined, this.arguments.definitionFilePath,
                 this.arguments.listSteps, this.arguments.listVariables);
         } catch (err) {
-            error = "List workflow(s) " + err;
+            error = new ImperativeError({
+                msg: "List workflow(s) " + err,
+                causeErrors: err.causeErrors,
+                additionalDetails: err.additionalDetails
+            });
             throw error;
         }
 

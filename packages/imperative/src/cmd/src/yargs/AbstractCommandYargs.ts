@@ -19,8 +19,6 @@ import { IYargsParms } from "./doc/IYargsParms";
 import { ICommandResponseParms } from "../../../cmd/src/doc/response/parms/ICommandResponseParms";
 import { ImperativeYargsCommandAction, IYargsResponse } from "./doc/IYargsResponse";
 import { GroupCommandYargs } from "./GroupCommandYargs";
-import { IProfileManagerFactory } from "../../../profiles";
-import { ICommandProfileTypeConfiguration } from "../doc/profiles/definition/ICommandProfileTypeConfiguration";
 import { IHelpGeneratorFactory } from "../help/doc/IHelpGeneratorFactory";
 import { CommandResponse } from "../response/CommandResponse";
 import { ICommandResponse } from "../../src/doc/response/response/ICommandResponse";
@@ -33,7 +31,7 @@ import { ImperativeConfig } from "../../../utilities/src/ImperativeConfig";
 export type YargsCommandCompleted = (args: Arguments, response: IYargsResponse) => void;
 
 /**
- * Abstract Yargs Bright Command - Contains base methods for defining commands and groups
+ * Abstract Yargs Zowe Command - Contains base methods for defining commands and groups
  */
 export abstract class AbstractCommandYargs {
     /**
@@ -67,14 +65,6 @@ export abstract class AbstractCommandYargs {
      * The help generator factory for creating help generators for the commands
      */
     private mHelpGeneratorFactory: IHelpGeneratorFactory;
-
-    /**
-     * Profile manager factory (for creating managers of certain types)
-     * @private
-     * @type {IProfileManagerFactory<any>}
-     * @memberof AbstractCommandYargs
-     */
-    private mProfileManagerFactory: IProfileManagerFactory<ICommandProfileTypeConfiguration>;
 
     /**
      * The root command name for the CLI.
@@ -117,7 +107,6 @@ export abstract class AbstractCommandYargs {
         this.mDefinition = yargsParms.commandDefinition;
         this.mParent = yargsParms.yargsParent;
         this.mCommandResponseParms = yargsParms.commandResponseParms;
-        this.mProfileManagerFactory = yargsParms.profileManagerFactory;
         this.mHelpGeneratorFactory = yargsParms.helpGeneratorFactory;
         this.mRootCommandName = yargsParms.rootCommandName;
         this.mCommandLine = yargsParms.commandLine;
@@ -187,16 +176,6 @@ export abstract class AbstractCommandYargs {
     }
 
     /**
-     * Accessor for the profile manager factory
-     * @readonly
-     * @type {IProfileManagerFactory<any>}
-     * @memberof AbstractCommandYargs
-     */
-    protected get profileManagerFactory(): IProfileManagerFactory<any> {
-        return this.mProfileManagerFactory;
-    }
-
-    /**
      * Returns a copy of the definition.
      * @return {ICommandDefinition}: A copy of the definition.
      */
@@ -226,12 +205,12 @@ export abstract class AbstractCommandYargs {
     }
 
     /**
-     * Construct the Bright command definition "tree" - the full definition document including all parents.
+     * Construct the Zowe command definition "tree" - the full definition document including all parents.
      * @return {ICommandDefinition}: The command definition "tree".
      */
     public constructDefinitionTree(): ICommandDefinition {
         const parents: GroupCommandYargs[] = this.parents;
-        return (parents[0]) ? JSON.parse(JSON.stringify(parents[0].definition)) : {};
+        return parents[0] ? JSON.parse(JSON.stringify(parents[0].definition)) : {};
     }
 
     /**
@@ -241,17 +220,7 @@ export abstract class AbstractCommandYargs {
     public abstract defineCommandToYargs(commandExecuted: YargsCommandCompleted): void;
 
     /**
-     * @deprecated Use `getZoweYargsResponse` instead
-     */
-    protected getBrightYargsResponse(successful: boolean, responseMessage: string,
-        action: ImperativeYargsCommandAction,
-        responses?: ICommandResponse[]): IYargsResponse
-    {
-        return this.getZoweYargsResponse(successful, responseMessage, action, responses);
-    }
-
-    /**
-     * Build The Bright Yargs response for the callback. Includes the Bright command response and status info.
+     * Build The Zowe Yargs response for the callback. Includes the Zowe command response and status info.
      * @param {boolean} successful: True if the command succeeded
      * @param {string} responseMessage: Response message for display purposes.
      * @param {ImperativeYargsCommandAction} action
@@ -265,7 +234,7 @@ export abstract class AbstractCommandYargs {
         if (responses != null && responses.length > 0) {
             for (const response of responses) {
                 // use the maximum exit code from all command responses
-                if (exitCode == null || (response.exitCode != null && response.exitCode > exitCode)) {
+                if (exitCode == null || response.exitCode != null && response.exitCode > exitCode) {
                     exitCode = response.exitCode;
                 }
             }
@@ -290,7 +259,7 @@ export abstract class AbstractCommandYargs {
          * object is recreated/changed based on the currently specified CLI options
          */
         let tempDefinition: ICommandDefinition;
-        if (args[Constants.HELP_EXAMPLES] && (this.definition.children.length > 0)) {
+        if (args[Constants.HELP_EXAMPLES] && this.definition.children.length > 0) {
             tempDefinition = this.getDepthExamples();
         }
 
@@ -307,7 +276,6 @@ export abstract class AbstractCommandYargs {
                 definition: tempDefinition ? tempDefinition : this.definition,
                 fullDefinition: tempDefinition ? tempDefinition : this.constructDefinitionTree(),
                 helpGenerator: newHelpGenerator,
-                profileManagerFactory: this.profileManagerFactory,
                 rootCommandName: this.rootCommandName,
                 commandLine: this.commandLine,
                 envVariablePrefix: this.envVariablePrefix,
@@ -315,7 +283,7 @@ export abstract class AbstractCommandYargs {
                 daemonContext: ImperativeConfig.instance.daemonContext
             }).help(new CommandResponse({
                 silent: false,
-                responseFormat: (args[Constants.JSON_OPTION] || false) ? "json" : "default",
+                responseFormat: args[Constants.JSON_OPTION] || false ? "json" : "default",
                 stream: ImperativeConfig.instance.daemonContext?.stream
             }));
         } catch (helpErr) {
@@ -355,7 +323,7 @@ export abstract class AbstractCommandYargs {
             commandDefinition.examples = [];
         }
 
-        lodashDeep.deepMapValues(this.definition.children, ((value: any, path: any) => {
+        lodashDeep.deepMapValues(this.definition.children, (value: any, path: any) => {
             if(path.endsWith("name") && (path.includes("options") || path.includes("positionals"))) {
                 /* Do nothing */
             } else if(path.endsWith("name") && path.includes("children")) {
@@ -391,13 +359,13 @@ export abstract class AbstractCommandYargs {
 
                 if(tempDescPath === tempOpPath ) {
                     let commandExamples: ICommandExampleDefinition;
-                    (tempPre && (tempDescPath === tempPrePath)) ?
+                    tempPre && tempDescPath === tempPrePath ?
                         commandDefinition.examples[commandDefinition.examples.length - 1].prefix = tempPre
                         :commandExamples = {description: tempDesc, options: tempOp};
                     if(commandExamples) {commandDefinition.examples.push(commandExamples);}
                 }
             }
-        }));
+        });
         return commandDefinition;
     }
 
@@ -419,7 +387,6 @@ export abstract class AbstractCommandYargs {
                 definition: this.definition,
                 fullDefinition: this.constructDefinitionTree(),
                 helpGenerator: "fake" as any,
-                profileManagerFactory: this.profileManagerFactory,
                 rootCommandName: this.rootCommandName,
                 commandLine: this.commandLine,
                 envVariablePrefix: this.envVariablePrefix,
@@ -428,7 +395,7 @@ export abstract class AbstractCommandYargs {
             }).webHelp(fullCommandName + "_" + this.definition.name,
                 new CommandResponse({
                     silent: false,
-                    responseFormat: (args[Constants.JSON_OPTION] || false) ? "json" : "default",
+                    responseFormat: args[Constants.JSON_OPTION] || false ? "json" : "default",
                     stream: ImperativeConfig.instance.daemonContext?.stream
                 })
             );

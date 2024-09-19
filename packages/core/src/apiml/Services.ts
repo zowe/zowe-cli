@@ -40,7 +40,7 @@ export class Services {
         );
 
         // Get the APIML configs from the loaded imperative config
-        for (const apimlConfig of (ImperativeConfig.instance.loadedConfig.apimlConnLookup || [])) {
+        for (const apimlConfig of ImperativeConfig.instance.loadedConfig.apimlConnLookup || []) {
             apimlConfigs.push({
                 ...apimlConfig,
                 connProfType: apimlConfig.connProfType || ImperativeConfig.instance.loadedConfig.profiles[0].type,
@@ -50,7 +50,7 @@ export class Services {
 
         // Load APIML configs from all plugins
         for (const pluginCfgProps of PluginManagementFacility.instance.allPluginCfgProps) {
-            for (const apimlConfig of (pluginCfgProps.impConfig.apimlConnLookup || [])) {
+            for (const apimlConfig of pluginCfgProps.impConfig.apimlConnLookup || []) {
                 apimlConfigs.push({
                     ...apimlConfig,
                     connProfType: apimlConfig.connProfType || pluginCfgProps.impConfig.profiles[0].type,
@@ -125,7 +125,7 @@ export class Services {
 
                         profInfo.pluginConfigs.add(config);
                         profInfo.gatewayUrlConflicts[config.pluginName] = [
-                            ...(profInfo.gatewayUrlConflicts[config.pluginName] || []),
+                            ...profInfo.gatewayUrlConflicts[config.pluginName] || [],
                             apiInfo.gatewayUrl
                         ];
                     }
@@ -246,6 +246,9 @@ export class Services {
                     conflictingPluginsList += `
                     //     "${element}": "${profileInfo.gatewayUrlConflicts[element].join('", "')}"`;
                 });
+
+                // Typecasting because of this issue: https://github.com/kaelzhang/node-comment-json/issues/42
+
                 const basepathConflictMessage = `
                     // ---
                     // Warning: basePath conflict detected!
@@ -261,7 +264,7 @@ export class Services {
                         ${_genCommentsHelper("basePath", basePaths)}
                         "basePath": "${defaultBasePath}"
                     }`
-                );
+                ) as any;
             }
         });
 
@@ -287,7 +290,7 @@ export class Services {
                     "${defaultKey}": "${trueDefault}"`;
                 // Terminate the JSON string
                 jsonString += '\n}';
-                configDefaults = JSONC.parse(jsonString);
+                configDefaults = JSONC.parse(jsonString) as any;
             }
         }
 

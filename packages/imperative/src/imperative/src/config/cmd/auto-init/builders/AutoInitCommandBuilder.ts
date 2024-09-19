@@ -15,7 +15,7 @@ import { Logger } from "../../../../../../logger";
 import { ICommandProfileAutoInitConfig } from "../../../../../../cmd/src/doc/profiles/definition/ICommandProfileAutoInitConfig";
 import { ImperativeError } from "../../../../../../error";
 import { TextUtils } from "../../../../../../utilities";
-import { autoInitCommandDesc } from "../../../../../../messages";
+import { autoInitCommandDesc, autoInitCommandSummary } from "../../../../../../messages";
 import { Constants } from "../../../../../../constants";
 import { AutoInitConstants } from "../AutoInitConstants";
 
@@ -85,19 +85,20 @@ export class AutoInitCommandBuilder implements AbstractCommandBuilder {
                 AutoInitConstants.AUTO_INIT_OPTION_GLOBAL_CONFIG,
                 AutoInitConstants.AUTO_INIT_OPTION_DRY_RUN,
                 AutoInitConstants.AUTO_INIT_OPTION_EDIT,
+                AutoInitConstants.AUTO_INIT_OPTION_EDITOR,
                 AutoInitConstants.AUTO_INIT_OPTION_OVERWRITE,
                 AutoInitConstants.AUTO_INIT_OPTION_FOR_SURE,
-                ...(this.mConfig.autoInit?.options || [])
+                ...this.mConfig.autoInit?.options || []
             ],
             examples: this.mConfig.autoInit?.examples,
             customize: {}
         };
 
         if (autoInitCommand.summary == null) {
-            autoInitCommand.summary = TextUtils.formatMessage(autoInitCommandDesc.message, {source: this.mConfig.provider});
+            autoInitCommand.summary = TextUtils.formatMessage(autoInitCommandSummary.message, {source: this.mConfig.provider});
         }
         if (autoInitCommand.description == null) {
-            autoInitCommand.description = autoInitCommand.summary;
+            autoInitCommand.description = TextUtils.formatMessage(autoInitCommandDesc.message, {source: this.mConfig.provider});
         }
         if (this.mProfileType != null) {
             autoInitCommand.profile = {};

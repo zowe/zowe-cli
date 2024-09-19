@@ -14,9 +14,9 @@ import { IProfileDependency } from "../definition/IProfileDependency";
 
 /**
  * The profile "type" configuration document. Provides all configuration information for the "type". A profile
- * "type" is an arbirarty (implementation defined) category used to isolate configuration documents, provide
+ * "type" is an arbitrary (implementation defined) category used to isolate configuration documents, provide
  * ease of configuration for complex CLIs (user only configures what they'll use), and allows the CLI to be
- * extendable in an isolated fashion. See the "IProfile" and "BasicProfileManager" for more detailed profile info.
+ * extendable in an isolated fashion. See the "IProfile" for more detailed profile info.
  * @export
  * @interface IProfileTypeConfiguration
  */
@@ -46,6 +46,7 @@ export interface IProfileTypeConfiguration {
      *
      * @type {IProfileDependency[]}
      * @memberof IProfileTypeConfiguration
+     * @deprecated Only applies to V1 profiles. For team config, use nested profiles instead.
      */
     dependencies?: IProfileDependency[];
     /**
@@ -55,6 +56,7 @@ export interface IProfileTypeConfiguration {
      *
      * @type {string}
      * @memberof IProfileTypeConfiguration
+     * @deprecated Only applies to V1 profiles. For team config, validate with JSON schema instead.
      */
     validationPlanModule?: string;
 }

@@ -36,14 +36,25 @@ describe("provisioning delete", () => {
     it("should fail with invalid parameter", async () => {
         const response = runCliScript(__dirname + "/__scripts__/delete_invalid_parameter.sh", TEST_ENVIRONMENT);
         expect(response.status).toBe(1);
-        expect(response.stderr.toString()).toMatchSnapshot();
-        expect(response.stdout.toString()).toMatchSnapshot();
+        expect(response.stdout.toString()).toBe('');
+        expect(response.stderr.toString()).toContain('Unknown argument: foobar');
+        expect(response.stderr.toString()).toContain('Command failed due to improper syntax');
+        expect(response.stderr.toString()).toContain('Did you mean: provisioning delete');
+        expect(response.stderr.toString()).toContain('Command entered: "provisioning delete foobar"');
+        expect(response.stderr.toString()).toContain('Available commands are "instance".');
+        expect(response.stderr.toString()).toContain('Use "zowe provisioning delete --help" to view groups, commands, and options.');
+        expect(response.stderr.toString()).toContain('Error: Unknown argument: foobar');
     });
 
     it("should fail with invalid option", async () => {
         const response = runCliScript(__dirname + "/__scripts__/delete_invalid_option.sh", TEST_ENVIRONMENT);
         expect(response.status).toBe(1);
-        expect(response.stderr.toString()).toMatchSnapshot();
-        expect(response.stdout.toString()).toMatchSnapshot();
+        expect(response.stdout.toString()).toBe('');
+        expect(response.stderr.toString()).toContain('Unknown arguments: foo-bar, fooBar');
+        expect(response.stderr.toString()).toContain('Command failed due to improper syntax');
+        expect(response.stderr.toString()).toContain('Command entered: "provisioning delete instance --foo-bar"');
+        expect(response.stderr.toString()).toContain('Available commands are "instance".');
+        expect(response.stderr.toString()).toContain('Use "zowe provisioning delete --help" to view groups, commands, and options.');
+        expect(response.stderr.toString()).toContain('Error: Unknown arguments: foo-bar, fooBar');
     });
 });

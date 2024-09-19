@@ -27,10 +27,10 @@ export interface ICommandArguments {
     $0: string;
     /**
      * The set of command segments and positional operands in an array.
-     * @type {string[]}
+     * @type {(string | number)[]}
      * @example ["create", "file", "text.txt"]
      */
-    _: string[];
+    _: (string | number)[];
     /**
      * Index signature.
      */

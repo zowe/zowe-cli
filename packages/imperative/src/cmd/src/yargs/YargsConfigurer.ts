@@ -18,8 +18,6 @@ import { ICommandDefinition } from "../doc/ICommandDefinition";
 import { ICommandResponseParms } from "../doc/response/parms/ICommandResponseParms";
 import { CommandProcessor } from "../CommandProcessor";
 import { CommandUtils } from "../utils/CommandUtils";
-import { IProfileManagerFactory } from "../../../profiles";
-import { ICommandProfileTypeConfiguration } from "../doc/profiles/definition/ICommandProfileTypeConfiguration";
 import { IHelpGeneratorFactory } from "../help/doc/IHelpGeneratorFactory";
 import { ImperativeConfig } from "../../../utilities";
 import { closest } from "fastest-levenshtein";
@@ -33,7 +31,6 @@ export class YargsConfigurer {
     constructor(private rootCommand: ICommandDefinition,
         private yargs: any,
         private commandRespParms: ICommandResponseParms,
-        private profileManagerFactory: IProfileManagerFactory<ICommandProfileTypeConfiguration>,
         private helpGeneratorFactory: IHelpGeneratorFactory,
         private experimentalCommandDescription: string,
         private rootCommandName: string,
@@ -42,6 +39,11 @@ export class YargsConfigurer {
         private promptPhrase: string
     ) {
     }
+
+    public static readonly yargsConfiguration: Readonly<Record<string, boolean>> = {
+        "parse-numbers": false,
+        "parse-positional-numbers": false
+    };
 
     public configure() {
 
@@ -53,6 +55,7 @@ export class YargsConfigurer {
         this.yargs.help(false);
         this.yargs.version(false);
         this.yargs.showHelpOnFail(false);
+        this.yargs.parserConfiguration(YargsConfigurer.yargsConfiguration);
         // finally, catch any undefined commands
         this.yargs.command({
             command: "*",
@@ -74,7 +77,6 @@ export class YargsConfigurer {
                     new CommandProcessor({
                         definition: this.rootCommand, fullDefinition: this.rootCommand,
                         helpGenerator: rootHelpGenerator,
-                        profileManagerFactory: this.profileManagerFactory,
                         rootCommandName: this.rootCommandName,
                         commandLine: this.commandLine,
                         envVariablePrefix: this.envVariablePrefix,
@@ -108,7 +110,6 @@ export class YargsConfigurer {
                         definition: failedCommandDefinition,
                         fullDefinition: failedCommandDefinition,
                         helpGenerator: rootHelpGenerator,
-                        profileManagerFactory: this.profileManagerFactory,
                         rootCommandName: this.rootCommandName,
                         commandLine: ImperativeConfig.instance.commandLine,
                         envVariablePrefix: this.envVariablePrefix,
@@ -144,7 +145,6 @@ export class YargsConfigurer {
                 definition: failedCommandDefinition,
                 fullDefinition: failedCommandDefinition,
                 helpGenerator: failHelpGenerator,
-                profileManagerFactory: this.profileManagerFactory,
                 rootCommandName: this.rootCommandName,
                 commandLine: this.commandLine,
                 envVariablePrefix: this.envVariablePrefix,
@@ -187,7 +187,6 @@ export class YargsConfigurer {
                 definition: failedCommandDefinition,
                 fullDefinition: failedCommandDefinition,
                 helpGenerator: failHelpGenerator,
-                profileManagerFactory: this.profileManagerFactory,
                 rootCommandName: this.rootCommandName,
                 commandLine: ImperativeConfig.instance.commandLine,
                 envVariablePrefix: this.envVariablePrefix,
@@ -243,11 +242,11 @@ export class YargsConfigurer {
 
         // loop through the top level groups
         for (const group of this.rootCommand.children) {
-            if ((group.name.trim() === groupValues[0]) || (group.aliases[0] === groupValues[0])) {
+            if (group.name.trim() === groupValues[0] || group.aliases[0] === groupValues[0]) {
                 groups += groupValues[0] + " ";
                 // found the top level group so loop to see if second level group valid
                 for (const group2 of group.children) {
-                    if ((group2.name.trim() === groupValues[1]) || (group2.aliases[0] === groupValues[1])) {
+                    if (group2.name.trim() === groupValues[1] || group2.aliases[0] === groupValues[1]) {
                         groups += groupValues[1] + " ";
                         // second level group valid so command provided is invalid, retrieve the valid command(s)
                         for (let i = 0; i < group2.children.length; i++) {

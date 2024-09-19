@@ -22,7 +22,8 @@ import { join } from "path";
 export const UssFile: ICommandDefinition = {
     name: "workflow-from-uss-file",
     aliases: ["wfuf"],
-    description: "Create a workflow instance in z/OSMF using a USS file",
+    summary: "Create a workflow instance in z/OSMF using a USS file",
+    description: "Create a workflow instance in z/OSMF using a USS file.",
     type: "command",
     handler: join(__dirname, "../Create.common.handler"),
     profile: {
@@ -36,7 +37,7 @@ export const UssFile: ICommandDefinition = {
             required: true
         }
     ],
-    options: ([
+    options: [
         CreateCommonOptions.ussFile,
         CreateCommonOptions.systemName,
         CreateCommonOptions.owner,
@@ -47,7 +48,7 @@ export const UssFile: ICommandDefinition = {
         CreateCommonOptions.deleteCompleted,
         CreateCommonOptions.overwrite
         // CreateCommonOptions.zosmfVersion
-    ]),
+    ],
     outputFormatOptions: true,
     examples: [
         {

@@ -43,6 +43,7 @@ describe("provisioning perform action", () => {
         instanceID = instance["object-id"];
         instanceName = instance["external-name"];
         Imperative.console.info(`Provisioned instance: ${instanceName}`);
+        if (instanceID == null) { throw Error("Cannot continue test - instance ID is undefined"); }
     }, ProvisioningTestUtils.MAX_TIMEOUT_TIME);
 
     it("should successfully perform checkStatus action", async () => {

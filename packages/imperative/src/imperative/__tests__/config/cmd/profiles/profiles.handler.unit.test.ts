@@ -93,7 +93,7 @@ describe("Configuration Profiles command handler", () => {
             properties: configProps
         });
 
-        await (new ProfilesHandler()).process(handlerParms);
+        await new ProfilesHandler().process(handlerParms);
         expect(errorText).toBeNull();
         expect(dataObj).toEqual(["email", "email.incoming", "email.outgoing"]);
         expect(formatObj).toEqual(dataObj);

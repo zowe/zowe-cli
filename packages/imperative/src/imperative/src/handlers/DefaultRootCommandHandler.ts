@@ -10,9 +10,12 @@
 */
 
 import { Imperative } from "../../../imperative/src/Imperative";
-import { ICommandHandler, IHandlerParameters, ICommandTreeEntry, CommandUtils } from "../../../cmd";
+import { ICommandTreeEntry } from "../../../cmd/src/utils/CommandUtils";
+import { CommandUtils } from "../../../cmd/src/utils/CommandUtils";
+import { ICommandHandler, IHandlerParameters } from "../../../cmd";
 import { ImperativeConfig, TextUtils } from "../../../utilities";
 import { WebHelpManager } from "../../../cmd/src/help/WebHelpManager";
+import { IImperativeVersions } from "../doc/IImperativeVersions";
 /**
  * The default command handler for the top level/root command
  * Allows the user to check the version of the package.
@@ -24,9 +27,14 @@ export default class DefaultRootCommandHandler implements ICommandHandler {
         if (params.arguments.version) {
             // load the user's package.json to check the version of their package
             const packageJson: any = ImperativeConfig.instance.callerPackageJson;
-            params.response.console.log(packageJson.version);
-            params.response.data.setObj({ version: packageJson.version });
-            params.response.data.setMessage("Version displayed");
+            const jsonResponse: IImperativeVersions = { version: packageJson.version };
+            params.response.console.log("CLI Version: " + packageJson.version);
+            if (packageJson.zoweVersion) {
+                params.response.console.log("Zowe Release Version: " + packageJson.zoweVersion);
+                jsonResponse.zoweVersion = packageJson.zoweVersion;
+            }
+            params.response.data.setObj(jsonResponse);
+            params.response.data.setMessage("Version(s) displayed");
         } else if(params.arguments.availableCommands) {
 
             // Gather and display the full set of commands available to the CLI with descriptions

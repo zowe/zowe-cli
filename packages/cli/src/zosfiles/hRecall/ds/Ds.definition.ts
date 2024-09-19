@@ -20,6 +20,7 @@ const dSStrings = strings.HRECALL.ACTIONS.DATA_SET;
 export const DsDefinition: ICommandDefinition = {
     name: "data-set",
     aliases: ["ds"],
+    summary: dSStrings.SUMMARY,
     description: dSStrings.DESCRIPTION,
     type: "command",
     handler: __dirname + "/Ds.handler",

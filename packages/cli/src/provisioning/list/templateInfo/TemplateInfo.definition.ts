@@ -16,7 +16,7 @@ export const templateInfo: ICommandDefinition = {
     name: "template-info",
     aliases: ["ti"],
     type: "command",
-    summary: "List Published Template Details.",
+    summary: "List Published Template Details",
     description: "List details about a template published with z/OSMF Cloud Provisioning.",
     handler:  path.join(__dirname, "/TemplateInfo.handler"),
     profile: {

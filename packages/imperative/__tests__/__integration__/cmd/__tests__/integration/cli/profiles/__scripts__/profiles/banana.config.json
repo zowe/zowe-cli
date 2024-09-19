@@ -1,0 +1,20 @@
+{
+    "profiles": {
+        "bananaProfName": {
+            "type": "banana",
+            "properties": {
+                "color": "NoColorVal",
+                "bananaDescription": "NoDescriptionVal",
+                "moldType": "NoMoldTypeVal",
+                "sweetness": "mild",
+                "ripe": false,
+                "sides": 0,
+                "names": ["NoNamesVal"]
+            }
+        },
+   },
+    "defaults": {
+        "banana": "bananaProfName"
+    },
+    "autoStore": true
+}

@@ -1,6 +1,6 @@
 {
   "name": "@zowe/cli-test-utils",
-  "version": "7.29.2",
+  "version": "8.0.0-next.202409111528",
   "description": "Test utilities package for Zowe CLI plug-ins",
   "author": "Zowe",
   "license": "EPL-2.0",
@@ -37,15 +37,15 @@
   "dependencies": {
     "find-up": "^5.0.0",
     "js-yaml": "^4.0.0",
-    "rimraf": "^3.0.2",
-    "uuid": "^8.3.2"
+    "rimraf": "^5.0.0",
+    "uuid": "^10.0.0"
   },
   "devDependencies": {
-    "@types/js-yaml": "^4.0.0",
-    "@types/uuid": "^8.3.0",
-    "@zowe/imperative": "5.27.1"
+    "@types/js-yaml": "^4.0.9",
+    "@types/uuid": "^10.0.0",
+    "@zowe/imperative": "8.0.0-next.202409111528"
   },
   "peerDependencies": {
-    "@zowe/imperative": "^5.0.0"
+    "@zowe/imperative": "^8.0.0-next"
   }
 }

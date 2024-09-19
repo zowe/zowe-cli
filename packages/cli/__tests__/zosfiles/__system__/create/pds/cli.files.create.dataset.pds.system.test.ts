@@ -216,7 +216,7 @@ describe("Create Partitioned Data Set", () => {
         it("should fail creating a partitioned data set due to invalid record format", () => {
             const response = runCliScript(__dirname + "/__scripts__/command/command_create_pds_fail_recfm.sh",
                 TEST_ENVIRONMENT, [user]);
-            expect(response.stderr.toString()).toContain("Invalid zos-files create command 'recfm' option: NB");
+            expect(response.stderr.toString()).toContain("Unable to perform this operation due to the following problem.");
         });
 
         it("should fail creating a partitioned data set due to block size specified but no value specified", () => {

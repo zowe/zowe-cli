@@ -20,16 +20,6 @@ import { IProfileTypeConfiguration } from "../config/IProfileTypeConfiguration";
 
 export interface IProfileManager<T extends IProfileTypeConfiguration> {
     /**
-     * The profiles directory (normally obtained from the Imperative config). The profile root directory contains
-     * a list of type directories, within each will be the profiles of that type and the meta file. The meta file
-     * for a type contains the default specifications and the profile type configuration document. Use the "initialize"
-     * API method on the Profile Manager to create the appropriate structure based on your configuration documents.
-     *
-     * @type {string}
-     * @memberof IProfileManager
-     */
-    profileRootDirectory: string;
-    /**
      * The profile type for this manager - the configuration document for the type can either be supplied on the
      * "typeConfigurations" property on this object OR the mananger will attempt to extract it from the profile
      * root directory type meta file. If the type configuration cannot be located, an exception will be thrown.
@@ -60,12 +50,6 @@ export interface IProfileManager<T extends IProfileTypeConfiguration> {
      * @memberof IProfileManager
      */
     typeConfigurations?: T[];
-
-    /**
-     * Map of which profile types have been loaded so far, to avoid circular profile loads
-     * Used internally by profile manager classes
-     */
-    loadCounter?: Map<string, number>;
 
     /**
      * Product display name of CLI

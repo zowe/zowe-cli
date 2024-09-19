@@ -46,6 +46,7 @@ const vsamRetainFor = Object.assign({}, ...[VsamCreateOptions.retainFor]);
 export const VsamDefinition: ICommandDefinition = {
     name: "data-set-vsam",
     aliases: ["vsam"],
+    summary: vsamStrings.SUMMARY,
     description: vsamStrings.DESCRIPTION,
     type: "command",
     handler: __dirname + "/vsam.handler",
@@ -70,7 +71,6 @@ export const VsamDefinition: ICommandDefinition = {
         ZosFilesCreateOptions.dataclass,
         vsamRetainFor,
         VsamCreateOptions.retainTo,
-        ZosFilesCreateExtraOptions.showAttributes,
         ZosFilesCreateExtraOptions.attributes
     ].sort((a, b) => a.name.localeCompare(b.name)),
     examples: [

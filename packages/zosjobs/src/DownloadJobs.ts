@@ -9,7 +9,8 @@
 *
 */
 
-import { AbstractSession, Headers, ImperativeExpect, IO, Logger } from "@zowe/imperative";
+import * as path from "path";
+import { AbstractSession, ImperativeExpect, IO, Logger, Headers } from "@zowe/imperative";
 import { JobsConstants } from "./JobsConstants";
 import { IDownloadAllSpoolContentParms } from "./doc/input/IDownloadAllSpoolContentParms";
 import { IJobFile } from "./doc/response/IJobFile";
@@ -133,65 +134,36 @@ export class DownloadJobs {
 
     /**
      * Get the file where a specified spool file (IJobFile) would be downloaded to
-     * @deprecated Use getSpoolDownloadFilePath instead
-     * @static
-     * @param {IJobFile} jobFile - the spool file that would be downloaded
-     * @param {boolean} omitJobidDirectory - if true, the job ID of the jobFile will not be included in the file path
-     * @param {string} outDir - parent output directory you would like to download to
-     * @returns {string} the file path that the spool file would be downloaded to
-     * @memberof DownloadJobs
-     */
-    public static getSpoolDownloadFile(jobFile: IJobFile, omitJobidDirectory?: boolean, outDir = DownloadJobs.DEFAULT_JOBS_OUTPUT_DIR): string {
-        this.log.trace("getSpoolDownloadFile called with jobFile %s, omitJobIDDirectory: %s, outDir: %s",
-            JSON.stringify(jobFile), omitJobidDirectory + "", outDir);
-        let directory: string = outDir;
-        if (omitJobidDirectory == null || omitJobidDirectory === false) {
-            directory += IO.FILE_DELIM + jobFile.jobid;
-        }
-
-        if (jobFile.procstep != null) {
-            directory += IO.FILE_DELIM + jobFile.procstep;
-        }
-
-        if (jobFile.stepname != null) {
-            directory += IO.FILE_DELIM + jobFile.stepname;
-        }
-
-        return directory + IO.FILE_DELIM + jobFile.ddname + DownloadJobs.DEFAULT_JOBS_OUTPUT_FILE_EXT;
-    }
-
-    /**
-     * Get the file where a specified spool file (IJobFile) would be downloaded to
      * @static
      * @param {IDownloadSpoolContentParms} parms - parm object (see IDownloadSpoolContentParms interface for details)
      * @returns {string} the file path that the spool file would be downloaded to
      * @memberof DownloadJobs
      */
     public static getSpoolDownloadFilePath(parms: IDownloadSpoolContentParms): string {
-        this.log.trace("getSpoolDownloadFile called with jobFile %s, omitJobIDDirectory: %s, outDir: %s",
+        this.log.trace("getSpoolDownloadFilePath called with jobFile %s, omitJobIDDirectory: %s, outDir: %s",
             JSON.stringify(parms.jobFile), parms.omitJobidDirectory + "", parms.outDir);
 
         let directory: string = parms.outDir ?? DownloadJobs.DEFAULT_JOBS_OUTPUT_DIR;
 
         if (parms.omitJobidDirectory == null || parms.omitJobidDirectory === false) {
-            directory += IO.FILE_DELIM + parms.jobFile.jobid;
+            directory += path.posix.sep + parms.jobFile.jobid;
         }
 
         if (parms.jobFile.procstep != null) {
-            directory += IO.FILE_DELIM + parms.jobFile.procstep;
+            directory += path.posix.sep + parms.jobFile.procstep;
         }
 
         if (parms.jobFile.stepname != null) {
-            directory += IO.FILE_DELIM + parms.jobFile.stepname;
+            directory += path.posix.sep + parms.jobFile.stepname;
         }
 
         const extension = parms.extension ?? DownloadJobs.DEFAULT_JOBS_OUTPUT_FILE_EXT;
 
-        return directory + IO.FILE_DELIM + parms.jobFile.ddname + extension;
+        return directory + path.posix.sep + parms.jobFile.ddname + extension;
     }
 
     /**
-     * Getter for brightside logger
+     * Getter for Zowe logger
      * @returns {Logger}
      */
     private static get log(): Logger {

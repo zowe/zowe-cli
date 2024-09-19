@@ -217,18 +217,6 @@ exports[`zos-jobs submit data-set command should display the help 1`] = `
 }"
 `;
 
-exports[`zos-jobs submit data-set command syntax errors should occur if an extra unknown option is specified 1`] = `
-"Command Error:
-Unknown argument: blah
-Command failed due to improper syntax
-Command entered: \\"zos-jobs submit data-set DATA.SET blah\\"
-Available commands are \\"data-set, local-file, stdin, uss-file\\".
-Use \\"zowe zos-jobs submit --help\\" to view groups, commands, and options.
-Error Details:
-Unknown argument: blah
-"
-`;
-
 exports[`zos-jobs submit data-set command syntax errors should occur if both --wait-for-active and --directory is specified 1`] = `
 "
 Syntax Error:

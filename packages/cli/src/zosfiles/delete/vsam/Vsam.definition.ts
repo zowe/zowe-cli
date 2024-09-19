@@ -25,6 +25,7 @@ const strings = (require("../../-strings-/en").default as typeof i18nTypings).DE
 export const VsamDefinition: ICommandDefinition = {
     name: "data-set-vsam",
     aliases: ["vsam"],
+    summary: strings.SUMMARY,
     description: strings.DESCRIPTION,
     type: "command",
     handler: join(__dirname, "Vsam.handler"),

@@ -19,8 +19,9 @@ import { ImperativeError } from "../../../../../error";
 import { ExecUtils, TextUtils } from "../../../../../utilities";
 import { StdioOptions } from "child_process";
 import { findNpmOnPath } from "../NpmFunctions";
-import { ConfigSchema, ProfileInfo } from "../../../../../config";
+import { ConfigSchema, ConfigUtils } from "../../../../../config";
 import { IProfileTypeConfiguration } from "../../../../../profiles";
+
 const npmCmd = findNpmOnPath();
 
 /**
@@ -29,7 +30,7 @@ const npmCmd = findNpmOnPath();
  * @returns A list of types to remove from the schema
  */
 export const updateAndGetRemovedTypes = (npmPackage: string): string[] => {
-    const extendersJson = ProfileInfo.readExtendersJsonFromDisk();
+    const extendersJson = ConfigUtils.readExtendersJson();
     const pluginTypes = Object.keys(extendersJson.profileTypes)
         .filter((type) => extendersJson.profileTypes[type].from.includes(npmPackage));
     const typesToRemove: string[] = [];
@@ -58,7 +59,7 @@ export const updateAndGetRemovedTypes = (npmPackage: string): string[] => {
                 typesToRemove.push(profileType);
             }
         }
-        ProfileInfo.writeExtendersJson(extendersJson);
+        ConfigUtils.writeExtendersJson(extendersJson);
     }
 
     return typesToRemove;

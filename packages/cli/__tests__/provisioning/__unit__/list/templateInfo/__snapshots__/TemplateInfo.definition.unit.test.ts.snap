@@ -36,7 +36,7 @@ Object {
       "zosmf",
     ],
   },
-  "summary": "List Published Template Details.",
+  "summary": "List Published Template Details",
   "type": "command",
 }
 `;

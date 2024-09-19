@@ -129,7 +129,8 @@ describe("Delete a z/OS File System", () => {
             }
             expect(error).toBeDefined();
             expect(response).toBeUndefined();
-            expect(error.message).toContain("Error executing IDCAMS DELETE command. exit_code=8");
+            expect(error.message).toContain(`ENTRY ${nonExistZfs.toUpperCase()} NOT FOUND`);
+            expect(error.message).toContain("FUNCTION COMPLETED, HIGHEST CONDITION CODE WAS 8");
         });
     });
 

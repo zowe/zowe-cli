@@ -10,7 +10,8 @@
 */
 
 /* eslint-disable jest/expect-expect */
-import { CommandProcessor, ICommandDefinition, ICommandResponse } from "../../../../../src/cmd/index";
+import { CommandProcessor } from "../../../../../src/cmd/src/CommandProcessor";
+import { ICommandDefinition, ICommandResponse } from "../../../../../src/cmd/index";
 import { ValidationTestCommand } from "../ValidationTestCommand";
 import { Constants } from "../../../../../src/constants/index";
 import { Imperative } from "../../../../../src/imperative/src/Imperative";
@@ -18,7 +19,7 @@ import { TestLogger } from "../../../../src/TestLogger";
 import { createUniqueTestDataDir, rimraf } from "../../../TestUtil";
 import { AbstractHelpGenerator } from "../../../../../src/cmd/src/help/abstract/AbstractHelpGenerator";
 import { DefaultHelpGenerator } from "../../../../../src/cmd/src/help/DefaultHelpGenerator";
-import { BasicProfileManagerFactory, IProfileTypeConfiguration } from "../../../../../src/index";
+import { IProfileTypeConfiguration, ImperativeConfig } from "../../../../../src/index";
 
 const ENV_PREFIX = "INTEGRATION_TEST";
 const TEST_HOME = createUniqueTestDataDir();
@@ -43,15 +44,9 @@ const DUMMY_PROFILE_TYPE_CONFIG: IProfileTypeConfiguration[] = [
 ];
 describe("Imperative should provide advanced syntax validation rules", function () {
     const home = __dirname + "/validationtests";
-    // eslint-disable-next-line deprecation/deprecation
-    const mainModule = process.mainModule;
 
-    beforeAll(function () {
-        // eslint-disable-next-line deprecation/deprecation
-        (process.mainModule as any) = {
-            filename: __filename
-        };
-        return Imperative.init({
+    beforeAll(async function () {
+        await Imperative.init({
             productDisplayName: "Validation tests",
             definitions: [{
                 name: "banana",
@@ -60,10 +55,9 @@ describe("Imperative should provide advanced syntax validation rules", function 
             }],
             defaultHome: home,
         });
+        ImperativeConfig.instance.callerLocation = __filename;
     });
     afterAll(() => {
-        // eslint-disable-next-line deprecation/deprecation
-        process.mainModule = mainModule;
         rimraf(home);
     });
     describe("Advanced syntax validation for commands using a test command", function () {
@@ -95,7 +89,6 @@ describe("Imperative should provide advanced syntax validation rules", function 
                     definition: ValidationTestCommand,
                     fullDefinition: fakeParent,
                     helpGenerator,
-                    profileManagerFactory: new BasicProfileManagerFactory(TEST_HOME, DUMMY_PROFILE_TYPE_CONFIG),
                     rootCommandName: "fakeroot",
                     commandLine: "fakecommand",
                     promptPhrase: "fakefakefake"
@@ -108,7 +101,7 @@ describe("Imperative should provide advanced syntax validation rules", function 
                         } else {
                             expect(completedResponse.success).toEqual(false);
                         }
-                        if (!(expectedText == null) && expectedText.length > 0) {
+                        if (expectedText != null && expectedText.length > 0) {
                             (completedResponse.stderr as any) = completedResponse.stderr.toString();
                             (completedResponse.stdout as any) = completedResponse.stdout.toString();
                             for (const text of expectedText) {
@@ -452,8 +445,6 @@ describe("Imperative should provide advanced syntax validation rules", function 
                     definition: numberCommand,
                     fullDefinition: fakeParent,
                     helpGenerator,
-                    profileManagerFactory: new BasicProfileManagerFactory(TEST_HOME,
-                        DUMMY_PROFILE_TYPE_CONFIG),
                     rootCommandName: "fake",
                     commandLine: "fake",
                     promptPhrase: "fakefakefake"
@@ -483,8 +474,6 @@ describe("Imperative should provide advanced syntax validation rules", function 
                     definition: numberCommand,
                     fullDefinition: fakeParent,
                     helpGenerator,
-                    profileManagerFactory: new BasicProfileManagerFactory(TEST_HOME,
-                        DUMMY_PROFILE_TYPE_CONFIG),
                     rootCommandName: "fake",
                     commandLine: "fake",
                     promptPhrase: "fakefakefake"
@@ -537,8 +526,6 @@ describe("Imperative should provide advanced syntax validation rules", function 
                     definition: numberCommand,
                     fullDefinition: fakeParent,
                     helpGenerator,
-                    profileManagerFactory: new BasicProfileManagerFactory(TEST_HOME,
-                        DUMMY_PROFILE_TYPE_CONFIG),
                     rootCommandName: "fake",
                     commandLine: "fake",
                     promptPhrase: "dummydummy"
@@ -571,8 +558,6 @@ describe("Imperative should provide advanced syntax validation rules", function 
                     definition: numberCommand,
                     fullDefinition: fakeParent,
                     helpGenerator,
-                    profileManagerFactory: new BasicProfileManagerFactory(TEST_HOME,
-                        DUMMY_PROFILE_TYPE_CONFIG),
                     rootCommandName: "fake",
                     commandLine: "fake",
                     promptPhrase: "fakefakefake"
@@ -602,8 +587,6 @@ describe("Imperative should provide advanced syntax validation rules", function 
                     definition: numberCommand,
                     fullDefinition: fakeParent,
                     helpGenerator,
-                    profileManagerFactory: new BasicProfileManagerFactory(TEST_HOME,
-                        DUMMY_PROFILE_TYPE_CONFIG),
                     rootCommandName: "fake",
                     commandLine: "fake",
                     promptPhrase: "dummydummy"

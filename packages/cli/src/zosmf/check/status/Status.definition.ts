@@ -14,6 +14,7 @@ import { ZosmfSession } from "@zowe/zosmf-for-zowe-sdk";
 
 export const StatusDefinition: ICommandDefinition = {
     name: "status",
+    summary: "Check z/OSMF status on a specified system",
     description: "Confirm that z/OSMF is running on a system specified in your profile and gather " +
         "information about the z/OSMF server for diagnostic purposes. The command outputs properties " +
         "of the z/OSMF server such as version, hostname, and installed plug-ins.",

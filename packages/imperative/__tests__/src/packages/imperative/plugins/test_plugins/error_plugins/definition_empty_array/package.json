@@ -10,7 +10,6 @@
     "name": "definition_empty_array",
     "rootCommandDescription": "definition empty array",
     "pluginBaseCliVersion": "^1.0.0",
-    "pluginHealthCheck": "./dummy.handler",
     "definitions": []
   },
   "peerDependencies": {

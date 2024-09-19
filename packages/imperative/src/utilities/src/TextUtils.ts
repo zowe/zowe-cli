@@ -36,11 +36,14 @@ export class TextUtils {
      *                                  by the user's terminal
      * @returns {number} - the width that will work best for the user's terminal
      */
-    public static getRecommendedWidth(preferredWidth: number = TextUtils.DEFAULT_WRAP_WIDTH): number {
+    public static getRecommendedWidth(
+        preferredWidth: number = process?.stdout?.columns ? process.stdout.columns : TextUtils.DEFAULT_WRAP_WIDTH
+    ): number {
         const widthSafeGuard = 8; // prevent partial words from continuing over lines
         const yargs = require("yargs");
-        const maxWidth = (!(yargs.terminalWidth() == null) && yargs.terminalWidth() > 0) ?
-            (yargs.terminalWidth() - widthSafeGuard) : preferredWidth;
+        // eslint-disable-next-line no-extra-parens
+        const maxWidth = (yargs.terminalWidth() != null && yargs.terminalWidth() > 0) ?
+            yargs.terminalWidth() - widthSafeGuard : preferredWidth;
         return Math.min(preferredWidth, maxWidth);
     }
 
@@ -129,7 +132,7 @@ export class TextUtils {
         /**
          *  Default options for printing prettyJson
          */
-        const defaultOptions = (!color || process.env.FORCE_COLOR === "0") ? {
+        const defaultOptions = !color || process.env.FORCE_COLOR === "0" ? {
             noColor: true
         } : {
             keysColor: "yellow"
@@ -283,13 +286,13 @@ export class TextUtils {
                 } catch (e) {
                     // not json
                 }
-                return (typeof value === 'string') || (typeof value === 'number') || isJson;
+                return typeof value === 'string' || typeof value === 'number' || isJson;
             };
             if (Array.isArray(values) && values.filter(isPrintfValue).length === values.length) {
-                message = format.apply(this, [message].concat(values));
+                message = format.apply(this, [message, ...values]);
             }
             else {
-                message = TextUtils.renderWithMustache.apply(this, [message].concat(values));
+                message = TextUtils.renderWithMustache.apply(this, [message, ...values]);
             }
         }
         return message;
@@ -300,14 +303,14 @@ export class TextUtils {
         const mChalk = require("chalk");
         // chalk is supposed to handle this, but I think it only does so the first time it is loaded
         // so we need to check ourselves in case we've changed the environmental variables
-        if (process.env.FORCE_COLOR != null && ["1", "2", "3", "true"].includes(process.env.FORCE_COLOR)) { mChalk.enabled = true; }
-        if (process.env.MARKDOWN_GEN != null || process.env.FORCE_COLOR == "0") { mChalk.enabled = false; }
-        if (!mChalk.enabled) { mChalk.level = 0; }
+        if (process.env.MARKDOWN_GEN != null) { mChalk.level = 0; }
         else if (process.env.FORCE_COLOR != null) {
             const parsedInt = parseInt(process.env.FORCE_COLOR);
             // eslint-disable-next-line @typescript-eslint/no-magic-numbers
             if (!isNaN(parsedInt) && parsedInt >= 0 && parsedInt <= 3) {
                 mChalk.level = parsedInt;
+            } else if (process.env.FORCE_COLOR === "true") {
+                mChalk.level = 1;
             }
         }
 
@@ -328,7 +331,7 @@ export class TextUtils {
         const numberOfCommas = (keysAndValues.match(/[^\\],/g) || []).length;
 
         if (!/[^\\]=/g.test(keysAndValues) ||
-            (numberOfEqualsSigns > 1 && numberOfCommas !== (numberOfEqualsSigns - 1))
+            numberOfEqualsSigns > 1 && numberOfCommas !== numberOfEqualsSigns - 1
         ) {
             throw new Error("The keys and values provided are not in the expected format. Example of expected format: " + keyValueExample);
         }

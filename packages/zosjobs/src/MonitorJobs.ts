@@ -160,7 +160,7 @@ export class MonitorJobs {
     }
 
     /**
-     * Obtain an instance of the app logger (Brightside).
+     * Obtain an instance of the app logger (Zowe).
      * @private
      * @static
      * @type {Logger}

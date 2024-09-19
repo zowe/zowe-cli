@@ -25,7 +25,7 @@ export default class EditHandler extends ZosFilesBaseHandler {
         let lfFile: ILocalFile = {
             tempPath: null,
             fileName: commandParameters.arguments.ussFilePath ?? commandParameters.arguments.dataSetName,
-            fileType: commandParameters.positionals[2].includes('d') ? "ds" : "uss",
+            fileType: commandParameters.positionals[2].toString().includes('d') ? "ds" : "uss",
             guiAvail: ProcessUtils.isGuiAvailable() === GuiResult.GUI_AVAILABLE,
             conflict: false,
             encoding: commandParameters.arguments.encoding,

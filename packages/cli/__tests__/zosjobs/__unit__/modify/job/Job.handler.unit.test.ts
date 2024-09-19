@@ -14,10 +14,7 @@ import { IHandlerParameters, ImperativeError } from "@zowe/imperative";
 import { GetJobs, IJob, IJobFeedback, ModifyJobs } from "@zowe/zos-jobs-for-zowe-sdk";
 import * as ModifyDefintion from "../../../../../src/zosjobs/modify/job/Job.definition";
 import * as ModifyHandler from "../../../../../src/zosjobs/modify/job/Job.handler";
-import {
-    UNIT_TEST_ZOSMF_PROF_OPTS,
-    UNIT_TEST_PROFILES_ZOSMF
-} from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
+import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../../__tests__/__src__/TestConstants";
 import { mockHandlerParameters } from "@zowe/cli-test-utils";
 
 process.env.FORCE_COLOR = "0";
@@ -25,8 +22,7 @@ process.env.FORCE_COLOR = "0";
 const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
     arguments: UNIT_TEST_ZOSMF_PROF_OPTS,
     positionals: ["zos-jobs", "modify", "job"],
-    definition: ModifyDefintion.JobDefinition,
-    profiles: UNIT_TEST_PROFILES_ZOSMF
+    definition: ModifyDefintion.JobDefinition
 });
 
 const SAMPLE_COMPLETE_JOB: IJob= {

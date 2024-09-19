@@ -15,7 +15,7 @@ import * as lodash from "lodash";
 import { ZosmfSession } from "@zowe/zosmf-for-zowe-sdk";
 import { BaseAutoInitHandler, AbstractSession, ICommandArguments, IConfig, IConfigProfile,
     ISession, IHandlerResponseApi, IHandlerParameters, SessConstants, ImperativeConfig,
-    ImperativeError, RestClientError, TextUtils, Config
+    ImperativeError, RestClientError, TextUtils, Config, ConfigUtils
 } from "@zowe/imperative";
 import { IApimlProfileInfo, IAutoInitRpt, IProfileRpt, Login, Services } from "@zowe/core-for-zowe-sdk";
 
@@ -70,6 +70,7 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
      */
     protected async doAutoInit(session: AbstractSession, params: IHandlerParameters): Promise<IConfig> {
         // Login with token authentication first, so we can support certificates
+        // eslint-disable-next-line no-extra-parens
         if ((session.ISession.user && session.ISession.password) || (session.ISession.cert && session.ISession.certKey)) {
             // If it is basic authentication, we need to set the auth type.
             if (session.ISession.tokenType == null) {
@@ -107,9 +108,15 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
         // Check to see if there is an active base profile to avoid creating a new one named "base"
         let activeBaseProfile = params.arguments[`${this.mProfileType}-profile`] || config.properties.defaults[this.mProfileType];
         let baseProfileCreated = false;
+
         // Populate the config with base profile information
         if (activeBaseProfile == null) {
-            profileConfig.profiles[this.mProfileType] = {
+
+            // Name our base profile differently in a global config vs a project config
+            const globalConfig: boolean = params.arguments?.globalConfig ? true : false;
+            activeBaseProfile = ConfigUtils.formGlobOrProjProfileNm(this.mProfileType, globalConfig);
+
+            profileConfig.profiles[activeBaseProfile] = {
                 type: this.mProfileType,
                 properties: {
                     host: session.ISession.hostname,
@@ -118,7 +125,6 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
                 },
                 secure: []
             };
-            activeBaseProfile = this.mProfileType;
             baseProfileCreated = true;
         } else {
             const oldBaseProfile = this.getOldBaseProfileProps(config, activeBaseProfile);
@@ -148,7 +154,7 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
 
         // Report whether or not we created a base profile in this auto-init execution
         this.mAutoInitReport.profileRpts.push({
-            profName: this.mProfileType,
+            profName: activeBaseProfile,
             profType: this.mProfileType,
             changeForProf: baseProfileCreated ? "created" : "modified",
             basePath: null,
@@ -247,7 +253,7 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
                     if (!baseOverride.secure) {
                         msg += `'${baseOverride.priorityValue}' overrides '${baseOverride.baseValue}' in`;
                     } else {
-                        msg += "secure value " + ((baseOverride.priorityValue != null) ? "overrides" : "may override");
+                        msg += "secure value " + (baseOverride.priorityValue != null ? "overrides" : "may override");
                     }
                     msg += ` profile '${baseProfileName}'`;
                 }
@@ -510,7 +516,7 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
                         });
                     }
                 }
-                for (const name of (baseProfile.secure || [])) {
+                for (const name of baseProfile.secure || []) {
                     if (serviceProfile.secure?.includes(name)) {
                         profileRpt.baseOverrides.push({ propName: name, secure: true });
                     }

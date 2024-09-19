@@ -90,7 +90,7 @@ export class SendTso {
             if (!(tso.tsoData == null)) {
                 tso.tsoData.forEach((data) => {
                     if (data[TsoConstants.TSO_MESSAGE]) {
-                        messages += (data[TsoConstants.TSO_MESSAGE].DATA + "\n");
+                        messages += data[TsoConstants.TSO_MESSAGE].DATA + "\n";
                     } else if (data[TsoConstants.TSO_PROMPT]) {
                         // handle case where we get a PROMPT but no data has been accumulated yet
                         if (messages !== "") {

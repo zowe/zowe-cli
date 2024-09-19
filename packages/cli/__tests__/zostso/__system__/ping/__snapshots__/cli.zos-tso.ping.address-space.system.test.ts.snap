@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`zos-tso ping address-space should throw an error if provided address space is inactive 1`] = `
-"Command Error:
+"Unable to perform this operation due to the following problem.
 Expect Error: IZUG1126E: z/OSMF cannot correlate the request for key \\"BadKey\\" with an active z/OS application session.
 "
 `;

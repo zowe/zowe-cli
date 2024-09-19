@@ -82,6 +82,6 @@ describe("Configuration Edit command handler", () => {
         const params = getIHandlerParametersObject();
 
         await handler.process(params);
-        expect(editFileSpy).toHaveBeenCalledWith("fake");
+        expect(editFileSpy).toHaveBeenCalledWith("fake", undefined);
     });
 });

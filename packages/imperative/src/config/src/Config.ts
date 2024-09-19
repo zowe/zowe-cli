@@ -225,7 +225,7 @@ export class Config {
 
         try {
             for (const currLayer of this.mLayers) {
-                if (allLayers || (currLayer.user === this.mActive.user && currLayer.global === this.mActive.global)) {
+                if (allLayers || currLayer.user === this.mActive.user && currLayer.global === this.mActive.global) {
                     this.api.layers.write(currLayer);
                 }
             }
@@ -243,7 +243,7 @@ export class Config {
      * Get absolute file path for a config layer.
      * For project config files, We search up from our current directory and
      * ignore the Zowe hone directory (in case our current directory is under
-     * Zowe home.). For golbal config files we only retrieve config files
+     * Zowe home.). For global config files we only retrieve config files
      * from the Zowe home directory.
      *
      * @internal
@@ -308,7 +308,8 @@ export class Config {
      * Returns a clone to prevent accidental edits of the original object.
      */
     public get layers(): IConfigLayer[] {
-        return JSONC.parse(JSONC.stringify(this.mLayers, null, ConfigConstants.INDENT));
+        // Typecasting because of this issue: https://github.com/kaelzhang/node-comment-json/issues/42
+        return JSONC.parse(JSONC.stringify(this.mLayers, null, ConfigConstants.INDENT)) as any;
     }
 
     // _______________________________________________________________________
@@ -502,11 +503,12 @@ export class Config {
      */
     public setSchema(schema: string | object) {
         const layer = this.layerActive();
-        const schemaUri = (typeof schema === "string") ? schema : `./${this.schemaName}`;
-        const schemaObj = (typeof schema !== "string") ? schema : null;
+        const schemaUri = typeof schema === "string" ? schema : `./${this.schemaName}`;
+        const schemaObj = typeof schema !== "string" ? schema : null;
 
         if (layer.properties.$schema == null) {
-            layer.properties = JSONC.parse(JSONC.stringify({ $schema: schemaUri, ...layer.properties }, null, ConfigConstants.INDENT));
+            // Typecasting because of this issue: https://github.com/kaelzhang/node-comment-json/issues/42
+            layer.properties = JSONC.parse(JSONC.stringify({ $schema: schemaUri, ...layer.properties }, null, ConfigConstants.INDENT)) as any;
         }
 
         const schemaInfo = this.getSchemaInfo();
@@ -583,7 +585,8 @@ export class Config {
     public layerProfiles(layer: IConfigLayer, opts: IConfigMergeOpts = {}): { [key: string]: IConfigProfile } {
         let properties = layer.properties;
         if (opts.cloneLayers !== false || opts.maskSecure) {
-            properties = JSONC.parse(JSONC.stringify(properties, null, ConfigConstants.INDENT));
+            // Typecasting because of this issue: https://github.com/kaelzhang/node-comment-json/issues/42
+            properties = JSONC.parse(JSONC.stringify(properties, null, ConfigConstants.INDENT)) as any;
         }
         if (opts.maskSecure) {
             for (const secureProp of this.api.secure.secureFields(layer)) {
@@ -606,7 +609,7 @@ export class Config {
      * @returns The desired layer object. Null if no layer matches.
      */
     public findLayer(user: boolean, global: boolean): IConfigLayer {
-        for (const layer of (this.mLayers || [])) {
+        for (const layer of this.mLayers || []) {
             if (layer.user === user && layer.global === global)
                 return layer;
         }
@@ -615,8 +618,6 @@ export class Config {
     // _______________________________________________________________________
     /**
      * Obtain the layer object that is currently active.
-     *
-     * @internal
      *
      * @returns The active layer object
      */

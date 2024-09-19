@@ -9,7 +9,7 @@
 *
 */
 
-import { CliUtils, ImperativeConfig } from "../../../utilities";
+import { CliUtils, ImperativeConfig, TextUtils } from "../../../utilities";
 import { ICommandArguments, IHandlerParameters } from "../../../cmd";
 import { ImperativeError } from "../../../error";
 import { IOptionsForAddConnProps } from "./doc/IOptionsForAddConnProps";
@@ -147,14 +147,16 @@ export class ConnectionPropsForSessCfg {
         if (ConnectionPropsForSessCfg.propHasValue(sessCfgToUse.hostname) === false && !doNotPromptForValues.includes("hostname")) {
             promptForValues.push("hostname");
         }
-        if (ConnectionPropsForSessCfg.propHasValue(sessCfgToUse.port) === false && !doNotPromptForValues.includes("port")) {
+
+        if ((ConnectionPropsForSessCfg.propHasValue(sessCfgToUse.port) === false || sessCfgToUse.port === 0) &&
+            !doNotPromptForValues.includes("port")) {
             promptForValues.push("port");
         }
 
         const isTokenIrrelevant = ConnectionPropsForSessCfg.propHasValue(sessCfgToUse.tokenValue) === false ||
-            (connOpts.supportedAuthTypes && !connOpts.supportedAuthTypes.includes(SessConstants.AUTH_TYPE_TOKEN));
+            connOpts.supportedAuthTypes && !connOpts.supportedAuthTypes.includes(SessConstants.AUTH_TYPE_TOKEN);
         const isCertIrrelevant = ConnectionPropsForSessCfg.propHasValue(sessCfgToUse.cert) === false ||
-            (connOpts.supportedAuthTypes && !connOpts.supportedAuthTypes.includes(SessConstants.AUTH_TYPE_CERT_PEM));
+            connOpts.supportedAuthTypes && !connOpts.supportedAuthTypes.includes(SessConstants.AUTH_TYPE_CERT_PEM);
         if (isTokenIrrelevant && isCertIrrelevant) {
             if (ConnectionPropsForSessCfg.propHasValue(sessCfgToUse.user) === false && !doNotPromptForValues.includes("user")) {
                 promptForValues.push("user");
@@ -191,6 +193,7 @@ export class ConnectionPropsForSessCfg {
                 }
             }
 
+            //
             if (connOptsToUse.autoStore !== false && connOptsToUse.parms != null) {
                 await ConfigAutoStore.storeSessCfgProps(connOptsToUse.parms, sessCfgToUse, promptForValues);
             }
@@ -377,6 +380,30 @@ export class ConnectionPropsForSessCfg {
     private static getValuesBack<SessCfgType extends ISession=ISession>(connOpts: IOptionsForAddConnProps<SessCfgType>):
     (properties: string[]) => Promise<{ [key: string]: any }> {
         return async (promptForValues: string[]) => {
+            /* The check for console.log in the following 'if' statement is only needed for tests
+             * which do not create a mock for the connOpts.parms.response.console.log property.
+             * In the real world, that property always exists for this CLI-only path of logic.
+             */
+            if (promptForValues.length > 0 && connOpts?.parms?.response?.console?.log) {
+                // We need to prompt for some values. Determine why we need to prompt.
+                let reasonForPrompts: string = "";
+                if (ImperativeConfig.instance.config?.exists) {
+                    reasonForPrompts += "Some required connection properties have not been specified " +
+                        "in your Zowe client configuration. ";
+                } else if (ConfigUtils.onlyV1ProfilesExist) {
+                    reasonForPrompts += "Only V1 profiles exist. V1 profiles are no longer supported. " +
+                        "You should convert your V1 profiles to a newer Zowe client configuration. ";
+                } else {
+                    reasonForPrompts += "No Zowe client configuration exists. ";
+                }
+
+                reasonForPrompts += "Therefore, you will be asked for the connection properties " +
+                    "that are required to complete your command.\n";
+                connOpts.parms.response.console.log(TextUtils.wordWrap(
+                    TextUtils.chalk.yellowBright(reasonForPrompts))
+                );
+            }
+
             const answers: { [key: string]: any } = {};
             const profileSchema = this.loadSchemaForSessCfgProps(connOpts.parms, promptForValues);
             const serviceDescription = connOpts.serviceDescription || "your service";

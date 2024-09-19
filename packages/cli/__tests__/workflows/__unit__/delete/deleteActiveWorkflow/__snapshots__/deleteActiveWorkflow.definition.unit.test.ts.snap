@@ -5,7 +5,7 @@ Object {
   "aliases": Array [
     "aw",
   ],
-  "description": "Delete an active workflow instance in z/OSMF",
+  "description": "Delete an active workflow instance in z/OSMF.",
   "examples": Array [
     Object {
       "description": "To delete a workflow instance in z/OSMF with workflow key \\"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\\"",
@@ -52,6 +52,7 @@ Object {
       "zosmf",
     ],
   },
+  "summary": "Delete an active workflow instance in z/OSMF",
   "type": "command",
 }
 `;

@@ -55,7 +55,8 @@ export class ConfigProfiles extends ConfigApi {
     public get(path: string, mustExist?: boolean): { [key: string]: string } {
         if (mustExist !== false && !this.exists(path))
             return null;
-        return JSONC.parse(JSONC.stringify(this.buildProfile(path, this.mConfig.mProperties.profiles), null, ConfigConstants.INDENT));
+        // Typecasting because of this issue: https://github.com/kaelzhang/node-comment-json/issues/42
+        return JSONC.parse(JSONC.stringify(this.buildProfile(path, this.mConfig.mProperties.profiles), null, ConfigConstants.INDENT)) as any;
     }
 
     // _______________________________________________________________________
@@ -67,7 +68,7 @@ export class ConfigProfiles extends ConfigApi {
      * @returns True if a profile exists. False otherwise.
      */
     public exists(path: string): boolean {
-        return (this.findProfile(path, this.mConfig.mProperties.profiles) != null);
+        return this.findProfile(path, this.mConfig.mProperties.profiles) != null;
     }
 
     // _______________________________________________________________________
@@ -95,20 +96,6 @@ export class ConfigProfiles extends ConfigApi {
     public defaultGet(profileType: string): { [key: string]: string } {
         const dflt = this.mConfig.mProperties.defaults[profileType];
         return dflt != null ? this.get(dflt) : null;
-    }
-
-    // _______________________________________________________________________
-    /**
-     * Expands a short path into an expanded path.
-     *
-     * @param shortPath The short path.
-     *
-     * @returns The expanded path.
-     *
-     * @deprecated Please use getProfilePathFromName
-     */
-    public expandPath(shortPath: string): string {
-        return this.getProfilePathFromName(shortPath);
     }
 
     // _______________________________________________________________________

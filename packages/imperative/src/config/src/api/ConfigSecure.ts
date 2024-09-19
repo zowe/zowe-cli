@@ -20,6 +20,8 @@ import { ConfigConstants } from "../ConfigConstants";
 import { IConfigProfile } from "../doc/IConfigProfile";
 import { CredentialManagerFactory } from "../../../security";
 import { ConfigUtils } from "../ConfigUtils";
+import { ZoweUserEvents } from "../../../events/src/EventConstants";
+import { EventOperator } from "../../../events/src/EventOperator";
 
 /**
  * API Class for manipulating config layers.
@@ -45,7 +47,8 @@ export class ConfigSecure extends ConfigApi {
         try {
             const s: string = await this.mConfig.mVault.load(ConfigConstants.SECURE_ACCT);
             if (s == null) return;
-            this.mConfig.mSecure = JSONC.parse(s);
+            // Typecasting because of this issue: https://github.com/kaelzhang/node-comment-json/issues/42
+            this.mConfig.mSecure = JSONC.parse(s) as any;
         } catch (error) {
             this.mLoadFailed = true;
             throw error;
@@ -111,7 +114,7 @@ export class ConfigSecure extends ConfigApi {
 
         // Build the entries for each layer
         for (const { user, global } of this.mConfig.mLayers) {
-            if (allLayers || (user === this.mConfig.mActive.user && global === this.mConfig.mActive.global)) {
+            if (allLayers || user === this.mConfig.mActive.user && global === this.mConfig.mActive.global) {
                 this.cacheAndPrune({ user, global });
             }
         }
@@ -129,6 +132,7 @@ export class ConfigSecure extends ConfigApi {
      */
     public async directSave() {
         await this.mConfig.mVault.save(ConfigConstants.SECURE_ACCT, JSONC.stringify(this.mConfig.mSecure));
+        EventOperator.getZoweProcessor().emitZoweEvent(ZoweUserEvents.ON_VAULT_CHANGED);
     }
 
     // _______________________________________________________________________
@@ -228,7 +232,7 @@ export class ConfigSecure extends ConfigApi {
     public findSecure(profiles: { [key: string]: IConfigProfile }, path: string): string[] {
         const secureProps = [];
         for (const profName of Object.keys(profiles)) {
-            for (const propName of (profiles[profName].secure || [])) {
+            for (const propName of profiles[profName].secure || []) {
                 secureProps.push(`${path}.${profName}.properties.${propName}`);
             }
             if (profiles[profName].profiles != null) {
@@ -236,6 +240,17 @@ export class ConfigSecure extends ConfigApi {
             }
         }
         return secureProps;
+    }
+
+    /**
+     * Retrieve secure properties for a given layer path
+     *
+     * @param layerPath Path of the layer to get secure properties for
+     * @returns the secure properties for the given layer, or null if not found
+     */
+    public securePropsForLayer(layerPath: string): IConfigSecureProperties {
+        const secureLayer = Object.keys(this.mConfig.mSecure).find(osLocation => osLocation === layerPath);
+        return secureLayer ? this.mConfig.mSecure[secureLayer] : null;
     }
 
     /**
@@ -295,6 +310,6 @@ export class ConfigSecure extends ConfigApi {
      * it was never called because the CredentialManager failed to initialize.
      */
     public get loadFailed(): boolean {
-        return (this.mLoadFailed != null) ? this.mLoadFailed : !CredentialManagerFactory.initialized;
+        return this.mLoadFailed != null ? this.mLoadFailed : !CredentialManagerFactory.initialized;
     }
 }

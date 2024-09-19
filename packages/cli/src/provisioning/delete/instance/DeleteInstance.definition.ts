@@ -15,7 +15,7 @@ export const DeleteInstanceDefinition: ICommandDefinition = {
     name: "instance",
     aliases: ["i"],
     type: "command",
-    summary: "Deletes instance.",
+    summary: "Deletes instance",
     description: "Deletes selected deprovisioned instance.",
     handler: __dirname + "/DeleteInstance.handler",
     profile: {

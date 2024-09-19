@@ -11,7 +11,6 @@
 
 import * as stream from "stream";
 import { ICommandDefinition } from "../ICommandDefinition";
-import { CommandProfiles } from "../../profiles/CommandProfiles";
 import { IHandlerResponseApi } from "../../doc/response/api/handler/IHandlerResponseApi";
 import { ICommandArguments } from "../args/ICommandArguments";
 
@@ -47,20 +46,10 @@ export interface IHandlerParameters {
 
     /**
      * The positional options specified by the user on the command line.
-     * @type {string[]}
+     * @type {(string | number)[]}
      * @memberof IHandlerParameters
      */
-    positionals: string[];
-
-    /**
-     * The set of profiles loaded for this command handler - the map is built with the key being the type and it
-     * returns the set of profiles loaded of that type. Multiple profiles can be loaded of the same type - depending
-     * on the request and the 0th entry is the first loaded.
-     * @deprecated This API only loads v1 profiles. To load v2 profiles, use `ImperativeConfig.instance.config.api.profiles`.
-     * @type {Map<string, IProfile[]>}
-     * @memberof IHandlerParameters
-     */
-    profiles: CommandProfiles;
+    positionals: (string | number)[];
 
     /**
      * The command definition node that defines the command being issued.

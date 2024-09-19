@@ -145,11 +145,11 @@ export class Shell {
                 port: session.ISshSession.port,
                 username: session.ISshSession.user,
                 password: session.ISshSession.password,
-                privateKey: (session.ISshSession.privateKey != null && session.ISshSession.privateKey !== "undefined") ?
+                privateKey: session.ISshSession.privateKey != null && session.ISshSession.privateKey !== "undefined" ?
                     require("fs").readFileSync(session.ISshSession.privateKey) : "",
                 passphrase: session.ISshSession.keyPassphrase,
                 authHandler: this.authenticationHandler(authsAllowed),
-                readyTimeout: (session.ISshSession.handshakeTimeout != null && session.ISshSession.handshakeTimeout !== undefined) ?
+                readyTimeout: session.ISshSession.handshakeTimeout != null && session.ISshSession.handshakeTimeout !== undefined ?
                     session.ISshSession.handshakeTimeout : 0
             } as any);
         });
@@ -174,8 +174,3 @@ export class Shell {
         };
     }
 }
-
-/**
- * @deprecated Use `Shell.startCmdFlag` instead.
- */
-export const startCmdFlag = Shell.startCmdFlag;

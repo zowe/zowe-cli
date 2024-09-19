@@ -72,9 +72,9 @@ export class EditUtilities {
      */
     public static async buildTempPath(lfFile: ILocalFile, commandParameters: IHandlerParameters): Promise<string>{
         // find the appropriate extension for either uss or ds
-        const ussExt = (lfFile.fileType === 'uss' && lfFile.fileName.includes(".")) ? lfFile.fileName.split(".").pop() : "";
-        let ext = "."  + (lfFile.fileType === 'uss' ? ussExt : (commandParameters.arguments.extension ?? "txt"));
-        ext = (ext === "." ? "" : ext);
+        const ussExt = lfFile.fileType === 'uss' && lfFile.fileName.includes(".") ? lfFile.fileName.split(".").pop() : "";
+        let ext = "."  + (lfFile.fileType === 'uss' ? ussExt : commandParameters.arguments.extension ?? "txt");
+        ext = ext === "." ? "" : ext;
         if (lfFile.fileType === 'uss'){
             // Hash in a repeatable way if uss fileName (in case presence of special chars)
             const crypto = require("crypto");
@@ -114,7 +114,7 @@ export class EditUtilities {
     public static async promptUser(prompt: Prompt, conflict?: boolean): Promise<boolean>{
         let input;
         let promptText;
-        const promptPrefix = (conflict ? 'CONFLICT: ' : '');
+        const promptPrefix = conflict ? 'CONFLICT: ' : '';
         switch (prompt){
             case Prompt.useStash:
                 promptText = 'Keep and continue editing found temp file? y/n';
@@ -199,12 +199,12 @@ export class EditUtilities {
             name2: "remote file"
         };
 
-        helper.browserView = (gui === GuiResult.GUI_AVAILABLE);
+        helper.browserView = gui === GuiResult.GUI_AVAILABLE;
 
         const lf: Buffer = await handlerDs.getFile1(session, commandParameters.arguments, helper);
         let mf: string | Buffer;
         try{
-            if (commandParameters.positionals[2].includes('d')){
+            if (commandParameters.positionals[2].toString().includes('d')){
                 mf = await handlerDs.getFile2(session, commandParameters.arguments, helper);
             }else{
                 mf = await handlerUss.getFile2(session, commandParameters.arguments, helper);

@@ -9,11 +9,12 @@
 *
 */
 
-import { AbstractSession, Headers, ImperativeError, ImperativeExpect, IO, Logger, TaskProgress } from "@zowe/imperative";
+import { AbstractSession, Headers, ImperativeError, ImperativeExpect, IO, Logger,
+    TaskProgress, IHeaderContent, IOptionsFullResponse, IRestClientResponse } from "@zowe/imperative";
 import * as fs from "fs";
 import * as path from "path";
 
-import { IHeaderContent, ZosmfHeaders, ZosmfRestClient, asyncPool } from "@zowe/core-for-zowe-sdk";
+import { ZosmfHeaders, ZosmfRestClient, asyncPool } from "@zowe/core-for-zowe-sdk";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 
@@ -27,8 +28,6 @@ import { IUploadFile } from "./doc/IUploadFile";
 import { IUploadDir } from "./doc/IUploadDir";
 import { Utilities, Tag } from "../utilities";
 import { Readable } from "stream";
-import { IOptionsFullResponse } from "../../doc/IOptionsFullResponse";
-import { IRestClientResponse } from "../../doc/IRestClientResponse";
 import { CLIENT_PROPERTY } from "../../doc/types/ZosmfRestClientProperties";
 import { TransferMode } from "../../utils/ZosFilesAttributes";
 
@@ -447,26 +446,52 @@ export class Upload {
      * Upload content to USS file
      * @param {AbstractSession} session - z/OS connection info
      * @param {string} ussname          - Name of the USS file to write to
-     * @param {Buffer} buffer          - Data to be written
+     * @param {Buffer} fileBuffer       - Data to be written
      * @param {IUploadOptions}  [options={}] - Uploading options
-     * @returns {Promise<string>}
+     * @returns {Promise<IZosFilesResponse>}
      */
     public static async bufferToUssFile(session: AbstractSession,
         ussname: string,
-        buffer: Buffer,
-        options: IUploadOptions = {}) {
+        fileBuffer: Buffer,
+        options: IUploadOptions = {}): Promise<IZosFilesResponse> {
         ImperativeExpect.toNotBeEqual(options.record, true, ZosFilesMessages.unsupportedDataType.message);
         options.binary = options.binary ? options.binary : false;
         ImperativeExpect.toNotBeNullOrUndefined(ussname, ZosFilesMessages.missingUSSFileName.message);
         ussname = ZosFilesUtils.sanitizeUssPathForRestCall(ussname);
-        const parameters: string = ZosFilesConstants.RES_USS_FILES + "/" + ussname;
-        const headers: IHeaderContent[] = this.generateHeadersBasedOnOptions(options, "buffer");
+
+        const endpoint = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + ussname;
+        const reqHeaders: IHeaderContent[] = this.generateHeadersBasedOnOptions(options, "buffer");
 
         if (!options.binary) {
-            buffer = ZosFilesUtils.normalizeNewline(buffer);
+            fileBuffer = ZosFilesUtils.normalizeNewline(fileBuffer);
         }
 
-        return ZosmfRestClient.putExpectString(session, ZosFilesConstants.RESOURCE + parameters, headers, buffer);
+        // Options to use the buffer to write a file
+        const requestOptions: IOptionsFullResponse = {
+            resource: endpoint,
+            reqHeaders,
+            writeData: fileBuffer
+        };
+
+        // If requestor needs etag, add header + get "response" back
+        if (options.returnEtag) {
+            requestOptions.dataToReturn = [CLIENT_PROPERTY.response];
+        }
+        const uploadRequest: IRestClientResponse = await ZosmfRestClient.putExpectFullResponse(session, requestOptions);
+
+        // By default, apiResponse is empty when uploading
+        const apiResponse: any = {};
+
+        // Return Etag in apiResponse, if requested
+        if (options.returnEtag) {
+            apiResponse.etag = uploadRequest.response.headers.etag;
+        }
+
+        return {
+            success: true,
+            commandResponse: ZosFilesMessages.dataSetUploadedSuccessfully.message,
+            apiResponse
+        };
     }
 
     /**

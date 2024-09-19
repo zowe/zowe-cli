@@ -100,7 +100,7 @@ describe("Configuration List command handler", () => {
         jest.spyOn(fakeConfig, "exists", "get").mockReturnValueOnce(false);
         handlerParms.arguments = {};
 
-        await (new ListHandler()).process(handlerParms);
+        await new ListHandler().process(handlerParms);
         expect(errorText).toBeNull();
         expect(dataObj).toEqual({});
         expect(formatObj).toEqual(dataObj);
@@ -110,7 +110,7 @@ describe("Configuration List command handler", () => {
         (fakeConfig as any).mLayers = configLayers;
         handlerParms.arguments = {};
 
-        await (new ListHandler()).process(handlerParms);
+        await new ListHandler().process(handlerParms);
         expect(errorText).toBeNull();
         expect(dataObj).toEqual(configMaskedProps);
         expect(dataObj.profiles.email.properties.user).toBe(ConfigConstants.SECURE_VALUE);
@@ -122,7 +122,7 @@ describe("Configuration List command handler", () => {
         (fakeConfig as any).mLayers = configLayers;
         handlerParms.arguments = { property: "plugins" };
 
-        await (new ListHandler()).process(handlerParms);
+        await new ListHandler().process(handlerParms);
         expect(errorText).toBeNull();
         expect(dataObj).toEqual(["fakePlugin"]);
         expect(formatObj).toEqual(dataObj);
@@ -132,7 +132,7 @@ describe("Configuration List command handler", () => {
         (fakeConfig as any).mLayers = configLayers;
         handlerParms.arguments = { locations: true };
 
-        await (new ListHandler()).process(handlerParms);
+        await new ListHandler().process(handlerParms);
         expect(errorText).toBeNull();
         expect(dataObj.fakePath).toEqual(configMaskedProps);
         expect(dataObj.fakePath.profiles.email.properties.user).toBe(ConfigConstants.SECURE_VALUE);
@@ -144,7 +144,7 @@ describe("Configuration List command handler", () => {
         (fakeConfig as any).mLayers = configLayers;
         handlerParms.arguments = { locations: true, property: "plugins" };
 
-        await (new ListHandler()).process(handlerParms);
+        await new ListHandler().process(handlerParms);
         expect(errorText).toBeNull();
         expect(dataObj.fakePath).toEqual(["fakePlugin"]);
         expect(formatObj).toEqual(dataObj);
@@ -154,7 +154,7 @@ describe("Configuration List command handler", () => {
         (fakeConfig as any).mLayers = configLayers;
         handlerParms.arguments = { locations: true, property: "profiles" };
 
-        await (new ListHandler()).process(handlerParms);
+        await new ListHandler().process(handlerParms);
         expect(errorText).toBeNull();
         expect(dataObj.fakePath).toEqual(configMaskedProps.profiles);
         expect(dataObj.fakePath.email.properties.user).toBe(ConfigConstants.SECURE_VALUE);
@@ -164,9 +164,9 @@ describe("Configuration List command handler", () => {
 
     it("should output entire config at root level", async () => {
         (fakeConfig as any).mLayers = configLayers;
-        handlerParms.arguments = { root: true };
+        handlerParms.arguments = { nameOnly: true };
 
-        await (new ListHandler()).process(handlerParms);
+        await new ListHandler().process(handlerParms);
         expect(errorText).toBeNull();
         expect(dataObj).toEqual(Object.keys(configLayers[0].properties));
         expect(formatObj).toEqual(dataObj);

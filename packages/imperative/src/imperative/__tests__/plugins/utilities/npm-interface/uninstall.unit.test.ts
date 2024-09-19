@@ -30,7 +30,7 @@ import { PMFConstants } from "../../../../src/plugins/utilities/PMFConstants";
 import { readFileSync, writeFileSync } from "jsonfile";
 import { findNpmOnPath } from "../../../../src/plugins/utilities/NpmFunctions";
 import { uninstall } from "../../../../src/plugins/utilities/npm-interface";
-import { ConfigSchema, ProfileInfo } from "../../../../../config";
+import { ConfigSchema, ConfigUtils } from "../../../../../config";
 import mockTypeConfig from "../../__resources__/typeConfiguration";
 import { ExecUtils } from "../../../../../utilities";
 import { IExtendersJsonOpts } from "../../../../../config/src/doc/IExtenderOpts";
@@ -87,10 +87,10 @@ describe("PMF: Uninstall Interface", () => {
      */
     const wasWriteFileSyncCallValid = () => {
         // Create the object that should be sent to the command.
-        const expectedObject = {
+        const expectedObject: IPluginJson = {
             plugin2: {
                 package: "plugin1",
-                registry: packageRegistry,
+                location: packageRegistry,
                 version: "1.2.3"
             }
         };
@@ -117,12 +117,12 @@ describe("PMF: Uninstall Interface", () => {
             const pluginJsonFile: IPluginJson = {
                 a: {
                     package: "a",
-                    registry: packageRegistry,
+                    location: packageRegistry,
                     version: "3.2.1"
                 },
                 plugin2: {
                     package: "plugin1",
-                    registry: packageRegistry,
+                    location: packageRegistry,
                     version: "1.2.3"
                 }
             };
@@ -141,12 +141,12 @@ describe("PMF: Uninstall Interface", () => {
             const pluginJsonFile: IPluginJson = {
                 "imperative-sample-plugin": {
                     package: "C:\\test\\imperative-plugins",
-                    registry: packageRegistry,
+                    location: packageRegistry,
                     version: "1.0.1"
                 },
                 "plugin2": {
                     package: "plugin1",
-                    registry: packageRegistry,
+                    location: packageRegistry,
                     version: "1.2.3"
                 }
             };
@@ -187,7 +187,7 @@ describe("PMF: Uninstall Interface", () => {
             const pluginJsonFile: IPluginJson = {
                 a: {
                     package: "a",
-                    registry: packageRegistry,
+                    location: packageRegistry,
                     version: "3.2.1"
                 }
             };
@@ -234,12 +234,12 @@ describe("PMF: Uninstall Interface", () => {
             const pluginJsonFile: IPluginJson = {
                 a: {
                     package: "a",
-                    registry: packageRegistry,
+                    location: packageRegistry,
                     version: "3.2.1"
                 },
                 plugin2: {
                     package: "plugin1",
-                    registry: packageRegistry,
+                    location: packageRegistry,
                     version: "1.2.3"
                 }
             };
@@ -248,7 +248,7 @@ describe("PMF: Uninstall Interface", () => {
             const blockMocks = getBlockMocks();
             if (opts.schemaUpdated) {
                 blockMocks.fs.existsSync.mockReturnValueOnce(true);
-                jest.spyOn(ProfileInfo, "readExtendersJsonFromDisk").mockReturnValue({
+                jest.spyOn(ConfigUtils, "readExtendersJson").mockReturnValue({
                     profileTypes: {
                         "test-type": {
                             from: ["a"],
@@ -281,13 +281,13 @@ describe("PMF: Uninstall Interface", () => {
 
     describe("updateAndGetRemovedTypes", () => {
         const getBlockMocks = () => {
-            const profileInfo = {
-                readExtendersJsonFromDisk: jest.spyOn(ProfileInfo, "readExtendersJsonFromDisk"),
-                writeExtendersJson: jest.spyOn(ProfileInfo, "writeExtendersJson").mockImplementation(),
+            const configUtils = {
+                readExtendersJson: jest.spyOn(ConfigUtils, "readExtendersJson"),
+                writeExtendersJson: jest.spyOn(ConfigUtils, "writeExtendersJson").mockImplementation(),
             };
 
             return {
-                profileInfo,
+                configUtils
             };
         };
 
@@ -296,23 +296,23 @@ describe("PMF: Uninstall Interface", () => {
             schema?: boolean;
         }, extendersJson: IExtendersJsonOpts) => {
             const blockMocks = getBlockMocks();
-            blockMocks.profileInfo.readExtendersJsonFromDisk.mockReturnValue(extendersJson);
+            blockMocks.configUtils.readExtendersJson.mockReturnValue(extendersJson);
 
             const hasMultipleSources = extendersJson.profileTypes["some-type"].from.length > 1;
             const wasLatestSource = extendersJson.profileTypes["some-type"].latestFrom === "aPluginPackage";
 
             const typesToRemove = updateAndGetRemovedTypes("aPluginPackage");
             if (shouldUpdate.extJson) {
-                expect(blockMocks.profileInfo.writeExtendersJson).toHaveBeenCalled();
+                expect(blockMocks.configUtils.writeExtendersJson).toHaveBeenCalled();
             } else {
-                expect(blockMocks.profileInfo.writeExtendersJson).not.toHaveBeenCalled();
+                expect(blockMocks.configUtils.writeExtendersJson).not.toHaveBeenCalled();
                 return;
             }
 
-            const newExtendersObj = blockMocks.profileInfo.writeExtendersJson.mock.calls[0][0];
+            const newExtendersObj = blockMocks.configUtils.writeExtendersJson.mock.calls[0][0];
 
             if (hasMultipleSources) {
-                expect(blockMocks.profileInfo.writeExtendersJson).not.toHaveBeenCalledWith(
+                expect(blockMocks.configUtils.writeExtendersJson).not.toHaveBeenCalledWith(
                     expect.objectContaining({
                         profileTypes: {
                             "some-type": {
@@ -369,7 +369,7 @@ describe("PMF: Uninstall Interface", () => {
 
         it("returns an empty list when package does not contribute any profile types", () => {
             const blockMocks = getBlockMocks();
-            blockMocks.profileInfo.readExtendersJsonFromDisk.mockReturnValue({
+            blockMocks.configUtils.readExtendersJson.mockReturnValue({
                 profileTypes: {
                     "some-type": {
                         from: ["anotherPkg"]

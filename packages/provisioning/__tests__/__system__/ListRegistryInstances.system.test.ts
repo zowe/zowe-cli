@@ -43,6 +43,7 @@ describe("ListRegistryInstances (system)", () => {
         instanceName = instance["external-name"];
         instanceID = instance["object-id"];
         Imperative.console.info(`Provisioned instance: ${instanceName}`);
+        if (instanceID == null) { throw Error("Cannot continue test - instance ID is undefined"); }
     }, ProvisioningTestUtils.MAX_TIMEOUT_TIME);
 
     afterAll(async () => {

@@ -16,7 +16,7 @@
   "webHelpLogoImgPath": "C:\\ourstuff\\repos\\zowe-cli\\packages\\cli\\web-help-logo.png",
   "logging": {
     "appLogging": {
-      "logFile": "zowe/logs/zowe.log",
+      "logFile": "logs/zowe.log",
       "apiName": "app",
       "category": "app"
     },

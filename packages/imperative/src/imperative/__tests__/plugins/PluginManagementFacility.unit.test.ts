@@ -87,7 +87,6 @@ describe("Plugin Management Facility", () => {
         pluginAliases: goodPluginAliases,
         pluginSummary: goodPluginSummary,
         rootCommandDescription: "imperative sample plugin",
-        pluginHealthCheck: "./lib/sample-plugin/healthCheck.handler",   // TODO: remove in V3, when pluginHealthCheck is removed
         definitions: [
             {
                 name: "foo",
@@ -215,6 +214,7 @@ describe("Plugin Management Facility", () => {
         expect(UpdateImpConfig.addCmdGrp).toHaveBeenCalledWith({
             name: "plugins",
             type: "group",
+            summary: "Install and manage plug-ins",
             description: "Install and manage plug-ins.",
             children: [
                 installDef,
@@ -234,8 +234,8 @@ describe("Plugin Management Facility", () => {
         const knownOverridePluginNm = CredentialManagerOverride.getKnownCredMgrs()[1].credMgrPluginName as string;
 
         const mockInstalledPlugins: IPluginJson = {
-            firstPlugin: {package: "1", registry: "1", version: "1"},
-            secondPlugin: {package: "2", registry: "2", version: "2"}
+            firstPlugin: {package: "1", location: "1", version: "1"},
+            secondPlugin: {package: "2", location: "2", version: "2"}
         };
         const loadPluginCfgPropsReal: any = PMF.loadPluginCfgProps;
         const loadPluginCfgPropsMock = jest.fn();
@@ -732,48 +732,6 @@ describe("Plugin Management Facility", () => {
                 expect(issue.issueSev).toBe(IssueSeverity.CFG_ERROR);
                 expect(issue.issueText).toContain(
                     "The plugin defines no commands and overrides no framework components.");
-            });
-
-            // TODO: remove this test in V3, when pluginHealthCheck is removed
-            it("should not record warning if pluginHealthCheck property does not exist", () => {
-                // remove pluginHealthCheck property from config
-                badPluginConfig = JSON.parse(JSON.stringify(basePluginConfig));
-                // eslint-disable-next-line deprecation/deprecation
-                delete badPluginConfig.pluginHealthCheck;
-                badPluginCfgProps = JSON.parse(JSON.stringify(basePluginCfgProps));
-                badPluginCfgProps.impConfig = badPluginConfig;
-
-                // Ensure we get to the function that we want to validate
-                mockConflictNmOrAlias.mockReturnValueOnce({ hasConflict: false });
-                mockAreVersionsCompatible.mockReturnValueOnce(true);
-
-                isValid = PMF.validatePlugin(badPluginCfgProps, basePluginCmdDef);
-
-                // missing healthCheck is just a warning, so we succeed
-                expect(isValid).toBe(true);
-
-                // we no longer report any error about missing pluginHealthCheck property
-                expect(pluginIssues.getIssueListForPlugin(pluginName).length).toBe(0);
-            });
-
-            // TODO: remove this test in V3, when pluginHealthCheck is removed
-            it("should not record error if pluginHealthCheck file does not exist", () => {
-                // set pluginHealthCheck property to a bogus file
-                badPluginConfig = JSON.parse(JSON.stringify(basePluginConfig));
-                // eslint-disable-next-line deprecation/deprecation
-                badPluginConfig.pluginHealthCheck = "./This/File/Does/Not/Exist";
-                badPluginCfgProps = JSON.parse(JSON.stringify(basePluginCfgProps));
-                badPluginCfgProps.impConfig = badPluginConfig;
-
-                // Ensure we get to the function that we want to validate
-                mockConflictNmOrAlias.mockReturnValueOnce({ hasConflict: false });
-                mockAreVersionsCompatible.mockReturnValueOnce(true);
-
-                isValid = PMF.validatePlugin(badPluginCfgProps, basePluginCmdDef);
-                expect(isValid).toBe(true);
-
-                // we no longer report any error about missing pluginHealthCheck file
-                expect(pluginIssues.getIssueListForPlugin(pluginName).length).toBe(0);
             });
 
             it("should record error when ConfigurationValidator throws an exception", () => {
@@ -1944,7 +1902,7 @@ describe("Plugin Management Facility", () => {
     describe("comparePluginVersionToCli function", () => {
         beforeEach(() => {
             PMF.currPluginName = pluginName;
-            PMF.semver.intersects = jest.fn();
+            PMF.semver.satisfies = jest.fn();
 
             // impCfg.getCliCmdName is a getter of a property, so mock the property
             Object.defineProperty(impCfg, "cliCmdName", {
@@ -1956,7 +1914,7 @@ describe("Plugin Management Facility", () => {
         });
 
         it("should record no issue when version is compatible", () => {
-            PMF.semver.intersects.mockReturnValueOnce(true);
+            PMF.semver.satisfies.mockReturnValueOnce(true);
 
             PMF.comparePluginVersionToCli(pluginName, "pluginVerVal", "cliVerPropNm", "CliVerVal");
 
@@ -1964,7 +1922,7 @@ describe("Plugin Management Facility", () => {
         });
 
         it("should record issue when exception threw by semver", () => {
-            PMF.semver.intersects.mockImplementationOnce(() => {
+            PMF.semver.satisfies.mockImplementationOnce(() => {
                 throw new Error("dummy error");
             });
 

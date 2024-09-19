@@ -104,6 +104,7 @@ Object {
       "tso",
     ],
   },
+  "summary": "Start a TSO address space",
   "type": "command",
 }
 `;

@@ -10,7 +10,7 @@
 */
 
 import * as spawn from "cross-spawn";
-import { ExecUtils, GuiResult, ImperativeConfig, ProcessUtils } from "../../utilities";
+import { GuiResult, ImperativeConfig, ProcessUtils } from "../../utilities";
 
 jest.mock("cross-spawn");
 jest.mock("opener");
@@ -240,11 +240,6 @@ describe("ProcessUtils tests", () => {
     describe("openInEditor", () => {
         it("should open file in graphical editor", async () => {
             jest.spyOn(ProcessUtils, "isGuiAvailable").mockReturnValueOnce(GuiResult.GUI_AVAILABLE);
-            jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({
-                loadedConfig: {
-                    envVariablePrefix: "TEST_CLI"
-                }
-            } as any);
             const mockOpener = require("opener");
             await ProcessUtils.openInEditor("filePath");
             expect(mockOpener).toHaveBeenCalledWith("filePath");
@@ -252,34 +247,14 @@ describe("ProcessUtils tests", () => {
 
         it("should open file in custom graphical editor", async () => {
             jest.spyOn(ProcessUtils, "isGuiAvailable").mockReturnValueOnce(GuiResult.GUI_AVAILABLE);
-            jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({
-                loadedConfig: {
-                    envVariablePrefix: "TEST_CLI"
-                }
-            } as any);
             const mockOpener = require("opener");
-            try {
-                process.env.TEST_CLI_EDITOR = "fakeEdit";
-                await ProcessUtils.openInEditor("filePath");
-            } finally {
-                delete process.env.TEST_CLI_EDITOR;
-            }
+            await ProcessUtils.openInEditor("filePath", "fakeEdit");
             expect(spawn.spawn).toHaveBeenCalledWith("fakeEdit", ["filePath"], { stdio: "inherit" });
         });
 
         it("should open file in custom command-line editor", async () => {
             jest.spyOn(ProcessUtils, "isGuiAvailable").mockReturnValueOnce(GuiResult.NO_GUI_NO_DISPLAY);
-            jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({
-                loadedConfig: {
-                    envVariablePrefix: "TEST_CLI"
-                }
-            } as any);
-            try {
-                process.env.TEST_CLI_EDITOR = "fakeEdit";
-                await ProcessUtils.openInEditor("filePath");
-            } finally {
-                delete process.env.TEST_CLI_EDITOR;
-            }
+            await ProcessUtils.openInEditor("filePath", "fakeEdit");
             expect(spawn.spawn).toHaveBeenCalledWith("fakeEdit", ["filePath"], { stdio: "inherit" });
         });
 
@@ -290,24 +265,6 @@ describe("ProcessUtils tests", () => {
             } as any);
             await ProcessUtils.openInEditor("filePath");
             expect(spawn.spawn).toHaveBeenCalledWith("vi", ["filePath"], { stdio: "inherit" });
-        });
-    });
-
-    // TODO: Remove this entire 'describe' section in V3 when the @deprecated execAndCheckOutput function is removed
-    describe("execAndCheckOutput", () => {
-        afterEach(() => {
-            jest.clearAllMocks();
-        });
-
-        it("should just pass through to ExecUtils.spawnAndGetOutput", () => {
-            const message = "Hello world!";
-            const options: any = { cwd: __dirname };
-            const stdoutBuffer = Buffer.from(message + "\n");
-            const spawnSpy = jest.spyOn(ExecUtils, "spawnAndGetOutput").mockReturnValueOnce(stdoutBuffer as any);
-            // eslint-disable-next-line deprecation/deprecation
-            const execOutput = ProcessUtils.execAndCheckOutput("echo", [message], options);
-            expect(spawnSpy).toHaveBeenCalledWith("echo", [message], options);
-            expect(execOutput).toBe(stdoutBuffer);
         });
     });
 });

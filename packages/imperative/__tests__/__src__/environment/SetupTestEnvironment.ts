@@ -15,7 +15,8 @@ import * as nodePath from "path";
 import { TEST_RESULT_DATA_DIR } from "../TestConstants";
 import { mkdirpSync } from "fs-extra";
 import { ITestEnvironment } from "./doc/response/ITestEnvironment";
-const uuidv4 = require("uuid/v4");
+import { v4 as uuidv4 } from "uuid";
+
 /**
  * Use the utility methods here to setup the test environment for running APIs
  * and CLIs. Imperative will always touch the filesystem in some capacity

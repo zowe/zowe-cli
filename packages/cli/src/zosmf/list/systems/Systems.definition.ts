@@ -14,6 +14,7 @@ import { ZosmfSession } from "@zowe/zosmf-for-zowe-sdk";
 
 export const SystemsDefinition: ICommandDefinition = {
     name: "systems",
+    summary: "Obtain a list of systems that are defined to a z/OSMF instance",
     description: "Obtain a list of systems that are defined to a z/OSMF instance.",
     type: "command",
     handler: __dirname + "/Systems.handler",

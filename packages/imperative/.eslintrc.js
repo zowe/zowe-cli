@@ -5,7 +5,8 @@ module.exports = {
         "sourceType": "module",
         "project": [
             "./tsconfig.json",
-            "./__tests__/tsconfig.json"
+            "./__tests__/tsconfig.json",
+            "./tsconfig-tests.json"
         ]
     }
 }

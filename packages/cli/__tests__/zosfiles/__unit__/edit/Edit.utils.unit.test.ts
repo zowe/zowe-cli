@@ -11,7 +11,7 @@
 
 import { mockHandlerParameters } from "@zowe/cli-test-utils";
 import { AbstractSession, CliUtils, GuiResult, IHandlerParameters, ImperativeError, ProcessUtils } from "@zowe/imperative";
-import { UNIT_TEST_ZOSMF_PROF_OPTS, UNIT_TEST_PROFILES_ZOSMF } from "../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
+import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../__tests__/__src__/TestConstants";
 import { EditDefinition } from "../../../../src/zosfiles/edit/Edit.definition";
 import { EditUtilities, ILocalFile, Prompt } from "../../../../src/zosfiles/edit/Edit.utils";
 import { cloneDeep } from "lodash";
@@ -26,15 +26,13 @@ describe("Files Edit Utilities", () => {
     const commandParametersDs: IHandlerParameters = mockHandlerParameters({
         arguments: UNIT_TEST_ZOSMF_PROF_OPTS,
         positionals: ["zos-files", "edit", "ds"],
-        definition: EditDefinition,
-        profiles: UNIT_TEST_PROFILES_ZOSMF
+        definition: EditDefinition
     });
 
     const commandParametersUss: IHandlerParameters = mockHandlerParameters({
         arguments: UNIT_TEST_ZOSMF_PROF_OPTS,
         positionals: ["zos-files", "edit", "uss"],
-        definition: EditDefinition,
-        profiles: UNIT_TEST_PROFILES_ZOSMF
+        definition: EditDefinition
     });
 
     commandParametersDs.arguments["dataSetName"] =  commandParametersUss.arguments["file"] = 'fake';
@@ -371,7 +369,7 @@ describe("Files Edit Utilities", () => {
 
             //TEST CONFIRMATION
             await EditUtilities.fileComparison(REAL_SESSION, commandParametersDs, localFileDS);
-            expect(getFile2DsSpy).toBeCalledWith(undefined, expect.anything(), expect.objectContaining({
+            expect(getFile2DsSpy).toHaveBeenCalledWith(undefined, expect.anything(), expect.objectContaining({
                 "browserView": true
             }));
         });
@@ -428,12 +426,12 @@ describe("Files Edit Utilities", () => {
         it("should open in editor if one specified, otherwise skip to prompting", async () => {
             const openInEditorSpy = jest.spyOn(ProcessUtils, "openInEditor").mockImplementation(jest.fn());
             await EditUtilities.makeEdits(localFile, 'editorPath');
-            expect(openInEditorSpy).toBeCalledTimes(1);
+            expect(openInEditorSpy).toHaveBeenCalledTimes(1);
         });
         it("should skip to prompting if no supplied editor", async () => {
             const promptUserSpy = jest.spyOn(EditUtilities, "promptUser");
             await EditUtilities.makeEdits(localFile, 'editorPath');
-            expect(promptUserSpy).toBeCalledTimes(1);
+            expect(promptUserSpy).toHaveBeenCalledTimes(1);
         });
     });
     describe("uploadEdits()", () => {

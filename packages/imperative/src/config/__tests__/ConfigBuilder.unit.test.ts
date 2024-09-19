@@ -9,11 +9,13 @@
 *
 */
 
-import { CredentialManagerFactory, IImperativeConfig } from "../..";
+import { IImperativeConfig } from "../..";
 import { Config, ConfigBuilder, IConfig } from "../";
-import { ProfileIO } from "../../profiles";
 import * as config from "../../../__tests__/__integration__/imperative/src/imperative";
 import * as lodash from "lodash";
+
+const CHOOSE_GLOB_CONFIG = true;
+const CHOOSE_PROJ_CONFIG = false;
 
 const expectedConfigObject: IConfig = {
     autoStore: true,
@@ -68,14 +70,14 @@ describe("Config Builder tests", () => {
     describe("build", () => {
 
         it("should build a config without populating properties", async () => {
-            const builtConfig = await ConfigBuilder.build(testConfig);
+            const builtConfig = await ConfigBuilder.build(testConfig, CHOOSE_PROJ_CONFIG);
             expect(configEmptySpy).toHaveBeenCalledTimes(1);
             expect(getDefaultValueSpy).toHaveBeenCalledTimes(0); // Not populating any properties
             expect(builtConfig).toEqual(expectedConfig);
         });
 
         it("should build a config and populate properties", async () => {
-            const builtConfig = await ConfigBuilder.build(testConfig, {populateProperties: true});
+            const builtConfig = await ConfigBuilder.build(testConfig, CHOOSE_PROJ_CONFIG, {populateProperties: true});
             expectedConfig.profiles.secured.properties.info = "";
             expectedConfig.profiles.secured.secure.push("secret");
             expectedConfig.defaults = { secured: "secured" };
@@ -86,7 +88,7 @@ describe("Config Builder tests", () => {
 
         it("should build a config and populate properties, even option with missing option definition", async () => {
             testConfig.profiles[0].schema.properties.fakestr = buildProfileProperty("fakestr", "string", true);
-            const builtConfig = await ConfigBuilder.build(testConfig, {populateProperties: true});
+            const builtConfig = await ConfigBuilder.build(testConfig, CHOOSE_PROJ_CONFIG, {populateProperties: true});
             expectedConfig.profiles.secured.properties.info = "";
             expectedConfig.profiles.secured.properties.fakestr = "";
             expectedConfig.profiles.secured.secure.push("secret");
@@ -104,7 +106,7 @@ describe("Config Builder tests", () => {
             testConfig.profiles[0].schema.properties.fakebool = buildProfileProperty("fakebool", "boolean");
             testConfig.profiles[0].schema.properties.fakedflt = buildProfileProperty("fakedflt", "IShouldntExist");
 
-            const builtConfig = await ConfigBuilder.build(testConfig, {populateProperties: true});
+            const builtConfig = await ConfigBuilder.build(testConfig, CHOOSE_PROJ_CONFIG, {populateProperties: true});
             expectedConfig.profiles.secured.properties.info = "";
             expectedConfig.profiles.secured.properties.fakestr = "";
             expectedConfig.profiles.secured.properties.fakenum = 0;
@@ -123,7 +125,7 @@ describe("Config Builder tests", () => {
         it("should build a config and populate an empty property that can have multiple types", async () => {
             testConfig.profiles[0].schema.properties.fakestr = buildProfileProperty("fakestr", ["string", "number", "boolean"]);
 
-            const builtConfig = await ConfigBuilder.build(testConfig, {populateProperties: true});
+            const builtConfig = await ConfigBuilder.build(testConfig, CHOOSE_PROJ_CONFIG, {populateProperties: true});
             expectedConfig.profiles.secured.properties.info = "";
             expectedConfig.profiles.secured.properties.fakestr = "";
             expectedConfig.profiles.secured.secure.push("secret");
@@ -134,7 +136,7 @@ describe("Config Builder tests", () => {
             expect(builtConfig).toEqual(expectedConfig);
         });
 
-        it("should build a config with a base profile", async () => {
+        it("should build a config with a project base profile", async () => {
             testConfig.baseProfile = {
                 type: "base",
                 schema: {
@@ -145,7 +147,7 @@ describe("Config Builder tests", () => {
                 }
             };
             testConfig.profiles.push(testConfig.baseProfile);
-            const builtConfig = await ConfigBuilder.build(testConfig, {populateProperties: true});
+            const builtConfig = await ConfigBuilder.build(testConfig, CHOOSE_PROJ_CONFIG, {populateProperties: true});
             expectedConfig.profiles = {
                 secured: {
                     type: "secured",
@@ -154,7 +156,7 @@ describe("Config Builder tests", () => {
                     },
                     secure: ["secret"]
                 },
-                base: {
+                project_base: {
                     type: "base",
                     properties: {
                         host: ""
@@ -162,14 +164,14 @@ describe("Config Builder tests", () => {
                     secure: []
                 }
             };
-            expectedConfig.defaults = { base: "base", secured: "secured" };
+            expectedConfig.defaults = { base: "project_base", secured: "secured" };
 
             expect(configEmptySpy).toHaveBeenCalledTimes(1);
             expect(getDefaultValueSpy).toHaveBeenCalledTimes(2); // Populating default value for host and info
             expect(builtConfig).toEqual(expectedConfig);
         });
 
-        it("should build a config with a base profile and prompt for missing property", async () => {
+        it("should build a config with a global base profile and prompt for missing property", async () => {
             testConfig.baseProfile = {
                 type: "base",
                 schema: {
@@ -180,7 +182,7 @@ describe("Config Builder tests", () => {
                 }
             };
             testConfig.profiles.push(testConfig.baseProfile);
-            const builtConfig = await ConfigBuilder.build(testConfig, {populateProperties: true, getValueBack});
+            const builtConfig = await ConfigBuilder.build(testConfig, CHOOSE_GLOB_CONFIG, {populateProperties: true, getValueBack});
             expectedConfig.profiles = {
                 secured: {
                     type: "secured",
@@ -189,7 +191,7 @@ describe("Config Builder tests", () => {
                     },
                     secure: ["secret"]
                 },
-                base: {
+                global_base: {
                     type: "base",
                     properties: {
                         host: "fake value",
@@ -197,14 +199,14 @@ describe("Config Builder tests", () => {
                     secure: []
                 }
             };
-            expectedConfig.defaults = { base: "base", secured: "secured" };
+            expectedConfig.defaults = { base: "global_base", secured: "secured" };
 
             expect(configEmptySpy).toHaveBeenCalledTimes(1);
             expect(getDefaultValueSpy).toHaveBeenCalledTimes(2); // Populating default value for host and info
             expect(builtConfig).toEqual(expectedConfig);
         });
 
-        it("should build a config with a base profile and prompt for missing secure property", async () => {
+        it("should build a config with a global base profile and prompt for missing secure property", async () => {
             testConfig.profiles.push(testConfig.baseProfile);
             expectedConfig.profiles = {
                 secured: {
@@ -214,7 +216,7 @@ describe("Config Builder tests", () => {
                     },
                     secure: ["secret"]
                 },
-                base: {
+                global_base: {
                     type: "base",
                     properties: {
                         secret: "fake value"
@@ -222,11 +224,11 @@ describe("Config Builder tests", () => {
                     secure: ["secret"]
                 }
             };
-            expectedConfig.defaults = { base: "base", secured: "secured" };
+            expectedConfig.defaults = { base: "global_base", secured: "secured" };
             let builtConfig;
             let caughtError;
             try {
-                builtConfig = await ConfigBuilder.build(testConfig, {populateProperties: true, getValueBack});
+                builtConfig = await ConfigBuilder.build(testConfig, CHOOSE_GLOB_CONFIG, {populateProperties: true, getValueBack});
             } catch (error) {
                 caughtError = error;
             }
@@ -235,153 +237,5 @@ describe("Config Builder tests", () => {
             expect(getDefaultValueSpy).toHaveBeenCalledTimes(1); // Populating default value for info
             expect(builtConfig).toEqual(expectedConfig);
         });
-    });
-
-    describe("convert", () => {
-        const mockSecureLoad = jest.fn().mockReturnValue("\"area51\"");
-
-        beforeAll(() => {
-            jest.spyOn(CredentialManagerFactory, "manager", "get").mockReturnValue({
-                load: mockSecureLoad
-            } as any);
-        });
-
-        it("should successfully convert multiple v1 profiles to config object", async () => {
-            jest.spyOn(ProfileIO, "getAllProfileDirectories").mockReturnValueOnce(["fruit", "nut"]);
-            jest.spyOn(ProfileIO, "getAllProfileNames")
-                .mockReturnValueOnce(["apple", "banana", "coconut"])
-                .mockReturnValueOnce(["almond", "brazil", "cashew"]);
-            jest.spyOn(ProfileIO, "readMetaFile")
-                .mockReturnValueOnce({ defaultProfile: "apple" } as any)
-                .mockReturnValueOnce({ defaultProfile: "brazil" } as any);
-            jest.spyOn(ProfileIO, "readProfileFile")
-                .mockReturnValueOnce({ color: "green", secret: "managed by A" })
-                .mockReturnValueOnce({ color: "yellow", secret: "managed by B" })
-                .mockReturnValueOnce({ color: "brown", secret: "managed by C" })
-                .mockReturnValueOnce({ unitPrice: 1 })
-                .mockReturnValueOnce({ unitPrice: 5 })
-                .mockReturnValueOnce({ unitPrice: 2 });
-            const convertResult = await ConfigBuilder.convert(__dirname);
-            expect(convertResult.config).toMatchObject({
-                profiles: {
-                    fruit_apple: {
-                        type: "fruit",
-                        properties: { color: "green", secret: "area51" },
-                        secure: ["secret"]
-                    },
-                    fruit_banana: {
-                        type: "fruit",
-                        properties: { color: "yellow", secret: "area51" },
-                        secure: ["secret"]
-                    },
-                    fruit_coconut: {
-                        type: "fruit",
-                        properties: { color: "brown", secret: "area51" },
-                        secure: ["secret"]
-                    },
-                    nut_almond: {
-                        type: "nut",
-                        properties: { unitPrice: 1 },
-                        secure: []
-                    },
-                    nut_brazil: {
-                        type: "nut",
-                        properties: { unitPrice: 5 },
-                        secure: []
-                    },
-                    nut_cashew: {
-                        type: "nut",
-                        properties: { unitPrice: 2 },
-                        secure: []
-                    }
-                },
-                defaults: {
-                    fruit: "fruit_apple",
-                    nut: "nut_brazil"
-                },
-                autoStore: true
-            });
-            expect(Object.keys(convertResult.profilesConverted).length).toBe(2);
-            expect(convertResult.profilesFailed.length).toBe(0);
-        });
-
-        it("should fail to convert invalid v1 profiles to config object", async () => {
-            mockSecureLoad.mockReturnValueOnce(null);
-            const metaError = new Error("invalid meta file");
-            const profileError = new Error("invalid profile file");
-            jest.spyOn(ProfileIO, "getAllProfileDirectories").mockReturnValueOnce(["fruit", "nut"]);
-            jest.spyOn(ProfileIO, "getAllProfileNames")
-                .mockReturnValueOnce(["apple", "banana", "coconut"])
-                .mockReturnValueOnce([]);
-            jest.spyOn(ProfileIO, "readMetaFile").mockImplementationOnce(() => { throw metaError; });
-            jest.spyOn(ProfileIO, "readProfileFile")
-                .mockImplementationOnce(() => ({ color: "green", secret: "managed by A" }))
-                .mockImplementationOnce(() => { throw profileError; })
-                .mockImplementationOnce(() => ({ color: "brown", secret: "managed by C" }));
-            const convertResult = await ConfigBuilder.convert(__dirname);
-            expect(convertResult.config).toMatchObject({
-                profiles: {
-                    fruit_apple: {
-                        type: "fruit",
-                        properties: { color: "green" },
-                        secure: []
-                    },
-                    fruit_coconut: {
-                        type: "fruit",
-                        properties: { color: "brown", secret: "area51" },
-                        secure: ["secret"]
-                    }
-                },
-                defaults: {},
-                autoStore: true
-            });
-            expect(Object.keys(convertResult.profilesConverted).length).toBe(1);
-            expect(convertResult.profilesFailed.length).toBe(2);
-            expect(convertResult.profilesFailed[0]).toMatchObject({
-                name: "banana",
-                type: "fruit",
-                error: profileError
-            });
-            expect(convertResult.profilesFailed[1]).toMatchObject({
-                type: "fruit",
-                error: metaError
-            });
-        });
-    });
-
-    it("should convert v1 property names to v2 names", async () => {
-        jest.spyOn(ProfileIO, "getAllProfileDirectories").mockReturnValueOnce(["zosmf"]);
-        jest.spyOn(ProfileIO, "getAllProfileNames")
-            .mockReturnValueOnce(["LPAR1"]);
-        jest.spyOn(ProfileIO, "readMetaFile")
-            .mockReturnValueOnce({ defaultProfile: "LPAR1" } as any);
-        jest.spyOn(ProfileIO, "readProfileFile")
-            .mockReturnValueOnce({
-                hostname: "should change to host",
-                username: "should change to user",
-                pass: "managed by A"
-            });
-
-        const convertResult = await ConfigBuilder.convert(__dirname);
-
-        expect(convertResult.config).toMatchObject({
-            profiles: {
-                zosmf_LPAR1: {
-                    type: "zosmf",
-                    properties: {
-                        host: "should change to host",
-                        user: "should change to user",
-                        password: "area51"
-                    },
-                    secure: ["password"]
-                }
-            },
-            defaults: {
-                zosmf: "zosmf_LPAR1"
-            },
-            autoStore: true
-        });
-        expect(Object.keys(convertResult.profilesConverted).length).toBe(1);
-        expect(convertResult.profilesFailed.length).toBe(0);
     });
 });

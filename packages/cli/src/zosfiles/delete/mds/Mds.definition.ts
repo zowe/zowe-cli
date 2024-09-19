@@ -19,6 +19,7 @@ const strings = (require("../../-strings-/en").default as typeof i18nTypings).DE
 export const MdsDefinition: ICommandDefinition = {
     name: "migrated-data-set",
     aliases: ["mds"],
+    summary: strings.SUMMARY,
     description: strings.DESCRIPTION,
     type: "command",
     handler: __dirname + "/Mds.handler",

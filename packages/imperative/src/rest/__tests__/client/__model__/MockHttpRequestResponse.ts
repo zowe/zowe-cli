@@ -10,7 +10,6 @@
 */
 
 import { EventEmitter } from "events";
-
 /**
  * Simulate http(s).clientRequest or http(s).clientRequest callback invoked
  * @export

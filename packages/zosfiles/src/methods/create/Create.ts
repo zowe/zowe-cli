@@ -91,7 +91,7 @@ export class Create {
 
                 const tPrimary = tempOptions.size.toString().match(/[0-9]+/g);
                 if (!(tPrimary === null || tPrimary === undefined)) {
-                    tempOptions.primary = +(tPrimary.join(""));
+                    tempOptions.primary = +tPrimary.join("");
 
                     if (tempOptions.secondary === null || tempOptions.secondary === undefined) {
                         const TEN_PERCENT = 0.10;
@@ -153,7 +153,7 @@ export class Create {
             headers.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
         }
 
-        const tempOptions = JSON.parse(JSON.stringify({ like: likeDataSetName, ...(options || {}) }));
+        const tempOptions = JSON.parse(JSON.stringify({ like: likeDataSetName, ...options || {} }));
         Create.dataSetValidateOptions(tempOptions);
 
         /*
@@ -234,20 +234,10 @@ export class Create {
                             tempOptions.blksize = tempOptions.lrecl;
                         }
 
-                        if(tempOptions.blksize  <= tempOptions.lrecl ){
+                        if(tempOptions.blksize <= tempOptions.lrecl ){
                             tempOptions.blksize = tempOptions.lrecl;
-                            if(tempOptions.recfm === null || tempOptions.recfm === undefined){
-                                tempOptions.recfm = "FB";
-                            }
-                            switch (tempOptions.recfm.toUpperCase()) {
-                                case "V":
-                                case "VB":
-                                case "VBS":
-                                case "VS":
-                                    tempOptions.blksize += 4;
-                                    break;
-                                default:
-                                    break;
+                            if (tempOptions.recfm && tempOptions.recfm.toUpperCase().startsWith("V")) {
+                                tempOptions.blksize += 4;
                             }
                         }
                         break;
@@ -315,31 +305,8 @@ export class Create {
                         break;
 
                     case "recfm":
-                    // zOSMF defaults to F if missing so mimic it's behavior
-                        if (tempOptions.recfm === null || tempOptions.recfm === undefined) {
-                            tempOptions.recfm = "F";
-                        }
+                    // no validation
 
-                        // F, V, or U are required; B, A, M, S, T or additional
-                        // VBA works on mainframe but not via zOSMF
-                        switch (tempOptions.recfm.toUpperCase()) {
-                            case "D":
-                            case "DB":
-                            case "DBS":
-                            case "DS":
-                            case "F":
-                            case "FB":
-                            case "FBS":
-                            case "FS":
-                            case "V":
-                            case "VB":
-                            case "VBS":
-                            case "VS":
-                            case "U":
-                                break;
-                            default:
-                                throw new ImperativeError({ msg: ZosFilesMessages.invalidRecfmOption.message + tempOptions.recfm });
-                        }
                         break;
 
                     // SMS class values
@@ -720,7 +687,7 @@ export class Create {
 
                     case "perms": {
                         const maxPerm = 777;
-                        if ((options.perms < 0) || (options.perms > maxPerm)) {
+                        if (options.perms < 0 || options.perms > maxPerm) {
                             throw new ImperativeError({
                                 msg: ZosFilesMessages.invalidPermsOption.message + options.perms
                             });

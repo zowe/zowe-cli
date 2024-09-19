@@ -36,13 +36,10 @@ export * from "./methods/list";
 export * from "./methods/mount";
 export * from "./methods/hRecall";
 export * from "./methods/rename";
+export * from "./methods/search";
 export * from "./methods/unmount";
 export * from "./methods/upload";
 export * from "./methods/utilities";
 
 export * from "./utils/ZosFilesAttributes";
 export * from "./utils/ZosFilesUtils";
-export * from "./doc/IOptionsFullResponse";
-export * from "./doc/IRestClientResponse";
-export * from "./doc/IOptions";
-export * from "./doc/types/ZosmfRestClientProperties";

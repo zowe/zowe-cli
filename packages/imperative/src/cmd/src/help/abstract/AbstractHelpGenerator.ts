@@ -125,7 +125,7 @@ export abstract class AbstractHelpGenerator implements IHelpGenerator {
     public getOptionAndAliasesString(option: ICommandOptionDefinition, caseSensitive?: boolean): string {
         let aliasString = "";
         if (!(option.aliases == null) && option.aliases.length > 0 &&
-            (option.aliases.join("").trim().length !== 0)) {
+            option.aliases.join("").trim().length !== 0) {
 
             const formattedOptAliases = [];
             aliasString += " | ";

@@ -31,19 +31,8 @@ const spawnSyncOutput = {
 };
 
 describe("runValidatePlugin", () => {
-    // eslint-disable-next-line deprecation/deprecation
-    const mainModule = process.mainModule;
-
-    beforeEach(() => {
-        // eslint-disable-next-line deprecation/deprecation
-        (process.mainModule as any) = {
-            filename: __filename
-        };
-    });
 
     afterEach(() => {
-        // eslint-disable-next-line deprecation/deprecation
-        process.mainModule = mainModule;
         mocks.spawnSync.mockReset();
     });
 

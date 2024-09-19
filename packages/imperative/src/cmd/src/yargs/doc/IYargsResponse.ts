@@ -16,7 +16,7 @@ import { ICommandResponse } from "../../../src/doc/response/response/ICommandRes
 export type ImperativeYargsCommandAction = "syntax validation" | "command handler invoked" | "help invoked";
 
 /**
- * The Yargs response is provided on the callback for a command definition defined through the Brightside
+ * The Yargs response is provided on the callback for a command definition defined through the Zowe
  * Yargs definer - when an execution of that command is complete - this response will be given to the callback.
  */
 export interface IYargsResponse {

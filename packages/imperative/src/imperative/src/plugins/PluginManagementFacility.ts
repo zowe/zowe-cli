@@ -121,7 +121,7 @@ export class PluginManagementFacility {
     private pluginIssues = PluginIssues.instance;
 
     /**
-     * A set of bright dependencies used by plugins. Each item in the
+     * A set of Zowe dependencies used by plugins. Each item in the
      * set contains the dependency's property name, and the the version
      * of that dependency.
      *
@@ -166,6 +166,7 @@ export class PluginManagementFacility {
         UpdateImpConfig.addCmdGrp({
             name: "plugins",
             type: "group",
+            summary: "Install and manage plug-ins",
             description: "Install and manage plug-ins.",
             children: [
                 // Done dynamically so that PMFConstants can be initialized
@@ -224,7 +225,6 @@ export class PluginManagementFacility {
      */
     public loadAllPluginCfgProps(): void {
         // Initialize the plugin.json file if needed
-        // TODO Skip creation of PMF_ROOT directory once it is deprecated by team config
         if (!existsSync(this.pmfConst.PLUGIN_JSON)) {
             if (!existsSync(this.pmfConst.PMF_ROOT)) {
                 this.impLogger.debug("Creating PMF_ROOT directory");
@@ -280,7 +280,7 @@ export class PluginManagementFacility {
                      * We must find the plugin name from within our known credMgr overrides.
                      */
                     const credMgrInfo = CredentialManagerOverride.getCredMgrInfoByDisplayName(overrideDispNm);
-                    if ( credMgrInfo === null) {
+                    if (credMgrInfo === null) {
                         credMgrIsUnknown = true;
                     } else {
                         // record the known plugin name that we found for this display name
@@ -520,42 +520,36 @@ export class PluginManagementFacility {
      * Compare the version of a plugin version property with a version property
      * of its base CLI.
      *
-     * If the versions do not intersect (according so semver rules), then a
-     * PluginIssue is recorded.
+     * If the versions do not satisfy the semver rules, then a PluginIssue is recorded.
      *
      * @param  pluginName - The name of the plugin.
-     *
      * @param  pluginVerPropNm - The name of the plugin property containing a version.
-     *
-     * @param  pluginVerVal - value of the plugin's version.
-     *
+     * @param  pluginVerRange - value of the plugin's version.
      * @param  cliVerPropNm - The name of the base CLI property containing a version.
-     *
-     * @param  cliVerVal - value of the base CLI's version.
-     *
+     * @param  cliVerValue - value of the base CLI's version.
      */
     private comparePluginVersionToCli(
         pluginName: string,
         pluginVerPropNm: string,
-        pluginVerVal: string,
+        pluginVerRange: string,
         cliVerPropNm: string,
-        cliVerVal: string
+        cliVerValue: string
     ): void {
         const cliCmdName = ImperativeConfig.instance.rootCommandName;
         try {
-            if (!this.semver.intersects(cliVerVal, pluginVerVal, false)) {
+            if (!this.semver.satisfies(cliVerValue, pluginVerRange)) {
                 this.pluginIssues.recordIssue(pluginName, IssueSeverity.WARNING,
-                    "The version value (" + pluginVerVal + ") of the plugin's '" +
+                    "The version value (" + pluginVerRange + ") of the plugin's '" +
                     pluginVerPropNm + "' property is incompatible with the version value (" +
-                    cliVerVal + ") of the " + cliCmdName + " command's '" +
+                    cliVerValue + ") of the " + cliCmdName + " command's '" +
                     cliVerPropNm + "' property."
                 );
             }
         } catch (semverExcept) {
             PluginIssues.instance.recordIssue(pluginName, IssueSeverity.WARNING,
                 "Failed to compare the version value (" +
-                pluginVerVal + ") of the plugin's '" + pluginVerPropNm +
-                "' property with the version value (" + cliVerVal +
+                pluginVerRange + ") of the plugin's '" + pluginVerPropNm +
+                "' property with the version value (" + cliVerValue +
                 ") of the " + cliCmdName + " command's '" + cliVerPropNm + "' property.\n" +
                 "This can occur when one of the specified values is not a valid version string.\n" +
                 "Reported reason = " + semverExcept.message
@@ -630,9 +624,8 @@ export class PluginManagementFacility {
          */
         if (pluginGroupNm.toLowerCase() === cmdTreeDef.name.toLowerCase()) {
             const conflictMessage = this.impLogger.error("The plugin named '%s' attempted to add a group of commands" +
-                " with the name '%s'" +
-                ". Your base application already contains a group with the name '%s'.", pluginGroupNm, pluginGroupDefinition.name,
-            cmdTreeDef.name);
+                " with the name '%s'. Your base application already contains a group with the name '%s'.",
+            pluginGroupNm, pluginGroupDefinition.name, cmdTreeDef.name);
             return { hasConflict: true, message: conflictMessage };
         }
 
@@ -640,9 +633,8 @@ export class PluginManagementFacility {
             for (const pluginAlias of pluginGroupDefinition.aliases) {
                 if (pluginAlias.toLowerCase() === cmdTreeDef.name.toLowerCase()) {
                     const conflictMessage = this.impLogger.error("The plugin named '%s' attempted to add a group of commands" +
-                        " with the alias '%s' " +
-                        ". Your base application already contains a group with the name '%s'.", pluginGroupNm, pluginAlias,
-                    cmdTreeDef.name);
+                        " with the alias '%s' . Your base application already contains a group with the name '%s'.",
+                    pluginGroupNm, pluginAlias, cmdTreeDef.name);
                     return { hasConflict: true, message: conflictMessage };
                 }
             }
@@ -655,8 +647,8 @@ export class PluginManagementFacility {
                 // if the plugin name matches an alias of the definition tree
                 if (pluginGroupNm.toLowerCase() === nextAliasToTest.toLowerCase()) {
                     const conflictMessage = this.impLogger.error("The plugin attempted to add a group of commands with the name '%s' " +
-                        ". Your base application already contains a group with an alias '%s'.", pluginGroupNm, nextAliasToTest,
-                    cmdTreeDef.name);
+                        ". Your base application already contains a group with an alias '%s'.",
+                    pluginGroupNm, nextAliasToTest, cmdTreeDef.name);
                     return { hasConflict: true, message: conflictMessage };
                 }
                 if (pluginGroupDefinition.aliases != null) {
@@ -664,9 +656,8 @@ export class PluginManagementFacility {
                         // if an alias of the plugin matches an alias of hte definition tree
                         if (pluginAlias.toLowerCase() === nextAliasToTest.toLowerCase()) {
                             const conflictMessage = this.impLogger.error("The plugin named '%s' attempted to add a " +
-                                "group of command with the alias '%s', which conflicts with " +
-                                "another alias of the same name for group '%s'.", pluginGroupDefinition.name, pluginAlias,
-                            cmdTreeDef.name);
+                                "group of command with the alias '%s', which conflicts with another alias of the same name for group '%s'.",
+                            pluginGroupDefinition.name, pluginAlias, cmdTreeDef.name);
                             return { hasConflict: true, message: conflictMessage };
                         }
                     }
@@ -888,19 +879,17 @@ export class PluginManagementFacility {
              */
             const knownCredMgrs: ICredentialManagerNameMap[] = CredentialManagerOverride.getKnownCredMgrs();
             overrideErrMsg += `"${settingNm}": "${CredentialManagerOverride.DEFAULT_CRED_MGR_NAME}" (default)`;
-            for ( let credMgrInx = 1; credMgrInx < knownCredMgrs.length; credMgrInx++) {
+            for (let credMgrInx = 1; credMgrInx < knownCredMgrs.length; credMgrInx++) {
                 overrideErrMsg += `\n"${settingNm}": "${knownCredMgrs[credMgrInx].credMgrDisplayName}" `;
 
-                if ( typeof(knownCredMgrs[credMgrInx].credMgrPluginName) !== "undefined") {
+                if (typeof knownCredMgrs[credMgrInx].credMgrPluginName !== "undefined") {
                     overrideErrMsg += `(supplied in CLI plugin ${knownCredMgrs[credMgrInx].credMgrPluginName}`;
                 }
-                if ( typeof(knownCredMgrs[credMgrInx].credMgrZEName) !== "undefined") {
+                if (typeof knownCredMgrs[credMgrInx].credMgrZEName !== "undefined") {
                     const punctuation = 8;
                     overrideErrMsg += "\n";
-                    for (let indent: number = 0; indent <
-                        settingNm.length + knownCredMgrs[credMgrInx].credMgrDisplayName.length + punctuation;
-                        indent++ )
-                    {
+                    const indentLength = settingNm.length + `${knownCredMgrs[credMgrInx].credMgrDisplayName}`.length + punctuation;
+                    for (let indent: number = 0; indent < indentLength; indent++) {
                         overrideErrMsg += " ";
                     }
                     overrideErrMsg += `and in ZE extension ${knownCredMgrs[credMgrInx].credMgrZEName}`;
@@ -936,8 +925,8 @@ export class PluginManagementFacility {
      * with those specified in the host CLI.
      *
      * Both range strings come from the package.json files of the plugin and the
-     * hosting CLI. We consider the version ranges to be compatible if the two
-     * ranges intersect. This should allow npm to download one common version
+     * hosting CLI. We consider the version ranges to be compatible if they satisfy
+     * the CLI version range. This should allow npm to download one common version
      * of core and of imperative to be owned by the base CLI and shared by the plugin.
      *
      * Any errors are recorded in PluginIssues.

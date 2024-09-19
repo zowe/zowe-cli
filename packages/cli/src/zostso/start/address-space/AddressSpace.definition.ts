@@ -15,6 +15,7 @@ import { TsoProfileConstants } from "@zowe/zos-tso-for-zowe-sdk";
 export const AddressSpaceDefinition: ICommandDefinition = {
     name: "address-space",
     aliases: ["as"],
+    summary: "Start a TSO address space",
     description: "Start a TSO address space, from which " +
         "you will receive a token (a.k.a 'servlet-key') for further address space interaction " +
         "(e.g. termination).",

@@ -1,47 +1,115 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Imperative Secure Tests Cli Profile Manager Default Credential Management Generic Failure Scenarios should fail if the Credential Manager is unable to retrieve a password 1`] = `
-"Command Preparation Failed:
-Unable to load the secure field \\"username\\" associated with the profile \\"profile-name-changed\\" of type \\"username-password\\".
-Error Details:
-Unable to load credentials.
-Could not find an entry in the credential vault for the following:
-  Service = example_with_profiles
-  Account = username-password_profile-name-changed_username
+exports[`Imperative Secure Tests Imperative Test CLI Secure Tests imperative-test-cli config import failure scenarios should fail to import if location is not specified 1`] = `
+"
+Syntax Error:
+Missing Positional Argument: location
+Argument Description: File path or URL to import from.
 
-Possible Causes:
-  This could have been caused by any manual removal of credentials from your vault.
+Example:
 
-Resolutions: 
-  Recreate the credentials in the vault for the particular service in the vault.
-  To recreate credentials, issue a 'profiles create' sub-command with the --ow flag.
+ - Import config from local file on disk:
 
+      $ imperative-test-cli config import ~/Downloads/zowe.config.json
+
+Use \\"imperative-test-cli config import --help\\" to view command description, usage, and options.
 "
 `;
 
-exports[`Imperative Secure Tests Cli Profile Manager Default Credential Management Generic Failure Scenarios should fail if the Credential Manager is unable to retrieve a password 2`] = `
-"Your default profile named profile-name of type username-password was successfully deleted.
-Because you deleted it, the default profile for type username-password has been cleared.
-To set a new default profile, run \\"zowe profiles set-default username-password <profileName>\\".
+exports[`Imperative Secure Tests Imperative Test CLI Secure Tests imperative-test-cli config list should list the configuration 1`] = `
+"profiles: 
+  secured: 
+    type:       secured
+    properties: 
+      info: 
+    secure: 
+      (empty array)
+  project_base: 
+    type:       base
+    properties: 
+    secure: 
+      - secret
+  global_base: 
+    type:       base
+    properties: 
+    secure: 
+      - secret
+defaults: 
+  secured: secured
+  base:    project_base
+autoStore: true
 "
 `;
 
-exports[`Imperative Secure Tests Cli Profile Manager Default Credential Management Generic Success Scenarios should update a password 1`] = `
-"
-Warning: The command 'profiles update username-password-profile' is deprecated.
-Recommended replacement: The 'config set' command
+exports[`Imperative Secure Tests Imperative Test CLI Secure Tests imperative-test-cli config list should list the configuration without showing secure values 1`] = `
+"profiles: 
+  secured: 
+    type:       secured
+    properties: 
+      info: 
+    secure: 
+      (empty array)
+  project_base: 
+    type:       base
+    properties: 
+      secret: (secure value)
+    secure: 
+      - secret
+  global_base: 
+    type:       base
+    properties: 
+    secure: 
+      - secret
+defaults: 
+  secured: secured
+  base:    project_base
+autoStore: true
 "
 `;
 
-exports[`Imperative Secure Tests Cli Profile Manager Default Credential Management Generic Success Scenarios should update a password 2`] = `
-"Your default profile named profile-name of type username-password was successfully deleted.
-Because you deleted it, the default profile for type username-password has been cleared.
-To set a new default profile, run \\"zowe profiles set-default username-password <profileName>\\".
+exports[`Imperative Secure Tests Imperative Test CLI Secure Tests imperative-test-cli config list should list the defaults configuration property 1`] = `
+"secured: secured
+base:    project_base
 "
 `;
 
-exports[`Imperative Secure Tests imperative-test-cli config profiles should list profiles 1`] = `
+exports[`Imperative Secure Tests Imperative Test CLI Secure Tests imperative-test-cli config list should list the profiles configuration property 1`] = `
+"secured: 
+  type:       secured
+  properties: 
+    info: 
+  secure: 
+    (empty array)
+project_base: 
+  type:       base
+  properties: 
+  secure: 
+    - secret
+global_base: 
+  type:       base
+  properties: 
+  secure: 
+    - secret
+"
+`;
+
+exports[`Imperative Secure Tests Imperative Test CLI Secure Tests imperative-test-cli config list should list the root level property names only 1 1`] = `
+"profiles
+defaults
+autoStore
+"
+`;
+
+exports[`Imperative Secure Tests Imperative Test CLI Secure Tests imperative-test-cli config list should list the root level property names only 2 1`] = `
+"profiles
+defaults
+autoStore
+"
+`;
+
+exports[`Imperative Secure Tests Imperative Test CLI Secure Tests imperative-test-cli config profiles should list profiles 1`] = `
 "secured
-base
+project_base
+global_base
 "
 `;

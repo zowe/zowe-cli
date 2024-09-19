@@ -26,7 +26,7 @@ export default class Handler extends ZosmfBaseHandler {
         let usedOptionalParms: boolean = false;
         let arrayOfSystemNickNames: string[];
 
-        if (!(commandParameters.arguments.systemNickNames == null)) {
+        if (commandParameters.arguments.systemNickNames != null) {
             arrayOfSystemNickNames = commandParameters.arguments.systemNickNames
                 .split(",")
                 .map((systemName: string) => {
@@ -46,9 +46,7 @@ export default class Handler extends ZosmfBaseHandler {
         );
 
         for (const property in provisionOptionalParams) {
-            if (
-                !(provisionOptionalParams[property as keyof IProvisionOptionals] == null)
-            ) {
+            if ( provisionOptionalParams[property as keyof IProvisionOptionals] != null ) {
                 usedOptionalParms = true;
             }
         }

@@ -13,7 +13,7 @@ jest.mock("net");
 jest.mock("@zowe/imperative");
 import * as net from "net";
 import * as stream from "stream";
-import getStream = require("get-stream");
+import { text } from "stream/consumers";
 import { DaemonClient } from "../../../src/daemon/DaemonClient";
 import { IDaemonResponse, Imperative, IO } from "@zowe/imperative";
 
@@ -338,7 +338,7 @@ describe("DaemonClient tests", () => {
             client.once("readable", () => resolve(client.read()));
         });
         const stdinStream = (daemonClient as any).createStdinStream(firstChunk, alphabet.length);
-        expect(await getStream(stdinStream)).toBe(alphabet);
+        expect(await text(stdinStream)).toBe(alphabet);
     });
 
     it("should not process data when received from another user", () => {

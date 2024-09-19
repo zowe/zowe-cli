@@ -2,6 +2,34 @@
 
 All notable changes to the Zowe CLI test utils package will be documented in this file.
 
+## Recent Changes
+
+- Update: Final prerelease
+
+## `8.0.0-next.202408271330`
+
+- BugFix: Removed obsolete V1 `profiles` property from the parameters object returned by `mockHandlerParameters` method.
+
+## `8.0.0-next.202408131445`
+
+- Update: See `7.28.3` for details
+
+## `8.0.0-next.202407262216`
+
+- Update: See `7.28.2` for details
+
+## `8.0.0-next.202407021516`
+
+- BugFix: Updated dependencies for technical currency [#2188](https://github.com/zowe/zowe-cli/pull/2188)
+
+## `8.0.0-next.202402261705`
+
+- BugFix: Updated dependencies for technical currency. [#2061](https://github.com/zowe/zowe-cli/pull/2061)
+
+## `8.0.0-next.202311132045`
+
+- Major: First major version bump for V3
+
 ## `7.28.3`
 
 - BugFix: Refactored code to reduce the use of deprecated functions to prepare for upcoming Node.js 22 support. [#2191](https://github.com/zowe/zowe-cli/issues/2191)

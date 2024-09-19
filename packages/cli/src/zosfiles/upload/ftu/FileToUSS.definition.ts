@@ -25,6 +25,7 @@ const strings = (require("../../-strings-/en").default as typeof i18nTypings).UP
 export const FileToUSSDefinition: ICommandDefinition = {
     name: "file-to-uss",
     aliases: ["ftu"],
+    summary: strings.SUMMARY,
     description: strings.DESCRIPTION,
     type: "command",
     handler: path.join(__dirname, "/FileToUSS.handler"),

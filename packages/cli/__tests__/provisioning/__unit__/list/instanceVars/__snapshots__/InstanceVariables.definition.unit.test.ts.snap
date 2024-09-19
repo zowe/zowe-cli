@@ -27,7 +27,7 @@ Object {
       "zosmf",
     ],
   },
-  "summary": "List Instance Variables and Values.",
+  "summary": "List Instance Variables and Values",
   "type": "command",
 }
 `;

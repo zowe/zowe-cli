@@ -13,7 +13,6 @@ import { Argv } from "yargs";
 import { ICommandDefinition } from "../../doc/ICommandDefinition";
 import { GroupCommandYargs } from "../GroupCommandYargs";
 import { ICommandResponseParms } from "../../doc/response/parms/ICommandResponseParms";
-import { IProfileManagerFactory } from "../../../../profiles";
 import { IHelpGeneratorFactory } from "../../help/doc/IHelpGeneratorFactory";
 
 /**
@@ -48,12 +47,6 @@ export interface IYargsParms {
      * @memberof IYargsParms
      */
     helpGeneratorFactory: IHelpGeneratorFactory;
-    /**
-     * The profile manager factory to use in this CLI profile management.
-     * @type {AbstractProfileManagerFactory<any>}
-     * @memberof IYargsParms
-     */
-    profileManagerFactory: IProfileManagerFactory<any>;
     /**
      * Optionally override the experimental command help text block.
      * Used to propagate the user's configuration down to different yargs/cmd services.

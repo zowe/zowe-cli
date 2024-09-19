@@ -17,20 +17,16 @@ import { ICommandHandler } from "./doc/handler/ICommandHandler";
 import { couldNotInstantiateCommandHandler, unexpectedCommandError } from "../../messages";
 import { SharedOptions } from "./utils/SharedOptions";
 import { IImperativeError, ImperativeError } from "../../error";
-import { IProfileManagerFactory, ProfileUtils } from "../../profiles";
 import { SyntaxValidator } from "./syntax/SyntaxValidator";
-import { CommandProfileLoader } from "./profiles/CommandProfileLoader";
-import { ICommandProfileTypeConfiguration } from "./doc/profiles/definition/ICommandProfileTypeConfiguration";
 import { IHelpGenerator } from "./help/doc/IHelpGenerator";
-import { ICommandPrepared } from "./doc/response/response/ICommandPrepared";
 import { CommandResponse } from "./response/CommandResponse";
 import { ICommandResponse } from "./doc/response/response/ICommandResponse";
-import { Logger, LoggerUtils } from "../../logger";
+import { Logger } from "../../logger";
 import { IInvokeCommandParms } from "./doc/parms/IInvokeCommandParms";
 import { ICommandProcessorParms } from "./doc/processor/ICommandProcessorParms";
 import { ImperativeExpect } from "../../expect";
 import { inspect } from "util";
-import { EnvFileUtils, ImperativeConfig, NextVerFeatures, TextUtils } from "../../utilities";
+import { EnvFileUtils, ImperativeConfig, TextUtils } from "../../utilities";
 import * as nodePath from "path";
 import * as os from "os";
 import * as stream from "stream";
@@ -41,7 +37,6 @@ import { Constants } from "../../constants";
 import { ICommandArguments } from "./doc/args/ICommandArguments";
 import { CliUtils } from "../../utilities/src/CliUtils";
 import { WebHelpManager } from "./help/WebHelpManager";
-import { ICommandProfile } from "./doc/profiles/definition/ICommandProfile";
 import { Config } from "../../config/src/Config";
 import { ConfigUtils } from "../../config/src/ConfigUtils";
 import { ConfigConstants } from "../../config/src/ConfigConstants";
@@ -61,13 +56,6 @@ interface IResolvedArgsResponse {
      * @memberof IResolvedArgsResponse
      */
     commandValues?: ICommandArguments;
-
-    /**
-     * Whether we're using old profiles or config
-     * @type {(`v1` | `v2`)}
-     * @memberof IResolvedArgsResponse
-     */
-    profileVersion?: `v1` | `v2`;
 
     /**
      * The profiles that are required
@@ -164,13 +152,6 @@ export class CommandProcessor {
      */
     private mHelpGenerator: IHelpGenerator;
     /**
-     * The profile manager to use when loading profiles for commands
-     * @private
-     * @type {IProfileManagerFactory<ICommandProfileTypeConfiguration>}
-     * @memberof CommandProcessor
-     */
-    private mProfileManagerFactory: IProfileManagerFactory<ICommandProfileTypeConfiguration>;
-    /**
      * Imperative Logger instance for logging from the command processor.
      * @private
      * @type {Logger}
@@ -201,11 +182,9 @@ export class CommandProcessor {
         ImperativeExpect.toNotBeNullOrUndefined(params, `${CommandProcessor.ERROR_TAG} No parameters supplied to constructor.`);
         this.mDefinition = params.definition;
         ImperativeExpect.toNotBeNullOrUndefined(this.mDefinition, `${CommandProcessor.ERROR_TAG} No command definition supplied.`);
-        this.mFullDefinition = (params.fullDefinition == null) ? this.mDefinition : params.fullDefinition;
+        this.mFullDefinition = params.fullDefinition == null ? this.mDefinition : params.fullDefinition;
         this.mHelpGenerator = params.helpGenerator;
         ImperativeExpect.toNotBeNullOrUndefined(this.mHelpGenerator, `${CommandProcessor.ERROR_TAG} No help generator supplied.`);
-        this.mProfileManagerFactory = params.profileManagerFactory;
-        ImperativeExpect.toNotBeNullOrUndefined(this.mProfileManagerFactory, `${CommandProcessor.ERROR_TAG} No profile manager factory supplied.`);
         if (this.mDefinition.type === "command" && this.mDefinition.chainedHandlers == null) {
             ImperativeExpect.keysToBeDefinedAndNonBlank(this.mDefinition, ["handler"], `${CommandProcessor.ERROR_TAG} ` +
                 `The definition supplied is of type "command", ` +
@@ -284,18 +263,8 @@ export class CommandProcessor {
     }
 
     /**
-     * Accessor for the profile manager factory in use for this command processor.
-     * @readonly
-     * @type {IProfileManagerFactory<ICommandProfileTypeConfiguration>}
-     * @memberof CommandProcessor
-     */
-    get profileFactory(): IProfileManagerFactory<ICommandProfileTypeConfiguration> {
-        return this.mProfileManagerFactory;
-    }
-
-    /**
      * Obtain a copy of the command definition
-     * @return {ICommandDefinition}: The Bright Commands definition document.
+     * @return {ICommandDefinition}: The Zowe Commands definition document.
      */
     get definition(): ICommandDefinition {
         return JSON.parse(JSON.stringify(this.mDefinition));
@@ -303,7 +272,7 @@ export class CommandProcessor {
 
     /**
      * Obtain a copy of the command definition
-     * @return {ICommandDefinition}: The Bright Commands definition document.
+     * @return {ICommandDefinition}: The Zowe Commands definition document.
      */
     get fullDefinition(): ICommandDefinition {
         return JSON.parse(JSON.stringify(this.mFullDefinition));
@@ -374,7 +343,7 @@ export class CommandProcessor {
             `${CommandProcessor.ERROR_TAG} invoke(): No parameters supplied.`);
         ImperativeExpect.toNotBeNullOrUndefined(params.arguments,
             `${CommandProcessor.ERROR_TAG} invoke(): No command arguments supplied.`);
-        params.responseFormat = (params.responseFormat == null) ? "default" : params.responseFormat;
+        params.responseFormat = params.responseFormat == null ? "default" : params.responseFormat;
         const responseOptions: string[] = ["default", "json"];
         ImperativeExpect.toBeOneOf(params.responseFormat, responseOptions,
             `${CommandProcessor.ERROR_TAG} invoke(): Response format must be one of the following: ${responseOptions.join(",")}`);
@@ -436,7 +405,7 @@ export class CommandProcessor {
         prepareResponse.succeeded();
 
         // Prepare for command processing - load profiles, stdin, etc.
-        let prepared: ICommandPrepared;
+        let preparedArgs: ICommandArguments;
         try {
             // Build the response object, base args object, and the entire array of options for this command
             // Assume that the command succeed, it will be marked otherwise under the appropriate failure conditions
@@ -469,7 +438,7 @@ export class CommandProcessor {
             }
 
             this.log.info(`Preparing (loading profiles, reading stdin, etc.) execution of "${this.definition.name}" command...`);
-            prepared = await this.prepare(prepareResponse, params.arguments);
+            preparedArgs = await this.prepare(prepareResponse, params.arguments);
         } catch (prepareErr) {
 
             // Indicate that the command has failed
@@ -502,7 +471,7 @@ export class CommandProcessor {
         }
 
         // Recreate the response object with the update params from prepare.
-        params.arguments = prepared.args;
+        params.arguments = preparedArgs;
         const response = this.constructResponseObject(params);
         response.succeeded();
 
@@ -515,37 +484,35 @@ export class CommandProcessor {
                         // convert if positional is an array designated by "..."
                         const positionalName = positional.name.replace("...", "");
                         // check if value provided
-                        if (prepared.args[positionalName] != null) {
+                        if (preparedArgs[positionalName] != null) {
                             // string processing
-                            if (typeof prepared.args[positionalName] === "string" &&
-                                prepared.args[positionalName].toUpperCase() === this.promptPhrase.toUpperCase()) {
+                            if (typeof preparedArgs[positionalName] === "string" &&
+                                preparedArgs[positionalName].toUpperCase() === this.promptPhrase.toUpperCase()) {
                                 // prompt has been requested for a positional
                                 this.log.debug("Prompting for positional %s which was requested by passing the value %s",
                                     positionalName, this.promptPhrase);
-                                prepared.args[positionalName] =
+                                preparedArgs[positionalName] =
                                     await response.console.prompt(`"${positionalName}" Description: ` +
                                         `${positional.description}\nPlease enter "${positionalName}":`,
                                     { hideText: true, secToWait: 0 });
                             }
                             // array processing
-                            else {
-                                if ((prepared.args[positionalName] != null &&
-                                    (Array.isArray(prepared.args[positionalName])) &&
-                                    prepared.args[positionalName][0] != null &&
-                                    typeof prepared.args[positionalName][0] === "string" &&
-                                    (prepared.args[positionalName][0].toUpperCase() === this.promptPhrase.toUpperCase()))) {
-                                    // prompt has been requested for a positional
-                                    this.log.debug("Prompting for positional %s which was requested by passing the value %s",
-                                        prepared.args[positionalName][0], this.promptPhrase);
-                                    prepared.args[positionalName][0] =
-                                        await response.console.prompt(`"${positionalName}" Description: ` +
-                                            `${positional.description}\nPlease enter "${positionalName}":`,
-                                        { hideText: true, secToWait: 0 });
-                                    // prompting enters as string but need to place it in array
+                            else if (preparedArgs[positionalName] != null &&
+                                Array.isArray(preparedArgs[positionalName]) &&
+                                preparedArgs[positionalName][0] != null &&
+                                typeof preparedArgs[positionalName][0] === "string" &&
+                                preparedArgs[positionalName][0].toUpperCase() === this.promptPhrase.toUpperCase()) {
+                                // prompt has been requested for a positional
+                                this.log.debug("Prompting for positional %s which was requested by passing the value %s",
+                                    preparedArgs[positionalName][0], this.promptPhrase);
+                                preparedArgs[positionalName][0] =
+                                    await response.console.prompt(`"${positionalName}" Description: ` +
+                                        `${positional.description}\nPlease enter "${positionalName}":`,
+                                    { hideText: true, secToWait: 0 });
+                                // prompting enters as string but need to place it in array
 
-                                    const array = prepared.args[positionalName][0].split(" ");
-                                    prepared.args[positionalName] = array;
-                                }
+                                const array = preparedArgs[positionalName][0].split(" ");
+                                preparedArgs[positionalName] = array;
                             }
                         }
                     }
@@ -554,49 +521,47 @@ export class CommandProcessor {
                 if (this.definition.options != null && this.definition.options.length > 0) {
                     for (const option of this.definition.options) {
                         // check if value provided
-                        if (prepared.args[option.name] != null) {
+                        if (preparedArgs[option.name] != null) {
                             // string processing
-                            if (typeof prepared.args[option.name] === "string" &&
-                                prepared.args[option.name].toUpperCase() === this.promptPhrase.toUpperCase()) {
+                            if (typeof preparedArgs[option.name] === "string" &&
+                                preparedArgs[option.name].toUpperCase() === this.promptPhrase.toUpperCase()) {
                                 // prompt has been requested for an --option
                                 this.log.debug("Prompting for option %s which was requested by passing the value %s",
                                     option.name, this.promptPhrase);
-                                prepared.args[option.name] =
+                                preparedArgs[option.name] =
                                     await response.console.prompt(`"${option.name}" Description: ` +
                                         `${option.description}\nPlease enter "${option.name}":`,
                                     { hideText: true, secToWait: 0 });
                                 const camelCase = CliUtils.getOptionFormat(option.name).camelCase;
-                                prepared.args[camelCase] = prepared.args[option.name];
+                                preparedArgs[camelCase] = preparedArgs[option.name];
                                 if (option.aliases != null) {
                                     for (const alias of option.aliases) {
                                         // set each alias of the args object as well
-                                        prepared.args[alias] = prepared.args[option.name];
+                                        preparedArgs[alias] = preparedArgs[option.name];
                                     }
                                 }
                             }
                             // array processing
-                            else {
-                                if (((Array.isArray(prepared.args[option.name])) &&
-                                    prepared.args[option.name][0] != null &&
-                                    typeof prepared.args[option.name][0] === "string" &&
-                                    (prepared.args[option.name][0].toUpperCase() === this.promptPhrase.toUpperCase()))) {
-                                    // prompt has been requested for an --option
-                                    this.log.debug("Prompting for option %s which was requested by passing the value %s",
-                                        option.name, this.promptPhrase);
-                                    prepared.args[option.name][0] =
-                                        await response.console.prompt(`"${option.name}" Description: ` +
-                                            `${option.description}\nPlease enter "${option.name}":`,
-                                        { hideText: true, secToWait: 0 });
+                            else if (Array.isArray(preparedArgs[option.name]) &&
+                                preparedArgs[option.name][0] != null &&
+                                typeof preparedArgs[option.name][0] === "string" &&
+                                preparedArgs[option.name][0].toUpperCase() === this.promptPhrase.toUpperCase()) {
+                                // prompt has been requested for an --option
+                                this.log.debug("Prompting for option %s which was requested by passing the value %s",
+                                    option.name, this.promptPhrase);
+                                preparedArgs[option.name][0] =
+                                    await response.console.prompt(`"${option.name}" Description: ` +
+                                        `${option.description}\nPlease enter "${option.name}":`,
+                                    { hideText: true, secToWait: 0 });
 
-                                    const array = prepared.args[option.name][0].split(" ");
-                                    prepared.args[option.name] = array;
-                                    const camelCase = CliUtils.getOptionFormat(option.name).camelCase;
-                                    prepared.args[camelCase] = prepared.args[option.name];
-                                    if (option.aliases != null) {
-                                        for (const alias of option.aliases) {
-                                            // set each alias of the args object as well
-                                            prepared.args[alias] = prepared.args[option.name];
-                                        }
+                                const array = preparedArgs[option.name][0].split(" ");
+                                preparedArgs[option.name] = array;
+                                const camelCase = CliUtils.getOptionFormat(option.name).camelCase;
+                                preparedArgs[camelCase] = preparedArgs[option.name];
+                                if (option.aliases != null) {
+                                    for (const alias of option.aliases) {
+                                        // set each alias of the args object as well
+                                        preparedArgs[alias] = preparedArgs[option.name];
                                     }
                                 }
                             }
@@ -622,7 +587,7 @@ export class CommandProcessor {
         // Validate that the syntax is correct for the command
         let validator: ICommandValidatorResponse;
         try {
-            validator = await this.validate(prepared.args, response);
+            validator = await this.validate(preparedArgs, response);
         } catch (e) {
             const errMsg: string = `Unexpected syntax validation error`;
             const errReason: string = errMsg + ": " + e.message;
@@ -657,9 +622,8 @@ export class CommandProcessor {
 
             const handlerParms: IHandlerParameters = {
                 response,
-                profiles: prepared.profiles,
-                arguments: prepared.args,
-                positionals: prepared.args._,
+                arguments: preparedArgs,
+                positionals: preparedArgs._,
                 definition: this.definition,
                 fullDefinition: this.fullDefinition,
                 stdin: this.getStdinStream()
@@ -723,16 +687,15 @@ export class CommandProcessor {
                 try {
                     await handler.process({
                         response: chainedResponse,
-                        profiles: prepared.profiles,
                         arguments: ChainedHandlerService.getArguments(
                             this.mCommandRootName,
                             this.definition.chainedHandlers,
                             chainedHandlerIndex,
                             chainedResponses,
-                            prepared.args,
+                            preparedArgs,
                             this.log
                         ),
-                        positionals: prepared.args._,
+                        positionals: preparedArgs._,
                         definition: this.definition,
                         fullDefinition: this.fullDefinition,
                         stdin: this.getStdinStream(),
@@ -787,21 +750,12 @@ export class CommandProcessor {
             showSecure = true;
         }
 
-        // if config exists and a layer exists, use config
-        let useConfig = false;
-        this.mConfig?.layers.forEach((layer) => {
-            if (layer.exists) {
-                useConfig = true;
-            }
-        });
-
         /**
          * Begin building response object
          */
         const showInputsOnly: IResolvedArgsResponse =
         {
-            commandValues: {} as ICommandArguments,
-            profileVersion: useConfig ? `v2` : `v1`,
+            commandValues: {} as ICommandArguments
         };
 
         /**
@@ -814,30 +768,21 @@ export class CommandProcessor {
         const configSecureProps: string[] = [];
 
         /**
-         * If using config, then we need to get the secure properties from the config
+         * Need to get the secure properties from the config
          */
-        if (useConfig) {
-
-            const combinedProfiles = [ ...showInputsOnly.requiredProfiles ?? [], ...showInputsOnly.optionalProfiles ?? [] ];
-            combinedProfiles.forEach((profile) => {
-                const name = ConfigUtils.getActiveProfileName(profile, commandParameters.arguments); // get profile name
-                const props = this.mConfig.api.secure.securePropsForProfile(name); // get secure props
-                for (const propName of props) {
-                    configSecureProps.push(...Object.values(CliUtils.getOptionFormat(propName))); // add multiple cases to list
-                }
-            });
-        }
+        const combinedProfiles = [ ...showInputsOnly.requiredProfiles ?? [], ...showInputsOnly.optionalProfiles ?? [] ];
+        combinedProfiles.forEach((profile) => {
+            const name = ConfigUtils.getActiveProfileName(profile, commandParameters.arguments); // get profile name
+            const props = this.mConfig.api.secure.securePropsForProfile(name); // get secure props
+            for (const propName of props) {
+                configSecureProps.push(...Object.values(CliUtils.getOptionFormat(propName))); // add multiple cases to list
+            }
+        });
 
         /**
-         * Determine if Zowe V2 Config is in effect.  If it is, then we will construct
-         * a Set of secure fields from its API.  If it is not, then we will construct
-         * a Set of secure fields from the `ConnectionPropsForSessCfg` defaults.
+         * Construct a Set of secure fields from Zowe Team Config API.
          */
-        const secureInputs: Set<string> =
-        useConfig ?
-            new Set([...configSecureProps]) :
-            new Set([...LoggerUtils.CENSORED_OPTIONS, ...LoggerUtils.SECURE_PROMPT_OPTIONS]);
-
+        const secureInputs: Set<string> = new Set([...configSecureProps]);
         let censored = false;
 
         /**
@@ -860,15 +805,11 @@ export class CommandProcessor {
         /**
          * Add profile location info
          */
-        if (useConfig) {
-            this.mConfig?.layers.forEach((layer) => {
-                if (layer.exists) {
-                    showInputsOnly.locations.push(layer.path);
-                }
-            });
-        } else {
-            showInputsOnly.locations.push(nodePath.normalize(ImperativeConfig.instance.cliHome));
-        }
+        this.mConfig?.layers.forEach((layer) => {
+            if (layer.exists) {
+                showInputsOnly.locations.push(layer.path);
+            }
+        });
 
         /**
          * Show warning if we censored output and we were not instructed to show secure values
@@ -931,15 +872,15 @@ export class CommandProcessor {
      * the command handler is invoked.
      * @param {CommandResponse} response: The response object for command messaging.
      * @param {yargs.Arguments} commandArguments: The arguments specified on the command line.
-     * @return {Promise<CommandResponse>}: Promise to fulfill when complete.
+     * @return {Promise<ICommandArguments>}: Promise to fulfill when complete.
      */
-    private async prepare(response: CommandResponse, commandArguments: Arguments): Promise<ICommandPrepared> {
+    private async prepare(response: CommandResponse, commandArguments: Arguments): Promise<ICommandArguments> {
         // Construct the imperative arguments - replacement/wrapper for Yargs to insulate handlers against any
         // changes made to Yargs
         let args: ICommandArguments = CliUtils.buildBaseArgs(commandArguments);
         this.log.trace(`Base set of arguments from Yargs parse:\n${inspect(args)}`);
-        let allOpts = (this.definition.options != null) ? this.definition.options : [];
-        allOpts = (this.definition.positionals != null) ? allOpts.concat(this.definition.positionals) : allOpts;
+        let allOpts = this.definition.options != null ? this.definition.options : [];
+        allOpts = this.definition.positionals != null ? allOpts.concat(this.definition.positionals) : allOpts;
         this.log.trace(`Set of options and positionals defined on the command:\n${inspect(allOpts)}`);
 
         // Extract options supplied via environment variables - we must do this before we load profiles to
@@ -954,101 +895,11 @@ export class CommandProcessor {
         this.log.trace(`Reading stdin for "${this.definition.name}" command...`);
         await SharedOptions.readStdinIfRequested(commandArguments, response, this.definition.type);
 
-        // Build a list of all profile types - this will help us search the CLI
-        // options for profiles specified by the user
-        let allTypes: string[] = [];
-        if (this.definition.profile != null) {
-            if (this.definition.profile.required != null)
-                allTypes = allTypes.concat(this.definition.profile.required);
-            if (this.definition.profile.optional != null)
-                allTypes = allTypes.concat(this.definition.profile.optional);
-        }
-
         // Build an object that contains all the options loaded from config
-        const fulfilled: string[] = [];
-        let fromCnfg: any = {};
         if (this.mConfig != null) {
-            for (const profileType of allTypes) {
-                const opt = ProfileUtils.getProfileOptionAndAlias(profileType)[0];
-                // If the config contains the requested profiles, then "remember"
-                // that this type has been fulfilled - so that we do NOT load from
-                // the traditional profile location
-                const profileTypePrefix = profileType + "_";
-                let p: any = {};
-                if (args[opt] != null && this.mConfig.api.profiles.exists(args[opt])) {
-                    fulfilled.push(profileType);
-                    p = this.mConfig.api.profiles.get(args[opt]);
-                } else if (args[opt] != null && !args[opt].startsWith(profileTypePrefix) &&
-                    this.mConfig.api.profiles.exists(profileTypePrefix + args[opt])) {
-                    fulfilled.push(profileType);
-                    p = this.mConfig.api.profiles.get(profileTypePrefix + args[opt]);
-                } else if (args[opt] == null &&
-                    this.mConfig.properties.defaults[profileType] != null &&
-                    this.mConfig.api.profiles.exists(this.mConfig.properties.defaults[profileType])) {
-                    fulfilled.push(profileType);
-                    p = this.mConfig.api.profiles.defaultGet(profileType);
-                }
-                fromCnfg = { ...p, ...fromCnfg };
-            }
-        }
-
-        // Convert each property extracted from the config to the correct yargs
-        // style cases for the command handler (kebab and camel)
-        allOpts.forEach((opt) => {
-            const cases = CliUtils.getOptionFormat(opt.name);
-            const profileKebab = fromCnfg[cases.kebabCase];
-            const profileCamel = fromCnfg[cases.camelCase];
-
-            if ((profileCamel !== undefined || profileKebab !== undefined) &&
-                (!Object.prototype.hasOwnProperty.call(args, cases.kebabCase) &&
-                 !Object.prototype.hasOwnProperty.call(args, cases.camelCase))) {
-
-                // If both case properties are present in the profile, use the one that matches
-                // the option name explicitly
-                const value = (profileKebab !== undefined && profileCamel !== undefined) ?
-                    ((opt.name === cases.kebabCase) ? profileKebab : profileCamel) :
-                    ((profileKebab !== undefined) ? profileKebab : profileCamel);
-                const keys = CliUtils.setOptionValue(opt.name,
-                    ("aliases" in opt) ? opt.aliases : [],
-                    value
-                );
-                fromCnfg = { ...fromCnfg, ...keys };
-            }
-        });
-
-        // Merge the arguments from the config into the CLI args
-        this.log.trace(`Arguments extracted from the config:\n${inspect(fromCnfg)}`);
-        args = CliUtils.mergeArguments(fromCnfg, args);
-
-        // Load all profiles for the command
-        this.log.trace(`Loading profiles for "${this.definition.name}" command. ` +
-            `Profile definitions: ${inspect(this.definition.profile, { depth: null })}`);
-
-        const profiles = await CommandProfileLoader.loader({
-            commandDefinition: this.definition,
-            profileManagerFactory: this.profileFactory
-        }).loadProfiles(args);
-        this.log.trace(`Profiles loaded for "${this.definition.name}" command:\n${inspect(profiles, { depth: null })}`);
-
-        // If we have profiles listed on the command definition (the would be loaded already)
-        // we can extract values from them for options arguments
-        if (this.definition.profile != null) {
-
-            // "fake out" the cli util to only populate options for profiles
-            // that have not been fulfilled by the config
-            const p: ICommandProfile = {
-                required: [],
-                optional: [],
-                suppressOptions: this.definition.profile.suppressOptions
-            };
-
-            if (this.definition.profile.required)
-                p.required = this.definition.profile.required.filter(type => fulfilled.indexOf(type) < 0);
-            if (this.definition.profile.optional)
-                p.optional = this.definition.profile.optional.filter(type => fulfilled.indexOf(type) < 0);
-
-            const profArgs = CliUtils.getOptValueFromProfiles(profiles, p, allOpts);
-            this.log.trace(`Arguments extract from the profile:\n${inspect(profArgs)}`);
+            // Merge the arguments from the config into the CLI args
+            const profArgs = CliUtils.getOptValuesFromConfig(this.mConfig, this.definition.profile, args, allOpts);
+            this.log.trace(`Arguments extracted from the config:\n${inspect(profArgs)}`);
             args = CliUtils.mergeArguments(profArgs, args);
         }
 
@@ -1057,7 +908,7 @@ export class CommandProcessor {
         for (const option of allOpts) {
             if (option.defaultValue != null && args[option.name] == null && !args[Constants.DISABLE_DEFAULTS_OPTION]) {
                 const defaultedArgs = CliUtils.setOptionValue(option.name,
-                    ("aliases" in option) ? option.aliases : [],
+                    "aliases" in option ? option.aliases : [],
                     option.defaultValue
                 );
                 args = CliUtils.mergeArguments(args, defaultedArgs);
@@ -1070,7 +921,7 @@ export class CommandProcessor {
 
         // Log for debugging
         this.log.trace(`Full argument object constructed:\n${inspect(args)}`);
-        return { profiles, args };
+        return args;
     }
 
     /**
@@ -1097,7 +948,7 @@ export class CommandProcessor {
         return new CommandResponse({
             definition: this.definition,
             args: params.arguments,
-            silent: (params.silent == null) ? false : params.silent,
+            silent: params.silent == null ? false : params.silent,
             responseFormat: params.responseFormat,
             stream: ImperativeConfig.instance.daemonContext?.stream
         });
@@ -1212,37 +1063,28 @@ export class CommandProcessor {
             response.setError(handlerErr.details);
 
             // display primary user message
-            // TODO:V3_ERR_FORMAT - Don't test for env variable in V3
-            if (NextVerFeatures.useV3ErrFormat()) {
-                response.console.error(TextUtils.chalk.red(
-                    "Unable to perform this operation due to the following problem."
-                ));
-                // Remove http status in 'message', since the same information was placed in additionalDetails.
-                response.console.error(TextUtils.chalk.red(
-                    handlerErr.message.replace(/Rest API failure with HTTP\(S\) status \d\d\d\n/, "")
-                ));
-            } else { // TODO:V3_ERR_FORMAT - Remove in V3
-                response.console.errorHeader("Command Error");
-                response.console.error(Buffer.from(handlerErr.message + "\n"));
-            }
+            response.console.error(TextUtils.chalk.red(
+                "Unable to perform this operation due to the following problem."
+            ));
+            // Remove http status in 'message', since the same information was placed in additionalDetails.
+            response.console.error(TextUtils.chalk.red(
+                handlerErr.message.replace(/Rest API failure with HTTP\(S\) status \d\d\d\n/, "")
+            ));
 
             // display server response
-            // TODO:V3_ERR_FORMAT - Don't test for env variable in V3
-            if (NextVerFeatures.useV3ErrFormat()) {
-                const responseTitle = "Response From Service";
-                if (handlerErr.causeErrors) {
-                    try {
-                        const causeErrorsJson = JSON.parse(handlerErr.causeErrors);
+            const responseTitle = "Response From Service";
+            if (handlerErr.causeErrors) {
+                try {
+                    const causeErrorsJson = JSON.parse(handlerErr.causeErrors);
+                    response.console.error("\n" + TextUtils.chalk.bold.yellow(responseTitle));
+                    response.console.error(TextUtils.prettyJson(causeErrorsJson, undefined, false, ""));
+                } catch (parseErr) {
+                    // causeErrors was not JSON.
+                    const causeErrString: string = handlerErr.causeErrors.toString();
+                    if (causeErrString.length > 0) {
+                        // output the text value of causeErrors
                         response.console.error("\n" + TextUtils.chalk.bold.yellow(responseTitle));
-                        response.console.error(TextUtils.prettyJson(causeErrorsJson, undefined, false, ""));
-                    } catch (parseErr) {
-                        // causeErrors was not JSON.
-                        const causeErrString: string = handlerErr.causeErrors.toString();
-                        if (causeErrString.length > 0) {
-                            // output the text value of causeErrors
-                            response.console.error("\n" + TextUtils.chalk.bold.yellow(responseTitle));
-                            response.console.error(causeErrString);
-                        }
+                        response.console.error(causeErrString);
                     }
                 }
             }
@@ -1250,12 +1092,7 @@ export class CommandProcessor {
             // display diagnostic information
             const diagInfo: string = (handlerErr as ImperativeError).details.additionalDetails;
             if (diagInfo?.length > 0) {
-                // TODO:V3_ERR_FORMAT - Don't test for env variable in V3
-                if (NextVerFeatures.useV3ErrFormat()) {
-                    response.console.error(TextUtils.chalk.bold.yellow("\nDiagnostic Information"));
-                } else { // TODO:V3_ERR_FORMAT - Remove in V3
-                    response.console.errorHeader("Error Details");
-                }
+                response.console.error(TextUtils.chalk.bold.yellow("\nDiagnostic Information"));
                 response.console.error(diagInfo);
             }
 

@@ -43,7 +43,7 @@ module.exports = class CredentialManagerOverrides extends imperative_1.AbstractC
                 failNotFound: true
             };
             const loadResultString = JSON.stringify(loadedProfResult, null, 2);
-            yield Buffer.from(loadResultString).toString("base64");
+            return Buffer.from(loadResultString).toString("base64");
         });
     }
     saveCredentials(account, credentials) {

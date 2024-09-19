@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, IHandlerParameters, IProfile, Session } from "@zowe/imperative";
+import { AbstractSession, IHandlerParameters, Session } from "@zowe/imperative";
 import { IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosFilesBaseHandler } from "../../../src/zosfiles/ZosFilesBase.handler";
 
@@ -21,8 +21,7 @@ describe("ZosFilesBaseHandler", () => {
 
         public async processWithSession(
             commandParameters: IHandlerParameters,
-            session: AbstractSession,
-            zosmfProfile: IProfile
+            session: AbstractSession
         ): Promise<IZosFilesResponse> {
             return this.returnResponse;
         }

@@ -234,31 +234,6 @@ export interface IImperativeConfig {
     pluginLifeCycle?: string;
 
     /**
-     * A path to a module (javascript file) that will perform a health check for a plugin.
-     * The health check should verify the health of the plugin.
-     * The implementor of a plugin determines what actions
-     * can confirm that the plugin is in an operational state.
-     *
-     * The health check should return true if all plugin health checks pass.
-     * It should return false otherwise.
-     *
-     * This property is unused for a base CLI.
-     *
-     * No Zowe CLI command currently calls the health check function.
-     *
-     * @deprecated
-     *      This property is deprecated. Plugins that want to perform a health check can
-     *      specify the pluginLifeCycle property to load a class from the plugin.
-     *      The plugin can implement the postInstall() function of that class to perform
-     *      a health check, or any other desired operation. Our intention is to remove
-     *      the pluginHealthCheck property in Zowe V3.
-     *
-     * @type {string}
-     * @memberof IImperativeConfig
-     */
-    pluginHealthCheck?: string;
-
-    /**
      * If the project you are configuring is an Imperative plugin,
      * you can assign aliases to the group that is added when a user
      * installs your plugin.

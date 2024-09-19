@@ -2,6 +2,47 @@
 
 All notable changes to the Zowe core SDK package will be documented in this file.
 
+## Recent Changes
+
+- Update: Final prerelease
+
+## `8.0.0-next.202406111958`
+
+- BugFix: Deprecated the IHeaderContent interface - use `IHeaderContent` from `@zowe/imperative`. [#2083](https://github.com/zowe/zowe-cli/issues/2083)
+
+## `8.0.0-next.202406061600`
+
+- Enhancement: Modified Services.ts to have commented properties end with commas. [#1049](https://github.com/zowe/zowe-cli/issues/1049)
+
+## `8.0.0-next.202403041352`
+
+- BugFix: Updated engine to Node 18.12.0. [#2074](https://github.com/zowe/zowe-cli/pull/2074)
+- LTS Breaking: Removed the file ProfileUtils.ts which contains the following obsolete V1 profile functions:
+  - getDefaultProfile
+  - getZoweDir - moved to ProfileInfo.getZoweDir
+
+## `8.0.0-next.202402261705`
+
+- BugFix: Updated additional dependencies for technical currency. [#2061](https://github.com/zowe/zowe-cli/pull/2061)
+- BugFix: Updated engine to Node 16.7.0. [#2061](https://github.com/zowe/zowe-cli/pull/2061)
+
+## `8.0.0-next.202402211923`
+
+- BugFix: Updated dependencies for technical currency. [#2057](https://github.com/zowe/zowe-cli/pull/2057)
+
+## `8.0.0-next.202401191954`
+
+- LTS Breaking: Removed all 'profiles' commands, since they only worked with now-obsolete V1 profiles.
+- BugFix: Include text from a REST response's causeErrors.message property in error messages.
+
+## `8.0.0-next.202311282012`
+
+- LTS Breaking: Unpinned dependency versions to allow for patch/minor version updates for dependencies [#1968](https://github.com/zowe/zowe-cli/issues/1968)
+
+## `8.0.0-next.202311132045`
+
+- Major: First major version bump for V3
+
 ## `7.25.2`
 
 - Enhancement: Modified Services.ts to have commented properties end with commas. [#1049](https://github.com/zowe/zowe-cli/issues/1049)
@@ -25,7 +66,7 @@ All notable changes to the Zowe core SDK package will be documented in this file
 ## `7.17.0`
 
 - Enhancement: Set properties for z/OSMF REST errors for use in a more user-friendly format with the ZOWE_V3_ERR_FORMAT environment variable. [zowe-cli#935](https://github.com/zowe/zowe-cli/issues/935)
--
+
 ## `7.16.5`
 
 - BugFix: Fixed confusing error message "Token is not valid or expired" when APIML token is used to connect direct-to-service with `ZosmfRestClient`. [Imperative #978](https://github.com/zowe/imperative/issues/978)

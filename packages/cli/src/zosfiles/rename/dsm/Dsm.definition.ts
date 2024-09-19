@@ -20,6 +20,7 @@ const dsmStrings = strings.RENAME.ACTIONS.DATA_SET_MEMBER;
 export const DsmDefinition: ICommandDefinition = {
     name: "data-set-member",
     aliases: ["dsm"],
+    summary: dsmStrings.SUMMARY,
     description: dsmStrings.DESCRIPTION,
     type: "command",
     handler: __dirname + "/Dsm.handler",

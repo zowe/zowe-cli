@@ -23,6 +23,7 @@ const strings = (require("../../-strings-/en").default as typeof i18nTypings).CR
 export const DsDefinition: ICommandDefinition = {
     name: "data-set",
     aliases: ["ds"],
+    summary: strings.ACTIONS.DATA_SET_LIKE.SUMMARY,
     description: strings.ACTIONS.DATA_SET_LIKE.DESCRIPTION,
     type: "command",
     handler: __dirname + "/ds.handler",
@@ -51,7 +52,6 @@ export const DsDefinition: ICommandDefinition = {
         ZosFilesCreateOptions.dataclass,
         ZosFilesCreateOptions.unit,
         ZosFilesCreateOptions.dsntype,
-        ZosFilesCreateExtraOptions.showAttributes,
         ZosFilesCreateExtraOptions.attributes,
         ZosFilesCreateExtraOptions.like
     ].sort((a, b) => a.name.localeCompare(b.name)),

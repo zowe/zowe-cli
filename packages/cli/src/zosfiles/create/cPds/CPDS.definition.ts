@@ -24,6 +24,7 @@ const strings = (require("../../-strings-/en").default as typeof i18nTypings).CR
 export const CPDSDefinition: ICommandDefinition = {
     name: "data-set-c",
     aliases: ["dsc"],
+    summary: strings.ACTIONS.DATA_SET_C.SUMMARY,
     description: strings.ACTIONS.DATA_SET_C.DESCRIPTION,
     type: "command",
     handler: __dirname + "/CPDS.handler",
@@ -52,7 +53,6 @@ export const CPDSDefinition: ICommandDefinition = {
         ZosFilesCreateOptions.dataclass,
         ZosFilesCreateOptions.unit,
         ZosFilesCreateOptions.dsntype,
-        ZosFilesCreateExtraOptions.showAttributes,
         ZosFilesCreateExtraOptions.attributes
     ].sort((a, b) => a.name.localeCompare(b.name)),
     examples: [

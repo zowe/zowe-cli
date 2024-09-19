@@ -62,7 +62,7 @@ export class ConfigManagementFacility {
             name: "config",
             type: "group",
             summary: "Manage JSON project and global configuration",
-            description: "Manage JSON project and global configuration",
+            description: "Manage JSON project and global configuration.",
             children: [
                 listDefinition,
                 secureDefinition,

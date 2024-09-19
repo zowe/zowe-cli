@@ -49,6 +49,7 @@ module.exports = {
     "rules": {
         "max-len": ["warn", 150],
         "no-console": "error",
+        "no-extra-parens": "error",
         "no-multiple-empty-lines": "warn",
         "no-trailing-spaces": "warn",
         "@typescript-eslint/ban-types": "off",

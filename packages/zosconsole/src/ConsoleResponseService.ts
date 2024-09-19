@@ -57,8 +57,8 @@ export class ConsoleResponseService {
             // If there are messages append a line-break to ensure that additional messages collected are
             // displayed properly.
             if (response.commandResponse.length > 0
-                && (response.commandResponse.indexOf("\n")
-                    !== response.commandResponse.length - 1)) {
+                && response.commandResponse.indexOf("\n")
+                    !== response.commandResponse.length - 1) {
                 response.commandResponse += "\n";
             }
         }

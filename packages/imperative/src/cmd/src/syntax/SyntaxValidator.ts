@@ -122,13 +122,13 @@ export class SyntaxValidator {
 
         /**
          * Prevent empty string options, regardless of if they are
-         * required or not  e.g.   --bright-zosmf-profile (without a value)
+         * required or not  e.g.   --zosmf-profile (without a value)
          */
         if (!(this.mCommandDefinition.options == null)) {
             for (const option of this.mCommandDefinition.options) {
                 if (!(commandArguments[option.name] == null) &&
                     (option.type !== "stringOrEmpty" && commandArguments[option.name] === "") ||
-                    (option.type !== "boolean" && commandArguments[option.name] === true)) {
+                    option.type !== "boolean" && commandArguments[option.name] === true) {
                     valid = false;
                     this.emptyValueError(responseObject, option.name);
                 }
@@ -209,7 +209,7 @@ export class SyntaxValidator {
                     // Use replace to trim possible ... which is used for arrays
                     const positionalName = positional.name.replace("...", "");
                     if (commandArguments[positionalName] == null ||
-                        (positional.type !== "stringOrEmpty" && commandArguments[positionalName] === "")) {
+                        positional.type !== "stringOrEmpty" && commandArguments[positionalName] === "") {
                         missingPositionals.push(positional);
                     }
                 }
@@ -226,7 +226,7 @@ export class SyntaxValidator {
                 if (!(commandArguments[positional.name] == null)) {
                     if (positional.regex) {
                         if (commandArguments[positional.name]
-                            .toString().match(new RegExp(positional.regex)) == null) {
+                            .toString().match(new RegExp(positional.regex) == null)) {
                             valid = false;
                             this.positionalParameterInvalid(positional,
                                 commandArguments[positional.name], responseObject);
@@ -234,6 +234,14 @@ export class SyntaxValidator {
                     }
                     if (positional.type === "number") {
                         valid = this.validateNumeric(commandArguments[positional.name], positional, responseObject, true) && valid;
+                        // Convert to number for backwards compatability
+                        if (valid) {
+                            const changedOptions: ICommandArguments = CliUtils.setOptionValue(positional.name,
+                                [], parseFloat(commandArguments[positional.name]));
+                            for (const [k, v] of Object.entries(changedOptions)) {
+                                commandArguments[k] = v;
+                            }
+                        }
                     }
 
                     if (!(positional.stringLengthRange == null) &&
@@ -373,11 +381,17 @@ export class SyntaxValidator {
                             commandArguments[optionDef.name]);
                     }
                 } else if (optionDef.type === "boolean") {
-                    valid = this.validateBoolean(commandArguments[optionDef.name], optionDef,
-                        responseObject) && valid;
+                    valid = this.validateBoolean(commandArguments[optionDef.name], optionDef, responseObject) && valid;
                 } else if (optionDef.type === "number") {
-                    valid = this.validateNumeric(commandArguments[optionDef.name], optionDef,
-                        responseObject) && valid;
+                    valid = this.validateNumeric(commandArguments[optionDef.name], optionDef, responseObject) && valid;
+                    // Convert to numbers for backwards compatibility - sets all possible values
+                    if (valid) {
+                        const changedOptions: ICommandArguments = CliUtils.setOptionValue(optionDef.name,
+                            optionDef.aliases ?? [], parseFloat(commandArguments[optionDef.name]));
+                        for (const [k, v] of Object.entries(changedOptions)) {
+                            commandArguments[k] = v;
+                        }
+                    }
                 }
                 /**
                  * Validate that the option's value is valid json.
@@ -426,10 +440,10 @@ export class SyntaxValidator {
                     for (const value of Object.keys(optionDef.valueImplications)) {
                         const implicationObject: ICommandOptionValueImplications
                             = optionDef.valueImplications[value];
-                        if ((implicationObject.isCaseSensitive &&
-                            commandArguments[optionName] === value) ||
-                            (!implicationObject.isCaseSensitive &&
-                                commandArguments[optionName].toUpperCase() === value.toUpperCase())) {
+                        if (implicationObject.isCaseSensitive &&
+                            commandArguments[optionName] === value ||
+                            !implicationObject.isCaseSensitive &&
+                                commandArguments[optionName].toUpperCase() === value.toUpperCase()) {
                             for (const impliedOption of implicationObject.impliedOptionNames) {
                                 if (!util.optionWasSpecified(impliedOption,
                                     this.mCommandDefinition, commandArguments)) {
@@ -504,7 +518,7 @@ export class SyntaxValidator {
 
         if (!isPositional) {
             const def = optionDefinition as ICommandOptionDefinition;
-            aliasString = (!(def.aliases == null) && def.aliases.length > 0) ?
+            aliasString = def.aliases != null && def.aliases.length > 0 ?
                 "(" + def.aliases.map((alias: string) => {
                     return this.getDashFormOfOption(alias);
                 }).join(",") + ")" : "";
@@ -615,8 +629,8 @@ export class SyntaxValidator {
         let valid: boolean = true;
         const min = optionDefinition.numericValueRange[0];
         const max = optionDefinition.numericValueRange[1];
-        if ((optionValue < min) ||
-            (optionValue > max)) {
+        if (optionValue < min ||
+            optionValue > max) {
             responseObject.console.errorHeader(syntaxErrorHeader.message);
             const msg: string = responseObject.console.error("Invalid numeric value specified for option:\n{{option}}\n\n" +
                 "You specified:\n{{value}}\n\n" +
@@ -705,7 +719,7 @@ export class SyntaxValidator {
                 {message: msg, optionInError: optionDefinition.name, definition: optionDefinition});
         }
 
-        const valid = (duplicateValuesSet.size === 0);
+        const valid = duplicateValuesSet.size === 0;
         return valid;
     }
 
@@ -1033,8 +1047,8 @@ export class SyntaxValidator {
     }
 
     /**
-     * Append the validator error to the resposne object.
-     * @param {CommandResponse} responseObject: The Brightside response object
+     * Append the validator error to the response object.
+     * @param {CommandResponse} responseObject: The Zowe response object
      * @param {ICommandValidatorError} error: The error to append.
      */
     private appendValidatorError(responseObject: CommandResponse, error: ICommandValidatorError) {

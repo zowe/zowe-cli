@@ -51,8 +51,8 @@ export default class ListHandler implements ICommandHandler {
             }
         }
 
-        // If requested, only include the root property
-        if (params.arguments.root && lodash.isObject(obj)) {
+        // If requested, only include the root property name
+        if (params.arguments.nameOnly && lodash.isObject(obj)) {
             obj = Object.keys(obj);
         }
 
@@ -60,7 +60,7 @@ export default class ListHandler implements ICommandHandler {
         params.response.data.setObj(obj);
         params.response.format.output({
             output: obj,
-            format: (Array.isArray(obj)) ? "list" : "object"
+            format: Array.isArray(obj) ? "list" : "object"
         });
     }
 }

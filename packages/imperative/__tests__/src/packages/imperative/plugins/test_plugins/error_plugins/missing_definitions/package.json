@@ -9,8 +9,7 @@
   "imperative": {
     "name": "missing_definitions",
     "rootCommandDescription": "missing definitions",
-    "pluginBaseCliVersion": "^1.0.0",
-    "pluginHealthCheck": "./dummy.handler"
+    "pluginBaseCliVersion": "^1.0.0"
   },
   "peerDependencies": {
     "@zowe/imperative": "1.0.0"

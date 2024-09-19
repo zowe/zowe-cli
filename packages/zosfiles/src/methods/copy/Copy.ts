@@ -10,7 +10,7 @@
 */
 
 import { AbstractSession, ImperativeError, ImperativeExpect, ITaskWithStatus, Logger, Headers,
-    TaskStage } from "@zowe/imperative";
+    IHeaderContent, TaskStage } from "@zowe/imperative";
 import { posix } from "path";
 
 import { Create, CreateDataSetTypeEnum, ICreateDataSetOptions } from "../create";
@@ -18,7 +18,7 @@ import { Get } from "../get";
 import { Upload } from "../upload";
 import { List } from "../list";
 import { IGetOptions } from "../get/doc/IGetOptions";
-import { ZosmfRestClient, ZosmfHeaders, IHeaderContent } from "@zowe/core-for-zowe-sdk";
+import { ZosmfRestClient, ZosmfHeaders } from "@zowe/core-for-zowe-sdk";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 import { IZosFilesResponse } from "../../doc/IZosFilesResponse";
@@ -262,7 +262,7 @@ export class Copy {
             *  Don't overwrite an existing dataset or member if overwrite is false
             */
             if(overwriteTarget || !targetFound ||
-                (targetMember != undefined && !targetMemberFound )){
+                targetMember != undefined && !targetMemberFound ){
                 /**
                  *  Upload the source data to the target dataset
                  */
@@ -304,7 +304,7 @@ export class Copy {
             storclass: targetOptions.targetStorageClass,
             mgntclass: targetOptions.targetManagementClass,
             dataclass: targetOptions.targetDataClass,
-            dirblk: parseInt(((dsInfo.dsorg == "PO" || dsInfo.dsorg == "POE" ) ? "10" : "0"))
+            dirblk: parseInt(dsInfo.dsorg == "PO" || dsInfo.dsorg == "POE"  ? "10" : "0")
         }));
     }
 

@@ -16,7 +16,7 @@ export const instanceVariables: ICommandDefinition = {
     name: "instance-variables",
     aliases: ["iv"],
     type: "command",
-    summary: "List Instance Variables and Values.",
+    summary: "List Instance Variables and Values",
     description: "List a set of variables and their values for a given name.",
     handler: path.join(__dirname, "/InstanceVariables.handler"),
     profile: {

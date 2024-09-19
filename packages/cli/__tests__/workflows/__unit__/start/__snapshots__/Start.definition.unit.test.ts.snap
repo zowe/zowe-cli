@@ -7,6 +7,7 @@ Object {
   ],
   "description": "Start a z/OSMF workflow on a z/OS system.",
   "name": "start",
+  "summary": "Start a z/OSMF workflow on a z/OS system",
   "type": "group",
 }
 `;

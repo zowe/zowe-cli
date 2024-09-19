@@ -6,7 +6,7 @@ Array [
     "aliases": Array [
       "b",
     ],
-    "description": "Transfer the content of the first data set in binary mode (no EBCDIC to ASCII conversion). If binary mode is set and the binary2 flag is not set then both datasets are transferred in binary mode.",
+    "description": "Transfer the content of the first data set in binary mode (no EBCDIC to ASCII conversion). If binary mode is set and the binary2 flag is not set then both data sets are transferred in binary mode.",
     "name": "binary",
     "type": "boolean",
   },
@@ -93,7 +93,7 @@ Array [
     "aliases": Array [
       "bv",
     ],
-    "description": "Opens the diffs between two given files in browser",
+    "description": "Opens the diffs between two given files in browser.",
     "name": "browser-view",
     "type": "boolean",
   },

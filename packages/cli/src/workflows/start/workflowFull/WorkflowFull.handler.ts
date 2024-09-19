@@ -52,7 +52,11 @@ export default class WorkflowFullHandler extends ZosmfBaseHandler {
         try{
             await StartWorkflow.startWorkflow(this.mSession, workflowKey, this.arguments.resolveConflict);
         } catch (err) {
-            error = "Start workflow: " + err;
+            error = new ImperativeError({
+                msg: "Start workflow: " + err,
+                causeErrors: err.causeErrors,
+                additionalDetails: err.additionalDetails
+            });
             throw error;
         }
 

@@ -93,11 +93,11 @@ describe("Logger tests", () => {
         logger.fatal("test");
 
         // expect((logger as any).writeToLog).toBeCalled();
-        expect((logger as any).logService.info).toBeCalled();
-        expect((logger as any).logService.debug).toBeCalled();
-        expect((logger as any).logService.warn).toBeCalled();
-        expect((logger as any).logService.error).toBeCalled();
-        expect((logger as any).logService.fatal).toBeCalled();
+        expect((logger as any).logService.info).toHaveBeenCalled();
+        expect((logger as any).logService.debug).toHaveBeenCalled();
+        expect((logger as any).logService.warn).toHaveBeenCalled();
+        expect((logger as any).logService.error).toHaveBeenCalled();
+        expect((logger as any).logService.fatal).toHaveBeenCalled();
     });
 
     it("Should allow all service function to store message in memory", () => {
@@ -174,11 +174,11 @@ describe("Logger tests", () => {
 
         logger.logError(error);
 
-        expect((logger as any).logService.trace).not.toBeCalled();
-        expect((logger as any).logService.info).not.toBeCalled();
-        expect((logger as any).logService.debug).toBeCalled();
+        expect((logger as any).logService.trace).not.toHaveBeenCalled();
+        expect((logger as any).logService.info).not.toHaveBeenCalled();
+        expect((logger as any).logService.debug).toHaveBeenCalled();
         expect((logger as any).logService.warn).not.toHaveBeenCalledTimes(1);
-        expect((logger as any).logService.fatal).not.toBeCalled();
+        expect((logger as any).logService.fatal).not.toHaveBeenCalled();
         expect((logger as any).logService.error).toHaveBeenCalledTimes(2);
     });
 

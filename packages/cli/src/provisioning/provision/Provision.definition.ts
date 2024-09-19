@@ -17,7 +17,7 @@ export const ProvisionCommand: ICommandDefinition = {
     name: "provision",
     aliases: ["prov"],
     type: "group",
-    summary: "Provision published software service templates.",
+    summary: "Provision published software service templates",
     description: "Using z/OSMF cloud provisioning services provision available templates.",
     children: [TemplateDefinition]
 };

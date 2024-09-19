@@ -24,6 +24,7 @@ const strings = (require("../../-strings-/en").default as typeof i18nTypings).CR
 export const ClassicPDSDefinition: ICommandDefinition = {
     name: "data-set-classic",
     aliases: ["classic"],
+    summary: strings.ACTIONS.DATA_SET_CLASSIC.SUMMARY,
     description: strings.ACTIONS.DATA_SET_CLASSIC.DESCRIPTION,
     type: "command",
     handler: __dirname + "/ClassicPDS.handler",
@@ -52,7 +53,6 @@ export const ClassicPDSDefinition: ICommandDefinition = {
         ZosFilesCreateOptions.dataclass,
         ZosFilesCreateOptions.unit,
         ZosFilesCreateOptions.dsntype,
-        ZosFilesCreateExtraOptions.showAttributes,
         ZosFilesCreateExtraOptions.attributes
     ].sort((a, b) => a.name.localeCompare(b.name)),
     examples: [

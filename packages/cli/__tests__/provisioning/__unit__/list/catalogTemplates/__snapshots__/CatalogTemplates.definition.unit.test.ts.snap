@@ -28,7 +28,7 @@ Object {
       "zosmf",
     ],
   },
-  "summary": "List z/OSMF published catalog templates.",
+  "summary": "List z/OSMF published catalog templates",
   "type": "command",
 }
 `;

@@ -26,6 +26,7 @@ const strings = (require("../../-strings-/en").default as typeof i18nTypings).CO
 export const DsDefinition: ICommandDefinition = {
     name: "data-set",
     aliases: ["ds"],
+    summary: strings.SUMMARY,
     description: strings.DESCRIPTION,
     type: "command",
     handler: join(__dirname, "Ds.handler"),

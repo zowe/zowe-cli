@@ -23,8 +23,6 @@ import { ICommandDefinition } from "../../../cmd/src/doc/ICommandDefinition";
 
 describe("WebHelpGenerator", () => {
     describe("buildHelp", () => {
-        // eslint-disable-next-line deprecation/deprecation
-        const mainModule = process.mainModule;
         let moduleFileNm: string;
         let cliHome: string;
         let configForHelp: IImperativeConfig;
@@ -102,21 +100,12 @@ describe("WebHelpGenerator", () => {
 
             rimraf.sync(cliHome);
 
-            /* process.mainModule.filename was null, so we must give it a value.
-             * mainModule is a getter of a property, so we mock the property.
-             */
-            // eslint-disable-next-line deprecation/deprecation
-            (process.mainModule as any) = {
-                filename: moduleFileNm
-            };
-
             // imperative.init does all the setup for WebHelp to be run
             await Imperative.init(configForHelp);
+            ImperativeConfig.instance.rootCommandName = moduleFileNm;
         });
 
         afterAll(() => {
-            // eslint-disable-next-line deprecation/deprecation
-            process.mainModule = mainModule;
             rimraf.sync(cliHome);
         });
 

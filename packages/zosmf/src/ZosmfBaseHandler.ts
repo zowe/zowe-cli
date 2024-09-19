@@ -14,14 +14,12 @@ import {
     ICommandArguments,
     ICommandHandler,
     IHandlerParameters,
-    IProfile,
     IHandlerResponseConsoleApi,
     IHandlerFormatOutputApi,
     IHandlerResponseDataApi,
     IHandlerProgressApi,
     IImperativeError,
     ImperativeError,
-    IProfileLoaded,
     ISession,
     Session,
     ConnectionPropsForSessCfg
@@ -37,18 +35,6 @@ export abstract class ZosmfBaseHandler implements ICommandHandler {
      * The session creating from the command line arguments / profile
      */
     protected mSession: AbstractSession;
-
-    /**
-     * Loaded z/OSMF profile if needed
-     * @deprecated
-     */
-    protected mZosmfProfile: IProfile;
-
-    /**
-     * Loaded z/OSMF profile with meta information
-     * @deprecated
-     */
-    protected mZosmfLoadedProfile: IProfileLoaded;
 
     /**
      * Command line arguments passed
@@ -71,12 +57,6 @@ export abstract class ZosmfBaseHandler implements ICommandHandler {
     public async process(commandParameters: IHandlerParameters) {
 
         this.mHandlerParams = commandParameters;
-        // Nothing uses this, but extenders might... -awharn
-        // eslint-disable-next-line deprecation/deprecation
-        this.mZosmfProfile = commandParameters.profiles.get("zosmf", false);
-        // This one too... -awharn
-        // eslint-disable-next-line deprecation/deprecation
-        this.mZosmfLoadedProfile = commandParameters.profiles.getMeta("zosmf", false);
 
         const sessCfg: ISession = ZosmfSession.createSessCfgFromArgs(
             commandParameters.arguments

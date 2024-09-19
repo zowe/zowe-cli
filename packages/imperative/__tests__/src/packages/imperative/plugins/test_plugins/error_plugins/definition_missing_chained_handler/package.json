@@ -10,7 +10,6 @@
     "name": "definition_missing_chained_handler",
     "rootCommandDescription": "definition missing chained handler",
     "pluginBaseCliVersion": "^1.0.0",
-    "pluginHealthCheck": "./dummy.handler",
     "definitions": [
       {
         "name": "foo",

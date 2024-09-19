@@ -19,6 +19,7 @@ import { IHelpGeneratorParms } from "./doc/IHelpGeneratorParms";
 import { IHelpGeneratorFactoryParms } from "./doc/IHelpGeneratorFactoryParms";
 import { compareCommands, ICommandDefinition } from "../../src/doc/ICommandDefinition";
 import stripAnsi = require("strip-ansi");
+import { CliUtils } from "../../../utilities/src/CliUtils";
 
 /**
  * Imperative default help generator. Accepts the command definitions and constructs
@@ -133,7 +134,7 @@ export class DefaultHelpGenerator extends AbstractHelpGenerator {
         if (!this.mProduceMarkdown && this.mCommandDefinition.name != null &&
             this.mCommandDefinition.name.length > 0) {
             helpText += "\n" + this.buildHeader("COMMAND NAME");
-            helpText += (DefaultHelpGenerator.HELP_INDENT + this.mCommandDefinition.name);
+            helpText += DefaultHelpGenerator.HELP_INDENT + this.mCommandDefinition.name;
             if (this.mCommandDefinition.aliases != null && this.mCommandDefinition.aliases.length > 0) {
                 helpText += " | " + this.mCommandDefinition.aliases.join(" | ");
             }
@@ -270,7 +271,7 @@ export class DefaultHelpGenerator extends AbstractHelpGenerator {
             // Place the positional parameters.
             if (this.mCommandDefinition.positionals != null) {
                 for (const positional of this.mCommandDefinition.positionals) {
-                    usage += " " + ((positional.required) ? "<" + positional.name + ">" : "[" + positional.name + "]");
+                    usage += " " + (positional.required ? "<" + positional.name + ">" : "[" + positional.name + "]");
                 }
             }
             // Append the options segment
@@ -355,25 +356,12 @@ export class DefaultHelpGenerator extends AbstractHelpGenerator {
         if (!this.mProduceMarkdown) {
             descriptionForHelp += this.buildHeader("DESCRIPTION");
         }
-        let description = this.mCommandDefinition.description
-            || this.mCommandDefinition.summary;
-
-        // we place the deprecated message in the DESCRIPTION help section
-        if (this.mCommandDefinition.deprecatedReplacement != null) {
-            const noNewlineInText = this.mCommandDefinition.deprecatedReplacement.replace(/\n/g, " ");
-            description += this.grey("\n\nWarning: This " + this.mCommandDefinition.type +
-                " has been deprecated.\n");
-            if(this.mCommandDefinition.deprecatedReplacement === "")
-            {
-                description += this.grey("Obsolete component. No replacement exists");
-            }
-            else
-            {
-                description += this.grey("Recommended replacement: " + noNewlineInText);
-            }
-        }
+        let description = this.mCommandDefinition.description || this.mCommandDefinition.summary;
+        // Use consolidated deprecated message logic
+        description +=
+            this.grey(CliUtils.generateDeprecatedMessage(this.mCommandDefinition, true));
         if (this.mProduceMarkdown) {
-            description = this.escapeMarkdown(description);  // escape Markdown special characters
+            description = this.escapeMarkdown(description);
         }
         if (this.skipTextWrap) {
             descriptionForHelp += TextUtils.indentLines(description, this.mProduceMarkdown ? "" : DefaultHelpGenerator.HELP_INDENT);
@@ -401,9 +389,9 @@ export class DefaultHelpGenerator extends AbstractHelpGenerator {
                     this.dimGrey("{{italic}}(" + this.explainType(positional.type) + "){{italic}}");
                 let fullDescription = positional.description;
                 if (positional.regex) {
-                    fullDescription += (DefaultHelpGenerator.HELP_INDENT +
+                    fullDescription += DefaultHelpGenerator.HELP_INDENT +
                         DefaultHelpGenerator.HELP_INDENT + "Must match regular expression: {{codeBegin}}"
-                        + positional.regex + "{{codeEnd}}\n\n");
+                        + positional.regex + "{{codeEnd}}\n\n";
                 }
                 positionalsHelpText += this.buildOptionText(positionalString, fullDescription);
             }
@@ -509,7 +497,7 @@ export class DefaultHelpGenerator extends AbstractHelpGenerator {
             examplesText = this.mCommandDefinition.examples.map((example) => {
                 const prefix = example.prefix != null ? example.prefix + "{{space}} " : "";
                 const exampleHyphen = this.mProduceMarkdown ? "" : "-";
-                const options = (example.options.length > 0) ? ` ${example.options}` : "";
+                const options = example.options.length > 0 ? ` ${example.options}` : "";
                 const description = this.mProduceMarkdown ? this.escapeMarkdown(example.description) : example.description;
                 let exampleText = "{{bullet}}" + exampleHyphen + " {{space}}" + description + ":\n\n";
                 if (this.skipTextWrap) {

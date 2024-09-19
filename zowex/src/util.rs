@@ -44,7 +44,7 @@ pub fn util_get_nodejs_zowe_path() -> String {
      */
     let my_exe_result = env::current_exe();
     if my_exe_result.is_err() {
-        println!("Unable to get path to my own executable. Terminating.");
+        eprintln!("Unable to get path to my own executable. Terminating.");
         std::process::exit(EXIT_CODE_CANNOT_GET_MY_PATH);
     }
     let my_exe_path_buf = my_exe_result.unwrap();
@@ -73,8 +73,8 @@ pub fn util_get_nodejs_zowe_path() -> String {
         break;
     }
     if njs_zowe_path == NOT_FOUND {
-        println!("Could not find a NodeJS zowe command on your path.");
-        println!("Will not be able to run Zowe commands. Terminating.");
+        eprintln!("Could not find a NodeJS zowe command on your path.");
+        eprintln!("Will not be able to run Zowe commands. Terminating.");
         std::process::exit(EXIT_CODE_NO_NODEJS_ZOWE_ON_PATH);
     }
 
@@ -96,7 +96,7 @@ pub fn util_get_daemon_dir() -> Result<PathBuf, i32> {
         match home_dir() {
             Some(path_buf_val) => daemon_dir = path_buf_val,
             None => {
-                println!("Unable to get user's home directory.");
+                eprintln!("Unable to get user's home directory.");
                 return Err(EXIT_CODE_ENV_ERROR);
             }
         }
@@ -106,11 +106,11 @@ pub fn util_get_daemon_dir() -> Result<PathBuf, i32> {
 
     if !daemon_dir.exists() {
         if let Err(err_val) = std::fs::create_dir_all(&daemon_dir) {
-            println!(
+            eprintln!(
                 "Unable to create zowe daemon directory = {}.",
                 &daemon_dir.display()
             );
-            println!("Reason = {}.", err_val);
+            eprintln!("Reason = {}.", err_val);
             return Err(EXIT_CODE_FILE_IO_ERROR);
         }
     }
@@ -178,6 +178,6 @@ pub fn util_terminal_supports_color() -> i32 {
             return 1;
         }
     }
-    
+
     0
 }

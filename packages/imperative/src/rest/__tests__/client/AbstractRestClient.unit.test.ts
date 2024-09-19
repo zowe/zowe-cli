@@ -18,7 +18,7 @@ import {
 } from "../../src/session/SessConstants";
 import { RestClient } from "../../src/client/RestClient";
 import { Headers } from "../../src/client/Headers";
-import { NextVerFeatures, ProcessUtils } from "../../../utilities";
+import { ProcessUtils } from "../../../utilities";
 import { MockHttpRequestResponse } from "./__model__/MockHttpRequestResponse";
 import { EventEmitter } from "events";
 import { ImperativeError } from "../../../error";
@@ -31,7 +31,7 @@ import { AbstractRestClient } from "../../src/client/AbstractRestClient";
 import * as os from "os";
 import { join } from "path";
 import { IO } from "../../../io";
-import { Proxy } from "../../src/client/Proxy";
+import { ProxySettings } from "../../src/client/ProxySettings";
 import { HttpsProxyAgent } from "https-proxy-agent";
 
 /**
@@ -43,11 +43,6 @@ describe("AbstractRestClient tests", () => {
     let setPasswordAuthSpy: any;
 
     beforeEach(() => {
-        /* This avoids having to mock ImperativeConfig.envVariablePrefix.
-         * Unless overridden, tests will use our legacy format for errors.
-         */
-        jest.spyOn(NextVerFeatures, "useV3ErrFormat").mockReturnValue(false);
-
         // pretend that basic auth was successfully set
         setPasswordAuthSpy = jest.spyOn(AbstractRestClient.prototype as any, "setPasswordAuth");
         setPasswordAuthSpy.mockReturnValue(true);
@@ -190,61 +185,6 @@ describe("AbstractRestClient tests", () => {
     });
 
     it("should error with request rejection when status code is not in 200 range", async () => {
-
-        interface IResponseload {
-            newData: string;
-        }
-
-        const emitter = new MockHttpRequestResponse();
-        const requestFnc = jest.fn((options, callback) => {
-            ProcessUtils.nextTick(async () => {
-
-                const newEmit = new MockHttpRequestResponse();
-                newEmit.statusCode = "400";
-                callback(newEmit);
-
-                await ProcessUtils.nextTick(() => {
-                    newEmit.emit("data", Buffer.from("{\"newData\":", "utf8"));
-                });
-
-                // missing closing bracket
-                await ProcessUtils.nextTick(() => {
-                    newEmit.emit("data", Buffer.from("\"response data\"}", "utf8"));
-                });
-
-                await ProcessUtils.nextTick(() => {
-                    newEmit.emit("end");
-                });
-            });
-            return emitter;
-        });
-
-        (https.request as any) = requestFnc;
-        const headers: any = [{"My-Header": "value is here"}];
-        const payload: any = {"my payload object": "hello"};
-        let error;
-        try {
-            await RestClient.putExpectJSON<IResponseload>(new Session({hostname: "test"}), "/resource", headers, payload);
-        } catch (thrownError) {
-            error = thrownError;
-        }
-        expect(error instanceof ImperativeError).toBe(true);
-        expect(error.message).toBe("Rest API failure with HTTP(S) status 400");
-        expect(error.errorCode).toBe("400");
-        expect(error.causeErrors).toBe("{\"newData\":\"response data\"}");
-        for (const header of headers) {
-            // make sure the error contains the headers that were appended to the request
-            for (const key of Object.keys(header)) {
-                expect(error.additionalDetails).toContain(key);
-                expect(error.additionalDetails).toContain(header[key]);
-            }
-        }
-        expect(error.additionalDetails).toContain("HTTP(S) error status \"400\" received.");
-    });
-
-    it("should give a v3-format error when status code is not in 200 range", async () => {
-        jest.spyOn(NextVerFeatures, "useV3ErrFormat").mockReturnValue(true);
-
         interface IResponseload {
             newData: string;
         }
@@ -522,8 +462,8 @@ describe("AbstractRestClient tests", () => {
             error = thrownError;
         }
 
-        expect(httpRequestFnc).toBeCalled();
-        expect(httpsRequestFnc).not.toBeCalled();
+        expect(httpRequestFnc).toHaveBeenCalled();
+        expect(httpsRequestFnc).not.toHaveBeenCalled();
     });
 
     it("should call https request for https requests", async () => {
@@ -557,8 +497,8 @@ describe("AbstractRestClient tests", () => {
         } catch (thrownError) {
             error = thrownError;
         }
-        expect(httpsRequestFnc).toBeCalled();
-        expect(httpRequestFnc).not.toBeCalled();
+        expect(httpsRequestFnc).toHaveBeenCalled();
+        expect(httpRequestFnc).not.toHaveBeenCalled();
     });
 
     it("should not error when streaming data", async () => {
@@ -819,7 +759,7 @@ describe("AbstractRestClient tests", () => {
         } catch (thrownError) {
             error = thrownError;
         }
-        expect(httpsRequestFnc).toBeCalled();
+        expect(httpsRequestFnc).toHaveBeenCalled();
     });
 
     it("should create buildOptions according to input parameter options 2", async () => {
@@ -859,7 +799,7 @@ describe("AbstractRestClient tests", () => {
         } catch (thrownError) {
             error = thrownError;
         }
-        expect(httpsRequestFnc).toBeCalled();
+        expect(httpsRequestFnc).toHaveBeenCalled();
         expect(error).toBeDefined();
     });
 
@@ -897,7 +837,7 @@ describe("AbstractRestClient tests", () => {
         } catch (thrownError) {
             error = thrownError;
         }
-        expect(httpsRequestFnc).not.toBeCalled();
+        expect(httpsRequestFnc).not.toHaveBeenCalled();
         expect(error.message).toContain("Failed to open one or more PEM certificate files");
     });
 
@@ -1496,8 +1436,8 @@ describe("AbstractRestClient tests", () => {
 
             beforeEach(() => {
                 jest.clearAllMocks();
-                getSystemProxyUrlSpy = jest.spyOn(Proxy, "getSystemProxyUrl");
-                getProxyAgentSpy = jest.spyOn(Proxy, "getProxyAgent");
+                getSystemProxyUrlSpy = jest.spyOn(ProxySettings, "getSystemProxyUrl");
+                getProxyAgentSpy = jest.spyOn(ProxySettings, "getProxyAgent");
                 setCertPemAuthSpy = jest.spyOn(privateRestClient, "setCertPemAuth");
             });
 

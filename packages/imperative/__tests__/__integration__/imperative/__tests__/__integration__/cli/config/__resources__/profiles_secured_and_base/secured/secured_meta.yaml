@@ -1,0 +1,24 @@
+defaultProfile: test
+configuration:
+    type: secured
+    schema:
+        type: object
+        title: 'Test Secured Fields'
+        description: 'Test Secured Fields'
+        properties:
+            info:
+                type: string
+                includeInTemplate: true
+                optionDefinition:
+                    name: info
+                    description: 'The info the keep in the profile.'
+                    type: string
+                    required: true
+            secret:
+                type: string
+                secure: true
+                optionDefinition:
+                    name: secret
+                    description: 'The secret info the keep in the profile.'
+                    type: string
+                    required: true

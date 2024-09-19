@@ -20,6 +20,7 @@ const dsStrings = strings.RENAME.ACTIONS.DATA_SET;
 export const DsDefinition: ICommandDefinition = {
     name: "data-set",
     aliases: ["ds"],
+    summary: dsStrings.SUMMARY,
     description: dsStrings.DESCRIPTION,
     type: "command",
     handler: __dirname + "/Ds.handler",

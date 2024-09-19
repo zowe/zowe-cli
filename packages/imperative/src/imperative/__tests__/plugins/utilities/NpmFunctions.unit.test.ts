@@ -15,6 +15,7 @@ import * as npmPackageArg from "npm-package-arg";
 import * as pacote from "pacote";
 import * as npmFunctions from "../../../src/plugins/utilities/NpmFunctions";
 import { PMFConstants } from "../../../src/plugins/utilities/PMFConstants";
+import { ExecUtils } from "../../../../utilities";
 
 jest.mock("cross-spawn");
 jest.mock("jsonfile");
@@ -75,8 +76,20 @@ describe("NpmFunctions", () => {
             jest.spyOn(pacote, "manifest").mockResolvedValue(expectedInfo as any);
         });
 
-        it("should fetch info for package installed from registry", async () => {
+        it("should fetch info for package installed from registry 1", async () => {
             const pkgSpec = "@zowe/imperative";
+            expect(npmPackageArg(pkgSpec).type).toEqual("range");
+
+            jest.spyOn(PMFConstants, "instance", "get").mockReturnValueOnce({
+                PLUGIN_HOME_LOCATION: ""
+            } as any);
+            const actualInfo = await npmFunctions.getPackageInfo(pkgSpec);
+            expect(actualInfo).toBe(expectedInfo);
+            expect(jsonfile.readFileSync).toHaveBeenCalledTimes(1);
+        });
+
+        it("should fetch info for package installed from registry 2", async () => {
+            const pkgSpec = "@zowe/imperative@latest";
             expect(npmPackageArg(pkgSpec).type).toEqual("tag");
 
             jest.spyOn(PMFConstants, "instance", "get").mockReturnValueOnce({
@@ -122,5 +135,14 @@ describe("NpmFunctions", () => {
             expect(actualInfo).toBe(expectedInfo);
             expect(pacote.manifest).toHaveBeenCalledTimes(1);
         });
+
+        it("getScopeRegistry() should return registry for 'test' scope", async () => {
+            const spawnSpy = jest.spyOn(ExecUtils, "spawnAndGetOutput");
+            spawnSpy.mockReturnValueOnce("https://test123.com");
+            const result = await npmFunctions.getScopeRegistry("test");
+            expect(result).toBe("https://test123.com");
+            expect(spawnSpy).toHaveBeenCalledTimes(1);
+        });
+
     });
 });

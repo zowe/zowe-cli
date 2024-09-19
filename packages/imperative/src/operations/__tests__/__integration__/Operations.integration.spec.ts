@@ -10,14 +10,13 @@
 */
 
 /* eslint-disable jest/expect-expect */
+/* eslint-disable deprecation/deprecation */
 import { TestOperations1 } from "../operation/TestOperations1";
 import { TestOperations4 } from "../operation/TestOperations4";
-
 import { TestOperations3 } from "../operation/TestOperations3";
 
 import { IOperationResult, Operation, Operations } from "../../index";
 import { TestLogger } from "../../../../__tests__/src/TestLogger";
-
 const logger = TestLogger.getTestLogger();
 
 class OperationTestConstants {

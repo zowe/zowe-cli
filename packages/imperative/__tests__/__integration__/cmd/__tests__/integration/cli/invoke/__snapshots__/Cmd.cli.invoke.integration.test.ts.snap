@@ -6,7 +6,7 @@ exports[`cmd-cli invoke should display help examples for a group 1`] = `
  DESCRIPTION
  -----------
 
-   Connect to token-based authentication services
+   Connect to token-based authentication services.
 
  USAGE
  -----

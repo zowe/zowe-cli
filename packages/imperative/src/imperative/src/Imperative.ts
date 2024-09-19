@@ -30,7 +30,6 @@ import { PluginManagementFacility } from "./plugins/PluginManagementFacility";
 // import { ConfigManagementFacility } from "./config/ConfigManagementFacility";
 
 import { AbstractCommandYargs } from "../../cmd/src/yargs/AbstractCommandYargs";
-import { CliProfileManager } from "../../cmd/src/profiles/CliProfileManager";
 import { CommandPreparer } from "../../cmd/src/CommandPreparer";
 import { CommandYargs } from "../../cmd/src/yargs/CommandYargs";
 import { ICommandDefinition } from "../../cmd/src/doc/ICommandDefinition";
@@ -44,12 +43,9 @@ import { WebHelpManager } from "../../cmd/src/help/WebHelpManager";
 import { YargsConfigurer } from "../../cmd/src/yargs/YargsConfigurer";
 import { YargsDefiner } from "../../cmd/src/yargs/YargsDefiner";
 
-import { ProfileUtils } from "../../profiles/src/utils/ProfileUtils";
 import { IProfileTypeConfiguration } from "../../profiles/src/doc/config/IProfileTypeConfiguration";
-import { CompleteProfilesGroupBuilder } from "./profiles/builders/CompleteProfilesGroupBuilder";
 import { ImperativeHelpGeneratorFactory } from "./help/ImperativeHelpGeneratorFactory";
 import { OverridesLoader } from "./OverridesLoader";
-import { ImperativeProfileManagerFactory } from "./profiles/ImperativeProfileManagerFactory";
 import { DefinitionTreeResolver } from "./DefinitionTreeResolver";
 import { EnvironmentalVariableSettings } from "./env/EnvironmentalVariableSettings";
 import { AppSettings } from "../../settings/src/AppSettings";
@@ -133,8 +129,7 @@ export class Imperative {
             /**
              * Identify caller's location on the system
              */
-            // eslint-disable-next-line deprecation/deprecation
-            ImperativeConfig.instance.callerLocation = process.mainModule.filename;
+            ImperativeConfig.instance.callerLocation = require.main.filename;
 
             /**
              * Load callers configuration, validate, and save
@@ -280,14 +275,6 @@ export class Imperative {
             const preparedHostCliCmdTree = this.getPreparedCmdTree(resolvedHostCliCmdTree, config.baseProfile);
 
             /**
-             * Only initialize the old-school profile environment
-             * if we are not in team-config mode.
-             */
-            if (ImperativeConfig.instance.config.exists === false) {
-                await this.initProfiles(config);
-            }
-
-            /**
              * Define all known commands
              */
             this.log.info("Inherited traits applied to CLI command tree children. " +
@@ -417,15 +404,6 @@ export class Imperative {
     }
 
     /**
-     * Get the configured environmental variable prefix for the user's CLI
-     * @returns {string} - the configured or default prefix for environmental variables for use in the environmental variable service
-     * @deprecated Please use ImperativeConfig.instance.envVariablePrefix
-     */
-    public static get envVariablePrefix(): string {
-        return ImperativeConfig.instance.envVariablePrefix;
-    }
-
-    /**
      * Highlight text with your configured (or default) secondary color
      * @param {string} text - the text to highlight
      * @returns {string} - the highlighted text
@@ -528,25 +506,6 @@ export class Imperative {
     }
 
     /**
-     * Initialize the profiles directory with types and meta files. This can be called every startup of the CLI
-     * without issue, but if the meta files or configuration changes, we'll have to re-initialize.
-     * TODO: Determine the re-initialize strategy.
-     * @private
-     * @static
-     * @param {IImperativeConfig} config - The configuration document passed to init.
-     * @memberof Imperative
-     */
-    private static async initProfiles(config: IImperativeConfig) {
-        if (config.profiles != null && config.profiles.length > 0) {
-            await CliProfileManager.initialize({
-                configuration: config.profiles,
-                profileRootDirectory: ProfileUtils.constructProfilesRootDirectory(ImperativeConfig.instance.cliHome),
-                reinitialize: false
-            });
-        }
-    }
-
-    /**
      * Define to yargs for main CLI and plugins
      *
      * @param {ICommandDefinition} preparedHostCliCmdTree - The Root of the imperative host CLI
@@ -565,7 +524,6 @@ export class Imperative {
             preparedHostCliCmdTree,
             yargs,
             commandResponseParms,
-            new ImperativeProfileManagerFactory(this.api),
             this.mHelpGeneratorFactory,
             ImperativeConfig.instance.loadedConfig.experimentalCommandDescription,
             Imperative.rootCommandName,
@@ -585,7 +543,6 @@ export class Imperative {
             Imperative.rootCommandName,
             Imperative.commandLine,
             ImperativeConfig.instance.envVariablePrefix,
-            new ImperativeProfileManagerFactory(this.api),
             this.mHelpGeneratorFactory,
             ImperativeConfig.instance.loadedConfig.experimentalCommandDescription,
 
@@ -720,7 +677,6 @@ export class Imperative {
             if (loadedConfig.baseProfile != null) {
                 allProfiles.push(loadedConfig.baseProfile);
             }
-            rootCommand.children.push(CompleteProfilesGroupBuilder.getProfileGroup(allProfiles, this.log));
         }
         const authConfigs: {[key: string]: ICommandProfileAuthConfig[]} = {};
         if (loadedConfig.profiles != null) {

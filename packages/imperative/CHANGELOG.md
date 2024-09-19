@@ -2,6 +2,482 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- Update: Final prerelease
+- Update: See `5.27.1` for details
+
+## `8.0.0-next.202408301809`
+
+- LTS Breaking: Removed the following obsolete V1 profile classes/functions:
+  - `CliProfileManager`
+  - `CliUtils.getOptValueFromProfiles`
+  - `CommandProfiles`
+  - `ProfileValidator`
+
+  See [`8.0.0-next.202408271330`](#800-next202408271330) for replacements
+- Next Breaking: Changed 2nd parameter of `CliUtils.getOptValuesFromConfig` method from type `ICommandDefinition` to `ICommandProfile`.
+- Next Breaking: Renamed `ConfigSecure.secureFieldsForLayer` method to `securePropsForLayer`.
+
+## `8.0.0-next.202408291544`
+
+- Enhancement: Added a new SDK method (`ConfigSecure.secureFieldsForLayer`) to allow developers to get vault content in the context of the specified layer. [#2206](https://github.com/zowe/zowe-cli/issues/2206)
+- Enhancement: Added a new SDK method (`ProfileInfo.secureFieldsWithDetails`) to allow developers to the more details regarding the securely stored properties. [#2206](https://github.com/zowe/zowe-cli/issues/2206)
+
+## `8.0.0-next.202408271330`
+
+- LTS Breaking: [#2231](https://github.com/zowe/zowe-cli/issues/2231)
+  - Removed the obsolete V1 `profiles` property from `IHandlerParameters` interface - Use `IHandlerParameters.arguments` to access profile properties in a command handler
+  - Deprecated the following obsolete V1 profile interfaces:
+    - `IProfileTypeConfiguration.dependencies` - For team config, use nested profiles instead
+    - `IProfileTypeConfiguration.validationPlanModule` - For team config, validate with JSON schema instead
+  - Deprecated the following obsolete V1 profile classes/functions:
+    - `CliProfileManager` - Use `ProfileInfo` class to manage team config profiles
+    - `CliUtils.getOptValueFromProfiles` - Use `CliUtils.getOptValuesFromConfig` to load properties from team config
+    - `CommandProfiles` - Use `ImperativeConfig.instance.config.api.profiles` to load profiles from team config
+    - `ProfileValidator` - No direct replacement
+
+## `8.0.0-next.202408231832`
+
+- LTS Breaking: Fixed command parsing error where `string` typed options would be converted into `number`s if the value provided by the user consists only of numeric characters. [#1881](https://github.com/zowe/zowe-cli/issues/1881)
+- LTS Breaking: Renamed `Proxy` class to `ProxySettings` to avoid name conflict with JS built-in `Proxy` object. [#2230](https://github.com/zowe/zowe-cli/issues/2230)
+
+## `8.0.0-next.202408191401`
+
+- Update: See `5.26.3` and `5.27.0` for details
+
+## `8.0.0-next.202408131445`
+
+- Update: See `5.26.2` for details
+
+## `8.0.0-next.202408092029`
+
+- BugFix: Resolved bug that resulted in user not being prompted for a key passphrase if it is located in the secure credential array of the ssh profile. [#1770](https://github.com/zowe/zowe-cli/issues/1770)
+
+## `8.0.0-next.202407262216`
+
+- Update: See `5.26.1` for details
+
+## `8.0.0-next.202407232256`
+
+- Enhancement: Allowed boolean value (`false`) to be provided to the Credential Manager related function. [zowe-explorer-vscode#2622](https://github.com/zowe/zowe-explorer-vscode/issues/2622)
+- Update: See `5.26.0` for details
+
+## `8.0.0-next.202407181904`
+
+- Enhancement: Added the function ConfigUtils.formGlobOrProjProfileNm and modified the function ConfigBuilder.build so that the 'zowe config init' command now generates a base profile name of 'global_base' or 'project_base', depending on whether a global or project configuration file is being generated. Related to Zowe Explorer issue https://github.com/zowe/zowe-explorer-vscode/issues/2682.
+
+## `8.0.0-next.202407181255`
+
+- BugFix: Resolved bug that resulted in each plug-in to have identical public registries regardless of actual installation location/reference. [#2189](https://github.com/zowe/zowe-cli/pull/2189)
+- BugFix: Resolved bug that resulted in every plug-in to have the same registry location field as the first if multiple plugins were installed in the same command. [#2189](https://github.com/zowe/zowe-cli/pull/2189)
+
+## `8.0.0-next.202407112150`
+
+- Enhancement: Add client-side custom-event handling capabilities. [#2136](https://github.com/zowe/zowe-cli/pull/2136)
+- Next-Breaking: Refactored the Imperative Event Emitter class. [#2136](https://github.com/zowe/zowe-cli/pull/2136)
+  - Removed the `ImperativeEventEmitter` class.
+  - Added an `EventProcessor` class to handle event listening and emitting.
+  - Added an `EventOperator` class to handle creation and deletion of `EventProcessors`.
+  - Added an `EventUtils` class to contain all common utility methods for the Client Event Handling capabilities.
+  - Added `IEmitter`, `IWatcher`, and `IEmitterAndWatcher` interfaces to expose what application developers should see.
+
+## `8.0.0-next.202407051717`
+
+- BugFix: V3 Breaking: Modified the ConvertV1Profiles.convert API to accept a new ProfileInfo option and initialize components sufficiently to enable VSCode apps to convert V1 profiles. [#2170](https://github.com/zowe/zowe-cli/issues/2170)
+
+## `8.0.0-next.202407021516`
+
+- BugFix: Updated dependencies for technical currency [#2188](https://github.com/zowe/zowe-cli/pull/2188)
+- Update: See `5.25.0` for details
+
+## `8.0.0-next.202406201950`
+
+- Enhancement: Added `ProfileInfo.profileManagerWillLoad` function to verify the credential manager can load. [#2111](https://github.com/zowe/zowe-cli/issues/2111)
+
+## `8.0.0-next.202406111958`
+
+- LTS Breaking: Modified the @zowe/imperative SDK [#2083](https://github.com/zowe/zowe-cli/issues/2083)
+  - Removed the following exported classes:
+    - AbstractAuthHandler
+    - AbstractCommandYargs
+    - AbstractHelpGenerator
+    - AbstractHelpGeneratorFactory
+    - CommandPreparer
+    - CommandProcessor
+    - CommandUtils
+    - CommandYargs
+    - CompressionUtils
+    - ConfigAutoStore
+    - ConfigurationLoader
+    - ConfigurationValidator
+    - DefinitionTreeResolver
+    - FailedCommandHandler
+    - GroupCommandYargs
+    - HelpConstants
+    - HelpGeneratorFactory
+    - ImperativeReject
+    - LoggerConfigBuilder
+    - LoggerUtils
+    - RestStandAloneUtils
+    - SharedOptions
+    - SyntaxValidator
+    - WebHelpManager
+    - YargsConfigurer
+    - YargsDefiner
+  - Removed the following exported interfaces:
+    - ICommandHandlerResponseChecker
+    - ICommandHandlerResponseValidator
+    - ICommandValidatorError
+    - ICommandValidatorResponse
+    - IConstructor
+    - IHelpGenerator
+    - IHelpGeneratorFactory
+    - IYargsParms
+    - IYargsResponse
+  - Deprecated the following classes:
+    - Operation
+    - Operations
+
+## `8.0.0-next.202406111728`
+
+- Enhancement: Added `BufferBuilder` utility class to provide convenient way of downloading to a stream that can be read as a buffer. [#2167](https://github.com/zowe/zowe-cli/pull/2167)
+- BugFix: Fixed error in REST client that when using stream could cause small data sets to download with incomplete contents. [#744](https://github.com/zowe/zowe-cli/issues/744)
+- BugFix: Updated `micromatch` dependency for technical currency. [#2167](https://github.com/zowe/zowe-cli/pull/2167)
+
+## `8.0.0-next.202406061600`
+
+- BugFix: Updated `braces` dependency for technical currency. [#2158](https://github.com/zowe/zowe-cli/pull/2158)
+
+## `8.0.0-next.202405241520`
+
+- BugFix: Modified command output to show appropriate error message given available ImperativeError properties. [#1897](https://github.com/zowe/zowe-cli/issues/1897)
+- Patch: Modify error text in SyntaxValidator.invalidOptionError. [#2138](https://github.com/zowe/zowe-cli/issues/2138)
+
+## `8.0.0-next.202405211929`
+
+- BugFix: Fixed error "Only one instance of the Imperative Event Emitter is allowed" when running system tests. [#2146](https://github.com/zowe/zowe-cli/issues/2146)
+
+## `8.0.0-next.202405151329`
+
+- Enhancement: Add client-side event handling capabilities. [#1987](https://github.com/zowe/zowe-cli/issues/1987)
+
+## `8.0.0-next.202405061946`
+
+- Enhancement: Consolidated the Zowe client log files into the same directory. [#2116](https://github.com/zowe/zowe-cli/issues/2116)
+- Deprecated: The `IO.FILE_DELIM` constant. Use `path.posix.sep` instead or `path.sep` for better cross-platform support.
+- Deprecated: The `LoggerConfigBuilder.DEFAULT_LOG_DIR` and `LoggerConfigBuilder.DEFAULT_LOG_FILE_DIR` constants. Use `LoggerConfigBuilder.DEFAULT_LOGS_DIR` instead.
+
+## `8.0.0-next.202405031808`
+
+- BugFix: Restore the previous precedence of token over password in AbstractRestClient [#2109](https://github.com/zowe/zowe-cli/issues/2109)
+
+## `8.0.0-next.202404301428`
+
+- Enhancement: Add informative messages before prompting for connection property values in the CLI callback function getValuesBack.
+
+## `8.0.0-next.202404191414`
+
+- Enhancement: Added a new class named ConvertV1Profiles to enable other apps to better convert V1 profiles into a current Zowe config file.
+  - Refactored logic from convert-profiles.handler and ConfigBuilder.convert into ConvertV1Profiles.convert.
+  - Removed ConfigBuilder.convert.
+  - Replaced IConfigConvertResult with IConvertV1Profiles (which contains IConvertV1ProfResult).
+  - Renamed class V1ProfileConversion (formerly known as ProfileIO) to V1ProfileRead for consistency.
+    - Marked class V1ProfileRead as @internal.
+
+## `8.0.0-next.202403272026`
+
+- BugFix: Resolved technical currency by updating `markdown-it` dependency. [#2107](https://github.com/zowe/zowe-cli/pull/2107)
+
+## `8.0.0-next.202403251613`
+
+- BugFix: Fixed issue where the `ProfileInfo.addProfileTypeToSchema` function did not update the global schema if a project-level configuration was detected. [#2086](https://github.com/zowe/zowe-cli/issues/2086)
+- BugFix: Updated debugging output for technical currency. [#2100](https://github.com/zowe/zowe-cli/pull/2100)
+
+## `8.0.0-next.202403141949`
+- LTS Breaking: Modified the @zowe/imperative SDK [#1703](https://github.com/zowe/zowe-cli/issues/1703)
+  - Renamed class ProfileIO to V1ProfileConversion.
+    - Removed the following obsolete V1 profile functions:
+      - createProfileDirs
+      - deleteProfile
+      - exists
+      - writeMetaFile
+      - writeProfile
+    - Removed the following obsolete V1 profile constant:
+      - MAX_YAML_DEPTH
+    - Changed fileToProfileName from public to private
+  - Removed deprecated function ConfigProfiles.expandPath
+    - Use ConfigProfiles.getProfilePathFromName
+  - Removed deprecated function ProcessUtils.execAndCheckOutput
+    - Use ExecUtils.spawnAndGetOutput
+
+## `8.0.0-next.202403132009`
+
+- Enhancement: Prompt for user/password on SSH commands when a token is stored in the config. [#2081](https://github.com/zowe/zowe-cli/pull/2081)
+
+## `8.0.0-next.202403061549`
+
+- V3 Breaking: Changed prompting logic to prompt for port if port provided is 0 [#2075](https://github.com/zowe/zowe-cli/issues/2075)
+- BugFix: Fixed issue with peerDep warnings showing when a plug-in is installed and the version ranges satisfy the semver requirements. [#2067](https://github.com/zowe/zowe-cli/pull/2067)
+
+## `8.0.0-next.202403041352`
+
+- BugFix: Updated engine to Node 18.12.0. [#2074](https://github.com/zowe/zowe-cli/pull/2074)
+- BugFix: Removed `profileVersion` from the response given by `--show-inputs-only` to fix [#1689](https://github.com/zowe/zowe-cli/issues/1689). Extended that change to the `config report-env` command, where similar soon-to-be obsolete v1 considerations occur.
+- BugFix: Changed text displayed for configuration from "V2" to "TeamConfig" [#2019](https://github.com/zowe/zowe-cli/issues/2019)
+- BugFix: Eliminated a Node Version Manager (NVM) GUI popup dialog which NVM now displays during the `zowe config report-env` command by removing the NVM version number from our report.
+- Enhancement: Replaced the term "Team configuration" with "Zowe client configuration" in the `zowe config report-env` command.
+
+- LTS Breaking: [#1703](https://github.com/zowe/zowe-cli/issues/1703)
+  - Removed the following obsolete V1 profile interfaces:
+    - @zowe/cli-test-utils
+      - ISetupEnvironmentParms.createOldProfiles
+
+    - @zowe/imperative
+      - ICliLoadProfile
+      - ICliLoadAllProfiles
+      - ICommandLoadProfile
+      - ICommandProfileTypeConfiguration.createProfileExamples
+      - ICommandProfileTypeConfiguration.createProfileFromArgumentsHandler
+      - ICommandProfileTypeConfiguration.updateProfileExamples
+      - ICommandProfileTypeConfiguration.updateProfileFromArgumentsHandler
+      - IDeleteProfile
+      - ILoadAllProfiles
+      - ILoadProfile
+      - IProfileDeleted
+      - IProfileManager.loadCounter
+      - IProfileManagerFactory
+      - IProfileSaved
+      - IProfileValidated
+      - ISaveProfile
+      - ISaveProfileFromCliArgs
+      - ISetDefaultProfile
+      - IUpdateProfile
+      - IUpdateProfileFromCliArgs
+      - IValidateProfile
+      - IValidateProfileForCLI
+      - IValidateProfileWithSchema
+
+  - Removed the following obsolete V1 profile classes/functions:
+    - @zowe/core-for-zowe-sdk
+      - File ProfileUtils.ts, which includes these functions:
+        - getDefaultProfile
+        - getZoweDir - moved to ProfileInfo.getZoweDir
+
+    - @zowe/cli-test-utils
+      - TempTestProfiles.forceOldProfiles
+      - TestUtils.stripProfileDeprecationMessages
+
+    - @zowe/imperative
+      - AbstractProfileManager
+        - Any remaining functions consolidated into CliProfileManager
+      - AbstractProfileManagerFactory
+      - BasicProfileManager
+        - Any remaining functions consolidated into CliProfileManager
+      - BasicProfileManagerFactory
+      - CliProfileManager
+        - clearDefault
+        - configurations
+        - constructFullProfilePath
+        - delete
+        - deleteProfile
+        - deleteProfileFromDisk
+        - getAllProfileNames
+        - getDefaultProfileName
+        - isProfileEmpty
+        - load
+        - loadAll
+        - loadCounter
+        - loadDependencies
+        - loadFailed
+        - loadProfile
+        - loadSpecificProfile
+        - locateExistingProfile
+        - managerParameters
+        - mergeProfiles
+        - META_FILE_SUFFIX
+        - PROFILE_EXTENSION
+        - profileRootDirectory
+        - profileTypeSchema
+        - save
+        - saveProfile
+        - setDefault
+        - update
+        - updateProfile
+        - validate
+        - validateProfile
+        - validateProfileAgainstSchema
+        - validateProfileObject
+        - validateRequiredDependenciesAreSpecified
+      - CommandProfiles
+        - getMeta
+        - getAll
+      - ImperativeProfileManagerFactory
+      - ProfileInfo.usingTeamConfig
+        - To detect if a team config exists, use ProfileInfo.getTeamConfig().exists
+        - To detect if only V1 profiles exist, use ProfileInfo.onlyV1ProfilesExist
+
+    - @zowe/zos-uss-for-zowe-sdk
+        - SshBaseHandler
+            - Removed the unused, protected property ‘mSshProfile’
+
+  - Removed the following obsolete V1 profile constants:
+    - @zowe/imperative
+      - CoreMessages class
+        - createProfileCommandSummary
+        - createProfileDisableDefaultsDesc
+        - createProfileOptionDesc
+        - createProfileOptionOverwriteDesc
+        - createProfilesCommandDesc
+        - createProfilesCommandSummary
+        - deleteProfileActionDesc
+        - deleteProfileCommandDesc
+        - deleteProfileDepsDesc
+        - deleteProfileExample
+        - deleteProfileForceOptionDesc
+        - deleteProfileNameDesc
+        - deleteProfilesCommandDesc
+        - deleteProfilesCommandSummary
+        - detailProfileCommandDesc
+        - listGroupWithOnlyProfileCommandSummary
+        - listGroupWithOnlyProfileDefaultDesc
+        - listGroupWithOnlyProfilesDefinition
+        - listGroupWithOnlyProfileSetDesc
+        - listGroupWithOnlyProfilesSummary
+        - listProfileCommandDesc
+        - listProfileCommandSummary
+        - listProfileExample
+        - listProfileExampleShowContents
+        - listProfileLoadedModulesOptionDesc
+        - listProfilesFoundMessage
+        - listProfilesNotFoundMessage
+        - listProfileVerboseOptionDesc
+        - locateProfilesDesc
+        - overroteProfileMessage
+        - profileCreatedSuccessfully
+        - profileCreatedSuccessfullyAndPath
+        - profileCreateErrorDetails
+        - profileCreateErrorHeader
+        - profileDeletedSuccessfully
+        - profileDeleteErrorDetails
+        - profileDeleteErrorHeader
+        - profileDesc
+        - profileLoadError
+        - profileNotDeletedMessage
+        - profileReviewMessage
+        - profileUpdatedSuccessfullyAndPath
+        - selectProfileNameDesc
+        - setGroupWithOnlyProfilesCommandDesc
+        - setGroupWithOnlyProfilesListDesc
+        - setGroupWithOnlyProfilesSummary
+        - setProfileActionDesc
+        - setProfileActionSummary
+        - setProfileExample
+        - setProfileOptionDesc
+        - showDependenciesCommandDesc
+        - unableToCreateProfile
+        - unableToDeleteProfile
+        - unableToFindProfile
+        - unableToLoadRequestedProfilesError
+        - unexpectedProfileCreationError
+        - unexpectedProfileLoadError
+        - unexpectedProfilesLoadError
+        - unexpectedProfileUpdateError
+        - updateProfileActionDesc
+        - updateProfileCommandDesc
+        - updateProfileCommandSummary
+        - validateProfileCommandDesc
+        - validateProfileCommandSummary
+        - validateProfileGroupDesc
+        - validateProfileNameDesc
+        - validateProfileOptionDesc
+      - ProfilesConstants class
+        - DEPRECATE_TO_CONFIG_EDIT
+        - DEPRECATE_TO_CONFIG_INIT
+        - DEPRECATE_TO_CONFIG_LIST
+        - DEPRECATE_TO_CONFIG_SET
+        - PROFILES_COMMAND_TYPE_KEY
+
+  - Annotated the following items as @internal:
+    - @zowe/imperative
+      - CommandProfileLoader
+      - ImperativeApi.profileManager
+      - ProfileValidator
+
+## `8.0.0-next.202402271901`
+
+- BugFix: Fixed chalk functionality that was broken due to the use of the removed `.enabled` property. [#2071](https://github.com/zowe/zowe-cli/issues/2071)
+
+## `8.0.0-next.202402261705`
+
+- LTS Breaking: Updated `ICommandArguments` and `IHandlerParameters` to accept strings or numbers per Yargs changes. [#2069](https://github.com/zowe/zowe-cli/pull/2069)
+- BugFix: Correct the examples displayed by the `--help-examples` command. [#1865](https://github.com/zowe/zowe-cli/issues/1865) and [#1715](https://github.com/zowe/zowe-cli/issues/1715)
+- BugFix: Updated additional dependencies for technical currency. [#2061](https://github.com/zowe/zowe-cli/pull/2061)
+- BugFix: Updated engine to Node 16.7.0. [#2061](https://github.com/zowe/zowe-cli/pull/2061)
+
+## `8.0.0-next.202402221834`
+
+- Enhancement: Added multiple APIs to the `ProfileInfo` class to help manage schemas between client applications. [#2012](https://github.com/zowe/zowe-cli/issues/2012)
+
+## `8.0.0-next.202402211923`
+
+- BugFix: Updated dependencies for technical currency. [#2057](https://github.com/zowe/zowe-cli/pull/2057)
+
+## `8.0.0-next.202402132108`
+
+- LTS Breaking: Added Zowe release version output for `--version` [#2028](https://github.com/zowe/zowe-cli/issues/2028)
+- Enhancement: Added `name-only` alias to `root` on `config list` command [#1797](https://github.com/zowe/zowe-cli/issues/1797)
+- BugFix: Resolved technical currency by updating `socks` transitive dependency
+
+
+## `8.0.0-next.202401191954`
+
+- LTS Breaking: Removed the following:
+  - All 'profiles' commands, since they only worked with now-obsolete V1 profiles.
+  - BasicProfileManager.initialize function
+  - These interfaces:
+    - IProfileManagerInit
+    - IProfileInitialized
+
+## `8.0.0-next.202401081937`
+
+- BugFix: Fixed error message shown for null option definition to include details about which command caused the error. [#2002](https://github.com/zowe/zowe-cli/issues/2002)
+
+## `8.0.0-next.202401031939`
+
+- Enhancement: Revised help text for consistency [#1756](https://github.com/zowe/zowe-cli/issues/1756)
+
+## `8.0.0-next.202311291643`
+
+- LTS Breaking: Removed check for `ZOWE_EDITOR` environment variable in `ProcessUtils.openInEditor` [#1867](https://github.com/zowe/zowe-cli/issues/1867)
+
+## `8.0.0-next.202311282012`
+
+- LTS Breaking: Unpinned dependency versions to allow for patch/minor version updates for dependencies [#1968](https://github.com/zowe/zowe-cli/issues/1968)
+
+## `8.0.0-next.202311141903`
+
+- LTS Breaking: Removed the following previously deprecated items:
+  - `flattenCommandTreeWithAliases()` -- Use `CommandUtils.flattenCommandTree()` instead
+  - `AbstractAuthHandler.getPromptParams()` -- Use `getAuthHandlerApi()` instead
+  - `BaseAuthHandler.getPromptParams()` -- Use `getAuthHandlerApi()` instead
+  - `promptForInput()` -- Use the asynchronous method `readPrompt()` instead
+  - `promptWithTimeout()` -- Use `readPrompt` instead which supports more options
+  - `Imperative.envVariablePrefix` -- Use `ImperativeConfig.instance.envVariablePrefix` instead
+  - `pluginHealthCheck()` -- Plugins that want to perform a health check can
+    specify the `pluginLifeCycle` property to load a class from the plugin.
+    The plugin can implement the `postInstall()` function of that class to perform
+    a health check, or any other desired operation.
+  - `IProfOpts.requireKeytar` -- removing the default implementation of `require("keytar")` from the caller app's node_modules folders
+
+## `8.0.0-next.202311141517`
+
+- LTS Breaking: Replaced the previously deprecated function AbstractCommandYargs.getBrightYargsResponse - use AbstractCommandYargs.getZoweYargsResponse
+
+## `8.0.0-next.202311132045`
+
+- Major: First major version bump for V3
+
 ## `5.27.1`
 
 - BugFix: Updated `dataobject-parser` dependency for technical currency. [#2262](https://github.com/zowe/zowe-cli/pull/2262)

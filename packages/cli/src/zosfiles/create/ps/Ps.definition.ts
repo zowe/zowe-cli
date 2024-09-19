@@ -25,6 +25,7 @@ const strings = (require("../../-strings-/en").default as typeof i18nTypings).CR
 export const PsDefinition: ICommandDefinition = {
     name: "data-set-sequential",
     aliases: ["ps"],
+    summary: strings.ACTIONS.DATA_SET_SEQUENTIAL.SUMMARY,
     description: strings.ACTIONS.DATA_SET_SEQUENTIAL.DESCRIPTION,
     type: "command",
     handler: __dirname + "/Ps.handler",
@@ -52,7 +53,6 @@ export const PsDefinition: ICommandDefinition = {
         ZosFilesCreateOptions.mgntclass,
         ZosFilesCreateOptions.dataclass,
         ZosFilesCreateOptions.unit,
-        ZosFilesCreateExtraOptions.showAttributes,
         ZosFilesCreateExtraOptions.attributes
     ].sort((a, b) => a.name.localeCompare(b.name)),
     examples: [

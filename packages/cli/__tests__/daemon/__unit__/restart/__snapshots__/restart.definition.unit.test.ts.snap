@@ -1,6 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-
 exports[`daemon restart definition should not have changed 1`] = `
 Object {
   "description": "Restart the Zowe CLI daemon.",
@@ -11,6 +10,7 @@ Object {
     },
   ],
   "name": "restart",
+  "summary": "Restart the Zowe CLI daemon",
   "type": "command",
 }
 `;

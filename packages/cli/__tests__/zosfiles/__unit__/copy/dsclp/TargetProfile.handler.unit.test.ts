@@ -12,17 +12,13 @@
 import { IHandlerParameters, ImperativeConfig, ImperativeError } from "@zowe/imperative";
 import TargetProfileHandler from "../../../../../src/zosfiles/copy/dsclp/TargetProfile.handler";
 import { DsclpDefinition } from "../../../../../src/zosfiles/copy/dsclp/Dsclp.definition";
-import {
-    UNIT_TEST_ZOSMF_PROF_OPTS,
-    UNIT_TEST_PROFILES_ZOSMF
-} from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
+import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../../__tests__/__src__/TestConstants";
 import { mockHandlerParameters } from "@zowe/cli-test-utils";
 
 const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
     arguments: UNIT_TEST_ZOSMF_PROF_OPTS,
     positionals: ["files", "copy", "data-set-cross-lpar"],
-    definition: DsclpDefinition,
-    profiles: UNIT_TEST_PROFILES_ZOSMF
+    definition: DsclpDefinition
 });
 
 describe("TargetProfileHandler", () => {
@@ -60,48 +56,6 @@ describe("TargetProfileHandler", () => {
             },
             envVariablePrefix: "ZOWE",
             loadedConfig: {}
-        } as any);
-
-        const handler = new TargetProfileHandler();
-        await handler.process(commandParameters);
-
-        expect(getProfileMock).toHaveBeenCalledTimes(1);
-        expect(commandParameters.response.data.setObj).toHaveBeenCalledWith({
-            apiResponse: {
-                sessCfg: expect.objectContaining({
-                    hostname: "example1.com",
-                    port: 123,
-                    user: "user2",
-                    password: "password3"
-                })
-            },
-            success: true
-        });
-    });
-
-    it("should merge properties from v1 profiles and command arguments", async () => {
-        const commandParameters = {
-            ...DEFAULT_PARAMETERS,
-            arguments: {
-                ...DEFAULT_PARAMETERS.arguments,
-                host: "example1.com",
-                user: "user1",
-                password: "password1",
-                targetUser: "user2",
-                targetPassword: "password3",
-                targetZosmfProfile: "target_zosmf"
-            }
-        };
-
-        commandParameters.response.data.setObj = jest.fn();
-        const getProfileMock = jest.fn().mockReturnValue({
-            password: "password2",
-            port: 123
-        });
-        // eslint-disable-next-line deprecation/deprecation
-        commandParameters.profiles.get = getProfileMock;
-        jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({
-            config: { exists: false }
         } as any);
 
         const handler = new TargetProfileHandler();

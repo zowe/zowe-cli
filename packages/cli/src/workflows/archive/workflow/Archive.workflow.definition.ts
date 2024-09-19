@@ -28,10 +28,10 @@ export const Workflow: ICommandDefinition = {
     profile: {
         optional: ["zosmf"]
     },
-    options: ([
+    options: [
         ArchiveOptions.workflowName,
         ArchiveOptions.workflowKey
-    ]),
+    ],
     outputFormatOptions: true,
     examples: [
         {

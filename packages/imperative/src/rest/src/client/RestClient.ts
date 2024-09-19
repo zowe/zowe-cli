@@ -501,7 +501,7 @@ export class RestClient extends AbstractRestClient {
      * @memberof RestClient
      */
     public static hasQueryString(query: string): boolean {
-        return (query.slice(-1) !== RestConstants.QUERY_ID);
+        return query.slice(-1) !== RestConstants.QUERY_ID;
     }
 
     /**

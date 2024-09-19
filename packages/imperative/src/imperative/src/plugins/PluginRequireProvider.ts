@@ -32,7 +32,7 @@ import * as lodash from "lodash";
  * PluginRequireProvider.createPluginHooks(["module-a", "module-b"]);
  *
  * // Now in all places of the application, module-a and module-b will be loaded
- * // from the package location of process.mainModule (I.E the Host Package). This
+ * // from the package location of require.main (I.E the Host Package). This
  * // is useful when the Host Package has some sort of plugin infrastructure that
  * // might require modules to be injected to the plugins.
  *
@@ -160,6 +160,7 @@ export class PluginRequireProvider {
          */
         const regex = this.regex = new RegExp(`^(${internalModules.join("|")})(?:\\/.*)?$`, "gm");
         const origRequire = this.origRequire = Module.prototype.require;
+        const origMain = this.origRequire.main;
 
         // Timerify the function if needed
         // Gave it a name so that we can more easily track it
@@ -180,8 +181,7 @@ export class PluginRequireProvider {
                 }
 
                 // Inject it from the main module dependencies
-                // eslint-disable-next-line deprecation/deprecation
-                return origRequire.apply(process.mainModule, args);
+                return origRequire.apply(origMain, args);
             } else {
                 // Otherwise use the package dependencies
                 return origRequire.apply(this, args);

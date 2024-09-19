@@ -209,7 +209,7 @@ export class CreateWorkflow{
             await Upload.fileToUssFile(session, localFile, remoteFile, { binary: true });
         } catch (error) {
             throw new ImperativeError({
-                msg : "Failed to create temporary uss file\n" + (error.message) + "\n" + (error.additionalDetails)
+                msg : "Failed to create temporary uss file\n" + error.message + "\n" + error.additionalDetails
             });
         }
     }

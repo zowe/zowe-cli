@@ -59,6 +59,18 @@ const tokenValueOption: ICommandOptionDefinition = {
     type: "string"
 };
 
+const certFileOption: ICommandOptionDefinition = {
+    name: "cert-file",
+    description: "Fruit certificate file",
+    type: "existingLocalFile"
+};
+
+const certKeyFileOption: ICommandOptionDefinition = {
+    name: "cert-key-file",
+    description: "Fruit certificate key file",
+    type: "existingLocalFile"
+};
+
 // Example to use with tsnode: */*CommandDefinitions!(.d).*s
 export const config: IImperativeConfig = {
     commandModuleGlobs: ["**/cli/*/*definition!(.d).*s"],
@@ -148,6 +160,14 @@ export const config: IImperativeConfig = {
                     type: "string",
                     optionDefinition: tokenValueOption,
                     secure: true
+                },
+                certFile: {
+                    type: "existingLocalFile",
+                    optionDefinition: certFileOption
+                },
+                certKeyFile: {
+                    type: "existingLocalFile",
+                    optionDefinition: certKeyFileOption
                 }
             },
         },
@@ -162,7 +182,9 @@ export const config: IImperativeConfig = {
                         hostOption,
                         portOption,
                         userOption,
-                        passwordOption
+                        passwordOption,
+                        certFileOption,
+                        certKeyFileOption
                     ]
                 },
                 logout: {

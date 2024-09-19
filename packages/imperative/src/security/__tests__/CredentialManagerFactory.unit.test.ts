@@ -35,13 +35,13 @@ describe("CredentialManagerFactory", () => {
     it("should throw an error if no service name was provided", () => {
         expect(() => {
             CredentialManagerFactory.manager.initialize();
-        }).toThrowError("Credential Manager not yet initialized!");
+        }).toThrow("Credential Manager not yet initialized!");
     });
 
     it("should throw an error when getting the manager before init", () => {
         expect(() => {
             CredentialManagerFactory.manager.initialize();
-        }).toThrowError("Credential Manager not yet initialized!");
+        }).toThrow("Credential Manager not yet initialized!");
     });
 
     it("should throw an error when initialize is called twice", async () => {
@@ -87,7 +87,7 @@ describe("CredentialManagerFactory", () => {
             expect(actualError.message).toContain(`${classFile} does not extend AbstractCredentialManager`);
             expect(() => {
                 CredentialManagerFactory.manager.initialize();
-            }).toThrowError("Credential Manager not yet initialized!");
+            }).toThrow("Credential Manager not yet initialized!");
         });
 
         it("should handle a load failure", async () => {
@@ -97,7 +97,7 @@ describe("CredentialManagerFactory", () => {
             expect(actualError.message).toContain(`Cannot find module '${classFile}'`);
             expect(() => {
                 CredentialManagerFactory.manager.initialize();
-            }).toThrowError("Credential Manager not yet initialized!");
+            }).toThrow("Credential Manager not yet initialized!");
         });
     });
 
@@ -110,8 +110,8 @@ describe("CredentialManagerFactory", () => {
 
         beforeEach(async () => {
             // Generate a random name so we can verify that different names work
-            emulated.pluginName = generateRandomAlphaNumericString(Math.floor((Math.random() * nameMaxLength) + 1));
-            emulated.cliName = generateRandomAlphaNumericString(Math.floor((Math.random() * nameMaxLength) + 1));
+            emulated.pluginName = generateRandomAlphaNumericString(Math.floor(Math.random() * nameMaxLength + 1));
+            emulated.cliName = generateRandomAlphaNumericString(Math.floor(Math.random() * nameMaxLength + 1));
         });
 
         afterEach(() => {
@@ -167,7 +167,7 @@ describe("CredentialManagerFactory", () => {
             expect(actualError.message).toContain(`Cannot find module '${classFile}'`);
             expect(() => {
                 CredentialManagerFactory.manager.initialize();
-            }).toThrowError("Credential Manager not yet initialized!");
+            }).toThrow("Credential Manager not yet initialized!");
         });
 
         it("should initialize a credential manager with a display name", async () => {

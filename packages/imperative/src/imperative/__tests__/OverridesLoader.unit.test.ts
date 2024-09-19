@@ -23,8 +23,6 @@ import { AppSettings } from "../../settings";
 const TEST_MANAGER_NAME = "test manager";
 
 describe("OverridesLoader", () => {
-    // eslint-disable-next-line deprecation/deprecation
-    const mainModule = process.mainModule;
     const mockCredMgrInitialized = jest.fn().mockReturnValue(false);
 
     beforeAll(() => {
@@ -34,15 +32,6 @@ describe("OverridesLoader", () => {
     beforeEach(() => {
         jest.restoreAllMocks();
         jest.resetAllMocks();
-        // eslint-disable-next-line deprecation/deprecation
-        (process.mainModule as any) = {
-            filename: __filename
-        };
-    });
-
-    afterEach(() => {
-        // eslint-disable-next-line deprecation/deprecation
-        process.mainModule = mainModule;
     });
 
     afterAll(() => {
@@ -217,9 +206,8 @@ describe("OverridesLoader", () => {
                 };
 
                 // DON'T YOU EVER DO THIS AFTER THE SPY, IT WILL CAUSE YOU MASSIVE PROBLEMS
-                // I suspect that process.mainModule.filename somehow uses path.resolve (25 times when I ran this)
-                // eslint-disable-next-line deprecation/deprecation
-                const expectedArgs = [process.mainModule.filename, "../", config.overrides.CredentialManager];
+                // I suspect that require.main.filename somehow uses path.resolve (25 times when I ran this)
+                const expectedArgs = [__filename, "../", config.overrides?.CredentialManager];
 
                 const expectedLocation = "/some/random/dummy/location/DummyFile.ts";
                 jest.spyOn(path, "resolve").mockReturnValueOnce(expectedLocation);

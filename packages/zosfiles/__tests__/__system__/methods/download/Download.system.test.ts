@@ -38,7 +38,7 @@ import * as fs from "fs";
 import { posix } from "path";
 import { Shell } from "@zowe/zos-uss-for-zowe-sdk";
 import { PassThrough } from "stream";
-import getStream = require("get-stream");
+import { text } from "stream/consumers";
 
 const rimraf = require("rimraf").sync;
 const delayTime = 2000;
@@ -353,7 +353,7 @@ describe("Download Data Set", () => {
                     ZosFilesMessages.datasetDownloadedSuccessfully.message.substring(0, "Data set downloaded successfully".length + 1));
 
                 // Compare the downloaded contents to those uploaded
-                const fileContents = stripNewLines(await getStream(responseStream));
+                const fileContents = stripNewLines(await text(responseStream));
                 expect(fileContents).toEqual(testData);
             });
         });
@@ -1006,7 +1006,7 @@ describe("Download Data Set", () => {
             const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussname;
 
             try {
-                (await ZosmfRestClient.deleteExpectString(REAL_SESSION, endpoint));
+                await ZosmfRestClient.deleteExpectString(REAL_SESSION, endpoint);
                 await delay(delayTime);
             } catch (err) {
                 Imperative.console.error(err);
@@ -1229,7 +1229,7 @@ describe("Download Data Set", () => {
                 expect(response).toBeTruthy();
 
                 // Compare the downloaded contents to those uploaded
-                const fileContents = stripNewLines(await getStream(responseStream));
+                const fileContents = stripNewLines(await text(responseStream));
                 expect(fileContents).toEqual(testData);
             });
         });
@@ -1508,7 +1508,7 @@ describe("Download Data Set", () => {
                     caughtError = error;
                 }
                 expect(caughtError).toBeDefined();
-                expect(caughtError.message).toContain("Path name not found");
+                expect(stripNewLines(caughtError.message)).toContain("Path name not found");
             });
         });
     });
@@ -1793,7 +1793,7 @@ describe("Download Data Set - encoded", () => {
             const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + encodeURIComponent(ussname);
 
             try {
-                (await ZosmfRestClient.deleteExpectString(REAL_SESSION, endpoint));
+                await ZosmfRestClient.deleteExpectString(REAL_SESSION, endpoint);
                 await delay(delayTime);
             } catch (err) {
                 Imperative.console.error(err);

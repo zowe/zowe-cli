@@ -17,6 +17,8 @@ import { ICredentialManagerNameMap } from "../src/doc/ICredentialManagerNameMap"
 import { ImperativeConfig } from "../../utilities";
 import { ImperativeError } from "../../error";
 import { ISettingsFile } from "../../settings/src/doc/ISettingsFile";
+import { EventOperator, EventUtils } from "../../events";
+
 
 describe("CredentialManagerOverride", () => {
     let mockImpConfig: any;
@@ -28,6 +30,8 @@ describe("CredentialManagerOverride", () => {
             cliHome: __dirname
         };
         jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue(mockImpConfig);
+        jest.spyOn(EventUtils, "validateAppName").mockImplementation(jest.fn());
+        jest.spyOn(EventOperator, "getZoweProcessor").mockReturnValue({emitZoweEvent: jest.fn()} as any);
 
         expectedSettings = {
             fileName: path.join(mockImpConfig.cliHome, "settings", "imperative.json"),
@@ -53,10 +57,34 @@ describe("CredentialManagerOverride", () => {
                     "credMgrDisplayName": "Secrets for Kubernetes",
                     "credMgrPluginName": "@zowe/secrets-for-kubernetes-for-zowe-cli",
                     "credMgrZEName": "Zowe.secrets-for-kubernetes"
-                }
+                },
+                {
+                    "credMgrDisplayName": false
+                },
             ];
             const receivedCredMgrs = CredentialManagerOverride.getKnownCredMgrs();
             expect(receivedCredMgrs).toEqual(expectedCredMgrs);
+        });
+    });
+
+    describe("getCurrentCredMgr", () => {
+        it("should return the current credential manager", () => {
+            const getSettingsFileJsonSpy = jest.spyOn(CredentialManagerOverride as any, "getSettingsFileJson");
+            getSettingsFileJsonSpy.mockReturnValue({json: {overrides: { CredentialManager: "test"}}});
+            const current = CredentialManagerOverride.getCurrentCredMgr();
+            expect(current).toEqual("test");
+        });
+        it("should return false if the credential management is disabled", () => {
+            const getSettingsFileJsonSpy = jest.spyOn(CredentialManagerOverride as any, "getSettingsFileJson");
+            getSettingsFileJsonSpy.mockReturnValue({json: {overrides: { CredentialManager: false}}});
+            const current = CredentialManagerOverride.getCurrentCredMgr();
+            expect(current).toBe(false);
+        });
+        it("should return the default credential manager if settings file does not exist", () => {
+            const getSettingsFileJsonSpy = jest.spyOn(CredentialManagerOverride as any, "getSettingsFileJson");
+            getSettingsFileJsonSpy.mockImplementation(() => {throw "test";});
+            const current = CredentialManagerOverride.getCurrentCredMgr();
+            expect(current).toEqual(CredentialManagerOverride.DEFAULT_CRED_MGR_NAME);
         });
     });
 

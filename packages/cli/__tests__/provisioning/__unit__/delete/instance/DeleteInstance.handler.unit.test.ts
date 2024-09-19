@@ -19,17 +19,13 @@ import {
     ListRegistryInstances,
     ProvisioningConstants
 } from "@zowe/provisioning-for-zowe-sdk";
-import {
-    UNIT_TEST_ZOSMF_PROF_OPTS,
-    UNIT_TEST_PROFILES_ZOSMF
-} from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
+import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../../__tests__/__src__/TestConstants";
 import { mockHandlerParameters } from "@zowe/cli-test-utils";
 
 const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
     arguments: UNIT_TEST_ZOSMF_PROF_OPTS,
     positionals: ["provisioning", "delete", "instance"],
-    definition: DeleteInstanceDefinition.DeleteInstanceDefinition,
-    profiles: UNIT_TEST_PROFILES_ZOSMF
+    definition: DeleteInstanceDefinition.DeleteInstanceDefinition
 });
 
 describe("delete deprovisioned instance handler tests", () => {

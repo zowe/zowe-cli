@@ -208,16 +208,6 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
     },
 
     /**
-     * Message indicating that the data sets matching pattern was downloaded successfully
-     * @type {IMessageDefinition}
-     * @deprecated
-     */
-    // eslint-disable-next-line deprecation/deprecation
-    datasetsDownloadedSuccessfully: {
-        message: "Data sets matching pattern downloaded successfully.\nDestination: %s"
-    },
-
-    /**
      * Message indicating that the data sets matching pattern were listed successfully
      * @type {IMessageDefinition}
      */
@@ -410,26 +400,6 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
     },
 
     /**
-     * Message indicating that all data sets matching the provided patterns are archived.
-     * @type {IMessageDefinition}
-     * @deprecated
-     */
-    // eslint-disable-next-line deprecation/deprecation
-    allDataSetsArchived: {
-        message: "All data sets matching the selected pattern(s) were archived."
-    },
-
-    /**
-     * Message indicating that no data sets remain to be downloaded after the excluded ones were filtered out.
-     * @type {IMessageDefinition}
-     * @deprecated
-     */
-    // eslint-disable-next-line deprecation/deprecation
-    noDataSetsInList: {
-        message: "No data sets left after excluded pattern(s) were filtered out."
-    },
-
-    /**
      * Message indicating that no data sets remain to be downloaded after the excluded ones were filtered out.
      * @type {IMessageDefinition}
      */
@@ -440,22 +410,9 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
     /**
      * Message indicating that no data sets remain to be downloaded after the excluded ones were filtered out.
      * @type {IMessageDefinition}
-     * @deprecated
      */
-    // eslint-disable-next-line deprecation/deprecation
-    noDataSetsMatchingPatternRemain: {
-        message: "After filtering out the archived files and files that match the exclusion-parameters, no data sets matching" +
-        " the supported organization type remain."
-    },
-
-    /**
-     * Message indicating that only empty partitioned data sets match the provided patterns
-     * @type {IMessageDefinition}
-     * @deprecated
-     */
-    // eslint-disable-next-line deprecation/deprecation
-    onlyEmptyPartitionedDataSets: {
-        message: "Only empty partitioned data sets match the provided patterns."
+    noDataSetsInList: {
+        message: "No data sets left after excluded pattern(s) were filtered out."
     },
 
     /**

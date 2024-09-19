@@ -13,14 +13,13 @@ import { IHandlerParameters, Session } from "@zowe/imperative";
 import { Download, IDownloadOptions, IDsmListOptions, List } from "@zowe/zos-files-for-zowe-sdk";
 import * as DataSetMatchingDefinition from "../../../../../src/zosfiles/download/dsm/DataSetMatching.definition";
 import * as DataSetMatchingHandler from "../../../../../src/zosfiles/download/dsm/DataSetMatching.handler";
-import { UNIT_TEST_ZOSMF_PROF_OPTS, UNIT_TEST_PROFILES_ZOSMF } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
+import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../../__tests__/__src__/TestConstants";
 import { mockHandlerParameters } from "@zowe/cli-test-utils";
 
 const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
     arguments: UNIT_TEST_ZOSMF_PROF_OPTS,
     positionals: ["zos-jobs", "download", "output"],
-    definition: DataSetMatchingDefinition.DataSetMatchingDefinition,
-    profiles: UNIT_TEST_PROFILES_ZOSMF
+    definition: DataSetMatchingDefinition.DataSetMatchingDefinition
 });
 
 const fakeListOptions: IDsmListOptions = {
@@ -35,7 +34,6 @@ const fakeDownloadOptions: IDownloadOptions = {
     binary: undefined,
     directory: undefined,
     encoding: undefined,
-    excludePatterns: undefined,
     extension: undefined,
     extensionMap: undefined,
     failFast: undefined,

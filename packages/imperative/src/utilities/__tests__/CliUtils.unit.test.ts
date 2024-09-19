@@ -11,12 +11,9 @@
 
 import * as stream from "stream";
 import { CliUtils } from "../src/CliUtils";
-import { CommandProfiles, ICommandOptionDefinition } from "../../cmd";
-import { IProfile } from "../../profiles";
+import { ICommandOptionDefinition } from "../../cmd";
 import { ImperativeError } from "../../error";
-import * as prompt from "readline-sync";
-
-jest.mock("readline-sync");
+import { Config, IConfig } from "../../config";
 
 const TEST_PREFIX = "TEST_CLI_PREFIX";
 const boolEnv = TEST_PREFIX + "_OPT_FAKE_BOOL_OPT";
@@ -24,6 +21,31 @@ const stringEnv = TEST_PREFIX + "_OPT_FAKE_STRING_OPT";
 const stringAliasEnv = TEST_PREFIX + "_OPT_FAKE_STRING_OPT_WITH_ALIASES";
 const numberEnv = TEST_PREFIX + "_OPT_FAKE_NUMBER_OPT";
 const arrayEnv = TEST_PREFIX + "_OPT_FAKE_ARRAY_OPT";
+
+function mockConfigApi(properties: IConfig | undefined): any {
+    properties = properties || Config.empty();
+    return {
+        api: {
+            layers: {
+                get: () => ({
+                    exists: true,
+                    path: "fakePath",
+                    properties
+                })
+            },
+            profiles: {
+                defaultGet: jest.fn().mockReturnValue(properties.profiles[properties.defaults.banana]?.properties),
+                exists: () => properties.defaults.banana != null,
+                getProfilePathFromName: (name: string) => `profiles.${name}`
+            },
+            secure: {
+                securePropsForProfile: jest.fn().mockReturnValue([])
+            }
+        },
+        exists: true,
+        properties
+    };
+}
 
 describe("CliUtils", () => {
     describe("extractEnvForOptions", () => {
@@ -125,18 +147,6 @@ describe("CliUtils", () => {
         });
     });
 
-    describe("promptForInput", () => {
-        it("should return the mocked value", () => {
-            const mockedPromptValue = "My value is here ";
-            (prompt as any).question = jest.fn(() => {
-                return mockedPromptValue;
-            });
-            // eslint-disable-next-line deprecation/deprecation
-            const value = CliUtils.promptForInput("my message goes here:");
-            expect(value).toEqual(mockedPromptValue);
-        });
-    });
-
     describe("sleep", () => {
         it("should sleep for 1 second", async () => {
             const startTime = Date.now();
@@ -146,78 +156,6 @@ describe("CliUtils", () => {
             const timeDiff = Date.now() - startTime;
             expect(timeDiff).toBeGreaterThanOrEqual(minElapsedTime);
         });
-    });
-
-    describe("promptWithTimeout", () => {
-        let readline = require("readline");
-        let readlineReal: any;
-        const mockedAnswer = "User answer";
-
-        beforeEach(() => {
-            readlineReal = readline;
-            readline.createInterface = jest.fn(() => {
-                return {
-                    prompt: jest.fn(() => {
-                        // do nothing
-                    }),
-                    on: jest.fn((eventName: string, callback: any) => {
-                        if (eventName === "line") {
-                            callback(mockedAnswer);
-                        }
-                        return {
-                            on: jest.fn((chainedEvtNm: string, chainedCallBack: any) => {
-                                if (chainedEvtNm === "close") {
-                                    chainedCallBack();
-                                }
-                            }),
-                        };
-                    }),
-                    output: {
-                        write: jest.fn(() => {
-                            // do nothing
-                        })
-                    },
-                    close: jest.fn(() => {
-                        // do nothing
-                    })
-                };
-            });
-        });
-
-        afterEach(() => {
-            readline = readlineReal;
-        });
-
-        it("should return the user's answer", async () => {
-            // eslint-disable-next-line deprecation/deprecation
-            const answer = await CliUtils.promptWithTimeout("Question to be asked: ");
-            expect(answer).toEqual(mockedAnswer);
-        });
-
-        it("should accept a hideText parameter", async () => {
-            // eslint-disable-next-line deprecation/deprecation
-            const answer = await CliUtils.promptWithTimeout("Should we hide your answer: ", true);
-            expect(answer).toEqual(mockedAnswer);
-        });
-
-        it("should accept a secToWait parameter", async () => {
-            const secToWait = 15;
-            // eslint-disable-next-line deprecation/deprecation
-            const answer = await CliUtils.promptWithTimeout("Should wait your amount of time: ",
-                false, secToWait
-            );
-            expect(answer).toEqual(mockedAnswer);
-        });
-
-        it("should limit to a max secToWait", async () => {
-            const tooLong = 1000;
-            // eslint-disable-next-line deprecation/deprecation
-            const answer = await CliUtils.promptWithTimeout("Should wait your amount of time: ",
-                false, tooLong
-            );
-            expect(answer).toEqual(mockedAnswer);
-        });
-
     });
 
     describe("readPrompt", () => {
@@ -248,14 +186,15 @@ describe("CliUtils", () => {
         it("should accept a secToWait parameter", async () => {
             const secToWait = 15;
             const answer = await CliUtils.readPrompt("Should wait your amount of time: ",
-                { hideText: false, secToWait }
+                { hideText: false, secToWait: secToWait }
             );
             expect(answer).toEqual(mockedAnswer);
         });
 
         it("should limit to a max secToWait", async () => {
             const tooLong = 1000;
-            const answer = await CliUtils.readPrompt("Should wait your amount of time: ",
+            const answer = await CliUtils.readPrompt(
+                "Should wait your amount of time: ",
                 { hideText: false, secToWait: tooLong }
             );
             expect(answer).toEqual(mockedAnswer);
@@ -294,7 +233,7 @@ describe("CliUtils", () => {
         it("should produce a deprecated message when deprecated", () => {
             responseErrText = notSetYet;
             CliUtils.showMsgWhenDeprecated(handlerParms);
-            expect(responseErrText).toEqual("Recommended replacement: " +
+            expect(responseErrText).toContain("Recommended replacement: " +
                 handlerParms.definition.deprecatedReplacement);
         });
 
@@ -302,7 +241,7 @@ describe("CliUtils", () => {
             responseErrText = notSetYet;
             handlerParms.positionals = ["positional_one"];
             CliUtils.showMsgWhenDeprecated(handlerParms);
-            expect(responseErrText).toEqual("Recommended replacement: " +
+            expect(responseErrText).toContain("Recommended replacement: " +
                 handlerParms.definition.deprecatedReplacement);
         });
 
@@ -310,7 +249,7 @@ describe("CliUtils", () => {
             responseErrText = notSetYet;
             handlerParms.positionals = [];
             CliUtils.showMsgWhenDeprecated(handlerParms);
-            expect(responseErrText).toEqual("Recommended replacement: " +
+            expect(responseErrText).toContain("Recommended replacement: " +
                 handlerParms.definition.deprecatedReplacement);
             expect(responseErrText).not.toContain("Obsolete component. No replacement exists");
         });
@@ -348,7 +287,7 @@ describe("CliUtils", () => {
         });
     });
 
-    describe("getOptValueFromProfiles", () => {
+    describe("getOptValuesFromConfig", () => {
 
         const FAKE_OPTS: ICommandOptionDefinition[] = [{
             name: "fake-string-opt",
@@ -379,10 +318,8 @@ describe("CliUtils", () => {
         it("should throw an imperative error if a required profile is not present", () => {
             let error;
             try {
-                const args = CliUtils.getOptValueFromProfiles(
-                    new CommandProfiles(new Map<string, IProfile[]>()),
-                    { required: ["banana"] },
-                    FAKE_OPTS);
+                CliUtils.getOptValuesFromConfig(mockConfigApi(undefined),
+                    { required: ["banana"] } as any, {} as any, FAKE_OPTS);
             } catch (e) {
                 error = e;
             }
@@ -392,106 +329,129 @@ describe("CliUtils", () => {
         });
 
         it("should return nothing if a profile was optional and not loaded", () => {
-            const args = CliUtils.getOptValueFromProfiles(
-                new CommandProfiles(new Map<string, IProfile[]>()),
-                { optional: ["banana"] },
-                FAKE_OPTS);
+            const args = CliUtils.getOptValuesFromConfig(mockConfigApi(undefined),
+                { optional: ["banana"] }, {} as any, FAKE_OPTS);
             expect(Object.keys(args).length).toBe(0);
         });
 
         it("should return args (from definitions with no hyphen in name) extracted from loaded profile", () => {
-            const map = new Map<string, IProfile[]>();
-            map.set("banana", [{ type: "banana", name: "fakebanana", nohyphen: "specified in profile" }]);
-            const args = CliUtils.getOptValueFromProfiles(
-                new CommandProfiles(map),
-                { optional: ["banana"] },
-                FAKE_OPTS);
+            const args = CliUtils.getOptValuesFromConfig(
+                mockConfigApi({
+                    profiles: {
+                        fakebanana: {
+                            type: "banana",
+                            properties: {
+                                nohyphen: "specified in profile"
+                            }
+                        }
+                    },
+                    defaults: { banana: "fakebanana" }
+                }),
+                { optional: ["banana"] }, {} as any, FAKE_OPTS);
             expect(args).toMatchSnapshot();
         });
 
         it("should return args (with both cases) extracted from loaded profile, preferring the camel case", () => {
-            const map = new Map<string, IProfile[]>();
-            map.set("banana", [{
-                "type": "banana",
-                "name": "fakebanana",
-                "couldBeEither": "should be me",
-                "could-be-either": "should not be me"
-            }]);
-            const args = CliUtils.getOptValueFromProfiles(
-                new CommandProfiles(map),
-                { optional: ["banana"] },
-                FAKE_OPTS);
+            const args = CliUtils.getOptValuesFromConfig(
+                mockConfigApi({
+                    profiles: {
+                        fakebanana: {
+                            type: "banana",
+                            properties: {
+                                couldBeEither: "should be me",
+                                "could-be-either": "should not be me"
+                            }
+                        }
+                    },
+                    defaults: { banana: "fakebanana" }
+                }),
+                { optional: ["banana"] }, {} as any, FAKE_OPTS);
             expect(args).toMatchSnapshot();
         });
 
         it("should return args (with both cases) extracted from loaded profile, preferring the kebab case", () => {
-            const map = new Map<string, IProfile[]>();
-            map.set("banana", [{
-                "type": "banana",
-                "name": "fakebanana",
-                "fakeStringOpt": "should not be me",
-                "fake-string-opt": "should be me"
-            }]);
-            const args = CliUtils.getOptValueFromProfiles(
-                new CommandProfiles(map),
-                { optional: ["banana"] },
-                FAKE_OPTS);
+            const args = CliUtils.getOptValuesFromConfig(
+                mockConfigApi({
+                    profiles: {
+                        fakebanana: {
+                            type: "banana",
+                            properties: {
+                                fakeStringOpt: "should not be me",
+                                "fake-string-opt": "should be me"
+                            }
+                        }
+                    },
+                    defaults: { banana: "fakebanana" }
+                }),
+                { optional: ["banana"] }, {} as any, FAKE_OPTS);
             expect(args).toMatchSnapshot();
         });
 
         it("should return args with both cases, if the option is camel and the profile is kebab", () => {
-            const map = new Map<string, IProfile[]>();
-            map.set("banana", [{
-                "type": "banana",
-                "name": "fakebanana",
-                "could-be-either": "should be me"
-            }]);
-            const args = CliUtils.getOptValueFromProfiles(
-                new CommandProfiles(map),
-                { optional: ["banana"] },
-                FAKE_OPTS);
+            const args = CliUtils.getOptValuesFromConfig(
+                mockConfigApi({
+                    profiles: {
+                        fakebanana: {
+                            type: "banana",
+                            properties: {
+                                "could-be-either": "should be me"
+                            }
+                        }
+                    },
+                    defaults: { banana: "fakebanana" }
+                }),
+                { optional: ["banana"] }, {} as any, FAKE_OPTS);
             expect(args).toMatchSnapshot();
         });
 
         it("should return args with both cases, if the option is kebab and the profile is camel", () => {
-            const map = new Map<string, IProfile[]>();
-            map.set("banana", [{
-                type: "banana",
-                name: "fakebanana",
-                fakeStringOpt: "should be me"
-            }]);
-            const args = CliUtils.getOptValueFromProfiles(
-                new CommandProfiles(map),
-                { optional: ["banana"] },
-                FAKE_OPTS);
+            const args = CliUtils.getOptValuesFromConfig(
+                mockConfigApi({
+                    profiles: {
+                        fakebanana: {
+                            type: "banana",
+                            properties: {
+                                fakeStringOpt: "should be me"
+                            }
+                        }
+                    },
+                    defaults: { banana: "fakebanana" }
+                }),
+                { optional: ["banana"] }, {} as any, FAKE_OPTS);
             expect(args).toMatchSnapshot();
         });
 
         it("should return args with aliases if extracted option from a profile", () => {
-            const map = new Map<string, IProfile[]>();
-            map.set("banana", [{
-                type: "banana",
-                name: "fakebanana",
-                withAlias: "should have 'w' on args object too"
-            }]);
-            const args = CliUtils.getOptValueFromProfiles(
-                new CommandProfiles(map),
-                { optional: ["banana"] },
-                FAKE_OPTS);
+            const args = CliUtils.getOptValuesFromConfig(
+                mockConfigApi({
+                    profiles: {
+                        fakebanana: {
+                            type: "banana",
+                            properties: {
+                                withAlias: "should have 'w' on args object too"
+                            }
+                        }
+                    },
+                    defaults: { banana: "fakebanana" }
+                }),
+                { optional: ["banana"] }, {} as any, FAKE_OPTS);
             expect(args).toMatchSnapshot();
         });
 
         it("should return args if extracted option from a profile is only available as an alias", () => {
-            const map = new Map<string, IProfile[]>();
-            map.set("banana", [{
-                type: "banana",
-                name: "fakebanana",
-                username: "fake"
-            }]);
-            const args = CliUtils.getOptValueFromProfiles(
-                new CommandProfiles(map),
-                { optional: ["banana"] },
-                FAKE_OPTS);
+            const args = CliUtils.getOptValuesFromConfig(
+                mockConfigApi({
+                    profiles: {
+                        fakebanana: {
+                            type: "banana",
+                            properties: {
+                                username: "fake"
+                            }
+                        }
+                    },
+                    defaults: { banana: "fakebanana" }
+                }),
+                { optional: ["banana"] }, {} as any, FAKE_OPTS);
             expect(args).toEqual({ user: "fake", username: "fake" });
         });
     });

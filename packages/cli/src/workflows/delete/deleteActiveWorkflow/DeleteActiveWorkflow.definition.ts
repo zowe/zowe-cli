@@ -23,17 +23,18 @@ import { DeleteWorkflowOptions } from "../deleteActiveWorkflow/DeleteActiveWorkf
 export const DeleteActiveWorkflow: ICommandDefinition = {
     name: "active-workflow",
     aliases: ["aw"],
-    description: "Delete an active workflow instance in z/OSMF",
+    summary: "Delete an active workflow instance in z/OSMF",
+    description: "Delete an active workflow instance in z/OSMF.",
     type: "command",
     handler: join(__dirname, "../Delete.common.handler"),
     profile: {
         optional: ["zosmf"]
     },
-    options: ([
+    options: [
         DeleteWorkflowOptions.workflowKey,
         DeleteWorkflowOptions.workflowName
 
-    ]),
+    ],
     examples: [
         {
             description: "To delete a workflow instance in z/OSMF with workflow key \"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\"",

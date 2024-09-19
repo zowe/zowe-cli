@@ -24,8 +24,8 @@ export const firststepsDefinition: ICommandDefinition = {
     name: "show-first-steps",
     type: "command",
     aliases: ["fs"],
-    summary: "Show first steps for a plugin",
-    description: "Show first steps required to set up plugin for use.",
+    summary: "Show first steps for a plug-in",
+    description: "Show first steps required to set up plug-in for use.",
     handler: join(__dirname, "showfirststeps.handler"),
     positionals: [
         {
@@ -39,7 +39,7 @@ export const firststepsDefinition: ICommandDefinition = {
     // ],
     examples: [
         {
-            description: `Show first steps for a plugin called 'my-plugin'`,
+            description: `Show first steps for a plug-in called 'my-plugin'`,
             options: "my-plugin"
         }
     ]

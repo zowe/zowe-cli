@@ -38,7 +38,7 @@ import { sync } from "cross-spawn";
 const yargs = require("yargs").argv;
 const yaml = require("js-yaml");
 const diff = require("deep-diff").diff;
-const uuidv4 = require("uuid/v4");
+import { v4 as uuidv4 } from "uuid";
 
 /**
  * Exports for usage in tests
@@ -48,8 +48,8 @@ export { resolve, basename, dirname } from "path";
 
 export const rimraf = (dir: string) => {
 
-    const rimrafExecutable = __dirname + "/../../../../node_modules/rimraf/bin.js";
-    const rimrafProcess = sync("node", [rimrafExecutable, dir]);
+    const rimrafExecutable = __dirname + "/../../../../node_modules/rimraf/dist/esm/bin.mjs";
+    const rimrafProcess = sync("node", [rimrafExecutable, dir, "--glob"]);
     if (rimrafProcess.status !== 0) {
         throw new Error("Error deleting directory with rimraf CLI: \n" + rimrafProcess.output.join(" "));
     }
@@ -170,10 +170,17 @@ export function executeTestCLICommand(cliBinModule: string, testContext: any, ar
     execDir?: string, pipeContent?: string | Buffer,
     env: { [key: string]: string } = process.env): SpawnSyncReturns<string> {
     const testLogger = TestLogger.getTestLogger();
-    const nodeCommand = "node";
-    // run the command with ts-node/register
-    const starterArguments = ["--require", "ts-node/register", cliBinModule];
-    args = starterArguments.concat(args);
+    const isLocalFile = fs.existsSync(cliBinModule) && fs.statSync(cliBinModule).isFile();
+    const nodeCommand = isLocalFile ? "node" : "npx";
+    if (isLocalFile) {
+        // run the command with ts-node/register if local file specified
+        const starterArguments = ["--require", "ts-node/register", cliBinModule];
+        args = starterArguments.concat(args);
+    } else {
+        // run the command with package bin script if directory specified
+        args.unshift(Object.keys(require(cliBinModule + "/package.json").bin).pop());
+        execDir ??= cliBinModule;
+    }
 
     const commandExecutionMessage = "Executing " + nodeCommand + " " + args.join(" ");
 
@@ -257,8 +264,8 @@ export function findExpectedOutputInCommand(cliBinModule: string,
         try {
             jsonOutput = JSON.parse(jsonCommand.stdout);
         } catch (e) {
-            const message = ("Error parsing JSON output: stdout:'" + jsonCommand.stdout + "' stderr: '" + jsonCommand.stderr +
-                "'\n status code " + jsonCommand.status) + " " + e.message;
+            const message = "Error parsing JSON output: stdout:'" + jsonCommand.stdout + "' stderr: '" + jsonCommand.stderr +
+                "'\n status code " + jsonCommand.status + " " + e.message;
             throw new Error(message);
         }
         dataObjectParser = new DataObjectParser(jsonOutput);
@@ -303,7 +310,7 @@ export function findExpectedOutputInCommand(cliBinModule: string,
 
     expectedContent = expectedContent || "";
 
-    if (!(Array.isArray(expectedContent))) {
+    if (!Array.isArray(expectedContent)) {
         // convert single expected content to an array
         expectedContent = [expectedContent];
     }
@@ -357,8 +364,8 @@ export function compareJsonObjects(actual: any, expected: any, parms?: ICompareP
     if (parms) {
         diffs.forEach((difference: any) => {
             const path = difference.path.join(".");
-            if (parms.ignorePaths == null || (parms.ignorePaths.indexOf(path) < 0)) {
-                if (!(parms.pathRegex == null)) {
+            if (parms.ignorePaths == null || parms.ignorePaths.indexOf(path) < 0) {
+                if (parms.pathRegex != null) {
                     let regexPathMatch: boolean = false;
                     for (const reg of parms.pathRegex) {
                         if (path === reg.path) {
@@ -386,7 +393,7 @@ export function compareJsonObjects(actual: any, expected: any, parms?: ICompareP
             }
         });
     } else {
-        if (!(diffs == null)) {
+        if (diffs != null) {
             returnDiffs = returnDiffs.concat(diffs);
         }
     }
@@ -440,7 +447,7 @@ export function runCliScript(scriptPath: string, cwd: string, args: any = [], en
         // Execute the command synchronously
         return sync("sh", [`${scriptPath}`].concat(args), {cwd, env: childEnv});
     } else {
-        throw new Error("The script directory doesn't exist");
+        throw new Error("The script directory doesn't exist: " + scriptPath);
     }
 }
 

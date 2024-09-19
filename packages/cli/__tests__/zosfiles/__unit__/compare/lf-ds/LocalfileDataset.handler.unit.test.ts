@@ -12,7 +12,7 @@
 jest.mock("fs");
 
 import { Get } from "@zowe/zos-files-for-zowe-sdk";
-import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../../__tests__/__src__/mocks/ZosmfProfileMock";
+import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../../__tests__/__src__/TestConstants";
 import { DiffUtils, IDiffOptions, ImperativeError } from "@zowe/imperative";
 import * as fs from "fs";
 describe("Compare local-file and data-set handler", () => {

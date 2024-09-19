@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`search job handler tests should be able respond with error message 1`] = `"You fail"`;
+
+exports[`search job handler tests should be able to search job spool 1`] = `"This job contains RC=0000"`;
+
+exports[`search job handler tests should be able to search job spool 2`] = `"This job contains RC=0000"`;

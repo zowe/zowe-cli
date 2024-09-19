@@ -86,16 +86,17 @@ describe("ApimlAutoInitHandler", () => {
             }, {
                 arguments: {
                     $0: "fake",
-                    _: ["fake"]
+                    _: ["fake"],
                 }
             });
         expect(mockGetPluginApimlConfigs).toHaveBeenCalledTimes(1);
         expect(mockGetServicesByConfig).toHaveBeenCalledTimes(1);
         expect(mockConvertApimlProfileInfoToProfileConfig).toHaveBeenCalledTimes(1);
         expect(mockLogin).toHaveBeenCalledTimes(1);
-        expect(response.profiles.base.secure).toContain("tokenValue");
-        expect(response.profiles.base.properties.tokenType).toEqual(SessConstants.TOKEN_TYPE_APIML);
-        expect(response.profiles.base.properties.tokenValue).toEqual("fakeToken");
+        const baseProfName = "project_base";
+        expect(response.profiles[baseProfName].secure).toContain("tokenValue");
+        expect(response.profiles[baseProfName].properties.tokenType).toEqual(SessConstants.TOKEN_TYPE_APIML);
+        expect(response.profiles[baseProfName].properties.tokenValue).toEqual("fakeToken");
     });
 
     it("should not have changed - tokenType and tokenValue", async () => {
@@ -141,9 +142,11 @@ describe("ApimlAutoInitHandler", () => {
         expect(mockGetServicesByConfig).toHaveBeenCalledTimes(1);
         expect(mockConvertApimlProfileInfoToProfileConfig).toHaveBeenCalledTimes(1);
         expect(mockLogin).toHaveBeenCalledTimes(0);
-        expect(response.profiles.base.secure).toContain("tokenValue");
-        expect(response.profiles.base.properties.tokenType).toEqual(SessConstants.TOKEN_TYPE_APIML);
-        expect(response.profiles.base.properties.tokenValue).toEqual("fakeToken");
+
+        const baseProfName = "project_base";
+        expect(response.profiles[baseProfName].secure).toContain("tokenValue");
+        expect(response.profiles[baseProfName].properties.tokenType).toEqual(SessConstants.TOKEN_TYPE_APIML);
+        expect(response.profiles[baseProfName].properties.tokenValue).toEqual("fakeToken");
     });
 
     it("should not have changed - PEM Certificates", async () => {
@@ -190,9 +193,11 @@ describe("ApimlAutoInitHandler", () => {
         expect(mockGetServicesByConfig).toHaveBeenCalledTimes(1);
         expect(mockConvertApimlProfileInfoToProfileConfig).toHaveBeenCalledTimes(1);
         expect(mockLogin).toHaveBeenCalledTimes(1);
-        expect(response.profiles.base.secure).toContain("tokenValue");
-        expect(response.profiles.base.properties.tokenType).toEqual(SessConstants.TOKEN_TYPE_APIML);
-        expect(response.profiles.base.properties.tokenValue).toEqual("fakeToken");
+
+        const baseProfName = "project_base";
+        expect(response.profiles[baseProfName].secure).toContain("tokenValue");
+        expect(response.profiles[baseProfName].properties.tokenType).toEqual(SessConstants.TOKEN_TYPE_APIML);
+        expect(response.profiles[baseProfName].properties.tokenValue).toEqual("fakeToken");
     });
 
     it("should not have changed - secure fields with existing non-default base profile", async () => {
@@ -380,7 +385,7 @@ describe("ApimlAutoInitHandler", () => {
         expect(mockGetServicesByConfig).toHaveBeenCalledTimes(1);
         expect(mockConvertApimlProfileInfoToProfileConfig).toHaveBeenCalledTimes(1);
         expect(mockLogin).toHaveBeenCalledTimes(1);
-        expect(response.profiles.base.properties.rejectUnauthorized).toEqual(true);
+        expect(response.profiles["project_base"].properties.rejectUnauthorized).toEqual(true);
     });
 
     it("should not have changed - rejectUnauthorized flag false", async () => {
@@ -428,7 +433,7 @@ describe("ApimlAutoInitHandler", () => {
         expect(mockGetServicesByConfig).toHaveBeenCalledTimes(1);
         expect(mockConvertApimlProfileInfoToProfileConfig).toHaveBeenCalledTimes(1);
         expect(mockLogin).toHaveBeenCalledTimes(1);
-        expect(response.profiles.base.properties.rejectUnauthorized).toEqual(false);
+        expect(response.profiles["project_base"].properties.rejectUnauthorized).toEqual(false);
     });
 
     it("should not have changed - a condition that shouldn't ever happen", async () => {
@@ -472,9 +477,11 @@ describe("ApimlAutoInitHandler", () => {
         expect(mockGetServicesByConfig).toHaveBeenCalledTimes(1);
         expect(mockConvertApimlProfileInfoToProfileConfig).toHaveBeenCalledTimes(1);
         expect(mockLogin).toHaveBeenCalledTimes(0);
-        expect(response.profiles.base.secure).not.toContain("tokenValue");
-        expect(response.profiles.base.properties.tokenType).not.toBeDefined();
-        expect(response.profiles.base.properties.tokenValue).not.toBeDefined();
+
+        const baseProfName = "project_base";
+        expect(response.profiles[baseProfName].secure).not.toContain("tokenValue");
+        expect(response.profiles[baseProfName].properties.tokenType).not.toBeDefined();
+        expect(response.profiles[baseProfName].properties.tokenValue).not.toBeDefined();
     });
 
     it("should throw an error if an error 403 is experienced", async () => {

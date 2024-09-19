@@ -63,6 +63,18 @@ export class AutoInitConstants {
     };
 
     /**
+     * Option used to override default editor
+     */
+    public static AUTO_INIT_OPTION_EDITOR: ICommandOptionDefinition = {
+        name: "editor",
+        aliases: ["ed"],
+        description: `Editor that overrides the default editor for this file type. Set the option to the editor's executable file location ` +
+            `or the program's name: ie "--editor notepad"`,
+        type: "string",
+        implies: ["edit"]
+    };
+
+    /**
      * Option used to specify whether or not to overwrite the config
      */
     public static AUTO_INIT_OPTION_OVERWRITE: ICommandOptionDefinition = {

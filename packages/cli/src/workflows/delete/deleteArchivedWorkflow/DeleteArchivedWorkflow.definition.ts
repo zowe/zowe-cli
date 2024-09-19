@@ -23,17 +23,18 @@ import { DeleteArchivedWorkflowOptions } from "../deleteArchivedWorkflow/DeleteA
 export const DeleteArchivedWorkflow: ICommandDefinition = {
     name: "archived-workflow",
     aliases: ["arw"],
-    description: "Delete an archived workflow from z/OSMF",
+    summary: "Delete an archived workflow from z/OSMF",
+    description: "Delete an archived workflow from z/OSMF.",
     type: "command",
     handler: join(__dirname, "../Delete.archived.common.handler"),
     profile: {
         optional: ["zosmf"]
     },
-    options: ([
+    options: [
         DeleteArchivedWorkflowOptions.workflowKey,
         DeleteArchivedWorkflowOptions.workflowName
 
-    ]),
+    ],
     examples: [
         {
             description: "To delete an archived workflow from z/OSMF with workflow key \"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\"",

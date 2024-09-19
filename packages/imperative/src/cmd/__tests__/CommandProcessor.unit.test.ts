@@ -15,19 +15,17 @@ import { CommandProcessor } from "../src/CommandProcessor";
 import { ICommandResponse } from "../src/doc/response/response/ICommandResponse";
 import { CommandResponse } from "../src/response/CommandResponse";
 import { IHelpGenerator } from "../src/help/doc/IHelpGenerator";
-import { BasicProfileManager, IProfileManagerFactory, IProfileTypeConfiguration } from "../../profiles";
 import { ImperativeError } from "../../error";
 import { ICommandValidatorResponse } from "../src/doc/response/response/ICommandValidatorResponse";
 import { SharedOptions } from "../src/utils/SharedOptions";
-import { CommandProfileLoader } from "../src/profiles/CommandProfileLoader";
 import { CliUtils } from "../../utilities/src/CliUtils";
 import { WebHelpManager } from "../src/help/WebHelpManager";
 import { ImperativeConfig } from "../../utilities/src/ImperativeConfig";
 import { setupConfigToLoad } from "../../../__tests__/src/TestUtil";
-import { EnvFileUtils, NextVerFeatures } from "../../utilities";
+import { EnvFileUtils } from "../../utilities";
 import { join } from "path";
 import { Config } from "../../config";
-import { LoggerUtils } from "../..";
+import { LoggerUtils } from "../../logger/src/LoggerUtils";
 
 jest.mock("../src/syntax/SyntaxValidator");
 jest.mock("../src/utils/SharedOptions");
@@ -184,59 +182,6 @@ const SAMPLE_COMMAND_REAL_HANDLER_WITH_DEFAULT_OPT: ICommandDefinition = {
     }
 };
 
-// A fake instance of the profile manager factory
-const FAKE_PROFILE_MANAGER_FACTORY: IProfileManagerFactory<IProfileTypeConfiguration> = {
-    getManager: () => {
-        return new BasicProfileManager({
-            profileRootDirectory: "FAKE_ROOT",
-            type: "banana",
-            typeConfigurations: [
-                {
-                    type: "banana",
-                    schema: {
-                        title: "fake banana schema",
-                        type: "object",
-                        description: "",
-                        properties: {}
-                    }
-                }
-            ]
-        });
-    }
-};
-
-// A fake instance of the profile manager factory with props
-const FAKE_PROFILE_MANAGER_FACTORY_WITH_PROPS: IProfileManagerFactory<IProfileTypeConfiguration> = {
-    getManager: () => {
-        return new BasicProfileManager({
-            profileRootDirectory: "FAKE_ROOT",
-            type: "banana",
-            typeConfigurations: [
-                {
-                    type: "banana",
-                    schema: {
-                        title: "fake banana schema",
-                        type: "object",
-                        description: "",
-                        properties: {
-                            color: {
-                                type: "string",
-                                optionDefinition: {
-                                    name: "color",
-                                    aliases: ["c"],
-                                    description: "The color of the banana.",
-                                    type: "string",
-                                    required: true,
-                                },
-                            }
-                        }
-                    }
-                }
-            ]
-        });
-    }
-};
-
 // A fake instance of the help generator
 const FAKE_HELP_GENERATOR: IHelpGenerator = {
     buildHelp: function buildHelp(): string {
@@ -247,6 +192,11 @@ const FAKE_HELP_GENERATOR: IHelpGenerator = {
 const ENV_VAR_PREFIX: string = "UNIT_TEST";
 
 describe("Command Processor", () => {
+    beforeEach(() => {
+        // Mock read stdin
+        jest.spyOn(SharedOptions, "readStdinIfRequested").mockResolvedValueOnce(false);
+    });
+
     // Restore everything after each test
     afterEach(() => {
         process.stdout.write = ORIGINAL_STDOUT_WRITE;
@@ -262,7 +212,6 @@ describe("Command Processor", () => {
                 envVariablePrefix: ENV_VAR_PREFIX,
                 definition: SAMPLE_COMMAND_DEFINITION,
                 helpGenerator: FAKE_HELP_GENERATOR,
-                profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
                 rootCommandName: SAMPLE_ROOT_COMMAND,
                 commandLine: "",
                 promptPhrase: "dummydummy"
@@ -293,7 +242,6 @@ describe("Command Processor", () => {
                 envVariablePrefix: ENV_VAR_PREFIX,
                 definition: undefined,
                 helpGenerator: FAKE_HELP_GENERATOR,
-                profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
                 rootCommandName: SAMPLE_ROOT_COMMAND,
                 commandLine: "",
                 promptPhrase: "dummydummy"
@@ -313,27 +261,6 @@ describe("Command Processor", () => {
                 envVariablePrefix: ENV_VAR_PREFIX,
                 definition: SAMPLE_COMMAND_DEFINITION,
                 helpGenerator: undefined,
-                profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
-                rootCommandName: SAMPLE_ROOT_COMMAND,
-                commandLine: "",
-                promptPhrase: "dummydummy"
-            });
-        } catch (e) {
-            error = e;
-        }
-        expect(error).toBeDefined();
-        expect(error instanceof ImperativeError).toBe(true);
-        expect(error.message).toMatchSnapshot();
-    });
-
-    it("should detect no profile manager factory supplied", () => {
-        let error;
-        try {
-            const processor: CommandProcessor = new CommandProcessor({
-                envVariablePrefix: ENV_VAR_PREFIX,
-                definition: SAMPLE_COMMAND_DEFINITION,
-                helpGenerator: FAKE_HELP_GENERATOR,
-                profileManagerFactory: undefined,
                 rootCommandName: SAMPLE_ROOT_COMMAND,
                 commandLine: "",
                 promptPhrase: "dummydummy"
@@ -353,7 +280,6 @@ describe("Command Processor", () => {
                 envVariablePrefix: ENV_VAR_PREFIX,
                 definition: SAMPLE_COMMAND_DEFINITION,
                 helpGenerator: FAKE_HELP_GENERATOR,
-                profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
                 rootCommandName: undefined,
                 commandLine: "",
                 promptPhrase: "dummydummy"
@@ -373,7 +299,6 @@ describe("Command Processor", () => {
                 envVariablePrefix: ENV_VAR_PREFIX,
                 definition: SAMPLE_COMMAND_DEFINITION,
                 helpGenerator: FAKE_HELP_GENERATOR,
-                profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
                 rootCommandName: "",
                 commandLine: "",
                 promptPhrase: "dummydummy"
@@ -393,7 +318,6 @@ describe("Command Processor", () => {
                 envVariablePrefix: undefined,
                 definition: SAMPLE_COMMAND_DEFINITION,
                 helpGenerator: FAKE_HELP_GENERATOR,
-                profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
                 rootCommandName: SAMPLE_ROOT_COMMAND,
                 commandLine: "",
                 promptPhrase: "dummydummy"
@@ -411,7 +335,6 @@ describe("Command Processor", () => {
             envVariablePrefix: ENV_VAR_PREFIX,
             definition: SAMPLE_COMMAND_DEFINITION,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
@@ -424,7 +347,6 @@ describe("Command Processor", () => {
             envVariablePrefix: ENV_VAR_PREFIX,
             definition: SAMPLE_COMMAND_DEFINITION,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
@@ -437,7 +359,6 @@ describe("Command Processor", () => {
             envVariablePrefix: ENV_VAR_PREFIX,
             definition: SAMPLE_COMMAND_DEFINITION,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
@@ -450,7 +371,6 @@ describe("Command Processor", () => {
             envVariablePrefix: ENV_VAR_PREFIX,
             definition: SAMPLE_COMMAND_DEFINITION,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
@@ -463,7 +383,6 @@ describe("Command Processor", () => {
             envVariablePrefix: ENV_VAR_PREFIX,
             definition: SAMPLE_COMMAND_DEFINITION,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
@@ -476,12 +395,14 @@ describe("Command Processor", () => {
             envVariablePrefix: ENV_VAR_PREFIX,
             definition: SAMPLE_COMMAND_DEFINITION,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
         });
-        expect(processor.profileFactory).toEqual(FAKE_PROFILE_MANAGER_FACTORY);
+        expect(processor instanceof CommandProcessor).toBe(true);
+        expect(processor.envVariablePrefix).toEqual(ENV_VAR_PREFIX);
+        expect(processor.definition).toEqual(SAMPLE_COMMAND_DEFINITION);
+        expect(processor.promptPhrase).toEqual("dummydummy");
     });
 
     it("should build the help if requested", () => {
@@ -493,7 +414,6 @@ describe("Command Processor", () => {
             envVariablePrefix: ENV_VAR_PREFIX,
             definition: SAMPLE_COMMAND_DEFINITION,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
@@ -518,7 +438,6 @@ describe("Command Processor", () => {
             envVariablePrefix: ENV_VAR_PREFIX,
             definition: SAMPLE_COMMAND_DEFINITION,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
@@ -544,7 +463,6 @@ describe("Command Processor", () => {
             envVariablePrefix: ENV_VAR_PREFIX,
             definition: SAMPLE_COMMAND_DEFINITION,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
@@ -570,7 +488,6 @@ describe("Command Processor", () => {
             envVariablePrefix: ENV_VAR_PREFIX,
             definition: SAMPLE_COMMAND_DEFINITION,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
@@ -592,7 +509,6 @@ describe("Command Processor", () => {
             envVariablePrefix: ENV_VAR_PREFIX,
             definition: SAMPLE_COMMAND_DEFINITION,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
@@ -612,7 +528,6 @@ describe("Command Processor", () => {
             envVariablePrefix: ENV_VAR_PREFIX,
             definition: SAMPLE_COMMAND_DEFINITION,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
@@ -635,7 +550,6 @@ describe("Command Processor", () => {
             envVariablePrefix: ENV_VAR_PREFIX,
             definition: SAMPLE_COMMAND_DEFINITION,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
@@ -662,7 +576,6 @@ describe("Command Processor", () => {
             envVariablePrefix: ENV_VAR_PREFIX,
             definition: SAMPLE_COMMAND_DEFINITION,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
@@ -685,7 +598,6 @@ describe("Command Processor", () => {
             envVariablePrefix: ENV_VAR_PREFIX,
             definition: SAMPLE_COMMAND_DEFINITION,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
@@ -708,7 +620,6 @@ describe("Command Processor", () => {
             envVariablePrefix: ENV_VAR_PREFIX,
             definition: SAMPLE_COMMAND_DEFINITION,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
@@ -732,7 +643,6 @@ describe("Command Processor", () => {
             envVariablePrefix: ENV_VAR_PREFIX,
             definition: SAMPLE_COMMAND_DEFINITION,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
@@ -756,7 +666,6 @@ describe("Command Processor", () => {
             envVariablePrefix: ENV_VAR_PREFIX,
             definition: SAMPLE_COMMAND_DEFINITION,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
@@ -780,7 +689,6 @@ describe("Command Processor", () => {
             fullDefinition: SAMPLE_COMPLEX_COMMAND,
             definition: SAMPLE_COMMAND_DEFINITION,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
@@ -807,7 +715,6 @@ describe("Command Processor", () => {
             fullDefinition: SAMPLE_COMPLEX_COMMAND,
             definition: SAMPLE_COMMAND_DEFINITION,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
@@ -835,7 +742,6 @@ describe("Command Processor", () => {
             fullDefinition: SAMPLE_COMPLEX_COMMAND,
             definition: SAMPLE_COMMAND_DEFINITION,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
@@ -860,7 +766,6 @@ describe("Command Processor", () => {
             fullDefinition: SAMPLE_COMPLEX_COMMAND,
             definition: SAMPLE_COMMAND_DEFINITION,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "--user fakeUser --password fakePass --token-value fakeToken " +
                 "--cert-file-passphrase fakePassphrase --cert-key-file /fake/path",
@@ -888,44 +793,6 @@ describe("Command Processor", () => {
         expect(logOutput).toContain("--user **** --password **** --token-value **** --cert-file-passphrase **** --cert-key-file ****");
     });
 
-    it("should handle an error thrown from the profile loader", async () => {
-        // Allocate the command processor
-        const processor: CommandProcessor = new CommandProcessor({
-            envVariablePrefix: ENV_VAR_PREFIX,
-            fullDefinition: SAMPLE_COMPLEX_COMMAND,
-            definition: SAMPLE_COMMAND_REAL_HANDLER,
-            helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
-            rootCommandName: SAMPLE_ROOT_COMMAND,
-            commandLine: "",
-            promptPhrase: "dummydummy"
-        });
-
-        // Mock read stdin
-        (SharedOptions.readStdinIfRequested as any) = jest.fn((args, response, type) => {
-            // Nothing to do
-        });
-
-        // Mock the profile loader
-        CommandProfileLoader.loader = jest.fn((args) => {
-            throw new ImperativeError({ msg: "Profile loading failed!" });
-        });
-
-        const parms: any = {
-            arguments: { _: ["check", "for", "banana"], $0: "", valid: true },
-            responseFormat: "json", silent: true
-        };
-        const commandResponse: ICommandResponse = await processor.invoke(parms);
-
-        expect(commandResponse).toBeDefined();
-        const stderrText = (commandResponse.stderr as Buffer).toString();
-        expect(stderrText).toContain("Command Preparation Failed:");
-        expect(stderrText).toContain("Profile loading failed!");
-        expect(commandResponse.message).toEqual("Profile loading failed!");
-        expect(commandResponse.error?.msg).toEqual("Profile loading failed!");
-        expect(commandResponse.error?.additionalDetails).not.toBeDefined();
-    });
-
     it("should handle not being able to instantiate the handler", async () => {
         // Allocate the command processor
         const processor: CommandProcessor = new CommandProcessor({
@@ -933,24 +800,9 @@ describe("Command Processor", () => {
             fullDefinition: SAMPLE_COMPLEX_COMMAND,
             definition: SAMPLE_COMMAND_DEFINITION,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
-        });
-
-        // Mock read stdin
-        (SharedOptions.readStdinIfRequested as any) = jest.fn((args, response, type) => {
-            // Nothing to do
-        });
-
-        // Mock the profile loader
-        (CommandProfileLoader.loader as any) = jest.fn((args) => {
-            return {
-                loadProfiles: (profArgs: any) => {
-                    // Nothing to do
-                }
-            };
         });
 
         const parms: any = {
@@ -988,24 +840,9 @@ describe("Command Processor", () => {
             fullDefinition: SAMPLE_COMPLEX_COMMAND,
             definition: commandDef,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
-        });
-
-        // Mock read stdin
-        (SharedOptions.readStdinIfRequested as any) = jest.fn((args, response, type) => {
-            // Nothing to do
-        });
-
-        // Mock the profile loader
-        (CommandProfileLoader.loader as any) = jest.fn((args) => {
-            return {
-                loadProfiles: (profArgs: any) => {
-                    // Nothing to do
-                }
-            };
         });
 
         const parms: any = {
@@ -1040,24 +877,9 @@ describe("Command Processor", () => {
             fullDefinition: SAMPLE_COMPLEX_COMMAND,
             definition: commandDef,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
-        });
-
-        // Mock read stdin
-        (SharedOptions.readStdinIfRequested as any) = jest.fn((args, response, type) => {
-            // Nothing to do
-        });
-
-        // Mock the profile loader
-        (CommandProfileLoader.loader as any) = jest.fn((args) => {
-            return {
-                loadProfiles: (profArgs: any) => {
-                    // Nothing to do
-                }
-            };
         });
 
         const parms: any = {
@@ -1101,24 +923,9 @@ describe("Command Processor", () => {
             fullDefinition: SAMPLE_COMPLEX_COMMAND,
             definition: commandDef,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
-        });
-
-        // Mock read stdin
-        (SharedOptions.readStdinIfRequested as any) = jest.fn((args, response, type) => {
-            // Nothing to do
-        });
-
-        // Mock the profile loader
-        (CommandProfileLoader.loader as any) = jest.fn((args) => {
-            return {
-                loadProfiles: (profArgs: any) => {
-                    // Nothing to do
-                }
-            };
         });
 
         const parms: any = {
@@ -1144,24 +951,9 @@ describe("Command Processor", () => {
             fullDefinition: SAMPLE_COMPLEX_COMMAND,
             definition: SAMPLE_COMMAND_REAL_HANDLER,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
-        });
-
-        // Mock read stdin
-        (SharedOptions.readStdinIfRequested as any) = jest.fn((args, response, type) => {
-            // Nothing to do
-        });
-
-        // Mock the profile loader
-        (CommandProfileLoader.loader as any) = jest.fn((args) => {
-            return {
-                loadProfiles: (profArgs: any) => {
-                    // Nothing to do
-                }
-            };
         });
 
         const parms: any = {
@@ -1188,80 +980,16 @@ describe("Command Processor", () => {
         expect(commandResponse.error?.additionalDetails).toEqual("More details!");
     });
 
-    it("should handle an imperative error thrown from the handler", async () => {
+    it("should handle an imperative error with JSON causeErrors", async () => {
         // Allocate the command processor
         const processor: CommandProcessor = new CommandProcessor({
             envVariablePrefix: ENV_VAR_PREFIX,
             fullDefinition: SAMPLE_COMPLEX_COMMAND,
             definition: SAMPLE_COMMAND_REAL_HANDLER,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
-        });
-
-        // Mock read stdin
-        (SharedOptions.readStdinIfRequested as any) = jest.fn((args, response, type) => {
-            // Nothing to do
-        });
-
-        // Mock the profile loader
-        (CommandProfileLoader.loader as any) = jest.fn((args) => {
-            return {
-                loadProfiles: (profArgs: any) => {
-                    // Nothing to do
-                }
-            };
-        });
-
-        const parms: any = {
-            arguments: {
-                _: ["check", "for", "banana"],
-                $0: "",
-                valid: true,
-                throwImperative: true
-            },
-            responseFormat: "json",
-            silent: true
-        };
-        const commandResponse: ICommandResponse = await processor.invoke(parms);
-        expect(commandResponse).toBeDefined();
-        const stderrText = (commandResponse.stderr as Buffer).toString();
-        expect(stderrText).toContain("Handler threw an imperative error!");
-        expect(stderrText).toContain("More details!");
-        expect(commandResponse.message).toEqual("Handler threw an imperative error!");
-        expect(commandResponse.error?.msg).toEqual("Handler threw an imperative error!");
-        expect(commandResponse.error?.additionalDetails).toEqual("More details!");
-    });
-
-    it("should handle an imperative error with JSON causeErrors using v3-format message", async () => {
-        jest.spyOn(NextVerFeatures, "useV3ErrFormat").mockReturnValue(true);
-
-        // Allocate the command processor
-        const processor: CommandProcessor = new CommandProcessor({
-            envVariablePrefix: ENV_VAR_PREFIX,
-            fullDefinition: SAMPLE_COMPLEX_COMMAND,
-            definition: SAMPLE_COMMAND_REAL_HANDLER,
-            helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
-            rootCommandName: SAMPLE_ROOT_COMMAND,
-            commandLine: "",
-            promptPhrase: "dummydummy"
-        });
-
-        // Mock read stdin
-        (SharedOptions.readStdinIfRequested as any) = jest.fn((args, response, type) => {
-            // Nothing to do
-        });
-
-        // Mock the profile loader
-        (CommandProfileLoader.loader as any) = jest.fn((args) => {
-            return {
-                loadProfiles: (profArgs: any) => {
-                    // Nothing to do
-                }
-            };
         });
 
         const parms: any = {
@@ -1288,33 +1016,16 @@ describe("Command Processor", () => {
         expect(commandResponse.error?.additionalDetails).toEqual("More details!");
     });
 
-    it("should handle an imperative error with string causeErrors using v3-format message", async () => {
-        jest.spyOn(NextVerFeatures, "useV3ErrFormat").mockReturnValue(true);
-
+    it("should handle an imperative error with string causeErrors", async () => {
         // Allocate the command processor
         const processor: CommandProcessor = new CommandProcessor({
             envVariablePrefix: ENV_VAR_PREFIX,
             fullDefinition: SAMPLE_COMPLEX_COMMAND,
             definition: SAMPLE_COMMAND_REAL_HANDLER,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
-        });
-
-        // Mock read stdin
-        (SharedOptions.readStdinIfRequested as any) = jest.fn((args, response, type) => {
-            // Nothing to do
-        });
-
-        // Mock the profile loader
-        (CommandProfileLoader.loader as any) = jest.fn((args) => {
-            return {
-                loadProfiles: (profArgs: any) => {
-                    // Nothing to do
-                }
-            };
         });
 
         const parms: any = {
@@ -1348,24 +1059,9 @@ describe("Command Processor", () => {
             fullDefinition: SAMPLE_COMPLEX_COMMAND,
             definition: SAMPLE_COMMAND_REAL_HANDLER,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
-        });
-
-        // Mock read stdin
-        (SharedOptions.readStdinIfRequested as any) = jest.fn((args, response, type) => {
-            // Nothing to do
-        });
-
-        // Mock the profile loader
-        (CommandProfileLoader.loader as any) = jest.fn((args) => {
-            return {
-                loadProfiles: (profArgs: any) => {
-                    // Nothing to do
-                }
-            };
         });
 
         const parms: any = {
@@ -1402,75 +1098,9 @@ describe("Command Processor", () => {
             fullDefinition: SAMPLE_COMPLEX_COMMAND,
             definition: SAMPLE_COMMAND_REAL_HANDLER,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
-        });
-
-        // Mock read stdin
-        (SharedOptions.readStdinIfRequested as any) = jest.fn((args, response, type) => {
-            // Nothing to do
-        });
-
-        // Mock the profile loader
-        (CommandProfileLoader.loader as any) = jest.fn((args) => {
-            return {
-                loadProfiles: (profArgs: any) => {
-                    // Nothing to do
-                }
-            };
-        });
-
-        const parms: any = {
-            arguments: {
-                _: ["check", "for", "banana"],
-                $0: "",
-                valid: true,
-                rejectWithMessage: true
-            },
-            responseFormat: "json",
-            silent: true
-        };
-        const commandResponse: ICommandResponse = await processor.invoke(parms);
-        expect(commandResponse).toBeDefined();
-        const stderrText = (commandResponse.stderr as Buffer).toString();
-        expect(stderrText).toContain("Command Error:");
-        expect(stderrText).toContain("Rejected with a message");
-        expect(commandResponse.success).toEqual(false);
-        expect(commandResponse.exitCode).toEqual(1);
-        expect(commandResponse.message).toEqual("Rejected with a message");
-        expect(commandResponse.error?.msg).toEqual("Rejected with a message");
-        expect(commandResponse.error?.additionalDetails).not.toBeDefined();
-    });
-
-    it("should handle a handler-error with a v3-format message", async () => {
-        jest.spyOn(NextVerFeatures, "useV3ErrFormat").mockReturnValue(true);
-
-        // Allocate the command processor
-        const processor: CommandProcessor = new CommandProcessor({
-            envVariablePrefix: ENV_VAR_PREFIX,
-            fullDefinition: SAMPLE_COMPLEX_COMMAND,
-            definition: SAMPLE_COMMAND_REAL_HANDLER,
-            helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
-            rootCommandName: SAMPLE_ROOT_COMMAND,
-            commandLine: "",
-            promptPhrase: "dummydummy"
-        });
-
-        // Mock read stdin
-        (SharedOptions.readStdinIfRequested as any) = jest.fn((args, response, type) => {
-            // Nothing to do
-        });
-
-        // Mock the profile loader
-        (CommandProfileLoader.loader as any) = jest.fn((args) => {
-            return {
-                loadProfiles: (profArgs: any) => {
-                    // Nothing to do
-                }
-            };
         });
 
         const parms: any = {
@@ -1502,24 +1132,9 @@ describe("Command Processor", () => {
             fullDefinition: SAMPLE_COMPLEX_COMMAND,
             definition: SAMPLE_COMMAND_REAL_HANDLER,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
-        });
-
-        // Mock read stdin
-        (SharedOptions.readStdinIfRequested as any) = jest.fn((args, response, type) => {
-            // Nothing to do
-        });
-
-        // Mock the profile loader
-        (CommandProfileLoader.loader as any) = jest.fn((args) => {
-            return {
-                loadProfiles: (profArgs: any) => {
-                    // Nothing to do
-                }
-            };
         });
 
         const parms: any = {
@@ -1544,24 +1159,9 @@ describe("Command Processor", () => {
             fullDefinition: SAMPLE_COMPLEX_COMMAND,
             definition: SAMPLE_COMMAND_REAL_HANDLER,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
-        });
-
-        // Mock read stdin
-        (SharedOptions.readStdinIfRequested as any) = jest.fn((args, response, type) => {
-            // Nothing to do
-        });
-
-        // Mock the profile loader
-        (CommandProfileLoader.loader as any) = jest.fn((args) => {
-            return {
-                loadProfiles: (profArgs: any) => {
-                    // Nothing to do
-                }
-            };
         });
 
         const parms: any = {
@@ -1601,7 +1201,6 @@ describe("Command Processor", () => {
                 ],
             },
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
@@ -1621,68 +1220,7 @@ describe("Command Processor", () => {
         expect(commandResponse.data.commandValues[parm1Key]).toBe(parm1Value);
     });
 
-    it("should display input value for simple parm when --show-inputs-only flag is set and v1 profile exists", async () => {
-
-        // values to test
-        const parm1Key = `parm1`;
-        const parm1Value = `value1`;
-
-        // Allocate the command processor
-        const processor: CommandProcessor = new CommandProcessor({
-            envVariablePrefix: ENV_VAR_PREFIX,
-            fullDefinition: SAMPLE_CMD_WITH_OPTS_AND_PROF, // `group action`
-            definition: { // `object`
-                name: "banana",
-                description: "The banana command",
-                type: "command",
-                handler: __dirname + "/__model__/TestCmdHandler",
-                options: [
-                    {
-                        name: parm1Key,
-                        type: "string",
-                        description: "The first parameter",
-                    }
-                ],
-            },
-            helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
-            rootCommandName: SAMPLE_ROOT_COMMAND,
-            commandLine: "",
-            promptPhrase: "dummydummy"
-        });
-
-        // Mock the profile loader
-        (CommandProfileLoader.loader as any) = jest.fn((args) => {
-            return {
-                loadProfiles: (profArgs: any) => {
-                    return;
-                }
-            };
-        });
-
-        // return the "fake" args object with values from profile
-        CliUtils.getOptValueFromProfiles = jest.fn((cmdProfiles, profileDef, allOpts) => {
-            return {
-                color: "yellow"
-            };
-        });
-
-        const parms: any = {
-            arguments: {
-                _: ["check", "for", "banana"],
-                $0: "",
-                [parm1Key]: parm1Value,
-                valid: true,
-                showInputsOnly: true,
-            },
-            silent: true
-        };
-        const commandResponse: ICommandResponse = await processor.invoke(parms);
-        expect(commandResponse.data.locations[0]).toContain('home');
-        expect(commandResponse.data.profileVersion).toBe('v1');
-    });
-
-    it("should display input value for simple parm when --show-inputs-only flag is set and v2 config exists", async () => {
+    it("should display input value for simple parm when --show-inputs-only flag is set and team config exists", async () => {
 
         // values to test
         const parm1Key = `parm1`;
@@ -1753,20 +1291,10 @@ describe("Command Processor", () => {
                 }
             },
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy",
-            config:  ImperativeConfig.instance.config
-        });
-
-        // Mock the profile loader
-        (CommandProfileLoader.loader as any) = jest.fn((args) => {
-            return {
-                loadProfiles: (profArgs: any) => {
-                    return;
-                }
-            };
+            config: ImperativeConfig.instance.config
         });
 
         const parms: any = {
@@ -1783,54 +1311,110 @@ describe("Command Processor", () => {
         expect(commandResponse.data.locations.length).toBeGreaterThan(0);
         expect(commandResponse.data.optionalProfiles[0]).toBe(`banana`);
         expect(commandResponse.data.requiredProfiles).toBeUndefined();
-        expect(commandResponse.data.profileVersion).toBe('v2');
     });
-
 
     it("should mask input value for a default secure parm when --show-inputs-only flag is set", async () => {
 
         // values to test
-        const parm1Key = `user`;
-        const parm1Value = `secret`;
+        const secretParmKey = `brownSpots`;
+        const secretParmValue = true;
         const secure = `(secure value)`;
+
+        await setupConfigToLoad({
+            "profiles": {
+                "fruit": {
+                    "properties": {
+                        "origin": "California"
+                    },
+                    "profiles": {
+                        "apple": {
+                            "type": "fruit",
+                            "properties": {
+                                "color": "red"
+                            }
+                        },
+                        "banana": {
+                            "type": "fruit",
+                            "properties": {
+                                "color": "yellow",
+                                secretParmKey : secretParmValue
+                            },
+                            "secure": [
+                                secretParmKey
+                            ]
+                        },
+                        "orange": {
+                            "type": "fruit",
+                            "properties": {
+                                "color": "orange"
+                            }
+                        }
+                    }
+                }
+            },
+            "defaults": {
+                "fruit": "fruit.apple",
+                "banana": "fruit.banana"
+            },
+            "plugins": [
+                "@zowe/fruit-for-imperative"
+            ]
+        });
 
         // Allocate the command processor
         const processor: CommandProcessor = new CommandProcessor({
             envVariablePrefix: ENV_VAR_PREFIX,
-            fullDefinition: SAMPLE_COMPLEX_COMMAND, // `group action`
-            definition: { // `object`
+            fullDefinition: SAMPLE_CMD_WITH_OPTS_AND_PROF, // `group action`
+            definition: {
                 name: "banana",
                 description: "The banana command",
                 type: "command",
-                handler: __dirname + "/__model__/TestCmdHandler",
+                handler: __dirname + "/__model__/TestArgHandler",
                 options: [
                     {
-                        name: parm1Key,
+                        name: "boolean-opt",
+                        type: "boolean",
+                        description: "A boolean option.",
+                    },
+                    {
+                        name: "color",
                         type: "string",
-                        description: "The first parameter",
-                    }
+                        description: "The banana color.",
+                        required: true
+                    },
+                    {
+                        name: secretParmKey,
+                        type: "boolean",
+                        description: "Whether or not the banana has brown spots"
+                    },
                 ],
+                profile: {
+                    optional: ["banana"]
+                }
             },
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
-            promptPhrase: "dummydummy"
+            promptPhrase: "dummydummy",
+            config: ImperativeConfig.instance.config
         });
 
         const parms: any = {
             arguments: {
                 _: ["check", "for", "banana"],
                 $0: "",
-                [parm1Key]: parm1Value,
+                [secretParmKey]: secretParmValue,
                 valid: true,
                 showInputsOnly: true,
             },
             silent: true
         };
+
         const commandResponse: ICommandResponse = await processor.invoke(parms);
-        expect(commandResponse.data.commandValues[parm1Key]).toBe(secure);
-        expect(commandResponse.stderr.toString()).toContain(`Some inputs are not displayed`);
+        expect(commandResponse.data.locations.length).toBeGreaterThan(0);
+        expect(commandResponse.data.optionalProfiles[0]).toBe(`banana`);
+        expect(commandResponse.data.commandValues[secretParmKey]).toBe(secure);
+        expect(commandResponse.data.requiredProfiles).toBeUndefined();
     });
 
     it.each(LoggerUtils.SECURE_PROMPT_OPTIONS)("should mask input value for secure parm %s when --show-inputs-only flag is set", async (propName) => {
@@ -1872,12 +1456,14 @@ describe("Command Processor", () => {
                 }
             },
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy",
             config: ImperativeConfig.instance.config
         });
+
+        // return the "fake" args object with values from profile
+        jest.spyOn(CliUtils, "getOptValuesFromConfig").mockReturnValueOnce({});
 
         const parms: any = {
             arguments: {
@@ -1920,7 +1506,6 @@ describe("Command Processor", () => {
                 ],
             },
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
@@ -1950,7 +1535,6 @@ describe("Command Processor", () => {
             fullDefinition: SAMPLE_COMPLEX_COMMAND,
             definition: SAMPLE_COMMAND_REAL_HANDLER,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy",
@@ -1960,20 +1544,6 @@ describe("Command Processor", () => {
                     env: { UNIT_TEST_ENV: "new" }
                 }
             }
-        });
-
-        // Mock read stdin
-        (SharedOptions.readStdinIfRequested as any) = jest.fn((args, response, type) => {
-            // Nothing to do
-        });
-
-        // Mock the profile loader
-        (CommandProfileLoader.loader as any) = jest.fn((args) => {
-            return {
-                loadProfiles: (profArgs: any) => {
-                    // Nothing to do
-                }
-            };
         });
 
         jest.spyOn(process, "chdir");
@@ -2017,7 +1587,6 @@ describe("Command Processor", () => {
             fullDefinition: SAMPLE_COMPLEX_COMMAND,
             definition: SAMPLE_COMMAND_REAL_HANDLER,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy",
@@ -2027,20 +1596,6 @@ describe("Command Processor", () => {
                     env: { UNIT_TEST_ENV: "new" }
                 }
             }
-        });
-
-        // Mock read stdin
-        (SharedOptions.readStdinIfRequested as any) = jest.fn((args, response, type) => {
-            // Nothing to do
-        });
-
-        // Mock the profile loader
-        (CommandProfileLoader.loader as any) = jest.fn((args) => {
-            return {
-                loadProfiles: (profArgs: any) => {
-                    // Nothing to do
-                }
-            };
         });
 
         jest.spyOn(process, "chdir");
@@ -2085,32 +1640,14 @@ describe("Command Processor", () => {
             fullDefinition: SAMPLE_CMD_WITH_OPTS_AND_PROF,
             definition: SAMPLE_COMMAND_REAL_HANDLER_WITH_OPT,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY_WITH_PROPS,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
-            promptPhrase: "dummydummy"
-        });
-
-        // Mock read stdin
-        (SharedOptions.readStdinIfRequested as any) = jest.fn((args, response, type) => {
-            // Nothing to do
-        });
-
-        // Mock the profile loader
-        (CommandProfileLoader.loader as any) = jest.fn((args) => {
-            return {
-                loadProfiles: (profArgs: any) => {
-                    return;
-                }
-            };
+            promptPhrase: "dummydummy",
+            config: ImperativeConfig.instance.config
         });
 
         // return the "fake" args object with values from profile
-        CliUtils.getOptValueFromProfiles = jest.fn((cmdProfiles, profileDef, allOpts) => {
-            return {
-                color: "yellow"
-            };
-        });
+        const getOptValuesSpy = jest.spyOn(CliUtils, "getOptValuesFromConfig").mockReturnValueOnce({ color: "yellow" });
 
         const parms: any = {
             arguments: {
@@ -2122,7 +1659,7 @@ describe("Command Processor", () => {
         };
 
         const commandResponse: ICommandResponse = await processor.invoke(parms);
-        expect(CliUtils.getOptValueFromProfiles).toHaveBeenCalledTimes(1);
+        expect(getOptValuesSpy).toHaveBeenCalledTimes(1);
         expect(commandResponse.stdout.toString()).toMatchSnapshot();
         expect(commandResponse).toBeDefined();
         expect(commandResponse).toMatchSnapshot();
@@ -2134,30 +1671,13 @@ describe("Command Processor", () => {
             fullDefinition: SAMPLE_CMD_WITH_OPTS_AND_PROF,
             definition: SAMPLE_COMMAND_REAL_HANDLER_WITH_DEFAULT_OPT,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY_WITH_PROPS,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
         });
 
-        // Mock read stdin
-        (SharedOptions.readStdinIfRequested as any) = jest.fn((args, response, type) => {
-            // Nothing to do
-        });
-
-        // Mock the profile loader
-        (CommandProfileLoader.loader as any) = jest.fn((args) => {
-            return {
-                loadProfiles: (profArgs: any) => {
-                    return;
-                }
-            };
-        });
-
         // return the "fake" args object with values from profile
-        CliUtils.getOptValueFromProfiles = jest.fn((cmdProfiles, profileDef, allOpts) => {
-            return {};
-        });
+        jest.spyOn(CliUtils, "getOptValuesFromConfig").mockReturnValueOnce({});
 
         const parms: any = {
             arguments: {
@@ -2180,32 +1700,14 @@ describe("Command Processor", () => {
             fullDefinition: SAMPLE_CMD_WITH_OPTS_AND_PROF,
             definition: SAMPLE_COMMAND_REAL_HANDLER_WITH_POS_OPT,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY_WITH_PROPS,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
-            promptPhrase: "dummydummy"
-        });
-
-        // Mock read stdin
-        (SharedOptions.readStdinIfRequested as any) = jest.fn((args, response, type) => {
-            // Nothing to do
-        });
-
-        // Mock the profile loader
-        (CommandProfileLoader.loader as any) = jest.fn((args) => {
-            return {
-                loadProfiles: (profArgs: any) => {
-                    return;
-                }
-            };
+            promptPhrase: "dummydummy",
+            config: ImperativeConfig.instance.config
         });
 
         // return the "fake" args object with values from profile
-        CliUtils.getOptValueFromProfiles = jest.fn((cmdProfiles, profileDef, allOpts) => {
-            return {
-                color: "yellow"
-            };
-        });
+        const getOptValuesSpy = jest.spyOn(CliUtils, "getOptValuesFromConfig").mockReturnValueOnce({ color: "yellow" });
 
         const parms: any = {
             arguments: {
@@ -2217,7 +1719,7 @@ describe("Command Processor", () => {
         };
 
         const commandResponse: ICommandResponse = await processor.invoke(parms);
-        expect(CliUtils.getOptValueFromProfiles).toHaveBeenCalledTimes(1);
+        expect(getOptValuesSpy).toHaveBeenCalledTimes(1);
         expect(commandResponse.stdout.toString()).toMatchSnapshot();
         expect(commandResponse).toBeDefined();
         expect(commandResponse).toMatchSnapshot();
@@ -2229,32 +1731,14 @@ describe("Command Processor", () => {
             fullDefinition: SAMPLE_CMD_WITH_OPTS_AND_PROF,
             definition: SAMPLE_COMMAND_REAL_HANDLER_WITH_POS_OPT,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY_WITH_PROPS,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
-            promptPhrase: "dummydummy"
-        });
-
-        // Mock read stdin
-        (SharedOptions.readStdinIfRequested as any) = jest.fn((args, response, type) => {
-            // Nothing to do
-        });
-
-        // Mock the profile loader
-        (CommandProfileLoader.loader as any) = jest.fn((args) => {
-            return {
-                loadProfiles: (profArgs: any) => {
-                    return;
-                }
-            };
+            promptPhrase: "dummydummy",
+            config: ImperativeConfig.instance.config
         });
 
         // return the "fake" args object with values from profile
-        CliUtils.getOptValueFromProfiles = jest.fn((cmdProfiles, profileDef, allOpts) => {
-            return {
-                color: "yellow"
-            };
-        });
+        const getOptValuesSpy = jest.spyOn(CliUtils, "getOptValuesFromConfig").mockReturnValueOnce({ color: "yellow" });
 
         const parms: any = {
             arguments: {
@@ -2267,7 +1751,7 @@ describe("Command Processor", () => {
         };
 
         const commandResponse: ICommandResponse = await processor.invoke(parms);
-        expect(CliUtils.getOptValueFromProfiles).toHaveBeenCalledTimes(1);
+        expect(getOptValuesSpy).toHaveBeenCalledTimes(1);
         expect(commandResponse.stdout.toString()).toMatchSnapshot();
         expect(commandResponse).toBeDefined();
         expect(commandResponse).toMatchSnapshot();
@@ -2279,32 +1763,14 @@ describe("Command Processor", () => {
             fullDefinition: SAMPLE_CMD_WITH_OPTS_AND_PROF,
             definition: SAMPLE_COMMAND_REAL_HANDLER_WITH_OPT,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY_WITH_PROPS,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
-            promptPhrase: "dummydummy"
-        });
-
-        // Mock read stdin
-        (SharedOptions.readStdinIfRequested as any) = jest.fn((args, response, type) => {
-            // Nothing to do
-        });
-
-        // Mock the profile loader
-        (CommandProfileLoader.loader as any) = jest.fn((args) => {
-            return {
-                loadProfiles: (profArgs: any) => {
-                    return;
-                }
-            };
+            promptPhrase: "dummydummy",
+            config: ImperativeConfig.instance.config
         });
 
         // return the "fake" args object with values from profile
-        CliUtils.getOptValueFromProfiles = jest.fn((cmdProfiles, profileDef, allOpts) => {
-            return {
-                color: "yellow"
-            };
-        });
+        const getOptValuesSpy = jest.spyOn(CliUtils, "getOptValuesFromConfig").mockReturnValueOnce({ color: "yellow" });
 
         const parms: any = {
             arguments: {
@@ -2317,7 +1783,7 @@ describe("Command Processor", () => {
         };
 
         const commandResponse: ICommandResponse = await processor.invoke(parms);
-        expect(CliUtils.getOptValueFromProfiles).toHaveBeenCalledTimes(1);
+        expect(getOptValuesSpy).toHaveBeenCalledTimes(1);
         expect(commandResponse.stdout.toString()).toMatchSnapshot();
         expect(commandResponse).toBeDefined();
         expect(commandResponse).toMatchSnapshot();
@@ -2330,7 +1796,6 @@ describe("Command Processor", () => {
             fullDefinition: SAMPLE_COMPLEX_COMMAND,
             definition: SAMPLE_COMPLEX_COMMAND,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
@@ -2348,7 +1813,6 @@ describe("Command Processor", () => {
                 fullDefinition: SAMPLE_COMPLEX_COMMAND,
                 definition: SAMPLE_COMMAND_WIH_NO_HANDLER,
                 helpGenerator: FAKE_HELP_GENERATOR,
-                profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
                 rootCommandName: SAMPLE_ROOT_COMMAND,
                 commandLine: "",
                 promptPhrase: "dummydummy"
@@ -2369,24 +1833,9 @@ describe("Command Processor", () => {
             fullDefinition: SAMPLE_COMPLEX_COMMAND,
             definition: SAMPLE_COMMAND_REAL_HANDLER,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
-        });
-
-        // Mock read stdin
-        (SharedOptions.readStdinIfRequested as any) = jest.fn((args, response, type) => {
-            // Nothing to do
-        });
-
-        // Mock the profile loader
-        (CommandProfileLoader.loader as any) = jest.fn((args) => {
-            return {
-                loadProfiles: (profArgs: any) => {
-                    // Nothing to do
-                }
-            };
         });
 
         const parms: any = {
@@ -2414,24 +1863,9 @@ describe("Command Processor", () => {
             fullDefinition: SAMPLE_COMPLEX_COMMAND,
             definition: SAMPLE_COMMAND_REAL_HANDLER,
             helpGenerator: FAKE_HELP_GENERATOR,
-            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
             rootCommandName: SAMPLE_ROOT_COMMAND,
             commandLine: "",
             promptPhrase: "dummydummy"
-        });
-
-        // Mock read stdin
-        (SharedOptions.readStdinIfRequested as any) = jest.fn((args, response, type) => {
-            // Nothing to do
-        });
-
-        // Mock the profile loader
-        (CommandProfileLoader.loader as any) = jest.fn((args) => {
-            return {
-                loadProfiles: (profArgs: any) => {
-                    // Nothing to do
-                }
-            };
         });
 
         const parms: any = {
@@ -2497,7 +1931,6 @@ describe("Command Processor", () => {
                 envVariablePrefix: ENV_VAR_PREFIX,
                 definition: SAMPLE_COMMAND_DEFINITION,
                 helpGenerator: FAKE_HELP_GENERATOR,
-                profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
                 rootCommandName: SAMPLE_ROOT_COMMAND,
                 commandLine: "",
                 promptPhrase: "dummydummy"
@@ -2524,7 +1957,6 @@ describe("Command Processor", () => {
                 envVariablePrefix: ENV_VAR_PREFIX,
                 definition: SAMPLE_COMMAND_DEFINITION,
                 helpGenerator: FAKE_HELP_GENERATOR,
-                profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
                 rootCommandName: SAMPLE_ROOT_COMMAND,
                 commandLine: "",
                 promptPhrase: "dummydummy"
@@ -2551,7 +1983,6 @@ describe("Command Processor", () => {
                 envVariablePrefix: ENV_VAR_PREFIX,
                 definition: SAMPLE_COMMAND_DEFINITION_WITH_EXAMPLES,
                 helpGenerator: FAKE_HELP_GENERATOR,
-                profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
                 rootCommandName: SAMPLE_ROOT_COMMAND,
                 commandLine: "",
                 promptPhrase: "dummydummy"
@@ -2624,7 +2055,6 @@ describe("Command Processor", () => {
                 envVariablePrefix: ENV_VAR_PREFIX,
                 definition: SAMPLE_COMMAND_REAL_HANDLER_WITH_OPT,
                 helpGenerator: FAKE_HELP_GENERATOR,
-                profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
                 rootCommandName: SAMPLE_ROOT_COMMAND,
                 commandLine: "",
                 promptPhrase: "dummydummy",
@@ -2633,22 +2063,132 @@ describe("Command Processor", () => {
         });
 
         it("should find profile that matches name specified in arguments", async () => {
-            const commandPrepared = await (processor as any).prepare(null, {
+            const preparedArgs = await (processor as any).prepare(null, {
                 "banana-profile": "ripe"
             });
-            expect(commandPrepared.args.color).toBe("yellow");
+            expect(preparedArgs.color).toBe("yellow");
         });
 
         it("should find profile with type prefix that matches name specified in arguments", async () => {
-            const commandPrepared = await (processor as any).prepare(null, {
+            const preparedArgs = await (processor as any).prepare(null, {
                 "banana-profile": "old"
             });
-            expect(commandPrepared.args.color).toBe("brown");
+            expect(preparedArgs.color).toBe("brown");
         });
 
         it("should find default profile that matches type", async () => {
-            const commandPrepared = await (processor as any).prepare(null, {});
-            expect(commandPrepared.args.color).toBe("green");
+            const preparedArgs = await (processor as any).prepare(null, {});
+            expect(preparedArgs.color).toBe("green");
+        });
+    });
+
+    describe("prompting", () => {
+        const invokeParms: any = {
+            arguments: {
+                _: ["check", "for", "banana"],
+                $0: "",
+                valid: true
+            },
+            silent: true
+        };
+        function buildProcessor(definition: ICommandDefinition): CommandProcessor {
+            return new CommandProcessor({
+                envVariablePrefix: ENV_VAR_PREFIX,
+                fullDefinition: SAMPLE_CMD_WITH_OPTS_AND_PROF,
+                definition,
+                helpGenerator: FAKE_HELP_GENERATOR,
+                rootCommandName: SAMPLE_ROOT_COMMAND,
+                commandLine: "",
+                promptPhrase: "please"
+            });
+        }
+
+        it("should prompt for missing positional with string type", async () => {
+            // Allocate the command processor
+            const processor = buildProcessor(SAMPLE_COMMAND_REAL_HANDLER_WITH_POS_OPT);
+
+            const promptMock = jest.fn().mockResolvedValue("yellow");
+            jest.spyOn(CommandResponse.prototype, "console", "get").mockReturnValueOnce({
+                prompt: promptMock
+            } as any);
+
+            invokeParms.arguments.color = "please";
+            const commandResponse: ICommandResponse = await processor.invoke(invokeParms);
+            expect(commandResponse).toBeDefined();
+            expect(promptMock).toHaveBeenCalledTimes(1);
+            expect(promptMock.mock.calls[0][0]).toContain(`Please enter "color"`);
+            expect(invokeParms.arguments.color).toBe("yellow");
+        });
+
+        it("should prompt for missing positional with array type", async () => {
+            // Allocate the command processor
+            const processor = buildProcessor({
+                ...SAMPLE_COMMAND_REAL_HANDLER_WITH_POS_OPT,
+                positionals: [
+                    {
+                        name: "color",
+                        type: "array",
+                        description: "The banana colors.",
+                        required: true
+                    }
+                ],
+            });
+
+            const promptMock = jest.fn().mockResolvedValue("yellow brown");
+            jest.spyOn(CommandResponse.prototype, "console", "get").mockReturnValueOnce({
+                prompt: promptMock
+            } as any);
+
+            invokeParms.arguments.color = ["please"];
+            const commandResponse: ICommandResponse = await processor.invoke(invokeParms);
+            expect(commandResponse).toBeDefined();
+            expect(promptMock).toHaveBeenCalledTimes(1);
+            expect(promptMock.mock.calls[0][0]).toContain(`Please enter "color"`);
+            expect(invokeParms.arguments.color).toEqual(["yellow", "brown"]);
+        });
+
+        it("should prompt for missing option with string type", async () => {
+            // Allocate the command processor
+            const processor = buildProcessor(SAMPLE_COMMAND_REAL_HANDLER_WITH_OPT);
+
+            const promptMock = jest.fn().mockResolvedValue("yellow");
+            jest.spyOn(CommandResponse.prototype, "console", "get").mockReturnValueOnce({
+                prompt: promptMock
+            } as any);
+
+            invokeParms.arguments.color = "please";
+            const commandResponse: ICommandResponse = await processor.invoke(invokeParms);
+            expect(commandResponse).toBeDefined();
+            expect(promptMock).toHaveBeenCalledTimes(1);
+            expect(promptMock.mock.calls[0][0]).toContain(`Please enter "color"`);
+            expect(invokeParms.arguments.color).toBe("yellow");
+        });
+
+        it("should prompt for missing option with array type", async () => {
+            // Allocate the command processor
+            const processor = buildProcessor({
+                ...SAMPLE_COMMAND_REAL_HANDLER_WITH_OPT,
+                options: [
+                    {
+                        name: "color",
+                        type: "array",
+                        description: "The banana colors.",
+                        required: true
+                    }
+                ],
+            });
+
+            const promptMock = jest.fn().mockResolvedValue("yellow brown");
+            jest.spyOn(CommandResponse.prototype, "console", "get").mockReturnValueOnce({
+                prompt: promptMock
+            } as any);
+
+            invokeParms.arguments.color = ["please"];
+            const commandResponse: ICommandResponse = await processor.invoke(invokeParms);
+            expect(commandResponse).toBeDefined();
+            expect(promptMock).toHaveBeenCalledTimes(1);
+            expect(promptMock.mock.calls[0][0]).toContain(`Please enter "color"`);
+            expect(invokeParms.arguments.color).toEqual(["yellow", "brown"]);
         });
     });
 });

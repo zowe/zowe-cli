@@ -9,8 +9,8 @@
 *
 */
 
+/* eslint-disable @typescript-eslint/no-unsafe-declaration-merging */
 import { ImperativeError } from "../../../error";
-
 /**
  * String credential
  */

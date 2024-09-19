@@ -95,7 +95,7 @@ export class Mount {
                 switch (option) {
 
                     case "mode":
-                        if ((options.mode !== "rdonly") && (options.mode !== "rdwr")) {
+                        if (options.mode !== "rdonly" && options.mode !== "rdwr") {
                             throw new ImperativeError({
                                 msg: ZosFilesMessages.invalidMountModeOption.message + options.mode
                             });

@@ -95,6 +95,7 @@ leaveConflict: Automation is stopped. The user must resolve the conflict manuall
       "zosmf",
     ],
   },
+  "summary": "Will run given step of workflow instance plus following steps if specified by --perform-following-steps option",
   "type": "command",
 }
 `;

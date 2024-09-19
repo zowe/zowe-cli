@@ -40,7 +40,7 @@ export const validateDefinition: ICommandDefinition = {
             name: "fail-on-error",
             aliases: ["foe"],
             type: "boolean",
-            description: "Enables throwing an error and setting an error code if plugin validation detects an error",
+            description: "Enables throwing an error and setting an error code if plugin validation detects an error.",
             required: false,
             defaultValue: true
         },

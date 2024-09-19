@@ -90,25 +90,3 @@ exports[`cmd-cli invoke test-async-handler should display the help 1`] = `
   \\"data\\": \\"\\\\n COMMAND NAME\\\\n ------------\\\\n\\\\n   test-async-handler\\\\n\\\\n DESCRIPTION\\\\n -----------\\\\n\\\\n   Test async handler command tests tests a fulfill/reject from an asynchronous\\\\n   handler.\\\\n\\\\n USAGE\\\\n -----\\\\n\\\\n   cmd-cli invoke test-async-handler [options]\\\\n\\\\n OPTIONS\\\\n -------\\\\n\\\\n   --fail (boolean)\\\\n\\\\n      Fail the handler with an 'Imperative Error'.\\\\n\\\\n   --fail-with-error (boolean)\\\\n\\\\n      Fail the handler with a generic 'Error'.\\\\n\\\\n GLOBAL OPTIONS\\\\n --------------\\\\n\\\\n   --show-inputs-only (boolean)\\\\n\\\\n      Show command inputs and do not run the command\\\\n\\\\n   --response-format-json | --rfj (boolean)\\\\n\\\\n      Produce JSON formatted data from a command\\\\n\\\\n   --help | -h (boolean)\\\\n\\\\n      Display help text\\\\n\\\\n   --help-web | --hw (boolean)\\\\n\\\\n      Display HTML help in browser\\\\n\\\\n\\"
 }"
 `;
-
-exports[`cmd-cli invoke test-async-handler should fail a handler if an imperative error is thrown 1`] = `
-"Command Error:
-Fail with Imperative Error
-"
-`;
-
-exports[`cmd-cli invoke test-async-handler should fail a handler if an imperative error is thrown 2`] = `
-"===================FAIL WITH IMPERATIVE ERROR============================
-===================FAIL WITH IMPERATIVE ERROR RFJ========================
-{
-  \\"success\\": false,
-  \\"exitCode\\": 1,
-  \\"message\\": \\"Fail with Imperative Error\\",
-  \\"stdout\\": \\"\\",
-  \\"stderr\\": \\"Command Error:\\\\nFail with Imperative Error\\\\n\\",
-  \\"data\\": {},
-  \\"error\\": {
-    \\"msg\\": \\"Fail with Imperative Error\\"
-  }
-}"
-`;

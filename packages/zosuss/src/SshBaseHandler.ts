@@ -23,7 +23,6 @@ import {
     ImperativeError,
     ConnectionPropsForSessCfg,
     SessConstants,
-    IProfile
 } from "@zowe/imperative";
 import { SshSession } from "./SshSession";
 import { ISshSession } from "./doc/ISshSession";
@@ -38,12 +37,6 @@ export abstract class SshBaseHandler implements ICommandHandler {
      * The session creating from the command line arguments / profile
      */
     protected mSession: SshSession;
-
-    /**
-     * Loaded z/OS SSH profile if needed
-     * @deprecated
-     */
-    protected mSshProfile: IProfile;
 
     /**
      * Command line arguments passed
@@ -65,9 +58,6 @@ export abstract class SshBaseHandler implements ICommandHandler {
      */
     public async process(commandParameters: IHandlerParameters) {
         this.mHandlerParams = commandParameters;
-        // Why is this here? NOTHING uses it, but I suppose an extender MIGHT be... -awharn
-        // eslint-disable-next-line deprecation/deprecation
-        this.mSshProfile = commandParameters.profiles.get("ssh", false);
 
         const sshSessCfgOverride: IOverridePromptConnProps[] = [
             {

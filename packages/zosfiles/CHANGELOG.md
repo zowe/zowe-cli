@@ -2,6 +2,78 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
+## Recent Changes
+
+- Update: Final prerelease
+
+## `8.0.0-next.202408131445`
+
+- Update: See `7.28.3` for details
+
+## `8.0.0-next.202407021516`
+
+- BugFix: Updated dependencies for technical currency [#2188](https://github.com/zowe/zowe-cli/pull/2188)
+
+## `8.0.0-next.202406111958`
+
+- LTS Breaking: Modified the zos-files SDK. [#2083](https://github.com/zowe/zowe-cli/issues/2083)
+  - Deprecated the following interfaces:
+    - IOptionsFullResponse - use `IOptionsFullResponse` from `@zowe/imperative`.
+    - IRestClientResponse - use `IRestClientResponse` from `@zowe/imperative`.
+
+## `8.0.0-next.202406111728`
+
+- BugFix: Fixed error where `Get.dataSet` and `Get.USSFile` methods could silently fail when downloading large data sets or files. [#2167](https://github.com/zowe/zowe-cli/pull/2167)
+
+## `8.0.0-next.202405202020`
+
+- BugFix: Fixed a bug where a data set search would not return a search term if it was at the beginning of a line. [#2147](https://github.com/zowe/zowe-cli/pull/2147)
+
+## `8.0.0-next.202405101931`
+
+- Enhancement: Added the ability to search for a string in a data set or PDS member matching a pattern. [#2095](https://github.com/zowe/zowe-cli/issues/2095)
+
+## `8.0.0-next.202404032038`
+
+- BugFix: Fixed error that could occur when listing data set members that contain control characters in the name. [#2104](https://github.com/zowe/zowe-cli/pull/2104)
+
+## `8.0.0-next.202403132009`
+
+- LTS Breaking: Changed return type of `Upload.bufferToUssFile` to return `IZosFilesResponse` object instead of string. [#2089](https://github.com/zowe/zowe-cli/pull/2089)
+- BugFix: Fixed `Upload.bufferToUssFile` not normalizing new lines when uploading plain text. [#2089](https://github.com/zowe/zowe-cli/pull/2089)
+
+## `8.0.0-next.202403041352`
+
+- BugFix: Updated engine to Node 18.12.0. [#2074](https://github.com/zowe/zowe-cli/pull/2074)
+
+## `8.0.0-next.202402261705`
+
+- BugFix: Updated additional dependencies for technical currency. [#2061](https://github.com/zowe/zowe-cli/pull/2061)
+- BugFix: Updated engine to Node 16.7.0. [#2061](https://github.com/zowe/zowe-cli/pull/2061)
+
+## `8.0.0-next.202402211923`
+
+- BugFix: Updated dependencies for technical currency. [#2057](https://github.com/zowe/zowe-cli/pull/2057)
+
+## `8.0.0-next.202402132108`
+
+- LTS Breaking: Removed record format (recfm) validation when creating data-sets [#1699](https://github.com/zowe/zowe-cli/issues/1699)
+
+## `8.0.0-next.202402021649`
+
+- LTS Breaking: Removed the unused protected property `mSshProfile` in SshBaseHandler.
+- LTS Breaking: Removed the following previously deprecated items:
+  - Removed `ZosFilesCreateExtraOptions.showAttributes` without replacement
+  - Removed `allDataSetsArchived`, `datasetsDownloadedSuccessfully`, `noDataSetsMatchingPatternRemain` and `onlyEmptyPartitionedDataSets` from ZosFiles.messages.ts
+
+## `8.0.0-next.202311282012`
+
+- LTS Breaking: Unpinned dependency versions to allow for patch/minor version updates for dependencies [#1968](https://github.com/zowe/zowe-cli/issues/1968)
+
+## `8.0.0-next.202311132045`
+
+- Major: First major version bump for V3
+
 ## `7.28.3`
 
 - BugFix: Refactored code to reduce the use of deprecated functions to prepare for upcoming Node.js 22 support. [#2191](https://github.com/zowe/zowe-cli/issues/2191)

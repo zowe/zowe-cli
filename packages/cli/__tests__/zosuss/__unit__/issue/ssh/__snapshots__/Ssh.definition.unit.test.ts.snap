@@ -3,7 +3,7 @@
 exports[`zos-uss issue ssh command definition should not have changed 1`] = `
 Array [
   Object {
-    "description": "Working directory in which to execute the command",
+    "description": "Working directory in which to execute the command.",
     "name": "cwd",
     "type": "string",
   },

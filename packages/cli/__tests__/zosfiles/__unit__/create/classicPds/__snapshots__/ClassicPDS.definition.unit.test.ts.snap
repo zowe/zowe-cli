@@ -103,15 +103,6 @@ Array [
   },
   Object {
     "aliases": Array [
-      "pa",
-    ],
-    "description": "Show the full allocation attributes",
-    "hidden": true,
-    "name": "show-attributes",
-    "type": "boolean",
-  },
-  Object {
-    "aliases": Array [
       "sz",
     ],
     "description": "The size of the data set (specified as nCYL or nTRK - where n is the number of cylinders or tracks). Sets the primary allocation (the secondary allocation becomes ~10% of the primary).",

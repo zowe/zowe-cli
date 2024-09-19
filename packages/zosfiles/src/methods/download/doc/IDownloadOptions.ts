@@ -68,14 +68,6 @@ export interface IDownloadSingleOptions extends IGetOptions {
  */
 export interface IDownloadOptions extends Omit<IDownloadSingleOptions, "stream"> {
     /**
-     * Exclude data sets that match these DSLEVEL patterns. Any data sets that match
-     * this pattern will not be downloaded
-     * @example "ibmuser.**.jcl, ibmuser.rexa.*"
-     * @deprecated Use the `List.dataSetsMatchingPattern` API to match data sets and exclude patterns
-     */
-    excludePatterns?: string[];
-
-    /**
      * Map data set names that match your pattern to the desired extension
      * @example cpgm=c,asmpgm=asm
      */

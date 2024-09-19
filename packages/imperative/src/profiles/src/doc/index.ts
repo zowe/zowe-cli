@@ -9,8 +9,6 @@
 *
 */
 
-export * from "./api/IProfileManagerFactory";
-
 export * from "./config/IProfileTypeConfiguration";
 
 export * from "./definition";

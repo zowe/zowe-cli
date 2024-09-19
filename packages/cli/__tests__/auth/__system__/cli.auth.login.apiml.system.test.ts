@@ -140,7 +140,11 @@ describe("auth login/logout apiml create profile", () => {
         await TestEnvironment.cleanUp(TEST_ENVIRONMENT_CREATE_PROF);
     });
 
-    it("should successfully issue the login command and create a profile", () => {
+    /* Resurrect the following test after this Git issue is fixed:
+       https://github.com/zowe/zowe-cli/issues/2005
+    */
+    // eslint-disable-next-line jest/no-disabled-tests
+    it.skip("TODO: After 2005 is fixed: should successfully issue the login command and create a team config", () => {
         const response = runCliScript(__dirname + "/__scripts__/auth_login_apiml_create.sh",
             TEST_ENVIRONMENT_CREATE_PROF,
             [
@@ -152,18 +156,44 @@ describe("auth login/logout apiml create profile", () => {
                 "y"
             ]);
         expect(response.stderr.toString()).toBe("");
-        expect(response.status).toBe(0);
         expect(response.stdout.toString()).toContain("Login successful.");
         expect(response.stdout.toString()).toContain("The authentication token is stored in the"); // ${name} base profile
+        expect(response.status).toBe(0);
     });
 
-    it("should successfully issue the logout command with a created profile", () => {
-        const response = runCliScript(__dirname + "/__scripts__/auth_logout_apiml.sh",
-            TEST_ENVIRONMENT_CREATE_PROF);
+    it("should successfully issue the logout command with a created team config", async () => {
+        // Form a posix-style path to scripts directory
+        let scriptsPosixPath = __dirname + "/__scripts__";
+        scriptsPosixPath = scriptsPosixPath.replaceAll("\\", "/");
+        scriptsPosixPath = scriptsPosixPath.replace(/^(.):(.*)/, "/$1$2");
+
+        // create a team config
+        let response = runCliScript(__dirname + "/__scripts__/create_team_cfg.sh",
+            TEST_ENVIRONMENT_CREATE_PROF,
+            [
+                base.host,
+                base.port,
+                base.rejectUnauthorized,
+                scriptsPosixPath
+            ]);
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
+
+        // login to create token in SCS
+        response = runCliScript(__dirname + "/__scripts__/auth_login_apiml.sh", TEST_ENVIRONMENT_CREATE_PROF,
+            [
+                TEST_ENVIRONMENT_CREATE_PROF.systemTestProperties.base.user,
+                TEST_ENVIRONMENT_CREATE_PROF.systemTestProperties.base.password
+            ]
+        );
+        expect(response.stderr.toString()).toBe("");
+        expect(response.status).toBe(0);
+
+        response = runCliScript(__dirname + "/__scripts__/auth_logout_apiml.sh", TEST_ENVIRONMENT_CREATE_PROF);
+        expect(response.stderr.toString()).toBe("");
         expect(response.stdout.toString()).toContain("Logout successful. The authentication token has been revoked");
-        expect(response.stdout.toString()).toContain("and removed from your 'default' base profile"); // V1 message
+        expect(response.stdout.toString()).toContain("Token was removed from your 'base' base profile"); // V1 message
+        expect(response.status).toBe(0);
     });
 });
 

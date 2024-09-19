@@ -11,8 +11,6 @@
 
 import { ICommandDefinition } from "../ICommandDefinition";
 import { IHelpGenerator } from "../../help/doc/IHelpGenerator";
-import { IProfileManagerFactory } from "../../../../profiles";
-import { ICommandProfileTypeConfiguration } from "../../../src/doc/profiles/definition/ICommandProfileTypeConfiguration";
 import { Config } from "../../../../config";
 import { IDaemonContext } from "../../../../imperative/src/doc/IDaemonContext";
 
@@ -36,13 +34,6 @@ export interface ICommandProcessorParms {
      * @memberof ICommandProcessorParms
      */
     helpGenerator: IHelpGenerator;
-    /**
-     * The profile manager factory allows the command processor to obtain an instance of the profile manager for
-     * the command being issued.
-     * @type {IProfileManagerFactory<ICommandProfileTypeConfiguration>}
-     * @memberof ICommandProcessorParms
-     */
-    profileManagerFactory: IProfileManagerFactory<ICommandProfileTypeConfiguration>;
     /**
      * The root command name for the CLI - used in help generation, etc.
      * @type {string}

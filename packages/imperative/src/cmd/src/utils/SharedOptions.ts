@@ -17,7 +17,7 @@ import { CommandResponse } from "../response/CommandResponse";
 import { Logger } from "../../../logger";
 
 /**
- * Options which can be reused between different Brightside commands
+ * Options which can be reused between different Zowe commands
  */
 export class SharedOptions {
     /**
@@ -96,7 +96,7 @@ export class SharedOptions {
             const stdinReadError: IImperativeError = {
                 msg: "Error encountered while reading from stdin",
                 causeErrors: error,
-                additionalDetails: (error == null) ? undefined : error.message
+                additionalDetails: error == null ? undefined : error.message
             };
             done(stdinReadError, true);
             // don't call done, we don't want to continue on an error

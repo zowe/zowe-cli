@@ -10,7 +10,6 @@
     "name": "incompatible_imperative_version",
     "rootCommandDescription": "imperative working test plugin",
     "pluginBaseCliVersion": "^2.0.0",
-    "pluginHealthCheck": "./dummy.handler",
     "definitions": [
       {
         "name": "foo",

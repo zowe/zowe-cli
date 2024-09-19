@@ -22,20 +22,21 @@ import { join } from "path";
 export const ActiveWorkflowDetails: ICommandDefinition = {
     name: "active-workflow-details",
     aliases: ["awd"],
-    description: "Get the details of an active z/OSMF workflow",
+    summary: "Get the details of an active z/OSMF workflow",
+    description: "Get the details of an active z/OSMF workflow.",
     type: "command",
     handler: join(__dirname, "./ActiveWorkflowDetails.handler"),
     profile: {
         optional: ["zosmf"]
     },
-    options: ([
+    options: [
         ActiveWorkflowDetailsCommonOptions.workflowName,
         ActiveWorkflowDetailsCommonOptions.workflowKey,
         ActiveWorkflowDetailsCommonOptions.listSteps,
         ActiveWorkflowDetailsCommonOptions.stepsSummaryOnly,
         ActiveWorkflowDetailsCommonOptions.listVariables,
         ActiveWorkflowDetailsCommonOptions.skipWorkflowSummary
-    ]),
+    ],
     examples: [
         {
             description: "To list the details of an active workflow with key \"7c62c790-0340-86b2-61ce618d8f8c\" including its steps and variables",

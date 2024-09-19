@@ -16,12 +16,12 @@ export const setDefinition: ICommandDefinition = {
     name: "set",
     type: "command",
     handler: join(__dirname, "set.handler"),
-    summary: "set configuration property",
-    description: "create or update a configuration property",
+    summary: "Set configuration property",
+    description: "Create or update a configuration property.",
     positionals: [
         {
             name: "property",
-            description: "The property to set. You may specify a path using dot notation (e.g. profiles.host1.profiles.service1.properties.setting)",
+            description: "The property to set. You may specify a path using dot notation (e.g. profiles.host1.profiles.service1.properties.setting).",
             required: true,
             type: "string"
         },

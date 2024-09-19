@@ -21,7 +21,7 @@ import { join } from "path";
 export const ArchivedWorkflows: ICommandDefinition = {
     name: "archived-workflows",
     aliases: ["arw"],
-    summary: "List all archived workflows for a system.",
+    summary: "List all archived workflows for a system",
     description: "List the archived z/OSMF workflows for a system or sysplex.",
     type: "command",
     handler: join(__dirname, "ArchivedWorkflows.handler"),

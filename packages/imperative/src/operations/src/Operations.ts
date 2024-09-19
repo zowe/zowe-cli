@@ -9,12 +9,14 @@
 *
 */
 
+/* eslint-disable deprecation/deprecation */
 import { IOperationResultReady, Operation } from "./Operation";
 import { IOperationResult } from "./doc/IOperationResult";
 import { TextUtils } from "../../utilities";
 import { TaskProgress } from "./TaskProgress";
 
 /**
+ * @deprecated
  * The Operations class extends Operation and is used to create a 'string' of operations that must
  * be completed in serial order.
  *
@@ -122,12 +124,12 @@ export abstract class Operations<T> extends Operation<any> {
      * @returns {number}  percentComplete weighted against how many operations are complete
      */
     public get percentComplete(): number {
-        const percentPerOp: number = (TaskProgress.ONE_HUNDRED_PERCENT / this.mOperationList.length);
+        const percentPerOp: number = TaskProgress.ONE_HUNDRED_PERCENT / this.mOperationList.length;
         const currentOpPercentComplete = this.mOperationList[this.mCurrentOperation].percentComplete == null
             ? 0 : this.mOperationList[this.mCurrentOperation].percentComplete;
 
         return Math.ceil(percentPerOp * this.mCurrentOperation + // how many operations completed so far (each 100%)
-            (percentPerOp * (currentOpPercentComplete / TaskProgress.ONE_HUNDRED_PERCENT)));
+            percentPerOp * (currentOpPercentComplete / TaskProgress.ONE_HUNDRED_PERCENT));
 
         // what is the percent complete of the current operation in the list? weight that against number of ops
     }

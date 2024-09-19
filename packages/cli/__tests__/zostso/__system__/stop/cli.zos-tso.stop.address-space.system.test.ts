@@ -32,16 +32,18 @@ describe("zos-tso start address-space", () => {
 
     it("should throw an error if servlet key parameter is not provided", async () => {
         const response = runCliScript(__dirname + "/__scripts__/address-space/as_error_stop.sh", TEST_ENVIRONMENT);
-        expect(response.status).toBe(1);
         expect(response.stdout.toString()).toBe("");
-        expect(response.stderr.toString()).toMatchSnapshot();
+        expect(response.stderr.toString()).toContain('IZUG1126E: z/OSMF cannot correlate the request for ' +
+        'key "ZOSMFAD-55-aaakaaac" with an active z/OS application session');
+        expect(response.status).toBe(1);
     });
 
     it("should throw an error if provided address space is inactive", async () => {
         const response = runCliScript(__dirname + "/__scripts__/address-space/as_error_stop.sh", TEST_ENVIRONMENT);
-        expect(response.status).toBe(1);
         expect(response.stdout.toString()).toBe("");
-        expect(response.stderr.toString()).toMatchSnapshot();
+        expect(response.stderr.toString()).toContain('IZUG1126E: z/OSMF cannot correlate the request for ' +
+            'key "ZOSMFAD-55-aaakaaac" with an active z/OS application session');
+        expect(response.status).toBe(1);
     });
 
     it("should successfully issue the command", async () => {

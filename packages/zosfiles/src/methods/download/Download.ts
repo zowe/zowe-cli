@@ -9,22 +9,21 @@
 *
 */
 
-import { AbstractSession, Headers, ImperativeExpect, IO, Logger, TaskProgress, ImperativeError, TextUtils } from "@zowe/imperative";
+import { AbstractSession, Headers, ImperativeExpect, IO, Logger, TaskProgress, ImperativeError,
+    TextUtils, IHeaderContent, IOptionsFullResponse, IRestClientResponse } from "@zowe/imperative";
 
 import { posix, join, relative } from "path";
 import * as fs from "fs";
 import * as util from "util";
 
-import { ZosmfRestClient, IHeaderContent, ZosmfHeaders, asyncPool } from "@zowe/core-for-zowe-sdk";
+import { ZosmfRestClient, ZosmfHeaders, asyncPool } from "@zowe/core-for-zowe-sdk";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 import { IZosFilesResponse } from "../../doc/IZosFilesResponse";
 import { ZosFilesUtils } from "../../utils/ZosFilesUtils";
 import { List } from "../list/List";
 import { IDownloadOptions, IDownloadSingleOptions } from "./doc/IDownloadOptions";
-import { IRestClientResponse } from "../../doc/IRestClientResponse";
 import { CLIENT_PROPERTY } from "../../doc/types/ZosmfRestClientProperties";
-import { IOptionsFullResponse } from "../../doc/IOptionsFullResponse";
 import { Utilities } from "../utilities";
 import { IZosmfListResponse } from "../list/doc/IZosmfListResponse";
 import { IDownloadDsmResult } from "./doc/IDownloadDsmResult";
@@ -93,6 +92,9 @@ export class Download {
             }
 
             endpoint = posix.join(endpoint, encodeURIComponent(dataSetName));
+            if (options.queryParams) {
+                endpoint += options.queryParams;
+            }
 
             Logger.getAppLogger().debug(`Endpoint: ${endpoint}`);
 
@@ -260,7 +262,7 @@ export class Download {
                 const fileName = options.preserveOriginalLetterCase ? mem.member : mem.member.toLowerCase();
                 return this.dataSet(session, `${dataSetName}(${mem.member})`, {
                     volume: options.volume,
-                    file: baseDir + IO.FILE_DELIM + fileName + IO.normalizeExtension(extension),
+                    file: posix.join(baseDir, fileName + IO.normalizeExtension(extension)),
                     binary: options.binary,
                     record: options.record,
                     encoding: options.encoding,
@@ -269,7 +271,7 @@ export class Download {
                     downloadErrors.push(err);
                     failedMembers.push(fileName);
                     // Delete the file that could not be downloaded
-                    IO.deleteFile(baseDir + IO.FILE_DELIM + fileName + IO.normalizeExtension(extension));
+                    IO.deleteFile(join(baseDir, fileName + IO.normalizeExtension(extension)));
                     // If we should fail fast, rethrow error
                     if (options.failFast || options.failFast === undefined) {
                         throw err;
@@ -663,7 +665,7 @@ export class Download {
 
             // For each item in the listing...
             for (const item of list) {
-                if (item.name === "." || item.name === ".." || item.name === "..." || (!fileOptions.includeHidden && /(^|\/)\./.test(item.name))) {
+                if (item.name === "." || item.name === ".." || item.name === "..." || !fileOptions.includeHidden && /(^|\/)\./.test(item.name)) {
                     // If the name is ., .., ..., or a hidden file, ignore it.
                     continue;
                 } else if (item.mode.startsWith("-")) {

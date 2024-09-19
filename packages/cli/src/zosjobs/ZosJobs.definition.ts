@@ -14,6 +14,7 @@ import { SubmitDefinition } from "./submit/Submit.definition";
 import { ViewDefinition } from "./view/View.definition";
 import { ListDefinition } from "./list/List.definition";
 import { CancelDefinition } from "./cancel/Cancel.definition";
+import { SearchDefinition } from "./search/Search.definition";
 import { DeleteDefinition } from "./delete/Delete.definition";
 import { DownloadDefinition } from "./download/Download.definition";
 import { ZosmfSession } from "@zowe/zosmf-for-zowe-sdk";
@@ -32,7 +33,8 @@ export const definition: ICommandDefinition = {
         ListDefinition,
         DeleteDefinition,
         ModifyDefinition,
-        CancelDefinition
+        CancelDefinition,
+        SearchDefinition
     ],
     passOn: [
         {

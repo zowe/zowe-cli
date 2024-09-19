@@ -131,8 +131,6 @@ exports[`Command Processor should detect no command definition supplied 1`] = `"
 
 exports[`Command Processor should detect no help generator supplied 1`] = `"Expect Error: Command Processor Error: No help generator supplied."`;
 
-exports[`Command Processor should detect no profile manager factory supplied 1`] = `"Expect Error: Command Processor Error: No profile manager factory supplied."`;
-
 exports[`Command Processor should detect no root command supplied 1`] = `"Expect Error: Command Processor Error: No root command supplied."`;
 
 exports[`Command Processor should detect that no parameters have been supplied 1`] = `"Expect Error: Command Processor Error: No parameters supplied to constructor."`;

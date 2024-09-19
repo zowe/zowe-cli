@@ -38,6 +38,8 @@ export default class FruitAuthHandler extends BaseAuthHandler {
             port: 3000,
             user: args.user,
             password: args.password,
+            cert: args.certFile,
+            certKey: args.certKeyFile,
             tokenType: args.tokenType,
             tokenValue: args.tokenValue
         };
@@ -50,7 +52,11 @@ export default class FruitAuthHandler extends BaseAuthHandler {
      * @returns {Promise<string>} The response from the auth service containing a token
      */
     protected async doLogin(session: AbstractSession) {
-        return `${session.ISession.user}:${session.ISession.password}@fakeToken`;
+        if (session.ISession.user) {
+            return `${session.ISession.user}:${session.ISession.password}@fakeToken`;
+        } else {
+            return `fakeCertificate@fakeToken`;
+        }
     }
 
     /**

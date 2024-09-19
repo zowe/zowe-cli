@@ -330,7 +330,7 @@ describe("Upload file to data set", () => {
                 localFileName,
                 "MF.DOES.NOT.EXIST"
             ]);
-            expect(response.stderr.toString()).toContain("Data set not found");
+            expect(response.stderr.toString()).toContain("NOT IN CATALOG OR CATALOG CAN NOT BE ACCESSED");
         });
     });
 });

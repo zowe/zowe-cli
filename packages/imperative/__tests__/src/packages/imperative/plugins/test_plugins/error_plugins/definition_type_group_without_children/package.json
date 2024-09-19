@@ -10,7 +10,6 @@
     "name": "definition_type_group_without_children",
     "rootCommandDescription": "definition type group without children",
     "pluginBaseCliVersion": "^1.0.0",
-    "pluginHealthCheck": "./dummy.handler",
     "definitions": [
       {
         "name": "foo",

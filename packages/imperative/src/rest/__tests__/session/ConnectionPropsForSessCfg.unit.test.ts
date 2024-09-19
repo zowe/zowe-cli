@@ -10,6 +10,7 @@
 */
 
 jest.mock("../../../logger/src/LoggerUtils");
+
 import { ConnectionPropsForSessCfg } from "../../src/session/ConnectionPropsForSessCfg";
 import { CliUtils } from "../../../utilities/src/CliUtils";
 import { ImperativeError } from "../../../error";
@@ -20,7 +21,11 @@ import { join } from "path";
 import { ConfigAutoStore } from "../../../config/src/ConfigAutoStore";
 import { setupConfigToLoad } from "../../../../__tests__/src/TestUtil";
 import { IOverridePromptConnProps } from "../../src/session/doc/IOverridePromptConnProps";
+import { IOptionsForAddConnProps } from "../../src/session/doc/IOptionsForAddConnProps";
+import { ImperativeConfig } from "../../../utilities";
+import { ConfigUtils } from "../../../config/src/ConfigUtils";
 import { ISshSession } from "../../../../../zosuss/lib/doc/ISshSession";
+
 const certFilePath = join(
     __dirname,
     "..",
@@ -58,12 +63,11 @@ interface extendedSession extends ISession {
 }
 
 describe("ConnectionPropsForSessCfg tests", () => {
-
     afterEach(() => {
         jest.clearAllMocks();
     });
 
-    it("authenticate with user and pass", async() => {
+    it("authenticate with user and pass", async () => {
         const initialSessCfg = {
             rejectUnauthorized: true,
         };
@@ -73,11 +77,13 @@ describe("ConnectionPropsForSessCfg tests", () => {
             host: "SomeHost",
             port: 11,
             user: "FakeUser",
-            password: "FakePassword"
+            password: "FakePassword",
         };
-        const sessCfgWithConnProps = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
-            initialSessCfg, args
-        );
+        const sessCfgWithConnProps =
+            await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
+                initialSessCfg,
+                args
+            );
         expect(sessCfgWithConnProps.hostname).toBe("SomeHost");
         expect(sessCfgWithConnProps.port).toBe(11);
         expect(sessCfgWithConnProps.user).toBe("FakeUser");
@@ -89,58 +95,68 @@ describe("ConnectionPropsForSessCfg tests", () => {
         expect(sessCfgWithConnProps.certKey).toBeUndefined();
     });
 
-    it("authenticate with user, pass, and tokenType to get token", async() => {
+    it("authenticate with user, pass, and tokenType to get token", async () => {
         const initialSessCfg = {
             hostname: "SomeHost",
             port: 11,
-            rejectUnauthorized: true
+            rejectUnauthorized: true,
         };
         const args = {
             $0: "zowe",
             _: [""],
             user: "FakeUser",
             password: "FakePassword",
-            tokenType: SessConstants.TOKEN_TYPE_JWT
+            tokenType: SessConstants.TOKEN_TYPE_JWT,
         };
-        const sessCfgWithConnProps = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
-            initialSessCfg, args, {requestToken: true}
-        );
+        const sessCfgWithConnProps =
+            await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
+                initialSessCfg,
+                args,
+                { requestToken: true }
+            );
         expect(sessCfgWithConnProps.hostname).toBe("SomeHost");
         expect(sessCfgWithConnProps.user).toBe("FakeUser");
         expect(sessCfgWithConnProps.password).toBe("FakePassword");
         expect(sessCfgWithConnProps.type).toBe(SessConstants.AUTH_TYPE_TOKEN);
-        expect(sessCfgWithConnProps.tokenType).toBe(SessConstants.TOKEN_TYPE_JWT);
+        expect(sessCfgWithConnProps.tokenType).toBe(
+            SessConstants.TOKEN_TYPE_JWT
+        );
         expect(sessCfgWithConnProps.tokenValue).toBeUndefined();
         expect(sessCfgWithConnProps.cert).toBeUndefined();
         expect(sessCfgWithConnProps.certKey).toBeUndefined();
     });
 
-    it("authenticate with user, pass, and *NO* tokenType to get token", async() => {
+    it("authenticate with user, pass, and *NO* tokenType to get token", async () => {
         const initialSessCfg = {
             hostname: "SomeHost",
             port: 11,
-            rejectUnauthorized: true
+            rejectUnauthorized: true,
         };
         const args = {
             $0: "zowe",
             _: [""],
             user: "FakeUser",
-            password: "FakePassword"
+            password: "FakePassword",
         };
-        const sessCfgWithConnProps = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
-            initialSessCfg, args, {requestToken: true}
-        );
+        const sessCfgWithConnProps =
+            await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
+                initialSessCfg,
+                args,
+                { requestToken: true }
+            );
         expect(sessCfgWithConnProps.hostname).toBe("SomeHost");
         expect(sessCfgWithConnProps.user).toBe("FakeUser");
         expect(sessCfgWithConnProps.password).toBe("FakePassword");
         expect(sessCfgWithConnProps.type).toBe(SessConstants.AUTH_TYPE_TOKEN);
-        expect(sessCfgWithConnProps.tokenType).toBe(SessConstants.TOKEN_TYPE_JWT);
+        expect(sessCfgWithConnProps.tokenType).toBe(
+            SessConstants.TOKEN_TYPE_JWT
+        );
         expect(sessCfgWithConnProps.tokenValue).toBeUndefined();
         expect(sessCfgWithConnProps.cert).toBeUndefined();
         expect(sessCfgWithConnProps.certKey).toBeUndefined();
     });
 
-    it("authenticate with token value", async() => {
+    it("authenticate with token value", async () => {
         const initialSessCfg = {
             hostname: "SomeHost",
             port: 11,
@@ -151,9 +167,11 @@ describe("ConnectionPropsForSessCfg tests", () => {
             _: [""],
             tokenValue: "FakeToken",
         };
-        const sessCfgWithConnProps = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
-            initialSessCfg, args
-        );
+        const sessCfgWithConnProps =
+            await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
+                initialSessCfg,
+                args
+            );
         expect(sessCfgWithConnProps.hostname).toBe("SomeHost");
         expect(sessCfgWithConnProps.tokenValue).toBe("FakeToken");
         expect(sessCfgWithConnProps.type).toBe(SessConstants.AUTH_TYPE_BEARER);
@@ -163,48 +181,56 @@ describe("ConnectionPropsForSessCfg tests", () => {
         expect(sessCfgWithConnProps.certKey).toBeUndefined();
     });
 
-    it("authenticate with token value and token type", async() => {
+    it("authenticate with token value and token type", async () => {
         const initialSessCfg = {
             hostname: "SomeHost",
             port: 11,
-            rejectUnauthorized: true
+            rejectUnauthorized: true,
         };
         const args = {
             $0: "zowe",
             _: [""],
             tokenValue: "FakeToken",
-            tokenType: SessConstants.TOKEN_TYPE_LTPA
+            tokenType: SessConstants.TOKEN_TYPE_LTPA,
         };
-        const sessCfgWithConnProps = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
-            initialSessCfg, args
-        );
+        const sessCfgWithConnProps =
+            await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
+                initialSessCfg,
+                args
+            );
         expect(sessCfgWithConnProps.hostname).toBe("SomeHost");
         expect(sessCfgWithConnProps.tokenValue).toBe("FakeToken");
         expect(sessCfgWithConnProps.type).toBe(SessConstants.AUTH_TYPE_TOKEN);
-        expect(sessCfgWithConnProps.tokenType).toBe(SessConstants.TOKEN_TYPE_LTPA);
+        expect(sessCfgWithConnProps.tokenType).toBe(
+            SessConstants.TOKEN_TYPE_LTPA
+        );
         expect(sessCfgWithConnProps.user).toBeUndefined();
         expect(sessCfgWithConnProps.password).toBeUndefined();
         expect(sessCfgWithConnProps.cert).toBeUndefined();
         expect(sessCfgWithConnProps.certKey).toBeUndefined();
     });
 
-    it("authenticate with certFile and certKeyFile", async() => {
+    it("authenticate with certFile and certKeyFile", async () => {
         const initialSessCfg = {
             hostname: "SomeHost",
             port: 11,
-            rejectUnauthorized: true
+            rejectUnauthorized: true,
         };
         const args = {
             $0: "zowe",
             _: [""],
             certFile: certFilePath,
-            certKeyFile: certKeyFilePath
+            certKeyFile: certKeyFilePath,
         };
-        const sessCfgWithConnProps = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
-            initialSessCfg, args
-        );
+        const sessCfgWithConnProps =
+            await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
+                initialSessCfg,
+                args
+            );
         expect(sessCfgWithConnProps.hostname).toBe("SomeHost");
-        expect(sessCfgWithConnProps.type).toBe(SessConstants.AUTH_TYPE_CERT_PEM);
+        expect(sessCfgWithConnProps.type).toBe(
+            SessConstants.AUTH_TYPE_CERT_PEM
+        );
         expect(sessCfgWithConnProps.cert).toBe(certFilePath);
         expect(sessCfgWithConnProps.certKey).toBe(certKeyFilePath);
         expect(sessCfgWithConnProps.user).toBeUndefined();
@@ -213,11 +239,11 @@ describe("ConnectionPropsForSessCfg tests", () => {
         expect(sessCfgWithConnProps.tokenValue).toBeUndefined();
     });
 
-    it("ignore token and cert if unsupported auth types and authenticate with user and pass", async() => {
+    it("ignore token and cert if unsupported auth types and authenticate with user and pass", async () => {
         const initialSessCfg = {
             hostname: "SomeHost",
             port: 11,
-            rejectUnauthorized: true
+            rejectUnauthorized: true,
         };
         const args = {
             $0: "zowe",
@@ -225,15 +251,18 @@ describe("ConnectionPropsForSessCfg tests", () => {
             cert: "fakeCert",
             certKey: "fakeCertKey",
             tokenType: SessConstants.TOKEN_TYPE_JWT,
-            tokenValue: "fakeToken"
+            tokenValue: "fakeToken",
         };
         const fakePromptFn = jest.fn().mockReturnValue({
-            "user": "FakeUser",
-            "password": "FakePassword"
+            user: "FakeUser",
+            password: "FakePassword",
         });
-        const sessCfgWithConnProps = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
-            initialSessCfg, args, {getValuesBack: fakePromptFn, supportedAuthTypes: ["basic"]}
-        );
+        const sessCfgWithConnProps =
+            await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
+                initialSessCfg,
+                args,
+                { getValuesBack: fakePromptFn, supportedAuthTypes: ["basic"] }
+            );
         expect(fakePromptFn).toHaveBeenCalledWith(["user", "password"]);
         expect(sessCfgWithConnProps.hostname).toBe("SomeHost");
         expect(sessCfgWithConnProps.user).toBe("FakeUser");
@@ -241,11 +270,11 @@ describe("ConnectionPropsForSessCfg tests", () => {
         expect(sessCfgWithConnProps.type).toBe(SessConstants.AUTH_TYPE_BASIC);
     });
 
-    it("not set tokenValue if user and pass are defined", async() => {
+    it("not set tokenValue if user and pass are defined", async () => {
         const initialSessCfg = {
             hostname: "SomeHost",
             port: 11,
-            rejectUnauthorized: true
+            rejectUnauthorized: true,
         };
         const args = {
             $0: "zowe",
@@ -253,11 +282,13 @@ describe("ConnectionPropsForSessCfg tests", () => {
             user: "FakeUser",
             password: "FakePassword",
             tokenType: SessConstants.TOKEN_TYPE_JWT,
-            tokenValue: "FakeToken"
+            tokenValue: "FakeToken",
         };
-        const sessCfgWithConnProps = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
-            initialSessCfg, args
-        );
+        const sessCfgWithConnProps =
+            await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
+                initialSessCfg,
+                args
+            );
         expect(sessCfgWithConnProps.hostname).toBe("SomeHost");
         expect(sessCfgWithConnProps.user).toBe("FakeUser");
         expect(sessCfgWithConnProps.password).toBe("FakePassword");
@@ -268,20 +299,23 @@ describe("ConnectionPropsForSessCfg tests", () => {
         expect(sessCfgWithConnProps.certKey).toBeUndefined();
     });
 
-    it("not prompt when asked not to prompt", async() => {
+    it("not prompt when asked not to prompt", async () => {
         const initialSessCfg = {
             hostname: "SomeHost",
             port: 11,
-            rejectUnauthorized: true
+            rejectUnauthorized: true,
         };
         const args = {
             $0: "zowe",
-            _: [""]
+            _: [""],
         };
 
-        const sessCfgWithConnProps: ISession = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
-            initialSessCfg, args, {doPrompting: false}
-        );
+        const sessCfgWithConnProps: ISession =
+            await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
+                initialSessCfg,
+                args,
+                { doPrompting: false }
+            );
         expect(sessCfgWithConnProps.type).toBe(SessConstants.AUTH_TYPE_BASIC);
         expect(sessCfgWithConnProps.user).toBeUndefined();
         expect(sessCfgWithConnProps.password).toBeUndefined();
@@ -291,32 +325,37 @@ describe("ConnectionPropsForSessCfg tests", () => {
         expect(sessCfgWithConnProps.certKey).toBeUndefined();
     });
 
-    it("override with a different command line name", async() => {
+    it("override with a different command line name", async () => {
         const passFromPrompt = "somePass";
         const initialSessCfg: extendedSession = {
             hostname: "SomeHost",
             port: 11,
             user: "FakeUser",
             password: "somePass",
-            rejectUnauthorized: true
+            rejectUnauthorized: true,
         };
         const args = {
             $0: "zowe",
             _: [""],
-            someKeyOther: "somekeyvalue"
+            someKeyOther: "somekeyvalue",
         };
-        const overrides: IOverridePromptConnProps[] = [{
-            propertyName: "someKey",
-            argumentName: "someKeyOther",
-            propertiesOverridden: [
-                "password",
-                "tokenType",
-                "tokenValue",
-                "cert",
-                "certKey"
-            ]
-        }];
-        const mockClientPrompt = jest.spyOn(ConnectionPropsForSessCfg as any, "clientPrompt");
+        const overrides: IOverridePromptConnProps[] = [
+            {
+                propertyName: "someKey",
+                argumentName: "someKeyOther",
+                propertiesOverridden: [
+                    "password",
+                    "tokenType",
+                    "tokenValue",
+                    "cert",
+                    "certKey",
+                ],
+            },
+        ];
+        const mockClientPrompt = jest.spyOn(
+            ConnectionPropsForSessCfg as any,
+            "clientPrompt"
+        );
         // command handler prompt method (CLI versus SDK-based prompting)
         const commandHandlerPrompt = jest.fn(() => {
             return Promise.resolve(passFromPrompt);
@@ -325,16 +364,23 @@ describe("ConnectionPropsForSessCfg tests", () => {
         const parms = {
             response: {
                 console: {
-                    prompt: commandHandlerPrompt
-                }
-            }
+                    prompt: commandHandlerPrompt,
+                },
+            },
         };
-        const sessCfgWithConnProps: extendedSession = await ConnectionPropsForSessCfg.addPropsOrPrompt<extendedSession>(
-            initialSessCfg, args, {doPrompting: true, propertyOverrides: overrides, parms: (parms as any)}
-        );
+        const sessCfgWithConnProps: extendedSession =
+            await ConnectionPropsForSessCfg.addPropsOrPrompt<extendedSession>(
+                initialSessCfg,
+                args,
+                {
+                    doPrompting: true,
+                    propertyOverrides: overrides,
+                    parms: parms as any,
+                }
+            );
         expect(sessCfgWithConnProps.type).toBe(SessConstants.AUTH_TYPE_BASIC);
-        expect(commandHandlerPrompt).not.toBeCalled(); // we are only testing that we call an already tested prompt method if in CLI mode
-        expect(mockClientPrompt).not.toBeCalled();
+        expect(commandHandlerPrompt).not.toHaveBeenCalled(); // we are only testing that we call an already tested prompt method if in CLI mode
+        expect(mockClientPrompt).not.toHaveBeenCalled();
         expect(sessCfgWithConnProps.user).toEqual("FakeUser");
         expect(sessCfgWithConnProps.someKey).toEqual("somekeyvalue");
         expect(sessCfgWithConnProps.password).toBeUndefined();
@@ -344,31 +390,36 @@ describe("ConnectionPropsForSessCfg tests", () => {
         expect(sessCfgWithConnProps.certKey).toBeUndefined();
     });
 
-    it("override a session value when an override is specified on the command line", async() => {
+    it("override a session value when an override is specified on the command line", async () => {
         const passFromPrompt = "somePass";
         const initialSessCfg: extendedSession = {
             hostname: "SomeHost",
             port: 11,
             user: "FakeUser",
             password: "somePass",
-            rejectUnauthorized: true
+            rejectUnauthorized: true,
         };
         const args = {
             $0: "zowe",
             _: [""],
-            someKey: "somekeyvalue"
+            someKey: "somekeyvalue",
         };
-        const overrides: IOverridePromptConnProps[] = [{
-            propertyName: "someKey",
-            propertiesOverridden: [
-                "password",
-                "tokenType",
-                "tokenValue",
-                "cert",
-                "certKey"
-            ]
-        }];
-        const mockClientPrompt = jest.spyOn(ConnectionPropsForSessCfg as any, "clientPrompt");
+        const overrides: IOverridePromptConnProps[] = [
+            {
+                propertyName: "someKey",
+                propertiesOverridden: [
+                    "password",
+                    "tokenType",
+                    "tokenValue",
+                    "cert",
+                    "certKey",
+                ],
+            },
+        ];
+        const mockClientPrompt = jest.spyOn(
+            ConnectionPropsForSessCfg as any,
+            "clientPrompt"
+        );
         // command handler prompt method (CLI versus SDK-based prompting)
         const commandHandlerPrompt = jest.fn(() => {
             return Promise.resolve(passFromPrompt);
@@ -377,16 +428,23 @@ describe("ConnectionPropsForSessCfg tests", () => {
         const parms = {
             response: {
                 console: {
-                    prompt: commandHandlerPrompt
-                }
-            }
+                    prompt: commandHandlerPrompt,
+                },
+            },
         };
-        const sessCfgWithConnProps: extendedSession = await ConnectionPropsForSessCfg.addPropsOrPrompt<extendedSession>(
-            initialSessCfg, args, {doPrompting: true, propertyOverrides: overrides, parms: (parms as any)}
-        );
+        const sessCfgWithConnProps: extendedSession =
+            await ConnectionPropsForSessCfg.addPropsOrPrompt<extendedSession>(
+                initialSessCfg,
+                args,
+                {
+                    doPrompting: true,
+                    propertyOverrides: overrides,
+                    parms: parms as any,
+                }
+            );
         expect(sessCfgWithConnProps.type).toBe(SessConstants.AUTH_TYPE_BASIC);
-        expect(commandHandlerPrompt).not.toBeCalled(); // we are only testing that we call an already tested prompt method if in CLI mode
-        expect(mockClientPrompt).not.toBeCalled();
+        expect(commandHandlerPrompt).not.toHaveBeenCalled(); // we are only testing that we call an already tested prompt method if in CLI mode
+        expect(mockClientPrompt).not.toHaveBeenCalled();
         expect(sessCfgWithConnProps.user).toEqual("FakeUser");
         expect(sessCfgWithConnProps.someKey).toEqual("somekeyvalue");
         expect(sessCfgWithConnProps.password).toBeUndefined();
@@ -396,7 +454,7 @@ describe("ConnectionPropsForSessCfg tests", () => {
         expect(sessCfgWithConnProps.certKey).toBeUndefined();
     });
 
-    it("override a session value when an override is specified on the session", async() => {
+    it("override a session value when an override is specified on the session", async () => {
         const passFromPrompt = "somePass";
         const initialSessCfg: extendedSession = {
             hostname: "SomeHost",
@@ -404,74 +462,28 @@ describe("ConnectionPropsForSessCfg tests", () => {
             user: "FakeUser",
             password: "somePass",
             someKey: "somekeyvalue",
-            rejectUnauthorized: true
-        };
-        const args = {
-            $0: "zowe",
-            _: [""]
-        };
-        const overrides: IOverridePromptConnProps[] = [{
-            propertyName: "someKey",
-            propertiesOverridden: [
-                "password",
-                "tokenType",
-                "tokenValue",
-                "cert",
-                "certKey"
-            ]
-        }];
-        const mockClientPrompt = jest.spyOn(ConnectionPropsForSessCfg as any, "clientPrompt");
-        // command handler prompt method (CLI versus SDK-based prompting)
-        const commandHandlerPrompt = jest.fn(() => {
-            return Promise.resolve(passFromPrompt);
-        });
-        // pretend we have a command handler object
-        const parms = {
-            response: {
-                console: {
-                    prompt: commandHandlerPrompt
-                }
-            }
-        };
-        const sessCfgWithConnProps: extendedSession = await ConnectionPropsForSessCfg.addPropsOrPrompt<extendedSession>(
-            initialSessCfg, args, {doPrompting: true, propertyOverrides: overrides, parms: (parms as any)}
-        );
-        expect(sessCfgWithConnProps.type).toBe(SessConstants.AUTH_TYPE_BASIC);
-        expect(commandHandlerPrompt).not.toBeCalled(); // we are only testing that we call an already tested prompt method if in CLI mode
-        expect(mockClientPrompt).not.toBeCalled();
-        expect(sessCfgWithConnProps.user).toEqual("FakeUser");
-        expect(sessCfgWithConnProps.someKey).toEqual("somekeyvalue");
-        expect(sessCfgWithConnProps.password).toBeUndefined();
-        expect(sessCfgWithConnProps.tokenType).toBeUndefined();
-        expect(sessCfgWithConnProps.tokenValue).toBeUndefined();
-        expect(sessCfgWithConnProps.cert).toBeUndefined();
-        expect(sessCfgWithConnProps.certKey).toBeUndefined();
-    });
-
-    it("not prompt when an override is specified on the command line", async() => {
-        const passFromPrompt = "somePass";
-        const initialSessCfg: extendedSession = {
-            hostname: "SomeHost",
-            port: 11,
-            user: "FakeUser",
-            rejectUnauthorized: true
+            rejectUnauthorized: true,
         };
         const args = {
             $0: "zowe",
             _: [""],
-            someKey: "somekeyvalue"
         };
-        const overrides: IOverridePromptConnProps[] = [{
-            propertyName: "someKey",
-            propertiesOverridden: [
-                "password",
-                "tokenType",
-                "tokenValue",
-                "cert",
-                "certKey"
-            ]
-        }];
-        const mockClientPrompt = jest.spyOn(ConnectionPropsForSessCfg as any, "clientPrompt");
+        const overrides: IOverridePromptConnProps[] = [
+            {
+                propertyName: "someKey",
+                propertiesOverridden: [
+                    "password",
+                    "tokenType",
+                    "tokenValue",
+                    "cert",
+                    "certKey",
+                ],
+            },
+        ];
+        const mockClientPrompt = jest.spyOn(
+            ConnectionPropsForSessCfg as any,
+            "clientPrompt"
+        );
         // command handler prompt method (CLI versus SDK-based prompting)
         const commandHandlerPrompt = jest.fn(() => {
             return Promise.resolve(passFromPrompt);
@@ -480,16 +492,23 @@ describe("ConnectionPropsForSessCfg tests", () => {
         const parms = {
             response: {
                 console: {
-                    prompt: commandHandlerPrompt
-                }
-            }
+                    prompt: commandHandlerPrompt,
+                },
+            },
         };
-        const sessCfgWithConnProps: extendedSession = await ConnectionPropsForSessCfg.addPropsOrPrompt<extendedSession>(
-            initialSessCfg, args, {doPrompting: true, propertyOverrides: overrides, parms: (parms as any)}
-        );
+        const sessCfgWithConnProps: extendedSession =
+            await ConnectionPropsForSessCfg.addPropsOrPrompt<extendedSession>(
+                initialSessCfg,
+                args,
+                {
+                    doPrompting: true,
+                    propertyOverrides: overrides,
+                    parms: parms as any,
+                }
+            );
         expect(sessCfgWithConnProps.type).toBe(SessConstants.AUTH_TYPE_BASIC);
-        expect(commandHandlerPrompt).not.toBeCalled(); // we are only testing that we call an already tested prompt method if in CLI mode
-        expect(mockClientPrompt).not.toBeCalled();
+        expect(commandHandlerPrompt).not.toHaveBeenCalled(); // we are only testing that we call an already tested prompt method if in CLI mode
+        expect(mockClientPrompt).not.toHaveBeenCalled();
         expect(sessCfgWithConnProps.user).toEqual("FakeUser");
         expect(sessCfgWithConnProps.someKey).toEqual("somekeyvalue");
         expect(sessCfgWithConnProps.password).toBeUndefined();
@@ -499,30 +518,35 @@ describe("ConnectionPropsForSessCfg tests", () => {
         expect(sessCfgWithConnProps.certKey).toBeUndefined();
     });
 
-    it("not prompt when an override is specified on the session", async() => {
+    it("not prompt when an override is specified on the command line", async () => {
         const passFromPrompt = "somePass";
         const initialSessCfg: extendedSession = {
             hostname: "SomeHost",
             port: 11,
             user: "FakeUser",
             rejectUnauthorized: true,
-            someKey: "somekeyvalue"
         };
         const args = {
             $0: "zowe",
-            _: [""]
+            _: [""],
+            someKey: "somekeyvalue",
         };
-        const overrides: IOverridePromptConnProps[] = [{
-            propertyName: "someKey",
-            propertiesOverridden: [
-                "password",
-                "tokenType",
-                "tokenValue",
-                "cert",
-                "certKey"
-            ]
-        }];
-        const mockClientPrompt = jest.spyOn(ConnectionPropsForSessCfg as any, "clientPrompt");
+        const overrides: IOverridePromptConnProps[] = [
+            {
+                propertyName: "someKey",
+                propertiesOverridden: [
+                    "password",
+                    "tokenType",
+                    "tokenValue",
+                    "cert",
+                    "certKey",
+                ],
+            },
+        ];
+        const mockClientPrompt = jest.spyOn(
+            ConnectionPropsForSessCfg as any,
+            "clientPrompt"
+        );
         // command handler prompt method (CLI versus SDK-based prompting)
         const commandHandlerPrompt = jest.fn(() => {
             return Promise.resolve(passFromPrompt);
@@ -531,16 +555,23 @@ describe("ConnectionPropsForSessCfg tests", () => {
         const parms = {
             response: {
                 console: {
-                    prompt: commandHandlerPrompt
-                }
-            }
+                    prompt: commandHandlerPrompt,
+                },
+            },
         };
-        const sessCfgWithConnProps: extendedSession = await ConnectionPropsForSessCfg.addPropsOrPrompt<extendedSession>(
-            initialSessCfg, args, {doPrompting: true, propertyOverrides: overrides, parms: (parms as any)}
-        );
+        const sessCfgWithConnProps: extendedSession =
+            await ConnectionPropsForSessCfg.addPropsOrPrompt<extendedSession>(
+                initialSessCfg,
+                args,
+                {
+                    doPrompting: true,
+                    propertyOverrides: overrides,
+                    parms: parms as any,
+                }
+            );
         expect(sessCfgWithConnProps.type).toBe(SessConstants.AUTH_TYPE_BASIC);
-        expect(commandHandlerPrompt).not.toBeCalled(); // we are only testing that we call an already tested prompt method if in CLI mode
-        expect(mockClientPrompt).not.toBeCalled();
+        expect(commandHandlerPrompt).not.toHaveBeenCalled(); // we are only testing that we call an already tested prompt method if in CLI mode
+        expect(mockClientPrompt).not.toHaveBeenCalled();
         expect(sessCfgWithConnProps.user).toEqual("FakeUser");
         expect(sessCfgWithConnProps.someKey).toEqual("somekeyvalue");
         expect(sessCfgWithConnProps.password).toBeUndefined();
@@ -550,29 +581,35 @@ describe("ConnectionPropsForSessCfg tests", () => {
         expect(sessCfgWithConnProps.certKey).toBeUndefined();
     });
 
-    it("should prompt when an override is specified but is not present", async() => {
+    it("not prompt when an override is specified on the session", async () => {
         const passFromPrompt = "somePass";
         const initialSessCfg: extendedSession = {
             hostname: "SomeHost",
             port: 11,
             user: "FakeUser",
-            rejectUnauthorized: true
+            rejectUnauthorized: true,
+            someKey: "somekeyvalue",
         };
         const args = {
             $0: "zowe",
-            _: [""]
+            _: [""],
         };
-        const overrides: IOverridePromptConnProps[] = [{
-            propertyName: "someKey",
-            propertiesOverridden: [
-                "password",
-                "tokenType",
-                "tokenValue",
-                "cert",
-                "certKey"
-            ]
-        }];
-        const mockClientPrompt = jest.spyOn(ConnectionPropsForSessCfg as any, "clientPrompt");
+        const overrides: IOverridePromptConnProps[] = [
+            {
+                propertyName: "someKey",
+                propertiesOverridden: [
+                    "password",
+                    "tokenType",
+                    "tokenValue",
+                    "cert",
+                    "certKey",
+                ],
+            },
+        ];
+        const mockClientPrompt = jest.spyOn(
+            ConnectionPropsForSessCfg as any,
+            "clientPrompt"
+        );
         // command handler prompt method (CLI versus SDK-based prompting)
         const commandHandlerPrompt = jest.fn(() => {
             return Promise.resolve(passFromPrompt);
@@ -581,15 +618,84 @@ describe("ConnectionPropsForSessCfg tests", () => {
         const parms = {
             response: {
                 console: {
-                    prompt: commandHandlerPrompt
-                }
-            }
+                    prompt: commandHandlerPrompt,
+                },
+            },
         };
-        const sessCfgWithConnProps: extendedSession = await ConnectionPropsForSessCfg.addPropsOrPrompt<extendedSession>(
-            initialSessCfg, args, {doPrompting: true, propertyOverrides: overrides, parms: (parms as any)}
-        );
+        const sessCfgWithConnProps: extendedSession =
+            await ConnectionPropsForSessCfg.addPropsOrPrompt<extendedSession>(
+                initialSessCfg,
+                args,
+                {
+                    doPrompting: true,
+                    propertyOverrides: overrides,
+                    parms: parms as any,
+                }
+            );
         expect(sessCfgWithConnProps.type).toBe(SessConstants.AUTH_TYPE_BASIC);
-        expect(commandHandlerPrompt).toBeCalled(); // we are only testing that we call an already tested prompt method if in CLI mode
+        expect(commandHandlerPrompt).not.toHaveBeenCalled(); // we are only testing that we call an already tested prompt method if in CLI mode
+        expect(mockClientPrompt).not.toHaveBeenCalled();
+        expect(sessCfgWithConnProps.user).toEqual("FakeUser");
+        expect(sessCfgWithConnProps.someKey).toEqual("somekeyvalue");
+        expect(sessCfgWithConnProps.password).toBeUndefined();
+        expect(sessCfgWithConnProps.tokenType).toBeUndefined();
+        expect(sessCfgWithConnProps.tokenValue).toBeUndefined();
+        expect(sessCfgWithConnProps.cert).toBeUndefined();
+        expect(sessCfgWithConnProps.certKey).toBeUndefined();
+    });
+
+    it("should prompt when an override is specified but is not present", async () => {
+        const passFromPrompt = "somePass";
+        const initialSessCfg: extendedSession = {
+            hostname: "SomeHost",
+            port: 11,
+            user: "FakeUser",
+            rejectUnauthorized: true,
+        };
+        const args = {
+            $0: "zowe",
+            _: [""],
+        };
+        const overrides: IOverridePromptConnProps[] = [
+            {
+                propertyName: "someKey",
+                propertiesOverridden: [
+                    "password",
+                    "tokenType",
+                    "tokenValue",
+                    "cert",
+                    "certKey",
+                ],
+            },
+        ];
+        const mockClientPrompt = jest.spyOn(
+            ConnectionPropsForSessCfg as any,
+            "clientPrompt"
+        );
+        // command handler prompt method (CLI versus SDK-based prompting)
+        const commandHandlerPrompt = jest.fn(() => {
+            return Promise.resolve(passFromPrompt);
+        });
+        // pretend we have a command handler object
+        const parms = {
+            response: {
+                console: {
+                    prompt: commandHandlerPrompt,
+                },
+            },
+        };
+        const sessCfgWithConnProps: extendedSession =
+            await ConnectionPropsForSessCfg.addPropsOrPrompt<extendedSession>(
+                initialSessCfg,
+                args,
+                {
+                    doPrompting: true,
+                    propertyOverrides: overrides,
+                    parms: parms as any,
+                }
+            );
+        expect(sessCfgWithConnProps.type).toBe(SessConstants.AUTH_TYPE_BASIC);
+        expect(commandHandlerPrompt).toHaveBeenCalled(); // we are only testing that we call an already tested prompt method if in CLI mode
         expect((mockClientPrompt.mock.calls[0][1] as any).parms).toBe(parms);
         expect(sessCfgWithConnProps.user).toEqual("FakeUser");
         expect(sessCfgWithConnProps.someKey).toBeUndefined();
@@ -600,31 +706,36 @@ describe("ConnectionPropsForSessCfg tests", () => {
         expect(sessCfgWithConnProps.certKey).toBeUndefined();
     });
 
-    it("not prompt when an override is specified and should prioritize the argument value", async() => {
+    it("not prompt when an override is specified and should prioritize the argument value", async () => {
         const passFromPrompt = "somePass";
         const initialSessCfg: extendedSession = {
             hostname: "SomeHost",
             port: 11,
             user: "FakeUser",
             rejectUnauthorized: true,
-            someKey: "somekeyvalue"
+            someKey: "somekeyvalue",
         };
         const args = {
             $0: "zowe",
             _: [""],
-            someKey: "someotherkeyvalue"
+            someKey: "someotherkeyvalue",
         };
-        const overrides: IOverridePromptConnProps[] = [{
-            propertyName: "someKey",
-            propertiesOverridden: [
-                "password",
-                "tokenType",
-                "tokenValue",
-                "cert",
-                "certKey"
-            ]
-        }];
-        const mockClientPrompt = jest.spyOn(ConnectionPropsForSessCfg as any, "clientPrompt");
+        const overrides: IOverridePromptConnProps[] = [
+            {
+                propertyName: "someKey",
+                propertiesOverridden: [
+                    "password",
+                    "tokenType",
+                    "tokenValue",
+                    "cert",
+                    "certKey",
+                ],
+            },
+        ];
+        const mockClientPrompt = jest.spyOn(
+            ConnectionPropsForSessCfg as any,
+            "clientPrompt"
+        );
         // command handler prompt method (CLI versus SDK-based prompting)
         const commandHandlerPrompt = jest.fn(() => {
             return Promise.resolve(passFromPrompt);
@@ -633,16 +744,23 @@ describe("ConnectionPropsForSessCfg tests", () => {
         const parms = {
             response: {
                 console: {
-                    prompt: commandHandlerPrompt
-                }
-            }
+                    prompt: commandHandlerPrompt,
+                },
+            },
         };
-        const sessCfgWithConnProps: extendedSession = await ConnectionPropsForSessCfg.addPropsOrPrompt<extendedSession>(
-            initialSessCfg, args, {doPrompting: true, propertyOverrides: overrides, parms: (parms as any)}
-        );
+        const sessCfgWithConnProps: extendedSession =
+            await ConnectionPropsForSessCfg.addPropsOrPrompt<extendedSession>(
+                initialSessCfg,
+                args,
+                {
+                    doPrompting: true,
+                    propertyOverrides: overrides,
+                    parms: parms as any,
+                }
+            );
         expect(sessCfgWithConnProps.type).toBe(SessConstants.AUTH_TYPE_BASIC);
-        expect(commandHandlerPrompt).not.toBeCalled(); // we are only testing that we call an already tested prompt method if in CLI mode
-        expect(mockClientPrompt).not.toBeCalled();
+        expect(commandHandlerPrompt).not.toHaveBeenCalled(); // we are only testing that we call an already tested prompt method if in CLI mode
+        expect(mockClientPrompt).not.toHaveBeenCalled();
         expect(sessCfgWithConnProps.user).toEqual("FakeUser");
         expect(sessCfgWithConnProps.someKey).toEqual("someotherkeyvalue");
         expect(sessCfgWithConnProps.password).toBeUndefined();
@@ -652,21 +770,24 @@ describe("ConnectionPropsForSessCfg tests", () => {
         expect(sessCfgWithConnProps.certKey).toBeUndefined();
     });
 
-    it("get user name from prompt from daemon client", async() => {
+    it("get user name from prompt from daemon client", async () => {
         const userFromPrompt = "FakeUser";
         const passFromArgs = "FakePassword";
 
-        const mockClientPrompt = jest.spyOn(ConnectionPropsForSessCfg as any, "clientPrompt");
+        const mockClientPrompt = jest.spyOn(
+            ConnectionPropsForSessCfg as any,
+            "clientPrompt"
+        );
 
         const initialSessCfg = {
             hostname: "SomeHost",
             port: 11,
-            rejectUnauthorized: true
+            rejectUnauthorized: true,
         };
         const args = {
             $0: "zowe",
             _: [""],
-            password: passFromArgs
+            password: passFromArgs,
         };
 
         // command handler prompt method (CLI versus SDK-based prompting)
@@ -678,22 +799,25 @@ describe("ConnectionPropsForSessCfg tests", () => {
         const parms = {
             response: {
                 console: {
-                    prompt: commandHandlerPrompt
-                }
-            }
+                    prompt: commandHandlerPrompt,
+                },
+            },
         };
 
-        const sessCfgWithConnProps: ISession = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
-            initialSessCfg, args, {
-                parms: parms as any // treat this as a CLI-based prompt
-            }
-        );
+        const sessCfgWithConnProps: ISession =
+            await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
+                initialSessCfg,
+                args,
+                {
+                    parms: parms as any, // treat this as a CLI-based prompt
+                }
+            );
 
-        expect(commandHandlerPrompt).toBeCalled(); // we are only testing that we call an already tested prompt method if in CLI mode
-        expect((mockClientPrompt.mock.calls[0][1] as any).parms).toBe(parms);  // toBe is important here, parms object must be same as original
+        expect(commandHandlerPrompt).toHaveBeenCalled(); // we are only testing that we call an already tested prompt method if in CLI mode
+        expect((mockClientPrompt.mock.calls[0][1] as any).parms).toBe(parms); // toBe is important here, parms object must be same as original
     });
 
-    it("get user name from prompt", async() => {
+    it("get user name from prompt", async () => {
         const userFromPrompt = "FakeUser";
         const passFromArgs = "FakePassword";
 
@@ -707,17 +831,19 @@ describe("ConnectionPropsForSessCfg tests", () => {
         const initialSessCfg = {
             hostname: "SomeHost",
             port: 11,
-            rejectUnauthorized: true
+            rejectUnauthorized: true,
         };
         const args = {
             $0: "zowe",
             _: [""],
-            password: passFromArgs
+            password: passFromArgs,
         };
 
-        const sessCfgWithConnProps: ISession = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
-            initialSessCfg, args
-        );
+        const sessCfgWithConnProps: ISession =
+            await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
+                initialSessCfg,
+                args
+            );
         CliUtils.sleep = sleepReal;
         CliUtils.readPrompt = readPromptReal;
 
@@ -730,7 +856,7 @@ describe("ConnectionPropsForSessCfg tests", () => {
         expect(sessCfgWithConnProps.certKey).toBeUndefined();
     });
 
-    it("get password from prompt", async() => {
+    it("get password from prompt", async () => {
         const userFromArgs = "FakeUser";
         const passFromPrompt = "FakePassword";
 
@@ -744,17 +870,19 @@ describe("ConnectionPropsForSessCfg tests", () => {
         const initialSessCfg = {
             hostname: "SomeHost",
             port: 11,
-            rejectUnauthorized: true
+            rejectUnauthorized: true,
         };
         const args = {
             $0: "zowe",
             _: [""],
-            user: userFromArgs
+            user: userFromArgs,
         };
 
-        const sessCfgWithConnProps: ISession = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
-            initialSessCfg, args
-        );
+        const sessCfgWithConnProps: ISession =
+            await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
+                initialSessCfg,
+                args
+            );
         CliUtils.sleep = sleepReal;
         CliUtils.readPrompt = readPromptReal;
 
@@ -767,7 +895,7 @@ describe("ConnectionPropsForSessCfg tests", () => {
         expect(sessCfgWithConnProps.certKey).toBeUndefined();
     });
 
-    it("get host name from prompt", async() => {
+    it("get host name from prompt", async () => {
         const hostFromPrompt = "FakeHost";
         const portFromArgs = 11;
         const userFromArgs = "FakeUser";
@@ -788,12 +916,14 @@ describe("ConnectionPropsForSessCfg tests", () => {
             _: [""],
             port: portFromArgs,
             user: userFromArgs,
-            password: passFromArgs
+            password: passFromArgs,
         };
 
-        const sessCfgWithConnProps: ISession = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
-            initialSessCfg, args
-        );
+        const sessCfgWithConnProps: ISession =
+            await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
+                initialSessCfg,
+                args
+            );
         CliUtils.sleep = sleepReal;
         CliUtils.readPrompt = readPromptReal;
 
@@ -807,7 +937,7 @@ describe("ConnectionPropsForSessCfg tests", () => {
         expect(sessCfgWithConnProps.certKey).toBeUndefined();
     });
 
-    it("get port from prompt - string", async() => {
+    it("get port from prompt - string", async () => {
         const hostFromArgs = "FakeHost";
         const portFromPrompt = "11";
         const userFromArgs = "FakeUser";
@@ -821,19 +951,21 @@ describe("ConnectionPropsForSessCfg tests", () => {
         });
 
         const initialSessCfg = {
-            rejectUnauthorized: true
+            rejectUnauthorized: true,
         };
         const args = {
             $0: "zowe",
             _: [""],
             host: hostFromArgs,
             user: userFromArgs,
-            password: passFromArgs
+            password: passFromArgs,
         };
 
-        const sessCfgWithConnProps: ISession = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
-            initialSessCfg, args
-        );
+        const sessCfgWithConnProps: ISession =
+            await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
+                initialSessCfg,
+                args
+            );
         CliUtils.sleep = sleepReal;
         CliUtils.readPrompt = readPromptReal;
 
@@ -846,7 +978,7 @@ describe("ConnectionPropsForSessCfg tests", () => {
         expect(sessCfgWithConnProps.tokenValue).toBeUndefined();
     });
 
-    it("get port from prompt - number", async() => {
+    it("get port from prompt - number", async () => {
         const hostFromArgs = "FakeHost";
         const portFromPrompt = 11;
         const userFromArgs = "FakeUser";
@@ -858,24 +990,29 @@ describe("ConnectionPropsForSessCfg tests", () => {
         CliUtils.readPrompt = jest.fn(() => {
             return Promise.resolve(portFromPrompt.toString());
         });
-        jest.spyOn(ConnectionPropsForSessCfg as any, "loadSchemaForSessCfgProps").mockReturnValueOnce({
-            port: { type: "number" }
+        jest.spyOn(
+            ConnectionPropsForSessCfg as any,
+            "loadSchemaForSessCfgProps"
+        ).mockReturnValueOnce({
+            port: { type: "number" },
         });
 
         const initialSessCfg = {
-            rejectUnauthorized: true
+            rejectUnauthorized: true,
         };
         const args = {
             $0: "zowe",
             _: [""],
             host: hostFromArgs,
             user: userFromArgs,
-            password: passFromArgs
+            password: passFromArgs,
         };
 
-        const sessCfgWithConnProps: ISession = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
-            initialSessCfg, args
-        );
+        const sessCfgWithConnProps: ISession =
+            await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
+                initialSessCfg,
+                args
+            );
         CliUtils.sleep = sleepReal;
         CliUtils.readPrompt = readPromptReal;
 
@@ -888,7 +1025,56 @@ describe("ConnectionPropsForSessCfg tests", () => {
         expect(sessCfgWithConnProps.tokenValue).toBeUndefined();
     });
 
-    it("get host name from prompt with custom service description", async() => {
+    it("get port from prompt - zero", async () => {
+        const hostFromArgs = "FakeHost";
+        const portFromArgs = 0;
+        const portFromPrompt = 11;
+        const userFromArgs = "FakeUser";
+        const passFromArgs = "FakePassword";
+
+        const sleepReal = CliUtils.sleep;
+        CliUtils.sleep = jest.fn();
+        const readPromptReal = CliUtils.readPrompt;
+        CliUtils.readPrompt = jest.fn(() => {
+            return Promise.resolve(portFromPrompt.toString());
+        });
+        jest.spyOn(
+            ConnectionPropsForSessCfg as any,
+            "loadSchemaForSessCfgProps"
+        ).mockReturnValueOnce({
+            port: { type: "number" },
+        });
+
+        const initialSessCfg = {
+            rejectUnauthorized: true,
+        };
+        const args = {
+            $0: "zowe",
+            _: [""],
+            host: hostFromArgs,
+            port: portFromArgs,
+            user: userFromArgs,
+            password: passFromArgs,
+        };
+
+        const sessCfgWithConnProps: ISession =
+            await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
+                initialSessCfg,
+                args
+            );
+        CliUtils.sleep = sleepReal;
+        CliUtils.readPrompt = readPromptReal;
+
+        expect(sessCfgWithConnProps.type).toBe(SessConstants.AUTH_TYPE_BASIC);
+        expect(sessCfgWithConnProps.user).toBe(userFromArgs);
+        expect(sessCfgWithConnProps.password).toBe(passFromArgs);
+        expect(sessCfgWithConnProps.hostname).toBe(hostFromArgs);
+        expect(sessCfgWithConnProps.port).toBe(portFromPrompt);
+        expect(sessCfgWithConnProps.tokenType).toBeUndefined();
+        expect(sessCfgWithConnProps.tokenValue).toBeUndefined();
+    });
+
+    it("get host name from prompt with custom service description", async () => {
         const hostFromPrompt = "FakeHost";
         const portFromArgs = 11;
         const userFromArgs = "FakeUser";
@@ -911,12 +1097,15 @@ describe("ConnectionPropsForSessCfg tests", () => {
             _: [""],
             port: portFromArgs,
             user: userFromArgs,
-            password: passFromArgs
+            password: passFromArgs,
         };
 
-        const sessCfgWithConnProps: ISession = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
-            initialSessCfg, args, { serviceDescription: "my cool service" }
-        );
+        const sessCfgWithConnProps: ISession =
+            await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
+                initialSessCfg,
+                args,
+                { serviceDescription: "my cool service" }
+            );
         CliUtils.sleep = sleepReal;
         CliUtils.readPrompt = readPromptReal;
 
@@ -929,7 +1118,7 @@ describe("ConnectionPropsForSessCfg tests", () => {
         expect(sessCfgWithConnProps.tokenValue).toBeUndefined();
     });
 
-    it("get port from prompt with custom service description", async() => {
+    it("get port from prompt with custom service description", async () => {
         const hostFromArgs = "FakeHost";
         const portFromPrompt = 11;
         const userFromArgs = "FakeUser";
@@ -943,24 +1132,30 @@ describe("ConnectionPropsForSessCfg tests", () => {
             questionText = text;
             return Promise.resolve(portFromPrompt.toString());
         });
-        jest.spyOn(ConnectionPropsForSessCfg as any, "loadSchemaForSessCfgProps").mockReturnValueOnce({
-            port: { type: "number" }
+        jest.spyOn(
+            ConnectionPropsForSessCfg as any,
+            "loadSchemaForSessCfgProps"
+        ).mockReturnValueOnce({
+            port: { type: "number" },
         });
 
         const initialSessCfg = {
-            rejectUnauthorized: true
+            rejectUnauthorized: true,
         };
         const args = {
             $0: "zowe",
             _: [""],
             host: hostFromArgs,
             user: userFromArgs,
-            password: passFromArgs
+            password: passFromArgs,
         };
 
-        const sessCfgWithConnProps: ISession = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
-            initialSessCfg, args, { serviceDescription: "my cool service" }
-        );
+        const sessCfgWithConnProps: ISession =
+            await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
+                initialSessCfg,
+                args,
+                { serviceDescription: "my cool service" }
+            );
         CliUtils.sleep = sleepReal;
         CliUtils.readPrompt = readPromptReal;
 
@@ -976,7 +1171,7 @@ describe("ConnectionPropsForSessCfg tests", () => {
         expect(sessCfgWithConnProps.certKey).toBeUndefined();
     });
 
-    it("get host name from prompt with hidden text - service profile", async() => {
+    it("get host name from prompt with hidden text - service profile", async () => {
         const hostFromPrompt = "FakeHost";
         const portFromArgs = 11;
         const userFromArgs = "FakeUser";
@@ -992,7 +1187,7 @@ describe("ConnectionPropsForSessCfg tests", () => {
             _: [""],
             port: portFromArgs,
             user: userFromArgs,
-            password: passFromArgs
+            password: passFromArgs,
         };
 
         // command handler prompt method (CLI versus SDK-based prompting)
@@ -1007,28 +1202,34 @@ describe("ConnectionPropsForSessCfg tests", () => {
             arguments: {},
             response: {
                 console: {
-                    prompt: commandHandlerPrompt
-                }
-            }
+                    prompt: commandHandlerPrompt,
+                },
+            },
         };
 
-        jest.spyOn(ConfigAutoStore, "findActiveProfile").mockReturnValueOnce(["fruit", "mango"]);
+        jest.spyOn(ConfigAutoStore, "findActiveProfile").mockReturnValueOnce([
+            "fruit",
+            "mango",
+        ]);
         await setupConfigToLoad({
             profiles: {
                 mango: {
                     type: "fruit",
                     properties: {},
-                    secure: ["host"]
-                }
+                    secure: ["host"],
+                },
             },
-            defaults: { fruit: "mango" }
+            defaults: { fruit: "mango" },
         });
 
-        const sessCfgWithConnProps: ISession = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
-            initialSessCfg, args, {
-                parms: parms as any // treat this as a CLI-based prompt
-            }
-        );
+        const sessCfgWithConnProps: ISession =
+            await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
+                initialSessCfg,
+                args,
+                {
+                    parms: parms as any, // treat this as a CLI-based prompt
+                }
+            );
 
         expect(questionText).toContain("(will be hidden)");
         expect(promptOpts.hideText).toBe(true);
@@ -1040,7 +1241,7 @@ describe("ConnectionPropsForSessCfg tests", () => {
         expect(sessCfgWithConnProps.tokenValue).toBeUndefined();
     });
 
-    it("get host name from prompt with hidden text - base profile", async() => {
+    it("get host name from prompt with hidden text - base profile", async () => {
         const hostFromPrompt = "FakeHost";
         const portFromArgs = 11;
         const userFromArgs = "FakeUser";
@@ -1056,7 +1257,7 @@ describe("ConnectionPropsForSessCfg tests", () => {
             _: [""],
             port: portFromArgs,
             user: userFromArgs,
-            password: passFromArgs
+            password: passFromArgs,
         };
 
         // command handler prompt method (CLI versus SDK-based prompting)
@@ -1071,32 +1272,38 @@ describe("ConnectionPropsForSessCfg tests", () => {
             arguments: {},
             response: {
                 console: {
-                    prompt: commandHandlerPrompt
-                }
-            }
+                    prompt: commandHandlerPrompt,
+                },
+            },
         };
 
-        jest.spyOn(ConfigAutoStore, "findActiveProfile").mockReturnValueOnce(["fruit", "mango"]);
+        jest.spyOn(ConfigAutoStore, "findActiveProfile").mockReturnValueOnce([
+            "fruit",
+            "mango",
+        ]);
         await setupConfigToLoad({
             profiles: {
                 mango: {
                     type: "fruit",
-                    properties: {}
+                    properties: {},
                 },
                 fruit: {
                     type: "base",
                     properties: {},
-                    secure: ["host"]
-                }
+                    secure: ["host"],
+                },
             },
-            defaults: { fruit: "mango", base: "fruit" }
+            defaults: { fruit: "mango", base: "fruit" },
         });
 
-        const sessCfgWithConnProps: ISession = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
-            initialSessCfg, args, {
-                parms: parms as any // treat this as a CLI-based prompt
-            }
-        );
+        const sessCfgWithConnProps: ISession =
+            await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
+                initialSessCfg,
+                args,
+                {
+                    parms: parms as any, // treat this as a CLI-based prompt
+                }
+            );
 
         expect(questionText).toContain("(will be hidden)");
         expect(promptOpts.hideText).toBe(true);
@@ -1108,7 +1315,7 @@ describe("ConnectionPropsForSessCfg tests", () => {
         expect(sessCfgWithConnProps.tokenValue).toBeUndefined();
     });
 
-    it("throws an error if user doesn't enter port as a number", async() => {
+    it("throws an error if user doesn't enter port as a number", async () => {
         const hostFromArgs = "FakeHost";
         const portFromPrompt = "abcd";
         const userFromArgs = "FakeUser";
@@ -1120,24 +1327,30 @@ describe("ConnectionPropsForSessCfg tests", () => {
         CliUtils.readPrompt = jest.fn(() => {
             return Promise.resolve(portFromPrompt);
         });
-        jest.spyOn(ConnectionPropsForSessCfg as any, "loadSchemaForSessCfgProps").mockReturnValueOnce({
-            port: { type: "number" }
+        jest.spyOn(
+            ConnectionPropsForSessCfg as any,
+            "loadSchemaForSessCfgProps"
+        ).mockReturnValueOnce({
+            port: { type: "number" },
         });
 
         const initialSessCfg = {
-            rejectUnauthorized: true
+            rejectUnauthorized: true,
         };
         const args = {
             $0: "zowe",
             _: [""],
             host: hostFromArgs,
             user: userFromArgs,
-            password: passFromArgs
+            password: passFromArgs,
         };
 
         let theError;
         try {
-            await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(initialSessCfg, args);
+            await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
+                initialSessCfg,
+                args
+            );
         } catch (err) {
             theError = err;
         }
@@ -1147,7 +1360,7 @@ describe("ConnectionPropsForSessCfg tests", () => {
         expect(theError.message).toBe("Specified port was not a number.");
     });
 
-    it("timeout waiting for user name", async() => {
+    it("timeout waiting for user name", async () => {
         const sleepReal = CliUtils.sleep;
         CliUtils.sleep = jest.fn();
         const readPromptReal = CliUtils.readPrompt;
@@ -1156,20 +1369,22 @@ describe("ConnectionPropsForSessCfg tests", () => {
         const initialSessCfg = {
             hostname: "SomeHost",
             port: 11,
-            rejectUnauthorized: true
+            rejectUnauthorized: true,
         };
         const args = {
             $0: "zowe",
             _: [""],
-            password: "FakePassword"
+            password: "FakePassword",
         };
 
         let sessCfgWithConnProps: ISession;
         let caughtError;
         try {
-            sessCfgWithConnProps = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
-                initialSessCfg, args
-            );
+            sessCfgWithConnProps =
+                await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
+                    initialSessCfg,
+                    args
+                );
         } catch (thrownError) {
             caughtError = thrownError;
         }
@@ -1179,7 +1394,7 @@ describe("ConnectionPropsForSessCfg tests", () => {
         expect(caughtError.message).toBe("Timed out waiting for user.");
     });
 
-    it("timeout waiting for password", async() => {
+    it("timeout waiting for password", async () => {
         const sleepReal = CliUtils.sleep;
         CliUtils.sleep = jest.fn();
         const readPromptReal = CliUtils.readPrompt;
@@ -1188,20 +1403,22 @@ describe("ConnectionPropsForSessCfg tests", () => {
         const initialSessCfg = {
             hostname: "SomeHost",
             port: 11,
-            rejectUnauthorized: true
+            rejectUnauthorized: true,
         };
         const args = {
             $0: "zowe",
             _: [""],
-            user: "FakeUser"
+            user: "FakeUser",
         };
 
         let sessCfgWithConnProps: ISession;
         let caughtError;
         try {
-            sessCfgWithConnProps = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
-                initialSessCfg, args
-            );
+            sessCfgWithConnProps =
+                await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
+                    initialSessCfg,
+                    args
+                );
         } catch (thrownError) {
             caughtError = thrownError;
         }
@@ -1211,7 +1428,7 @@ describe("ConnectionPropsForSessCfg tests", () => {
         expect(caughtError.message).toBe("Timed out waiting for password.");
     });
 
-    it("timeout waiting for host name", async() => {
+    it("timeout waiting for host name", async () => {
         const sleepReal = CliUtils.sleep;
         CliUtils.sleep = jest.fn();
         const readPromptReal = CliUtils.readPrompt;
@@ -1225,15 +1442,17 @@ describe("ConnectionPropsForSessCfg tests", () => {
             _: [""],
             port: 11,
             user: "FakeUser",
-            password: "FakePassword"
+            password: "FakePassword",
         };
 
         let sessCfgWithConnProps: ISession;
         let caughtError;
         try {
-            sessCfgWithConnProps = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
-                initialSessCfg, args
-            );
+            sessCfgWithConnProps =
+                await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
+                    initialSessCfg,
+                    args
+                );
         } catch (thrownError) {
             caughtError = thrownError;
         }
@@ -1243,7 +1462,7 @@ describe("ConnectionPropsForSessCfg tests", () => {
         expect(caughtError.message).toBe("Timed out waiting for hostname.");
     });
 
-    it("timeout waiting for port number", async() => {
+    it("timeout waiting for port number", async () => {
         const sleepReal = CliUtils.sleep;
         CliUtils.sleep = jest.fn();
         const readPromptReal = CliUtils.readPrompt;
@@ -1257,15 +1476,17 @@ describe("ConnectionPropsForSessCfg tests", () => {
             _: [""],
             host: "SomeHost",
             user: "FakeUser",
-            password: "FakePassword"
+            password: "FakePassword",
         };
 
         let sessCfgWithConnProps: ISession;
         let caughtError;
         try {
-            sessCfgWithConnProps = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
-                initialSessCfg, args
-            );
+            sessCfgWithConnProps =
+                await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
+                    initialSessCfg,
+                    args
+                );
         } catch (thrownError) {
             caughtError = thrownError;
         }
@@ -1277,7 +1498,8 @@ describe("ConnectionPropsForSessCfg tests", () => {
 
     it("should not log secure properties of session config", async () => {
         const mockLoggerDebug = jest.fn();
-        const getImperativeLoggerSpy = jest.spyOn(Logger, "getImperativeLogger")
+        const getImperativeLoggerSpy = jest
+            .spyOn(Logger, "getImperativeLogger")
             .mockReturnValueOnce({ debug: mockLoggerDebug } as any);
         (ConnectionPropsForSessCfg as any).logSessCfg({
             host: "SomeHost",
@@ -1285,7 +1507,7 @@ describe("ConnectionPropsForSessCfg tests", () => {
             user: "FakeUser",
             password: "FakePassword",
             tokenType: SessConstants.TOKEN_TYPE_JWT,
-            tokenValue: "FakeToken"
+            tokenValue: "FakeToken",
         });
         getImperativeLoggerSpy.mockRestore();
         expect(mockLoggerDebug).toHaveBeenCalledTimes(1);
@@ -1296,7 +1518,7 @@ describe("ConnectionPropsForSessCfg tests", () => {
         expect(logOutput).not.toContain("FakeToken");
     });
 
-    it("SSO CallBack with getValuesBack", async() => {
+    it("SSO CallBack with getValuesBack", async () => {
         const initialSessCfg = {
             rejectUnauthorized: true,
         };
@@ -1305,28 +1527,28 @@ describe("ConnectionPropsForSessCfg tests", () => {
             port: 11,
             user: "FakeUser",
             password: "FakePassword",
-            rejectUnauthorized: false
+            rejectUnauthorized: false,
         };
         const args = {
             $0: "zowe",
-            _: [""]
+            _: [""],
         };
         const fakeFunction = jest.fn((neededProps) => {
             for (const value of neededProps) {
                 switch (value) {
-                    case "hostname" :
+                    case "hostname":
                         neededProps[value] = fakeFunctionSessCfg.hostname;
                         break;
-                    case "port" :
+                    case "port":
                         neededProps[value] = fakeFunctionSessCfg.port;
                         break;
-                    case "user" :
+                    case "user":
                         neededProps[value] = fakeFunctionSessCfg.user;
                         break;
-                    case "password" :
+                    case "password":
                         neededProps[value] = fakeFunctionSessCfg.password;
                         break;
-                    case "rejectUnauthorized" :
+                    case "rejectUnauthorized":
                         neededProps[value] = initialSessCfg.rejectUnauthorized;
                         break;
                     default:
@@ -1335,9 +1557,12 @@ describe("ConnectionPropsForSessCfg tests", () => {
             }
             return neededProps;
         });
-        const sessCfgWithConnProps = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
-            initialSessCfg, args, {getValuesBack: fakeFunction}
-        );
+        const sessCfgWithConnProps =
+            await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
+                initialSessCfg,
+                args,
+                { getValuesBack: fakeFunction }
+            );
         expect(sessCfgWithConnProps.hostname).toBe("SomeHost");
         expect(sessCfgWithConnProps.port).toBe(11);
         expect(sessCfgWithConnProps.user).toBe("FakeUser");
@@ -1349,7 +1574,7 @@ describe("ConnectionPropsForSessCfg tests", () => {
         expect(sessCfgWithConnProps.certKey).toBeUndefined();
     });
 
-    it("SSO CallBack with getValuesBack and partial session config", async() => {
+    it("SSO CallBack with getValuesBack and partial session config", async () => {
         const initialSessCfg = {
             password: "FakePassword",
             rejectUnauthorized: true,
@@ -1366,19 +1591,19 @@ describe("ConnectionPropsForSessCfg tests", () => {
         const fakeFunction = jest.fn((neededProps) => {
             for (const value of neededProps) {
                 switch (value) {
-                    case "hostname" :
+                    case "hostname":
                         neededProps[value] = fakeFunctionSessCfg.hostname;
                         break;
-                    case "port" :
+                    case "port":
                         neededProps[value] = fakeFunctionSessCfg.port;
                         break;
-                    case "user" :
+                    case "user":
                         neededProps[value] = args.user;
                         break;
-                    case "password" :
+                    case "password":
                         neededProps[value] = initialSessCfg.password;
                         break;
-                    case "rejectUnauthorized" :
+                    case "rejectUnauthorized":
                         neededProps[value] = initialSessCfg.rejectUnauthorized;
                         break;
                     default:
@@ -1387,9 +1612,12 @@ describe("ConnectionPropsForSessCfg tests", () => {
             }
             return neededProps;
         });
-        const sessCfgWithConnProps = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
-            initialSessCfg, args, {getValuesBack: fakeFunction}
-        );
+        const sessCfgWithConnProps =
+            await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
+                initialSessCfg,
+                args,
+                { getValuesBack: fakeFunction }
+            );
         expect(sessCfgWithConnProps.hostname).toBe("SomeHost");
         expect(sessCfgWithConnProps.port).toBe(11);
         expect(sessCfgWithConnProps.user).toBe("FakeUser");
@@ -1463,5 +1691,136 @@ describe("ConnectionPropsForSessCfg tests", () => {
                 }
             );
         expect((ConnectionPropsForSessCfg as any).secureSessCfgProps).toContain("keyPassphrase");
+    });
+    describe("getValuesBack private function", () => {
+        // pretend that console.log works, but put data into a variable
+        let consoleMsgs = "";
+        const connOpts: IOptionsForAddConnProps = {
+            parms: {
+                response: {
+                    console: {
+                        log: jest.fn((logArgs) => {
+                            consoleMsgs += "\n" + logArgs;
+                        }),
+                    },
+                },
+            },
+        } as any;
+
+        let getValuesCallBack: any;
+        let clientPromptSpy: any;
+
+        beforeEach(() => {
+            // establish a callback function with our fake console.log
+            getValuesCallBack =
+                ConnectionPropsForSessCfg["getValuesBack"](connOpts);
+
+            // pretend that clientPrompt returns an answer
+            clientPromptSpy = jest
+                .spyOn(ConnectionPropsForSessCfg as any, "clientPrompt")
+                .mockResolvedValue(Promise.resolve("Some fake answer"));
+            // clear log messages from last test
+            consoleMsgs = "";
+        });
+
+        afterEach(() => {
+            // restore original app implementations
+            clientPromptSpy.mockRestore();
+        });
+
+        it("should state that you have no zowe config file", async () => {
+            // Pretend that we do not have a zowe config.
+            Object.defineProperty(ImperativeConfig.instance, "config", {
+                configurable: true,
+                get: jest.fn(() => {
+                    return {
+                        exists: false,
+                    };
+                }),
+            });
+
+            // call the function that we want to test
+            await getValuesCallBack(["hostname"]);
+
+            expect(consoleMsgs).toContain(
+                "No Zowe client configuration exists."
+            );
+            expect(consoleMsgs).toContain(
+                "Therefore, you will be asked for the"
+            );
+            expect(consoleMsgs).toContain(
+                "connection properties that are required to complete your command."
+            );
+        });
+
+        it("should state that V1 profiles are not supported", async () => {
+            // Pretend that we do not have a zowe config.
+            Object.defineProperty(ImperativeConfig.instance, "config", {
+                configurable: true,
+                get: jest.fn(() => {
+                    return {
+                        exists: false,
+                    };
+                }),
+            });
+
+            /* Pretend that we only have V1 profiles.
+             * onlyV1ProfilesExist is a getter property, so mock the property.
+             */
+            Object.defineProperty(ConfigUtils, "onlyV1ProfilesExist", {
+                configurable: true,
+                get: jest.fn(() => {
+                    return true;
+                }),
+            });
+
+            // call the function that we want to test
+            await getValuesCallBack(["hostname"]);
+
+            expect(consoleMsgs).toContain(
+                "Only V1 profiles exist. V1 profiles are no longer supported. You should convert"
+            );
+            expect(consoleMsgs).toContain(
+                "your V1 profiles to a newer Zowe client configuration. Therefore, you will be"
+            );
+            expect(consoleMsgs).toContain(
+                "asked for the connection properties that are required to complete your command."
+            );
+        });
+
+        it("should state that connection properties are missing from config", async () => {
+            // Pretend that we have a zowe config.
+            Object.defineProperty(ImperativeConfig.instance, "config", {
+                configurable: true,
+                get: jest.fn(() => {
+                    return {
+                        exists: true,
+                    };
+                }),
+            });
+
+            /* Pretend that we do not have any V1 profiles.
+             * onlyV1ProfilesExist is a getter property, so mock the property.
+             */
+            Object.defineProperty(ConfigUtils, "onlyV1ProfilesExist", {
+                configurable: true,
+                get: jest.fn(() => {
+                    return false;
+                }),
+            });
+
+            // call the function that we want to test
+            await getValuesCallBack(["hostname"]);
+
+            expect(consoleMsgs).toContain(
+                "Some required connection properties have not been specified in your Zowe client"
+            );
+            expect(consoleMsgs).toContain(
+                "configuration. Therefore, you will be asked for the connection properties that"
+            );
+            expect(consoleMsgs).toContain(
+                "are required to complete your command."
+            );
+        });
     });
 });

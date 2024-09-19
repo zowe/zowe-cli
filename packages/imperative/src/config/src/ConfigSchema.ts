@@ -388,7 +388,7 @@ export class ConfigSchema {
      */
     public static updateSchema(options?: IConfigUpdateSchemaOptions): IConfigUpdateSchemaPaths {
         // Handle default values
-        const opts: IConfigUpdateSchemaOptions = { layer: "active", depth: 0, ...(options ?? {}) };
+        const opts: IConfigUpdateSchemaOptions = { layer: "active", depth: 0, ...options ?? {} };
 
         // Build schema from loaded config if needed
         opts.schema = opts.schema ?? ConfigSchema.buildSchema(ImperativeConfig.instance.loadedConfig.profiles);

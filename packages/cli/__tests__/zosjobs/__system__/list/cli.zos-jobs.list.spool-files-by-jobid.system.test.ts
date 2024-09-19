@@ -61,14 +61,8 @@ describe("zos-jobs list spool-files-by-jobid command", () => {
         it("should present an error message if the JOBID is not found", () => {
             const response = runCliScript(__dirname + "/__scripts__/spool-files-by-jobid/not_found.sh", TEST_ENVIRONMENT);
             expect(response.stdout.toString()).toBe("");
-            // TODO:V3_ERR_FORMAT - In V3 remove the following lines
-            expect(response.stderr.toString()).toContain("Command Error:");
-            expect(response.stderr.toString()).toContain("Obtaining job info for a single job id j0");
-            expect(response.stderr.toString()).toContain("failed: Job not found");
-            /* TODO:V3_ERR_FORMAT - Use the following lines instead
             expect(response.stderr.toString()).toContain("Cannot obtain job info for job id = j0");
             expect(response.stderr.toString()).toContain("Zero jobs were returned");
-            */
             expect(response.status).toBe(1);
         });
 
@@ -76,11 +70,11 @@ describe("zos-jobs list spool-files-by-jobid command", () => {
             const response = runCliScript(__dirname + "/__scripts__/spool-files-by-jobid/invalid_jobid.sh", TEST_ENVIRONMENT);
             expect(response.stdout.toString()).toBe("");
             const trimmed = trimMessage(response.stderr.toString());
-            expect(trimmed).toContain("status 400");
-            expect(trimmed).toContain("category: 6");
-            expect(trimmed).toContain("reason: 4");
             expect(trimmed).toContain("Value of jobid query parameter is not valid");
             expect(trimmed).toContain("rc: 4");
+            expect(trimmed).toContain("reason: 4");
+            expect(trimmed).toContain("category: 6");
+            expect(trimmed).toContain("Received HTTP(S) error 400 = Bad Request");
             expect(trimmed).toContain("Resource: /zosmf/restjobs/jobs");
             expect(trimmed).toContain("Request: GET");
             expect(response.status).toBe(1);

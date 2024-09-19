@@ -22,7 +22,7 @@ export const convertProfilesDefinition: ICommandDefinition = {
     aliases: ["convert"],
     type: "command",
     handler: join(__dirname, "convert-profiles.handler"),
-    summary: "Convert profiles to team config",
+    summary: "Convert V1 profiles to a current Zowe client configuration",
     description: `Convert v1 profiles to a global ${ImperativeConfig.instance.rootCommandName}.config.json file.`,
     options: [{
         name: "prompt",
@@ -35,10 +35,10 @@ export const convertProfilesDefinition: ICommandDefinition = {
         type: "boolean"
     }],
     examples: [{
-        description: "Convert profiles to team config without prompting",
+        description: "Convert V1 profiles to a new Zowe client configuration without prompting",
         options: "--no-prompt"
     }, {
-        description: "Convert profiles to team config and delete the old profiles",
+        description: "Convert V1 profiles to a new Zowe client configuration and delete the old V1 profiles",
         options: "--delete"
     }]
 };

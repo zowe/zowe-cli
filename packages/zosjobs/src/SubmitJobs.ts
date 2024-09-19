@@ -505,7 +505,7 @@ export class SubmitJobs {
     }
 
     /**
-     * Getter for brightside logger
+     * Getter for Zowe logger
      * @returns {Logger}
      */
     private static get log(): Logger {

@@ -21,6 +21,7 @@ import { Workflow } from "./workflow/Archive.workflow.definition";
 export const ArchiveDefinition: ICommandDefinition = {
     name: "archive",
     type: "group",
+    summary: "Archive workflow instance in z/OSMF",
     description: "Archive workflow instance in z/OSMF.",
     children: [
         Workflow

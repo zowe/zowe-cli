@@ -16,6 +16,8 @@ import { ICredentialManagerNameMap } from "./doc/ICredentialManagerNameMap";
 import { ImperativeConfig } from "../../utilities";
 import { ImperativeError } from "../../error";
 import { ISettingsFile } from "../../settings/src/doc/ISettingsFile";
+import { ZoweSharedEvents } from "../../events";
+import { EventOperator } from "../../events/src/EventOperator";
 
 /**
  * This class provides access to the known set of credential manager overrides
@@ -38,7 +40,10 @@ export class CredentialManagerOverride {
             "credMgrDisplayName": "Secrets for Kubernetes",
             "credMgrPluginName": "@zowe/secrets-for-kubernetes-for-zowe-cli",
             "credMgrZEName": "Zowe.secrets-for-kubernetes"
-        }
+        },
+        {
+            "credMgrDisplayName": false
+        },
     ];
 
     //________________________________________________________________________
@@ -51,7 +56,7 @@ export class CredentialManagerOverride {
      * @returns An ICredentialManagerNameMap or
      *          null if the specified plugin is not a known credential manager.
      */
-    public static getCredMgrInfoByDisplayName(credMgrDisplayName: string) : ICredentialManagerNameMap | null {
+    public static getCredMgrInfoByDisplayName(credMgrDisplayName: string | false) : ICredentialManagerNameMap | null {
         return this.KNOWN_CRED_MGRS.find((credMgr) => credMgr.credMgrDisplayName === credMgrDisplayName) ?? null;
     }
 
@@ -91,6 +96,21 @@ export class CredentialManagerOverride {
         return this.KNOWN_CRED_MGRS;
     }
 
+    //________________________________________________________________________
+    /**
+     * Get the active credential manager.
+     *
+     * @returns Information about the current redential managers or false if none is set.
+     */
+    public static getCurrentCredMgr() : string | false {
+        try {
+            const settings = this.getSettingsFileJson();
+            return settings.json.overrides.CredentialManager;
+        } catch (err) {
+            return this.DEFAULT_CRED_MGR_NAME;
+        }
+    }
+
     /**
      * Record the specified credential manager in the configuration of overrides.
      * A plugin or ZE extension that provides a credential manager would record
@@ -101,7 +121,7 @@ export class CredentialManagerOverride {
      *
      * @throws An ImperativeError upon error.
      */
-    public static recordCredMgrInConfig(newCredMgrName: string) : void {
+    public static recordCredMgrInConfig(newCredMgrName: string | false) : void {
         const credMgrInfo: ICredentialManagerNameMap =
             CredentialManagerOverride.getCredMgrInfoByDisplayName(newCredMgrName);
         if (credMgrInfo === null) {
@@ -132,6 +152,7 @@ export class CredentialManagerOverride {
         settings.json.overrides.CredentialManager = newCredMgrName;
         try {
             writeJsonSync(settings.fileName, settings.json, {spaces: 2});
+            EventOperator.getZoweProcessor().emitZoweEvent(ZoweSharedEvents.ON_CREDENTIAL_MANAGER_CHANGED);
         } catch (error) {
             throw new ImperativeError({
                 msg: "Unable to write settings file = " + settings.fileName +
@@ -157,7 +178,7 @@ export class CredentialManagerOverride {
      *
      * @throws An ImperativeError upon error.
      */
-    public static recordDefaultCredMgrInConfig(credMgrToReplace: string) : void {
+    public static recordDefaultCredMgrInConfig(credMgrToReplace: string | false) : void {
         // read in the existing settings file
         let settings: any;
         try {
@@ -186,6 +207,7 @@ export class CredentialManagerOverride {
         settings.json.overrides.CredentialManager = this.DEFAULT_CRED_MGR_NAME;
         try {
             writeJsonSync(settings.fileName, settings.json, {spaces: 2});
+            EventOperator.getZoweProcessor().emitZoweEvent(ZoweSharedEvents.ON_CREDENTIAL_MANAGER_CHANGED);
         } catch (error) {
             throw new ImperativeError({
                 msg: "Unable to write settings file = " + settings.fileName +
@@ -219,7 +241,7 @@ export class CredentialManagerOverride {
                 "\nReason: " + error.message
             });
         }
-        if ( typeof(settings.json?.overrides?.CredentialManager) === "undefined") {
+        if ( typeof settings.json?.overrides?.CredentialManager === "undefined") {
             throw new ImperativeError({
                 msg: "The property key 'overrides.CredentialManager' does not exist in settings file = " +
                 settings.fileName

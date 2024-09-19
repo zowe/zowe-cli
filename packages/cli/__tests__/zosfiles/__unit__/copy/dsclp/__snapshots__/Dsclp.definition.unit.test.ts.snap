@@ -6,7 +6,7 @@ Array [
     "aliases": Array [
       "rep",
     ],
-    "description": "Specify this option as true if you wish to replace the target dataset if it already exists",
+    "description": "Specify this option as true if you wish to replace the target data set if it already exists.",
     "name": "replace",
     "type": "boolean",
   },
@@ -96,7 +96,7 @@ Array [
       "t-zosmf-p",
       "target-zosmf-p",
     ],
-    "description": "The name of a z/OSMF profile to load for the target host. ",
+    "description": "The name of a z/OSMF profile to load for the target host.",
     "name": "target-zosmf-profile",
     "type": "string",
   },

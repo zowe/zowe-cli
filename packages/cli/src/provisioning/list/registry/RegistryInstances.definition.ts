@@ -16,7 +16,7 @@ export const registryInstances: ICommandDefinition = {
     name: "registry-instances",
     aliases: ["ri"],
     type: "command",
-    summary: "List provisioned instances.",
+    summary: "List provisioned instances",
     description: "List the provisioned instances from the z/OSMF software registry.",
     handler:  path.join(__dirname, "/RegistryInstances.handler"),
     profile: {

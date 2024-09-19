@@ -1,0 +1,89 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`zos-jobs search job definition should not have changed 1`] = `
+Object {
+  "description": "Search the spool output of a job.",
+  "examples": Array [
+    Object {
+      "description": "Search all jobs named USERJOB for the string \\"RC=0000\\"",
+      "options": "\\"USERJOB\\" --search-string \\"RC=0000\\"",
+    },
+    Object {
+      "description": "Search all jobs that start with USER for the string \\"ENDED\\"",
+      "options": "\\"USER*\\" --search-string \\"ENDED\\"",
+    },
+    Object {
+      "description": "Search all jobs named USERJOB for the string \\"COND CODE\\", with the options case sensitive and a search limit of 5",
+      "options": "\\"USERJOB\\" --search-string \\"COND CODE\\" --case-insensitive false --search-limit 5",
+    },
+  ],
+  "name": "job",
+  "options": Array [
+    Object {
+      "aliases": Array [
+        "string",
+      ],
+      "defaultValue": undefined,
+      "description": "The string to search for in the spool output.",
+      "name": "search-string",
+      "required": false,
+      "type": "string",
+    },
+    Object {
+      "aliases": Array [
+        "regex",
+      ],
+      "defaultValue": undefined,
+      "description": "The regular expression to search for in the spool output.",
+      "name": "search-regex",
+      "required": false,
+      "type": "string",
+    },
+    Object {
+      "aliases": Array [
+        "ci",
+      ],
+      "defaultValue": true,
+      "description": "The search is case insensitive or not.",
+      "name": "case-insensitive",
+      "required": false,
+      "type": "boolean",
+    },
+    Object {
+      "aliases": Array [
+        "sl",
+      ],
+      "defaultValue": 100,
+      "description": "The maximum number of matching lines to return for an individual spool file.",
+      "name": "search-limit",
+      "required": false,
+      "type": "number",
+    },
+    Object {
+      "aliases": Array [
+        "fl",
+      ],
+      "defaultValue": 100,
+      "description": "The maximum number of spool files to search.",
+      "name": "file-limit",
+      "required": false,
+      "type": "number",
+    },
+  ],
+  "positionals": Array [
+    Object {
+      "description": "The job name to search. Wildcards are accepted for the job name. You can use, for example \\"USERJOB*\\" to search all jobs that start with USERJOB.",
+      "name": "jobname",
+      "required": true,
+      "type": "string",
+    },
+  ],
+  "profile": Object {
+    "optional": Array [
+      "zosmf",
+    ],
+  },
+  "summary": "Search the spool output of a job.",
+  "type": "command",
+}
+`;

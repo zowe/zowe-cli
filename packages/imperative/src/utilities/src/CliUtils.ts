@@ -14,14 +14,13 @@ import { Constants } from "../../constants";
 import { Arguments } from "yargs";
 import { TextUtils } from "./TextUtils";
 import { IOptionFormat } from "./doc/IOptionFormat";
-import { CommandProfiles, ICommandOptionDefinition, ICommandPositionalDefinition,
-    ICommandProfile, IHandlerParameters
-} from "../../cmd";
+import { ICommandOptionDefinition, ICommandPositionalDefinition, ICommandProfile, IHandlerParameters } from "../../cmd";
 import { ICommandArguments } from "../../cmd/src/doc/args/ICommandArguments";
-import { IProfile } from "../../profiles";
-import * as prompt from "readline-sync";
-import * as os from "os";
+import { ProfileUtils } from "../../profiles/src/utils/ProfileUtils";
 import { IPromptOptions } from "../../cmd/src/doc/response/api/handler/IPromptOptions";
+import { read } from "read";
+import { ICommandDefinition } from "../../cmd";
+import { Config } from "../../config";
 
 /**
  * Cli Utils contains a set of static methods/helpers that are CLI related (forming options, censoring args, etc.)
@@ -51,7 +50,7 @@ export class CliUtils {
      * @returns {string} - e.g. --my-option
      */
     public static getDashFormOfOption(optionName: string): string {
-        if ((optionName !== undefined && optionName !== null) && optionName.length >= 1) {
+        if (optionName !== undefined && optionName !== null && optionName.length >= 1) {
             const dashes = optionName.length > 1 ? Constants.OPT_LONG_DASH : Constants.OPT_SHORT_DASH;
             return dashes + optionName;
         } else {
@@ -102,15 +101,11 @@ export class CliUtils {
         return newArgs;
     }
 
-
     /**
-     * Accepts the full set of loaded profiles and attempts to match the option names supplied with profile keys.
-     *
-     * @param {Map<string, IProfile[]>} profileMap - the map of type to loaded profiles. The key is the profile type
-     * and the value is an array of profiles loaded for that type.
-     *
-     * @param {definitions} definitions - the profile definition on the command.
-     *
+     * Searches properties in team configuration and attempts to match the option names supplied with profile keys.
+     * @param {Config} config - Team config API
+     * @param {ICommandProfile} profileDef - Profile definition of invoked command
+     * @param {ICommandArguments} args - Arguments from command line and environment
      * @param {(Array<ICommandOptionDefinition | ICommandPositionalDefinition>)} options - the full set of command options
      * for the command being processed
      *
@@ -118,72 +113,74 @@ export class CliUtils {
      *
      * @memberof CliUtils
      */
-    public static getOptValueFromProfiles(profiles: CommandProfiles, definitions: ICommandProfile,
+    public static getOptValuesFromConfig(config: Config, profileDef: ICommandProfile, args: ICommandArguments,
         options: Array<ICommandOptionDefinition | ICommandPositionalDefinition>): any {
-        let args: any = {};
-
-        // Construct the precedence order to iterate through the profiles
-        let profileOrder: any = (definitions.required != null) ? definitions.required : [];
-        if (definitions.optional != null) {
-            profileOrder = profileOrder.concat(definitions.optional);
+        // Build a list of all profile types - this will help us search the CLI
+        // options for profiles specified by the user
+        let allTypes: string[] = [];
+        if (profileDef != null) {
+            if (profileDef.required != null)
+                allTypes = allTypes.concat(profileDef.required);
+            if (profileDef.optional != null)
+                allTypes = allTypes.concat(profileDef.optional);
         }
 
-        // Iterate through the profiles in the order they appear in the list provided. For each profile found, we will
-        // attempt to match the option name to a profile property exactly - and extract the value from the profile.
-        profileOrder.forEach((profileType: string) => {
-
-            // Get the first profile loaded - for now, we won't worry about profiles and double-type loading for dependencies
-            // eslint-disable-next-line deprecation/deprecation
-            const profile: IProfile = profiles.get(profileType, false);
-            if (profile == null && definitions.required != null && definitions.required.indexOf(profileType) >= 0) {
+        // Build an object that contains all the options loaded from config
+        let fromCnfg: any = {};
+        for (const profileType of allTypes) {
+            const opt = ProfileUtils.getProfileOptionAndAlias(profileType)[0];
+            // If the config contains the requested profiles, then "remember"
+            // that this type has been fulfilled - so that we do NOT load from
+            // the traditional profile location
+            const profileTypePrefix = profileType + "_";
+            let p: any = null;
+            if (args[opt] != null && config.api.profiles.exists(args[opt])) {
+                p = config.api.profiles.get(args[opt]);
+            } else if (args[opt] != null && !args[opt].startsWith(profileTypePrefix) &&
+                config.api.profiles.exists(profileTypePrefix + args[opt])) {
+                p = config.api.profiles.get(profileTypePrefix + args[opt]);
+            } else if (args[opt] == null &&
+                config.properties.defaults[profileType] != null &&
+                config.api.profiles.exists(config.properties.defaults[profileType])) {
+                p = config.api.profiles.defaultGet(profileType);
+            }
+            if (p == null && profileDef.required != null && profileDef.required.indexOf(profileType) >= 0) {
                 throw new ImperativeError({
                     msg: `Profile of type "${profileType}" does not exist within the loaded profiles for the command and it is marked as required.`,
                     additionalDetails: `This is an internal imperative error. ` +
                         `Command preparation was attempting to extract option values from this profile.`
                 });
-            } else if (profile != null) {
-                // For each option - extract the value if that exact property exists
-                options.forEach((opt) => {
-                    let cases;
-                    if (profile[opt.name] == null && "aliases" in opt) {
-                        // Use aliases for backwards compatibility
-                        // Search for first alias available in the profile
-                        const oldOption = opt.aliases.find(o => profile[o] != null);
-                        // Get the camel an kebab case
-                        if (oldOption) cases = CliUtils.getOptionFormat(oldOption);
-                    }
+            }
+            fromCnfg = { ...p ?? {}, ...fromCnfg };
+        }
 
-                    if (cases == null) {
-                        cases = CliUtils.getOptionFormat(opt.name);
-                    }
+        // Convert each property extracted from the config to the correct yargs
+        // style cases for the command handler (kebab and camel)
+        options.forEach((opt) => {
+            let cases = CliUtils.getOptionFormat(opt.name);
+            if (fromCnfg[opt.name] == null && "aliases" in opt) {
+                // Use aliases for backwards compatibility
+                // Search for first alias available in the profile
+                const oldOption = opt.aliases.find(o => fromCnfg[o] != null);
+                // Get the camel and kebab case
+                if (oldOption) cases = CliUtils.getOptionFormat(oldOption);
+            }
+            const profileKebab = fromCnfg[cases.kebabCase];
+            const profileCamel = fromCnfg[cases.camelCase];
 
-                    // We have to "deal" with the situation that the profile contains both cases - camel and kebab.
-                    // This is to support where the profile options have "-", but the properties are camel case in the
-                    // yaml file - which is currently how most imperative CLIs have it coded.
-                    const profileKebab = profile[cases.kebabCase];
-                    const profileCamel = profile[cases.camelCase];
+            if ((profileCamel !== undefined || profileKebab !== undefined) &&
+                (!Object.hasOwn(args, cases.kebabCase) && !Object.hasOwn(args, cases.camelCase))) {
 
-                    // If the profile has either type (or both specified) we'll add it to args if the args object
-                    // does NOT already contain the value in any case
-                    if ((profileCamel !== undefined || profileKebab !== undefined) &&
-                        (!Object.prototype.hasOwnProperty.call(args, cases.kebabCase) &&
-                         !Object.prototype.hasOwnProperty.call(args, cases.camelCase))) {
-
-                        // If both case properties are present in the profile, use the one that matches
-                        // the option name explicitly
-                        const value = (profileKebab !== undefined && profileCamel !== undefined) ?
-                            ((opt.name === cases.kebabCase) ? profileKebab : profileCamel) :
-                            ((profileKebab !== undefined) ? profileKebab : profileCamel);
-                        const keys = CliUtils.setOptionValue(opt.name,
-                            ("aliases" in opt) ? (opt as ICommandOptionDefinition).aliases : [],
-                            value
-                        );
-                        args = {...args, ...keys};
-                    }
-                });
+                // If both case properties are present in the profile, use the one that matches
+                // the option name explicitly
+                const shouldUseKebab = profileKebab !== undefined && profileCamel !== undefined ?
+                    opt.name === cases.kebabCase : profileKebab !== undefined;
+                const value = shouldUseKebab ? profileKebab : profileCamel;
+                const keys = CliUtils.setOptionValue(opt.name, "aliases" in opt ? opt.aliases : [], value);
+                fromCnfg = { ...fromCnfg, ...keys };
             }
         });
-        return args;
+        return fromCnfg;
     }
 
     /**
@@ -258,7 +255,7 @@ export class CliUtils {
                 }
 
                 const keys = CliUtils.setOptionValue(opt.name,
-                    ("aliases" in opt) ? (opt as ICommandOptionDefinition).aliases : [],
+                    "aliases" in opt ? (opt as ICommandOptionDefinition).aliases : [],
                     envValue
                 );
                 args = {...args, ...keys};
@@ -370,6 +367,21 @@ export class CliUtils {
         return TextUtils.chalk[color](headerText);
     }
 
+    public static generateDeprecatedMessage(cmdDefinition: ICommandDefinition, showWarning?: boolean): string {
+
+        let message = "";
+        if (cmdDefinition.deprecatedReplacement != null) {
+            const noNewlineInText = cmdDefinition.deprecatedReplacement.replace(/\n/g, " ");
+            if(showWarning) message += "\n\nWarning: This " + cmdDefinition.type + " has been deprecated.\n";
+            if (cmdDefinition.deprecatedReplacement === "") {
+                message += "Obsolete component. No replacement exists";
+            } else {
+                message += "Recommended replacement: " + noNewlineInText;
+            }
+        }
+        return message;
+    }
+
     /**
      * Display a message when the command is deprecated.
      * @static
@@ -383,15 +395,9 @@ export class CliUtils {
             const oldCmd = handlerParms.positionals.join(" ");
             // display the message
             handlerParms.response.console.error("\nWarning: The command '" + oldCmd + "' is deprecated.");
-            if(handlerParms.definition.deprecatedReplacement === "")
-            {
-                handlerParms.response.console.error("Obsolete component. No replacement exists");
-            }
-            else
-            {
-                handlerParms.response.console.error("Recommended replacement: " +
-                    handlerParms.definition.deprecatedReplacement);
-            }
+            // Use consolidated deprecated message logic
+            const deprecatedMessage = CliUtils.generateDeprecatedMessage(handlerParms.definition);
+            handlerParms.response.console.error(deprecatedMessage);
         }
     }
 
@@ -439,20 +445,6 @@ export class CliUtils {
     }
 
     /**
-     * Display a prompt that hides user input and reads from stdin
-     * DOES NOT WORK WITH COMMANDS THAT ALSO READ STDIN
-     * Useful for prompting the user for sensitive info such as passwords
-     * Synchronous
-     * @deprecated Use the asynchronous method `readPrompt` instead
-     * @param message - The message to display to the user e.g. "Please enter password:"
-     * @returns value - the value entered by the user
-     */
-    public static promptForInput(message: string): string {
-        prompt.setDefaultOptions({mask: "", hideEchoBack: true});
-        return prompt.question(message);
-    }
-
-    /**
      * Sleep for the specified number of miliseconds.
      * @param timeInMs Number of miliseconds to sleep
      *
@@ -464,98 +456,6 @@ export class CliUtils {
         return new Promise((resolve) => {
             setTimeout(resolve, timeInMs);
         });
-    }
-
-    /**
-     * Prompt the user with a question and wait for an answer,
-     * but only up to the specified timeout.
-     *
-     * @deprecated Use `readPrompt` instead which supports more options
-     * @param questionText The text with which we will prompt the user.
-     *
-     * @param hideText Should we hide the text. True = display stars.
-     *                 False = display text. Default = false.
-     *
-     * @param secToWait The number of seconds that we will wait for an answer.
-     *                  If not supplied, the default is 600 seconds.
-     *
-     * @return A string containing the user's answer, or null if we timeout.
-     *
-     * @example
-     *      const answer = await CliUtils.promptWithTimeout("Type your answer here: ");
-     *      if (answer === null) {
-     *          // abort the operation that you wanted to perform
-     *      } else {
-     *          // use answer in some operation
-     *      }
-     */
-    public static async promptWithTimeout(
-        questionText: string,
-        hideText: boolean = false,
-        secToWait: number = 600,
-    ): Promise<string> {
-
-        // readline provides our interface for terminal I/O
-        const readline = require("readline");
-        const ttyIo = readline.createInterface({
-            input: process.stdin,
-            output: process.stdout,
-            terminal: true,
-            prompt: questionText
-        });
-        const writeToOutputOrig = ttyIo._writeToOutput;
-
-        // ask user the desired question and then asynchronously read answer
-        ttyIo.prompt();
-        let answerToReturn: string = null;
-        ttyIo.on("line", (answer: string) => {
-            answerToReturn = answer;
-            ttyIo.close();
-        }).on("close", () => {
-            if (hideText) {
-                // The user's Enter key was echoed as a '*', so now output a newline
-                ttyIo._writeToOutput = writeToOutputOrig;
-                ttyIo.output.write("\n");
-            }
-        });
-
-        // when asked to hide text, override output to only display stars
-        if (hideText) {
-            ttyIo._writeToOutput = function _writeToOutput(stringToWrite: string) {
-                if (stringToWrite === os.EOL) {
-                    return;
-                }
-                if (stringToWrite.length === 1) {
-                    // display a star for each one character of the hidden response
-                    ttyIo.output.write("*");
-                } else {
-                    /* After a backspace, we get a string with the whole question
-                     * and the hidden response. Redisplay the prompt and hide the response.
-                     */
-                    let stringToShow = stringToWrite.substring(0, questionText.length);
-                    for (let count = 1; count <= stringToWrite.length - questionText.length; count ++) {
-                        stringToShow += "*";
-                    }
-                    ttyIo.output.write(stringToShow);
-                }
-            };
-        }
-
-        // Ensure that we use a reasonable timeout
-        const maxSecToWait = 900; // 15 minute max
-        if (secToWait > maxSecToWait || secToWait <= 0) {
-            secToWait = maxSecToWait;
-        }
-
-        // loop until timeout, to give our earlier asynch read a chance to work
-        const oneSecOfMillis = 1000;
-        for (let count = 1; answerToReturn === null && count <= secToWait; count++) {
-            await CliUtils.sleep(oneSecOfMillis);
-        }
-
-        // terminate our use of the ttyIo object
-        ttyIo.close();
-        return answerToReturn;
     }
 
     /**
@@ -593,27 +493,30 @@ export class CliUtils {
             secToWait = maxSecToWait;
         }
 
-        return new Promise((resolve, reject) => {
-            require("read")({
+        let response: string;
+        try {
+            response = await read({
                 input: process.stdin,
                 output: process.stdout,
                 terminal: true,
                 prompt: message,
                 silent: opts?.hideText,
                 replace: opts?.maskChar,
-                timeout: secToWait ? (secToWait * 1000) : null  // eslint-disable-line @typescript-eslint/no-magic-numbers
-            }, (error: any, result: string) => {
-                if (error == null) {
-                    resolve(result);
-                } else if (error.message === "canceled") {
-                    process.exit(2);
-                } else if (error.message === "timed out") {
-                    resolve(null);
-                } else {
-                    reject(error);
-                }
+                timeout: secToWait ? secToWait * 1000 : null  // eslint-disable-line @typescript-eslint/no-magic-numbers
             });
-        });
+            if (opts?.hideText) {
+                process.stdout.write("\r\n");
+            }
+        } catch (err) {
+            if (err.message === "canceled") {
+                process.exit(2);
+            } else if (err.message === "timed out") {
+                return null;
+            } else {
+                throw err;
+            }
+        }
+        return response;
     }
 
     /**

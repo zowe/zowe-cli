@@ -10,7 +10,6 @@
     "name": "normal-plugin",
     "rootCommandDescription": "imperative working test plugin",
     "pluginBaseCliVersion": "^1.0.0",
-    "pluginHealthCheck": "./lib/sample-plugin/healthCheck.handler",
     "pluginAliases": [
       "np",
       "normalp"

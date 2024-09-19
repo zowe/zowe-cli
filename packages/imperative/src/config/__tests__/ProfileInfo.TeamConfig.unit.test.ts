@@ -31,11 +31,13 @@ import { ConfigUtils } from "../src/ConfigUtils";
 import { ConfigProfiles } from "../src/api";
 import { IExtendersJsonOpts } from "../src/doc/IExtenderOpts";
 import { ConfigSchema } from "../src/ConfigSchema";
-import { Logger } from "../..";
+import { Logger } from "../../logger/src/Logger";
 
 const testAppNm = "ProfInfoApp";
 const testEnvPrefix = testAppNm.toUpperCase();
 const profileTypes = ["zosmf", "tso", "base", "dummy"];
+const testDir = path.join(__dirname, "__resources__");
+const teamProjDir = path.join(testDir, testAppNm + "_team_config_proj");
 
 function createNewProfInfo(newDir: string, opts?: IProfOpts): ProfileInfo {
     // create a new ProfileInfo in the desired directory
@@ -50,8 +52,6 @@ describe("TeamConfig ProfileInfo tests", () => {
     const tsoName = "tsoProfName";
     const tsoProfName = "LPAR1.tsoProfName";
     const tsoJsonLoc = "profiles.LPAR1.profiles." + tsoName;
-    const testDir = path.join(__dirname, "__resources__");
-    const teamProjDir = path.join(testDir, testAppNm + "_team_config_proj");
     const userTeamProjDir = path.join(testDir, testAppNm + "_user_and_team_config_proj");
     const teamHomeProjDir = path.join(testDir, testAppNm + "_home_team_config_proj");
     const largeTeamProjDir = path.join(testDir, testAppNm + "_large_team_config_proj");
@@ -136,6 +136,17 @@ describe("TeamConfig ProfileInfo tests", () => {
                 expect(profLoaded.profile.profLoc.osLoc[1]).toBe(profAttrs.profLoc.osLoc[1]);
                 expect(profLoaded.profile.profLoc.jsonLoc).toBe(profAttrs.profLoc.jsonLoc);
                 expect(profLoaded.profile.isDefaultProfile).toBe(profAttrs.isDefaultProfile);
+            });
+
+            it("should detect that only V1 profiles exist", async () => {
+                // onlyV1ProfilesExist is a getter of a property, so mock the property
+                Object.defineProperty(ConfigUtils, "onlyV1ProfilesExist", {
+                    configurable: true,
+                    get: jest.fn(() => {
+                        return true;
+                    })
+                });
+                expect(ProfileInfo.onlyV1ProfilesExist).toBe(true);
             });
         });
 
@@ -257,7 +268,6 @@ describe("TeamConfig ProfileInfo tests", () => {
             "getTeamConfig",
             "mergeArgsForProfile",
             "mergeArgsForProfileType",
-            "usingTeamConfig",
             "getOsLocInfo",
             "loadSecureArg"
         ];
@@ -280,7 +290,6 @@ describe("TeamConfig ProfileInfo tests", () => {
             const profInfo = createNewProfInfo(teamProjDir);
             await profInfo.readProfilesFromDisk();
 
-            expect(profInfo.usingTeamConfig).toBe(true);
             const teamConfig: Config = profInfo.getTeamConfig();
             expect(teamConfig).not.toBeNull();
             expect(teamConfig.exists).toBe(true);
@@ -293,7 +302,6 @@ describe("TeamConfig ProfileInfo tests", () => {
             const teamCfgOpts: IConfigOpts = { projectDir: teamProjDir };
             await profInfo.readProfilesFromDisk(teamCfgOpts);
 
-            expect(profInfo.usingTeamConfig).toBe(true);
             const teamConfig: Config = profInfo.getTeamConfig();
             expect(teamConfig).not.toBeNull();
             expect(teamConfig.exists).toBe(true);
@@ -322,7 +330,7 @@ describe("TeamConfig ProfileInfo tests", () => {
         it("should return true if credentials are not secure", async () => {
             // ensure that we are not in the team project directory
             const profInfo = createNewProfInfo(origDir);
-            (profInfo as any).mCredentials = {isSecured: false};
+            (profInfo as any).mCredentials = { isSecured: false };
             const response = await profInfo.profileManagerWillLoad();
             expect(response).toEqual(true);
         });
@@ -357,6 +365,56 @@ describe("TeamConfig ProfileInfo tests", () => {
         });
     });
 
+    describe("secureFieldsWithDetails", () => {
+        it("should return an empty array if there are no secure fields in the given layer or if the layer does not exist", async () => {
+            const profInfo = createNewProfInfo(teamProjDir);
+            await profInfo.readProfilesFromDisk();
+
+            // Temporarily assume that there are no secure properties for this test only
+            profInfo.getTeamConfig().mLayers[1].properties.profiles["LPAR007"].secure = [];
+
+            // Project User does not exist
+            expect(profInfo.secureFieldsWithDetails({ user: true, global: false })).toEqual([]);
+
+            // Project Team dos exist, but has no secure properties
+            expect(profInfo.secureFieldsWithDetails({ user: false, global: false })).toEqual([]);
+        });
+
+        it("should return secure fields for the active layer even if they have no secure values stored in the vault", async () => {
+            const profInfo = createNewProfInfo(teamProjDir);
+            await profInfo.readProfilesFromDisk();
+
+            const securePropPath = "profiles.LPAR007.properties.";
+            const teamProjDirJson = path.join(teamProjDir, testAppNm + ".config.json");
+            profInfo.getTeamConfig().mSecure = {
+                [teamProjDirJson]: {
+                    [securePropPath + "string"]: "area51",
+                    [securePropPath + "boolean"]: true,
+                    [securePropPath + "number"]: 1234,
+                },
+            };
+
+            const getPropAttr = (name: string | any, value: any, type?: string | null): IProfArgAttrs => ({
+                argLoc: { osLoc: [teamProjDirJson], locType: 1, jsonLoc: securePropPath + name },
+                argName: name,
+                argValue: value,
+                dataType: type !== undefined ? type : name,
+            });
+
+            expect(profInfo.secureFieldsWithDetails()).toEqual([
+                getPropAttr("string", "area51"),
+                getPropAttr("boolean", true),
+                getPropAttr("number", 1234),
+                getPropAttr("missing-after-this", undefined, null),
+                getPropAttr("host", undefined, "string"),
+                getPropAttr("port", undefined, "number"),
+                getPropAttr("rejectUnauthorized", undefined, "boolean"),
+            ]);
+
+            profInfo.getTeamConfig().mSecure = {};
+        });
+    });
+
     describe("getAllProfiles", () => {
         it("should return all profiles if no type is specified", async () => {
             const expectedDefaultProfiles = 4;
@@ -366,7 +424,7 @@ describe("TeamConfig ProfileInfo tests", () => {
             const expectedDefaultProfileNameDummy = "LPAR4";
             let actualDefaultProfiles = 0;
             let expectedProfileNames = ["LPAR1", "LPAR2", "LPAR3", "LPAR1.tsoProfName", "LPAR1.tsoProfName.tsoSubProfName",
-                "base_glob", "LPAR4", "LPAR5"];
+                "base_glob", "LPAR4", "LPAR5", "LPAR007"];
 
             const profInfo = createNewProfInfo(teamProjDir);
             await profInfo.readProfilesFromDisk();
@@ -406,7 +464,7 @@ describe("TeamConfig ProfileInfo tests", () => {
             const desiredProfType = "zosmf";
             const expectedName = "LPAR1";
             const expectedDefaultProfiles = 1;
-            let expectedProfileNames = ["LPAR1", "LPAR2", "LPAR3", "LPAR2_home", "LPAR5"];
+            let expectedProfileNames = ["LPAR1", "LPAR2", "LPAR3", "LPAR2_home", "LPAR5", "LPAR007"];
             let actualDefaultProfiles = 0;
 
             const profInfo = createNewProfInfo(teamProjDir);
@@ -440,7 +498,7 @@ describe("TeamConfig ProfileInfo tests", () => {
             const desiredProfType = "zosmf";
             const expectedName = "LPAR1";
             const expectedDefaultProfiles = 1;
-            let expectedProfileNames = ["LPAR1", "LPAR2", "LPAR3", "LPAR5"];
+            let expectedProfileNames = ["LPAR1", "LPAR2", "LPAR3", "LPAR5", "LPAR007"];
             let actualDefaultProfiles = 0;
 
             const profInfo = createNewProfInfo(teamProjDir);
@@ -471,6 +529,9 @@ describe("TeamConfig ProfileInfo tests", () => {
     });
 
     describe("mergeArgsForProfile", () => {
+        beforeEach(() => {
+            (ImperativeConfig as any).mInstance = null;
+        });
         afterEach(() => {
             delete process.env[envHost];
             delete process.env[envPort];
@@ -848,6 +909,7 @@ describe("TeamConfig ProfileInfo tests", () => {
         it("should not look for secure properties in the global-layer base profile if it does not exist", async () => {
             process.env[testEnvPrefix + "_CLI_HOME"] = nestedTeamProjDir;
             const profInfo = createNewProfInfo(userTeamProjDir);
+            process.env[testEnvPrefix + "_CLI_HOME"] = nestedTeamProjDir;
             await profInfo.readProfilesFromDisk();
             const profiles = profInfo.getAllProfiles();
             const desiredProfile = "TEST001.first";
@@ -862,7 +924,7 @@ describe("TeamConfig ProfileInfo tests", () => {
                 }
                 expect(unexpectedError).toBeUndefined();
             } else {
-                expect("Profile " + desiredProfile + "not found").toBeUndefined();
+                expect("Profile " + desiredProfile + " not found").toBeUndefined();
             }
             expect(mergedArgs.missingArgs.find(a => a.argName === "user")?.secure).toBeTruthy();
             expect(mergedArgs.missingArgs.find(a => a.argName === "password")?.secure).toBeTruthy();
@@ -935,6 +997,9 @@ describe("TeamConfig ProfileInfo tests", () => {
     describe("loadSchema", () => {
         it("should return null if schema is not found", () => {
             const profInfo = createNewProfInfo(teamProjDir);
+            profInfo["mLoadedConfig"] = {
+                mLayers: []
+            } as any;
             let schema: IProfileSchema;
             let caughtError;
 
@@ -1100,7 +1165,7 @@ describe("TeamConfig ProfileInfo tests", () => {
             expect(storeSpy).toHaveBeenCalledWith({
                 config: profInfo.getTeamConfig(), profileName: "LPAR4", profileType: "dummy",
                 defaultBaseProfileName: "base_glob",
-                propsToStore: [ "DOES_NOT_EXIST" ], sessCfg: { "DOES_NOT_EXIST": true }, setSecure : undefined,
+                propsToStore: ["DOES_NOT_EXIST"], sessCfg: { "DOES_NOT_EXIST": true }, setSecure: undefined,
             });
         });
 
@@ -1139,7 +1204,7 @@ describe("TeamConfig ProfileInfo tests", () => {
             const storageSpy = jest.spyOn(ConfigAutoStore as any, "_storeSessCfgProps").mockResolvedValue(undefined);
             const profiles = [{ type: "test", schema: {} as any }];
             ImperativeConfig.instance.loadedConfig.profiles = profiles;
-            ImperativeConfig.instance.loadedConfig.baseProfile = null;
+            ImperativeConfig.instance.loadedConfig.baseProfile = undefined;
 
             let caughtError;
             try {
@@ -1180,7 +1245,7 @@ describe("TeamConfig ProfileInfo tests", () => {
             expect(storeSpy).toHaveBeenCalledWith({
                 config: profInfo.getTeamConfig(), profileName: "typeless", profileType: null,
                 defaultBaseProfileName: "base_glob",
-                propsToStore: [ "areBirdsReal" ], sessCfg: { "areBirdsReal": true }, setSecure : undefined,
+                propsToStore: ["areBirdsReal"], sessCfg: { "areBirdsReal": true }, setSecure: undefined,
             });
         });
 
@@ -1226,7 +1291,7 @@ describe("TeamConfig ProfileInfo tests", () => {
             expect(storeSpy).toHaveBeenCalledWith({
                 config: profInfo.getTeamConfig(), profileName: "typeless_new", profileType: null,
                 defaultBaseProfileName: "base_glob",
-                propsToStore: [ "areBirdsReal" ], sessCfg: { "areBirdsReal": true }, setSecure : undefined,
+                propsToStore: ["areBirdsReal"], sessCfg: { "areBirdsReal": true }, setSecure: undefined,
             });
         });
     });
@@ -1339,11 +1404,11 @@ describe("TeamConfig ProfileInfo tests", () => {
             const mergedArgs = profInfo.mergeArgsForProfile(profAttrs);
 
             const userArg = mergedArgs.knownArgs.find((arg) => arg.argName === "user");
-            expect(userArg.argValue).toBe("userNameBase");
+            expect(userArg?.argValue).toBe("userNameBase");
             expect(profInfo.loadSecureArg(userArg as IProfArgAttrs)).toBe("userNameBase");
 
             const passwordArg = mergedArgs.knownArgs.find((arg) => arg.argName === "password");
-            expect(passwordArg.argValue).toBe("passwordBase");
+            expect(passwordArg?.argValue).toBe("passwordBase");
             expect(profInfo.loadSecureArg(passwordArg as IProfArgAttrs)).toBe("passwordBase");
         });
 
@@ -1354,10 +1419,10 @@ describe("TeamConfig ProfileInfo tests", () => {
             const mergedArgs = profInfo.mergeArgsForProfile(profAttrs, { getSecureVals: true });
 
             const userArg = mergedArgs.knownArgs.find((arg) => arg.argName === "user");
-            expect(userArg.argValue).toBe("userNameBase");
+            expect(userArg?.argValue).toBe("userNameBase");
 
             const passwordArg = mergedArgs.knownArgs.find((arg) => arg.argName === "password");
-            expect(passwordArg.argValue).toBe("passwordBase");
+            expect(passwordArg?.argValue).toBe("passwordBase");
         });
 
         it("should treat secure arg as plain text if loaded from environment variable", async () => {
@@ -1384,7 +1449,7 @@ describe("TeamConfig ProfileInfo tests", () => {
                 profInfo.loadSecureArg({
                     argName: "test",
                     dataType: "string",
-                    argValue: undefined,
+                    argValue: undefined as any,
                     argLoc: { locType: ProfLocType.DEFAULT }
                 });
             } catch (error) {
@@ -1411,8 +1476,12 @@ describe("TeamConfig ProfileInfo tests", () => {
             const profAttrs = profInfo.getDefaultProfile("zosmf") as IProfAttrs;
             const osLocInfo = profInfo.getOsLocInfo(profAttrs);
             const expectedObjs = [
-                { name: profAttrs.profName, path: profAttrs.profLoc.osLoc[0], user: false, global: false },
-                { name: profAttrs.profName, path: profAttrs.profLoc.osLoc[0], user: false, global: true }
+                { name: profAttrs.profName, path: profAttrs.profLoc.osLoc?.[0], user: false, global: false },
+                // TODO(zFernand0): Investigate why only the team project is present in the osLoc array
+                //      Possible reason: global layer not loaded by getAllProfiles()
+                //      ----
+                //      Reseting the loaded configuration in `getZoweDir` may be the root cause.
+                { name: profAttrs.profName, path: profAttrs.profLoc.osLoc?.[0], user: false, global: true }
             ];
             expect(osLocInfo).toBeDefined();
             expect(osLocInfo.length).toBe(expectedObjs.length);
@@ -1464,58 +1533,6 @@ describe("TeamConfig ProfileInfo tests", () => {
         };
 
         // begin schema management tests
-        describe("readExtendersJsonFromDisk", () => {
-            // case 1: the JSON file doesn't exist at time of read
-            it("writes an empty extenders.json file if it doesn't exist on disk", async () => {
-                const profInfo = createNewProfInfo(teamProjDir);
-                (profInfo as any).mExtendersJson = { profileTypes: {} };
-                jest.spyOn(fs, "existsSync").mockReturnValueOnce(false);
-                ProfileInfo.readExtendersJsonFromDisk();
-                expect(writeFileSyncMock).toHaveBeenCalled();
-            });
-
-            // case 2: JSON file exists on-disk at time of read
-            it("reads extenders.json from disk if it exists", async () => {
-                const readFileSyncMock = jest.spyOn(jsonfile, "readFileSync").mockReturnValueOnce({ profileTypes: {
-                    "test": {
-                        from: ["Zowe Client App"]
-                    }
-                } });
-                const profInfo = createNewProfInfo(teamProjDir);
-                jest.spyOn(fs, "existsSync").mockReturnValueOnce(true);
-                (profInfo as any).mExtendersJson = ProfileInfo.readExtendersJsonFromDisk();
-                expect(readFileSyncMock).toHaveBeenCalled();
-                expect((profInfo as any).mExtendersJson).toEqual({
-                    profileTypes: {
-                        "test": {
-                            from: ["Zowe Client App"]
-                        }
-                    }
-                });
-            });
-        });
-
-        describe("writeExtendersJson", () => {
-            // case 1: Write operation is successful
-            it("returns true if written to disk successfully", async () => {
-                const profInfo = createNewProfInfo(teamProjDir);
-                (profInfo as any).mExtendersJson = { profileTypes: {} };
-                await profInfo.readProfilesFromDisk({ homeDir: teamHomeProjDir });
-                expect(ProfileInfo.writeExtendersJson((profInfo as any).mExtendersJson)).toBe(true);
-                expect(writeFileSyncMock).toHaveBeenCalled();
-            });
-
-            // case 2: Write operation is unsuccessful
-            it("returns false if it couldn't write to disk", async () => {
-                const profInfo = createNewProfInfo(teamProjDir);
-                (profInfo as any).mExtendersJson = { profileTypes: {} };
-                await profInfo.readProfilesFromDisk({ homeDir: teamHomeProjDir });
-                writeFileSyncMock.mockImplementation(() => { throw new Error(); });
-                expect(ProfileInfo.writeExtendersJson((profInfo as any).mExtendersJson)).toBe(false);
-                expect(writeFileSyncMock).toHaveBeenCalled();
-            });
-        });
-
         describe("updateSchemaAtLayer", () => {
             const getBlockMocks = () => {
                 return {
@@ -1667,7 +1684,7 @@ describe("TeamConfig ProfileInfo tests", () => {
                 } as any);
                 const updateSchemaAtLayerMock = jest.spyOn((ProfileInfo as any).prototype, "updateSchemaAtLayer")
                     .mockReturnValue(expected.res.success);
-                const writeExtendersJsonMock = jest.spyOn(ProfileInfo, "writeExtendersJson").mockImplementation();
+                const writeExtendersJsonMock = jest.spyOn(ConfigUtils, "writeExtendersJson").mockImplementation();
                 const res = profInfo.addProfileTypeToSchema("some-type", { ...testCase, sourceApp: "Zowe Client App" });
                 if (expected.res.success) {
                     expect(updateSchemaAtLayerMock).toHaveBeenCalled();
@@ -1715,8 +1732,10 @@ describe("TeamConfig ProfileInfo tests", () => {
                                 }
                             }
                         },
-                        res: { success: false, info: "Both the old and new schemas are unversioned for some-type, but the schemas are different. "
-                            .concat("The new schema was not written to disk, but will still be accessible in-memory.") }
+                        res: {
+                            success: false, info: "Both the old and new schemas are unversioned for some-type, but the schemas are different. "
+                                .concat("The new schema was not written to disk, but will still be accessible in-memory.")
+                        }
                     }
                 );
             });

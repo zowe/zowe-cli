@@ -33,14 +33,8 @@ describe("zos-jobs download output command", () => {
             const response = runCliScript(__dirname + "/__scripts__/download-output/not_found.sh", TEST_ENVIRONMENT);
             expect(response.status).toBe(1);
             expect(response.stdout.toString()).toBe("");
-            // TODO:V3_ERR_FORMAT - In V3 remove the following lines
-            expect(response.stderr.toString()).toContain("Command Error:");
-            expect(response.stderr.toString()).toContain("Obtaining job info for a single job id JOB00000 on");
-            expect(response.stderr.toString()).toContain("failed: Job not found");
-            /* TODO:V3_ERR_FORMAT - Use the following lines instead
             expect(response.stderr.toString()).toContain("Cannot obtain job info for job id = JOB00000");
             expect(response.stderr.toString()).toContain("Zero jobs were returned");
-            */
         });
     });
 

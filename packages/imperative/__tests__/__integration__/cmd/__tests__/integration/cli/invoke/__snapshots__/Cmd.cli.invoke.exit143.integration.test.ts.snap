@@ -1,7 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`cmd-cli invoke exit 143 should allow a handler to set an exit code and throw an error 1`] = `
-"Command Error:
-Command failed with exit code 143
-"
-`;

@@ -111,6 +111,7 @@ Object {
       "zosmf",
     ],
   },
+  "summary": "Obtain a list of systems that are defined to a z/OSMF instance",
   "type": "command",
 }
 `;

@@ -17,6 +17,7 @@ import * as nodePath from "path";
  * Set of static utility methods to assist with creating profile option names from profile types, constructing the
  * root directory, reforming responses for different purposes, etc.
  *
+ * @internal
  * @export
  * @class ProfileUtils
  */
@@ -46,7 +47,7 @@ export class ProfileUtils {
         let flatten: IProfileLoaded[] = [];
         if (!(dependencyResponses == null)) {
             for (const response of dependencyResponses) {
-                const moreDependencies = (!(response.dependencyLoadResponses == null)) ?
+                const moreDependencies = response.dependencyLoadResponses != null ?
                     JSON.parse(JSON.stringify(response.dependencyLoadResponses)) : [];
                 flatten.push(response);
                 delete response.dependencyLoadResponses;

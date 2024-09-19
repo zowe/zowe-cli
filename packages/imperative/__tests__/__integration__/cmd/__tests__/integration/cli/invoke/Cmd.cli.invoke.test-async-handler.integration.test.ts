@@ -47,8 +47,16 @@ describe("cmd-cli invoke test-async-handler", () => {
         const response = runCliScript(__dirname + "/__scripts__/test-async-handler/invoke_test_async_handler_fail_ie.sh",
             TEST_ENVIRONMENT.workingDir);
         expect(response.status).toBe(1);
-        expect(response.stderr.toString()).toMatchSnapshot();
-        expect(response.stdout.toString()).toMatchSnapshot();
+        expect(response.stderr.toString()).toContain("Fail with Imperative Error");
+        expect(response.stdout.toString()).toContain("===================FAIL WITH IMPERATIVE ERROR============================");
+        expect(response.stdout.toString()).toContain("===================FAIL WITH IMPERATIVE ERROR RFJ========================");
+        expect(response.stdout.toString()).toContain('"success": false');
+        expect(response.stdout.toString()).toContain('"exitCode": 1');
+        expect(response.stdout.toString()).toContain('"message": "Fail with Imperative Error"');
+        expect(response.stdout.toString()).toContain('"stdout":');
+        expect(response.stdout.toString()).toContain('"data":');
+        expect(response.stdout.toString()).toContain('"error":');
+        expect(response.stdout.toString()).toContain('"msg": "Fail with Imperative Error"');
     });
 
     it("should fail a handler if a generic error is thrown", async () => {

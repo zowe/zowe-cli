@@ -12,15 +12,13 @@
 import { ICommandDefinition } from "../../../../../../lib/index";
 import { NoHandlerDefinition } from "./no-handler/NoHandler.definition";
 import { InvalidHandlerDefinition } from "./invalid-handler/InvalidHandler.definition";
-import { ProfileSpecDefinition } from "./profile-spec/ProfileSpec.definition";
 
 export const definition: ICommandDefinition = {
     name: "invalid",
     description: "Attempt to invoke commands that have poorly coded definitions.",
     summary: "Invalid definitions",
     type: "group",
-    children: [NoHandlerDefinition, InvalidHandlerDefinition,
-        ProfileSpecDefinition]
+    children: [NoHandlerDefinition, InvalidHandlerDefinition]
 };
 
 module.exports = definition;

@@ -43,7 +43,8 @@ export class EnvFileUtils {
         if (expectedFileLocation) {
             try {
                 const fileContents = readFileSync(expectedFileLocation).toString(); // Read the file in
-                const fileContentsJSON = JSONC.parse(fileContents);
+                // Typecasting because of this issue: https://github.com/kaelzhang/node-comment-json/issues/42
+                const fileContentsJSON = JSONC.parse(fileContents) as any;
                 this.environmentJSON = fileContentsJSON;
                 this.resetEnvironmentForApp();
             } catch (err) {

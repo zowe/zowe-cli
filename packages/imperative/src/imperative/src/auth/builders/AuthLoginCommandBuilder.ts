@@ -54,7 +54,7 @@ export class AuthLoginCommandBuilder extends AuthCommandBuilder {
                     description: authLoginShowTokenDesc.message,
                     type: "boolean"
                 },
-                ...(this.mConfig.login?.options || [])
+                ...this.mConfig.login?.options || []
             ],
             examples: this.mConfig.login?.examples,
             profile: {

@@ -16,8 +16,8 @@ export const secureDefinition: ICommandDefinition = {
     name: "secure",
     type: "command",
     handler: join(__dirname, "secure.handler"),
-    summary: "secure configuration properties",
-    description: "prompt for secure configuration properties",
+    summary: "Secure configuration properties",
+    description: "Prompt for secure configuration properties.",
     options: [
         {
             name: "global-config",
@@ -35,7 +35,7 @@ export const secureDefinition: ICommandDefinition = {
         },
         {
             name: "prune",
-            description: "Delete properties stored in the vault for team config files that do not exist.",
+            description: "Delete properties stored in the vault for Zowe client config files that do not exist.",
             aliases: ["p"],
             type: "boolean",
             defaultValue: false

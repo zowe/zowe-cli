@@ -39,7 +39,7 @@ Array [
       "po",
     ],
     "defaultValue": false,
-    "description": "Specifies if the automatically generated directories and files use the original letter case",
+    "description": "Specifies if the automatically generated directories and files use the original letter case.",
     "name": "preserve-original-letter-case",
     "type": "boolean",
   },

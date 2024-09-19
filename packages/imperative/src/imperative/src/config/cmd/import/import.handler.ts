@@ -49,8 +49,9 @@ export default class ImportHandler implements ICommandHandler {
 
         const configFilePath = path.resolve(params.arguments.location);
         const isConfigLocal = fs.existsSync(configFilePath) || path.isAbsolute(params.arguments.location);
+        // Typecasting because of this issue: https://github.com/kaelzhang/node-comment-json/issues/42
         const configJson: IConfig = isConfigLocal ?
-            JSONC.parse(fs.readFileSync(configFilePath, "utf-8")) :
+            JSONC.parse(fs.readFileSync(configFilePath, "utf-8")) as any :
             await this.fetchConfig(new URL(params.arguments.location));
         config.api.layers.set(configJson);
 
@@ -102,7 +103,8 @@ export default class ImportHandler implements ICommandHandler {
     private async fetchConfig(url: URL): Promise<IConfig> {
         const response = await RestClient.getExpectString(this.buildSession(url), url.pathname);
         try {
-            return JSONC.parse(response);
+            // Typecasting because of this issue: https://github.com/kaelzhang/node-comment-json/issues/42
+            return JSONC.parse(response) as any;
         } catch (error) {
             throw new ImperativeError({
                 msg: "Failed to parse config JSON: URL must point to a valid JSON file\n" + error.message,
@@ -122,7 +124,8 @@ export default class ImportHandler implements ICommandHandler {
         } else {
             const response = await RestClient.getExpectString(this.buildSession(url), url.pathname);
             try {
-                JSONC.parse(response);
+                // Typecasting because of this issue: https://github.com/kaelzhang/node-comment-json/issues/42
+                JSONC.parse(response) as any;
             } catch (error) {
                 throw new ImperativeError({
                     msg: "Failed to parse schema JSON: URL must point to a valid JSON file\n" + error.message,

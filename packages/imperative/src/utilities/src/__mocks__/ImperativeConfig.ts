@@ -43,7 +43,7 @@ export class ImperativeConfig {
     }
 
     public get callerPackageJson(): any {
-        return {version: 10000, name: "sample"};
+        return {version: 10000, zoweVersion: "V99", name: "sample"};
     }
 
     public get cliHome(): string {

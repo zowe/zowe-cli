@@ -14,6 +14,7 @@ import { ICommandDefinition } from "@zowe/imperative";
 export const SshDefinition: ICommandDefinition = {
     name: "command",
     aliases: ["cmd", "ssh"],
+    summary: "Issue a z/OS USS command",
     description: "Issue a z/OS USS command\n\n" +
                  "Note: The common CLI 'Base Connection Options' of token-type and token-value are not applicable to " +
                  "the ssh command, since the ssh service is not accessible through APIML.",
@@ -21,14 +22,14 @@ export const SshDefinition: ICommandDefinition = {
     type: "command",
     positionals: [{
         name: "command",
-        description: "z/OS USS command to issue",
+        description: "z/OS USS command to issue.",
         type: "string",
         required: true
     }],
     options: [
         {
             name: "cwd",
-            description: "Working directory in which to execute the command",
+            description: "Working directory in which to execute the command.",
             type: "string"
         }],
     profile: {

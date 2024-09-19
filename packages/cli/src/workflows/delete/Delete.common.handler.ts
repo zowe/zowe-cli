@@ -49,7 +49,11 @@ export default class DeleteCommonHandler extends ZosmfBaseHandler {
                 try{
                     await DeleteWorkflow.deleteWorkflow(this.mSession, this.arguments.workflowKey);
                 } catch (err){
-                    error = "Delete workflow: " + err;
+                    error = new ImperativeError({
+                        msg: "Delete workflow: " + err,
+                        causeErrors: err.causeErrors,
+                        additionalDetails: err.additionalDetails
+                    });
                     throw error;
                 }
                 params.response.data.setObj("Deleted.");

@@ -26,7 +26,6 @@ const config = {
             }
         }
     ],
-    pluginHealthCheck: "./lib/sample-plugin/healthCheck.handler",
     commandModuleGlobs: ["**/cmd/*/*.definition!(.d).*s"],
     rootCommandDescription: "Test plugin with globs and profiles",
     pluginBaseCliVersion: "^0.4.0-1",
