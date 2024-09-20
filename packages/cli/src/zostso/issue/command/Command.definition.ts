@@ -51,7 +51,7 @@ export const CommandDefinition: ICommandDefinition = {
             aliases: ["sf"],
             type: "boolean",
             description:"Statefulness of address space created for TSO command." +
-            "This option is not supported when --suppress-startup-messages is set to false.",
+            " This option is not supported when --suppress-startup-messages is set to false.",
             defaultValue: false
         }
     ] as ICommandOptionDefinition[]).concat(TsoProfileConstants.TSO_PROFILE_OPTIONS),
