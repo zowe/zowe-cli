@@ -33,6 +33,8 @@ describe("Modify Jobs - System Tests", () => {
             testName: "zos_modify_jobs"
         });
         REAL_SESSION = await TestEnvironment.createZosmfSession(testEnvironment);
+        testEnvironment.resources.session = REAL_SESSION;
+
         systemProps = testEnvironment.systemTestProperties;
         account = systemProps.tso.account;
         jobclass = testEnvironment.systemTestProperties.zosjobs.jobclass;
@@ -106,6 +108,8 @@ describe("Modify Jobs - System Tests - Encoded", () => {
             testName: "zos_modify_jobs_encoded"
         });
         REAL_SESSION = await TestEnvironment.createZosmfSession(testEnvironment);
+        testEnvironment.resources.session = REAL_SESSION;
+
         systemProps = testEnvironment.systemTestProperties;
         account = systemProps.tso.account;
         jobclass = systemProps.zosjobs.jobclass;

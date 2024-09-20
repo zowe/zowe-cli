@@ -12,9 +12,9 @@
 import { Create, Delete, CreateDataSetTypeEnum, HMigrate, HRecall, IListOptions, IRecallOptions, List, ZosFilesMessages } from "../../../../src";
 import { Imperative, Session } from "@zowe/imperative";
 import { inspect } from "util";
-import { ITestEnvironment } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
+import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/ITestEnvironment";
 
 let REAL_SESSION: Session;
 let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
@@ -31,6 +31,8 @@ describe("Recall Dataset", () => {
         defaultSystem = testEnvironment.systemTestProperties;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
+        testEnvironment.resources.session = REAL_SESSION;
+
         dataSet1 = `${defaultSystem.zosmf.user.trim().toUpperCase()}.SDATA.REC`;
         dataSet2 = `${defaultSystem.zosmf.user.trim().toUpperCase()}.PDATA.REC`;
         dataSet3 = `${defaultSystem.zosmf.user.trim().toUpperCase()}.FAIL.REC`;

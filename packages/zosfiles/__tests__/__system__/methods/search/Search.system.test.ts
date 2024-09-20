@@ -10,11 +10,11 @@
 */
 
 import { Session } from "@zowe/imperative";
-import { ITestEnvironment } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { getUniqueDatasetName } from "../../../../../../__tests__/__src__/TestUtils";
 import { Create, Upload, Delete, Search, CreateDataSetTypeEnum, ISearchOptions, IZosFilesResponse } from "../../../../src";
+import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/ITestEnvironment";
 
 let REAL_SESSION: Session;
 let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
@@ -34,6 +34,7 @@ describe("Search", () => {
         });
         defaultSystem = testEnvironment.systemTestProperties;
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
+        testEnvironment.resources.session = REAL_SESSION;
 
         // We can't test color related stuff in GitHub Actions or Jenkins
         oldForceColor = process.env.FORCE_COLOR;

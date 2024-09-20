@@ -64,6 +64,7 @@ describe("Get Jobs System Tests", () => {
                 testName: "get_jobs_system_test"
             });
             REAL_SESSION = await TestEnvironment.createZosmfSession(testEnvironment);
+            testEnvironment.resources.session = REAL_SESSION;
 
             defaultSystem = testEnvironment.systemTestProperties;
 
@@ -1018,6 +1019,8 @@ describe("Get Jobs System Tests", () => {
                 testName: "zos_get_jobs_encoded"
             });
             REAL_SESSION = await TestEnvironment.createZosmfSession(testEnvironment);
+            testEnvironment.resources.session = REAL_SESSION;
+
 
             INVALID_SESSION = new Session({
                 user: "fakeuser",

@@ -14,7 +14,6 @@ import { inspect } from "util";
 import { Create } from "../../../../src/methods/create";
 import { Mount, IMountFsOptions } from "../../../../src/methods/mount";
 import { Unmount } from "../../../../src/methods/unmount";
-import { ITestEnvironment } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { Delete } from "../../../../src/methods/delete";
@@ -22,6 +21,7 @@ import { List, ZosFilesMessages } from "../../../../src";
 import { getUniqueDatasetName } from "../../../../../../__tests__/__src__/TestUtils";
 import { ICreateZfsOptions } from "../../../../src/methods/create/doc/ICreateZfsOptions";
 import { SshSession, Shell } from "@zowe/zos-uss-for-zowe-sdk";
+import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/ITestEnvironment";
 
 
 let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
@@ -59,6 +59,8 @@ describe("Mount and unmount a file system", () => {
         volume = defaultSystem.datasets.vol;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
+        testEnvironment.resources.session = REAL_SESSION;
+
         fsname = getUniqueDatasetName(defaultSystem.zosmf.user);
         const dirname = getUniqueDatasetName(defaultSystem.zosmf.user).split(".")[1];
         mountPoint = "/tmp/" + dirname;
@@ -261,6 +263,8 @@ describe("Mount and unmount a file system - encoded", () => {
         volume = defaultSystem.datasets.vol;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
+        testEnvironment.resources.session = REAL_SESSION;
+
         fsname = getUniqueDatasetName(defaultSystem.zosmf.user, true);
         const dirname = getUniqueDatasetName(defaultSystem.zosmf.user, true).split(".")[1];
         mountPoint = "/tmp/" + dirname;

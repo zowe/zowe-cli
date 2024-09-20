@@ -31,6 +31,7 @@ describe("zos-jobs cancel job command", () => {
             tempProfileTypes: ["zosmf"]
         });
         REAL_SESSION = await TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
+        TEST_ENVIRONMENT.resources.session = REAL_SESSION;
         const systemProps = TEST_ENVIRONMENT.systemTestProperties;
         const jcl = JobTestsUtils.getSleepJCL(systemProps.zosmf.user, systemProps.tso.account, systemProps.zosjobs.jobclass);
         const bufferJCL: Buffer = Buffer.from(jcl);
@@ -121,7 +122,7 @@ describe("zos-jobs cancel job command", () => {
                     testName: "zos_jobs_cancel_job_without_profiles"
                 });
                 REAL_SESSION = await TestEnvironment.createZosmfSession(TEST_ENVIRONMENT_NO_PROF);
-
+                TEST_ENVIRONMENT_NO_PROF.resources.session = REAL_SESSION;
                 DEFAULT_SYSTEM_PROPS = TEST_ENVIRONMENT_NO_PROF.systemTestProperties;
             });
 

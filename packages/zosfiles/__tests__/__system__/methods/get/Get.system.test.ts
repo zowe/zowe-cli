@@ -31,6 +31,8 @@ describe("Get", () => {
             testName: "zos_file_view"
         });
         REAL_SESSION = await TestEnvironment.createZosmfSession(testEnvironment);
+        testEnvironment.resources.session = REAL_SESSION;
+
         defaultSystem = testEnvironment.systemTestProperties;
         dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.VIEW`);
         Imperative.console.info("Using dsname:" + dsname);
@@ -366,6 +368,8 @@ describe("Get - encoded", () => {
             testName: "zos_file_view"
         });
         REAL_SESSION = await TestEnvironment.createZosmfSession(testEnvironment);
+        testEnvironment.resources.session = REAL_SESSION;
+
         defaultSystem = testEnvironment.systemTestProperties;
         dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.VIEW`, true);
         Imperative.console.info("Using dsname:" + dsname);

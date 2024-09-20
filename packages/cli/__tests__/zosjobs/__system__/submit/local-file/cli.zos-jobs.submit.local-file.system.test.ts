@@ -39,6 +39,8 @@ describe("zos-jobs submit local-file command", () => {
         systemProps = TEST_ENVIRONMENT.systemTestProperties;
         account = systemProps.tso.account;
 
+        TEST_ENVIRONMENT.resources.session = REAL_SESSION;
+
         // JCL to submit
         jcl = (await Get.dataSet(REAL_SESSION, systemProps.zosjobs.iefbr14Member)).toString();
 

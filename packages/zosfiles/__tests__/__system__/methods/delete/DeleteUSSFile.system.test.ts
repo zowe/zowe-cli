@@ -12,9 +12,9 @@
 import { Create, Delete, ZosFilesMessages } from "../../../../src";
 import { Imperative, Session } from "@zowe/imperative";
 import { inspect } from "util";
-import { ITestEnvironment } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
+import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/ITestEnvironment";
 
 let REAL_SESSION: Session;
 let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
@@ -32,6 +32,9 @@ describe("Delete a USS File", () => {
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
         ussname = `${defaultSystem.zosmf.user.trim()}`;
+
+        testEnvironment.resources.session = REAL_SESSION;
+        testEnvironment.resources.files.push(ussname);
     });
 
     afterAll(async () => {
@@ -154,6 +157,9 @@ describe("Delete a USS File - encoded", () => {
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
         ussname = `${defaultSystem.zosmf.user.trim() + ".Enco#ed"}`;
+
+        testEnvironment.resources.session = REAL_SESSION;
+        testEnvironment.resources.files.push(ussname);
     });
 
     afterAll(async () => {
@@ -220,6 +226,9 @@ describe("Delete USS Directory", () => {
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
         filename = `${defaultSystem.unix.testdir}/${ussname}.aTestUssFolderDelete`.replace(/\./g, "");
+
+        testEnvironment.resources.session = REAL_SESSION;
+        testEnvironment.resources.files.push(filename);
     });
 
     afterAll(async () => {
@@ -319,6 +328,9 @@ describe("Delete USS Directory - encoded", () => {
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
         filename = `${defaultSystem.unix.testdir}/${ussname}.Enco#ed.aTestUssFolderDelete`.replace(/\./g, "");
+
+        testEnvironment.resources.session = REAL_SESSION;
+        testEnvironment.resources.files.push(filename);
     });
 
     afterAll(async () => {
@@ -367,6 +379,9 @@ describe("Delete USS Directory with children", () => {
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
         filename = `${defaultSystem.unix.testdir}/${ussname}.aTestUssFileDelete`.replace(/\./g, "");
+
+        testEnvironment.resources.session = REAL_SESSION;
+        testEnvironment.resources.files.push(filename);
     });
 
     afterAll(async () => {
@@ -475,6 +490,9 @@ describe("Delete USS Directory with children - encoded", () => {
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
         filename = `${defaultSystem.unix.testdir}/${ussname}.Enco#ed.aTestUssFileDelete`.replace(/\./g, "");
+
+        testEnvironment.resources.session = REAL_SESSION;
+        testEnvironment.resources.files.push(filename);
     });
 
     afterAll(async () => {

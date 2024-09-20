@@ -60,7 +60,7 @@ export function deleteLocalDirectories(directories: string[]): void {
  * @returns {Promise<void>} A promise that resolves when the file is deleted
  */
 export async function deleteFiles(session: AbstractSession, fileName: string): Promise<void> {
-    await Delete.ussFile(session, fileName);
+    await Delete.ussFile(session, fileName, true); //recursive = true
 }
 
 /**

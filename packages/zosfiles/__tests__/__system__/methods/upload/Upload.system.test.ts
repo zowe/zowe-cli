@@ -39,6 +39,8 @@ describe("All Upload Tests", () => {
             testName: "zos_file_upload"
         });
         REAL_SESSION = await TestEnvironment.createZosmfSession(testEnvironment);
+        testEnvironment.resources.session = REAL_SESSION;
+
         defaultSystem = testEnvironment.systemTestProperties;
         dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.UPLOAD`);
         Imperative.console.info("Using dsname:" + dsname);
@@ -671,6 +673,8 @@ describe("All Upload Tests", () => {
                 testName: "zos_file_upload"
             });
             REAL_SESSION = await TestEnvironment.createZosmfSession(testEnvironment);
+            testEnvironment.resources.session = REAL_SESSION;
+
             defaultSystem = testEnvironment.systemTestProperties;
             dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.UPLOAD`, true);
             Imperative.console.info("Using dsname:" + dsname);
@@ -771,6 +775,8 @@ describe("All Upload Tests", () => {
                 testName: "zos_file_upload_uss"
             });
             REAL_SESSION = await TestEnvironment.createZosmfSession(testEnvironment);
+            testEnvironment.resources.session = REAL_SESSION;
+
             defaultSystem = testEnvironment.systemTestProperties;
             dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.UPLOAD`);
             ussname = dsname.replace(/\./g, "");
@@ -929,6 +935,8 @@ describe("All Upload Tests", () => {
                 testName: "zos_file_upload_uss"
             });
             REAL_SESSION = await TestEnvironment.createZosmfSession(testEnvironment);
+            testEnvironment.resources.session = REAL_SESSION;
+
             defaultSystem = testEnvironment.systemTestProperties;
             dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.UPLOAD`, true);
             ussname = dsname.replace(/\./g, "");
@@ -1006,6 +1014,8 @@ describe("All Upload Tests", () => {
                     testName: "zos_file_upload_dir_to_uss"
                 });
                 REAL_SESSION = await TestEnvironment.createZosmfSession(testEnvironment);
+                testEnvironment.resources.session = REAL_SESSION;
+
                 defaultSystem = testEnvironment.systemTestProperties;
                 dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.UPLOAD`);
                 ussname = dsname.replace(/\./g, "");
@@ -1234,6 +1244,8 @@ describe("All Upload Tests", () => {
                     testName: "zos_file_upload_dir_to_uss"
                 });
                 REAL_SESSION = await TestEnvironment.createZosmfSession(testEnvironment);
+                testEnvironment.resources.session = REAL_SESSION;
+
                 defaultSystem = testEnvironment.systemTestProperties;
                 dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.UPLOAD`);
 
@@ -1371,6 +1383,8 @@ describe("All Upload Tests", () => {
                     testName: "zos_file_upload_dir_to_uss"
                 });
                 REAL_SESSION = await TestEnvironment.createZosmfSession(testEnvironment);
+                testEnvironment.resources.session = REAL_SESSION;
+
                 defaultSystem = testEnvironment.systemTestProperties;
                 dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.UPLOAD`, true);
                 ussname = dsname.replace(/\./g, "");

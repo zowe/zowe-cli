@@ -12,10 +12,10 @@
 import { Create, CreateDataSetTypeEnum, Delete, IListOptions, IZosFilesResponse, List, Upload, ZosFilesMessages } from "../../../../src";
 import { Imperative, Session } from "@zowe/imperative";
 import { format, inspect } from "util";
-import { ITestEnvironment } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { getUniqueDatasetName, wait, waitTime } from "../../../../../../__tests__/__src__/TestUtils";
+import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/ITestEnvironment";
 
 let REAL_SESSION: Session;
 let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
@@ -33,6 +33,7 @@ describe("List command group", () => {
         defaultSystem = testEnvironment.systemTestProperties;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
+        testEnvironment.resources.session = REAL_SESSION;
 
         dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.LIST`);
         Imperative.console.info("Using dsname:" + dsname);
@@ -670,6 +671,7 @@ describe("List command group - encoded", () => {
         });
         defaultSystem = testEnvironment.systemTestProperties;
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
+        testEnvironment.resources.session = REAL_SESSION;
 
         dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.LIST`, true);
         Imperative.console.info("Using dsname:" + dsname);

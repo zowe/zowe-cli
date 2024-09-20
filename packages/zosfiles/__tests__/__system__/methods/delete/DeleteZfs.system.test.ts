@@ -12,11 +12,11 @@
 import { Create, Delete, ZosFilesMessages } from "../../../../src";
 import { Imperative, Session } from "@zowe/imperative";
 import { inspect } from "util";
-import { ITestEnvironment } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { getUniqueDatasetName } from "../../../../../../__tests__/__src__/TestUtils";
 import { ICreateZfsOptions } from "../../../../src/methods/create/doc/ICreateZfsOptions";
+import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/ITestEnvironment";
 
 let REAL_SESSION: Session;
 let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
@@ -43,6 +43,8 @@ describe("Delete a z/OS File System", () => {
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
         fsname = getUniqueDatasetName(defaultSystem.zosmf.user);
         createOptions.volumes = [defaultSystem.datasets.vol];
+        testEnvironment.resources.session = REAL_SESSION;
+        testEnvironment.resources.datasets.push(fsname);
     });
 
     afterAll(async () => {

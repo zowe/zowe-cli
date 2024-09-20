@@ -38,6 +38,7 @@ describe("zos-jobs view all-spool-content command", () => {
         IEFBR14_JOB = TEST_ENVIRONMENT.systemTestProperties.zosjobs.iefbr14Member;
         const defaultSystem = TEST_ENVIRONMENT.systemTestProperties;
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
+        TEST_ENVIRONMENT.resources.session = REAL_SESSION;
 
         ACCOUNT = defaultSystem.tso.account;
         const JOB_LENGTH = 6;

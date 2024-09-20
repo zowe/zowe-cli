@@ -39,6 +39,7 @@ describe("zos-jobs view job-status-by-jobid command", () => {
         });
 
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
+        TEST_ENVIRONMENT.resources.session = REAL_SESSION;
 
         systemProps = TEST_ENVIRONMENT.systemTestProperties;
 
@@ -112,6 +113,7 @@ describe("zos-jobs view job-status-by-jobid command", () => {
                     testName: "zos_jobs_view_job_status_by_jobid_command_without_profiles"
                 });
                 REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
+                TEST_ENVIRONMENT.resources.session = REAL_SESSION;
                 DEFAULT_SYSTEM_PROPS = TEST_ENVIRONMENT_NO_PROF.systemTestProperties;
             });
 

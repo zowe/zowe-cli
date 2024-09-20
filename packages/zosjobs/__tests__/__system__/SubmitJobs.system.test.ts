@@ -37,6 +37,8 @@ describe("Submit Jobs - System Tests", () => {
             testName: "zos_submit_jobs"
         });
         REAL_SESSION = await TestEnvironment.createZosmfSession(testEnvironment);
+        testEnvironment.resources.session = REAL_SESSION;
+
         systemProps = testEnvironment.systemTestProperties;
         account = systemProps.tso.account;
         jobDataSet = testEnvironment.systemTestProperties.zosjobs.iefbr14PSDataSet;

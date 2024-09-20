@@ -29,7 +29,7 @@ import {
 } from "../../../../src";
 import { Imperative, IO, Session } from "@zowe/imperative";
 import { inspect } from "util";
-import { ITestEnvironment } from "@zowe/cli-test-utils";
+import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/ITestEnvironment";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { getUniqueDatasetName, stripNewLines, wait, waitTime } from "../../../../../../__tests__/__src__/TestUtils";
@@ -61,6 +61,7 @@ describe("Download Data Set", () => {
         defaultSystem = testEnvironment.systemTestProperties;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
+        testEnvironment.resources.session = REAL_SESSION;
 
         dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.DOWNLOAD`);
         Imperative.console.info("Using dsname:" + dsname);
@@ -69,6 +70,9 @@ describe("Download Data Set", () => {
         ussname = `${defaultSystem.unix.testdir}/${dsname}`;
         ussDirname = `${defaultSystem.unix.testdir}/zos_file_download`;
         localDirname = `${testEnvironment.workingDir}/ussDir`;
+
+        testEnvironment.resources.localFiles.push(localDirname);
+        testEnvironment.resources.files.push(ussname, ussDirname);
     });
 
     afterAll(async () => {
@@ -1522,6 +1526,7 @@ describe("Download Data Set - encoded", () => {
         defaultSystem = testEnvironment.systemTestProperties;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
+        testEnvironment.resources.session = REAL_SESSION;
 
         dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.DOWNLOAD`, true);
         Imperative.console.info("Using dsname:" + dsname);
@@ -1530,6 +1535,9 @@ describe("Download Data Set - encoded", () => {
         ussname = `${defaultSystem.unix.testdir}/ENCO#ED${dsname}`;
         ussDirname = `${defaultSystem.unix.testdir}/ENCO#EDzos_file_download`;
         localDirname = `${testEnvironment.workingDir}/ENCO#EDussDir`;
+
+        testEnvironment.resources.localFiles.push(localDirname);
+        testEnvironment.resources.files.push(ussname, ussDirname);
     });
 
     afterAll(async () => {

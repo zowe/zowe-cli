@@ -12,10 +12,10 @@
 import { Create, CreateDataSetTypeEnum, Delete, List, Rename, Upload, ZosFilesMessages } from "../../../../src";
 import { Imperative, Session } from "@zowe/imperative";
 import { inspect } from "util";
-import { ITestEnvironment } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { join } from "path";
+import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/ITestEnvironment";
 
 let REAL_SESSION: Session;
 let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
@@ -33,6 +33,8 @@ describe("Rename", () => {
         defaultSystem = testEnvironment.systemTestProperties;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
+        testEnvironment.resources.session = REAL_SESSION;
+
         beforeDataSetName = `${defaultSystem.zosmf.user.trim().toUpperCase()}.BEFORE.SET`;
         afterDataSetName = `${defaultSystem.zosmf.user.trim().toUpperCase()}.AFTER.SET`;
     });
@@ -426,6 +428,8 @@ describe("Rename - encoded", () => {
         defaultSystem = testEnvironment.systemTestProperties;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
+        testEnvironment.resources.session = REAL_SESSION;
+
         beforeDataSetName = `${defaultSystem.zosmf.user.trim().toUpperCase()}.ENCO#ED.BEFORE.SET`;
         afterDataSetName = `${defaultSystem.zosmf.user.trim().toUpperCase()}.ENCO#ED.AFTER.SET`;
     });

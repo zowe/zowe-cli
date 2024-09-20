@@ -12,9 +12,9 @@
 import { Create, CreateDataSetTypeEnum, Delete, ZosFilesMessages } from "../../../../src";
 import { Imperative, Session } from "@zowe/imperative";
 import { inspect } from "util";
-import { ITestEnvironment } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
+import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/ITestEnvironment";
 
 let REAL_SESSION: Session;
 let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
@@ -30,7 +30,10 @@ describe("Delete Dataset", () => {
         defaultSystem = testEnvironment.systemTestProperties;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
+        testEnvironment.resources.session = REAL_SESSION;
+
         dsname = `${defaultSystem.zosmf.user.trim().toUpperCase()}.TEST.DATA.SET.DELETE`;
+        testEnvironment.resources.datasets.push(dsname);
     });
 
     afterAll(async () => {
@@ -137,6 +140,9 @@ describe("Delete Dataset - encoded", () => {
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
         dsname = `${defaultSystem.zosmf.user.trim().toUpperCase()}.TEST.ENCO#ED.DATA.SET.DELETE`;
+
+        testEnvironment.resources.session = REAL_SESSION;
+        testEnvironment.resources.datasets.push(dsname);
     });
 
     afterAll(async () => {

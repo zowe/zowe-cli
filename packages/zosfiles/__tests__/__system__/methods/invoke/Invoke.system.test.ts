@@ -35,6 +35,8 @@ describe("Invoke AMS", () => {
             testName: "zos_create_VSAM_dataset"
         });
         REAL_SESSION = await TestEnvironment.createZosmfSession(testEnvironment);
+        testEnvironment.resources.session = REAL_SESSION;
+
         systemProps = testEnvironment.systemTestProperties;
         dsname = getUniqueDatasetName(`${systemProps.zosmf.user}.ZOSFILE.VSAM`);
         volume = systemProps.datasets.vol.toUpperCase();
@@ -211,6 +213,8 @@ describe("Invoke AMS - encoded", () => {
             testName: "zos_create_VSAM_dataset"
         });
         REAL_SESSION = await TestEnvironment.createZosmfSession(testEnvironment);
+        testEnvironment.resources.session = REAL_SESSION;
+
         systemProps = testEnvironment.systemTestProperties;
         dsname = getUniqueDatasetName(`${systemProps.zosmf.user}.ZOSFILE.ENCO#ED.VSAM`);
         volume = systemProps.datasets.vol.toUpperCase();

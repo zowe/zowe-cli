@@ -13,11 +13,11 @@ import { Create, Upload, Delete, CreateDataSetTypeEnum, Copy, ZosFilesMessages, 
     ICrossLparCopyDatasetOptions, IGetOptions, IZosFilesResponse } from "../../../../src";
 import { Imperative, Session } from "@zowe/imperative";
 import { inspect } from "util";
-import { ITestEnvironment } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { join } from "path";
 import { readFileSync } from "fs";
+import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/ITestEnvironment";
 
 let REAL_SESSION: Session;
 let REAL_TARGET_SESSION: Session;
@@ -41,6 +41,9 @@ describe("Copy", () => {
         REAL_TARGET_SESSION = REAL_SESSION;
         fromDataSetName = `${defaultSystem.zosmf.user.trim().toUpperCase()}.DATA.ORIGINAL`;
         toDataSetName = `${defaultSystem.zosmf.user.trim().toUpperCase()}.DATA.COPY`;
+
+        testEnvironment.resources.session = REAL_SESSION;
+        testEnvironment.resources.datasets.push(fromDataSetName, toDataSetName);
     });
 
     afterAll(async () => {
@@ -1022,6 +1025,8 @@ describe("Copy - Encoded", () => {
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
         fromDataSetName = `${defaultSystem.zosmf.user.trim().toUpperCase()}.DATA.ENCO#ED.ORIGINAL`;
         toDataSetName = `${defaultSystem.zosmf.user.trim().toUpperCase()}.ENCO#ED.DATA.COPY`;
+        testEnvironment.resources.session = REAL_SESSION;
+        testEnvironment.resources.datasets.push(fromDataSetName, toDataSetName);
     });
 
     afterAll(async () => {

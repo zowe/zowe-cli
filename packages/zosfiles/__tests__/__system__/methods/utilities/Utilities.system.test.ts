@@ -30,11 +30,15 @@ describe("USS Utilities", () => {
             testName: "zos_files_utilities"
         });
         REAL_SESSION = await TestEnvironment.createZosmfSession(testEnvironment);
+        testEnvironment.resources.session = REAL_SESSION;
+
         const defaultSystem = testEnvironment.systemTestProperties;
         let dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.UPLOAD`);
         dsname = dsname.replace(/\./g, "");
         ussname = `${defaultSystem.unix.testdir}/${dsname}`;
         Imperative.console.info("Using ussDir:" + ussname);
+
+        testEnvironment.resources.files.push(ussname);
     });
 
     afterAll(async () => {

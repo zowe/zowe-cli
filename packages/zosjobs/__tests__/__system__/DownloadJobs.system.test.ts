@@ -45,6 +45,8 @@ describe("Download Jobs - System tests", () => {
             testName: "zos_download_jobs"
         });
         REAL_SESSION = await TestEnvironment.createZosmfSession(testEnvironment);
+        testEnvironment.resources.session = REAL_SESSION;
+
         outputDirectory = testEnvironment.workingDir + "/output";
         defaultSystem = testEnvironment.systemTestProperties;
 
@@ -358,6 +360,7 @@ describe("Download Jobs - System tests - Encoded", () => {
             testName: "zos_download_jobs_encoded"
         });
         REAL_SESSION = await TestEnvironment.createZosmfSession(testEnvironment);
+        testEnvironment.resources.session = REAL_SESSION;
         outputDirectory = testEnvironment.workingDir + "/output";
         defaultSystem = testEnvironment.systemTestProperties;
 
