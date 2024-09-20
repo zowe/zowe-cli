@@ -2,6 +2,14 @@
 
 All notable changes to the Zowe CLI test utils package will be documented in this file.
 
+## `8.0.0`
+
+- MAJOR: v8.0.0 Release
+
+## `8.0.0-next.202409191615`
+
+- Update: Final prerelease
+
 ## `8.0.0-next.202408271330`
 
 - BugFix: Removed obsolete V1 `profiles` property from the parameters object returned by `mockHandlerParameters` method.

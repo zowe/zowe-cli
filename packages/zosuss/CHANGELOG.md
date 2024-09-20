@@ -2,6 +2,14 @@
 
 All notable changes to the Zowe z/OS USS SDK package will be documented in this file.
 
+## `8.0.0`
+
+- MAJOR: v8.0.0 Release
+
+## `8.0.0-next.202409191615`
+
+- Update: Final prerelease
+
 ## `8.0.0-next.202408131445`
 
 - Update: See `7.28.3` for details

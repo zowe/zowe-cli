@@ -1,17 +1,15 @@
 module.exports = {
     branches: [
-        {
-            name: "master",
-            level: "minor"
-        },
+        // Temporarily put zowe-v2-lts branch first in the list.
+        // It should move down once latest becomes zowe-v3-lts.
         {
             name: "zowe-v?-lts",
             level: "patch"
         },
         {
-            name: "next",
+            name: "master",
             level: "none",
-            prerelease: true
+            channel: "zowe-v3-lts"
         }
     ],
     plugins: [

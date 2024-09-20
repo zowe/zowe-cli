@@ -2,6 +2,14 @@
 
 All notable changes to the Zowe Secrets SDK package will be documented in this file.
 
+## `8.0.0`
+
+- MAJOR: v8.0.0 Release
+
+## `8.0.0-next.202409191615`
+
+- Update: Final prerelease
+
 ## `8.0.0-next.202407021516`
 
 - BugFix: Updated dependencies for technical currency [#2188](https://github.com/zowe/zowe-cli/pull/2188)
@@ -35,7 +43,7 @@ All notable changes to the Zowe Secrets SDK package will be documented in this f
 
 ## `7.18.1`
 
-- Added README to package w/ description, instructions and examples of using the `keyring` module. 
+- Added README to package w/ description, instructions and examples of using the `keyring` module.
 
 ## `7.18.0`
 
