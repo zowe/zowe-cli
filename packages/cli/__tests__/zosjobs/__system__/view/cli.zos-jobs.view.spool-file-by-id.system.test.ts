@@ -17,6 +17,7 @@ import * as fs from "fs";
 import { IJob, SubmitJobs, GetJobs } from "@zowe/zos-jobs-for-zowe-sdk";
 import { TEST_RESOURCES_DIR } from "../../../../../../packages/zosjobs/__tests__/__src__/ZosJobsTestConstants";
 import { join } from "path";
+import { runCliScript } from "@zowe/cli-test-utils";
 
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
