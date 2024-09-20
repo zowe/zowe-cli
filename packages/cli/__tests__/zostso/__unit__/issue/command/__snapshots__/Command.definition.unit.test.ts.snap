@@ -28,7 +28,7 @@ Object {
         "sf",
       ],
       "defaultValue": false,
-      "description": "Statefulness of address space created for TSO Command.",
+      "description": "Statefulness of address space created for TSO command.This option is not supported when --suppress-startup-messages is set to false.",
       "name": "stateful",
       "type": "boolean",
     },
