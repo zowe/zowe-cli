@@ -15,6 +15,7 @@ import {
     IssueTso,
     ZosTsoBaseHandler,
 } from "@zowe/zos-tso-for-zowe-sdk";
+import chalk = require("chalk");
 /**
  * Handler to issue command to TSO address space
  * @export
@@ -43,8 +44,10 @@ export default class Handler extends ZosTsoBaseHandler {
         ) {
             this.console.log(response.startResponse.messages);
         }
-        this.console.log(response.commandResponse);
+        if(response. zosmfResponse?.[0]?.servletKey)
+            this.console.log(`${chalk.yellow("Servlet Key: ")}${response.zosmfResponse[0].servletKey}`);
 
+        this.console.log(response.commandResponse);
         // Return as an object when using --response-format-json
         this.data.setObj(response);
     }

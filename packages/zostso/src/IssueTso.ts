@@ -40,7 +40,7 @@ export class IssueTso {
                 session,
                 ZosmfConstants.VERSIONS.V2R4
             ) &&
-            (opts.suppressStartupMessages ?? true);
+            (opts.suppressStartupMessages ?? false);
         if (useNewApi) {
             version = "v1";
             try {
@@ -61,7 +61,7 @@ export class IssueTso {
                         apiResponse.cmdResponse[
                             apiResponse.cmdResponse.length - 1
                         ].message.trim() === "READY",
-                    zosmfResponse: apiResponse as any,
+                    zosmfResponse: [apiResponse as any],
                     commandResponse: apiResponse.cmdResponse
                         .map((item) => item.message)
                         .join("\n"),
