@@ -6,6 +6,10 @@ All notable changes to the Imperative package will be documented in this file.
 
 - Enhancement: Added the ability to specify a profile with the `zowe config secure command`. This allows the user to prompt for the secure values of the specified profile. [#1890] https://github.com/zowe/zowe-cli/issues/1890
 
+## `8.0.0`
+
+- MAJOR: v8.0.0 Release
+
 ## `8.0.0-next.202409191615`
 
 - Update: Final prerelease
