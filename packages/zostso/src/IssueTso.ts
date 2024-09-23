@@ -36,11 +36,7 @@ export class IssueTso {
         opts = opts || {};
         let useNewApi =
         opts.addressSpaceOptions == null ||
-            await CheckStatus.isZosVersionAtLeast(
-                session,
-                ZosmfConstants.VERSIONS.V2R4
-            ) &&
-            (opts.suppressStartupMessages ?? false);
+            await CheckStatus.isZosVersionAtLeast(session,ZosmfConstants.VERSIONS.V2R4) && (opts.suppressStartupMessages ?? false);
         if (useNewApi) {
             version = "v1";
             try {
