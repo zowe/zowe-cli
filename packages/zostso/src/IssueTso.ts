@@ -34,9 +34,8 @@ export class IssueTso {
     ): Promise<IIssueResponse> {
         let version: string;
         opts = opts || {};
-        let useNewApi =
-        opts.addressSpaceOptions == null ||
-            await CheckStatus.isZosVersionAtLeast(session,ZosmfConstants.VERSIONS.V2R4) && (opts.suppressStartupMessages ?? true);
+        let zosVersionCheck = await CheckStatus.isZosVersionAtLeast(session,ZosmfConstants.VERSIONS.V2R4);
+        let useNewApi = opts.addressSpaceOptions == null || zosVersionCheck && (opts.suppressStartupMessages ?? true);
         if (useNewApi) {
             version = "v1";
             try {
