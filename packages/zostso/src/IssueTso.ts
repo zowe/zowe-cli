@@ -36,7 +36,7 @@ export class IssueTso {
         opts = opts || {};
         let useNewApi =
         opts.addressSpaceOptions == null ||
-            await CheckStatus.isZosVersionAtLeast(session,ZosmfConstants.VERSIONS.V2R4) && (opts.suppressStartupMessages ?? false);
+            await CheckStatus.isZosVersionAtLeast(session,ZosmfConstants.VERSIONS.V2R4) && (opts.suppressStartupMessages ?? true);
         if (useNewApi) {
             version = "v1";
             try {
@@ -135,7 +135,7 @@ export class IssueTso {
         command: string,
         startParams?: IStartTsoParms
     ): Promise<IIssueResponse> {
-        return await IssueTso.issueTsoCmd(session, command, { addressSpaceOptions: {...startParams, account: accountNumber}});
+        return await IssueTso.issueTsoCmd(session, command, { suppressStartupMessages: false, addressSpaceOptions: {...startParams, account: accountNumber } });
     }
 
     /**

@@ -43,7 +43,7 @@ export const CommandDefinition: ICommandDefinition = {
             aliases: ["ssm"],
             type: "boolean",
             description: "Suppress console messages from start of address space.",
-            defaultValue: false
+            defaultValue: true
         },
         {
             // --stateful has no impact if --suppress-startup-messages is set to false.
