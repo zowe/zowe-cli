@@ -18,7 +18,7 @@ Object {
       "aliases": Array [
         "ssm",
       ],
-      "defaultValue": false,
+      "defaultValue": true,
       "description": "Suppress console messages from start of address space.",
       "name": "suppress-startup-messages",
       "type": "boolean",
