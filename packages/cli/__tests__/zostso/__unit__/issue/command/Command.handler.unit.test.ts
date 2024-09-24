@@ -25,7 +25,7 @@ const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
         ...UNIT_TEST_TSO_PROF_OPTS
     },
     positionals: ["zos-tso", "issue", "address-space"],
-    definition: CommandDefinition
+    definition: CommandDefinition,
 });
 
 describe("issue command handler tests", () => {

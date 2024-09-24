@@ -1,13 +1,13 @@
 /*
-* This program and the accompanying materials are made available under the terms of the
-* Eclipse Public License v2.0 which accompanies this distribution, and is available at
-* https://www.eclipse.org/legal/epl-v20.html
-*
-* SPDX-License-Identifier: EPL-2.0
-*
-* Copyright Contributors to the Zowe Project.
-*
-*/
+ * This program and the accompanying materials are made available under the terms of the
+ * Eclipse Public License v2.0 which accompanies this distribution, and is available at
+ * https://www.eclipse.org/legal/epl-v20.html
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Copyright Contributors to the Zowe Project.
+ *
+ */
 
 import { AbstractSession, Headers, ImperativeError } from "@zowe/imperative";
 import { IStartTsoParms } from "./doc/input/IStartTsoParms";
@@ -34,8 +34,10 @@ export class IssueTso {
     ): Promise<IIssueResponse> {
         let version: string;
         opts = opts || {};
-        let zosVersionCheck = await CheckStatus.isZosVersionAtLeast(session,ZosmfConstants.VERSIONS.V2R4);
-        let useNewApi = opts.addressSpaceOptions == null || zosVersionCheck && (opts.suppressStartupMessages ?? true);
+        opts.suppressStartupMessages = opts.suppressStartupMessages ?? true;
+        const versionCheck = await CheckStatus.isZosVersionAtLeast(session,ZosmfConstants.VERSIONS.V2R4);
+        let useNewApi = opts.addressSpaceOptions == null || versionCheck && opts.suppressStartupMessages;
+
         if (useNewApi) {
             version = "v1";
             try {
@@ -47,7 +49,9 @@ export class IssueTso {
                         [Headers.APPLICATION_JSON],
                         {
                             tsoCmd: command,
-                            cmdState: opts.isStateful ? "stateful" : "stateless",
+                            cmdState: opts.isStateful
+                                ? "stateful"
+                                : "stateless",
                         }
                     );
                 const response: IIssueResponse = {
@@ -81,9 +85,7 @@ export class IssueTso {
 
             const response: IIssueResponse = {
                 success: false,
-                startResponse: await StartTso.start(
-                    session,
-                    opts.addressSpaceOptions?.account,
+                startResponse: await StartTso.start(session,opts.addressSpaceOptions?.account,
                     opts.addressSpaceOptions || {}
                 ),
                 startReady: false,
@@ -134,7 +136,10 @@ export class IssueTso {
         command: string,
         startParams?: IStartTsoParms
     ): Promise<IIssueResponse> {
-        return await IssueTso.issueTsoCmd(session, command, { suppressStartupMessages: false, addressSpaceOptions: {...startParams, account: accountNumber } });
+        return await IssueTso.issueTsoCmd(session, command, {
+            suppressStartupMessages: false,
+            addressSpaceOptions: { ...startParams, account: accountNumber },
+        });
     }
 
     /**
@@ -149,7 +154,11 @@ export class IssueTso {
         session: AbstractSession,
         commandParms: IIssueTsoParms
     ): Promise<IIssueResponse> {
-        return await IssueTso.issueTsoCmd(session, commandParms.command,
-            { addressSpaceOptions: {...commandParms.startParams,account: commandParms.accountNumber}});
+        return await IssueTso.issueTsoCmd(session, commandParms.command, {
+            addressSpaceOptions: {
+                ...commandParms.startParams,
+                account: commandParms.accountNumber,
+            },
+        });
     }
 }
