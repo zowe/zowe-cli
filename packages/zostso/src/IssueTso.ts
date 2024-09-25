@@ -35,8 +35,13 @@ export class IssueTso {
         let version: string;
         opts = opts || {};
         opts.suppressStartupMessages = opts.suppressStartupMessages ?? true;
-        const versionCheck = await CheckStatus.isZosVersionAtLeast(session,ZosmfConstants.VERSIONS.V2R4);
-        let useNewApi = opts.addressSpaceOptions == null || versionCheck && opts.suppressStartupMessages;
+        const versionCheck = await CheckStatus.isZosVersionAtLeast(
+            session,
+            ZosmfConstants.VERSIONS.V2R4
+        );
+        let useNewApi =
+            opts.addressSpaceOptions == null ||
+            (versionCheck && opts.suppressStartupMessages);
 
         if (useNewApi) {
             version = "v1";
@@ -67,8 +72,13 @@ export class IssueTso {
                 };
                 return response;
             } catch (e) {
-                if (!e.mMessage.includes("status 404")) throw e;
-                useNewApi = false;
+                if (e.mMessage.includes("status 404")) {
+                    // Set useNewApi to false to handle fallback logic
+                    useNewApi = false;
+                } else {
+                    // Re-throw for other exceptions
+                    throw e;
+                }
             }
         }
         // Deprecated API Behavior [former issueTsoCommand() behavior]
@@ -85,7 +95,9 @@ export class IssueTso {
 
             const response: IIssueResponse = {
                 success: false,
-                startResponse: await StartTso.start(session,opts.addressSpaceOptions?.account,
+                startResponse: await StartTso.start(
+                    session,
+                    opts.addressSpaceOptions?.account,
                     opts.addressSpaceOptions || {}
                 ),
                 startReady: false,
