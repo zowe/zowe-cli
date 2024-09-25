@@ -155,6 +155,7 @@ export class IssueTso {
         commandParms: IIssueTsoParms
     ): Promise<IIssueResponse> {
         return await IssueTso.issueTsoCmd(session, commandParms.command, {
+            suppressStartupMessages: false,
             addressSpaceOptions: {
                 ...commandParms.startParams,
                 account: commandParms.accountNumber,
