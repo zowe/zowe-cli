@@ -41,7 +41,7 @@ export class IssueTso {
         );
         let useNewApi =
             opts.addressSpaceOptions == null ||
-            (versionCheck && opts.suppressStartupMessages);
+            versionCheck && opts.suppressStartupMessages;
 
         if (useNewApi) {
             version = "v1";
