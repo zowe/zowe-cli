@@ -72,7 +72,7 @@ export class IssueTso {
             }
         }
         // Deprecated API Behavior [former issueTsoCommand() behavior]
-        if (opts.addressSpaceOptions != null || !useNewApi) {
+        if (!useNewApi) {
             TsoValidator.validateSession(session);
             TsoValidator.validateNotEmptyString(
                 opts.addressSpaceOptions?.account,
