@@ -13,7 +13,7 @@ import { AbstractCredentialManager, SecureCredential } from "./abstract/Abstract
 import { ImperativeError } from "../../error";
 import { Logger } from "../../logger";
 
-import { keyring as keytar } from "@zowe/secrets-for-zowe-sdk"; // Used for typing purposes only
+import type { keyring as keytar } from "@zowe/secrets-for-zowe-sdk"; // Used for typing purposes only
 
 /**
  * Default Credential Manager is our implementation of the Imperative Credential Manager. This manager invokes methods
