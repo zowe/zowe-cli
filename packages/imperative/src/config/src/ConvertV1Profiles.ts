@@ -20,7 +20,7 @@ import { IConfig } from "./doc/IConfig";
 import { CredentialManagerFactory } from "../../security";
 import { IConvertV1ProfOpts, ConvertMsg, ConvertMsgFmt, IConvertV1ProfResult } from "./doc/IConvertV1Profiles";
 import { IImperativeOverrides } from "../../imperative/src/doc/IImperativeOverrides";
-import { keyring } from "@zowe/secrets-for-zowe-sdk";
+import type { keyring } from "@zowe/secrets-for-zowe-sdk";
 import { AppSettings } from "../../settings";
 import { ISettingsFile } from "../../settings/src/doc/ISettingsFile";
 import { ImperativeConfig } from "../../utilities";
