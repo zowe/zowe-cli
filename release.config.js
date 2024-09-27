@@ -8,7 +8,7 @@ module.exports = {
         },
         {
             name: "master",
-            level: "none",
+            level: "patch",
             channel: "zowe-v3-lts"
         }
     ],
