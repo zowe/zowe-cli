@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## `8.0.1`
+
+- BugFix: Removed Secrets SDK requirement when Imperative is a bundled dependency. [#2276](https://github.com/zowe/zowe-cli/issues/2276)
+
 ## `8.0.0`
 
 - MAJOR: v8.0.0 Release
