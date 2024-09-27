@@ -35,7 +35,7 @@ describe("List command group", () => {
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
         testEnvironment.resources.session = REAL_SESSION;
 
-        dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.LIST`);
+        dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.LIST`, false, 1);
         Imperative.console.info("Using dsname:" + dsname);
 
         const user = `${defaultSystem.zosmf.user.trim()}`.replace(/\./g, "");
@@ -655,8 +655,8 @@ describe("List command group", () => {
                 caughtError = error;
             }
 
-            expect(response).toBeDefined();
             expect(caughtError).not.toBeDefined();
+            expect(response).toBeDefined();
             expect(response.commandResponse).toContain("There are no data sets that match");
         });
     });
@@ -993,8 +993,8 @@ describe("List command group - encoded", () => {
                 caughtError = error;
             }
 
-            expect(response).toBeDefined();
             expect(caughtError).not.toBeDefined();
+            expect(response).toBeDefined();
             expect(response.commandResponse).toContain("There are no data sets that match");
         });
     });

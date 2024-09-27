@@ -222,6 +222,12 @@ describe("Invoke AMS - encoded", () => {
 
     afterAll(async () => {
         await TestEnvironment.cleanUp(testEnvironment);
+        try {
+            fs.unlinkSync(__dirname + "/DefineVSAM.ams.temp");
+            fs.unlinkSync(__dirname + "/DeleteVSAM.ams.temp");
+        } catch (err) {
+            // do nothing
+        }
     });
 
     function createTestAMSStatementFileFromTemplate(templateFile: string) {
