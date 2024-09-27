@@ -86,7 +86,7 @@ describe("zos-jobs download output command", () => {
                     testName: "zos_jobs_download_output_without_profiles"
                 });
                 REAL_SESSION = await TestEnvironment.createZosmfSession(TEST_ENVIRONMENT_NO_PROF);
-                TEST_ENVIRONMENT.resources.session = REAL_SESSION;
+                TEST_ENVIRONMENT_NO_PROF.resources.session = REAL_SESSION;
                 DEFAULT_SYSTEM_PROPS = TEST_ENVIRONMENT_NO_PROF.systemTestProperties;
             });
 
