@@ -19,6 +19,7 @@ import { TsoValidator } from "./TsoValidator";
 import { noAccountNumber, TsoConstants } from "./TsoConstants";
 import { TsoResponseService } from "./TsoResponseService";
 import { IStartASAppResponse } from "./doc/IStartASAppResponse";
+import { IStartTsoAppParms } from "./doc/input/IStartTsoAppParms";
 /**
  * Start TSO address space and receive servlet key
  * @export
@@ -34,11 +35,21 @@ export class StartTsoApp {
      * @returns {Promise<IStartASAppResponse>} command response on resolve, @see {IStartASAppResponse}
      * @memberof StartTso
      */
-    public static async start(session: AbstractSession, accountNumber: string, parms?: IStartTsoParms): Promise<any> {
-        
-        return "";
-
-
+    public static async start(session: AbstractSession, accountNumber: string, params: IStartTsoAppParms, parms?: IStartTsoParms): Promise<IStartASAppResponse> {
+        // Address space is not known
+        TsoValidator.validateSession(session);
+        TsoValidator.validateNotEmptyString(accountNumber, noAccountNumber.message);
+        if(!params.queueID || !params.servletKey)
+        {
+            console.log("NEEDS IMPLEMENTATION");
+            return undefined;
+        }
+        // Address space is known
+        else
+        {
+            const response: string;
+            return undefined;
+        }
     }
 }
 

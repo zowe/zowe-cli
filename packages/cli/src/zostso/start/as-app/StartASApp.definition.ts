@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandDefinition } from "@zowe/imperative";
+import { ICommandDefinition, ICommandOptionDefinition } from "@zowe/imperative";
 import { TsoProfileConstants } from "@zowe/zos-tso-for-zowe-sdk";
 
 export const StartASApp: ICommandDefinition = {
@@ -24,25 +24,37 @@ export const StartASApp: ICommandDefinition = {
     },
     options: TsoProfileConstants.TSO_PROFILE_OPTIONS.concat([
         {
-            name: "app-key", aliases: ["ak"],
+            name: "app-key",
+            aliases: ["ak"],
             description: "App Key",
-            type: "string"
+            type: "string",
+            required: true
         },
         {
-            name: "startup", aliases: ["s"],
+            name: "startup",
+            aliases: ["s"],
             description: "Startup",
-            type: "string"
+            type: "string",
+            required: true
         },
         {
-            name: "queue-id", aliases: ["qi"],
+            name: "queue-id",
+            aliases: ["qi"],
             description: "Queue ID",
             type: "string"
         },
         {
-            name: "servlet-key", aliases: ["sk"],
+            name: "servlet-key",
+            aliases: ["sk"],
             description: "Servlet Key",
             type: "string"
         }
-    ]),
-    examples: []
+    ] as ICommandOptionDefinition[]),
+    examples: [],
+    check: (argv: { [key: string]: any }) => {
+        if ((argv["queue-id"] && !argv["servlet-key"]) || (!argv["queue-id"] && argv["servlet-key"])) {
+            throw new Error("Both queue-id and servlet-key must be defined together.");
+        }
+        return true;
+    }
 };
