@@ -52,971 +52,863 @@ let ussDirname: string;
 let localDirname: string;
 let file: string;
 
-describe("Download Data Set", () => {
+describe("Unencoded", () => {
+    describe("Download Data Sets", () => {
 
-    beforeAll(async () => {
-        testEnvironment = await TestEnvironment.setUp({
-            testName: "zos_file_download"
-        });
-        defaultSystem = testEnvironment.systemTestProperties;
-
-        REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
-        testEnvironment.resources.session = REAL_SESSION;
-
-        dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.DOWNLOAD`);
-        Imperative.console.info("Using dsname:" + dsname);
-
-        // using unique DS function to generate unique USS file name
-        ussname = `${defaultSystem.unix.testdir}/${dsname}`;
-        ussDirname = `${defaultSystem.unix.testdir}/zos_file_download`;
-        localDirname = `${testEnvironment.workingDir}/ussDir`;
-
-        testEnvironment.resources.localFiles.push(localDirname);
-        testEnvironment.resources.files.push(ussname, ussDirname);
-    });
-
-    afterAll(async () => {
-        await TestEnvironment.cleanUp(testEnvironment);
-    });
-
-    describe("Success Scenarios", () => {
-
-        describe("Physical sequential data set", () => {
-
-            beforeEach(async () => {
-                let error;
-                let response;
-
-                try {
-                    response = await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dsname);
-                    await wait(waitTime); //wait 2 seconds
-                } catch (err) {
-                    error = err;
-                }
+        beforeAll(async () => {
+            testEnvironment = await TestEnvironment.setUp({
+                testName: "zos_file_download"
             });
+            defaultSystem = testEnvironment.systemTestProperties;
 
-            afterEach(async () => {
-                let error;
-                let response;
+            REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
+            testEnvironment.resources.session = REAL_SESSION;
 
-                try {
-                    response = await Delete.dataSet(REAL_SESSION, dsname);
-                    await wait(waitTime); //wait 2 seconds
-                } catch (err) {
-                    error = err;
-                }
+            dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.DOWNLOAD`);
+            Imperative.console.info("Using dsname:" + dsname);
 
-                // delete the top-level folder and the folders and file below
-                // variable 'file' should be set in the test
-                if (file != null) {
-                    const folders = file.split("/");
-                    rimraf(folders[0]);
-                    rimraf(file);
-                }
-            });
-
-            it("should download a data set", async () => {
-                let error;
-                let response: IZosFilesResponse;
-
-                // upload data to the newly created data set
-                await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname);
-                await wait(waitTime); //wait 2 seconds
-
-                try {
-                    response = await Download.dataSet(REAL_SESSION, dsname);
-                    Imperative.console.info("Response: " + inspect(response));
-                } catch (err) {
-                    error = err;
-                    Imperative.console.info("Error: " + inspect(error));
-                }
-                expect(error).toBeFalsy();
-                expect(response).toBeTruthy();
-                expect(response.success).toBeTruthy();
-                expect(response.commandResponse).toContain(
-                    ZosFilesMessages.datasetDownloadedSuccessfully.message.substring(0, "Data set downloaded successfully".length + 1));
-
-                // convert the data set name to use as a path/file
-                const regex = /\./gi;
-                file = dsname.replace(regex, "/") + ".txt";
-                file = file.toLowerCase();
-                // Compare the downloaded contents to those uploaded
-                const fileContents = stripNewLines(fs.readFileSync(`${file}`).toString());
-                expect(fileContents).toEqual(testData);
-            });
-
-            it("should download a data set with response timeout", async () => {
-                let error;
-                let response: IZosFilesResponse;
-
-                await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname);
-                await wait(waitTime); //wait 2 seconds
-
-                try {
-                    response = await Download.dataSet(REAL_SESSION, dsname, {responseTimeout: 5});
-                    Imperative.console.info("Response: " + inspect(response));
-                } catch (err) {
-                    error = err;
-                    Imperative.console.info("Error: " + inspect(error));
-                }
-                expect(error).toBeFalsy();
-                expect(response).toBeTruthy();
-                expect(response.success).toBeTruthy();
-                expect(response.commandResponse).toContain(
-                    ZosFilesMessages.datasetDownloadedSuccessfully.message.substring(0, "Data set downloaded successfully".length + 1));
-
-                // convert the data set name to use as a path/file
-                const regex = /\./gi;
-                file = dsname.replace(regex, "/") + ".txt";
-                file = file.toLowerCase();
-                // Compare the downloaded contents to those uploaded
-                const fileContents = stripNewLines(fs.readFileSync(`${file}`).toString());
-                expect(fileContents).toEqual(testData);
-            });
-
-            it("should download a data set and create folders and file in original letter case", async () => {
-                let error;
-                let response: IZosFilesResponse;
-
-                // upload data to the newly created data set
-                await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname);
-                await wait(waitTime); //wait 2 seconds
-
-                try {
-                    response = await Download.dataSet(REAL_SESSION, dsname, { preserveOriginalLetterCase: true });
-                    Imperative.console.info("Response: " + inspect(response));
-                } catch (err) {
-                    error = err;
-                    Imperative.console.info("Error: " + inspect(error));
-                }
-                expect(error).toBeFalsy();
-                expect(response).toBeTruthy();
-                expect(response.success).toBeTruthy();
-                expect(response.commandResponse).toContain(
-                    ZosFilesMessages.datasetDownloadedSuccessfully.message.substring(0, "Data set downloaded successfully".length + 1));
-
-                // convert the data set name to use as a path/file
-                const regex = /\./gi;
-                file = dsname.replace(regex, "/") + ".txt";
-
-                // Check if folders and file are created in original uppercase
-                file.split("/").reduce((path, pathSegment) => {
-                    const pathExists = fs.readdirSync(path).indexOf(pathSegment) !== -1;
-                    expect(pathExists).toBeTruthy();
-                    return [path, pathSegment].join("/");
-                }, ".");
-
-                // Compare the downloaded contents to those uploaded
-                const fileContents = stripNewLines(fs.readFileSync(`${file}`).toString());
-                expect(fileContents).toEqual(testData);
-            });
-
-            it("should download a data set in binary mode", async () => {
-                let error;
-                let response: IZosFilesResponse;
-
-                const options: IDownloadOptions = {
-                    binary: true
-                };
-
-                try {
-                    response = await Download.dataSet(REAL_SESSION, dsname, options);
-                    Imperative.console.info("Response: " + inspect(response));
-                } catch (err) {
-                    error = err;
-                    Imperative.console.info("Error: " + inspect(error));
-                }
-                expect(error).toBeFalsy();
-                expect(response).toBeTruthy();
-                expect(response.success).toBeTruthy();
-                expect(response.commandResponse).toContain(
-                    ZosFilesMessages.datasetDownloadedSuccessfully.message.substring(0, "Data set downloaded successfully".length + 1));
-
-                // convert the data set name to use as a path/file for clean up in AfterEach
-                const regex = /\./gi;
-                file = dsname.replace(regex, "/") + ".txt";
-            });
-
-            it("should download a data set in record mode", async () => {
-                let error;
-                let response: IZosFilesResponse;
-
-                const options: IDownloadOptions = {
-                    record: true
-                };
-
-                try {
-                    response = await Download.dataSet(REAL_SESSION, dsname, options);
-                    Imperative.console.info("Response: " + inspect(response));
-                } catch (err) {
-                    error = err;
-                    Imperative.console.info("Error: " + inspect(error));
-                }
-                expect(error).toBeFalsy();
-                expect(response).toBeTruthy();
-                expect(response.success).toBeTruthy();
-                expect(response.commandResponse).toContain(
-                    ZosFilesMessages.datasetDownloadedSuccessfully.message.substring(0, "Data set downloaded successfully".length + 1));
-
-                // convert the data set name to use as a path/file for clean up in AfterEach
-                const regex = /\./gi;
-                file = dsname.replace(regex, "/") + ".txt";
-            });
-
-
-            it("should download a data set and return Etag", async () => {
-                let error;
-                let response: IZosFilesResponse;
-
-                await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname);
-                await wait(waitTime); //wait 2 seconds
-
-                const options: IDownloadOptions = {
-                    returnEtag: true
-                };
-
-                try {
-                    response = await Download.dataSet(REAL_SESSION, dsname, options);
-                    Imperative.console.info("Response: " + inspect(response));
-                } catch (err) {
-                    error = err;
-                    Imperative.console.info("Error: " + inspect(error));
-                }
-
-                expect(error).toBeFalsy();
-                expect(response).toBeTruthy();
-                expect(response.success).toBeTruthy();
-                expect(response.commandResponse).toContain(
-                    ZosFilesMessages.datasetDownloadedSuccessfully.message.substring(0, "Data set downloaded successfully".length + 1));
-                expect(response.apiResponse.etag).toBeDefined();
-                // convert the data set name to use as a path/file for clean up in AfterEach
-                const regex = /\./gi;
-                file = dsname.replace(regex, "/") + ".txt";
-                file = file.toLowerCase();
-
-                // Compare the downloaded contents to those uploaded
-                const fileContents = stripNewLines(fs.readFileSync(`${file}`).toString());
-                expect(fileContents).toEqual(testData);
-            });
-
-            it("should download a data set that has been populated by upload and use file extension specified", async () => {
-                let error;
-                let response: IZosFilesResponse;
-
-                const options: IDownloadOptions = {
-                    extension: "dat"
-                };
-
-                // upload data to the newly created data set
-                await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname);
-                await wait(waitTime); //wait 2 seconds
-
-                try {
-                    response = await Download.dataSet(REAL_SESSION, dsname, options);
-                    Imperative.console.info("Response: " + inspect(response));
-                } catch (err) {
-                    error = err;
-                    Imperative.console.info("Error: " + inspect(error));
-                }
-                expect(error).toBeFalsy();
-                expect(response).toBeTruthy();
-                expect(response.success).toBeTruthy();
-                expect(response.commandResponse).toContain(
-                    ZosFilesMessages.datasetDownloadedSuccessfully.message.substring(0, "Data set downloaded successfully".length + 1));
-
-                // convert the data set name to use as a path/file
-                const regex = /\./gi;
-                file = dsname.replace(regex, "/") + ".dat";
-                file = file.toLowerCase();
-                // Compare the downloaded contents to those uploaded
-                const fileContents = stripNewLines(fs.readFileSync(`${file}`).toString());
-                expect(fileContents).toEqual(testData);
-            });
-
-            it("should download a data set to a stream", async () => {
-                let error;
-                let response: IZosFilesResponse;
-                const responseStream = new PassThrough();
-
-                // upload data to the newly created data set
-                await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname);
-                await wait(waitTime); //wait 2 seconds
-
-                try {
-                    response = await Download.dataSet(REAL_SESSION, dsname, { stream: responseStream });
-                    Imperative.console.info("Response: " + inspect(response));
-                } catch (err) {
-                    error = err;
-                    Imperative.console.info("Error: " + inspect(error));
-                }
-                expect(error).toBeFalsy();
-                expect(response).toBeTruthy();
-                expect(response.success).toBeTruthy();
-                expect(response.commandResponse).toContain(
-                    ZosFilesMessages.datasetDownloadedSuccessfully.message.substring(0, "Data set downloaded successfully".length + 1));
-
-                // Compare the downloaded contents to those uploaded
-                const fileContents = stripNewLines(await text(responseStream));
-                expect(fileContents).toEqual(testData);
-            });
+            testEnvironment.resources.datasets.push(dsname);
         });
 
-        describe("Partitioned data set - all members", () => {
-
-            beforeEach(async () => {
-                let error;
-                let response;
-
-                try {
-                    response = await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname);
-                    await wait(waitTime); //wait 2 seconds
-                } catch (err) {
-                    error = err;
-                }
-            });
-
-            afterEach(async () => {
-                let error;
-                let response;
-
-                try {
-                    response = await Delete.dataSet(REAL_SESSION, dsname);
-                    await wait(waitTime); //wait 2 seconds
-                } catch (err) {
-                    error = err;
-                }
-
-                // delete the top-level folder and the folders and file below
-                const folders = file.split("/");
-                rimraf(folders[0]);
-            });
-
-            it("should download a data set member", async () => {
-                let error;
-                let response: IZosFilesResponse;
-
-                // upload data to the newly created data set
-                await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname + "(member)");
-                await wait(waitTime); //wait 2 seconds
-
-                try {
-                    response = await Download.allMembers(REAL_SESSION, dsname);
-                    Imperative.console.info("Response: " + inspect(response));
-                } catch (err) {
-                    error = err;
-                    Imperative.console.info("Error: " + inspect(error));
-                }
-                expect(error).toBeFalsy();
-                expect(response).toBeTruthy();
-                expect(response.success).toBeTruthy();
-                expect(response.commandResponse).toContain(
-                    ZosFilesMessages.datasetDownloadedSuccessfully.message.substring(0, "Data set downloaded successfully".length + 1));
-
-                // convert the data set name to use as a path/file
-                const regex = /\./gi;
-                file = dsname.replace(regex, "/");
-                file = file.toLowerCase();
-                // Compare the downloaded contents to those uploaded
-                const fileContents = stripNewLines(fs.readFileSync(`${file}/member.txt`).toString());
-                expect(fileContents).toEqual(testData);
-            });
-
-            it("should download a data set member with response timeout", async () => {
-                let error;
-                let response: IZosFilesResponse;
-
-                // upload data to the newly created data set
-                await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname + "(member)");
-                await wait(waitTime); //wait 2 seconds
-
-                try {
-                    response = await Download.allMembers(REAL_SESSION, dsname, {responseTimeout: 5});
-                    Imperative.console.info("Response: " + inspect(response));
-                } catch (err) {
-                    error = err;
-                    Imperative.console.info("Error: " + inspect(error));
-                }
-                expect(error).toBeFalsy();
-                expect(response).toBeTruthy();
-                expect(response.success).toBeTruthy();
-                expect(response.commandResponse).toContain(
-                    ZosFilesMessages.datasetDownloadedSuccessfully.message.substring(0, "Data set downloaded successfully".length + 1));
-
-                // convert the data set name to use as a path/file
-                const regex = /\./gi;
-                file = dsname.replace(regex, "/");
-                file = file.toLowerCase();
-                // Compare the downloaded contents to those uploaded
-                const fileContents = stripNewLines(fs.readFileSync(`${file}/member.txt`).toString());
-                expect(fileContents).toEqual(testData);
-            });
-
-            it("should download a data set and create folders and file in original letter case", async () => {
-                let error;
-                let response: IZosFilesResponse;
-
-                // upload data to the newly created data set
-                await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname + "(member)");
-                await wait(waitTime); //wait 2 seconds
-
-                try {
-                    response = await Download.allMembers(REAL_SESSION, dsname, { preserveOriginalLetterCase: true });
-                    Imperative.console.info("Response: " + inspect(response));
-                } catch (err) {
-                    error = err;
-                    Imperative.console.info("Error: " + inspect(error));
-                }
-                expect(error).toBeFalsy();
-                expect(response).toBeTruthy();
-                expect(response.success).toBeTruthy();
-                expect(response.commandResponse).toContain(
-                    ZosFilesMessages.datasetDownloadedSuccessfully.message.substring(0, "Data set downloaded successfully".length + 1));
-
-                // convert the data set name to use as a path/file
-                const regex = /\./gi;
-                file = dsname.replace(regex, "/") + "/MEMBER.txt";
-
-                // Check if folders and file are created in original uppercase
-                file.split("/").reduce((path, pathSegment) => {
-                    const pathExists = fs.readdirSync(path).indexOf(pathSegment) !== -1;
-                    expect(pathExists).toBeTruthy();
-                    return [path, pathSegment].join("/");
-                }, ".");
-
-                // Compare the downloaded contents to those uploaded
-                const fileContents = stripNewLines(fs.readFileSync(file).toString());
-                expect(fileContents).toEqual(testData);
-            });
-
-            it("should download a data set in binary mode", async () => {
-                let error;
-                let response: IZosFilesResponse;
-
-                // upload data to the newly created data set
-                await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname + "(member)");
-                await wait(waitTime); //wait 2 seconds
-
-                const options: IDownloadOptions = {
-                    binary: true
-                };
-
-                try {
-                    response = await Download.allMembers(REAL_SESSION, dsname, options);
-                    Imperative.console.info("Response: " + inspect(response));
-                } catch (err) {
-                    error = err;
-                    Imperative.console.info("Error: " + inspect(error));
-                }
-                expect(error).toBeFalsy();
-                expect(response).toBeTruthy();
-                expect(response.success).toBeTruthy();
-                expect(response.commandResponse).toContain(
-                    ZosFilesMessages.datasetDownloadedSuccessfully.message.substring(0, "Data set downloaded successfully".length + 1));
-
-                // convert the data set name to use as a path/file for clean up in AfterEach
-                const regex = /\./gi;
-                file = dsname.replace(regex, "/") + "/member.txt";
-            });
-
-            it("should download a data set in record mode", async () => {
-                let error;
-                let response: IZosFilesResponse;
-
-                // upload data to the newly created data set
-                await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname + "(member)");
-                await wait(waitTime); //wait 2 seconds
-
-                const options: IDownloadOptions = {
-                    record: true
-                };
-
-                try {
-                    response = await Download.allMembers(REAL_SESSION, dsname, options);
-                    Imperative.console.info("Response: " + inspect(response));
-                } catch (err) {
-                    error = err;
-                    Imperative.console.info("Error: " + inspect(error));
-                }
-                expect(error).toBeFalsy();
-                expect(response).toBeTruthy();
-                expect(response.success).toBeTruthy();
-                expect(response.commandResponse).toContain(
-                    ZosFilesMessages.datasetDownloadedSuccessfully.message.substring(0, "Data set downloaded successfully".length + 1));
-
-                // convert the data set name to use as a path/file for clean up in AfterEach
-                const regex = /\./gi;
-                file = dsname.replace(regex, "/") + "/member.txt";
-            });
-
-            it("should download a data set and use file extension specified", async () => {
-                let error;
-                let response: IZosFilesResponse;
-
-                // upload data to the newly created data set
-                await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname + "(member)");
-                await wait(waitTime); //wait 2 seconds
-
-                const options: IDownloadOptions = {
-                    extension: "dat"
-                };
-
-                try {
-                    response = await Download.allMembers(REAL_SESSION, dsname, options);
-                    Imperative.console.info("Response: " + inspect(response));
-                } catch (err) {
-                    error = err;
-                    Imperative.console.info("Error: " + inspect(error));
-                }
-                expect(error).toBeFalsy();
-                expect(response).toBeTruthy();
-                expect(response.success).toBeTruthy();
-                expect(response.commandResponse).toContain(
-                    ZosFilesMessages.datasetDownloadedSuccessfully.message.substring(0, "Data set downloaded successfully".length + 1));
-
-                // convert the data set name to use as a path/file for clean up in AfterEach
-                const regex = /\./gi;
-                file = dsname.replace(regex, "/") + "/member.dat";
-            });
-        });
-
-        describe("Data sets matching - all data sets - PO", () => {
-
-            beforeEach(async () => {
-                let error;
-                let response;
-
-                try {
-                    response = await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname);
-                    await wait(waitTime); //wait 2 seconds
-                } catch (err) {
-                    error = err;
-                }
-            });
-
-            afterEach(async () => {
-                let error;
-                let response;
-
-                try {
-                    response = await Delete.dataSet(REAL_SESSION, dsname);
-                    await wait(waitTime); //wait 2 seconds
-                } catch (err) {
-                    error = err;
-                    Imperative.console.info("Error: " + inspect(error));
-                }
-
-                // delete the top-level folder and the folders and file below
-                try {
-                    const folders = file.split("/");
-                    rimraf(folders[0]);
-                } catch (err) {
-                    // Do nothing, sometimes the files are not created.
-                    error = err;
-                    Imperative.console.info("Error: " + inspect(error));
-                }
-            });
-
-            it("should download a data set", async () => {
-                let error;
-                let response: IZosFilesResponse;
-
-                // upload data to the newly created data set
-                await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname + "(member)");
-
-                try {
-                    response = await Download.allDataSets(REAL_SESSION, [{ dsname, dsorg: "PO", vol: "*" }]);
-                    Imperative.console.info("Response: " + inspect(response));
-                } catch (err) {
-                    error = err;
-                    Imperative.console.info("Error: " + inspect(error));
-                }
-                expect(error).toBeFalsy();
-                expect(response).toBeTruthy();
-                expect(response.success).toBeTruthy();
-                expect(response.commandResponse).toContain("1 data set(s) downloaded successfully");
-
-                // convert the data set name to use as a path/file
-                const regex = /\./gi;
-                file = dsname.toLowerCase().replace(regex, "/");
-                // Compare the downloaded contents to those uploaded
-                const fileContents = stripNewLines(fs.readFileSync(`${file}/member.txt`).toString());
-                expect(fileContents).toEqual(testData);
-            });
-
-            it("should download a data set in binary mode", async () => {
-                let error;
-                let response: IZosFilesResponse;
-
-                // upload data to the newly created data set
-                await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname + "(member)");
-
-                const options: IDownloadOptions = {
-                    binary: true,
-                    extension: ".txt",
-                    directory: "testDir"
-                };
-
-                try {
-                    response = await Download.allDataSets(REAL_SESSION, [{ dsname, dsorg: "PO", vol: "*" }], options);
-                    Imperative.console.info("Response: " + inspect(response));
-                } catch (err) {
-                    error = err;
-                    Imperative.console.info("Error: " + inspect(error));
-                }
-                expect(error).toBeFalsy();
-                expect(response).toBeTruthy();
-                expect(response.success).toBeTruthy();
-                expect(response.commandResponse).toContain("1 data set(s) downloaded successfully");
-
-                // convert the data set name to use as a path/file for clean up in AfterEach
-                const regex = /\./gi;
-                file = "testDir/" + dsname.replace(regex, "/") + "/member.txt";
-            });
-
-            it("should download a data set in record mode", async () => {
-                let error;
-                let response: IZosFilesResponse;
-
-                // upload data to the newly created data set
-                await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname + "(member)");
-
-                const options: IDownloadOptions = {
-                    record: true,
-                    extension: ".txt",
-                    directory: "testDir"
-                };
-
-                try {
-                    response = await Download.allDataSets(REAL_SESSION, [{ dsname, dsorg: "PO", vol: "*" }], options);
-                    Imperative.console.info("Response: " + inspect(response));
-                } catch (err) {
-                    error = err;
-                    Imperative.console.info("Error: " + inspect(error));
-                }
-                expect(error).toBeFalsy();
-                expect(response).toBeTruthy();
-                expect(response.success).toBeTruthy();
-                expect(response.commandResponse).toContain("1 data set(s) downloaded successfully");
-
-                // convert the data set name to use as a path/file for clean up in AfterEach
-                const regex = /\./gi;
-                file = "testDir/" + dsname.replace(regex, "/") + "/member.txt";
-            });
-
-            it("should download a data set with a different extension", async () => {
-                let error;
-                let response: IZosFilesResponse;
-
-                // upload data to the newly created data set
-                await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname + "(member)");
-
-                try {
-                    response = await Download.allDataSets(REAL_SESSION, [{ dsname, dsorg: "PO", vol: "*" }], {extension: "jcl"});
-                    Imperative.console.info("Response: " + inspect(response));
-                } catch (err) {
-                    error = err;
-                    Imperative.console.info("Error: " + inspect(error));
-                }
-                expect(error).toBeFalsy();
-                expect(response).toBeTruthy();
-                expect(response.success).toBeTruthy();
-                expect(response.commandResponse).toContain("1 data set(s) downloaded successfully");
-
-                // convert the data set name to use as a path/file
-                const regex = /\./gi;
-                file = dsname.toLowerCase().replace(regex, "/");
-                // Compare the downloaded contents to those uploaded
-                const fileContents = stripNewLines(fs.readFileSync(`${file}/member.jcl`).toString());
-                expect(fileContents).toEqual(testData);
-            });
-
-            it("should download a data set with an extension map", async () => {
-                let error;
-                let response: IZosFilesResponse;
-
-                // upload data to the newly created data set
-                await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname + "(member)");
-                const ending = dsname.split(".").pop().toLowerCase();
-                const extMap: any = {};
-                extMap[ending] = "jcl";
-
-                try {
-                    response = await Download.allDataSets(REAL_SESSION, [{ dsname, dsorg: "PO", vol: "*" }], {extensionMap: extMap});
-                    Imperative.console.info("Response: " + inspect(response));
-                } catch (err) {
-                    error = err;
-                    Imperative.console.info("Error: " + inspect(error));
-                }
-                expect(error).toBeFalsy();
-                expect(response).toBeTruthy();
-                expect(response.success).toBeTruthy();
-                expect(response.commandResponse).toContain("1 data set(s) downloaded successfully");
-
-                // convert the data set name to use as a path/file
-                const regex = /\./gi;
-                file = dsname.toLowerCase().replace(regex, "/");
-                // Compare the downloaded contents to those uploaded
-                const fileContents = stripNewLines(fs.readFileSync(`${file}/member.jcl`).toString());
-                expect(fileContents).toEqual(testData);
-            });
-        });
-
-        describe("Data sets matching - all data sets - PS", () => {
-
-            beforeEach(async () => {
-                let error;
-                let response;
-
-                try {
-                    response = await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dsname);
-                    await wait(waitTime); //wait 2 seconds
-                } catch (err) {
-                    error = err;
-                }
-            });
-
-            afterEach(async () => {
-                let error;
-                let response;
-
-                try {
-                    response = await Delete.dataSet(REAL_SESSION, dsname);
-                    await wait(waitTime); //wait 2 seconds
-                } catch (err) {
-                    error = err;
-                }
-
-                // delete the top-level folder and the folders and file below
-                const folders = file.split("/");
-                rimraf(folders[0]);
-                rimraf(file);
-            });
-
-            it("should download a data set", async () => {
-                let error;
-                let response: IZosFilesResponse;
-
-                // upload data to the newly created data set
-                await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname);
-
-                try {
-                    response = await Download.allDataSets(REAL_SESSION, [{ dsname, dsorg: "PS", vol: "*" }]);
-                    Imperative.console.info("Response: " + inspect(response));
-                } catch (err) {
-                    error = err;
-                    Imperative.console.info("Error: " + inspect(error));
-                }
-                expect(error).toBeFalsy();
-                expect(response).toBeTruthy();
-                expect(response.success).toBeTruthy();
-                expect(response.commandResponse).toContain("1 data set(s) downloaded successfully");
-
-                // convert the data set name to use as a path/file
-                const regex = /\./gi;
-                file = dsname.toLowerCase() + ".txt";
-                // Compare the downloaded contents to those uploaded
-                const fileContents = stripNewLines(fs.readFileSync(`${file}`).toString());
-                expect(fileContents).toEqual(testData);
-            });
-
-            it("should download a data set in binary mode", async () => {
-                let error;
-                let response: IZosFilesResponse;
-
-                // upload data to the newly created data set
-                await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname);
-
-                const options: IDownloadOptions = {
-                    binary: true,
-                    extension: ".txt",
-                    directory: "testDir"
-                };
-
-                try {
-                    response = await Download.allDataSets(REAL_SESSION, [{ dsname, dsorg: "PS", vol: "*" }], options);
-                    Imperative.console.info("Response: " + inspect(response));
-                } catch (err) {
-                    error = err;
-                    Imperative.console.info("Error: " + inspect(error));
-                }
-                expect(error).toBeFalsy();
-                expect(response).toBeTruthy();
-                expect(response.success).toBeTruthy();
-                expect(response.commandResponse).toContain("1 data set(s) downloaded successfully");
-
-                file = "testdir/" + dsname.toLowerCase() + ".txt";
-            });
-
-            it("should download a data set in record mode", async () => {
-                let error;
-                let response: IZosFilesResponse;
-
-                // upload data to the newly created data set
-                await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname);
-
-                const options: IDownloadOptions = {
-                    record: true,
-                    extension: ".txt",
-                    directory: "testDir"
-                };
-
-                try {
-                    response = await Download.allDataSets(REAL_SESSION, [{ dsname, dsorg: "PS", vol: "*" }], options);
-                    Imperative.console.info("Response: " + inspect(response));
-                } catch (err) {
-                    error = err;
-                    Imperative.console.info("Error: " + inspect(error));
-                }
-                expect(error).toBeFalsy();
-                expect(response).toBeTruthy();
-                expect(response.success).toBeTruthy();
-                expect(response.commandResponse).toContain("1 data set(s) downloaded successfully");
-
-                file = "testdir/" + dsname.toLowerCase() + ".txt";
-            });
-
-            it("should download a data set with a different extension", async () => {
-                let error;
-                let response: IZosFilesResponse;
-
-                // upload data to the newly created data set
-                await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname);
-
-                try {
-                    response = await Download.allDataSets(REAL_SESSION, [{ dsname, dsorg: "PS", vol: "*" }], {extension: "jcl"});
-                    Imperative.console.info("Response: " + inspect(response));
-                } catch (err) {
-                    error = err;
-                    Imperative.console.info("Error: " + inspect(error));
-                }
-                expect(error).toBeFalsy();
-                expect(response).toBeTruthy();
-                expect(response.success).toBeTruthy();
-                expect(response.commandResponse).toContain("1 data set(s) downloaded successfully");
-
-                file = dsname.toLowerCase() + ".jcl";
-                // Compare the downloaded contents to those uploaded
-                const fileContents = stripNewLines(fs.readFileSync(`${file}`).toString());
-                expect(fileContents).toEqual(testData);
-            });
-
-            it("should download a data set with an extension map", async () => {
-                let error;
-                let response: IZosFilesResponse;
-
-                // upload data to the newly created data set
-                await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname);
-                const ending = dsname.split(".").pop().toLowerCase();
-                const extMap: any = {};
-                extMap[ending] = "jcl";
-
-                try {
-                    response = await Download.allDataSets(REAL_SESSION, [{ dsname, dsorg: "PS", vol: "*" }], {extensionMap: extMap});
-                    Imperative.console.info("Response: " + inspect(response));
-                } catch (err) {
-                    error = err;
-                    Imperative.console.info("Error: " + inspect(error));
-                }
-                expect(error).toBeFalsy();
-                expect(response).toBeTruthy();
-                expect(response.success).toBeTruthy();
-                expect(response.commandResponse).toContain("1 data set(s) downloaded successfully");
-
-                file = dsname.toLowerCase() + ".jcl";
-                // Compare the downloaded contents to those uploaded
-                const fileContents = stripNewLines(fs.readFileSync(`${file}`).toString());
-                expect(fileContents).toEqual(testData);
-            });
-        });
-    });
-
-    describe("Failure Scenarios", () => {
-        afterAll(() => {
-            // delete the top-level folder and the folders and file below
-            const folders = dsname.split(".");
-            rimraf(folders[0].toLowerCase());
-        });
-
-        describe("Physical sequential data set", () => {
-
-            it("should display proper error message when missing session", async () => {
-                let response: IZosFilesResponse;
-                let error;
-
-                try {
-                    response = await Download.dataSet(undefined, dsname);
-                } catch (err) {
-                    error = err;
-                }
-
-                expect(response).toBeFalsy();
-                expect(error).toBeTruthy();
-                expect(error.message).toContain("Expect Error: Required object must be defined");
-            });
-
-            it("should display proper message when downloading a data set that does not exist", async () => {
-                let response: IZosFilesResponse;
-                let error;
-
-                try {
-                    response = await Download.dataSet(REAL_SESSION, dsname);
-                } catch (err) {
-                    error = err;
-                }
-
-                expect(response).toBeFalsy();
-                expect(error).toBeTruthy();
-                expect(stripNewLines(error.message)).toContain("Data set not found.");
-            });
-        });
-
-        describe("Partitioned data set - all members", () => {
-            it("should display proper error message when missing session", async () => {
-                let response: IZosFilesResponse;
-                let error;
-
-                try {
-                    response = await Download.allMembers(undefined, dsname);
-                } catch (err) {
-                    error = err;
-                }
-
-                expect(response).toBeFalsy();
-                expect(error).toBeTruthy();
-                expect(stripNewLines(error.message)).toContain("Expect Error: Required object must be defined");
-            });
-
-            it("should display a relevant message when downloading data set members and the data set does not exist", async () => {
-                let response: IZosFilesResponse;
-                let error;
-
-                try {
-                    response = await Download.allMembers(REAL_SESSION, dsname + ".d");
-                } catch (err) {
-                    error = err;
-                }
-
-                expect(response).toBeFalsy();
-                expect(error).toBeTruthy();
-                expect(stripNewLines(error.message)).toContain("Data set not cataloged");
-            });
-        });
-    });
-
-    describe("Download USS File", () => {
         afterAll(async () => {
-            // Delete created uss file
-            const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussname;
+            await TestEnvironment.cleanUp(testEnvironment);
+        });
 
-            try {
-                await ZosmfRestClient.deleteExpectString(REAL_SESSION, endpoint);
-                await wait(waitTime); //wait 2 seconds
-            } catch (err) {
-                Imperative.console.error(err);
-            }
+        describe("Success Scenarios", () => {
 
-            // Delete created local file
-            IO.deleteFile(`./${posix.basename(ussname)}`);
+            describe("Physical sequential data set", () => {
+
+                it("should download a data set", async () => {
+                    let error;
+                    let response: IZosFilesResponse;
+
+                    // Upload data to the newly created data set
+                    await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname);
+                    await wait(waitTime); // Wait 2 seconds
+
+                    try {
+                        response = await Download.dataSet(REAL_SESSION, dsname);
+                        Imperative.console.info("Response: " + inspect(response));
+                    } catch (err) {
+                        error = err;
+                        Imperative.console.info("Error: " + inspect(error));
+                    }
+                    expect(error).toBeFalsy();
+                    expect(response).toBeTruthy();
+                    expect(response.success).toBeTruthy();
+                    expect(response.commandResponse).toContain(
+                        ZosFilesMessages.datasetDownloadedSuccessfully.message.substring(0, "Data set downloaded successfully".length + 1)
+                    );
+
+                    // Convert the data set name to use as a path/file
+                    const regex = /\./gi;
+                    file = dsname.replace(regex, "/") + ".txt";
+                    file = file.toLowerCase();
+
+                    // Add the file to localFiles resources for cleanup
+                    testEnvironment.resources.localFiles.push(file);
+
+                    // Compare the downloaded contents to those uploaded
+                    const fileContents = stripNewLines(fs.readFileSync(`${file}`).toString());
+                    expect(fileContents).toEqual(testData);
+                });
+
+
+                it("should download a data set with response timeout", async () => {
+                    let error;
+                    let response: IZosFilesResponse;
+
+                    await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname);
+                    await wait(waitTime); // Wait 2 seconds
+
+                    try {
+                        response = await Download.dataSet(REAL_SESSION, dsname, { responseTimeout: 5 });
+                        Imperative.console.info("Response: " + inspect(response));
+                    } catch (err) {
+                        error = err;
+                        Imperative.console.info("Error: " + inspect(error));
+                    }
+                    expect(error).toBeFalsy();
+                    expect(response).toBeTruthy();
+                    expect(response.success).toBeTruthy();
+                    expect(response.commandResponse).toContain(
+                        ZosFilesMessages.datasetDownloadedSuccessfully.message.substring(0, "Data set downloaded successfully".length + 1)
+                    );
+
+                    // Convert the data set name to use as a path/file
+                    const regex = /\./gi;
+                    file = dsname.replace(regex, "/") + ".txt";
+                    file = file.toLowerCase();
+
+                    // Add the file to localFiles resources for cleanup
+                    testEnvironment.resources.localFiles.push(file);
+
+                    // Compare the downloaded contents to those uploaded
+                    const fileContents = stripNewLines(fs.readFileSync(`${file}`).toString());
+                    expect(fileContents).toEqual(testData);
+                });
+
+                it("should download a data set and create folders and file in original letter case", async () => {
+                    let error;
+                    let response: IZosFilesResponse;
+
+                    // Upload data to the newly created data set
+                    await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname);
+                    await wait(waitTime); // Wait 2 seconds
+
+                    try {
+                        response = await Download.dataSet(REAL_SESSION, dsname, { preserveOriginalLetterCase: true });
+                        Imperative.console.info("Response: " + inspect(response));
+                    } catch (err) {
+                        error = err;
+                        Imperative.console.info("Error: " + inspect(error));
+                    }
+                    expect(error).toBeFalsy();
+                    expect(response).toBeTruthy();
+                    expect(response.success).toBeTruthy();
+                    expect(response.commandResponse).toContain(
+                        ZosFilesMessages.datasetDownloadedSuccessfully.message.substring(0, "Data set downloaded successfully".length + 1)
+                    );
+
+                    // Convert the data set name to use as a path/file
+                    const regex = /\./gi;
+                    file = dsname.replace(regex, "/") + ".txt";
+
+                    // Check if folders and file are created in original uppercase
+                    file.split("/").reduce((path, pathSegment) => {
+                        const pathExists = fs.readdirSync(path).indexOf(pathSegment) !== -1;
+                        expect(pathExists).toBeTruthy();
+                        return [path, pathSegment].join("/");
+                    }, ".");
+
+                    // Add the file to localFiles resources for cleanup
+                    testEnvironment.resources.localFiles.push(file);
+
+                    // Compare the downloaded contents to those uploaded
+                    const fileContents = stripNewLines(fs.readFileSync(`${file}`).toString());
+                    expect(fileContents).toEqual(testData);
+                });
+
+                it("should download a data set in binary mode", async () => {
+                    let error;
+                    let response: IZosFilesResponse;
+
+                    const options: IDownloadOptions = {
+                        binary: true
+                    };
+
+                    try {
+                        response = await Download.dataSet(REAL_SESSION, dsname, options);
+                        Imperative.console.info("Response: " + inspect(response));
+                    } catch (err) {
+                        error = err;
+                        Imperative.console.info("Error: " + inspect(error));
+                    }
+                    expect(error).toBeFalsy();
+                    expect(response).toBeTruthy();
+                    expect(response.success).toBeTruthy();
+                    expect(response.commandResponse).toContain(
+                        ZosFilesMessages.datasetDownloadedSuccessfully.message.substring(0, "Data set downloaded successfully".length + 1)
+                    );
+
+                    // Convert the data set name to use as a path/file
+                    const regex = /\./gi;
+                    file = dsname.replace(regex, "/") + ".txt";
+
+                    // Add the file to localFiles resources for cleanup
+                    testEnvironment.resources.localFiles.push(file);
+                });
+                it("should download a data set in record mode", async () => {
+                    let error;
+                    let response: IZosFilesResponse;
+
+                    const options: IDownloadOptions = {
+                        record: true
+                    };
+
+                    try {
+                        response = await Download.dataSet(REAL_SESSION, dsname, options);
+                        Imperative.console.info("Response: " + inspect(response));
+                    } catch (err) {
+                        error = err;
+                        Imperative.console.info("Error: " + inspect(error));
+                    }
+                    expect(error).toBeFalsy();
+                    expect(response).toBeTruthy();
+                    expect(response.success).toBeTruthy();
+                    expect(response.commandResponse).toContain(
+                        ZosFilesMessages.datasetDownloadedSuccessfully.message.substring(0, "Data set downloaded successfully".length + 1)
+                    );
+
+                    // Convert the data set name to use as a path/file for cleanup
+                    const regex = /\./gi;
+                    file = dsname.replace(regex, "/") + ".txt";
+
+                    // Add the file to localFiles resources for cleanup
+                    testEnvironment.resources.localFiles.push(file);
+                });
+
+
+
+                it("should download a data set and return Etag", async () => {
+                    let error;
+                    let response: IZosFilesResponse;
+
+                    await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname);
+                    await wait(waitTime); // Wait 2 seconds
+
+                    const options: IDownloadOptions = {
+                        returnEtag: true
+                    };
+
+                    try {
+                        response = await Download.dataSet(REAL_SESSION, dsname, options);
+                        Imperative.console.info("Response: " + inspect(response));
+                    } catch (err) {
+                        error = err;
+                        Imperative.console.info("Error: " + inspect(error));
+                    }
+
+                    expect(error).toBeFalsy();
+                    expect(response).toBeTruthy();
+                    expect(response.success).toBeTruthy();
+                    expect(response.commandResponse).toContain(
+                        ZosFilesMessages.datasetDownloadedSuccessfully.message.substring(0, "Data set downloaded successfully".length + 1)
+                    );
+                    expect(response.apiResponse.etag).toBeDefined();
+
+                    // Convert the data set name to use as a path/file for cleanup
+                    const regex = /\./gi;
+                    file = dsname.replace(regex, "/") + ".txt";
+                    file = file.toLowerCase();
+
+                    // Add the file to localFiles resources for cleanup
+                    testEnvironment.resources.localFiles.push(file);
+
+                    // Compare the downloaded contents to those uploaded
+                    const fileContents = stripNewLines(fs.readFileSync(`${file}`).toString());
+                    expect(fileContents).toEqual(testData);
+                });
+                it("should download a data set that has been populated by upload and use file extension specified", async () => {
+                    let error;
+                    let response: IZosFilesResponse;
+
+                    const options: IDownloadOptions = {
+                        extension: "dat"
+                    };
+
+                    // Upload data to the newly created data set
+                    await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname);
+                    await wait(waitTime); // Wait 2 seconds
+
+                    try {
+                        response = await Download.dataSet(REAL_SESSION, dsname, options);
+                        Imperative.console.info("Response: " + inspect(response));
+                    } catch (err) {
+                        error = err;
+                        Imperative.console.info("Error: " + inspect(error));
+                    }
+                    expect(error).toBeFalsy();
+                    expect(response).toBeTruthy();
+                    expect(response.success).toBeTruthy();
+                    expect(response.commandResponse).toContain(
+                        ZosFilesMessages.datasetDownloadedSuccessfully.message.substring(0, "Data set downloaded successfully".length + 1)
+                    );
+
+                    // Convert the data set name to use as a path/file
+                    const regex = /\./gi;
+                    file = dsname.replace(regex, "/") + ".dat";
+                    file = file.toLowerCase();
+
+                    // Add the file to localFiles resources for cleanup
+                    testEnvironment.resources.localFiles.push(file);
+
+                    // Compare the downloaded contents to those uploaded
+                    const fileContents = stripNewLines(fs.readFileSync(`${file}`).toString());
+                    expect(fileContents).toEqual(testData);
+                });
+
+                it("should download a data set to a stream", async () => {
+                    let error;
+                    let response: IZosFilesResponse;
+                    const responseStream = new PassThrough();
+
+                    // Upload data to the newly created data set
+                    await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname);
+                    await wait(waitTime); // Wait 2 seconds
+
+                    try {
+                        response = await Download.dataSet(REAL_SESSION, dsname, { stream: responseStream });
+                        Imperative.console.info("Response: " + inspect(response));
+                    } catch (err) {
+                        error = err;
+                        Imperative.console.info("Error: " + inspect(error));
+                    }
+                    expect(error).toBeFalsy();
+                    expect(response).toBeTruthy();
+                    expect(response.success).toBeTruthy();
+                    expect(response.commandResponse).toContain(
+                        ZosFilesMessages.datasetDownloadedSuccessfully.message.substring(0, "Data set downloaded successfully".length + 1)
+                    );
+
+                    // Compare the downloaded contents to those uploaded
+                    const fileContents = stripNewLines(await text(responseStream));
+                    expect(fileContents).toEqual(testData);
+                });
+            });
+
+            describe("Partitioned data set - all members", () => {
+
+                beforeEach(async () => {
+                    try {
+                        let response = await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname);
+                        // Adding the dataset to resources for tracking and cleanup
+                        testEnvironment.resources.datasets.push(dsname);
+                    } catch (err) {
+                        console.error("Setup error:", err);
+                    }
+                });
+
+                afterEach(async () => {
+                    // Trusting TestEnvironment.cleanUp() to handle all resource cleanups
+                    await TestEnvironment.cleanUp(testEnvironment);
+                });
+
+                it("should download a data set member", async () => {
+                    let error;
+                    let response: IZosFilesResponse;
+
+                    // upload data to the newly created data set
+                    await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname + "(member)");
+                    await wait(waitTime); //wait 2 seconds
+
+                    try {
+                        response = await Download.allMembers(REAL_SESSION, dsname);
+                        console.info("Response:", response);
+                    } catch (err) {
+                        error = err;
+                        console.error("Error:", error);
+                    }
+                    expect(error).toBeFalsy();
+                    expect(response).toBeTruthy();
+                    expect(response.success).toBeTruthy();
+                    expect(response.commandResponse).toContain("Data set downloaded successfully");
+
+                    // Path file construction and assertion
+                    const regex = /\./gi;
+                    const file = dsname.replace(regex, "/") + "/member.txt";
+                    testEnvironment.resources.localFiles.push(file);  // Add file to resources for cleanup
+
+                    // Comparing the downloaded contents
+                    const fileContents = stripNewLines(fs.readFileSync(file).toString());
+                    expect(fileContents).toEqual(testData);
+                });
+
+                it("should download a data set and create folders and file in original letter case", async () => {
+                    let error;
+                    let response;
+
+                    await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname + "(member)");
+                    await wait(waitTime);
+
+                    try {
+                        response = await Download.allMembers(REAL_SESSION, dsname, { preserveOriginalLetterCase: true });
+                        console.info("Response:", response);
+                    } catch (err) {
+                        error = err;
+                        console.error("Error:", error);
+                    }
+                    expect(error).toBeFalsy();
+                    expect(response).toBeTruthy();
+                    expect(response.success).toBeTruthy();
+                    expect(response.commandResponse).toContain("Data set downloaded successfully");
+
+                    const regex = /\./gi;
+                    const file = dsname.replace(regex, "/") + "/MEMBER.txt";
+                    testEnvironment.resources.localFiles.push(file);
+
+                    const fileContents = stripNewLines(fs.readFileSync(file).toString());
+                    expect(fileContents).toEqual(testData);
+                });
+
+                it("should download a data set in binary mode", async () => {
+                    let error;
+                    let response;
+
+                    await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname + "(member)");
+                    await wait(waitTime);
+
+                    try {
+                        response = await Download.allMembers(REAL_SESSION, dsname, { binary: true });
+                        console.info("Response:", response);
+                    } catch (err) {
+                        error = err;
+                        console.error("Error:", error);
+                    }
+                    expect(error).toBeFalsy();
+                    expect(response).toBeTruthy();
+                    expect(response.success).toBeTruthy();
+                    expect(response.commandResponse).toContain("Data set downloaded successfully");
+
+                    const regex = /\./gi;
+                    const file = dsname.replace(regex, "/") + "/member.txt";
+                    testEnvironment.resources.localFiles.push(file);
+                });
+
+                it("should download a data set in record mode", async () => {
+                    let error;
+                    let response;
+
+                    await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname + "(member)");
+                    await wait(waitTime);
+
+                    try {
+                        response = await Download.allMembers(REAL_SESSION, dsname, { record: true });
+                        console.info("Response:", response);
+                    } catch (err) {
+                        error = err;
+                        console.error("Error:", error);
+                    }
+                    expect(error).toBeFalsy();
+                    expect(response).toBeTruthy();
+                    expect(response.success).toBeTruthy();
+                    expect(response.commandResponse).toContain("Data set downloaded successfully");
+
+                    const regex = /\./gi;
+                    the file = dsname.replace(regex, "/") + "/member.txt";
+                    testEnvironment.resources.localFiles.push(file);
+                });
+
+                it("should download a data set and use file extension specified", async () => {
+                    let error;
+                    let response;
+
+                    await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname + "(member)");
+                    await wait(waitTime);
+
+                    try {
+                        response = await Download.allMembers(REAL_SESSION, dsname, { extension: "dat" });
+                        console.info("Response:", response);
+                    } catch (err) {
+                        error = err;
+                        console.error("Error:", error);
+                    }
+                    expect(error).toBeFalsy();
+                    expect(response).toBeTruthy();
+                    expect(response.success).toBeTruthy();
+                    expect(response.commandResponse).toContain("Data set downloaded successfully");
+
+                    const regex = /\./gi;
+                    const file = dsname.replace(regex, "/") + "/member.dat";
+                    testEnvironment.resources.localFiles.push(file);
+                });
+            });
+
+            describe("Data sets matching - all data sets - PO", () => {
+
+                beforeEach(async () => {
+                    try {
+                        let response = await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname);
+                        testEnvironment.resources.datasets.push(dsname); // Tracking created dataset for cleanup
+                    } catch (err) {
+                        console.error("Setup error:", err);
+                    }
+                });
+
+                afterEach(async () => {
+                    await TestEnvironment.cleanUp(testEnvironment);
+                });
+
+                it("should download a data set", async () => {
+                    let error;
+                    let response;
+
+                    await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname + "(member)");
+
+                    try {
+                        response = await Download.allDataSets(REAL_SESSION, [{ dsname, dsorg: "PO", vol: "*" }]);
+                        console.info("Response:", response);
+                    } catch (err) {
+                        error = err;
+                        console.error("Error:", error);
+                    }
+                    expect(error).toBeFalsy();
+                    expect(response).toBeTruthy();
+                    expect(response.success).toBeTruthy();
+                    expect(response.commandResponse).toContain("1 data set(s) downloaded successfully");
+
+                    const regex = /\./gi;
+                    const file = dsname.toLowerCase().replace(regex, "/");
+                    testEnvironment.resources.localFiles.push(file + "/member.txt");
+
+                    const fileContents = stripNewLines(fs.readFileSync(file + "/member.txt").toString());
+                    expect(fileContents).toEqual(testData);
+                });
+
+                it("should download a data set in binary mode", async () => {
+                    let error;
+                    let response;
+
+                    await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname + "(member)");
+
+                    const options: IDownloadOptions = {
+                        binary: true,
+                        extension: ".txt",
+                        directory: "testDir"
+                    };
+
+                    try {
+                        response = await Download.allDataSets(REAL_SESSION, [{ dsname, dsorg: "PO", vol: "*" }], options);
+                        console.info("Response:", response);
+                    } catch (err) {
+                        error = err;
+                        console.error("Error:", error);
+                    }
+                    expect(error).toBeFalsy();
+                    expect(response).toBeTruthy();
+                    expect(response.success).toBeTruthy();
+                    expect(response.commandResponse).toContain("1 data set(s) downloaded successfully");
+
+                    const regex = /\./gi;
+                    const file = "testDir/" + dsname.replace(regex, "/") + "/member.txt";
+                    testEnvironment.resources.localFiles.push(file);
+                });
+
+                it("should download a data set in record mode", async () => {
+                    let error;
+                    let response;
+
+                    await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname + "(member)");
+
+                    const options: IDownloadOptions = {
+                        record: true,
+                        extension: ".txt",
+                        directory: "testDir"
+                    };
+
+                    try {
+                        response = await Download.allDataSets(REAL_SESSION, [{ dsname, dsorg: "PO", vol: "*" }], options);
+                        console.info("Response:", response);
+                    } catch (err) {
+                        error = err;
+                        console.error("Error:", error);
+                    }
+                    expect(error).toBeFalsy();
+                    expect(response).toBeTruthy();
+                    expect(response.success).toBeTruthy();
+                    expect(response.commandResponse).toContain("1 data set(s) downloaded successfully");
+
+                    const regex = /\./gi;
+                    const file = "testDir/" + dsname.replace(regex, "/") + "/member.txt";
+                    testEnvironment.resources.localFiles.push(file);
+                });
+
+                it("should download a data set with a different extension", async () => {
+                    let error;
+                    let response;
+
+                    await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname + "(member)");
+
+                    try {
+                        response = await Download.allDataSets(REAL_SESSION, [{ dsname, dsorg: "PO", vol: "*" }], {extension: "jcl"});
+                        console.info("Response:", response);
+                    } catch (err) {
+                        error = err;
+                        console.error("Error:", error);
+                    }
+                    expect(error).toBeFalsy();
+                    expect(response).toBeTruthy();
+                    expect(response.success).toBeTruthy();
+                    expect(response.commandResponse).toContain("1 data set(s) downloaded successfully");
+
+                    const regex = /\./gi;
+                    const file = dsname.toLowerCase().replace(regex, "/");
+                    testEnvironment.resources.localFiles.push(file + "/member.jcl");
+
+                    const fileContents = stripNewLines(fs.readFileSync(file + "/member.jcl").toString());
+                    expect(fileContents).toEqual(testData);
+                });
+
+                it("should download a data set with an extension map", async () => {
+                    let error;
+                    let response;
+
+                    await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname + "(member)");
+                    const ending = dsname.split(".").pop().toLowerCase();
+                    const extMap: any = {};
+                    extMap[ending] = "jcl";
+
+                    try {
+                        response = await Download.allDataSets(REAL_SESSION, [{ dsname, dsorg: "PO", vol: "*" }], {extensionMap: extMap});
+                        console.info("Response:", response);
+                    } catch (err) {
+                        error = err;
+                        console.error("Error:", error);
+                    }
+                    expect(error).toBeFalsy();
+                    expect(response).toBeTruthy();
+                    expect(response.success).toBeTruthy();
+                    expect(response.commandResponse).toContain("1 data set(s) downloaded successfully");
+
+                    const regex = /\./gi;
+                    const file = dsname.toLowerCase().replace(regex, "/");
+                    testEnvironment.resources.localFiles.push(file + "/member.jcl");
+
+                    const fileContents = stripNewLines(fs.readFileSync(file + "/member.jcl").toString());
+                    expect(fileContents).toEqual(testData);
+                });
+            });
+
+            describe("Data sets matching - all data sets - PS", () => {
+
+                beforeEach(async () => {
+                    try {
+                        let response = await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dsname);
+                        testEnvironment.resources.datasets.push(dsname); // Tracking created dataset for cleanup
+                    } catch (err) {
+                        console.error("Setup error:", err);
+                    }
+                });
+
+                afterEach(async () => {
+                    // Utilizing TestEnvironment.cleanUp() for comprehensive cleanup
+                    await TestEnvironment.cleanUp(testEnvironment);
+                });
+
+                it("should download a data set", async () => {
+                    let error;
+                    let response;
+
+                    await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname);
+
+                    try {
+                        response = await Download.allDataSets(REAL_SESSION, [{ dsname, dsorg: "PS", vol: "*" }]);
+                        console.info("Response:", response);
+                    } catch (err) {
+                        error = err;
+                        console.error("Error:", error);
+                    }
+                    expect(error).toBeFalsy();
+                    expect(response).toBeTruthy();
+                    expect(response.success).toBeTruthy();
+                    expect(response.commandResponse).toContain("1 data set(s) downloaded successfully");
+
+                    const regex = /\./gi;
+                    const file = dsname.toLowerCase() + ".txt";
+                    const fileContents = stripNewLines(fs.readFileSync(file).toString());
+                    expect(fileContents).toEqual(testData);
+                });
+
+                it("should download a data set in binary mode", async () => {
+                    let error;
+                    let response;
+
+                    await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname);
+
+                    const options: IDownloadOptions = {
+                        binary: true,
+                        extension: ".txt",
+                        directory: "testDir"
+                    };
+
+                    try {
+                        response = await Download.allDataSets(REAL_SESSION, [{ dsname, dsorg: "PS", vol: "*" }], options);
+                        console.info("Response:", response);
+                    } catch (err) {
+                        error = err;
+                        console.error("Error:", error);
+                    }
+                    expect(error).toBeFalsy();
+                    expect(response).toBeTruthy();
+                    expect(response.success).toBeTruthy();
+                    expect(response.commandResponse).toContain("1 data set(s) downloaded successfully");
+
+                    const regex = /\./gi;
+                    const file = "testDir/" + dsname.toLowerCase() + ".txt";
+                });
+
+                it("should download a data set in record mode", async () => {
+                    let error;
+                    let response;
+
+                    await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname);
+
+                    const options: IDownloadOptions = {
+                        record: true,
+                        extension: ".txt",
+                        directory: "testDir"
+                    };
+
+                    try {
+                        response = await Download.allDataSets(REAL_SESSION, [{ dsname, dsorg: "PS", vol: "*" }], options);
+                        console.info("Response:", response);
+                    } catch (err) {
+                        error = err;
+                        console.error("Error:", error);
+                    }
+                    expect(error).toBeFalsy();
+                    expect(response).toBeTruthy();
+                    expect(response.success).toBeTruthy();
+                    expect(response.commandResponse).toContain("1 data set(s) downloaded successfully");
+
+                    const regex = /\./gi;
+                    const file = "testDir/" + dsname.toLowerCase() + ".txt";
+                });
+
+                it("should download a data set with a different extension", async () => {
+                    let error;
+                    let response;
+
+                    await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname);
+
+                    try {
+                        response = await Download.allDataSets(REAL_SESSION, [{ dsname, dsorg: "PS", vol: "*" }], {extension: "jcl"});
+                        console.info("Response:", response);
+                    } catch (err) {
+                        error = err;
+                        console.error("Error:", error);
+                    }
+                    expect(error).toBeFalsy();
+                    expect(response).toBeTruthy();
+                    expect(response.success).toBeTruthy();
+                    expect(response.commandResponse).toContain("1 data set(s) downloaded successfully");
+
+                    const regex = /\./gi;
+                    const file = dsname.toLowerCase() + ".jcl";
+                    const fileContents = stripNewLines(fs.readFileSync(file).toString());
+                    expect(fileContents).toEqual(testData);
+                });
+
+                it("should download a data set with an extension map", async () => {
+                    let error;
+                    let response;
+
+                    await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname);
+                    const ending = dsname.split(".").pop().toLowerCase();
+                    const extMap: any = {};
+                    extMap[ending] = "jcl";
+
+                    try {
+                        response = await Download.allDataSets(REAL_SESSION, [{ dsname, dsorg: "PS", vol: "*" }], {extensionMap: extMap});
+                        console.info("Response:", response);
+                    } catch (err) {
+                        error = err;
+                        console.error("Error:", error);
+                    }
+                    expect(error).toBeFalsy();
+                    expect(response).toBeTruthy();
+                    expect(response.success).toBeTruthy();
+                    expect(response.commandResponse).toContain("1 data set(s) downloaded successfully");
+
+                    const regex = /\./gi;
+                    const file = dsname.toLowerCase() + ".jcl";
+                    const fileContents = stripNewLines(fs.readFileSync(file).toString());
+                    expect(fileContents).toEqual(testData);
+                });
+            });
+
+        });
+
+        describe("Failure Scenarios", () => {
+            afterAll(async () => {
+                // Utilizing TestEnvironment.cleanUp() for comprehensive cleanup
+                await TestEnvironment.cleanUp(testEnvironment);
+            });
+
+            describe("Physical sequential data set", () => {
+
+                it("should display proper error message when missing session", async () => {
+                    let response;
+                    let error;
+
+                    try {
+                        response = await Download.dataSet(undefined, dsname);
+                    } catch (err) {
+                        error = err;
+                    }
+
+                    expect(response).toBeFalsy();
+                    expect(error).toBeTruthy();
+                    expect(error.message).toContain("Expect Error: Required object must be defined");
+                });
+
+                it("should display proper message when downloading a data set that does not exist", async () => {
+                    let response;
+                    let error;
+
+                    try {
+                        response = await Download.dataSet(REAL_SESSION, dsname);
+                    } catch (err) {
+                        error = err;
+                    }
+
+                    expect(response).toBeFalsy();
+                    expect(error).toBeTruthy();
+                    expect(stripNewLines(error.message)).toContain("Data set not found.");
+                });
+            });
+
+            describe("Partitioned data set - all members", () => {
+                it("should display proper error message when missing session", async () => {
+                    let response;
+                    let error;
+
+                    try {
+                        response = await Download.allMembers(undefined, dsname);
+                    } catch (err) {
+                        error = err;
+                    }
+
+                    expect(response).toBeFalsy();
+                    expect(error).toBeTruthy();
+                    expect(stripNewLines(error.message)).toContain("Expect Error: Required object must be defined");
+                });
+
+                it("should display a relevant message when downloading data set members and the data set does not exist", async () => {
+                    let response;
+                    let error;
+
+                    try {
+                        response = await Download.allMembers(REAL_SESSION, dsname + ".d");
+                    } catch (err) {
+                        error = err;
+                    }
+
+                    expect(response).toBeFalsy();
+                    expect(error).toBeTruthy();
+                    expect(stripNewLines(error.message)).toContain("Data set not cataloged");
+                });
+            });
+        });
+    });
+
+    /////STOPPED
+    describe("Download USS File", () => {
+        beforeAll(async () => {
+            testEnvironment = await TestEnvironment.setUp({
+                testName: "zos_file_download_uss"
+            });
+            defaultSystem = testEnvironment.systemTestProperties;
+
+            REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
+            testEnvironment.resources.session = REAL_SESSION;
+
+            dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.DOWNLOAD.USS`);
+            Imperative.console.info("Using dsname:" + dsname);
+
+            testEnvironment.resources.datasets.push(dsname);
+
+            // using unique DS function to generate unique USS file name
+            ussname = `${defaultSystem.unix.testdir}/${dsname}`;
+            ussDirname = `${defaultSystem.unix.testdir}/zos_file_download`;
+            localDirname = `${testEnvironment.workingDir}/ussDir`;
+
+            testEnvironment.resources.localFiles.push(localDirname);
+            testEnvironment.resources.files.push(ussname, ussDirname);
+        });
+
+        afterAll(async () => {
+            await TestEnvironment.cleanUp(testEnvironment);
         });
 
         describe("Successful scenarios", () => {
@@ -1301,7 +1193,6 @@ describe("Download Data Set", () => {
             });
         });
     });
-
     describe("Download USS Directory", () => {
         describe("Success Scenarios", () => {
             const testFileContents = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -1515,286 +1406,289 @@ describe("Download Data Set", () => {
             });
         });
     });
-});
 
-describe("Download Data Set - encoded", () => {
+})
 
-    beforeAll(async () => {
-        testEnvironment = await TestEnvironment.setUp({
-            testName: "zos_file_download"
-        });
-        defaultSystem = testEnvironment.systemTestProperties;
+describe("Encoded", () => {
+    describe("Download Data Set - encoded", () => {
 
-        REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
-        testEnvironment.resources.session = REAL_SESSION;
-
-        dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.DOWNLOAD`, true);
-        Imperative.console.info("Using dsname:" + dsname);
-
-        // using unique DS function to generate unique USS file name
-        ussname = `${defaultSystem.unix.testdir}/ENCO#ED${dsname}`;
-        ussDirname = `${defaultSystem.unix.testdir}/ENCO#EDzos_file_download`;
-        localDirname = `${testEnvironment.workingDir}/ENCO#EDussDir`;
-
-        testEnvironment.resources.localFiles.push(localDirname);
-        testEnvironment.resources.files.push(ussname, ussDirname);
-    });
-
-    afterAll(async () => {
-        await TestEnvironment.cleanUp(testEnvironment);
-    });
-
-    describe("Success Scenarios", () => {
-
-        describe("Physical sequential data set", () => {
-            beforeEach(async () => {
-                let error;
-                try {
-                    await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dsname);
-                    await wait(waitTime); //wait 2 seconds
-                } catch (err) {
-                    // Do nothing, sometimes the files are not created.
-                    error = err;
-                    Imperative.console.info("Error: " + inspect(error));
-                }
+        beforeAll(async () => {
+            testEnvironment = await TestEnvironment.setUp({
+                testName: "zos_file_download"
             });
+            defaultSystem = testEnvironment.systemTestProperties;
 
-            afterEach(async () => {
-                let error;
-                try {
-                    await Delete.dataSet(REAL_SESSION, dsname);
-                    await wait(waitTime); //wait 2 seconds
-                } catch (err) {
-                    // Do nothing, sometimes the files are not created.
-                    error = err;
-                    Imperative.console.info("Error: " + inspect(error));
-                }
+            REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
+            testEnvironment.resources.session = REAL_SESSION;
 
-                // delete the top-level folder and the folders and file below
-                // variable 'file' should be set in the test
-                const folders = file.split("/");
-                rimraf(folders[0]);
-                rimraf(file);
-            });
+            dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.DOWNLOAD`, true);
+            Imperative.console.info("Using dsname:" + dsname);
 
-            it("should download a data set", async () => {
-                let error;
-                let response: IZosFilesResponse;
+            // using unique DS function to generate unique USS file name
+            ussname = `${defaultSystem.unix.testdir}/ENCO#ED${dsname}`;
+            ussDirname = `${defaultSystem.unix.testdir}/ENCO#EDzos_file_download`;
+            localDirname = `${testEnvironment.workingDir}/ENCO#EDussDir`;
 
-                // upload data to the newly created data set
-                await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname);
-                await wait(waitTime); //wait 2 seconds
-
-                try {
-                    response = await Download.dataSet(REAL_SESSION, dsname);
-                    Imperative.console.info("Response: " + inspect(response));
-                } catch (err) {
-                    error = err;
-                    Imperative.console.info("Error: " + inspect(error));
-                }
-                expect(error).toBeFalsy();
-                expect(response).toBeTruthy();
-                expect(response.success).toBeTruthy();
-                expect(response.commandResponse).toContain(
-                    ZosFilesMessages.datasetDownloadedSuccessfully.message.substring(0, "Data set downloaded successfully".length + 1));
-
-                // convert the data set name to use as a path/file
-                const regex = /\./gi;
-                file = dsname.replace(regex, "/") + ".txt";
-                file = file.toLowerCase();
-                // Compare the downloaded contents to those uploaded
-                const fileContents = stripNewLines(fs.readFileSync(`${file}`).toString());
-                expect(fileContents).toEqual(testData);
-            });
+            testEnvironment.resources.localFiles.push(localDirname);
+            testEnvironment.resources.files.push(ussname, ussDirname);
         });
 
-        describe("Partitioned data set - all members", () => {
-            beforeEach(async () => {
-                let error;
-                try {
-                    await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname);
-                    await wait(waitTime); //wait 2 seconds
-                } catch (err) {
-                    // Do nothing, sometimes the files are not created.
-                    error = err;
-                    Imperative.console.info("Error: " + inspect(error));
-                }
-            });
-
-            afterEach(async () => {
-                let error;
-                try {
-                    await Delete.dataSet(REAL_SESSION, dsname);
-                    await wait(waitTime); //wait 2 seconds
-                } catch (err) {
-                    // Do nothing, sometimes the files are not created.
-                    error = err;
-                    Imperative.console.info("Error: " + inspect(error));
-                }
-
-                // delete the top-level folder and the folders and file below
-                const folders = file.split("/");
-                rimraf(folders[0]);
-            });
-
-            it("should download a data set member", async () => {
-                let error;
-                let response: IZosFilesResponse;
-
-                // upload data to the newly created data set
-                await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname + "(member)");
-                await wait(waitTime); //wait 2 seconds
-
-                try {
-                    response = await Download.allMembers(REAL_SESSION, dsname);
-                    Imperative.console.info("Response: " + inspect(response));
-                } catch (err) {
-                    error = err;
-                    Imperative.console.info("Error: " + inspect(error));
-                }
-                expect(error).toBeFalsy();
-                expect(response).toBeTruthy();
-                expect(response.success).toBeTruthy();
-                expect(response.commandResponse).toContain(
-                    ZosFilesMessages.datasetDownloadedSuccessfully.message.substring(0, "Data set downloaded successfully".length + 1));
-
-                // convert the data set name to use as a path/file
-                const regex = /\./gi;
-                file = dsname.replace(regex, "/");
-                file = file.toLowerCase();
-                // Compare the downloaded contents to those uploaded
-                const fileContents = stripNewLines(fs.readFileSync(`${file}/member.txt`).toString());
-                expect(fileContents).toEqual(testData);
-            });
-
+        afterAll(async () => {
+            await TestEnvironment.cleanUp(testEnvironment);
         });
 
-        describe("Data sets matching - all data sets - PO", () => {
+        describe("Success Scenarios", () => {
 
-            beforeEach(async () => {
-                let error;
-                try {
-                    await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname);
-                    await wait(waitTime); //wait 2 seconds
-                } catch (err) {
-                    // Do nothing, sometimes the files are not created.
-                    error = err;
-                    Imperative.console.info("Error: " + inspect(error));
-                }
-            });
+            describe("Physical sequential data set", () => {
+                beforeEach(async () => {
+                    let error;
+                    try {
+                        await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dsname);
+                        await wait(waitTime); //wait 2 seconds
+                    } catch (err) {
+                        // Do nothing, sometimes the files are not created.
+                        error = err;
+                        Imperative.console.info("Error: " + inspect(error));
+                    }
+                });
 
-            afterEach(async () => {
-                let error;
+                afterEach(async () => {
+                    let error;
+                    try {
+                        await Delete.dataSet(REAL_SESSION, dsname);
+                        await wait(waitTime); //wait 2 seconds
+                    } catch (err) {
+                        // Do nothing, sometimes the files are not created.
+                        error = err;
+                        Imperative.console.info("Error: " + inspect(error));
+                    }
 
-                try {
-                    await Delete.dataSet(REAL_SESSION, dsname);
-                    await wait(waitTime); //wait 2 seconds
-                } catch (err) {
-                    // Do nothing, sometimes the files are not created.
-                    error = err;
-                    Imperative.console.info("Error: " + inspect(error));
-                }
-
-                // delete the top-level folder and the folders and file below
-                try {
+                    // delete the top-level folder and the folders and file below
+                    // variable 'file' should be set in the test
                     const folders = file.split("/");
                     rimraf(folders[0]);
-                } catch (err) {
-                    // Do nothing, sometimes the files are not created.
-                    error = err;
-                    Imperative.console.info("Error: " + inspect(error));
-                }
-            });
+                    rimraf(file);
+                });
 
-            it("should download a data set", async () => {
-                let error;
-                let response: IZosFilesResponse;
+                it("should download a data set", async () => {
+                    let error;
+                    let response: IZosFilesResponse;
 
-                // upload data to the newly created data set
-                await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname + "(member)");
-
-                try {
-                    response = await Download.allDataSets(REAL_SESSION, [{ dsname, dsorg: "PO", vol: "*" }]);
-                    Imperative.console.info("Response: " + inspect(response));
-                } catch (err) {
-                    error = err;
-                    Imperative.console.info("Error: " + inspect(error));
-                }
-                expect(error).toBeFalsy();
-                expect(response).toBeTruthy();
-                expect(response.success).toBeTruthy();
-                expect(response.commandResponse).toContain("1 data set(s) downloaded successfully");
-
-                // convert the data set name to use as a path/file
-                const regex = /\./gi;
-                file = dsname.toLowerCase().replace(regex, "/");
-                // Compare the downloaded contents to those uploaded
-                const fileContents = stripNewLines(fs.readFileSync(`${file}/member.txt`).toString());
-                expect(fileContents).toEqual(testData);
-            });
-
-        });
-
-        describe("Data sets matching - all data sets - PS", () => {
-
-            beforeEach(async () => {
-                let error;
-                try {
-                    await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dsname);
+                    // upload data to the newly created data set
+                    await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname);
                     await wait(waitTime); //wait 2 seconds
-                } catch (err) {
-                    // Do nothing, sometimes the files are not created.
-                    error = err;
-                    Imperative.console.info("Error: " + inspect(error));
-                }
+
+                    try {
+                        response = await Download.dataSet(REAL_SESSION, dsname);
+                        Imperative.console.info("Response: " + inspect(response));
+                    } catch (err) {
+                        error = err;
+                        Imperative.console.info("Error: " + inspect(error));
+                    }
+                    expect(error).toBeFalsy();
+                    expect(response).toBeTruthy();
+                    expect(response.success).toBeTruthy();
+                    expect(response.commandResponse).toContain(
+                        ZosFilesMessages.datasetDownloadedSuccessfully.message.substring(0, "Data set downloaded successfully".length + 1));
+
+                    // convert the data set name to use as a path/file
+                    const regex = /\./gi;
+                    file = dsname.replace(regex, "/") + ".txt";
+                    file = file.toLowerCase();
+                    // Compare the downloaded contents to those uploaded
+                    const fileContents = stripNewLines(fs.readFileSync(`${file}`).toString());
+                    expect(fileContents).toEqual(testData);
+                });
             });
 
-            afterEach(async () => {
-                let error;
-                try {
-                    await Delete.dataSet(REAL_SESSION, dsname);
+            describe("Partitioned data set - all members", () => {
+                beforeEach(async () => {
+                    let error;
+                    try {
+                        await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname);
+                        await wait(waitTime); //wait 2 seconds
+                    } catch (err) {
+                        // Do nothing, sometimes the files are not created.
+                        error = err;
+                        Imperative.console.info("Error: " + inspect(error));
+                    }
+                });
+
+                afterEach(async () => {
+                    let error;
+                    try {
+                        await Delete.dataSet(REAL_SESSION, dsname);
+                        await wait(waitTime); //wait 2 seconds
+                    } catch (err) {
+                        // Do nothing, sometimes the files are not created.
+                        error = err;
+                        Imperative.console.info("Error: " + inspect(error));
+                    }
+
+                    // delete the top-level folder and the folders and file below
+                    const folders = file.split("/");
+                    rimraf(folders[0]);
+                });
+
+                it("should download a data set member", async () => {
+                    let error;
+                    let response: IZosFilesResponse;
+
+                    // upload data to the newly created data set
+                    await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname + "(member)");
                     await wait(waitTime); //wait 2 seconds
-                } catch (err) {
-                    // Do nothing, sometimes the files are not created.
-                    error = err;
-                    Imperative.console.info("Error: " + inspect(error));
-                }
 
-                // delete the top-level folder and the folders and file below
-                const folders = file.split("/");
-                rimraf(folders[0]);
-                rimraf(file);
+                    try {
+                        response = await Download.allMembers(REAL_SESSION, dsname);
+                        Imperative.console.info("Response: " + inspect(response));
+                    } catch (err) {
+                        error = err;
+                        Imperative.console.info("Error: " + inspect(error));
+                    }
+                    expect(error).toBeFalsy();
+                    expect(response).toBeTruthy();
+                    expect(response.success).toBeTruthy();
+                    expect(response.commandResponse).toContain(
+                        ZosFilesMessages.datasetDownloadedSuccessfully.message.substring(0, "Data set downloaded successfully".length + 1));
+
+                    // convert the data set name to use as a path/file
+                    const regex = /\./gi;
+                    file = dsname.replace(regex, "/");
+                    file = file.toLowerCase();
+                    // Compare the downloaded contents to those uploaded
+                    const fileContents = stripNewLines(fs.readFileSync(`${file}/member.txt`).toString());
+                    expect(fileContents).toEqual(testData);
+                });
+
             });
 
-            it("should download a data set", async () => {
-                let error;
-                let response: IZosFilesResponse;
+            describe("Data sets matching - all data sets - PO", () => {
 
-                // upload data to the newly created data set
-                await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname);
+                beforeEach(async () => {
+                    let error;
+                    try {
+                        await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname);
+                        await wait(waitTime); //wait 2 seconds
+                    } catch (err) {
+                        // Do nothing, sometimes the files are not created.
+                        error = err;
+                        Imperative.console.info("Error: " + inspect(error));
+                    }
+                });
 
-                try {
-                    response = await Download.allDataSets(REAL_SESSION, [{ dsname, dsorg: "PS", vol: "*" }]);
-                    Imperative.console.info("Response: " + inspect(response));
-                } catch (err) {
-                    error = err;
-                    Imperative.console.info("Error: " + inspect(error));
-                }
-                expect(error).toBeFalsy();
-                expect(response).toBeTruthy();
-                expect(response.success).toBeTruthy();
-                expect(response.commandResponse).toContain("1 data set(s) downloaded successfully");
+                afterEach(async () => {
+                    let error;
 
-                file = dsname.toLowerCase() + ".txt";
-                // Compare the downloaded contents to those uploaded
-                const fileContents = stripNewLines(fs.readFileSync(`${file}`).toString());
-                expect(fileContents).toEqual(testData);
+                    try {
+                        await Delete.dataSet(REAL_SESSION, dsname);
+                        await wait(waitTime); //wait 2 seconds
+                    } catch (err) {
+                        // Do nothing, sometimes the files are not created.
+                        error = err;
+                        Imperative.console.info("Error: " + inspect(error));
+                    }
+
+                    // delete the top-level folder and the folders and file below
+                    try {
+                        const folders = file.split("/");
+                        rimraf(folders[0]);
+                    } catch (err) {
+                        // Do nothing, sometimes the files are not created.
+                        error = err;
+                        Imperative.console.info("Error: " + inspect(error));
+                    }
+                });
+
+                it("should download a data set", async () => {
+                    let error;
+                    let response: IZosFilesResponse;
+
+                    // upload data to the newly created data set
+                    await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname + "(member)");
+
+                    try {
+                        response = await Download.allDataSets(REAL_SESSION, [{ dsname, dsorg: "PO", vol: "*" }]);
+                        Imperative.console.info("Response: " + inspect(response));
+                    } catch (err) {
+                        error = err;
+                        Imperative.console.info("Error: " + inspect(error));
+                    }
+                    expect(error).toBeFalsy();
+                    expect(response).toBeTruthy();
+                    expect(response.success).toBeTruthy();
+                    expect(response.commandResponse).toContain("1 data set(s) downloaded successfully");
+
+                    // convert the data set name to use as a path/file
+                    const regex = /\./gi;
+                    file = dsname.toLowerCase().replace(regex, "/");
+                    // Compare the downloaded contents to those uploaded
+                    const fileContents = stripNewLines(fs.readFileSync(`${file}/member.txt`).toString());
+                    expect(fileContents).toEqual(testData);
+                });
+
             });
 
+            describe("Data sets matching - all data sets - PS", () => {
+
+                beforeEach(async () => {
+                    let error;
+                    try {
+                        await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dsname);
+                        await wait(waitTime); //wait 2 seconds
+                    } catch (err) {
+                        // Do nothing, sometimes the files are not created.
+                        error = err;
+                        Imperative.console.info("Error: " + inspect(error));
+                    }
+                });
+
+                afterEach(async () => {
+                    let error;
+                    try {
+                        await Delete.dataSet(REAL_SESSION, dsname);
+                        await wait(waitTime); //wait 2 seconds
+                    } catch (err) {
+                        // Do nothing, sometimes the files are not created.
+                        error = err;
+                        Imperative.console.info("Error: " + inspect(error));
+                    }
+
+                    // delete the top-level folder and the folders and file below
+                    const folders = file.split("/");
+                    rimraf(folders[0]);
+                    rimraf(file);
+                });
+
+                it("should download a data set", async () => {
+                    let error;
+                    let response: IZosFilesResponse;
+
+                    // upload data to the newly created data set
+                    await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname);
+
+                    try {
+                        response = await Download.allDataSets(REAL_SESSION, [{ dsname, dsorg: "PS", vol: "*" }]);
+                        Imperative.console.info("Response: " + inspect(response));
+                    } catch (err) {
+                        error = err;
+                        Imperative.console.info("Error: " + inspect(error));
+                    }
+                    expect(error).toBeFalsy();
+                    expect(response).toBeTruthy();
+                    expect(response.success).toBeTruthy();
+                    expect(response.commandResponse).toContain("1 data set(s) downloaded successfully");
+
+                    file = dsname.toLowerCase() + ".txt";
+                    // Compare the downloaded contents to those uploaded
+                    const fileContents = stripNewLines(fs.readFileSync(`${file}`).toString());
+                    expect(fileContents).toEqual(testData);
+                });
+
+            });
         });
     });
 
-    describe("Download USS File", () => {
+    describe("Download USS File - encoded", () => {
         afterAll(async () => {
             // Delete created uss file
             const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + encodeURIComponent(ussname);
@@ -1862,7 +1756,7 @@ describe("Download Data Set - encoded", () => {
 
     });
 
-    describe("Download USS Directory", () => {
+    describe("Download USS Directory - encoded", () => {
         describe("Success Scenarios", () => {
             const testFileContents = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
             const anotherTestFileContents = testFileContents.toLowerCase();
@@ -2030,4 +1924,4 @@ describe("Download Data Set - encoded", () => {
         });
 
     });
-});
+})
