@@ -11,6 +11,7 @@
 
 import { ICommandDefinition } from "@zowe/imperative";
 import { AddressSpaceDefinition } from "./address-space/AddressSpace.definition";
+import { StartASApp } from "./address-space/StartASApp.definition";
 
 export const StartCommand: ICommandDefinition = {
     name: "start",
@@ -19,6 +20,6 @@ export const StartCommand: ICommandDefinition = {
     summary: "Start TSO/E address space",
     description: "Start TSO/E address space.",
     children: [
-        AddressSpaceDefinition
-    ]
+        AddressSpaceDefinition, StartASApp
+    ],
 };
