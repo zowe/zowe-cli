@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Added the ability to specify a profile with the `zowe config secure` command. This allows the user to prompt for the secure values of the specified profile. [#1890] https://github.com/zowe/zowe-cli/issues/1890
+
 ## `8.0.1`
 
 - BugFix: Removed Secrets SDK requirement when Imperative is a bundled dependency. [#2276](https://github.com/zowe/zowe-cli/issues/2276)
@@ -14,6 +18,7 @@ All notable changes to the Imperative package will be documented in this file.
 
 - Update: Final prerelease
 - Update: See `5.27.1` for details
+
 
 ## `8.0.0-next.202408301809`
 

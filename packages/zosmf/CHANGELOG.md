@@ -2,6 +2,11 @@
 
 All notable changes to the Zowe z/OSMF SDK package will be documented in this file.
 
+
+## Recent Changes
+
+- Enhancement: Created `isZosVersionAtLeast()` function to allow for dynamic behavior based on z/OS version. [#2240](https://github.com/zowe/zowe-cli/pull/2240)
+
 ## `8.0.0`
 
 - MAJOR: v8.0.0 Release
