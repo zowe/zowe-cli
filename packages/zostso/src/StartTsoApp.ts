@@ -17,7 +17,7 @@ import { noAccountNumber, TsoConstants } from "./TsoConstants";
 import { IStartASAppResponse } from "./doc/IStartASAppResponse";
 import { IStartTsoAppParms } from "./doc/input/IStartTsoAppParms";
 import { StartTso } from "./StartTso";
-import { IIssueResponse } from "../lib";
+import { IIssueResponse } from "../src";
 /**
  * Start TSO address space and receive servlet key
  * @export

@@ -9,34 +9,32 @@
  *
  */
 
-import { AbstractSession, Headers } from "@zowe/imperative";
+import { AbstractSession } from "@zowe/imperative";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
-import { IStartTsoParms } from "./doc/input/IStartTsoParms";
 import { TsoValidator } from "./TsoValidator";
 import { noAccountNumber, TsoConstants } from "./TsoConstants";
-import { IStartASAppResponse } from "./doc/IStartASAppResponse";
 import { ITsoAppCommunicationParms } from "./doc/input/ITsoAppCommunicationParms";
+
 /**
  * Send message to TSO App running at an address space
  * @export
- * @class SendTsoApp
+ * @class RecieveTsoApp
  */
-export class SendTsoApp {
+export class ReceiveTsoApp {
     /**
      * Start TSO application at address space with provided parameters.
      * @static
      * @param {AbstractSession} session - z/OSMF connection info
      * @param {string}  accountNumber - this key of IStartTsoParms required, because it cannot be default.
-     * @param {IStartTsoParms} parms - optional object with required parameters, @see {IStartTsoParms}
+     * @param {IStartTsoParms} params - optional object with required parameters, @see {IStartTsoParms}
      * @returns {Promise<IStartASAppResponse>} command response on resolve, @see {IStartASAppResponse}
      * @memberof StartTso
      */
-    public static async send(
+    public static async receive(
         session: AbstractSession,
         accountNumber: string,
         params: ITsoAppCommunicationParms,
-        startParms: IStartTsoParms
-    ): Promise<IStartASAppResponse> {
+    ): Promise<string> {
         TsoValidator.validateSession(session);
         TsoValidator.validateNotEmptyString(
             accountNumber,
@@ -45,11 +43,9 @@ export class SendTsoApp {
 
         const endpoint = `${TsoConstants.RESOURCE}/app/${params.servletKey}/${params.appKey}`;
         const apiResponse =
-            await ZosmfRestClient.putExpectJSON<IStartASAppResponse>(
+            await ZosmfRestClient.getExpectString(
                 session,
                 endpoint,
-                [Headers.CONTENT_TYPE, "text/plain"],
-                params.message
             );
 
         return apiResponse;

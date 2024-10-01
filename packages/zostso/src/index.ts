@@ -41,6 +41,7 @@ export * from "./SendTso";
 export * from "./StartTso";
 export * from "./StartTsoApp";
 export * from "./SendTsoApp";
+export * from "./ReceiveTsoApp";
 export * from "./StopTso";
 export * from "./TsoConstants";
 export * from "./TsoResponseService";

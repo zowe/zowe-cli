@@ -12,26 +12,26 @@
 /**
  * Interface for starting an app on a TSO Address Space
  * @export
- * @interface ISendTsoAppParms
+ * @interface ITsoAppCommunicationParms
  */
-export interface ISendTsoAppParms {
+export interface ITsoAppCommunicationParms {
 
     /**
      * Body contents being sent to TSO address space app
      * @type {string}
-     * @memberof ISendTsoAppParms
+     * @memberof ITsoAppCommunicationParms
      */
-    message: string;
+    message?: string;
     /**
      * App Key of application to be started at a TSO address space
      * @type {string}
-     * @memberof ISendTsoAppParms
+     * @memberof ITsoAppCommunicationParms
      */
     appKey: string;
     /**
      * Servlet key of an active address space
      * @type {string}
-     * @memberof ISendTsoAppParms
+     * @memberof ITsoAppCommunicationParms
      */
     servletKey: string;
 }
