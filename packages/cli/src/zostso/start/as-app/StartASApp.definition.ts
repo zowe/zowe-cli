@@ -31,8 +31,8 @@ export const StartASApp: ICommandDefinition = {
             required: true
         },
         {
-            name: "startup",
-            aliases: ["s"],
+            name: "startup-command",
+            aliases: ["sc"],
             description: "Startup",
             type: "string",
             required: true
