@@ -47,8 +47,16 @@ export class StartTsoApp {
         // Address space is known
         else
         {
-            const response: string;
-            return undefined;
+            const endpoint = `${TsoConstants.RESOURCE}/app/${params.servletKey}/${params.appKey}`;
+            const apiResponse = await ZosmfRestClient.postExpectJSON<IStartASAppResponse>(
+                session,
+                endpoint,
+                [Headers.APPLICATION_JSON],
+                {
+                    "startcmd": `${params.startupCommand} '&1 &2 ${params.queueID}'`
+                }
+            );
+            return apiResponse;
         }
     }
 }

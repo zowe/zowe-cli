@@ -11,11 +11,29 @@
 
 export interface IStartASAppResponse {
     /**
-     * True if the command was issued and the responses were collected.
+     * Version in response
      * @type {boolean}
      * @memberof IStartASAppResponse
      */
-    success: boolean;
+    version: string
+    /**
+     * Data from response
+     * @type {boolean}
+     * @memberof IStartASAppResponse
+     */
+    tsoData: string[]
+    /**
+     * Reused boolean
+     * @type {boolean}
+     * @memberof IStartASAppResponse
+     */
+    reused: boolean
+    /**
+     * Data from response
+     * @type {boolean}
+     * @memberof IStartASAppResponse
+     */
+    timeout: boolean
     /**
      * Servlet key from IZosmfTsoResponse
      * @type {string}
