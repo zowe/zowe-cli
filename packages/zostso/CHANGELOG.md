@@ -2,6 +2,14 @@
 
 All notable changes to the Zowe z/OS TSO SDK package will be documented in this file.
 
+
+## Recent Changes
+
+- Enhancement: Deprecated `IssueTsoCommand()` function and replaced with `IssueTsoCmd()` for compatibility with z/OS version 2.4. [#2240](https://github.com/zowe/zowe-cli/pull/2240)
+- Enhancement: Modified `IIssueReponse` to handle z/OS 2.4 and newer TSO command response. [#2240](https://github.com/zowe/zowe-cli/pull/2240)
+  - Old API behavior will be utilized upon specifying --ssm to be false, otherwise try new API and if it fails, fallback to old API.
+  - Specifying --ssm to be false makes the value of --stateful have no impact on behavior since old API behavior does not utilize statefulness.
+
 ## `8.0.0`
 
 - MAJOR: v8.0.0 Release

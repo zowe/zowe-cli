@@ -28,6 +28,7 @@ export * from "./doc/zosmf/IZosmfPingResponse";
 export * from "./doc/zosmf/IZosmfTsoResponse";
 
 export * from "./doc/ICollectedResponses";
+export * from "./doc/IIssueTsoCmdResponse";
 export * from "./doc/IIssueResponse";
 export * from "./doc/IPingResponse";
 export * from "./doc/ISendResponse";

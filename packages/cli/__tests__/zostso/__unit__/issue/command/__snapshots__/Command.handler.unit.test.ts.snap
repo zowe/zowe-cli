@@ -7,13 +7,17 @@ with an active z/OS application session."
 
 exports[`issue command handler tests should issue command 1`] = `
 Object {
-  "account": "fake",
-  "characterSet": undefined,
-  "codePage": undefined,
-  "columns": undefined,
-  "logonProcedure": undefined,
-  "regionSize": undefined,
-  "rows": undefined,
+  "base64EncodedAuth": "c29tZW9uZTpmYWtl",
+  "basePath": "",
+  "hostname": "somewhere.com",
+  "password": "fake",
+  "port": "43443",
+  "protocol": "https",
+  "rejectUnauthorized": true,
+  "secureProtocol": "SSLv23_method",
+  "strictSSL": true,
+  "type": "basic",
+  "user": "someone",
 }
 `;
 

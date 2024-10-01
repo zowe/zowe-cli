@@ -9,6 +9,7 @@
 *
 */
 
+/* eslint-disable deprecation/deprecation */
 jest.mock("../../../../../../zostso/lib/IssueTso");
 import { IssueTso } from "@zowe/zos-tso-for-zowe-sdk";
 import { IHandlerParameters, ImperativeError } from "@zowe/imperative";
@@ -24,7 +25,7 @@ const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
         ...UNIT_TEST_TSO_PROF_OPTS
     },
     positionals: ["zos-tso", "issue", "address-space"],
-    definition: CommandDefinition
+    definition: CommandDefinition,
 });
 
 describe("issue command handler tests", () => {
@@ -34,9 +35,9 @@ describe("issue command handler tests", () => {
     });
 
     it("should issue command", async () => {
-        IssueTso.issueTsoCommand = jest.fn((session, acc, cmd, prof) => {
-            expect(prof).toBeDefined();
-            expect(prof).toMatchSnapshot();
+        IssueTso.issueTsoCmd = jest.fn((session, cmd) => {
+            expect(session).toBeDefined();
+            expect(session.ISession).toMatchSnapshot();
             return StartTsoData.SAMPLE_ISSUE_RESPONSE_WITH_MSG;
         });
         const handler = new Command.default();
@@ -44,14 +45,14 @@ describe("issue command handler tests", () => {
         params.arguments.acc = "acc";
         params.arguments.cmd = "time";
         await handler.process(params);
-        expect(IssueTso.issueTsoCommand).toHaveBeenCalledTimes(1);
+        expect(IssueTso.issueTsoCmd).toHaveBeenCalledTimes(1);
     });
 
     it("should be able respond with error message", async () => {
         const failMessage = "IZUG1126E: z/OSMF cannot correlate the request for key \"ZOSMFAD-SYS2-55-aaakaaac\"\n" +
             "with an active z/OS application session.";
         let error;
-        IssueTso.issueTsoCommand = jest.fn((session, servletKey) => {
+        IssueTso.issueTsoCmd = jest.fn((session, servletKey) => {
             throw new ImperativeError({msg: failMessage});
         });
         const handler = new Command.default();
@@ -63,7 +64,7 @@ describe("issue command handler tests", () => {
         } catch (thrownError) {
             error = thrownError;
         }
-        expect(IssueTso.issueTsoCommand).toHaveBeenCalledTimes(1);
+        expect(IssueTso.issueTsoCmd).toHaveBeenCalledTimes(1);
         expect(error).toBeDefined();
         expect(error instanceof ImperativeError).toBe(true);
         expect(error.message).toMatchSnapshot();
