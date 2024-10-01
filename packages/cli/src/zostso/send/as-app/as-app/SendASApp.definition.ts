@@ -12,13 +12,13 @@
 import { ICommandDefinition, ICommandOptionDefinition } from "@zowe/imperative";
 import { TsoProfileConstants } from "@zowe/zos-tso-for-zowe-sdk";
 
-export const StartASApp: ICommandDefinition = {
+export const SendASApp: ICommandDefinition = {
     name: "app",
     aliases: ["a"],
-    summary: "Start application at TSO address space",
-    description: "Start application at TSO address space,",
+    summary: "Send message to an application at a TSO address space",
+    description: "Send message to an application at a TSO address space,",
     type: "command",
-    handler: __dirname + "/StartASApp.handler",
+    handler: __dirname + "/SendASApp.handler",
     profile: {
         optional: ["zosmf", "tso"]
     },
@@ -31,25 +31,18 @@ export const StartASApp: ICommandDefinition = {
             required: true
         },
         {
-            name: "startup",
-            aliases: ["sc"],
-            description: "Startup",
-            type: "string",
-            required: true
-        },
-        {
-            name: "queue-id",
-            aliases: ["qi"],
-            description: "Queue ID",
-            type: "string",
-            implies: ["servlet-key"]
-        },
-        {
             name: "servlet-key",
             aliases: ["sk"],
             description: "Servlet Key",
             type: "string",
-            implies: ["queue-id"]
+            required: true
+        },
+        {
+            name: "message",
+            aliases: ["msg"],
+            description: "Message",
+            type: "string",
+            required: true
         }
     ] as ICommandOptionDefinition[]),
     examples: [],

@@ -40,6 +40,7 @@ export * from "./PingTso";
 export * from "./SendTso";
 export * from "./StartTso";
 export * from "./StartTsoApp";
+export * from "./SendTsoApp";
 export * from "./StopTso";
 export * from "./TsoConstants";
 export * from "./TsoResponseService";
