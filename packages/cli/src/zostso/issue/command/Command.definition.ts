@@ -34,10 +34,25 @@ export const CommandDefinition: ICommandDefinition = {
     ],
     options: ([
         {
+            // Old API behavior will be utilized upon specifying --ssm to be false,
+            // otherwise try new API and if it fails, fallback to old API.
+
+            // Specifying --ssm to be false makes the value of --stateful have no impact on
+            // behavior since old API behavior does not utilize statefulness.
             name: "suppress-startup-messages",
             aliases: ["ssm"],
             type: "boolean",
-            description: "Suppress console messages from start of address space."
+            description: "Suppress console messages from start of address space.",
+            defaultValue: true
+        },
+        {
+            // --stateful has no impact if --suppress-startup-messages is set to false.
+            name: "stateful",
+            aliases: ["sf"],
+            type: "boolean",
+            description:"Statefulness of address space created for TSO command." +
+            " This option is not supported when --suppress-startup-messages is set to false.",
+            defaultValue: false
         }
     ] as ICommandOptionDefinition[]).concat(TsoProfileConstants.TSO_PROFILE_OPTIONS),
     examples: [
