@@ -39,12 +39,12 @@ export class StartTsoApp {
         params: IStartTsoAppParms,
         startParms: IStartTsoParms
     ): Promise<IStartASAppResponse> {
-
         TsoValidator.validateSession(session);
         TsoValidator.validateNotEmptyString(
             accountNumber,
             noAccountNumber.message
         );
+
         // Address space is not known and must be created
         if (!params.queueID || !params.servletKey) {
             const response: IIssueResponse = {
@@ -64,6 +64,7 @@ export class StartTsoApp {
                 response.startResponse.zosmfTsoResponse.servletKey;
             params.queueID = response.startResponse.zosmfTsoResponse.queueID;
         }
+
         // Address space application starting
         const endpoint = `${TsoConstants.RESOURCE}/app/${params.servletKey}/${params.appKey}`;
         const apiResponse =
@@ -78,6 +79,7 @@ export class StartTsoApp {
         // Add newly created queueID and servletKey information to return object.
         apiResponse.queueID = params.queueID;
         apiResponse.servletKey = params.servletKey;
+
         return apiResponse;
     }
 }
