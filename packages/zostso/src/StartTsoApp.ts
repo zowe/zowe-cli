@@ -11,13 +11,9 @@
 
 import { AbstractSession, Headers } from "@zowe/imperative";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
-import { SendTso } from "./SendTso";
-import { IStartStopResponses } from "./doc/IStartStopResponses";
 import { IStartTsoParms } from "./doc/input/IStartTsoParms";
-import { IZosmfTsoResponse } from "./doc/zosmf/IZosmfTsoResponse";
 import { TsoValidator } from "./TsoValidator";
 import { noAccountNumber, TsoConstants } from "./TsoConstants";
-import { TsoResponseService } from "./TsoResponseService";
 import { IStartASAppResponse } from "./doc/IStartASAppResponse";
 import { IStartTsoAppParms } from "./doc/input/IStartTsoAppParms";
 import { StartTso } from "./StartTso";
@@ -43,12 +39,13 @@ export class StartTsoApp {
         params: IStartTsoAppParms,
         startParms: IStartTsoParms
     ): Promise<IStartASAppResponse> {
-        // Address space is not known
+
         TsoValidator.validateSession(session);
         TsoValidator.validateNotEmptyString(
             accountNumber,
             noAccountNumber.message
         );
+        // Address space is not known and must be created
         if (!params.queueID || !params.servletKey) {
             const response: IIssueResponse = {
                 success: false,
@@ -62,11 +59,12 @@ export class StartTsoApp {
                 commandResponse: null,
                 stopResponse: null,
             };
+            // Reassigning servletKey and queueID so the application can be started at the correct location
             params.servletKey =
                 response.startResponse.zosmfTsoResponse.servletKey;
             params.queueID = response.startResponse.zosmfTsoResponse.queueID;
         }
-        // Address space is known
+        // Address space application starting
         const endpoint = `${TsoConstants.RESOURCE}/app/${params.servletKey}/${params.appKey}`;
         const apiResponse =
             await ZosmfRestClient.postExpectJSON<IStartASAppResponse>(
@@ -77,6 +75,7 @@ export class StartTsoApp {
                     startcmd: `${params.startupCommand} '&1 &2 ${params.queueID}'`,
                 }
             );
+        // Add newly created queueID and servletKey information to return object.
         apiResponse.queueID = params.queueID;
         apiResponse.servletKey = params.servletKey;
         return apiResponse;

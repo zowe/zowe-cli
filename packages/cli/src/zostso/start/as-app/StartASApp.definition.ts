@@ -41,20 +41,16 @@ export const StartASApp: ICommandDefinition = {
             name: "queue-id",
             aliases: ["qi"],
             description: "Queue ID",
-            type: "string"
+            type: "string",
+            implies: ["servlet-key"]
         },
         {
             name: "servlet-key",
             aliases: ["sk"],
             description: "Servlet Key",
-            type: "string"
+            type: "string",
+            implies: ["queue-id"]
         }
     ] as ICommandOptionDefinition[]),
     examples: [],
-    check: (argv: { [key: string]: any }) => {
-        if ((argv["queue-id"] && !argv["servlet-key"]) || (!argv["queue-id"] && argv["servlet-key"])) {
-            throw new Error("Both queue-id and servlet-key must be defined together.");
-        }
-        return true;
-    }
 };
