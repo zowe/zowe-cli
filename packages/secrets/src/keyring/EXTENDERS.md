@@ -71,7 +71,7 @@ await keyring.deletePassword("TestService", "AccountA");
 }
 ```
 
-This will prevent Webpack from trying to dynamically resolve the Secrets SDK during compile time. This does not affect the majority of developers, as Webpack will omit any unused Imperative modules during the bundling phase.
+This will prevent Webpack from trying to dynamically resolve the Secrets SDK during compile time. This does not affect the majority of developers, as Webpack omits any unused Imperative modules during the bundling phase.
 
 ---
 
@@ -90,7 +90,7 @@ your-pkg/
 │   └── (node binaries for Secrets SDK)
 ```
 
-If you are using ESbuild or Webpack, consider using a copy plugin to copy the `prebuilds` folder from the Secrets SDK _node_modules_ folder:
+If you are using ESbuild or Webpack, consider using a copy plug-in to copy the `prebuilds` folder from the Secrets SDK _node_modules_ folder:
 
 - ESbuild: [esbuild-copy-static-files](https://www.npmjs.com/package/esbuild-copy-static-files)
 - Webpack: [copy-webpack-plugin](https://www.npmjs.com/package/copy-webpack-plugin)
