@@ -29,6 +29,6 @@ export default class Handler extends ZosTsoBaseHandler {
                 servletKey: commandParameters.arguments.servletKey,
             },
         );
-        console.log(response);
+        commandParameters.response.console.log(response);
     }
 }
