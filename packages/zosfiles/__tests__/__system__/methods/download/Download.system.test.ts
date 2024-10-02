@@ -42,7 +42,11 @@ const testData = "abcdefghijklmnopqrstuvwxyz";
 let REAL_SESSION: Session;
 let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 let defaultSystem: ITestPropertiesSchema;
-let dsname: string;
+let dsname: string; //uss
+let dsname_seq: string;
+let dsname_part: string;
+let dsname_all_po: string;
+let dsname_all_ps: string;
 let ussname: string;
 let ussDirname: string;
 let localDirname: string;
@@ -61,28 +65,74 @@ describe("All Download System Tests", () => {
                 REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
                 testEnvironment.resources.session = REAL_SESSION;
 
-                dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.DOWNLOAD`);
+                dsname_seq = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.DOWNLOAD`);
+                dsname_part = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.DOWNLOAD`);
+                dsname_all_po = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.DOWNLOAD`);
+                dsname_all_ps = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.DOWNLOAD`);
+                await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dsname_seq);
+                await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname_part);
+                await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname_all_po);
+                await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dsname_all_ps);
             });
 
             afterAll(async () => {
-                testEnvironment.resources.datasets.push(dsname);
+                testEnvironment.resources.datasets.push(dsname_seq, dsname_part, dsname_all_po, dsname_all_ps);
                 await TestEnvironment.cleanUp(testEnvironment);
             });
 
             describe("Success Scenarios", () => {
 
                 describe("Physical sequential data set", () => {
+                    //this test needs to be first because it requires dir to be created as uppercase (other tests have no requirement)
+                    it("should download a data set and create folders and file in original letter case", async () => {
+                        let error;
+                        let response: IZosFilesResponse;
+
+                        // Upload data to the newly created data set
+                        await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname_seq);
+                        await wait(waitTime); // Wait 2 seconds
+
+                        try {
+                            response = await Download.dataSet(REAL_SESSION, dsname_seq, { preserveOriginalLetterCase: true });
+                        } catch (err) {
+                            error = err;
+                        }
+                        expect(error).toBeFalsy();
+                        expect(response).toBeTruthy();
+                        expect(response.success).toBeTruthy();
+                        expect(response.commandResponse).toContain(
+                            ZosFilesMessages.datasetDownloadedSuccessfully.message.substring(0, "Data set downloaded successfully".length + 1)
+                        );
+
+                        // Convert the data set name to use as a path/file
+                        const regex = /\./gi;
+                        file = dsname_seq.replace(regex, "/") + ".txt";
+
+                        // Check if folders and file are created in original uppercase
+                        file.split("/").reduce((path, pathSegment) => {
+                            const pathExists = fs.readdirSync(path).indexOf(pathSegment) !== -1;
+                            expect(pathExists).toBeTruthy();
+                            return [path, pathSegment].join("/");
+                        }, ".");
+
+                        // Add the file to localFiles resources for cleanup
+                        testEnvironment.resources.localFiles.push(file);
+
+                        // Compare the downloaded contents to those uploaded
+                        const fileContents = stripNewLines(fs.readFileSync(`${file}`).toString());
+                        expect(fileContents).toEqual(testData);
+                    });
 
                     it("should download a data set", async () => {
                         let error;
                         let response: IZosFilesResponse;
 
                         // Upload data to the newly created data set
-                        await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname);
+                        await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname_seq);
                         await wait(waitTime); // Wait 2 seconds
 
                         try {
-                            response = await Download.dataSet(REAL_SESSION, dsname);
+                            response = await Download.dataSet(REAL_SESSION, dsname_seq);
                             await wait(waitTime);
                         } catch (err) {
                             error = err;
@@ -96,7 +146,7 @@ describe("All Download System Tests", () => {
 
                         // Convert the data set name to use as a path/file
                         const regex = /\./gi;
-                        file = dsname.replace(regex, "/") + ".txt";
+                        file = dsname_seq.replace(regex, "/") + ".txt";
                         file = file.toLowerCase();
 
                         // Add the file to localFiles resources for cleanup
@@ -112,11 +162,11 @@ describe("All Download System Tests", () => {
                         let error;
                         let response: IZosFilesResponse;
 
-                        await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname);
+                        await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname_seq);
                         await wait(waitTime); // Wait 2 seconds
 
                         try {
-                            response = await Download.dataSet(REAL_SESSION, dsname, { responseTimeout: 5 });
+                            response = await Download.dataSet(REAL_SESSION, dsname_seq, { responseTimeout: 5 });
                         } catch (err) {
                             error = err;
                         }
@@ -129,47 +179,8 @@ describe("All Download System Tests", () => {
 
                         // Convert the data set name to use as a path/file
                         const regex = /\./gi;
-                        file = dsname.replace(regex, "/") + ".txt";
+                        file = dsname_seq.replace(regex, "/") + ".txt";
                         file = file.toLowerCase();
-
-                        // Add the file to localFiles resources for cleanup
-                        testEnvironment.resources.localFiles.push(file);
-
-                        // Compare the downloaded contents to those uploaded
-                        const fileContents = stripNewLines(fs.readFileSync(`${file}`).toString());
-                        expect(fileContents).toEqual(testData);
-                    });
-
-                    it("should download a data set and create folders and file in original letter case", async () => {
-                        let error;
-                        let response: IZosFilesResponse;
-
-                        // Upload data to the newly created data set
-                        await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname);
-                        await wait(waitTime); // Wait 2 seconds
-
-                        try {
-                            response = await Download.dataSet(REAL_SESSION, dsname, { preserveOriginalLetterCase: true });
-                        } catch (err) {
-                            error = err;
-                        }
-                        expect(error).toBeFalsy();
-                        expect(response).toBeTruthy();
-                        expect(response.success).toBeTruthy();
-                        expect(response.commandResponse).toContain(
-                            ZosFilesMessages.datasetDownloadedSuccessfully.message.substring(0, "Data set downloaded successfully".length + 1)
-                        );
-
-                        // Convert the data set name to use as a path/file
-                        const regex = /\./gi;
-                        file = dsname.replace(regex, "/") + ".txt";
-
-                        // Check if folders and file are created in original uppercase
-                        file.split("/").reduce((path, pathSegment) => {
-                            const pathExists = fs.readdirSync(path).indexOf(pathSegment) !== -1;
-                            expect(pathExists).toBeTruthy();
-                            return [path, pathSegment].join("/");
-                        }, ".");
 
                         // Add the file to localFiles resources for cleanup
                         testEnvironment.resources.localFiles.push(file);
@@ -188,7 +199,7 @@ describe("All Download System Tests", () => {
                         };
 
                         try {
-                            response = await Download.dataSet(REAL_SESSION, dsname, options);
+                            response = await Download.dataSet(REAL_SESSION, dsname_seq, options);
                         } catch (err) {
                             error = err;
                         }
@@ -201,7 +212,7 @@ describe("All Download System Tests", () => {
 
                         // Convert the data set name to use as a path/file
                         const regex = /\./gi;
-                        file = dsname.replace(regex, "/") + ".txt";
+                        file = dsname_seq.replace(regex, "/") + ".txt";
 
                         // Add the file to localFiles resources for cleanup
                         testEnvironment.resources.localFiles.push(file);
@@ -215,7 +226,7 @@ describe("All Download System Tests", () => {
                         };
 
                         try {
-                            response = await Download.dataSet(REAL_SESSION, dsname, options);
+                            response = await Download.dataSet(REAL_SESSION, dsname_seq, options);
                         } catch (err) {
                             error = err;
                         }
@@ -228,7 +239,7 @@ describe("All Download System Tests", () => {
 
                         // Convert the data set name to use as a path/file for cleanup
                         const regex = /\./gi;
-                        file = dsname.replace(regex, "/") + ".txt";
+                        file = dsname_seq.replace(regex, "/") + ".txt";
 
                         // Add the file to localFiles resources for cleanup
                         testEnvironment.resources.localFiles.push(file);
@@ -238,7 +249,7 @@ describe("All Download System Tests", () => {
                         let error;
                         let response: IZosFilesResponse;
 
-                        await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname);
+                        await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname_seq);
                         await wait(waitTime); // Wait 2 seconds
 
                         const options: IDownloadOptions = {
@@ -246,7 +257,7 @@ describe("All Download System Tests", () => {
                         };
 
                         try {
-                            response = await Download.dataSet(REAL_SESSION, dsname, options);
+                            response = await Download.dataSet(REAL_SESSION, dsname_seq, options);
                         } catch (err) {
                             error = err;
                         }
@@ -261,7 +272,7 @@ describe("All Download System Tests", () => {
 
                         // Convert the data set name to use as a path/file for cleanup
                         const regex = /\./gi;
-                        file = dsname.replace(regex, "/") + ".txt";
+                        file = dsname_seq.replace(regex, "/") + ".txt";
                         file = file.toLowerCase();
 
                         // Add the file to localFiles resources for cleanup
@@ -280,11 +291,11 @@ describe("All Download System Tests", () => {
                         };
 
                         // Upload data to the newly created data set
-                        await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname);
+                        await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname_seq);
                         await wait(waitTime); // Wait 2 seconds
 
                         try {
-                            response = await Download.dataSet(REAL_SESSION, dsname, options);
+                            response = await Download.dataSet(REAL_SESSION, dsname_seq, options);
                         } catch (err) {
                             error = err;
                         }
@@ -297,7 +308,7 @@ describe("All Download System Tests", () => {
 
                         // Convert the data set name to use as a path/file
                         const regex = /\./gi;
-                        file = dsname.replace(regex, "/") + ".dat";
+                        file = dsname_seq.replace(regex, "/") + ".dat";
                         file = file.toLowerCase();
 
                         // Add the file to localFiles resources for cleanup
@@ -314,11 +325,11 @@ describe("All Download System Tests", () => {
                         const responseStream = new PassThrough();
 
                         // Upload data to the newly created data set
-                        await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname);
+                        await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname_seq);
                         await wait(waitTime); // Wait 2 seconds
 
                         try {
-                            response = await Download.dataSet(REAL_SESSION, dsname, { stream: responseStream });
+                            response = await Download.dataSet(REAL_SESSION, dsname_seq, { stream: responseStream });
                         } catch (err) {
                             error = err;
                         }
@@ -337,31 +348,16 @@ describe("All Download System Tests", () => {
 
                 describe("Partitioned data set - all members", () => {
 
-                    beforeEach(async () => {
-                        let error;
-                        try {
-                            const response = await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname);
-                            // Adding the dataset to resources for tracking and cleanup
-                            testEnvironment.resources.datasets.push(dsname);
-                        } catch (err) {
-                            error = err;                        }
-                    });
-
-                    afterEach(async () => {
-                        // Trusting TestEnvironment.cleanUp() to handle all resource cleanups
-                        await TestEnvironment.cleanUp(testEnvironment);
-                    });
-
                     it("should download a data set member", async () => {
                         let error;
                         let response: IZosFilesResponse;
 
                         // upload data to the newly created data set
-                        await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname + "(member)");
+                        await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname_part + "(member)");
                         await wait(waitTime); //wait 2 seconds
 
                         try {
-                            response = await Download.allMembers(REAL_SESSION, dsname);
+                            response = await Download.allMembers(REAL_SESSION, dsname_part);
                         } catch (err) {
                             error = err;
                         }
@@ -372,7 +368,7 @@ describe("All Download System Tests", () => {
 
                         // Path file construction and assertion
                         const regex = /\./gi;
-                        const file = dsname.replace(regex, "/") + "/member.txt";
+                        const file = dsname_part.replace(regex, "/") + "/member.txt";
                         testEnvironment.resources.localFiles.push(file);  // Add file to resources for cleanup
 
                         // Comparing the downloaded contents
@@ -384,11 +380,11 @@ describe("All Download System Tests", () => {
                         let error;
                         let response;
 
-                        await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname + "(member)");
+                        await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname_part + "(member)");
                         await wait(waitTime);
 
                         try {
-                            response = await Download.allMembers(REAL_SESSION, dsname, { preserveOriginalLetterCase: true });
+                            response = await Download.allMembers(REAL_SESSION, dsname_part, { preserveOriginalLetterCase: true });
                         } catch (err) {
                             error = err;
                         }
@@ -398,7 +394,7 @@ describe("All Download System Tests", () => {
                         expect(response.commandResponse).toContain("Data set downloaded successfully");
 
                         const regex = /\./gi;
-                        const file = dsname.replace(regex, "/") + "/MEMBER.txt";
+                        const file = dsname_part.replace(regex, "/") + "/MEMBER.txt";
                         testEnvironment.resources.localFiles.push(file);
 
                         const fileContents = stripNewLines(fs.readFileSync(file).toString());
@@ -409,11 +405,11 @@ describe("All Download System Tests", () => {
                         let error;
                         let response;
 
-                        await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname + "(member)");
+                        await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname_part + "(member)");
                         await wait(waitTime);
 
                         try {
-                            response = await Download.allMembers(REAL_SESSION, dsname, { binary: true });
+                            response = await Download.allMembers(REAL_SESSION, dsname_part, { binary: true });
                         } catch (err) {
                             error = err;
                         }
@@ -423,7 +419,7 @@ describe("All Download System Tests", () => {
                         expect(response.commandResponse).toContain("Data set downloaded successfully");
 
                         const regex = /\./gi;
-                        const file = dsname.replace(regex, "/") + "/member.txt";
+                        const file = dsname_part.replace(regex, "/") + "/member.txt";
                         testEnvironment.resources.localFiles.push(file);
                     });
 
@@ -431,11 +427,11 @@ describe("All Download System Tests", () => {
                         let error;
                         let response;
 
-                        await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname + "(member)");
+                        await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname_part + "(member)");
                         await wait(waitTime);
 
                         try {
-                            response = await Download.allMembers(REAL_SESSION, dsname, { record: true });
+                            response = await Download.allMembers(REAL_SESSION, dsname_part, { record: true });
                         } catch (err) {
                             error = err;
                         }
@@ -445,7 +441,7 @@ describe("All Download System Tests", () => {
                         expect(response.commandResponse).toContain("Data set downloaded successfully");
 
                         const regex = /\./gi;
-                        file = dsname.replace(regex, "/") + "/member.txt";
+                        file = dsname_part.replace(regex, "/") + "/member.txt";
                         testEnvironment.resources.localFiles.push(file);
                     });
 
@@ -453,11 +449,11 @@ describe("All Download System Tests", () => {
                         let error;
                         let response;
 
-                        await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname + "(member)");
+                        await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname_part + "(member)");
                         await wait(waitTime);
 
                         try {
-                            response = await Download.allMembers(REAL_SESSION, dsname, { extension: "dat" });
+                            response = await Download.allMembers(REAL_SESSION, dsname_part, { extension: "dat" });
                         } catch (err) {
                             error = err;
                         }
@@ -467,35 +463,21 @@ describe("All Download System Tests", () => {
                         expect(response.commandResponse).toContain("Data set downloaded successfully");
 
                         const regex = /\./gi;
-                        const file = dsname.replace(regex, "/") + "/member.dat";
+                        const file = dsname_part.replace(regex, "/") + "/member.dat";
                         testEnvironment.resources.localFiles.push(file);
                     });
                 });
 
                 describe("Data sets matching - all data sets - PO", () => {
 
-                    beforeEach(async () => {
-                        let error;
-                        try {
-                            const response = await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname);
-                            testEnvironment.resources.datasets.push(dsname); // Tracking created dataset for cleanup
-                        } catch (err) {
-                            error = err;
-                        }
-                    });
-
-                    afterEach(async () => {
-                        await TestEnvironment.cleanUp(testEnvironment);
-                    });
-
                     it("should download a data set", async () => {
                         let error;
                         let response;
 
-                        await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname + "(member)");
+                        await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname_all_po + "(member)");
 
                         try {
-                            response = await Download.allDataSets(REAL_SESSION, [{ dsname, dsorg: "PO", vol: "*" }]);
+                            response = await Download.allDataSets(REAL_SESSION, [{ dsname: dsname_all_po, dsorg: "PO", vol: "*" }]);
                         } catch (err) {
                             error = err;
                         }
@@ -505,7 +487,7 @@ describe("All Download System Tests", () => {
                         expect(response.commandResponse).toContain("1 data set(s) downloaded successfully");
 
                         const regex = /\./gi;
-                        const file = dsname.toLowerCase().replace(regex, "/");
+                        const file = dsname_all_po.toLowerCase().replace(regex, "/");
                         testEnvironment.resources.localFiles.push(file + "/member.txt");
 
                         const fileContents = stripNewLines(fs.readFileSync(file + "/member.txt").toString());
@@ -516,7 +498,7 @@ describe("All Download System Tests", () => {
                         let error;
                         let response;
 
-                        await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname + "(member)");
+                        await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname_all_po + "(member)");
 
                         const options: IDownloadOptions = {
                             binary: true,
@@ -525,7 +507,7 @@ describe("All Download System Tests", () => {
                         };
 
                         try {
-                            response = await Download.allDataSets(REAL_SESSION, [{ dsname, dsorg: "PO", vol: "*" }], options);
+                            response = await Download.allDataSets(REAL_SESSION, [{ dsname: dsname_all_po, dsorg: "PO", vol: "*" }], options);
                         } catch (err) {
                             error = err;
                         }
@@ -535,7 +517,7 @@ describe("All Download System Tests", () => {
                         expect(response.commandResponse).toContain("1 data set(s) downloaded successfully");
 
                         const regex = /\./gi;
-                        const file = "testDir/" + dsname.replace(regex, "/") + "/member.txt";
+                        const file = "testDir/" + dsname_all_po.replace(regex, "/") + "/member.txt";
                         testEnvironment.resources.localFiles.push(file);
                     });
 
@@ -543,7 +525,7 @@ describe("All Download System Tests", () => {
                         let error;
                         let response;
 
-                        await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname + "(member)");
+                        await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname_all_po + "(member)");
 
                         const options: IDownloadOptions = {
                             record: true,
@@ -552,7 +534,7 @@ describe("All Download System Tests", () => {
                         };
 
                         try {
-                            response = await Download.allDataSets(REAL_SESSION, [{ dsname, dsorg: "PO", vol: "*" }], options);
+                            response = await Download.allDataSets(REAL_SESSION, [{ dsname: dsname_all_po, dsorg: "PO", vol: "*" }], options);
                         } catch (err) {
                             error = err;
                         }
@@ -562,7 +544,7 @@ describe("All Download System Tests", () => {
                         expect(response.commandResponse).toContain("1 data set(s) downloaded successfully");
 
                         const regex = /\./gi;
-                        const file = "testDir/" + dsname.replace(regex, "/") + "/member.txt";
+                        const file = "testDir/" + dsname_all_po.replace(regex, "/") + "/member.txt";
                         testEnvironment.resources.localFiles.push(file);
                     });
 
@@ -570,10 +552,10 @@ describe("All Download System Tests", () => {
                         let error;
                         let response;
 
-                        await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname + "(member)");
+                        await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname_all_po + "(member)");
 
                         try {
-                            response = await Download.allDataSets(REAL_SESSION, [{ dsname, dsorg: "PO", vol: "*" }], {extension: "jcl"});
+                            response = await Download.allDataSets(REAL_SESSION, [{ dsname: dsname_all_po, dsorg: "PO", vol: "*" }], {extension: "jcl"});
                         } catch (err) {
                             error = err;
                         }
@@ -583,7 +565,7 @@ describe("All Download System Tests", () => {
                         expect(response.commandResponse).toContain("1 data set(s) downloaded successfully");
 
                         const regex = /\./gi;
-                        const file = dsname.toLowerCase().replace(regex, "/");
+                        const file = dsname_all_po.toLowerCase().replace(regex, "/");
                         testEnvironment.resources.localFiles.push(file + "/member.jcl");
 
                         const fileContents = stripNewLines(fs.readFileSync(file + "/member.jcl").toString());
@@ -594,13 +576,13 @@ describe("All Download System Tests", () => {
                         let error;
                         let response;
 
-                        await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname + "(member)");
-                        const ending = dsname.split(".").pop().toLowerCase();
+                        await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname_all_po + "(member)");
+                        const ending = dsname_all_po.split(".").pop().toLowerCase();
                         const extMap: any = {};
                         extMap[ending] = "jcl";
 
                         try {
-                            response = await Download.allDataSets(REAL_SESSION, [{ dsname, dsorg: "PO", vol: "*" }], {extensionMap: extMap});
+                            response = await Download.allDataSets(REAL_SESSION, [{ dsname: dsname_all_po, dsorg: "PO", vol: "*" }], {extensionMap: extMap});
                         } catch (err) {
                             error = err;
                         }
@@ -610,7 +592,7 @@ describe("All Download System Tests", () => {
                         expect(response.commandResponse).toContain("1 data set(s) downloaded successfully");
 
                         const regex = /\./gi;
-                        const file = dsname.toLowerCase().replace(regex, "/");
+                        const file = dsname_all_po.toLowerCase().replace(regex, "/");
                         testEnvironment.resources.localFiles.push(file + "/member.jcl");
 
                         const fileContents = stripNewLines(fs.readFileSync(file + "/member.jcl").toString());
@@ -620,29 +602,14 @@ describe("All Download System Tests", () => {
 
                 describe("Data sets matching - all data sets - PS", () => {
 
-                    beforeEach(async () => {
-                        let error;
-                        try {
-                            const response = await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dsname);
-                            testEnvironment.resources.datasets.push(dsname); // Tracking created dataset for cleanup
-                        } catch (err) {
-                            error = err;
-                        }
-                    });
-
-                    afterEach(async () => {
-                        // Utilizing TestEnvironment.cleanUp() for comprehensive cleanup
-                        await TestEnvironment.cleanUp(testEnvironment);
-                    });
-
                     it("should download a data set", async () => {
                         let error;
                         let response;
 
-                        await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname);
+                        await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname_all_ps);
 
                         try {
-                            response = await Download.allDataSets(REAL_SESSION, [{ dsname, dsorg: "PS", vol: "*" }]);
+                            response = await Download.allDataSets(REAL_SESSION, [{ dsname: dsname_all_ps, dsorg: "PS", vol: "*" }]);
                         } catch (err) {
                             error = err;
                         }
@@ -652,7 +619,7 @@ describe("All Download System Tests", () => {
                         expect(response.commandResponse).toContain("1 data set(s) downloaded successfully");
 
                         const regex = /\./gi;
-                        const file = dsname.toLowerCase() + ".txt";
+                        const file = dsname_all_ps.toLowerCase() + ".txt";
                         const fileContents = stripNewLines(fs.readFileSync(file).toString());
                         expect(fileContents).toEqual(testData);
                     });
@@ -661,7 +628,7 @@ describe("All Download System Tests", () => {
                         let error;
                         let response;
 
-                        await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname);
+                        await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname_all_ps);
 
                         const options: IDownloadOptions = {
                             binary: true,
@@ -670,7 +637,7 @@ describe("All Download System Tests", () => {
                         };
 
                         try {
-                            response = await Download.allDataSets(REAL_SESSION, [{ dsname, dsorg: "PS", vol: "*" }], options);
+                            response = await Download.allDataSets(REAL_SESSION, [{ dsname: dsname_all_ps, dsorg: "PS", vol: "*" }], options);
                         } catch (err) {
                             error = err;
                         }
@@ -680,14 +647,14 @@ describe("All Download System Tests", () => {
                         expect(response.commandResponse).toContain("1 data set(s) downloaded successfully");
 
                         const regex = /\./gi;
-                        const file = "testDir/" + dsname.toLowerCase() + ".txt";
+                        const file = "testDir/" + dsname_all_ps.toLowerCase() + ".txt";
                     });
 
                     it("should download a data set in record mode", async () => {
                         let error;
                         let response;
 
-                        await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname);
+                        await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname_all_ps);
 
                         const options: IDownloadOptions = {
                             record: true,
@@ -696,7 +663,7 @@ describe("All Download System Tests", () => {
                         };
 
                         try {
-                            response = await Download.allDataSets(REAL_SESSION, [{ dsname, dsorg: "PS", vol: "*" }], options);
+                            response = await Download.allDataSets(REAL_SESSION, [{ dsname: dsname_all_ps, dsorg: "PS", vol: "*" }], options);
                         } catch (err) {
                             error = err;
                         }
@@ -706,17 +673,17 @@ describe("All Download System Tests", () => {
                         expect(response.commandResponse).toContain("1 data set(s) downloaded successfully");
 
                         const regex = /\./gi;
-                        const file = "testDir/" + dsname.toLowerCase() + ".txt";
+                        const file = "testDir/" + dsname_all_ps.toLowerCase() + ".txt";
                     });
 
                     it("should download a data set with a different extension", async () => {
                         let error;
                         let response;
 
-                        await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname);
+                        await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname_all_ps);
 
                         try {
-                            response = await Download.allDataSets(REAL_SESSION, [{ dsname, dsorg: "PS", vol: "*" }], {extension: "jcl"});
+                            response = await Download.allDataSets(REAL_SESSION, [{ dsname: dsname_all_ps, dsorg: "PS", vol: "*" }], {extension: "jcl"});
                         } catch (err) {
                             error = err;
                         }
@@ -726,7 +693,7 @@ describe("All Download System Tests", () => {
                         expect(response.commandResponse).toContain("1 data set(s) downloaded successfully");
 
                         const regex = /\./gi;
-                        const file = dsname.toLowerCase() + ".jcl";
+                        const file = dsname_all_ps.toLowerCase() + ".jcl";
                         const fileContents = stripNewLines(fs.readFileSync(file).toString());
                         expect(fileContents).toEqual(testData);
                     });
@@ -735,13 +702,13 @@ describe("All Download System Tests", () => {
                         let error;
                         let response;
 
-                        await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname);
-                        const ending = dsname.split(".").pop().toLowerCase();
+                        await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname_all_ps);
+                        const ending = dsname_all_ps.split(".").pop().toLowerCase();
                         const extMap: any = {};
                         extMap[ending] = "jcl";
 
                         try {
-                            response = await Download.allDataSets(REAL_SESSION, [{ dsname, dsorg: "PS", vol: "*" }], {extensionMap: extMap});
+                            response = await Download.allDataSets(REAL_SESSION, [{ dsname: dsname_all_ps, dsorg: "PS", vol: "*" }], {extensionMap: extMap});
                         } catch (err) {
                             error = err;
                         }
@@ -751,7 +718,7 @@ describe("All Download System Tests", () => {
                         expect(response.commandResponse).toContain("1 data set(s) downloaded successfully");
 
                         const regex = /\./gi;
-                        const file = dsname.toLowerCase() + ".jcl";
+                        const file = dsname_all_ps.toLowerCase() + ".jcl";
                         const fileContents = stripNewLines(fs.readFileSync(file).toString());
                         expect(fileContents).toEqual(testData);
                     });
@@ -760,11 +727,6 @@ describe("All Download System Tests", () => {
             });
 
             describe("Failure Scenarios", () => {
-                afterAll(async () => {
-                    // Utilizing TestEnvironment.cleanUp() for comprehensive cleanup
-                    await TestEnvironment.cleanUp(testEnvironment);
-                });
-
                 describe("Physical sequential data set", () => {
 
                     it("should display proper error message when missing session", async () => {
@@ -772,7 +734,7 @@ describe("All Download System Tests", () => {
                         let error;
 
                         try {
-                            response = await Download.dataSet(undefined, dsname);
+                            response = await Download.dataSet(undefined, dsname_seq);
                         } catch (err) {
                             error = err;
                         }
@@ -785,9 +747,8 @@ describe("All Download System Tests", () => {
                     it("should display proper message when downloading a data set that does not exist", async () => {
                         let response;
                         let error;
-
                         try {
-                            response = await Download.dataSet(REAL_SESSION, dsname);
+                            response = await Download.dataSet(REAL_SESSION, dsname_seq+".F");
                         } catch (err) {
                             error = err;
                         }
@@ -804,7 +765,7 @@ describe("All Download System Tests", () => {
                         let error;
 
                         try {
-                            response = await Download.allMembers(undefined, dsname);
+                            response = await Download.allMembers(undefined, dsname_part);
                         } catch (err) {
                             error = err;
                         }
@@ -819,7 +780,7 @@ describe("All Download System Tests", () => {
                         let error;
 
                         try {
-                            response = await Download.allMembers(REAL_SESSION, dsname + ".d");
+                            response = await Download.allMembers(REAL_SESSION, dsname_part + ".d");
                         } catch (err) {
                             error = err;
                         }
@@ -844,19 +805,17 @@ describe("All Download System Tests", () => {
 
                 dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.DOWNLOAD.USS`);
 
-                testEnvironment.resources.datasets.push(dsname);
-
                 // using unique DS function to generate unique USS file name
                 ussname = `${defaultSystem.unix.testdir}/${dsname}`;
                 ussDirname = `${defaultSystem.unix.testdir}/zos_file_download`;
                 localDirname = `${testEnvironment.workingDir}/ussDir`;
-
-                // Track local and USS files for cleanup
-                testEnvironment.resources.localFiles.push(localDirname);
-                testEnvironment.resources.files.push(ussname, ussDirname);
             });
 
             afterAll(async () => {
+                // Track local and USS files for cleanup
+                testEnvironment.resources.localFiles.push(localDirname);
+                testEnvironment.resources.files.push(dsname, ussname, ussDirname);
+
                 await TestEnvironment.cleanUp(testEnvironment);
             });
 
@@ -1196,9 +1155,6 @@ describe("All Download System Tests", () => {
                     ussDirname = `${defaultSystem.unix.testdir}/zos_file_download`;
                     localDirname = `${testEnvironment.workingDir}/ussDir`;
 
-                    testEnvironment.resources.localFiles.push(localDirname);
-                    testEnvironment.resources.files.push(ussDirname);
-
                     const emptyFolder = posix.join(ussDirname, "emptyFolder");
                     const parentFolder = posix.join(ussDirname, "parentFolder");
                     const childFolder = posix.join(parentFolder, "childFolder");
@@ -1217,7 +1173,6 @@ describe("All Download System Tests", () => {
                     zfsName = getUniqueDatasetName(defaultSystem.zosmf.user);
                     await Create.zfs(REAL_SESSION, zfsName, createZfsOptions);
                     await Mount.fs(REAL_SESSION, zfsName, mountFolder, mountZfsOptions);
-                    testEnvironment.resources.datasets.push(zfsName);
 
                     // Upload files
                     await Upload.bufferToUssFile(REAL_SESSION, testFile, Buffer.from(testFileContents));
@@ -1244,8 +1199,9 @@ describe("All Download System Tests", () => {
                     // Delete directory recursively
                     const SSH_SESSION: any = TestEnvironment.createSshSession(testEnvironment);
                     await Shell.executeSshCwd(SSH_SESSION, `rm testFile.lnk`, ussDirname, jest.fn());
-                    await Delete.ussFile(REAL_SESSION, ussDirname, true);
-
+                    // await Delete.ussFile(REAL_SESSION, ussDirname, true);
+                    testEnvironment.resources.localFiles.push(localDirname);
+                    testEnvironment.resources.files.push(ussDirname);
                     await TestEnvironment.cleanUp(testEnvironment);
                 });
 
@@ -1385,49 +1341,40 @@ describe("All Download System Tests", () => {
                 REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
                 testEnvironment.resources.session = REAL_SESSION;
 
-                dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.DOWNLOAD`, true);
+                dsname_seq = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.DOWNLOAD`, true);
+                dsname_part = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.DOWNLOAD`, true);
+                dsname_all_po = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.DOWNLOAD`, true);
+                dsname_all_ps = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.DOWNLOAD`, true);
+                await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dsname_seq);
+                await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname_part);
+                await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname_all_po);
+                await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dsname_all_ps);
 
                 // using unique DS function to generate unique USS file name
                 ussname = `${defaultSystem.unix.testdir}/ENCO#ED${dsname}`;
                 ussDirname = `${defaultSystem.unix.testdir}/ENCO#EDzos_file_download`;
                 localDirname = `${testEnvironment.workingDir}/ENCO#EDussDir`;
-
-                testEnvironment.resources.localFiles.push(localDirname);
-                testEnvironment.resources.files.push(ussname, ussDirname);
             });
 
             afterAll(async () => {
+                testEnvironment.resources.localFiles.push(localDirname);
+                testEnvironment.resources.datasets.push(ussname, ussDirname);
                 await TestEnvironment.cleanUp(testEnvironment);
             });
 
             describe("Success Scenarios", () => {
 
                 describe("Physical sequential data set", () => {
-                    beforeEach(async () => {
-                        let error;
-                        try {
-                            await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dsname);
-                            await wait(waitTime); //wait 2 seconds
-                        } catch (err) {
-                            error = err;
-                        }
-                        testEnvironment.resources.datasets.push(dsname);
-                    });
-
-                    afterEach(async () => {
-                        await TestEnvironment.cleanUp(testEnvironment);
-                    });
-
                     it("should download a data set", async () => {
                         let error;
                         let response: IZosFilesResponse;
 
                         // upload data to the newly created data set
-                        await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname);
+                        await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname_seq);
                         await wait(waitTime); //wait 2 seconds
 
                         try {
-                            response = await Download.dataSet(REAL_SESSION, dsname);
+                            response = await Download.dataSet(REAL_SESSION, dsname_seq);
                         } catch (err) {
                             error = err;
                         }
@@ -1448,31 +1395,16 @@ describe("All Download System Tests", () => {
                 });
 
                 describe("Partitioned data set - all members", () => {
-                    beforeEach(async () => {
-                        let error;
-                        try {
-                            await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname);
-                            await wait(waitTime); //wait 2 seconds
-                        } catch (err) {
-                            error = err;
-                        }
-                        testEnvironment.resources.datasets.push(dsname);
-                    });
-
-                    afterEach(async () => {
-                        await TestEnvironment.cleanUp(testEnvironment);
-                    });
-
                     it("should download a data set member", async () => {
                         let error;
                         let response: IZosFilesResponse;
 
                         // upload data to the newly created data set
-                        await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname + "(member)");
+                        await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname_part + "(member)");
                         await wait(waitTime); //wait 2 seconds
 
                         try {
-                            response = await Download.allMembers(REAL_SESSION, dsname);
+                            response = await Download.allMembers(REAL_SESSION, dsname_part);
                         } catch (err) {
                             error = err;
                         }
@@ -1493,31 +1425,15 @@ describe("All Download System Tests", () => {
                 });
 
                 describe("Data sets matching - all data sets - PO", () => {
-
-                    beforeEach(async () => {
-                        let error;
-                        try {
-                            await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname);
-                            await wait(waitTime); //wait 2 seconds
-                        } catch (err) {
-                            error = err;
-                        }
-                        testEnvironment.resources.datasets.push(dsname);
-                    });
-
-                    afterEach(async () => {
-                        await TestEnvironment.cleanUp(testEnvironment);
-                    });
-
                     it("should download a data set", async () => {
                         let error;
                         let response: IZosFilesResponse;
 
                         // upload data to the newly created data set
-                        await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname + "(member)");
+                        await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname_all_po + "(member)");
 
                         try {
-                            response = await Download.allDataSets(REAL_SESSION, [{ dsname, dsorg: "PO", vol: "*" }]);
+                            response = await Download.allDataSets(REAL_SESSION, [{ dsname: dsname_all_po, dsorg: "PO", vol: "*" }]);
                         } catch (err) {
                             error = err;
                         }
@@ -1537,30 +1453,15 @@ describe("All Download System Tests", () => {
 
                 describe("Data sets matching - all data sets - PS", () => {
 
-                    beforeEach(async () => {
-                        let error;
-                        try {
-                            await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dsname);
-                            await wait(waitTime); //wait 2 seconds
-                        } catch (err) {
-                            error = err;
-                        }
-                        testEnvironment.resources.datasets.push(dsname);
-                    });
-
-                    afterEach(async () => {
-                        await TestEnvironment.cleanUp(testEnvironment);
-                    });
-
                     it("should download a data set", async () => {
                         let error;
                         let response: IZosFilesResponse;
 
                         // upload data to the newly created data set
-                        await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname);
+                        await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname_all_ps);
 
                         try {
-                            response = await Download.allDataSets(REAL_SESSION, [{ dsname, dsorg: "PS", vol: "*" }]);
+                            response = await Download.allDataSets(REAL_SESSION, [{ dsname: dsname_all_ps, dsorg: "PS", vol: "*" }]);
                         } catch (err) {
                             error = err;
                         }
@@ -1569,7 +1470,7 @@ describe("All Download System Tests", () => {
                         expect(response.success).toBeTruthy();
                         expect(response.commandResponse).toContain("1 data set(s) downloaded successfully");
 
-                        file = dsname.toLowerCase() + ".txt";
+                        file = dsname_all_ps.toLowerCase() + ".txt";
                         // Compare the downloaded contents to those uploaded
                         const fileContents = stripNewLines(fs.readFileSync(`${file}`).toString());
                         expect(fileContents).toEqual(testData);
@@ -1590,12 +1491,10 @@ describe("All Download System Tests", () => {
 
                 // using unique DS function to generate unique USS file name
                 ussname = `${defaultSystem.unix.testdir}/ENCO#ED${getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.DOWNLOAD`, true)}`;
-
-                // Track the USS file and local files in testEnvironment resources for cleanup
-                testEnvironment.resources.files.push(ussname);
             });
 
             afterAll(async () => {
+                testEnvironment.resources.files.push(ussname);
                 await TestEnvironment.cleanUp(testEnvironment);
             });
 
@@ -1712,9 +1611,6 @@ describe("All Download System Tests", () => {
                     REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
                     testEnvironment.resources.session = REAL_SESSION;
 
-                    testEnvironment.resources.files.push(ussDirname, mountFolder, testFile, anotherTestFile, binaryFile, testSymlink);
-                    testEnvironment.resources.localFiles.push(localDirname);
-
                     // Create directories
                     for (const directory of [ussDirname, emptyFolder, parentFolder, childFolder, mountFolder]) {
                         await Create.uss(REAL_SESSION, directory, "directory");
@@ -1731,16 +1627,15 @@ describe("All Download System Tests", () => {
                     await Upload.bufferToUssFile(REAL_SESSION, binaryFile, Buffer.from(binaryFileContents), { binary: true });
                     await Utilities.chtag(REAL_SESSION, binaryFile, Tag.BINARY);
 
+                    testEnvironment.resources.files.push(testFile, anotherTestFile, binaryFile);
+
                     // Create symlink
                     const SSH_SESSION: any = TestEnvironment.createSshSession(testEnvironment);
-                    await Shell.executeSshCwd(SSH_SESSION, `ln -s ${posix.basename(testFile)} ${posix.basename(testSymlink)}`, ussDirname, jest.fn());
-                });
-
-                afterEach(() => {
-                    IO.deleteDirTree(localDirname);
+                    await Shell.executeSshCwd(SSH_SESSION, `ln -s ${posix.basename(testFile)} ${posix.basename(testSymlink)}`, ussDirname, jest.fn());                    testEnvironment.resources.files.push(ussDirname, mountFolder, testFile, anotherTestFile, binaryFile, testSymlink);
                 });
 
                 afterAll(async () => {
+                    testEnvironment.resources.localFiles.push(localDirname);
                     await TestEnvironment.cleanUp(testEnvironment);
                 });
 
