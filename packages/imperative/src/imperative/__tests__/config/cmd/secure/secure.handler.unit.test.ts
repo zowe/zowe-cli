@@ -796,17 +796,17 @@ describe("Configuration Secure command handler", () => {
             let handler: SecureHandler;
             let params: any;
             let myPromptSpy: jest.SpyInstance;
-        
+
             beforeEach(() => {
                 handler = new SecureHandler();
                 params = getIHandlerParametersObject();
-        
+
                 params.arguments.userConfig = true;
                 params.arguments.globalConfig = true;
-        
+
                 // Mock the console prompt to return an empty string
                 myPromptSpy = jest.spyOn(params.response.console, "prompt").mockResolvedValue("");
-        
+
                 // Reset spies
                 keytarGetPasswordSpy.mockReturnValue(fakeSecureData);
                 keytarSetPasswordSpy.mockImplementation();
@@ -816,10 +816,10 @@ describe("Configuration Secure command handler", () => {
                 existsSyncSpy = jest.spyOn(fs, "existsSync");
                 writeFileSyncSpy.mockImplementation();
             });
-        
-            const runTest = async (profile: string, secureFields: string[], expectedPromptTimes: number, expectedSecureField: string) => {
+
+            const expectSecurePrompt = async (profile: string, secureFields: string[], expectedPromptTimes: number, expectedSecureField: string) => {
                 params.arguments.profile = profile;
-        
+
                 // Mock fs calls
                 const eco = lodash.cloneDeep(expectedGlobalUserConfigObject);
                 eco.$schema = "./fakeapp.schema.json";
@@ -827,17 +827,17 @@ describe("Configuration Secure command handler", () => {
                 existsSyncSpy.mockReturnValueOnce(false).mockReturnValueOnce(false).mockReturnValueOnce(true).mockReturnValue(false);
                 searchSpy.mockReturnValueOnce(fakeProjUserPath).mockReturnValueOnce(fakeProjPath);
                 await setupConfigToLoad(undefined, configOpts);
-        
+
                 // Setup mock secure fields
                 jest.spyOn(ImperativeConfig.instance.config.api.secure, "secureFields").mockReturnValue(secureFields);
-        
+
                 let caughtError;
                 try {
                     await handler.process(params);
                 } catch (error) {
                     caughtError = error;
                 }
-        
+
                 // Verify prompt count and inclusion of expected secure fields
                 expect(myPromptSpy).toHaveBeenCalledTimes(expectedPromptTimes);
                 if (expectedPromptTimes > 0) {
@@ -845,9 +845,9 @@ describe("Configuration Secure command handler", () => {
                 }
                 expect(caughtError).toBeUndefined();
             };
-        
+
             it("should only prompt for secure values that match the profile passed in through params", async () => {
-                await runTest(
+                await expectSecurePrompt(
                     "GoodProfile",
                     [
                         "profiles.noMatchProfile.properties.tokenValue",
@@ -858,9 +858,9 @@ describe("Configuration Secure command handler", () => {
                     "profiles.GoodProfile.properties.tokenValue"
                 );
             });
-        
+
             it("should only prompt for secure values that match the profile passed in through params - nested profile", async () => {
-                await runTest(
+                await expectSecurePrompt(
                     "lpar1.GoodProfile",
                     [
                         "profiles.noMatchProfile.properties.tokenValue",
@@ -871,9 +871,9 @@ describe("Configuration Secure command handler", () => {
                     "profiles.lpar1.profiles.GoodProfile.properties.tokenValue"
                 );
             });
-        
+
             it("should only prompt for secure values that match the profile passed in through params - ignore casing", async () => {
-                await runTest(
+                await expectSecurePrompt(
                     "gOODpROFILE",
                     [
                         "profiles.noMatchProfile.properties.tokenValue",
@@ -884,9 +884,9 @@ describe("Configuration Secure command handler", () => {
                     "profiles.GoodProfile.properties.tokenValue"
                 );
             });
-        
+
             it("should prompt for all secure values given a profile in which no secure profile value matches", async () => {
-                await runTest(
+                await expectSecurePrompt(
                     "noMatchProfile",
                     [
                         "profiles.lpar1.profiles.test.properties.tokenValue",
@@ -898,6 +898,6 @@ describe("Configuration Secure command handler", () => {
                 );
             });
         });
-        
+
     });
 });

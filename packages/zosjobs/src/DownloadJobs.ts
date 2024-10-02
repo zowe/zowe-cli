@@ -128,8 +128,9 @@ export class DownloadJobs {
         }
 
         const writeStream = parms.stream ?? IO.createWriteStream(file);
+        const normalizeResponseNewLines = !(parms.binary || parms.record);
         await ZosmfRestClient.getStreamed(session, JobsConstants.RESOURCE + parameters, [Headers.TEXT_PLAIN_UTF8], writeStream,
-            true);
+            normalizeResponseNewLines);
     }
 
     /**
