@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe z/OS jobs SDK package will be documented in this file.
 
-## Recent Changes
+## `8.1.0`
 
 - BugFix: Fixed error in `DownloadJobs.downloadSpoolContentCommon` method causing binary spool files to be corrupted by newline normalization. [#2282](https://github.com/zowe/zowe-cli/issues/2282)
 

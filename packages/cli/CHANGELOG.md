@@ -3,7 +3,7 @@
 All notable changes to the Zowe CLI package will be documented in this file.
 
 
-## Recent Changes
+## `8.1.0`
 
 - Enhancement: Added `--stateful` flag to `zos-tso issue cmd` to allow declaring the statefulness of the address space being created.  [#2240](https://github.com/zowe/zowe-cli/pull/2240)
 - Enhancement: `--suppress-startup-messages` flag default value changed to `true`. [#2240](https://github.com/zowe/zowe-cli/pull/2240)
