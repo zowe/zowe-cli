@@ -33,12 +33,12 @@ After the desired functions are imported, feel free to use them in the same fash
 
 ```ts
 getPassword("TestService", "AccountA")
-.then((pw) => {
+  .then((pw) => {
     console.log("The password for TestService/AccountA is:", pw);
-})
-.catch((err) => {
+  })
+  .catch((err) => {
     console.error("An error occurred!", err.message);
-});
+  });
 ```
 
 **Examples:**
@@ -63,6 +63,18 @@ await keyring.deletePassword("TestService", "AccountA");
 
 ## Webpacking/bundling alongside your project
 
+**Note for Webpack users:** If you do **_not_** want to use the Secrets SDK, but have Imperative modules imported that reference it (such as `ConvertV1Profiles` or `DefaultCredentialManager`), you must define the `@zowe/secrets-for-zowe-sdk` package in the `externals` section of your Webpack config:
+
+```json
+"externals": {
+    "@zowe/secrets-for-zowe-sdk": "commonjs @zowe/secrets-for-zowe-sdk"
+}
+```
+
+This will prevent Webpack from trying to dynamically resolve the Secrets SDK during compile time. This does not affect the majority of developers, as Webpack omits any unused Imperative modules during the bundling phase.
+
+---
+
 Some projects leverage a JavaScript bundler, such as Webpack or Vite, to minify and compress their Node.js packages.
 While the Secrets SDK does support Webpack, developers who want to bundle the Secrets SDK alongside their package should set up a `prebuilds` folder alongside their package root.
 
@@ -78,7 +90,8 @@ your-pkg/
 │   └── (node binaries for Secrets SDK)
 ```
 
-If you are using ESbuild or Webpack, consider using a copy plugin to copy the `prebuilds` folder from the Secrets SDK *node_modules* folder:
+If you are using ESbuild or Webpack, consider using a copy plug-in to copy the `prebuilds` folder from the Secrets SDK _node_modules_ folder:
+
 - ESbuild: [esbuild-copy-static-files](https://www.npmjs.com/package/esbuild-copy-static-files)
 - Webpack: [copy-webpack-plugin](https://www.npmjs.com/package/copy-webpack-plugin)
 
@@ -86,9 +99,14 @@ Otherwise, use the Node.js script below (**requires Node 16.7.0 and above**). It
 
 ```js
 const { cpSync } = require("fs");
-cpSync("/path/to/node_modules/@zowe/secrets-for-zowe-sdk/prebuilds", "prebuilds", {force: true, recursive: true});
+cpSync(
+  "/path/to/node_modules/@zowe/secrets-for-zowe-sdk/prebuilds",
+  "prebuilds",
+  { force: true, recursive: true }
+);
 ```
-**Note:** The first argument for `cpSync` will vary, depending on where the *node_modules* folder is located in your environment.
+
+**Note:** The first argument for `cpSync` will vary, depending on where the _node_modules_ folder is located in your environment.
 
 We recommend that developers add this logic to a `prepare` script in their `package.json` to guarantee the binaries are up-to-date after installing dependencies.
 Save the above script as a JavaScript file (e.g., `scripts/copyKeyringBinaries.js`), and execute the script:
@@ -102,7 +120,8 @@ Save the above script as a JavaScript file (e.g., `scripts/copyKeyringBinaries.j
 ```
 
 If you are bundling a VSCode extension, and are using a `.vscodeignore` file, you must allow the prebuilds folder to be packaged in the VSIX.  
-Add the following line to your `.vscodeignore` file:  
+Add the following line to your `.vscodeignore` file:
+
 ```
 !prebuilds/**
 ```
@@ -113,14 +132,16 @@ Some extenders might import `keytar` directly as a dependency. In these cases, e
 
 **Take caution when importing** as the import process is slightly different than `node-keytar`:
 
-Before:  
+Before:
+
 ```js
 const keytar = require("node-keytar");
 // ES6 import:
 import * as keytar from "node-keytar";
 ```
 
-After:  
+After:
+
 ```js
 const { keyring } = require("@zowe/secrets-for-zowe-sdk");
 // ES6 import:
