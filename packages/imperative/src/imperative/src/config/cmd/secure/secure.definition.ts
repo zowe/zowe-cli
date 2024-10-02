@@ -39,6 +39,13 @@ export const secureDefinition: ICommandDefinition = {
             aliases: ["p"],
             type: "boolean",
             defaultValue: false
+        },
+        {
+            name: "profile",
+            description: "Specify the profile for which you want to configure secure values.",
+            type: "string",
+            aliases: ["pf"],
+            defaultValue: null
         }
     ],
     examples: [
