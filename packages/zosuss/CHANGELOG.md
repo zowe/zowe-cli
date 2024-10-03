@@ -4,7 +4,7 @@ All notable changes to the Zowe z/OS USS SDK package will be documented in this 
 
 ## Recent Changes
 
-- BugFix: Updated peer dependencies to `^8.0.0`, dropping support for next-tagged versions [#2287](https://github.com/zowe/zowe-cli/pull/2287)
+- BugFix: Updated peer dependencies to `^8.0.0`, dropping support for versions tagged `next`. [#2287](https://github.com/zowe/zowe-cli/pull/2287)
 
 ## `8.0.0`
 
