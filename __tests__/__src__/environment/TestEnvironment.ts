@@ -72,7 +72,7 @@ export class TestEnvironment extends BaseTestEnvironment {
         // Delete profiles and plugindir
         await super.cleanUp(testEnvironment);
 
-         // Deleting resources (if they exist)
+        // Deleting resources (if they exist)
         if (testEnvironment?.resources?.session) {
             const session = testEnvironment.resources.session;
             try{
@@ -80,20 +80,20 @@ export class TestEnvironment extends BaseTestEnvironment {
                     deleteLocalFile(file);
                 }
                 for (const file of testEnvironment.resources.files) {
-                    deleteFiles(session, file);
+                    await deleteFiles(session, file);
                 }
                 for (const job of testEnvironment.resources.jobs) {
-                    deleteJob(session, job);
+                    await deleteJob(session, job);
                 }
                 for (const jobData of testEnvironment.resources.jobData) {
                     if (jobData.jobname && jobData.jobid) {
-                        deleteJobCommon(session, jobData);
+                        await deleteJobCommon(session, jobData);
                     } else {
                         Imperative.console.info('Error: Missing jobname or jobid for jobData:', jobData);
                     }
                 }
                 for (const dataset of testEnvironment.resources.datasets) {
-                    deleteDataset(session, dataset);
+                    await deleteDataset(session, dataset);
                 }
             }catch (error){
                 if (error.mDetails?.httpStatus !== 404) {

@@ -814,7 +814,8 @@ describe("All Download System Tests", () => {
             afterAll(async () => {
                 // Track local and USS files for cleanup
                 testEnvironment.resources.localFiles.push(localDirname);
-                testEnvironment.resources.files.push(dsname, ussname, ussDirname);
+                testEnvironment.resources.datasets.push(dsname);
+                testEnvironment.resources.files.push(ussname, ussDirname);
 
                 await TestEnvironment.cleanUp(testEnvironment);
             });
@@ -1647,7 +1648,16 @@ describe("All Download System Tests", () => {
                 });
 
                 afterAll(async () => {
+                    // Unmount and delete file system
+                    await Unmount.fs(REAL_SESSION, zfsName);
+                    await Delete.zfs(REAL_SESSION, zfsName);
+
+                    // Delete directory recursively
+                    const SSH_SESSION: any = TestEnvironment.createSshSession(testEnvironment);
+                    await Shell.executeSshCwd(SSH_SESSION, `rm testFile.lnk`, ussDirname, jest.fn());
+                    // await Delete.ussFile(REAL_SESSION, ussDirname, true);
                     testEnvironment.resources.localFiles.push(localDirname);
+                    testEnvironment.resources.files.push(ussDirname);
                     await TestEnvironment.cleanUp(testEnvironment);
                 });
 
