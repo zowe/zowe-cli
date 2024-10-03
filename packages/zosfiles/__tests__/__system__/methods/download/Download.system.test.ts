@@ -1099,8 +1099,7 @@ describe("All Download System Tests", () => {
         });
 
         describe("Download USS Directory", () => {
-            describe("Success Scenarios", () => {
-                const testFileContents = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            const testFileContents = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
                 const anotherTestFileContents = testFileContents.toLowerCase();
                 const binaryFileContents = String.fromCharCode(...Array(256).keys());
                 const createZfsOptions: ICreateZfsOptions = {
@@ -1115,6 +1114,69 @@ describe("All Download System Tests", () => {
                 };
                 let zfsName: string;
 
+            beforeAll(async () => {
+                testEnvironment = await TestEnvironment.setUp({
+                    testName: "zos_file_download_uss_directory"
+                });
+                defaultSystem = testEnvironment.systemTestProperties;
+
+                REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
+                testEnvironment.resources.session = REAL_SESSION;
+
+                ussDirname = `${defaultSystem.unix.testdir}/zos_file_download_unecoded`;
+                localDirname = `${testEnvironment.workingDir}/ussDir`;
+
+                const emptyFolder = posix.join(ussDirname, "emptyFolder");
+                const parentFolder = posix.join(ussDirname, "parentFolder");
+                const childFolder = posix.join(parentFolder, "childFolder");
+                const testFile = posix.join(ussDirname, "testFile.txt");
+                const anotherTestFile = posix.join(childFolder, "anotherTestFile.txt");
+                const mountFolder = posix.join(ussDirname, "mountFolder");
+                const binaryFile = posix.join(mountFolder, "binaryFile.bin");
+                const testSymlink = posix.join(ussDirname, "testFile.lnk");
+
+                // Create directories
+                for (const directory of [ussDirname, emptyFolder, parentFolder, childFolder, mountFolder]) {
+                    await Create.uss(REAL_SESSION, directory, "directory");
+                }
+
+                // Create and mount file system
+                zfsName = getUniqueDatasetName(defaultSystem.zosmf.user);
+                await Create.zfs(REAL_SESSION, zfsName, createZfsOptions);
+                await Mount.fs(REAL_SESSION, zfsName, mountFolder, mountZfsOptions);
+
+                // Upload files
+                await Upload.bufferToUssFile(REAL_SESSION, testFile, Buffer.from(testFileContents));
+                await Upload.bufferToUssFile(REAL_SESSION, anotherTestFile, Buffer.from(anotherTestFileContents));
+                await Upload.bufferToUssFile(REAL_SESSION, binaryFile, Buffer.from(binaryFileContents), { binary: true });
+                await Utilities.chtag(REAL_SESSION, binaryFile, Tag.BINARY);
+
+                // Create symlink
+                const SSH_SESSION: any = TestEnvironment.createSshSession(testEnvironment);
+                await Shell.executeSshCwd(SSH_SESSION, `ln -s ${posix.basename(testFile)} ${posix.basename(testSymlink)}`, ussDirname, jest.fn());
+
+                testEnvironment.resources.files.push(testSymlink);
+            });
+
+            afterEach(() => {
+                IO.deleteDirTree(localDirname);
+            });
+
+            afterAll(async () => {
+                // Unmount and delete file system
+                await Unmount.fs(REAL_SESSION, zfsName);
+                await Delete.zfs(REAL_SESSION, zfsName);
+
+                // Delete directory recursively
+                const SSH_SESSION: any = TestEnvironment.createSshSession(testEnvironment);
+                await Shell.executeSshCwd(SSH_SESSION, `rm testFile.lnk`, ussDirname, jest.fn());
+                // await Delete.ussFile(REAL_SESSION, ussDirname, true);
+                testEnvironment.resources.localFiles.push(localDirname);
+                testEnvironment.resources.files.push(ussDirname);
+                await TestEnvironment.cleanUp(testEnvironment);
+            });
+
+            describe("Success Scenarios", () => {
                 const expectDownloaded = (dirname: string, options: IUSSListOptions = {}) => {
                     expect(fs.existsSync(`${dirname}/emptyFolder`)).toBe(true);
                     expect(fs.readdirSync(`${dirname}/emptyFolder`).length).toBe(0);
@@ -1142,68 +1204,6 @@ describe("All Download System Tests", () => {
                         expect(fs.readFileSync(`${dirname}/testFile.lnk`, "utf-8")).toBe(testFileContents);
                     }
                 };
-
-                beforeAll(async () => {
-                    testEnvironment = await TestEnvironment.setUp({
-                        testName: "zos_file_download_uss_directory"
-                    });
-                    defaultSystem = testEnvironment.systemTestProperties;
-
-                    REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
-                    testEnvironment.resources.session = REAL_SESSION;
-
-                    ussDirname = `${defaultSystem.unix.testdir}/zos_file_download`;
-                    localDirname = `${testEnvironment.workingDir}/ussDir`;
-
-                    const emptyFolder = posix.join(ussDirname, "emptyFolder");
-                    const parentFolder = posix.join(ussDirname, "parentFolder");
-                    const childFolder = posix.join(parentFolder, "childFolder");
-                    const testFile = posix.join(ussDirname, "testFile.txt");
-                    const anotherTestFile = posix.join(childFolder, "anotherTestFile.txt");
-                    const mountFolder = posix.join(ussDirname, "mountFolder");
-                    const binaryFile = posix.join(mountFolder, "binaryFile.bin");
-                    const testSymlink = posix.join(ussDirname, "testFile.lnk");
-
-                    // Create directories
-                    for (const directory of [ussDirname, emptyFolder, parentFolder, childFolder, mountFolder]) {
-                        await Create.uss(REAL_SESSION, directory, "directory");
-                    }
-
-                    // Create and mount file system
-                    zfsName = getUniqueDatasetName(defaultSystem.zosmf.user);
-                    await Create.zfs(REAL_SESSION, zfsName, createZfsOptions);
-                    await Mount.fs(REAL_SESSION, zfsName, mountFolder, mountZfsOptions);
-
-                    // Upload files
-                    await Upload.bufferToUssFile(REAL_SESSION, testFile, Buffer.from(testFileContents));
-                    await Upload.bufferToUssFile(REAL_SESSION, anotherTestFile, Buffer.from(anotherTestFileContents));
-                    await Upload.bufferToUssFile(REAL_SESSION, binaryFile, Buffer.from(binaryFileContents), { binary: true });
-                    await Utilities.chtag(REAL_SESSION, binaryFile, Tag.BINARY);
-
-                    // Create symlink
-                    const SSH_SESSION: any = TestEnvironment.createSshSession(testEnvironment);
-                    await Shell.executeSshCwd(SSH_SESSION, `ln -s ${posix.basename(testFile)} ${posix.basename(testSymlink)}`, ussDirname, jest.fn());
-
-                    testEnvironment.resources.files.push(testSymlink);
-                });
-
-                afterEach(() => {
-                    IO.deleteDirTree(localDirname);
-                });
-
-                afterAll(async () => {
-                    // Unmount and delete file system
-                    await Unmount.fs(REAL_SESSION, zfsName);
-                    await Delete.zfs(REAL_SESSION, zfsName);
-
-                    // Delete directory recursively
-                    const SSH_SESSION: any = TestEnvironment.createSshSession(testEnvironment);
-                    await Shell.executeSshCwd(SSH_SESSION, `rm testFile.lnk`, ussDirname, jest.fn());
-                    // await Delete.ussFile(REAL_SESSION, ussDirname, true);
-                    testEnvironment.resources.localFiles.push(localDirname);
-                    testEnvironment.resources.files.push(ussDirname);
-                    await TestEnvironment.cleanUp(testEnvironment);
-                });
 
                 it("should download directory recursively", async () => {
                     let caughtError;
@@ -1386,7 +1386,7 @@ describe("All Download System Tests", () => {
 
                         // convert the data set name to use as a path/file
                         const regex = /\./gi;
-                        file = dsname.replace(regex, "/") + ".txt";
+                        file = dsname_seq.replace(regex, "/") + ".txt";
                         file = file.toLowerCase();
                         // Compare the downloaded contents to those uploaded
                         const fileContents = stripNewLines(fs.readFileSync(`${file}`).toString());
@@ -1416,7 +1416,7 @@ describe("All Download System Tests", () => {
 
                         // convert the data set name to use as a path/file
                         const regex = /\./gi;
-                        file = dsname.replace(regex, "/");
+                        file = dsname_part.replace(regex, "/");
                         file = file.toLowerCase();
                         // Compare the downloaded contents to those uploaded
                         const fileContents = stripNewLines(fs.readFileSync(`${file}/member.txt`).toString());
@@ -1444,7 +1444,7 @@ describe("All Download System Tests", () => {
 
                         // convert the data set name to use as a path/file
                         const regex = /\./gi;
-                        file = dsname.toLowerCase().replace(regex, "/");
+                        file = dsname_all_po.toLowerCase().replace(regex, "/");
                         // Compare the downloaded contents to those uploaded
                         const fileContents = stripNewLines(fs.readFileSync(`${file}/member.txt`).toString());
                         expect(fileContents).toEqual(testData);
@@ -1596,6 +1596,14 @@ describe("All Download System Tests", () => {
                 };
 
                 beforeAll(async () => {
+                    testEnvironment = await TestEnvironment.setUp({
+                        testName: "zos_file_download_uss_dir_encoded"
+                    });
+                    defaultSystem = testEnvironment.systemTestProperties;
+                    REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
+                    testEnvironment.resources.session = REAL_SESSION;
+
+                    ussDirname = `${defaultSystem.unix.testdir}/ENCO#EDzos_file_download`;
                     const emptyFolder = posix.join(ussDirname, "emptyFolder");
                     const parentFolder = posix.join(ussDirname, "parentFolder");
                     const childFolder = posix.join(parentFolder, "childFolder");
@@ -1632,6 +1640,10 @@ describe("All Download System Tests", () => {
                     // Create symlink
                     const SSH_SESSION: any = TestEnvironment.createSshSession(testEnvironment);
                     await Shell.executeSshCwd(SSH_SESSION, `ln -s ${posix.basename(testFile)} ${posix.basename(testSymlink)}`, ussDirname, jest.fn());                    testEnvironment.resources.files.push(ussDirname, mountFolder, testFile, anotherTestFile, binaryFile, testSymlink);
+                });
+
+                afterEach(() => {
+                    IO.deleteDirTree(localDirname);
                 });
 
                 afterAll(async () => {
