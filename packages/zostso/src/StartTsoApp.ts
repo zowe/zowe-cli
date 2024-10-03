@@ -67,19 +67,26 @@ export class StartTsoApp {
 
         // Address space application starting
         const endpoint = `${TsoConstants.RESOURCE}/app/${params.servletKey}/${params.appKey}`;
-        const apiResponse =
-            await ZosmfRestClient.postExpectJSON<IStartASAppResponse>(
-                session,
-                endpoint,
-                [Headers.APPLICATION_JSON],
-                {
-                    startcmd: `${params.startupCommand} '&1 &2 ${params.queueID}'`,
-                }
-            );
-        // Add newly created queueID and servletKey information to return object.
-        apiResponse.queueID = params.queueID;
-        apiResponse.servletKey = params.servletKey;
+        const apiResponse = await ZosmfRestClient.postExpectJSON<any>(
+            session,
+            endpoint,
+            [Headers.APPLICATION_JSON],
+            {
+                startcmd: `${params.startupCommand} '&1 &2 ${params.queueID}'`,
+            }
+        );
+        const formattedApiResponse: IStartASAppResponse = {
+            version: apiResponse.ver,
+            reused: apiResponse.reused,
+            timeout: apiResponse.timeout,
+            servletKey: apiResponse.servletKey ?? null,
+            queueID: apiResponse.queueID ?? null,
+            tsoData: apiResponse.tsoData.map((message: any) => ({
+                VERSION: message["TSO MESSAGE"].VERSION,
+                DATA: message["TSO MESSAGE"].DATA,
+            })),
+        };
 
-        return apiResponse;
+        return formattedApiResponse;
     }
 }

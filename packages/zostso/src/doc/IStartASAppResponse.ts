@@ -9,6 +9,8 @@
 *
 */
 
+import { ITsoMessage } from "../../lib";
+
 export interface IStartASAppResponse {
     /**
      * Version in response
@@ -21,7 +23,7 @@ export interface IStartASAppResponse {
      * @type {boolean}
      * @memberof IStartASAppResponse
      */
-    tsoData: string[]
+    tsoData: ITsoMessage[]
     /**
      * Reused boolean
      * @type {boolean}
