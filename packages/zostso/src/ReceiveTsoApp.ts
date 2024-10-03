@@ -27,7 +27,7 @@ export class ReceiveTsoApp {
      * @param {AbstractSession} session - z/OSMF connection info
      * @param {string}  accountNumber - this key of IStartTsoParms required, because it cannot be default.
      * @param {IStartTsoParms} params - optional object with required parameters, @see {IStartTsoParms}
-     * @returns {Promise<IStartASAppResponse>} command response on resolve, @see {IStartASAppResponse}
+     * @returns {Promise<IASAppResponse>} command response on resolve, @see {IASAppResponse}
      * @memberof StartTso
      */
     public static async receive(

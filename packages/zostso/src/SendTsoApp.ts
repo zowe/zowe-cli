@@ -14,7 +14,7 @@ import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { IStartTsoParms } from "./doc/input/IStartTsoParms";
 import { TsoValidator } from "./TsoValidator";
 import { noAccountNumber, TsoConstants } from "./TsoConstants";
-import { IStartASAppResponse } from "./doc/IStartASAppResponse";
+import { IASAppResponse } from "./doc/IASAppResponse";
 import { ITsoAppCommunicationParms } from "./doc/input/ITsoAppCommunicationParms";
 /**
  * Send message to TSO App running at an address space
@@ -28,7 +28,7 @@ export class SendTsoApp {
      * @param {AbstractSession} session - z/OSMF connection info
      * @param {string}  accountNumber - this key of IStartTsoParms required, because it cannot be default.
      * @param {IStartTsoParms} parms - optional object with required parameters, @see {IStartTsoParms}
-     * @returns {Promise<IStartASAppResponse>} command response on resolve, @see {IStartASAppResponse}
+     * @returns {Promise<IASAppResponse>} command response on resolve, @see {IASAppResponse}
      * @memberof StartTso
      */
     public static async send(
@@ -36,7 +36,7 @@ export class SendTsoApp {
         accountNumber: string,
         params: ITsoAppCommunicationParms,
         startParms: IStartTsoParms
-    ): Promise<IStartASAppResponse> {
+    ): Promise<IASAppResponse> {
         TsoValidator.validateSession(session);
         TsoValidator.validateNotEmptyString(
             accountNumber,
@@ -45,7 +45,7 @@ export class SendTsoApp {
 
         const endpoint = `${TsoConstants.RESOURCE}/app/${params.servletKey}/${params.appKey}`;
         const apiResponse =
-            await ZosmfRestClient.putExpectJSON<IStartASAppResponse>(
+            await ZosmfRestClient.putExpectJSON<IASAppResponse>(
                 session,
                 endpoint,
                 [Headers.CONTENT_TYPE, "text/plain"],

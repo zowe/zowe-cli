@@ -11,41 +11,41 @@
 
 import { ITsoMessage } from "../../lib";
 
-export interface IStartASAppResponse {
+export interface IASAppResponse {
     /**
      * Version in response
      * @type {boolean}
-     * @memberof IStartASAppResponse
+     * @memberof IASAppResponse
      */
     version: string
     /**
      * Data from response
      * @type {boolean}
-     * @memberof IStartASAppResponse
+     * @memberof IASAppResponse
      */
     tsoData: ITsoMessage[]
     /**
      * Reused boolean
      * @type {boolean}
-     * @memberof IStartASAppResponse
+     * @memberof IASAppResponse
      */
     reused: boolean
     /**
      * Data from response
      * @type {boolean}
-     * @memberof IStartASAppResponse
+     * @memberof IASAppResponse
      */
     timeout: boolean
     /**
      * Servlet key from IZosmfTsoResponse
      * @type {string}
-     * @memberof IStartASAppResponse
+     * @memberof IASAppResponse
      */
     servletKey?: string;
     /**
      * Servlet key from IZosmfTsoResponse
      * @type {string}
-     * @memberof IStartASAppResponse
+     * @memberof IASAppResponse
      */
     queueID?: string;
 }

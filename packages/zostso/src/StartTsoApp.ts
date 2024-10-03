@@ -14,7 +14,7 @@ import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { IStartTsoParms } from "./doc/input/IStartTsoParms";
 import { TsoValidator } from "./TsoValidator";
 import { noAccountNumber, TsoConstants } from "./TsoConstants";
-import { IStartASAppResponse } from "./doc/IStartASAppResponse";
+import { IASAppResponse } from "./doc/IASAppResponse";
 import { IStartTsoAppParms } from "./doc/input/IStartTsoAppParms";
 import { StartTso } from "./StartTso";
 import { IIssueResponse } from "../src";
@@ -30,7 +30,7 @@ export class StartTsoApp {
      * @param {AbstractSession} session - z/OSMF connection info
      * @param {string}  accountNumber - this key of IStartTsoParms required, because it cannot be default.
      * @param {IStartTsoParms} parms - optional object with required parameters, @see {IStartTsoParms}
-     * @returns {Promise<IStartASAppResponse>} command response on resolve, @see {IStartASAppResponse}
+     * @returns {Promise<IASAppResponse>} command response on resolve, @see {IASAppResponse}
      * @memberof StartTso
      */
     public static async start(
@@ -38,7 +38,7 @@ export class StartTsoApp {
         accountNumber: string,
         params: IStartTsoAppParms,
         startParms: IStartTsoParms
-    ): Promise<IStartASAppResponse> {
+    ): Promise<IASAppResponse> {
         TsoValidator.validateSession(session);
         TsoValidator.validateNotEmptyString(
             accountNumber,
@@ -75,7 +75,7 @@ export class StartTsoApp {
                 startcmd: `${params.startupCommand} '&1 &2 ${params.queueID}'`,
             }
         );
-        const formattedApiResponse: IStartASAppResponse = {
+        const formattedApiResponse: IASAppResponse = {
             version: apiResponse.ver,
             reused: apiResponse.reused,
             timeout: apiResponse.timeout,
