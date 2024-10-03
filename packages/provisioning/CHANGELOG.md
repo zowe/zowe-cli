@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe provisioning SDK package will be documented in this file.
 
-## Recent Changes
+## `8.1.1`
 
 - BugFix: Updated peer dependencies to `^8.0.0`, dropping support for versions tagged `next`. [#2287](https://github.com/zowe/zowe-cli/pull/2287)
 
