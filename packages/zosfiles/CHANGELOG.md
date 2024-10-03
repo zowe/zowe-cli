@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Fixed an issue with the `List.dataSetsMatchingPattern` method where migrated data sets could break fetching attributes for other data sets. [#2285](https://github.com/zowe/zowe-cli/issues/2285)
+
 ## `7.28.3`
 
 - BugFix: Refactored code to reduce the use of deprecated functions to prepare for upcoming Node.js 22 support. [#2191](https://github.com/zowe/zowe-cli/issues/2191)

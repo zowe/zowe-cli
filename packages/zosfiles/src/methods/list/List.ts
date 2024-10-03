@@ -389,7 +389,7 @@ export class List {
                         listsInitiated++;
                     }
 
-                    return List.dataSet(session, dataSetObj.dsname, { attributes: true }).then(
+                    return List.dataSet(session, dataSetObj.dsname, { attributes: true, maxLength: 1 }).then(
                         (tempResponse) => {
                             Object.assign(dataSetObj, tempResponse.apiResponse.items[0]);
                         },
