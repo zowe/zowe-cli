@@ -4,7 +4,7 @@ All notable changes to the Zowe z/OS files SDK package will be documented in thi
 
 ## Recent Changes
 
-- BugFix: Fixed an issue with `List.dataSetsMatchingPattern` method where migrated data sets could break fetching attributes for other data sets. [#2285](https://github.com/zowe/zowe-cli/issues/2285)
+- BugFix: Fixed an issue with the `List.dataSetsMatchingPattern` method where migrated data sets could break fetching attributes for other data sets. [#2285](https://github.com/zowe/zowe-cli/issues/2285)
 
 ## `8.0.0`
 
