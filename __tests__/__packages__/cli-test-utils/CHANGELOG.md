@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI test utils package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated peer dependencies to `^8.0.0`, dropping support for next-tagged versions [#2287](https://github.com/zowe/zowe-cli/pull/2287)
+
 ## `8.0.0`
 
 - MAJOR: v8.0.0 Release
