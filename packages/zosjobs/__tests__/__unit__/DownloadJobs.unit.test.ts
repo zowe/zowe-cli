@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, ImperativeError, IO } from "@zowe/imperative";
+import { AbstractSession, Headers, ImperativeError, IO } from "@zowe/imperative";
 import { DownloadJobs, GetJobs, IDownloadAllSpoolContentParms, IDownloadSpoolContentParms, IJobFile } from "../../src";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { Writable } from "stream";
@@ -103,10 +103,7 @@ describe("DownloadJobs", () => {
 
         describe("downloadAllSpoolContentCommon", () => {
             it("should allow users to call downloadAllSpoolContentCommon with correct parameters", async () => {
-                let uri: string = "";
-                ZosmfRestClient.getStreamed = jest.fn(async (session: AbstractSession, resource: string, reqHeaders?: any[]): Promise<any> => {
-                    uri = resource;
-                });
+                const getStreamedSpy = jest.spyOn(ZosmfRestClient, "getStreamed");
                 const allSpoolParms: IDownloadAllSpoolContentParms = {
                     jobid: fakeJobID,
                     jobname: fakeJobName,
@@ -120,14 +117,15 @@ describe("DownloadJobs", () => {
 
                 expect(GetJobs.getSpoolFiles).toHaveBeenCalled();
                 expect(IO.createDirsSyncFromFilePath).toHaveBeenCalledWith(expectedFile);
-                expect(uri).not.toContain("fileEncoding");
+                expect(getStreamedSpy).toHaveBeenCalledTimes(1);
+                const [_session, resource, reqHeaders, _responseStream, normalizeResponseNewLines] = getStreamedSpy.mock.calls[0];
+                expect(resource).not.toContain("fileEncoding");
+                expect(reqHeaders).toContain(Headers.TEXT_PLAIN_UTF8);
+                expect(normalizeResponseNewLines).toBe(true);
             });
 
             it("should allow users to call downloadAllSpoolContentCommon with correct parameters and binary mode", async () => {
-                let uri: string = "";
-                ZosmfRestClient.getStreamed = jest.fn(async (session: AbstractSession, resource: string, reqHeaders?: any[]): Promise<any> => {
-                    uri = resource;
-                });
+                const getStreamedSpy = jest.spyOn(ZosmfRestClient, "getStreamed");
                 const allSpoolParms: IDownloadAllSpoolContentParms = {
                     jobid: fakeJobID,
                     jobname: fakeJobName,
@@ -142,14 +140,14 @@ describe("DownloadJobs", () => {
 
                 expect(GetJobs.getSpoolFiles).toHaveBeenCalled();
                 expect(IO.createDirsSyncFromFilePath).toHaveBeenCalledWith(expectedFile);
-                expect(uri).toContain("?mode=binary");
+                expect(getStreamedSpy).toHaveBeenCalledTimes(1);
+                const [_session, resource, _reqHeaders, _responseStream, normalizeResponseNewLines] = getStreamedSpy.mock.calls[0];
+                expect(resource).toContain("?mode=binary");
+                expect(normalizeResponseNewLines).toBe(false);
             });
 
             it("should allow users to call downloadAllSpoolContentCommon with correct parameters and record mode", async () => {
-                let uri: string = "";
-                ZosmfRestClient.getStreamed = jest.fn(async (session: AbstractSession, resource: string, reqHeaders?: any[]): Promise<any> => {
-                    uri = resource;
-                });
+                const getStreamedSpy = jest.spyOn(ZosmfRestClient, "getStreamed");
                 const allSpoolParms: IDownloadAllSpoolContentParms = {
                     jobid: fakeJobID,
                     jobname: fakeJobName,
@@ -164,7 +162,10 @@ describe("DownloadJobs", () => {
 
                 expect(GetJobs.getSpoolFiles).toHaveBeenCalled();
                 expect(IO.createDirsSyncFromFilePath).toHaveBeenCalledWith(expectedFile);
-                expect(uri).toContain("?mode=record");
+                expect(getStreamedSpy).toHaveBeenCalledTimes(1);
+                const [_session, resource, _reqHeaders, _responseStream, normalizeResponseNewLines] = getStreamedSpy.mock.calls[0];
+                expect(resource).toContain("?mode=record");
+                expect(normalizeResponseNewLines).toBe(false);
             });
 
             it("should allow users to call downloadAllSpoolContentCommon with a job containing duplicate step names", async () => {
