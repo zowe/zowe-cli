@@ -601,7 +601,7 @@ export class CliUtils {
                 prompt: message,
                 silent: opts?.hideText,
                 replace: opts?.maskChar,
-                timeout: secToWait ? (secToWait * 1000) : null  // eslint-disable-line @typescript-eslint/no-magic-numbers
+                timeout: secToWait * 1000  // eslint-disable-line @typescript-eslint/no-magic-numbers
             }, (error: any, result: string) => {
                 if (error == null) {
                     resolve(result);
