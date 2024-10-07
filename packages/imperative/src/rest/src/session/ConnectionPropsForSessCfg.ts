@@ -399,14 +399,14 @@ export class ConnectionPropsForSessCfg {
 
                 reasonForPrompts += "Therefore, you will be asked for the connection properties " +
                     "that are required to complete your command.\n";
-                connOpts.parms.response.console.log(TextUtils.wordWrap(
+                connOpts?.parms?.response?.console?.log(TextUtils.wordWrap(
                     TextUtils.chalk.yellowBright(reasonForPrompts))
                 );
             }
 
             const answers: { [key: string]: any } = {};
-            const profileSchema = this.loadSchemaForSessCfgProps(connOpts.parms, promptForValues);
-            const serviceDescription = connOpts.serviceDescription || "your service";
+            const profileSchema = this.loadSchemaForSessCfgProps(connOpts?.parms, promptForValues);
+            const serviceDescription = connOpts?.serviceDescription || "your service";
 
             for (const value of promptForValues) {
                 let answer;
@@ -417,7 +417,7 @@ export class ConnectionPropsForSessCfg {
                     if (hideText) {
                         promptText += " (will be hidden)";
                     }
-                    answer = await this.clientPrompt(`${promptText}: `, { hideText, parms: connOpts.parms });
+                    answer = await this.clientPrompt(`${promptText}: `, { hideText, parms: connOpts?.parms });
                     if (answer === null) {
                         throw new ImperativeError({ msg: `Timed out waiting for ${value}.` });
                     }
