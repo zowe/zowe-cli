@@ -384,7 +384,7 @@ export class ConnectionPropsForSessCfg {
              * which do not create a mock for the connOpts.parms.response.console.log property.
              * In the real world, that property always exists for this CLI-only path of logic.
              */
-            if (promptForValues.length > 0 && connOpts?.parms?.response?.console?.log) {
+            if (promptForValues.length > 0 && connOpts.parms?.response.console.log) {
                 // We need to prompt for some values. Determine why we need to prompt.
                 let reasonForPrompts: string = "";
                 if (ImperativeConfig.instance.config?.exists) {
@@ -399,14 +399,14 @@ export class ConnectionPropsForSessCfg {
 
                 reasonForPrompts += "Therefore, you will be asked for the connection properties " +
                     "that are required to complete your command.\n";
-                connOpts?.parms?.response?.console?.log(TextUtils.wordWrap(
+                connOpts.parms.response.console.log(TextUtils.wordWrap(
                     TextUtils.chalk.yellowBright(reasonForPrompts))
                 );
             }
 
             const answers: { [key: string]: any } = {};
-            const profileSchema = this.loadSchemaForSessCfgProps(connOpts?.parms, promptForValues);
-            const serviceDescription = connOpts?.serviceDescription || "your service";
+            const profileSchema = this.loadSchemaForSessCfgProps(connOpts.parms, promptForValues);
+            const serviceDescription = connOpts.serviceDescription || "your service";
 
             for (const value of promptForValues) {
                 let answer;
@@ -417,7 +417,7 @@ export class ConnectionPropsForSessCfg {
                     if (hideText) {
                         promptText += " (will be hidden)";
                     }
-                    answer = await this.clientPrompt(`${promptText}: `, { hideText, parms: connOpts?.parms });
+                    answer = await this.clientPrompt(`${promptText}: `, { hideText, parms: connOpts.parms });
                     if (answer === null) {
                         throw new ImperativeError({ msg: `Timed out waiting for ${value}.` });
                     }
