@@ -1498,7 +1498,7 @@ describe("z/OS Files - List", () => {
             });
 
             expect(listDataSetSpy).toHaveBeenCalledTimes(3);
-            expect(listDataSetSpy).toHaveBeenCalledWith(dummySession, dataSetPS.dsname, {attributes: true});
+            expect(listDataSetSpy).toHaveBeenLastCalledWith(dummySession, dataSetPS.dsname, {attributes: true, maxLength: 1});
         });
 
         it("should handle an error when the exclude pattern is specified", async () => {

@@ -2,16 +2,11 @@ module.exports = {
     branches: [
         {
             name: "master",
-            level: "minor"
+            level: "minor",
         },
         {
             name: "zowe-v?-lts",
             level: "patch"
-        },
-        {
-            name: "next",
-            level: "none",
-            prerelease: true
         }
     ],
     plugins: [
@@ -35,7 +30,7 @@ module.exports = {
         }],
         ["@octorelease/lerna", {
             aliasTags: {
-                "latest": ["zowe-v2-lts"]
+                "latest": ["zowe-v3-lts"]
             },
             pruneShrinkwrap: ["@zowe/cli"],
             smokeTest: true

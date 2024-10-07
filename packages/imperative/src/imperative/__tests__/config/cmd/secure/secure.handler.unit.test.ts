@@ -10,7 +10,7 @@
 */
 
 import { Logger } from "../../../../../logger";
-import { Config } from "../../../../../config/src/Config";
+import { Config } from "../../../../../config";
 import { IConfig, IConfigOpts, IConfigProfile } from "../../../../../config";
 import { ImperativeConfig } from "../../../../../utilities";
 import { IImperativeConfig } from "../../../../src/doc/IImperativeConfig";
@@ -760,7 +760,7 @@ describe("Configuration Secure command handler", () => {
             expect(writeFileSyncSpy).toHaveBeenNthCalledWith(1, fakeProjPath, JSON.stringify(compObj, null, 4)); // Config
         });
 
-        it("should fail to invoke auth handler if it throws an error", async () => {
+        it("should only prompt for profiles that matched profile param", async () => {
             const eco = lodash.cloneDeep(expectedProjConfigObjectWithToken);
 
             readFileSyncSpy.mockReturnValueOnce(JSON.stringify(eco));
@@ -792,5 +792,112 @@ describe("Configuration Secure command handler", () => {
             expect(keytarSetPasswordSpy).toHaveBeenCalledTimes(0);
             expect(writeFileSyncSpy).toHaveBeenCalledTimes(0);
         });
+        describe("profile param tests", () => {
+            let handler: SecureHandler;
+            let params: any;
+            let myPromptSpy: jest.SpyInstance;
+
+            beforeEach(() => {
+                handler = new SecureHandler();
+                params = getIHandlerParametersObject();
+
+                params.arguments.userConfig = true;
+                params.arguments.globalConfig = true;
+
+                // Mock the console prompt to return an empty string
+                myPromptSpy = jest.spyOn(params.response.console, "prompt").mockResolvedValue("");
+
+                // Reset spies
+                keytarGetPasswordSpy.mockReturnValue(fakeSecureData);
+                keytarSetPasswordSpy.mockImplementation();
+                keytarDeletePasswordSpy.mockImplementation();
+                readFileSyncSpy = jest.spyOn(fs, "readFileSync");
+                writeFileSyncSpy = jest.spyOn(fs, "writeFileSync");
+                existsSyncSpy = jest.spyOn(fs, "existsSync");
+                writeFileSyncSpy.mockImplementation();
+            });
+
+            const expectSecurePrompt = async (profile: string, secureFields: string[], expectedPromptTimes: number, expectedSecureField: string) => {
+                params.arguments.profile = profile;
+
+                // Mock fs calls
+                const eco = lodash.cloneDeep(expectedGlobalUserConfigObject);
+                eco.$schema = "./fakeapp.schema.json";
+                readFileSyncSpy.mockReturnValueOnce(JSON.stringify(eco));
+                existsSyncSpy.mockReturnValueOnce(false).mockReturnValueOnce(false).mockReturnValueOnce(true).mockReturnValue(false);
+                searchSpy.mockReturnValueOnce(fakeProjUserPath).mockReturnValueOnce(fakeProjPath);
+                await setupConfigToLoad(undefined, configOpts);
+
+                // Setup mock secure fields
+                jest.spyOn(ImperativeConfig.instance.config.api.secure, "secureFields").mockReturnValue(secureFields);
+
+                let caughtError;
+                try {
+                    await handler.process(params);
+                } catch (error) {
+                    caughtError = error;
+                }
+
+                // Verify prompt count and inclusion of expected secure fields
+                expect(myPromptSpy).toHaveBeenCalledTimes(expectedPromptTimes);
+                if (expectedPromptTimes > 0) {
+                    expect(myPromptSpy).toHaveBeenCalledWith(expect.stringContaining(expectedSecureField), { "hideText": true });
+                }
+                expect(caughtError).toBeUndefined();
+            };
+
+            it("should only prompt for secure values that match the profile passed in through params", async () => {
+                await expectSecurePrompt(
+                    "GoodProfile",
+                    [
+                        "profiles.noMatchProfile.properties.tokenValue",
+                        "profiles.GoodProfile.properties.tokenValue",
+                        "profiles.abcdefg.properties.tokenValue"
+                    ],
+                    1,
+                    "profiles.GoodProfile.properties.tokenValue"
+                );
+            });
+
+            it("should only prompt for secure values that match the profile passed in through params - nested profile", async () => {
+                await expectSecurePrompt(
+                    "lpar1.GoodProfile",
+                    [
+                        "profiles.noMatchProfile.properties.tokenValue",
+                        "profiles.lpar1.profiles.GoodProfile.properties.tokenValue",
+                        "profiles.abcdefg.properties.tokenValue"
+                    ],
+                    1,
+                    "profiles.lpar1.profiles.GoodProfile.properties.tokenValue"
+                );
+            });
+
+            it("should only prompt for secure values that match the profile passed in through params - ignore casing", async () => {
+                await expectSecurePrompt(
+                    "gOODpROFILE",
+                    [
+                        "profiles.noMatchProfile.properties.tokenValue",
+                        "profiles.GoodProfile.properties.tokenValue",
+                        "profiles.abcdefg.properties.tokenValue"
+                    ],
+                    1,
+                    "profiles.GoodProfile.properties.tokenValue"
+                );
+            });
+
+            it("should prompt for all secure values given a profile in which no secure profile value matches", async () => {
+                await expectSecurePrompt(
+                    "noMatchProfile",
+                    [
+                        "profiles.lpar1.profiles.test.properties.tokenValue",
+                        "profiles.GoodProfile.properties.tokenValue",
+                        "profiles.abcdefg.properties.tokenValue"
+                    ],
+                    3,
+                    "profiles.lpar1.profiles.test.properties.tokenValue"
+                );
+            });
+        });
+
     });
 });

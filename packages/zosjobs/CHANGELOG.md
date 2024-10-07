@@ -2,6 +2,22 @@
 
 All notable changes to the Zowe z/OS jobs SDK package will be documented in this file.
 
+## `8.1.1`
+
+- BugFix: Updated peer dependencies to `^8.0.0`, dropping support for versions tagged `next`. [#2287](https://github.com/zowe/zowe-cli/pull/2287)
+
+## `8.1.0`
+
+- BugFix: Fixed error in `DownloadJobs.downloadSpoolContentCommon` method causing binary spool files to be corrupted by newline normalization. [#2282](https://github.com/zowe/zowe-cli/issues/2282)
+
+## `8.0.0`
+
+- MAJOR: v8.0.0 Release
+
+## `8.0.0-next.202409191615`
+
+- Update: Final prerelease
+
 ## `8.0.0-next.202406111728`
 
 - BugFix: Fixed error in `DownloadJobs.downloadSpoolContentCommon` method when encoding parameter is not specified. [#2173](https://github.com/zowe/zowe-cli/pull/2173)
@@ -21,7 +37,7 @@ All notable changes to the Zowe z/OS jobs SDK package will be documented in this
 
 ## `8.0.0-next.202402211923`
 
-- Enhancement: New `SeachJob.searchJobs` class and method, which can be used to search spool files for a specified string or regular expression. 
+- Enhancement: New `SeachJob.searchJobs` class and method, which can be used to search spool files for a specified string or regular expression.
 
 ## `8.0.0-next.202402021649`
 
