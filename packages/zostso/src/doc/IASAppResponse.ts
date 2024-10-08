@@ -9,7 +9,7 @@
 *
 */
 
-import { ITsoMessage } from "../../lib";
+import { ITsoMessage } from "../../src";
 
 export interface IASAppResponse {
     /**

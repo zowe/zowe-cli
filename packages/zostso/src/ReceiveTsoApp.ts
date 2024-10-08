@@ -14,7 +14,7 @@ import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { TsoValidator } from "./TsoValidator";
 import { noAccountNumber, TsoConstants } from "./TsoConstants";
 import { ITsoAppCommunicationParms } from "./doc/input/ITsoAppCommunicationParms";
-
+import { IASAppResponse } from "./doc/IASAppResponse";
 /**
  * Send message to TSO App running at an address space
  * @export
@@ -33,8 +33,8 @@ export class ReceiveTsoApp {
     public static async receive(
         session: AbstractSession,
         accountNumber: string,
-        params: ITsoAppCommunicationParms,
-    ): Promise<string> {
+        params: ITsoAppCommunicationParms
+    ): Promise<IASAppResponse> {
         TsoValidator.validateSession(session);
         TsoValidator.validateNotEmptyString(
             accountNumber,
@@ -42,12 +42,42 @@ export class ReceiveTsoApp {
         );
 
         const endpoint = `${TsoConstants.RESOURCE}/app/${params.servletKey}/${params.appKey}`;
-        const apiResponse =
-            await ZosmfRestClient.getExpectString(
-                session,
-                endpoint,
-            );
+        let combinedResponse: IASAppResponse | null = null;
 
-        return apiResponse;
+        let endKeyword: boolean = false;
+        do {
+            const apiResponse = await ZosmfRestClient.getExpectJSON<
+                IASAppResponse & { ver: string }
+            >(session, endpoint);
+
+            const formattedApiResponse: IASAppResponse = {
+                version: apiResponse.ver,
+                reused: apiResponse.reused,
+                timeout: apiResponse.timeout,
+                servletKey: apiResponse.servletKey ?? null,
+                queueID: apiResponse.queueID ?? null,
+                tsoData: apiResponse.tsoData.map((message: any) => {
+                    const messageKey = message["TSO MESSAGE"]
+                        ? "TSO MESSAGE"
+                        : "TSO PROMPT";
+                    return {
+                        VERSION: message[messageKey].VERSION,
+                        DATA: message[messageKey].DATA,
+                    };
+                }),
+            };
+
+            if (combinedResponse === null) {
+                combinedResponse = formattedApiResponse;
+            } else {
+                combinedResponse.tsoData.push(...formattedApiResponse.tsoData);
+            }
+
+            endKeyword = formattedApiResponse.tsoData.some(
+                (data) => data.DATA.trim() === "READY"
+            );
+        } while (!endKeyword && params.receiveUntil);
+
+        return combinedResponse!;
     }
 }

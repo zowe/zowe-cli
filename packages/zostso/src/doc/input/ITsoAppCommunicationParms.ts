@@ -15,7 +15,6 @@
  * @interface ITsoAppCommunicationParms
  */
 export interface ITsoAppCommunicationParms {
-
     /**
      * Body contents being sent to TSO address space app
      * @type {string}
@@ -34,4 +33,10 @@ export interface ITsoAppCommunicationParms {
      * @memberof ITsoAppCommunicationParms
      */
     servletKey: string;
+    /**
+     * Keep receiving until end keyword is found.
+     * @type {boolean}
+     * @memberof ITsoAppCommunicationParms
+     */
+    receiveUntil?: boolean;
 }

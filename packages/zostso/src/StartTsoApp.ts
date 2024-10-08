@@ -67,7 +67,7 @@ export class StartTsoApp {
 
         // Address space application starting
         const endpoint = `${TsoConstants.RESOURCE}/app/${params.servletKey}/${params.appKey}`;
-        const apiResponse = await ZosmfRestClient.postExpectJSON<any>(
+        const apiResponse = await ZosmfRestClient.postExpectJSON<IASAppResponse&{ver: string}>(
             session,
             endpoint,
             [Headers.APPLICATION_JSON],
@@ -81,10 +81,13 @@ export class StartTsoApp {
             timeout: apiResponse.timeout,
             servletKey: apiResponse.servletKey ?? null,
             queueID: apiResponse.queueID ?? null,
-            tsoData: apiResponse.tsoData.map((message: any) => ({
-                VERSION: message["TSO MESSAGE"].VERSION,
-                DATA: message["TSO MESSAGE"].DATA,
-            })),
+            tsoData: apiResponse.tsoData.map((message: any) => {
+                const messageKey = message["TSO MESSAGE"] ? "TSO MESSAGE" : "TSO PROMPT";
+                return {
+                    VERSION: message[messageKey].VERSION,
+                    DATA: message[messageKey].DATA,
+                };
+            }),
         };
 
         return formattedApiResponse;

@@ -36,6 +36,14 @@ export const ReceiveASApp: ICommandDefinition = {
             description: "Servlet Key",
             type: "string",
             required: true
+        },
+        {
+            name: "recieveUntil",
+            aliases: ["ru"],
+            description: "Recieves data until keyword is received or timeout",
+            type: "boolean",
+            required: false,
+            defaultValue: false
         }
     ] as ICommandOptionDefinition[]),
     examples: [],

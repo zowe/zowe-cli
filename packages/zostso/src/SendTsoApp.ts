@@ -45,13 +45,23 @@ export class SendTsoApp {
 
         const endpoint = `${TsoConstants.RESOURCE}/app/${params.servletKey}/${params.appKey}`;
         const apiResponse =
-            await ZosmfRestClient.putExpectJSON<IASAppResponse>(
+            await ZosmfRestClient.putExpectJSON<IASAppResponse&{ver: string}>(
                 session,
                 endpoint,
                 [Headers.CONTENT_TYPE, "text/plain"],
                 params.message
             );
-
-        return apiResponse;
+            const formattedApiResponse: IASAppResponse = {
+                version: apiResponse.ver,
+                reused: apiResponse.reused,
+                timeout: apiResponse.timeout,
+                servletKey: apiResponse.servletKey ?? null,
+                queueID: apiResponse.queueID ?? null,
+                tsoData: apiResponse.tsoData.map((message: any) => ({
+                    VERSION: message["TSO MESSAGE"].VERSION,
+                    DATA: message["TSO MESSAGE"].DATA,
+                })),
+            };
+        return formattedApiResponse;
     }
 }
