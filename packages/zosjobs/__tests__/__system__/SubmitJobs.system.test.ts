@@ -36,7 +36,7 @@ describe("Submit Jobs - System Tests", () => {
         testEnvironment = await TestEnvironment.setUp({
             testName: "zos_submit_jobs"
         });
-        REAL_SESSION = await TestEnvironment.createZosmfSession(testEnvironment);
+        REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
         testEnvironment.resources.session = REAL_SESSION;
 
         systemProps = testEnvironment.systemTestProperties;

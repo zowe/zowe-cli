@@ -9,14 +9,14 @@
 *
 */
 
-import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { Session } from "@zowe/imperative";
-import { ITestEnvironment, runCliScript } from "@zowe/cli-test-utils";
+import { runCliScript } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { getUniqueDatasetName } from "../../../../../../../__tests__/__src__/TestUtils";
-import { Upload, ZosFilesConstants } from "@zowe/zos-files-for-zowe-sdk";
+import { Upload } from "@zowe/zos-files-for-zowe-sdk";
 import { join } from "path";
+import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/ITestEnvironment";
 
 let REAL_SESSION: Session;
 let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
@@ -49,19 +49,7 @@ describe("Retrieve workflow definition cli system tests", () => {
         beforeAll(async () => {
             // Upload files only for successful scenarios
             await Upload.fileToUssFile(REAL_SESSION, workflow, definitionFile, { binary: true });
-        });
-        afterAll(async () => {
-            let error;
-            let response;
-
-            const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES;
-            // deleting uploaded workflow file
-            try {
-                const wfEndpoint = endpoint + definitionFile;
-                response = await ZosmfRestClient.deleteExpectString(REAL_SESSION, wfEndpoint);
-            } catch (err) {
-                error = err;
-            }
+            testEnvironment.resources.files.push(definitionFile);
         });
         describe("Success Scenarios", () => {
             it("Should return the details of a workflow definition file.", async () => {

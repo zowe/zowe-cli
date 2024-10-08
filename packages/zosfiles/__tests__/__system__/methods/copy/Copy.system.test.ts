@@ -41,9 +41,6 @@ describe("Copy", () => {
         REAL_TARGET_SESSION = REAL_SESSION;
         fromDataSetName = `${defaultSystem.zosmf.user.trim().toUpperCase()}.DATA.ORIGINAL`;
         toDataSetName = `${defaultSystem.zosmf.user.trim().toUpperCase()}.DATA.COPY`;
-
-        testEnvironment.resources.session = REAL_SESSION;
-        testEnvironment.resources.datasets.push(fromDataSetName, toDataSetName);
     });
 
     afterAll(async () => {
@@ -1025,8 +1022,6 @@ describe("Copy - Encoded", () => {
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
         fromDataSetName = `${defaultSystem.zosmf.user.trim().toUpperCase()}.DATA.ENCO#ED.ORIGINAL`;
         toDataSetName = `${defaultSystem.zosmf.user.trim().toUpperCase()}.ENCO#ED.DATA.COPY`;
-        testEnvironment.resources.session = REAL_SESSION;
-        testEnvironment.resources.datasets.push(fromDataSetName, toDataSetName);
     });
 
     afterAll(async () => {

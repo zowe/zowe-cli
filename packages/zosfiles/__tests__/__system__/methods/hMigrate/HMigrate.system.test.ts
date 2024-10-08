@@ -31,8 +31,6 @@ describe("Migrate Dataset", () => {
         defaultSystem = testEnvironment.systemTestProperties;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
-        testEnvironment.resources.session = REAL_SESSION;
-
         dataSet1 = `${defaultSystem.zosmf.user.trim().toUpperCase()}.SDATA.MIGR`;
         dataSet2 = `${defaultSystem.zosmf.user.trim().toUpperCase()}.PDATA.MIGR`;
         dataSet3 = `${defaultSystem.zosmf.user.trim().toUpperCase()}.FAIL.MIGR`;

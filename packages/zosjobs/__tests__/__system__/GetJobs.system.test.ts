@@ -63,7 +63,7 @@ describe("Get Jobs System Tests", () => {
             testEnvironment = await TestEnvironment.setUp({
                 testName: "get_jobs_system_test"
             });
-            REAL_SESSION = await TestEnvironment.createZosmfSession(testEnvironment);
+            REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
             testEnvironment.resources.session = REAL_SESSION;
 
             defaultSystem = testEnvironment.systemTestProperties;
@@ -1018,7 +1018,7 @@ describe("Get Jobs System Tests", () => {
             testEnvironment = await TestEnvironment.setUp({
                 testName: "zos_get_jobs_encoded"
             });
-            REAL_SESSION = await TestEnvironment.createZosmfSession(testEnvironment);
+            REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
             testEnvironment.resources.session = REAL_SESSION;
 
 

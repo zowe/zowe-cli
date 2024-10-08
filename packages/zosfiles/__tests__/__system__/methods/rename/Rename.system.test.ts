@@ -33,8 +33,6 @@ describe("Rename", () => {
         defaultSystem = testEnvironment.systemTestProperties;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
-        testEnvironment.resources.session = REAL_SESSION;
-
         beforeDataSetName = `${defaultSystem.zosmf.user.trim().toUpperCase()}.BEFORE.SET`;
         afterDataSetName = `${defaultSystem.zosmf.user.trim().toUpperCase()}.AFTER.SET`;
     });
@@ -428,8 +426,6 @@ describe("Rename - encoded", () => {
         defaultSystem = testEnvironment.systemTestProperties;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
-        testEnvironment.resources.session = REAL_SESSION;
-
         beforeDataSetName = `${defaultSystem.zosmf.user.trim().toUpperCase()}.ENCO#ED.BEFORE.SET`;
         afterDataSetName = `${defaultSystem.zosmf.user.trim().toUpperCase()}.ENCO#ED.AFTER.SET`;
     });

@@ -34,7 +34,6 @@ describe("Search", () => {
         });
         defaultSystem = testEnvironment.systemTestProperties;
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
-        testEnvironment.resources.session = REAL_SESSION;
 
         // We can't test color related stuff in GitHub Actions or Jenkins
         oldForceColor = process.env.FORCE_COLOR;

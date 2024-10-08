@@ -51,8 +51,6 @@ describe("Create data set", () => {
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
         dsname = `${defaultSystem.zosmf.user.trim().toUpperCase()}.TEST.DATA.SET`;
-        testEnvironment.resources.session = REAL_SESSION;
-        testEnvironment.resources.datasets.push(dsname);
     });
 
     afterAll(async () => {
@@ -170,9 +168,6 @@ describe("Create data set - encoded", () => {
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
         dsname = `${defaultSystem.zosmf.user.trim().toUpperCase()}.TEST.ENCO#ED.DATA.SET`;
-
-        testEnvironment.resources.session = REAL_SESSION;
-        testEnvironment.resources.datasets.push(dsname);
     });
 
     afterAll(async () => {
@@ -256,8 +251,6 @@ describe("Allocate Like", () => {
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
         dsnameLike = `${dsname}.LIKE`;
-        testEnvironment.resources.session = REAL_SESSION;
-        testEnvironment.resources.datasets.push(dsnameLike);
         await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_CLASSIC, dsname, options);
     });
 
@@ -319,8 +312,6 @@ describe("Allocate Like - encoded", () => {
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
         dsnameLike = `${dsname}.ENCO#ED.LIKE`;
-        testEnvironment.resources.session = REAL_SESSION;
-        testEnvironment.resources.datasets.push(dsnameLike);
         await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_CLASSIC, dsname, options);
     });
 
@@ -375,9 +366,6 @@ describe("Create VSAM", () => {
 
         volume = defaultSystem.datasets.vol;
         dsname = getUniqueDatasetName(defaultSystem.zosmf.user);
-
-        testEnvironment.resources.session = REAL_SESSION;
-        testEnvironment.resources.datasets.push(dsname);
     });
 
     afterAll(async () => {
@@ -459,9 +447,6 @@ describe("Create VSAM - encoded", () => {
 
         volume = defaultSystem.datasets.vol;
         dsname = getUniqueDatasetName(defaultSystem.zosmf.user, true);
-
-        testEnvironment.resources.session = REAL_SESSION;
-        testEnvironment.resources.datasets.push(dsname);
     });
 
     afterAll(async () => {
@@ -522,9 +507,6 @@ describe("Create z/OS file system", () => {
 
         fsname = getUniqueDatasetName(defaultSystem.zosmf.user);
         volume = defaultSystem.datasets.vol;
-
-        testEnvironment.resources.session = REAL_SESSION;
-        testEnvironment.resources.datasets.push(fsname);
     });
 
     afterAll(async () => {
@@ -617,9 +599,6 @@ describe("Create z/OS file system - encoded", () => {
 
         fsname = getUniqueDatasetName(defaultSystem.zosmf.user, true);
         volume = defaultSystem.datasets.vol;
-
-        testEnvironment.resources.session = REAL_SESSION;
-        testEnvironment.resources.datasets.push(fsname);
     });
 
     afterAll(async () => {
@@ -688,9 +667,6 @@ describe("Create uss file", () => {
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
         basePath = defaultSystem.unix.testdir; // `${defaultSystem.zosmf.basePath.trim()}`;
         filename = `${basePath}/test.txt`.replace(/\./g, "");
-
-        testEnvironment.resources.session = REAL_SESSION;
-        testEnvironment.resources.files.push(filename);
     });
 
     afterAll(async () => {
@@ -767,8 +743,6 @@ describe("Create uss file - encoded", () => {
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
         basePath = defaultSystem.unix.testdir; // `${defaultSystem.zosmf.basePath.trim()}`;
         filename = `${basePath}/enco#edtest.txt`.replace(/\./g, "");
-        testEnvironment.resources.session = REAL_SESSION;
-        testEnvironment.resources.files.push(filename);
     });
 
     afterAll(async () => {
@@ -824,8 +798,6 @@ describe("Create uss directory", () => {
         // dsname = `${defaultSystem.zosmf.user.trim().toUpperCase()}.TEST.DATA.SET`;
         basePath = defaultSystem.unix.testdir; // `${defaultSystem.zosmf.basePath.trim()}`;
         filename = `${basePath}/testDir`.replace(/\./g, "");
-        testEnvironment.resources.session = REAL_SESSION;
-        testEnvironment.resources.files.push(filename);
     });
 
     afterAll(async () => {
@@ -901,8 +873,6 @@ describe("Create uss directory - encoded", () => {
         // dsname = `${defaultSystem.zosmf.user.trim().toUpperCase()}.TEST.DATA.SET`;
         basePath = defaultSystem.unix.testdir; // `${defaultSystem.zosmf.basePath.trim()}`;
         filename = `${basePath}/testEnco#edDir`.replace(/\./g, "");
-        testEnvironment.resources.session = REAL_SESSION;
-        testEnvironment.resources.files.push(filename);
     });
 
     afterAll(async () => {

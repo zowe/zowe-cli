@@ -14,9 +14,8 @@ import * as path from "path";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/ITestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { getUniqueDatasetName } from "../../../../../../../__tests__/__src__/TestUtils";
-import { ZosFilesConstants } from "@zowe/zos-files-for-zowe-sdk";
-import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
+import { deleteFiles, getUniqueDatasetName } from "../../../../../../../__tests__/__src__/TestUtils";
+import { Upload } from "@zowe/zos-files-for-zowe-sdk";
 import { runCliScript } from "@zowe/cli-test-utils";
 
 let REAL_SESSION: Session;
@@ -60,32 +59,11 @@ describe("Download USS File", () => {
             defaultSys = TEST_ENVIRONMENT_NO_PROF.systemTestProperties;
 
             const data: string = "abcdefghijklmnopqrstuvwxyz";
-            const endpoint: string =
-                ZosFilesConstants.RESOURCE +
-                ZosFilesConstants.RES_USS_FILES +
-                ussname;
-            await ZosmfRestClient.putExpectString(
-                REAL_SESSION,
-                endpoint,
-                [],
-                data
-            );
+            await Upload.bufferToUssFile(REAL_SESSION, ussname, Buffer.from(data));
         });
 
         afterAll(async () => {
-            const endpoint: string =
-                ZosFilesConstants.RESOURCE +
-                ZosFilesConstants.RES_USS_FILES +
-                ussname;
-
-            try {
-                await ZosmfRestClient.deleteExpectString(
-                    REAL_SESSION,
-                    endpoint
-                );
-            } catch (err) {
-                Imperative.console.error(err);
-            }
+            await deleteFiles(REAL_SESSION, ussname);
 
             await TestEnvironment.cleanUp(TEST_ENVIRONMENT_NO_PROF);
         });
@@ -129,32 +107,11 @@ describe("Download USS File", () => {
     describe("Success scenarios", () => {
         beforeAll(async () => {
             const data: string = "abcdefghijklmnopqrstuvwxyz";
-            const endpoint: string =
-                ZosFilesConstants.RESOURCE +
-                ZosFilesConstants.RES_USS_FILES +
-                ussname;
-            await ZosmfRestClient.putExpectString(
-                REAL_SESSION,
-                endpoint,
-                [],
-                data
-            );
+            await Upload.bufferToUssFile(REAL_SESSION, ussname, Buffer.from(data));
         });
 
         afterAll(async () => {
-            const endpoint: string =
-                ZosFilesConstants.RESOURCE +
-                ZosFilesConstants.RES_USS_FILES +
-                ussname;
-
-            try {
-                await ZosmfRestClient.deleteExpectString(
-                    REAL_SESSION,
-                    endpoint
-                );
-            } catch (err) {
-                Imperative.console.error(err);
-            }
+            await deleteFiles(REAL_SESSION, ussname);
         });
 
         it("should download an uss file", () => {

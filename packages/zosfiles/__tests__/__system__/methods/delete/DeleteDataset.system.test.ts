@@ -30,10 +30,7 @@ describe("Delete Dataset", () => {
         defaultSystem = testEnvironment.systemTestProperties;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
-        testEnvironment.resources.session = REAL_SESSION;
-
         dsname = `${defaultSystem.zosmf.user.trim().toUpperCase()}.TEST.DATA.SET.DELETE`;
-        testEnvironment.resources.datasets.push(dsname);
     });
 
     afterAll(async () => {
@@ -140,9 +137,6 @@ describe("Delete Dataset - encoded", () => {
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
         dsname = `${defaultSystem.zosmf.user.trim().toUpperCase()}.TEST.ENCO#ED.DATA.SET.DELETE`;
-
-        testEnvironment.resources.session = REAL_SESSION;
-        testEnvironment.resources.datasets.push(dsname);
     });
 
     afterAll(async () => {

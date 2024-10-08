@@ -9,13 +9,12 @@
 *
 */
 
-import { Create, CreateDataSetTypeEnum, Delete, Get, IGetOptions, List, ZosFilesConstants } from "../../../../src";
+import { Create, CreateDataSetTypeEnum, Delete, Get, IGetOptions, List, Upload } from "../../../../src";
 import { Imperative, Session } from "@zowe/imperative";
 import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/ITestEnvironment";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { getRandomBytes, getUniqueDatasetName, stripNewLines } from "../../../../../../__tests__/__src__/TestUtils";
-import { ZosmfRestClient, ZosmfHeaders } from "@zowe/core-for-zowe-sdk";
+import { deleteFiles, getRandomBytes, getUniqueDatasetName, stripNewLines } from "../../../../../../__tests__/__src__/TestUtils";
 import { IZosmfListResponse } from "../../../../src/methods/list/doc/IZosmfListResponse";
 
 let REAL_SESSION: Session;
@@ -30,10 +29,9 @@ describe("Get", () => {
         testEnvironment = await TestEnvironment.setUp({
             testName: "zos_file_view"
         });
-        REAL_SESSION = await TestEnvironment.createZosmfSession(testEnvironment);
-        testEnvironment.resources.session = REAL_SESSION;
-
         defaultSystem = testEnvironment.systemTestProperties;
+
+        REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
         dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.VIEW`);
         Imperative.console.info("Using dsname:" + dsname);
 
@@ -78,8 +76,7 @@ describe("Get", () => {
                 let response: Buffer;
 
                 const data: string = "abcdefghijklmnopqrstuvwxyz\n";
-                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname;
-                const rc = await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
+                await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(data), dsname);
 
                 try {
                     response = await Get.dataSet(REAL_SESSION, dsname);
@@ -96,8 +93,7 @@ describe("Get", () => {
                 let response: Buffer;
 
                 const data: string = "abcdefghijklmnopqrstuvwxyz\n";
-                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname;
-                const rc = await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
+                await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(data), dsname);
 
                 try {
                     response = await Get.dataSet(REAL_SESSION, dsname, {responseTimeout: 5});
@@ -116,8 +112,7 @@ describe("Get", () => {
 
                 const options: IGetOptions = {};
                 const data: string = "abcdefghijklmnopqrstuvwxyz\n";
-                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname;
-                const rc = await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
+                await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(data), dsname);
                 const listOfDataSets = await List.dataSet(REAL_SESSION, dsname, {attributes: true});
                 listOfDataSets.apiResponse.items.forEach((dataSetObj: IZosmfListResponse) => {
                     options.volume = dataSetObj.vol;
@@ -143,8 +138,7 @@ describe("Get", () => {
 
                 const randomByteLength = 60;
                 const data: Buffer = await getRandomBytes(randomByteLength);
-                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname;
-                const rc = await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [ZosmfHeaders.X_IBM_BINARY], data);
+                await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(data), dsname, { binary: true });
 
                 try {
                     response = await Get.dataSet(REAL_SESSION, dsname, options);
@@ -165,8 +159,7 @@ describe("Get", () => {
                 };
 
                 const data: string = "abcdefghijklmnopqrstuvwxyz\n";
-                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname;
-                const rc = await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
+                await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(data), dsname);
 
                 try {
                     response = await Get.dataSet(REAL_SESSION, dsname, options);
@@ -184,30 +177,8 @@ describe("Get", () => {
             });
         });
         describe("USS File", () => {
-            beforeEach(async () => {
-                let response;
-                let error;
-                const data = "{\"type\":\"file\",\"mode\":\"RWXRW-RW-\"}";
-                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussname;
-
-                try {
-                    response = await ZosmfRestClient.postExpectString(REAL_SESSION, endpoint, [], data);
-                } catch (err) {
-                    error = err;
-                }
-            });
-
             afterEach(async () => {
-                let error;
-                let response;
-
-                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussname;
-
-                try {
-                    response = await ZosmfRestClient.deleteExpectString(REAL_SESSION, endpoint);
-                } catch (err) {
-                    error = err;
-                }
+                await deleteFiles(REAL_SESSION, ussname);
             });
 
             it("should get uss file content", async () => {
@@ -215,8 +186,7 @@ describe("Get", () => {
                 let response: Buffer;
 
                 const data: string = "abcdefghijklmnopqrstuvwxyz\n";
-                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussname;
-                const rc = await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
+                await Upload.bufferToUssFile(REAL_SESSION, ussname, Buffer.from(data));
 
                 try {
                     response = await Get.USSFile(REAL_SESSION, ussname);
@@ -238,8 +208,7 @@ describe("Get", () => {
 
                 const randomByteLength = 60;
                 const data: Buffer = await getRandomBytes(randomByteLength);
-                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussname;
-                const rc = await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [ZosmfHeaders.X_IBM_BINARY], data);
+                await Upload.bufferToUssFile(REAL_SESSION, ussname, Buffer.from(data), { binary: true });
 
                 try {
                     response = await Get.USSFile(REAL_SESSION, ussname, options);
@@ -256,8 +225,7 @@ describe("Get", () => {
                 let response: Buffer;
 
                 const data: string = "abcdefghijklmnopqrstuvwxyz\nabcdefghijklmnopqrstuvwxyz\nabcdefghijklmnopqrstuvwxyz\n";
-                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussname;
-                const rc = await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
+                await Upload.bufferToUssFile(REAL_SESSION, ussname, Buffer.from(data));
 
                 try {
                     response = await Get.USSFile(REAL_SESSION, ussname, {range: "0,1"});
@@ -343,8 +311,8 @@ describe("Get", () => {
                 const record = true;
 
                 const data: string = "abcdefghijklmnopqrstuvwxyz\n";
-                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussname;
-                const rc = await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
+                await Upload.bufferToUssFile(REAL_SESSION, ussname, Buffer.from(data));
+                testEnvironment.resources.files.push(ussname);
 
                 try {
                     response = await Get.USSFile(REAL_SESSION, ussname, {record});
@@ -354,7 +322,6 @@ describe("Get", () => {
                 expect(response).toBeFalsy();
                 expect(error).toBeTruthy();
                 expect(stripNewLines(error.message)).toContain("Unsupported data type 'record' specified for USS file operation.");
-                testEnvironment.resources.files.push(ussname);
             });
         });
     });
@@ -367,10 +334,9 @@ describe("Get - encoded", () => {
         testEnvironment = await TestEnvironment.setUp({
             testName: "zos_file_view"
         });
-        REAL_SESSION = await TestEnvironment.createZosmfSession(testEnvironment);
-        testEnvironment.resources.session = REAL_SESSION;
-
         defaultSystem = testEnvironment.systemTestProperties;
+
+        REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
         dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.VIEW`, true);
         Imperative.console.info("Using dsname:" + dsname);
 
@@ -409,8 +375,7 @@ describe("Get - encoded", () => {
                 let response: Buffer;
 
                 const data: string = "abcdefghijklmnopqrstuvwxyz\n";
-                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + encodeURIComponent(dsname);
-                await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
+                await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(data), dsname);
 
                 try {
                     response = await Get.dataSet(REAL_SESSION, dsname);
@@ -424,25 +389,8 @@ describe("Get - encoded", () => {
         });
 
         describe("USS File", () => {
-            beforeEach(async () => {
-                const data = "{\"type\":\"file\",\"mode\":\"RWXRW-RW-\"}";
-                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + encodeURIComponent(ussname);
-
-                try {
-                    await ZosmfRestClient.postExpectString(REAL_SESSION, endpoint, [], data);
-                } catch (err) {
-                    // Do nothing
-                }
-            });
-
             afterEach(async () => {
-                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + encodeURIComponent(ussname);
-
-                try {
-                    await ZosmfRestClient.deleteExpectString(REAL_SESSION, endpoint);
-                } catch (err) {
-                    // Do nothing
-                }
+                await deleteFiles(REAL_SESSION, ussname);
             });
 
             it("should get uss file content", async () => {
@@ -450,8 +398,7 @@ describe("Get - encoded", () => {
                 let response: Buffer;
 
                 const data: string = "abcdefghijklmnopqrstuvwxyz\n";
-                const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + encodeURIComponent(ussname);
-                await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
+                await Upload.bufferToUssFile(REAL_SESSION, ussname, Buffer.from(data));
 
                 try {
                     response = await Get.USSFile(REAL_SESSION, ussname);

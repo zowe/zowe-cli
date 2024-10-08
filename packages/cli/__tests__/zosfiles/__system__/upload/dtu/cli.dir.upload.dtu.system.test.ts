@@ -15,7 +15,7 @@ import * as fs from "fs";
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/ITestEnvironment";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { getTag, getUniqueDatasetName } from "../../../../../../../__tests__/__src__/TestUtils";
+import { deleteFiles, getTag, getUniqueDatasetName } from "../../../../../../../__tests__/__src__/TestUtils";
 import { Get, ZosFilesUtils } from "@zowe/zos-files-for-zowe-sdk";
 import { runCliScript } from "@zowe/cli-test-utils";
 
@@ -37,15 +37,11 @@ describe("Upload directory to USS", () => {
             tempProfileTypes: ["zosmf"],
             testName: "zos_files_upload_directory_to_uss_with_profile"
         });
-        REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
 
         defaultSystem = TEST_ENVIRONMENT.systemTestProperties;
+        REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
         dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILES.UPLOAD`);
         dsname = dsname.replace(/\./g, "");
-        ussname = `${defaultSystem.unix.testdir}/${dsname}`;
-        TEST_ENVIRONMENT.resources.session = REAL_SESSION;
-        TEST_ENVIRONMENT.resources.datasets.push(dsname);
-        TEST_ENVIRONMENT.resources.files.push(ussname);
         Imperative.console.info("Using ussDir:" + ussname);
         binaryFile = "bin_file.pax";
         binaryFiles = "bin_file.pax,subdir_bin_file1.pax,subdir_bin_file2.pax.Z";
@@ -67,8 +63,10 @@ describe("Upload directory to USS", () => {
 
             defaultSys = TEST_ENVIRONMENT_NO_PROF.systemTestProperties;
             Imperative.console.info("Using ussDir:" + ussname);
-            TEST_ENVIRONMENT_NO_PROF.resources.session = REAL_SESSION;
-            TEST_ENVIRONMENT_NO_PROF.resources.files.push(ussname);
+        });
+
+        afterEach(async () => {
+            await deleteFiles(REAL_SESSION, ussname);
         });
 
         afterAll(async () => {
@@ -103,6 +101,10 @@ describe("Upload directory to USS", () => {
     });
 
     describe("Success scenarios", () => {
+
+        afterEach(async () => {
+            await deleteFiles(REAL_SESSION, ussname);
+        });
 
         it("should upload local directory to USS directory", async () => {
             const localDirName = path.join(__dirname, "__data__", "command_upload_dtu_dir/command_upload_dtu_subdir_ascii");
@@ -357,6 +359,9 @@ describe("Upload directory to USS", () => {
                 error = err;
             }
             expect(error).toBeDefined();
+
+            const ussResponse = await Get.USSFile(REAL_SESSION, ussname + "/uploaded_dir/uploaded_file");
+            expect(ussResponse).toBeInstanceOf(Buffer);
         });
 
         it("wild cards should work with * and mixed casing on tagging and ignore", async () => {

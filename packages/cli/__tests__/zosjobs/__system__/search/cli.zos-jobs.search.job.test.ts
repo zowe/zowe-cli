@@ -36,7 +36,7 @@ describe("zos-jobs search job command", () => {
             testName: "zos_jobs_search_job_command",
             tempProfileTypes: ["zosmf"]
         });
-        REAL_SESSION = await TestEnvironment.createZosmfSession(testEnvironment);
+        REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
         // Use testEnvironment for accessing properties
         defaultSystem = testEnvironment.systemTestProperties;
 

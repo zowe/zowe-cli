@@ -17,7 +17,7 @@ import { ITestEnvironmentResources } from "./ITestEnvironmentResources";
  * @export
  * @interface ITestEnvironment
  */
-export interface ITestEnvironment<ITestPropertiesSchema> extends IBaseTestEnvironment<ITestPropertiesSchema>{
+export interface ITestEnvironment<TestPropertiesSchema> extends IBaseTestEnvironment<TestPropertiesSchema>{
     /**
      * A collection of resources used within the test environment that need to be cleaned up once test finishes.
      * @type {ITestEnvironmentResources}

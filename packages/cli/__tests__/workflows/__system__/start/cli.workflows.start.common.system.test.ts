@@ -9,16 +9,16 @@
 *
 */
 
-import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { Session, Imperative } from "@zowe/imperative";
-import { ITestEnvironment, runCliScript } from "@zowe/cli-test-utils";
+import { runCliScript } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { getUniqueDatasetName } from "../../../../../../__tests__/__src__/TestUtils";
-import { Upload, ZosFilesConstants } from "@zowe/zos-files-for-zowe-sdk";
+import { Upload } from "@zowe/zos-files-for-zowe-sdk";
 import { join } from "path";
 import { CreateWorkflow, PropertiesWorkflow, DeleteWorkflow, startT, IWorkflowInfo, WorkflowConstants,
     IStepInfo } from "@zowe/zos-workflows-for-zowe-sdk";
+import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/ITestEnvironment";
 
 const resolveConflict: startT = "outputFileValue";
 const stepName = "echo";
@@ -56,19 +56,7 @@ describe("Start workflow cli system tests", () => {
         beforeAll(async () => {
             // Upload files only for successful scenarios
             await Upload.fileToUssFile(REAL_SESSION, workflow, definitionFile, { binary: true });
-        });
-        afterAll(async () => {
-            let error;
-            let response;
-
-            const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES;
-            // deleting uploaded workflow file
-            try {
-                const wfEndpoint = endpoint + definitionFile;
-                response = await ZosmfRestClient.deleteExpectString(REAL_SESSION, wfEndpoint);
-            } catch (err) {
-                error = err;
-            }
+            testEnvironment.resources.files.push(definitionFile);
         });
         describe("Success Scenarios", () => {
             afterEach(async () => {

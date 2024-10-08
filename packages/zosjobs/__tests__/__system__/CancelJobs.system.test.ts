@@ -29,7 +29,7 @@ describe("CancelJobs System tests", () => {
         testEnvironment = await TestEnvironment.setUp({
             testName: "zos_cancel_jobs"
         });
-        REAL_SESSION = await TestEnvironment.createZosmfSession(testEnvironment);
+        REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
         systemProps = testEnvironment.systemTestProperties;
         const ACCOUNT = systemProps.tso.account;
         const maxStepNum = 6;  // Use lots of steps to make the job stay in INPUT status longer
@@ -190,7 +190,7 @@ describe("CancelJobs System tests - encoded", () => {
         testEnvironment = await TestEnvironment.setUp({
             testName: "zos_cancel_jobs_encoded"
         });
-        REAL_SESSION = await TestEnvironment.createZosmfSession(testEnvironment);
+        REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
         systemProps = testEnvironment.systemTestProperties;
         const ACCOUNT = systemProps.tso.account;
         const maxStepNum = 6;  // Use lots of steps to make the job stay in INPUT status longer

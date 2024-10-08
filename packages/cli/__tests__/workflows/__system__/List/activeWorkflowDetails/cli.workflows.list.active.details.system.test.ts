@@ -16,7 +16,7 @@ import { TestEnvironment } from "../../../../../../../__tests__/__src__/environm
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { getUniqueDatasetName, wait, waitTime } from "../../../../../../../__tests__/__src__/TestUtils";
 import { CreateWorkflow, DeleteWorkflow } from "@zowe/zos-workflows-for-zowe-sdk";
-import { Upload, ZosFilesConstants } from "@zowe/zos-files-for-zowe-sdk";
+import { Upload } from "@zowe/zos-files-for-zowe-sdk";
 import { join } from "path";
 import { runCliScript } from "@zowe/cli-test-utils";
 
@@ -53,15 +53,10 @@ describe("List active workflow details cli system tests", () => {
     });
     describe("Create workflow using uss file", () => {
         beforeAll(async () => {
-            let error;
-
             // Upload files only for successful scenarios
-            try {
-                await Upload.fileToUssFile(REAL_SESSION, workflow, definitionFile, { binary: true });
-                await wait(waitTime); //wait 2 seconds
-            } catch (err) {
-                error = err;
-            }
+            await Upload.fileToUssFile(REAL_SESSION, workflow, definitionFile, { binary: true });
+            await wait(waitTime); //wait 2 seconds
+            testEnvironment.resources.files.push(definitionFile);
 
             // Create a workflow instance in zOS/MF to list
             const response = await CreateWorkflow.createWorkflow(REAL_SESSION, wfName, definitionFile, system, owner);
@@ -69,27 +64,13 @@ describe("List active workflow details cli system tests", () => {
             wfKey = response.workflowKey;
         });
         afterAll(async () => {
-            let error;
-
-            const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES;
-            // deleting uploaded workflow file
-            try {
-                const wfEndpoint = endpoint + definitionFile;
-                await ZosmfRestClient.deleteExpectString(REAL_SESSION, wfEndpoint);
-            } catch (err) {
-                error = err;
-            }
-
             // deleting wf instance
             const response: any = await ZosmfRestClient.getExpectJSON(REAL_SESSION, "/zosmf/workflow/rest/1.0/workflows?workflowName=" + wfName);
             response.workflows.forEach(async (element: any) => {
                 if (element.workflowName === wfName) {
-                    wfKey = element.workflowKey;
                     try {
-                        await DeleteWorkflow.deleteWorkflow(REAL_SESSION, wfKey);
-                    } catch (err) {
-                        error = err;
-                    }
+                        await DeleteWorkflow.deleteWorkflow(REAL_SESSION, element.workflowKey);
+                    } catch { /* Do nothing */ }
                 }
             });
         });

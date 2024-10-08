@@ -11,13 +11,10 @@
 
 import { randomBytes } from "crypto";
 import * as fs from "fs";
-import { Imperative, Headers, AbstractSession, IO } from "@zowe/imperative";
+import { Imperative, Headers, AbstractSession } from "@zowe/imperative";
 import { ZosmfRestClient } from "../../packages/core/src";
 import { ZosFilesConstants, Delete } from "../../packages/zosfiles/src";
 import { DeleteJobs, ICommonJobParms, IDeleteJobParms, IJob } from "../../packages/zosjobs/src";
-import { posix } from "path";
-import { spawnSync, SpawnSyncReturns, ExecFileException } from "child_process";
-import { ITestEnvironment } from "./environment/ITestEnvironment";
 import { promisify } from "util";
 
 /**
@@ -28,12 +25,7 @@ export function deleteLocalFile(filePath: string): void {
     try {
         fs.unlinkSync(filePath);
     } catch {
-        // If fs.unlinkSync fails, try to delete it with IO.deleteFile
-        try {
-            IO.deleteFile(posix.basename(filePath));
-        } catch {
-            throw new Error(`Error deleting local file: ${filePath}`);
-        }
+        throw new Error(`Error deleting local file: ${filePath}`);
     }
 }
 
@@ -47,7 +39,7 @@ export function deleteLocalDirectories(directories: string[]): void {
             if (fs.existsSync(dir)) {
                 fs.rmdirSync(dir, { recursive: true });
             }
-        } catch (err) {
+        } catch {
             throw new Error(`Error deleting directory: ${dir}`);
         }
     });

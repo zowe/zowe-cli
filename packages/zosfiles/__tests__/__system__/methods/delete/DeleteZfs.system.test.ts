@@ -43,8 +43,6 @@ describe("Delete a z/OS File System", () => {
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
         fsname = getUniqueDatasetName(defaultSystem.zosmf.user);
         createOptions.volumes = [defaultSystem.datasets.vol];
-        testEnvironment.resources.session = REAL_SESSION;
-        testEnvironment.resources.datasets.push(fsname);
     });
 
     afterAll(async () => {

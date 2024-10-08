@@ -29,8 +29,7 @@ describe("USS Utilities", () => {
             tempProfileTypes: ["zosmf"],
             testName: "zos_files_utilities"
         });
-        REAL_SESSION = await TestEnvironment.createZosmfSession(testEnvironment);
-        testEnvironment.resources.session = REAL_SESSION;
+        REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
 
         const defaultSystem = testEnvironment.systemTestProperties;
         let dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.UPLOAD`);
@@ -46,39 +45,33 @@ describe("USS Utilities", () => {
     });
 
     it("should tag a binary file", async () => {
-        const fileResponse = await Upload.fileToUssFile(REAL_SESSION, localfile, ussname);
-        const fileName = fileResponse.apiResponse.to;
+        await Upload.fileToUssFile(REAL_SESSION, localfile, ussname);
         await Utilities.chtag(REAL_SESSION, ussname, Tag.BINARY);
         const tag = await getTag(REAL_SESSION, ussname);
         expect(tag).toMatch("b binary");
 
         const isBin = await Utilities.isFileTagBinOrAscii(REAL_SESSION, ussname);
         expect(isBin).toBe(true);
-        testEnvironment.resources.files.push(fileName);
     });
 
     it("should tag a text file", async () => {
-        const fileResponse = await Upload.fileToUssFile(REAL_SESSION, localfile, ussname);
-        const fileName = fileResponse.apiResponse.to;
+        await Upload.fileToUssFile(REAL_SESSION, localfile, ussname);
         await Utilities.chtag(REAL_SESSION, ussname, Tag.TEXT, "ISO8859-1");
         const tag = await getTag(REAL_SESSION, ussname);
         expect(tag).toMatch("t ISO8859-1");
 
         const isBin = await Utilities.isFileTagBinOrAscii(REAL_SESSION, ussname);
         expect(isBin).toBe(true);
-        testEnvironment.resources.files.push(fileName);
     });
 
     it("should flag an EBCDIC file as text", async () => {
-        const fileResponse = await Upload.fileToUssFile(REAL_SESSION, localfile, ussname);
-        const fileName = fileResponse.apiResponse.to;
+        await Upload.fileToUssFile(REAL_SESSION, localfile, ussname);
         await Utilities.chtag(REAL_SESSION, ussname, Tag.TEXT, "IBM-1047");
         const tag = await getTag(REAL_SESSION, ussname);
         expect(tag).toMatch("t IBM-1047");
 
         const isBin = await Utilities.isFileTagBinOrAscii(REAL_SESSION, ussname);
         expect(isBin).toBe(false);
-        testEnvironment.resources.files.push(fileName);
     });
 
     it("should rename USS file", async () => {
@@ -128,14 +121,8 @@ describe("USS Utilities", () => {
     });
 
     describe("applyTaggedEncoding", () => {
-        let fileName: string;
         beforeAll(async () => {
-            const fileResponse = await Upload.fileToUssFile(REAL_SESSION, localfile, ussname);
-            fileName = fileResponse.apiResponse.to;
-        });
-
-        afterAll(async () => {
-            testEnvironment.resources.files.push(fileName);
+            await Upload.fileToUssFile(REAL_SESSION, localfile, ussname);
         });
 
         it("should set binary property if file is tagged as binary", async () => {

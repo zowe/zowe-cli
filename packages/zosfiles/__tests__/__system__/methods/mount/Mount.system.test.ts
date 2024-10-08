@@ -59,8 +59,6 @@ describe("Mount and unmount a file system", () => {
         volume = defaultSystem.datasets.vol;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
-        testEnvironment.resources.session = REAL_SESSION;
-
         fsname = getUniqueDatasetName(defaultSystem.zosmf.user);
         const dirname = getUniqueDatasetName(defaultSystem.zosmf.user).split(".")[1];
         mountPoint = "/tmp/" + dirname;
@@ -263,8 +261,6 @@ describe("Mount and unmount a file system - encoded", () => {
         volume = defaultSystem.datasets.vol;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
-        testEnvironment.resources.session = REAL_SESSION;
-
         fsname = getUniqueDatasetName(defaultSystem.zosmf.user, true);
         const dirname = getUniqueDatasetName(defaultSystem.zosmf.user, true).split(".")[1];
         mountPoint = "/tmp/" + dirname;

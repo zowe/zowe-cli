@@ -29,7 +29,7 @@ describe("zos-jobs download output command", () => {
             testName: "zos_jobs_download_output_command",
             tempProfileTypes: ["zosmf"]
         });
-        REAL_SESSION = await TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
+        REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
 
         TEST_ENVIRONMENT.resources.session = REAL_SESSION;
         IEFBR14_JCL = TEST_ENVIRONMENT.systemTestProperties.zosjobs.iefbr14Member;
@@ -85,7 +85,7 @@ describe("zos-jobs download output command", () => {
                 TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
                     testName: "zos_jobs_download_output_without_profiles"
                 });
-                REAL_SESSION = await TestEnvironment.createZosmfSession(TEST_ENVIRONMENT_NO_PROF);
+                REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT_NO_PROF);
                 TEST_ENVIRONMENT_NO_PROF.resources.session = REAL_SESSION;
                 DEFAULT_SYSTEM_PROPS = TEST_ENVIRONMENT_NO_PROF.systemTestProperties;
             });

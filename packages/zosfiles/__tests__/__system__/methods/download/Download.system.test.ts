@@ -19,7 +19,6 @@ import {
     IZosFilesResponse,
     Tag,
     Utilities,
-    ZosFilesConstants,
     ZosFilesMessages,
     ICreateZfsOptions,
     IMountFsOptions,
@@ -32,8 +31,7 @@ import { inspect } from "util";
 import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/ITestEnvironment";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { getUniqueDatasetName, stripNewLines, wait } from "../../../../../../__tests__/__src__/TestUtils";
-import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
+import { deleteFiles, getUniqueDatasetName, stripNewLines, wait } from "../../../../../../__tests__/__src__/TestUtils";
 import * as fs from "fs";
 import { posix } from "path";
 import { Shell } from "@zowe/zos-uss-for-zowe-sdk";
@@ -62,10 +60,8 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
         defaultSystem = testEnvironment.systemTestProperties;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
-        testEnvironment.resources.session = REAL_SESSION;
 
         dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.DOWNLOAD`, encoded);
-        testEnvironment.resources.datasets.push(dsname);
         Imperative.console.info("Using dsname:" + dsname);
 
         // using unique DS function to generate unique USS file name
@@ -78,8 +74,6 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
             ussDirname = `${defaultSystem.unix.testdir}/zos_file_download`;
             localDirname = `${testEnvironment.workingDir}/ussDir`;
         }
-        testEnvironment.resources.files.push(ussname, ussDirname);
-        testEnvironment.resources.localFiles.push(localDirname);
     });
 
     afterAll(async () => {
@@ -1013,14 +1007,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
     describe("Download USS File", () => {
         afterAll(async () => {
             // Delete created uss file
-            const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussname;
-
-            try {
-                await ZosmfRestClient.deleteExpectString(REAL_SESSION, endpoint);
-                await wait(delayTime);
-            } catch (err) {
-                Imperative.console.error(err);
-            }
+            await deleteFiles(REAL_SESSION, ussname);
 
             // Delete created local file
             IO.deleteFile(`./${posix.basename(ussname)}`);

@@ -53,7 +53,7 @@ export class TestEnvironment extends BaseTestEnvironment {
             jobs: [],
             jobData: [],
             datasets: [],
-            session: result.resources?.session || null
+            session: params.skipProperties ? null : TestEnvironment.createZosmfSession(result)
         };
         // Return the test environment including working directory that the tests should be using
         return result;
@@ -75,30 +75,24 @@ export class TestEnvironment extends BaseTestEnvironment {
         // Deleting resources (if they exist)
         if (testEnvironment?.resources?.session) {
             const session = testEnvironment.resources.session;
-            try{
-                for (const file of testEnvironment.resources.localFiles) {
-                    deleteLocalFile(file);
+            for (const file of testEnvironment.resources.localFiles) {
+                deleteLocalFile(file);
+            }
+            for (const file of testEnvironment.resources.files) {
+                await deleteFiles(session, file);
+            }
+            for (const job of testEnvironment.resources.jobs) {
+                await deleteJob(session, job);
+            }
+            for (const jobData of testEnvironment.resources.jobData) {
+                if (jobData.jobname && jobData.jobid) {
+                    await deleteJobCommon(session, jobData);
+                } else {
+                    Imperative.console.info('Error: Missing jobname or jobid for jobData:', jobData);
                 }
-                for (const file of testEnvironment.resources.files) {
-                    await deleteFiles(session, file);
-                }
-                for (const job of testEnvironment.resources.jobs) {
-                    await deleteJob(session, job);
-                }
-                for (const jobData of testEnvironment.resources.jobData) {
-                    if (jobData.jobname && jobData.jobid) {
-                        await deleteJobCommon(session, jobData);
-                    } else {
-                        Imperative.console.info('Error: Missing jobname or jobid for jobData:', jobData);
-                    }
-                }
-                for (const dataset of testEnvironment.resources.datasets) {
-                    await deleteDataset(session, dataset);
-                }
-            }catch (error){
-                if (error.mDetails?.httpStatus !== 404) {
-                    throw error;
-                }
+            }
+            for (const dataset of testEnvironment.resources.datasets) {
+                await deleteDataset(session, dataset);
             }
 
             testEnvironment.resources = {

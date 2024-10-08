@@ -10,7 +10,7 @@
 *
 */
 
-import { Imperative, Session } from "@zowe/imperative";
+import { Session } from "@zowe/imperative";
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/ITestEnvironment";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
@@ -42,11 +42,9 @@ describe("Mount and unmount file system", () => {
 
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
         fsname = getUniqueDatasetName(defaultSystem.zosmf.user);
-        TEST_ENVIRONMENT.resources.datasets.push(fsname); // Track the dataset for cleanup
 
         const dirname = getUniqueDatasetName(defaultSystem.zosmf.user).split(".")[1];
         mountPoint = "//tmp/" + dirname;
-        TEST_ENVIRONMENT.resources.files.push(mountPoint); // Track the USS directory for cleanup
 
         const sshCommand = "mkdir " + mountPoint;
 
@@ -59,19 +57,14 @@ describe("Mount and unmount file system", () => {
     });
 
     afterAll(async () => {
-        try {
-            const sshCommand = "rmdir " + mountPoint;
-            runCliScript(__dirname + "/__scripts__/command/command_teardown.sh",
-                TEST_ENVIRONMENT, [sshCommand, fsname,
-                    defaultSystem.ssh.host,
-                    defaultSystem.ssh.port,
-                    defaultSystem.ssh.user,
-                    defaultSystem.ssh.password]);
-        } catch (err) {
-            Imperative.console.info(`Error cleaning up USS directory: ${err}`);
-        }
+        const sshCommand = "rmdir " + mountPoint;
+        runCliScript(__dirname + "/__scripts__/command/command_teardown.sh",
+            TEST_ENVIRONMENT, [sshCommand, fsname,
+                defaultSystem.ssh.host,
+                defaultSystem.ssh.port,
+                defaultSystem.ssh.user,
+                defaultSystem.ssh.password]);
 
-        // Clean up any resources tracked by the test environment
         await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
     });
 
