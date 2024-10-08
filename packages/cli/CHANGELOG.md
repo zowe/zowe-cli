@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Fixed issues flagged by Coverity [#2291](https://github.com/zowe/zowe-cli/pull/2291)
+
 ## `8.1.0`
 
 - Enhancement: Added `--stateful` flag to `zos-tso issue cmd` to allow declaring the statefulness of the address space being created.  [#2240](https://github.com/zowe/zowe-cli/pull/2240)

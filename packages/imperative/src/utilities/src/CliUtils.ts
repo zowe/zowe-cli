@@ -144,7 +144,7 @@ export class CliUtils {
                 config.api.profiles.exists(config.properties.defaults[profileType])) {
                 p = config.api.profiles.defaultGet(profileType);
             }
-            if (p == null && profileDef.required != null && profileDef.required.indexOf(profileType) >= 0) {
+            if (p == null && profileDef?.required != null && profileDef?.required.indexOf(profileType) >= 0) {
                 throw new ImperativeError({
                     msg: `Profile of type "${profileType}" does not exist within the loaded profiles for the command and it is marked as required.`,
                     additionalDetails: `This is an internal imperative error. ` +
@@ -502,7 +502,7 @@ export class CliUtils {
                 prompt: message,
                 silent: opts?.hideText,
                 replace: opts?.maskChar,
-                timeout: secToWait ? secToWait * 1000 : null  // eslint-disable-line @typescript-eslint/no-magic-numbers
+                timeout: secToWait * 1000 // eslint-disable-line @typescript-eslint/no-magic-numbers
             });
             if (opts?.hideText) {
                 process.stdout.write("\r\n");
