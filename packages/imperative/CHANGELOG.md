@@ -5,6 +5,7 @@ All notable changes to the Imperative package will be documented in this file.
 ## Recent Changes
 
 - BugFix: Fixed issues flagged by Coverity [#2291](https://github.com/zowe/zowe-cli/pull/2291)
+- BugFix: Fixed an issue where the default credential manager failed to load if the `main` property of the `require` object was `undefined`.
 
 ## `8.1.0`
 
