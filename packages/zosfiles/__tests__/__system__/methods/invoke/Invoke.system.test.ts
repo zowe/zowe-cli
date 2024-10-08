@@ -49,6 +49,7 @@ describe("Invoke AMS", () => {
         const AMSStatement = fs.readFileSync(templateFile).toString();
         const updatedStatement = TextUtils.renderWithMustache(AMSStatement, {DSN: dsname, VOL: volume});
         fs.writeFileSync(templateFile + ".temp", updatedStatement);
+        testEnvironment.resources.localFiles.push(templateFile + ".temp");
         return templateFile + ".temp";
     }
 
@@ -74,9 +75,6 @@ describe("Invoke AMS", () => {
         expect(response.success).toBe(true);
         expect(response.commandResponse).toContain(ZosFilesMessages.amsCommandExecutedSuccessfully.message);
 
-        // Delete the temp file
-        fs.unlinkSync(controlStatementFile);
-
         // create a temporary file from the template file that has the proper high level qualifier to delete the VSAM file
         controlStatementFile =
             createTestAMSStatementFileFromTemplate(__dirname + "/DeleteVSAM.ams");
@@ -94,9 +92,6 @@ describe("Invoke AMS", () => {
 
         expect(response.success).toBe(true);
         expect(response.commandResponse).toContain(ZosFilesMessages.amsCommandExecutedSuccessfully.message);
-
-        // Delete the temp file
-        fs.unlinkSync(controlStatementFile);
     });
 
     it("should create and delete a VSAM data set from command statement in files with response timeout", async () => {
@@ -121,9 +116,6 @@ describe("Invoke AMS", () => {
         expect(response.success).toBe(true);
         expect(response.commandResponse).toContain(ZosFilesMessages.amsCommandExecutedSuccessfully.message);
 
-        // Delete the temp file
-        fs.unlinkSync(controlStatementFile);
-
         // create a temporary file from the template file that has the proper high level qualifier to delete the VSAM file
         controlStatementFile =
             createTestAMSStatementFileFromTemplate(__dirname + "/DeleteVSAM.ams");
@@ -141,9 +133,6 @@ describe("Invoke AMS", () => {
 
         expect(response.success).toBe(true);
         expect(response.commandResponse).toContain(ZosFilesMessages.amsCommandExecutedSuccessfully.message);
-
-        // Delete the temp file
-        fs.unlinkSync(controlStatementFile);
     });
 
     it("should create and delete a VSAM data set from command statements", async () => {
@@ -251,9 +240,6 @@ describe("Invoke AMS - encoded", () => {
         expect(response.success).toBe(true);
         expect(response.commandResponse).toContain(ZosFilesMessages.amsCommandExecutedSuccessfully.message);
 
-        // Delete the temp file
-        fs.unlinkSync(controlStatementFile);
-
         // create a temporary file from the template file that has the proper high level qualifier to delete the VSAM file
         controlStatementFile =
             createTestAMSStatementFileFromTemplate(__dirname + "/DeleteVSAM.ams");
@@ -271,9 +257,6 @@ describe("Invoke AMS - encoded", () => {
 
         expect(response.success).toBe(true);
         expect(response.commandResponse).toContain(ZosFilesMessages.amsCommandExecutedSuccessfully.message);
-
-        // Delete the temp file
-        fs.unlinkSync(controlStatementFile);
     });
 
     it("should create and delete a VSAM data set from command statement in files with response timeout", async () => {
@@ -298,9 +281,6 @@ describe("Invoke AMS - encoded", () => {
         expect(response.success).toBe(true);
         expect(response.commandResponse).toContain(ZosFilesMessages.amsCommandExecutedSuccessfully.message);
 
-        // Delete the temp file
-        fs.unlinkSync(controlStatementFile);
-
         // create a temporary file from the template file that has the proper high level qualifier to delete the VSAM file
         controlStatementFile =
             createTestAMSStatementFileFromTemplate(__dirname + "/DeleteVSAM.ams");
@@ -318,9 +298,6 @@ describe("Invoke AMS - encoded", () => {
 
         expect(response.success).toBe(true);
         expect(response.commandResponse).toContain(ZosFilesMessages.amsCommandExecutedSuccessfully.message);
-
-        // Delete the temp file
-        fs.unlinkSync(controlStatementFile);
     });
 
     it("should create and delete a VSAM data set from command statements", async () => {

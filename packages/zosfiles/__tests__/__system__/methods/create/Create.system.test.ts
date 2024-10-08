@@ -251,6 +251,7 @@ describe("Allocate Like", () => {
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
         dsnameLike = `${dsname}.LIKE`;
+
         await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_CLASSIC, dsname, options);
     });
 
@@ -312,6 +313,7 @@ describe("Allocate Like - encoded", () => {
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
         dsnameLike = `${dsname}.ENCO#ED.LIKE`;
+
         await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_CLASSIC, dsname, options);
     });
 
