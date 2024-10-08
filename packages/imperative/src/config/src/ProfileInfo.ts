@@ -190,33 +190,34 @@ export class ProfileInfo {
         const profAttrs = this.getAllProfiles().find((prof) => prof.profName === profName);
         const knownProps = this.mergeArgsForProfile(profAttrs, { getSecureVals: true }).knownArgs;
         const tokenValueProp = knownProps.find((arg) => arg.argName === "tokenValue" && arg.argValue != null);
-    
+
         // Ignore if tokenValue is not a prop
         if (tokenValueProp == null) {
             return false;
         }
-    
+
         const tokenTypeProp = knownProps.find((arg) => arg.argName === "tokenType");
         // Cannot decode LTPA tokens without private key
         if (tokenTypeProp?.argValue == "LtpaToken2") {
             return false;
         }
-    
+
         const fullToken = tokenValueProp.argValue.toString();
         // JWT format: [header].[payload].[signature]
         const tokenParts = fullToken.split(".");
         try {
             const payloadJson = JSON.parse(Buffer.from(tokenParts[1], "base64url").toString("utf8"));
             if ("exp" in payloadJson) {
-                // There are 1000 milliseconds in a second. The expire time is stored in seconds since UNIX epoch.
+                // The expire time is stored in seconds since UNIX epoch.
                 // The Date constructor expects a timestamp in milliseconds.
-                const expireDate = new Date(payloadJson.exp * 1000);
+                const msPerSec = 1000;
+                const expireDate = new Date(payloadJson.exp * msPerSec);
                 return expireDate < new Date();
             }
         } catch (err) {
             return false;
         }
-    
+
         return false;
     }
 

@@ -1852,7 +1852,7 @@ describe("TeamConfig ProfileInfo tests", () => {
         });
         // end schema management tests
     });
-    
+
     describe("hasTokenExpiredForProfile", () => {
         function getBlockMocks() {
             const profileInfo = createNewProfInfo(teamProjDir);
@@ -1870,7 +1870,7 @@ describe("TeamConfig ProfileInfo tests", () => {
                     },
                 ]);
             const mergeArgsForProfile = jest.spyOn(profileInfo, "mergeArgsForProfile");
-            
+
             return {
                 getAllProfiles,
                 mergeArgsForProfile,
@@ -1881,27 +1881,27 @@ describe("TeamConfig ProfileInfo tests", () => {
         it("returns false if the profile uses LTPA for token type", async () => {
             const blockMocks = getBlockMocks();
             const jsonParseSpy = jest.spyOn(JSON, "parse");
-            blockMocks.mergeArgsForProfile.mockReturnValue({ 
+            blockMocks.mergeArgsForProfile.mockReturnValue({
                 knownArgs: [
-                    { 
-                        argName: "tokenValue", 
-                        argValue: "SOMELTPA2TOKENTHATCANNOTBEDECODED", 
-                        dataType: "string", 
+                    {
+                        argName: "tokenValue",
+                        argValue: "SOMELTPA2TOKENTHATCANNOTBEDECODED",
+                        dataType: "string",
                         argLoc: {
                             locType: ProfLocType.TEAM_CONFIG,
                             osLoc: ["/a/b/c/zowe.config.json"],
                             jsonLoc: "profiles.zosmf.properties.tokenValue",
                         }
                     },
-                    { 
-                        argName: "tokenType", 
-                        argValue: "LtpaToken2", 
-                        dataType: "string", 
+                    {
+                        argName: "tokenType",
+                        argValue: "LtpaToken2",
+                        dataType: "string",
                         argLoc: {
                             locType: ProfLocType.TEAM_CONFIG,
                             osLoc: ["/a/b/c/zowe.config.json"],
                             jsonLoc: "profiles.zosmf.properties.tokenType",
-                        } 
+                        }
                     }
                 ],
                 missingArgs: []
@@ -1909,13 +1909,13 @@ describe("TeamConfig ProfileInfo tests", () => {
             expect(blockMocks.profileInfo.hasTokenExpiredForProfile("zosmf")).toBe(false);
             expect(jsonParseSpy).not.toHaveBeenCalled();
         });
-    
+
         it("returns false if no tokenValue is present", async () => {
             const blockMocks = getBlockMocks();
             const jsonParseSpy = jest.spyOn(JSON, "parse");
-            blockMocks.mergeArgsForProfile.mockReturnValue({ 
+            blockMocks.mergeArgsForProfile.mockReturnValue({
                 knownArgs: [
-                    { 
+                    {
                         argName: "tokenType",
                         argValue: "apimlAuthenticationToken",
                         dataType: "string",
@@ -1931,18 +1931,18 @@ describe("TeamConfig ProfileInfo tests", () => {
             expect(blockMocks.profileInfo.hasTokenExpiredForProfile("zosmf")).toBe(false);
             expect(jsonParseSpy).not.toHaveBeenCalled();
         });
-        
+
         it("returns false if an error occurred during parsing", async () => {
             const blockMocks = getBlockMocks();
             const jsonParseSpy = jest.spyOn(JSON, "parse").mockImplementation(() => {
                 throw new Error("Unknown error while parsing JSON");
             });
-            blockMocks.mergeArgsForProfile.mockReturnValue({ 
+            blockMocks.mergeArgsForProfile.mockReturnValue({
                 knownArgs: [
-                    { 
-                        argName: "tokenValue", 
-                        argValue: "FAKE_HEADER.FAKE_PAYLOAD.FAKE_SIGNATURE", 
-                        dataType: "string", 
+                    {
+                        argName: "tokenValue",
+                        argValue: "FAKE_HEADER.FAKE_PAYLOAD.FAKE_SIGNATURE",
+                        dataType: "string",
                         argLoc: {
                             locType: ProfLocType.TEAM_CONFIG,
                             osLoc: ["/a/b/c/zowe.config.json"],
@@ -1955,7 +1955,7 @@ describe("TeamConfig ProfileInfo tests", () => {
             expect(blockMocks.profileInfo.hasTokenExpiredForProfile("zosmf")).toBe(false);
             expect(jsonParseSpy).toHaveBeenCalled();
         });
-    
+
         it("returns true if a JWT token is present and has expired", async () => {
             const blockMocks = getBlockMocks();
             const jsonParseSpy = jest.spyOn(JSON, "parse").mockReturnValue({
@@ -1963,17 +1963,17 @@ describe("TeamConfig ProfileInfo tests", () => {
             });
             blockMocks.mergeArgsForProfile.mockReturnValue({
                 knownArgs: [
-                    { 
-                        argName: "tokenValue", 
-                        argValue: "FAKE_HEADER.FAKE_PAYLOAD.FAKE_SIGNATURE", 
-                        dataType: "string", 
+                    {
+                        argName: "tokenValue",
+                        argValue: "FAKE_HEADER.FAKE_PAYLOAD.FAKE_SIGNATURE",
+                        dataType: "string",
                         argLoc: {
                             locType: ProfLocType.TEAM_CONFIG,
                             osLoc: ["/a/b/c/zowe.config.json"],
                             jsonLoc: "profiles.zosmf.properties.tokenValue",
                         }
                     }
-                ], 
+                ],
                 missingArgs: []
             });
             expect(blockMocks.profileInfo.hasTokenExpiredForProfile("zosmf")).toBe(true);
@@ -1987,17 +1987,17 @@ describe("TeamConfig ProfileInfo tests", () => {
             });
             blockMocks.mergeArgsForProfile.mockReturnValue({
                 knownArgs: [
-                    { 
-                        argName: "tokenValue", 
-                        argValue: "FAKE_HEADER.FAKE_PAYLOAD.FAKE_SIGNATURE", 
-                        dataType: "string", 
+                    {
+                        argName: "tokenValue",
+                        argValue: "FAKE_HEADER.FAKE_PAYLOAD.FAKE_SIGNATURE",
+                        dataType: "string",
                         argLoc: {
                             locType: ProfLocType.TEAM_CONFIG,
                             osLoc: ["/a/b/c/zowe.config.json"],
                             jsonLoc: "profiles.zosmf.properties.tokenValue",
                         }
                     }
-                ], 
+                ],
                 missingArgs: []
             });
             expect(blockMocks.profileInfo.hasTokenExpiredForProfile("zosmf")).toBe(false);
