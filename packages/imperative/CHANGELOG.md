@@ -5,6 +5,7 @@ All notable changes to the Imperative package will be documented in this file.
 ## Recent Changes
 
 - BugFix: Fixed issues flagged by Coverity [#2291](https://github.com/zowe/zowe-cli/pull/2291)
+- Enhancement: Added a new SDK method (`ProfileInfo.hasTokenExpiredForProfile`) that allows developers to verify whether a token has expired for a given profile. [#2298](https://github.com/zowe/zowe-cli/pull/2298)
 
 ## `8.1.0`
 
