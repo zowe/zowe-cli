@@ -11,10 +11,11 @@
 
 import * as fs from "fs";
 import * as nodePath from "path";
+
 import * as yaml from "js-yaml";
 import { v4 as uuidv4 } from "uuid";
-import { AbstractSession, ImperativeError, ImperativeExpect,
-    IO, Logger, LoggingConfigurer, TextUtils } from "@zowe/imperative";
+import { ImperativeError, ImperativeExpect, IO, Logger, LoggingConfigurer, TextUtils } from "@zowe/imperative";
+
 import { ISetupEnvironmentParms } from "./doc/parms/ISetupEnvironmentParms";
 import { ITestEnvironment } from "./doc/response/ITestEnvironment";
 import { TempTestProfiles } from "./TempTestProfiles";
@@ -42,7 +43,7 @@ export class TestEnvironment {
      * @returns {Promise<ITestEnvironment>}
      * @memberof TestEnvironment
      */
-    public static async setUp(params: ISetupEnvironmentParms, session?: AbstractSession): Promise<ITestEnvironment<any>> {
+    public static async setUp(params: ISetupEnvironmentParms): Promise<ITestEnvironment<any>> {
         // Validate the input parameters
         ImperativeExpect.toNotBeNullOrUndefined(params,
             `${TestEnvironment.ERROR_TAG} createTestEnv(): No parameters supplied.`);

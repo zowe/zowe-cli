@@ -42,6 +42,7 @@ describe("Upload directory to USS", () => {
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
         dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILES.UPLOAD`);
         dsname = dsname.replace(/\./g, "");
+        ussname = `${defaultSystem.unix.testdir}/${dsname}`;
         Imperative.console.info("Using ussDir:" + ussname);
         binaryFile = "bin_file.pax";
         binaryFiles = "bin_file.pax,subdir_bin_file1.pax,subdir_bin_file2.pax.Z";
@@ -62,6 +63,7 @@ describe("Upload directory to USS", () => {
             });
 
             defaultSys = TEST_ENVIRONMENT_NO_PROF.systemTestProperties;
+
             Imperative.console.info("Using ussDir:" + ussname);
         });
 

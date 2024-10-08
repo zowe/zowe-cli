@@ -45,7 +45,6 @@ describe("Mount and unmount file system", () => {
 
         const dirname = getUniqueDatasetName(defaultSystem.zosmf.user).split(".")[1];
         mountPoint = "//tmp/" + dirname;
-
         const sshCommand = "mkdir " + mountPoint;
 
         runCliScript(__dirname + "/__scripts__/command/command_setup.sh",
