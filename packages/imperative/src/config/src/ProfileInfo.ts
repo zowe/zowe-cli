@@ -180,6 +180,46 @@ export class ProfileInfo {
     }
 
     /**
+     * Checks if a JWT token is used for authenticating the given profile name. If so, it will decode the token to determine whether it has expired.
+     *
+     * @param {string} profileName - The name of the profile to check the JWT token for
+     * @returns {boolean} Whether the token has expired for the given profile. Returns `false` if a token value is not set or the token type is LTPA2.
+     */
+    public hasTokenExpiredForProfile(profileName: string): boolean {
+        const profAttrs = this.getAllProfiles().find((prof) => prof.profName === profileName);
+        const knownProps = this.mergeArgsForProfile(profAttrs, { getSecureVals: true }).knownArgs;
+        const tokenValueProp = knownProps.find((arg) => arg.argName === "tokenValue" && arg.argValue != null);
+    
+        // Ignore if tokenValue is not a prop
+        if (tokenValueProp == null) {
+            return false;
+        }
+    
+        const tokenTypeProp = knownProps.find((arg) => arg.argName === "tokenType");
+        // Cannot decode LTPA tokens without private key
+        if (tokenTypeProp?.argValue == "LtpaToken2") {
+            return false;
+        }
+    
+        const fullToken = tokenValueProp.argValue.toString();
+        // JWT format: [header].[payload].[signature]
+        const tokenParts = fullToken.split(".");
+        try {
+            const payloadJson = JSON.parse(Buffer.from(tokenParts[1], "base64url").toString("utf8"));
+            if ("exp" in payloadJson) {
+                // There are 1000 milliseconds in a second. The expire time is stored in seconds since UNIX epoch.
+                // The Date constructor expects a timestamp in milliseconds.
+                const expireDate = new Date(payloadJson.exp * 1000);
+                return expireDate < new Date();
+            }
+        } catch (err) {
+            return false;
+        }
+    
+        return false;
+    }
+
+    /**
      * Update a given property in the config file.
      * @param options Set of options needed to update a given property
      */
