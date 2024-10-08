@@ -182,11 +182,12 @@ export class ProfileInfo {
     /**
      * Checks if a JWT token is used for authenticating the given profile name. If so, it will decode the token to determine whether it has expired.
      *
-     * @param {string} profileName - The name of the profile to check the JWT token for
+     * @param {string | IProfileLoaded} profile - The name of the profile or the profile object to check the JWT token for
      * @returns {boolean} Whether the token has expired for the given profile. Returns `false` if a token value is not set or the token type is LTPA2.
      */
-    public hasTokenExpiredForProfile(profileName: string): boolean {
-        const profAttrs = this.getAllProfiles().find((prof) => prof.profName === profileName);
+    public hasTokenExpiredForProfile(profile: string | IProfileLoaded): boolean {
+        const profName = typeof profile === "string" ? profile : profile.name;
+        const profAttrs = this.getAllProfiles().find((prof) => prof.profName === profName);
         const knownProps = this.mergeArgsForProfile(profAttrs, { getSecureVals: true }).knownArgs;
         const tokenValueProp = knownProps.find((arg) => arg.argName === "tokenValue" && arg.argValue != null);
     
