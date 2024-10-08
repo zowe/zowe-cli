@@ -76,7 +76,7 @@ export class ReceiveTsoApp {
             endKeyword = formattedApiResponse.tsoData.some(
                 (data) => data.DATA.trim() === "READY"
             );
-        } while (!endKeyword && params.receiveUntil);
+        } while (!endKeyword && params.receiveUntilReady);
 
         return combinedResponse!;
     }

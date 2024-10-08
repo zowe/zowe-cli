@@ -38,9 +38,9 @@ export const ReceiveASApp: ICommandDefinition = {
             required: true
         },
         {
-            name: "recieveUntil",
-            aliases: ["ru"],
-            description: "Recieves data until keyword is received or timeout",
+            name: "receive-until-ready",
+            aliases: ["rur"],
+            description: "Receives data until keyword is received or timeout",
             type: "boolean",
             required: false,
             defaultValue: false

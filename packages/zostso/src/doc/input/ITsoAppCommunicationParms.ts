@@ -38,5 +38,5 @@ export interface ITsoAppCommunicationParms {
      * @type {boolean}
      * @memberof ITsoAppCommunicationParms
      */
-    receiveUntil?: boolean;
+    receiveUntilReady?: boolean;
 }
