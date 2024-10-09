@@ -49,7 +49,7 @@ export class SendTsoApp {
         >(
             session,
             endpoint,
-            [Headers.APPLICATION_JSON],
+            [Headers.CONTENT_TYPE, "text/plain"],
             params.message
         );
         const formattedApiResponse: IASAppResponse = {
@@ -58,10 +58,10 @@ export class SendTsoApp {
             timeout: apiResponse.timeout,
             servletKey: apiResponse.servletKey ?? null,
             queueID: apiResponse.queueID ?? null,
-            tsoData: apiResponse.tsoData?.map((message: any) => ({
+            tsoData: apiResponse.tsoData.map((message: any) => ({
                 VERSION: message["TSO MESSAGE"].VERSION,
                 DATA: message["TSO MESSAGE"].DATA,
-            })) ?? null,
+            })),
         };
         return formattedApiResponse;
     }
