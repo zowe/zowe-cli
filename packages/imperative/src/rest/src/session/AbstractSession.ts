@@ -213,7 +213,7 @@ export abstract class AbstractSession {
         }
 
         // set strictSSL
-        if (populatedSession.strictSSL === undefined || populatedSession.strictSSL === null) {
+        if (populatedSession.strictSSL === undefined || populatedSession.strictSSL === null || populatedSession?.proxy.proxy_strict_ssl) {
             populatedSession.strictSSL = AbstractSession.DEFAULT_STRICT_SSL;
         }
 
