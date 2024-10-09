@@ -30,6 +30,7 @@ export default class Handler extends ZosTsoBaseHandler {
                 receiveUntilReady: commandParameters.arguments.receiveUntilReady
             },
         );
+        commandParameters.response.console.log("\n");
         response.tsoData.forEach((data) => {
             if(typeof data === 'string') {
                 commandParameters.response.console.log(data);

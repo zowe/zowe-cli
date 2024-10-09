@@ -35,7 +35,7 @@ export class ReceiveTsoApp {
         const spinner = setInterval(() => {
             process.stdout.write(`\rReceiving response... ${spinnerChars[spinnerIndex]}`);
             spinnerIndex = (spinnerIndex + 1) % spinnerChars.length;
-        }, 100); // 100ms delay
+        }, 100);
 
         const endpoint = `${TsoConstants.RESOURCE}/app/${params.servletKey}/${params.appKey}`;
         let combinedResponse: IASAppResponse | null = null;
@@ -45,7 +45,6 @@ export class ReceiveTsoApp {
 
         try {
             do {
-                // Seconds to milliseconds
                 if (Date.now() - startTime > TIMEOUT_SECONDS * 1000){
                     timeoutReached = true;
                     break;
@@ -53,7 +52,7 @@ export class ReceiveTsoApp {
 
                 try {
                     const apiResponse = await ZosmfRestClient.getExpectJSON<
-                    IASAppResponse & { ver: string; appData?: any }
+                        IASAppResponse & { ver: string; appData?: any }
                     >(session, endpoint);
 
                     const response = apiResponse as IASAppResponse & {
@@ -98,9 +97,8 @@ export class ReceiveTsoApp {
                 }
             } while (!endKeyword && params.receiveUntilReady && !timeoutReached);
         } finally {
-            // Stop the spinner
             clearInterval(spinner);
-            process.stdout.write("\r"); // Clear the spinner line
+            process.stdout.write("\r");
         }
 
         return combinedResponse!;

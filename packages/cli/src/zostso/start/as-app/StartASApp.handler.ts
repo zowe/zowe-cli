@@ -33,6 +33,6 @@ export default class Handler extends ZosTsoBaseHandler {
             },
             this.mTsoStart
         );
-        commandParameters.response.console.log(JSON.stringify(response));
+        commandParameters.response.console.log(JSON.stringify(response,null,2));
     }
 }
