@@ -18,6 +18,7 @@ import { Config } from "../src/Config";
 import { IConfig } from "../src/doc/IConfig";
 import { IConfigSecure } from "../src/doc/IConfigSecure";
 import { IConfigVault } from "../src/doc/IConfigVault";
+import { EventOperator } from "../../events";
 
 const MY_APP = "my_app";
 
@@ -52,6 +53,7 @@ describe("Config secure tests", () => {
             load: mockSecureLoad,
             save: mockSecureSave
         };
+        jest.spyOn(EventOperator, "getZoweProcessor").mockReturnValue({ emitZoweEvent: jest.fn() } as any);
     });
 
     it("should set vault if provided for secure load", async () => {
