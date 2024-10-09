@@ -18,6 +18,8 @@ import { ISearchMatchLocation } from "./doc/ISearchMatchLocation";
 import { asyncPool } from "@zowe/core-for-zowe-sdk";
 import { ISearchOptions } from "./doc/ISearchOptions";
 import { IZosFilesResponse } from "../../doc/IZosFilesResponse";
+import { IDataSet } from "../../doc/IDataSet";
+import { cloneDeep } from "lodash";
 
 // This interface isn't used outside of the private functions, so just keeping it here.
 interface ISearchResponse {
@@ -71,7 +73,7 @@ export class Search {
         }
 
         // List all data sets that match the search term
-        let searchItems: ISearchItem[] = [];
+        const searchItemsQueue: IDataSet[] = [];
         const partitionedDataSets: string[] = [];
 
         // We are in trouble if list fails - exit if it does
@@ -84,7 +86,7 @@ export class Search {
                 // Skip anything that doesn't have a DSORG or is migrated
                 if (resp.dsorg && !(resp.migr && resp.migr.toLowerCase() === "yes")) {
                     if (resp.dsorg === "PS") {                                      // Sequential
-                        searchItems.push({dsn: resp.dsname});
+                        searchItemsQueue.push({dsn: resp.dsname});
                     } else if (resp.dsorg === "PO" || resp.dsorg === "PO-E") {      // Partitioned
                         partitionedDataSets.push(resp.dsname);
                     }
@@ -100,13 +102,31 @@ export class Search {
                 const response = await List.allMembers(session, pds, searchOptions.listOptions);
                 if (response.apiResponse.items.length > 0) {
                     for (const item of response.apiResponse.items) {
-                        if (item.member != undefined) { searchItems.push({dsn: pds, member: item.member}); }
+                        if (item.member != undefined) { searchItemsQueue.push({dsn: pds, member: item.member}); }
                     }
                 }
             } catch (err) {
                 failedDatasets.push(pds);
             }
         }
+
+        // Call the callback if it exists.
+        let resp: boolean = true;
+        if (searchOptions.continueSearch) {
+            // Do not pass along the real search items queue. Extenders should not be modifying it.
+            resp = await searchOptions.continueSearch(cloneDeep(searchItemsQueue));
+        }
+
+        // Return if either of the callbacks set response to false, null, or undefined
+        if (resp != true) {
+            return {
+                success: false,
+                commandResponse: "The search was cancelled."
+            };
+        }
+
+        // Cast the search items queue to ISearchItem. Spread to make brand new items instead of a reference.
+        let searchItems: ISearchItem[] = searchItemsQueue;
 
         // Start searching on the mainframe if applicable
         if (searchOptions.mainframeSearch) {
