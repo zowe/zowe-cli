@@ -1980,6 +1980,30 @@ describe("TeamConfig ProfileInfo tests", () => {
             expect(jsonParseSpy).toHaveBeenCalled();
         });
 
+        it("returns false if a JWT payload can be parsed, but doesn't contain the exp property", async () => {
+            const blockMocks = getBlockMocks();
+            const jsonParseSpy = jest.spyOn(JSON, "parse").mockReturnValue({
+                iat: 1000000000,
+            });
+            blockMocks.mergeArgsForProfile.mockReturnValue({
+                knownArgs: [
+                    {
+                        argName: "tokenValue",
+                        argValue: "FAKE_HEADER.FAKE_PAYLOAD.FAKE_SIGNATURE",
+                        dataType: "string",
+                        argLoc: {
+                            locType: ProfLocType.TEAM_CONFIG,
+                            osLoc: ["/a/b/c/zowe.config.json"],
+                            jsonLoc: "profiles.zosmf.properties.tokenValue",
+                        }
+                    }
+                ],
+                missingArgs: []
+            });
+            expect(blockMocks.profileInfo.hasTokenExpiredForProfile("zosmf")).toBe(false);
+            expect(jsonParseSpy).toHaveBeenCalled();
+        });
+
         it("returns false if a JWT token is present and has not expired", async () => {
             const blockMocks = getBlockMocks();
             const jsonParseSpy = jest.spyOn(JSON, "parse").mockReturnValue({
