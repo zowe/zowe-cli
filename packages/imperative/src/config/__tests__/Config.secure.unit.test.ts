@@ -37,7 +37,6 @@ const secureConfigs: IConfigSecure = {
 describe("Config secure tests", () => {
     let mockSecureLoad = jest.fn();
     let mockSecureSave = jest.fn();
-    let mockGetZoweProcessor = jest.spyOn(EventOperator, "getZoweProcessor").mockReturnValue({ emitZoweEvent: jest.fn() } as any);
     let mockVault: IConfigVault = {
         load: mockSecureLoad,
         save: mockSecureSave
@@ -54,6 +53,7 @@ describe("Config secure tests", () => {
             load: mockSecureLoad,
             save: mockSecureSave
         };
+        jest.spyOn(EventOperator, "getZoweProcessor").mockReturnValue({ emitZoweEvent: jest.fn() } as any);
     });
 
     it("should set vault if provided for secure load", async () => {
