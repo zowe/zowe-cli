@@ -52,7 +52,7 @@ export class ConfigLayers extends ConfigApi {
                 layer.exists = true;
             } catch (e) {
                 const msg = `Error parsing JSON in the file '${layer.path}'.\n` +
-                `Please check this configuration file for errors.\nError details: ${e.message}\nLine ${e.line}, Column ${e.column}`
+                `Please check this configuration file for errors.\nError details: ${e.message}\nLine ${e.line}, Column ${e.column}`;
                 if (!opts.ignoreErrors){
                     throw new ImperativeError({
                         msg:msg,
