@@ -18,6 +18,8 @@ import { ConfigConstants } from "../ConfigConstants";
 import { IConfigLayer } from "../doc/IConfigLayer";
 import { ConfigApi } from "./ConfigApi";
 import { IConfig } from "../doc/IConfig";
+import { TextUtils } from "../../../utilities";
+import { CommandResponse } from "../../../cmd/src/response/CommandResponse";
 
 /**
  * API Class for manipulating config layers.
@@ -31,7 +33,7 @@ export class ConfigLayers extends ConfigApi {
      * @param opts The user and global flags that indicate which of the four
      *             config files (aka layers) is to be read.
      */
-    public read(opts?: { user: boolean; global: boolean }) {
+    public read(opts?: { user: boolean; global: boolean; ignoreErrors: boolean}) {
         // Attempt to populate the layer
         const layer = opts ? this.mConfig.findLayer(opts.user, opts.global) : this.mConfig.layerActive();
         if (fs.existsSync(layer.path)) {
@@ -49,11 +51,19 @@ export class ConfigLayers extends ConfigApi {
                 layer.properties = JSONC.parse(fileContents.toString()) as any;
                 layer.exists = true;
             } catch (e) {
-                throw new ImperativeError({
-                    msg: `Error parsing JSON in the file '${layer.path}'.\n` +
-                        `Please check this configuration file for errors.\nError details: ${e.message}\nLine ${e.line}, Column ${e.column}`,
-                    suppressDump: true
-                });
+                const msg = `Error parsing JSON in the file '${layer.path}'.\n` +
+                `Please check this configuration file for errors.\nError details: ${e.message}\nLine ${e.line}, Column ${e.column}`
+                if (!opts.ignoreErrors){
+                    throw new ImperativeError({
+                        msg:msg,
+                        suppressDump: true
+                    });
+               } else {
+                    const cmdResp: CommandResponse = new CommandResponse({
+                        responseFormat: "default"
+                    });
+                    cmdResp.console.log(TextUtils.chalk.red(msg));
+               }
             }
             this.mConfig.api.secure.loadCached(opts);
         } else if (layer.exists) {
