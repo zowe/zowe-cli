@@ -113,7 +113,7 @@ export class Search {
         // Call the callback if it exists.
         let resp: boolean = true;
         if (searchOptions.continueSearch) {
-            // Do not pass along the real search items queue. Extenders should not be modifying it.
+            // Call with a clone of the search items queue. Extenders should not be modifying the original.
             resp = await searchOptions.continueSearch(cloneDeep(searchItemsQueue));
         }
 
@@ -125,8 +125,8 @@ export class Search {
             };
         }
 
-        // Cast the search items queue to ISearchItem. Spread to make brand new items instead of a reference.
-        let searchItems: ISearchItem[] = searchItemsQueue;
+        // Cast the search items queue to ISearchItem. Clone so the original search items are not being modified.
+        let searchItems: ISearchItem[] = cloneDeep(searchItemsQueue);
 
         // Start searching on the mainframe if applicable
         if (searchOptions.mainframeSearch) {
