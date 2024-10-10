@@ -2,7 +2,7 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
-## Recent Changes
+## `8.1.2`
 
 - BugFix: Fixed issues flagged by Coverity [#2291](https://github.com/zowe/zowe-cli/pull/2291)
 - BugFix: Fixed an issue where the default credential manager failed to load when using ESM or the Node.js REPL environment. [#2297](https://github.com/zowe/zowe-cli/pull/2297)
