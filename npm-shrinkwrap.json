@@ -16637,6 +16637,7 @@
       "version": "8.1.2",
       "license": "EPL-2.0",
       "dependencies": {
+        "lodash": "^4.17.21",
         "minimatch": "^9.0.5"
       },
       "devDependencies": {
