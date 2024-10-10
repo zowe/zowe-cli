@@ -117,15 +117,16 @@ export class Search {
             resp = await searchOptions.continueSearch(cloneDeep(searchItemsQueue));
         }
 
-        // Return if either of the callbacks set response to false, null, or undefined
-        if (resp != true) {
+        // Return if the callback set response to false, null, undefined, or anything that is not boolean true
+        if (resp !== true) {
             return {
                 success: false,
                 commandResponse: "The search was cancelled."
             };
         }
 
-        // Cast the search items queue to ISearchItem. Clone so the original search items are not being modified.
+        // Cast the search items queue to ISearchItem. Clone so the original search items are not being modified and type errors aren't thrown
+        // when/if we reference the original list again.
         let searchItems: ISearchItem[] = cloneDeep(searchItemsQueue);
 
         // Start searching on the mainframe if applicable
