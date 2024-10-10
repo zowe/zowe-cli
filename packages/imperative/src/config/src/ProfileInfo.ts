@@ -180,6 +180,33 @@ export class ProfileInfo {
     }
 
     /**
+     * Checks if a JSON web token is used for authenticating the given profile name. If so, it will decode the token to determine whether it has expired.
+     *
+     * @param {string | IProfileLoaded} profile - The name of the profile or the profile object to check the JSON web token for
+     * @returns {boolean} Whether the token has expired for the given profile. Returns `false` if a token value is not set or the token type is LTPA2.
+     */
+    public hasTokenExpiredForProfile(profile: string | IProfileLoaded): boolean {
+        const profName = typeof profile === "string" ? profile : profile.name;
+        const profAttrs = this.getAllProfiles().find((prof) => prof.profName === profName);
+        const knownProps = this.mergeArgsForProfile(profAttrs, { getSecureVals: true }).knownArgs;
+        const tokenValueProp = knownProps.find((arg) => arg.argName === "tokenValue" && arg.argValue != null);
+
+        // Ignore if tokenValue is not a prop
+        if (tokenValueProp == null) {
+            return false;
+        }
+
+        const tokenTypeProp = knownProps.find((arg) => arg.argName === "tokenType");
+        // Cannot decode LTPA tokens without private key
+        if (tokenTypeProp?.argValue == "LtpaToken2") {
+            return false;
+        }
+
+        const fullToken = tokenValueProp.argValue.toString();
+        return ConfigUtils.hasTokenExpired(fullToken);
+    }
+
+    /**
      * Update a given property in the config file.
      * @param options Set of options needed to update a given property
      */
