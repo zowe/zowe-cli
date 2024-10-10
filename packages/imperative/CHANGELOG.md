@@ -4,6 +4,7 @@ All notable changes to the Imperative package will be documented in this file.
 
 ## Recent Changes
 
+- Enhancement: Added a new SDK method (`ConfigUtils.hasTokenExpired`) that allows developers to verify whether a given JSON web token has expired. [#2298](https://github.com/zowe/zowe-cli/pull/2298)
 - Enhancement: Added a new SDK method (`ProfileInfo.hasTokenExpiredForProfile`) that allows developers to verify whether a JSON web token has expired for a given profile. [#2298](https://github.com/zowe/zowe-cli/pull/2298)
 
 ## `8.1.2`
