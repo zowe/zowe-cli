@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Added an optional `continueSearch` function to the `ISearchOptions` interface. After a data set listing is completed, the new function is called with the list of data sets about to be searched. This allows the extender or end users to continue with the search or cancel it. [#2300](https://github.com/zowe/zowe-cli/pull/2300)
+
 ## `8.1.1`
 
 - BugFix: Updated peer dependencies to `^8.0.0`, dropping support for versions tagged `next`. [#2287](https://github.com/zowe/zowe-cli/pull/2287)
