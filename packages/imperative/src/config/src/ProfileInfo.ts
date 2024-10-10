@@ -180,9 +180,9 @@ export class ProfileInfo {
     }
 
     /**
-     * Checks if a JWT token is used for authenticating the given profile name. If so, it will decode the token to determine whether it has expired.
+     * Checks if a JSON web token is used for authenticating the given profile name. If so, it will decode the token to determine whether it has expired.
      *
-     * @param {string | IProfileLoaded} profile - The name of the profile or the profile object to check the JWT token for
+     * @param {string | IProfileLoaded} profile - The name of the profile or the profile object to check the JSON web token for
      * @returns {boolean} Whether the token has expired for the given profile. Returns `false` if a token value is not set or the token type is LTPA2.
      */
     public hasTokenExpiredForProfile(profile: string | IProfileLoaded): boolean {
@@ -203,22 +203,7 @@ export class ProfileInfo {
         }
 
         const fullToken = tokenValueProp.argValue.toString();
-        // JWT format: [header].[payload].[signature]
-        const tokenParts = fullToken.split(".");
-        try {
-            const payloadJson = JSON.parse(Buffer.from(tokenParts[1], "base64url").toString("utf8"));
-            if ("exp" in payloadJson) {
-                // The expire time is stored in seconds since UNIX epoch.
-                // The Date constructor expects a timestamp in milliseconds.
-                const msPerSec = 1000;
-                const expireDate = new Date(payloadJson.exp * msPerSec);
-                return expireDate < new Date();
-            }
-        } catch (err) {
-            return false;
-        }
-
-        return false;
+        return ConfigUtils.hasTokenExpired(fullToken);
     }
 
     /**
