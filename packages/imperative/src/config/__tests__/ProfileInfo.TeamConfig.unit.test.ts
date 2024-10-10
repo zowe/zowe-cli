@@ -1931,5 +1931,39 @@ describe("TeamConfig ProfileInfo tests", () => {
             expect(blockMocks.profileInfo.hasTokenExpiredForProfile("zosmf")).toBe(false);
             expect(jsonParseSpy).not.toHaveBeenCalled();
         });
+
+        it("returns result of ConfigUtils.hasTokenExpired if token value is present", async () => {
+            const blockMocks = getBlockMocks();
+            const jsonParseSpy = jest.spyOn(JSON, "parse");
+            const hasTokenExpired = jest.spyOn(ConfigUtils, "hasTokenExpired").mockReturnValue(true);
+            blockMocks.mergeArgsForProfile.mockReturnValue({
+                knownArgs: [
+                    {
+                        argName: "tokenValue",
+                        argValue: "A.JWT.TOKEN",
+                        dataType: "string",
+                        argLoc: {
+                            locType: ProfLocType.TEAM_CONFIG,
+                            osLoc: ["/a/b/c/zowe.config.json"],
+                            jsonLoc: "profiles.zosmf.properties.tokenValue",
+                        }
+                    },
+                    {
+                        argName: "tokenType",
+                        argValue: "apimlAuthenticationToken",
+                        dataType: "string",
+                        argLoc: {
+                            locType: ProfLocType.TEAM_CONFIG,
+                            osLoc: ["/a/b/c/zowe.config.json"],
+                            jsonLoc: "profiles.zosmf.properties.tokenType",
+                        }
+                    }
+                ],
+                missingArgs: []
+            });
+            expect(blockMocks.profileInfo.hasTokenExpiredForProfile("zosmf")).toBe(true);
+            expect(hasTokenExpired).toHaveBeenCalledWith("A.JWT.TOKEN");
+            expect(jsonParseSpy).not.toHaveBeenCalled();
+        });
     });
 });
