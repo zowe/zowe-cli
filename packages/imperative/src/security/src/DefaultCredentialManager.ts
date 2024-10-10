@@ -120,7 +120,9 @@ export class DefaultCredentialManager extends AbstractCredentialManager {
             // our calling CLI. Since our caller must supply keytar, we search for keytar
             // within our caller's path.
             const requireOpts: any = {};
-            requireOpts.paths = [require.main?.filename, ...require.resolve.paths("@zowe/secrets-for-zowe-sdk")].filter(Boolean);
+            if (require.main?.filename != null) {
+                requireOpts.paths = [require.main.filename, ...require.resolve.paths("@zowe/secrets-for-zowe-sdk")];
+            }
             // use helper function for require.resolve so it can be mocked in jest tests
             const keytarPath = require.resolve("@zowe/secrets-for-zowe-sdk", requireOpts);
             Logger.getImperativeLogger().debug("Loading Keytar module from", keytarPath);
