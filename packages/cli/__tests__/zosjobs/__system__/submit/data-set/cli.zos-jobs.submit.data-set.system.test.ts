@@ -13,15 +13,15 @@ import { TestEnvironment } from "../../../../../../../__tests__/__src__/environm
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/ITestEnvironment";
 import { runCliScript } from "@zowe/cli-test-utils";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { List } from "../../../../../../zosfiles/src/methods/list";
-import { AbstractSession } from "@zowe/imperative";
-import { GetJobs } from "@zowe/zos-jobs-for-zowe-sdk/lib/GetJobs";
+import { List } from "@zowe/zos-files-for-zowe-sdk";
+import { Session } from "@zowe/imperative";
+import { GetJobs } from "@zowe/zos-jobs-for-zowe-sdk";
 
 process.env.FORCE_COLOR = "0";
 
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
-let REAL_SESSION: AbstractSession;
+let REAL_SESSION: Session;
 let JOB_NAME: string;
 const jobNameRegex = /jobname: (\w+)/;
 
@@ -146,17 +146,12 @@ describe("zos-jobs submit data-set command", () => {
                 TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
                     testName: "zos_jobs_submit_data_set_without_profiles"
                 });
-                REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT_NO_PROF);
 
                 SYSTEM_PROPS = TEST_ENVIRONMENT_NO_PROF.systemTestProperties;
             });
 
             afterAll(async () => {
-                // Retrieve jobs by prefix
-                const jobs = await GetJobs.getJobsByPrefix(REAL_SESSION, JOB_NAME);
-                TEST_ENVIRONMENT.resources.jobs = jobs;
-
-                await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
+                await TestEnvironment.cleanUp(TEST_ENVIRONMENT_NO_PROF);
             });
 
             it("should submit a job in an existing valid data set from a PDS member", async () => {

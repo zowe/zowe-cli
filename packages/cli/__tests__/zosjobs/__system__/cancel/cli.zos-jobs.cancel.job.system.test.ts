@@ -14,10 +14,9 @@ import { ITestEnvironment } from "../../../../../../__tests__/__src__/environmen
 import { runCliScript } from "@zowe/cli-test-utils";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { JobTestsUtils } from "../../../../../zosjobs/__tests__/__system__/JobTestsUtils";
-import { AbstractSession, IO } from "@zowe/imperative";
+import { IO } from "@zowe/imperative";
 
 // Test Environment populated in the beforeAll();
-let REAL_SESSION: AbstractSession;
 let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
 const LOCAL_JCL_FILE: string = __dirname + "/" + "testFileOfLocalJCL.txt";
 const jobDataRegexV1 = /Successfully submitted request to cancel job (\w+) \((JOB\d+)\)/;
@@ -30,9 +29,8 @@ describe("zos-jobs cancel job command", () => {
             testName: "zos_jobs_cancel_job_command",
             tempProfileTypes: ["zosmf"]
         });
-        REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
-        TEST_ENVIRONMENT.resources.session = REAL_SESSION;
         const systemProps = TEST_ENVIRONMENT.systemTestProperties;
+
         const jcl = JobTestsUtils.getSleepJCL(systemProps.zosmf.user, systemProps.tso.account, systemProps.zosjobs.jobclass);
         const bufferJCL: Buffer = Buffer.from(jcl);
         IO.createFileSync(LOCAL_JCL_FILE);
@@ -59,12 +57,12 @@ describe("zos-jobs cancel job command", () => {
             runCliScript(__dirname + "/__scripts__/job/submit_job.sh", TEST_ENVIRONMENT, [LOCAL_JCL_FILE]);
             const response = runCliScript(__dirname + "/__scripts__/job/cancel_job_v2_bad.sh", TEST_ENVIRONMENT, [LOCAL_JCL_FILE]);
             const [, jobname, jobid] = response.stdout.toString().match(jobDataRegex) || [];
-            TEST_ENVIRONMENT.resources.jobData.push({ jobname, jobid });
+            TEST_ENVIRONMENT.resources.jobs.push(jobid);
 
             // Calculate the previous job ID (one less) - jobid created by test before, inaccessible until now
             const jobidNumber = parseInt(jobid.replace('JOB', ''), 10); //Extract the numeric part of the job ID
             const previousJobid = 'JOB' + String(jobidNumber - 1).padStart(5, '0'); // then decrement by 1, assuming 5 digits in the job ID
-            TEST_ENVIRONMENT.resources.jobData.push({ jobname, jobid: previousJobid } );
+            TEST_ENVIRONMENT.resources.jobs.push(previousJobid);
 
             expect(response.status).toBe(1);
             expect(response.stderr.toString()).toContain("Failed to cancel job");
@@ -83,7 +81,7 @@ describe("zos-jobs cancel job command", () => {
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain("Successfully submitted request to cancel job");
 
-            TEST_ENVIRONMENT.resources.jobData.push({ jobname, jobid });
+            TEST_ENVIRONMENT.resources.jobs.push(jobid);
         });
 
         it("should cancel a job v2", () => {
@@ -95,7 +93,7 @@ describe("zos-jobs cancel job command", () => {
             expect(response.stdout.toString()).toContain("Successfully canceled job");
             expect(response.stdout.toString()).not.toContain("Failed to cancel job");
 
-            TEST_ENVIRONMENT.resources.jobData.push({ jobname, jobid });
+            TEST_ENVIRONMENT.resources.jobs.push(jobid);
         });
 
         it("should cancel a job default", () => {
@@ -108,7 +106,7 @@ describe("zos-jobs cancel job command", () => {
             expect(response.stdout.toString()).not.toContain("Failed to cancel job");
             expect(response.stdout.toString()).not.toContain("Failed to cancel job");
 
-            TEST_ENVIRONMENT.resources.jobData.push({ jobname, jobid });
+            TEST_ENVIRONMENT.resources.jobs.push(jobid);
         });
 
         describe("without profiles", () => {
@@ -121,8 +119,7 @@ describe("zos-jobs cancel job command", () => {
                 TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
                     testName: "zos_jobs_cancel_job_without_profiles"
                 });
-                REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT_NO_PROF);
-                TEST_ENVIRONMENT_NO_PROF.resources.session = REAL_SESSION;
+
                 DEFAULT_SYSTEM_PROPS = TEST_ENVIRONMENT_NO_PROF.systemTestProperties;
             });
 
@@ -146,7 +143,7 @@ describe("zos-jobs cancel job command", () => {
                 expect(response.status).toBe(0);
                 expect(response.stdout.toString()).toContain("Successfully submitted request to cancel job");
 
-                TEST_ENVIRONMENT_NO_PROF.resources.jobData.push({ jobname, jobid });
+                TEST_ENVIRONMENT_NO_PROF.resources.jobs.push(jobid);
             });
 
             it("cancel a job without a profile 2.0", async () => {
@@ -165,7 +162,7 @@ describe("zos-jobs cancel job command", () => {
                 expect(response.status).toBe(0);
                 expect(response.stdout.toString()).toContain("Successfully canceled job");
 
-                TEST_ENVIRONMENT_NO_PROF.resources.jobData.push({ jobname, jobid });
+                TEST_ENVIRONMENT_NO_PROF.resources.jobs.push(jobid);
             });
 
             it("cancel a job without a profile default", async () => {
@@ -184,7 +181,7 @@ describe("zos-jobs cancel job command", () => {
                 expect(response.status).toBe(0);
                 expect(response.stdout.toString()).toContain("Successfully canceled job");
 
-                TEST_ENVIRONMENT_NO_PROF.resources.jobData.push({ jobname, jobid });
+                TEST_ENVIRONMENT_NO_PROF.resources.jobs.push(jobid);
             });
         });
     });

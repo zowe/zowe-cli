@@ -26,7 +26,7 @@ fi
 echo "Submitted job ID: $JOBID"
 
 # Loop until the job goes to the output queue
-until [ $ATTEMPTS -le 0 ]
+until [ $ATTEMPTS -gt 0 ]
 do
     STATUS=`zowe jobs view job-status-by-jobid $JOBID --host $HOST --port $PORT --user $USER --password $PASS --ru=false --rff status --rft string`
     RC=$?

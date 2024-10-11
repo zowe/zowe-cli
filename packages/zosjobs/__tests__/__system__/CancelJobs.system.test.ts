@@ -9,14 +9,14 @@
 *
 */
 
-import { ImperativeError, RestClientError, AbstractSession } from "@zowe/imperative";
+import { ImperativeError, Session, RestClientError } from "@zowe/imperative";
 import { CancelJobs, SubmitJobs, IJob } from "../../src";
 import { JobTestsUtils } from "./JobTestsUtils";
 import { ITestEnvironment } from "../../../../__tests__/__src__/environment/ITestEnvironment";
 import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 
-let REAL_SESSION: AbstractSession;
+let REAL_SESSION: Session;
 let sleepJCL: string;
 
 let systemProps: ITestPropertiesSchema;
@@ -29,11 +29,12 @@ describe("CancelJobs System tests", () => {
         testEnvironment = await TestEnvironment.setUp({
             testName: "zos_cancel_jobs"
         });
-        REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
         systemProps = testEnvironment.systemTestProperties;
+
+        REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
+
         const ACCOUNT = systemProps.tso.account;
         const maxStepNum = 6;  // Use lots of steps to make the job stay in INPUT status longer
-        testEnvironment.resources.session = REAL_SESSION;
         sleepJCL = JobTestsUtils.getSleepJCL(REAL_SESSION.ISession.user, ACCOUNT, systemProps.zosjobs.jobclass, maxStepNum);
     });
 
@@ -190,11 +191,12 @@ describe("CancelJobs System tests - encoded", () => {
         testEnvironment = await TestEnvironment.setUp({
             testName: "zos_cancel_jobs_encoded"
         });
-        REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
         systemProps = testEnvironment.systemTestProperties;
+
+        REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
+
         const ACCOUNT = systemProps.tso.account;
         const maxStepNum = 6;  // Use lots of steps to make the job stay in INPUT status longer
-        testEnvironment.resources.session = REAL_SESSION;
         sleepJCL = JobTestsUtils.getSleepJCL(REAL_SESSION.ISession.user, ACCOUNT, systemProps.zosjobs.jobclass, maxStepNum, true);
     });
 

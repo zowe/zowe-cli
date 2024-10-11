@@ -38,10 +38,10 @@ describe("zos-jobs view spool-file-by-id command", () => {
             tempProfileTypes: ["zosmf"]
         });
 
-        REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
-        TEST_ENVIRONMENT.resources.session = REAL_SESSION;
         IEFBR14_JOB = TEST_ENVIRONMENT.systemTestProperties.zosjobs.iefbr14Member;
         const defaultSystem = TEST_ENVIRONMENT.systemTestProperties;
+        REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
+
         ACCOUNT = defaultSystem.tso.account;
         const JOB_LENGTH = 6;
         JOB_NAME = REAL_SESSION.ISession.user.substring(0, JOB_LENGTH).toUpperCase() + "SF";

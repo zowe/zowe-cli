@@ -15,7 +15,7 @@ import { runCliScript } from "@zowe/cli-test-utils";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { IO, Session } from "@zowe/imperative";
 import { GetJobs } from "@zowe/zos-jobs-for-zowe-sdk";
-import { Get } from "../../../../../../zosfiles/src/methods/get";
+import { Get } from "@zowe/zos-files-for-zowe-sdk";
 
 process.env.FORCE_COLOR = "0";
 
@@ -39,8 +39,6 @@ describe("zos-jobs submit stdin command", () => {
 
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
         account = systemProps.tso.account;
-
-        TEST_ENVIRONMENT.resources.session = REAL_SESSION;
 
         // JCL to submit
         jcl = (await Get.dataSet(REAL_SESSION, systemProps.zosjobs.iefbr14Member)).toString();
@@ -131,12 +129,6 @@ describe("zos-jobs submit stdin command", () => {
             });
 
             afterAll(async () => {
-                // Cleanup jobs before the environment is torn down
-                if (JOB_NAME) {
-                    const jobs = await GetJobs.getJobsByPrefix(REAL_SESSION, JOB_NAME);
-                    TEST_ENVIRONMENT_NO_PROF.resources.jobs.push(...jobs);
-                }
-
                 await TestEnvironment.cleanUp(TEST_ENVIRONMENT_NO_PROF);
             });
 

@@ -36,10 +36,9 @@ describe("Submit Jobs - System Tests", () => {
         testEnvironment = await TestEnvironment.setUp({
             testName: "zos_submit_jobs"
         });
-        REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
-        testEnvironment.resources.session = REAL_SESSION;
-
         systemProps = testEnvironment.systemTestProperties;
+
+        REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
         account = systemProps.tso.account;
         jobDataSet = testEnvironment.systemTestProperties.zosjobs.iefbr14PSDataSet;
         jobUSSFile = testEnvironment.systemTestProperties.zosjobs.iefbr14USSFile;
@@ -221,12 +220,16 @@ describe("Submit Jobs - System Tests", () => {
         });
 
         it("should return the job info of a submitted JCL string with extended options", async () => {
-            const job: any = await SubmitJobs.submitJclString(REAL_SESSION, "//JOBNAME1 JOB", {
+            const jobOrSpoolFiles = await SubmitJobs.submitJclString(REAL_SESSION, "//JOBNAME1 JOB", {
                 jclSource: "stdin",
                 internalReaderFileEncoding: "IBM-037",
                 internalReaderLrecl: "80",
                 internalReaderRecfm: "F"
             });
+
+            // Now `jobOrSpoolFiles` is guaranteed to be of type `IJob`
+            const job: IJob = jobOrSpoolFiles as IJob;
+
             expect(job.jobid).toBeDefined();
             expect(job.jobname).toBeDefined();
             testEnvironment.resources.jobs.push(job);
@@ -234,31 +237,21 @@ describe("Submit Jobs - System Tests", () => {
 
         it("should return an array of spool content", async () => {
             // Submit the JCL and request spool content to be returned
-            const result = await SubmitJobs.submitJclString(REAL_SESSION, "//JOBNAME1 JOB", {
+            const jobOrSpoolFiles = await SubmitJobs.submitJclString(REAL_SESSION, "//JOBNAME1 JOB", {
                 jclSource: "stdin",
                 viewAllSpoolContent: true
             });
 
-            let job: IJob;
-            let spoolFiles: ISpoolFile[];
+            // Now `jobOrSpoolFiles` is guaranteed to be of type `ISpoolFile[]`
+            const spoolFiles: ISpoolFile[] = jobOrSpoolFiles as ISpoolFile[];
 
-            if (Array.isArray(result)) {
-                // result is an array of spool files
-                spoolFiles = result as ISpoolFile[];
+            expect(spoolFiles.constructor === Array).toBe(true);
+            expect(spoolFiles[0].data.toString()).toContain("J E S 2  J O B  L O G");
 
-                // Ensure the first spool file contains the expected content
-                expect(spoolFiles[0].data.toString()).toContain("J E S 2  J O B  L O G");
-
-                // Extract job ID from the spool file content
-                const jobLogContent = spoolFiles[0].data.toString();
-                const jobIdMatch = jobLogContent.match(/JOB\d{5}/).toString();
-
-                job = await GetJobs.getJob(REAL_SESSION, jobIdMatch);
-            } else {
-                // result is a job
-                job = result as IJob;
-            }
-
+            // Extract job ID from the spool file content
+            const jobLogContent = spoolFiles[0].data.toString();
+            const jobIdMatch = jobLogContent.match(/JOB\d{5}/).toString();
+            const job = await GetJobs.getJob(REAL_SESSION, jobIdMatch);
             testEnvironment.resources.jobs.push(job);
         });
 

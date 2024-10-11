@@ -9,7 +9,7 @@
 *
 */
 
-import { DeleteJobs, DownloadJobs, GetJobs, ICommonJobParms, IJobFile, SubmitJobs } from "../../src";
+import { DownloadJobs, GetJobs, IJobFile, SubmitJobs } from "../../src";
 import { ImperativeError, IO, Session, TextUtils } from "@zowe/imperative";
 import { ITestEnvironment } from "../../../../__tests__/__src__/environment/ITestEnvironment";
 import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
@@ -44,11 +44,11 @@ describe("Download Jobs - System tests", () => {
         testEnvironment = await TestEnvironment.setUp({
             testName: "zos_download_jobs"
         });
-        REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
-        testEnvironment.resources.session = REAL_SESSION;
 
         outputDirectory = testEnvironment.workingDir + "/output";
         defaultSystem = testEnvironment.systemTestProperties;
+
+        REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
 
         // download the valid IEFBR14 from the data set specified in the properties file
         iefbr14DataSet = testEnvironment.systemTestProperties.zosjobs.iefbr14Member;
@@ -80,7 +80,6 @@ describe("Download Jobs - System tests", () => {
     });
 
     afterAll(async () => {
-        testEnvironment.resources.jobData.push({ jobname: jobname, jobid: jobid } as ICommonJobParms);
         await TestEnvironment.cleanUp(testEnvironment);
     });
 
@@ -359,11 +358,10 @@ describe("Download Jobs - System tests - Encoded", () => {
         testEnvironment = await TestEnvironment.setUp({
             testName: "zos_download_jobs_encoded"
         });
-        REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
-        testEnvironment.resources.session = REAL_SESSION;
         outputDirectory = testEnvironment.workingDir + "/output";
         defaultSystem = testEnvironment.systemTestProperties;
 
+        REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
         const ACCOUNT = defaultSystem.tso.account;
 
         const iefbr14JCL = JobTestsUtils.getIefbr14JCL(REAL_SESSION.ISession.user, ACCOUNT, defaultSystem.zosjobs.jobclass, 1, true);
@@ -393,7 +391,6 @@ describe("Download Jobs - System tests - Encoded", () => {
     });
 
     afterAll(async () => {
-        await DeleteJobs.deleteJob(REAL_SESSION, jobname, jobid);
         await TestEnvironment.cleanUp(testEnvironment);
     });
 

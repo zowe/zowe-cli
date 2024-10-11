@@ -14,7 +14,7 @@ import * as fs from "fs";
 import { Imperative, Headers, AbstractSession } from "@zowe/imperative";
 import { ZosmfRestClient } from "../../packages/core/src";
 import { ZosFilesConstants, Delete } from "../../packages/zosfiles/src";
-import { DeleteJobs, ICommonJobParms, IDeleteJobParms, IJob } from "../../packages/zosjobs/src";
+import { DeleteJobs, GetJobs, ICommonJobParms, IDeleteJobParms, IJob } from "../../packages/zosjobs/src";
 import { promisify } from "util";
 
 /**
@@ -68,10 +68,13 @@ export async function deleteDataset(session: AbstractSession, dataSetName: strin
 /**
  * Delete a job from the mainframe using Zowe SDKs - IJob
  * @param {AbstractSession} session - z/OSMF connection info
- * @param {IJob} job - the job that you want to delete
+ * @param {IJob | string} job - the job or job ID that you want to delete
  * @returns {Promise<void>} A promise that resolves when the job is deleted.
  */
-export async function deleteJob(session: AbstractSession, job: IJob): Promise<void> {
+export async function deleteJob(session: AbstractSession, job: IJob | string): Promise<void> {
+    if (typeof job === "string") {
+        job = await GetJobs.getJob(session, job);
+    }
     await DeleteJobs.deleteJobForJob(session, job);
 }
 

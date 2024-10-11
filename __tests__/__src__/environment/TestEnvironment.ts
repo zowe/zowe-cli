@@ -49,10 +49,9 @@ export class TestEnvironment extends BaseTestEnvironment {
         ].join(separator);
         result.resources = {
             localFiles: [],
+            datasets: [],
             files: [],
             jobs: [],
-            jobData: [],
-            datasets: [],
             session: params.skipProperties ? null : TestEnvironment.createZosmfSession(result)
         };
         // Return the test environment including working directory that the tests should be using
@@ -78,29 +77,21 @@ export class TestEnvironment extends BaseTestEnvironment {
             for (const file of testEnvironment.resources.localFiles) {
                 deleteLocalFile(file);
             }
+            for (const dataset of testEnvironment.resources.datasets) {
+                await deleteDataset(session, dataset);
+            }
             for (const file of testEnvironment.resources.files) {
                 await deleteFiles(session, file);
             }
             for (const job of testEnvironment.resources.jobs) {
                 await deleteJob(session, job);
             }
-            for (const jobData of testEnvironment.resources.jobData) {
-                if (jobData.jobname && jobData.jobid) {
-                    await deleteJobCommon(session, jobData);
-                } else {
-                    Imperative.console.info('Error: Missing jobname or jobid for jobData:', jobData);
-                }
-            }
-            for (const dataset of testEnvironment.resources.datasets) {
-                await deleteDataset(session, dataset);
-            }
 
             testEnvironment.resources = {
                 localFiles: [],
+                datasets: [],
                 files: [],
                 jobs: [],
-                jobData: [],
-                datasets: [],
                 session: testEnvironment.resources.session
             };
         }

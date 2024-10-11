@@ -14,13 +14,13 @@ import { ITestEnvironment } from "../../../../../../__tests__/__src__/environmen
 import { runCliScript } from "@zowe/cli-test-utils";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { wait, waitTime } from "../../../../../../__tests__/__src__/TestUtils";
-import { AbstractSession } from "@zowe/imperative";
+import { Session } from "@zowe/imperative";
 import { GetJobs } from "@zowe/zos-jobs-for-zowe-sdk";
 
 // Test Environment populated in the beforeAll();
 let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 let IEFBR14_JOB: string;
-let REAL_SESSION: AbstractSession;
+let REAL_SESSION: Session;
 let ACCOUNT: string;
 let JOB_NAME: string;
 let NON_HELD_JOBCLASS: string;
@@ -30,8 +30,8 @@ let BAD_SEARCH_STRING: string;
 let defaultSystem: ITestPropertiesSchema;
 
 describe("zos-jobs search job command", () => {
+    // Create the unique test environment
     beforeAll(async () => {
-        // Initialize testEnvironment first!
         testEnvironment = await TestEnvironment.setUp({
             testName: "zos_jobs_search_job_command",
             tempProfileTypes: ["zosmf"]

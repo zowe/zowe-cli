@@ -34,7 +34,6 @@ describe("DeleteJobs System tests", () => {
         defaultSystem = testEnvironment.systemTestProperties;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
-        testEnvironment.resources.session = REAL_SESSION;
 
         const ACCOUNT = defaultSystem.tso.account;
 

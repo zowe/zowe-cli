@@ -38,11 +38,9 @@ describe("zos-jobs view job-status-by-jobid command", () => {
             testName: "zos_jobs_view_job_status_by_jobid_command"
         });
 
-        REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
-        TEST_ENVIRONMENT.resources.session = REAL_SESSION;
-
         systemProps = TEST_ENVIRONMENT.systemTestProperties;
 
+        REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
         account = systemProps.tso.account;
         jclMember = TEST_ENVIRONMENT.systemTestProperties.zosjobs.iefbr14Member;
         psJclDataSet = TEST_ENVIRONMENT.systemTestProperties.zosjobs.iefbr14PSDataSet;
@@ -113,7 +111,6 @@ describe("zos-jobs view job-status-by-jobid command", () => {
                     testName: "zos_jobs_view_job_status_by_jobid_command_without_profiles"
                 });
                 REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
-                TEST_ENVIRONMENT.resources.session = REAL_SESSION;
                 DEFAULT_SYSTEM_PROPS = TEST_ENVIRONMENT_NO_PROF.systemTestProperties;
             });
 

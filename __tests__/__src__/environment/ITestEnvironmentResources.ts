@@ -10,7 +10,7 @@
 */
 
 import { AbstractSession } from "@zowe/imperative";
-import { ICommonJobParms, IJob } from "../../../packages/zosjobs";
+import { IJob } from "../../../packages/zosjobs";
 
 /**
  * Represents the resources used within the test environment.
@@ -31,16 +31,10 @@ export interface ITestEnvironmentResources {
     files: string[];
 
     /**
-     * Array of job objects representing jobs submitted to the mainframe during the test.
+     * Array of job objects or job IDs representing jobs submitted to the mainframe during the test.
      * @type {IJob[]}
      */
-    jobs: IJob[];
-
-    /**
-     * Array of job data containing jobname and jobid, used to track jobs within the test environment.
-     * @type {ICommonJobParms[]}
-     */
-    jobData: ICommonJobParms[]; // Contains jobname and jobid
+    jobs: (IJob | string)[];
 
     /**
      * Array of dataset names used within the test environment.

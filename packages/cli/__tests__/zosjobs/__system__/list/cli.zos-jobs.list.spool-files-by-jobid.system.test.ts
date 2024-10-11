@@ -13,8 +13,8 @@ import { TestEnvironment } from "../../../../../../__tests__/__src__/environment
 import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/ITestEnvironment";
 import { runCliScript } from "@zowe/cli-test-utils";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { AbstractSession, TextUtils } from "@zowe/imperative";
-import { IJob, GetJobs, SubmitJobs } from "@zowe/zos-jobs-for-zowe-sdk";
+import { Session, TextUtils } from "@zowe/imperative";
+import { IJob, SubmitJobs } from "@zowe/zos-jobs-for-zowe-sdk";
 import * as fs from "fs";
 import { join } from "path";
 import { TEST_RESOURCES_DIR } from "@zowe/zos-jobs-for-zowe-sdk/__tests__/__src__/ZosJobsTestConstants";
@@ -22,7 +22,7 @@ import { TEST_RESOURCES_DIR } from "@zowe/zos-jobs-for-zowe-sdk/__tests__/__src_
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
 let IEFBR14_JOB: string;
-let REAL_SESSION: AbstractSession;
+let REAL_SESSION: Session;
 let ACCOUNT: string;
 let JOB_NAME: string;
 let NON_HELD_JOBCLASS: string;
@@ -42,10 +42,10 @@ describe("zos-jobs list spool-files-by-jobid command", () => {
             testName: "zos_jobs_list_spool_files_by_jobid_command",
             tempProfileTypes: ["zosmf"]
         });
-        REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
-        TEST_ENVIRONMENT.resources.session = REAL_SESSION;
         IEFBR14_JOB = TEST_ENVIRONMENT.systemTestProperties.zosjobs.iefbr14Member;
         const defaultSystem = TEST_ENVIRONMENT.systemTestProperties;
+
+        REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
 
         ACCOUNT = defaultSystem.tso.account;
         const JOB_LENGTH = 6;
@@ -82,7 +82,7 @@ describe("zos-jobs list spool-files-by-jobid command", () => {
     });
 
     describe("response", () => {
-        it("should display the ddnames for a job", async () => {
+        it("should display the ddnames for a job", () => {
             const response = runCliScript(__dirname + "/__scripts__/spool-files-by-jobid/submit_and_list_dds.sh",
                 TEST_ENVIRONMENT, [IEFBR14_JOB]);
             expect(response.stderr.toString()).toBe("");
@@ -95,16 +95,12 @@ describe("zos-jobs list spool-files-by-jobid command", () => {
 
             // Ensure the JOBID was captured correctly
             expect(jobId).not.toBeNull();
-
-            // Retrieve job details using the Zowe SDK
-            const job: IJob = await GetJobs.getJob(REAL_SESSION, jobId);
+            TEST_ENVIRONMENT.resources.jobs.push(jobId);
 
             // Validate DDs and output
             expect(response.stdout.toString()).toContain("JESMSGLG");
             expect(response.stdout.toString()).toContain("JESJCL");
             expect(response.stdout.toString()).toContain("JESYSMSG");
-
-            TEST_ENVIRONMENT.resources.jobs.push(job);
         });
 
         it("should display the the procnames and ddnames for a job", async () => {
@@ -115,6 +111,7 @@ describe("zos-jobs list spool-files-by-jobid command", () => {
 
             // Submit the job
             const job: IJob = await SubmitJobs.submitJclNotify(REAL_SESSION, renderedJcl);
+            TEST_ENVIRONMENT.resources.jobs.push(job);
 
             // View the DDs
             const response = runCliScript(__dirname + "/__scripts__/spool-files-by-jobid/list_dds.sh",
@@ -126,8 +123,6 @@ describe("zos-jobs list spool-files-by-jobid command", () => {
             expect(response.stdout.toString()).toContain("SYSTSPRT");
             expect(response.stdout.toString()).toContain("TSOSTEP1");
             expect(response.stdout.toString()).toContain("TSOSTEP2");
-
-            TEST_ENVIRONMENT.resources.jobs.push(job);
         }, LONG_TIMEOUT);
 
         describe("without profiles", () => {
@@ -140,8 +135,7 @@ describe("zos-jobs list spool-files-by-jobid command", () => {
                 TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
                     testName: "zos_jobs_list_spool_files_by_jobid_without_profiles"
                 });
-                REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT_NO_PROF);
-                TEST_ENVIRONMENT_NO_PROF.resources.session = REAL_SESSION;
+
                 SYSTEM_PROPS = TEST_ENVIRONMENT_NO_PROF.systemTestProperties;
             });
 
@@ -149,7 +143,7 @@ describe("zos-jobs list spool-files-by-jobid command", () => {
                 await TestEnvironment.cleanUp(TEST_ENVIRONMENT_NO_PROF);
             });
 
-            it("should display the ddnames for a job", async () => {
+            it("should display the ddnames for a job", () => {
                 const ZOWE_OPT_BASE_PATH = "ZOWE_OPT_BASE_PATH";
 
                 // if API Mediation layer is being used (basePath has a value) then
@@ -177,16 +171,12 @@ describe("zos-jobs list spool-files-by-jobid command", () => {
 
                 // Ensure the JOBID was captured correctly
                 expect(jobId).not.toBeNull();
-
-                // Retrieve job details using the Zowe SDK
-                const job: IJob = await GetJobs.getJob(REAL_SESSION, jobId);
+                TEST_ENVIRONMENT_NO_PROF.resources.jobs.push(jobId);
 
                 // Validate DDs and output
                 expect(response.stdout.toString()).toContain("JESMSGLG");
                 expect(response.stdout.toString()).toContain("JESJCL");
                 expect(response.stdout.toString()).toContain("JESYSMSG");
-
-                TEST_ENVIRONMENT_NO_PROF.resources.jobs.push(job);
             }, LONG_TIMEOUT);
         });
     });

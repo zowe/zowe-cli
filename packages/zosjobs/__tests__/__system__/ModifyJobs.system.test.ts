@@ -32,21 +32,18 @@ describe("Modify Jobs - System Tests", () => {
         testEnvironment = await TestEnvironment.setUp({
             testName: "zos_modify_jobs"
         });
-        REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
-        testEnvironment.resources.session = REAL_SESSION;
-
         systemProps = testEnvironment.systemTestProperties;
+        REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
         account = systemProps.tso.account;
         jobclass = testEnvironment.systemTestProperties.zosjobs.jobclass;
         modifiedJobClass = testEnvironment.systemTestProperties.zosjobs.modifiedJobclass;
         iefbr14Job = await SubmitJobs.submitJob(REAL_SESSION,
             testEnvironment.systemTestProperties.zosjobs.iefbr14Member
         );
+        testEnvironment.resources.jobs.push(iefbr14Job);
     });
 
     afterAll(async () => {
-        // Add the job to resources for automatic cleanup
-        testEnvironment.resources.jobData.push({jobname: iefbr14Job.jobname, jobid: iefbr14Job.jobid});
         await TestEnvironment.cleanUp(testEnvironment);
     });
 
@@ -107,10 +104,8 @@ describe("Modify Jobs - System Tests - Encoded", () => {
         testEnvironment = await TestEnvironment.setUp({
             testName: "zos_modify_jobs_encoded"
         });
-        REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
-        testEnvironment.resources.session = REAL_SESSION;
-
         systemProps = testEnvironment.systemTestProperties;
+        REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
         account = systemProps.tso.account;
         jobclass = systemProps.zosjobs.jobclass;
         modifiedJobClass = systemProps.zosjobs.modifiedJobclass;
@@ -118,11 +113,10 @@ describe("Modify Jobs - System Tests - Encoded", () => {
         const maxStepNum = 6;
         const sleepJCL = JobTestsUtils.getSleepJCL(REAL_SESSION.ISession.user, account, systemProps.zosjobs.jobclass, maxStepNum, true);
         sleepJCLJob = await SubmitJobs.submitJcl(REAL_SESSION, sleepJCL);
+        testEnvironment.resources.jobs.push(sleepJCLJob);
     });
 
     afterAll(async () => {
-        // Add the sleep job to resources for automatic cleanup
-        testEnvironment.resources.jobData.push({jobname: sleepJCLJob.jobname, jobid: sleepJCLJob.jobid});
         await TestEnvironment.cleanUp(testEnvironment);
     });
 

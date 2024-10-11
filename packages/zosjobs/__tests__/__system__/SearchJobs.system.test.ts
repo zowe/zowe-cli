@@ -58,9 +58,9 @@ describe("Search Jobs - System Tests", () => {
         testEnvironment = await TestEnvironment.setUp({
             testName: "zos_search_jobs"
         });
-        REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
-        testEnvironment.resources.session = REAL_SESSION;
         defaultSystem = testEnvironment.systemTestProperties;
+
+        REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
 
         INVALID_SESSION = new Session({
             user: "fakeuser",
