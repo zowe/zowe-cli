@@ -39,4 +39,10 @@ export interface ITsoAppCommunicationParms {
      * @memberof ITsoAppCommunicationParms
      */
     receiveUntilReady?: boolean;
+    /**
+     * Timeout duration in seconds
+     * @type {boolean}
+     * @memberof ITsoAppCommunicationParms
+     */
+    timeout?: number;
 }

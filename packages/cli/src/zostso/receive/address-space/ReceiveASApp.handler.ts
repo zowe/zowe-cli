@@ -27,7 +27,8 @@ export default class Handler extends ZosTsoBaseHandler {
             {
                 appKey: commandParameters.arguments.appKey,
                 servletKey: commandParameters.arguments.servletKey,
-                receiveUntilReady: commandParameters.arguments.receiveUntilReady
+                receiveUntilReady: commandParameters.arguments.receiveUntilReady,
+                timeout: commandParameters.arguments.timeout
             },
         );
         commandParameters.response.console.log("\n");

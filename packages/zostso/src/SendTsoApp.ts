@@ -16,6 +16,7 @@ import { TsoValidator } from "./TsoValidator";
 import { noAccountNumber, TsoConstants } from "./TsoConstants";
 import { IASAppResponse } from "./doc/IASAppResponse";
 import { ITsoAppCommunicationParms } from "./doc/input/ITsoAppCommunicationParms";
+
 /**
  * Send message to TSO App running at an address space
  * @export
@@ -38,30 +39,46 @@ export class SendTsoApp {
         startParms: IStartTsoParms
     ): Promise<IASAppResponse> {
         TsoValidator.validateSession(session);
-        TsoValidator.validateNotEmptyString(
-            accountNumber,
-            noAccountNumber.message
-        );
+        TsoValidator.validateNotEmptyString(accountNumber, noAccountNumber.message);
+
+        const spinnerChars = ["|", "/", "-", "\\"];
+        let spinnerIndex = 0;
+
+        // Start the spinner
+        const spinner = setInterval(() => {
+            process.stdout.write(`\rSending request... ${spinnerChars[spinnerIndex]}`);
+            spinnerIndex = (spinnerIndex + 1) % spinnerChars.length;
+        }, 100);
 
         const endpoint = `${TsoConstants.RESOURCE}/app/${params.servletKey}/${params.appKey}`;
-        const apiResponse =
-            await ZosmfRestClient.putExpectJSON<IASAppResponse&{ver: string}>(
+
+        try {
+            const apiResponse = await ZosmfRestClient.putExpectJSON<IASAppResponse & { ver: string }>(
                 session,
                 endpoint,
                 [Headers.CONTENT_TYPE, "text/plain"],
                 params.message
             );
+
             const formattedApiResponse: IASAppResponse = {
                 version: apiResponse.ver,
                 reused: apiResponse.reused,
                 timeout: apiResponse.timeout,
                 servletKey: apiResponse.servletKey ?? null,
                 queueID: apiResponse.queueID ?? null,
-                tsoData: apiResponse.tsoData.map((message: any) => ({
-                    VERSION: message["TSO MESSAGE"].VERSION,
-                    DATA: message["TSO MESSAGE"].DATA,
-                })),
+                tsoData: apiResponse.tsoData?.map((message: any) => {
+                    const messageKey = message["TSO MESSAGE"] ? "TSO MESSAGE" : "TSO PROMPT";
+                    return {
+                        VERSION: message[messageKey].VERSION,
+                        DATA: message[messageKey].DATA,
+                    };
+                }),
             };
-        return formattedApiResponse;
+
+            return formattedApiResponse;
+        } finally {
+            clearInterval(spinner); // Stop the spinner
+            process.stdout.write("\r\x1b[K"); // Clear the line with spinner text
+        }
     }
 }

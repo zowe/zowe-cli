@@ -44,6 +44,14 @@ export const ReceiveASApp: ICommandDefinition = {
             type: "boolean",
             required: false,
             defaultValue: false
+        },
+        {
+            name: "timeout",
+            aliases: ["t"],
+            description: "Timeout length in seconds, all data at the time of timeout will be returned to user",
+            type: "number",
+            required: false,
+            defaultValue: 600
         }
     ] as ICommandOptionDefinition[]),
     examples: [],

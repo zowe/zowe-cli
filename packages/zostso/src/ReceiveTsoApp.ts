@@ -15,8 +15,6 @@ import { noAccountNumber, TsoConstants } from "./TsoConstants";
 import { ITsoAppCommunicationParms } from "./doc/input/ITsoAppCommunicationParms";
 import { IASAppResponse } from "./doc/IASAppResponse";
 
-const TIMEOUT_SECONDS = 600;
-
 export class ReceiveTsoApp {
     public static async receive(
         session: AbstractSession,
@@ -24,14 +22,12 @@ export class ReceiveTsoApp {
         params: ITsoAppCommunicationParms
     ): Promise<IASAppResponse> {
         TsoValidator.validateSession(session);
-        TsoValidator.validateNotEmptyString(
-            accountNumber,
-            noAccountNumber.message
-        );
-
+        TsoValidator.validateNotEmptyString(accountNumber, noAccountNumber.message);
+        const TIMEOUT_SECONDS: number = params.timeout;
         const spinnerChars = ["|", "/", "-", "\\"];
         let spinnerIndex = 0;
 
+        // Start the spinner
         const spinner = setInterval(() => {
             process.stdout.write(`\rReceiving response... ${spinnerChars[spinnerIndex]}`);
             spinnerIndex = (spinnerIndex + 1) % spinnerChars.length;
@@ -45,20 +41,14 @@ export class ReceiveTsoApp {
 
         try {
             do {
-                if (Date.now() - startTime > TIMEOUT_SECONDS * 1000){
+                if (Date.now() - startTime > TIMEOUT_SECONDS * 1000) {
                     timeoutReached = true;
                     break;
                 }
 
                 try {
-                    const apiResponse = await ZosmfRestClient.getExpectJSON<
-                        IASAppResponse & { ver: string; appData?: any }
-                    >(session, endpoint);
-
-                    const response = apiResponse as IASAppResponse & {
-                        ver: string;
-                        appData?: any;
-                    };
+                    const apiResponse = await ZosmfRestClient.getExpectJSON<IASAppResponse & { ver: string; appData?: any }>(session, endpoint);
+                    const response = apiResponse as IASAppResponse & { ver: string; appData?: any };
                     const formattedApiResponse: IASAppResponse = {
                         version: response.ver,
                         reused: response.reused,
@@ -66,9 +56,7 @@ export class ReceiveTsoApp {
                         servletKey: response.servletKey ?? null,
                         queueID: response.queueID ?? null,
                         tsoData: response.tsoData?.map((message: any) => {
-                            const messageKey = message["TSO MESSAGE"]
-                                ? "TSO MESSAGE"
-                                : "TSO PROMPT";
+                            const messageKey = message["TSO MESSAGE"] ? "TSO MESSAGE" : "TSO PROMPT";
                             return {
                                 VERSION: message[messageKey].VERSION,
                                 DATA: message[messageKey].DATA,
@@ -79,15 +67,11 @@ export class ReceiveTsoApp {
                     if (combinedResponse === null) {
                         combinedResponse = formattedApiResponse;
                     } else {
-                        combinedResponse.tsoData.push(
-                            ...formattedApiResponse.tsoData
-                        );
+                        combinedResponse.tsoData.push(...formattedApiResponse.tsoData);
                     }
 
                     endKeyword = formattedApiResponse.tsoData.some((data: any) =>
-                        typeof data === "string"
-                            ? data.trim() === "READY"
-                            : data.DATA.trim() === "READY"
+                        typeof data === "string" ? data.trim() === "READY" : data.DATA.trim() === "READY"
                     );
                 } catch (error) {
                     if (combinedResponse) {
@@ -97,8 +81,8 @@ export class ReceiveTsoApp {
                 }
             } while (!endKeyword && params.receiveUntilReady && !timeoutReached);
         } finally {
-            clearInterval(spinner);
-            process.stdout.write("\r");
+            clearInterval(spinner); // Stop the spinner
+            process.stdout.write("\r\x1b[K"); // Clear the line with spinner text
         }
 
         return combinedResponse!;
