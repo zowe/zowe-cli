@@ -78,8 +78,6 @@ We tag various releases of our product in an NPM registry. End users install the
 
    This tag is deprecated.
 
-See the [example timeline](#example-timeline) for examples that show how the above versions will be updated.
-
 ## Requirements
 
 Our versioning scheme has the following requirements:
