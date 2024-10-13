@@ -1,6 +1,6 @@
 # Versioning
 
-This article describes the versioning scheme used by Zowe CLI and Imperative CLI Framework, and provides [examples](#example-timeline) on how the scheme works.
+This article describes the versioning scheme used by Zowe CLI and Imperative CLI Framework, and provides examples on how the scheme works.
 
 We highly recommend that consumers adhere to the [requirements](#requirements), [tentative release schedule](#tentative-release-schedule), and [tag usage](#tag-usage) for versioning.
 
