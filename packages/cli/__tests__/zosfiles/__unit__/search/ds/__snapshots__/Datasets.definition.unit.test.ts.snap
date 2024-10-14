@@ -45,7 +45,7 @@ Array [
     "aliases": Array [
       "to",
     ],
-    "description": "The number of seconds to search before timing out",
+    "description": "The number of seconds to search before timing out.",
     "name": "timeout",
     "type": "number",
   },
