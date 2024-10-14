@@ -32,9 +32,12 @@ describe("Invoke AMS CLI", () => {
         // replace high-level-qualifier with user value
         const AMSStatement = fs.readFileSync(templateFile).toString();
         const updatedStatement = TextUtils.renderWithMustache(AMSStatement, {DSN: dsname, VOL: volume});
-        fs.writeFileSync(templateFile + ".temp", updatedStatement);
-        testEnvironment.resources.localFiles.push(templateFile + ".temp");
-        return templateFile + ".temp";
+        const filename = templateFile + ".temp";
+        fs.writeFileSync(filename, updatedStatement);
+        if (!testEnvironment.resources.localFiles.includes(filename)) {
+            testEnvironment.resources.localFiles.push(filename);
+        }
+        return filename;
     }
 
     // Create the unique test environment

@@ -52,23 +52,23 @@ describe("Retrieve workflow definition cli system tests", () => {
             testEnvironment.resources.files.push(definitionFile);
         });
         describe("Success Scenarios", () => {
-            it("Should return the details of a workflow definition file.", async () => {
+            it("Should return the details of a workflow definition file.", () => {
                 const response = runCliScript(__dirname + "/__scripts__/command/command_definition_file_details.sh",
                     testEnvironment, [`/${defaultSystem.unix.testdir.toLocaleLowerCase()}/${uniqueFileName}.xml`]);
                 expect(response.stderr.toString()).toBe("");
                 expect(response.status).toBe(0);
                 expect(response.stdout.toString()).toContain(`success": true`);
             });
-            it("Should return a message if search does not match any existing files", async () => {
-                const response = await runCliScript(__dirname + "/__scripts__/command/command_definition_file_details.sh",
+            it("Should return a message if search does not match any existing files", () => {
+                const response = runCliScript(__dirname + "/__scripts__/command/command_definition_file_details.sh",
                     testEnvironment, [`/${defaultSystem.unix.testdir.toLocaleLowerCase()}/${uniqueFileName}`]);
                 expect(response.status).toBe(1);
                 expect(response.stdout.toString()).toContain("not found or cannot be accessed.");
             });
 
-            it("Should return a message if search is for a diectory", async () => {
+            it("Should return a message if search is for a diectory", () => {
                 const fakeName = `/${defaultSystem.unix.testdir.toLocaleLowerCase()}`;
-                const response = await runCliScript(__dirname + "/__scripts__/command/command_definition_file_details.sh",
+                const response = runCliScript(__dirname + "/__scripts__/command/command_definition_file_details.sh",
                     testEnvironment, [fakeName]);
                 expect(response.status).toBe(1);
                 expect(response.stdout.toString()).toContain("is not a UNIX file");

@@ -48,9 +48,12 @@ describe("Invoke AMS", () => {
         // replace DSN with unique data set name
         const AMSStatement = fs.readFileSync(templateFile).toString();
         const updatedStatement = TextUtils.renderWithMustache(AMSStatement, {DSN: dsname, VOL: volume});
-        fs.writeFileSync(templateFile + ".temp", updatedStatement);
-        testEnvironment.resources.localFiles.push(templateFile + ".temp");
-        return templateFile + ".temp";
+        const filename = templateFile + ".temp";
+        fs.writeFileSync(filename, updatedStatement);
+        if (!testEnvironment.resources.localFiles.includes(filename)) {
+            testEnvironment.resources.localFiles.push(filename);
+        }
+        return filename;
     }
 
     it("should create and delete a VSAM data set from command statement in files", async () => {

@@ -260,6 +260,10 @@ describe("Upload directory to USS", () => {
     });
 
     describe("Scenarios using the .zosattributes file", () => {
+        afterEach(async () => {
+            await deleteFiles(REAL_SESSION, ussname);
+        });
+
         it("should ignore files marked with a -", async () => {
             const localDirName = path.join(__dirname, "__data__", "command_upload_dtu_dir/dir_with_ignored_files");
             testSuccessfulUpload(localDirName);

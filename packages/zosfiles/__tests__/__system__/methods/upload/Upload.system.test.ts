@@ -941,12 +941,12 @@ describe("Upload a local directory to USS directory", () => {
             Imperative.console.info("Using ussfile:" + ussname);
         });
 
-        beforeEach(() => {
-            tempUssname = null;
-        });
-
         afterAll(async () => {
             await TestEnvironment.cleanUp(testEnvironment);
+        });
+
+        beforeEach(() => {
+            tempUssname = null;
         });
 
         afterEach(async () => {

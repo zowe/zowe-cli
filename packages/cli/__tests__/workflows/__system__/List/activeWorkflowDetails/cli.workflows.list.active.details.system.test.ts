@@ -66,16 +66,16 @@ describe("List active workflow details cli system tests", () => {
         afterAll(async () => {
             // deleting wf instance
             const response: any = await ZosmfRestClient.getExpectJSON(REAL_SESSION, "/zosmf/workflow/rest/1.0/workflows?workflowName=" + wfName);
-            response.workflows.forEach(async (element: any) => {
+            for (const element of response.workflows) {
                 if (element.workflowName === wfName) {
                     try {
                         await DeleteWorkflow.deleteWorkflow(REAL_SESSION, element.workflowKey);
                     } catch { /* Do nothing */ }
                 }
-            });
+            }
         });
         describe("Success Scenarios", () => {
-            it("Should list active workflow details using wf key.", async () => {
+            it("Should list active workflow details using wf key.", () => {
                 const response = runCliScript(__dirname + "/__scripts__/command/list_active_workflow_key_details.sh",
                     testEnvironment, [wfKey]);
                 expect(response.stderr.toString()).toBe("");
@@ -83,7 +83,7 @@ describe("List active workflow details cli system tests", () => {
                 expect(response.stdout.toString()).toContain("Workflow Details");
             });
 
-            it("Should list active workflow details using wf name.", async () => {
+            it("Should list active workflow details using wf name.", () => {
                 const response = runCliScript(__dirname + "/__scripts__/command/list_active_workflow_name_details.sh",
                     testEnvironment, [wfName]);
                 expect(response.stderr.toString()).toBe("");
@@ -92,14 +92,14 @@ describe("List active workflow details cli system tests", () => {
             });
         });
         describe("Failure Scenarios", () => {
-            it("Should throw error if the workflow does not exist", async () => {
+            it("Should throw error if the workflow does not exist", () => {
                 const response = runCliScript(__dirname + "/__scripts__/command/list_active_workflow_key_details.sh",
                     testEnvironment, [fakeDefFile]);
                 expect(response.status).toBe(1);
                 expect(response.stderr.toString()).toContain("does not exist.");
             });
 
-            it("Should throw error if the workflow name does not exist", async () => {
+            it("Should throw error if the workflow name does not exist", () => {
                 const response = runCliScript(__dirname + "/__scripts__/command/list_active_workflow_name_details.sh",
                     testEnvironment, [fakeDefFile]);
                 expect(response.status).toBe(1);
