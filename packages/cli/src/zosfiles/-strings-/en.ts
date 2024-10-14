@@ -613,7 +613,7 @@ export default {
                     "Increasing the value results in faster searches. " +
                     "However, increasing the value increases resource consumption on z/OS and can be prone " +
                     "to errors caused by making too many concurrent requests.",
-                    TIMEOUT: "The number of seconds to search before timing out",
+                    TIMEOUT: "The number of seconds to search before timing out.",
                     ENCODING: "Search the file content with encoding mode, which means that data conversion is performed using the file encoding " +
                     "specified.",
                 },
