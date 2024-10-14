@@ -18,8 +18,18 @@ Object {
       "aliases": Array [
         "ssm",
       ],
+      "defaultValue": true,
       "description": "Suppress console messages from start of address space.",
       "name": "suppress-startup-messages",
+      "type": "boolean",
+    },
+    Object {
+      "aliases": Array [
+        "sf",
+      ],
+      "defaultValue": false,
+      "description": "Statefulness of address space created for TSO command. This option is not supported when --suppress-startup-messages is set to false.",
+      "name": "stateful",
       "type": "boolean",
     },
     Object {

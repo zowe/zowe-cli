@@ -2,6 +2,14 @@
 
 All notable changes to the Zowe z/OS jobs SDK package will be documented in this file.
 
+## `8.1.1`
+
+- BugFix: Updated peer dependencies to `^8.0.0`, dropping support for versions tagged `next`. [#2287](https://github.com/zowe/zowe-cli/pull/2287)
+
+## `8.1.0`
+
+- BugFix: Fixed error in `DownloadJobs.downloadSpoolContentCommon` method causing binary spool files to be corrupted by newline normalization. [#2282](https://github.com/zowe/zowe-cli/issues/2282)
+
 ## `8.0.0`
 
 - MAJOR: v8.0.0 Release

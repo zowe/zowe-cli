@@ -2,6 +2,14 @@
 
 All notable changes to the Zowe z/OSMF SDK package will be documented in this file.
 
+## `8.1.1`
+
+- BugFix: Updated peer dependencies to `^8.0.0`, dropping support for versions tagged `next`. [#2287](https://github.com/zowe/zowe-cli/pull/2287)
+
+## `8.1.0`
+
+- Enhancement: Created `isZosVersionAtLeast()` function to allow for dynamic behavior based on z/OS version. [#2240](https://github.com/zowe/zowe-cli/pull/2240)
+
 ## `8.0.0`
 
 - MAJOR: v8.0.0 Release

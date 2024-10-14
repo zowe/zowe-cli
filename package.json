@@ -39,7 +39,7 @@
     "audit:public": "npm audit --registry https://registry.npmjs.org/",
     "bundle:webHelp": "cd packages/imperative/web-help && node build.js",
     "prepare": "husky && npm run bundle:webHelp",
-    "package": "node scripts/bundleCliTgz.js"
+    "package": "lerna run prepublishOnly && node scripts/bundleCliTgz.js"
   },
   "devDependencies": {
     "@lerna-lite/changed": "^3.6.0",

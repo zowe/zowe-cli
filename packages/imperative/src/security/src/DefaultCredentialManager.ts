@@ -13,7 +13,7 @@ import { AbstractCredentialManager, SecureCredential } from "./abstract/Abstract
 import { ImperativeError } from "../../error";
 import { Logger } from "../../logger";
 
-import { keyring as keytar } from "@zowe/secrets-for-zowe-sdk"; // Used for typing purposes only
+import type { keyring as keytar } from "@zowe/secrets-for-zowe-sdk"; // Used for typing purposes only
 
 /**
  * Default Credential Manager is our implementation of the Imperative Credential Manager. This manager invokes methods
@@ -120,7 +120,7 @@ export class DefaultCredentialManager extends AbstractCredentialManager {
             // our calling CLI. Since our caller must supply keytar, we search for keytar
             // within our caller's path.
             const requireOpts: any = {};
-            if (require.main.filename != null) {
+            if (require.main?.filename != null) {
                 requireOpts.paths = [require.main.filename, ...require.resolve.paths("@zowe/secrets-for-zowe-sdk")];
             }
             // use helper function for require.resolve so it can be mocked in jest tests
