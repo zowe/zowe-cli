@@ -119,7 +119,7 @@ describe("Use a test directory to do stuff in that creates files", () => {
         const directory = `${defaultSystem.unix.testdir}/`;
         const commandName = "rm -rf " + directory + "usstest";
         // Imperative.console.info("Remove test directory cmd:" + commandName);
-        const response = runCliScript(__dirname + "/__scripts__/issue_ssh_no_cwd.sh", TEST_ENVIRONMENT, [commandName]);
+        runCliScript(__dirname + "/__scripts__/issue_ssh_no_cwd.sh", TEST_ENVIRONMENT, [commandName]);
         // Imperative.console.info("Remove Response:" + response.stdout.toString());
         await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
 

@@ -40,9 +40,8 @@ describe("Delete a USS File", () => {
     describe("Success scenarios", () => {
         beforeEach(async () => {
             let error;
-            let response;
             try {
-                response = await Create.uss(REAL_SESSION, ussname, "file");
+                await Create.uss(REAL_SESSION, ussname, "file");
             } catch (err) {
                 error = err;
                 Imperative.console.info("Error: " + inspect(error));
@@ -226,9 +225,8 @@ describe("Delete USS Directory", () => {
     describe("Success scenarios", () => {
         beforeEach(async () => {
             let error;
-            let response;
             try {
-                response = await Create.uss(REAL_SESSION, ussname, "directory");
+                await Create.uss(REAL_SESSION, ussname, "directory");
             } catch (err) {
                 error = err;
                 Imperative.console.info("Error: " + inspect(error));
@@ -310,9 +308,8 @@ describe("Delete USS Directory - encoded", () => {
     describe("Success scenarios", () => {
         beforeEach(async () => {
             let error;
-            let response;
             try {
-                response = await Create.uss(REAL_SESSION, ussname, "directory");
+                await Create.uss(REAL_SESSION, ussname, "directory");
             } catch (err) {
                 error = err;
                 Imperative.console.info("Error: " + inspect(error));
@@ -358,15 +355,14 @@ describe("Delete USS Directory with children", () => {
     describe("Success scenarios", () => {
         beforeEach(async () => {
             let error;
-            let response;
             try {
-                response = await Create.uss(REAL_SESSION, ussname, "directory");
+                await Create.uss(REAL_SESSION, ussname, "directory");
             } catch (err) {
                 error = err;
                 Imperative.console.info("Error: " + inspect(error));
             }
             try {
-                response = await Create.uss(REAL_SESSION, `${ussname}/aChild.txt`, "file");
+                await Create.uss(REAL_SESSION, `${ussname}/aChild.txt`, "file");
             } catch (err) {
                 error = err;
                 Imperative.console.info("Error: " + inspect(error));

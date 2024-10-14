@@ -56,7 +56,7 @@ describe("zos-jobs cancel job command", () => {
         it("should surface an error from z/OSMF if the jobid was already canceled", () => {
             runCliScript(__dirname + "/__scripts__/job/submit_job.sh", TEST_ENVIRONMENT, [LOCAL_JCL_FILE]);
             const response = runCliScript(__dirname + "/__scripts__/job/cancel_job_v2_bad.sh", TEST_ENVIRONMENT, [LOCAL_JCL_FILE]);
-            const [, jobname, jobid] = response.stdout.toString().match(jobDataRegex) || [];
+            const jobid = response.stdout.toString().match(jobDataRegex).pop();
             TEST_ENVIRONMENT.resources.jobs.push(jobid);
 
             // Calculate the previous job ID (one less) - jobid created by test before, inaccessible until now
@@ -75,37 +75,34 @@ describe("zos-jobs cancel job command", () => {
     describe("successful scenario", () => {
         it("should cancel a job v1", () => {
             const response = runCliScript(__dirname + "/__scripts__/job/cancel_job_v1.sh", TEST_ENVIRONMENT, [LOCAL_JCL_FILE]);
-            const [, jobname, jobid] = response.stdout.toString().match(jobDataRegexV1) || [];
-
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain("Successfully submitted request to cancel job");
 
+            const jobid = response.stdout.toString().match(jobDataRegexV1).pop();
             TEST_ENVIRONMENT.resources.jobs.push(jobid);
         });
 
         it("should cancel a job v2", () => {
             const response = runCliScript(__dirname + "/__scripts__/job/cancel_job_v2.sh", TEST_ENVIRONMENT, [LOCAL_JCL_FILE]);
-            const [, jobname, jobid] = response.stdout.toString().match(jobDataRegex) || [];
-
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain("Successfully canceled job");
             expect(response.stdout.toString()).not.toContain("Failed to cancel job");
 
+            const jobid = response.stdout.toString().match(jobDataRegex).pop();
             TEST_ENVIRONMENT.resources.jobs.push(jobid);
         });
 
         it("should cancel a job default", () => {
             const response = runCliScript(__dirname + "/__scripts__/job/cancel_job.sh", TEST_ENVIRONMENT, [LOCAL_JCL_FILE]);
-            const [, jobname, jobid] = response.stdout.toString().match(jobDataRegex) || [];
-
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain("Successfully canceled job");
             expect(response.stdout.toString()).not.toContain("Failed to cancel job");
             expect(response.stdout.toString()).not.toContain("Failed to cancel job");
 
+            const jobid = response.stdout.toString().match(jobDataRegex).pop();
             TEST_ENVIRONMENT.resources.jobs.push(jobid);
         });
 
@@ -137,12 +134,11 @@ describe("zos-jobs cancel job command", () => {
                         DEFAULT_SYSTEM_PROPS.zosmf.user,
                         DEFAULT_SYSTEM_PROPS.zosmf.password,
                     ]);
-                const [, jobname, jobid] = response.stdout.toString().match(jobDataRegexV1) || [];
-
                 expect(response.stderr.toString()).toBe("");
                 expect(response.status).toBe(0);
                 expect(response.stdout.toString()).toContain("Successfully submitted request to cancel job");
 
+                const jobid = response.stdout.toString().match(jobDataRegexV1).pop();
                 TEST_ENVIRONMENT_NO_PROF.resources.jobs.push(jobid);
             });
 
@@ -156,12 +152,11 @@ describe("zos-jobs cancel job command", () => {
                         DEFAULT_SYSTEM_PROPS.zosmf.user,
                         DEFAULT_SYSTEM_PROPS.zosmf.password,
                     ]);
-                const [, jobname, jobid] = response.stdout.toString().match(jobDataRegex) || [];
-
                 expect(response.stderr.toString()).toBe("");
                 expect(response.status).toBe(0);
                 expect(response.stdout.toString()).toContain("Successfully canceled job");
 
+                const jobid = response.stdout.toString().match(jobDataRegex).pop();
                 TEST_ENVIRONMENT_NO_PROF.resources.jobs.push(jobid);
             });
 
@@ -175,12 +170,11 @@ describe("zos-jobs cancel job command", () => {
                         DEFAULT_SYSTEM_PROPS.zosmf.user,
                         DEFAULT_SYSTEM_PROPS.zosmf.password,
                     ]);
-                const [, jobname, jobid] = response.stdout.toString().match(jobDataRegex) || [];
-
                 expect(response.stderr.toString()).toBe("");
                 expect(response.status).toBe(0);
                 expect(response.stdout.toString()).toContain("Successfully canceled job");
 
+                const jobid = response.stdout.toString().match(jobDataRegex).pop();
                 TEST_ENVIRONMENT_NO_PROF.resources.jobs.push(jobid);
             });
         });

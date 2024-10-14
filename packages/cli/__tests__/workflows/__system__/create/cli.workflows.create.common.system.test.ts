@@ -83,7 +83,7 @@ describe("Create workflow cli system tests", () => {
                 expect(response.stdout.toString()).toContain("workflowKey");
             });
             it("Should throw error if workflow with the same name already exists", () => {
-                const createWf = runCliScript(__dirname + "/__scripts__/command/command_create_workflow_uss.sh",
+                runCliScript(__dirname + "/__scripts__/command/command_create_workflow_uss.sh",
                     testEnvironment, [wfName, definitionFile, system, owner]);
                 const response = runCliScript(__dirname + "/__scripts__/command/command_create_workflow_uss.sh",
                     testEnvironment, [wfName, definitionFile, system, owner]);
@@ -91,7 +91,7 @@ describe("Create workflow cli system tests", () => {
                 expect(response.stderr.toString()).toContain("already exists.");
             });
             it("Should not throw error if workflow with the same name already exists and there is overwrite", () => {
-                const createWf = runCliScript(__dirname + "/__scripts__/command/command_create_workflow_uss.sh",
+                runCliScript(__dirname + "/__scripts__/command/command_create_workflow_uss.sh",
                     testEnvironment, [wfName, definitionFile, system, owner]);
                 const response = runCliScript(__dirname + "/__scripts__/command/command_create_workflow_uss.sh",
                     testEnvironment, [wfName, definitionFile, system, owner, "--overwrite"]);
@@ -134,7 +134,7 @@ describe("Create workflow cli system tests", () => {
                 expect(response.stdout.toString()).toContain("workflowKey");
             });
             it("Should throw error if workflow with the same name already exists", () => {
-                const createWf = runCliScript(__dirname + "/__scripts__/command/command_create_workflow_local_file.sh",
+                runCliScript(__dirname + "/__scripts__/command/command_create_workflow_local_file.sh",
                     testEnvironment, [wfName, workflow, system, owner]);
                 const response = runCliScript(__dirname + "/__scripts__/command/command_create_workflow_local_file.sh",
                     testEnvironment, [wfName, workflow, system, owner]);
@@ -142,7 +142,7 @@ describe("Create workflow cli system tests", () => {
                 expect(response.stderr.toString()).toContain("already exists.");
             });
             it("Should not throw error if workflow with the same name already exists and there is overwrite", () => {
-                const createWf = runCliScript(__dirname + "/__scripts__/command/command_create_workflow_local_file.sh",
+                runCliScript(__dirname + "/__scripts__/command/command_create_workflow_local_file.sh",
                     testEnvironment, [wfName, workflow, system, owner]);
                 const response = runCliScript(__dirname + "/__scripts__/command/command_create_workflow_local_file.sh",
                     testEnvironment, [wfName, workflow, system, owner, "--overwrite"]);
@@ -198,7 +198,7 @@ describe("Create workflow cli system tests", () => {
                 expect(response.stdout.toString()).toContain("workflowKey");
             });
             it("Should throw error if workflow with the same name already exists", () => {
-                const createWf = runCliScript(__dirname + "/__scripts__/command/command_create_workflow_ds.sh",
+                runCliScript(__dirname + "/__scripts__/command/command_create_workflow_ds.sh",
                     testEnvironment, [wfName, definitionDs, system, owner]);
                 const response = runCliScript(__dirname + "/__scripts__/command/command_create_workflow_ds.sh",
                     testEnvironment, [wfName, definitionDs, system, owner]);
@@ -206,7 +206,7 @@ describe("Create workflow cli system tests", () => {
                 expect(response.stderr.toString()).toContain("already exists.");
             });
             it("Should not throw error if workflow with the same name already exists and there is overwrite", () => {
-                const createWf = runCliScript(__dirname + "/__scripts__/command/command_create_workflow_ds.sh",
+                runCliScript(__dirname + "/__scripts__/command/command_create_workflow_ds.sh",
                     testEnvironment, [wfName, definitionDs, system, owner]);
                 const response = runCliScript(__dirname + "/__scripts__/command/command_create_workflow_ds.sh",
                     testEnvironment, [wfName, definitionDs, system, owner, "--overwrite"]);
