@@ -54,15 +54,14 @@ describe("zos-jobs cancel job command", () => {
         });
 
         it("should surface an error from z/OSMF if the jobid was already canceled", () => {
-            runCliScript(__dirname + "/__scripts__/job/submit_job.sh", TEST_ENVIRONMENT, [LOCAL_JCL_FILE]);
-            const response = runCliScript(__dirname + "/__scripts__/job/cancel_job_v2_bad.sh", TEST_ENVIRONMENT, [LOCAL_JCL_FILE]);
-            const jobid = response.stdout.toString().match(jobDataRegex).pop();
+            let response = runCliScript(__dirname + "/__scripts__/job/submit_job.sh", TEST_ENVIRONMENT, [LOCAL_JCL_FILE]);
+            const jobidRegex = /Submitted job ID: (JOB\d+)/;
+            let jobid = response.stdout.toString().match(jobidRegex).pop();
             TEST_ENVIRONMENT.resources.jobs.push(jobid);
 
-            // Calculate the previous job ID (one less) - jobid created by test before, inaccessible until now
-            const jobidNumber = parseInt(jobid.replace('JOB', ''), 10); //Extract the numeric part of the job ID
-            const previousJobid = 'JOB' + String(jobidNumber - 1).padStart(5, '0'); // then decrement by 1, assuming 5 digits in the job ID
-            TEST_ENVIRONMENT.resources.jobs.push(previousJobid);
+            response = runCliScript(__dirname + "/__scripts__/job/cancel_job_v2_bad.sh", TEST_ENVIRONMENT, [LOCAL_JCL_FILE]);
+            jobid = response.stdout.toString().match(jobDataRegex).pop();
+            TEST_ENVIRONMENT.resources.jobs.push(jobid);
 
             expect(response.status).toBe(1);
             expect(response.stderr.toString()).toContain("Failed to cancel job");
