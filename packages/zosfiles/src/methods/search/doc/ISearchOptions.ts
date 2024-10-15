@@ -12,6 +12,7 @@
 import { ITaskWithStatus } from "@zowe/imperative";
 import { IGetOptions } from "../../get";
 import { IListOptions } from "../../list";
+import { IDataSet } from "../../../doc/IDataSet";
 
 export interface ISearchOptions {
     /* The pattern matching the data set(s) that should be searched */
@@ -40,4 +41,8 @@ export interface ISearchOptions {
 
     /* The search should be case sensitive */
     caseSensitive?: boolean;
+
+    /* A function that, if provided, is called with a list of data sets and members that are about to be searched. */
+    /* If true, continue search. If false, terminate search. */
+    continueSearch?: (dataSets: IDataSet[]) => Promise<boolean> | boolean;
 }
