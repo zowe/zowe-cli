@@ -13,7 +13,6 @@ import { Session } from "@zowe/imperative";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { ReceiveTsoApp } from "../../src";
 import { ITsoAppCommunicationParms } from "../../src/doc/input/ITsoAppCommunicationParms";
-import { IASAppResponse } from "../../src/doc/IASAppResponse";
 
 const PRETEND_SESSION = new Session({
     user: "usr",

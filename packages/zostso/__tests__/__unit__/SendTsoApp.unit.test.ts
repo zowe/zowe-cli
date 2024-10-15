@@ -9,7 +9,6 @@
  *
  */
 
-
 import { Session } from "@zowe/imperative";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { SendTsoApp } from "../../src";
@@ -24,7 +23,7 @@ const PRETEND_SESSION = new Session({
     rejectUnauthorized: false,
 });
 
-const MOCK_START_RESPONSE = Promise.resolve({
+const MOCK_SEND_RESPONSE = Promise.resolve({
     servletKey: "JR897694-127-aabeaaag",
     ver: "0100",
     tsoData: [
@@ -51,7 +50,9 @@ describe("SendTsoApp behavior", () => {
     });
 
     it("should send a TSO application message and receive a response", async () => {
-        jest.spyOn(ZosmfRestClient, "putExpectJSON").mockReturnValue(MOCK_START_RESPONSE);
+        jest.spyOn(ZosmfRestClient, "putExpectJSON").mockReturnValue(
+            MOCK_SEND_RESPONSE
+        );
 
         const params: ITsoAppCommunicationParms = {
             servletKey: "JR897694-127-aabeaaag",
@@ -59,7 +60,12 @@ describe("SendTsoApp behavior", () => {
             message: "Test message",
         };
 
-        const response = await SendTsoApp.send(PRETEND_SESSION, "123456", params, null);
+        const response = await SendTsoApp.send(
+            PRETEND_SESSION,
+            "123456",
+            params,
+            null
+        );
 
         expect(ZosmfRestClient.putExpectJSON).toHaveBeenCalledWith(
             PRETEND_SESSION,
