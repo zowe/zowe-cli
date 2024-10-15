@@ -12,7 +12,7 @@ const PRETEND_SESSION = new Session({
     type: "basic",
     rejectUnauthorized: false
 });
-const MOCK_RESPONSE: Promise<any> = Promise.resolve({
+const MOCK_RESPONSE = Promise.resolve({
     version: "0100",
     reused: false,
     timeout: false,
