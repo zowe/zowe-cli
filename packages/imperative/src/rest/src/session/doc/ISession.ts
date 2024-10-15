@@ -187,5 +187,12 @@ export interface ISession {
      */
     authTypeOrder?: string[];
 
+    /**
+     * Specifies external proxy settings
+     * values will override environment variable proxy settings
+     *
+     * @type {ProxyVariables[]}
+     * @memberof ISession
+     */
     proxy?: ProxyVariables;
 }
