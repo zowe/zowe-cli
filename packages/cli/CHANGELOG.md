@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Issue the `zowe files search data-sets` command with the new `encoding` option to use a different code page when searching data set contents. [#2161](https://github.com/zowe/zowe-cli/issues/2161)
+
 ## `8.1.2`
 
 - BugFix: Fixed issues flagged by Coverity [#2291](https://github.com/zowe/zowe-cli/pull/2291)
