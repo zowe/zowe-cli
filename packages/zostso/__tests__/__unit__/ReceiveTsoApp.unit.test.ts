@@ -152,4 +152,54 @@ describe("ReceiveTsoApp behavior", () => {
             ReceiveTsoApp.receive(PRETEND_SESSION, "123456", params)
         ).rejects.toThrow("Network error");
     });
+
+    it("should append multiple responses to combinedResponse.tsoData", async () => {
+        // Mock the first response without "READY" to simulate multiple API calls
+        const mockResponse1: any = {
+            version: "0100",
+            reused: false,
+            timeout: false,
+            servletKey: "JR897694-127-aabeaaag",
+            queueID: null,
+            tsoData: [{"TSO MESSAGE":{ VERSION: "0100", DATA: "First response data." }}],
+        };
+
+        // Mock the second response containing "READY" to trigger stopping condition
+        const mockResponse2: any = {
+            version: "0100",
+            reused: false,
+            timeout: false,
+            servletKey: "JR897694-127-aabeaaag",
+            queueID: null,
+            tsoData: [
+                {"TSO MESSAGE":{ VERSION: "0100", DATA: "Second response data." }},
+                {"TSO MESSAGE":{ VERSION: "0100", DATA: "READY" }}
+            ],
+        };
+
+        // Set up mock to return these responses in sequence
+        jest.spyOn(ZosmfRestClient, "getExpectJSON")
+            .mockResolvedValueOnce(mockResponse1) // First call
+            .mockResolvedValueOnce(mockResponse2); // Second call
+
+        const params: ITsoAppCommunicationParms = {
+            servletKey: "JR897694-127-aabeaaag",
+            appKey: "someAppKey",
+            timeout: 10,
+            receiveUntilReady: true,
+        };
+
+        const response = await ReceiveTsoApp.receive(
+            PRETEND_SESSION,
+            "123456",
+            params
+        );
+
+        expect(response.tsoData).toEqual([
+            { VERSION: "0100", DATA: "First response data." },
+            { VERSION: "0100", DATA: "Second response data." },
+            { VERSION: "0100", DATA: "READY" },
+        ]);
+        expect(ZosmfRestClient.getExpectJSON).toHaveBeenCalledTimes(2); // Two calls due to no "READY" in the first response
+    });
 });
