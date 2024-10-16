@@ -41,7 +41,7 @@ describe("zos-tso start", () => {
         expect(response.stderr.toString()).toContain('Command failed due to improper syntax');
         expect(response.stderr.toString()).toContain('Did you mean: zos-tso start');
         expect(response.stderr.toString()).toContain('Command entered: "zos-tso start foobar"');
-        expect(response.stderr.toString()).toContain('Available commands are "address-space".');
+        expect(response.stderr.toString()).toContain('Available commands are "address-space, app".');
         expect(response.stderr.toString()).toContain('Use "zowe zos-tso start --help" to view groups, commands, and options.');
         expect(response.stderr.toString()).toContain('Error: Unknown argument: foobar');
     });
@@ -53,7 +53,7 @@ describe("zos-tso start", () => {
         expect(response.stderr.toString()).toContain('Unknown arguments: foo-bar, fooBar');
         expect(response.stderr.toString()).toContain('Command failed due to improper syntax');
         expect(response.stderr.toString()).toContain('Command entered: "zos-tso start --foo-bar"');
-        expect(response.stderr.toString()).toContain('Available commands are "address-space".');
+        expect(response.stderr.toString()).toContain('Available commands are "address-space, app".');
         expect(response.stderr.toString()).toContain('Use "zowe zos-tso start --help" to view groups, commands, and options.');
         expect(response.stderr.toString()).toContain('Error: Unknown arguments: foo-bar, fooBar');
     });

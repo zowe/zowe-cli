@@ -69,7 +69,6 @@ export class ReceiveTsoApp {
                     } else {
                         combinedResponse.tsoData.push(...formattedApiResponse.tsoData);
                     }
-
                     endKeyword = formattedApiResponse.tsoData.some((data: any) =>
                         typeof data === "string" ? data.trim() === "READY" : data.DATA.trim() === "READY"
                     );
