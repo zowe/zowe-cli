@@ -1852,4 +1852,118 @@ describe("TeamConfig ProfileInfo tests", () => {
         });
         // end schema management tests
     });
+
+    describe("hasTokenExpiredForProfile", () => {
+        function getBlockMocks() {
+            const profileInfo = createNewProfInfo(teamProjDir);
+            const getAllProfiles = jest.spyOn(profileInfo, "getAllProfiles")
+                .mockReturnValue([
+                    {
+                        profName: "zosmf",
+                        profType: "zosmf",
+                        isDefaultProfile: false,
+                        profLoc: {
+                            locType: ProfLocType.TEAM_CONFIG,
+                            osLoc: ["/a/b/c/zowe.config.json"],
+                            jsonLoc: "profiles.zosmf",
+                        },
+                    },
+                ]);
+            const mergeArgsForProfile = jest.spyOn(profileInfo, "mergeArgsForProfile");
+
+            return {
+                getAllProfiles,
+                mergeArgsForProfile,
+                profileInfo
+            };
+        }
+
+        it("returns false if the profile uses LTPA for token type", async () => {
+            const blockMocks = getBlockMocks();
+            const jsonParseSpy = jest.spyOn(JSON, "parse");
+            blockMocks.mergeArgsForProfile.mockReturnValue({
+                knownArgs: [
+                    {
+                        argName: "tokenValue",
+                        argValue: "SOMELTPA2TOKENTHATCANNOTBEDECODED",
+                        dataType: "string",
+                        argLoc: {
+                            locType: ProfLocType.TEAM_CONFIG,
+                            osLoc: ["/a/b/c/zowe.config.json"],
+                            jsonLoc: "profiles.zosmf.properties.tokenValue",
+                        }
+                    },
+                    {
+                        argName: "tokenType",
+                        argValue: "LtpaToken2",
+                        dataType: "string",
+                        argLoc: {
+                            locType: ProfLocType.TEAM_CONFIG,
+                            osLoc: ["/a/b/c/zowe.config.json"],
+                            jsonLoc: "profiles.zosmf.properties.tokenType",
+                        }
+                    }
+                ],
+                missingArgs: []
+            });
+            expect(blockMocks.profileInfo.hasTokenExpiredForProfile("zosmf")).toBe(false);
+            expect(jsonParseSpy).not.toHaveBeenCalled();
+        });
+
+        it("returns false if no tokenValue is present", async () => {
+            const blockMocks = getBlockMocks();
+            const jsonParseSpy = jest.spyOn(JSON, "parse");
+            blockMocks.mergeArgsForProfile.mockReturnValue({
+                knownArgs: [
+                    {
+                        argName: "tokenType",
+                        argValue: "apimlAuthenticationToken",
+                        dataType: "string",
+                        argLoc: {
+                            locType: ProfLocType.TEAM_CONFIG,
+                            osLoc: ["/a/b/c/zowe.config.json"],
+                            jsonLoc: "profiles.zosmf.properties.tokenType",
+                        }
+                    }
+                ],
+                missingArgs: []
+            });
+            expect(blockMocks.profileInfo.hasTokenExpiredForProfile("zosmf")).toBe(false);
+            expect(jsonParseSpy).not.toHaveBeenCalled();
+        });
+
+        it("returns result of ConfigUtils.hasTokenExpired if token value is present", async () => {
+            const blockMocks = getBlockMocks();
+            const jsonParseSpy = jest.spyOn(JSON, "parse");
+            const hasTokenExpired = jest.spyOn(ConfigUtils, "hasTokenExpired").mockReturnValue(true);
+            blockMocks.mergeArgsForProfile.mockReturnValue({
+                knownArgs: [
+                    {
+                        argName: "tokenValue",
+                        argValue: "A.JWT.TOKEN",
+                        dataType: "string",
+                        argLoc: {
+                            locType: ProfLocType.TEAM_CONFIG,
+                            osLoc: ["/a/b/c/zowe.config.json"],
+                            jsonLoc: "profiles.zosmf.properties.tokenValue",
+                        }
+                    },
+                    {
+                        argName: "tokenType",
+                        argValue: "apimlAuthenticationToken",
+                        dataType: "string",
+                        argLoc: {
+                            locType: ProfLocType.TEAM_CONFIG,
+                            osLoc: ["/a/b/c/zowe.config.json"],
+                            jsonLoc: "profiles.zosmf.properties.tokenType",
+                        }
+                    }
+                ],
+                missingArgs: []
+            });
+            expect(blockMocks.profileInfo.hasTokenExpiredForProfile("zosmf")).toBe(true);
+            expect(hasTokenExpired).toHaveBeenCalledWith("A.JWT.TOKEN");
+            expect(jsonParseSpy).not.toHaveBeenCalled();
+        });
+    });
 });

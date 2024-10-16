@@ -295,4 +295,29 @@ export class ConfigUtils {
         }
         return false;
     }
+
+    /**
+     * Checks if the given token has expired. Supports JSON web tokens only.
+     *
+     * @param {string} token - The JSON web token to check
+     * @returns {boolean} Whether the token has expired. Returns `false` if the token cannot be decoded or an expire time is not specified in the payload.
+     */
+    public static hasTokenExpired(token: string): boolean {
+        // JWT format: [header].[payload].[signature]
+        const tokenParts = token.split(".");
+        try {
+            const payloadJson = JSON.parse(Buffer.from(tokenParts[1], "base64url").toString("utf8"));
+            if ("exp" in payloadJson) {
+                // The expire time is stored in seconds since UNIX epoch.
+                // The Date constructor expects a timestamp in milliseconds.
+                const msPerSec = 1000;
+                const expireDate = new Date(payloadJson.exp * msPerSec);
+                return expireDate < new Date();
+            }
+        } catch (err) {
+            return false;
+        }
+
+        return false;
+    }
 }

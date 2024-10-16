@@ -366,4 +366,38 @@ describe("Config Utils", () => {
             expect(writeFileSyncMock).toHaveBeenCalled();
         });
     });
+
+    describe("hasTokenExpired", () => {
+        it("returns false if an error occurred during parsing", async () => {
+            const jsonParseSpy = jest.spyOn(JSON, "parse").mockImplementation(() => {
+                throw new Error("Unknown error while parsing JSON");
+            });
+            expect(ConfigUtils.hasTokenExpired("HEADER.PAYLOAD.SIGNATURE")).toBe(false);
+            expect(jsonParseSpy).toHaveBeenCalled();
+        });
+
+        it("returns true if a JWT token is present and has expired", async () => {
+            const jsonParseSpy = jest.spyOn(JSON, "parse").mockReturnValue({
+                exp: 1000000000,
+            });
+            expect(ConfigUtils.hasTokenExpired("HEADER.PAYLOAD.SIGNATURE")).toBe(true);
+            expect(jsonParseSpy).toHaveBeenCalled();
+        });
+
+        it("returns false if a JWT payload can be parsed, but doesn't contain the exp property", async () => {
+            const jsonParseSpy = jest.spyOn(JSON, "parse").mockReturnValue({
+                iat: 1000000000,
+            });
+            expect(ConfigUtils.hasTokenExpired("HEADER.PAYLOAD.SIGNATURE")).toBe(false);
+            expect(jsonParseSpy).toHaveBeenCalled();
+        });
+
+        it("returns false if a JWT token is present and has not expired", async () => {
+            const jsonParseSpy = jest.spyOn(JSON, "parse").mockReturnValue({
+                exp: 5000000000,
+            });
+            expect(ConfigUtils.hasTokenExpired("HEADER.PAYLOAD.SIGNATURE")).toBe(false);
+            expect(jsonParseSpy).toHaveBeenCalled();
+        });
+    });
 });

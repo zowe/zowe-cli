@@ -2,8 +2,11 @@
 
 All notable changes to the Zowe z/OS TSO SDK package will be documented in this file.
 
+## `8.1.1`
 
-## Recent Changes
+- BugFix: Updated peer dependencies to `^8.0.0`, dropping support for versions tagged `next`. [#2287](https://github.com/zowe/zowe-cli/pull/2287)
+
+## `8.1.0`
 
 - Enhancement: Deprecated `IssueTsoCommand()` function and replaced with `IssueTsoCmd()` for compatibility with z/OS version 2.4. [#2240](https://github.com/zowe/zowe-cli/pull/2240)
 - Enhancement: Modified `IIssueReponse` to handle z/OS 2.4 and newer TSO command response. [#2240](https://github.com/zowe/zowe-cli/pull/2240)

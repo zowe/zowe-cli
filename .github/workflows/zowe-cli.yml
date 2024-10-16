@@ -37,7 +37,7 @@ jobs:
         node-version: [18.x, 20.x]
         os: 
           - windows-latest
-          - ubuntu-latest
+          - ubuntu-22.04
           - ${{ github.event.inputs.macos-type || 'macos-14'}}
 
     env:
@@ -130,7 +130,7 @@ jobs:
 
     - name: Unlock Keyring
       id: unlock-keyring
-      if: ${{ always() && steps.build.outcome == 'success' && matrix.os == 'ubuntu-latest' }}
+      if: ${{ always() && steps.build.outcome == 'success' && matrix.os == 'ubuntu-22.04' }}
       uses: t1m0thyj/unlock-keyring@v1
 
     - name: Start Daemon
@@ -163,7 +163,7 @@ jobs:
   release:
     if: github.event_name == 'push' && github.ref_protected
     needs: test
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     permissions:
       issues: write
       contents: write
