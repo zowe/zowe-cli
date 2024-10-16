@@ -1,0 +1,21 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`receive TSO app handler behavior should properly receive and parse data from receive TSO response 1`] = `
+"{
+  \\"version\\": \\"0100\\",
+  \\"reused\\": false,
+  \\"timeout\\": false,
+  \\"servletKey\\": \\"JR897694-127-aabeaaag\\",
+  \\"queueID\\": null,
+  \\"tsoData\\": [
+    {
+      \\"VERSION\\": \\"0100\\",
+      \\"DATA\\": \\"HELLOW exec processing has started.\\"
+    },
+    {
+      \\"VERSION\\": \\"0100\\",
+      \\"DATA\\": \\"UNIX message queue id = 1048608\\"
+    }
+  ]
+}"
+`;

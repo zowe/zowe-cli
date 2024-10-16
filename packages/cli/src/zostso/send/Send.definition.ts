@@ -13,7 +13,7 @@ import { ICommandDefinition } from "@zowe/imperative";
 import {
     SendToAddressSpaceCommandDefinition
 } from "./address_space/SendToAddressSpace.definition";
-import { SendASApp } from "./as-app/as-app/SendASApp.definition";
+import { SendASApp } from "./as-app/SendASApp.definition";
 
 export const SendCommand: ICommandDefinition = {
     name: "send",
