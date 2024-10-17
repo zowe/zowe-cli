@@ -69,7 +69,7 @@ describe("List Defined Systems Api", () => {
             expect(error.message).toContain(ZosmfMessages.missingSession.message);
         });
 
-        it("should return with proper message for invalid hostname", async () => {
+        (!process.env.HTTP_PROXY && !process.env.HTTPS_PROXY ? it : it.skip)("should return with proper message for invalid hostname", async () => {
             const badHostName = "badHost";
             const badSession = new Session({
                 user: defaultSystem.zosmf.user,
@@ -95,7 +95,7 @@ describe("List Defined Systems Api", () => {
             expect(error.message).toMatch(/(Error: getaddrinfo).*(badHost)/);
         });
 
-        it("should return with proper message for invalid port", async () => {
+        (!process.env.HTTP_PROXY && !process.env.HTTPS_PROXY ? it : it.skip)("should return with proper message for invalid port", async () => {
             const badPort = 9999;
             const badSession = new Session({
                 user: defaultSystem.zosmf.user,
