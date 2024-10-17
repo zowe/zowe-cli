@@ -47,8 +47,6 @@ export abstract class ZosFilesBaseHandler implements ICommandHandler {
             sessCfg, commandParameters.arguments, { parms: commandParameters }
         );
         const session = new Session(sessCfgWithCreds);
-        commandParameters.response.progress.endBar(); // end any progress bars
-
         try {
             const response = await this.processWithSession(commandParameters, session);
             if (!response.success && response.commandResponse) {
@@ -70,6 +68,7 @@ export abstract class ZosFilesBaseHandler implements ICommandHandler {
                 });
             }
         }
+        commandParameters.response.progress.endBar(); // end any progress bars
     }
 
     /**
