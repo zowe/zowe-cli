@@ -10,9 +10,83 @@
 */
 
 import { randomBytes } from "crypto";
-import { ZosFilesConstants } from "../../packages/zosfiles/src";
+import * as fs from "fs";
 import { Imperative, Headers, AbstractSession } from "@zowe/imperative";
 import { ZosmfRestClient } from "../../packages/core/src";
+import { ZosFilesConstants, Delete } from "../../packages/zosfiles/src";
+import { DeleteJobs, GetJobs, ICommonJobParms, IDeleteJobParms, IJob } from "../../packages/zosjobs/src";
+import { promisify } from "util";
+
+/**
+ * Delete a local testing file after use
+ * @param {string} filePath - File path of temporary file
+ */
+export function deleteLocalFile(filePath: string): void {
+    try {
+        fs.unlinkSync(filePath);
+    } catch {
+        throw new Error(`Error deleting local file: ${filePath}`);
+    }
+}
+
+/**
+ * Delete local directories after use
+ * @param {string[]} directories - Array of directories to delete
+ */
+export function deleteLocalDirectories(directories: string[]): void {
+    directories.forEach((dir) => {
+        try {
+            if (fs.existsSync(dir)) {
+                fs.rmdirSync(dir, { recursive: true });
+            }
+        } catch {
+            throw new Error(`Error deleting directory: ${dir}`);
+        }
+    });
+}
+
+/**
+ * Deletes a USS file from the mainframe
+ * @param {AbstractSession} session - The session object
+ * @param {string} fileName - The name of the file to delete
+ * @returns {Promise<void>} A promise that resolves when the file is deleted
+ */
+export async function deleteFiles(session: AbstractSession, fileName: string): Promise<void> {
+    await Delete.ussFile(session, fileName, true); //recursive = true
+}
+
+/**
+ * Deletes a data set from the mainframe
+ * @param {AbstractSession} session - The session object
+ * @param {string} dataSetName - The name of the data set to delete.
+ * @returns {Promise<void>} A promise that resolves when the data set is deleted
+ */
+export async function deleteDataset(session: AbstractSession, dataSetName: string): Promise<void> {
+    await Delete.dataSet(session, dataSetName);
+}
+
+/**
+ * Delete a job from the mainframe using Zowe SDKs - IJob
+ * @param {AbstractSession} session - z/OSMF connection info
+ * @param {IJob | string} job - the job or job ID that you want to delete
+ * @returns {Promise<void>} A promise that resolves when the job is deleted.
+ */
+export async function deleteJob(session: AbstractSession, job: IJob | string): Promise<void> {
+    if (typeof job === "string") {
+        job = await GetJobs.getJob(session, job);
+    }
+    await DeleteJobs.deleteJobForJob(session, job);
+}
+
+/**
+ * Delete a job from the mainframe using Zowe SDKs - jobid, jobname
+ * @param {AbstractSession} session - z/OSMF connection info
+ * @param {params} ICommonJobParms - constains jobname and jobid for job to delete
+ * @returns {Promise<void>} A promise that resolves when the job is deleted.
+ */
+export async function deleteJobCommon(session: AbstractSession, params: ICommonJobParms): Promise<void> {
+    await DeleteJobs.deleteJobCommon(session, params as IDeleteJobParms);
+}
 
 /**
  * This function strips any new lines out of the string passed.
@@ -32,14 +106,14 @@ export function stripNewLines(str: string): string {
  * @param {string} hlq User specified high level qualify
  * @returns {string} A generated data set name
  */
-export function getUniqueDatasetName(hlq: string, encoded = false): string {
+export function getUniqueDatasetName(hlq: string, encoded = false, maxNodes = 2): string {
     let generatedName: string = "";
     const randomNumber = Math.random();
     const timestampInMsNum = Date.now();
     let timestampInMs = Math.floor(randomNumber * timestampInMsNum).toString();
     let tempStr: string;
     const MAX_NODE_LENGTH = 7;
-    let MAX_NODES = 2;
+    let MAX_NODES = maxNodes;
     let currNodes = 0;
 
     if (encoded) {MAX_NODES = 1;}
@@ -100,11 +174,13 @@ export async function getTag(session: AbstractSession, ussPath: string) {
     return response.stdout[0];
 }
 
-export function delay(ms: number) {
-    return new Promise((resolve) => setTimeout(resolve, ms) );
-}
-
-export const delTime = 500;
+/**
+ * Pauses execution for a given number of milliseconds.
+ * @param {number} ms - Number of milliseconds to wait
+ * @returns {Promise<void>} - Resolves after the specified time has passed
+ */
+export const wait = promisify(setTimeout);
+export const waitTime = 2000; //wait 2 seconds
 
 /**
  * Use instead of `util.inspect` to get consistently formatted output that can be used in snapshots.

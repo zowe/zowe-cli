@@ -1,8 +1,7 @@
 #!/bin/bash
 set -e
 
-# arguments: $1 is a data set name with JCL inside to submit
-
+# Submit one job and capture its ID
 JOBID1=`zowe zos-jobs submit data-set $1 --rff jobid --rft string`
 
 echo "Listing jobs to find job IDs $JOBID1"
@@ -15,3 +14,6 @@ then
 else
    echo "No match - test passed"
 fi
+
+# Echo the job ID for later retrieval
+echo "Submitted job: $JOBID1"

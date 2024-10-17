@@ -9,8 +9,9 @@
 *
 */
 
-import { ITestEnvironment, runCliScript } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
+import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/ITestEnvironment";
+import { runCliScript } from "@zowe/cli-test-utils";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { JobTestsUtils } from "../../../../../zosjobs/__tests__/__system__/JobTestsUtils";
 import { IO } from "@zowe/imperative";
@@ -18,6 +19,8 @@ import { IO } from "@zowe/imperative";
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
 const LOCAL_JCL_FILE: string = __dirname + "/" + "testFileOfLocalJCL.txt";
+const jobDataRegexV1 = /Successfully submitted request to cancel job (\w+) \((JOB\d+)\)/;
+const jobDataRegex = /Successfully canceled job (\w+) \((JOB\d+)\)/;
 
 describe("zos-jobs cancel job command", () => {
     // Create the unique test environment
@@ -32,16 +35,18 @@ describe("zos-jobs cancel job command", () => {
         const bufferJCL: Buffer = Buffer.from(jcl);
         IO.createFileSync(LOCAL_JCL_FILE);
         IO.writeFile(LOCAL_JCL_FILE, bufferJCL);
+        TEST_ENVIRONMENT.resources.localFiles.push(LOCAL_JCL_FILE);
     });
 
     afterAll(async () => {
-        IO.deleteFile(LOCAL_JCL_FILE);
+        await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
     });
 
     describe("error handling", () => {
 
         it("should surface an error from z/OSMF if the jobid doesn't exist", () => {
             const response = runCliScript(__dirname + "/__scripts__/job/not_found.sh", TEST_ENVIRONMENT);
+
             expect(response.status).toBe(1);
             expect(response.stdout.toString()).toBe("");
             expect(response.stderr.toString()).toContain("Cannot obtain job info for job id = JOB00000");
@@ -49,8 +54,15 @@ describe("zos-jobs cancel job command", () => {
         });
 
         it("should surface an error from z/OSMF if the jobid was already canceled", () => {
-            runCliScript(__dirname + "/__scripts__/job/submit_job.sh", TEST_ENVIRONMENT, [LOCAL_JCL_FILE]);
-            const response = runCliScript(__dirname + "/__scripts__/job/cancel_job_v2_bad.sh", TEST_ENVIRONMENT, [LOCAL_JCL_FILE]);
+            let response = runCliScript(__dirname + "/__scripts__/job/submit_job.sh", TEST_ENVIRONMENT, [LOCAL_JCL_FILE]);
+            const jobidRegex = /Submitted job ID: (JOB\d+)/;
+            let jobid = response.stdout.toString().match(jobidRegex).pop();
+            TEST_ENVIRONMENT.resources.jobs.push(jobid);
+
+            response = runCliScript(__dirname + "/__scripts__/job/cancel_job_v2_bad.sh", TEST_ENVIRONMENT, [LOCAL_JCL_FILE]);
+            jobid = response.stdout.toString().match(jobDataRegex).pop();
+            TEST_ENVIRONMENT.resources.jobs.push(jobid);
+
             expect(response.status).toBe(1);
             expect(response.stderr.toString()).toContain("Failed to cancel job");
             expect(response.stderr.toString()).toContain("Job not cancellable or purgeable");
@@ -65,6 +77,9 @@ describe("zos-jobs cancel job command", () => {
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain("Successfully submitted request to cancel job");
+
+            const jobid = response.stdout.toString().match(jobDataRegexV1).pop();
+            TEST_ENVIRONMENT.resources.jobs.push(jobid);
         });
 
         it("should cancel a job v2", () => {
@@ -73,6 +88,9 @@ describe("zos-jobs cancel job command", () => {
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain("Successfully canceled job");
             expect(response.stdout.toString()).not.toContain("Failed to cancel job");
+
+            const jobid = response.stdout.toString().match(jobDataRegex).pop();
+            TEST_ENVIRONMENT.resources.jobs.push(jobid);
         });
 
         it("should cancel a job default", () => {
@@ -81,6 +99,10 @@ describe("zos-jobs cancel job command", () => {
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain("Successfully canceled job");
             expect(response.stdout.toString()).not.toContain("Failed to cancel job");
+            expect(response.stdout.toString()).not.toContain("Failed to cancel job");
+
+            const jobid = response.stdout.toString().match(jobDataRegex).pop();
+            TEST_ENVIRONMENT.resources.jobs.push(jobid);
         });
 
         describe("without profiles", () => {
@@ -114,6 +136,9 @@ describe("zos-jobs cancel job command", () => {
                 expect(response.stderr.toString()).toBe("");
                 expect(response.status).toBe(0);
                 expect(response.stdout.toString()).toContain("Successfully submitted request to cancel job");
+
+                const jobid = response.stdout.toString().match(jobDataRegexV1).pop();
+                TEST_ENVIRONMENT_NO_PROF.resources.jobs.push(jobid);
             });
 
             it("cancel a job without a profile 2.0", async () => {
@@ -129,6 +154,9 @@ describe("zos-jobs cancel job command", () => {
                 expect(response.stderr.toString()).toBe("");
                 expect(response.status).toBe(0);
                 expect(response.stdout.toString()).toContain("Successfully canceled job");
+
+                const jobid = response.stdout.toString().match(jobDataRegex).pop();
+                TEST_ENVIRONMENT_NO_PROF.resources.jobs.push(jobid);
             });
 
             it("cancel a job without a profile default", async () => {
@@ -144,6 +172,9 @@ describe("zos-jobs cancel job command", () => {
                 expect(response.stderr.toString()).toBe("");
                 expect(response.status).toBe(0);
                 expect(response.stdout.toString()).toContain("Successfully canceled job");
+
+                const jobid = response.stdout.toString().match(jobDataRegex).pop();
+                TEST_ENVIRONMENT_NO_PROF.resources.jobs.push(jobid);
             });
         });
     });

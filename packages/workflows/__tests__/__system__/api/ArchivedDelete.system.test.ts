@@ -9,16 +9,16 @@
 *
 */
 
-import { ZosFilesConstants, Upload } from "@zowe/zos-files-for-zowe-sdk";
-import { ZosmfRestClient, nozOSMFVersion, noSession } from "@zowe/core-for-zowe-sdk";
+import { Upload } from "@zowe/zos-files-for-zowe-sdk";
+import { nozOSMFVersion, noSession } from "@zowe/core-for-zowe-sdk";
 import { Imperative, ImperativeError, Session } from "@zowe/imperative";
 import { noWorkflowKey } from "../../../src/WorkflowConstants";
-import { ITestEnvironment } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { ArchivedDeleteWorkflow, ArchiveWorkflow, CreateWorkflow } from "../../../src";
 import { inspect } from "util";
 import { getUniqueDatasetName } from "../../../../../__tests__/__src__/TestUtils";
+import { ITestEnvironment } from "../../../../../__tests__/__src__/environment/ITestEnvironment";
 
 
 let REAL_SESSION: Session;
@@ -64,19 +64,7 @@ describe("Delete archived workflow", () => {
         beforeAll(async () => {
             // Upload files only for successful scenarios
             await Upload.fileToUssFile(REAL_SESSION, workflow, definitionFile, { binary: true });
-        });
-        afterAll(async () => {
-            let error;
-            let response;
-
-            const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES;
-            // Deleting uploaded workflow file
-            try {
-                const wfEndpoint = endpoint + definitionFile;
-                response = await ZosmfRestClient.deleteExpectString(REAL_SESSION, wfEndpoint);
-            } catch (err) {
-                error = err;
-            }
+            testEnvironment.resources.files.push(definitionFile);
         });
         beforeEach(async () => {
             const response = await CreateWorkflow.createWorkflow(REAL_SESSION, wfName, definitionFile, system, owner);

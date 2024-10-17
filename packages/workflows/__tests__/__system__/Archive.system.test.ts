@@ -13,12 +13,12 @@ import { Session, Imperative } from "@zowe/imperative";
 import { IArchivedWorkflow } from "../../src/doc/IArchivedWorkflow";
 import { ArchiveWorkflow } from "../../src";
 import { WorkflowConstants } from "../../src/WorkflowConstants";
-import { ITestEnvironment } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { CreateWorkflow } from "../../src/Create";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { Upload } from "@zowe/zos-files-for-zowe-sdk";
+import { ITestEnvironment } from "../../../../__tests__/__src__/environment/ITestEnvironment";
 
 let session: Session;
 let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
@@ -53,6 +53,7 @@ describe("Archive workflow unit tests - successful scenarios", () => {
     beforeAll(async () => {
         await setup();
         await Upload.fileToUssFile(session, localWorkflowPath, remoteWorkflowPath, { binary: true});
+        testEnvironment.resources.files.push(remoteWorkflowPath);
     });
     beforeEach(async () => {
         const systemName = testEnvironment.systemTestProperties.workflows.system;
@@ -164,6 +165,7 @@ describe("Errors caused by the user interaction", () => {
     beforeAll(async () => {
         await setup();
         await Upload.fileToUssFile(session, localWorkflowPath, remoteWorkflowPath, { binary: true });
+        testEnvironment.resources.files.push(remoteWorkflowPath);
     });
     it("404 Not Found", async () => {
         try {

@@ -11,11 +11,12 @@
 
 import * as fs from "fs";
 import { Session, TextUtils } from "@zowe/imperative";
-import { ITestEnvironment, runCliScript } from "@zowe/cli-test-utils";
+import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/ITestEnvironment";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { getUniqueDatasetName, stripNewLines } from "../../../../../../../__tests__/__src__/TestUtils";
 import { ZosFilesMessages } from "@zowe/zos-files-for-zowe-sdk";
+import { runCliScript } from "@zowe/cli-test-utils";
 
 let REAL_SESSION: Session;
 // Test Environment populated in the beforeAll();
@@ -27,12 +28,16 @@ let volume: string;
 
 describe("Invoke AMS CLI", () => {
 
-    function createTestAMSStatementFileFromTemplate(templateFile: string, dsname?: string) {
+    function createTestAMSStatementFileFromTemplate(templateFile: string, testEnvironment: ITestEnvironment<ITestPropertiesSchema>, dsname?: string) {
         // replace high-level-qualifier with user value
         const AMSStatement = fs.readFileSync(templateFile).toString();
         const updatedStatement = TextUtils.renderWithMustache(AMSStatement, {DSN: dsname, VOL: volume});
-        fs.writeFileSync(templateFile + ".temp", updatedStatement);
-        return templateFile + ".temp";
+        const filename = templateFile + ".temp";
+        fs.writeFileSync(filename, updatedStatement);
+        if (!testEnvironment.resources.localFiles.includes(filename)) {
+            testEnvironment.resources.localFiles.push(filename);
+        }
+        return filename;
     }
 
     // Create the unique test environment
@@ -80,7 +85,7 @@ describe("Invoke AMS CLI", () => {
             // create a temporary file from the template file that has the proper high level qualifier to create the VSAM file
             let controlStatementFile: string = createTestAMSStatementFileFromTemplate(
                 process.cwd() + "/packages/zosfiles/__tests__/__system__/methods/invoke/DefineVSAM.ams",
-                dsname);
+                TEST_ENVIRONMENT_NO_PROF, dsname);
 
             const ZOWE_OPT_BASE_PATH = "ZOWE_OPT_BASE_PATH";
 
@@ -102,13 +107,10 @@ describe("Invoke AMS CLI", () => {
             let testOutput = stripNewLines(response.stdout.toString());
             expect(testOutput).toContain(ZosFilesMessages.amsCommandExecutedSuccessfully.message);
 
-            // Delete the temp file
-            fs.unlinkSync(controlStatementFile);
-
             // create a temporary file from the template file that has the proper high level qualifier to delete the VSAM file
             controlStatementFile = createTestAMSStatementFileFromTemplate(
                 process.cwd() + "/packages/zosfiles/__tests__/__system__/methods/invoke/DeleteVSAM.ams",
-                dsname);
+                TEST_ENVIRONMENT_NO_PROF, dsname);
 
             response = runCliScript(__dirname + "/__scripts__/command/command_invoke_ams_file_fully_qualified.sh",
                 TEST_ENVIRONMENT_NO_PROF,
@@ -121,9 +123,6 @@ describe("Invoke AMS CLI", () => {
             expect(response.status).toBe(0);
             testOutput = stripNewLines(response.stdout.toString());
             expect(testOutput).toContain(ZosFilesMessages.amsCommandExecutedSuccessfully.message);
-
-            // Delete the temp file
-            fs.unlinkSync(controlStatementFile);
         });
     });
 
@@ -135,7 +134,7 @@ describe("Invoke AMS CLI", () => {
             // create a temporary file from the template file that has the proper high level qualifier to create the VSAM file
             let controlStatementFile: string = createTestAMSStatementFileFromTemplate(
                 process.cwd() + "/packages/zosfiles/__tests__/__system__/methods/invoke/DefineVSAM.ams",
-                dsname);
+                TEST_ENVIRONMENT, dsname);
 
             let response = runCliScript(__dirname + "/__scripts__/command/command_invoke_ams_file.sh",
                 TEST_ENVIRONMENT, [controlStatementFile]);
@@ -144,13 +143,10 @@ describe("Invoke AMS CLI", () => {
             let testOutput = stripNewLines(response.stdout.toString());
             expect(testOutput).toContain(ZosFilesMessages.amsCommandExecutedSuccessfully.message);
 
-            // Delete the temp file
-            fs.unlinkSync(controlStatementFile);
-
             // create a temporary file from the template file that has the proper high level qualifier to delete the VSAM file
             controlStatementFile = createTestAMSStatementFileFromTemplate(
                 process.cwd() + "/packages/zosfiles/__tests__/__system__/methods/invoke/DeleteVSAM.ams",
-                dsname);
+                TEST_ENVIRONMENT, dsname);
 
             response = runCliScript(__dirname + "/__scripts__/command/command_invoke_ams_file.sh",
                 TEST_ENVIRONMENT, [controlStatementFile]);
@@ -158,9 +154,6 @@ describe("Invoke AMS CLI", () => {
             expect(response.status).toBe(0);
             testOutput = stripNewLines(response.stdout.toString());
             expect(testOutput).toContain(ZosFilesMessages.amsCommandExecutedSuccessfully.message);
-
-            // Delete the temp file
-            fs.unlinkSync(controlStatementFile);
         });
         it("should invoke ams to create and then delete a VSAM cluster using files with response timeout", async () => {
             const dsname = getUniqueDatasetName(defaultSystem.zosmf.user);
@@ -168,7 +161,7 @@ describe("Invoke AMS CLI", () => {
             // create a temporary file from the template file that has the proper high level qualifier to create the VSAM file
             let controlStatementFile: string = createTestAMSStatementFileFromTemplate(
                 process.cwd() + "/packages/zosfiles/__tests__/__system__/methods/invoke/DefineVSAM.ams",
-                dsname);
+                TEST_ENVIRONMENT, dsname);
 
             let response = runCliScript(__dirname + "/__scripts__/command/command_invoke_ams_file.sh",
                 TEST_ENVIRONMENT, [controlStatementFile, "--responseTimeout 5"]);
@@ -177,13 +170,10 @@ describe("Invoke AMS CLI", () => {
             let testOutput = stripNewLines(response.stdout.toString());
             expect(testOutput).toContain(ZosFilesMessages.amsCommandExecutedSuccessfully.message);
 
-            // Delete the temp file
-            fs.unlinkSync(controlStatementFile);
-
             // create a temporary file from the template file that has the proper high level qualifier to delete the VSAM file
             controlStatementFile = createTestAMSStatementFileFromTemplate(
                 process.cwd() + "/packages/zosfiles/__tests__/__system__/methods/invoke/DeleteVSAM.ams",
-                dsname);
+                TEST_ENVIRONMENT, dsname);
 
             response = runCliScript(__dirname + "/__scripts__/command/command_invoke_ams_file.sh",
                 TEST_ENVIRONMENT, [controlStatementFile, "--responseTimeout 5"]);
@@ -191,9 +181,6 @@ describe("Invoke AMS CLI", () => {
             expect(response.status).toBe(0);
             testOutput = stripNewLines(response.stdout.toString());
             expect(testOutput).toContain(ZosFilesMessages.amsCommandExecutedSuccessfully.message);
-
-            // Delete the temp file
-            fs.unlinkSync(controlStatementFile);
         });
     });
 

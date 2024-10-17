@@ -11,11 +11,12 @@
 
 import { Imperative, IO, Session } from "@zowe/imperative";
 import * as path from "path";
-import { ITestEnvironment, runCliScript } from "@zowe/cli-test-utils";
+import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/ITestEnvironment";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { Get, ZosFilesConstants } from "@zowe/zos-files-for-zowe-sdk";
-import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
+import { runCliScript } from "@zowe/cli-test-utils";
+import { Get } from "@zowe/zos-files-for-zowe-sdk";
+import { deleteFiles } from "../../../../../../../__tests__/__src__/TestUtils";
 
 let REAL_SESSION: Session;
 let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
@@ -87,16 +88,7 @@ describe("Upload uss file", () => {
     describe("Success scenarios", () => {
 
         afterEach(async () => {
-            let error;
-            let response;
-
-            const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussname;
-
-            try {
-                response = await ZosmfRestClient.deleteExpectString(REAL_SESSION, endpoint);
-            } catch (err) {
-                error = err;
-            }
+            await deleteFiles(REAL_SESSION, ussname);
         });
 
         it("should upload USS file from local file", async () => {

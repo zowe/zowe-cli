@@ -12,15 +12,14 @@
 import { Imperative, Session } from "@zowe/imperative";
 import * as path from "path";
 import * as fs from "fs";
-import { ITestEnvironment, runCliScript } from "@zowe/cli-test-utils";
+import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/ITestEnvironment";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { getUniqueDatasetName, getTag } from "../../../../../../../__tests__/__src__/TestUtils";
-import { Get, ZosFilesConstants, ZosFilesUtils } from "@zowe/zos-files-for-zowe-sdk";
-import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
+import { deleteFiles, getTag, getUniqueDatasetName } from "../../../../../../../__tests__/__src__/TestUtils";
+import { Get, ZosFilesUtils } from "@zowe/zos-files-for-zowe-sdk";
+import { runCliScript } from "@zowe/cli-test-utils";
 
 let REAL_SESSION: Session;
-// Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
 let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment<ITestPropertiesSchema>;
 let defaultSystem: ITestPropertiesSchema;
@@ -34,7 +33,6 @@ let dsname: string;
 describe("Upload directory to USS", () => {
 
     beforeAll(async () => {
-
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
             tempProfileTypes: ["zosmf"],
             testName: "zos_files_upload_directory_to_uss_with_profile"
@@ -59,7 +57,6 @@ describe("Upload directory to USS", () => {
     describe("without profiles", () => {
         let defaultSys: ITestPropertiesSchema;
 
-        // Create the unique test environment
         beforeAll(async () => {
             TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
                 testName: "upload_dir_to_uss"
@@ -71,16 +68,7 @@ describe("Upload directory to USS", () => {
         });
 
         afterEach(async () => {
-            let error;
-            let response;
-
-            const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussname;
-
-            try {
-                response = await ZosmfRestClient.deleteExpectString(REAL_SESSION, endpoint, [{"X-IBM-Option": "recursive"}]);
-            } catch (err) {
-                error = err;
-            }
+            await deleteFiles(REAL_SESSION, ussname);
         });
 
         afterAll(async () => {
@@ -93,7 +81,7 @@ describe("Upload directory to USS", () => {
 
             const ZOWE_OPT_BASE_PATH = "ZOWE_OPT_BASE_PATH";
 
-            // if API Mediation layer is being used (basePath has a value) then
+            // If API Mediation layer is being used (basePath has a value) then
             // set an ENVIRONMENT variable to be used by zowe.
             if (defaultSys.zosmf.basePath != null) {
                 TEST_ENVIRONMENT_NO_PROF.env[ZOWE_OPT_BASE_PATH] = defaultSys.zosmf.basePath;
@@ -117,16 +105,7 @@ describe("Upload directory to USS", () => {
     describe("Success scenarios", () => {
 
         afterEach(async () => {
-            let error;
-            let response;
-
-            const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussname;
-
-            try {
-                response = await ZosmfRestClient.deleteExpectString(REAL_SESSION, endpoint, [{"X-IBM-Option": "recursive"}]);
-            } catch (err) {
-                error = err;
-            }
+            await deleteFiles(REAL_SESSION, ussname);
         });
 
         it("should upload local directory to USS directory", async () => {
@@ -227,13 +206,7 @@ describe("Upload directory to USS", () => {
                     ussname
                 ]);
 
-
-            // const downloadResponse = await Download.ussFile(REAL_SESSION, path.posix.join(ussname, "bin_file.pax"), { file: localFileLocation });
-            // expect(downloadResponse.success).toBe(true);
-            // // fs.readFileSync(localFileLocation).toString(); returns an empty buffer ???? Getting the file directly seems to work consistently
-            // const downloadedFileContents = fs.readFileSync(localFileLocation).toString();
-
-            const downloadedFileContents = (await Get.USSFile(REAL_SESSION, path.posix.join(ussname, "bin_file.pax"), {binary: false})).toString();
+            const downloadedFileContents = (await Get.USSFile(REAL_SESSION, path.posix.join(ussname, "bin_file.pax"), { binary: false })).toString();
             expect(downloadedFileContents).toContain("00000000125");
             expect(downloadedFileContents).toContain("13424013123");
             expect(response.stderr.toString()).not.toContain("Rest API failure with HTTP(S) status 500");
@@ -287,6 +260,10 @@ describe("Upload directory to USS", () => {
     });
 
     describe("Scenarios using the .zosattributes file", () => {
+        afterEach(async () => {
+            await deleteFiles(REAL_SESSION, ussname);
+        });
+
         it("should ignore files marked with a -", async () => {
             const localDirName = path.join(__dirname, "__data__", "command_upload_dtu_dir/dir_with_ignored_files");
             testSuccessfulUpload(localDirName);
@@ -310,13 +287,12 @@ describe("Upload directory to USS", () => {
                 expect(err).toBeDefined();
             }
 
-            let tag = await getTag(REAL_SESSION,ussname + "/I%20have%20a%20space.txt");
+            let tag = await getTag(REAL_SESSION, ussname + "/I%20have%20a%20space.txt");
             expect(tag).toMatch("t IBM-1140");
 
-            tag = await getTag(REAL_SESSION,ussname + "/dir_with%20spaces/file%20withSpaceinName.txt");
+            tag = await getTag(REAL_SESSION, ussname + "/dir_with%20spaces/file%20withSpaceinName.txt");
             expect(tag).toMatch("t IBM-1140");
         });
-
 
         it("should upload files in binary or text as indicated", async () => {
             const localDirName = path.join(__dirname, "__data__", "command_upload_dtu_dir/dir_with_mixed_files");
@@ -328,7 +304,7 @@ describe("Upload directory to USS", () => {
 
             expect(ZosFilesUtils.normalizeNewline(remoteTextFileBuffer)).toEqual(ZosFilesUtils.normalizeNewline(localTextFileBuffer));
 
-            const remoteBinaryFileBuffer = await Get.USSFile(REAL_SESSION, ussname + "/bar.binary", {binary: true});
+            const remoteBinaryFileBuffer = await Get.USSFile(REAL_SESSION, ussname + "/bar.binary", { binary: true });
             const localBinaryFileBuffer = fs.readFileSync(path.join(localDirName, "bar.binary"));
             expect(remoteBinaryFileBuffer).toEqual(localBinaryFileBuffer);
         });
@@ -338,13 +314,13 @@ describe("Upload directory to USS", () => {
 
             testSuccessfulUpload(localDirName);
 
-            let tag = await getTag(REAL_SESSION,ussname + "/baz.asciitext");
+            let tag = await getTag(REAL_SESSION, ussname + "/baz.asciitext");
             expect(tag).toMatch("t ISO8859-1");
 
-            tag = await getTag(REAL_SESSION,ussname + "/foo.text");
+            tag = await getTag(REAL_SESSION, ussname + "/foo.text");
             expect(tag).toMatch("t IBM-1047");
 
-            tag = await getTag(REAL_SESSION,ussname + "/bar.binary");
+            tag = await getTag(REAL_SESSION, ussname + "/bar.binary");
             expect(tag).toMatch("b binary");
         });
 
@@ -353,10 +329,10 @@ describe("Upload directory to USS", () => {
 
             testSuccessfulUpload(localDirName, ["--include-hidden"]);
 
-            let tag = await getTag(REAL_SESSION,ussname + "/.project");
+            let tag = await getTag(REAL_SESSION, ussname + "/.project");
             expect(tag).toMatch("t IBM-1047");
 
-            tag = await getTag(REAL_SESSION,ussname + "/.hidden");
+            tag = await getTag(REAL_SESSION, ussname + "/.hidden");
             expect(tag).toMatch("b binary");
         });
 
@@ -399,31 +375,31 @@ describe("Upload directory to USS", () => {
 
             testSuccessfulUpload(localDirName, ["--recursive --binary"]);
 
-            let tag = await getTag(REAL_SESSION,ussname + "/piccpy.png");
+            let tag = await getTag(REAL_SESSION, ussname + "/piccpy.png");
             expect(tag).toMatch("b binary");
 
-            tag = await getTag(REAL_SESSION,ussname + "/picCopyMe.png");
+            tag = await getTag(REAL_SESSION, ussname + "/picCopyMe.png");
             expect(tag).toMatch("b binary");
 
-            tag = await getTag(REAL_SESSION,ussname + "/picCopyMeToo.png");
+            tag = await getTag(REAL_SESSION, ussname + "/picCopyMeToo.png");
             expect(tag).toMatch("b binary");
 
-            tag = await getTag(REAL_SESSION,ussname + "/picCopy.png");
+            tag = await getTag(REAL_SESSION, ussname + "/picCopy.png");
             expect(tag).toMatch("b binary");
 
-            tag = await getTag(REAL_SESSION,ussname + "/picCopyNoTagPlease.png");
+            tag = await getTag(REAL_SESSION, ussname + "/picCopyNoTagPlease.png");
             expect(tag).toMatch("b binary");
 
-            tag = await getTag(REAL_SESSION,ussname + "/copyMe.txt");
+            tag = await getTag(REAL_SESSION, ussname + "/copyMe.txt");
             expect(tag).toMatch("t IBM-1047");
 
-            tag = await getTag(REAL_SESSION,ussname + "/copyMeToo.txt");
+            tag = await getTag(REAL_SESSION, ussname + "/copyMeToo.txt");
             expect(tag).toMatch("t IBM-1047");
 
-            tag = await getTag(REAL_SESSION,ussname + "/copyAndMeToo.txt");
+            tag = await getTag(REAL_SESSION, ussname + "/copyAndMeToo.txt");
             expect(tag).toMatch("t IBM-1140");
 
-            tag = await getTag(REAL_SESSION,ussname + "/copyButDontTagMe.text");
+            tag = await getTag(REAL_SESSION, ussname + "/copyButDontTagMe.text");
             expect(tag).toMatch("b binary");
 
             let error: Error;
@@ -458,8 +434,6 @@ describe("Upload directory to USS", () => {
                 error = err;
             }
             expect(error).toBeDefined();
-
-
         });
 
         it("should accept zosattributes path as an argument to a nested attributes file (the attribute file should not be uploaded)", async () => {
@@ -468,19 +442,18 @@ describe("Upload directory to USS", () => {
                 "command_upload_dtu_dir/dir_with_nested_attributefile/nest_attribute_folder/.attributes");
             testSuccessfulUpload(localDirName, ["--r --attributes", path.relative(TEST_ENVIRONMENT.workingDir, attributesPath)]);
 
-            let tag = await getTag(REAL_SESSION,ussname + "/baz.asciitext");
+            let tag = await getTag(REAL_SESSION, ussname + "/baz.asciitext");
             expect(tag).toMatch("t ISO8859-1");
-            tag = await getTag(REAL_SESSION,ussname + "/foo.text");
+            tag = await getTag(REAL_SESSION, ussname + "/foo.text");
             expect(tag).toMatch("t IBM-1047");
-            tag = await getTag(REAL_SESSION,ussname + "/bar.binary");
+            tag = await getTag(REAL_SESSION, ussname + "/bar.binary");
             expect(tag).toMatch("b binary");
-            tag = await getTag(REAL_SESSION,ussname + "/nest_attribute_folder/baz.asciitext");
+            tag = await getTag(REAL_SESSION, ussname + "/nest_attribute_folder/baz.asciitext");
             expect(tag).toMatch("t ISO8859-1");
-            tag = await getTag(REAL_SESSION,ussname + "/nest_attribute_folder/foo.text");
+            tag = await getTag(REAL_SESSION, ussname + "/nest_attribute_folder/foo.text");
             expect(tag).toMatch("t IBM-1047");
-            tag = await getTag(REAL_SESSION,ussname + "/nest_attribute_folder/bar.binary");
+            tag = await getTag(REAL_SESSION, ussname + "/nest_attribute_folder/bar.binary");
             expect(tag).toMatch("b binary");
-
 
             let error: Error;
             try {
