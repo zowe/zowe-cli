@@ -119,13 +119,25 @@ describe("Delete VSAM Data Set", () => {
         });
 
         it("should delete a VSAM data set that has a retention period", async () => {
-            let response = runCliScript(__dirname + "/__scripts__/command/command_invoke_ams_define_for_statement.sh",
-                TEST_ENVIRONMENT, [dsname, volume]);
-            response = runCliScript(__dirname + "/__scripts__/command/command_delete_vsam_data_set.sh",
+            const response = runCliScript(__dirname + "/__scripts__/command/command_delete_vsam_data_set.sh",
                 TEST_ENVIRONMENT, [dsname, "--for-sure", "--purge"]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toMatchSnapshot();
+        });
+
+        it("should successfully delete a VSAM data set with --ignore-not-found flag", async () => {
+            // create vsam
+            const createResponse = runCliScript(__dirname + "/__scripts__/command/command_invoke_ams_define_statement.sh",
+                TEST_ENVIRONMENT, [dsname, volume]);
+            expect(createResponse.status).toBe(0);
+
+            // now delete
+            const deleteResponse = runCliScript(__dirname + "/__scripts__/command/command_delete_vsam_data_set.sh",
+                TEST_ENVIRONMENT, [dsname, "--for-sure", "--ignore-not-found"]);
+            expect(deleteResponse.stderr.toString()).toBe("");
+            expect(deleteResponse.status).toBe(0);
+            expect(deleteResponse.stdout.toString()).toMatchSnapshot();
         });
     });
 
@@ -135,6 +147,15 @@ describe("Delete VSAM Data Set", () => {
                 TEST_ENVIRONMENT, [user + ".DOES.NOT.EXIST", "--for-sure"]);
             expect(response.status).toBe(1);
             expect(stripNewLines(response.stderr.toString())).toContain(`ENTRY ${user}.DOES.NOT.EXIST NOT DELETED`);
+        });
+        it("should fail deleting a non-existent data set without a --ignore-not-found flag", async () => {
+            // Attempt to delete a non-existent VSAM dataset without the --ignore-not-found flag
+            const response = runCliScript(__dirname + "/__scripts__/command/command_delete_vsam_data_set.sh",
+                TEST_ENVIRONMENT, [user + ".DOES.NOT.EXIST", "--for-sure"]);
+
+            // Check that stderr contains the expected error message about the dataset not being found
+            expect(response.status).toBe(1);
+            expect(stripNewLines(response.stderr.toString())).toContain(`ENTRY ${user}.DOES.NOT.EXIST NOT FOUND`);
         });
 
         it("should fail due to retention period not being exceeded", async () => {

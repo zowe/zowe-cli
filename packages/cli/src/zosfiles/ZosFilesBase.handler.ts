@@ -39,34 +39,36 @@ export abstract class ZosFilesBaseHandler implements ICommandHandler {
      *
      * @returns {Promise<void>}
      */
-    public async process(commandParameters: IHandlerParameters) {
+    public async process(commandParameters: IHandlerParameters): Promise<void> {
         const sessCfg: ISession = ZosmfSession.createSessCfgFromArgs(
             commandParameters.arguments
         );
         const sessCfgWithCreds = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
-            sessCfg, commandParameters.arguments, {parms: commandParameters}
+            sessCfg, commandParameters.arguments, { parms: commandParameters }
         );
-
         const session = new Session(sessCfgWithCreds);
-        const response = await this.processWithSession(commandParameters, session);
-
+        try {
+            const response = await this.processWithSession(commandParameters, session);
+            if (!response.success && response.commandResponse) {
+                throw new ImperativeError({
+                    msg: response.errorMessage || response.commandResponse
+                });
+            }
+            if (response.commandResponse) {
+                commandParameters.response.console.log(response.commandResponse);
+            }
+            commandParameters.response.data.setObj(response);
+        } catch (error) {
+            if (commandParameters.arguments.ignoreNotFound && (error.errorCode === '404' || error.toString().includes("IDC3012I "))) {
+                // The IDC3012I code is an IBM z/OS error indicating the DS/VSAM does not exist
+                commandParameters.response.data.setObj({ success: true });
+            } else {
+                throw new ImperativeError({
+                    msg: error.mMessage
+                });
+            }
+        }
         commandParameters.response.progress.endBar(); // end any progress bars
-        // Print out the response
-        if (response.commandResponse) {
-            commandParameters.response.console.log(response.commandResponse);
-        }
-
-        // Return as an object when using --response-format-json
-        commandParameters.response.data.setObj(response);
-
-        // Ensure error gets thrown if request was unsuccessful.
-        // Sometimes it is useful to delay throwing an error until the end of the handler is
-        // reached, for example the upload API needs to return an API response even when it fails.
-        if (!response.success && response.commandResponse) {
-            throw new ImperativeError({
-                msg: response.errorMessage || response.commandResponse
-            });
-        }
     }
 
     /**

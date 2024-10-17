@@ -106,7 +106,7 @@ describe("Search Jobs - System Tests", () => {
                 it("should detect and surface an error for an invalid user", async () => {
                     let err;
                     try {
-                        await SearchJobs.searchJobs(INVALID_SESSION,{jobName: "IBMUSER"});
+                        await SearchJobs.searchJobs(INVALID_SESSION,{searchString: "dummy", jobName: "IBMUSER"});
                     } catch (e) {
                         err = e;
                     }
