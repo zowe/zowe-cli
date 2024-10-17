@@ -1,6 +1,6 @@
 # Versioning
 
-This article describes the versioning scheme used by Zowe CLI and Imperative CLI Framework, and provides [examples](#example-timeline) on how the scheme works.
+This article describes the versioning scheme used by Zowe CLI and Imperative CLI Framework, and provides examples on how the scheme works.
 
 We highly recommend that consumers adhere to the [requirements](#requirements), [tentative release schedule](#tentative-release-schedule), and [tag usage](#tag-usage) for versioning.
 
@@ -77,8 +77,6 @@ We tag various releases of our product in an NPM registry. End users install the
 * **`daily` *DEPRECATED***
 
    This tag is deprecated.
-
-See the [example timeline](#example-timeline) for examples that show how the above versions will be updated.
 
 ## Requirements
 

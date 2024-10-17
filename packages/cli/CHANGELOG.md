@@ -1,9 +1,16 @@
 # Change Log
 
 All notable changes to the Zowe CLI package will be documented in this file.
-
 ## Recent Changes
 - Enhancement: Add --ignore-not-found flag logic to zosfilesBase.handler and update command definitions and en.ts for delete operations. [#2254](https://github.com/zowe/zowe-cli/pull/2254)
+
+## `8.3.0`
+
+- Enhancement: Issue the `zowe files search data-sets` command with the new `encoding` option to use a different code page when searching data set contents. [#2161](https://github.com/zowe/zowe-cli/issues/2161)
+
+## `8.1.2`
+
+- BugFix: Fixed issues flagged by Coverity [#2291](https://github.com/zowe/zowe-cli/pull/2291)
 
 ## `8.1.0`
 

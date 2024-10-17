@@ -384,7 +384,7 @@ export class ConnectionPropsForSessCfg {
              * which do not create a mock for the connOpts.parms.response.console.log property.
              * In the real world, that property always exists for this CLI-only path of logic.
              */
-            if (promptForValues.length > 0 && connOpts?.parms?.response?.console?.log) {
+            if (promptForValues.length > 0 && connOpts.parms?.response.console.log) {
                 // We need to prompt for some values. Determine why we need to prompt.
                 let reasonForPrompts: string = "";
                 if (ImperativeConfig.instance.config?.exists) {
