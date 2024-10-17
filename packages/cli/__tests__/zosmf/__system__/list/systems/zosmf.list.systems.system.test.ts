@@ -121,7 +121,7 @@ describe("zosmf list systems", () => {
 
     describe("Expected failures", () => {
 
-        it("should fail due to invalid port", async () => {
+        (!process.env.HTTP_PROXY && !process.env.HTTPS_PROXY ? it : it.skip)("should fail due to invalid port", async () => {
             // update temporary zowe profile with an invalid port
             const scriptPath = testEnvironment.workingDir + "_create_profile_invalid_port";
             const bogusPort = 12345;
