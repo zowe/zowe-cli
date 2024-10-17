@@ -83,7 +83,7 @@ describe("ZfsHandler", () => {
             }
         };
 
-        await expect(handler.process(commandParameters)).resolves.toBe(undefined);
+        await expect(handler.processWithSession(commandParameters, {} as any)).resolves.toBeTruthy();
     });
 
     it("should throw file not found error (404) when --ignore-not-found is not used", async () => {

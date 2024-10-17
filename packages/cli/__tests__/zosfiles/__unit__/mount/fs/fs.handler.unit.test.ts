@@ -91,58 +91,43 @@ describe("Mount file system handler", () => {
         // Require the handler and create a new instance
         const handlerReq = require("../../../../../src/zosfiles/mount/fs/fs.handler");
         const handler = new handlerReq.default();
-        const fileSystemName = "TEST.ZFS";
-        const mountPoint = "/u/ibmuser/mount";
 
         // Vars populated by the mocked function
-        let error: any;
-        let apiMessage = "";
-        let jsonObj;
-        let logMessage = "";
+        let error;
         let fakeSession = null;
 
-        // Mock the fs function
+        // Mock the fs function to throw an error
         Mount.fs = jest.fn((session) => {
             fakeSession = session;
-            const impErr = new ImperativeError({
-                msg: message
-            });
+            const impErr = new ImperativeError({ msg: message });
             throw impErr;
         });
 
-        try {
-            // Invoke the handler with a full set of mocked arguments and response functions
-            await handler.process({
-
-                arguments: {
-                    $0: "fake",
-                    _: ["fake"],
-                    fileSystemName,
-                    mountPoint,
-                    ...UNIT_TEST_ZOSMF_PROF_OPTS
+        const commandParameters: any = {
+            arguments: {
+                fileSystemName: "TEST.ZFS",
+                mountPoint: "/u/ibmuser/mount",
+                ...UNIT_TEST_ZOSMF_PROF_OPTS
+            },
+            response: {
+                data: {
+                    setMessage: jest.fn(),
+                    setObj: jest.fn()
                 },
-                response: {
-                    data: {
-                        setMessage: jest.fn((setMsgArgs) => {
-                            apiMessage = setMsgArgs;
-                        }),
-                        setObj: jest.fn((setObjArgs) => {
-                            jsonObj = setObjArgs;
-                        })
-                    },
-                    console: {
-                        log: jest.fn((logArgs) => {
-                            logMessage += "\n" + logArgs;
-                        })
-                    }
+                console: {
+                    log: jest.fn()
                 }
-            } as any);
+            }
+        };
+
+        try {
+            await handler.processWithSession(commandParameters as any);
         } catch (e) {
             error = e;
         }
 
         expect(error).toBeDefined();
         expect(Mount.fs).toHaveBeenCalledTimes(1);
-        expect(Mount.fs).toHaveBeenCalledWith(fakeSession, fileSystemName, mountPoint, {});
+        expect(Mount.fs).toHaveBeenCalledWith(fakeSession, "TEST.ZFS", "/u/ibmuser/mount", {});
     });
 });
