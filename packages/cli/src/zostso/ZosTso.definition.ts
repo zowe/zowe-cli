@@ -16,6 +16,7 @@ import { StopCommand } from "./stop/Stop.definition";
 import { PingCommand } from "./ping/Ping.definition";
 import { IssueCommand } from "./issue/Issue.definition";
 import { ZosmfSession } from "@zowe/zosmf-for-zowe-sdk";
+import { ReceiveCommand } from "./receive/Receive.definition";
 
 export const definition: ICommandDefinition = {
     name: "zos-tso",
@@ -24,7 +25,7 @@ export const definition: ICommandDefinition = {
     summary: "Interact with TSO",
     description: "Issue TSO commands and interact with TSO address spaces.",
     children: [
-        SendCommand, StartCommand, PingCommand, StopCommand, IssueCommand
+        SendCommand, StartCommand, PingCommand, StopCommand, IssueCommand, ReceiveCommand
     ],
     passOn: [{
         property: "options",
