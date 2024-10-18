@@ -2,6 +2,11 @@
 
 All notable changes to the Zowe z/OS TSO SDK package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Created app command under zos-tso start/send and new receieve command group,
+  this allows for starting applications at TSO address spaces aswell as message transmission/reception [#2280] (https://github.com/zowe/zowe-cli/pull/2280)
+
 ## `8.1.1`
 
 - BugFix: Updated peer dependencies to `^8.0.0`, dropping support for versions tagged `next`. [#2287](https://github.com/zowe/zowe-cli/pull/2287)
