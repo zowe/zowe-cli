@@ -13,6 +13,14 @@ Array [
   },
   Object {
     "aliases": Array [
+      "ec",
+    ],
+    "description": "Search the file content with encoding mode, which means that data conversion is performed using the file encoding specified.",
+    "name": "encoding",
+    "type": "string",
+  },
+  Object {
+    "aliases": Array [
       "ms",
     ],
     "defaultValue": false,
@@ -37,7 +45,7 @@ Array [
     "aliases": Array [
       "to",
     ],
-    "description": "The number of seconds to search before timing out",
+    "description": "The number of seconds to search before timing out.",
     "name": "timeout",
     "type": "number",
   },

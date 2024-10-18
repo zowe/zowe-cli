@@ -69,7 +69,7 @@ describe("Check Status Api", () => {
             expect(error.message).toContain(ZosmfMessages.missingSession.message);
         });
 
-        it("should return with proper message for invalid hostname", async () => {
+        (!process.env.HTTP_PROXY && !process.env.HTTPS_PROXY ? it : it.skip)("should return with proper message for invalid hostname", async () => {
             const badHostName = "badHost";
             const badSession = new Session({
                 user: defaultSystem.zosmf.user,
@@ -98,7 +98,7 @@ describe("Check Status Api", () => {
             expect(jsonCauseErrors.hostname).toEqual(badHostName);
         });
 
-        it("should return with proper message for invalid port", async () => {
+        (!process.env.HTTP_PROXY && !process.env.HTTPS_PROXY ? it : it.skip)("should return with proper message for invalid port", async () => {
             const badPort = 51342;
             const badSession = new Session({
                 user: defaultSystem.zosmf.user,

@@ -32,7 +32,8 @@ export default class DataSetsHandler extends ZosFilesBaseHandler {
             mainframeSearch: commandParameters.arguments.mainframeSearch,
             maxConcurrentRequests: commandParameters.arguments.maxConcurrentRequests,
             caseSensitive: commandParameters.arguments.caseSensitive,
-            progressTask: task
+            progressTask: task,
+            getOptions: { encoding: commandParameters.arguments.encoding }
         };
 
         commandParameters.response.progress.startBar({task});
