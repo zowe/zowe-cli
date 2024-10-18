@@ -15,7 +15,7 @@ import * as fs from "fs";
 import * as fsExtra from "fs-extra";
 import * as jsonfile from "jsonfile";
 import { CredentialManagerFactory } from "../..";
-import { ConvertV1Profiles } from "../";
+import { Config, ConvertV1Profiles } from "../";
 import { ConvertMsgFmt } from "../src/doc/IConvertV1Profiles";
 import { ImperativeConfig } from "../../utilities/src/ImperativeConfig";
 import { ImperativeError } from "../../error/src/ImperativeError";
@@ -425,6 +425,18 @@ describe("ConvertV1Profiles tests", () => {
 
                 expect(getOldProfileCountSpy).toHaveBeenCalled();
                 expect(convNeeded).toEqual(true);
+            });
+
+            it("should create a client config instance if it does not exist yet", async () => {
+                delete (ImperativeConfig.instance as any).config;
+                const configLoadSpy = jest.spyOn(Config, "load").mockResolvedValueOnce({ exists: true } as any);
+
+                // call the function that we want to test
+                // using class["name"] notation because it is a private static function
+                const convNeeded = await ConvertV1Profiles["isConversionNeeded"]();
+
+                expect(configLoadSpy).toHaveBeenCalledWith("zowe", { homeDir: ImperativeConfig.instance.cliHome });
+                expect(convNeeded).toEqual(false);
             });
         }); // end isConversionNeeded
 
