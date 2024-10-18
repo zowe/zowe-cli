@@ -1010,11 +1010,13 @@ export class ProfileInfo {
 
     //_________________________________________________________________________
     /**
-     * Function to ensure the credential manager will load successfully
-     * Returns true if it will load, or the credentials are not secured. Returns false if it will not load.
+     * Checks whether the credential manager will load successfully.
+     * @returns
+     *     True if it loaded successfully, or there is no credential manager
+     *     configured in Imperative settings.json
      */
     public async profileManagerWillLoad(): Promise<boolean> {
-        if (this.mCredentials.isSecured) {
+        if (this.mCredentials.isCredentialManagerInAppSettings()) {
             try {
                 await this.mCredentials.loadManager();
                 return true;
