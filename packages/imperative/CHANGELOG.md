@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- I fixed random linting warnings here and I want to appease the changelog check, idk what to put here
+
 ## `8.2.0`
 
 - Enhancement: Use the new SDK method `ConfigUtils.hasTokenExpired` to check whether a given JSON web token has expired. [#2298](https://github.com/zowe/zowe-cli/pull/2298)
