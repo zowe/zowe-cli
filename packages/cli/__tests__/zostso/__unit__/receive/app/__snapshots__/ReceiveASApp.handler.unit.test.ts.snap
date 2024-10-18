@@ -1,0 +1,30 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`receive TSO app handler behavior should properly receive and parse data from receive TSO response 1`] = `
+"
+"
+`;
+
+exports[`receive TSO app handler behavior should properly receive and parse data from receive TSO response 2`] = `"Processing started."`;
+
+exports[`receive TSO app handler behavior should properly receive and parse data from receive TSO response 3`] = `"READY"`;
+
+exports[`receive TSO app handler behavior should properly receive and parse data from receive TSO response 4`] = `
+Object {
+  "queueID": null,
+  "reused": false,
+  "servletKey": "JR897694-122-aabyaaaj",
+  "timeout": false,
+  "tsoData": Array [
+    Object {
+      "DATA": "Processing started.",
+      "VERSION": "0100",
+    },
+    Object {
+      "DATA": "READY",
+      "VERSION": "0100",
+    },
+  ],
+  "version": undefined,
+}
+`;
