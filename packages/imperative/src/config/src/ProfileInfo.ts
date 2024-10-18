@@ -795,7 +795,7 @@ export class ProfileInfo {
      *          False otherwise.
      */
     public get onlyV1ProfilesExist(): boolean {
-        return this.getTeamConfig().exists && ConfigUtils.onlyV1ProfilesExist;
+        return !this.getTeamConfig().exists && ConfigUtils.onlyV1ProfilesExist;
     }
 
     // _______________________________________________________________________

@@ -137,18 +137,25 @@ describe("TeamConfig ProfileInfo tests", () => {
                 expect(profLoaded.profile.profLoc.jsonLoc).toBe(profAttrs.profLoc.jsonLoc);
                 expect(profLoaded.profile.isDefaultProfile).toBe(profAttrs.isDefaultProfile);
             });
+        });
+
+        describe("onlyV1ProfilesExist", () => {
+            it("should detect that V2 profiles exist", async () => {
+                const profInfo = createNewProfInfo(teamProjDir);
+                const v2ExistsSpy = jest.spyOn(profInfo, "getTeamConfig").mockReturnValue({ exists: true } as any);
+                const v1ExistsSpy = jest.spyOn(ConfigUtils, "onlyV1ProfilesExist", "get");
+                expect(profInfo.onlyV1ProfilesExist).toBe(false);
+                expect(v2ExistsSpy).toHaveBeenCalledTimes(1);
+                expect(v1ExistsSpy).not.toHaveBeenCalled();
+            });
 
             it("should detect that only V1 profiles exist", async () => {
                 const profInfo = createNewProfInfo(teamProjDir);
-                jest.spyOn(profInfo, "getTeamConfig").mockReturnValue({ exists: true } as any);
-                // onlyV1ProfilesExist is a getter of a property, so mock the property
-                Object.defineProperty(ConfigUtils, "onlyV1ProfilesExist", {
-                    configurable: true,
-                    get: jest.fn(() => {
-                        return true;
-                    })
-                });
+                const v2ExistsSpy = jest.spyOn(profInfo, "getTeamConfig").mockReturnValue({ exists: false } as any);
+                const v1ExistsSpy = jest.spyOn(ConfigUtils, "onlyV1ProfilesExist", "get").mockReturnValueOnce(true);
                 expect(profInfo.onlyV1ProfilesExist).toBe(true);
+                expect(v2ExistsSpy).toHaveBeenCalledTimes(1);
+                expect(v1ExistsSpy).toHaveBeenCalledTimes(1);
             });
         });
 
