@@ -139,6 +139,8 @@ describe("TeamConfig ProfileInfo tests", () => {
             });
 
             it("should detect that only V1 profiles exist", async () => {
+                const profInfo = createNewProfInfo(teamProjDir);
+                jest.spyOn(profInfo, "getTeamConfig").mockReturnValue({ exists: true } as any);
                 // onlyV1ProfilesExist is a getter of a property, so mock the property
                 Object.defineProperty(ConfigUtils, "onlyV1ProfilesExist", {
                     configurable: true,
@@ -146,7 +148,7 @@ describe("TeamConfig ProfileInfo tests", () => {
                         return true;
                     })
                 });
-                expect(ProfileInfo.onlyV1ProfilesExist).toBe(true);
+                expect(profInfo.onlyV1ProfilesExist).toBe(true);
             });
         });
 

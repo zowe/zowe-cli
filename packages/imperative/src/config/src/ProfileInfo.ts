@@ -180,10 +180,16 @@ export class ProfileInfo {
     }
 
     /**
-     * Checks if a JSON web token is used for authenticating the given profile name. If so, it will decode the token to determine whether it has expired.
+     * Checks if a JSON web token is used for authenticating the given profile
+     * name. If so, it will decode the token to determine whether it has
+     * expired.
      *
-     * @param {string | IProfileLoaded} profile - The name of the profile or the profile object to check the JSON web token for
-     * @returns {boolean} Whether the token has expired for the given profile. Returns `false` if a token value is not set or the token type is LTPA2.
+     * @param {string | IProfileLoaded} profile
+     *     The name of the profile or the profile object to check the JSON web
+     *     token for
+     * @returns {boolean}
+     *     Whether the token has expired for the given profile. Returns `false`
+     *     if a token value is not set or the token type is LTPA2.
      */
     public hasTokenExpiredForProfile(profile: string | IProfileLoaded): boolean {
         const profName = typeof profile === "string" ? profile : profile.name;
@@ -771,12 +777,25 @@ export class ProfileInfo {
      * detected the existence of old-school V1 profiles. We will not work with the
      * V1 profiles. This function can let you tell a user that they are incorrectly
      * trying to use V1 profiles.
-     *
+     * @deprecated Use non-static method instead to detect V2 profiles
      * @returns True - Means there is *NO* team config *AND* we detected that a V1 profile exists.
      *          False otherwise.
      */
     public static get onlyV1ProfilesExist(): boolean {
         return ConfigUtils.onlyV1ProfilesExist;
+    }
+
+    /**
+     * Returns an indicator that the user has no team configuration, but we
+     * detected the existence of old-school V1 profiles. We will not work with the
+     * V1 profiles. This function can let you tell a user that they are incorrectly
+     * trying to use V1 profiles.
+     *
+     * @returns True - Means there is *NO* team config *AND* we detected that a V1 profile exists.
+     *          False otherwise.
+     */
+    public get onlyV1ProfilesExist(): boolean {
+        return this.getTeamConfig().exists && ConfigUtils.onlyV1ProfilesExist;
     }
 
     // _______________________________________________________________________
