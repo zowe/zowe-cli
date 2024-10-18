@@ -12,12 +12,12 @@
 
 import { Imperative, Session } from "@zowe/imperative";
 import * as path from "path";
-import { ZosFilesConstants, ZosmfRestClient, ZosmfHeaders, Upload } from "@zowe/cli";
-import {ITestEnvironment, runCliScript} from "@zowe/cli-test-utils";
-import {TestEnvironment} from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
-import { getRandomBytes } from "../../../../../../../__tests__/__src__/TestUtils";
-import {ITestPropertiesSchema} from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { getUniqueDatasetName} from "../../../../../../../__tests__/__src__/TestUtils";
+import { Upload } from "@zowe/zos-files-for-zowe-sdk";
+import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/ITestEnvironment";
+import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
+import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
+import { deleteFiles, getRandomBytes, getUniqueDatasetName } from "../../../../../../../__tests__/__src__/TestUtils";
+import { runCliScript } from "@zowe/cli-test-utils";
 
 let REAL_SESSION: Session;
 let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
@@ -47,35 +47,13 @@ describe("View uss file", () => {
     });
 
     describe("Success scenarios", () => {
-        beforeEach(async () => {
-            let response;
-            let error;
-            const data = "{\"type\":\"file\",\"mode\":\"RWXRW-RW-\"}";
-            const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussname;
-            try {
-                response = await ZosmfRestClient.postExpectString(REAL_SESSION, endpoint, [], data);
-            } catch (err) {
-                error = err;
-            }
-        });
-
         afterEach(async () => {
-            let error;
-            let response;
-
-            const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussname;
-
-            try {
-                response = await ZosmfRestClient.deleteExpectString(REAL_SESSION, endpoint);
-            } catch (err) {
-                error = err;
-            }
+            await deleteFiles(REAL_SESSION, ussname);
         });
 
         it("should view uss file", async () => {
             const data: string = "abcdefghijklmnopqrstuvwxyz";
-            const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussname;
-            await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
+            await Upload.bufferToUssFile(REAL_SESSION, ussname, Buffer.from(data));
 
             const shellScript = path.join(__dirname, "__scripts__", "command", "command_view_uss_file.sh");
             const response = runCliScript(shellScript, testEnvironment, [ussname.substring(1, ussname.length)]);
@@ -86,8 +64,7 @@ describe("View uss file", () => {
         });
         it("should view uss file in binary", async () => {
             const data: string = "abcdefghijklmnopqrstuvwxyz";
-            const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussname;
-            await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [ZosmfHeaders.X_IBM_BINARY], data);
+            await Upload.bufferToUssFile(REAL_SESSION, ussname, Buffer.from(data), { binary: true });
 
             const shellScript = path.join(__dirname, "__scripts__", "command", "command_view_uss_file.sh");
             const response = runCliScript(shellScript, testEnvironment, [ussname.substring(1, ussname.length), "--binary"]);
@@ -97,7 +74,7 @@ describe("View uss file", () => {
             expect(response.stdout.toString().trim()).toEqual(data);
         });
         it("should view large uss file in binary", async () => {
-            const rawData:Buffer =  await getRandomBytes(1024*64);
+            const rawData: Buffer = await getRandomBytes(1024*64);
             const data = encodeURIComponent(rawData.toLocaleString());
             await Upload.bufferToUssFile(REAL_SESSION, ussname, Buffer.from(data), { binary: true });
 
@@ -111,8 +88,7 @@ describe("View uss file", () => {
         });
         it("should view uss file with range", async () => {
             const data: string = "abcdefghijklmnopqrstuvwxyz\nabcdefghijklmnopqrstuvwxyz\nabcdefghijklmnopqrstuvwxyz\n";
-            const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + ussname;
-            await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);
+            await Upload.bufferToUssFile(REAL_SESSION, ussname, Buffer.from(data));
 
             const shellScript = path.join(__dirname, "__scripts__", "command", "command_view_uss_file.sh");
             const response = runCliScript(shellScript, testEnvironment, [ussname.substring(1, ussname.length), "--range", "0,1"]);

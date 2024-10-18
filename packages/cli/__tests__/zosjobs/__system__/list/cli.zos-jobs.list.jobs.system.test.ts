@@ -9,8 +9,9 @@
 *
 */
 
-import { ITestEnvironment, runCliScript } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
+import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/ITestEnvironment";
+import { runCliScript } from "@zowe/cli-test-utils";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { Session } from "@zowe/imperative";
 
@@ -55,24 +56,42 @@ describe("zos-jobs list jobs command", () => {
 
     describe("positive tests", () => {
 
-        it("should be able to submit two jobs and then find both in the output",
-            () => {
-                const response = runCliScript(scriptDir + "/submit_and_list_jobs.sh", TEST_ENVIRONMENT,
-                    [TEST_ENVIRONMENT.systemTestProperties.zosjobs.iefbr14Member]);
-                expect(response.stderr.toString()).toBe("");
-                expect(response.status).toBe(0);
-                expect(response.stdout.toString()).toContain("found");
-            });
+        it("should be able to submit two jobs and then find both in the output", () => {
+            const response = runCliScript(scriptDir + "/submit_and_list_jobs.sh", TEST_ENVIRONMENT,
+                [TEST_ENVIRONMENT.systemTestProperties.zosjobs.iefbr14Member]);
 
-        it("should be able to submit one job and then not see the job if we list jobs for a different user",
-            () => {
-                // note: this test could fail if your user Id starts with "FAKE"
-                const response = runCliScript(scriptDir + "/submit_and_list_jobs_no_match.sh", TEST_ENVIRONMENT,
-                    [TEST_ENVIRONMENT.systemTestProperties.zosjobs.iefbr14Member]);
-                expect(response.stderr.toString()).toBe("");
-                expect(response.status).toBe(0);
-                expect(response.stdout.toString()).toContain("test passed");
-            });
+            // Regex to extract both JOBIDs
+            const jobidRegex = /(?:First|Second) job ID (JOB\d+) found/g;
+
+            // Extract all matching job IDs
+            const jobIds = [...response.stdout.toString().matchAll(jobidRegex)].map(match => match[1]);
+
+            // Ensure both job IDs were captured correctly
+            expect(jobIds.length).toBe(2);
+            TEST_ENVIRONMENT.resources.jobs.push(...jobIds);
+
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toContain("found");
+        });
+
+        it("should be able to submit one job and then not see the job if we list jobs for a different user", () => {
+            // note: this test could fail if your user Id starts with "FAKE"
+            const response = runCliScript(scriptDir + "/submit_and_list_jobs_no_match.sh", TEST_ENVIRONMENT,
+                [TEST_ENVIRONMENT.systemTestProperties.zosjobs.iefbr14Member]);
+
+            // Regex to extract the JOBID
+            const jobidRegex = /Submitted job: (JOB\d+)/;
+            const match = response.stdout.toString().match(jobidRegex);
+            const jobId = match ? match[1] : null;
+
+            expect(jobId).not.toBeNull();
+            TEST_ENVIRONMENT.resources.jobs.push(jobId);
+
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toContain("test passed");
+        });
 
         describe("without profiles", () => {
 
@@ -91,7 +110,7 @@ describe("zos-jobs list jobs command", () => {
                 await TestEnvironment.cleanUp(TEST_ENVIRONMENT_NO_PROF);
             });
 
-            it("should be able to submit two jobs and then find both in the output", async () => {
+            it("should be able to submit two jobs and then find both in the output", () => {
                 const ZOWE_OPT_BASE_PATH = "ZOWE_OPT_BASE_PATH";
 
                 // if API Mediation layer is being used (basePath has a value) then
@@ -109,6 +128,17 @@ describe("zos-jobs list jobs command", () => {
                         SYSTEM_PROPS.zosmf.user,
                         SYSTEM_PROPS.zosmf.password,
                     ]);
+
+                // Regex to extract both JOBIDs
+                const jobidRegex = /(?:First|Second) job ID (JOB\d+) found/g;
+
+                // Extract all matching job IDs
+                const jobIds = [...response.stdout.toString().matchAll(jobidRegex)].map(match => match[1]);
+
+                // Ensure both job IDs were captured correctly
+                expect(jobIds.length).toBe(2);
+                TEST_ENVIRONMENT_NO_PROF.resources.jobs.push(...jobIds);
+
                 expect(response.stderr.toString()).toBe("");
                 expect(response.status).toBe(0);
                 expect(response.stdout.toString()).toContain("found");

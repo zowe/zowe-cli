@@ -16,7 +16,6 @@ import * as fs from "fs";
 import { ITestEnvironment } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { IIssueTsoCmdParms } from "../../src";
 import { IIssueTsoCmdOpts } from "../../src/doc/input/IIssueTsoCmdOpts";
 let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 let systemProperties: ITestPropertiesSchema;
@@ -25,7 +24,6 @@ let ACCOUNT_NUMBER: string;
 
 let START_PARAMS: IStartTsoParms;
 let ISSUE_PARAMS: IIssueTsoParms;
-let COMMAND_PARAMS: IIssueTsoCmdParms;
 let AS_OPTIONS: IIssueTsoCmdOpts;
 describe("IssueTso.issueTsoCommand", () => {
 
@@ -51,9 +49,6 @@ describe("IssueTso.issueTsoCommand", () => {
             command: "time",
             accountNumber: ACCOUNT_NUMBER,
             startParams: START_PARAMS
-        };
-        COMMAND_PARAMS = {
-            command: "TIME"
         };
         AS_OPTIONS = {
             addressSpaceOptions: START_PARAMS

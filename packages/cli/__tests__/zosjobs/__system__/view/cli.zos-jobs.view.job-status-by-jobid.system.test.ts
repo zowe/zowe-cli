@@ -9,19 +9,26 @@
 *
 */
 
-import { ITestEnvironment, runCliScript } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
+import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/ITestEnvironment";
+import { runCliScript } from "@zowe/cli-test-utils";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { ICommandResponse } from "@zowe/imperative";
+import { ICommandResponse, Session } from "@zowe/imperative";
+import { GetJobs } from "@zowe/zos-jobs-for-zowe-sdk";
 
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
+let REAL_SESSION: Session;
 
 // Pulled from test properties file
 let account: string;
 let systemProps: ITestPropertiesSchema;
 let jclMember: string;
 let psJclDataSet: string;
+let JOB_NAME: string;
+
+// Regex to match any job name that starts with "IEFBR14"
+const jobNameRegex = /IEFBR14\w*/;
 
 describe("zos-jobs view job-status-by-jobid command", () => {
     // Create the unique test environment
@@ -33,12 +40,18 @@ describe("zos-jobs view job-status-by-jobid command", () => {
 
         systemProps = TEST_ENVIRONMENT.systemTestProperties;
 
+        REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
         account = systemProps.tso.account;
         jclMember = TEST_ENVIRONMENT.systemTestProperties.zosjobs.iefbr14Member;
         psJclDataSet = TEST_ENVIRONMENT.systemTestProperties.zosjobs.iefbr14PSDataSet;
     });
 
     afterAll(async () => {
+        if (JOB_NAME) {
+            const jobs = await GetJobs.getJobsByPrefix(REAL_SESSION, JOB_NAME);
+            TEST_ENVIRONMENT.resources.jobs.push(...jobs);
+        }
+
         await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
     });
 
@@ -52,6 +65,10 @@ describe("zos-jobs view job-status-by-jobid command", () => {
             expect(response.stdout.toString()).toContain("jobid:");
             expect(response.stdout.toString()).toContain("status:");
             expect(response.stdout.toString()).toContain("retcode:");
+
+            // Set jobname for cleanup of all jobs
+            const match = response.stdout.toString().match(jobNameRegex);
+            JOB_NAME = match ? match[0] : null;
         });
 
         it("should be able to submit the job then view the job and the details should match", () => {
@@ -69,7 +86,7 @@ describe("zos-jobs view job-status-by-jobid command", () => {
                 "/__scripts__/job-status-by-jobid/view_rfj.sh", TEST_ENVIRONMENT, [submitJson.data.jobid]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
-            const viewJson: ICommandResponse = JSON.parse(response.stdout.toString());
+            const viewJson: ICommandResponse = JSON.parse(viewResponse.stdout.toString());
             expect(viewJson.success).toBe(true);
             expect(viewJson.data.jobid).toBe(submitJson.data.jobid);
             expect(viewJson.data.jobname).toBe(submitJson.data.jobname);
@@ -93,11 +110,16 @@ describe("zos-jobs view job-status-by-jobid command", () => {
                 TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
                     testName: "zos_jobs_view_job_status_by_jobid_command_without_profiles"
                 });
-
+                REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
                 DEFAULT_SYSTEM_PROPS = TEST_ENVIRONMENT_NO_PROF.systemTestProperties;
             });
 
             afterAll(async () => {
+                if (JOB_NAME) {
+                    const jobs = await GetJobs.getJobsByPrefix(REAL_SESSION, JOB_NAME);
+                    TEST_ENVIRONMENT_NO_PROF.resources.jobs.push(...jobs);
+                }
+
                 await TestEnvironment.cleanUp(TEST_ENVIRONMENT_NO_PROF);
             });
 
@@ -125,6 +147,10 @@ describe("zos-jobs view job-status-by-jobid command", () => {
                 expect(response.stdout.toString()).toContain("jobid:");
                 expect(response.stdout.toString()).toContain("status:");
                 expect(response.stdout.toString()).toContain("retcode:");
+
+                // Set jobname for cleanup of all jobs
+                const match = response.stdout.toString().match(jobNameRegex);
+                JOB_NAME = match ? match[0] : null;
             });
         });
     });

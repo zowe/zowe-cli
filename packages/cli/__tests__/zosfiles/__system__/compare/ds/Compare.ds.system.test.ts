@@ -12,10 +12,11 @@
 import { Session } from "@zowe/imperative";
 import { Create, Delete, CreateDataSetTypeEnum, Upload } from "@zowe/cli";
 import * as path from "path";
-import {ITestEnvironment, runCliScript} from "@zowe/cli-test-utils";
-import {TestEnvironment} from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
-import {ITestPropertiesSchema} from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { getUniqueDatasetName} from "../../../../../../../__tests__/__src__/TestUtils";
+import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
+import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/ITestEnvironment";
+import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
+import { getUniqueDatasetName } from "../../../../../../../__tests__/__src__/TestUtils";
+import { runCliScript } from "@zowe/cli-test-utils";
 
 let REAL_SESSION: Session;
 let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;

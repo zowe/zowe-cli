@@ -15,3 +15,6 @@ then
     echo "Submit returned a non-zero return code" 1>&2
     exit $RC
 fi
+
+# Echo the JOBID for retrieval in tests
+echo "Submitted job ID: $JOBID"

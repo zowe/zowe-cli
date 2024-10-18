@@ -9,16 +9,16 @@
 *
 */
 
-import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { Session, Imperative } from "@zowe/imperative";
-import { ITestEnvironment, runCliScript } from "@zowe/cli-test-utils";
+import { runCliScript } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { getUniqueDatasetName } from "../../../../../../__tests__/__src__/TestUtils";
-import { Upload, ZosFilesConstants } from "@zowe/zos-files-for-zowe-sdk";
+import { Upload } from "@zowe/zos-files-for-zowe-sdk";
 import { join } from "path";
 import { CreateWorkflow, PropertiesWorkflow, DeleteWorkflow, startT, IWorkflowInfo, WorkflowConstants,
     IStepInfo } from "@zowe/zos-workflows-for-zowe-sdk";
+import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/ITestEnvironment";
 
 const resolveConflict: startT = "outputFileValue";
 const stepName = "echo";
@@ -56,19 +56,7 @@ describe("Start workflow cli system tests", () => {
         beforeAll(async () => {
             // Upload files only for successful scenarios
             await Upload.fileToUssFile(REAL_SESSION, workflow, definitionFile, { binary: true });
-        });
-        afterAll(async () => {
-            let error;
-            let response;
-
-            const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES;
-            // deleting uploaded workflow file
-            try {
-                const wfEndpoint = endpoint + definitionFile;
-                response = await ZosmfRestClient.deleteExpectString(REAL_SESSION, wfEndpoint);
-            } catch (err) {
-                error = err;
-            }
+            testEnvironment.resources.files.push(definitionFile);
         });
         describe("Success Scenarios", () => {
             afterEach(async () => {
@@ -97,42 +85,42 @@ describe("Start workflow cli system tests", () => {
                     Imperative.console.info(err);
                 }
             });
-            it("Should start full workflow using wf key in zOSMF.", async () => {
+            it("Should start full workflow using wf key in zOSMF.", () => {
                 const response = runCliScript(__dirname + "/__scripts__/command/command_start_workflow_key_full.sh",
                     testEnvironment, [wfKey, resolveConflict]);
                 expect(response.stderr.toString()).toBe("");
                 expect(response.status).toBe(0);
                 expect(response.stdout.toString()).toContain("Workflow");
             });
-            it("Should start full workflow using wf Name in zOSMF.", async () => {
-                const response = await runCliScript(__dirname + "/__scripts__/command/command_start_workflow_name_full.sh",
+            it("Should start full workflow using wf Name in zOSMF.", () => {
+                const response = runCliScript(__dirname + "/__scripts__/command/command_start_workflow_name_full.sh",
                     testEnvironment, [wfName, resolveConflict]);
                 expect(response.stderr.toString()).toBe("");
                 expect(response.status).toBe(0);
                 expect(response.stdout.toString()).toContain("Workflow");
             });
-            it("Should start one workflow using wf Key and step.", async () => {
+            it("Should start one workflow using wf Key and step.", () => {
                 const response = runCliScript(__dirname + "/__scripts__/command/command_start_workflow_key_step.sh",
                     testEnvironment, [stepName, wfKey, resolveConflict]);
                 expect(response.stderr.toString()).toBe("");
                 expect(response.status).toBe(0);
                 expect(response.stdout.toString()).toContain("Workflow step started.");
             });
-            it("Should start one workflow using wf Name and step.", async () => {
+            it("Should start one workflow using wf Name and step.", () => {
                 const response = runCliScript(__dirname + "/__scripts__/command/command_start_workflow_name_step.sh",
                     testEnvironment, [stepName, wfName, resolveConflict]);
                 expect(response.stderr.toString()).toBe("");
                 expect(response.status).toBe(0);
                 expect(response.stdout.toString()).toContain("Workflow step started.");
             });
-            it("Should start one workflow step using wf Key.", async () => {
+            it("Should start one workflow step using wf Key.", () => {
                 const response = runCliScript(__dirname + "/__scripts__/command/command_start_workflow_key_step_plus_following.sh",
                     testEnvironment, [stepName, wfKey, resolveConflict, "--perform-following-steps"]);
                 expect(response.stderr.toString()).toBe("");
                 expect(response.status).toBe(0);
                 expect(response.stdout.toString()).toContain("Workflow step started.");
             });
-            it("Should start one workflow step using wf Name.", async () => {
+            it("Should start one workflow step using wf Name.", () => {
                 const response = runCliScript(__dirname + "/__scripts__/command/command_start_workflow_name_step_plus_following.sh",
                     testEnvironment, [stepName, wfName, resolveConflict, "--perform-following-steps"]);
                 expect(response.stderr.toString()).toBe("");

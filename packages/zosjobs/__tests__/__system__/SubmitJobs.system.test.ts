@@ -10,14 +10,13 @@
 */
 
 import { ImperativeError, Session } from "@zowe/imperative";
-import { DeleteJobs, IJob, SubmitJobs } from "../../src";
-import { ITestEnvironment } from "@zowe/cli-test-utils";
+import { GetJobs, IJob, ISpoolFile, SubmitJobs } from "../../src";
+import { ITestEnvironment } from "../../../../__tests__/__src__/environment/ITestEnvironment";
 import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../__tests__/__src__/properties/ITestPropertiesSchema";
+import { wait } from "../../../../__tests__/__src__/TestUtils";
 import { existsSync } from "fs";
 import { ZosJobsMessages } from "../../src/JobsMessages";
-const rimraf = require("rimraf").sync;
-
 
 let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 let systemProps: ITestPropertiesSchema;
@@ -29,18 +28,7 @@ let iefbr14JCL: string;
 const badJCL = "thIsIs BaDJCL!";
 const badDataSet = "DOES.NOT.EXIST(FAKE)";
 const badUSSFile = "/tmp/does/not/exist/fake.txt";
-
 const LONG_TIMEOUT = 100000; // 100 second timeout - jobs could take a while to complete due to system load
-
-const waitThreeSeconds = () => {
-    return new Promise<void>((resolveWaitTime) => {
-        const threeSeconds = 3000;
-        setTimeout(() => {
-            resolveWaitTime();
-        }, threeSeconds);
-    }
-    );
-};
 
 describe("Submit Jobs - System Tests", () => {
 
@@ -64,10 +52,6 @@ describe("Submit Jobs - System Tests", () => {
         await TestEnvironment.cleanUp(testEnvironment);
     });
 
-    // helper to delete a job
-    const deleteJob = async (job: IJob) => {
-        await DeleteJobs.deleteJob(REAL_SESSION, job.jobname, job.jobid);
-    };
     describe("Positive tests", () => {
         it("should allow users to call submitJCLCommon with correct parameters", async () => {
             const job = await SubmitJobs.submitJclCommon(REAL_SESSION, {
@@ -75,7 +59,7 @@ describe("Submit Jobs - System Tests", () => {
             });
             expect(job.jobid).toBeDefined();
             expect(job.jobname).toBeDefined();
-            await deleteJob(job);
+            testEnvironment.resources.jobs.push(job);
         });
 
         it("should allow users to call submitJCLCommon with correct extended parameters", async () => {
@@ -87,7 +71,7 @@ describe("Submit Jobs - System Tests", () => {
             });
             expect(job.jobid).toBeDefined();
             expect(job.jobname).toBeDefined();
-            await deleteJob(job);
+            testEnvironment.resources.jobs.push(job);
         });
 
 
@@ -98,7 +82,7 @@ describe("Submit Jobs - System Tests", () => {
                 );
                 expect(job.jobid).toBeDefined();
                 expect(job.jobname).toBeDefined();
-                await deleteJob(job);
+                testEnvironment.resources.jobs.push(job);
             });
 
 
@@ -115,8 +99,8 @@ describe("Submit Jobs - System Tests", () => {
                 );
                 expect(job.jobid).toBeDefined();
                 expect(job.jobname).toBeDefined();
-                await waitThreeSeconds();
-                await deleteJob(job);
+                await wait(3000); // Waits for 3 seconds
+                testEnvironment.resources.jobs.push(job);
             }, LONG_TIMEOUT);
 
 
@@ -136,7 +120,7 @@ describe("Submit Jobs - System Tests", () => {
                 );
                 expect(job.jobid).toBeDefined();
                 expect(job.jobname).toBeDefined();
-                await deleteJob(job);
+                testEnvironment.resources.jobs.push(job);
             }, LONG_TIMEOUT);
 
         it("should allow users to call submitJobCommon with correct parameters (with data set)", async () => {
@@ -145,7 +129,7 @@ describe("Submit Jobs - System Tests", () => {
             });
             expect(job.jobid).toBeDefined();
             expect(job.jobname).toBeDefined();
-            await deleteJob(job);
+            testEnvironment.resources.jobs.push(job);
         });
 
         it("should allow users to call submitJobCommon with correct parameters (with uss file)", async () => {
@@ -154,7 +138,7 @@ describe("Submit Jobs - System Tests", () => {
             });
             expect(job.jobid).toBeDefined();
             expect(job.jobname).toBeDefined();
-            await deleteJob(job);
+            testEnvironment.resources.jobs.push(job);
         });
 
         it("should allow users to call submitJobNotifyCommon with correct parameters (using a data set)", async () => {
@@ -163,7 +147,7 @@ describe("Submit Jobs - System Tests", () => {
             });
             expect(job.jobid).toBeDefined();
             expect(job.jobname).toBeDefined();
-            await deleteJob(job);
+            testEnvironment.resources.jobs.push(job);
         }, LONG_TIMEOUT);
 
         it("should allow users to call submitJobNotifyCommon with correct parameters (using a uss file)", async () => {
@@ -172,7 +156,7 @@ describe("Submit Jobs - System Tests", () => {
             });
             expect(job.jobid).toBeDefined();
             expect(job.jobname).toBeDefined();
-            await deleteJob(job);
+            testEnvironment.resources.jobs.push(job);
         }, LONG_TIMEOUT);
 
         it("should allow users to call submitJCLNotify with correct parameters", async () => {
@@ -185,7 +169,7 @@ describe("Submit Jobs - System Tests", () => {
                 "IBM-037");
             expect(job.jobid).toBeDefined();
             expect(job.jobname).toBeDefined();
-            await deleteJob(job);
+            testEnvironment.resources.jobs.push(job);
         }, LONG_TIMEOUT);
 
         it("should allow users to call submitJobNotify with correct parameters", async () => {
@@ -194,7 +178,7 @@ describe("Submit Jobs - System Tests", () => {
             );
             expect(job.jobid).toBeDefined();
             expect(job.jobname).toBeDefined();
-            await deleteJob(job);
+            testEnvironment.resources.jobs.push(job);
         }, LONG_TIMEOUT);
 
         it("should allow users to call submitUSSJobNotify with correct parameters", async () => {
@@ -203,7 +187,7 @@ describe("Submit Jobs - System Tests", () => {
             );
             expect(job.jobid).toBeDefined();
             expect(job.jobname).toBeDefined();
-            await deleteJob(job);
+            testEnvironment.resources.jobs.push(job);
         }, LONG_TIMEOUT);
 
         it("should allow users to call submitJob with correct parameters", async () => {
@@ -212,7 +196,7 @@ describe("Submit Jobs - System Tests", () => {
             );
             expect(job.jobid).toBeDefined();
             expect(job.jobname).toBeDefined();
-            await deleteJob(job);
+            testEnvironment.resources.jobs.push(job);
         });
 
         it("should allow users to call submitUSSJob with correct parameters", async () => {
@@ -221,45 +205,75 @@ describe("Submit Jobs - System Tests", () => {
             );
             expect(job.jobid).toBeDefined();
             expect(job.jobname).toBeDefined();
-            await deleteJob(job);
+            testEnvironment.resources.jobs.push(job);
         });
-
         it("should return the job info of a submitted JCL string", async () => {
-            const job: any = await SubmitJobs.submitJclString(REAL_SESSION, "//JOBNAME1 JOB", {jclSource: "stdin"});
+            const jobOrSpoolFiles = await SubmitJobs.submitJclString(REAL_SESSION, "//JOBNAME1 JOB", { jclSource: "stdin" });
+
+            // Now `jobOrSpoolFiles` is guaranteed to be of type `IJob`
+            const job: IJob = jobOrSpoolFiles as IJob;
+
+            // Ensure jobid and jobname are defined before proceeding
             expect(job.jobid).toBeDefined();
             expect(job.jobname).toBeDefined();
+            testEnvironment.resources.jobs.push(job);
         });
 
         it("should return the job info of a submitted JCL string with extended options", async () => {
-            const job: any = await SubmitJobs.submitJclString(REAL_SESSION, "//JOBNAME1 JOB", {
+            const jobOrSpoolFiles = await SubmitJobs.submitJclString(REAL_SESSION, "//JOBNAME1 JOB", {
                 jclSource: "stdin",
                 internalReaderFileEncoding: "IBM-037",
                 internalReaderLrecl: "80",
                 internalReaderRecfm: "F"
             });
+
+            // Now `jobOrSpoolFiles` is guaranteed to be of type `IJob`
+            const job: IJob = jobOrSpoolFiles as IJob;
+
             expect(job.jobid).toBeDefined();
             expect(job.jobname).toBeDefined();
+            testEnvironment.resources.jobs.push(job);
         });
 
         it("should return an array of spool content", async () => {
-            const job: any = await SubmitJobs.submitJclString(REAL_SESSION, "//JOBNAME1 JOB", {jclSource: "stdin", viewAllSpoolContent: true});
-            expect(job.constructor === Array).toBe(true);
-            expect(job[0].data.toString()).toContain("J E S 2  J O B  L O G");
+            // Submit the JCL and request spool content to be returned
+            const jobOrSpoolFiles = await SubmitJobs.submitJclString(REAL_SESSION, "//JOBNAME1 JOB", {
+                jclSource: "stdin",
+                viewAllSpoolContent: true
+            });
+
+            // Now `jobOrSpoolFiles` is guaranteed to be of type `ISpoolFile[]`
+            const spoolFiles: ISpoolFile[] = jobOrSpoolFiles as ISpoolFile[];
+
+            expect(spoolFiles.constructor === Array).toBe(true);
+            expect(spoolFiles[0].data.toString()).toContain("J E S 2  J O B  L O G");
+
+            // Extract job ID from the spool file content
+            const jobLogContent = spoolFiles[0].data.toString();
+            const jobIdMatch = jobLogContent.match(/JOB\d{5}/).toString();
+            const job = await GetJobs.getJob(REAL_SESSION, jobIdMatch);
+            testEnvironment.resources.jobs.push(job);
         });
 
         it("should download spool content to a local directory", async () => {
-            const job: any = await SubmitJobs.submitJclString(REAL_SESSION, "//JOBNAME1 JOB",
-                {
-                    jclSource: "stdin",
-                    viewAllSpoolContent: false,
-                    directory: "./"
-                });
-            // check if the file was created
+            const jobOrSpoolFiles = await SubmitJobs.submitJclString(REAL_SESSION, "//JOBNAME1 JOB", {
+                jclSource: "stdin",
+                viewAllSpoolContent: false,
+                directory: "./"
+            });
+
+            // Now `jobOrSpoolFiles` is guaranteed to be of type `IJob`
+            const job: IJob = jobOrSpoolFiles as IJob;
+
+            // Ensure jobid and jobname and file are defined before proceeding
+            expect(job.jobid).toBeDefined();
+            expect(job.jobname).toBeDefined();
             expect(existsSync(`${job.jobid}/JES2`)).toBeTruthy();
 
-            // delete locally created directory
-            require("rimraf").sync(job.jobid, {maxBusyTries: 10});
+            testEnvironment.resources.jobs.push(job);
 
+            // Delete the locally created directory
+            require("rimraf").sync(job.jobid, { maxBusyTries: 10 });
         });
     });
 

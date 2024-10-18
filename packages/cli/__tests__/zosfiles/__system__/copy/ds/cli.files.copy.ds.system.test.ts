@@ -10,11 +10,12 @@
 */
 
 import { Session } from "@zowe/imperative";
-import { ITestEnvironment, runCliScript } from "@zowe/cli-test-utils";
+import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/ITestEnvironment";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { Delete, Create, CreateDataSetTypeEnum, Upload, Get } from "@zowe/zos-files-for-zowe-sdk";
 import { join } from "path";
+import { runCliScript } from "@zowe/cli-test-utils";
 
 let REAL_SESSION: Session;
 let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;

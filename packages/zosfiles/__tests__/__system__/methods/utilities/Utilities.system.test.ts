@@ -10,36 +10,37 @@
 */
 
 import { posix } from "path";
-import { ITestEnvironment } from "@zowe/cli-test-utils";
+import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/ITestEnvironment";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { AbstractSession, Imperative, IO } from "@zowe/imperative";
-import { Utilities, Tag, Upload, Create, Download, Delete } from "../../../../src";
+import { Utilities, Tag, Upload, Create, Download } from "../../../../src";
 import { getUniqueDatasetName, getTag } from "../../../../../../__tests__/__src__/TestUtils";
 
 let REAL_SESSION: AbstractSession;
 let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 
 describe("USS Utilities", () => {
-
     const localfile = __dirname + "/__data__/tagfile.txt";
     let ussname: string;
+
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({
             tempProfileTypes: ["zosmf"],
             testName: "zos_files_utilities"
         });
+        REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
+
         const defaultSystem = testEnvironment.systemTestProperties;
         let dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.UPLOAD`);
         dsname = dsname.replace(/\./g, "");
         ussname = `${defaultSystem.unix.testdir}/${dsname}`;
         Imperative.console.info("Using ussDir:" + ussname);
 
-        REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
-
+        testEnvironment.resources.files.push(ussname);
     });
+
     afterAll(async () => {
-        await Delete.ussFile(REAL_SESSION, ussname);
         await TestEnvironment.cleanUp(testEnvironment);
     });
 
@@ -93,6 +94,7 @@ describe("USS Utilities", () => {
 
         // Delete created local file
         IO.deleteFile(posix.basename(newName));
+        testEnvironment.resources.files.push(newName);
     });
 
     it("should rename USS file - encoded", async () => {
@@ -115,6 +117,7 @@ describe("USS Utilities", () => {
 
         // Delete created local file
         IO.deleteFile(posix.basename(newName));
+        testEnvironment.resources.files.push(newName);
     });
 
     describe("applyTaggedEncoding", () => {
