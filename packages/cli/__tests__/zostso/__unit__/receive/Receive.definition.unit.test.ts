@@ -11,7 +11,7 @@
 
 import { ICommandDefinition } from "@zowe/imperative";
 
-describe("zos-tso receieve group definition", () => {
+describe("zos-tso receive group definition", () => {
     it("should not have changed", () => {
         const definition: ICommandDefinition = require("../../../../src/zostso/receive/Receive.definition").ReceiveCommand;
         expect(definition).toBeDefined();

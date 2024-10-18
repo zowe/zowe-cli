@@ -39,7 +39,7 @@ export const SendASApp: ICommandDefinition = {
         },
         {
             name: "message",
-            aliases: ["msg"],
+            aliases: ["m"],
             description: "Message",
             type: "string",
             required: true

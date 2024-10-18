@@ -1104,7 +1104,6 @@ describe("Configuration Secure command handler", () => {
                     ImperativeConfig.instance.config.api.secure,
                     "secureFields"
                 ).mockReturnValue(secureFields);
-              
                 jest.spyOn(ImperativeConfig.instance.config.api.secure, "secureFields").mockReturnValue(secureFields);
 
                 let caughtError;

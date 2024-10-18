@@ -13,7 +13,7 @@ import { IHandlerParameters } from "@zowe/imperative";
 import { ZosTsoBaseHandler, ReceiveTsoApp } from "@zowe/zos-tso-for-zowe-sdk";
 
 /**
- * Handler to receieve message from an app at an address space
+ * Handler to receive message from an app at an address space
  * @export
  * @class Handler
  * @implements {ICommandHandler}

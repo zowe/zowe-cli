@@ -13,11 +13,11 @@ import { ICommandDefinition } from "@zowe/imperative";
 import { ReceiveASApp } from "./app/ReceiveASApp.definition";
 
 export const ReceiveCommand: ICommandDefinition = {
-    name: "receieve",
+    name: "receive",
     aliases: ["r"],
     type: "group",
-    summary: "Receieve message from TSO address space app",
-    description: "Receieve message from TSO address space app",
+    summary: "Receive message from TSO address space app",
+    description: "Receive message from TSO address space app",
     children: [
         ReceiveASApp
     ],
