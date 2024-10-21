@@ -140,9 +140,7 @@ export class ConvertV1Profiles {
             // Initialization for VSCode extensions does not create the config property, so create it now.
             ImperativeConfig.instance.config = await Config.load(
                 ImperativeConfig.instance.loadedConfig.name,
-                {
-                    homeDir: ImperativeConfig.instance.loadedConfig.defaultHome
-                }
+                { homeDir: ImperativeConfig.instance.cliHome }
             );
         }
 
