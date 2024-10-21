@@ -64,16 +64,16 @@ describe("List workflow cli system tests", () => {
             }
         });
         describe("Success Scenarios", () => {
-            it("Should return list of workflows in zOSMF.", async () => {
+            it("Should return list of workflows in zOSMF.", () => {
                 const response = runCliScript(__dirname + "/__scripts__/command/command_list_workflow.sh",
                     testEnvironment, [wfName]);
                 expect(response.stderr.toString()).toBe("");
                 expect(response.status).toBe(0);
                 expect(response.stdout.toString()).toContain(`${wfName}`);
             });
-            it("Should return a message if search does not match any existing workflows", async () => {
+            it("Should return a message if search does not match any existing workflows", () => {
                 const fakeName = `${wfName}${wfName}${wfName}`;
-                const response = await runCliScript(__dirname + "/__scripts__/command/command_list_workflow.sh",
+                const response = runCliScript(__dirname + "/__scripts__/command/command_list_workflow.sh",
                     testEnvironment, [fakeName]);
                 expect(response.status).toBe(0);
                 expect(response.stdout.toString()).toContain("No workflows match the requested querry");
