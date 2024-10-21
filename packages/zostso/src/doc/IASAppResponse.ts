@@ -20,7 +20,7 @@ export interface IASAppResponse {
     version: string
     /**
      * Data from response
-     * @type {boolean}
+     * @type {ITsoMessage[]}
      * @memberof IASAppResponse
      */
     tsoData: ITsoMessage[]
@@ -31,7 +31,7 @@ export interface IASAppResponse {
      */
     reused: boolean
     /**
-     * Data from response
+     * Timeout boolean response
      * @type {boolean}
      * @memberof IASAppResponse
      */
@@ -43,7 +43,7 @@ export interface IASAppResponse {
      */
     servletKey?: string;
     /**
-     * Servlet key from IZosmfTsoResponse
+     * QueueID from created address space
      * @type {string}
      * @memberof IASAppResponse
      */
