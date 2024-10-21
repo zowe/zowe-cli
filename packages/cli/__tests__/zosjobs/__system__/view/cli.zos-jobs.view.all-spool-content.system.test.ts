@@ -9,10 +9,12 @@
 *
 */
 
-import { ITestEnvironment, runCliScript } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
+import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/ITestEnvironment";
+import { runCliScript } from "@zowe/cli-test-utils";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { Session } from "@zowe/imperative";
+import { GetJobs } from "@zowe/zos-jobs-for-zowe-sdk";
 
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
@@ -21,6 +23,9 @@ let REAL_SESSION: Session;
 let ACCOUNT: string;
 let JOB_NAME: string;
 let NON_HELD_JOBCLASS: string;
+
+// Regex to match any job name that starts with "IEFBR14"
+const jobNameRegex = /IEFBR14\w*/;
 
 describe("zos-jobs view all-spool-content command", () => {
     // Create the unique test environment
@@ -41,6 +46,12 @@ describe("zos-jobs view all-spool-content command", () => {
     });
 
     afterAll(async () => {
+        // Cleanup jobs before the environment is torn down
+        if (JOB_NAME) {
+            const jobs = await GetJobs.getJobsByPrefix(REAL_SESSION, JOB_NAME);
+            TEST_ENVIRONMENT.resources.jobs.push(...jobs);
+        }
+
         await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
     });
 
@@ -53,6 +64,10 @@ describe("zos-jobs view all-spool-content command", () => {
             expect(response.stdout.toString()).not.toContain("!!!SPOOL FILE");
             expect(response.stdout.toString()).toContain("Spool file: JESMSGLG");
             expect(response.stdout.toString()).toContain("PGM=IEFBR14");
+
+            // Set jobname for cleanup of all jobs
+            const match = response.stdout.toString().match(jobNameRegex);
+            JOB_NAME = match ? match[0] : null;
         });
 
         describe("without profiles", () => {
@@ -70,6 +85,12 @@ describe("zos-jobs view all-spool-content command", () => {
             });
 
             afterAll(async () => {
+                // Cleanup jobs before the environment is torn down
+                if (JOB_NAME) {
+                    const jobs = await GetJobs.getJobsByPrefix(REAL_SESSION, JOB_NAME);
+                    TEST_ENVIRONMENT_NO_PROF.resources.jobs.push(...jobs);
+                }
+
                 await TestEnvironment.cleanUp(TEST_ENVIRONMENT_NO_PROF);
             });
 
@@ -96,6 +117,10 @@ describe("zos-jobs view all-spool-content command", () => {
                 expect(response.stdout.toString()).not.toContain("!!!SPOOL FILE");
                 expect(response.stdout.toString()).toContain("Spool file: JESMSGLG");
                 expect(response.stdout.toString()).toContain("PGM=IEFBR14");
+
+                // Set jobname for cleanup of all jobs
+                const match = response.stdout.toString().match(jobNameRegex);
+                JOB_NAME = match ? match[0] : null;
             });
         });
     });

@@ -10,8 +10,8 @@
 */
 
 import { ImperativeError, Session } from "@zowe/imperative";
-import { IJob, SubmitJobs, ModifyJobs, CancelJobs } from "../../src";
-import { ITestEnvironment } from "@zowe/cli-test-utils";
+import { IJob, SubmitJobs, ModifyJobs } from "../../src";
+import { ITestEnvironment } from "../../../../__tests__/__src__/environment/ITestEnvironment";
 import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { JobTestsUtils } from "./JobTestsUtils";
@@ -40,10 +40,10 @@ describe("Modify Jobs - System Tests", () => {
         iefbr14Job = await SubmitJobs.submitJob(REAL_SESSION,
             testEnvironment.systemTestProperties.zosjobs.iefbr14Member
         );
+        testEnvironment.resources.jobs.push(iefbr14Job);
     });
 
     afterAll(async () => {
-        await CancelJobs.cancelJob(REAL_SESSION, iefbr14Job.jobname, iefbr14Job.jobid);
         await TestEnvironment.cleanUp(testEnvironment);
     });
 
@@ -80,7 +80,6 @@ describe("Modify Jobs - System Tests", () => {
     });
 
     describe("Negative tests", () => {
-
         it("should surface an error from z/OSMF when calling an unknown jobid", async () => {
             let err: any;
             try {
@@ -108,15 +107,16 @@ describe("Modify Jobs - System Tests - Encoded", () => {
         systemProps = testEnvironment.systemTestProperties;
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
         account = systemProps.tso.account;
-        jobclass = testEnvironment.systemTestProperties.zosjobs.jobclass;
-        modifiedJobClass = testEnvironment.systemTestProperties.zosjobs.modifiedJobclass;
+        jobclass = systemProps.zosjobs.jobclass;
+        modifiedJobClass = systemProps.zosjobs.modifiedJobclass;
+
         const maxStepNum = 6;
         const sleepJCL = JobTestsUtils.getSleepJCL(REAL_SESSION.ISession.user, account, systemProps.zosjobs.jobclass, maxStepNum, true);
         sleepJCLJob = await SubmitJobs.submitJcl(REAL_SESSION, sleepJCL);
+        testEnvironment.resources.jobs.push(sleepJCLJob);
     });
 
     afterAll(async () => {
-        await CancelJobs.cancelJob(REAL_SESSION, iefbr14Job.jobname, iefbr14Job.jobid);
         await TestEnvironment.cleanUp(testEnvironment);
     });
 
