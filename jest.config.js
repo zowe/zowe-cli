@@ -137,10 +137,6 @@ module.exports = {
             "outputDirectory": "__tests__/__results__",
             "reportTestSuiteErrors": true
         }],
-        ["jest-stare", {
-            "coverageLink": "../unit/coverage/lcov-report/index.html",
-            "resultDir": "__tests__/__results__/jest-stare"
-        }],
         ["github-actions", { "silent": false } ]
     ],
     "testResultsProcessor": "jest-sonar-reporter",

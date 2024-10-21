@@ -82,5 +82,13 @@
   },
   "jestSonar": {
     "reportPath": "__tests__/__results__/jest-sonar"
+  },
+  "jest-stare": {
+    "additionalResultsProcessors": [
+      "jest-junit",
+      "jest-sonar-reporter"
+    ],
+    "coverageLink": "../unit/coverage/lcov-report/index.html",
+    "resultDir": "__tests__/__results__/jest-stare"
   }
 }
