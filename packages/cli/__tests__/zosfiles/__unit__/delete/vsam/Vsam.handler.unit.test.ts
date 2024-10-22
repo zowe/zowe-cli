@@ -70,7 +70,7 @@ describe("VsamHandler", () => {
     });
 
     it("should return success: true when --ignore-not-found flag is used and file is not found", async () => {
-        deleteVsamDatasetSpy.mockImplementation(() => {
+        deleteVsamDatasetSpy.mockImplementationOnce(() => {
             throw fileNotFoundError;
         });
 
@@ -82,18 +82,16 @@ describe("VsamHandler", () => {
                 purge: false,
                 forSure: true,
                 ignoreNotFound: true,
-            },
-            response: {
-                progress: { endBar: jest.fn() },
-                data: { setObj: jest.fn() }
             }
         };
 
-        await expect(handler.process(commandParameters)).resolves.toBe(undefined);
+        const response = await handler.processWithSession(commandParameters, {} as any);
+        expect(response).toHaveProperty('success', true);
+        expect(deleteVsamDatasetSpy).toHaveBeenCalledTimes(1);
     });
 
     it("should throw file not found error (404) when --ignore-not-found is not used", async () => {
-        deleteVsamDatasetSpy.mockImplementation(() => {
+        deleteVsamDatasetSpy.mockImplementationOnce(() => {
             throw fileNotFoundError;
         });
 
@@ -107,8 +105,8 @@ describe("VsamHandler", () => {
             }
         };
 
-        const error = new ImperativeError({ msg: "IDC3012I ENTRY HLQ.MYNEW.VSAM NOT FOUND" });
-
-        await expect(handler.processWithSession(commandParameters, {} as any)).rejects.toThrow(error);
+        await expect(handler.processWithSession(commandParameters, {} as any)).rejects.toThrow(
+            new ImperativeError({ msg: "IDC3012I ENTRY HLQ.MYNEW.VSAM NOT FOUND" })
+        );
     });
 });

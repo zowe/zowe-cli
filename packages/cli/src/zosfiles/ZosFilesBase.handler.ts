@@ -59,8 +59,7 @@ export abstract class ZosFilesBaseHandler implements ICommandHandler {
             }
             commandParameters.response.data.setObj(response);
         } catch (error) {
-            if (commandParameters.arguments.ignoreNotFound && (error.errorCode === '404' || error.toString().includes("IDC3012I "))) {
-                // The IDC3012I code is an IBM z/OS error indicating the DS/VSAM does not exist
+            if (commandParameters.arguments.ignoreNotFound && error.errorCode === '404') {
                 commandParameters.response.data.setObj({ success: true });
             } else {
                 throw new ImperativeError({
@@ -68,7 +67,7 @@ export abstract class ZosFilesBaseHandler implements ICommandHandler {
                 });
             }
         }
-        commandParameters.response.progress.endBar(); // end any progress bars
+        commandParameters.response.progress.endBar();
     }
 
     /**
