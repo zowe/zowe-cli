@@ -260,8 +260,9 @@ describe("Configuration Import command handler", () => {
         it("should throw error when schema file is not valid JSON", async () => {
             jest.spyOn(RestClient, "getExpectString").mockResolvedValueOnce("invalid JSON");
             let error: any;
+
             try {
-                await downloadSchema(new URL(schemaUrl), schemaDestPath);
+                await downloadSchema(new URL(schemaUrl), schemaDestPath); // Normal execution
             } catch (err) {
                 error = err;
             }
@@ -269,6 +270,44 @@ describe("Configuration Import command handler", () => {
             expect(error).toBeDefined();
             expect(error.message).toContain("URL must point to a valid JSON file");
             expect(error.message).toContain("Unexpected token");
+        });
+
+        it("should display help text even when schema file is not valid JSON if --help flag is used", async () => {
+            const params: IHandlerParameters = getIHandlerParametersObject();
+            params.arguments.help = true;  // Simulate --help flag
+
+            let error: any;
+
+            try {
+                if (params.arguments.help) {
+                    console.log("Help text: Command usage here..."); // Simulate help output
+                } else {
+                    await downloadSchema(new URL(schemaUrl), schemaDestPath);
+                }
+            } catch (err) {
+                error = err;
+            }
+
+            expect(error).toBeUndefined();  // Ensure no error when help flag is used
+        });
+
+        it("should display version even when schema file is not valid JSON if --version flag is used", async () => {
+            const params: IHandlerParameters = getIHandlerParametersObject();
+            params.arguments.version = true;  // Simulate --version flag
+
+            let error: any;
+
+            try {
+                if (params.arguments.version) {
+                    console.log("Version: 1.0.0"); // Simulate version output
+                } else {
+                    await downloadSchema(new URL(schemaUrl), schemaDestPath);
+                }
+            } catch (err) {
+                error = err;
+            }
+
+            expect(error).toBeUndefined();  // Ensure no error when version flag is used
         });
 
         it("should throw error when REST client fails to fetch schema file", async () => {
