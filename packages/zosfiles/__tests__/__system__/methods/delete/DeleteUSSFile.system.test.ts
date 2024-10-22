@@ -12,15 +12,14 @@
 import { Create, Delete, ZosFilesMessages } from "../../../../src";
 import { Imperative, Session } from "@zowe/imperative";
 import { inspect } from "util";
-import { ITestEnvironment } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
+import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/ITestEnvironment";
 
 let REAL_SESSION: Session;
 let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 let defaultSystem: ITestPropertiesSchema;
 let ussname: string;
-let filename: string;
 
 describe("Delete a USS File", () => {
 
@@ -31,7 +30,7 @@ describe("Delete a USS File", () => {
         defaultSystem = testEnvironment.systemTestProperties;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
-        ussname = `${defaultSystem.zosmf.user.trim()}`;
+        ussname = `${defaultSystem.unix.testdir}/${defaultSystem.zosmf.user.trim()}.aTestUssFileSingle`.replace(/\./g, "");
     });
 
     afterAll(async () => {
@@ -41,10 +40,8 @@ describe("Delete a USS File", () => {
     describe("Success scenarios", () => {
         beforeEach(async () => {
             let error;
-            let response;
-            filename = `${defaultSystem.unix.testdir}/${ussname}.aTestUssFileSingle`.replace(/\./g, "");
             try {
-                response = await Create.uss(REAL_SESSION, filename, "file");
+                await Create.uss(REAL_SESSION, ussname, "file");
             } catch (err) {
                 error = err;
                 Imperative.console.info("Error: " + inspect(error));
@@ -56,7 +53,7 @@ describe("Delete a USS File", () => {
             let response;
 
             try {
-                response = await Delete.ussFile(REAL_SESSION, filename);
+                response = await Delete.ussFile(REAL_SESSION, ussname);
                 Imperative.console.info("Response: " + inspect(response));
             } catch (err) {
                 error = err;
@@ -74,7 +71,7 @@ describe("Delete a USS File", () => {
             let response;
 
             try {
-                response = await Delete.ussFile(REAL_SESSION, filename, undefined, {responseTimeout: 5});
+                response = await Delete.ussFile(REAL_SESSION, ussname, undefined, {responseTimeout: 5});
                 Imperative.console.info("Response: " + inspect(response));
             } catch (err) {
                 error = err;
@@ -92,7 +89,7 @@ describe("Delete a USS File", () => {
             let response;
 
             try {
-                response = await Delete.ussFile(REAL_SESSION, "//"+filename);
+                response = await Delete.ussFile(REAL_SESSION, "//"+ussname);
                 Imperative.console.info("Response: " + inspect(response));
             } catch (err) {
                 error = err;
@@ -153,7 +150,7 @@ describe("Delete a USS File - encoded", () => {
         defaultSystem = testEnvironment.systemTestProperties;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
-        ussname = `${defaultSystem.zosmf.user.trim() + ".Enco#ed"}`;
+        ussname = `${defaultSystem.unix.testdir}/${defaultSystem.zosmf.user.trim()}.Enco#ed.aTestUssFileSingle`.replace(/\./g, "");
     });
 
     afterAll(async () => {
@@ -163,9 +160,8 @@ describe("Delete a USS File - encoded", () => {
     describe("Success scenarios", () => {
         beforeEach(async () => {
             let error;
-            filename = `${defaultSystem.unix.testdir}/${ussname}.aTestUssFileSingle`.replace(/\./g, "");
             try {
-                await Create.uss(REAL_SESSION, filename, "file");
+                await Create.uss(REAL_SESSION, ussname, "file");
             } catch (err) {
                 error = err;
                 Imperative.console.info("Error: " + inspect(error));
@@ -177,7 +173,7 @@ describe("Delete a USS File - encoded", () => {
             let response;
 
             try {
-                response = await Delete.ussFile(REAL_SESSION, filename);
+                response = await Delete.ussFile(REAL_SESSION, ussname);
                 Imperative.console.info("Response: " + inspect(response));
             } catch (err) {
                 error = err;
@@ -195,7 +191,7 @@ describe("Delete a USS File - encoded", () => {
             let response;
 
             try {
-                response = await Delete.ussFile(REAL_SESSION, "//"+filename);
+                response = await Delete.ussFile(REAL_SESSION, "//"+ussname);
                 Imperative.console.info("Response: " + inspect(response));
             } catch (err) {
                 error = err;
@@ -219,7 +215,7 @@ describe("Delete USS Directory", () => {
         defaultSystem = testEnvironment.systemTestProperties;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
-        filename = `${defaultSystem.unix.testdir}/${ussname}.aTestUssFolderDelete`.replace(/\./g, "");
+        ussname = `${defaultSystem.unix.testdir}/${defaultSystem.zosmf.user.trim()}.aTestUssFolderDelete`.replace(/\./g, "");
     });
 
     afterAll(async () => {
@@ -229,9 +225,8 @@ describe("Delete USS Directory", () => {
     describe("Success scenarios", () => {
         beforeEach(async () => {
             let error;
-            let response;
             try {
-                response = await Create.uss(REAL_SESSION, filename, "directory");
+                await Create.uss(REAL_SESSION, ussname, "directory");
             } catch (err) {
                 error = err;
                 Imperative.console.info("Error: " + inspect(error));
@@ -243,7 +238,7 @@ describe("Delete USS Directory", () => {
             let response;
 
             try {
-                response = await Delete.ussFile(REAL_SESSION, filename);
+                response = await Delete.ussFile(REAL_SESSION, ussname);
                 Imperative.console.info("Response: " + inspect(response));
             } catch (err) {
                 error = err;
@@ -258,21 +253,6 @@ describe("Delete USS Directory", () => {
     });
 
     describe("Failure scenarios", () => {
-        beforeAll(async () => {
-            let error;
-            let response;
-            // ussname = ussname.replace(/\./g, "");
-            filename = `${defaultSystem.unix.testdir}/${ussname}`;
-            try {
-                response = await Create.uss(REAL_SESSION, filename, "directory");
-            } catch (err) {
-                error = err;
-                Imperative.console.info("Error: " + inspect(error));
-            }
-        });
-        afterAll(async () => {
-            await TestEnvironment.cleanUp(testEnvironment);
-        });
         it("should display proper error message when called with invalid directory name", async () => {
             let error;
             let response;
@@ -318,7 +298,7 @@ describe("Delete USS Directory - encoded", () => {
         defaultSystem = testEnvironment.systemTestProperties;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
-        filename = `${defaultSystem.unix.testdir}/${ussname}.Enco#ed.aTestUssFolderDelete`.replace(/\./g, "");
+        ussname = `${defaultSystem.unix.testdir}/${defaultSystem.zosmf.user.trim()}.Enco#ed.aTestUssFolderDelete`.replace(/\./g, "");
     });
 
     afterAll(async () => {
@@ -328,9 +308,8 @@ describe("Delete USS Directory - encoded", () => {
     describe("Success scenarios", () => {
         beforeEach(async () => {
             let error;
-            let response;
             try {
-                response = await Create.uss(REAL_SESSION, filename, "directory");
+                await Create.uss(REAL_SESSION, ussname, "directory");
             } catch (err) {
                 error = err;
                 Imperative.console.info("Error: " + inspect(error));
@@ -342,7 +321,7 @@ describe("Delete USS Directory - encoded", () => {
             let response;
 
             try {
-                response = await Delete.ussFile(REAL_SESSION, filename);
+                response = await Delete.ussFile(REAL_SESSION, ussname);
                 Imperative.console.info("Response: " + inspect(response));
             } catch (err) {
                 error = err;
@@ -366,7 +345,7 @@ describe("Delete USS Directory with children", () => {
         defaultSystem = testEnvironment.systemTestProperties;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
-        filename = `${defaultSystem.unix.testdir}/${ussname}.aTestUssFileDelete`.replace(/\./g, "");
+        ussname = `${defaultSystem.unix.testdir}/${defaultSystem.zosmf.user.trim()}.aTestUssFileDelete`.replace(/\./g, "");
     });
 
     afterAll(async () => {
@@ -376,15 +355,14 @@ describe("Delete USS Directory with children", () => {
     describe("Success scenarios", () => {
         beforeEach(async () => {
             let error;
-            let response;
             try {
-                response = await Create.uss(REAL_SESSION, filename, "directory");
+                await Create.uss(REAL_SESSION, ussname, "directory");
             } catch (err) {
                 error = err;
                 Imperative.console.info("Error: " + inspect(error));
             }
             try {
-                response = await Create.uss(REAL_SESSION, `${filename}/aChild.txt`, "file");
+                await Create.uss(REAL_SESSION, `${ussname}/aChild.txt`, "file");
             } catch (err) {
                 error = err;
                 Imperative.console.info("Error: " + inspect(error));
@@ -395,7 +373,7 @@ describe("Delete USS Directory with children", () => {
             let error;
             let response;
             try {
-                response = await Delete.ussFile(REAL_SESSION, filename, true);
+                response = await Delete.ussFile(REAL_SESSION, ussname, true);
                 Imperative.console.info("Response: " + inspect(response));
             } catch (err) {
                 error = err;
@@ -412,13 +390,13 @@ describe("Delete USS Directory with children", () => {
         beforeEach(async () => {
             let error;
             try {
-                await Create.uss(REAL_SESSION, filename, "directory");
+                await Create.uss(REAL_SESSION, ussname, "directory");
             } catch (err) {
                 error = err;
                 Imperative.console.info("Error: " + inspect(error));
             }
             try {
-                await Create.uss(REAL_SESSION, `${filename}/aChild.txt`, "file");
+                await Create.uss(REAL_SESSION, `${ussname}/aChild.txt`, "file");
             } catch (err) {
                 error = err;
                 Imperative.console.info("Error: " + inspect(error));
@@ -437,7 +415,7 @@ describe("Delete USS Directory with children", () => {
             let error;
             let response;
             try {
-                response = await Delete.ussFile(REAL_SESSION, filename);
+                response = await Delete.ussFile(REAL_SESSION, ussname);
                 Imperative.console.info("Response: " + inspect(response));
             } catch (err) {
                 error = err;
@@ -452,7 +430,7 @@ describe("Delete USS Directory with children", () => {
             let error;
             let response;
             try {
-                response = await Delete.ussFile(REAL_SESSION, filename, false);
+                response = await Delete.ussFile(REAL_SESSION, ussname, false);
                 Imperative.console.info("Response: " + inspect(response));
             } catch (err) {
                 error = err;
@@ -474,7 +452,7 @@ describe("Delete USS Directory with children - encoded", () => {
         defaultSystem = testEnvironment.systemTestProperties;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
-        filename = `${defaultSystem.unix.testdir}/${ussname}.Enco#ed.aTestUssFileDelete`.replace(/\./g, "");
+        ussname = `${defaultSystem.unix.testdir}/${defaultSystem.zosmf.user.trim()}.Enco#ed.aTestUssFileDelete`.replace(/\./g, "");
     });
 
     afterAll(async () => {
@@ -485,13 +463,13 @@ describe("Delete USS Directory with children - encoded", () => {
         beforeEach(async () => {
             let error;
             try {
-                await Create.uss(REAL_SESSION, filename, "directory");
+                await Create.uss(REAL_SESSION, ussname, "directory");
             } catch (err) {
                 error = err;
                 Imperative.console.info("Error: " + inspect(error));
             }
             try {
-                await Create.uss(REAL_SESSION, `${filename}/aChild.txt`, "file");
+                await Create.uss(REAL_SESSION, `${ussname}/aChild.txt`, "file");
             } catch (err) {
                 error = err;
                 Imperative.console.info("Error: " + inspect(error));
@@ -502,7 +480,7 @@ describe("Delete USS Directory with children - encoded", () => {
             let error;
             let response;
             try {
-                response = await Delete.ussFile(REAL_SESSION, filename, true);
+                response = await Delete.ussFile(REAL_SESSION, ussname, true);
                 Imperative.console.info("Response: " + inspect(response));
             } catch (err) {
                 error = err;

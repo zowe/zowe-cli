@@ -11,7 +11,7 @@
 
 import { ImperativeError, Session } from "@zowe/imperative";
 import { DeleteJobs, GetJobs, IJob, SearchJobs } from "../../src";
-import { ITestEnvironment } from "@zowe/cli-test-utils";
+import { ITestEnvironment } from "../../../../__tests__/__src__/environment/ITestEnvironment";
 import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 
@@ -84,6 +84,10 @@ describe("Search Jobs - System Tests", () => {
             "//IEFBR14 EXEC PGM=IEFBR14"; // GetJobs
     });
 
+    afterAll(async () => {
+        await TestEnvironment.cleanUp(testEnvironment);
+    });
+
     // Cleanup before & after each test - this will ensure that hopefully no jobs are left outstanding (or are currently
     // outstanding) when the tests run
     beforeEach(async () => {
@@ -106,7 +110,7 @@ describe("Search Jobs - System Tests", () => {
                 it("should detect and surface an error for an invalid user", async () => {
                     let err;
                     try {
-                        await SearchJobs.searchJobs(INVALID_SESSION,{searchString: "dummy", jobName: "IBMUSER"});
+                        await SearchJobs.searchJobs(INVALID_SESSION,{jobName: "IBMUSER", searchString: "dummy"});
                     } catch (e) {
                         err = e;
                     }
