@@ -1,3 +1,4 @@
+
 /*
 * This program and the accompanying materials are made available under the terms of the
 * Eclipse Public License v2.0 which accompanies this distribution, and is available at
@@ -10,10 +11,11 @@
 */
 
 import { Session } from "@zowe/imperative";
-import { ITestEnvironment, runCliScript } from "@zowe/cli-test-utils";
+import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/ITestEnvironment";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { getUniqueDatasetName } from "../../../../../../../__tests__/__src__/TestUtils";
+import { runCliScript } from "@zowe/cli-test-utils";
 
 const ZOWE_OPT_BASE_PATH = "ZOWE_OPT_BASE_PATH";
 
@@ -45,7 +47,7 @@ describe("Mount and unmount file system", () => {
         mountPoint = "//tmp/" + dirname;
         const sshCommand = "mkdir " + mountPoint;
 
-        const response = runCliScript(__dirname + "/__scripts__/command/command_setup.sh",
+        runCliScript(__dirname + "/__scripts__/command/command_setup.sh",
             TEST_ENVIRONMENT, [sshCommand, fsname,
                 defaultSystem.ssh.host,
                 defaultSystem.ssh.port,
@@ -55,7 +57,7 @@ describe("Mount and unmount file system", () => {
 
     afterAll(async () => {
         const sshCommand = "rmdir " + mountPoint;
-        const response = runCliScript(__dirname + "/__scripts__/command/command_teardown.sh",
+        runCliScript(__dirname + "/__scripts__/command/command_teardown.sh",
             TEST_ENVIRONMENT, [sshCommand, fsname,
                 defaultSystem.ssh.host,
                 defaultSystem.ssh.port,

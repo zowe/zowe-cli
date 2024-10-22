@@ -54,6 +54,12 @@ export const DataSetsDefinition: ICommandDefinition = {
             defaultValue: false
         },
         {
+            name: "encoding",
+            aliases: ["ec"],
+            description: dataSetStrings.OPTIONS.ENCODING,
+            type: "string"
+        },
+        {
             name: "mainframe-search",
             aliases: ["ms"],
             description: dataSetStrings.OPTIONS.MAINFRAMESEARCH,
