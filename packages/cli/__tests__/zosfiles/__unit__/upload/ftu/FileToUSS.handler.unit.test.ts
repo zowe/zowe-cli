@@ -29,7 +29,7 @@ describe("Upload file-to-uss handler", () => {
             let fakeSession = null;
 
             // Mock the submit JCL function
-            Upload.fileToUssFile = jest.fn(async (session, file, name, options = {}) => {
+            Upload.uploadFile = jest.fn(async (session, file, name, options = {}) => {
                 fakeSession = session;
                 return {
                     success: true,
@@ -79,20 +79,23 @@ describe("Upload file-to-uss handler", () => {
             }
 
             expect(error).toBeUndefined();
-            expect(Upload.fileToUssFile).toHaveBeenCalledTimes(1);
-            expect(Upload.fileToUssFile).toHaveBeenCalledWith(fakeSession, inputfile, USSFileName, {
+            expect(Upload.uploadFile).toHaveBeenCalledTimes(1);
+            expect(Upload.uploadFile).toHaveBeenCalledWith(fakeSession, inputfile, USSFileName, {
                 binary: undefined,
                 encoding: undefined,
                 task: {
                     percentComplete: 0,
                     stageName: 0,
                     statusMessage: "Uploading USS file"
-                }
+                },
+                filesMap: null,
+                includeHidden: undefined,
+                maxConcurrentRequests: undefined,
+                responseTimeout: undefined
             });
             expect(jsonObj).toMatchSnapshot();
             expect(apiMessage).toMatchSnapshot();
             expect(logMessage).toMatchSnapshot();
         });
-
     });
 });
