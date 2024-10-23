@@ -40,7 +40,7 @@ describe("NpmFunctions", () => {
             status: 0,
             stdout: stdoutBuffer
         } as any);
-        const result = npmFunctions.installPackages("fakePrefix", fakeRegistry, "samplePlugin");
+        const result = npmFunctions.installPackages("samplePlugin", { prefix: "fakePrefix", registry: fakeRegistry });
         expect(spawnSyncSpy.mock.calls[0][0]).toBe(npmCmd);
         expect(spawnSyncSpy.mock.calls[0][1]).toEqual(expect.arrayContaining(["install", "samplePlugin"]));
         expect(spawnSyncSpy.mock.calls[0][1]).toEqual(expect.arrayContaining(["--prefix", "fakePrefix"]));

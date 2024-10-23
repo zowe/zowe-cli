@@ -28,6 +28,7 @@ import { IProfileTypeConfiguration } from "../../../../../profiles";
 import * as semver from "semver";
 import { ConfigUtils } from "../../../../../config";
 import { IExtendersJsonOpts } from "../../../../../config/src/doc/IExtenderOpts";
+import { JsUtils } from "../../../../../utilities";
 
 // Helper function to update extenders.json object during plugin install.
 // Returns true if the object was updated, and false otherwise
@@ -122,7 +123,10 @@ export async function install(packageLocation: string, registry: string, install
         // Perform the npm install.
         iConsole.info("Installing packages...this may take some time.");
 
-        installPackages(PMFConstants.instance.PLUGIN_INSTALL_LOCATION, registry, npmPackage);
+        installPackages(npmPackage, {
+            prefix: PMFConstants.instance.PLUGIN_INSTALL_LOCATION,
+            registry: JsUtils.isUrl(registry) ? registry : undefined,
+        });
 
         // We fetch the package name and version of newly installed plugin
         const packageInfo = await getPackageInfo(npmPackage);

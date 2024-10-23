@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Fixed an issue where `plugins install` command could fail when installing scoped package because scoped registry was used to fetch all dependencies. [#2317](https://github.com/zowe/zowe-cli/issues/2317)
+
 ## `8.2.0`
 
 - Enhancement: Use the new SDK method `ConfigUtils.hasTokenExpired` to check whether a given JSON web token has expired. [#2298](https://github.com/zowe/zowe-cli/pull/2298)

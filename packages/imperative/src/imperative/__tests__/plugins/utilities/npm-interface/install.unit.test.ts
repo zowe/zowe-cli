@@ -133,8 +133,8 @@ describe("PMF: Install Interface", () => {
      * @param {string} expectedRegistry The registry that should be sent to npm install
      */
     const wasNpmInstallCallValid = (expectedPackage: string, expectedRegistry: string, updateSchema?: boolean) => {
-        expect(mocks.installPackages).toHaveBeenCalledWith(PMFConstants.instance.PLUGIN_INSTALL_LOCATION,
-            expectedRegistry, expectedPackage);
+        expect(mocks.installPackages).toHaveBeenCalledWith(expectedPackage,
+            { prefix: PMFConstants.instance.PLUGIN_INSTALL_LOCATION, registry: expectedRegistry });
         shouldUpdateSchema(updateSchema ?? true);
     };
 

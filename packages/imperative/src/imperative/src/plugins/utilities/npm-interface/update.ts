@@ -12,6 +12,7 @@
 import { PMFConstants } from "../PMFConstants";
 import { Logger } from "../../../../../logger";
 import { getPackageInfo, installPackages } from "../NpmFunctions";
+import { JsUtils } from "../../../../../utilities";
 
 /**
  * @TODO - allow multiple packages to be updated?
@@ -31,7 +32,10 @@ export async function update(packageName: string, registry: string) {
     // NOTE: Using npm install in order to retrieve the version which may be updated
     iConsole.info("updating package...this may take some time.");
 
-    installPackages(PMFConstants.instance.PLUGIN_INSTALL_LOCATION, registry, npmPackage);
+    installPackages(npmPackage, {
+        prefix: PMFConstants.instance.PLUGIN_INSTALL_LOCATION,
+        registry: JsUtils.isUrl(registry) ? registry : undefined,
+    });
 
     // We fetch the package version of newly installed plugin
     const packageInfo = await getPackageInfo(npmPackage);

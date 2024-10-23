@@ -17,7 +17,7 @@ import { readFileSync } from "jsonfile";
 import * as npmPackageArg from "npm-package-arg";
 import * as pacote from "pacote";
 import { ExecUtils } from "../../../../utilities";
-import { IO } from "../../../../io";
+import { INpmInstallArgs } from "../doc/INpmInstallArgs";
 const npmCmd = findNpmOnPath();
 
 /**
@@ -40,29 +40,12 @@ export function findNpmOnPath(): string {
  * @return {string} command response
  *
  */
-export function installPackages(prefix: string, registry: string, npmPackage: string): string {
+export function installPackages(npmPackage: string, npmArgs: INpmInstallArgs): string {
     const pipe: StdioOptions = ["pipe", "pipe", process.stderr];
-
-    const args = [
-        "install", npmPackage,
-        "--prefix", prefix,
-        "-g"
-    ];
-    let isDirTest: boolean;
-
-    try{
-        isDirTest = IO.isDir(registry);
+    const args = ["install", npmPackage, "-g", "--legacy-peer-deps"];
+    for (const [k, v] of Object.entries(npmArgs)) {
+        args.push(`--${k}`, v);
     }
-    catch(e){
-        isDirTest = false;
-    }
-
-    if (!(registry.substring(registry.lastIndexOf(".") + 1) === "tgz") && !isDirTest) {
-        args.push("--registry",registry);
-    }
-
-    args.push("--legacy-peer-deps");
-
     const execOutput = ExecUtils.spawnAndGetOutput(npmCmd, args, {
         cwd: PMFConstants.instance.PMF_ROOT,
         stdio: pipe
@@ -70,7 +53,6 @@ export function installPackages(prefix: string, registry: string, npmPackage: st
 
     return execOutput.toString();
 }
-
 
 /**
  * Get the registry to install to.

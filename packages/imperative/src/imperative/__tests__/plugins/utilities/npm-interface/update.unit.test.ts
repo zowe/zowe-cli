@@ -65,8 +65,8 @@ describe("PMF: update Interface", () => {
    *                                          the pipe sent to spawnSync stdio option.
    */
     const wasNpmInstallCallValid = (expectedPackage: string, expectedRegistry: string) => {
-        expect(mocks.installPackages).toHaveBeenCalledWith(PMFConstants.instance.PLUGIN_INSTALL_LOCATION,
-            expectedRegistry, expectedPackage);
+        expect(mocks.installPackages).toHaveBeenCalledWith(expectedPackage,
+            { prefix: PMFConstants.instance.PLUGIN_INSTALL_LOCATION, registry: expectedRegistry });
     };
 
     describe("Basic update", () => {
