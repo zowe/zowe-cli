@@ -35,6 +35,20 @@ export interface IJob {
     jobname: string;
 
     /**
+     * start date of the job
+     * @type {Date}
+     * @memberof IJob
+     */
+    "exec-started": string;
+
+    /**
+     * end date of the job
+     * @type {Date}
+     * @memberof IJob
+     */
+    "exec-ended": string;
+
+    /**
      * The primary or secondary JES subsystem.
      * If this value is null, the job was processed by the primary subsystem.
      * @type {string}

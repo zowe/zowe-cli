@@ -29,6 +29,8 @@ export class GetJobsData {
     public static readonly SAMPLE_COMPLETE_JOB: IJob = {
         "jobid": "TSUxxx",
         "jobname": "IBMUSER$",
+        "exec-started": '2024-01-02T15:57:58.350Z', 
+        "exec-ended": '2024-01-02T15:58:00.600Z',
         "subsystem": "JES2",
         "owner": "IBMUSER",
         "status": "OUTPUT",
@@ -51,6 +53,8 @@ export class GetJobsData {
     public static readonly SAMPLE_COMPLETE_JOB_AGAIN: IJob = {
         "jobid": "JOBxxx",
         "jobname": "CAUSER$",
+        "exec-started": '2024-01-02T15:57:58.350Z', 
+        "exec-ended": '2024-01-02T15:58:00.600Z',
         "subsystem": "JES2",
         "owner": "CAUSER",
         "status": "OUTPUT",
@@ -81,6 +85,8 @@ export class GetJobsData {
     public static readonly SAMPLE_ACTIVE_JOB: IJob = {
         "retcode": null,
         "jobname": "IBMUSER$",
+        "exec-started": '2024-01-02T15:57:58.350Z', 
+        "exec-ended": '2024-01-02T15:58:00.600Z',
         "status": "INPUT",
         "job-correlator": "J0003781USILDAMDD3CE8146.......:",
         "class": "A",
