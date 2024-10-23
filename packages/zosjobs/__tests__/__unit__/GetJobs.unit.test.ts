@@ -597,7 +597,7 @@ describe("GetJobs tests", () => {
                     class: 'c', retcode: 'r', url: '',
                     'files-url': '', 'job-correlator': '',
                     phase: 1, 'phase-name': 'name', 'reason-not-running': 'no',
-                    'exec-started': '2024-01-02T15:57:58.350Z', 
+                    'exec-started': '2024-01-02T15:57:58.350Z',
                     'exec-ended': '2024-01-02T15:58:00.600Z'
                 },
                 {
@@ -605,8 +605,8 @@ describe("GetJobs tests", () => {
                     owner: 'zowe', status: 'Output', type: 't',
                     class: 'c', retcode: 'r', url: '',
                     'files-url': '', 'job-correlator': '',
-                    phase: 1, 'phase-name': 'name', 'reason-not-running': 'no', 
-                    'exec-started': '2024-01-02T15:57:58.350Z', 
+                    phase: 1, 'phase-name': 'name', 'reason-not-running': 'no',
+                    'exec-started': '2024-01-02T15:57:58.350Z',
                     'exec-ended': '2024-01-02T15:58:00.600Z'
                 },
                 {
@@ -615,7 +615,7 @@ describe("GetJobs tests", () => {
                     class: 'c', retcode: 'r', url: '',
                     'files-url': '', 'job-correlator': '',
                     phase: 1, 'phase-name': 'name', 'reason-not-running': 'no',
-                    'exec-started': '2024-01-02T15:57:58.350Z', 
+                    'exec-started': '2024-01-02T15:57:58.350Z',
                     'exec-ended': '2024-01-02T15:58:00.600Z'
 
                 }
@@ -627,7 +627,7 @@ describe("GetJobs tests", () => {
                     class: 'c', retcode: 'r', url: '',
                     'files-url': '', 'job-correlator': '',
                     phase: 1, 'phase-name': 'name', 'reason-not-running': 'no',
-                    'exec-started': '2024-01-02T15:57:58.350Z', 
+                    'exec-started': '2024-01-02T15:57:58.350Z',
                     'exec-ended': '2024-01-02T15:58:00.600Z'
                 },
                 {
@@ -636,7 +636,7 @@ describe("GetJobs tests", () => {
                     class: 'c', retcode: 'r', url: '',
                     'files-url': '', 'job-correlator': '',
                     phase: 1, 'phase-name': 'name', 'reason-not-running': 'no',
-                    'exec-started': '2024-01-02T15:57:58.350Z', 
+                    'exec-started': '2024-01-02T15:57:58.350Z',
                     'exec-ended': '2024-01-02T15:58:00.600Z'
                 }
             ];
