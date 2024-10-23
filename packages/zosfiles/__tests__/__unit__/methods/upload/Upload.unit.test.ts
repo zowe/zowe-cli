@@ -2111,6 +2111,21 @@ describe("z/OS Files - Upload", () => {
             expect(error.message).toContain(ZosFilesMessages.missingInputFile.message);
             lstatSpy.mockClear();
         });
+        it("should throw an error if local file name is not a valid file path", async () => {
+            lstatSpy.mockImplementationOnce((somePath, callback: any) => {
+                callback(null, {isFile: () => false});
+            });
+            try {
+                USSresponse = await Upload.fileToUssFile(dummySession, undefined, "file");
+            } catch (err) {
+                error = err;
+            }
+
+            expect(USSresponse).toBeUndefined();
+            expect(error).toBeDefined();
+            expect(error.message).toContain(ZosFilesMessages.missingInputFile.message);
+            lstatSpy.mockClear();
+        });
     });
 
     describe("dirToUSSDirRecursive", () => {
