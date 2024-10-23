@@ -101,11 +101,11 @@ export class NpmRegistryInfo {
      * NPM login to be able to install from secure registry
      * @param {string} registry The npm registry to install from.
      */
-    public npmLogin() {
+    public npmLogin(registry?: string) {
         ExecUtils.spawnAndGetOutput(npmCmd,
             [
                 "login",
-                "--registry", this.customRegistry,
+                "--registry", registry ?? this.customRegistry,
                 "--always-auth",
                 "--auth-type=legacy"
             ], {
@@ -115,7 +115,7 @@ export class NpmRegistryInfo {
     }
 
     public buildRegistryArgs(): Partial<INpmInstallArgs> {
-        const registrySpec = this.defaultRegistryScope ? `${this.defaultRegistryScope}:registry` : "registry";
+        const registrySpec = this.defaultRegistryScope != null ? `${this.defaultRegistryScope}:registry` : "registry";
         return this.customRegistry != null ? { [registrySpec]: this.location } : {};
     }
 

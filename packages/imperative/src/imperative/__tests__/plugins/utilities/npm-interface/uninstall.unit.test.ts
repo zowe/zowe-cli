@@ -10,24 +10,18 @@
 */
 
 /* eslint-disable jest/expect-expect */
-import Mock = jest.Mock;
-
 jest.mock("cross-spawn");
 jest.mock("jsonfile");
 jest.mock("../../../../src/plugins/utilities/PMFConstants");
-jest.mock("../../../../../logger");
-jest.mock("../../../../../cmd/src/response/CommandResponse");
-jest.mock("../../../../../cmd/src/response/HandlerResponse");
 
 import * as fs from "fs";
 import * as jsonfile from "jsonfile";
 import { Console } from "../../../../../console";
-import { sync } from "cross-spawn";
+import * as crossSpawn from "cross-spawn";
 import { ImperativeError } from "../../../../../error";
 import { IPluginJson } from "../../../../src/plugins/doc/IPluginJson";
 import { Logger } from "../../../../../logger";
 import { PMFConstants } from "../../../../src/plugins/utilities/PMFConstants";
-import { readFileSync, writeFileSync } from "jsonfile";
 import { findNpmOnPath } from "../../../../src/plugins/utilities/NpmFunctions";
 import { uninstall } from "../../../../src/plugins/utilities/npm-interface";
 import { ConfigSchema, ConfigUtils } from "../../../../../config";
@@ -39,9 +33,9 @@ import { updateAndGetRemovedTypes } from "../../../../src/plugins/utilities/npm-
 describe("PMF: Uninstall Interface", () => {
     // Objects created so types are correct.
     const mocks = {
-        spawnSync: sync as unknown as Mock<typeof sync>,
-        readFileSync: readFileSync as Mock<typeof readFileSync>,
-        writeFileSync: writeFileSync as Mock<typeof writeFileSync>
+        spawnSync: jest.spyOn(crossSpawn, "sync"),
+        readFileSync: jest.spyOn(jsonfile, "readFileSync"),
+        writeFileSync: jest.spyOn(jsonfile, "writeFileSync")
     };
 
     const samplePackageName = "imperative-sample-plugin";
@@ -54,7 +48,7 @@ describe("PMF: Uninstall Interface", () => {
         jest.resetAllMocks();
 
         // This needs to be mocked before running uninstall
-        (Logger.getImperativeLogger as unknown as Mock<typeof Logger.getImperativeLogger>).mockReturnValue(new Logger(new Console()) as any);
+        jest.spyOn(Logger, "getImperativeLogger").mockReturnValue(new Logger(new Console()));
     });
 
     afterAll(() => {
@@ -127,7 +121,7 @@ describe("PMF: Uninstall Interface", () => {
                 }
             };
 
-            mocks.readFileSync.mockReturnValue(pluginJsonFile as any);
+            mocks.readFileSync.mockReturnValue(pluginJsonFile);
 
             uninstall(packageName);
 
@@ -151,7 +145,7 @@ describe("PMF: Uninstall Interface", () => {
                 }
             };
 
-            mocks.readFileSync.mockReturnValue(pluginJsonFile as any);
+            mocks.readFileSync.mockReturnValue(pluginJsonFile);
 
             uninstall(samplePackageName);
 
@@ -192,7 +186,7 @@ describe("PMF: Uninstall Interface", () => {
                 }
             };
 
-            mocks.readFileSync.mockReturnValue(pluginJsonFile as any);
+            mocks.readFileSync.mockReturnValue(pluginJsonFile);
             jest.spyOn(fs, "existsSync").mockReturnValueOnce(true);
             let caughtError;
 
@@ -244,7 +238,7 @@ describe("PMF: Uninstall Interface", () => {
                 }
             };
 
-            mocks.readFileSync.mockReturnValue(pluginJsonFile as any);
+            mocks.readFileSync.mockReturnValue(pluginJsonFile);
             const blockMocks = getBlockMocks();
             if (opts.schemaUpdated) {
                 blockMocks.fs.existsSync.mockReturnValueOnce(true);
