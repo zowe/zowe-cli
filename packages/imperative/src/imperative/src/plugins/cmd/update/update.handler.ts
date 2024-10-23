@@ -17,7 +17,7 @@ import { ImperativeError } from "../../../../../error";
 import { TextUtils } from "../../../../../utilities";
 import { IPluginJson } from "../../doc/IPluginJson";
 import { readFileSync, writeFileSync } from "jsonfile";
-import { npmLogin } from "../../utilities/NpmFunctions";
+import { NpmRegistryInfo } from "../../utilities/NpmFunctions";
 
 /**
  * The update command handler for cli plugin install.
@@ -52,7 +52,7 @@ export default class UpdateHandler implements ICommandHandler {
         this.console.debug(`Root Directory: ${PMFConstants.instance.PLUGIN_INSTALL_LOCATION}`);
 
         const plugin: string = params.arguments.plugin;
-        let registry = params.arguments.registry;
+        const registryInfo = new NpmRegistryInfo(params.arguments.registry);
 
         if (params.arguments.plugin == null || params.arguments.plugin.length === 0) {
             throw new ImperativeError({
@@ -63,8 +63,8 @@ export default class UpdateHandler implements ICommandHandler {
         iConsole.debug("Reading in the current configuration.");
         const installedPlugins: IPluginJson = readFileSync(PMFConstants.instance.PLUGIN_JSON);
 
-        if (params.arguments.login) {
-            npmLogin(registry);
+        if (params.arguments.registry != null && params.arguments.login) {
+            registryInfo.npmLogin();
         }
 
         if (Object.prototype.hasOwnProperty.call(installedPlugins, plugin)) {
@@ -76,12 +76,10 @@ export default class UpdateHandler implements ICommandHandler {
                     // as package may not match the plugin value.  This is true for plugins installed by
                     // folder location.  Example: plugin 'imperative-sample-plugin' installed from ../imperative-plugins
                     packageName = installedPlugins[pluginName].package;
-                    if (registry === undefined) {
-                        registry = installedPlugins[pluginName].location;
-                    }
+                    registryInfo.setPackage(installedPlugins[pluginName]);
                     // Call update which returns the plugin's version so plugins.json can be updated
-                    installedPlugins[pluginName].version = await update(packageName, registry);
-                    installedPlugins[pluginName].location = registry; // update in case it changed
+                    installedPlugins[pluginName].version = await update(packageName, registryInfo);
+                    installedPlugins[pluginName].location = registryInfo.location; // update in case it changed
 
                     writeFileSync(PMFConstants.instance.PLUGIN_JSON, installedPlugins, {
                         spaces: 2

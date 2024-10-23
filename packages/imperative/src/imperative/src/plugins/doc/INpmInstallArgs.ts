@@ -21,7 +21,7 @@ export interface INpmInstallArgs {
     /**
      * The base URL of the npm package registry
      */
-    registry: string;
+    registry?: string;
 
     /**
      * Allows us to handle scoped registries in the future

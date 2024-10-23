@@ -20,7 +20,7 @@ import { readFileSync } from "jsonfile";
 import { ImperativeConfig, TextUtils } from "../../../../../utilities";
 import { ImperativeError } from "../../../../../error";
 import { runValidatePlugin } from "../../utilities/runValidatePlugin";
-import { getRegistry, npmLogin } from "../../utilities/NpmFunctions";
+import { NpmRegistryInfo } from "../../utilities/NpmFunctions";
 
 /**
  * The install command handler for cli plugin install.
@@ -80,16 +80,11 @@ export default class InstallHandler implements ICommandHandler {
             });
         } else {
             try {
-                let installRegistry: any;
+                const registryInfo = new NpmRegistryInfo(params.arguments.registry);
 
                 // Get the registry to install to
-                if (typeof params.arguments.registry === "undefined") {
-                    installRegistry = getRegistry().replace("\n",  "");
-                } else {
-                    installRegistry = params.arguments.registry;
-                    if (params.arguments.login) {
-                        npmLogin(installRegistry);
-                    }
+                if (params.arguments.registry != null && params.arguments.login) {
+                    registryInfo.npmLogin();
                 }
 
                 params.response.console.log(
@@ -99,7 +94,7 @@ export default class InstallHandler implements ICommandHandler {
                     "Install 3rd party plug-ins at your own risk.\n"
                 );
 
-                params.response.console.log("Location = " + installRegistry);
+                params.response.console.log("Location = " + registryInfo.location);
 
                 // This section determines which npm logic needs to take place
                 if (params.arguments.plugin == null || params.arguments.plugin.length === 0) {
@@ -123,9 +118,8 @@ export default class InstallHandler implements ICommandHandler {
 
                             // Registry is typed as optional in the doc but the function expects it
                             // to be passed. So we'll always set it if it hasn't been done yet.
-                            if (!packageInfo.location) {
-                                packageInfo.location = installRegistry;
-                            }
+                            registryInfo.setPackage(packageInfo);
+                            packageInfo.location ??= registryInfo.location;
 
                             this.console.debug(`Installing plugin: ${packageName}`);
                             this.console.debug(`Package: ${packageInfo.package}`);
@@ -140,7 +134,7 @@ export default class InstallHandler implements ICommandHandler {
                             this.console.debug(`Package: ${packageArgument}`);
 
                             params.response.console.log("\n_______________________________________________________________");
-                            const pluginName = await install(packageArgument, packageInfo.location, true);
+                            const pluginName = await install(packageArgument, registryInfo, true);
                             params.response.console.log("Installed plugin name = '" + pluginName + "'");
                             params.response.console.log(runValidatePlugin(pluginName));
                         }
@@ -150,7 +144,8 @@ export default class InstallHandler implements ICommandHandler {
                 } else {
                     for (const packageString of params.arguments.plugin) {
                         params.response.console.log("\n_______________________________________________________________");
-                        const pluginName = await install(packageString, installRegistry);
+                        registryInfo.setPackage(packageString);
+                        const pluginName = await install(packageString, registryInfo);
                         params.response.console.log("Installed plugin name = '" + pluginName + "'");
                         params.response.console.log(runValidatePlugin(pluginName));
                     }

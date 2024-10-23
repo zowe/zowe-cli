@@ -18,7 +18,7 @@ import { Logger } from "../../../../../logger";
 import { IImperativeConfig } from "../../../doc/IImperativeConfig";
 import { ImperativeError } from "../../../../../error";
 import { IPluginJsonObject } from "../../doc/IPluginJsonObject";
-import { getPackageInfo, installPackages } from "../NpmFunctions";
+import { getPackageInfo, installPackages, NpmRegistryInfo } from "../NpmFunctions";
 import { ConfigSchema } from "../../../../../config/src/ConfigSchema";
 import { PluginManagementFacility } from "../../PluginManagementFacility";
 import { ConfigurationLoader } from "../../../ConfigurationLoader";
@@ -28,7 +28,6 @@ import { IProfileTypeConfiguration } from "../../../../../profiles";
 import * as semver from "semver";
 import { ConfigUtils } from "../../../../../config";
 import { IExtendersJsonOpts } from "../../../../../config/src/doc/IExtenderOpts";
-import { JsUtils } from "../../../../../utilities";
 
 // Helper function to update extenders.json object during plugin install.
 // Returns true if the object was updated, and false otherwise
@@ -75,9 +74,7 @@ export const updateExtendersJson = (
  *                                 be converted to an absolute path prior to being passed to the
  *                                 `npm install` command.
  *
- * @param {string} registry The npm registry to use, this is expected to be passed by every caller
- *                          so if calling functions don't have a registry available, they need
- *                          to get it from npm.
+ * @param {NpmRegistryInfo} registryInfo The npm registry to use.
  *
  * @param {boolean} [installFromFile=false] If installing from a file, the package location is
  *                                          automatically interpreted as an absolute location.
@@ -88,7 +85,7 @@ export const updateExtendersJson = (
  *                                          it.
  * @returns {string} The name of the plugin.
  */
-export async function install(packageLocation: string, registry: string, installFromFile = false) {
+export async function install(packageLocation: string, registryInfo: NpmRegistryInfo, installFromFile = false) {
     const iConsole = Logger.getImperativeLogger();
     let npmPackage = packageLocation;
 
@@ -118,14 +115,14 @@ export async function install(packageLocation: string, registry: string, install
     }
 
     try {
-        iConsole.debug(`Installing from registry ${registry}`);
+        iConsole.debug(`Installing from registry ${registryInfo.location}`);
 
         // Perform the npm install.
         iConsole.info("Installing packages...this may take some time.");
 
         installPackages(npmPackage, {
             prefix: PMFConstants.instance.PLUGIN_INSTALL_LOCATION,
-            registry: JsUtils.isUrl(registry) ? registry : undefined,
+            ...registryInfo.buildRegistryArgs(),
         });
 
         // We fetch the package name and version of newly installed plugin
@@ -154,7 +151,7 @@ export async function install(packageLocation: string, registry: string, install
 
         const newPlugin: IPluginJsonObject = {
             package: npmPackage,
-            location: registry,
+            location: registryInfo.location,
             version: packageVersion
         };
         iConsole.debug("Updating the current configuration with new plugin:\n" +
