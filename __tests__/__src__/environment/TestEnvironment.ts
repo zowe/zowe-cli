@@ -11,11 +11,13 @@
 
 import * as nodePath from "path";
 
-import { AbstractSession, Session } from "@zowe/imperative";
+import { AbstractSession, Imperative, ImperativeError, Session } from "@zowe/imperative";
 
 import { ITestPropertiesSchema } from "../properties/ITestPropertiesSchema";
-import { ISetupEnvironmentParms, ITestEnvironment, TestEnvironment as BaseTestEnvironment } from "../../__packages__/cli-test-utils";
+import { ISetupEnvironmentParms, TestEnvironment as BaseTestEnvironment } from "../../__packages__/cli-test-utils";
+import { ITestEnvironment }  from "./ITestEnvironment";
 import { SshSession } from "../../../packages/zosuss/src/SshSession";
+import { deleteLocalFile, deleteFiles, deleteJob, deleteJobCommon, deleteDataset } from "../TestUtils";
 
 /**
  * Use the utility methods here to setup the test environment for running APIs
@@ -36,7 +38,7 @@ export class TestEnvironment extends BaseTestEnvironment {
      * @memberof TestEnvironment
      */
     public static async setUp(params: ISetupEnvironmentParms): Promise<ITestEnvironment<ITestPropertiesSchema>> {
-        const result = await super.setUp(params);
+        const result: ITestEnvironment<ITestPropertiesSchema> = await super.setUp(params);
 
         // Ensure correct path separator for windows or linux like systems.
         const separator = process.platform === "win32" ? ";" : ":";
@@ -45,9 +47,54 @@ export class TestEnvironment extends BaseTestEnvironment {
             nodePath.resolve(__dirname, "../../__resources__/application_instances"),
             process.env.PATH
         ].join(separator);
-
+        result.resources = {
+            localFiles: [],
+            datasets: [],
+            files: [],
+            jobs: [],
+            session: params.skipProperties ? null : TestEnvironment.createZosmfSession(result)
+        };
         // Return the test environment including working directory that the tests should be using
         return result;
+    }
+
+    /**
+     * Clean up your test environment.
+     * Deletes any temporary profiles that have been created
+     * @params {ITestEnvironment} testEnvironment - the test environment returned by createTestEnv
+     *
+     * @returns {Promise<void>} - promise fulfilled when cleanup is complete
+     * @throws errors if profiles fail to delete
+     * @memberof TestEnvironment
+     */
+    public static async cleanUp(testEnvironment: ITestEnvironment<ITestPropertiesSchema>) {
+        // Delete profiles and plugindir
+        await super.cleanUp(testEnvironment);
+
+        // Deleting resources (if they exist)
+        if (testEnvironment?.resources?.session) {
+            const session = testEnvironment.resources.session;
+            for (const file of testEnvironment.resources.localFiles) {
+                deleteLocalFile(file);
+            }
+            for (const dataset of testEnvironment.resources.datasets) {
+                await deleteDataset(session, dataset);
+            }
+            for (const file of testEnvironment.resources.files) {
+                await deleteFiles(session, file);
+            }
+            for (const job of testEnvironment.resources.jobs) {
+                await deleteJob(session, job);
+            }
+
+            testEnvironment.resources = {
+                localFiles: [],
+                datasets: [],
+                files: [],
+                jobs: [],
+                session: testEnvironment.resources.session
+            };
+        }
     }
 
     /**

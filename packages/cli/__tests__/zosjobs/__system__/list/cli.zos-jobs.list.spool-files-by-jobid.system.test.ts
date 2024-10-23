@@ -9,14 +9,15 @@
 *
 */
 
-import { ITestEnvironment, runCliScript } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
+import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/ITestEnvironment";
+import { runCliScript } from "@zowe/cli-test-utils";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import * as fs from "fs";
 import { Session, TextUtils } from "@zowe/imperative";
 import { IJob, SubmitJobs } from "@zowe/zos-jobs-for-zowe-sdk";
-import { TEST_RESOURCES_DIR } from "../../../../../../packages/zosjobs/__tests__/__src__/ZosJobsTestConstants";
+import * as fs from "fs";
 import { join } from "path";
+import { TEST_RESOURCES_DIR } from "@zowe/zos-jobs-for-zowe-sdk/__tests__/__src__/ZosJobsTestConstants";
 
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
@@ -31,7 +32,6 @@ const LONG_TIMEOUT = 100000;
 
 const trimMessage = (message: string) => {
     // don't use more than one space or tab when checking error details
-    // this allows us to expect things like "reason: 6" regardless of how prettyjson aligns the text
     return message.replace(/( {2,})|\t/g, " ");
 };
 
@@ -88,10 +88,16 @@ describe("zos-jobs list spool-files-by-jobid command", () => {
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
 
-            // TODO: Hopefully these DDs are deterministic on all of our test systems.
-            // TODO: Once available, we can submit from a local file via command
-            // TODO: with certain DDs (wanted this test to be entirely script driven
-            // TODO: to capture a "real world" scenario)
+            // Extract the JOBID using regex
+            const jobidRegex = /Submitted job ID: (JOB\d+)/;
+            const match = response.stdout.toString().match(jobidRegex);
+            const jobId = match ? match[1] : null;
+
+            // Ensure the JOBID was captured correctly
+            expect(jobId).not.toBeNull();
+            TEST_ENVIRONMENT.resources.jobs.push(jobId);
+
+            // Validate DDs and output
             expect(response.stdout.toString()).toContain("JESMSGLG");
             expect(response.stdout.toString()).toContain("JESJCL");
             expect(response.stdout.toString()).toContain("JESYSMSG");
@@ -105,6 +111,7 @@ describe("zos-jobs list spool-files-by-jobid command", () => {
 
             // Submit the job
             const job: IJob = await SubmitJobs.submitJclNotify(REAL_SESSION, renderedJcl);
+            TEST_ENVIRONMENT.resources.jobs.push(job);
 
             // View the DDs
             const response = runCliScript(__dirname + "/__scripts__/spool-files-by-jobid/list_dds.sh",
@@ -136,7 +143,7 @@ describe("zos-jobs list spool-files-by-jobid command", () => {
                 await TestEnvironment.cleanUp(TEST_ENVIRONMENT_NO_PROF);
             });
 
-            it("should display the ddnames for a job", async () => {
+            it("should display the ddnames for a job", () => {
                 const ZOWE_OPT_BASE_PATH = "ZOWE_OPT_BASE_PATH";
 
                 // if API Mediation layer is being used (basePath has a value) then
@@ -156,6 +163,17 @@ describe("zos-jobs list spool-files-by-jobid command", () => {
                     ]);
                 expect(response.stderr.toString()).toBe("");
                 expect(response.status).toBe(0);
+
+                // Extract the JOBID using regex
+                const jobidRegex = /Submitted job ID: (JOB\d+)/;
+                const match = response.stdout.toString().match(jobidRegex);
+                const jobId = match ? match[1] : null;
+
+                // Ensure the JOBID was captured correctly
+                expect(jobId).not.toBeNull();
+                TEST_ENVIRONMENT_NO_PROF.resources.jobs.push(jobId);
+
+                // Validate DDs and output
                 expect(response.stdout.toString()).toContain("JESMSGLG");
                 expect(response.stdout.toString()).toContain("JESJCL");
                 expect(response.stdout.toString()).toContain("JESYSMSG");

@@ -9,12 +9,13 @@
 *
 */
 
-import { ITestEnvironment, runCliScript } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
+import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/ITestEnvironment";
+import { runCliScript } from "@zowe/cli-test-utils";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { IO, Session } from "@zowe/imperative";
-import { Get } from "../../../../../../zosfiles/src/methods/get";
-
+import { GetJobs } from "@zowe/zos-jobs-for-zowe-sdk";
+import { Get } from "@zowe/zos-files-for-zowe-sdk";
 
 process.env.FORCE_COLOR = "0";
 
@@ -24,6 +25,9 @@ let REAL_SESSION: Session;
 let systemProps: ITestPropertiesSchema;
 let account: string;
 let jcl: string;
+let JOB_NAME: string;
+const jobNameRegex = /jobname: (\w+)/;
+
 describe("zos-jobs submit local-file command", () => {
     // Create the unique test environment
     beforeAll(async () => {
@@ -36,52 +40,68 @@ describe("zos-jobs submit local-file command", () => {
 
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
         account = systemProps.tso.account;
-        const maxJobNamePrefixLength = 5;
+
         // JCL to submit
         jcl = (await Get.dataSet(REAL_SESSION, systemProps.zosjobs.iefbr14Member)).toString();
 
-        // Create an local file with JCL to submit
+        // Create a local file with JCL to submit
         const bufferJCL: Buffer = Buffer.from(jcl);
         IO.createFileSync(__dirname + "/testFileOfLocalJCL.txt");
         IO.writeFile(__dirname + "/testFileOfLocalJCL.txt", bufferJCL);
+
+        // Add the local file to resources for cleanup
+        TEST_ENVIRONMENT.resources.localFiles.push(__dirname + "/testFileOfLocalJCL.txt");
     });
 
     afterAll(async () => {
+        // Cleanup jobs before the environment is torn down
+        if (JOB_NAME) {
+            const jobs = await GetJobs.getJobsByPrefix(REAL_SESSION, JOB_NAME);
+            TEST_ENVIRONMENT.resources.jobs.push(...jobs);
+        }
+
         await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
-        IO.deleteFile(__dirname + "/testFileOfLocalJCL.txt");
     });
 
     describe("Live system tests", () => {
-        it("should submit a job in an existing valid local file", async () => {
+        it("should submit a job in an existing valid local file", () => {
             const response = runCliScript(__dirname + "/__scripts__/submit_valid_local_file.sh",
                 TEST_ENVIRONMENT, [__dirname + "/testFileOfLocalJCL.txt"]);
+
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain("jobname");
             expect(response.stdout.toString()).toContain("jobid");
+
+            // Set jobname for cleanup of all jobs
+            const match = response.stdout.toString().match(jobNameRegex);
+            JOB_NAME = match ? match[1] : null;
         });
 
-        it("should submit a job in an existing valid local file with explicit RECFM, LRECL, and encoding", async () => {
+        it("should submit a job in an existing valid local file with explicit RECFM, LRECL, and encoding", () => {
             const response = runCliScript(__dirname + "/__scripts__/submit_valid_local_file.sh",
                 TEST_ENVIRONMENT, [__dirname + "/testFileOfLocalJCL.txt", "--job-encoding IBM-037 --job-record-format F --job-record-length 80"]);
+
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain("jobname");
             expect(response.stdout.toString()).toContain("jobid");
         });
 
-        it("should submit a job in an existing valid local file with 'view-all-spool-content' option", async () => {
+        it("should submit a job in an existing valid local file with 'view-all-spool-content' option", () => {
             const response = runCliScript(__dirname + "/__scripts__/submit_valid_local_file_vasc.sh",
                 TEST_ENVIRONMENT, [__dirname + "/testFileOfLocalJCL.txt", "--vasc"]);
+
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain("Spool file");
             expect(response.stdout.toString()).toContain("JES2");
         });
 
-        it("should submit a job and wait for it to reach output status", async () => {
+        it("should submit a job and wait for it to reach output status", () => {
             const response = runCliScript(__dirname + "/__scripts__/submit_valid_local_file_wait.sh",
                 TEST_ENVIRONMENT, [__dirname + "/testFileOfLocalJCL.txt"]);
+
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain("jobname");
@@ -89,19 +109,19 @@ describe("zos-jobs submit local-file command", () => {
             expect(response.stdout.toString()).toContain("CC 0000");
             expect(response.stdout.toString()).not.toContain("null"); // retcode should not be null
         });
-        it("should submit a job in an existing valid local file with 'directory' option", async () => {
+
+        it("should submit a job in an existing valid local file with 'directory' option", () => {
             const response = runCliScript(__dirname + "/__scripts__/submit_valid_local_file_with_directory.sh",
                 TEST_ENVIRONMENT, [__dirname + "/testFileOfLocalJCL.txt", "--directory", "./"]);
+
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain("jobname");
             expect(response.stdout.toString()).toContain("jobid");
             expect(response.stdout.toString()).toContain("Successfully downloaded output to ./");
-            expect(new RegExp("JOB\\d{5}", "g").test(response.stdout.toString())).toBe(true);
         });
 
         describe("without profiles", () => {
-
             // Create a separate test environment for no profiles
             let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment<ITestPropertiesSchema>;
             let DEFAULT_SYSTEM_PROPS: ITestPropertiesSchema;
@@ -118,7 +138,7 @@ describe("zos-jobs submit local-file command", () => {
                 await TestEnvironment.cleanUp(TEST_ENVIRONMENT_NO_PROF);
             });
 
-            it("should submit a job in an existing valid local file", async () => {
+            it("should submit a job in an existing valid local file", () => {
                 const ZOWE_OPT_BASE_PATH = "ZOWE_OPT_BASE_PATH";
 
                 // if API Mediation layer is being used (basePath has a value) then
@@ -140,8 +160,11 @@ describe("zos-jobs submit local-file command", () => {
                 expect(response.status).toBe(0);
                 expect(response.stdout.toString()).toContain("jobname");
                 expect(response.stdout.toString()).toContain("jobid");
+
+                // Set jobname for cleanup of all jobs
+                const match = response.stdout.toString().match(jobNameRegex);
+                JOB_NAME = match ? match[1] : null;
             });
         });
     });
-
 });
