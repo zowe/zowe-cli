@@ -26,28 +26,28 @@ export const StartASApp: ICommandDefinition = {
         {
             name: "app-key",
             aliases: ["ak"],
-            description: "App Key",
+            description: "App key of application running at TSO address space, this app key value should be referenced when sending or receiving messages from the application instance",
             type: "string",
             required: true
         },
         {
             name: "startup",
             aliases: ["sc"],
-            description: "Startup",
+            description: "Command to be ran to start application at the TSO address space",
             type: "string",
             required: true
         },
         {
             name: "queue-id",
             aliases: ["qi"],
-            description: "Queue ID",
+            description: "Queue ID of TSO address space",
             type: "string",
             implies: ["servlet-key"]
         },
         {
             name: "servlet-key",
             aliases: ["sk"],
-            description: "Servlet Key",
+            description: "Servlet Key of TSO address space",
             type: "string",
             implies: ["queue-id"]
         }

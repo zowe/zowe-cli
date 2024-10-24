@@ -26,14 +26,14 @@ export const ReceiveASApp: ICommandDefinition = {
         {
             name: "app-key",
             aliases: ["ak"],
-            description: "App Key",
+            description: "App key of application running at TSO address space, app key should be the value established when app instance was started",
             type: "string",
             required: true
         },
         {
             name: "servlet-key",
             aliases: ["sk"],
-            description: "Servlet Key",
+            description: "Servlet Key of TSO address space",
             type: "string",
             required: true
         },

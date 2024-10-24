@@ -51,7 +51,7 @@ describe("receive TSO app handler behavior", () => {
         const handler = new ReceiveASAppHandler.default();
         const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
         let error = undefined;
-        params.arguments = {...params.arguments,account: "izuacct", appKey: "test2", servletKey: "JR897694-122-aabyaaaj", runUntilReady: true};
+        params.arguments = {...params.arguments,account: "izuacct", appKey: "test2", servletKey: "CUST009-122-aabyaaaj", runUntilReady: true};
         try{
             await handler.process(params);
         }
