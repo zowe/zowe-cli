@@ -27,7 +27,7 @@ const MOCK_RECEIVE_RESPONSE: any = {
     version: undefined,
     reused: false,
     timeout: false,
-    servletKey: "JR897694-127-aabeaaag",
+    servletKey: "CUST009-127-aabeaaag",
     queueID: null,
     tsoData: [
         {
@@ -43,7 +43,7 @@ const MOCK_TIMEOUT_RESPONSE: any = {
     version: undefined,
     reused: false,
     timeout: true,
-    servletKey: "JR897694-127-aabeaaag",
+    servletKey: "CUST009-127-aabeaaag",
     queueID: null,
     tsoData: [],
 };
@@ -59,7 +59,7 @@ describe("ReceiveTsoApp behavior", () => {
         );
 
         const params: ITsoAppCommunicationParms = {
-            servletKey: "JR897694-127-aabeaaag",
+            servletKey: "CUST009-127-aabeaaag",
             appKey: "someAppKey",
             timeout: 10,
             receiveUntilReady: true,
@@ -80,7 +80,7 @@ describe("ReceiveTsoApp behavior", () => {
             version: undefined,
             reused: false,
             timeout: false,
-            servletKey: "JR897694-127-aabeaaag",
+            servletKey: "CUST009-127-aabeaaag",
             queueID: null,
             tsoData: [
                 { VERSION: "0100", DATA: "Processing started." },
@@ -95,7 +95,7 @@ describe("ReceiveTsoApp behavior", () => {
         );
 
         const params: ITsoAppCommunicationParms = {
-            servletKey: "JR897694-127-aabeaaag",
+            servletKey: "CUST009-127-aabeaaag",
             appKey: "someAppKey",
             timeout: 10,
             receiveUntilReady: true,
@@ -119,7 +119,7 @@ describe("ReceiveTsoApp behavior", () => {
         );
 
         const params: ITsoAppCommunicationParms = {
-            servletKey: "JR897694-127-aabeaaag",
+            servletKey: "CUST009-127-aabeaaag",
             appKey: "someAppKey",
             timeout: 1,
             receiveUntilReady: true,
@@ -141,7 +141,7 @@ describe("ReceiveTsoApp behavior", () => {
         );
 
         const params: ITsoAppCommunicationParms = {
-            servletKey: "JR897694-127-aabeaaag",
+            servletKey: "CUST009-127-aabeaaag",
             appKey: "someAppKey",
             timeout: 10,
             receiveUntilReady: true,
@@ -158,7 +158,7 @@ describe("ReceiveTsoApp behavior", () => {
             version: "0100",
             reused: false,
             timeout: false,
-            servletKey: "JR897694-127-aabeaaag",
+            servletKey: "CUST009-127-aabeaaag",
             queueID: null,
             tsoData: [{"TSO MESSAGE":{ VERSION: "0100", DATA: "First response data." }}],
         };
@@ -168,7 +168,7 @@ describe("ReceiveTsoApp behavior", () => {
             version: "0100",
             reused: false,
             timeout: false,
-            servletKey: "JR897694-127-aabeaaag",
+            servletKey: "CUST009-127-aabeaaag",
             queueID: null,
             tsoData: [
                 {"TSO MESSAGE":{ VERSION: "0100", DATA: "Second response data." }},
@@ -182,7 +182,7 @@ describe("ReceiveTsoApp behavior", () => {
             .mockResolvedValueOnce(mockResponse2); // Second call
 
         const params: ITsoAppCommunicationParms = {
-            servletKey: "JR897694-127-aabeaaag",
+            servletKey: "CUST009-127-aabeaaag",
             appKey: "someAppKey",
             timeout: 10,
             receiveUntilReady: true,

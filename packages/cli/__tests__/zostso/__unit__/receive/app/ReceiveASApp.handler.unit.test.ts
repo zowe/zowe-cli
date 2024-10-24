@@ -26,7 +26,7 @@ const MOCK_RECEIVE_RESPONSE: any = {
     version: undefined,
     reused: false,
     timeout: false,
-    servletKey: "JR897694-122-aabyaaaj",
+    servletKey: "CUST009-122-aabyaaaj",
     queueID: null,
     tsoData: [
         {

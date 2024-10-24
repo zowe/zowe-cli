@@ -24,7 +24,7 @@ const PRETEND_SESSION = new Session({
 });
 
 const MOCK_SEND_RESPONSE = Promise.resolve({
-    servletKey: "JR897694-127-aabeaaag",
+    servletKey: "CUST009-127-aabeaaag",
     ver: "0100",
     tsoData: [
         {
@@ -55,7 +55,7 @@ describe("SendTsoApp behavior", () => {
         );
 
         const params: ITsoAppCommunicationParms = {
-            servletKey: "JR897694-127-aabeaaag",
+            servletKey: "CUST009-127-aabeaaag",
             appKey: "someAppKey",
             message: "Test message",
         };
@@ -78,7 +78,7 @@ describe("SendTsoApp behavior", () => {
             version: "0100",
             reused: false,
             timeout: false,
-            servletKey: "JR897694-127-aabeaaag",
+            servletKey: "CUST009-127-aabeaaag",
             queueID: null,
             tsoData: [
                 {

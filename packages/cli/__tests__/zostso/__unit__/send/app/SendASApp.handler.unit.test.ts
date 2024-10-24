@@ -23,7 +23,7 @@ const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
     definition: SendASAppDefinition.SendASApp
 });
 const MOCK_SEND_RESPONSE = Promise.resolve({
-    servletKey: "JR897694-127-aabeaaag",
+    servletKey: "CUST009-127-aabeaaag",
     ver: "0100",
     tsoData: [
         {
@@ -56,7 +56,7 @@ describe("receive TSO app handler behavior", () => {
         const handler = new SendASAppHandler.default();
         const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
         let error = undefined;
-        params.arguments = {...params.arguments,account: "izuacct", appKey: "test2", servletKey: "JR897694-129-aaceaaap", message: "LONG 100"};
+        params.arguments = {...params.arguments,account: "izuacct", appKey: "test2", servletKey: "CUST009-129-aaceaaap", message: "LONG 100"};
         try{
             await handler.process(params);
         }

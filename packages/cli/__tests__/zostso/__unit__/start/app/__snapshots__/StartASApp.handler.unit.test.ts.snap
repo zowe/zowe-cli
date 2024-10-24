@@ -4,7 +4,7 @@ exports[`receive TSO app handler behavior should properly start TSO address spac
 "{
   \\"reused\\": false,
   \\"timeout\\": false,
-  \\"servletKey\\": \\"JR897694-123-aaaaaa\\",
+  \\"servletKey\\": \\"CUST009-123-aaaaaa\\",
   \\"queueID\\": \\"983068\\",
   \\"tsoData\\": [
     {
@@ -35,7 +35,7 @@ exports[`receive TSO app handler behavior should properly start TSO address spac
 "{
   \\"reused\\": false,
   \\"timeout\\": false,
-  \\"servletKey\\": \\"JR897694-123-aaaaaa\\",
+  \\"servletKey\\": \\"CUST009-123-aaaaaa\\",
   \\"queueID\\": \\"983068\\",
   \\"tsoData\\": [
     {

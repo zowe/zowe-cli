@@ -5,7 +5,7 @@ exports[`receive TSO app handler behavior should properly receive and parse data
   \\"version\\": \\"0100\\",
   \\"reused\\": false,
   \\"timeout\\": false,
-  \\"servletKey\\": \\"JR897694-127-aabeaaag\\",
+  \\"servletKey\\": \\"CUST009-127-aabeaaag\\",
   \\"queueID\\": null,
   \\"tsoData\\": [
     {
