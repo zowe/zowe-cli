@@ -31,6 +31,8 @@ describe("Delete Jobs unit tests", () => {
     const fakeJob: IJob = {
         "jobid": "JOB00001",
         "jobname": "MYJOB1",
+        "exec-started": '2024-01-02T15:57:58.350Z',
+        "exec-ended": '2024-01-02T15:58:00.600Z',
         "retcode": "CC 0000",
         "owner": "dummy",
         "subsystem": "JES2",

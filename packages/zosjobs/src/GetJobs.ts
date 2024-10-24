@@ -153,7 +153,7 @@ export class GetJobs {
         Logger.getAppLogger().trace("GetJobs.getJobsCommon()");
         ImperativeExpect.toNotBeNullOrUndefined(session, "Required session must be defined");
         let query = JobsConstants.QUERY_ID;
-        params.execData = true; // always returning start and end time data
+        // params.execData = true; // always returning start and end time data
 
         if (params) {
             if (params.owner) {

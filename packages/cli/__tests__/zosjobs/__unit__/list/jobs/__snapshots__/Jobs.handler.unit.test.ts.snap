@@ -4,6 +4,8 @@ exports[`list jobs handler tests should be able to get a list of jobs for a spec
 Array [
   Object {
     "class": "A",
+    "exec-ended": "2024-01-02T15:58:00.600Z",
+    "exec-started": "2024-01-02T15:57:58.350Z",
     "files-url": "www.nowhere.com/restjobs/jobs/files",
     "job-correlator": "123545asdfadf",
     "jobid": "TSUxxx",
@@ -19,6 +21,8 @@ Array [
   },
   Object {
     "class": "A",
+    "exec-ended": "2024-01-02T15:58:00.600Z",
+    "exec-started": "2024-01-02T15:57:58.350Z",
     "files-url": "www.nowhere.com/restjobs/jobs/files",
     "job-correlator": "123545asdfadf",
     "jobid": "JOBxxx",
@@ -49,6 +53,8 @@ Object {
   "output": Array [
     Object {
       "class": "A",
+      "exec-ended": "2024-01-02T15:58:00.600Z",
+      "exec-started": "2024-01-02T15:57:58.350Z",
       "files-url": "www.nowhere.com/restjobs/jobs/files",
       "job-correlator": "123545asdfadf",
       "jobid": "TSUxxx",
@@ -64,6 +70,8 @@ Object {
     },
     Object {
       "class": "A",
+      "exec-ended": "2024-01-02T15:58:00.600Z",
+      "exec-started": "2024-01-02T15:57:58.350Z",
       "files-url": "www.nowhere.com/restjobs/jobs/files",
       "job-correlator": "123545asdfadf",
       "jobid": "JOBxxx",
@@ -85,6 +93,8 @@ exports[`list jobs handler tests should be able to get a list of jobs for a spec
 Array [
   Object {
     "class": "A",
+    "exec-ended": "2024-01-02T15:58:00.600Z",
+    "exec-started": "2024-01-02T15:57:58.350Z",
     "files-url": "www.nowhere.com/restjobs/jobs/files",
     "job-correlator": "123545asdfadf",
     "jobid": "TSUxxx",
@@ -100,6 +110,8 @@ Array [
   },
   Object {
     "class": "A",
+    "exec-ended": "2024-01-02T15:58:00.600Z",
+    "exec-started": "2024-01-02T15:57:58.350Z",
     "files-url": "www.nowhere.com/restjobs/jobs/files",
     "job-correlator": "123545asdfadf",
     "jobid": "JOBxxx",
@@ -130,6 +142,8 @@ Object {
   "output": Array [
     Object {
       "class": "A",
+      "exec-ended": "2024-01-02T15:58:00.600Z",
+      "exec-started": "2024-01-02T15:57:58.350Z",
       "files-url": "www.nowhere.com/restjobs/jobs/files",
       "job-correlator": "123545asdfadf",
       "jobid": "TSUxxx",
@@ -145,6 +159,8 @@ Object {
     },
     Object {
       "class": "A",
+      "exec-ended": "2024-01-02T15:58:00.600Z",
+      "exec-started": "2024-01-02T15:57:58.350Z",
       "files-url": "www.nowhere.com/restjobs/jobs/files",
       "job-correlator": "123545asdfadf",
       "jobid": "JOBxxx",
@@ -166,6 +182,8 @@ exports[`list jobs handler tests should be able to get a list of jobs using defa
 Array [
   Object {
     "class": "A",
+    "exec-ended": "2024-01-02T15:58:00.600Z",
+    "exec-started": "2024-01-02T15:57:58.350Z",
     "files-url": "www.nowhere.com/restjobs/jobs/files",
     "job-correlator": "123545asdfadf",
     "jobid": "TSUxxx",
@@ -181,6 +199,8 @@ Array [
   },
   Object {
     "class": "A",
+    "exec-ended": "2024-01-02T15:58:00.600Z",
+    "exec-started": "2024-01-02T15:57:58.350Z",
     "files-url": "www.nowhere.com/restjobs/jobs/files",
     "job-correlator": "123545asdfadf",
     "jobid": "JOBxxx",
@@ -211,6 +231,8 @@ Object {
   "output": Array [
     Object {
       "class": "A",
+      "exec-ended": "2024-01-02T15:58:00.600Z",
+      "exec-started": "2024-01-02T15:57:58.350Z",
       "files-url": "www.nowhere.com/restjobs/jobs/files",
       "job-correlator": "123545asdfadf",
       "jobid": "TSUxxx",
@@ -226,6 +248,8 @@ Object {
     },
     Object {
       "class": "A",
+      "exec-ended": "2024-01-02T15:58:00.600Z",
+      "exec-started": "2024-01-02T15:57:58.350Z",
       "files-url": "www.nowhere.com/restjobs/jobs/files",
       "job-correlator": "123545asdfadf",
       "jobid": "JOBxxx",

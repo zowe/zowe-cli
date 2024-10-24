@@ -27,6 +27,7 @@ const expectedMockSpoolContent = "Hello! This is my spool content.";
 const jobFiles: IJobFile[] = [{
     "jobid": fakeJobID,
     "jobname": fakeJobName,
+    
     "id": 0,
     "recfm": "FB",
     "lrecl": 80,
@@ -44,6 +45,8 @@ const sampleJob: IJob = {
     "jobid": fakeJobID,
     "jobname": fakeJobName,
     "subsystem": "JES2",
+    "exec-started": '2024-01-02T15:57:58.350Z',
+    "exec-ended": '2024-01-02T15:58:00.600Z',
     "owner": "IBMUSER",
     "status": "OUTPUT",
     "type": "job",
