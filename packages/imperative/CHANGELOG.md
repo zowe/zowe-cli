@@ -4,7 +4,7 @@ All notable changes to the Imperative package will be documented in this file.
 
 ## Recent Changes
 
-- BugFix: Fixed an issue where `plugins install` command could fail when installing scoped package because scoped registry was used to fetch all dependencies. [#2317](https://github.com/zowe/zowe-cli/issues/2317)
+- BugFix: Fixed an issue where the `plugins install` command could fail when installing a scoped package because scoped registry was used to fetch all dependencies. [#2317](https://github.com/zowe/zowe-cli/issues/2317)
 
 ## `8.2.0`
 
