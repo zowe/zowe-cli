@@ -1,5 +1,195 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Search Datasets handler process method should search a data set if requested - with case sensitive 1`] = `
+Object {
+  "apiResponse": Array [
+    Object {
+      "dsname": "TEST1.DS",
+      "matchList": Array [
+        Object {
+          "column": 1,
+          "contents": "TEST CONTENTS",
+          "line": 1,
+        },
+      ],
+      "memname": "TESTMEM",
+    },
+    Object {
+      "dsname": "TEST2.DS",
+      "matchList": Array [
+        Object {
+          "column": 1,
+          "contents": "TEST CONTENTS",
+          "line": 1,
+        },
+      ],
+      "memname": undefined,
+    },
+  ],
+  "commandResponse": "Found \\"test\\" in 2 data sets and PDS members",
+  "success": true,
+}
+`;
+
+exports[`Search Datasets handler process method should search a data set if requested - with case sensitive 2`] = `""`;
+
+exports[`Search Datasets handler process method should search a data set if requested - with case sensitive 3`] = `
+"
+Found \\"test\\" in 2 data sets and PDS members"
+`;
+
+exports[`Search Datasets handler process method should search a data set if requested - with encoding 1`] = `
+Object {
+  "apiResponse": Array [
+    Object {
+      "dsname": "TEST1.DS",
+      "matchList": Array [
+        Object {
+          "column": 1,
+          "contents": "TEST CONTENTS",
+          "line": 1,
+        },
+      ],
+      "memname": "TESTMEM",
+    },
+    Object {
+      "dsname": "TEST2.DS",
+      "matchList": Array [
+        Object {
+          "column": 1,
+          "contents": "TEST CONTENTS",
+          "line": 1,
+        },
+      ],
+      "memname": undefined,
+    },
+  ],
+  "commandResponse": "Found \\"test\\" in 2 data sets and PDS members",
+  "success": true,
+}
+`;
+
+exports[`Search Datasets handler process method should search a data set if requested - with encoding 2`] = `""`;
+
+exports[`Search Datasets handler process method should search a data set if requested - with encoding 3`] = `
+"
+Found \\"test\\" in 2 data sets and PDS members"
+`;
+
+exports[`Search Datasets handler process method should search a data set if requested - with mainframe search 1`] = `
+Object {
+  "apiResponse": Array [
+    Object {
+      "dsname": "TEST1.DS",
+      "matchList": Array [
+        Object {
+          "column": 1,
+          "contents": "TEST CONTENTS",
+          "line": 1,
+        },
+      ],
+      "memname": "TESTMEM",
+    },
+    Object {
+      "dsname": "TEST2.DS",
+      "matchList": Array [
+        Object {
+          "column": 1,
+          "contents": "TEST CONTENTS",
+          "line": 1,
+        },
+      ],
+      "memname": undefined,
+    },
+  ],
+  "commandResponse": "Found \\"test\\" in 2 data sets and PDS members",
+  "success": true,
+}
+`;
+
+exports[`Search Datasets handler process method should search a data set if requested - with mainframe search 2`] = `""`;
+
+exports[`Search Datasets handler process method should search a data set if requested - with mainframe search 3`] = `
+"
+Found \\"test\\" in 2 data sets and PDS members"
+`;
+
+exports[`Search Datasets handler process method should search a data set if requested - with max concurrent requests 1`] = `
+Object {
+  "apiResponse": Array [
+    Object {
+      "dsname": "TEST1.DS",
+      "matchList": Array [
+        Object {
+          "column": 1,
+          "contents": "TEST CONTENTS",
+          "line": 1,
+        },
+      ],
+      "memname": "TESTMEM",
+    },
+    Object {
+      "dsname": "TEST2.DS",
+      "matchList": Array [
+        Object {
+          "column": 1,
+          "contents": "TEST CONTENTS",
+          "line": 1,
+        },
+      ],
+      "memname": undefined,
+    },
+  ],
+  "commandResponse": "Found \\"test\\" in 2 data sets and PDS members",
+  "success": true,
+}
+`;
+
+exports[`Search Datasets handler process method should search a data set if requested - with max concurrent requests 2`] = `""`;
+
+exports[`Search Datasets handler process method should search a data set if requested - with max concurrent requests 3`] = `
+"
+Found \\"test\\" in 2 data sets and PDS members"
+`;
+
+exports[`Search Datasets handler process method should search a data set if requested - with timeout 1`] = `
+Object {
+  "apiResponse": Array [
+    Object {
+      "dsname": "TEST1.DS",
+      "matchList": Array [
+        Object {
+          "column": 1,
+          "contents": "TEST CONTENTS",
+          "line": 1,
+        },
+      ],
+      "memname": "TESTMEM",
+    },
+    Object {
+      "dsname": "TEST2.DS",
+      "matchList": Array [
+        Object {
+          "column": 1,
+          "contents": "TEST CONTENTS",
+          "line": 1,
+        },
+      ],
+      "memname": undefined,
+    },
+  ],
+  "commandResponse": "Found \\"test\\" in 2 data sets and PDS members",
+  "success": true,
+}
+`;
+
+exports[`Search Datasets handler process method should search a data set if requested - with timeout 2`] = `""`;
+
+exports[`Search Datasets handler process method should search a data set if requested - with timeout 3`] = `
+"
+Found \\"test\\" in 2 data sets and PDS members"
+`;
+
 exports[`Search Datasets handler process method should search a data set if requested 1`] = `
 Object {
   "apiResponse": Array [

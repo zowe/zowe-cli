@@ -14,7 +14,6 @@ import { inspect } from "util";
 import { Create } from "../../../../src/methods/create";
 import { Mount, IMountFsOptions } from "../../../../src/methods/mount";
 import { Unmount } from "../../../../src/methods/unmount";
-import { ITestEnvironment } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { Delete } from "../../../../src/methods/delete";
@@ -22,6 +21,7 @@ import { List, ZosFilesMessages } from "../../../../src";
 import { getUniqueDatasetName } from "../../../../../../__tests__/__src__/TestUtils";
 import { ICreateZfsOptions } from "../../../../src/methods/create/doc/ICreateZfsOptions";
 import { SshSession, Shell } from "@zowe/zos-uss-for-zowe-sdk";
+import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/ITestEnvironment";
 
 
 let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
