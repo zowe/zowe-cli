@@ -54,11 +54,13 @@ export abstract class ZosFilesBaseHandler implements ICommandHandler {
                     msg: response.errorMessage || response.commandResponse
                 });
             }
+            commandParameters.response.progress.endBar();
             if (response.commandResponse) {
                 commandParameters.response.console.log(response.commandResponse);
             }
             commandParameters.response.data.setObj(response);
         } catch (error) {
+            commandParameters.response.progress.endBar();
             if (commandParameters.arguments.ignoreNotFound && error.errorCode === '404') {
                 commandParameters.response.data.setObj({ success: true });
             } else {
@@ -67,7 +69,6 @@ export abstract class ZosFilesBaseHandler implements ICommandHandler {
                 });
             }
         }
-        commandParameters.response.progress.endBar();
     }
 
     /**
