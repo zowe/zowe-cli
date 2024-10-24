@@ -10,16 +10,15 @@
 */
 
 import { ICommandDefinition } from "@zowe/imperative";
-import { AddressSpaceDefinition } from "./address-space/AddressSpace.definition";
-import { StartASApp } from "./as-app/StartASApp.definition";
+import { ReceiveASApp } from "./app/ReceiveASApp.definition";
 
-export const StartCommand: ICommandDefinition = {
-    name: "start",
-    aliases: ["st"],
+export const ReceiveCommand: ICommandDefinition = {
+    name: "receive",
+    aliases: ["r"],
     type: "group",
-    summary: "Start TSO/E address space",
-    description: "Start TSO/E address space.",
+    summary: "Receive message from TSO address space app",
+    description: "Receive message from TSO address space app",
     children: [
-        AddressSpaceDefinition, StartASApp
+        ReceiveASApp
     ],
 };

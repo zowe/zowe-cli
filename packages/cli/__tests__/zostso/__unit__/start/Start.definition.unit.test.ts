@@ -15,7 +15,7 @@ describe("zos-tso start group definition", () => {
     it("should not have changed", () => {
         const definition: ICommandDefinition = require("../../../../src/zostso/start/Start.definition").StartCommand;
         expect(definition).toBeDefined();
-        expect(definition.children.length).toBe(1);
+        expect(definition.children.length).toBe(2);
         delete definition.children;
         expect(definition).toMatchSnapshot();
     });
