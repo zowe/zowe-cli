@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Upload file-to-uss handler process method should upload a file to a uss if requested - zosattributes 1`] = `
+exports[`Upload file-to-uss handler process method should upload a file to a USS if requested - zosattributes file 1`] = `
 Object {
   "apiResponse": Array [
     Object {
@@ -14,9 +14,9 @@ Object {
 }
 `;
 
-exports[`Upload file-to-uss handler process method should upload a file to a uss if requested - zosattributes 2`] = `""`;
+exports[`Upload file-to-uss handler process method should upload a file to a USS if requested - zosattributes file 2`] = `""`;
 
-exports[`Upload file-to-uss handler process method should upload a file to a uss if requested - zosattributes 3`] = `
+exports[`Upload file-to-uss handler process method should upload a file to a USS if requested - zosattributes file 3`] = `
 "
 [32m- [39m
   [33msuccess: [39m[32mtrue[39m
@@ -44,33 +44,6 @@ Object {
 exports[`Upload file-to-uss handler process method should upload a file to a uss if requested 2`] = `""`;
 
 exports[`Upload file-to-uss handler process method should upload a file to a uss if requested 3`] = `
-"
-[32m- [39m
-  [33msuccess: [39m[32mtrue[39m
-  [33mfrom: [39m   test-file
-  [33mto: [39m     testing
-
-
-uploaded"
-`;
-
-exports[`Upload file-to-uss handler process method should upload a file to a uss if requested 4`] = `
-Object {
-  "apiResponse": Array [
-    Object {
-      "from": "test-file",
-      "success": true,
-      "to": "testing",
-    },
-  ],
-  "commandResponse": "uploaded",
-  "success": true,
-}
-`;
-
-exports[`Upload file-to-uss handler process method should upload a file to a uss if requested 5`] = `""`;
-
-exports[`Upload file-to-uss handler process method should upload a file to a uss if requested 6`] = `
 "
 [32m- [39m
   [33msuccess: [39m[32mtrue[39m
