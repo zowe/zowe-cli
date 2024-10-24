@@ -16,7 +16,7 @@ import { StdioOptions } from "child_process";
 import { readFileSync } from "jsonfile";
 import * as npmPackageArg from "npm-package-arg";
 import * as pacote from "pacote";
-import { ExecUtils, JsUtils } from "../../../../utilities";
+import { ExecUtils } from "../../../../utilities";
 import { INpmInstallArgs } from "../doc/INpmInstallArgs";
 import { IPluginJsonObject } from "../doc/IPluginJsonObject";
 import { INpmRegistryInfo } from "../doc/INpmRegistryInfo";
@@ -97,9 +97,8 @@ export class NpmRegistryUtils {
                 "--registry", registry,
                 "--always-auth",
                 "--auth-type=legacy"
-            ], {
-                stdio: [0,1,2]
-            }
+            ],
+            { stdio: "inherit" }
         );
     }
 
@@ -127,7 +126,7 @@ export class NpmRegistryUtils {
             };
         } else {
             // If updating a plug-in, fetch registry info from plugins.json
-            const cachedRegistry = JsUtils.isUrl(packageInfo.location) ? packageInfo.location : undefined;
+            const cachedRegistry = npmPackageArg(packageInfo.package).registry ? packageInfo.location : undefined;
             return {
                 location: packageInfo.location,
                 npmArgs: this.buildRegistryNpmArgs(cachedRegistry ?? this.getRegistry(), packageScope)
