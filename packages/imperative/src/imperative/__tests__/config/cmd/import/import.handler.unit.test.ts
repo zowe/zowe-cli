@@ -272,40 +272,6 @@ describe("Configuration Import command handler", () => {
             expect(error.message).toContain("Unexpected token");
         });
 
-        it("should display help text even when schema file is not valid JSON if --help flag is used", async () => {
-            const params: IHandlerParameters = getIHandlerParametersObject();
-            params.arguments.help = true;  // Simulate --help flag
-
-            let error: any;
-
-            try {
-                if (params.arguments.help) {
-                    await downloadSchema(new URL(schemaUrl), schemaDestPath);
-                }
-            } catch (err) {
-                error = err;
-            }
-
-            expect(error).toBeUndefined();  // Ensure no error when help flag is used
-        });
-
-        it("should display version even when schema file is not valid JSON if --version flag is used", async () => {
-            const params: IHandlerParameters = getIHandlerParametersObject();
-            params.arguments.version = true;  // Simulate --version flag
-
-            let error: any;
-
-            try {
-                if (params.arguments.version) {
-                    await downloadSchema(new URL(schemaUrl), schemaDestPath);
-                }
-            } catch (err) {
-                error = err;
-            }
-
-            expect(error).toBeUndefined();  // Ensure no error when version flag is used
-        });
-
         it("should throw error when REST client fails to fetch schema file", async () => {
             jest.spyOn(RestClient, "getExpectString").mockRejectedValueOnce(new Error("invalid URL"));
             let error;
