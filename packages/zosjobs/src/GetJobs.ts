@@ -108,7 +108,7 @@ export class GetJobs {
         ImperativeExpect.toBeDefinedAndNonBlank(jobid, "jobid");
         ImperativeExpect.toNotBeNullOrUndefined(session, "Required session must be defined");
         const jobs = await GetJobs.getJobsCommon(session, { jobid, owner: "*" });
-
+        
         const userMsg: string = "Cannot obtain job info for job id = " + jobid;
         const diagInfo: string =
             "Protocol:          "   + session.ISession.protocol +
@@ -153,7 +153,7 @@ export class GetJobs {
         Logger.getAppLogger().trace("GetJobs.getJobsCommon()");
         ImperativeExpect.toNotBeNullOrUndefined(session, "Required session must be defined");
         let query = JobsConstants.QUERY_ID;
-        // params.execData = true; // always returning start and end time data
+        let includeExecData = params?.execData != false;
 
         if (params) {
             if (params.owner) {
@@ -181,7 +181,7 @@ export class GetJobs {
                 }
                 query += JobsConstants.QUERY_JOBID + encodeURIComponent(params.jobid);
             }
-            if (params.execData) {
+            if (includeExecData) {
                 if (RestClient.hasQueryString(query)) {
                     query += JobsConstants.COMBO_ID;
                 }
