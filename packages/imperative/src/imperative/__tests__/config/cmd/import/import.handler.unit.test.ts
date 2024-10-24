@@ -280,8 +280,6 @@ describe("Configuration Import command handler", () => {
 
             try {
                 if (params.arguments.help) {
-                    console.log("Help text: Command usage here..."); // Simulate help output
-                } else {
                     await downloadSchema(new URL(schemaUrl), schemaDestPath);
                 }
             } catch (err) {
@@ -299,8 +297,6 @@ describe("Configuration Import command handler", () => {
 
             try {
                 if (params.arguments.version) {
-                    console.log("Version: 1.0.0"); // Simulate version output
-                } else {
                     await downloadSchema(new URL(schemaUrl), schemaDestPath);
                 }
             } catch (err) {

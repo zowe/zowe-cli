@@ -58,12 +58,12 @@ export class ConfigLayers extends ConfigApi {
                         msg:msg,
                         suppressDump: true
                     });
-               } else {
+                } else {
                     const cmdResp: CommandResponse = new CommandResponse({
                         responseFormat: "default"
                     });
                     cmdResp.console.log(TextUtils.chalk.red(msg));
-               }
+                }
             }
             this.mConfig.api.secure.loadCached(opts);
         } else if (layer.exists) {
