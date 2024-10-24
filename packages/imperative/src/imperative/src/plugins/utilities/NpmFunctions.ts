@@ -47,7 +47,8 @@ export function installPackages(npmPackage: string, npmArgs: INpmInstallArgs): s
     const args = ["install", npmPackage, "-g", "--legacy-peer-deps"];
     for (const [k, v] of Object.entries(npmArgs)) {
         if (v != null) {
-            args.push(`--${k}`, v);
+            // If npm arg starts with @ like @zowe:registry, must use = as separator
+            args.push(...k.startsWith("@") ? [`--${k}=${v}`] : [`--${k}`, v]);
         }
     }
     const execOutput = ExecUtils.spawnAndGetOutput(npmCmd, args, {
