@@ -9,17 +9,11 @@
 *
 */
 
-import Mock = jest.Mock;
-
+/* eslint-disable jest/expect-expect */
 jest.mock("child_process");
 jest.mock("jsonfile");
-jest.mock("../../../../src/plugins/utilities/npm-interface/update");
 jest.mock("../../../../src/plugins/utilities/PMFConstants");
-jest.mock("../../../../../cmd/src/doc/handler/IHandlerParameters");
-jest.mock("../../../../../cmd/src/response/CommandResponse");
 jest.mock("../../../../../cmd/src/response/HandlerResponse");
-jest.mock("../../../../../logger");
-jest.mock("../../../../src/plugins/utilities/NpmFunctions");
 
 import { HandlerResponse, IHandlerParameters } from "../../../../../cmd";
 import { Console } from "../../../../../console";
@@ -27,21 +21,21 @@ import { IPluginJson } from "../../../../src/plugins/doc/IPluginJson";
 import { Logger } from "../../../../../logger";
 import { PMFConstants } from "../../../../src/plugins/utilities/PMFConstants";
 import UpdateHandler from "../../../../src/plugins/cmd/update/update.handler";
-import * as NpmFunctions from "../../../../src/plugins/utilities/NpmFunctions";
-import * as ChildProcesses from "child_process";
-import * as JsonFile from "jsonfile";
-import * as NpmInterface from "../../../../src/plugins/utilities/npm-interface";
+import { NpmRegistryUtils } from "../../../../src/plugins/utilities/NpmFunctions";
+import * as childProcess from "child_process";
+import * as jsonfile from "jsonfile";
+import * as npmInterface from "../../../../src/plugins/utilities/npm-interface";
 
 describe("Plugin Management Facility update handler", () => {
 
     const resolveVal = "test/imperative-plugins";
 
     const mocks = {
-        npmLoginSpy: jest.spyOn(NpmFunctions, 'npmLogin') as jest.SpyInstance,
-        execSyncSpy: jest.spyOn(ChildProcesses, 'execSync') as jest.SpyInstance,
-        readFileSyncSpy: jest.spyOn(JsonFile, 'readFileSync') as jest.SpyInstance,
-        writeFileSyncSpy: jest.spyOn(JsonFile, 'writeFileSync') as jest.SpyInstance,
-        updateSpy: jest.spyOn(NpmInterface, 'update') as jest.SpyInstance,
+        npmLoginSpy: jest.spyOn(NpmRegistryUtils, "npmLogin"),
+        execSyncSpy: jest.spyOn(childProcess, "execSync"),
+        readFileSyncSpy: jest.spyOn(jsonfile, "readFileSync"),
+        writeFileSyncSpy: jest.spyOn(jsonfile, "writeFileSync"),
+        updateSpy: jest.spyOn(npmInterface, "update"),
     };
 
     // two plugin set of values
@@ -56,14 +50,13 @@ describe("Plugin Management Facility update handler", () => {
     const pluginName = "imperative-sample-plugin";
 
     beforeEach(() => {
-    // Mocks need cleared after every test for clean test runs
+        // Mocks need cleared after every test for clean test runs
         jest.resetAllMocks();
 
         // This needs to be mocked before running process function of update handler
-        (Logger.getImperativeLogger as unknown as Mock<typeof Logger.getImperativeLogger>).mockReturnValue(new Logger(new Console()) as any);
-        mocks.execSyncSpy.mockReturnValue(packageRegistry as any);
-        mocks.readFileSyncSpy.mockReturnValue({} as any);
-        NpmFunctions.npmLogin(packageRegistry);
+        jest.spyOn(Logger, "getImperativeLogger").mockReturnValue(new Logger(new Console()));
+        mocks.execSyncSpy.mockReturnValue(packageRegistry);
+        mocks.readFileSyncSpy.mockReturnValue({});
     });
 
     /**
@@ -96,7 +89,7 @@ describe("Plugin Management Facility update handler", () => {
         registry: string
     ) => {
         expect(mocks.updateSpy).toHaveBeenCalledWith(
-            packageNameParm, registry
+            packageNameParm, { location: registry, npmArgs: { registry } }
         );
     };
 
@@ -107,7 +100,8 @@ describe("Plugin Management Facility update handler", () => {
      *                                    process function.
      */
     const wasUpdateSuccessful = (params: IHandlerParameters) => {
-        expect(params.response.console.log).toHaveBeenCalledWith(`Update of the npm package(${params.arguments.plugin}) was successful.\n`);
+        expect(params.response.console.log).toHaveBeenCalledWith(
+            `Update of the npm package(${resolveVal}) was successful.\n`);
     };
 
     /**
@@ -131,7 +125,7 @@ describe("Plugin Management Facility update handler", () => {
         );
     };
 
-    test("update specified plugin", async () => {
+    it("update specified plugin", async () => {
 
         // plugin definitions mocking file contents
         const fileJson: IPluginJson = {
@@ -148,13 +142,14 @@ describe("Plugin Management Facility update handler", () => {
         };
 
         // Override the return value for this test only
-        mocks.readFileSyncSpy.mockReturnValueOnce(fileJson as any);
+        mocks.readFileSyncSpy.mockReturnValueOnce(fileJson);
 
         const handler = new UpdateHandler();
 
         const params = getIHandlerParametersObject();
         params.arguments.plugin = pluginName;
         params.arguments.registry = packageRegistry;
+        params.arguments.login = true;
 
         await handler.process(params as IHandlerParameters);
 
@@ -162,12 +157,10 @@ describe("Plugin Management Facility update handler", () => {
         wasNpmLoginCallValid(packageRegistry);
         wasWriteFileSyncValid(PMFConstants.instance.PLUGIN_JSON, fileJson);
         wasUpdateCallValid(packageName, packageRegistry);
-
-        expect(params.response.console.log).toHaveBeenCalledWith(
-            `Update of the npm package(${resolveVal}) was successful.\n`);
+        wasUpdateSuccessful(params);
     });
 
-    test("update imperative-sample-plugin", async () => {
+    it("update imperative-sample-plugin", async () => {
 
         // plugin definitions mocking file contents
         const fileJson: IPluginJson = {
@@ -179,7 +172,7 @@ describe("Plugin Management Facility update handler", () => {
         };
 
         // Override the return value for this test only
-        mocks.readFileSyncSpy.mockReturnValueOnce(fileJson as any);
+        mocks.readFileSyncSpy.mockReturnValueOnce(fileJson);
 
         const handler = new UpdateHandler();
 
@@ -189,11 +182,8 @@ describe("Plugin Management Facility update handler", () => {
         await handler.process(params as IHandlerParameters);
 
         // Validate the call to login
-        wasNpmLoginCallValid(packageRegistry);
         wasWriteFileSyncValid(PMFConstants.instance.PLUGIN_JSON, fileJson);
         wasUpdateCallValid(resolveVal, packageRegistry);
-        expect(params.response.console.log).toHaveBeenCalledWith(
-            `Update of the npm package(${resolveVal}) was successful.\n`);
+        wasUpdateSuccessful(params);
     });
 });
-

@@ -10,31 +10,22 @@
 */
 
 /* eslint-disable jest/expect-expect */
-import Mock = jest.Mock;
-
 let expectedVal: unknown;
 let returnedVal: unknown;
 
 jest.mock("cross-spawn");
 jest.mock("jsonfile");
-jest.mock("../../../../src/plugins/utilities/npm-interface/install");
-jest.mock("../../../../src/plugins/utilities/runValidatePlugin");
 jest.mock("../../../../src/plugins/utilities/PMFConstants");
-jest.mock("../../../../../cmd/src/response/CommandResponse");
 jest.mock("../../../../../cmd/src/response/HandlerResponse");
-jest.mock("../../../../../cmd/src/doc/handler/IHandlerParameters");
-jest.mock("../../../../../logger");
-jest.mock("../../../../src/Imperative");
-jest.mock("../../../../src/plugins/utilities/NpmFunctions");
 jest.doMock("path", () => {
     const originalPath = jest.requireActual("path");
     return {
         ...originalPath,
-        resolve: (...path: string[]) => {
-            if (path[0] == expectedVal) {
+        resolve: (...paths: string[]) => {
+            if (paths[0] === expectedVal) {
                 return returnedVal ? returnedVal : expectedVal;
             } else {
-                return originalPath.resolve(...path);
+                return originalPath.resolve(...paths);
             }
         }
     };
@@ -43,29 +34,29 @@ jest.doMock("path", () => {
 import { HandlerResponse, IHandlerParameters } from "../../../../../cmd";
 import { Console } from "../../../../../console";
 import { ImperativeError } from "../../../../../error";
-import { install } from "../../../../src/plugins/utilities/npm-interface";
-import { runValidatePlugin } from "../../../../src/plugins/utilities/runValidatePlugin";
+import * as npmInterface from "../../../../src/plugins/utilities/npm-interface";
+import * as validatePlugin from "../../../../src/plugins/utilities/runValidatePlugin";
 import InstallHandler from "../../../../src/plugins/cmd/install/install.handler";
 import { IPluginJson } from "../../../../src/plugins/doc/IPluginJson";
 import { Logger } from "../../../../../logger";
-import { readFileSync, writeFileSync } from "jsonfile";
+import * as jsonfile from "jsonfile";
 import { PMFConstants } from "../../../../src/plugins/utilities/PMFConstants";
 import { TextUtils } from "../../../../../utilities";
-import { getRegistry, getScopeRegistry, npmLogin } from "../../../../src/plugins/utilities/NpmFunctions";
+import { NpmRegistryUtils } from "../../../../src/plugins/utilities/NpmFunctions";
 import * as spawn from "cross-spawn";
-import { IO } from "../../../../../io";
 
 describe("Plugin Management Facility install handler", () => {
 
     // Objects created so types are correct.
+    const origGetRegistry = jest.requireActual("../../../../src/plugins/utilities/NpmFunctions").NpmRegistryUtils.getRegistry;
     const mocks = {
-        npmLogin: npmLogin as Mock<typeof npmLogin>,
-        getRegistry: getRegistry as unknown as Mock<typeof getRegistry>,
-        getScopeRegistry: getScopeRegistry as unknown as Mock<typeof getScopeRegistry>,
-        readFileSync: readFileSync as Mock<typeof readFileSync>,
-        writeFileSync: writeFileSync as Mock<typeof writeFileSync>,
-        install: install as unknown as Mock<typeof install>,
-        runValidatePlugin: runValidatePlugin as unknown as Mock<typeof runValidatePlugin>,
+        npmLogin: jest.spyOn(NpmRegistryUtils, "npmLogin"),
+        getRegistry: jest.spyOn(NpmRegistryUtils, "getRegistry"),
+        getScopeRegistry: jest.spyOn(NpmRegistryUtils as any, "getScopeRegistry"),
+        readFileSync: jest.spyOn(jsonfile, "readFileSync"),
+        writeFileSync: jest.spyOn(jsonfile, "writeFileSync"),
+        install: jest.spyOn(npmInterface, "install"),
+        runValidatePlugin: jest.spyOn(validatePlugin, "runValidatePlugin"),
     };
 
     // two plugin set of values
@@ -84,11 +75,11 @@ describe("Plugin Management Facility install handler", () => {
         jest.clearAllMocks();
 
         // This needs to be mocked before running process function of uninstall handler
-        (Logger.getImperativeLogger as unknown as Mock<typeof Logger.getImperativeLogger>).mockReturnValue(new Logger(new Console()) as any);
-        mocks.getRegistry.mockReturnValue(packageRegistry as any);
-        mocks.readFileSync.mockReturnValue({} as any);
-        npmLogin(packageRegistry);
-        mocks.runValidatePlugin.mockReturnValue(finalValidationMsg as any);
+        jest.spyOn(Logger, "getImperativeLogger").mockReturnValue(new Logger(new Console()));
+        mocks.getRegistry.mockReturnValue(packageRegistry);
+        mocks.readFileSync.mockReturnValue({});
+        mocks.runValidatePlugin.mockReturnValue(finalValidationMsg);
+        mocks.install.mockImplementation();
         expectedVal = undefined;
         returnedVal = undefined;
     });
@@ -141,15 +132,16 @@ describe("Plugin Management Facility install handler", () => {
     const wasInstallCallValid = (
         packageLocation: string,
         registry: string,
-        installFromFile = false
+        installFromFile = false,
+        extraNpmArgs = {}
     ) => {
         if (installFromFile) {
             expect(mocks.install).toHaveBeenCalledWith(
-                packageLocation, registry, true
+                packageLocation, { location: registry, npmArgs: { registry, ...extraNpmArgs } }, true
             );
         } else {
             expect(mocks.install).toHaveBeenCalledWith(
-                packageLocation, registry
+                packageLocation, { location: registry, npmArgs: { registry, ...extraNpmArgs } }
             );
         }
     };
@@ -162,8 +154,9 @@ describe("Plugin Management Facility install handler", () => {
      */
     const wasInstallSuccessful = (params: IHandlerParameters) => {
         // get the text of the last message that was displayed
-        const outputMsg = (params.response.console.log as Mock).mock.calls[(params.response.console.log as Mock).mock.calls.length - 1][0];
-        expect(outputMsg).toContain(finalValidationMsg);
+        expect(params.response.console.log).toHaveBeenLastCalledWith(
+            expect.stringContaining(finalValidationMsg)
+        );
     };
 
     /**
@@ -193,10 +186,10 @@ describe("Plugin Management Facility install handler", () => {
         };
 
         // Override the return value for this test only
-        mocks.readFileSync.mockReturnValueOnce(fileJson as any);
+        mocks.readFileSync.mockReturnValueOnce(fileJson);
         mocks.install
-            .mockReturnValueOnce("a" as any)
-            .mockReturnValueOnce("plugin2" as any);
+            .mockResolvedValueOnce("a")
+            .mockResolvedValueOnce("plugin2");
 
         const handler = new InstallHandler();
 
@@ -213,9 +206,6 @@ describe("Plugin Management Facility install handler", () => {
         // Validate the call to get the registry value
         wasGetRegistryCalled();
 
-        // Validate the call to login
-        wasNpmLoginCallValid(packageRegistry);
-
         expect(mocks.install).toHaveBeenCalledTimes(2);
         wasInstallCallValid(`${fileJson.a.package}@${fileJson.a.version}`, packageRegistry, true);
         wasInstallCallValid(fileJson.plugin2.package, packageRegistry2, true);
@@ -223,7 +213,6 @@ describe("Plugin Management Facility install handler", () => {
         expect(mocks.runValidatePlugin).toHaveBeenCalledTimes(2);
         expect(mocks.runValidatePlugin).toHaveBeenCalledWith("a");
         expect(mocks.runValidatePlugin).toHaveBeenCalledWith("plugin2");
-
 
         // Validate that the read was correct
         wasReadFileSyncCallValid(resolveVal);
@@ -265,9 +254,6 @@ describe("Plugin Management Facility install handler", () => {
         // Validate the call to get the registry value
         wasGetRegistryCalled();
 
-        // Validate the call to login
-        wasNpmLoginCallValid(packageRegistry);
-
         // Check that install worked as expected
         wasInstallCallValid(params.arguments.plugin[0], packageRegistry);
 
@@ -290,6 +276,27 @@ describe("Plugin Management Facility install handler", () => {
         wasInstallSuccessful(params);
     });
 
+    it("should install single package with registry and login specified", async () => {
+        mocks.npmLogin.mockReturnValueOnce();
+        const handler = new InstallHandler();
+
+        const params = getIHandlerParametersObject();
+        params.arguments.plugin = ["sample1"];
+        params.arguments.registry = "http://localhost:4873/";
+        params.arguments.login = true;
+
+        await handler.process(params as IHandlerParameters);
+
+        // Validate the call to login
+        wasNpmLoginCallValid(packageRegistry);
+
+        // Check that install worked as expected
+        wasInstallCallValid(params.arguments.plugin[0], params.arguments.registry);
+
+        // Check that success is output
+        wasInstallSuccessful(params);
+    });
+
     it("should install multiple packages", async () => {
         const handler = new InstallHandler();
 
@@ -300,9 +307,6 @@ describe("Plugin Management Facility install handler", () => {
 
         // Validate the install
         wasGetRegistryCalled();
-
-        // Validate the call to login
-        wasNpmLoginCallValid(packageRegistry);
 
         // Validate that install was called with each of these values
         expect(mocks.install).toHaveBeenCalledTimes(params.arguments.plugin.length);
@@ -324,8 +328,7 @@ describe("Plugin Management Facility install handler", () => {
         // Validate the call to get the registry value
         wasGetRegistryCalled();
 
-        // Validate the call to login
-        wasNpmLoginCallValid(packageRegistry);
+        // Validate that the read was correct
         wasReadFileSyncCallValid(PMFConstants.instance.PLUGIN_JSON);
 
         expect(params.response.console.log).toHaveBeenCalledWith("No packages were found in " +
@@ -369,7 +372,7 @@ describe("Plugin Management Facility install handler", () => {
         });
 
         jest.spyOn(spawn, "sync").mockReturnValueOnce({ status: 1 } as any);
-        mocks.getRegistry.mockImplementationOnce(jest.requireActual("../../../../src/plugins/utilities/NpmFunctions").getRegistry);
+        mocks.getRegistry.mockImplementationOnce(origGetRegistry);
 
         try {
             await handler.process(params);
@@ -381,13 +384,13 @@ describe("Plugin Management Facility install handler", () => {
         expect(expectedError.additionalDetails).toContain("Command failed");
         expect(expectedError.additionalDetails).toContain("npm");
     });
-    it("should handle installed plugins via public scope", async () => {
+    it("should handle installed plugins via package name", async () => {
         const handler = new InstallHandler();
 
         const params = getIHandlerParametersObject();
         params.arguments.plugin = ["@public/sample1"];
 
-        mocks.getScopeRegistry.mockReturnValueOnce("publicRegistryUrl" as any);
+        mocks.getScopeRegistry.mockReturnValueOnce("publicRegistryUrl");
 
         try {
             await handler.process(params);
@@ -395,14 +398,13 @@ describe("Plugin Management Facility install handler", () => {
             expect(e).toBeUndefined();
         }
 
-        expect(mocks.install).toHaveBeenCalledWith("@public/sample1","publicRegistryUrl");
+        wasInstallCallValid("@public/sample1", packageRegistry, false, { "@public:registry": "publicRegistryUrl" });
     });
     it("should handle installed plugins via project/directory", async () => {
         const handler = new InstallHandler();
 
         const params = getIHandlerParametersObject();
         params.arguments.plugin = ["path/to/dir"];
-        jest.spyOn(IO, 'isDir').mockReturnValue(true);
 
         try{
             await handler.process(params);
@@ -411,7 +413,7 @@ describe("Plugin Management Facility install handler", () => {
             expect(e).toBeUndefined();
         }
 
-        expect(mocks.install).toHaveBeenCalledWith("path/to/dir","path/to/dir");
+        wasInstallCallValid("path/to/dir", "path/to/dir", false, { registry: packageRegistry });
     });
     it("should handle installed plugins via tarball file", async () => {
         const handler = new InstallHandler();
@@ -426,16 +428,15 @@ describe("Plugin Management Facility install handler", () => {
             expect(e).toBeUndefined();
         }
 
-        expect(mocks.install).toHaveBeenCalledWith("path/to/dir/file.tgz","path/to/dir/file.tgz");
+        wasInstallCallValid("path/to/dir/file.tgz", "path/to/dir/file.tgz", false, { registry: packageRegistry });
     });
-    it("should handle multiple installed plugins via tarball, director, public registry, and private registry", async () => {
+    it("should handle multiple installed plugins via tarball, directory, and registry", async () => {
         const handler = new InstallHandler();
 
         const params = getIHandlerParametersObject();
-        params.arguments.plugin = ["@public/sample1","@private/sample1","path/to/dir","path/to/dir/file.tgz"];
-        mocks.getScopeRegistry.mockReturnValueOnce("publicRegistryUrl" as any);
-        mocks.getScopeRegistry.mockReturnValueOnce("privateRegistryUrl" as any);
-        jest.spyOn(IO, 'isDir').mockReturnValue(true);
+        params.arguments.plugin = ["@public/sample1", "@private/sample1", "path/to/dir", "path/to/dir/file.tgz"];
+        mocks.getScopeRegistry.mockReturnValueOnce("publicRegistryUrl");
+        mocks.getScopeRegistry.mockReturnValueOnce("privateRegistryUrl");
 
         try{
             await handler.process(params);
@@ -444,10 +445,10 @@ describe("Plugin Management Facility install handler", () => {
             expect(e).toBeUndefined();
         }
 
-        expect(mocks.install).toHaveBeenCalledWith("@public/sample1","publicRegistryUrl");
-        expect(mocks.install).toHaveBeenCalledWith("@private/sample1","privateRegistryUrl");
-        expect(mocks.install).toHaveBeenCalledWith("path/to/dir","path/to/dir");
-        expect(mocks.install).toHaveBeenCalledWith("path/to/dir/file.tgz","path/to/dir/file.tgz");
+        expect(mocks.install).toHaveBeenCalledTimes(params.arguments.plugin.length);
+        wasInstallCallValid("@public/sample1", packageRegistry, false, { "@public:registry": "publicRegistryUrl" });
+        wasInstallCallValid("@private/sample1", packageRegistry, false, { "@private:registry": "privateRegistryUrl" });
+        wasInstallCallValid("path/to/dir", "path/to/dir", false, { registry: packageRegistry });
+        wasInstallCallValid("path/to/dir/file.tgz", "path/to/dir/file.tgz", false, { registry: packageRegistry });
     });
 });
-

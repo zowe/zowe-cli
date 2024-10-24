@@ -109,7 +109,7 @@ describe("Plugin Management Facility uninstall handler", () => {
         expect(params.response.console.log).toHaveBeenCalledWith("Removal of the npm package(s) was successful.\n");
     };
 
-    test("uninstall specified package", async () => {
+    it("uninstall specified package", async () => {
         // plugin definitions mocking file contents
         const fileJson: IPluginJson = {
             a: {

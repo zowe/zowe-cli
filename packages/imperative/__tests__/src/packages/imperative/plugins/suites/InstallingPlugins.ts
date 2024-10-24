@@ -83,7 +83,7 @@ describe("Installing Plugins", () => {
             name: "override-plugin",
             usage: "override-plugin"
         },
-        location: {
+        sample_registry: {
             location: "imperative-sample-plugin",
             name: "imperative-sample-plugin",
             usage: "sample-plugin"
@@ -667,7 +667,7 @@ describe("Installing Plugins", () => {
             const savedPluginJson = readFileSync(pluginJsonLocation);
             const expectedContent: IPluginJson = fileContent as IPluginJson;
 
-            expectedContent[plugins.normal.name].location = envNpmRegistry;
+            expectedContent[plugins.normal.name].location = plugins.normal.location;
 
             expect(savedPluginJson).toEqual(expectedContent);
         });
@@ -735,7 +735,7 @@ describe("Installing Plugins", () => {
             const actualJson = readFileSync(pluginJsonLocation);
 
             // Add missing registry to expected
-            expectedJson[plugins.normal.name].location = envNpmRegistry;
+            expectedJson[plugins.normal.name].location = plugins.normal.location;
 
             // Add missing normal2 plugin not present in before each
             expectedJson[plugins.normal3.name] = {
@@ -751,7 +751,7 @@ describe("Installing Plugins", () => {
         it("should error when a package and --file is specified", function () {
             expect(
                 T.stripNewLines(
-                    executeCommandString(this, `${pluginGroup} install ${plugins.location.location} --file ${testFile}`).stderr
+                    executeCommandString(this, `${pluginGroup} install ${plugins.sample_registry.location} --file ${testFile}`).stderr
                 )
             ).toContain("Option --file can not be specified if positional package... is as well. They are mutually exclusive.");
         });
@@ -760,7 +760,7 @@ describe("Installing Plugins", () => {
             expect(
                 T.stripNewLines(
                     executeCommandString(this,
-                        `${pluginGroup} install ${plugins.location.location} --file ${testFile} --registry ${TEST_REGISTRY}`).stderr
+                        `${pluginGroup} install ${plugins.sample_registry.location} --file ${testFile} --registry ${TEST_REGISTRY}`).stderr
                 )
             ).toContain("The following options conflict (mutually exclusive)");
         });
