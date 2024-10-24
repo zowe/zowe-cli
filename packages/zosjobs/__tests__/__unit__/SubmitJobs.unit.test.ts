@@ -27,7 +27,7 @@ const expectedMockSpoolContent = "Hello! This is my spool content.";
 const jobFiles: IJobFile[] = [{
     "jobid": fakeJobID,
     "jobname": fakeJobName,
-    
+
     "id": 0,
     "recfm": "FB",
     "lrecl": 80,

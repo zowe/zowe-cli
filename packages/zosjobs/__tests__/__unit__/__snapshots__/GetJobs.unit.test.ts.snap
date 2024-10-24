@@ -439,23 +439,23 @@ Array [
 ]
 `;
 
-exports[`GetJobs tests getJobs APIs should have proper URI when using all parms 1`] = `"/zosmf/restjobs/jobs?owner=fakeOwner&prefix=fakePrefix&max-jobs=2&jobid=fakeID"`;
+exports[`GetJobs tests getJobs APIs should have proper URI when using all parms 1`] = `"/zosmf/restjobs/jobs?owner=fakeOwner&prefix=fakePrefix&max-jobs=2&jobid=fakeID&exec-data=Y"`;
 
-exports[`GetJobs tests getJobs APIs should have proper URI when using jobid 1`] = `"/zosmf/restjobs/jobs?jobid=fakeJobid"`;
+exports[`GetJobs tests getJobs APIs should have proper URI when using jobid 1`] = `"/zosmf/restjobs/jobs?jobid=fakeJobid&exec-data=Y"`;
 
-exports[`GetJobs tests getJobs APIs should have proper URI when using jobname and jobid 1`] = `"/zosmf/restjobs/jobs?owner=someOwner&prefix=somePrefix"`;
+exports[`GetJobs tests getJobs APIs should have proper URI when using jobname and jobid 1`] = `"/zosmf/restjobs/jobs?owner=someOwner&prefix=somePrefix&exec-data=Y"`;
 
-exports[`GetJobs tests getJobs APIs should have proper URI when using jobname, prefix, and jobid 1`] = `"/zosmf/restjobs/jobs?owner=someOwner&prefix=somePrefix&jobid=fakeJobid"`;
+exports[`GetJobs tests getJobs APIs should have proper URI when using jobname, prefix, and jobid 1`] = `"/zosmf/restjobs/jobs?owner=someOwner&prefix=somePrefix&jobid=fakeJobid&exec-data=Y"`;
 
-exports[`GetJobs tests getJobs APIs should have proper URI when using maxjobs 1`] = `"/zosmf/restjobs/jobs?max-jobs=10"`;
+exports[`GetJobs tests getJobs APIs should have proper URI when using maxjobs 1`] = `"/zosmf/restjobs/jobs?max-jobs=10&exec-data=Y"`;
 
-exports[`GetJobs tests getJobs APIs should have proper URI when using no parms 1`] = `"/zosmf/restjobs/jobs"`;
+exports[`GetJobs tests getJobs APIs should have proper URI when using no parms 1`] = `"/zosmf/restjobs/jobs?exec-data=Y"`;
 
-exports[`GetJobs tests getJobs APIs should have proper URI when using owner 1`] = `"/zosmf/restjobs/jobs?owner=fakeOwner"`;
+exports[`GetJobs tests getJobs APIs should have proper URI when using owner 1`] = `"/zosmf/restjobs/jobs?owner=fakeOwner&exec-data=Y"`;
 
-exports[`GetJobs tests getJobs APIs should have proper URI when using prefix 1`] = `"/zosmf/restjobs/jobs?prefix=fakePrefix"`;
+exports[`GetJobs tests getJobs APIs should have proper URI when using prefix 1`] = `"/zosmf/restjobs/jobs?prefix=fakePrefix&exec-data=Y"`;
 
-exports[`GetJobs tests getJobs APIs should have proper URI when using status 1`] = `"/zosmf/restjobs/jobs?status=active"`;
+exports[`GetJobs tests getJobs APIs should have proper URI when using status 1`] = `"/zosmf/restjobs/jobs?exec-data=Y&status=active"`;
 
 exports[`GetJobs tests getJobs APIs should locate a job by jobid 1`] = `
 Object {
