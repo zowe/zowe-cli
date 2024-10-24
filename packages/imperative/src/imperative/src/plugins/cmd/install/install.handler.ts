@@ -135,7 +135,7 @@ export default class InstallHandler implements ICommandHandler {
                             this.console.debug(`Package: ${packageArgument}`);
 
                             params.response.console.log("\n_______________________________________________________________");
-                            params.response.console.log("Location = " + packageInfo.location);
+                            params.response.console.log("Location = " + packageInfo.location + "\n");
                             const pluginName = await install(packageArgument, registryInfo, true);
                             params.response.console.log("Installed plugin name = '" + pluginName + "'");
                             params.response.console.log(runValidatePlugin(pluginName));
@@ -147,7 +147,7 @@ export default class InstallHandler implements ICommandHandler {
                     for (const packageString of params.arguments.plugin) {
                         params.response.console.log("\n_______________________________________________________________");
                         const registryInfo = NpmRegistryUtils.buildRegistryInfo(packageString, params.arguments.registry);
-                        params.response.console.log("Location = " + registryInfo.location);
+                        params.response.console.log("Location = " + registryInfo.location + "\n");
                         const pluginName = await install(packageString, registryInfo);
                         params.response.console.log("Installed plugin name = '" + pluginName + "'");
                         params.response.console.log(runValidatePlugin(pluginName));
