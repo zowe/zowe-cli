@@ -1,6 +1,8 @@
 # Change Log
-
 All notable changes to the Zowe CLI package will be documented in this file.
+
+## Recent Changes
+- Enhancement: Add the --ignore-not-found flag to avoid error messages potentially interrupting a script for automated batch processes. The flag bypasses warning prompts to confirm delete actions. [#2254](https://github.com/zowe/zowe-cli/pull/2254)
 
 ## `8.3.0`
 

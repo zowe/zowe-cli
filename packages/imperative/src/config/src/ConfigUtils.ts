@@ -300,7 +300,8 @@ export class ConfigUtils {
      * Checks if the given token has expired. Supports JSON web tokens only.
      *
      * @param {string} token - The JSON web token to check
-     * @returns {boolean} Whether the token has expired. Returns `false` if the token cannot be decoded or an expire time is not specified in the payload.
+     * @returns {boolean} Whether the token has expired. Returns `false` 
+     * if the token cannot be decoded or an expire time is not specified in the payload.
      */
     public static hasTokenExpired(token: string): boolean {
         // JWT format: [header].[payload].[signature]
