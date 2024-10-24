@@ -128,29 +128,26 @@ export function uninstall(packageName: string): void {
             throw new Error("Failed to uninstall plugin, install folder still exists:\n  " + installFolder);
         }
 
-        if (PMFConstants.instance.PLUGIN_USING_CONFIG) {
-            // Update the Imperative Configuration to add the profiles introduced by the recently installed plugin
-            // This might be needed outside of PLUGIN_USING_CONFIG scenarios, but we haven't had issues with other APIs before
-            const globalLayer = PMFConstants.instance.PLUGIN_CONFIG.layers.find((layer) => layer.global && layer.exists);
-            if (globalLayer) {
-                const schemaInfo = PMFConstants.instance.PLUGIN_CONFIG.getSchemaInfo();
-                if (schemaInfo.local && fs.existsSync(schemaInfo.resolved)) {
-                    let loadedSchema: IProfileTypeConfiguration[];
-                    try {
-                        // load schema from disk to prevent removal of profile types from other applications
-                        loadedSchema = ConfigSchema.loadSchema(readFileSync(schemaInfo.resolved));
-                    } catch (err) {
-                        iConsole.error("Error when removing profile type for plugin %s: failed to parse schema", npmPackage);
-                    }
-                    // update extenders.json with any removed types - function returns the list of types to remove
-                    const typesToRemove = updateAndGetRemovedTypes(npmPackage);
+        // Update the Imperative Configuration to add the profiles introduced by the recently installed plugin
+        const globalLayer = PMFConstants.instance.PLUGIN_CONFIG.layers.find((layer) => layer.global && layer.exists);
+        if (globalLayer) {
+            const schemaInfo = PMFConstants.instance.PLUGIN_CONFIG.getSchemaInfo();
+            if (schemaInfo.local && fs.existsSync(schemaInfo.resolved)) {
+                let loadedSchema: IProfileTypeConfiguration[];
+                try {
+                    // load schema from disk to prevent removal of profile types from other applications
+                    loadedSchema = ConfigSchema.loadSchema(readFileSync(schemaInfo.resolved));
+                } catch (err) {
+                    iConsole.error("Error when removing profile type for plugin %s: failed to parse schema", npmPackage);
+                }
+                // update extenders.json with any removed types - function returns the list of types to remove
+                const typesToRemove = updateAndGetRemovedTypes(npmPackage);
 
-                    // Only update global schema if there are types to remove and accessible from disk
-                    if (loadedSchema != null && typesToRemove.length > 0) {
-                        loadedSchema = loadedSchema.filter((typeCfg) => !typesToRemove.includes(typeCfg.type));
-                        const schema = ConfigSchema.buildSchema(loadedSchema);
-                        ConfigSchema.updateSchema({ layer: "global", schema });
-                    }
+                // Only update global schema if there are types to remove and accessible from disk
+                if (loadedSchema != null && typesToRemove.length > 0) {
+                    loadedSchema = loadedSchema.filter((typeCfg) => !typesToRemove.includes(typeCfg.type));
+                    const schema = ConfigSchema.buildSchema(loadedSchema);
+                    ConfigSchema.updateSchema({ layer: "global", schema });
                 }
             }
         }

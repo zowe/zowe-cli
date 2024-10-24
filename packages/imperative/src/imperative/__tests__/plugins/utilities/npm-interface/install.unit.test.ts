@@ -16,6 +16,19 @@ let returnedVal: any;
 jest.mock("cross-spawn");
 jest.mock("jsonfile");
 jest.mock("../../../../src/plugins/utilities/PMFConstants");
+jest.doMock("path", () => {
+    const originalPath = jest.requireActual("path");
+    return {
+        ...originalPath,
+        resolve: (...paths: string[]) => {
+            if (paths[0] === expectedVal) {
+                return returnedVal ? returnedVal : expectedVal;
+            } else {
+                return originalPath.resolve(...paths);
+            }
+        }
+    };
+});
 
 import { Console } from "../../../../../console";
 import { ImperativeError } from "../../../../../error";
@@ -25,7 +38,7 @@ import { IPluginJson } from "../../../../src/plugins/doc/IPluginJson";
 import { IPluginJsonObject } from "../../../../src/plugins/doc/IPluginJsonObject";
 import { Logger } from "../../../../../logger";
 import { PMFConstants } from "../../../../src/plugins/utilities/PMFConstants";
-import * as crossSpawn from "cross-spawn";
+import * as spawn from "cross-spawn";
 import * as jsonfile from "jsonfile";
 import * as findUp from "find-up";
 import * as npmFns from "../../../../src/plugins/utilities/NpmFunctions";
@@ -59,7 +72,7 @@ describe("PMF: Install Interface", () => {
         requirePluginModuleCallback: jest.spyOn(pmfI, "requirePluginModuleCallback"),
         loadConfiguration: jest.spyOn(ConfigurationLoader, "load"),
         addProfiles: jest.spyOn(UpdateImpConfig, "addProfiles"),
-        spawnSync: jest.spyOn(crossSpawn, "sync"),
+        spawnSync: jest.spyOn(spawn, "sync"),
         ConfigSchema: {
             loadSchema: jest.spyOn(ConfigSchema, "loadSchema"),
             updateSchema: jest.spyOn(ConfigSchema, "updateSchema")
@@ -73,6 +86,7 @@ describe("PMF: Install Interface", () => {
     const packageName = "a";
     const packageVersion = "1.2.3";
     const packageRegistry = "https://registry.npmjs.org/";
+    const registryInfo = npmFns.NpmRegistryUtils.buildRegistryInfo(packageName, packageRegistry);
 
     beforeEach(() => {
         // Mocks need cleared after every test for clean test runs
@@ -97,6 +111,7 @@ describe("PMF: Install Interface", () => {
         });
         mocks.ConfigUtils.writeExtendersJson.mockImplementation();
         mocks.ConfigSchema.loadSchema.mockReturnValue([mockTypeConfig]);
+        mocks.ConfigSchema.updateSchema.mockImplementation();
         mocks.loadConfiguration.mockReturnValue({ profiles: [mockTypeConfig] });
         mocks.spawnSync.mockReturnValue({
             status: 0,
@@ -165,16 +180,7 @@ describe("PMF: Install Interface", () => {
     describe("Basic install", () => {
         beforeEach(() => {
             mocks.getPackageInfo.mockResolvedValue({ name: packageName, version: packageVersion });
-            mocks.ConfigSchema.updateSchema.mockImplementation();
             jest.spyOn(fs, "existsSync").mockReturnValue(true);
-            // jest.spyOn(path, "normalize").mockReturnValue("testing");
-            jest.spyOn(path, "resolve").mockImplementation((...paths) => {
-                if (paths[0] == expectedVal) {
-                    return returnedVal ? returnedVal : expectedVal;
-                } else {
-                    return jest.requireActual("path").resolve(...paths);
-                }
-            });
             jest.spyOn(fs, "lstatSync").mockReturnValue({
                 isSymbolicLink: jest.fn().mockReturnValue(true)
             } as any);
@@ -182,7 +188,7 @@ describe("PMF: Install Interface", () => {
 
         it("should install from the npm registry", async () => {
             setResolve(packageName);
-            await install(packageName, new npmFns.NpmRegistryInfo(packageRegistry));
+            await install(packageName, registryInfo);
 
             // Validate the install
             wasNpmInstallCallValid(packageName, packageRegistry);
@@ -198,7 +204,7 @@ describe("PMF: Install Interface", () => {
 
             jest.spyOn(path, "isAbsolute").mockReturnValueOnce(true);
             setResolve(rootFile);
-            await install(rootFile, new npmFns.NpmRegistryInfo(packageRegistry));
+            await install(rootFile, registryInfo);
 
             // Validate the install
             wasNpmInstallCallValid(rootFile, packageRegistry);
@@ -214,7 +220,7 @@ describe("PMF: Install Interface", () => {
 
             jest.spyOn(path, "isAbsolute").mockReturnValueOnce(true);
             setResolve(rootFile);
-            await install(rootFile, new npmFns.NpmRegistryInfo(packageRegistry));
+            await install(rootFile, registryInfo);
 
             // Validate the install
             wasNpmInstallCallValid(rootFile, packageRegistry);
@@ -241,7 +247,7 @@ describe("PMF: Install Interface", () => {
 
                 // Call the install function
                 setResolve(relativePath, absolutePath);
-                await install(relativePath, new npmFns.NpmRegistryInfo(packageRegistry));
+                await install(relativePath, registryInfo);
 
                 // Validate results
                 wasNpmInstallCallValid(absolutePath, packageRegistry);
@@ -259,7 +265,7 @@ describe("PMF: Install Interface", () => {
 
             // mocks.isUrl.mockReturnValue(true);
 
-            await install(installUrl, new npmFns.NpmRegistryInfo(packageRegistry));
+            await install(installUrl, registryInfo);
 
             wasNpmInstallCallValid(installUrl, packageRegistry);
             wasWriteFileSyncCallValid({}, packageName, {
@@ -272,7 +278,7 @@ describe("PMF: Install Interface", () => {
         it("should install plugin that does not define profiles", async () => {
             mocks.loadConfiguration.mockReturnValueOnce({});
             setResolve(packageName);
-            await install(packageName, new npmFns.NpmRegistryInfo(packageRegistry));
+            await install(packageName, registryInfo);
 
             // Validate the install
             wasNpmInstallCallValid(packageName, packageRegistry, false);
@@ -285,7 +291,7 @@ describe("PMF: Install Interface", () => {
     }); // end Basic install
 
     describe("Advanced install", () => {
-        fit("should write even when install from file is true", async () => {
+        it("should write even when install from file is true", async () => {
             // This test is constructed in such a way that all if conditions with installFromFile
             // are validated to have been called or not.
             const location = "/this/should/not/change";
@@ -293,12 +299,11 @@ describe("PMF: Install Interface", () => {
             jest.spyOn(path, "isAbsolute").mockReturnValueOnce(false);
             jest.spyOn(fs, "existsSync").mockReturnValue(true);
             mocks.getPackageInfo.mockResolvedValue({ name: packageName, version: packageVersion });
-            // jest.spyOn(path, "normalize").mockReturnValue("testing");
             jest.spyOn(fs, "lstatSync").mockReturnValue({
                 isSymbolicLink: jest.fn().mockReturnValue(true)
             } as any);
 
-            await install(location, new npmFns.NpmRegistryInfo(packageRegistry), true);
+            await install(location, registryInfo, true);
 
             wasNpmInstallCallValid(location, packageRegistry);
             expect(mocks.writeFileSync).toHaveBeenCalled();
@@ -309,7 +314,6 @@ describe("PMF: Install Interface", () => {
             const semverPackage = `${packageName}@${semverVersion}`;
 
             jest.spyOn(fs, "existsSync").mockReturnValueOnce(true);
-            // jest.spyOn(path, "normalize").mockReturnValue("testing");
             jest.spyOn(fs, "lstatSync").mockReturnValue({
                 isSymbolicLink: jest.fn().mockReturnValue(true)
             } as any);
@@ -323,7 +327,7 @@ describe("PMF: Install Interface", () => {
 
             // Call the install
             setResolve(semverPackage);
-            await install(semverPackage, new npmFns.NpmRegistryInfo(packageRegistry));
+            await install(semverPackage, registryInfo);
 
             // Test that shit happened
             wasNpmInstallCallValid(semverPackage, packageRegistry);
@@ -346,14 +350,13 @@ describe("PMF: Install Interface", () => {
 
             mocks.getPackageInfo.mockResolvedValue({ name: packageName, version: packageVersion });
             jest.spyOn(fs, "existsSync").mockReturnValueOnce(true);
-            // jest.spyOn(path, "normalize").mockReturnValue("testing");
             jest.spyOn(fs, "lstatSync").mockReturnValue({
                 isSymbolicLink: jest.fn().mockReturnValue(true)
             } as any);
             mocks.readFileSync.mockReturnValue(oneOldPlugin);
 
             setResolve(packageName);
-            await install(packageName, new npmFns.NpmRegistryInfo(packageRegistry));
+            await install(packageName, registryInfo);
 
             wasNpmInstallCallValid(packageName, packageRegistry);
             wasWriteFileSyncCallValid(oneOldPlugin, packageName, {
@@ -363,7 +366,7 @@ describe("PMF: Install Interface", () => {
             });
         });
 
-        xdescribe("Updating the global schema", () => {
+        describe("Updating the global schema", () => {
             const expectTestSchemaMgmt = async (opts: {
                 schemaExists: boolean;
                 newProfileType: boolean;
@@ -388,7 +391,6 @@ describe("PMF: Install Interface", () => {
 
                 mocks.getPackageInfo.mockResolvedValue({ name: packageName, version: packageVersion });
                 jest.spyOn(fs, "existsSync").mockReturnValueOnce(true).mockReturnValueOnce(opts.schemaExists);
-                // jest.spyOn(path, "normalize").mockReturnValue("testing");
                 jest.spyOn(fs, "lstatSync").mockReturnValue({
                     isSymbolicLink: jest.fn().mockReturnValue(true)
                 } as any);
@@ -407,7 +409,7 @@ describe("PMF: Install Interface", () => {
                 }
 
                 setResolve(packageName);
-                await install(packageName, new npmFns.NpmRegistryInfo(packageRegistry));
+                await install(packageName, registryInfo);
                 if (opts.schemaExists) {
                     expect(mocks.ConfigSchema.updateSchema).toHaveBeenCalled();
                 } else {
@@ -491,7 +493,7 @@ describe("PMF: Install Interface", () => {
             });
 
             try {
-                await install("test", new npmFns.NpmRegistryInfo("http://www.example.com"));
+                await install("test", registryInfo);
             } catch (e) {
                 expectedError = e;
             }

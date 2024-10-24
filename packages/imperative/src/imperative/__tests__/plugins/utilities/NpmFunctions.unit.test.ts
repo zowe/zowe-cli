@@ -54,7 +54,7 @@ describe("NpmFunctions", () => {
             status: 0,
             stdout: stdoutBuffer
         } as any);
-        const result = npmFunctions.getRegistry();
+        const result = npmFunctions.NpmRegistryUtils.getRegistry();
         expect(spawnSyncSpy.mock.calls[0][0]).toBe(npmCmd);
         expect(spawnSyncSpy.mock.calls[0][1]).toEqual(["config", "get", "registry"]);
         expect(result).toBe(stdoutBuffer.toString());
@@ -62,7 +62,7 @@ describe("NpmFunctions", () => {
 
     it("npmLogin should run npm login command", () => {
         const spawnSyncSpy = jest.spyOn(spawn, "sync").mockReturnValueOnce({ status: 0 } as any);
-        npmFunctions.npmLogin(fakeRegistry);
+        npmFunctions.NpmRegistryUtils.npmLogin(fakeRegistry);
         expect(spawnSyncSpy.mock.calls[0][0]).toBe(npmCmd);
         expect(spawnSyncSpy.mock.calls[0][1]).toContain("login");
         expect(spawnSyncSpy.mock.calls[0][1]).toEqual(expect.arrayContaining(["--registry", fakeRegistry]));
@@ -136,10 +136,10 @@ describe("NpmFunctions", () => {
             expect(pacote.manifest).toHaveBeenCalledTimes(1);
         });
 
-        it("getScopeRegistry() should return registry for 'test' scope", async () => {
+        it("getScopeRegistry() should return registry for 'test' scope", () => {
             const spawnSpy = jest.spyOn(ExecUtils, "spawnAndGetOutput");
             spawnSpy.mockReturnValueOnce("https://test123.com");
-            const result = await npmFunctions.getScopeRegistry("test");
+            const result = (npmFunctions.NpmRegistryUtils as any).getScopeRegistry("test");
             expect(result).toBe("https://test123.com");
             expect(spawnSpy).toHaveBeenCalledTimes(1);
         });

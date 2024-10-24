@@ -17,7 +17,7 @@ jest.mock("../../../../src/plugins/utilities/PMFConstants");
 import * as fs from "fs";
 import * as jsonfile from "jsonfile";
 import { Console } from "../../../../../console";
-import * as crossSpawn from "cross-spawn";
+import * as spawn from "cross-spawn";
 import { ImperativeError } from "../../../../../error";
 import { IPluginJson } from "../../../../src/plugins/doc/IPluginJson";
 import { Logger } from "../../../../../logger";
@@ -33,7 +33,7 @@ import { updateAndGetRemovedTypes } from "../../../../src/plugins/utilities/npm-
 describe("PMF: Uninstall Interface", () => {
     // Objects created so types are correct.
     const mocks = {
-        spawnSync: jest.spyOn(crossSpawn, "sync"),
+        spawnSync: jest.spyOn(spawn, "sync"),
         readFileSync: jest.spyOn(jsonfile, "readFileSync"),
         writeFileSync: jest.spyOn(jsonfile, "writeFileSync")
     };

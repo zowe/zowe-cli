@@ -11,7 +11,8 @@
 
 import { PMFConstants } from "../PMFConstants";
 import { Logger } from "../../../../../logger";
-import { getPackageInfo, installPackages, NpmRegistryInfo } from "../NpmFunctions";
+import { getPackageInfo, installPackages } from "../NpmFunctions";
+import { INpmRegistryInfo } from "../../doc/INpmRegistryInfo";
 
 /**
  * @TODO - allow multiple packages to be updated?
@@ -19,10 +20,10 @@ import { getPackageInfo, installPackages, NpmRegistryInfo } from "../NpmFunction
  *
  * @param {string} packageName A package name. This value is a valid npm package name.
  *
- * @param {NpmRegistryInfo} registryInfo The npm registry to use.
+ * @param {INpmRegistryInfo} registryInfo The npm registry to use.
  *
  */
-export async function update(packageName: string, registryInfo: NpmRegistryInfo) {
+export async function update(packageName: string, registryInfo: INpmRegistryInfo) {
     const iConsole = Logger.getImperativeLogger();
     const npmPackage = packageName;
 
@@ -33,7 +34,7 @@ export async function update(packageName: string, registryInfo: NpmRegistryInfo)
 
     installPackages(npmPackage, {
         prefix: PMFConstants.instance.PLUGIN_INSTALL_LOCATION,
-        ...registryInfo.buildRegistryArgs(),
+        ...registryInfo.npmArgs,
     });
 
     // We fetch the package version of newly installed plugin
@@ -45,4 +46,3 @@ export async function update(packageName: string, registryInfo: NpmRegistryInfo)
     // return the package version so the plugins.json file can be updated
     return packageVersion;
 }
-

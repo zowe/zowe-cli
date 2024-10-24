@@ -18,7 +18,7 @@ import { Logger } from "../../../../../logger";
 import { IImperativeConfig } from "../../../doc/IImperativeConfig";
 import { ImperativeError } from "../../../../../error";
 import { IPluginJsonObject } from "../../doc/IPluginJsonObject";
-import { getPackageInfo, installPackages, NpmRegistryInfo } from "../NpmFunctions";
+import { getPackageInfo, installPackages } from "../NpmFunctions";
 import { ConfigSchema } from "../../../../../config/src/ConfigSchema";
 import { PluginManagementFacility } from "../../PluginManagementFacility";
 import { ConfigurationLoader } from "../../../ConfigurationLoader";
@@ -28,6 +28,7 @@ import { IProfileTypeConfiguration } from "../../../../../profiles";
 import * as semver from "semver";
 import { ConfigUtils } from "../../../../../config";
 import { IExtendersJsonOpts } from "../../../../../config/src/doc/IExtenderOpts";
+import { INpmRegistryInfo } from "../../doc/INpmRegistryInfo";
 
 // Helper function to update extenders.json object during plugin install.
 // Returns true if the object was updated, and false otherwise
@@ -74,7 +75,7 @@ export const updateExtendersJson = (
  *                                 be converted to an absolute path prior to being passed to the
  *                                 `npm install` command.
  *
- * @param {NpmRegistryInfo} registryInfo The npm registry to use.
+ * @param {INpmRegistryInfo} registryInfo The npm registry to use.
  *
  * @param {boolean} [installFromFile=false] If installing from a file, the package location is
  *                                          automatically interpreted as an absolute location.
@@ -85,7 +86,7 @@ export const updateExtendersJson = (
  *                                          it.
  * @returns {string} The name of the plugin.
  */
-export async function install(packageLocation: string, registryInfo: NpmRegistryInfo, installFromFile = false) {
+export async function install(packageLocation: string, registryInfo: INpmRegistryInfo, installFromFile = false) {
     const iConsole = Logger.getImperativeLogger();
     let npmPackage = packageLocation;
 
@@ -122,7 +123,7 @@ export async function install(packageLocation: string, registryInfo: NpmRegistry
 
         installPackages(npmPackage, {
             prefix: PMFConstants.instance.PLUGIN_INSTALL_LOCATION,
-            ...registryInfo.buildRegistryArgs(),
+            ...registryInfo.npmArgs,
         });
 
         // We fetch the package name and version of newly installed plugin
@@ -169,55 +170,51 @@ export async function install(packageLocation: string, registryInfo: NpmRegistry
         const pluginImpConfig = ConfigurationLoader.load(null, packageInfo, requirerFunction);
 
         iConsole.debug(`Checking for global Zowe client configuration files to update.`);
-        if (PMFConstants.instance.PLUGIN_USING_CONFIG)
-        {
-            // Update the Imperative Configuration to add the profiles introduced by the recently installed plugin
-            // This might be needed outside of PLUGIN_USING_CONFIG scenarios, but we haven't had issues with other APIs before
-            const globalLayer = PMFConstants.instance.PLUGIN_CONFIG.layers.find((layer) => layer.global && layer.exists);
-            if (globalLayer && Array.isArray(pluginImpConfig.profiles)) {
-                UpdateImpConfig.addProfiles(pluginImpConfig.profiles);
-                const schemaInfo = PMFConstants.instance.PLUGIN_CONFIG.getSchemaInfo();
-                if (schemaInfo.local && fs.existsSync(schemaInfo.resolved)) {
-                    let loadedSchema: IProfileTypeConfiguration[];
-                    try {
-                        // load schema from disk to prevent removal of profile types from other applications
-                        loadedSchema = ConfigSchema.loadSchema(readFileSync(schemaInfo.resolved));
-                    } catch (err) {
-                        iConsole.error("Error when adding new profile type for plugin %s: failed to parse schema", newPlugin.package);
-                    }
+        // Update the Imperative Configuration to add the profiles introduced by the recently installed plugin
+        const globalLayer = PMFConstants.instance.PLUGIN_CONFIG.layers.find((layer) => layer.global && layer.exists);
+        if (globalLayer && Array.isArray(pluginImpConfig.profiles)) {
+            UpdateImpConfig.addProfiles(pluginImpConfig.profiles);
+            const schemaInfo = PMFConstants.instance.PLUGIN_CONFIG.getSchemaInfo();
+            if (schemaInfo.local && fs.existsSync(schemaInfo.resolved)) {
+                let loadedSchema: IProfileTypeConfiguration[];
+                try {
+                    // load schema from disk to prevent removal of profile types from other applications
+                    loadedSchema = ConfigSchema.loadSchema(readFileSync(schemaInfo.resolved));
+                } catch (err) {
+                    iConsole.error("Error when adding new profile type for plugin %s: failed to parse schema", newPlugin.package);
+                }
 
-                    // Only update global schema if we were able to load it from disk
-                    if (loadedSchema != null) {
-                        const existingTypes = loadedSchema.map((obj) => obj.type);
-                        const extendersJson = ConfigUtils.readExtendersJson();
+                // Only update global schema if we were able to load it from disk
+                if (loadedSchema != null) {
+                    const existingTypes = loadedSchema.map((obj) => obj.type);
+                    const extendersJson = ConfigUtils.readExtendersJson();
 
-                        // Determine new profile types to add to schema
-                        let shouldUpdate = false;
-                        for (const profile of pluginImpConfig.profiles) {
-                            if (!existingTypes.includes(profile.type)) {
-                                loadedSchema.push(profile);
-                            } else {
-                                const existingType = loadedSchema.find((obj) => obj.type === profile.type);
-                                if (semver.valid(existingType.schema.version)) {
-                                    if (semver.valid(profile.schema.version) && semver.gt(profile.schema.version, existingType.schema.version)) {
-                                        existingType.schema = profile.schema;
-                                        existingType.schema.version = profile.schema.version;
-                                    }
-                                } else {
+                    // Determine new profile types to add to schema
+                    let shouldUpdate = false;
+                    for (const profile of pluginImpConfig.profiles) {
+                        if (!existingTypes.includes(profile.type)) {
+                            loadedSchema.push(profile);
+                        } else {
+                            const existingType = loadedSchema.find((obj) => obj.type === profile.type);
+                            if (semver.valid(existingType.schema.version)) {
+                                if (semver.valid(profile.schema.version) && semver.gt(profile.schema.version, existingType.schema.version)) {
                                     existingType.schema = profile.schema;
                                     existingType.schema.version = profile.schema.version;
                                 }
+                            } else {
+                                existingType.schema = profile.schema;
+                                existingType.schema.version = profile.schema.version;
                             }
-                            shouldUpdate = updateExtendersJson(extendersJson, packageInfo, profile) || shouldUpdate;
                         }
-
-                        if (shouldUpdate) {
-                            // Update extenders.json (if necessary) after installing the plugin
-                            ConfigUtils.writeExtendersJson(extendersJson);
-                        }
-                        const schema = ConfigSchema.buildSchema(loadedSchema);
-                        ConfigSchema.updateSchema({ layer: "global", schema });
+                        shouldUpdate = updateExtendersJson(extendersJson, packageInfo, profile) || shouldUpdate;
                     }
+
+                    if (shouldUpdate) {
+                        // Update extenders.json (if necessary) after installing the plugin
+                        ConfigUtils.writeExtendersJson(extendersJson);
+                    }
+                    const schema = ConfigSchema.buildSchema(loadedSchema);
+                    ConfigSchema.updateSchema({ layer: "global", schema });
                 }
             }
         }

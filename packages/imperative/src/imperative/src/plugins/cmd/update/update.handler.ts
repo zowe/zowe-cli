@@ -17,7 +17,7 @@ import { ImperativeError } from "../../../../../error";
 import { TextUtils } from "../../../../../utilities";
 import { IPluginJson } from "../../doc/IPluginJson";
 import { readFileSync, writeFileSync } from "jsonfile";
-import { NpmRegistryInfo } from "../../utilities/NpmFunctions";
+import { NpmRegistryUtils } from "../../utilities/NpmFunctions";
 
 /**
  * The update command handler for cli plugin install.
@@ -52,7 +52,7 @@ export default class UpdateHandler implements ICommandHandler {
         this.console.debug(`Root Directory: ${PMFConstants.instance.PLUGIN_INSTALL_LOCATION}`);
 
         const plugin: string = params.arguments.plugin;
-        const registryInfo = new NpmRegistryInfo(params.arguments.registry);
+        const registry = NpmRegistryUtils.getRegistry(params.arguments.registry);
 
         if (params.arguments.plugin == null || params.arguments.plugin.length === 0) {
             throw new ImperativeError({
@@ -64,7 +64,7 @@ export default class UpdateHandler implements ICommandHandler {
         const installedPlugins: IPluginJson = readFileSync(PMFConstants.instance.PLUGIN_JSON);
 
         if (params.arguments.registry != null && params.arguments.login) {
-            registryInfo.npmLogin();
+            NpmRegistryUtils.npmLogin(registry);
         }
 
         if (Object.prototype.hasOwnProperty.call(installedPlugins, plugin)) {
@@ -76,7 +76,7 @@ export default class UpdateHandler implements ICommandHandler {
                     // as package may not match the plugin value.  This is true for plugins installed by
                     // folder location.  Example: plugin 'imperative-sample-plugin' installed from ../imperative-plugins
                     packageName = installedPlugins[pluginName].package;
-                    registryInfo.setPackage(installedPlugins[pluginName]);
+                    const registryInfo = NpmRegistryUtils.buildRegistryInfo(installedPlugins[pluginName], params.arguments.registry);
                     // Call update which returns the plugin's version so plugins.json can be updated
                     installedPlugins[pluginName].version = await update(packageName, registryInfo);
                     installedPlugins[pluginName].location = registryInfo.location; // update in case it changed
