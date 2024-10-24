@@ -207,7 +207,10 @@ describe("Plugin Management Facility install handler", () => {
         wasGetRegistryCalled();
 
         expect(mocks.install).toHaveBeenCalledTimes(2);
-        wasInstallCallValid(`${fileJson.a.package}@${fileJson.a.version}`, { location: packageRegistry, npmArgs: {} }, true);
+        wasInstallCallValid(`${fileJson.a.package}@${fileJson.a.version}`, {
+            location: packageRegistry,
+            npmArgs: { registry: packageRegistry }
+        }, true);
         wasInstallCallValid(fileJson.plugin2.package, {
             location: packageRegistry2,
             npmArgs: { registry: packageRegistry2 }
@@ -258,7 +261,10 @@ describe("Plugin Management Facility install handler", () => {
         wasGetRegistryCalled();
 
         // Check that install worked as expected
-        wasInstallCallValid(params.arguments.plugin[0], { location: packageRegistry, npmArgs: {} });
+        wasInstallCallValid(params.arguments.plugin[0], {
+            location: packageRegistry,
+            npmArgs: { registry: packageRegistry }
+        });
 
         // Check that success is output
         wasInstallSuccessful(params);
@@ -319,9 +325,13 @@ describe("Plugin Management Facility install handler", () => {
 
         // Validate that install was called with each of these values
         expect(mocks.install).toHaveBeenCalledTimes(params.arguments.plugin.length);
-        wasInstallCallValid(params.arguments.plugin[0], { location: packageRegistry, npmArgs: {} });
-        wasInstallCallValid(params.arguments.plugin[1], { location: packageRegistry, npmArgs: {} });
-        wasInstallCallValid(params.arguments.plugin[2], { location: packageRegistry, npmArgs: {} });
+        const registryInfo: INpmRegistryInfo = {
+            location: packageRegistry,
+            npmArgs: { registry: packageRegistry }
+        };
+        wasInstallCallValid(params.arguments.plugin[0], registryInfo);
+        wasInstallCallValid(params.arguments.plugin[1], registryInfo);
+        wasInstallCallValid(params.arguments.plugin[2], registryInfo);
 
         wasInstallSuccessful(params);
     });
@@ -407,7 +417,10 @@ describe("Plugin Management Facility install handler", () => {
             expect(e).toBeUndefined();
         }
 
-        wasInstallCallValid("@public/sample1", { location: "publicRegistryUrl", npmArgs: {} });
+        wasInstallCallValid("@public/sample1", {
+            location: packageRegistry,
+            npmArgs: { registry: packageRegistry, "@public:registry": "publicRegistryUrl" }
+        });
     });
     it("should handle installed plugins via project/directory", async () => {
         const handler = new InstallHandler();
@@ -422,7 +435,10 @@ describe("Plugin Management Facility install handler", () => {
             expect(e).toBeUndefined();
         }
 
-        wasInstallCallValid("path/to/dir", { location: "path/to/dir", npmArgs: {} });
+        wasInstallCallValid("path/to/dir", {
+            location: "path/to/dir",
+            npmArgs: { registry: packageRegistry }
+        });
     });
     it("should handle installed plugins via tarball file", async () => {
         const handler = new InstallHandler();
@@ -437,7 +453,10 @@ describe("Plugin Management Facility install handler", () => {
             expect(e).toBeUndefined();
         }
 
-        wasInstallCallValid("path/to/dir/file.tgz", { location: "path/to/dir/file.tgz", npmArgs: {} });
+        wasInstallCallValid("path/to/dir/file.tgz", {
+            location: "path/to/dir/file.tgz",
+            npmArgs: { registry: packageRegistry }
+        });
     });
     it("should handle multiple installed plugins via tarball, directory, and registry", async () => {
         const handler = new InstallHandler();
@@ -455,9 +474,21 @@ describe("Plugin Management Facility install handler", () => {
         }
 
         expect(mocks.install).toHaveBeenCalledTimes(params.arguments.plugin.length);
-        wasInstallCallValid("@public/sample1", { location: "publicRegistryUrl", npmArgs: {} });
-        wasInstallCallValid("@private/sample1", { location: "privateRegistryUrl", npmArgs: {} });
-        wasInstallCallValid("path/to/dir", { location: "path/to/dir", npmArgs: {} });
-        wasInstallCallValid("path/to/dir/file.tgz", { location: "path/to/dir/file.tgz", npmArgs: {} });
+        wasInstallCallValid("@public/sample1", {
+            location: packageRegistry,
+            npmArgs: { registry: packageRegistry, "@public:registry": "publicRegistryUrl" }
+        });
+        wasInstallCallValid("@private/sample1", {
+            location: packageRegistry,
+            npmArgs: { registry: packageRegistry, "@private:registry": "privateRegistryUrl" }
+        });
+        wasInstallCallValid("path/to/dir", {
+            location: "path/to/dir",
+            npmArgs: { registry: packageRegistry }
+        });
+        wasInstallCallValid("path/to/dir/file.tgz", {
+            location: "path/to/dir/file.tgz",
+            npmArgs: { registry: packageRegistry }
+        });
     });
 });

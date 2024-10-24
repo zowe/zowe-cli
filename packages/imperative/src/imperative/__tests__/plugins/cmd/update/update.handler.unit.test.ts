@@ -9,6 +9,7 @@
 *
 */
 
+/* eslint-disable jest/expect-expect */
 jest.mock("child_process");
 jest.mock("jsonfile");
 jest.mock("../../../../src/plugins/utilities/PMFConstants");
@@ -157,7 +158,7 @@ describe("Plugin Management Facility update handler", () => {
         wasNpmLoginCallValid(packageRegistry);
         wasWriteFileSyncValid(PMFConstants.instance.PLUGIN_JSON, fileJson);
         wasUpdateCallValid(packageName, {
-            location: resolveVal,
+            location: packageRegistry,
             npmArgs: { registry: packageRegistry }
         });
         wasUpdateSuccessful(params);

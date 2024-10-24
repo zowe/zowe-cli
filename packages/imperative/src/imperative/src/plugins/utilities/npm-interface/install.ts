@@ -170,51 +170,55 @@ export async function install(packageLocation: string, registryInfo: INpmRegistr
         const pluginImpConfig = ConfigurationLoader.load(null, packageInfo, requirerFunction);
 
         iConsole.debug(`Checking for global Zowe client configuration files to update.`);
-        // Update the Imperative Configuration to add the profiles introduced by the recently installed plugin
-        const globalLayer = PMFConstants.instance.PLUGIN_CONFIG.layers.find((layer) => layer.global && layer.exists);
-        if (globalLayer && Array.isArray(pluginImpConfig.profiles)) {
-            UpdateImpConfig.addProfiles(pluginImpConfig.profiles);
-            const schemaInfo = PMFConstants.instance.PLUGIN_CONFIG.getSchemaInfo();
-            if (schemaInfo.local && fs.existsSync(schemaInfo.resolved)) {
-                let loadedSchema: IProfileTypeConfiguration[];
-                try {
-                    // load schema from disk to prevent removal of profile types from other applications
-                    loadedSchema = ConfigSchema.loadSchema(readFileSync(schemaInfo.resolved));
-                } catch (err) {
-                    iConsole.error("Error when adding new profile type for plugin %s: failed to parse schema", newPlugin.package);
-                }
+        if (PMFConstants.instance.PLUGIN_USING_CONFIG)
+        {
+            // Update the Imperative Configuration to add the profiles introduced by the recently installed plugin
+            // This might be needed outside of PLUGIN_USING_CONFIG scenarios, but we haven't had issues with other APIs before
+            const globalLayer = PMFConstants.instance.PLUGIN_CONFIG.layers.find((layer) => layer.global && layer.exists);
+            if (globalLayer && Array.isArray(pluginImpConfig.profiles)) {
+                UpdateImpConfig.addProfiles(pluginImpConfig.profiles);
+                const schemaInfo = PMFConstants.instance.PLUGIN_CONFIG.getSchemaInfo();
+                if (schemaInfo.local && fs.existsSync(schemaInfo.resolved)) {
+                    let loadedSchema: IProfileTypeConfiguration[];
+                    try {
+                        // load schema from disk to prevent removal of profile types from other applications
+                        loadedSchema = ConfigSchema.loadSchema(readFileSync(schemaInfo.resolved));
+                    } catch (err) {
+                        iConsole.error("Error when adding new profile type for plugin %s: failed to parse schema", newPlugin.package);
+                    }
 
-                // Only update global schema if we were able to load it from disk
-                if (loadedSchema != null) {
-                    const existingTypes = loadedSchema.map((obj) => obj.type);
-                    const extendersJson = ConfigUtils.readExtendersJson();
+                    // Only update global schema if we were able to load it from disk
+                    if (loadedSchema != null) {
+                        const existingTypes = loadedSchema.map((obj) => obj.type);
+                        const extendersJson = ConfigUtils.readExtendersJson();
 
-                    // Determine new profile types to add to schema
-                    let shouldUpdate = false;
-                    for (const profile of pluginImpConfig.profiles) {
-                        if (!existingTypes.includes(profile.type)) {
-                            loadedSchema.push(profile);
-                        } else {
-                            const existingType = loadedSchema.find((obj) => obj.type === profile.type);
-                            if (semver.valid(existingType.schema.version)) {
-                                if (semver.valid(profile.schema.version) && semver.gt(profile.schema.version, existingType.schema.version)) {
+                        // Determine new profile types to add to schema
+                        let shouldUpdate = false;
+                        for (const profile of pluginImpConfig.profiles) {
+                            if (!existingTypes.includes(profile.type)) {
+                                loadedSchema.push(profile);
+                            } else {
+                                const existingType = loadedSchema.find((obj) => obj.type === profile.type);
+                                if (semver.valid(existingType.schema.version)) {
+                                    if (semver.valid(profile.schema.version) && semver.gt(profile.schema.version, existingType.schema.version)) {
+                                        existingType.schema = profile.schema;
+                                        existingType.schema.version = profile.schema.version;
+                                    }
+                                } else {
                                     existingType.schema = profile.schema;
                                     existingType.schema.version = profile.schema.version;
                                 }
-                            } else {
-                                existingType.schema = profile.schema;
-                                existingType.schema.version = profile.schema.version;
                             }
+                            shouldUpdate = updateExtendersJson(extendersJson, packageInfo, profile) || shouldUpdate;
                         }
-                        shouldUpdate = updateExtendersJson(extendersJson, packageInfo, profile) || shouldUpdate;
-                    }
 
-                    if (shouldUpdate) {
-                        // Update extenders.json (if necessary) after installing the plugin
-                        ConfigUtils.writeExtendersJson(extendersJson);
+                        if (shouldUpdate) {
+                            // Update extenders.json (if necessary) after installing the plugin
+                            ConfigUtils.writeExtendersJson(extendersJson);
+                        }
+                        const schema = ConfigSchema.buildSchema(loadedSchema);
+                        ConfigSchema.updateSchema({ layer: "global", schema });
                     }
-                    const schema = ConfigSchema.buildSchema(loadedSchema);
-                    ConfigSchema.updateSchema({ layer: "global", schema });
                 }
             }
         }

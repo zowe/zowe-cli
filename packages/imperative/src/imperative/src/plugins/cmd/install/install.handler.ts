@@ -76,7 +76,7 @@ export default class InstallHandler implements ICommandHandler {
         if (params.arguments.plugin != null && params.arguments.plugin.length > 0 && typeof params.arguments.file !== "undefined") {
             throw new ImperativeError({
                 msg: `Option ${chalk.yellow.bold("--file")} can not be specified if positional ${chalk.yellow.bold("package...")} is as well. ` +
-                    `They are mutually exclusive.`,
+                    `They are mutually exclusive.`
             });
         } else {
             try {
@@ -94,8 +94,6 @@ export default class InstallHandler implements ICommandHandler {
                     "Install 3rd party plug-ins at your own risk.\n"
                 );
 
-                params.response.console.log("Location = " + installRegistry);
-
                 // This section determines which npm logic needs to take place
                 if (params.arguments.plugin == null || params.arguments.plugin.length === 0) {
                     const configFile = typeof params.arguments.file === "undefined" ?
@@ -108,7 +106,8 @@ export default class InstallHandler implements ICommandHandler {
                     const packageJson: IPluginJson = readFileSync(configFile);
 
                     if (Object.keys(packageJson).length === 0) {
-                        params.response.console.log("No packages were found in " + configFile + ", so no plugins were installed.");
+                        params.response.console.log("No packages were found in " +
+                            configFile + ", so no plugins were installed.");
                         return;
                     }
 
@@ -119,7 +118,9 @@ export default class InstallHandler implements ICommandHandler {
                             // Registry is typed as optional in the doc but the function expects it
                             // to be passed. So we'll always set it if it hasn't been done yet.
                             const registryInfo = NpmRegistryUtils.buildRegistryInfo(packageInfo, params.arguments.registry);
-                            packageInfo.location ??= registryInfo.location;
+                            if (!packageInfo.location) {
+                                packageInfo.location = registryInfo.location;
+                            }
 
                             this.console.debug(`Installing plugin: ${packageName}`);
                             this.console.debug(`Package: ${packageInfo.package}`);
@@ -136,6 +137,7 @@ export default class InstallHandler implements ICommandHandler {
                             params.response.console.log("\n_______________________________________________________________");
                             const pluginName = await install(packageArgument, registryInfo, true);
                             params.response.console.log("Installed plugin name = '" + pluginName + "'");
+                            params.response.console.log("Location = " + packageInfo.location);
                             params.response.console.log(runValidatePlugin(pluginName));
                         }
                     }
@@ -147,6 +149,7 @@ export default class InstallHandler implements ICommandHandler {
                         const registryInfo = NpmRegistryUtils.buildRegistryInfo(packageString, params.arguments.registry);
                         const pluginName = await install(packageString, registryInfo);
                         params.response.console.log("Installed plugin name = '" + pluginName + "'");
+                        params.response.console.log("Location = " + registryInfo.location);
                         params.response.console.log(runValidatePlugin(pluginName));
                     }
                 }
@@ -168,7 +171,7 @@ export default class InstallHandler implements ICommandHandler {
                 throw new ImperativeError({
                     msg: installResultMsg,
                     causeErrors: e,
-                    additionalDetails: e.message,
+                    additionalDetails: e.message
                 });
             }
         }

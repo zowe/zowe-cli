@@ -100,34 +100,40 @@ export class NpmRegistryUtils {
     public static buildRegistryInfo(packageInfo: string | IPluginJsonObject, userRegistry?: string): INpmRegistryInfo {
         const packageName = typeof packageInfo === "string" ? packageInfo : packageInfo.package;
         const packageScope = packageName.startsWith("@") ? packageName.split("/")[0] : undefined;
-        const isLocationRegistry = npmPackageArg(packageName).registry;
         if (userRegistry != null) {
             // If --registry was passed on the command line, it takes precedence
             return {
-                location: isLocationRegistry ? userRegistry : packageName,
-                npmArgs: this.buildRegistryNpmArgs(userRegistry)
+                location: userRegistry,
+                npmArgs: this.buildRegistryNpmArgs(userRegistry, packageScope)
             };
         } else if (typeof packageInfo === "string" || !packageInfo.location) {
             // If installing a plug-in for the first time, get default registry
-            const defaultRegistry = isLocationRegistry && (packageScope != null ? this.getScopeRegistry(packageScope) : this.getRegistry());
-            return { location: isLocationRegistry ? defaultRegistry : packageName, npmArgs: {} };
+            const defaultRegistry = this.getRegistry();
+            return {
+                location: npmPackageArg(packageName).registry ? defaultRegistry : packageName,
+                npmArgs: this.buildRegistryNpmArgs(defaultRegistry, packageScope)
+            };
         } else {
             // If updating a plug-in, fetch registry info from plugins.json
+            const cachedRegistry = JsUtils.isUrl(packageInfo.location) ? packageInfo.location : undefined;
             return {
                 location: packageInfo.location,
-                npmArgs: JsUtils.isUrl(packageInfo.location) ? this.buildRegistryNpmArgs(packageInfo.location, packageScope) : {}
+                npmArgs: this.buildRegistryNpmArgs(cachedRegistry ?? this.getRegistry(), packageScope)
             };
         }
     }
 
     private static buildRegistryNpmArgs(registryUrl: string, scope?: string): Partial<INpmInstallArgs> {
-        const registrySpec = scope != null ? `${scope}:registry` : "registry";
-        return { [registrySpec]: registryUrl };
+        const npmArgs: INpmRegistryInfo["npmArgs"] = { registry: registryUrl };
+        if (scope != null) {
+            npmArgs[`${scope}:registry`] = this.getScopeRegistry(scope);
+        }
+        return npmArgs;
     }
 
-    private static getScopeRegistry(scope: string): string {
+    private static getScopeRegistry(scope: string): string | undefined {
         const execOutput = ExecUtils.spawnAndGetOutput(npmCmd, ["config", "get", `${scope}:registry`]);
-        if (execOutput.toString().trim() === "undefined") return this.getRegistry();
+        if (execOutput.toString().trim() === "undefined") return;
         return execOutput.toString().replace("\n", "");
     }
 }

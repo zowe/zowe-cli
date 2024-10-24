@@ -26,7 +26,8 @@ describe("PMF: update Interface", () => {
     const mocks = {
         installPackages: jest.spyOn(npmFns, "installPackages"),
         readFileSync: jest.spyOn(jsonfile, "readFileSync"),
-        getPackageInfo: jest.spyOn(npmFns, "getPackageInfo")
+        getPackageInfo: jest.spyOn(npmFns, "getPackageInfo"),
+        getScopeRegistry: jest.spyOn(npmFns.NpmRegistryUtils as any, "getScopeRegistry")
     };
 
     const packageName = "pretty-format";
@@ -44,6 +45,7 @@ describe("PMF: update Interface", () => {
         * readFileSync(plugins.json), we must reset readFileSync to return an empty set before each test.
         */
         mocks.readFileSync.mockReturnValue({});
+        mocks.getScopeRegistry.mockReturnValue(packageRegistry);
     });
 
     afterAll(() => {
@@ -105,6 +107,6 @@ describe("PMF: update Interface", () => {
         expect(data).toEqual(packageVersion);
 
         // Validate the update
-        wasNpmInstallCallValid(scopedPackageName, { "@org:registry": packageRegistry });
+        wasNpmInstallCallValid(scopedPackageName, { registry: packageRegistry, "@org:registry": packageRegistry });
     });
 });
