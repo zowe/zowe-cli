@@ -180,7 +180,8 @@ export class ProfileInfo {
     }
 
     /**
-     * Checks if a JSON web token is used for authenticating the given profile name. If so, it will decode the token to determine whether it has expired.
+     * Checks if a JSON web token is used for authenticating the given profile name. 
+     * If so, it will decode the token to determine whether it has expired.
      *
      * @param {string | IProfileLoaded} profile - The name of the profile or the profile object to check the JSON web token for
      * @returns {boolean} Whether the token has expired for the given profile. Returns `false` if a token value is not set or the token type is LTPA2.

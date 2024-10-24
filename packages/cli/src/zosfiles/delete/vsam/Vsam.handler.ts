@@ -31,8 +31,12 @@ export default class VsamHandler extends ZosFilesBaseHandler {
                 (error.errorCode === '404' || error.toString().includes("IDC3012I"))) {
                 return { success: true, commandResponse: "VSAM dataset not found but this is ignored" };
             }
+            if (error.typeof(ImperativeError)){
+                throw error;
+            }
             throw new ImperativeError({
-                msg: error.mMessage || "An unexpected error occurred."
+                msg: error.mMessage || "An unexpected error occurred.",
+                causeErrors: error
             });
         }
     }

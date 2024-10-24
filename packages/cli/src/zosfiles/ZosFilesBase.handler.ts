@@ -40,14 +40,15 @@ export abstract class ZosFilesBaseHandler implements ICommandHandler {
      * @returns {Promise<void>}
      */
     public async process(commandParameters: IHandlerParameters): Promise<void> {
-        const sessCfg: ISession = ZosmfSession.createSessCfgFromArgs(
-            commandParameters.arguments
-        );
-        const sessCfgWithCreds = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
-            sessCfg, commandParameters.arguments, { parms: commandParameters }
-        );
-        const session = new Session(sessCfgWithCreds);
         try {
+            const sessCfg: ISession = ZosmfSession.createSessCfgFromArgs(
+                commandParameters.arguments
+            );
+            const sessCfgWithCreds = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
+                sessCfg, commandParameters.arguments, { parms: commandParameters }
+            );
+            const session = new Session(sessCfgWithCreds);
+
             const response = await this.processWithSession(commandParameters, session);
             if (!response.success && response.commandResponse) {
                 throw new ImperativeError({
@@ -58,16 +59,20 @@ export abstract class ZosFilesBaseHandler implements ICommandHandler {
                 commandParameters.response.console.log(response.commandResponse);
             }
             commandParameters.response.data.setObj(response);
+            commandParameters.response.progress.endBar();
         } catch (error) {
             if (commandParameters.arguments.ignoreNotFound && error.errorCode === '404') {
                 commandParameters.response.data.setObj({ success: true });
             } else {
+                if (error.typeof(ImperativeError)){
+                    throw error;
+                }
                 throw new ImperativeError({
-                    msg: error.mMessage
+                    msg: error.mMessage,
+                    causeErrors: error
                 });
             }
         }
-        commandParameters.response.progress.endBar();
     }
 
     /**
