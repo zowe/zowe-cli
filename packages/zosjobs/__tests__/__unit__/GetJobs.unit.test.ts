@@ -596,21 +596,37 @@ describe("GetJobs tests", () => {
                     owner: 'zowe', status: 'active', type: 't',
                     class: 'c', retcode: 'r', url: '',
                     'files-url': '', 'job-correlator': '',
-                    phase: 1, 'phase-name': 'name', 'reason-not-running': 'no'
+                    phase: 1, 'phase-name': 'name', 'reason-not-running': 'no',
+                    'exec-started': '2024-01-02T15:57:58.350Z',
+                    'exec-ended': '2024-01-02T15:58:00.600Z',
+                    "exec-member": 'SYS1',
+                    "exec-system": 'SYS1',
+                    "exec-submitted": '2024-01-02T15:58:00.600Z'
                 },
                 {
                     jobid: '2', jobname: 'b', subsystem: 'sub',
                     owner: 'zowe', status: 'Output', type: 't',
                     class: 'c', retcode: 'r', url: '',
                     'files-url': '', 'job-correlator': '',
-                    phase: 1, 'phase-name': 'name', 'reason-not-running': 'no'
+                    phase: 1, 'phase-name': 'name', 'reason-not-running': 'no',
+                    'exec-started': '2024-01-02T15:57:58.350Z',
+                    'exec-ended': '2024-01-02T15:58:00.600Z',
+                    "exec-member": 'SYS1',
+                    "exec-system": 'SYS1',
+                    "exec-submitted": '2024-01-02T15:58:00.600Z'
                 },
                 {
                     jobid: '3', jobname: 'c', subsystem: 'sub',
                     owner: 'kri', status: 'Output', type: 't',
                     class: 'c', retcode: 'r', url: '',
                     'files-url': '', 'job-correlator': '',
-                    phase: 1, 'phase-name': 'name', 'reason-not-running': 'no'
+                    phase: 1, 'phase-name': 'name', 'reason-not-running': 'no',
+                    'exec-started': '2024-01-02T15:57:58.350Z',
+                    'exec-ended': '2024-01-02T15:58:00.600Z',
+                    "exec-member": 'SYS1',
+                    "exec-system": 'SYS1',
+                    "exec-submitted": '2024-01-02T15:58:00.600Z'
+
                 }
             ];
             const expectedJobs = [
@@ -619,14 +635,24 @@ describe("GetJobs tests", () => {
                     owner: 'zowe', status: 'Output', type: 't',
                     class: 'c', retcode: 'r', url: '',
                     'files-url': '', 'job-correlator': '',
-                    phase: 1, 'phase-name': 'name', 'reason-not-running': 'no'
+                    phase: 1, 'phase-name': 'name', 'reason-not-running': 'no',
+                    'exec-started': '2024-01-02T15:57:58.350Z',
+                    'exec-ended': '2024-01-02T15:58:00.600Z',
+                    "exec-member": 'SYS1',
+                    "exec-system": 'SYS1',
+                    "exec-submitted": '2024-01-02T15:58:00.600Z'
                 },
                 {
                     jobid: '3', jobname: 'c', subsystem: 'sub',
                     owner: 'kri', status: 'Output', type: 't',
                     class: 'c', retcode: 'r', url: '',
                     'files-url': '', 'job-correlator': '',
-                    phase: 1, 'phase-name': 'name', 'reason-not-running': 'no'
+                    phase: 1, 'phase-name': 'name', 'reason-not-running': 'no',
+                    'exec-started': '2024-01-02T15:57:58.350Z',
+                    'exec-ended': '2024-01-02T15:58:00.600Z',
+                    "exec-member": 'SYS1',
+                    "exec-system": 'SYS1',
+                    "exec-submitted": '2024-01-02T15:58:00.600Z'
                 }
             ];
             const filteredResults = GetJobs['filterResultsByStatuses'](jobs, { status: 'OUTPUT', owner: 'zowe' });

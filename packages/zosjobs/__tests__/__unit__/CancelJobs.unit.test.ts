@@ -40,7 +40,12 @@ describe("Cancel Jobs unit tests", () => {
         "files-url": "myfakeurl.com/files/records",
         "phase": 2,
         "phase-name": "OUTPUT",
-        "job-correlator": "mycorrelator"
+        "job-correlator": "mycorrelator",
+        "exec-started": '2024-01-02T15:57:58.350Z',
+        "exec-ended": '2024-01-02T15:58:00.600Z',
+        "exec-member": 'SYS1',
+        "exec-system": 'SYS1',
+        "exec-submitted": '2024-01-02T15:58:00.600Z'
     };
     describe("Positive tests", () => {
         it("should allow users to call cancelJob with correct parameters", async () => {
