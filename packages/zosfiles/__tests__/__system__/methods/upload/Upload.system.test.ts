@@ -18,6 +18,7 @@ import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/prope
 import { deleteFiles, getUniqueDatasetName, stripNewLines, wait, waitTime } from "../../../../../../__tests__/__src__/TestUtils";
 import * as fs from "fs";
 import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/ITestEnvironment";
+import { runCliScript } from "../../../../../../__tests__/__packages__/cli-test-utils/src";
 
 let REAL_SESSION: Session;
 let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
@@ -25,8 +26,10 @@ let defaultSystem: ITestPropertiesSchema;
 let dsname: string;
 let ussname: string;
 const inputfile = __dirname + "/testfiles/upload.txt";
+const encodingCheck = __dirname + "/testfiles/encodingCheck.txt";
 const testdata = "abcdefghijklmnopqrstuvwxyz";
 const uploadOptions: IUploadOptions = {} as any;
+let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
 
 describe("Upload Data Set", () => {
 
@@ -847,6 +850,38 @@ describe("Upload USS file", () => {
             expect(uploadResponse).toBeTruthy();
             expect(uploadResponse.success).toBeTruthy();
             expect(uploadResponse.apiResponse.etag).toBeDefined();
+        });
+        it("should upload local file to USS using .zosattributes file", async () => {
+            TEST_ENVIRONMENT = await TestEnvironment.setUp({
+                testName: "zos_files_file_to_uss",
+            });
+            const systemProperties = TEST_ENVIRONMENT.systemTestProperties;
+            const ACCOUNT_NUMBER = systemProperties.tso.account;
+            let response: any;
+            let error;
+            let uploadResponse;
+            let getResponse;
+            let tagResponse;
+            try {
+                response = runCliScript(__dirname + "/__resources__/upload_file_to_uss.sh", TEST_ENVIRONMENT,[
+                    ACCOUNT_NUMBER,
+                    defaultSystem.zosmf.host,
+                    defaultSystem.zosmf.port,
+                    defaultSystem.zosmf.user,
+                    defaultSystem.zosmf.password,
+                    defaultSystem.zosmf.rejectUnauthorized,
+                    __dirname + "/testfiles/encodingCheck.txt",
+                    "/u/users/jr897694/usstest.txt",
+                    __dirname + "/__resources__/.zosattributes",
+                ]);
+            }
+            catch (err) {
+                error = err;
+                Imperative.console.info("Error: " + inspect(error));
+            }
+            expect(response.stderr.toString()).toBe("");
+            expect(response.stdout.toString()).toBeDefined();
+            expect(response.stdout.toString()).toContain("USS file uploaded successfully.");
         });
     });
 });
