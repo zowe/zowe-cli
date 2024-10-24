@@ -43,7 +43,10 @@ describe("Delete Jobs unit tests", () => {
         "files-url": "myfakeurl.com/files/records",
         "phase": 2,
         "phase-name": "OUTPUT",
-        "job-correlator": "mycorrelator"
+        "job-correlator": "mycorrelator",
+        "exec-member": 'SYS1',
+        "exec-system": 'SYS1',
+        "exec-submitted": '2024-01-02T15:58:00.600Z'
     };
 
     describe("Positive tests", () => {

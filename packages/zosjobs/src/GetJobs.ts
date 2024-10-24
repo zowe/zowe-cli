@@ -153,7 +153,7 @@ export class GetJobs {
         Logger.getAppLogger().trace("GetJobs.getJobsCommon()");
         ImperativeExpect.toNotBeNullOrUndefined(session, "Required session must be defined");
         let query = JobsConstants.QUERY_ID;
-        const includeExecData = params?.execData != false;
+        const includeExecData = params?.execData !== false;
 
         if (params) {
             if (params.owner) {

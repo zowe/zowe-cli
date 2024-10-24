@@ -41,6 +41,9 @@ const SAMPLE_COMPLETE_JOB: IJob= {
     "url": "https://tso1:443/zosmf/restjobs/jobs/J0003781USILDAMDD3CE8146.......%3A",
     "exec-started": '2024-01-02T15:57:58.350Z',
     "exec-ended": '2024-01-02T15:58:00.600Z',
+    "exec-member": 'SYS1',
+    "exec-system": 'SYS1',
+    "exec-submitted": '2024-01-02T15:58:00.600Z'
 };
 
 const SUCCESS_FEEDBACK: IJobFeedback = {

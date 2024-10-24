@@ -598,7 +598,10 @@ describe("GetJobs tests", () => {
                     'files-url': '', 'job-correlator': '',
                     phase: 1, 'phase-name': 'name', 'reason-not-running': 'no',
                     'exec-started': '2024-01-02T15:57:58.350Z',
-                    'exec-ended': '2024-01-02T15:58:00.600Z'
+                    'exec-ended': '2024-01-02T15:58:00.600Z',
+                    "exec-member": 'SYS1',
+                    "exec-system": 'SYS1',
+                    "exec-submitted": '2024-01-02T15:58:00.600Z'
                 },
                 {
                     jobid: '2', jobname: 'b', subsystem: 'sub',
@@ -607,7 +610,10 @@ describe("GetJobs tests", () => {
                     'files-url': '', 'job-correlator': '',
                     phase: 1, 'phase-name': 'name', 'reason-not-running': 'no',
                     'exec-started': '2024-01-02T15:57:58.350Z',
-                    'exec-ended': '2024-01-02T15:58:00.600Z'
+                    'exec-ended': '2024-01-02T15:58:00.600Z',
+                    "exec-member": 'SYS1',
+                    "exec-system": 'SYS1',
+                    "exec-submitted": '2024-01-02T15:58:00.600Z'
                 },
                 {
                     jobid: '3', jobname: 'c', subsystem: 'sub',
@@ -616,7 +622,10 @@ describe("GetJobs tests", () => {
                     'files-url': '', 'job-correlator': '',
                     phase: 1, 'phase-name': 'name', 'reason-not-running': 'no',
                     'exec-started': '2024-01-02T15:57:58.350Z',
-                    'exec-ended': '2024-01-02T15:58:00.600Z'
+                    'exec-ended': '2024-01-02T15:58:00.600Z',
+                    "exec-member": 'SYS1',
+                    "exec-system": 'SYS1',
+                    "exec-submitted": '2024-01-02T15:58:00.600Z'
 
                 }
             ];
@@ -628,7 +637,10 @@ describe("GetJobs tests", () => {
                     'files-url': '', 'job-correlator': '',
                     phase: 1, 'phase-name': 'name', 'reason-not-running': 'no',
                     'exec-started': '2024-01-02T15:57:58.350Z',
-                    'exec-ended': '2024-01-02T15:58:00.600Z'
+                    'exec-ended': '2024-01-02T15:58:00.600Z',
+                    "exec-member": 'SYS1',
+                    "exec-system": 'SYS1',
+                    "exec-submitted": '2024-01-02T15:58:00.600Z'
                 },
                 {
                     jobid: '3', jobname: 'c', subsystem: 'sub',
@@ -637,7 +649,10 @@ describe("GetJobs tests", () => {
                     'files-url': '', 'job-correlator': '',
                     phase: 1, 'phase-name': 'name', 'reason-not-running': 'no',
                     'exec-started': '2024-01-02T15:57:58.350Z',
-                    'exec-ended': '2024-01-02T15:58:00.600Z'
+                    'exec-ended': '2024-01-02T15:58:00.600Z',
+                    "exec-member": 'SYS1',
+                    "exec-system": 'SYS1',
+                    "exec-submitted": '2024-01-02T15:58:00.600Z'
                 }
             ];
             const filteredResults = GetJobs['filterResultsByStatuses'](jobs, { status: 'OUTPUT', owner: 'zowe' });
