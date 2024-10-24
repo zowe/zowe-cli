@@ -74,6 +74,11 @@ export async function getPackageInfo(pkgSpec: string): Promise<{ name: string, v
 }
 
 export class NpmRegistryUtils {
+    /**
+     * Get the registry to install to.
+     * @param userRegistry Registry override specified on the command line
+     * @return {string}
+     */
     public static getRegistry(userRegistry?: string): string {
         if (userRegistry != null) return userRegistry;
         const execOutput = ExecUtils.spawnAndGetOutput(npmCmd, ["config", "get", "registry"]);
@@ -97,6 +102,12 @@ export class NpmRegistryUtils {
         );
     }
 
+    /**
+     * Get package location and npm registry args for installing it.
+     * @param packageInfo Plugin name or object from plugins.json
+     * @param userRegistry Registry override specified on the command line
+     * @returns Location info for npm package to be installed
+     */
     public static buildRegistryInfo(packageInfo: string | IPluginJsonObject, userRegistry?: string): INpmRegistryInfo {
         const packageName = typeof packageInfo === "string" ? packageInfo : packageInfo.package;
         const packageScope = packageName.startsWith("@") ? packageName.split("/")[0] : undefined;

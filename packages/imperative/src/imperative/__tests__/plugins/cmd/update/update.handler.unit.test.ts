@@ -25,7 +25,6 @@ import { NpmRegistryUtils } from "../../../../src/plugins/utilities/NpmFunctions
 import * as childProcess from "child_process";
 import * as jsonfile from "jsonfile";
 import * as npmInterface from "../../../../src/plugins/utilities/npm-interface";
-import { INpmRegistryInfo } from "../../../../src/plugins/doc/INpmRegistryInfo";
 
 describe("Plugin Management Facility update handler", () => {
 
@@ -58,7 +57,6 @@ describe("Plugin Management Facility update handler", () => {
         jest.spyOn(Logger, "getImperativeLogger").mockReturnValue(new Logger(new Console()));
         mocks.execSyncSpy.mockReturnValue(packageRegistry);
         mocks.readFileSyncSpy.mockReturnValue({});
-        NpmRegistryUtils.npmLogin(packageRegistry);
     });
 
     /**
@@ -88,10 +86,10 @@ describe("Plugin Management Facility update handler", () => {
      */
     const wasUpdateCallValid = (
         packageNameParm: string,
-        registry: INpmRegistryInfo
+        registry: string
     ) => {
         expect(mocks.updateSpy).toHaveBeenCalledWith(
-            packageNameParm, registry
+            packageNameParm, { location: registry, npmArgs: { registry } }
         );
     };
 
@@ -151,16 +149,14 @@ describe("Plugin Management Facility update handler", () => {
         const params = getIHandlerParametersObject();
         params.arguments.plugin = pluginName;
         params.arguments.registry = packageRegistry;
+        params.arguments.login = true;
 
         await handler.process(params as IHandlerParameters);
 
         // Validate the call to login
         wasNpmLoginCallValid(packageRegistry);
         wasWriteFileSyncValid(PMFConstants.instance.PLUGIN_JSON, fileJson);
-        wasUpdateCallValid(packageName, {
-            location: packageRegistry,
-            npmArgs: { registry: packageRegistry }
-        });
+        wasUpdateCallValid(packageName, packageRegistry);
         wasUpdateSuccessful(params);
     });
 
@@ -186,12 +182,8 @@ describe("Plugin Management Facility update handler", () => {
         await handler.process(params as IHandlerParameters);
 
         // Validate the call to login
-        wasNpmLoginCallValid(packageRegistry);
         wasWriteFileSyncValid(PMFConstants.instance.PLUGIN_JSON, fileJson);
-        wasUpdateCallValid(resolveVal, {
-            location: packageRegistry,
-            npmArgs: { registry: packageRegistry }
-        });
+        wasUpdateCallValid(resolveVal, packageRegistry);
         wasUpdateSuccessful(params);
     });
 });

@@ -44,7 +44,6 @@ import { PMFConstants } from "../../../../src/plugins/utilities/PMFConstants";
 import { TextUtils } from "../../../../../utilities";
 import { NpmRegistryUtils } from "../../../../src/plugins/utilities/NpmFunctions";
 import * as spawn from "cross-spawn";
-import { INpmRegistryInfo } from "../../../../src/plugins/doc/INpmRegistryInfo";
 
 describe("Plugin Management Facility install handler", () => {
 
@@ -132,16 +131,17 @@ describe("Plugin Management Facility install handler", () => {
      */
     const wasInstallCallValid = (
         packageLocation: string,
-        registry: INpmRegistryInfo,
-        installFromFile = false
+        registry: string,
+        installFromFile = false,
+        extraNpmArgs = {}
     ) => {
         if (installFromFile) {
             expect(mocks.install).toHaveBeenCalledWith(
-                packageLocation, registry, true
+                packageLocation, { location: registry, npmArgs: { registry, ...extraNpmArgs } }, true
             );
         } else {
             expect(mocks.install).toHaveBeenCalledWith(
-                packageLocation, registry
+                packageLocation, { location: registry, npmArgs: { registry, ...extraNpmArgs } }
             );
         }
     };
@@ -207,14 +207,8 @@ describe("Plugin Management Facility install handler", () => {
         wasGetRegistryCalled();
 
         expect(mocks.install).toHaveBeenCalledTimes(2);
-        wasInstallCallValid(`${fileJson.a.package}@${fileJson.a.version}`, {
-            location: packageRegistry,
-            npmArgs: { registry: packageRegistry }
-        }, true);
-        wasInstallCallValid(fileJson.plugin2.package, {
-            location: packageRegistry2,
-            npmArgs: { registry: packageRegistry2 }
-        }, true);
+        wasInstallCallValid(`${fileJson.a.package}@${fileJson.a.version}`, packageRegistry, true);
+        wasInstallCallValid(fileJson.plugin2.package, packageRegistry2, true);
 
         expect(mocks.runValidatePlugin).toHaveBeenCalledTimes(2);
         expect(mocks.runValidatePlugin).toHaveBeenCalledWith("a");
@@ -261,10 +255,7 @@ describe("Plugin Management Facility install handler", () => {
         wasGetRegistryCalled();
 
         // Check that install worked as expected
-        wasInstallCallValid(params.arguments.plugin[0], {
-            location: packageRegistry,
-            npmArgs: { registry: packageRegistry }
-        });
+        wasInstallCallValid(params.arguments.plugin[0], packageRegistry);
 
         // Check that success is output
         wasInstallSuccessful(params);
@@ -280,10 +271,7 @@ describe("Plugin Management Facility install handler", () => {
         await handler.process(params as IHandlerParameters);
 
         // Validate the call to install with specified plugin and registry
-        wasInstallCallValid(params.arguments.plugin[0], {
-            location: params.arguments.registry,
-            npmArgs: { registry: params.arguments.registry }
-        });
+        wasInstallCallValid(params.arguments.plugin[0], params.arguments.registry);
 
         wasInstallSuccessful(params);
     });
@@ -303,10 +291,7 @@ describe("Plugin Management Facility install handler", () => {
         wasNpmLoginCallValid(packageRegistry);
 
         // Check that install worked as expected
-        wasInstallCallValid(params.arguments.plugin[0], {
-            location: params.arguments.registry,
-            npmArgs: { registry: params.arguments.registry }
-        });
+        wasInstallCallValid(params.arguments.plugin[0], params.arguments.registry);
 
         // Check that success is output
         wasInstallSuccessful(params);
@@ -325,13 +310,9 @@ describe("Plugin Management Facility install handler", () => {
 
         // Validate that install was called with each of these values
         expect(mocks.install).toHaveBeenCalledTimes(params.arguments.plugin.length);
-        const registryInfo: INpmRegistryInfo = {
-            location: packageRegistry,
-            npmArgs: { registry: packageRegistry }
-        };
-        wasInstallCallValid(params.arguments.plugin[0], registryInfo);
-        wasInstallCallValid(params.arguments.plugin[1], registryInfo);
-        wasInstallCallValid(params.arguments.plugin[2], registryInfo);
+        wasInstallCallValid(params.arguments.plugin[0], packageRegistry);
+        wasInstallCallValid(params.arguments.plugin[1], packageRegistry);
+        wasInstallCallValid(params.arguments.plugin[2], packageRegistry);
 
         wasInstallSuccessful(params);
     });
@@ -417,10 +398,7 @@ describe("Plugin Management Facility install handler", () => {
             expect(e).toBeUndefined();
         }
 
-        wasInstallCallValid("@public/sample1", {
-            location: packageRegistry,
-            npmArgs: { registry: packageRegistry, "@public:registry": "publicRegistryUrl" }
-        });
+        wasInstallCallValid("@public/sample1", packageRegistry, false, { "@public:registry": "publicRegistryUrl" });
     });
     it("should handle installed plugins via project/directory", async () => {
         const handler = new InstallHandler();
@@ -435,10 +413,7 @@ describe("Plugin Management Facility install handler", () => {
             expect(e).toBeUndefined();
         }
 
-        wasInstallCallValid("path/to/dir", {
-            location: "path/to/dir",
-            npmArgs: { registry: packageRegistry }
-        });
+        wasInstallCallValid("path/to/dir", "path/to/dir", false, { registry: packageRegistry });
     });
     it("should handle installed plugins via tarball file", async () => {
         const handler = new InstallHandler();
@@ -453,10 +428,7 @@ describe("Plugin Management Facility install handler", () => {
             expect(e).toBeUndefined();
         }
 
-        wasInstallCallValid("path/to/dir/file.tgz", {
-            location: "path/to/dir/file.tgz",
-            npmArgs: { registry: packageRegistry }
-        });
+        wasInstallCallValid("path/to/dir/file.tgz", "path/to/dir/file.tgz", false, { registry: packageRegistry });
     });
     it("should handle multiple installed plugins via tarball, directory, and registry", async () => {
         const handler = new InstallHandler();
@@ -474,21 +446,9 @@ describe("Plugin Management Facility install handler", () => {
         }
 
         expect(mocks.install).toHaveBeenCalledTimes(params.arguments.plugin.length);
-        wasInstallCallValid("@public/sample1", {
-            location: packageRegistry,
-            npmArgs: { registry: packageRegistry, "@public:registry": "publicRegistryUrl" }
-        });
-        wasInstallCallValid("@private/sample1", {
-            location: packageRegistry,
-            npmArgs: { registry: packageRegistry, "@private:registry": "privateRegistryUrl" }
-        });
-        wasInstallCallValid("path/to/dir", {
-            location: "path/to/dir",
-            npmArgs: { registry: packageRegistry }
-        });
-        wasInstallCallValid("path/to/dir/file.tgz", {
-            location: "path/to/dir/file.tgz",
-            npmArgs: { registry: packageRegistry }
-        });
+        wasInstallCallValid("@public/sample1", packageRegistry, false, { "@public:registry": "publicRegistryUrl" });
+        wasInstallCallValid("@private/sample1", packageRegistry, false, { "@private:registry": "privateRegistryUrl" });
+        wasInstallCallValid("path/to/dir", "path/to/dir", false, { registry: packageRegistry });
+        wasInstallCallValid("path/to/dir/file.tgz", "path/to/dir/file.tgz", false, { registry: packageRegistry });
     });
 });

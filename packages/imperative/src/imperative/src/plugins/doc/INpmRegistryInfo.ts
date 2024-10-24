@@ -15,6 +15,13 @@ import { INpmInstallArgs } from "./INpmInstallArgs";
  * Location info for an npm package.
  */
 export interface INpmRegistryInfo {
+    /**
+     * The origin of npm package (registry URL or absolute path)
+     */
     location: string;
+
+    /**
+     * Defines npm config values to pass to `npm install` command
+     */
     npmArgs: Partial<INpmInstallArgs>;
 }
