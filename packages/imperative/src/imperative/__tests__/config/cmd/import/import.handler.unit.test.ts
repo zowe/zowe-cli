@@ -260,8 +260,9 @@ describe("Configuration Import command handler", () => {
         it("should throw error when schema file is not valid JSON", async () => {
             jest.spyOn(RestClient, "getExpectString").mockResolvedValueOnce("invalid JSON");
             let error: any;
+
             try {
-                await downloadSchema(new URL(schemaUrl), schemaDestPath);
+                await downloadSchema(new URL(schemaUrl), schemaDestPath); // Normal execution
             } catch (err) {
                 error = err;
             }

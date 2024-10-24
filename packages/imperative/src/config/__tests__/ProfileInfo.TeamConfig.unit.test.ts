@@ -1843,6 +1843,7 @@ describe("TeamConfig ProfileInfo tests", () => {
                     properties: { profiles: {}, defaults: {} },
                     global: true,
                     user: false,
+                    ignoreErrors: false
                 });
                 expect(cfgSchemaBuildMock).toHaveBeenCalledWith([{
                     type: "some-type-with-source",

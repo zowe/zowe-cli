@@ -191,6 +191,61 @@ const FAKE_HELP_GENERATOR: IHelpGenerator = {
 
 const ENV_VAR_PREFIX: string = "UNIT_TEST";
 
+describe("Command Processor with --help and --version flags", () => {
+    let faultyConfigProcessor: CommandProcessor;
+
+    beforeEach(() => {
+        faultyConfigProcessor = new CommandProcessor({
+            envVariablePrefix: ENV_VAR_PREFIX,
+            definition: SAMPLE_COMMAND_DEFINITION,
+            helpGenerator: FAKE_HELP_GENERATOR,
+            rootCommandName: SAMPLE_ROOT_COMMAND,
+            commandLine: "",
+            promptPhrase: "dummyPrompt",
+            config: {
+                isValid: () => false, // Simulate faulty config
+            } as any,
+        });
+
+        jest.spyOn(console, "log").mockImplementation(() => {}); // Prevent console logs in tests
+    });
+
+    afterEach(() => {
+        jest.restoreAllMocks();
+    });
+
+    it("should display help text even with faulty config", async () => {
+        const parms: any = { arguments: { _: [], $0: "", help: true }, silent: true };
+        const helpResponse: ICommandResponse = await faultyConfigProcessor.invoke(parms);
+
+        expect(helpResponse).toBeDefined();
+        expect(helpResponse.stdout?.toString() || "").toContain("Build help invoked!");
+        expect(helpResponse.success).toBe(true);
+    });
+
+    it("should display version even with faulty config", async () => {
+        const parms: any = { arguments: { _: [], $0: "", version: true }, silent: true };
+        const versionResponse: ICommandResponse = await faultyConfigProcessor.invoke(parms);
+
+        expect(versionResponse).toBeDefined();
+        expect(versionResponse.stdout?.toString() || "").toContain("Version:");
+        expect(versionResponse.success).toBe(true);
+    });
+
+    it("should fail command execution without --help or --version if config is faulty", async () => {
+        const parms: any = { arguments: { _: ["some", "command"], $0: "" }, silent: true };
+        let error;
+        try {
+            await faultyConfigProcessor.invoke(parms);
+        } catch (e) {
+            error = e;
+        }
+
+        expect(error).toBeDefined();
+        expect(error.message).toContain("Configuration invalid");
+    });
+});
+
 describe("Command Processor", () => {
     beforeEach(() => {
         // Mock read stdin

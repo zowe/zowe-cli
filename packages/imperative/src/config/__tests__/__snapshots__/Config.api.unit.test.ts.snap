@@ -4,6 +4,7 @@ exports[`Config API tests layers get should get the active layer 1`] = `
 Object {
   "exists": true,
   "global": false,
+  "ignoreErrors": false,
   "path": "project.config.user.json",
   "properties": Object {
     "autoStore": false,
