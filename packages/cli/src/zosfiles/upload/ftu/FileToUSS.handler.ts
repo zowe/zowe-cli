@@ -53,8 +53,6 @@ export default class FileToUSSHandler extends ZosFilesBaseHandler {
         );
         if (attributes != null) {
             uploadOptions.attributes = attributes;
-        } else {
-            uploadOptions.filesMap = this.buildFilesMap(commandParameters);
         }
 
         const response = await Upload.uploadFile(
@@ -67,27 +65,5 @@ export default class FileToUSSHandler extends ZosFilesBaseHandler {
         const formatMessage = TextUtils.prettyJson(response.apiResponse);
         commandParameters.response.console.log(formatMessage);
         return response;
-    }
-    private buildFilesMap(commandParameters: IHandlerParameters) {
-        let filesMap: IUploadMap = null;
-
-        // checking if binary-files or ascii-files are used, and update filesMap argument
-        if (commandParameters.arguments.binaryFiles) {
-            filesMap = {
-                binary: true,
-                fileNames: commandParameters.arguments.binaryFiles
-                    .split(",")
-                    .map((fileName: string) => fileName.trim()),
-            };
-        }
-        if (commandParameters.arguments.asciiFiles) {
-            filesMap = {
-                binary: false,
-                fileNames: commandParameters.arguments.asciiFiles
-                    .split(",")
-                    .map((fileName: string) => fileName.trim()),
-            };
-        }
-        return filesMap;
     }
 }

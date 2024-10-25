@@ -83,13 +83,11 @@ describe("Upload file-to-uss handler", () => {
             expect(Upload.uploadFile).toHaveBeenCalledTimes(1);
             expect(Upload.uploadFile).toHaveBeenCalledWith(fakeSession, inputfile, USSFileName, {
                 binary: undefined,
-                encoding: undefined,
                 task: {
                     percentComplete: 0,
                     stageName: 0,
                     statusMessage: "Uploading USS file"
                 },
-                filesMap: null,
                 includeHidden: undefined,
                 maxConcurrentRequests: undefined,
                 responseTimeout: undefined
