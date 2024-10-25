@@ -26,10 +26,8 @@ let defaultSystem: ITestPropertiesSchema;
 let dsname: string;
 let ussname: string;
 const inputfile = __dirname + "/testfiles/upload.txt";
-const encodingCheck = __dirname + "/testfiles/encodingCheck.txt";
 const testdata = "abcdefghijklmnopqrstuvwxyz";
 const uploadOptions: IUploadOptions = {} as any;
-let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
 
 describe("Upload Data Set", () => {
 
@@ -772,12 +770,11 @@ describe("Upload USS file", () => {
         });
         it("should upload a USS file from local file", async () => {
             let error;
-            let uploadResponse;
             let getResponse;
             let tagResponse;
 
             try {
-                uploadResponse = await Upload.fileToUssFile(REAL_SESSION, inputfile, ussname);
+                await Upload.fileToUssFile(REAL_SESSION, inputfile, ussname);
                 getResponse = await Get.USSFile(REAL_SESSION, ussname);
                 tagResponse = await Utilities.isFileTagBinOrAscii(REAL_SESSION, ussname);
             } catch (err) {
@@ -791,12 +788,11 @@ describe("Upload USS file", () => {
         });
         it("should upload a USS file from local file in binary mode", async () => {
             let error;
-            let uploadResponse;
             let getResponse;
             let tagResponse;
 
             try {
-                uploadResponse = await Upload.fileToUssFile(REAL_SESSION, inputfile, ussname, { binary: true });
+                await Upload.fileToUssFile(REAL_SESSION, inputfile, ussname, { binary: true });
                 getResponse = await Get.USSFile(REAL_SESSION, ussname, {binary: true});
                 tagResponse = await Utilities.isFileTagBinOrAscii(REAL_SESSION, ussname);
             } catch (err) {
@@ -835,11 +831,10 @@ describe("Upload USS file", () => {
         it("should upload a USS file and return Etag", async () => {
             let error;
             let uploadResponse;
-            let getResponse;
 
             try {
                 uploadResponse = await Upload.fileToUssFile(REAL_SESSION, inputfile, ussname, {returnEtag: true});
-                getResponse = await Get.USSFile(REAL_SESSION, ussname);
+                await Get.USSFile(REAL_SESSION, ussname);
             } catch (err) {
                 error = err;
                 Imperative.console.info("Error: " + inspect(error));
