@@ -29,8 +29,49 @@ describe("Proxy tests", () => {
     const httpUrl = "http://www.zowe.com";
     const httpsUrl = "https://www.zowe.com";
     const noProxyList = "www.zowe.com, fake.com,ibm.com,broadcom.com   ";
+    const passedUrl = "passedurl.com";
     let getProxySettingsSpy: jest.SpyInstance;
     let checkUrlSpy: jest.SpyInstance;
+
+    describe("recognise passed proxy values in session", () => {
+        const noProxySpy = jest.spyOn(privateProxy, "matchesNoProxySettings");
+        const httpEnvVarSpy = jest.spyOn(privateProxy, "getHttpEnvVariables");
+        const httpsEnvVarSpy = jest.spyOn(privateProxy, "getHttpsEnvVariables");
+        checkUrlSpy = jest.spyOn(privateProxy, "checkUrl");
+        const expected = {
+            proxyUrl: passedUrl,
+            protocol: HTTPS_PROTOCOL
+        }
+
+        beforeEach(() => {
+            jest.clearAllMocks();
+            checkUrlSpy.mockClear();
+        });
+        it("Should use the HTTP proxy agent passed with session", () => {
+            expected.protocol = HTTP_PROTOCOL;
+            session.proxy = { http_proxy: passedUrl };
+            session.protocol = HTTP_PROTOCOL;
+            noProxySpy.mockReturnValueOnce(false);
+            expect(httpEnvVarSpy).not.toHaveBeenCalled();
+            expect(httpsEnvVarSpy).not.toHaveBeenCalled();
+            checkUrlSpy.mockReturnValueOnce(passedUrl);
+            expect(JSON.stringify(ProxySettings["getProxySettings"](session))).toEqual(JSON.stringify(expected));
+            noProxySpy.mockClear();
+            checkUrlSpy.mockClear();
+        });
+        it("Should use the HTTPS proxy agent passed with session", () => {
+            expected.protocol = HTTPS_PROTOCOL;
+            session.proxy = { https_proxy: passedUrl };
+            session.protocol = HTTPS_PROTOCOL;
+            noProxySpy.mockReturnValueOnce(false);
+            expect(httpEnvVarSpy).not.toHaveBeenCalled();
+            expect(httpsEnvVarSpy).not.toHaveBeenCalled();
+            checkUrlSpy.mockReturnValueOnce(passedUrl);
+            expect(JSON.stringify(ProxySettings["getProxySettings"](session))).toEqual(JSON.stringify(expected));
+            noProxySpy.mockClear();
+            checkUrlSpy.mockClear();
+        });
+    })
 
     describe("getProxyAgent", () => {
         beforeEach(() => {
@@ -108,13 +149,22 @@ describe("Proxy tests", () => {
             expect(ProxySettings["matchesNoProxySettings"](session)).toEqual(expected);
             process.env["NO_PROXY"] = undefined;
         });
-
+        it("Should return true for match with no_proxy passed with session proxy", () => {
+            session.proxy = { http_proxy: passedUrl, no_proxy: ["fake.com"] };
+            session.protocol = HTTP_PROTOCOL;
+            expect(ProxySettings["matchesNoProxySettings"](session)).toEqual(true);
+        });
         it("Should not match session hostname with no_proxy",  () => {
             const expected = false;
             process.env["NO_PROXY"] = noProxyList;
             session.hostname = "microsoft.com";
             expect(ProxySettings["matchesNoProxySettings"](session)).toEqual(expected);
             process.env["NO_PROXY"] = undefined;
+        });
+        it("Should return false for match with no_proxy passed with session proxy", () => {
+            session.proxy = { http_proxy: passedUrl, no_proxy: ["false.com", "blah.com"] };
+            session.protocol = HTTP_PROTOCOL;
+            expect(ProxySettings["matchesNoProxySettings"](session)).toEqual(false);
         });
     });
 });

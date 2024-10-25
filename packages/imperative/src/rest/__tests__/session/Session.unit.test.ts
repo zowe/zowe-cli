@@ -277,7 +277,7 @@ describe("Session tests", () => {
     it("should build a session with passed proxy settings updating http_proxy and session's strictSSL", () => {
         let error;
         let session;
-        let mySettings
+        let mySettings;
         try {
             mySettings = {
                 http_proxy: "example.com",
@@ -285,14 +285,14 @@ describe("Session tests", () => {
                 no_proxy: undefined,
                 proxy_authorization: undefined,
                 proxy_strict_ssl: false
-            }
+            };
             session = new Session({hostname: "localhost", type: "bearer", tokenValue: "blahblahblah", proxy: mySettings});
         } catch (thrownError) {
             error = thrownError;
         }
         expect(error).toBeUndefined();
-        expect(session.ISession.proxy).toEqual(mySettings)
-        expect(session.ISession.strictSSL).toEqual(false)
+        expect(session.ISession.proxy).toEqual(mySettings);
+        expect(session.ISession.strictSSL).toEqual(false);
     })
 
     it("should require proper type", () => {
