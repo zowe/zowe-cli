@@ -521,7 +521,7 @@ exports[`GetJobs tests getJobs APIs should have proper URI when using owner 1`] 
 
 exports[`GetJobs tests getJobs APIs should have proper URI when using prefix 1`] = `"/zosmf/restjobs/jobs?prefix=fakePrefix&exec-data=Y"`;
 
-exports[`GetJobs tests getJobs APIs should have proper URI when using status 1`] = `"/zosmf/restjobs/jobs?exec-data=Y&status=active"`;
+exports[`GetJobs tests getJobs APIs should have proper URI when using status 1`] = `"/zosmf/restjobs/jobs?status=active&exec-data=Y"`;
 
 exports[`GetJobs tests getJobs APIs should locate a job by jobid 1`] = `
 Object {

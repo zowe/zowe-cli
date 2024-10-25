@@ -1,0 +1,11 @@
+{
+  "normal-plugin": {
+    "package": "/Users/pujalgandhi/Documents/ZOWE/zowe-cli/packages/imperative/__tests__/src/packages/imperative/plugins/test_plugins/normal_plugin",
+    "version": "1.0.1"
+  },
+  "normal-plugin-2": {
+    "package": "/Users/pujalgandhi/Documents/ZOWE/zowe-cli/packages/imperative/__tests__/src/packages/imperative/plugins/test_plugins/normal_plugin_2",
+    "location": "http://imperative-npm-registry:4873",
+    "version": "1.0.2"
+  }
+}

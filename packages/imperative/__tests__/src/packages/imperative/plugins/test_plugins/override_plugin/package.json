@@ -1,5 +1,5 @@
 {
-  "name": "@zowe/secrets-for-kubernetes-for-zowe-cli",
+  "name": "override-plugin",
   "version": "1.0.1",
   "description": "Some description",
   "main": "lib/index.js",

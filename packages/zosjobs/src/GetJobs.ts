@@ -181,18 +181,19 @@ export class GetJobs {
                 }
                 query += JobsConstants.QUERY_JOBID + encodeURIComponent(params.jobid);
             }
-            if (includeExecData) {
-                if (RestClient.hasQueryString(query)) {
-                    query += JobsConstants.COMBO_ID;
-                }
-                query += JobsConstants.EXEC_DATA;
-            }
             if (params.status) {
                 if (RestClient.hasQueryString(query)) {
                     query += JobsConstants.COMBO_ID;
                 }
                 query += JobsConstants.QUERY_STATUS + encodeURIComponent(params.status);
             }
+        }
+
+        if (includeExecData) {
+            if (RestClient.hasQueryString(query)) {
+                query += JobsConstants.COMBO_ID;
+            }
+            query += JobsConstants.EXEC_DATA;
         }
 
         let resource = JobsConstants.RESOURCE;
