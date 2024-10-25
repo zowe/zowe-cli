@@ -38,7 +38,7 @@ import { Logger } from "../../../logger";
 import { LoggerUtils } from "../../../logger/src/LoggerUtils";
 
 const DataObjectParser = require("dataobject-parser");
-
+export const DEFAULT_SPINNER_CHARS = "-oO0)|(0Oo-";
 /**
  * Command response object allocated by the command processor and used to construct the handler response object
  * passed to the command handlers. The response object contains all the methods necessary for a command handler (and

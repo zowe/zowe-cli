@@ -16,7 +16,7 @@ import { TsoValidator } from "./TsoValidator";
 import { noAccountNumber, TsoConstants } from "./TsoConstants";
 import { IASAppResponse } from "./doc/IASAppResponse";
 import { ITsoAppCommunicationParms } from "./doc/input/ITsoAppCommunicationParms";
-
+import { DEFAULT_SPINNER_CHARS } from "@zowe/imperative";
 /**
  * Send message to TSO App running at an address space
  * @export
@@ -41,7 +41,7 @@ export class SendTsoApp {
         TsoValidator.validateSession(session);
         TsoValidator.validateNotEmptyString(accountNumber, noAccountNumber.message);
 
-        const spinnerChars = ["|", "/", "-", "\\"];
+        const spinnerChars = DEFAULT_SPINNER_CHARS.split("");
         let spinnerIndex = 0;
 
         // Start the spinner

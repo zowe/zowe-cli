@@ -15,6 +15,7 @@ import { TsoValidator } from "./TsoValidator";
 import { noAccountNumber, TsoConstants } from "./TsoConstants";
 import { ITsoAppCommunicationParms } from "./doc/input/ITsoAppCommunicationParms";
 import { IASAppResponse } from "./doc/IASAppResponse";
+import { DEFAULT_SPINNER_CHARS } from "@zowe/imperative";
 
 export class ReceiveTsoApp {
     public static async receive(
@@ -25,7 +26,7 @@ export class ReceiveTsoApp {
         TsoValidator.validateSession(session);
         TsoValidator.validateNotEmptyString(accountNumber, noAccountNumber.message);
         const TIMEOUT_SECONDS: number = params.timeout;
-        const spinnerChars = ["|", "/", "-", "\\"];
+        const spinnerChars = DEFAULT_SPINNER_CHARS.split("");
         let spinnerIndex = 0;
 
         // Start the spinner
