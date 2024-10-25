@@ -26,7 +26,8 @@ export const StartASApp: ICommandDefinition = {
         {
             name: "app-key",
             aliases: ["ak"],
-            description: "App key of application running at TSO address space, this app key value should be referenced when sending or receiving messages from the application instance",
+            description: "App key of application running at TSO address space, " +
+            "this app key value should be referenced when sending or receiving messages from the application instance",
             type: "string",
             required: true
         },
