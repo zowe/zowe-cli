@@ -20,7 +20,6 @@ import { Upload, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
 import { IUploadOptions } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosFilesAttributes } from "@zowe/zos-files-for-zowe-sdk";
-import { IUploadMap } from "@zowe/zos-files-for-zowe-sdk";
 
 /**
  * Handler to upload content from a local file to a USS file
