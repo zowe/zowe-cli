@@ -1422,14 +1422,13 @@ describe("AbstractRestClient tests", () => {
         });
 
         describe('buildOptions', () => {
-            const privateRestClient = new RestClient(
-                new Session({
-                    hostname: "FakeHostName",
-                    type: AUTH_TYPE_CERT_PEM,
-                    cert: "FakePemCert",
-                    certKey: "FakePemCertKey"
-                })
-            ) as any;
+            const restSession = new Session({
+                hostname: "FakeHostName",
+                type: AUTH_TYPE_CERT_PEM,
+                cert: "FakePemCert",
+                certKey: "FakePemCertKey"
+            });
+            const privateRestClient = new RestClient(restSession) as any;
             let getSystemProxyUrlSpy: jest.SpyInstance;
             let getProxyAgentSpy: jest.SpyInstance;
             let setCertPemAuthSpy: jest.SpyInstance;
@@ -1453,6 +1452,22 @@ describe("AbstractRestClient tests", () => {
                 const result = privateRestClient.buildOptions(resource, request, reqHeaders);
                 expect(Object.keys(result)).toContain('agent');
             });
+
+            it('Should use session proxy options over env vars for proxy agent', () => {
+                restSession.ISession.proxy = { proxy_authorization: 'proxy_auth_string'};
+                const resource = '/resource';
+                const request = '';
+                const reqHeaders: any[] = [];
+                const url = new URL('https://www.zowe.com');
+                const proxyAgent = new HttpsProxyAgent(url, { rejectUnauthorized: true });
+                getSystemProxyUrlSpy.mockReturnValue(url);
+                getProxyAgentSpy.mockReturnValue(proxyAgent);
+                setCertPemAuthSpy.mockReturnValue(true);
+                const headerSpy = jest.spyOn(privateRestClient, "appendHeaders");
+                const result = privateRestClient.buildOptions(resource, request, reqHeaders);
+                expect(Object.keys(result)).toContain('agent');
+                expect(headerSpy).toHaveBeenCalledWith([{'Proxy-Authorization': restSession.ISession.proxy.proxy_authorization}]);
+            })
         });
     });
 });
