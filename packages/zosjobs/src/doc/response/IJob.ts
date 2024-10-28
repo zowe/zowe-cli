@@ -39,35 +39,35 @@ export interface IJob {
      * @type {Date}
      * @memberof IJob
      */
-    "exec-started": string;
+    "exec-started"?: string;
 
     /**
      * end date of the job
      * @type {Date}
      * @memberof IJob
      */
-    "exec-ended": string;
+    "exec-ended"?: string;
 
     /**
      * exec-member
      * @type {string}
      * @memberof IJob
      */
-    "exec-member": string;
+    "exec-member"?: string;
 
     /**
      * exec-submitted
      * @type {Date}
      * @memberof IJob
      */
-    "exec-submitted": string;
+    "exec-submitted"?: string;
 
     /**
      * exec-system
      * @type {String}
      * @memberof IJob
      */
-    "exec-system": string;
+    "exec-system"?: string;
 
     /**
      * The primary or secondary JES subsystem.

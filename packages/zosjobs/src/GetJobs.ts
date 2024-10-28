@@ -153,7 +153,6 @@ export class GetJobs {
         Logger.getAppLogger().trace("GetJobs.getJobsCommon()");
         ImperativeExpect.toNotBeNullOrUndefined(session, "Required session must be defined");
         let query = JobsConstants.QUERY_ID;
-        const includeExecData = params?.execData !== false;
 
         if (params) {
             if (params.owner) {
@@ -181,6 +180,12 @@ export class GetJobs {
                 }
                 query += JobsConstants.QUERY_JOBID + encodeURIComponent(params.jobid);
             }
+            if (params.execData) {
+                if (RestClient.hasQueryString(query)) {
+                    query += JobsConstants.COMBO_ID;
+                }
+                query += JobsConstants.EXEC_DATA;
+            }
             if (params.status) {
                 if (RestClient.hasQueryString(query)) {
                     query += JobsConstants.COMBO_ID;
@@ -189,12 +194,6 @@ export class GetJobs {
             }
         }
 
-        if (includeExecData) {
-            if (RestClient.hasQueryString(query)) {
-                query += JobsConstants.COMBO_ID;
-            }
-            query += JobsConstants.EXEC_DATA;
-        }
 
         let resource = JobsConstants.RESOURCE;
         resource += query === JobsConstants.QUERY_ID ? "" : query;
