@@ -84,7 +84,7 @@ describe("Plugin Management Facility list handler", () => {
         mocks.readFileSync.mockReturnValue({} as any);
     });
 
-    test("list packages", async () => {
+    it("list packages", async () => {
 
         // plugin definitions mocking unsorted file contents
         const fileJson: IPluginJson = {
@@ -113,7 +113,7 @@ describe("Plugin Management Facility list handler", () => {
 
     });
 
-    test("list packages short", async () => {
+    it("list packages short", async () => {
 
         // plugin definitions mocking unsorted file contents
         const fileJson: IPluginJson = {
@@ -143,4 +143,3 @@ describe("Plugin Management Facility list handler", () => {
 
     });
 });
-
