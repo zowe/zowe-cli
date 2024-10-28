@@ -18,8 +18,7 @@ import {
 } from "@zowe/imperative";
 import { Upload, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
-import { IUploadOptions } from "@zowe/zos-files-for-zowe-sdk";
-import { ZosFilesAttributes } from "@zowe/zos-files-for-zowe-sdk";
+import { IUploadOptions, ZosFilesAttributes } from "@zowe/zos-files-for-zowe-sdk";
 
 /**
  * Handler to upload content from a local file to a USS file

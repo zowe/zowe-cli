@@ -855,7 +855,7 @@ export class Upload {
     }
 
     public static async uploadFile(session: AbstractSession, localPath: string, ussPath: string,
-        options: IUploadOptions) {
+        options: IUploadOptions): Promise<IZosFilesResponse> {
         const tempOptions: Partial<IUploadOptions> = {};
 
         if (options.attributes) {
