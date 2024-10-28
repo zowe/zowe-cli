@@ -17,7 +17,9 @@ import { readFileSync } from "jsonfile";
 import * as npmPackageArg from "npm-package-arg";
 import * as pacote from "pacote";
 import { ExecUtils } from "../../../../utilities";
-import { IO } from "../../../../io";
+import { INpmInstallArgs } from "../doc/INpmInstallArgs";
+import { IPluginJsonObject } from "../doc/IPluginJsonObject";
+import { INpmRegistryInfo } from "../doc/INpmRegistryInfo";
 const npmCmd = findNpmOnPath();
 
 /**
@@ -40,69 +42,21 @@ export function findNpmOnPath(): string {
  * @return {string} command response
  *
  */
-export function installPackages(prefix: string, registry: string, npmPackage: string): string {
+export function installPackages(npmPackage: string, npmArgs: INpmInstallArgs): string {
     const pipe: StdioOptions = ["pipe", "pipe", process.stderr];
-
-    const args = [
-        "install", npmPackage,
-        "--prefix", prefix,
-        "-g"
-    ];
-    let isDirTest: boolean;
-
-    try{
-        isDirTest = IO.isDir(registry);
+    const args = ["install", npmPackage, "-g", "--legacy-peer-deps"];
+    for (const [k, v] of Object.entries(npmArgs)) {
+        if (v != null) {
+            // If npm arg starts with @ like @zowe:registry, must use = as separator
+            args.push(...k.startsWith("@") ? [`--${k}=${v}`] : [`--${k}`, v]);
+        }
     }
-    catch(e){
-        isDirTest = false;
-    }
-
-    if (!(registry.substring(registry.lastIndexOf(".") + 1) === "tgz") && !isDirTest) {
-        args.push("--registry",registry);
-    }
-
-    args.push("--legacy-peer-deps");
-
     const execOutput = ExecUtils.spawnAndGetOutput(npmCmd, args, {
         cwd: PMFConstants.instance.PMF_ROOT,
         stdio: pipe
     });
 
     return execOutput.toString();
-}
-
-
-/**
- * Get the registry to install to.
- *
- * @return {string}
- */
-export function getRegistry(): string {
-    const execOutput = ExecUtils.spawnAndGetOutput(npmCmd, [ "config", "get", "registry" ]);
-    return execOutput.toString();
-}
-
-export function getScopeRegistry(scope: string): string {
-    const execOutput = ExecUtils.spawnAndGetOutput(npmCmd, [ "config", "get", `@${scope}:registry` ]);
-    if(execOutput.toString().trim() === 'undefined') return getRegistry();
-    return execOutput.toString();
-}
-
-/**
- * NPM login to be able to install from secure registry
- * @param {string} registry The npm registry to install from.
- */
-export function npmLogin(registry: string) {
-    ExecUtils.spawnAndGetOutput(npmCmd,
-        [
-            "login",
-            "--registry", registry,
-            "--always-auth",
-            "--auth-type=legacy"
-        ], {
-            stdio: [0,1,2]
-        }
-    );
 }
 
 /**
@@ -117,5 +71,80 @@ export async function getPackageInfo(pkgSpec: string): Promise<{ name: string, v
     } else {
         // Package name is unknown, so fetch name and version with pacote (npm SDK)
         return pacote.manifest(pkgSpec);
+    }
+}
+
+export class NpmRegistryUtils {
+    /**
+     * Get the registry to install to.
+     * @param userRegistry Registry override specified on the command line
+     * @return {string}
+     */
+    public static getRegistry(userRegistry?: string): string {
+        if (userRegistry != null) return userRegistry;
+        const execOutput = ExecUtils.spawnAndGetOutput(npmCmd, ["config", "get", "registry"]);
+        return execOutput.toString().replace("\n", "");
+    }
+
+    /**
+     * NPM login to be able to install from secure registry
+     * @param {string} registry The npm registry to install from.
+     */
+    public static npmLogin(registry: string) {
+        ExecUtils.spawnAndGetOutput(npmCmd,
+            [
+                "login",
+                "--registry", registry,
+                "--always-auth",
+                "--auth-type=legacy"
+            ],
+            { stdio: "inherit" }
+        );
+    }
+
+    /**
+     * Get package location and npm registry args for installing it.
+     * @param packageInfo Plugin name or object from plugins.json
+     * @param userRegistry Registry override specified on the command line
+     * @returns Location info for npm package to be installed
+     */
+    public static buildRegistryInfo(packageInfo: string | IPluginJsonObject, userRegistry?: string): INpmRegistryInfo {
+        const packageName = typeof packageInfo === "string" ? packageInfo : packageInfo.package;
+        const packageScope = packageName.startsWith("@") ? packageName.split("/")[0] : undefined;
+        if (userRegistry != null) {
+            // If --registry was passed on the command line, it takes precedence
+            return {
+                location: userRegistry,
+                npmArgs: this.buildRegistryNpmArgs(userRegistry, packageScope)
+            };
+        } else if (typeof packageInfo === "string" || !packageInfo.location) {
+            // If installing a plug-in for the first time, get default registry
+            const defaultRegistry = this.getRegistry();
+            return {
+                location: npmPackageArg(packageName).registry ? defaultRegistry : packageName,
+                npmArgs: this.buildRegistryNpmArgs(defaultRegistry, packageScope)
+            };
+        } else {
+            // If updating a plug-in, fetch registry info from plugins.json
+            const cachedRegistry = npmPackageArg(packageInfo.package).registry ? packageInfo.location : undefined;
+            return {
+                location: packageInfo.location,
+                npmArgs: this.buildRegistryNpmArgs(cachedRegistry ?? this.getRegistry(), packageScope)
+            };
+        }
+    }
+
+    private static buildRegistryNpmArgs(registryUrl: string, scope?: string): Partial<INpmInstallArgs> {
+        const npmArgs: INpmRegistryInfo["npmArgs"] = { registry: registryUrl };
+        if (scope != null) {
+            npmArgs[`${scope}:registry`] = this.getScopeRegistry(scope);
+        }
+        return npmArgs;
+    }
+
+    private static getScopeRegistry(scope: string): string | undefined {
+        const execOutput = ExecUtils.spawnAndGetOutput(npmCmd, ["config", "get", `${scope}:registry`]);
+        if (execOutput.toString().trim() === "undefined") return;
+        return execOutput.toString().replace("\n", "");
     }
 }
