@@ -65,7 +65,7 @@ export class AddressSpaceApps {
         // Address space application starting
         const endpoint = `${TsoConstants.RESOURCE}/app/${params.servletKey}/${params.appKey}`;
         const response = await ZosmfRestClient.postExpectJSON<
-            IASAppResponse & { ver: string }
+        IASAppResponse & { ver: string }
         >(session, endpoint, [Headers.APPLICATION_JSON], {
             startcmd: `${params.startupCommand} '&1 &2 ${params.queueID}'`,
         });
@@ -112,7 +112,7 @@ export class AddressSpaceApps {
         const endpoint = `${TsoConstants.RESOURCE}/app/${params.servletKey}/${params.appKey}`;
 
         const apiResponse = await ZosmfRestClient.putExpectJSON<
-            IASAppResponse & { ver: string }
+        IASAppResponse & { ver: string }
         >(
             session,
             endpoint,
@@ -167,14 +167,14 @@ export class AddressSpaceApps {
         let timeoutReached = false;
 
         do {
-            if (Date.now() - startTime > TIMEOUT_SECONDS * 1000) {
+            if (Date.now() - startTime > TIMEOUT_SECONDS * 1000) { // eslint-disable-line
                 timeoutReached = true;
                 break;
             }
 
             try {
                 const apiResponse = await ZosmfRestClient.getExpectJSON<
-                    IASAppResponse & { ver: string; appData?: any }
+                IASAppResponse & { ver: string; appData?: any }
                 >(session, endpoint);
                 const response = apiResponse as IASAppResponse & {
                     ver: string;

@@ -709,7 +709,7 @@ export class CommandResponse implements ICommandResponseApi {
                         this.spinnerInterval = setInterval(() => {
                             process.stdout.write(`\r${pendingText} ${this.mProgressBarSpinnerChars[this.spinnerIndex]}`);
                             this.spinnerIndex = (this.spinnerIndex + 1) % this.mProgressBarSpinnerChars.length;
-                        }, 100);
+                        }, 100); // eslint-disable-line
                     }
                 }
                 /**
