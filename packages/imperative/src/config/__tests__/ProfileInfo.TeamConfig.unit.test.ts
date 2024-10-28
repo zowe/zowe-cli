@@ -1232,7 +1232,7 @@ describe("TeamConfig ProfileInfo tests", () => {
     });
 
     describe("updateKnownProperty", () => {
-        it("should throw and error if the property location type is invalid", async () => {
+        it("should throw an error if the property location type is invalid", async () => {
             const profInfo = createNewProfInfo(teamProjDir);
             await profInfo.readProfilesFromDisk();
             let caughtError;
@@ -1271,6 +1271,7 @@ describe("TeamConfig ProfileInfo tests", () => {
             const profInfo = createNewProfInfo(teamProjDir);
             await profInfo.readProfilesFromDisk();
             const jsonPathMatchesSpy = jest.spyOn(ConfigUtils, "jsonPathMatches");
+            const configSaveSpy = jest.spyOn(profInfo.getTeamConfig(), "save");
 
             const prof = profInfo.mergeArgsForProfile(profInfo.getAllProfiles("dummy")[0]);
             const ret = await profInfo.updateKnownProperty({ mergedArgs: prof, property: "host", value: "example.com" });
@@ -1279,6 +1280,26 @@ describe("TeamConfig ProfileInfo tests", () => {
             expect(newHost).toEqual("example.com");
             expect(ret).toBe(true);
             expect(jsonPathMatchesSpy).toHaveBeenCalled(); // Verify that profile names are matched correctly
+            expect(configSaveSpy).toHaveBeenCalled();
+        });
+
+        it("should update the given property in the vault and return true", async () => {
+            const profInfo = createNewProfInfo(teamProjDir);
+            await profInfo.readProfilesFromDisk();
+            const jsonPathMatchesSpy = jest.spyOn(ConfigUtils, "jsonPathMatches");
+            jest.spyOn(profInfo.getTeamConfig().api.secure, "secureFields").mockReturnValue(["profiles.LPAR4.properties.host"]);
+            const configSaveSpy = jest.spyOn(profInfo.getTeamConfig(), "save");
+            const configSecureSaveSpy = jest.spyOn(profInfo.getTeamConfig().api.secure, "save");
+
+            const prof = profInfo.mergeArgsForProfile(profInfo.getAllProfiles("dummy")[0]);
+            const ret = await profInfo.updateKnownProperty({ mergedArgs: prof, property: "host", value: "example.com", setSecure: true });
+            const newHost = profInfo.getTeamConfig().api.layers.get().properties.profiles.LPAR4.properties.host;
+
+            expect(newHost).toEqual("example.com");
+            expect(ret).toBe(true);
+            expect(jsonPathMatchesSpy).toHaveBeenCalled(); // Verify that profile names are matched correctly
+            expect(configSaveSpy).not.toHaveBeenCalled();
+            expect(configSecureSaveSpy).toHaveBeenCalled();
         });
 
         it("should remove the given property if the value specified if undefined", async () => {
