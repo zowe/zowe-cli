@@ -10,7 +10,7 @@
 */
 
 import { IHandlerParameters } from "@zowe/imperative";
-import { ZosTsoBaseHandler, SendTsoApp } from "@zowe/zos-tso-for-zowe-sdk";
+import { ZosTsoBaseHandler, AddressSpaceApps } from "@zowe/zos-tso-for-zowe-sdk";
 
 /**
  * Handler to send a message to address space
@@ -24,7 +24,7 @@ export default class Handler extends ZosTsoBaseHandler {
 
         commandParameters.response.progress.startSpinner("Sending request...");
 
-        const response = await SendTsoApp.send(
+        const response = await AddressSpaceApps.send(
             this.mSession,
             this.mArguments.account,
             {

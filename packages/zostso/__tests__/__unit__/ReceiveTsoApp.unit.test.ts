@@ -11,7 +11,7 @@
 
 import { Session } from "@zowe/imperative";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
-import { ReceiveTsoApp } from "../../src";
+import { AddressSpaceApps } from "../../src";
 import { ITsoAppCommunicationParms } from "../../src/doc/input/ITsoAppCommunicationParms";
 
 const PRETEND_SESSION = new Session({
@@ -65,7 +65,7 @@ describe("ReceiveTsoApp behavior", () => {
             receiveUntilReady: true,
         };
 
-        const response = await ReceiveTsoApp.receive(
+        const response = await AddressSpaceApps.receive(
             PRETEND_SESSION,
             "123456",
             params
@@ -101,7 +101,7 @@ describe("ReceiveTsoApp behavior", () => {
             receiveUntilReady: true,
         };
 
-        const response = await ReceiveTsoApp.receive(
+        const response = await AddressSpaceApps.receive(
             PRETEND_SESSION,
             "123456",
             params
@@ -125,7 +125,7 @@ describe("ReceiveTsoApp behavior", () => {
             receiveUntilReady: true,
         };
 
-        const response = await ReceiveTsoApp.receive(
+        const response = await AddressSpaceApps.receive(
             PRETEND_SESSION,
             "123456",
             params
@@ -148,7 +148,7 @@ describe("ReceiveTsoApp behavior", () => {
         };
 
         await expect(
-            ReceiveTsoApp.receive(PRETEND_SESSION, "123456", params)
+            AddressSpaceApps.receive(PRETEND_SESSION, "123456", params)
         ).rejects.toThrow("Network error");
     });
 
@@ -188,7 +188,7 @@ describe("ReceiveTsoApp behavior", () => {
             receiveUntilReady: true,
         };
 
-        const response = await ReceiveTsoApp.receive(
+        const response = await AddressSpaceApps.receive(
             PRETEND_SESSION,
             "123456",
             params

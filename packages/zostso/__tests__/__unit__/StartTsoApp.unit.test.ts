@@ -11,9 +11,7 @@
 
 import { Session } from "@zowe/imperative";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
-import { StartTsoApp } from "../../src";
-import { StartTso } from "../../src";
-import { IStartStopResponses } from "../../src";
+import { AddressSpaceApps, StartTso, IStartStopResponses } from "../../src";
 
 const PRETEND_SESSION = new Session({
     user: "usr",
@@ -63,7 +61,7 @@ describe("StartTsoApp behavior", () => {
         jest.spyOn(StartTso, "start").mockReturnValue(MOCK_START_RESPONSE);
         jest.spyOn(ZosmfRestClient, "postExpectJSON").mockReturnValue(MOCK_RESPONSE);
 
-        const response = await StartTsoApp.start(PRETEND_SESSION, "izuacct", {
+        const response = await AddressSpaceApps.start(PRETEND_SESSION, "izuacct", {
             startupCommand: "EXEC 'TEST.EXEC(THISSCRIPTDOESNOTEXIST)'",
             appKey: "testappkey",
         }, null);
@@ -89,7 +87,7 @@ describe("StartTsoApp behavior", () => {
         jest.spyOn(StartTso, "start").mockReturnValue(MOCK_START_RESPONSE);
         jest.spyOn(ZosmfRestClient, "postExpectJSON").mockReturnValue(MOCK_RESPONSE);
 
-        const response = await StartTsoApp.start(PRETEND_SESSION, "izuacct", {
+        const response = await AddressSpaceApps.start(PRETEND_SESSION, "izuacct", {
             startupCommand: "EXEC 'TEST.EXEC(THISSCRIPTDOESNOTEXIST)'",
             appKey: "testappkey",
             queueID: "12345",

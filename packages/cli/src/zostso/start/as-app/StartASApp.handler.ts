@@ -10,8 +10,7 @@
 */
 
 import { IHandlerParameters } from "@zowe/imperative";
-import { ZosTsoBaseHandler } from "@zowe/zos-tso-for-zowe-sdk";
-import { StartTsoApp } from "@zowe/zos-tso-for-zowe-sdk";
+import { ZosTsoBaseHandler, AddressSpaceApps } from "@zowe/zos-tso-for-zowe-sdk";
 
 /**
  * Handler to start app at an address space
@@ -22,7 +21,7 @@ import { StartTsoApp } from "@zowe/zos-tso-for-zowe-sdk";
 export default class Handler extends ZosTsoBaseHandler {
     // Process the command and produce the start response (returns servlet)
     public async processCmd(commandParameters: IHandlerParameters) {
-        const response = await StartTsoApp.start(
+        const response = await AddressSpaceApps.start(
             this.mSession,
             this.mArguments.account,
             {

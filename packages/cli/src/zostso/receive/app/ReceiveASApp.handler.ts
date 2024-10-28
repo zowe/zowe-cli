@@ -10,7 +10,7 @@
 */
 
 import { IHandlerParameters } from "@zowe/imperative";
-import { ZosTsoBaseHandler, ReceiveTsoApp } from "@zowe/zos-tso-for-zowe-sdk";
+import { ZosTsoBaseHandler, AddressSpaceApps } from "@zowe/zos-tso-for-zowe-sdk";
 
 /**
  * Handler to receive message from an app at an address space
@@ -24,7 +24,7 @@ export default class Handler extends ZosTsoBaseHandler {
 
         commandParameters.response.progress.startSpinner("Receiving response...");
 
-        const response = await ReceiveTsoApp.receive(
+        const response = await AddressSpaceApps.receive(
             this.mSession,
             this.mArguments.account,
             {

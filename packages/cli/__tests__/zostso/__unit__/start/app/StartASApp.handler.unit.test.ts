@@ -21,13 +21,12 @@
  */
 
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
-import { StartTso, StartTsoApp } from "@zowe/zos-tso-for-zowe-sdk";
+import { StartTso, AddressSpaceApps, IStartStopResponses } from "@zowe/zos-tso-for-zowe-sdk";
 import * as StartASAppHandler from "../../../../../src/zostso/start/as-app/StartASApp.handler";
 import * as StartASAppDefinition from "../../../../../src/zostso/start/as-app/StartASApp.definition";
 import { IHandlerParameters } from "@zowe/imperative";
 import { mockHandlerParameters } from "@zowe/cli-test-utils";
 import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../../__tests__/__src__/TestConstants";
-import { IStartStopResponses } from "@zowe/zos-tso-for-zowe-sdk";
 
 const NEW_AS_SPACE_PARAMS: IHandlerParameters = mockHandlerParameters({
     arguments: UNIT_TEST_ZOSMF_PROF_OPTS,
@@ -101,7 +100,7 @@ describe("receive TSO app handler behavior", () => {
             MOCK_RESPONSE
         );
 
-        const startSpy = jest.spyOn(StartTsoApp, "start");
+        const startSpy = jest.spyOn(AddressSpaceApps, "start");
         const startASSpaceSpy = jest.spyOn(StartTso, "start");
         const zosmfSpy = jest.spyOn(ZosmfRestClient, "postExpectJSON");
         const handler = new StartASAppHandler.default();
@@ -129,7 +128,7 @@ describe("receive TSO app handler behavior", () => {
             MOCK_RESPONSE
         );
 
-        const startSpy = jest.spyOn(StartTsoApp, "start");
+        const startSpy = jest.spyOn(AddressSpaceApps, "start");
         const startASSpaceSpy = jest.spyOn(StartTso, "start");
         const zosmfSpy = jest.spyOn(ZosmfRestClient, "postExpectJSON");
         const handler = new StartASAppHandler.default();

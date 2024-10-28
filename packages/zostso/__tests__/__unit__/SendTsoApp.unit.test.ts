@@ -11,7 +11,7 @@
 
 import { Session } from "@zowe/imperative";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
-import { SendTsoApp } from "../../src";
+import { AddressSpaceApps } from "../../src";
 import { ITsoAppCommunicationParms } from "../../src/doc/input/ITsoAppCommunicationParms";
 
 const PRETEND_SESSION = new Session({
@@ -60,7 +60,7 @@ describe("SendTsoApp behavior", () => {
             message: "Test message",
         };
 
-        const response = await SendTsoApp.send(
+        const response = await AddressSpaceApps.send(
             PRETEND_SESSION,
             "123456",
             params,

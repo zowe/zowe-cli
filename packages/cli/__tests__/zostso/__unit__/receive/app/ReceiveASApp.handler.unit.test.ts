@@ -10,7 +10,7 @@
 */
 
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
-import { ReceiveTsoApp } from "@zowe/zos-tso-for-zowe-sdk";
+import { AddressSpaceApps } from "@zowe/zos-tso-for-zowe-sdk";
 import * as ReceiveASAppHandler from "../../../../../src/zostso/receive/app/ReceiveASApp.handler";
 import * as ReceiveASAppDefinition from "../../../../../src/zostso/receive/app/ReceiveASApp.definition";
 import { IHandlerParameters } from "@zowe/imperative";
@@ -47,7 +47,7 @@ describe("receive TSO app handler behavior", () => {
         jest.spyOn(ZosmfRestClient, "getExpectJSON").mockResolvedValueOnce(
             MOCK_RECEIVE_RESPONSE
         );
-        const receiveSpy = jest.spyOn(ReceiveTsoApp,"receive");
+        const receiveSpy = jest.spyOn(AddressSpaceApps,"receive");
         const handler = new ReceiveASAppHandler.default();
         const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
         let error = undefined;
