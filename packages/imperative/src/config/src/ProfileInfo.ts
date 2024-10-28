@@ -298,8 +298,13 @@ export class ProfileInfo {
                     this.getTeamConfig().api.layers.activate(osLoc.user, osLoc.global);
                 }
 
+                const updateVaultOnly = options.setSecure && this.getTeamConfig().api.secure.secureFields().includes(toUpdate.argLoc.jsonLoc);
                 this.getTeamConfig().set(toUpdate.argLoc.jsonLoc, options.value, { secure: options.setSecure });
-                await this.getTeamConfig().save(false);
+                if (!updateVaultOnly) {
+                    await this.getTeamConfig().save(false);
+                } else {
+                    await this.getTeamConfig().api.secure.save(false);
+                }
 
                 if (oldLayer) {
                     this.getTeamConfig().api.layers.activate(oldLayer.user, oldLayer.global);
