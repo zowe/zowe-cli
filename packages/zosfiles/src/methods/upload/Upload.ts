@@ -678,7 +678,7 @@ export class Upload {
                 }
                 const fileName = path.normalize(path.join(inputDirectory, file.fileName));
                 const ussFilePath = path.posix.join(ussname, file.fileName);
-                return this.uploadFile(fileName, ussFilePath, session,
+                return this.uploadFile(session,fileName, ussFilePath,
                     { ...options, binary: file.binary });
             };
 
@@ -831,7 +831,7 @@ export class Upload {
                 }
                 const filePath = path.normalize(path.join(inputDirectory, file.fileName));
                 const ussFilePath = path.posix.join(ussname, file.fileName);
-                return this.uploadFile(filePath, ussFilePath, session,
+                return this.uploadFile(session, filePath, ussFilePath,
                     { ...options, binary: file.binary });
             };
             if (maxConcurrentRequests === 0) {
@@ -854,8 +854,8 @@ export class Upload {
         };
     }
 
-    private static async uploadFile(localPath: string, ussPath: string,
-        session: AbstractSession, options: IUploadOptions) {
+    public static async uploadFile(session: AbstractSession, localPath: string, ussPath: string,
+        options: IUploadOptions): Promise<IZosFilesResponse> {
         const tempOptions: Partial<IUploadOptions> = {};
 
         if (options.attributes) {
@@ -882,7 +882,7 @@ export class Upload {
             }
         }
 
-        await this.fileToUssFile(session, localPath, ussPath, tempOptions);
+        return await this.fileToUssFile(session, localPath, ussPath, tempOptions);
     }
 
     /**
