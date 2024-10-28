@@ -20,17 +20,14 @@ import { readFileSync } from "jsonfile";
 import { ImperativeConfig, TextUtils } from "../../../../../utilities";
 import { ImperativeError } from "../../../../../error";
 import { runValidatePlugin } from "../../utilities/runValidatePlugin";
-import {
-    getRegistry,
-    getScopeRegistry,
-    npmLogin,
-} from "../../utilities/NpmFunctions";
-import { IO } from "../../../../../io";
+import { NpmRegistryUtils } from "../../utilities/NpmFunctions";
+
 /**
  * The install command handler for cli plugin install.
  *
  * @see {installDefinition}
- */ export default class InstallHandler implements ICommandHandler {
+ */
+export default class InstallHandler implements ICommandHandler {
     /**
      * A logger for this class
      *
@@ -72,180 +69,89 @@ import { IO } from "../../../../../io";
      *
      * @throws {ImperativeError}
      */
-
-    private locationTypeTest(plugin: string){
-        let isDirTest: boolean;
-        let installRegistry = getRegistry();
-        try {
-            isDirTest = IO.isDir(plugin);
-        } catch (e) {
-            isDirTest = false;
-        }
-
-        if (plugin.startsWith("@")) {
-            installRegistry = getScopeRegistry(
-                plugin.split("/")[0].substring(1)
-            ).replace("\n", "");
-        } else if (
-            plugin.substring(plugin.lastIndexOf(".") + 1) === "tgz" ||
-            isDirTest
-        ) {
-            installRegistry = plugin;
-        }
-        return installRegistry;
-    }
-
     public async process(params: IHandlerParameters): Promise<void> {
         const chalk = TextUtils.chalk;
-        this.console.debug(
-            `Root Directory: ${PMFConstants.instance.PLUGIN_INSTALL_LOCATION}`
-        );
+        this.console.debug(`Root Directory: ${PMFConstants.instance.PLUGIN_INSTALL_LOCATION}`);
 
-        if (
-            params.arguments.plugin != null &&
-            params.arguments.plugin.length > 0 &&
-            typeof params.arguments.file !== "undefined"
-        ) {
+        if (params.arguments.plugin != null && params.arguments.plugin.length > 0 && typeof params.arguments.file !== "undefined") {
             throw new ImperativeError({
-                msg:
-                    `Option ${chalk.yellow.bold(
-                        "--file"
-                    )} can not be specified if positional ${chalk.yellow.bold(
-                        "package..."
-                    )} is as well. ` + `They are mutually exclusive.`,
+                msg: `Option ${chalk.yellow.bold("--file")} can not be specified if positional ${chalk.yellow.bold("package...")} is as well. ` +
+                    `They are mutually exclusive.`
             });
         } else {
             try {
-                let installRegistry =
-                    params.arguments.registry ??
-                    getRegistry().replace("\n", "");
+                const installRegistry = NpmRegistryUtils.getRegistry(params.arguments.registry);
+
+                // Get the registry to install to
+                if (params.arguments.registry != null && params.arguments.login) {
+                    NpmRegistryUtils.npmLogin(installRegistry);
+                }
+
+                params.response.console.log(
+                    "Plug-ins within the Imperative CLI Framework can legitimately gain\n" +
+                    `control of the ${ImperativeConfig.instance.rootCommandName} CLI application ` +
+                    "during the execution of every command.\n" +
+                    "Install 3rd party plug-ins at your own risk.\n"
+                );
 
                 // This section determines which npm logic needs to take place
-                if (
-                    params.arguments.plugin == null ||
-                    params.arguments.plugin.length === 0
-                ) {
-                    const configFile =
-                        typeof params.arguments.file === "undefined"
-                            ? PMFConstants.instance.PLUGIN_JSON
-                            : resolve(params.arguments.file);
+                if (params.arguments.plugin == null || params.arguments.plugin.length === 0) {
+                    const configFile = typeof params.arguments.file === "undefined" ?
+                        PMFConstants.instance.PLUGIN_JSON : resolve(params.arguments.file);
 
-                    this.console.debug(
-                        "Need to install using plugins.json file"
-                    );
+                    this.console.debug("Need to install using plugins.json file");
                     this.console.debug(`Using config file: ${configFile}`);
 
                     // Attempt to load that file and formulate the corresponding package
                     const packageJson: IPluginJson = readFileSync(configFile);
 
                     if (Object.keys(packageJson).length === 0) {
-                        params.response.console.log(
-                            "No packages were found in " +
-                                configFile +
-                                ", so no plugins were installed."
-                        );
+                        params.response.console.log("No packages were found in " +
+                            configFile + ", so no plugins were installed.");
                         return;
                     }
 
                     for (const packageName in packageJson) {
-                        if (
-                            Object.prototype.hasOwnProperty.call(
-                                packageJson,
-                                packageName
-                            )
-                        ) {
-                            const packageInfo: IPluginJsonObject =
-                                packageJson[packageName];
+                        if (Object.prototype.hasOwnProperty.call(packageJson, packageName)) {
+                            const packageInfo: IPluginJsonObject = packageJson[packageName];
 
                             // Registry is typed as optional in the doc but the function expects it
                             // to be passed. So we'll always set it if it hasn't been done yet.
+                            const registryInfo = NpmRegistryUtils.buildRegistryInfo(packageInfo, params.arguments.registry);
                             if (!packageInfo.location) {
-                                packageInfo.location = installRegistry;
+                                packageInfo.location = registryInfo.location;
                             }
 
-                            installRegistry = this.locationTypeTest(packageInfo.location);
-
-                            this.console.debug(
-                                `Installing plugin: ${packageName}`
-                            );
-                            this.console.debug(
-                                `Package: ${packageInfo.package}`
-                            );
-                            this.console.debug(
-                                `Location: ${packageInfo.location}`
-                            );
-                            this.console.debug(
-                                `Version : ${packageInfo.version}`
-                            );
+                            this.console.debug(`Installing plugin: ${packageName}`);
+                            this.console.debug(`Package: ${packageInfo.package}`);
+                            this.console.debug(`Location: ${packageInfo.location}`);
+                            this.console.debug(`Version : ${packageInfo.version}`);
 
                             // Get the argument to the install command
                             // For simplicity a / or \ indicates that we are not dealing with an npm package
-                            const packageArgument =
-                                packageInfo.package === packageName
-                                    ? `${packageInfo.package}@${packageInfo.version}`
-                                    : packageInfo.package;
+                            const packageArgument = packageInfo.package === packageName ?
+                                `${packageInfo.package}@${packageInfo.version}` : packageInfo.package;
 
                             this.console.debug(`Package: ${packageArgument}`);
 
-                            params.response.console.log(
-                                "Plug-ins within the Imperative CLI Framework can legitimately gain\n" +
-                                    `control of the ${ImperativeConfig.instance.rootCommandName} CLI application ` +
-                                    "during the execution of every command.\n" +
-                                    "Install 3rd party plug-ins at your own risk.\n"
-                            );
-                            params.response.console.log(
-                                "Location = " + installRegistry
-                            );
-
-                            params.response.console.log(
-                                "\n_______________________________________________________________"
-                            );
-                            const pluginName = await install(
-                                packageArgument,
-                                packageInfo.location,
-                                true
-                            );
-                            params.response.console.log(
-                                "Installed plugin name = '" + pluginName + "'"
-                            );
-                            params.response.console.log(
-                                runValidatePlugin(pluginName)
-                            );
+                            params.response.console.log("\n_______________________________________________________________");
+                            params.response.console.log("Location = " + packageInfo.location + "\n");
+                            const pluginName = await install(packageArgument, registryInfo, true);
+                            params.response.console.log("Installed plugin name = '" + pluginName + "'");
+                            params.response.console.log(runValidatePlugin(pluginName));
                         }
                     }
-                }
 
-                for (const plugin of params.arguments.plugin ?? []) {
-                    // Get the registry to install to
-                    if (typeof params.arguments.registry === "undefined") {
-                        installRegistry = this.locationTypeTest(plugin);
-                    } else {
-                        installRegistry = params.arguments.registry;
-                        if (params.arguments.login) {
-                            npmLogin(installRegistry);
-                        }
+                    // write the json file when done if not the plugin json file
+                } else {
+                    for (const packageString of params.arguments.plugin) {
+                        params.response.console.log("\n_______________________________________________________________");
+                        const registryInfo = NpmRegistryUtils.buildRegistryInfo(packageString, params.arguments.registry);
+                        params.response.console.log("Location = " + registryInfo.location + "\n");
+                        const pluginName = await install(packageString, registryInfo);
+                        params.response.console.log("Installed plugin name = '" + pluginName + "'");
+                        params.response.console.log(runValidatePlugin(pluginName));
                     }
-                    params.response.console.log(
-                        "Plug-ins within the Imperative CLI Framework can legitimately gain\n" +
-                            `control of the ${ImperativeConfig.instance.rootCommandName} CLI application ` +
-                            "during the execution of every command.\n" +
-                            "Install 3rd party plug-ins at your own risk.\n"
-                    );
-                    params.response.console.log(
-                        "Location = " + installRegistry
-                    );
-
-                    params.response.console.log(
-                        "\n_______________________________________________________________"
-                    );
-                    const pluginName = await install(
-                        `${plugin}`,
-                        installRegistry
-                    );
-                    params.response.console.log(
-                        "Installed plugin name = '" + pluginName + "'"
-                    );
-                    params.response.console.log(runValidatePlugin(pluginName));
                 }
             } catch (e) {
                 let installResultMsg = "Install Failed";
@@ -253,25 +159,19 @@ import { IO } from "../../../../../io";
                  * give a special message, as per UX request.
                  */
                 if (e.mMessage) {
-                    const matchArray = e.mMessage.match(
-                        /The intended symlink.*already exists and is not a symbolic link/
-                    );
+                    const matchArray = e.mMessage.match(/The intended symlink.*already exists and is not a symbolic link/);
                     if (matchArray !== null) {
-                        installResultMsg =
-                            "Installation completed. However, the plugin incorrectly contains\nits own copy of " +
+                        installResultMsg = "Installation completed. However, the plugin incorrectly contains\nits own copy of " +
                             `${PMFConstants.instance.CLI_CORE_PKG_NAME} or ${PMFConstants.instance.IMPERATIVE_PKG_NAME}.\n` +
                             "Some plugin operations may not work correctly.";
-                    } else if (
-                        e.mMessage.includes("Failed to create symbolic link")
-                    ) {
-                        installResultMsg =
-                            "Installation completed. However, due to the following error, the plugin will not operate correctly.";
+                    } else if (e.mMessage.includes("Failed to create symbolic link")) {
+                        installResultMsg = "Installation completed. However, due to the following error, the plugin will not operate correctly.";
                     }
                 }
                 throw new ImperativeError({
                     msg: installResultMsg,
                     causeErrors: e,
-                    additionalDetails: e.message,
+                    additionalDetails: e.message
                 });
             }
         }
