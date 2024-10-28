@@ -18,6 +18,7 @@ import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/prope
 import { deleteFiles, getUniqueDatasetName, stripNewLines, wait, waitTime } from "../../../../../../__tests__/__src__/TestUtils";
 import * as fs from "fs";
 import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/ITestEnvironment";
+import { runCliScript } from "../../../../../../__tests__/__packages__/cli-test-utils/src";
 
 let REAL_SESSION: Session;
 let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
@@ -769,12 +770,11 @@ describe("Upload USS file", () => {
         });
         it("should upload a USS file from local file", async () => {
             let error;
-            let uploadResponse;
             let getResponse;
             let tagResponse;
 
             try {
-                uploadResponse = await Upload.fileToUssFile(REAL_SESSION, inputfile, ussname);
+                await Upload.fileToUssFile(REAL_SESSION, inputfile, ussname);
                 getResponse = await Get.USSFile(REAL_SESSION, ussname);
                 tagResponse = await Utilities.isFileTagBinOrAscii(REAL_SESSION, ussname);
             } catch (err) {
@@ -785,16 +785,14 @@ describe("Upload USS file", () => {
             expect(error).toBeFalsy();
             expect(getResponse).toEqual(Buffer.from(testdata));
             expect(tagResponse).toBe(false);
-
         });
         it("should upload a USS file from local file in binary mode", async () => {
             let error;
-            let uploadResponse;
             let getResponse;
             let tagResponse;
 
             try {
-                uploadResponse = await Upload.fileToUssFile(REAL_SESSION, inputfile, ussname, { binary: true });
+                await Upload.fileToUssFile(REAL_SESSION, inputfile, ussname, { binary: true });
                 getResponse = await Get.USSFile(REAL_SESSION, ussname, {binary: true});
                 tagResponse = await Utilities.isFileTagBinOrAscii(REAL_SESSION, ussname);
             } catch (err) {
@@ -833,11 +831,10 @@ describe("Upload USS file", () => {
         it("should upload a USS file and return Etag", async () => {
             let error;
             let uploadResponse;
-            let getResponse;
 
             try {
                 uploadResponse = await Upload.fileToUssFile(REAL_SESSION, inputfile, ussname, {returnEtag: true});
-                getResponse = await Get.USSFile(REAL_SESSION, ussname);
+                await Get.USSFile(REAL_SESSION, ussname);
             } catch (err) {
                 error = err;
                 Imperative.console.info("Error: " + inspect(error));
@@ -847,6 +844,64 @@ describe("Upload USS file", () => {
             expect(uploadResponse).toBeTruthy();
             expect(uploadResponse.success).toBeTruthy();
             expect(uploadResponse.apiResponse.etag).toBeDefined();
+        });
+        it("should upload local file to USS using .zosattributes file", async () => {
+            let response: any;
+            let error;
+            let readResponseGood: any;
+            let readResponseBad: any;
+            try {
+                response = runCliScript(__dirname + "/__resources__/upload_file_to_uss.sh", testEnvironment,[
+                    defaultSystem.tso.account,
+                    defaultSystem.zosmf.host,
+                    defaultSystem.zosmf.port,
+                    defaultSystem.zosmf.user,
+                    defaultSystem.zosmf.password,
+                    defaultSystem.zosmf.rejectUnauthorized,
+                    __dirname + "/testfiles/encodingCheck.txt",
+                    ussname,
+                    __dirname + "/__resources__/.zosattributes",
+                ]);
+                // View file with matching encoding
+                readResponseGood = runCliScript(__dirname + "/__resources__/view_file_uss.sh", testEnvironment,[
+                    defaultSystem.tso.account,
+                    defaultSystem.zosmf.host,
+                    defaultSystem.zosmf.port,
+                    defaultSystem.zosmf.user,
+                    defaultSystem.zosmf.password,
+                    defaultSystem.zosmf.rejectUnauthorized,
+                    ussname,
+                    1047
+                ]);
+                // View file with not matching encoding
+                readResponseBad = runCliScript(__dirname + "/__resources__/view_file_uss.sh", testEnvironment,[
+                    defaultSystem.tso.account,
+                    defaultSystem.zosmf.host,
+                    defaultSystem.zosmf.port,
+                    defaultSystem.zosmf.user,
+                    defaultSystem.zosmf.password,
+                    defaultSystem.zosmf.rejectUnauthorized,
+                    ussname,
+                    1147
+                ]);
+            }
+            catch (err) {
+                error = err;
+                Imperative.console.info("Error: " + inspect(error));
+            }
+            // Get contents of file that was uploaded
+            const fileContents = fs.readFileSync(__dirname + "/testfiles/encodingCheck.txt").toString();
+
+            // Ensure upload was successful
+            expect(response.stderr.toString()).toBe("");
+            expect(response.stdout.toString()).toBeDefined();
+            expect(response.stdout.toString()).toContain("USS file uploaded successfully.");
+
+            // Compare file view with not matching upload and view encoding (1047 vs 1147).
+            expect(readResponseBad.stdout.toString()).not.toContain(fileContents);
+
+            // Compare file view with matching upload and view encoding (1047).
+            expect(readResponseGood.stdout.toString()).toContain(fileContents);
         });
     });
 });
