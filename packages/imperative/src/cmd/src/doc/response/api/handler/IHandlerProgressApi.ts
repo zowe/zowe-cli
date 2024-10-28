@@ -29,4 +29,16 @@ export interface IHandlerProgressApi {
      * @memberof IHandlerProgressApi
      */
     endBar(): void;
+    /**
+     * Start a spinner - displays on the users terminal
+     * @param {IProgressBarParms} params
+     * @memberof IHandlerProgressApi
+     */
+    startSpinner(pendingText: string): void;
+    /**
+     * Stop a spinner - displays on the users terminal
+     * @param {IProgressBarParms} params
+     * @memberof IHandlerProgressApi
+     */
+    stopSpinner(endText: string): void;
 }

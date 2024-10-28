@@ -698,6 +698,32 @@ export class CommandResponse implements ICommandResponseApi {
 
             // Create an instance of the class
             this.mProgressApi = new class {
+                private spinnerIndex = 0;
+                private spinnerInterval: any;
+
+                /**
+                 * Start a spinner
+                 */
+                public startSpinner(pendingText: string): void {
+                    if (this.spinnerInterval == null) {
+                        this.spinnerInterval = setInterval(() => {
+                            process.stdout.write(`\r${pendingText} ${this.mProgressBarSpinnerChars[this.spinnerIndex]}`);
+                            this.spinnerIndex = (this.spinnerIndex + 1) % this.mProgressBarSpinnerChars.length;
+                        }, 100);
+                    }
+                }
+                /**
+                 * Stop a spinner
+                 */
+                public stopSpinner(stopText: string): void {
+                    if (this.spinnerInterval != null) {
+                        clearInterval(this.spinnerInterval);
+                        this.spinnerInterval = null;
+                        process.stdout.write(`\r${stopText}\n`);
+                        process.stdout.write("\r\x1b[K");
+                    }
+                }
+
                 private mProgressBarSpinnerIndex = 0;
                 private mProgressTask: ITaskWithStatus;
                 private mProgressBarPollFrequency = 65;  // eslint-disable-line @typescript-eslint/no-magic-numbers

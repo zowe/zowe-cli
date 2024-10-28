@@ -21,6 +21,9 @@ import { ZosTsoBaseHandler, ReceiveTsoApp } from "@zowe/zos-tso-for-zowe-sdk";
 export default class Handler extends ZosTsoBaseHandler {
     // Process the command and produce the start response (returns servlet)
     public async processCmd(commandParameters: IHandlerParameters) {
+
+        commandParameters.response.progress.startSpinner("Receiving response...");
+
         const response = await ReceiveTsoApp.receive(
             this.mSession,
             this.mArguments.account,
@@ -31,6 +34,9 @@ export default class Handler extends ZosTsoBaseHandler {
                 timeout: commandParameters.arguments.timeout
             },
         );
+
+        commandParameters.response.progress.stopSpinner("Receiving response... Done!");
+
         commandParameters.response.console.log("\n");
         response.tsoData.forEach((data) => {
             if(typeof data === 'string') {

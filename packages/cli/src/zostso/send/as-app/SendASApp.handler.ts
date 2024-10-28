@@ -21,6 +21,9 @@ import { ZosTsoBaseHandler, SendTsoApp } from "@zowe/zos-tso-for-zowe-sdk";
 export default class Handler extends ZosTsoBaseHandler {
     // Process the command and transmit a message to an app running at a TSO address space
     public async processCmd(commandParameters: IHandlerParameters) {
+
+        commandParameters.response.progress.startSpinner("Sending request...");
+
         const response = await SendTsoApp.send(
             this.mSession,
             this.mArguments.account,
@@ -31,6 +34,9 @@ export default class Handler extends ZosTsoBaseHandler {
             },
             this.mTsoStart
         );
+
+        commandParameters.response.progress.stopSpinner("Sending request... Done!");
+
         commandParameters.response.console.log(
             JSON.stringify(response, null, 2)
         );
