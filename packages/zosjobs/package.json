@@ -1,6 +1,6 @@
 {
   "name": "@zowe/zos-jobs-for-zowe-sdk",
-  "version": "8.4.0",
+  "version": "8.5.0",
   "description": "Zowe SDK to interact with jobs on z/OS",
   "author": "Zowe",
   "license": "EPL-2.0",
