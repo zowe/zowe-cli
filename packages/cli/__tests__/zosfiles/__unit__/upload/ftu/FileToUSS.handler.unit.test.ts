@@ -9,9 +9,8 @@
 *
 */
 
-import { Upload } from "@zowe/zos-files-for-zowe-sdk";
+import { Upload, ZosFilesAttributes } from "@zowe/zos-files-for-zowe-sdk";
 import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../../__tests__/__src__/TestConstants";
-import { ZosFilesAttributes } from "@zowe/zos-files-for-zowe-sdk";
 
 describe("Upload file-to-uss handler", () => {
     describe("process method", () => {

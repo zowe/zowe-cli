@@ -16,9 +16,8 @@ import {
     TaskStage,
     TextUtils,
 } from "@zowe/imperative";
-import { Upload, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
+import { Upload, IZosFilesResponse, IUploadOptions, ZosFilesAttributes } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
-import { IUploadOptions, ZosFilesAttributes } from "@zowe/zos-files-for-zowe-sdk";
 
 /**
  * Handler to upload content from a local file to a USS file
