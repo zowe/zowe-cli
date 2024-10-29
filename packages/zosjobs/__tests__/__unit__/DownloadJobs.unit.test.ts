@@ -286,7 +286,7 @@ describe("DownloadJobs", () => {
                     jobFile: jobFile,
                     jobid: fakeJobID,
                     jobname: fakeJobName,
-                    waitForOutput: true
+                    waitForActive: true
                 };
 
                 const completedJob: any = {
