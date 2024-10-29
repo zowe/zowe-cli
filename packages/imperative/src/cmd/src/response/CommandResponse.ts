@@ -1,13 +1,13 @@
 /*
- * This program and the accompanying materials are made available under the terms of the
- * Eclipse Public License v2.0 which accompanies this distribution, and is available at
- * https://www.eclipse.org/legal/epl-v20.html
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Copyright Contributors to the Zowe Project.
- *
- */
+* This program and the accompanying materials are made available under the terms of the
+* Eclipse Public License v2.0 which accompanies this distribution, and is available at
+* https://www.eclipse.org/legal/epl-v20.html
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Copyright Contributors to the Zowe Project.
+*
+*/
 
 import { IImperativeError, ImperativeError } from "../../../error";
 import { IHandlerResponseConsoleApi } from "../doc/response/api/handler/IHandlerResponseConsoleApi";
@@ -15,20 +15,14 @@ import { IHandlerResponseDataApi } from "../doc/response/api/handler/IHandlerRes
 import { ICommandResponseParms } from "../doc/response/parms/ICommandResponseParms";
 import { ICommandResponse } from "../doc/response/response/ICommandResponse";
 import { CliUtils, TextUtils } from "../../../utilities";
-import {
-    COMMAND_RESPONSE_FORMAT,
-    ICommandResponseApi,
-} from "../doc/response/api/processor/ICommandResponseApi";
+import { COMMAND_RESPONSE_FORMAT, ICommandResponseApi } from "../doc/response/api/processor/ICommandResponseApi";
 import { ITaskWithStatus, TaskProgress, TaskStage } from "../../../operations";
 import { IHandlerProgressApi } from "../doc/response/api/handler/IHandlerProgressApi";
 import { IProgressBarParms } from "../doc/response/parms/IProgressBarParms";
 import { Constants } from "../../../constants";
 import { ImperativeExpect } from "../../../expect";
 import { IHandlerFormatOutputApi } from "../doc/response/api/handler/IHandlerFormatOutputApi";
-import {
-    ICommandOutputFormat,
-    OUTPUT_FORMAT,
-} from "../doc/response/response/ICommandOutputFormat";
+import { ICommandOutputFormat, OUTPUT_FORMAT } from "../doc/response/response/ICommandOutputFormat";
 import { Arguments } from "yargs";
 import { ICommandDefinition } from "../../src/doc/ICommandDefinition";
 import { OptionConstants } from "../constants/OptionConstants";
@@ -65,8 +59,7 @@ export class CommandResponse implements ICommandResponseApi {
      * @type {string}
      * @memberof CommandResponse
      */
-    private static readonly RESPONSE_ERR_TAG: string =
-        "Command Response Error:";
+    private static readonly RESPONSE_ERR_TAG: string = "Command Response Error:";
     /**
      * Max column width for formulating tabular output
      * @private
@@ -226,33 +219,15 @@ export class CommandResponse implements ICommandResponseApi {
         this.mControl = params == null ? {} : params;
         this.mArguments = this.mControl.args;
         this.mDefinition = this.mControl.definition;
-        this.mPrimaryTextColor =
-            this.mControl.primaryTextColor == null
-                ? this.mPrimaryTextColor
-                : this.mControl.primaryTextColor;
-        ImperativeExpect.toNotBeEqual(
-            this.mPrimaryTextColor.trim(),
-            "",
-            `${CommandResponse.RESPONSE_ERR_TAG} The primary text color supplied is blank. Must provide a valid color.`
-        );
+        this.mPrimaryTextColor = this.mControl.primaryTextColor == null ? this.mPrimaryTextColor : this.mControl.primaryTextColor;
+        ImperativeExpect.toNotBeEqual(this.mPrimaryTextColor.trim(), "",
+            `${CommandResponse.RESPONSE_ERR_TAG} The primary text color supplied is blank. Must provide a valid color.`);
         const formats: string[] = ["json", "default"];
-        this.mResponseFormat =
-            this.mControl.responseFormat == null
-                ? "default"
-                : this.mControl.responseFormat;
-        ImperativeExpect.toBeOneOf(
-            this.mResponseFormat,
-            formats,
-            `${
-                CommandResponse.RESPONSE_ERR_TAG
-            } Response format invalid. Valid formats: "${formats.join(",")}"`
-        );
-        this.mSilent =
-            this.mControl.silent == null ? false : this.mControl.silent;
-        this.mProgressBarSpinnerChars =
-            this.mControl.progressBarSpinner == null
-                ? this.mProgressBarSpinnerChars
-                : this.mControl.progressBarSpinner;
+        this.mResponseFormat = this.mControl.responseFormat == null ? "default" : this.mControl.responseFormat;
+        ImperativeExpect.toBeOneOf(this.mResponseFormat, formats,
+            `${CommandResponse.RESPONSE_ERR_TAG} Response format invalid. Valid formats: "${formats.join(",")}"`);
+        this.mSilent = this.mControl.silent == null ? false : this.mControl.silent;
+        this.mProgressBarSpinnerChars = this.mControl.progressBarSpinner == null ? this.mProgressBarSpinnerChars : this.mControl.progressBarSpinner;
         this.mStream = params ? params.stream : undefined;
     }
 
@@ -262,35 +237,23 @@ export class CommandResponse implements ICommandResponseApi {
         const outer: CommandResponse = this;
 
         if (this.mFormatApi == null) {
-            this.mFormatApi = new (class implements IHandlerFormatOutputApi {
+            this.mFormatApi = new class implements IHandlerFormatOutputApi {
                 /**
                  * Format output data from the command based on the defaults specified OR the parameters specified by
                  * the user.
                  * @param {ICommandOutputFormat} format
                  */
                 public output(format: ICommandOutputFormat): void {
+
                     // The input parameters must not be null and we will make a copy to not alter the original
-                    ImperativeExpect.toNotBeNullOrUndefined(
-                        format,
-                        "No format parameters were supplied"
-                    );
-                    ImperativeExpect.toNotBeNullOrUndefined(
-                        format.output,
-                        "No output data to format was supplied"
-                    );
-                    ImperativeExpect.toBeOneOf(
-                        format.format,
-                        OptionConstants.RESPONSE_FORMAT_TYPES,
-                        `Output format must be one of the following: ${OptionConstants.RESPONSE_FORMAT_TYPES.toString()}`
-                    );
+                    ImperativeExpect.toNotBeNullOrUndefined(format, "No format parameters were supplied");
+                    ImperativeExpect.toNotBeNullOrUndefined(format.output, "No output data to format was supplied");
+                    ImperativeExpect.toBeOneOf(format.format, OptionConstants.RESPONSE_FORMAT_TYPES,
+                        `Output format must be one of the following: ${OptionConstants.RESPONSE_FORMAT_TYPES.toString()}`);
 
                     // If the output is an array and the length is 0 or - do nothing
-                    if (
-                        (Array.isArray(format.output) &&
-                            format.output.length === 0) ||
-                        (Object.keys(format.output).length === 0 &&
-                            format.output.constructor === Object)
-                    ) {
+                    if (Array.isArray(format.output) && format.output.length === 0 ||
+                        Object.keys(format.output).length === 0 && format.output.constructor === Object) {
                         return;
                     }
 
@@ -300,38 +263,21 @@ export class CommandResponse implements ICommandResponseApi {
                         formatCopy = JSON.parse(JSON.stringify(format));
                     } catch (copyErr) {
                         outer.console.errorHeader(`Non-formatted output data`);
-                        outer.console.error(
-                            `${inspect(format.output, {
-                                depth: null,
-                                compact: true,
-                            } as any)}`
-                        );
+                        outer.console.error(`${inspect(format.output, { depth: null, compact: true } as any)}`);
                         throw new ImperativeError({
                             msg: `Error copying input parameters. Details: ${copyErr.message}`,
-                            additionalDetails: copyErr,
+                            additionalDetails: copyErr
                         });
                     }
 
                     // Depending on the command definition and arguments, override the format options
-                    if (
-                        outer.mDefinition != null &&
-                        outer.mDefinition.outputFormatOptions != null
-                    ) {
-                        formatCopy.format =
-                            outer.mArguments != null &&
-                            outer.mArguments.responseFormatType != null
-                                ? outer.mArguments.responseFormatType
-                                : formatCopy.format;
-                        formatCopy.fields =
-                            outer.mArguments != null &&
-                            outer.mArguments.responseFormatFilter != null
-                                ? outer.mArguments.responseFormatFilter
-                                : formatCopy.fields;
-                        formatCopy.header =
-                            outer.mArguments != null &&
-                            outer.mArguments.responseFormatHeader != null
-                                ? outer.mArguments.responseFormatHeader
-                                : formatCopy.header;
+                    if (outer.mDefinition != null && outer.mDefinition.outputFormatOptions != null) {
+                        formatCopy.format = outer.mArguments != null && outer.mArguments.responseFormatType != null ?
+                            outer.mArguments.responseFormatType : formatCopy.format;
+                        formatCopy.fields = outer.mArguments != null && outer.mArguments.responseFormatFilter != null ?
+                            outer.mArguments.responseFormatFilter : formatCopy.fields;
+                        formatCopy.header = outer.mArguments != null && outer.mArguments.responseFormatHeader != null ?
+                            outer.mArguments.responseFormatHeader : formatCopy.header;
                     }
 
                     // Format the output for the command, if an error occurs, output the format error data
@@ -340,11 +286,7 @@ export class CommandResponse implements ICommandResponseApi {
                         this.formatOutput(formatCopy, outer);
                     } catch (formatErr) {
                         outer.console.errorHeader(`Non-formatted output data`);
-                        outer.console.error(
-                            `${inspect(format.output, {
-                                compact: true,
-                            } as any)}`
-                        );
+                        outer.console.error(`${inspect(format.output, { compact: true } as any)}`);
                         throw formatErr;
                     }
                 }
@@ -359,23 +301,18 @@ export class CommandResponse implements ICommandResponseApi {
                  * @param {Arguments} args - the arguments passed on the command line by the user
                  * @memberof CommandProcessor
                  */
-                private formatOutput(
-                    params: ICommandOutputFormat,
-                    response: CommandResponse
-                ) {
+                private formatOutput(params: ICommandOutputFormat, response: CommandResponse) {
+
                     // If a single filter is specified, save the field the data was extracted from
-                    const extractedFrom =
-                        params.fields != null &&
-                        params.fields.length === 1 &&
-                        typeof params.output !== "string"
-                            ? params.fields[0]
-                            : undefined;
+                    const extractedFrom = params.fields != null && params.fields.length === 1 && typeof params.output !== "string" ?
+                        params.fields[0] : undefined;
 
                     // If filter fields are present, filter the object
                     params.output = this.filterProperties(params);
 
                     // Process each type according to the data presented from the handler
                     switch (params.format) {
+
                         // Output the data as a string
                         case "string":
                             // Stringify if not a string
@@ -389,6 +326,7 @@ export class CommandResponse implements ICommandResponseApi {
                         // Output the data as a list of strings
                         case "list":
                             if (Array.isArray(params.output)) {
+
                                 // Filter the properties by request and stringify if needed
                                 const list: string[] = [];
                                 params.output.forEach((entry) => {
@@ -404,37 +342,25 @@ export class CommandResponse implements ICommandResponseApi {
                                 response.console.log(params.output);
                             } else {
                                 throw new ImperativeError({
-                                    msg: this.errorDetails(
-                                        params,
-                                        "Arrays",
-                                        extractedFrom
-                                    ),
+                                    msg: this.errorDetails(params, "Arrays", extractedFrom)
                                 });
                             }
                             break;
 
                         // Output the data as an object or list of objects (prettified)
                         case "object":
-                            if (
-                                Array.isArray(params.output) ||
-                                typeof params.output === "object"
-                            ) {
+                            if (Array.isArray(params.output) || typeof params.output === "object") {
+
                                 // Build the table and catch any errors that may occur from the packages
                                 let pretty;
                                 try {
                                     // Prettify the data
-                                    pretty = TextUtils.prettyJson(
-                                        params.output,
-                                        undefined,
-                                        undefined,
-                                        ""
-                                    );
+                                    pretty = TextUtils.prettyJson(params.output, undefined, undefined, "");
                                 } catch (prettyErr) {
                                     throw new ImperativeError({
-                                        msg:
-                                            `Error formulating pretty JSON for command response. Details: ` +
+                                        msg: `Error formulating pretty JSON for command response. Details: ` +
                                             `${prettyErr.message}`,
-                                        additionalDetails: prettyErr,
+                                        additionalDetails: prettyErr
                                     });
                                 }
 
@@ -442,21 +368,15 @@ export class CommandResponse implements ICommandResponseApi {
                                 response.console.log(pretty);
                             } else {
                                 throw new ImperativeError({
-                                    msg: this.errorDetails(
-                                        params,
-                                        "JSON objects or Arrays",
-                                        extractedFrom
-                                    ),
+                                    msg: this.errorDetails(params, "JSON objects or Arrays", extractedFrom)
                                 });
                             }
                             break;
 
                         // Output the data as a table
                         case "table":
-                            if (
-                                typeof params.output === "object" ||
-                                Array.isArray(params.output)
-                            ) {
+                            if (typeof params.output === "object" || Array.isArray(params.output)) {
+
                                 // Build the table and catch any errors that may occur from the packages
                                 let table;
                                 try {
@@ -466,20 +386,13 @@ export class CommandResponse implements ICommandResponseApi {
                                     }
 
                                     // Build the table
-                                    table = TextUtils.getTable(
-                                        params.output,
-                                        "yellow",
-                                        CommandResponse.MAX_COLUMN_WIDTH,
-                                        params.header != null
-                                            ? params.header
-                                            : false
-                                    );
+                                    table = TextUtils.getTable(params.output, "yellow", CommandResponse.MAX_COLUMN_WIDTH,
+                                        params.header != null ? params.header : false);
                                 } catch (tableErr) {
                                     throw new ImperativeError({
-                                        msg:
-                                            `Error formulating table for command response. ` +
+                                        msg: `Error formulating table for command response. ` +
                                             `Details: ${tableErr.message}`,
-                                        additionalDetails: tableErr,
+                                        additionalDetails: tableErr
                                     });
                                 }
 
@@ -487,19 +400,14 @@ export class CommandResponse implements ICommandResponseApi {
                                 response.console.log(table);
                             } else {
                                 throw new ImperativeError({
-                                    msg: this.errorDetails(
-                                        params,
-                                        "JSON objects or Arrays",
-                                        extractedFrom
-                                    ),
+                                    msg: this.errorDetails(params, "JSON objects or Arrays", extractedFrom)
                                 });
                             }
                             break;
                         default:
                             throw new ImperativeError({
-                                msg:
-                                    `Invalid output format of "${params.format}" supplied. ` +
-                                    `Contact the command handler creators for support.`,
+                                msg: `Invalid output format of "${params.format}" supplied. ` +
+                                    `Contact the command handler creators for support.`
                             });
                     }
                 }
@@ -513,26 +421,12 @@ export class CommandResponse implements ICommandResponseApi {
                  * that it makes sense to the user.
                  * @returns {string} - the error string
                  */
-                private errorDetails(
-                    params: ICommandOutputFormat,
-                    appliedTo: string,
-                    extractedFrom?: string
-                ): string {
-                    return (
-                        `The format type of "${params.format}" can only be applied to ${appliedTo}.\n` +
+                private errorDetails(params: ICommandOutputFormat, appliedTo: string, extractedFrom?: string): string {
+                    return `The format type of "${params.format}" can only be applied to ${appliedTo}.\n` +
                         `The data being formatted is of type ` +
-                        `"${
-                            Array.isArray(params.output)
-                                ? "array"
-                                : typeof params.output
-                        }".` +
-                        `${
-                            extractedFrom != null
-                                ? `\nNote that the data being formatted was extracted from property "${extractedFrom}" ` +
-                                  `because that field was specified as the single filter.`
-                                : ""
-                        }`
-                    );
+                        `"${Array.isArray(params.output) ? "array" : typeof params.output}".` +
+                        `${extractedFrom != null ? `\nNote that the data being formatted was extracted from property "${extractedFrom}" ` +
+                            `because that field was specified as the single filter.` : ""}`;
                 }
 
                 /**
@@ -549,62 +443,42 @@ export class CommandResponse implements ICommandResponseApi {
 
                     // If there are no filter fields, return the original object/data
                     if (params.fields != null && params.fields.length > 0) {
+
                         // Extract the single filter if required
                         let singleFilter: any;
-                        if (
-                            params.fields.length === 1 &&
-                            typeof params.output === "object"
-                        ) {
+                        if (params.fields.length === 1 && typeof params.output === "object") {
                             singleFilter = params.fields[0];
                         }
 
                         // Perform the filtering depending on if a single filter was specified
-                        if (
-                            singleFilter != null &&
-                            !Array.isArray(params.output)
-                        ) {
+                        if (singleFilter != null && !Array.isArray(params.output)) {
+
                             // Extract only the single field - this allows a single object property
                             // to be selected and output without "meta" info (like the prop name)
-                            const dataObjectParser = new DataObjectParser(
-                                params.output
-                            );
+                            const dataObjectParser = new DataObjectParser(params.output);
                             filtered = dataObjectParser.get(singleFilter);
-                        } else if (
-                            singleFilter != null &&
-                            Array.isArray(params.output) &&
-                            (params.format === "list" ||
-                                params.format === "string")
-                        ) {
+
+                        } else if (singleFilter != null && Array.isArray(params.output) && (params.format === "list" || params.format === "string")) {
+
                             // Extract each of the single fields and output as a list of strings
                             const strings: string[] = [];
                             params.output.forEach((entry) => {
-                                const dataObjectParser = new DataObjectParser(
-                                    entry
-                                );
-                                strings.push(
-                                    dataObjectParser.get(singleFilter)
-                                );
+                                const dataObjectParser = new DataObjectParser(entry);
+                                strings.push(dataObjectParser.get(singleFilter));
                             });
                             filtered = strings;
+
                         } else if (Array.isArray(params.output)) {
+
                             // Extract all the fields from each entry in the array
                             filtered = [];
                             params.output.forEach((entry) => {
-                                filtered.push(
-                                    this.extractProperties(
-                                        entry,
-                                        params.fields,
-                                        params.format
-                                    )
-                                );
+                                filtered.push(this.extractProperties(entry, params.fields, params.format));
                             });
                         } else if (typeof params.output === "object") {
+
                             // Extract each field from the object
-                            filtered = this.extractProperties(
-                                params.output,
-                                params.fields,
-                                params.format
-                            );
+                            filtered = this.extractProperties(params.output, params.fields, params.format);
                         }
                     }
 
@@ -620,37 +494,33 @@ export class CommandResponse implements ICommandResponseApi {
                  * @param {OUTPUT_FORMAT} format - the output format
                  * @returns {*} - the "filtered" object
                  */
-                private extractProperties(
-                    dataObj: any,
-                    keepProps: string[],
-                    format: OUTPUT_FORMAT
-                ): any {
+                private extractProperties(dataObj: any, keepProps: string[], format: OUTPUT_FORMAT): any {
                     let extracted: any = dataObj;
-                    if (
-                        keepProps != null &&
-                        keepProps.length > 0 &&
-                        typeof dataObj === "object"
-                    ) {
+                    if (keepProps != null && keepProps.length > 0 && typeof dataObj === "object") {
                         extracted = {};
                         const objParser = new DataObjectParser(dataObj);
                         const extractedParser = new DataObjectParser(extracted);
                         for (const extractProp of keepProps) {
+
                             // If the response format is table, then extract the data
                             // and create a property with hyphenated names to allow
                             // for the user to create a proper table fro nested extractions
                             const propValue = objParser.get(extractProp);
                             if (format === "table") {
+
                                 // Use the dots for the table
                                 extracted[extractProp] = propValue;
                             } else {
+
                                 // Keep the object structure
                                 extractedParser.set(extractProp, propValue);
                             }
+
                         }
                     }
                     return extracted;
                 }
-            })();
+            }();
         }
 
         return this.mFormatApi;
@@ -669,9 +539,8 @@ export class CommandResponse implements ICommandResponseApi {
 
         // Create only a single instance of the console API
         if (this.mConsoleApi == null) {
-            this.mConsoleApi = new (class
-                implements IHandlerResponseConsoleApi
-            {
+            this.mConsoleApi = new class implements IHandlerResponseConsoleApi {
+
                 /**
                  * Write a message/data to stdout. Appends a newline character if the input is of type string. If the
                  * command response indicates JSON format, then the message is automatically buffered.
@@ -680,14 +549,9 @@ export class CommandResponse implements ICommandResponseApi {
                  * @returns {string} - The formatted data or the original data.toString() if a buffer was passed
                  */
                 public log(message: string | Buffer, ...values: any[]): string {
-                    let msg: string = LoggerUtils.censorRawData(
-                        message.toString(),
-                        Logger.DEFAULT_CONSOLE_NAME
-                    );
+                    let msg: string = LoggerUtils.censorRawData(message.toString(), Logger.DEFAULT_CONSOLE_NAME);
                     if (!Buffer.isBuffer(message)) {
-                        msg =
-                            outer.formatMessage(msg.toString(), ...values) +
-                            "\n";
+                        msg = outer.formatMessage(msg.toString(), ...values) + "\n";
                     }
                     outer.writeAndBufferStdout(msg);
                     return msg;
@@ -700,18 +564,10 @@ export class CommandResponse implements ICommandResponseApi {
                  * @param {...any[]} values - The format values.
                  * @returns {string} - The formatted data, or the original data.toString() if a buffer was passed
                  */
-                public error(
-                    message: string | Buffer,
-                    ...values: any[]
-                ): string {
-                    let msg: string = LoggerUtils.censorRawData(
-                        message.toString(),
-                        Logger.DEFAULT_CONSOLE_NAME
-                    );
+                public error(message: string | Buffer, ...values: any[]): string {
+                    let msg: string = LoggerUtils.censorRawData(message.toString(), Logger.DEFAULT_CONSOLE_NAME);
                     if (!Buffer.isBuffer(message)) {
-                        msg =
-                            outer.formatMessage(msg.toString(), ...values) +
-                            "\n";
+                        msg = outer.formatMessage(msg.toString(), ...values) + "\n";
                     }
                     outer.writeAndBufferStderr(msg);
                     return msg;
@@ -725,10 +581,7 @@ export class CommandResponse implements ICommandResponseApi {
                  * @returns {string} - The string that is printed (including the color codes)
                  */
                 public errorHeader(message: string, delimeter = ":"): string {
-                    let msg: string = LoggerUtils.censorRawData(
-                        message.toString(),
-                        Logger.DEFAULT_CONSOLE_NAME
-                    );
+                    let msg: string = LoggerUtils.censorRawData(message.toString(), Logger.DEFAULT_CONSOLE_NAME);
                     msg = TextUtils.chalk.red(msg + `${delimeter}\n`);
                     outer.writeAndBufferStderr(msg);
                     return msg;
@@ -740,30 +593,23 @@ export class CommandResponse implements ICommandResponseApi {
                  * @param {IPromptOptions} [opts]
                  * @returns {Promise<string>}
                  */
-                public prompt(
-                    questionText: string,
-                    opts?: IPromptOptions
-                ): Promise<string> {
-                    const msg: string = LoggerUtils.censorRawData(
-                        questionText.toString(),
-                        Logger.DEFAULT_CONSOLE_NAME
-                    );
+                public prompt(questionText: string, opts?: IPromptOptions): Promise<string> {
+                    const msg: string = LoggerUtils.censorRawData(questionText.toString(), Logger.DEFAULT_CONSOLE_NAME);
 
                     if (outer.mStream) {
                         return new Promise<string>((resolve) => {
+
                             // send prompt content
-                            const daemonRequest = opts?.hideText
-                                ? DaemonRequest.create({ securePrompt: msg })
-                                : DaemonRequest.create({ prompt: msg });
+                            const daemonRequest = opts?.hideText ?
+                                DaemonRequest.create({ securePrompt: msg }) :
+                                DaemonRequest.create({ prompt: msg });
 
                             outer.writeStream(daemonRequest);
 
                             // wait for a response here
                             outer.mStream.once("data", (data) => {
                                 // strip response header and give to content the waiting handler
-                                const response: IDaemonResponse = JSON.parse(
-                                    data.toString()
-                                );
+                                const response: IDaemonResponse = JSON.parse(data.toString());
                                 resolve(response.stdin.trim());
                             });
                         });
@@ -771,7 +617,7 @@ export class CommandResponse implements ICommandResponseApi {
                         return CliUtils.readPrompt(msg, opts);
                     }
                 }
-            })();
+            }();
         }
 
         // Return the instance of the console API
@@ -792,7 +638,8 @@ export class CommandResponse implements ICommandResponseApi {
 
         // Only create a single instance
         if (this.mDataApi == null) {
-            this.mDataApi = new (class {
+            this.mDataApi = new class {
+
                 /**
                  * Sets the response object "data" field to be the object passed. The data field indicates any structured
                  * JSON/object data that the command wants to return for programmatic consumption.
@@ -812,10 +659,7 @@ export class CommandResponse implements ICommandResponseApi {
                  * @returns {string} - The formatted string.
                  */
                 public setMessage(message: string, ...values: any[]): string {
-                    const formatted: string = outer.formatMessage(
-                        message,
-                        values
-                    );
+                    const formatted: string = outer.formatMessage(message, values);
                     outer.mMessage = formatted;
                     return outer.mMessage;
                 }
@@ -831,7 +675,7 @@ export class CommandResponse implements ICommandResponseApi {
                     outer.mExitCode = code;
                     return outer.mExitCode;
                 }
-            })();
+            }();
         }
 
         // Return the data API
@@ -851,8 +695,9 @@ export class CommandResponse implements ICommandResponseApi {
 
         // Ensure there is only a single instance created of the progress API class
         if (this.mProgressApi == null) {
+
             // Create an instance of the class
-            this.mProgressApi = new (class {
+            this.mProgressApi = new class {
                 private spinnerIndex = 0;
                 private spinnerInterval: any;
 
@@ -862,16 +707,8 @@ export class CommandResponse implements ICommandResponseApi {
                 public startSpinner(pendingText: string): void {
                     if (this.spinnerInterval == null) {
                         this.spinnerInterval = setInterval(() => {
-                            outer.writeStdout(
-                                `\r${pendingText} ${
-                                    this.mProgressBarSpinnerChars[
-                                        this.spinnerIndex
-                                    ]
-                                }`
-                            );
-                            this.spinnerIndex =
-                                (this.spinnerIndex + 1) %
-                                this.mProgressBarSpinnerChars.length;
+                            outer.writeStdout(`\r${pendingText} ${this.mProgressBarSpinnerChars[this.spinnerIndex]}`);
+                            this.spinnerIndex = (this.spinnerIndex + 1) % this.mProgressBarSpinnerChars.length;
                         }, 100); // eslint-disable-line
                     }
                 }
@@ -882,19 +719,15 @@ export class CommandResponse implements ICommandResponseApi {
                     outer.write();
                     clearInterval(this.spinnerInterval);
                     this.spinnerInterval = null;
-                    if (stopText) outer.writeStdout(`\r${stopText}\n`);
+                    if(stopText) outer.writeStdout(`\r${stopText}\n`);
                     outer.writeStdout("\r\x1b[K");
                 }
 
                 private mProgressBarSpinnerIndex = 0;
                 private mProgressTask: ITaskWithStatus;
-                private mProgressBarPollFrequency = 65; // eslint-disable-line @typescript-eslint/no-magic-numbers
-                private mProgressBarTemplate: string =
-                    " " +
-                    TextUtils.chalk[outer.mPrimaryTextColor](":bar|") +
-                    " :current%  " +
-                    TextUtils.chalk[outer.mPrimaryTextColor](":spin") +
-                    " | :statusMessage";
+                private mProgressBarPollFrequency = 65;  // eslint-disable-line @typescript-eslint/no-magic-numbers
+                private mProgressBarTemplate: string = " " + TextUtils.chalk[outer.mPrimaryTextColor](":bar|") + " :current%  " +
+                    TextUtils.chalk[outer.mPrimaryTextColor](":spin") + " | :statusMessage";
                 private mProgressBarInterval: any;
                 private mIsDaemon = false;
 
@@ -904,10 +737,7 @@ export class CommandResponse implements ICommandResponseApi {
                  * TODO: get from config - default value is below
                  */
                 private mProgressBarSpinnerChars: string = "-oO0)|(0Oo-";
-                private mDaemonProgressBarSpinnerChars =
-                    this.mProgressBarSpinnerChars
-                        .split("")
-                        .map((char) => char + DaemonRequest.EOW_DELIMITER);
+                private mDaemonProgressBarSpinnerChars = this.mProgressBarSpinnerChars.split("").map((char) => char + DaemonRequest.EOW_DELIMITER);
 
                 /**
                  * Start a progress bar (assuming silent mode is not enabled).
@@ -916,26 +746,18 @@ export class CommandResponse implements ICommandResponseApi {
                 public startBar(params: IProgressBarParms): void {
                     if (outer.mProgressBar != null) {
                         throw new ImperativeError({
-                            msg:
-                                `${CommandResponse.RESPONSE_ERR_TAG} A progress bar has already been started. ` +
-                                `Please call progress.endBar() before starting a new one.`,
+                            msg: `${CommandResponse.RESPONSE_ERR_TAG} A progress bar has already been started. ` +
+                                `Please call progress.endBar() before starting a new one.`
                         });
                     }
-                    if (
-                        !outer.silent &&
-                        outer.mResponseFormat !== "json" &&
-                        !(TextUtils.chalk.level === 0 || process.env.CI != null)
-                    ) {
+                    if (!outer.silent && outer.mResponseFormat !== "json" &&
+                        !(TextUtils.chalk.level === 0 || process.env.CI != null)) {
+
                         // Persist the task specifications and determine the stream to use for the progress bar
-                        this.mProgressBarStdoutStartIndex =
-                            outer.mStdout.length;
-                        this.mProgressBarStderrStartIndex =
-                            outer.mStderr.length;
+                        this.mProgressBarStdoutStartIndex = outer.mStdout.length;
+                        this.mProgressBarStderrStartIndex = outer.mStderr.length;
                         this.mProgressTask = params.task;
-                        let stream: any =
-                            params.stream == null
-                                ? process.stderr
-                                : params.stream;
+                        let stream: any = params.stream == null ? process.stderr : params.stream;
                         const arbitraryColumnSize = 80;
 
                         // if we have an outer stream (e.g. socket connection for daemon mode) use it
@@ -948,9 +770,7 @@ export class CommandResponse implements ICommandResponseApi {
                             if (!(stream as any).isTTY) {
                                 const ttyPrototype = tty.WriteStream.prototype;
                                 Object.keys(ttyPrototype).forEach((key) => {
-                                    (stream as any)[key] = (
-                                        ttyPrototype as any
-                                    )[key];
+                                    (stream as any)[key] = (ttyPrototype as any)[key];
                                 });
                                 (stream as any).columns = arbitraryColumnSize;
                             }
@@ -958,30 +778,21 @@ export class CommandResponse implements ICommandResponseApi {
 
                         // send header to enable progress bar streaming
                         // const daemonHeaders = DaemonUtils.buildHeaders({ progress: true });
-                        outer.writeStream(
-                            DaemonRequest.create({ progress: true })
-                        );
+                        outer.writeStream(DaemonRequest.create({ progress: true }));
 
                         // Create the progress bar instance
-                        outer.mProgressBar = new ProgressBar(
-                            this.mProgressBarTemplate,
-                            {
-                                total: 100,
-                                width: 10,
-                                stream,
-                                complete: "█",
-                                clear: true,
-                                incomplete: "_",
-                            }
-                        );
+                        outer.mProgressBar = new ProgressBar(this.mProgressBarTemplate, {
+                            total: 100,
+                            width: 10,
+                            stream,
+                            complete: "█",
+                            clear: true,
+                            incomplete: "_",
+                        });
 
                         // Set the interval based on the params of the default
-                        this.mProgressBarInterval = setInterval(
-                            this.updateProgressBar.bind(this),
-                            params.updateInterval == null
-                                ? this.mProgressBarPollFrequency
-                                : params.updateInterval
-                        );
+                        this.mProgressBarInterval = setInterval(this.updateProgressBar.bind(this),
+                            params.updateInterval == null ? this.mProgressBarPollFrequency : params.updateInterval);
                     }
                 }
 
@@ -998,29 +809,17 @@ export class CommandResponse implements ICommandResponseApi {
                         const statusMessage = "Complete";
                         outer.mProgressBar.update(1, {
                             statusMessage,
-                            spin: " ",
+                            spin: " "
                         });
 
                         outer.mProgressBar.terminate();
 
                         // NOTE(Kelosky): ansi escape codes for progress bar cursor and line clearing are written on the socket
                         // so we need to ensure they're emptied out before we write to the stream.
-                        if (this.mIsDaemon)
-                            outer.writeStream(
-                                DaemonRequest.EOW_DELIMITER +
-                                    DaemonRequest.create({ progress: false })
-                            );
+                        if (this.mIsDaemon) outer.writeStream(DaemonRequest.EOW_DELIMITER + DaemonRequest.create({ progress: false }));
 
-                        outer.writeStdout(
-                            outer.mStdout.subarray(
-                                this.mProgressBarStdoutStartIndex
-                            )
-                        );
-                        outer.writeStderr(
-                            outer.mStderr.subarray(
-                                this.mProgressBarStderrStartIndex
-                            )
-                        );
+                        outer.writeStdout(outer.mStdout.subarray(this.mProgressBarStdoutStartIndex));
+                        outer.writeStderr(outer.mStderr.subarray(this.mProgressBarStderrStartIndex));
                         this.mProgressTask = undefined;
 
                         // clear the progress bar field
@@ -1034,42 +833,30 @@ export class CommandResponse implements ICommandResponseApi {
                  * @private
                  */
                 private updateProgressBar(): void {
-                    if (
-                        this.mProgressTask == null ||
+                    if (this.mProgressTask == null ||
                         this.mProgressTask.stageName === TaskStage.COMPLETE ||
-                        this.mProgressTask.stageName === TaskStage.FAILED
-                    ) {
+                        this.mProgressTask.stageName === TaskStage.FAILED) {
                         this.endBar();
                     } else {
                         if (this.mProgressBarInterval != null) {
-                            const percentRatio =
-                                this.mProgressTask.percentComplete /
-                                TaskProgress.ONE_HUNDRED_PERCENT;
-                            this.mProgressBarSpinnerIndex =
-                                (this.mProgressBarSpinnerIndex + 1) %
-                                this.mProgressBarSpinnerChars.length;
+                            const percentRatio = this.mProgressTask.percentComplete / TaskProgress.ONE_HUNDRED_PERCENT;
+                            this.mProgressBarSpinnerIndex = (this.mProgressBarSpinnerIndex + 1) % this.mProgressBarSpinnerChars.length;
 
                             if (this.mIsDaemon) {
                                 outer.mProgressBar.update(percentRatio, {
-                                    statusMessage:
-                                        this.mProgressTask.statusMessage,
-                                    spin: this.mDaemonProgressBarSpinnerChars[
-                                        this.mProgressBarSpinnerIndex
-                                    ],
+                                    statusMessage: this.mProgressTask.statusMessage,
+                                    spin: this.mDaemonProgressBarSpinnerChars[this.mProgressBarSpinnerIndex]
                                 });
                             } else {
                                 outer.mProgressBar.update(percentRatio, {
-                                    statusMessage:
-                                        this.mProgressTask.statusMessage,
-                                    spin: this.mProgressBarSpinnerChars[
-                                        this.mProgressBarSpinnerIndex
-                                    ],
+                                    statusMessage: this.mProgressTask.statusMessage,
+                                    spin: this.mProgressBarSpinnerChars[this.mProgressBarSpinnerIndex]
                                 });
                             }
                         }
                     }
                 }
-            })();
+            }();
         }
 
         // Return the progress bar API
@@ -1109,10 +896,7 @@ export class CommandResponse implements ICommandResponseApi {
      * @memberof CommandResponse
      */
     public bufferStdout(data: Buffer | string) {
-        this.mStdout = Buffer.concat([
-            this.mStdout,
-            data instanceof Buffer ? data : Buffer.from(data),
-        ]);
+        this.mStdout = Buffer.concat([this.mStdout, data instanceof Buffer ? data : Buffer.from(data)]);
     }
 
     /**
@@ -1122,10 +906,7 @@ export class CommandResponse implements ICommandResponseApi {
      * @memberof CommandResponse
      */
     public bufferStderr(data: Buffer | string) {
-        this.mStderr = Buffer.concat([
-            this.mStderr,
-            data instanceof Buffer ? data : Buffer.from(data),
-        ]);
+        this.mStderr = Buffer.concat([this.mStderr, data instanceof Buffer ? data : Buffer.from(data)]);
     }
 
     /**
@@ -1144,6 +925,7 @@ export class CommandResponse implements ICommandResponseApi {
      * @memberof CommandResponse
      */
     public buildJsonResponse(): ICommandResponse {
+
         if (this.mExitCode == null) {
             this.mExitCode = this.mSucceeded ? 0 : Constants.ERROR_EXIT_CODE;
         }
@@ -1155,7 +937,7 @@ export class CommandResponse implements ICommandResponseApi {
             stdout: this.mStdout,
             stderr: this.mStderr,
             data: this.mData,
-            error: this.mError,
+            error: this.mError
         };
     }
 
@@ -1171,36 +953,18 @@ export class CommandResponse implements ICommandResponseApi {
             response = this.buildJsonResponse();
             (response.stderr as any) = response.stderr.toString();
             (response.stdout as any) = response.stdout.toString();
-            response.message = LoggerUtils.censorRawData(
-                response.message,
-                "json"
-            );
-            response.data = response.data
-                ? JSON.parse(
-                      LoggerUtils.censorRawData(
-                          JSON.stringify(response.data),
-                          "json"
-                      )
-                  )
-                : undefined;
-            response.error = response.error
-                ? JSON.parse(
-                      LoggerUtils.censorRawData(
-                          JSON.stringify(response.error),
-                          "json"
-                      )
-                  )
-                : undefined;
+            response.message = LoggerUtils.censorRawData(response.message, "json");
+            response.data =  response.data ? JSON.parse(LoggerUtils.censorRawData(JSON.stringify(response.data), "json")) : undefined;
+            response.error = response.error ? JSON.parse(LoggerUtils.censorRawData(JSON.stringify(response.error), "json")) : undefined;
 
             if (!this.mSilent) {
                 this.writeStdout(JSON.stringify(response, null, 2));
             }
         } catch (e) {
             throw new ImperativeError({
-                msg:
-                    `${CommandResponse.RESPONSE_ERR_TAG} An error occurred stringifying the JSON response object. ` +
+                msg: `${CommandResponse.RESPONSE_ERR_TAG} An error occurred stringifying the JSON response object. ` +
                     `Error Details: ${e.message}`,
-                additionalDetails: e,
+                additionalDetails: e
             });
         }
         return response;
@@ -1340,10 +1104,6 @@ export class CommandResponse implements ICommandResponseApi {
      * @memberof CommandResponse
      */
     private write(): boolean {
-        return (
-            !this.control.silent &&
-            this.mResponseFormat !== "json" &&
-            this.mProgressBar == null
-        );
+        return !this.control.silent && this.mResponseFormat !== "json" && this.mProgressBar == null;
     }
 }
