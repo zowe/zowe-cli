@@ -81,8 +81,8 @@ export function isStderrEmptyForProfilesCommand(output: Buffer): boolean {
  */
 export function stripProfileDeprecationMessages(stderr: Buffer | string): string {
     return stderr.toString()
-        .replace(/Warning: The command 'profiles [a-z]+' is deprecated\./g, "")
-        .replace(/Recommended replacement: The 'config [a-z]+' command/g, "")
+        .replace(/Warning: The command 'profiles [a-z\s]+' is deprecated\./g, "")
+        .replace(/Recommended replacement: The 'config [a-z\s]+' command/g, "")
         .replace(/Recommended replacement: Edit your Zowe V2 configuration\s+zowe\.config\.json/g, "")
         .trim();
 }
