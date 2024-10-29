@@ -49,15 +49,4 @@ export interface IDownloadSpoolContentParms extends Omit<IDownloadAllSpoolConten
      * @memberof IDownloadAllSpoolContentParms
      */
     stream?: Writable;
-
-    /**
-     * Wait for the job to reach output status
-     */
-    waitForActive?: boolean;
-
-
-    /**
-     * Wait for the job to reach output status
-     */
-    waitForOutput?: boolean;
 }

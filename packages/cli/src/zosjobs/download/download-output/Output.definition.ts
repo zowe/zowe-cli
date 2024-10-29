@@ -73,7 +73,18 @@ export const OutputDefinition: ICommandDefinition = {
                 "data conversion is performed using the file encoding specified.",
             type: "string",
             conflictsWith: ["binary", "record"]
-        }
+        },
+        {
+            name: "wait-for-active", aliases: ["wfa"],
+            description: "Wait for the job to enter ACTIVE status before completing the command.",
+            type: "boolean",
+            conflictsWith: ["wait-for-output", "directory"]
+        },
+        {
+            name: "wait-for-output", aliases: ["wfo"],
+            description: "Wait for the job to enter OUTPUT status before completing the command.",
+            type: "boolean"
+        },
     ] as ICommandOptionDefinition[]),
     examples: [
         {
