@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
+## `8.4.0`
+
+- Enhancement: Added optional `--attributes` flag to `zowe zos-files upload file-to-uss` to allow passing a .zosattributes file path for upload encoding format. [#2319] (https://github.com/zowe/zowe-cli/pull/2319)
+
 ## `8.2.0`
 
 - Enhancement: Added an optional `continueSearch` function to the `ISearchOptions` interface. After a data set listing is completed, the new function is called with the list of data sets about to be searched. This allows the extender or end users to continue with the search or cancel it. [#2300](https://github.com/zowe/zowe-cli/pull/2300)
