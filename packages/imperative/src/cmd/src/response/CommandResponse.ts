@@ -716,11 +716,12 @@ export class CommandResponse implements ICommandResponseApi {
                  * Stop a spinner
                  */
                 public endSpinner(stopText?: string): void {
-                    outer.write();
-                    clearInterval(this.spinnerInterval);
-                    this.spinnerInterval = null;
-                    if(stopText) outer.writeStdout(`\r${stopText}\n`);
-                    outer.writeStdout("\r\x1b[K");
+                    if (this.spinnerInterval != null) {
+                        clearInterval(this.spinnerInterval);
+                        this.spinnerInterval = null;
+                        if(stopText) outer.writeStdout(`\r${stopText}\n`);
+                        outer.writeStdout("\r\x1b[K");
+                    }
                 }
 
                 private mProgressBarSpinnerIndex = 0;
