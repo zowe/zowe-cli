@@ -71,7 +71,7 @@ describe("Proxy tests", () => {
             noProxySpy.mockClear();
             checkUrlSpy.mockClear();
         });
-    })
+    });
 
     describe("getProxyAgent", () => {
         beforeEach(() => {

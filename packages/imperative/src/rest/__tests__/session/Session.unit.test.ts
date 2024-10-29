@@ -11,7 +11,6 @@
 
 import { URL } from "url";
 import { Session } from "../../src/session/Session";
-import { ProxyVariables } from "../../src/session/doc/ProxyVariables";
 
 describe("Session tests", () => {
 
@@ -293,7 +292,7 @@ describe("Session tests", () => {
         expect(error).toBeUndefined();
         expect(session.ISession.proxy).toEqual(mySettings);
         expect(session.ISession.strictSSL).toEqual(false);
-    })
+    });
 
     it("should require proper type", () => {
         let error;

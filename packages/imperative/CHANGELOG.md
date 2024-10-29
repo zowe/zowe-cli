@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## `8.4.0`
+
+- Enhancement: Added optional `proxy` object to ISession interface for extenders to pass a ProxyVariables object that would override the environment variables if in place. [#2330](https://github.com/zowe/zowe-cli/pull/2330)
+
 ## `8.3.1`
 
 - BugFix: Fixed an issue where the `plugins install` command could fail when installing a scoped package because scoped registry was used to fetch all dependencies. [#2317](https://github.com/zowe/zowe-cli/issues/2317)
