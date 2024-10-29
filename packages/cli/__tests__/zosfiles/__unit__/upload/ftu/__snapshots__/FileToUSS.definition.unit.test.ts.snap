@@ -18,6 +18,17 @@ Array [
     "name": "encoding",
     "type": "string",
   },
+  Object {
+    "aliases": Array [
+      "attrs",
+    ],
+    "conflictsWith": Array [
+      "ascii-files, binary-files",
+    ],
+    "description": "Path of an attributes file to control how files are uploaded.",
+    "name": "attributes",
+    "type": "string",
+  },
 ]
 `;
 

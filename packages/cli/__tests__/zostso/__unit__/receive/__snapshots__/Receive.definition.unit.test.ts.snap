@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`zos-tso receive group definition should not have changed 1`] = `
+Object {
+  "aliases": Array [
+    "r",
+  ],
+  "description": "Receive message from TSO address space app",
+  "name": "receive",
+  "summary": "Receive message from TSO address space app",
+  "type": "group",
+}
+`;
