@@ -10,13 +10,15 @@
 */
 
 import * as path from "path";
-import { AbstractSession, ImperativeExpect, IO, Logger, Headers } from "@zowe/imperative";
+import { AbstractSession, ImperativeExpect, IO, Logger, Headers} from "@zowe/imperative";
 import { JobsConstants } from "./JobsConstants";
 import { IDownloadAllSpoolContentParms } from "./doc/input/IDownloadAllSpoolContentParms";
 import { IJobFile } from "./doc/response/IJobFile";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { IDownloadSpoolContentParms } from "./doc/input/IDownloadSpoolContentParms";
 import { GetJobs } from "./GetJobs";
+import { MonitorJobs } from "./MonitorJobs";
+import { IJob } from "./doc/response/IJob";
 
 
 /**
@@ -89,6 +91,7 @@ export class DownloadJobs {
         }
     }
 
+
     /**
      * Download spool content to specified directory
      * @static
@@ -101,8 +104,35 @@ export class DownloadJobs {
         this.log.trace("Entering downloadSpoolContentCommon with parms %s", JSON.stringify(parms));
         ImperativeExpect.keysToBeDefined(parms, ["jobFile"], "You must specify a job file on your 'parms' parameter" +
             " object to the downloadSpoolContentCommon API.");
-        const job = parms.jobFile;
+        const directory: string = parms.outDir ?? DownloadJobs.DEFAULT_JOBS_OUTPUT_DIR;
 
+        //waiting for job to be active before continuing with job download
+        if (parms.waitForActive) {
+            await MonitorJobs.waitForStatusCommon(session, {
+                jobid: parms.jobid,
+                jobname: parms.jobname,
+                status: "ACTIVE"
+            });
+        }
+
+        //waiting for job status to be output before continuing on with job download
+        if (parms.waitForOutput) {
+            await MonitorJobs.waitForJobOutputStatus(session, {
+                jobname: parms.jobname,
+                jobid: parms.jobid
+            } as IJob);
+            const downloadParms: IDownloadAllSpoolContentParms = {
+                jobid: parms.jobid,
+                jobname: parms.jobname,
+                outDir: directory
+            };
+            if (parms.extension) {
+                downloadParms.extension = IO.normalizeExtension(parms.extension);
+            }
+            await DownloadJobs.downloadAllSpoolContentCommon(session, downloadParms);
+        }
+
+        const job = parms.jobFile;
         let debugMessage = `Downloading spool file ${job.ddname} for job ${job.jobname}(${job.jobid})`;
         let file: string;
         if (parms.stream == null) {
