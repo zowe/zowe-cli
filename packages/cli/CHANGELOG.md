@@ -3,7 +3,7 @@
 All notable changes to the Zowe CLI package will be documented in this file.
 
 ## Recent Changes
-- Enhancement: Added waitForActive and waitForOutput to download options on zosjobs. []
+- Enhancement: Added waitForActive and waitForOutput to download options on zosjobs. [#2328](https://github.com/zowe/zowe-cli/pull/2328)
 
 ## `8.3.0`
 
