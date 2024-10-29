@@ -13,7 +13,7 @@ exports[`receive TSO app handler behavior should properly receive and parse data
 Object {
   "queueID": null,
   "reused": false,
-  "servletKey": "CUST009-122-aabyaaaj",
+  "servletKey": "ZOWEUSER-122-aabyaaaj",
   "timeout": false,
   "tsoData": Array [
     Object {

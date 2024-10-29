@@ -42,7 +42,7 @@ const MOCK_RESPONSE = Promise.resolve({
     version: "0100",
     reused: false,
     timeout: false,
-    servletKey: "CUST009-123-aaaaaa",
+    servletKey: "ZOWEUSER-123-aaaaaa",
     queueID: "983068",
     tsoData: [
         {
@@ -76,14 +76,14 @@ const MOCK_RESPONSE = Promise.resolve({
 const MOCK_START_RESPONSE: Promise<IStartStopResponses> = Promise.resolve({
     collectedResponses: [],
     messages:
-        "IKJ56455I CUST009 LOGON IN PROGRESS AT 11:18:56 ON OCTOBER 14, 2024\nIKJ56951I NO BROADCAST MESSAGES\nREADY \n",
-    servletKey: "CUST009-123-aaaaaa",
+        "IKJ56455I ZOWEUSER LOGON IN PROGRESS AT 11:18:56 ON OCTOBER 14, 2024\nIKJ56951I NO BROADCAST MESSAGES\nREADY \n",
+    servletKey: "ZOWEUSER-123-aaaaaa",
     success: true,
     zosmfTsoResponse: {
         ver: "0100",
         queueID: "983068",
         reused: false,
-        servletKey: "CUST009-123-aaaaaa",
+        servletKey: "ZOWEUSER-123-aaaaaa",
         sessionID: "0x00",
         timeout: false,
         tsoData: [{}],
@@ -109,7 +109,7 @@ describe("receive TSO app handler behavior", () => {
         params.arguments = {
             ...params.arguments,
             account: "izuacct",
-            startup: "EXEC 'CUST009.PUBLIC.REXX(VAREXX)'",
+            startup: "EXEC 'ZOWEUSER.PUBLIC.REXX(VAREXX)'",
             appKey: "test2",
         };
         try {
@@ -137,9 +137,9 @@ describe("receive TSO app handler behavior", () => {
         params.arguments = {
             ...params.arguments,
             account: "izuacct",
-            startup: "EXEC 'CUST009.PUBLIC.REXX(VAREXX)'",
+            startup: "EXEC 'ZOWEUSER.PUBLIC.REXX(VAREXX)'",
             queueId: "983068",
-            servletKey: "CUST009-123-aaaaaa",
+            servletKey: "ZOWEUSER-123-aaaaaa",
             appKey: "test2",
         };
         try {

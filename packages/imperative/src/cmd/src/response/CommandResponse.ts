@@ -38,7 +38,7 @@ import { Logger } from "../../../logger";
 import { LoggerUtils } from "../../../logger/src/LoggerUtils";
 
 const DataObjectParser = require("dataobject-parser");
-export const DEFAULT_SPINNER_CHARS = "-oO0)|(0Oo-";
+
 /**
  * Command response object allocated by the command processor and used to construct the handler response object
  * passed to the command handlers. The response object contains all the methods necessary for a command handler (and
@@ -707,7 +707,7 @@ export class CommandResponse implements ICommandResponseApi {
                 public startSpinner(pendingText: string): void {
                     if (this.spinnerInterval == null) {
                         this.spinnerInterval = setInterval(() => {
-                            process.stdout.write(`\r${pendingText} ${this.mProgressBarSpinnerChars[this.spinnerIndex]}`);
+                            outer.writeStdout(`\r${pendingText} ${this.mProgressBarSpinnerChars[this.spinnerIndex]}`);
                             this.spinnerIndex = (this.spinnerIndex + 1) % this.mProgressBarSpinnerChars.length;
                         }, 100); // eslint-disable-line
                     }
@@ -715,12 +715,13 @@ export class CommandResponse implements ICommandResponseApi {
                 /**
                  * Stop a spinner
                  */
-                public stopSpinner(stopText: string): void {
+                public endSpinner(stopText?: string): void {
                     if (this.spinnerInterval != null) {
+                        outer.write();
                         clearInterval(this.spinnerInterval);
                         this.spinnerInterval = null;
-                        process.stdout.write(`\r${stopText}\n`);
-                        process.stdout.write("\r\x1b[K");
+                        if(stopText) outer.writeStdout(`\r${stopText}\n`);
+                        outer.writeStdout("\r\x1b[K");
                     }
                 }
 

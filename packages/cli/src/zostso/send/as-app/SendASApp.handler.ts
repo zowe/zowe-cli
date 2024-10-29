@@ -35,7 +35,7 @@ export default class Handler extends ZosTsoBaseHandler {
             this.mTsoStart
         );
 
-        commandParameters.response.progress.stopSpinner("Sending request... Done!");
+        commandParameters.response.progress.endSpinner();
 
         commandParameters.response.console.log(
             JSON.stringify(response, null, 2)

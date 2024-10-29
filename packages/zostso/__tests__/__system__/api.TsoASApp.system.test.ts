@@ -15,12 +15,15 @@ import { ITestEnvironment } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { runCliScript } from "@zowe/cli-test-utils";
+import { Upload, Create, CreateDataSetTypeEnum, Delete } from "../../../zosfiles/src";
+import { getUniqueDatasetName } from "../../../../__tests__/__src__/TestUtils";
 
 let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 let systemProperties: ITestPropertiesSchema;
 let REAL_SESSION: Session;
 let ACCOUNT_NUMBER: string;
 let defaultSystem: ITestPropertiesSchema;
+let dsname: string;
 
 describe("All test", () => {
     beforeAll(async () => {
@@ -31,9 +34,12 @@ describe("All test", () => {
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
         ACCOUNT_NUMBER = systemProperties.tso.account;
         defaultSystem = testEnvironment.systemTestProperties;
+        dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSTEST`);
+        await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname);
+        await Upload.fileToDataset(REAL_SESSION, __dirname + "/__scripts__/start/test_app.rexx", dsname, {});
     });
-
     afterAll(async () => {
+        await Delete.dataSet(REAL_SESSION, dsname);
         await TestEnvironment.cleanUp(testEnvironment);
     });
 
@@ -51,6 +57,7 @@ describe("All test", () => {
                     defaultSystem.zosmf.user,
                     defaultSystem.zosmf.password,
                     defaultSystem.zosmf.rejectUnauthorized,
+                    dsname+"(TESTAPP)"
                 ]
             );
 
@@ -77,6 +84,10 @@ describe("All test", () => {
             );
         });
         it("should create TSO application instance on existing address space", async () => {
+            dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSTEST`);
+            await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname);
+            await Upload.fileToDataset(REAL_SESSION, __dirname + "/__scripts__/start/test_app.rexx", dsname, {});
+
             const startResponse: IIssueResponse = {
                 success: false,
                 startResponse: await StartTso.start(
@@ -101,6 +112,7 @@ describe("All test", () => {
                     defaultSystem.zosmf.rejectUnauthorized,
                     startResponse.startResponse.zosmfTsoResponse.servletKey,
                     startResponse.startResponse.zosmfTsoResponse.queueID,
+                    dsname+"(TESTAPP)"
                 ]
             );
             expect(response.stdout.toString()).toBeDefined();
@@ -139,6 +151,7 @@ describe("All test", () => {
                     defaultSystem.zosmf.user,
                     defaultSystem.zosmf.password,
                     defaultSystem.zosmf.rejectUnauthorized,
+                    dsname+"(TESTAPP)"
                 ]
             );
             const startServletkey = JSON.parse(
@@ -183,6 +196,7 @@ describe("All test", () => {
                     defaultSystem.zosmf.user,
                     defaultSystem.zosmf.password,
                     defaultSystem.zosmf.rejectUnauthorized,
+                    dsname+"(TESTAPP)"
                 ]
             );
             const startServletkey = JSON.parse(
@@ -237,6 +251,7 @@ describe("All test", () => {
                     defaultSystem.zosmf.user,
                     defaultSystem.zosmf.password,
                     defaultSystem.zosmf.rejectUnauthorized,
+                    dsname+"(TESTAPP)"
                 ]
             );
             const startServletkey = JSON.parse(

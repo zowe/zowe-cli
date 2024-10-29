@@ -35,7 +35,7 @@ export default class Handler extends ZosTsoBaseHandler {
             },
         );
 
-        commandParameters.response.progress.stopSpinner("Receiving response... Done!");
+        commandParameters.response.progress.endSpinner();
 
         commandParameters.response.console.log("\n");
         response.tsoData.forEach((data) => {

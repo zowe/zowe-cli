@@ -22,14 +22,30 @@ import { IIssueResponse } from "../src";
 
 export class AddressSpaceApps {
     /**
-     * Start TSO application at address space with provided parameters.
+     * Format API response to IASAppResponse structure.
      * @static
-     * @param {AbstractSession} session - z/OSMF connection info
-     * @param {string}  accountNumber - this key of IStartTsoParms required, because it cannot be default.
-     * @param {IStartTsoParms} parms - optional object with required parameters, @see {IStartTsoParms}
-     * @returns {Promise<IASAppResponse>} command response on resolve, @see {IASAppResponse}
-     * @memberof StartTso
+     * @param {any} response - Raw API response
+     * @param {string | null} servletKey - Servlet key if present
+     * @param {string | null} queueID - Queue ID if present
+     * @returns {IASAppResponse} Formatted API response
      */
+    private static formatResponse(response: any, servletKey: string | null, queueID: string | null): IASAppResponse {
+        return {
+            version: response.ver,
+            reused: response.reused,
+            timeout: response.timeout,
+            servletKey: servletKey ?? null,
+            queueID: queueID ?? null,
+            tsoData: response.tsoData?.map((message: any) => {
+                const messageKey = message["TSO MESSAGE"] ? "TSO MESSAGE" : "TSO PROMPT";
+                return {
+                    VERSION: message[messageKey].VERSION,
+                    DATA: message[messageKey].DATA,
+                };
+            }) || [response.appData],
+        };
+    }
+
     public static async start(
         session: AbstractSession,
         accountNumber: string,
@@ -37,66 +53,32 @@ export class AddressSpaceApps {
         startParms: IStartTsoParms
     ): Promise<IASAppResponse> {
         TsoValidator.validateSession(session);
-        TsoValidator.validateNotEmptyString(
-            accountNumber,
-            noAccountNumber.message
-        );
+        TsoValidator.validateNotEmptyString(accountNumber, noAccountNumber.message);
 
-        // Address space is not known and must be created
         if (!params.queueID || !params.servletKey) {
             const response: IIssueResponse = {
                 success: false,
-                startResponse: await StartTso.start(
-                    session,
-                    accountNumber,
-                    startParms
-                ),
+                startResponse: await StartTso.start(session, accountNumber, startParms),
                 startReady: false,
                 zosmfResponse: null,
                 commandResponse: null,
                 stopResponse: null,
             };
-            // Reassigning servletKey and queueID so the application can be started at the correct location
-            params.servletKey =
-                response.startResponse.zosmfTsoResponse.servletKey;
+            params.servletKey = response.startResponse.zosmfTsoResponse.servletKey;
             params.queueID = response.startResponse.zosmfTsoResponse.queueID;
         }
 
-        // Address space application starting
         const endpoint = `${TsoConstants.RESOURCE}/app/${params.servletKey}/${params.appKey}`;
-        const response = await ZosmfRestClient.postExpectJSON<
-        IASAppResponse & { ver: string }
-        >(session, endpoint, [Headers.APPLICATION_JSON], {
-            startcmd: `${params.startupCommand} '&1 &2 ${params.queueID}'`,
-        });
-        const formattedApiResponse: IASAppResponse = {
-            version: response.ver,
-            reused: response.reused,
-            timeout: response.timeout,
-            servletKey: params.servletKey ?? null,
-            queueID: params.queueID ?? null,
-            tsoData: response.tsoData?.map((message: any) => {
-                const messageKey = message["TSO MESSAGE"]
-                    ? "TSO MESSAGE"
-                    : "TSO PROMPT";
-                return {
-                    VERSION: message[messageKey].VERSION,
-                    DATA: message[messageKey].DATA,
-                };
-            }),
-        };
+        const response = await ZosmfRestClient.postExpectJSON<IASAppResponse & { ver: string }>(
+            session,
+            endpoint,
+            [Headers.APPLICATION_JSON],
+            { startcmd: `${params.startupCommand} '&1 &2 ${params.queueID}'` }
+        );
 
-        return formattedApiResponse;
+        return AddressSpaceApps.formatResponse(response, params.servletKey, params.queueID);
     }
-    /**
-     * Send message to TSO application at address space with provided parameters.
-     * @static
-     * @param {AbstractSession} session - z/OSMF connection info
-     * @param {string}  accountNumber - this key of IStartTsoParms required, because it cannot be default.
-     * @param {IStartTsoParms} parms - optional object with required parameters,
-     * @returns {Promise<IASAppResponse>} command response on resolve, @see {IASAppResponse}
-     * @memberof SendTso
-     */
+
     public static async send(
         session: AbstractSession,
         accountNumber: string,
@@ -104,60 +86,26 @@ export class AddressSpaceApps {
         startParms: IStartTsoParms
     ): Promise<IASAppResponse> {
         TsoValidator.validateSession(session);
-        TsoValidator.validateNotEmptyString(
-            accountNumber,
-            noAccountNumber.message
-        );
+        TsoValidator.validateNotEmptyString(accountNumber, noAccountNumber.message);
 
         const endpoint = `${TsoConstants.RESOURCE}/app/${params.servletKey}/${params.appKey}`;
-
-        const apiResponse = await ZosmfRestClient.putExpectJSON<
-        IASAppResponse & { ver: string }
-        >(
+        const apiResponse = await ZosmfRestClient.putExpectJSON<IASAppResponse & { ver: string }>(
             session,
             endpoint,
             [Headers.CONTENT_TYPE, "text/plain"],
             params.message
         );
 
-        const formattedApiResponse: IASAppResponse = {
-            version: apiResponse.ver,
-            reused: apiResponse.reused,
-            timeout: apiResponse.timeout,
-            servletKey: apiResponse.servletKey ?? null,
-            queueID: apiResponse.queueID ?? null,
-            tsoData: apiResponse.tsoData?.map((message: any) => {
-                const messageKey = message["TSO MESSAGE"]
-                    ? "TSO MESSAGE"
-                    : "TSO PROMPT";
-                return {
-                    VERSION: message[messageKey].VERSION,
-                    DATA: message[messageKey].DATA,
-                };
-            }),
-        };
-
-        return formattedApiResponse;
+        return AddressSpaceApps.formatResponse(apiResponse, apiResponse.servletKey ?? null, apiResponse.queueID ?? null);
     }
-    /**
-     * Receive message from TSO application at address space with provided parameters.
-     * @static
-     * @param {AbstractSession} session - z/OSMF connection info
-     * @param {string}  accountNumber - this key of IStartTsoParms required, because it cannot be default.
-     * @param {IStartTsoParms} parms - optional object with required parameters,
-     * @returns {Promise<IASAppResponse>} command response on resolve, @see {IASAppResponse}
-     * @memberof SendTso
-     */
+
     public static async receive(
         session: AbstractSession,
         accountNumber: string,
         params: ITsoAppCommunicationParms
     ): Promise<IASAppResponse> {
         TsoValidator.validateSession(session);
-        TsoValidator.validateNotEmptyString(
-            accountNumber,
-            noAccountNumber.message
-        );
+        TsoValidator.validateNotEmptyString(accountNumber, noAccountNumber.message);
         const TIMEOUT_SECONDS: number = params.timeout;
 
         const endpoint = `${TsoConstants.RESOURCE}/app/${params.servletKey}/${params.appKey}`;
@@ -167,47 +115,27 @@ export class AddressSpaceApps {
         let timeoutReached = false;
 
         do {
-            if (Date.now() - startTime > TIMEOUT_SECONDS * 1000) { // eslint-disable-line
+            // eslint-disable-next-line @typescript-eslint/no-magic-numbers
+            if (Date.now() - startTime > TIMEOUT_SECONDS * 1000) {
                 timeoutReached = true;
                 break;
             }
 
             try {
-                const apiResponse = await ZosmfRestClient.getExpectJSON<
-                IASAppResponse & { ver: string; appData?: any }
-                >(session, endpoint);
-                const response = apiResponse as IASAppResponse & {
-                    ver: string;
-                    appData?: any;
-                };
-                const formattedApiResponse: IASAppResponse = {
-                    version: response.ver,
-                    reused: response.reused,
-                    timeout: response.timeout,
-                    servletKey: response.servletKey ?? null,
-                    queueID: response.queueID ?? null,
-                    tsoData: response.tsoData?.map((message: any) => {
-                        const messageKey = message["TSO MESSAGE"]
-                            ? "TSO MESSAGE"
-                            : "TSO PROMPT";
-                        return {
-                            VERSION: message[messageKey].VERSION,
-                            DATA: message[messageKey].DATA,
-                        };
-                    }) || [response.appData],
-                };
+                const apiResponse = await ZosmfRestClient.getExpectJSON<IASAppResponse & { ver: string; appData?: any }>(
+                    session,
+                    endpoint
+                );
+                const formattedResponse = AddressSpaceApps.formatResponse(apiResponse, apiResponse.servletKey ?? null, apiResponse.queueID ?? null);
 
                 if (combinedResponse === null) {
-                    combinedResponse = formattedApiResponse;
+                    combinedResponse = formattedResponse;
                 } else {
-                    combinedResponse.tsoData.push(
-                        ...formattedApiResponse.tsoData
-                    );
+                    combinedResponse.tsoData.push(...formattedResponse.tsoData);
                 }
-                endKeyword = formattedApiResponse.tsoData.some((data: any) =>
-                    typeof data === "string"
-                        ? data.trim() === "READY"
-                        : data.DATA.trim() === "READY"
+
+                endKeyword = formattedResponse.tsoData.some((data: any) =>
+                    typeof data === "string" ? data.trim() === "READY" : data.DATA.trim() === "READY"
                 );
             } catch (error) {
                 if (combinedResponse) {

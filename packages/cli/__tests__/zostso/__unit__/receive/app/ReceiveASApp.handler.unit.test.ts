@@ -26,7 +26,7 @@ const MOCK_RECEIVE_RESPONSE: any = {
     version: undefined,
     reused: false,
     timeout: false,
-    servletKey: "CUST009-122-aabyaaaj",
+    servletKey: "ZOWEUSER-122-aabyaaaj",
     queueID: null,
     tsoData: [
         {
@@ -51,7 +51,7 @@ describe("receive TSO app handler behavior", () => {
         const handler = new ReceiveASAppHandler.default();
         const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
         let error = undefined;
-        params.arguments = {...params.arguments,account: "izuacct", appKey: "test2", servletKey: "CUST009-122-aabyaaaj", runUntilReady: true};
+        params.arguments = {...params.arguments,account: "izuacct", appKey: "test2", servletKey: "ZOWEUSER-122-aabyaaaj", runUntilReady: true};
         try{
             await handler.process(params);
         }

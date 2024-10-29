@@ -40,5 +40,5 @@ export interface IHandlerProgressApi {
      * @param {IProgressBarParms} params
      * @memberof IHandlerProgressApi
      */
-    stopSpinner(endText: string): void;
+    endSpinner(endText?: string): void;
 }

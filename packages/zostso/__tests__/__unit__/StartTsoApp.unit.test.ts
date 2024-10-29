@@ -25,7 +25,7 @@ const MOCK_RESPONSE = Promise.resolve({
     version: "0100",
     reused: false,
     timeout: false,
-    servletKey: "CUST009-123-aaaaaa",
+    servletKey: "ZOWEUSER-123-aaaaaa",
     queueID: "983068",
     tsoData: [
         { "TSO MESSAGE": { VERSION: "0100", DATA: "HELLOW exec processing has started." } },
@@ -38,14 +38,14 @@ const MOCK_RESPONSE = Promise.resolve({
 
 const MOCK_START_RESPONSE: Promise<IStartStopResponses> = Promise.resolve({
     collectedResponses: [],
-    messages: "IKJ56455I CUST009 LOGON IN PROGRESS AT 11:18:56 ON OCTOBER 14, 2024\nIKJ56951I NO BROADCAST MESSAGES\nREADY \n",
-    servletKey: "CUST009-123-aaaaaa",
+    messages: "IKJ56455I ZOWEUSER LOGON IN PROGRESS AT 11:18:56 ON OCTOBER 14, 2024\nIKJ56951I NO BROADCAST MESSAGES\nREADY \n",
+    servletKey: "ZOWEUSER-123-aaaaaa",
     success: true,
     zosmfTsoResponse: {
         ver: "0100",
         queueID: "983068",
         reused: false,
-        servletKey: "CUST009-123-aaaaaa",
+        servletKey: "ZOWEUSER-123-aaaaaa",
         sessionID: "0x00",
         timeout: false,
         tsoData: [{}]
@@ -76,7 +76,7 @@ describe("StartTsoApp behavior", () => {
             })
         );
         expect(response).toMatchObject({
-            servletKey: "CUST009-123-aaaaaa",
+            servletKey: "ZOWEUSER-123-aaaaaa",
             queueID: "983068",
             tsoData: expect.arrayContaining([
                 expect.objectContaining({ DATA: "HELLOW exec processing has started." })
@@ -91,7 +91,7 @@ describe("StartTsoApp behavior", () => {
             startupCommand: "EXEC 'TEST.EXEC(THISSCRIPTDOESNOTEXIST)'",
             appKey: "testappkey",
             queueID: "12345",
-            servletKey: "CUST009-123-aaaaaaaa"
+            servletKey: "ZOWEUSER-123-aaaaaaaa"
         }, null);
 
         expect(StartTso.start).not.toHaveBeenCalled();
@@ -104,7 +104,7 @@ describe("StartTsoApp behavior", () => {
             })
         );
         expect(response).toMatchObject({
-            servletKey: "CUST009-123-aaaaaaaa",
+            servletKey: "ZOWEUSER-123-aaaaaaaa",
             queueID: "12345",
             tsoData: expect.arrayContaining([
                 expect.objectContaining({ DATA: "HELLOW exec processing has started." })
