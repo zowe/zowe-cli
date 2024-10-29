@@ -39,6 +39,7 @@ export const UssFileDefinition: ICommandDefinition = {
         }
     ],
     options: [
+        DownloadOptions.attributes,
         DownloadOptions.file,
         DownloadOptions.binary,
         DownloadOptions.encoding

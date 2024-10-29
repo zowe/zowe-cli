@@ -11,7 +11,8 @@
 
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
 import { AbstractSession, IHandlerParameters, ITaskWithStatus, TaskStage } from "@zowe/imperative";
-import { Download, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
+import { Download, IDownloadOptions, IZosFilesResponse, ZosFilesAttributes } from "@zowe/zos-files-for-zowe-sdk";
+import { UploadOptions } from "../../upload/Upload.options";
 
 /**
  * Handler to download an uss file
@@ -25,13 +26,22 @@ export default class UssFileHandler extends ZosFilesBaseHandler {
             stageName: TaskStage.IN_PROGRESS
         };
         commandParameters.response.progress.startBar({task});
-        return Download.ussFile(session, commandParameters.arguments.ussFileName, {
+
+        const downloadOptions: IDownloadOptions = {
             binary: commandParameters.arguments.binary,
             encoding: commandParameters.arguments.encoding,
             file: commandParameters.arguments.file,
             task,
             responseTimeout: commandParameters.arguments.responseTimeout,
-            overwrite: commandParameters.arguments.overwrite
-        });
+            overwrite: commandParameters.arguments.overwrite,
+        };
+        const attributes = ZosFilesAttributes.loadFromFile(
+            commandParameters.arguments.attributes,
+            commandParameters.arguments.inputDir
+        );
+        if (attributes != null) {
+            downloadOptions.attributes = attributes;
+        }
+        return Download.ussFile(session, commandParameters.arguments.ussFileName, downloadOptions);
     }
 }

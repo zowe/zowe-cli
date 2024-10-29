@@ -61,6 +61,13 @@ export interface IDownloadSingleOptions extends IGetOptions {
      * Optional stream to read the file contents
      */
     stream?: Writable;
+    /**
+     * The ZosFilesAttributes instance describe upload attributes for the files and directories
+     */
+    attributes?: ZosFilesAttributes;
+    /**
+     * The map of files and their upload mode to be used for binary_files and ascii_files
+     */
 }
 
 /**
