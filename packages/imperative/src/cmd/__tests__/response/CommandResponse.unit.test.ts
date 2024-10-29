@@ -333,9 +333,9 @@ describe("Command Response", () => {
             responseFormat: "default",
             stream,
         });
-        response.progress.startSpinner("Test Spinner....");
+        (response.progress as any).startSpinner("Test Spinner....");
         expect((response as any).progress.spinnerInterval).toBeDefined();
-        response.progress.endSpinner("Done");
+        (response.progress as any).endSpinner("Done");
         expect((response as any).progress.spinnerInterval).toBe(null);
     });
     it("should allow us to create an instance", () => {

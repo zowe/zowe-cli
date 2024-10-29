@@ -34,11 +34,11 @@ export interface IHandlerProgressApi {
      * @param {IProgressBarParms} params
      * @memberof IHandlerProgressApi
      */
-    startSpinner(pendingText: string): void;
+    startSpinner?(pendingText: string): void;
     /**
      * Stop a spinner - displays on the users terminal
      * @param {IProgressBarParms} params
      * @memberof IHandlerProgressApi
      */
-    endSpinner(endText?: string): void;
+    endSpinner?(endText?: string): void;
 }
