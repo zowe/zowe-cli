@@ -11,11 +11,11 @@
 
 import { ICommandDefinition } from "@zowe/imperative";
 
-describe("zos-tso send group definition", () => {
+describe("zos-tso receive group definition", () => {
     it("should not have changed", () => {
-        const definition: ICommandDefinition = require("../../../../src/zostso/send/Send.definition").SendCommand;
+        const definition: ICommandDefinition = require("../../../../src/zostso/receive/Receive.definition").ReceiveCommand;
         expect(definition).toBeDefined();
-        expect(definition.children.length).toBe(2);
+        expect(definition.children.length).toBe(1);
         delete definition.children;
         expect(definition).toMatchSnapshot();
     });
