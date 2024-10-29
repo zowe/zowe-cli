@@ -3,7 +3,12 @@
 All notable changes to the Zowe CLI package will be documented in this file.
 
 ## Recent Changes
+
 - Enhancement: Added waitForActive and waitForOutput to download options on zosjobs. [#2328](https://github.com/zowe/zowe-cli/pull/2328)
+
+## `8.4.0`
+
+- Enhancement: Added optional `--attributes` flag to `zowe zos-files upload file-to-uss` to allow passing a .zosattributes file path for upload encoding format. [#2319] (https://github.com/zowe/zowe-cli/pull/2319)
 
 ## `8.3.0`
 

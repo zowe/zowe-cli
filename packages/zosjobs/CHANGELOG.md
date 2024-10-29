@@ -3,6 +3,9 @@
 All notable changes to the Zowe z/OS jobs SDK package will be documented in this file.
 
 ## Recent Changes
+- Enhancement: Added --wait-for-output & --wait-for-active as optional parameters to download on zosjobs.
+
+## `8.5.0`
 - Enhancement: Added execData to IJob return data from GetJobs.getJob [#2320](https://github.com/zowe/zowe-cli/pull/2320)
 
 ## `8.1.1`
