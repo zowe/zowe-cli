@@ -117,15 +117,6 @@ export class DownloadJobs {
                 jobname: parms.jobname,
                 jobid: parms.jobid
             } as IJob);
-            // const downloadParms: IDownloadAllSpoolContentParms = {
-            //     jobid: parms.jobid,
-            //     jobname: parms.jobname,
-            //     outDir: directory
-            // };
-            // if (parms.extension) {
-            //     downloadParms.extension = IO.normalizeExtension(parms.extension);
-            // }
-            // await DownloadJobs.downloadAllSpoolContentCommon(session, downloadParms);
         }
 
         const job = parms.jobFile;
