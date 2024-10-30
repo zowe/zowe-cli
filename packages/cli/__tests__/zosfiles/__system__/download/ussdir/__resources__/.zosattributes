@@ -2,4 +2,4 @@
 *.bin binary binary
 *.jcl IBM-1047 IBM-1047
 *.md UTF-8 UTF-8
-*.txt UTF-8 IBM-1047
+*.txt UTF-8 binary

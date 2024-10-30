@@ -24,7 +24,7 @@ import { ZosFilesUtils } from "../../utils/ZosFilesUtils";
 import { List } from "../list/List";
 import { IDownloadOptions, IDownloadSingleOptions } from "./doc/IDownloadOptions";
 import { CLIENT_PROPERTY } from "../../doc/types/ZosmfRestClientProperties";
-import { Utilities } from "../utilities";
+import { Tag, Utilities } from "../utilities";
 import { IZosmfListResponse } from "../list/doc/IZosmfListResponse";
 import { IDownloadDsmResult } from "./doc/IDownloadDsmResult";
 import { IDownloadUssDirResult } from "./doc/IDownloadUssDirResult";
@@ -521,7 +521,16 @@ export class Download {
 
             const writeStream = options.stream ?? IO.createWriteStream(destination);
 
-            // If data type is not defined by user, check for USS tags
+            //const remoteEncoding = options.attributes.getRemoteEncoding(ussFileName);
+            options.binary = options.attributes.getFileTransferMode(ussFileName, options.binary) === TransferMode.BINARY;
+            const localEncoding = options.attributes.getRemoteEncoding(ussFileName);
+            // If attributes map was passed from handler then assign remote coding of the file to the download encoding
+            if(options.attributes && localEncoding != null && localEncoding !== Tag.BINARY )
+            {
+                options.encoding = options.attributes.getRemoteEncoding(ussFileName);
+            }
+
+            // If data type is not defined by user via encoding flag or attributes file, check for USS tags
             if (options.binary == null && options.encoding == null) {
                 await Utilities.applyTaggedEncoding(session, ussFileName, options);
             }
@@ -530,11 +539,6 @@ export class Download {
             // If the "file" is not provided, we create a folder structure similar to the uss file structure
             ussFileName = ZosFilesUtils.sanitizeUssPathForRestCall(ussFileName);
             const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, ussFileName);
-
-            if(options.attributes)
-            {
-                options.encoding = options.attributes.getRemoteEncoding(ussFileName);
-            }
 
             const reqHeaders: IHeaderContent[] = this.generateHeadersBasedOnOptions(options);
 
