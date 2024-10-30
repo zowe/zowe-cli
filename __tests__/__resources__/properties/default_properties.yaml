@@ -104,6 +104,8 @@ zosjobs:
   modifiedJobclass: B
   # System affinity
   sysaff: zosjobs-sysaff
+  # CIM Support
+  skipCIM: cim-skipped
 #-----------------------------------------------------------------------------#
 #  Set of properties for testing provisioning                                 #
 #-----------------------------------------------------------------------------#
