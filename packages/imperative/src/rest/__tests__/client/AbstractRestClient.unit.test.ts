@@ -436,7 +436,7 @@ describe("AbstractRestClient tests", () => {
 
         let reusedSocket = true;
         const requestFnc = jest.fn((options, callback) => {
-            let emitter = new MockHttpRequestResponse();
+            const emitter = new MockHttpRequestResponse();
 
             ProcessUtils.nextTick(() => {
                 callback(emitter);
