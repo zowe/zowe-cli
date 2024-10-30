@@ -3,7 +3,8 @@
 All notable changes to the Imperative package will be documented in this file.
 
 ## Recent Changes
-- BugFix: Enabling commands with either the `--help` or `--version` flags to still display their information despite any config file issues [#2301](https://github.com/zowe/zowe-cli/pull/2301)
+
+- BugFix: Enabled commands with either the `--help` or `--version` flags to still display their information despite any config file issues [#2301](https://github.com/zowe/zowe-cli/pull/2301)
 
 ## `8.2.0`
 
