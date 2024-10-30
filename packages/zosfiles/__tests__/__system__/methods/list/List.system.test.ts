@@ -985,7 +985,7 @@ describe("List command group - encoded", () => {
             let caughtError;
 
             try {
-                response = await List.dataSetsMatchingPattern(REAL_SESSION, [dsname + ".INVALID"]);
+                response = await List.dataSetsMatchingPattern(REAL_SESSION, [dsname + ".INVAL"]);
             } catch (error) {
                 caughtError = error;
             }
