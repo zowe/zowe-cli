@@ -83,7 +83,8 @@ export const OutputDefinition: ICommandDefinition = {
         {
             name: "wait-for-output", aliases: ["wfo"],
             description: "Wait for the job to enter OUTPUT status before completing the command.",
-            type: "boolean"
+            type: "boolean",
+            conflictsWith: ["wait-for-active"]
         },
     ] as ICommandOptionDefinition[]),
     examples: [
