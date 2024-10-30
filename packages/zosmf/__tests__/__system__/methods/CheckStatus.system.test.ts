@@ -125,6 +125,6 @@ describe("Check Status Api", () => {
             expect(jsonCauseErrors.code).toMatch(/(ECONNREFUSED|ECONNRESET|ETIMEDOUT)/);
             expect(jsonCauseErrors.syscall).toEqual("connect");
             expect(jsonCauseErrors.port).toEqual(badPort);
-        });
+        }, 300000);
     });
 });
