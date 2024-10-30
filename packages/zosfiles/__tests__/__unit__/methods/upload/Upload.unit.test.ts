@@ -2475,7 +2475,7 @@ describe("z/OS Files - Upload", () => {
                 expect(fileToUssFileSpy).toHaveBeenCalledTimes(1);
                 expect(fileToUssFileSpy).toHaveBeenCalledWith(dummySession,
                     path.normalize(path.join(testPath, "uploadme")),
-                    `${dsName}/uploadme`, { binary: true });
+                    `${dsName}/uploadme`, { binary: true, attributes: attributesMock, recursive: false });
             });
 
             it("should not upload ignored directories", async () => {
@@ -2518,7 +2518,7 @@ describe("z/OS Files - Upload", () => {
                 expect(fileToUssFileSpy).toHaveBeenCalledTimes(1);
                 expect(fileToUssFileSpy).toHaveBeenCalledWith(dummySession,
                     path.normalize(path.join(testPath, "uploaddir", "uploadedfile")),
-                    `${dsName}/uploaddir/uploadedfile`, { binary: true });
+                    `${dsName}/uploaddir/uploadedfile`, { binary: true, attributes: attributesMock });
             });
             it("should upload files in text or binary according to attributes", async () => {
                 getFileListFromPathSpy.mockReturnValue(["textfile", "binaryfile"]);
@@ -2532,10 +2532,10 @@ describe("z/OS Files - Upload", () => {
                 expect(fileToUssFileSpy).toHaveBeenCalledWith(dummySession,
                     path.normalize(path.join(testPath, "textfile")),
                     `${dsName}/textfile`,
-                    { binary: false, encoding: "ISO8859-1", localEncoding: "ISO8859-1" });
+                    { binary: false, encoding: "ISO8859-1", localEncoding: "ISO8859-1", attributes: attributesMock, recursive: false });
                 expect(fileToUssFileSpy).toHaveBeenCalledWith(dummySession,
                     path.normalize(path.join(testPath, "binaryfile")),
-                    `${dsName}/binaryfile`, { binary: true });
+                    `${dsName}/binaryfile`, { binary: true, attributes: attributesMock, recursive: false });
             });
 
             it("should call API to tag files according to remote encoding", async () => {

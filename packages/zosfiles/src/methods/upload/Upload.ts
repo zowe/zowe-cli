@@ -854,37 +854,33 @@ export class Upload {
         };
     }
 
-    public static async uploadFile(session: AbstractSession, localPath: string, ussPath: string,
-        options: IUploadOptions): Promise<IZosFilesResponse> {
-        const tempOptions: Partial<IUploadOptions> = {};
-
+    public static async uploadFile(
+        session: AbstractSession,
+        localPath: string,
+        ussPath: string,
+        options: IUploadOptions
+    ): Promise<IZosFilesResponse> {
         if (options.attributes) {
             if (!options.attributes.fileShouldBeUploaded(localPath)) {
                 return;
             }
-            tempOptions.binary = options.attributes.getFileTransferMode(localPath, options.binary) === TransferMode.BINARY;
+            options.binary = options.attributes.getFileTransferMode(localPath, options.binary) === TransferMode.BINARY;
             const remoteEncoding = options.attributes.getRemoteEncoding(localPath);
             if (remoteEncoding != null && remoteEncoding !== Tag.BINARY) {
-                tempOptions.encoding = remoteEncoding;
+                options.encoding = remoteEncoding;
             }
-            if (!tempOptions.binary) {
-                tempOptions.localEncoding = options.attributes.getLocalEncoding(localPath);
+            if (!options.binary) {
+                options.localEncoding = options.attributes.getLocalEncoding(localPath);
             }
         } else {
             if (options.filesMap) {
                 if (options.filesMap.fileNames.indexOf(path.basename(localPath)) > -1) {
-                    tempOptions.binary = options.filesMap.binary;
-                } else {
-                    tempOptions.binary = options.binary;
+                    options.binary = options.filesMap.binary;
                 }
-            } else {
-                tempOptions.binary = options.binary;
             }
         }
-
-        return await this.fileToUssFile(session, localPath, ussPath, tempOptions);
+        return await this.fileToUssFile(session, localPath, ussPath, options);
     }
-
     /**
      * Get Log
      * @returns {Logger} applicationLogger.
