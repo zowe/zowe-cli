@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe z/OS TSO SDK package will be documented in this file.
 
-## Recent Changes
+## `8.6.0`
 
 - Enhancement: Issue `app` commands to better target communication with a TSO/E application. The `app` command is now included in the `start`/`send` command group and the new `receive` command group,
 allowing direct interaction with an application through a z/OS message queue. [#2280] (https://github.com/zowe/zowe-cli/pull/2280)
