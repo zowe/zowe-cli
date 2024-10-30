@@ -2535,7 +2535,7 @@ describe("z/OS Files - Upload", () => {
                     { binary: false, encoding: "ISO8859-1", localEncoding: "ISO8859-1", attributes: attributesMock, recursive: false });
                 expect(fileToUssFileSpy).toHaveBeenCalledWith(dummySession,
                     path.normalize(path.join(testPath, "binaryfile")),
-                    `${dsName}/binaryfile`, { binary: true, attributes: attributesMock, recursive: false });
+                    `${dsName}/binaryfile`, { binary: true, recursive: false, attributes: attributesMock });
             });
 
             it("should call API to tag files according to remote encoding", async () => {

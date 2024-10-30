@@ -860,27 +860,33 @@ export class Upload {
         ussPath: string,
         options: IUploadOptions
     ): Promise<IZosFilesResponse> {
+        const tempOptions: Partial<IUploadOptions> = { ...options };
         if (options.attributes) {
             if (!options.attributes.fileShouldBeUploaded(localPath)) {
                 return;
             }
-            options.binary = options.attributes.getFileTransferMode(localPath, options.binary) === TransferMode.BINARY;
+            tempOptions.binary = options.attributes.getFileTransferMode(localPath, options.binary) === TransferMode.BINARY;
             const remoteEncoding = options.attributes.getRemoteEncoding(localPath);
             if (remoteEncoding != null && remoteEncoding !== Tag.BINARY) {
-                options.encoding = remoteEncoding;
+                tempOptions.encoding = remoteEncoding;
             }
-            if (!options.binary) {
-                options.localEncoding = options.attributes.getLocalEncoding(localPath);
+            if (!tempOptions.binary) {
+                tempOptions.localEncoding = options.attributes.getLocalEncoding(localPath);
             }
         } else {
             if (options.filesMap) {
                 if (options.filesMap.fileNames.indexOf(path.basename(localPath)) > -1) {
-                    options.binary = options.filesMap.binary;
+                    tempOptions.binary = options.filesMap.binary;
+                } else {
+                    tempOptions.binary = options.binary;
                 }
+            } else {
+                tempOptions.binary = options.binary;
             }
         }
-        return await this.fileToUssFile(session, localPath, ussPath, options);
+        return await this.fileToUssFile(session, localPath, ussPath, tempOptions);
     }
+
     /**
      * Get Log
      * @returns {Logger} applicationLogger.
