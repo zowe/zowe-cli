@@ -11,6 +11,7 @@
 
 import { ITaskWithStatus } from "@zowe/imperative";
 import { IZosFilesOptions } from "./IZosFilesOptions";
+import { ZosFilesAttributes } from "../utils/ZosFilesAttributes";
 
 /**
  * This interface defines the options that can be sent to get a data set or USS file function
@@ -57,4 +58,8 @@ export interface IOptions extends IZosFilesOptions {
      * @type {ITaskWithStatus}
      */
     task?: ITaskWithStatus;
+    /**
+     * The path to a .zosattributes file used to control file conversion and tagging.
+     */
+    attributes?: ZosFilesAttributes;
 }

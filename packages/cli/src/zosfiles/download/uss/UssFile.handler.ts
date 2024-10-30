@@ -37,7 +37,6 @@ export default class UssFileHandler extends ZosFilesBaseHandler {
         };
         const attributes = ZosFilesAttributes.loadFromFile(
             commandParameters.arguments.attributes,
-            commandParameters.arguments.inputDir
         );
         if (attributes != null) {
             downloadOptions.attributes = attributes;

@@ -531,6 +531,8 @@ export class Download {
             ussFileName = ZosFilesUtils.sanitizeUssPathForRestCall(ussFileName);
             const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, ussFileName);
 
+            options.encoding = options.attributes.getRemoteEncoding(ussFileName)
+
             const reqHeaders: IHeaderContent[] = this.generateHeadersBasedOnOptions(options);
 
             // Use specific options to mimic ZosmfRestClient.getStreamed()
