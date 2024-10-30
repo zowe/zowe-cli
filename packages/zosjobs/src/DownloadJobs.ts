@@ -104,15 +104,11 @@ export class DownloadJobs {
         this.log.trace("Entering downloadSpoolContentCommon with parms %s", JSON.stringify(parms));
         ImperativeExpect.keysToBeDefined(parms, ["jobFile"], "You must specify a job file on your 'parms' parameter" +
             " object to the downloadSpoolContentCommon API.");
-        const directory: string = parms.outDir ?? DownloadJobs.DEFAULT_JOBS_OUTPUT_DIR;
+        // const directory: string = parms.outDir ?? DownloadJobs.DEFAULT_JOBS_OUTPUT_DIR;
 
         //waiting for job to be active before continuing with job download
         if (parms.waitForActive) {
-            await MonitorJobs.waitForStatusCommon(session, {
-                jobid: parms.jobid,
-                jobname: parms.jobname,
-                status: "ACTIVE"
-            });
+            await MonitorJobs.waitForActiveStatus(session, parms.jobname, parms.jobid);
         }
 
         //waiting for job status to be output before continuing on with job download
@@ -121,15 +117,15 @@ export class DownloadJobs {
                 jobname: parms.jobname,
                 jobid: parms.jobid
             } as IJob);
-            const downloadParms: IDownloadAllSpoolContentParms = {
-                jobid: parms.jobid,
-                jobname: parms.jobname,
-                outDir: directory
-            };
-            if (parms.extension) {
-                downloadParms.extension = IO.normalizeExtension(parms.extension);
-            }
-            await DownloadJobs.downloadAllSpoolContentCommon(session, downloadParms);
+            // const downloadParms: IDownloadAllSpoolContentParms = {
+            //     jobid: parms.jobid,
+            //     jobname: parms.jobname,
+            //     outDir: directory
+            // };
+            // if (parms.extension) {
+            //     downloadParms.extension = IO.normalizeExtension(parms.extension);
+            // }
+            // await DownloadJobs.downloadAllSpoolContentCommon(session, downloadParms);
         }
 
         const job = parms.jobFile;

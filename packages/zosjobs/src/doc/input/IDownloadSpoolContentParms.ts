@@ -55,7 +55,6 @@ export interface IDownloadSpoolContentParms extends Omit<IDownloadAllSpoolConten
      */
     waitForActive?: boolean;
 
-
     /**
      * Wait for the job to reach output status
      */

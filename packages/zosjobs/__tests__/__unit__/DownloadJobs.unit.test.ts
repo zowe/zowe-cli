@@ -276,7 +276,7 @@ describe("DownloadJobs", () => {
                 expect(waitForJobOutputStatusSpy).toHaveBeenCalledTimes(1);
             });
 
-            it("should allow users to call downloadSpoolContentCommon with correct params (default outDir and waitForStatusCommon)", async () => {
+            it("should allow users to call downloadSpoolContentCommon with correct params (default outDir and waitForActiveStatus)", async () => {
                 let uri: string = "";
                 ZosmfRestClient.getStreamed = jest.fn(async (session: AbstractSession, resource: string, reqHeaders?: any[]): Promise<any> => {
                     uri = resource;
@@ -296,14 +296,14 @@ describe("DownloadJobs", () => {
                     retcode: "CC 0000"
                 };
 
-                const waitForStatusCommonSpy = jest.spyOn(MonitorJobs, "waitForStatusCommon").mockImplementation(() => {return completedJob;});
+                const waitForActiveStatusSpy = jest.spyOn(MonitorJobs, "waitForActiveStatus").mockImplementation(() => {return completedJob;});
 
                 const downloadFilePath = DownloadJobs.getSpoolDownloadFilePath(spoolParms);
 
                 await DownloadJobs.downloadSpoolContentCommon(fakeSession, spoolParms);
 
                 expect(IO.createDirsSyncFromFilePath).toHaveBeenCalledWith(downloadFilePath);
-                expect(waitForStatusCommonSpy).toHaveBeenCalledTimes(1);
+                expect(waitForActiveStatusSpy).toHaveBeenCalledTimes(1);
             });
 
             it("should allow users to call downloadSpoolContentCommon with correct parameters (streamed in binary mode)", async () => {
