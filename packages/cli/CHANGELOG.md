@@ -4,7 +4,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## Recent Changes
 
-- Enhancement: Added support for running applications on TSO/E address spaces. Applications can be started, receive messages and transmit messages [#2280](https://github.com/zowe/zowe-cli/pull/2280)
+- Enhancement: Added support for running applications on TSO/E address spaces. Start applications and receive/transmit messages using the new `tso start`, `tso receive` and `tso send` commands. [#2280](https://github.com/zowe/zowe-cli/pull/2280)
 
 ## `8.4.0`
 
