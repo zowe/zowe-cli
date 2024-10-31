@@ -12,7 +12,6 @@
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
 import { AbstractSession, IHandlerParameters, ITaskWithStatus, TaskStage } from "@zowe/imperative";
 import { Download, IDownloadOptions, IZosFilesResponse, ZosFilesAttributes } from "@zowe/zos-files-for-zowe-sdk";
-import { UploadOptions } from "../../upload/Upload.options";
 
 /**
  * Handler to download an uss file
