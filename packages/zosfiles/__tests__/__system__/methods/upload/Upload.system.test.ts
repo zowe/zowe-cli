@@ -851,6 +851,7 @@ describe("Upload USS file", () => {
             let readResponseGood: any;
             let readResponseBad: any;
             try {
+                // Upload file
                 response = runCliScript(__dirname + "/__resources__/upload_file_to_uss.sh", testEnvironment,[
                     defaultSystem.tso.account,
                     defaultSystem.zosmf.host,
@@ -902,6 +903,62 @@ describe("Upload USS file", () => {
 
             // Compare file view with matching upload and view encoding (1047).
             expect(readResponseGood.stdout.toString()).toContain(fileContents);
+        });
+        it("should upload local file to USS using .zosattributes file - binary", async () => {
+            let response: any;
+            let error;
+            let readResponseGood: any;
+            let readResponseBad: any;
+            try {
+                // Upload file
+                response = runCliScript(__dirname + "/__resources__/upload_file_to_uss.sh", testEnvironment,[
+                    defaultSystem.tso.account,
+                    defaultSystem.zosmf.host,
+                    defaultSystem.zosmf.port,
+                    defaultSystem.zosmf.user,
+                    defaultSystem.zosmf.password,
+                    defaultSystem.zosmf.rejectUnauthorized,
+                    __dirname + "/testfiles/encodingCheckBinary.txt",
+                    ussname,
+                    __dirname + "/__resources__/.zosattributes-binary",
+                ]);
+                // View file with .txt binary encoding in .zosattributes
+                readResponseGood = runCliScript(__dirname + "/__resources__/view_file_uss_binary.sh", testEnvironment,[
+                    defaultSystem.tso.account,
+                    defaultSystem.zosmf.host,
+                    defaultSystem.zosmf.port,
+                    defaultSystem.zosmf.user,
+                    defaultSystem.zosmf.password,
+                    defaultSystem.zosmf.rejectUnauthorized,
+                    ussname,
+                    true
+                ]);
+                readResponseBad = runCliScript(__dirname + "/__resources__/view_file_uss.sh", testEnvironment,[
+                    defaultSystem.tso.account,
+                    defaultSystem.zosmf.host,
+                    defaultSystem.zosmf.port,
+                    defaultSystem.zosmf.user,
+                    defaultSystem.zosmf.password,
+                    defaultSystem.zosmf.rejectUnauthorized,
+                    ussname,
+                    "1047"
+                ]);
+            }
+            catch (err) {
+                error = err;
+                Imperative.console.info("Error: " + inspect(error));
+            }
+            const fileContents = fs.readFileSync(__dirname + "/testfiles/encodingCheckBinary.txt").toString();
+
+            expect(response.stderr.toString()).toBe("");
+            expect(response.stdout.toString()).toBeDefined();
+            expect(response.stdout.toString()).toContain("USS file uploaded successfully.");
+
+            // Compare file view with not matching upload and view encoding (1047 vs 1147).
+            expect(readResponseBad.stdout.toString()).not.toContain(fileContents);
+
+            // Compare file view with matching upload and view encoding (1047).
+            expect(readResponseGood.stdout.toString()).toContain(fileContents)
         });
     });
 });
