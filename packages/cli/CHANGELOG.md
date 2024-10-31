@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Fixed an issue where the `zowe zos-logs list logs` command could fail or not return all logs if a start time was not supplied. [#2336](https://github.com/zowe/zowe-cli/pull/2336)
+
 ## `8.4.0`
 
 - Enhancement: Added optional `--attributes` flag to `zowe zos-files upload file-to-uss` to allow passing a .zosattributes file path for upload encoding format. [#2319] (https://github.com/zowe/zowe-cli/pull/2319)
