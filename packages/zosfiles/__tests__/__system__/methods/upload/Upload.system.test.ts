@@ -958,7 +958,7 @@ describe("Upload USS file", () => {
             expect(readResponseBad.stdout.toString()).not.toContain(fileContents);
 
             // Compare file view with matching upload and view encoding (1047).
-            expect(readResponseGood.stdout.toString()).toContain(fileContents)
+            expect(readResponseGood.stdout.toString()).toContain(fileContents);
         });
     });
 });
