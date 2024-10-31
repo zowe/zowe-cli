@@ -522,12 +522,12 @@ export class Download {
             const writeStream = options.stream ?? IO.createWriteStream(destination);
 
             //const remoteEncoding = options.attributes.getRemoteEncoding(ussFileName);
-            options.binary = options.attributes.getFileTransferMode(ussFileName, options.binary) === TransferMode.BINARY;
-            const localEncoding = options.attributes.getRemoteEncoding(ussFileName);
-            // If attributes map was passed from handler then assign remote coding of the file to the download encoding
-            if(options.attributes && localEncoding != null && localEncoding !== Tag.BINARY )
+            if(options.attributes)
             {
-                options.encoding = options.attributes.getRemoteEncoding(ussFileName);
+                options.binary = options.attributes.getFileTransferMode(ussFileName, options.binary) === TransferMode.BINARY;
+                const remoteEncoding = options.attributes.getRemoteEncoding(ussFileName);
+                if(remoteEncoding === Tag.BINARY) options.encoding = undefined;
+                else if(remoteEncoding !== null) options.encoding = remoteEncoding;
             }
 
             // If data type is not defined by user via encoding flag or attributes file, check for USS tags
