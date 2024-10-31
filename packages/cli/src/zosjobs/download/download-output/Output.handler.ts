@@ -35,8 +35,8 @@ export default class OutputHandler extends ZosmfBaseHandler {
         const binary: boolean = this.mArguments.binary;
         const record: boolean = this.mArguments.record;
         const encoding: string = this.mArguments.encoding;
-        const waitForActive: boolean = this.mArguments.wfa;
-        const waitForOutput: boolean = this.mArguments.wfo;
+        const waitForActive: boolean = this.mArguments.waitForActive;
+        const waitForOutput: boolean = this.mArguments.waitForOutput;
         // Get the job details
         const job: IJob = await GetJobs.getJob(this.mSession, jobid);
         const options: IDownloadAllSpoolContentParms = {

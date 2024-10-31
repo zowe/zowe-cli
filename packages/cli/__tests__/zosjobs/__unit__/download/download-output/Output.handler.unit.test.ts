@@ -310,7 +310,7 @@ describe("download output handler tests", () => {
             jobid: GetJobsData.SAMPLE_COMPLETE_JOB.jobid,
             outDir: DownloadJobs.DEFAULT_JOBS_OUTPUT_DIR,
             omitJobidDirectory: false,
-            waitForActive: true
+            waitForActive: params.arguments.waitForActive
         };
         await handler.process(params);
         expect(GetJobs.getJob).toHaveBeenCalledTimes(1);
@@ -341,7 +341,7 @@ describe("download output handler tests", () => {
             jobid: GetJobsData.SAMPLE_COMPLETE_JOB.jobid,
             outDir: DownloadJobs.DEFAULT_JOBS_OUTPUT_DIR,
             omitJobidDirectory: false,
-            waitForOutput: true
+            waitForOutput: params.arguments.waitForOutput
         };
         await handler.process(params);
         expect(GetJobs.getJob).toHaveBeenCalledTimes(1);
