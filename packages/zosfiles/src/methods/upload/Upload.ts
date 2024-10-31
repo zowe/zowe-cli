@@ -869,7 +869,7 @@ export class Upload {
             const remoteEncoding = options.attributes.getRemoteEncoding(localPath);
 
             if(remoteEncoding === Tag.BINARY) tempOptions.encoding = undefined;
-            else if(remoteEncoding !== null) tempOptions.encoding = remoteEncoding
+            else if(remoteEncoding !== null) tempOptions.encoding = remoteEncoding;
 
             if (!tempOptions.binary) {
                 tempOptions.localEncoding = options.attributes.getLocalEncoding(localPath);
