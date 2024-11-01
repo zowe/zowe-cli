@@ -28,7 +28,7 @@ Command failed due to improper syntax
 Did you mean: zos-tso stop as?
 
 Command entered: \\"zos-tso stop foobar\\"
-Available commands are \\"address-space, app\\".
+Available commands are \\"address-space\\".
 Use \\"zowe zos-tso stop --help\\" to view groups, commands, and options.
 
 Response From Service
