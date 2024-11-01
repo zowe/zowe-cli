@@ -199,7 +199,6 @@ describe("z/OS Files - Upload", () => {
             expect(error).toBeDefined();
             expect(error.message).toContain(ZosFilesMessages.missingDatasetName.message);
         });
-
         it("should throw underlying fs error", async () => {
             const rootError = {
                 code: "test",
@@ -225,6 +224,22 @@ describe("z/OS Files - Upload", () => {
             expect(error.message).toContain(ZosFilesMessages.nodeJsFsError.message);
             expect(error.additionalDetails).toEqual(rootError.toString());
             expect(error.causeErrors).toBe(rootError);
+        });
+        it("should throw error if error is null and stats.isFile() is true", async () => {
+            const testPath = "test/path";
+            lstatSpy.mockImplementationOnce((somePath, callback: any) => {
+                callback(null, {isFile: () => true});
+            });
+
+            try {
+                response = await Upload.dirToPds(dummySession, testPath, dsName);
+            } catch (err) {
+                error = err;
+            }
+
+            expect(response).toBeUndefined();
+            expect(error).toBeDefined();
+            expect(error.message).toContain(ZosFilesMessages.pathIsNotDirectory.message);
         });
 
         it("should return with proper message when path is pointing to a file", async () => {
