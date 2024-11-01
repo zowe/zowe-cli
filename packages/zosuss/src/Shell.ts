@@ -174,8 +174,7 @@ export class Shell {
     public static async isConnectionValid(session: SshSession): Promise<boolean>{
         return new Promise((resolve, _) => {
             const conn = new Client();
-            conn.on("ready", () => conn.end() && resolve(true))
-                .on("error", () => resolve(false));
+            conn.on("ready", () => conn.end() && resolve(true)).on("error", () => resolve(false));
             Shell.connect(conn, session);
         });
     }
