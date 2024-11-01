@@ -61,6 +61,11 @@ export interface IDownloadSingleOptions extends IGetOptions {
      * Optional stream to read the file contents
      */
     stream?: Writable;
+
+    /**
+     * An optional pattern for restricting the response list
+     */
+    pattern?: string;
 }
 
 /**
@@ -99,4 +104,9 @@ export interface IDownloadOptions extends Omit<IDownloadSingleOptions, "stream">
      * Specifies whether hidden files whose names begin with a dot should be downloaded.
      */
     includeHidden?: boolean;
+
+    /**
+     * An optional pattern for restricting the response list
+     */
+    pattern?: string;
 }
