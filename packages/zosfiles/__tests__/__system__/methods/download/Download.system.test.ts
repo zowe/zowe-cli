@@ -1133,8 +1133,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
                         defaultSystem.zosmf.password,
                         defaultSystem.zosmf.rejectUnauthorized,
                         __dirname + "/__resources__/testfiles/downloadEncodingCheck.txt",
-                        // "/u/users/jr897694/example/example.txt",
-                        ussname,
+                        ussname+".txt",
                         true
                     ]);
                     downloadResponse = runCliScript(__dirname + "/__resources__/download_file.sh", testEnvironment,[
@@ -1144,11 +1143,11 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
                         defaultSystem.zosmf.user,
                         defaultSystem.zosmf.password,
                         defaultSystem.zosmf.rejectUnauthorized,
-                        ussname,
+                        ussname+".txt",
                         __dirname+"/__resources__/.zosattributes-binary"
                     ]);
 
-                    // downloadResponse = await Download.ussFile(REAL_SESSION, /*"/u/users/jr897694/example/example.txt"*/ ussname, { attributes: zosAttributes});
+                    // downloadResponse = await Download.ussFile(REAL_SESSION, ussname, { attributes: zosAttributes});
                 } catch (err) {
                     error = err;
                 }
