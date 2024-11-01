@@ -16,8 +16,11 @@ then
     exit $RC
 fi
 
+# Echo the job ID for further use
+echo "Submitted job ID: $JOBID"
+
 # Loop until the job goes to the output queue
-until [ $ATTEMPTS -gt 0 ]
+until [ $ATTEMPTS -lt 1 ]
 do
     STATUS=`zowe jobs view job-status-by-jobid $JOBID --rff status --rft string`
     RC=$?

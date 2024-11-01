@@ -12,11 +12,11 @@
 import { ImperativeError, Session } from "@zowe/imperative";
 import { DeleteJobs, IJobFeedback, SubmitJobs } from "../../src";
 import { IJob } from "../../src/doc/response/IJob";
-import { ITestEnvironment } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { Get } from "@zowe/zos-files-for-zowe-sdk";
 import { JobTestsUtils } from "./JobTestsUtils";
+import { ITestEnvironment } from "../../../../__tests__/__src__/environment/ITestEnvironment";
 
 let REAL_SESSION: Session;
 let iefbr14JCL: string;
@@ -24,6 +24,7 @@ let iefbr14JCL: string;
 let defaultSystem: ITestPropertiesSchema;
 let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 const LONG_TIMEOUT = 100000; // 100 second timeout - jobs could take a while to complete due to system load
+const modifyVersionDefaultUsesCIM = false;
 
 describe("DeleteJobs System tests", () => {
 
@@ -44,24 +45,36 @@ describe("DeleteJobs System tests", () => {
 
     describe("Positive tests", () => {
         it("should be able to delete a job using deleteJob", async () => {
-            const job = await SubmitJobs.submitJclNotifyCommon(REAL_SESSION, {jcl: iefbr14JCL});
-            expect(job.retcode).toEqual("CC 0000");
-            const response = await DeleteJobs.deleteJob(REAL_SESSION, job.jobname, job.jobid);
-            expect(response).toBeUndefined();
+            if (testEnvironment.systemTestProperties.zosjobs.skipCIM && modifyVersionDefaultUsesCIM) {
+                process.stdout.write("Skipping test because skipCIM is set.");
+            } else {
+                const job = await SubmitJobs.submitJclNotifyCommon(REAL_SESSION, {jcl: iefbr14JCL});
+                expect(job.retcode).toEqual("CC 0000");
+                const response = await DeleteJobs.deleteJob(REAL_SESSION, job.jobname, job.jobid);
+                expect(response).toBeUndefined();
+            }
         }, LONG_TIMEOUT);
 
         it("should be able to delete a job using deleteJobForJob", async () => {
-            const job = await SubmitJobs.submitJclNotifyCommon(REAL_SESSION, {jcl: iefbr14JCL});
-            expect(job.retcode).toEqual("CC 0000");
-            const response = await DeleteJobs.deleteJobForJob(REAL_SESSION, job);
-            expect(response).toBeUndefined();
+            if (testEnvironment.systemTestProperties.zosjobs.skipCIM && modifyVersionDefaultUsesCIM) {
+                process.stdout.write("Skipping test because skipCIM is set.");
+            } else {
+                const job = await SubmitJobs.submitJclNotifyCommon(REAL_SESSION, {jcl: iefbr14JCL});
+                expect(job.retcode).toEqual("CC 0000");
+                const response = await DeleteJobs.deleteJobForJob(REAL_SESSION, job);
+                expect(response).toBeUndefined();
+            }
         }, LONG_TIMEOUT);
 
         it("should be able to delete a job using deleteJobCommon", async () => {
-            const job = await SubmitJobs.submitJclNotifyCommon(REAL_SESSION, {jcl: iefbr14JCL});
-            expect(job.retcode).toEqual("CC 0000");
-            const response = await DeleteJobs.deleteJobCommon(REAL_SESSION, {jobname: job.jobname, jobid: job.jobid});
-            expect(response).toBeUndefined();
+            if (testEnvironment.systemTestProperties.zosjobs.skipCIM && modifyVersionDefaultUsesCIM) {
+                process.stdout.write("Skipping test because skipCIM is set.");
+            } else {
+                const job = await SubmitJobs.submitJclNotifyCommon(REAL_SESSION, {jcl: iefbr14JCL});
+                expect(job.retcode).toEqual("CC 0000");
+                const response = await DeleteJobs.deleteJobCommon(REAL_SESSION, {jobname: job.jobname, jobid: job.jobid});
+                expect(response).toBeUndefined();
+            }
         }, LONG_TIMEOUT);
 
         it("should be able to delete a job using deleteJobCommon (job modify version 2.0 - synchronous)", async () => {

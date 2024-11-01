@@ -426,6 +426,56 @@ describe("AbstractRestClient tests", () => {
         expect(error.message).toMatchSnapshot();
     });
 
+    // called IRL when socket is reused and HTTP 1.1 race condition is hit
+    it("should handle a socket reuse error", async () => {
+        const errorObject: any = {
+            name: "socket hang up",
+            message: "socket hang up",
+            code: "ECONNRESET"
+        };
+
+        let reusedSocket = true;
+        const requestFnc = jest.fn((options, callback) => {
+            const emitter = new MockHttpRequestResponse();
+
+            ProcessUtils.nextTick(() => {
+                callback(emitter);
+
+                if (reusedSocket) {
+                    emitter.reusedSocket = true;
+                    ProcessUtils.nextTick(() => {
+                        emitter.emit("error", errorObject);
+                        reusedSocket = false;
+                    });
+                } else {
+                    ProcessUtils.nextTick(() => {
+                        emitter.emit("data", Buffer.from("\"response data\"", "utf8"));
+                    });
+
+                    ProcessUtils.nextTick(() => {
+                        emitter.emit("end");
+                    });
+                }
+            });
+            return emitter;
+        });
+
+        (https.request as any) = requestFnc;
+
+        let error;
+        let response: string = "";
+
+        try {
+            response = await RestClient.getExpectString(new Session({hostname: "test"}), "/resource");
+        } catch (thrownError) {
+            error = thrownError;
+        }
+
+        expect(error).not.toBeDefined();
+        expect(response).toEqual("\"response data\"");
+        expect(requestFnc).toHaveBeenCalledTimes(2);
+    });
+
     it("should call http request for http requests", async () => {
         const requestEmitter = new MockHttpRequestResponse();
         const httpRequestFnc = jest.fn((options, callback) => {
