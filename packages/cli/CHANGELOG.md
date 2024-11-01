@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Resolved issue where `zowe zos-files upload file-to-uss` was not properly handling command flags. [#2234](https://github.com/zowe/zowe-cli/pull/2334)
+
 ## `8.6.0`
 
 - Enhancement: Added support for running applications on TSO/E address spaces. Start applications and receive/transmit messages using the new `tso start`, `tso receive` and `tso send` commands. [#2280](https://github.com/zowe/zowe-cli/pull/2280)
