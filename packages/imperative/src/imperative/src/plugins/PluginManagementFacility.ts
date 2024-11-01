@@ -9,8 +9,8 @@
 *
 */
 
-import { IImperativeConfig } from "../../src/doc/IImperativeConfig";
-import { UpdateImpConfig } from "../../src/UpdateImpConfig";
+import { IImperativeConfig } from "../doc/IImperativeConfig";
+import { UpdateImpConfig } from "../UpdateImpConfig";
 import { isAbsolute, join } from "path";
 import { ImperativeConfig, JsUtils } from "../../../utilities";
 import { Logger } from "../../../logger";

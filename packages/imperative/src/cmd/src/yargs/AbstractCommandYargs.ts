@@ -23,7 +23,7 @@ import { IProfileManagerFactory } from "../../../profiles";
 import { ICommandProfileTypeConfiguration } from "../doc/profiles/definition/ICommandProfileTypeConfiguration";
 import { IHelpGeneratorFactory } from "../help/doc/IHelpGeneratorFactory";
 import { CommandResponse } from "../response/CommandResponse";
-import { ICommandResponse } from "../../src/doc/response/response/ICommandResponse";
+import { ICommandResponse } from "../doc/response/response/ICommandResponse";
 import { ICommandExampleDefinition } from "../..";
 import { ImperativeConfig } from "../../../utilities/src/ImperativeConfig";
 

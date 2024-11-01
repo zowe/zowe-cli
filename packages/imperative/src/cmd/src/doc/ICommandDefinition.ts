@@ -14,7 +14,7 @@ import { IChainedHandlerEntry } from "./handler/IChainedHandlerEntry";
 import { ICommandOptionDefinition } from "./option/ICommandOptionDefinition";
 import { ICommandPositionalDefinition } from "./option/ICommandPositionalDefinition";
 import { ICommandDefinitionPassOn } from "./ICommandDefinitionPassOn";
-import { ICommandProfile } from "../../src/doc/profiles/definition/ICommandProfile";
+import { ICommandProfile } from "../doc/profiles/definition/ICommandProfile";
 /**
  * Command Segment type - either "group" or "command".
  *
