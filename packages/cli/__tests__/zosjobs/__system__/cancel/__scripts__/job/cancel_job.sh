@@ -16,6 +16,8 @@ then
     exit $RC
 fi
 
+sleep 1
+
 # Cancel the job
 zowe jobs cancel job $JOBID
 RC=$?

@@ -126,7 +126,7 @@ describe("zowe uss issue ssh api call test", () => {
 
     it("should handle errors correctly when connection is refused", async () => {
         const invalidSshSession = new SshSession({
-            hostname: "localhost",
+            hostname: "127.0.0.1",
             port: 22,
             user: "root",
             password: "**ThisPasswordIsExpectedNotToBeTheRealPasswordForRoot**"
