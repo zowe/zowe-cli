@@ -24,7 +24,8 @@ import {
     IMountFsOptions,
     Mount,
     Unmount,
-    IUSSListOptions
+    IUSSListOptions,
+    ZosFilesAttributes
 } from "../../../../src";
 import { Imperative, IO, Session } from "@zowe/imperative";
 import { inspect } from "util";
@@ -37,10 +38,12 @@ import { posix } from "path";
 import { Shell } from "@zowe/zos-uss-for-zowe-sdk";
 import { PassThrough } from "stream";
 import { text } from "stream/consumers";
+import { runCliScript } from "../../../../../../__tests__/__packages__/cli-test-utils/lib";
 
 const rimraf = require("rimraf").sync;
 const delayTime = 2000;
 const testData = "abcdefghijklmnopqrstuvwxyz";
+const testDataBinary = "[][][]";
 
 let REAL_SESSION: Session;
 let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
@@ -1018,7 +1021,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
                 let error;
                 let response: IZosFilesResponse;
 
-                await Upload.bufferToUssFile(REAL_SESSION, ussname, Buffer.from(testData));
+                await Upload.bufferToUssFile(REAL_SESSION, ussname, Buffer.from(testDataBinary));
                 await wait(delayTime);
 
                 try {
@@ -1079,6 +1082,61 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
                 const fileContents = stripNewLines(fs.readFileSync(`./${posix.basename(ussname)}`).toString());
                 expect(fileContents).toEqual(testData);
 
+            });
+
+            it("should download uss file with --attributes flag", async () => {
+                let error;
+                let response: any;
+                let downloadResponse: any;
+                let zosAttributes = Object.create(ZosFilesAttributes.prototype);
+                zosAttributes.attributes = new Map([
+                    ['*.json', { ignore: true }],
+                    ['*.bin', { ignore: false, localEncoding: 'binary', remoteEncoding: 'binary' }],
+                    ['*.jcl', { ignore: false, localEncoding: 'IBM-1047', remoteEncoding: 'IBM-1047' }],
+                    ['*.md', { ignore: false, localEncoding: 'UTF-8', remoteEncoding: 'UTF-8' }],
+                    ['*.txt', { ignore: false, localEncoding: 'UTF-8', remoteEncoding: 'IBM-1047' }]
+                ]);
+                try {
+                    response = await Upload.bufferToUssFile(REAL_SESSION, ussname, Buffer.from(testDataBinary));
+                    downloadResponse = await Download.ussFile(REAL_SESSION, ussname, { attributes: zosAttributes});
+                } catch (err) {
+                    error = err;
+                }
+                expect(error).toBeFalsy();
+                expect(response).toBeTruthy();
+                expect(downloadResponse).toBeTruthy();
+
+                // Compare the downloaded contents to those uploaded
+                const fileContents = stripNewLines(fs.readFileSync(`./${posix.basename(ussname)}`).toString());
+                expect(fileContents).toEqual(testDataBinary);
+            });
+
+            it("should download uss file with --attributes flag - binary", async () => {
+                let error;
+                let response: any;
+                let downloadResponse: any;
+                let zosAttributes = Object.create(ZosFilesAttributes.prototype);
+                zosAttributes.attributes = new Map([
+                    ['*.json', { ignore: true }],
+                    ['*.bin', { ignore: false, localEncoding: 'binary', remoteEncoding: 'binary' }],
+                    ['*.jcl', { ignore: false, localEncoding: 'IBM-1047', remoteEncoding: 'IBM-1047' }],
+                    ['*.md', { ignore: false, localEncoding: 'UTF-8', remoteEncoding: 'UTF-8' }],
+                    ['*.txt', { ignore: false, localEncoding: 'binary', remoteEncoding: 'binary' }]
+                ]);
+                try {
+                    response = await Upload.uploadFile(REAL_SESSION, __dirname+"/__resources__/testfiles/downloadEncodingCheck.txt" ,ussname, { attributes: zosAttributes});
+                    downloadResponse = await Download.ussFile(REAL_SESSION, ussname, { attributes: zosAttributes});
+                } catch (err) {
+                    error = err;
+                }
+                expect(error).toBeFalsy();
+                expect(response).toBeTruthy();
+                expect(downloadResponse).toBeTruthy();
+
+                // Compare the downloaded contents to those uploaded
+                const fileContents = stripNewLines(fs.readFileSync(`./${posix.basename(ussname)}`).toString());
+
+                expect(fileContents).toEqual(fs.readFileSync(__dirname+"/__resources__/testfiles/downloadEncodingCheck.txt").toString());
             });
 
             // When requesting etag, z/OSMF has a limit on file size when it stops to return etag by default (>8mb)
