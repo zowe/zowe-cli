@@ -105,7 +105,7 @@ zosjobs:
   # System affinity
   sysaff: zosjobs-sysaff
   # CIM Support
-  skipCIM: cim-skipped
+  skipCIM: false
 #-----------------------------------------------------------------------------#
 #  Set of properties for testing provisioning                                 #
 #-----------------------------------------------------------------------------#
