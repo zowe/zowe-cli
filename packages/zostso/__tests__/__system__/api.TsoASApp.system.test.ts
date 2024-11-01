@@ -169,7 +169,7 @@ describe("All test", () => {
             const responses = response.stdout.toString() + response2.stdout.toString();
 
             expect(response.stdout.toString()).toBeDefined();
-            expect(response2.stdout.toString()).toBeDefined;
+            expect(response2.stdout.toString()).toBeDefined();
             expect(responses).toContain(
                 "Application input = LONG 100"
             );
