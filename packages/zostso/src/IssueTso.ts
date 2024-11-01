@@ -72,7 +72,7 @@ export class IssueTso {
                 };
                 return response;
             } catch (e) {
-                if (e.mMessage.includes("status 404")) {
+                if (e.message?.includes("status 404")) {
                     // Set useNewApi to false to handle fallback logic
                     useNewApi = false;
                 } else {

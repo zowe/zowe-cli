@@ -17,6 +17,7 @@ import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/prope
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
 let IEFBR14_JCL: string;
+const modifyVersionDefaultUsesCIM = false;
 
 describe("zos-jobs delete job command", () => {
     // Create the unique test environment
@@ -41,11 +42,15 @@ describe("zos-jobs delete job command", () => {
 
     describe("successful scenario", () => {
         it("should delete a job 1.0", () => {
-            const response = runCliScript(__dirname + "/__scripts__/job/delete_job_v1.sh",
-                TEST_ENVIRONMENT, [IEFBR14_JCL]);
-            expect(response.stderr.toString()).toBe("");
-            expect(response.status).toBe(0);
-            expect(response.stdout.toString()).toContain("Successfully submitted request to delete job");
+            if (TEST_ENVIRONMENT.systemTestProperties.zosjobs.skipCIM) {
+                process.stdout.write("Skipping test because skipCIM is set.");
+            } else {
+                const response = runCliScript(__dirname + "/__scripts__/job/delete_job_v1.sh",
+                    TEST_ENVIRONMENT, [IEFBR14_JCL]);
+                expect(response.stderr.toString()).toBe("");
+                expect(response.status).toBe(0);
+                expect(response.stdout.toString()).toContain("Successfully submitted request to delete job");
+            }
         });
 
         it("should delete a job 2.0", () => {
@@ -57,11 +62,15 @@ describe("zos-jobs delete job command", () => {
         });
 
         it("should delete a job default", () => {
-            const response = runCliScript(__dirname + "/__scripts__/job/delete_job.sh",
-                TEST_ENVIRONMENT, [IEFBR14_JCL]);
-            expect(response.stderr.toString()).toBe("");
-            expect(response.status).toBe(0);
-            expect(response.stdout.toString()).toContain("Successfully deleted job");
+            if (TEST_ENVIRONMENT.systemTestProperties.zosjobs.skipCIM && modifyVersionDefaultUsesCIM) {
+                process.stdout.write("Skipping test because skipCIM is set.");
+            } else {
+                const response = runCliScript(__dirname + "/__scripts__/job/delete_job.sh",
+                    TEST_ENVIRONMENT, [IEFBR14_JCL]);
+                expect(response.stderr.toString()).toBe("");
+                expect(response.status).toBe(0);
+                expect(response.stdout.toString()).toContain("Successfully deleted job");
+            }
         });
 
         describe("without profiles", () => {
@@ -83,26 +92,30 @@ describe("zos-jobs delete job command", () => {
             });
 
             it("delete a job without a profile 1.0", async () => {
-                const ZOWE_OPT_BASE_PATH = "ZOWE_OPT_BASE_PATH";
+                if (TEST_ENVIRONMENT.systemTestProperties.zosjobs.skipCIM) {
+                    process.stdout.write("Skipping test because skipCIM is set.");
+                } else {
+                    const ZOWE_OPT_BASE_PATH = "ZOWE_OPT_BASE_PATH";
 
-                // if API Mediation layer is being used (basePath has a value) then
-                // set an ENVIRONMENT variable to be used by zowe.
-                if (DEFAULT_SYSTEM_PROPS.zosmf.basePath != null) {
-                    TEST_ENVIRONMENT_NO_PROF.env[ZOWE_OPT_BASE_PATH] = DEFAULT_SYSTEM_PROPS.zosmf.basePath;
+                    // if API Mediation layer is being used (basePath has a value) then
+                    // set an ENVIRONMENT variable to be used by zowe.
+                    if (DEFAULT_SYSTEM_PROPS.zosmf.basePath != null) {
+                        TEST_ENVIRONMENT_NO_PROF.env[ZOWE_OPT_BASE_PATH] = DEFAULT_SYSTEM_PROPS.zosmf.basePath;
+                    }
+
+                    const response = runCliScript(__dirname + "/__scripts__/job/delete_job_v1_fully_qualified.sh",
+                        TEST_ENVIRONMENT_NO_PROF,
+                        [
+                            IEFBR14_JCL,
+                            DEFAULT_SYSTEM_PROPS.zosmf.host,
+                            DEFAULT_SYSTEM_PROPS.zosmf.port,
+                            DEFAULT_SYSTEM_PROPS.zosmf.user,
+                            DEFAULT_SYSTEM_PROPS.zosmf.password,
+                        ]);
+                    expect(response.stderr.toString()).toBe("");
+                    expect(response.status).toBe(0);
+                    expect(response.stdout.toString()).toContain("Successfully submitted request to delete job");
                 }
-
-                const response = runCliScript(__dirname + "/__scripts__/job/delete_job_v1_fully_qualified.sh",
-                    TEST_ENVIRONMENT_NO_PROF,
-                    [
-                        IEFBR14_JCL,
-                        DEFAULT_SYSTEM_PROPS.zosmf.host,
-                        DEFAULT_SYSTEM_PROPS.zosmf.port,
-                        DEFAULT_SYSTEM_PROPS.zosmf.user,
-                        DEFAULT_SYSTEM_PROPS.zosmf.password,
-                    ]);
-                expect(response.stderr.toString()).toBe("");
-                expect(response.status).toBe(0);
-                expect(response.stdout.toString()).toContain("Successfully submitted request to delete job");
             });
 
             it("delete a job without a profile 2.0", async () => {
@@ -129,26 +142,30 @@ describe("zos-jobs delete job command", () => {
             });
 
             it("delete a job without a profile default", async () => {
-                const ZOWE_OPT_BASE_PATH = "ZOWE_OPT_BASE_PATH";
+                if (TEST_ENVIRONMENT.systemTestProperties.zosjobs.skipCIM && modifyVersionDefaultUsesCIM) {
+                    process.stdout.write("Skipping test because skipCIM is set.");
+                } else {
+                    const ZOWE_OPT_BASE_PATH = "ZOWE_OPT_BASE_PATH";
 
-                // if API Mediation layer is being used (basePath has a value) then
-                // set an ENVIRONMENT variable to be used by zowe.
-                if (DEFAULT_SYSTEM_PROPS.zosmf.basePath != null) {
-                    TEST_ENVIRONMENT_NO_PROF.env[ZOWE_OPT_BASE_PATH] = DEFAULT_SYSTEM_PROPS.zosmf.basePath;
+                    // if API Mediation layer is being used (basePath has a value) then
+                    // set an ENVIRONMENT variable to be used by zowe.
+                    if (DEFAULT_SYSTEM_PROPS.zosmf.basePath != null) {
+                        TEST_ENVIRONMENT_NO_PROF.env[ZOWE_OPT_BASE_PATH] = DEFAULT_SYSTEM_PROPS.zosmf.basePath;
+                    }
+
+                    const response = runCliScript(__dirname + "/__scripts__/job/delete_job_fully_qualified.sh",
+                        TEST_ENVIRONMENT_NO_PROF,
+                        [
+                            IEFBR14_JCL,
+                            DEFAULT_SYSTEM_PROPS.zosmf.host,
+                            DEFAULT_SYSTEM_PROPS.zosmf.port,
+                            DEFAULT_SYSTEM_PROPS.zosmf.user,
+                            DEFAULT_SYSTEM_PROPS.zosmf.password,
+                        ]);
+                    expect(response.stderr.toString()).toBe("");
+                    expect(response.status).toBe(0);
+                    expect(response.stdout.toString()).toContain("Successfully deleted job");
                 }
-
-                const response = runCliScript(__dirname + "/__scripts__/job/delete_job_fully_qualified.sh",
-                    TEST_ENVIRONMENT_NO_PROF,
-                    [
-                        IEFBR14_JCL,
-                        DEFAULT_SYSTEM_PROPS.zosmf.host,
-                        DEFAULT_SYSTEM_PROPS.zosmf.port,
-                        DEFAULT_SYSTEM_PROPS.zosmf.user,
-                        DEFAULT_SYSTEM_PROPS.zosmf.password,
-                    ]);
-                expect(response.stderr.toString()).toBe("");
-                expect(response.status).toBe(0);
-                expect(response.stdout.toString()).toContain("Successfully deleted job");
             });
         });
     });

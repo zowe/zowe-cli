@@ -205,7 +205,7 @@ describe("Invoke AMS - encoded", () => {
         systemProps = testEnvironment.systemTestProperties;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
-        dsname = getUniqueDatasetName(`${systemProps.zosmf.user}.ZOSFILE.ENCO#ED.VSAM`);
+        dsname = getUniqueDatasetName(`${systemProps.zosmf.user}.ZOSFILE.ENCO#ED.VSAM`, false, 1);
         volume = systemProps.datasets.vol.toUpperCase();
     });
 
