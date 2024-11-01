@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## `8.6.1`
+
+- BugFix: Fixed an issue where the `zowe zos-logs list logs` command could fail or not return all logs if a start time was not supplied. [#2336](https://github.com/zowe/zowe-cli/pull/2336)
+
 ## `8.6.0`
 
 - Enhancement: Added support for running applications on TSO/E address spaces. Start applications and receive/transmit messages using the new `tso start`, `tso receive` and `tso send` commands. [#2280](https://github.com/zowe/zowe-cli/pull/2280)

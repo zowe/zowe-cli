@@ -330,11 +330,20 @@ export abstract class AbstractRestClient {
              * Invoke any onError method whenever an error occurs on writing
              */
             clientRequest.on("error", (errorResponse: any) => {
-                reject(this.populateError({
-                    msg: "Failed to send an HTTP request.",
-                    causeErrors: errorResponse,
-                    source: "client"
-                }));
+                // Handle the HTTP 1.1 Keep-Alive race condition
+                if (errorResponse.code === "ECONNRESET" && clientRequest.reusedSocket) {
+                    this.request(options).then((response: string) => {
+                        resolve(response);
+                    }).catch((err) => {
+                        reject(err);
+                    });
+                } else {
+                    reject(this.populateError({
+                        msg: "Failed to send an HTTP request.",
+                        causeErrors: errorResponse,
+                        source: "client"
+                    }));
+                }
             });
 
             if (options.requestStream != null) {

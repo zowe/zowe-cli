@@ -9,7 +9,10 @@ PASS=$5
 
 # Submit two jobs and capture their IDs
 JOBID1=`zowe zos-jobs submit data-set $JCL --host $HOST --port $PORT --user $USER --password $PASS --ru=false --rff jobid --rft string`
+sleep 1
 JOBID2=`zowe zos-jobs submit data-set $JCL --host $HOST --port $PORT --user $USER --password $PASS --ru=false --rff jobid --rft string`
+
+sleep 1
 
 echo "Listing jobs to find job IDs $JOBID1 and $JOBID2"
 
