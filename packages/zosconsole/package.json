@@ -1,6 +1,6 @@
 {
   "name": "@zowe/zos-console-for-zowe-sdk",
-  "version": "8.6.0",
+  "version": "8.6.1",
   "description": "Zowe SDK to interact with the z/OS console",
   "author": "Zowe",
   "license": "EPL-2.0",
@@ -45,9 +45,9 @@
     "prepack": "node ../../scripts/prepareLicenses.js"
   },
   "devDependencies": {
-    "@zowe/cli-test-utils": "8.6.0",
-    "@zowe/core-for-zowe-sdk": "8.6.0",
-    "@zowe/imperative": "8.6.0"
+    "@zowe/cli-test-utils": "8.6.1",
+    "@zowe/core-for-zowe-sdk": "8.6.1",
+    "@zowe/imperative": "8.6.1"
   },
   "peerDependencies": {
     "@zowe/core-for-zowe-sdk": "^8.0.0",

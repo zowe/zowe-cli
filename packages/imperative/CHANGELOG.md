@@ -2,7 +2,7 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
-## Recent Changes
+## `8.6.1`
 
 - BugFix: Handled an HTTP 1.1 race condition where an SDK user may experience an ECONNRESET error if a session was reused on Node 20 and above due to HTTP Keep-Alive. [#2339](https://github.com/zowe/zowe-cli/pull/2339)
 
