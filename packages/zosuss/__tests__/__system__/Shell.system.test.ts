@@ -35,6 +35,19 @@ describe("zowe uss issue ssh api call test", () => {
         await TestEnvironment.cleanUp(TEST_ENVIRONMENT);
     });
 
+    describe("Function isConnectionValid", () => {
+        it("should verify that the connection is valid", async () => {
+            const response = await Shell.isConnectionValid(SSH_SESSION);
+            expect(response).toBe(true);
+        });
+        it("should verify that the connection is invalid", async () => {
+            const fakeSession: SshSession = TestEnvironment.createSshSession(TEST_ENVIRONMENT);
+            fakeSession.ISshSession.hostname = "fake-host";
+            const response = await Shell.isConnectionValid(fakeSession);
+            expect(response).toBe(false);
+        });
+    });
+
     it ("should execute uname command on the remote system by ssh and return operating system name", async () => {
         const command = "uname";
         let stdoutData = "";
