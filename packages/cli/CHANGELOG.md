@@ -2,6 +2,9 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Improved output formatting for `zowe zos-tso start app` and `zowe zos-tso send app`[#2347](https://github.com/zowe/zowe-cli/pull/2347)
 
 ## `8.6.2`
 
