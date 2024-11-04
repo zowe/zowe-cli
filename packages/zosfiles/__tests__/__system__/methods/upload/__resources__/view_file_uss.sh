@@ -8,5 +8,5 @@ ru=$6
 ussName=$7
 encoding=$8
 
-zowe zos-files view uf $ussName --encoding $encoding --host $host --port $port --user $user --password $password --ru $ru
+zowe zos-files view uf "$ussName" --encoding $encoding --host $host --port $port --user $user --password $password --ru $ru
 exit $?
