@@ -58,7 +58,8 @@ export function runCliScript(scriptPath: string, testEnvironment: ITestEnvironme
         return spawnSync(scriptPath, args, {
             cwd: testEnvironment.workingDir,
             env: childEnv,
-            encoding: "buffer"
+            encoding: "buffer",
+            shell: true // Don't require shebangs on MacOS
         });
 
     } else {
