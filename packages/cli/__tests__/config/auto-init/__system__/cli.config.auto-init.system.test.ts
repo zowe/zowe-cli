@@ -45,6 +45,7 @@ describe("config auto-init without profile", () => {
                 base.rejectUnauthorized
             ]
         );
+        expect(response.status).toEqual(0);
 
         const config = fs.readFileSync(path.join(TEST_ENVIRONMENT.workingDir, "zowe.config.json")).toString();
         // Typecasting because of this issue: https://github.com/kaelzhang/node-comment-json/issues/42
@@ -107,6 +108,7 @@ describe("config auto-init without profile", () => {
                 base.rejectUnauthorized
             ]
         );
+        expect(response.status).toEqual(0);
 
         config = fs.readFileSync(path.join(TEST_ENVIRONMENT.workingDir, "zowe.config.json")).toString();
         // Typecasting because of this issue: https://github.com/kaelzhang/node-comment-json/issues/42
@@ -186,6 +188,7 @@ describe("config auto-init without profile and with certificates", () => {
                     base.rejectUnauthorized
                 ]
             );
+            expect(response.status).toEqual(0);
 
             const config = fs.readFileSync(path.join(TEST_ENVIRONMENT.workingDir, "zowe.config.json")).toString();
             // Typecasting because of this issue: https://github.com/kaelzhang/node-comment-json/issues/42
@@ -254,6 +257,7 @@ describe("config auto-init without profile and with certificates", () => {
                     base.rejectUnauthorized
                 ]
             );
+            expect(response.status).toEqual(0);
 
             config = fs.readFileSync(path.join(TEST_ENVIRONMENT.workingDir, "zowe.config.json")).toString();
             // Typecasting because of this issue: https://github.com/kaelzhang/node-comment-json/issues/42
@@ -319,6 +323,7 @@ describe("config auto-init with profile", () => {
 
     it("should successfully issue the auto-init command", () => {
         const response = runCliScript(__dirname + "/__scripts__/config_auto_init_profile.sh", TEST_ENVIRONMENT);
+        expect(response.status).toEqual(0);
 
         const config = fs.readFileSync(path.join(TEST_ENVIRONMENT.workingDir, "zowe.config.json")).toString();
         // Typecasting because of this issue: https://github.com/kaelzhang/node-comment-json/issues/42
@@ -379,6 +384,7 @@ describe("config auto-init with profile and certificates", () => {
 
     it("should successfully issue the auto-init command", () => {
         const response = runCliScript(__dirname + "/__scripts__/config_auto_init_profile.sh", TEST_ENVIRONMENT);
+        expect(response.status).toEqual(0);
 
         const config = fs.readFileSync(path.join(TEST_ENVIRONMENT.workingDir, "zowe.config.json")).toString();
         // Typecasting because of this issue: https://github.com/kaelzhang/node-comment-json/issues/42

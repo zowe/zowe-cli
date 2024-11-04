@@ -65,4 +65,10 @@ export class MockHttpRequestResponse extends EventEmitter {
      * @memberof RequestOrResponse
      */
     public headers: { [key: string]: any };
+
+    /**
+     * Simulate a reused socket
+     * @memberof MockHttpRequestResponse
+     */
+    public reusedSocket: boolean = false;
 }

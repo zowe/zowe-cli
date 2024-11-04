@@ -50,7 +50,7 @@ describe("zos-tso", () => {
         expect(response.stdout.toString()).toBe("");
         expect(response.stderr.toString()).toContain('Unknown arguments: not-valid-option, notValidOption');
         expect(response.stderr.toString()).toContain('Command failed due to improper syntax');
-        expect(response.stderr.toString()).toContain('Did you mean: zos-tso start');
+        expect(response.stderr.toString()).toContain('Did you mean: zos-tso send app');
         expect(response.stderr.toString()).toContain('Command entered: "zos-tso --not-valid-option"');
         expect(response.stderr.toString()).toContain('Use "zowe zos-tso --help" to view groups, commands, and options.');
     });
