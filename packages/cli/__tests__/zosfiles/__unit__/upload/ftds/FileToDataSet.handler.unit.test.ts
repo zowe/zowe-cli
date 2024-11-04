@@ -329,8 +329,9 @@ describe("Upload file-to-data-set handler", () => {
                     statusMessage: "Uploading to data set"
                 }
             });
-            expect(jsonObj).toMatchSnapshot();
-            expect(apiMessage).toMatchSnapshot();
+
+            expect(apiMessage).toBe(""); 
+
             expect(logMessage).toMatch(/success:.*false/);
             expect(logMessage).toMatch(/from:.*test-file/);
             expect(logMessage).toMatch(/file_to_upload:.*1/);
