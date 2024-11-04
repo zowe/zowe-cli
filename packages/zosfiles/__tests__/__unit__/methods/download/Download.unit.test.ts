@@ -2194,7 +2194,7 @@ describe("z/OS Files - Download", () => {
                 ['*.bin', { ignore: false, localEncoding: 'binary', remoteEncoding: 'binary' }],
                 ['*.jcl', { ignore: false, localEncoding: 'IBM-1047', remoteEncoding: 'IBM-1047' }],
                 ['*.md', { ignore: false, localEncoding: 'UTF-8', remoteEncoding: 'UTF-8' }],
-                ['*.txt', { ignore: false, localEncoding: 'UTF-8', remoteEncoding: '285' }]
+                ['*.txt', { ignore: false, localEncoding: 'UTF-8', remoteEncoding: 'IBM-1047' }]
             ]);
             try {
                 response = await Download.ussFile(dummySession, ussname, { attributes: zosAttributes });
@@ -2214,7 +2214,7 @@ describe("z/OS Files - Download", () => {
             expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
             expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {
                 resource: endpoint,
-                reqHeaders: [{ "X-IBM-Data-Type": "text;fileEncoding=285" }, ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.TEXT_PLAIN],
+                reqHeaders: [{ "X-IBM-Data-Type": "text;fileEncoding=IBM-1047" }, ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.TEXT_PLAIN],
                 responseStream: fakeStream,
                 normalizeResponseNewLines: true,
                 task: undefined /* no progress task */
