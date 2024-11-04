@@ -48,18 +48,18 @@ export abstract class ZosFilesBaseHandler implements ICommandHandler {
                 sessCfg, commandParameters.arguments, { parms: commandParameters }
             );
             const session = new Session(sessCfgWithCreds);
-
             const response = await this.processWithSession(commandParameters, session);
+            
+            commandParameters.response.progress.endBar();
+            if (response.commandResponse) {
+                commandParameters.response.console.log(response.commandResponse);
+            }
+            commandParameters.response.data.setObj(response);
             if (!response.success && response.commandResponse) {
                 throw new ImperativeError({
                     msg: response.errorMessage || response.commandResponse
                 });
             }
-            if (response.commandResponse) {
-                commandParameters.response.console.log(response.commandResponse);
-            }
-            commandParameters.response.data.setObj(response);
-            commandParameters.response.progress.endBar();
         } catch (error) {
             if (commandParameters.arguments.ignoreNotFound && error.errorCode === '404') {
                 commandParameters.response.data.setObj({ success: true });
