@@ -18,7 +18,7 @@ import { IStartTsoParms } from "./doc/input/IStartTsoParms";
 import { TsoValidator } from "./TsoValidator";
 import { IStartTsoAppParms } from "./doc/input/IStartTsoAppParms";
 import { StartTso } from "./StartTso";
-import { IIssueResponse } from "../src";
+import { IIssueResponse } from "./doc/IIssueResponse";
 
 export class AddressSpaceApps {
     /**

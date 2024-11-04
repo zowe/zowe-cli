@@ -24,7 +24,7 @@ import { ImperativeExpect } from "../../../expect";
 import { IHandlerFormatOutputApi } from "../doc/response/api/handler/IHandlerFormatOutputApi";
 import { ICommandOutputFormat, OUTPUT_FORMAT } from "../doc/response/response/ICommandOutputFormat";
 import { Arguments } from "yargs";
-import { ICommandDefinition } from "../../src/doc/ICommandDefinition";
+import { ICommandDefinition } from "../doc/ICommandDefinition";
 import { OptionConstants } from "../constants/OptionConstants";
 import { inspect } from "util";
 import * as DeepMerge from "deepmerge";
