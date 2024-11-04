@@ -1,63 +1,105 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`receive TSO app handler behavior should properly start TSO address space and run an application at the created address space 1`] = `
-"{
-  \\"reused\\": false,
-  \\"timeout\\": false,
-  \\"servletKey\\": \\"ZOWEUSER-123-aaaaaa\\",
-  \\"queueID\\": \\"983068\\",
-  \\"tsoData\\": [
-    {
-      \\"VERSION\\": \\"0100\\",
-      \\"DATA\\": \\"HELLOW exec processing has started.\\"
+"[33m[1m[22m[39m
+[33m[1mServlet Key: [22m[39mZOWEUSER-123-aaaaaa"
+`;
+
+exports[`receive TSO app handler behavior should properly start TSO address space and run an application at the created address space 2`] = `
+"[33m[1mQueue ID: [22m[39m983068
+"
+`;
+
+exports[`receive TSO app handler behavior should properly start TSO address space and run an application at the created address space 3`] = `"HELLOW exec processing has started."`;
+
+exports[`receive TSO app handler behavior should properly start TSO address space and run an application at the created address space 4`] = `"UNIX message queue id = 983068"`;
+
+exports[`receive TSO app handler behavior should properly start TSO address space and run an application at the created address space 5`] = `"Input message type = 32772"`;
+
+exports[`receive TSO app handler behavior should properly start TSO address space and run an application at the created address space 6`] = `"Output message type = 4"`;
+
+exports[`receive TSO app handler behavior should properly start TSO address space and run an application at the created address space 7`] = `"Reading application input from the UNIX message queue."`;
+
+exports[`receive TSO app handler behavior should properly start TSO address space and run an application at the created address space 8`] = `
+Object {
+  "queueID": "983068",
+  "reused": false,
+  "servletKey": "ZOWEUSER-123-aaaaaa",
+  "timeout": false,
+  "tsoData": Array [
+    Object {
+      "DATA": "HELLOW exec processing has started.",
+      "VERSION": "0100",
     },
-    {
-      \\"VERSION\\": \\"0100\\",
-      \\"DATA\\": \\"UNIX message queue id = 983068\\"
+    Object {
+      "DATA": "UNIX message queue id = 983068",
+      "VERSION": "0100",
     },
-    {
-      \\"VERSION\\": \\"0100\\",
-      \\"DATA\\": \\"Input message type = 32772\\"
+    Object {
+      "DATA": "Input message type = 32772",
+      "VERSION": "0100",
     },
-    {
-      \\"VERSION\\": \\"0100\\",
-      \\"DATA\\": \\"Output message type = 4\\"
+    Object {
+      "DATA": "Output message type = 4",
+      "VERSION": "0100",
     },
-    {
-      \\"VERSION\\": \\"0100\\",
-      \\"DATA\\": \\"Reading application input from the UNIX message queue.\\"
-    }
-  ]
-}"
+    Object {
+      "DATA": "Reading application input from the UNIX message queue.",
+      "VERSION": "0100",
+    },
+  ],
+  "version": undefined,
+}
 `;
 
 exports[`receive TSO app handler behavior should properly start TSO address space at an existing TSO address space 1`] = `
-"{
-  \\"reused\\": false,
-  \\"timeout\\": false,
-  \\"servletKey\\": \\"ZOWEUSER-123-aaaaaa\\",
-  \\"queueID\\": \\"983068\\",
-  \\"tsoData\\": [
-    {
-      \\"VERSION\\": \\"0100\\",
-      \\"DATA\\": \\"HELLOW exec processing has started.\\"
+"[33m[1m[22m[39m
+[33m[1mServlet Key: [22m[39mZOWEUSER-123-aaaaaa"
+`;
+
+exports[`receive TSO app handler behavior should properly start TSO address space at an existing TSO address space 2`] = `
+"[33m[1mQueue ID: [22m[39m983068
+"
+`;
+
+exports[`receive TSO app handler behavior should properly start TSO address space at an existing TSO address space 3`] = `"HELLOW exec processing has started."`;
+
+exports[`receive TSO app handler behavior should properly start TSO address space at an existing TSO address space 4`] = `"UNIX message queue id = 983068"`;
+
+exports[`receive TSO app handler behavior should properly start TSO address space at an existing TSO address space 5`] = `"Input message type = 32772"`;
+
+exports[`receive TSO app handler behavior should properly start TSO address space at an existing TSO address space 6`] = `"Output message type = 4"`;
+
+exports[`receive TSO app handler behavior should properly start TSO address space at an existing TSO address space 7`] = `"Reading application input from the UNIX message queue."`;
+
+exports[`receive TSO app handler behavior should properly start TSO address space at an existing TSO address space 8`] = `
+Object {
+  "queueID": "983068",
+  "reused": false,
+  "servletKey": "ZOWEUSER-123-aaaaaa",
+  "timeout": false,
+  "tsoData": Array [
+    Object {
+      "DATA": "HELLOW exec processing has started.",
+      "VERSION": "0100",
     },
-    {
-      \\"VERSION\\": \\"0100\\",
-      \\"DATA\\": \\"UNIX message queue id = 983068\\"
+    Object {
+      "DATA": "UNIX message queue id = 983068",
+      "VERSION": "0100",
     },
-    {
-      \\"VERSION\\": \\"0100\\",
-      \\"DATA\\": \\"Input message type = 32772\\"
+    Object {
+      "DATA": "Input message type = 32772",
+      "VERSION": "0100",
     },
-    {
-      \\"VERSION\\": \\"0100\\",
-      \\"DATA\\": \\"Output message type = 4\\"
+    Object {
+      "DATA": "Output message type = 4",
+      "VERSION": "0100",
     },
-    {
-      \\"VERSION\\": \\"0100\\",
-      \\"DATA\\": \\"Reading application input from the UNIX message queue.\\"
-    }
-  ]
-}"
+    Object {
+      "DATA": "Reading application input from the UNIX message queue.",
+      "VERSION": "0100",
+    },
+  ],
+  "version": undefined,
+}
 `;
