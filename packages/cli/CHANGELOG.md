@@ -4,10 +4,14 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## Recent Changes
 - Enhancement: Add the --ignore-not-found flag to avoid error messages potentially interrupting a script for automated batch processes. The flag bypasses warning prompts to confirm delete actions. [#2254](https://github.com/zowe/zowe-cli/pull/2254)
+## `8.6.2`
+
+- BugFix: Resolved issue where `zowe zos-files upload file-to-uss` was not properly handling command flags. [#2234](https://github.com/zowe/zowe-cli/pull/2334)
 
 ## `8.6.1`
 
 - BugFix: Fixed an issue where the `zowe zos-logs list logs` command could fail or not return all logs if a start time was not supplied. [#2336](https://github.com/zowe/zowe-cli/pull/2336)
+
 
 ## `8.6.0`
 
