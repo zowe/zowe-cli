@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe z/OS TSO SDK package will be documented in this file.
 
-## Recent Changes
+## `8.6.2`
 
 - BugFix: Fixed imports that failed to resolve. [#2343](https://github.com/zowe/zowe-cli/pull/2343)
 

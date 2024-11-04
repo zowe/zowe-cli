@@ -3,7 +3,7 @@
 All notable changes to the Zowe CLI package will be documented in this file.
 
 
-## Recent Changes
+## `8.6.2`
 
 - BugFix: Resolved issue where `zowe zos-files upload file-to-uss` was not properly handling command flags. [#2234](https://github.com/zowe/zowe-cli/pull/2334)
 
