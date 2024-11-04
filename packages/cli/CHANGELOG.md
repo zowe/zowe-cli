@@ -4,7 +4,11 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## `8.4.0`
 
-- Enhancement: Added optional `--attributes` flag to `zowe zos-files upload file-to-uss` to allow passing a .zosattributes file path for upload encoding format. [#2319] (https://github.com/zowe/zowe-cli/pull/2319)
+- Enhancement: Added optional `--attributes` flag to `zowe zos-files download uss-file` to allow passing a .zosattributes file path for download encoding format. [#2322](https://github.com/zowe/zowe-cli/issues/2322)
+
+## `8.4.0`
+
+- Enhancement: Added optional `--attributes` flag to `zowe zos-files upload file-to-uss` to allow passing a .zosattributes file path for upload encoding format. [#2319](https://github.com/zowe/zowe-cli/pull/2319)
 
 ## `8.3.0`
 

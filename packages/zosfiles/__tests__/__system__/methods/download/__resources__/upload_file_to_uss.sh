@@ -7,7 +7,7 @@ password=$5
 ru=$6
 inputFile=$7
 ussName=$8
-binary=$9
+encoding=$9
 
-zowe zos-files upload file-to-uss $inputFile $ussName --binary $binary --host $host --port $port --user $user --password $password --ru $ru
+zowe zos-files upload file-to-uss $inputFile $ussName --encoding $encoding --host $host --port $port --user $user --password $password --ru $ru
 exit $?
