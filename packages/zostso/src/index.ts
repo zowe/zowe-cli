@@ -39,6 +39,7 @@ export * from "./IssueTso";
 export * from "./PingTso";
 export * from "./SendTso";
 export * from "./StartTso";
+export * from "./AddressSpaceApps";
 export * from "./StopTso";
 export * from "./TsoConstants";
 export * from "./TsoResponseService";

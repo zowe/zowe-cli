@@ -16,6 +16,8 @@ then
     exit $RC
 fi
 
+sleep 1
+
 # Cancel the job 1
 zowe jobs cancel job $JOBID --modify-version 2.0
 RC=$?
@@ -25,6 +27,8 @@ then
     echo "The cancel job command returned on first cancel with a non-zero rc: $RC" 1>&2
     exit $RC
 fi
+
+sleep 1
 
 # Cancel the job 2
 zowe jobs cancel job $JOBID --modify-version 2.0

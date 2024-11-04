@@ -18,6 +18,7 @@ import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { ITestEnvironment } from "../../../../__tests__/__src__/environment/ITestEnvironment";
+import { wait } from "../../../../__tests__/__src__/TestUtils";
 
 // long running test timeout
 const LONG_TIMEOUT = 100000;
@@ -45,6 +46,7 @@ let MONITOR_JOB_NAME: string;
 // Utility function to cleanup
 async function cleanTestJobs() {
     // The tests may submit jobs - we will clean every job that may have been left by failures, etc.
+    await wait(1000); // Wait for jobs to register in z/OSMF
     const jobs: IJob[] = await GetJobs.getJobsCommon(REAL_SESSION, {owner: REAL_SESSION.ISession.user, prefix: MONITOR_JOB_NAME});
     if (jobs.length > 0) {
         for (const job of jobs) {
@@ -89,12 +91,8 @@ describe.each([false, true])("System Tests - Monitor Jobs - Encoded: %s", (encod
         SYSAFF = testEnvironment.systemTestProperties.zosjobs.sysaff;
     });
 
-    // Cleanup before & after each test - this will ensure that hopefully no jobs are left outstanding (or are currently
+    // Cleanup after each test - this will ensure that hopefully no jobs are left outstanding (or are currently
     // outstanding) when the tests run
-    beforeEach(async () => {
-        GetJobs.getStatusCommon = ORIG_JOBS_STATUS;
-        await cleanTestJobs();
-    });
     afterEach(async () => {
         GetJobs.getStatusCommon = ORIG_JOBS_STATUS;
         await cleanTestJobs();

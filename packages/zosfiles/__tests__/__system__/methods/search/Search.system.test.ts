@@ -59,7 +59,7 @@ describe("Search", () => {
         let expectedApiResponse: any;
 
         beforeAll(async () => {
-            dsnPrefix = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILES.SEARCH`);
+            dsnPrefix = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILES.SEARCH`, false, 1);
             pattern = dsnPrefix + ".*";
 
             goodDsNames = [`${dsnPrefix}.SEQ1`, `${dsnPrefix}.SEQ4`, `${dsnPrefix}.SEQ5`];

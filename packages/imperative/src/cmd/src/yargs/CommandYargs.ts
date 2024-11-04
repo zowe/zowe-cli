@@ -14,11 +14,11 @@ import { inspect } from "util";
 import { Constants } from "../../../constants";
 import { IYargsResponse } from "./doc/IYargsResponse";
 import { AbstractCommandYargs, YargsCommandCompleted } from "./AbstractCommandYargs";
-import { ICommandOptionDefinition } from "../../src/doc/option/ICommandOptionDefinition";
+import { ICommandOptionDefinition } from "../doc/option/ICommandOptionDefinition";
 import { ICommandDefinition } from "../doc/ICommandDefinition";
 import { CommandProcessor } from "../CommandProcessor";
-import { ICommandResponse } from "../../src/doc/response/response/ICommandResponse";
-import { CommandResponse } from "../../src/response/CommandResponse";
+import { ICommandResponse } from "../doc/response/response/ICommandResponse";
+import { CommandResponse } from "../response/CommandResponse";
 import { ImperativeConfig } from "../../../utilities";
 
 /**

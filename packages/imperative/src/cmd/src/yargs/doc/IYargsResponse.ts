@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandResponse } from "../../../src/doc/response/response/ICommandResponse";
+import { ICommandResponse } from "../../doc/response/response/ICommandResponse";
 /**
  * Indicates the action performed.
  */

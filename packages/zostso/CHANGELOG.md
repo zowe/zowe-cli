@@ -2,6 +2,15 @@
 
 All notable changes to the Zowe z/OS TSO SDK package will be documented in this file.
 
+## `8.6.2`
+
+- BugFix: Fixed imports that failed to resolve. [#2343](https://github.com/zowe/zowe-cli/pull/2343)
+
+## `8.6.0`
+
+- Enhancement: Issue `app` commands to better target communication with a TSO/E application. The `app` command is now included in the `start`/`send` command group and the new `receive` command group,
+allowing direct interaction with an application through a z/OS message queue. [#2280] (https://github.com/zowe/zowe-cli/pull/2280)
+
 ## `8.1.1`
 
 - BugFix: Updated peer dependencies to `^8.0.0`, dropping support for versions tagged `next`. [#2287](https://github.com/zowe/zowe-cli/pull/2287)
