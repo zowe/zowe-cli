@@ -2,6 +2,11 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Resolved issue where encoding argument was missing from `FileToUss.handler.ts` options object. [#2234](https://github.com/zowe/zowe-cli/pull/2334)
+- BugFix: Resolved issue where `FileToUss.handler.ts` options object was not properly passed through subsequent command calls. [#2234](https://github.com/zowe/zowe-cli/pull/2334)
+
 ## `8.4.0`
 
 - Enhancement: Added optional `--attributes` flag to `zowe zos-files upload file-to-uss` to allow passing a .zosattributes file path for upload encoding format. [#2319] (https://github.com/zowe/zowe-cli/pull/2319)

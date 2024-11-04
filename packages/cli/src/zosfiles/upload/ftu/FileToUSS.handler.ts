@@ -37,6 +37,7 @@ export default class FileToUSSHandler extends ZosFilesBaseHandler {
 
         const uploadOptions: IUploadOptions = {
             binary: commandParameters.arguments.binary,
+            encoding: commandParameters.arguments.encoding,
             maxConcurrentRequests:
                 commandParameters.arguments.maxConcurrentRequests,
             task: task,
