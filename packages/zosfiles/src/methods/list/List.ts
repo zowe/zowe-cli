@@ -34,7 +34,6 @@ export class List {
      * @param {AbstractSession}  session      - z/OS MF connection info
      * @param {string}           dataSetName  - contains the data set name
      * @param {IListOptions}     [options={}] - contains the options to be sent
-     *
      * @returns {Promise<IZosFilesResponse>} A response indicating the outcome of the API
      *
      * @throws {ImperativeError} data set name must be set

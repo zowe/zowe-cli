@@ -267,7 +267,6 @@ export class Download {
                     record: options.record,
                     encoding: options.encoding,
                     responseTimeout: options.responseTimeout,
-                    pattern: options.pattern
                 }).catch((err) => {
                     downloadErrors.push(err);
                     failedMembers.push(fileName);
