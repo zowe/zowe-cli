@@ -11,6 +11,7 @@
 
 import { IHandlerParameters } from "@zowe/imperative";
 import { ZosTsoBaseHandler, AddressSpaceApps } from "@zowe/zos-tso-for-zowe-sdk";
+import chalk = require("chalk");
 
 /**
  * Handler to start app at an address space
@@ -32,6 +33,17 @@ export default class Handler extends ZosTsoBaseHandler {
             },
             this.mTsoStart
         );
-        commandParameters.response.console.log(JSON.stringify(response,null,2));
+        commandParameters.response.console.log(chalk.yellow.bold("\n" + "Servlet Key: ") + response.servletKey);
+        commandParameters.response.console.log(chalk.yellow.bold("Queue ID: ") + response.queueID + "\n");
+
+        response.tsoData.forEach((data) => {
+            if(typeof data === 'string') {
+                commandParameters.response.console.log(data);
+            } else if (data && data.DATA) {
+                commandParameters.response.console.log(data.DATA);
+            }
+        });
+
+        commandParameters.response.data.setObj(response);
     }
 }
