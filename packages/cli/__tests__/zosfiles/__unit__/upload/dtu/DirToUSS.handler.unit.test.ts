@@ -19,7 +19,7 @@ describe("Upload dir-to-uss handler", () => {
         let fakeSession: any = null;
         const inputDir = "/somedir/test_dir";
         const USSDir = "USS_dir";
-        const encoding = "IBM-1047"
+        const encoding = "IBM-1047";
         let handler: any;
         const UPLOAD_OPTIONS_ARG_INDEX = 3;
 
