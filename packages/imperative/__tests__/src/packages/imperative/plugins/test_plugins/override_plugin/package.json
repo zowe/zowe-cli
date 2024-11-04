@@ -52,8 +52,7 @@
           ]
         }
       }
-    ],
-    "pluginLifeCycle": "./lib/sample-plugin/lifeCycle/class_no_post_install"
+    ]
   },
   "peerDependencies": {
     "TestCLI": "1.0.2",
