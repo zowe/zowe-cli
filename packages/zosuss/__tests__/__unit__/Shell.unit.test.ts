@@ -103,6 +103,14 @@ describe("Shell", () => {
         checkMockFunctionsWithCommand(command);
     });
 
+    it("Should execute ssh command with cwd option and no extra characters in the output", async () => {
+        const cwd = "/";
+        const command = "commandtest";
+        await Shell.executeSshCwd(fakeSshSession, command, cwd, stdoutHandler, true);
+
+        checkMockFunctionsWithCommand(command);
+    });
+
     describe("Connection validation", () => {
         it("should determine that the connection is valid", async () => {
             const response = await Shell.isConnectionValid(fakeSshSession);

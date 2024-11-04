@@ -23,7 +23,8 @@ export class Shell {
 
     public static executeSsh(session: SshSession,
         command: string,
-        stdoutHandler: (data: string) => void): Promise<any> {
+        stdoutHandler: (data: string) => void,
+        removeExtraCharactersFromOutput = false): Promise<any> {
         let hasAuthFailed = false;
         const promise = new Promise<any>((resolve, reject) => {
             const conn = new Client();
@@ -92,7 +93,8 @@ export class Shell {
                             else if (isUserCommand && dataToPrint.length != 0) {
                                 if (!dataToPrint.startsWith('\r\n$ '+cmd) && !dataToPrint.startsWith('\r<')){
                                     //only prints command output
-                                    if (dataToPrint.startsWith("\r\n$ ")) dataToPrint = dataToPrint.replace(/\r\n\$\s/, "\r\n");
+                                    if (removeExtraCharactersFromOutput && dataToPrint.startsWith("\r\n$ "))
+                                        dataToPrint = dataToPrint.replace(/\r\n\$\s/, "\r\n");
                                     stdoutHandler(dataToPrint);
                                     dataToPrint = "";
                                 }
@@ -166,9 +168,11 @@ export class Shell {
     public static async executeSshCwd(session: SshSession,
         command: string,
         cwd: string,
-        stdoutHandler: (data: string) => void): Promise<any> {
+        stdoutHandler: (data: string) => void,
+        removeExtraCharactersFromOutput = false
+    ): Promise<any> {
         const cwdCommand = `cd ${cwd} && ${command}`;
-        return this.executeSsh(session, cwdCommand, stdoutHandler);
+        return this.executeSsh(session, cwdCommand, stdoutHandler, removeExtraCharactersFromOutput);
     }
 
     public static async isConnectionValid(session: SshSession): Promise<boolean>{
