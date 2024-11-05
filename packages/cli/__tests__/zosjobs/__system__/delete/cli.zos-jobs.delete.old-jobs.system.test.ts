@@ -17,6 +17,7 @@ import { runCliScript } from "@zowe/cli-test-utils";
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
 let IEFBR14_JCL: string;
+const modifyVersionDefaultUsesCIM = false;
 
 describe("zos-jobs delete old-jobs command", () => {
     // Create the unique test environment
@@ -39,35 +40,51 @@ describe("zos-jobs delete old-jobs command", () => {
 
     describe("successful scenario", () => {
         it("should delete all old jobs sequentially default", () => {
-            const response = runCliScript(__dirname + "/__scripts__/old-jobs/delete_old_jobs.sh",
-                TEST_ENVIRONMENT, [IEFBR14_JCL]);
-            expect(response.status).toBe(0);
-            expect(response.stderr.toString()).toBe("");
-            expect(response.stdout.toString()).toContain("Successfully deleted");
+            if (TEST_ENVIRONMENT.systemTestProperties.zosjobs.skipCIM && modifyVersionDefaultUsesCIM) {
+                process.stdout.write("Skipping test because skipCIM is set.");
+            } else {
+                const response = runCliScript(__dirname + "/__scripts__/old-jobs/delete_old_jobs.sh",
+                    TEST_ENVIRONMENT, [IEFBR14_JCL]);
+                expect(response.status).toBe(0);
+                expect(response.stderr.toString()).toBe("");
+                expect(response.stdout.toString()).toContain("Successfully deleted");
+            }
         });
 
         it("should delete all old jobs in parallel default", () => {
-            const response = runCliScript(__dirname + "/__scripts__/old-jobs/delete_old_jobs.sh",
-                TEST_ENVIRONMENT, [IEFBR14_JCL, "--mcr", "0"]);
-            expect(response.status).toBe(0);
-            expect(response.stderr.toString()).toBe("");
-            expect(response.stdout.toString()).toContain("Successfully deleted");
+            if (TEST_ENVIRONMENT.systemTestProperties.zosjobs.skipCIM && modifyVersionDefaultUsesCIM) {
+                process.stdout.write("Skipping test because skipCIM is set.");
+            } else {
+                const response = runCliScript(__dirname + "/__scripts__/old-jobs/delete_old_jobs.sh",
+                    TEST_ENVIRONMENT, [IEFBR14_JCL, "--mcr", "0"]);
+                expect(response.status).toBe(0);
+                expect(response.stderr.toString()).toBe("");
+                expect(response.stdout.toString()).toContain("Successfully deleted");
+            }
         });
 
         it("should delete all old jobs with modifyVersion 1.0 sequentially", () => {
-            const response = runCliScript(__dirname + "/__scripts__/old-jobs/delete_old_jobs.sh",
-                TEST_ENVIRONMENT, [IEFBR14_JCL, "--modify-version", "1.0"]);
-            expect(response.status).toBe(0);
-            expect(response.stderr.toString()).toBe("");
-            expect(response.stdout.toString()).toContain("Successfully deleted");
+            if (TEST_ENVIRONMENT.systemTestProperties.zosjobs.skipCIM) {
+                process.stdout.write("Skipping test because skipCIM is set.");
+            } else {
+                const response = runCliScript(__dirname + "/__scripts__/old-jobs/delete_old_jobs.sh",
+                    TEST_ENVIRONMENT, [IEFBR14_JCL, "--modify-version", "1.0"]);
+                expect(response.status).toBe(0);
+                expect(response.stderr.toString()).toBe("");
+                expect(response.stdout.toString()).toContain("Successfully deleted");
+            }
         });
 
         it("should delete all old jobs with modifyVersion 1.0 parallel", () => {
-            const response = runCliScript(__dirname + "/__scripts__/old-jobs/delete_old_jobs.sh",
-                TEST_ENVIRONMENT, [IEFBR14_JCL, "--mcr", "0", "--modify-version", "1.0"]);
-            expect(response.status).toBe(0);
-            expect(response.stderr.toString()).toBe("");
-            expect(response.stdout.toString()).toContain("Successfully deleted");
+            if (TEST_ENVIRONMENT.systemTestProperties.zosjobs.skipCIM) {
+                process.stdout.write("Skipping test because skipCIM is set.");
+            } else {
+                const response = runCliScript(__dirname + "/__scripts__/old-jobs/delete_old_jobs.sh",
+                    TEST_ENVIRONMENT, [IEFBR14_JCL, "--mcr", "0", "--modify-version", "1.0"]);
+                expect(response.status).toBe(0);
+                expect(response.stderr.toString()).toBe("");
+                expect(response.stdout.toString()).toContain("Successfully deleted");
+            }
         });
 
         it("should delete all old jobs with modifyVersion 2.0 sequentially", () => {

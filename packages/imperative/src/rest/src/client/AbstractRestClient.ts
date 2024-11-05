@@ -330,11 +330,20 @@ export abstract class AbstractRestClient {
              * Invoke any onError method whenever an error occurs on writing
              */
             clientRequest.on("error", (errorResponse: any) => {
-                reject(this.populateError({
-                    msg: "Failed to send an HTTP request.",
-                    causeErrors: errorResponse,
-                    source: "client"
-                }));
+                // Handle the HTTP 1.1 Keep-Alive race condition
+                if (errorResponse.code === "ECONNRESET" && clientRequest.reusedSocket) {
+                    this.request(options).then((response: string) => {
+                        resolve(response);
+                    }).catch((err) => {
+                        reject(err);
+                    });
+                } else {
+                    reject(this.populateError({
+                        msg: "Failed to send an HTTP request.",
+                        causeErrors: errorResponse,
+                        source: "client"
+                    }));
+                }
             });
 
             if (options.requestStream != null) {
@@ -467,6 +476,9 @@ export abstract class AbstractRestClient {
                 this.mLogger.info(`Proxy setting "${proxyUrl.href}" will not be used as hostname was found listed under "no_proxy" setting.`);
             } else {
                 this.mLogger.info(`Using the following proxy setting for the request: ${proxyUrl.href}`);
+                if (this.session.ISession?.proxy?.proxy_authorization) {
+                    reqHeaders.push({ 'Proxy-Authorization': this.session.ISession.proxy.proxy_authorization});
+                 }
                 options.agent = ProxySettings.getProxyAgent(this.session.ISession);
             }
         }

@@ -21,7 +21,7 @@ import { ImperativeYargsCommandAction, IYargsResponse } from "./doc/IYargsRespon
 import { GroupCommandYargs } from "./GroupCommandYargs";
 import { IHelpGeneratorFactory } from "../help/doc/IHelpGeneratorFactory";
 import { CommandResponse } from "../response/CommandResponse";
-import { ICommandResponse } from "../../src/doc/response/response/ICommandResponse";
+import { ICommandResponse } from "../doc/response/response/ICommandResponse";
 import { ICommandExampleDefinition } from "../..";
 import { ImperativeConfig } from "../../../utilities/src/ImperativeConfig";
 
