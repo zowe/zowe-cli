@@ -9,9 +9,10 @@
 *
 */
 
-import { homedir as osHomedir } from "os";
-import { normalize as pathNormalize, join as pathJoin } from "path";
-import { existsSync as fsExistsSync } from "fs";
+import * as fs from "fs";
+import * as os from "os";
+import * as path from "path";
+import * as glob from "fast-glob";
 import * as jsonfile from "jsonfile";
 
 import { CredentialManagerFactory } from "../../security/src/CredentialManagerFactory";
@@ -32,7 +33,7 @@ export class ConfigUtils {
      * @returns {string} - Returns the Zowe home directory
      */
     public static getZoweDir(): string {
-        const defaultHome = pathJoin(osHomedir(), ".zowe");
+        const defaultHome = path.join(os.homedir(), ".zowe");
         if (ImperativeConfig.instance.loadedConfig?.defaultHome !== defaultHome) {
             ImperativeConfig.instance.loadedConfig = {
                 name: "zowe",
@@ -52,8 +53,8 @@ export class ConfigUtils {
      */
     public static readExtendersJson(): IExtendersJsonOpts {
         const cliHome = ImperativeConfig.instance.loadedConfig != null ? ImperativeConfig.instance.cliHome : ConfigUtils.getZoweDir();
-        const extenderJsonPath = pathJoin(cliHome, "extenders.json");
-        if (!fsExistsSync(extenderJsonPath)) {
+        const extenderJsonPath = path.join(cliHome, "extenders.json");
+        if (!fs.existsSync(extenderJsonPath)) {
             jsonfile.writeFileSync(extenderJsonPath, {
                 profileTypes: {}
             }, { spaces: 4 });
@@ -70,7 +71,7 @@ export class ConfigUtils {
      */
     public static writeExtendersJson(obj: IExtendersJsonOpts): boolean {
         try {
-            const extenderJsonPath = pathJoin(ConfigUtils.getZoweDir(), "extenders.json");
+            const extenderJsonPath = path.join(ConfigUtils.getZoweDir(), "extenders.json");
             jsonfile.writeFileSync(extenderJsonPath, obj, { spaces: 4 });
         } catch (err) {
             return false;
@@ -144,20 +145,14 @@ export class ConfigUtils {
             return false;
         }
 
-        let v1ZosmfProfileFileNm: string;
-        try {
-            v1ZosmfProfileFileNm = pathNormalize(ImperativeConfig.instance.cliHome + "/profiles/zosmf/zosmf_meta.yaml");
-        } catch (_thrownErr) {
-            // We failed to get the CLI home directory. So, we definitely have no V1 profiles.
-            return false;
-        }
-
-        if (fsExistsSync(v1ZosmfProfileFileNm)) {
-            // we found V1 profiles
-            return true;
-        }
-
-        return false;
+        // look for V1 profiles in the CLI home directory
+        const v1ProfilePaths = glob.sync("profiles/**/*.yaml", { cwd: ImperativeConfig.instance.cliHome })
+            .filter(filename => {
+                // ignore meta yaml files
+                const { dir, name } = path.parse(filename);
+                return name !== path.basename(dir) + "_meta";
+            });
+        return v1ProfilePaths.length > 0;
     }
 
     /**
@@ -190,10 +185,10 @@ export class ConfigUtils {
             const envVarNm = envVarPrefix + EnvironmentalVariableSettings.CLI_HOME_SUFFIX;
             if (process.env[envVarNm] === undefined) {
                 // use OS home directory
-                homeDir = pathJoin(osHomedir(), "." + appName.toLowerCase());
+                homeDir = path.join(os.homedir(), "." + appName.toLowerCase());
             } else {
                 // use the available environment variable
-                homeDir = pathNormalize(process.env[envVarNm]);
+                homeDir = path.normalize(process.env[envVarNm]);
             }
             ImperativeConfig.instance.loadedConfig = {
                 name: appName,
