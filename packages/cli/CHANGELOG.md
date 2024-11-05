@@ -2,9 +2,12 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## `8.7.0`
+## Recent Changes
 
 - Enhancement: Added optional `--attributes` flag to `zowe zos-files download uss-file` to allow passing a .zosattributes file path for download encoding format. [#2322](https://github.com/zowe/zowe-cli/issues/2322)
+
+## `8.7.0`
+
 - Enhancement: Added --wait-for-active and --wait-for-output to download options on zosjobs. [#2328](https://github.com/zowe/zowe-cli/pull/2328)
 
 ## `8.6.2`
