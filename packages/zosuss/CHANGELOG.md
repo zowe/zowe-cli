@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe z/OS USS SDK package will be documented in this file.
 
-## Recent Changes
+## `8.7.0`
 
 - BugFix: Removed unnecessary `$ ` characters in front of most output. [zowe-explorer#3079(comment)](https://github.com/zowe/zowe-explorer-vscode/pull/3079#pullrequestreview-2408842655)
 - Enhancement: Added the ability to validate if an SSH profile can successfully establish a connection, ensuring quicker troubleshooting of connection issues. [zowe-explorer#3079(comment)](https://github.com/zowe/zowe-explorer-vscode/pull/3079#discussion_r1825783867)

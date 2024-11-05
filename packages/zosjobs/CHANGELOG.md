@@ -4,7 +4,10 @@ All notable changes to the Zowe z/OS jobs SDK package will be documented in this
 
 ## Recent Changes
 
-- BugFix: Fixed an error where the Delete Jobs API response was not returned if the `modifyVersion` parameter was not specified, even though it was available. []()
+- BugFix: Fixed an error where the Delete Jobs API response was not returned if the `modifyVersion` parameter was not specified, even though it was available. [#2352](https://github.com/zowe/zowe-cli/pull/2352)
+
+## `8.7.0`
+- Enhancement: Added waitForOutput & waitForActive as optional parameters to download on zosjobs. [#2326] (https://github.com/zowe/zowe-cli/pull/2326).
 
 ## `8.5.0`
 
