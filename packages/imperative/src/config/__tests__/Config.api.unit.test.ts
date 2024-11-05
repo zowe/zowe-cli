@@ -18,6 +18,7 @@ import { ConfigConstants } from "../src/ConfigConstants";
 import { IConfig } from "../src/doc/IConfig";
 import { IConfigLayer } from "../src/doc/IConfigLayer";
 import { IConfigProfile } from "../src/doc/IConfigProfile";
+import { ImperativeError, TextUtils } from "../..";
 
 const MY_APP = "my_app";
 
@@ -263,6 +264,65 @@ describe("Config API tests", () => {
                 expect(existsSpy).toHaveBeenCalledTimes(5); // Once for each config layer and one more time for read
                 expect(readFileSpy).toHaveBeenCalledTimes(1);
                 expect(secureLoadSpy).toHaveBeenCalledTimes(1);
+            });
+            it("should error when ignoreErrors is implicit false", async () => {
+                const config = await Config.load(MY_APP);
+                const existsSpy = jest.spyOn(fs, "existsSync").mockReturnValueOnce(true);
+                const readFileSpy = jest.spyOn(fs, "readFileSync");
+                const secureLoadSpy = jest.spyOn(config.api.secure, "loadCached");
+                const jsoncParseSpy = jest.spyOn(JSONC, "parse").mockImplementationOnce(() => { throw "failed to parse"; });
+                let caughtError: ImperativeError = {} as any;
+                try {
+                    config.api.layers.read();
+                } catch(err) {
+                    caughtError = err;
+                }
+                expect(existsSpy).toHaveBeenCalledTimes(5); // Once for each config layer and one more time for read
+                expect(readFileSpy).toHaveBeenCalledTimes(1);
+                expect(secureLoadSpy).toHaveBeenCalledTimes(0);
+                expect(jsoncParseSpy).toHaveBeenCalledTimes(1);
+                expect(caughtError.message).toContain("Please check this configuration file for errors");
+            });
+
+            it("should error when ignoreErrors is explicit false", async () => {
+                const config = await Config.load(MY_APP);
+                const existsSpy = jest.spyOn(fs, "existsSync").mockReturnValueOnce(true);
+                const readFileSpy = jest.spyOn(fs, "readFileSync");
+                const secureLoadSpy = jest.spyOn(config.api.secure, "loadCached");
+                const jsoncParseSpy = jest.spyOn(JSONC, "parse").mockImplementationOnce(() => { throw "failed to parse"; });
+                let caughtError: ImperativeError = {} as any;
+                try {
+                    config.api.layers.read({user: false, global: false, ignoreErrors: false});
+                } catch(err) {
+                    caughtError = err;
+                }
+                expect(existsSpy).toHaveBeenCalledTimes(5); // Once for each config layer and one more time for read
+                expect(readFileSpy).toHaveBeenCalledTimes(1);
+                expect(secureLoadSpy).toHaveBeenCalledTimes(0);
+                expect(jsoncParseSpy).toHaveBeenCalledTimes(1);
+                expect(caughtError.message).toContain("Please check this configuration file for errors");
+            });
+
+            it("should error when ignoreErrors is true", async () => {
+                const config = await Config.load(MY_APP);
+                const existsSpy = jest.spyOn(fs, "existsSync").mockReturnValueOnce(true);
+                const readFileSpy = jest.spyOn(fs, "readFileSync");
+                const secureLoadSpy = jest.spyOn(config.api.secure, "loadCached");
+                const jsoncParseSpy = jest.spyOn(JSONC, "parse").mockImplementationOnce(() => { throw "failed to parse"; });
+                const redSpy = jest.fn().mockImplementation((str: string) => str);
+                jest.spyOn(TextUtils, "chalk", "get").mockReturnValueOnce({red: redSpy});
+                let caughtError;
+                try {
+                    config.api.layers.read({user: false, global: false, ignoreErrors: true});
+                } catch(err) {
+                    caughtError = err;
+                }
+                expect(existsSpy).toHaveBeenCalledTimes(5); // Once for each config layer and one more time for read
+                expect(readFileSpy).toHaveBeenCalledTimes(1);
+                expect(secureLoadSpy).toHaveBeenCalledTimes(1);
+                expect(jsoncParseSpy).toHaveBeenCalledTimes(1);
+                expect(caughtError).toBeUndefined();
+                expect(redSpy.mock.calls[0][0]).toContain("Please check this configuration file for errors");
             });
         });
         describe("write", () => {

@@ -172,8 +172,7 @@ export class Config {
                 properties: Config.empty(),
                 global: layer === Layers.GlobalUser || layer === Layers.GlobalConfig,
                 user: layer === Layers.ProjectUser || layer === Layers.GlobalUser,
-                ignoreErrors: process.argv.includes("--help") || process.argv.includes("--version")
-                ||  process.argv[process.argv.length-1] === require.resolve('@zowe/cli')
+                ignoreErrors: opts?.ignoreErrors
             });
         }
 

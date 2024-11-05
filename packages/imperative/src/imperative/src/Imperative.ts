@@ -140,7 +140,7 @@ export class Imperative {
             ConfigurationValidator.validate(config);
             ImperativeConfig.instance.loadedConfig = config;
 
-             // Detect CLI arguments to determine if errors should be ignored
+            // Detect CLI arguments to determine if errors should be ignored
             const ignoreErrors = process.argv.includes(Constants.HELP_OPTION) ||
                 process.argv.includes(Constants.HELP_OPTION_ALIAS) ||
                 process.argv.includes(Constants.VERSION_OPTION) ||

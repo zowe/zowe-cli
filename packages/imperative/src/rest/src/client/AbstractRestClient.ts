@@ -478,7 +478,7 @@ export abstract class AbstractRestClient {
                 this.mLogger.info(`Using the following proxy setting for the request: ${proxyUrl.href}`);
                 if (this.session.ISession?.proxy?.proxy_authorization) {
                     reqHeaders.push({ 'Proxy-Authorization': this.session.ISession.proxy.proxy_authorization});
-                 }
+                }
                 options.agent = ProxySettings.getProxyAgent(this.session.ISession);
             }
         }
