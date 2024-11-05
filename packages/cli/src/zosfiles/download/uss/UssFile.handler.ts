@@ -26,6 +26,9 @@ export default class UssFileHandler extends ZosFilesBaseHandler {
         };
         commandParameters.response.progress.startBar({task});
 
+        const attributes = ZosFilesAttributes.loadFromFile(
+            commandParameters.arguments.attributes,
+        );
         const downloadOptions: IDownloadOptions = {
             binary: commandParameters.arguments.binary,
             encoding: commandParameters.arguments.encoding,
@@ -33,13 +36,9 @@ export default class UssFileHandler extends ZosFilesBaseHandler {
             task,
             responseTimeout: commandParameters.arguments.responseTimeout,
             overwrite: commandParameters.arguments.overwrite,
+            ...(attributes != null && { attributes })
         };
-        const attributes = ZosFilesAttributes.loadFromFile(
-            commandParameters.arguments.attributes,
-        );
-        if (attributes != null) {
-            downloadOptions.attributes = attributes;
-        }
+
         return Download.ussFile(session, commandParameters.arguments.ussFileName, downloadOptions);
     }
 }

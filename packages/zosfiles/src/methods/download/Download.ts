@@ -521,7 +521,6 @@ export class Download {
 
             const writeStream = options.stream ?? IO.createWriteStream(destination);
 
-            //const remoteEncoding = options.attributes.getRemoteEncoding(ussFileName);
             if(options.attributes)
             {
                 options.binary = options.attributes.getFileTransferMode(ussFileName, options.binary) === TransferMode.BINARY;
