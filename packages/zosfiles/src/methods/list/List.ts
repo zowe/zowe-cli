@@ -127,7 +127,7 @@ export class List {
             let response: any;
             try {
                 response = await List.allMembers(session, dataSetName, { attributes: true});
-                console.log(response.apiResponse);
+                // console.log(response.apiResponse);
 
             } catch(err) {
                 if(!(err instanceof ImperativeError && err.errorCode?.toString().startsWith("5"))) {
@@ -161,6 +161,7 @@ export class List {
                     await asyncPool(maxConcurrentRequests, response.apiResponse.items, createListPromise);
                 }
             }
+            zosmfResponses.push(...response.apiResponse.items);
         }
         // Check if members matching pattern found
         if (zosmfResponses.length === 0) {
@@ -172,25 +173,25 @@ export class List {
         }
 
         // Exclude names of members
-        for (const pattern of options.excludePatterns || []) {
-            const response = await List.allMembers(session, dataSetName);
-            console.log(response.apiResponse);
-            response.apiResponse.items.forEach((membersObj: IZosmfListResponse) => {
-                const responseIndex = zosmfResponses.findIndex(response => response.apiResponse.memberName === membersObj.memberName);
-                if (responseIndex !== -1) {
-                    zosmfResponses.splice(responseIndex, 1);
-                }
-            });
-        }
+        // for (const pattern of options.excludePatterns || []) {
+        //     const response = await List.allMembers(session, dataSetName);
+        //     console.log(response.apiResponse);
+        //     response.apiResponse.items.forEach((membersObj: IZosmfListResponse) => {
+        //         const responseIndex = zosmfResponses.findIndex(response => response.apiResponse.memberName === membersObj.memberName);
+        //         if (responseIndex !== -1) {
+        //             zosmfResponses.splice(responseIndex, 1);
+        //         }
+        //     });
+        // }
 
-        // Check if exclude pattern has left any members in the list
-        if (zosmfResponses.length === 0) {
-            return {
-                success: false,
-                commandResponse: ZosFilesMessages.noMembersInList.message,
-                apiResponse: []
-            };
-        }
+        // // Check if exclude pattern has left any members in the list
+        // if (zosmfResponses.length === 0) {
+        //     return {
+        //         success: false,
+        //         commandResponse: ZosFilesMessages.noMembersInList.message,
+        //         apiResponse: []
+        //     };
+        // }
 
         return {
             success: true,

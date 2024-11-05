@@ -1571,7 +1571,7 @@ describe("z/OS Files - List", () => {
 
             try {
                 response = await List.membersMatchingPattern(dummySession, dsname, [pattern]);
-                console.log(response.apiResponse)
+                // console.log(response.apiResponse)
             } catch (e) {
                 caughtError = e;
             }
