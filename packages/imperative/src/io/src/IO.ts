@@ -127,6 +127,7 @@ export class IO {
      * @static
      * @param {string} dir - directory to create all sub directories for
      * @memberof IO
+     * @deprecated Please use IO.createDirSync
      */
     public static createDirsSync(dir: string) {
         ImperativeExpect.toBeDefinedAndNonBlank(dir, "dir");
@@ -153,7 +154,7 @@ export class IO {
      */
     public static createDirsSyncFromFilePath(filePath: string) {
         ImperativeExpect.toBeDefinedAndNonBlank(filePath, "filePath");
-        IO.createDirsSync(path.dirname(filePath));
+        IO.createDirSync(path.dirname(filePath));
     }
 
     /**
@@ -200,6 +201,7 @@ export class IO {
      * @static
      * @param {string} dir - the directory (do not include a file name)
      * @memberof IO
+     * @deprecated Please use IO.createDirSync
      */
     public static mkdirp(dir: string) {
         ImperativeExpect.toBeDefinedAndNonBlank(dir, "dir");

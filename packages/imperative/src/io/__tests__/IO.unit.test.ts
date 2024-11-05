@@ -133,6 +133,7 @@ describe("IO tests", () => {
     it("should get an error for no input on createDirsSync", () => {
         let error;
         try {
+            // eslint-disable-next-line deprecation/deprecation
             IO.createDirsSync("   ");
         } catch (thrownError) {
             error = thrownError;
@@ -152,6 +153,7 @@ describe("IO tests", () => {
         });
         const willBeADir = ["pretend", "to", "create"];
         const dir = willBeADir.join(path.posix.sep);
+        // eslint-disable-next-line deprecation/deprecation
         IO.createDirsSync(dir);
         expect(fnFm).toHaveBeenCalledTimes(willBeADir.length);
     });
@@ -168,6 +170,7 @@ describe("IO tests", () => {
         });
         const willBeADir = ["pretend", "to", "create"];
         const dir = willBeADir.join(path.posix.sep);
+        // eslint-disable-next-line deprecation/deprecation
         IO.createDirsSync(dir);
         expect(fnFm).not.toHaveBeenCalled();
     });
@@ -188,6 +191,7 @@ describe("IO tests", () => {
             return pathSegments[0];
         });
         const dir = willBeADir.join(path.posix.sep);
+        // eslint-disable-next-line deprecation/deprecation
         IO.createDirsSync(dir);
         expect(fnFm).toHaveBeenCalledTimes(willBeADir.length - 1);
     });
@@ -279,6 +283,7 @@ describe("IO tests", () => {
     it("should get an error for no input on mkdirp", () => {
         let error;
         try {
+            // eslint-disable-next-line deprecation/deprecation
             IO.mkdirp("   ");
         } catch (thrownError) {
             error = thrownError;

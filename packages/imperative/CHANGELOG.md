@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Deprecated `IO` functions `createDirsSync` and `mkdirp` due to code duplication. Please use `createDirSync`. [#2352](https://github.com/zowe/zowe-cli/pull/2352)
+
 ## `8.7.0`
 
 - Enhancement: Added optional `proxy` object to ISession interface for extenders to pass a ProxyVariables object that would override the environment variables if in place. [#2330](https://github.com/zowe/zowe-cli/pull/2330)
