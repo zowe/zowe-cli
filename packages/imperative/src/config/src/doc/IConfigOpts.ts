@@ -13,6 +13,11 @@ import { IConfigVault } from "./IConfigVault";
 
 export interface IConfigOpts {
     /**
+     * Continue command execution despite config errors because version or help flag present
+     */
+    ignoreErrors?: boolean;
+
+    /**
      * Directory where global config files are located. Defaults to `~/.appName`.
      */
     homeDir?: string;

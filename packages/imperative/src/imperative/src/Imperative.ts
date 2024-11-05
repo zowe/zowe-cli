@@ -140,6 +140,13 @@ export class Imperative {
             ConfigurationValidator.validate(config);
             ImperativeConfig.instance.loadedConfig = config;
 
+             // Detect CLI arguments to determine if errors should be ignored
+            const ignoreErrors = process.argv.includes(Constants.HELP_OPTION) ||
+                process.argv.includes(Constants.HELP_OPTION_ALIAS) ||
+                process.argv.includes(Constants.VERSION_OPTION) ||
+                process.argv.includes(Constants.VERSION_OPTION_ALIAS) ||
+                process.argv[process.argv.length - 1] === require.resolve('@zowe/cli');
+
             /**
              * Get the command name from the package bin.
              * If no command name exists, we will instead use the file name invoked
@@ -178,7 +185,7 @@ export class Imperative {
 
             try {
                 ImperativeConfig.instance.config = await Config.load(configAppName,
-                    { homeDir: ImperativeConfig.instance.cliHome }
+                    { homeDir: ImperativeConfig.instance.cliHome, ignoreErrors }
                 );
             } catch (err) {
                 delayedConfigLoadError = err;
@@ -226,6 +233,7 @@ export class Imperative {
                     ImperativeConfig.instance.config = await Config.load(configAppName,
                         {
                             homeDir: ImperativeConfig.instance.cliHome,
+                            ignoreErrors,
                             noLoad: true
                         }
                     );
