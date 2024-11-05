@@ -68,7 +68,7 @@ export abstract class ZosFilesBaseHandler implements ICommandHandler {
                     throw error;
                 }
                 throw new ImperativeError({
-                    msg: error.mMessage,
+                    msg: error.message,
                     causeErrors: error
                 });
             }
