@@ -978,6 +978,7 @@ describe("Get Jobs - System Tests", () => {
         describe("invalid request error handling", () => {
             it("should detect and surface an error for getting JCL that doesnt exist", async () => {
                 const job = await SubmitJobs.submitJcl(REAL_SESSION, JCL);
+                await wait(3000);
                 await DeleteJobs.deleteJobForJob(REAL_SESSION, job);
                 await wait(3000);
                 let error;
