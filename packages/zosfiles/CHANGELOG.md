@@ -2,10 +2,6 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
-## Recent Changes
-
-- BugFix: Improved output formatting for `zowe zos-tso start app` and `zowe zos-tso send app`[#2347](https://github.com/zowe/zowe-cli/pull/2347)
-
 ## `8.6.2`
 
 - BugFix: Resolved issue where encoding argument was missing from `FileToUss.handler.ts` options object. [#2234](https://github.com/zowe/zowe-cli/pull/2334)
