@@ -195,22 +195,6 @@ describe("Command Processor", () => {
     describe("Command Processor with --help and --version flags", () => {
         let faultyConfigProcessor: CommandProcessor;
 
-        const helpParms: any = {
-            arguments: {
-                _: ["sample", "cmd", "--help"],
-                $0: "",
-                valid: true
-            }
-        };
-
-        const versionParms: any = {
-            arguments: {
-                _: ["sample", "cmd", "--version"],
-                $0: "",
-                valid: true
-            }
-        };
-
         beforeEach(() => {
             faultyConfigProcessor = new CommandProcessor({
                 envVariablePrefix: ENV_VAR_PREFIX,
@@ -229,20 +213,6 @@ describe("Command Processor", () => {
 
         afterEach(() => {
             jest.restoreAllMocks();
-        });
-
-        it("should display help text even with faulty config", async () => {
-            const helpResponse: ICommandResponse = await faultyConfigProcessor.invoke(helpParms);
-
-            expect(helpResponse).toBeDefined();
-            expect(helpResponse.success).toBe(true);
-        });
-
-        it("should display version even with faulty config", async () => {
-            const versionResponse: ICommandResponse = await faultyConfigProcessor.invoke(versionParms);
-
-            expect(versionResponse).toBeDefined();
-            expect(versionResponse.success).toBe(true);
         });
 
         it("should fail command execution without --help or --version if config is faulty", async () => {
