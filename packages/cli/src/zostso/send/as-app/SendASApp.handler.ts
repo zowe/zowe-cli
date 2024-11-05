@@ -39,7 +39,7 @@ export default class Handler extends ZosTsoBaseHandler {
 
         commandParameters.response.console.log("\n");
         response.tsoData.forEach((data) => {
-            commandParameters.response.console.log(typeof data === 'string' ? data : (data?.DATA ?? ""));
+            commandParameters.response.console.log(typeof data === 'string' ? data : data?.DATA ?? "");
         });
         commandParameters.response.data.setObj(response);
     }

@@ -37,7 +37,7 @@ export default class Handler extends ZosTsoBaseHandler {
         commandParameters.response.console.log(chalk.yellow.bold("Queue ID: ") + response.queueID + "\n");
 
         response.tsoData.forEach((data) => {
-            commandParameters.response.console.log(typeof data === 'string' ? data : (data?.DATA ?? ""));
+            commandParameters.response.console.log(typeof data === 'string' ? data : data?.DATA ?? "");
         });
 
         commandParameters.response.data.setObj(response);
