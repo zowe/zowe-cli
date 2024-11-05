@@ -1,6 +1,9 @@
 # Change Log
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## `8.7.0`
+
+- Enhancement: Added --wait-for-active and --wait-for-output to download options on zosjobs. [#2328](https://github.com/zowe/zowe-cli/pull/2328)
 
 ## Recent Changes
 - Enhancement: Add the --ignore-not-found flag to avoid error messages potentially interrupting a script for automated batch processes. The flag bypasses warning prompts to confirm delete actions. [#2254](https://github.com/zowe/zowe-cli/pull/2254)
@@ -11,7 +14,6 @@ All notable changes to the Zowe CLI package will be documented in this file.
 ## `8.6.1`
 
 - BugFix: Fixed an issue where the `zowe zos-logs list logs` command could fail or not return all logs if a start time was not supplied. [#2336](https://github.com/zowe/zowe-cli/pull/2336)
-
 
 ## `8.6.0`
 
