@@ -2,6 +2,9 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Removed unnecessary `$ ` characters in front of most output. [zowe-explorer#3079(comment)](https://github.com/zowe/zowe-explorer-vscode/pull/3079#pullrequestreview-2408842655)
 
 ## `8.6.2`
 
