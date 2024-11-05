@@ -2,7 +2,12 @@
 
 All notable changes to the Zowe z/OS jobs SDK package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Fixed an error where the Delete Jobs API response was not returned if the `modifyVersion` parameter was not specified, even though it was available. []()
+
 ## `8.5.0`
+
 - Enhancement: Added execData to IJob return data from GetJobs.getJob [#2320](https://github.com/zowe/zowe-cli/pull/2320)
 
 ## `8.1.1`
