@@ -474,7 +474,7 @@ export abstract class Operation<T> implements ITaskWithStatus {
         for (let x = 0; x < order.length; x++) {
             this.log.info("Cleaning file: " + this.fileToUndo[x]);
             try {
-                fs.rmSync(order[x]);
+                fs.rmSync(order[x], {recursive: true, force: true});
             } catch (error) {
                 this.log.error("An error occurred deleting: " + order[x]);
                 this.log.error("Message: " + error.message);
