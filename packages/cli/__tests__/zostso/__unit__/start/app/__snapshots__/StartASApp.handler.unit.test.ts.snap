@@ -1,0 +1,63 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`receive TSO app handler behavior should properly start TSO address space and run an application at the created address space 1`] = `
+"{
+  \\"reused\\": false,
+  \\"timeout\\": false,
+  \\"servletKey\\": \\"ZOWEUSER-123-aaaaaa\\",
+  \\"queueID\\": \\"983068\\",
+  \\"tsoData\\": [
+    {
+      \\"VERSION\\": \\"0100\\",
+      \\"DATA\\": \\"HELLOW exec processing has started.\\"
+    },
+    {
+      \\"VERSION\\": \\"0100\\",
+      \\"DATA\\": \\"UNIX message queue id = 983068\\"
+    },
+    {
+      \\"VERSION\\": \\"0100\\",
+      \\"DATA\\": \\"Input message type = 32772\\"
+    },
+    {
+      \\"VERSION\\": \\"0100\\",
+      \\"DATA\\": \\"Output message type = 4\\"
+    },
+    {
+      \\"VERSION\\": \\"0100\\",
+      \\"DATA\\": \\"Reading application input from the UNIX message queue.\\"
+    }
+  ]
+}"
+`;
+
+exports[`receive TSO app handler behavior should properly start TSO address space at an existing TSO address space 1`] = `
+"{
+  \\"reused\\": false,
+  \\"timeout\\": false,
+  \\"servletKey\\": \\"ZOWEUSER-123-aaaaaa\\",
+  \\"queueID\\": \\"983068\\",
+  \\"tsoData\\": [
+    {
+      \\"VERSION\\": \\"0100\\",
+      \\"DATA\\": \\"HELLOW exec processing has started.\\"
+    },
+    {
+      \\"VERSION\\": \\"0100\\",
+      \\"DATA\\": \\"UNIX message queue id = 983068\\"
+    },
+    {
+      \\"VERSION\\": \\"0100\\",
+      \\"DATA\\": \\"Input message type = 32772\\"
+    },
+    {
+      \\"VERSION\\": \\"0100\\",
+      \\"DATA\\": \\"Output message type = 4\\"
+    },
+    {
+      \\"VERSION\\": \\"0100\\",
+      \\"DATA\\": \\"Reading application input from the UNIX message queue.\\"
+    }
+  ]
+}"
+`;

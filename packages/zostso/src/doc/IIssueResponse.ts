@@ -33,7 +33,7 @@ export interface IIssueResponse {
     startResponse?: IStartStopResponses;
 
     /**
-     * Indicates if started TSO containes "READY " message
+     * Indicates if started TSO contains "READY" message
      * @type {boolean}
      * @memberof IIssueResponse
      */

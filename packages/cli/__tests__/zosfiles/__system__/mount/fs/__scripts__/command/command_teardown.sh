@@ -15,5 +15,5 @@ then
 fi
 
 echo "================Z/OS FILES DELETE ZOS-FILE-SYSTEM==============="
-zowe zos-files delete zos-file-system "$fsn"
+zowe zos-files delete zos-file-system "$fsn" -f
 exit $?

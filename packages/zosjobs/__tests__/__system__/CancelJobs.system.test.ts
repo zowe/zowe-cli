@@ -11,10 +11,10 @@
 
 import { ImperativeError, Session, RestClientError } from "@zowe/imperative";
 import { CancelJobs, SubmitJobs, IJob } from "../../src";
-import { ITestEnvironment } from "@zowe/cli-test-utils";
+import { JobTestsUtils } from "./JobTestsUtils";
+import { ITestEnvironment } from "../../../../__tests__/__src__/environment/ITestEnvironment";
 import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { JobTestsUtils } from "./JobTestsUtils";
 
 let REAL_SESSION: Session;
 let sleepJCL: string;
@@ -22,6 +22,7 @@ let sleepJCL: string;
 let systemProps: ITestPropertiesSchema;
 let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 const LONG_TIMEOUT = 100000; // 100 second timeout - jobs could take a while to complete due to system load
+const modifyVersionDefaultUsesCIM = false;
 
 describe("CancelJobs System tests", () => {
 
@@ -35,16 +36,24 @@ describe("CancelJobs System tests", () => {
 
         const ACCOUNT = systemProps.tso.account;
         const maxStepNum = 6;  // Use lots of steps to make the job stay in INPUT status longer
-
         sleepJCL = JobTestsUtils.getSleepJCL(REAL_SESSION.ISession.user, ACCOUNT, systemProps.zosjobs.jobclass, maxStepNum);
+    });
+
+    afterAll(async () => {
+        await TestEnvironment.cleanUp(testEnvironment);
     });
 
     describe("Positive tests", () => {
         it("should be able to cancel a job using cancelJob (modify version 1)", async () => {
-            const job = await SubmitJobs.submitJclNotifyCommon(REAL_SESSION, {jcl: sleepJCL, status: "INPUT"});
-            expect(job.retcode).toBeNull(); // job is not complete, no CC
-            const response = await CancelJobs.cancelJob(REAL_SESSION, job.jobname, job.jobid, "1.0");
-            expect(response).toBeUndefined();
+            if (testEnvironment.systemTestProperties.zosjobs.skipCIM) {
+                process.stdout.write("Skipping test because skipCIM is set.");
+            } else {
+                const job = await SubmitJobs.submitJclNotifyCommon(REAL_SESSION, {jcl: sleepJCL, status: "INPUT"});
+                expect(job.retcode).toBeNull(); // job is not complete, no CC
+                const response = await CancelJobs.cancelJob(REAL_SESSION, job.jobname, job.jobid, "1.0");
+                expect(response).toBeUndefined();
+                testEnvironment.resources.jobs.push(job);
+            }
         }, LONG_TIMEOUT);
 
         it("should be able to cancel a job using cancelJob (modify version 2)", async () => {
@@ -53,21 +62,32 @@ describe("CancelJobs System tests", () => {
             const response = await CancelJobs.cancelJob(REAL_SESSION, job.jobname, job.jobid, "2.0");
             expect(response).not.toBeUndefined();
             expect(response?.status).toEqual("0"); // intermittent failure
+            testEnvironment.resources.jobs.push(job);
         }, LONG_TIMEOUT);
 
         it("should be able to cancel a job using cancelJob (modify version default)", async () => {
-            const job = await SubmitJobs.submitJclNotifyCommon(REAL_SESSION, {jcl: sleepJCL, status: "INPUT"});
-            expect(job.retcode).toBeNull(); // job is not complete, no CC
-            const response = await CancelJobs.cancelJob(REAL_SESSION, job.jobname, job.jobid);
-            expect(response).not.toBeUndefined();
-            expect(response?.status).toEqual("0"); // intermittent failure
+            if (testEnvironment.systemTestProperties.zosjobs.skipCIM && modifyVersionDefaultUsesCIM) {
+                process.stdout.write("Skipping test because skipCIM is set.");
+            } else {
+                const job = await SubmitJobs.submitJclNotifyCommon(REAL_SESSION, {jcl: sleepJCL, status: "INPUT"});
+                expect(job.retcode).toBeNull(); // job is not complete, no CC
+                const response = await CancelJobs.cancelJob(REAL_SESSION, job.jobname, job.jobid);
+                expect(response).not.toBeUndefined();
+                expect(response?.status).toEqual("0"); // intermittent failure
+                testEnvironment.resources.jobs.push(job);
+            }
         }, LONG_TIMEOUT);
 
         it("should be able to cancel a job using cancelJobForJob (modify version 1)", async () => {
-            const job = await SubmitJobs.submitJclNotifyCommon(REAL_SESSION, {jcl: sleepJCL, status: "INPUT"});
-            expect(job.retcode).toBeNull(); // job is not complete, no CC
-            const response = await CancelJobs.cancelJobForJob(REAL_SESSION, job, "1.0");
-            expect(response).toBeUndefined();
+            if (testEnvironment.systemTestProperties.zosjobs.skipCIM) {
+                process.stdout.write("Skipping test because skipCIM is set.");
+            } else {
+                const job = await SubmitJobs.submitJclNotifyCommon(REAL_SESSION, {jcl: sleepJCL, status: "INPUT"});
+                expect(job.retcode).toBeNull(); // job is not complete, no CC
+                const response = await CancelJobs.cancelJobForJob(REAL_SESSION, job, "1.0");
+                expect(response).toBeUndefined();
+                testEnvironment.resources.jobs.push(job);
+            }
         }, LONG_TIMEOUT);
 
         it("should be able to cancel a job using cancelJobForJob (modify version 2)", async () => {
@@ -76,21 +96,32 @@ describe("CancelJobs System tests", () => {
             const response = await CancelJobs.cancelJobForJob(REAL_SESSION, job, "2.0");
             expect(response).not.toBeUndefined();
             expect(response?.status).toEqual("0"); // intermittent failure
+            testEnvironment.resources.jobs.push(job);
         }, LONG_TIMEOUT);
 
         it("should be able to cancel a job using cancelJobForJob (modify version default)", async () => {
-            const job = await SubmitJobs.submitJclNotifyCommon(REAL_SESSION, {jcl: sleepJCL, status: "INPUT"});
-            expect(job.retcode).toBeNull(); // job is not complete, no CC
-            const response = await CancelJobs.cancelJobForJob(REAL_SESSION, job);
-            expect(response).not.toBeUndefined();
-            expect(response?.status).toEqual("0"); // intermittent failure
+            if (testEnvironment.systemTestProperties.zosjobs.skipCIM && modifyVersionDefaultUsesCIM) {
+                process.stdout.write("Skipping test because skipCIM is set.");
+            } else {
+                const job = await SubmitJobs.submitJclNotifyCommon(REAL_SESSION, {jcl: sleepJCL, status: "INPUT"});
+                expect(job.retcode).toBeNull(); // job is not complete, no CC
+                const response = await CancelJobs.cancelJobForJob(REAL_SESSION, job);
+                expect(response).not.toBeUndefined();
+                expect(response?.status).toEqual("0"); // intermittent failure
+                testEnvironment.resources.jobs.push(job);
+            }
         }, LONG_TIMEOUT);
 
         it("should be able to cancel a job using cancelJobCommon (job version 1)", async () => {
-            const job = await SubmitJobs.submitJclNotifyCommon(REAL_SESSION, {jcl: sleepJCL, status: "INPUT"});
-            expect(job.retcode).toBeNull(); // job is not complete, no CC
-            const response = await CancelJobs.cancelJobCommon(REAL_SESSION, {jobname: job.jobname, jobid: job.jobid, version: "1.0"});
-            expect(response).toBeUndefined();
+            if (testEnvironment.systemTestProperties.zosjobs.skipCIM) {
+                process.stdout.write("Skipping test because skipCIM is set.");
+            } else {
+                const job = await SubmitJobs.submitJclNotifyCommon(REAL_SESSION, {jcl: sleepJCL, status: "INPUT"});
+                expect(job.retcode).toBeNull(); // job is not complete, no CC
+                const response = await CancelJobs.cancelJobCommon(REAL_SESSION, {jobname: job.jobname, jobid: job.jobid, version: "1.0"});
+                expect(response).toBeUndefined();
+                testEnvironment.resources.jobs.push(job);
+            }
         }, LONG_TIMEOUT);
 
         it("should be able to cancel a job using cancelJobCommon (job version 2.0 - synchronous)", async () => {
@@ -99,13 +130,19 @@ describe("CancelJobs System tests", () => {
             const response = await CancelJobs.cancelJobCommon(REAL_SESSION, {jobname: job.jobname, jobid: job.jobid, version: "2.0"});
             expect(response).toBeDefined();
             expect(response?.status).toEqual("0"); // intermittent failure
+            testEnvironment.resources.jobs.push(job);
         }, LONG_TIMEOUT);
 
         it("should be able to cancel a job using cancelJobCommon (job version default)", async () => {
-            const job = await SubmitJobs.submitJclNotifyCommon(REAL_SESSION, {jcl: sleepJCL, status: "INPUT"});
-            expect(job.retcode).toBeNull(); // job is not complete, no CC
-            const response = await CancelJobs.cancelJobCommon(REAL_SESSION, {jobname: job.jobname, jobid: job.jobid});
-            expect(response?.status).toEqual("0"); // intermittent failure
+            if (testEnvironment.systemTestProperties.zosjobs.skipCIM && modifyVersionDefaultUsesCIM) {
+                process.stdout.write("Skipping test because skipCIM is set.");
+            } else {
+                const job = await SubmitJobs.submitJclNotifyCommon(REAL_SESSION, {jcl: sleepJCL, status: "INPUT"});
+                expect(job.retcode).toBeNull(); // job is not complete, no CC
+                const response = await CancelJobs.cancelJobCommon(REAL_SESSION, {jobname: job.jobname, jobid: job.jobid});
+                expect(response?.status).toEqual("0"); // intermittent failure
+                testEnvironment.resources.jobs.push(job);
+            }
         }, LONG_TIMEOUT);
 
         it("should be able to cancel a job using cancelJobCommon (job version 2.0 - synchronous) and return an error feedback object", async () => {
@@ -115,6 +152,7 @@ describe("CancelJobs System tests", () => {
             expect(response?.status).toEqual("0");
             response = await CancelJobs.cancelJobCommon(REAL_SESSION, {jobname: job.jobname, jobid: job.jobid, version: "2.0"});
             expect(response?.status).toEqual("156");
+            testEnvironment.resources.jobs.push(job);
         }, LONG_TIMEOUT);
     });
 
@@ -184,32 +222,50 @@ describe("CancelJobs System tests - encoded", () => {
 
         const ACCOUNT = systemProps.tso.account;
         const maxStepNum = 6;  // Use lots of steps to make the job stay in INPUT status longer
-
         sleepJCL = JobTestsUtils.getSleepJCL(REAL_SESSION.ISession.user, ACCOUNT, systemProps.zosjobs.jobclass, maxStepNum, true);
+    });
+
+    afterAll(async () => {
+        await TestEnvironment.cleanUp(testEnvironment);
     });
 
     describe("Positive tests", () => {
         it("should be able to cancel a job using cancelJob (modify version default)", async () => {
-            const job = await SubmitJobs.submitJclNotifyCommon(REAL_SESSION, {jcl: sleepJCL, status: "INPUT"});
-            expect(job.retcode).toBeNull(); // job is not complete, no CC
-            const response = await CancelJobs.cancelJob(REAL_SESSION, job.jobname, job.jobid);
-            expect(response).not.toBeUndefined();
-            expect(response?.status).toEqual("0"); // intermittent failure
+            if (testEnvironment.systemTestProperties.zosjobs.skipCIM && modifyVersionDefaultUsesCIM) {
+                process.stdout.write("Skipping test because skipCIM is set.");
+            } else {
+                const job = await SubmitJobs.submitJclNotifyCommon(REAL_SESSION, {jcl: sleepJCL, status: "INPUT"});
+                expect(job.retcode).toBeNull(); // job is not complete, no CC
+                const response = await CancelJobs.cancelJob(REAL_SESSION, job.jobname, job.jobid);
+                expect(response).not.toBeUndefined();
+                expect(response?.status).toEqual("0"); // intermittent failure
+                testEnvironment.resources.jobs.push(job);
+            }
         }, LONG_TIMEOUT);
 
         it("should be able to cancel a job using cancelJobForJob (modify version default)", async () => {
-            const job = await SubmitJobs.submitJclNotifyCommon(REAL_SESSION, {jcl: sleepJCL, status: "INPUT"});
-            expect(job.retcode).toBeNull(); // job is not complete, no CC
-            const response = await CancelJobs.cancelJobForJob(REAL_SESSION, job);
-            expect(response).not.toBeUndefined();
-            expect(response?.status).toEqual("0"); // intermittent failure
+            if (testEnvironment.systemTestProperties.zosjobs.skipCIM && modifyVersionDefaultUsesCIM) {
+                process.stdout.write("Skipping test because skipCIM is set.");
+            } else {
+                const job = await SubmitJobs.submitJclNotifyCommon(REAL_SESSION, {jcl: sleepJCL, status: "INPUT"});
+                expect(job.retcode).toBeNull(); // job is not complete, no CC
+                const response = await CancelJobs.cancelJobForJob(REAL_SESSION, job);
+                expect(response).not.toBeUndefined();
+                expect(response?.status).toEqual("0"); // intermittent failure
+                testEnvironment.resources.jobs.push(job);
+            }
         }, LONG_TIMEOUT);
 
         it("should be able to cancel a job using cancelJobCommon (job version default)", async () => {
-            const job = await SubmitJobs.submitJclNotifyCommon(REAL_SESSION, {jcl: sleepJCL, status: "INPUT"});
-            expect(job.retcode).toBeNull(); // job is not complete, no CC
-            const response = await CancelJobs.cancelJobCommon(REAL_SESSION, {jobname: job.jobname, jobid: job.jobid});
-            expect(response?.status).toEqual("0"); // intermittent failure
+            if (testEnvironment.systemTestProperties.zosjobs.skipCIM && modifyVersionDefaultUsesCIM) {
+                process.stdout.write("Skipping test because skipCIM is set.");
+            } else {
+                const job = await SubmitJobs.submitJclNotifyCommon(REAL_SESSION, {jcl: sleepJCL, status: "INPUT"});
+                expect(job.retcode).toBeNull(); // job is not complete, no CC
+                const response = await CancelJobs.cancelJobCommon(REAL_SESSION, {jobname: job.jobname, jobid: job.jobid});
+                expect(response?.status).toEqual("0"); // intermittent failure
+                testEnvironment.resources.jobs.push(job);
+            }
         }, LONG_TIMEOUT);
 
         it("should be able to cancel a job using cancelJobCommon (job version 2.0 - synchronous) and return an error feedback object", async () => {
@@ -219,6 +275,7 @@ describe("CancelJobs System tests - encoded", () => {
             expect(response?.status).toEqual("0");
             response = await CancelJobs.cancelJobCommon(REAL_SESSION, {jobname: job.jobname, jobid: job.jobid, version: "2.0"});
             expect(response?.status).toEqual("156");
+            testEnvironment.resources.jobs.push(job);
         }, LONG_TIMEOUT);
     });
 });

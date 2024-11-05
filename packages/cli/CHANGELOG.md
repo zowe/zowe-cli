@@ -2,6 +2,26 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## `8.7.0`
+
+- Enhancement: Added --wait-for-active and --wait-for-output to download options on zosjobs. [#2328](https://github.com/zowe/zowe-cli/pull/2328)
+
+## `8.6.2`
+
+- BugFix: Resolved issue where `zowe zos-files upload file-to-uss` was not properly handling command flags. [#2234](https://github.com/zowe/zowe-cli/pull/2334)
+
+## `8.6.1`
+
+- BugFix: Fixed an issue where the `zowe zos-logs list logs` command could fail or not return all logs if a start time was not supplied. [#2336](https://github.com/zowe/zowe-cli/pull/2336)
+
+## `8.6.0`
+
+- Enhancement: Added support for running applications on TSO/E address spaces. Start applications and receive/transmit messages using the new `tso start`, `tso receive` and `tso send` commands. [#2280](https://github.com/zowe/zowe-cli/pull/2280)
+
+## `8.4.0`
+
+- Enhancement: Added optional `--attributes` flag to `zowe zos-files upload file-to-uss` to allow passing a .zosattributes file path for upload encoding format. [#2319](https://github.com/zowe/zowe-cli/pull/2319)
+
 ## `8.3.0`
 
 - Enhancement: Issue the `zowe files search data-sets` command with the new `encoding` option to use a different code page when searching data set contents. [#2161](https://github.com/zowe/zowe-cli/issues/2161)

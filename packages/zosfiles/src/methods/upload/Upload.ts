@@ -678,7 +678,7 @@ export class Upload {
                 }
                 const fileName = path.normalize(path.join(inputDirectory, file.fileName));
                 const ussFilePath = path.posix.join(ussname, file.fileName);
-                return this.uploadFile(fileName, ussFilePath, session,
+                return this.uploadFile(session,fileName, ussFilePath,
                     { ...options, binary: file.binary });
             };
 
@@ -831,7 +831,7 @@ export class Upload {
                 }
                 const filePath = path.normalize(path.join(inputDirectory, file.fileName));
                 const ussFilePath = path.posix.join(ussname, file.fileName);
-                return this.uploadFile(filePath, ussFilePath, session,
+                return this.uploadFile(session, filePath, ussFilePath,
                     { ...options, binary: file.binary });
             };
             if (maxConcurrentRequests === 0) {
@@ -854,35 +854,34 @@ export class Upload {
         };
     }
 
-    private static async uploadFile(localPath: string, ussPath: string,
-        session: AbstractSession, options: IUploadOptions) {
-        const tempOptions: Partial<IUploadOptions> = {};
-
+    public static async uploadFile(
+        session: AbstractSession,
+        localPath: string,
+        ussPath: string,
+        options: IUploadOptions
+    ): Promise<IZosFilesResponse> {
+        const tempOptions: IUploadOptions = { ...options };
         if (options.attributes) {
             if (!options.attributes.fileShouldBeUploaded(localPath)) {
                 return;
             }
             tempOptions.binary = options.attributes.getFileTransferMode(localPath, options.binary) === TransferMode.BINARY;
             const remoteEncoding = options.attributes.getRemoteEncoding(localPath);
-            if (remoteEncoding != null && remoteEncoding !== Tag.BINARY) {
-                tempOptions.encoding = remoteEncoding;
-            }
+
+            if(remoteEncoding === Tag.BINARY) tempOptions.encoding = undefined;
+            else if(remoteEncoding !== null) tempOptions.encoding = remoteEncoding;
+
             if (!tempOptions.binary) {
                 tempOptions.localEncoding = options.attributes.getLocalEncoding(localPath);
             }
-        } else {
-            if (options.filesMap) {
-                if (options.filesMap.fileNames.indexOf(path.basename(localPath)) > -1) {
-                    tempOptions.binary = options.filesMap.binary;
-                } else {
-                    tempOptions.binary = options.binary;
-                }
-            } else {
-                tempOptions.binary = options.binary;
-            }
+        } else if(options.filesMap?.fileNames.indexOf(path.basename(localPath)) > -1) {
+            tempOptions.binary = options.filesMap.binary;
+
+             // Reset encoding to undefined if binary is true to avoid file tagging issues
+            if(tempOptions.binary) tempOptions.encoding = undefined;
         }
 
-        await this.fileToUssFile(session, localPath, ussPath, tempOptions);
+        return await this.fileToUssFile(session, localPath, ussPath, tempOptions);
     }
 
     /**
