@@ -9,7 +9,7 @@
 *
 */
 
-import { ImperativeError, Logger, Session } from "@zowe/imperative";
+import { apiErrorHeader, ImperativeError, Logger, Session } from "@zowe/imperative";
 import { ZosmfRestClient, ZosmfHeaders } from "@zowe/core-for-zowe-sdk";
 import { List } from "../../../../src/methods/list/List";
 import { ZosFilesMessages } from "../../../../src/constants/ZosFiles.messages";
@@ -1527,6 +1527,64 @@ describe("z/OS Files - List", () => {
                 commandResponse: util.format(ZosFilesMessages.noDataSetsInList.message),
                 apiResponse: []
             });
+        });
+    });
+    describe("membersMatchingPattern", () => {
+        const listDataSetSpy = jest.spyOn(List, "allMembers");
+
+        const memberData1 = {
+            dsname: "TEST.PS",
+            memberName: "M1",
+            dsorg: "PS"
+        };
+
+        const memberData2 = {
+            dsname: "TEST.PS",
+            memberName: "M2",
+            dsorg: "PS"
+        };
+
+        // const memberData3 = {
+        //     dsname: "TEST.PS",
+        //     memberName: "testM1",
+        //     dsorg: "PS"
+        // };
+
+        beforeEach(() => {
+            listDataSetSpy.mockClear();
+            listDataSetSpy.mockResolvedValue({} as any);
+        });
+
+        it("should successfully list M1 & M2 using the List.allMembers API", async () => {
+            const dsname = "TEST.PS"
+            const pattern = "M*";
+            let response;
+            let caughtError;
+
+            listDataSetSpy.mockImplementation(async (): Promise<any> => {
+                return {
+                    apiResponse: {
+                        items: [memberData1, memberData2]
+                    }
+                };
+            });
+
+            try {
+                response = await List.membersMatchingPattern(dummySession, dsname, [pattern]);
+                console.log(response.apiResponse)
+            } catch (e) {
+                caughtError = e;
+            }
+
+            // expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: util.format(ZosFilesMessages.membersMatchedPattern.message, 2),
+                apiResponse: [memberData1, memberData2]
+            });
+
+            expect(listDataSetSpy).toHaveBeenCalledTimes(1);
+            expect(listDataSetSpy).toHaveBeenCalledWith(dummySession, dsname, {attributes: true});
         });
     });
 });

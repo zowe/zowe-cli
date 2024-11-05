@@ -105,6 +105,100 @@ export class List {
     }
 
     /**
+     * List data sets that match a DSLEVEL pattern
+     * @param {AbstractSession} session z/OSMF connection info
+     * @param {string[]} patterns Data set patterns to include
+     * @param {IDsmListOptions} options Contains options for the z/OSMF request
+     * @returns {Promise<IZosFilesResponse>} List of z/OSMF list responses for each data set
+     *
+     * @example
+     */
+    public static async membersMatchingPattern(session: AbstractSession, dataSetName: string, patterns: string[],
+        options: IDsmListOptions = {}): Promise<IZosFilesResponse> {
+
+        ImperativeExpect.toNotBeNullOrUndefined(dataSetName, ZosFilesMessages.missingDatasetName.message);
+        ImperativeExpect.toNotBeEqual(dataSetName, "", ZosFilesMessages.missingDatasetName.message);
+        ImperativeExpect.toNotBeNullOrUndefined(patterns, ZosFilesMessages.missingPatterns.message);
+        patterns = patterns.filter(Boolean);
+        ImperativeExpect.toNotBeEqual(patterns.length, 0, ZosFilesMessages.missingPatterns.message);
+        const zosmfResponses: IZosFilesResponse[] = [];
+
+        for(const pattern of patterns) {
+            let response: any;
+            try {
+                response = await List.allMembers(session, dataSetName, { attributes: true});
+                console.log(response.apiResponse);
+
+            } catch(err) {
+                if(!(err instanceof ImperativeError && err.errorCode?.toString().startsWith("5"))) {
+                    throw err;
+                }
+
+                response = await List.allMembers(session, dataSetName);
+
+                let listsInitiated = 0;
+                const createListPromise = (membersObj: any) => {
+                    if (options.task != null) {
+                        options.task.percentComplete = Math.floor(TaskProgress.ONE_HUNDRED_PERCENT *
+                            (listsInitiated / response.apiResponse.items.length));
+                        listsInitiated++;
+                    }
+
+                    return List.allMembers(session, membersObj.dsname, { attributes: true, maxLength: 1 }).then(
+                        (tempResponse) => {
+                            Object.assign(membersObj, tempResponse.apiResponse.items[0]);
+                        },
+                        (tempErr) => {
+                            Object.assign(membersObj, { error: tempErr });
+                        }
+                    );
+                };
+
+                const maxConcurrentRequests = options.maxConcurrentRequests == null ? 1 : options.maxConcurrentRequests;
+                if (maxConcurrentRequests === 0) {
+                    await Promise.all(response.apiResponse.items.map(createListPromise));
+                } else {
+                    await asyncPool(maxConcurrentRequests, response.apiResponse.items, createListPromise);
+                }
+            }
+        }
+        // Check if members matching pattern found
+        if (zosmfResponses.length === 0) {
+            return {
+                success: false,
+                commandResponse: ZosFilesMessages.noMembersMatchingPattern.message,
+                apiResponse: []
+            };
+        }
+
+        // Exclude names of members
+        for (const pattern of options.excludePatterns || []) {
+            const response = await List.allMembers(session, dataSetName);
+            console.log(response.apiResponse);
+            response.apiResponse.items.forEach((membersObj: IZosmfListResponse) => {
+                const responseIndex = zosmfResponses.findIndex(response => response.apiResponse.memberName === membersObj.memberName);
+                if (responseIndex !== -1) {
+                    zosmfResponses.splice(responseIndex, 1);
+                }
+            });
+        }
+
+        // Check if exclude pattern has left any members in the list
+        if (zosmfResponses.length === 0) {
+            return {
+                success: false,
+                commandResponse: ZosFilesMessages.noMembersInList.message,
+                apiResponse: []
+            };
+        }
+
+        return {
+            success: true,
+            commandResponse: util.format(ZosFilesMessages.membersMatchedPattern.message, zosmfResponses.length),
+            apiResponse: zosmfResponses
+        };
+    }
+    /**
      * Retrieve all members from a data set name
      *
      * @param {AbstractSession}  session      - z/OS MF connection info

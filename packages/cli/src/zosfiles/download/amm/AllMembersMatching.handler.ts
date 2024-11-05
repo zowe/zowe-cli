@@ -14,7 +14,7 @@ import { IZosFilesResponse, Download, IDsmListOptions, List } from "@zowe/zos-fi
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
 
 /**
- * Handler to download all members given a data set name/pattern
+ * Handler to download all members given a data set name & pattern
  * @export
  */
 export default class AllMembersMatchingHandler extends ZosFilesBaseHandler {
@@ -35,7 +35,7 @@ export default class AllMembersMatchingHandler extends ZosFilesBaseHandler {
         }
 
         const listStatus: ITaskWithStatus = {
-            statusMessage: "Searching for data sets",
+            statusMessage: "Searching for members",
             percentComplete: 0,
             stageName: TaskStage.IN_PROGRESS
         };
@@ -46,7 +46,8 @@ export default class AllMembersMatchingHandler extends ZosFilesBaseHandler {
             responseTimeout: commandParameters.arguments.responseTimeout
         };
         commandParameters.response.progress.startBar({ task: listStatus });
-        const response = await List.allMembers(session, commandParameters.arguments.pattern.split(","), listOptions);
+        const response = await List.membersMatchingPattern(session, commandParameters.arguments.dataSetName,
+            commandParameters.arguments.pattern.split(","), listOptions);
         commandParameters.response.progress.endBar();
         if (response.success) {
             commandParameters.response.console.log(`\r${response.commandResponse}\n`);
@@ -71,7 +72,7 @@ export default class AllMembersMatchingHandler extends ZosFilesBaseHandler {
             preserveOriginalLetterCase: commandParameters.arguments.preserveOriginalLetterCase,
             failFast: commandParameters.arguments.failFast,
             task: status,
-            responseTimeout: commandParameters.arguments.responseTimeout
+            responseTimeout: commandParameters.arguments.responseTimeout,
         });
     }
 }

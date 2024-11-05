@@ -216,6 +216,14 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
     },
 
     /**
+     * Message indicating that the data sets matching pattern were listed successfully
+     * @type {IMessageDefinition}
+     */
+    membersMatchedPattern: {
+        message: "%d members(s) were found matching pattern."
+    },
+
+    /**
      * Message indicating that file is uploaded to data set successfully
      * @type {IMessageDefinition}
      */
@@ -408,11 +416,27 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
     },
 
     /**
+     * Message indicating that no members xsremain to be downloaded after the excluded ones were filtered out.
+     * @type {IMessageDefinition}
+     */
+    noMembersMatchingPattern: {
+        message: "There are no members that match the provided pattern(s)."
+    },
+
+    /**
      * Message indicating that no data sets remain to be downloaded after the excluded ones were filtered out.
      * @type {IMessageDefinition}
      */
     noDataSetsInList: {
         message: "No data sets left after excluded pattern(s) were filtered out."
+    },
+
+    /**
+     * Message indicating that no data sets remain to be downloaded after the excluded ones were filtered out.
+     * @type {IMessageDefinition}
+     */
+    noMembersInList: {
+        message: "No members left after excluded pattern(s) were filtered out."
     },
 
     /**
