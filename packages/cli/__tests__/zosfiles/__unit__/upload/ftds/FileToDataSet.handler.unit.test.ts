@@ -330,7 +330,7 @@ describe("Upload file-to-data-set handler", () => {
                 }
             });
 
-            expect(apiMessage).toBe(""); 
+            expect(apiMessage).toBe("");
 
             expect(logMessage).toMatch(/success:.*false/);
             expect(logMessage).toMatch(/from:.*test-file/);
