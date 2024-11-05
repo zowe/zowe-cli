@@ -10,6 +10,7 @@
 */
 
 import * as SessConstants from "../SessConstants";
+import { ProxyVariables } from "./ProxyVariables";
 
 /**
  * Session interface for maintaining cookie and protocol information
@@ -185,4 +186,13 @@ export interface ISession {
      * @memberof ISession
      */
     authTypeOrder?: string[];
+
+    /**
+     * Specifies external proxy settings
+     * values will override environment variable proxy settings
+     *
+     * @type {ProxyVariables[]}
+     * @memberof ISession
+     */
+    proxy?: ProxyVariables;
 }
