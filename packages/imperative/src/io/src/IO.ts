@@ -129,7 +129,7 @@ export class IO {
      * @deprecated Please use IO.createDirSync
      */
     public static createDirsSync(dir: string) {
-        this.createDirSync(dir);
+        IO.createDirSync(dir);
     }
 
     /**
@@ -194,7 +194,7 @@ export class IO {
      */
     public static mkdirp(dir: string) {
         ImperativeExpect.toBeDefinedAndNonBlank(dir, "dir");
-        this.createDirSync(dir);
+        IO.createDirSync(dir);
     }
 
     /**
