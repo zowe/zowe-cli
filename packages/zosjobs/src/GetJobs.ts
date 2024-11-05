@@ -194,6 +194,7 @@ export class GetJobs {
             }
         }
 
+
         let resource = JobsConstants.RESOURCE;
         resource += query === JobsConstants.QUERY_ID ? "" : query;
         Logger.getAppLogger().info("GetJobs.getJobsCommon() resource: " + resource);

@@ -10,6 +10,7 @@
 */
 
 import * as fs from "fs";
+import * as path from "path";
 import { spawnSync, SpawnSyncReturns, ExecFileException } from "child_process";
 import { ITestEnvironment } from "./environment/doc/response/ITestEnvironment";
 import { ICommandDefinition, IHandlerParameters } from "@zowe/imperative";
@@ -55,12 +56,16 @@ export function runCliScript(scriptPath: string, testEnvironment: ITestEnvironme
         } catch {
             fs.chmodSync(scriptPath, "755");
         }
-        return spawnSync(scriptPath, args, {
+        const response = spawnSync(scriptPath, args, {
             cwd: testEnvironment.workingDir,
             env: childEnv,
             encoding: "buffer"
         });
+        if (process.platform === "darwin" && (response.error as ExecFileException)?.errno === -8) {
+            throw new Error(`The script file ${path.basename(scriptPath)} failed to execute. Check that it starts with a shebang line.`);
+        }
 
+        return response;
     } else {
         throw new Error(`The script file ${scriptPath} doesn't exist`);
 
@@ -121,7 +126,9 @@ export function mockHandlerParameters(params: PartialHandlerParameters): IHandle
             },
             progress: {
                 startBar: jest.fn((parms) => undefined),
-                endBar: jest.fn(() => undefined)
+                endBar: jest.fn(() => undefined),
+                startSpinner: jest.fn(() => undefined),
+                endSpinner: jest.fn(() => undefined)
             },
             format: {
                 output: jest.fn((parms) => {

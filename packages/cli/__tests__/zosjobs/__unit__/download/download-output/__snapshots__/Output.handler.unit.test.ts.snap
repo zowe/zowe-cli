@@ -35,6 +35,20 @@ Destination: ./output"
 
 exports[`download output handler tests should download a job output using defaults 2`] = `Object {}`;
 
+exports[`download output handler tests should download a job output using wfa 1`] = `
+"Successfully downloaded the job output
+Destination: ./output"
+`;
+
+exports[`download output handler tests should download a job output using wfa 2`] = `Object {}`;
+
+exports[`download output handler tests should download a job output using wfo 1`] = `
+"Successfully downloaded the job output
+Destination: ./output"
+`;
+
+exports[`download output handler tests should download a job output using wfo 2`] = `Object {}`;
+
 exports[`download output handler tests should download a job output with a specific extension 1`] = `
 "Successfully downloaded the job output
 Destination: ./output"

@@ -9,8 +9,14 @@
 *
 */
 
-import { AbstractSession, IHandlerParameters, ITaskWithStatus, TaskStage, TextUtils } from "@zowe/imperative";
-import { Upload, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
+import {
+    AbstractSession,
+    IHandlerParameters,
+    ITaskWithStatus,
+    TaskStage,
+    TextUtils,
+} from "@zowe/imperative";
+import { Upload, IZosFilesResponse, IUploadOptions, ZosFilesAttributes } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
 
 /**
@@ -18,22 +24,41 @@ import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
  * @export
  */
 export default class FileToUSSHandler extends ZosFilesBaseHandler {
-    public async processWithSession(commandParameters: IHandlerParameters,
-        session: AbstractSession): Promise<IZosFilesResponse> {
+    public async processWithSession(
+        commandParameters: IHandlerParameters,
+        session: AbstractSession
+    ): Promise<IZosFilesResponse> {
         const task: ITaskWithStatus = {
             percentComplete: 0,
             statusMessage: "Uploading USS file",
-            stageName: TaskStage.IN_PROGRESS
+            stageName: TaskStage.IN_PROGRESS,
         };
         commandParameters.response.progress.startBar({ task });
 
-        const response = await Upload.fileToUssFile(session, commandParameters.arguments.inputfile,
-            commandParameters.arguments.USSFileName, {
-                binary: commandParameters.arguments.binary,
-                encoding: commandParameters.arguments.encoding,
-                task,
-                responseTimeout: commandParameters.arguments.responseTimeout
-            });
+        const uploadOptions: IUploadOptions = {
+            binary: commandParameters.arguments.binary,
+            encoding: commandParameters.arguments.encoding,
+            maxConcurrentRequests:
+                commandParameters.arguments.maxConcurrentRequests,
+            task: task,
+            responseTimeout: commandParameters.arguments.responseTimeout,
+            includeHidden: commandParameters.arguments.includeHidden,
+        };
+
+        const attributes = ZosFilesAttributes.loadFromFile(
+            commandParameters.arguments.attributes,
+            commandParameters.arguments.inputDir
+        );
+        if (attributes != null) {
+            uploadOptions.attributes = attributes;
+        }
+
+        const response = await Upload.uploadFile(
+            session,
+            commandParameters.arguments.inputfile,
+            commandParameters.arguments.USSFileName,
+            uploadOptions
+        );
 
         const formatMessage = TextUtils.prettyJson(response.apiResponse);
         commandParameters.response.console.log(formatMessage);

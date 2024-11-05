@@ -327,6 +327,17 @@ describe("Command Response", () => {
         expect((response.progress as any).mProgressBarInterval).not.toBeDefined();
     });
 
+    it("should start and stop a spinner", () => {
+        const response: CommandResponse = new CommandResponse({
+            silent: false,
+            responseFormat: "default",
+            stream,
+        });
+        (response.progress as any).startSpinner("Test Spinner....");
+        expect((response as any).progress.spinnerInterval).toBeDefined();
+        (response.progress as any).endSpinner("Done");
+        expect((response as any).progress.spinnerInterval).toBe(null);
+    });
     it("should allow us to create an instance", () => {
         let caughtError;
         try {
@@ -414,7 +425,6 @@ describe("Command Response", () => {
         response.failed();
         expect(response.buildJsonResponse()).toMatchSnapshot();
     });
-
     it("should allow us to indicate that the command succeeded", () => {
         const response = new CommandResponse();
         response.failed();

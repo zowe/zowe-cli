@@ -288,4 +288,66 @@ describe("download output handler tests", () => {
         expect(error instanceof ImperativeError).toBe(true);
         expect(error.message).toMatchSnapshot();
     });
+
+    it("should download a job output using wfa", async () => {
+        let passedSession: Session = null;
+        GetJobs.getJob = jest.fn(async (session, jobid) => {
+            passedSession = session;
+            return GetJobsData.SAMPLE_COMPLETE_JOB;
+        });
+        DownloadJobs.downloadAllSpoolContentCommon = jest.fn(
+            async (session, options) => {
+                return;
+            }
+        );
+        const handler = new OutputHandler.default();
+        const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
+        params.arguments = Object.assign({}, ...[DEFAULT_PARAMETERS.arguments]);
+        params.arguments.jobid = GetJobsData.SAMPLE_COMPLETE_JOB.jobid;
+        params.arguments.wfa = true;
+        const opts: IDownloadAllSpoolContentParms = {
+            jobname: GetJobsData.SAMPLE_COMPLETE_JOB.jobname,
+            jobid: GetJobsData.SAMPLE_COMPLETE_JOB.jobid,
+            outDir: DownloadJobs.DEFAULT_JOBS_OUTPUT_DIR,
+            omitJobidDirectory: false,
+            waitForActive: params.arguments.waitForActive
+        };
+        await handler.process(params);
+        expect(GetJobs.getJob).toHaveBeenCalledTimes(1);
+        expect(DownloadJobs.downloadAllSpoolContentCommon).toHaveBeenCalledWith(
+            passedSession,
+            opts
+        );
+    });
+
+    it("should download a job output using wfo", async () => {
+        let passedSession: Session = null;
+        GetJobs.getJob = jest.fn(async (session, jobid) => {
+            passedSession = session;
+            return GetJobsData.SAMPLE_COMPLETE_JOB;
+        });
+        DownloadJobs.downloadAllSpoolContentCommon = jest.fn(
+            async (session, options) => {
+                return;
+            }
+        );
+        const handler = new OutputHandler.default();
+        const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
+        params.arguments = Object.assign({}, ...[DEFAULT_PARAMETERS.arguments]);
+        params.arguments.jobid = GetJobsData.SAMPLE_COMPLETE_JOB.jobid;
+        params.arguments.wfo = true;
+        const opts: IDownloadAllSpoolContentParms = {
+            jobname: GetJobsData.SAMPLE_COMPLETE_JOB.jobname,
+            jobid: GetJobsData.SAMPLE_COMPLETE_JOB.jobid,
+            outDir: DownloadJobs.DEFAULT_JOBS_OUTPUT_DIR,
+            omitJobidDirectory: false,
+            waitForOutput: params.arguments.waitForOutput
+        };
+        await handler.process(params);
+        expect(GetJobs.getJob).toHaveBeenCalledTimes(1);
+        expect(DownloadJobs.downloadAllSpoolContentCommon).toHaveBeenCalledWith(
+            passedSession,
+            opts
+        );
+    });
 });

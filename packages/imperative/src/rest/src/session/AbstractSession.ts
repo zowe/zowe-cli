@@ -213,8 +213,12 @@ export abstract class AbstractSession {
         }
 
         // set strictSSL
-        if (populatedSession.strictSSL === undefined || populatedSession.strictSSL === null) {
-            populatedSession.strictSSL = AbstractSession.DEFAULT_STRICT_SSL;
+        if (populatedSession.proxy?.proxy_strict_ssl === false) {
+            populatedSession.strictSSL = false;
+        } else {
+            if (populatedSession.proxy?.proxy_strict_ssl || populatedSession.strictSSL === undefined || populatedSession.strictSSL === null) {
+                populatedSession.strictSSL = AbstractSession.DEFAULT_STRICT_SSL;
+            }
         }
 
         // set port if not set

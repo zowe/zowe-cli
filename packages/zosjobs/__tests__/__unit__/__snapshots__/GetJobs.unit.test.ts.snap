@@ -14,6 +14,11 @@ exports[`GetJobs tests getJobs APIs should allow getting jobs by common method w
 Array [
   Object {
     "class": "A",
+    "exec-ended": "2024-01-02T15:58:00.600Z",
+    "exec-member": "SYS1",
+    "exec-started": "2024-01-02T15:57:58.350Z",
+    "exec-submitted": "2024-01-02T15:58:00.600Z",
+    "exec-system": "SYS1",
     "files-url": "www.nowhere.com/restjobs/jobs/files",
     "job-correlator": "123545asdfadf",
     "jobid": "TSUxxx",
@@ -29,6 +34,11 @@ Array [
   },
   Object {
     "class": "A",
+    "exec-ended": "2024-01-02T15:58:00.600Z",
+    "exec-member": "SYS1",
+    "exec-started": "2024-01-02T15:57:58.350Z",
+    "exec-submitted": "2024-01-02T15:58:00.600Z",
+    "exec-system": "SYS1",
     "files-url": "https://tso1:443/zosmf/restjobs/jobs/J0003781USILDAMDD3CE8146.......%3A/files",
     "job-correlator": "J0003781USILDAMDD3CE8146.......:",
     "jobid": "JOB03781",
@@ -49,6 +59,11 @@ exports[`GetJobs tests getJobs APIs should allow getting jobs by common method w
 Array [
   Object {
     "class": "A",
+    "exec-ended": "2024-01-02T15:58:00.600Z",
+    "exec-member": "SYS1",
+    "exec-started": "2024-01-02T15:57:58.350Z",
+    "exec-submitted": "2024-01-02T15:58:00.600Z",
+    "exec-system": "SYS1",
     "files-url": "www.nowhere.com/restjobs/jobs/files",
     "job-correlator": "123545asdfadf",
     "jobid": "TSUxxx",
@@ -64,6 +79,11 @@ Array [
   },
   Object {
     "class": "A",
+    "exec-ended": "2024-01-02T15:58:00.600Z",
+    "exec-member": "SYS1",
+    "exec-started": "2024-01-02T15:57:58.350Z",
+    "exec-submitted": "2024-01-02T15:58:00.600Z",
+    "exec-system": "SYS1",
     "files-url": "https://tso1:443/zosmf/restjobs/jobs/J0003781USILDAMDD3CE8146.......%3A/files",
     "job-correlator": "J0003781USILDAMDD3CE8146.......:",
     "jobid": "JOB03781",
@@ -84,6 +104,11 @@ exports[`GetJobs tests getJobs APIs should get a list of jobs from getJobs and g
 Array [
   Object {
     "class": "A",
+    "exec-ended": "2024-01-02T15:58:00.600Z",
+    "exec-member": "SYS1",
+    "exec-started": "2024-01-02T15:57:58.350Z",
+    "exec-submitted": "2024-01-02T15:58:00.600Z",
+    "exec-system": "SYS1",
     "files-url": "www.nowhere.com/restjobs/jobs/files",
     "job-correlator": "123545asdfadf",
     "jobid": "TSUxxx",
@@ -99,6 +124,11 @@ Array [
   },
   Object {
     "class": "A",
+    "exec-ended": "2024-01-02T15:58:00.600Z",
+    "exec-member": "SYS1",
+    "exec-started": "2024-01-02T15:57:58.350Z",
+    "exec-submitted": "2024-01-02T15:58:00.600Z",
+    "exec-system": "SYS1",
     "files-url": "https://tso1:443/zosmf/restjobs/jobs/J0003781USILDAMDD3CE8146.......%3A/files",
     "job-correlator": "J0003781USILDAMDD3CE8146.......:",
     "jobid": "JOB03781",
@@ -119,6 +149,11 @@ exports[`GetJobs tests getJobs APIs should get a list of jobs from getJobs and g
 Array [
   Object {
     "class": "A",
+    "exec-ended": "2024-01-02T15:58:00.600Z",
+    "exec-member": "SYS1",
+    "exec-started": "2024-01-02T15:57:58.350Z",
+    "exec-submitted": "2024-01-02T15:58:00.600Z",
+    "exec-system": "SYS1",
     "files-url": "www.nowhere.com/restjobs/jobs/files",
     "job-correlator": "123545asdfadf",
     "jobid": "TSUxxx",
@@ -134,6 +169,11 @@ Array [
   },
   Object {
     "class": "A",
+    "exec-ended": "2024-01-02T15:58:00.600Z",
+    "exec-member": "SYS1",
+    "exec-started": "2024-01-02T15:57:58.350Z",
+    "exec-submitted": "2024-01-02T15:58:00.600Z",
+    "exec-system": "SYS1",
     "files-url": "https://tso1:443/zosmf/restjobs/jobs/J0003781USILDAMDD3CE8146.......%3A/files",
     "job-correlator": "J0003781USILDAMDD3CE8146.......:",
     "jobid": "JOB03781",
@@ -154,6 +194,11 @@ exports[`GetJobs tests getJobs APIs should get a list of jobs from getJobsCommon
 Array [
   Object {
     "class": "A",
+    "exec-ended": "2024-01-02T15:58:00.600Z",
+    "exec-member": "SYS1",
+    "exec-started": "2024-01-02T15:57:58.350Z",
+    "exec-submitted": "2024-01-02T15:58:00.600Z",
+    "exec-system": "SYS1",
     "files-url": "www.nowhere.com/restjobs/jobs/files",
     "job-correlator": "123545asdfadf",
     "jobid": "TSUxxx",
@@ -169,6 +214,11 @@ Array [
   },
   Object {
     "class": "A",
+    "exec-ended": "2024-01-02T15:58:00.600Z",
+    "exec-member": "SYS1",
+    "exec-started": "2024-01-02T15:57:58.350Z",
+    "exec-submitted": "2024-01-02T15:58:00.600Z",
+    "exec-system": "SYS1",
     "files-url": "https://tso1:443/zosmf/restjobs/jobs/J0003781USILDAMDD3CE8146.......%3A/files",
     "job-correlator": "J0003781USILDAMDD3CE8146.......:",
     "jobid": "JOB03781",
@@ -189,6 +239,11 @@ exports[`GetJobs tests getJobs APIs should get a list of jobs from getJobsCommon
 Array [
   Object {
     "class": "A",
+    "exec-ended": "2024-01-02T15:58:00.600Z",
+    "exec-member": "SYS1",
+    "exec-started": "2024-01-02T15:57:58.350Z",
+    "exec-submitted": "2024-01-02T15:58:00.600Z",
+    "exec-system": "SYS1",
     "files-url": "www.nowhere.com/restjobs/jobs/files",
     "job-correlator": "123545asdfadf",
     "jobid": "TSUxxx",
@@ -204,6 +259,11 @@ Array [
   },
   Object {
     "class": "A",
+    "exec-ended": "2024-01-02T15:58:00.600Z",
+    "exec-member": "SYS1",
+    "exec-started": "2024-01-02T15:57:58.350Z",
+    "exec-submitted": "2024-01-02T15:58:00.600Z",
+    "exec-system": "SYS1",
     "files-url": "https://tso1:443/zosmf/restjobs/jobs/J0003781USILDAMDD3CE8146.......%3A/files",
     "job-correlator": "J0003781USILDAMDD3CE8146.......:",
     "jobid": "JOB03781",
@@ -224,6 +284,11 @@ exports[`GetJobs tests getJobs APIs should get a list of jobs from getJobsCommon
 Array [
   Object {
     "class": "A",
+    "exec-ended": "2024-01-02T15:58:00.600Z",
+    "exec-member": "SYS1",
+    "exec-started": "2024-01-02T15:57:58.350Z",
+    "exec-submitted": "2024-01-02T15:58:00.600Z",
+    "exec-system": "SYS1",
     "files-url": "www.nowhere.com/restjobs/jobs/files",
     "job-correlator": "123545asdfadf",
     "jobid": "TSUxxx",
@@ -239,6 +304,11 @@ Array [
   },
   Object {
     "class": "A",
+    "exec-ended": "2024-01-02T15:58:00.600Z",
+    "exec-member": "SYS1",
+    "exec-started": "2024-01-02T15:57:58.350Z",
+    "exec-submitted": "2024-01-02T15:58:00.600Z",
+    "exec-system": "SYS1",
     "files-url": "https://tso1:443/zosmf/restjobs/jobs/J0003781USILDAMDD3CE8146.......%3A/files",
     "job-correlator": "J0003781USILDAMDD3CE8146.......:",
     "jobid": "JOB03781",
@@ -259,6 +329,11 @@ exports[`GetJobs tests getJobs APIs should get a list of jobs from getJobsCommon
 Array [
   Object {
     "class": "A",
+    "exec-ended": "2024-01-02T15:58:00.600Z",
+    "exec-member": "SYS1",
+    "exec-started": "2024-01-02T15:57:58.350Z",
+    "exec-submitted": "2024-01-02T15:58:00.600Z",
+    "exec-system": "SYS1",
     "files-url": "www.nowhere.com/restjobs/jobs/files",
     "job-correlator": "123545asdfadf",
     "jobid": "TSUxxx",
@@ -274,6 +349,11 @@ Array [
   },
   Object {
     "class": "A",
+    "exec-ended": "2024-01-02T15:58:00.600Z",
+    "exec-member": "SYS1",
+    "exec-started": "2024-01-02T15:57:58.350Z",
+    "exec-submitted": "2024-01-02T15:58:00.600Z",
+    "exec-system": "SYS1",
     "files-url": "https://tso1:443/zosmf/restjobs/jobs/J0003781USILDAMDD3CE8146.......%3A/files",
     "job-correlator": "J0003781USILDAMDD3CE8146.......:",
     "jobid": "JOB03781",
@@ -294,6 +374,11 @@ exports[`GetJobs tests getJobs APIs should get jobs by owner 1`] = `
 Array [
   Object {
     "class": "A",
+    "exec-ended": "2024-01-02T15:58:00.600Z",
+    "exec-member": "SYS1",
+    "exec-started": "2024-01-02T15:57:58.350Z",
+    "exec-submitted": "2024-01-02T15:58:00.600Z",
+    "exec-system": "SYS1",
     "files-url": "www.nowhere.com/restjobs/jobs/files",
     "job-correlator": "123545asdfadf",
     "jobid": "TSUxxx",
@@ -309,6 +394,11 @@ Array [
   },
   Object {
     "class": "A",
+    "exec-ended": "2024-01-02T15:58:00.600Z",
+    "exec-member": "SYS1",
+    "exec-started": "2024-01-02T15:57:58.350Z",
+    "exec-submitted": "2024-01-02T15:58:00.600Z",
+    "exec-system": "SYS1",
     "files-url": "https://tso1:443/zosmf/restjobs/jobs/J0003781USILDAMDD3CE8146.......%3A/files",
     "job-correlator": "J0003781USILDAMDD3CE8146.......:",
     "jobid": "JOB03781",
@@ -329,6 +419,11 @@ exports[`GetJobs tests getJobs APIs should get jobs by owner and prefix 1`] = `
 Array [
   Object {
     "class": "A",
+    "exec-ended": "2024-01-02T15:58:00.600Z",
+    "exec-member": "SYS1",
+    "exec-started": "2024-01-02T15:57:58.350Z",
+    "exec-submitted": "2024-01-02T15:58:00.600Z",
+    "exec-system": "SYS1",
     "files-url": "www.nowhere.com/restjobs/jobs/files",
     "job-correlator": "123545asdfadf",
     "jobid": "TSUxxx",
@@ -344,6 +439,11 @@ Array [
   },
   Object {
     "class": "A",
+    "exec-ended": "2024-01-02T15:58:00.600Z",
+    "exec-member": "SYS1",
+    "exec-started": "2024-01-02T15:57:58.350Z",
+    "exec-submitted": "2024-01-02T15:58:00.600Z",
+    "exec-system": "SYS1",
     "files-url": "https://tso1:443/zosmf/restjobs/jobs/J0003781USILDAMDD3CE8146.......%3A/files",
     "job-correlator": "J0003781USILDAMDD3CE8146.......:",
     "jobid": "JOB03781",
@@ -364,6 +464,11 @@ exports[`GetJobs tests getJobs APIs should get jobs by prefix 1`] = `
 Array [
   Object {
     "class": "A",
+    "exec-ended": "2024-01-02T15:58:00.600Z",
+    "exec-member": "SYS1",
+    "exec-started": "2024-01-02T15:57:58.350Z",
+    "exec-submitted": "2024-01-02T15:58:00.600Z",
+    "exec-system": "SYS1",
     "files-url": "www.nowhere.com/restjobs/jobs/files",
     "job-correlator": "123545asdfadf",
     "jobid": "TSUxxx",
@@ -379,6 +484,11 @@ Array [
   },
   Object {
     "class": "A",
+    "exec-ended": "2024-01-02T15:58:00.600Z",
+    "exec-member": "SYS1",
+    "exec-started": "2024-01-02T15:57:58.350Z",
+    "exec-submitted": "2024-01-02T15:58:00.600Z",
+    "exec-system": "SYS1",
     "files-url": "https://tso1:443/zosmf/restjobs/jobs/J0003781USILDAMDD3CE8146.......%3A/files",
     "job-correlator": "J0003781USILDAMDD3CE8146.......:",
     "jobid": "JOB03781",
@@ -416,6 +526,11 @@ exports[`GetJobs tests getJobs APIs should have proper URI when using status 1`]
 exports[`GetJobs tests getJobs APIs should locate a job by jobid 1`] = `
 Object {
   "class": "A",
+  "exec-ended": "2024-01-02T15:58:00.600Z",
+  "exec-member": "SYS1",
+  "exec-started": "2024-01-02T15:57:58.350Z",
+  "exec-submitted": "2024-01-02T15:58:00.600Z",
+  "exec-system": "SYS1",
   "files-url": "www.nowhere.com/restjobs/jobs/files",
   "job-correlator": "123545asdfadf",
   "jobid": "TSUxxx",
@@ -445,6 +560,11 @@ exports[`GetJobs tests getJobsByParameters should get jobs even when no params a
 Array [
   Object {
     "class": "A",
+    "exec-ended": "2024-01-02T15:58:00.600Z",
+    "exec-member": "SYS1",
+    "exec-started": "2024-01-02T15:57:58.350Z",
+    "exec-submitted": "2024-01-02T15:58:00.600Z",
+    "exec-system": "SYS1",
     "files-url": "www.nowhere.com/restjobs/jobs/files",
     "job-correlator": "123545asdfadf",
     "jobid": "TSUxxx",
@@ -460,6 +580,11 @@ Array [
   },
   Object {
     "class": "A",
+    "exec-ended": "2024-01-02T15:58:00.600Z",
+    "exec-member": "SYS1",
+    "exec-started": "2024-01-02T15:57:58.350Z",
+    "exec-submitted": "2024-01-02T15:58:00.600Z",
+    "exec-system": "SYS1",
     "files-url": "https://tso1:443/zosmf/restjobs/jobs/J0003781USILDAMDD3CE8146.......%3A/files",
     "job-correlator": "J0003781USILDAMDD3CE8146.......:",
     "jobid": "JOB03781",
@@ -480,6 +605,11 @@ exports[`GetJobs tests getJobsByParameters should get jobs when any of the valid
 Array [
   Object {
     "class": "A",
+    "exec-ended": "2024-01-02T15:58:00.600Z",
+    "exec-member": "SYS1",
+    "exec-started": "2024-01-02T15:57:58.350Z",
+    "exec-submitted": "2024-01-02T15:58:00.600Z",
+    "exec-system": "SYS1",
     "files-url": "www.nowhere.com/restjobs/jobs/files",
     "job-correlator": "123545asdfadf",
     "jobid": "TSUxxx",
@@ -495,6 +625,11 @@ Array [
   },
   Object {
     "class": "A",
+    "exec-ended": "2024-01-02T15:58:00.600Z",
+    "exec-member": "SYS1",
+    "exec-started": "2024-01-02T15:57:58.350Z",
+    "exec-submitted": "2024-01-02T15:58:00.600Z",
+    "exec-system": "SYS1",
     "files-url": "https://tso1:443/zosmf/restjobs/jobs/J0003781USILDAMDD3CE8146.......%3A/files",
     "job-correlator": "J0003781USILDAMDD3CE8146.......:",
     "jobid": "JOB03781",
@@ -693,6 +828,11 @@ exports[`GetJobs tests getSpoolFiles APIs should have proper URI when getting sp
 exports[`GetJobs tests getStatus APIs should get a job via getStatus and getStatusCommon 1`] = `
 Object {
   "class": "A",
+  "exec-ended": "2024-01-02T15:58:00.600Z",
+  "exec-member": "SYS1",
+  "exec-started": "2024-01-02T15:57:58.350Z",
+  "exec-submitted": "2024-01-02T15:58:00.600Z",
+  "exec-system": "SYS1",
   "files-url": "www.nowhere.com/restjobs/jobs/files",
   "job-correlator": "123545asdfadf",
   "jobid": "TSUxxx",
@@ -711,6 +851,11 @@ Object {
 exports[`GetJobs tests getStatus APIs should get a job via getStatus and getStatusCommon 2`] = `
 Object {
   "class": "A",
+  "exec-ended": "2024-01-02T15:58:00.600Z",
+  "exec-member": "SYS1",
+  "exec-started": "2024-01-02T15:57:58.350Z",
+  "exec-submitted": "2024-01-02T15:58:00.600Z",
+  "exec-system": "SYS1",
   "files-url": "www.nowhere.com/restjobs/jobs/files",
   "job-correlator": "123545asdfadf",
   "jobid": "TSUxxx",
