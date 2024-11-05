@@ -199,18 +199,16 @@ describe("Command Processor", () => {
             arguments: {
                 _: ["sample", "cmd", "--help"],
                 $0: "",
-                valid: true
-            },
-            silent: true
+                valid: false
+            }
         };
 
         const versionParms: any = {
             arguments: {
                 _: ["sample", "cmd", "--version"],
                 $0: "",
-                valid: true
-            },
-            silent: true
+                valid: false
+            }
         };
 
         beforeEach(() => {
@@ -222,7 +220,7 @@ describe("Command Processor", () => {
                 commandLine: "",
                 promptPhrase: "dummyPrompt",
                 config: {
-                    isValid: () => false, // Simulate faulty config
+                    validate: () => ({valid: false}), // Simulate faulty config
                 } as any,
             });
 
