@@ -117,9 +117,7 @@ export class IO {
      */
     public static createDirSync(dir: string) {
         ImperativeExpect.toBeDefinedAndNonBlank(dir, "dir");
-        if (!IO.existsSync(dir)) {
-            fs.mkdirSync(dir);
-        }
+        fs.mkdirSync(dir, {recursive: true});
     }
 
     /**
