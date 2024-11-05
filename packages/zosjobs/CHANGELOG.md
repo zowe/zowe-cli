@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe z/OS jobs SDK package will be documented in this file.
 
-## Recent Changes
+## `8.7.0`
 - Enhancement: Added waitForOutput & waitForActive as optional parameters to download on zosjobs. [#2326] (https://github.com/zowe/zowe-cli/pull/2326).
 
 ## `8.5.0`
