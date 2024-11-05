@@ -6,6 +6,10 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 - BugFix: Added support for `--encoding` flag to `zowe upload dir-to-uss` to allow for encoding uploaded directories for command group consitency [#2337](https://github.com/zowe/zowe-cli/issues/2337)
 
+## `8.7.0`
+
+- Enhancement: Added --wait-for-active and --wait-for-output to download options on zosjobs. [#2328](https://github.com/zowe/zowe-cli/pull/2328)
+
 ## `8.6.2`
 
 - BugFix: Resolved issue where `zowe zos-files upload file-to-uss` was not properly handling command flags. [#2234](https://github.com/zowe/zowe-cli/pull/2334)
@@ -13,7 +17,6 @@ All notable changes to the Zowe CLI package will be documented in this file.
 ## `8.6.1`
 
 - BugFix: Fixed an issue where the `zowe zos-logs list logs` command could fail or not return all logs if a start time was not supplied. [#2336](https://github.com/zowe/zowe-cli/pull/2336)
-
 
 ## `8.6.0`
 

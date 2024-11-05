@@ -53,6 +53,16 @@ Object {
 }
 `;
 
+exports[`MonitorJobs Public Methods waitForActiveStatus error handling should throw the proper error if catching a normal error 1`] = `"THIS IS A NORMAL ERROR"`;
+
+exports[`MonitorJobs Public Methods waitForActiveStatus error handling should throw the proper error if catching an ImperativeError 1`] = `"EXPECT THIS ERROR TO BE THROWN"`;
+
+exports[`MonitorJobs Public Methods waitForActiveStatus expects should error if missing jobid 1`] = `"Expect Error: Jobid required"`;
+
+exports[`MonitorJobs Public Methods waitForActiveStatus expects should error if missing jobname 1`] = `"Expect Error: Jobname required"`;
+
+exports[`MonitorJobs Public Methods waitForActiveStatus expects should error if missing session 1`] = `"Expect Error: Session must be defined"`;
+
 exports[`MonitorJobs Public Methods waitForJobOutputStatus error handling should throw the proper error if catching a normal error 1`] = `"THIS IS A NORMAL ERROR"`;
 
 exports[`MonitorJobs Public Methods waitForJobOutputStatus error handling should throw the proper error if catching an ImperativeError 1`] = `"EXPECT THIS ERROR TO BE THROWN"`;
