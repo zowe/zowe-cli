@@ -1,12 +1,13 @@
 # Change Log
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+- Enhancement: Add the --ignore-not-found flag to avoid FNF error messages when deleting files so scripts are not interupted during automated batch processing. The flag bypasses warning prompts to confirm delete actions. [#2254](https://github.com/zowe/zowe-cli/pull/2254)
+
 ## `8.7.0`
 
 - Enhancement: Added --wait-for-active and --wait-for-output to download options on zosjobs. [#2328](https://github.com/zowe/zowe-cli/pull/2328)
 
-## Recent Changes
-- Enhancement: Add the --ignore-not-found flag to avoid error messages potentially interrupting a script for automated batch processes. The flag bypasses warning prompts to confirm delete actions. [#2254](https://github.com/zowe/zowe-cli/pull/2254)
 ## `8.6.2`
 
 - BugFix: Resolved issue where `zowe zos-files upload file-to-uss` was not properly handling command flags. [#2234](https://github.com/zowe/zowe-cli/pull/2334)

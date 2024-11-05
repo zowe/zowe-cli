@@ -1,6 +1,18 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Upload file-to-data-set handler process method should display error when upload file to data set 1`] = `undefined`;
+exports[`Upload file-to-data-set handler process method should display error when upload file to data set 1`] = `
+Object {
+  "apiResponse": Array [
+    Object {
+      "from": "test-file",
+      "success": false,
+      "to": "testing",
+    },
+  ],
+  "commandResponse": "upload failed",
+  "success": false,
+}
+`;
 
 exports[`Upload file-to-data-set handler process method should display error when upload file to data set 2`] = `""`;
 

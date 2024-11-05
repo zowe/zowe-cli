@@ -1,6 +1,28 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Upload dir-to-uss handler process method should override .zosattributes content with --attributes content 1`] = `undefined`;
+exports[`Upload dir-to-uss handler process method should override .zosattributes content with --attributes content 1`] = `
+Object {
+  "apiResponse": Array [
+    Object {
+      "from": "/somedir/test_dir",
+      "success": true,
+      "to": "USS_dir",
+    },
+    Object {
+      "from": "testfrom",
+      "success": false,
+      "to": "testto",
+    },
+    Object {
+      "from": "dummy",
+      "success": undefined,
+      "to": "nowhere",
+    },
+  ],
+  "commandResponse": "uploaded",
+  "success": false,
+}
+`;
 
 exports[`Upload dir-to-uss handler process method should override .zosattributes content with --attributes content 2`] = `""`;
 
@@ -19,6 +41,7 @@ exports[`Upload dir-to-uss handler process method should override .zosattributes
   [33mto: [39m  nowhere
 
 
+uploaded
 [32m- [39m
   [33msuccess: [39m[32mtrue[39m
   [33mfrom: [39m   /somedir/test_dir
@@ -32,6 +55,7 @@ exports[`Upload dir-to-uss handler process method should override .zosattributes
   [33mto: [39m  nowhere
 
 
+uploaded
 [32m- [39m
   [33msuccess: [39m[32mtrue[39m
   [33mfrom: [39m   /somedir/test_dir
@@ -44,10 +68,33 @@ exports[`Upload dir-to-uss handler process method should override .zosattributes
   [33mfrom: [39mdummy
   [33mto: [39m  nowhere
 
-"
+
+uploaded"
 `;
 
-exports[`Upload dir-to-uss handler process method should pass attributes when a .zosattributes file is present 1`] = `undefined`;
+exports[`Upload dir-to-uss handler process method should pass attributes when a .zosattributes file is present 1`] = `
+Object {
+  "apiResponse": Array [
+    Object {
+      "from": "/somedir/test_dir",
+      "success": true,
+      "to": "USS_dir",
+    },
+    Object {
+      "from": "testfrom",
+      "success": false,
+      "to": "testto",
+    },
+    Object {
+      "from": "dummy",
+      "success": undefined,
+      "to": "nowhere",
+    },
+  ],
+  "commandResponse": "uploaded",
+  "success": false,
+}
+`;
 
 exports[`Upload dir-to-uss handler process method should pass attributes when a .zosattributes file is present 2`] = `""`;
 
@@ -66,6 +113,7 @@ exports[`Upload dir-to-uss handler process method should pass attributes when a 
   [33mto: [39m  nowhere
 
 
+uploaded
 [32m- [39m
   [33msuccess: [39m[32mtrue[39m
   [33mfrom: [39m   /somedir/test_dir
@@ -78,10 +126,33 @@ exports[`Upload dir-to-uss handler process method should pass attributes when a 
   [33mfrom: [39mdummy
   [33mto: [39m  nowhere
 
-"
+
+uploaded"
 `;
 
-exports[`Upload dir-to-uss handler process method should upload a directory to a USS directory if requested 1`] = `undefined`;
+exports[`Upload dir-to-uss handler process method should upload a directory to a USS directory if requested 1`] = `
+Object {
+  "apiResponse": Array [
+    Object {
+      "from": "/somedir/test_dir",
+      "success": true,
+      "to": "USS_dir",
+    },
+    Object {
+      "from": "testfrom",
+      "success": false,
+      "to": "testto",
+    },
+    Object {
+      "from": "dummy",
+      "success": undefined,
+      "to": "nowhere",
+    },
+  ],
+  "commandResponse": "uploaded",
+  "success": false,
+}
+`;
 
 exports[`Upload dir-to-uss handler process method should upload a directory to a USS directory if requested 2`] = `""`;
 
@@ -99,5 +170,6 @@ exports[`Upload dir-to-uss handler process method should upload a directory to a
   [33mfrom: [39mdummy
   [33mto: [39m  nowhere
 
-"
+
+uploaded"
 `;
