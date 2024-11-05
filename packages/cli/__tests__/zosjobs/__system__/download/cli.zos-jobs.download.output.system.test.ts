@@ -14,6 +14,8 @@ import { ITestEnvironment } from "../../../../../../__tests__/__src__/environmen
 import { runCliScript } from "@zowe/cli-test-utils";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import * as fs from "fs";
+import { Session } from "@zowe/imperative";
+import { GetJobs } from "@zowe/zos-jobs-for-zowe-sdk";
 
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
@@ -43,12 +45,25 @@ describe("zos-jobs download output command", () => {
         });
     });
 
+    describe("Live system tests", () => {
+        it("should download a job and wait for it to reach output status", async () => {
+            const response = runCliScript(__dirname + "/__scripts__/download-output/download_job_wait_for_output.sh",
+                TEST_ENVIRONMENT, [IEFBR14_JCL]);
+                expect(response.stderr.toString()).toBe("");
+                expect(response.status).toBe(0);
+        });
+        it("should download a job and wait for it to reach active status", async () => {
+            const response = runCliScript(__dirname + "/__scripts__/download-output/download_job_wait_for_active.sh",
+                TEST_ENVIRONMENT, [IEFBR14_JCL]);
+                expect(response.stderr.toString()).toBe("");
+                expect(response.status).toBe(0);
+        });
+    });
     describe("output", () => {
         it("should download all spool files of a job", () => {
             const outdir: string = TEST_ENVIRONMENT.workingDir + "/output/JES2";
             const response = runCliScript(__dirname + "/__scripts__/download-output/download.sh",
                 TEST_ENVIRONMENT, [IEFBR14_JCL]);
-
             // Extract the JOBID from the response output
             const jobidRegex = /Submitted job ID: (JOB\d+)/;
             const match = response.stdout.toString().match(jobidRegex);
