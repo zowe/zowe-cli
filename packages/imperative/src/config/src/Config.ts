@@ -119,14 +119,6 @@ export class Config {
 
     // _______________________________________________________________________
     /**
-     * Constructor for Config class. Don't use this directly. Await `Config.load` instead.
-     * @param opts Options to control how Config class behaves
-     * @private
-     */
-    private constructor(public opts?: IConfigOpts) { }
-
-    // _______________________________________________________________________
-    /**
      * Return a Config interface with required fields initialized as empty.
      */
     public static empty(): IConfig {
@@ -147,10 +139,10 @@ export class Config {
         opts = opts || {};
 
         // Create the basic empty configuration
-        const myNewConfig = new Config(opts);
+        const myNewConfig = new Config();
         myNewConfig.mApp = app;
         myNewConfig.mActive = { user: false, global: false };
-        myNewConfig.mVault = opts.vault;
+        myNewConfig.mVault = opts?.vault;
         myNewConfig.mSecure = {};
 
         // Populate configuration file layers
