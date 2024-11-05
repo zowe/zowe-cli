@@ -13,7 +13,6 @@
 import { IOperationResult } from "./doc/IOperationResult";
 import { TaskStage } from "./TaskStage";
 import * as fs from "fs";
-import { removeSync } from "fs-extra";
 import { TextUtils } from "../../utilities";
 import { ITaskWithStatus } from "./doc/ITaskWithStatus";
 import { TaskProgress } from "./TaskProgress";
@@ -475,11 +474,7 @@ export abstract class Operation<T> implements ITaskWithStatus {
         for (let x = 0; x < order.length; x++) {
             this.log.info("Cleaning file: " + this.fileToUndo[x]);
             try {
-                if (fs.statSync(order[x]).isDirectory()) {
-                    removeSync(order[x]);
-                } else {
-                    fs.unlinkSync(order[x]);
-                }
+                fs.rmSync(order[x]);
             } catch (error) {
                 this.log.error("An error occurred deleting: " + order[x]);
                 this.log.error("Message: " + error.message);
