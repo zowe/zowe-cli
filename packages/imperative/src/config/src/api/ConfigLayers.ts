@@ -33,7 +33,7 @@ export class ConfigLayers extends ConfigApi {
      * @param opts The user and global flags that indicate which of the four
      *             config files (aka layers) is to be read.
      */
-    public read(opts?: { user: boolean; global: boolean; ignoreErrors: boolean}) {
+    public read(opts?: { user: boolean; global: boolean; ignoreErrors?: boolean}) {
         // Attempt to populate the layer
         const layer = opts ? this.mConfig.findLayer(opts.user, opts.global) : this.mConfig.layerActive();
         if (fs.existsSync(layer.path)) {
@@ -53,7 +53,7 @@ export class ConfigLayers extends ConfigApi {
             } catch (e) {
                 const msg = `Error parsing JSON in the file '${layer.path}'.\n` +
                 `Please check this configuration file for errors.\nError details: ${e.message}\nLine ${e.line}, Column ${e.column}`;
-                if (!opts.ignoreErrors){
+                if (!opts?.ignoreErrors){
                     throw new ImperativeError({
                         msg:msg,
                         suppressDump: true

@@ -199,7 +199,7 @@ describe("Command Processor", () => {
             arguments: {
                 _: ["sample", "cmd", "--help"],
                 $0: "",
-                valid: false
+                valid: true
             }
         };
 
@@ -207,7 +207,7 @@ describe("Command Processor", () => {
             arguments: {
                 _: ["sample", "cmd", "--version"],
                 $0: "",
-                valid: false
+                valid: true
             }
         };
 
