@@ -430,7 +430,124 @@ describe("MonitorJobs", () => {
                 });
             });
         });
+        describe("waitForActiveStatus", () => {
+            let waitForStatusCommonSpy = jest.spyOn(privateMonitorJobs, "waitForStatusCommon");
 
+            beforeEach(() => {
+                waitForStatusCommonSpy.mockReset();
+                waitForStatusCommonSpy = jest.spyOn(privateMonitorJobs, "waitForStatusCommon");
+            });
+
+            afterAll(() => {
+                waitForStatusCommonSpy.mockRestore();
+            });
+
+            describe("expects", () => {
+                it("should call waitForStatusCommon", async () => {
+                    const returnValue = "RETURNED FROM COMMON METHOD";
+                    const jobname = "FAKE";
+                    const jobid = "FAKE";
+                    waitForStatusCommonSpy.mockReturnValue(returnValue);
+
+                    expect(await MonitorJobs.waitForActiveStatus({test: "1234"} as any, jobname, jobid)).toBe(returnValue);
+                    expect(MonitorJobs.waitForStatusCommon).toHaveBeenCalledTimes(1);
+                    expect(MonitorJobs.waitForStatusCommon).toHaveBeenCalledWith({test: "1234"}, {
+                        jobname,
+                        jobid,
+                        status: JOB_STATUS.ACTIVE
+                    });
+                });
+
+                it("should error if missing session", async () => {
+                    let error;
+                    const jobname = "FAKE";
+                    const jobid = "FAKE";
+                    try {
+                        await MonitorJobs.waitForActiveStatus(undefined as any, jobname, jobid);
+                    } catch (e) {
+                        error = e;
+                    }
+                    expect(error).toBeDefined();
+                    expect(error instanceof ImperativeError).toBe(true);
+                    expect(error.message).toMatchSnapshot();
+                });
+
+                it("should error if missing jobname", async () => {
+                    let error;
+                    const jobname = undefined as any;
+                    const jobid = "FAKE";
+                    try {
+                        await MonitorJobs.waitForActiveStatus(session, jobname, jobid);
+                    } catch (e) {
+                        error = e;
+                    }
+                    expect(error).toBeDefined();
+                    expect(error instanceof ImperativeError).toBe(true);
+                    expect(error.message).toMatchSnapshot();
+                });
+
+                it("should error if missing jobid", async () => {
+                    let error;
+                    const jobname = "FAKE";
+                    const jobid = undefined as any;
+                    try {
+                        await MonitorJobs.waitForActiveStatus(session, jobname, jobid);
+                    } catch (e) {
+                        error = e;
+                    }
+                    expect(error).toBeDefined();
+                    expect(error instanceof ImperativeError).toBe(true);
+                    expect(error.message).toMatchSnapshot();
+                });
+            });
+            describe("error handling", () => {
+                const parms: IMonitorJobWaitForParms = {
+                    jobid  : "FAKE",
+                    jobname: "FAKE"
+                };
+
+                it("should throw the proper error if catching an ImperativeError", async () => {
+                    const error = new ImperativeError({
+                        msg: "EXPECT THIS ERROR TO BE THROWN"
+                    });
+
+                    let expectError: any;
+
+                    waitForStatusCommonSpy.mockImplementationOnce(async () => {
+                        throw error;
+                    });
+
+                    try {
+                        await MonitorJobs.waitForStatusCommon(session, parms);
+                    } catch (e) {
+                        expectError = e;
+                    }
+
+                    expect(expectError).toBeInstanceOf(ImperativeError);
+                    expect(expectError.message).toMatchSnapshot();
+                });
+
+                it("should throw the proper error if catching a normal error", async () => {
+                    const error = new Error("THIS IS A NORMAL ERROR");
+
+                    let expectError: Error;
+
+                    waitForStatusCommonSpy.mockImplementationOnce(async () => {
+                        throw error;
+                    });
+
+                    try {
+                        await MonitorJobs.waitForStatusCommon(session, parms);
+                    } catch (e) {
+                        expectError = e;
+                    }
+
+                    expect(expectError).toBeInstanceOf(Error);
+                    expect(expectError.message).toMatchSnapshot();
+                });
+            });
+
+        });
         describe("waitForOutputStatus", () => {
             let waitForStatusCommonSpy = jest.spyOn(privateMonitorJobs, "waitForStatusCommon");
 
