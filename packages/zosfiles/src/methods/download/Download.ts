@@ -24,7 +24,7 @@ import { ZosFilesUtils } from "../../utils/ZosFilesUtils";
 import { List } from "../list/List";
 import { IDownloadOptions, IDownloadSingleOptions } from "./doc/IDownloadOptions";
 import { CLIENT_PROPERTY } from "../../doc/types/ZosmfRestClientProperties";
-import { Tag, Utilities } from "../utilities";
+import { Utilities } from "../utilities";
 import { IZosmfListResponse } from "../list/doc/IZosmfListResponse";
 import { IDownloadDsmResult } from "./doc/IDownloadDsmResult";
 import { IDownloadUssDirResult } from "./doc/IDownloadUssDirResult";
@@ -523,7 +523,7 @@ export class Download {
 
             if(options.attributes)
             {
-                options = { ...options, ...this.parseAttributeOptions(ussFileName,options)}
+                options = { ...options, ...this.parseAttributeOptions(ussFileName,options)};
                 if(options.binary) options.encoding = undefined;
             }
 
