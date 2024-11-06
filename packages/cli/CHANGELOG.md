@@ -4,7 +4,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## Recent Changes
 
-- Enhancement: Allows for passing a `.zosattributues` file path for the download encoding format via the `--attributes` flag on the `zowe zos-files download` command [#2322](https://github.com/zowe/zowe-cli/issues/2322)
+- Enhancement: Pass a `.zosattributes` file path for the download encoding format by adding the new --attributes flag to the `zowe zos-files upload` command.[#2322](https://github.com/zowe/zowe-cli/issues/2322)
 
 ## `8.7.0`
 
