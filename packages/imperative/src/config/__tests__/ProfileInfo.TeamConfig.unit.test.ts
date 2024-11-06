@@ -304,7 +304,7 @@ describe("TeamConfig ProfileInfo tests", () => {
         it("should return false if secure credentials fail to load", async () => {
             const profInfo = createNewProfInfo(teamProjDir);
             jest.spyOn((profInfo as any).mCredentials, "isCredentialManagerInAppSettings").mockReturnValueOnce(true);
-            jest.spyOn((profInfo as any).mCredentials, "loadManager").mockImplementationOnce(async () => {
+            jest.spyOn((profInfo as any).mCredentials, "activateCredMgrOverride").mockImplementationOnce(async () => {
                 throw new Error("bad credential manager");
             });
 

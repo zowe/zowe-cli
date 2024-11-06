@@ -74,6 +74,25 @@ export class ProfileCredentials {
             throw new ImperativeError({ msg: "Secure credential storage is not enabled" });
         }
 
+        await this.activateCredMgrOverride();
+
+        if (this.mProfileInfo.usingTeamConfig) {
+            await this.mProfileInfo.getTeamConfig().api.secure.load({
+                load: (key: string): Promise<string> => {
+                    return CredentialManagerFactory.manager.load(key, true);
+                },
+                save: (key: string, value: any): Promise<void> => {
+                    return CredentialManagerFactory.manager.save(key, value);
+                }
+            });
+        }
+    }
+
+    /**
+     * Attempt to initialize `CredentialManagerFactory` with the specified override.
+     * @internal
+     */
+    public async activateCredMgrOverride(): Promise<void> {
         if (!CredentialManagerFactory.initialized) {
             try {
                 // TODO? Make CredentialManagerFactory.initialize params optional
@@ -85,17 +104,6 @@ export class ProfileCredentials {
                     causeErrors: error
                 });
             }
-        }
-
-        if (this.mProfileInfo.usingTeamConfig) {
-            await this.mProfileInfo.getTeamConfig().api.secure.load({
-                load: ((key: string): Promise<string> => {
-                    return CredentialManagerFactory.manager.load(key, true);
-                }),
-                save: ((key: string, value: any): Promise<void> => {
-                    return CredentialManagerFactory.manager.save(key, value);
-                })
-            });
         }
     }
 
