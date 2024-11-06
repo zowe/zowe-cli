@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+BugFix: Added support for `--encoding` flag to `zowe upload dir-to-uss` to allow for encoding uploaded directories for command group consistency.
+
 ## `7.29.1`
 
 - BugFix: Updated `micromatch` dependency for technical currency. [#2242](https://github.com/zowe/zowe-cli/pull/2242)

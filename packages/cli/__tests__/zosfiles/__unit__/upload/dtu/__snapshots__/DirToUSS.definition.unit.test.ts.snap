@@ -73,6 +73,14 @@ The maximum number of TSO address spaces have been created. When you specify 0, 
     "name": "include-hidden",
     "type": "boolean",
   },
+  Object {
+    "aliases": Array [
+      "ec",
+    ],
+    "description": "Data content in encoding mode, which means that data conversion is performed according to the encoding specified.",
+    "name": "encoding",
+    "type": "string",
+  },
 ]
 `;
 
