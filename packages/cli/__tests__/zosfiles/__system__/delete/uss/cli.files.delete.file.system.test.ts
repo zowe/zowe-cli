@@ -138,6 +138,12 @@ describe("Delete File", () => {
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toMatchSnapshot();
+
+            //delete this file a second time, it doesnt exist. ensure no output because --inf
+            const secondResponse = runCliScript(__dirname + "/__scripts__/command/command_delete_file.sh",
+                TEST_ENVIRONMENT, [ussname, "--for-sure", "--ignore-not-found"]);
+            expect(secondResponse.stderr.toString()).toBe("");
+            expect(secondResponse.status).toBe(0);
         });
     });
 

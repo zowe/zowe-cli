@@ -9,7 +9,7 @@
 *
 */
 
-import { IHandlerParameters, ImperativeError, Session } from "@zowe/imperative";
+import { IHandlerParameters, Session } from "@zowe/imperative";
 import { Download, IDownloadOptions, IDsmListOptions, List } from "@zowe/zos-files-for-zowe-sdk";
 import * as DataSetMatchingDefinition from "../../../../../src/zosfiles/download/dsm/DataSetMatching.definition";
 import * as DataSetMatchingHandler from "../../../../../src/zosfiles/download/dsm/DataSetMatching.handler";
@@ -178,34 +178,30 @@ describe("Download DataSetMatching handler", () => {
     });
 
     it("should gracefully handle an error from the z/OSMF List API", async () => {
-        const errorMsg = "i haz bad data set"; // Expected error message
+        const errorMsg = "i haz bad data set";
         const pattern = "testing";
-        let caughtError: ImperativeError | undefined;
-
-        // Mock the List API to throw an error
-        List.dataSetsMatchingPattern = jest.fn(async () => {
-            throw new ImperativeError({ msg: errorMsg });
+        let caughtError;
+        let passedSession: Session = null;
+        List.dataSetsMatchingPattern = jest.fn((session) => {
+            passedSession = session;
+            throw new Error(errorMsg);
         });
-
-        Download.allDataSets = jest.fn(); // Mock the download function
+        Download.allDataSets = jest.fn();
 
         const handler = new DataSetMatchingHandler.default();
-        const params = {
-            ...DEFAULT_PARAMETERS,
-            arguments: { ...DEFAULT_PARAMETERS.arguments, pattern }
-        };
-
+        const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
+        params.arguments = Object.assign({}, ...[DEFAULT_PARAMETERS.arguments]);
+        params.arguments.pattern = pattern;
         try {
             await handler.process(params);
         } catch (error) {
-            caughtError = error as ImperativeError;
+            caughtError = error;
         }
 
-        // Assertions
-        expect(caughtError).toBeDefined(); // Ensure an error was thrown
-        expect(caughtError?.message).toContain(errorMsg);
+        expect(caughtError).toBeDefined();
+        expect(caughtError.message).toBe(errorMsg);
         expect(List.dataSetsMatchingPattern).toHaveBeenCalledTimes(1);
-        expect(List.dataSetsMatchingPattern).toHaveBeenCalledWith(expect.any(Object), [pattern], { ...fakeListOptions });
+        expect(List.dataSetsMatchingPattern).toHaveBeenCalledWith(passedSession, [pattern], { ...fakeListOptions });
         expect(Download.allDataSets).toHaveBeenCalledTimes(0);
     });
 });

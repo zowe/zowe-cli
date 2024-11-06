@@ -35,7 +35,7 @@ export default class VsamHandler extends ZosFilesBaseHandler {
                 throw error;
             }
             throw new ImperativeError({
-                msg: error.mMessage || "An unexpected error occurred.",
+                msg: error.message,
                 causeErrors: error
             });
         }
