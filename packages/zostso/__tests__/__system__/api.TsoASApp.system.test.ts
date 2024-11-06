@@ -68,7 +68,7 @@ describe("All test", () => {
             expect(error).toBeUndefined();
             await StopTso.stop(
                 REAL_SESSION,
-                JSON.parse(response.stdout.toString()).servletKey
+                JSON.parse(response.stdout.toString()).data.servletKey
             );
         });
 
@@ -132,9 +132,7 @@ describe("All test", () => {
                 ]
             );
 
-            const startServletkey = JSON.parse(
-                startResponse.stdout.toString()
-            ).servletKey;
+            const startServletkey = JSON.parse(startResponse.stdout.toString()).data.servletKey;
 
             const response = runCliScript(
                 __dirname + "/__scripts__/send/send_tso_app.sh",
@@ -173,7 +171,6 @@ describe("All test", () => {
             expect(responses).toContain(
                 "Application input = LONG 100"
             );
-            expect(responses).toContain("servletKey");
             expect(responses).toContain("READY ");
 
             //Clean up test
@@ -195,9 +192,7 @@ describe("All test", () => {
                     dsname+"(TESTAPP)"
                 ]
             );
-            const startServletkey = JSON.parse(
-                startResponse.stdout.toString()
-            ).servletKey;
+            const startServletkey = JSON.parse(startResponse.stdout.toString()).data.servletKey;
             runCliScript(
                 __dirname + "/__scripts__/send/send_tso_app.sh",
                 testEnvironment,
@@ -248,9 +243,7 @@ describe("All test", () => {
                     dsname+"(TESTAPP)"
                 ]
             );
-            const startServletkey = JSON.parse(
-                startResponse.stdout.toString()
-            ).servletKey;
+            const startServletkey = JSON.parse(startResponse.stdout.toString()).data.servletKey;
             runCliScript(
                 __dirname + "/__scripts__/send/send_tso_app.sh",
                 testEnvironment,
