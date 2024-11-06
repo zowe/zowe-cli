@@ -141,6 +141,12 @@ describe("Delete VSAM Data Set", () => {
             expect(deleteResponse.stderr.toString()).toBe("");
             expect(deleteResponse.status).toBe(0);
             expect(deleteResponse.stdout.toString()).toMatchSnapshot();
+
+            //delete vsam a second time, it doesnt exist. ensure no output because --inf
+            const secondDeleteResponse = runCliScript(__dirname + "/__scripts__/command/command_delete_vsam_data_set.sh",
+                TEST_ENVIRONMENT, [dsname, "--for-sure", "--ignore-not-found"]);
+            expect(secondDeleteResponse.stderr.toString()).toBe("");
+            expect(secondDeleteResponse.status).toBe(0);
         });
     });
 
