@@ -11,7 +11,6 @@
 
 import { ITaskWithStatus } from "@zowe/imperative";
 import { IZosFilesOptions } from "./IZosFilesOptions";
-import { ZosFilesAttributes } from "../utils/ZosFilesAttributes";
 
 /**
  * This interface defines the options that can be sent to get a data set or USS file function
