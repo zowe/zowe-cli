@@ -10,7 +10,7 @@
 */
 
 import { AbstractSession, Headers, ImperativeError, IO } from "@zowe/imperative";
-import { DownloadJobs, GetJobs, IDownloadAllSpoolContentParms, IDownloadSpoolContentParms, IJobFile } from "../../src";
+import { DownloadJobs, GetJobs, IDownloadAllSpoolContentParms, IDownloadSpoolContentParms, IJobFile, MonitorJobs } from "../../src";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { Writable } from "stream";
 
@@ -244,6 +244,66 @@ describe("DownloadJobs", () => {
 
                 expect(IO.createDirsSyncFromFilePath).toHaveBeenCalledWith(downloadFilePath);
                 expect(uri).toContain("?mode=binary");
+            });
+
+            it("should allow users to call downloadSpoolContentCommon with correct params (default outDir and waitForJobOutputStatus)", async () => {
+                let uri: string = "";
+                ZosmfRestClient.getStreamed = jest.fn(async (session: AbstractSession, resource: string, reqHeaders?: any[]): Promise<any> => {
+                    uri = resource;
+                });
+                const jobFile: IJobFile = JSON.parse(JSON.stringify(jobFiles[0]));
+                const spoolParms: IDownloadSpoolContentParms = {
+                    jobFile: jobFile,
+                    jobid: fakeJobID,
+                    jobname: fakeJobName,
+                    waitForOutput: true
+                };
+
+                const completedJob: any = {
+                    jobname: fakeJobName,
+                    jobid: fakeJobID,
+                    status: "OUTPUT",
+                    retcode: "CC 0000"
+                };
+
+                const waitForJobOutputStatusSpy = jest.spyOn(MonitorJobs, "waitForJobOutputStatus").mockImplementation(() => {return completedJob;});
+
+                const downloadFilePath = DownloadJobs.getSpoolDownloadFilePath(spoolParms);
+
+                await DownloadJobs.downloadSpoolContentCommon(fakeSession, spoolParms);
+
+                expect(IO.createDirsSyncFromFilePath).toHaveBeenCalledWith(downloadFilePath);
+                expect(waitForJobOutputStatusSpy).toHaveBeenCalledTimes(1);
+            });
+
+            it("should allow users to call downloadSpoolContentCommon with correct params (default outDir and waitForActiveStatus)", async () => {
+                let uri: string = "";
+                ZosmfRestClient.getStreamed = jest.fn(async (session: AbstractSession, resource: string, reqHeaders?: any[]): Promise<any> => {
+                    uri = resource;
+                });
+                const jobFile: IJobFile = JSON.parse(JSON.stringify(jobFiles[0]));
+                const spoolParms: IDownloadSpoolContentParms = {
+                    jobFile: jobFile,
+                    jobid: fakeJobID,
+                    jobname: fakeJobName,
+                    waitForActive: true
+                };
+
+                const completedJob: any = {
+                    jobname: fakeJobName,
+                    jobid: fakeJobID,
+                    status: "OUTPUT",
+                    retcode: "CC 0000"
+                };
+
+                const waitForActiveStatusSpy = jest.spyOn(MonitorJobs, "waitForActiveStatus").mockImplementation(() => {return completedJob;});
+
+                const downloadFilePath = DownloadJobs.getSpoolDownloadFilePath(spoolParms);
+
+                await DownloadJobs.downloadSpoolContentCommon(fakeSession, spoolParms);
+
+                expect(IO.createDirsSyncFromFilePath).toHaveBeenCalledWith(downloadFilePath);
+                expect(waitForActiveStatusSpy).toHaveBeenCalledTimes(1);
             });
 
             it("should allow users to call downloadSpoolContentCommon with correct parameters (streamed in binary mode)", async () => {

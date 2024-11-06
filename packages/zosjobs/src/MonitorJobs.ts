@@ -47,6 +47,25 @@ export class MonitorJobs {
     public static readonly DEFAULT_ATTEMPTS = Infinity;
 
     /**
+     * Given the jobname/jobid, waits for the status of the job to be "ACTIVE".
+     *
+     * See JSDoc for "waitForStatusCommon" for full details on polling and other logic.
+     *
+     * @static
+     * @param {AbstractSession} session - a Rest client session for z/OSMF
+     * @param {string} jobname - the z/OS jobname of the job to wait for output status (see z/OSMF Jobs APIs for details)
+     * @param {string} jobid - the z/OS jobid of the job to wait for output status (see z/OSMF Jobs APIS for details)
+     * @returns {Promise<IJob>} - the promise to be fulfilled with IJob object (or rejected with an ImperativeError)
+     * @memberof MonitorJobs
+     */
+    public static waitForActiveStatus(session: AbstractSession, jobname: string, jobid: string): Promise<IJob> {
+        ImperativeExpect.toNotBeNullOrUndefined(jobname, "Jobname required");
+        ImperativeExpect.toNotBeNullOrUndefined(jobid, "Jobid required");
+        ImperativeExpect.toNotBeNullOrUndefined(session, "Session must be defined");
+        return MonitorJobs.waitForStatusCommon(session, {jobname, jobid, status: JOB_STATUS.ACTIVE});
+    }
+
+    /**
      * Given an IJob (has jobname/jobid), waits for the status of the job to be "OUTPUT". This API will poll for
      * the OUTPUT status once every 3 seconds indefinitely. If the polling interval/duration is NOT sufficient, use
      * "waitForStatusCommon" to adjust.

@@ -77,4 +77,15 @@ export interface IDownloadAllSpoolContentParms {
      * @memberof IDownloadSpoolContentParms
      */
     encoding?: string;
+
+    /**
+     * Wait for the job to reach output status
+     */
+    waitForActive?: boolean;
+
+
+    /**
+     * Wait for the job to reach output status
+     */
+    waitForOutput?: boolean;
 }
