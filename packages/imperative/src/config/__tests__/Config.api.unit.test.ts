@@ -311,7 +311,7 @@ describe("Config API tests", () => {
                 const jsoncParseSpy = jest.spyOn(JSONC, "parse").mockImplementationOnce(() => { throw "failed to parse"; });
 
                 let logMsg: string = "Nothing logged";
-                jest.spyOn(Logger, "getImperativeLogger").mockImplementation(() => {
+                jest.spyOn(Logger, "getAppLogger").mockImplementation(() => {
                     return {
                         error: jest.fn((errMsg) => {
                             logMsg = errMsg;
@@ -324,12 +324,12 @@ describe("Config API tests", () => {
                 } catch(err) {
                     caughtError = err;
                 }
-                expect(existsSpy).toHaveBeenCalledTimes(6); // Once for each config layer and one more time for read
+                expect(existsSpy).toHaveBeenCalledTimes(5); // Once for each config layer and one more time for read
                 expect(readFileSpy).toHaveBeenCalledTimes(1);
                 expect(secureLoadSpy).toHaveBeenCalledTimes(1);
                 expect(jsoncParseSpy).toHaveBeenCalledTimes(1);
                 expect(caughtError).toBeUndefined();
-                expect(logMsg).toContain("Nothing logged");
+                expect(logMsg).toContain("Please check this configuration file for errors");
             });
         });
         describe("write", () => {
