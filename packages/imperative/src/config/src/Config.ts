@@ -119,6 +119,14 @@ export class Config {
 
     // _______________________________________________________________________
     /**
+     * Constructor for Config class. Don't use this directly. Await `Config.load` instead.
+     * @param opts Options to control how Config class behaves
+     * @private
+     */
+    private constructor(public opts?: IConfigOpts) { }
+
+    // _______________________________________________________________________
+    /**
      * Return a Config interface with required fields initialized as empty.
      */
     public static empty(): IConfig {

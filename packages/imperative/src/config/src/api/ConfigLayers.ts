@@ -18,8 +18,7 @@ import { ConfigConstants } from "../ConfigConstants";
 import { IConfigLayer } from "../doc/IConfigLayer";
 import { ConfigApi } from "./ConfigApi";
 import { IConfig } from "../doc/IConfig";
-import { TextUtils } from "../../../utilities";
-import { CommandResponse } from "../../../cmd/src/response/CommandResponse";
+import { Logger } from "../../../logger";
 
 /**
  * API Class for manipulating config layers.
@@ -59,10 +58,8 @@ export class ConfigLayers extends ConfigApi {
                         suppressDump: true
                     });
                 } else {
-                    const cmdResp: CommandResponse = new CommandResponse({
-                        responseFormat: "default"
-                    });
-                    cmdResp.console.log(TextUtils.chalk.red(msg));
+                    const logger = Logger.getAppLogger();
+                    logger.error(msg);
                 }
             }
             this.mConfig.api.secure.loadCached(opts);
