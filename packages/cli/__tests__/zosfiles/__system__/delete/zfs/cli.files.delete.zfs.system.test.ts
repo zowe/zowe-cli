@@ -128,11 +128,11 @@ describe("Delete z/OS File System", () => {
             expect(deleteResponse.status).toBe(0);
             expect(deleteResponse.stdout.toString()).toMatchSnapshot();
 
-            //delete this file a second time, it doesnt exist. ensure no output because --inf
-            const secondResponse = runCliScript(__dirname + "/__scripts__/command/command_delete_zfs.sh",
+            //repeat and ensure still no output because --inf
+            const deleteResp = runCliScript(__dirname + "/__scripts__/command/command_delete_zfs.sh",
                 TEST_ENVIRONMENT, [fsname, "--for-sure", "--ignore-not-found"]);
-            expect(secondResponse.stderr.toString()).toBe("");
-            expect(secondResponse.status).toBe(0);
+            expect(deleteResp.stderr.toString()).toBe("");
+            expect(deleteResp.status).toBe(0);
         });
 
     });

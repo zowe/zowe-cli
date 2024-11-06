@@ -148,10 +148,10 @@ describe("Delete Data Set", () => {
                 TEST_ENVIRONMENT, [dsname, "--for-sure", "--ignore-not-found"]);
             expect(deleteResponse.stderr.toString()).toBe("");
             
-            //delete ds a second time, it doesnt exist. ensure no output because --inf
-            const secondDeleteResponse = runCliScript(__dirname + "/__scripts__/command/command_delete_data_set.sh",
+            //delete again
+            const secondDelete = runCliScript(__dirname + "/__scripts__/command/command_delete_data_set.sh",
                 TEST_ENVIRONMENT, [dsname, "--for-sure", "--ignore-not-found"]);
-            expect(secondDeleteResponse.stderr.toString()).toBe("");
+            expect(secondDelete.stderr.toString()).toBe("");
         });
     });
 
