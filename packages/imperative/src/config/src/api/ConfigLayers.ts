@@ -58,8 +58,7 @@ export class ConfigLayers extends ConfigApi {
                         suppressDump: true
                     });
                 } else {
-                    const logger = Logger.getAppLogger();
-                    logger.error(msg);
+                    Logger.getConsoleLogger().error(msg);
                 }
             }
             this.mConfig.api.secure.loadCached(opts);

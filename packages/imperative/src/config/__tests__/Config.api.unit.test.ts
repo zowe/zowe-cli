@@ -311,7 +311,7 @@ describe("Config API tests", () => {
                 const jsoncParseSpy = jest.spyOn(JSONC, "parse").mockImplementationOnce(() => { throw "failed to parse"; });
 
                 let logMsg: string = "Nothing logged";
-                jest.spyOn(Logger, "getAppLogger").mockImplementation(() => {
+                jest.spyOn(Logger, "getConsoleLogger").mockImplementation(() => {
                     return {
                         error: jest.fn((errMsg) => {
                             logMsg = errMsg;

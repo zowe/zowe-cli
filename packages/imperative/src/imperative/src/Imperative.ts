@@ -141,10 +141,10 @@ export class Imperative {
             ImperativeConfig.instance.loadedConfig = config;
 
             // Detect CLI arguments to determine if errors should be ignored
-            const ignoreErrors = process.argv.includes(Constants.HELP_OPTION) ||
-                process.argv.includes(Constants.HELP_OPTION_ALIAS) ||
-                process.argv.includes(Constants.VERSION_OPTION) ||
-                process.argv.includes(Constants.VERSION_OPTION_ALIAS) ||
+            const ignoreErrors = process.argv.includes(Constants.OPT_LONG_DASH + Constants.HELP_OPTION) ||
+                process.argv.includes(Constants.OPT_SHORT_DASH + Constants.HELP_OPTION_ALIAS) ||
+                process.argv.includes(Constants.OPT_LONG_DASH + Constants.VERSION_OPTION) ||
+                process.argv.includes(Constants.OPT_SHORT_DASH + Constants.VERSION_OPTION_ALIAS) ||
                 process.argv[process.argv.length - 1] === require.resolve('@zowe/cli');
 
             /**
