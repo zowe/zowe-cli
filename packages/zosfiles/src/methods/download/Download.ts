@@ -523,10 +523,8 @@ export class Download {
 
             if(options.attributes)
             {
-                options.binary = options.attributes.getFileTransferMode(ussFileName, options.binary) === TransferMode.BINARY;
-                const remoteEncoding = options.attributes.getRemoteEncoding(ussFileName);
-                if(remoteEncoding === Tag.BINARY) options.encoding = undefined;
-                else if(remoteEncoding !== null) options.encoding = remoteEncoding;
+                options = { ...options, ...this.parseAttributeOptions(ussFileName,options)}
+                if(options.binary) options.encoding = undefined;
             }
 
             // If data type is not defined by user via encoding flag or attributes file, check for USS tags
