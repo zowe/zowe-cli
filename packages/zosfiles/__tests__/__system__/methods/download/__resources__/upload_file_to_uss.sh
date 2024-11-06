@@ -9,5 +9,5 @@ inputFile=$7
 ussName=$8
 encoding=$9
 
-zowe zos-files upload file-to-uss $inputFile $ussName --encoding $encoding --host $host --port $port --user $user --password $password --ru $ru
+zowe zos-files upload file-to-uss "$inputFile" "$ussName" --encoding $encoding --host $host --port $port --user $user --password $password --ru $ru
 exit $?

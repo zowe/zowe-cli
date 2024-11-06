@@ -8,5 +8,5 @@ ru=$6
 fileToDownload=$7
 attributes=$8
 
-zowe zos-files download uss $fileToDownload --attributes $attributes --host $host --port $port --user $user --password $password --ru $ru
+zowe zos-files download uss "$fileToDownload" --attributes "$attributes" --host $host --port $port --user $user --password $password --ru $ru
 exit $?

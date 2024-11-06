@@ -9,5 +9,5 @@ inputFile=$7
 ussName=$8
 binary=$9
 
-zowe zos-files upload file-to-uss $inputFile $ussName --binary $binary --host $host --port $port --user $user --password $password --ru $ru
+zowe zos-files upload file-to-uss "$inputFile" "$ussName" --binary $binary --host $host --port $port --user $user --password $password --ru $ru
 exit $?
