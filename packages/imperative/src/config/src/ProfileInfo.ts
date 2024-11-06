@@ -893,7 +893,7 @@ export class ProfileInfo {
     public async profileManagerWillLoad(): Promise<boolean> {
         if (this.mCredentials.isCredentialManagerInAppSettings()) {
             try {
-                await this.mCredentials.loadManager();
+                await this.mCredentials.activateCredMgrOverride();
                 return true;
             } catch (err) {
                 this.mImpLogger.warn("Failed to initialize secure credential manager: " + err.message);
