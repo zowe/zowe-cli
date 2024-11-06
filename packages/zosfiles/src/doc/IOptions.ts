@@ -58,8 +58,4 @@ export interface IOptions extends IZosFilesOptions {
      * @type {ITaskWithStatus}
      */
     task?: ITaskWithStatus;
-    /**
-     * The path to a .zosattributes file used to control file conversion and tagging.
-     */
-    attributes?: ZosFilesAttributes;
 }
