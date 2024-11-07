@@ -12,7 +12,7 @@
 import { AbstractSession, Headers, ImperativeExpect, IO, Logger, TaskProgress, ImperativeError,
     TextUtils, IHeaderContent, IOptionsFullResponse, IRestClientResponse } from "@zowe/imperative";
 
-import { posix, join, relative, resolve } from "path";
+import { posix, join, relative } from "path";
 import * as fs from "fs";
 import * as util from "util";
 
