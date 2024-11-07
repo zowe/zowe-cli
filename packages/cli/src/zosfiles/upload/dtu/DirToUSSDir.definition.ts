@@ -75,6 +75,10 @@ export const DirToUSSDirDefinition: ICommandDefinition = {
         {
             description: strings.EXAMPLES.EX5,
             options: `"local_dir" "/a/ibmuser/my_dir" --recursive --attributes my_global_attributes`
+        },
+        {
+            description: strings.EXAMPLES.EX6,
+            options: `"local_dir" "/a/ibmuser/my_dir" --encoding "IBM-1047"`
         }
     ]
 };

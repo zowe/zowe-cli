@@ -1128,6 +1128,7 @@ describe("Upload a local directory to USS directory", () => {
             expect(isDirectoryExist).toBeDefined();
             expect(isDirectoryExist).toBeTruthy();
         });
+
         it("should upload local directory to USS with an encoding", async () => {
             let error;
             let uploadResponse: IZosFilesResponse;
