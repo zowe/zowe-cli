@@ -37,7 +37,7 @@ export class DaemonUtil {
         }
         if (!IO.existsSync(daemonDir)) {
             try {
-                IO.mkdirp(daemonDir);
+                IO.createDirSync(daemonDir);
                 const ownerReadWriteTraverse = 0o700;
                 fs.chmodSync(daemonDir, ownerReadWriteTraverse);
             } catch(err) {

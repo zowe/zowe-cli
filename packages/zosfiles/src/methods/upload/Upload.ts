@@ -876,8 +876,9 @@ export class Upload {
             }
         } else if(options.filesMap?.fileNames.indexOf(path.basename(localPath)) > -1) {
             tempOptions.binary = options.filesMap.binary;
+          
+            // Reset encoding to undefined if binary is true to avoid file tagging issues
 
-            //Reset encoding to undefined if binary is true to avoid file tagging issues
             if(tempOptions.binary) tempOptions.encoding = undefined;
         }
 
