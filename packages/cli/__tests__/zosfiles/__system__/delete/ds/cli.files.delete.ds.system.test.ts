@@ -137,6 +137,22 @@ describe("Delete Data Set", () => {
             runCliScript(__dirname + "/__scripts__/command/command_delete_data_set.sh",
                 TEST_ENVIRONMENT, [dsname, "--for-sure", "--rfj"]);
         });
+
+        it("should delete a data set with --ignore-not-found flag", async () => {
+            const createResponse = runCliScript(__dirname + '/__scripts__/command/command_create_data_set.sh',
+                TEST_ENVIRONMENT, [dsname]);
+            expect(createResponse.status).toBe(0);  // Ensure data set is created successfully
+
+            // Now delete the data set, verify no output in ignore-not-found mode
+            const deleteResponse = runCliScript(__dirname + "/__scripts__/command/command_delete_data_set.sh",
+                TEST_ENVIRONMENT, [dsname, "--for-sure", "--ignore-not-found"]);
+            expect(deleteResponse.stderr.toString()).toBe("");
+            
+            //delete again
+            const secondDelete = runCliScript(__dirname + "/__scripts__/command/command_delete_data_set.sh",
+                TEST_ENVIRONMENT, [dsname, "--for-sure", "--ignore-not-found"]);
+            expect(secondDelete.stderr.toString()).toBe("");
+        });
     });
 
     describe("Expected failures", () => {

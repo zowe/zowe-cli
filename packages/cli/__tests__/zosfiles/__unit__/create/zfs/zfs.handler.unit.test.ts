@@ -107,32 +107,35 @@ describe("Create z/OS file system handler", () => {
             throw impErr;
         });
 
-        try {
-            // Invoke the handler with a full set of mocked arguments and response functions
-            await handler.process({
-
-                arguments: {
-                    $0: "fake",
-                    _: ["fake"],
-                    fileSystemName,
-                    ...UNIT_TEST_ZOSMF_PROF_OPTS
+        const commandParameters = {
+            arguments: {
+                $0: "fake",
+                _: ["fake"],
+                fileSystemName,
+                ...UNIT_TEST_ZOSMF_PROF_OPTS,
+            },
+            response: {
+                data: {
+                    setMessage: jest.fn((setMsgArgs) => {
+                        apiMessage = setMsgArgs;
+                    }),
+                    setObj: jest.fn((setObjArgs) => {
+                        jsonObj = setObjArgs;
+                    }),
                 },
-                response: {
-                    data: {
-                        setMessage: jest.fn((setMsgArgs) => {
-                            apiMessage = setMsgArgs;
-                        }),
-                        setObj: jest.fn((setObjArgs) => {
-                            jsonObj = setObjArgs;
-                        })
-                    },
-                    console: {
-                        log: jest.fn((logArgs) => {
-                            logMessage += "\n" + logArgs;
-                        })
-                    }
-                }
-            } as any);
+                console: {
+                    log: jest.fn((logArgs) => {
+                        logMessage += "\n" + logArgs;
+                    }),
+                },
+                progress: {
+                    endBar: jest.fn(), // Mocking progress.endBar here
+                },
+            },
+        };
+
+        try {
+            await handler.process(commandParameters);
         } catch (e) {
             error = e;
         }
