@@ -1133,6 +1133,7 @@ describe("Upload a local directory to USS directory", () => {
             expect(getResponseLongFile).toEqual(Buffer.from(longResponse));
             expect(getResponseFile1.toString()).toEqual(testdata);
         });
+
         it("should upload local directory to USS with an encoding", async () => {
             let error;
             let uploadResponse: IZosFilesResponse;
