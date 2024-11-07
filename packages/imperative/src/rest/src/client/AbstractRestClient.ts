@@ -476,7 +476,7 @@ export abstract class AbstractRestClient {
                 this.mLogger.info(`Proxy setting "${proxyUrl.href}" will not be used as hostname was found listed under "no_proxy" setting.`);
             } else {
                 this.mLogger.info(`Using the following proxy setting for the request: ${proxyUrl.href}`);
-                if (this.session.ISession?.proxy?.proxy_authorization) {
+                if (this.session.ISession.proxy?.proxy_authorization) {
                     reqHeaders.push({ 'Proxy-Authorization': this.session.ISession.proxy.proxy_authorization});
                 }
                 options.agent = ProxySettings.getProxyAgent(this.session.ISession);
