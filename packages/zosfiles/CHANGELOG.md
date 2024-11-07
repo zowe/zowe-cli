@@ -4,7 +4,7 @@ All notable changes to the Zowe z/OS files SDK package will be documented in thi
 
 ## Recent Changes
 
-BugFix: Added support for `--encoding` flag to `zowe upload dir-to-uss` to allow for encoding uploaded directories for command group consistency.
+- BugFix: Added support for the `--encoding` flag to the `zowe upload dir-to-uss` to allow for encoding uploaded directories for command group consistency. [#2356](https://github.com/zowe/zowe-cli/pull/2356)
 
 ## `7.29.3`
 
