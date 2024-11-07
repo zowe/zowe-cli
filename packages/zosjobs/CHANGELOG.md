@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe z/OS jobs SDK package will be documented in this file.
 
-## Recent Changes
+## `8.7.1`
 
 - BugFix: Fixed an error where the Delete Jobs API response was not returned if the `modifyVersion` parameter was not specified, even though it was available. [#2352](https://github.com/zowe/zowe-cli/pull/2352)
 
