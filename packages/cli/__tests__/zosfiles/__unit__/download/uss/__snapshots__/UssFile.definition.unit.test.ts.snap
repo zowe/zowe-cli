@@ -51,5 +51,9 @@ Array [
     "description": "Download the file \\"/a/ibmuser/MyJava.class\\" to \\"java/MyJava.class\\" in binary mode",
     "options": "\\"/a/ibmuser/MyJava.class\\" -b -f \\"java/MyJava.class\\"",
   },
+  Object {
+    "description": "Download the file \\"/a/ibmuser/MyJava.class\\" to \\"java/MyJava.class\\" using a .zosattributes file",
+    "options": "\\"/a/ibmuser/MyJava.class\\" --attributes /path/to/.zosattributes -f \\"java/MyJava.class\\"",
+  },
 ]
 `;
