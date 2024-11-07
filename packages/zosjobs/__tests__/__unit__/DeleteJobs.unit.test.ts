@@ -51,7 +51,7 @@ describe("Delete Jobs unit tests", () => {
 
     describe("Positive tests", () => {
         it("should allow users to call deleteJob with correct parameters", async () => {
-            ZosmfRestClient.deleteExpectJSON = jest.fn(returnDeleteJobsDataAsync);
+            ZosmfRestClient.deleteExpectJSON = jest.fn().mockReturnValue(CancelJobsData.SAMPLE_JOB_FEEDBACK_GOOD);
             let caughtError;
             let response;
             try {
@@ -60,11 +60,11 @@ describe("Delete Jobs unit tests", () => {
                 caughtError = error;
             }
             expect(caughtError).toBeUndefined();
-            expect(response).toEqual(CancelJobsData.SAMPLE_JOB_FEEDBACK_ASYNC);
+            expect(response).toEqual(CancelJobsData.SAMPLE_JOB_FEEDBACK_GOOD);
         });
 
         it("should allow users to call deleteJobForJob with correct parameters", async () => {
-            ZosmfRestClient.deleteExpectJSON = jest.fn(returnDeleteJobsDataAsync);
+            ZosmfRestClient.deleteExpectJSON = jest.fn().mockReturnValue(CancelJobsData.SAMPLE_JOB_FEEDBACK_GOOD);
             let caughtError;
             let response;
             try {
@@ -73,7 +73,7 @@ describe("Delete Jobs unit tests", () => {
                 caughtError = error;
             }
             expect(caughtError).toBeUndefined();
-            expect(response).toEqual(CancelJobsData.SAMPLE_JOB_FEEDBACK_ASYNC);
+            expect(response).toEqual(CancelJobsData.SAMPLE_JOB_FEEDBACK_GOOD);
         });
 
         it("should allow users to call deleteJobForJob with correct parameters (with modify version 1_0)", async () => {
@@ -104,7 +104,7 @@ describe("Delete Jobs unit tests", () => {
         });
 
         it("should allow users to call deleteJobCommon with correct parameters", async () => {
-            ZosmfRestClient.deleteExpectJSON = jest.fn(returnDeleteJobsDataAsync);
+            ZosmfRestClient.deleteExpectJSON = jest.fn().mockReturnValue(CancelJobsData.SAMPLE_JOB_FEEDBACK_GOOD);
             let caughtError;
             let response;
             try {
@@ -113,7 +113,7 @@ describe("Delete Jobs unit tests", () => {
                 caughtError = error;
             }
             expect(caughtError).toBeUndefined();
-            expect(response).toEqual(CancelJobsData.SAMPLE_JOB_FEEDBACK_ASYNC);
+            expect(response).toEqual(CancelJobsData.SAMPLE_JOB_FEEDBACK_GOOD);
         });
 
         it("should allow users to call deleteJobCommon with correct parameters (with modify version 1_0)", async () => {

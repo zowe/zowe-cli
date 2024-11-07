@@ -1517,7 +1517,7 @@ describe("AbstractRestClient tests", () => {
                 const result = privateRestClient.buildOptions(resource, request, reqHeaders);
                 expect(Object.keys(result)).toContain('agent');
                 expect(headerSpy).toHaveBeenCalledWith([{'Proxy-Authorization': restSession.ISession.proxy.proxy_authorization}]);
-            })
+            });
         });
     });
 });

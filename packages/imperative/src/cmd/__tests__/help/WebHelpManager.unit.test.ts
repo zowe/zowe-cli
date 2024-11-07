@@ -103,7 +103,7 @@ describe("WebHelpManager", () => {
                 // ensure that the plugins directory exists
                 instPluginsFileNm = path.join(mockCliHome, "plugins");
                 if (!fs.existsSync(instPluginsFileNm)) {
-                    IO.mkdirp(instPluginsFileNm);
+                    IO.createDirSync(instPluginsFileNm);
                 }
 
                 // add the plugins file name to the directory, and create an empty object
@@ -118,7 +118,7 @@ describe("WebHelpManager", () => {
                 */
                 const webHelpDocsDirNm = webHelpDirNm + "/docs";
                 if (!fs.existsSync(webHelpDocsDirNm)) {
-                    IO.mkdirp(webHelpDocsDirNm);
+                    IO.createDirSync(webHelpDocsDirNm);
                 }
             });
 
