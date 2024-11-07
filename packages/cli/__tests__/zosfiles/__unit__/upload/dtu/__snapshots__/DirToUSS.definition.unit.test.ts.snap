@@ -106,5 +106,9 @@ Array [
     "description": "Recursively upload all files from the \\"local_dir\\" directory to the \\"/a/ibmuser/my_dir\\" USS directory, specifying files to ignore and file encodings in the local file my_global_attributes",
     "options": "\\"local_dir\\" \\"/a/ibmuser/my_dir\\" --recursive --attributes my_global_attributes",
   },
+  Object {
+    "description": "Upload all files from the \\"local_dir\\" directory to the \\"/a/ibmuser/my_dir\\" USS directory using IBM-1047 encoding",
+    "options": "\\"local_dir\\" \\"/a/ibmuser/my_dir\\" --encoding \\"IBM-1047\\"",
+  },
 ]
 `;
