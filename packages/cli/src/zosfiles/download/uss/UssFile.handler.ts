@@ -18,27 +18,33 @@ import { Download, IDownloadOptions, IZosFilesResponse, ZosFilesAttributes } fro
  * @export
  */
 export default class UssFileHandler extends ZosFilesBaseHandler {
-    public async processWithSession(commandParameters: IHandlerParameters, session: AbstractSession): Promise<IZosFilesResponse> {
+    public async processWithSession(
+        commandParameters: IHandlerParameters,
+        session: AbstractSession
+    ): Promise<IZosFilesResponse> {
         const task: ITaskWithStatus = {
             percentComplete: 0,
             statusMessage: "Downloading USS file",
-            stageName: TaskStage.IN_PROGRESS
+            stageName: TaskStage.IN_PROGRESS,
         };
-        commandParameters.response.progress.startBar({task});
+        commandParameters.response.progress.startBar({ task });
 
         const attributes = ZosFilesAttributes.loadFromFile(
-            commandParameters.arguments.attributes,
+            commandParameters.arguments.attributes
         );
-        const downloadOptions: IDownloadOptions = {
-            binary: commandParameters.arguments.binary,
-            encoding: commandParameters.arguments.encoding,
-            file: commandParameters.arguments.file,
-            task,
-            responseTimeout: commandParameters.arguments.responseTimeout,
-            overwrite: commandParameters.arguments.overwrite,
-            attributes
-        };
 
-        return Download.ussFile(session, commandParameters.arguments.ussFileName, downloadOptions);
+        return Download.ussFile(
+            session,
+            commandParameters.arguments.ussFileName,
+            {
+                binary: commandParameters.arguments.binary,
+                encoding: commandParameters.arguments.encoding,
+                file: commandParameters.arguments.file,
+                task,
+                responseTimeout: commandParameters.arguments.responseTimeout,
+                overwrite: commandParameters.arguments.overwrite,
+                attributes,
+            }
+        );
     }
 }
