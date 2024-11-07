@@ -208,7 +208,7 @@ export class Download {
         try {
             const response = await List.allMembers(session, dataSetName, {
                 volume: options.volume,
-                responseTimeout: options.responseTimeout,
+                responseTimeout: options.responseTimeout
             });
 
             const memberList: Array<{ member: string }> = response.apiResponse.items;
@@ -266,7 +266,7 @@ export class Download {
                     binary: options.binary,
                     record: options.record,
                     encoding: options.encoding,
-                    responseTimeout: options.responseTimeout,
+                    responseTimeout: options.responseTimeout
                 }).catch((err) => {
                     downloadErrors.push(err);
                     failedMembers.push(fileName);
@@ -308,6 +308,7 @@ export class Download {
             throw error;
         }
     }
+
 
     /**
      * Download a list of data sets to local files

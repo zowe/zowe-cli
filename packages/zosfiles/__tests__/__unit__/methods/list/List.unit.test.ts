@@ -1544,11 +1544,11 @@ describe("z/OS Files - List", () => {
             dsorg: "PS"
         };
 
-        // const memberData3 = {
-        //     dsname: "TEST.PS",
-        //     memberName: "testM1",
-        //     dsorg: "PS"
-        // };
+        const memberData3 = {
+            dsname: "TEST.PS",
+            memberName: "testM1",
+            dsorg: "PS"
+        };
 
         beforeEach(() => {
             listDataSetSpy.mockClear();
@@ -1571,7 +1571,6 @@ describe("z/OS Files - List", () => {
 
             try {
                 response = await List.membersMatchingPattern(dummySession, dsname, [pattern]);
-                // console.log(response.apiResponse)
             } catch (e) {
                 caughtError = e;
             }

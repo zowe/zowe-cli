@@ -126,8 +126,8 @@ export class List {
         for(const pattern of patterns) {
             let response: any;
             try {
-                response = await List.allMembers(session, dataSetName, { attributes: true});
-                // console.log(response.apiResponse);
+                response = await List.allMembers(session, dataSetName, { attributes: true, pattern});
+                console.log(response.apiResponse);
 
             } catch(err) {
                 if(!(err instanceof ImperativeError && err.errorCode?.toString().startsWith("5"))) {
