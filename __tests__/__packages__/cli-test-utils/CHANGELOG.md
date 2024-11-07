@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI test utils package will be documented in this file.
 
-## Recent Changes
+## `8.7.1`
 
 - BugFix: Improved the error message shown on MacOS when `runCliScript` method fails to run script that is missing shebang line. [#2314](https://github.com/zowe/zowe-cli/pull/2314)
 

@@ -2,7 +2,7 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
-## Recent Changes
+## `8.7.1`
 
 - BugFix: Deprecated `IO` functions `createDirsSync` and `mkdirp` due to code duplication. Please use `createDirSync` instead. [#2352](https://github.com/zowe/zowe-cli/pull/2352)
 
