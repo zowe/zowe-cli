@@ -127,7 +127,7 @@ export class List {
             let response: any;
             try {
                 response = await List.allMembers(session, dataSetName, { attributes: true, pattern});
-                console.log(response.apiResponse);
+                // console.log(response.apiResponse);
 
             } catch(err) {
                 if(!(err instanceof ImperativeError && err.errorCode?.toString().startsWith("5"))) {
@@ -163,6 +163,7 @@ export class List {
             }
             zosmfResponses.push(...response.apiResponse.items);
         }
+
         // Check if members matching pattern found
         if (zosmfResponses.length === 0) {
             return {

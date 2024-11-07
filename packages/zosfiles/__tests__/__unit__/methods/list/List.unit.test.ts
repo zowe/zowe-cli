@@ -9,7 +9,7 @@
 *
 */
 
-import { apiErrorHeader, ImperativeError, Logger, Session } from "@zowe/imperative";
+import { ImperativeError, Logger, Session } from "@zowe/imperative";
 import { ZosmfRestClient, ZosmfHeaders } from "@zowe/core-for-zowe-sdk";
 import { List } from "../../../../src/methods/list/List";
 import { ZosFilesMessages } from "../../../../src/constants/ZosFiles.messages";
@@ -1556,7 +1556,7 @@ describe("z/OS Files - List", () => {
         });
 
         it("should successfully list M1 & M2 using the List.allMembers API", async () => {
-            const dsname = "TEST.PS"
+            const dsname = "TEST.PS";
             const pattern = "M*";
             let response;
             let caughtError;
@@ -1583,7 +1583,7 @@ describe("z/OS Files - List", () => {
             });
 
             expect(listDataSetSpy).toHaveBeenCalledTimes(1);
-            expect(listDataSetSpy).toHaveBeenCalledWith(dummySession, dsname, {attributes: true});
+            expect(listDataSetSpy).toHaveBeenCalledWith(dummySession, dsname, {attributes: true, pattern});
         });
     });
 });

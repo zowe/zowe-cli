@@ -111,4 +111,6 @@ export interface IDownloadOptions extends Omit<IDownloadSingleOptions, "stream">
      */
     pattern?: string;
 
+    memberPatternResponse?: IZosFilesResponse;
+
 }

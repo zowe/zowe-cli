@@ -12,7 +12,7 @@
 import { AbstractSession, Headers, ImperativeExpect, IO, Logger, TaskProgress, ImperativeError,
     TextUtils, IHeaderContent, IOptionsFullResponse, IRestClientResponse } from "@zowe/imperative";
 
-import { posix, join, relative } from "path";
+import { posix, join, relative, resolve } from "path";
 import * as fs from "fs";
 import * as util from "util";
 
@@ -205,13 +205,14 @@ export class Download {
         ImperativeExpect.toNotBeNullOrUndefined(dataSetName, ZosFilesMessages.missingDatasetName.message);
         ImperativeExpect.toNotBeEqual(dataSetName, "", ZosFilesMessages.missingDatasetName.message);
 
+        const memberObjects = options.memberPatternResponse.apiResponse.map((item: { member: string; }) => ({ member: item.member }));
+
         try {
             const response = await List.allMembers(session, dataSetName, {
                 volume: options.volume,
                 responseTimeout: options.responseTimeout
             });
-
-            const memberList: Array<{ member: string }> = response.apiResponse.items;
+            const memberList: Array<{ member: string }> = memberObjects ?? response.apiResponse.items;
             if (memberList.length === 0) {
                 return {
                     success: false,

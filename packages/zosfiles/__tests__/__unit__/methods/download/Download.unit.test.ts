@@ -696,6 +696,7 @@ describe("z/OS Files - Download", () => {
             let response;
             let caughtError;
 
+
             try {
                 response = await Download.allMembers(dummySession, dsname);
             } catch (e) {
