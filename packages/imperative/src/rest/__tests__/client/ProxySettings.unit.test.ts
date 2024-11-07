@@ -41,7 +41,7 @@ describe("Proxy tests", () => {
         const expected = {
             proxyUrl: passedUrl,
             protocol: HTTPS_PROTOCOL
-        }
+        };
 
         beforeEach(() => {
             jest.clearAllMocks();

@@ -12,7 +12,6 @@
 jest.mock("jsonfile");
 
 import * as fs from "fs";
-import * as fsExtra from "fs-extra";
 import * as jsonfile from "jsonfile";
 import { CredentialManagerFactory } from "../..";
 import { ConvertV1Profiles } from "../";
@@ -834,7 +833,7 @@ describe("ConvertV1Profiles tests", () => {
             beforeAll(() => {
                 ConvertV1Profiles["oldProfilesDir"] = oldProfileDir;
                 existsSyncSpy = jest.spyOn(fs, "existsSync");
-                removeSyncSpy = jest.spyOn(fsExtra, "removeSync");
+                removeSyncSpy = jest.spyOn(fs, "rmSync");
             });
 
             beforeEach(() => {
@@ -907,7 +906,7 @@ describe("ConvertV1Profiles tests", () => {
                 existsSyncSpy.mockReturnValue(true);
 
                 // pretend that remove crashed
-                const removeError = "fsExtra.removeSync threw a horrible error";
+                const removeError = "fs.rmSync threw a horrible error";
                 removeSyncSpy.mockImplementation(() => {
                     throw new Error(removeError);
                 });
