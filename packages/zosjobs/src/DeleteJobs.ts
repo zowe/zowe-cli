@@ -79,12 +79,14 @@ export class DeleteJobs {
         const parameters: string = path.posix.sep + encodeURIComponent(parms.jobname) + path.posix.sep + encodeURIComponent(parms.jobid);
         const responseJson = await ZosmfRestClient.deleteExpectJSON(session, JobsConstants.RESOURCE + parameters, headers);
 
-        if (parms.modifyVersion === "2.0") {
+        if (parms.modifyVersion === "1.0") {
+            return undefined;
+        } else {
             const responseFeedback = responseJson as IJobFeedback;
             // Turns out status is a number, but we cannot introduce breaking changes.
             responseFeedback.status = responseFeedback.status.toString();
             return responseFeedback;
-        } else { return undefined; }
+        }
     }
 
 

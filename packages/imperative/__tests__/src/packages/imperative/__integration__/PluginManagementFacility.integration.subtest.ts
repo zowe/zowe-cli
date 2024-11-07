@@ -33,7 +33,7 @@ describe("Plugin Management Facility", () => {
          * expect to see them.
          */
         const namespaceDirPath = join(testCliNodeModulePath, "@zowe");
-        IO.mkdirp(namespaceDirPath);
+        IO.createDirSync(namespaceDirPath);
         const testCliImpSymLink = join(namespaceDirPath, "imperative");
         IO.createSymlinkToDir(testCliImpSymLink, impLibDir);
     });
@@ -42,7 +42,7 @@ describe("Plugin Management Facility", () => {
         T.rimraf(home);
         // Some test may still need this directory to exists in order to spawn zowe commands in that location
         // (e.g. node --require ts-node/register <absolute-path-for-TestCLI.ts> config init)
-        IO.mkdirp(home);
+        IO.createDirSync(home);
     });
 
     afterAll(() => {
