@@ -2,7 +2,7 @@
 All notable changes to the Zowe CLI package will be documented in this file.
 
 ## Recent Changes
-- Enhancement: Add the --ignore-not-found flag to avoid FNF error messages when deleting files so scripts are not interupted during automated batch processing. The flag bypasses warning prompts to confirm delete actions. [#2254](https://github.com/zowe/zowe-cli/pull/2254)
+- Enhancement: Add the --ignore-not-found flag to avoid file-not-found error messages when deleting files so scripts are not interupted during automated batch processing. The flag bypasses warning prompts to confirm delete actions. [#2254](https://github.com/zowe/zowe-cli/pull/2254)
 
 ## `8.7.0`
 
