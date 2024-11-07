@@ -9,7 +9,7 @@ Object {
       "to": "testing",
     },
   ],
-  "commandResponse": "uploaded",
+  "commandResponse": "upload failed",
   "success": false,
 }
 `;
