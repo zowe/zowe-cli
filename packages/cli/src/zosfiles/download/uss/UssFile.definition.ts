@@ -52,6 +52,10 @@ export const UssFileDefinition: ICommandDefinition = {
         {
             description: strings.EXAMPLES.EX2,
             options: `"/a/ibmuser/MyJava.class" -b -f "java/MyJava.class"`
+        },
+        {
+            description: strings.EXAMPLES.EX3,
+            options: `"/a/ibmuser/MyJava.class" --attributes /path/to/.zosattributes -f "java/MyJava.class"`
         }
     ]
 };
