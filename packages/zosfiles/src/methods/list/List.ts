@@ -127,14 +127,13 @@ export class List {
             let response: any;
             try {
                 response = await List.allMembers(session, dataSetName, { attributes: true, pattern});
-                // console.log(response.apiResponse);
 
             } catch(err) {
                 if(!(err instanceof ImperativeError && err.errorCode?.toString().startsWith("5"))) {
                     throw err;
                 }
 
-                response = await List.allMembers(session, dataSetName);
+                response = await List.allMembers(session, dataSetName, {pattern});
 
                 let listsInitiated = 0;
                 const createListPromise = (membersObj: any) => {
@@ -144,7 +143,7 @@ export class List {
                         listsInitiated++;
                     }
 
-                    return List.allMembers(session, membersObj.dsname, { attributes: true, maxLength: 1 }).then(
+                    return List.allMembers(session, membersObj.dsname, { attributes: true, maxLength: 1, pattern}).then(
                         (tempResponse) => {
                             Object.assign(membersObj, tempResponse.apiResponse.items[0]);
                         },
@@ -174,25 +173,24 @@ export class List {
         }
 
         // Exclude names of members
-        // for (const pattern of options.excludePatterns || []) {
-        //     const response = await List.allMembers(session, dataSetName);
-        //     console.log(response.apiResponse);
-        //     response.apiResponse.items.forEach((membersObj: IZosmfListResponse) => {
-        //         const responseIndex = zosmfResponses.findIndex(response => response.apiResponse.memberName === membersObj.memberName);
-        //         if (responseIndex !== -1) {
-        //             zosmfResponses.splice(responseIndex, 1);
-        //         }
-        //     });
-        // }
+        for (const pattern of options.excludePatterns || []) {
+            const response = await List.allMembers(session, dataSetName, {pattern});
+            response.apiResponse.items.forEach((membersObj: IZosmfListResponse) => {
+                const responseIndex = zosmfResponses.findIndex(response => response.apiResponse.memberName === membersObj.memberName);
+                if (responseIndex !== -1) {
+                    zosmfResponses.splice(responseIndex, 1);
+                }
+            });
+        }
 
-        // // Check if exclude pattern has left any members in the list
-        // if (zosmfResponses.length === 0) {
-        //     return {
-        //         success: false,
-        //         commandResponse: ZosFilesMessages.noMembersInList.message,
-        //         apiResponse: []
-        //     };
-        // }
+        // Check if exclude pattern has left any members in the list
+        if (zosmfResponses.length === 0) {
+            return {
+                success: false,
+                commandResponse: ZosFilesMessages.noMembersInList.message,
+                apiResponse: []
+            };
+        }
 
         return {
             success: true,

@@ -9,3 +9,201 @@
 *
 */
 
+import { IHandlerParameters, Session } from "@zowe/imperative";
+import { Download, IDownloadOptions, IDsmListOptions, List } from "@zowe/zos-files-for-zowe-sdk";
+import * as AllMembersMatchingDefinition from "../../../../../src/zosfiles/download/amm/AllMembersMatching.definition";
+import * as AllMembersMatchingHandler from "../../../../../src/zosfiles/download/amm/AllMembersMatching.handler";
+import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../../__tests__/__src__/TestConstants";
+import { mockHandlerParameters } from "@zowe/cli-test-utils";
+
+const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
+    arguments: UNIT_TEST_ZOSMF_PROF_OPTS,
+    positionals: ["zos-jobs", "download", "output"],
+    definition: AllMembersMatchingDefinition.AllMembersMatchingDefinition
+});
+
+const fakeListOptions: IDsmListOptions = {
+    task: {
+        percentComplete: 0,
+        stageName: 0,
+        statusMessage: "Searching for members"
+    }
+};
+
+const fakeDownloadOptions: IDownloadOptions = {
+    binary: undefined,
+    directory: undefined,
+    encoding: undefined,
+    extension: undefined,
+    extensionMap: undefined,
+    failFast: undefined,
+    maxConcurrentRequests: undefined,
+    preserveOriginalLetterCase: undefined,
+    record: undefined,
+    responseTimeout: undefined,
+    volume: undefined,
+    task: {
+        percentComplete: 0,
+        stageName: 0,
+        statusMessage: "Downloading members"
+    }
+};
+
+describe("Download AllMembersMatching handler", () => {
+    it("should download matching members if requested", async () => {
+        const pattern = "test*";
+        const dsname: "HLQ.";
+        const fakeListResponse = [{ dsname: "HLQ." + pattern }];
+        let passedSession: Session = null;
+        List.membersMatchingPattern = jest.fn(async (session) => {
+            passedSession = session;
+            return {
+                success: true,
+                commandResponse: "listed",
+                apiResponse: fakeListResponse
+            };
+        });
+        Download.allMembers = jest.fn(async (session) => {
+            return {
+                success: true,
+                commandResponse: "downloaded"
+            };
+        });
+
+        const handler = new AllMembersMatchingHandler.default();
+        const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
+        params.arguments = Object.assign({}, ...[DEFAULT_PARAMETERS.arguments]);
+        params.arguments.pattern = pattern;
+        await handler.process(params);
+
+        expect(List.membersMatchingPattern).toHaveBeenCalledTimes(1);
+        expect(List.membersMatchingPattern).toHaveBeenCalledWith(passedSession, dsname, [pattern], { ...fakeListOptions });
+        expect(Download.allMembers).toHaveBeenCalledTimes(1);
+        expect(Download.allMembers).toHaveBeenCalledWith(passedSession, fakeListResponse, { ...fakeDownloadOptions });
+    });
+
+    it("should handle generation of an extension map", async () => {
+        const pattern = "testing";
+        const fakeListResponse = [{ dsname: "HLQ." + pattern }];
+        const extensionMap = "CNTL=JCL,PARMLIB=JCL,LOADLIB=JCL";
+        let passedSession: Session = null;
+        List.membersMatchingPattern = jest.fn(async (session) => {
+            passedSession = session;
+            return {
+                success: true,
+                commandResponse: "listed",
+                apiResponse: fakeListResponse
+            };
+        });
+        Download.allMembers = jest.fn(async (session) => {
+            return {
+                success: true,
+                commandResponse: "downloaded"
+            };
+        });
+
+        const handler = new AllMembersMatchingHandler.default();
+        const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
+        params.arguments = Object.assign({}, ...[DEFAULT_PARAMETERS.arguments]);
+        params.arguments.pattern = pattern;
+        params.arguments.extensionMap = extensionMap;
+        await handler.process(params);
+
+        expect(List.membersMatchingPattern).toHaveBeenCalledTimes(1);
+        expect(List.membersMatchingPattern).toHaveBeenCalledWith(passedSession, [pattern], { ...fakeListOptions });
+        expect(Download.allMembers).toHaveBeenCalledTimes(1);
+        expect(Download.allMembers).toHaveBeenCalledWith(passedSession, fakeListResponse, {
+            ...fakeDownloadOptions,
+            extensionMap: { cntl: "jcl", parmlib: "jcl", loadlib: "jcl" }
+        });
+    });
+
+    it("should gracefully handle an extension map parsing error", async () => {
+        const pattern = "testing";
+        const extensionMap = "CNTL=JCL,PARMLIB-JCL,LOADLIB=JCL";
+        let caughtError;
+        List.membersMatchingPattern = jest.fn();
+        Download.allMembers = jest.fn();
+
+        const handler = new AllMembersMatchingHandler.default();
+        const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
+        params.arguments = Object.assign({}, ...[DEFAULT_PARAMETERS.arguments]);
+        params.arguments.pattern = pattern;
+        params.arguments.extensionMap = extensionMap;
+        try {
+            await handler.process(params);
+        } catch (error) {
+            caughtError = error;
+        }
+
+        expect(caughtError).toBeDefined();
+        expect(caughtError.message).toContain("An error occurred processing the extension map");
+        expect(List.membersMatchingPattern).toHaveBeenCalledTimes(0);
+        expect(Download.allMembers).toHaveBeenCalledTimes(0);
+    });
+
+    it("should handle generation of an exclusion list", async () => {
+        const pattern = "testing";
+        const fakeListResponse = [{ dsname: "HLQ." + pattern }];
+        const excludePatterns = "TEST.EXCLUDE.**.CNTL";
+        let passedSession: Session = null;
+        List.membersMatchingPattern = jest.fn(async (session) => {
+            passedSession = session;
+            return {
+                success: true,
+                commandResponse: "listed",
+                apiResponse: fakeListResponse
+            };
+        });
+        Download.allMembers = jest.fn(async (session) => {
+            return {
+                success: true,
+                commandResponse: "downloaded"
+            };
+        });
+
+        const handler = new AllMembersMatchingHandler.default();
+        const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
+        params.arguments = Object.assign({}, ...[DEFAULT_PARAMETERS.arguments]);
+        params.arguments.pattern = pattern;
+        params.arguments.excludePatterns = excludePatterns;
+        await handler.process(params);
+
+        expect(List.membersMatchingPattern).toHaveBeenCalledTimes(1);
+        expect(List.membersMatchingPattern).toHaveBeenCalledWith(passedSession, [pattern], {
+            ...fakeListOptions,
+            excludePatterns: [excludePatterns]
+        });
+        expect(Download.allMembers).toHaveBeenCalledTimes(1);
+        expect(Download.allMembers).toHaveBeenCalledWith(passedSession, fakeListResponse, { ...fakeDownloadOptions });
+    });
+
+    it("should gracefully handle an error from the z/OSMF List API", async () => {
+        const errorMsg = "i haz bad data set";
+        const pattern = "testing";
+        let caughtError;
+        let passedSession: Session = null;
+        List.membersMatchingPattern = jest.fn((session) => {
+            passedSession = session;
+            throw new Error(errorMsg);
+        });
+        Download.allMembers = jest.fn();
+
+        const handler = new AllMembersMatchingHandler.default();
+        const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
+        params.arguments = Object.assign({}, ...[DEFAULT_PARAMETERS.arguments]);
+        params.arguments.pattern = pattern;
+        try {
+            await handler.process(params);
+        } catch (error) {
+            caughtError = error;
+        }
+
+        expect(caughtError).toBeDefined();
+        expect(caughtError.message).toBe(errorMsg);
+        expect(List.membersMatchingPattern).toHaveBeenCalledTimes(1);
+        expect(List.membersMatchingPattern).toHaveBeenCalledWith(passedSession, [pattern], { ...fakeListOptions });
+        expect(Download.allMembers).toHaveBeenCalledTimes(0);
+    });
+});
+

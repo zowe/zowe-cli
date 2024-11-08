@@ -354,8 +354,8 @@ export default {
                     `for example "ibmuser.**.cntl,ibmuser.**.jcl"`
                 },
                 EXAMPLES: {
-                    EX1: `Download the members of the data set "ibmuser.loadlib" in binary mode to the directory "loadlib/"`,
-                    EX2: `Download the members of the data set "ibmuser.cntl" in text mode to the directory "jcl/"`
+                    EX1: `Download the members of the data set "ibmuser.loadlib" that begin with "Test" to the directory "loadlib/"`,
+                    EX2: `Download the members of the data set "ibmuser.cntl" that begin with "Test" & "M" to the directory "jcl/"`
                 }
             },
             DATA_SET: {
