@@ -57,7 +57,7 @@ describe("APIML Services system test", () => {
         expect(new Array(...zosmfProfileInfo.pluginConfigs)).toEqual(pluginConfigs);
 
         const actualJson = require("comment-json").stringify(Services.convertApimlProfileInfoToProfileConfig(response), null, 1);
-        expect(actualJson).toContain("// Multiple services were detected.");
-        expect(actualJson).toContain("// Uncomment one of the lines below to set a different default.");
+        expect(actualJson).toContain("\"ibmzosmf\"");
+        expect(actualJson).toContain("ibmzosmf/api/v1");
     });
 });
