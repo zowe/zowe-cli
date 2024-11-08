@@ -147,7 +147,7 @@ describe("Delete Data Set", () => {
             const deleteResponse = runCliScript(__dirname + "/__scripts__/command/command_delete_data_set.sh",
                 TEST_ENVIRONMENT, [dsname, "--for-sure", "--ignore-not-found"]);
             expect(deleteResponse.stderr.toString()).toBe("");
-            
+
             //delete again
             const secondDelete = runCliScript(__dirname + "/__scripts__/command/command_delete_data_set.sh",
                 TEST_ENVIRONMENT, [dsname, "--for-sure", "--ignore-not-found"]);
