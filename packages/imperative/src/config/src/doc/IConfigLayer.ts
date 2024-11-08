@@ -17,4 +17,5 @@ export interface IConfigLayer {
     properties: IConfig;
     global: boolean;
     user: boolean;
+    ignoreErrors?: boolean;
 }
