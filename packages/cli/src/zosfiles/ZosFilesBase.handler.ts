@@ -49,14 +49,14 @@ export abstract class ZosFilesBaseHandler implements ICommandHandler {
             );
             const session = new Session(sessCfgWithCreds);
             const response = await this.processWithSession(commandParameters, session);
-            
+
             commandParameters.response.progress.endBar();
             if (response.commandResponse) {
                 commandParameters.response.console.log(response.commandResponse);
             }
             // Return as an object when using --response-format-json
             commandParameters.response.data.setObj(response);
-            
+
             // Ensure error gets thrown if request was unsuccessful.
             // Sometimes it is useful to delay throwing an error until the end of the handler is
             // reached, for example the upload API needs to return an API response even when it fails.
