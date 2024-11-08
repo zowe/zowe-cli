@@ -4,7 +4,7 @@ All notable changes to the Zowe z/OS files SDK package will be documented in thi
 
 ## Recent Changes
 
-- Enhancement: Allows for passing a `.zosattributues` file path for the download encoding format via the `--attributes` flag on the `zowe zos-files download` command [#2322](https://github.com/zowe/zowe-cli/issues/2322)
+- Enhancement: Allows for passing a `.zosattributues` file path for the download encoding format via the `attributes` option on the `Download.ussFile` method. [#2322](https://github.com/zowe/zowe-cli/issues/2322)
 
 ## `8.6.2`
 
