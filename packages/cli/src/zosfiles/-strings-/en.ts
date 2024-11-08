@@ -760,7 +760,8 @@ export default {
                     EX4: `Upload all files from the "local_dir" directory to the "/a/ibmuser/my_dir" USS directory ` +
                         `in binary mode, while specifying a list of file names (without path) to be uploaded in ASCII mode`,
                     EX5: `Recursively upload all files from the "local_dir" directory to the "/a/ibmuser/my_dir" USS directory, ` +
-                        `specifying files to ignore and file encodings in the local file my_global_attributes`
+                        `specifying files to ignore and file encodings in the local file my_global_attributes`,
+                    EX6: `Upload all files from the "local_dir" directory to the "/a/ibmuser/my_dir" USS directory using IBM-1047 encoding`,
                 }
             }
         },
