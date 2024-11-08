@@ -192,6 +192,37 @@ const FAKE_HELP_GENERATOR: IHelpGenerator = {
 const ENV_VAR_PREFIX: string = "UNIT_TEST";
 
 describe("Command Processor", () => {
+    describe("Command Processor with --help and --version flags", () => {
+        let faultyConfigProcessor: CommandProcessor;
+
+        beforeEach(() => {
+            faultyConfigProcessor = new CommandProcessor({
+                envVariablePrefix: ENV_VAR_PREFIX,
+                definition: SAMPLE_COMMAND_DEFINITION,
+                helpGenerator: FAKE_HELP_GENERATOR,
+                rootCommandName: SAMPLE_ROOT_COMMAND,
+                commandLine: "",
+                promptPhrase: "dummyPrompt",
+                config: {
+                    validate: () => ({valid: false}), // Simulate faulty config
+                } as any,
+            });
+
+            jest.spyOn(console, "log").mockImplementation(() => {}); // Prevent console logs in tests
+        });
+
+        afterEach(() => {
+            jest.restoreAllMocks();
+        });
+
+        it("should fail command execution without --help or --version if config is faulty", async () => {
+            const parms: any = { arguments: { _: ["some", "command"], $0: "" }, silent: true };
+            const response: ICommandResponse = await faultyConfigProcessor.invoke(parms);
+
+            expect(response).toBeDefined();
+            expect(response.success).toBe(false);
+        });
+    });
     beforeEach(() => {
         // Mock read stdin
         jest.spyOn(SharedOptions, "readStdinIfRequested").mockResolvedValueOnce(false);
@@ -203,7 +234,6 @@ describe("Command Processor", () => {
         process.stderr.write = ORIGINAL_STDERR_WRITE;
         jest.restoreAllMocks();
     });
-
     it("should allow us to create an instance", () => {
         let caughtError;
 
