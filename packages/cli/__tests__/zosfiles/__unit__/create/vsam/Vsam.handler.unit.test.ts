@@ -16,6 +16,10 @@ import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../../__tests__/__src_
 const message: string = "Dummy error message";
 
 describe("Create VSAM data set handler", () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+        Create.vsam = jest.fn(); // Ensure a fresh mock
+    });
     describe("process method", () => {
         it("should create a VSAM data set if requested", async () => {
             // Require the handler and create a new instance
@@ -84,61 +88,35 @@ describe("Create VSAM data set handler", () => {
             expect(logMessage).toMatchSnapshot();
         });
     });
-
     it("should raise an error", async () => {
-        // Require the handler and create a new instance
         const handlerReq = require("../../../../../src/zosfiles/create/vsam/vsam.handler");
         const handler = new handlerReq.default();
         const dataSetName = "testing";
 
-        // Vars populated by the mocked function
-        let error: any;
-        let apiMessage = "";
-        let jsonObj;
-        let logMessage = "";
-        let fakeSession = null;
+        // Ensure the spy works as intended
+        const createVsamSpy = jest.spyOn(Create, "vsam");
 
-        // Mock the vsam function
-        Create.vsam = jest.fn((session) => {
-            fakeSession = session;
-            const impErr = new ImperativeError({
-                msg: message
-            });
-            throw impErr;
+        createVsamSpy.mockImplementationOnce(() => {
+            throw new ImperativeError({ msg: message });
         });
 
-        try {
-            // Invoke the handler with a full set of mocked arguments and response functions
-            await handler.process({
+        const commandParameters = {
+            arguments: {
+                dataSetName,
+                ...UNIT_TEST_ZOSMF_PROF_OPTS,
+            },
+            response: {
+                data: { setObj: jest.fn() },
+                console: { log: jest.fn() },
+                progress: { endBar: jest.fn() }
+            },
+        };
 
-                arguments: {
-                    $0: "fake",
-                    _: ["fake"],
-                    dataSetName,
-                    ...UNIT_TEST_ZOSMF_PROF_OPTS
-                },
-                response: {
-                    data: {
-                        setMessage: jest.fn((setMsgArgs) => {
-                            apiMessage = setMsgArgs;
-                        }),
-                        setObj: jest.fn((setObjArgs) => {
-                            jsonObj = setObjArgs;
-                        })
-                    },
-                    console: {
-                        log: jest.fn((logArgs) => {
-                            logMessage += "\n" + logArgs;
-                        })
-                    }
-                }
-            } as any);
-        } catch (e) {
-            error = e;
-        }
+        // Ensure the error is thrown as expected
+        await expect(handler.process(commandParameters)).rejects.toThrow(ImperativeError);
 
-        expect(error).toBeDefined();
-        expect(Create.vsam).toHaveBeenCalledTimes(1);
-        expect(Create.vsam).toHaveBeenCalledWith(fakeSession, dataSetName, {});
+        // Validate that the function was called correctly
+        expect(createVsamSpy).toHaveBeenCalledTimes(1);
+        expect(createVsamSpy).toHaveBeenCalledWith(expect.any(Object), dataSetName, {});
     });
 });
