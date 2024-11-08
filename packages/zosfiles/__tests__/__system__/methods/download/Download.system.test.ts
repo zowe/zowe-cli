@@ -24,7 +24,7 @@ import {
     IMountFsOptions,
     Mount,
     Unmount,
-    IUSSListOptions
+    IUSSListOptions,
 } from "../../../../src";
 import { Imperative, IO, Session } from "@zowe/imperative";
 import { inspect } from "util";
@@ -37,6 +37,7 @@ import { posix } from "path";
 import { Shell } from "@zowe/zos-uss-for-zowe-sdk";
 import { PassThrough } from "stream";
 import { text } from "stream/consumers";
+import { runCliScript } from "@zowe/cli-test-utils";
 
 const rimraf = require("rimraf").sync;
 const delayTime = 2000;
@@ -1080,7 +1081,91 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
                 expect(fileContents).toEqual(testData);
 
             });
+            describe.each([false, true])(
+                "Download Data Set - Binary: %s",
+                (binary: boolean) => {
+                    it("should upload and download file with correct encoding", async () => {
+                        let response: any;
 
+                        // Upload binary or encoded file
+                        const uploadFile: string = binary
+                            ? "downloadEncodingCheck.txt"
+                            : "downloadEncodingCheckBinary.txt";
+                        let downloadResponse: any;
+                        let error: any;
+
+                        // Use text file as to get proper response from getRemoteEncoding()
+                        const ussnameAsTxt = ussname + ".txt";
+                        try {
+                            response = runCliScript(
+                                __dirname +
+                                    `/__resources__/${
+                                        binary
+                                            ? "upload_file_to_uss.sh"
+                                            : "upload_file_to_uss_binary.sh"
+                                    }`,
+                                testEnvironment,
+                                [
+                                    defaultSystem.tso.account,
+                                    defaultSystem.zosmf.host,
+                                    defaultSystem.zosmf.port,
+                                    defaultSystem.zosmf.user,
+                                    defaultSystem.zosmf.password,
+                                    defaultSystem.zosmf.rejectUnauthorized,
+                                    __dirname +
+                                        "/__resources__/testfiles/" +
+                                        uploadFile,
+                                    ussnameAsTxt,
+                                    binary ? "1047" : true,
+                                ]
+                            );
+                            downloadResponse = runCliScript(
+                                __dirname + "/__resources__/download_file.sh",
+                                testEnvironment,
+                                [
+                                    defaultSystem.tso.account,
+                                    defaultSystem.zosmf.host,
+                                    defaultSystem.zosmf.port,
+                                    defaultSystem.zosmf.user,
+                                    defaultSystem.zosmf.password,
+                                    defaultSystem.zosmf.rejectUnauthorized,
+                                    ussnameAsTxt,
+                                    __dirname +
+                                        `/__resources__/${
+                                            binary
+                                                ? ".zosattributes"
+                                                : ".zosattributes-binary"
+                                        }`,
+                                ]
+                            );
+                        } catch (err) {
+                            error = err;
+                        }
+
+                        expect(error).toBeFalsy();
+                        expect(response).toBeTruthy();
+                        expect(downloadResponse).toBeTruthy();
+
+                        // Compare the downloaded contents to those uploaded
+                        const fileContents = fs
+                            .readFileSync(
+                                `${testEnvironment.workingDir}/${posix.basename(
+                                    ussnameAsTxt
+                                )}`
+                            )
+                            .toString();
+                        expect(fileContents).toEqual(
+                            fs
+                                .readFileSync(
+                                    __dirname +
+                                        "/__resources__/testfiles/" +
+                                        uploadFile
+                                )
+                                .toString()
+                        );
+                    });
+                }
+            );
             // When requesting etag, z/OSMF has a limit on file size when it stops to return etag by default (>8mb)
             // We are passing X-IBM-Return-Etag to force z/OSMF to always return etag, but testing here for case where it would be optional
             it("should download a 10mb uss file and return Etag", async () => {

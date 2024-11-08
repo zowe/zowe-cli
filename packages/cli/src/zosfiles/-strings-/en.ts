@@ -366,7 +366,8 @@ export default {
                 },
                 EXAMPLES: {
                     EX1: `Download the file "/a/ibmuser/my_text.txt" to ./my_text.txt`,
-                    EX2: `Download the file "/a/ibmuser/MyJava.class" to "java/MyJava.class" in binary mode`
+                    EX2: `Download the file "/a/ibmuser/MyJava.class" to "java/MyJava.class" in binary mode`,
+                    EX3: `Download the file "/a/ibmuser/MyJava.class" to "java/MyJava.class" using a .zosattributes file`
                 }
             },
             USS_DIR: {

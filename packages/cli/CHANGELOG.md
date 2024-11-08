@@ -3,6 +3,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## Recent Changes
 
+- Enhancement: Pass a `.zosattributes` file path for the download encoding format by adding the new `--attributes` flag to the `zowe zos-files upload` command. [#2322](https://github.com/zowe/zowe-cli/issues/2322)
 - BugFix: Added support for the `--encoding` flag to the `zowe upload dir-to-uss` to allow for encoding uploaded directories for command group consistency. [#2337](https://github.com/zowe/zowe-cli/issues/2337)
 - BugFix: Improved output formatting for `zowe zos-tso start app` and `zowe zos-tso send app` commands by parsing and displaying relevant data rather than the entire JSON response. [#2347](https://github.com/zowe/zowe-cli/pull/2347)
 - Enhancement: Add the --ignore-not-found flag to avoid file-not-found error messages when deleting files so scripts are not interupted during automated batch processing. The flag bypasses warning prompts to confirm delete actions. [#2254](https://github.com/zowe/zowe-cli/pull/2254)
@@ -22,6 +23,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 ## `8.6.0`
 
 - Enhancement: Added support for running applications on TSO/E address spaces. Start applications and receive/transmit messages using the new `tso start`, `tso receive` and `tso send` commands. [#2280](https://github.com/zowe/zowe-cli/pull/2280)
+
 
 ## `8.4.0`
 
