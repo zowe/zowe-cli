@@ -47,12 +47,23 @@ export const ZfsDefinition: ICommandDefinition = {
             description: strings.OPTIONS.FOR_SURE,
             type: "boolean",
             required: true
+        },
+        {
+            name: "ignore-not-found",
+            aliases: ["i", "inf"],
+            description: strings.OPTIONS.IGNORE_NF,
+            type: "boolean",
+            required: false
         }
     ] as ICommandOptionDefinition[]).sort((a, b) => a.name.localeCompare(b.name)),
     examples: [
         {
             description: strings.EXAMPLES.EX1,
             options: `"HLQ.MYNEW.ZFS" -f`
+        },
+        {
+            description: strings.EXAMPLES.EX2,
+            options: `"HLQ.MYNEW.ZFS" -fi`
         }
     ]
 };
