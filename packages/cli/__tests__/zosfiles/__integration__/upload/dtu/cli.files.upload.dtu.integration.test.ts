@@ -59,7 +59,7 @@ describe("Upload local dir to uss dir", () => {
             expect(response.stderr.toString()).toContain("USSDir");
         });
 
-        it("should fail when local directory does not exist", async () => {
+        it("should fail when local directory does not exist and no --inf flag", async () => {
             const shellScript = path.join(__dirname, "__scripts__", "command", "command_upload_dtu.sh");
             const response = runCliScript(shellScript, TEST_ENVIRONMENT, ["localDirThatDoesNotExist", "/a/uss/dir"]);
             expect(stripNewLines(response.stderr.toString())).toContain("no such file or directory");
