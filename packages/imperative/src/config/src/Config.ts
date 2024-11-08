@@ -150,7 +150,7 @@ export class Config {
         const myNewConfig = new Config();
         myNewConfig.mApp = app;
         myNewConfig.mActive = { user: false, global: false };
-        myNewConfig.mVault = opts?.vault;
+        myNewConfig.mVault = opts.vault;
         myNewConfig.mSecure = {};
 
         // Populate configuration file layers
