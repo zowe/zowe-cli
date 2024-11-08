@@ -9,7 +9,7 @@
 *
 */
 
-import { IHandlerParameters } from "@zowe/imperative";
+import { IHandlerParameters, TextUtils } from "@zowe/imperative";
 import { ZosTsoBaseHandler, AddressSpaceApps } from "@zowe/zos-tso-for-zowe-sdk";
 
 /**
@@ -32,6 +32,13 @@ export default class Handler extends ZosTsoBaseHandler {
             },
             this.mTsoStart
         );
-        commandParameters.response.console.log(JSON.stringify(response,null,2));
+        commandParameters.response.console.log(TextUtils.chalk.yellow.bold("\n" + "Servlet Key: ") + response.servletKey);
+        commandParameters.response.console.log(TextUtils.chalk.yellow.bold("Queue ID: ") + response.queueID + "\n");
+
+        response.tsoData.forEach((data) => {
+            commandParameters.response.console.log(typeof data === 'string' ? data : data?.DATA ?? "");
+        });
+
+        commandParameters.response.data.setObj(response);
     }
 }
