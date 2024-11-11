@@ -180,11 +180,16 @@ export class ProfileInfo {
     }
 
     /**
-     * Checks if a JSON web token is used for authenticating the given profile name.
-     * If so, it will decode the token to determine whether it has expired.
+     * Checks if a JSON web token is used for authenticating the given profile
+     * name. If so, it will decode the token to determine whether it has
+     * expired.
      *
-     * @param {string | IProfileLoaded} profile - The name of the profile or the profile object to check the JSON web token for
-     * @returns {boolean} Whether the token has expired for the given profile. Returns `false` if a token value is not set or the token type is LTPA2.
+     * @param {string | IProfileLoaded} profile
+     *     The name of the profile or the profile object to check the JSON web
+     *     token for
+     * @returns {boolean}
+     *     Whether the token has expired for the given profile. Returns `false`
+     *     if a token value is not set or the token type is LTPA2.
      */
     public hasTokenExpiredForProfile(profile: string | IProfileLoaded): boolean {
         const profName = typeof profile === "string" ? profile : profile.name;
@@ -293,8 +298,13 @@ export class ProfileInfo {
                     this.getTeamConfig().api.layers.activate(osLoc.user, osLoc.global);
                 }
 
+                const updateVaultOnly = options.setSecure && this.getTeamConfig().api.secure.secureFields().includes(toUpdate.argLoc.jsonLoc);
                 this.getTeamConfig().set(toUpdate.argLoc.jsonLoc, options.value, { secure: options.setSecure });
-                await this.getTeamConfig().save(false);
+                if (!updateVaultOnly) {
+                    await this.getTeamConfig().save(false);
+                } else {
+                    await this.getTeamConfig().api.secure.save(false);
+                }
 
                 if (oldLayer) {
                     this.getTeamConfig().api.layers.activate(oldLayer.user, oldLayer.global);
@@ -772,12 +782,24 @@ export class ProfileInfo {
      * detected the existence of old-school V1 profiles. We will not work with the
      * V1 profiles. This function can let you tell a user that they are incorrectly
      * trying to use V1 profiles.
+     * @deprecated Use non-static method instead to detect V2 profiles
+     * @returns {boolean} `true` if a V1 profile exists, and `false` otherwise.
+     */
+    public static get onlyV1ProfilesExist(): boolean {
+        return ConfigUtils.onlyV1ProfilesExist;
+    }
+
+    /**
+     * Returns an indicator that the user has no team configuration, but we
+     * detected the existence of old-school V1 profiles. We will not work with the
+     * V1 profiles. This function can let you tell a user that they are incorrectly
+     * trying to use V1 profiles.
      *
      * @returns True - Means there is *NO* team config *AND* we detected that a V1 profile exists.
      *          False otherwise.
      */
-    public static get onlyV1ProfilesExist(): boolean {
-        return ConfigUtils.onlyV1ProfilesExist;
+    public get onlyV1ProfilesExist(): boolean {
+        return !this.getTeamConfig().exists && ConfigUtils.onlyV1ProfilesExist;
     }
 
     // _______________________________________________________________________
@@ -867,13 +889,15 @@ export class ProfileInfo {
 
     //_________________________________________________________________________
     /**
-     * Function to ensure the credential manager will load successfully
-     * Returns true if it will load, or the credentials are not secured. Returns false if it will not load.
+     * Checks whether the credential manager will load successfully.
+     * @returns
+     *     True if it loaded successfully, or there is no credential manager
+     *     configured in Imperative settings.json
      */
     public async profileManagerWillLoad(): Promise<boolean> {
-        if (this.mCredentials.isSecured) {
+        if (this.mCredentials.isCredentialManagerInAppSettings()) {
             try {
-                await this.mCredentials.loadManager();
+                await this.mCredentials.activateCredMgrOverride();
                 return true;
             } catch (err) {
                 this.mImpLogger.warn("Failed to initialize secure credential manager: " + err.message);

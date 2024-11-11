@@ -13,6 +13,7 @@ import * as fs from "fs";
 import * as path from "path";
 import * as os from "os";
 import * as jsonfile from "jsonfile";
+import * as glob from "fast-glob";
 import { ConfigUtils } from "../../config/src/ConfigUtils";
 import { CredentialManagerFactory } from "../../security";
 import { ImperativeConfig } from "../../utilities";
@@ -132,10 +133,29 @@ describe("Config Utils", () => {
                 })
             } as any);
 
-            const fsExistsSyncSpy = jest.spyOn(fs, "existsSync").mockReturnValueOnce(false);
+            const globSyncSpy = jest.spyOn(glob, "sync").mockReturnValueOnce([]);
 
             expect(ConfigUtils.onlyV1ProfilesExist).toBe(false);
-            expect(fsExistsSyncSpy).toHaveBeenCalledTimes(1);
+            expect(globSyncSpy).toHaveBeenCalledTimes(1);
+        });
+
+        it("should return false when only V1 profile meta files exist", () => {
+            jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({
+                config: {
+                    exists: false
+                },
+                cliHome: "/fake/cli/home/dir",
+                loadedConfig: jest.fn(() => {
+                    return {
+                        envVariablePrefix: "Fake_cli_prefix"
+                    };
+                })
+            } as any);
+
+            const globSyncSpy = jest.spyOn(glob, "sync").mockReturnValueOnce(["profiles/zosmf/zosmf_meta.yaml"]);
+
+            expect(ConfigUtils.onlyV1ProfilesExist).toBe(false);
+            expect(globSyncSpy).toHaveBeenCalledTimes(1);
         });
 
         it("should return true when only V1 profiles exist", () => {
@@ -151,10 +171,10 @@ describe("Config Utils", () => {
                 })
             } as any);
 
-            const fsExistsSyncSpy = jest.spyOn(fs, "existsSync").mockReturnValueOnce(true);
+            const globSyncSpy = jest.spyOn(glob, "sync").mockReturnValueOnce(["profiles/zosmf/lpar1.yaml"]);
 
             expect(ConfigUtils.onlyV1ProfilesExist).toBe(true);
-            expect(fsExistsSyncSpy).toHaveBeenCalledTimes(1);
+            expect(globSyncSpy).toHaveBeenCalledTimes(1);
         });
     });
 

@@ -122,6 +122,7 @@ export class EventProcessor {
     private emit(eventName: string) {
         try {
             const event = this.subscribedEvents.get(eventName) ?? EventUtils.createEvent(eventName, this.appName);
+            event.appProcId = process.pid;
             event.eventTime = new Date().toISOString();
             EventUtils.writeEvent(event);
         } catch (err) {

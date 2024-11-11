@@ -2,6 +2,15 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Fixed an issue where the `ProfileInfo.profileManagerWillLoad` method failed if profiles were not yet read from disk. [#2284](https://github.com/zowe/zowe-cli/issues/2284)
+- BugFix: Fixed an issue where the `ProfileInfo.onlyV1ProfilesExist` method could wrongly return true when V2 profiles exist. [#2311](https://github.com/zowe/zowe-cli/issues/2311)
+  - Deprecated the static method `ProfileInfo.onlyV1ProfilesExist` and replaced it with an `onlyV1ProfilesExist` instance method on the `ProfileInfo` class.
+- BugFix: Fixed an issue where the `ConvertV1Profiles.convert` method may create team configuration files in the wrong directory if the environment variable `ZOWE_CLI_HOME` is set. [#2312](https://github.com/zowe/zowe-cli/issues/2312)
+- BugFix: Fixed an issue where the Imperative Event Emitter would fire event callbacks for the same app that triggered the event. [#2279](https://github.com/zowe/zowe-cli/issues/2279)
+- BugFix: Fixed an issue where the `ProfileInfo.updateKnownProperty` method could rewrite team config file to disk without any changes when storing secure value. [#2324](https://github.com/zowe/zowe-cli/issues/2324)
+
 ## `8.8.0`
 
 - BugFix: Enabled commands with either the `--help` or `--version` flags to still display their information despite any configuration file issues. [#2301](https://github.com/zowe/zowe-cli/pull/2301)

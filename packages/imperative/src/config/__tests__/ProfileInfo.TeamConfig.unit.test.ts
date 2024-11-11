@@ -137,16 +137,25 @@ describe("TeamConfig ProfileInfo tests", () => {
                 expect(profLoaded.profile.profLoc.jsonLoc).toBe(profAttrs.profLoc.jsonLoc);
                 expect(profLoaded.profile.isDefaultProfile).toBe(profAttrs.isDefaultProfile);
             });
+        });
+
+        describe("onlyV1ProfilesExist", () => {
+            it("should detect that V2 profiles exist", async () => {
+                const profInfo = createNewProfInfo(teamProjDir);
+                const v2ExistsSpy = jest.spyOn(profInfo, "getTeamConfig").mockReturnValue({ exists: true } as any);
+                const v1ExistsSpy = jest.spyOn(ConfigUtils, "onlyV1ProfilesExist", "get");
+                expect(profInfo.onlyV1ProfilesExist).toBe(false);
+                expect(v2ExistsSpy).toHaveBeenCalledTimes(1);
+                expect(v1ExistsSpy).not.toHaveBeenCalled();
+            });
 
             it("should detect that only V1 profiles exist", async () => {
-                // onlyV1ProfilesExist is a getter of a property, so mock the property
-                Object.defineProperty(ConfigUtils, "onlyV1ProfilesExist", {
-                    configurable: true,
-                    get: jest.fn(() => {
-                        return true;
-                    })
-                });
-                expect(ProfileInfo.onlyV1ProfilesExist).toBe(true);
+                const profInfo = createNewProfInfo(teamProjDir);
+                const v2ExistsSpy = jest.spyOn(profInfo, "getTeamConfig").mockReturnValue({ exists: false } as any);
+                const v1ExistsSpy = jest.spyOn(ConfigUtils, "onlyV1ProfilesExist", "get").mockReturnValueOnce(true);
+                expect(profInfo.onlyV1ProfilesExist).toBe(true);
+                expect(v2ExistsSpy).toHaveBeenCalledTimes(1);
+                expect(v1ExistsSpy).toHaveBeenCalledTimes(1);
             });
         });
 
@@ -311,8 +320,8 @@ describe("TeamConfig ProfileInfo tests", () => {
     describe("profileManagerWillLoad", () => {
         it("should return false if secure credentials fail to load", async () => {
             const profInfo = createNewProfInfo(teamProjDir);
-            jest.spyOn((profInfo as any).mCredentials, "isSecured", "get").mockReturnValueOnce(true);
-            jest.spyOn((profInfo as any).mCredentials, "loadManager").mockImplementationOnce(async () => {
+            jest.spyOn((profInfo as any).mCredentials, "isCredentialManagerInAppSettings").mockReturnValueOnce(true);
+            jest.spyOn((profInfo as any).mCredentials, "activateCredMgrOverride").mockImplementationOnce(async () => {
                 throw new Error("bad credential manager");
             });
 
@@ -327,10 +336,10 @@ describe("TeamConfig ProfileInfo tests", () => {
             expect(response).toEqual(true);
         });
 
-        it("should return true if credentials are not secure", async () => {
+        it("should return true if there is no credential manager", async () => {
             // ensure that we are not in the team project directory
             const profInfo = createNewProfInfo(origDir);
-            (profInfo as any).mCredentials = { isSecured: false };
+            jest.spyOn((profInfo as any).mCredentials, "isCredentialManagerInAppSettings").mockReturnValueOnce(false);
             const response = await profInfo.profileManagerWillLoad();
             expect(response).toEqual(true);
         });
@@ -1297,7 +1306,7 @@ describe("TeamConfig ProfileInfo tests", () => {
     });
 
     describe("updateKnownProperty", () => {
-        it("should throw and error if the property location type is invalid", async () => {
+        it("should throw an error if the property location type is invalid", async () => {
             const profInfo = createNewProfInfo(teamProjDir);
             await profInfo.readProfilesFromDisk();
             let caughtError;
@@ -1336,6 +1345,7 @@ describe("TeamConfig ProfileInfo tests", () => {
             const profInfo = createNewProfInfo(teamProjDir);
             await profInfo.readProfilesFromDisk();
             const jsonPathMatchesSpy = jest.spyOn(ConfigUtils, "jsonPathMatches");
+            const configSaveSpy = jest.spyOn(profInfo.getTeamConfig(), "save");
 
             const prof = profInfo.mergeArgsForProfile(profInfo.getAllProfiles("dummy")[0]);
             const ret = await profInfo.updateKnownProperty({ mergedArgs: prof, property: "host", value: "example.com" });
@@ -1344,6 +1354,26 @@ describe("TeamConfig ProfileInfo tests", () => {
             expect(newHost).toEqual("example.com");
             expect(ret).toBe(true);
             expect(jsonPathMatchesSpy).toHaveBeenCalled(); // Verify that profile names are matched correctly
+            expect(configSaveSpy).toHaveBeenCalled();
+        });
+
+        it("should update the given property in the vault and return true", async () => {
+            const profInfo = createNewProfInfo(teamProjDir);
+            await profInfo.readProfilesFromDisk();
+            const jsonPathMatchesSpy = jest.spyOn(ConfigUtils, "jsonPathMatches");
+            jest.spyOn(profInfo.getTeamConfig().api.secure, "secureFields").mockReturnValue(["profiles.LPAR4.properties.host"]);
+            const configSaveSpy = jest.spyOn(profInfo.getTeamConfig(), "save");
+            const configSecureSaveSpy = jest.spyOn(profInfo.getTeamConfig().api.secure, "save");
+
+            const prof = profInfo.mergeArgsForProfile(profInfo.getAllProfiles("dummy")[0]);
+            const ret = await profInfo.updateKnownProperty({ mergedArgs: prof, property: "host", value: "example.com", setSecure: true });
+            const newHost = profInfo.getTeamConfig().api.layers.get().properties.profiles.LPAR4.properties.host;
+
+            expect(newHost).toEqual("example.com");
+            expect(ret).toBe(true);
+            expect(jsonPathMatchesSpy).toHaveBeenCalled(); // Verify that profile names are matched correctly
+            expect(configSaveSpy).not.toHaveBeenCalled();
+            expect(configSecureSaveSpy).toHaveBeenCalled();
         });
 
         it("should remove the given property if the value specified if undefined", async () => {
