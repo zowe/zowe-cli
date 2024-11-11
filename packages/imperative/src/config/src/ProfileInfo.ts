@@ -783,8 +783,7 @@ export class ProfileInfo {
      * V1 profiles. This function can let you tell a user that they are incorrectly
      * trying to use V1 profiles.
      * @deprecated Use non-static method instead to detect V2 profiles
-     * @returns True - Means there is *NO* team config *AND* we detected that a V1 profile exists.
-     *          False otherwise.
+     * @returns {boolean} `true` if a V1 profile exists, and `false` otherwise.
      */
     public static get onlyV1ProfilesExist(): boolean {
         return ConfigUtils.onlyV1ProfilesExist;
