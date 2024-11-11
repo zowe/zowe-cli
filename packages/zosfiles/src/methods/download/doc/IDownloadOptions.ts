@@ -12,7 +12,6 @@
 import { Writable } from "stream";
 import { IGetOptions } from "../../get/doc/IGetOptions";
 import { ZosFilesAttributes } from "../../../utils/ZosFilesAttributes";
-import { IZosFilesResponse } from "../../../doc/IZosFilesResponse";
 
 /**
  * This interface defines options for downloading a single data set or USS file
@@ -111,6 +110,6 @@ export interface IDownloadOptions extends Omit<IDownloadSingleOptions, "stream">
      */
     pattern?: string;
 
-    memberPatternResponse?: IZosFilesResponse;
+    memberPatternResponse?: any;
 
 }

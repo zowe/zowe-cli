@@ -187,6 +187,13 @@ Destination: %s",
     "message": "Failed to download the following members: 
 ",
   },
+  "memberDownloadedWithDestination": Object {
+    "message": "Member(s) downloaded successfully.
+Destination: %s",
+  },
+  "membersMatchedPattern": Object {
+    "message": "%d members(s) were found matching pattern.",
+  },
   "missingDataSets": Object {
     "message": "No list of data sets to download was passed.",
   },
@@ -267,6 +274,12 @@ Destination: %s",
   },
   "noMembersFound": Object {
     "message": "No members found!",
+  },
+  "noMembersInList": Object {
+    "message": "No members left after excluded pattern(s) were filtered out.",
+  },
+  "noMembersMatchingPattern": Object {
+    "message": "There are no members that match the provided pattern(s).",
   },
   "nodeJsFsError": Object {
     "message": "Node.js File System API error",

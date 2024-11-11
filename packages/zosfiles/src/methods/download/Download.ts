@@ -297,7 +297,7 @@ export class Download {
 
             return {
                 success: true,
-                commandResponse: util.format(ZosFilesMessages.datasetDownloadedWithDestination.message, baseDir),
+                commandResponse: util.format(ZosFilesMessages.memberDownloadedWithDestination.message, baseDir),
                 apiResponse: response.apiResponse
             };
 

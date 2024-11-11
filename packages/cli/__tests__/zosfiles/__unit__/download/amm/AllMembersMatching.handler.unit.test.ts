@@ -18,7 +18,7 @@ import { mockHandlerParameters } from "@zowe/cli-test-utils";
 
 const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
     arguments: UNIT_TEST_ZOSMF_PROF_OPTS,
-    positionals: ["zos-jobs", "download", "output"],
+    positionals: ["zos-jobs", "download", "amm", "output"],
     definition: AllMembersMatchingDefinition.AllMembersMatchingDefinition
 });
 
@@ -28,6 +28,27 @@ const fakeListOptions: IDsmListOptions = {
         stageName: 0,
         statusMessage: "Searching for members"
     }
+};
+
+const fakeListResponse = {
+    success: true,
+    commandResponse: '1 members(s) were found matching pattern.',
+    apiResponse: [
+        {
+            member: 'M1',
+            vers: 1,
+            mod: 0,
+            c4date: '2024/11/11',
+            m4date: '2024/11/11',
+            cnorc: 0,
+            inorc: 0,
+            mnorc: 0,
+            mtime: '16:06',
+            msec: '51',
+            user: 'PG899423',
+            sclm: 'N'
+        }
+    ]
 };
 
 const fakeDownloadOptions: IDownloadOptions = {
@@ -46,14 +67,14 @@ const fakeDownloadOptions: IDownloadOptions = {
         percentComplete: 0,
         stageName: 0,
         statusMessage: "Downloading members"
-    }
+    },
+    memberPatternResponse: fakeListResponse.apiResponse,
 };
 
 describe("Download AllMembersMatching handler", () => {
     it("should download matching members if requested", async () => {
-        const pattern = "test*";
-        const dsname: "HLQ.";
-        const fakeListResponse = [{ dsname: "HLQ." + pattern }];
+        const pattern = "M1*";
+        const dsname = "test-pds";
         let passedSession: Session = null;
         List.membersMatchingPattern = jest.fn(async (session) => {
             passedSession = session;
@@ -79,7 +100,7 @@ describe("Download AllMembersMatching handler", () => {
         expect(List.membersMatchingPattern).toHaveBeenCalledTimes(1);
         expect(List.membersMatchingPattern).toHaveBeenCalledWith(passedSession, dsname, [pattern], { ...fakeListOptions });
         expect(Download.allMembers).toHaveBeenCalledTimes(1);
-        expect(Download.allMembers).toHaveBeenCalledWith(passedSession, fakeListResponse, { ...fakeDownloadOptions });
+        expect(Download.allMembers).toHaveBeenCalledWith(passedSession, dsname, { ...fakeDownloadOptions });
     });
 
     it("should handle generation of an extension map", async () => {

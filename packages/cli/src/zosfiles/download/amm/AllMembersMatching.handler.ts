@@ -48,7 +48,6 @@ export default class AllMembersMatchingHandler extends ZosFilesBaseHandler {
         commandParameters.response.progress.startBar({ task: listStatus });
         const response = await List.membersMatchingPattern(session, commandParameters.arguments.dataSetName,
             commandParameters.arguments.pattern.split(","), listOptions);
-        // console.log(response);
         commandParameters.response.progress.endBar();
         if (response.success) {
             commandParameters.response.console.log(`\r${response.commandResponse}\n`);

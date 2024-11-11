@@ -64,7 +64,7 @@ export const AllMembersMatchingDefinition: ICommandDefinition = {
         },
         {
             description: strings.EXAMPLES.EX2,
-            options: `"ibmuser.cntl" -d jcl`
+            options: `"ibmuser.cntl" "test*,M*" --exclude-patterns "M2*" -d output`
         }
     ]
 };
