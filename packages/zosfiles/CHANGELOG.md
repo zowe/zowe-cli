@@ -2,6 +2,11 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
+## `8.8.0`
+
+- Enhancement: Allows for passing a `.zosattributues` file path for the download encoding format via the `attributes` option on the `Download.ussFile` method. [#2322](https://github.com/zowe/zowe-cli/issues/2322)
+- BugFix: Added support for the `--encoding` flag to the `zowe upload dir-to-uss` to allow for encoding uploaded directories for command group consistency. [#2337](https://github.com/zowe/zowe-cli/issues/2337)
+
 ## `8.6.2`
 
 - BugFix: Resolved issue where encoding argument was missing from `FileToUss.handler.ts` options object. [#2234](https://github.com/zowe/zowe-cli/pull/2334)
@@ -9,7 +14,7 @@ All notable changes to the Zowe z/OS files SDK package will be documented in thi
 
 ## `8.4.0`
 
-- Enhancement: Added optional `--attributes` flag to `zowe zos-files upload file-to-uss` to allow passing a .zosattributes file path for upload encoding format. [#2319] (https://github.com/zowe/zowe-cli/pull/2319)
+- Enhancement: Added optional `--attributes` flag to `zowe zos-files upload file-to-uss` to allow passing a .zosattributes file path for upload encoding format. [#2319](https://github.com/zowe/zowe-cli/pull/2319)
 
 ## `8.2.0`
 

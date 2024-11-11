@@ -12,7 +12,6 @@
 import * as fs from "fs";
 import * as path from "path";
 import { readFileSync } from "jsonfile";
-import { removeSync } from "fs-extra";
 import stripAnsi = require("strip-ansi");
 import { V1ProfileRead, ProfilesConstants, ProfileUtils } from "../../profiles";
 import { Config } from "./Config";
@@ -444,7 +443,7 @@ export class ConvertV1Profiles {
         // Delete the profiles directory
         try {
             if (fs.existsSync(ConvertV1Profiles.oldProfilesDir)) {
-                removeSync(ConvertV1Profiles.oldProfilesDir);
+                fs.rmSync(ConvertV1Profiles.oldProfilesDir, {recursive: true});
                 ConvertV1Profiles.addToConvertMsgs(
                     ConvertMsgFmt.REPORT_LINE | ConvertMsgFmt.PARAGRAPH,
                     `Deleted the old profiles directory ${ConvertV1Profiles.oldProfilesDir}.`

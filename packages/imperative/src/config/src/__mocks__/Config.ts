@@ -48,7 +48,8 @@ export class Config {
                 defaults: {}
             },
             global: true,
-            user: false
+            user: false,
+            ignoreErrors: false
         }];
 
         return config;

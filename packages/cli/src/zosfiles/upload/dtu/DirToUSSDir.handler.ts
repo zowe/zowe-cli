@@ -43,7 +43,8 @@ export default class DirToUSSDirHandler extends ZosFilesBaseHandler {
             maxConcurrentRequests: commandParameters.arguments.maxConcurrentRequests,
             task: status,
             responseTimeout: commandParameters.arguments.responseTimeout,
-            includeHidden: commandParameters.arguments.includeHidden
+            includeHidden: commandParameters.arguments.includeHidden,
+            encoding: commandParameters.arguments.encoding
         };
 
         const attributes = ZosFilesAttributes.loadFromFile(commandParameters.arguments.attributes, inputDir);

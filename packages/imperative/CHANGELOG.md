@@ -11,6 +11,14 @@ All notable changes to the Imperative package will be documented in this file.
 - BugFix: Fixed an issue where the Imperative Event Emitter would fire event callbacks for the same app that triggered the event. [#2279](https://github.com/zowe/zowe-cli/issues/2279)
 - BugFix: Fixed an issue where the `ProfileInfo.updateKnownProperty` method could rewrite team config file to disk without any changes when storing secure value. [#2324](https://github.com/zowe/zowe-cli/issues/2324)
 
+## `8.8.0`
+
+- BugFix: Enabled commands with either the `--help` or `--version` flags to still display their information despite any configuration file issues. [#2301](https://github.com/zowe/zowe-cli/pull/2301)
+
+## `8.7.1`
+
+- BugFix: Deprecated `IO` functions `createDirsSync` and `mkdirp` due to code duplication. Please use `createDirSync` instead. [#2352](https://github.com/zowe/zowe-cli/pull/2352)
+
 ## `8.7.0`
 
 - Enhancement: Added optional `proxy` object to ISession interface for extenders to pass a ProxyVariables object that would override the environment variables if in place. [#2330](https://github.com/zowe/zowe-cli/pull/2330)

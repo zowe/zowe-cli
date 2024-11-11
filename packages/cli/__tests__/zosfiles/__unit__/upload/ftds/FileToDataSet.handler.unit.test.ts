@@ -273,7 +273,7 @@ describe("Upload file-to-data-set handler", () => {
                 fakeSession = session;
                 return {
                     success: false,
-                    commandResponse: "uploaded",
+                    commandResponse: "upload failed",
                     apiResponse: [
                         {success: false, from: inputfile, to: dataSetName}
                     ]
@@ -318,7 +318,7 @@ describe("Upload file-to-data-set handler", () => {
             }
 
             expect(error).toBeDefined();
-            expect(error.message).toBe("uploaded");
+            expect(error.message).toBe("upload failed");
             expect(Upload.fileToDataset).toHaveBeenCalledTimes(1);
             expect(Upload.fileToDataset).toHaveBeenCalledWith(fakeSession, inputfile, dataSetName, {
                 binary: undefined,
@@ -329,15 +329,16 @@ describe("Upload file-to-data-set handler", () => {
                     statusMessage: "Uploading to data set"
                 }
             });
-            expect(jsonObj).toMatchSnapshot();
-            expect(apiMessage).toMatchSnapshot();
+
+            expect(apiMessage).toBe("");
+
             expect(logMessage).toMatch(/success:.*false/);
             expect(logMessage).toMatch(/from:.*test-file/);
             expect(logMessage).toMatch(/file_to_upload:.*1/);
             expect(logMessage).toMatch(/success:.*0/);
             expect(logMessage).toMatch(/error:.*1/);
             expect(logMessage).toMatch(/skipped:.*0/);
-            expect(logMessage).toMatch(/uploaded/);
+            expect(error.mDetails.msg).toContain('upload failed');
         });
     });
 });

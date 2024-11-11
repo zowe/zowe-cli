@@ -61,6 +61,7 @@ export function runCliScript(scriptPath: string, testEnvironment: ITestEnvironme
             env: childEnv,
             encoding: "buffer"
         });
+        // eslint-disable-next-line @typescript-eslint/no-magic-numbers
         if (process.platform === "darwin" && (response.error as ExecFileException)?.errno === -8) {
             throw new Error(`The script file ${path.basename(scriptPath)} failed to execute. Check that it starts with a shebang line.`);
         }
