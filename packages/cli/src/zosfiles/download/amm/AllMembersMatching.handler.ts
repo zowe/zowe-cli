@@ -74,7 +74,7 @@ export default class AllMembersMatchingHandler extends ZosFilesBaseHandler {
             failFast: commandParameters.arguments.failFast,
             task: status,
             responseTimeout: commandParameters.arguments.responseTimeout,
-            memberPatternResponse: response
+            memberPatternResponse: response.apiResponse,
         });
     }
 }

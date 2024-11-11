@@ -205,14 +205,12 @@ export class Download {
         ImperativeExpect.toNotBeNullOrUndefined(dataSetName, ZosFilesMessages.missingDatasetName.message);
         ImperativeExpect.toNotBeEqual(dataSetName, "", ZosFilesMessages.missingDatasetName.message);
 
-        const members = options.memberPatternResponse.apiResponse.map((item: { member: string; }) => ({ member: item.member }));
-
         try {
             const response = await List.allMembers(session, dataSetName, {
                 volume: options.volume,
                 responseTimeout: options.responseTimeout
             });
-            const memberList: Array<{ member: string }> = members ?? response.apiResponse.items;
+            const memberList: Array<{ member: string }> = options.memberPatternResponse ?? response.apiResponse.items;
             if (memberList.length === 0) {
                 return {
                     success: false,

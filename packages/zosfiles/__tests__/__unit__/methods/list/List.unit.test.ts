@@ -1534,19 +1534,13 @@ describe("z/OS Files - List", () => {
 
         const memberData1 = {
             dsname: "TEST.PS",
-            memberName: "M1",
+            member: "M1",
             dsorg: "PS"
         };
 
         const memberData2 = {
             dsname: "TEST.PS",
-            memberName: "M2",
-            dsorg: "PS"
-        };
-
-        const memberData3 = {
-            dsname: "TEST.PS",
-            memberName: "testM1",
+            member: "M2",
             dsorg: "PS"
         };
 
@@ -1575,7 +1569,7 @@ describe("z/OS Files - List", () => {
                 caughtError = e;
             }
 
-            // expect(caughtError).toBeUndefined();
+            expect(caughtError).toBeUndefined();
             expect(response).toEqual({
                 success: true,
                 commandResponse: util.format(ZosFilesMessages.membersMatchedPattern.message, 2),
@@ -1584,6 +1578,171 @@ describe("z/OS Files - List", () => {
 
             expect(listDataSetSpy).toHaveBeenCalledTimes(1);
             expect(listDataSetSpy).toHaveBeenCalledWith(dummySession, dsname, {attributes: true, pattern});
+        });
+        it("should throw an error if the data set name is not specified", async () => {
+            let response;
+            let caughtError;
+            const pattern = "M*";
+
+            // Test for NULL
+            try {
+                response = await List.membersMatchingPattern(dummySession, null, [pattern]);
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(response).toBeUndefined();
+            expect(caughtError).toBeDefined();
+            expect(caughtError.message).toContain(ZosFilesMessages.missingDatasetName.message);
+
+            caughtError = undefined;
+            // Test for UNDEFINED
+            try {
+                response = await List.membersMatchingPattern(dummySession, undefined, [pattern]);
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(response).toBeUndefined();
+            expect(caughtError).toBeDefined();
+            expect(caughtError.message).toContain(ZosFilesMessages.missingDatasetName.message);
+
+            caughtError = undefined;
+            // Test for EMPTY
+            try {
+                response = await List.membersMatchingPattern(dummySession,"",[pattern]);
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(response).toBeUndefined();
+            expect(caughtError).toBeDefined();
+            expect(caughtError.message).toContain(ZosFilesMessages.missingDatasetName.message);
+        });
+
+        it("should throw an error if the member pattern is not specified", async () => {
+            let response;
+            let caughtError;
+
+            // Test for NULL
+            try {
+                response = await List.membersMatchingPattern(dummySession, memberData1.dsname, [null]);
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(response).toBeUndefined();
+            expect(caughtError).toBeDefined();
+            expect(caughtError.message).toContain(ZosFilesMessages.missingPatterns.message);
+
+            caughtError = undefined;
+            // Test for UNDEFINED
+            try {
+                response = await List.membersMatchingPattern(dummySession, memberData1.dsname, [undefined]);
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(response).toBeUndefined();
+            expect(caughtError).toBeDefined();
+            expect(caughtError.message).toContain(ZosFilesMessages.missingPatterns.message);
+
+            caughtError = undefined;
+            // Test for EMPTY
+            try {
+                response = await List.membersMatchingPattern(dummySession,memberData1.dsname,[]);
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(response).toBeUndefined();
+            expect(caughtError).toBeDefined();
+            expect(caughtError.message).toContain(ZosFilesMessages.missingPatterns.message);
+        });
+
+        it("should handle an error from the List.allMembers API", async () => {
+            const dummyError = new Error("test2");
+            let response;
+            let caughtError;
+            const pattern = "M*";
+            const dsname = "TEST.PS";
+
+            listDataSetSpy.mockImplementation(async () => {
+                throw dummyError;
+            });
+
+            try {
+                response = await List.membersMatchingPattern(dummySession, dsname, [pattern]);
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(response).toBeUndefined();
+            expect(caughtError).toEqual(dummyError);
+
+            expect(listDataSetSpy).toHaveBeenCalledTimes(1);
+            expect(listDataSetSpy).toHaveBeenCalledWith(dummySession, dsname, {attributes: true, pattern});
+        });
+        it("should handle an error from the List.allMembers API and fall back to fetching attributes sequentially", async () => {
+            let response;
+            let caughtError;
+            const dsname = "TEST.PS";
+            const pattern = "M*";
+
+            listDataSetSpy.mockImplementationOnce(async () => {
+                throw new ImperativeError({msg: "test2", errorCode: "500"});
+            }).mockImplementation(async (): Promise<any> => {
+                return {
+                    apiResponse: {
+                        items: [memberData1,memberData2]
+                    }
+                };
+            });
+
+            try {
+                response = await List.membersMatchingPattern(dummySession, dsname, [pattern]);
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: util.format(ZosFilesMessages.membersMatchedPattern.message, 2),
+                apiResponse: [memberData1,memberData2]
+            });
+
+            expect(listDataSetSpy).toHaveBeenCalledTimes(4);
+            expect(listDataSetSpy).toHaveBeenLastCalledWith(dummySession, dsname, {attributes: true, maxLength: 1, pattern});
+        });
+
+        it("should handle an error when the exclude pattern is specified", async () => {
+            const excludePatterns = ["M1*"];
+            const pattern = "M1*";
+            let response;
+            let caughtError;
+
+            List.allMembers = jest.fn(async (): Promise<any> => {
+                return {
+                    apiResponse: {
+                        items: [memberData1]
+                    }
+                };
+            });
+
+            try {
+                response = await List.membersMatchingPattern(
+                    dummySession, memberData1.dsname, [pattern], { excludePatterns });
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: false,
+                commandResponse: util.format(ZosFilesMessages.noMembersInList.message),
+                apiResponse: []
+            });
         });
     });
 });

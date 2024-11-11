@@ -121,7 +121,7 @@ export class List {
         ImperativeExpect.toNotBeNullOrUndefined(patterns, ZosFilesMessages.missingPatterns.message);
         patterns = patterns.filter(Boolean);
         ImperativeExpect.toNotBeEqual(patterns.length, 0, ZosFilesMessages.missingPatterns.message);
-        const zosmfResponses: IZosFilesResponse[] = [];
+        const zosmfResponses: IZosmfListResponse[] = [];
 
         for(const pattern of patterns) {
             let response: any;
@@ -176,7 +176,7 @@ export class List {
         for (const pattern of options.excludePatterns || []) {
             const response = await List.allMembers(session, dataSetName, {pattern});
             response.apiResponse.items.forEach((membersObj: IZosmfListResponse) => {
-                const responseIndex = zosmfResponses.findIndex(response => response.apiResponse.memberName === membersObj.memberName);
+                const responseIndex = zosmfResponses.findIndex(response=> response.member === membersObj.member);
                 if (responseIndex !== -1) {
                     zosmfResponses.splice(responseIndex, 1);
                 }
