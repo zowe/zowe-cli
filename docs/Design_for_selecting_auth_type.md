@@ -83,6 +83,17 @@ These selections of authentication should be maintained as the default selection
   - Base
   - Nested parent
   - Individual profile
+  - As a sibling of the secure array.
+
+## Documentation Impact
+
+- We must describe the purpose and function of the new authOrder property.
+
+- We must describe where users can place the authOrder property.
+
+- We must describe the default order of authentication, when no authOrder property is supplied.
+
+- We must notify extenders to guide their customers to supply an appropriate authOrder property if their extension needs a non-default order.
 
 ## Determination of functions to be modified
 
@@ -180,7 +191,7 @@ The set of candidates for modification consist of all functions that contain the
   - process - Since our SSH connection can only use basic authentication, this function's use of AUTH_TYPE_BASIC is appropriate and does not need to change.
     - **Modify process ? <span style="color:green">No</span>**
 
-## New software logic to add
+## New software logic that must be added
 
 This section describes new functions that must be added to achieve the desired functionality.
 
@@ -258,7 +269,5 @@ This section describes new functions that must be added to achieve the desired f
   > - <span style="color:red">Maybe this function lives in AbstractSession?.</span>
   > 
   > }
-
-
 
 # 
