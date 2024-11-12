@@ -20,7 +20,7 @@ In this section we identify the key features that a solution would have to provi
 
 - The user must be able to change that authentication order for different parts of the Zowe client configuration.
 
-- Zowe client logic must be enhanced to select the right authentication type for a profile being used to make a connection.
+- Zowe client logic must be enhanced to select the authentication type for a profile used to make a connection based on a user-specified preferred order.
 
 - Zowe client extenders (CLI plugins and ZE extensions) should **<u>not</u>** be able to alter the order of authentication types. The user should control that choice.
 
@@ -32,25 +32,25 @@ In this section we identify the key features that a solution would have to provi
   
   - For example, if a user specifies a token value on the command line, it will override a token value stored in a config file. However,
     
-    - If the user has specified that a certificate should be used before a token, and a certificate is also available in the configuration, the certificate should be used because the user configured that certificates are used before tokens.
+    - If the user has specified that a certificate should be used before a token, and a certificate is also available in the configuration, the certificate should be used because the user configured that certificates should be used before tokens.
     
     - The token should not be used just because it was supplied on the command line.
 
 - The authentication order only identifies the order in which Zowe chooses the **<u>one</u>** authentication method that will be used. If that first authentication method fails, Zowe will not make a second attempt to authenticate with any of the later authentication methods.
 
-- Once an auth type is selected, our logic should ensure that only that one auth type is placed into a session object. Thus, logic in down-stream handlers will not alter the order of auth selection, simply by testing for the auth types within the session in a different order than the order that the user specified.
+- Once an authentication is selected, our logic should ensure that only that one type of authentication is placed into a session object. Thus, logic in down-stream handlers will not alter the order of authentication selection, simply by testing for the authentications within the session in a different order than the order that the user specified.
   
-  - If we continue to allow multiple auth types to be placed into a session, we will have to re-work various functions to test for auth type in the desired order. We will also have to provide the object containing that well-defined order to each such function. This will increase the amount of code being changed, and thus increase the probability of mistakes.
+  - If we were to continue to allow multiple authentications to be placed into a session, we will have to re-work various functions to test for authentications in the desired order. We will also have to provide the object containing that well-defined order to each such function. This will increase the amount of code being changed, and thus increase the probability of mistakes.
 
-- Zowe clients do not currently support AUTH_TYPE_CERT_PFX, so we cannot add it to a set of available auth types. If AUTH_TYPE_CERT_PFX is implemented, it should be placed immediately after AUTH_TYPE_CERT_PEM in the default order.
+- Zowe clients do not currently support AUTH_TYPE_CERT_PFX, so we cannot add it to a set of available authentications. If AUTH_TYPE_CERT_PFX is implemented, it should be placed immediately after AUTH_TYPE_CERT_PEM in the default order.
 
-- Customers should be able to specify AUTH_TYPE_NONE in their preferred order of auth types. While it is not advisable to have no authentication, if a customer has a service that requires no authentication, the customer should be able to specify AUTH_TYPE_NONE at the top of their list of auth types applicable to that particular profile.
+- Customers should be able to specify AUTH_TYPE_NONE in their preferred order of authentications. While it is not advisable to have no authentication, if a customer has a service that requires no authentication, the customer should be able to specify AUTH_TYPE_NONE at the top of their list of authentications applicable to that particular profile.
 
-- A customer should not have to specify every possible auth type in their ordered list of auth types. If a site only uses password and tokens, the customer should be able to specify only those two auth types in their list.
+- A customer should not have to specify every possible authentication in their ordered list of authentications. If a site only uses password and tokens, the customer should be able to specify only those two authentications in their list.
 
-- A customer-specified list of auth types must contain at least one of our supported auth types.
+- A customer-specified list of authentications must contain at least one of our supported authentications.
 
-- ## Historical behavior
+## Historical behavior
 
 The objective of this feature is to enable users to define the order in which an authentication type is selected. However, when a user does not specify any such order, the default order should reflect past behavior.
 
@@ -78,12 +78,56 @@ These selections of authentication should be maintained as the default selection
 
 ## Configuration enhancement
 
-- <span style="color:red">authTypeOrder config property</span>
-- <span style="color:red">Levels in config where auth type order can reside</span>
-  - Base
-  - Nested parent
-  - Individual profile
-  - As a sibling of the secure array.
+A new profile property named **authOrder** should be created to enable users to specify their order of precedence for  the authentication to be used when making a REST connection. The authOrder property should be treated like one of our key connection properties (like host and port). Thus authOrder would have the following characteristics:
+
+- It must be specified within a "properties" object. That "properties" object could reside in:
+  
+  - A base profile
+  
+  - A parent profile of a nested configuration.
+  
+  - Any profile of type **zosmf**.
+  
+  - Any profile specific to a plugin (or VSCode extension) that supports a REST connection. For example an **endevor** profile could contain an **authOrder** property, but an **endevor-location** profile would not.
+
+- Our existing inheritance of connection properties should also apply to the inheritance of the authOrder property.
+
+- We should be able to use our logic for where and how the **rejectUnauthorized** property is handled as a model for how we handle the **authOrder** property.
+
+For example, the user could specify their desired authOrder like this:
+
+```
+"properties": {
+    "host": ... ,
+    "port": ... ,
+    "rejectUnauthorized": ... ,
+    "authOrder": [ "basic", "token", "cert-pem"]
+}
+```
+
+The programmatic definition of authOrder would be:
+
+```
+authOrder[SessConstants.AUTH_TYPE_CHOICES]   
+```
+
+The current set of AUTH_TYPE_CHOICES are:
+
+- AUTH_TYPE_BASIC = "basic"
+
+- AUTH_TYPE_BEARER = "bearer"
+
+- AUTH_TYPE_TOKEN = "token"
+
+- AUTH_TYPE_CERT_PEM = "cert-pem"
+
+- AUTH_TYPE_NONE = "none"
+
+We should add a new AUTH_TYPE_CHOICE of:
+
+- AUTH_TYPE_SSH_KEY = "ssh-key"
+
+That addition would enable customers to also specify the authentication order of precedence for an SSH connection using an authOrder property. The only permissible values for an ssh connection would be "basic" and "ssh-key". Our ssh-handling logic will have to be modified to enforce that restriction and to honor the order. Conversely, our zosmf-handling logic would have to be modified to reject "ssh-key" in authOrder (or at least ignore it). If we choose not to implement authOrder for ssh at this time, we should at least create a design and implementation that can tolerate the addition of "ssh-key" at a later date.
 
 ## Documentation Impact
 
@@ -97,16 +141,16 @@ These selections of authentication should be maintained as the default selection
 
 ## Determination of functions to be modified
 
-The set of candidates for modification consist of all functions that contain the string ***"AUTH_TYPE_"***. This section contains an assessment of whether each such function affects the authentication order. Based on this analysis, those functions that warrant modification are identified in the "Proposed software modifications" section of this document.
+The set of candidates for modification consist of all functions that contain the string ***"AUTH_TYPE_"***. This section contains an assessment of whether each such function affects the authentication order and must be modified. 
 
 - cli\src\config\auto-init\ApimlAutoInitHandler
   
-  - doAutoInit - This function logins into APIML with the session object if either user & password or cert are in the session object. doAutoInit does not make a selection of order. It lets Login.apimlLogin() make that decision. If only the selected auth type is placed into a session, then no need to change.
+  - doAutoInit - This function logins into APIML with the session object if either user & password or cert are in the session object. doAutoInit does not make a selection of order. It lets Login.apimlLogin() make that decision. If only the selected authentication is placed into a session, then no need to change.
     - **Modify doAutoInit ?  <span style="color:green">No</span>**
 
 - core\src\rest\ZosmfRestClient.ts
   
-  - processError - This function just alters error message text based on auth types found in the session. If only the selected auth type is placed into a session, then no need to change.
+  - processError - This function just alters error message text based on authentications found in the session. If only the selected authentication is placed into a session, then no need to change.
     - **Modify processError ?  <span style="color:green">No</span>**
 
 - imperative\src\config\src\ConfigAutoStore.ts
@@ -116,22 +160,22 @@ The set of candidates for modification consist of all functions that contain the
 
 - imperative\src\imperative\src\config\cmd\import\import.handler.ts
   
-  - buildSession - This function is used to import a config from a URL. That URL is an arbitrary location at a customer site where a config file is kept. It is not the target of a REST request to a mainframe service. By design, the only auth type that it will use is user & password. Supporting more authentication types in the 'import' command is beyond the scope of this authentication-order feature. Therefore, no need to change.
+  - buildSession - This function is used to import a config from a URL. That URL is an arbitrary location at a customer site where a config file is kept. It is not the target of a REST request to a mainframe service. By design, the only authentication that it will use is user & password. Supporting more authentication types in the 'import' command is beyond the scope of this authentication-order feature. Therefore, no need to change.
     - **Modify buildSession ? <span style="color:green">No</span>**
 
 - imperative\src\rest\src\client\AbstractRestClient.ts
   
   This class is the only class to use the recently created ISession.authTypeOrder property, which is an array of authentication types supplied in the order in which they should be selected.
   
-  - buildOptions - This function tests for the auth type based on the order in which they occur in ISession.authTypeOrder. Therefore, no need to change.
+  - buildOptions - This function tests for the authentication based on the order in which they occur in ISession.authTypeOrder. Therefore, no need to change.
     
     - **Modify buildOptions ? <span style="color:green">No</span>**
   
-  - constructor - This function currently hard-codes an order of authentication types into the ISession.authTypeOrder array. We must create a means to record the customer-defined order in this function. This function should call a common function (tentatively named recordAuthTypeOrderFromConfig) to do this work. recordAuthTypeOrderFromConfig should be able to set the old hard-coded order (as the default order) only if a customer does not specify an order. 
+  - constructor - This function currently hard-codes an order of authentication types into the ISession.authTypeOrder array. We must create a means to record the customer-defined order in this function. This function should call a common function (tentatively named recordAuthOrderFromConfig) to do this work. recordAuthOrderFromConfig should be able to set the old hard-coded order (as the default order) only if a customer does not specify an order. 
     
     - **Modify constructor?   <span style="color:orange">yes</span>**
   
-  - Each of the following functions reference AUTH_TYPE_XXX to a place an identified type into the ISession.type property. Since buildOptions calls just one of the following functions based on being the first available auth type in the ISession.authTypeOrder array, none of these functions need to change.
+  - Each of the following functions reference AUTH_TYPE_XXX to a place an identified type into the ISession.type property. Since buildOptions calls just one of the following functions based on being the first available authentication in the ISession.authTypeOrder array, none of these functions need to change.
     
     - **Modify setBearerAuth ? <span style="color:green">No</span>**
     
@@ -143,7 +187,7 @@ The set of candidates for modification consist of all functions that contain the
 
 - imperative\src\rest\src\session\AbstractSession.ts
   
-  - buildSession - This private function is called by the constructor, which accepts an Isession object. A caller could populate multiple auth types (and related properties) into that supplied session. Session.buildSession() will have to scrub all but the highest priority available auth type from the session. We should create a common utility function (tentatively named selectTopAuthType) to do the scrubbing. selectTopAuthType can be also be called from ConnectionPropsForSessCfg.resolveSessCfgProps function as described below.
+  - buildSession - This private function is called by the constructor, which accepts an Isession object. A caller could populate multiple authentications (and related properties) into that supplied session. Session.buildSession() will have to scrub all but the highest priority available authentication from the session. We should create a common utility function (tentatively named selectTopAuthType) to do the scrubbing. selectTopAuthType can be also be called from ConnectionPropsForSessCfg.resolveSessCfgProps function as described below.
     
     - **Modify buildSession ? <span style="color:orange">Yes</span>**
   
@@ -153,15 +197,15 @@ The set of candidates for modification consist of all functions that contain the
 
 - imperative\src\rest\src\session\ConnectionPropsForSessCfg.ts
   
-  - addPropsOrPrompt - This function only uses AUTH_TYPE_XXX to determine whether a token and a cert are irrelevant based on the existence of AUTH_TYPE_TOKEN. Those items should not need to change. However, addPropsOrPrompt accepts three parameters, each of which can have property overrides of auth type. After calling resolveSessCfgProps, addPropsOrPrompt continues to modify the session properties with values from its parameters. Thus addPropsOrPrompt must be refactored to work properly with a refactored resolveSessCfgProps.
+  - addPropsOrPrompt - This function only uses AUTH_TYPE_XXX to determine whether a token and a cert are irrelevant based on the existence of AUTH_TYPE_TOKEN. Those items should not need to change. However, addPropsOrPrompt accepts three parameters, each of which can have property overrides of authentication. After calling resolveSessCfgProps, addPropsOrPrompt continues to modify the session properties with values from its parameters. Thus addPropsOrPrompt must be refactored to work properly with a refactored resolveSessCfgProps.
     
     - **Modify addPropsOrPrompt ? <span style="color:orange">Yes</span>**
   
-  - resolveSessCfgProps - Many functions call this function before creating a new session. This function could scrub all but the selected auth type and related properties from the session object. However, callers could call 'new Session()' without first calling resolveSessCfgProps(). Thus, Session.buildSession() will have to perform the same scrubbing of auth types from the session. Both Session.buildSession and resolveSessCfgProps should call selectTopAuthType() to do the scrubbing. 
+  - resolveSessCfgProps - Many functions call this function before creating a new session. This function could scrub all but the selected authentication and related properties from the session object. However, callers could call 'new Session()' without first calling resolveSessCfgProps(). Thus, Session.buildSession() will have to perform the same scrubbing of authentications from the session. Both Session.buildSession and resolveSessCfgProps should call selectTopAuthType() to do the scrubbing. 
     
     - **Modify resolveSessCfgProps ? <span style="color:orange">Yes</span>**
   
-  - setTypeForTokenRequest - This function handles setting auth type to AUTH_TYPE_TOKEN to get a token back from user & password. This does not appear to require any change, but it should be revisited after resolveSessCfgProps is refactored.
+  - setTypeForTokenRequest - This function handles setting authentication to AUTH_TYPE_TOKEN to get a token back from user & password. This does not appear to require any change, but it should be revisited after resolveSessCfgProps is refactored.
     
     - **Modify setTypeForTokenRequest ? <span style="color:orange">Maybe</span>**
 
@@ -177,21 +221,21 @@ The set of candidates for modification consist of all functions that contain the
 
 - imperative\src\rest\src\session\doc\IOptionsForAddConnProps.ts
   
-  - supportedAuthTypes - Our set of supported auth types will not change as part of this feature.
+  - supportedAuthTypes - Our set of supported authentications will not change as part of this feature.
     - **Modify supportedAuthTypes ? <span style="color:green">No</span>**
 
 - imperative\src\rest\src\session\doc\ISession.ts
   
-  - authTypeOrder - This property could be the focus of our refactoring, but currently it is hard-coded and only used in AbstractRestClient.constructor & AbstractRestClient.buildOptions. This property should be used to hold the customer-defined order of authentication types. There is no reason to change this property. Other code will repopulate authTypeOrder's set of values based on customer input. It is possible that an ISession may not be available at the time we want to store the customer-defined order of authentication types. Another object may need to store that order, which is later transferred into this ISession property.
+  - authTypeOrder - This property could be the focus of our refactoring, but currently it is hard-coded and only used in AbstractRestClient.constructor & AbstractRestClient.buildOptions. This property should be used to hold the customer-defined order of authentication types. There is no reason to change this property. Other code will repopulate authTypeOrder's set of values based on customer input. It is possible that an ISession may not be available at the time we want to store the customer-defined order of authentication types. Another object may need to store that order, which is later transferred into this ISession property. The only reason that we may want to change this item is to rename it from authtypeOrder to authOrder to reflect the same, simpler object name that a user will use to specify the authentication order. We should only change the name of authTypeOrder if it is only used internally by Zowe (and thus would be a non-breaking change).
     
-    - **Modify authTypeOrder ? <span style="color:green">No</span>**
+    - **Modify authTypeOrder ? <span style="color:orange">Maybe</span>**
 
 - packages\zosuss\src\SshBaseHandler.ts
   
   - process - Since our SSH connection can only use basic authentication, this function's use of AUTH_TYPE_BASIC is appropriate and does not need to change.
     - **Modify process ? <span style="color:green">No</span>**
 
-## New software logic that must be added
+## New functions that must be added
 
 This section describes new functions that must be added to achieve the desired functionality.
 
@@ -201,13 +245,13 @@ This section describes new functions that must be added to achieve the desired f
   > 
   > @internal
   > 
-  > public UnknownClass.recordAuthTypeOrderFromConfig(tokenIsTopDefault: boolean = false): string[ ] {
+  > public UnknownClass.recordAuthOrderFromConfig(tokenIsTopDefault: boolean = false): string[ ] {
   > 
-  > - This function should obtain the customer-defined authentication order from the Zowe client config file.
+  > - as siblingThis function should obtain the customer-defined authentication order from the Zowe client config file.
   > 
   > - It must confirm that the customer specified valid values. If not, it should record the error, and fall-back to the appropriate default order.
   > 
-  > - It should place those auth types into a string array that is returned.
+  > - It should place those authentications into a string array that is returned.
   >   
   >   - <span style="color:red">Maybe instead of returning that array, the array is set into come commonly accessible object (like ImperativeConfig)?</span>
   > 
@@ -247,7 +291,7 @@ This section describes new functions that must be added to achieve the desired f
   
   > ---
   > 
-  > public UnknownClass.getAuthTypeOrder(): string[ ] {
+  > public UnknownClass.getAuthOrder(): string[ ] {
   > 
   > - This function should return the recorded array of authentication types. They will be in the order of top preference first.
   > 
@@ -263,9 +307,9 @@ This section describes new functions that must be added to achieve the desired f
   > 
   > public UnknownClass.selectTopAuthType(iSessObj: ISession): void {
   > 
-  > - This function should use the new getAuthTypeOrder function to get the ordered array of auth types.
-  > - It should confirm if the auth types (in the preferred order) and their associated properties are available in the iSessObj.
-  > - Once the first auth type is found, the properties related to all other auth types should be removed from iSessObj.
+  > - This function should use the new getAuthOrder function to get the ordered array of authentications.
+  > - It should confirm if the authentications (in the preferred order) and their associated properties are available in the iSessObj.
+  > - Once the first authentication is found, the properties related to all other authentications should be removed from iSessObj.
   > - <span style="color:red">Maybe this function lives in AbstractSession?.</span>
   > 
   > }
