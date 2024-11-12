@@ -355,7 +355,8 @@ export default {
                 },
                 EXAMPLES: {
                     EX1: `Download the members of the data set "ibmuser.loadlib" that begin with "Test" to the directory "loadlib/"`,
-                    EX2: `Download the members of the data set "ibmuser.cntl" that begin with "Test" & "M" to the directory "output", and exclude members that begin with "M2".`
+                    EX2: `Download the members of the data set "ibmuser.cntl" that begin with "Test" & "M" to the directory "output",
+                    and exclude members that begin with "M2".`
                 }
             },
             DATA_SET: {

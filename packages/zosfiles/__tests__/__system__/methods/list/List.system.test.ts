@@ -659,6 +659,77 @@ describe("List command group", () => {
         });
     });
 
+    describe("membersMatchingPattern", () => {
+        const members = ["M1", "M1A", "M2", "M3"];
+        const pattern = "M*";
+        beforeEach(async () => {
+            await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname,
+                { volser: defaultSystem.datasets.vol });
+            await wait(waitTime); //wait 2 seconds
+            for(const mem of members) {
+                await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(mem), `${dsname}(${mem})`);
+            }
+            await wait(waitTime); //wait 2 seconds
+        });
+
+        afterEach(async () => {
+            await Delete.dataSet(REAL_SESSION, dsname);
+            await wait(waitTime); //wait 2 seconds
+        });
+        it("should find data sets that match a pattern", async () => {
+            let error;
+            let response: IZosFilesResponse;
+
+            try {
+                response = await List.membersMatchingPattern(REAL_SESSION, dsname, [pattern]);
+                Imperative.console.info("Response: " + inspect(response));
+            } catch (err) {
+                error = err;
+                Imperative.console.info("Error: " + inspect(error));
+            }
+            expect(error).toBeFalsy();
+            expect(response).toBeTruthy();
+            expect(response.success).toBeTruthy();
+            expect(response.commandResponse).toBe("4 members(s) were found matching pattern.");
+            expect(response.apiResponse.length).toBe(4);
+            expect(response.apiResponse[0].member).toEqual(members[0].toUpperCase());
+        });
+
+        it("should exclude data sets that do not match a pattern", async () => {
+            let response;
+            let caughtError;
+
+            try {
+                response = await List.membersMatchingPattern(REAL_SESSION, dsname, [pattern],
+                    { excludePatterns: ["M1*"] });
+            } catch (error) {
+                caughtError = error;
+            }
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toBeDefined();
+            expect(response.success).toBe(true);
+            expect(response.commandResponse).toContain(format(ZosFilesMessages.membersMatchedPattern.message, 2));
+            expect(response.apiResponse.length).toBe(2);
+        });
+
+        it("should fail when no data sets match", async () => {
+            let response;
+            let caughtError;
+            const pattern = "test*";
+
+            try {
+                response = await List.membersMatchingPattern(REAL_SESSION, dsname, [pattern]);
+            } catch (error) {
+                caughtError = error;
+            }
+
+            expect(caughtError).not.toBeDefined();
+            expect(response).toBeDefined();
+            expect(response.commandResponse).toContain("There are no members that match");
+        });
+    });
+
 });
 
 describe("List command group - encoded", () => {

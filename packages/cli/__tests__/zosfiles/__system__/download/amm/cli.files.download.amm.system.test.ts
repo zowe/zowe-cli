@@ -24,9 +24,8 @@ let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
 let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment<ITestPropertiesSchema>;
 let defaultSystem: ITestPropertiesSchema;
 let dsname: string;
-let members: string[];
 const pattern = "M*";
-members = ["M1", "M2", "M3"];
+const members = ["M1", "M2", "M3"];
 
 describe("Download Members Matching Pattern", () => {
 
@@ -152,7 +151,7 @@ describe("Download Members Matching Pattern", () => {
 
         it("should download all data set members of a large data set with --max-concurrent-requests 2", async () => {
             const bigDsname = getUniqueDatasetName(defaultSystem.zosmf.user);
-            const pattern = "a*"
+            const pattern = "a*";
             await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, bigDsname);
             const members = ["a1", "a2", "a3", "a4", "a5", "a6", "a7", "a8", "a9", "a10", "a11", "a12", "a13", "b1", "b2"];
             const memberContent = Buffer.from("ABCDEFGHIJKLMNOPQRSTUVWXYZ\nABCDEFGHIJKLMNOPQRSTUVWXYZ\nABCDEFGHIJKLMNOPQRSTUVWXYZ");
