@@ -10,11 +10,11 @@
 */
 
 import { Session } from "@zowe/imperative";
-import { ITestEnvironment } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { getUniqueDatasetName } from "../../../../../../__tests__/__src__/TestUtils";
 import { Create, Upload, Delete, Search, CreateDataSetTypeEnum, ISearchOptions, IZosFilesResponse } from "../../../../src";
+import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/ITestEnvironment";
 
 let REAL_SESSION: Session;
 let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
@@ -59,7 +59,7 @@ describe("Search", () => {
         let expectedApiResponse: any;
 
         beforeAll(async () => {
-            dsnPrefix = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILES.SEARCH`);
+            dsnPrefix = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILES.SEARCH`, false, 1);
             pattern = dsnPrefix + ".*";
 
             goodDsNames = [`${dsnPrefix}.SEQ1`, `${dsnPrefix}.SEQ4`, `${dsnPrefix}.SEQ5`];

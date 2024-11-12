@@ -22,7 +22,8 @@ export default class LogsHandler extends ZosmfBaseHandler {
     public async processCmd(commandParameters: IHandlerParameters) {
         const outputHeader = "Retrieved %s messages from %s, starts from %s, ends at %s. ";
 
-        let startTime = new Date().toISOString();
+        let startTime: any;
+        const startDate = new Date().toISOString();
         if (commandParameters.arguments.startTime !== undefined) {
             startTime = commandParameters.arguments.startTime;
             // in case the input is milliseconds format, which is a long number
@@ -39,6 +40,7 @@ export default class LogsHandler extends ZosmfBaseHandler {
 
         try{
             const resp: IZosLogType = await GetZosLog.getZosLog(this.mSession, zosLogParms);
+            if (startTime == null) { startTime = startDate; }
 
             const logItems: Array<IZosLogItemType> = resp.items;
             if (logItems === undefined || logItems.length === 0) {

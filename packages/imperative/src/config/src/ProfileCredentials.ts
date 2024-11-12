@@ -54,9 +54,9 @@ export class ProfileCredentials {
 
     /**
      * Check if secure credentials will be encrypted or stored in plain text.
-     * If using team config, this will always return true. If using classic
-     * profiles, this will check whether a custom CredentialManager is defined
-     * in the Imperative settings.json file.
+     * This will return true if the team configuration files contain secure
+     * fields, or if a custom CredentialManager is defined in the Imperative
+     * settings.json file.
      */
     public get isSecured(): boolean {
         this.mSecured = this.isTeamConfigSecure() || this.isCredentialManagerInAppSettings();
@@ -74,6 +74,22 @@ export class ProfileCredentials {
             throw new ImperativeError({ msg: "Secure credential storage is not enabled" });
         }
 
+        await this.activateCredMgrOverride();
+        await this.mProfileInfo.getTeamConfig().api.secure.load({
+            load: (key: string): Promise<string> => {
+                return CredentialManagerFactory.manager.load(key, true);
+            },
+            save: (key: string, value: any): Promise<void> => {
+                return CredentialManagerFactory.manager.save(key, value);
+            }
+        });
+    }
+
+    /**
+     * Attempt to initialize `CredentialManagerFactory` with the specified override.
+     * @internal
+     */
+    public async activateCredMgrOverride(): Promise<void> {
         if (!CredentialManagerFactory.initialized) {
             try {
                 // TODO? Make CredentialManagerFactory.initialize params optional
@@ -86,15 +102,6 @@ export class ProfileCredentials {
                 });
             }
         }
-
-        await this.mProfileInfo.getTeamConfig().api.secure.load({
-            load: (key: string): Promise<string> => {
-                return CredentialManagerFactory.manager.load(key, true);
-            },
-            save: (key: string, value: any): Promise<void> => {
-                return CredentialManagerFactory.manager.save(key, value);
-            }
-        });
     }
 
     /**
@@ -109,8 +116,9 @@ export class ProfileCredentials {
     /**
      * Check whether a custom CredentialManager is defined in the Imperative
      * settings.json file.
+     * @internal
      */
-    private isCredentialManagerInAppSettings(): boolean {
+    public isCredentialManagerInAppSettings(): boolean {
         try {
             const fileName = path.join(ImperativeConfig.instance.cliHome, "settings", "imperative.json");
             let settings: any;

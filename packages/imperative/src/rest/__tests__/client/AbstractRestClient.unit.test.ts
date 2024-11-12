@@ -426,6 +426,56 @@ describe("AbstractRestClient tests", () => {
         expect(error.message).toMatchSnapshot();
     });
 
+    // called IRL when socket is reused and HTTP 1.1 race condition is hit
+    it("should handle a socket reuse error", async () => {
+        const errorObject: any = {
+            name: "socket hang up",
+            message: "socket hang up",
+            code: "ECONNRESET"
+        };
+
+        let reusedSocket = true;
+        const requestFnc = jest.fn((options, callback) => {
+            const emitter = new MockHttpRequestResponse();
+
+            ProcessUtils.nextTick(() => {
+                callback(emitter);
+
+                if (reusedSocket) {
+                    emitter.reusedSocket = true;
+                    ProcessUtils.nextTick(() => {
+                        emitter.emit("error", errorObject);
+                        reusedSocket = false;
+                    });
+                } else {
+                    ProcessUtils.nextTick(() => {
+                        emitter.emit("data", Buffer.from("\"response data\"", "utf8"));
+                    });
+
+                    ProcessUtils.nextTick(() => {
+                        emitter.emit("end");
+                    });
+                }
+            });
+            return emitter;
+        });
+
+        (https.request as any) = requestFnc;
+
+        let error;
+        let response: string = "";
+
+        try {
+            response = await RestClient.getExpectString(new Session({hostname: "test"}), "/resource");
+        } catch (thrownError) {
+            error = thrownError;
+        }
+
+        expect(error).not.toBeDefined();
+        expect(response).toEqual("\"response data\"");
+        expect(requestFnc).toHaveBeenCalledTimes(2);
+    });
+
     it("should call http request for http requests", async () => {
         const requestEmitter = new MockHttpRequestResponse();
         const httpRequestFnc = jest.fn((options, callback) => {
@@ -1422,14 +1472,13 @@ describe("AbstractRestClient tests", () => {
         });
 
         describe('buildOptions', () => {
-            const privateRestClient = new RestClient(
-                new Session({
-                    hostname: "FakeHostName",
-                    type: AUTH_TYPE_CERT_PEM,
-                    cert: "FakePemCert",
-                    certKey: "FakePemCertKey"
-                })
-            ) as any;
+            const restSession = new Session({
+                hostname: "FakeHostName",
+                type: AUTH_TYPE_CERT_PEM,
+                cert: "FakePemCert",
+                certKey: "FakePemCertKey"
+            });
+            const privateRestClient = new RestClient(restSession) as any;
             let getSystemProxyUrlSpy: jest.SpyInstance;
             let getProxyAgentSpy: jest.SpyInstance;
             let setCertPemAuthSpy: jest.SpyInstance;
@@ -1452,6 +1501,22 @@ describe("AbstractRestClient tests", () => {
                 setCertPemAuthSpy.mockReturnValue(true);
                 const result = privateRestClient.buildOptions(resource, request, reqHeaders);
                 expect(Object.keys(result)).toContain('agent');
+            });
+
+            it('Should use session proxy options over env vars for proxy agent', () => {
+                restSession.ISession.proxy = { proxy_authorization: 'proxy_auth_string'};
+                const resource = '/resource';
+                const request = '';
+                const reqHeaders: any[] = [];
+                const url = new URL('https://www.zowe.com');
+                const proxyAgent = new HttpsProxyAgent(url, { rejectUnauthorized: true });
+                getSystemProxyUrlSpy.mockReturnValue(url);
+                getProxyAgentSpy.mockReturnValue(proxyAgent);
+                setCertPemAuthSpy.mockReturnValue(true);
+                const headerSpy = jest.spyOn(privateRestClient, "appendHeaders");
+                const result = privateRestClient.buildOptions(resource, request, reqHeaders);
+                expect(Object.keys(result)).toContain('agent');
+                expect(headerSpy).toHaveBeenCalledWith([{'Proxy-Authorization': restSession.ISession.proxy.proxy_authorization}]);
             });
         });
     });

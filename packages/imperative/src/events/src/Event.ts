@@ -22,6 +22,7 @@ export class Event implements IEventJson {
     public eventName: string;
     public eventType: EventTypes;
     public appName: string;
+    public appProcId: number;
     public eventFilePath: string;
     public subscriptions: FSWatcher[];
 

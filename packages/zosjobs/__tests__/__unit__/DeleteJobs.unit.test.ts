@@ -31,6 +31,8 @@ describe("Delete Jobs unit tests", () => {
     const fakeJob: IJob = {
         "jobid": "JOB00001",
         "jobname": "MYJOB1",
+        "exec-started": '2024-01-02T15:57:58.350Z',
+        "exec-ended": '2024-01-02T15:58:00.600Z',
         "retcode": "CC 0000",
         "owner": "dummy",
         "subsystem": "JES2",
@@ -41,12 +43,15 @@ describe("Delete Jobs unit tests", () => {
         "files-url": "myfakeurl.com/files/records",
         "phase": 2,
         "phase-name": "OUTPUT",
-        "job-correlator": "mycorrelator"
+        "job-correlator": "mycorrelator",
+        "exec-member": 'SYS1',
+        "exec-system": 'SYS1',
+        "exec-submitted": '2024-01-02T15:58:00.600Z'
     };
 
     describe("Positive tests", () => {
         it("should allow users to call deleteJob with correct parameters", async () => {
-            ZosmfRestClient.deleteExpectJSON = jest.fn(returnDeleteJobsDataAsync);
+            ZosmfRestClient.deleteExpectJSON = jest.fn().mockReturnValue(CancelJobsData.SAMPLE_JOB_FEEDBACK_GOOD);
             let caughtError;
             let response;
             try {
@@ -55,11 +60,11 @@ describe("Delete Jobs unit tests", () => {
                 caughtError = error;
             }
             expect(caughtError).toBeUndefined();
-            expect(response).toEqual(CancelJobsData.SAMPLE_JOB_FEEDBACK_ASYNC);
+            expect(response).toEqual(CancelJobsData.SAMPLE_JOB_FEEDBACK_GOOD);
         });
 
         it("should allow users to call deleteJobForJob with correct parameters", async () => {
-            ZosmfRestClient.deleteExpectJSON = jest.fn(returnDeleteJobsDataAsync);
+            ZosmfRestClient.deleteExpectJSON = jest.fn().mockReturnValue(CancelJobsData.SAMPLE_JOB_FEEDBACK_GOOD);
             let caughtError;
             let response;
             try {
@@ -68,7 +73,7 @@ describe("Delete Jobs unit tests", () => {
                 caughtError = error;
             }
             expect(caughtError).toBeUndefined();
-            expect(response).toEqual(CancelJobsData.SAMPLE_JOB_FEEDBACK_ASYNC);
+            expect(response).toEqual(CancelJobsData.SAMPLE_JOB_FEEDBACK_GOOD);
         });
 
         it("should allow users to call deleteJobForJob with correct parameters (with modify version 1_0)", async () => {
@@ -99,7 +104,7 @@ describe("Delete Jobs unit tests", () => {
         });
 
         it("should allow users to call deleteJobCommon with correct parameters", async () => {
-            ZosmfRestClient.deleteExpectJSON = jest.fn(returnDeleteJobsDataAsync);
+            ZosmfRestClient.deleteExpectJSON = jest.fn().mockReturnValue(CancelJobsData.SAMPLE_JOB_FEEDBACK_GOOD);
             let caughtError;
             let response;
             try {
@@ -108,7 +113,7 @@ describe("Delete Jobs unit tests", () => {
                 caughtError = error;
             }
             expect(caughtError).toBeUndefined();
-            expect(response).toEqual(CancelJobsData.SAMPLE_JOB_FEEDBACK_ASYNC);
+            expect(response).toEqual(CancelJobsData.SAMPLE_JOB_FEEDBACK_GOOD);
         });
 
         it("should allow users to call deleteJobCommon with correct parameters (with modify version 1_0)", async () => {

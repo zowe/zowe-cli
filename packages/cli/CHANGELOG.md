@@ -1,8 +1,40 @@
 # Change Log
-
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `8.8.0`
+
+- Enhancement: Pass a `.zosattributes` file path for the download encoding format by adding the new `--attributes` flag to the `zowe zos-files upload` command. [#2322](https://github.com/zowe/zowe-cli/issues/2322)
+- BugFix: Added support for the `--encoding` flag to the `zowe upload dir-to-uss` to allow for encoding uploaded directories for command group consistency. [#2337](https://github.com/zowe/zowe-cli/issues/2337)
+- BugFix: Improved output formatting for `zowe zos-tso start app` and `zowe zos-tso send app` commands by parsing and displaying relevant data rather than the entire JSON response. [#2347](https://github.com/zowe/zowe-cli/pull/2347)
+- Enhancement: Add the --ignore-not-found flag to avoid file-not-found error messages when deleting files so scripts are not interupted during automated batch processing. The flag bypasses warning prompts to confirm delete actions. [#2254](https://github.com/zowe/zowe-cli/pull/2254)
+
+## `8.7.0`
+
+- Enhancement: Added --wait-for-active and --wait-for-output to download options on zosjobs. [#2328](https://github.com/zowe/zowe-cli/pull/2328)
+
+## `8.6.2`
+
+- BugFix: Resolved issue where `zowe zos-files upload file-to-uss` was not properly handling command flags. [#2234](https://github.com/zowe/zowe-cli/pull/2334)
+
+## `8.6.1`
+
+- BugFix: Fixed an issue where the `zowe zos-logs list logs` command could fail or not return all logs if a start time was not supplied. [#2336](https://github.com/zowe/zowe-cli/pull/2336)
+
+## `8.6.0`
+
+- Enhancement: Added support for running applications on TSO/E address spaces. Start applications and receive/transmit messages using the new `tso start`, `tso receive` and `tso send` commands. [#2280](https://github.com/zowe/zowe-cli/pull/2280)
+
+
+## `8.4.0`
+
+- Enhancement: Added optional `--attributes` flag to `zowe zos-files upload file-to-uss` to allow passing a .zosattributes file path for upload encoding format. [#2319](https://github.com/zowe/zowe-cli/pull/2319)
+
+
+## `8.3.0`
+
+- Enhancement: Issue the `zowe files search data-sets` command with the new `encoding` option to use a different code page when searching data set contents. [#2161](https://github.com/zowe/zowe-cli/issues/2161)
+
+## `8.1.2`
 
 - BugFix: Fixed issues flagged by Coverity [#2291](https://github.com/zowe/zowe-cli/pull/2291)
 

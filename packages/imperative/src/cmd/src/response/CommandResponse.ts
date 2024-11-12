@@ -24,7 +24,7 @@ import { ImperativeExpect } from "../../../expect";
 import { IHandlerFormatOutputApi } from "../doc/response/api/handler/IHandlerFormatOutputApi";
 import { ICommandOutputFormat, OUTPUT_FORMAT } from "../doc/response/response/ICommandOutputFormat";
 import { Arguments } from "yargs";
-import { ICommandDefinition } from "../../src/doc/ICommandDefinition";
+import { ICommandDefinition } from "../doc/ICommandDefinition";
 import { OptionConstants } from "../constants/OptionConstants";
 import { inspect } from "util";
 import * as DeepMerge from "deepmerge";
@@ -698,6 +698,32 @@ export class CommandResponse implements ICommandResponseApi {
 
             // Create an instance of the class
             this.mProgressApi = new class {
+                private spinnerIndex = 0;
+                private spinnerInterval: any;
+
+                /**
+                 * Start a spinner
+                 */
+                public startSpinner(pendingText: string): void {
+                    if (this.spinnerInterval == null) {
+                        this.spinnerInterval = setInterval(() => {
+                            outer.writeStdout(`\r${pendingText} ${this.mProgressBarSpinnerChars[this.spinnerIndex]}`);
+                            this.spinnerIndex = (this.spinnerIndex + 1) % this.mProgressBarSpinnerChars.length;
+                        }, 100); // eslint-disable-line
+                    }
+                }
+                /**
+                 * Stop a spinner
+                 */
+                public endSpinner(stopText?: string): void {
+                    if (this.spinnerInterval != null) {
+                        clearInterval(this.spinnerInterval);
+                        this.spinnerInterval = null;
+                        if(stopText) outer.writeStdout(`\r${stopText}\n`);
+                        outer.writeStdout("\r\x1b[K");
+                    }
+                }
+
                 private mProgressBarSpinnerIndex = 0;
                 private mProgressTask: ITaskWithStatus;
                 private mProgressBarPollFrequency = 65;  // eslint-disable-line @typescript-eslint/no-magic-numbers

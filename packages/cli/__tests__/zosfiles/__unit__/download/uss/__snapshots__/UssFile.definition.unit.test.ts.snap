@@ -4,6 +4,18 @@ exports[`zos-files download uss-file command definition should not have changed 
 Array [
   Object {
     "aliases": Array [
+      "attrs",
+    ],
+    "conflictsWith": Array [
+      "binary",
+      "record",
+    ],
+    "description": "Path of an attributes file to control how files are downloaded.",
+    "name": "attributes",
+    "type": "existingLocalFile",
+  },
+  Object {
+    "aliases": Array [
       "b",
     ],
     "description": "Download the file content in binary mode, which means that no data conversion is performed. The data transfer process returns each line as-is, without translation. No delimiters are added between records.",
@@ -38,6 +50,10 @@ Array [
   Object {
     "description": "Download the file \\"/a/ibmuser/MyJava.class\\" to \\"java/MyJava.class\\" in binary mode",
     "options": "\\"/a/ibmuser/MyJava.class\\" -b -f \\"java/MyJava.class\\"",
+  },
+  Object {
+    "description": "Download the file \\"/a/ibmuser/MyJava.class\\" to \\"java/MyJava.class\\" using a .zosattributes file",
+    "options": "\\"/a/ibmuser/MyJava.class\\" --attributes /path/to/.zosattributes -f \\"java/MyJava.class\\"",
   },
 ]
 `;

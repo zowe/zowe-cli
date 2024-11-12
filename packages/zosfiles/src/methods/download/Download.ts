@@ -521,7 +521,13 @@ export class Download {
 
             const writeStream = options.stream ?? IO.createWriteStream(destination);
 
-            // If data type is not defined by user, check for USS tags
+            if(options.attributes)
+            {
+                options = { ...options, ...this.parseAttributeOptions(ussFileName,options)};
+                if(options.binary) options.encoding = undefined;
+            }
+
+            // If data type is not defined by user via encoding flag or attributes file, check for USS tags
             if (options.binary == null && options.encoding == null) {
                 await Utilities.applyTaggedEncoding(session, ussFileName, options);
             }

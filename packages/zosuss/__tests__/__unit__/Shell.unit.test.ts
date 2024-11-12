@@ -54,7 +54,7 @@ const mockShell = jest.fn().mockImplementation((callback) => {
 (Client as any).mockImplementation(() => {
     mockClient.connect = mockConnect;
     mockClient.shell = mockShell;
-    mockClient.end = jest.fn();
+    mockClient.end = jest.fn().mockReturnValue(mockClient);
     return mockClient;
 });
 
@@ -101,6 +101,29 @@ describe("Shell", () => {
         await Shell.executeSshCwd(fakeSshSession, command, cwd, stdoutHandler);
 
         checkMockFunctionsWithCommand(command);
+    });
+
+    it("Should execute ssh command with cwd option and no extra characters in the output", async () => {
+        const cwd = "/";
+        const command = "commandtest";
+        await Shell.executeSshCwd(fakeSshSession, command, cwd, stdoutHandler, true);
+
+        checkMockFunctionsWithCommand(command);
+    });
+
+    describe("Connection validation", () => {
+        it("should determine that the connection is valid", async () => {
+            const response = await Shell.isConnectionValid(fakeSshSession);
+            expect(response).toBe(true);
+        });
+        it("should determine that the connection is invalid", async () => {
+            mockConnect.mockImplementationOnce(() => {
+                mockClient.emit("error", new Error(Shell.connRefusedFlag));
+                mockStream.emit("exit", 0);
+            });
+            const response = await Shell.isConnectionValid(fakeSshSession);
+            expect(response).toBe(false);
+        });
     });
 
     describe("Error handling", () => {

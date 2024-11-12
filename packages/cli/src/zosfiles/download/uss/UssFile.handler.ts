@@ -11,27 +11,40 @@
 
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
 import { AbstractSession, IHandlerParameters, ITaskWithStatus, TaskStage } from "@zowe/imperative";
-import { Download, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
+import { Download, IZosFilesResponse, ZosFilesAttributes } from "@zowe/zos-files-for-zowe-sdk";
 
 /**
  * Handler to download an uss file
  * @export
  */
 export default class UssFileHandler extends ZosFilesBaseHandler {
-    public async processWithSession(commandParameters: IHandlerParameters, session: AbstractSession): Promise<IZosFilesResponse> {
+    public async processWithSession(
+        commandParameters: IHandlerParameters,
+        session: AbstractSession
+    ): Promise<IZosFilesResponse> {
         const task: ITaskWithStatus = {
             percentComplete: 0,
             statusMessage: "Downloading USS file",
-            stageName: TaskStage.IN_PROGRESS
+            stageName: TaskStage.IN_PROGRESS,
         };
-        commandParameters.response.progress.startBar({task});
-        return Download.ussFile(session, commandParameters.arguments.ussFileName, {
-            binary: commandParameters.arguments.binary,
-            encoding: commandParameters.arguments.encoding,
-            file: commandParameters.arguments.file,
-            task,
-            responseTimeout: commandParameters.arguments.responseTimeout,
-            overwrite: commandParameters.arguments.overwrite
-        });
+        commandParameters.response.progress.startBar({ task });
+
+        const attributes = ZosFilesAttributes.loadFromFile(
+            commandParameters.arguments.attributes
+        );
+
+        return Download.ussFile(
+            session,
+            commandParameters.arguments.ussFileName,
+            {
+                binary: commandParameters.arguments.binary,
+                encoding: commandParameters.arguments.encoding,
+                file: commandParameters.arguments.file,
+                task,
+                responseTimeout: commandParameters.arguments.responseTimeout,
+                overwrite: commandParameters.arguments.overwrite,
+                attributes,
+            }
+        );
     }
 }

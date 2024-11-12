@@ -14,6 +14,8 @@ import { TestEnvironment } from "../../../../../../../__tests__/__src__/environm
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { stripNewLines } from "../../../../../../../__tests__/__src__/TestUtils";
 import { IO } from "@zowe/imperative";
+import { join } from "path";
+import { chmodSync } from "fs";
 
 let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 let host: string;
@@ -103,17 +105,18 @@ describe("zosmf check status", () => {
 
     describe("Expected failures", () => {
 
-        it("should fail due to invalid port", async () => {
+        (!process.env.HTTP_PROXY && !process.env.HTTPS_PROXY ? it : it.skip)("should fail due to invalid port", async () => {
             // update temporary zowe profile with an invalid port
-            const scriptPath = testEnvironment.workingDir + "_create_profile_invalid_port";
+            const scriptPath = join(testEnvironment.workingDir, "create_profile_invalid_port.sh");
             const bogusPort = 12345;
-            const command = `zowe config set profiles.${testEnvironment.tempProfiles?.zosmf[0]}.properties.port ${bogusPort} --gc`;
+            const command = `#!/bin/bash\nzowe config set profiles.${testEnvironment.tempProfiles?.zosmf[0]}.properties.port ${bogusPort} --gc`;
             await IO.writeFileAsync(scriptPath, command);
+            if (process.platform !== "win32") { chmodSync(scriptPath, 0o755); }
             let response = runCliScript(scriptPath, testEnvironment);
             expect(response.status).toBe(0);
             // now check the status
             response = runCliScript(__dirname + "/__scripts__/command/zosmf_check_status.sh", testEnvironment);
-            expect(stripNewLines(response.stderr.toString())).toContain("connect ECONNREFUSED");
+            expect(stripNewLines(response.stderr.toString())).toMatch(/.*(ECONNREFUSED|ECONNRESET|ETIMEDOUT).*/);
         });
     });
 });

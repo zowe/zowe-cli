@@ -1730,14 +1730,10 @@ describe("ConnectionPropsForSessCfg tests", () => {
 
         it("should state that you have no zowe config file", async () => {
             // Pretend that we do not have a zowe config.
-            Object.defineProperty(ImperativeConfig.instance, "config", {
-                configurable: true,
-                get: jest.fn(() => {
-                    return {
-                        exists: false,
-                    };
-                }),
-            });
+            jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({
+                config: { exists: false },
+                cliHome: "/fake/cli/home/dir",
+            } as any);
 
             // call the function that we want to test
             await getValuesCallBack(["hostname"]);
@@ -1755,14 +1751,9 @@ describe("ConnectionPropsForSessCfg tests", () => {
 
         it("should state that V1 profiles are not supported", async () => {
             // Pretend that we do not have a zowe config.
-            Object.defineProperty(ImperativeConfig.instance, "config", {
-                configurable: true,
-                get: jest.fn(() => {
-                    return {
-                        exists: false,
-                    };
-                }),
-            });
+            jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({
+                config: { exists: false },
+            } as any);
 
             /* Pretend that we only have V1 profiles.
              * onlyV1ProfilesExist is a getter property, so mock the property.
@@ -1790,14 +1781,9 @@ describe("ConnectionPropsForSessCfg tests", () => {
 
         it("should state that connection properties are missing from config", async () => {
             // Pretend that we have a zowe config.
-            Object.defineProperty(ImperativeConfig.instance, "config", {
-                configurable: true,
-                get: jest.fn(() => {
-                    return {
-                        exists: true,
-                    };
-                }),
-            });
+            jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({
+                config: { exists: true },
+            } as any);
 
             /* Pretend that we do not have any V1 profiles.
              * onlyV1ProfilesExist is a getter property, so mock the property.

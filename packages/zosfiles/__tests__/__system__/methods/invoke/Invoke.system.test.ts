@@ -13,7 +13,7 @@ import * as fs from "fs";
 import { Imperative, Session, TextUtils } from "@zowe/imperative";
 import { inspect } from "util";
 
-import { ITestEnvironment } from "@zowe/cli-test-utils";
+import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/ITestEnvironment";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { ZosFilesMessages } from "../../../../src/constants/ZosFiles.messages";
@@ -36,7 +36,6 @@ describe("Invoke AMS", () => {
         systemProps = testEnvironment.systemTestProperties;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
-
         dsname = getUniqueDatasetName(`${systemProps.zosmf.user}.ZOSFILE.VSAM`);
         volume = systemProps.datasets.vol.toUpperCase();
     });
@@ -49,8 +48,12 @@ describe("Invoke AMS", () => {
         // replace DSN with unique data set name
         const AMSStatement = fs.readFileSync(templateFile).toString();
         const updatedStatement = TextUtils.renderWithMustache(AMSStatement, {DSN: dsname, VOL: volume});
-        fs.writeFileSync(templateFile + ".temp", updatedStatement);
-        return templateFile + ".temp";
+        const filename = templateFile + ".temp";
+        fs.writeFileSync(filename, updatedStatement);
+        if (!testEnvironment.resources.localFiles.includes(filename)) {
+            testEnvironment.resources.localFiles.push(filename);
+        }
+        return filename;
     }
 
     it("should create and delete a VSAM data set from command statement in files", async () => {
@@ -75,9 +78,6 @@ describe("Invoke AMS", () => {
         expect(response.success).toBe(true);
         expect(response.commandResponse).toContain(ZosFilesMessages.amsCommandExecutedSuccessfully.message);
 
-        // Delete the temp file
-        fs.unlinkSync(controlStatementFile);
-
         // create a temporary file from the template file that has the proper high level qualifier to delete the VSAM file
         controlStatementFile =
             createTestAMSStatementFileFromTemplate(__dirname + "/DeleteVSAM.ams");
@@ -95,9 +95,6 @@ describe("Invoke AMS", () => {
 
         expect(response.success).toBe(true);
         expect(response.commandResponse).toContain(ZosFilesMessages.amsCommandExecutedSuccessfully.message);
-
-        // Delete the temp file
-        fs.unlinkSync(controlStatementFile);
     });
 
     it("should create and delete a VSAM data set from command statement in files with response timeout", async () => {
@@ -122,9 +119,6 @@ describe("Invoke AMS", () => {
         expect(response.success).toBe(true);
         expect(response.commandResponse).toContain(ZosFilesMessages.amsCommandExecutedSuccessfully.message);
 
-        // Delete the temp file
-        fs.unlinkSync(controlStatementFile);
-
         // create a temporary file from the template file that has the proper high level qualifier to delete the VSAM file
         controlStatementFile =
             createTestAMSStatementFileFromTemplate(__dirname + "/DeleteVSAM.ams");
@@ -142,9 +136,6 @@ describe("Invoke AMS", () => {
 
         expect(response.success).toBe(true);
         expect(response.commandResponse).toContain(ZosFilesMessages.amsCommandExecutedSuccessfully.message);
-
-        // Delete the temp file
-        fs.unlinkSync(controlStatementFile);
     });
 
     it("should create and delete a VSAM data set from command statements", async () => {
@@ -214,8 +205,7 @@ describe("Invoke AMS - encoded", () => {
         systemProps = testEnvironment.systemTestProperties;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
-
-        dsname = getUniqueDatasetName(`${systemProps.zosmf.user}.ZOSFILE.ENCO#ED.VSAM`);
+        dsname = getUniqueDatasetName(`${systemProps.zosmf.user}.ZOSFILE.ENCO#ED.VSAM`, false, 1);
         volume = systemProps.datasets.vol.toUpperCase();
     });
 
@@ -253,9 +243,6 @@ describe("Invoke AMS - encoded", () => {
         expect(response.success).toBe(true);
         expect(response.commandResponse).toContain(ZosFilesMessages.amsCommandExecutedSuccessfully.message);
 
-        // Delete the temp file
-        fs.unlinkSync(controlStatementFile);
-
         // create a temporary file from the template file that has the proper high level qualifier to delete the VSAM file
         controlStatementFile =
             createTestAMSStatementFileFromTemplate(__dirname + "/DeleteVSAM.ams");
@@ -273,9 +260,6 @@ describe("Invoke AMS - encoded", () => {
 
         expect(response.success).toBe(true);
         expect(response.commandResponse).toContain(ZosFilesMessages.amsCommandExecutedSuccessfully.message);
-
-        // Delete the temp file
-        fs.unlinkSync(controlStatementFile);
     });
 
     it("should create and delete a VSAM data set from command statement in files with response timeout", async () => {
@@ -300,9 +284,6 @@ describe("Invoke AMS - encoded", () => {
         expect(response.success).toBe(true);
         expect(response.commandResponse).toContain(ZosFilesMessages.amsCommandExecutedSuccessfully.message);
 
-        // Delete the temp file
-        fs.unlinkSync(controlStatementFile);
-
         // create a temporary file from the template file that has the proper high level qualifier to delete the VSAM file
         controlStatementFile =
             createTestAMSStatementFileFromTemplate(__dirname + "/DeleteVSAM.ams");
@@ -320,9 +301,6 @@ describe("Invoke AMS - encoded", () => {
 
         expect(response.success).toBe(true);
         expect(response.commandResponse).toContain(ZosFilesMessages.amsCommandExecutedSuccessfully.message);
-
-        // Delete the temp file
-        fs.unlinkSync(controlStatementFile);
     });
 
     it("should create and delete a VSAM data set from command statements", async () => {

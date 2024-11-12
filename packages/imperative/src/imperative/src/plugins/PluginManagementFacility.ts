@@ -9,8 +9,8 @@
 *
 */
 
-import { IImperativeConfig } from "../../src/doc/IImperativeConfig";
-import { UpdateImpConfig } from "../../src/UpdateImpConfig";
+import { IImperativeConfig } from "../doc/IImperativeConfig";
+import { UpdateImpConfig } from "../UpdateImpConfig";
 import { isAbsolute, join } from "path";
 import { ImperativeConfig, JsUtils } from "../../../utilities";
 import { Logger } from "../../../logger";
@@ -228,7 +228,7 @@ export class PluginManagementFacility {
         if (!existsSync(this.pmfConst.PLUGIN_JSON)) {
             if (!existsSync(this.pmfConst.PMF_ROOT)) {
                 this.impLogger.debug("Creating PMF_ROOT directory");
-                IO.mkdirp(this.pmfConst.PMF_ROOT);
+                IO.createDirSync(this.pmfConst.PMF_ROOT);
             }
 
             this.impLogger.debug("Creating PLUGIN_JSON file");

@@ -1,0 +1,30 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`receive TSO app handler behavior should properly receive and parse data from receive TSO response 1`] = `
+"
+"
+`;
+
+exports[`receive TSO app handler behavior should properly receive and parse data from receive TSO response 2`] = `"HELLOW exec processing has started."`;
+
+exports[`receive TSO app handler behavior should properly receive and parse data from receive TSO response 3`] = `"UNIX message queue id = 1048608"`;
+
+exports[`receive TSO app handler behavior should properly receive and parse data from receive TSO response 4`] = `
+Object {
+  "queueID": null,
+  "reused": false,
+  "servletKey": "ZOWEUSER-127-aabeaaag",
+  "timeout": false,
+  "tsoData": Array [
+    Object {
+      "DATA": "HELLOW exec processing has started.",
+      "VERSION": "0100",
+    },
+    Object {
+      "DATA": "UNIX message queue id = 1048608",
+      "VERSION": "0100",
+    },
+  ],
+  "version": "0100",
+}
+`;

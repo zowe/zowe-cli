@@ -10,10 +10,12 @@
 */
 
 import { Session } from "@zowe/imperative";
-import { ITestEnvironment, runCliScript } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
+import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/ITestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { getUniqueDatasetName, stripNewLines } from "../../../../../../../__tests__/__src__/TestUtils";
+import { runCliScript } from "@zowe/cli-test-utils";
+
 
 const ZOWE_OPT_BASE_PATH = "ZOWE_OPT_BASE_PATH";
 
@@ -101,6 +103,7 @@ describe("Delete z/OS File System", () => {
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toMatchSnapshot();
         });
+
         it("should delete a ZFS with response timeout", async () => {
             let response = runCliScript(__dirname + "/__scripts__/command/command_create_zfs.sh",
                 TEST_ENVIRONMENT, [fsname, volume, "--responseTimeout 5"]);
@@ -112,6 +115,26 @@ describe("Delete z/OS File System", () => {
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toMatchSnapshot();
         });
+
+        it("should delete a ZFS with --ignore-not-found flag", async () => {
+            // first create zfs
+            const createResponse = runCliScript(__dirname + "/__scripts__/command/command_create_zfs.sh",
+                TEST_ENVIRONMENT, [fsname, volume]);
+            expect(createResponse.status).toBe(0);
+
+            const deleteResponse = runCliScript(__dirname + "/__scripts__/command/command_delete_zfs.sh",
+                TEST_ENVIRONMENT, [fsname, "--for-sure", "--ignore-not-found"]);
+            expect(deleteResponse.stderr.toString()).toBe("");
+            expect(deleteResponse.status).toBe(0);
+            expect(deleteResponse.stdout.toString()).toMatchSnapshot();
+
+            //repeat and ensure still no output because --inf
+            const deleteResp = runCliScript(__dirname + "/__scripts__/command/command_delete_zfs.sh",
+                TEST_ENVIRONMENT, [fsname, "--for-sure", "--ignore-not-found"]);
+            expect(deleteResp.stderr.toString()).toBe("");
+            expect(deleteResp.status).toBe(0);
+        });
+
     });
 
     describe("Expected failures", () => {

@@ -1,6 +1,6 @@
 {
   "name": "@zowe/zos-files-for-zowe-sdk",
-  "version": "8.1.1",
+  "version": "8.8.1",
   "description": "Zowe SDK to interact with files and data sets on z/OS",
   "author": "Zowe",
   "license": "EPL-2.0",
@@ -46,13 +46,14 @@
     "prepack": "node ../../scripts/prepareLicenses.js"
   },
   "dependencies": {
+    "lodash": "^4.17.21",
     "minimatch": "^9.0.5"
   },
   "devDependencies": {
-    "@zowe/cli-test-utils": "8.1.1",
-    "@zowe/core-for-zowe-sdk": "8.1.1",
-    "@zowe/imperative": "8.1.0",
-    "@zowe/zos-uss-for-zowe-sdk": "8.1.1"
+    "@zowe/cli-test-utils": "8.8.1",
+    "@zowe/core-for-zowe-sdk": "8.8.1",
+    "@zowe/imperative": "8.8.1",
+    "@zowe/zos-uss-for-zowe-sdk": "8.8.1"
   },
   "peerDependencies": {
     "@zowe/core-for-zowe-sdk": "^8.0.0",

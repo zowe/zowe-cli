@@ -23,20 +23,11 @@ export class Shell {
 
     public static executeSsh(session: SshSession,
         command: string,
-        stdoutHandler: (data: string) => void): Promise<any> {
-        const authsAllowed = ["none"];
+        stdoutHandler: (data: string) => void,
+        removeExtraCharactersFromOutput = false): Promise<any> {
         let hasAuthFailed = false;
         const promise = new Promise<any>((resolve, reject) => {
             const conn = new Client();
-
-            // These are needed for authenticationHandler
-            // The order is critical as this is the order of authentication that will be used.
-            if (session.ISshSession.privateKey != null && session.ISshSession.privateKey !== "undefined") {
-                authsAllowed.push("publickey");
-            }
-            if (session.ISshSession.password != null && session.ISshSession.password !== "undefined") {
-                authsAllowed.push("password");
-            }
             conn.on("ready", () => {
                 conn.shell((err: any, stream: ClientChannel) => {
                     if (err) { throw err; }
@@ -77,6 +68,7 @@ export class Shell {
                             return;
                         }
                         dataBuffer += data;
+
                         if (dataBuffer.includes("\r")) {
                             // when data is not received with complete lines,
                             // slice the last incomplete line and put it back to dataBuffer until it gets the complete line,
@@ -101,6 +93,8 @@ export class Shell {
                             else if (isUserCommand && dataToPrint.length != 0) {
                                 if (!dataToPrint.startsWith('\r\n$ '+cmd) && !dataToPrint.startsWith('\r<')){
                                     //only prints command output
+                                    if (removeExtraCharactersFromOutput && dataToPrint.startsWith("\r\n$ "))
+                                        dataToPrint = dataToPrint.replace(/\r\n\$\s/, "\r\n");
                                     stdoutHandler(dataToPrint);
                                     dataToPrint = "";
                                 }
@@ -140,28 +134,53 @@ export class Shell {
                     }));
                 }
             });
-            conn.connect({
-                host: session.ISshSession.hostname,
-                port: session.ISshSession.port,
-                username: session.ISshSession.user,
-                password: session.ISshSession.password,
-                privateKey: session.ISshSession.privateKey != null && session.ISshSession.privateKey !== "undefined" ?
-                    require("fs").readFileSync(session.ISshSession.privateKey) : "",
-                passphrase: session.ISshSession.keyPassphrase,
-                authHandler: this.authenticationHandler(authsAllowed),
-                readyTimeout: session.ISshSession.handshakeTimeout != null && session.ISshSession.handshakeTimeout !== undefined ?
-                    session.ISshSession.handshakeTimeout : 0
-            } as any);
+            Shell.connect(conn, session);
         });
         return promise;
+    }
+
+    private static connect(connection: Client, session: SshSession) {
+        const authsAllowed = ["none"];
+
+        // These are needed for authenticationHandler
+        // The order is critical as this is the order of authentication that will be used.
+        if (session.ISshSession.privateKey != null && session.ISshSession.privateKey !== "undefined") {
+            authsAllowed.push("publickey");
+        }
+        if (session.ISshSession.password != null && session.ISshSession.password !== "undefined") {
+            authsAllowed.push("password");
+        }
+
+        connection.connect({
+            host: session.ISshSession.hostname,
+            port: session.ISshSession.port,
+            username: session.ISshSession.user,
+            password: session.ISshSession.password,
+            privateKey: session.ISshSession.privateKey != null && session.ISshSession.privateKey !== "undefined" ?
+                require("fs").readFileSync(session.ISshSession.privateKey) : "",
+            passphrase: session.ISshSession.keyPassphrase,
+            authHandler: this.authenticationHandler(authsAllowed),
+            readyTimeout: session.ISshSession.handshakeTimeout != null && session.ISshSession.handshakeTimeout !== undefined ?
+                session.ISshSession.handshakeTimeout : 0
+        } as any);
     }
 
     public static async executeSshCwd(session: SshSession,
         command: string,
         cwd: string,
-        stdoutHandler: (data: string) => void): Promise<any> {
+        stdoutHandler: (data: string) => void,
+        removeExtraCharactersFromOutput = false
+    ): Promise<any> {
         const cwdCommand = `cd ${cwd} && ${command}`;
-        return this.executeSsh(session, cwdCommand, stdoutHandler);
+        return this.executeSsh(session, cwdCommand, stdoutHandler, removeExtraCharactersFromOutput);
+    }
+
+    public static async isConnectionValid(session: SshSession): Promise<boolean>{
+        return new Promise((resolve, _) => {
+            const conn = new Client();
+            conn.on("ready", () => conn.end() && resolve(true)).on("error", () => resolve(false));
+            Shell.connect(conn, session);
+        });
     }
 
     private static authenticationHandler(authsAllowed: string[]) {

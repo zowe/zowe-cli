@@ -78,7 +78,7 @@ export class ProxySettings {
      * @memberof ProxySettings
      */
     public static matchesNoProxySettings(session: ISession): boolean {
-        const noProxyValues = this.getNoProxyEnvVariables();
+        const noProxyValues = session.proxy?.no_proxy ?? this.getNoProxyEnvVariables();
         if (!noProxyValues) {
             return false;
         }
@@ -103,10 +103,10 @@ export class ProxySettings {
         const protocol = session.protocol ?? HTTPS_PROTOCOL;
         let envVariable: string | undefined;
         if (protocol === HTTP_PROTOCOL) {
-            envVariable = this.getHttpEnvVariables();
+            envVariable = session.proxy?.http_proxy ?? this.getHttpEnvVariables();
         }
         else if (protocol === HTTPS_PROTOCOL) {
-            envVariable = this.getHttpsEnvVariables();
+            envVariable = session.proxy?.https_proxy ?? this.getHttpsEnvVariables();
         }
         const proxyUrl = this.checkUrl(envVariable);
         if (proxyUrl) {

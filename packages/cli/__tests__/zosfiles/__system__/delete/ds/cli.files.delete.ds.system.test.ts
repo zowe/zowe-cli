@@ -10,9 +10,10 @@
 */
 
 import { Session } from "@zowe/imperative";
-import { ITestEnvironment, runCliScript } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
+import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/ITestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
+import { runCliScript } from "@zowe/cli-test-utils";
 
 let REAL_SESSION: Session;
 // Test Environment populated in the beforeAll();
@@ -135,6 +136,22 @@ describe("Delete Data Set", () => {
             expect(response.stdout.toString()).toMatchSnapshot();
             runCliScript(__dirname + "/__scripts__/command/command_delete_data_set.sh",
                 TEST_ENVIRONMENT, [dsname, "--for-sure", "--rfj"]);
+        });
+
+        it("should delete a data set with --ignore-not-found flag", async () => {
+            const createResponse = runCliScript(__dirname + '/__scripts__/command/command_create_data_set.sh',
+                TEST_ENVIRONMENT, [dsname]);
+            expect(createResponse.status).toBe(0);  // Ensure data set is created successfully
+
+            // Now delete the data set, verify no output in ignore-not-found mode
+            const deleteResponse = runCliScript(__dirname + "/__scripts__/command/command_delete_data_set.sh",
+                TEST_ENVIRONMENT, [dsname, "--for-sure", "--ignore-not-found"]);
+            expect(deleteResponse.stderr.toString()).toBe("");
+
+            //delete again
+            const secondDelete = runCliScript(__dirname + "/__scripts__/command/command_delete_data_set.sh",
+                TEST_ENVIRONMENT, [dsname, "--for-sure", "--ignore-not-found"]);
+            expect(secondDelete.stderr.toString()).toBe("");
         });
     });
 

@@ -147,7 +147,7 @@ export class Config {
         opts = opts || {};
 
         // Create the basic empty configuration
-        const myNewConfig = new Config(opts);
+        const myNewConfig = new Config();
         myNewConfig.mApp = app;
         myNewConfig.mActive = { user: false, global: false };
         myNewConfig.mVault = opts.vault;
@@ -179,7 +179,8 @@ export class Config {
                 exists: false,
                 properties: Config.empty(),
                 global: layer === Layers.GlobalUser || layer === Layers.GlobalConfig,
-                user: layer === Layers.ProjectUser || layer === Layers.GlobalUser
+                user: layer === Layers.ProjectUser || layer === Layers.GlobalUser,
+                ignoreErrors: opts?.ignoreErrors
             });
         }
 

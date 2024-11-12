@@ -13,6 +13,7 @@ import * as fs from "fs";
 import * as path from "path";
 import * as os from "os";
 import * as jsonfile from "jsonfile";
+import * as glob from "fast-glob";
 import { ConfigUtils } from "../../config/src/ConfigUtils";
 import { CredentialManagerFactory } from "../../security";
 import { ImperativeConfig } from "../../utilities";
@@ -132,10 +133,29 @@ describe("Config Utils", () => {
                 })
             } as any);
 
-            const fsExistsSyncSpy = jest.spyOn(fs, "existsSync").mockReturnValueOnce(false);
+            const globSyncSpy = jest.spyOn(glob, "sync").mockReturnValueOnce([]);
 
             expect(ConfigUtils.onlyV1ProfilesExist).toBe(false);
-            expect(fsExistsSyncSpy).toHaveBeenCalledTimes(1);
+            expect(globSyncSpy).toHaveBeenCalledTimes(1);
+        });
+
+        it("should return false when only V1 profile meta files exist", () => {
+            jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({
+                config: {
+                    exists: false
+                },
+                cliHome: "/fake/cli/home/dir",
+                loadedConfig: jest.fn(() => {
+                    return {
+                        envVariablePrefix: "Fake_cli_prefix"
+                    };
+                })
+            } as any);
+
+            const globSyncSpy = jest.spyOn(glob, "sync").mockReturnValueOnce(["profiles/zosmf/zosmf_meta.yaml"]);
+
+            expect(ConfigUtils.onlyV1ProfilesExist).toBe(false);
+            expect(globSyncSpy).toHaveBeenCalledTimes(1);
         });
 
         it("should return true when only V1 profiles exist", () => {
@@ -151,10 +171,10 @@ describe("Config Utils", () => {
                 })
             } as any);
 
-            const fsExistsSyncSpy = jest.spyOn(fs, "existsSync").mockReturnValueOnce(true);
+            const globSyncSpy = jest.spyOn(glob, "sync").mockReturnValueOnce(["profiles/zosmf/lpar1.yaml"]);
 
             expect(ConfigUtils.onlyV1ProfilesExist).toBe(true);
-            expect(fsExistsSyncSpy).toHaveBeenCalledTimes(1);
+            expect(globSyncSpy).toHaveBeenCalledTimes(1);
         });
     });
 
@@ -364,6 +384,40 @@ describe("Config Utils", () => {
             writeFileSyncMock.mockImplementation(() => { throw new Error(); });
             expect(ConfigUtils.writeExtendersJson(dummyExtJson)).toBe(false);
             expect(writeFileSyncMock).toHaveBeenCalled();
+        });
+    });
+
+    describe("hasTokenExpired", () => {
+        it("returns false if an error occurred during parsing", async () => {
+            const jsonParseSpy = jest.spyOn(JSON, "parse").mockImplementation(() => {
+                throw new Error("Unknown error while parsing JSON");
+            });
+            expect(ConfigUtils.hasTokenExpired("HEADER.PAYLOAD.SIGNATURE")).toBe(false);
+            expect(jsonParseSpy).toHaveBeenCalled();
+        });
+
+        it("returns true if a JWT token is present and has expired", async () => {
+            const jsonParseSpy = jest.spyOn(JSON, "parse").mockReturnValue({
+                exp: 1000000000,
+            });
+            expect(ConfigUtils.hasTokenExpired("HEADER.PAYLOAD.SIGNATURE")).toBe(true);
+            expect(jsonParseSpy).toHaveBeenCalled();
+        });
+
+        it("returns false if a JWT payload can be parsed, but doesn't contain the exp property", async () => {
+            const jsonParseSpy = jest.spyOn(JSON, "parse").mockReturnValue({
+                iat: 1000000000,
+            });
+            expect(ConfigUtils.hasTokenExpired("HEADER.PAYLOAD.SIGNATURE")).toBe(false);
+            expect(jsonParseSpy).toHaveBeenCalled();
+        });
+
+        it("returns false if a JWT token is present and has not expired", async () => {
+            const jsonParseSpy = jest.spyOn(JSON, "parse").mockReturnValue({
+                exp: 5000000000,
+            });
+            expect(ConfigUtils.hasTokenExpired("HEADER.PAYLOAD.SIGNATURE")).toBe(false);
+            expect(jsonParseSpy).toHaveBeenCalled();
         });
     });
 });
