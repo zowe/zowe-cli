@@ -29,18 +29,3 @@ Object {
   "success": true,
 }
 `;
-
-exports[`Download AllMembersMatching handler should handle generation of an extension map 1`] = `
-"
-listed
-"
-`;
-
-exports[`Download AllMembersMatching handler should handle generation of an extension map 2`] = `"downloaded"`;
-
-exports[`Download AllMembersMatching handler should handle generation of an extension map 3`] = `
-Object {
-  "commandResponse": "downloaded",
-  "success": true,
-}
-`;
