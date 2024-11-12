@@ -4,7 +4,7 @@ All notable changes to the Zowe z/OS files SDK package will be documented in thi
 
 ## Recent Changes
 
-- Enhancement: Added a `List.membersMatchingPattern` method to download all members that match a DSLEVEL pattern.[#2175](https://github.com/zowe/zowe-cli/issues/2175)
+- Enhancement: Added a `List.membersMatchingPattern` method to download all members that match a DSLEVEL pattern.[#2359](https://github.com/zowe/zowe-cli/pull/2359)
 
 ## `8.4.0`
 

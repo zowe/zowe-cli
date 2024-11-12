@@ -52,7 +52,6 @@ export const AllMembersMatchingDefinition: ICommandDefinition = {
         DownloadOptions.encoding,
         DownloadOptions.extension,
         DownloadOptions.excludePattern,
-        DownloadOptions.extensionMap,
         DownloadOptions.maxConcurrentRequests,
         DownloadOptions.preserveOriginalLetterCase,
         DownloadOptions.failFast

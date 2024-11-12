@@ -20,7 +20,7 @@ const dsname = "test-pds";
 
 const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
     arguments: UNIT_TEST_ZOSMF_PROF_OPTS,
-    positionals: ["zos-jobs", "download", "amm", "output"],
+    positionals: ["zos-jobs", "download", "output"],
     definition: AllMembersMatchingDefinition.AllMembersMatchingDefinition
 });
 
@@ -103,67 +103,6 @@ describe("Download AllMembersMatching handler", () => {
         expect(List.membersMatchingPattern).toHaveBeenCalledWith(passedSession, dsname, [pattern], { ...fakeListOptions });
         expect(Download.allMembers).toHaveBeenCalledTimes(1);
         expect(Download.allMembers).toHaveBeenCalledWith(passedSession, dsname, { ...fakeDownloadOptions });
-    });
-
-    it("should handle generation of an extension map", async () => {
-        const pattern = "testing";
-        const extensionMap = "CNTL=JCL,PARMLIB=JCL,LOADLIB=JCL";
-        let passedSession: Session = null;
-        List.membersMatchingPattern = jest.fn(async (session) => {
-            passedSession = session;
-            return {
-                success: true,
-                commandResponse: "listed",
-                apiResponse: fakeListResponse
-            };
-        });
-        Download.allMembers = jest.fn(async (session) => {
-            return {
-                success: true,
-                commandResponse: "downloaded"
-            };
-        });
-
-        const handler = new AllMembersMatchingHandler.default();
-        const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
-        params.arguments = Object.assign({}, ...[DEFAULT_PARAMETERS.arguments]);
-        params.arguments.pattern = pattern;
-        params.arguments.extensionMap = extensionMap;
-        params.arguments.dataSetName = dsname;
-        await handler.process(params);
-
-        expect(List.membersMatchingPattern).toHaveBeenCalledTimes(1);
-        expect(List.membersMatchingPattern).toHaveBeenCalledWith(passedSession, dsname, [pattern], { ...fakeListOptions });
-        expect(Download.allMembers).toHaveBeenCalledTimes(1);
-        expect(Download.allMembers).toHaveBeenCalledWith(passedSession, dsname, {
-            ...fakeDownloadOptions,
-            extensionMap: { cntl: "jcl", parmlib: "jcl", loadlib: "jcl" }
-        });
-    });
-
-    it("should gracefully handle an extension map parsing error", async () => {
-        const pattern = "testing";
-        const extensionMap = "CNTL=JCL,PARMLIB-JCL,LOADLIB=JCL";
-        let caughtError;
-        List.membersMatchingPattern = jest.fn();
-        Download.allMembers = jest.fn();
-
-        const handler = new AllMembersMatchingHandler.default();
-        const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
-        params.arguments = Object.assign({}, ...[DEFAULT_PARAMETERS.arguments]);
-        params.arguments.pattern = pattern;
-        params.arguments.extensionMap = extensionMap;
-        params.arguments.dataSetName = dsname;
-        try {
-            await handler.process(params);
-        } catch (error) {
-            caughtError = error;
-        }
-
-        expect(caughtError).toBeDefined();
-        expect(caughtError.message).toContain("An error occurred processing the extension map");
-        expect(List.membersMatchingPattern).toHaveBeenCalledTimes(0);
-        expect(Download.allMembers).toHaveBeenCalledTimes(0);
     });
 
     it("should handle generation of an exclusion list", async () => {

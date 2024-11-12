@@ -19,21 +19,6 @@ import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
  */
 export default class AllMembersMatchingHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters, session: AbstractSession): Promise<IZosFilesResponse> {
-        const extensionMap: {[key: string]: string} = {};
-        try {
-            if (commandParameters.arguments.extensionMap) {
-                commandParameters.arguments.extensionMap = commandParameters.arguments.extensionMap.toLowerCase();
-                const unoptimizedMap = commandParameters.arguments.extensionMap.split(",");
-                for (const entry of unoptimizedMap) {
-                    const splitEntry = entry.split("=");
-                    ImperativeExpect.toBeEqual(splitEntry.length, 2);
-                    extensionMap[splitEntry[0]] = splitEntry[1];
-                }
-            }
-        } catch (err) {
-            throw new ImperativeError({msg: "An error occurred processing the extension map.", causeErrors: err});
-        }
-
         const listStatus: ITaskWithStatus = {
             statusMessage: "Searching for members",
             percentComplete: 0,
@@ -67,7 +52,6 @@ export default class AllMembersMatchingHandler extends ZosFilesBaseHandler {
             encoding: commandParameters.arguments.encoding,
             directory: commandParameters.arguments.directory,
             extension: commandParameters.arguments.extension,
-            extensionMap: commandParameters.arguments.extensionMap ? extensionMap : undefined,
             maxConcurrentRequests: commandParameters.arguments.maxConcurrentRequests,
             preserveOriginalLetterCase: commandParameters.arguments.preserveOriginalLetterCase,
             failFast: commandParameters.arguments.failFast,
