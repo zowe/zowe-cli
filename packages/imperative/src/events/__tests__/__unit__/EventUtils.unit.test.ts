@@ -139,6 +139,7 @@ describe("EventOperator Unit Tests", () => {
 
             const createEventSpy = jest.spyOn(EventUtils, "createEvent").mockReturnValue(testEvent);
             const getEventContentsSpy = jest.spyOn(EventUtils, "getEventContents").mockReturnValue(testEvent);
+            const eventTimeSetSpy = jest.spyOn(processor.eventTimes, "set");
             jest.spyOn(fs, "watch").mockImplementationOnce((_filename, listener: any) => listener());
 
             const eventCb = jest.fn();
@@ -147,6 +148,7 @@ describe("EventOperator Unit Tests", () => {
 
             expect(createEventSpy).toHaveBeenCalledTimes(1);
             expect(getEventContentsSpy).toHaveBeenCalledTimes(1);
+            expect(eventTimeSetSpy).toHaveBeenCalledWith(testEvent.eventName, testEvent.eventTime);
             expect(eventCb).not.toHaveBeenCalled();
         });
 
@@ -171,6 +173,7 @@ describe("EventOperator Unit Tests", () => {
 
             expect(createEventSpy).toHaveBeenCalledTimes(1);
             expect(getEventContentsSpy).toHaveBeenCalledTimes(1);
+            expect(testEvent.appProcId).toBeUndefined();
             expect(eventCb).not.toHaveBeenCalled();
         });
 
