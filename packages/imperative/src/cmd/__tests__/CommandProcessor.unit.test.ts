@@ -215,7 +215,7 @@ describe("Command Processor", () => {
             jest.restoreAllMocks();
         });
 
-        it("should fail command execution without --help or --version if config is faulty", async () => {
+        it("should fail command execution without --help, --help-web or --version if config is faulty", async () => {
             const parms: any = { arguments: { _: ["some", "command"], $0: "" }, silent: true };
             const response: ICommandResponse = await faultyConfigProcessor.invoke(parms);
 

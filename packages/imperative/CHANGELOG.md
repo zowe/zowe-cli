@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Enhanced [#2301](https://github.com/zowe/zowe-cli/pull/2301) to include "--help-web" commands to pass even if presence of a faulty configuration.
+
 ## `8.8.1`
 
 - BugFix: Fixed an issue where the `ProfileInfo.profileManagerWillLoad` method failed if profiles were not yet read from disk. [#2284](https://github.com/zowe/zowe-cli/issues/2284)
