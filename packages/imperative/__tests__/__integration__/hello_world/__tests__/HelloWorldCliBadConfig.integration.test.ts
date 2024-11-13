@@ -40,4 +40,11 @@ describe("Hello World", () => {
         expect(response.stdout.toString()).toContain("help");
         expect(response.stderr.toString()).toContain("Please check this configuration file for errors.");
     });
+
+    it ("should trigger help-web even if bad config", async () => {
+        const response = await TestUtils.runCliScript(__dirname + "/scripts/help.sh", TEST_ENVIRONMENT.workingDir);
+        expect(response.status).toBe(0);
+        expect(response.stdout.toString()).toContain("help-web");
+        expect(response.stderr.toString()).toContain("Please check this configuration file for errors.");
+    });
 });
