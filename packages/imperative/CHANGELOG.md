@@ -2,7 +2,7 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
-## Recent Changes
+## `8.8.2`
 
 - BugFix: Fixed an issue where the Imperative Event Emitter could skip triggering event callbacks. [#2360](https://github.com/zowe/zowe-cli/pull/2360)
 - BugFix: Enhanced [#2301](https://github.com/zowe/zowe-cli/pull/2301) to include "--help-web" commands to pass even if presence of a faulty configuration.
