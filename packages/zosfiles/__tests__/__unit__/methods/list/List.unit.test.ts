@@ -1577,7 +1577,7 @@ describe("z/OS Files - List", () => {
             });
 
             expect(listDataSetSpy).toHaveBeenCalledTimes(1);
-            expect(listDataSetSpy).toHaveBeenCalledWith(dummySession, dsname, {attributes: true, pattern});
+            expect(listDataSetSpy).toHaveBeenCalledWith(dummySession, dsname, {pattern});
         });
         it("should throw an error if the data set name is not specified", async () => {
             let response;
@@ -1681,41 +1681,8 @@ describe("z/OS Files - List", () => {
             expect(caughtError).toEqual(dummyError);
 
             expect(listDataSetSpy).toHaveBeenCalledTimes(1);
-            expect(listDataSetSpy).toHaveBeenCalledWith(dummySession, dsname, {attributes: true, pattern});
+            expect(listDataSetSpy).toHaveBeenCalledWith(dummySession, dsname, {pattern});
         });
-        it("should handle an error from the List.allMembers API and fall back to fetching attributes sequentially", async () => {
-            let response;
-            let caughtError;
-            const dsname = "TEST.PS";
-            const pattern = "M*";
-
-            listDataSetSpy.mockImplementationOnce(async () => {
-                throw new ImperativeError({msg: "test2", errorCode: "500"});
-            }).mockImplementation(async (): Promise<any> => {
-                return {
-                    apiResponse: {
-                        items: [memberData1,memberData2]
-                    }
-                };
-            });
-
-            try {
-                response = await List.membersMatchingPattern(dummySession, dsname, [pattern]);
-            } catch (e) {
-                caughtError = e;
-            }
-
-            expect(caughtError).toBeUndefined();
-            expect(response).toEqual({
-                success: true,
-                commandResponse: util.format(ZosFilesMessages.membersMatchedPattern.message, 2),
-                apiResponse: [memberData1,memberData2]
-            });
-
-            expect(listDataSetSpy).toHaveBeenCalledTimes(4);
-            expect(listDataSetSpy).toHaveBeenLastCalledWith(dummySession, dsname, {attributes: true, maxLength: 1, pattern});
-        });
-
         it("should handle an error when the exclude pattern is specified", async () => {
             const excludePatterns = ["M1*"];
             const pattern = "M1*";

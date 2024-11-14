@@ -124,42 +124,7 @@ export class List {
         const zosmfResponses: IZosmfListResponse[] = [];
 
         for(const pattern of patterns) {
-            let response: any;
-            try {
-                response = await List.allMembers(session, dataSetName, { attributes: true, pattern});
-
-            } catch(err) {
-                if(!(err instanceof ImperativeError && err.errorCode?.toString().startsWith("5"))) {
-                    throw err;
-                }
-
-                response = await List.allMembers(session, dataSetName, {pattern});
-
-                let listsInitiated = 0;
-                const createListPromise = (membersObj: any) => {
-                    if (options.task != null) {
-                        options.task.percentComplete = Math.floor(TaskProgress.ONE_HUNDRED_PERCENT *
-                            (listsInitiated / response.apiResponse.items.length));
-                        listsInitiated++;
-                    }
-
-                    return List.allMembers(session, membersObj.dsname, { attributes: true, maxLength: 1, pattern}).then(
-                        (tempResponse) => {
-                            Object.assign(membersObj, tempResponse.apiResponse.items[0]);
-                        },
-                        (tempErr) => {
-                            Object.assign(membersObj, { error: tempErr });
-                        }
-                    );
-                };
-
-                const maxConcurrentRequests = options.maxConcurrentRequests == null ? 1 : options.maxConcurrentRequests;
-                if (maxConcurrentRequests === 0) {
-                    await Promise.all(response.apiResponse.items.map(createListPromise));
-                } else {
-                    await asyncPool(maxConcurrentRequests, response.apiResponse.items, createListPromise);
-                }
-            }
+            const response = await List.allMembers(session, dataSetName, { pattern});
             zosmfResponses.push(...response.apiResponse.items);
         }
 
