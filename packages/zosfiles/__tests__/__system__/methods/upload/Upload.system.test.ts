@@ -28,6 +28,7 @@ let ussname: string;
 const delayTime = 2000;
 const inputfile = __dirname + "/testfiles/upload.txt";
 const testdata = "abcdefghijklmnopqrstuvwxyz";
+const encodedTestData = "á é í ó ú ñ Ç ß 12345 !@#$% ^ [ ] $ £";
 const uploadOptions: IUploadOptions = {} as any;
 
 describe("Upload Data Set", () => {
@@ -1133,6 +1134,33 @@ describe("Upload a local directory to USS directory", () => {
             expect(getResponseFile1.toString()).toEqual(testdata);
         });
 
+        it("should upload local directory to USS with an encoding", async () => {
+            let error;
+            let uploadResponse: IZosFilesResponse;
+            let isDirectoryExist: any;
+            let getResponse;
+            let getResponseBinary;
+            let getResponseDiffEncoding;
+            try {
+                uploadResponse = await Upload.dirToUSSDir(REAL_SESSION, localDir, ussname, {encoding: "IBM-1047"});
+                isDirectoryExist = await Upload.isDirectoryExist(REAL_SESSION, ussname);
+                getResponse = await Get.USSFile(REAL_SESSION, `${ussname}/file4.txt`, {encoding: "IBM-1047"});
+                getResponseBinary = await Get.USSFile(REAL_SESSION, `${ussname}/file4.txt`, {binary: true});
+                getResponseDiffEncoding = await Get.USSFile(REAL_SESSION, `${ussname}/file4.txt`, {encoding: "IBM-1147"});
+            } catch (err) {
+                error = err;
+                Imperative.console.info("Error: " + inspect(error));
+            }
+
+            expect(error).toBeFalsy();
+            expect(uploadResponse).toBeDefined();
+            expect(uploadResponse.success).toBeTruthy();
+            expect(isDirectoryExist).toBeDefined();
+            expect(isDirectoryExist).toBeTruthy();
+            expect(getResponse).toEqual(Buffer.from(encodedTestData));
+            expect(getResponseBinary).not.toEqual(Buffer.from(encodedTestData));
+            expect(getResponseDiffEncoding).not.toEqual(Buffer.from(encodedTestData));
+        });
         it("should upload local directory to USS some files need to be uploaded as ASCII", async () => {
             let error;
             let uploadResponse: IZosFilesResponse;

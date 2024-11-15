@@ -19,6 +19,7 @@ describe("Upload dir-to-uss handler", () => {
         let fakeSession: any = null;
         const inputDir = "/somedir/test_dir";
         const USSDir = "USS_dir";
+        const encoding = "IBM-1047";
         let handler: any;
         const UPLOAD_OPTIONS_ARG_INDEX = 3;
 
@@ -64,7 +65,43 @@ describe("Upload dir-to-uss handler", () => {
                 }
             }
         };
-
+        const DEFAULT_ENCODING_PARAMETERS = {
+            arguments: {
+                $0: "fake",
+                _: ["fake"],
+                inputDir,
+                USSDir,
+                encoding,
+                // binary: boolean,
+                // recursive: boolean,
+                // asciiFiles: "a,b,c",
+                // binaryFiles: "a,b,c",
+                ...UNIT_TEST_ZOSMF_PROF_OPTS
+            },
+            response: {
+                data: {
+                    setMessage: jest.fn((setMsgArgs) => {
+                        apiMessage = setMsgArgs;
+                    }),
+                    setObj: jest.fn((setObjArgs) => {
+                        jsonObj = setObjArgs;
+                    })
+                },
+                console: {
+                    log: jest.fn((logArgs) => {
+                        logMessage += "\n" + logArgs;
+                    })
+                },
+                progress: {
+                    startBar: jest.fn((parms) => {
+                        // do nothing
+                    }),
+                    endBar: jest.fn(() => {
+                        // do nothing
+                    })
+                }
+            }
+        };
         beforeEach(() => {
 
             Upload.dirToUSSDir = jest.fn(async (session) => {
@@ -98,6 +135,23 @@ describe("Upload dir-to-uss handler", () => {
                     stageName: 0,
                     statusMessage: "Uploading all files"
                 }
+            });
+        });
+        it("should upload a directory to a USS directory if requested with encoding flag", async () => {
+            const params = Object.assign({}, ...[DEFAULT_ENCODING_PARAMETERS]);
+            await testHandlerWorksWithParameters(params);
+            expect(Upload.dirToUSSDir).toHaveBeenCalledTimes(1);
+            expect(Upload.dirToUSSDir).toHaveBeenCalledWith(fakeSession, inputDir, USSDir, {
+                binary: undefined,
+                filesMap: null,
+                maxConcurrentRequests: undefined,
+                recursive: undefined,
+                task: {
+                    percentComplete: 0,
+                    stageName: 0,
+                    statusMessage: "Uploading all files"
+                },
+                encoding: "IBM-1047"
             });
         });
         it("should pass attributes when a .zosattributes file is present", async () => {
