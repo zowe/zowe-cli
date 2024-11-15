@@ -264,17 +264,38 @@ export class IO {
      * @returns {string} - input with removed newlines
      * @memberof IO
      */
-    public static processNewlines(original: string, lastByte?: number): string {
+    public static processNewlines<T extends string | Buffer>(original: T, lastByte?: number): T {
         ImperativeExpect.toNotBeNullOrUndefined(original, "Required parameter 'original' must not be null or undefined");
+
         if (os.platform() !== IO.OS_WIN32) {
             return original;
         }
-        // otherwise, we're on windows
-        const processed = original.replace(/([^\r])\n/g, "$1\r\n");
-        if ((lastByte == null || lastByte !== "\r".charCodeAt(0)) && original.startsWith("\n")) {
-            return "\r" + processed;
+
+        let processed: T;
+
+        if (typeof original === "string") {
+            processed = original.replace(/([^\r])\n/g, "$1\r\n") as T;
+            if ((lastByte == null || lastByte !== "\r".charCodeAt(0)) && original.startsWith("\n")) {
+                return ("\r" + processed) as T;
+            }
+            return processed;
+        } else {
+            // Create worst-case scenario sized buffer
+            const bufferList = Buffer.alloc(original.length * 2);
+            let bufferIndex = 0;
+            let prevByte = lastByte;
+            for (let i = 0; i < original.length; i++) {
+                const currentByte = original[i];
+                if (prevByte !== 13 && currentByte === 10) {
+                    bufferList[bufferIndex++] = 13;
+                }
+                bufferList[bufferIndex++] = currentByte;
+                prevByte = currentByte;
+            }
+            // Create a buffer slice of the actual used portion
+            processed = bufferList.slice(0, bufferIndex) as T;
+            return processed;
         }
-        return processed;
     }
 
     /**
