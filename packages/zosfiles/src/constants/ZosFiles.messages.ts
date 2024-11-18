@@ -168,6 +168,15 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
     },
 
     /**
+     * Message indicating that the members of a data set were downloaded successfully
+     * @type {IMessageDefinition}
+     */
+    memberDownloadedSuccessfully: {
+        message: "Member(s) downloaded successfully."
+    },
+
+
+    /**
      * Message indicating that the member was downloaded successfully
      * @type {IMessageDefinition}
      */

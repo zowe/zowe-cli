@@ -187,6 +187,9 @@ Destination: %s",
     "message": "Failed to download the following members: 
 ",
   },
+  "memberDownloadedSuccessfully": Object {
+    "message": "Member(s) downloaded successfully.",
+  },
   "memberDownloadedWithDestination": Object {
     "message": "Member(s) downloaded successfully.
 Destination: %s",
