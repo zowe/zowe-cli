@@ -280,23 +280,20 @@ export class IO {
             }
             return processed;
         } else {
-            // Create worst-case scenario sized buffer
-            const bufferList = Buffer.alloc(original.length * 2);
-            let bufferIndex = 0;
+            const bufferList: number[] = [];
             let prevByte = lastByte;
             for (let i = 0; i < original.length; i++) {
                 const currentByte = original[i];
                 //Check if previous byte is not Carriage Return (13) and if current byte is Line Feed (10)
                 // eslint-disable-next-line @typescript-eslint/no-magic-numbers
-                if (prevByte !== 13 && currentByte === 10) {
+                if (currentByte === 10 && prevByte !== 13) {
                     // eslint-disable-next-line @typescript-eslint/no-magic-numbers
-                    bufferList[bufferIndex++] = 13;
+                    bufferList.push(13);
                 }
-                bufferList[bufferIndex++] = currentByte;
+                bufferList.push(currentByte);
                 prevByte = currentByte;
             }
-            // Create a buffer slice of the actual used portion
-            processed = bufferList.slice(0, bufferIndex) as T;
+            processed = Buffer.from(bufferList);
             return processed;
         }
     }
