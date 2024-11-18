@@ -293,7 +293,7 @@ export class IO {
                 bufferList.push(currentByte);
                 prevByte = currentByte;
             }
-            processed = Buffer.from(bufferList);
+            processed = Buffer.from(bufferList) as T;
             return processed;
         }
     }
