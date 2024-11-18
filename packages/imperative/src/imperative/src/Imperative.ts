@@ -144,7 +144,7 @@ export class Imperative {
             const ignoreErrors = process.argv.includes(Constants.OPT_LONG_DASH + Constants.HELP_OPTION) ||
                 process.argv.includes(Constants.OPT_SHORT_DASH + Constants.HELP_OPTION_ALIAS) ||
                 process.argv.includes(Constants.OPT_LONG_DASH + Constants.HELP_WEB_OPTION) ||
-                process.argv.includes(Constants.OPT_SHORT_DASH + Constants.HELP_WEB_OPTION_ALIAS) ||
+                process.argv.includes(Constants.OPT_LONG_DASH + Constants.HELP_WEB_OPTION_ALIAS) ||
                 process.argv.includes(Constants.OPT_LONG_DASH + Constants.VERSION_OPTION) ||
                 process.argv.includes(Constants.OPT_SHORT_DASH + Constants.VERSION_OPTION_ALIAS) ||
                 process.argv[process.argv.length - 1] === require.resolve('@zowe/cli');
