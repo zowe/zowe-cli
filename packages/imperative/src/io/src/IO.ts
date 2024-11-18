@@ -18,7 +18,6 @@ import { ImperativeExpect } from "../../expect";
 // use complete path to ExecUtils to avoid circular dependency that results from utilities/index
 import { ExecUtils } from "../../utilities/src/ExecUtils";
 import { Readable, Writable } from "stream";
-import { mkdirpSync } from "fs-extra";
 
 /**
  * This class will handle common sequences of node I/O and issue messages /
@@ -109,7 +108,7 @@ export class IO {
     }
 
     /**
-     * Create a directory if it does not yet exist synchronously.
+     * Create a directory and all subdirectories if they do not yet exist synchronously.
      * @static
      * @param  {string} dir - directory to create
      * @return {undefined}
@@ -117,9 +116,7 @@ export class IO {
      */
     public static createDirSync(dir: string) {
         ImperativeExpect.toBeDefinedAndNonBlank(dir, "dir");
-        if (!IO.existsSync(dir)) {
-            fs.mkdirSync(dir);
-        }
+        fs.mkdirSync(dir, {recursive: true});
     }
 
     /**
@@ -129,19 +126,10 @@ export class IO {
      * @static
      * @param {string} dir - directory to create all sub directories for
      * @memberof IO
+     * @deprecated Please use IO.createDirSync
      */
     public static createDirsSync(dir: string) {
-        ImperativeExpect.toBeDefinedAndNonBlank(dir, "dir");
-        // we're splitting on a specific separator character, so replace \ with /
-        // before splitting
-        const dirs = path.resolve(dir).replace(/\\/g, path.posix.sep).split(path.posix.sep);
-
-        let createDir: string = "";
-        for (const crDir of dirs) {
-
-            createDir += crDir + path.posix.sep;
-            IO.createDirSync(createDir);
-        }
+        IO.createDirSync(dir);
     }
 
     /**
@@ -155,7 +143,7 @@ export class IO {
      */
     public static createDirsSyncFromFilePath(filePath: string) {
         ImperativeExpect.toBeDefinedAndNonBlank(filePath, "filePath");
-        IO.createDirsSync(path.dirname(filePath));
+        IO.createDirSync(path.dirname(filePath));
     }
 
     /**
@@ -198,14 +186,15 @@ export class IO {
     }
 
     /**
-     * Uses the fs-extra package to create a directory (and all subdirectories)
+     * Create a directory and all subdirectories if they do not yet exist synchronously.
      * @static
      * @param {string} dir - the directory (do not include a file name)
      * @memberof IO
+     * @deprecated Please use IO.createDirSync
      */
     public static mkdirp(dir: string) {
         ImperativeExpect.toBeDefinedAndNonBlank(dir, "dir");
-        mkdirpSync(dir);
+        IO.createDirSync(dir);
     }
 
     /**

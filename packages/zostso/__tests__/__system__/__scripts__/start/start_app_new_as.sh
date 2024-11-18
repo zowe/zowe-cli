@@ -6,5 +6,7 @@ user=$4
 password=$5
 ru=$6
 file=$7
-zowe zos-tso start app --app-key "test2" --startup "EXEC '$file'" --account $account --host $host --port $port --user $user --password $password --ru $ru
+rfj=$8
+
+zowe zos-tso start app --app-key "test2" --startup "EXEC '$file'" --account $account --host $host --port $port --user $user --password $password --ru $ru --rfj $rfj
 exit $?

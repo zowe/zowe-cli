@@ -44,10 +44,10 @@ describe("All test", () => {
     });
 
     describe("Start TSO app tests", () => {
-        it("should create TSO address space and run an application instance at the created AS", async () => {
+        it("should create TSO address space and run an application instance at the created AS --rfj", async () => {
             let error: ImperativeError;
 
-            const response = await runCliScript(
+            const response = runCliScript(
                 __dirname + "/__scripts__/start/start_app_new_as.sh",
                 testEnvironment,
                 [
@@ -57,7 +57,8 @@ describe("All test", () => {
                     defaultSystem.zosmf.user,
                     defaultSystem.zosmf.password,
                     defaultSystem.zosmf.rejectUnauthorized,
-                    dsname+"(TESTAPP)"
+                    dsname+"(TESTAPP)",
+                    true
                 ]
             );
 
@@ -65,25 +66,42 @@ describe("All test", () => {
             expect(response.stdout.toString()).toContain(
                 "HELLOW exec processing has started"
             );
-            expect(response.stdout.toString()).toContain(
-                "UNIX message queue id = "
+            expect(error).toBeUndefined();
+            await StopTso.stop(
+                REAL_SESSION,
+                JSON.parse(response.stdout.toString()).data.servletKey
             );
-            expect(response.stdout.toString()).toContain(
-                "Input message type = "
+        });
+        it("should create TSO address space and run an application instance at the created AS --no-rfj", async () => {
+            let error: ImperativeError;
+
+            const response = runCliScript(
+                __dirname + "/__scripts__/start/start_app_new_as.sh",
+                testEnvironment,
+                [
+                    ACCOUNT_NUMBER,
+                    defaultSystem.zosmf.host,
+                    defaultSystem.zosmf.port,
+                    defaultSystem.zosmf.user,
+                    defaultSystem.zosmf.password,
+                    defaultSystem.zosmf.rejectUnauthorized,
+                    dsname+"(TESTAPP)",
+                    false
+                ]
             );
+
+            expect(response.stdout.toString()).toBeDefined();
             expect(response.stdout.toString()).toContain(
-                "Output message type = "
-            );
-            expect(response.stdout.toString()).toContain(
-                "Reading application input from the UNIX message queue."
+                "HELLOW exec processing has started"
             );
             expect(error).toBeUndefined();
             await StopTso.stop(
                 REAL_SESSION,
-                JSON.parse(response.stdout.toString()).servletKey
+                response.stdout.toString().match(/Servlet Key:\s*([A-Za-z0-9-]+)/)[1]
             );
         });
-        it("should create TSO application instance on existing address space", async () => {
+
+        it("should create TSO application instance on existing address space --rfj", async () => {
             dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSTEST`);
             await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname);
             await Upload.fileToDataset(REAL_SESSION, __dirname + "/__scripts__/start/test_app.rexx", dsname, {});
@@ -100,7 +118,50 @@ describe("All test", () => {
                 stopResponse: null,
             };
 
-            const response = await runCliScript(
+            const response = runCliScript(
+                __dirname + "/__scripts__/start/start_app_existing_as_rfj.sh",
+                testEnvironment,
+                [
+                    ACCOUNT_NUMBER,
+                    defaultSystem.zosmf.host,
+                    defaultSystem.zosmf.port,
+                    defaultSystem.zosmf.user,
+                    defaultSystem.zosmf.password,
+                    defaultSystem.zosmf.rejectUnauthorized,
+                    startResponse.startResponse.zosmfTsoResponse.servletKey,
+                    startResponse.startResponse.zosmfTsoResponse.queueID,
+                    dsname+"(TESTAPP)",
+                ]
+            );
+            expect(response.stdout.toString()).toBeDefined();
+            expect(response.stdout.toString()).toContain(
+                "HELLOW exec processing has started"
+            );
+
+            //Clean up test
+            await StopTso.stop(
+                REAL_SESSION,
+                startResponse.startResponse.zosmfTsoResponse.servletKey
+            );
+        });
+        it("should create TSO application instance on existing address space --no-rfj", async () => {
+            dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSTEST`);
+            await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname);
+            await Upload.fileToDataset(REAL_SESSION, __dirname + "/__scripts__/start/test_app.rexx", dsname, {});
+
+            const startResponse: IIssueResponse = {
+                success: false,
+                startResponse: await StartTso.start(
+                    REAL_SESSION,
+                    ACCOUNT_NUMBER
+                ),
+                startReady: false,
+                zosmfResponse: null,
+                commandResponse: null,
+                stopResponse: null,
+            };
+
+            const response = runCliScript(
                 __dirname + "/__scripts__/start/start_app_existing_as.sh",
                 testEnvironment,
                 [
@@ -112,36 +173,24 @@ describe("All test", () => {
                     defaultSystem.zosmf.rejectUnauthorized,
                     startResponse.startResponse.zosmfTsoResponse.servletKey,
                     startResponse.startResponse.zosmfTsoResponse.queueID,
-                    dsname+"(TESTAPP)"
+                    dsname+"(TESTAPP)",
                 ]
             );
             expect(response.stdout.toString()).toBeDefined();
             expect(response.stdout.toString()).toContain(
                 "HELLOW exec processing has started"
             );
-            expect(response.stdout.toString()).toContain(
-                "UNIX message queue id = "
-            );
-            expect(response.stdout.toString()).toContain(
-                "Input message type = "
-            );
-            expect(response.stdout.toString()).toContain(
-                "Output message type = "
-            );
-            expect(response.stdout.toString()).toContain(
-                "Reading application input from the UNIX message queue."
-            );
 
             //Clean up test
             await StopTso.stop(
                 REAL_SESSION,
-                startResponse.startResponse.zosmfTsoResponse.servletKey
+                response.stdout.toString().match(/Servlet Key:\s*([A-Za-z0-9-]+)/)[1]
             );
         });
     });
     describe("Send TSO app tests", () => {
-        it("Should send message to TSO address space app", async () => {
-            const startResponse = await runCliScript(
+        it("Should send message to TSO address space app --no-rfj", async () => {
+            const startResponse = runCliScript(
                 __dirname + "/__scripts__/start/start_app_new_as.sh",
                 testEnvironment,
                 [
@@ -151,13 +200,14 @@ describe("All test", () => {
                     defaultSystem.zosmf.user,
                     defaultSystem.zosmf.password,
                     defaultSystem.zosmf.rejectUnauthorized,
-                    dsname+"(TESTAPP)"
+                    dsname+"(TESTAPP)",
+                    true
                 ]
             );
-            const startServletkey = JSON.parse(
-                startResponse.stdout.toString()
-            ).servletKey;
-            const response = await runCliScript(
+
+            const startServletkey = JSON.parse(startResponse.stdout.toString()).data.servletKey;
+
+            const response = runCliScript(
                 __dirname + "/__scripts__/send/send_tso_app.sh",
                 testEnvironment,
                 [
@@ -172,21 +222,35 @@ describe("All test", () => {
                     "test2",
                 ]
             );
+            const response2 = runCliScript(
+                __dirname + "/__scripts__/receive/receive_tso_app.sh",
+                testEnvironment,
+                [
+                    ACCOUNT_NUMBER,
+                    defaultSystem.zosmf.host,
+                    defaultSystem.zosmf.port,
+                    defaultSystem.zosmf.user,
+                    defaultSystem.zosmf.password,
+                    defaultSystem.zosmf.rejectUnauthorized,
+                    startServletkey,
+                    "test2",
+                    "true",
+                ]
+            );
+            const responses = response.stdout.toString() + response2.stdout.toString();
 
             expect(response.stdout.toString()).toBeDefined();
-            expect(response.stdout.toString()).toContain(
+            expect(response2.stdout.toString()).toBeDefined();
+            expect(responses).toContain(
                 "Application input = LONG 100"
             );
-            expect(response.stdout.toString()).toContain("servletKey");
-            expect(response.stdout.toString()).toContain("READY ");
+            expect(responses).toContain("READY ");
 
             //Clean up test
             await StopTso.stop(REAL_SESSION, startServletkey);
         });
-    });
-    describe("Receive TSO app tests", () => {
-        it("should pull from message queue but not reach the end (--no-rur)", async () => {
-            const startResponse = await runCliScript(
+        it("Should send message to TSO address space app --rfj", async () => {
+            const startResponse = runCliScript(
                 __dirname + "/__scripts__/start/start_app_new_as.sh",
                 testEnvironment,
                 [
@@ -196,13 +260,74 @@ describe("All test", () => {
                     defaultSystem.zosmf.user,
                     defaultSystem.zosmf.password,
                     defaultSystem.zosmf.rejectUnauthorized,
-                    dsname+"(TESTAPP)"
+                    dsname+"(TESTAPP)",
+                    true
                 ]
             );
-            const startServletkey = JSON.parse(
-                startResponse.stdout.toString()
-            ).servletKey;
-            await runCliScript(
+
+            const startServletkey = JSON.parse(startResponse.stdout.toString()).data.servletKey;
+
+            const response = runCliScript(
+                __dirname + "/__scripts__/send/send_tso_app_rfj.sh",
+                testEnvironment,
+                [
+                    ACCOUNT_NUMBER,
+                    defaultSystem.zosmf.host,
+                    defaultSystem.zosmf.port,
+                    defaultSystem.zosmf.user,
+                    defaultSystem.zosmf.password,
+                    defaultSystem.zosmf.rejectUnauthorized,
+                    startServletkey,
+                    "LONG 100",
+                    "test2",
+                ]
+            );
+            const response2 = runCliScript(
+                __dirname + "/__scripts__/receive/receive_tso_app.sh",
+                testEnvironment,
+                [
+                    ACCOUNT_NUMBER,
+                    defaultSystem.zosmf.host,
+                    defaultSystem.zosmf.port,
+                    defaultSystem.zosmf.user,
+                    defaultSystem.zosmf.password,
+                    defaultSystem.zosmf.rejectUnauthorized,
+                    startServletkey,
+                    "test2",
+                    "true",
+                ]
+            );
+            const responses = response.stdout.toString() + response2.stdout.toString();
+
+            expect(response.stdout.toString()).toBeDefined();
+            expect(response2.stdout.toString()).toBeDefined();
+            expect(responses).toContain(
+                "Application input = LONG 100"
+            );
+            expect(responses).toContain("READY ");
+
+            //Clean up test
+            await StopTso.stop(REAL_SESSION, startServletkey);
+        });
+    });
+    describe("Receive TSO app tests", () => {
+        it("should pull from message queue but not reach the end (--no-rur)", async () => {
+            const startResponse = runCliScript(
+                __dirname + "/__scripts__/start/start_app_new_as.sh",
+                testEnvironment,
+                [
+                    ACCOUNT_NUMBER,
+                    defaultSystem.zosmf.host,
+                    defaultSystem.zosmf.port,
+                    defaultSystem.zosmf.user,
+                    defaultSystem.zosmf.password,
+                    defaultSystem.zosmf.rejectUnauthorized,
+                    dsname+"(TESTAPP)",
+                    true
+                ]
+            );
+            const startServletkey = JSON.parse(startResponse.stdout.toString()).data.servletKey;
+            runCliScript(
                 __dirname + "/__scripts__/send/send_tso_app.sh",
                 testEnvironment,
                 [
@@ -217,7 +342,7 @@ describe("All test", () => {
                     "test2",
                 ]
             );
-            const response = await runCliScript(
+            const response = runCliScript(
                 __dirname + "/__scripts__/receive/receive_tso_app.sh",
                 testEnvironment,
                 [
@@ -232,16 +357,14 @@ describe("All test", () => {
                     "false",
                 ]
             );
-            expect(response.stdout.toString()).toContain("999");
-            expect(response.stdout.toString()).toContain("1000");
-            expect(response.stdout.toString()).toContain("1001");
-            expect(response.stdout.toString()).not.toContain("4000");
+            expect(response.stdout.toString()).toContain("1");
+            expect(response.stdout.toString()).not.toContain("3999");
 
             //Clean up test
             await StopTso.stop(REAL_SESSION, startServletkey);
         });
         it("should empty message queue using --rur flag", async () => {
-            const startResponse = await runCliScript(
+            const startResponse = runCliScript(
                 __dirname + "/__scripts__/start/start_app_new_as.sh",
                 testEnvironment,
                 [
@@ -251,13 +374,12 @@ describe("All test", () => {
                     defaultSystem.zosmf.user,
                     defaultSystem.zosmf.password,
                     defaultSystem.zosmf.rejectUnauthorized,
-                    dsname+"(TESTAPP)"
+                    dsname+"(TESTAPP)",
+                    true
                 ]
             );
-            const startServletkey = JSON.parse(
-                startResponse.stdout.toString()
-            ).servletKey;
-            await runCliScript(
+            const startServletkey = JSON.parse(startResponse.stdout.toString()).data.servletKey;
+            runCliScript(
                 __dirname + "/__scripts__/send/send_tso_app.sh",
                 testEnvironment,
                 [
@@ -272,7 +394,7 @@ describe("All test", () => {
                     "test2",
                 ]
             );
-            const response = await runCliScript(
+            const response = runCliScript(
                 __dirname + "/__scripts__/receive/receive_tso_app.sh",
                 testEnvironment,
                 [

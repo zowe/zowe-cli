@@ -21,6 +21,7 @@ let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
 const LOCAL_JCL_FILE: string = __dirname + "/" + "testFileOfLocalJCL.txt";
 const jobDataRegexV1 = /Successfully submitted request to cancel job (\w+) \((JOB\d+)\)/;
 const jobDataRegex = /Successfully canceled job (\w+) \((JOB\d+)\)/;
+const modifyVersionDefaultUsesCIM = false;
 
 describe("zos-jobs cancel job command", () => {
     // Create the unique test environment
@@ -73,13 +74,17 @@ describe("zos-jobs cancel job command", () => {
 
     describe("successful scenario", () => {
         it("should cancel a job v1", () => {
-            const response = runCliScript(__dirname + "/__scripts__/job/cancel_job_v1.sh", TEST_ENVIRONMENT, [LOCAL_JCL_FILE]);
-            expect(response.stderr.toString()).toBe("");
-            expect(response.status).toBe(0);
-            expect(response.stdout.toString()).toContain("Successfully submitted request to cancel job");
+            if (TEST_ENVIRONMENT.systemTestProperties.zosjobs.skipCIM) {
+                process.stdout.write("Skipping test because skipCIM is set.");
+            } else {
+                const response = runCliScript(__dirname + "/__scripts__/job/cancel_job_v1.sh", TEST_ENVIRONMENT, [LOCAL_JCL_FILE]);
+                expect(response.stderr.toString()).toBe("");
+                expect(response.status).toBe(0);
+                expect(response.stdout.toString()).toContain("Successfully submitted request to cancel job");
 
-            const jobid = response.stdout.toString().match(jobDataRegexV1).pop();
-            TEST_ENVIRONMENT.resources.jobs.push(jobid);
+                const jobid = response.stdout.toString().match(jobDataRegexV1).pop();
+                TEST_ENVIRONMENT.resources.jobs.push(jobid);
+            }
         });
 
         it("should cancel a job v2", () => {
@@ -94,15 +99,19 @@ describe("zos-jobs cancel job command", () => {
         });
 
         it("should cancel a job default", () => {
-            const response = runCliScript(__dirname + "/__scripts__/job/cancel_job.sh", TEST_ENVIRONMENT, [LOCAL_JCL_FILE]);
-            expect(response.stderr.toString()).toBe("");
-            expect(response.status).toBe(0);
-            expect(response.stdout.toString()).toContain("Successfully canceled job");
-            expect(response.stdout.toString()).not.toContain("Failed to cancel job");
-            expect(response.stdout.toString()).not.toContain("Failed to cancel job");
+            if (TEST_ENVIRONMENT.systemTestProperties.zosjobs.skipCIM && modifyVersionDefaultUsesCIM) {
+                process.stdout.write("Skipping test because skipCIM is set.");
+            } else {
+                const response = runCliScript(__dirname + "/__scripts__/job/cancel_job.sh", TEST_ENVIRONMENT, [LOCAL_JCL_FILE]);
+                expect(response.stderr.toString()).toBe("");
+                expect(response.status).toBe(0);
+                expect(response.stdout.toString()).toContain("Successfully canceled job");
+                expect(response.stdout.toString()).not.toContain("Failed to cancel job");
+                expect(response.stdout.toString()).not.toContain("Failed to cancel job");
 
-            const jobid = response.stdout.toString().match(jobDataRegex).pop();
-            TEST_ENVIRONMENT.resources.jobs.push(jobid);
+                const jobid = response.stdout.toString().match(jobDataRegex).pop();
+                TEST_ENVIRONMENT.resources.jobs.push(jobid);
+            }
         });
 
         describe("without profiles", () => {
@@ -124,21 +133,25 @@ describe("zos-jobs cancel job command", () => {
             });
 
             it("cancel a job without a profile 1.0", async () => {
-                const response = runCliScript(__dirname + "/__scripts__/job/cancel_job_v1_fully_qualified.sh",
-                    TEST_ENVIRONMENT_NO_PROF,
-                    [
-                        LOCAL_JCL_FILE,
-                        DEFAULT_SYSTEM_PROPS.zosmf.host,
-                        DEFAULT_SYSTEM_PROPS.zosmf.port,
-                        DEFAULT_SYSTEM_PROPS.zosmf.user,
-                        DEFAULT_SYSTEM_PROPS.zosmf.password,
-                    ]);
-                expect(response.stderr.toString()).toBe("");
-                expect(response.status).toBe(0);
-                expect(response.stdout.toString()).toContain("Successfully submitted request to cancel job");
+                if (TEST_ENVIRONMENT.systemTestProperties.zosjobs.skipCIM) {
+                    process.stdout.write("Skipping test because skipCIM is set.");
+                } else {
+                    const response = runCliScript(__dirname + "/__scripts__/job/cancel_job_v1_fully_qualified.sh",
+                        TEST_ENVIRONMENT_NO_PROF,
+                        [
+                            LOCAL_JCL_FILE,
+                            DEFAULT_SYSTEM_PROPS.zosmf.host,
+                            DEFAULT_SYSTEM_PROPS.zosmf.port,
+                            DEFAULT_SYSTEM_PROPS.zosmf.user,
+                            DEFAULT_SYSTEM_PROPS.zosmf.password,
+                        ]);
+                    expect(response.stderr.toString()).toBe("");
+                    expect(response.status).toBe(0);
+                    expect(response.stdout.toString()).toContain("Successfully submitted request to cancel job");
 
-                const jobid = response.stdout.toString().match(jobDataRegexV1).pop();
-                TEST_ENVIRONMENT_NO_PROF.resources.jobs.push(jobid);
+                    const jobid = response.stdout.toString().match(jobDataRegexV1).pop();
+                    TEST_ENVIRONMENT_NO_PROF.resources.jobs.push(jobid);
+                }
             });
 
             it("cancel a job without a profile 2.0", async () => {
@@ -160,21 +173,25 @@ describe("zos-jobs cancel job command", () => {
             });
 
             it("cancel a job without a profile default", async () => {
-                const response = runCliScript(__dirname + "/__scripts__/job/cancel_job_fully_qualified.sh",
-                    TEST_ENVIRONMENT_NO_PROF,
-                    [
-                        LOCAL_JCL_FILE,
-                        DEFAULT_SYSTEM_PROPS.zosmf.host,
-                        DEFAULT_SYSTEM_PROPS.zosmf.port,
-                        DEFAULT_SYSTEM_PROPS.zosmf.user,
-                        DEFAULT_SYSTEM_PROPS.zosmf.password,
-                    ]);
-                expect(response.stderr.toString()).toBe("");
-                expect(response.status).toBe(0);
-                expect(response.stdout.toString()).toContain("Successfully canceled job");
+                if (TEST_ENVIRONMENT.systemTestProperties.zosjobs.skipCIM && modifyVersionDefaultUsesCIM) {
+                    process.stdout.write("Skipping test because skipCIM is set.");
+                } else {
+                    const response = runCliScript(__dirname + "/__scripts__/job/cancel_job_fully_qualified.sh",
+                        TEST_ENVIRONMENT_NO_PROF,
+                        [
+                            LOCAL_JCL_FILE,
+                            DEFAULT_SYSTEM_PROPS.zosmf.host,
+                            DEFAULT_SYSTEM_PROPS.zosmf.port,
+                            DEFAULT_SYSTEM_PROPS.zosmf.user,
+                            DEFAULT_SYSTEM_PROPS.zosmf.password,
+                        ]);
+                    expect(response.stderr.toString()).toBe("");
+                    expect(response.status).toBe(0);
+                    expect(response.stdout.toString()).toContain("Successfully canceled job");
 
-                const jobid = response.stdout.toString().match(jobDataRegex).pop();
-                TEST_ENVIRONMENT_NO_PROF.resources.jobs.push(jobid);
+                    const jobid = response.stdout.toString().match(jobDataRegex).pop();
+                    TEST_ENVIRONMENT_NO_PROF.resources.jobs.push(jobid);
+                }
             });
         });
     });

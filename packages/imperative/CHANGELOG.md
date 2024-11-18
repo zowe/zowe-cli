@@ -2,6 +2,40 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Modified 8.8.2 bugfix to correct web help alias. [#2361](https://github.com/zowe/zowe-cli/pull/2361)
+
+## `8.8.2`
+
+- BugFix: Fixed an issue where the Imperative Event Emitter could skip triggering event callbacks. [#2360](https://github.com/zowe/zowe-cli/pull/2360)
+- BugFix: Enhanced [#2301](https://github.com/zowe/zowe-cli/pull/2301) to include "--help-web" commands to pass even if presence of a faulty configuration.
+
+## `8.8.1`
+
+- BugFix: Fixed an issue where the `ProfileInfo.profileManagerWillLoad` method failed if profiles were not yet read from disk. [#2284](https://github.com/zowe/zowe-cli/issues/2284)
+- BugFix: Fixed an issue where the `ProfileInfo.onlyV1ProfilesExist` method could wrongly return true when V2 profiles exist. [#2311](https://github.com/zowe/zowe-cli/issues/2311)
+  - Deprecated the static method `ProfileInfo.onlyV1ProfilesExist` and replaced it with an `onlyV1ProfilesExist` instance method on the `ProfileInfo` class.
+- BugFix: Fixed an issue where the `ConvertV1Profiles.convert` method may create team configuration files in the wrong directory if the environment variable `ZOWE_CLI_HOME` is set. [#2312](https://github.com/zowe/zowe-cli/issues/2312)
+- BugFix: Fixed an issue where the Imperative Event Emitter would fire event callbacks for the same app that triggered the event. [#2279](https://github.com/zowe/zowe-cli/issues/2279)
+- BugFix: Fixed an issue where the `ProfileInfo.updateKnownProperty` method could rewrite team config file to disk without any changes when storing secure value. [#2324](https://github.com/zowe/zowe-cli/issues/2324)
+
+## `8.8.0`
+
+- BugFix: Enabled commands with either the `--help` or `--version` flags to still display their information despite any configuration file issues. [#2301](https://github.com/zowe/zowe-cli/pull/2301)
+
+## `8.7.1`
+
+- BugFix: Deprecated `IO` functions `createDirsSync` and `mkdirp` due to code duplication. Please use `createDirSync` instead. [#2352](https://github.com/zowe/zowe-cli/pull/2352)
+
+## `8.7.0`
+
+- Enhancement: Added optional `proxy` object to ISession interface for extenders to pass a ProxyVariables object that would override the environment variables if in place. [#2330](https://github.com/zowe/zowe-cli/pull/2330)
+
+## `8.6.1`
+
+- BugFix: Handled an HTTP 1.1 race condition where an SDK user may experience an ECONNRESET error if a session was reused on Node 20 and above due to HTTP Keep-Alive. [#2339](https://github.com/zowe/zowe-cli/pull/2339)
+
 ## `8.3.1`
 
 - BugFix: Fixed an issue where the `plugins install` command could fail when installing a scoped package because scoped registry was used to fetch all dependencies. [#2317](https://github.com/zowe/zowe-cli/issues/2317)

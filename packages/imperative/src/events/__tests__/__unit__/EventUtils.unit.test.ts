@@ -11,15 +11,29 @@
 
 import { EventOperator } from '../../src/EventOperator';
 import { EventProcessor } from '../../src/EventProcessor';
-import { Logger } from '../../..';
+import { EventUtils, Logger } from '../../..';
 import { IProcessorTypes } from '../../src/doc';
 import { Event } from '../../..';
 import { EventTypes, ZoweUserEvents } from "../../src/EventConstants";
+import * as fs from "fs";
 
 jest.mock('../../src/EventProcessor');
 jest.mock('../../../logger');
 
 const logger = Logger.getImperativeLogger();
+
+const createTestEvent = (appName: string) => ({
+    eventTime: '',
+    eventName: 'testEvent',
+    eventType: EventTypes.SharedEvents,
+    appName,
+    subscriptions: [
+        {
+            removeAllListeners: jest.fn(),
+            close: jest.fn()
+        }
+    ]
+} as unknown as Event);
 
 describe("EventOperator Unit Tests", () => {
     beforeEach(() => {
@@ -69,18 +83,7 @@ describe("EventOperator Unit Tests", () => {
             const appName = 'DeleteApp';
             const processor = new EventProcessor(appName, IProcessorTypes.BOTH);
             processor.subscribedEvents = new Map([
-                ['testEvent', {
-                    eventTime: '',
-                    eventName: 'testEvent',
-                    eventType: EventTypes.SharedEvents,
-                    appName: appName,
-                    subscriptions: new Set([
-                        {
-                            removeAllListeners: jest.fn(),
-                            close: jest.fn()
-                        }
-                    ])
-                } as unknown as Event]
+                ['testEvent', createTestEvent(appName)]
             ]);
 
             EventOperator.deleteProcessor(appName);
@@ -97,22 +100,88 @@ describe("EventOperator Unit Tests", () => {
             expect(EventProcessor).toHaveBeenCalledWith(appName, IProcessorTypes.WATCHER, logger);
             expect(processor).toBeInstanceOf(EventProcessor);
         });
+
+        it("'setupWatcher' should setup a watcher that handles events", () => {
+            const appName = "WatcherApp";
+            const testEvent = createTestEvent(appName);
+            const processor = new EventProcessor(appName, IProcessorTypes.WATCHER);
+            processor.eventTimes = new Map();
+            processor.logger = { debug: jest.fn() } as any;
+            processor.subscribedEvents = new Map([
+                ['testEvent', testEvent]
+            ]);
+
+            const createEventSpy = jest.spyOn(EventUtils, "createEvent").mockReturnValue(testEvent);
+            const getEventContentsSpy = jest.spyOn(EventUtils, "getEventContents").mockReturnValue(testEvent);
+            jest.spyOn(fs, "watch").mockImplementationOnce((_filename, listener: any) => listener());
+
+            const eventCb = jest.fn();
+            EventUtils.createSubscription(processor, testEvent.eventName, EventTypes.SharedEvents);
+            EventUtils.setupWatcher(processor, testEvent.eventName, eventCb);
+
+            expect(createEventSpy).toHaveBeenCalledTimes(1);
+            expect(getEventContentsSpy).toHaveBeenCalledTimes(1);
+            expect(eventCb).toHaveBeenCalled();
+        });
+
+        it("'setupWatcher' should setup a watcher that ignores events with same time", () => {
+            const appName = "WatcherApp";
+            const testEvent = createTestEvent(appName);
+            testEvent.eventTime = new Date().toISOString();
+            const processor = new EventProcessor(appName, IProcessorTypes.WATCHER);
+            processor.eventTimes = new Map([
+                [testEvent.eventName, testEvent.eventTime]
+            ]);
+            processor.logger = { debug: jest.fn() } as any;
+            processor.subscribedEvents = new Map([
+                ['testEvent', testEvent]
+            ]);
+
+            const createEventSpy = jest.spyOn(EventUtils, "createEvent").mockReturnValue(testEvent);
+            const getEventContentsSpy = jest.spyOn(EventUtils, "getEventContents").mockReturnValue(testEvent);
+            const eventTimeSetSpy = jest.spyOn(processor.eventTimes, "set");
+            jest.spyOn(fs, "watch").mockImplementationOnce((_filename, listener: any) => listener());
+
+            const eventCb = jest.fn();
+            EventUtils.createSubscription(processor, testEvent.eventName, EventTypes.SharedEvents);
+            EventUtils.setupWatcher(processor, testEvent.eventName, eventCb);
+
+            expect(createEventSpy).toHaveBeenCalledTimes(1);
+            expect(getEventContentsSpy).toHaveBeenCalledTimes(1);
+            expect(eventTimeSetSpy).toHaveBeenCalledWith(testEvent.eventName, testEvent.eventTime);
+            expect(eventCb).not.toHaveBeenCalled();
+        });
+
+        it("'setupWatcher' should setup a watcher that ignores events with same PID", () => {
+            const appName = "WatcherApp";
+            const testEvent = createTestEvent(appName);
+            testEvent.appProcId = process.pid;
+            const processor = new EventProcessor(appName, IProcessorTypes.WATCHER);
+            processor.eventTimes = new Map();
+            processor.logger = { debug: jest.fn() } as any;
+            processor.subscribedEvents = new Map([
+                ['testEvent', testEvent]
+            ]);
+
+            const createEventSpy = jest.spyOn(EventUtils, "createEvent").mockReturnValue(testEvent);
+            const getEventContentsSpy = jest.spyOn(EventUtils, "getEventContents").mockReturnValue(testEvent);
+            jest.spyOn(fs, "watch").mockImplementationOnce((_filename, listener: any) => listener());
+
+            const eventCb = jest.fn();
+            EventUtils.createSubscription(processor, testEvent.eventName, EventTypes.SharedEvents);
+            EventUtils.setupWatcher(processor, testEvent.eventName, eventCb);
+
+            expect(createEventSpy).toHaveBeenCalledTimes(1);
+            expect(getEventContentsSpy).toHaveBeenCalledTimes(1);
+            expect(testEvent.appProcId).toBeUndefined();
+            expect(eventCb).not.toHaveBeenCalled();
+        });
+
         it("'deleteWatcher' should remove the correct event processor", () => {
             const appName = 'DeleteWatcher';
             const processor = new EventProcessor(appName, IProcessorTypes.WATCHER);
             processor.subscribedEvents = new Map([
-                ['testEvent', {
-                    eventTime: '',
-                    eventName: 'testEvent',
-                    eventType: EventTypes.UserEvents,
-                    appName: appName,
-                    subscriptions: new Set([
-                        {
-                            removeAllListeners: jest.fn(),
-                            close: jest.fn()
-                        }
-                    ])
-                } as unknown as Event]
+                ['testEvent', createTestEvent(appName)]
             ]);
 
             EventOperator.deleteWatcher(appName);
@@ -134,18 +203,7 @@ describe("EventOperator Unit Tests", () => {
             const appName = 'DeleteEmitter';
             const processor = new EventProcessor(appName, IProcessorTypes.EMITTER);
             processor.subscribedEvents = new Map([
-                ['testEvent', {
-                    eventTime: '',
-                    eventName: 'testEvent',
-                    eventType: EventTypes.UserEvents,
-                    appName: appName,
-                    subscriptions: new Set([
-                        {
-                            removeAllListeners: jest.fn(),
-                            close: jest.fn()
-                        }
-                    ])
-                } as unknown as Event]
+                ['testEvent', createTestEvent(appName)]
             ]);
 
             EventOperator.deleteEmitter(appName);

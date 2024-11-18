@@ -205,14 +205,18 @@ export class EventUtils {
             // Accommodates for the delay between actual file change event and fsWatcher's perception
             //(Node.JS triggers this notification event 3 times)
             event.eventTime = EventUtils.getEventContents(event.eventFilePath).eventTime;
-            if (eeInst.eventTimes.get(eventName) !== event.eventTime) {
+            let shouldProcessEvent = eeInst.eventTimes.get(eventName) !== event.eventTime;
+            eeInst.eventTimes.set(eventName, event.eventTime);
+            // Checks that event was not triggered by the same process
+            shouldProcessEvent &&= process.pid !== event.appProcId;
+            delete event.appProcId;
+            if (shouldProcessEvent) {
                 eeInst.logger.debug(`EventEmitter: Event "${trigger}" emitted: ${eventName}`);
                 if (Array.isArray(callbacks)) {
                     callbacks.forEach(cb => cb());
                 } else {
                     callbacks();
                 }
-                eeInst.eventTimes.set(eventName, event.eventTime);
             }
         });
         event.subscriptions.push(watcher);

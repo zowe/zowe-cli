@@ -251,11 +251,13 @@ export default {
                 OPTIONS: {
                     VOLUME: "The volume serial (VOLSER) where the data set resides. The option is required only when the data set is not" +
                         " catalogued on the system.",
-                    FOR_SURE: "Specify this option to confirm that you want to delete the data set permanently."
+                    FOR_SURE: "Specify this option to confirm that you want to delete the data set permanently.",
+                    IGNORE_NF: "Suppress errors if the data set does not exist."
                 },
                 EXAMPLES: {
                     EX1: "Delete the data set named 'ibmuser.cntl'",
-                    EX2: "Delete the data set member named 'ibmuser.cntl(mem)'"
+                    EX2: "Delete the data set member named 'ibmuser.cntl(mem)'",
+                    EX3: "Quietly delete a data set, suppressing errors if it doesn't exist"
                 }
             },
             MIGRATED_DATA_SET: {
@@ -283,13 +285,15 @@ export default {
                     FOR_SURE: "Specify this option to confirm that you want to delete the VSAM cluster permanently.",
                     ERASE: "Specify this option to overwrite the data component for the cluster with binary zeros. This " +
                         "option is ignored if the NOERASE attribute was specified when the cluster was defined or altered.",
-                    PURGE: "Specify this option to delete the VSAM cluster regardless of its retention period or date."
+                    PURGE: "Specify this option to delete the VSAM cluster regardless of its retention period or date.",
+                    IGNORE_NF: "Suppress errors if the VSAM data set does not exist."
                 },
                 EXAMPLES: {
                     EX1: "Delete the VSAM data set named 'ibmuser.cntl.vsam'",
-                    EX2: "Delete all expired VSAM data sets that match 'ibmuser.AAA.**.FFF'",
+                    EX2: "Quietly delete all VSAM data sets that match 'ibmuser.AAA.**.FFF' ignoring not-found errors",
                     EX3: "Delete a non-expired VSAM data set named 'ibmuser.cntl.vsam'",
-                    EX4: "Delete an expired VSAM data set named 'ibmuser.cntl.vsam' by overwriting the components with zeros"
+                    EX4: "Delete an expired VSAM data set named 'ibmuser.cntl.vsam' by overwriting the components with zeros",
+                    EX5: "Quietly delete VSAM data set, suppressing errors if it doesn't exist"
                 }
             },
             USS: {
@@ -300,12 +304,14 @@ export default {
                 },
                 OPTIONS: {
                     FOR_SURE: "Specify this option to confirm that you want to delete the file or directory permanently.",
-                    RECURSIVE: "Delete directories recursively."
+                    RECURSIVE: "Delete directories recursively.",
+                    IGNORE_NF: "Suppress errors if the file does not exist."
                 },
                 EXAMPLES: {
                     EX1: "Delete the empty directory '/u/ibmuser/testcases'",
                     EX2: "Delete the file named '/a/ibmuser/my_text.txt'",
-                    EX3: "Recursively delete the directory named '/u/ibmuser/testcases'"
+                    EX3: "Recursively delete the directory named '/u/ibmuser/testcases'",
+                    EX4: "Quietly delete a file, suppressing errors if the file doesn't exist"
                 }
             },
             ZFS: {
@@ -315,10 +321,14 @@ export default {
                     FILESYSTEMNAME: "The name of the z/OS file system that you want to delete."
                 },
                 OPTIONS: {
-                    FOR_SURE: "Specify this option to confirm that you want to delete the ZFS permanently."
+                    FOR_SURE: "Specify this option to confirm that you want to delete the ZFS permanently.",
+                    IGNORE_NF: "Suppress errors if the z/OS file does not exist."
+
                 },
                 EXAMPLES: {
-                    EX1: "Delete the z/OS file system 'HLQ.MYNEW.ZFS'"
+                    EX1: "Delete the z/OS file system 'HLQ.MYNEW.ZFS'",
+                    EX2: "Quietly delete a z/OS file, suppressing errors if the file doesn't exist"
+
                 }
             }
         }
@@ -377,7 +387,8 @@ export default {
                 },
                 EXAMPLES: {
                     EX1: `Download the file "/a/ibmuser/my_text.txt" to ./my_text.txt`,
-                    EX2: `Download the file "/a/ibmuser/MyJava.class" to "java/MyJava.class" in binary mode`
+                    EX2: `Download the file "/a/ibmuser/MyJava.class" to "java/MyJava.class" in binary mode`,
+                    EX3: `Download the file "/a/ibmuser/MyJava.class" to "java/MyJava.class" using a .zosattributes file`
                 }
             },
             USS_DIR: {
@@ -770,7 +781,8 @@ export default {
                     EX4: `Upload all files from the "local_dir" directory to the "/a/ibmuser/my_dir" USS directory ` +
                         `in binary mode, while specifying a list of file names (without path) to be uploaded in ASCII mode`,
                     EX5: `Recursively upload all files from the "local_dir" directory to the "/a/ibmuser/my_dir" USS directory, ` +
-                        `specifying files to ignore and file encodings in the local file my_global_attributes`
+                        `specifying files to ignore and file encodings in the local file my_global_attributes`,
+                    EX6: `Upload all files from the "local_dir" directory to the "/a/ibmuser/my_dir" USS directory using IBM-1047 encoding`,
                 }
             }
         },

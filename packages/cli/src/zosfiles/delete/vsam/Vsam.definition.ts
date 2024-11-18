@@ -61,6 +61,13 @@ export const VsamDefinition: ICommandDefinition = {
             description: strings.OPTIONS.PURGE,
             type: "boolean",
             defaultValue: false
+        },
+        {
+            name: "ignore-not-found",
+            aliases: ["i", "inf"],
+            description: strings.OPTIONS.IGNORE_NF,
+            type: "boolean",
+            required: false
         }
     ] as ICommandOptionDefinition[]).sort((a, b) => a.name.localeCompare(b.name)),
     examples: [
@@ -79,6 +86,10 @@ export const VsamDefinition: ICommandDefinition = {
         {
             description: strings.EXAMPLES.EX4,
             options: `"ibmuser.cntl.vsam" -f --erase`
-        }
+        },
+        {
+            description: strings.EXAMPLES.EX2,
+            options: `"ibmuser.cntl.vsam" -fi`
+        },
     ]
 };

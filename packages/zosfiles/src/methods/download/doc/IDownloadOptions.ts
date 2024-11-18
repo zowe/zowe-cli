@@ -58,7 +58,7 @@ export interface IDownloadSingleOptions extends IGetOptions {
     overwrite?: boolean;
 
     /**
-     * Optional stream to read the file contents
+     * Optional stream to write the file contents
      */
     stream?: Writable;
 
@@ -66,6 +66,10 @@ export interface IDownloadSingleOptions extends IGetOptions {
      * An optional pattern for restricting the response list
      */
     pattern?: string;
+    /**
+     * The ZosFilesAttributes instance describe upload attributes for the files and directories
+     */
+    attributes?: ZosFilesAttributes;
 }
 
 /**
