@@ -5,6 +5,7 @@ All notable changes to the Imperative package will be documented in this file.
 ## Recent Changes
 
 - BugFix: Modified 8.8.2 bugfix to correct web help alias. [#2361](https://github.com/zowe/zowe-cli/pull/2361)
+- BugFix: Resolved issue where special characters could be corrupted when downloading a large file. [#2366](https://github.com/zowe/zowe-cli/pull/2366)
 
 ## `8.8.2`
 
