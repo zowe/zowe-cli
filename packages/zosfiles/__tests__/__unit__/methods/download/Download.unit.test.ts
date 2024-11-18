@@ -609,7 +609,6 @@ describe("z/OS Files - Download", () => {
     describe("allMembers", () => {
         const listAllMembersSpy = jest.spyOn(List, "allMembers");
         const downloadDatasetSpy = jest.spyOn(Download, "dataSet");
-        const downloadMembers = jest.spyOn(Download, "allMembers");
 
         const listApiResponse = {
             items: [
