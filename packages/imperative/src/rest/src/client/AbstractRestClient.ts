@@ -770,7 +770,7 @@ export abstract class AbstractRestClient {
             this.log.debug("Streaming data chunk of length " + respData.length + " to response stream");
             if (this.mNormalizeResponseNewlines && this.mContentEncoding == null) {
                 this.log.debug("Normalizing new lines in data chunk to operating system appropriate line endings");
-                respData = Buffer.from(IO.processNewlines(respData.toString(), this.lastByteReceived));
+                respData = IO.processNewlines(respData, this.lastByteReceived);
             }
             if (this.mTask != null) {
                 // update the progress task if provided by the requester

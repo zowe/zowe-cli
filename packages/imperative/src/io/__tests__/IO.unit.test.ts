@@ -288,6 +288,22 @@ describe("IO tests", () => {
         expect(error).toBeUndefined();
     });
 
+    it("processNewlines should replace LF line endings with CRLF on Windows when input is a Buffer", () => {
+        jest.spyOn(os, "platform").mockReturnValueOnce(IO.OS_WIN32);
+        const originalBuffer = Buffer.from("\nabc\ndef\n");
+        const processedBuffer = IO.processNewlines(originalBuffer);
+        const expectedBuffer = Buffer.from("\r\nabc\r\ndef\r\n");
+        expect(processedBuffer.equals(expectedBuffer)).toBe(true);
+    });
+
+    it("processNewlines should not replace LF line ending when last byte is CR and input is a Buffer", () => {
+        jest.spyOn(os, "platform").mockReturnValueOnce(IO.OS_WIN32);
+        const originalBuffer = Buffer.from("\nabc\ndef\n");
+        const processedBuffer = IO.processNewlines(originalBuffer, "\r".charCodeAt(0));
+        const expectedBuffer = Buffer.from("\nabc\r\ndef\r\n");
+        expect(processedBuffer.equals(expectedBuffer)).toBe(true);
+    });
+
     it("should throw imperative error when getting an IO error writing asynchronously", async () => {
 
         // mock fs.writeFile
