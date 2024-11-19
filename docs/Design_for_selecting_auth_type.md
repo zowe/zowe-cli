@@ -1,6 +1,6 @@
 # Order of authentication in Zowe Clients
 
-This document identifies a design to enable users to specify the order in which credentials are selected for authentication when multiple credentials are specified by the user.
+This document proposes a design to enable users to specify the order in which credentials are selected for authentication when multiple credentials are specified by the user.
 
 Users may not intentionally specify multiple credentials for the same operation. However, because configuration properties can be inherited from a base profile or within nested profiles, it is possible that multiple credentials may be available when a Zowe client attempts to make a connection to a mainframe service.
 
@@ -103,7 +103,7 @@ As an example, the user could specify their desired authOrder like this:
     "host": ... ,
     "port": ... ,
     "rejectUnauthorized": ... ,
-    "authOrder": [ "basic", "token", "cert-pem"]
+    "authOrder": [ "basic", "token", "cert-pem" ]
 }
 ```
 
@@ -218,7 +218,7 @@ The set of candidates for modification consist of all functions that contain the
 
 - imperative\src\rest\src\session\Session.ts
   
-  - createFromUrl - This function is only called from ImportHandler.buildSession when to enable importing a config from a URL. As with ImportHandler.buildSession, the use of AUTH_TYPE_BASIC when user & password exist is appropriate and should not need to change.
+  - createFromUrl - This function is only called from ImportHandler.buildSession to enable importing a config from a URL. As with ImportHandler.buildSession, the use of AUTH_TYPE_BASIC when user & password exist is appropriate and should not need to change.
     - **Modify createFromUrl ? <span style="color:green">No</span>**
 
 - imperative\src\rest\src\session\doc\IOptionsForAddConnProps.ts
@@ -246,21 +246,23 @@ The set of candidates for modification consist of all functions that contain the
 
 This section describes new functions that must be added to achieve the desired functionality.
 
+<span style="color:red">This section is a work in progress. The ideas are still pipe dreams and not confirmed by analysis of our code.</span>
+
 - Utility function to record the order of authentication types.
   
   > ---
   > 
   > @internal
   > 
-  > public UnknownClass.recordAuthOrderFromConfig(tokenIsTopDefault: boolean = false): string[ ] {
+  > public ClassNotDecidedYet.recordAuthOrderFromConfig(tokenIsTopDefault: boolean = false): string[ ] {
   > 
-  > - as siblingThis function should obtain the customer-defined authentication order from the Zowe client config file.
+  > - This function should obtain the customer-defined authentication order from the Zowe client config file.
   > 
   > - It must confirm that the customer specified valid values. If not, it should record the error, and fall-back to the appropriate default order.
   > 
   > - It should place those authentications into a string array that is returned.
   >   
-  >   - <span style="color:red">Maybe instead of returning that array, the array is set into come commonly accessible object (like ImperativeConfig)?</span>
+  >   - <span style="color:red">Maybe instead of returning that array, the array is set into come commonly accessible object (like the Config class)?</span>
   > 
   > - If no order has been configured into zowe.config.json, it should create a default order to be backward compatible.
   > 
@@ -298,11 +300,11 @@ This section describes new functions that must be added to achieve the desired f
   
   > ---
   > 
-  > public UnknownClass.getAuthOrder(): string[ ] {
+  > public ClassNotDecidedYet.getAuthOrder(): string[ ] {
   > 
   > - This function should return the recorded array of authentication types. They will be in the order of top preference first.
   > 
-  > - <span style="color:red">Maybe this function lives in ImperativeConfig?.</span>
+  > - <span style="color:red">Maybe this function lives in Config?.</span>
   > 
   > }
 
@@ -310,7 +312,7 @@ This section describes new functions that must be added to achieve the desired f
   
   > ---
   > 
-  > public UnknownClass.selectPreferredAuth(iSessObj: ISession): void {
+  > public ClassNotDecidedYet.selectPreferredAuth(iSessObj: ISession): void {
   > 
   > - This function should use the new getAuthOrder function to get the ordered array of authentications.
   > - It should confirm if the authentications (in the preferred order) and their associated properties are available in the iSessObj.
