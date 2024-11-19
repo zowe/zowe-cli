@@ -246,7 +246,7 @@ export class Search {
         const failures: string[] = [];
         const total = searchItems.length;
         let complete = 0;
-        let searchAborted = false;
+        let searchAborted: boolean = searchOptions.abortSearch && searchOptions.abortSearch();
 
         const createSearchPromise = async (searchItem: ISearchItem) => {
             if (!this.timerExpired && !searchAborted) {
@@ -314,7 +314,7 @@ export class Search {
         const failures: string[] = [];
         const total = searchItems.length;
         let complete = 0;
-        let searchAborted = false;
+        let searchAborted: boolean = searchOptions.abortSearch && searchOptions.abortSearch();
 
         const createFindPromise = async (searchItem: ISearchItem) => {
             if (!this.timerExpired && !searchAborted) {
