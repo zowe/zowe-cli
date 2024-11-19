@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Fixed an issue where the `zowe zos-logs list logs` command could fail or not return all logs if a start time was not supplied. [#2336](https://github.com/zowe/zowe-cli/pull/2336)
+
 ## `7.29.1`
 
 - BugFix: Updated `micromatch` dependency for technical currency. [#2242](https://github.com/zowe/zowe-cli/pull/2242)

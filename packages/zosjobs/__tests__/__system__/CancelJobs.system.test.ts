@@ -22,6 +22,7 @@ let sleepJCL: string;
 let systemProps: ITestPropertiesSchema;
 let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 const LONG_TIMEOUT = 100000; // 100 second timeout - jobs could take a while to complete due to system load
+const modifyVersionDefaultUsesCIM = false;
 
 describe("CancelJobs System tests", () => {
 
