@@ -589,7 +589,7 @@ describe("Search", () => {
             expect(response.commandResponse).toContain("The search was cancelled.");
         });
 
-        it("Should handle an abort that returns true", async () => {
+        it("Should handle an abort that returns true 1", async () => {
             testDataString = "TESTDATA IS AT THE BEGINNING OF THE STRING";
             expectedCol = 1;
             expectedLine = 1;
@@ -613,6 +613,41 @@ describe("Search", () => {
             expect(response.apiResponse).toEqual([]);
             expect(response.commandResponse).toContain("The search was cancelled.");
             expect(response.commandResponse).toContain("Found \"TESTDATA\" in 0 data sets and PDS members.");
+        });
+
+        it("Should handle an abort that returns true 2", async () => {
+            testDataString = "TESTDATA IS AT THE BEGINNING OF THE STRING";
+            expectedCol = 1;
+            expectedLine = 1;
+            regenerateMockImplementations();
+            searchOptions.abortSearch = function fakeAbort() {
+                return true;
+            };
+            searchOptions.progressTask = {
+                stageName: TaskStage.NOT_STARTED,
+                percentComplete: 0,
+                statusMessage: undefined
+            };
+
+            const response = await Search.dataSets(dummySession, searchOptions);
+
+            expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledTimes(1);
+            expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledWith(dummySession, ["TEST*"], {maxConcurrentRequests: 1});
+            expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
+            expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS", {});
+            expect(searchOnMainframeSpy).toHaveBeenCalledTimes(1);
+            expect(searchLocalSpy).toHaveBeenCalledTimes(1);
+
+            expect(response.errorMessage).toEqual("The following data set(s) failed to be searched: " +
+                "\nTEST1.DS\nTEST2.DS\nTEST3.PDS(MEMBER1)\nTEST3.PDS(MEMBER2)\nTEST3.PDS(MEMBER3)\n");
+            expect(response.success).toEqual(false);
+            expect(response.apiResponse).toEqual([]);
+            expect(response.commandResponse).toContain("The search was cancelled.");
+            expect(response.commandResponse).toContain("Found \"TESTDATA\" in 0 data sets and PDS members.");
+
+            expect(searchOptions.progressTask.percentComplete).toEqual(100);
+            expect(searchOptions.progressTask.stageName).toEqual(TaskStage.FAILED);
+            expect(searchOptions.progressTask.statusMessage).toEqual("Operation cancelled");
         });
 
         it("Should handle an abort that returns false", async () => {
