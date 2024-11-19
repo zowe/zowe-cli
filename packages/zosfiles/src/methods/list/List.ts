@@ -105,7 +105,7 @@ export class List {
     }
 
     /**
-     * List data sets that match a DSLEVEL pattern
+     * List data set members that match a DSLEVEL pattern
      * @param {AbstractSession} session z/OSMF connection info
      * @param {string[]} patterns Data set patterns to include
      * @param {IDsmListOptions} options Contains options for the z/OSMF request
