@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Allows extenders of the Search functionality to pass a function `abortSearch` on `searchOptions` to abort a search. []()
+
 ## `8.8.0`
 
 - Enhancement: Allows for passing a `.zosattributues` file path for the download encoding format via the `attributes` option on the `Download.ussFile` method. [#2322](https://github.com/zowe/zowe-cli/issues/2322)

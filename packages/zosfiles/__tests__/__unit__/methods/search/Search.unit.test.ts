@@ -38,6 +38,8 @@ describe("Search", () => {
         progressTask: undefined,
         maxConcurrentRequests: 1,
         timeout: undefined,
+        continueSearch: undefined,
+        abortSearch: undefined
     };
     let searchItems: ISearchItem[] = [
         {dsn: "TEST1.DS", member: undefined, matchList: undefined},
@@ -95,7 +97,8 @@ describe("Search", () => {
             progressTask: undefined,
             maxConcurrentRequests: 1,
             timeout: undefined,
-            continueSearch: undefined
+            continueSearch: undefined,
+            abortSearch: undefined
         };
 
         searchItems = [
@@ -128,8 +131,8 @@ describe("Search", () => {
 
         function delay(ms: number) { jest.advanceTimersByTime(ms); }
         function regenerateMockImplementations() {
-            searchOnMainframeSpy.mockImplementation(async (session, searchOptions, searchItems: ISearchItem[]) => {
-                if ((Search as any).timerExpired != true) {
+            searchOnMainframeSpy.mockImplementation(async (session, searchOptions: ISearchOptions, searchItems: ISearchItem[]) => {
+                if ((Search as any).timerExpired != true && !(searchOptions.abortSearch && searchOptions.abortSearch())) {
                     return {
                         responses: searchItems,
                         failures: []
@@ -143,8 +146,8 @@ describe("Search", () => {
                     return {responses: [], failures};
                 }
             });
-            searchLocalSpy.mockImplementation(async (session, searchOptions, searchItems: ISearchItem[]) => {
-                if ((Search as any).timerExpired != true) {
+            searchLocalSpy.mockImplementation(async (session, searchOptions: ISearchOptions, searchItems: ISearchItem[]) => {
+                if ((Search as any).timerExpired != true && !(searchOptions.abortSearch && searchOptions.abortSearch())) {
                     const searchItemArray: ISearchItem[] = [];
                     for (const searchItem of searchItems) {
                         const localSearchItem: ISearchItem = searchItem;
@@ -584,6 +587,72 @@ describe("Search", () => {
             expect(response.success).toEqual(false);
             expect(response.apiResponse).toEqual(undefined);
             expect(response.commandResponse).toContain("The search was cancelled.");
+        });
+
+        it("Should handle an abort that returns true", async () => {
+            testDataString = "TESTDATA IS AT THE BEGINNING OF THE STRING";
+            expectedCol = 1;
+            expectedLine = 1;
+            regenerateMockImplementations();
+            searchOptions.abortSearch = function fakeAbort() {
+                return true;
+            };
+
+            const response = await Search.dataSets(dummySession, searchOptions);
+
+            expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledTimes(1);
+            expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledWith(dummySession, ["TEST*"], {maxConcurrentRequests: 1});
+            expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
+            expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS", {});
+            expect(searchOnMainframeSpy).toHaveBeenCalledTimes(1);
+            expect(searchLocalSpy).toHaveBeenCalledTimes(1);
+
+            expect(response.errorMessage).toEqual("The following data set(s) failed to be searched: " +
+                "\nTEST1.DS\nTEST2.DS\nTEST3.PDS(MEMBER1)\nTEST3.PDS(MEMBER2)\nTEST3.PDS(MEMBER3)\n");
+            expect(response.success).toEqual(false);
+            expect(response.apiResponse).toEqual([]);
+            expect(response.commandResponse).toContain("The search was cancelled.");
+            expect(response.commandResponse).toContain("Found \"TESTDATA\" in 0 data sets and PDS members.");
+        });
+
+        it("Should handle an abort that returns false", async () => {
+            testDataString = "TESTDATA IS AT THE BEGINNING OF THE STRING";
+            expectedCol = 1;
+            expectedLine = 1;
+            regenerateMockImplementations();
+            searchOptions.abortSearch = function fakeAbort() {
+                return false;
+            };
+
+            const response = await Search.dataSets(dummySession, searchOptions);
+
+            expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledTimes(1);
+            expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledWith(dummySession, ["TEST*"], {maxConcurrentRequests: 1});
+            expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
+            expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS", {});
+            expect(searchOnMainframeSpy).toHaveBeenCalledTimes(1);
+            expect(searchLocalSpy).toHaveBeenCalledTimes(1);
+
+            expect(response.errorMessage).not.toBeDefined();
+            expect(response.success).toEqual(true);
+            expect(response.apiResponse).toEqual([
+                {dsn: "TEST1.DS", member: undefined, matchList: [{column: expectedCol, line: expectedLine, contents: testDataString}]},
+                {dsn: "TEST2.DS", member: undefined, matchList: [{column: expectedCol, line: expectedLine, contents: testDataString}]},
+                {dsn: "TEST3.PDS", member: "MEMBER1", matchList: [{column: expectedCol, line: expectedLine, contents: testDataString}]},
+                {dsn: "TEST3.PDS", member: "MEMBER2", matchList: [{column: expectedCol, line: expectedLine, contents: testDataString}]},
+                {dsn: "TEST3.PDS", member: "MEMBER3", matchList: [{column: expectedCol, line: expectedLine, contents: testDataString}]}
+            ]);
+            expect(response.commandResponse).toContain("Found \"TESTDATA\" in 5 data sets and PDS members");
+            expect(response.commandResponse).toContain("Data Set \"TEST1.DS\":\nLine: " +
+                expectedLine + ", Column: " + expectedCol + ", Contents: " + testDataString);
+            expect(response.commandResponse).toContain("Data Set \"TEST2.DS\":\nLine: " +
+                expectedLine + ", Column: " + expectedCol + ", Contents: " + testDataString);
+            expect(response.commandResponse).toContain("Data Set \"TEST3.PDS\" | Member \"MEMBER1\":\nLine: " +
+                expectedLine + ", Column: " + expectedCol + ", Contents: " + testDataString);
+            expect(response.commandResponse).toContain("Data Set \"TEST3.PDS\" | Member \"MEMBER2\":\nLine: " +
+                expectedLine + ", Column: " + expectedCol + ", Contents: " + testDataString);
+            expect(response.commandResponse).toContain("Data Set \"TEST3.PDS\" | Member \"MEMBER3\":\nLine: " +
+                expectedLine + ", Column: " + expectedCol + ", Contents: " + testDataString);
         });
 
         it("Should handle a migrated data set", async () => {
@@ -1104,6 +1173,18 @@ describe("Search", () => {
             });
         });
 
+        it("Should return failures if aborted", async () => {
+            searchOptions.abortSearch = function fakeAbort() { return true; };
+
+            const response = await (Search as any).searchOnMainframe(dummySession, searchOptions, searchItems);
+
+            expect(getDataSetSpy).toHaveBeenCalledTimes(0);
+            expect(response).toEqual({
+                responses: [],
+                failures: ["TEST1.DS", "TEST2.DS", "TEST3.PDS(MEMBER1)", "TEST3.PDS(MEMBER2)", "TEST3.PDS(MEMBER3)"]
+            });
+        });
+
         it("Should handle a data set get failure", async () => {
             getDataSetSpy.mockImplementation(async (session, dsn, options) => {
                 return Buffer.from(testDataString);
@@ -1321,6 +1402,18 @@ describe("Search", () => {
 
         it("Should return failures if the timer expired", async () => {
             (Search as any).timerExpired = true;
+
+            const response = await (Search as any).searchLocal(dummySession, searchOptions, searchItems);
+
+            expect(getDataSetSpy).toHaveBeenCalledTimes(0);
+            expect(response).toEqual({
+                responses: [],
+                failures: ["TEST1.DS", "TEST2.DS", "TEST3.PDS(MEMBER1)", "TEST3.PDS(MEMBER2)", "TEST3.PDS(MEMBER3)"]
+            });
+        });
+
+        it("Should return failures if aborted", async () => {
+            searchOptions.abortSearch = function fakeAbort() { return true; };
 
             const response = await (Search as any).searchLocal(dummySession, searchOptions, searchItems);
 

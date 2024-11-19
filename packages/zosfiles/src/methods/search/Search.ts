@@ -146,6 +146,10 @@ export class Search {
                 searchOptions.progressTask.stageName = TaskStage.FAILED;
                 searchOptions.progressTask.percentComplete = 100;
                 searchOptions.progressTask.statusMessage = "Operation timed out";
+            } else if (searchOptions.abortSearch && searchOptions.abortSearch()) {
+                searchOptions.progressTask.stageName = TaskStage.FAILED;
+                searchOptions.progressTask.percentComplete = 100;
+                searchOptions.progressTask.statusMessage = "Operation cancelled";
             } else {
                 searchOptions.progressTask.stageName = TaskStage.COMPLETE;
                 searchOptions.progressTask.percentComplete = 100;
@@ -176,6 +180,11 @@ export class Search {
                 chalk.yellow(matchResponses.length) + " data sets and PDS members",
             apiResponse: matchResponses
         };
+
+        if (searchOptions.abortSearch && searchOptions.abortSearch()) {
+            // Notify the user the search was cancelled, and give the results from before the cancellation.
+            apiResponse.commandResponse = "The search was cancelled.\n" + apiResponse.commandResponse;
+        }
 
         if (matchResponses.length >= 1) {
             apiResponse.commandResponse += ":\n";
@@ -239,7 +248,7 @@ export class Search {
         let complete = 0;
 
         const createSearchPromise = async (searchItem: ISearchItem) => {
-            if (!this.timerExpired) {
+            if (!this.timerExpired && !(searchOptions.abortSearch && searchOptions.abortSearch())) {
                 // Update the progress bar
                 if (searchOptions.progressTask) {
                     // eslint-disable-next-line @typescript-eslint/no-magic-numbers
@@ -301,7 +310,7 @@ export class Search {
         const total = searchItems.length;
         let complete = 0;
         const createFindPromise = async (searchItem: ISearchItem) => {
-            if (!this.timerExpired) {
+            if (!this.timerExpired && !(searchOptions.abortSearch && searchOptions.abortSearch())) {
                 // Handle the progress bars
                 if (searchOptions.progressTask) {
                     if (searchOptions.mainframeSearch) {

@@ -45,4 +45,7 @@ export interface ISearchOptions {
     /* A function that, if provided, is called with a list of data sets and members that are about to be searched. */
     /* If true, continue search. If false, terminate search. */
     continueSearch?: (dataSets: IDataSet[]) => Promise<boolean> | boolean;
+
+    /* A function that gets called to validate whether or not to abort if a timeout isn't specified */
+    abortSearch?: () => boolean;
 }

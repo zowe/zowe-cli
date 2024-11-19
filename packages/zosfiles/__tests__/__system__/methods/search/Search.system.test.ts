@@ -9,11 +9,11 @@
 *
 */
 
-import { Session } from "@zowe/imperative";
+import { AbstractSession, Session } from "@zowe/imperative";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { getUniqueDatasetName } from "../../../../../../__tests__/__src__/TestUtils";
-import { Create, Upload, Delete, Search, CreateDataSetTypeEnum, ISearchOptions, IZosFilesResponse } from "../../../../src";
+import { Create, Upload, Delete, Search, CreateDataSetTypeEnum, ISearchOptions, IZosFilesResponse, Get, IGetOptions } from "../../../../src";
 import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/ITestEnvironment";
 
 let REAL_SESSION: Session;
@@ -93,6 +93,7 @@ describe("Search", () => {
             for (const dsn of [...goodDsNames, ...badDsNames, ...pdsNames]) {
                 await Delete.dataSet(REAL_SESSION, dsn);
             }
+            jest.restoreAllMocks();
         });
 
         beforeEach(() => {
@@ -104,7 +105,8 @@ describe("Search", () => {
                 mainframeSearch: undefined,
                 progressTask: undefined,
                 maxConcurrentRequests: undefined,
-                timeout: undefined
+                timeout: undefined,
+                abortSearch: undefined
             };
 
             expectedApiResponse = [
@@ -116,6 +118,8 @@ describe("Search", () => {
                 {dsn: `${dsnPrefix}.SEQ4`, matchList: [{line: 1, column: 39, contents: goodTestString}]},
                 {dsn: `${dsnPrefix}.SEQ5`, matchList: [{line: 1, column: 39, contents: goodTestString}]},
             ];
+
+            jest.restoreAllMocks();
         });
 
         it("should search and find the correct data sets", async () => {
@@ -231,6 +235,36 @@ describe("Search", () => {
              * in under one second.
              */
             expect(response.success).toEqual(false);
+            expect(response.commandResponse).toContain(`Found "${searchString}" in`);
+            expect(response.commandResponse).toContain(`data sets and PDS members`);
+            expect(response.errorMessage).toContain("The following data set(s) failed to be searched:");
+        });
+
+        it("should abort when requested", async () => {
+            let count = 0;
+            let abort = false;
+            function abortFn () { return abort; }
+            const realGet = jest.requireActual("../../../../src/methods/get/Get");
+            searchOptions.abortSearch = abortFn;
+
+            const getDataSetSpy = jest.spyOn(Get, "dataSet");
+            getDataSetSpy.mockImplementation((session: AbstractSession, dataSetName: string, options: IGetOptions) => {
+                count++;
+                if (count > 3) {
+                    abort = true;
+                }
+                return realGet.dataSet(session, dataSetName, options);
+            });
+
+            const response = await Search.dataSets(REAL_SESSION, searchOptions);
+
+            /**
+             * Since this test is timeout based, we cannot make many assumptions about what will or will not be found.
+             * The safest assumption is that something may or may not be found, but we will not find everything
+             * in under one second.
+             */
+            expect(response.success).toEqual(false);
+            expect(response.commandResponse).toContain(`cancelled`);
             expect(response.commandResponse).toContain(`Found "${searchString}" in`);
             expect(response.commandResponse).toContain(`data sets and PDS members`);
             expect(response.errorMessage).toContain("The following data set(s) failed to be searched:");
