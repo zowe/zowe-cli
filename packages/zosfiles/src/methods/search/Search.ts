@@ -246,9 +246,14 @@ export class Search {
         const failures: string[] = [];
         const total = searchItems.length;
         let complete = 0;
+        let searchAborted = false;
 
         const createSearchPromise = async (searchItem: ISearchItem) => {
-            if (!this.timerExpired && !(searchOptions.abortSearch && searchOptions.abortSearch())) {
+            if (!this.timerExpired && !searchAborted) {
+                if (searchOptions.abortSearch && searchOptions.abortSearch()) {
+                    searchAborted = true;
+                }
+
                 // Update the progress bar
                 if (searchOptions.progressTask) {
                     // eslint-disable-next-line @typescript-eslint/no-magic-numbers
@@ -309,8 +314,14 @@ export class Search {
         const failures: string[] = [];
         const total = searchItems.length;
         let complete = 0;
+        let searchAborted = false;
+
         const createFindPromise = async (searchItem: ISearchItem) => {
-            if (!this.timerExpired && !(searchOptions.abortSearch && searchOptions.abortSearch())) {
+            if (!this.timerExpired && !searchAborted) {
+                if (searchOptions.abortSearch && searchOptions.abortSearch()) {
+                    searchAborted = true;
+                }
+
                 // Handle the progress bars
                 if (searchOptions.progressTask) {
                     if (searchOptions.mainframeSearch) {
