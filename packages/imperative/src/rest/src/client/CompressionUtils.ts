@@ -102,7 +102,7 @@ export class CompressionUtils {
         let lastByteReceived: number = 0;
         return new Transform({
             transform(chunk, _, callback) {
-                this.push(Buffer.from(IO.processNewlines(chunk.toString(), lastByteReceived)));
+                this.push(IO.processNewlines(chunk, lastByteReceived));
                 lastByteReceived = chunk[chunk.byteLength - 1];
                 callback();
             }
