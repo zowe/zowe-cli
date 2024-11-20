@@ -24,7 +24,6 @@ import { ICommandResponse } from "../../src/cmd";
 import { ICompareParms } from "./doc/ICompareParms";
 import { TestLogger } from "./TestLogger";
 import * as nodePath from "path";
-import { mkdirSync } from "fs";
 import * as fs from "fs";
 import { randomBytes } from "crypto";
 import * as os from "os";

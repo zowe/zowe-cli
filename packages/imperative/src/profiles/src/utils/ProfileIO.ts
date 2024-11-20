@@ -48,7 +48,7 @@ export class ProfileIO {
     public static createProfileDirs(path: string) {
         ProfileIO.crashInTeamConfigMode();
         try {
-            IO.createDirsSync(path);
+            IO.createDirSync(path);
         } catch (err) {
             throw new ImperativeError({
                 msg: `An error occurred creating profile directory: "${path}". ` +

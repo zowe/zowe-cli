@@ -186,7 +186,7 @@ describe("IO tests", () => {
     it("should get an error for no input on mkdirp", () => {
         let error;
         try {
-            IO.mkdirp("   ");
+            IO.createDirSync("   ");
         } catch (thrownError) {
             error = thrownError;
         }
