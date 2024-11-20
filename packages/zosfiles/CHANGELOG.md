@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
-## Recent Changes
+## `8.8.3`
 
 - BugFix: Resolved issue where special characters could be corrupted when downloading a large file. [#2366](https://github.com/zowe/zowe-cli/pull/2366)
 
