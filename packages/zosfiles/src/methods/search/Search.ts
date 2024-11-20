@@ -17,12 +17,12 @@ import { Get } from "../get";
 import { ISearchMatchLocation } from "./doc/ISearchMatchLocation";
 import { asyncPool } from "@zowe/core-for-zowe-sdk";
 import { ISearchOptions } from "./doc/ISearchOptions";
-import { IZosFilesResponse } from "../../doc/IZosFilesResponse";
 import { IDataSet } from "../../doc/IDataSet";
 import { cloneDeep } from "lodash";
+import { ISearchResponse } from "./doc/ISearchResponse";
 
 // This interface isn't used outside of the private functions, so just keeping it here.
-interface ISearchResponse {
+interface IInternalSearchResponse {
     responses: ISearchItem[],
     failures: string[]
 }
@@ -48,7 +48,7 @@ export class Search {
      * @throws {Error} When the {@link ZosmfRestClient} throws an error
      */
 
-    public static async dataSets(session: AbstractSession, searchOptions: ISearchOptions): Promise<IZosFilesResponse> {
+    public static async dataSets(session: AbstractSession, searchOptions: ISearchOptions): Promise<ISearchResponse> {
         ImperativeExpect.toBeDefinedAndNonBlank(searchOptions.pattern, "pattern");
         ImperativeExpect.toBeDefinedAndNonBlank(searchOptions.searchString, "searchString");
 
@@ -174,7 +174,7 @@ export class Search {
 
         const chalk = TextUtils.chalk;
 
-        const apiResponse: IZosFilesResponse = {
+        const apiResponse: ISearchResponse = {
             success: failedDatasets.length <= 0,
             commandResponse: "Found \"" + chalk.yellow(origSearchQuery) + "\" in " +
                 chalk.yellow(matchResponses.length) + " data sets and PDS members",
@@ -241,7 +241,7 @@ export class Search {
      * @throws {ImperativeError} when a download fails, or timeout is exceeded.
      */
     private static async searchOnMainframe(session: AbstractSession, searchOptions: ISearchOptions, searchItems: ISearchItem[]):
-    Promise<ISearchResponse> {
+    Promise<IInternalSearchResponse> {
         const matches: ISearchItem[] = [];
         const failures: string[] = [];
         const total = searchItems.length;
@@ -309,7 +309,8 @@ export class Search {
      *
      * @throws {ImperativeError} when a download fails, or timeout is exceeded.
      */
-    private static async searchLocal(session: AbstractSession, searchOptions: ISearchOptions, searchItems: ISearchItem[]): Promise<ISearchResponse> {
+    private static async searchLocal(session: AbstractSession, searchOptions: ISearchOptions, searchItems: ISearchItem[]):
+    Promise<IInternalSearchResponse> {
         const matchedItems: ISearchItem[] = [];
         const failures: string[] = [];
         const total = searchItems.length;
