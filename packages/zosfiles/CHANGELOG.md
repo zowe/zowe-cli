@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Resolved issue where special characters could be corrupted when downloading a large file. [#2366](https://github.com/zowe/zowe-cli/pull/2366)
+
 ## `8.8.0`
 
 - Enhancement: Allows for passing a `.zosattributues` file path for the download encoding format via the `attributes` option on the `Download.ussFile` method. [#2322](https://github.com/zowe/zowe-cli/issues/2322)

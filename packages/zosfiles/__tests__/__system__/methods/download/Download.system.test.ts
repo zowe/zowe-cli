@@ -42,6 +42,7 @@ import { runCliScript } from "@zowe/cli-test-utils";
 const rimraf = require("rimraf").sync;
 const delayTime = 2000;
 const testData = "abcdefghijklmnopqrstuvwxyz";
+const specialCharTestData = fs.readFileSync(__dirname+"/__resources__/testfiles/specialCharTestData.txt");
 
 let REAL_SESSION: Session;
 let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
@@ -578,6 +579,40 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
                 // convert the data set name to use as a path/file for clean up in AfterEach
                 const regex = /\./gi;
                 file = dsname.replace(regex, "/") + "/member.dat";
+            });
+            it("should download a data set member full of special characters to test buffer chunk concatenation", async () => {
+                let error;
+                let response: IZosFilesResponse;
+
+                // upload data to the newly created data set
+                await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(specialCharTestData), dsname + "(member)");
+                await wait(delayTime);
+
+                try {
+                    response = await Download.allMembers(REAL_SESSION, dsname);
+                    Imperative.console.info("Response: " + inspect(response));
+                } catch (err) {
+                    error = err;
+                    Imperative.console.info("Error: " + inspect(error));
+                }
+                expect(error).toBeFalsy();
+                expect(response).toBeTruthy();
+                expect(response.success).toBeTruthy();
+                expect(response.commandResponse).toContain(
+                    ZosFilesMessages.datasetDownloadedSuccessfully.message.substring(0, "Data set downloaded successfully".length + 1));
+
+                // Convert the data set name to use as a path/file
+                const regex = /\./gi;
+                file = dsname.replace(regex, "/");
+                file = file.toLowerCase();
+
+                // Compare the downloaded contents to those uploaded
+                const fileContents = stripNewLines(fs.readFileSync(`${file}/member.txt`).toString());
+                const uniqueFileChars = Array.from(new Set(fileContents)).join('');
+                const expectedUniqueChars = "àèéìòùÀÈÉÌÒÙ° "; // Expected unique characters
+
+                // Ensure the file only contains the unique characters and nothing else
+                expect(uniqueFileChars).toEqual(expectedUniqueChars);
             });
         });
 
