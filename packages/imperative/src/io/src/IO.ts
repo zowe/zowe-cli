@@ -264,17 +264,38 @@ export class IO {
      * @returns {string} - input with removed newlines
      * @memberof IO
      */
-    public static processNewlines(original: string, lastByte?: number): string {
+    public static processNewlines<T extends string | Buffer>(original: T, lastByte?: number): T {
         ImperativeExpect.toNotBeNullOrUndefined(original, "Required parameter 'original' must not be null or undefined");
+
         if (os.platform() !== IO.OS_WIN32) {
             return original;
         }
-        // otherwise, we're on windows
-        const processed = original.replace(/([^\r])\n/g, "$1\r\n");
-        if ((lastByte == null || lastByte !== "\r".charCodeAt(0)) && original.startsWith("\n")) {
-            return "\r" + processed;
+
+        let processed: T;
+
+        if (typeof original === "string") {
+            processed = original.replace(/([^\r])\n/g, "$1\r\n") as T;
+            if ((lastByte == null || lastByte !== "\r".charCodeAt(0)) && original.startsWith("\n")) {
+                return ("\r" + processed) as T;
+            }
+            return processed;
+        } else {
+            const bufferList: number[] = [];
+            let prevByte = lastByte;
+            for (let i = 0; i < original.length; i++) {
+                const currentByte = original[i];
+                //Check if previous byte is not Carriage Return (13) and if current byte is Line Feed (10)
+                // eslint-disable-next-line @typescript-eslint/no-magic-numbers
+                if (currentByte === 10 && prevByte !== 13) {
+                    // eslint-disable-next-line @typescript-eslint/no-magic-numbers
+                    bufferList.push(13);
+                }
+                bufferList.push(currentByte);
+                prevByte = currentByte;
+            }
+            processed = Buffer.from(bufferList) as T;
+            return processed;
         }
-        return processed;
     }
 
     /**
