@@ -51,7 +51,12 @@ describe("DeleteJobs System tests", () => {
                 const job = await SubmitJobs.submitJclNotifyCommon(REAL_SESSION, {jcl: iefbr14JCL});
                 expect(job.retcode).toEqual("CC 0000");
                 const response = await DeleteJobs.deleteJob(REAL_SESSION, job.jobname, job.jobid);
-                expect(response).toBeUndefined();
+                expect(response.message).toEqual("Request was successful.");
+                expect(response.jobname).toEqual(job.jobname);
+                expect(response.jobid).toEqual(job.jobid);
+                expect(response["job-correlator"]).toEqual(job["job-correlator"]);
+                expect(response.owner).toEqual(job.owner);
+                expect(response.status).toEqual("0");
             }
         }, LONG_TIMEOUT);
 
@@ -62,7 +67,12 @@ describe("DeleteJobs System tests", () => {
                 const job = await SubmitJobs.submitJclNotifyCommon(REAL_SESSION, {jcl: iefbr14JCL});
                 expect(job.retcode).toEqual("CC 0000");
                 const response = await DeleteJobs.deleteJobForJob(REAL_SESSION, job);
-                expect(response).toBeUndefined();
+                expect(response.message).toEqual("Request was successful.");
+                expect(response.jobname).toEqual(job.jobname);
+                expect(response.jobid).toEqual(job.jobid);
+                expect(response["job-correlator"]).toEqual(job["job-correlator"]);
+                expect(response.owner).toEqual(job.owner);
+                expect(response.status).toEqual("0");
             }
         }, LONG_TIMEOUT);
 
@@ -73,7 +83,12 @@ describe("DeleteJobs System tests", () => {
                 const job = await SubmitJobs.submitJclNotifyCommon(REAL_SESSION, {jcl: iefbr14JCL});
                 expect(job.retcode).toEqual("CC 0000");
                 const response = await DeleteJobs.deleteJobCommon(REAL_SESSION, {jobname: job.jobname, jobid: job.jobid});
-                expect(response).toBeUndefined();
+                expect(response.message).toEqual("Request was successful.");
+                expect(response.jobname).toEqual(job.jobname);
+                expect(response.jobid).toEqual(job.jobid);
+                expect(response["job-correlator"]).toEqual(job["job-correlator"]);
+                expect(response.owner).toEqual(job.owner);
+                expect(response.status).toEqual("0");
             }
         }, LONG_TIMEOUT);
 
@@ -166,21 +181,36 @@ describe("DeleteJobs System tests - Encoded", () => {
             const job = await SubmitJobs.submitJclNotifyCommon(REAL_SESSION, {jcl: iefbr14JCL});
             expect(job.retcode).toEqual("CC 0000");
             const response = await DeleteJobs.deleteJob(REAL_SESSION, job.jobname, job.jobid);
-            expect(response).toBeUndefined();
+            expect(response.message).toEqual("Request was successful.");
+            expect(response.jobname).toEqual(job.jobname);
+            expect(response.jobid).toEqual(job.jobid);
+            expect(response["job-correlator"]).toEqual(job["job-correlator"]);
+            expect(response.owner).toEqual(job.owner);
+            expect(response.status).toEqual("0");
         }, LONG_TIMEOUT);
 
         it("should be able to delete a job using deleteJobForJob", async () => {
             const job = await SubmitJobs.submitJclNotifyCommon(REAL_SESSION, {jcl: iefbr14JCL});
             expect(job.retcode).toEqual("CC 0000");
             const response = await DeleteJobs.deleteJobForJob(REAL_SESSION, job);
-            expect(response).toBeUndefined();
+            expect(response.message).toEqual("Request was successful.");
+            expect(response.jobname).toEqual(job.jobname);
+            expect(response.jobid).toEqual(job.jobid);
+            expect(response["job-correlator"]).toEqual(job["job-correlator"]);
+            expect(response.owner).toEqual(job.owner);
+            expect(response.status).toEqual("0");
         }, LONG_TIMEOUT);
 
         it("should be able to delete a job using deleteJobCommon", async () => {
             const job = await SubmitJobs.submitJclNotifyCommon(REAL_SESSION, {jcl: iefbr14JCL});
             expect(job.retcode).toEqual("CC 0000");
             const response = await DeleteJobs.deleteJobCommon(REAL_SESSION, {jobname: job.jobname, jobid: job.jobid});
-            expect(response).toBeUndefined();
+            expect(response.message).toEqual("Request was successful.");
+            expect(response.jobname).toEqual(job.jobname);
+            expect(response.jobid).toEqual(job.jobid);
+            expect(response["job-correlator"]).toEqual(job["job-correlator"]);
+            expect(response.owner).toEqual(job.owner);
+            expect(response.status).toEqual("0");
         }, LONG_TIMEOUT);
 
         it("should be able to delete a job using deleteJobCommon (job modify version 2.0 - synchronous)", async () => {

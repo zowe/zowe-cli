@@ -13,7 +13,7 @@ import { ISetupEnvironmentParms } from "./doc/parms/ISetupEnvironmentParms";
 import { ImperativeExpect } from "../../../src";
 import * as nodePath from "path";
 import { TEST_RESULT_DATA_DIR } from "../TestConstants";
-import { mkdirpSync } from "fs-extra";
+import { mkdirSync } from "fs";
 import { ITestEnvironment } from "./doc/response/ITestEnvironment";
 const uuidv4 = require("uuid/v4");
 /**
@@ -79,7 +79,7 @@ export class SetupTestEnvironment {
     public static createUniqueTestDataDir(testName: string): string {
         const app = uuidv4() + "_" + testName + "/";
         const path = nodePath.resolve(TEST_RESULT_DATA_DIR + "/" + app);
-        mkdirpSync(path);
+        mkdirSync(path, {recursive: true});
         return path;
     }
 }

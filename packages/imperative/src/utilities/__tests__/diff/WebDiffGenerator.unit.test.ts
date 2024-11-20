@@ -26,7 +26,7 @@ describe("WebDiffGenerator", () => {
         beforeAll(async () => {
             // checking if fakewebdiffdir exists or not
             if (!fs.existsSync(webDiffDir)) {
-                IO.mkdirp(webDiffDir);
+                IO.createDirSync(webDiffDir);
             }
         });
         afterAll(async () => {

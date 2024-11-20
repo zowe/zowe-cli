@@ -228,7 +228,7 @@ export class PluginManagementFacility {
         if (!existsSync(this.pmfConst.PLUGIN_JSON)) {
             if (!existsSync(this.pmfConst.PMF_ROOT)) {
                 this.impLogger.debug("Creating PMF_ROOT directory");
-                IO.mkdirp(this.pmfConst.PMF_ROOT);
+                IO.createDirSync(this.pmfConst.PMF_ROOT);
             }
 
             this.impLogger.debug("Creating PLUGIN_JSON file");
