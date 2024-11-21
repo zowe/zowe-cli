@@ -599,7 +599,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
                 expect(response).toBeTruthy();
                 expect(response.success).toBeTruthy();
                 expect(response.commandResponse).toContain(
-                    ZosFilesMessages.datasetDownloadedSuccessfully.message.substring(0, "Data set downloaded successfully".length + 1));
+                    ZosFilesMessages.memberDownloadedSuccessfully.message.substring(0, "Member(s) downloaded successfully".length + 1));
 
                 // Convert the data set name to use as a path/file
                 const regex = /\./gi;

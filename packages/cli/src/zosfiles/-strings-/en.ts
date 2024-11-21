@@ -350,7 +350,7 @@ export default {
             },
             ALL_MEMBERS_MATCHING: {
                 SUMMARY: "Download all members from a pds",
-                DESCRIPTION: "Download all members that match a DSLEVEL pattern from a partitioned data set to a local folder.",
+                DESCRIPTION: "Download all members that match a specific pattern from a partitioned data set to a local folder.",
                 POSITIONALS: {
                     DATASETNAME: "The name of the data set from which you want to download members",
                     PATTERN: `The pattern or patterns to match members against. Also known as 'DSLEVEL'. The following special sequences can be ` +
