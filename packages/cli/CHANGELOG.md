@@ -1,6 +1,10 @@
 # Change Log
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+-Enhancement: Added new command zowe zos-files download all-members-matching, (zowe files dl amm), to download members matching specified pattern(s). The success message for the Download.allMembers API was changed from originally "Data set downloaded successfully" to "Member(s) downloaded successfully." The change also alters the commandResponse when using the --rfj flag. [#2359](https://github.com/zowe/zowe-cli/pull/2359)
+
 ## `8.8.0`
 
 - Enhancement: Pass a `.zosattributes` file path for the download encoding format by adding the new `--attributes` flag to the `zowe zos-files upload` command. [#2322](https://github.com/zowe/zowe-cli/issues/2322)
@@ -9,10 +13,6 @@ All notable changes to the Zowe CLI package will be documented in this file.
 - Enhancement: Add the --ignore-not-found flag to avoid file-not-found error messages when deleting files so scripts are not interupted during automated batch processing. The flag bypasses warning prompts to confirm delete actions. [#2254](https://github.com/zowe/zowe-cli/pull/2254)
 
 ## `8.7.0`
-
--Enhancement: Added new command zowe zos-files download all-members-matching, (zowe files dl amm), to download members matching specified pattern(s). The success message for the Download.allMembers API was changed from originally "Data set downloaded successfully" to "Member(s) downloaded successfully." The change also alters the commandResponse when using the --rfj flag. [#2359](https://github.com/zowe/zowe-cli/pull/2359)
-
-## Recent Changes
 
 - Enhancement: Added --wait-for-active and --wait-for-output to download options on zosjobs. [#2328](https://github.com/zowe/zowe-cli/pull/2328)
 

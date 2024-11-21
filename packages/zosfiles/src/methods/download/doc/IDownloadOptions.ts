@@ -114,6 +114,9 @@ export interface IDownloadOptions extends Omit<IDownloadSingleOptions, "stream">
      */
     pattern?: string;
 
+    /**
+     * An optional response returned based on inputted patterns
+     */
     memberPatternResponse?: any;
 
 }
