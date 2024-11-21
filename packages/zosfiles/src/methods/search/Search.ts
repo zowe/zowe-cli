@@ -146,7 +146,7 @@ export class Search {
                 searchOptions.progressTask.stageName = TaskStage.FAILED;
                 searchOptions.progressTask.percentComplete = 100;
                 searchOptions.progressTask.statusMessage = "Operation timed out";
-            } else if (searchOptions.abortSearch && searchOptions.abortSearch()) {
+            } else if (searchOptions.abortSearch?.()) {
                 searchOptions.progressTask.stageName = TaskStage.FAILED;
                 searchOptions.progressTask.percentComplete = 100;
                 searchOptions.progressTask.statusMessage = "Operation cancelled";
@@ -181,7 +181,7 @@ export class Search {
             apiResponse: matchResponses
         };
 
-        if (searchOptions.abortSearch && searchOptions.abortSearch()) {
+        if (searchOptions.abortSearch?.()) {
             // Notify the user the search was cancelled, and give the results from before the cancellation.
             apiResponse.commandResponse = "The search was cancelled.\n" + apiResponse.commandResponse;
         }
@@ -246,11 +246,11 @@ export class Search {
         const failures: string[] = [];
         const total = searchItems.length;
         let complete = 0;
-        let searchAborted: boolean = searchOptions.abortSearch && searchOptions.abortSearch();
+        let searchAborted: boolean = searchOptions.abortSearch?.();
 
         const createSearchPromise = async (searchItem: ISearchItem) => {
             if (!this.timerExpired && !searchAborted) {
-                if (searchOptions.abortSearch && searchOptions.abortSearch()) {
+                if (searchOptions.abortSearch?.()) {
                     searchAborted = true;
                 }
 
@@ -315,11 +315,11 @@ export class Search {
         const failures: string[] = [];
         const total = searchItems.length;
         let complete = 0;
-        let searchAborted: boolean = searchOptions.abortSearch && searchOptions.abortSearch();
+        let searchAborted: boolean = searchOptions.abortSearch?.();
 
         const createFindPromise = async (searchItem: ISearchItem) => {
             if (!this.timerExpired && !searchAborted) {
-                if (searchOptions.abortSearch && searchOptions.abortSearch()) {
+                if (searchOptions.abortSearch?.()) {
                     searchAborted = true;
                 }
 
