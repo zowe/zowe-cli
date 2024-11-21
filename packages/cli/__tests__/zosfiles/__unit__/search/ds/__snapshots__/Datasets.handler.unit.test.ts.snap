@@ -4,7 +4,7 @@ exports[`Search Datasets handler process method should search a data set if requ
 Object {
   "apiResponse": Array [
     Object {
-      "dsname": "TEST1.DS",
+      "dsn": "TEST1.DS",
       "matchList": Array [
         Object {
           "column": 1,
@@ -12,10 +12,10 @@ Object {
           "line": 1,
         },
       ],
-      "memname": "TESTMEM",
+      "member": "TESTMEM",
     },
     Object {
-      "dsname": "TEST2.DS",
+      "dsn": "TEST2.DS",
       "matchList": Array [
         Object {
           "column": 1,
@@ -23,7 +23,7 @@ Object {
           "line": 1,
         },
       ],
-      "memname": undefined,
+      "member": undefined,
     },
   ],
   "commandResponse": "Found \\"test\\" in 2 data sets and PDS members",
@@ -42,7 +42,7 @@ exports[`Search Datasets handler process method should search a data set if requ
 Object {
   "apiResponse": Array [
     Object {
-      "dsname": "TEST1.DS",
+      "dsn": "TEST1.DS",
       "matchList": Array [
         Object {
           "column": 1,
@@ -50,10 +50,10 @@ Object {
           "line": 1,
         },
       ],
-      "memname": "TESTMEM",
+      "member": "TESTMEM",
     },
     Object {
-      "dsname": "TEST2.DS",
+      "dsn": "TEST2.DS",
       "matchList": Array [
         Object {
           "column": 1,
@@ -61,7 +61,7 @@ Object {
           "line": 1,
         },
       ],
-      "memname": undefined,
+      "member": undefined,
     },
   ],
   "commandResponse": "Found \\"test\\" in 2 data sets and PDS members",
@@ -80,7 +80,7 @@ exports[`Search Datasets handler process method should search a data set if requ
 Object {
   "apiResponse": Array [
     Object {
-      "dsname": "TEST1.DS",
+      "dsn": "TEST1.DS",
       "matchList": Array [
         Object {
           "column": 1,
@@ -88,10 +88,10 @@ Object {
           "line": 1,
         },
       ],
-      "memname": "TESTMEM",
+      "member": "TESTMEM",
     },
     Object {
-      "dsname": "TEST2.DS",
+      "dsn": "TEST2.DS",
       "matchList": Array [
         Object {
           "column": 1,
@@ -99,7 +99,7 @@ Object {
           "line": 1,
         },
       ],
-      "memname": undefined,
+      "member": undefined,
     },
   ],
   "commandResponse": "Found \\"test\\" in 2 data sets and PDS members",
@@ -118,7 +118,7 @@ exports[`Search Datasets handler process method should search a data set if requ
 Object {
   "apiResponse": Array [
     Object {
-      "dsname": "TEST1.DS",
+      "dsn": "TEST1.DS",
       "matchList": Array [
         Object {
           "column": 1,
@@ -126,10 +126,10 @@ Object {
           "line": 1,
         },
       ],
-      "memname": "TESTMEM",
+      "member": "TESTMEM",
     },
     Object {
-      "dsname": "TEST2.DS",
+      "dsn": "TEST2.DS",
       "matchList": Array [
         Object {
           "column": 1,
@@ -137,7 +137,7 @@ Object {
           "line": 1,
         },
       ],
-      "memname": undefined,
+      "member": undefined,
     },
   ],
   "commandResponse": "Found \\"test\\" in 2 data sets and PDS members",
@@ -156,7 +156,7 @@ exports[`Search Datasets handler process method should search a data set if requ
 Object {
   "apiResponse": Array [
     Object {
-      "dsname": "TEST1.DS",
+      "dsn": "TEST1.DS",
       "matchList": Array [
         Object {
           "column": 1,
@@ -164,10 +164,10 @@ Object {
           "line": 1,
         },
       ],
-      "memname": "TESTMEM",
+      "member": "TESTMEM",
     },
     Object {
-      "dsname": "TEST2.DS",
+      "dsn": "TEST2.DS",
       "matchList": Array [
         Object {
           "column": 1,
@@ -175,7 +175,7 @@ Object {
           "line": 1,
         },
       ],
-      "memname": undefined,
+      "member": undefined,
     },
   ],
   "commandResponse": "Found \\"test\\" in 2 data sets and PDS members",
@@ -194,7 +194,7 @@ exports[`Search Datasets handler process method should search a data set if requ
 Object {
   "apiResponse": Array [
     Object {
-      "dsname": "TEST1.DS",
+      "dsn": "TEST1.DS",
       "matchList": Array [
         Object {
           "column": 1,
@@ -202,10 +202,10 @@ Object {
           "line": 1,
         },
       ],
-      "memname": "TESTMEM",
+      "member": "TESTMEM",
     },
     Object {
-      "dsname": "TEST2.DS",
+      "dsn": "TEST2.DS",
       "matchList": Array [
         Object {
           "column": 1,
@@ -213,7 +213,7 @@ Object {
           "line": 1,
         },
       ],
-      "memname": undefined,
+      "member": undefined,
     },
   ],
   "commandResponse": "Found \\"test\\" in 2 data sets and PDS members",

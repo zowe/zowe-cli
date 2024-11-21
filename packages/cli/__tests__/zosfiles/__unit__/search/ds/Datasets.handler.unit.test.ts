@@ -29,7 +29,7 @@ describe("Search Datasets handler", () => {
             let logMessage = "";
             let fakeSession = null;
 
-            // Mock the submit JCL function
+            // Mock the search datasets function
             Search.dataSets = jest.fn(async (session) => {
                 fakeSession = session;
                 return {
@@ -37,8 +37,8 @@ describe("Search Datasets handler", () => {
                     commandResponse: "Found \"test\" in 2 data sets and PDS members",
                     apiResponse: [
                         {
-                            dsname: "TEST1.DS",
-                            memname: "TESTMEM",
+                            dsn: "TEST1.DS",
+                            member: "TESTMEM",
                             matchList: [
                                 {
                                     line: 1,
@@ -48,8 +48,8 @@ describe("Search Datasets handler", () => {
                             ]
                         },
                         {
-                            dsname: "TEST2.DS",
-                            memname: undefined,
+                            dsn: "TEST2.DS",
+                            member: undefined,
                             matchList: [
                                 {
                                     line: 1,
@@ -139,8 +139,8 @@ describe("Search Datasets handler", () => {
                     commandResponse: "Found \"test\" in 2 data sets and PDS members",
                     apiResponse: [
                         {
-                            dsname: "TEST1.DS",
-                            memname: "TESTMEM",
+                            dsn: "TEST1.DS",
+                            member: "TESTMEM",
                             matchList: [
                                 {
                                     line: 1,
@@ -150,8 +150,8 @@ describe("Search Datasets handler", () => {
                             ]
                         },
                         {
-                            dsname: "TEST2.DS",
-                            memname: undefined,
+                            dsn: "TEST2.DS",
+                            member: undefined,
                             matchList: [
                                 {
                                     line: 1,
@@ -242,8 +242,8 @@ describe("Search Datasets handler", () => {
                     commandResponse: "Found \"test\" in 2 data sets and PDS members",
                     apiResponse: [
                         {
-                            dsname: "TEST1.DS",
-                            memname: "TESTMEM",
+                            dsn: "TEST1.DS",
+                            member: "TESTMEM",
                             matchList: [
                                 {
                                     line: 1,
@@ -253,8 +253,8 @@ describe("Search Datasets handler", () => {
                             ]
                         },
                         {
-                            dsname: "TEST2.DS",
-                            memname: undefined,
+                            dsn: "TEST2.DS",
+                            member: undefined,
                             matchList: [
                                 {
                                     line: 1,
@@ -345,8 +345,8 @@ describe("Search Datasets handler", () => {
                     commandResponse: "Found \"test\" in 2 data sets and PDS members",
                     apiResponse: [
                         {
-                            dsname: "TEST1.DS",
-                            memname: "TESTMEM",
+                            dsn: "TEST1.DS",
+                            member: "TESTMEM",
                             matchList: [
                                 {
                                     line: 1,
@@ -356,8 +356,8 @@ describe("Search Datasets handler", () => {
                             ]
                         },
                         {
-                            dsname: "TEST2.DS",
-                            memname: undefined,
+                            dsn: "TEST2.DS",
+                            member: undefined,
                             matchList: [
                                 {
                                     line: 1,
@@ -448,8 +448,8 @@ describe("Search Datasets handler", () => {
                     commandResponse: "Found \"test\" in 2 data sets and PDS members",
                     apiResponse: [
                         {
-                            dsname: "TEST1.DS",
-                            memname: "TESTMEM",
+                            dsn: "TEST1.DS",
+                            member: "TESTMEM",
                             matchList: [
                                 {
                                     line: 1,
@@ -459,8 +459,8 @@ describe("Search Datasets handler", () => {
                             ]
                         },
                         {
-                            dsname: "TEST2.DS",
-                            memname: undefined,
+                            dsn: "TEST2.DS",
+                            member: undefined,
                             matchList: [
                                 {
                                     line: 1,
@@ -551,8 +551,8 @@ describe("Search Datasets handler", () => {
                     commandResponse: "Found \"test\" in 2 data sets and PDS members",
                     apiResponse: [
                         {
-                            dsname: "TEST1.DS",
-                            memname: "TESTMEM",
+                            dsn: "TEST1.DS",
+                            member: "TESTMEM",
                             matchList: [
                                 {
                                     line: 1,
@@ -562,8 +562,8 @@ describe("Search Datasets handler", () => {
                             ]
                         },
                         {
-                            dsname: "TEST2.DS",
-                            memname: undefined,
+                            dsn: "TEST2.DS",
+                            member: undefined,
                             matchList: [
                                 {
                                     line: 1,
