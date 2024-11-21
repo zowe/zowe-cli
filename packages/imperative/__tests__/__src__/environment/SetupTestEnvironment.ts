@@ -13,7 +13,6 @@ import { ISetupEnvironmentParms } from "./doc/parms/ISetupEnvironmentParms";
 import { ImperativeExpect } from "../../../src";
 import * as nodePath from "path";
 import { TEST_RESULT_DATA_DIR } from "../TestConstants";
-import { mkdirSync } from "fs";
 import { ITestEnvironment } from "./doc/response/ITestEnvironment";
 import { mkdirpSync } from "fs-extra";
 

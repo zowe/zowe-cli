@@ -23,7 +23,7 @@ then
 fi
 
 # Loop until the job goes to the output queue
-until [ $ATTEMPTS -lt 1]
+until [ $ATTEMPTS -lt 1 ]
 do
     STATUS=`zowe jobs view job-status-by-jobid $JOBID --host $HOST --port $PORT --user $USER --password $PASS --ru=false --rff status --rft string`
     RC=$?
