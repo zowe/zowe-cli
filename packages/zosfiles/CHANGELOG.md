@@ -6,6 +6,10 @@ All notable changes to the Zowe z/OS files SDK package will be documented in thi
 
 - Enhancement: Added a `List.membersMatchingPattern` method to download all members that match a specific pattern.[#2359](https://github.com/zowe/zowe-cli/pull/2359)
 
+## `8.8.4`
+
+- Enhancement: Allows extenders of the Search functionality to pass a function `abortSearch` on `searchOptions` to abort a search. [#2370](https://github.com/zowe/zowe-cli/pull/2370)
+
 ## `8.8.3`
 
 - BugFix: Resolved issue where special characters could be corrupted when downloading a large file. [#2366](https://github.com/zowe/zowe-cli/pull/2366)
