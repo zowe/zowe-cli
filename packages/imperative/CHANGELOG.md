@@ -2,7 +2,7 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
-## Recent Changes
+## `5.27.4`
 
 - BugFix: Updated the `cross-spawn` dependency for technical currency. [#2374](https://github.com/zowe/zowe-cli/pull/2374)
 
