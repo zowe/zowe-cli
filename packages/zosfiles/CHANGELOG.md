@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
-## Recent Changes
+## `8.8.4`
 
 - Enhancement: Allows extenders of the Search functionality to pass a function `abortSearch` on `searchOptions` to abort a search. [#2370](https://github.com/zowe/zowe-cli/pull/2370)
 
