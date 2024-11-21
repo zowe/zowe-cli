@@ -2,6 +2,16 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## `8.8.3`
+
+- BugFix: Modified 8.8.2 bugfix to correct web help alias. [#2361](https://github.com/zowe/zowe-cli/pull/2361)
+- BugFix: Resolved issue where special characters could be corrupted when downloading a large file. [#2366](https://github.com/zowe/zowe-cli/pull/2366)
+
+## `8.8.2`
+
+- BugFix: Fixed an issue where the Imperative Event Emitter could skip triggering event callbacks. [#2360](https://github.com/zowe/zowe-cli/pull/2360)
+- BugFix: Enhanced [#2301](https://github.com/zowe/zowe-cli/pull/2301) to include "--help-web" commands to pass even if presence of a faulty configuration.
+
 ## `8.8.1`
 
 - BugFix: Fixed an issue where the `ProfileInfo.profileManagerWillLoad` method failed if profiles were not yet read from disk. [#2284](https://github.com/zowe/zowe-cli/issues/2284)
