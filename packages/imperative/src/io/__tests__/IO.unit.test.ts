@@ -119,10 +119,20 @@ describe("IO tests", () => {
         expect(fnFm).toBeCalled();
     });
 
+    it("should not create a dir if file exists", () => {
+        existsSyncSpy = jest.spyOn(fs, "existsSync").mockReturnValue(true);
+        const fnFm = jest.mocked(fs.mkdirSync);
+        fnFm.mockImplementation(((file: fs.PathLike) => {
+            return; // do nothing but pretend to write
+        }) as any);
+        IO.createDirSync("pretend/already/exists");
+        expect(existsSyncSpy).toBeCalled();
+        expect(fnFm).not.toBeCalled();
+    });
+
     it("should get an error for no input on createDirsSync", () => {
         let error;
         try {
-            // eslint-disable-next-line deprecation/deprecation
             IO.createDirsSync("   ");
         } catch (thrownError) {
             error = thrownError;
@@ -142,9 +152,44 @@ describe("IO tests", () => {
         });
         const willBeADir = ["pretend", "to", "create"];
         const dir = willBeADir.join(IO.FILE_DELIM);
-        // eslint-disable-next-line deprecation/deprecation
         IO.createDirsSync(dir);
-        expect(fnFm).toHaveBeenCalledTimes(1);
+        expect(fnFm).toHaveBeenCalledTimes(willBeADir.length);
+    });
+
+    it("should not create several dirs if dirs already exist", () => {
+        existsSyncSpy = jest.spyOn(fs, "existsSync").mockReturnValue(true);
+        const fnFm = jest.mocked(fs.mkdirSync);
+        fnFm.mockImplementation(((file: fs.PathLike) => {
+            return; // do nothing but pretend to write
+        }) as any);
+        const fnPr = jest.mocked(path.resolve);
+        fnPr.mockImplementation((...pathSegments: any[]) => {
+            return pathSegments[0];
+        });
+        const willBeADir = ["pretend", "to", "create"];
+        const dir = willBeADir.join(IO.FILE_DELIM);
+        IO.createDirsSync(dir);
+        expect(fnFm).not.toHaveBeenCalled();
+    });
+
+    it("should only create dirs that do not exist", () => {
+        // pretend that only one of our directories exist
+        const willBeADir = ["pretend", "to", "create"];
+        existsSyncSpy = jest.spyOn(fs, "existsSync")
+            .mockReturnValue(false)
+            .mockReturnValueOnce(true);
+
+        const fnFm = jest.mocked(fs.mkdirSync);
+        fnFm.mockImplementation(((file: fs.PathLike) => {
+            return; // do nothing but pretend to write
+        }) as any);
+        const fnPr = jest.mocked(path.resolve);
+        fnPr.mockImplementation((...pathSegments: any[]) => {
+            return pathSegments[0];
+        });
+        const dir = willBeADir.join(IO.FILE_DELIM);
+        IO.createDirsSync(dir);
+        expect(fnFm).toHaveBeenCalledTimes(willBeADir.length - 1);
     });
 
     it("should create several dirs if dirs do not exist from input file", () => {
@@ -169,6 +214,54 @@ describe("IO tests", () => {
         expect(fnFm).toHaveBeenCalledTimes(willBeADir.length - 1);
     });
 
+    it("should not create several dirs if dirs already exist from input file", () => {
+        existsSyncSpy = jest.spyOn(fs, "existsSync").mockReturnValue(true);
+        const fnFm = jest.mocked(fs.mkdirSync);
+        fnFm.mockImplementation(((file: fs.PathLike) => {
+            return; // do nothing but pretend to write
+        }) as any);
+        const fnPr = jest.mocked(path.resolve);
+        fnPr.mockImplementation((...pathSegments: any[]) => {
+            return pathSegments[0];
+        });
+        const fnPd = jest.mocked(path.dirname);
+        fnPd.mockImplementation(((...pathSegments: any[]) => {
+            const toDir: string[] = pathSegments[0].split(IO.FILE_DELIM);
+            toDir.pop();
+            return toDir.join(IO.FILE_DELIM);
+        }) as any);
+        const willBeADir = ["pretend", "to", "create", "test.txt"];
+        const dir = willBeADir.join(IO.FILE_DELIM);
+        IO.createDirsSyncFromFilePath(dir);
+        expect(fnFm).not.toHaveBeenCalled();
+    });
+
+    it("should only create dirs that do not exist from input file", () => {
+        // pretend that only one of our three directories exist
+        const willBeADir = ["pretend", "to", "create", "test.txt"];
+        existsSyncSpy = jest.spyOn(fs, "existsSync")
+            .mockReturnValue(false)
+            .mockReturnValueOnce(true);
+
+        const fnFm = jest.mocked(fs.mkdirSync);
+        fnFm.mockImplementation(((file: fs.PathLike) => {
+            return; // do nothing but pretend to write
+        }) as any);
+        const fnPr = jest.mocked(path.resolve);
+        fnPr.mockImplementation((...pathSegments: any[]) => {
+            return pathSegments[0];
+        });
+        const fnPd = jest.mocked(path.dirname);
+        fnPd.mockImplementation(((...pathSegments: any[]) => {
+            const toDir: string[] = pathSegments[0].split(IO.FILE_DELIM);
+            toDir.pop();
+            return toDir.join(IO.FILE_DELIM);
+        }) as any);
+        const dir = willBeADir.join(IO.FILE_DELIM);
+        IO.createDirsSyncFromFilePath(dir);
+        expect(fnFm).toHaveBeenCalledTimes(willBeADir.length - 2);
+    });
+
     it("processNewLines should replace LF line endings with CRLF on Windows", () => {
         jest.spyOn(os, "platform").mockReturnValueOnce(IO.OS_WIN32);
         const original = "\nabc\ndef\n";
@@ -186,7 +279,7 @@ describe("IO tests", () => {
     it("should get an error for no input on mkdirp", () => {
         let error;
         try {
-            IO.createDirSync("   ");
+            IO.mkdirp("   ");
         } catch (thrownError) {
             error = thrownError;
         }

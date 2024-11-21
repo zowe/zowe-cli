@@ -10,7 +10,7 @@
 */
 
 const childProcess = require("child_process");
-const fs = require("fs");
+const fs = require("fs-extra");
 const path = require("path");
 
 // Workaround for https://github.com/npm/cli/issues/3466
@@ -18,7 +18,7 @@ process.chdir(__dirname + "/..");
 const cliPkgDir = path.join(process.cwd(), "packages", "cli");
 const pkgJsonFile = path.join(cliPkgDir, "package.json");
 const execCmd = (cmd) => childProcess.execSync(cmd, { cwd: cliPkgDir, stdio: "inherit" });
-fs.mkdirSync("dist", {recursive: true});
+fs.mkdirpSync("dist");
 fs.renameSync(path.join(cliPkgDir, "node_modules"), path.join(cliPkgDir, "node_modules_old"));
 fs.copyFileSync(pkgJsonFile, pkgJsonFile + ".bak");
 

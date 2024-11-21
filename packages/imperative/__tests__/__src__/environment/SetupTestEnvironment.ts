@@ -15,6 +15,8 @@ import * as nodePath from "path";
 import { TEST_RESULT_DATA_DIR } from "../TestConstants";
 import { mkdirSync } from "fs";
 import { ITestEnvironment } from "./doc/response/ITestEnvironment";
+import { mkdirpSync } from "fs-extra";
+
 const uuidv4 = require("uuid/v4");
 /**
  * Use the utility methods here to setup the test environment for running APIs
@@ -79,7 +81,7 @@ export class SetupTestEnvironment {
     public static createUniqueTestDataDir(testName: string): string {
         const app = uuidv4() + "_" + testName + "/";
         const path = nodePath.resolve(TEST_RESULT_DATA_DIR + "/" + app);
-        mkdirSync(path, {recursive: true});
+        mkdirpSync(path);
         return path;
     }
 }

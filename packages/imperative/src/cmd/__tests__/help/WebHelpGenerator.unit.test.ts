@@ -129,7 +129,7 @@ describe("WebHelpGenerator", () => {
              */
             const webHelpDocsDirNm = webHelpDirNm + "/docs";
             if (!existsSync(webHelpDocsDirNm)) {
-                IO.createDirSync(webHelpDocsDirNm);
+                IO.mkdirp(webHelpDocsDirNm);
             }
 
             const webHelpGen = new WebHelpGenerator(

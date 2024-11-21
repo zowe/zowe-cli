@@ -44,7 +44,7 @@ describe("Plugin Management Facility", () => {
         existsSync: jest.spyOn(fs, "existsSync"),
         writeFileSync: jest.spyOn(jsonfile, "writeFileSync"),
         readFileSync: jest.spyOn(jsonfile, "readFileSync"),
-        mkdirp: jest.spyOn(IO, "createDirSync")
+        mkdirp: jest.spyOn(IO, "mkdirp")
     };
 
     /* Put a base CLI config into ImperativeConfig. It is required by infrastructure

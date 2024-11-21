@@ -30,6 +30,7 @@ import * as os from "os";
 import { Config, IConfig, IConfigOpts } from "../../src/config";
 import { ImperativeConfig } from "../../src/utilities";
 import { sync } from "cross-spawn";
+import { mkdirpSync } from "fs-extra";
 
 /**
  * Requires for non-typed.
@@ -402,7 +403,7 @@ export function compareJsonObjects(actual: any, expected: any, parms?: ICompareP
 export function createUniqueTestDataDir(append = ""): string {
     const app = uuidv4() + "/" + append + "/";
     const path = nodePath.resolve(TEST_RESULT_DIR + "/data/" + app);
-    fs.mkdirSync(path, {recursive: true});
+    mkdirpSync(path);
     return path;
 }
 
