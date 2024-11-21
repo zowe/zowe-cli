@@ -185,7 +185,7 @@ describe("Download Dataset Matching", () => {
             const response = runCliScript(shellScript, TEST_ENVIRONMENT, [pattern, "--rfj", "-d", testDir, "-e", ".jcl"]);
 
             const result = JSON.parse(response.stdout.toString());
-            // expect(response.stderr.toString()).toBe("");
+            expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(result.stdout).toContain(`${dsnames.length} data set(s) were found matching pattern`);
             expect(result.stdout).toContain(`${dsnames.length} data set(s) downloaded successfully to ${testDir}`);
