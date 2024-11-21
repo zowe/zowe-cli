@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Allows extenders of the Search functionality to pass a function `abortSearch` on `searchOptions` to abort a search. [#2370](https://github.com/zowe/zowe-cli/pull/2370)
+
 ## `8.8.3`
 
 - BugFix: Resolved issue where special characters could be corrupted when downloading a large file. [#2366](https://github.com/zowe/zowe-cli/pull/2366)
