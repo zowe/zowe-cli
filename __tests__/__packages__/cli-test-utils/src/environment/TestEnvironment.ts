@@ -115,7 +115,7 @@ export class TestEnvironment {
     public static createUniqueTestDataDir(testName: string): string {
         const app = uuidv4() + "_" + testName + "/";
         const path = nodePath.resolve(TEST_RESULT_DATA_DIR + "/" + app);
-        IO.createDirSync(path);
+        IO.mkdirp(path);
         return path;
     }
 
