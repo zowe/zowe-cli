@@ -338,7 +338,7 @@ export default {
         DESCRIPTION: "Download content from z/OS data sets and USS files to your PC.",
         ACTIONS: {
             ALL_MEMBERS: {
-                SUMMARY: "Download all members from a pds",
+                SUMMARY: "Download all members from a PDS",
                 DESCRIPTION: "Download all members from a partitioned data set to a local folder.",
                 POSITIONALS: {
                     DATASETNAME: "The name of the data set from which you want to download members"
@@ -349,7 +349,7 @@ export default {
                 }
             },
             ALL_MEMBERS_MATCHING: {
-                SUMMARY: "Download all members from a pds",
+                SUMMARY: "Download all members from a PDS",
                 DESCRIPTION: "Download all members that match a specific pattern from a partitioned data set to a local folder.",
                 POSITIONALS: {
                     DATASETNAME: "The name of the data set from which you want to download members",
@@ -506,7 +506,7 @@ export default {
         DESCRIPTION: "List data sets and data set members. Optionally, you can list their details and attributes.",
         ACTIONS: {
             ALL_MEMBERS: {
-                SUMMARY: "List all members of a pds",
+                SUMMARY: "List all members of a PDS",
                 DESCRIPTION: "List all members of a partitioned data set. To view additional information about each member, use the --attributes " +
                     "option under the Options section of this help text.",
                 POSITIONALS: {

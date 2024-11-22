@@ -433,7 +433,7 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
     },
 
     /**
-     * Message indicating that no members xsremain to be downloaded after the excluded ones were filtered out.
+     * Message indicating that no members remain to be downloaded after the excluded ones were filtered out.
      * @type {IMessageDefinition}
      */
     noMembersMatchingPattern: {
