@@ -133,6 +133,7 @@ module.exports = {
     ...projectConfig,
     "reporters": [
         "default",
+        "jest-stare",
         ["jest-junit", {
             "outputDirectory": "__tests__/__results__",
             "reportTestSuiteErrors": true
