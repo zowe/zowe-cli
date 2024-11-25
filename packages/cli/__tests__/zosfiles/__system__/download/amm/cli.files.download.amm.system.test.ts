@@ -24,20 +24,20 @@ let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
 let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment<ITestPropertiesSchema>;
 let defaultSystem: ITestPropertiesSchema;
 let dsname: string;
-const testString = "test";
+const pattern = "M*";
+const members = ["M1", "M2", "M3"];
 
-describe("Download All Member", () => {
+describe("Download Members Matching Pattern", () => {
 
     beforeAll(async () => {
         TEST_ENVIRONMENT = await TestEnvironment.setUp({
             tempProfileTypes: ["zosmf"],
-            testName: "download_all_data_set_member"
+            testName: "download_all_data_set_member_pattern"
         });
 
         defaultSystem = TEST_ENVIRONMENT.systemTestProperties;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
-
         dsname = getUniqueDatasetName(defaultSystem.zosmf.user);
     });
 
@@ -50,7 +50,7 @@ describe("Download All Member", () => {
         // Create the unique test environment
         beforeAll(async () => {
             TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
-                testName: "zos_files_download_all_members_without_profile"
+                testName: "zos_files_download_all_members_matching_without_profile"
             });
 
             defaultSys = TEST_ENVIRONMENT_NO_PROF.systemTestProperties;
@@ -62,15 +62,17 @@ describe("Download All Member", () => {
 
         beforeEach(async () => {
             await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname);
-            await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testString), `${dsname}(${testString})`);
+            for(const mem of members) {
+                await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(mem), `${dsname}(${mem})`);
+            }
         });
 
         afterEach(async () => {
             await Delete.dataSet(REAL_SESSION, dsname);
         });
 
-        it("should download all data set member of pds", () => {
-            const shellScript = path.join(__dirname, "__scripts__", "command", "command_download_all_member_fully_qualified.sh");
+        it("should download matching members of a pds", () => {
+            const shellScript = path.join(__dirname, "__scripts__", "command_download_amm_fully_qualified.sh");
 
             const ZOWE_OPT_BASE_PATH = "ZOWE_OPT_BASE_PATH";
 
@@ -81,13 +83,14 @@ describe("Download All Member", () => {
             }
             const response = runCliScript(shellScript,
                 TEST_ENVIRONMENT_NO_PROF,
-                [dsname,
+                [dsname, pattern,
                     defaultSys.zosmf.host,
                     defaultSys.zosmf.port,
                     defaultSys.zosmf.user,
                     defaultSys.zosmf.password]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toContain(`${members.length} members(s) were found matching pattern`);
             expect(response.stdout.toString()).toContain("Member(s) downloaded successfully.");
         });
     });
@@ -96,7 +99,9 @@ describe("Download All Member", () => {
 
         beforeEach(async () => {
             await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname);
-            await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testString), `${dsname}(${testString})`);
+            for(const mem of members) {
+                await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(mem), `${dsname}(${mem})`);
+            }
         });
 
         afterEach(async () => {
@@ -104,40 +109,41 @@ describe("Download All Member", () => {
         });
 
         it("should download all data set member of pds", () => {
-            const shellScript = path.join(__dirname, "__scripts__", "command", "command_download_all_member.sh");
-            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [dsname]);
+            const shellScript = path.join(__dirname, "__scripts__", "command_download_amm.sh");
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [dsname, pattern]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toContain(`${members.length} members(s) were found matching pattern`);
             expect(response.stdout.toString()).toContain("Member(s) downloaded successfully.");
         });
 
         it("should download all data set member of pds in binary format", () => {
-            const shellScript = path.join(__dirname, "__scripts__", "command", "command_download_all_member.sh");
-            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [dsname, "--binary"]);
+            const shellScript = path.join(__dirname, "__scripts__", "command_download_amm.sh");
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [dsname,pattern, "--binary"]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain("Member(s) downloaded successfully.");
         });
 
         it("should download all data set member of pds in record format", () => {
-            const shellScript = path.join(__dirname, "__scripts__", "command", "command_download_all_member.sh");
-            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [dsname, "--record"]);
+            const shellScript = path.join(__dirname, "__scripts__", "command_download_amm.sh");
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [dsname, pattern, "--record"]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain("Member(s) downloaded successfully.");
         });
 
         it("should download all data set member of pds with response timeout", () => {
-            const shellScript = path.join(__dirname, "__scripts__", "command", "command_download_all_member.sh");
-            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [dsname, "--responseTimeout 5"]);
+            const shellScript = path.join(__dirname, "__scripts__", "command_download_amm.sh");
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [dsname, pattern, "--responseTimeout 5"]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain("Member(s) downloaded successfully.");
         });
 
         it("should download all data set members with --max-concurrent-requests 2", () => {
-            const shellScript = path.join(__dirname, "__scripts__", "command", "command_download_all_member_mcr.sh");
-            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [dsname, 2]);
+            const shellScript = path.join(__dirname, "__scripts__", "command_download_amm_mcr.sh");
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [dsname, pattern, 2]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain("Member(s) downloaded successfully.");
@@ -145,14 +151,15 @@ describe("Download All Member", () => {
 
         it("should download all data set members of a large data set with --max-concurrent-requests 2", async () => {
             const bigDsname = getUniqueDatasetName(defaultSystem.zosmf.user);
+            const pattern = "a*";
             await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, bigDsname);
-            const members = ["a1", "a2", "a3", "a4", "a5", "a6", "a7", "a8", "a9", "a10", "a11", "a12", "a13"];
+            const members = ["a1", "a2", "a3", "a4", "a5", "a6", "a7", "a8", "a9", "a10", "a11", "a12", "a13", "b1", "b2"];
             const memberContent = Buffer.from("ABCDEFGHIJKLMNOPQRSTUVWXYZ\nABCDEFGHIJKLMNOPQRSTUVWXYZ\nABCDEFGHIJKLMNOPQRSTUVWXYZ");
-            for (const member of members) {
-                await Upload.bufferToDataSet(REAL_SESSION, memberContent, `${bigDsname}(${member})`);
+            for (const mem of members) {
+                await Upload.bufferToDataSet(REAL_SESSION, memberContent, `${bigDsname}(${mem})`);
             }
-            const shellScript = path.join(__dirname, "__scripts__", "command", "command_download_all_member_mcr.sh");
-            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [bigDsname, 2]);
+            const shellScript = path.join(__dirname, "__scripts__", "command_download_amm_mcr.sh");
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [bigDsname, pattern, 2]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain("Member(s) downloaded successfully.");
@@ -160,17 +167,17 @@ describe("Download All Member", () => {
         });
 
         it("should download all data set member with response-format-json flag", () => {
-            const shellScript = path.join(__dirname, "__scripts__", "command", "command_download_all_member.sh");
-            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [dsname, "--rfj"]);
+            const shellScript = path.join(__dirname, "__scripts__", "command_download_amm.sh");
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [dsname, pattern, "--rfj"]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain("Member(s) downloaded successfully.");
         });
 
         it("should download all data set member to specified directory", () => {
-            const shellScript = path.join(__dirname, "__scripts__", "command", "command_download_all_member.sh");
+            const shellScript = path.join(__dirname, "__scripts__", "command_download_amm.sh");
             const testDir = "test/folder";
-            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [dsname, `-d ${testDir}`, "--rfj"]);
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [dsname, pattern,`-d ${testDir}`, "--rfj"]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain("Member(s) downloaded successfully.");
@@ -178,11 +185,11 @@ describe("Download All Member", () => {
         });
 
         it("should download all data set member with extension = \"\"", () => {
-            const shellScript = path.join(__dirname, "__scripts__", "command", "command_download_all_member_no_extension.sh");
+            const shellScript = path.join(__dirname, "__scripts__", "command_download_amm_no_extension.sh");
             const testDir = "test/folder";
-            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [dsname, `-d ${testDir} --rfj`]);
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT, [dsname, pattern,`-d ${testDir} --rfj`]);
             const result = JSON.parse(response.stdout.toString());
-            const expectedResult = {member: "TEST"};
+            const expectedResult = {member: "M1"};
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(result.stdout).toContain("Member(s) downloaded successfully.");
