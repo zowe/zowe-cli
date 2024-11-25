@@ -141,7 +141,7 @@ That addition would enable customers to also specify the authentication order of
 
 - We must notify extenders to guide their customers to supply an appropriate authOrder property if their extension needs a non-default order.
 
-## Determination of functions to be modified
+## Functions that reference AUTH_TYPE may need modification
 
 The set of candidates for modification consist of all functions that contain the string ***"AUTH_TYPE_"***. This section contains an assessment of whether each such function affects the authentication order and must be modified.
 
@@ -241,6 +241,80 @@ The set of candidates for modification consist of all functions that contain the
   
   - connect - This function explicitly checks for an ssh key (first) or a password (second) in a hard-coded fashion. If we want the user's authOrder to apply to ssh connections, this function must use the proposed selectPreferredAuth() utility function to to make the right authentication choice.
     - **Modify connect ? <span style="color:orange">Yes</span>**
+
+## Functions that reference rejectUnauthorized may need modification
+
+If we treat **authOrder** like other connection properties, those functions that process **rejectUnauthorized** may also need to process **authOrder**. This section contains an assessment of whether each such function must be modified.
+
+- packages\cli\src\config\auto-init\ApimlAutoInitHandler.ts
+  
+  - doAutoInit - This function uses a connection to APIML. However, it is passed an AbstractSession object. An authOrder property should already be placed into the AbstractSession by a calling function.
+    - **Modify doAutoInit ? <span style="color:green">No</span>** 
+
+- packages\cli\src\imperative.ts
+  
+  - This class provides definitions used to create the zowe command tree and other CLI operating properties. It includes command-line options for connection properties (like host, port, user, and password). Unless we chose to add authOrder as a command line option (contrary to this proposal) this class should not require modification.
+    - **Modify imperative.ts? <span style="color:green">No</span>**
+
+- packages\core\src\constants\Core.constants.ts
+  
+  - BaseProfile - This object contains a schema definition for a base profile. An authOrder property must be added to this object.
+    - **Modify BaseProfile ? <span style="color:orange">Yes</span>**
+
+- packages\imperative\src\config\src\ProfileInfo.ts
+  
+  - createSession - This function creates a session with key connection properties. An authOrder property must be added to those properties.
+    - **Modify createSession ? <span style="color:orange">Yes</span>**
+
+- packages\imperative\src\imperative\src\config\cmd\import\import.handler.ts
+  
+  - buildSession - This class imports a config file from a URL. To connect to the URL, this function specifically uses only user & password authentication. It does not access the URL through z/OSMF or APIML. Providing an ability to connect with other credentials for this purpose is beyond the scope of this proposal, and so will not be done as part of this design.
+    - **Modify buildSession ? <span style="color:green">No</span>**
+
+- packages\imperative\src\rest\src\client\AbstractRestClient.ts
+  
+  - buildOptions - The constructor for the AbstractRestClient requires an AbstractSession object. That AbstractSession should have already been populated with connection properties. Multiple authentication types should be scrubbed from the  AbstractSession by earlier code. Therefore, no change should be required in buildOptions.
+    - **Modify buildOptions ? <span style="color:green">No</span>**
+
+- packages\imperative\src\rest\src\client\ProxySettings.ts
+  
+  - getProxyAgent - This function requires an ISession object. The ISession.authTypeOrder should have already been populated. Therefore, no change should be required in getProxyAgent
+    - **Modify getProxyAgent ? <span style="color:green">No</span>**
+
+- packages\imperative\src\rest\src\client\doc\IHTTPSOptions.ts
+  
+  - IHTTPSOptions - This interface is only used by AbstractRestClient. Credentials are never extracted from nor added to this an instance of this interface. Therefore there is no reason to add authOrder to this interface.
+    - **Modify IHTTPSOptions ? <span style="color:green">No</span>**
+
+- packages\imperative\src\rest\src\session\AbstractSession.ts
+  
+  - buildSession - This function was analyzed in the previous section of this document.
+    - **Modify buildSession ? <span style="color:orange">Yes</span>**
+
+- packages\imperative\src\rest\src\session\doc\ISession.ts
+  
+  - authTypeOrder - This property was analyzed in the previous section of this document.
+    - **Modify authTypeOrder ? <span style="color:cyan">Maybe</span>**
+
+- packages\zosjobs\src\GetJobs.ts
+  
+  - getJob - This function displays rejectUnauthorized in a diagnostic message. No need to process authOrder here. 
+    - **Modify getJob ? <span style="color:green">No</span>**
+
+- packages\zosmf\src\ZosmfSession.ts
+  
+  - This Class contains option definitions for connection properties that can be defined in profiles. A definition of the authOrder connection property with a name like ZOSMF_OPTION_AUTH_ORDER should be added. If we choose to not allow authOrder to be specified on the command line (as recommended by this proposal), we may have to provide a definition someplace else. The **autoSave** property could be similar example.
+    - **Modify ZosmfSession.ts ? <span style="color:orange">Yes</span>**
+
+- packages\zosmf\src\constants\Zosmf.messages.ts
+  
+  - This class provides message text used to display error details. There is no clear reason to add authOrder to this class.
+    - **Modify Zosmf.messages.ts ? <span style="color:green">No</span>**
+
+- packages\zosmf\src\constants\Zosmf.profile.ts
+  
+  - ZosmfProfile - This class provides the property definitions for a zosmf profile type. We must add a definition for the authOrder property.
+    - **Modify Zosmf.profile.ts ? <span style="color:orange">Yes</span>**
 
 ## New functions that must be added
 
