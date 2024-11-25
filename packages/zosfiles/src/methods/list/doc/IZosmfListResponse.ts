@@ -23,6 +23,11 @@ export interface IZosmfListResponse extends IZosFilesOptions {
     dsname: string;
 
     /**
+     * The name of the member
+     */
+    member?: string;
+
+    /**
      * The block size of the dataset
      */
     blksz?: string;
