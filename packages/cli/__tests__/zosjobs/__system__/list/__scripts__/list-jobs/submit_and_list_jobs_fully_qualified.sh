@@ -10,7 +10,10 @@ PASS=$5
 # arguments: $1 is a data set name with JCL inside to submit
 
 JOBID1=`zowe zos-jobs submit data-set $JCL --host $HOST --port $PORT --user $USER --password $PASS --ru=false --rff jobid --rft string`
+sleep 1
 JOBID2=`zowe zos-jobs submit data-set $JCL --host $HOST --port $PORT --user $USER --password $PASS --ru=false --rff jobid --rft string`
+
+sleep 1
 
 echo "Listing jobs to find job IDs $JOBID1 and $JOBID2"
 

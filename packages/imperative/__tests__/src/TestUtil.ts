@@ -24,13 +24,13 @@ import { ICommandResponse } from "../../src/cmd";
 import { ICompareParms } from "./doc/ICompareParms";
 import { TestLogger } from "./TestLogger";
 import * as nodePath from "path";
-import { mkdirpSync } from "fs-extra";
 import * as fs from "fs";
 import { randomBytes } from "crypto";
 import * as os from "os";
 import { Config, IConfig, IConfigOpts } from "../../src/config";
 import { ImperativeConfig } from "../../src/utilities";
 import { sync } from "cross-spawn";
+import { mkdirpSync } from "fs-extra";
 
 /**
  * Requires for non-typed.

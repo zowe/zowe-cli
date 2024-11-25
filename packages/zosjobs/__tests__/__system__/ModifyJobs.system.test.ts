@@ -15,6 +15,7 @@ import { ITestEnvironment } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { JobTestsUtils } from "./JobTestsUtils";
+import { delay } from "../../../../__tests__/__src__/TestUtils";
 
 let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 let systemProps: ITestPropertiesSchema;
@@ -45,6 +46,10 @@ describe("Modify Jobs - System Tests", () => {
     afterAll(async () => {
         await CancelJobs.cancelJob(REAL_SESSION, iefbr14Job.jobname, iefbr14Job.jobid);
         await TestEnvironment.cleanUp(testEnvironment);
+    });
+
+    beforeEach(async () => {
+        await delay(1000);
     });
 
     describe("Positive tests", () => {
@@ -118,6 +123,10 @@ describe("Modify Jobs - System Tests - Encoded", () => {
     afterAll(async () => {
         await CancelJobs.cancelJob(REAL_SESSION, iefbr14Job.jobname, iefbr14Job.jobid);
         await TestEnvironment.cleanUp(testEnvironment);
+    });
+
+    beforeEach(async () => {
+        await delay(1000);
     });
 
     describe("Positive tests", () => {

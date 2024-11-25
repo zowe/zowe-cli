@@ -41,7 +41,7 @@ describe("imperative-test-cli config convert-profiles", () => {
         if (fs.existsSync(configJsonPath)) {
             fs.unlinkSync(configJsonPath);
         }
-        fsExtra.removeSync(TEST_ENVIRONMENT.workingDir + "/profiles-old");
+        fs.rmSync(TEST_ENVIRONMENT.workingDir + "/profiles-old", {recursive: true, force: true});
     });
 
     describe("success scenarios", () => {
