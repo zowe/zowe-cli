@@ -54,9 +54,9 @@ export class ProfileCredentials {
 
     /**
      * Check if secure credentials will be encrypted or stored in plain text.
-     * This will return true if the team configuration files contain secure
-     * fields, or if a custom CredentialManager is defined in the Imperative
-     * settings.json file.
+     * If using team config, this will always return true. If using classic
+     * profiles, this will check whether a custom CredentialManager is defined
+     * in the Imperative settings.json file.
      */
     public get isSecured(): boolean {
         this.mSecured = this.isTeamConfigSecure() || this.isCredentialManagerInAppSettings();

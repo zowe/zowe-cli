@@ -12,7 +12,7 @@
 import { ICommandDefinition } from "../ICommandDefinition";
 import { IHelpGenerator } from "../../help/doc/IHelpGenerator";
 import { IProfileManagerFactory } from "../../../../profiles";
-import { ICommandProfileTypeConfiguration } from "../../../src/doc/profiles/definition/ICommandProfileTypeConfiguration";
+import { ICommandProfileTypeConfiguration } from "../../doc/profiles/definition/ICommandProfileTypeConfiguration";
 import { Config } from "../../../../config";
 import { IDaemonContext } from "../../../../imperative/src/doc/IDaemonContext";
 

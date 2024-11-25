@@ -9,8 +9,8 @@
 *
 */
 
-import { CommandProfiles } from "../../../../src/profiles/CommandProfiles";
-import { ICommandArguments } from "../../../../src/doc/args/ICommandArguments";
+import { CommandProfiles } from "../../../profiles/CommandProfiles";
+import { ICommandArguments } from "../../../doc/args/ICommandArguments";
 /**
  * Command Processor prepare response.
  * @export
