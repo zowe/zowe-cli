@@ -719,7 +719,7 @@ describe("Upload USS file", () => {
     });
 
     afterAll(async () => {
-        //await TestEnvironment.cleanUp(testEnvironment);
+        await TestEnvironment.cleanUp(testEnvironment);
     });
 
     describe("Success Scenarios", () => {
