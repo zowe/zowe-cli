@@ -41,7 +41,6 @@
     "prepare": "husky install && npm run bundle:webHelp",
     "package": "lerna run prepublishOnly && node scripts/bundleCliTgz.js"
   },
-  "dependencies": {},
   "devDependencies": {
     "@lerna-lite/changed": "^3.3.0",
     "@lerna-lite/cli": "^3.3.0",
@@ -69,7 +68,7 @@
     "jest-html-reporter": "^3.6.0",
     "jest-junit": "^12.0.0",
     "jest-sonar-reporter": "^2.0.0",
-    "jest-stare": "^2.2.0",
+    "jest-stare": "^2.5.2",
     "js-yaml": "^4.1.0",
     "jsonfile": "^4.0.0",
     "madge": "^4.0.1",
@@ -85,5 +84,13 @@
   },
   "jestSonar": {
     "reportPath": "__tests__/__results__/jest-sonar"
+  },
+  "jest-stare": {
+    "additionalResultsProcessors": [
+      "jest-junit",
+      "jest-sonar-reporter"
+    ],
+    "coverageLink": "../unit/coverage/lcov-report/index.html",
+    "resultDir": "__tests__/__results__/jest-stare"
   }
 }

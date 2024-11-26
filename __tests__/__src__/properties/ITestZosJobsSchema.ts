@@ -16,4 +16,5 @@ export interface ITestZosJobsSchema {
     jobclass: string;
     modifiedJobclass: string;
     sysaff: string;
+    skipCIM?: boolean;
 }

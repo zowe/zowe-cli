@@ -18,6 +18,7 @@ import { join } from "path";
 import { ITestEnvironment } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../__tests__/__src__/properties/ITestPropertiesSchema";
+import { delay } from "../../../../__tests__/__src__/TestUtils";
 
 /**********************************************************************************/
 let ACCOUNT: string;
@@ -722,8 +723,7 @@ describe("Get Status APIs", () => {
 
             it("should be able to get a job that was submitted and get proper error when the job is deleted", async () => {
                 const job = await SubmitJobs.submitJcl(REAL_SESSION, JCL);
-                const jobStatus = await GetJobs.getStatusForJob(REAL_SESSION, job);
-
+                delay(3000);
                 await DeleteJobs.deleteJobForJob(REAL_SESSION, job);
                 await waitThreeSeconds(); // make sure jobs is deleted
                 let error;
@@ -978,6 +978,7 @@ describe("Get JCL APIs", () => {
     describe("invalid request error handling", () => {
         it("should detect and surface an error for getting JCL that doesnt exist", async () => {
             const job = await SubmitJobs.submitJcl(REAL_SESSION, JCL);
+            delay(3000);
             await DeleteJobs.deleteJobForJob(REAL_SESSION, job);
             await waitThreeSeconds();
             let error;

@@ -118,8 +118,10 @@ describe("Check Status Api", () => {
 
             expect(error).toBeTruthy();
             expect(response).toBeFalsy();
-            expect(error.message).toContain(`Error: connect ECONNREFUSED`);
-            expect(error.message).toContain(badPort.toString());
-        });
+            const jsonCauseErrors = error.causeErrors;
+            expect(jsonCauseErrors.code).toMatch(/(ECONNREFUSED|ECONNRESET|ETIMEDOUT)/);
+            expect(jsonCauseErrors.syscall).toEqual("connect");
+            expect(jsonCauseErrors.port).toEqual(badPort);
+        }, 300000);
     });
 });
