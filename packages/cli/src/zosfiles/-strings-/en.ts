@@ -338,7 +338,7 @@ export default {
         DESCRIPTION: "Download content from z/OS data sets and USS files to your PC.",
         ACTIONS: {
             ALL_MEMBERS: {
-                SUMMARY: "Download all members from a pds",
+                SUMMARY: "Download all members from a PDS",
                 DESCRIPTION: "Download all members from a partitioned data set to a local folder.",
                 POSITIONALS: {
                     DATASETNAME: "The name of the data set from which you want to download members"
@@ -346,6 +346,23 @@ export default {
                 EXAMPLES: {
                     EX1: `Download the members of the data set "ibmuser.loadlib" in binary mode to the directory "loadlib/"`,
                     EX2: `Download the members of the data set "ibmuser.cntl" in text mode to the directory "jcl/"`
+                }
+            },
+            ALL_MEMBERS_MATCHING: {
+                SUMMARY: "Download all members from a PDS",
+                DESCRIPTION: "Download all members that match a specific pattern from a partitioned data set to a local folder.",
+                POSITIONALS: {
+                    DATASETNAME: "The name of the data set from which you want to download members",
+                    PATTERN: `The pattern or patterns to match members against. Also known as 'DSLEVEL'. The following special sequences can be ` +
+                    `used in the pattern:
+                    ${TextUtils.chalk.yellow("%")}: matches any single character
+                    ${TextUtils.chalk.yellow("*")}: matches any number of characters within a member
+                    You can specify multiple patterns separated by commas, for example "Mem*, Test*"`
+                },
+                EXAMPLES: {
+                    EX1: `Download the members of the data set "ibmuser.loadlib" that begin with "Test" to the directory "loadlib/"`,
+                    EX2: `Download the members of the data set "ibmuser.cntl" that begin with "Test" & "M" to the directory "output",
+                    and exclude members that begin with "M2".`
                 }
             },
             DATA_SET: {
@@ -489,7 +506,7 @@ export default {
         DESCRIPTION: "List data sets and data set members. Optionally, you can list their details and attributes.",
         ACTIONS: {
             ALL_MEMBERS: {
-                SUMMARY: "List all members of a pds",
+                SUMMARY: "List all members of a PDS",
                 DESCRIPTION: "List all members of a partitioned data set. To view additional information about each member, use the --attributes " +
                     "option under the Options section of this help text.",
                 POSITIONALS: {

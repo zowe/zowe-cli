@@ -61,6 +61,11 @@ export interface IDownloadSingleOptions extends IGetOptions {
      * Optional stream to write the file contents
      */
     stream?: Writable;
+
+    /**
+     * An optional pattern for restricting the response list
+     */
+    pattern?: string;
     /**
      * The ZosFilesAttributes instance describe upload attributes for the files and directories
      */
@@ -103,4 +108,15 @@ export interface IDownloadOptions extends Omit<IDownloadSingleOptions, "stream">
      * Specifies whether hidden files whose names begin with a dot should be downloaded.
      */
     includeHidden?: boolean;
+
+    /**
+     * An optional pattern for restricting the response list
+     */
+    pattern?: string;
+
+    /**
+     * An optional response returned based on inputted patterns
+     */
+    memberPatternResponse?: any;
+
 }

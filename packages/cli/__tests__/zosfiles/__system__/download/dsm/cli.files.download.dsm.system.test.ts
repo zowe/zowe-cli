@@ -191,7 +191,7 @@ describe("Download Dataset Matching", () => {
             expect(result.stdout).toContain(`${dsnames.length} data set(s) downloaded successfully to ${testDir}`);
 
             for (const apiResp of result.data.apiResponse) {
-                expect(apiResp.status).toContain("Data set downloaded successfully.");
+                expect(apiResp.status).toContain("Member(s) downloaded successfully.");
                 expect(apiResp.status).toContain("Destination:");
                 expect(apiResp.status).toContain(testDir);
                 expect(apiResp.status).toContain("Members:  TEST;");

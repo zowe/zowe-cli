@@ -210,8 +210,7 @@ export class Download {
                 volume: options.volume,
                 responseTimeout: options.responseTimeout
             });
-
-            const memberList: Array<{ member: string }> = response.apiResponse.items;
+            const memberList: Array<{ member: string }> = options.memberPatternResponse ?? response.apiResponse.items;
             if (memberList.length === 0) {
                 return {
                     success: false,
@@ -298,7 +297,7 @@ export class Download {
 
             return {
                 success: true,
-                commandResponse: util.format(ZosFilesMessages.datasetDownloadedWithDestination.message, baseDir),
+                commandResponse: util.format(ZosFilesMessages.memberDownloadedWithDestination.message, baseDir),
                 apiResponse: response.apiResponse
             };
 
@@ -308,6 +307,7 @@ export class Download {
             throw error;
         }
     }
+
 
     /**
      * Download a list of data sets to local files

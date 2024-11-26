@@ -9,9 +9,9 @@
 *
 */
 
-export * from "./doc/ISearchMatchLocation";
-export * from "./doc/ISearchItem";
-export * from "./doc/ISearchOptions";
-export * from "./doc/ISearchResponse";
+import { IZosFilesResponse } from "../../../doc/IZosFilesResponse";
+import { ISearchItem } from "./ISearchItem";
 
-export * from "./Search";
+export interface ISearchResponse extends IZosFilesResponse {
+    apiResponse?: ISearchItem[];
+}

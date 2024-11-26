@@ -1,0 +1,31 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Download AllMembersMatching handler should download matching members if requested 1`] = `
+"
+listed
+"
+`;
+
+exports[`Download AllMembersMatching handler should download matching members if requested 2`] = `"downloaded"`;
+
+exports[`Download AllMembersMatching handler should download matching members if requested 3`] = `
+Object {
+  "commandResponse": "downloaded",
+  "success": true,
+}
+`;
+
+exports[`Download AllMembersMatching handler should handle generation of an exclusion list 1`] = `
+"
+listed
+"
+`;
+
+exports[`Download AllMembersMatching handler should handle generation of an exclusion list 2`] = `"downloaded"`;
+
+exports[`Download AllMembersMatching handler should handle generation of an exclusion list 3`] = `
+Object {
+  "commandResponse": "downloaded",
+  "success": true,
+}
+`;
