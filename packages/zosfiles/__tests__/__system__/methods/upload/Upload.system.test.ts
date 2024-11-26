@@ -719,7 +719,7 @@ describe("Upload USS file", () => {
     });
 
     afterAll(async () => {
-        await TestEnvironment.cleanUp(testEnvironment);
+        //await TestEnvironment.cleanUp(testEnvironment);
     });
 
     describe("Success Scenarios", () => {
@@ -755,11 +755,14 @@ describe("Upload USS file", () => {
             let error;
             let uploadResponse;
             let getResponse;
+            let tagResponse;
+
             const data: Buffer = Buffer.from(testdata);
 
             try {
                 uploadResponse = await Upload.bufferToUssFile(REAL_SESSION, ussname, data, { binary: true });
                 getResponse = await Get.USSFile(REAL_SESSION, ussname, {binary: true});
+                tagResponse = await Utilities.isFileTagBinOrAscii(REAL_SESSION, ussname);
             } catch (err) {
                 error = err;
                 Imperative.console.info("Error: " + inspect(error));
@@ -767,7 +770,7 @@ describe("Upload USS file", () => {
 
             expect(error).toBeFalsy();
             expect(getResponse).toEqual(Buffer.from(data.toString()));
-
+            expect(tagResponse).toBe(true);
         });
         it("should upload a USS file from local file", async () => {
             let error;

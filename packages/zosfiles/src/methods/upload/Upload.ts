@@ -457,6 +457,7 @@ export class Upload {
         ImperativeExpect.toNotBeEqual(options.record, true, ZosFilesMessages.unsupportedDataType.message);
         options.binary = options.binary ? options.binary : false;
         ImperativeExpect.toNotBeNullOrUndefined(ussname, ZosFilesMessages.missingUSSFileName.message);
+        const origUssname = ussname;
         ussname = ZosFilesUtils.sanitizeUssPathForRestCall(ussname);
 
         const endpoint = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + ussname;
@@ -485,6 +486,12 @@ export class Upload {
         // Return Etag in apiResponse, if requested
         if (options.returnEtag) {
             apiResponse.etag = uploadRequest.response.headers.etag;
+        }
+
+        if (options.encoding != null) {
+            await Utilities.chtag(session, origUssname, Tag.TEXT, options.encoding);
+        } else if (options.binary) {
+            await Utilities.chtag(session, origUssname, Tag.BINARY);
         }
 
         return {
