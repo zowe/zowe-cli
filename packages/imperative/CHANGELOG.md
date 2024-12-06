@@ -2,6 +2,11 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Fixed an issue where the `ProfileInfo.profileManagerWillLoad` method failed if profiles were not yet read from disk. [#2284](https://github.com/zowe/zowe-cli/issues/2284)
+- BugFix: Fixed an issue where the `ProfileInfo.updateKnownProperty` method could rewrite team config file to disk without any changes when storing secure value. [#2324](https://github.com/zowe/zowe-cli/issues/2324)
+
 ## `5.27.4`
 
 - BugFix: Updated the `cross-spawn` dependency for technical currency. [#2374](https://github.com/zowe/zowe-cli/pull/2374)

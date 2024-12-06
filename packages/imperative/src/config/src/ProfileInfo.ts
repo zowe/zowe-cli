@@ -316,8 +316,13 @@ export class ProfileInfo {
                     this.getTeamConfig().api.layers.activate(osLoc.user, osLoc.global);
                 }
 
+                const updateVaultOnly = options.setSecure && this.getTeamConfig().api.secure.secureFields().includes(toUpdate.argLoc.jsonLoc);
                 this.getTeamConfig().set(toUpdate.argLoc.jsonLoc, options.value, { secure: options.setSecure });
-                await this.getTeamConfig().save(false);
+                if (!updateVaultOnly) {
+                    await this.getTeamConfig().save(false);
+                } else {
+                    await this.getTeamConfig().api.secure.save(false);
+                }
 
                 if (oldLayer) {
                     this.getTeamConfig().api.layers.activate(oldLayer.user, oldLayer.global);
@@ -1005,13 +1010,15 @@ export class ProfileInfo {
 
     //_________________________________________________________________________
     /**
-     * Function to ensure the credential manager will load successfully
-     * Returns true if it will load, or the credentials are not secured. Returns false if it will not load.
+     * Checks whether the credential manager will load successfully.
+     * @returns
+     *     True if it loaded successfully, or there is no credential manager
+     *     configured in Imperative settings.json
      */
     public async profileManagerWillLoad(): Promise<boolean> {
-        if (this.mCredentials.isSecured) {
+        if (this.mCredentials.isCredentialManagerInAppSettings()) {
             try {
-                await this.mCredentials.loadManager();
+                await this.mCredentials.activateCredMgrOverride();
                 return true;
             } catch (err) {
                 this.mImpLogger.warn("Failed to initialize secure credential manager: " + err.message);

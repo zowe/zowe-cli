@@ -27,7 +27,7 @@ import { ImperativeError } from "../../../error";
 import { Arguments } from "yargs";
 import { CommandResponse } from "../response/CommandResponse";
 import { ICommandHandlerRequire } from "../doc/handler/ICommandHandlerRequire";
-import { ICommandHandler } from "../../src/doc/handler/ICommandHandler";
+import { ICommandHandler } from "../doc/handler/ICommandHandler";
 import { ICommandProfileTypeConfiguration } from "../doc/profiles/definition/ICommandProfileTypeConfiguration";
 import { CommandProfiles } from "./CommandProfiles";
 import { ICommandProfileProperty } from "../doc/profiles/definition/ICommandProfileProperty";

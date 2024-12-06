@@ -25,6 +25,7 @@ module.exports = {
             ],
             "rules": {
                 "@typescript-eslint/no-magic-numbers": "off",
+                "@typescript-eslint/no-restricted-imports": "off",
                 "jest/expect-expect": ["warn", {
                     "assertFunctionNames": ["expect*", "**.*expect*"]
                 }],
@@ -62,6 +63,11 @@ module.exports = {
             "ignoreDefaultValues": true,
             "ignoreEnums": true,
             "ignoreReadonlyClassProperties": true
+        }],
+        "@typescript-eslint/no-restricted-imports": ["error", {
+            "patterns": [{
+                "group": ["**/../lib", "**/../src"]
+            }]
         }],
         "@typescript-eslint/no-unused-vars": "off",
         "@typescript-eslint/no-var-requires": "off",

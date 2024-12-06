@@ -17,7 +17,7 @@ import { CommandUtils } from "../utils/CommandUtils";
 import { ImperativeError } from "../../../error";
 import { IHelpGeneratorParms } from "./doc/IHelpGeneratorParms";
 import { IHelpGeneratorFactoryParms } from "./doc/IHelpGeneratorFactoryParms";
-import { compareCommands, ICommandDefinition } from "../../src/doc/ICommandDefinition";
+import { compareCommands, ICommandDefinition } from "../doc/ICommandDefinition";
 import stripAnsi = require("strip-ansi");
 
 /**
