@@ -1676,7 +1676,7 @@ describe("z/OS Files - Upload", () => {
 
             expect(error).toBeUndefined();
             expect(USSresponse).toBeDefined();
-
+            expect(chtagSpy).toHaveBeenCalled();
             expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
             expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, { reqHeaders: headers, resource: endpoint, writeData: data });
         });
