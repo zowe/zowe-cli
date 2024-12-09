@@ -483,7 +483,7 @@ export class Upload {
         // By default, apiResponse is empty when uploading
         const apiResponse: any = {
             success: true,
-            buffer: fileBuffer,
+            bufferContents: fileBuffer.toString(),
             to: ussname
         };;
 
