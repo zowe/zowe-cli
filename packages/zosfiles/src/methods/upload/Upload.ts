@@ -481,7 +481,11 @@ export class Upload {
         const uploadRequest: IRestClientResponse = await ZosmfRestClient.putExpectFullResponse(session, requestOptions);
 
         // By default, apiResponse is empty when uploading
-        const apiResponse: any = {};
+        const apiResponse: any = {
+            success: true,
+            buffer: fileBuffer,
+            to: ussname
+        };;
 
         // Return Etag in apiResponse, if requested
         if (options.returnEtag) {
@@ -897,7 +901,6 @@ export class Upload {
      */
     private static get log(): Logger {
         return Logger.getAppLogger();
-        // return Logger.getConsoleLogger();
     }
 
 
@@ -922,7 +925,6 @@ export class Upload {
         const response: IUploadDir[] = [];
         if (Upload.hasDirs(dirPath)) {
             const directories = fs.readdirSync(dirPath).filter((file) => IO.isDir(path.normalize(path.join(dirPath, file))));
-            // directories = directories.filter((file) => IO.isDir(path.normalize(path.join(dirPath, file))));
             for (let index = 0; index < directories.length; index++) {
                 const dirFullPath = path.normalize(path.join(dirPath, directories[index]));
                 response.push({
