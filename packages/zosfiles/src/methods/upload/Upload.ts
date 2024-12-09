@@ -485,7 +485,7 @@ export class Upload {
             success: true,
             bufferContents: fileBuffer.toString(),
             to: ussname
-        };;
+        };
 
         // Return Etag in apiResponse, if requested
         if (options.returnEtag) {
