@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Corrected the `Upload.BufferToUssFile()` SDK function to properly tag uploaded files. [#2378](https://github.com/zowe/zowe-cli/pull/2378)
+
 ## `8.9.0`
 
 - Enhancement: Added a `List.membersMatchingPattern` method to download all members that match a specific pattern.[#2359](https://github.com/zowe/zowe-cli/pull/2359)

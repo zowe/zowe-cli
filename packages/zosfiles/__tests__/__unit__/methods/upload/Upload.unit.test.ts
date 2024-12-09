@@ -1661,6 +1661,9 @@ describe("z/OS Files - Upload", () => {
             expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, { reqHeaders: headers, resource: endpoint, writeData: data });
         });
         it("should return with proper response when upload USS file in binary", async () => {
+            const chtagSpy = jest.spyOn(Utilities, "chtag");
+            chtagSpy.mockImplementation(async (): Promise<any> => null);
+
             const data: Buffer = Buffer.from("testing");
             const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, dsName);
             const headers = [ZosmfHeaders.OCTET_STREAM, ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.ACCEPT_ENCODING];
@@ -1673,7 +1676,7 @@ describe("z/OS Files - Upload", () => {
 
             expect(error).toBeUndefined();
             expect(USSresponse).toBeDefined();
-
+            expect(chtagSpy).toHaveBeenCalled();
             expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
             expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, { reqHeaders: headers, resource: endpoint, writeData: data });
         });
