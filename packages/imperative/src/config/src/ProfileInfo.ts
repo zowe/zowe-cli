@@ -597,6 +597,10 @@ export class ProfileInfo {
             if (osLoc?.global) {
                 layerProperties = this.mLoadedConfig.findLayer(osLoc.user, osLoc.global)?.properties;
                 realBaseProfileName = layerProperties?.defaults.base;
+                if (!realBaseProfileName && osLoc.user) {
+                    layerProperties = this.mLoadedConfig.findLayer(false, osLoc.global)?.properties;
+                    realBaseProfileName = layerProperties?.defaults.base;
+                }
                 if (realBaseProfileName) baseProfile = this.mLoadedConfig.api.profiles.buildProfile(realBaseProfileName, layerProperties?.profiles);
                 else baseProfile = null;
             }
