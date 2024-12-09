@@ -184,7 +184,11 @@ export class Upload {
         const uploadRequest: IRestClientResponse = await ZosmfRestClient.putExpectFullResponse(session, requestOptions);
 
         // By default, apiResponse is empty when uploading
-        const apiResponse: any = {};
+        const apiResponse: any = {
+            success: true,
+            from: "Buffer<>",
+            to: dataSetName
+        };
 
         // Return Etag in apiResponse, if requested
         if (options.returnEtag) {
@@ -242,7 +246,11 @@ export class Upload {
         const uploadRequest: IRestClientResponse = await ZosmfRestClient.putExpectFullResponse(session, requestOptions);
 
         // By default, apiResponse is empty when uploading
-        const apiResponse: any = {};
+        const apiResponse: any = {
+            success: true,
+            from: "Stream<>",
+            to: dataSetName
+        };
 
         // Return Etag in apiResponse, if requested
         if (options.returnEtag) {
@@ -481,7 +489,11 @@ export class Upload {
         const uploadRequest: IRestClientResponse = await ZosmfRestClient.putExpectFullResponse(session, requestOptions);
 
         // By default, apiResponse is empty when uploading
-        const apiResponse: any = {};
+        const apiResponse: any = {
+            success: true,
+            from: "Buffer<>",
+            to: ussname
+        };
 
         // Return Etag in apiResponse, if requested
         if (options.returnEtag) {
@@ -541,7 +553,11 @@ export class Upload {
         }
 
         // By default, apiResponse is empty when uploading
-        const apiResponse: any = {};
+        const apiResponse: any = {
+            success: true,
+            from: "Stream<>",
+            to: ussname
+        };
 
         // Return Etag in apiResponse, if requested
         if (options.returnEtag) {
