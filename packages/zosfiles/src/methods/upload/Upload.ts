@@ -489,10 +489,11 @@ export class Upload {
         const uploadRequest: IRestClientResponse = await ZosmfRestClient.putExpectFullResponse(session, requestOptions);
 
         // By default, apiResponse is empty when uploading
-        const apiResponse: any = {
+        const apiResponse: any = 
+        {
             success: true,
             from: "Buffer<>",
-            to: ussname
+            to: origUssname
         };
 
         // Return Etag in apiResponse, if requested
@@ -556,7 +557,7 @@ export class Upload {
         const apiResponse: any = {
             success: true,
             from: "Stream<>",
-            to: ussname
+            to: origUssname
         };
 
         // Return Etag in apiResponse, if requested
