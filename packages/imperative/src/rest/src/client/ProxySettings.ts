@@ -45,20 +45,17 @@ export class ProxySettings {
      */
     public static getProxyAgent(session: ISession): Agent | undefined {
         const proxySetting = this.getProxySettings(session);
-        const proxyUrl = proxySetting.proxyUrl;
-        const proxyAuthorizationHeader = proxySetting.authSetting;
+        const proxyOptions = {} as ProxyOptions;
+        const authHeader = ProxySettings.getProxyAuthHeader(proxySetting);
+        if(authHeader) {
+            proxyOptions.headers = authHeader;
+        }
         if (proxySetting?.protocol === HTTP_PROTOCOL) {
-            const proxyAgentOptions = proxyAuthorizationHeader
-            ? { headers: { 'Proxy-Authorization': proxyAuthorizationHeader } }
-            : undefined;
-            return new HttpProxyAgent(proxyUrl, proxyAgentOptions);
+            return new HttpProxyAgent(proxySetting.proxyUrl, proxyOptions);
         }
         if (proxySetting?.protocol === HTTPS_PROTOCOL) {
-            const proxyAgentOptions = {
-                rejectUnauthorized: session.rejectUnauthorized ?? true,
-                headers: { 'Proxy-Authorization': proxyAuthorizationHeader }
-            };
-            return new HttpsProxyAgent(proxyUrl, proxyAgentOptions);
+            proxyOptions.rejectUnauthorized = session.rejectUnauthorized ?? true;
+            return new HttpsProxyAgent(proxySetting.proxyUrl, proxyOptions);
         }
     }
 
@@ -94,6 +91,12 @@ export class ProxySettings {
             return true;
         }
         return false;
+    }
+
+    private static getProxyAuthHeader(proxySetting: ProxySetting): { [key: string]: string } | undefined {
+        return proxySetting.authSetting
+        ? { 'Proxy-Authorization': proxySetting.authSetting }
+        : undefined;
     }
 
     /**
@@ -189,4 +192,9 @@ interface ProxySetting {
     proxyUrl: URL,
     protocol: HTTP_PROTOCOL_CHOICES,
     authSetting?: string
+}
+
+interface ProxyOptions {
+    headers?: { [key: string]: string },
+    rejectUnauthorized?: boolean
 }
