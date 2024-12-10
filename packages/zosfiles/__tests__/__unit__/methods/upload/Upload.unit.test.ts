@@ -749,6 +749,7 @@ describe("z/OS Files - Upload", () => {
 
             expect(error).toBeUndefined();
             expect(response).toBeDefined();
+            expect(response.apiResponse).toMatchObject({"from": "Stream<>", "success": true, "to": dsName});
 
             expect(zosmfPutFullSpy).toHaveBeenCalledTimes(1);
             expect(zosmfPutFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
@@ -1832,6 +1833,7 @@ describe("z/OS Files - Upload", () => {
 
             expect(error).toBeUndefined();
             expect(USSresponse).toBeDefined();
+            expect(USSresponse.apiResponse).toMatchObject({"from": "Stream<>", "success": true, "to": dsName});
             expect(USSresponse.success).toBeTruthy();
 
             expect(zosmfExpectFullSpy).toHaveBeenCalledTimes(1);
