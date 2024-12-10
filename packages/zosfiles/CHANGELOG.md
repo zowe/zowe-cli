@@ -4,6 +4,7 @@ All notable changes to the Zowe z/OS files SDK package will be documented in thi
 
 ## Recent Changes
 
+- BugFix: Corrected the `apiResponse` response value from `streamToDataSet()`,`streamToUss()`,`bufferToUss()` and `bufferToDataSet()` on the Upload SDK. [#2381](https://github.com/zowe/zowe-cli/pull/2381)
 - BugFix: Corrected the `Upload.BufferToUssFile()` SDK function to properly tag uploaded files. [#2378](https://github.com/zowe/zowe-cli/pull/2378)
 
 ## `8.9.0`
