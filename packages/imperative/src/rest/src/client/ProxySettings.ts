@@ -45,12 +45,17 @@ export class ProxySettings {
      */
     public static getProxyAgent(session: ISession): Agent | undefined {
         const proxySetting = this.getProxySettings(session);
+        const proxyOptions = {} as ProxyOptions;
+        const authHeader = ProxySettings.getProxyAuthHeader(proxySetting);
+        if(authHeader) {
+            proxyOptions.headers = authHeader;
+        }
         if (proxySetting?.protocol === HTTP_PROTOCOL) {
-            return new HttpProxyAgent(proxySetting.proxyUrl);
+            return new HttpProxyAgent(proxySetting.proxyUrl, proxyOptions);
         }
         if (proxySetting?.protocol === HTTPS_PROTOCOL) {
-            return new HttpsProxyAgent(proxySetting.proxyUrl,
-                { rejectUnauthorized: session.rejectUnauthorized ?? true });
+            proxyOptions.rejectUnauthorized = session.rejectUnauthorized ?? true;
+            return new HttpsProxyAgent(proxySetting.proxyUrl, proxyOptions);
         }
     }
 
@@ -88,6 +93,12 @@ export class ProxySettings {
         return false;
     }
 
+    private static getProxyAuthHeader(proxySetting: ProxySetting): { [key: string]: string } | undefined {
+        return proxySetting.authSetting
+        ? { 'Proxy-Authorization': proxySetting.authSetting }
+        : undefined;
+    }
+
     /**
      * Parses environment variables for proxy servers.
      * @private
@@ -109,6 +120,11 @@ export class ProxySettings {
             envVariable = session.proxy?.https_proxy ?? this.getHttpsEnvVariables();
         }
         const proxyUrl = this.checkUrl(envVariable);
+
+        const authSetting = session.proxy?.proxy_authorization;
+        if (authSetting) {
+            return {proxyUrl, protocol, authSetting};
+        }
         if (proxyUrl) {
             return {proxyUrl, protocol};
         }
@@ -174,5 +190,11 @@ export class ProxySettings {
  */
 interface ProxySetting {
     proxyUrl: URL,
-    protocol: HTTP_PROTOCOL_CHOICES
+    protocol: HTTP_PROTOCOL_CHOICES,
+    authSetting?: string
+}
+
+interface ProxyOptions {
+    headers?: { [key: string]: string },
+    rejectUnauthorized?: boolean
 }
