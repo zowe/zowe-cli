@@ -1,0 +1,15 @@
+name: Merge-by
+
+on:
+  pull_request:
+    types: [opened, ready_for_review]
+jobs:
+    rfr_add_date:
+        name: "Post merge-by date as comment"
+        runs-on: ubuntu-latest
+        permissions:
+            pull-requests: write
+        steps:
+            - uses: zowe-actions/shared-actions/merge-by@main
+              with:
+                operation: "bump-dates"
