@@ -489,7 +489,7 @@ export class Upload {
         const uploadRequest: IRestClientResponse = await ZosmfRestClient.putExpectFullResponse(session, requestOptions);
 
         // By default, apiResponse is empty when uploading
-        const apiResponse: any = 
+        const apiResponse: any =
         {
             success: true,
             from: "Buffer<>",

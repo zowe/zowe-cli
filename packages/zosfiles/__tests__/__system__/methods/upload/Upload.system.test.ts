@@ -315,11 +315,10 @@ describe("Upload Data Set", () => {
                 let uploadResponse;
                 let getResponse;
                 const data: Buffer = Buffer.from(testdata);
-                dsname = dsname+("(TEST)");
 
                 try {
-                    uploadResponse = await Upload.bufferToDataSet(REAL_SESSION, data, dsname);
-                    getResponse = await Get.dataSet(REAL_SESSION, dsname);
+                    uploadResponse = await Upload.bufferToDataSet(REAL_SESSION, data, dsname+"(TEST)");
+                    getResponse = await Get.dataSet(REAL_SESSION, dsname+"(TEST)");
                 } catch (err) {
                     error = err;
                     Imperative.console.info("Error: " + inspect(error));
@@ -327,7 +326,7 @@ describe("Upload Data Set", () => {
 
                 expect(error).toBeFalsy();
 
-                expect(uploadResponse.apiResponse).toMatchObject({"success": true, "from": "Buffer<>","to": dsname});
+                expect(uploadResponse.apiResponse).toMatchObject({"success": true, "from": "Buffer<>","to": dsname+"(TEST)"});
                 expect(Buffer.from(getResponse.toString().trim())).toEqual(data);
             });
 
@@ -339,11 +338,10 @@ describe("Upload Data Set", () => {
                 const inputStream = new Readable();
                 inputStream.push(testdata);
                 inputStream.push(null);
-                dsname = dsname+("(TEST)");
 
                 try {
-                    uploadResponse = await Upload.streamToDataSet(REAL_SESSION, inputStream, dsname);
-                    getResponse = await Get.dataSet(REAL_SESSION, dsname);
+                    uploadResponse = await Upload.streamToDataSet(REAL_SESSION, inputStream, dsname+"(TEST)");
+                    getResponse = await Get.dataSet(REAL_SESSION, dsname+"(TEST)");
                 } catch (err) {
                     error = err;
                     Imperative.console.info("Error: " + inspect(error));
@@ -351,7 +349,7 @@ describe("Upload Data Set", () => {
 
                 expect(error).toBeFalsy();
 
-                expect(uploadResponse.apiResponse).toMatchObject({"success": true, "from": "Stream<>","to": dsname});
+                expect(uploadResponse.apiResponse).toMatchObject({"success": true, "from": "Stream<>","to": dsname+"(TEST)"});
                 expect(getResponse.toString().trim()).toEqual(testdata);
             });
 
