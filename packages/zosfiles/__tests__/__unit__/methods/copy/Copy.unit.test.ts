@@ -11,11 +11,13 @@
 
 import { Session, ImperativeError } from "@zowe/imperative";
 import { posix } from "path";
-
+import * as fs from "fs";
 import { error } from "console";
 
-import { Copy, Create, Get, List, Upload, ZosFilesConstants, ZosFilesMessages, IZosFilesResponse } from "../../../../src";
+import { Copy, Create, Get, List, Upload, ZosFilesConstants, ZosFilesMessages, IZosFilesResponse, Download, ZosFilesUtils } from "../../../../src";
 import { ZosmfHeaders, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
+import { tmpdir } from "os";
+import path = require("path");
 
 describe("Copy", () => {
     const dummySession = new Session({
@@ -29,6 +31,8 @@ describe("Copy", () => {
 
     describe("Data Set", () => {
         const copyExpectStringSpy = jest.spyOn(ZosmfRestClient, "putExpectString");
+        let copyPDSSpy = jest.spyOn(Copy, "copyPDS");
+        let isPDSSpy: jest.SpyInstance;
         const fromDataSetName = "USER.DATA.FROM";
         const fromMemberName = "mem1";
         const toDataSetName = "USER.DATA.TO";
@@ -39,6 +43,12 @@ describe("Copy", () => {
             copyExpectStringSpy.mockImplementation(async () => {
                 return "";
             });
+            copyPDSSpy.mockClear();
+            copyPDSSpy = jest.spyOn(Copy, "copyPDS").mockResolvedValue({
+                success:true,
+                commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message,
+            });
+            isPDSSpy = jest.spyOn(Copy as any, "isPDS").mockResolvedValue(true);
         });
 
         describe("Success Scenarios", () => {
@@ -438,6 +448,28 @@ describe("Copy", () => {
                     expect(lastArgumentOfCall).toHaveProperty("replace", false);
                 });
             });
+            describe("Partitioned > Partitioned", () => {
+                it("should call copyPDS to copy members of source PDS to target PDS", async () => {
+                    const response = await Copy.dataSet(
+                        dummySession,
+                        {dsn: toDataSetName},
+                        {"from-dataset": {
+                            dsn:fromDataSetName
+                        }}
+                    );
+                    expect(isPDSSpy).toHaveBeenCalledTimes(2);
+                    expect(isPDSSpy).toHaveBeenNthCalledWith(1, dummySession, fromDataSetName);
+                    expect(isPDSSpy).toHaveBeenNthCalledWith(2, dummySession, toDataSetName);
+
+                    expect(copyPDSSpy).toHaveBeenCalledTimes(1);
+                    expect(copyPDSSpy).toHaveBeenCalledWith(dummySession, fromDataSetName, toDataSetName);
+
+                    expect(response).toEqual({
+                        success: true,
+                        commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message
+                    });
+                });
+            });
         });
         describe("Failure Scenarios", () => {
             it("should fail if the zOSMF REST client fails", async () => {
@@ -512,6 +544,41 @@ describe("Copy", () => {
 
                 expect(error.message).toContain("Required object must be defined");
             });
+        });
+    });
+
+    describe("Copy Partitioned Data Set", () => {
+        const listAllMembersSpy   = jest.spyOn(List, "allMembers");
+        const downloadAllMembersSpy = jest.spyOn(Download, "allMembers");
+        const uploadSpy = jest.spyOn(Upload, "streamToDataSet");
+        const fileListPathSpy = jest.spyOn(ZosFilesUtils, "getFileListFromPath");
+        const fromDataSetName = "USER.DATA.FROM";
+        const toDataSetName = "USER.DATA.TO";
+        it("should successfully copy members from source to target PDS", async () => {
+            // listAllMembersSpy.mockImplementation(async (): Promise<any> => ({
+            //     apiResponse: {
+            //         items: [
+            //             {member: "mem1"},
+            //             {member: "mem2"}
+            //         ]
+            //     }
+            // }));
+            // downloadAllMembersSpy.mockImplementation(async (): Promise<any> => undefined);
+
+            // uploadSpy.mockImplementation(async (): Promise<any> => undefined);
+
+            // const response = await Copy.copyPDS(dummySession, fromDataSetName, toDataSetName);
+            // // const downloadDir = path.join(tmpdir(), fromDataSetName);
+            // expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, fromDataSetName);
+            // expect(downloadAllMembersSpy).toHaveBeenCalled();
+            // // expect(fileListPathSpy).toHaveBeenCalledWith(path.join(tmpdir(), fromDataSetName));
+            // expect(uploadSpy).toHaveBeenCalledTimes(2);
+
+            // // expect(fs.rmSync).toHaveBeenCalled();
+            // expect(response).toEqual({
+            //     success: true,
+            //     commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message,
+            // });
         });
     });
 

@@ -10,14 +10,18 @@
 */
 
 import { Create, Upload, Delete, CreateDataSetTypeEnum, Copy, ZosFilesMessages, Get, IDataSet,
-    ICrossLparCopyDatasetOptions, IGetOptions, IZosFilesResponse } from "../../../../src";
-import { Imperative, Session } from "@zowe/imperative";
+    ICrossLparCopyDatasetOptions, IGetOptions, IZosFilesResponse, 
+    ZosFilesUtils} from "../../../../src";
+import { Imperative, IO, Session } from "@zowe/imperative";
 import { inspect } from "util";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { join } from "path";
 import { readFileSync } from "fs";
 import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/ITestEnvironment";
+import { tmpdir } from "os";
+import path = require("path");
+import * as fs from "fs";
 
 let REAL_SESSION: Session;
 let REAL_TARGET_SESSION: Session;
@@ -78,6 +82,56 @@ describe("Copy", () => {
                             REAL_SESSION,
                             { dsn: toDataSetName },
                             { "from-dataset": { dsn: fromDataSetName } }
+                        );
+                        contents1 = await Get.dataSet(REAL_SESSION, fromDataSetName);
+                        contents2 = await Get.dataSet(REAL_SESSION, toDataSetName);
+                        Imperative.console.info(`Response: ${inspect(response)}`);
+                    } catch (err) {
+                        error = err;
+                        Imperative.console.info(`Error: ${inspect(err)}`);
+                    }
+
+                    expect(error).toBeFalsy();
+
+                    expect(response).toBeTruthy();
+                    expect(response.success).toBe(true);
+                    expect(response.commandResponse).toContain(ZosFilesMessages.datasetCopiedSuccessfully.message);
+
+                    expect(contents1).toBeTruthy();
+                    expect(contents2).toBeTruthy();
+                    expect(contents1.toString()).toEqual(contents2.toString());
+                });
+            });
+            describe("Partioned > Partioned", () => {
+                beforeEach(async () => {
+                    try {
+                        const downloadDir = path.join(tmpdir(), fromDataSetName);
+                        fs.mkdirSync(downloadDir, { recursive: true });
+                        const mockFile = path.join(downloadDir, "mockFile.txt");
+                        fs.writeFileSync(mockFile, "test file content");
+
+                        const uploadFileList: string[] = ZosFilesUtils.getFileListFromPath(downloadDir);
+                        const stream = IO.createReadStream(uploadFileList[0]);
+                        await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, fromDataSetName);
+                        await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, toDataSetName);
+                        await Upload.streamToDataSet(REAL_SESSION, stream, fromDataSetName);
+                    } catch (err) {
+                        Imperative.console.info(`Error: ${inspect(err)}`);
+                    }
+                });
+                it("Should copy a partitioned data set", async () => {
+                    let error;
+                    let response;
+                    let contents1;
+                    let contents2;
+
+                    try {
+                        response = await Copy.dataSet(
+                            REAL_SESSION,
+                            {dsn: toDataSetName},
+                            {"from-dataset": {
+                                dsn:fromDataSetName
+                            }}
                         );
                         contents1 = await Get.dataSet(REAL_SESSION, fromDataSetName);
                         contents2 = await Get.dataSet(REAL_SESSION, toDataSetName);

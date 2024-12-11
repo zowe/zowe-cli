@@ -9,10 +9,10 @@
 *
 */
 
-import { AbstractSession, ImperativeError, ImperativeExpect, ITaskWithStatus, Logger, Headers,
-    IHeaderContent, TaskStage } from "@zowe/imperative";
+import { AbstractSession, ImperativeError, ImperativeExpect, ITaskWithStatus,
+    Logger, Headers, IHeaderContent, TaskStage, IO} from "@zowe/imperative";
 import { posix } from "path";
-
+import * as fs from "fs";
 import { Create, CreateDataSetTypeEnum, ICreateDataSetOptions } from "../create";
 import { Get } from "../get";
 import { Upload } from "../upload";
@@ -26,6 +26,10 @@ import { IZosmfListResponse } from "../list/doc/IZosmfListResponse";
 import { IDataSet } from "../../doc/IDataSet";
 import { ICopyDatasetOptions } from "./doc/ICopyDatasetOptions";
 import { ICrossLparCopyDatasetOptions } from "./doc/ICrossLparCopyDatasetOptions";
+import { Download } from "../download";
+import { ZosFilesUtils } from "../../utils/ZosFilesUtils";
+import { tmpdir } from "os";
+import path = require("path");
 /**
  * This class holds helper functions that are used to copy the contents of datasets through the
  * z/OSMF APIs.
@@ -53,6 +57,12 @@ export class Copy {
         ImperativeExpect.toBeDefinedAndNonBlank(options["from-dataset"].dsn, "fromDataSetName");
         ImperativeExpect.toBeDefinedAndNonBlank(toDataSetName, "toDataSetName");
 
+        const sourceIsPds = await Copy.isPDS(session, options["from-dataset"].dsn);
+        const targetIsPds = await Copy.isPDS(session, toDataSetName);
+
+        if(sourceIsPds && targetIsPds) {
+            return await Copy.copyPDS(session, options["from-dataset"].dsn, toDataSetName);
+        }
         const endpoint: string = posix.join(
             ZosFilesConstants.RESOURCE,
             ZosFilesConstants.RES_DS_FILES,
@@ -93,6 +103,76 @@ export class Copy {
         }
     }
 
+    /**
+     * Private function that checks if a dataset is type PDS
+    **/
+    private static async isPDS(
+        session: AbstractSession,
+        dataSetName: string
+    ): Promise<boolean> {
+        try {
+            const response = await List.dataSet(session, dataSetName, {attributes: true});
+            const dsntp = response.apiResponse.items[0].dsntp;
+            const dsorg = response.apiResponse.items[0].dsorg;
+            return dsntp === "PDS" && dsorg === "PO";
+        }
+        catch(error) {
+            Logger.getAppLogger().error(error);
+            throw error;
+        }
+    }
+
+    /**
+     * Copy the members of a Partitioned dataset into another Partitioned dataset
+     *
+     * @param {AbstractSession}   session        - z/OSMF connection info
+     * @param {IDataSet}          toDataSet      - The data set to copy to
+     * @param {IDataSetOptions}   options        - Options
+     *
+     * @returns {Promise<IZosFilesResponse>} A response indicating the status of the copying
+     *
+     * @throws {ImperativeError} Data set name must be specified as a non-empty string
+     * @throws {Error} When the {@link ZosmfRestClient} throws an error
+     *
+     * @see https://www.ibm.com/support/knowledgecenter/en/SSLTBW_2.1.0/com.ibm.zos.v2r1.izua700/IZUHPINFO_API_PutDataSetMemberUtilities.htm
+     */
+
+    public static async copyPDS (
+        session: AbstractSession,
+        fromPds: string,
+        toPds: string
+    ): Promise<IZosFilesResponse> {
+        try {
+            const sourceResponse = await List.allMembers(session, fromPds);
+            const sourceMemberList: Array<{ member: string }> = sourceResponse.apiResponse.items;
+
+            if(sourceMemberList.length == 0) {
+                return {
+                    success: false,
+                    commandResponse: `Source dataset (${fromPds}) - ` + ZosFilesMessages.noMembersFound.message
+                };
+            }
+
+            const downloadDir = path.join(tmpdir(), fromPds);
+            await Download.allMembers(session, fromPds, {directory:downloadDir});
+            const uploadFileList: string[] = ZosFilesUtils.getFileListFromPath(downloadDir);
+
+            for (const file of uploadFileList) {
+                const uploadingDsn = `${toPds}(${ZosFilesUtils.generateMemberName(file)})`;
+                const uploadStream = IO.createReadStream(file);
+                await Upload.streamToDataSet(session, uploadStream, uploadingDsn);
+            }
+            fs.rmSync(downloadDir, {recursive: true});
+            return {
+                success:true,
+                commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message
+            };
+        }
+        catch (error) {
+            Logger.getAppLogger().error(error);
+            throw error;
+        }
+    }
 
     /**
      * Copy the contents of a dataset from one LPAR to another LPAR
