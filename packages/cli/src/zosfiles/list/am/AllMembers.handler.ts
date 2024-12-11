@@ -26,7 +26,6 @@ export default class AllMembersHandler extends ZosFilesBaseHandler {
             pattern: commandParameters.arguments.pattern,
             responseTimeout: commandParameters.arguments.responseTimeout
         });
-
         const invalidMemberCount = response.apiResponse.returnedRows - response.apiResponse.items.length;
         if (invalidMemberCount > 0) {
             const invalidMemberMsg = `${invalidMemberCount} members failed to load due to invalid name errors`;
