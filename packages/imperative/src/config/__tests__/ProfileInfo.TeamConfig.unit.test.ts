@@ -38,6 +38,7 @@ const testEnvPrefix = testAppNm.toUpperCase();
 const profileTypes = ["zosmf", "tso", "base", "dummy"];
 const testDir = path.join(__dirname, "__resources__");
 const teamProjDir = path.join(testDir, testAppNm + "_team_config_proj");
+const teamProjBaseTest = path.join(testDir, testAppNm + "_team_config_proj_base");
 
 function createNewProfInfo(newDir: string, opts?: IProfOpts): ProfileInfo {
     // create a new ProfileInfo in the desired directory
@@ -955,6 +956,37 @@ describe("TeamConfig ProfileInfo tests", () => {
 
             expect(caughtError).toBeDefined();
             expect(caughtError.message).toContain("Profile attributes must be defined");
+        });
+        it("should fall back to layerProperties when realBaseProfileName is undefined", async () => {
+            const profInfo = createNewProfInfo(teamProjDir);
+            await profInfo.readProfilesFromDisk();
+
+            // Simulate the condition where the active layer has no `defaults.base` but global and user layers exist
+            const layerActive = profInfo.getTeamConfig().layerActive();
+            delete layerActive.properties.defaults.base;
+
+            const globalLayer = profInfo.getTeamConfig().findLayer(false, true);
+            globalLayer.properties.defaults.base = "globalBaseProfile";
+
+            const userLayer = profInfo.getTeamConfig().findLayer(true, true);
+            userLayer.properties.defaults.base = "";
+
+            const profAttrs = profInfo.getDefaultProfile("zosmf") as IProfAttrs;
+
+            // Merge args to trigger the logic
+            const mergedArgs = profInfo.mergeArgsForProfile(profAttrs);
+
+            // Expected args should include those from the global base profile
+            const expectedArgs = [
+                {argName: 'host', dataType: 'string', argValue: 'LPAR1.your.domain.net', secure: false},
+                {argName: 'port', dataType: 'number', argValue: 1234, secure: false},
+                {argName: 'responseFormatHeader', dataType: 'boolean', argValue: true, secure: false}
+            ];
+
+            expect(mergedArgs.knownArgs.length).toBeGreaterThanOrEqual(expectedArgs.length);
+            for (const [idx, arg] of expectedArgs.entries()) {
+                expect(mergedArgs.knownArgs[idx]).toMatchObject(arg);
+            }
         });
     });
 
