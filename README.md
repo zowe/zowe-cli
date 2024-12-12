@@ -150,6 +150,7 @@ Alternatively, import Zowe CLI into your project to call the Node APIs. However,
   ```
 
   `<interfaceName>`
+  
   - Name of an interface that you populate (i.e. `IIssueParms`), or a function that submits requests (i.e `IssueCommand`)
 
 <br/>
@@ -186,7 +187,7 @@ After downloading/installing the prerequisites, ensure that you can execute the 
 
 To run Zowe CLI system tests, you need a configured properties file populated with proper system information.
 
-A dummy properties file is available in the `default_properties.yaml` file **[is this correct? I couldn't find it in the repo]** in the `__tests__/__resources__/properties` folder. Using this file as a template, you should create a `custom_properties.yaml` file within the same directory. Git is configured to ignore all properties files in the properties folder, except for the `default_properties.yaml` **[is this correct? I couldn't find it in the repo]** file. If the `custom_properties.yaml` file cannot be found or loaded, an error with relevant details displays when attempting to run tests.
+A dummy properties file is available in the `default_properties.yaml` file in the `__tests__/__resources__/properties` folder. Using this file as a template, you should create a `custom_properties.yaml` file within the same directory. Git is configured to ignore all properties files in the properties folder, except for the `default_properties.yaml` file. If the `custom_properties.yaml` file cannot be found or loaded, an error with relevant details displays when attempting to run tests.
 
 Run the system tests:
 
@@ -209,6 +210,7 @@ npm run test:system
     ```
     npm i -g @zowe/cli@latest --ignore-scripts
     ```
+
     **WARNING!** If you use this method, plug-ins that are installed as root can only be accessed as root. Users must install plug-ins on their user account or share all profiles/plugins/settings/logs with root. You also might encounter npm errors if you install as root. We recommend that Linux administrators implement a user/group environment where permissions can be more carefully controlled.
 
 ### What is the difference between Zowe V2 and V3?
