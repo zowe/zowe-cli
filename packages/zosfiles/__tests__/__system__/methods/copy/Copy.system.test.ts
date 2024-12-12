@@ -10,7 +10,7 @@
 */
 
 import { Create, Upload, Delete, CreateDataSetTypeEnum, Copy, ZosFilesMessages, Get, IDataSet,
-    ICrossLparCopyDatasetOptions, IGetOptions, IZosFilesResponse, 
+    ICrossLparCopyDatasetOptions, IGetOptions, IZosFilesResponse,
     ZosFilesUtils} from "../../../../src";
 import { Imperative, IO, Session } from "@zowe/imperative";
 import { inspect } from "util";

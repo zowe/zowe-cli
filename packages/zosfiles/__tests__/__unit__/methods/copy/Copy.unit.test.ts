@@ -16,7 +16,6 @@ import { error } from "console";
 
 import { Copy, Create, Get, List, Upload, ZosFilesConstants, ZosFilesMessages, IZosFilesResponse, Download, ZosFilesUtils } from "../../../../src";
 import { ZosmfHeaders, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
-import { tmpdir } from "os";
 import path = require("path");
 
 describe("Copy", () => {
@@ -454,7 +453,7 @@ describe("Copy", () => {
                 });
                 afterEach(() => {
                     copyPDSSpy.mockRestore();
-                })
+                });
                 it("should call copyPDS to copy members of source PDS to target PDS", async () => {
                     const response = await Copy.dataSet(
                         dummySession,
@@ -566,16 +565,16 @@ describe("Copy", () => {
         it("should successfully copy members from source to target PDS", async () => {
             const sourceResponse = {
                 apiResponse: {
-                items: [
-                    { member: "mem1" },
-                    { member: "mem2" },
-                ]
+                    items: [
+                        { member: "mem1" },
+                        { member: "mem2" },
+                    ]
                 }
             };
             const fileList = ["mem1", "mem2"];
 
-            listAllMembersSpy.mockImplementation(async (): Promise<any>  => (sourceResponse));
-            downloadAllMembersSpy.mockImplementation(async (): Promise<any> => (undefined));
+            listAllMembersSpy.mockImplementation(async (): Promise<any>  => sourceResponse);
+            downloadAllMembersSpy.mockImplementation(async (): Promise<any> => undefined);
             fileListPathSpy.mockReturnValue(fileList);
             generateMemName.mockReturnValue("mem1");
             readStream.mockReturnValue("test" as any);
