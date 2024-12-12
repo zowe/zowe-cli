@@ -203,7 +203,7 @@ npm run test:system
 
 <br/>
 
-**IMPORTANT!** Do not commit configured properties files to your repository **[is "to your repo" correct here?]** because they contain security principles and other critical information.
+**IMPORTANT!** Do not commit configured properties files to this repository because they contain security principles and other critical information.
 
 <br/>
 
