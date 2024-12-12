@@ -547,40 +547,40 @@ describe("Copy", () => {
         });
     });
 
-    describe("Copy Partitioned Data Set", () => {
-        const listAllMembersSpy   = jest.spyOn(List, "allMembers");
-        const downloadAllMembersSpy = jest.spyOn(Download, "allMembers");
-        const uploadSpy = jest.spyOn(Upload, "streamToDataSet");
-        const fileListPathSpy = jest.spyOn(ZosFilesUtils, "getFileListFromPath");
-        const fromDataSetName = "USER.DATA.FROM";
-        const toDataSetName = "USER.DATA.TO";
-        it("should successfully copy members from source to target PDS", async () => {
-            // listAllMembersSpy.mockImplementation(async (): Promise<any> => ({
-            //     apiResponse: {
-            //         items: [
-            //             {member: "mem1"},
-            //             {member: "mem2"}
-            //         ]
-            //     }
-            // }));
-            // downloadAllMembersSpy.mockImplementation(async (): Promise<any> => undefined);
+    // describe("Copy Partitioned Data Set", () => {
+    //     const listAllMembersSpy   = jest.spyOn(List, "allMembers");
+    //     const downloadAllMembersSpy = jest.spyOn(Download, "allMembers");
+    //     const uploadSpy = jest.spyOn(Upload, "streamToDataSet");
+    //     const fileListPathSpy = jest.spyOn(ZosFilesUtils, "getFileListFromPath");
+    //     const fromDataSetName = "USER.DATA.FROM";
+    //     const toDataSetName = "USER.DATA.TO";
+    //     it("should successfully copy members from source to target PDS", async () => {
+    //         listAllMembersSpy.mockImplementation(async (): Promise<any> => ({
+    //             apiResponse: {
+    //                 items: [
+    //                     {member: "mem1"},
+    //                     {member: "mem2"}
+    //                 ]
+    //             }
+    //         }));
+    //         downloadAllMembersSpy.mockImplementation(async (): Promise<any> => undefined);
 
-            // uploadSpy.mockImplementation(async (): Promise<any> => undefined);
+    //         uploadSpy.mockImplementation(async (): Promise<any> => undefined);
 
-            // const response = await Copy.copyPDS(dummySession, fromDataSetName, toDataSetName);
-            // // const downloadDir = path.join(tmpdir(), fromDataSetName);
-            // expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, fromDataSetName);
-            // expect(downloadAllMembersSpy).toHaveBeenCalled();
-            // // expect(fileListPathSpy).toHaveBeenCalledWith(path.join(tmpdir(), fromDataSetName));
-            // expect(uploadSpy).toHaveBeenCalledTimes(2);
+    //         const response = await Copy.copyPDS(dummySession, fromDataSetName, toDataSetName);
+    //         // const downloadDir = path.join(tmpdir(), fromDataSetName);
+    //         expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, fromDataSetName);
+    //         expect(downloadAllMembersSpy).toHaveBeenCalled();
+    //         // expect(fileListPathSpy).toHaveBeenCalledWith(path.join(tmpdir(), fromDataSetName));
+    //         expect(uploadSpy).toHaveBeenCalledTimes(2);
 
-            // // expect(fs.rmSync).toHaveBeenCalled();
-            // expect(response).toEqual({
-            //     success: true,
-            //     commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message,
-            // });
-        });
-    });
+    //         // expect(fs.rmSync).toHaveBeenCalled();
+    //         expect(response).toEqual({
+    //             success: true,
+    //             commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message,
+    //         });
+    //     });
+    // });
 
     describe("Data Set Cross LPAR", () => {
         const getDatasetSpy    = jest.spyOn(Get, "dataSet");
