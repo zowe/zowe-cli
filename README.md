@@ -1,4 +1,5 @@
 # Zowe CLI  <!-- omit in toc -->
+
 [![codecov](https://codecov.io/gh/zowe/zowe-cli/branch/master/graph/badge.svg)](https://codecov.io/gh/zowe/zowe-cli)
 [![OpenSSF Best Practices](https://bestpractices.coreinfrastructure.org/projects/7204/badge)](https://bestpractices.coreinfrastructure.org/projects/7204)
 
@@ -9,6 +10,7 @@ This repository also contains the Zowe Node Client SDK. The SDK lets you leverag
 <br/>
 
 ## Content  <!-- omit in toc -->
+
  - [Documentation](#documentation)
  - [Contribution guidelines](#contribution-guidelines)
  - [Building Zowe CLI from source](#building-zowe-cli-from-source)
@@ -23,6 +25,7 @@ This repository also contains the Zowe Node Client SDK. The SDK lets you leverag
 <br/>
 
 ## Documentation
+
 For information about how to install, configure, and use Zowe CLI, see [Zowe CLI Quick Start](https://docs.zowe.org/stable/getting-started/cli-getting-started/) documentation. For more detailed instructions, see [Zowe CLI](https://docs.zowe.org/stable/user-guide/cli-using-usingcli/) documentation, which also includes examples and tutorials for how to contribute to Zowe CLI and develop CLI plug-ins.
 
 Engineering design documentation is contained in the `docs` directory in this repository. To view the Web Help for all Zowe CLI commands and contributed plug-ins, see the [Zowe CLI Web Help](https://docs.zowe.org/stable/web_help/index.html). To view all locally accessible commands, run `zowe --help-web`. For more use cases and tutorials visit [Medium.com/zowe](https://medium.com/zowe).
@@ -30,6 +33,7 @@ Engineering design documentation is contained in the `docs` directory in this re
 <br/>
 
 ## Contribution guidelines
+
 The following information is critical to working with the code, running/writing/maintaining automated tests, developing consistent syntax in your plug-in, and ensuring that your plug-in integrates with Zowe CLI properly:
 
 | For more information about | Go to |
@@ -96,13 +100,15 @@ From your copy of this repository, after a build, navigate to the `packages/cli`
 npm install -g
 ```
 
-**Notes:** 
+**Notes:**
+
 - Depending on how you configured npm on Linux or Mac, you might need to prefix the `npm install -g` command or the `npm uninstall -g` command with `sudo` to let npm have write access to the installation directory.
 - On Windows, the `npm install -g` command might fail several times due to an `EPERM` error. This appears to be a bug that npm documented in their GitHub issues. This behaviour does not appear to be specific to installing the Zowe CLI package. Unfortunately, the only solution that we know of is to issue the `npm cache clean` command and the `npm install -g` command repeatedly until it works.
 
 <br/>
 
 ## Uninstalling Zowe CLI
+
 From your local copy of this repository, to uninstall Zowe CLI:
 
 ```
@@ -150,7 +156,7 @@ Alternatively, import Zowe CLI into your project to call the Node APIs. However,
   ```
 
   `<interfaceName>`
-  
+
   - Name of an interface that you populate (i.e. `IIssueParms`), or a function that submits requests (i.e `IssueCommand`)
 
 <br/>
@@ -201,7 +207,7 @@ npm run test:system
 
 <br/>
 
-## **Frequently asked questions**
+## Frequently asked questions
 
 ### How can I install Zowe CLI as a root user on Mac/Linux?
 
@@ -229,7 +235,7 @@ npm run test:system
 
 Don't see what you're looking for? Browse questions from the community or ask your own in the [Q&A section](https://github.com/zowe/zowe-cli/discussions/categories/q-a) of our repo.
 
-## **Project structure and governance**
+## Project structure and governance
 
 Zowe CLI is a component of the Zowe Open Mainframe Project, part of the Linux Foundation.
 
