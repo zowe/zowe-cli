@@ -57,12 +57,12 @@ export class Copy {
         ImperativeExpect.toBeDefinedAndNonBlank(options["from-dataset"].dsn, "fromDataSetName");
         ImperativeExpect.toBeDefinedAndNonBlank(toDataSetName, "toDataSetName");
 
-        const sourceIsPds = await Copy.isPDS(session, options["from-dataset"].dsn);
-        const targetIsPds = await Copy.isPDS(session, toDataSetName);
-
-        if(sourceIsPds && targetIsPds) {
-            return await Copy.copyPDS(session, options["from-dataset"].dsn, toDataSetName);
+        const sourceIsPds = await this.isPDS(session, options["from-dataset"].dsn);
+        const targetIsPds = await this.isPDS(session, toDataSetName);
+        if (sourceIsPds && targetIsPds) {
+            return await this.copyPDS(session, options["from-dataset"].dsn, toDataSetName);
         }
+
         const endpoint: string = posix.join(
             ZosFilesConstants.RESOURCE,
             ZosFilesConstants.RES_DS_FILES,
@@ -115,6 +115,7 @@ export class Copy {
             const dsntp = response.apiResponse.items[0].dsntp;
             const dsorg = response.apiResponse.items[0].dsorg;
             return dsntp === "PDS" && dsorg === "PO";
+            // return response;
         }
         catch(error) {
             Logger.getAppLogger().error(error);

@@ -103,9 +103,10 @@ describe("Copy", () => {
                 });
             });
             describe("Partioned > Partioned", () => {
+                let downloadDir: string;
                 beforeEach(async () => {
                     try {
-                        const downloadDir = path.join(tmpdir(), fromDataSetName);
+                        downloadDir = path.join(tmpdir(), fromDataSetName);
                         fs.mkdirSync(downloadDir, { recursive: true });
                         const mockFile = path.join(downloadDir, "mockFile.txt");
                         fs.writeFileSync(mockFile, "test file content");
@@ -150,6 +151,9 @@ describe("Copy", () => {
                     expect(contents1).toBeTruthy();
                     expect(contents2).toBeTruthy();
                     expect(contents1.toString()).toEqual(contents2.toString());
+                });
+                afterEach(() => {
+                    fs.rmSync(downloadDir, { recursive: true, force: true });
                 });
             });
             describe("Member > Member", () => {
