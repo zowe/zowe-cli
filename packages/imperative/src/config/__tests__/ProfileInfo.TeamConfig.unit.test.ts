@@ -32,7 +32,6 @@ import { ConfigProfiles } from "../src/api";
 import { IExtendersJsonOpts } from "../src/doc/IExtenderOpts";
 import { ConfigSchema } from "../src/ConfigSchema";
 import { Logger } from "../../logger/src/Logger";
-import { IProfLocOsLoc } from "@zowe/imperative";
 
 const testAppNm = "ProfInfoApp";
 const testEnvPrefix = testAppNm.toUpperCase();
@@ -961,13 +960,12 @@ describe("TeamConfig ProfileInfo tests", () => {
             const profInfo = createNewProfInfo(teamProjDir);
             await profInfo.readProfilesFromDisk();
 
-            const mockResp: IProfLocOsLoc[] = [{
+            jest.spyOn(ProfileInfo.prototype, "getOsLocInfo").mockReturnValue([{
                 global: true,
                 name: "LPAR1",
                 path: "/mocked/path/xyz",
                 user: true
-            }];
-            jest.spyOn(ProfileInfo.prototype, "getOsLocInfo").mockReturnValue(mockResp);
+            }]);
 
             // Simulate the condition where the active layer has no `defaults.base` but global and user layers exist
             const layerActive = profInfo.getTeamConfig().layerActive();
