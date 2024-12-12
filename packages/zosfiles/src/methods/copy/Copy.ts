@@ -106,16 +106,14 @@ export class Copy {
     /**
      * Private function that checks if a dataset is type PDS
     **/
-    private static async isPDS(
+    public static async isPDS(
         session: AbstractSession,
         dataSetName: string
     ): Promise<boolean> {
         try {
             const response = await List.dataSet(session, dataSetName, {attributes: true});
-            const dsntp = response.apiResponse.items[0].dsntp;
             const dsorg = response.apiResponse.items[0].dsorg;
-            return dsntp === "PDS" && dsorg === "PO";
-            // return response;
+            return dsorg === "POE" || dsorg === "PO";
         }
         catch(error) {
             Logger.getAppLogger().error(error);

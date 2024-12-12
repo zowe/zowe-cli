@@ -43,7 +43,9 @@ describe("Copy", () => {
             });
             isPDSSpy = jest.spyOn(Copy as any, "isPDS").mockResolvedValue(false);
         });
-
+        afterAll(() => {
+            isPDSSpy.mockRestore();
+        });
         describe("Success Scenarios", () => {
             describe("Sequential > Sequential", () => {
                 it("should send a request", async () => {
@@ -451,8 +453,9 @@ describe("Copy", () => {
                     });
                     isPDSSpy = jest.spyOn(Copy as any, "isPDS").mockResolvedValue(true);
                 });
-                afterEach(() => {
+                afterAll(() => {
                     copyPDSSpy.mockRestore();
+                    isPDSSpy.mockRestore();
                 });
                 it("should call copyPDS to copy members of source PDS to target PDS", async () => {
                     const response = await Copy.dataSet(
@@ -561,6 +564,42 @@ describe("Copy", () => {
         const toDataSetName = "USER.DATA.TO";
         const readStream = jest.spyOn(IO, "createReadStream");
         const rmSync = jest.spyOn(fs, "rmSync");
+        const listDatasetSpy = jest.spyOn(List, "dataSet");
+
+        const dsPO = {
+            dsname: fromDataSetName,
+            dsorg: "PO",
+        };
+        const dsPS = {
+            dsname: fromDataSetName,
+            dsorg: "PS",
+        };
+
+        it("should detect PDS datasets correctly during copy", async () => {
+            listDatasetSpy.mockImplementation(async (): Promise<any>  => {
+                return {
+                    apiResponse: {
+                        items: [dsPO]
+                    }
+                };
+            });
+            const response = await Copy.isPDS(dummySession, dsPO.dsname);
+            expect(response).toEqual(true);
+            expect(listDatasetSpy).toHaveBeenCalledWith(dummySession, dsPO.dsname, { attributes: true });
+        });
+
+        it("should return false if the data set is not partitioned", async () => {
+            listDatasetSpy.mockImplementation(async (): Promise<any>  => {
+                return {
+                    apiResponse: {
+                        items: [dsPS]
+                    }
+                };
+            });
+            const response = await Copy.isPDS(dummySession, dsPS.dsname);
+            expect(response).toEqual(false);
+            expect(listDatasetSpy).toHaveBeenCalledWith(dummySession, dsPS.dsname, { attributes: true });
+        });
 
         it("should successfully copy members from source to target PDS", async () => {
             const sourceResponse = {
