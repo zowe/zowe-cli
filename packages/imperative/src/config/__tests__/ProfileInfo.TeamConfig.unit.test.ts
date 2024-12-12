@@ -38,7 +38,6 @@ const testEnvPrefix = testAppNm.toUpperCase();
 const profileTypes = ["zosmf", "tso", "base", "dummy"];
 const testDir = path.join(__dirname, "__resources__");
 const teamProjDir = path.join(testDir, testAppNm + "_team_config_proj");
-const teamProjBaseTest = path.join(testDir, testAppNm + "_team_config_proj_base");
 
 function createNewProfInfo(newDir: string, opts?: IProfOpts): ProfileInfo {
     // create a new ProfileInfo in the desired directory
