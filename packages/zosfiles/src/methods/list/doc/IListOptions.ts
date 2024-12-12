@@ -13,7 +13,7 @@ import { ZosmfMigratedRecallOptions } from "../../../doc/types/ZosmfMigratedReca
 import { IZosFilesOptions } from "../../../doc/IZosFilesOptions";
 
 /**
- * This interface defines the options that can be sent into the dwanload data set function
+ * This interface defines the options that can be sent into the download data set & member function
  */
 export interface IListOptions extends IZosFilesOptions {
 

@@ -696,6 +696,7 @@ describe("z/OS Files - Download", () => {
             let response;
             let caughtError;
 
+
             try {
                 response = await Download.allMembers(dummySession, dsname);
             } catch (e) {
@@ -705,7 +706,7 @@ describe("z/OS Files - Download", () => {
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
                 success: true,
-                commandResponse: util.format(ZosFilesMessages.datasetDownloadedWithDestination.message, dsFolder),
+                commandResponse: util.format(ZosFilesMessages.memberDownloadedWithDestination.message, dsFolder),
                 apiResponse: listApiResponse
             });
 
@@ -738,7 +739,7 @@ describe("z/OS Files - Download", () => {
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
                 success: true,
-                commandResponse: util.format(ZosFilesMessages.datasetDownloadedWithDestination.message, directory),
+                commandResponse: util.format(ZosFilesMessages.memberDownloadedWithDestination.message, directory),
                 apiResponse: listApiResponse
             });
 
@@ -773,7 +774,7 @@ describe("z/OS Files - Download", () => {
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
                 success: true,
-                commandResponse: util.format(ZosFilesMessages.datasetDownloadedWithDestination.message, directory),
+                commandResponse: util.format(ZosFilesMessages.memberDownloadedWithDestination.message, directory),
                 apiResponse: listApiResponse
             });
 
@@ -809,7 +810,7 @@ describe("z/OS Files - Download", () => {
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
                 success: true,
-                commandResponse: util.format(ZosFilesMessages.datasetDownloadedWithDestination.message, directory),
+                commandResponse: util.format(ZosFilesMessages.memberDownloadedWithDestination.message, directory),
                 apiResponse: listApiResponse
             });
 
@@ -847,7 +848,7 @@ describe("z/OS Files - Download", () => {
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
                 success: true,
-                commandResponse: util.format(ZosFilesMessages.datasetDownloadedWithDestination.message, directory),
+                commandResponse: util.format(ZosFilesMessages.memberDownloadedWithDestination.message, directory),
                 apiResponse: listApiResponse
             });
 
@@ -884,7 +885,7 @@ describe("z/OS Files - Download", () => {
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
                 success: true,
-                commandResponse: util.format(ZosFilesMessages.datasetDownloadedWithDestination.message, directory),
+                commandResponse: util.format(ZosFilesMessages.memberDownloadedWithDestination.message, directory),
                 apiResponse: listApiResponse
             });
 
@@ -918,7 +919,7 @@ describe("z/OS Files - Download", () => {
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
                 success: true,
-                commandResponse: util.format(ZosFilesMessages.datasetDownloadedWithDestination.message, directory),
+                commandResponse: util.format(ZosFilesMessages.memberDownloadedWithDestination.message, directory),
                 apiResponse: listApiResponse
             });
 
@@ -952,7 +953,7 @@ describe("z/OS Files - Download", () => {
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
                 success: true,
-                commandResponse: util.format(ZosFilesMessages.datasetDownloadedWithDestination.message, directory),
+                commandResponse: util.format(ZosFilesMessages.memberDownloadedWithDestination.message, directory),
                 apiResponse: listApiResponse
             });
 
@@ -982,7 +983,7 @@ describe("z/OS Files - Download", () => {
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
                 success: true,
-                commandResponse: util.format(ZosFilesMessages.datasetDownloadedWithDestination.message, dsFolder.toUpperCase()),
+                commandResponse: util.format(ZosFilesMessages.memberDownloadedWithDestination.message, dsFolder.toUpperCase()),
                 apiResponse: listApiResponse
             });
 
