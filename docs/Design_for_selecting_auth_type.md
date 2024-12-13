@@ -32,9 +32,21 @@ In this section we identify the key features that a solution would have to provi
   
   - For example, assume that a user has specified that a certificate should be used before a token. Assume that a certificate is supplied in a config file and a token is supplied on the command line.
     
-    - The certificate should be used because the user configured that certificates should be used before tokens.
+    - The certificate should be used because the user-configured authentication order specifies that certificates should be used before tokens.
     
     - The token should not be used just because it was supplied on the command line.
+
+- Zowe should ignore any authentication order property that is specified in a environment variable (unlike most other connection properties).
+  
+  - A single environment variable property would override **every** authentication order property specified in **every** profile within the user's zowe.config.json file. The most likely customer use of this property will be to specify a different authentication order for different profiles. A single environment variable would likely defeat the primary purpose of enabling a user to specify a different authentication order for different profiles.
+
+- The authentication order **could** be specified on the command line. However, in the initial implementation of this feature, Zowe CLI will **NOT** implement a command line option for the authentication order.
+  
+  - Conceptually, specifying an authentication order as a command line option is a reasonable idea. However, implementing that behavior could involve modifications to dozens of CLI command handlers, which could increase our implementation effort and time-to-market significantly.
+  
+  - It is not clear whether a command line option for authentication order will be particularly valuable to customers. The authentication order would typically be static for a given profile. It is unlikely to change from one CLI command to another.
+  
+  - Therefore, we will **NOT** implement a command-line option for authentication order until customer demand makes such work a priority.
 
 - The authentication order only identifies the order in which Zowe chooses the **<u>one</u>** authentication method that will be used. If that first authentication method fails, Zowe will not make a second attempt to authenticate with any of the later authentication methods.
 
@@ -48,7 +60,7 @@ In this section we identify the key features that a solution would have to provi
 
 - A customer should not have to specify every possible authentication in their ordered list of authentications. If a site only uses password and tokens, the customer should be able to specify only those two authentications in their list.
 
-- A customer-specified list of authentications must contain at least one of our supported authentications.
+- If a customer-specified list of authentications contains none of our supported authentications, a default order will be used.
 
 - The `--show-input-only` option should show the order of authentication as part of its displayed connection properties.
 
@@ -84,7 +96,7 @@ A new profile property named **authOrder** should be created to enable users to 
   
   - Any service profile.
   
-  - Any profile specific to a plugin (or VSCode extension) that supports a REST connection. For example an **endevor** profile could contain an **authOrder** property, but an **endevor-location** profile would not.
+  - Any profile specific to a plugin (or VSCode extension) that supports a REST connction. For example an **endevor** profile could contain an **authOrder** property, but an **endevor-location** profile would not.
 
 - Our existing inheritance of connection properties should also apply to the inheritance of the authOrder property.
 
@@ -94,11 +106,9 @@ A new profile property named **authOrder** should be created to enable users to 
 
 - Such a new item within the properties object will not currently be included in the zowe.schema.json file. An IntelliSense-like editor will not display **authOrder** as an option when a user starts to add a new property in a profile.
   
-  - We do not want to require plugins/extensions to add **authOrder** to their profiles. Requesting new work from plugins/extensions in the middle of a release's lifecycle can be a burden for those contributors.
+  - We do not want to require plugins/extensions to add **authOrder** to their profiles. Asking extenders  to add AuthOrder to their set of options (and thus the schema) in the middle of a release's lifecycle can be a burden for those contributors.
   
-  - When the CLI is installed, the schema is not updated, so the CLI cannot currently take on that burden. It is possible that a CLI post-install step could be performed to update the schema. This is not considered to be a trivial task.
-  
-  - It should be noted if **authOrder** is absent from the schema, users will lose a nice convenience, but the user's config will not be broken in any functional way.
+  - As a result, we feel that losing IntelliSense is an acceptable compromise to avoid adding work to every extender. Users will lose a nice convenience, but the user's config will not be limited in any way at runtime.
 
 To represent a series of values, the **authOrder** property should be  an array. The following example shows how a user could specify their desired authOrder.
 
@@ -142,6 +152,8 @@ That addition would enable customers to also specify the authentication order of
 - We must describe where users can place the authOrder property.
 
 - We must describe the default order of authentication, when no authOrder property is supplied.
+
+- We must document that the new authOrder property name is a  Zowe reserved word that should **NOT** be used by any extender.
 
 - We must notify extenders to guide their customers to supply an appropriate authOrder property if their extension needs a non-default order.
 
