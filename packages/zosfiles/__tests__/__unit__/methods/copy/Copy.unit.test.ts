@@ -16,7 +16,6 @@ import { error } from "console";
 
 import { Copy, Create, Get, List, Upload, ZosFilesConstants, ZosFilesMessages, IZosFilesResponse, Download, ZosFilesUtils } from "../../../../src";
 import { ZosmfHeaders, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
-import path = require("path");
 
 describe("Copy", () => {
     const dummySession = new Session({
