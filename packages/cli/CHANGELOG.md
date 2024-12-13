@@ -2,6 +2,7 @@
 All notable changes to the Zowe CLI package will be documented in this file.
 
 ## Recent Changes
+-Enhancement: Updated the help text with PDS enhancement of `zowe zos-files copy data-set` command.[#2386](https://github.com/zowe/zowe-cli/pull/2386)
 
 -Enhancement: Added new command zowe zos-files download all-members-matching, (zowe files dl amm), to download members matching specified pattern(s). The success message for the Download.allMembers API was changed from originally "Data set downloaded successfully" to "Member(s) downloaded successfully." The change also alters the commandResponse when using the --rfj flag. [#2359](https://github.com/zowe/zowe-cli/pull/2359)
 
