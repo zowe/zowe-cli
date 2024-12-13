@@ -147,7 +147,7 @@ export class Copy {
 
             if(sourceMemberList.length == 0) {
                 return {
-                    success: false,
+                    success: true,
                     commandResponse: `Source dataset (${fromPds}) - ` + ZosFilesMessages.noMembersFound.message
                 };
             }
