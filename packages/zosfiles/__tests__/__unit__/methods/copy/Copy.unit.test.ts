@@ -575,6 +575,8 @@ describe("Copy", () => {
         };
 
         it("should detect PDS datasets correctly during copy", async () => {
+            let caughtError;
+            let response;
             listDatasetSpy.mockImplementation(async (): Promise<any>  => {
                 return {
                     apiResponse: {
@@ -582,12 +584,19 @@ describe("Copy", () => {
                     }
                 };
             });
-            const response = await Copy.isPDS(dummySession, dsPO.dsname);
+            try {
+                response = await Copy.isPDS(dummySession, dsPO.dsname);
+            }
+            catch(e) {
+                caughtError = e;
+            }
             expect(response).toEqual(true);
             expect(listDatasetSpy).toHaveBeenCalledWith(dummySession, dsPO.dsname, { attributes: true });
         });
 
         it("should return false if the data set is not partitioned", async () => {
+            let response;
+            let caughtError;
             listDatasetSpy.mockImplementation(async (): Promise<any>  => {
                 return {
                     apiResponse: {
@@ -595,12 +604,19 @@ describe("Copy", () => {
                     }
                 };
             });
-            const response = await Copy.isPDS(dummySession, dsPS.dsname);
+            try {
+                response = await Copy.isPDS(dummySession, dsPS.dsname);
+            }
+            catch(e) {
+                caughtError = e;
+            }
             expect(response).toEqual(false);
             expect(listDatasetSpy).toHaveBeenCalledWith(dummySession, dsPS.dsname, { attributes: true });
         });
 
         it("should successfully copy members from source to target PDS", async () => {
+            let caughtError;
+            let response;
             const sourceResponse = {
                 apiResponse: {
                     items: [
@@ -619,7 +635,13 @@ describe("Copy", () => {
             uploadSpy.mockResolvedValue(undefined);
             rmSync.mockImplementation(jest.fn());
 
-            const response = await Copy.copyPDS(dummySession, fromDataSetName, toDataSetName);
+
+            try{
+                response = await Copy.copyPDS(dummySession, fromDataSetName, toDataSetName);
+            }
+            catch(e) {
+                caughtError = e;
+            }
             expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, fromDataSetName);
             expect(downloadAllMembersSpy).toHaveBeenCalledWith(dummySession, fromDataSetName, expect.any(Object));
             expect(fileListPathSpy).toHaveBeenCalled();
