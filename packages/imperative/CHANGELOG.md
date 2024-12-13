@@ -6,6 +6,7 @@ All notable changes to the Imperative package will be documented in this file.
 
 - BugFix: Modified 8.8.2 bugfix to correct web help alias. [#2361](https://github.com/zowe/zowe-cli/pull/2361)
 - BugFix: Resolved issue where special characters could be corrupted when downloading a large file. [#2366](https://github.com/zowe/zowe-cli/pull/2366)
+- BugFix: Modified location of Proxy-Authorization header to be located in the agent instead of the request.
 
 ## `8.8.2`
 
