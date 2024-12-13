@@ -113,7 +113,7 @@ export class Copy {
         try {
             const response = await List.dataSet(session, dataSetName, {attributes: true});
             const dsorg = response.apiResponse.items[0].dsorg;
-            return dsorg === "POE" || dsorg === "PO";
+            return dsorg.startsWith("PO");
         }
         catch(error) {
             Logger.getAppLogger().error(error);
