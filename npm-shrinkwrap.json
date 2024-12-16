@@ -16269,7 +16269,7 @@
     },
     "packages/cli": {
       "name": "@zowe/cli",
-      "version": "8.8.4",
+      "version": "8.9.1",
       "hasInstallScript": true,
       "license": "EPL-2.0",
       "dependencies": {
@@ -16277,12 +16277,12 @@
         "@zowe/imperative": "8.8.3",
         "@zowe/provisioning-for-zowe-sdk": "8.8.3",
         "@zowe/zos-console-for-zowe-sdk": "8.8.3",
-        "@zowe/zos-files-for-zowe-sdk": "8.8.4",
-        "@zowe/zos-jobs-for-zowe-sdk": "8.8.4",
+        "@zowe/zos-files-for-zowe-sdk": "8.9.1",
+        "@zowe/zos-jobs-for-zowe-sdk": "8.9.1",
         "@zowe/zos-logs-for-zowe-sdk": "8.8.3",
         "@zowe/zos-tso-for-zowe-sdk": "8.8.3",
         "@zowe/zos-uss-for-zowe-sdk": "8.8.3",
-        "@zowe/zos-workflows-for-zowe-sdk": "8.8.4",
+        "@zowe/zos-workflows-for-zowe-sdk": "8.9.1",
         "@zowe/zosmf-for-zowe-sdk": "8.8.3",
         "find-process": "1.4.7",
         "lodash": "4.17.21",
@@ -16599,10 +16599,10 @@
     },
     "packages/workflows": {
       "name": "@zowe/zos-workflows-for-zowe-sdk",
-      "version": "8.8.4",
+      "version": "8.9.1",
       "license": "EPL-2.0",
       "dependencies": {
-        "@zowe/zos-files-for-zowe-sdk": "8.8.4"
+        "@zowe/zos-files-for-zowe-sdk": "8.9.1"
       },
       "devDependencies": {
         "@zowe/cli-test-utils": "8.8.3",
@@ -16636,7 +16636,7 @@
     },
     "packages/zosfiles": {
       "name": "@zowe/zos-files-for-zowe-sdk",
-      "version": "8.8.4",
+      "version": "8.9.1",
       "license": "EPL-2.0",
       "dependencies": {
         "lodash": "^4.17.21",
@@ -16678,10 +16678,10 @@
     },
     "packages/zosjobs": {
       "name": "@zowe/zos-jobs-for-zowe-sdk",
-      "version": "8.8.4",
+      "version": "8.9.1",
       "license": "EPL-2.0",
       "dependencies": {
-        "@zowe/zos-files-for-zowe-sdk": "8.8.4"
+        "@zowe/zos-files-for-zowe-sdk": "8.9.1"
       },
       "devDependencies": {
         "@zowe/cli-test-utils": "8.8.3",

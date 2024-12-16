@@ -1,0 +1,25 @@
+name: Merge-by
+
+on:
+    pull_request:
+      types: [opened, ready_for_review, converted_to_draft]
+    pull_request_review:
+      types: [submitted]
+    push:
+      branches:
+        - main
+        - next
+    workflow_dispatch:
+    schedule:
+    - cron: "0 11 * * *"
+jobs:
+    rfr_add_date:
+        name: "Build table and notify users"
+        runs-on: ubuntu-latest
+        permissions:
+            discussions: write
+            pull-requests: write
+        steps:
+            - uses: zowe-actions/shared-actions/merge-by@main
+              with:
+                operation: "build-table"

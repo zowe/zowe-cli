@@ -5,7 +5,12 @@ All notable changes to the Zowe z/OS files SDK package will be documented in thi
 ## Recent Changes
 - Enhancement: The `Copy.dataset` method now recognizes partioned data sets and can copy members of a source PDS into an existing target PDS. [#2386](https://github.com/zowe/zowe-cli/pull/2386)
 
-## Recent Changes
+## `8.9.1`
+
+- BugFix: Corrected the `apiResponse` response value from `streamToDataSet()`,`streamToUss()`,`bufferToUss()` and `bufferToDataSet()` on the Upload SDK. [#2381](https://github.com/zowe/zowe-cli/pull/2381)
+- BugFix: Corrected the `Upload.BufferToUssFile()` SDK function to properly tag uploaded files. [#2378](https://github.com/zowe/zowe-cli/pull/2378)
+
+## `8.9.0`
 - Enhancement: Added a `List.membersMatchingPattern` method to download all members that match a specific pattern.[#2359](https://github.com/zowe/zowe-cli/pull/2359)
 
 ## `8.8.4`
