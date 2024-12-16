@@ -1,22 +1,26 @@
 /*
-* This program and the accompanying materials are made available under the terms of the
-* Eclipse Public License v2.0 which accompanies this distribution, and is available at
-* https://www.eclipse.org/legal/epl-v20.html
-*
-* SPDX-License-Identifier: EPL-2.0
-*
-* Copyright Contributors to the Zowe Project.
-*
-*/
+ * This program and the accompanying materials are made available under the terms of the
+ * Eclipse Public License v2.0 which accompanies this distribution, and is available at
+ * https://www.eclipse.org/legal/epl-v20.html
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Copyright Contributors to the Zowe Project.
+ *
+ */
 
-import { env } from 'process';
-import { URL } from 'url';
-import { Agent } from 'https';
-import { HttpProxyAgent } from 'http-proxy-agent';
-import { HttpsProxyAgent } from 'https-proxy-agent';
+import { env } from "process";
+import { URL } from "url";
+import { Agent } from "https";
+import { HttpProxyAgent } from "http-proxy-agent";
+import { HttpsProxyAgent } from "https-proxy-agent";
 
-import { HTTP_PROTOCOL_CHOICES, HTTP_PROTOCOL, HTTPS_PROTOCOL } from '../session/SessConstants';
-import { ISession } from '../session/doc/ISession';
+import {
+    HTTP_PROTOCOL_CHOICES,
+    HTTP_PROTOCOL,
+    HTTPS_PROTOCOL,
+} from "../session/SessConstants";
+import { ISession } from "../session/doc/ISession";
 
 /**
  * Utility class to provide an http agent to REST APIs that is configured for
@@ -33,7 +37,6 @@ import { ISession } from '../session/doc/ISession';
  * to match with the hostname of the Zowe profile.
  */
 export class ProxySettings {
-
     /**
      * Retrieve an appropriate http.agent instance if proxy environment variables can be found.
      * @static
@@ -47,14 +50,18 @@ export class ProxySettings {
         const proxySetting = this.getProxySettings(session);
         const proxyOptions = {} as ProxyOptions;
         const authHeader = ProxySettings.getProxyAuthHeader(proxySetting);
-        if(authHeader) {
+        if (authHeader) {
             proxyOptions.headers = authHeader;
         }
-        if (proxySetting?.protocol === HTTP_PROTOCOL) {
+        if (!proxySetting?.protocol) {
+            return;
+        }
+        if (proxySetting.protocol === HTTP_PROTOCOL) {
             return new HttpProxyAgent(proxySetting.proxyUrl, proxyOptions);
         }
-        if (proxySetting?.protocol === HTTPS_PROTOCOL) {
-            proxyOptions.rejectUnauthorized = session.rejectUnauthorized ?? true;
+        if (proxySetting.protocol === HTTPS_PROTOCOL) {
+            proxyOptions.rejectUnauthorized =
+                session.rejectUnauthorized ?? true;
             return new HttpsProxyAgent(proxySetting.proxyUrl, proxyOptions);
         }
     }
@@ -83,7 +90,8 @@ export class ProxySettings {
      * @memberof ProxySettings
      */
     public static matchesNoProxySettings(session: ISession): boolean {
-        const noProxyValues = session.proxy?.no_proxy ?? this.getNoProxyEnvVariables();
+        const noProxyValues =
+            session.proxy?.no_proxy ?? this.getNoProxyEnvVariables();
         if (!noProxyValues) {
             return false;
         }
@@ -93,10 +101,12 @@ export class ProxySettings {
         return false;
     }
 
-    private static getProxyAuthHeader(proxySetting: ProxySetting): { [key: string]: string } | undefined {
-        return proxySetting.authSetting
-        ? { 'Proxy-Authorization': proxySetting.authSetting }
-        : undefined;
+    private static getProxyAuthHeader(
+        proxySetting: ProxySetting
+    ): { [key: string]: string } | undefined {
+        return proxySetting?.authSetting
+            ? { "Proxy-Authorization": proxySetting.authSetting }
+            : undefined;
     }
 
     /**
@@ -107,26 +117,29 @@ export class ProxySettings {
      * @returns instance of private `ProxySetting` or `undefined`
      * @memberof ProxySettings
      */
-    private static getProxySettings(session: ISession): ProxySetting | undefined {
+    private static getProxySettings(
+        session: ISession
+    ): ProxySetting | undefined {
         if (this.matchesNoProxySettings(session)) {
             return;
         }
         const protocol = session.protocol ?? HTTPS_PROTOCOL;
         let envVariable: string | undefined;
         if (protocol === HTTP_PROTOCOL) {
-            envVariable = session.proxy?.http_proxy ?? this.getHttpEnvVariables();
-        }
-        else if (protocol === HTTPS_PROTOCOL) {
-            envVariable = session.proxy?.https_proxy ?? this.getHttpsEnvVariables();
+            envVariable =
+                session.proxy?.http_proxy ?? this.getHttpEnvVariables();
+        } else if (protocol === HTTPS_PROTOCOL) {
+            envVariable =
+                session.proxy?.https_proxy ?? this.getHttpsEnvVariables();
         }
         const proxyUrl = this.checkUrl(envVariable);
 
         const authSetting = session.proxy?.proxy_authorization;
         if (authSetting) {
-            return {proxyUrl, protocol, authSetting};
+            return { proxyUrl, protocol, authSetting };
         }
         if (proxyUrl) {
-            return {proxyUrl, protocol};
+            return { proxyUrl, protocol };
         }
     }
 
@@ -165,7 +178,9 @@ export class ProxySettings {
         if (!noProxyValue) {
             return;
         }
-        return noProxyValue.split(',').map(entry => entry.trim().toLocaleLowerCase());
+        return noProxyValue
+            .split(",")
+            .map((entry) => entry.trim().toLocaleLowerCase());
     }
 
     /**
@@ -189,12 +204,12 @@ export class ProxySettings {
  * Internal interface to group proxy settings
  */
 interface ProxySetting {
-    proxyUrl: URL,
-    protocol: HTTP_PROTOCOL_CHOICES,
-    authSetting?: string
+    proxyUrl: URL;
+    protocol: HTTP_PROTOCOL_CHOICES;
+    authSetting?: string;
 }
 
 interface ProxyOptions {
-    headers?: { [key: string]: string },
-    rejectUnauthorized?: boolean
+    headers?: { [key: string]: string };
+    rejectUnauthorized?: boolean;
 }
