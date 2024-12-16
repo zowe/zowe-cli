@@ -229,7 +229,7 @@ npm run test:system
     
     - Secure credential encryption is included in the core CLI.
 
-  - V3 includes the preceding features. Additionally, deprecates support for Zowe V1 profiles.
+  - V3 includes the preceding features. Additionally, removes support for Zowe V1 profiles.
 
     - To upgrade from an older Zowe release, see [Migrating from Zowe Vx to Zowe V3](https://docs.zowe.org/stable/whats-new/zowe-v3-migratio3).
 
