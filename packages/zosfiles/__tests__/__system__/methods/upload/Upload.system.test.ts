@@ -326,7 +326,11 @@ describe("Upload Data Set", () => {
 
                 expect(error).toBeFalsy();
 
-                expect(uploadResponse.apiResponse).toMatchObject({"success": true, "from": "<Buffer 61 62 63 64 65 66 67 68 69 6a...>","to": dsname+"(TEST)"});
+                expect(uploadResponse.apiResponse).toMatchObject({
+                    success: true,
+                    from: "<Buffer 61 62 63 64 65 66 67 68 69 6a...>",
+                    to: dsname + "(TEST)",
+                });
                 expect(Buffer.from(getResponse.toString().trim())).toEqual(data);
             });
 
