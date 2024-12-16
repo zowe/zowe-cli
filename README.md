@@ -54,11 +54,11 @@ Versioning conventions for Zowe CLI and Plug-ins| [Versioning guidelines](./docs
 
 ## Building Zowe CLI from source
 
-Zowe CLI requires NPM version 8 and Cargo version 1.72.0 (or newer) to build from source.
+Zowe CLI requires the NPM version bundled with the active LTS versions of NodeJS and Cargo version 1.72.0 (or newer) to build from source.
 
 Check your NPM version with `npm --version` and if it's older than 8.x, update with `npm install -g npm`.
 
-Check your vCargo version with `cargo --version`. Cargo can be installed using [rustup](https://rustup.rs/). To update Cargo, run the `rustup update` command.
+Check your Cargo version with `cargo --version`. Cargo can be installed using [rustup](https://rustup.rs/). To update Cargo, run the `rustup update` command.
 
 For developers using Linux, the following packages are required to build Zowe CLI from source:
 
@@ -139,9 +139,11 @@ For detailed information about creating profiles, or integrating with Zowe API M
 
 If you try to use Zowe CLI functionality and you get an error message that Zowe CLI failed to load any profiles, try issuing the following commands:
 
+- `zowe config report-env` to generate a report on the status of the key areas in your working environment. Address any problems indicated in the report.
 - `zowe config edit` to open your `~/.zowe/zowe.config.json` configuration file in your system's default text editor. Fix any properties with incorrect values.
 - `zowe config secure` to have Zowe CLI prompt for your secure configuration properties in case your secure values are incorrect in your configuration.
-- `zowe config report-env` to generate a report on the status of the key areas in your working environment. Address any problems indicated in the report.
+
+**Note:** For these commands, use the `--global-config` option to update your global configuration or `--user-config` for your user configuration.
 
 ## Zowe Node Client SDK
 
@@ -163,7 +165,7 @@ Alternatively, import Zowe CLI into your project to call the Node APIs. However,
 
 ### Example API usage
 
-For example usage syntax, see the ReadMe for each API package in this repository:
+For example usage syntax, see the README for each API package in this repository:
 
 - [Provisioning](https://github.com/zowe/zowe-cli/tree/master/packages/provisioning): Provision middleware and resources such as IBM CICS, IBM Db2, IBM MQ, and more.
 - [z/OS Console](https://github.com/zowe/zowe-cli/tree/master/packages/zosconsole): Perform z/OS console operations.
@@ -221,15 +223,15 @@ npm run test:system
 
 ### What is the difference between Zowe V2 and V3?
 
-  - V3 deprecates support for Zowe V1 profiles.
-
-    - To updgrade from an older Zowe release, see [Migrating from Zowe Vx to Zowe V3](https://docs.zowe.org/stable/whats-new/zowe-v3-migratio3).
-
-  - V2 uses **team profiles** and **deprecates the Secure Credential Store** (SCS) plug-in used in Zowe V1.
+  - V2 introduces **team profiles** and **deprecates the Secure Credential Store** (SCS) plug-in used in Zowe V1.
 
     - Connection details can be managed efficiently within one file, promoting a global configuration that can be shared across teams and mainframe services. For more information on how to use profiles, see [Team configurations](https://docs.zowe.org/stable/user-guide/cli-using-using-team-profiles/) in Zowe Docs.
     
     - Secure credential encryption is included in the core CLI.
+
+  - V3 includes the preceding features. Additionally, deprecates support for Zowe V1 profiles.
+
+    - To upgrade from an older Zowe release, see [Migrating from Zowe Vx to Zowe V3](https://docs.zowe.org/stable/whats-new/zowe-v3-migratio3).
 
 <br/>
 
