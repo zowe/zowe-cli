@@ -30,7 +30,7 @@ import { Utilities, Tag } from "../utilities";
 import { Readable } from "stream";
 import { CLIENT_PROPERTY } from "../../doc/types/ZosmfRestClientProperties";
 import { TransferMode } from "../../utils/ZosFilesAttributes";
-
+import { inspect } from "util";
 
 export class Upload {
 
@@ -183,8 +183,13 @@ export class Upload {
         }
         const uploadRequest: IRestClientResponse = await ZosmfRestClient.putExpectFullResponse(session, requestOptions);
 
+        const maxBufferPreviewSize = 10;
         // By default, apiResponse is empty when uploading
-        const apiResponse: any = {};
+        const apiResponse: any = {
+            success: true,
+            from: fileBuffer.length > maxBufferPreviewSize ? inspect(fileBuffer.subarray(0, maxBufferPreviewSize)).slice(0, -1) + "...>" : inspect(fileBuffer),
+            to: dataSetName
+        };
 
         // Return Etag in apiResponse, if requested
         if (options.returnEtag) {
@@ -242,7 +247,11 @@ export class Upload {
         const uploadRequest: IRestClientResponse = await ZosmfRestClient.putExpectFullResponse(session, requestOptions);
 
         // By default, apiResponse is empty when uploading
-        const apiResponse: any = {};
+        const apiResponse: any = {
+            success: true,
+            from: inspect(fileStream, { showHidden: false, depth: -1}),
+            to: dataSetName
+        };
 
         // Return Etag in apiResponse, if requested
         if (options.returnEtag) {
@@ -480,8 +489,13 @@ export class Upload {
         }
         const uploadRequest: IRestClientResponse = await ZosmfRestClient.putExpectFullResponse(session, requestOptions);
 
+        const maxBufferPreviewSize = 10;
         // By default, apiResponse is empty when uploading
-        const apiResponse: any = {};
+        const apiResponse: any = {
+            success: true,
+            from: fileBuffer.length > maxBufferPreviewSize ? inspect(fileBuffer.subarray(0, maxBufferPreviewSize)).slice(0, -1) + "...>" : inspect(fileBuffer),
+            to: origUssname
+        };
 
         // Return Etag in apiResponse, if requested
         if (options.returnEtag) {
@@ -541,7 +555,11 @@ export class Upload {
         }
 
         // By default, apiResponse is empty when uploading
-        const apiResponse: any = {};
+        const apiResponse: any = {
+            success: true,
+            from: inspect(uploadStream, { showHidden: false, depth: -1}),
+            to: origUssname
+        };
 
         // Return Etag in apiResponse, if requested
         if (options.returnEtag) {
