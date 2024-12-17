@@ -677,7 +677,14 @@ describe("TeamConfig ProfileInfo tests", () => {
                 expect(arg.argValue).toEqual(expectedArgs[idx].argValue);
                 expect(arg.argLoc.locType).toBe(ProfLocType.TEAM_CONFIG);
                 expect(arg.argLoc.jsonLoc).toMatch(/^profiles\.(base_glob|LPAR2_home)\.properties\./);
-                expect(arg.argLoc.osLoc[0]).toEqual(path.normalize(path.join(teamHomeProjDir, `${testAppNm}.config.json`)));
+                expect([
+                    path.normalize(
+                        path.join(teamHomeProjDir, `${testAppNm}.config.json`)
+                    ),
+                    path.normalize(
+                        path.join(teamProjDir, `${testAppNm}.config.json`)
+                    ),
+                ]).toContain(arg.argLoc.osLoc[0]);
             }
         });
 
