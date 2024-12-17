@@ -22,7 +22,6 @@ import { IUploadOptions } from "../../../../src/methods/upload/doc/IUploadOption
 import { Upload } from "../../../../src/methods/upload/Upload";
 import { List } from "../../../../src/methods/list/List";
 import { Utilities } from "../../../../src/methods/utilities/Utilities";
-import { inspect } from "util";
 import { ZosFilesUtils } from "../../../../src/utils/ZosFilesUtils";
 import { stripNewLines } from "../../../../../../__tests__/__src__/TestUtils";
 import { Create } from "../../../../src/methods/create";

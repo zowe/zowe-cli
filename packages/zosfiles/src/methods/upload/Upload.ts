@@ -187,8 +187,13 @@ export class Upload {
         // By default, apiResponse is empty when uploading
         const apiResponse: any = {
             success: true,
-            from: fileBuffer.length > maxBufferPreviewSize ? inspect(fileBuffer.subarray(0, maxBufferPreviewSize)).slice(0, -1) + "...>" : inspect(fileBuffer),
-            to: dataSetName
+            from:
+                fileBuffer.length > maxBufferPreviewSize
+                    ? inspect(
+                        fileBuffer.subarray(0, maxBufferPreviewSize)
+                    ).slice(0, -1) + "...>"
+                    : inspect(fileBuffer),
+            to: dataSetName,
         };
 
         // Return Etag in apiResponse, if requested
@@ -493,8 +498,13 @@ export class Upload {
         // By default, apiResponse is empty when uploading
         const apiResponse: any = {
             success: true,
-            from: fileBuffer.length > maxBufferPreviewSize ? inspect(fileBuffer.subarray(0, maxBufferPreviewSize)).slice(0, -1) + "...>" : inspect(fileBuffer),
-            to: origUssname
+            from:
+                fileBuffer.length > maxBufferPreviewSize
+                    ? inspect(
+                        fileBuffer.subarray(0, maxBufferPreviewSize)
+                    ).slice(0, -1) + "...>"
+                    : inspect(fileBuffer),
+            to: origUssname,
         };
 
         // Return Etag in apiResponse, if requested

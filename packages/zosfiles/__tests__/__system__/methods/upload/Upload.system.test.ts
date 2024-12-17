@@ -326,7 +326,11 @@ describe("Upload Data Set", () => {
 
                 expect(error).toBeFalsy();
 
-                expect(uploadResponse.apiResponse).toMatchObject({"success": true, "from": "Buffer<>","to": dsname+"(TEST)"});
+                expect(uploadResponse.apiResponse).toMatchObject({
+                    success: true,
+                    from: "<Buffer 61 62 63 64 65 66 67 68 69 6a...>",
+                    to: dsname + "(TEST)",
+                });
                 expect(Buffer.from(getResponse.toString().trim())).toEqual(data);
             });
 
@@ -349,7 +353,7 @@ describe("Upload Data Set", () => {
 
                 expect(error).toBeFalsy();
 
-                expect(uploadResponse.apiResponse).toMatchObject({"success": true, "from": "Stream<>","to": dsname+"(TEST)"});
+                expect(uploadResponse.apiResponse).toMatchObject({"success": true, "from": "[Readable]","to": dsname+"(TEST)"});
                 expect(getResponse.toString().trim()).toEqual(testdata);
             });
 
@@ -793,7 +797,7 @@ describe("Upload USS file", () => {
 
             expect(error).toBeFalsy();
 
-            expect(uploadResponse.apiResponse).toMatchObject({"success": true, "from": "Buffer<>","to": ussname});
+            expect(uploadResponse.apiResponse).toMatchObject({"success": true, "from": "<Buffer 61 62 63 64 65 66 67 68 69 6a...>","to": ussname});
             expect(getResponse).toEqual(Buffer.from(data.toString()));
         });
 
@@ -815,7 +819,7 @@ describe("Upload USS file", () => {
 
             expect(error).toBeFalsy();
 
-            expect(uploadResponse.apiResponse).toMatchObject({"success": true, "from": "Stream<>","to": ussname});
+            expect(uploadResponse.apiResponse).toMatchObject({"success": true, "from": "[Readable]","to": ussname});
             expect(getResponse).toEqual(Buffer.from(testdata));
         });
 
