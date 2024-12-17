@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
-## Recent Changes
+## `8.10.0`
 - Enhancement: The `Copy.dataset` method now recognizes partitioned data sets and can copy members of a source PDS into an existing target PDS. [#2386](https://github.com/zowe/zowe-cli/pull/2386)
 
 ## `8.9.1`

@@ -2,7 +2,7 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
-## Recent Changes
+## `8.10.0`
 
 - BugFix: Modified location of Proxy-Authorization header to be located in the agent instead of the request. [#2389](https://github.com/zowe/zowe-cli/issues/2389)
 
