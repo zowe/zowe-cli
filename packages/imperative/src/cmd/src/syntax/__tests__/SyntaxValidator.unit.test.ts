@@ -525,6 +525,19 @@ describe("Imperative should provide advanced syntax validation rules", () => {
             expect(svResponse.valid).toEqual(true);
         });
 
+        it.only("If a positional argument does not match the defined regex, the command should fail", async () => {
+            const invalidPositional = "invalid_value"; 
+            const regexForPositional = "^[a-zA-Z0-9_]+$";
+        
+            return tryOptions.bind(
+                this,
+                `${minValidOptions} ${invalidPositional}`,
+                false,
+                [`Positional argument '${invalidPositional}' does not match the regex: ${regexForPositional}`]
+            )();
+        });
+        
+        
         describe("We should be able to validate positional arguments of type 'number'", () => {
             const numberCommand: ICommandDefinition = {
                 name: "gimme-number", aliases: [],

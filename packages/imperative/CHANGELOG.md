@@ -2,6 +2,11 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## `8.8.4`
+
+- BugFix: Broken validation of positional arguments. [#2384](https://github.com/zowe/zowe-cli/pull/2384)
+- Enhancement: Added a test to validate it . [#2384](https://github.com/zowe/zowe-cli/pull/2384)
+
 ## `8.8.3`
 
 - BugFix: Modified 8.8.2 bugfix to correct web help alias. [#2361](https://github.com/zowe/zowe-cli/pull/2361)

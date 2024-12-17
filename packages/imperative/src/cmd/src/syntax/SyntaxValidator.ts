@@ -226,7 +226,7 @@ export class SyntaxValidator {
                 if (!(commandArguments[positional.name] == null)) {
                     if (positional.regex) {
                         if (commandArguments[positional.name]
-                            .toString().match(new RegExp(positional.regex) == null)) {
+                            .toString().match(new RegExp(positional.regex)) == null) {
                             valid = false;
                             this.positionalParameterInvalid(positional,
                                 commandArguments[positional.name], responseObject);
