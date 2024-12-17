@@ -22,7 +22,6 @@ import { IUploadOptions } from "../../../../src/methods/upload/doc/IUploadOption
 import { Upload } from "../../../../src/methods/upload/Upload";
 import { List } from "../../../../src/methods/list/List";
 import { Utilities } from "../../../../src/methods/utilities/Utilities";
-
 import { ZosFilesUtils } from "../../../../src/utils/ZosFilesUtils";
 import { stripNewLines } from "../../../../../../__tests__/__src__/TestUtils";
 import { Create } from "../../../../src/methods/create";
@@ -379,7 +378,7 @@ describe("z/OS Files - Upload", () => {
             expect(error).toBeDefined();
             expect(error).toBe(testError);
         });
-        it("should return with proper response when upload buffer to a data set", async () => {
+        it("should return with proper response when upload buffer to a data set - buffer less than 10 chars", async () => {
             const buffer: Buffer = Buffer.from("testing");
             const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsName);
             const reqHeaders = [ZosmfHeaders.X_IBM_TEXT, ZosmfHeaders.ACCEPT_ENCODING];
@@ -392,6 +391,27 @@ describe("z/OS Files - Upload", () => {
 
             expect(error).toBeUndefined();
             expect(response).toBeDefined();
+            expect(response.apiResponse).toMatchObject({"from": "<Buffer 74 65 73 74 69 6e 67>", "success": true, "to": dsName});
+
+            expect(zosmfPutFullSpy).toHaveBeenCalledTimes(1);
+            expect(zosmfPutFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
+                reqHeaders,
+                writeData: buffer});
+        });
+        it("should return with proper response when upload buffer to a data set - buffer more than 10 chars", async () => {
+            const buffer: Buffer = Buffer.from("bufferLargerThan10Chars");
+            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsName);
+            const reqHeaders = [ZosmfHeaders.X_IBM_TEXT, ZosmfHeaders.ACCEPT_ENCODING];
+
+            try {
+                response = await Upload.bufferToDataSet(dummySession, buffer, dsName);
+            } catch (err) {
+                error = err;
+            }
+
+            expect(error).toBeUndefined();
+            expect(response).toBeDefined();
+            expect(response.apiResponse).toMatchObject({"from": "<Buffer 62 75 66 66 65 72 4c 61 72 67...>", "success": true, "to": dsName});
 
             expect(zosmfPutFullSpy).toHaveBeenCalledTimes(1);
             expect(zosmfPutFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
@@ -748,6 +768,7 @@ describe("z/OS Files - Upload", () => {
 
             expect(error).toBeUndefined();
             expect(response).toBeDefined();
+            expect(response.apiResponse).toMatchObject({"from": "[Readable]", "success": true, "to": dsName});
 
             expect(zosmfPutFullSpy).toHaveBeenCalledTimes(1);
             expect(zosmfPutFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
@@ -1755,6 +1776,7 @@ describe("z/OS Files - Upload", () => {
 
             expect(error).toBeUndefined();
             expect(USSresponse).toBeDefined();
+            expect(USSresponse.apiResponse).toMatchObject({"from": "<Buffer 74 65 73 74 69 6e 67 0a 74 65...>", "success": true, "to": dsName});
 
             const normalizedData = ZosFilesUtils.normalizeNewline(data);
             expect(data.length).not.toBe(normalizedData.length);
@@ -1830,6 +1852,7 @@ describe("z/OS Files - Upload", () => {
 
             expect(error).toBeUndefined();
             expect(USSresponse).toBeDefined();
+            expect(USSresponse.apiResponse).toMatchObject({"from": "[Readable]", "success": true, "to": dsName});
             expect(USSresponse.success).toBeTruthy();
 
             expect(zosmfExpectFullSpy).toHaveBeenCalledTimes(1);
