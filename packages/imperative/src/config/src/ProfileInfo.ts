@@ -597,6 +597,10 @@ export class ProfileInfo {
             if (osLoc?.global) {
                 layerProperties = this.mLoadedConfig.findLayer(osLoc.user, osLoc.global)?.properties;
                 realBaseProfileName = layerProperties?.defaults.base;
+                if (!realBaseProfileName && osLoc.user) {
+                    layerProperties = this.mLoadedConfig.findLayer(false, osLoc.global)?.properties;
+                    realBaseProfileName = layerProperties?.defaults.base;
+                }
                 if (realBaseProfileName) baseProfile = this.mLoadedConfig.api.profiles.buildProfile(realBaseProfileName, layerProperties?.profiles);
                 else baseProfile = null;
             }
@@ -1650,15 +1654,11 @@ export class ProfileInfo {
         };
 
         let filePath: string;
-        if (_isPropInLayer(opts.configProperties) && opts.osLocInfo) {
-            filePath = opts.osLocInfo.path;
-        } else {
-            for (const layer of this.mLoadedConfig.mLayers) {
-                // Find the first layer that includes the JSON path
-                if (_isPropInLayer(layer.properties)) {
-                    filePath = layer.path;
-                    break;
-                }
+        for (const layer of this.mLoadedConfig.mLayers) {
+            // Find the first layer that includes the JSON path
+            if (_isPropInLayer(layer.properties)) {
+                filePath = layer.path;
+                break;
             }
         }
 
