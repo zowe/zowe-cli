@@ -157,9 +157,21 @@ That addition would enable customers to also specify the authentication order of
 
 - We must notify extenders to guide their customers to supply an appropriate authOrder property if their extension needs a non-default order.
 
+## Edge cases that must be confirmed during implementation
+
+Every edge case was not included in the protype used to confirm the validity of this design document. The following edge cases must be confirmed and appropriate logic must be written during the implementation of this design.
+
+- As an alternative to user & password, a property named base64EncodedAuth can be used in a session. The new APIs must handle this alternative.
+
+- To login to APIML, a user supplies a user & password (or cert) and receives a token. The new APIs must determine the correct authentication type for such a session which kind of morphs its authentication type during the transaction.
+
+- Zowe Explorer currently inherits the same hard-coded order as the CLI from the client SDKs. The new authentication order APIs must be integrated into the APIs used by Zowe Explorer. We must confirm whether any additional logic changes must be made within Zowe Explorer itself.
+
+- TSO commands can create a sequence of actions, which use a user & password, receive a token from TSO, and then use that token for additional actions. This change in authentication type during the life of a single transaction may be self contained within the transaction and may not not influenced by either the existing hard-coded authentication order or the new user-controlled authentication order. This behavior must be confirmed and modifications made if necessary.
+
 ## A new class must be created to support authOrder
 
-A new class located in
+A new class located in:
 
     [zowe-cli/packages/imperative/src/rest/src/session/AuthOrder.ts](https://github.com/zowe/zowe-cli/blob/master/packages/imperative/src/rest/src/session/AuthOrder.ts)
 
