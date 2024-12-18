@@ -1654,12 +1654,12 @@ export class ProfileInfo {
         };
 
         let filePath: string;
-            for (const layer of this.mLoadedConfig.mLayers) {
-                // Find the first layer that includes the JSON path
-                if (_isPropInLayer(layer.properties)) {
-                    filePath = layer.path;
-                    break;
-                }
+        for (const layer of this.mLoadedConfig.mLayers) {
+            // Find the first layer that includes the JSON path
+            if (_isPropInLayer(layer.properties)) {
+                filePath = layer.path;
+                break;
+            }
         }
 
         return [{
