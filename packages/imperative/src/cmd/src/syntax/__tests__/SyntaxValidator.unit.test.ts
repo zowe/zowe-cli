@@ -525,7 +525,7 @@ describe("Imperative should provide advanced syntax validation rules", () => {
             expect(svResponse.valid).toEqual(true);
         });
 
-        it.only("If a positional argument does not match the defined regex, the command should fail", async () => {
+        it("should fail if a positional argument does not match the defined regex", async () => {  
             const invalidPositional = "invalid_value"; 
             const regexForPositional = "^[a-zA-Z0-9_]+$";
         
