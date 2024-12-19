@@ -2,10 +2,15 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
-## `8.8.4`
 
-- BugFix: Broken validation of positional arguments. [#2384](https://github.com/zowe/zowe-cli/pull/2384)
-- Enhancement: Added a test to validate it . [#2384](https://github.com/zowe/zowe-cli/pull/2384)
+## `8.10.1`
+
+- BugFix: Resolved an issue where base profiles in a team configuration file were overwritten when a user configuration file did not include a base profile. [#2383](https://github.com/zowe/zowe-cli/pull/2383)
+
+## `8.10.0`
+
+- BugFix: Modified location of Proxy-Authorization header to be located in the agent instead of the request. [#2389](https://github.com/zowe/zowe-cli/issues/2389)
+
 
 ## `8.8.3`
 

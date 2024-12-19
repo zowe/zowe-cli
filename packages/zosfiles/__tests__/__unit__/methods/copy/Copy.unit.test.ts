@@ -9,12 +9,12 @@
 *
 */
 
-import { Session, ImperativeError } from "@zowe/imperative";
+import { Session, ImperativeError, IO } from "@zowe/imperative";
 import { posix } from "path";
-
+import * as fs from "fs";
 import { error } from "console";
 
-import { Copy, Create, Get, List, Upload, ZosFilesConstants, ZosFilesMessages, IZosFilesResponse } from "../../../../src";
+import { Copy, Create, Get, List, Upload, ZosFilesConstants, ZosFilesMessages, IZosFilesResponse, Download, ZosFilesUtils } from "../../../../src";
 import { ZosmfHeaders, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 
 describe("Copy", () => {
@@ -33,14 +33,18 @@ describe("Copy", () => {
         const fromMemberName = "mem1";
         const toDataSetName = "USER.DATA.TO";
         const toMemberName = "mem2";
+        let isPDSSpy: jest.SpyInstance;
 
         beforeEach(() => {
             copyExpectStringSpy.mockClear();
             copyExpectStringSpy.mockImplementation(async () => {
                 return "";
             });
+            isPDSSpy = jest.spyOn(Copy as any, "isPDS").mockResolvedValue(false);
         });
-
+        afterAll(() => {
+            isPDSSpy.mockRestore();
+        });
         describe("Success Scenarios", () => {
             describe("Sequential > Sequential", () => {
                 it("should send a request", async () => {
@@ -438,6 +442,40 @@ describe("Copy", () => {
                     expect(lastArgumentOfCall).toHaveProperty("replace", false);
                 });
             });
+            describe("Partitioned > Partitioned", () => {
+                let copyPDSSpy = jest.spyOn(Copy, "copyPDS");
+                beforeEach(() => {
+                    copyPDSSpy.mockClear();
+                    copyPDSSpy = jest.spyOn(Copy, "copyPDS").mockResolvedValue({
+                        success:true,
+                        commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message,
+                    });
+                    isPDSSpy = jest.spyOn(Copy as any, "isPDS").mockResolvedValue(true);
+                });
+                afterAll(() => {
+                    copyPDSSpy.mockRestore();
+                    isPDSSpy.mockRestore();
+                });
+                it("should call copyPDS to copy members of source PDS to target PDS", async () => {
+                    const response = await Copy.dataSet(
+                        dummySession,
+                        {dsn: toDataSetName},
+                        {"from-dataset": {
+                            dsn:fromDataSetName
+                        }}
+                    );
+                    expect(isPDSSpy).toHaveBeenNthCalledWith(1, dummySession, fromDataSetName);
+                    expect(isPDSSpy).toHaveBeenNthCalledWith(2, dummySession, toDataSetName);
+
+                    expect(copyPDSSpy).toHaveBeenCalledTimes(1);
+                    expect(copyPDSSpy).toHaveBeenCalledWith(dummySession, fromDataSetName, toDataSetName);
+
+                    expect(response).toEqual({
+                        success: true,
+                        commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message
+                    });
+                });
+            });
         });
         describe("Failure Scenarios", () => {
             it("should fail if the zOSMF REST client fails", async () => {
@@ -511,6 +549,107 @@ describe("Copy", () => {
                 }
 
                 expect(error.message).toContain("Required object must be defined");
+            });
+        });
+    });
+
+    describe("Copy Partitioned Data Set", () => {
+        const listAllMembersSpy   = jest.spyOn(List, "allMembers");
+        const downloadAllMembersSpy = jest.spyOn(Download, "allMembers");
+        const uploadSpy = jest.spyOn(Upload, "streamToDataSet");
+        const fileListPathSpy = jest.spyOn(ZosFilesUtils, "getFileListFromPath");
+        const generateMemName = jest.spyOn(ZosFilesUtils, "generateMemberName");
+        const fromDataSetName = "USER.DATA.FROM";
+        const toDataSetName = "USER.DATA.TO";
+        const readStream = jest.spyOn(IO, "createReadStream");
+        const rmSync = jest.spyOn(fs, "rmSync");
+        const listDatasetSpy = jest.spyOn(List, "dataSet");
+
+        const dsPO = {
+            dsname: fromDataSetName,
+            dsorg: "PO",
+        };
+        const dsPS = {
+            dsname: fromDataSetName,
+            dsorg: "PS",
+        };
+
+        it("should detect PDS datasets correctly during copy", async () => {
+            let caughtError;
+            let response;
+            listDatasetSpy.mockImplementation(async (): Promise<any>  => {
+                return {
+                    apiResponse: {
+                        items: [dsPO]
+                    }
+                };
+            });
+            try {
+                response = await Copy.isPDS(dummySession, dsPO.dsname);
+            }
+            catch(e) {
+                caughtError = e;
+            }
+            expect(response).toEqual(true);
+            expect(listDatasetSpy).toHaveBeenCalledWith(dummySession, dsPO.dsname, { attributes: true });
+        });
+
+        it("should return false if the data set is not partitioned", async () => {
+            let response;
+            let caughtError;
+            listDatasetSpy.mockImplementation(async (): Promise<any>  => {
+                return {
+                    apiResponse: {
+                        items: [dsPS]
+                    }
+                };
+            });
+            try {
+                response = await Copy.isPDS(dummySession, dsPS.dsname);
+            }
+            catch(e) {
+                caughtError = e;
+            }
+            expect(response).toEqual(false);
+            expect(listDatasetSpy).toHaveBeenCalledWith(dummySession, dsPS.dsname, { attributes: true });
+        });
+
+        it("should successfully copy members from source to target PDS", async () => {
+            let caughtError;
+            let response;
+            const sourceResponse = {
+                apiResponse: {
+                    items: [
+                        { member: "mem1" },
+                        { member: "mem2" },
+                    ]
+                }
+            };
+            const fileList = ["mem1", "mem2"];
+
+            listAllMembersSpy.mockImplementation(async (): Promise<any>  => sourceResponse);
+            downloadAllMembersSpy.mockImplementation(async (): Promise<any> => undefined);
+            fileListPathSpy.mockReturnValue(fileList);
+            generateMemName.mockReturnValue("mem1");
+            readStream.mockReturnValue("test" as any);
+            uploadSpy.mockResolvedValue(undefined);
+            rmSync.mockImplementation(jest.fn());
+
+
+            try{
+                response = await Copy.copyPDS(dummySession, fromDataSetName, toDataSetName);
+            }
+            catch(e) {
+                caughtError = e;
+            }
+            expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, fromDataSetName);
+            expect(downloadAllMembersSpy).toHaveBeenCalledWith(dummySession, fromDataSetName, expect.any(Object));
+            expect(fileListPathSpy).toHaveBeenCalled();
+            expect(uploadSpy).toHaveBeenCalledTimes(fileList.length);
+            expect(rmSync).toHaveBeenCalled();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message,
             });
         });
     });
