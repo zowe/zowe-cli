@@ -375,9 +375,8 @@ export class GetJobs {
         ImperativeExpect.toNotBeNullOrUndefined(spoolId, "Required parameter spoolId must be defined");
         let parameters: string = "/" + encodeURIComponent(jobname) + "/" + encodeURIComponent(jobid) +
             JobsConstants.RESOURCE_SPOOL_FILES + "/" + encodeURIComponent(spoolId) + JobsConstants.RESOURCE_SPOOL_CONTENT;
-        if (encoding != null && String(encoding).trim !== "") {
+        if (encoding != null && String(encoding).trim() !== "") {
             parameters += "?fileEncoding=" + encoding;
-        }
         }
         Logger.getAppLogger().info("GetJobs.getSpoolContentById() parameters: " + parameters);
         return ZosmfRestClient.getExpectString(session, JobsConstants.RESOURCE + parameters, [Headers.TEXT_PLAIN_UTF8]);
