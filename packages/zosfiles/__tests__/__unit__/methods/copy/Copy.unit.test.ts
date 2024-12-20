@@ -608,7 +608,6 @@ describe("Copy", () => {
         const readStream = jest.spyOn(IO, "createReadStream");
         const rmSync = jest.spyOn(fs, "rmSync");
         const listDatasetSpy = jest.spyOn(List, "dataSet");
-        const targetDataSetExistsSpy = jest.spyOn(Copy, "dataSetExists");
 
         const dsPO = {
             dsname: fromDataSetName,
