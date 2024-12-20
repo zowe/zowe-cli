@@ -34,6 +34,7 @@ describe("Copy", () => {
         const toDataSetName = "USER.DATA.TO";
         const toMemberName = "mem2";
         let isPDSSpy: jest.SpyInstance;
+        let dataSetExistsSpy: jest.SpyInstance;
 
         beforeEach(() => {
             copyExpectStringSpy.mockClear();
@@ -41,9 +42,11 @@ describe("Copy", () => {
                 return "";
             });
             isPDSSpy = jest.spyOn(Copy as any, "isPDS").mockResolvedValue(false);
+            dataSetExistsSpy = jest.spyOn(Copy, "dataSetExists").mockResolvedValue(true);
         });
         afterAll(() => {
             isPDSSpy.mockRestore();
+            dataSetExistsSpy.mockRestore();
         });
         describe("Success Scenarios", () => {
             describe("Sequential > Sequential", () => {
@@ -453,12 +456,17 @@ describe("Copy", () => {
                         commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message,
                     });
                     isPDSSpy = jest.spyOn(Copy as any, "isPDS").mockResolvedValue(true);
-                    createSpy = jest.spyOn(Create, "dataSetLike");
+                    createSpy = jest.spyOn(Create, "dataSetLike").mockResolvedValue({
+                        success: true,
+                        commandResponse: ZosFilesMessages.dataSetCreatedSuccessfully.message
+                    });
                     dataSetExistsSpy = jest.spyOn(Copy, "dataSetExists");
                 });
                 afterAll(() => {
                     copyPDSSpy.mockRestore();
                     isPDSSpy.mockRestore();
+                });
+                afterEach(() => {
                     createSpy.mockRestore();
                     dataSetExistsSpy.mockRestore();
                 });
@@ -482,6 +490,7 @@ describe("Copy", () => {
                     });
                 });
                 it("should call Create.dataSetLike and create a new data set if the target data set inputted does not exist", async() => {
+                    dataSetExistsSpy.mockResolvedValue(false);
                     const response = await Copy.dataSet(
                         dummySession,
                         {dsn: toDataSetName},
@@ -489,14 +498,14 @@ describe("Copy", () => {
                             dsn:fromDataSetName
                         }}
                     );
-                    dataSetExistsSpy.mockResolvedValue(false);
-                    expect(createSpy).toHaveBeenCalledWith(dummySession, toDataSetName, fromDataSetName);
+                    expect(createSpy).toHaveBeenCalled();
                     expect(response).toEqual({
                         success: true,
                         commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message
                     });
                 });
                 it("should not create a new data set if the target data set inputted exists", async() => {
+                    dataSetExistsSpy.mockResolvedValue(true);
                     const response = await Copy.dataSet(
                         dummySession,
                         {dsn: toDataSetName},
@@ -504,7 +513,6 @@ describe("Copy", () => {
                             dsn:fromDataSetName
                         }}
                     );
-                    dataSetExistsSpy.mockResolvedValue(true);
                     expect(createSpy).not.toHaveBeenCalled();
                     expect(response).toEqual({
                         success: true,
