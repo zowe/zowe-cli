@@ -19,6 +19,7 @@ import { deleteFiles, getUniqueDatasetName, stripNewLines, wait, waitTime } from
 import * as fs from "fs";
 import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/ITestEnvironment";
 import { runCliScript } from "../../../../../../__tests__/__packages__/cli-test-utils/src";
+import { Readable } from "stream";
 
 let REAL_SESSION: Session;
 let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
@@ -307,6 +308,53 @@ describe("Upload Data Set", () => {
                 } catch (err) {
                     error = err;
                 }
+            });
+
+            it("should upload a PDS file - bufferToDataSet()", async () => {
+                let error;
+                let uploadResponse;
+                let getResponse;
+                const data: Buffer = Buffer.from(testdata);
+
+                try {
+                    uploadResponse = await Upload.bufferToDataSet(REAL_SESSION, data, dsname+"(TEST)");
+                    getResponse = await Get.dataSet(REAL_SESSION, dsname+"(TEST)");
+                } catch (err) {
+                    error = err;
+                    Imperative.console.info("Error: " + inspect(error));
+                }
+
+                expect(error).toBeFalsy();
+
+                expect(uploadResponse.apiResponse).toMatchObject({
+                    success: true,
+                    from: "<Buffer 61 62 63 64 65 66 67 68 69 6a...>",
+                    to: dsname + "(TEST)",
+                });
+                expect(Buffer.from(getResponse.toString().trim())).toEqual(data);
+            });
+
+            it("should upload a PDS file - streamToDataSet()", async () => {
+                let error;
+                let uploadResponse;
+                let getResponse;
+
+                const inputStream = new Readable();
+                inputStream.push(testdata);
+                inputStream.push(null);
+
+                try {
+                    uploadResponse = await Upload.streamToDataSet(REAL_SESSION, inputStream, dsname+"(TEST)");
+                    getResponse = await Get.dataSet(REAL_SESSION, dsname+"(TEST)");
+                } catch (err) {
+                    error = err;
+                    Imperative.console.info("Error: " + inspect(error));
+                }
+
+                expect(error).toBeFalsy();
+
+                expect(uploadResponse.apiResponse).toMatchObject({"success": true, "from": "[Readable]","to": dsname+"(TEST)"});
+                expect(getResponse.toString().trim()).toEqual(testdata);
             });
 
             it("should upload a file to a partitioned data set member using full path", async () => {
@@ -733,7 +781,7 @@ describe("Upload USS file", () => {
             await deleteFiles(REAL_SESSION, ussname);
         });
 
-        it("should upload a USS file", async () => {
+        it("should upload a USS file - bufferToUssFile()", async () => {
             let error;
             let uploadResponse;
             let getResponse;
@@ -748,18 +796,45 @@ describe("Upload USS file", () => {
             }
 
             expect(error).toBeFalsy();
-            expect(getResponse).toEqual(Buffer.from(data.toString()));
 
+            expect(uploadResponse.apiResponse).toMatchObject({"success": true, "from": "<Buffer 61 62 63 64 65 66 67 68 69 6a...>","to": ussname});
+            expect(getResponse).toEqual(Buffer.from(data.toString()));
         });
+
+        it("should upload a USS file - streamToUssFile()", async () => {
+            let error;
+            let uploadResponse;
+            let getResponse;
+            const inputStream = new Readable();
+            inputStream.push(testdata);
+            inputStream.push(null);
+
+            try {
+                uploadResponse = await Upload.streamToUssFile(REAL_SESSION, ussname, inputStream);
+                getResponse = await Get.USSFile(REAL_SESSION, ussname);
+            } catch (err) {
+                error = err;
+                Imperative.console.info("Error: " + inspect(error));
+            }
+
+            expect(error).toBeFalsy();
+
+            expect(uploadResponse.apiResponse).toMatchObject({"success": true, "from": "[Readable]","to": ussname});
+            expect(getResponse).toEqual(Buffer.from(testdata));
+        });
+
         it("should upload a USS file in binary mode", async () => {
             let error;
             let uploadResponse;
             let getResponse;
+            let tagResponse;
+
             const data: Buffer = Buffer.from(testdata);
 
             try {
                 uploadResponse = await Upload.bufferToUssFile(REAL_SESSION, ussname, data, { binary: true });
                 getResponse = await Get.USSFile(REAL_SESSION, ussname, {binary: true});
+                tagResponse = await Utilities.isFileTagBinOrAscii(REAL_SESSION, ussname);
             } catch (err) {
                 error = err;
                 Imperative.console.info("Error: " + inspect(error));
@@ -767,7 +842,7 @@ describe("Upload USS file", () => {
 
             expect(error).toBeFalsy();
             expect(getResponse).toEqual(Buffer.from(data.toString()));
-
+            expect(tagResponse).toBe(true);
         });
         it("should upload a USS file from local file", async () => {
             let error;
