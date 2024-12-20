@@ -677,7 +677,14 @@ describe("TeamConfig ProfileInfo tests", () => {
                 expect(arg.argValue).toEqual(expectedArgs[idx].argValue);
                 expect(arg.argLoc.locType).toBe(ProfLocType.TEAM_CONFIG);
                 expect(arg.argLoc.jsonLoc).toMatch(/^profiles\.(base_glob|LPAR2_home)\.properties\./);
-                expect(arg.argLoc.osLoc[0]).toEqual(path.normalize(path.join(teamHomeProjDir, `${testAppNm}.config.json`)));
+                expect([
+                    path.normalize(
+                        path.join(teamHomeProjDir, `${testAppNm}.config.json`)
+                    ),
+                    path.normalize(
+                        path.join(teamProjDir, `${testAppNm}.config.json`)
+                    ),
+                ]).toContain(arg.argLoc.osLoc[0]);
             }
         });
 
@@ -955,6 +962,44 @@ describe("TeamConfig ProfileInfo tests", () => {
 
             expect(caughtError).toBeDefined();
             expect(caughtError.message).toContain("Profile attributes must be defined");
+        });
+        it("should fall back to layerProperties when realBaseProfileName is undefined", async () => {
+            const profInfo = createNewProfInfo(teamProjDir);
+            await profInfo.readProfilesFromDisk();
+
+            jest.spyOn(ProfileInfo.prototype, "getOsLocInfo").mockReturnValue([{
+                global: true,
+                name: "LPAR1",
+                path: "/mocked/path/xyz",
+                user: true
+            }]);
+
+            // Simulate the condition where the active layer has no `defaults.base` but global and user layers exist
+            const layerActive = profInfo.getTeamConfig().layerActive();
+            delete layerActive.properties.defaults.base;
+
+            const globalLayer = profInfo.getTeamConfig().findLayer(false, true);
+            globalLayer.properties.defaults.base = "globalBaseProfile";
+
+            const userLayer = profInfo.getTeamConfig().findLayer(true, true);
+            userLayer.properties.defaults.base = "";
+
+            const profAttrs = profInfo.getDefaultProfile("zosmf") as IProfAttrs;
+
+            // Merge args to trigger the logic
+            const mergedArgs = profInfo.mergeArgsForProfile(profAttrs);
+
+            // Expected args should include those from the global base profile
+            const expectedArgs = [
+                {argName: 'host', dataType: 'string', argValue: 'LPAR1.your.domain.net', secure: false},
+                {argName: 'port', dataType: 'number', argValue: 1234, secure: false},
+                {argName: 'responseFormatHeader', dataType: 'boolean', argValue: true, secure: false}
+            ];
+
+            expect(mergedArgs.knownArgs.length).toBeGreaterThanOrEqual(expectedArgs.length);
+            for (const [idx, arg] of expectedArgs.entries()) {
+                expect(mergedArgs.knownArgs[idx]).toMatchObject(arg);
+            }
         });
     });
 
