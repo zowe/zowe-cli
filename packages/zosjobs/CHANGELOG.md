@@ -4,7 +4,7 @@ All notable changes to the Zowe z/OS jobs SDK package will be documented in this
 
 ## Recent Changes
 
-- BugFix: Check if encoding is set and not empty now works for numeric-only value in encoding. [#2392] (https://github.com/zowe/zowe-cli/pull/2392).
+- BugFix: Check if encoding is set and not empty now works for numeric-only value in encoding (GetJobs.ts). [#2392] (https://github.com/zowe/zowe-cli/pull/2392).
 
 ## `8.7.1`
 
