@@ -58,6 +58,10 @@ export class Copy {
         ImperativeExpect.toBeDefinedAndNonBlank(toDataSetName, "toDataSetName");
 
         const sourceIsPds = await this.isPDS(session, options["from-dataset"].dsn);
+        const targetDataSetExists = await this.dataSetExists(session, toDataSetName);
+        if(!targetDataSetExists) {
+            await Create.dataSetLike(session, toDataSetName, options["from-dataset"].dsn);
+        }
         const targetIsPds = await this.isPDS(session, toDataSetName);
         if (sourceIsPds && targetIsPds) {
             return await this.copyPDS(session, options["from-dataset"].dsn, toDataSetName);
@@ -119,6 +123,19 @@ export class Copy {
             Logger.getAppLogger().error(error);
             throw error;
         }
+    }
+
+    public static async dataSetExists(
+        session: AbstractSession,
+        dataSetName: string
+    ): Promise<boolean> {
+        let dsnameIndex;
+        const dataSetList = await List.dataSet(session, dataSetName, {attributes: true, start: dataSetName});
+        if(dataSetList.apiResponse != null && dataSetList.apiResponse.returnedRows != null && dataSetList.apiResponse.items != null) {
+            dsnameIndex = dataSetList.apiResponse.returnedRows === 0 ? -1 :
+                dataSetList.apiResponse.items.findIndex((ds: any) => ds.dsname.toUpperCase() === dataSetName.toUpperCase());
+        }
+        return dsnameIndex !== -1;
     }
 
     /**

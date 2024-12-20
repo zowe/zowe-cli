@@ -444,6 +444,8 @@ describe("Copy", () => {
             });
             describe("Partitioned > Partitioned", () => {
                 let copyPDSSpy = jest.spyOn(Copy, "copyPDS");
+                let createSpy: jest.SpyInstance;
+                let dataSetExistsSpy: jest.SpyInstance;
                 beforeEach(() => {
                     copyPDSSpy.mockClear();
                     copyPDSSpy = jest.spyOn(Copy, "copyPDS").mockResolvedValue({
@@ -451,10 +453,14 @@ describe("Copy", () => {
                         commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message,
                     });
                     isPDSSpy = jest.spyOn(Copy as any, "isPDS").mockResolvedValue(true);
+                    createSpy = jest.spyOn(Create, "dataSetLike");
+                    dataSetExistsSpy = jest.spyOn(Copy, "dataSetExists");
                 });
                 afterAll(() => {
                     copyPDSSpy.mockRestore();
                     isPDSSpy.mockRestore();
+                    createSpy.mockRestore();
+                    dataSetExistsSpy.mockRestore();
                 });
                 it("should call copyPDS to copy members of source PDS to target PDS", async () => {
                     const response = await Copy.dataSet(
@@ -470,6 +476,36 @@ describe("Copy", () => {
                     expect(copyPDSSpy).toHaveBeenCalledTimes(1);
                     expect(copyPDSSpy).toHaveBeenCalledWith(dummySession, fromDataSetName, toDataSetName);
 
+                    expect(response).toEqual({
+                        success: true,
+                        commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message
+                    });
+                });
+                it("should call Create.dataSetLike and create a new data set if the target data set inputted does not exist", async() => {
+                    const response = await Copy.dataSet(
+                        dummySession,
+                        {dsn: toDataSetName},
+                        {"from-dataset": {
+                            dsn:fromDataSetName
+                        }}
+                    );
+                    dataSetExistsSpy.mockResolvedValue(false);
+                    expect(createSpy).toHaveBeenCalledWith(dummySession, toDataSetName, fromDataSetName);
+                    expect(response).toEqual({
+                        success: true,
+                        commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message
+                    });
+                });
+                it("should not create a new data set if the target data set inputted exists", async() => {
+                    const response = await Copy.dataSet(
+                        dummySession,
+                        {dsn: toDataSetName},
+                        {"from-dataset": {
+                            dsn:fromDataSetName
+                        }}
+                    );
+                    dataSetExistsSpy.mockResolvedValue(true);
+                    expect(createSpy).not.toHaveBeenCalled();
                     expect(response).toEqual({
                         success: true,
                         commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message
@@ -564,6 +600,7 @@ describe("Copy", () => {
         const readStream = jest.spyOn(IO, "createReadStream");
         const rmSync = jest.spyOn(fs, "rmSync");
         const listDatasetSpy = jest.spyOn(List, "dataSet");
+        const targetDataSetExistsSpy = jest.spyOn(Copy, "dataSetExists");
 
         const dsPO = {
             dsname: fromDataSetName,
@@ -613,6 +650,47 @@ describe("Copy", () => {
             expect(response).toEqual(false);
             expect(listDatasetSpy).toHaveBeenCalledWith(dummySession, dsPS.dsname, { attributes: true });
         });
+        it("should return true if the data set exists", async () => {
+            let caughtError;
+            let response;
+            listDatasetSpy.mockImplementation(async (): Promise<any>  => {
+                return {
+                    apiResponse: {
+                        returnedRows: 1,
+                        items: [dsPO]
+                    }
+                };
+            });
+            try {
+                response = await Copy.dataSetExists(dummySession, dsPO.dsname);
+            }
+            catch(e) {
+                caughtError = e;
+            }
+            expect(response).toEqual(true);
+            expect(listDatasetSpy).toHaveBeenCalledWith(dummySession, dsPO.dsname, { attributes: true , start: dsPO.dsname});
+        });
+
+        it("should return false if the data set does not exist", async () => {
+            let caughtError;
+            let response;
+            listDatasetSpy.mockImplementation(async (): Promise<any>  => {
+                return {
+                    apiResponse: {
+                        returnedRows: 0,
+                        items: []
+                    }
+                };
+            });
+            try {
+                response = await Copy.dataSetExists(dummySession, dsPO.dsname);
+            }
+            catch(e) {
+                caughtError = e;
+            }
+            expect(response).toEqual(false);
+            expect(listDatasetSpy).toHaveBeenCalledWith(dummySession, dsPO.dsname, { attributes: true , start: dsPO.dsname});
+        });
 
         it("should successfully copy members from source to target PDS", async () => {
             let caughtError;
@@ -634,7 +712,6 @@ describe("Copy", () => {
             readStream.mockReturnValue("test" as any);
             uploadSpy.mockResolvedValue(undefined);
             rmSync.mockImplementation(jest.fn());
-
 
             try{
                 response = await Copy.copyPDS(dummySession, fromDataSetName, toDataSetName);
