@@ -21,7 +21,7 @@ jobs:
     - name: Configure Sonar Scan
       uses: zowe-actions/octorelease/script@v1
       env:
-        COVERAGE_ARTIFACT: "ubuntu-latest-18.x-results:__tests__/__results__"
+        COVERAGE_ARTIFACT: "ubuntu-latest-20.x-results:__tests__/__results__"
       with:
         script: sonarConfig
 
