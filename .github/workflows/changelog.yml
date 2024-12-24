@@ -4,7 +4,7 @@ on:
   pull_request:
     branches:
       - master
-      - zowe-v1-lts
+      - zowe-v?-lts
       - next
 
 jobs:
