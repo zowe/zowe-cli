@@ -34,8 +34,6 @@ jobs:
   test:
     if: (github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository) && !contains(github.event.head_commit.message, '[ci skip]')
     runs-on: ${{ matrix.os }}
-    outputs:
-      npm-resolutions: ${{ steps.npm-update.outputs.result }}
 
     strategy:
       fail-fast: false
@@ -89,14 +87,14 @@ jobs:
       if: matrix.os != 'windows-latest' && github.event.inputs.test-type != 'nodejs'
       run: |
         cargo build --verbose ${{ github.event.inputs.binary-type == 'release' && '--release' || '' }} --manifest-path=zowex/Cargo.toml
-        tar -cvzf zowe.tgz -C zowex/target/${{ github.event.inputs.binary-type == 'release' && 'release' || 'debug' }} zowe
+        tar -cvzf zowe.tgz -C zowex/target/${{ github.event.inputs.binary-type }} zowe
 
     - name: Build Binary (Windows)
       id: build-windows-binary
       if: matrix.os == 'windows-latest' && github.event.inputs.test-type != 'nodejs'
       run: |
         cargo build --verbose ${{ github.event.inputs.binary-type == 'release' && '--release' || '' }} --manifest-path=zowex/Cargo.toml
-        tar -cvzf zowe.tgz -C zowex/target/${{ github.event.inputs.binary-type == 'release' && 'release' || 'debug' }} zowe.exe
+        tar -cvzf zowe.tgz -C zowex/target/${{ github.event.inputs.binary-type }} zowe.exe
       env:
         RUSTFLAGS: "-Ctarget-feature=+crt-static"
 
@@ -142,8 +140,8 @@ jobs:
 
     - name: Integration Tests (Daemon)
       if: ${{ always() && steps.build.outcome == 'success' && github.event.inputs.test-type != 'nodejs' }}
-      # We need double double hyphen to work around Windows + Node 22 bug: https://github.com/npm/cli/issues/7375
-      run: npm run test:integration -- -- --runInBand
+      # Use double double hyphen to work around Windows + Node 22 bug: https://github.com/npm/cli/issues/7375
+      run: npm run test:integration -- ${{ (matrix.os == 'windows-latest' && matrix.node-version == '22.x') && '--' || '' }} --runInBand
 
     - name: Archive Results
       if: ${{ always() && steps.build.outcome == 'success' }}
