@@ -4,9 +4,7 @@ All notable changes to the Imperative package will be documented in this file.
 
 ## `8.10.2`
 
-- bugfix: fixed a typo in the syntax validation code for positional arguments. the bug caused the validation to never fail. [#2384](https://github.com/zowe/zowe-cli/pull/2384)
-- enhancement: added a regression test to validate the fix. [#2384](https://github.com/zowe/zowe-cli/pull/2384)  
-  (note: non-user-facing items like regression tests are typically not included in the changelog).
+- BugFix: Fixed a typo in the syntax validation code for positional arguments which caused the validation to never fail. [#2375](https://github.com/zowe/zowe-cli/issues/2375)
 
 ## `8.10.1`
 
