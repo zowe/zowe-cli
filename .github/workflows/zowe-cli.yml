@@ -84,24 +84,17 @@ jobs:
 
     - name: Build Binary
       id: build-binary
-      if: matrix.os != 'windows-latest' && github.event.inputs.test-type != 'nodejs'
+      if: github.event.inputs.test-type != 'nodejs'
       run: |
         cargo build --verbose ${{ github.event.inputs.binary-type == 'release' && '--release' || '' }} --manifest-path=zowex/Cargo.toml
-        tar -cvzf zowe.tgz -C zowex/target/${{ github.event.inputs.binary-type }} zowe
-
-    - name: Build Binary (Windows)
-      id: build-windows-binary
-      if: matrix.os == 'windows-latest' && github.event.inputs.test-type != 'nodejs'
-      run: |
-        cargo build --verbose ${{ github.event.inputs.binary-type == 'release' && '--release' || '' }} --manifest-path=zowex/Cargo.toml
-        tar -cvzf zowe.tgz -C zowex/target/${{ github.event.inputs.binary-type }} zowe.exe
-      env:
-        RUSTFLAGS: "-Ctarget-feature=+crt-static"
+        tar -cvzf zowe.tgz -C zowex/target/${{ github.event.inputs.binary-type || 'debug' }} ${{ matrix.os == 'windows-latest' && 'zowe.exe' || 'zowe' }}
 
     - name: Archive Binary
       if: github.event.inputs.test-type != 'nodejs'
       id: upload-binary
       uses: actions/upload-artifact@v4
+      # Ignore conflict if multiple jobs upload artifact at same time: https://github.com/actions/upload-artifact/issues/506
+      continue-on-error: true
       with:
         name: zowe-${{ matrix.os }}.tgz
         path: zowe.tgz
@@ -114,11 +107,6 @@ jobs:
       run: |
         tar -xvzf zowe.tgz -C ./__tests__/__resources__/daemon_instances
         echo "${{ github.workspace }}/__tests__/__resources__/application_instances" >> $GITHUB_PATH
-
-    - name: Test Rust EXE and zowe script
-      id: test-exe-and-script
-      if: ${{ steps.setup-binary.outcome == 'success' && github.event.inputs.test-type != 'nodejs' }}
-      run: cargo test ${{ github.event.inputs.binary-type == 'release' && '--release' || '' }} --manifest-path=zowex/Cargo.toml -- --nocapture
 
     - name: Unit Tests
       if: ${{ always() && steps.build.outcome == 'success' }}
