@@ -31,7 +31,7 @@ export interface IDownloadSpoolContentParms extends Omit<IDownloadAllSpoolConten
      * Name of the job for which you want to download all output
      * e.g. MYJOBNM
      * @type {string}
-     * @memberof IDownloadAllSpoolContentParms
+     * @memberof IDownloadSpoolContentParms
      */
     jobname?: string;
 
@@ -39,14 +39,28 @@ export interface IDownloadSpoolContentParms extends Omit<IDownloadAllSpoolConten
      * JOB ID of the job for which you want to download all output
      * e.g. JOB00001
      * @type {string}
-     * @memberof IDownloadAllSpoolContentParms
+     * @memberof IDownloadSpoolContentParms
      */
     jobid?: string;
 
     /**
      * Optional stream to read the spool contents
      * @type {Writable}
-     * @memberof IDownloadAllSpoolContentParms
+     * @memberof IDownloadSpoolContentParms
      */
     stream?: Writable;
+
+    /**
+     * Starting record for fetching spool contents
+     * @type {number}
+     * @memberof IDownloadSpoolContentParms
+     */
+    startRecord?: number;
+
+    /**
+     * Number of records to fetch for spool contents
+     * @type {number}
+     * @memberof IDownloadSpoolContentParms
+     */
+    numRecords?: number;
 }

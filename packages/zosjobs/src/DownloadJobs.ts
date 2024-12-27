@@ -14,7 +14,7 @@ import { AbstractSession, ImperativeExpect, IO, Logger, Headers} from "@zowe/imp
 import { JobsConstants } from "./JobsConstants";
 import { IDownloadAllSpoolContentParms } from "./doc/input/IDownloadAllSpoolContentParms";
 import { IJobFile } from "./doc/response/IJobFile";
-import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
+import { ZosmfHeaders, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { IDownloadSpoolContentParms } from "./doc/input/IDownloadSpoolContentParms";
 import { GetJobs } from "./GetJobs";
 import { MonitorJobs } from "./MonitorJobs";
@@ -143,9 +143,14 @@ export class DownloadJobs {
             parameters += "?fileEncoding=" + parms.encoding;
         }
 
+        const headers = [Headers.TEXT_PLAIN_UTF8];
+        if (parms.startRecord || parms.numRecords) {
+            headers.push({ [ZosmfHeaders.X_IBM_RECORD_RANGE]: `${parms.startRecord ?? 0}-${parms.numRecords ?? 0}` });
+        }
+
         const writeStream = parms.stream ?? IO.createWriteStream(file);
         const normalizeResponseNewLines = !(parms.binary || parms.record);
-        await ZosmfRestClient.getStreamed(session, JobsConstants.RESOURCE + parameters, [Headers.TEXT_PLAIN_UTF8], writeStream,
+        await ZosmfRestClient.getStreamed(session, JobsConstants.RESOURCE + parameters, headers, writeStream,
             normalizeResponseNewLines);
     }
 
