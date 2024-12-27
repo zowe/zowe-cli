@@ -145,7 +145,9 @@ export class DownloadJobs {
 
         const headers = [Headers.TEXT_PLAIN_UTF8];
         if (parms.startRecord || parms.numRecords) {
-            headers.push({ [ZosmfHeaders.X_IBM_RECORD_RANGE]: `${parms.startRecord ?? 0}-${parms.numRecords ?? 0}` });
+            const start = parms.startRecord ?? 0;
+            const numRecords = parms.numRecords ? start + parms.numRecords : 0;
+            headers.push({ [ZosmfHeaders.X_IBM_RECORD_RANGE]: `${start}-${numRecords}` });
         }
 
         const writeStream = parms.stream ?? IO.createWriteStream(file);
