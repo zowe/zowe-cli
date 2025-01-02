@@ -1355,11 +1355,11 @@ describe("TeamConfig ProfileInfo tests", () => {
             const profInfo = createNewProfInfo(nestedTeamProjDirEmptyBase);
             await profInfo.readProfilesFromDisk({ projectDir: nestedTeamProjDirEmptyBaseProj});
             const profiles = profInfo.getAllProfiles();
-            const desiredProfile = "lpar1.zosmf";
+            const desiredProfile = "lpar1.base1234567";
             const upd = { profileName: "lpar1.zosmf", profileType: "zosmf" };
             await profInfo.updateProperty({ ...upd, property: "user", value: "testxyz", setSecure: true });
             await profInfo.updateProperty({ ...upd, property: "password", value: "testabc", setSecure: true });
-            expect(profiles.find(p => p.profName === "lpar1.base1234567")).toBeUndefined();
+            expect(profiles.find(p => p.profName === desiredProfile)).toBeUndefined();
         });
     });
 
