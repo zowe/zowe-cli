@@ -3,7 +3,7 @@
 All notable changes to the Imperative package will be documented in this file.
 
 
-## Recent Changes
+## `8.10.1`
 
 - BugFix: Resolved an issue where base profiles in a team configuration file were overwritten when a user configuration file did not include a base profile. [#2383](https://github.com/zowe/zowe-cli/pull/2383)
 - BugFix: Resolved an issue where extraneous base profiles were being added to project configs if a nested profile property was updated. [#]
