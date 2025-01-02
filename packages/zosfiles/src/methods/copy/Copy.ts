@@ -59,12 +59,15 @@ export class Copy {
 
         const sourceIsPds = await this.isPDS(session, options["from-dataset"].dsn);
         const targetDataSetExists = await this.dataSetExists(session, toDataSetName);
+
+        let newDataSet = false;
         if(!targetDataSetExists) {
+            newDataSet = true;
             await Create.dataSetLike(session, toDataSetName, options["from-dataset"].dsn);
         }
         const targetIsPds = await this.isPDS(session, toDataSetName);
         if (sourceIsPds && targetIsPds) {
-            return await this.copyPDS(session, options["from-dataset"].dsn, toDataSetName);
+            return await this.copyPDS(session, options["from-dataset"].dsn, toDataSetName, newDataSet);
         }
 
         const endpoint: string = posix.join(
@@ -108,7 +111,7 @@ export class Copy {
     }
 
     /**
-     * Private function that checks if a dataset is type PDS
+     * Function that checks if a dataset is type PDS
     **/
     public static async isPDS(
         session: AbstractSession,
@@ -125,6 +128,9 @@ export class Copy {
         }
     }
 
+    /**
+     * Function that checks if the data set exists
+    **/
     public static async dataSetExists(
         session: AbstractSession,
         dataSetName: string
@@ -154,10 +160,7 @@ export class Copy {
      */
 
     public static async copyPDS (
-        session: AbstractSession,
-        fromPds: string,
-        toPds: string
-    ): Promise<IZosFilesResponse> {
+        session: AbstractSession, fromPds: string, toPds: string, newDataSet: boolean): Promise<IZosFilesResponse> {
         try {
             const sourceResponse = await List.allMembers(session, fromPds);
             const sourceMemberList: Array<{ member: string }> = sourceResponse.apiResponse.items;
@@ -181,7 +184,9 @@ export class Copy {
             fs.rmSync(downloadDir, {recursive: true});
             return {
                 success:true,
-                commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message
+                commandResponse: newDataSet
+                    ? ZosFilesMessages.newDataSetCreatedAndCopied.message + ` - "${toPds}"`
+                    : ZosFilesMessages.datasetCopiedSuccessfully.message
             };
         }
         catch (error) {

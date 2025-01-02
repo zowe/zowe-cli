@@ -136,6 +136,14 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
     },
 
     /**
+     * Message indicating that a new target data set was created and copied into
+     * @type {IMessageDefinition}
+     */
+    newDataSetCreatedAndCopied: {
+        message: "A new data set was created and copied into"
+    },
+
+    /**
      * Message indicating that the data set was created successfully
      * @type {IMessageDefinition}
      */

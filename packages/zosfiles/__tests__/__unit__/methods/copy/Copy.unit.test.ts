@@ -478,11 +478,12 @@ describe("Copy", () => {
                             dsn:fromDataSetName
                         }}
                     );
+                    const newDataSet = false;
                     expect(isPDSSpy).toHaveBeenNthCalledWith(1, dummySession, fromDataSetName);
                     expect(isPDSSpy).toHaveBeenNthCalledWith(2, dummySession, toDataSetName);
 
                     expect(copyPDSSpy).toHaveBeenCalledTimes(1);
-                    expect(copyPDSSpy).toHaveBeenCalledWith(dummySession, fromDataSetName, toDataSetName);
+                    expect(copyPDSSpy).toHaveBeenCalledWith(dummySession, fromDataSetName, toDataSetName, newDataSet);
 
                     expect(response).toEqual({
                         success: true,
@@ -710,6 +711,7 @@ describe("Copy", () => {
                     ]
                 }
             };
+            const newDataSet = false;
             const fileList = ["mem1", "mem2"];
 
             listAllMembersSpy.mockImplementation(async (): Promise<any>  => sourceResponse);
@@ -721,7 +723,7 @@ describe("Copy", () => {
             rmSync.mockImplementation(jest.fn());
 
             try{
-                response = await Copy.copyPDS(dummySession, fromDataSetName, toDataSetName);
+                response = await Copy.copyPDS(dummySession, fromDataSetName, toDataSetName, newDataSet);
             }
             catch(e) {
                 caughtError = e;
