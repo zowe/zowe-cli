@@ -9,8 +9,6 @@
                         "port": 1234
                     },
                     "secure": [
-                        "password",
-                        "user"
                     ]
                 }
             }
