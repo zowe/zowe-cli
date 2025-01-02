@@ -151,11 +151,7 @@ export class ConfigAutoStore {
         }
 
         const beforeLayer = config.api.layers.get();
-        const foundLayer = config.api.layers.find(profileName);
-        if (foundLayer != null) {
-            const { user, global } = foundLayer;
-            config.api.layers.activate(user, global);
-        }
+
 
         const profileObj = config.api.profiles.get(profileName, false);
         const profileSchema = ImperativeConfig.instance.loadedConfig.profiles?.find(p => p.type === profileType)?.schema;
@@ -193,6 +189,12 @@ export class ConfigAutoStore {
                 if (secureProfilePath != null && secureProfilePath.split(".").length < propProfilePath.split(".").length) {
                     propProfilePath = secureProfilePath.slice(0, secureProfilePath.lastIndexOf("."));
                 }
+            }
+
+            const foundLayer = config.api.layers.find(config.api.profiles.getProfileNameFromPath(propProfilePath));
+            if (foundLayer != null) {
+                const { user, global } = foundLayer;
+                config.api.layers.activate(user, global);
             }
 
             const sessCfgPropName = propName === "host" ? "hostname" : propName;

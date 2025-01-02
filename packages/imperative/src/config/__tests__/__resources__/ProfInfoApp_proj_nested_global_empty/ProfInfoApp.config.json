@@ -1,0 +1,18 @@
+{
+    "$schema": "./ProfInfoApp.schema.json",
+    "profiles": {
+        "base1234567": {
+            "type": "base",
+            "properties": {
+            },
+            "secure": [
+                "password",
+                "user"
+            ]
+        }
+    },
+    "defaults": {
+        "base": "base1234567"
+    },
+    "autoStore": true
+}

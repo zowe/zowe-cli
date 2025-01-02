@@ -1,0 +1,23 @@
+{
+    "$schema": "./ProfInfoApp.schema.json",
+    "profiles": {
+        "lpar1": {
+            "profiles": {
+                "zosmf": {
+                    "type": "zosmf",
+                    "properties": {
+                        "port": 1234
+                    },
+                    "secure": [
+                        "password",
+                        "user"
+                    ]
+                }
+            }
+        }
+    },
+    "defaults": {
+        "zosmf": "zosmf"
+    },
+    "autoStore": true
+}
