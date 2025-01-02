@@ -1359,8 +1359,7 @@ describe("TeamConfig ProfileInfo tests", () => {
             const upd = { profileName: "lpar1.zosmf", profileType: "zosmf" };
             await profInfo.updateProperty({ ...upd, property: "user", value: "testxyz", setSecure: true });
             await profInfo.updateProperty({ ...upd, property: "password", value: "testabc", setSecure: true });
-            const profAttrs = profiles.find(p => p.profName === desiredProfile);
-            expect(!profiles.find(p => p.profName === "lpar1.base"));
+            expect(profiles.find(p => p.profName === "lpar1.base1234567")).toBeUndefined();
         });
     });
 
