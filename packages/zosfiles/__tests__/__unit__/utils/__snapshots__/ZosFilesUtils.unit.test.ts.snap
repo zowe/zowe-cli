@@ -269,6 +269,9 @@ Destination: %s",
   "missingZfsOption": Object {
     "message": "To create a z/OS file system, the following option must be supplied: ",
   },
+  "newDataSetCreatedAndCopied": Object {
+    "message": "A new data set was created and copied into",
+  },
   "noDataSetsInList": Object {
     "message": "No data sets left after excluded pattern(s) were filtered out.",
   },
