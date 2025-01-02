@@ -10,7 +10,7 @@
 */
 
 use std::env;
-use std::io;
+use std::process::ExitCode;
 
 // other source modules that constitute this executable
 mod comm;
@@ -38,7 +38,7 @@ extern crate tokio;
 // 3.6393932 and 0.76156812 zowe average over 10 run sample = 2.87782508 sec faster on windows
 
 #[tokio::main]
-async fn main() -> io::Result<()> {
+async fn main() -> ExitCode {
     // turn args into vector
     let mut cmd_line_args: Vec<String> = env::args().collect();
 
@@ -55,8 +55,6 @@ async fn main() -> io::Result<()> {
         Err(err_val) => err_val,
     };
 
-    /* Rust does not enable main() to return an exit code.
-     * Thus, we explicitly exit the process with our desired exit code.
-     */
-    std::process::exit(exit_code);
+    // return exit code to indicate success or failure
+    ExitCode::from(exit_code as u8)
 }

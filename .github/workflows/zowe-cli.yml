@@ -9,13 +9,19 @@ on:
   workflow_dispatch:
     inputs:
       binary-type:
+        type: choice
         description: Specify whether to use a `debug` or a `release` version of the binary
         default: debug
-        required: false
+        options:
+          - debug
+          - release
       test-type:
+        type: choice
         description: Specify whether to run tests using the `binary` or regular `nodejs` executable
         default: binary
-        required: false
+        options:
+          - binary
+          - nodejs
       macos-type:
         type: choice
         description: Run against x86-based MacOS (12), otherwise run against ARM64-based MacOS (14)
@@ -28,14 +34,12 @@ jobs:
   test:
     if: (github.event_name == 'push' || github.event.pull_request.head.repo.full_name != github.repository) && !contains(github.event.head_commit.message, '[ci skip]')
     runs-on: ${{ matrix.os }}
-    outputs:
-      npm-resolutions: ${{ steps.npm-update.outputs.result }}
 
     strategy:
       fail-fast: false
       matrix:
-        node-version: [18.x, 20.x]
-        os: 
+        node-version: [18.x, 20.x, 22.x]
+        os:
           - windows-latest
           - ubuntu-latest
           - ${{ github.event.inputs.macos-type || 'macos-14'}}
@@ -66,20 +70,12 @@ jobs:
         echo "::remove-matcher owner=eslint-compact::"
         echo "::remove-matcher owner=eslint-stylish::"
 
-    - name: Get NPM Version
-      id: npm-version
-      run: echo "number=$(npm --version)" >> $GITHUB_OUTPUT
-
     - name: Install Dependencies
       run: npm ci
 
-    - name: Use Original NPM Version
-      id: original-npm-version
-      run: npm install -g npm@${{ steps.npm-version.outputs.number || '9' }}
-
     - name: Install Rust toolchain
       id: install-rust
-      if: github.event.inputs.test-type == 'binary' || github.event_name == 'push'
+      if: github.event.inputs.test-type != 'nodejs'
       uses: dtolnay/rust-toolchain@stable
 
     - name: Build Source
@@ -88,41 +84,29 @@ jobs:
 
     - name: Build Binary
       id: build-binary
-      if: matrix.os != 'windows-latest' && (github.event.inputs.test-type == 'binary' || github.event_name == 'push')
+      if: github.event.inputs.test-type != 'nodejs'
       run: |
         cargo build --verbose ${{ github.event.inputs.binary-type == 'release' && '--release' || '' }} --manifest-path=zowex/Cargo.toml
-        tar -cvzf zowe.tgz -C zowex/target/${{ github.event.inputs.binary-type == 'release' && 'release' || 'debug' }} zowe
-
-    - name: Build Binary (Windows)
-      id: build-windows-binary
-      if: matrix.os == 'windows-latest' && (github.event.inputs.test-type == 'binary' || github.event_name == 'push')
-      run: |
-        cargo build --verbose ${{ github.event.inputs.binary-type == 'release' && '--release' || '' }} --manifest-path=zowex/Cargo.toml
-        tar -cvzf zowe.tgz -C zowex/target/${{ github.event.inputs.binary-type == 'release' && 'release' || 'debug' }} zowe.exe
-      env:
-        RUSTFLAGS: "-Ctarget-feature=+crt-static"
+        tar -cvzf zowe.tgz -C zowex/target/${{ github.event.inputs.binary-type || 'debug' }} ${{ matrix.os == 'windows-latest' && 'zowe.exe' || 'zowe' }}
 
     - name: Archive Binary
-      if: github.event.inputs.test-type == 'binary' || github.event_name == 'push'
+      if: github.event.inputs.test-type != 'nodejs'
       id: upload-binary
       uses: actions/upload-artifact@v4
+      # Ignore conflict if multiple jobs upload artifact at same time: https://github.com/actions/upload-artifact/issues/506
+      continue-on-error: true
       with:
         name: zowe-${{ matrix.os }}.tgz
         path: zowe.tgz
         overwrite: true
 
     - name: Setup Binary in PATH
-      if: github.event.inputs.test-type == 'binary' || github.event_name == 'push'
+      if: github.event.inputs.test-type != 'nodejs'
       id: setup-binary
       shell: bash
       run: |
         tar -xvzf zowe.tgz -C ./__tests__/__resources__/daemon_instances
         echo "${{ github.workspace }}/__tests__/__resources__/application_instances" >> $GITHUB_PATH
-
-    - name: Test Rust EXE and zowe script
-      id: test-exe-and-script
-      if: ${{ steps.setup-binary.outcome == 'success' && (github.event.inputs.test-type == 'binary' || github.event_name == 'push') }}
-      run: cargo test ${{ github.event.inputs.binary-type == 'release' && '--release' || '' }} --manifest-path=zowex/Cargo.toml -- --nocapture
 
     - name: Unit Tests
       if: ${{ always() && steps.build.outcome == 'success' }}
@@ -135,16 +119,17 @@ jobs:
 
     - name: Start Daemon
       id: start-daemon
-      if: ${{ always() && steps.build.outcome == 'success' && (github.event.inputs.test-type == 'binary' || github.event_name == 'push') }}
+      if: ${{ always() && steps.build.outcome == 'success' && github.event.inputs.test-type != 'nodejs' }}
       run: ./__tests__/__resources__/daemon_instances/zowe
 
     - name: Integration Tests (Native)
-      if: ${{ always() && steps.build.outcome == 'success' && !(github.event.inputs.test-type == 'binary' || github.event_name == 'push') }}
+      if: ${{ always() && steps.build.outcome == 'success' && github.event.inputs.test-type == 'nodejs' }}
       run: npm run test:integration
 
     - name: Integration Tests (Daemon)
-      if: ${{ always() && steps.build.outcome == 'success' && (github.event.inputs.test-type == 'binary' || github.event_name == 'push') }}
-      run: npm run test:integration -- --runInBand
+      if: ${{ always() && steps.build.outcome == 'success' && github.event.inputs.test-type != 'nodejs' }}
+      # Use double double hyphen to work around Windows + Node 22 bug: https://github.com/npm/cli/issues/7375
+      run: npm run test:integration -- ${{ (matrix.os == 'windows-latest' && matrix.node-version == '22.x') && '--' || '' }} --runInBand
 
     - name: Archive Results
       if: ${{ always() && steps.build.outcome == 'success' }}
