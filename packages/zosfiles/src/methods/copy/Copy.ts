@@ -57,7 +57,6 @@ export class Copy {
         ImperativeExpect.toBeDefinedAndNonBlank(options["from-dataset"].dsn, "fromDataSetName");
         ImperativeExpect.toBeDefinedAndNonBlank(toDataSetName, "toDataSetName");
 
-        const sourceIsPds = await this.isPDS(session, options["from-dataset"].dsn);
         const targetDataSetExists = await this.dataSetExists(session, toDataSetName);
 
         let newDataSet = false;
@@ -65,11 +64,13 @@ export class Copy {
             newDataSet = true;
             await Create.dataSetLike(session, toDataSetName, options["from-dataset"].dsn);
         }
-        const targetIsPds = await this.isPDS(session, toDataSetName);
-        if (sourceIsPds && targetIsPds) {
-            return await this.copyPDS(session, options["from-dataset"].dsn, toDataSetName, newDataSet);
+        if(!toMemberName && !options["from-dataset"].member) {
+            const sourceIsPds = await this.isPDS(session, options["from-dataset"].dsn);
+            const targetIsPds = await this.isPDS(session, toDataSetName);
+            if (sourceIsPds && targetIsPds) {
+                return await this.copyPDS(session, options["from-dataset"].dsn, toDataSetName, newDataSet);
+            }
         }
-
         const endpoint: string = posix.join(
             ZosFilesConstants.RESOURCE,
             ZosFilesConstants.RES_DS_FILES,
@@ -185,7 +186,7 @@ export class Copy {
             return {
                 success:true,
                 commandResponse: newDataSet
-                    ? ZosFilesMessages.newDataSetCreatedAndCopied.message + ` - "${toPds}"`
+                    ? ZosFilesMessages.newDataSetCreated.message + ` - "${toPds}"`
                     : ZosFilesMessages.datasetCopiedSuccessfully.message
             };
         }
