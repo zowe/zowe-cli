@@ -11,7 +11,6 @@ pub enum KeyringError {
     #[error("[keyring] {name:?} library returned an error:\n\n{details:?}")]
     Library { name: String, details: String },
 
-    #[cfg(not(target_os = "macos"))]
     #[error("[keyring] An OS error has occurred:\n\n{0}")]
     Os(String),
 
