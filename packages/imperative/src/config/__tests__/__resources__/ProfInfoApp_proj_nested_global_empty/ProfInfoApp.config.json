@@ -3,8 +3,7 @@
     "profiles": {
         "base1234567": {
             "type": "base",
-            "properties": {
-            },
+            "properties": {},
             "secure": [
                 "password",
                 "user"

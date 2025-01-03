@@ -1355,11 +1355,21 @@ describe("TeamConfig ProfileInfo tests", () => {
             const profInfo = createNewProfInfo(nestedTeamProjDirEmptyBase);
             await profInfo.readProfilesFromDisk({ projectDir: nestedTeamProjDirEmptyBaseProj});
             const profiles = profInfo.getAllProfiles();
-            const desiredProfile = "lpar1.base1234567";
             const upd = { profileName: "lpar1.zosmf", profileType: "zosmf" };
-            await profInfo.updateProperty({ ...upd, property: "user", value: "testxyz", setSecure: true });
-            await profInfo.updateProperty({ ...upd, property: "password", value: "testabc", setSecure: true });
-            expect(profiles.find(p => p.profName === desiredProfile)).toBeUndefined();
+
+            let caughtError;
+            try {
+                await profInfo.updateProperty({ ...upd, property: "user", value: "testxyz", setSecure: true });
+                await profInfo.updateProperty({ ...upd, property: "password", value: "testabc", setSecure: true });
+            } catch (error) {
+                caughtError = error;
+            }
+
+            const targetProfile = profiles.find(p => p.profName === "base1234567");
+            expect(caughtError).toBeUndefined();
+            expect(targetProfile).toBeDefined();
+            expect(targetProfile?.profLoc?.osLoc?.[0]).toEqual(testDir + "/ProfInfoApp_proj_nested_global_empty/ProfInfoApp.config.json");
+            expect(targetProfile?.profLoc?.osLoc?.[0]).not.toEqual(testDir + "/ProfInfoApp_proj_nested_global_empty_proj/ProfInfoApp.config.json");
         });
     });
 
