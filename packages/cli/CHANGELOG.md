@@ -1,6 +1,10 @@
 # Change Log
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: The `zowe files copy data-set` command no longer copies all partitioned data set members if a member is specified. [#2402](https://github.com/zowe/zowe-cli/pull/2402)
+
 ## `8.10.0`
 -Enhancement: The `zowe zos-files copy data-set` command now copies members from a source partitioned data set to an existing target partitioned data set.[#2386](https://github.com/zowe/zowe-cli/pull/2386)
 
