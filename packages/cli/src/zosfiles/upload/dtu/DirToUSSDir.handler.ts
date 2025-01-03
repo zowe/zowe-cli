@@ -54,7 +54,7 @@ export default class DirToUSSDirHandler extends ZosFilesBaseHandler {
             uploadOptions.filesMap = this.buildFilesMap(commandParameters);
         }
 
-        commandParameters.response.progress.startBar("Uploading files...");
+        commandParameters.response.progress.startBar({ task: status });
 
         try {
             const uploadApi = commandParameters.arguments.recursive ? Upload.dirToUSSDirRecursive : Upload.dirToUSSDir;
