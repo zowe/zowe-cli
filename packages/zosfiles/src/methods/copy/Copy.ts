@@ -57,10 +57,12 @@ export class Copy {
         ImperativeExpect.toBeDefinedAndNonBlank(options["from-dataset"].dsn, "fromDataSetName");
         ImperativeExpect.toBeDefinedAndNonBlank(toDataSetName, "toDataSetName");
 
-        const sourceIsPds = await this.isPDS(session, options["from-dataset"].dsn);
-        const targetIsPds = await this.isPDS(session, toDataSetName);
-        if (sourceIsPds && targetIsPds) {
-            return await this.copyPDS(session, options["from-dataset"].dsn, toDataSetName);
+        if(!toMemberName && !options["from-dataset"].member) {
+            const sourceIsPds = await this.isPDS(session, options["from-dataset"].dsn);
+            const targetIsPds = await this.isPDS(session, toDataSetName);
+            if (sourceIsPds && targetIsPds) {
+                return await this.copyPDS(session, options["from-dataset"].dsn, toDataSetName);
+            }
         }
 
         const endpoint: string = posix.join(
