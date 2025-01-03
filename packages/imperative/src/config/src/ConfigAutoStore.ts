@@ -192,10 +192,7 @@ export class ConfigAutoStore {
             }
 
             const foundLayer = config.api.layers.find(config.api.profiles.getProfileNameFromPath(propProfilePath));
-            if (foundLayer != null) {
-                const { user, global } = foundLayer;
-                config.api.layers.activate(user, global);
-            }
+            if (foundLayer != null) config.api.layers.activate(foundLayer.user, foundLayer.global);
 
             const sessCfgPropName = propName === "host" ? "hostname" : propName;
             config.set(`${propProfilePath}.properties.${propName}`, opts.sessCfg[sessCfgPropName], {
