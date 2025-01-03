@@ -1354,7 +1354,6 @@ describe("TeamConfig ProfileInfo tests", () => {
             process.env[testEnvPrefix + "_CLI_HOME"] = nestedTeamProjDirEmptyBase;
             const profInfo = createNewProfInfo(nestedTeamProjDirEmptyBase);
             await profInfo.readProfilesFromDisk({ projectDir: nestedTeamProjDirEmptyBaseProj});
-            const profiles = profInfo.getAllProfiles();
             const upd = { profileName: "lpar1.zosmf", profileType: "zosmf" };
 
             let caughtError;
@@ -1364,7 +1363,7 @@ describe("TeamConfig ProfileInfo tests", () => {
             } catch (error) {
                 caughtError = error;
             }
-
+            const profiles = profInfo.getAllProfiles();
             const targetProfile = profiles.find(p => p.profName === "base1234567");
             expect(caughtError).toBeUndefined();
             expect(targetProfile).toBeDefined();
