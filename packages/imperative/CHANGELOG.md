@@ -4,7 +4,7 @@ All notable changes to the Imperative package will be documented in this file.
 
 ## Recent Changes
 
-- BugFix: Resolved an issue where extraneous base profiles were created in project configurations when a nested profile property was updated. [#2400](https://github.com/zowe/zowe-cli/pull/2400)
+- BugFix: Resolved an issue where extraneous base profiles were created in project configurations when a nested profile property was updated. [#2404](https://github.com/zowe/zowe-cli/pull/2404)
 
 ## `5.27.5`
 
