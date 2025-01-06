@@ -2,8 +2,12 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
+
 ## Recent Changes
-- Enhancement: The `Copy.dataset` method now creates a new data set if the inputted target data set does not exist.
+- Enhancement: The `Copy.dataset` method now creates a new data set if the inputted target data set does not exist. [#2386](https://github.com/zowe/zowe-cli/pull/2386)
+
+## `8.10.3`
+- BugFix: The `Copy.dataset` method no longer copies all partitioned data set members if a member is passed to the function. [#2402](https://github.com/zowe/zowe-cli/pull/2402)
 
 ## `8.10.0`
 - Enhancement: The `Copy.dataset` method now recognizes partitioned data sets and can copy members of a source PDS into an existing target PDS. [#2386](https://github.com/zowe/zowe-cli/pull/2386)
