@@ -140,7 +140,7 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
      * @type {IMessageDefinition}
      */
     newDataSetCreated: {
-        message: "New data set created"
+        message: `New data set created - %s`
     },
 
     /**

@@ -30,6 +30,7 @@ import { Download } from "../download";
 import { ZosFilesUtils } from "../../utils/ZosFilesUtils";
 import { tmpdir } from "os";
 import path = require("path");
+import * as util from "util";
 /**
  * This class holds helper functions that are used to copy the contents of datasets through the
  * z/OSMF APIs.
@@ -59,9 +60,8 @@ export class Copy {
 
         const targetDataSetExists = await this.dataSetExists(session, toDataSetName);
 
-        let newDataSet = false;
-        if(!targetDataSetExists) {
-            newDataSet = true;
+        const newDataSet = !targetDataSetExists;
+        if (newDataSet) {
             await Create.dataSetLike(session, toDataSetName, options["from-dataset"].dsn);
         }
         if(!toMemberName && !options["from-dataset"].member) {
@@ -161,7 +161,7 @@ export class Copy {
      */
 
     public static async copyPDS (
-        session: AbstractSession, fromPds: string, toPds: string, newDataSet: boolean): Promise<IZosFilesResponse> {
+        session: AbstractSession, fromPds: string, toPds: string, newDataSet = false): Promise<IZosFilesResponse> {
         try {
             const sourceResponse = await List.allMembers(session, fromPds);
             const sourceMemberList: Array<{ member: string }> = sourceResponse.apiResponse.items;
@@ -186,7 +186,7 @@ export class Copy {
             return {
                 success:true,
                 commandResponse: newDataSet
-                    ? ZosFilesMessages.newDataSetCreated.message + ` - "${toPds}"`
+                    ? util.format(ZosFilesMessages.newDataSetCreated.message, toPds)
                     : ZosFilesMessages.datasetCopiedSuccessfully.message
             };
         }
