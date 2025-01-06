@@ -29,19 +29,18 @@ describe("Copy", () => {
 
     describe("Data Set", () => {
         const copyExpectStringSpy = jest.spyOn(ZosmfRestClient, "putExpectString");
+        const copyPDSSpy = jest.spyOn(Copy, "copyPDS");
         const fromDataSetName = "USER.DATA.FROM";
         const fromMemberName = "mem1";
         const toDataSetName = "USER.DATA.TO";
         const toMemberName = "mem2";
-        let isPDSSpy: jest.SpyInstance;
+        const isPDSSpy = jest.spyOn(Copy as any, "isPDS");
         let dataSetExistsSpy: jest.SpyInstance;
 
         beforeEach(() => {
-            copyExpectStringSpy.mockClear();
-            copyExpectStringSpy.mockImplementation(async () => {
-                return "";
-            });
-            isPDSSpy = jest.spyOn(Copy as any, "isPDS").mockResolvedValue(false);
+            copyPDSSpy.mockClear();
+            copyExpectStringSpy.mockClear().mockImplementation(async () => { return ""; });
+            isPDSSpy.mockClear().mockResolvedValue(false);
             dataSetExistsSpy = jest.spyOn(Copy, "dataSetExists").mockResolvedValue(true);
         });
         afterAll(() => {
@@ -78,6 +77,7 @@ describe("Copy", () => {
                         success: true,
                         commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message
                     });
+                    expect(copyPDSSpy).not.toHaveBeenCalled();
                     expect(copyExpectStringSpy).toHaveBeenCalledTimes(1);
                     expect(copyExpectStringSpy).toHaveBeenLastCalledWith(
                         dummySession,
@@ -116,6 +116,7 @@ describe("Copy", () => {
                         success: true,
                         commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message
                     });
+                    expect(copyPDSSpy).not.toHaveBeenCalled();
                     expect(copyExpectStringSpy).toHaveBeenCalledTimes(1);
                     expect(copyExpectStringSpy).toHaveBeenLastCalledWith(
                         dummySession,
@@ -155,6 +156,7 @@ describe("Copy", () => {
                         success: true,
                         commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message
                     });
+                    expect(copyPDSSpy).not.toHaveBeenCalled();
                     expect(copyExpectStringSpy).toHaveBeenCalledTimes(1);
                     expect(copyExpectStringSpy).toHaveBeenLastCalledWith(
                         dummySession,
@@ -194,6 +196,7 @@ describe("Copy", () => {
                         success: true,
                         commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message
                     });
+                    expect(copyPDSSpy).not.toHaveBeenCalled();
                     expect(copyExpectStringSpy).toHaveBeenCalledTimes(1);
                     expect(copyExpectStringSpy).toHaveBeenLastCalledWith(
                         dummySession,
@@ -232,6 +235,7 @@ describe("Copy", () => {
                         success: true,
                         commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message
                     });
+                    expect(copyPDSSpy).not.toHaveBeenCalled();
                     expect(copyExpectStringSpy).toHaveBeenCalledTimes(1);
                     expect(copyExpectStringSpy).toHaveBeenLastCalledWith(
                         dummySession,
@@ -270,6 +274,7 @@ describe("Copy", () => {
                         success: true,
                         commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message
                     });
+                    expect(copyPDSSpy).not.toHaveBeenCalled();
                     expect(copyExpectStringSpy).toHaveBeenCalledTimes(1);
                     expect(copyExpectStringSpy).toHaveBeenLastCalledWith(
                         dummySession,
@@ -309,6 +314,7 @@ describe("Copy", () => {
                         success: true,
                         commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message
                     });
+                    expect(copyPDSSpy).not.toHaveBeenCalled();
                     expect(copyExpectStringSpy).toHaveBeenCalledTimes(1);
                     expect(copyExpectStringSpy).toHaveBeenLastCalledWith(
                         dummySession,
@@ -348,6 +354,7 @@ describe("Copy", () => {
                         success: true,
                         commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message
                     });
+                    expect(copyPDSSpy).not.toHaveBeenCalled();
                     expect(copyExpectStringSpy).toHaveBeenCalledTimes(1);
                     expect(copyExpectStringSpy).toHaveBeenLastCalledWith(
                         dummySession,
@@ -369,6 +376,7 @@ describe("Copy", () => {
                     const argumentsOfCall = copyExpectStringSpy.mock.calls[0];
                     const lastArgumentOfCall = argumentsOfCall[argumentsOfCall.length - 1];
                     expect(lastArgumentOfCall).not.toHaveProperty("enq");
+                    expect(copyPDSSpy).not.toHaveBeenCalled();
                 });
                 it("should contain valid enq value in payload", async () => {
                     await Copy.dataSet(
@@ -383,6 +391,7 @@ describe("Copy", () => {
                     expect(copyExpectStringSpy).toHaveBeenCalledTimes(1);
                     const argumentsOfCall = copyExpectStringSpy.mock.calls[0];
                     const lastArgumentOfCall = argumentsOfCall[argumentsOfCall.length - 1];
+                    expect(copyPDSSpy).not.toHaveBeenCalled();
                     expect(lastArgumentOfCall).toHaveProperty("enq", "SHR");
                 });
                 it("should contain invalid enq value in payload", async () => {
@@ -398,6 +407,7 @@ describe("Copy", () => {
                     expect(copyExpectStringSpy).toHaveBeenCalledTimes(1);
                     const argumentsOfCall = copyExpectStringSpy.mock.calls[0];
                     const lastArgumentOfCall = argumentsOfCall[argumentsOfCall.length - 1];
+                    expect(copyPDSSpy).not.toHaveBeenCalled();
                     expect(lastArgumentOfCall).toHaveProperty("enq", "AnyThing");
                 });
             });
@@ -412,6 +422,7 @@ describe("Copy", () => {
                     expect(copyExpectStringSpy).toHaveBeenCalledTimes(1);
                     const argumentsOfCall = copyExpectStringSpy.mock.calls[0];
                     const lastArgumentOfCall = argumentsOfCall[argumentsOfCall.length - 1];
+                    expect(copyPDSSpy).not.toHaveBeenCalled();
                     expect(lastArgumentOfCall).not.toHaveProperty("replace");
                 });
                 it("should contain replace with value true in payload", async () => {
@@ -427,6 +438,7 @@ describe("Copy", () => {
                     expect(copyExpectStringSpy).toHaveBeenCalledTimes(1);
                     const argumentsOfCall = copyExpectStringSpy.mock.calls[0];
                     const lastArgumentOfCall = argumentsOfCall[argumentsOfCall.length - 1];
+                    expect(copyPDSSpy).not.toHaveBeenCalled();
                     expect(lastArgumentOfCall).toHaveProperty("replace", true);
                 });
                 it("should contain replace with value false in payload", async () => {
@@ -442,20 +454,16 @@ describe("Copy", () => {
                     expect(copyExpectStringSpy).toHaveBeenCalledTimes(1);
                     const argumentsOfCall = copyExpectStringSpy.mock.calls[0];
                     const lastArgumentOfCall = argumentsOfCall[argumentsOfCall.length - 1];
+                    expect(copyPDSSpy).not.toHaveBeenCalled();
                     expect(lastArgumentOfCall).toHaveProperty("replace", false);
                 });
             });
             describe("Partitioned > Partitioned", () => {
-                let copyPDSSpy = jest.spyOn(Copy, "copyPDS");
                 let createSpy: jest.SpyInstance;
                 let dataSetExistsSpy: jest.SpyInstance;
                 beforeEach(() => {
-                    copyPDSSpy.mockClear();
-                    copyPDSSpy = jest.spyOn(Copy, "copyPDS").mockResolvedValue({
-                        success:true,
-                        commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message,
-                    });
-                    isPDSSpy = jest.spyOn(Copy as any, "isPDS").mockResolvedValue(true);
+                    isPDSSpy.mockClear().mockResolvedValue(true);
+                    copyPDSSpy.mockClear().mockResolvedValue({success: true, commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message});
                     createSpy = jest.spyOn(Create, "dataSetLike").mockResolvedValue({
                         success: true,
                         commandResponse: ZosFilesMessages.dataSetCreatedSuccessfully.message
@@ -464,7 +472,6 @@ describe("Copy", () => {
                 });
                 afterAll(() => {
                     copyPDSSpy.mockRestore();
-                    isPDSSpy.mockRestore();
                 });
                 afterEach(() => {
                     createSpy.mockRestore();
@@ -489,6 +496,48 @@ describe("Copy", () => {
                         success: true,
                         commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message
                     });
+                });
+                it("should not call copyPDS to copy members of source PDS to target PDS if member is specified", async() => {
+                    const expectedPayload = {
+                        "request": "copy",
+                        "from-dataset": {
+                            dsn: fromDataSetName,
+                            member: fromMemberName
+                        }
+                    };
+                    const expectedEndpoint = posix.join(
+                        ZosFilesConstants.RESOURCE,
+                        ZosFilesConstants.RES_DS_FILES,
+                        `${toDataSetName}(${toMemberName})`
+                    );
+                    const expectedHeaders = [
+                        { "Content-Type": "application/json" },
+                        { "Content-Length": JSON.stringify(expectedPayload).length.toString() },
+                        ZosmfHeaders.ACCEPT_ENCODING
+                    ];
+
+                    const response = await Copy.dataSet(
+                        dummySession,
+                        {dsn: toDataSetName, member: toMemberName},
+                        {"from-dataset": {
+                            dsn: fromDataSetName,
+                            member: fromMemberName
+                        }}
+                    );
+
+                    expect(isPDSSpy).not.toHaveBeenCalled();
+                    expect(copyPDSSpy).not.toHaveBeenCalled();
+                    expect(response).toEqual({
+                        success: true,
+                        commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message
+                    });
+                    expect(copyExpectStringSpy).toHaveBeenCalledTimes(1);
+                    expect(copyExpectStringSpy).toHaveBeenLastCalledWith(
+                        dummySession,
+                        expectedEndpoint,
+                        expectedHeaders,
+                        expectedPayload
+                    );
                 });
                 it("should call Create.dataSetLike and create a new data set if the target data set inputted does not exist", async() => {
                     dataSetExistsSpy.mockResolvedValue(false);
@@ -699,7 +748,6 @@ describe("Copy", () => {
             expect(response).toEqual(false);
             expect(listDatasetSpy).toHaveBeenCalledWith(dummySession, dsPO.dsname, { attributes: true , start: dsPO.dsname});
         });
-
         it("should successfully copy members from source to target PDS", async () => {
             let caughtError;
             let response;
@@ -711,9 +759,8 @@ describe("Copy", () => {
                     ]
                 }
             };
-            const newDataSet = false;
             const fileList = ["mem1", "mem2"];
-
+            const newDataSet = false;
             listAllMembersSpy.mockImplementation(async (): Promise<any>  => sourceResponse);
             downloadAllMembersSpy.mockImplementation(async (): Promise<any> => undefined);
             fileListPathSpy.mockReturnValue(fileList);
@@ -721,6 +768,7 @@ describe("Copy", () => {
             readStream.mockReturnValue("test" as any);
             uploadSpy.mockResolvedValue(undefined);
             rmSync.mockImplementation(jest.fn());
+
 
             try{
                 response = await Copy.copyPDS(dummySession, fromDataSetName, toDataSetName, newDataSet);
