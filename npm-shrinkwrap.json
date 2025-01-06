@@ -52,7 +52,7 @@
     },
     "__tests__/__packages__/cli-test-utils": {
       "name": "@zowe/cli-test-utils",
-      "version": "8.10.1",
+      "version": "8.10.3",
       "license": "EPL-2.0",
       "dependencies": {
         "find-up": "^5.0.0",
@@ -63,7 +63,7 @@
       "devDependencies": {
         "@types/js-yaml": "^4.0.9",
         "@types/uuid": "^10.0.0",
-        "@zowe/imperative": "8.10.1"
+        "@zowe/imperative": "8.10.3"
       },
       "peerDependencies": {
         "@zowe/imperative": "^8.0.0"
@@ -11658,7 +11658,9 @@
       "optional": true
     },
     "node_modules/nanoid": {
-      "version": "3.3.7",
+      "version": "3.3.8",
+      "resolved": "https://registry.npmjs.org/nanoid/-/nanoid-3.3.8.tgz",
+      "integrity": "sha512-WNLf5Sd8oZxOm+TzppcYk8gVOgP+l58xNy58D0nbUnOxOWRWvlcCV4kUF7ltmI6PsrLl/BgKEyS4mqsGChFN0w==",
       "dev": true,
       "funding": [
         {
@@ -16269,21 +16271,21 @@
     },
     "packages/cli": {
       "name": "@zowe/cli",
-      "version": "8.10.2",
+      "version": "8.10.3",
       "hasInstallScript": true,
       "license": "EPL-2.0",
       "dependencies": {
-        "@zowe/core-for-zowe-sdk": "8.10.1",
-        "@zowe/imperative": "8.10.1",
-        "@zowe/provisioning-for-zowe-sdk": "8.10.1",
-        "@zowe/zos-console-for-zowe-sdk": "8.10.1",
-        "@zowe/zos-files-for-zowe-sdk": "8.10.1",
-        "@zowe/zos-jobs-for-zowe-sdk": "8.10.2",
-        "@zowe/zos-logs-for-zowe-sdk": "8.10.1",
-        "@zowe/zos-tso-for-zowe-sdk": "8.10.1",
-        "@zowe/zos-uss-for-zowe-sdk": "8.10.1",
-        "@zowe/zos-workflows-for-zowe-sdk": "8.10.1",
-        "@zowe/zosmf-for-zowe-sdk": "8.10.1",
+        "@zowe/core-for-zowe-sdk": "8.10.3",
+        "@zowe/imperative": "8.10.3",
+        "@zowe/provisioning-for-zowe-sdk": "8.10.3",
+        "@zowe/zos-console-for-zowe-sdk": "8.10.3",
+        "@zowe/zos-files-for-zowe-sdk": "8.10.3",
+        "@zowe/zos-jobs-for-zowe-sdk": "8.10.3",
+        "@zowe/zos-logs-for-zowe-sdk": "8.10.3",
+        "@zowe/zos-tso-for-zowe-sdk": "8.10.3",
+        "@zowe/zos-uss-for-zowe-sdk": "8.10.3",
+        "@zowe/zos-workflows-for-zowe-sdk": "8.10.3",
+        "@zowe/zosmf-for-zowe-sdk": "8.10.3",
         "find-process": "1.4.7",
         "lodash": "4.17.21",
         "minimatch": "9.0.5",
@@ -16296,7 +16298,7 @@
         "@types/diff": "^5.0.9",
         "@types/lodash": "^4.17.6",
         "@types/tar": "^6.1.11",
-        "@zowe/cli-test-utils": "8.10.1",
+        "@zowe/cli-test-utils": "8.10.3",
         "comment-json": "^4.2.3",
         "strip-ansi": "^6.0.1",
         "which": "^4.0.0"
@@ -16352,15 +16354,15 @@
     },
     "packages/core": {
       "name": "@zowe/core-for-zowe-sdk",
-      "version": "8.10.1",
+      "version": "8.10.3",
       "license": "EPL-2.0",
       "dependencies": {
         "comment-json": "~4.2.3",
         "string-width": "^4.2.3"
       },
       "devDependencies": {
-        "@zowe/cli-test-utils": "8.10.1",
-        "@zowe/imperative": "8.10.1"
+        "@zowe/cli-test-utils": "8.10.3",
+        "@zowe/imperative": "8.10.3"
       },
       "engines": {
         "node": ">=18.12.0"
@@ -16371,7 +16373,7 @@
     },
     "packages/imperative": {
       "name": "@zowe/imperative",
-      "version": "8.10.1",
+      "version": "8.10.3",
       "license": "EPL-2.0",
       "dependencies": {
         "@types/yargs": "^17.0.32",
@@ -16565,16 +16567,16 @@
     },
     "packages/provisioning": {
       "name": "@zowe/provisioning-for-zowe-sdk",
-      "version": "8.10.1",
+      "version": "8.10.3",
       "license": "EPL-2.0",
       "dependencies": {
         "js-yaml": "^4.1.0"
       },
       "devDependencies": {
         "@types/js-yaml": "^4.0.9",
-        "@zowe/cli-test-utils": "8.10.1",
-        "@zowe/core-for-zowe-sdk": "8.10.1",
-        "@zowe/imperative": "8.10.1"
+        "@zowe/cli-test-utils": "8.10.3",
+        "@zowe/core-for-zowe-sdk": "8.10.3",
+        "@zowe/imperative": "8.10.3"
       },
       "engines": {
         "node": ">=18.12.0"
@@ -16599,15 +16601,15 @@
     },
     "packages/workflows": {
       "name": "@zowe/zos-workflows-for-zowe-sdk",
-      "version": "8.10.1",
+      "version": "8.10.3",
       "license": "EPL-2.0",
       "dependencies": {
-        "@zowe/zos-files-for-zowe-sdk": "8.10.1"
+        "@zowe/zos-files-for-zowe-sdk": "8.10.3"
       },
       "devDependencies": {
-        "@zowe/cli-test-utils": "8.10.1",
-        "@zowe/core-for-zowe-sdk": "8.10.1",
-        "@zowe/imperative": "8.10.1"
+        "@zowe/cli-test-utils": "8.10.3",
+        "@zowe/core-for-zowe-sdk": "8.10.3",
+        "@zowe/imperative": "8.10.3"
       },
       "engines": {
         "node": ">=18.12.0"
@@ -16619,12 +16621,12 @@
     },
     "packages/zosconsole": {
       "name": "@zowe/zos-console-for-zowe-sdk",
-      "version": "8.10.1",
+      "version": "8.10.3",
       "license": "EPL-2.0",
       "devDependencies": {
-        "@zowe/cli-test-utils": "8.10.1",
-        "@zowe/core-for-zowe-sdk": "8.10.1",
-        "@zowe/imperative": "8.10.1"
+        "@zowe/cli-test-utils": "8.10.3",
+        "@zowe/core-for-zowe-sdk": "8.10.3",
+        "@zowe/imperative": "8.10.3"
       },
       "engines": {
         "node": ">=18.12.0"
@@ -16636,17 +16638,17 @@
     },
     "packages/zosfiles": {
       "name": "@zowe/zos-files-for-zowe-sdk",
-      "version": "8.10.1",
+      "version": "8.10.3",
       "license": "EPL-2.0",
       "dependencies": {
         "lodash": "^4.17.21",
         "minimatch": "^9.0.5"
       },
       "devDependencies": {
-        "@zowe/cli-test-utils": "8.10.1",
-        "@zowe/core-for-zowe-sdk": "8.10.1",
-        "@zowe/imperative": "8.10.1",
-        "@zowe/zos-uss-for-zowe-sdk": "8.10.1"
+        "@zowe/cli-test-utils": "8.10.3",
+        "@zowe/core-for-zowe-sdk": "8.10.3",
+        "@zowe/imperative": "8.10.3",
+        "@zowe/zos-uss-for-zowe-sdk": "8.10.3"
       },
       "engines": {
         "node": ">=18.12.0"
@@ -16678,15 +16680,15 @@
     },
     "packages/zosjobs": {
       "name": "@zowe/zos-jobs-for-zowe-sdk",
-      "version": "8.10.2",
+      "version": "8.10.3",
       "license": "EPL-2.0",
       "dependencies": {
-        "@zowe/zos-files-for-zowe-sdk": "8.10.1"
+        "@zowe/zos-files-for-zowe-sdk": "8.10.3"
       },
       "devDependencies": {
-        "@zowe/cli-test-utils": "8.10.1",
-        "@zowe/core-for-zowe-sdk": "8.10.1",
-        "@zowe/imperative": "8.10.1"
+        "@zowe/cli-test-utils": "8.10.3",
+        "@zowe/core-for-zowe-sdk": "8.10.3",
+        "@zowe/imperative": "8.10.3"
       },
       "engines": {
         "node": ">=18.12.0"
@@ -16698,12 +16700,12 @@
     },
     "packages/zoslogs": {
       "name": "@zowe/zos-logs-for-zowe-sdk",
-      "version": "8.10.1",
+      "version": "8.10.3",
       "license": "EPL-2.0",
       "devDependencies": {
-        "@zowe/cli-test-utils": "8.10.1",
-        "@zowe/core-for-zowe-sdk": "8.10.1",
-        "@zowe/imperative": "8.10.1"
+        "@zowe/cli-test-utils": "8.10.3",
+        "@zowe/core-for-zowe-sdk": "8.10.3",
+        "@zowe/imperative": "8.10.3"
       },
       "engines": {
         "node": ">=18.12.0"
@@ -16715,12 +16717,12 @@
     },
     "packages/zosmf": {
       "name": "@zowe/zosmf-for-zowe-sdk",
-      "version": "8.10.1",
+      "version": "8.10.3",
       "license": "EPL-2.0",
       "devDependencies": {
-        "@zowe/cli-test-utils": "8.10.1",
-        "@zowe/core-for-zowe-sdk": "8.10.1",
-        "@zowe/imperative": "8.10.1"
+        "@zowe/cli-test-utils": "8.10.3",
+        "@zowe/core-for-zowe-sdk": "8.10.3",
+        "@zowe/imperative": "8.10.3"
       },
       "engines": {
         "node": ">=18.12.0"
@@ -16732,15 +16734,15 @@
     },
     "packages/zostso": {
       "name": "@zowe/zos-tso-for-zowe-sdk",
-      "version": "8.10.1",
+      "version": "8.10.3",
       "license": "EPL-2.0",
       "dependencies": {
-        "@zowe/zosmf-for-zowe-sdk": "8.10.1"
+        "@zowe/zosmf-for-zowe-sdk": "8.10.3"
       },
       "devDependencies": {
-        "@zowe/cli-test-utils": "8.10.1",
-        "@zowe/core-for-zowe-sdk": "8.10.1",
-        "@zowe/imperative": "8.10.1"
+        "@zowe/cli-test-utils": "8.10.3",
+        "@zowe/core-for-zowe-sdk": "8.10.3",
+        "@zowe/imperative": "8.10.3"
       },
       "engines": {
         "node": ">=18.12.0"
@@ -16752,15 +16754,15 @@
     },
     "packages/zosuss": {
       "name": "@zowe/zos-uss-for-zowe-sdk",
-      "version": "8.10.1",
+      "version": "8.10.3",
       "license": "EPL-2.0",
       "dependencies": {
         "ssh2": "^1.15.0"
       },
       "devDependencies": {
         "@types/ssh2": "^1.11.19",
-        "@zowe/cli-test-utils": "8.10.1",
-        "@zowe/imperative": "8.10.1"
+        "@zowe/cli-test-utils": "8.10.3",
+        "@zowe/imperative": "8.10.3"
       },
       "engines": {
         "node": ">=18.12.0"

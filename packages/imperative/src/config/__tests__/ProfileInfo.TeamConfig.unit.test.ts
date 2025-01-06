@@ -56,6 +56,8 @@ describe("TeamConfig ProfileInfo tests", () => {
     const teamHomeProjDir = path.join(testDir, testAppNm + "_home_team_config_proj");
     const largeTeamProjDir = path.join(testDir, testAppNm + "_large_team_config_proj");
     const nestedTeamProjDir = path.join(testDir, testAppNm + "_nested_team_config_proj");
+    const nestedTeamProjDirEmptyBase = path.join(testDir, testAppNm + "_proj_nested_global_empty");
+    const nestedTeamProjDirEmptyBaseProj = path.join(testDir, testAppNm + "_proj_nested_global_empty_proj");
     let origDir: string;
 
     const envHost = testEnvPrefix + "_OPT_HOST";
@@ -1347,6 +1349,26 @@ describe("TeamConfig ProfileInfo tests", () => {
                 defaultBaseProfileName: "base_glob",
                 propsToStore: ["areBirdsReal"], sessCfg: { "areBirdsReal": true }, setSecure: undefined,
             });
+        });
+        it("should not add new base to nested project config profile when updating secure creds", async () => {
+            process.env[testEnvPrefix + "_CLI_HOME"] = nestedTeamProjDirEmptyBase;
+            const profInfo = createNewProfInfo(nestedTeamProjDirEmptyBase);
+            await profInfo.readProfilesFromDisk({ projectDir: nestedTeamProjDirEmptyBaseProj});
+            const upd = { profileName: "lpar1.zosmf", profileType: "zosmf" };
+
+            let caughtError;
+            try {
+                await profInfo.updateProperty({ ...upd, property: "user", value: "testxyz", setSecure: true });
+                await profInfo.updateProperty({ ...upd, property: "password", value: "testabc", setSecure: true });
+            } catch (error) {
+                caughtError = error;
+            }
+            const profiles = profInfo.getAllProfiles();
+            const targetProfile = profiles.find(p => p.profName === "base1234567");
+            expect(caughtError).toBeUndefined();
+            expect(targetProfile).toBeDefined();
+            expect(targetProfile?.profLoc?.osLoc?.[0]).toEqual(path.join(testDir,"/ProfInfoApp_proj_nested_global_empty/ProfInfoApp.config.json"));
+            expect(targetProfile?.profLoc?.osLoc?.[0]).not.toEqual(path.join(testDir,"/ProfInfoApp_proj_nested_global_empty_proj/ProfInfoApp.config.json"));
         });
     });
 
