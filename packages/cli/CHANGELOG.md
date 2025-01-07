@@ -1,7 +1,7 @@
 # Change Log
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `8.10.4`
 
 - BugFix: Fixed an issue where the `zowe files upload dir-to-uss` command was missing progress bar to track progress of file uploads. [#2344](https://github.com/zowe/zowe-cli/issues/2344)
 
