@@ -4,7 +4,7 @@ All notable changes to the Zowe Secrets SDK package will be documented in this f
 
 ## Recent Changes
 
-- BugFix: Reduced number of keychain unlock prompts on MacOS for simultaneous access to secrets by multiple instances of the same application.
+- BugFix: Reduced number of keychain unlock prompts on MacOS for simultaneous access to secrets by multiple instances of the same application. [#2406](https://github.com/zowe/zowe-cli/pull/2406)
 
 ## `7.18.6`
 
