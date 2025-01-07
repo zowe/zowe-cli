@@ -2,10 +2,6 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
-## Recent Changes
-
-- Enhancement: Added progress tracking to the `DirToUSSDirHandler` by using `commandParameters.response.progress` to show progress bars during file uploads. [#2334](https://github.com/zowe/zowe-cli/issues/2344)
-
 ## `8.10.3`
 
 - BugFix: Resolved an issue where extraneous base profiles were created in project configurations when a nested profile property was updated. [#2400](https://github.com/zowe/zowe-cli/pull/2400)
