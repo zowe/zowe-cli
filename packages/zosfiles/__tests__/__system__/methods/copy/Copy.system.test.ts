@@ -280,6 +280,21 @@ describe("Copy", () => {
                 });
             });
         });
+        describe("dataSetExists", () => {
+            it("should return true when the dataset exists", async () => {
+                try {
+                    await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, fromDataSetName);
+                } catch (err) {
+                    Imperative.console.info(`Error: ${inspect(err)}`);
+                }
+                const exists = await Copy["dataSetExists"](REAL_SESSION, fromDataSetName);
+                expect(exists).toBe(true);
+            });
+            it("should return false when the dataset does not exist", async () => {
+                const exists = await Copy["dataSetExists"](REAL_SESSION, fromDataSetName);
+                expect(exists).toBe(false);
+            });
+        });
         describe("Enq option", () => {
             beforeEach(async () => {
                 try {

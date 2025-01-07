@@ -41,7 +41,8 @@ describe("Copy", () => {
             copyPDSSpy.mockClear();
             copyExpectStringSpy.mockClear().mockImplementation(async () => { return ""; });
             isPDSSpy.mockClear().mockResolvedValue(false);
-            dataSetExistsSpy = jest.spyOn(Copy, "dataSetExists").mockResolvedValue(true);
+            dataSetExistsSpy = jest.spyOn(Copy as any, "dataSetExists").mockResolvedValue(true);
+
         });
         afterAll(() => {
             isPDSSpy.mockRestore();
@@ -468,7 +469,7 @@ describe("Copy", () => {
                         success: true,
                         commandResponse: ZosFilesMessages.dataSetCreatedSuccessfully.message
                     });
-                    dataSetExistsSpy = jest.spyOn(Copy, "dataSetExists");
+                    dataSetExistsSpy = jest.spyOn(Copy as any, "dataSetExists");
                 });
                 afterAll(() => {
                     copyPDSSpy.mockRestore();
@@ -719,13 +720,13 @@ describe("Copy", () => {
                 };
             });
             try {
-                response = await Copy.dataSetExists(dummySession, dsPO.dsname);
+                response = await (Copy as any).dataSetExists(dummySession, dsPO.dsname);
             }
             catch(e) {
                 caughtError = e;
             }
             expect(response).toEqual(true);
-            expect(listDatasetSpy).toHaveBeenCalledWith(dummySession, dsPO.dsname, { attributes: true , start: dsPO.dsname});
+            expect(listDatasetSpy).toHaveBeenCalledWith(dummySession, dsPO.dsname, {start: dsPO.dsname});
         });
 
         it("should return false if the data set does not exist", async () => {
@@ -740,13 +741,13 @@ describe("Copy", () => {
                 };
             });
             try {
-                response = await Copy.dataSetExists(dummySession, dsPO.dsname);
+                response = await (Copy as any).dataSetExists(dummySession, dsPO.dsname);
             }
             catch(e) {
                 caughtError = e;
             }
             expect(response).toEqual(false);
-            expect(listDatasetSpy).toHaveBeenCalledWith(dummySession, dsPO.dsname, { attributes: true , start: dsPO.dsname});
+            expect(listDatasetSpy).toHaveBeenCalledWith(dummySession, dsPO.dsname, {start: dsPO.dsname});
         });
         it("should successfully copy members from source to target PDS", async () => {
             let caughtError;

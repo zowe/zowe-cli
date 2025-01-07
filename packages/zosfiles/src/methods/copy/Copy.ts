@@ -132,12 +132,12 @@ export class Copy {
     /**
      * Function that checks if the data set exists
     **/
-    public static async dataSetExists(
+    private static async dataSetExists(
         session: AbstractSession,
         dataSetName: string
     ): Promise<boolean> {
         let dsnameIndex;
-        const dataSetList = await List.dataSet(session, dataSetName, {attributes: true, start: dataSetName});
+        const dataSetList = await List.dataSet(session, dataSetName, {start: dataSetName});
         if(dataSetList.apiResponse != null && dataSetList.apiResponse.returnedRows != null && dataSetList.apiResponse.items != null) {
             dsnameIndex = dataSetList.apiResponse.returnedRows === 0 ? -1 :
                 dataSetList.apiResponse.items.findIndex((ds: any) => ds.dsname.toUpperCase() === dataSetName.toUpperCase());

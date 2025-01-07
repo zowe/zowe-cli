@@ -192,7 +192,7 @@ export default {
                 DESCRIPTION: "Copy a data set/partitioned data set to another data set/partitioned data set.",
                 POSITIONALS: {
                     FROMDSNAME: "The name of the data set that you want to copy from",
-                    TODSNAME: "The name of the data set that you want to copy to (data set must be preallocated)"
+                    TODSNAME: "The name of the data set that you want to copy to"
                 },
                 OPTIONS: {
                     REPLACE: "Specify this option as true if you wish to replace like-named members in the target data set"
@@ -203,7 +203,8 @@ export default {
                     EX3: "Copy the data set named 'USER.FROM.SET' to the data set member named 'USER.TO.SET(MEM2)'",
                     EX4: "Copy the data set member named 'USER.FROM.SET(MEM1)' to the data set named 'USER.TO.SET'",
                     EX5: "Copy the data set named 'USER.FROM.SET' to the data set named 'USER.TO.SET' and replace like-named members",
-                    EX6: "Copy the partitioned data set named 'TEST.PDS1' to the partitioned data set named 'TEST.PDS2'"
+                    EX6: "Copy the partitioned data set named 'TEST.PDS1' to the partitioned data set named 'TEST.PDS2'",
+                    EX7: "Copy the partionted data set named 'EXISTING.PDS' to a non-existent target 'NEW.PDS'"
                 }
             },
             DATA_SET_CROSS_LPAR: {
