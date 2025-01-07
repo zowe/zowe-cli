@@ -46,6 +46,9 @@ describe("Imperative should provide advanced syntax validation rules", () => {
         function tryOptions(optionString: string, shouldSucceed: boolean, expectedText?: string[]) {
 
             const options = yargsParser.detailed(optionString, configuration).argv;
+            ValidationTestCommand.positionals?.forEach((p) => {
+                options[p.name] = options._.shift(); // fake out named positionals
+            });
             options._ = ["test", "validation-test"].concat(options._ || []); // fake out command structure
             options[Constants.JSON_OPTION] = true;
             delete options["--"]; // delete extra yargs parse field
@@ -523,6 +526,28 @@ describe("Imperative should provide advanced syntax validation rules", () => {
             expect(options["fluffy"]).toBe("9001");
             expect(options["fluffy"]).not.toBe(9001);
             expect(svResponse.valid).toEqual(true);
+        });
+
+        it("should fail if a positional argument does not match the defined regex", async () => {
+            const invalidPositional = "invalid_value";
+            const regexForPositional = "^\\w+$";
+            ValidationTestCommand.positionals = [{
+                name: invalidPositional,
+                type: "string",
+                description: "Invalid positional",
+                regex: regexForPositional,
+            }];
+
+            return tryOptions.bind(this)(
+                minValidOptions + "inv@lid",
+                false,
+                [
+                    "Invalid format specified for positional option:",
+                    invalidPositional,
+                    "Option must match the following regular expression:",
+                    regexForPositional
+                ]
+            );
         });
 
         describe("We should be able to validate positional arguments of type 'number'", () => {
