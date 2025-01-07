@@ -26,4 +26,4 @@ export * from "./src/doc/ISystemInfo";
 export * from "./src/diff/DiffUtils";
 export * from "./src/diff/doc/IDiffOptions";
 export * from "./src/diff/doc/IDiffNameOptions";
-export * from "./src/DeferredPromise"
+export * from "./src/DeferredPromise";
