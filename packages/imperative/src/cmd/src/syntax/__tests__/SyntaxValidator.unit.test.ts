@@ -530,7 +530,7 @@ describe("Imperative should provide advanced syntax validation rules", () => {
 
         it("should fail if a positional argument does not match the defined regex", async () => {
             const invalidPositional = "invalid_value";
-            const regexForPositional = "^\w+$";
+            const regexForPositional = "^\\w+$";
             ValidationTestCommand.positionals = [{
                 name: invalidPositional,
                 type: "string",
