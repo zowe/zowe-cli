@@ -38,7 +38,7 @@ fn keyring_mutex() -> Result<Guard, KeyringError> {
         .to_string_lossy()
         .replace(std::path::MAIN_SEPARATOR, "_");
     let lock_path = std::env::temp_dir()
-        .join(format!("keyring_{}.lock", exe_path));
+        .join(format!("zowe_{}_{}.lock", env!("CARGO_PKG_NAME"), exe_path));
     std::fs::OpenOptions::new().create(true).write(true).open(&lock_path)
         .and_then(|_| fmutex::lock(lock_path))
         .map_err(KeyringError::from)
