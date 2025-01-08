@@ -570,17 +570,17 @@ describe("Copy", () => {
                         commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message
                     });
                 });
-                it("should return early if the source and target data sets are identical", async () => {
-                    const response = await Copy.dataSet(
-                        dummySession,
-                        { dsn: fromDataSetName},
-                        {"from-dataset": { dsn: fromDataSetName}
-                    });
+            });
+            it("should return early if the source and target data sets are identical", async () => {
+                const response = await Copy.dataSet(
+                    dummySession,
+                    { dsn: fromDataSetName},
+                    {"from-dataset": { dsn: fromDataSetName}
+                });
 
-                    expect(response).toEqual({
-                        success: false,
-                        commandResponse: `The source and target data sets are identical.`
-                    });
+                expect(response).toEqual({
+                    success: false,
+                    commandResponse: `The source and target data sets are identical.`
                 });
             });
         });
