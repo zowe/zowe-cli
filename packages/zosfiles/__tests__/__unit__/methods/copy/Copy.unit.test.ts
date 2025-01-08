@@ -574,9 +574,11 @@ describe("Copy", () => {
             it("should return early if the source and target data sets are identical", async () => {
                 const response = await Copy.dataSet(
                     dummySession,
-                    { dsn: fromDataSetName},
-                    {"from-dataset": { dsn: fromDataSetName}
-                });
+                    {dsn: fromDataSetName},
+                    {"from-dataset": {
+                        dsn: fromDataSetName
+                    }}
+                );
 
                 expect(response).toEqual({
                     success: false,

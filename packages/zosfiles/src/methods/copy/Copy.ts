@@ -62,7 +62,7 @@ export class Copy {
             return {
                 success: false,
                 commandResponse: ZosFilesMessages.identicalDataSets.message
-            }
+            };
         }
 
         const targetDataSetExists = await this.dataSetExists(session, toDataSetName);
