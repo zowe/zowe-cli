@@ -4,6 +4,8 @@ All notable changes to the Zowe CLI package will be documented in this file.
 ## Recent Changes
 - Enhancement: The `zowe zos-files copy data-set` command no longer requires the target data set to be preallocated. [##2349] (https://github.com/zowe/zowe-cli/issues/2349)
 
+- BugFix: Fixed an issue where the `zowe files upload dir-to-uss` command was missing progress bar to track progress of file uploads. [#2344](https://github.com/zowe/zowe-cli/issues/2344)
+
 ## `8.10.3`
 
 - BugFix: The `zowe files copy data-set` command no longer copies all partitioned data set members if a member is specified. [#2402](https://github.com/zowe/zowe-cli/pull/2402)

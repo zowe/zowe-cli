@@ -140,6 +140,9 @@ Destination: %s",
   "fsUnmountedSuccessfully": Object {
     "message": "File system unmounted successfully.",
   },
+  "identicalDataSets": Object {
+    "message": "The source and target data sets are identical.",
+  },
   "invalidAlcunitOption": Object {
     "message": "Invalid zos-files create command 'alcunit' option: ",
   },

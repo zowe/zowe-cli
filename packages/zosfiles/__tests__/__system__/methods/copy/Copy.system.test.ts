@@ -280,6 +280,39 @@ describe("Copy", () => {
                 });
             });
         });
+        describe("dataSetsIdentical", () => {
+            beforeEach(async () => {
+                try {
+                    await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, fromDataSetName);
+                    await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, fromDataSetName);
+                } catch (err) {
+                    Imperative.console.info(`Error: ${inspect(err)}`);
+                }
+            });
+            it("should return false when the source and target data sets are indentical", async () => {
+                let error;
+                let response;
+                try {
+                    response = await Copy.dataSet(
+                        REAL_SESSION,
+                        {dsn: fromDataSetName},
+                        {"from-dataset": {
+                            dsn:fromDataSetName
+                        }}
+                    );
+                }
+                catch(err) {
+                    error = err;
+                    Imperative.console.info(`Error: ${inspect(err)}`);
+                }
+                expect(error).toBeFalsy();
+
+                expect(response).toBeTruthy();
+                expect(response.success).toBe(false);
+                expect(response.commandResponse).toContain(ZosFilesMessages.identicalDataSets.message);
+
+            });
+        });
         describe("dataSetExists", () => {
             it("should return true when the dataset exists", async () => {
                 try {

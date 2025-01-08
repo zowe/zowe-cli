@@ -58,6 +58,13 @@ export class Copy {
         ImperativeExpect.toBeDefinedAndNonBlank(options["from-dataset"].dsn, "fromDataSetName");
         ImperativeExpect.toBeDefinedAndNonBlank(toDataSetName, "toDataSetName");
 
+        if(options["from-dataset"].dsn === toDataSetName) {
+            return {
+                success: false,
+                commandResponse: ZosFilesMessages.identicalDataSets.message
+            }
+        }
+
         const targetDataSetExists = await this.dataSetExists(session, toDataSetName);
 
         const newDataSet = !targetDataSetExists;
