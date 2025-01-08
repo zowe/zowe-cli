@@ -2,7 +2,7 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
-## Recent Changes
+## `8.10.4`
 
 - BugFix: Fixed a typo in the syntax validation code for positional arguments which caused the validation to never fail. [#2375](https://github.com/zowe/zowe-cli/issues/2375)
 
