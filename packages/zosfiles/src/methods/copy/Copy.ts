@@ -79,8 +79,8 @@ export class Copy {
                 return {
                     success: true,
                     commandResponse: newDataSet
-                    ? util.format(ZosFilesMessages.dataSetCopiedIntoNew.message, toDataSetName)
-                    : response.commandResponse
+                        ? util.format(ZosFilesMessages.dataSetCopiedIntoNew.message, toDataSetName)
+                        : response.commandResponse
                 };
             }
         }
@@ -117,8 +117,8 @@ export class Copy {
             return {
                 success: true,
                 commandResponse: newDataSet
-                ? util.format(ZosFilesMessages.dataSetCopiedIntoNew.message, toDataSetName)
-                : ZosFilesMessages.datasetCopiedSuccessfully.message
+                    ? util.format(ZosFilesMessages.dataSetCopiedIntoNew.message, toDataSetName)
+                    : ZosFilesMessages.datasetCopiedSuccessfully.message
             };
         } catch (error) {
             Logger.getAppLogger().error(error);
