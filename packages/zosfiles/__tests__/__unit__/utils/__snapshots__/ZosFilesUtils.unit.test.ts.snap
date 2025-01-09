@@ -66,6 +66,9 @@ Object {
   "commonWithValue": Object {
     "message": "with value",
   },
+  "dataSetCopiedIntoNew": Object {
+    "message": "Source contents were successfully copied into a new data set - %s",
+  },
   "dataSetCreatedSuccessfully": Object {
     "message": "Data set created successfully.",
   },
@@ -271,9 +274,6 @@ Destination: %s",
   },
   "missingZfsOption": Object {
     "message": "To create a z/OS file system, the following option must be supplied: ",
-  },
-  "newDataSetCreated": Object {
-    "message": "New data set created - %s",
   },
   "noDataSetsInList": Object {
     "message": "No data sets left after excluded pattern(s) were filtered out.",

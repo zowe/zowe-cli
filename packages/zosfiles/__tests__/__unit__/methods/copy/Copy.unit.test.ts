@@ -13,7 +13,7 @@ import { Session, ImperativeError, IO } from "@zowe/imperative";
 import { posix } from "path";
 import * as fs from "fs";
 import { error } from "console";
-
+import * as util from "util";
 import { Copy, Create, Get, List, Upload, ZosFilesConstants, ZosFilesMessages, IZosFilesResponse, Download, ZosFilesUtils } from "../../../../src";
 import { ZosmfHeaders, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 
@@ -486,12 +486,11 @@ describe("Copy", () => {
                             dsn:fromDataSetName
                         }}
                     );
-                    const newDataSet = false;
                     expect(isPDSSpy).toHaveBeenNthCalledWith(1, dummySession, fromDataSetName);
                     expect(isPDSSpy).toHaveBeenNthCalledWith(2, dummySession, toDataSetName);
 
                     expect(copyPDSSpy).toHaveBeenCalledTimes(1);
-                    expect(copyPDSSpy).toHaveBeenCalledWith(dummySession, fromDataSetName, toDataSetName, newDataSet);
+                    expect(copyPDSSpy).toHaveBeenCalledWith(dummySession, fromDataSetName, toDataSetName);
 
                     expect(response).toEqual({
                         success: true,
@@ -552,7 +551,7 @@ describe("Copy", () => {
                     expect(createSpy).toHaveBeenCalled();
                     expect(response).toEqual({
                         success: true,
-                        commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message
+                        commandResponse: util.format(ZosFilesMessages.dataSetCopiedIntoNew.message, toDataSetName)
                     });
                 });
                 it("should not create a new data set if the target data set inputted exists", async() => {
@@ -775,7 +774,6 @@ describe("Copy", () => {
                 }
             };
             const fileList = ["mem1", "mem2"];
-            const newDataSet = false;
             listAllMembersSpy.mockImplementation(async (): Promise<any>  => sourceResponse);
             downloadAllMembersSpy.mockImplementation(async (): Promise<any> => undefined);
             fileListPathSpy.mockReturnValue(fileList);
@@ -786,7 +784,7 @@ describe("Copy", () => {
 
 
             try{
-                response = await Copy.copyPDS(dummySession, fromDataSetName, toDataSetName, newDataSet);
+                response = await Copy.copyPDS(dummySession, fromDataSetName, toDataSetName);
             }
             catch(e) {
                 caughtError = e;

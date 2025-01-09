@@ -75,7 +75,13 @@ export class Copy {
             const sourceIsPds = await this.isPDS(session, options["from-dataset"].dsn);
             const targetIsPds = await this.isPDS(session, toDataSetName);
             if (sourceIsPds && targetIsPds) {
-                return await this.copyPDS(session, options["from-dataset"].dsn, toDataSetName, newDataSet);
+                const response = await this.copyPDS(session, options["from-dataset"].dsn, toDataSetName);
+                return {
+                    success: true,
+                    commandResponse: newDataSet
+                    ? util.format(ZosFilesMessages.dataSetCopiedIntoNew.message, toDataSetName)
+                    : response.commandResponse
+                };
             }
         }
         const endpoint: string = posix.join(
@@ -110,7 +116,9 @@ export class Copy {
 
             return {
                 success: true,
-                commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message
+                commandResponse: newDataSet
+                ? util.format(ZosFilesMessages.dataSetCopiedIntoNew.message, toDataSetName)
+                : ZosFilesMessages.datasetCopiedSuccessfully.message
             };
         } catch (error) {
             Logger.getAppLogger().error(error);
@@ -168,7 +176,7 @@ export class Copy {
      */
 
     public static async copyPDS (
-        session: AbstractSession, fromPds: string, toPds: string, newDataSet = false): Promise<IZosFilesResponse> {
+        session: AbstractSession, fromPds: string, toPds: string): Promise<IZosFilesResponse> {
         try {
             const sourceResponse = await List.allMembers(session, fromPds);
             const sourceMemberList: Array<{ member: string }> = sourceResponse.apiResponse.items;
@@ -192,9 +200,7 @@ export class Copy {
             fs.rmSync(downloadDir, {recursive: true});
             return {
                 success:true,
-                commandResponse: newDataSet
-                    ? util.format(ZosFilesMessages.newDataSetCreated.message, toPds)
-                    : ZosFilesMessages.datasetCopiedSuccessfully.message
+                commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message
             };
         }
         catch (error) {
