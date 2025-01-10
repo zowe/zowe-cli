@@ -2,7 +2,7 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
-## Recent Changes
+## `8.11.0`
 
 - Enhancement: Added `DeferredPromise` class to Imperative to provide utilities for data synchronization. [#2405](https://github.com/zowe/zowe-cli/pull/2405)
 
