@@ -58,7 +58,7 @@ export class Copy {
         ImperativeExpect.toBeDefinedAndNonBlank(options["from-dataset"].dsn, "fromDataSetName");
         ImperativeExpect.toBeDefinedAndNonBlank(toDataSetName, "toDataSetName");
 
-        if(options["from-dataset"].dsn === toDataSetName) {
+        if(options["from-dataset"].dsn === toDataSetName && toMemberName === options["from-dataset"].member) {
             return {
                 success: false,
                 commandResponse: ZosFilesMessages.identicalDataSets.message
