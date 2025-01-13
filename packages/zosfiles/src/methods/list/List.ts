@@ -57,6 +57,9 @@ export class List {
             if (options.pattern) {
                 endpoint += `?pattern=${encodeURIComponent(options.pattern)}`;
             }
+            if (options.start) {
+                endpoint = `${endpoint}&start=${encodeURIComponent(options.start)}`;
+            }
 
             const reqHeaders: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING];
             if (options.attributes) {
@@ -426,7 +429,7 @@ export class List {
         for (const pattern of patterns) {
             let response: any;
             try {
-                response = await List.dataSet(session, pattern, { attributes: true });
+                response = await List.dataSet(session, pattern, { attributes: true, maxLength: options.maxLength });
             } catch (err) {
                 if (!(err instanceof ImperativeError && err.errorCode?.toString().startsWith("5"))) {
                     throw err;
