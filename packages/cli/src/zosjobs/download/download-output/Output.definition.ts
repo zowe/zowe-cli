@@ -86,6 +86,12 @@ export const OutputDefinition: ICommandDefinition = {
             type: "boolean",
             conflictsWith: ["wait-for-active"]
         },
+        {
+            name: "record-range", aliases: ["rr"],
+            description: "placeholder.",
+            type: "string",
+            optional: true
+        }
     ] as ICommandOptionDefinition[]),
     examples: [
         {
