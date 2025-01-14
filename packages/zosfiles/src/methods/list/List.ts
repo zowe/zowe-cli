@@ -48,17 +48,18 @@ export class List {
 
         try {
             // Format the endpoint to send the request to
-            let endpoint = posix.join(
+            const endpoint = posix.join(
                 ZosFilesConstants.RESOURCE,
                 ZosFilesConstants.RES_DS_FILES,
                 encodeURIComponent(dataSetName),
                 ZosFilesConstants.RES_DS_MEMBERS);
 
+            const params = new URLSearchParams();
             if (options.pattern) {
-                endpoint += `?pattern=${encodeURIComponent(options.pattern)}`;
+                params.set("pattern", encodeURIComponent(options.pattern));
             }
             if (options.start) {
-                endpoint = `${endpoint}&start=${encodeURIComponent(options.start)}`;
+                params.set("start", encodeURIComponent(options.start));
             }
 
             const reqHeaders: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING];
@@ -76,7 +77,7 @@ export class List {
 
             this.log.debug(`Endpoint: ${endpoint}`);
 
-            const data = await ZosmfRestClient.getExpectString(session, endpoint, reqHeaders);
+            const data = await ZosmfRestClient.getExpectString(session, endpoint.concat(params.size > 0 ? `?${params.toString()}` : ""), reqHeaders);
             let response: any;
             try {
                 response = JSONUtils.parse(data);
@@ -127,7 +128,7 @@ export class List {
         const zosmfResponses: IZosmfListResponse[] = [];
 
         for(const pattern of patterns) {
-            const response = await List.allMembers(session, dataSetName, { pattern});
+            const response = await List.allMembers(session, dataSetName, { pattern, maxLength: options.maxLength, start: options.start });
             zosmfResponses.push(...response.apiResponse.items);
         }
 
@@ -429,7 +430,7 @@ export class List {
         for (const pattern of patterns) {
             let response: any;
             try {
-                response = await List.dataSet(session, pattern, { attributes: true, maxLength: options.maxLength });
+                response = await List.dataSet(session, pattern, { attributes: true, maxLength: options.maxLength, start: options.start });
             } catch (err) {
                 if (!(err instanceof ImperativeError && err.errorCode?.toString().startsWith("5"))) {
                     throw err;
