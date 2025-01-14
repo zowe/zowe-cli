@@ -253,7 +253,7 @@ describe("List command group", () => {
                 expect(error).toBeFalsy();
                 expect(response).toBeTruthy();
                 expect(response.success).toBeTruthy();
-                expect(response.commandResponse).toBe(null);
+                expect(response.commandResponse).toBe("1 members(s) were found matching pattern.");
                 expect(response.apiResponse.items.length).toBe(1);
                 expect(response.apiResponse.items[0].dsname).toEqual(dsname);
             });
@@ -746,6 +746,7 @@ describe("List command group", () => {
             await Delete.dataSet(REAL_SESSION, dsname);
             await wait(waitTime); //wait 2 seconds
         });
+
         it("should find data sets that match a pattern", async () => {
             let error;
             let response: IZosFilesResponse;
@@ -813,7 +814,7 @@ describe("List command group", () => {
             expect(error).toBeFalsy();
             expect(response).toBeTruthy();
             expect(response.success).toBeTruthy();
-            expect(response.commandResponse).toBe(null);
+            expect(response.commandResponse).toBe("1 members(s) were found matching pattern.");
             expect(response.apiResponse.items.length).toBe(1);
             expect(response.apiResponse.items[0].member).toEqual(members[0]);
         });
@@ -832,7 +833,7 @@ describe("List command group", () => {
             expect(error).toBeFalsy();
             expect(response).toBeTruthy();
             expect(response.success).toBeTruthy();
-            expect(response.commandResponse).toBe(null);
+            expect(response.commandResponse).toBe("3 members(s) were found matching pattern.");
             expect(response.apiResponse.items.length).toBe(3);
             expect(response.apiResponse.items[0].member).toEqual(members[1]);
         });
