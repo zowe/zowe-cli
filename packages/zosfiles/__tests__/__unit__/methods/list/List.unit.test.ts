@@ -60,7 +60,7 @@ describe("z/OS Files - List", () => {
 
         it("should use X-IBM-Max-Items to limit the number of members returned for a data set", async () => {
             const maxLength = 100;
-            const response = await List.allMembers(dummySession, dsname, { maxLength });
+            await List.allMembers(dummySession, dsname, { maxLength });
 
             expect(expectStringSpy).toHaveBeenCalledTimes(1);
             expect(expectStringSpy).toHaveBeenCalledWith(dummySession, endpoint,
@@ -68,7 +68,7 @@ describe("z/OS Files - List", () => {
         });
 
         it("should pass start option in URL search params if provided", async () => {
-            const response = await List.allMembers(dummySession, dsname, { start: "MEMBER1" });
+            await List.allMembers(dummySession, dsname, { start: "MEMBER1" });
 
             expect(expectStringSpy).toHaveBeenCalledTimes(1);
             expect(expectStringSpy).toHaveBeenCalledWith(dummySession, endpoint.concat("?start=MEMBER1"),
