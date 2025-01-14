@@ -35,7 +35,7 @@ describe("List command group", () => {
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
         dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.LIST`, false, 1);
-        dsname2 = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.LIST2`, false, 1);
+        dsname2 = dsname + '2';
         Imperative.console.info("Using dsname:" + dsname);
 
         const user = `${defaultSystem.zosmf.user.trim()}`.replace(/\./g, "");
