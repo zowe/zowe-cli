@@ -48,12 +48,16 @@ describe("List command group", () => {
 
     describe("All Members", () => {
         describe("Success Scenarios", () => {
-            const testString = "test";
+            const memberOne = "test";
+            const memberTwo = "test2";
             beforeEach(async () => {
                 await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname,
                     { volser: defaultSystem.datasets.vol });
                 await wait(waitTime); //wait 2 seconds
-                await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testString), `${dsname}(${testString})`);
+                // first data set member
+                await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(memberOne), `${dsname}(${memberOne})`);
+                // second data set member
+                await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(memberOne), `${dsname}(${memberTwo})`);
                 await wait(waitTime); //wait 2 seconds
             });
 
@@ -77,8 +81,47 @@ describe("List command group", () => {
                 expect(response).toBeTruthy();
                 expect(response.success).toBeTruthy();
                 expect(response.commandResponse).toBe(null);
+                expect(response.apiResponse.items.length).toBe(2);
+                expect(response.apiResponse.items[0].member).toEqual(memberOne.toUpperCase());
+                expect(response.apiResponse.items[1].member).toEqual(memberTwo.toUpperCase());
+            });
+
+            it("should limit number of members when maxLength is provided", async () => {
+                let error;
+                let response: IZosFilesResponse;
+
+                try {
+                    response = await List.allMembers(REAL_SESSION, dsname, {maxLength: 1});
+                    Imperative.console.info("Response: " + inspect(response));
+                } catch (err) {
+                    error = err;
+                    Imperative.console.info("Error: " + inspect(error));
+                }
+                expect(error).toBeFalsy();
+                expect(response).toBeTruthy();
+                expect(response.success).toBeTruthy();
+                expect(response.commandResponse).toBe(null);
                 expect(response.apiResponse.items.length).toBe(1);
-                expect(response.apiResponse.items[0].member).toEqual(testString.toUpperCase());
+                expect(response.apiResponse.items[0].member).toEqual(memberOne.toUpperCase());
+            });
+
+            it("should return a list starting with the given member in the start option", async () => {
+                let error;
+                let response: IZosFilesResponse;
+
+                try {
+                    response = await List.allMembers(REAL_SESSION, dsname, { start: memberTwo });
+                    Imperative.console.info("Response: " + inspect(response));
+                } catch (err) {
+                    error = err;
+                    Imperative.console.info("Error: " + inspect(error));
+                }
+                expect(error).toBeFalsy();
+                expect(response).toBeTruthy();
+                expect(response.success).toBeTruthy();
+                expect(response.commandResponse).toBe(null);
+                expect(response.apiResponse.items.length).toBe(1);
+                expect(response.apiResponse.items[0].member).toEqual(memberTwo.toUpperCase());
             });
 
             it("should list all members of a data set with response timeout", async () => {
@@ -96,8 +139,9 @@ describe("List command group", () => {
                 expect(response).toBeTruthy();
                 expect(response.success).toBeTruthy();
                 expect(response.commandResponse).toBe(null);
-                expect(response.apiResponse.items.length).toBe(1);
-                expect(response.apiResponse.items[0].member).toEqual(testString.toUpperCase());
+                expect(response.apiResponse.items.length).toBe(2);
+                expect(response.apiResponse.items[0].member).toEqual(memberOne.toUpperCase());
+                expect(response.apiResponse.items[1].member).toEqual(memberTwo.toUpperCase());
             });
 
             it("should list all members of a data set with attributes", async () => {
@@ -118,8 +162,9 @@ describe("List command group", () => {
                 expect(response).toBeTruthy();
                 expect(response.success).toBeTruthy();
                 expect(response.commandResponse).toBe(null);
-                expect(response.apiResponse.items.length).toBe(1);
-                expect(response.apiResponse.items[0].member).toEqual(testString.toUpperCase());
+                expect(response.apiResponse.items.length).toBe(2);
+                expect(response.apiResponse.items[0].member).toEqual(memberOne.toUpperCase());
+                expect(response.apiResponse.items[1].member).toEqual(memberTwo.toUpperCase());
                 expect(response.apiResponse.items[0].user).toBeDefined();
             });
 
@@ -129,7 +174,8 @@ describe("List command group", () => {
                 let error;
 
                 try {
-                    await Delete.dataSet(REAL_SESSION, `${dsname}(${testString})`);
+                    await Delete.dataSet(REAL_SESSION, `${dsname}(${memberOne})`);
+                    await Delete.dataSet(REAL_SESSION, `${dsname}(${memberTwo})`);
                     await wait(waitTime); //wait 2 seconds
                     response = await List.allMembers(REAL_SESSION, dsname);
                 } catch (err) {
@@ -727,6 +773,44 @@ describe("List command group", () => {
             expect(caughtError).not.toBeDefined();
             expect(response).toBeDefined();
             expect(response.commandResponse).toContain("There are no members that match");
+        });
+
+        it("should limit number of members when maxLength is provided", async () => {
+            let error;
+            let response: IZosFilesResponse;
+
+            try {
+                response = await List.membersMatchingPattern(REAL_SESSION, dsname, [pattern], { maxLength: 1 });
+                Imperative.console.info("Response: " + inspect(response));
+            } catch (err) {
+                error = err;
+                Imperative.console.info("Error: " + inspect(error));
+            }
+            expect(error).toBeFalsy();
+            expect(response).toBeTruthy();
+            expect(response.success).toBeTruthy();
+            expect(response.commandResponse).toBe(null);
+            expect(response.apiResponse.items.length).toBe(1);
+            expect(response.apiResponse.items[0].member).toEqual(members[0]);
+        });
+
+        it("should return a list starting with the given member in the start option", async () => {
+            let error;
+            let response: IZosFilesResponse;
+
+            try {
+                response = await List.membersMatchingPattern(REAL_SESSION, dsname, [pattern], { start: "M1A" });
+                Imperative.console.info("Response: " + inspect(response));
+            } catch (err) {
+                error = err;
+                Imperative.console.info("Error: " + inspect(error));
+            }
+            expect(error).toBeFalsy();
+            expect(response).toBeTruthy();
+            expect(response.success).toBeTruthy();
+            expect(response.commandResponse).toBe(null);
+            expect(response.apiResponse.items.length).toBe(3);
+            expect(response.apiResponse.items[0].member).toEqual(members[1]);
         });
     });
 
