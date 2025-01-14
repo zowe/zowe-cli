@@ -49,7 +49,7 @@ describe("z/OS Files - List", () => {
     afterAll(() => {
         jest.restoreAllMocks();
     });
-    
+
     const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname, ZosFilesConstants.RES_DS_MEMBERS);
 
     describe("allMembers", () => {
@@ -61,16 +61,18 @@ describe("z/OS Files - List", () => {
         it("should use X-IBM-Max-Items to limit the number of members returned for a data set", async () => {
             const maxLength = 100;
             const response = await List.allMembers(dummySession, dsname, { maxLength });
-    
+
             expect(expectStringSpy).toHaveBeenCalledTimes(1);
-            expect(expectStringSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.ACCEPT_ENCODING, { "X-IBM-Max-Items": maxLength.toString() }]);
+            expect(expectStringSpy).toHaveBeenCalledWith(dummySession, endpoint,
+                [ZosmfHeaders.ACCEPT_ENCODING, { "X-IBM-Max-Items": maxLength.toString() }]);
         });
-    
+
         it("should pass start option in URL search params if provided", async () => {
             const response = await List.allMembers(dummySession, dsname, { start: "MEMBER1" });
 
             expect(expectStringSpy).toHaveBeenCalledTimes(1);
-            expect(expectStringSpy).toHaveBeenCalledWith(dummySession, endpoint.concat("?start=MEMBER1"), [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_MAX_ITEMS]);
+            expect(expectStringSpy).toHaveBeenCalledWith(dummySession, endpoint.concat("?start=MEMBER1"),
+                [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_MAX_ITEMS]);
         });
 
         it("should throw an error if the data set name is not specified", async () => {
@@ -235,7 +237,8 @@ describe("z/OS Files - List", () => {
                 apiResponse: listApiResponse
             });
             expect(expectStringSpy).toHaveBeenCalledTimes(1);
-            expect(expectStringSpy).toHaveBeenCalledWith(dummySession, endpoint.concat(query), [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_MAX_ITEMS]);
+            expect(expectStringSpy).toHaveBeenCalledWith(dummySession, endpoint.concat(query),
+                [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_MAX_ITEMS]);
         });
 
         it("should list members from given data set with additional attributes", async () => {
