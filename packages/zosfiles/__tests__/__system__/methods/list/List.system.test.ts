@@ -21,6 +21,7 @@ let REAL_SESSION: Session;
 let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 let defaultSystem: ITestPropertiesSchema;
 let dsname: string;
+let dsname2: string;
 let path: string;
 let filename: string;
 
@@ -34,6 +35,7 @@ describe("List command group", () => {
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
         dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.LIST`, false, 1);
+        dsname2 = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.LIST2`, false, 1);
         Imperative.console.info("Using dsname:" + dsname);
 
         const user = `${defaultSystem.zosmf.user.trim()}`.replace(/\./g, "");
@@ -226,15 +228,18 @@ describe("List command group", () => {
             beforeEach(async () => {
                 await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dsname,
                     { volser: defaultSystem.datasets.vol });
+                await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dsname2,
+                    { volser: defaultSystem.datasets.vol });
                 await wait(waitTime); //wait 2 seconds
             });
 
             afterEach(async () => {
                 await Delete.dataSet(REAL_SESSION, dsname);
+                await Delete.dataSet(REAL_SESSION, dsname2);
                 await wait(waitTime); //wait 2 seconds
             });
 
-            it("should list a data set", async () => {
+            it("should list data set matching dsname", async () => {
                 let error;
                 let response: IZosFilesResponse;
 
@@ -253,16 +258,12 @@ describe("List command group", () => {
                 expect(response.apiResponse.items[0].dsname).toEqual(dsname);
             });
 
-            it("should list a data set with attributes and start options", async () => {
+            it("should limit amount of data sets with maxLength", async () => {
                 let error;
                 let response: IZosFilesResponse;
-                const option: IListOptions = {
-                    attributes: true,
-                    start: dsname
-                };
 
                 try {
-                    response = await List.dataSet(REAL_SESSION, dsname, option);
+                    response = await List.dataSet(REAL_SESSION, `${dsname}*`, { maxLength: 1 });
                     Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
@@ -274,6 +275,29 @@ describe("List command group", () => {
                 expect(response.commandResponse).toBe(null);
                 expect(response.apiResponse.items.length).toBe(1);
                 expect(response.apiResponse.items[0].dsname).toEqual(dsname);
+            });
+
+            it("should list a data set with attributes and start options", async () => {
+                let error;
+                let response: IZosFilesResponse;
+                const option: IListOptions = {
+                    attributes: true,
+                    start: dsname2
+                };
+
+                try {
+                    response = await List.dataSet(REAL_SESSION, `${dsname}*`, option);
+                    Imperative.console.info("Response: " + inspect(response));
+                } catch (err) {
+                    error = err;
+                    Imperative.console.info("Error: " + inspect(error));
+                }
+                expect(error).toBeFalsy();
+                expect(response).toBeTruthy();
+                expect(response.success).toBeTruthy();
+                expect(response.commandResponse).toBe(null);
+                expect(response.apiResponse.items.length).toBe(1);
+                expect(response.apiResponse.items[0].dsname).toEqual(dsname2);
                 expect(response.apiResponse.items[0].dsorg).toBeDefined();
             });
 
