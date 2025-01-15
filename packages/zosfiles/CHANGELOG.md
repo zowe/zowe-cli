@@ -4,8 +4,8 @@ All notable changes to the Zowe z/OS files SDK package will be documented in thi
 
 ## Recent Changes
 
-- Enhancement: Added the `maxLength` option to List SDK functions (`allMembers, dataSetsMatchingPattern, membersMatchingPattern`) to specify the maximum number of items to return.
-- Enhancement: Added the `start` option to List SDK functions (`allMembers, dataSetsMatchingPattern, membersMatchingPattern`) to specify the first data set/member name to return in the response.
+- Enhancement: Added the `maxLength` option to List SDK functions (`allMembers, dataSetsMatchingPattern, membersMatchingPattern`) to specify the maximum number of items to return. [#2409](https://github.com/zowe/zowe-cli/pull/2409)
+- Enhancement: Added the `start` option to List SDK functions (`allMembers, dataSetsMatchingPattern, membersMatchingPattern`) to specify the first data set/member name to return in the response. [#2409](https://github.com/zowe/zowe-cli/pull/2409)
 
 ## `8.10.3`
 
