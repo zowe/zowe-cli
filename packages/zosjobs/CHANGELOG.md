@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS jobs SDK package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Added `--recordRange` flag to `zowe jobs download output` command to allow users to select a specific range of records to output from a spool file. [#2411](https://github.com/zowe/zowe-cli/pull/2411)
+
 ## `8.10.2`
 
 - BugFix: Check if encoding is set and not empty now works for numeric-only value in encoding (GetJobs.ts). [#2392] (https://github.com/zowe/zowe-cli/pull/2392).
