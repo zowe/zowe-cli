@@ -13,7 +13,7 @@ import { Session, ImperativeError, IO } from "@zowe/imperative";
 import { posix } from "path";
 import * as fs from "fs";
 import { error } from "console";
-
+import * as util from "util";
 import { Copy, Create, Get, List, Upload, ZosFilesConstants, ZosFilesMessages, IZosFilesResponse, Download, ZosFilesUtils } from "../../../../src";
 import { ZosmfHeaders, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 
@@ -35,14 +35,18 @@ describe("Copy", () => {
         const toDataSetName = "USER.DATA.TO";
         const toMemberName = "mem2";
         const isPDSSpy = jest.spyOn(Copy as any, "isPDS");
+        let dataSetExistsSpy: jest.SpyInstance;
 
         beforeEach(() => {
             copyPDSSpy.mockClear();
             copyExpectStringSpy.mockClear().mockImplementation(async () => { return ""; });
             isPDSSpy.mockClear().mockResolvedValue(false);
+            dataSetExistsSpy = jest.spyOn(Copy as any, "dataSetExists").mockResolvedValue(true);
+
         });
         afterAll(() => {
             isPDSSpy.mockRestore();
+            dataSetExistsSpy.mockRestore();
         });
         describe("Success Scenarios", () => {
             describe("Sequential > Sequential", () => {
@@ -456,12 +460,23 @@ describe("Copy", () => {
                 });
             });
             describe("Partitioned > Partitioned", () => {
+                let createSpy: jest.SpyInstance;
+                let dataSetExistsSpy: jest.SpyInstance;
                 beforeEach(() => {
                     isPDSSpy.mockClear().mockResolvedValue(true);
                     copyPDSSpy.mockClear().mockResolvedValue({success: true, commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message});
+                    createSpy = jest.spyOn(Create, "dataSetLike").mockResolvedValue({
+                        success: true,
+                        commandResponse: ZosFilesMessages.dataSetCreatedSuccessfully.message
+                    });
+                    dataSetExistsSpy = jest.spyOn(Copy as any, "dataSetExists");
                 });
                 afterAll(() => {
                     copyPDSSpy.mockRestore();
+                });
+                afterEach(() => {
+                    createSpy.mockRestore();
+                    dataSetExistsSpy.mockRestore();
                 });
                 it("should call copyPDS to copy members of source PDS to target PDS", async () => {
                     const response = await Copy.dataSet(
@@ -523,6 +538,50 @@ describe("Copy", () => {
                         expectedHeaders,
                         expectedPayload
                     );
+                });
+                it("should call Create.dataSetLike and create a new data set if the target data set inputted does not exist", async() => {
+                    dataSetExistsSpy.mockResolvedValue(false);
+                    const response = await Copy.dataSet(
+                        dummySession,
+                        {dsn: toDataSetName},
+                        {"from-dataset": {
+                            dsn:fromDataSetName
+                        }}
+                    );
+                    expect(createSpy).toHaveBeenCalled();
+                    expect(response).toEqual({
+                        success: true,
+                        commandResponse: util.format(ZosFilesMessages.dataSetCopiedIntoNew.message, toDataSetName)
+                    });
+                });
+                it("should not create a new data set if the target data set inputted exists", async() => {
+                    dataSetExistsSpy.mockResolvedValue(true);
+                    const response = await Copy.dataSet(
+                        dummySession,
+                        {dsn: toDataSetName},
+                        {"from-dataset": {
+                            dsn:fromDataSetName
+                        }}
+                    );
+                    expect(createSpy).not.toHaveBeenCalled();
+                    expect(response).toEqual({
+                        success: true,
+                        commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message
+                    });
+                });
+            });
+            it("should return early if the source and target data sets are identical", async () => {
+                const response = await Copy.dataSet(
+                    dummySession,
+                    {dsn: fromDataSetName},
+                    {"from-dataset": {
+                        dsn: fromDataSetName
+                    }}
+                );
+
+                expect(response).toEqual({
+                    success: false,
+                    commandResponse: `The source and target data sets are identical.`
                 });
             });
         });
@@ -662,7 +721,47 @@ describe("Copy", () => {
             expect(response).toEqual(false);
             expect(listDatasetSpy).toHaveBeenCalledWith(dummySession, dsPS.dsname, { attributes: true });
         });
+        it("should return true if the data set exists", async () => {
+            let caughtError;
+            let response;
+            listDatasetSpy.mockImplementation(async (): Promise<any>  => {
+                return {
+                    apiResponse: {
+                        returnedRows: 1,
+                        items: [dsPO]
+                    }
+                };
+            });
+            try {
+                response = await (Copy as any).dataSetExists(dummySession, dsPO.dsname);
+            }
+            catch(e) {
+                caughtError = e;
+            }
+            expect(response).toEqual(true);
+            expect(listDatasetSpy).toHaveBeenCalledWith(dummySession, dsPO.dsname, {start: dsPO.dsname});
+        });
 
+        it("should return false if the data set does not exist", async () => {
+            let caughtError;
+            let response;
+            listDatasetSpy.mockImplementation(async (): Promise<any>  => {
+                return {
+                    apiResponse: {
+                        returnedRows: 0,
+                        items: []
+                    }
+                };
+            });
+            try {
+                response = await (Copy as any).dataSetExists(dummySession, dsPO.dsname);
+            }
+            catch(e) {
+                caughtError = e;
+            }
+            expect(response).toEqual(false);
+            expect(listDatasetSpy).toHaveBeenCalledWith(dummySession, dsPO.dsname, {start: dsPO.dsname});
+        });
         it("should successfully copy members from source to target PDS", async () => {
             let caughtError;
             let response;
@@ -675,7 +774,6 @@ describe("Copy", () => {
                 }
             };
             const fileList = ["mem1", "mem2"];
-
             listAllMembersSpy.mockImplementation(async (): Promise<any>  => sourceResponse);
             downloadAllMembersSpy.mockImplementation(async (): Promise<any> => undefined);
             fileListPathSpy.mockReturnValue(fileList);

@@ -2,8 +2,11 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
-## `8.10.3`
 
+## Recent Changes
+- Enhancement: The `Copy.dataset` function now creates a new data set if the entered target data set does not exist. [#2349](https://github.com/zowe/zowe-cli/issues/2349)
+
+## `8.10.3`
 - BugFix: The `Copy.dataset` method no longer copies all partitioned data set members if a member is passed to the function. [#2402](https://github.com/zowe/zowe-cli/pull/2402)
 
 ## `8.10.0`

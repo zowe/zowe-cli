@@ -30,6 +30,7 @@ import { Download } from "../download";
 import { ZosFilesUtils } from "../../utils/ZosFilesUtils";
 import { tmpdir } from "os";
 import path = require("path");
+import * as util from "util";
 /**
  * This class holds helper functions that are used to copy the contents of datasets through the
  * z/OSMF APIs.
@@ -57,14 +58,32 @@ export class Copy {
         ImperativeExpect.toBeDefinedAndNonBlank(options["from-dataset"].dsn, "fromDataSetName");
         ImperativeExpect.toBeDefinedAndNonBlank(toDataSetName, "toDataSetName");
 
+        if(options["from-dataset"].dsn === toDataSetName && toMemberName === options["from-dataset"].member) {
+            return {
+                success: false,
+                commandResponse: ZosFilesMessages.identicalDataSets.message
+            };
+        }
+
+        const targetDataSetExists = await this.dataSetExists(session, toDataSetName);
+
+        const newDataSet = !targetDataSetExists;
+        if (newDataSet) {
+            await Create.dataSetLike(session, toDataSetName, options["from-dataset"].dsn);
+        }
         if(!toMemberName && !options["from-dataset"].member) {
             const sourceIsPds = await this.isPDS(session, options["from-dataset"].dsn);
             const targetIsPds = await this.isPDS(session, toDataSetName);
             if (sourceIsPds && targetIsPds) {
-                return await this.copyPDS(session, options["from-dataset"].dsn, toDataSetName);
+                const response = await this.copyPDS(session, options["from-dataset"].dsn, toDataSetName);
+                return {
+                    success: true,
+                    commandResponse: newDataSet
+                        ? util.format(ZosFilesMessages.dataSetCopiedIntoNew.message, toDataSetName)
+                        : response.commandResponse
+                };
             }
         }
-
         const endpoint: string = posix.join(
             ZosFilesConstants.RESOURCE,
             ZosFilesConstants.RES_DS_FILES,
@@ -97,7 +116,9 @@ export class Copy {
 
             return {
                 success: true,
-                commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message
+                commandResponse: newDataSet
+                    ? util.format(ZosFilesMessages.dataSetCopiedIntoNew.message, toDataSetName)
+                    : ZosFilesMessages.datasetCopiedSuccessfully.message
             };
         } catch (error) {
             Logger.getAppLogger().error(error);
@@ -106,7 +127,7 @@ export class Copy {
     }
 
     /**
-     * Private function that checks if a dataset is type PDS
+     * Function that checks if a dataset is type PDS
     **/
     public static async isPDS(
         session: AbstractSession,
@@ -121,6 +142,22 @@ export class Copy {
             Logger.getAppLogger().error(error);
             throw error;
         }
+    }
+
+    /**
+     * Function that checks if the data set exists
+    **/
+    private static async dataSetExists(
+        session: AbstractSession,
+        dataSetName: string
+    ): Promise<boolean> {
+        let dsnameIndex;
+        const dataSetList = await List.dataSet(session, dataSetName, {start: dataSetName});
+        if(dataSetList.apiResponse != null && dataSetList.apiResponse.returnedRows != null && dataSetList.apiResponse.items != null) {
+            dsnameIndex = dataSetList.apiResponse.returnedRows === 0 ? -1 :
+                dataSetList.apiResponse.items.findIndex((ds: any) => ds.dsname.toUpperCase() === dataSetName.toUpperCase());
+        }
+        return dsnameIndex !== -1;
     }
 
     /**
@@ -139,10 +176,7 @@ export class Copy {
      */
 
     public static async copyPDS (
-        session: AbstractSession,
-        fromPds: string,
-        toPds: string
-    ): Promise<IZosFilesResponse> {
+        session: AbstractSession, fromPds: string, toPds: string): Promise<IZosFilesResponse> {
         try {
             const sourceResponse = await List.allMembers(session, fromPds);
             const sourceMemberList: Array<{ member: string }> = sourceResponse.apiResponse.items;
