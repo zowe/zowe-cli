@@ -143,7 +143,7 @@ export class List {
 
         // Exclude names of members
         for (const pattern of options.excludePatterns || []) {
-            const response = await List.allMembers(session, dataSetName, {pattern});
+            const response = await List.allMembers(session, dataSetName, { pattern });
             response.apiResponse.items.forEach((membersObj: IZosmfListResponse) => {
                 const responseIndex = zosmfResponses.findIndex(response=> response.member === membersObj.member);
                 if (responseIndex !== -1) {

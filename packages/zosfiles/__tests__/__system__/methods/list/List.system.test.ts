@@ -253,7 +253,7 @@ describe("List command group", () => {
                 expect(error).toBeFalsy();
                 expect(response).toBeTruthy();
                 expect(response.success).toBeTruthy();
-                expect(response.commandResponse).toBe("1 members(s) were found matching pattern.");
+                expect(response.commandResponse).toBe(null);
                 expect(response.apiResponse.items.length).toBe(1);
                 expect(response.apiResponse.items[0].dsname).toEqual(dsname);
             });
@@ -815,8 +815,8 @@ describe("List command group", () => {
             expect(response).toBeTruthy();
             expect(response.success).toBeTruthy();
             expect(response.commandResponse).toBe("1 members(s) were found matching pattern.");
-            expect(response.apiResponse.items.length).toBe(1);
-            expect(response.apiResponse.items[0].member).toEqual(members[0]);
+            expect(response.apiResponse.length).toBe(1);
+            expect(response.apiResponse[0].member).toEqual(members[0]);
         });
 
         it("should return a list starting with the given member in the start option", async () => {
@@ -834,8 +834,8 @@ describe("List command group", () => {
             expect(response).toBeTruthy();
             expect(response.success).toBeTruthy();
             expect(response.commandResponse).toBe("3 members(s) were found matching pattern.");
-            expect(response.apiResponse.items.length).toBe(3);
-            expect(response.apiResponse.items[0].member).toEqual(members[1]);
+            expect(response.apiResponse.length).toBe(3);
+            expect(response.apiResponse[0].member).toEqual(members[1]);
         });
     });
 
