@@ -37,7 +37,13 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
     unsupportedDataType: {
         message: "Unsupported data type 'record' specified for USS file operation."
     },
-
+    /**
+     * Message indicating that the source and target data sets are identical
+     * @type {IMessageDefinition}
+     */
+    identicalDataSets: {
+        message: "The source and target data sets are identical."
+    },
     /**
      * Message indicating that the data set type is required
      * @type {IMessageDefinition}
@@ -133,6 +139,14 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
      */
     missingInputDir: {
         message: "Specify the input directory path."
+    },
+
+    /**
+     * Message indicating that a new target data set was created and copied into
+     * @type {IMessageDefinition}
+     */
+    dataSetCopiedIntoNew: {
+        message: `Source contents were successfully copied into a new data set - %s`
     },
 
     /**
