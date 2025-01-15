@@ -104,20 +104,20 @@ export class DownloadJobs {
         this.log.trace("Entering downloadSpoolContentCommon with parms %s", JSON.stringify(parms));
         ImperativeExpect.keysToBeDefined(parms, ["jobFile"], "You must specify a job file on your 'parms' parameter" +
             " object to the downloadSpoolContentCommon API.");
-    
-        // Waiting for job to be active before continuing with job download
+
+        //waiting for job to be active before continuing with job download
         if (parms.waitForActive) {
             await MonitorJobs.waitForActiveStatus(session, parms.jobname, parms.jobid);
         }
-    
-        // Waiting for job status to be output before continuing on with job download
+
+        //waiting for job status to be output before continuing on with job download
         if (parms.waitForOutput) {
             await MonitorJobs.waitForJobOutputStatus(session, {
                 jobname: parms.jobname,
                 jobid: parms.jobid
             } as IJob);
         }
-    
+
         const job = parms.jobFile;
         let debugMessage = `Downloading spool file ${job.ddname} for job ${job.jobname}(${job.jobid})`;
         let file: string;
@@ -127,31 +127,33 @@ export class DownloadJobs {
             IO.createFileSync(file);
             debugMessage += ` to ${file}`;
         }
-    
+
         this.log.debug(debugMessage);
-    
+
         let parameters: string = "/" + encodeURIComponent(job.jobname) + "/" + encodeURIComponent(job.jobid) +
             JobsConstants.RESOURCE_SPOOL_FILES + "/" + encodeURIComponent(job.id) + JobsConstants.RESOURCE_SPOOL_CONTENT;
-    
+
         if (parms.binary) {
             parameters += "?mode=binary";
         } else if (parms.record) {
             parameters += "?mode=record";
         }
-    
+
         if (!parms.binary && !parms.record && parms.encoding?.trim()) {
             parameters += "?fileEncoding=" + parms.encoding;
         }
-    
+
+        let headers = [Headers.TEXT_PLAIN_UTF8];
+
         // Handle record range
         if (parms.recordRange) {
             const recordRangeMatch = parms.recordRange.match(/^(\d+)-(\d+)$/); // Match multi-digit numbers
             if (recordRangeMatch) {
                 const start = parseInt(recordRangeMatch[1], 10);
                 const end = parseInt(recordRangeMatch[2], 10);
-    
-                if (start >= 0 && end >= start) { // Ensure valid range
-                    parameters += (parameters.includes("?") ? "&" : "?") + `start=${start}&end=${end}`;
+
+                if (start >= 0 && end >= start) {
+                    if(parms.recordRange) headers.push({"X-IBM-Record-Range": `${start}-${end}`})
                 } else {
                     throw new Error(`Invalid record range specified: ${parms.recordRange}. Ensure the format is x-y with x <= y.`);
                 }
@@ -159,13 +161,12 @@ export class DownloadJobs {
                 throw new Error(`Invalid record range format: ${parms.recordRange}. Expected format is x-y.`);
             }
         }
-    
+
         const writeStream = parms.stream ?? IO.createWriteStream(file);
         const normalizeResponseNewLines = !(parms.binary || parms.record);
-        await ZosmfRestClient.getStreamed(session, JobsConstants.RESOURCE + parameters, [Headers.TEXT_PLAIN_UTF8], writeStream,
+        await ZosmfRestClient.getStreamed(session, JobsConstants.RESOURCE + parameters, headers, writeStream,
             normalizeResponseNewLines);
     }
-    
 
     /**
      * Get the file where a specified spool file (IJobFile) would be downloaded to
