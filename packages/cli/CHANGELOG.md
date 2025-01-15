@@ -2,6 +2,8 @@
 All notable changes to the Zowe CLI package will be documented in this file.
 
 ## Recent Changes
+
+- Enhancement: Added `--recordRange` flag to `zowe jobs download output` command to allow users to select a specific range of records to output from a spool file. [#2411](https://github.com/zowe/zowe-cli/pull/2411)
 - Enhancement: The `zowe zos-files copy data-set` command no longer requires the target data set to be preallocated. [##2349] (https://github.com/zowe/zowe-cli/issues/2349)
 
 ## `8.10.4`
