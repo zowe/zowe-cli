@@ -143,7 +143,7 @@ export class DownloadJobs {
             parameters += "?fileEncoding=" + parms.encoding;
         }
 
-        let headers = [Headers.TEXT_PLAIN_UTF8];
+        const headers = [Headers.TEXT_PLAIN_UTF8];
 
         // Handle record range
         if (parms.recordRange) {

@@ -4,6 +4,8 @@ All notable changes to the Zowe z/OS files SDK package will be documented in thi
 
 
 ## Recent Changes
+
+- Enhancement: Added `--recordRange` flag to `zowe jobs download output` command to allow users to select a specific range of records to output from a spool file. [#2411](https://github.com/zowe/zowe-cli/pull/2411)
 - Enhancement: The `Copy.dataset` function now creates a new data set if the entered target data set does not exist. [#2349](https://github.com/zowe/zowe-cli/issues/2349)
 
 ## `8.10.3`

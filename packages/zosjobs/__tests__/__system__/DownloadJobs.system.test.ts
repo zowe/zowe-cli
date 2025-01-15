@@ -424,7 +424,7 @@ describe("Download Jobs - System tests", () => {
                 expect(JSON.parse(err.causeErrors).message).toContain("does not contain spool file");
             });
 
-        it("should be able to download all DDs from job output with a record range (0-5)", async () => {
+        it("should be able to download all DDs from job output with a record range (0-0)", async () => {
             for (const file of jobFiles) {
                 if (file.ddname === "JESMSGLG") {
                     jesJCLJobFile = file;
@@ -456,7 +456,7 @@ describe("Download Jobs - System tests", () => {
             expect(expectedFile).toBeUndefined();
         });
 
-        it("should be able to download all DDs from job output with a record range (0-5)", async () => {
+        it("should be able to download all DDs from job output with a record range (2-1)", async () => {
             for (const file of jobFiles) {
                 if (file.ddname === "JESMSGLG") {
                     jesJCLJobFile = file;
@@ -488,7 +488,7 @@ describe("Download Jobs - System tests", () => {
             expect(expectedFile).toBeUndefined();
         });
 
-        it("should be able to download all DDs from job output with a record range (0-5)", async () => {
+        it("should be able to download all DDs from job output with a record range (0 50)", async () => {
             for (const file of jobFiles) {
                 if (file.ddname === "JESMSGLG") {
                     jesJCLJobFile = file;
@@ -706,7 +706,7 @@ describe("Download Jobs - System tests - Encoded", () => {
             }
         }, LONG_TIMEOUT);
 
-        it("should be able to download all DDs from job output with a record range (0-5)", async () => {
+        it("should be able to download all DDs from job output with a record range (0-5) - encoded", async () => {
             for (const file of jobFiles) {
                 if (file.ddname === "JESMSGLG") {
                     jesJCLJobFile = file;
@@ -732,7 +732,7 @@ describe("Download Jobs - System tests - Encoded", () => {
             expect(IO.readFileSync(expectedFile).toString()).not.toContain("0------ JES2 JOB STATISTICS ------");
         });
 
-        it("should be able to download all DDs from job output with a record range (2-8)", async () => {
+        it("should be able to download all DDs from job output with a record range (2-8) - encoded", async () => {
             for (const file of jobFiles) {
                 if (file.ddname === "JESMSGLG") {
                     jesJCLJobFile = file;
@@ -758,7 +758,7 @@ describe("Download Jobs - System tests - Encoded", () => {
             expect(IO.readFileSync(expectedFile).toString()).not.toContain("0------ JES2 JOB STATISTICS ------");
         });
 
-        it("should be able to download all DDs from job output with a record range (0-100)", async () => {
+        it("should be able to download all DDs from job output with a record range (0-100) - encoded", async () => {
             for (const file of jobFiles) {
                 if (file.ddname === "JESMSGLG") {
                     jesJCLJobFile = file;
