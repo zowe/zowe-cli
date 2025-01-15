@@ -152,10 +152,12 @@ export class DownloadJobs {
                 const start = parseInt(recordRangeMatch[1], 10);
                 const end = parseInt(recordRangeMatch[2], 10);
 
-                if (start >= 0 && end >= start) {
-                    if(parms.recordRange) headers.push({"X-IBM-Record-Range": `${start}-${end}`})
+                if (start >= 0 && end > start) {
+                    if (parms.recordRange) {
+                        headers.push({ "X-IBM-Record-Range": `${start}-${end}` });
+                    }
                 } else {
-                    throw new Error(`Invalid record range specified: ${parms.recordRange}. Ensure the format is x-y with x <= y.`);
+                    throw new Error(`Invalid record range specified: ${parms.recordRange}. Ensure the format is x-y with x < y.`);
                 }
             } else {
                 throw new Error(`Invalid record range format: ${parms.recordRange}. Expected format is x-y.`);

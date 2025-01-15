@@ -473,6 +473,22 @@ describe("DownloadJobs", () => {
                 expect(IO.createDirsSyncFromFilePath).toHaveBeenCalledWith(downloadFilePath);
                 expect(downloadFilePath).not.toContain(spoolParms.jobid);
             });
+
+            it("should allow users to call downloadSpoolContentCommon with correct parameters (record range)", async () => {
+                const jobFile: IJobFile = JSON.parse(JSON.stringify(jobFiles[0]));
+                const spoolParms: IDownloadSpoolContentParms = {
+                    jobFile: jobFile,
+                    jobid: fakeJobID,
+                    jobname: fakeJobName,
+                    recordRange: "0-100"
+                };
+                const downloadFilePath = DownloadJobs.getSpoolDownloadFilePath(spoolParms);
+
+                await DownloadJobs.downloadSpoolContentCommon(fakeSession, spoolParms);
+
+                expect(IO.createDirsSyncFromFilePath).toHaveBeenCalledWith(downloadFilePath);
+                expect(downloadFilePath).toContain(DownloadJobs.DEFAULT_JOBS_OUTPUT_DIR);
+            });
         });
     });
     describe("Error catching - async/ await", () => {

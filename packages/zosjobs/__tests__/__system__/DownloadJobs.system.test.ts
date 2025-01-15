@@ -57,6 +57,7 @@ describe("Download Jobs - System tests", () => {
         const job = await SubmitJobs.submitJclNotifyCommon(REAL_SESSION, {
             jcl: iefbr14JCL
         });
+
         testEnvironment.resources.jobs.push(job);
         jobid = job.jobid;
         jobname = job.jobname;
@@ -289,8 +290,86 @@ describe("Download Jobs - System tests", () => {
                 }
             }
         }, LONG_TIMEOUT);
-    });
 
+        it("should be able to download all DDs from job output with a record range (0-5)", async () => {
+            for (const file of jobFiles) {
+                if (file.ddname === "JESMSGLG") {
+                    jesJCLJobFile = file;
+                }
+            }
+
+            await DownloadJobs.downloadAllSpoolContentCommon(REAL_SESSION, {
+                outDir: outputDirectory,
+                jobid,
+                jobname,
+                recordRange: "0-5"
+            });
+            const expectedFile = DownloadJobs.getSpoolDownloadFilePath(
+                {
+                    jobFile: jesJCLJobFile,
+                    omitJobidDirectory: false,
+                    outDir: outputDirectory
+                }
+            );
+            expect(IO.existsSync(expectedFile)).toEqual(true);
+            expect(IO.readFileSync(expectedFile).toString()).toBeDefined();
+            expect(IO.readFileSync(expectedFile).toString()).toContain("J E S 2  J O B  L O G");
+            expect(IO.readFileSync(expectedFile).toString()).not.toContain("0------ JES2 JOB STATISTICS ------");
+        });
+
+        it("should be able to download all DDs from job output with a record range (2-8)", async () => {
+            for (const file of jobFiles) {
+                if (file.ddname === "JESMSGLG") {
+                    jesJCLJobFile = file;
+                }
+            }
+
+            await DownloadJobs.downloadAllSpoolContentCommon(REAL_SESSION, {
+                outDir: outputDirectory,
+                jobid,
+                jobname,
+                recordRange: "2-8"
+            });
+            const expectedFile = DownloadJobs.getSpoolDownloadFilePath(
+                {
+                    jobFile: jesJCLJobFile,
+                    omitJobidDirectory: false,
+                    outDir: outputDirectory
+                }
+            );
+            expect(IO.existsSync(expectedFile)).toEqual(true);
+            expect(IO.readFileSync(expectedFile).toString()).toBeDefined();
+            expect(IO.readFileSync(expectedFile).toString()).not.toContain("J E S 2  J O B  L O G");
+            expect(IO.readFileSync(expectedFile).toString()).not.toContain("0------ JES2 JOB STATISTICS ------");
+        });
+
+        it("should be able to download all DDs from job output with a record range (0-100)", async () => {
+            for (const file of jobFiles) {
+                if (file.ddname === "JESMSGLG") {
+                    jesJCLJobFile = file;
+                }
+            }
+
+            await DownloadJobs.downloadAllSpoolContentCommon(REAL_SESSION, {
+                outDir: outputDirectory,
+                jobid,
+                jobname,
+                recordRange: "0-100"
+            });
+            const expectedFile = DownloadJobs.getSpoolDownloadFilePath(
+                {
+                    jobFile: jesJCLJobFile,
+                    omitJobidDirectory: false,
+                    outDir: outputDirectory
+                }
+            );
+            expect(IO.existsSync(expectedFile)).toEqual(true);
+            expect(IO.readFileSync(expectedFile).toString()).toBeDefined();
+            expect(IO.readFileSync(expectedFile).toString()).toContain("J E S 2  J O B  L O G");
+            expect(IO.readFileSync(expectedFile).toString()).toContain("0------ JES2 JOB STATISTICS ------");
+            expect(IO.readFileSync(expectedFile).toString()).toContain("MINUTES EXECUTION TIME");
+        });
+    });
 
     describe("Negative tests", () => {
         let badJobFile: IJobFile;
@@ -345,6 +424,101 @@ describe("Download Jobs - System tests", () => {
                 expect(JSON.parse(err.causeErrors).message).toContain("does not contain spool file");
             });
 
+        it("should be able to download all DDs from job output with a record range (0-5)", async () => {
+            for (const file of jobFiles) {
+                if (file.ddname === "JESMSGLG") {
+                    jesJCLJobFile = file;
+                }
+            }
+            let err;
+            let expectedFile;
+            try{
+                await DownloadJobs.downloadAllSpoolContentCommon(REAL_SESSION, {
+                    outDir: outputDirectory,
+                    jobid,
+                    jobname,
+                    recordRange: "0-0"
+                });
+                expectedFile = DownloadJobs.getSpoolDownloadFilePath(
+                    {
+                        jobFile: jesJCLJobFile,
+                        omitJobidDirectory: false,
+                        outDir: outputDirectory
+                    }
+                );
+            }
+            catch(e){
+                err = e;
+            }
+
+            expect(err).toBeDefined();
+            expect(err.message).toEqual('Invalid record range specified: 0-0. Ensure the format is x-y with x < y.');
+            expect(expectedFile).toBeUndefined();
+        });
+
+        it("should be able to download all DDs from job output with a record range (0-5)", async () => {
+            for (const file of jobFiles) {
+                if (file.ddname === "JESMSGLG") {
+                    jesJCLJobFile = file;
+                }
+            }
+            let err;
+            let expectedFile;
+            try{
+                await DownloadJobs.downloadAllSpoolContentCommon(REAL_SESSION, {
+                    outDir: outputDirectory,
+                    jobid,
+                    jobname,
+                    recordRange: "2-1"
+                });
+                expectedFile = DownloadJobs.getSpoolDownloadFilePath(
+                    {
+                        jobFile: jesJCLJobFile,
+                        omitJobidDirectory: false,
+                        outDir: outputDirectory
+                    }
+                );
+            }
+            catch(e){
+                err = e;
+            }
+
+            expect(err).toBeDefined();
+            expect(err.message).toEqual('Invalid record range specified: 2-1. Ensure the format is x-y with x < y.');
+            expect(expectedFile).toBeUndefined();
+        });
+
+        it("should be able to download all DDs from job output with a record range (0-5)", async () => {
+            for (const file of jobFiles) {
+                if (file.ddname === "JESMSGLG") {
+                    jesJCLJobFile = file;
+                }
+            }
+            let err;
+            let expectedFile;
+            try{
+                await DownloadJobs.downloadAllSpoolContentCommon(REAL_SESSION, {
+                    outDir: outputDirectory,
+                    jobid,
+                    jobname,
+                    recordRange: "0 50"
+                });
+                expectedFile = DownloadJobs.getSpoolDownloadFilePath(
+                    {
+                        jobFile: jesJCLJobFile,
+                        omitJobidDirectory: false,
+                        outDir: outputDirectory
+                    }
+                );
+            }
+            catch(e){
+                err = e;
+            }
+
+            expect(err).toBeDefined();
+            expect(err.message).toEqual('Invalid record range format: 0 50. Expected format is x-y.');
+            expect(expectedFile).toBeUndefined();
+        });
     });
 });
 
@@ -531,5 +705,84 @@ describe("Download Jobs - System tests - Encoded", () => {
                 }
             }
         }, LONG_TIMEOUT);
+
+        it("should be able to download all DDs from job output with a record range (0-5)", async () => {
+            for (const file of jobFiles) {
+                if (file.ddname === "JESMSGLG") {
+                    jesJCLJobFile = file;
+                }
+            }
+
+            await DownloadJobs.downloadAllSpoolContentCommon(REAL_SESSION, {
+                outDir: outputDirectory,
+                jobid,
+                jobname,
+                recordRange: "0-5"
+            });
+            const expectedFile = DownloadJobs.getSpoolDownloadFilePath(
+                {
+                    jobFile: jesJCLJobFile,
+                    omitJobidDirectory: false,
+                    outDir: outputDirectory
+                }
+            );
+            expect(IO.existsSync(expectedFile)).toEqual(true);
+            expect(IO.readFileSync(expectedFile).toString()).toBeDefined();
+            expect(IO.readFileSync(expectedFile).toString()).toContain("J E S 2  J O B  L O G");
+            expect(IO.readFileSync(expectedFile).toString()).not.toContain("0------ JES2 JOB STATISTICS ------");
+        });
+
+        it("should be able to download all DDs from job output with a record range (2-8)", async () => {
+            for (const file of jobFiles) {
+                if (file.ddname === "JESMSGLG") {
+                    jesJCLJobFile = file;
+                }
+            }
+
+            await DownloadJobs.downloadAllSpoolContentCommon(REAL_SESSION, {
+                outDir: outputDirectory,
+                jobid,
+                jobname,
+                recordRange: "2-8"
+            });
+            const expectedFile = DownloadJobs.getSpoolDownloadFilePath(
+                {
+                    jobFile: jesJCLJobFile,
+                    omitJobidDirectory: false,
+                    outDir: outputDirectory
+                }
+            );
+            expect(IO.existsSync(expectedFile)).toEqual(true);
+            expect(IO.readFileSync(expectedFile).toString()).toBeDefined();
+            expect(IO.readFileSync(expectedFile).toString()).not.toContain("J E S 2  J O B  L O G");
+            expect(IO.readFileSync(expectedFile).toString()).not.toContain("0------ JES2 JOB STATISTICS ------");
+        });
+
+        it("should be able to download all DDs from job output with a record range (0-100)", async () => {
+            for (const file of jobFiles) {
+                if (file.ddname === "JESMSGLG") {
+                    jesJCLJobFile = file;
+                }
+            }
+
+            await DownloadJobs.downloadAllSpoolContentCommon(REAL_SESSION, {
+                outDir: outputDirectory,
+                jobid,
+                jobname,
+                recordRange: "0-100"
+            });
+            const expectedFile = DownloadJobs.getSpoolDownloadFilePath(
+                {
+                    jobFile: jesJCLJobFile,
+                    omitJobidDirectory: false,
+                    outDir: outputDirectory
+                }
+            );
+            expect(IO.existsSync(expectedFile)).toEqual(true);
+            expect(IO.readFileSync(expectedFile).toString()).toBeDefined();
+            expect(IO.readFileSync(expectedFile).toString()).toContain("J E S 2  J O B  L O G");
+            expect(IO.readFileSync(expectedFile).toString()).toContain("0------ JES2 JOB STATISTICS ------");
+            expect(IO.readFileSync(expectedFile).toString()).toContain("MINUTES EXECUTION TIME");
+        });
     });
 });
