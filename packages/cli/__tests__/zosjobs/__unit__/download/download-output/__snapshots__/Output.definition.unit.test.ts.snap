@@ -92,6 +92,15 @@ Object {
       "name": "wait-for-output",
       "type": "boolean",
     },
+    Object {
+      "aliases": Array [
+        "rr",
+      ],
+      "description": "placeholder.",
+      "name": "record-range",
+      "optional": true,
+      "type": "string",
+    },
   ],
   "positionals": Array [
     Object {
