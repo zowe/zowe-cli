@@ -591,8 +591,6 @@ describe("DownloadJobs", () => {
                 jobname: fakeJobName,
                 recordRange: "0 100"
             };
-            const downloadFilePath = DownloadJobs.getSpoolDownloadFilePath(spoolParms);
-
             let err;
             try {
                 await DownloadJobs.downloadSpoolContentCommon(fakeSession, spoolParms);
@@ -612,8 +610,6 @@ describe("DownloadJobs", () => {
                 jobname: fakeJobName,
                 recordRange: "100-0"
             };
-            const downloadFilePath = DownloadJobs.getSpoolDownloadFilePath(spoolParms);
-
             let err;
             try {
                 await DownloadJobs.downloadSpoolContentCommon(fakeSession, spoolParms);

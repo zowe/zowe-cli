@@ -87,8 +87,9 @@ export const OutputDefinition: ICommandDefinition = {
             conflictsWith: ["wait-for-active"]
         },
         {
-            name: "record-range", aliases: ["rr"],
-            description: "placeholder.",
+            name: "record-range",
+            aliases: ["rr"],
+            description: "Zero indexed range of records to download from a spool file. (example: 0-100)",
             type: "string",
             optional: true
         }
