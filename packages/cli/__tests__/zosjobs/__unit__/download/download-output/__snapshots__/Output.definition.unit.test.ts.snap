@@ -96,7 +96,7 @@ Object {
       "aliases": Array [
         "rr",
       ],
-      "description": "placeholder.",
+      "description": "Zero indexed range of records to download from a spool file. (example: 0-100)",
       "name": "record-range",
       "optional": true,
       "type": "string",
