@@ -196,7 +196,7 @@ export default {
                 },
                 OPTIONS: {
                     REPLACE: "Specify this option as true if you wish to replace like-named members in the target data set",
-                    SAFE_REPLACE: "Specify this option as true if you wish to replace like-named members or the content of the target data set." +
+                    SAFE_REPLACE: "Specify this option as true if you wish to replace like-named members or the content of the target data set. " +
                      "This option will prompt to confirm."
                 },
                 EXAMPLES: {
