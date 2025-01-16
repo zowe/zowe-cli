@@ -7,7 +7,8 @@ Zowe follows a regular release schedule with major versions released every two y
 ### Zowe v3.x LTS Releases
 |  Version | Release Date |  Status    | Release Notes |
 |:--------:|:------------:|:----------:|:-------------:|
-|  v3.0.0-prerelease  | 2024-08      | **Under Development** |     |
+|  v3.0.0  | 2024-10      | **Active** |     |
+|  v3.1.0  | 2025-02      | **Under Development** |     |
 
 ### Major Release Timeline
 

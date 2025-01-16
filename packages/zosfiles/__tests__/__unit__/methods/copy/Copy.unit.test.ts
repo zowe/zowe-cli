@@ -36,6 +36,7 @@ describe("Copy", () => {
         const toMemberName = "mem2";
         const isPDSSpy = jest.spyOn(Copy as any, "isPDS");
         let dataSetExistsSpy: jest.SpyInstance;
+        const promptFn = jest.fn();
 
         beforeEach(() => {
             copyPDSSpy.mockClear();
@@ -458,6 +459,55 @@ describe("Copy", () => {
                     expect(copyPDSSpy).not.toHaveBeenCalled();
                     expect(lastArgumentOfCall).toHaveProperty("replace", false);
                 });
+            });
+            describe("Safe replace option", () => {
+                it("should not throw error if safeReplace has value of true", async () => {
+                    promptFn.mockResolvedValue(true);
+
+                    const response = await Copy.dataSet(
+                        dummySession,
+                        { dsn: toDataSetName },
+                        { "from-dataset": { dsn: fromDataSetName },
+                            safeReplace: true,
+                            promptFn }
+                    );
+                    expect(copyExpectStringSpy).toHaveBeenCalledTimes(1);
+                    const argumentsOfCall = copyExpectStringSpy.mock.calls[0];
+                    const lastArgumentOfCall = argumentsOfCall[argumentsOfCall.length - 1];
+                    expect(lastArgumentOfCall).toHaveProperty("safeReplace", true);
+                    expect(response).toEqual({success: true, commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message});
+                    expect(promptFn).toHaveBeenCalledWith(toDataSetName);
+                });
+
+                it("should throw error if user declines to replace the dataset", async () => {
+                    promptFn.mockResolvedValue(false);
+
+                    await expect(Copy.dataSet(
+                        dummySession,
+                        { dsn: toDataSetName },
+                        { "from-dataset": { dsn: fromDataSetName },
+                            safeReplace: true,
+                            promptFn }
+                    )).rejects.toThrow(new ImperativeError({ msg: ZosFilesMessages.datasetCopiedAborted.message }));
+
+                    expect(promptFn).toHaveBeenCalledWith(toDataSetName);
+
+                });
+
+                it("should not throw error if safeReplace has value of false", async () => {
+                    await expect(Copy.dataSet(
+                        dummySession,
+                        { dsn: toDataSetName },
+                        { "from-dataset": { dsn: fromDataSetName },
+                            safeReplace: false,
+                        }
+                    )).resolves.not.toThrow();
+                    expect(copyExpectStringSpy).toHaveBeenCalledTimes(1);
+                    const argumentsOfCall = copyExpectStringSpy.mock.calls[0];
+                    const lastArgumentOfCall = argumentsOfCall[argumentsOfCall.length - 1];
+                    expect(lastArgumentOfCall).toHaveProperty("safeReplace", false);
+                });
+
             });
             describe("Partitioned > Partitioned", () => {
                 let createSpy: jest.SpyInstance;

@@ -195,7 +195,9 @@ export default {
                     TODSNAME: "The name of the data set that you want to copy to"
                 },
                 OPTIONS: {
-                    REPLACE: "Specify this option as true if you wish to replace like-named members in the target data set"
+                    REPLACE: "Specify this option as true if you wish to replace like-named members in the target data set",
+                    SAFE_REPLACE: "Specify this option as true if you wish to replace like-named members or the content of the target data set." +
+                     "This option will prompt to confirm."
                 },
                 EXAMPLES: {
                     EX1: "Copy the data set named 'USER.FROM.SET' to the data set named 'USER.TO.SET'",
@@ -204,7 +206,7 @@ export default {
                     EX4: "Copy the data set member named 'USER.FROM.SET(MEM1)' to the data set named 'USER.TO.SET'",
                     EX5: "Copy the data set named 'USER.FROM.SET' to the data set named 'USER.TO.SET' and replace like-named members",
                     EX6: "Copy the partitioned data set named 'TEST.PDS1' to the partitioned data set named 'TEST.PDS2'",
-                    EX7: "Copy the partionted data set named 'EXISTING.PDS' to a non-existent target 'NEW.PDS'"
+                    EX7: "Copy the partitioned data set named 'EXISTING.PDS' to a non-existent target 'NEW.PDS'"
                 }
             },
             DATA_SET_CROSS_LPAR: {

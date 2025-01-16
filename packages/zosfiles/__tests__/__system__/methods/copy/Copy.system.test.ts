@@ -466,6 +466,87 @@ describe("Copy", () => {
                 expect(contents1.toString()).toEqual(contents2.toString());
             });
         });
+
+        describe("Safe replace option", () => {
+            const promptFn = jest.fn();
+            beforeEach(async () => {
+                try {
+                    await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, fromDataSetName);
+                    await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, toDataSetName);
+                    await Upload.fileToDataset(REAL_SESSION, fileLocation, fromDataSetName);
+                    await Copy.dataSet(
+                        REAL_SESSION,
+                        { dsn: toDataSetName },
+                        { "from-dataset": { dsn: fromDataSetName } }
+                    );
+                } catch (err) {
+                    Imperative.console.info(`Error: ${inspect(err)}`);
+                }
+            });
+
+            it("Should succeed with safe replace option", async () => {
+                let error;
+                let response;
+                let contents1;
+                let contents2;
+                promptFn.mockResolvedValue(true);
+
+                try {
+                    response = await Copy.dataSet(
+                        REAL_SESSION,
+                        { dsn: toDataSetName},
+                        {
+                            "from-dataset": { dsn: fromDataSetName },
+                            "safeReplace": true,
+                            promptFn
+                        }
+                    );
+                    contents1 = await Get.dataSet(REAL_SESSION, `${fromDataSetName}`);
+                    contents2 = await Get.dataSet(REAL_SESSION, `${toDataSetName}`);
+                    Imperative.console.info(`Response: ${inspect(response)}`);
+                } catch (err) {
+                    error = err;
+                    Imperative.console.info(`Error: ${inspect(err)}`);
+                }
+
+                expect(error).toBeFalsy();
+                expect(promptFn).toHaveBeenCalledWith(toDataSetName);
+                expect(response).toBeTruthy();
+                expect(response.success).toBe(true);
+                expect(response.commandResponse).toContain(ZosFilesMessages.datasetCopiedSuccessfully.message);
+
+                expect(contents1).toBeTruthy();
+                expect(contents2).toBeTruthy();
+                expect(contents1.toString()).toEqual(contents2.toString());
+            });
+
+            it("Should result in error when safe replace option is selected but the user declines the prompt", async () => {
+                let error;
+                let response;
+                promptFn.mockResolvedValue(false);
+
+                try {
+                    response = await Copy.dataSet(
+                        REAL_SESSION,
+                        { dsn: toDataSetName, member: file2 },
+                        {
+                            "from-dataset": { dsn: fromDataSetName},
+                            "safeReplace": true,
+                            promptFn
+                        }
+                    );
+                    Imperative.console.info(`Response: ${inspect(response)}`);
+                } catch (err) {
+                    error = err;
+                    Imperative.console.info(`Error: ${inspect(err)}`);
+                }
+
+                expect(error).toBeTruthy();
+                expect(error.message).toContain(ZosFilesMessages.datasetCopiedAborted.message);
+                expect(response).toBeFalsy();
+            });
+
+        });
         describe("responseTimeout option", () => {
             beforeEach(async () => {
                 try {

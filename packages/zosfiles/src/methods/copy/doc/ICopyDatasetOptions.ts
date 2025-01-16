@@ -30,8 +30,21 @@ export interface ICopyDatasetOptions extends IZosFilesOptions {
     enq?: string;
 
     /**
-     * Replace option
+     * Replace option (DEPRECATED)
      * @type {boolean}
      */
     replace?: boolean;
+
+    /**
+     * Safe replace option
+     * @type {boolean};
+     */
+    safeReplace?: boolean;
+
+    /**
+     * Prompt callback that will be invoked before overwiting a data set.
+     * @param targetDSN Name of data set that already exists
+     * @returns True if target data set should be overwritten
+     */
+    promptFn?: (targetDSN: string) => Promise<boolean>;
 }

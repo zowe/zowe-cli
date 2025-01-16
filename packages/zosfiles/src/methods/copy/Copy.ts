@@ -57,8 +57,9 @@ export class Copy {
     ): Promise<IZosFilesResponse> {
         ImperativeExpect.toBeDefinedAndNonBlank(options["from-dataset"].dsn, "fromDataSetName");
         ImperativeExpect.toBeDefinedAndNonBlank(toDataSetName, "toDataSetName");
+        const safeReplace: boolean = options.safeReplace;
 
-        if(options["from-dataset"].dsn === toDataSetName) {
+        if(options["from-dataset"].dsn === toDataSetName && toMemberName === options["from-dataset"].member) {
             return {
                 success: false,
                 commandResponse: ZosFilesMessages.identicalDataSets.message
@@ -70,6 +71,15 @@ export class Copy {
         const newDataSet = !targetDataSetExists;
         if (newDataSet) {
             await Create.dataSetLike(session, toDataSetName, options["from-dataset"].dsn);
+        }
+        else if(safeReplace) {
+            if (options.promptFn != null) {
+                const userResponse = await options.promptFn(toDataSetName);
+
+                if(!userResponse) {
+                    throw new ImperativeError({ msg: ZosFilesMessages.datasetCopiedAborted.message });
+                }
+            }
         }
         if(!toMemberName && !options["from-dataset"].member) {
             const sourceIsPds = await this.isPDS(session, options["from-dataset"].dsn);

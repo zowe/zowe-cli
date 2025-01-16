@@ -12,6 +12,9 @@
 import { Copy, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
 import DsHandler from "../../../../../src/zosfiles/copy/ds/Ds.handler";
 import { ZosFilesBaseHandler } from "../../../../../src/zosfiles/ZosFilesBase.handler";
+import { u } from "tar";
+import { resolvePtr } from "dns";
+import en from "../../../../../src/zosfiles/-strings-/en";
 
 describe("DsHandler", () => {
     const defaultReturn: IZosFilesResponse = {
@@ -33,73 +36,24 @@ describe("DsHandler", () => {
 
         const fromDataSetName = "ABCD";
         const toDataSetName = "EFGH";
-
-        const commandParameters: any = {
-            arguments: {
-                fromDataSetName,
-                toDataSetName
-            }
-        };
-
-        const dummySession = {};
-
-        const response = await handler.processWithSession(commandParameters, dummySession as any);
-
-        expect(copyDatasetSpy).toHaveBeenCalledTimes(1);
-        expect(copyDatasetSpy).toHaveBeenLastCalledWith(
-            dummySession,
-            { dsn: commandParameters.arguments.toDataSetName },
-            { "from-dataset": { dsn: commandParameters.arguments.fromDataSetName } }
-        );
-        expect(response).toBe(defaultReturn);
-    });
-
-    it("should call Copy.dataSet with members", async () => {
-        const handler = new DsHandler();
-
-        expect(handler).toBeInstanceOf(ZosFilesBaseHandler);
-
-        const fromDataSetName = "ABCD";
-        const fromMemberName = "mem1";
-        const toDataSetName = "EFGH";
-        const toMemberName = "mem2";
-
-        const commandParameters: any = {
-            arguments: {
-                fromDataSetName: `${fromDataSetName}(${fromMemberName})`,
-                toDataSetName: `${toDataSetName}(${toMemberName})`
-            }
-        };
-
-        const dummySession = {};
-
-        const response = await handler.processWithSession(commandParameters, dummySession as any);
-
-        expect(copyDatasetSpy).toHaveBeenCalledTimes(1);
-        expect(copyDatasetSpy).toHaveBeenLastCalledWith(
-            dummySession,
-            { dsn: toDataSetName, member: toMemberName },
-            { "from-dataset": { dsn: fromDataSetName, member: fromMemberName } }
-        );
-        expect(response).toBe(defaultReturn);
-    });
-
-    it("should call Copy.dataSet with options", async () => {
-        const handler = new DsHandler();
-
-        expect(handler).toBeInstanceOf(ZosFilesBaseHandler);
-
-        const fromDataSetName = "ABCD";
-        const toDataSetName = "EFGH";
         const enq = "SHR";
         const replace = true;
+        const safeReplace = true;
+        const responseTimeout: any = undefined;
+
 
         const commandParameters: any = {
             arguments: {
                 fromDataSetName,
                 toDataSetName,
                 enq,
-                replace
+                replace,
+                safeReplace,
+                responseTimeout
+
+            },
+            response: {
+                console: { promptFn: jest.fn() }
             }
         };
 
@@ -114,7 +68,104 @@ describe("DsHandler", () => {
             {
                 "from-dataset": { dsn: commandParameters.arguments.fromDataSetName },
                 "enq": commandParameters.arguments.enq,
-                "replace": commandParameters.arguments.replace
+                "replace": commandParameters.arguments.replace,
+                "responseTimeout": commandParameters.arguments.responseTimeout,
+                "safeReplace": commandParameters.arguments.safeReplace,
+                "promptFn": expect.any(Function)
+            }
+        );
+        expect(response).toBe(defaultReturn);
+    });
+
+    it("should call Copy.dataSet with members", async () => {
+        const handler = new DsHandler();
+
+        expect(handler).toBeInstanceOf(ZosFilesBaseHandler);
+
+        const fromDataSetName = "ABCD";
+        const fromMemberName = "mem1";
+        const toDataSetName = "EFGH";
+        const toMemberName = "mem2";
+        const enq = "SHR";
+        const replace = true;
+        const safeReplace = true;
+        const responseTimeout: any = undefined;
+
+        const commandParameters: any = {
+            arguments: {
+                fromDataSetName: `${fromDataSetName}(${fromMemberName})`,
+                toDataSetName: `${toDataSetName}(${toMemberName})`,
+                enq,
+                replace,
+                safeReplace,
+                responseTimeout
+            },
+            response: {
+                console: { promptFn: jest.fn() }
+            }
+        };
+
+        const dummySession = {};
+
+        const response = await handler.processWithSession(commandParameters, dummySession as any);
+
+        expect(copyDatasetSpy).toHaveBeenCalledTimes(1);
+        expect(copyDatasetSpy).toHaveBeenLastCalledWith(
+            dummySession,
+            { dsn: toDataSetName, member: toMemberName },
+            {
+                "from-dataset": { dsn: fromDataSetName, member: fromMemberName },
+                "enq": commandParameters.arguments.enq,
+                "replace": commandParameters.arguments.replace,
+                "responseTimeout": commandParameters.arguments.responseTimeout,
+                "safeReplace": commandParameters.arguments.safeReplace,
+                "promptFn": expect.any(Function)
+            }
+        );
+        expect(response).toBe(defaultReturn);
+    });
+
+    it("should call Copy.dataSet with options", async () => {
+        const handler = new DsHandler();
+
+        expect(handler).toBeInstanceOf(ZosFilesBaseHandler);
+
+        const fromDataSetName = "ABCD";
+        const toDataSetName = "EFGH";
+        const enq = "SHR";
+        const replace = true;
+        const safeReplace = true;
+        const responseTimeout: any = undefined;
+
+        const commandParameters: any = {
+            arguments: {
+                fromDataSetName,
+                toDataSetName,
+                enq,
+                replace,
+                safeReplace,
+                responseTimeout
+            },
+            response: {
+                console: { promptFn: jest.fn() }
+            }
+        };
+
+        const dummySession = {};
+
+        const response = await handler.processWithSession(commandParameters, dummySession as any);
+
+        expect(copyDatasetSpy).toHaveBeenCalledTimes(1);
+        expect(copyDatasetSpy).toHaveBeenLastCalledWith(
+            dummySession,
+            { dsn: commandParameters.arguments.toDataSetName },
+            {
+                "from-dataset": { dsn: commandParameters.arguments.fromDataSetName },
+                "enq": commandParameters.arguments.enq,
+                "replace": commandParameters.arguments.replace,
+                "reseponseTimeout": commandParameters.arguments.responseTimeout,
+                "safeReplace": commandParameters.arguments.safeReplace,
+                "promptFn": expect.any(Function)
             }
         );
         expect(response).toBe(defaultReturn);
