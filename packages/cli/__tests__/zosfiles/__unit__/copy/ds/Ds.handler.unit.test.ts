@@ -12,9 +12,6 @@
 import { Copy, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
 import DsHandler from "../../../../../src/zosfiles/copy/ds/Ds.handler";
 import { ZosFilesBaseHandler } from "../../../../../src/zosfiles/ZosFilesBase.handler";
-import { u } from "tar";
-import { resolvePtr } from "dns";
-import en from "../../../../../src/zosfiles/-strings-/en";
 
 describe("DsHandler", () => {
     const defaultReturn: IZosFilesResponse = {
