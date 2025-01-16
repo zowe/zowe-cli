@@ -14,7 +14,7 @@ Array [
     "aliases": Array [
       "safe-rep",
     ],
-    "description": "Specify this option as true if you wish to replace like-named members or the content of the target data set.This option will prompt to confirm.",
+    "description": "Specify this option as true if you wish to replace like-named members or the content of the target data set. This option will prompt to confirm.",
     "name": "safe-replace",
     "type": "boolean",
   },
