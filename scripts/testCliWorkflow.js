@@ -244,9 +244,9 @@ Usage:
 - npm run test: act -- --node 16.x --dr
 - npm run test: act -- --node 16.x --verbose
 - npm run test: act -- --node 16.x, 14.x
-- npm run test: act -- --node 16.x, 14.x --os ubuntu-latest
-- npm run test: act -- --node 16.x, 14.x --os ubuntu-latest, windows-latest
-- npm run test: act -- --node 16.x --os ubuntu-latest --ap ubuntu-latest=nektos/act-environments-ubuntu:18.04
+- npm run test: act -- --node 16.x, 14.x --os ubuntu-22.04
+- npm run test: act -- --node 16.x, 14.x --os ubuntu-22.04, windows-latest
+- npm run test: act -- --node 16.x --os ubuntu-22.04 --ap ubuntu-22.04=nektos/act-environments-ubuntu:18.04
 `);
 }
 
