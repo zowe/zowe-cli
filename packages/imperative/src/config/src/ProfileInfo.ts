@@ -38,7 +38,6 @@ import { IProfileLoaded, IProfileProperty, IProfileSchema } from "../../profiles
 import { CliUtils, ImperativeConfig } from "../../utilities";
 import { ImperativeExpect } from "../../expect";
 import { Logger } from "../../logger";
-import { LoggerUtils } from "../../logger/src/LoggerUtils";
 import {
     IOptionsForAddConnProps, ISession, Session, SessConstants, ConnectionPropsForSessCfg
 } from "../../rest";
@@ -52,6 +51,7 @@ import { ConfigBuilder } from "./ConfigBuilder";
 import { IAddProfTypeResult, IExtenderTypeInfo, IExtendersJsonOpts } from "./doc/IExtenderOpts";
 import { IConfigLayer } from "..";
 import { Constants } from "../../constants";
+import { Censor } from "../../censor";
 
 /**
  * This class provides functions to retrieve profile-related information.
@@ -1080,7 +1080,7 @@ export class ProfileInfo {
         }
 
         this.mHasValidSchema = lastSchema.path != null;
-        LoggerUtils.setProfileSchemas(this.mProfileSchemaCache);
+        Censor.setProfileSchemas(this.mProfileSchemaCache);
     }
 
     /**

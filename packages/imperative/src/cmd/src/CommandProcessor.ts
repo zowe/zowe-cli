@@ -41,7 +41,8 @@ import { Config } from "../../config/src/Config";
 import { ConfigUtils } from "../../config/src/ConfigUtils";
 import { ConfigConstants } from "../../config/src/ConfigConstants";
 import { IDaemonContext } from "../../imperative/src/doc/IDaemonContext";
-import { IHandlerResponseApi } from "../..";
+import { IHandlerResponseApi } from "./doc/response/api/handler/IHandlerResponseApi";
+import { Censor } from "../../censor/src/Censor";
 
 
 /**
@@ -357,41 +358,32 @@ export class CommandProcessor {
                 `${CommandProcessor.ERROR_TAG} invoke(): Cannot invoke the handler for command "${this.definition.name}". The handler is blank.`);
         }
 
+        // Set up the censored options
+        Censor.setCensoredOptions({
+            profiles: ImperativeConfig.instance.loadedConfig?.profiles,
+            config: ImperativeConfig.instance.config,
+            commandDefinition: this.definition,
+            commandArguments: params.arguments
+        });
+
         let commandLine = ImperativeConfig.instance.commandLine || this.commandLine;
 
-        // determine if the command has the user option and mask the user value
-        let regEx = /--(user|u) ([^\s]+)/gi;
-
-        if (commandLine.search(regEx) >= 0) {
-            commandLine = commandLine.replace(regEx, "--$1 ****");
-        }
-
-        // determine if the command has the password option and mask the password value
-        regEx = /--(password|pass|pw) ([^\s]+)/gi;
-
-        if (commandLine.search(regEx) >= 0) {
-            commandLine = commandLine.replace(regEx, "--$1 ****");
-        }
-
-        // determine if the command has the token value option and mask the token value
-        regEx = /--(token-value|tokenValue|tv) ([^\s]+)/gi;
-
-        if (commandLine.search(regEx) >= 0) {
-            commandLine = commandLine.replace(regEx, "--$1 ****");
-        }
-
-        // determine if the command has the cert key file option and mask the value
-        regEx = /--(cert-key-file|certKeyFile) ([^\s]+)/gi;
-
-        if (commandLine.search(regEx) >= 0) {
-            commandLine = commandLine.replace(regEx, "--$1 ****");
-        }
-
-        // determine if the command has the cert file passphrase option and mask the value
-        regEx = /--(cert-file-passphrase|certFilePassphrase) ([^\s]+)/gi;
-
-        if (commandLine.search(regEx) >= 0) {
-            commandLine = commandLine.replace(regEx, "--$1 ****");
+        for (const secureArg of Censor.CENSORED_OPTIONS) {
+            let regex: RegExp;
+            if (secureArg.length > 1) {
+                regex = new RegExp(`--${secureArg} ([^\\s]+)`, "gi");
+            } else {
+                regex = new RegExp(`-${secureArg} ([^\\s]+)`, "gi");
+            }
+            if (commandLine.search(regex) >= 0) {
+                if (secureArg.length > 1) {
+                    commandLine = commandLine.replace(regex, `--${secureArg} ${Censor.CENSOR_RESPONSE}`);
+                } else {
+                    commandLine = commandLine.replace(regex, `-${secureArg} ${Censor.CENSOR_RESPONSE}`);
+                }
+            }
+            console.dir(secureArg);
+            console.dir(commandLine);
         }
 
         // this.log.info(`post commandLine issued:\n\n${TextUtils.prettyJson(commandLine)}`);

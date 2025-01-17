@@ -22,10 +22,15 @@ export class Config {
 
     public get api() {
         return {
-            // profiles: new ConfigProfiles(this),
+            profiles: {
+                get: () => [] as any
+            },
             plugins: {
                 get: () => [] as any
             },
+            secure: {
+                securePropsForProfile: () => [] as any 
+            }
             // layers: new ConfigLayers(this),
             // secure: new ConfigSecure(this)
         };

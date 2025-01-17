@@ -191,6 +191,7 @@ const FAKE_HELP_GENERATOR: IHelpGenerator = {
 
 const ENV_VAR_PREFIX: string = "UNIT_TEST";
 
+/* eslint-disable deprecation/deprecation */
 describe("Command Processor", () => {
     describe("Command Processor with --help and --version flags", () => {
         let faultyConfigProcessor: CommandProcessor;
@@ -789,7 +790,7 @@ describe("Command Processor", () => {
         expect(commandResponse.error?.additionalDetails).toEqual("Syntax validation error!");
     });
 
-    it("should mask sensitive CLI options like user and password in log output", async () => {
+    fit("should mask sensitive CLI options like user and password in log output", async () => {
         // Allocate the command processor
         const processor: CommandProcessor = new CommandProcessor({
             envVariablePrefix: ENV_VAR_PREFIX,

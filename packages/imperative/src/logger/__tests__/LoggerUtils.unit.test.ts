@@ -13,6 +13,7 @@ import { EnvironmentalVariableSettings } from "../../imperative/src/env/Environm
 import { LoggerUtils } from "../src/LoggerUtils";
 import { ImperativeConfig } from "../../utilities/src/ImperativeConfig";
 
+/* eslint-disable deprecation/deprecation */
 describe("LoggerUtils tests", () => {
 
     it("Should hide --password operand", () => {
