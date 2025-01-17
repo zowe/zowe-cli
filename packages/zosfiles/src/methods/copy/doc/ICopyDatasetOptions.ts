@@ -30,7 +30,7 @@ export interface ICopyDatasetOptions extends IZosFilesOptions {
     enq?: string;
 
     /**
-     * Replace option (DEPRECATED)
+     * Replace option
      * @type {boolean}
      */
     replace?: boolean;

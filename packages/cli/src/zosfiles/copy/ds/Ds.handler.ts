@@ -35,8 +35,7 @@ export default class DsHandler extends ZosFilesBaseHandler {
     private promptForSafeReplace(console: IHandlerResponseConsoleApi) {
         return async (targetDSN: string) => {
             const answer: string = await console.prompt(
-                `The dataset '${targetDSN}' exists on the target system. This copy will result in data loss.
-                Are you sure you want to continue? [y/N]: `
+                `The dataset '${targetDSN}' exists on the target system. This copy will result in data loss. Are you sure you want to continue? [y/N]: `
             );
             return answer != null && (answer.toLowerCase() === "y" || answer.toLowerCase() === "yes");
         };
