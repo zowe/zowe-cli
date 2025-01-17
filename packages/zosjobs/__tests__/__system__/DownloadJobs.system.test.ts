@@ -315,6 +315,7 @@ describe("Download Jobs - System tests", () => {
             expect(IO.readFileSync(expectedFile).toString()).toBeDefined();
             expect(IO.readFileSync(expectedFile).toString()).toContain("J E S 2  J O B  L O G");
             expect(IO.readFileSync(expectedFile).toString()).not.toContain("0------ JES2 JOB STATISTICS ------");
+            expect(IO.readFileSync(expectedFile).toString().trim().split('\n').length).toEqual(6);
         });
 
         it("should be able to download all DDs from job output with a record range (2-8)", async () => {
@@ -341,6 +342,7 @@ describe("Download Jobs - System tests", () => {
             expect(IO.readFileSync(expectedFile).toString()).toBeDefined();
             expect(IO.readFileSync(expectedFile).toString()).not.toContain("J E S 2  J O B  L O G");
             expect(IO.readFileSync(expectedFile).toString()).not.toContain("0------ JES2 JOB STATISTICS ------");
+            expect(IO.readFileSync(expectedFile).toString().trim().split('\n').length).toEqual(7);
         });
 
         it("should be able to download all DDs from job output with a record range (0-100)", async () => {
@@ -368,6 +370,7 @@ describe("Download Jobs - System tests", () => {
             expect(IO.readFileSync(expectedFile).toString()).toContain("J E S 2  J O B  L O G");
             expect(IO.readFileSync(expectedFile).toString()).toContain("0------ JES2 JOB STATISTICS ------");
             expect(IO.readFileSync(expectedFile).toString()).toContain("MINUTES EXECUTION TIME");
+            expect(IO.readFileSync(expectedFile).toString().trim().split('\n').length).toEqual(16); //only 16 records in spool file
         });
     });
 
@@ -730,6 +733,7 @@ describe("Download Jobs - System tests - Encoded", () => {
             expect(IO.readFileSync(expectedFile).toString()).toBeDefined();
             expect(IO.readFileSync(expectedFile).toString()).toContain("J E S 2  J O B  L O G");
             expect(IO.readFileSync(expectedFile).toString()).not.toContain("0------ JES2 JOB STATISTICS ------");
+            expect(IO.readFileSync(expectedFile).toString().trim().split('\n').length).toEqual(6);
         });
 
         it("should be able to download all DDs from job output with a record range (2-8) - encoded", async () => {
@@ -756,6 +760,7 @@ describe("Download Jobs - System tests - Encoded", () => {
             expect(IO.readFileSync(expectedFile).toString()).toBeDefined();
             expect(IO.readFileSync(expectedFile).toString()).not.toContain("J E S 2  J O B  L O G");
             expect(IO.readFileSync(expectedFile).toString()).not.toContain("0------ JES2 JOB STATISTICS ------");
+            expect(IO.readFileSync(expectedFile).toString().trim().split('\n').length).toEqual(7);
         });
 
         it("should be able to download all DDs from job output with a record range (0-100) - encoded", async () => {
@@ -783,6 +788,7 @@ describe("Download Jobs - System tests - Encoded", () => {
             expect(IO.readFileSync(expectedFile).toString()).toContain("J E S 2  J O B  L O G");
             expect(IO.readFileSync(expectedFile).toString()).toContain("0------ JES2 JOB STATISTICS ------");
             expect(IO.readFileSync(expectedFile).toString()).toContain("MINUTES EXECUTION TIME");
+            expect(IO.readFileSync(expectedFile).toString().trim().split('\n').length).toEqual(16);  //only 16 records in spool file
         });
     });
 });
