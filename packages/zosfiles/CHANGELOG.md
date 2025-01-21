@@ -2,14 +2,18 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
-
 ## Recent Changes
+
 - Enhancement: The `Copy.dataset` function now creates a new data set if the entered target data set does not exist. [#2349](https://github.com/zowe/zowe-cli/issues/2349)
+- Enhancement: Added the `maxLength` option to List SDK functions (`allMembers`, `dataSetsMatchingPattern`, `membersMatchingPattern`) to specify the maximum number of items to return. [#2409](https://github.com/zowe/zowe-cli/pull/2409)
+- Enhancement: Added the `start` option to List SDK functions (`allMembers`, `dataSetsMatchingPattern`, `membersMatchingPattern`) to specify the first data set/member name to return in the response. [#2409](https://github.com/zowe/zowe-cli/pull/2409)
 
 ## `8.10.3`
+
 - BugFix: The `Copy.dataset` method no longer copies all partitioned data set members if a member is passed to the function. [#2402](https://github.com/zowe/zowe-cli/pull/2402)
 
 ## `8.10.0`
+
 - Enhancement: The `Copy.dataset` method now recognizes partitioned data sets and can copy members of a source PDS into an existing target PDS. [#2386](https://github.com/zowe/zowe-cli/pull/2386)
 
 ## `8.9.1`
@@ -18,6 +22,7 @@ All notable changes to the Zowe z/OS files SDK package will be documented in thi
 - BugFix: Corrected the `Upload.BufferToUssFile()` SDK function to properly tag uploaded files. [#2378](https://github.com/zowe/zowe-cli/pull/2378)
 
 ## `8.9.0`
+
 - Enhancement: Added a `List.membersMatchingPattern` method to download all members that match a specific pattern.[#2359](https://github.com/zowe/zowe-cli/pull/2359)
 
 ## `8.8.4`
