@@ -16,7 +16,7 @@ on:
 
 jobs:
   update_versions_and_create_pr:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
       - name: Checkout CLI Repo
