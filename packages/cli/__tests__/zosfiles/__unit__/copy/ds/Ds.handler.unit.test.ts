@@ -160,11 +160,47 @@ describe("DsHandler", () => {
                 "from-dataset": { dsn: commandParameters.arguments.fromDataSetName },
                 "enq": commandParameters.arguments.enq,
                 "replace": commandParameters.arguments.replace,
-                "reseponseTimeout": commandParameters.arguments.responseTimeout,
+                "responseTimeout": commandParameters.arguments.responseTimeout,
                 "safeReplace": commandParameters.arguments.safeReplace,
                 "promptFn": expect.any(Function)
             }
         );
         expect(response).toBe(defaultReturn);
+    });
+    it("should prompt the user and return true when input is 'y'", async () => {
+        const handler = new DsHandler();
+
+        expect(handler).toBeInstanceOf(ZosFilesBaseHandler);
+        const fromDataSetName = "ABCD";
+        const toDataSetName = "EFGH";
+        const enq = "SHR";
+        const replace = true;
+        const safeReplace = true;
+        const responseTimeout: any = undefined;
+
+        const commandParameters: any = {
+            arguments: {
+                fromDataSetName,
+                toDataSetName,
+                enq,
+                replace,
+                safeReplace,
+                responseTimeout
+            },
+            response: {
+                console: { promptFn: jest.fn() }
+            }
+        };
+        const promptMock = jest.fn();
+        promptMock.mockResolvedValue("y");
+
+        const promptFn = (handler as any)["promptForSafeReplace"]({ prompt: promptMock });
+        const result = await promptFn(commandParameters.arguments.toDataSetName);
+
+        expect(promptMock).toHaveBeenCalledWith(
+            "The dataset 'EFGH' exists on the target system. This copy will result in data loss." +
+            " Are you sure you want to continue? [y/N]: "
+        );
+        expect(result).toBe(true);
     });
 });

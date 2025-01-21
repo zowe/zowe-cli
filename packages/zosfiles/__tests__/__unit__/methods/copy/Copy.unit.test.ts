@@ -471,6 +471,7 @@ describe("Copy", () => {
                             safeReplace: true,
                             promptFn }
                     );
+
                     expect(copyExpectStringSpy).toHaveBeenCalledTimes(1);
                     const argumentsOfCall = copyExpectStringSpy.mock.calls[0];
                     const lastArgumentOfCall = argumentsOfCall[argumentsOfCall.length - 1];
@@ -491,7 +492,6 @@ describe("Copy", () => {
                     )).rejects.toThrow(new ImperativeError({ msg: ZosFilesMessages.datasetCopiedAborted.message }));
 
                     expect(promptFn).toHaveBeenCalledWith(toDataSetName);
-
                 });
 
                 it("should not throw error if safeReplace has value of false", async () => {
