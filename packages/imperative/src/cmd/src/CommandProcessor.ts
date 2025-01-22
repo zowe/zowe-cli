@@ -382,8 +382,6 @@ export class CommandProcessor {
                     commandLine = commandLine.replace(regex, `-${secureArg} ${Censor.CENSOR_RESPONSE}`);
                 }
             }
-            console.dir(secureArg);
-            console.dir(commandLine);
         }
 
         // this.log.info(`post commandLine issued:\n\n${TextUtils.prettyJson(commandLine)}`);

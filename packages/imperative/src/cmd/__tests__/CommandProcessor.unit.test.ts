@@ -790,7 +790,7 @@ describe("Command Processor", () => {
         expect(commandResponse.error?.additionalDetails).toEqual("Syntax validation error!");
     });
 
-    fit("should mask sensitive CLI options like user and password in log output", async () => {
+    it("should mask sensitive CLI options like user and password in log output", async () => {
         // Allocate the command processor
         const processor: CommandProcessor = new CommandProcessor({
             envVariablePrefix: ENV_VAR_PREFIX,
@@ -821,7 +821,7 @@ describe("Command Processor", () => {
         const commandResponse: ICommandResponse = await processor.invoke(parms);
 
         expect(mockLogInfo).toHaveBeenCalled();
-        expect(logOutput).toContain("--user **** --password **** --token-value **** --cert-file-passphrase **** --cert-key-file ****");
+        expect(logOutput).toContain("--user fakeUser --password **** --token-value **** --cert-file-passphrase **** --cert-key-file /fake/path");
     });
 
     it("should handle not being able to instantiate the handler", async () => {

@@ -27,10 +27,10 @@ export class Censor {
     *
     * NOTE(Harn): This list should be kept in sync with the base profile secure definitions and MUST be in camel case.
     */
-    private static readonly MAIN_CENSORED_OPTIONS = ["auth", "p", "pass", "password", "passphrase", "credentials",
+    private static readonly MAIN_CENSORED_OPTIONS = ["auth", "pw", "pass", "password", "passphrase", "credentials",
         "authentication", "basicAuth", "tv", "tokenValue", "certFilePassphrase"];
 
-    private static readonly MAIN_SECURE_PROMPT_OPTIONS = ["user", "password", "tokenValue", "passphrase"];
+    private static readonly MAIN_SECURE_PROMPT_OPTIONS = ["user", "password", "tokenValue", "passphrase", "keyPassphrase"];
 
     // The censor response.
     public static readonly CENSOR_RESPONSE = "****";
@@ -74,7 +74,22 @@ export class Censor {
      * @returns True - if the given property is to be treated as a special value; False - otherwise
      */
     public static isSpecialValue(prop: string): boolean {
-        for (const v of this.CENSORED_OPTIONS) {
+        let specialValues = this.SECURE_PROMPT_OPTIONS;
+        const getPropertyNames = (prop: ICommandProfileProperty): string[] => {
+            const ret: string[] = [];
+            ret.push(prop.optionDefinition?.name);
+            prop.optionDefinitions?.map(opDef => ret.push(opDef.name));
+            return ret;
+        };
+
+        for (const profile of this.profileSchemas) {
+            // eslint-disable-next-line unused-imports/no-unused-vars
+            for (const [_, prop] of Object.entries(profile.schema.properties)) {
+                if (prop.secure) specialValues = lodash.union(specialValues, getPropertyNames(prop));
+            }
+        }
+
+        for (const v of specialValues) {
             if (prop.endsWith(`.${v}`)) return true;
         }
         return false;
@@ -168,7 +183,7 @@ export class Censor {
                     for (const prof of profiles) {
                         // If the profile exists, append all of the secure props to the censored list
                         const profName = censorOpts.commandArguments?.[`${prof}-profile`];
-                        if (censorOpts.config.api.profiles.get(profName)) {
+                        if (profName && censorOpts.config.api.profiles.get(profName)) {
                             censorOpts.config.api.secure.securePropsForProfile(profName).forEach(prop => this.addCensoredOption(prop));
                         }
                     }
