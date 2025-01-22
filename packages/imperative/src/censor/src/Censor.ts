@@ -17,8 +17,9 @@ import { ICensorOptions } from "./doc/ICensorOptions";
 import { Config } from "../../config/src/Config";
 import { ImperativeConfig } from "../../utilities/src/ImperativeConfig";
 import { EnvironmentalVariableSettings } from "../../imperative/src/env/EnvironmentalVariableSettings";
-import { ICommandProfileTypeConfiguration } from "../../cmd";
-import { IProfileSchema, IProfileTypeConfiguration } from "../../profiles";
+import { ICommandProfileTypeConfiguration } from "../../cmd/src/doc/profiles/definition/ICommandProfileTypeConfiguration";
+import { IProfileSchema} from "../../profiles/src/doc/definition/IProfileSchema";
+import { IProfileTypeConfiguration } from "../../profiles/src/doc/config/IProfileTypeConfiguration";
 
 export class Censor {
     /*
