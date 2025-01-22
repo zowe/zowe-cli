@@ -954,6 +954,7 @@ describe("Copy", () => {
 
                     expect(listDatasetSpy).toHaveBeenCalledTimes(2);
                     expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
+                    expect(listAllMembersSpy.mock.calls[0][2].start).toBe(memberName);
                     expect(getDatasetSpy).toHaveBeenCalledTimes(1);
                     expect(uploadDatasetSpy).toHaveBeenCalledTimes(1);
                 });
