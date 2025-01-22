@@ -410,6 +410,10 @@ export class List {
      * @param {IDsmListOptions} options Contains options for the z/OSMF request
      * @returns {Promise<IZosFilesResponse>} List of z/OSMF list responses for each data set
      *
+     * *Note*: When the `maxLength` option is provided, it is passed to z/OSMF when listing
+     * each data set pattern. For example, for three patterns with a `maxLength` of 10, the maximum
+     * number of returned items is 30.
+     * 
      * @example
      * ```typescript
      *
