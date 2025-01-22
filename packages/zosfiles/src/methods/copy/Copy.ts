@@ -338,7 +338,7 @@ export class Copy {
             */
             if(targetMember != undefined && targetFound == true){
                 const TargetMemberList = await List.allMembers(targetSession, targetDataset,
-                    {attributes: true, maxLength: 1, start: targetDataset, recall: "wait", pattern: targetMember});
+                    { attributes: true, maxLength: 1, recall: "wait", start: targetMember });
                 if(TargetMemberList.apiResponse.returnedRows > 0){
                     targetMemberFound = true;
                 }
