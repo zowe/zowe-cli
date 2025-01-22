@@ -1154,7 +1154,7 @@ describe("List command group - encoded", () => {
             expect(caughtError).toBeUndefined();
             expect(response).toBeDefined();
             expect(response.success).toBe(true);
-            expect(response.commandResponse).toContain(format(ZosFilesMessages.dataSetsMatchedPattern.message, 2));
+            expect(response.commandResponse).toContain(format(ZosFilesMessages.dataSetsMatchedPattern.message, 1));
             expect(response.apiResponse.length).toBe(1);
             expect(response.apiResponse[0].dsname).toBe(dsname);
         });
