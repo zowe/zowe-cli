@@ -20,6 +20,7 @@ import { ISession } from "./doc/ISession";
 import { IProfileProperty } from "../../../profiles";
 import { ConfigAutoStore } from "../../../config/src/ConfigAutoStore";
 import { ConfigUtils } from "../../../config/src/ConfigUtils";
+import { AuthOrder } from "./AuthOrder";
 
 /**
  * Extend options for IPromptOptions for internal wrapper method
@@ -199,6 +200,8 @@ export class ConnectionPropsForSessCfg {
             }
         }
 
+        AuthOrder.putTopAuthInSession(sessCfgToUse, cmdArgs);
+
         impLogger.debug("Session config after any prompting for missing values:");
         ConnectionPropsForSessCfg.logSessCfg(sessCfgToUse);
         return sessCfgToUse;
@@ -248,6 +251,12 @@ export class ConnectionPropsForSessCfg {
         }
         if (!Object.prototype.hasOwnProperty.call(connOpts, "defaultTokenType")) {
             connOpts.defaultTokenType = SessConstants.TOKEN_TYPE_JWT;
+        }
+
+        // Record that we want to request a token.
+        // Downstream logic in AuthOrder will set it to the appropriate value.
+        if (connOpts.requestToken) {
+            sessCfg.authTypeToRequestToken = SessConstants.AUTH_TYPE_NONE;
         }
 
         /* Override properties from our caller's sessCfg
