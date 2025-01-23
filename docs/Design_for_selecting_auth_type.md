@@ -36,9 +36,9 @@ In this section we identify the key features that a solution would have to provi
     
     - The token should not be used just because it was supplied on the command line.
 
-- Zowe client options can be specified in a configuration file, on the command line, or in an environment variable. Technically, the authentication order could be specified in an environment variable, but as a best practice, customers should **NOT** use an environment variable to specify the desired authentication order.
+- Typically, Zowe client options can be specified in a configuration file, on the command line, or in an environment variable. Zowe CLI will **NOT** enable the authentication order to be specified in an environment variable.
   
-  - A single environment variable property would be applied to **every** profile within the user's zowe.config.json file. The most likely customer use of an authentication order property will be to specify a different authentication order for different profiles. A single environment variable would likely defeat the primary purpose of enabling a user to specify a different authentication order for different profiles.
+  - A single environment variable property would be applied to **every** profile within the user's zowe.config.json file. The most likely customer use of an authentication order property will be to specify a different authentication order for different profiles. A single environment variable could defeat the primary purpose of enabling a user to specify a different authentication order for different profiles.
 
 - The authentication order **could** be specified on the command line. However, in the initial implementation of this feature, Zowe CLI will **NOT** implement a command line option for the authentication order.
   
