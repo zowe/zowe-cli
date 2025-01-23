@@ -50,10 +50,29 @@ describe("z/OS Files - List", () => {
         jest.restoreAllMocks();
     });
 
+    const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname, ZosFilesConstants.RES_DS_MEMBERS);
+
     describe("allMembers", () => {
         beforeEach(() => {
             expectStringSpy.mockClear();
             expectStringSpy.mockImplementation(async () => listApiResponseString);
+        });
+
+        it("should use X-IBM-Max-Items to limit the number of members returned for a data set", async () => {
+            const maxLength = 100;
+            await List.allMembers(dummySession, dsname, { maxLength });
+
+            expect(expectStringSpy).toHaveBeenCalledTimes(1);
+            expect(expectStringSpy).toHaveBeenCalledWith(dummySession, endpoint,
+                [ZosmfHeaders.ACCEPT_ENCODING, { "X-IBM-Max-Items": maxLength.toString() }]);
+        });
+
+        it("should pass start option in URL search params if provided", async () => {
+            await List.allMembers(dummySession, dsname, { start: "MEMBER1" });
+
+            expect(expectStringSpy).toHaveBeenCalledTimes(1);
+            expect(expectStringSpy).toHaveBeenCalledWith(dummySession, endpoint.concat("?start=MEMBER1"),
+                [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_MAX_ITEMS]);
         });
 
         it("should throw an error if the data set name is not specified", async () => {
@@ -108,8 +127,6 @@ describe("z/OS Files - List", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname, ZosFilesConstants.RES_DS_MEMBERS);
-
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
                 success: true,
@@ -129,8 +146,6 @@ describe("z/OS Files - List", () => {
             } catch (e) {
                 caughtError = e;
             }
-
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname, ZosFilesConstants.RES_DS_MEMBERS);
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -152,8 +167,6 @@ describe("z/OS Files - List", () => {
             } catch (e) {
                 caughtError = e;
             }
-
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname, ZosFilesConstants.RES_DS_MEMBERS);
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -191,8 +204,6 @@ describe("z/OS Files - List", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname, ZosFilesConstants.RES_DS_MEMBERS);
-
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
                 success: true,
@@ -219,8 +230,6 @@ describe("z/OS Files - List", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname, ZosFilesConstants.RES_DS_MEMBERS + query);
-
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
                 success: true,
@@ -228,7 +237,8 @@ describe("z/OS Files - List", () => {
                 apiResponse: listApiResponse
             });
             expect(expectStringSpy).toHaveBeenCalledTimes(1);
-            expect(expectStringSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_MAX_ITEMS]);
+            expect(expectStringSpy).toHaveBeenCalledWith(dummySession, endpoint.concat(query),
+                [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_MAX_ITEMS]);
         });
 
         it("should list members from given data set with additional attributes", async () => {
@@ -242,8 +252,6 @@ describe("z/OS Files - List", () => {
             } catch (e) {
                 caughtError = e;
             }
-
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname, ZosFilesConstants.RES_DS_MEMBERS);
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -1356,6 +1364,66 @@ describe("z/OS Files - List", () => {
             listDataSetSpy.mockResolvedValue({} as any);
         });
 
+        it("should pass maxLength option to List.dataSet API", async () => {
+            const pattern = "TEST.**.DATA.SET";
+            let response;
+            let caughtError;
+
+            listDataSetSpy.mockImplementation(async (): Promise<any> => {
+                return {
+                    apiResponse: {
+                        items: [dataSetPS, dataSetPO]
+                    }
+                };
+            });
+
+            try {
+                response = await List.dataSetsMatchingPattern(dummySession, [pattern], { maxLength: 2 });
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: util.format(ZosFilesMessages.dataSetsMatchedPattern.message, 2),
+                apiResponse: [dataSetPS, dataSetPO]
+            });
+
+            expect(listDataSetSpy).toHaveBeenCalledTimes(1);
+            expect(listDataSetSpy).toHaveBeenCalledWith(dummySession, pattern, { attributes: true, maxLength: 2 });
+        });
+
+        it("should pass start option to List.dataSet API", async () => {
+            const pattern = "TEST.**.DATA.SET";
+            let response;
+            let caughtError;
+
+            listDataSetSpy.mockImplementation(async (): Promise<any> => {
+                return {
+                    apiResponse: {
+                        items: [dataSetPO]
+                    }
+                };
+            });
+
+            try {
+                response = await List.dataSetsMatchingPattern(dummySession, [pattern], { start: dataSetPO.dsname });
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: util.format(ZosFilesMessages.dataSetsMatchedPattern.message, 1),
+                apiResponse: [dataSetPO]
+            });
+
+            expect(listDataSetSpy).toHaveBeenCalledTimes(1);
+            expect(listDataSetSpy).toHaveBeenCalledWith(dummySession, pattern, { attributes: true, start: dataSetPO.dsname });
+        });
+
         it("should successfully list PS and PO data sets using the List.dataSet API", async () => {
             const pattern = "TEST.**.DATA.SET";
             let response;
@@ -1547,6 +1615,38 @@ describe("z/OS Files - List", () => {
         beforeEach(() => {
             listDataSetSpy.mockClear();
             listDataSetSpy.mockResolvedValue({} as any);
+        });
+
+        it("should pass maxLength option to List.allMembers API", async () => {
+            const pattern = "M*";
+            const maxLength = 2;
+            listDataSetSpy.mockImplementation(async (): Promise<any> => {
+                return {
+                    apiResponse: {
+                        items: [memberData1, memberData2]
+                    }
+                };
+            });
+            await List.membersMatchingPattern(dummySession, dsname, [pattern], { maxLength });
+
+            expect(listDataSetSpy).toHaveBeenCalledTimes(1);
+            expect(listDataSetSpy).toHaveBeenCalledWith(dummySession, dsname, { pattern, maxLength });
+        });
+
+        it("should pass start option to List.allMembers API", async () => {
+            const pattern = "M*";
+            const start = "M1";
+            listDataSetSpy.mockImplementation(async (): Promise<any> => {
+                return {
+                    apiResponse: {
+                        items: [memberData1, memberData2]
+                    }
+                };
+            });
+            await List.membersMatchingPattern(dummySession, dsname, [pattern], { start });
+
+            expect(listDataSetSpy).toHaveBeenCalledTimes(1);
+            expect(listDataSetSpy).toHaveBeenCalledWith(dummySession, dsname, { pattern, start });
         });
 
         it("should successfully list M1 & M2 using the List.allMembers API", async () => {

@@ -33,6 +33,16 @@ export interface IDsmListOptions extends IZosFilesOptions {
     maxConcurrentRequests?: number;
 
     /**
+     * The indicator that we want to show less data sets or members
+     */
+    maxLength?: number;
+
+    /**
+     * An optional search parameter that specifies the first data set name to return in the response document
+     */
+    start?: string;
+
+    /**
      * Task status object used by CLI handlers to create progress bars
      * Optional
      * @type {ITaskWithStatus}
