@@ -22,6 +22,7 @@ import { ITestEnvironment } from "../../../../../../__tests__/__src__/environmen
 import { tmpdir } from "os";
 import path = require("path");
 import * as fs from "fs";
+import { List } from "@zowe/zos-files-for-zowe-sdk"
 
 let REAL_SESSION: Session;
 let REAL_TARGET_SESSION: Session;
@@ -895,6 +896,7 @@ describe("Copy", () => {
                     let error: any;
                     let response: IZosFilesResponse | undefined = undefined;
                     let contents: Buffer;
+                    let listAttributes;
                     const TEST_TARGET_SESSION = REAL_TARGET_SESSION;
                     const toDataset: IDataSet = { dsn: toDataSetName, member: file1 };
                     const fromOptions: IGetOptions = {
@@ -909,11 +911,14 @@ describe("Copy", () => {
                     };
                     const toDataSetString = `${toDataset.dsn}(${toDataset.member})`;
                     try {
+                        listAttributes = (await List.dataSet(REAL_SESSION, fromDataSetName, {attributes: true})).apiResponse.items;
                         response = await Copy.dataSetCrossLPAR(REAL_SESSION, toDataset, options, fromOptions, TEST_TARGET_SESSION);
                         contents = await Get.dataSet(TEST_TARGET_SESSION, toDataSetString);
                     } catch (err) {
                         error = err;
                     }
+
+                    expect(listAttributes[0].spacu).toEqual("CYLINDERS");
                     expect(response?.success).toBeTruthy();
                     expect(error).not.toBeDefined();
                     expect(response?.errorMessage).not.toBeDefined();
