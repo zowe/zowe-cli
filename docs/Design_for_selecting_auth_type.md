@@ -2,13 +2,13 @@
 
 This document proposes a design to enable users to specify the order in which credentials are selected for authentication when multiple credentials are specified by the user.
 
-Users may not intentionally specify multiple credentials for the same operation. However, because configuration properties can be inherited from a base profile or within nested profiles, it is possible that multiple credentials may be available when a Zowe client attempts to make a connection to a mainframe service.
+Users might not intentionally specify multiple credentials for the same operation. However, because configuration properties can be inherited from a base profile or within nested profiles, it is possible that multiple credentials may be available when a Zowe client attempts to make a connection to a mainframe service.
 
 ## Use cases
 
-A user may use the same user and password to authenticate to most of their services. It makes sense to place that user & password in a base profile so that they are automatically available to every service. This reduces redundancy and reduces maintenance efforts. If one plugin requires a token for authentication, the user would store a token value within that plugin's profile. For that plugin, both the user & password and a token will be available when Zowe CLI attempts to make a connection to that service. For this example, the token is the right choice for this service.  For historical reasons, Zowe always selects a user & password over a token when both are available. The use of user & password does not give the desired results.
+A user may use the same user and password to authenticate to most of their services. It makes sense to place that user & password in a base profile so that they are automatically available to every service. This reduces redundancy and reduces maintenance efforts. If one service requires a token for authentication, the user might also store a token value within the base profile associated with API Mediation Layer (API-ML). Then, when connecting to that service through API-ML, both the user & password and a token will be available when Zowe CLI attempts to make a connection to that service. For this example, the token is the right choice for this service.  For historical reasons, Zowe always selects a user & password over a token when both are available. The use of user & password does not give the desired results.
 
-In another example, sites gradually deploy API-ML and can easily encounter another (but opposite) authentication issue. Sites login to APIML to obtain a token, which is then used to authenticate all future requests to services through API-ML. The API-ML token is typically stored in a base profile so that connections to all services are done through API-ML with its token. When a new service is brought on-line at a site, it is common for that service to not be immediately integrated with APIML. For at least a period of time, the site makes a direct connection to that service. The site adds user/password properties to that service's profile to authenticate that direct connection. Once again, both user & password and a token are available when Zowe attempts to connect to the service for that profile. In this case, the user & password are the right choice for this service. However, this is the opposite choice from the previous example.
+In another example, sites gradually deploy API-ML and can easily encounter another (but opposite) authentication issue. Sites login to APIML to obtain a token, which is then used to authenticate all future requests to services through API-ML. The API-ML token is typically stored in a base profile so that connections to all services are done through API-ML with its token. When a new service is brought on-line at a site, it is common for that service to not be immediately integrated with API-ML. For at least a period of time, the site makes a direct connection to that service. The site adds user/password properties to that service's profile to authenticate that direct connection. Once again, both user & password and a token are available when Zowe attempts to connect to the service for that profile. In this case, the user & password are the right choice for this service. However, this is the opposite choice from the previous example.
 
 As these examples demonstrate, Zowe cannot simply change which authentication type should be given preference. It varies based on what a site is trying to do. That order might also change from one part of the customer's configuration to another. The preferred order in which credentials are chosen is further complicated when we consider that certificates may also be used by a site for some of its services.
 
@@ -36,9 +36,9 @@ In this section we identify the key features that a solution would have to provi
     
     - The token should not be used just because it was supplied on the command line.
 
-- Zowe should ignore any authentication order property that is specified in a environment variable (unlike most other connection properties).
+- Zowe client options can be specified in a configuration file, on the command line, or in an environment variable. Technically, the authentication order could be specified in an environment variable, but as a best practice, customers should **NOT** use an environment variable to specify the desired authentication order.
   
-  - A single environment variable property would override **every** authentication order property specified in **every** profile within the user's zowe.config.json file. The most likely customer use of this property will be to specify a different authentication order for different profiles. A single environment variable would likely defeat the primary purpose of enabling a user to specify a different authentication order for different profiles.
+  - A single environment variable property would be applied to **every** profile within the user's zowe.config.json file. The most likely customer use of an authentication order property will be to specify a different authentication order for different profiles. A single environment variable would likely defeat the primary purpose of enabling a user to specify a different authentication order for different profiles.
 
 - The authentication order **could** be specified on the command line. However, in the initial implementation of this feature, Zowe CLI will **NOT** implement a command line option for the authentication order.
   
@@ -96,7 +96,7 @@ A new profile property named **authOrder** should be created to enable users to 
   
   - Any service profile.
   
-  - Any profile specific to a plugin (or VSCode extension) that supports a REST connction. For example an **endevor** profile could contain an **authOrder** property, but an **endevor-location** profile would not.
+  - Any profile specific to a plugin (or VSCode extension) that supports a REST connection. For example an **endevor** profile could contain an **authOrder** property, but an **endevor-location** profile would not.
 
 - Our existing inheritance of connection properties should also apply to the inheritance of the authOrder property.
 
@@ -110,22 +110,20 @@ A new profile property named **authOrder** should be created to enable users to 
   
   - As a result, we feel that losing IntelliSense is an acceptable compromise to avoid adding work to every extender. Users will lose a nice convenience, but the user's config will not be limited in any way at runtime.
 
-To represent a series of values, the **authOrder** property should be  an array. The following example shows how a user could specify their desired authOrder.
+## Characteristics of the authOrder property
+
+To represent a series of values, the **authOrder** property will be a string containing well-defined keywords that are separated by commas. The left-most keyword in the string will be the top priority. Later authentication options will proceed to the right. The following example shows how a user could specify their desired authOrder.
 
 ```
 "properties": {
     "host": ... ,
     "port": ... ,
     "rejectUnauthorized": ... ,
-    "authOrder": [ "basic", "token", "cert-pem" ]
+    "authOrder": "basic, token, cert-pem"
 }
 ```
 
-The programmatic definition of authOrder would be:
-
-```
-authOrder: SessConstants.AUTH_TYPE_CHOICES[]
-```
+The set of accepted **authOrder** keywords are defined by the existing data type of SessConstants.AUTH_TYPE_CHOICES.
 
 The current set of AUTH_TYPE_CHOICES are:
 
@@ -143,7 +141,15 @@ We should add a new AUTH_TYPE_CHOICE of:
 
 - AUTH_TYPE_SSH_KEY = "ssh-key"
 
-That addition would enable customers to also specify the authentication order of precedence for an SSH connection using an authOrder property. The only permissible values for an ssh connection would be "basic" and "ssh-key". Our ssh-handling logic will have to be modified to enforce that restriction and to honor the order. Conversely, our zosmf-handling logic would have to be modified to reject "ssh-key" in authOrder (or at least ignore it). If we choose not to implement authOrder for ssh at this time, we should at least create a design and implementation that can tolerate the addition of "ssh-key" at a later date.
+That addition of **ssh-key** would enable customers to also specify the authentication order of precedence for an SSH connection using an **authOrder** property. The only permissible values for an ssh connection would be "basic" and "ssh-key". Our ssh-handling logic will have to be modified to enforce that restriction and to honor the order. Conversely, our zosmf-handling logic would have to be modified to reject "ssh-key" in authOrder (or at least ignore it). If we choose not to implement authOrder for ssh at this time, we should at least create a design and implementation that can tolerate the addition of "ssh-key" at a later date.
+
+While a user specifies the authentication order as a string of comma separated keywords, Zowe's internal representation for the authentication order will be an array of strings, each containing one keyword. The order of the array will represent the order in which the authentication will be chosen. The 0 index of the array will be the top priority. An internal array will make processing of the authentication order easier to implement and understand in the programming logic.
+
+The internal programmatic definition of authOrder would be:
+
+```
+authOrder: SessConstants.AUTH_TYPE_CHOICES[]
+```
 
 ## Documentation Impact
 
