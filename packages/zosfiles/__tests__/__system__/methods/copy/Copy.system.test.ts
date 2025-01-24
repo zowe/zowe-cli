@@ -658,7 +658,7 @@ describe("Copy", () => {
                         responseTimeout: 5,
                         replace: false
                     };
-                try {
+                    try {
                         response = await Copy.dataSetCrossLPAR(REAL_SESSION, toDataset, options, fromOptions, TEST_TARGET_SESSION);
                         contents = await Get.dataSet(TEST_TARGET_SESSION, toDataSetName);
                     } catch (err) {
