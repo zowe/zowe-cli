@@ -883,6 +883,7 @@ describe("Copy", () => {
 
             describe("Sequential > Sequential - no replace", () => {
                 it("should send a request", async () => {
+                    let caughtError;
                     listDatasetSpy.mockImplementation(async (): Promise<any>  => {
                         return {
                             apiResponse: {
@@ -895,14 +896,19 @@ describe("Copy", () => {
                         return Buffer.from("123456789abcd");
                     });
 
-                    await Copy.dataSetCrossLPAR(
-                        dummySession,
-                        { dsn: psDataSetName },
-                        { "from-dataset": { dsn: dataSetPS.dsname }, replace: false},
-                        { },
-                        dummySession
-                    );
+                    try {
+                        await Copy.dataSetCrossLPAR(
+                            dummySession,
+                            { dsn: psDataSetName },
+                            { "from-dataset": { dsn: dataSetPS.dsname }, replace: false},
+                            { },
+                            dummySession
+                        );
+                    } catch (e) {
+                        caughtError = e;
+                    }
 
+                    expect(caughtError).toBeDefined();
                     expect(listDatasetSpy).toHaveBeenCalledTimes(2);
                     expect(getDatasetSpy).toHaveBeenCalledTimes(1);
                     expect(uploadDatasetSpy).toHaveBeenCalledTimes(0);
@@ -954,8 +960,6 @@ describe("Copy", () => {
                 });
 
                 it("should send a request - TRK and validate spacu", async () => {
-                    let response;
-
                     listDatasetSpy.mockImplementation(async (): Promise<any> => {
                         return {
                             apiResponse: {
@@ -973,7 +977,7 @@ describe("Copy", () => {
                         };
                     });
 
-                    await Copy.dataSetCrossLPAR(
+                    const response = await Copy.dataSetCrossLPAR(
                         dummySession,
                         { dsn: poDataSetName, member: memberName },
                         { "from-dataset": { dsn: poDataSetName, member: memberName }, replace: true },
