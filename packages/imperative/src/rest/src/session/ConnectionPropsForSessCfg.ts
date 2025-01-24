@@ -158,7 +158,9 @@ export class ConnectionPropsForSessCfg {
             connOpts.supportedAuthTypes && !connOpts.supportedAuthTypes.includes(SessConstants.AUTH_TYPE_TOKEN);
         const isCertIrrelevant = ConnectionPropsForSessCfg.propHasValue(sessCfgToUse.cert) === false ||
             connOpts.supportedAuthTypes && !connOpts.supportedAuthTypes.includes(SessConstants.AUTH_TYPE_CERT_PEM);
-        if (isTokenIrrelevant && isCertIrrelevant) {
+
+        // when we do not have a token, cert, or base64EncodedAuth; then we must have user and password
+        if (isTokenIrrelevant && isCertIrrelevant && !sessCfgToUse.base64EncodedAuth) {
             if (ConnectionPropsForSessCfg.propHasValue(sessCfgToUse.user) === false && !doNotPromptForValues.includes("user")) {
                 promptForValues.push("user");
             }
@@ -200,6 +202,7 @@ export class ConnectionPropsForSessCfg {
             }
         }
 
+        // ensure that only one credential (with the top user priority) remains in the session
         AuthOrder.putTopAuthInSession(sessCfgToUse, cmdArgs);
 
         impLogger.debug("Session config after any prompting for missing values:");
