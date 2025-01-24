@@ -807,6 +807,7 @@ describe("Copy", () => {
         const listAllMembersSpy   = jest.spyOn(List, "allMembers");
         const createDatasetSpy = jest.spyOn(Create, "dataSet");
         const uploadDatasetSpy = jest.spyOn(Upload, "bufferToDataSet");
+
         const psDataSetName = "TEST.PS.DATA.SET";
         const memberName    = "mem1";
         const poDataSetName = "TEST.PO.DATA.SET";
@@ -824,6 +825,12 @@ describe("Copy", () => {
             dsname: poDataSetName,
             dsorg: "PO",
             spacu: "TRK"
+        };
+
+        const dataSetPOCYL = {
+            dsname: poDataSetName,
+            dsorg: "PO",
+            spacu: "CYL"
         };
 
         beforeEach(() => {
@@ -957,6 +964,99 @@ describe("Copy", () => {
                     expect(listAllMembersSpy.mock.calls[0][2].start).toBe(memberName);
                     expect(getDatasetSpy).toHaveBeenCalledTimes(1);
                     expect(uploadDatasetSpy).toHaveBeenCalledTimes(1);
+                });
+
+                it("should send a request - TRK and validate spacu", async () => {
+                    let response;
+                    let caughtError;
+
+                    listDatasetSpy.mockImplementation(async (): Promise<any> => {
+                        return {
+                            apiResponse: {
+                                returnedRows: 1,
+                                items: [dataSetPO],
+                            }
+                        };
+                    });
+
+                    listAllMembersSpy.mockImplementation(async (): Promise<any> => {
+                        return {
+                            apiResponse: {
+                                returnedRows: 1
+                            }
+                        };
+                    });
+
+                    try {
+                        response = await Copy.dataSetCrossLPAR(
+                            dummySession,
+                            { dsn: poDataSetName, member: memberName },
+                            { "from-dataset": { dsn: poDataSetName, member: memberName }, replace: true },
+                            {},
+                            dummySession
+                        );
+                    } catch (e) {
+                        caughtError = e;
+                    }
+
+                    // Assertions
+                    expect(response).toEqual({
+                        success: true,
+                        commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message
+                    });
+
+                    expect(listDatasetSpy).toHaveBeenCalledTimes(2);
+                    expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
+                    expect(listAllMembersSpy.mock.calls[0][2].start).toBe(memberName);
+                    expect(getDatasetSpy).toHaveBeenCalledTimes(1);
+                    expect(uploadDatasetSpy).toHaveBeenCalledTimes(1);
+                    expect(dataSetPO.spacu).toBe("TRK");
+                });
+
+                it("should send a request - CYL and validate spacu", async () => {
+                    let response;
+                    let caughtError;
+
+                    listDatasetSpy.mockImplementation(async (): Promise<any> => {
+                        return {
+                            apiResponse: {
+                                returnedRows: 1,
+                                items: [dataSetPOCYL],
+                            }
+                        };
+                    });
+
+                    listAllMembersSpy.mockImplementation(async (): Promise<any> => {
+                        return {
+                            apiResponse: {
+                                returnedRows: 1
+                            }
+                        };
+                    });
+
+                    try {
+                        response = await Copy.dataSetCrossLPAR(
+                            dummySession,
+                            { dsn: poDataSetName, member: memberName },
+                            { "from-dataset": { dsn: poDataSetName, member: memberName }, replace: true },
+                            {},
+                            dummySession
+                        );
+                    } catch (e) {
+                        caughtError = e;
+                    }
+
+                    expect(response).toEqual({
+                        success: true,
+                        commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message
+                    });
+
+                    expect(listDatasetSpy).toHaveBeenCalledTimes(2);
+                    expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
+                    expect(listAllMembersSpy.mock.calls[0][2].start).toBe(memberName);
+                    expect(getDatasetSpy).toHaveBeenCalledTimes(1);
+                    expect(uploadDatasetSpy).toHaveBeenCalledTimes(1);
+                    expect(dataSetPOCYL.spacu).toBe("CYL");
                 });
 
                 describe("Sequential > Member", () => {

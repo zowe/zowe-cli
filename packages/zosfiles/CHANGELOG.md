@@ -4,6 +4,7 @@ All notable changes to the Zowe z/OS files SDK package will be documented in thi
 
 ## Recent Changes
 
+- Fixed an issue in the Copy.dataSetCrossLPAR() function where the `spacu` attribute of the copied data set was always set to `TRK`, regardless of the source data set's attributes. [#2412](https://github.com/zowe/zowe-cli/issues/2412)
 - Enhancement: The `Copy.dataset` function now creates a new data set if the entered target data set does not exist. [#2349](https://github.com/zowe/zowe-cli/issues/2349)
 - Enhancement: Added the `maxLength` option to List SDK functions (`allMembers`, `dataSetsMatchingPattern`, `membersMatchingPattern`) to specify the maximum number of items to return. [#2409](https://github.com/zowe/zowe-cli/pull/2409)
 - Enhancement: Added the `start` option to List SDK functions (`allMembers`, `dataSetsMatchingPattern`, `membersMatchingPattern`) to specify the first data set/member name to return in the response. [#2409](https://github.com/zowe/zowe-cli/pull/2409)

@@ -430,7 +430,7 @@ export class Copy {
      */
     private static convertAlcTozOSMF(getValue: string): string {
         const alcMap: Record<string, string> = {
-            "TRACK": "TRK",
+            "TRACKS": "TRK",
             "CYLINDERS": "CYL"
         };
         return alcMap[getValue.toUpperCase()] || "TRK";
