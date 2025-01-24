@@ -25,6 +25,7 @@ import { IPluginJson } from "../../../plugins/doc/IPluginJson";
 import { PluginIssues } from "../../../plugins/utilities/PluginIssues";
 
 import { ItemId, IProbTest, probTests } from "./EnvItems";
+import { Censor } from "../../../../../censor";
 
 /**
  * This interface represents the result from getEnvItemVal().
@@ -476,13 +477,13 @@ export class EnvQuery {
     private static getOtherZoweEnvVars(getResult: IGetItemVal): void {
         getResult.itemValMsg = "";
         const envVars = process.env;
+        const secureCredsList = Censor.CENSORED_OPTIONS.map(opt => opt.toUpperCase().replaceAll("-", "_"));
         for (const nextVar of Object.keys(envVars)) {
             if (nextVar.startsWith("ZOWE_") && nextVar != "ZOWE_CLI_HOME" &&
                 nextVar != "ZOWE_APP_LOG_LEVEL" && nextVar != "ZOWE_IMPERATIVE_LOG_LEVEL")
             {
                 getResult.itemValMsg += nextVar + " = " ;
-                if (nextVar.toUpperCase().includes("PASSWORD") ||
-                    nextVar.toUpperCase().includes("TOKEN"))
+                if (secureCredsList.includes(nextVar.toUpperCase()))
                 {
                     getResult.itemValMsg += "******";
                 } else {

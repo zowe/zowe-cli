@@ -14,6 +14,10 @@ import { ICommandProfileTypeConfiguration } from "../../cmd/src/doc/profiles/def
 import { IProfileSchema } from "../../profiles/src/doc/definition/IProfileSchema";
 import { Censor } from "../../censor/src/Censor";
 
+/**
+ * @deprecated Use Censor
+ * Logging utilities
+ */
 export class LoggerUtils {
     /**
      * @deprecated Use Censor.CENSOR_RESPONSE

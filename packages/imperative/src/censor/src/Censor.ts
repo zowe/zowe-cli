@@ -28,10 +28,10 @@ export class Censor {
     *
     * NOTE(Harn): This list should be kept in sync with the base profile secure definitions and MUST be in camel case.
     */
-    private static readonly MAIN_CENSORED_OPTIONS = ["auth", "pw", "pass", "password", "passphrase", "credentials",
-        "authentication", "basicAuth", "tv", "tokenValue", "certFilePassphrase"];
+    private static readonly MAIN_CENSORED_OPTIONS = ["auth", "authentication", "basicAuth", "certFilePassphrase", "credentials",
+        "pw", "pass", "password", "passphrase", "tv", "tokenValue"];
 
-    private static readonly MAIN_SECURE_PROMPT_OPTIONS = ["user", "password", "tokenValue", "passphrase", "keyPassphrase"];
+    private static readonly MAIN_SECURE_PROMPT_OPTIONS = ["keyPassphrase", "password", "passphrase", "tokenValue", "user"];
 
     // The censor response.
     public static readonly CENSOR_RESPONSE = "****";
