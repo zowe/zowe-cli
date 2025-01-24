@@ -290,7 +290,7 @@ export class AuthOrder {
             throw new ImperativeError({ msg: errMsg });
         }
 
-        // initially set all creds to be removed from the session.
+        // Initially set all creds to be removed from the session.
         // Then delete from this set the creds that we want to keep.
         const credsToRemove = new Set(["user", "password", "base64EncodedAuth", "tokenType", "tokenValue", "cert", "certKey"]);
 
