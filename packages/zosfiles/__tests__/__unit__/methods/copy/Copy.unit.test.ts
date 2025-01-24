@@ -850,7 +850,6 @@ describe("Copy", () => {
             describe("Sequential > Sequential", () => {
                 it("should send a request", async () => {
                     let response;
-                    let caughtError;
 
                     listDatasetSpy.mockImplementation(async (): Promise<any>  => {
                         return {
@@ -872,9 +871,7 @@ describe("Copy", () => {
                             { },
                             dummySession
                         );
-                    } catch (e) {
-                        caughtError = e;
-                    }
+                    } catch{}
 
                     expect(response).toEqual({
                         success: true,
@@ -912,9 +909,7 @@ describe("Copy", () => {
                             { },
                             dummySession
                         );
-                    } catch (e) {
-                        caughtError = e;
-                    }
+                    } catch{}
 
                     expect(listDatasetSpy).toHaveBeenCalledTimes(2);
                     expect(getDatasetSpy).toHaveBeenCalledTimes(1);
