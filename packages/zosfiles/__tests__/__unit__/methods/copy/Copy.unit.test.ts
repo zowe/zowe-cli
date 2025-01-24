@@ -895,7 +895,7 @@ describe("Copy", () => {
                         return Buffer.from("123456789abcd");
                     });
 
-                    const response = await Copy.dataSetCrossLPAR(
+                    await Copy.dataSetCrossLPAR(
                         dummySession,
                         { dsn: psDataSetName },
                         { "from-dataset": { dsn: dataSetPS.dsname }, replace: false},
@@ -955,7 +955,6 @@ describe("Copy", () => {
 
                 it("should send a request - TRK and validate spacu", async () => {
                     let response;
-                    let caughtError;
 
                     listDatasetSpy.mockImplementation(async (): Promise<any> => {
                         return {
@@ -974,17 +973,12 @@ describe("Copy", () => {
                         };
                     });
 
-                    try {
-                        response = await Copy.dataSetCrossLPAR(
-                            dummySession,
-                            { dsn: poDataSetName, member: memberName },
-                            { "from-dataset": { dsn: poDataSetName, member: memberName }, replace: true },
-                            {},
-                            dummySession
-                        );
-                    } catch (e) {
-                        caughtError = e;
-                    }
+                    await Copy.dataSetCrossLPAR(
+                        dummySession,
+                        { dsn: poDataSetName, member: memberName },
+                        { "from-dataset": { dsn: poDataSetName, member: memberName }, replace: true },
+                        {},
+                        dummySession);
 
                     // Assertions
                     expect(response).toEqual({
@@ -1001,9 +995,6 @@ describe("Copy", () => {
                 });
 
                 it("should send a request - CYL and validate spacu", async () => {
-                    let response;
-                    let caughtError;
-
                     listDatasetSpy.mockImplementation(async (): Promise<any> => {
                         return {
                             apiResponse: {
@@ -1021,17 +1012,15 @@ describe("Copy", () => {
                         };
                     });
 
-                    try {
-                        response = await Copy.dataSetCrossLPAR(
-                            dummySession,
-                            { dsn: poDataSetName, member: memberName },
-                            { "from-dataset": { dsn: poDataSetName, member: memberName }, replace: true },
-                            {},
-                            dummySession
-                        );
-                    } catch (e) {
-                        caughtError = e;
-                    }
+
+                    const response = await Copy.dataSetCrossLPAR(
+                        dummySession,
+                        { dsn: poDataSetName, member: memberName },
+                        { "from-dataset": { dsn: poDataSetName, member: memberName }, replace: true },
+                        {},
+                        dummySession
+                    );
+
 
                     expect(response).toEqual({
                         success: true,
@@ -1048,7 +1037,6 @@ describe("Copy", () => {
 
                 describe("Sequential > Member", () => {
                     it("should send a request", async () => {
-                        let response;
                         let caughtError;
 
                         listDatasetSpy.mockReturnValueOnce({
@@ -1070,17 +1058,14 @@ describe("Copy", () => {
                             };
                         });
 
-                        try {
-                            response = await Copy.dataSetCrossLPAR(
-                                dummySession,
-                                { dsn: poDataSetName, member: memberName },
-                                { "from-dataset": { dsn: psDataSetName }, replace: true},
-                                { },
-                                dummySession
-                            );
-                        } catch (e) {
-                            caughtError = e;
-                        }
+                        const response = await Copy.dataSetCrossLPAR(
+                            dummySession,
+                            { dsn: poDataSetName, member: memberName },
+                            { "from-dataset": { dsn: psDataSetName }, replace: true},
+                            { },
+                            dummySession
+                        );
+
 
                         expect(response).toEqual({
                             success: true,
