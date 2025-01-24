@@ -71,36 +71,44 @@ export class AuthOrder {
     private static cacheAuthOrder(cmdArgs: ICommandArguments): void {
         // have we already cached the authOrder?
         if (AuthOrder.m_authOrder !== null) {
-            // start over with an empty order.
+            // start over with an empty auth order.
             AuthOrder.m_authOrder = null;
         }
 
         if (cmdArgs.authOrder) {
-            // convert user's comma-separated string into an array of auth types, and remove whitespace
-            const userAuthOrder = cmdArgs.authOrder.split(',');
-            for (let nextUserAuth of userAuthOrder) {
-                nextUserAuth = nextUserAuth.trim();
+            if (typeof cmdArgs.authOrder === "string") {
+                // convert user's comma-separated string into an array of auth types, and remove whitespace
+                const userAuthOrder = cmdArgs.authOrder.split(',');
+                for (let nextUserAuth of userAuthOrder) {
+                    nextUserAuth = nextUserAuth.trim();
 
-                // validate each user-supplied type of authentication
-                switch (nextUserAuth) {
-                    case SessConstants.AUTH_TYPE_BASIC:
-                    case SessConstants.AUTH_TYPE_TOKEN:
-                    case SessConstants.AUTH_TYPE_BEARER:
-                    case SessConstants.AUTH_TYPE_CERT_PEM:
-                    case SessConstants.AUTH_TYPE_NONE:
-                        if (AuthOrder.m_authOrder === null) {
-                            AuthOrder.m_authOrder = [];
-                        }
-                        AuthOrder.m_authOrder.push(nextUserAuth);
-                        break;
-                    default:
-                        Logger.getImperativeLogger().error(
-                            `The authentication = '${nextUserAuth}' is not valid and will be ignored.`
-                        );
-                        // todo: Remove diagnostic print statement below
-                        console.log("____ cacheAuthOrder: nextUserAuth = '" + nextUserAuth + "' is not valid and will be ignored.");
-                        break;
+                    // validate each user-supplied type of authentication
+                    switch (nextUserAuth) {
+                        case SessConstants.AUTH_TYPE_BASIC:
+                        case SessConstants.AUTH_TYPE_TOKEN:
+                        case SessConstants.AUTH_TYPE_BEARER:
+                        case SessConstants.AUTH_TYPE_CERT_PEM:
+                        case SessConstants.AUTH_TYPE_NONE:
+                            if (AuthOrder.m_authOrder === null) {
+                                AuthOrder.m_authOrder = [];
+                            }
+                            AuthOrder.m_authOrder.push(nextUserAuth);
+                            break;
+                        default:
+                            Logger.getImperativeLogger().error(
+                                `The authentication = '${nextUserAuth}' is not valid and will be ignored.`
+                            );
+                            // todo: Remove diagnostic print statement below
+                            console.log("____ cacheAuthOrder: nextUserAuth = '" + nextUserAuth + "' is not valid and will be ignored.");
+                            break;
+                    }
                 }
+            } else {
+                Logger.getImperativeLogger().error(
+                    `The authOrder option = '${cmdArgs.authOrder}' is not a string. A default authOrder will be used.`
+                );
+                // todo: Remove diagnostic print statement below
+                console.log(`The authOrder option = '${cmdArgs.authOrder}' is not a string. A default authOrder will be used.`);
             }
         }
 
@@ -160,23 +168,25 @@ export class AuthOrder {
         for (const nextAuth of AuthOrder.m_authOrder) {
             switch (nextAuth) {
                 case SessConstants.AUTH_TYPE_BASIC:
-                    // todo: do we have to check for sessCfg.base64EncodedAuth ?
-                    if (cmdArgs.user?.length > 0) {
+                    if (cmdArgs.base64EncodedAuth?.length > 0) {
+                        // When we have base64EncodedAuth, place it in the session.
+                        // We then do not need or want user and password in the session.
+                        sessCfg.base64EncodedAuth = cmdArgs.base64EncodedAuth;
+                        sessTypeToUse = SessConstants.AUTH_TYPE_BASIC;
+                    } else if (sessCfg.user?.length > 0 && sessCfg.password?.length > 0) {
+                        // Since both user and password are available, place them in the session.
+                        // Remove an existing base64EncodedAuth from the session. It will be
+                        // recreated later with this user and password.
                         sessCfg.user = cmdArgs.user;
-                    }
-                    if (cmdArgs.password?.length > 0) {
                         sessCfg.password = cmdArgs.password;
+                        sessTypeToUse = SessConstants.AUTH_TYPE_BASIC;
                     }
-                    if (sessCfg.user?.length > 0 && sessCfg.password?.length > 0) {
-                        if (sessCfg.authTypeToRequestToken) {
-                            // The existence of authTypeToRequestToken indicates that we want
-                            // to request a token. We record how we will authenticate,
-                            // but we still record the session type as token (old requirements).
-                            sessCfg.authTypeToRequestToken = SessConstants.AUTH_TYPE_BASIC;
-                            sessTypeToUse = SessConstants.AUTH_TYPE_TOKEN;
-                        } else {
-                            sessTypeToUse = SessConstants.AUTH_TYPE_BASIC;
-                        }
+                    if (sessTypeToUse === SessConstants.AUTH_TYPE_BASIC && sessCfg.authTypeToRequestToken) {
+                        // The existence of authTypeToRequestToken indicates that we want
+                        // to request a token. We record how we will authenticate,
+                        // but we change the session type to token (old requirement).
+                        sessCfg.authTypeToRequestToken = SessConstants.AUTH_TYPE_BASIC;
+                        sessTypeToUse = SessConstants.AUTH_TYPE_TOKEN;
                     }
                     break;
                 case SessConstants.AUTH_TYPE_TOKEN:
@@ -211,13 +221,9 @@ export class AuthOrder {
                     }
                     break;
                 case SessConstants.AUTH_TYPE_CERT_PEM:
-                    if (cmdArgs.certFile?.length > 0) {
-                        sessCfg.cert = cmdArgs.certFile;
-                    }
-                    if (cmdArgs.certKeyFile?.length > 0) {
-                        sessCfg.certKey = cmdArgs.certKeyFile;
-                    }
                     if (sessCfg.cert?.length > 0 && sessCfg.certKey?.length > 0) {
+                        sessCfg.cert = cmdArgs.certFile;
+                        sessCfg.certKey = cmdArgs.certKeyFile;
                         if (sessCfg.authTypeToRequestToken) {
                             // The existence of authTypeToRequestToken indicates that we want
                             // to request a token. We record how we will authenticate,
@@ -284,35 +290,43 @@ export class AuthOrder {
             throw new ImperativeError({ msg: errMsg });
         }
 
-        // initially set all creds to be removed from the session. Later we delete the desired creds from this set
+        // initially set all creds to be removed from the session.
+        // Then delete from this set the creds that we want to keep.
         const credsToRemove = new Set(["user", "password", "base64EncodedAuth", "tokenType", "tokenValue", "cert", "certKey"]);
 
-        // Delete the selected creds from the set of creds that will be removed from our session config.
-        // Each case statement sets the creds that we want to **KEEP**.
+        // Select the creds that we want to keep.
         let errMsg: string;
         switch (sessCfg.type) {
             case SessConstants.AUTH_TYPE_BASIC:
-                credsToRemove.delete("user");
-                credsToRemove.delete("password");
-                credsToRemove.delete("base64EncodedAuth");
+                // only keep one of our basic creds
+                if (sessCfg.base64EncodedAuth) {
+                    this.keepCred("base64EncodedAuth", credsToRemove);
+                } else {
+                    this.keepCred("user", credsToRemove);
+                    this.keepCred("password", credsToRemove);
+                }
                 break;
             case SessConstants.AUTH_TYPE_TOKEN:
                 // in all cases we keep the supplied token type
-                credsToRemove.delete("tokenType");
+                this.keepCred("tokenType", credsToRemove);
 
                 if (!sessCfg.authTypeToRequestToken) {
                     // we want to actually use the token, so keep its value
-                    credsToRemove.delete("tokenValue");
+                    this.keepCred("tokenValue", credsToRemove);
                 } else if (sessCfg.authTypeToRequestToken == SessConstants.AUTH_TYPE_BASIC) {
                     // We are requesting a token using basic creds.
-                    // Keep the basic creds and allow tokenValue to be removed
-                    credsToRemove.delete("user");
-                    credsToRemove.delete("password");
+                    // Keep only one of our basic creds and allow tokenValue to be removed.
+                    if (sessCfg.base64EncodedAuth) {
+                        this.keepCred("base64EncodedAuth", credsToRemove);
+                    } else {
+                        this.keepCred("user", credsToRemove);
+                        this.keepCred("password", credsToRemove);
+                    }
                 } else if (sessCfg.authTypeToRequestToken == SessConstants.AUTH_TYPE_CERT_PEM) {
                     // We are requesting a token using a cert.
                     // Keep the cert creds and allow tokenValue to be removed
-                    credsToRemove.delete("cert");
-                    credsToRemove.delete("certKey");
+                    this.keepCred("cert", credsToRemove);
+                    this.keepCred("certKey", credsToRemove);
                 } else {
                     // Our own code supplied a bad value for authTypeToRequestToken.
                     errMsg = "The requested session contains an invalid value for " +
@@ -322,11 +336,11 @@ export class AuthOrder {
                 }
                 break;
             case SessConstants.AUTH_TYPE_BEARER:
-                credsToRemove.delete("tokenValue");
+                this.keepCred("tokenValue", credsToRemove);
                 break;
             case SessConstants.AUTH_TYPE_CERT_PEM:
-                credsToRemove.delete("cert");
-                credsToRemove.delete("certKey");
+                this.keepCred("cert", credsToRemove);
+                this.keepCred("certKey", credsToRemove);
                 break;
             case SessConstants.AUTH_TYPE_NONE:
                 break;
@@ -345,4 +359,20 @@ export class AuthOrder {
             nextCredToRemove = credIter.next();
         }
     }
+
+    // ***********************************************************************
+    /**
+     * Keep the specified credential by deleting it from the set of
+     * credentials to remove.
+     *
+     * @param credToKeep - Input.
+     *      The credential that we want to keep.
+     *
+     * @param credsToRemove - Modified.
+     *      The set of credentials that will be removed.
+     */
+    private static keepCred(credToKeep: string, credsToRemove: Set<string>): void {
+        credsToRemove.delete(credToKeep);
+    }
+
 }
