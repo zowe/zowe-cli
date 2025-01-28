@@ -264,12 +264,13 @@ export class Create {
                         break;
 
                     case "dsorg":
-                    // Check if dsorg is PS-L, if it is change it to "PS" and the dsntype to "LARGE" since the create endpoint does not see "PS-L" as a valid creation option
+                    // Check if dsorg is PS-L, if it is change it to "PS" and the dsntype to "LARGE".
+                    // Since the create endpoint does not see "PS-L" as a valid creation option
 
                         if(tempOptions.dsorg === "PS-L")
                         {
-                            tempOptions.dsorg = "PS"
-                            tempOptions.dsntype = "LARGE"
+                            tempOptions.dsorg = "PS";
+                            tempOptions.dsntype = "LARGE";
                         }
 
                         break;
