@@ -202,8 +202,8 @@ export class ConnectionPropsForSessCfg {
             }
         }
 
-        // ensure that only one credential (with the top user priority) remains in the session
-        AuthOrder.putTopAuthInSession(sessCfgToUse, cmdArgs);
+        // cache all available creds. Only the right set will later be kept in the session.
+        AuthOrder.cacheAvailableCreds(sessCfgToUse, cmdArgs);
 
         impLogger.debug("Session config after any prompting for missing values:");
         ConnectionPropsForSessCfg.logSessCfg(sessCfgToUse);
