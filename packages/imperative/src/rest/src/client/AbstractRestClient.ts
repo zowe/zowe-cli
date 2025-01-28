@@ -13,6 +13,7 @@ import { inspect } from "util";
 import { Logger } from "../../../logger";
 import { IImperativeError, ImperativeError } from "../../../error";
 import { AbstractSession } from "../session/AbstractSession";
+import { AuthOrder } from "../session/AuthOrder";
 import * as https from "https";
 import * as http from "http";
 import { readFileSync } from "fs";
@@ -34,6 +35,7 @@ import { IRestOptions } from "./doc/IRestOptions";
 import * as SessConstants from "../session/SessConstants";
 import { CompressionUtils } from "./CompressionUtils";
 import { ProxySettings } from "./ProxySettings";
+
 
 export type RestClientResolve = (data: string) => void;
 
@@ -231,26 +233,19 @@ export abstract class AbstractRestClient {
         this.mLogger = Logger.getImperativeLogger();
         this.mIsJson = false;
 
-        /* Set the order of precedence in which available credentials will be used.
-         *
-         * The Zowe SDK policy is to select password credentials over a token.
-         * However, this class was originally released with the token over password.
-         * The commonly-used ConnectionPropsForSessCfg.resolveSessCfgProps enforces the
-         * order of password over token. None-the-less, consumers which directly extended
-         * AbstractRestClient came to rely on the order of token over password.
-         *
-         * Later changes in this class to adhere to Zowe policy inadvertently broke
-         * such extenders. While we now use a generalized authTypeOrder property to
-         * determine the order, until a means is provided for consumers (and/or end-users)
-         * to customize their credential order of precedence, we hard-code the
-         * original order of token over password to correct the breaking change.
-         */
-        this.mSession.ISession.authTypeOrder = [
-            SessConstants.AUTH_TYPE_TOKEN,
-            SessConstants.AUTH_TYPE_BASIC,
-            SessConstants.AUTH_TYPE_BEARER,
-            SessConstants.AUTH_TYPE_CERT_PEM
-        ];
+        // When a user specifies an authentication order, it will always be used.
+        // When a user does NOT specify an authentication order, the following call
+        // to cacheDefaultAuthOrder will set a default order with token at the top.
+        // This is done to avoid introducing a breaking change to historical behavior.
+        // Note that the RestClient class overrides the default order to place
+        // basic auth at the top. Most of the Zowe client logic uses the RestClient
+        // (which alters the default order to place basic authentication at the top).
+        // Only consumers who extend classes directly from AbstractRestClient will have
+        // a default order with token at the top.
+        // The current best practice for consumers of these APIs is to extend classes
+        // from RestClient and instruct your users to place an 'authOrder' property
+        // into the related profile within their zowe.config.json file.
+        AuthOrder.cacheDefaultAuthOrder(SessConstants.AUTH_TYPE_TOKEN);
     }
 
     /**
@@ -284,6 +279,9 @@ export abstract class AbstractRestClient {
             ImperativeExpect.toBeEqual(options.requestStream != null && options.writeData != null, false,
                 "You cannot specify both writeData and writeStream");
             const buildOptions = this.buildOptions(options.resource, options.request, options.reqHeaders);
+
+            // ensure that only the top available cred is left in the session
+            AuthOrder.putTopAuthInSession(this.session.ISession);
 
             /**
              * Perform the actual http request
@@ -496,7 +494,7 @@ export abstract class AbstractRestClient {
          * order of precedence) into the session options.
          */
         let credsAreSet: boolean = false;
-        for (const nextAuthType of this.session.ISession.authTypeOrder) {
+        for (const nextAuthType of AuthOrder.getAuthOrder()) {
             if (nextAuthType === SessConstants.AUTH_TYPE_TOKEN) {
                 credsAreSet ||= this.setTokenAuth(options);
 
@@ -515,7 +513,7 @@ export abstract class AbstractRestClient {
             }
             /* The following commented code was left as a place-holder for adding support
              * for PFX certificates. The commented code was added when the order of credentials
-             * was specified using hard-coded logic. We now use authTypeOrder to specify
+             * was specified using hard-coded logic. We now use the AuthOrder class to specify
              * the order. When adding support for PFX certs, move this logic into a new function
              * (with a name like setCertPfxAuth). Some conditional logic may have to be reversed
              * in that function. See other such functions for an example. Add a new else-if
