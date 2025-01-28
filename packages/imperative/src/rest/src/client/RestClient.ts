@@ -10,6 +10,7 @@
 */
 
 import { AbstractSession } from "../session/AbstractSession";
+import { AuthOrder } from "../session/AuthOrder";
 import { RestConstants } from "./RestConstants";
 import { HTTP_VERB } from "./types/HTTPVerb";
 import { AbstractRestClient } from "./AbstractRestClient";
@@ -20,6 +21,7 @@ import { IRestClientResponse } from "./doc/IRestClientResponse";
 import { IOptionsFullResponse } from "./doc/IOptionsFullResponse";
 import { CLIENT_PROPERTY } from "./types/AbstractRestClientProperties";
 import { IRestOptions } from "./doc/IRestOptions";
+import * as SessConstants from "../session/SessConstants";
 
 /**
  * Class to handle http(s) requests, build headers, collect data, report status codes, and header responses
@@ -29,6 +31,18 @@ import { IRestOptions } from "./doc/IRestOptions";
  * @extends {AbstractRestClient}
  */
 export class RestClient extends AbstractRestClient {
+
+    /**
+     * Creates an instance of RestClient and changes the default authentication order
+     * set by AbstractRestClient to place basic at the top instead of token.
+     *
+     * @param {AbstractSession} session - a session connection for this api
+     * @memberof AbstractRestClient
+     */
+    constructor(session: AbstractSession) {
+        super(session);
+        AuthOrder.cacheDefaultAuthOrder(SessConstants.AUTH_TYPE_BASIC);
+    }
 
     /**
      * Wrap get for common error handling and supporting generic JSON types
