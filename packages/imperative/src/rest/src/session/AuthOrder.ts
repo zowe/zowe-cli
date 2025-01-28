@@ -26,13 +26,6 @@ import * as SessConstants from "./SessConstants";
 export class AuthOrder {
 
     /**
-     * When a user does not supply an auth order, Zowe clients will use a
-     * hard-coded default order. This property records whether AUTH_TYPE_BASIC
-     * or AUTH_TYPE_TOKEN is the top auth choice in the order.
-     */
-    private static m_topDefaultAuth: string = SessConstants.AUTH_TYPE_BASIC;
-
-    /**
      * This array of authentication types specifies the order of preferred
      * authentication. It contains the user-specified order, or a default order
      * if the user does not specify an order. m_authOrder[0] is the highest
@@ -40,86 +33,87 @@ export class AuthOrder {
      */
     private static m_authOrder: SessConstants.AUTH_TYPE_CHOICES[] = null;
 
+    /**
+     * Indicates whether the user has supplied the authentication order.
+     */
+    private static m_didUserGiveOrder: boolean = false;
+
+    /**
+     * This property holds the set of all credentials that are available for
+     * the REST request currently being processed.
+     */
+    private static m_availableCreds: any = {};
+
     // ***********************************************************************
     /**
-     * Set the top auth type when a default authOrder is used. Previously,
-     * two different hard-coded orders were present in the Zowe clients.
-     * Both hard-coded orders are now provided by this class. Zowe code,
-     * that still sets a specific order for backward compatibility, now
-     * calls this function to ensure that that the original behavior remains
-     * the same and avoids a breaking change when a user has not specified
-     * an authOrder property.
+     * Cache all of the credentials that are available in either the supplied
+     * sessCfg object or in the command arguments.
      *
-     * @param topDefaultAuth - Input.
-     *      The top authentication type that will be used when forming a
-     *      default authOrder.
+     * Downstream logic uses this cache to determine which auth type should be
+     * used in the final session used by a client REST request.
+     *
+     * @param sessCfg - Input.
+     *      A session configuration object.
+     *
+     * @param cmdArgs - Input.
+     *      The set of arguments with which the calling function is operating.
+     *      For CLI, the cmdArgs come from the command line, profile, or
+     *      environment. Other apps can place relevant arguments into this
+     *      object to be processed by this function.
      */
-    public static setTopDefaultAuth(
-        topDefaultAuth: typeof SessConstants.AUTH_TYPE_BASIC | typeof SessConstants.AUTH_TYPE_TOKEN
+    public static cacheAvailableCreds<SessCfgType extends ISession>(
+        sessCfg: SessCfgType,
+        cmdArgs: ICommandArguments
     ): void {
-        AuthOrder.m_topDefaultAuth = topDefaultAuth;
+        AuthOrder.m_availableCreds = {};
+
+        // cache the correct authOrder to use
+        AuthOrder.cacheAuthOrder(cmdArgs);
+
+        AuthOrder.cacheCred("user", sessCfg, cmdArgs);
+        AuthOrder.cacheCred("password", sessCfg, cmdArgs);
+        AuthOrder.cacheCred("base64EncodedAuth", sessCfg, cmdArgs);
+        AuthOrder.cacheCred("tokenType", sessCfg, cmdArgs);
+        AuthOrder.cacheCred("tokenValue", sessCfg, cmdArgs);
+        AuthOrder.cacheCred("certFile", sessCfg, cmdArgs);
+        AuthOrder.cacheCred("certKeyFile", sessCfg, cmdArgs);
+
+        Logger.getImperativeLogger().debug("AuthOrder.m_availableCreds = " +
+            JSON.stringify(AuthOrder.m_availableCreds, null, 2)
+        );
     }
 
     // ***********************************************************************
     /**
-     * Cache the authOrder property from the supplied cmdArgs. If no authOrder exists
-     * in cmdArgs, a default authOrder is created and cached.
+     * Cache the default authentication order when the user has not specified
+     * the order.
      *
-     * @param cmdArgs - Input.
-     *      The set of arguments that the calling function is using.
+     * For historical reason, we have 2 default orders. Thus, the caller can
+     * specify which of 2 creds to use as the top cred in the authentication order:
+     *     SessConstants.AUTH_TYPE_BASIC or SessConstants.AUTH_TYPE_TOKEN
+     *
+     * @param topDefaultAuth - Input.
+     *      The authentication type that will be used first.
+     *
+     * @return True when the default order was cached.
+     *         False when the user supplied an order, because you cannot
+     *         override the user-supplied order with any default.
      */
-    private static cacheAuthOrder(cmdArgs: ICommandArguments): void {
-        // have we already cached the authOrder?
-        if (AuthOrder.m_authOrder !== null) {
-            // start over with an empty auth order.
-            AuthOrder.m_authOrder = null;
+    public static cacheDefaultAuthOrder(
+        topDefaultAuth: typeof SessConstants.AUTH_TYPE_BASIC | typeof SessConstants.AUTH_TYPE_TOKEN
+    ): boolean {
+        if (AuthOrder.m_didUserGiveOrder) {
+            // nobody can change what the user specified
+            Logger.getImperativeLogger().info(
+                `Because user set authOrder, an attempt to put ${topDefaultAuth} at the top of the order was ignored.`
+            );
+            return false;
         }
 
-        if (cmdArgs.authOrder) {
-            if (typeof cmdArgs.authOrder === "string") {
-                // convert user's comma-separated string into an array of auth types, and remove whitespace
-                const userAuthOrder = cmdArgs.authOrder.split(',');
-                for (let nextUserAuth of userAuthOrder) {
-                    nextUserAuth = nextUserAuth.trim();
-
-                    // validate each user-supplied type of authentication
-                    switch (nextUserAuth) {
-                        case SessConstants.AUTH_TYPE_BASIC:
-                        case SessConstants.AUTH_TYPE_TOKEN:
-                        case SessConstants.AUTH_TYPE_BEARER:
-                        case SessConstants.AUTH_TYPE_CERT_PEM:
-                        case SessConstants.AUTH_TYPE_NONE:
-                            if (AuthOrder.m_authOrder === null) {
-                                AuthOrder.m_authOrder = [];
-                            }
-                            AuthOrder.m_authOrder.push(nextUserAuth);
-                            break;
-                        default:
-                            Logger.getImperativeLogger().error(
-                                `The authentication = '${nextUserAuth}' is not valid and will be ignored.`
-                            );
-                            // todo: Remove diagnostic print statement below
-                            console.log("____ cacheAuthOrder: nextUserAuth = '" + nextUserAuth + "' is not valid and will be ignored.");
-                            break;
-                    }
-                }
-            } else {
-                Logger.getImperativeLogger().error(
-                    `The authOrder option = '${cmdArgs.authOrder}' is not a string. A default authOrder will be used.`
-                );
-                // todo: Remove diagnostic print statement below
-                console.log(`The authOrder option = '${cmdArgs.authOrder}' is not a string. A default authOrder will be used.`);
-            }
-        }
-
-        if (AuthOrder.m_authOrder !== null) {
-            // the user supplied an authOrder and we used it
-            return;
-        }
-
-        // No authOrder was supplied by the user. Create a default order.
+        // start over with an empty auth order.
         AuthOrder.m_authOrder = [];
-        if (AuthOrder.m_topDefaultAuth === SessConstants.AUTH_TYPE_BASIC) {
+
+        if (topDefaultAuth === SessConstants.AUTH_TYPE_BASIC) {
             // we want user & password auth as the top choice
             AuthOrder.m_authOrder.push(SessConstants.AUTH_TYPE_BASIC);
             AuthOrder.m_authOrder.push(SessConstants.AUTH_TYPE_TOKEN);
@@ -131,6 +125,25 @@ export class AuthOrder {
         // add remaining auth types. We do not include 'none' in our defaults.
         AuthOrder.m_authOrder.push(SessConstants.AUTH_TYPE_BEARER);
         AuthOrder.m_authOrder.push(SessConstants.AUTH_TYPE_CERT_PEM);
+
+        return true;
+    }
+
+    // ***********************************************************************
+    /**
+     * Returns the cached authentication order.
+     *
+     * @return {SessConstants.AUTH_TYPE_CHOICES[]} The cached authentication order.
+     * @throws {ImperativeError} If the authentication order has not been cached yet.
+     */
+    public static getAuthOrder(): SessConstants.AUTH_TYPE_CHOICES[] {
+        if (AuthOrder.m_authOrder == null) {
+            const errMsg = "cacheAuthOrder() must be called before calling getAuthOrder().";
+            Logger.getImperativeLogger().error(errMsg);
+            throw new ImperativeError({ msg: errMsg });
+        }
+
+        return AuthOrder.m_authOrder;
     }
 
     // ***********************************************************************
@@ -153,32 +166,41 @@ export class AuthOrder {
      *      object to be processed by this function.
      */
     public static putTopAuthInSession<SessCfgType extends ISession>(
-        sessCfg: SessCfgType,
-        cmdArgs: ICommandArguments
+        sessCfg: SessCfgType
     ): void {
+        if (Object.keys(AuthOrder.m_availableCreds).length === 0) {
+            const errMsg = "cacheAvailableCreds() must be called before calling putTopAuthInSession().";
+            Logger.getImperativeLogger().error(errMsg);
+            throw new ImperativeError({ msg: errMsg });
+        }
+        if (AuthOrder.m_authOrder == null) {
+            const errMsg = "cacheAuthOrder() must be called before calling putTopAuthInSession().";
+            Logger.getImperativeLogger().error(errMsg);
+            throw new ImperativeError({ msg: errMsg });
+        }
+
         let sessTypeToUse: SessConstants.AUTH_TYPE_CHOICES = null;
 
-        // cache the correct authOrder to use
-        AuthOrder.cacheAuthOrder(cmdArgs);
+        Logger.getImperativeLogger().debug("AuthOrder.m_availableCreds = " +
+            JSON.stringify(AuthOrder.m_availableCreds, null, 2)
+        );
+        Logger.getImperativeLogger().debug("Starting sessCfg = " + JSON.stringify(sessCfg, null, 2));
 
-        // Detect the first auth type (from our auth order) provided in the session config or in command args.
+        // Detect the first auth type (from our auth order) from our cache of credentials.
         // Ensure that the auth properties are placed in the session config.
         // Record the detected auth type for use as the session type.
         let errMsg: string;
         for (const nextAuth of AuthOrder.m_authOrder) {
             switch (nextAuth) {
                 case SessConstants.AUTH_TYPE_BASIC:
-                    if (cmdArgs.base64EncodedAuth?.length > 0) {
-                        // When we have base64EncodedAuth, place it in the session.
-                        // We then do not need or want user and password in the session.
-                        sessCfg.base64EncodedAuth = cmdArgs.base64EncodedAuth;
+                    // We put our preferred basic auth in the session.
+                    // However, historical logic later puts the other in the session.
+                    if (AuthOrder.m_availableCreds.base64EncodedAuth) {
+                        sessCfg.base64EncodedAuth = AuthOrder.m_availableCreds.base64EncodedAuth;
                         sessTypeToUse = SessConstants.AUTH_TYPE_BASIC;
-                    } else if (sessCfg.user?.length > 0 && sessCfg.password?.length > 0) {
-                        // Since both user and password are available, place them in the session.
-                        // Remove an existing base64EncodedAuth from the session. It will be
-                        // recreated later with this user and password.
-                        sessCfg.user = cmdArgs.user;
-                        sessCfg.password = cmdArgs.password;
+                    } else if (AuthOrder.m_availableCreds.user && AuthOrder.m_availableCreds.password) {
+                        sessCfg.user = AuthOrder.m_availableCreds.user;
+                        sessCfg.password = AuthOrder.m_availableCreds.password;
                         sessTypeToUse = SessConstants.AUTH_TYPE_BASIC;
                     }
                     if (sessTypeToUse === SessConstants.AUTH_TYPE_BASIC && sessCfg.authTypeToRequestToken) {
@@ -194,13 +216,13 @@ export class AuthOrder {
                         // you cannot use a token to retrieve a new token
                         continue;
                     }
-                    if (cmdArgs.tokenType?.length > 0) {
-                        sessCfg.tokenType = cmdArgs.tokenType;
+                    if (AuthOrder.m_availableCreds.tokenType) {
+                        sessCfg.tokenType = AuthOrder.m_availableCreds.tokenType;
                     }
-                    if (cmdArgs.tokenValue?.length > 0) {
-                        sessCfg.tokenValue = cmdArgs.tokenValue;
+                    if (AuthOrder.m_availableCreds.tokenValue) {
+                        sessCfg.tokenValue = AuthOrder.m_availableCreds.tokenValue;
                     }
-                    if (sessCfg.tokenType?.length > 0 && sessCfg.tokenValue?.length > 0) {
+                    if (sessCfg.tokenType && sessCfg.tokenValue) {
                         sessTypeToUse = SessConstants.AUTH_TYPE_TOKEN;
                     }
                     break;
@@ -209,21 +231,21 @@ export class AuthOrder {
                         // you cannot use a token to retrieve a new token
                         continue;
                     }
-                    if (cmdArgs.tokenType?.length > 0) {
-                        sessCfg.tokenType = cmdArgs.tokenType;
+                    if (AuthOrder.m_availableCreds.tokenType) {
+                        sessCfg.tokenType = AuthOrder.m_availableCreds.tokenType;
                     }
-                    if (cmdArgs.tokenValue?.length > 0) {
-                        sessCfg.tokenValue = cmdArgs.tokenValue;
+                    if (AuthOrder.m_availableCreds.tokenValue > 0) {
+                        sessCfg.tokenValue = AuthOrder.m_availableCreds.tokenValue;
                     }
                     // a tokenValue with no tokenType implies a bearer token
-                    if (!(sessCfg.tokenType?.length > 0) && sessCfg.tokenValue?.length > 0) {
+                    if (!sessCfg.tokenType && sessCfg.tokenValue) {
                         sessTypeToUse = SessConstants.AUTH_TYPE_BEARER;
                     }
                     break;
                 case SessConstants.AUTH_TYPE_CERT_PEM:
-                    if (sessCfg.cert?.length > 0 && sessCfg.certKey?.length > 0) {
-                        sessCfg.cert = cmdArgs.certFile;
-                        sessCfg.certKey = cmdArgs.certKeyFile;
+                    if (AuthOrder.m_availableCreds.cert && AuthOrder.m_availableCreds.certKey) {
+                        sessCfg.cert = AuthOrder.m_availableCreds.certFile;
+                        sessCfg.certKey = AuthOrder.m_availableCreds.certKeyFile;
                         if (sessCfg.authTypeToRequestToken) {
                             // The existence of authTypeToRequestToken indicates that we want
                             // to request a token. We record how we will authenticate,
@@ -264,8 +286,108 @@ export class AuthOrder {
         // copy our authOrder into the session object
         sessCfg.authTypeOrder = [...AuthOrder.m_authOrder];
 
-        // todo: Remove diagnostic print statement below
-        console.log("____ putTopAuthInSession:\nsessCfg after processing = " + JSON.stringify(sessCfg, null, 2));
+        Logger.getImperativeLogger().debug("Ending sessCfg = " + JSON.stringify(sessCfg, null, 2));
+    }
+
+    // ***********************************************************************
+    /**
+     * Cache the authOrder property from the supplied cmdArgs. If no authOrder exists
+     * in cmdArgs, a default authOrder is created and cached.
+     *
+     * @param cmdArgs - Input.
+     *      The set of arguments that the calling function is using.
+     */
+    private static cacheAuthOrder(cmdArgs: ICommandArguments): void {
+        // have we already cached the authOrder?
+        if (AuthOrder.m_authOrder !== null) {
+            // start over with an empty auth order.
+            AuthOrder.m_authOrder = null;
+        }
+
+        if (cmdArgs.authOrder) {
+            if (typeof cmdArgs.authOrder === "string") {
+                // convert user's comma-separated string into an array of auth types, and remove whitespace
+                const userAuthOrder = cmdArgs.authOrder.split(',');
+                for (let nextUserAuth of userAuthOrder) {
+                    nextUserAuth = nextUserAuth.trim();
+
+                    // validate each user-supplied type of authentication
+                    switch (nextUserAuth) {
+                        case SessConstants.AUTH_TYPE_BASIC:
+                        case SessConstants.AUTH_TYPE_TOKEN:
+                        case SessConstants.AUTH_TYPE_BEARER:
+                        case SessConstants.AUTH_TYPE_CERT_PEM:
+                        case SessConstants.AUTH_TYPE_NONE:
+                            if (AuthOrder.m_authOrder === null) {
+                                AuthOrder.m_authOrder = [];
+                            }
+                            AuthOrder.m_authOrder.push(nextUserAuth);
+                            break;
+                        default:
+                            Logger.getImperativeLogger().error(
+                                `The authentication = '${nextUserAuth}' is not valid and will be ignored.`
+                            );
+                            break;
+                    }
+                }
+            } else {
+                Logger.getImperativeLogger().error(
+                    `The authOrder option = '${cmdArgs.authOrder}' is not a string. A default authOrder will be used.`
+                );
+            }
+        }
+
+        if (AuthOrder.m_authOrder !== null) {
+            // the user supplied an authOrder and we used it
+            AuthOrder.m_didUserGiveOrder = true;
+            return;
+        }
+
+        // fall back to a default authOrder
+        AuthOrder.cacheDefaultAuthOrder(SessConstants.AUTH_TYPE_BASIC);
+    }
+
+    // ***********************************************************************
+    /**
+     * Cache the named credential into our cache of available credentials.
+     *
+     * @param credName - Input.
+     *
+     * @param sessCfg - Input.
+     *      A session configuration object.
+     *
+     * @param cmdArgs - Input.
+     *      The set of arguments with which the calling function is operating.
+     *      For CLI, the cmdArgs come from the command line, profile, or
+     *      environment. Other apps can place relevant arguments into this
+     *      object to be processed by this function.
+     */
+    private static cacheCred<SessCfgType extends ISession>(
+        credName: string,
+        sessCfg: SessCfgType,
+        cmdArgs: ICommandArguments
+    ): void {
+        if ((sessCfg as any)[credName]) {
+            AuthOrder.m_availableCreds[credName] = (sessCfg as any)[credName];
+        } else if (cmdArgs[credName]) {
+            AuthOrder.m_availableCreds[credName] = cmdArgs[credName];
+        }
+
+    }
+
+    // ***********************************************************************
+    /**
+     * Keep the specified credential by deleting it from the set of
+     * credentials to remove.
+     *
+     * @param credToKeep - Input.
+     *      The credential that we want to keep.
+     *
+     * @param credsToRemove - Modified.
+     *      The set of credentials that will be removed.
+     */
+    private static keepCred(credToKeep: string, credsToRemove: Set<string>): void {
+        credsToRemove.delete(credToKeep);
     }
 
     // ***********************************************************************
@@ -300,33 +422,33 @@ export class AuthOrder {
             case SessConstants.AUTH_TYPE_BASIC:
                 // only keep one of our basic creds
                 if (sessCfg.base64EncodedAuth) {
-                    this.keepCred("base64EncodedAuth", credsToRemove);
+                    AuthOrder.keepCred("base64EncodedAuth", credsToRemove);
                 } else {
-                    this.keepCred("user", credsToRemove);
-                    this.keepCred("password", credsToRemove);
+                    AuthOrder.keepCred("user", credsToRemove);
+                    AuthOrder.keepCred("password", credsToRemove);
                 }
                 break;
             case SessConstants.AUTH_TYPE_TOKEN:
                 // in all cases we keep the supplied token type
-                this.keepCred("tokenType", credsToRemove);
+                AuthOrder.keepCred("tokenType", credsToRemove);
 
                 if (!sessCfg.authTypeToRequestToken) {
                     // we want to actually use the token, so keep its value
-                    this.keepCred("tokenValue", credsToRemove);
+                    AuthOrder.keepCred("tokenValue", credsToRemove);
                 } else if (sessCfg.authTypeToRequestToken == SessConstants.AUTH_TYPE_BASIC) {
                     // We are requesting a token using basic creds.
                     // Keep only one of our basic creds and allow tokenValue to be removed.
                     if (sessCfg.base64EncodedAuth) {
-                        this.keepCred("base64EncodedAuth", credsToRemove);
+                        AuthOrder.keepCred("base64EncodedAuth", credsToRemove);
                     } else {
-                        this.keepCred("user", credsToRemove);
-                        this.keepCred("password", credsToRemove);
+                        AuthOrder.keepCred("user", credsToRemove);
+                        AuthOrder.keepCred("password", credsToRemove);
                     }
                 } else if (sessCfg.authTypeToRequestToken == SessConstants.AUTH_TYPE_CERT_PEM) {
                     // We are requesting a token using a cert.
                     // Keep the cert creds and allow tokenValue to be removed
-                    this.keepCred("cert", credsToRemove);
-                    this.keepCred("certKey", credsToRemove);
+                    AuthOrder.keepCred("cert", credsToRemove);
+                    AuthOrder.keepCred("certKey", credsToRemove);
                 } else {
                     // Our own code supplied a bad value for authTypeToRequestToken.
                     errMsg = "The requested session contains an invalid value for " +
@@ -336,11 +458,11 @@ export class AuthOrder {
                 }
                 break;
             case SessConstants.AUTH_TYPE_BEARER:
-                this.keepCred("tokenValue", credsToRemove);
+                AuthOrder.keepCred("tokenValue", credsToRemove);
                 break;
             case SessConstants.AUTH_TYPE_CERT_PEM:
-                this.keepCred("cert", credsToRemove);
-                this.keepCred("certKey", credsToRemove);
+                AuthOrder.keepCred("cert", credsToRemove);
+                AuthOrder.keepCred("certKey", credsToRemove);
                 break;
             case SessConstants.AUTH_TYPE_NONE:
                 break;
@@ -359,20 +481,4 @@ export class AuthOrder {
             nextCredToRemove = credIter.next();
         }
     }
-
-    // ***********************************************************************
-    /**
-     * Keep the specified credential by deleting it from the set of
-     * credentials to remove.
-     *
-     * @param credToKeep - Input.
-     *      The credential that we want to keep.
-     *
-     * @param credsToRemove - Modified.
-     *      The set of credentials that will be removed.
-     */
-    private static keepCred(credToKeep: string, credsToRemove: Set<string>): void {
-        credsToRemove.delete(credToKeep);
-    }
-
 }
