@@ -409,7 +409,7 @@ export class List {
      * @param {string[]} patterns Data set patterns to include
      * @param {IDsmListOptions} options Contains options for the z/OSMF request
      * @returns {Promise<IZosFilesResponse>} List of z/OSMF list responses for each data set
-     * 
+     *
      * @example
      * ```typescript
      *
@@ -428,9 +428,11 @@ export class List {
 
         const maxLength = options.maxLength;
 
+        // Keep a count of returned data sets to compare against the `maxLength` option.
         let totalCount = 0;
         // Get names of all data sets
         for (const pattern of patterns) {
+            // Stop searching for more data sets once we've reached the `maxLength` limit (if provided).
             if (maxLength && totalCount >= options.maxLength) {
                 break;
             }
@@ -475,6 +477,7 @@ export class List {
                     await asyncPool(maxConcurrentRequests, response.apiResponse.items, createListPromise);
                 }
             }
+            // Track the total number of datasets returned for this pattern.
             if (response.success && response.apiResponse?.items?.length > 0) {
                 totalCount += response.apiResponse.items.length;
             }
