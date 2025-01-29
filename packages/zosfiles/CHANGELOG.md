@@ -3,6 +3,7 @@
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
 ## Recent Changes
+
 - Bug Fix: The `Copy.data.set` function now prompts the user to confirm before overwriting the contents of the target data set with the addition of the `--safe-replace` option. [#2369] (https://github.com/zowe/zowe-cli/issues/2369)
 
 ## `8.12.0`
