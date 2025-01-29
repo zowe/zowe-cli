@@ -19,7 +19,6 @@ import { ZosFilesMessages } from "../../../../src";
 import { getUniqueDatasetName } from "../../../../../../__tests__/__src__/TestUtils";
 import { ICreateZfsOptions } from "../../../../src/methods/create/doc/ICreateZfsOptions";
 import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/ITestEnvironment";
-import { Get } from "../../../../src";
 
 let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 let defaultSystem: ITestPropertiesSchema;
@@ -145,7 +144,7 @@ describe("Create data set", () => {
                 REAL_SESSION,
                 CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL,
                 dsname,
-                    {primary:1,recfm:"FB",blksize:6160,lrecl:80,dsntype:"LARGE",showAttributes:true}
+                {primary:1,recfm:"FB",blksize:6160,lrecl:80,dsntype:"LARGE",showAttributes:true}
             );
             Imperative.console.info("Response: " + inspect(response));
         } catch (err) {
