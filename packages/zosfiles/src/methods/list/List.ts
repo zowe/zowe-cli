@@ -426,11 +426,20 @@ export class List {
         ImperativeExpect.toNotBeEqual(patterns.length, 0, ZosFilesMessages.missingPatterns.message);
         const zosmfResponses: IZosmfListResponse[] = [];
 
+        const maxLength = options.maxLength;
+
+        // Keep a count of returned data sets to compare against the `maxLength` option.
+        let totalCount = 0;
         // Get names of all data sets
         for (const pattern of patterns) {
+            // Stop searching for more data sets once we've reached the `maxLength` limit (if provided).
+            if (maxLength && totalCount >= options.maxLength) {
+                break;
+            }
             let response: any;
             try {
-                response = await List.dataSet(session, pattern, { attributes: true, maxLength: options.maxLength, start: options.start });
+                response = await List.dataSet(session, pattern,
+                    { attributes: true, maxLength: maxLength ? maxLength - totalCount : undefined, start: options.start });
             } catch (err) {
                 if (!(err instanceof ImperativeError && err.errorCode?.toString().startsWith("5"))) {
                     throw err;
@@ -467,6 +476,10 @@ export class List {
                 } else {
                     await asyncPool(maxConcurrentRequests, response.apiResponse.items, createListPromise);
                 }
+            }
+            // Track the total number of datasets returned for this pattern.
+            if (response.success && response.apiResponse?.items?.length > 0) {
+                totalCount += response.apiResponse.items.length;
             }
             zosmfResponses.push(...response.apiResponse.items);
         }
