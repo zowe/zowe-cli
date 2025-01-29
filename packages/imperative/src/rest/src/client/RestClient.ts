@@ -33,8 +33,8 @@ import * as SessConstants from "../session/SessConstants";
 export class RestClient extends AbstractRestClient {
 
     /**
-     * Creates an instance of RestClient and changes the default authentication order
-     * set by AbstractRestClient to place basic at the top instead of token.
+     * Creates an instance of RestClient and sets the default authentication order
+     * to place basic at the top.
      *
      * @param {AbstractSession} session - a session connection for this api
      * @memberof AbstractRestClient
@@ -42,6 +42,9 @@ export class RestClient extends AbstractRestClient {
     constructor(session: AbstractSession) {
         super(session);
         AuthOrder.cacheDefaultAuthOrder(SessConstants.AUTH_TYPE_BASIC);
+
+        // Ensure that no other creds are in the session.
+        AuthOrder.putTopAuthInSession(session.ISession);
     }
 
     /**
