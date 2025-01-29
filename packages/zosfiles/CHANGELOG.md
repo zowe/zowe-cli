@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
-## Recent Changes
+## `8.12.0`
 
 - Fixed an issue in the `Copy.dataSetCrossLPAR()` function where the `spacu` attribute of the copied data set was always set to `TRK`, regardless of the source data set's attributes. [#2412](https://github.com/zowe/zowe-cli/issues/2412)
 - Enhancement: The `Copy.dataset` function now creates a new data set if the entered target data set does not exist. [#2349](https://github.com/zowe/zowe-cli/issues/2349)
