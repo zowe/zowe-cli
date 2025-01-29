@@ -98,6 +98,10 @@ export const OutputDefinition: ICommandDefinition = {
         {
             description: "Download all the output of the job with job ID JOB00234 to an automatically generated directory.",
             options: "JOB00234"
+        },
+        {
+            description: "Download the records in the range of 0 to 100 from a job spool.",
+            options: "--record-range '0-100'"
         }
     ]
 };
