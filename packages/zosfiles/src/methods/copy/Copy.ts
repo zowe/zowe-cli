@@ -272,7 +272,7 @@ export class Copy {
                 /*
                 * If the source is a PDS and no member was specified then abort the copy.
                 */
-                if((sourceDataSetObj.dsorg == "PO" || sourceDataSetObj.dsorg == "PO-E") && sourceMember == undefined){
+                if((sourceDataSetObj.dsorg.startsWith("PO") || sourceDataSetObj.dsorg.startsWith("PO-E")) && sourceMember == undefined){
                     throw new ImperativeError({ msg: ZosFilesMessages.datasetCopiedAbortedNoPDS.message });
                 }
             }
@@ -429,6 +429,12 @@ export class Copy {
      * @returns {string} - The ALC value in the format used by the Create() call.
      */
     private static convertAlcTozOSMF(getValue: string): string {
+        /**
+         *  Create dataset only accepts tracks or cylinders as allocation units.
+         *  When the get() call retreives the dataset info, it will convert size
+         *  allocations of the other unit types in to tracks. So we will always
+         *  allocate the new target in tracks.
+        */
         const alcMap: Record<string, string> = {
             "TRACKS": "TRK",
             "CYLINDERS": "CYL"
