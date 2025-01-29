@@ -254,15 +254,19 @@ stateDiagram-v2
 
     CallingApp --> AbstractRestClient.constructor
 
-    AbstractRestClient.constructor --> AuthOrder.cacheDefaultAuthOrder(token)
+    AbstractRestClient.constructor --> AuthOrder.cacheDefaultAuthOrder(token)<br/>(for_apps_that_don't_use_RestClient)
 
-    AbstractRestClient.constructor --> RestClient.constructor
+    AbstractRestClient.constructor --> AuthOrder.putTopAuthInSession<br/>(for_apps_that_don't_use_RestClient): Earliest place we can put creds in the session
+
+    AbstractRestClient.constructor --> RestClient.constructor: Extended by
 
     RestClient.constructor --> AuthOrder.cacheDefaultAuthOrder(basic)
 
+    RestClient.constructor --> AuthOrder.putTopAuthInSession: Earliest place we can put creds in the session
+
     CallingApp --> AbstractRestClient.request
 
-    AbstractRestClient.request --> AuthOrder.putTopAuthInSession
+    AbstractRestClient.request --> AuthOrder.putTopAuthInSession: Last place we can put creds in the session again (failsafe)
 
     AbstractRestClient.request --> https.request
 ```
