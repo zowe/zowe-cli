@@ -4,7 +4,7 @@ All notable changes to the Zowe z/OS files SDK package will be documented in thi
 
 ## Recent Changes
 
-- BugFix: The `Create.dataSetValidateOptions()` function now handles creating data sets with a `dsorg` of `PS-L` by changing the `dsntype` to `LARGE` [#2141](https://github.com/zowe/zowe-cli/issues/2141)
+- BugFix: The `Create.dataSetValidateOptions()` function now correctly handles data set creation when the `dsorg` attribute is set to `PS-L` by automatically updating the `dsntype` attribute to `LARGE`. [#2141](https://github.com/zowe/zowe-cli/issues/2141)
 
 ## `8.12.0`
 
