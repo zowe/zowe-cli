@@ -713,7 +713,7 @@ describe("Copy", () => {
                     }
                     expect(response?.success).toBeFalsy();
                     expect(error).toBeDefined();
-                    expect(error.message).toContain("Data set copied aborted. The existing target data set was not overwritten.");
+                    expect(error.message).toContain("Data set copy aborted. The existing target data set was not overwritten.");
                 });
             });
 
@@ -853,7 +853,7 @@ describe("Copy", () => {
                     }
                     expect(response?.success).toBeFalsy();
                     expect(error).toBeDefined();
-                    expect(error.message).toContain("Data set copied aborted. The existing target data set was not overwritten.");
+                    expect(error.message).toContain("Data set copy aborted. The existing target data set was not overwritten.");
                 });
             });
 
@@ -967,7 +967,7 @@ describe("Copy", () => {
                     }
                     expect(response?.success).toBeFalsy();
                     expect(error).toBeDefined();
-                    expect(error.message).toContain("Data set copied aborted. The existing target data set was not overwritten.");
+                    expect(error.message).toContain("Data set copy aborted. The existing target data set was not overwritten.");
                 });
             });
 
@@ -1082,7 +1082,7 @@ describe("Copy", () => {
                     }
                     expect(response?.success).toBeFalsy();
                     expect(error).toBeDefined();
-                    expect(error.message).toContain("Data set copied aborted. The existing target data set was not overwritten.");
+                    expect(error.message).toContain("Data set copy aborted. The existing target data set was not overwritten.");
                 });
             });
 
