@@ -19,7 +19,7 @@ import { ZosFilesMessages } from "../../../../src";
 import { getUniqueDatasetName } from "../../../../../../__tests__/__src__/TestUtils";
 import { ICreateZfsOptions } from "../../../../src/methods/create/doc/ICreateZfsOptions";
 import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/ITestEnvironment";
-
+import { Get } from "../../../../src";
 
 let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 let defaultSystem: ITestPropertiesSchema;
@@ -134,6 +134,31 @@ describe("Create data set", () => {
 
         expect(response.success).toBe(true);
         expect(response.commandResponse).toContain(ZosFilesMessages.dataSetCreatedSuccessfully.message);
+    }, LONGER_TIMEOUT);
+
+    it("should create a large sequential data set (PS-L)", async () => {
+        let error;
+        let response;
+
+        try {
+            response = await Create.dataSet(
+                REAL_SESSION,
+                CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL,
+                dsname,
+                    {primary:1,recfm:"FB",blksize:6160,lrecl:80,dsntype:"LARGE",showAttributes:true}
+            );
+            Imperative.console.info("Response: " + inspect(response));
+        } catch (err) {
+            error = err;
+            Imperative.console.info("Error: " + inspect(error));
+        }
+
+        expect(error).toBeFalsy();
+        expect(response).toBeTruthy();
+
+        expect(response.success).toBe(true);
+        expect(response.commandResponse).toContain(ZosFilesMessages.dataSetCreatedSuccessfully.message);
+        expect(response.commandResponse).toContain("LARGE");
     }, LONGER_TIMEOUT);
 
     it("should create a sequential data set with response timeout", async () => {
