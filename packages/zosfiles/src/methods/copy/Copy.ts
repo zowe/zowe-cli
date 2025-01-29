@@ -272,7 +272,7 @@ export class Copy {
                 /*
                 * If the source is a PDS and no member was specified then abort the copy.
                 */
-                if((sourceDataSetObj.dsorg.startsWith("PO") || sourceDataSetObj.dsorg.startsWith("PO-E")) && sourceMember == undefined){
+                if(sourceDataSetObj.dsorg.startsWith("PO") && sourceMember == undefined){
                     throw new ImperativeError({ msg: ZosFilesMessages.datasetCopiedAbortedNoPDS.message });
                 }
             }
@@ -316,7 +316,7 @@ export class Copy {
                     targetDataSetObj = TargetDsList.apiResponse.items[dsnameIndex];
                     targetFound = true;
 
-                    if((targetDataSetObj.dsorg == "PO" || targetDataSetObj.dsorg == "PO-E") && targetMember == undefined)
+                    if(targetDataSetObj.dsorg.startsWith("PO") && targetMember == undefined)
                     {
                         throw new ImperativeError({ msg: ZosFilesMessages.datasetCopiedAbortedTargetNotPDSMember.message });
                     }
@@ -346,11 +346,11 @@ export class Copy {
                 * If this is a PDS but the target is the sequential dataset and does not exist,
                 * create a new sequential dataset with the same parameters as the original PDS.
                 */
-                if((createOptions.dsorg == "PO" || createOptions.dsorg == "PO-E") && targetMember == undefined){
+                if(createOptions.dsorg.startsWith("PO") && targetMember == undefined){
                     createOptions.dsorg ="PS";
                     createOptions.dirblk = 0;
                 }
-                else if(targetMember != undefined &&  (createOptions.dsorg != "PO" && createOptions.dsorg != "PO-E"))
+                else if(targetMember != undefined &&  !createOptions.dsorg.startsWith("PO"))
                 {
                     createOptions.dsorg ="PO";
                     createOptions.dirblk = 1;
@@ -419,7 +419,7 @@ export class Copy {
             storclass: targetOptions.targetStorageClass,
             mgntclass: targetOptions.targetManagementClass,
             dataclass: targetOptions.targetDataClass,
-            dirblk: parseInt(dsInfo.dsorg == "PO" || dsInfo.dsorg == "PO-E"  ? "10" : "0")
+            dirblk: parseInt(dsInfo.dsorg.startsWith("PO") ? "10" : "0")
         }));
     }
 
