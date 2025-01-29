@@ -36,7 +36,6 @@ import * as SessConstants from "../session/SessConstants";
 import { CompressionUtils } from "./CompressionUtils";
 import { ProxySettings } from "./ProxySettings";
 
-
 export type RestClientResolve = (data: string) => void;
 
 /**
@@ -237,15 +236,30 @@ export abstract class AbstractRestClient {
         // When a user does NOT specify an authentication order, the following call
         // to cacheDefaultAuthOrder will set a default order with token at the top.
         // This is done to avoid introducing a breaking change to historical behavior.
-        // Note that the RestClient class overrides the default order to place
-        // basic auth at the top. Most of the Zowe client logic uses the RestClient
-        // (which alters the default order to place basic authentication at the top).
-        // Only consumers who extend classes directly from AbstractRestClient will have
-        // a default order with token at the top.
-        // The current best practice for consumers of these APIs is to extend classes
-        // from RestClient and instruct your users to place an 'authOrder' property
-        // into the related profile within their zowe.config.json file.
-        AuthOrder.cacheDefaultAuthOrder(SessConstants.AUTH_TYPE_TOKEN);
+        //
+        // Note that the RestClient class (and by extension, the ZosmfRestClient class)
+        // overrides the default order to place basic auth at the top.
+        // Our Zowe client APIs use those two classes, and expect basic authentication
+        // to be placed at the top.
+        //
+        // Only consumers who extend their own class directly from AbstractRestClient
+        // will have a default order with token at the top.
+        //
+        // The current best practice for consumers of any of these APIs is to let the
+        // default order maintain backward compatibility. If your app needs a credential
+        // that conflicts with credentials required by other profiles/services, you should
+        // instruct your end users to specify an 'authOrder' property in the profile
+        // related to your app within their zowe.config.json file.
+
+        if (this.constructor.name !== "RestClient" &&
+            this.constructor.name !== "ZosmfRestClient") {
+            // Maintain the historic behavior where other classes which extend from
+            // from AbstractRestClient have a default order with token at the top.
+            AuthOrder.cacheDefaultAuthOrder(SessConstants.AUTH_TYPE_TOKEN);
+
+            // Ensure that no other creds are in the session.
+            AuthOrder.putTopAuthInSession(mSession.ISession);
+        }
     }
 
     /**
@@ -280,7 +294,9 @@ export abstract class AbstractRestClient {
                 "You cannot specify both writeData and writeStream");
             const buildOptions = this.buildOptions(options.resource, options.request, options.reqHeaders);
 
-            // ensure that only the top available cred is left in the session
+            // This was originally done in the RestClient constructor. As a safety net
+            // to ensure that no logic has placed a different cred in the session since then,
+            // we again place only the top cred in the session.
             AuthOrder.putTopAuthInSession(this.session.ISession);
 
             /**
