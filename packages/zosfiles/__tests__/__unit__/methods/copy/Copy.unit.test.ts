@@ -857,6 +857,7 @@ describe("Copy", () => {
         const listAllMembersSpy   = jest.spyOn(List, "allMembers");
         const createDatasetSpy = jest.spyOn(Create, "dataSet");
         const uploadDatasetSpy = jest.spyOn(Upload, "bufferToDataSet");
+
         const psDataSetName = "TEST.PS.DATA.SET";
         const memberName    = "mem1";
         const poDataSetName = "TEST.PO.DATA.SET";
@@ -876,6 +877,12 @@ describe("Copy", () => {
             spacu: "TRK"
         };
 
+        const dataSetPOCYL = {
+            dsname: poDataSetName,
+            dsorg: "PO",
+            spacu: "CYL"
+        };
+
         beforeEach(() => {
             getDatasetSpy.mockClear();
             listDatasetSpy.mockClear();
@@ -892,9 +899,6 @@ describe("Copy", () => {
         describe("Success Scenarios", () => {
             describe("Sequential > Sequential", () => {
                 it("should send a request", async () => {
-                    let response;
-                    let caughtError;
-
                     listDatasetSpy.mockImplementation(async (): Promise<any>  => {
                         return {
                             apiResponse: {
@@ -907,17 +911,14 @@ describe("Copy", () => {
                         return Buffer.from("123456789abcd");
                     });
 
-                    try {
-                        response = await Copy.dataSetCrossLPAR(
-                            dummySession,
-                            { dsn: psDataSetName },
-                            { "from-dataset": { dsn: dataSetPS.dsname }, replace: true},
-                            { },
-                            dummySession
-                        );
-                    } catch (e) {
-                        caughtError = e;
-                    }
+
+                    const response = await Copy.dataSetCrossLPAR(
+                        dummySession,
+                        { dsn: psDataSetName },
+                        { "from-dataset": { dsn: dataSetPS.dsname }, replace: true},
+                        { },
+                        dummySession
+                    );
 
                     expect(response).toEqual({
                         success: true,
@@ -932,9 +933,7 @@ describe("Copy", () => {
 
             describe("Sequential > Sequential - no replace", () => {
                 it("should send a request", async () => {
-                    let response;
                     let caughtError;
-
                     listDatasetSpy.mockImplementation(async (): Promise<any>  => {
                         return {
                             apiResponse: {
@@ -948,7 +947,7 @@ describe("Copy", () => {
                     });
 
                     try {
-                        response = await Copy.dataSetCrossLPAR(
+                        await Copy.dataSetCrossLPAR(
                             dummySession,
                             { dsn: psDataSetName },
                             { "from-dataset": { dsn: dataSetPS.dsname }, replace: false},
@@ -959,6 +958,7 @@ describe("Copy", () => {
                         caughtError = e;
                     }
 
+                    expect(caughtError).toBeDefined();
                     expect(listDatasetSpy).toHaveBeenCalledTimes(2);
                     expect(getDatasetSpy).toHaveBeenCalledTimes(1);
                     expect(uploadDatasetSpy).toHaveBeenCalledTimes(0);
@@ -1009,9 +1009,88 @@ describe("Copy", () => {
                     expect(uploadDatasetSpy).toHaveBeenCalledTimes(1);
                 });
 
+                it("should send a request - TRK and validate spacu", async () => {
+                    listDatasetSpy.mockImplementation(async (): Promise<any> => {
+                        return {
+                            apiResponse: {
+                                returnedRows: 1,
+                                items: [dataSetPO],
+                            }
+                        };
+                    });
+
+                    listAllMembersSpy.mockImplementation(async (): Promise<any> => {
+                        return {
+                            apiResponse: {
+                                returnedRows: 1
+                            }
+                        };
+                    });
+
+                    const response = await Copy.dataSetCrossLPAR(
+                        dummySession,
+                        { dsn: poDataSetName, member: memberName },
+                        { "from-dataset": { dsn: poDataSetName, member: memberName }, replace: true },
+                        {},
+                        dummySession);
+
+                    // Assertions
+                    expect(response).toEqual({
+                        success: true,
+                        commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message
+                    });
+
+                    expect(listDatasetSpy).toHaveBeenCalledTimes(2);
+                    expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
+                    expect(listAllMembersSpy.mock.calls[0][2].start).toBe(memberName);
+                    expect(getDatasetSpy).toHaveBeenCalledTimes(1);
+                    expect(uploadDatasetSpy).toHaveBeenCalledTimes(1);
+                    expect(dataSetPO.spacu).toBe("TRK");
+                });
+
+                it("should send a request - CYL and validate spacu", async () => {
+                    listDatasetSpy.mockImplementation(async (): Promise<any> => {
+                        return {
+                            apiResponse: {
+                                returnedRows: 1,
+                                items: [dataSetPOCYL],
+                            }
+                        };
+                    });
+
+                    listAllMembersSpy.mockImplementation(async (): Promise<any> => {
+                        return {
+                            apiResponse: {
+                                returnedRows: 1
+                            }
+                        };
+                    });
+
+
+                    const response = await Copy.dataSetCrossLPAR(
+                        dummySession,
+                        { dsn: poDataSetName, member: memberName },
+                        { "from-dataset": { dsn: poDataSetName, member: memberName }, replace: true },
+                        {},
+                        dummySession
+                    );
+
+
+                    expect(response).toEqual({
+                        success: true,
+                        commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message
+                    });
+
+                    expect(listDatasetSpy).toHaveBeenCalledTimes(2);
+                    expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
+                    expect(listAllMembersSpy.mock.calls[0][2].start).toBe(memberName);
+                    expect(getDatasetSpy).toHaveBeenCalledTimes(1);
+                    expect(uploadDatasetSpy).toHaveBeenCalledTimes(1);
+                    expect(dataSetPOCYL.spacu).toBe("CYL");
+                });
+
                 describe("Sequential > Member", () => {
                     it("should send a request", async () => {
-                        let response;
                         let caughtError;
 
                         listDatasetSpy.mockReturnValueOnce({
@@ -1033,17 +1112,14 @@ describe("Copy", () => {
                             };
                         });
 
-                        try {
-                            response = await Copy.dataSetCrossLPAR(
-                                dummySession,
-                                { dsn: poDataSetName, member: memberName },
-                                { "from-dataset": { dsn: psDataSetName }, replace: true},
-                                { },
-                                dummySession
-                            );
-                        } catch (e) {
-                            caughtError = e;
-                        }
+                        const response = await Copy.dataSetCrossLPAR(
+                            dummySession,
+                            { dsn: poDataSetName, member: memberName },
+                            { "from-dataset": { dsn: psDataSetName }, replace: true},
+                            { },
+                            dummySession
+                        );
+
 
                         expect(response).toEqual({
                             success: true,

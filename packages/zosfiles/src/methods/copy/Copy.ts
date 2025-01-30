@@ -282,7 +282,7 @@ export class Copy {
                 /*
                 * If the source is a PDS and no member was specified then abort the copy.
                 */
-                if((sourceDataSetObj.dsorg == "PO" || sourceDataSetObj.dsorg == "POE") && sourceMember == undefined){
+                if(sourceDataSetObj.dsorg.startsWith("PO") && sourceMember == undefined){
                     throw new ImperativeError({ msg: ZosFilesMessages.datasetCopiedAbortedNoPDS.message });
                 }
             }
@@ -326,7 +326,7 @@ export class Copy {
                     targetDataSetObj = TargetDsList.apiResponse.items[dsnameIndex];
                     targetFound = true;
 
-                    if((targetDataSetObj.dsorg == "PO" || targetDataSetObj.dsorg == "POE") && targetMember == undefined)
+                    if(targetDataSetObj.dsorg.startsWith("PO") && targetMember == undefined)
                     {
                         throw new ImperativeError({ msg: ZosFilesMessages.datasetCopiedAbortedTargetNotPDSMember.message });
                     }
@@ -356,11 +356,11 @@ export class Copy {
                 * If this is a PDS but the target is the sequential dataset and does not exist,
                 * create a new sequential dataset with the same parameters as the original PDS.
                 */
-                if((createOptions.dsorg == "PO" || createOptions.dsorg == "POE") && targetMember == undefined){
+                if(createOptions.dsorg.startsWith("PO") && targetMember == undefined){
                     createOptions.dsorg ="PS";
                     createOptions.dirblk = 0;
                 }
-                else if(targetMember != undefined &&  (createOptions.dsorg != "PO" && createOptions.dsorg != "POE"))
+                else if(targetMember != undefined &&  !createOptions.dsorg.startsWith("PO"))
                 {
                     createOptions.dsorg ="PO";
                     createOptions.dirblk = 1;
@@ -429,21 +429,27 @@ export class Copy {
             storclass: targetOptions.targetStorageClass,
             mgntclass: targetOptions.targetManagementClass,
             dataclass: targetOptions.targetDataClass,
-            dirblk: parseInt(dsInfo.dsorg == "PO" || dsInfo.dsorg == "POE"  ? "10" : "0")
+            dirblk: parseInt(dsInfo.dsorg.startsWith("PO") ? "10" : "0")
         }));
     }
 
     /**
-     *  Private function to convert the ALC value from the format returned by the Get() call in to the format used by the Create() call
+     * Converts the ALC value from the format returned by the Get() call to the format used by the Create() call.
+     * @param {string} getValue - The ALC value from the Get() call.
+     * @returns {string} - The ALC value in the format used by the Create() call.
      */
-    private static convertAlcTozOSMF( zosmfValue: string): string {
+    private static convertAlcTozOSMF(getValue: string): string {
         /**
          *  Create dataset only accepts tracks or cylinders as allocation units.
          *  When the get() call retreives the dataset info, it will convert size
          *  allocations of the other unit types in to tracks. So we will always
          *  allocate the new target in tracks.
         */
-        return "TRK";
+        const alcMap: Record<string, string> = {
+            "TRACKS": "TRK",
+            "CYLINDERS": "CYL"
+        };
+        return alcMap[getValue.toUpperCase()] || "TRK";
     }
 }
 

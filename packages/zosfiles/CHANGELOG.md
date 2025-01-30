@@ -4,7 +4,10 @@ All notable changes to the Zowe z/OS files SDK package will be documented in thi
 
 ## Recent Changes
 
-- Bug Fix: The `Copy.data.set` function now prompts the user to confirm before overwriting the contents of the target data set with the addition of the `--safe-replace` option. [#2369] (https://github.com/zowe/zowe-cli/issues/2369)
+- BugFix: Fixed an issue in the `Copy.dataSetCrossLPAR()` function where the `spacu` attribute of the copied data set was always set to `TRK`, regardless of the source data set's attributes. [#2412](https://github.com/zowe/zowe-cli/issues/2412)
+- BugFix: The `Copy.data.set` function now prompts the user to confirm before overwriting the contents of the target data set with the addition of the `--safe-replace` option. [#2369] (https://github.com/zowe/zowe-cli/issues/2369)
+
+## `8.12.0`
 
 ## `8.12.0`
 - Enhancement: The `Copy.dataset` function now creates a new data set if the entered target data set does not exist. [#2349](https://github.com/zowe/zowe-cli/issues/2349)
