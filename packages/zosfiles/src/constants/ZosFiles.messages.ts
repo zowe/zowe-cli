@@ -678,7 +678,7 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
      * @type {IMessageDefinition}
      */
     datasetCopiedAborted: {
-        message: "Data set copied aborted. The existing target data set was not overwritten."
+        message: "Data set copy aborted. The existing target data set was not overwritten."
     },
 
     /**
