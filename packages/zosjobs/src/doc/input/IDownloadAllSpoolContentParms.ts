@@ -79,6 +79,14 @@ export interface IDownloadAllSpoolContentParms {
     encoding?: string;
 
     /**
+     * Optional record range
+     * e.g. 0-100
+     * @type {string}
+     * @memberof IDownloadAllSpoolContentParms
+     */
+    recordRange?: string;
+
+    /**
      * Wait for the job to reach output status
      */
     waitForActive?: boolean;
