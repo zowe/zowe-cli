@@ -1,6 +1,8 @@
 # Change Log
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+- Fix: Removed the `--` from the `safe-replace` option's alias. [#2423] (https://github.com/zowe/zowe-cli/pull/2423)
 
 ## Recent Changes
 

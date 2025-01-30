@@ -13,7 +13,7 @@ Array [
   Object {
     "aliases": Array [
       "safe-rep",
-      "--sr",
+      "sr",
     ],
     "description": "Specify this option as true if you wish to replace like-named members or the content of the target data set. This option will prompt to confirm.",
     "name": "safe-replace",
