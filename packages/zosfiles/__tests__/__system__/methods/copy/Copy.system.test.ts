@@ -22,6 +22,7 @@ import { ITestEnvironment } from "../../../../../../__tests__/__src__/environmen
 import { tmpdir } from "os";
 import path = require("path");
 import * as fs from "fs";
+import { List } from "@zowe/zos-files-for-zowe-sdk";
 
 let REAL_SESSION: Session;
 let REAL_TARGET_SESSION: Session;
@@ -29,6 +30,8 @@ let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 let defaultSystem: ITestPropertiesSchema;
 let defaultTargetSystem: ITestPropertiesSchema;
 let fromDataSetName: string;
+let fromDataSetNameTracks: string;
+let fromDataSetNameCylinders: string;
 let toDataSetName: string;
 
 const file1 = "file1";
@@ -44,6 +47,8 @@ describe("Copy", () => {
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
         REAL_TARGET_SESSION = REAL_SESSION;
         fromDataSetName = `${defaultSystem.zosmf.user.trim().toUpperCase()}.DATA.ORIGINAL`;
+        fromDataSetNameTracks = `${defaultSystem.zosmf.user.trim().toUpperCase()}.DATA.TRKORG`;
+        fromDataSetNameCylinders = `${defaultSystem.zosmf.user.trim().toUpperCase()}.DATA.CYLORG`;
         toDataSetName = `${defaultSystem.zosmf.user.trim().toUpperCase()}.DATA.COPY`;
     });
 
@@ -891,10 +896,18 @@ describe("Copy", () => {
             });
 
             describe("Success cases", () => {
-                it("should copy the source to the destination data set and allocate the dataset", async() => {
+                it("should copy the source to the destination data set and allocate the dataset - CYLINDERS", async() => {
+                    try {
+                        await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, fromDataSetNameCylinders, {alcunit: "CYL"});
+                        await Upload.fileToDataset(REAL_SESSION, fileLocation, fromDataSetNameCylinders);
+                    } catch (err) {
+                        Imperative.console.info(`Error: ${inspect(err)}`);
+                    }
+
                     let error: any;
                     let response: IZosFilesResponse | undefined = undefined;
                     let contents: Buffer;
+                    let listAttributes;
                     const TEST_TARGET_SESSION = REAL_TARGET_SESSION;
                     const toDataset: IDataSet = { dsn: toDataSetName, member: file1 };
                     const fromOptions: IGetOptions = {
@@ -903,22 +916,82 @@ describe("Copy", () => {
                         record: false
                     };
                     const options: ICrossLparCopyDatasetOptions = {
-                        "from-dataset": { dsn: fromDataSetName },
+                        "from-dataset": { dsn: fromDataSetNameCylinders },
                         responseTimeout: 5,
                         replace: false
                     };
                     const toDataSetString = `${toDataset.dsn}(${toDataset.member})`;
                     try {
+                        listAttributes = (await List.dataSet(REAL_SESSION, fromDataSetNameCylinders, {attributes: true})).apiResponse.items;
                         response = await Copy.dataSetCrossLPAR(REAL_SESSION, toDataset, options, fromOptions, TEST_TARGET_SESSION);
                         contents = await Get.dataSet(TEST_TARGET_SESSION, toDataSetString);
                     } catch (err) {
                         error = err;
                     }
+
+                    expect(listAttributes[0].spacu).toEqual("CYLINDERS");
                     expect(response?.success).toBeTruthy();
                     expect(error).not.toBeDefined();
                     expect(response?.errorMessage).not.toBeDefined();
                     expect(response?.commandResponse).toContain("Data set copied successfully");
                     expect(contents.toString().trim()).toBe(readFileSync(fileLocation).toString());
+
+                    try {
+                        await Delete.dataSet(REAL_SESSION, fromDataSetNameCylinders);
+                        await Delete.dataSet(REAL_SESSION, toDataSetName);
+                    } catch (err) {
+                        Imperative.console.info(`Error: ${inspect(err)}`);
+                    }
+                });
+
+                it("should copy the source to the destination data set and allocate the dataset - TRACKS", async() => {
+                    try {
+                        await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, fromDataSetNameTracks, {alcunit: "TRK"});
+                        await Upload.fileToDataset(REAL_SESSION, fileLocation, fromDataSetNameTracks);
+                    } catch (err) {
+                        Imperative.console.info(`Error: ${inspect(err)}`);
+                    }
+
+                    let error: any;
+                    let response: IZosFilesResponse | undefined = undefined;
+                    let contents: Buffer;
+                    let listAttributes;
+                    const TEST_TARGET_SESSION = REAL_TARGET_SESSION;
+
+                    // Append "1" such that it is not an existing data set and thus will reach generateDatasetOptions() within Copy.ts
+                    const toDataset: IDataSet = { dsn: toDataSetName, member: file1 };
+                    const fromOptions: IGetOptions = {
+                        binary: false,
+                        encoding: undefined,
+                        record: false
+                    };
+                    const options: ICrossLparCopyDatasetOptions = {
+                        "from-dataset": { dsn: fromDataSetNameTracks },
+                        responseTimeout: 5,
+                        replace: false
+                    };
+                    const toDataSetString = `${toDataset.dsn}(${toDataset.member})`;
+                    try {
+                        listAttributes = (await List.dataSet(REAL_SESSION, fromDataSetNameTracks, {attributes: true})).apiResponse.items;
+                        response = await Copy.dataSetCrossLPAR(REAL_SESSION, toDataset, options, fromOptions, TEST_TARGET_SESSION);
+                        contents = await Get.dataSet(TEST_TARGET_SESSION, toDataSetString);
+                    } catch (err) {
+                        error = err;
+                    }
+
+                    expect(listAttributes[0].spacu).toEqual("TRACKS");
+                    expect(response?.success).toBeTruthy();
+                    expect(error).not.toBeDefined();
+                    expect(response?.errorMessage).not.toBeDefined();
+                    expect(response?.commandResponse).toContain("Data set copied successfully");
+                    expect(contents.toString().trim()).toBe(readFileSync(fileLocation).toString());
+
+                    try {
+                        await Delete.dataSet(REAL_SESSION, fromDataSetNameTracks);
+                        await Delete.dataSet(REAL_SESSION, toDataSetName);
+                    } catch (err) {
+                        Imperative.console.info(`Error: ${inspect(err)}`);
+                    }
                 });
 
                 it("should overwrite the destination data set member", async() => {
