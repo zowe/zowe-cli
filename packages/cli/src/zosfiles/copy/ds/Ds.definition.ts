@@ -53,6 +53,12 @@ export const DsDefinition: ICommandDefinition = {
             aliases: ["rep"],
             description: strings.OPTIONS.REPLACE,
             type: "boolean"
+        },
+        {
+            name: "safe-replace",
+            aliases: ["safe-rep", "--sr"],
+            description: strings.OPTIONS.SAFE_REPLACE,
+            type: "boolean",
         }
     ] as ICommandOptionDefinition[]).sort((a, b) =>
         a.name.localeCompare(b.name)
@@ -77,6 +83,10 @@ export const DsDefinition: ICommandDefinition = {
         {
             description: strings.EXAMPLES.EX5,
             options: `"USER.FROM.SET" "USER.TO.SET" --replace`
+        },
+        {
+            description: strings.EXAMPLES.EX6,
+            options: `"USER.FROM.SET" "USER.TO.SET" --safe-replace`
         }
     ]
 };
