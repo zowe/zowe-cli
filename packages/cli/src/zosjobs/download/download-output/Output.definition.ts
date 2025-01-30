@@ -86,11 +86,22 @@ export const OutputDefinition: ICommandDefinition = {
             type: "boolean",
             conflictsWith: ["wait-for-active"]
         },
+        {
+            name: "record-range",
+            aliases: ["rr"],
+            description: "Zero indexed range of records to download from a spool file. (example: 0-100)",
+            type: "string",
+            optional: true
+        }
     ] as ICommandOptionDefinition[]),
     examples: [
         {
             description: "Download all the output of the job with job ID JOB00234 to an automatically generated directory.",
             options: "JOB00234"
+        },
+        {
+            description: "Download the records in the range of 0 to 100 from a job spool.",
+            options: "--record-range '0-100'"
         }
     ]
 };

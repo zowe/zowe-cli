@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, IHandlerParameters } from "@zowe/imperative";
+import { AbstractSession, IHandlerParameters, IHandlerResponseConsoleApi } from "@zowe/imperative";
 import { Copy, IZosFilesResponse, IDataSet, ICopyDatasetOptions, ZosFilesUtils } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
 
@@ -24,9 +24,21 @@ export default class DsHandler extends ZosFilesBaseHandler {
             "from-dataset": fromDataSet,
             enq: commandParameters.arguments.enq,
             replace: commandParameters.arguments.replace,
-            responseTimeout: commandParameters.arguments.responseTimeout
+            responseTimeout: commandParameters.arguments.responseTimeout,
+            safeReplace: commandParameters.arguments.safeReplace,
+            promptFn: this.promptForSafeReplace(commandParameters.response.console)
         };
 
         return Copy.dataSet(session, toDataSet, options);
+    }
+
+    private promptForSafeReplace(console: IHandlerResponseConsoleApi) {
+        return async (targetDSN: string) => {
+            const answer: string = await console.prompt(
+                `The dataset '${targetDSN}' exists on the target system. This copy will result in data loss.` +
+                ` Are you sure you want to continue? [y/N]: `
+            );
+            return answer != null && (answer.toLowerCase() === "y" || answer.toLowerCase() === "yes");
+        };
     }
 }

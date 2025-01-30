@@ -85,7 +85,7 @@ Object {
     "message": "Data set allocation aborted. The \\"allocate like\\" data set was not found.",
   },
   "datasetCopiedAborted": Object {
-    "message": "Data set copied aborted. The existing target data set was not overwritten.",
+    "message": "Data set copy aborted. The existing target data set was not overwritten.",
   },
   "datasetCopiedAbortedNoPDS": Object {
     "message": "Data set copied aborted. Copying from a PDS to PDS is not supported when using the 'dsclp' option.",
