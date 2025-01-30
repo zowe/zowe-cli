@@ -199,7 +199,8 @@ describe("Create Partitioned Data Set", () => {
         it("should fail creating a partitioned data set extended due to invalid data-set-type", () => {
             const response = runCliScript(__dirname + "/__scripts__/command/command_create_pdse_fail_dsntype.sh",
                 TEST_ENVIRONMENT, [user]);
-            expect(response.stderr.toString()).toContain("Invalid zos-files create command 'dsntype' option: NONLIBRARY");
+            expect(response.stderr.toString()).toContain("Unable to perform this operation due to the following problem.");
+            expect(response.stderr.toString()).toContain("NONLIBRARY");
         });
 
         it("should fail creating a partitioned data set due to exceeding maximum value for size (primary space)", () => {
