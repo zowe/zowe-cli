@@ -483,12 +483,10 @@ export class EnvQuery {
                 nextVar != "ZOWE_APP_LOG_LEVEL" && nextVar != "ZOWE_IMPERATIVE_LOG_LEVEL")
             {
                 getResult.itemValMsg += nextVar + " = " ;
-                if (secureCredsList.includes(nextVar.toUpperCase()))
-                {
+                if (secureCredsList.some(secureOpt => nextVar.toUpperCase().includes(secureOpt))) {
                     getResult.itemValMsg += "******";
                 } else {
                     getResult.itemValMsg += envVars[nextVar];
-
                 }
                 getResult.itemValMsg += os.EOL;
             }

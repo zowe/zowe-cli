@@ -22,6 +22,7 @@ beforeAll(() => {
 
 afterAll(() => {
     jest.restoreAllMocks();
+    Censor.setCensoredOptions();
 });
 
 describe("Censor tests", () => {
@@ -258,7 +259,11 @@ describe("Censor tests", () => {
                     properties: {
                         test: {
                             type: "string",
-                            description: "Fake Test Description"
+                            optionDefinition: {
+                                name: "test",
+                                type: "string",
+                                description: "Fake Test Description"
+                            }
                         }
                     }
                 }
@@ -274,6 +279,93 @@ describe("Censor tests", () => {
         it("should return nothing", () => {
             impConfigSpy.mockReturnValue({});
             expect(Censor.profileSchemas).toEqual([]);
+        });
+    });
+
+    describe("isSpecialValues", () => {
+        let impConfigSpy: jest.SpyInstance = null;
+
+        beforeEach(() => {
+            (Censor as any).mSchema = null;
+            impConfigSpy = jest.spyOn(ImperativeConfig, "instance", "get");
+        });
+
+        afterAll(() => {
+            (Censor as any).mSchema = null;
+        });
+
+        describe("default list", () => {
+            for(const opt of Censor.SECURE_PROMPT_OPTIONS) {
+                it(`should return true for ${opt}`, () => {
+                    expect(Censor.isSpecialValue("profiles.secret.properties." + opt)).toBe(true);
+                });
+            }
+
+            it("should return false for option 'test' when no profile schema is set", () => {
+                expect(Censor.isSpecialValue("profiles.test.properties.test")).toBe(false);
+            });
+
+            it("should return true for option 'test' when profile schema is set 1", () => {
+                const mockedProfiles = [{
+                    type: "test",
+                    schema: {
+                        title: "Fake Profile Type",
+                        description: "Fake Profile Description",
+                        type: "object",
+                        properties: {
+                            test: {
+                                type: "string",
+                                secure: true,
+                                optionDefinition: {
+                                    name: "test",
+                                    type: "string",
+                                    description: "Fake Test Description",
+                                }
+                            }
+                        }
+                    }
+                }];
+                impConfigSpy.mockReturnValue({
+                    loadedConfig: {
+                        profiles: mockedProfiles
+                    }
+                });
+                expect(Censor.isSpecialValue("profiles.test.properties.test")).toBe(true);
+            });
+
+            it("should return true for option 'test' when profile schema is set 2", () => {
+                const mockedProfiles = [{
+                    type: "test",
+                    schema: {
+                        title: "Fake Profile Type",
+                        description: "Fake Profile Description",
+                        type: "object",
+                        properties: {
+                            test: {
+                                type: "string",
+                                secure: true,
+                                optionDefinitions: [{
+                                    name: "test1",
+                                    type: "string",
+                                    description: "Fake Test Description"
+                                }, {
+                                    name: "test2",
+                                    type: "string",
+                                    description: "Fake Test Description"
+                                }]
+                            }
+                        }
+                    }
+                }];
+                impConfigSpy.mockReturnValue({
+                    loadedConfig: {
+                        profiles: mockedProfiles
+                    }
+                });
+                expect(Censor.isSpecialValue("profiles.test.properties.test")).toBe(false);
+                expect(Censor.isSpecialValue("profiles.test.properties.test1")).toBe(true);
+                expect(Censor.isSpecialValue("profiles.test.properties.test2")).toBe(true);
+            });
         });
     });
 });

@@ -101,9 +101,12 @@ export class Censor {
      * @param {string} option - The option to censor
      */
     public static addCensoredOption(option: string) {
-        this.censored_options.add(option);
-        this.censored_options.add(CliUtils.getOptionFormat(option).camelCase);
-        this.censored_options.add(CliUtils.getOptionFormat(option).kebabCase);
+        // This option is required, but we do not want to ever allow null or undefined itself into the censored options
+        if (option != null) {
+            this.censored_options.add(option);
+            this.censored_options.add(CliUtils.getOptionFormat(option).camelCase);
+            this.censored_options.add(CliUtils.getOptionFormat(option).kebabCase);
+        }
     }
 
     /**
@@ -154,17 +157,26 @@ export class Censor {
             if (censorOpts.profiles) {this.setProfileSchemas(censorOpts.profiles);}
 
             for (const profileType of this.profileSchemas ?? []) {
-                for (const [propName, propValue] of Object.entries(profileType.schema.properties)) {
-                    // Include the property itself
-                    if (propValue.secure) {
-                        this.addCensoredOption(propName);
-                    }
-
-                    // Include any known aliases (if available)
-                    if ((propValue as ICommandProfileProperty).optionDefinition?.aliases != null) {
-                        for (const alias of (propValue as ICommandProfileProperty).optionDefinition.aliases) {
-                            this.addCensoredOption(alias);
+                for (const [_, prop] of Object.entries(profileType.schema.properties)) {
+                    // Add censored options from the schema if the option is secure
+                    if (prop.secure) {
+                        // Handle the case of a single option definition
+                        if (prop.optionDefinition) {
+                            this.addCensoredOption(prop.optionDefinition.name);
+                            for (const alias of prop.optionDefinition.aliases || []) {
+                                // Remember to add the alias
+                                this.addCensoredOption(alias);
+                            }
                         }
+
+                        // Handle the case of multiple option definitions
+                        prop.optionDefinitions?.map(opDef => {
+                            this.addCensoredOption(opDef.name);
+                            for (const alias of opDef.aliases || []) {
+                                // Remember to add the alias
+                                this.addCensoredOption(alias);
+                            }
+                        });
                     }
                 }
             }
