@@ -30,6 +30,15 @@ Array [
   },
   Object {
     "aliases": Array [
+      "dst",
+      "dsntype",
+    ],
+    "description": "The data set type (BASIC, EXTPREF, EXTREQ, HFS, LARGE, PDS, LIBRARY, PIPE)",
+    "name": "data-set-type",
+    "type": "string",
+  },
+  Object {
+    "aliases": Array [
       "dt",
       "unit",
     ],
