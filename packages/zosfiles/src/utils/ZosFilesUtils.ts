@@ -19,9 +19,13 @@ import { ZosmfRestClient, ZosmfHeaders } from "@zowe/core-for-zowe-sdk";
 import { IDeleteOptions } from "../methods/hDelete";
 import { IOptions } from "../doc/IOptions";
 import { IDataSet } from "../doc/IDataSet";
-
+interface ExtendedOptions extends IOptions {
+    etag?: string;
+    returnEtag?: boolean;
+    recall?: string;
+}
 /**
- * Common IO utilities
+ * Common ZosFiles Utilities
  */
 export class ZosFilesUtils {
     /**
@@ -37,6 +41,84 @@ export class ZosFilesUtils {
     public static readonly DEFAULT_FILE_EXTENSION: string = "txt";
 
     public static readonly MAX_MEMBER_LENGTH: number = 8;
+
+    // public static generateHeaders(options: Record<string, any>, payload?: any): IHeaderContent[] {
+    //     const headersMap: Record<string, string> = {
+    //         "Accept-Encoding": "gzip",
+    //     };
+
+    //     // Add Content-Length only if a payload exists
+    //     if (payload) {
+    //         headersMap["Content-Length"] = JSON.stringify(payload).length.toString();
+    //     }
+
+    //     // Process headers based on OPTION_DEFINITIONS
+    //     for (const [key, value] of Object.entries(options)) {
+    //         if (value == null) continue;
+
+    //         const mapping = this.OPTION_DEFINITIONS[key];
+    //         if (mapping) {
+    //             let transformedValue: string | undefined;
+
+    //             switch (mapping.transform) {
+    //                 case "boolean":
+    //                     transformedValue = value ? "true" : "false";
+    //                     break;
+    //                 case "number":
+    //                     transformedValue = value.toString();
+    //                     break;
+    //                 default:
+    //                     transformedValue = value;
+    //             }
+
+    //             if (transformedValue !== undefined) {
+    //                 headersMap[mapping.headerName] = transformedValue;
+    //             }
+    //         }
+    //     }
+
+    //     // Handle special cases (Data-Type, Content-Type, Recall, Volume)
+    //     if (options.binary) {
+    //         headersMap["X-IBM-Data-Type"] = "binary";
+    //         headersMap["Content-Type"] = "application/octet-stream";
+    //     } else if (options.record) {
+    //         headersMap["X-IBM-Data-Type"] = "record";
+    //         headersMap["Content-Type"] = "text/plain";
+    //     } else if (options.encoding) {
+    //         headersMap["X-IBM-Data-Type"] = `text;fileEncoding=${options.encoding}`;
+    //         headersMap["Content-Type"] = `text/plain;fileEncoding=${options.encoding}`;
+    //     } else if (!headersMap["Content-Type"]) {
+    //         headersMap["Content-Type"] = "application/json";
+    //     }
+
+    //     if (options.recall) {
+    //         switch (options.recall.toLowerCase()) {
+    //             case "wait":
+    //                 headersMap["X-IBM-Migrated-Recall-Wait"] = "true";
+    //                 break;
+    //             case "nowait":
+    //                 headersMap["X-IBM-Migrated-Recall-No-Wait"] = "true";
+    //                 break;
+    //             case "error":
+    //                 headersMap["X-IBM-Migrated-Recall-Error"] = "true";
+    //                 break;
+    //         }
+    //     }
+
+    //     if (options.volume) {
+    //         headersMap["X-IBM-Volume"] = options.volume;
+    //     }
+
+    //     if (options.returnEtag) {
+    //         headersMap["X-IBM-Return-Etag"] = "true";
+    //     }
+
+    //     if (options.responseTimeout != null) {
+    //         headersMap["X-IBM-Response-Timeout"] = options.responseTimeout.toString();
+    //     }
+
+    //     return Object.entries(headersMap).map(([header, value]) => ({ [header]: value }));
+    // }
 
     /**
      * Break up a dataset name of either:
@@ -114,40 +196,89 @@ export class ZosFilesUtils {
     }
 
     /**
-     * Common method to build headers given input options object
+     * Generate headers for z/OSMF requests
+     * - Sets binary/record/text for X-IBM-Data-Type
+     * - Adds gzip if not binary or record
+     * - Adds responseTimeout if needed
+     * - Optionally calculates Content-Length if a payload is supplied
+     * - Optionally includes ETag headers if passed
      * @private
      * @static
      * @param {IOptions} options - various options
+     * @param payload - Optional request body to compute Content-Length
+
      * @returns {IHeaderContent[]}
      * @memberof ZosFilesUtils
      */
-    public static generateHeadersBasedOnOptions(options: IOptions): IHeaderContent[] {
+    public static generateHeadersBasedOnOptions<T extends ExtendedOptions>(
+        options: T,
+        payload?: any
+    ): IHeaderContent[] {
         const reqHeaders: IHeaderContent[] = [];
 
-        if (options.binary) {
-            reqHeaders.push(ZosmfHeaders.X_IBM_BINARY);
-        } else if (options.record) {
-            reqHeaders.push(ZosmfHeaders.X_IBM_RECORD);
-        } else if (options.encoding) {
-
-            const keys: string[] = Object.keys(ZosmfHeaders.X_IBM_TEXT);
-            const value = ZosmfHeaders.X_IBM_TEXT[keys[0]] + ZosmfHeaders.X_IBM_TEXT_ENCODING + options.encoding;
-            const header: any = Object.create(ZosmfHeaders.X_IBM_TEXT);
-            header[keys[0]] = value;
-            reqHeaders.push(header);
-
-        } else {
-            // do nothing
+        // If request body, add Content-Length
+        if (payload) {
+            const contentLength = JSON.stringify(payload).length.toString();
+            reqHeaders.push({ [Headers.CONTENT_LENGTH]: contentLength });
         }
 
-        // TODO:gzip Always accept encoding after z/OSMF truncating gzipped binary data is fixed
-        // See https://github.com/zowe/zowe-cli/issues/1170
+        // Decide X-IBM-Data-Type + Content-Type
+        if (!options.binary && !options.record) {
+            reqHeaders.push({ [Headers.CONTENT_TYPE]: "application/json" });
+        } else if (options.binary) {
+            reqHeaders.push({ [Headers.CONTENT_TYPE]: "application/octet-stream" });
+            reqHeaders.push({ "X-IBM-Data-Type": "binary" });
+        } else if (options.encoding) {
+                reqHeaders.push({ "X-IBM-Data-Type": `text;fileEncoding=${options.encoding}` });
+                reqHeaders.push({ [Headers.CONTENT_TYPE]: `text/plain;fileEncoding=${options.encoding}` });
+        } else if (options.record) {
+            reqHeaders.push({ "X-IBM-Data-Type": "record" });
+            reqHeaders.push({ [Headers.CONTENT_TYPE]: "text/plain" });
+        }
+
+        if (options.binary) {
+            reqHeaders.push({ "X-IBM-Data-Type": "binary" });
+            reqHeaders.push({ [Headers.CONTENT_TYPE]: "application/octet-stream" });
+        } else if (options.record) {
+            reqHeaders.push({ "X-IBM-Data-Type": "record" });
+            reqHeaders.push({ [Headers.CONTENT_TYPE]: "text/plain" });
+        } else if (options.encoding) {
+            reqHeaders.push({ "X-IBM-Data-Type": `text;fileEncoding=${options.encoding}` });
+            reqHeaders.push({ [Headers.CONTENT_TYPE]: `text/plain;fileEncoding=${options.encoding}` });
+        } else {
+            reqHeaders.push({ [Headers.CONTENT_TYPE]: "application/json" });
+        }
+
+        // Enable gzip if not binary or record
         if (!options.binary && !options.record) {
             reqHeaders.push(ZosmfHeaders.ACCEPT_ENCODING);
         }
 
+        // Include response timeout if specified
         if (options.responseTimeout != null) {
-            reqHeaders.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
+            reqHeaders.push({
+                [ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()
+            });
+        }
+
+        // ETag handling
+        if (options.etag) {
+            reqHeaders.push({ "If-Match": options.etag });
+        }
+        if (options.returnEtag) {
+            reqHeaders.push({ "X-IBM-Return-Etag": "true" });
+        }
+
+        // Support additional options like recall and volume if needed
+        if (options.recall) {
+            switch (options.recall.toLowerCase()) {
+                case "wait":   reqHeaders.push({ "X-IBM-Migrated-Recall": "wait" });   break;
+                case "nowait": reqHeaders.push({ "X-IBM-Migrated-Recall": "nowait" }); break;
+                case "error":  reqHeaders.push({ "X-IBM-Migrated-Recall": "error" });  break;
+            }
+        }
+        if (options.volume) {
+            reqHeaders.push({ "X-IBM-Volume": options.volume });
         }
 
         return reqHeaders;

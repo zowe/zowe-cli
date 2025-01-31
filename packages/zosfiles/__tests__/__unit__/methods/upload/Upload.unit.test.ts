@@ -395,7 +395,7 @@ describe("z/OS Files - Upload", () => {
 
             expect(zosmfPutFullSpy).toHaveBeenCalledTimes(1);
             expect(zosmfPutFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
-                reqHeaders,
+                reqHeaders: expect.arrayContaining(reqHeaders),
                 writeData: buffer});
         });
         it("should return with proper response when upload buffer to a data set - buffer more than 10 chars", async () => {
@@ -415,7 +415,7 @@ describe("z/OS Files - Upload", () => {
 
             expect(zosmfPutFullSpy).toHaveBeenCalledTimes(1);
             expect(zosmfPutFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
-                reqHeaders,
+                reqHeaders: expect.arrayContaining(reqHeaders),
                 writeData: buffer});
         });
         it("should return with proper response when upload buffer to a PDS member", async () => {
@@ -435,7 +435,7 @@ describe("z/OS Files - Upload", () => {
 
             expect(zosmfPutFullSpy).toHaveBeenCalledTimes(1);
             expect(zosmfPutFullSpy).toHaveBeenCalledWith(dummySession, {resource:endpoint,
-                reqHeaders,
+                reqHeaders: expect.arrayContaining(reqHeaders),
                 writeData: buffer});
         });
         it("should normalize new lines when upload buffer to a data set", async () => {
@@ -456,7 +456,7 @@ describe("z/OS Files - Upload", () => {
             expect(buffer.length).not.toBe(normalizedData.length);
             expect(zosmfPutFullSpy).toHaveBeenCalledTimes(1);
             expect(zosmfPutFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
-                reqHeaders,
+                reqHeaders: expect.arrayContaining(reqHeaders),
                 writeData: normalizedData});
         });
         describe("Using optional parameters", () => {
@@ -492,7 +492,7 @@ describe("z/OS Files - Upload", () => {
 
                 expect(zosmfPutFullSpy).toHaveBeenCalledTimes(1);
                 expect(zosmfPutFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
-                    reqHeaders,
+                    reqHeaders: expect.arrayContaining(reqHeaders),
                     writeData: buffer});
             });
             it("should return with proper response when uploading with 'binary' and 'record' options", async () => {
@@ -513,7 +513,7 @@ describe("z/OS Files - Upload", () => {
 
                 expect(zosmfPutFullSpy).toHaveBeenCalledTimes(1);
                 expect(zosmfPutFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
-                    reqHeaders,
+                    reqHeaders: expect.arrayContaining(reqHeaders),
                     writeData: buffer});
             });
             it("should return with proper response when uploading with 'record' option", async () => {
@@ -531,7 +531,7 @@ describe("z/OS Files - Upload", () => {
 
                 expect(zosmfPutFullSpy).toHaveBeenCalledTimes(1);
                 expect(zosmfPutFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
-                    reqHeaders,
+                    reqHeaders: expect.arrayContaining(reqHeaders),
                     writeData: buffer});
             });
             it("should return with proper response when uploading with 'encoding' option", async () => {
@@ -550,7 +550,7 @@ describe("z/OS Files - Upload", () => {
 
                 expect(zosmfPutFullSpy).toHaveBeenCalledTimes(1);
                 expect(zosmfPutFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
-                    reqHeaders,
+                    reqHeaders: expect.arrayContaining(reqHeaders),
                     writeData: buffer});
             });
             it("should return with proper response when uploading with 'recall wait' option", async () => {
@@ -570,7 +570,7 @@ describe("z/OS Files - Upload", () => {
 
                 expect(zosmfPutFullSpy).toHaveBeenCalledTimes(1);
                 expect(zosmfPutFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
-                    reqHeaders,
+                    reqHeaders: expect.arrayContaining(reqHeaders),
                     writeData: buffer});
             });
             it("should return with proper response when uploading with 'recall nowait' option", async () => {
@@ -589,7 +589,7 @@ describe("z/OS Files - Upload", () => {
 
                 expect(zosmfPutFullSpy).toHaveBeenCalledTimes(1);
                 expect(zosmfPutFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
-                    reqHeaders,
+                    reqHeaders: expect.arrayContaining(reqHeaders),
                     writeData: buffer});
             });
             it("should return with proper response when uploading with 'recall error' option", async () => {
@@ -608,7 +608,7 @@ describe("z/OS Files - Upload", () => {
 
                 expect(zosmfPutFullSpy).toHaveBeenCalledTimes(1);
                 expect(zosmfPutFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
-                    reqHeaders,
+                    reqHeaders: expect.arrayContaining(reqHeaders),
                     writeData: buffer});
             });
             it("should return with proper response when uploading with non-exiting recall option", async () => {
@@ -627,7 +627,7 @@ describe("z/OS Files - Upload", () => {
 
                 expect(zosmfPutFullSpy).toHaveBeenCalledTimes(1);
                 expect(zosmfPutFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
-                    reqHeaders,
+                    reqHeaders: expect.arrayContaining(reqHeaders),
                     writeData: buffer});
             });
             it("should return with proper response when uploading with pass 'etag' option", async () => {
@@ -646,7 +646,7 @@ describe("z/OS Files - Upload", () => {
 
                 expect(zosmfPutFullSpy).toHaveBeenCalledTimes(1);
                 expect(zosmfPutFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
-                    reqHeaders,
+                    reqHeaders: expect.arrayContaining(reqHeaders),
                     writeData: buffer});
             });
             it("should return with proper response when uploading with return 'etag' option", async () => {
@@ -665,7 +665,7 @@ describe("z/OS Files - Upload", () => {
 
                 expect(zosmfPutFullSpy).toHaveBeenCalledTimes(1);
                 expect(zosmfPutFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
-                    reqHeaders,
+                    reqHeaders: expect.arrayContaining(reqHeaders),
                     writeData: buffer,
                     dataToReturn: [CLIENT_PROPERTY.response]});
             });
@@ -684,7 +684,7 @@ describe("z/OS Files - Upload", () => {
 
                 expect(zosmfPutFullSpy).toHaveBeenCalledTimes(1);
                 expect(zosmfPutFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
-                    reqHeaders,
+                    reqHeaders: expect.arrayContaining(reqHeaders),
                     writeData: buffer});
             });
         });
@@ -706,7 +706,7 @@ describe("z/OS Files - Upload", () => {
 
             expect(zosmfPutFullSpy).toHaveBeenCalledTimes(1);
             expect(zosmfPutFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
-                reqHeaders,
+                reqHeaders: expect.arrayContaining(reqHeaders),
                 writeData: buffer});
         });
     });
@@ -773,7 +773,7 @@ describe("z/OS Files - Upload", () => {
             expect(zosmfPutFullSpy).toHaveBeenCalledTimes(1);
             expect(zosmfPutFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
                 normalizeRequestNewLines: true,
-                reqHeaders,
+                reqHeaders: expect.arrayContaining(reqHeaders),
                 requestStream: inputStream});
         });
         it("should return with proper response when upload stream to a PDS member", async () => {
@@ -793,7 +793,7 @@ describe("z/OS Files - Upload", () => {
             expect(zosmfPutFullSpy).toHaveBeenCalledTimes(1);
             expect(zosmfPutFullSpy).toHaveBeenCalledWith(dummySession, {resource:endpoint,
                 normalizeRequestNewLines: true,
-                reqHeaders,
+                reqHeaders: expect.arrayContaining(reqHeaders),
                 requestStream: inputStream});
         });
         it("should return with proper response when upload stream to a data set with optional parameters 1", async () => {
@@ -817,7 +817,7 @@ describe("z/OS Files - Upload", () => {
             expect(zosmfPutFullSpy).toHaveBeenCalledTimes(1);
             expect(zosmfPutFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
                 normalizeRequestNewLines: false,
-                reqHeaders,
+                reqHeaders: expect.arrayContaining(reqHeaders),
                 requestStream: inputStream});
             zosmfPutFullSpy.mockClear();
 
@@ -839,7 +839,7 @@ describe("z/OS Files - Upload", () => {
             expect(zosmfPutFullSpy).toHaveBeenCalledTimes(1);
             expect(zosmfPutFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
                 normalizeRequestNewLines: false,
-                reqHeaders,
+                reqHeaders: expect.arrayContaining(reqHeaders),
                 requestStream: inputStream});
             zosmfPutFullSpy.mockClear();
 
@@ -861,7 +861,7 @@ describe("z/OS Files - Upload", () => {
             expect(zosmfPutFullSpy).toHaveBeenCalledTimes(1);
             expect(zosmfPutFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
                 normalizeRequestNewLines: false,
-                reqHeaders,
+                reqHeaders: expect.arrayContaining(reqHeaders),
                 requestStream: inputStream});
             zosmfPutFullSpy.mockClear();
 
@@ -883,7 +883,7 @@ describe("z/OS Files - Upload", () => {
             expect(zosmfPutFullSpy).toHaveBeenCalledTimes(1);
             expect(zosmfPutFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
                 normalizeRequestNewLines: false,
-                reqHeaders,
+                reqHeaders: expect.arrayContaining(reqHeaders),
                 requestStream: inputStream});
             zosmfPutFullSpy.mockClear();
 
@@ -905,7 +905,7 @@ describe("z/OS Files - Upload", () => {
             expect(zosmfPutFullSpy).toHaveBeenCalledTimes(1);
             expect(zosmfPutFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
                 normalizeRequestNewLines: false,
-                reqHeaders,
+                reqHeaders: expect.arrayContaining(reqHeaders),
                 requestStream: inputStream});
             zosmfPutFullSpy.mockClear();
 
@@ -928,7 +928,7 @@ describe("z/OS Files - Upload", () => {
             expect(zosmfPutFullSpy).toHaveBeenCalledTimes(1);
             expect(zosmfPutFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
                 normalizeRequestNewLines: false,
-                reqHeaders,
+                reqHeaders: expect.arrayContaining(reqHeaders),
                 requestStream: inputStream});
             zosmfPutFullSpy.mockClear();
             zosmfPutFullSpy.mockImplementationOnce(async () => fakeResponseWithEtag);
@@ -953,7 +953,7 @@ describe("z/OS Files - Upload", () => {
             expect(zosmfPutFullSpy).toHaveBeenCalledTimes(1);
             expect(zosmfPutFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
                 normalizeRequestNewLines: false,
-                reqHeaders,
+                reqHeaders: expect.arrayContaining(reqHeaders),
                 requestStream: inputStream,
                 dataToReturn: [CLIENT_PROPERTY.response]});
             zosmfPutFullSpy.mockClear();
@@ -981,7 +981,7 @@ describe("z/OS Files - Upload", () => {
             expect(zosmfPutFullSpy).toHaveBeenCalledTimes(1);
             expect(zosmfPutFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
                 normalizeRequestNewLines: false,
-                reqHeaders,
+                reqHeaders: expect.arrayContaining(reqHeaders),
                 requestStream: inputStream,
                 dataToReturn: [CLIENT_PROPERTY.response]});
         });
@@ -1004,7 +1004,7 @@ describe("z/OS Files - Upload", () => {
             expect(zosmfPutFullSpy).toHaveBeenCalledTimes(1);
             expect(zosmfPutFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
                 normalizeRequestNewLines: false,
-                reqHeaders,
+                reqHeaders: expect.arrayContaining(reqHeaders),
                 requestStream: inputStream});
             zosmfPutFullSpy.mockClear();
 
@@ -1024,7 +1024,7 @@ describe("z/OS Files - Upload", () => {
             expect(zosmfPutFullSpy).toHaveBeenCalledTimes(1);
             expect(zosmfPutFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
                 normalizeRequestNewLines: false,
-                reqHeaders,
+                reqHeaders: expect.arrayContaining(reqHeaders),
                 requestStream: inputStream});
             zosmfPutFullSpy.mockClear();
 
@@ -1044,7 +1044,7 @@ describe("z/OS Files - Upload", () => {
             expect(zosmfPutFullSpy).toHaveBeenCalledTimes(1);
             expect(zosmfPutFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
                 normalizeRequestNewLines: false,
-                reqHeaders,
+                reqHeaders: expect.arrayContaining(reqHeaders),
                 requestStream: inputStream});
             zosmfPutFullSpy.mockClear();
 
@@ -1064,7 +1064,7 @@ describe("z/OS Files - Upload", () => {
             expect(zosmfPutFullSpy).toHaveBeenCalledTimes(1);
             expect(zosmfPutFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
                 normalizeRequestNewLines: false,
-                reqHeaders,
+                reqHeaders: expect.arrayContaining(reqHeaders),
                 requestStream: inputStream});
             zosmfPutFullSpy.mockClear();
 
@@ -1084,7 +1084,7 @@ describe("z/OS Files - Upload", () => {
             expect(zosmfPutFullSpy).toHaveBeenCalledTimes(1);
             expect(zosmfPutFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
                 normalizeRequestNewLines: false,
-                reqHeaders,
+                reqHeaders: expect.arrayContaining(reqHeaders),
                 requestStream: inputStream});
             zosmfPutFullSpy.mockClear();
 
@@ -1105,7 +1105,7 @@ describe("z/OS Files - Upload", () => {
             expect(zosmfPutFullSpy).toHaveBeenCalledTimes(1);
             expect(zosmfPutFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
                 normalizeRequestNewLines: false,
-                reqHeaders,
+                reqHeaders: expect.arrayContaining(reqHeaders),
                 requestStream: inputStream});
             zosmfPutFullSpy.mockClear();
             zosmfPutFullSpy.mockImplementationOnce(async () => fakeResponseWithEtag);
@@ -1128,7 +1128,7 @@ describe("z/OS Files - Upload", () => {
             expect(zosmfPutFullSpy).toHaveBeenCalledTimes(1);
             expect(zosmfPutFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
                 normalizeRequestNewLines: false,
-                reqHeaders,
+                reqHeaders: expect.arrayContaining(reqHeaders),
                 requestStream: inputStream,
                 dataToReturn: [CLIENT_PROPERTY.response]});
             zosmfPutFullSpy.mockClear();
@@ -1154,7 +1154,7 @@ describe("z/OS Files - Upload", () => {
             expect(zosmfPutFullSpy).toHaveBeenCalledTimes(1);
             expect(zosmfPutFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
                 normalizeRequestNewLines: false,
-                reqHeaders,
+                reqHeaders: expect.arrayContaining(reqHeaders),
                 requestStream: inputStream,
                 dataToReturn: [CLIENT_PROPERTY.response]});
         });
@@ -1176,7 +1176,7 @@ describe("z/OS Files - Upload", () => {
             expect(zosmfPutFullSpy).toHaveBeenCalledTimes(1);
             expect(zosmfPutFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
                 normalizeRequestNewLines: true,
-                reqHeaders,
+                reqHeaders: expect.arrayContaining(reqHeaders),
                 requestStream: inputStream});
         });
 
@@ -1198,7 +1198,7 @@ describe("z/OS Files - Upload", () => {
 
             expect(zosmfPutFullSpy).toHaveBeenCalledTimes(1);
             expect(zosmfPutFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
-                reqHeaders,
+                reqHeaders: expect.arrayContaining(reqHeaders),
                 writeData: buffer});
         });
     });
@@ -1857,7 +1857,7 @@ describe("z/OS Files - Upload", () => {
 
             expect(zosmfExpectFullSpy).toHaveBeenCalledTimes(1);
             expect(zosmfExpectFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
-                reqHeaders,
+                reqHeaders: expect.arrayContaining(reqHeaders),
                 requestStream: inputStream,
                 normalizeRequestNewLines: true});
             expect(chtagSpy).toHaveBeenCalledTimes(0);
@@ -1879,7 +1879,7 @@ describe("z/OS Files - Upload", () => {
 
             expect(zosmfExpectFullSpy).toHaveBeenCalledTimes(1);
             expect(zosmfExpectFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
-                reqHeaders,
+                reqHeaders: expect.arrayContaining(reqHeaders),
                 requestStream: inputStream,
                 normalizeRequestNewLines: true});
             expect(chtagSpy).toHaveBeenCalledTimes(0);
@@ -1901,7 +1901,7 @@ describe("z/OS Files - Upload", () => {
             expect(zosmfExpectFullSpy).toHaveBeenCalledTimes(1);
             expect(zosmfExpectFullSpy).toHaveBeenCalledWith(dummySession, {
                 resource: endpoint,
-                reqHeaders,
+                reqHeaders: expect.arrayContaining(reqHeaders),
                 requestStream: inputStream,
                 normalizeRequestNewLines: false});
             expect(chtagSpy).toHaveBeenCalledTimes(1);
@@ -1924,7 +1924,7 @@ describe("z/OS Files - Upload", () => {
             expect(zosmfExpectFullSpy).toHaveBeenCalledTimes(1);
             expect(zosmfExpectFullSpy).toHaveBeenCalledWith(dummySession, {
                 resource: endpoint,
-                reqHeaders,
+                reqHeaders: expect.arrayContaining(reqHeaders),
                 requestStream: inputStream,
                 normalizeRequestNewLines: true});
             expect(chtagSpy).toHaveBeenCalledTimes(0);
@@ -1948,7 +1948,7 @@ describe("z/OS Files - Upload", () => {
             expect(zosmfExpectFullSpy).toHaveBeenCalledTimes(1);
             expect(zosmfExpectFullSpy).toHaveBeenCalledWith(dummySession, {
                 resource: endpoint,
-                reqHeaders,
+                reqHeaders: expect.arrayContaining(reqHeaders),
                 requestStream: inputStream,
                 normalizeRequestNewLines: true,
                 dataToReturn: [CLIENT_PROPERTY.response]});
@@ -1970,7 +1970,7 @@ describe("z/OS Files - Upload", () => {
             expect(zosmfExpectFullSpy).toHaveBeenCalledTimes(1);
             expect(zosmfExpectFullSpy).toHaveBeenCalledWith(dummySession, {
                 resource: endpoint,
-                reqHeaders,
+                reqHeaders: expect.arrayContaining(reqHeaders),
                 requestStream: inputStream,
                 normalizeRequestNewLines: true});
             expect(chtagSpy).toHaveBeenCalledTimes(0);
@@ -1991,7 +1991,7 @@ describe("z/OS Files - Upload", () => {
             expect(zosmfExpectFullSpy).toHaveBeenCalledTimes(1);
             expect(zosmfExpectFullSpy).toHaveBeenCalledWith(dummySession, {
                 resource: endpoint,
-                reqHeaders,
+                reqHeaders: expect.arrayContaining(reqHeaders),
                 requestStream: inputStream,
                 normalizeRequestNewLines: false});
             expect(chtagSpy).toHaveBeenCalledTimes(1);

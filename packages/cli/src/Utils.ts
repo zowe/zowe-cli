@@ -9,7 +9,9 @@
 *
 */
 
-import { IImperativeConfig } from "@zowe/imperative";
+import { ICommandOptionDefinition, IImperativeConfig } from "@zowe/imperative";
+import { Arguments } from "yargs";
+import { ZosFilesOptionDefinitions } from "./zosfiles/ZosFiles.options";
 
 /**
  * Get the Imperative config object which defines properties of the CLI.
@@ -17,4 +19,51 @@ import { IImperativeConfig } from "@zowe/imperative";
  */
 export function getImperativeConfig(): IImperativeConfig {
     return require("./imperative");
+}
+
+/**
+ * Map command arguments to options based on a definition, applying defaults and type transformations.
+ * Consolidates processing originally done in generateDatasetOptions and generateZosmfOptions.
+ *
+ * @param args - The command arguments
+ * @param optionDefinitions - The options definitions (from ICommandDefinition)
+ * @returns A mapped options object
+ */
+export function mapArgumentsToOptions<T>(
+    args: Arguments,
+    optionDefinitions: ICommandOptionDefinition[]
+): T {
+    const options = {} as T;
+
+    // Combine global options with command-specific options
+    const combinedDefinitions = [...optionDefinitions, ...ZosFilesOptionDefinitions];
+    combinedDefinitions.forEach((optionDef) => {
+        const { name, type, defaultValue } = optionDef;
+
+        // Check if the argument exists in the command input or use the default value
+        const value = args[name] !== undefined ? args[name] : defaultValue;
+
+        // If the value is still undefined, skip adding it to the options
+        if (value === undefined) {
+            return;
+        }
+
+        // Handle transformations for specific fields
+        if (name === "dirblk") {
+            const dsorg = args["dsorg"];
+            options[name as keyof T] = parseInt(
+                dsorg === "PO" || dsorg === "POE" ? "10" : "0"
+            ) as unknown as T[keyof T];
+            return;
+        }
+
+        // Type-based transformations
+        if (type === "number") {
+            options[name as keyof T] = parseInt(value, 10) as unknown as T[keyof T];
+        } else {
+            options[name as keyof T] = value as T[keyof T];
+        }
+    });
+
+    return options as T;
 }

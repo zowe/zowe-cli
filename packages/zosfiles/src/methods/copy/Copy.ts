@@ -10,7 +10,7 @@
 */
 
 import { AbstractSession, ImperativeError, ImperativeExpect, ITaskWithStatus,
-    Logger, Headers, IHeaderContent, TaskStage, IO} from "@zowe/imperative";
+    Logger, TaskStage, IO} from "@zowe/imperative";
 import { posix } from "path";
 import * as fs from "fs";
 import { Create, CreateDataSetTypeEnum, ICreateDataSetOptions } from "../create";
@@ -18,7 +18,7 @@ import { Get } from "../get";
 import { Upload } from "../upload";
 import { List } from "../list";
 import { IGetOptions } from "../get/doc/IGetOptions";
-import { ZosmfRestClient, ZosmfHeaders } from "@zowe/core-for-zowe-sdk";
+import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 import { IZosFilesResponse } from "../../doc/IZosFilesResponse";
@@ -101,15 +101,7 @@ export class Copy {
         };
         delete payload.fromDataSet;
 
-        const reqHeaders: IHeaderContent[] = [
-            Headers.APPLICATION_JSON,
-            { [Headers.CONTENT_LENGTH]: JSON.stringify(payload).length.toString() },
-            ZosmfHeaders.ACCEPT_ENCODING
-        ];
-
-        if (options.responseTimeout != null) {
-            reqHeaders.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
-        }
+        const reqHeaders = ZosFilesUtils.generateHeadersBasedOnOptions(options, payload);
 
         try {
             await ZosmfRestClient.putExpectString(session, endpoint, reqHeaders, payload);

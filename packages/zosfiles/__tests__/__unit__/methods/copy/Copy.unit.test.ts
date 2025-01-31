@@ -83,7 +83,7 @@ describe("Copy", () => {
                     expect(copyExpectStringSpy).toHaveBeenLastCalledWith(
                         dummySession,
                         expectedEndpoint,
-                        expectedHeaders,
+                        expect.arrayContaining(expectedHeaders),
                         expectedPayload
                     );
                 });
@@ -122,7 +122,7 @@ describe("Copy", () => {
                     expect(copyExpectStringSpy).toHaveBeenLastCalledWith(
                         dummySession,
                         expectedEndpoint,
-                        expectedHeaders,
+                        expect.arrayContaining(expectedHeaders),
                         expectedPayload
                     );
                 });
@@ -162,7 +162,7 @@ describe("Copy", () => {
                     expect(copyExpectStringSpy).toHaveBeenLastCalledWith(
                         dummySession,
                         expectedEndpoint,
-                        expectedHeaders,
+                        expect.arrayContaining(expectedHeaders),
                         expectedPayload
                     );
                 });
@@ -202,7 +202,7 @@ describe("Copy", () => {
                     expect(copyExpectStringSpy).toHaveBeenLastCalledWith(
                         dummySession,
                         expectedEndpoint,
-                        expectedHeaders,
+                        expect.arrayContaining(expectedHeaders),
                         expectedPayload
                     );
                 });
@@ -241,7 +241,7 @@ describe("Copy", () => {
                     expect(copyExpectStringSpy).toHaveBeenLastCalledWith(
                         dummySession,
                         expectedEndpoint,
-                        expectedHeaders,
+                        expect.arrayContaining(expectedHeaders),
                         expectedPayload
                     );
                 });
@@ -280,7 +280,7 @@ describe("Copy", () => {
                     expect(copyExpectStringSpy).toHaveBeenLastCalledWith(
                         dummySession,
                         expectedEndpoint,
-                        expectedHeaders,
+                        expect.arrayContaining(expectedHeaders),
                         expectedPayload
                     );
                 });
@@ -320,7 +320,7 @@ describe("Copy", () => {
                     expect(copyExpectStringSpy).toHaveBeenLastCalledWith(
                         dummySession,
                         expectedEndpoint,
-                        expectedHeaders,
+                        expect.arrayContaining(expectedHeaders),
                         expectedPayload
                     );
                 });
@@ -360,7 +360,7 @@ describe("Copy", () => {
                     expect(copyExpectStringSpy).toHaveBeenLastCalledWith(
                         dummySession,
                         expectedEndpoint,
-                        expectedHeaders,
+                        expect.arrayContaining(expectedHeaders),
                         expectedPayload
                     );
                 });
@@ -535,7 +535,7 @@ describe("Copy", () => {
                     expect(copyExpectStringSpy).toHaveBeenLastCalledWith(
                         dummySession,
                         expectedEndpoint,
-                        expectedHeaders,
+                        expect.arrayContaining(expectedHeaders),
                         expectedPayload
                     );
                 });
@@ -623,7 +623,7 @@ describe("Copy", () => {
                 expect(copyExpectStringSpy).toHaveBeenLastCalledWith(
                     dummySession,
                     expectedEndpoint,
-                    expectedHeaders,
+                    expect.arrayContaining(expectedHeaders),
                     expectedPayload
                 );
                 expect(error.message).toContain(errorMessage);

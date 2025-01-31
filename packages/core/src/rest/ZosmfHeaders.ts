@@ -115,7 +115,7 @@ export class ZosmfHeaders {
      * @static
      * @memberof ZosmfHeaders
      */
-    public static readonly X_CSRF_ZOSMF_HEADER: object = { "X-CSRF-ZOSMF-HEADER": true }; // "the value does not matter"
+    public static readonly X_CSRF_ZOSMF_HEADER: object = { "X-CSRF-ZOSMF-HEADER": "true" }; // "the value does not matter"
 
     /**
      * binary transfer header
