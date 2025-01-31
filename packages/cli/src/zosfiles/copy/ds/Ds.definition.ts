@@ -56,7 +56,7 @@ export const DsDefinition: ICommandDefinition = {
         },
         {
             name: "safe-replace",
-            aliases: ["safe-rep", "--sr"],
+            aliases: ["safe-rep", "sr"],
             description: strings.OPTIONS.SAFE_REPLACE,
             type: "boolean",
         }
