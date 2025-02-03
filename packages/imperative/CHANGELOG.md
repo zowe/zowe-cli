@@ -4,7 +4,7 @@ All notable changes to the Imperative package will be documented in this file.
 
 ## Recent Changes
 
-- BugFix: Updated transitive dependencies for technical currency []()
+- BugFix: Updated transitive dependencies for technical currency [#2425](https://github.com/zowe/zowe-cli/pull/2425)
 
 ## `5.27.6`
 
