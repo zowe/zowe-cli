@@ -261,13 +261,13 @@ export class Create {
 
                     case "dsntype": {
                         // Key to create a PDSE.
-                            const type: string = tempOptions.dsntype.toUpperCase();
-                            const availableTypes = ["BASIC", "EXTPREF", "EXTREQ", "HFS", "LARGE", "PDS", "LIBRARY", "PIPE"];
-                            if (availableTypes.indexOf(type) === -1) {
-                                throw new ImperativeError({ msg: ZosFilesMessages.invalidDsntypeOption.message + tempOptions.dsntype });
-                            }
-                            break;
+                        const type: string = tempOptions.dsntype.toUpperCase();
+                        const availableTypes = ["BASIC", "EXTPREF", "EXTREQ", "HFS", "LARGE", "PDS", "LIBRARY", "PIPE"];
+                        if (availableTypes.indexOf(type) === -1) {
+                            throw new ImperativeError({ msg: ZosFilesMessages.invalidDsntypeOption.message + tempOptions.dsntype });
                         }
+                        break;
+                    }
 
                     case "dsorg":
                     // Check if dsorg is PS-L, if it is change it to "PS" and the dsntype to "LARGE".
