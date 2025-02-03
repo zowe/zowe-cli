@@ -1102,6 +1102,19 @@ describe("Create data set  Validator", () => {
             expect(testOptions.secondary).toEqual(0);  // Should be changed during create validation to zOSMF default of 0
         });
 
+        it("should fail when dsntype specified with invalid value", async () => {
+            let error;
+            try {
+
+                const testOptions: any = {dsntype: "NOTLIBRARY"};
+                Create.dataSetValidateOptions(testOptions);
+            } catch (err) {
+                error = err.message;
+            }
+
+            expect(error).toContain(`Invalid zos-files create command 'dsntype' option`);
+        });
+
         it("recfm should not default to anything if not specified", async () => {
             const testOptions: any = {
                 recfm: undefined
