@@ -818,13 +818,16 @@ describe("Command Processor", () => {
         });
 
         const parms: any = { arguments: { _: [], $0: "", syntaxThrow: true }, responseFormat: "json", silent: true };
-        const commandResponse: ICommandResponse = await processor.invoke(parms);
+        await processor.invoke(parms);
 
         expect(mockLogInfo).toHaveBeenCalled();
         expect(logOutput).toContain("--user fakeUser --password **** --token-value **** --cert-file-passphrase **** --cert-key-file /fake/path");
     });
 
     it("should mask sensitive CLI options like user and password in log output 2", async () => {
+        const realCensoredOptions = Censor.CENSORED_OPTIONS;
+        jest.spyOn(Censor, "CENSORED_OPTIONS", "get").mockReturnValueOnce([...realCensoredOptions, "u"]);
+
         // Allocate the command processor
         const processor: CommandProcessor = new CommandProcessor({
             envVariablePrefix: ENV_VAR_PREFIX,
@@ -852,10 +855,10 @@ describe("Command Processor", () => {
         });
 
         const parms: any = { arguments: { _: [], $0: "", syntaxThrow: true }, responseFormat: "json", silent: true };
-        const commandResponse: ICommandResponse = await processor.invoke(parms);
+        await processor.invoke(parms);
 
         expect(mockLogInfo).toHaveBeenCalled();
-        expect(logOutput).toContain("-u fakeUser --password **** --token-value **** --cert-file-passphrase **** --cert-key-file /fake/path");
+        expect(logOutput).toContain("-u **** --password **** --token-value **** --cert-file-passphrase **** --cert-key-file /fake/path");
     });
 
     it("should handle not being able to instantiate the handler", async () => {
