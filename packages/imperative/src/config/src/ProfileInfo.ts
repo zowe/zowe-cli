@@ -1066,7 +1066,9 @@ export class ProfileInfo {
                     } else {
                         schemaJson = lastSchema.json;
                     }
-                    for (const { type, schema } of ConfigSchema.loadSchema(schemaJson)) {
+                    const loadedSchemas = ConfigSchema.loadSchema(schemaJson);
+                    Censor.setProfileSchemas(loadedSchemas);
+                    for (const { type, schema } of loadedSchemas) {
                         this.mProfileSchemaCache.set(`${layer.path}:${type}`, schema);
                     }
                 } catch (error) {
@@ -1080,7 +1082,6 @@ export class ProfileInfo {
         }
 
         this.mHasValidSchema = lastSchema.path != null;
-        Censor.setProfileSchemas(this.mProfileSchemaCache);
     }
 
     /**

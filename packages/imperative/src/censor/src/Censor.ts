@@ -22,6 +22,11 @@ import { IProfileSchema} from "../../profiles/src/doc/definition/IProfileSchema"
 import { IProfileTypeConfiguration } from "../../profiles/src/doc/config/IProfileTypeConfiguration";
 
 export class Censor {
+
+    /*********************************************************************
+    * Basic censorship items - list definitions & initialiazations, etc. *
+    **********************************************************************/
+
     /*
     * NOTE(Kelosky): Ideally we might have a consolidated list for secure fields, but for now we'll just
     * make sure they're collocated within the same class.
@@ -68,6 +73,86 @@ export class Censor {
     }
 
     /**
+     * Singleton implementation of an internal reference to the schema
+     */
+    private static mSchema: ICommandProfileTypeConfiguration[] = null;
+
+    /**
+     * Helper method to get an internal reference to the loaded profiles
+     */
+    public static get profileSchemas(): ICommandProfileTypeConfiguration[] {
+        if (this.mSchema == null) this.mSchema = ImperativeConfig.instance.loadedConfig?.profiles ?? [];
+        return this.mSchema;
+    }
+
+    /**
+     * Helper method to set an internal reference to loaded profiles
+     * @param _schemas - The schmas to pass in to set to the logger
+     */
+    public static setProfileSchemas(_schemas: IProfileTypeConfiguration[] | Map<string, IProfileSchema>) {
+        if (this.mSchema == null) {
+            this.mSchema = [];
+        }
+        if (_schemas instanceof Map) {
+            _schemas.forEach((v: IProfileSchema) => {
+                this.mSchema.push({ type: v.type, schema: v });
+            });
+        } else if (Array.isArray(_schemas)) {
+            _schemas.forEach((v: IProfileTypeConfiguration) => {
+                this.mSchema.push({ type: v.type, schema: v.schema });
+            });
+        }
+    }
+
+    /****************************************************
+     * Helper functions for more advanced functionality *
+     ****************************************************/
+
+    /**
+     * Helper function to handle profile schemas when setting the censored options
+     * @param {ICommandProfileTypeConfiguration} profileType - the profile type configuration to iterate over
+     */
+    private static handleSchema(profileType: ICommandProfileTypeConfiguration): void {
+        /* eslint-disable-next-line no-unused-vars */
+        for (const [_, prop] of Object.entries(profileType.schema.properties)) {
+            // Add censored options from the schema if the option is secure
+            if (prop.secure) {
+                // Handle the case of a single option definition
+                if (prop.optionDefinition) {
+                    this.addCensoredOption(prop.optionDefinition.name);
+                    for (const alias of prop.optionDefinition.aliases || []) {
+                        // Remember to add the alias
+                        this.addCensoredOption(alias);
+                    }
+                }
+
+                // Handle the case of multiple option definitions
+                prop.optionDefinitions?.map(opDef => {
+                    this.addCensoredOption(opDef.name);
+                    for (const alias of opDef.aliases || []) {
+                        // Remember to add the alias
+                        this.addCensoredOption(alias);
+                    }
+                });
+            }
+        }
+    }
+
+    /**
+     * Add a censored option, including it's camelCase and kebabCase versions
+     * @param {string} option - The option to censor
+     */
+    private static addCensoredOption(option: string) {
+        // This option is required, but we do not want to ever allow null or undefined itself into the censored options
+        if (option != null) {
+            this.censored_options.add(option);
+            this.censored_options.add(CliUtils.getOptionFormat(option).camelCase);
+            this.censored_options.add(CliUtils.getOptionFormat(option).kebabCase);
+        }
+    }
+
+
+    /**
      * Specifies whether a given property path (e.g. "profiles.lpar1.properties.host") is a special value or not.
      * Special value: Refers to any value defined as secure in the schema definition.
      *                These values should be already masked by the application (and/or plugin) developer.
@@ -96,50 +181,9 @@ export class Censor {
         return false;
     }
 
-    /**
-     * Add a censored option, including it's camelCase and kebabCase versions
-     * @param {string} option - The option to censor
-     */
-    public static addCensoredOption(option: string) {
-        // This option is required, but we do not want to ever allow null or undefined itself into the censored options
-        if (option != null) {
-            this.censored_options.add(option);
-            this.censored_options.add(CliUtils.getOptionFormat(option).camelCase);
-            this.censored_options.add(CliUtils.getOptionFormat(option).kebabCase);
-        }
-    }
-
-    /**
-     * Singleton implementation of an internal reference to the schema
-     */
-    private static mSchema: ICommandProfileTypeConfiguration[] = null;
-
-    /**
-     * Helper method to get an internal reference to the loaded profiles
-     */
-    public static get profileSchemas(): ICommandProfileTypeConfiguration[] {
-        if (this.mSchema == null) this.mSchema = ImperativeConfig.instance.loadedConfig?.profiles ?? [];
-        return this.mSchema;
-    }
-
-    /**
-     * Helper method to set an internal reference to loaded profiles
-     * @param _schemas - The schemas to pass in to set to the logger
-     */
-    public static setProfileSchemas(_schemas: IProfileTypeConfiguration[] | Map<string, IProfileSchema>) {
-        if (this.mSchema == null) {
-            this.mSchema = [];
-        }
-        if (_schemas instanceof Map) {
-            _schemas.forEach((v: IProfileSchema) => {
-                this.mSchema.push({ type: v.type, schema: v });
-            });
-        } else if (Array.isArray(_schemas)) {
-            _schemas.forEach((v: IProfileTypeConfiguration) => {
-                this.mSchema.push({ type: v.type, schema: v.schema });
-            });
-        }
-    }
+    /****************************************************************************************
+     * Bread and butter functions, setting up the class and performing censorship of values *
+     ****************************************************************************************/
 
     /**
      * Generate and set the list of censored options.
@@ -157,28 +201,16 @@ export class Censor {
             if (censorOpts.profiles) {this.setProfileSchemas(censorOpts.profiles);}
 
             for (const profileType of this.profileSchemas ?? []) {
-                for (const [_, prop] of Object.entries(profileType.schema.properties)) {
-                    // Add censored options from the schema if the option is secure
-                    if (prop.secure) {
-                        // Handle the case of a single option definition
-                        if (prop.optionDefinition) {
-                            this.addCensoredOption(prop.optionDefinition.name);
-                            for (const alias of prop.optionDefinition.aliases || []) {
-                                // Remember to add the alias
-                                this.addCensoredOption(alias);
-                            }
-                        }
-
-                        // Handle the case of multiple option definitions
-                        prop.optionDefinitions?.map(opDef => {
-                            this.addCensoredOption(opDef.name);
-                            for (const alias of opDef.aliases || []) {
-                                // Remember to add the alias
-                                this.addCensoredOption(alias);
-                            }
-                        });
-                    }
+                // If we know the command we are running, and we know the profile types that the command uses
+                // we should only use those profiles to determine what should be censored.
+                if (censorOpts.commandDefinition?.profile?.optional &&
+                    !censorOpts.commandDefinition?.profile?.optional?.includes(profileType.type) ||
+                    censorOpts.commandDefinition?.profile?.required &&
+                    !censorOpts.commandDefinition?.profile?.required?.includes(profileType.type)) {
+                    continue;
                 }
+
+                this.handleSchema(profileType);
             }
 
             // Include any secure options from the config
@@ -206,6 +238,10 @@ export class Censor {
                         prop => this.addCensoredOption(prop.split(".").pop())
                     );
                 }
+            }
+        } else if (this.profileSchemas) {
+            for (const profileType of this.profileSchemas) {
+                this.handleSchema(profileType);
             }
         }
     }
