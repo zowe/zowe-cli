@@ -9,7 +9,7 @@ on:
 
 jobs:
   changelog:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     if: ${{ contains( github.event.pull_request.labels.*.name, 'no-changelog') != true }}
 
     steps:
