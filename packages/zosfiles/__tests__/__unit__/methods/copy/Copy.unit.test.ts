@@ -636,7 +636,7 @@ describe("Copy", () => {
                     );
                     expect(promptForLikeNamedMembers).toHaveBeenCalledWith();
 
-                })
+                });
                 it("should not display a prompt for like named members if there are no duplicate member names", async () => {
                     const response = await Copy.dataSet(
                         dummySession,
