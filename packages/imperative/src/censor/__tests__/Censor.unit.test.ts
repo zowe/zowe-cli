@@ -450,4 +450,64 @@ describe("Censor tests", () => {
             expect((Censor as any).mSchema).toEqual([{ type: "test", schema: mockedProfiles[0].schema }]);
         });
     });
+
+    describe("handleSchema", () => {
+        it("should add secure props with an option definition to the secure array", () => {
+            const fakeSchema = {
+                type: "test",
+                schema: {
+                    title: "Fake Profile Type",
+                    description: "Fake Profile Description",
+                    type: "object",
+                    properties: {
+                        test: {
+                            type: "string",
+                            secure: true,
+                            optionDefinition: {
+                                name: "test",
+                                type: "string",
+                                description: "Fake Test Description",
+                                aliases: ["test1", "t"]
+                            }
+                        }
+                    }
+                }
+            };
+            (Censor as any).handleSchema(fakeSchema);
+            expect(Censor.CENSORED_OPTIONS).toContain("test");
+            expect(Censor.CENSORED_OPTIONS).toContain("test1");
+            expect(Censor.CENSORED_OPTIONS).toContain("t");
+        });
+
+        it("should add secure props with option definitions to the secure array", () => {
+            const fakeSchema = {
+                type: "test",
+                schema: {
+                    title: "Fake Profile Type",
+                    description: "Fake Profile Description",
+                    type: "object",
+                    properties: {
+                        test: {
+                            type: "string",
+                            secure: true,
+                            optionDefinitions: [{
+                                name: "test1",
+                                type: "string",
+                                description: "Fake Test Description"
+                            }, {
+                                name: "test2",
+                                type: "string",
+                                description: "Fake Test Description",
+                                aliases: ["t"]
+                            }]
+                        }
+                    }
+                }
+            };
+            (Censor as any).handleSchema(fakeSchema);
+            expect(Censor.CENSORED_OPTIONS).toContain("test1");
+            expect(Censor.CENSORED_OPTIONS).toContain("test2");
+            expect(Censor.CENSORED_OPTIONS).toContain("t");
+        });
+    });
 });
