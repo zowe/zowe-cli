@@ -93,7 +93,7 @@ export class Copy {
                     const userResponse = await options.promptForLikeNamedMembers();
 
                     if(!userResponse) {
-                        throw new ImperativeError({ msg: ZosFilesMessages.datasetCopiedAborted.message });
+                        throw new ImperativeError({ msg: ZosFilesMessages.datasetCopiedAborted.message});
                     }
                 }
                 const response = await this.copyPDS(session, options["from-dataset"].dsn, toDataSetName);
