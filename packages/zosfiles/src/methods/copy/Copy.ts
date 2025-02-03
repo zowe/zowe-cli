@@ -31,6 +31,7 @@ import { ZosFilesUtils } from "../../utils/ZosFilesUtils";
 import { tmpdir } from "os";
 import path = require("path");
 import * as util from "util";
+import { has } from "lodash";
 /**
  * This class holds helper functions that are used to copy the contents of datasets through the
  * z/OSMF APIs.
@@ -58,6 +59,7 @@ export class Copy {
         ImperativeExpect.toBeDefinedAndNonBlank(options["from-dataset"].dsn, "fromDataSetName");
         ImperativeExpect.toBeDefinedAndNonBlank(toDataSetName, "toDataSetName");
         const safeReplace: boolean = options.safeReplace;
+        const overwriteMembers: boolean = options.replace;
 
         if(options["from-dataset"].dsn === toDataSetName && toMemberName === options["from-dataset"].member) {
             return {
@@ -84,7 +86,16 @@ export class Copy {
         if(!toMemberName && !options["from-dataset"].member) {
             const sourceIsPds = await this.isPDS(session, options["from-dataset"].dsn);
             const targetIsPds = await this.isPDS(session, toDataSetName);
+
             if (sourceIsPds && targetIsPds) {
+                const hasLikeNamedMembers = await this.hasLikeNamedMembers(session, options["from-dataset"].dsn, toDataSetName);
+                if(!safeReplace && hasLikeNamedMembers && !overwriteMembers) {
+                    const userResponse = await options.promptForLikeNamedMembers();
+
+                    if(!userResponse) {
+                        throw new ImperativeError({ msg: ZosFilesMessages.datasetCopiedAborted.message });
+                    }
+                }
                 const response = await this.copyPDS(session, options["from-dataset"].dsn, toDataSetName);
                 return {
                     success: true,
@@ -168,6 +179,22 @@ export class Copy {
                 dataSetList.apiResponse.items.findIndex((ds: any) => ds.dsname.toUpperCase() === dataSetName.toUpperCase());
         }
         return dsnameIndex !== -1;
+    }
+
+    /**
+     * Function that checks if source and target data sets have like-named members
+    */
+    private static async hasLikeNamedMembers (
+        session: AbstractSession,
+        fromPds: string,
+        toPds: string
+    ): Promise <boolean> {
+        const sourceResponse = await List.allMembers(session, fromPds);
+        const sourceMemberList = sourceResponse.apiResponse.items.map((item: { member: any; }) => item.member);
+        const targetResponse = await List.allMembers(session, toPds);
+        const targetMemberList = targetResponse.apiResponse.items.map((item: { member: any; }) => item.member);
+
+        return sourceMemberList.some((mem: any) => targetMemberList.includes(mem));
     }
 
     /**

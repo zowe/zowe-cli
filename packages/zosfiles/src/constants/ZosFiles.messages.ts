@@ -189,7 +189,6 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
         message: "Member(s) downloaded successfully."
     },
 
-
     /**
      * Message indicating that the member was downloaded successfully
      * @type {IMessageDefinition}

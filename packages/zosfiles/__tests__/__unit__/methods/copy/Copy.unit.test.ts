@@ -35,15 +35,18 @@ describe("Copy", () => {
         const toDataSetName = "USER.DATA.TO";
         const toMemberName = "mem2";
         const isPDSSpy = jest.spyOn(Copy as any, "isPDS");
+        const hasLikeNamedMembers = jest.spyOn(Copy as any, "hasLikeNamedMembers");
         let dataSetExistsSpy: jest.SpyInstance;
         const promptFn = jest.fn();
+        const promptForLikeNamedMembers = jest.fn();
 
         beforeEach(() => {
             copyPDSSpy.mockClear();
             copyExpectStringSpy.mockClear().mockImplementation(async () => { return ""; });
             isPDSSpy.mockClear().mockResolvedValue(false);
             dataSetExistsSpy = jest.spyOn(Copy as any, "dataSetExists").mockResolvedValue(true);
-
+            hasLikeNamedMembers.mockClear().mockResolvedValue(false);
+            promptForLikeNamedMembers.mockClear();
         });
         afterAll(() => {
             isPDSSpy.mockRestore();
@@ -619,6 +622,48 @@ describe("Copy", () => {
                         commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message
                     });
                 });
+                it("should display a prompt for like named members if there are duplicate member names and --safe-replace and --replace flags are not used", async () => {
+                    hasLikeNamedMembers.mockResolvedValue(true);
+                    promptForLikeNamedMembers.mockClear().mockResolvedValue(true);
+
+                    const response = await Copy.dataSet(
+                        dummySession,
+                        { dsn: toDataSetName },
+                        { "from-dataset": { dsn: fromDataSetName },
+                            safeReplace: false,
+                            replace: false,
+                            promptForLikeNamedMembers }
+                    );
+                    expect(promptForLikeNamedMembers).toHaveBeenCalledWith();
+
+                })
+                it("should not display a prompt for like named members if there are no duplicate member names", async () => {
+                    const response = await Copy.dataSet(
+                        dummySession,
+                        { dsn: toDataSetName },
+                        { "from-dataset": { dsn: fromDataSetName },
+                            safeReplace: false,
+                            replace: false,
+                            promptForLikeNamedMembers }
+                    );
+
+                    expect(promptForLikeNamedMembers).not.toHaveBeenCalled();
+                });
+                it("should throw error if user declines to replace the dataset", async () => {
+                    hasLikeNamedMembers.mockResolvedValue(true);
+                    promptForLikeNamedMembers.mockClear().mockResolvedValue(false);
+
+                    await expect(Copy.dataSet(
+                        dummySession,
+                        { dsn: toDataSetName },
+                        { "from-dataset": { dsn: fromDataSetName },
+                            safeReplace: false,
+                            replace: false,
+                            promptForLikeNamedMembers }
+                    )).rejects.toThrow(new ImperativeError({ msg: ZosFilesMessages.datasetCopiedAborted.message }));
+
+                    expect(promptForLikeNamedMembers).toHaveBeenCalled();
+                });
             });
             it("should return early if the source and target data sets are identical", async () => {
                 const response = await Copy.dataSet(
@@ -711,7 +756,7 @@ describe("Copy", () => {
         });
     });
 
-    describe("Copy Partitioned Data Set", () => {
+    describe("Partitioned Data Set", () => {
         const listAllMembersSpy   = jest.spyOn(List, "allMembers");
         const downloadAllMembersSpy = jest.spyOn(Download, "allMembers");
         const uploadSpy = jest.spyOn(Upload, "streamToDataSet");
@@ -722,6 +767,11 @@ describe("Copy", () => {
         const readStream = jest.spyOn(IO, "createReadStream");
         const rmSync = jest.spyOn(fs, "rmSync");
         const listDatasetSpy = jest.spyOn(List, "dataSet");
+        const hasLikeNamedMembers = jest.spyOn(Copy as any, "hasLikeNamedMembers");
+
+        beforeEach(() => {
+            hasLikeNamedMembers.mockRestore();
+        });
 
         const dsPO = {
             dsname: fromDataSetName,
@@ -847,6 +897,69 @@ describe("Copy", () => {
             expect(response).toEqual({
                 success: true,
                 commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message,
+            });
+        });
+
+        describe("hasLikeNamedMembers", () => {
+            const listAllMembersSpy = jest.spyOn(List, "allMembers");
+
+            beforeEach(() => {
+                jest.clearAllMocks();
+            });
+            it("should return true if the source and target have like-named members", async () => {
+                listAllMembersSpy.mockImplementation(async (session, dsName): Promise<any> => {
+                    if (dsName === fromDataSetName) {
+                        return {
+                            apiResponse: {
+                                items: [
+                                    { member: "mem1" },
+                                    { member: "mem2" },
+                                ]
+                            }
+                        };
+                    } else if (dsName === toDataSetName) {
+                        return {
+                            apiResponse: {
+                                items: [{ member: "mem1" }]
+                            }
+                        };
+                    }
+                });
+
+                const response = await Copy["hasLikeNamedMembers"](dummySession, fromDataSetName, toDataSetName);
+                expect(response).toBe(true);
+                expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, fromDataSetName);
+                expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, toDataSetName);
+            });
+            it("should return false if the source and target do not have like-named members", async () => {
+                const sourceResponse = {
+                    apiResponse: {
+                        items: [
+                            { member: "mem1" },
+                            { member: "mem2" },
+                        ]
+                    }
+                };
+                const targetResponse = {
+                    apiResponse: {
+                        items: [
+                            { member: "mem3" },
+                        ]
+                    }
+                };
+                listAllMembersSpy.mockImplementation(async (session, dsName): Promise<any> => {
+                    if (dsName === fromDataSetName) {
+                        return sourceResponse;
+                    } else if (dsName === toDataSetName) {
+                        return targetResponse;
+                    }
+                });
+
+                const response = await Copy["hasLikeNamedMembers"](dummySession, fromDataSetName, toDataSetName);
+
+                expect(response).toBe(false);
+                expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, fromDataSetName);
+                expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, toDataSetName);
             });
         });
     });

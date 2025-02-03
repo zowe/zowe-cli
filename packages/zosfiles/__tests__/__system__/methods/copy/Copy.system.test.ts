@@ -598,6 +598,40 @@ describe("Copy", () => {
         });
     });
 
+    describe("hasLikeNamedMembers", () => {
+        beforeEach(async () => {
+            try {
+                await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, fromDataSetName);
+                await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, toDataSetName);
+                await Upload.fileToDataset(REAL_SESSION, fileLocation, fromDataSetName);
+                await Upload.fileToDataset(REAL_SESSION, fileLocation, toDataSetName);
+            }
+            catch (err) {
+                Imperative.console.info(`Error: ${inspect(err)}`);
+            }
+        });
+        afterEach(async () => {
+            try {
+                await Delete.dataSet(REAL_SESSION, fromDataSetName);
+                await Delete.dataSet(REAL_SESSION, toDataSetName);
+            } catch (err) {
+                Imperative.console.info(`Error: ${inspect(err)}`);
+            }
+        });
+        it("should return true if the source and target data sets have like-named members", async () => {
+            const response = await Copy["hasLikeNamedMembers"](REAL_SESSION, fromDataSetName, toDataSetName);
+            expect(response).toBe(true);
+        });
+
+        it("should return false if the source and target data sets do not have like-named members", async () => {   
+            await Delete.dataSet(REAL_SESSION, toDataSetName);
+            await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, toDataSetName);
+
+            const response = await Copy["hasLikeNamedMembers"](REAL_SESSION, fromDataSetName, toDataSetName);
+            expect(response).toBe(false);
+        });
+    });
+
     describe("Data Set Cross LPAR", () => {
         describe("Common Failures", () => {
             it("should fail if no fromDataSet data set name is supplied", async () => {
