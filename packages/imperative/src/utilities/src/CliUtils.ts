@@ -32,6 +32,7 @@ export class CliUtils {
      * Used as the place holder when censoring arguments in messages/command output
      * @static
      * @memberof CliUtils
+     * @deprecated Use Censor.CENSOR_RESPONSE
      */
     public static readonly CENSOR_RESPONSE = "****";
 
@@ -39,6 +40,7 @@ export class CliUtils {
      * A list of cli options/keywords that should normally be censored
      * @static
      * @memberof CliUtils
+     * @deprecated Use Censor.CENSORED_OPTIONS
      */
     public static CENSORED_OPTIONS = ["auth", "p", "pass", "password", "passphrase", "credentials",
         "authentication", "basic-auth", "basicAuth"];
@@ -64,14 +66,17 @@ export class CliUtils {
      * Copy and censor any sensitive CLI arguments before logging/printing
      * @param {string[]} args - The args list to censor
      * @returns {string[]}
+     * @deprecated Use Censor.censorCLIArgs
      */
     public static censorCLIArgs(args: string[]): string[] {
         const newArgs: string[] = JSON.parse(JSON.stringify(args));
+        // eslint-disable-next-line deprecation/deprecation
         const censoredValues = CliUtils.CENSORED_OPTIONS.map(CliUtils.getDashFormOfOption);
         for (const value of censoredValues) {
             if (args.indexOf(value) >= 0) {
                 const valueIndex = args.indexOf(value);
                 if (valueIndex < args.length - 1) {
+                    // eslint-disable-next-line deprecation/deprecation
                     newArgs[valueIndex + 1] = CliUtils.CENSOR_RESPONSE; // censor the argument after the option name
                 }
             }
@@ -83,16 +88,20 @@ export class CliUtils {
      * Copy and censor a yargs argument object before logging
      * @param {yargs.Arguments} args the args to censor
      * @returns {yargs.Arguments}  a censored copy of the arguments
+     * @deprecated Use Censor.censorYargsArguments
      */
     public static censorYargsArguments(args: Arguments): Arguments {
         const newArgs: Arguments = JSON.parse(JSON.stringify(args));
 
         for (const optionName of Object.keys(newArgs)) {
+            // eslint-disable-next-line deprecation/deprecation
             if (CliUtils.CENSORED_OPTIONS.indexOf(optionName) >= 0) {
                 const valueToCensor = newArgs[optionName];
+                // eslint-disable-next-line deprecation/deprecation
                 newArgs[optionName] = CliUtils.CENSOR_RESPONSE;
                 for (const checkAliasKey of Object.keys(newArgs)) {
                     if (newArgs[checkAliasKey] === valueToCensor) {
+                        // eslint-disable-next-line deprecation/deprecation
                         newArgs[checkAliasKey] = CliUtils.CENSOR_RESPONSE;
                     }
                 }

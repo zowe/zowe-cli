@@ -191,6 +191,7 @@ const FAKE_HELP_GENERATOR: IHelpGenerator = {
 
 const ENV_VAR_PREFIX: string = "UNIT_TEST";
 
+/* eslint-disable deprecation/deprecation */
 describe("Command Processor", () => {
     describe("Command Processor with --help and --version flags", () => {
         let faultyConfigProcessor: CommandProcessor;
@@ -820,7 +821,7 @@ describe("Command Processor", () => {
         const commandResponse: ICommandResponse = await processor.invoke(parms);
 
         expect(mockLogInfo).toHaveBeenCalled();
-        expect(logOutput).toContain("--user **** --password **** --token-value **** --cert-file-passphrase **** --cert-key-file ****");
+        expect(logOutput).toContain("--user fakeUser --password **** --token-value **** --cert-file-passphrase **** --cert-key-file /fake/path");
     });
 
     it("should handle not being able to instantiate the handler", async () => {
