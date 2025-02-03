@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandDefinition, ICommandArguments } from "../../../cmd";
+import { ICommandDefinition, ICommandArguments, ICommandProfileTypeConfiguration } from "../../../cmd";
 import { Config } from "../../../config";
 import { IProfileTypeConfiguration } from "../../../profiles";
 
@@ -17,7 +17,7 @@ export interface ICensorOptions {
     /**
      * An array of profile schema definitions
      */
-    profiles?: IProfileTypeConfiguration[];
+    profiles?: IProfileTypeConfiguration[] | ICommandProfileTypeConfiguration[];
 
     /**
      * The team config API

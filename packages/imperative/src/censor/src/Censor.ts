@@ -110,11 +110,12 @@ export class Censor {
 
     /**
      * Helper function to handle profile schemas when setting the censored options
-     * @param {ICommandProfileTypeConfiguration} profileType - the profile type configuration to iterate over
+     * @param {IProfileTypeConfiguration | ICommandProfileTypeConfiguration} profileType - the profile type configuration to iterate over
      */
-    private static handleSchema(profileType: ICommandProfileTypeConfiguration): void {
+    private static handleSchema(profileType: IProfileTypeConfiguration | ICommandProfileTypeConfiguration): void {
         /* eslint-disable-next-line no-unused-vars */
-        for (const [_, prop] of Object.entries(profileType.schema.properties)) {
+        for (const [key, cmdProp] of Object.entries(profileType.schema.properties)) {
+            const prop = cmdProp as ICommandProfileProperty;
             // Add censored options from the schema if the option is secure
             if (prop.secure) {
                 // Handle the case of a single option definition
@@ -124,16 +125,18 @@ export class Censor {
                         // Remember to add the alias
                         this.addCensoredOption(alias);
                     }
+                } else if (prop.optionDefinitions) {
+                    // Handle the case of multiple option definitions
+                    prop.optionDefinitions.map(opDef => {
+                        this.addCensoredOption(opDef.name);
+                        for (const alias of opDef.aliases || []) {
+                            // Remember to add the alias
+                            this.addCensoredOption(alias);
+                        }
+                    });
+                } else {
+                    this.addCensoredOption(key);
                 }
-
-                // Handle the case of multiple option definitions
-                prop.optionDefinitions?.map(opDef => {
-                    this.addCensoredOption(opDef.name);
-                    for (const alias of opDef.aliases || []) {
-                        // Remember to add the alias
-                        this.addCensoredOption(alias);
-                    }
-                });
             }
         }
     }
@@ -198,19 +201,17 @@ export class Censor {
             this.mConfig = censorOpts.config;
 
             // If we have a ProfileTypeConfiguration (i.e. ImperativeConfig.instance.loadedConfig.profiles)
-            if (censorOpts.profiles) {this.setProfileSchemas(censorOpts.profiles);}
+            if (censorOpts.profiles) { this.setProfileSchemas(censorOpts.profiles); }
 
             for (const profileType of this.profileSchemas ?? []) {
                 // If we know the command we are running, and we know the profile types that the command uses
-                // we should only use those profiles to determine what should be censored.
-                if (censorOpts.commandDefinition?.profile?.optional &&
-                    !censorOpts.commandDefinition?.profile?.optional?.includes(profileType.type) ||
-                    censorOpts.commandDefinition?.profile?.required &&
-                    !censorOpts.commandDefinition?.profile?.required?.includes(profileType.type)) {
-                    continue;
+                // we should only use those profiles to determine what should be censored. If we do not, we should
+                // add everything
+                if (censorOpts.commandDefinition == null ||
+                    censorOpts.commandDefinition.profile?.optional?.includes(profileType.type) ||
+                    censorOpts.commandDefinition.profile?.required?.includes(profileType.type)) {
+                    this.handleSchema(profileType);
                 }
-
-                this.handleSchema(profileType);
             }
 
             // Include any secure options from the config
