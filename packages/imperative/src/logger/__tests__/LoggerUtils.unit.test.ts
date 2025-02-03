@@ -15,6 +15,7 @@ jest.mock("../../config/src/Config");
 import { EnvironmentalVariableSettings } from "../../imperative/src/env/EnvironmentalVariableSettings";
 import { LoggerUtils } from "../src/LoggerUtils";
 import { ImperativeConfig } from "../../utilities/src/ImperativeConfig";
+import { Censor } from "../..";
 
 afterAll(() => {
     jest.restoreAllMocks();
@@ -144,5 +145,28 @@ describe("LoggerUtils tests", () => {
                 expect(received).toEqual(expected);
             });
         });
+    });
+
+    describe("isSpecialValue", () => {
+        let impConfigSpy: jest.SpyInstance = null;
+
+        beforeEach(() => {
+            (Censor as any).mSchema = null;
+            impConfigSpy = jest.spyOn(ImperativeConfig, "instance", "get");
+        });
+
+        afterAll(() => {
+            (Censor as any).mSchema = null;
+        });
+
+        it("should check if user is a special value", () => {
+            expect(LoggerUtils.isSpecialValue("profiles.test.properties.user")).toBe(true);
+        });
+    });
+
+    it("should get profile schemas from Censor", () => {
+        const schemaSpy = jest.spyOn(Censor, "profileSchemas", "get");
+        expect(LoggerUtils.profileSchemas).toEqual(Censor.profileSchemas);
+        expect(schemaSpy).toHaveBeenCalledTimes(2);
     });
 });

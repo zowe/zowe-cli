@@ -25,7 +25,7 @@ import { setupConfigToLoad } from "../../../__tests__/src/TestUtil";
 import { EnvFileUtils } from "../../utilities";
 import { join } from "path";
 import { Config } from "../../config";
-import { LoggerUtils } from "../../logger/src/LoggerUtils";
+import { Censor } from "../../censor";
 
 jest.mock("../src/syntax/SyntaxValidator");
 jest.mock("../src/utils/SharedOptions");
@@ -790,7 +790,7 @@ describe("Command Processor", () => {
         expect(commandResponse.error?.additionalDetails).toEqual("Syntax validation error!");
     });
 
-    it("should mask sensitive CLI options like user and password in log output", async () => {
+    it("should mask sensitive CLI options like user and password in log output 1", async () => {
         // Allocate the command processor
         const processor: CommandProcessor = new CommandProcessor({
             envVariablePrefix: ENV_VAR_PREFIX,
@@ -822,6 +822,40 @@ describe("Command Processor", () => {
 
         expect(mockLogInfo).toHaveBeenCalled();
         expect(logOutput).toContain("--user fakeUser --password **** --token-value **** --cert-file-passphrase **** --cert-key-file /fake/path");
+    });
+
+    it("should mask sensitive CLI options like user and password in log output 2", async () => {
+        // Allocate the command processor
+        const processor: CommandProcessor = new CommandProcessor({
+            envVariablePrefix: ENV_VAR_PREFIX,
+            fullDefinition: SAMPLE_COMPLEX_COMMAND,
+            definition: SAMPLE_COMMAND_DEFINITION,
+            helpGenerator: FAKE_HELP_GENERATOR,
+            rootCommandName: SAMPLE_ROOT_COMMAND,
+            commandLine: "-u fakeUser --password fakePass --token-value fakeToken " +
+                "--cert-file-passphrase fakePassphrase --cert-key-file /fake/path",
+            promptPhrase: "dummydummy"
+        });
+
+        // Mock log.info call
+        let logOutput: string = "";
+        const mockLogInfo = jest.fn((line) => {
+            logOutput += line + "\n";
+        });
+        Object.defineProperty(processor, "log", {
+            get: () => ({
+                debug: jest.fn(),
+                error: jest.fn(),
+                info: mockLogInfo,
+                trace: jest.fn()
+            })
+        });
+
+        const parms: any = { arguments: { _: [], $0: "", syntaxThrow: true }, responseFormat: "json", silent: true };
+        const commandResponse: ICommandResponse = await processor.invoke(parms);
+
+        expect(mockLogInfo).toHaveBeenCalled();
+        expect(logOutput).toContain("-u fakeUser --password **** --token-value **** --cert-file-passphrase **** --cert-key-file /fake/path");
     });
 
     it("should handle not being able to instantiate the handler", async () => {
@@ -1448,7 +1482,7 @@ describe("Command Processor", () => {
         expect(commandResponse.data.requiredProfiles).toBeUndefined();
     });
 
-    it.each(LoggerUtils.SECURE_PROMPT_OPTIONS)("should mask input value for secure parm %s when --show-inputs-only flag is set", async (propName) => {
+    it.each(Censor.SECURE_PROMPT_OPTIONS)("should mask input value for secure parm %s when --show-inputs-only flag is set", async (propName) => {
 
         // values to test
         const parm1Key = CliUtils.getOptionFormat(propName).kebabCase;
