@@ -134,5 +134,9 @@ Array [
     "description": "Create an empty physical sequential data set with default parameters",
     "options": "NEW.PS.DATASET",
   },
+  Object {
+    "description": "Create a LARGE format sequential data set with default parameters",
+    "options": "--data-set-type \`LARGE\`",
+  },
 ]
 `;
