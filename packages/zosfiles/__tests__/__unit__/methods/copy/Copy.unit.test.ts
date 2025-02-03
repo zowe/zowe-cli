@@ -635,6 +635,7 @@ describe("Copy", () => {
                             promptForLikeNamedMembers }
                     );
                     expect(promptForLikeNamedMembers).toHaveBeenCalledWith();
+                    expect(response.success).toEqual(true);
 
                 });
                 it("should not display a prompt for like named members if there are no duplicate member names", async () => {
@@ -646,7 +647,7 @@ describe("Copy", () => {
                             replace: false,
                             promptForLikeNamedMembers }
                     );
-
+                    expect(response.success).toEqual(true);
                     expect(promptForLikeNamedMembers).not.toHaveBeenCalled();
                 });
                 it("should throw error if user declines to replace the dataset", async () => {
