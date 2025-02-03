@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated transitive dependencies for technical currency []()
+
 ## `5.27.6`
 
 - BugFix: Resolved an issue where extraneous base profiles were created in project configurations when a nested profile property was updated. [#2404](https://github.com/zowe/zowe-cli/pull/2404)
