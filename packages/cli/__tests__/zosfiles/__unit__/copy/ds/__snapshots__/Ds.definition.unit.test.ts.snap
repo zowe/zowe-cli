@@ -10,6 +10,15 @@ Array [
     "name": "replace",
     "type": "boolean",
   },
+  Object {
+    "aliases": Array [
+      "safe-rep",
+      "sr",
+    ],
+    "description": "Specify this option as true if you wish to replace like-named members or the content of the target data set. This option will prompt to confirm.",
+    "name": "safe-replace",
+    "type": "boolean",
+  },
 ]
 `;
 
@@ -34,6 +43,10 @@ Array [
   Object {
     "description": "Copy the data set named 'USER.FROM.SET' to the data set named 'USER.TO.SET' and replace like-named members",
     "options": "\\"USER.FROM.SET\\" \\"USER.TO.SET\\" --replace",
+  },
+  Object {
+    "description": "Copy the partitioned data set named 'TEST.PDS1' to the partitioned data set named 'TEST.PDS2'",
+    "options": "\\"USER.FROM.SET\\" \\"USER.TO.SET\\" --safe-replace",
   },
 ]
 `;

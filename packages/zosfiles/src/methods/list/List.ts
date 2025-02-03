@@ -48,14 +48,18 @@ export class List {
 
         try {
             // Format the endpoint to send the request to
-            let endpoint = posix.join(
+            const endpoint = posix.join(
                 ZosFilesConstants.RESOURCE,
                 ZosFilesConstants.RES_DS_FILES,
                 encodeURIComponent(dataSetName),
                 ZosFilesConstants.RES_DS_MEMBERS);
 
+            const params = new URLSearchParams();
             if (options.pattern) {
-                endpoint += `?pattern=${encodeURIComponent(options.pattern)}`;
+                params.set("pattern", options.pattern);
+            }
+            if (options.start) {
+                params.set("start", options.start);
             }
 
             const reqHeaders: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING];
@@ -73,7 +77,7 @@ export class List {
 
             this.log.debug(`Endpoint: ${endpoint}`);
 
-            const data = await ZosmfRestClient.getExpectString(session, endpoint, reqHeaders);
+            const data = await ZosmfRestClient.getExpectString(session, endpoint.concat(params.size > 0 ? `?${params.toString()}` : ""), reqHeaders);
             let response: any;
             try {
                 response = JSONUtils.parse(data);
@@ -124,7 +128,7 @@ export class List {
         const zosmfResponses: IZosmfListResponse[] = [];
 
         for(const pattern of patterns) {
-            const response = await List.allMembers(session, dataSetName, { pattern});
+            const response = await List.allMembers(session, dataSetName, { pattern, maxLength: options.maxLength, start: options.start });
             zosmfResponses.push(...response.apiResponse.items);
         }
 
@@ -139,7 +143,7 @@ export class List {
 
         // Exclude names of members
         for (const pattern of options.excludePatterns || []) {
-            const response = await List.allMembers(session, dataSetName, {pattern});
+            const response = await List.allMembers(session, dataSetName, { pattern });
             response.apiResponse.items.forEach((membersObj: IZosmfListResponse) => {
                 const responseIndex = zosmfResponses.findIndex(response=> response.member === membersObj.member);
                 if (responseIndex !== -1) {
@@ -422,11 +426,20 @@ export class List {
         ImperativeExpect.toNotBeEqual(patterns.length, 0, ZosFilesMessages.missingPatterns.message);
         const zosmfResponses: IZosmfListResponse[] = [];
 
+        const maxLength = options.maxLength;
+
+        // Keep a count of returned data sets to compare against the `maxLength` option.
+        let totalCount = 0;
         // Get names of all data sets
         for (const pattern of patterns) {
+            // Stop searching for more data sets once we've reached the `maxLength` limit (if provided).
+            if (maxLength && totalCount >= options.maxLength) {
+                break;
+            }
             let response: any;
             try {
-                response = await List.dataSet(session, pattern, { attributes: true });
+                response = await List.dataSet(session, pattern,
+                    { attributes: true, maxLength: maxLength ? maxLength - totalCount : undefined, start: options.start });
             } catch (err) {
                 if (!(err instanceof ImperativeError && err.errorCode?.toString().startsWith("5"))) {
                     throw err;
@@ -463,6 +476,10 @@ export class List {
                 } else {
                     await asyncPool(maxConcurrentRequests, response.apiResponse.items, createListPromise);
                 }
+            }
+            // Track the total number of datasets returned for this pattern.
+            if (response.success && response.apiResponse?.items?.length > 0) {
+                totalCount += response.apiResponse.items.length;
             }
             zosmfResponses.push(...response.apiResponse.items);
         }
