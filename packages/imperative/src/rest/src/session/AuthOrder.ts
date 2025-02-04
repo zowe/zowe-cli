@@ -34,6 +34,14 @@ export class AuthOrder {
     private static m_authOrder: SessConstants.AUTH_TYPE_CHOICES[] = null;
 
     /**
+     * Contains the authentication to be placed at the top of a default auth order.
+     * If no caller changes the top auth, we use BASIC.
+     */
+    private static m_topDefaultAuth:
+        typeof SessConstants.AUTH_TYPE_BASIC | typeof SessConstants.AUTH_TYPE_TOKEN
+        = SessConstants.AUTH_TYPE_BASIC;
+
+    /**
      * Indicates whether the user has supplied the authentication order.
      */
     private static m_didUserGiveOrder: boolean = false;
@@ -110,10 +118,13 @@ export class AuthOrder {
             return false;
         }
 
+        // record the top auth that was requested for use in the default order
+        AuthOrder.m_topDefaultAuth = topDefaultAuth;
+
         // start over with an empty auth order.
         AuthOrder.m_authOrder = [];
 
-        if (topDefaultAuth === SessConstants.AUTH_TYPE_BASIC) {
+        if (AuthOrder.m_topDefaultAuth === SessConstants.AUTH_TYPE_BASIC) {
             // we want user & password auth as the top choice
             AuthOrder.m_authOrder.push(SessConstants.AUTH_TYPE_BASIC);
             AuthOrder.m_authOrder.push(SessConstants.AUTH_TYPE_TOKEN);
@@ -304,47 +315,54 @@ export class AuthOrder {
             AuthOrder.m_authOrder = null;
         }
 
+        AuthOrder.m_didUserGiveOrder = false;
         if (cmdArgs.authOrder) {
             if (typeof cmdArgs.authOrder === "string") {
-                // convert user's comma-separated string into an array of auth types, and remove whitespace
-                const userAuthOrder = cmdArgs.authOrder.split(',');
-                for (let nextUserAuth of userAuthOrder) {
-                    nextUserAuth = nextUserAuth.trim();
+                if (cmdArgs.authOrder.length > 0) {
+                    // user supplied an authOrder
+                    // convert user's comma-separated string into an array of auth types, and remove whitespace
+                    const userAuthOrder = cmdArgs.authOrder.split(',');
+                    for (let nextUserAuth of userAuthOrder) {
+                        nextUserAuth = nextUserAuth.trim();
 
-                    // validate each user-supplied type of authentication
-                    switch (nextUserAuth) {
-                        case SessConstants.AUTH_TYPE_BASIC:
-                        case SessConstants.AUTH_TYPE_TOKEN:
-                        case SessConstants.AUTH_TYPE_BEARER:
-                        case SessConstants.AUTH_TYPE_CERT_PEM:
-                        case SessConstants.AUTH_TYPE_NONE:
-                            if (AuthOrder.m_authOrder === null) {
-                                AuthOrder.m_authOrder = [];
-                            }
-                            AuthOrder.m_authOrder.push(nextUserAuth);
-                            break;
-                        default:
-                            Logger.getImperativeLogger().error(
-                                `The authentication = '${nextUserAuth}' is not valid and will be ignored.`
-                            );
-                            break;
+                        // validate each user-supplied type of authentication
+                        switch (nextUserAuth) {
+                            case SessConstants.AUTH_TYPE_BASIC:
+                            case SessConstants.AUTH_TYPE_TOKEN:
+                            case SessConstants.AUTH_TYPE_BEARER:
+                            case SessConstants.AUTH_TYPE_CERT_PEM:
+                            case SessConstants.AUTH_TYPE_NONE:
+                                if (AuthOrder.m_authOrder === null) {
+                                    AuthOrder.m_authOrder = [];
+                                }
+                                AuthOrder.m_authOrder.push(nextUserAuth);
+                                break;
+                            default:
+                                Logger.getImperativeLogger().error(
+                                    `The authentication = '${nextUserAuth}' is not valid and will be ignored.`
+                                );
+                                break;
+                        }
                     }
                 }
             } else {
                 Logger.getImperativeLogger().error(
-                    `The authOrder option = '${cmdArgs.authOrder}' is not a string. A default authOrder will be used.`
+                    `The authOrder option = '${cmdArgs.authOrder}' is not a a valid authOrder string. A default authOrder will be used.`
                 );
             }
         }
 
-        if (AuthOrder.m_authOrder !== null) {
-            // the user supplied an authOrder and we used it
-            AuthOrder.m_didUserGiveOrder = true;
+        if (AuthOrder.m_authOrder === null) {
+            // fall back to a default authOrder
+            AuthOrder.cacheDefaultAuthOrder(AuthOrder.m_topDefaultAuth);
             return;
         }
 
-        // fall back to a default authOrder
-        AuthOrder.cacheDefaultAuthOrder(SessConstants.AUTH_TYPE_BASIC);
+        // The user supplied an authOrder. Record that we used it.
+        AuthOrder.m_didUserGiveOrder = true;
+
+        // remove any duplicates
+        AuthOrder.m_authOrder = Array.from(new Set(AuthOrder.m_authOrder));
     }
 
     // ***********************************************************************

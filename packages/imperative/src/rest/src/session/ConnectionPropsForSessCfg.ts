@@ -256,8 +256,8 @@ export class ConnectionPropsForSessCfg {
             connOpts.defaultTokenType = SessConstants.TOKEN_TYPE_JWT;
         }
 
-        // Record that we want to request a token.
-        // Downstream logic in AuthOrder will set it to the appropriate value.
+        // Add authTypeToRequestToken to record that we want to request a token.
+        // Downstream logic in AuthOrder will set authTypeToRequestToken to the appropriate value.
         if (connOpts.requestToken) {
             sessCfg.authTypeToRequestToken = SessConstants.AUTH_TYPE_NONE;
         }
