@@ -92,5 +92,10 @@
     ],
     "coverageLink": "../unit/coverage/lcov-report/index.html",
     "resultDir": "__tests__/__results__/jest-stare"
+  },
+  "overrides": {
+    "yamljs": {
+      "glob": "^9.0.0"
+    }
   }
 }
