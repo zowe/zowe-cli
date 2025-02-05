@@ -20,6 +20,7 @@ import { EnvironmentalVariableSettings } from "../../imperative/src/env/Environm
 import { ICommandProfileTypeConfiguration } from "../../cmd/src/doc/profiles/definition/ICommandProfileTypeConfiguration";
 import { IProfileSchema} from "../../profiles/src/doc/definition/IProfileSchema";
 import { IProfileTypeConfiguration } from "../../profiles/src/doc/config/IProfileTypeConfiguration";
+import { ICommandArguments, ICommandDefinition } from "../../cmd";
 
 export class Censor {
 
@@ -64,13 +65,15 @@ export class Censor {
     // Set a censored options list that can be set and retrieved for each command.
     private static censored_options: Set<string> = new Set(this.DEFAULT_CENSORED_OPTIONS);
 
-    // Keep a cached config object if provided in another function
-    private static mConfig: Config = null;
-
     // Return a customized list of censored options (or just the defaults if not set).
     public static get CENSORED_OPTIONS(): string[] {
         return Array.from(this.censored_options);
     }
+
+    //Singleton caches of the Config, Command Definition and Command Arguments
+    private static mConfig: Config = null;
+    private static mCommandDefinition: ICommandDefinition = null;
+    private static mCommandArguments: ICommandArguments = null;
 
     /**
      * Singleton implementation of an internal reference to the schema
@@ -184,6 +187,15 @@ export class Censor {
         return false;
     }
 
+    /**
+     * Identifies if a property is a secure property
+     * @param {string} prop - The property to check
+     * @returns {boolean} - True if the property is secure; False otherwise
+     */
+    public static isSecureValue(prop: string) {
+        return this.SECURE_PROMPT_OPTIONS.includes(prop);
+    }
+
     /****************************************************************************************
      * Bread and butter functions, setting up the class and performing censorship of values *
      ****************************************************************************************/
@@ -216,33 +228,48 @@ export class Censor {
 
             // Include any secure options from the config
             if (censorOpts.config) {
-                // Try to use the command and inputs to find the profiles being loaded
-                if (censorOpts.commandDefinition && censorOpts.commandArguments) {
-                    const profiles = [];
-                    for (const prof of censorOpts.commandDefinition.profile?.required || []) {
-                        profiles.push(prof);
-                    }
-                    for (const prof of censorOpts.commandDefinition.profile?.optional || []) {
-                        profiles.push(prof);
-                    }
+                this.mCommandArguments = censorOpts.commandArguments;
+                this.mCommandDefinition = censorOpts.commandDefinition;
 
-                    for (const prof of profiles) {
-                        // If the profile exists, append all of the secure props to the censored list
-                        const profName = censorOpts.commandArguments?.[`${prof}-profile`];
-                        if (profName && censorOpts.config.api.profiles.get(profName)) {
-                            censorOpts.config.api.secure.securePropsForProfile(profName).forEach(prop => this.addCensoredOption(prop));
-                        }
-                    }
-                } else {
-                    // We only have a configuration file, assume every property that is secured should be censored
-                    censorOpts.config.api.secure.findSecure(censorOpts.config.mProperties.profiles, "profiles").forEach(
-                        prop => this.addCensoredOption(prop.split(".").pop())
-                    );
-                }
+                this.censorFromCommandOrConfig();
             }
         } else if (this.profileSchemas) {
             for (const profileType of this.profileSchemas) {
                 this.handleSchema(profileType);
+            }
+        }
+    }
+
+    /**
+     * Censor from the command cache from setCensoredOptions, or use the user's config to censor anything secure
+     */
+    private static censorFromCommandOrConfig() {
+        const config = this.mConfig ?? ImperativeConfig.instance?.config;
+
+        if (config) { 
+            // Try to use the command and inputs to find the profiles being loaded
+            if (this.mCommandDefinition && this.mCommandArguments) {
+                const profiles = [];
+                for (const prof of this.mCommandDefinition.profile?.required || []) {
+                    profiles.push(prof);
+                }
+                for (const prof of this.mCommandDefinition.profile?.optional || []) {
+                    profiles.push(prof);
+                }
+
+                for (const prof of profiles) {
+                    // If the profile exists, append all of the secure props to the censored list
+                    let profName = this.mCommandArguments?.[`${prof}-profile`];
+                    if (!profName) { profName = this.mConfig.mProperties.defaults[`${prof}`]; }
+                    if (profName && config.api.profiles.get(profName)) {
+                        config.api.secure.securePropsForProfile(profName).forEach(prop => this.addCensoredOption(prop));
+                    }
+                }
+            } else {
+                // We only have a configuration file, assume every property that is secured should be censored
+                config.api.secure.findSecure(config.mProperties.profiles, "profiles").forEach(
+                    prop => this.addCensoredOption(prop.split(".").pop())
+                );
             }
         }
     }
@@ -286,10 +313,12 @@ export class Censor {
 
         let newData = data;
 
+        this.censorFromCommandOrConfig();
+
         const secureFields = config.api.secure.findSecure(config.mProperties.profiles, "profiles");
         for (const prop of secureFields) {
             const sec = lodash.get(config.mProperties, prop);
-            if (sec && typeof sec !== "object" && !this.isSpecialValue(prop)) {
+            if (sec && typeof sec !== "object" && !this.isSpecialValue(prop) && this.isSecureValue(prop.split(".").pop())) {
                 newData = newData.replace(new RegExp(sec, "gi"), this.CENSOR_RESPONSE);
             }
         }

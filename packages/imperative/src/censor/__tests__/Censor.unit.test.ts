@@ -16,6 +16,7 @@ import { EnvironmentalVariableSettings } from "../../imperative/src/env/Environm
 import { Censor } from "../src/Censor";
 import { ImperativeConfig } from "../../utilities/src/ImperativeConfig";
 import { ICensorOptions } from "../..";
+import { ConfigSecure } from "../../config/src/api";
 
 beforeAll(() => {
     (Censor as any).mSchema = null;
@@ -537,7 +538,7 @@ describe("Censor tests", () => {
 
         it("should reset the censored options when called with nothing", () => {
             (Censor as any).mConfig = "bad";
-            (Censor as any).setCensoredOptions({});
+            Censor.setCensoredOptions({});
             expect((Censor as any).mConfig).not.toEqual("bad");
         });
 
@@ -745,6 +746,195 @@ describe("Censor tests", () => {
             expect(Censor.CENSORED_OPTIONS).not.toContain("test1");
             expect(Censor.CENSORED_OPTIONS).not.toContain("test2");
             expect(Censor.CENSORED_OPTIONS).not.toContain("t");
+        });
+
+        it("should apply a config without command definitions", () => {
+            const censorOpts: ICensorOptions = {
+                config: {
+                    api: {
+                        secure: new ConfigSecure({} as any)
+                    },
+                    mProperties: {
+                        profiles: {
+                            test1: {
+                                secure: [
+                                    "host",
+                                    "port",
+                                    "user"
+                                ]
+                            }
+                        }
+                    }
+                } as any
+            }
+            Censor.setCensoredOptions(censorOpts);
+
+            expect(Censor.CENSORED_OPTIONS).toContain("host");
+            expect(Censor.CENSORED_OPTIONS).toContain("port");
+            expect(Censor.CENSORED_OPTIONS).toContain("user");
+            expect(Censor.CENSORED_OPTIONS).toContain("password");
+        });
+
+        it("should apply a config with command definitions 1", () => {
+            const profile = {
+                test1: {
+                    secure: [
+                        "host",
+                        "port",
+                        "user"
+                    ]
+                }
+            }
+            const censorOpts: ICensorOptions = {
+                config: {
+                    api: {
+                        secure: new ConfigSecure({
+                            api: {
+                                profiles: {
+                                    getProfilePathFromName: jest.fn().mockReturnValue("profiles.test1")
+                                }
+                            },
+                            mProperties: {
+                                profiles: {
+                                    ...profile
+                                }
+                            }
+                        } as any),
+                        profiles: {
+                            get: jest.fn().mockReturnValue(profile)
+                        }
+                    },
+                    mProperties: {
+                        profiles: {
+                            ...profile
+                        }
+                    }
+                } as any,
+                commandDefinition: {
+                    profile: {
+                        required: [
+                            "test"
+                        ]
+                    }
+                } as any,
+                commandArguments: {
+                    "test-profile": "test1"
+                } as any
+            }
+            Censor.setCensoredOptions(censorOpts);
+
+            expect(Censor.CENSORED_OPTIONS).toContain("host");
+            expect(Censor.CENSORED_OPTIONS).toContain("port");
+            expect(Censor.CENSORED_OPTIONS).toContain("user");
+            expect(Censor.CENSORED_OPTIONS).toContain("password");
+        });
+
+        it("should apply a config with command definitions 2", () => {
+            const profile = {
+                test1: {
+                    secure: [
+                        "host",
+                        "port",
+                        "user"
+                    ]
+                }
+            }
+            const censorOpts: ICensorOptions = {
+                config: {
+                    api: {
+                        secure: new ConfigSecure({
+                            api: {
+                                profiles: {
+                                    getProfilePathFromName: jest.fn().mockReturnValue("profiles.test1")
+                                }
+                            },
+                            mProperties: {
+                                profiles: {
+                                    ...profile
+                                }
+                            }
+                        } as any),
+                        profiles: {
+                            get: jest.fn().mockReturnValue(profile)
+                        }
+                    },
+                    mProperties: {
+                        profiles: {
+                            ...profile
+                        }
+                    }
+                } as any,
+                commandDefinition: {
+                    profile: {
+                        optional: [
+                            "test"
+                        ]
+                    }
+                } as any,
+                commandArguments: {
+                    "test-profile": "test1"
+                } as any
+            }
+            Censor.setCensoredOptions(censorOpts);
+
+            expect(Censor.CENSORED_OPTIONS).toContain("host");
+            expect(Censor.CENSORED_OPTIONS).toContain("port");
+            expect(Censor.CENSORED_OPTIONS).toContain("user");
+            expect(Censor.CENSORED_OPTIONS).toContain("password");
+        });
+
+        it("should not apply a config with command definitions if the profile does not apply", () => {
+            const profile = {
+                test1: {
+                    secure: [
+                        "host",
+                        "port",
+                        "user"
+                    ]
+                }
+            }
+            const censorOpts: ICensorOptions = {
+                config: {
+                    api: {
+                        secure: new ConfigSecure({
+                            api: {
+                                profiles: {
+                                    getProfilePathFromName: jest.fn().mockReturnValue("profiles.test1")
+                                }
+                            },
+                            mProperties: {
+                                profiles: {
+                                    ...profile
+                                }
+                            }
+                        } as any),
+                        profiles: {
+                            get: jest.fn().mockReturnValue(profile)
+                        }
+                    },
+                    mProperties: {
+                        profiles: {
+                            ...profile
+                        }
+                    }
+                } as any,
+                commandDefinition: {
+                    profile: {
+                        required: [
+                            "nottest"
+                        ]
+                    }
+                } as any,
+                commandArguments: {
+                    "test-profile": "test1"
+                } as any
+            }
+            Censor.setCensoredOptions(censorOpts);
+
+            expect(Censor.CENSORED_OPTIONS).not.toContain("host");
+            expect(Censor.CENSORED_OPTIONS).not.toContain("port");
+            expect(Censor.CENSORED_OPTIONS).not.toContain("user");
+            expect(Censor.CENSORED_OPTIONS).toContain("password");
         });
     });
 });
