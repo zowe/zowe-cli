@@ -231,14 +231,8 @@ export class Copy {
             for (const file of uploadFileList) {
                 const memName = ZosFilesUtils.generateMemberName(file);
                 const uploadingDsn = `${toPds}(${memName})`;
-                try {
-                    const uploadStream = IO.createReadStream(file);
-                    await Upload.streamToDataSet(session, uploadStream, uploadingDsn);
-                }
-                catch(error) {
-                    Logger.getAppLogger().error(error);
-                    throw error;
-                }
+                const uploadStream = IO.createReadStream(file);
+                await Upload.streamToDataSet(session, uploadStream, uploadingDsn);
             }
             fs.rmSync(downloadDir, {recursive: true});
             return {
