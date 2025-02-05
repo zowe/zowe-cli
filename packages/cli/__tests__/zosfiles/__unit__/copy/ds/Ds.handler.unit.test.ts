@@ -273,7 +273,7 @@ describe("DsHandler", () => {
         const result = await promptForDuplicates();
 
         expect(promptMock).toHaveBeenCalledWith(
-            `The source and target data sets have like named member names. The contents of those members will be overwritten.` +
+            `The source and target data sets have identical member names. The contents of those members will be overwritten.` +
             ` Are you sure you want to continue? [y/N]: `
         );
         expect(result).toBe(true);
@@ -309,7 +309,7 @@ describe("DsHandler", () => {
         const result = await promptForDuplicates();
 
         expect(promptMock).toHaveBeenCalledWith(
-            `The source and target data sets have like named member names. The contents of those members will be overwritten.` +
+            `The source and target data sets have identical member names. The contents of those members will be overwritten.` +
             ` Are you sure you want to continue? [y/N]: `
         );
         expect(result).toBe(false);

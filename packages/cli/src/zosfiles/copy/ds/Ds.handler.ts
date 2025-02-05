@@ -46,7 +46,7 @@ export default class DsHandler extends ZosFilesBaseHandler {
     private promptForLikeNamedMembers(console: IHandlerResponseConsoleApi) {
         return async() => {
             const answer: string = await console.prompt (
-                `The source and target data sets have like named member names. The contents of those members will be overwritten.` +
+                `The source and target data sets have identical member names. The contents of those members will be overwritten.` +
                 ` Are you sure you want to continue? [y/N]: `
             )
             return answer != null && (answer.toLowerCase() === "y" || answer.toLowerCase() === "yes");

@@ -87,8 +87,8 @@ export class Copy {
             const targetIsPds = await this.isPDS(session, toDataSetName);
 
             if (sourceIsPds && targetIsPds) {
-                const hasLikeNamedMembers = await this.hasLikeNamedMembers(session, options["from-dataset"].dsn, toDataSetName);
-                if(!safeReplace && hasLikeNamedMembers && !overwriteMembers) {
+                const hasIdenticalMemberNames = await this.hasIdenticalMemberNames(session, options["from-dataset"].dsn, toDataSetName);
+                if(!safeReplace && hasIdenticalMemberNames && !overwriteMembers) {
                     const userResponse = await options.promptForLikeNamedMembers();
 
                     if(!userResponse) {
@@ -181,9 +181,9 @@ export class Copy {
     }
 
     /**
-     * Function that checks if source and target data sets have like-named members
+     * Function that checks if source and target data sets have identical member names
     */
-    private static async hasLikeNamedMembers (
+    private static async hasIdenticalMemberNames (
         session: AbstractSession,
         fromPds: string,
         toPds: string

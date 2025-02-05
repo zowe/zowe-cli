@@ -598,7 +598,7 @@ describe("Copy", () => {
         });
     });
 
-    describe("hasLikeNamedMembers", () => {
+    describe("hasIdenticalMemberNames", () => {
         beforeEach(async () => {
             try {
                 await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, fromDataSetName);
@@ -618,16 +618,16 @@ describe("Copy", () => {
                 Imperative.console.info(`Error: ${inspect(err)}`);
             }
         });
-        it("should return true if the source and target data sets have like-named members", async () => {
-            const response = await Copy["hasLikeNamedMembers"](REAL_SESSION, fromDataSetName, toDataSetName);
+        it("should return true if the source and target data sets have identical member names", async () => {
+            const response = await Copy["hasIdenticalMemberNames"](REAL_SESSION, fromDataSetName, toDataSetName);
             expect(response).toBe(true);
         });
 
-        it("should return false if the source and target data sets do not have like-named members", async () => {   
+        it("should return false if the source and target data sets do not have identical member names", async () => {
             await Delete.dataSet(REAL_SESSION, toDataSetName);
             await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, toDataSetName);
 
-            const response = await Copy["hasLikeNamedMembers"](REAL_SESSION, fromDataSetName, toDataSetName);
+            const response = await Copy["hasIdenticalMemberNames"](REAL_SESSION, fromDataSetName, toDataSetName);
             expect(response).toBe(false);
         });
     });
