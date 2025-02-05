@@ -229,9 +229,16 @@ export class Copy {
             const uploadFileList: string[] = ZosFilesUtils.getFileListFromPath(downloadDir);
 
             for (const file of uploadFileList) {
-                const uploadingDsn = `${toPds}(${ZosFilesUtils.generateMemberName(file)})`;
-                const uploadStream = IO.createReadStream(file);
-                await Upload.streamToDataSet(session, uploadStream, uploadingDsn);
+                const memName = ZosFilesUtils.generateMemberName(file);
+                const uploadingDsn = `${toPds}(${memName})`;
+                try {
+                    const uploadStream = IO.createReadStream(file);
+                    await Upload.streamToDataSet(session, uploadStream, uploadingDsn);
+                }
+                catch(error) {
+                    Logger.getAppLogger().error(error);
+                    throw error;
+                }
             }
             fs.rmSync(downloadDir, {recursive: true});
             return {
