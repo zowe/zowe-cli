@@ -42,16 +42,14 @@ import { HttpsProxyAgent } from "https-proxy-agent";
 
 describe("AbstractRestClient tests", () => {
     let setPasswordAuthSpy: any;
-    let putTopAuthInSessionSpy: any;
+
+    // never run putTopAuthInSession. It has its own unit test.
+    AuthOrder.putTopAuthInSession = jest.fn();
 
     beforeEach(() => {
         // pretend that basic auth was successfully set
         setPasswordAuthSpy = jest.spyOn(AbstractRestClient.prototype as any, "setPasswordAuth");
         setPasswordAuthSpy.mockReturnValue(true);
-
-        // never call putTopAuthInSession. It has its own unit test.
-        putTopAuthInSessionSpy = jest.spyOn(AuthOrder, "putTopAuthInSession");
-
     });
 
     it("should not append any headers to a request by default", () => {
