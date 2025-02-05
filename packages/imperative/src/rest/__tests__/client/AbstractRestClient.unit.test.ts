@@ -13,6 +13,7 @@ import * as fs from "fs";
 import * as https from "https";
 import * as http from "http";
 import { Session } from "../../src/session/Session";
+import { AuthOrder } from "../../src/session/AuthOrder";
 import {
     AUTH_TYPE_BASIC, AUTH_TYPE_BEARER, AUTH_TYPE_CERT_PEM, AUTH_TYPE_NONE, AUTH_TYPE_TOKEN
 } from "../../src/session/SessConstants";
@@ -41,11 +42,16 @@ import { HttpsProxyAgent } from "https-proxy-agent";
 
 describe("AbstractRestClient tests", () => {
     let setPasswordAuthSpy: any;
+    let putTopAuthInSessionSpy: any;
 
     beforeEach(() => {
         // pretend that basic auth was successfully set
         setPasswordAuthSpy = jest.spyOn(AbstractRestClient.prototype as any, "setPasswordAuth");
         setPasswordAuthSpy.mockReturnValue(true);
+
+        // never call putTopAuthInSession. It has its own unit test.
+        putTopAuthInSessionSpy = jest.spyOn(AuthOrder, "putTopAuthInSession");
+
     });
 
     it("should not append any headers to a request by default", () => {
