@@ -193,7 +193,7 @@ export class Censor {
      * @returns {boolean} - True if the property is secure; False otherwise
      */
     public static isSecureValue(prop: string) {
-        return this.SECURE_PROMPT_OPTIONS.includes(prop);
+        return this.CENSORED_OPTIONS.includes(prop);
     }
 
     /****************************************************************************************

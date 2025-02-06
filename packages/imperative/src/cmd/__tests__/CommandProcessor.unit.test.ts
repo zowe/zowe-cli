@@ -1499,7 +1499,8 @@ describe("Command Processor", () => {
                     }
                 },
                 layers: [{ exists: true, path: "zowe.config.json" }],
-                properties: Config.empty()
+                properties: Config.empty(),
+                mProperties: Config.empty()
             }
         } as any);
 

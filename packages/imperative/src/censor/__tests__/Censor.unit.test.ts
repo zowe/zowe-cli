@@ -149,9 +149,10 @@ describe("Censor tests", () => {
 
             describe("special value:", () => {
                 beforeEach(() => {
-                    impConfig.config.mProperties = {profiles: {secret: { properties: {}}}};
+                    impConfig.config.mProperties = {profiles: {secret: { properties: {}}}, defaults: {}};
                     impConfigSpy.mockReturnValue(impConfig);
                     envSettingsReadSpy.mockReturnValue({ maskOutput: { value: "TRUE" } });
+                    (Censor as any).addCensoredOption("secret");
                 });
 
                 const _lazyTest = (prop: string): [string, string] => {
@@ -905,7 +906,8 @@ describe("Censor tests", () => {
                             mProperties: {
                                 profiles: {
                                     ...profile
-                                }
+                                },
+                                defaults: {}
                             }
                         } as any),
                         profiles: {
@@ -915,7 +917,8 @@ describe("Censor tests", () => {
                     mProperties: {
                         profiles: {
                             ...profile
-                        }
+                        },
+                        defaults: {}
                     }
                 } as any,
                 commandDefinition: {

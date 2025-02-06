@@ -102,9 +102,10 @@ describe("LoggerUtils tests", () => {
 
             describe("special value:", () => {
                 beforeEach(() => {
-                    impConfig.config.mProperties = {profiles: {secret: { properties: {}}}};
+                    impConfig.config.mProperties = {profiles: {secret: { properties: {}}}, defaults: {}};
                     impConfigSpy.mockReturnValue(impConfig);
                     envSettingsReadSpy.mockReturnValue({ maskOutput: { value: "TRUE" } });
+                    (Censor as any).addCensoredOption("secret");
                 });
 
                 const _lazyTest = (prop: string): [string, string] => {
