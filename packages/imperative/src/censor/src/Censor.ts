@@ -20,7 +20,6 @@ import { EnvironmentalVariableSettings } from "../../imperative/src/env/Environm
 import { ICommandProfileTypeConfiguration } from "../../cmd/src/doc/profiles/definition/ICommandProfileTypeConfiguration";
 import { IProfileSchema} from "../../profiles/src/doc/definition/IProfileSchema";
 import { IProfileTypeConfiguration } from "../../profiles/src/doc/config/IProfileTypeConfiguration";
-import { ICommandArguments, ICommandDefinition } from "../../cmd";
 
 export class Censor {
 
@@ -72,8 +71,6 @@ export class Censor {
 
     //Singleton caches of the Config, Command Definition and Command Arguments
     private static mConfig: Config = null;
-    private static mCommandDefinition: ICommandDefinition = null;
-    private static mCommandArguments: ICommandArguments = null;
 
     /**
      * Singleton implementation of an internal reference to the schema
@@ -116,6 +113,8 @@ export class Censor {
      * @param {IProfileTypeConfiguration | ICommandProfileTypeConfiguration} profileType - the profile type configuration to iterate over
      */
     private static handleSchema(profileType: IProfileTypeConfiguration | ICommandProfileTypeConfiguration): void {
+        const secureOptions: Set<string> = new Set();
+
         /* eslint-disable-next-line no-unused-vars */
         for (const [key, cmdProp] of Object.entries(profileType.schema.properties)) {
             const prop = cmdProp as ICommandProfileProperty;
@@ -123,25 +122,27 @@ export class Censor {
             if (prop.secure) {
                 // Handle the case of a single option definition
                 if (prop.optionDefinition) {
-                    this.addCensoredOption(prop.optionDefinition.name);
+                    secureOptions.add(prop.optionDefinition.name);
                     for (const alias of prop.optionDefinition.aliases || []) {
                         // Remember to add the alias
-                        this.addCensoredOption(alias);
+                        secureOptions.add(alias);
                     }
                 } else if (prop.optionDefinitions) {
                     // Handle the case of multiple option definitions
                     prop.optionDefinitions.map(opDef => {
-                        this.addCensoredOption(opDef.name);
+                        secureOptions.add(opDef.name);
                         for (const alias of opDef.aliases || []) {
                             // Remember to add the alias
-                            this.addCensoredOption(alias);
+                            secureOptions.add(alias);
                         }
                     });
                 } else {
-                    this.addCensoredOption(key);
+                    secureOptions.add(key);
                 }
             }
         }
+
+        secureOptions.forEach(prop => this.addCensoredOption(prop));
     }
 
     /**
@@ -156,7 +157,6 @@ export class Censor {
             this.censored_options.add(CliUtils.getOptionFormat(option).kebabCase);
         }
     }
-
 
     /**
      * Specifies whether a given property path (e.g. "profiles.lpar1.properties.host") is a special value or not.
@@ -228,48 +228,37 @@ export class Censor {
 
             // Include any secure options from the config
             if (censorOpts.config) {
-                this.mCommandArguments = censorOpts.commandArguments;
-                this.mCommandDefinition = censorOpts.commandDefinition;
+                const secureOptions: Set<string> = new Set();
 
-                this.censorFromCommandOrConfig();
+                // Try to use the command and inputs to find the profiles being loaded
+                if (censorOpts.commandDefinition && censorOpts.commandArguments) {
+                    const profiles = [];
+                    for (const prof of censorOpts.commandDefinition.profile?.required || []) {
+                        profiles.push(prof);
+                    }
+                    for (const prof of censorOpts.commandDefinition.profile?.optional || []) {
+                        profiles.push(prof);
+                    }
+
+                    for (const prof of profiles) {
+                        // If the profile exists, append all of the secure props to the censored list
+                        let profName = censorOpts.commandArguments?.[`${prof}-profile`];
+                        if (!profName) { profName = this.mConfig.mProperties.defaults[`${prof}`]; }
+                        if (profName && censorOpts.config.api.profiles.get(profName)) {
+                            censorOpts.config.api.secure.securePropsForProfile(profName).forEach(prop => secureOptions.add(prop));
+                        }
+                    }
+                } else {
+                    // We only have a configuration file, assume every property that is secured should be censored
+                    censorOpts.config.api.secure.findSecure(censorOpts.config.mProperties.profiles, "profiles").forEach(
+                        prop => secureOptions.add(prop.split(".").pop())
+                    );
+                }
+                secureOptions.forEach(prop => this.addCensoredOption(prop));
             }
         } else if (this.profileSchemas) {
             for (const profileType of this.profileSchemas) {
                 this.handleSchema(profileType);
-            }
-        }
-    }
-
-    /**
-     * Censor from the command cache from setCensoredOptions, or use the user's config to censor anything secure
-     */
-    private static censorFromCommandOrConfig() {
-        const config = this.mConfig ?? ImperativeConfig.instance?.config;
-
-        if (config) { 
-            // Try to use the command and inputs to find the profiles being loaded
-            if (this.mCommandDefinition && this.mCommandArguments) {
-                const profiles = [];
-                for (const prof of this.mCommandDefinition.profile?.required || []) {
-                    profiles.push(prof);
-                }
-                for (const prof of this.mCommandDefinition.profile?.optional || []) {
-                    profiles.push(prof);
-                }
-
-                for (const prof of profiles) {
-                    // If the profile exists, append all of the secure props to the censored list
-                    let profName = this.mCommandArguments?.[`${prof}-profile`];
-                    if (!profName) { profName = this.mConfig.mProperties.defaults[`${prof}`]; }
-                    if (profName && config.api.profiles.get(profName)) {
-                        config.api.secure.securePropsForProfile(profName).forEach(prop => this.addCensoredOption(prop));
-                    }
-                }
-            } else {
-                // We only have a configuration file, assume every property that is secured should be censored
-                config.api.secure.findSecure(config.mProperties.profiles, "profiles").forEach(
-                    prop => this.addCensoredOption(prop.split(".").pop())
-                );
             }
         }
     }
@@ -312,8 +301,6 @@ export class Censor {
         }
 
         let newData = data;
-
-        this.censorFromCommandOrConfig();
 
         const secureFields = config.api.secure.findSecure(config.mProperties.profiles, "profiles");
         for (const prop of secureFields) {
