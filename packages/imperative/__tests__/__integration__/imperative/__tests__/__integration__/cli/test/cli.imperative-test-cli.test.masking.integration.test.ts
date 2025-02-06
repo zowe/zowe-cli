@@ -36,7 +36,7 @@ describe("imperative-test-cli test masking command", () => {
         TestLogger.info(`Working directory: ${TEST_ENVIRONMENT.workingDir}`);
         runCliScript(__dirname + "/../config/init/__scripts__/init_config.sh", TEST_ENVIRONMENT.workingDir, ["--no-prompt"]);
         runCliScript(__dirname + "/../config/set/__scripts__/set_secure.sh", TEST_ENVIRONMENT.workingDir,
-            ["profiles.secured.profiles.secure_profile.properties.info", "secret"]);
+            ["profiles.secured.properties.info", "secret"]);
     });
 
     const _logPrefix = (_log: string, level: string) => {

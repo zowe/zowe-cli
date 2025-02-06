@@ -528,6 +528,25 @@ describe("Censor tests", () => {
             expect(Censor.CENSORED_OPTIONS).toContain("test2");
             expect(Censor.CENSORED_OPTIONS).toContain("t");
         });
+
+        it("should add secure props with no option definitions to the secure array", () => {
+            const fakeSchema = {
+                type: "test",
+                schema: {
+                    title: "Fake Profile Type",
+                    description: "Fake Profile Description",
+                    type: "object",
+                    properties: {
+                        test: {
+                            type: "string",
+                            secure: true
+                        }
+                    }
+                }
+            };
+            (Censor as any).handleSchema(fakeSchema);
+            expect(Censor.CENSORED_OPTIONS).toContain("test");
+        });
     });
 
     describe("setCensoredOptions", () => {
@@ -613,7 +632,7 @@ describe("Censor tests", () => {
                         required: ["test"]
                     }
                 },
-            }
+            };
 
             Censor.setCensoredOptions(censorOpts);
 
@@ -656,7 +675,7 @@ describe("Censor tests", () => {
                         optional: ["test"]
                     }
                 },
-            }
+            };
 
             Censor.setCensoredOptions(censorOpts);
 
@@ -697,7 +716,7 @@ describe("Censor tests", () => {
                     type: "command",
                     profile: {}
                 },
-            }
+            };
 
             Censor.setCensoredOptions(censorOpts);
 
@@ -740,7 +759,7 @@ describe("Censor tests", () => {
                         optional: ["nottest"]
                     }
                 },
-            }
+            };
 
             Censor.setCensoredOptions(censorOpts);
 
@@ -767,7 +786,7 @@ describe("Censor tests", () => {
                         }
                     }
                 } as any
-            }
+            };
             Censor.setCensoredOptions(censorOpts);
 
             expect(Censor.CENSORED_OPTIONS).toContain("host");
@@ -785,7 +804,7 @@ describe("Censor tests", () => {
                         "user"
                     ]
                 }
-            }
+            };
             const censorOpts: ICensorOptions = {
                 config: {
                     api: {
@@ -821,7 +840,7 @@ describe("Censor tests", () => {
                 commandArguments: {
                     "test-profile": "test1"
                 } as any
-            }
+            };
             Censor.setCensoredOptions(censorOpts);
 
             expect(Censor.CENSORED_OPTIONS).toContain("host");
@@ -839,7 +858,7 @@ describe("Censor tests", () => {
                         "user"
                     ]
                 }
-            }
+            };
             const censorOpts: ICensorOptions = {
                 config: {
                     api: {
@@ -875,7 +894,7 @@ describe("Censor tests", () => {
                 commandArguments: {
                     "test-profile": "test1"
                 } as any
-            }
+            };
             Censor.setCensoredOptions(censorOpts);
 
             expect(Censor.CENSORED_OPTIONS).toContain("host");
@@ -893,7 +912,7 @@ describe("Censor tests", () => {
                         "user"
                     ]
                 }
-            }
+            };
             const censorOpts: ICensorOptions = {
                 config: {
                     api: {
@@ -931,7 +950,7 @@ describe("Censor tests", () => {
                 commandArguments: {
                     "test-profile": "test1"
                 } as any
-            }
+            };
             Censor.setCensoredOptions(censorOpts);
 
             expect(Censor.CENSORED_OPTIONS).not.toContain("host");
