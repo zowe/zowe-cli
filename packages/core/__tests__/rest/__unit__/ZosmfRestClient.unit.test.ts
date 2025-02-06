@@ -11,7 +11,7 @@
 
 import { ZosmfHeaders } from "../../../src/rest/ZosmfHeaders";
 import { ZosmfRestClient } from "../../../src/rest/ZosmfRestClient";
-import { IImperativeError, RestConstants, SessConstants, Session } from "@zowe/imperative";
+import { AuthOrder, IImperativeError, RestConstants, SessConstants, Session } from "@zowe/imperative";
 
 describe("ZosmfRestClient tests", () => {
 
@@ -42,6 +42,9 @@ describe("ZosmfRestClient tests", () => {
     describe("Authentication errors", () => {
 
         it("should handle basic auth error with empty string causeErrors", () => {
+            // ensure that some available creds are cached
+            (AuthOrder as any).cacheAvailableCreds({}, { user: "fakeUser", password: "fakePass", "$0": "zowe", "_": [""] });
+
             const zosmfRestClient = new ZosmfRestClient(new Session({
                 hostname: "dummy",
                 type: SessConstants.AUTH_TYPE_BASIC,
@@ -60,6 +63,7 @@ describe("ZosmfRestClient tests", () => {
                     'Allow Unauth Cert: true' +
                 '}'
             };
+
             const processedError = (zosmfRestClient as any).processError(error);
             expect(processedError.msg).toContain("Rest API failure with HTTP(S) status 401");
             expect(processedError.msg).toContain("This operation requires authentication.");
@@ -72,6 +76,9 @@ describe("ZosmfRestClient tests", () => {
         });
 
         it("should handle basic auth error with JSON causeErrors", () => {
+            // ensure that some available creds are cached
+            (AuthOrder as any).cacheAvailableCreds({}, { user: "fakeUser", password: "fakePass", "$0": "zowe", "_": [""] });
+
             const zosmfRestClient = new ZosmfRestClient(new Session({
                 hostname: "dummy",
                 type: SessConstants.AUTH_TYPE_BASIC,
@@ -106,6 +113,9 @@ describe("ZosmfRestClient tests", () => {
         });
 
         it("should handle error for token auth", () => {
+            // ensure that some available creds are cached
+            (AuthOrder as any).cacheAvailableCreds({}, { tokenType: SessConstants.TOKEN_TYPE_JWT, tokenValue: "fakeToken", "$0": "zowe", "_": [""] });
+
             const zosmfRestClient = new ZosmfRestClient(new Session({
                 hostname: "dummy",
                 type: SessConstants.AUTH_TYPE_TOKEN,
@@ -127,6 +137,9 @@ describe("ZosmfRestClient tests", () => {
         });
 
         it("should handle error for APIML token auth and missing base path", () => {
+            // ensure that some available creds are cached
+            (AuthOrder as any).cacheAvailableCreds({}, { tokenType: SessConstants.TOKEN_TYPE_APIML, tokenValue: "fakeToken", "$0": "zowe", "_": [""] });
+
             const zosmfRestClient = new ZosmfRestClient(new Session({
                 hostname: "dummy",
                 type: SessConstants.AUTH_TYPE_TOKEN,
@@ -147,6 +160,9 @@ describe("ZosmfRestClient tests", () => {
         });
 
         it("should handle error for cert auth", () => {
+            // ensure that some available creds are cached
+            (AuthOrder as any).cacheAvailableCreds({}, { certFile: "fakeCert", certKeyFile: "fakeKey", "$0": "zowe", "_": [""] });
+
             const zosmfRestClient = new ZosmfRestClient(new Session({
                 hostname: "dummy",
                 type: SessConstants.AUTH_TYPE_CERT_PEM,
