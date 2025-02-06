@@ -16,8 +16,6 @@ import { Logger } from "../../../logger";
 import * as SessConstants from "./SessConstants";
 
 /**
- * @internal - Cannot be used outside of the imperative package
- *
  * The purpose of this class is to detect an authentication order property
  * supplied by a user in a profile, command line, or environment variable.
  * That authOrder is then used to place the correct set of credentials into
@@ -60,6 +58,8 @@ export class AuthOrder {
      * Downstream logic uses this cache to determine which auth type should be
      * used in the final session used by a client REST request.
      *
+     * @internal - Cannot be used outside of the imperative package
+     *
      * @param sessCfg - Input.
      *      A session configuration object.
      *
@@ -99,6 +99,8 @@ export class AuthOrder {
      * For historical reason, we have 2 default orders. Thus, the caller can
      * specify which of 2 creds to use as the top cred in the authentication order:
      *     SessConstants.AUTH_TYPE_BASIC or SessConstants.AUTH_TYPE_TOKEN
+     *
+     * @internal - Cannot be used outside of the imperative package
      *
      * @param topDefaultAuth - Input.
      *      The authentication type that will be used first.
@@ -144,6 +146,8 @@ export class AuthOrder {
     /**
      * Returns the cached authentication order.
      *
+     * @internal - Cannot be used outside of the imperative package
+     *
      * @return {SessConstants.AUTH_TYPE_CHOICES[]} The cached authentication order.
      * @throws {ImperativeError} If the authentication order has not been cached yet.
      */
@@ -165,6 +169,8 @@ export class AuthOrder {
      * supplied session config. Credentials for all other auth types are
      * removed from the session config.
      *
+     * @internal - Cannot be used outside of the imperative package
+     *
      * @param sessCfg - Modified.
      *      Authentication properties are added to and removed from this
      *      session configuration, which can already have properties in
@@ -179,11 +185,6 @@ export class AuthOrder {
     public static putTopAuthInSession<SessCfgType extends ISession>(
         sessCfg: SessCfgType
     ): void {
-        if (Object.keys(AuthOrder.m_availableCreds).length === 0) {
-            const errMsg = "cacheAvailableCreds() must be called before calling putTopAuthInSession().";
-            Logger.getImperativeLogger().error(errMsg);
-            throw new ImperativeError({ msg: errMsg });
-        }
         if (AuthOrder.m_authOrder == null) {
             const errMsg = "cacheAuthOrder() must be called before calling putTopAuthInSession().";
             Logger.getImperativeLogger().error(errMsg);
@@ -245,7 +246,7 @@ export class AuthOrder {
                     if (AuthOrder.m_availableCreds.tokenType) {
                         sessCfg.tokenType = AuthOrder.m_availableCreds.tokenType;
                     }
-                    if (AuthOrder.m_availableCreds.tokenValue > 0) {
+                    if (AuthOrder.m_availableCreds.tokenValue) {
                         sessCfg.tokenValue = AuthOrder.m_availableCreds.tokenValue;
                     }
                     // a tokenValue with no tokenType implies a bearer token
@@ -254,7 +255,7 @@ export class AuthOrder {
                     }
                     break;
                 case SessConstants.AUTH_TYPE_CERT_PEM:
-                    if (AuthOrder.m_availableCreds.cert && AuthOrder.m_availableCreds.certKey) {
+                    if (AuthOrder.m_availableCreds.certFile && AuthOrder.m_availableCreds.certKeyFile) {
                         sessCfg.cert = AuthOrder.m_availableCreds.certFile;
                         sessCfg.certKey = AuthOrder.m_availableCreds.certKeyFile;
                         if (sessCfg.authTypeToRequestToken) {
@@ -390,7 +391,6 @@ export class AuthOrder {
         } else if (cmdArgs[credName]) {
             AuthOrder.m_availableCreds[credName] = cmdArgs[credName];
         }
-
     }
 
     // ***********************************************************************
@@ -424,79 +424,78 @@ export class AuthOrder {
             Logger.getImperativeLogger().error(errMsg);
             throw new ImperativeError({ msg: errMsg });
         }
-        if (!sessCfg?.type) {
-            const errMsg = "Session type must exist in the supplied session.";
-            Logger.getImperativeLogger().error(errMsg);
-            throw new ImperativeError({ msg: errMsg });
-        }
 
         // Initially set all creds to be removed from the session.
         // Then delete from this set the creds that we want to keep.
         const credsToRemove = new Set(["user", "password", "base64EncodedAuth", "tokenType", "tokenValue", "cert", "certKey"]);
 
         // Select the creds that we want to keep.
+        // If we have no type, it is because we had no creds,
+        // so we we have no creds to keep or remove.
         let errMsg: string;
-        switch (sessCfg.type) {
-            case SessConstants.AUTH_TYPE_BASIC:
-                // only keep one of our basic creds
-                if (sessCfg.base64EncodedAuth) {
-                    AuthOrder.keepCred("base64EncodedAuth", credsToRemove);
-                } else {
-                    AuthOrder.keepCred("user", credsToRemove);
-                    AuthOrder.keepCred("password", credsToRemove);
-                }
-                break;
-            case SessConstants.AUTH_TYPE_TOKEN:
-                // in all cases we keep the supplied token type
-                AuthOrder.keepCred("tokenType", credsToRemove);
-
-                if (!sessCfg.authTypeToRequestToken) {
-                    // we want to actually use the token, so keep its value
-                    AuthOrder.keepCred("tokenValue", credsToRemove);
-                } else if (sessCfg.authTypeToRequestToken == SessConstants.AUTH_TYPE_BASIC) {
-                    // We are requesting a token using basic creds.
-                    // Keep only one of our basic creds and allow tokenValue to be removed.
+        if (sessCfg?.type) {
+            switch (sessCfg.type) {
+                case SessConstants.AUTH_TYPE_BASIC:
+                    // only keep one of our basic creds
                     if (sessCfg.base64EncodedAuth) {
                         AuthOrder.keepCred("base64EncodedAuth", credsToRemove);
                     } else {
                         AuthOrder.keepCred("user", credsToRemove);
                         AuthOrder.keepCred("password", credsToRemove);
                     }
-                } else if (sessCfg.authTypeToRequestToken == SessConstants.AUTH_TYPE_CERT_PEM) {
-                    // We are requesting a token using a cert.
-                    // Keep the cert creds and allow tokenValue to be removed
+                    break;
+                case SessConstants.AUTH_TYPE_TOKEN:
+                    // in all cases we keep the supplied token type
+                    AuthOrder.keepCred("tokenType", credsToRemove);
+
+                    if (!sessCfg.authTypeToRequestToken) {
+                        // we want to actually use the token, so keep its value
+                        AuthOrder.keepCred("tokenValue", credsToRemove);
+                    } else if (sessCfg.authTypeToRequestToken == SessConstants.AUTH_TYPE_BASIC) {
+                        // We are requesting a token using basic creds.
+                        // Keep only one of our basic creds and allow tokenValue to be removed.
+                        if (sessCfg.base64EncodedAuth) {
+                            AuthOrder.keepCred("base64EncodedAuth", credsToRemove);
+                        } else {
+                            AuthOrder.keepCred("user", credsToRemove);
+                            AuthOrder.keepCred("password", credsToRemove);
+                        }
+                    } else if (sessCfg.authTypeToRequestToken == SessConstants.AUTH_TYPE_CERT_PEM) {
+                        // We are requesting a token using a cert.
+                        // Keep the cert creds and allow tokenValue to be removed
+                        AuthOrder.keepCred("cert", credsToRemove);
+                        AuthOrder.keepCred("certKey", credsToRemove);
+                    } else {
+                        // Our own code supplied a bad value for authTypeToRequestToken.
+                        errMsg = "The requested session contains an invalid value for " +
+                            `'authTypeToRequestToken' = ${sessCfg.authTypeToRequestToken}.`;
+                        Logger.getImperativeLogger().error(errMsg);
+                        throw new ImperativeError({ msg: errMsg });
+                    }
+                    break;
+                case SessConstants.AUTH_TYPE_BEARER:
+                    AuthOrder.keepCred("tokenValue", credsToRemove);
+                    break;
+                case SessConstants.AUTH_TYPE_CERT_PEM:
                     AuthOrder.keepCred("cert", credsToRemove);
                     AuthOrder.keepCred("certKey", credsToRemove);
-                } else {
-                    // Our own code supplied a bad value for authTypeToRequestToken.
-                    errMsg = "The requested session contains an invalid value for " +
-                        `'authTypeToRequestToken' = ${sessCfg.authTypeToRequestToken}.`;
+                    break;
+                case SessConstants.AUTH_TYPE_NONE:
+                    break;
+                default:
+                    // User's authOrder was validated. A wrong value now is due to our programming error.
+                    errMsg = `The requested session contains an invalid value for 'type' = ${sessCfg.type}.`;
                     Logger.getImperativeLogger().error(errMsg);
                     throw new ImperativeError({ msg: errMsg });
-                }
-                break;
-            case SessConstants.AUTH_TYPE_BEARER:
-                AuthOrder.keepCred("tokenValue", credsToRemove);
-                break;
-            case SessConstants.AUTH_TYPE_CERT_PEM:
-                AuthOrder.keepCred("cert", credsToRemove);
-                AuthOrder.keepCred("certKey", credsToRemove);
-                break;
-            case SessConstants.AUTH_TYPE_NONE:
-                break;
-            default:
-                // authOrder was validated. A wrong value now is our programming error.
-                errMsg = `The requested session contains an invalid value for 'type' = ${sessCfg.type}.`;
-                Logger.getImperativeLogger().error(errMsg);
-                throw new ImperativeError({ msg: errMsg });
-        }
+            } // end switch
 
-        // remove all auth creds from the session, except the creds for the auth type that we chose to keep
-        const credIter = credsToRemove.values();
-        let nextCredToRemove = credIter.next();
-        while (!nextCredToRemove.done) {
-            delete (sessCfg as any)[nextCredToRemove.value];
-            nextCredToRemove = credIter.next();
-        }
+            // remove all auth creds from the session, except the creds related to the selected auth type
+            const credIter = credsToRemove.values();
+            let nextCredToRemove = credIter.next();
+            while (!nextCredToRemove.done) {
+                delete (sessCfg as any)[nextCredToRemove.value];
+                nextCredToRemove = credIter.next();
+            }
+        } // end if we have a sessCfg.type
     }
 }
