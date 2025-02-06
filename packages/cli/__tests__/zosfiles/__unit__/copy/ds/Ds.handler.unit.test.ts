@@ -201,7 +201,7 @@ describe("DsHandler", () => {
         const result = await promptFn(commandParameters.arguments.toDataSetName);
 
         expect(promptMock).toHaveBeenCalledWith(
-            `The dataset '${toDataSetName}' exists on the target system. This copy may result in data loss.` +
+            `The dataset '${toDataSetName}' exists on the target system. This copy can result in data loss.` +
             ` Are you sure you want to continue? [y/N]: `
         );
         expect(result).toBe(true);
@@ -237,7 +237,7 @@ describe("DsHandler", () => {
         const result = await promptFn(commandParameters.arguments.toDataSetName);
 
         expect(promptMock).toHaveBeenCalledWith(
-            `The dataset '${toDataSetName}' exists on the target system. This copy may result in data loss.` +
+            `The dataset '${toDataSetName}' exists on the target system. This copy can result in data loss.` +
             ` Are you sure you want to continue? [y/N]: `
         );
         expect(result).toBe(false);
@@ -273,7 +273,7 @@ describe("DsHandler", () => {
         const result = await promptForDuplicates();
 
         expect(promptMock).toHaveBeenCalledWith(
-            `The source and target data sets have identical member names. The contents of those members will be overwritten.` +
+            `The source and target data sets have identical member names. The contents of the target members will be overwritten.` +
             ` Are you sure you want to continue? [y/N]: `
         );
         expect(result).toBe(true);
@@ -309,7 +309,7 @@ describe("DsHandler", () => {
         const result = await promptForDuplicates();
 
         expect(promptMock).toHaveBeenCalledWith(
-            `The source and target data sets have identical member names. The contents of those members will be overwritten.` +
+            `The source and target data sets have identical member names. The contents of the target members will be overwritten.` +
             ` Are you sure you want to continue? [y/N]: `
         );
         expect(result).toBe(false);

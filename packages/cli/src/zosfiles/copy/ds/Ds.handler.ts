@@ -36,7 +36,7 @@ export default class DsHandler extends ZosFilesBaseHandler {
     private promptForSafeReplace(console: IHandlerResponseConsoleApi) {
         return async (targetDSN: string) => {
             const answer: string = await console.prompt(
-                `The dataset '${targetDSN}' exists on the target system. This copy may result in data loss.` +
+                `The dataset '${targetDSN}' exists on the target system. This copy can result in data loss.` +
                 ` Are you sure you want to continue? [y/N]: `
             );
             return answer != null && (answer.toLowerCase() === "y" || answer.toLowerCase() === "yes");
@@ -46,7 +46,7 @@ export default class DsHandler extends ZosFilesBaseHandler {
     private promptForLikeNamedMembers(console: IHandlerResponseConsoleApi) {
         return async() => {
             const answer: string = await console.prompt (
-                `The source and target data sets have identical member names. The contents of those members will be overwritten.` +
+                `The source and target data sets have identical member names. The contents of the target members will be overwritten.` +
                 ` Are you sure you want to continue? [y/N]: `
             )
             return answer != null && (answer.toLowerCase() === "y" || answer.toLowerCase() === "yes");
