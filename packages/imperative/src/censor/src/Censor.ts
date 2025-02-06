@@ -129,7 +129,7 @@ export class Censor {
                     }
                 } else if (prop.optionDefinitions) {
                     // Handle the case of multiple option definitions
-                    prop.optionDefinitions.map(opDef => {
+                    prop.optionDefinitions.forEach(opDef => {
                         secureOptions.add(opDef.name);
                         for (const alias of opDef.aliases || []) {
                             // Remember to add the alias

@@ -355,7 +355,7 @@ export class ConnectionPropsForSessCfg {
      * List of properties on `sessCfg` object that should be kept secret and
      * may not appear in Imperative log files.
      */
-    private static secureSessCfgProps: Set<string> = new Set(Censor.SECURE_PROMPT_OPTIONS);
+    private static readonly secureSessCfgProps: Set<string> = new Set(Censor.SECURE_PROMPT_OPTIONS);
 
     /**
      * List of prompt messages that is used when the CLI prompts for session

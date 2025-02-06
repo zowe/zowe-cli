@@ -22,7 +22,7 @@ export class LoggerUtils {
     /**
      * @deprecated Use Censor.CENSOR_RESPONSE
      */
-    public static CENSOR_RESPONSE = Censor.CENSOR_RESPONSE;
+    public static readonly CENSOR_RESPONSE = Censor.CENSOR_RESPONSE;
 
     /**
      * @deprecated Use Censor.CENSORED_OPTIONS
@@ -32,7 +32,7 @@ export class LoggerUtils {
     /**
      * @deprecated Use Censor.SECURE_PROMPT_OPTIONS
      */
-    public static SECURE_PROMPT_OPTIONS = Censor.SECURE_PROMPT_OPTIONS;
+    public static readonly SECURE_PROMPT_OPTIONS = Censor.SECURE_PROMPT_OPTIONS;
 
     /**
      * Copy and censor any sensitive CLI arguments before logging/printing

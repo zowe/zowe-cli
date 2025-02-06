@@ -3,7 +3,14 @@
 All notable changes to the Imperative package will be documented in this file.
 
 ## Recent Changes
+
+- Enhancement: Added the `Censor` class, consolidating all sensitive data hiding logic into one class. [#2424](https://github.com/zowe/zowe-cli/pull/2424)
 - Format fix: `DeferredPromise` and `DeferredPromise.unit.test` comment format changed to match standard.
+- Deprecated: `LoggerUtils` class has been deprecated. Use `Censor` class instead. [#2424](https://github.com/zowe/zowe-cli/pull/2424)
+- Deprecated: `CliUtils.CENSOR_RESPONSE` has been deprecated. Use `Censor.CENSOR_RESPONSE` instead. [#2424](https://github.com/zowe/zowe-cli/pull/2424)
+- Deprecated: `CliUtils.CENSORED_OPTIONS` has been deprecated. Use `Censor.CENSORED_OPTIONS` instead. [#2424](https://github.com/zowe/zowe-cli/pull/2424)
+- Deprecated: `CliUtils.censorCLIArgs` has been deprecated. Use `Censor.censorCLIArgs` instead. [#2424](https://github.com/zowe/zowe-cli/pull/2424)
+- Deprecated: `CliUtils.censorYargsArguments` has been deprecated. Use `Censor.censorYargsArguments` instead. [#2424](https://github.com/zowe/zowe-cli/pull/2424)
 
 ## `8.11.0`
 
