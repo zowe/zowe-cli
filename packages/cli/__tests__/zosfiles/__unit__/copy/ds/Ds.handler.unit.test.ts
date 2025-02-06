@@ -50,7 +50,7 @@ describe("DsHandler", () => {
 
             },
             response: {
-                console: { promptFn: jest.fn(), promptForLikeNamedMembers: jest.fn() }
+                console: { promptFn: jest.fn(), promptForIdenticalNamedMembers: jest.fn() }
             }
         };
 
@@ -69,7 +69,7 @@ describe("DsHandler", () => {
                 "responseTimeout": commandParameters.arguments.responseTimeout,
                 "safeReplace": commandParameters.arguments.safeReplace,
                 "promptFn": expect.any(Function),
-                "promptForLikeNamedMembers": expect.any(Function)
+                "promptForIdenticalNamedMembers": expect.any(Function)
             }
         );
         expect(response).toBe(defaultReturn);
@@ -99,7 +99,7 @@ describe("DsHandler", () => {
                 responseTimeout
             },
             response: {
-                console: { promptFn: jest.fn(), promptForLikeNamedMembers: jest.fn() }
+                console: { promptFn: jest.fn(), promptForIdenticalNamedMembers: jest.fn() }
             }
         };
 
@@ -118,7 +118,7 @@ describe("DsHandler", () => {
                 "responseTimeout": commandParameters.arguments.responseTimeout,
                 "safeReplace": commandParameters.arguments.safeReplace,
                 "promptFn": expect.any(Function),
-                "promptForLikeNamedMembers": expect.any(Function)
+                "promptForIdenticalNamedMembers": expect.any(Function)
             }
         );
         expect(response).toBe(defaultReturn);
@@ -165,7 +165,7 @@ describe("DsHandler", () => {
                 "responseTimeout": commandParameters.arguments.responseTimeout,
                 "safeReplace": commandParameters.arguments.safeReplace,
                 "promptFn": expect.any(Function),
-                "promptForLikeNamedMembers": expect.any(Function)
+                "promptForIdenticalNamedMembers": expect.any(Function)
             }
         );
         expect(response).toBe(defaultReturn);
@@ -269,7 +269,7 @@ describe("DsHandler", () => {
         const promptMock = jest.fn();
         promptMock.mockResolvedValue("y");
 
-        const promptForDuplicates = (handler as any)["promptForLikeNamedMembers"]({ prompt: promptMock });
+        const promptForDuplicates = (handler as any)["promptForIdenticalNamedMembers"]({ prompt: promptMock });
         const result = await promptForDuplicates();
 
         expect(promptMock).toHaveBeenCalledWith(
@@ -305,7 +305,7 @@ describe("DsHandler", () => {
         const promptMock = jest.fn();
         promptMock.mockResolvedValue("N");
 
-        const promptForDuplicates = (handler as any)["promptForLikeNamedMembers"]({ prompt: promptMock });
+        const promptForDuplicates = (handler as any)["promptForIdenticalNamedMembers"]({ prompt: promptMock });
         const result = await promptForDuplicates();
 
         expect(promptMock).toHaveBeenCalledWith(

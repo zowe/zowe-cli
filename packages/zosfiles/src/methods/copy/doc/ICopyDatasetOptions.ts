@@ -52,5 +52,5 @@ export interface ICopyDatasetOptions extends IZosFilesOptions {
      * Prompt for duplicates
      * @returns True if target data set members
      */
-    promptForLikeNamedMembers?: () => Promise<boolean>;
+    promptForIdenticalNamedMembers?: () => Promise<boolean>;
 }

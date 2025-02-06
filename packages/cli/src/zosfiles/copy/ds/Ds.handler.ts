@@ -27,7 +27,7 @@ export default class DsHandler extends ZosFilesBaseHandler {
             responseTimeout: commandParameters.arguments.responseTimeout,
             safeReplace: commandParameters.arguments.safeReplace,
             promptFn: this.promptForSafeReplace(commandParameters.response.console),
-            promptForLikeNamedMembers: this.promptForLikeNamedMembers(commandParameters.response.console)
+            promptForIdenticalNamedMembers: this.promptForIdenticalNamedMembers(commandParameters.response.console)
         };
 
         return Copy.dataSet(session, toDataSet, options);
@@ -43,7 +43,7 @@ export default class DsHandler extends ZosFilesBaseHandler {
         };
     }
 
-    private promptForLikeNamedMembers(console: IHandlerResponseConsoleApi) {
+    private promptForIdenticalNamedMembers(console: IHandlerResponseConsoleApi) {
         return async() => {
             const answer: string = await console.prompt (
                 `The source and target data sets have identical member names. The contents of the target members will be overwritten.` +

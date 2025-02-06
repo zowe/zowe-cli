@@ -89,7 +89,7 @@ export class Copy {
             if (sourceIsPds && targetIsPds) {
                 const hasIdenticalMemberNames = await this.hasIdenticalMemberNames(session, options["from-dataset"].dsn, toDataSetName);
                 if(!safeReplace && hasIdenticalMemberNames && !overwriteMembers) {
-                    const userResponse = await options.promptForLikeNamedMembers();
+                    const userResponse = await options.promptForIdenticalNamedMembers();
 
                     if(!userResponse) {
                         throw new ImperativeError({ msg: ZosFilesMessages.datasetCopiedAborted.message});

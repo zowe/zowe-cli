@@ -38,7 +38,7 @@ describe("Copy", () => {
         const hasIdenticalMemberNames = jest.spyOn(Copy as any, "hasIdenticalMemberNames");
         let dataSetExistsSpy: jest.SpyInstance;
         const promptFn = jest.fn();
-        const promptForLikeNamedMembers = jest.fn();
+        const promptForIdenticalNamedMembers = jest.fn();
 
         beforeEach(() => {
             copyPDSSpy.mockClear();
@@ -46,7 +46,7 @@ describe("Copy", () => {
             isPDSSpy.mockClear().mockResolvedValue(false);
             dataSetExistsSpy = jest.spyOn(Copy as any, "dataSetExists").mockResolvedValue(true);
             hasIdenticalMemberNames.mockClear().mockResolvedValue(false);
-            promptForLikeNamedMembers.mockClear();
+            promptForIdenticalNamedMembers.mockClear();
         });
         afterAll(() => {
             isPDSSpy.mockRestore();
@@ -625,7 +625,7 @@ describe("Copy", () => {
                 it("should display a prompt for identical member names if there are identical member names and" +
                     "--safe-replace and --replace flags are not used", async () => {
                     hasIdenticalMemberNames.mockResolvedValue(true);
-                    promptForLikeNamedMembers.mockClear().mockResolvedValue(true);
+                    promptForIdenticalNamedMembers.mockClear().mockResolvedValue(true);
 
                     const response = await Copy.dataSet(
                         dummySession,
@@ -633,9 +633,9 @@ describe("Copy", () => {
                         { "from-dataset": { dsn: fromDataSetName },
                             safeReplace: false,
                             replace: false,
-                            promptForLikeNamedMembers }
+                            promptForIdenticalNamedMembers }
                     );
-                    expect(promptForLikeNamedMembers).toHaveBeenCalledWith();
+                    expect(promptForIdenticalNamedMembers).toHaveBeenCalledWith();
                     expect(response.success).toEqual(true);
 
                 });
@@ -646,14 +646,14 @@ describe("Copy", () => {
                         { "from-dataset": { dsn: fromDataSetName },
                             safeReplace: false,
                             replace: false,
-                            promptForLikeNamedMembers }
+                            promptForIdenticalNamedMembers }
                     );
                     expect(response.success).toEqual(true);
-                    expect(promptForLikeNamedMembers).not.toHaveBeenCalled();
+                    expect(promptForIdenticalNamedMembers).not.toHaveBeenCalled();
                 });
                 it("should throw error if user declines to replace the dataset", async () => {
                     hasIdenticalMemberNames.mockResolvedValue(true);
-                    promptForLikeNamedMembers.mockClear().mockResolvedValue(false);
+                    promptForIdenticalNamedMembers.mockClear().mockResolvedValue(false);
 
                     await expect(Copy.dataSet(
                         dummySession,
@@ -661,10 +661,10 @@ describe("Copy", () => {
                         { "from-dataset": { dsn: fromDataSetName },
                             safeReplace: false,
                             replace: false,
-                            promptForLikeNamedMembers }
+                            promptForIdenticalNamedMembers }
                     )).rejects.toThrow(new ImperativeError({ msg: ZosFilesMessages.datasetCopiedAborted.message }));
 
-                    expect(promptForLikeNamedMembers).toHaveBeenCalled();
+                    expect(promptForIdenticalNamedMembers).toHaveBeenCalled();
                 });
             });
             it("should return early if the source and target data sets are identical", async () => {
