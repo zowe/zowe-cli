@@ -31,6 +31,7 @@ export * from "./src/session/doc/ISession";
 export * from "./src/session/doc/IOptionsForAddConnProps";
 export * from "./src/session/doc/IOverridePromptConnProps";
 export * from "./src/session/doc/ProxyVariables";
+export * from "./src/session/AuthOrder";
 export * from "./src/session/AbstractSession";
 export * from "./src/session/ConnectionPropsForSessCfg";
 export * from "./src/session/Session";
