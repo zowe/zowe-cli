@@ -43,6 +43,7 @@ import { ConfigConstants } from "../../config/src/ConfigConstants";
 import { IDaemonContext } from "../../imperative/src/doc/IDaemonContext";
 import { IHandlerResponseApi } from "./doc/response/api/handler/IHandlerResponseApi";
 import { Censor } from "../../censor/src/Censor";
+import { EnvironmentalVariableSettings } from "../../imperative/src/env/EnvironmentalVariableSettings";
 
 
 /**
@@ -87,13 +88,6 @@ interface IResolvedArgsResponse {
  * @class CommandProcessor
  */
 export class CommandProcessor {
-    /**
-     * Show secure fields in the output of the command ENV var suffix
-     * @private
-     * @static
-     * @memberof CommandProcessor
-     */
-    private static readonly ENV_SHOW_SECURE_SUFFIX = `_SHOW_SECURE_ARGS`;
     /**
      * The error tag for imperative errors.
      * @private
@@ -733,8 +727,8 @@ export class CommandProcessor {
         let showSecure = false;
 
         // ZOWE_SHOW_SECURE_ARGS
-        const SECRETS_ENV = `${ImperativeConfig.instance.envVariablePrefix}${CommandProcessor.ENV_SHOW_SECURE_SUFFIX}`;
-        const env = (process.env[SECRETS_ENV] || "false").toUpperCase();
+        const SECRETS_ENV = `${ImperativeConfig.instance.envVariablePrefix}${EnvironmentalVariableSettings.ENV_SHOW_SECURE_SUFFIX}`;
+        const env = EnvironmentalVariableSettings.read(ImperativeConfig.instance.envVariablePrefix).showSecureArgs.value.toUpperCase();
 
         if (env === "TRUE" || env === "1") {
             showSecure = true;

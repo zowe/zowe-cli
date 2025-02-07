@@ -133,7 +133,7 @@ describe("Censor tests", () => {
                     envVariablePrefix: "ZOWE"
                 });
                 findSecure.mockReturnValue([]);
-                envSettingsReadSpy.mockReturnValue({ maskOutput: { value: "FALSE" } });
+                envSettingsReadSpy.mockReturnValue({ maskOutput: { value: "FALSE" }, showSecureArgs: { value: "FALSE" } });
                 expect(Censor.censorRawData(secrets[1], "console")).toEqual(secrets[1]);
             });
 
@@ -143,8 +143,30 @@ describe("Censor tests", () => {
                     envVariablePrefix: "ZOWE"
                 });
                 findSecure.mockReturnValue([]);
-                envSettingsReadSpy.mockReturnValue({ maskOutput: { value: "FALSE" } });
+                envSettingsReadSpy.mockReturnValue({ maskOutput: { value: "FALSE" }, showSecureArgs: { value: "FALSE" } });
                 expect(Censor.censorRawData(secrets[1], "json")).toEqual(secrets[1]);
+            });
+
+            it("Console Output if the SHOW_SECURE_ARGS env var is FALSE and category is console", () => {
+                impConfigSpy.mockReturnValue({
+                    config: { exists: true, api: { secure: { findSecure }}, mProperties: { profiles: []}},
+                    envVariablePrefix: "ZOWE"
+                });
+                findSecure.mockReturnValue([]);
+                envSettingsReadSpy.mockReturnValue({ maskOutput: { value: "TRUE" }, showSecureArgs: { value: "TRUE"}});
+                const censoredData = Censor.censorRawData(secrets[1], "console");
+                expect(censoredData).toEqual(secrets[1]);
+            });
+
+            it("Console Output if the SHOW_SECURE_ARGS env var is FALSE and category is json", () => {
+                impConfigSpy.mockReturnValue({
+                    config: { exists: true, api: { secure: { findSecure }}, mProperties: { profiles: []}},
+                    envVariablePrefix: "ZOWE"
+                });
+                findSecure.mockReturnValue([]);
+                envSettingsReadSpy.mockReturnValue({ maskOutput: { value: "TRUE" }, showSecureArgs: { value: "TRUE" } });
+                const censoredData = Censor.censorRawData(secrets[1], "json");
+                expect(censoredData).toEqual(secrets[1]);
             });
 
             describe("special value:", () => {

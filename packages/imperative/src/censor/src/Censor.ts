@@ -296,8 +296,12 @@ export class Censor {
         // Return the data if we are printing to the console and masking is disabled
         if (ImperativeConfig.instance?.envVariablePrefix) {
             const envMaskOutput = EnvironmentalVariableSettings.read(ImperativeConfig.instance.envVariablePrefix).maskOutput.value;
+            const envShowSecureArgs = EnvironmentalVariableSettings.read(ImperativeConfig.instance.envVariablePrefix).showSecureArgs.value;
             // Hardcoding "console" instead of using Logger.DEFAULT_CONSOLE_NAME because of circular dependencies
-            if ((category === "console" || category === "json") && envMaskOutput.toUpperCase() === "FALSE") return data;
+            if ((category === "console" || category === "json") &&
+                (envMaskOutput.toUpperCase() === "FALSE" || envShowSecureArgs.toUpperCase() === "TRUE")) {
+                return data;
+            }
         }
 
         let newData = data;

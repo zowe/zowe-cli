@@ -1501,7 +1501,8 @@ describe("Command Processor", () => {
                 layers: [{ exists: true, path: "zowe.config.json" }],
                 properties: Config.empty(),
                 mProperties: Config.empty()
-            }
+            },
+            envVariablePrefix: "ZOWE"
         } as any);
 
         // Allocate the command processor
