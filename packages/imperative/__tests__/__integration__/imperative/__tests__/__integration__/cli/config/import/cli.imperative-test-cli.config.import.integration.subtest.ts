@@ -219,7 +219,9 @@ describe("imperative-test-cli config import", () => {
 
             expect(response.status).toEqual(1);
             expect(response.stderr.toString()).toContain("Missing Positional Argument");
-            expect(response.stderr.toString()).toMatchSnapshot();
+            expect(response.stderr.toString()).toContain("Syntax Error:");
+            expect(response.stderr.toString()).toContain("Missing Positional Argument: location");
+            expect(response.stderr.toString()).toContain("Argument Description: File path or URL to import from.");
             expect(response.stdout.toString()).toEqual("");
         });
 
