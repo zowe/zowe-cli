@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
-## Recent Changes
+## `8.13.0`
 
 - BugFix: The `Create.dataSetValidateOptions()` function now correctly handles data set creation when the `dsorg` attribute is set to `PS-L` by automatically updating the `dsntype` attribute to `LARGE`. [#2141](https://github.com/zowe/zowe-cli/issues/2141)
 - BugFix: Fixed an issue in the `Copy.dataSetCrossLPAR()` function where the `spacu` attribute of the copied data set was always set to `TRK`, regardless of the source data set's attributes. [#2412](https://github.com/zowe/zowe-cli/issues/2412)
