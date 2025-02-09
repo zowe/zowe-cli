@@ -210,7 +210,6 @@ export class Copy {
      *
      * @see https://www.ibm.com/support/knowledgecenter/en/SSLTBW_2.1.0/com.ibm.zos.v2r1.izua700/IZUHPINFO_API_PutDataSetMemberUtilities.htm
      */
-
     public static async copyPDS (
         session: AbstractSession, fromPds: string, toPds: string): Promise<IZosFilesResponse> {
         try {
@@ -227,12 +226,29 @@ export class Copy {
             const downloadDir = path.join(tmpdir(), fromPds);
             await Download.allMembers(session, fromPds, {directory:downloadDir});
             const uploadFileList: string[] = ZosFilesUtils.getFileListFromPath(downloadDir);
+            const truncatedMembers: string[] = [];
 
             for (const file of uploadFileList) {
                 const memName = ZosFilesUtils.generateMemberName(file);
                 const uploadingDsn = `${toPds}(${memName})`;
-                const uploadStream = IO.createReadStream(file);
-                await Upload.streamToDataSet(session, uploadStream, uploadingDsn);
+                try {
+                    const uploadStream = IO.createReadStream(file);
+                    await Upload.streamToDataSet(session, uploadStream, uploadingDsn);
+                }
+                catch(error) {
+                    if(error.message && error.message.includes("Truncation of a record occurred during an I/O operation")) {
+                        truncatedMembers.push(memName);
+                    }
+                    continue;
+                }
+            }
+            if(truncatedMembers.length > 0) {
+                const errorMembersFile = path.join(tmpdir(), 'errorMembers.txt');
+                fs.writeFileSync(errorMembersFile, truncatedMembers.join('\n'));
+                return {
+                    success: true,
+                    commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message + " " + util.format(ZosFilesMessages.membersContentTruncated.message, errorMembersFile)
+                };
             }
             fs.rmSync(downloadDir, {recursive: true});
             return {

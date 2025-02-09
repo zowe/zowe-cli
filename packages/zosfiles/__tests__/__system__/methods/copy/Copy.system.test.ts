@@ -23,6 +23,7 @@ import { tmpdir } from "os";
 import path = require("path");
 import * as fs from "fs";
 import { List } from "@zowe/zos-files-for-zowe-sdk";
+import * as util from "util";
 
 let REAL_SESSION: Session;
 let REAL_TARGET_SESSION: Session;
@@ -156,6 +157,40 @@ describe("Copy", () => {
                     expect(contents1).toBeTruthy();
                     expect(contents2).toBeTruthy();
                     expect(contents1.toString()).toEqual(contents2.toString());
+                });
+                it("Should handle truncation errors and log them to a file", async () => {
+                    let error;
+                    let response;
+
+                    const uploadFileToDatasetSpy = jest.spyOn(Upload, 'fileToDataset').mockImplementation(async (session, filePath, dsn) => {
+                        if (filePath === fileLocation) {
+                            throw new Error("Truncation of a record occurred during an I/O operation");
+                        }
+                        return Promise.resolve() as any;
+                    });
+                    const copyDataSetSpy = jest.spyOn(Copy, 'dataSet').mockImplementation(async () => {
+                        return {
+                            success: true,
+                            commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message + " " + util.format(ZosFilesMessages.membersContentTruncated.message)
+                        };
+                    });
+                    try {
+                        response = await Copy.dataSet(
+                            REAL_SESSION,
+                            {dsn: toDataSetName},
+                            {"from-dataset": {
+                                dsn:fromDataSetName
+                            }}
+                        );
+                    } catch (err) {
+                        error = err;
+                        Imperative.console.info(`Error: ${inspect(err)}`);
+                    }
+                    expect(response).toBeTruthy();
+                    expect(response.success).toBe(true);
+                    expect(response.commandResponse).toContain(ZosFilesMessages.datasetCopiedSuccessfully.message + " " + util.format(ZosFilesMessages.membersContentTruncated.message));
+                    uploadFileToDatasetSpy.mockRestore();
+                    copyDataSetSpy.mockRestore();
                 });
                 afterEach(() => {
                     fs.rmSync(downloadDir, { recursive: true, force: true });

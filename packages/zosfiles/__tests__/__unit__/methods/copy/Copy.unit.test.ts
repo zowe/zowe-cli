@@ -16,6 +16,8 @@ import { error } from "console";
 import * as util from "util";
 import { Copy, Create, Get, List, Upload, ZosFilesConstants, ZosFilesMessages, IZosFilesResponse, Download, ZosFilesUtils } from "../../../../src";
 import { ZosmfHeaders, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
+import path = require("path");
+import { tmpdir } from "os";
 
 describe("Copy", () => {
     const dummySession = new Session({
@@ -770,6 +772,7 @@ describe("Copy", () => {
         const rmSync = jest.spyOn(fs, "rmSync");
         const listDatasetSpy = jest.spyOn(List, "dataSet");
         const hasIdenticalMemberNames = jest.spyOn(Copy as any, "hasIdenticalMemberNames");
+        const writeFileSync = jest.spyOn(fs, "writeFileSync");
 
         beforeEach(() => {
             hasIdenticalMemberNames.mockRestore();
@@ -901,6 +904,38 @@ describe("Copy", () => {
                 commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message,
             });
         });
+        it("should handle truncation errors and log them to a file", async () => {
+            const truncatedMembersFilePath = path.join(tmpdir(), "errorMembers.txt");
+            let caughtError;
+            let response;
+            const sourceResponse = {
+                apiResponse: {
+                    items: [
+                        { member: "mem1" },
+                        { member: "mem2" },
+                    ]
+                }
+            };
+            const fileList = ["mem1", "mem2"];
+            listAllMembersSpy.mockImplementation(async (): Promise<any>  => sourceResponse);
+            downloadAllMembersSpy.mockImplementation(async (): Promise<any> => undefined);
+            fileListPathSpy.mockReturnValue(fileList);
+            generateMemName.mockReturnValue("mem1");
+            readStream.mockReturnValue("test" as any);
+            uploadSpy.mockImplementation((dummySession, readStream, dsn) => {
+                if (dsn.includes("mem1")) {
+                    return Promise.reject(new Error("Truncation of a record occurred during an I/O operation"));
+                }
+                return Promise.resolve() as any;
+            });
+            try{
+                response = await Copy.copyPDS(dummySession, fromDataSetName, toDataSetName);
+            }
+            catch(e) {
+                caughtError = e;
+            }
+            expect(response.commandResponse).toContain("Data set copied successfully. Member(s)' contents were truncated due to insufficient record lines. You can view the list of members here: " + truncatedMembersFilePath);
+        });
 
         describe("hasIdenticalMemberNames", () => {
             const listAllMembersSpy = jest.spyOn(List, "allMembers");
@@ -909,7 +944,7 @@ describe("Copy", () => {
                 jest.clearAllMocks();
             });
             it("should return true if the source and target have identical member names", async () => {
-                listAllMembersSpy.mockImplementation(async (session, dsName): Promise<any> => {
+                listAllMembersSpy.mockImplementation(async (_session, dsName): Promise<any> => {
                     if (dsName === fromDataSetName) {
                         return {
                             apiResponse: {
@@ -949,7 +984,7 @@ describe("Copy", () => {
                         ]
                     }
                 };
-                listAllMembersSpy.mockImplementation(async (session, dsName): Promise<any> => {
+                listAllMembersSpy.mockImplementation(async (_session, dsName): Promise<any> => {
                     if (dsName === fromDataSetName) {
                         return sourceResponse;
                     } else if (dsName === toDataSetName) {

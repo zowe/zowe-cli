@@ -50,7 +50,7 @@ export interface ICopyDatasetOptions extends IZosFilesOptions {
 
     /**
      * Prompt for duplicates
-     * @returns True if target data set members
+     * @returns `True` if the copy operation will overwrite an existing member; `false` otherwise
      */
     promptForLikeNamedMembers?: () => Promise<boolean>;
 }
