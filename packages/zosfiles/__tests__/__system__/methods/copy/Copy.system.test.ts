@@ -11,7 +11,8 @@
 
 import { Create, Upload, Delete, CreateDataSetTypeEnum, Copy, ZosFilesMessages, Get, IDataSet,
     ICrossLparCopyDatasetOptions, IGetOptions, IZosFilesResponse,
-    ZosFilesUtils} from "../../../../src";
+    ZosFilesUtils,
+    List} from "../../../../src";
 import { Imperative, IO, Session } from "@zowe/imperative";
 import { inspect } from "util";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
@@ -22,7 +23,7 @@ import { ITestEnvironment } from "../../../../../../__tests__/__src__/environmen
 import { tmpdir } from "os";
 import path = require("path");
 import * as fs from "fs";
-import { ZosmfRestClient, List } from "@zowe/core-for-zowe-sdk";
+import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 
 
 let REAL_SESSION: Session;
