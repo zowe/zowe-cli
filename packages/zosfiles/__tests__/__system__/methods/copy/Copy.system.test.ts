@@ -22,7 +22,8 @@ import { ITestEnvironment } from "../../../../../../__tests__/__src__/environmen
 import { tmpdir } from "os";
 import path = require("path");
 import * as fs from "fs";
-import { ZosmfRestClient, List } from "@zowe/core-for-zowe-sdk";
+import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
+import { List } from "../../../../src/methods/list/List";
 
 
 let REAL_SESSION: Session;
