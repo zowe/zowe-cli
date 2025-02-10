@@ -2,7 +2,7 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
-## Recent Changes
+## `8.13.0`
 - Format fix: `DeferredPromise` and `DeferredPromise.unit.test` comment format changed to match standard.
 
 ## `8.11.0`
