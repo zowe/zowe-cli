@@ -6,12 +6,12 @@ All notable changes to the Imperative package will be documented in this file.
 
 - BugFix: Fixed inconsistent behavior with the `ZOWE_SHOW_SECURE_ARGS` environment variable continuing to mask secure properties when it should not. [#2430](https://github.com/zowe/zowe-cli/issues/2430)
 - Enhancement: Added the `Censor` class, consolidating all sensitive data hiding logic into one class. [#2424](https://github.com/zowe/zowe-cli/pull/2424)
-- Enhancement: Added `showSecureArgs` to `EnvironmentalVariableSettings` to allow extenders to determine if they should mask secure values. [#2424](https://github.com/zowe/zowe-cli/pull/2424)
+- Enhancement: Added the `showSecureArgs` environment variable to the `EnvironmentalVariableSettings` class to allow extenders to determine if they should mask secure values. [#2424](https://github.com/zowe/zowe-cli/pull/2424)
 - Deprecated: The `LoggerUtils` class has been deprecated. Use the `Censor` class instead. [#2424](https://github.com/zowe/zowe-cli/pull/2424)
-- Deprecated: `CliUtils.CENSOR_RESPONSE` has been deprecated. Use `Censor.CENSOR_RESPONSE` instead. [#2424](https://github.com/zowe/zowe-cli/pull/2424)
-- Deprecated: `CliUtils.CENSORED_OPTIONS` has been deprecated. Use `Censor.CENSORED_OPTIONS` instead. [#2424](https://github.com/zowe/zowe-cli/pull/2424)
-- Deprecated: `CliUtils.censorCLIArgs` has been deprecated. Use `Censor.censorCLIArgs` instead. [#2424](https://github.com/zowe/zowe-cli/pull/2424)
-- Deprecated: `CliUtils.censorYargsArguments` has been deprecated. Use `Censor.censorYargsArguments` instead. [#2424](https://github.com/zowe/zowe-cli/pull/2424)
+- Deprecated: The `CliUtils.CENSOR_RESPONSE` property has been deprecated. Use the `Censor.CENSOR_RESPONSE` property instead. [#2424](https://github.com/zowe/zowe-cli/pull/2424)
+- Deprecated: The `CliUtils.CENSORED_OPTIONS` property has been deprecated. Use the `Censor.CENSORED_OPTIONS` property instead. [#2424](https://github.com/zowe/zowe-cli/pull/2424)
+- Deprecated: The `CliUtils.censorCLIArgs` function has been deprecated. Use the `Censor.censorCLIArgs` function instead. [#2424](https://github.com/zowe/zowe-cli/pull/2424)
+- Deprecated: The `CliUtils.censorYargsArguments` function has been deprecated. Use the `Censor.censorYargsArguments` function instead. [#2424](https://github.com/zowe/zowe-cli/pull/2424)
 
 ## `8.13.0`
 
