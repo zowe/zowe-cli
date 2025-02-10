@@ -53,12 +53,17 @@ export const PsDefinition: ICommandDefinition = {
         ZosFilesCreateOptions.mgntclass,
         ZosFilesCreateOptions.dataclass,
         ZosFilesCreateOptions.unit,
+        ZosFilesCreateOptions.dsntype,
         ZosFilesCreateExtraOptions.attributes
     ].sort((a, b) => a.name.localeCompare(b.name)),
     examples: [
         {
             description: strings.ACTIONS.DATA_SET_SEQUENTIAL.EXAMPLES.EX1,
             options: "NEW.PS.DATASET"
+        },
+        {
+            description: strings.ACTIONS.DATA_SET_SEQUENTIAL.EXAMPLES.EX2,
+            options: "--data-set-type `LARGE`"
         }
 
     ]

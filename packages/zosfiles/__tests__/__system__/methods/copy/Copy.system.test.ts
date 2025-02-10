@@ -22,7 +22,8 @@ import { ITestEnvironment } from "../../../../../../__tests__/__src__/environmen
 import { tmpdir } from "os";
 import path = require("path");
 import * as fs from "fs";
-import { List } from "@zowe/zos-files-for-zowe-sdk";
+import { ZosmfRestClient, List } from "@zowe/core-for-zowe-sdk";
+
 
 let REAL_SESSION: Session;
 let REAL_TARGET_SESSION: Session;
@@ -783,6 +784,47 @@ describe("Copy", () => {
                     expect(response?.commandResponse).toContain("Data set copied successfully");
                     expect(contents.toString().trim()).not.toContain("Member contents for test");
                     expect(contents.toString().trim()).toBe(readFileSync(fileLocation).toString());
+                });
+
+                it("should copy a large sequential data set cross LPAR (PS-L) - invoked w/ dsntype: `LARGE`", async() => {
+                    const fromDataSetNameLrg = fromDataSetName += ".LRG";
+                    const toDataSetNameLrg = toDataSetName += ".LRG";
+
+                    let error: any;
+                    let response: IZosFilesResponse | undefined = undefined;
+                    const postExpectStringSpy = jest.spyOn(ZosmfRestClient, 'postExpectString');
+                    const TEST_TARGET_SESSION = REAL_TARGET_SESSION;
+                    const toDataset: IDataSet = { dsn: toDataSetNameLrg };
+                    const fromOptions: IGetOptions = {
+                        binary: false,
+                        encoding: undefined,
+                        record: false
+                    };
+                    const options: ICrossLparCopyDatasetOptions = {
+                        "from-dataset": { dsn: fromDataSetNameLrg },
+                        responseTimeout: 5,
+                        replace: false
+                    };
+                    try {
+                        await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, fromDataSetNameLrg, { dsorg: "PS-L"});
+                        response = await Copy.dataSetCrossLPAR(REAL_SESSION, toDataset, options, fromOptions, TEST_TARGET_SESSION);
+                        await Get.dataSet(TEST_TARGET_SESSION, toDataSetNameLrg);
+                        await Delete.dataSet(REAL_SESSION, fromDataSetNameLrg);
+                        await Delete.dataSet(REAL_SESSION, toDataSetNameLrg);
+                    } catch (err) {
+                        error = err;
+                    }
+
+                    expect(postExpectStringSpy).toHaveBeenCalledWith(
+                        TEST_TARGET_SESSION,
+                        expect.anything(),
+                        expect.anything(),
+                        expect.stringContaining("LARGE")
+                    );
+                    expect(response?.success).toBeTruthy();
+                    expect(error).not.toBeDefined();
+                    expect(response?.errorMessage).not.toBeDefined();
+                    expect(response?.commandResponse).toContain("Data set copied successfully");
                 });
             });
         });
