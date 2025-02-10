@@ -48,7 +48,7 @@ export default class DsHandler extends ZosFilesBaseHandler {
             const answer: string = await console.prompt (
                 `The source and target data sets have identical member names. The contents of the target members will be overwritten.` +
                 ` Are you sure you want to continue? [y/N]: `
-            )
+            );
             return answer != null && (answer.toLowerCase() === "y" || answer.toLowerCase() === "yes");
         };
     }
