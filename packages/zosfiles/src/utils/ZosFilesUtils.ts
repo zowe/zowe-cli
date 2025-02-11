@@ -209,6 +209,7 @@ export class ZosFilesUtils {
 
      * @returns {IHeaderContent[]}
      * @memberof ZosFilesUtils
+     * @deprecated in favor of unified header creation in ZosFilesHeaders.generateHeaders
      */
     public static generateHeadersBasedOnOptions<T extends ExtendedOptions>(
         options: T,
@@ -229,8 +230,8 @@ export class ZosFilesUtils {
             reqHeaders.push({ [Headers.CONTENT_TYPE]: "application/octet-stream" });
             reqHeaders.push({ "X-IBM-Data-Type": "binary" });
         } else if (options.encoding) {
-                reqHeaders.push({ "X-IBM-Data-Type": `text;fileEncoding=${options.encoding}` });
-                reqHeaders.push({ [Headers.CONTENT_TYPE]: `text/plain;fileEncoding=${options.encoding}` });
+            reqHeaders.push({ "X-IBM-Data-Type": `text;fileEncoding=${options.encoding}` });
+            reqHeaders.push({ [Headers.CONTENT_TYPE]: `text/plain;fileEncoding=${options.encoding}` });
         } else if (options.record) {
             reqHeaders.push({ "X-IBM-Data-Type": "record" });
             reqHeaders.push({ [Headers.CONTENT_TYPE]: "text/plain" });

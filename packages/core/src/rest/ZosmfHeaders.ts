@@ -166,6 +166,8 @@ export class ZosmfHeaders {
      */
     public static readonly TEXT_PLAIN: IHeaderContent = { "Content-Type": "text/plain" };
 
+    public static readonly APPLICATION_JSON: IHeaderContent = { "Content-Type": "application/json" };
+
     /**
      * This header value specifies the maximum number of items to return.
      * To request that all items be returned, set this header to 0. If you omit this header, or specify an incorrect value,

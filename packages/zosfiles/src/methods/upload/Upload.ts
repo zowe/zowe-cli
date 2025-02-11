@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, Headers, ImperativeError, ImperativeExpect, IO, Logger,
+import { AbstractSession, ImperativeError, ImperativeExpect, IO, Logger,
     TaskProgress, IHeaderContent, IOptionsFullResponse, IRestClientResponse } from "@zowe/imperative";
 import * as fs from "fs";
 import * as path from "path";
@@ -31,6 +31,7 @@ import { Readable } from "stream";
 import { CLIENT_PROPERTY } from "../../doc/types/ZosmfRestClientProperties";
 import { TransferMode } from "../../utils/ZosFilesAttributes";
 import { inspect } from "util";
+import { ZosFilesHeaders } from "../../utils/ZosFilesHeaders";
 
 export class Upload {
 
@@ -164,7 +165,7 @@ export class Upload {
         endpoint = path.posix.join(endpoint, encodeURIComponent(dataSetName));
 
         // Construct request header parameters
-        const reqHeaders: IHeaderContent[] = this.generateHeadersBasedOnOptions(options);
+        const reqHeaders: IHeaderContent[] = ZosFilesHeaders.generateHeaders({options, context:"buffer"});
 
         if (!options.binary) {
             fileBuffer = ZosFilesUtils.normalizeNewline(fileBuffer);
@@ -234,7 +235,7 @@ export class Upload {
         endpoint = path.posix.join(endpoint, encodeURIComponent(dataSetName));
 
         // Construct request header parameters
-        const reqHeaders: IHeaderContent[] = this.generateHeadersBasedOnOptions(options);
+        const reqHeaders: IHeaderContent[] = ZosFilesHeaders.generateHeaders({options, context: "stream"});
 
         const requestOptions: IOptionsFullResponse = {
             resource: endpoint,
@@ -475,7 +476,7 @@ export class Upload {
         ussname = ZosFilesUtils.sanitizeUssPathForRestCall(ussname);
 
         const endpoint = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + ussname;
-        const reqHeaders: IHeaderContent[] = this.generateHeadersBasedOnOptions(options, "buffer");
+        const reqHeaders: IHeaderContent[] = ZosFilesHeaders.generateHeaders({options, context: "buffer"});
 
         if (!options.binary) {
             fileBuffer = ZosFilesUtils.normalizeNewline(fileBuffer);
@@ -542,7 +543,8 @@ export class Upload {
         const origUssname = ussname;
         ussname = ZosFilesUtils.sanitizeUssPathForRestCall(ussname);
         const parameters: string = ZosFilesConstants.RES_USS_FILES + "/" + ussname;
-        const reqHeaders: IHeaderContent[] = this.generateHeadersBasedOnOptions(options, "stream");
+
+        const reqHeaders: IHeaderContent[] = ZosFilesHeaders.generateHeaders({options, context: "stream"});
 
         // Options to use the stream to write a file
         const restOptions: IOptionsFullResponse = {
@@ -970,83 +972,5 @@ export class Upload {
         const result: string = stringToDisplay === "" ? "all files" : stringToDisplay;
 
         return result;
-    }
-
-    /**
-     * helper function to generate the headers based on the options used
-     * @param {IUploadOptions} options - upload options
-     * @param {string} context         - context method from where you call this function (can be "buffer", "stream" or undefined)
-     */
-    private static generateHeadersBasedOnOptions(options: IUploadOptions, context?: string): IHeaderContent[] {
-        const reqHeaders: IHeaderContent[] = [];
-
-        switch (context) {
-            case "stream":
-            case "buffer":
-                if (options.binary) {
-                    reqHeaders.push(ZosmfHeaders.OCTET_STREAM);
-                    reqHeaders.push(ZosmfHeaders.X_IBM_BINARY);
-                } else if (options.record) {
-                    reqHeaders.push(ZosmfHeaders.X_IBM_RECORD);
-                } else {
-                    if (options.encoding) {
-                        const keys: string[] = Object.keys(ZosmfHeaders.X_IBM_TEXT);
-                        const value = ZosmfHeaders.X_IBM_TEXT[keys[0]] + ZosmfHeaders.X_IBM_TEXT_ENCODING + options.encoding;
-                        const header: any = Object.create(ZosmfHeaders.X_IBM_TEXT);
-                        header[keys[0]] = value;
-                        reqHeaders.push(header);
-                    } else {
-                        reqHeaders.push(ZosmfHeaders.X_IBM_TEXT);
-                    }
-                    if (options.localEncoding) {
-                        reqHeaders.push({ [Headers.CONTENT_TYPE]: options.localEncoding });
-                    } else {
-                        reqHeaders.push(ZosmfHeaders.TEXT_PLAIN);
-                    }
-                }
-                reqHeaders.push(ZosmfHeaders.ACCEPT_ENCODING);
-                if (options.responseTimeout != null) {
-                    reqHeaders.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
-                }
-                break;
-            default: {
-                const headers = ZosFilesUtils.generateHeadersBasedOnOptions(options);
-                const contentTypeHeaders = [...Object.keys(ZosmfHeaders.X_IBM_BINARY),
-                    ...Object.keys(ZosmfHeaders.X_IBM_RECORD),
-                    ...Object.keys(ZosmfHeaders.X_IBM_TEXT)];
-                if (!headers.find((x) => contentTypeHeaders.includes(Object.keys(x)[0]))) {
-                    reqHeaders.push(ZosmfHeaders.X_IBM_TEXT);
-                }
-                reqHeaders.push(...headers);
-                break;
-            }
-        }
-
-        // Migrated recall options
-        if (options.recall) {
-            switch (options.recall.toLowerCase()) {
-                case "wait":
-                    reqHeaders.push(ZosmfHeaders.X_IBM_MIGRATED_RECALL_WAIT);
-                    break;
-                case "nowait":
-                    reqHeaders.push(ZosmfHeaders.X_IBM_MIGRATED_RECALL_NO_WAIT);
-                    break;
-                case "error":
-                    reqHeaders.push(ZosmfHeaders.X_IBM_MIGRATED_RECALL_ERROR);
-                    break;
-                default:
-                    reqHeaders.push(ZosmfHeaders.X_IBM_MIGRATED_RECALL_NO_WAIT);
-                    break;
-            }
-        }
-
-        if (options.etag) {
-            reqHeaders.push({"If-Match" : options.etag});
-        }
-
-        if (options.returnEtag) {
-            reqHeaders.push(ZosmfHeaders.X_IBM_RETURN_ETAG);
-        }
-        return reqHeaders;
     }
 }
