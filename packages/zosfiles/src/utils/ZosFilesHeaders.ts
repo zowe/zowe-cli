@@ -17,49 +17,39 @@ import { ZosmfHeaders } from "@zowe/core-for-zowe-sdk";
  * Provides methods to dynamically generate headers based on upload/download options.
  */
 export class ZosFilesHeaders {
+
+///////////////////////////
+// CLASS VARIABLES & INIT //
+///////////////////////////
+
     /**
      * Map to store header generation functions for specific options.
      */
     private static headerMap = new Map<string, <T>(options: T, context?: string) => IHeaderContent | IHeaderContent[]>();
+
+    /**
+     * Initializes the header map with predefined header generation functions.
+     */
     static initializeHeaderMap() {
         this.headerMap.set("from-dataset", () => ZosmfHeaders.APPLICATION_JSON);
-        this.headerMap.set("responseTimeout", (options) => this.valOrEmpty(ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT, (options as any).responseTimeout));
+        this.headerMap.set("responseTimeout", (options) => this.createHeader(ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT, (options as any).responseTimeout));
         this.headerMap.set("recall", (options) => this.getRecallHeader(((options as any).recall || "").toString()));
-        this.headerMap.set("etag", (options) => this.valOrEmpty("If-Match", (options as any).etag));
-        this.headerMap.set("returnEtag", (options) => this.valOrEmpty("X-IBM-Return-Etag", (options as any).returnEtag));
-        this.headerMap.set("maxLength", (options) => this.valOrEmpty("X-IBM-Max-Items", (options as any).maxLength));
+        this.headerMap.set("etag", (options) => this.createHeader("If-Match", (options as any).etag));
+        this.headerMap.set("returnEtag", (options) => this.createHeader("X-IBM-Return-Etag", (options as any).returnEtag));
+        this.headerMap.set("maxLength", (options) => this.createHeader("X-IBM-Max-Items", (options as any).maxLength));
         this.headerMap.set("attributes", () => ZosmfHeaders.X_IBM_ATTRIBUTES_BASE);
     }
 
     /**
-     * Returns an object with a key-value pair if the value is not null,
-     * otherwise returns null.
-     *
-     * @param {string} key - The key for the object.
-     * @param {any} value - The value for the object.
-     * @return {IHeaderContent | null} An object with a key-value pair if the value is not null,
-     * otherwise null.
+     * Static initialization block to ensure header map is populated.
      */
-    private static valOrEmpty(key: string, value: any): IHeaderContent | null {
-        return value != null ? { [key]: value.toString() } : null;
+    static {
+        this.initializeHeaderMap();
     }
 
-
-    /**
-     * Adds a header to the header array if it is not already present and the value is defined.
-     * @param headers - Array of headers to add to.
-     * @param key - Header key.
-     * @param value - Header value.
-     */
-    private static addHeader(headers: IHeaderContent[], key: string, value: any): void {
-        // Overwrite if the key already exists, or push a new key-value pair if it doesn't
-        const reqKeys = headers.flatMap(headerObj => Object.keys(headerObj));
-        if (reqKeys.includes(key)){
-            headers[key as any] = value;
-        }else {
-            headers.push({ [key]: value });
-        }
-    }
+//////////////////////
+// HELPER METHODS //
+//////////////////////
 
     /**
      * Add headers related to binary, record, encoding, and localEncoding based on possible context
@@ -111,7 +101,38 @@ export class ZosFilesHeaders {
             }
         }
 
+        // Remove processed options
+        ["binary", "record", "encoding", "localEncoding"].forEach(key => delete updatedOptions[key]);
+
         return { headers, updatedOptions };
+    }
+
+    /**
+     * Adds a header to the headers array, replacing existing entries if necessary.
+     *
+     * @param headers - Array of headers to modify.
+     * @param key - Header key.
+     * @param value - Header value.
+     */
+    private static addHeader(headers: IHeaderContent[], key: string, value: any): void {
+        // Overwrite if the key already exists, or push a new key-value pair if it doesn't
+        const reqKeys = headers.flatMap(headerObj => Object.keys(headerObj));
+        if (reqKeys.includes(key)){
+            headers[key as any] = value;
+        }else {
+            headers.push({ [key]: value });
+        }
+    }
+
+    /**
+     * Creates a header object if the value is not null or undefined.
+     *
+     * @param key - The header key.
+     * @param value - The header value.
+     * @returns An object containing the key-value pair if the value exists, otherwise null.
+     */
+    private static createHeader(key: string, value: any): IHeaderContent | null {
+        return value != null ? { [key]: value.toString() } : null;
     }
 
     /**
@@ -132,39 +153,40 @@ export class ZosFilesHeaders {
         }
     }
 
+//////////////////////
+// PUBLIC METHODS //
+//////////////////////
+
     /**
-     * Generates an array of headers based on the provided options, context, and data length.
-     * @param params - Parameters including options, context, and data length.
-     * @returns An array of headers.
+     * Generates an array of headers based on provided options and context.
+     *
+     * @param options - The request options.
+     * @param context - The operation context (optional) ie "stream" or "buffer".
+     * @param dataLength - The content length (optional).
+     * @returns An array of generated headers.
      */
     public static generateHeaders<T>({
         options,
         context,
         dataLength,
     }: { options: T; context?: string; dataLength?: number | string }): IHeaderContent[] {
-
         const { headers: reqHeaders, updatedOptions } = this.addContextHeaders(options, context);
 
         this.addHeader(reqHeaders, "Accept-Encoding", "gzip");
 
-        for (const key of Object.keys(updatedOptions)) {
-            if (this.headerMap.has(key)) {
-                const result = this.headerMap.get(key)(updatedOptions);
-                if (typeof result === "object" && result !== null) {
-                    const key = Object.keys(result)[0];
-                    const val = Object.values(result)[0];
-                    this.addHeader(reqHeaders, key, val)
+        Object.entries(updatedOptions)
+            .filter(([key]) => this.headerMap.has(key))
+            .forEach(([key]) => {
+                const result = this.headerMap.get(key)?.(updatedOptions);
+                if (result) {
+                    this.addHeader(reqHeaders, Object.keys(result)[0], Object.values(result)[0]);
                 }
-            }
-        }
+            });
 
         if (dataLength !== undefined) {
-            this.addHeader(reqHeaders, "Content-Length", dataLength.toString());
+            this.addHeader(reqHeaders, "Content-Length", String(dataLength));
         }
 
         return reqHeaders;
     }
 }
-
-// Initialize the header map
-ZosFilesHeaders.initializeHeaderMap();
