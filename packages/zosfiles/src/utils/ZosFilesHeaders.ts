@@ -58,7 +58,7 @@ export class ZosFilesHeaders {
      * @param {string} context - The context in which the headers are being added ie: "stream", "buffer"
      * @return {{ headers: IHeaderContent[], updatedOptions: T }} - An object containing the updated headers and options.
      */
-    private static addContextHeaders<T>(options: T, context: string): { headers: IHeaderContent[], updatedOptions: T } {
+    private static addContextHeaders<T>(options: T, context: string): IHeaderContent[] {
 
         const headers: IHeaderContent[] = [];
         const updatedOptions: any = { ...options }; // for later removal of these soon-to-be processed options
@@ -101,10 +101,10 @@ export class ZosFilesHeaders {
             }
         }
 
-        // Remove processed options
+        // Remove already processed options
         ["binary", "record", "encoding", "localEncoding"].forEach(key => delete updatedOptions[key]);
 
-        return { headers, updatedOptions };
+        return headers;
     }
 
     /**
@@ -170,14 +170,14 @@ export class ZosFilesHeaders {
         context,
         dataLength,
     }: { options: T; context?: string; dataLength?: number | string }): IHeaderContent[] {
-        const { headers: reqHeaders, updatedOptions } = this.addContextHeaders(options, context);
+        let reqHeaders = this.addContextHeaders(options, context);
 
         this.addHeader(reqHeaders, "Accept-Encoding", "gzip");
 
-        Object.entries(updatedOptions)
+        Object.entries(options)
             .filter(([key]) => this.headerMap.has(key))
             .forEach(([key]) => {
-                const result = this.headerMap.get(key)?.(updatedOptions);
+                const result = this.headerMap.get(key)?.(options);
                 if (result) {
                     this.addHeader(reqHeaders, Object.keys(result)[0], Object.values(result)[0]);
                 }
