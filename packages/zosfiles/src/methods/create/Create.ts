@@ -9,8 +9,8 @@
 *
 */
 
-import { AbstractSession, Headers, IHeaderContent, ImperativeError, ImperativeExpect, Logger, TextUtils } from "@zowe/imperative";
-import { ZosmfHeaders, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
+import { AbstractSession, IHeaderContent, ImperativeError, ImperativeExpect, Logger, TextUtils } from "@zowe/imperative";
+import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 import { IZosFilesResponse } from "../../doc/IZosFilesResponse";
@@ -24,6 +24,7 @@ import * as path from "path";
 import { IZosFilesOptions } from "../../doc/IZosFilesOptions";
 import { List } from "../list";
 import { IZosmfListResponse } from "../list/doc/IZosmfListResponse";
+import { ZosFilesHeaders } from "../../utils/ZosFilesHeaders";
 
 // Do not use import in anticipation of some internationalization work to be done later.
 // const strings = (require("../../../../../packages/cli/zosfiles/src/-strings-/en").default as typeof i18nTypings);
@@ -123,14 +124,10 @@ export class Create {
             }
 
             const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + encodeURIComponent(dataSetName);
-            const headers: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING];
-            if (options && options.responseTimeout != null) {
-                headers.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
-            }
-
+            const reqHeaders = ZosFilesHeaders.generateHeaders({options});
             Create.dataSetValidateOptions(tempOptions);
 
-            await ZosmfRestClient.postExpectString(session, endpoint, headers, JSON.stringify(tempOptions));
+            await ZosmfRestClient.postExpectString(session, endpoint, reqHeaders, JSON.stringify(tempOptions));
 
             return {
                 success: true,
@@ -148,11 +145,7 @@ export class Create {
         ImperativeExpect.toNotBeNullOrUndefined(likeDataSetName, ZosFilesMessages.missingDatasetLikeName.message);
 
         const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + encodeURIComponent(dataSetName);
-        const headers: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING];
-        if (options && options.responseTimeout != null) {
-            headers.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
-        }
-
+        const reqHeaders = ZosFilesHeaders.generateHeaders({options});
         const tempOptions = JSON.parse(JSON.stringify({ like: likeDataSetName, ...options || {} }));
         Create.dataSetValidateOptions(tempOptions);
 
@@ -182,7 +175,7 @@ export class Create {
                 throw new ImperativeError({ msg: ZosFilesMessages.datasetAllocateLikeNotFound.message });
             }
         }
-        await ZosmfRestClient.postExpectString(session, endpoint, headers, JSON.stringify(tempOptions));
+        await ZosmfRestClient.postExpectString(session, endpoint, reqHeaders, JSON.stringify(tempOptions));
         return {
             success: true,
             commandResponse: ZosFilesMessages.dataSetCreatedSuccessfully.message
@@ -441,15 +434,13 @@ export class Create {
         ussPath = ussPath.charAt(0) === "/" ? ussPath.substring(1) : ussPath;
         ussPath = encodeURIComponent(ussPath);
         const parameters: string = `${ZosFilesConstants.RESOURCE}${ZosFilesConstants.RES_USS_FILES}/${ussPath}`;
-        const headers: IHeaderContent[] = [Headers.APPLICATION_JSON, ZosmfHeaders.ACCEPT_ENCODING];
-        if (options && options.responseTimeout != null) {
-            headers.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
-        }
+        const reqHeaders = ZosFilesHeaders.generateHeaders({ options, context: "uss" })
+
         let payload: object = { type };
         if (mode) {
             payload = { ...payload, ...{ mode } };
         }
-        const data = await ZosmfRestClient.postExpectString(session, parameters, headers, payload);
+        const data = await ZosmfRestClient.postExpectString(session, parameters, reqHeaders, payload);
 
         return {
             success: true,
@@ -458,36 +449,52 @@ export class Create {
         };
     }
 
+    /**
+     * Create a z/OS file system.
+     *
+     * @param {AbstractSession} session - z/OS MF connection info
+     * @param {string} fileSystemName - the name of the file system to create
+     * @param {Partial<ICreateZfsOptions>} [options] - options for the creation of the file system
+     * @returns {Promise<IZosFilesResponse>} A response indicating the outcome of the API
+     * @throws {ImperativeError} file system name must be set
+     * @throws {Error} When the {@link ZosmfRestClient} throws an error
+     */
     public static async zfs(
         session: AbstractSession,
         fileSystemName: string,
-        options?: Partial<ICreateZfsOptions>)
-        : Promise<IZosFilesResponse> {
-        // We require the file system name
+        options?: Partial<ICreateZfsOptions>
+    ): Promise<IZosFilesResponse> {
         ImperativeExpect.toNotBeNullOrUndefined(fileSystemName, ZosFilesMessages.missingFileSystemName.message);
 
-        // Removes undefined properties
-        const tempOptions = !(options === null || options === undefined) ? JSON.parse(JSON.stringify(options)) : {};
+        // Create a deep copy of the options (if any)
+        const originalOptions = options ? JSON.parse(JSON.stringify(options)) : {};
 
+        // Validate the options (this will throw if any required property is missing)
+        this.zfsValidateOptions(originalOptions);
+
+        // Create a copy for the JSON payload.
+        const payloadOptions = JSON.parse(JSON.stringify(originalOptions));
 
         let endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_ZFS_FILES + "/" + encodeURIComponent(fileSystemName);
-
-        this.zfsValidateOptions(tempOptions);
-        tempOptions.JSONversion = 1;
-        const headers = [];
-
-        if (!(tempOptions.timeout === null || tempOptions.timeout === undefined)) {
-            endpoint += `?timeout=${encodeURIComponent(tempOptions.timeout)}`;
-            delete tempOptions.timeout;
+        if (payloadOptions.timeout != null) {
+            endpoint += `?timeout=${encodeURIComponent(payloadOptions.timeout)}`;
+            delete payloadOptions.timeout;
         }
-        if (options && options.responseTimeout != null) {
-            headers.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
-            delete tempOptions.responseTimeout;
+        // Remove header-only keys from the payload.
+        if (payloadOptions.responseTimeout != null) {
+            delete payloadOptions.responseTimeout;
         }
+        // Add a fixed JSON version to the payload.
+        payloadOptions.JSONversion = 1;
 
-        const jsonContent = JSON.stringify(tempOptions);
-        headers.push(ZosmfHeaders.ACCEPT_ENCODING, { "Content-Length": jsonContent.length });
-        const data = await ZosmfRestClient.postExpectString(session, endpoint, headers, jsonContent);
+        // Stringify the payload and compute its length.
+        const jsonContent = JSON.stringify(payloadOptions);
+
+        // Use the original options copy for header generation.
+        const headerOptions = JSON.parse(JSON.stringify(originalOptions));
+        const reqHeaders = ZosFilesHeaders.generateHeaders({ options: headerOptions, context: "zfs", dataLength: jsonContent.length });
+
+        const data = await ZosmfRestClient.postExpectString(session, endpoint, reqHeaders, jsonContent);
 
         return {
             success: true,
