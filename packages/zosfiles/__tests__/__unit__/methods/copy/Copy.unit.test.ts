@@ -772,7 +772,6 @@ describe("Copy", () => {
         const rmSync = jest.spyOn(fs, "rmSync");
         const listDatasetSpy = jest.spyOn(List, "dataSet");
         const hasIdenticalMemberNames = jest.spyOn(Copy as any, "hasIdenticalMemberNames");
-        const writeFileSync = jest.spyOn(fs, "writeFileSync");
 
         beforeEach(() => {
             hasIdenticalMemberNames.mockRestore();
