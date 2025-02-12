@@ -68,7 +68,8 @@ export default {
                 SUMMARY: "Create physical sequential data sets (PS)",
                 DESCRIPTION: "Create physical sequential data sets (PS).",
                 EXAMPLES: {
-                    EX1: "Create an empty physical sequential data set with default parameters"
+                    EX1: "Create an empty physical sequential data set with default parameters",
+                    EX2: "Create a LARGE format sequential data set with default parameters"
                 }
             },
             VSAM: {
