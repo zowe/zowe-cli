@@ -549,7 +549,6 @@ describe("Copy", () => {
                             dsn:fromDataSetName
                         }}
                     );
-                    const sourceMemberList = sourceResponse.apiResponse.items.map((item: { member: any; }) => item.member);
                     expect(isPDSSpy).toHaveBeenNthCalledWith(1, dummySession, fromDataSetName);
                     expect(isPDSSpy).toHaveBeenNthCalledWith(2, dummySession, toDataSetName);
 
