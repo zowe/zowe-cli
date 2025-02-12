@@ -934,7 +934,8 @@ describe("Copy", () => {
             catch(e) {
                 caughtError = e;
             }
-            expect(response.commandResponse).toContain("Data set copied successfully. Member(s)' contents were truncated due to insufficient record lines. You can view the list of members here: " + truncatedMembersFilePath);
+            expect(response.commandResponse).toContain("Data set copied successfully. Member(s)' contents were truncated due to insufficient record lines. "
+                + "You can view the list of members here: " + truncatedMembersFilePath);
         });
 
         describe("hasIdenticalMemberNames", () => {

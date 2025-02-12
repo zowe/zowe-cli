@@ -10,18 +10,15 @@
 */
 
 import { Create, Upload, Delete, CreateDataSetTypeEnum, Copy, ZosFilesMessages, Get, IDataSet,
-    ICrossLparCopyDatasetOptions, IGetOptions, IZosFilesResponse,
-    ZosFilesUtils} from "../../../../src";
-import { Imperative, IO, Session } from "@zowe/imperative";
+    ICrossLparCopyDatasetOptions, IGetOptions, IZosFilesResponse} from "../../../../src";
+import { Imperative, Session } from "@zowe/imperative";
 import { inspect } from "util";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { join } from "path";
 import { readFileSync } from "fs";
 import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/ITestEnvironment";
-import { tmpdir } from "os";
 import path = require("path");
-import * as fs from "fs";
 import { List } from "@zowe/zos-files-for-zowe-sdk";
 import * as util from "util";
 
@@ -167,7 +164,8 @@ describe("Copy", () => {
                     const copyDataSetSpy = jest.spyOn(Copy, 'dataSet').mockImplementation(async () => {
                         return {
                             success: true,
-                            commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message + " " + util.format(ZosFilesMessages.membersContentTruncated.message)
+                            commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message + " " +
+                            util.format(ZosFilesMessages.membersContentTruncated.message)
                         };
                     });
                     try {
@@ -184,7 +182,8 @@ describe("Copy", () => {
                     }
                     expect(response).toBeTruthy();
                     expect(response.success).toBe(true);
-                    expect(response.commandResponse).toContain(ZosFilesMessages.datasetCopiedSuccessfully.message + " " + util.format(ZosFilesMessages.membersContentTruncated.message));
+                    expect(response.commandResponse).toContain(ZosFilesMessages.datasetCopiedSuccessfully.message + " " +
+                        util.format(ZosFilesMessages.membersContentTruncated.message));
                     uploadFileToDatasetSpy.mockRestore();
                     copyDataSetSpy.mockRestore();
                 });

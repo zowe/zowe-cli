@@ -250,7 +250,8 @@ export class Copy {
                 fs.writeFileSync(errorMembersFile, truncatedMembers.join('\n'));
                 return {
                     success: true,
-                    commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message + " " + util.format(ZosFilesMessages.membersContentTruncated.message, errorMembersFile)
+                    commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message + " " +
+                    util.format(ZosFilesMessages.membersContentTruncated.message, errorMembersFile)
                 };
             }
             fs.rmSync(downloadDir, {recursive: true});
