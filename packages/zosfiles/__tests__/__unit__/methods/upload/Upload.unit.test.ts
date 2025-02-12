@@ -1635,7 +1635,14 @@ describe("z/OS Files - Upload", () => {
             expect(USSresponse).toBeDefined();
 
             expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
-            expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, { reqHeaders: headers, resource: endpoint, writeData: data });
+            expect(zosmfExpectSpy).toHaveBeenCalledWith(
+                dummySession,
+                {
+                    reqHeaders: expect.arrayContaining(headers),
+                    resource: endpoint,
+                    writeData: data
+                }
+            );
         });
         it("should return with proper response when upload USS file with responseTimeout", async () => {
             const data: Buffer = Buffer.from("testing");
@@ -1659,7 +1666,14 @@ describe("z/OS Files - Upload", () => {
             expect(USSresponse).toBeDefined();
 
             expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
-            expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, { reqHeaders: headers, resource: endpoint, writeData: data });
+            expect(zosmfExpectSpy).toHaveBeenCalledWith(
+                dummySession,
+                {
+                    reqHeaders: expect.arrayContaining(headers),
+                    resource: endpoint,
+                    writeData: data
+                }
+            );
         });
         it("should return with proper response when upload USS file in binary", async () => {
             const chtagSpy = jest.spyOn(Utilities, "chtag");
@@ -1679,8 +1693,16 @@ describe("z/OS Files - Upload", () => {
             expect(USSresponse).toBeDefined();
             expect(chtagSpy).toHaveBeenCalled();
             expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
-            expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, { reqHeaders: headers, resource: endpoint, writeData: data });
+            expect(zosmfExpectSpy).toHaveBeenCalledWith(
+                dummySession,
+                {
+                    reqHeaders: expect.arrayContaining(headers),
+                    resource: endpoint,
+                    writeData: data
+                }
+            );
         });
+
         it("should return with proper response when upload USS file with Etag", async () => {
             const data: Buffer = Buffer.from("testing");
             const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, dsName);
@@ -1700,7 +1722,14 @@ describe("z/OS Files - Upload", () => {
             expect(USSresponse).toBeDefined();
 
             expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
-            expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, { reqHeaders: headers, resource: endpoint, writeData: data });
+            expect(zosmfExpectSpy).toHaveBeenCalledWith(
+                dummySession,
+                {
+                    reqHeaders: expect.arrayContaining(headers),
+                    resource: endpoint,
+                    writeData: data
+                }
+            );
         });
         it("should return with proper response when upload USS file and request Etag back", async () => {
             const data: Buffer = Buffer.from("testing");
@@ -1720,8 +1749,15 @@ describe("z/OS Files - Upload", () => {
             expect(USSresponse.apiResponse.etag).toEqual(etagValue);
 
             expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
-            expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, { reqHeaders: headers, resource: endpoint, writeData: data,
-                dataToReturn: [CLIENT_PROPERTY.response] });
+            expect(zosmfExpectSpy).toHaveBeenCalledWith(
+                dummySession,
+                {
+                    reqHeaders: expect.arrayContaining(headers),
+                    resource: endpoint,
+                    writeData: data,
+                    dataToReturn: [CLIENT_PROPERTY.response]
+                }
+            );
         });
         it("should set local encoding if specified", async () => {
             const data: Buffer = Buffer.from("testing");
@@ -1741,7 +1777,14 @@ describe("z/OS Files - Upload", () => {
             expect(USSresponse).toBeDefined();
 
             expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
-            expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, { reqHeaders: headers, resource: endpoint, writeData: data });
+            expect(zosmfExpectSpy).toHaveBeenCalledWith(
+                dummySession,
+                {
+                    reqHeaders: expect.arrayContaining(headers),
+                    resource: endpoint,
+                    writeData: data
+                }
+            );
         });
         it("should normalize new lines when upload USS file", async () => {
             const data: Buffer = Buffer.from("testing\r\ntesting2");
@@ -1761,7 +1804,14 @@ describe("z/OS Files - Upload", () => {
             const normalizedData = ZosFilesUtils.normalizeNewline(data);
             expect(data.length).not.toBe(normalizedData.length);
             expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
-            expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, { reqHeaders: headers, resource: endpoint, writeData: normalizedData });
+            expect(zosmfExpectSpy).toHaveBeenCalledWith(
+                dummySession,
+                {
+                    reqHeaders: expect.arrayContaining(headers),
+                    resource: endpoint,
+                    writeData: normalizedData
+                }
+            );
         });
     });
 

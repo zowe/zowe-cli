@@ -389,7 +389,8 @@ describe("Create", () => {
                 );
             });
 
-            it("should be able to create a fixed sequential data set using a block size that is too small without specifying the alcunit", async () => {
+            it("should be able to create a fixed sequential data set using a block"
+                + "size that is too small without specifying the alcunit", async () => {
                 const custOptions = {
                     dsorg: "PS",
                     alcunit: "CYL",
@@ -1063,7 +1064,8 @@ describe("Create", () => {
 
                 Create.dataSetValidateOptions(testOptions);
 
-                expect(testOptions.blksize).toEqual(testOptions.blksize);  // Should be changed during create validation to zOSMF default of lrecl value
+                expect(testOptions.blksize).toEqual(testOptions.blksize);
+                // Should be changed during create validation to zOSMF default of lrecl value
             });
 
             it("secondary should default to 0 if not specified", async () => {
@@ -1266,7 +1268,8 @@ describe("Create", () => {
             it("should be able to create a VSAM data set and over-ride multiple options", async () => {
 
                 const expectedCommand: string[] =
-                    [`DEFINE CLUSTER -\n(NAME('${dataSetName}') -\nNONINDEXED -\nCYL(${THIRTY} ${TEN}) -\nFOR(${TEN}) -\nVOLUMES(STG100, STG101) -\n)`];
+                    [`DEFINE CLUSTER -\n(NAME('${dataSetName}')`+
+                        ` -\nNONINDEXED -\nCYL(${THIRTY} ${TEN}) -\nFOR(${TEN}) -\nVOLUMES(STG100, STG101) -\n)`];
                 const options: IZosFilesOptions = {responseTimeout: undefined};
 
                 dsOptions.dsorg = "NONINDEXED";
@@ -1712,8 +1715,15 @@ describe("Create", () => {
 
                 expect(response.success).toBe(true);
                 expect(response.commandResponse).toContain("created successfully");
-                expect(mySpy).toHaveBeenCalledWith(dummySession, endpoint, expect.arrayContaining([{"Content-Type": "application/json"}, ZosmfHeaders.ACCEPT_ENCODING]),
-                    {type: optionDir});
+                expect(mySpy).toHaveBeenCalledWith(
+                    dummySession,
+                    endpoint,
+                    expect.arrayContaining([
+                        {"Content-Type": "application/json"},
+                        ZosmfHeaders.ACCEPT_ENCODING
+                    ]),
+                    {type: optionDir}
+                );
             });
 
             it("should be able to create a file", async () => {
@@ -1721,8 +1731,15 @@ describe("Create", () => {
 
                 expect(response.success).toBe(true);
                 expect(response.commandResponse).toContain("created successfully");
-                expect(mySpy).toHaveBeenCalledWith(dummySession, endpoint, expect.arrayContaining([{"Content-Type": "application/json"}, ZosmfHeaders.ACCEPT_ENCODING]),
-                    {type: optionFile});
+                expect(mySpy).toHaveBeenCalledWith(
+                    dummySession,
+                    endpoint,
+                    expect.arrayContaining([
+                        {"Content-Type": "application/json"},
+                        ZosmfHeaders.ACCEPT_ENCODING
+                    ]),
+                    {type: optionFile}
+                );
             });
 
             it("should be able to create a directory with option mode", async () => {
@@ -1730,8 +1747,15 @@ describe("Create", () => {
 
                 expect(response.success).toBe(true);
                 expect(response.commandResponse).toContain("created successfully");
-                expect(mySpy).toHaveBeenCalledWith(dummySession, endpoint, expect.arrayContaining([{"Content-Type": "application/json"}, ZosmfHeaders.ACCEPT_ENCODING]),
-                    {type: optionDir, mode: optionMode});
+                expect(mySpy).toHaveBeenCalledWith(
+                    dummySession,
+                    endpoint,
+                    expect.arrayContaining([
+                        {"Content-Type": "application/json"},
+                        ZosmfHeaders.ACCEPT_ENCODING
+                    ]),
+                    {type: optionDir, mode: optionMode}
+                );
             });
 
             it("should be able to create a file with option mode", async () => {
@@ -1739,8 +1763,15 @@ describe("Create", () => {
 
                 expect(response.success).toBe(true);
                 expect(response.commandResponse).toContain("created successfully");
-                expect(mySpy).toHaveBeenCalledWith(dummySession, endpoint, expect.arrayContaining([{"Content-Type": "application/json"}, ZosmfHeaders.ACCEPT_ENCODING]),
-                    {type: optionFile, mode: optionMode});
+                expect(mySpy).toHaveBeenCalledWith(
+                    dummySession,
+                    endpoint,
+                    expect.arrayContaining([
+                        {"Content-Type": "application/json"},
+                        ZosmfHeaders.ACCEPT_ENCODING
+                    ]),
+                    {type: optionFile, mode: optionMode}
+                );
             });
 
         });
@@ -1759,8 +1790,15 @@ describe("Create", () => {
                     error = err.message;
                 }
 
-                expect(mySpy).toHaveBeenCalledWith(dummySession, endpoint, expect.arrayContaining([{"Content-Type": "application/json"}, ZosmfHeaders.ACCEPT_ENCODING]),
-                    {type: "directory"});
+                expect(mySpy).toHaveBeenCalledWith(
+                    dummySession,
+                    endpoint,
+                    expect.arrayContaining([{
+                        "Content-Type": "application/json"},
+                        ZosmfHeaders.ACCEPT_ENCODING
+                    ]),
+                    {type: "directory"}
+                );
                 expect(error).toContain(errorMsg);
             });
         });

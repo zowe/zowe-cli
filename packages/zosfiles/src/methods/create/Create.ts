@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, IHeaderContent, ImperativeError, ImperativeExpect, Logger, TextUtils } from "@zowe/imperative";
+import { AbstractSession, ImperativeError, ImperativeExpect, Logger, TextUtils } from "@zowe/imperative";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";

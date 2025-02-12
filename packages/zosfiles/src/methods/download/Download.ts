@@ -99,7 +99,7 @@ export class Download {
 
             Logger.getAppLogger().debug(`Endpoint: ${endpoint}`);
 
-            const reqHeaders = ZosFilesHeaders.generateHeaders({options});
+            const reqHeaders = ZosFilesHeaders.generateHeaders({options, context: "stream"});
 
             // Get contents of the data set
             let extension = ZosFilesUtils.DEFAULT_FILE_EXTENSION;
@@ -533,7 +533,7 @@ export class Download {
             ussFileName = ZosFilesUtils.sanitizeUssPathForRestCall(ussFileName);
             const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, ussFileName);
 
-            const reqHeaders: IHeaderContent[] = ZosFilesHeaders.generateHeaders({options});
+            const reqHeaders: IHeaderContent[] = ZosFilesHeaders.generateHeaders({options, context: "download"});
 
             // Use specific options to mimic ZosmfRestClient.getStreamed()
             const requestOptions: IOptionsFullResponse = {

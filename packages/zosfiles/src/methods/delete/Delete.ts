@@ -9,11 +9,11 @@
 *
 */
 
-import { AbstractSession, ImperativeExpect, Logger, IHeaderContent } from "@zowe/imperative";
+import { AbstractSession, ImperativeExpect, Logger } from "@zowe/imperative";
 
 import { posix } from "path";
 
-import { ZosmfRestClient, ZosmfHeaders } from "@zowe/core-for-zowe-sdk";
+import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 import { IZosFilesResponse } from "../../doc/IZosFilesResponse";
@@ -24,6 +24,7 @@ import { IDeleteVsamOptions } from "./doc/IDeleteVsamOptions";
 import { IDeleteVsamResponse } from "./doc/IDeleteVsamResponse";
 import { ZosFilesUtils } from "../../utils/ZosFilesUtils";
 import { IZosFilesOptions } from "../../doc/IZosFilesOptions";
+import { ZosFilesHeaders } from "../../utils/ZosFilesHeaders";
 
 /**
  * This class holds helper functions that are used to delete files through the
@@ -59,10 +60,8 @@ export class Delete {
                 endpoint = posix.join(endpoint, `-(${encodeURIComponent(options.volume)})`);
             }
 
-            const reqHeaders: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING];
-            if (options && options.responseTimeout != null) {
-                reqHeaders.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
-            }
+            const reqHeaders = ZosFilesHeaders.generateHeaders({ options })
+
 
             endpoint = posix.join(endpoint, encodeURIComponent(dataSetName));
 
@@ -153,12 +152,10 @@ export class Delete {
         endpoint = posix.join(endpoint, fileName);
         Logger.getAppLogger().debug(`Endpoint: ${endpoint}`);
 
-        const reqHeaders: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING];
+        const reqHeaders = ZosFilesHeaders.generateHeaders({ options, context: "uss" })
+        // TO DO: make recursive an option on IDeleteOptions
         if (recursive && recursive === true) {
             reqHeaders.push({"X-IBM-Option": "recursive"});
-        }
-        if (options && options.responseTimeout != null) {
-            reqHeaders.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
         }
 
         try {
@@ -192,11 +189,7 @@ export class Delete {
 
         // Format the endpoint to send the request to
         const endpoint = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_ZFS_FILES + "/" + encodeURIComponent(fileSystemName);
-        const reqHeaders: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING];
-        if (options && options.responseTimeout != null) {
-            reqHeaders.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
-        }
-
+        const reqHeaders = ZosFilesHeaders.generateHeaders({ options, context: "zfs" })
         const data = await ZosmfRestClient.deleteExpectString(session, endpoint, reqHeaders);
 
         return {

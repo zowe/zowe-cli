@@ -33,6 +33,13 @@ export class ZosmfHeaders {
 
 
     /**
+     * recursive true header
+     * @static
+     * @memberof ZosmfHeaders
+     */
+    public static readonly X_IBM_RECURSIVE = {"X-IBM-Option": "recursive"};
+
+    /**
      * recfm header
      * @static
      * @memberof ZosmfHeaders
