@@ -245,16 +245,17 @@ export class Copy {
                     continue;
                 }
             }
+            const truncatedMembersFile = path.join(tmpdir(), 'truncatedMembers.txt');
             if(truncatedMembers.length > 0) {
-                const errorMembersFile = path.join(tmpdir(), 'errorMembers.txt');
-                fs.writeFileSync(errorMembersFile, truncatedMembers.join('\n'));
+                fs.writeFileSync(truncatedMembersFile, truncatedMembers.join('\n'));
                 return {
                     success: true,
                     commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message + " " +
-                    util.format(ZosFilesMessages.membersContentTruncated.message, errorMembersFile)
+                    util.format(ZosFilesMessages.membersContentTruncated.message, truncatedMembersFile)
                 };
             }
             fs.rmSync(downloadDir, {recursive: true});
+            fs.rmSync(truncatedMembersFile);
             return {
                 success:true,
                 commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message
