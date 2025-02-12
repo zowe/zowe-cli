@@ -239,6 +239,9 @@ export class Copy {
                     if(error.message && error.message.includes("Truncation of a record occurred during an I/O operation")) {
                         truncatedMembers.push(memName);
                     }
+                    else {
+                        Logger.getAppLogger().error(error);
+                    }
                     continue;
                 }
             }
