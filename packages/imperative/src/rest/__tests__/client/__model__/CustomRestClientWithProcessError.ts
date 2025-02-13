@@ -35,7 +35,7 @@ export class CustomRestClientWithProcessError extends RestClient {
         return JSONUtils.parse<T>(data, "The get request appeared to succeed, but the response was not in the expected format");
     }
 
-    protected processError(original: IImperativeError): IImperativeError {
+    protected processError(_original: IImperativeError): IImperativeError {
         return EXPECTED_REST_ERROR;
     }
 }

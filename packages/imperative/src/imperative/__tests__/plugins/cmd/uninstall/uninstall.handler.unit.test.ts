@@ -9,9 +9,6 @@
 *
 */
 
-/* eslint-disable jest/expect-expect */
-import Mock = jest.Mock;
-
 jest.mock("child_process");
 jest.mock("jsonfile");
 jest.mock("../../../../src/plugins/utilities/npm-interface/uninstall");
@@ -181,7 +178,6 @@ describe("callPluginPreUninstall", () => {
     let callPluginPreUninstallPrivate : any;
     let cfgLoaderLoadSpy: any;
     let fakePluginConfig: IImperativeConfig;
-    let getPackageInfoSpy: any;
     let LifeCycleClass: any;
     let preUninstallWorked = false;
     let recordDefaultCredMgrInConfigSpy: any;
@@ -247,13 +243,6 @@ describe("callPluginPreUninstall", () => {
                 return;
             });
 
-        // make getPackageInfo return a fake value
-        getPackageInfoSpy = jest.spyOn(NpmFunctions, "getPackageInfo").mockImplementation(async () => {
-            return {
-                name: knownCredMgrPlugin,
-                version: "9.9.9"
-            };
-        });
 
         // make requirePluginModuleCallback return our fake LifeCycleClass
         requirePluginModuleCallbackSpy = jest.spyOn(

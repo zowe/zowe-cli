@@ -12,7 +12,7 @@
 import { ICommandHandler, IHandlerParameters } from "../../../../../../../lib/index";
 
 export default class FieldNotexistHandler implements ICommandHandler {
-    public async process(params: IHandlerParameters) {
+    public async process(_params: IHandlerParameters) {
         throw Error("Some error happened");
     }
 }

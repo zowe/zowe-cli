@@ -347,7 +347,7 @@ describe("CoreUtils", () => {
             const poolSize = 2;
             let sum = 0;
             const createPromiseFunction = (numberToAdd: number) => {
-                return new Promise<void>((resolve, reject) => {
+                return new Promise<void>((resolve, _reject) => {
                     sum += numberToAdd;
                     resolve();
                 });
@@ -359,11 +359,9 @@ describe("CoreUtils", () => {
         it("should reject if any of the promises in the pool reject", async () => {
             const numbers = [1, 1, -1, 1, 1];
             const poolSize = 2;
-            let sum = 0;
             const createPromiseFunction = (numberToAdd: number) => {
                 return new Promise<void>((resolve, reject) => {
                     if (numberToAdd > 0) {
-                        sum += numberToAdd;
                         resolve();
                     }
                     else {

@@ -57,7 +57,7 @@ describe("Session tests", () => {
     it("should require user for 'basic' type", () => {
         let error;
         try {
-            const session = new Session({hostname: "localhost", type: "basic"});
+            new Session({hostname: "localhost", type: "basic"});
         } catch (thrownError) {
             error = thrownError;
         }
@@ -67,7 +67,7 @@ describe("Session tests", () => {
     it("should not allow tokenType for 'basic' type", () => {
         let error;
         try {
-            const session = new Session({hostname: "localhost", type: "basic", user: "hey", password: "there", tokenType: "LtpaToken2"});
+            new Session({hostname: "localhost", type: "basic", user: "hey", password: "there", tokenType: "LtpaToken2"});
         } catch (thrownError) {
             error = thrownError;
         }
@@ -77,7 +77,7 @@ describe("Session tests", () => {
     it("should not allow tokenValue for 'basic' type", () => {
         let error;
         try {
-            const session = new Session({hostname: "localhost", type: "basic", user: "hey", password: "there", tokenValue: "secretToken"});
+            new Session({hostname: "localhost", type: "basic", user: "hey", password: "there", tokenValue: "secretToken"});
         } catch (thrownError) {
             error = thrownError;
         }
@@ -87,7 +87,7 @@ describe("Session tests", () => {
     it("should not allow cert for 'basic' type", () => {
         let error;
         try {
-            const session = new Session({hostname: "localhost", type: "basic", user: "hey", password: "there", cert: "/fake/cert"});
+            new Session({hostname: "localhost", type: "basic", user: "hey", password: "there", cert: "/fake/cert"});
         } catch (thrownError) {
             error = thrownError;
         }
@@ -97,7 +97,7 @@ describe("Session tests", () => {
     it("should not allow certKey for 'basic' type", () => {
         let error;
         try {
-            const session = new Session({hostname: "localhost", type: "basic", user: "hey", password: "there", certKey: "/fake/cert"});
+            new Session({hostname: "localhost", type: "basic", user: "hey", password: "there", certKey: "/fake/cert"});
         } catch (thrownError) {
             error = thrownError;
         }
@@ -107,7 +107,7 @@ describe("Session tests", () => {
     it("should require password for 'basic' type", () => {
         let error;
         try {
-            const session = new Session({hostname: "localhost", type: "basic", user: "somebody"});
+            new Session({hostname: "localhost", type: "basic", user: "somebody"});
         } catch (thrownError) {
             error = thrownError;
         }
@@ -117,7 +117,7 @@ describe("Session tests", () => {
     it("should require password for 'tokenType' type", () => {
         let error;
         try {
-            const session = new Session({hostname: "localhost", type: "token", user: "somebody", password: "secret"});
+            new Session({hostname: "localhost", type: "token", user: "somebody", password: "secret"});
         } catch (thrownError) {
             error = thrownError;
         }
@@ -132,7 +132,7 @@ describe("Session tests", () => {
     it("should not allow tokenType for 'bearer' type", () => {
         let error;
         try {
-            const session = new Session({hostname: "localhost", type: "bearer",
+            new Session({hostname: "localhost", type: "bearer",
                 tokenValue: "blahblahblah", user: "user", password: "pass", tokenType: "LtpaToken2"});
         } catch (thrownError) {
             error = thrownError;
@@ -143,7 +143,7 @@ describe("Session tests", () => {
     it("should not allow user for 'bearer' type", () => {
         let error;
         try {
-            const session = new Session({hostname: "localhost", type: "bearer", tokenValue: "blahblahblah", user: "user", password: "pass"});
+            new Session({hostname: "localhost", type: "bearer", tokenValue: "blahblahblah", user: "user", password: "pass"});
         } catch (thrownError) {
             error = thrownError;
         }
@@ -153,7 +153,7 @@ describe("Session tests", () => {
     it("should not allow password for 'bearer' type", () => {
         let error;
         try {
-            const session = new Session({hostname: "localhost", type: "bearer", tokenValue: "blahblahblah", password: "pass"});
+            new Session({hostname: "localhost", type: "bearer", tokenValue: "blahblahblah", password: "pass"});
         } catch (thrownError) {
             error = thrownError;
         }
@@ -163,7 +163,7 @@ describe("Session tests", () => {
     it("should not allow cert for 'bearer' type", () => {
         let error;
         try {
-            const session = new Session({hostname: "localhost", type: "bearer", tokenValue: "blahblahblah", cert: "/fake/cert"});
+            new Session({hostname: "localhost", type: "bearer", tokenValue: "blahblahblah", cert: "/fake/cert"});
         } catch (thrownError) {
             error = thrownError;
         }
@@ -173,7 +173,7 @@ describe("Session tests", () => {
     it("should not allow certKey for 'bearer' type", () => {
         let error;
         try {
-            const session = new Session({hostname: "localhost", type: "bearer", tokenValue: "blahblahblah", certKey: "/fake/cert/key"});
+            new Session({hostname: "localhost", type: "bearer", tokenValue: "blahblahblah", certKey: "/fake/cert/key"});
         } catch (thrownError) {
             error = thrownError;
         }
@@ -183,7 +183,7 @@ describe("Session tests", () => {
     it("should require token for 'bearer' type", () => {
         let error;
         try {
-            const session = new Session({hostname: "localhost", type: "bearer"});
+            new Session({hostname: "localhost", type: "bearer"});
         } catch (thrownError) {
             error = thrownError;
         }
@@ -198,7 +198,7 @@ describe("Session tests", () => {
     it("should require cert for 'cert-pem' type", () => {
         let error;
         try {
-            const session = new Session({hostname: "localhost", type: "cert-pem"});
+            new Session({hostname: "localhost", type: "cert-pem"});
         } catch (thrownError) {
             error = thrownError;
         }
@@ -208,7 +208,7 @@ describe("Session tests", () => {
     it("should require certKey for 'cert-pem' type", () => {
         let error;
         try {
-            const session = new Session({hostname: "localhost", type: "cert-pem", cert: "/fake/cert"});
+            new Session({hostname: "localhost", type: "cert-pem", cert: "/fake/cert"});
         } catch (thrownError) {
             error = thrownError;
         }
@@ -218,7 +218,7 @@ describe("Session tests", () => {
     it("should allow tokenType for 'cert-pem' type for auth login", () => {
         let error;
         try {
-            const session = new Session({hostname: "localhost", type: "cert-pem",
+            new Session({hostname: "localhost", type: "cert-pem",
                 cert: "/fake/cert", certKey: "/fake/cert/key", tokenType: "LtpaToken2"});
         } catch (thrownError) {
             error = thrownError;
@@ -229,7 +229,7 @@ describe("Session tests", () => {
     it("should not allow tokenValue for 'cert-pem' type for auth login", () => {
         let error;
         try {
-            const session = new Session({hostname: "localhost", type: "cert-pem",
+            new Session({hostname: "localhost", type: "cert-pem",
                 cert: "/fake/cert", certKey: "/fake/cert/key", tokenType: "LtpaToken2",
                 tokenValue: "FakeTokenValue"});
         } catch (thrownError) {
@@ -241,7 +241,7 @@ describe("Session tests", () => {
     it("should not allow user for 'cert-pem' type", () => {
         let error;
         try {
-            const session = new Session({hostname: "localhost", type: "cert-pem", cert: "/fake/cert", certKey: "/fake/cert/key", user: "user"});
+            new Session({hostname: "localhost", type: "cert-pem", cert: "/fake/cert", certKey: "/fake/cert/key", user: "user"});
         } catch (thrownError) {
             error = thrownError;
         }
@@ -251,7 +251,7 @@ describe("Session tests", () => {
     it("should not allow password for 'cert-pem' type", () => {
         let error;
         try {
-            const session = new Session({hostname: "localhost", type: "cert-pem", cert: "/fake/cert", certKey: "/fake/cert/key", password: "pass"});
+            new Session({hostname: "localhost", type: "cert-pem", cert: "/fake/cert", certKey: "/fake/cert/key", password: "pass"});
         } catch (thrownError) {
             error = thrownError;
         }
@@ -298,7 +298,7 @@ describe("Session tests", () => {
         let error;
         try {
             // @ts-expect-error testing wrong argument type
-            const session = new Session({hostname: "localhost", type: "madeThisUp"});
+            new Session({hostname: "localhost", type: "madeThisUp"});
         } catch (thrownError) {
             error = thrownError;
         }
@@ -309,7 +309,7 @@ describe("Session tests", () => {
         let error;
         try {
             // @ts-expect-error testing wrong argument type
-            const session = new Session({hostname: "localhost", protocol: "ftp"});
+            new Session({hostname: "localhost", protocol: "ftp"});
         } catch (thrownError) {
             error = thrownError;
         }
@@ -319,7 +319,7 @@ describe("Session tests", () => {
     it("should fail to initialize without minimum data", () => {
         let error;
         try {
-            const session = new Session({});
+            new Session({});
         } catch (thrownError) {
             error = thrownError;
         }

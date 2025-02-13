@@ -31,15 +31,15 @@ export class InvalidCredentialManager extends AbstractCredentialManager {
         super(service, "Imperative Invalid Credential Manager");
     }
 
-    protected async deleteCredentials(account: string): Promise<void> {
+    protected async deleteCredentials(_account: string): Promise<void> {
         throw new BadCredentialManagerError(this.causeError);
     }
 
-    protected async loadCredentials(account: string, optional?: boolean): Promise<SecureCredential> {
+    protected async loadCredentials(_account: string, _optional?: boolean): Promise<SecureCredential> {
         throw new BadCredentialManagerError(this.causeError);
     }
 
-    protected async saveCredentials(account: string, credentials: SecureCredential): Promise<void> {
+    protected async saveCredentials(_account: string, _credentials: SecureCredential): Promise<void> {
         throw new BadCredentialManagerError(this.causeError);
     }
 }

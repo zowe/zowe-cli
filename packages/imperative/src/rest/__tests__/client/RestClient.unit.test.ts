@@ -61,17 +61,13 @@ describe("RestClient tests", () => {
 
         (https.request as any) = httpsRequestFnc;
 
-        let error;
-
         try {
             await CustomRestClient.getExpectString(new Session({hostname: "test"}), "/resource");
-
-            expect(path.posix.join).toHaveBeenCalledTimes(1);
-            expect(path.posix.join).toHaveBeenCalledWith(path.posix.sep, "", "/resource");
-        } catch (thrownError) {
-            error = thrownError;
+        } catch (err) {
+            // Do nothing
         }
-
+        expect(path.posix.join).toHaveBeenCalledTimes(2);
+        expect(path.posix.join).toHaveBeenCalledWith(path.posix.sep, "", "/resource");
         expect(httpsRequestFnc).toHaveBeenCalled();
     });
 
@@ -99,26 +95,19 @@ describe("RestClient tests", () => {
 
         (https.request as any) = httpsRequestFnc;
 
-        let error;
-
         try {
             await CustomRestClient.getExpectJSON<IDoesNotMatter>(new Session({hostname: "test"}), "/resource");
-
-            expect(path.posix.join).toHaveBeenCalledTimes(1);
-            expect(path.posix.join).toHaveBeenCalledWith(path.posix.sep, "", "/resource");
-        } catch (thrownError) {
-            error = thrownError;
+        } catch (err) {
+            // Do nothing
         }
 
+        expect(path.posix.join).toHaveBeenCalledTimes(2);
+        expect(path.posix.join).toHaveBeenCalledWith(path.posix.sep, "", "/resource");
         expect(httpsRequestFnc).toHaveBeenCalled();
     });
 
     it("should provide the ability to process encountered errors", async () => {
         let error;
-
-        interface IResponseload {
-            newData: string;
-        }
 
         const emitter = new MockHttpRequestResponse();
         const requestFnc = jest.fn((options, callback) => {

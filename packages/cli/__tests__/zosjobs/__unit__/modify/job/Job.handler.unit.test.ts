@@ -72,10 +72,8 @@ describe("modify job handler tests", () => {
 
     describe("successful response", () => {
         it("should be able to modify class of job", async () => {
-            let mySession;
             GetJobs.getJob = jest.fn().mockResolvedValue({fakeJobName, class: fakeJobClass});
-            ModifyJobs.modifyJob = jest.fn(async (session, {jobname, jobid}, {jobclass}) => {
-                mySession = session;
+            ModifyJobs.modifyJob = jest.fn(async (_session, {jobname: _jobname, jobid: _jobid}, {jobclass: _jobclass}) => {
                 return SUCCESS_FEEDBACK;
             });
             const handler = new ModifyHandler.default();
@@ -90,10 +88,15 @@ describe("modify job handler tests", () => {
             expect(SUCCESS_FEEDBACK.message).toContain("Successful.");
         });
         it("should be able to hold a job", async () => {
-            let mySession;
             GetJobs.getJob = jest.fn().mockResolvedValue({fakeJobName, class: fakeJobClass});
-            ModifyJobs.modifyJob = jest.fn(async (session, {jobname, jobid}, {jobclass, hold, release}) => {
-                mySession = session;
+            ModifyJobs.modifyJob = jest.fn(async (_session, {
+                jobname: _jobname,
+                jobid: _jobid
+            }, {
+                jobclass: _jobclass,
+                hold: _hold,
+                release: _release
+            }) => {
                 return SUCCESS_FEEDBACK;
             });
             ModifyJobs.modifyJobCommon = jest.fn().mockResolvedValue(SUCCESS_FEEDBACK);
@@ -109,10 +112,8 @@ describe("modify job handler tests", () => {
         });
 
         it("should be able to release a job", async () => {
-            let mySession;
             GetJobs.getJob = jest.fn().mockResolvedValue({fakeJobName, class: fakeJobClass});
-            ModifyJobs.modifyJob = jest.fn(async (session, {jobname, jobid}, {jobclass}) => {
-                mySession = session;
+            ModifyJobs.modifyJob = jest.fn(async (_session, {jobname: _jobname, jobid: _jobid}, {jobclass: _jobclass}) => {
                 return SUCCESS_FEEDBACK;
             });
             const handler = new ModifyHandler.default();
@@ -131,10 +132,10 @@ describe("modify job handler tests", () => {
         it("should be able respond with error message if any error", async () => {
             const failMessage = "You fail";
             let error;
-            GetJobs.getJob = jest.fn(async (session, jobid) => {
+            GetJobs.getJob = jest.fn(async (_session, _jobid) => {
                 return SAMPLE_COMPLETE_JOB;
             });
-            ModifyJobs.modifyJob = jest.fn(async (session, {jobname, jobid}, {jobclass}) => {
+            ModifyJobs.modifyJob = jest.fn(async (_session, {jobname: _jobname, jobid: _jobid}, {jobclass: _jobclass}) => {
                 throw new ImperativeError({msg: failMessage});
             });
             const handler = new ModifyHandler.default();
@@ -156,10 +157,10 @@ describe("modify job handler tests", () => {
         it("should be able respond with error message if no jobid", async () => {
             const failMessage = "Missing Positional Argument: jobid";
             let error;
-            GetJobs.getJob = jest.fn(async (session, jobid) => {
+            GetJobs.getJob = jest.fn(async (_session, _jobid) => {
                 return SAMPLE_COMPLETE_JOB;
             });
-            ModifyJobs.modifyJob = jest.fn(async (session, {jobname, jobid}, {jobclass}) => {
+            ModifyJobs.modifyJob = jest.fn(async (_session, {jobname: _jobname, jobid: _jobid}, {jobclass: _jobclass}) => {
                 throw new Error(failMessage);
             });
             const handler = new ModifyHandler.default();
@@ -177,10 +178,10 @@ describe("modify job handler tests", () => {
         it("should send error if an issue with modifying class||hold||release", async () => {
             const failMessage = "Modification Error";
             let error;
-            GetJobs.getJob = jest.fn(async (session, jobid) => {
+            GetJobs.getJob = jest.fn(async (_session, _jobid) => {
                 return SAMPLE_COMPLETE_JOB;
             });
-            ModifyJobs.modifyJob = jest.fn(async (session, {jobname, jobid}, {jobclass}) => {
+            ModifyJobs.modifyJob = jest.fn(async (_session, {jobname: _jobname, jobid: _jobid}, {jobclass: _jobclass}) => {
                 throw new Error(failMessage);
             });
             const handler = new ModifyHandler.default();
