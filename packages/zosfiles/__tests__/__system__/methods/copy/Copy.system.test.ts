@@ -21,7 +21,6 @@ import { ITestEnvironment } from "../../../../../../__tests__/__src__/environmen
 import path = require("path");
 import { List } from "@zowe/zos-files-for-zowe-sdk";
 import * as util from "util";
-import * as fs from "fs";
 import { ZosmfRestClient} from "@zowe/core-for-zowe-sdk";
 
 
