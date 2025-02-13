@@ -904,7 +904,7 @@ describe("Copy", () => {
             });
         });
         it("should handle truncation errors and log them to a file", async () => {
-            const truncatedMembersFilePath = path.join(tmpdir(), "errorMembers.txt");
+            const truncatedMembersFilePath = path.join(tmpdir(), "truncatedMembers.txt");
             let caughtError;
             let response;
             const sourceResponse = {
@@ -933,8 +933,8 @@ describe("Copy", () => {
             catch(e) {
                 caughtError = e;
             }
-            expect(response.commandResponse).toContain("Data set copied successfully. Member(s)' contents were truncated due to insufficient record lines. "
-                + "You can view the list of members here: " + truncatedMembersFilePath);
+            expect(response.commandResponse).toContain(ZosFilesMessages.datasetCopiedSuccessfully.message + " " +
+                util.format(ZosFilesMessages.membersContentTruncated.message, truncatedMembersFilePath));
         });
 
         describe("hasIdenticalMemberNames", () => {
