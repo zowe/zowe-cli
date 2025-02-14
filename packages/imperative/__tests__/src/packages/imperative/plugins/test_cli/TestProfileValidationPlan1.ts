@@ -51,7 +51,6 @@ class TestProfileValidationPlan1 implements IProfileValidationPlan {
                     name: "Should we work on this item",
                     description: "The duration determines whether we bother",
                     taskFunction: (profile: any, done: (result: IProfileValidationTaskResult) => void) => {
-                        const daysToDeadline: number = 100;
                         let outcome: VALIDATION_OUTCOME;
                         let description;
                         if (profile.importance === "desirable") {

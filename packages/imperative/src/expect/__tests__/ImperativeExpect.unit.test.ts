@@ -282,7 +282,7 @@ describe("ImperativeExpect tests", () => {
         try {
             ImperativeExpect.expectAndTransform(() => {
                 ImperativeExpect.toBeEqual(0, 1);
-            }, (impErr) => {
+            }, (_impErr) => {
                 return new ImperativeError({ msg: "The values weren't equal!!!" });
             });
         } catch (thrownError) {

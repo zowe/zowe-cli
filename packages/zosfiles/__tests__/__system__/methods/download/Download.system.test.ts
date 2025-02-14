@@ -87,26 +87,22 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
         describe("Physical sequential data set", () => {
 
             beforeEach(async () => {
-                let error;
-                let response;
 
                 try {
-                    response = await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dsname);
+                    await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dsname);
                     await wait(delayTime);
                 } catch (err) {
-                    error = err;
+                    // Do nothing
                 }
             });
 
             afterEach(async () => {
-                let error;
-                let response;
 
                 try {
-                    response = await Delete.dataSet(REAL_SESSION, dsname);
+                    await Delete.dataSet(REAL_SESSION, dsname);
                     await wait(delayTime);
                 } catch (err) {
-                    error = err;
+                    // Do nothing
                 }
 
                 // delete the top-level folder and the folders and file below
@@ -367,26 +363,22 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
         describe("Partitioned data set - all members", () => {
 
             beforeEach(async () => {
-                let error;
-                let response;
 
                 try {
-                    response = await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname);
+                    await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname);
                     await wait(delayTime);
                 } catch (err) {
-                    error = err;
+                    // Do nothing
                 }
             });
 
             afterEach(async () => {
-                let error;
-                let response;
 
                 try {
-                    response = await Delete.dataSet(REAL_SESSION, dsname);
+                    await Delete.dataSet(REAL_SESSION, dsname);
                     await wait(delayTime);
                 } catch (err) {
-                    error = err;
+                    // Do nothing
                 }
 
                 // delete the top-level folder and the folders and file below
@@ -619,27 +611,21 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
         describe("Data sets matching - all data sets - PO", () => {
 
             beforeEach(async () => {
-                let error;
-                let response;
 
                 try {
-                    response = await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname);
+                    await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname);
                     await wait(delayTime);
                 } catch (err) {
-                    error = err;
+                    // Do nothing
                 }
             });
 
             afterEach(async () => {
-                let error;
-                let response;
-
                 try {
-                    response = await Delete.dataSet(REAL_SESSION, dsname);
+                    await Delete.dataSet(REAL_SESSION, dsname);
                     await wait(delayTime);
                 } catch (err) {
-                    error = err;
-                    Imperative.console.info("Error: " + inspect(error));
+                    Imperative.console.info("Error: " + inspect(err));
                 }
 
                 // delete the top-level folder and the folders and file below
@@ -648,8 +634,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
                     rimraf(folders[0]);
                 } catch (err) {
                     // Do nothing, sometimes the files are not created.
-                    error = err;
-                    Imperative.console.info("Error: " + inspect(error));
+                    Imperative.console.info("Error: " + inspect(err));
                 }
             });
 
@@ -801,26 +786,21 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
         describe("Data sets matching - all data sets - PS", () => {
 
             beforeEach(async () => {
-                let error;
-                let response;
 
                 try {
-                    response = await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dsname);
+                    await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dsname);
                     await wait(delayTime);
                 } catch (err) {
-                    error = err;
+                    // Do nothing
                 }
             });
 
             afterEach(async () => {
-                let error;
-                let response;
-
                 try {
-                    response = await Delete.dataSet(REAL_SESSION, dsname);
+                    await Delete.dataSet(REAL_SESSION, dsname);
                     await wait(delayTime);
                 } catch (err) {
-                    error = err;
+                    // Do nothing
                 }
 
                 // delete the top-level folder and the folders and file below
@@ -849,7 +829,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
                 expect(response.commandResponse).toContain("1 data set(s) downloaded successfully");
 
                 // convert the data set name to use as a path/file
-                const regex = /\./gi;
+
                 file = dsname.toLowerCase() + ".txt";
                 // Compare the downloaded contents to those uploaded
                 const fileContents = stripNewLines(fs.readFileSync(`${file}`).toString());

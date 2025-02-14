@@ -233,12 +233,11 @@ describe("z/OS Files - View", () => {
         });
 
         it("should send range header when range option is specified", async () => {
-            let response;
             let caughtError;
             const range = "000,001";
 
             try {
-                response = await Get.dataSet(dummySession, dsname, {range});
+                await Get.dataSet(dummySession, dsname, {range});
             } catch (e) {
                 caughtError = e;
             }

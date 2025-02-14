@@ -57,18 +57,16 @@ describe("Create data set", () => {
     });
 
     beforeEach(async () => {
-        let response;
         try {
-            response = await Delete.dataSet(REAL_SESSION, dsname);
+            await Delete.dataSet(REAL_SESSION, dsname);
         } catch (error) {
             Imperative.console.info("Error: " + inspect(error));
         }
     });
 
     afterEach(async () => {
-        let response;
         try {
-            response = await Delete.dataSet(REAL_SESSION, dsname);
+            await Delete.dataSet(REAL_SESSION, dsname);
         } catch (error) {
             Imperative.console.info("Error: " + inspect(error));
         }
@@ -399,18 +397,16 @@ describe("Create VSAM", () => {
     });
 
     beforeEach(async () => {
-        let response;
         try {
-            response = await Delete.vsam(REAL_SESSION, dsname);
+            await Delete.vsam(REAL_SESSION, dsname);
         } catch (error) {
             Imperative.console.info("Error: " + inspect(error));
         }
     });
 
     afterEach(async () => {
-        let response;
         try {
-            response = await Delete.vsam(REAL_SESSION, dsname);
+            await Delete.vsam(REAL_SESSION, dsname);
         } catch (error) {
             Imperative.console.info("Error: " + inspect(error));
         }
@@ -540,9 +536,8 @@ describe("Create z/OS file system", () => {
     });
 
     beforeEach(async () => {
-        let response;
         try {
-            response = await Delete.zfs(REAL_SESSION, fsname);
+            await Delete.zfs(REAL_SESSION, fsname);
             await waitFiveSeconds();
         } catch (error) {
             Imperative.console.info("Error: " + inspect(error));
@@ -550,9 +545,8 @@ describe("Create z/OS file system", () => {
     });
 
     afterEach(async () => {
-        let response;
         try {
-            response = await Delete.zfs(REAL_SESSION, fsname);
+            await Delete.zfs(REAL_SESSION, fsname);
             await waitFiveSeconds();
         } catch (error) {
             Imperative.console.info("Error: " + inspect(error));
@@ -700,24 +694,20 @@ describe("Create uss file", () => {
     });
 
     beforeEach(async () => {
-        let response;
         try {
-            response = await Delete.ussFile(REAL_SESSION, filename);
+            await Delete.ussFile(REAL_SESSION, filename);
         } catch (error) {
             Imperative.console.info("Error: " + inspect(error));
         }
     });
 
     afterEach(async () => {
-        let response;
         try {
-            response = await Delete.ussFile(REAL_SESSION, filename);
+            await Delete.ussFile(REAL_SESSION, filename);
         } catch (error) {
             Imperative.console.info("Error: " + inspect(error));
         }
     });
-
-    const options: ICreateDataSetOptions = {} as any;
 
     it("should create a uss file", async () => {
         let error;
@@ -845,8 +835,6 @@ describe("Create uss directory", () => {
             Imperative.console.info("Error: " + inspect(error));
         }
     });
-
-    const options: ICreateDataSetOptions = {} as any;
 
     it("should create a uss directory", async () => {
         let error;

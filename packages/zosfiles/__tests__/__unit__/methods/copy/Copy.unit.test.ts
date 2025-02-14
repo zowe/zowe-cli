@@ -733,7 +733,6 @@ describe("Copy", () => {
         };
 
         it("should detect PDS datasets correctly during copy", async () => {
-            let caughtError;
             let response;
             listDatasetSpy.mockImplementation(async (): Promise<any>  => {
                 return {
@@ -746,7 +745,7 @@ describe("Copy", () => {
                 response = await Copy.isPDS(dummySession, dsPO.dsname);
             }
             catch(e) {
-                caughtError = e;
+                // Do nothing
             }
             expect(response).toEqual(true);
             expect(listDatasetSpy).toHaveBeenCalledWith(dummySession, dsPO.dsname, { attributes: true });
@@ -754,7 +753,6 @@ describe("Copy", () => {
 
         it("should return false if the data set is not partitioned", async () => {
             let response;
-            let caughtError;
             listDatasetSpy.mockImplementation(async (): Promise<any>  => {
                 return {
                     apiResponse: {
@@ -766,13 +764,12 @@ describe("Copy", () => {
                 response = await Copy.isPDS(dummySession, dsPS.dsname);
             }
             catch(e) {
-                caughtError = e;
+                // Do nothing
             }
             expect(response).toEqual(false);
             expect(listDatasetSpy).toHaveBeenCalledWith(dummySession, dsPS.dsname, { attributes: true });
         });
         it("should return true if the data set exists", async () => {
-            let caughtError;
             let response;
             listDatasetSpy.mockImplementation(async (): Promise<any>  => {
                 return {
@@ -786,14 +783,13 @@ describe("Copy", () => {
                 response = await (Copy as any).dataSetExists(dummySession, dsPO.dsname);
             }
             catch(e) {
-                caughtError = e;
+                // Do nothing
             }
             expect(response).toEqual(true);
             expect(listDatasetSpy).toHaveBeenCalledWith(dummySession, dsPO.dsname, {start: dsPO.dsname});
         });
 
         it("should return false if the data set does not exist", async () => {
-            let caughtError;
             let response;
             listDatasetSpy.mockImplementation(async (): Promise<any>  => {
                 return {
@@ -807,13 +803,12 @@ describe("Copy", () => {
                 response = await (Copy as any).dataSetExists(dummySession, dsPO.dsname);
             }
             catch(e) {
-                caughtError = e;
+                // Do nothing
             }
             expect(response).toEqual(false);
             expect(listDatasetSpy).toHaveBeenCalledWith(dummySession, dsPO.dsname, {start: dsPO.dsname});
         });
         it("should successfully copy members from source to target PDS", async () => {
-            let caughtError;
             let response;
             const sourceResponse = {
                 apiResponse: {
@@ -837,7 +832,7 @@ describe("Copy", () => {
                 response = await Copy.copyPDS(dummySession, fromDataSetName, toDataSetName);
             }
             catch(e) {
-                caughtError = e;
+                // Do nothing
             }
             expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, fromDataSetName);
             expect(downloadAllMembersSpy).toHaveBeenCalledWith(dummySession, fromDataSetName, expect.any(Object));
@@ -968,7 +963,6 @@ describe("Copy", () => {
             describe("Member > Member", () => {
                 it("should send a request", async () => {
                     let response;
-                    let caughtError;
 
                     listDatasetSpy.mockImplementation(async (): Promise<any>  => {
                         return {
@@ -994,7 +988,7 @@ describe("Copy", () => {
                             dummySession
                         );
                     } catch (e) {
-                        caughtError = e;
+                        // Do nothing
                     }
 
                     expect(response).toEqual({
@@ -1091,7 +1085,6 @@ describe("Copy", () => {
 
                 describe("Sequential > Member", () => {
                     it("should send a request", async () => {
-                        let caughtError;
 
                         listDatasetSpy.mockReturnValueOnce({
                             apiResponse: {
@@ -1135,7 +1128,6 @@ describe("Copy", () => {
                 describe("Member > Sequential", () => {
                     it("should send a request", async () => {
                         let response;
-                        let caughtError;
 
                         listDatasetSpy.mockReturnValueOnce({
                             apiResponse: {
@@ -1158,7 +1150,7 @@ describe("Copy", () => {
                                 dummySession
                             );
                         } catch (e) {
-                            caughtError = e;
+                            // Do nothing
                         }
 
                         expect(response).toEqual({
@@ -1214,7 +1206,6 @@ describe("Copy", () => {
                 describe("Sequential > Member - create target", () => {
                     it("should send a request", async () => {
                         let response;
-                        let caughtError;
 
                         listDatasetSpy.mockReturnValueOnce({
                             apiResponse: {
@@ -1236,7 +1227,7 @@ describe("Copy", () => {
                                 dummySession
                             );
                         } catch (e) {
-                            caughtError = e;
+                            // Do nothing
                         }
 
                         expect(response).toEqual({
@@ -1252,7 +1243,6 @@ describe("Copy", () => {
                 describe("Member > Sequential - create target", () => {
                     it("should send a request", async () => {
                         let response;
-                        let caughtError;
 
                         listDatasetSpy.mockReturnValueOnce({
                             apiResponse: {
@@ -1273,7 +1263,7 @@ describe("Copy", () => {
                                 dummySession
                             );
                         } catch (e) {
-                            caughtError = e;
+                            // Do nothing
                         }
 
                         expect(response).toEqual({

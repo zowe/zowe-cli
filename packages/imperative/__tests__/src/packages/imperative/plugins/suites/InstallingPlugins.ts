@@ -107,12 +107,6 @@ describe("Installing Plugins", () => {
         T.executeTestCLICommand(cliBin, context, cmd.split(" "));
 
     /**
-     * The registry from the user's environment, which is used when an explicit registry is not supplied.
-     * @type {string}
-     */
-    let envNpmRegistry: string = "";
-
-    /**
      * Specifies whether warnings about missing peer dependencies should be
      * expected in stderr output of `npm install`. This defaults to true and is
      * set to false if version 7 or newer of NPM is detected.
@@ -196,7 +190,7 @@ describe("Installing Plugins", () => {
     };
 
     beforeAll(() => {
-        envNpmRegistry = execSync("npm config get registry").toString().trim();
+        execSync("npm config get registry").toString().trim();
         peerDepWarning = parseInt(execSync("npm --version").toString().trim().split(".")[0], 10) < 7;
     });
 
@@ -527,7 +521,7 @@ describe("Installing Plugins", () => {
         });
 
         it("should fail to install a plugin from a file location with a command in it 2", async function(){
-            const result = T.runCliScript(join(__dirname, "__scripts__", "injectionTestInstall2.sh"), TEST_ENVIRONMENT.workingDir, [cliBin], {
+            T.runCliScript(join(__dirname, "__scripts__", "injectionTestInstall2.sh"), TEST_ENVIRONMENT.workingDir, [cliBin], {
                 PLUGINS_TEST_CLI_HOME: join(TEST_ENVIRONMENT.workingDir, '";touch test.txt;"')
             });
             delete process.env.PLUGINS_TEST_CLI_HOME;
@@ -535,7 +529,7 @@ describe("Installing Plugins", () => {
         });
 
         it("should fail to install a plugin from a file location with a command in it 3", async function(){
-            const result = T.runCliScript(join(__dirname, "__scripts__", "injectionTestInstall2.sh"), TEST_ENVIRONMENT.workingDir, [cliBin], {
+            T.runCliScript(join(__dirname, "__scripts__", "injectionTestInstall2.sh"), TEST_ENVIRONMENT.workingDir, [cliBin], {
                 PLUGINS_TEST_CLI_HOME: TEST_ENVIRONMENT.workingDir,
                 PLUGINS_TEST_CLI_PLUGINS_DIR: join(TEST_ENVIRONMENT.workingDir, '";touch test.txt;"')
             });
@@ -673,8 +667,6 @@ describe("Installing Plugins", () => {
         });
 
         it("should merge a plugins.json provided with one that is already managed", function () {
-
-            const initialVersion = "1.0.2";
 
             let result = executeCommandString(this, "--help");
 
