@@ -24,7 +24,7 @@ import * as path from "path";
 import { IZosFilesOptions } from "../../doc/IZosFilesOptions";
 import { List } from "../list";
 import { IZosmfListResponse } from "../list/doc/IZosmfListResponse";
-import { ZosFilesHeaders } from "../../utils/ZosFilesHeaders";
+import { ZosFilesContext, ZosFilesHeaders } from "../../utils/ZosFilesHeaders";
 
 // Do not use import in anticipation of some internationalization work to be done later.
 // const strings = (require("../../../../../packages/cli/zosfiles/src/-strings-/en").default as typeof i18nTypings);
@@ -434,7 +434,7 @@ export class Create {
         ussPath = ussPath.charAt(0) === "/" ? ussPath.substring(1) : ussPath;
         ussPath = encodeURIComponent(ussPath);
         const parameters: string = `${ZosFilesConstants.RESOURCE}${ZosFilesConstants.RES_USS_FILES}/${ussPath}`;
-        const reqHeaders = ZosFilesHeaders.generateHeaders({ options, context: "uss" })
+        const reqHeaders = ZosFilesHeaders.generateHeaders({ options, context: ZosFilesContext.USS });
 
         let payload: object = { type };
         if (mode) {
@@ -492,7 +492,7 @@ export class Create {
 
         // Use the original options copy for header generation.
         const headerOptions = JSON.parse(JSON.stringify(originalOptions));
-        const reqHeaders = ZosFilesHeaders.generateHeaders({ options: headerOptions, context: "zfs", dataLength: jsonContent.length });
+        const reqHeaders = ZosFilesHeaders.generateHeaders({ options: headerOptions, context: ZosFilesContext.ZFS, dataLength: jsonContent.length });
 
         const data = await ZosmfRestClient.postExpectString(session, endpoint, reqHeaders, jsonContent);
 

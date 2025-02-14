@@ -24,7 +24,7 @@ import { IDeleteVsamOptions } from "./doc/IDeleteVsamOptions";
 import { IDeleteVsamResponse } from "./doc/IDeleteVsamResponse";
 import { ZosFilesUtils } from "../../utils/ZosFilesUtils";
 import { IZosFilesOptions } from "../../doc/IZosFilesOptions";
-import { ZosFilesHeaders } from "../../utils/ZosFilesHeaders";
+import { ZosFilesContext, ZosFilesHeaders } from "../../utils/ZosFilesHeaders";
 
 /**
  * This class holds helper functions that are used to delete files through the
@@ -152,7 +152,7 @@ export class Delete {
         endpoint = posix.join(endpoint, fileName);
         Logger.getAppLogger().debug(`Endpoint: ${endpoint}`);
 
-        const reqHeaders = ZosFilesHeaders.generateHeaders({ options, context: "uss" })
+        const reqHeaders = ZosFilesHeaders.generateHeaders({ options, context: ZosFilesContext.USS });
         // TO DO: make recursive an option on IDeleteOptions
         if (recursive && recursive === true) {
             reqHeaders.push({"X-IBM-Option": "recursive"});
@@ -189,7 +189,7 @@ export class Delete {
 
         // Format the endpoint to send the request to
         const endpoint = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_ZFS_FILES + "/" + encodeURIComponent(fileSystemName);
-        const reqHeaders = ZosFilesHeaders.generateHeaders({ options, context: "zfs" })
+        const reqHeaders = ZosFilesHeaders.generateHeaders({ options, context: ZosFilesContext.ZFS })
         const data = await ZosmfRestClient.deleteExpectString(session, endpoint, reqHeaders);
 
         return {

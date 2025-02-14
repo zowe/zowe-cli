@@ -28,7 +28,7 @@ import { IDownloadDsmResult } from "./doc/IDownloadDsmResult";
 import { IDownloadUssDirResult } from "./doc/IDownloadUssDirResult";
 import { IUSSListOptions } from "../list";
 import { TransferMode } from "../../utils/ZosFilesAttributes";
-import { ZosFilesHeaders } from "../../utils/ZosFilesHeaders";
+import { ZosFilesContext, ZosFilesHeaders } from "../../utils/ZosFilesHeaders";
 
 type IZosmfListResponseWithStatus = IZosmfListResponse & { error?: Error; status?: string };
 
@@ -97,7 +97,7 @@ export class Download {
 
             Logger.getAppLogger().debug(`Endpoint: ${endpoint}`);
 
-            const reqHeaders = ZosFilesHeaders.generateHeaders({options, context: "stream"});
+            const reqHeaders = ZosFilesHeaders.generateHeaders({ options, context: ZosFilesContext.STREAM });
 
             // Get contents of the data set
             let extension = ZosFilesUtils.DEFAULT_FILE_EXTENSION;
@@ -531,7 +531,7 @@ export class Download {
             ussFileName = ZosFilesUtils.sanitizeUssPathForRestCall(ussFileName);
             const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, ussFileName);
 
-            const reqHeaders = ZosFilesHeaders.generateHeaders({options, context: "stream"});
+            const reqHeaders = ZosFilesHeaders.generateHeaders({ options, context: ZosFilesContext.STREAM });
 
             // Use specific options to mimic ZosmfRestClient.getStreamed()
             const requestOptions: IOptionsFullResponse = {

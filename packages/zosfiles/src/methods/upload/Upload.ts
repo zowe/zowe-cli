@@ -31,7 +31,7 @@ import { Readable } from "stream";
 import { CLIENT_PROPERTY } from "../../doc/types/ZosmfRestClientProperties";
 import { TransferMode } from "../../utils/ZosFilesAttributes";
 import { inspect } from "util";
-import { ZosFilesHeaders } from "../../utils/ZosFilesHeaders";
+import { ZosFilesContext, ZosFilesHeaders } from "../../utils/ZosFilesHeaders";
 
 export class Upload {
 
@@ -165,7 +165,7 @@ export class Upload {
         endpoint = path.posix.join(endpoint, encodeURIComponent(dataSetName));
 
         // Construct request header parameters
-        const reqHeaders: IHeaderContent[] = ZosFilesHeaders.generateHeaders({options, context:"buffer"});
+        const reqHeaders: IHeaderContent[] = ZosFilesHeaders.generateHeaders({ options, context: ZosFilesContext.BUFFER });
 
         if (!options.binary) {
             fileBuffer = ZosFilesUtils.normalizeNewline(fileBuffer);
@@ -235,7 +235,7 @@ export class Upload {
         endpoint = path.posix.join(endpoint, encodeURIComponent(dataSetName));
 
         // Construct request header parameters
-        const reqHeaders: IHeaderContent[] = ZosFilesHeaders.generateHeaders({options, context: "stream"});
+        const reqHeaders: IHeaderContent[] = ZosFilesHeaders.generateHeaders({ options, context: ZosFilesContext.STREAM });
 
         const requestOptions: IOptionsFullResponse = {
             resource: endpoint,
@@ -476,7 +476,7 @@ export class Upload {
         ussname = ZosFilesUtils.sanitizeUssPathForRestCall(ussname);
 
         const endpoint = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + ussname;
-        const reqHeaders: IHeaderContent[] = ZosFilesHeaders.generateHeaders({options, context: "buffer"});
+        const reqHeaders: IHeaderContent[] = ZosFilesHeaders.generateHeaders({ options, context: ZosFilesContext.BUFFER });
 
         if (!options.binary) {
             fileBuffer = ZosFilesUtils.normalizeNewline(fileBuffer);
@@ -544,7 +544,7 @@ export class Upload {
         ussname = ZosFilesUtils.sanitizeUssPathForRestCall(ussname);
         const parameters: string = ZosFilesConstants.RES_USS_FILES + "/" + ussname;
 
-        const reqHeaders: IHeaderContent[] = ZosFilesHeaders.generateHeaders({options, context: "stream"});
+        const reqHeaders: IHeaderContent[] = ZosFilesHeaders.generateHeaders({ options, context: ZosFilesContext.STREAM });
 
         // Options to use the stream to write a file
         const restOptions: IOptionsFullResponse = {
