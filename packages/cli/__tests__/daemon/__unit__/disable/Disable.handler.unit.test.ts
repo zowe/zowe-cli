@@ -46,11 +46,11 @@ describe("Disable daemon handler", () => {
             },
             response: {
                 data: {
-                    setMessage: jest.fn((setMsgArgs) => {
-                        apiMessage = setMsgArgs;
+                    setMessage: jest.fn((_setMsgArgs) => {
+                        // Do nothing
                     }),
-                    setObj: jest.fn((setObjArgs) => {
-                        jsonObj = setObjArgs;
+                    setObj: jest.fn((_setObjArgs) => {
+                        // Do nothing
                     }),
                     setExitCode: jest.fn((exitCode) => {
                         return exitCode;
