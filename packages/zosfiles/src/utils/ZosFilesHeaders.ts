@@ -15,7 +15,7 @@ import { ZosmfHeaders } from "@zowe/core-for-zowe-sdk";
 /**
  * Enumeration of operation contexts (USS,ZFS or Dataset-related) used when generating content-type headers.
  *
- * - **Stream** or **Buffer**: Used when uploading a USS file.
+ * - **Stream** or **Buffer**: Used when uploading/downloading USS files.
  * - **Uss**: Forces JSON content type for USS operations.
  * - **Zfs**: Use for ZFS operations; no default content-type header is added.
  * - **Undefined**: When no context is provided, the default is to treat the operation as a Dataset creation.
@@ -160,7 +160,7 @@ export class ZosFilesHeaders {
             return {headers, updatedOptions};
         }
 
-        // Add headers based on context: USS, ZFS or ZOS headers
+        // Add headers based on context: Upload/download, USS, ZFS or DS headers
         switch (context) {
             case ZosFilesContext.STREAM:
             case ZosFilesContext.BUFFER:
