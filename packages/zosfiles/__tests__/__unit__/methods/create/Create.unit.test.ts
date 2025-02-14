@@ -127,25 +127,19 @@ describe("Create", () => {
                 }
             });
 
-            it("explicit testing of dsntype", async () => {
-                let success: boolean = false;
-                const dsntypes = ["BASIC", "EXTPREF", "EXTREQ", "HFS", "LARGE", "PDS", "LIBRARY", "PIPE"];
-                for (const type of dsntypes) {
-                    dsOptions.dsntype = type;
-                    try {
-                        await Create.dataSetValidateOptions(dsOptions);
-                    } catch (err) {
-                        expect(success).toBe(true);
-                    }
-                }
+        it("explicit testing of dsntype", async () => {
+            let success: boolean = true;
+            const dsntypes = ["BASIC", "EXTPREF", "EXTREQ", "HFS", "LARGE", "PDS", "LIBRARY", "PIPE"];
+            for (const type of dsntypes) {
+                dsOptions.dsntype = type;
                 try {
-                    dsOptions.dsntype = "PDSE";
                     await Create.dataSetValidateOptions(dsOptions);
                 } catch (err) {
-                    success = true;
+                    success = false;
                 }
-                expect(success).toBe(true);
-            });
+            }
+            expect(success).toBe(true);
+        });
 
             it("should be able to create a sequential data set (PS)", async () => {
 
@@ -292,6 +286,58 @@ describe("Create", () => {
                     })
                 );
             });
+            expect(response.success).toBe(true);
+            expect(response.commandResponse).toContain("created successfully");
+            expect(mySpy).toHaveBeenCalledWith(
+                dummySession,
+                endpoint,
+                [ZosmfHeaders.ACCEPT_ENCODING],
+                JSON.stringify({
+                    ...{
+                        alcunit: "CYL",
+                        dsorg: "PS",
+                        primary: 20,
+                        recfm: "FB",
+                        blksize: 6160,
+                        lrecl: 80,
+                        secondary: 10
+                    }
+                })
+            );
+        });
+
+        it("should be able to create a large sequential data set using PS-L", async () => {
+            const custOptions = {
+                dsorg: "PS-L",
+                alcunit: "CYL",
+                primary: 20,
+                secondary: 10,
+                recfm: "FB",
+                blksize: 6160,
+                lrecl: 80
+            };
+            const response = await Create.dataSet(dummySession, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dataSetName, custOptions);
+
+            expect(response.success).toBe(true);
+            expect(response.commandResponse).toContain("created successfully");
+            expect(mySpy).toHaveBeenCalledWith(
+                dummySession,
+                endpoint,
+                [ZosmfHeaders.ACCEPT_ENCODING],
+                JSON.stringify({
+                    ...{
+                        alcunit: "CYL",
+                        dsorg: "PS",
+                        primary: 20,
+                        recfm: "FB",
+                        blksize: 6160,
+                        lrecl: 80,
+                        secondary: 10,
+                        dsntype: "LARGE"
+                    }
+                })
+            );
+        });
 
             it("should be able to create a variable block sequential data set using a block size that is too small", async () => {
                 const custOptions = {
@@ -1075,8 +1121,21 @@ describe("Create", () => {
 
                 Create.dataSetValidateOptions(testOptions);
 
-                expect(testOptions.secondary).toEqual(0);  // Should be changed during create validation to zOSMF default of 0
-            });
+            expect(testOptions.secondary).toEqual(0);  // Should be changed during create validation to zOSMF default of 0
+        });
+
+        it("should fail when dsntype specified with invalid value", async () => {
+            let error;
+            try {
+
+                const testOptions: any = {dsntype: "NOTLIBRARY"};
+                Create.dataSetValidateOptions(testOptions);
+            } catch (err) {
+                error = err.message;
+            }
+
+            expect(error).toContain(`Invalid zos-files create command 'dsntype' option`);
+        });
 
             it("recfm should not default to anything if not specified", async () => {
                 const testOptions: any = {
@@ -1101,21 +1160,8 @@ describe("Create", () => {
                     error = err.message;
                 }
 
-                expect(error).toContain(`Invalid zos-files create command 'alcunit' option`);
-            });
-
-            it("should fail when dsntype specified with invalid value", async () => {
-                let error;
-                try {
-
-                    const testOptions: any = {dsntype: "NOTLIBRARY"};
-                    Create.dataSetValidateOptions(testOptions);
-                } catch (err) {
-                    error = err.message;
-                }
-
-                expect(error).toContain(`Invalid zos-files create command 'dsntype' option`);
-            });
+            expect(error).toContain(`Invalid zos-files create command 'alcunit' option`);
+        });
 
             it("should fail when lrecl not specified", async () => {
                 let error;

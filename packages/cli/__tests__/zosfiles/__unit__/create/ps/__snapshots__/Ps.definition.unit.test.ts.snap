@@ -30,6 +30,15 @@ Array [
   },
   Object {
     "aliases": Array [
+      "dst",
+      "dsntype",
+    ],
+    "description": "The data set type (BASIC, EXTPREF, EXTREQ, HFS, LARGE, PDS, LIBRARY, PIPE)",
+    "name": "data-set-type",
+    "type": "string",
+  },
+  Object {
+    "aliases": Array [
       "dt",
       "unit",
     ],
@@ -124,6 +133,10 @@ Array [
   Object {
     "description": "Create an empty physical sequential data set with default parameters",
     "options": "NEW.PS.DATASET",
+  },
+  Object {
+    "description": "Create a LARGE format sequential data set with default parameters",
+    "options": "--data-set-type \`LARGE\`",
   },
 ]
 `;

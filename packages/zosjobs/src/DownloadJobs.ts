@@ -143,9 +143,30 @@ export class DownloadJobs {
             parameters += "?fileEncoding=" + parms.encoding;
         }
 
+        const headers = [Headers.TEXT_PLAIN_UTF8];
+
+        // Handle record range
+        if (parms.recordRange) {
+            const recordRangeMatch = parms.recordRange.match(/^(\d+)-(\d+)$/); // Match multi-digit numbers
+            if (recordRangeMatch) {
+                const start = parseInt(recordRangeMatch[1], 10);
+                const end = parseInt(recordRangeMatch[2], 10);
+
+                if (start >= 0 && end > start) {
+                    if (parms.recordRange) {
+                        headers.push({ "X-IBM-Record-Range": `${start}-${end}` });
+                    }
+                } else {
+                    throw new Error(`Invalid record range specified: ${parms.recordRange}. Ensure the format is x-y with x < y.`);
+                }
+            } else {
+                throw new Error(`Invalid record range format: ${parms.recordRange}. Expected format is x-y.`);
+            }
+        }
+
         const writeStream = parms.stream ?? IO.createWriteStream(file);
         const normalizeResponseNewLines = !(parms.binary || parms.record);
-        await ZosmfRestClient.getStreamed(session, JobsConstants.RESOURCE + parameters, [Headers.TEXT_PLAIN_UTF8], writeStream,
+        await ZosmfRestClient.getStreamed(session, JobsConstants.RESOURCE + parameters, headers, writeStream,
             normalizeResponseNewLines);
     }
 
