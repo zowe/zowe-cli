@@ -13,30 +13,27 @@ import { IHeaderContent } from "@zowe/imperative";
 import { ZosmfHeaders } from "@zowe/core-for-zowe-sdk";
 
 /**
- * Utility class for generating headers for ZosFiles requests.
- * Provides methods to dynamically generate headers based on upload/download options.
+ * Utility class for generating REST request headers for ZosFiles operations.
+ *
+ * This class centralizes header creation logic across all SDK methods. It uses a header map
+ * to associate specific option keys with header generation functions. To add a new global header,
+ * simply add a new entry to the header map in the `initializeHeaderMap()` method.
  */
 export class ZosFilesHeaders {
 
-    // CLASS VARIABLES & INIT //
+   // INITIALIZATION //
 
-    /**
-     * Map to store header generation functions for specific options.
-     */
+   /**
+   * Initializes the header map with predefined header generation functions.
+   * To extend header generation, add new keys and functions here.
+   */
     private static headerMap = new Map<string, <T>(options: T, context?: string) => IHeaderContent | IHeaderContent[]>();
-
-    /**
-     * Initializes the header map with predefined header generation functions.
-     */
     static initializeHeaderMap() {
         this.headerMap.set("from-dataset", (context?) => {
-            if (context === "zfs") {
-                return {}; // Instead of null, return an empty object
-            } else {
-                return ZosmfHeaders.APPLICATION_JSON;
-            }
+            // For dataset operations, use APPLICATION_JSON unless context is "zfs"
+            return context === "zfs" ? {} : ZosmfHeaders.APPLICATION_JSON;
         });
-        this.headerMap.set("binary", () => ZosmfHeaders.X_IBM_BINARY);
+        this.headerMap.set("binary",  (options) => this.generateBinaryHeaders((options as any).binary));
         this.headerMap.set("responseTimeout", (options) => this.createHeader(ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT, (options as any).responseTimeout));
         this.headerMap.set("recall", (options) => this.getRecallHeader(((options as any).recall || "").toString()));
         this.headerMap.set("etag", (options) => this.createHeader("If-Match", (options as any).etag));
@@ -49,23 +46,46 @@ export class ZosFilesHeaders {
         this.headerMap.set("localEncoding", (options) =>
             this.createHeader("Content-Type", (options as any).localEncoding || ZosmfHeaders.TEXT_PLAIN)
         );
+        this.headerMap.set("range", (options) => this.createHeader(ZosmfHeaders.X_IBM_RECORD_RANGE, (options as any).range));
     }
 
-    /**
-     * Static initialization block to ensure header map is populated.
-     */
     static {
         this.initializeHeaderMap();
     }
 
-    // HELPER METHODS //
+  // HELPER FUNCTIONS FOR MODE-SPECIFIC HEADER GENERATION //
 
+   /**
+   * Returns a header for remote text encoding if an encoding is provided.
+   * @param encoding - The remote encoding string.
+   * @returns A header object or null.
+   */
     private static getEncodingHeader(encoding: string): IHeaderContent {
         if (encoding) {
-            return { "X-IBM-Data-Type": `text;fileEncoding=${encoding}` }; // Fix duplicate "text"
+            return { "X-IBM-Data-Type": `text;fileEncoding=${encoding}` };
         }
         return null; // Ensure a valid return type
     }
+
+    /**
+     * Generates headers for binary mode.
+     *
+     * Returns:
+     *  - Content-Type: "application/octet-stream"
+     *  - X-IBM-Data-Type: "binary"
+     *
+     * This function removes the `binary` property from the options.
+     * @param updatedOptions - The options object (by reference).
+     * @returns An array of header objects.
+     */
+    private static generateBinaryHeaders(updatedOptions: any): IHeaderContent[] {
+        const headers: IHeaderContent[] = [];
+        headers.push({ "Content-Type": "application/octet-stream" });
+        headers.push({ "X-IBM-Data-Type": "binary" });
+        delete updatedOptions["binary"];
+        return headers;
+    }
+
 
     /**
      * Adds headers related to binary, record, encoding, and localEncoding based on the context.
@@ -76,18 +96,23 @@ export class ZosFilesHeaders {
      *  ie: "buffer","stream", "uss", "zfs"
      * @return {IHeaderContent[]} - An array of IHeaderContent representing the headers.
      */
-    private static addContextHeaders<T>(options: T, context?: string): {headers: IHeaderContent[], updatedOptions: T} {
+    private static addContextHeaders<T>(options: T, context?: string, dataLength?: number | string): {headers: IHeaderContent[], updatedOptions: T} {
         const headers: IHeaderContent[] = [];
         const updatedOptions: any = { ...options || {} };
+
+        if (dataLength !== undefined) {
+            //if content length, most likely application/json as well
+            this.addHeader(headers, "Content-Length", String(dataLength));
+            this.addHeader(headers, "Content-Type", "application/json");
+            return {headers, updatedOptions};
+        }
 
         switch (context) {
             case "stream":
             case "buffer":
                 if (updatedOptions.binary) {
                     if (updatedOptions.binary === true) {
-                        headers.push(ZosmfHeaders.OCTET_STREAM);
-                        headers.push(ZosmfHeaders.X_IBM_BINARY);
-                        delete updatedOptions["binary"];
+                        this.generateBinaryHeaders(updatedOptions);
                     }
                 } else if (updatedOptions.record) {
                     if (updatedOptions.record === true) {
@@ -124,16 +149,10 @@ export class ZosFilesHeaders {
                 // For ZFS operations, do not add any content-type header.
                 break;
             default: {
-                // For data set creation, if the options include dsntype LIBRARY, do not add a default content header.
+                // Add text X-IBM-Data-Type if no content header is present
+                    // only if options don't include dsntype LIBRARY
                 if (!(updatedOptions.dsntype && updatedOptions.dsntype.toUpperCase() === "LIBRARY")) {
-                    const contentTypeHeaders = [
-                        ...Object.keys(ZosmfHeaders.X_IBM_BINARY),
-                        ...Object.keys(ZosmfHeaders.X_IBM_RECORD),
-                        ...Object.keys(ZosmfHeaders.X_IBM_TEXT)
-                    ];
-                    if (!headers.find((x) => contentTypeHeaders.includes(Object.keys(x)[0]))) {
-                        headers.push(ZosmfHeaders.X_IBM_TEXT);
-                    }
+                    this.addHeader(headers, "X-IBM-Data-Type", "text", true);
                 }
             }
         }
@@ -148,10 +167,11 @@ export class ZosFilesHeaders {
      * @param key - Header key.
      * @param value - Header value.
      */
-    private static addHeader(headers: IHeaderContent[], key: string, value: any): void {
+    private static addHeader(headers: IHeaderContent[], key: string, value: any, search?: boolean): void {
         // Overwrite if the key already exists, or push a new key-value pair if it doesn't
+        // if search is true, only add headers if not found, don't overwrite
         const reqKeys = headers.flatMap(headerObj => Object.keys(headerObj));
-        if (reqKeys.includes(key)){
+        if (reqKeys.includes(key) && !search) {
             headers[key as any] = value;
         }else {
             headers.push({ [key]: value });
@@ -203,7 +223,7 @@ export class ZosFilesHeaders {
         context,
         dataLength,
     }: { options: T; context?: string; dataLength?: number | string }): IHeaderContent[] {
-        const { headers: reqHeaders, updatedOptions } = this.addContextHeaders(options, context);
+        const { headers: reqHeaders, updatedOptions } = this.addContextHeaders(options, context, dataLength);
 
         this.addHeader(reqHeaders, "Accept-Encoding", "gzip");
 
@@ -215,12 +235,6 @@ export class ZosFilesHeaders {
                     this.addHeader(reqHeaders, Object.keys(result)[0], Object.values(result)[0]);
                 }
             });
-
-        if (dataLength !== undefined) {
-            this.addHeader(reqHeaders, "Content-Length", String(dataLength));
-        }
-
-// add default content type if no content type or xibm type
 
         return reqHeaders;
     }

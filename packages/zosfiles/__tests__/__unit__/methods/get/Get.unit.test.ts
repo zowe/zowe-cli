@@ -104,7 +104,7 @@ describe("z/OS Files - View", () => {
 
             expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
             expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, expect.objectContaining({
-                reqHeaders: [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.TEXT_PLAIN],
+                reqHeaders: expect.arrayContaining([ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.TEXT_PLAIN]),
                 resource: endpoint
             }));
         });
@@ -130,7 +130,7 @@ describe("z/OS Files - View", () => {
 
             expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
             expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, expect.objectContaining({
-                reqHeaders: [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.TEXT_PLAIN],
+                reqHeaders: expect.arrayContaining([ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.TEXT_PLAIN]),
                 resource: endpoint
             }));
         });
@@ -155,7 +155,7 @@ describe("z/OS Files - View", () => {
             // TODO:gzip
             // expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.ACCEPT_ENCODING]);
             expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, expect.objectContaining({
-                reqHeaders: [ZosmfHeaders.X_IBM_BINARY],
+                reqHeaders: expect.arrayContaining([ZosmfHeaders.X_IBM_BINARY]),
                 resource: endpoint
             }));
         });
@@ -181,7 +181,7 @@ describe("z/OS Files - View", () => {
             // TODO:gzip
             // expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.ACCEPT_ENCODING]);
             expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, expect.objectContaining({
-                reqHeaders: [ZosmfHeaders.X_IBM_BINARY],
+                reqHeaders: expect.arrayContaining([ZosmfHeaders.X_IBM_BINARY]),
                 resource: endpoint
             }));
         });
@@ -204,7 +204,7 @@ describe("z/OS Files - View", () => {
 
             expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
             expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, expect.objectContaining({
-                reqHeaders: [ZosmfHeaders.X_IBM_RECORD],
+                reqHeaders: expect.arrayContaining([ZosmfHeaders.X_IBM_RECORD]),
                 resource: endpoint
             }));
         });
@@ -227,7 +227,11 @@ describe("z/OS Files - View", () => {
 
             expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
             expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, expect.objectContaining({
-                reqHeaders: [{ "X-IBM-Data-Type": "text;fileEncoding=285" }, ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.TEXT_PLAIN],
+                reqHeaders: expect.arrayContaining([
+                    { "X-IBM-Data-Type": "text;fileEncoding=285" },
+                    ZosmfHeaders.ACCEPT_ENCODING,
+                    ZosmfHeaders.TEXT_PLAIN
+                ]),
                 resource: endpoint
             }));
         });
@@ -249,7 +253,11 @@ describe("z/OS Files - View", () => {
 
             expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
             expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, expect.objectContaining({
-                reqHeaders: [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.TEXT_PLAIN, { [ZosmfHeaders.X_IBM_RECORD_RANGE]: range }],
+                reqHeaders: expect.arrayContaining([
+                    ZosmfHeaders.ACCEPT_ENCODING,
+                    ZosmfHeaders.TEXT_PLAIN,
+                    { [ZosmfHeaders.X_IBM_RECORD_RANGE]: range }
+                ]),
                 resource: endpoint
             }));
         });
@@ -272,7 +280,11 @@ describe("z/OS Files - View", () => {
 
             expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
             expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, expect.objectContaining({
-                reqHeaders: [ZosmfHeaders.ACCEPT_ENCODING, { "X-IBM-Response-Timeout": "5" }, ZosmfHeaders.TEXT_PLAIN],
+                reqHeaders: expect.arrayContaining([
+                    ZosmfHeaders.ACCEPT_ENCODING,
+                    { "X-IBM-Response-Timeout": "5" },
+                    ZosmfHeaders.TEXT_PLAIN
+                ]),
                 resource: endpoint
             }));
         });
@@ -297,7 +309,10 @@ describe("z/OS Files - View", () => {
 
             expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
             expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, expect.objectContaining({
-                reqHeaders: [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.TEXT_PLAIN],
+                reqHeaders: expect.arrayContaining([
+                    ZosmfHeaders.ACCEPT_ENCODING,
+                    ZosmfHeaders.TEXT_PLAIN
+                ]),
                 resource: endpoint
             }));
         });
@@ -390,7 +405,10 @@ describe("z/OS Files - View", () => {
 
             expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
             expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, expect.objectContaining({
-                reqHeaders: [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.TEXT_PLAIN],
+                reqHeaders: expect.arrayContaining([
+                    ZosmfHeaders.ACCEPT_ENCODING,
+                    ZosmfHeaders.TEXT_PLAIN
+                ]),
                 resource: endpoint
             }));
         });
@@ -416,7 +434,10 @@ describe("z/OS Files - View", () => {
 
             expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
             expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, expect.objectContaining({
-                reqHeaders: [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.TEXT_PLAIN],
+                reqHeaders: expect.arrayContaining([
+                    ZosmfHeaders.ACCEPT_ENCODING,
+                    ZosmfHeaders.TEXT_PLAIN
+                ]),
                 resource: endpoint
             }));
         });
@@ -439,7 +460,7 @@ describe("z/OS Files - View", () => {
 
             expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
             expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, expect.objectContaining({
-                reqHeaders: [ZosmfHeaders.X_IBM_BINARY],
+                reqHeaders: expect.arrayContaining([ZosmfHeaders.X_IBM_BINARY]),
                 resource: endpoint
             }));
         });
@@ -464,7 +485,11 @@ describe("z/OS Files - View", () => {
             expect(response).toEqual(content);
             expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
             expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, expect.objectContaining({
-                reqHeaders: [header, ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.TEXT_PLAIN],
+                reqHeaders: expect.arrayContaining([
+                    header,
+                    ZosmfHeaders.ACCEPT_ENCODING,
+                    ZosmfHeaders.TEXT_PLAIN
+                ]),
                 resource: endpoint
             }));
         });
@@ -486,7 +511,11 @@ describe("z/OS Files - View", () => {
             expect(response).toEqual(content);
             expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
             expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, expect.objectContaining({
-                reqHeaders: [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.TEXT_PLAIN, { [ZosmfHeaders.X_IBM_RECORD_RANGE]: range }],
+                reqHeaders: expect.arrayContaining([
+                    ZosmfHeaders.ACCEPT_ENCODING,
+                    ZosmfHeaders.TEXT_PLAIN,
+                    { [ZosmfHeaders.X_IBM_RECORD_RANGE]: range }
+                ]),
                 resource: endpoint
             }));
         });

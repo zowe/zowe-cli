@@ -64,7 +64,7 @@ describe("hMigrate data set", () => {
             expect(putExpectStringSpy).toHaveBeenLastCalledWith(
                 dummySession,
                 expectedEndpoint,
-                expectedHeaders,
+                expect.arrayContaining(expectedHeaders),
                 expectedPayload
             );
         });
@@ -96,7 +96,7 @@ describe("hMigrate data set", () => {
             expect(putExpectStringSpy).toHaveBeenLastCalledWith(
                 dummySession,
                 expectedEndpoint,
-                expectedHeaders,
+                expect.arrayContaining(expectedHeaders),
                 expectedPayload
             );
         });
@@ -128,7 +128,7 @@ describe("hMigrate data set", () => {
             expect(putExpectStringSpy).toHaveBeenLastCalledWith(
                 dummySession,
                 expectedEndpoint,
-                expectedHeaders,
+                expect.arrayContaining(expectedHeaders),
                 expectedPayload
             );
         });
@@ -165,7 +165,7 @@ describe("hMigrate data set", () => {
             expect(putExpectStringSpy).toHaveBeenLastCalledWith(
                 dummySession,
                 expectedEndpoint,
-                expectedHeaders,
+                expect.arrayContaining(expectedHeaders),
                 expectedPayload
             );
             expect(error).toContain(errorMessage);

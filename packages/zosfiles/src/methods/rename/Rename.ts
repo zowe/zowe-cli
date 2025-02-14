@@ -9,16 +9,16 @@
 *
 */
 
-import { AbstractSession, ImperativeExpect, Logger, Headers, IHeaderContent } from "@zowe/imperative";
+import { AbstractSession, ImperativeExpect, Logger } from "@zowe/imperative";
 import { posix } from "path";
 
-import { ZosmfRestClient, ZosmfHeaders } from "@zowe/core-for-zowe-sdk";
+import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 import { IZosFilesResponse } from "../../doc/IZosFilesResponse";
 import { IDataSet } from "../../doc/IDataSet";
 import { IZosFilesOptions } from "../../doc/IZosFilesOptions";
-
+import { ZosFilesHeaders } from "../../utils/ZosFilesHeaders";
 /**
  * Class to handle renaming data sets
  */
@@ -101,15 +101,10 @@ export class Rename {
             }
         };
 
-        const reqHeaders: IHeaderContent[] = [
-            Headers.APPLICATION_JSON,
-            { [Headers.CONTENT_LENGTH]: JSON.stringify(payload).length.toString() },
-            ZosmfHeaders.ACCEPT_ENCODING
-        ];
-
-        if (options && options.responseTimeout != null) {
-            reqHeaders.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
-        }
+        const reqHeaders = ZosFilesHeaders.generateHeaders({
+            options,
+            dataLength: JSON.stringify(payload).length.toString()
+        })
 
         try {
             await ZosmfRestClient.putExpectString(session, endpoint, reqHeaders, payload);

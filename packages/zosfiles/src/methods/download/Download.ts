@@ -10,12 +10,10 @@
 */
 
 import { AbstractSession, ImperativeExpect, IO, Logger, TaskProgress, ImperativeError,
-    TextUtils, IHeaderContent, IOptionsFullResponse, IRestClientResponse } from "@zowe/imperative";
-
+    TextUtils, IOptionsFullResponse, IRestClientResponse } from "@zowe/imperative";
 import { posix, join, relative } from "path";
 import * as fs from "fs";
 import * as util from "util";
-
 import { ZosmfRestClient, asyncPool } from "@zowe/core-for-zowe-sdk";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
@@ -533,7 +531,7 @@ export class Download {
             ussFileName = ZosFilesUtils.sanitizeUssPathForRestCall(ussFileName);
             const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, ussFileName);
 
-            const reqHeaders: IHeaderContent[] = ZosFilesHeaders.generateHeaders({options, context: "download"});
+            const reqHeaders = ZosFilesHeaders.generateHeaders({options, context: "stream"});
 
             // Use specific options to mimic ZosmfRestClient.getStreamed()
             const requestOptions: IOptionsFullResponse = {

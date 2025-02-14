@@ -15,10 +15,12 @@ import { IO, Logger, IHeaderContent, AbstractSession, ImperativeExpect, Headers 
 import { ZosFilesConstants } from "../constants/ZosFiles.constants";
 import { ZosFilesMessages } from "../constants/ZosFiles.messages";
 import { IZosFilesResponse } from "../doc/IZosFilesResponse";
-import { ZosmfRestClient, ZosmfHeaders } from "@zowe/core-for-zowe-sdk";
+import { ZosmfHeaders, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { IDeleteOptions } from "../methods/hDelete";
 import { IOptions } from "../doc/IOptions";
 import { IDataSet } from "../doc/IDataSet";
+import { ZosFilesHeaders } from "./ZosFilesHeaders";
+
 interface ExtendedOptions extends IOptions {
     etag?: string;
     returnEtag?: boolean;
@@ -42,84 +44,6 @@ export class ZosFilesUtils {
 
     public static readonly MAX_MEMBER_LENGTH: number = 8;
 
-    // public static generateHeaders(options: Record<string, any>, payload?: any): IHeaderContent[] {
-    //     const headersMap: Record<string, string> = {
-    //         "Accept-Encoding": "gzip",
-    //     };
-
-    //     // Add Content-Length only if a payload exists
-    //     if (payload) {
-    //         headersMap["Content-Length"] = JSON.stringify(payload).length.toString();
-    //     }
-
-    //     // Process headers based on OPTION_DEFINITIONS
-    //     for (const [key, value] of Object.entries(options)) {
-    //         if (value == null) continue;
-
-    //         const mapping = this.OPTION_DEFINITIONS[key];
-    //         if (mapping) {
-    //             let transformedValue: string | undefined;
-
-    //             switch (mapping.transform) {
-    //                 case "boolean":
-    //                     transformedValue = value ? "true" : "false";
-    //                     break;
-    //                 case "number":
-    //                     transformedValue = value.toString();
-    //                     break;
-    //                 default:
-    //                     transformedValue = value;
-    //             }
-
-    //             if (transformedValue !== undefined) {
-    //                 headersMap[mapping.headerName] = transformedValue;
-    //             }
-    //         }
-    //     }
-
-    //     // Handle special cases (Data-Type, Content-Type, Recall, Volume)
-    //     if (options.binary) {
-    //         headersMap["X-IBM-Data-Type"] = "binary";
-    //         headersMap["Content-Type"] = "application/octet-stream";
-    //     } else if (options.record) {
-    //         headersMap["X-IBM-Data-Type"] = "record";
-    //         headersMap["Content-Type"] = "text/plain";
-    //     } else if (options.encoding) {
-    //         headersMap["X-IBM-Data-Type"] = `text;fileEncoding=${options.encoding}`;
-    //         headersMap["Content-Type"] = `text/plain;fileEncoding=${options.encoding}`;
-    //     } else if (!headersMap["Content-Type"]) {
-    //         headersMap["Content-Type"] = "application/json";
-    //     }
-
-    //     if (options.recall) {
-    //         switch (options.recall.toLowerCase()) {
-    //             case "wait":
-    //                 headersMap["X-IBM-Migrated-Recall-Wait"] = "true";
-    //                 break;
-    //             case "nowait":
-    //                 headersMap["X-IBM-Migrated-Recall-No-Wait"] = "true";
-    //                 break;
-    //             case "error":
-    //                 headersMap["X-IBM-Migrated-Recall-Error"] = "true";
-    //                 break;
-    //         }
-    //     }
-
-    //     if (options.volume) {
-    //         headersMap["X-IBM-Volume"] = options.volume;
-    //     }
-
-    //     if (options.returnEtag) {
-    //         headersMap["X-IBM-Return-Etag"] = "true";
-    //     }
-
-    //     if (options.responseTimeout != null) {
-    //         headersMap["X-IBM-Response-Timeout"] = options.responseTimeout.toString();
-    //     }
-
-    //     return Object.entries(headersMap).map(([header, value]) => ({ [header]: value }));
-    // }
-
     /**
      * Break up a dataset name of either:
      *  USER.WORK.JCL(TEMPLATE) to user/work/jcl/template
@@ -135,7 +59,6 @@ export class ZosFilesUtils {
         }
         return localDirectory;
     }
-
 
     /**
      * Get fullpath name from input path.
@@ -209,7 +132,7 @@ export class ZosFilesUtils {
 
      * @returns {IHeaderContent[]}
      * @memberof ZosFilesUtils
-     * @deprecated in favor of unified header creation in ZosFilesHeaders.generateHeaders
+     * @deprecated in favor of unified header creation across all SDK methods in ZosFilesHeaders.generateHeaders
      */
     public static generateHeadersBasedOnOptions<T extends ExtendedOptions>(
         options: T,
@@ -387,17 +310,10 @@ export class ZosFilesUtils {
                 payload.purge = options.purge;
             }
 
-            const headers: IHeaderContent[] = [
-                Headers.APPLICATION_JSON,
-                { "Content-Length": JSON.stringify(payload).length.toString() },
-                ZosmfHeaders.ACCEPT_ENCODING
-            ];
+            const reqHeaders = ZosFilesHeaders.generateHeaders({options, dataLength: JSON.stringify(payload).length});
 
-            if (options.responseTimeout != null) {
-                headers.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
-            }
 
-            await ZosmfRestClient.putExpectString(session, endpoint, headers, payload);
+            await ZosmfRestClient.putExpectString(session, endpoint, reqHeaders, payload);
 
             return {
                 success: true,
