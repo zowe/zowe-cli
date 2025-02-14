@@ -69,7 +69,7 @@ describe("Create Classic Data Set", () => {
             // use DELETE APIs
             if (dsnameSuffix !== "") {
                 await wait(waitTime); //wait 2 seconds
-                const response = await Delete.dataSet(REAL_SESSION, dsname + "." + dsnameSuffix);
+                await Delete.dataSet(REAL_SESSION, dsname + "." + dsnameSuffix);
             }
         });
 
@@ -105,7 +105,7 @@ describe("Create Classic Data Set", () => {
             // use DELETE APIs
             if (dsnameSuffix !== "") {
                 await wait(waitTime); //wait 2 seconds
-                const response = await Delete.dataSet(REAL_SESSION, dsname + "." + dsnameSuffix);
+                await Delete.dataSet(REAL_SESSION, dsname + "." + dsnameSuffix);
             }
         });
 

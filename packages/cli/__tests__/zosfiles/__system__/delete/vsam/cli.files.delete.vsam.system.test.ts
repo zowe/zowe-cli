@@ -9,14 +9,12 @@
 *
 */
 
-import { Session } from "@zowe/imperative";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/ITestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { getUniqueDatasetName, stripNewLines } from "../../../../../../../__tests__/__src__/TestUtils";
 import { runCliScript } from "@zowe/cli-test-utils";
 
-let REAL_SESSION: Session;
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
 let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment<ITestPropertiesSchema>;
@@ -35,7 +33,6 @@ describe("Delete VSAM Data Set", () => {
 
         systemProps = TEST_ENVIRONMENT.systemTestProperties;
 
-        REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
 
         user = systemProps.zosmf.user.toUpperCase();
         dsname = getUniqueDatasetName(`${user}.ZOSFILE.VSAM`);
@@ -49,15 +46,12 @@ describe("Delete VSAM Data Set", () => {
 
     describe("without profiles", () => {
 
-        let systemProperties: ITestPropertiesSchema;
 
         // Create the unique test environment
         beforeAll(async () => {
             TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
                 testName: "zos_files_delete_vsam_data_set_without_profile"
             });
-
-            systemProperties = TEST_ENVIRONMENT_NO_PROF.systemTestProperties;
         });
 
         afterAll(async () => {

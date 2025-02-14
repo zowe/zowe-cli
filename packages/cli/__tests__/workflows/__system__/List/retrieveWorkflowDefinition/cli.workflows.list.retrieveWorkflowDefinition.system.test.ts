@@ -22,9 +22,7 @@ let REAL_SESSION: Session;
 let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 let defaultSystem: ITestPropertiesSchema;
 let definitionFile: string;
-let system: string;
 let owner: string;
-let wfName: string;
 let uniqueFileName: string;
 const workflow = join(__dirname, "../../../../../../workflows/__tests__/__system__/testfiles/demo.xml");
 
@@ -35,9 +33,7 @@ describe("Retrieve workflow definition cli system tests", () => {
             testName: "workflow_definition_cli"
         });
         defaultSystem = testEnvironment.systemTestProperties;
-        system = testEnvironment.systemTestProperties.workflows.system;
         owner = defaultSystem.zosmf.user;
-        wfName = `${getUniqueDatasetName(owner)}`;
         uniqueFileName = getUniqueDatasetName(owner);
         definitionFile = `${defaultSystem.unix.testdir}/${uniqueFileName}.xml`;
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);

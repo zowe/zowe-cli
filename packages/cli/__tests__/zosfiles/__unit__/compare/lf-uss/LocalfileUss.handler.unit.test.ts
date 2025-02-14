@@ -23,7 +23,6 @@ describe("Compare local-file and uss-file handler", () => {
         const handler = new handlerReq.default();
         const ussFilePath = "./testing2";
         // Vars populated by the mocked function
-        let error;
         let apiMessage = "";
         let jsonObj:object;
         let logMessage = "";
@@ -34,7 +33,7 @@ describe("Compare local-file and uss-file handler", () => {
         const getUSSFileSpy = jest.spyOn(Get, "USSFile");
         const getDiffStringSpy = jest.spyOn(DiffUtils, "getDiffString");
         const openDiffInbrowserSpy = jest.spyOn(DiffUtils, "openDiffInbrowser");
-        const profFunc = jest.fn((args) => {
+        const profFunc = jest.fn((_args) => {
             return {
                 host: "fake",
                 port: "fake",
@@ -68,7 +67,7 @@ describe("Compare local-file and uss-file handler", () => {
                     })
                 },
                 progress: {
-                    startBar: jest.fn((parms) => {
+                    startBar: jest.fn((_parms) => {
                         // do nothing
                     }),
                     endBar: jest.fn(() => {
@@ -118,7 +117,7 @@ describe("Compare local-file and uss-file handler", () => {
                 // Invoke the handler with a full set of mocked arguments and response functions
                 await handler.process(processArguments as any);
             } catch (e) {
-                error = e;
+                // Do nothing
             }
 
             expect(readFileSyncSpy).toHaveBeenCalledTimes(1);
@@ -145,7 +144,7 @@ describe("Compare local-file and uss-file handler", () => {
                 // Invoke the handler with a full set of mocked arguments and response functions
                 await handler.process(processArgCopy as any);
             } catch (e) {
-                error = e;
+                // Do nothing
             }
 
             expect(readFileSyncSpy).toHaveBeenCalledTimes(1);
@@ -181,7 +180,7 @@ describe("Compare local-file and uss-file handler", () => {
                 // Invoke the handler with a full set of mocked arguments and response functions
                 await handler.process(processArgCopy as any);
             } catch (e) {
-                error = e;
+                // Do nothing
             }
 
             expect(readFileSyncSpy).toHaveBeenCalledTimes(1);
@@ -202,7 +201,7 @@ describe("Compare local-file and uss-file handler", () => {
                 // Invoke the handler with a full set of mocked arguments and response functions
                 await handler.process(processArguments as any);
             } catch (e) {
-                error = e;
+                // Do nothing
             }
 
             expect(openDiffInbrowserSpy).toHaveBeenCalledTimes(1);

@@ -23,7 +23,6 @@ let REAL_SESSION: Session;
 let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
 let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment<ITestPropertiesSchema>;
 let defaultSystem: ITestPropertiesSchema;
-let user: string;
 let ussname: string;
 const testFile: string = "appendFile.txt";
 
@@ -38,7 +37,6 @@ describe("List directory", () => {
         defaultSystem = TEST_ENVIRONMENT.systemTestProperties;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
-        user = defaultSystem.zosmf.user.trim();
         ussname = `${defaultSystem.zosmf.user.trim()}.aTestUssDirectory`;
         ussname = `${defaultSystem.unix.testdir}/${ussname}`;
 
@@ -65,14 +63,11 @@ describe("List directory", () => {
         });
 
         beforeEach(async () => {
-            let error;
-            let response;
             try {
-                response = await Create.uss(REAL_SESSION, ussname, "directory");
-                response = await Create.uss(REAL_SESSION, `${ussname}/${testFile}`, "directory");
+                await Create.uss(REAL_SESSION, ussname, "directory");
+                await Create.uss(REAL_SESSION, `${ussname}/${testFile}`, "directory");
             } catch (err) {
-                error = err;
-                Imperative.console.info("Error: " + inspect(error));
+                Imperative.console.info("Error: " + inspect(err));
             }
         });
 
