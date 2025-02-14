@@ -62,11 +62,11 @@ export class Censor {
     }
 
     // Set a censored options list that can be set and retrieved for each command.
-    private static censored_options: Set<string> = new Set(this.DEFAULT_CENSORED_OPTIONS);
+    private static mCensoredOptions: Set<string> = new Set(this.DEFAULT_CENSORED_OPTIONS);
 
     // Return a customized list of censored options (or just the defaults if not set).
     public static get CENSORED_OPTIONS(): string[] {
-        return Array.from(this.censored_options);
+        return Array.from(this.mCensoredOptions);
     }
 
     //Singleton caches of the Config, Command Definition and Command Arguments
@@ -152,9 +152,9 @@ export class Censor {
     private static addCensoredOption(option: string) {
         // This option is required, but we do not want to ever allow null or undefined itself into the censored options
         if (option != null) {
-            this.censored_options.add(option);
-            this.censored_options.add(CliUtils.getOptionFormat(option).camelCase);
-            this.censored_options.add(CliUtils.getOptionFormat(option).kebabCase);
+            this.mCensoredOptions.add(option);
+            this.mCensoredOptions.add(CliUtils.getOptionFormat(option).camelCase);
+            this.mCensoredOptions.add(CliUtils.getOptionFormat(option).kebabCase);
         }
     }
 
@@ -175,16 +175,12 @@ export class Censor {
         };
 
         for (const profile of this.profileSchemas) {
-            // eslint-disable-next-line unused-imports/no-unused-vars
-            for (const [_, prop] of Object.entries(profile.schema.properties)) {
+            for (const prop of Object.values(profile.schema.properties)) {
                 if (prop.secure) specialValues = lodash.union(specialValues, getPropertyNames(prop));
             }
         }
 
-        for (const v of specialValues) {
-            if (prop.endsWith(`.${v}`)) return true;
-        }
-        return false;
+        return specialValues.some((v) => prop.endsWith(`.${v}`));
     }
 
     /**
@@ -206,7 +202,7 @@ export class Censor {
      * @param {ICensorOptions} censorOpts - The objects to use to gather options that should be censored
      */
     public static setCensoredOptions(censorOpts?: ICensorOptions) {
-        this.censored_options = new Set(this.DEFAULT_CENSORED_OPTIONS);
+        this.mCensoredOptions = new Set(this.DEFAULT_CENSORED_OPTIONS);
 
         if (censorOpts) {
             // Save off the config object
