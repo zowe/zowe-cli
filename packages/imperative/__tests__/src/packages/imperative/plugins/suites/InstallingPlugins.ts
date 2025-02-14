@@ -190,7 +190,6 @@ describe("Installing Plugins", () => {
     };
 
     beforeAll(() => {
-        execSync("npm config get registry").toString().trim();
         peerDepWarning = parseInt(execSync("npm --version").toString().trim().split(".")[0], 10) < 7;
     });
 

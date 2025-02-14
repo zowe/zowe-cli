@@ -262,8 +262,6 @@ export default class EnableDaemonHandler implements ICommandHandler {
                 // user wants us to do it for him/her
                 if ( osPlatform === "win32") {
                     userInfoMsg += await this.addZoweBinOnWindows(pathToZoweBin);
-                } else {
-                    userInfoMsg += this.addZoweBinOnPosix(pathToZoweBin);
                 }
             } else {
                 userInfoMsg += `\n\nManually add '${pathToZoweBin}' to your PATH.` +
@@ -319,21 +317,6 @@ export default class EnableDaemonHandler implements ICommandHandler {
             userInfoMsg += "Failed to run setx. Reason = " + err.message;
         }
 
-        return userInfoMsg;
-    }
-
-    /**
-     * Add our .zowe/bin directory to the front of the user's PATH on Linux and MAC.
-     * Do that by adding a line at the end of the user's .profile file.
-     *
-     * @param pathToZoweBin The absolute path to our .zowe/bin drectory.
-     *
-     * @returns {string} An informational message to display to the user after
-     *          successful completion of the operation.
-     */
-    private addZoweBinOnPosix(_pathToZoweBin: string): string {
-        // Todo: Implement addZoweBinOnPosix
-        const userInfoMsg: string = "";
         return userInfoMsg;
     }
 }
