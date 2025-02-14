@@ -23,14 +23,9 @@ describe("Upload stdin-to-data-set handler", () => {
 
             // Vars populated by the mocked function
             let error;
-            let apiMessage = "";
-            let jsonObj;
-            let logMessage = "";
-            let fakeSession = null;
 
             // Mock the submit JCL function
-            Upload.streamToDataSet = jest.fn(async (session) => {
-                fakeSession = session;
+            Upload.streamToDataSet = jest.fn(async (_session) => {
                 return {
                     success: true,
                     commandResponse: "uploaded"
@@ -54,20 +49,20 @@ describe("Upload stdin-to-data-set handler", () => {
                     },
                     response: {
                         data: {
-                            setMessage: jest.fn((setMsgArgs) => {
-                                apiMessage = setMsgArgs;
+                            setMessage: jest.fn((_setMsgArgs) => {
+                                // Do nothing
                             }),
-                            setObj: jest.fn((setObjArgs) => {
-                                jsonObj = setObjArgs;
+                            setObj: jest.fn((_setObjArgs) => {
+                                // Do nothing
                             })
                         },
                         console: {
-                            log: jest.fn((logArgs) => {
-                                logMessage += "\n" + logArgs;
+                            log: jest.fn((_logArgs) => {
+                                // Do nothing
                             })
                         },
                         progress: {
-                            startBar: jest.fn((parms) => {
+                            startBar: jest.fn((_parms) => {
                                 // do nothing
                             }),
                             endBar: jest.fn(() => {
@@ -94,9 +89,6 @@ describe("Upload stdin-to-data-set handler", () => {
 
             // Vars populated by the mocked function
             let error;
-            let apiMessage = "";
-            let jsonObj;
-            let logMessage = "";
             let fakeSession = null;
 
             // Mock the submit JCL function
@@ -126,20 +118,20 @@ describe("Upload stdin-to-data-set handler", () => {
                     },
                     response: {
                         data: {
-                            setMessage: jest.fn((setMsgArgs) => {
-                                apiMessage = setMsgArgs;
+                            setMessage: jest.fn((_setMsgArgs) => {
+                                // Do nothing
                             }),
-                            setObj: jest.fn((setObjArgs) => {
-                                jsonObj = setObjArgs;
+                            setObj: jest.fn((_setObjArgs) => {
+                                // Do nothing
                             })
                         },
                         console: {
-                            log: jest.fn((logArgs) => {
-                                logMessage += "\n" + logArgs;
+                            log: jest.fn((_logArgs) => {
+                                // Do nothing
                             })
                         },
                         progress: {
-                            startBar: jest.fn((parms) => {
+                            startBar: jest.fn((_parms) => {
                                 // do nothing
                             }),
                             endBar: jest.fn(() => {
@@ -174,9 +166,6 @@ describe("Upload stdin-to-data-set handler", () => {
 
             // Vars populated by the mocked function
             let error;
-            let apiMessage = "";
-            let jsonObj;
-            let logMessage = "";
             let fakeSession = null;
 
             // Mock the submit JCL function
@@ -206,20 +195,20 @@ describe("Upload stdin-to-data-set handler", () => {
                     },
                     response: {
                         data: {
-                            setMessage: jest.fn((setMsgArgs) => {
-                                apiMessage = setMsgArgs;
+                            setMessage: jest.fn((_setMsgArgs) => {
+                                // Do nothing
                             }),
-                            setObj: jest.fn((setObjArgs) => {
-                                jsonObj = setObjArgs;
+                            setObj: jest.fn((_setObjArgs) => {
+                                // Do nothing
                             })
                         },
                         console: {
-                            log: jest.fn((logArgs) => {
-                                logMessage += "\n" + logArgs;
+                            log: jest.fn((_logArgs) => {
+                                // Do nothing
                             })
                         },
                         progress: {
-                            startBar: jest.fn((parms) => {
+                            startBar: jest.fn((_parms) => {
                                 // do nothing
                             }),
                             endBar: jest.fn(() => {

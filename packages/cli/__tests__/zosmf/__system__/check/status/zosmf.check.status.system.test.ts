@@ -18,10 +18,7 @@ import { join } from "path";
 import { chmodSync } from "fs";
 
 let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
-let host: string;
-let port: number;
 let user: string;
-let pass: string;
 let systemProps: ITestPropertiesSchema;
 
 describe("zosmf check status", () => {
@@ -34,10 +31,7 @@ describe("zosmf check status", () => {
         });
 
         systemProps = testEnvironment.systemTestProperties;
-        host = systemProps.zosmf.host;
-        port = systemProps.zosmf.port;
         user = systemProps.zosmf.user;
-        pass = systemProps.zosmf.password;
     });
 
     afterAll(async () => {

@@ -23,7 +23,6 @@ process.env.FORCE_COLOR = "0";
 let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
 let REAL_SESSION: Session;
 let systemProps: ITestPropertiesSchema;
-let account: string;
 let jcl: string;
 let JOB_NAME: string;
 const jobNameRegex = /jobname: (\w+)/;
@@ -39,7 +38,6 @@ describe("zos-jobs submit local-file command", () => {
         systemProps = TEST_ENVIRONMENT.systemTestProperties;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
-        account = systemProps.tso.account;
 
         // JCL to submit
         jcl = (await Get.dataSet(REAL_SESSION, systemProps.zosjobs.iefbr14Member)).toString();

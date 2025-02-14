@@ -35,7 +35,7 @@ describe("issue command handler tests", () => {
     });
 
     it("should issue command", async () => {
-        IssueTso.issueTsoCmd = jest.fn((session, cmd) => {
+        IssueTso.issueTsoCmd = jest.fn((session, _cmd) => {
             expect(session).toBeDefined();
             expect(session.ISession).toMatchSnapshot();
             return StartTsoData.SAMPLE_ISSUE_RESPONSE_WITH_MSG;
@@ -52,7 +52,7 @@ describe("issue command handler tests", () => {
         const failMessage = "IZUG1126E: z/OSMF cannot correlate the request for key \"ZOSMFAD-SYS2-55-aaakaaac\"\n" +
             "with an active z/OS application session.";
         let error;
-        IssueTso.issueTsoCmd = jest.fn((session, servletKey) => {
+        IssueTso.issueTsoCmd = jest.fn((_session, _servletKey) => {
             throw new ImperativeError({msg: failMessage});
         });
         const handler = new Command.default();

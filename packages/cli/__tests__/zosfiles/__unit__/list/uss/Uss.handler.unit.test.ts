@@ -21,7 +21,6 @@ describe("USS file handler", () => {
             const path = "testing";
 
             // Vars populated by the mocked function
-            let error;
             let apiMessage = "";
             let jsonObj;
             let logMessage = "";
@@ -63,7 +62,7 @@ describe("USS file handler", () => {
                             })
                         },
                         progress: {
-                            startBar: jest.fn((parms) => {
+                            startBar: jest.fn((_parms) => {
                                 // do nothing
                             }),
                             endBar: jest.fn(() => {
@@ -73,7 +72,7 @@ describe("USS file handler", () => {
                     }
                 } as any);
             } catch (e) {
-                error = e;
+                // Do nothing
             }
 
             //            expect(error).toBeUndefined();

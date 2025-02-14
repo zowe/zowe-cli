@@ -20,9 +20,7 @@ import { GetJobs } from "@zowe/zos-jobs-for-zowe-sdk";
 let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
 let IEFBR14_JOB: string;
 let REAL_SESSION: Session;
-let ACCOUNT: string;
 let JOB_NAME: string;
-let NON_HELD_JOBCLASS: string;
 
 // Regex to match any job name that starts with "IEFBR14"
 const jobNameRegex = /IEFBR14\w*/;
@@ -36,13 +34,10 @@ describe("zos-jobs view all-spool-content command", () => {
         });
 
         IEFBR14_JOB = TEST_ENVIRONMENT.systemTestProperties.zosjobs.iefbr14Member;
-        const defaultSystem = TEST_ENVIRONMENT.systemTestProperties;
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
 
-        ACCOUNT = defaultSystem.tso.account;
         const JOB_LENGTH = 6;
         JOB_NAME = REAL_SESSION.ISession.user.substring(0, JOB_LENGTH).toUpperCase() + "SF";
-        NON_HELD_JOBCLASS = TEST_ENVIRONMENT.systemTestProperties.zosjobs.jobclass;
     });
 
     afterAll(async () => {

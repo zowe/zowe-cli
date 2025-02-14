@@ -192,7 +192,7 @@ describe("submit shared handler", () => {
             };
 
 
-            MonitorJobs.waitForJobOutputStatus = jest.fn((session, jobToWaitFor) => {
+            MonitorJobs.waitForJobOutputStatus = jest.fn((_session, _jobToWaitFor) => {
                 return completedJob;
             });
 
@@ -246,7 +246,7 @@ describe("submit shared handler", () => {
             };
 
 
-            MonitorJobs.waitForStatusCommon = jest.fn((session, jobToWaitFor) => {
+            MonitorJobs.waitForStatusCommon = jest.fn((_session, _jobToWaitFor) => {
                 return completedJob;
             });
 
@@ -291,7 +291,7 @@ describe("submit shared handler", () => {
                     retcode: "UNKNOWN"
                 };
             });
-            SubmitJobs.checkSubmitOptions = jest.fn(async (session, parms): Promise<any> => {
+            SubmitJobs.checkSubmitOptions = jest.fn(async (_session, _parms): Promise<any> => {
                 return [{
                     ddName: "fakeDD1",
                     id: 1,
@@ -387,7 +387,7 @@ describe("submit shared handler", () => {
             };
 
 
-            MonitorJobs.waitForJobOutputStatus = jest.fn((session, jobToWaitFor) => {
+            MonitorJobs.waitForJobOutputStatus = jest.fn((_session, _jobToWaitFor) => {
                 return completedJob;
             });
 
@@ -441,7 +441,7 @@ describe("submit shared handler", () => {
             };
 
 
-            MonitorJobs.waitForStatusCommon = jest.fn((session, jobToWaitFor) => {
+            MonitorJobs.waitForStatusCommon = jest.fn((_session, _jobToWaitFor) => {
                 return completedJob;
             });
 
@@ -486,7 +486,7 @@ describe("submit shared handler", () => {
                     retcode: "UNKNOWN"
                 };
             });
-            SubmitJobs.checkSubmitOptions = jest.fn(async (session, parms): Promise<any> => {
+            SubmitJobs.checkSubmitOptions = jest.fn(async (_session, _parms): Promise<any> => {
                 return [{
                     ddName: "fakeDD1",
                     id: 1,

@@ -31,7 +31,7 @@ describe("stop address-space handler tests", () => {
     });
 
     it("should be able to stop address-space", async () => {
-        StopTso.stop = jest.fn(async (session, servletKey) => {
+        StopTso.stop = jest.fn(async (_session, _servletKey) => {
             return StopTsoData.SAMPLE_STOP_RESPONSE;
         });
         const handler = new AddressSpaceHandler.default();
@@ -45,7 +45,7 @@ describe("stop address-space handler tests", () => {
         const failMessage = "IZUG1126E: z/OSMF cannot correlate the request for key \"ZOSMFAD-SYS2-55-aaakaaac\"\n" +
             "with an active z/OS application session.";
         let error;
-        StopTso.stop = jest.fn((session, servletKey) => {
+        StopTso.stop = jest.fn((_session, _servletKey) => {
             throw new ImperativeError({msg: failMessage});
         });
         const handler = new AddressSpaceHandler.default();

@@ -20,7 +20,6 @@ describe("fs handler", () => {
             const handler = new handlerReq.default();
 
             // Vars populated by the mocked function
-            let error;
             let apiMessage = "";
             let jsonObj;
             let logMessage = "";
@@ -62,7 +61,7 @@ describe("fs handler", () => {
                             })
                         },
                         progress: {
-                            startBar: jest.fn((parms) => {
+                            startBar: jest.fn((_parms) => {
                                 // do nothing
                             }),
                             endBar: jest.fn(() => {
@@ -72,7 +71,7 @@ describe("fs handler", () => {
                     }
                 } as any);
             } catch (e) {
-                error = e;
+                // Do nothing
             }
 
             //            expect(error).toBeUndefined();
@@ -90,7 +89,6 @@ describe("fs handler", () => {
             const path = "testing";
 
             // Vars populated by the mocked function
-            let error;
             let apiMessage = "";
             let jsonObj;
             let logMessage = "";
@@ -132,7 +130,7 @@ describe("fs handler", () => {
                             })
                         },
                         progress: {
-                            startBar: jest.fn((parms) => {
+                            startBar: jest.fn((_parms) => {
                                 // do nothing
                             }),
                             endBar: jest.fn(() => {
@@ -142,7 +140,7 @@ describe("fs handler", () => {
                     }
                 } as any);
             } catch (e) {
-                error = e;
+                // Do nothing
             }
 
             //            expect(error).toBeUndefined();
