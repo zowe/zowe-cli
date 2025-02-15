@@ -60,7 +60,7 @@ export class Delete {
                 endpoint = posix.join(endpoint, `-(${encodeURIComponent(options.volume)})`);
             }
 
-            const reqHeaders = ZosFilesHeaders.generateHeaders({ options })
+            const reqHeaders = ZosFilesHeaders.generateHeaders({ options });
 
 
             endpoint = posix.join(endpoint, encodeURIComponent(dataSetName));
