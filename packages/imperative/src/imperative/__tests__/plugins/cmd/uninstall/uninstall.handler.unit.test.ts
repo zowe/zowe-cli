@@ -9,9 +9,6 @@
 *
 */
 
-/* eslint-disable jest/expect-expect */
-import Mock = jest.Mock;
-
 jest.mock("child_process");
 jest.mock("jsonfile");
 jest.mock("../../../../src/plugins/utilities/npm-interface/uninstall");
@@ -36,7 +33,6 @@ import UninstallHandler from "../../../../src/plugins/cmd/uninstall/uninstall.ha
 import * as ChildProcesses from "child_process";
 import * as JsonFile from "jsonfile";
 import * as NpmInterface from "../../../../src/plugins/utilities/npm-interface";
-import * as NpmFunctions from "../../../../src/plugins/utilities/NpmFunctions";
 
 describe("Plugin Management Facility uninstall handler", () => {
 
@@ -86,29 +82,6 @@ describe("Plugin Management Facility uninstall handler", () => {
         jest.restoreAllMocks();
     });
 
-    /**
-     * Validates that an uninstall call was valid based on the parameters passed.
-     *
-     * @param {string}   packageNameParm  expected package location that uninstall was called with.
-     */
-    const wasUninstallCallValid = (
-        packageNameParm: string
-    ) => {
-        expect(mocks.uninstallSpy).toHaveBeenCalledWith(
-            packageNameParm
-        );
-    };
-
-    /**
-     * Checks that the successful message was written.
-     *
-     * @param {IHandlerParameters} params The parameters that were passed to the
-     *                                    process function.
-     */
-    const wasUninstallSuccessful = (params: IHandlerParameters) => {
-        expect(params.response.console.log).toHaveBeenCalledWith("Removal of the npm package(s) was successful.\n");
-    };
-
     it("uninstall specified package", async () => {
         // plugin definitions mocking file contents
         const fileJson: IPluginJson = {
@@ -134,9 +107,9 @@ describe("Plugin Management Facility uninstall handler", () => {
 
         await handler.process(params as IHandlerParameters);
 
-        wasUninstallCallValid(`${fileJson.a.package}`);
+        expect(mocks.uninstallSpy).toHaveBeenCalledWith(fileJson.a.package);
 
-        wasUninstallSuccessful(params);
+        expect(params.response.console.log).toHaveBeenCalledWith("Removal of the npm package(s) was successful.\n");
     });
 
     it("should handle an error during the uninstall", async () => {
@@ -181,7 +154,6 @@ describe("callPluginPreUninstall", () => {
     let callPluginPreUninstallPrivate : any;
     let cfgLoaderLoadSpy: any;
     let fakePluginConfig: IImperativeConfig;
-    let getPackageInfoSpy: any;
     let LifeCycleClass: any;
     let preUninstallWorked = false;
     let recordDefaultCredMgrInConfigSpy: any;
@@ -247,13 +219,6 @@ describe("callPluginPreUninstall", () => {
                 return;
             });
 
-        // make getPackageInfo return a fake value
-        getPackageInfoSpy = jest.spyOn(NpmFunctions, "getPackageInfo").mockImplementation(async () => {
-            return {
-                name: knownCredMgrPlugin,
-                version: "9.9.9"
-            };
-        });
 
         // make requirePluginModuleCallback return our fake LifeCycleClass
         requirePluginModuleCallbackSpy = jest.spyOn(

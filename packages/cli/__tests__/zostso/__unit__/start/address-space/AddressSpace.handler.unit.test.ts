@@ -72,7 +72,7 @@ describe("start address-space handler tests", () => {
     it("should throw an error if the response is not successful", async () => {
         const failure = "failed to start the address space";
         let error;
-        jest.spyOn(StartTso, "start").mockImplementation(async (session, commandParms): Promise<any> => {
+        jest.spyOn(StartTso, "start").mockImplementation(async (_session, _commandParms): Promise<any> => {
             return {
                 success: false,
                 failureResponse: {

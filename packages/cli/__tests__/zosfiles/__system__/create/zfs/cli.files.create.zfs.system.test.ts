@@ -88,7 +88,7 @@ describe("Create z/OS File System", () => {
     describe("Success scenarios", () => {
 
         afterEach(async () => {
-            const response = await Delete.zfs(REAL_SESSION, fsname);
+            await Delete.zfs(REAL_SESSION, fsname);
         });
 
         it("should create a ZFS", () => {

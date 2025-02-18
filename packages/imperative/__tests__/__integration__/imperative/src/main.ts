@@ -14,7 +14,7 @@
 import { Imperative, ImperativeError } from "../../../../lib/index";
 import { inspect } from "util";
 
-Imperative.init().then((response) => {
+Imperative.init().then((_response) => {
     // Log messages to check in the tests
     Imperative.api.imperativeLogger.trace("This is a trace message after init!");
     Imperative.api.imperativeLogger.debug("This is a debug message after init!");

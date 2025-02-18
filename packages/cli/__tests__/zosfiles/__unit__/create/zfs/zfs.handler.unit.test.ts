@@ -63,7 +63,7 @@ describe("Create z/OS file system handler", () => {
                             })
                         },
                         progress: {
-                            startBar: jest.fn((parms) => {
+                            startBar: jest.fn((_parms) => {
                                 // do nothing
                             }),
                             endBar: jest.fn(() => {
@@ -93,9 +93,6 @@ describe("Create z/OS file system handler", () => {
 
         // Vars populated by the mocked function
         let error: any;
-        let apiMessage = "";
-        let jsonObj;
-        let logMessage = "";
         let fakeSession = null;
 
         // Mock the zfs function
@@ -116,16 +113,16 @@ describe("Create z/OS file system handler", () => {
             },
             response: {
                 data: {
-                    setMessage: jest.fn((setMsgArgs) => {
-                        apiMessage = setMsgArgs;
+                    setMessage: jest.fn((_setMsgArgs) => {
+                        // Do nothing
                     }),
-                    setObj: jest.fn((setObjArgs) => {
-                        jsonObj = setObjArgs;
+                    setObj: jest.fn((_setObjArgs) => {
+                        // Do nothing
                     }),
                 },
                 console: {
-                    log: jest.fn((logArgs) => {
-                        logMessage += "\n" + logArgs;
+                    log: jest.fn((_logArgs) => {
+                        // Do nothing
                     }),
                 },
                 progress: {

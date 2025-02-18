@@ -64,7 +64,7 @@ export default class FruitAuthHandler extends BaseAuthHandler {
      * revoke a token before removing it from a profile.
      * @param {AbstractSession} session The session object to use to connect to the auth service
      */
-    protected async doLogout(session: AbstractSession) {
+    protected async doLogout(_session: AbstractSession) {
         // Do nothing.
     }
 }

@@ -26,7 +26,6 @@ let wfKey: string;
 let system: string;
 let owner: string;
 let wfName: string;
-const fakeName: string = "FAKENAME";
 const workflow = join(__dirname, "../../../../../../workflows/__tests__/__system__/testfiles/demo.xml");
 
 describe("List archived workflow cli system tests", () => {

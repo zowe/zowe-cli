@@ -17,8 +17,8 @@ import { GetJobsData } from "../__resources__/api/GetJobsData";
 const pretendSession = new Session({user: "test", password: "test", hostname: "Test"});
 
 function mockGetJobsJSONData(data: object) {
-    const mock = jest.fn((session: AbstractSession, resource: string, headers?: any[]): Promise<object> => {
-        return new Promise<object>((resolve, reject) => {
+    const mock = jest.fn((_session: AbstractSession, _resource: string, _headers?: any[]): Promise<object> => {
+        return new Promise<object>((resolve, _reject) => {
             ProcessUtils.nextTick(() => {
                 resolve(data);
             });
@@ -28,8 +28,8 @@ function mockGetJobsJSONData(data: object) {
 }
 
 function mockGetJobsStringData(data: string) {
-    const mock = jest.fn((session: AbstractSession, resource: string, headers?: any[]): Promise<string> => {
-        return new Promise<string>((resolve, reject) => {
+    const mock = jest.fn((_session: AbstractSession, _resource: string, _headers?: any[]): Promise<string> => {
+        return new Promise<string>((resolve, _reject) => {
             ProcessUtils.nextTick(() => {
                 resolve(data);
             });
@@ -67,7 +67,7 @@ describe("GetJobs tests", () => {
             (ZosmfRestClient.getExpectJSON as any) = mockGetJobsServerError("500", JSON.stringify(GetJobsData.WRONG_JOBS_URI));
             let error;
             try {
-                const job = await GetJobs.getStatusCommon(pretendSession, {jobname: "testjob", jobid: "fakeid"});
+                await GetJobs.getStatusCommon(pretendSession, {jobname: "testjob", jobid: "fakeid"});
             } catch (thrownError) {
                 error = thrownError;
             }
@@ -95,7 +95,7 @@ describe("GetJobs tests", () => {
         it("should get an error for missing jobname on getStatus", async () => {
             let error;
             try {
-                const job = await GetJobs.getStatus(pretendSession, undefined, "JOB015123");
+                await GetJobs.getStatus(pretendSession, undefined, "JOB015123");
             } catch (thrownError) {
                 error = thrownError;
             }
@@ -105,7 +105,7 @@ describe("GetJobs tests", () => {
         it("should get an error for missing jobname on getStatusCommon", async () => {
             let error;
             try {
-                const job = await GetJobs.getStatusCommon(pretendSession, {jobname: undefined, jobid: "JOB015123"});
+                await GetJobs.getStatusCommon(pretendSession, {jobname: undefined, jobid: "JOB015123"});
             } catch (thrownError) {
                 error = thrownError;
             }
@@ -115,7 +115,7 @@ describe("GetJobs tests", () => {
         it("should get an error for missing jobid on getStatus", async () => {
             let error;
             try {
-                const job = await GetJobs.getStatus(pretendSession, "testjob", " ");
+                await GetJobs.getStatus(pretendSession, "testjob", " ");
             } catch (thrownError) {
                 error = thrownError;
             }
@@ -125,7 +125,7 @@ describe("GetJobs tests", () => {
         it("should get an error for missing jobid on getStatusCommon", async () => {
             let error;
             try {
-                const job = await GetJobs.getStatusCommon(pretendSession, {jobname: "testjob", jobid: " "});
+                await GetJobs.getStatusCommon(pretendSession, {jobname: "testjob", jobid: " "});
             } catch (thrownError) {
                 error = thrownError;
             }
@@ -172,7 +172,7 @@ describe("GetJobs tests", () => {
         it("should require prefix for getJobsByPrefix", async () => {
             let error;
             try {
-                const job = await GetJobs.getJobsByPrefix(pretendSession, "    ");
+                await GetJobs.getJobsByPrefix(pretendSession, "    ");
             } catch (thrownError) {
                 error = thrownError;
             }
@@ -189,7 +189,7 @@ describe("GetJobs tests", () => {
         it("should require owner for getJobsByOwner", async () => {
             let error;
             try {
-                const job = await GetJobs.getJobsByOwner(pretendSession, "    ");
+                await GetJobs.getJobsByOwner(pretendSession, "    ");
             } catch (thrownError) {
                 error = thrownError;
             }
@@ -247,7 +247,7 @@ describe("GetJobs tests", () => {
         it("should require owner for getJobsByOwnerAndPrefix", async () => {
             let error;
             try {
-                const job = await GetJobs.getJobsByOwnerAndPrefix(pretendSession, "    ", "fakePrefix");
+                await GetJobs.getJobsByOwnerAndPrefix(pretendSession, "    ", "fakePrefix");
             } catch (thrownError) {
                 error = thrownError;
             }
@@ -257,7 +257,7 @@ describe("GetJobs tests", () => {
         it("should require prefix for getJobsByOwnerAndPrefix", async () => {
             let error;
             try {
-                const job = await GetJobs.getJobsByOwnerAndPrefix(pretendSession, "fakeOwner", undefined);
+                await GetJobs.getJobsByOwnerAndPrefix(pretendSession, "fakeOwner", undefined);
             } catch (thrownError) {
                 error = thrownError;
             }
@@ -285,7 +285,7 @@ describe("GetJobs tests", () => {
 
         it("should have proper URI when using status", () => {
             (ZosmfRestClient.getExpectJSON as any) =
-                jest.fn((session: AbstractSession, resource: string, headers?: any[]) => {
+                jest.fn((session: AbstractSession, resource: string, _headers?: any[]) => {
                     expect(resource).toMatchSnapshot();
                 });
             GetJobs.getJobsCommon(pretendSession, {status: "active"});
@@ -293,7 +293,7 @@ describe("GetJobs tests", () => {
 
         it("should have proper URI when using no parms", () => {
             (ZosmfRestClient.getExpectJSON as any) =
-                jest.fn((session: AbstractSession, resource: string, headers?: any[]) => {
+                jest.fn((session: AbstractSession, resource: string, _headers?: any[]) => {
                     expect(resource).toMatchSnapshot();
                 });
             GetJobs.getJobsCommon(pretendSession, {});
@@ -301,7 +301,7 @@ describe("GetJobs tests", () => {
 
         it("should have proper URI when using prefix", () => {
             (ZosmfRestClient.getExpectJSON as any) =
-                jest.fn((session: AbstractSession, resource: string, headers?: any[]) => {
+                jest.fn((session: AbstractSession, resource: string, _headers?: any[]) => {
                     expect(resource).toMatchSnapshot();
                 });
             GetJobs.getJobsCommon(pretendSession, {prefix: "fakePrefix"});
@@ -309,7 +309,7 @@ describe("GetJobs tests", () => {
 
         it("should have proper URI when using owner", () => {
             (ZosmfRestClient.getExpectJSON as any) =
-                jest.fn((session: AbstractSession, resource: string, headers?: any[]) => {
+                jest.fn((session: AbstractSession, resource: string, _headers?: any[]) => {
                     expect(resource).toMatchSnapshot();
                 });
             GetJobs.getJobsCommon(pretendSession, {owner: "fakeOwner"});
@@ -317,7 +317,7 @@ describe("GetJobs tests", () => {
 
         it("should have proper URI when using maxjobs", () => {
             (ZosmfRestClient.getExpectJSON as any) =
-                jest.fn((session: AbstractSession, resource: string, headers?: any[]) => {
+                jest.fn((session: AbstractSession, resource: string, _headers?: any[]) => {
                     expect(resource).toMatchSnapshot();
                 });
             GetJobs.getJobsCommon(pretendSession, {maxJobs: 10});
@@ -325,7 +325,7 @@ describe("GetJobs tests", () => {
 
         it("should have proper URI when using jobid", () => {
             (ZosmfRestClient.getExpectJSON as any) =
-                jest.fn((session: AbstractSession, resource: string, headers?: any[]) => {
+                jest.fn((session: AbstractSession, resource: string, _headers?: any[]) => {
                     expect(resource).toMatchSnapshot();
                 });
             GetJobs.getJobsCommon(pretendSession, {jobid: "fakeJobid"});
@@ -333,7 +333,7 @@ describe("GetJobs tests", () => {
 
         it("should have proper URI when using jobname and jobid", () => {
             (ZosmfRestClient.getExpectJSON as any) =
-                jest.fn((session: AbstractSession, resource: string, headers?: any[]) => {
+                jest.fn((session: AbstractSession, resource: string, _headers?: any[]) => {
                     expect(resource).toMatchSnapshot();
                 });
             GetJobs.getJobsByOwnerAndPrefix(pretendSession, "someOwner", "somePrefix");
@@ -341,7 +341,7 @@ describe("GetJobs tests", () => {
 
         it("should have proper URI when using jobname, prefix, and jobid", () => {
             (ZosmfRestClient.getExpectJSON as any) =
-                jest.fn((session: AbstractSession, resource: string, headers?: any[]) => {
+                jest.fn((session: AbstractSession, resource: string, _headers?: any[]) => {
                     expect(resource).toMatchSnapshot();
                 });
             GetJobs.getJobsCommon(pretendSession, {jobid: "fakeJobid", prefix: "somePrefix", owner: "someOwner"});
@@ -349,7 +349,7 @@ describe("GetJobs tests", () => {
 
         it("should have proper URI when using all parms", () => {
             (ZosmfRestClient.getExpectJSON as any) =
-                jest.fn((session: AbstractSession, resource: string, headers?: any[]) => {
+                jest.fn((session: AbstractSession, resource: string, _headers?: any[]) => {
                     expect(resource).toMatchSnapshot();
                 });
             GetJobs.getJobsCommon(pretendSession, {owner: "fakeOwner", prefix: "fakePrefix", maxJobs: 2, jobid: "fakeID"});
@@ -387,7 +387,7 @@ describe("GetJobs tests", () => {
     describe("getJcl APIs", () => {
         it("should have proper URI when getting JCL", () => {
             (ZosmfRestClient.getExpectString as any) =
-                jest.fn((session: AbstractSession, resource: string, headers?: any[]) => {
+                jest.fn((session: AbstractSession, resource: string, _headers?: any[]) => {
                     expect(resource).toMatchSnapshot();
                 });
             GetJobs.getJcl(pretendSession, "fakeJob", "fakeId");
@@ -423,7 +423,7 @@ describe("GetJobs tests", () => {
     describe("getSpoolFiles APIs", () => {
         it("should have proper URI when getting spool files", () => {
             (ZosmfRestClient.getExpectJSON as any) =
-                jest.fn((session: AbstractSession, resource: string, headers?: any[]) => {
+                jest.fn((session: AbstractSession, resource: string, _headers?: any[]) => {
                     expect(resource).toMatchSnapshot();
                 });
             GetJobs.getSpoolFiles(pretendSession, "fakeJob", "fakeId");
@@ -459,7 +459,7 @@ describe("GetJobs tests", () => {
     describe("getSpoolContent APIs", () => {
         it("should have proper URI when getting spool content", () => {
             (ZosmfRestClient.getExpectString as any) =
-                jest.fn((session: AbstractSession, resource: string, headers?: any[]) => {
+                jest.fn((session: AbstractSession, resource: string, _headers?: any[]) => {
                     expect(resource).toMatchSnapshot();
                 });
             GetJobs.getSpoolContent(pretendSession, GetJobsData.SAMPLE_JOB_FILE);

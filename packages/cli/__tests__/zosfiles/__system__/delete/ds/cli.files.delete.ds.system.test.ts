@@ -9,19 +9,16 @@
 *
 */
 
-import { Session } from "@zowe/imperative";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/ITestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { runCliScript } from "@zowe/cli-test-utils";
 
-let REAL_SESSION: Session;
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
 let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment<ITestPropertiesSchema>;
 let defaultSystem: ITestPropertiesSchema;
 let dsname: string;
-let dsnameSuffix: string;
 let user: string;
 
 describe("Delete Data Set", () => {
@@ -34,8 +31,6 @@ describe("Delete Data Set", () => {
         });
 
         defaultSystem = TEST_ENVIRONMENT.systemTestProperties;
-
-        REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
 
         user = defaultSystem.zosmf.user.trim().toUpperCase();
         dsname = `${user}.TEST.DATA.SET`;
@@ -87,10 +82,6 @@ describe("Delete Data Set", () => {
     });
 
     describe("Success scenarios", () => {
-
-        beforeEach(async () => {
-            dsnameSuffix = "";  // reset
-        });
 
         it("should delete a data set", async () => {
             let response = runCliScript(__dirname + "/__scripts__/command/command_create_data_set.sh",

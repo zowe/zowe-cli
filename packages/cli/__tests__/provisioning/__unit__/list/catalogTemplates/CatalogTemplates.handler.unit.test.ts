@@ -32,7 +32,7 @@ describe("list catalog templates handler tests", () => {
 
     it("should be able to list catalog", async () => {
         ListCatalogTemplates.listCatalogCommon = jest.fn(
-            async (session, zOSMFVersion) => {
+            async (_session, _zOSMFVersion) => {
                 return ProvisioningListMocks.LIST_CATALOG_TEMPLATES_RESPONSE;
             }
         );

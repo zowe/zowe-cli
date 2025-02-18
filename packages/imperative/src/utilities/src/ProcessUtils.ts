@@ -44,7 +44,7 @@ export class ProcessUtils {
      * @memberof ProcessUtils
      */
     public static nextTick(callback: (...args: any[]) => void, ...args: any[]): Promise<void> {
-        return new Promise<void>((resolve, reject) => {
+        return new Promise<void>((resolve, _reject) => {
             process.nextTick(() => {
                 callback(...args);
                 resolve();

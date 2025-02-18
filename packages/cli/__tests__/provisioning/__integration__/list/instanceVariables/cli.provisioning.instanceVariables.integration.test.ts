@@ -14,7 +14,6 @@ import { TestEnvironment } from "../../../../../../../__tests__/__src__/environm
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 
 let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
-const TIMEOUT = 30000;
 
 describe("provisioning list instance-variables", () => {
 

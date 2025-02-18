@@ -61,8 +61,6 @@ describe("DefaultCredentialManager", () => {
             });
 
             it("should catch a load error", async () => {
-                const tempKeytar = keytar;
-
                 // Force enter the try catch
                 Object.defineProperty(manager, "keytar", {
                     writable: false

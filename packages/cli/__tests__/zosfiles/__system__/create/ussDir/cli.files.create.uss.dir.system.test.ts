@@ -16,15 +16,12 @@ import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/pr
 import { Delete } from "@zowe/zos-files-for-zowe-sdk";
 import { runCliScript } from "@zowe/cli-test-utils";
 
-const ZOWE_OPT_BASE_PATH = "ZOWE_OPT_BASE_PATH";
 
 let REAL_SESSION: Session;
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
 let defaultSystem: ITestPropertiesSchema;
 let fileName: string;
-let dsnameSuffix: string;
-let user: string;
 let basePath: string;
 
 describe("Create USS dir", () => {
@@ -41,7 +38,6 @@ describe("Create USS dir", () => {
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
 
         basePath = defaultSystem.unix.testdir; // `${defaultSystem.zosmf.basePath.trim()}`;
-        user = defaultSystem.zosmf.user.trim().toUpperCase();
         fileName = `${basePath}/testDir`;
 
     });
@@ -52,13 +48,9 @@ describe("Create USS dir", () => {
 
     describe("Success scenarios", () => {
 
-        beforeEach(() => {
-            dsnameSuffix = "";  // reset
-        });
-
         afterEach(async () => {
             // use DELETE APIs
-            const response = await Delete.ussFile(REAL_SESSION, fileName);
+            await Delete.ussFile(REAL_SESSION, fileName);
         });
 
         it("should create a USS dir", () => {

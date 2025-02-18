@@ -13,7 +13,6 @@ import { ITestEnvironment, runCliScript } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import * as fs from "fs";
-import { Session } from "@zowe/imperative";
 import * as nodePath from "path";
 
 const yaml = require("js-yaml");
@@ -25,7 +24,6 @@ const jsonObject = yaml.load(fs.readFileSync(propfile, "utf8"));
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
 let systemProps: ITestPropertiesSchema;
-let REAL_SESSION: Session;
 let acc: string = jsonObject.tso.account;
 
 describe("zos-tso issue command", () => {
@@ -38,8 +36,6 @@ describe("zos-tso issue command", () => {
         });
 
         systemProps = TEST_ENVIRONMENT.systemTestProperties;
-
-        REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
         acc = systemProps.tso.account.toString();
     });
 

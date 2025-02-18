@@ -363,16 +363,13 @@ describe("List command group", () => {
 
         describe("Success scenarios", () => {
             beforeAll(async () => {
-                let error;
-                let response;
                 try {
-                    response = await Create.uss(REAL_SESSION, path, "directory");
+                    await Create.uss(REAL_SESSION, path, "directory");
                     await wait(waitTime); //wait 2 seconds
-                    response = await Create.uss(REAL_SESSION, `${path}/${filename}`, "file");
+                    await Create.uss(REAL_SESSION, `${path}/${filename}`, "file");
                     await wait(waitTime); //wait 2 seconds
                 } catch (err) {
-                    error = err;
-                    Imperative.console.info("Error: " + inspect(error));
+                    Imperative.console.info("Error: " + inspect(err));
                 }
             });
 

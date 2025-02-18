@@ -39,7 +39,6 @@ describe("Create workflow common handler", () => {
         const deleteCompleted = true;
         const remoteDirectory = "/fake/dir";
         const keepFiles = true;
-        const overwrite = true;
         it("should create a workflow using a dataset", async () => {
             // Require the handler and create a new instance
             const handlerReq = require("../../../../src/workflows/create/Create.common.handler");
@@ -48,9 +47,6 @@ describe("Create workflow common handler", () => {
 
             // Vars populated by the mocked function
             let error;
-            let apiMessage = "";
-            let jsonObj;
-            let logMessage = "";
             let fakeSession = null;
 
             // Mock the create function
@@ -79,7 +75,7 @@ describe("Create workflow common handler", () => {
             });
 
             // Mocked function references
-            const profFunc = jest.fn((args) => {
+            const profFunc = jest.fn((_args) => {
                 return {
                     host: "fake",
                     port: "fake",
@@ -109,16 +105,16 @@ describe("Create workflow common handler", () => {
                     },
                     response: {
                         data: {
-                            setMessage: jest.fn((setMsgArgs) => {
-                                apiMessage = setMsgArgs;
+                            setMessage: jest.fn((_setMsgArgs) => {
+                                return;
                             }),
-                            setObj: jest.fn((setObjArgs) => {
-                                jsonObj = setObjArgs;
+                            setObj: jest.fn((_setObjArgs) => {
+                                return;
                             })
                         },
                         console: {
-                            log: jest.fn((logArgs) => {
-                                logMessage += "\n" + logArgs;
+                            log: jest.fn((_logArgs) => {
+                                return;
                             })
                         },
                         format: {
@@ -156,9 +152,6 @@ describe("Create workflow common handler", () => {
 
             // Vars populated by the mocked function
             let error;
-            let apiMessage = "";
-            let jsonObj;
-            let logMessage = "";
             let fakeSession = null;
 
             // Mock the create function
@@ -171,7 +164,7 @@ describe("Create workflow common handler", () => {
             });
 
             // Mocked function references
-            const profFunc = jest.fn((args) => {
+            const profFunc = jest.fn((_args) => {
                 return {
                     host: "fake",
                     port: "fake",
@@ -200,16 +193,16 @@ describe("Create workflow common handler", () => {
                     },
                     response: {
                         data: {
-                            setMessage: jest.fn((setMsgArgs) => {
-                                apiMessage = setMsgArgs;
+                            setMessage: jest.fn((_setMsgArgs) => {
+                                return;
                             }),
-                            setObj: jest.fn((setObjArgs) => {
-                                jsonObj = setObjArgs;
+                            setObj: jest.fn((_setObjArgs) => {
+                                return;
                             })
                         },
                         console: {
-                            log: jest.fn((logArgs) => {
-                                logMessage += "\n" + logArgs;
+                            log: jest.fn((_logArgs) => {
+                                return;
                             })
                         },
                         format: {
@@ -247,9 +240,6 @@ describe("Create workflow common handler", () => {
 
             // Vars populated by the mocked function
             let error;
-            let apiMessage = "";
-            let jsonObj;
-            let logMessage = "";
             let fakeSession = null;
 
             // Mock the create function
@@ -262,7 +252,7 @@ describe("Create workflow common handler", () => {
             });
 
             // Mocked function references
-            const profFunc = jest.fn((args) => {
+            const profFunc = jest.fn((_args) => {
                 return {
                     host: "fake",
                     port: "fake",
@@ -293,16 +283,16 @@ describe("Create workflow common handler", () => {
                     },
                     response: {
                         data: {
-                            setMessage: jest.fn((setMsgArgs) => {
-                                apiMessage = setMsgArgs;
+                            setMessage: jest.fn((_setMsgArgs) => {
+                                return;
                             }),
-                            setObj: jest.fn((setObjArgs) => {
-                                jsonObj = setObjArgs;
+                            setObj: jest.fn((_setObjArgs) => {
+                                return;
                             })
                         },
                         console: {
-                            log: jest.fn((logArgs) => {
-                                logMessage += "\n" + logArgs;
+                            log: jest.fn((_logArgs) => {
+                                return;
                             })
                         },
                         format: {
@@ -342,14 +332,9 @@ describe("Create workflow common handler", () => {
 
             // Vars populated by the mocked function
             let error;
-            let apiMessage = "";
-            let jsonObj;
-            let logMessage = "";
-            let fakeSession = null;
 
             // Mock the create function
-            CreateWorkflow.createWorkflow = jest.fn(async (session): Promise<any> => {
-                fakeSession = session;
+            CreateWorkflow.createWorkflow = jest.fn(async (_session): Promise<any> => {
                 return {
                     success: true,
                     commandResponse: "deleted"
@@ -357,7 +342,7 @@ describe("Create workflow common handler", () => {
             });
 
             // Mocked function references
-            const profFunc = jest.fn((args) => {
+            const profFunc = jest.fn((_args) => {
                 return {
                     host: "fake",
                     port: "fake",
@@ -386,16 +371,16 @@ describe("Create workflow common handler", () => {
                     },
                     response: {
                         data: {
-                            setMessage: jest.fn((setMsgArgs) => {
-                                apiMessage = setMsgArgs;
+                            setMessage: jest.fn((_setMsgArgs) => {
+                                return;
                             }),
-                            setObj: jest.fn((setObjArgs) => {
-                                jsonObj = setObjArgs;
+                            setObj: jest.fn((_setObjArgs) => {
+                                return;
                             })
                         },
                         console: {
-                            log: jest.fn((logArgs) => {
-                                logMessage += "\n" + logArgs;
+                            log: jest.fn((_logArgs) => {
+                                return;
                             })
                         }
                     },

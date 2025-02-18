@@ -35,7 +35,7 @@ describe("search job handler tests", () => {
     });
 
     it("should be able to search job spool", async () => {
-        SearchJobs.searchJobs = jest.fn(async (session, searchParms) => {
+        SearchJobs.searchJobs = jest.fn(async (_session, _searchParms) => {
             return mockSearchData;
         });
         const handler = new JobHandler.default();
@@ -49,7 +49,7 @@ describe("search job handler tests", () => {
     it("should be able respond with error message", async () => {
         const failMessage = "You fail";
         let error;
-        SearchJobs.searchJobs = jest.fn(async (session, searchParms) => {
+        SearchJobs.searchJobs = jest.fn(async (_session, _searchParms) => {
             throw new ImperativeError({msg: failMessage});
         });
         const handler = new JobHandler.default();

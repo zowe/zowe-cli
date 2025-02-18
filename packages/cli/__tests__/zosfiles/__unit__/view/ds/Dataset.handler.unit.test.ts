@@ -19,11 +19,9 @@ describe("View data set handler", () => {
             const handlerReq = require("../../../../../src/zosfiles/view/ds/Dataset.handler");
             const handler = new handlerReq.default();
             const dataSetName = "testing";
-            const binary = true;
 
 
             // Vars populated by the mocked function
-            let error;
             let apiMessage = "";
             let jsonObj;
             let logMessage = "";
@@ -36,7 +34,7 @@ describe("View data set handler", () => {
             });
 
             // Mocked function references
-            const profFunc = jest.fn((args) => {
+            const profFunc = jest.fn((_args) => {
                 return {
                     host: "fake",
                     port: "fake",
@@ -71,7 +69,7 @@ describe("View data set handler", () => {
                             })
                         },
                         progress: {
-                            startBar: jest.fn((parms) => {
+                            startBar: jest.fn((_parms) => {
                                 // do nothing
                             }),
                             endBar: jest.fn(() => {
@@ -84,7 +82,7 @@ describe("View data set handler", () => {
                     }
                 } as any);
             } catch (e) {
-                error = e;
+                // Do nothing
             }
 
             expect(Get.dataSet).toHaveBeenCalledTimes(1);

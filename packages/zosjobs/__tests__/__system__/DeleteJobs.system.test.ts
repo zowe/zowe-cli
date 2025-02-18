@@ -36,8 +36,6 @@ describe("DeleteJobs System tests", () => {
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
 
-        const ACCOUNT = defaultSystem.tso.account;
-
         // download the valid IEFBR14 from the data set specified in the properties file
         const iefbr14DataSet = testEnvironment.systemTestProperties.zosjobs.iefbr14Member;
         iefbr14JCL = (await Get.dataSet(REAL_SESSION, iefbr14DataSet)).toString();

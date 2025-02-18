@@ -97,7 +97,7 @@ export class LoggingConfigurer {
                 }
                 loggingConfig = LoggerConfigBuilder.addFileAppender(loggingConfig, logConfig.apiName);
                 loggingConfig = LoggingConfigurer.configureLoggerByKeyHelper(
-                    home, logConfig, loggingConfig, logConfig.apiName, logConfig.apiName);
+                    home, logConfig, loggingConfig, logConfig.apiName);
             });
         }
 
@@ -161,7 +161,7 @@ export class LoggingConfigurer {
         home: string, imperativeConfig: IImperativeConfig, loggingConfig: IConfigLogging, entryKey: string, configKey: string) {
         if (imperativeConfig.logging != null && imperativeConfig.logging[configKey] != null) {
             loggingConfig = LoggingConfigurer.configureLoggerByKeyHelper(
-                home, imperativeConfig.logging[configKey], loggingConfig, entryKey, configKey);
+                home, imperativeConfig.logging[configKey], loggingConfig, entryKey);
         }
 
         return loggingConfig;
@@ -180,7 +180,7 @@ export class LoggingConfigurer {
      * @memberof LoggingConfigurer
      */
     private static configureLoggerByKeyHelper(home: string, impLogConfig: IImperativeLoggingConfig,
-        loggingConfig: IConfigLogging, entryKey: string, configKey: string) {
+        loggingConfig: IConfigLogging, entryKey: string) {
         if (impLogConfig.logFile != null) {
             const fullLogFilePath = home +
                 LoggingConfigurer.normalizeDir(impLogConfig.logFile);

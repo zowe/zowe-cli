@@ -70,7 +70,10 @@ module.exports = {
                 "group": ["**/../lib", "**/../src"]
             }]
         }],
-        "@typescript-eslint/no-unused-vars": "off",
+        "@typescript-eslint/no-unused-vars": ["warn", {
+            "argsIgnorePattern": "^_",
+            "varsIgnorePattern": "^_",
+        }],
         "@typescript-eslint/no-var-requires": "off",
         "@typescript-eslint/semi": "warn",
         "unused-imports/no-unused-imports": "warn",

@@ -9,8 +9,6 @@
 *
 */
 
-import Mock = jest.Mock;
-
 jest.mock("../../../../../cmd/src/response/CommandResponse");
 jest.mock("../../../../../cmd/src/response/HandlerResponse");
 

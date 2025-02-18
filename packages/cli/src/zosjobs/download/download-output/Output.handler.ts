@@ -26,7 +26,7 @@ export default class OutputHandler extends ZosmfBaseHandler {
      * @returns {Promise<void>} - Fulfilled when the command completes successfully OR rejected with imperative error
      * @memberof OutputHandler
      */
-    public async processCmd(params: IHandlerParameters): Promise<void> {
+    public async processCmd(_params: IHandlerParameters): Promise<void> {
         const response: any = {};
         const jobid: string = this.mArguments.jobid + "";
         const outDir: string = this.mArguments.directory;
