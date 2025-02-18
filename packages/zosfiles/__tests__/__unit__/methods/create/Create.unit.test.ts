@@ -1706,9 +1706,9 @@ describe("Create ZFS", () => {
             dummySession,
             endpoint,
             expect.arrayContaining([
-                {[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: "5" },
-                ZosmfHeaders.ACCEPT_ENCODING,
-                { "Content-Length": jsonContent.length },
+                {"X-IBM-Response-Timeout": "5"},
+                {"Accept-Encoding": "gzip"},
+                {"Content-Length": jsonContent.length },
                 {"Content-Type": "application/json"}
             ]),
             JSON.stringify(options)
