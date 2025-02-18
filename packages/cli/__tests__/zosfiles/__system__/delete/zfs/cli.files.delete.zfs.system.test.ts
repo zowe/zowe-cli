@@ -67,14 +67,14 @@ describe("Delete z/OS File System", () => {
                 TEST_ENVIRONMENT_NO_PROF.env[ZOWE_OPT_BASE_PATH] = defaultSys.zosmf.basePath;
             }
 
-            let response = runCliScript(__dirname + "/__scripts__/command/command_create_zfs_fully_qualified.sh",
+            runCliScript(__dirname + "/__scripts__/command/command_create_zfs_fully_qualified.sh",
                 TEST_ENVIRONMENT_NO_PROF, [fsname, volume,
                     defaultSys.zosmf.host,
                     defaultSys.zosmf.port,
                     defaultSys.zosmf.user,
                     defaultSys.zosmf.password]);
 
-            response = runCliScript(__dirname + "/__scripts__/command/command_delete_zfs_fully_qualified.sh",
+            const response = runCliScript(__dirname + "/__scripts__/command/command_delete_zfs_fully_qualified.sh",
                 TEST_ENVIRONMENT_NO_PROF, [fsname, "--for-sure",
                     defaultSys.zosmf.host,
                     defaultSys.zosmf.port,
@@ -89,10 +89,10 @@ describe("Delete z/OS File System", () => {
 
     describe("Success scenarios", () => {
         it("should delete a ZFS", async () => {
-            let response = runCliScript(__dirname + "/__scripts__/command/command_create_zfs.sh",
+            runCliScript(__dirname + "/__scripts__/command/command_create_zfs.sh",
                 TEST_ENVIRONMENT, [fsname, volume]);
 
-            response = runCliScript(__dirname + "/__scripts__/command/command_delete_zfs.sh",
+            const response = runCliScript(__dirname + "/__scripts__/command/command_delete_zfs.sh",
                 TEST_ENVIRONMENT, [fsname, "--for-sure"]);
 
             expect(response.stderr.toString()).toBe("");
@@ -101,10 +101,10 @@ describe("Delete z/OS File System", () => {
         });
 
         it("should delete a ZFS with response timeout", async () => {
-            let response = runCliScript(__dirname + "/__scripts__/command/command_create_zfs.sh",
+            runCliScript(__dirname + "/__scripts__/command/command_create_zfs.sh",
                 TEST_ENVIRONMENT, [fsname, volume, "--responseTimeout 5"]);
 
-            response = runCliScript(__dirname + "/__scripts__/command/command_delete_zfs.sh",
+            const response = runCliScript(__dirname + "/__scripts__/command/command_delete_zfs.sh",
                 TEST_ENVIRONMENT, [fsname, "--for-sure", "--responseTimeout 5"]);
 
             expect(response.stderr.toString()).toBe("");

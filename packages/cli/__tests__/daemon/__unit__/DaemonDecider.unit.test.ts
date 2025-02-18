@@ -139,7 +139,7 @@ describe("DaemonDecider tests", () => {
 
         const envWinPipeName = "MyWinPipeName";
         const envDaemonDir = path.normalize("./testOutput/daemonDir");
-        let expectedCommChannel: string = "NotAssignedYet";
+        let expectedCommChannel: string;
 
         if (process.platform === "win32") {
             process.env.ZOWE_DAEMON_PIPE = envWinPipeName;
@@ -238,7 +238,7 @@ describe("DaemonDecider tests", () => {
         const daemonDecider = new DaemonDecider(["node", "zowe", "--daemon"]);
         daemonDecider.init();
 
-        let expectedCommChannel: string = "NotAssignedYet";
+        let expectedCommChannel: string;
         if (process.platform === "win32") {
             expectedCommChannel = `\\\\.\\pipe\\${os.userInfo().username}\\ZoweDaemon`;
         } else {
