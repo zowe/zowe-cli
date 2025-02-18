@@ -162,16 +162,6 @@ describe("TeamConfig ProfileInfo tests", () => {
         });
 
         describe("createSession", () => {
-            const profAttrs: IProfAttrs = {
-                profName: "profName",
-                profType: "zosmf",
-                profLoc: {
-                    locType: ProfLocType.TEAM_CONFIG,
-                    osLoc: ["somewhere in the OS 1", "somewhere in the OS 1A"],
-                    jsonLoc: "somewhere in the JSON file 1"
-                },
-                isDefaultProfile: true
-            };
 
             // encoding for testUserName:testPassword
             const b64TestAuth = "dGVzdFVzZXJOYW1lOnRlc3RQYXNzd29yZA==";
@@ -671,7 +661,6 @@ describe("TeamConfig ProfileInfo tests", () => {
                 { argName: "password", dataType: "string", argValue: "globalPassword" },
                 { argName: "rejectUnauthorized", dataType: "boolean", argValue: false }
             ];
-            const propFromHome = ["user", "password"];
 
             expect(mergedArgs.knownArgs.length).toBe(expectedArgs.length);
             for (const [idx, arg] of mergedArgs.knownArgs.entries()) {
@@ -693,7 +682,6 @@ describe("TeamConfig ProfileInfo tests", () => {
         it("should override not known args in service and base profile with environment variables", async () => {
             const fakePort = 12345;
             const teamConfigHost = "LPAR4.your.domain.net";
-            const teamConfigPort = 234;
             process.env[envHost] = envHost; // already in known arguments
             process.env[envPort] = "" + fakePort; // arlready in known arguments
             process.env[envRFH] = "false";
@@ -1491,7 +1479,7 @@ describe("TeamConfig ProfileInfo tests", () => {
             const profInfo = createNewProfInfo(teamProjDir);
             await profInfo.readProfilesFromDisk();
 
-            const prof = profInfo.mergeArgsForProfile(profInfo.getAllProfiles("dummy")[0]);
+            profInfo.mergeArgsForProfile(profInfo.getAllProfiles("dummy")[0]);
             await profInfo.updateProperty({ profileName: 'LPAR4', property: "someProperty", value: "example.com", profileType: "dummy" });
             const afterUpdate = profInfo.mergeArgsForProfile(profInfo.getAllProfiles("dummy")[0]);
             expect(afterUpdate.knownArgs.find(v => v.argName === 'someProperty')?.argValue).toBe('example.com');

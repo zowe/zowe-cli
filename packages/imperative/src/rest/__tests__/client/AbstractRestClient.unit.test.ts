@@ -271,7 +271,7 @@ describe("AbstractRestClient tests", () => {
 
         let error;
         try {
-            const data = await RestClient.getExpectJSON<IResponseload>(new Session({hostname: "test"}), "/resource");
+            await RestClient.getExpectJSON<IResponseload>(new Session({hostname: "test"}), "/resource");
         } catch (thrownError) {
             error = thrownError;
         }
@@ -322,7 +322,7 @@ describe("AbstractRestClient tests", () => {
 
         let error;
         try {
-            const data = await RestClient.postExpectJSON<IResponseload>(new Session({hostname: "test"}),
+            await RestClient.postExpectJSON<IResponseload>(new Session({hostname: "test"}),
                 "/resource", [Headers.APPLICATION_JSON], payload);
         } catch (thrownError) {
             error = thrownError;
@@ -504,12 +504,10 @@ describe("AbstractRestClient tests", () => {
         (https.request as any) = httpsRequestFnc;
         (http.request as any) = httpRequestFnc;
 
-        let error;
-
         try {
             await RestClient.getExpectString(new Session({hostname: "test", protocol: "http"}), "/resource");
-        } catch (thrownError) {
-            error = thrownError;
+        } catch (err) {
+            // Do nothing
         }
 
         expect(httpRequestFnc).toHaveBeenCalled();
@@ -541,21 +539,17 @@ describe("AbstractRestClient tests", () => {
         (https.request as any) = httpsRequestFnc;
         (http.request as any) = httpRequestFnc;
 
-        let error;
         try {
             await RestClient.getExpectString(new Session({hostname: "test"}), "/resource");
-        } catch (thrownError) {
-            error = thrownError;
+        } catch (err) {
+            // Do nothing
         }
+
         expect(httpsRequestFnc).toHaveBeenCalled();
         expect(httpRequestFnc).not.toHaveBeenCalled();
     });
 
     it("should not error when streaming data", async () => {
-
-        interface IPayload {
-            data: string;
-        }
 
         const fakeResponseStream: any = {
             write: jest.fn(),
@@ -564,7 +558,7 @@ describe("AbstractRestClient tests", () => {
             writableFinished: true
         };
         const fakeRequestStream: any = {
-            on: jest.fn((eventName: string, callback: any) => {
+            on: jest.fn((_eventName: string, _callback: any) => {
                 // do nothing
             }),
         };
@@ -794,7 +788,6 @@ describe("AbstractRestClient tests", () => {
         // restore setPasswordAuth spy to its original implementation
         setPasswordAuthSpy.mockRestore();
 
-        let error;
         try {
             await RestClient.getExpectString(
                 new Session({
@@ -806,8 +799,8 @@ describe("AbstractRestClient tests", () => {
                     tokenValue: "someToken"
                 }),
                 "/resource");
-        } catch (thrownError) {
-            error = thrownError;
+        } catch (err) {
+            // Do nothing
         }
         expect(httpsRequestFnc).toHaveBeenCalled();
     });

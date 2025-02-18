@@ -27,7 +27,7 @@ describe("Compare Base Helper", () => {
     const string1: string = "test string 1";
     const string2: string = "test string 2";
 
-    helper.prepareContent = jest.fn((string: string | Buffer)=> {
+    helper.prepareContent = jest.fn((_string: string | Buffer)=> {
         return "prepared string 1";
     });
     describe("it should prepare the content strings for comparison", () => {

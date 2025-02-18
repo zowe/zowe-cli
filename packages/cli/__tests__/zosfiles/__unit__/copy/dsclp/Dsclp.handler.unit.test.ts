@@ -108,11 +108,6 @@ describe("DsclpHandler", () => {
 
         const dummySession = {};
 
-        const apiResponse: IZosFilesResponse = {
-            success: true,
-            commandResponse: "Success"
-        };
-
         const response = await handler.processWithSession(commandParameters, dummySession as any);
 
         expect(copyDatasetSpy).toHaveBeenCalledTimes(1);

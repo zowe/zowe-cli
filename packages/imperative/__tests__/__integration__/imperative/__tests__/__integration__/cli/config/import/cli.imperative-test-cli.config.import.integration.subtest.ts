@@ -48,7 +48,7 @@ describe("imperative-test-cli config import", () => {
             ["http-server", __dirname + "/__resources__"]);
 
         // Retrieve server URL from the end of first line printed to stdout
-        localhostUrl = await new Promise((resolve, reject) => {
+        localhostUrl = await new Promise((resolve, _reject) => {
             pServer.stdout.on("data", (data: Buffer) => {
                 const match = data.toString().match(serverAddressRegex);
                 if(match != null) {

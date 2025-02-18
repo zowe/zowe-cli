@@ -625,7 +625,6 @@ describe("Config tests", () => {
 
         it("should not be able to get any information if the $schema property is missing from the active layer", async () => {
             const config = await Config.load(MY_APP);
-            const layer = config.api.layers.get();
             config.layerActive().properties.$schema = null;
             expect(config.getSchemaInfo()).toEqual({
                 local: false,

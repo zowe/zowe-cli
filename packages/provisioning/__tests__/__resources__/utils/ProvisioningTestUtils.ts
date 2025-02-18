@@ -120,7 +120,7 @@ export class ProvisioningTestUtils {
 
             } else if (instanceState === this.STATE_BEING_INIT || instanceState === this.STATE_BEING_PROV) {
                 // Wait until instance state is 'provisioned'
-                instance = await this.waitInstanceState(session, zOSMFVersion, instanceID, this.STATE_PROV);
+                await this.waitInstanceState(session, zOSMFVersion, instanceID, this.STATE_PROV);
 
                 // Deprovision an instance in 'provisioned' state
                 instance = await PerformAction.doProvisioningActionCommon(session, ProvisioningConstants.ZOSMF_VERSION,

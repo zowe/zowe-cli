@@ -68,11 +68,11 @@ const DEFAULT_RESPONSE_FEEDBACK_2_BAD: IJobFeedback = {
 describe("delete job handler tests", () => {
     it("should be able to delete a job by job id", async () => {
         let passedSession: Session;
-        GetJobs.getJob = jest.fn(async (session, jobid) => {
+        GetJobs.getJob = jest.fn(async (session, _jobid) => {
             passedSession = session;
             return GetJobsData.SAMPLE_COMPLETE_JOB;
         });
-        DeleteJobs.deleteJobForJob = jest.fn(async (session, job) => {
+        DeleteJobs.deleteJobForJob = jest.fn(async (_session, _job) => {
             return DEFAULT_RESPONSE_FEEDBACK;
         });
         const handler = new JobHandler.default();
@@ -90,11 +90,11 @@ describe("delete job handler tests", () => {
 
     it("should be able to delete a job by job id version 2.0", async () => {
         let passedSession: Session;
-        GetJobs.getJob = jest.fn(async (session, jobid) => {
+        GetJobs.getJob = jest.fn(async (session, _jobid) => {
             passedSession = session;
             return GetJobsData.SAMPLE_COMPLETE_JOB;
         });
-        DeleteJobs.deleteJobForJob = jest.fn(async (session, job) => {
+        DeleteJobs.deleteJobForJob = jest.fn(async (_session, _job) => {
             return DEFAULT_RESPONSE_FEEDBACK_2;
         });
         const handler = new JobHandler.default();
@@ -112,11 +112,11 @@ describe("delete job handler tests", () => {
 
     it("should fail to delete a job by job id version 2.0", async () => {
         let passedSession: Session;
-        GetJobs.getJob = jest.fn(async (session, jobid) => {
+        GetJobs.getJob = jest.fn(async (session, _jobid) => {
             passedSession = session;
             return GetJobsData.SAMPLE_COMPLETE_JOB;
         });
-        DeleteJobs.deleteJobForJob = jest.fn(async (session, job) => {
+        DeleteJobs.deleteJobForJob = jest.fn(async (_session, _job) => {
             return DEFAULT_RESPONSE_FEEDBACK_2_BAD;
         });
         const handler = new JobHandler.default();
@@ -144,7 +144,7 @@ describe("delete job handler tests", () => {
     it("should not transform an error from the zosmf rest client", async () => {
         const failMessage = "You fail in z/OSMF";
         let error;
-        GetJobs.getJob = jest.fn((session, jobid) => {
+        GetJobs.getJob = jest.fn((_session, _jobid) => {
             throw new ImperativeError({ msg: failMessage });
         });
         const handler = new JobHandler.default();
@@ -163,10 +163,10 @@ describe("delete job handler tests", () => {
     it("should not transform an error from the DeleteJobs API class", async () => {
         const failMessage = "You fail in DeleteJobs";
         let error;
-        GetJobs.getJob = jest.fn(async (session, jobid) => {
+        GetJobs.getJob = jest.fn(async (_session, _jobid) => {
             return GetJobsData.SAMPLE_COMPLETE_JOB;
         });
-        DeleteJobs.deleteJobForJob = jest.fn((session, job) => {
+        DeleteJobs.deleteJobForJob = jest.fn((_session, _job) => {
             throw new ImperativeError({ msg: failMessage });
         });
         const handler = new JobHandler.default();

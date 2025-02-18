@@ -18,7 +18,6 @@ import ProfilesHandler from "../../../../src/config/cmd/profiles/profiles.handle
 let dataObj: any;
 let formatObj: any;
 let errorText: string;
-let logText: string;
 
 // "Mocked" version of the handler parameters for a config list command
 const handlerParms: any = {
@@ -34,8 +33,8 @@ const handlerParms: any = {
             })
         },
         console: {
-            log: jest.fn((msgText) => {
-                logText = msgText;
+            log: jest.fn((_msgText) => {
+                // Do nothing
             }),
             error: jest.fn((msgText) => {
                 errorText = msgText;
@@ -84,7 +83,6 @@ describe("Configuration Profiles command handler", () => {
         dataObj = null;
         formatObj = null;
         errorText = null;
-        logText = null;
     });
 
     it("should output list of nested profiles", async () => {

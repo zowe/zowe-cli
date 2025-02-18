@@ -25,7 +25,6 @@ let envFileCli: string;
 describe("imperative-test-cli config report-env", () => {
     // Create the test environment
     beforeAll(async () => {
-        const serverAddressRegex = /(http.*)\s/;
 
         TEST_ENVIRONMENT = await SetupTestEnvironment.createTestEnv({
             cliHomeEnvVar: "IMPERATIVE_TEST_CLI_CLI_HOME",

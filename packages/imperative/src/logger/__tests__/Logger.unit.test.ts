@@ -202,7 +202,6 @@ describe("Logger tests", () => {
         const imperative = Logger.getImperativeLogger();
         const imperativeCategory = Logger.getLoggerCategory("imperative");
         const app = Logger.getAppLogger();
-        const console = Logger.getConsoleLogger();
 
         // these should match config
         expect((imperative.level as any).toUpperCase()).toMatchSnapshot();

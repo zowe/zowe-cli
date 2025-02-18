@@ -38,8 +38,6 @@ describe("Disable daemon handler", () => {
 
     describe("process method", () => {
         // command parms passed to process() by multiple tests
-        let apiMessage = "";
-        let jsonObj;
         let logMessage = "";
         const cmdParms = {
             arguments: {
@@ -48,11 +46,11 @@ describe("Disable daemon handler", () => {
             },
             response: {
                 data: {
-                    setMessage: jest.fn((setMsgArgs) => {
-                        apiMessage = setMsgArgs;
+                    setMessage: jest.fn((_setMsgArgs) => {
+                        // Do nothing
                     }),
-                    setObj: jest.fn((setObjArgs) => {
-                        jsonObj = setObjArgs;
+                    setObj: jest.fn((_setObjArgs) => {
+                        // Do nothing
                     }),
                     setExitCode: jest.fn((exitCode) => {
                         return exitCode;
@@ -92,7 +90,6 @@ describe("Disable daemon handler", () => {
         });
 
         it("should tell you to open new terminal on Linux", async () => {
-            const getBasicSystemInfoOrig = ProcessUtils.getBasicSystemInfo;
             ProcessUtils.getBasicSystemInfo = jest.fn(() => {
                 return {
                     "arch": "ArchNotNeeded",
@@ -119,7 +116,6 @@ describe("Disable daemon handler", () => {
         });
 
         it("should NOT tell you to open new terminal on Windows", async () => {
-            const getBasicSystemInfoOrig = ProcessUtils.getBasicSystemInfo;
             ProcessUtils.getBasicSystemInfo = jest.fn(() => {
                 return {
                     "arch": "ArchNotNeeded",

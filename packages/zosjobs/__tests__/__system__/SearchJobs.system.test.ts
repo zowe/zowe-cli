@@ -16,12 +16,8 @@ import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestE
 import { ITestPropertiesSchema } from "../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 
 /**********************************************************************************/
-let ACCOUNT: string;
 
 // The job class for holding jobs on the input queue
-let JOBCLASS: string;
-let SYSAFF: string;
-
 // Session to use for the tests
 let REAL_SESSION: Session;
 
@@ -31,8 +27,6 @@ let INVALID_SESSION: Session;
 const SIX_CHARS = 6;
 let MONITOR_JOB_NAME: string;
 const TEST_JOB_NAME = "TSTMB";
-// Sample JCL - TODO replace by JCL resources
-let JCL: string;
 
 let defaultSystem: ITestPropertiesSchema;
 let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
@@ -71,17 +65,7 @@ describe("Search Jobs - System Tests", () => {
             type: "basic",
             rejectUnauthorized: false
         });
-
-        ACCOUNT = defaultSystem.tso.account;
         MONITOR_JOB_NAME = REAL_SESSION.ISession.user?.toUpperCase().substring(0, SIX_CHARS) + "G";
-
-        JOBCLASS = testEnvironment.systemTestProperties.zosjobs.jobclass;
-        SYSAFF = testEnvironment.systemTestProperties.zosjobs.sysaff;
-
-        // TODO: What string goes in the removed section?
-        JCL =
-            "//" + MONITOR_JOB_NAME + " JOB '" + ACCOUNT + "',CLASS=" + JOBCLASS + "\n" +
-            "//IEFBR14 EXEC PGM=IEFBR14"; // GetJobs
     });
 
     afterAll(async () => {

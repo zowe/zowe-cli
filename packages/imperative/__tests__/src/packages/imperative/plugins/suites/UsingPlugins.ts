@@ -270,12 +270,12 @@ describe("Using a Plugin", () => {
 
         // install the override plugin
         let cmd = `plugins install ${overridePluginDir}`;
-        let result = T.executeTestCLICommand(cliBin, this, cmd.split(" "));
+        T.executeTestCLICommand(cliBin, this, cmd.split(" "));
 
         // confirm the plugin summary is displayed from zowe help
         const pluginGrpNm = "override-plugin";
         cmd = ``;
-        result = T.executeTestCLICommand(cliBin, this, cmd.split(" "));
+        let result = T.executeTestCLICommand(cliBin, this, cmd.split(" "));
         expect(result.stderr).toBe("");
         expect(result.stdout).toContain(pluginGrpNm);
         expect(result.stdout).toContain("imperative override plugin pluginSummary");

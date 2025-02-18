@@ -14,14 +14,14 @@ import { CommandOptionType } from "../../../src/doc/option/ICommandOptionDefinit
 
 export class InheritedHelpGenerator extends AbstractHelpGenerator {
 
-    public buildFullCommandHelpText(includeGlobalOptions: boolean): string {
+    public buildFullCommandHelpText(_includeGlobalOptions: boolean): string {
         throw new Error("Method not implemented.");
     }
     public buildHelp(): string {
         return "inherited_help";
     }
 
-    public getCommandHelpText(includeGlobalOptions: boolean): string {
+    public getCommandHelpText(_includeGlobalOptions: boolean): string {
         return "command_help_text";
     }
 

@@ -17,8 +17,6 @@ import { wait, waitTime } from "../../../../../../../__tests__/__src__/TestUtils
 import { Delete } from "@zowe/zos-files-for-zowe-sdk";
 import { runCliScript } from "@zowe/cli-test-utils";
 
-const ZOWE_OPT_BASE_PATH = "ZOWE_OPT_BASE_PATH";
-
 let REAL_SESSION: Session;
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
@@ -62,7 +60,7 @@ describe("Create Data Set", () => {
             // use DELETE APIs
             if (dsnameSuffix !== "") {
                 await wait(waitTime); //wait 2 seconds
-                const response = await Delete.dataSet(REAL_SESSION, dsname + "." + dsnameSuffix);
+                await Delete.dataSet(REAL_SESSION, dsname + "." + dsnameSuffix);
             }
         });
 

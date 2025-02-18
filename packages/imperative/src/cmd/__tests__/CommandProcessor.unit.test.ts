@@ -239,7 +239,7 @@ describe("Command Processor", () => {
         let caughtError;
 
         try {
-            const processor: CommandProcessor = new CommandProcessor({
+            new CommandProcessor({
                 envVariablePrefix: ENV_VAR_PREFIX,
                 definition: SAMPLE_COMMAND_DEFINITION,
                 helpGenerator: FAKE_HELP_GENERATOR,
@@ -257,7 +257,7 @@ describe("Command Processor", () => {
     it("should detect that no parameters have been supplied", () => {
         let error;
         try {
-            const processor: CommandProcessor = new CommandProcessor(undefined);
+            new CommandProcessor(undefined);
         } catch (e) {
             error = e;
         }
@@ -269,7 +269,7 @@ describe("Command Processor", () => {
     it("should detect no command definition supplied", () => {
         let error;
         try {
-            const processor: CommandProcessor = new CommandProcessor({
+            new CommandProcessor({
                 envVariablePrefix: ENV_VAR_PREFIX,
                 definition: undefined,
                 helpGenerator: FAKE_HELP_GENERATOR,
@@ -288,7 +288,7 @@ describe("Command Processor", () => {
     it("should detect no help generator supplied", () => {
         let error;
         try {
-            const processor: CommandProcessor = new CommandProcessor({
+            new CommandProcessor({
                 envVariablePrefix: ENV_VAR_PREFIX,
                 definition: SAMPLE_COMMAND_DEFINITION,
                 helpGenerator: undefined,
@@ -307,7 +307,7 @@ describe("Command Processor", () => {
     it("should detect no root command supplied", () => {
         let error;
         try {
-            const processor: CommandProcessor = new CommandProcessor({
+            new CommandProcessor({
                 envVariablePrefix: ENV_VAR_PREFIX,
                 definition: SAMPLE_COMMAND_DEFINITION,
                 helpGenerator: FAKE_HELP_GENERATOR,
@@ -326,7 +326,7 @@ describe("Command Processor", () => {
     it("should detect blank root command supplied", () => {
         let error;
         try {
-            const processor: CommandProcessor = new CommandProcessor({
+            new CommandProcessor({
                 envVariablePrefix: ENV_VAR_PREFIX,
                 definition: SAMPLE_COMMAND_DEFINITION,
                 helpGenerator: FAKE_HELP_GENERATOR,
@@ -345,7 +345,7 @@ describe("Command Processor", () => {
     it("should detect missing ENV var prefix", () => {
         let error;
         try {
-            const processor: CommandProcessor = new CommandProcessor({
+            new CommandProcessor({
                 envVariablePrefix: undefined,
                 definition: SAMPLE_COMMAND_DEFINITION,
                 helpGenerator: FAKE_HELP_GENERATOR,
@@ -437,8 +437,6 @@ describe("Command Processor", () => {
     });
 
     it("should build the help if requested", () => {
-        let stdoutMessages: string = "";
-        let stderrMessages: string = "";
 
         // Allocate the command processor
         const processor: CommandProcessor = new CommandProcessor({
@@ -451,11 +449,11 @@ describe("Command Processor", () => {
         });
 
         // Mock the process write
-        (process.stdout.write as any) = jest.fn((data) => {
-            stdoutMessages += data;
+        (process.stdout.write as any) = jest.fn((_data) => {
+            return;
         });
-        (process.stderr.write as any) = jest.fn((data) => {
-            stderrMessages += data;
+        (process.stderr.write as any) = jest.fn((_data) => {
+            return;
         });
 
         const helpResponse: ICommandResponse = processor.help(new CommandResponse());
@@ -476,7 +474,7 @@ describe("Command Processor", () => {
 
         let error;
         try {
-            const helpResponse: ICommandResponse = processor.help(undefined);
+            processor.help(undefined);
         } catch (e) {
             error = e;
         }
@@ -486,8 +484,6 @@ describe("Command Processor", () => {
     });
 
     it("should build the web help if requested", () => {
-        let stdoutMessages: string = "";
-        let stderrMessages: string = "";
 
         // Allocate the command processor
         const processor: CommandProcessor = new CommandProcessor({
@@ -500,11 +496,11 @@ describe("Command Processor", () => {
         });
 
         // Mock the process write
-        (process.stdout.write as any) = jest.fn((data) => {
-            stdoutMessages += data;
+        (process.stdout.write as any) = jest.fn((_data) => {
+            return;
         });
-        (process.stderr.write as any) = jest.fn((data) => {
-            stderrMessages += data;
+        (process.stderr.write as any) = jest.fn((_data) => {
+            return;
         });
         WebHelpManager.instance.openHelp = jest.fn();
 
@@ -566,7 +562,7 @@ describe("Command Processor", () => {
 
         let error;
         try {
-            const validateResponse: ICommandValidatorResponse = await processor.validate(undefined, new CommandResponse());
+            await processor.validate(undefined, new CommandResponse());
         } catch (e) {
             error = e;
         }
@@ -588,7 +584,7 @@ describe("Command Processor", () => {
 
         let error;
         try {
-            const validateResponse: ICommandValidatorResponse = await processor.validate({
+            await processor.validate({
                 _: [],
                 $0: "",
                 valid: true
@@ -614,7 +610,7 @@ describe("Command Processor", () => {
 
         let error;
         try {
-            const validateResponse: ICommandResponse = await processor.invoke(undefined);
+            await processor.invoke(undefined);
         } catch (e) {
             error = e;
         }
@@ -636,7 +632,7 @@ describe("Command Processor", () => {
 
         let error;
         try {
-            const validateResponse: ICommandResponse = await processor.invoke({ arguments: undefined });
+            await processor.invoke({ arguments: undefined });
         } catch (e) {
             error = e;
         }
@@ -659,7 +655,7 @@ describe("Command Processor", () => {
         let error;
         try {
             const parms: any = { arguments: { _: [], $0: "" }, responseFormat: "blah", silent: true };
-            const validateResponse: ICommandResponse = await processor.invoke(parms);
+            await processor.invoke(parms);
         } catch (e) {
             error = e;
         }
@@ -682,7 +678,7 @@ describe("Command Processor", () => {
         let error;
         try {
             const parms: any = { arguments: { _: undefined, $0: "" }, responseFormat: "json", silent: true };
-            const validateResponse: ICommandResponse = await processor.invoke(parms);
+            await processor.invoke(parms);
         } catch (e) {
             error = e;
         }
@@ -1878,7 +1874,7 @@ describe("Command Processor", () => {
     it("should fail the creation of the command processor if a definition of type command has no handler", async () => {
         let error;
         try {
-            const processor: CommandProcessor = new CommandProcessor({
+            new CommandProcessor({
                 envVariablePrefix: ENV_VAR_PREFIX,
                 fullDefinition: SAMPLE_COMPLEX_COMMAND,
                 definition: SAMPLE_COMMAND_WIH_NO_HANDLER,

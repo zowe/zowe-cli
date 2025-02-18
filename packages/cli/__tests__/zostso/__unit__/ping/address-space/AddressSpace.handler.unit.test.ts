@@ -32,7 +32,7 @@ describe("ping address-space handler tests", () => {
     });
 
     it("should be able to ping address-space", async () => {
-        PingTso.ping = jest.fn(async (session, servletKey) => {
+        PingTso.ping = jest.fn(async (_session, _servletKey) => {
             return PingTsoData.SAMPLE_PING_RESPONSE;
         });
         const handler = new PingAddressSpaceHandler.default();
@@ -46,7 +46,7 @@ describe("ping address-space handler tests", () => {
         const failMessage = "IZUG1126E: z/OSMF cannot correlate the request for key \"ZOSMFAD-SYS2-55-aaakaaac\"\n" +
             "with an active z/OS application session.";
         let error;
-        PingTso.ping = jest.fn((session, servletKey) => {
+        PingTso.ping = jest.fn((_session, _servletKey) => {
             throw new ImperativeError({ msg: failMessage });
         });
         const handler = new PingAddressSpaceHandler.default();

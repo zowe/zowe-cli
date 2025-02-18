@@ -40,10 +40,9 @@ describe("Delete Dataset", () => {
     describe("Success scenarios", () => {
         beforeEach(async () => {
             let error;
-            let response;
 
             try {
-                response = await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname);
+                await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname);
             } catch (err) {
                 error = err;
                 Imperative.console.info("Error: " + inspect(error));

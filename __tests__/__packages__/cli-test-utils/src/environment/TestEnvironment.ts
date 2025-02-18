@@ -130,7 +130,7 @@ export class TestEnvironment {
      * @returns {ITestPropertiesSchema} - The parsed test properties.
      * @memberof TestEnvironment
      */
-    protected static loadSystemTestProperties<T>(filePath: string | null = null, testDirectory: string): T {
+    protected static loadSystemTestProperties<T>(_filePath: string | null = null, testDirectory: string): T {
         const logger: Logger = this.getMockFileLogger(testDirectory);
         // For now, I'm leaving the option for env specified properties in code. This will not be documented.
         const propfilename: string = process.env.propfile || TestEnvironment.DEFAULT_PROPERTIES;

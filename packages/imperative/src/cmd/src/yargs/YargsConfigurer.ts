@@ -82,7 +82,7 @@ export class YargsConfigurer {
                         envVariablePrefix: this.envVariablePrefix,
                         promptPhrase: this.promptPhrase
                     }).invoke({ arguments: argv, silent: false, responseFormat: this.getResponseFormat(argv) })
-                        .then((response) => {
+                        .then((_response) => {
                             Logger.getImperativeLogger().debug("Root help complete.");
                         })
                         .catch((rejected) => {
@@ -118,7 +118,7 @@ export class YargsConfigurer {
 
                     // Invoke the fail command
                     failCommand.invoke({ arguments: argv, silent: false, responseFormat: this.getResponseFormat(argv) })
-                        .then((failedCommandResponse) => {
+                        .then((_failedCommandResponse) => {
                             logger.debug("Finished invoking the 'FailedCommand' handler");
                         }).catch((err) => {
                             logger.error("%s", err.msg);
@@ -127,7 +127,7 @@ export class YargsConfigurer {
             }
         });
 
-        this.yargs.fail((msg: string, error: Error, failedYargs: any) => {
+        this.yargs.fail((msg: string, error: Error, _failedYargs: any) => {
             process.exitCode = Constants.ERROR_EXIT_CODE;
             AbstractCommandYargs.STOP_YARGS = true; // todo: figure out a better way
             error = error || new Error(msg);
@@ -164,7 +164,7 @@ export class YargsConfigurer {
 
             // Invoke the fail command
             failCommand.invoke({ arguments: argv, silent: false, responseFormat: this.getResponseFormat(argv) })
-                .then((failedCommandResponse) => {
+                .then((_failedCommandResponse) => {
                     logger.debug("Finished invoking the 'FailedCommand' handler");
                 }).catch((err) => {
                     logger.error("%s", err.msg);
@@ -207,7 +207,7 @@ export class YargsConfigurer {
 
             // Invoke the fail command processor
             failCommand.invoke({ arguments: argv, silent: false, responseFormat: this.getResponseFormat(argv) })
-                .then((failedCommandResponse) => {
+                .then((_failedCommandResponse) => {
                     logger.debug("Finished invoking the 'FailedCommand' handler");
                 }).catch((err) => {
                     logger.error("%s", err.msg);

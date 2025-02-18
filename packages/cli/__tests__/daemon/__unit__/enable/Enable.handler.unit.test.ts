@@ -84,8 +84,6 @@ describe("Handler for daemon enable", () => {
 
     describe("process method", () => {
         // command parms passed to process() by multiple tests
-        let apiMessage = "";
-        let jsonObj;
         const cmdParms = {
             arguments: {
                 $0: "fake",
@@ -93,11 +91,11 @@ describe("Handler for daemon enable", () => {
             },
             response: {
                 data: {
-                    setMessage: jest.fn((setMsgArgs) => {
-                        apiMessage = setMsgArgs;
+                    setMessage: jest.fn((_setMsgArgs) => {
+                        return;
                     }),
-                    setObj: jest.fn((setObjArgs) => {
-                        jsonObj = setObjArgs;
+                    setObj: jest.fn((_setObjArgs) => {
+                        return;
                     }),
                     setExitCode: jest.fn((exitCode) => {
                         return exitCode;
@@ -281,7 +279,7 @@ describe("Handler for daemon enable", () => {
 
             // spy on our handler's private enableDaemon() function
             unzipTgzSpy = jest.spyOn(EnableDaemonHandler.prototype as any, "unzipTgz");
-            unzipTgzSpy.mockImplementation((tgzFile: string, toDir: string, fileToExtract: string) => {return;});
+            unzipTgzSpy.mockImplementation((_tgzFile: string, _toDir: string, _fileToExtract: string) => {return;});
 
             let error;
             let userInfoMsg: string;
@@ -323,7 +321,7 @@ describe("Handler for daemon enable", () => {
 
             // spy on our handler's private enableDaemon() function
             unzipTgzSpy = jest.spyOn(EnableDaemonHandler.prototype as any, "unzipTgz");
-            unzipTgzSpy.mockImplementation((tgzFile: string, toDir: string, fileToExtract: string) => {return;});
+            unzipTgzSpy.mockImplementation((_tgzFile: string, _toDir: string, _fileToExtract: string) => {return;});
 
             let error;
             let userInfoMsg: string;
@@ -362,7 +360,7 @@ describe("Handler for daemon enable", () => {
 
             // spy on our handler's private enableDaemon() function
             unzipTgzSpy = jest.spyOn(EnableDaemonHandler.prototype as any, "unzipTgz");
-            unzipTgzSpy.mockImplementation((tgzFile: string, toDir: string, fileToExtract: string) => {return;});
+            unzipTgzSpy.mockImplementation((_tgzFile: string, _toDir: string, _fileToExtract: string) => {return;});
 
             let error;
             let userInfoMsg: string;
@@ -413,7 +411,7 @@ describe("Handler for daemon enable", () => {
 
             // spy on our handler's private enableDaemon() function
             unzipTgzSpy = jest.spyOn(EnableDaemonHandler.prototype as any, "unzipTgz");
-            unzipTgzSpy.mockImplementation((tgzFile: string, toDir: string, fileToExtract: string) => {return;});
+            unzipTgzSpy.mockImplementation((_tgzFile: string, _toDir: string, _fileToExtract: string) => {return;});
 
             let error;
             let userInfoMsg: string;
@@ -464,7 +462,7 @@ describe("Handler for daemon enable", () => {
 
             // spy on our handler's private enableDaemon() function
             unzipTgzSpy = jest.spyOn(EnableDaemonHandler.prototype as any, "unzipTgz");
-            unzipTgzSpy.mockImplementation((tgzFile: string, toDir: string, fileToExtract: string) => {return;});
+            unzipTgzSpy.mockImplementation((_tgzFile: string, _toDir: string, _fileToExtract: string) => {return;});
 
             let error;
             let userInfoMsg: string;
@@ -502,7 +500,7 @@ describe("Handler for daemon enable", () => {
 
             // spy on our handler's private enableDaemon() function
             unzipTgzSpy = jest.spyOn(EnableDaemonHandler.prototype as any, "unzipTgz");
-            unzipTgzSpy.mockImplementation((tgzFile: string, toDir: string, fileToExtract: string) => {return;});
+            unzipTgzSpy.mockImplementation((_tgzFile: string, _toDir: string, _fileToExtract: string) => {return;});
 
             let error;
             let userInfoMsg: string;
@@ -539,7 +537,7 @@ describe("Handler for daemon enable", () => {
 
             // spy on our handler's private enableDaemon() function
             unzipTgzSpy = jest.spyOn(EnableDaemonHandler.prototype as any, "unzipTgz");
-            unzipTgzSpy.mockImplementation((tgzFile: string, toDir: string, fileToExtract: string) => {return;});
+            unzipTgzSpy.mockImplementation((_tgzFile: string, _toDir: string, _fileToExtract: string) => {return;});
 
             // force the message to reset ZOWE_USE_DAEMON variable
             const noDaemonVal = "no";

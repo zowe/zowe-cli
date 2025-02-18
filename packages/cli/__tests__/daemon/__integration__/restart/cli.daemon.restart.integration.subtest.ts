@@ -24,8 +24,6 @@ let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 
 describe("daemon restart", () => {
     const rimrafSync = require("rimraf").sync;
-    const zoweCmdRegEx = "zowe.*[/|\\\\]cli[/|\\\\]lib[/|\\\\]main.js.* --daemon" + "|" +
-    "[/|\\\\]bin[/|\\\\]zowe.* --daemon";
 
     let exePath: string;
     let pathToBin: string;

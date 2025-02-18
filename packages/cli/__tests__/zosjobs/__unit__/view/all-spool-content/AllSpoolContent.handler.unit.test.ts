@@ -39,13 +39,13 @@ describe("zos-jobs view all-spool-content handler", () => {
 
     it("should be able to get the content of a spool file", async () => {
         const spoolContent = fs.readFileSync(TEST_RESOURCES_DIR + "/spool/example_spool_content.txt");
-        GetJobs.getJob = jest.fn(async (session, jobid) => {
+        GetJobs.getJob = jest.fn(async (_session, _jobid) => {
             return GetJobsData.SAMPLE_COMPLETE_JOB;
         });
-        GetJobs.getSpoolFilesForJob = jest.fn(async (session, jobid) => {
+        GetJobs.getSpoolFilesForJob = jest.fn(async (_session, _jobid) => {
             return GetJobsData.SAMPLE_SPOOL_FILES;
         });
-        GetJobs.getSpoolContent = jest.fn(async (session, spoolFile) => {
+        GetJobs.getSpoolContent = jest.fn(async (_session, _spoolFile) => {
             return spoolContent.toString();
         });
         const handler = new AllSpoolContentHandler.default();
@@ -66,13 +66,13 @@ describe("zos-jobs view all-spool-content handler", () => {
 
     it("should be able to get the content of a spool file with encoding", async () => {
         const spoolContent = fs.readFileSync(TEST_RESOURCES_DIR + "/spool/example_spool_content.txt");
-        GetJobs.getJob = jest.fn(async (session, jobid) => {
+        GetJobs.getJob = jest.fn(async (_session, _jobid) => {
             return GetJobsData.SAMPLE_COMPLETE_JOB;
         });
-        GetJobs.getSpoolFilesForJob = jest.fn(async (session, jobid) => {
+        GetJobs.getSpoolFilesForJob = jest.fn(async (_session, _jobid) => {
             return GetJobsData.SAMPLE_SPOOL_FILES;
         });
-        GetJobs.getSpoolContent = jest.fn(async (session, spoolFile) => {
+        GetJobs.getSpoolContent = jest.fn(async (_session, _spoolFile) => {
             return spoolContent.toString();
         });
         const handler = new AllSpoolContentHandler.default();
@@ -94,13 +94,13 @@ describe("zos-jobs view all-spool-content handler", () => {
 
     it("should be able to get the content of a spool file with procstep", async () => {
         const spoolContent = fs.readFileSync(TEST_RESOURCES_DIR + "/spool/example_spool_content.txt");
-        GetJobs.getJob = jest.fn(async (session, jobid) => {
+        GetJobs.getJob = jest.fn(async (_session, _jobid) => {
             return GetJobsData.SAMPLE_COMPLETE_JOB;
         });
-        GetJobs.getSpoolFilesForJob = jest.fn(async (session, jobid) => {
+        GetJobs.getSpoolFilesForJob = jest.fn(async (_session, _jobid) => {
             return GetJobsData.SAMPLE_SPOOL_FILES_WITH_PROCSTEP;
         });
-        GetJobs.getSpoolContent = jest.fn(async (session, spoolFile) => {
+        GetJobs.getSpoolContent = jest.fn(async (_session, _spoolFile) => {
             return spoolContent.toString();
         });
         const handler = new AllSpoolContentHandler.default();
@@ -122,7 +122,7 @@ describe("zos-jobs view all-spool-content handler", () => {
     it("should not transform an error thrown from get jobs getJob API", async () => {
         const failMessage = "Something went wrong";
         let error;
-        GetJobs.getJob = jest.fn((session, jobid) => {
+        GetJobs.getJob = jest.fn((_session, _jobid) => {
             throw new ImperativeError({ msg: failMessage });
         });
         const handler = new AllSpoolContentHandler.default();
@@ -142,10 +142,10 @@ describe("zos-jobs view all-spool-content handler", () => {
     it("should not transform an error thrown from get jobs getSpoolFilesForJob API", async () => {
         const failMessage = "Something went wrong";
         let error;
-        GetJobs.getJob = jest.fn(async (session, jobid) => {
+        GetJobs.getJob = jest.fn(async (_session, _jobid) => {
             return GetJobsData.SAMPLE_COMPLETE_JOB;
         });
-        GetJobs.getSpoolFilesForJob = jest.fn((session, jobid) => {
+        GetJobs.getSpoolFilesForJob = jest.fn((_session, _jobid) => {
             throw new ImperativeError({ msg: failMessage });
         });
         const handler = new AllSpoolContentHandler.default();
@@ -166,13 +166,13 @@ describe("zos-jobs view all-spool-content handler", () => {
     it("should not transform an error thrown from get jobs getSpoolContent API", async () => {
         const failMessage = "Something went wrong";
         let error;
-        GetJobs.getJob = jest.fn(async (session, jobid) => {
+        GetJobs.getJob = jest.fn(async (_session, _jobid) => {
             return GetJobsData.SAMPLE_COMPLETE_JOB;
         });
-        GetJobs.getSpoolFilesForJob = jest.fn(async (session, jobid) => {
+        GetJobs.getSpoolFilesForJob = jest.fn(async (_session, _jobid) => {
             return GetJobsData.SAMPLE_SPOOL_FILES;
         });
-        GetJobs.getSpoolContent = jest.fn((session, spoolFile) => {
+        GetJobs.getSpoolContent = jest.fn((_session, _spoolFile) => {
             throw new ImperativeError({ msg: failMessage });
         });
         const handler = new AllSpoolContentHandler.default();

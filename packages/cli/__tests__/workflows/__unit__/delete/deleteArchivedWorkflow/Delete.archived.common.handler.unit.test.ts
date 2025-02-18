@@ -23,9 +23,6 @@ describe("Delete workflow common handler", () => {
 
             // Vars populated by the mocked function
             let error;
-            let apiMessage = "";
-            let jsonObj;
-            let logMessage = "";
             let fakeSession = null;
 
             // Mock the delete function
@@ -38,7 +35,7 @@ describe("Delete workflow common handler", () => {
             });
 
             // Mocked function references
-            const profFunc = jest.fn((args) => {
+            const profFunc = jest.fn((_args) => {
                 return {
                     host: "fake",
                     port: "fake",
@@ -59,16 +56,16 @@ describe("Delete workflow common handler", () => {
                     },
                     response: {
                         data: {
-                            setMessage: jest.fn((setMsgArgs) => {
-                                apiMessage = setMsgArgs;
+                            setMessage: jest.fn((_setMsgArgs) => {
+                                // Do nothing
                             }),
-                            setObj: jest.fn((setObjArgs) => {
-                                jsonObj = setObjArgs;
+                            setObj: jest.fn((_setObjArgs) => {
+                                // Do nothing
                             })
                         },
                         console: {
-                            log: jest.fn((logArgs) => {
-                                logMessage += "\n" + logArgs;
+                            log: jest.fn((_logArgs) => {
+                                // Do nothing
                             })
                         }
                     },
@@ -94,9 +91,6 @@ describe("Delete workflow common handler", () => {
 
             // Vars populated by the mocked function
             let error;
-            let apiMessage = "";
-            let jsonObj;
-            let logMessage = "";
             let fakeSession = null;
 
             // Mock the delete function
@@ -115,7 +109,7 @@ describe("Delete workflow common handler", () => {
             });
 
             // Mocked function references
-            const profFunc = jest.fn((args) => {
+            const profFunc = jest.fn((_args) => {
                 return {
                     host: "fake",
                     port: "fake",
@@ -141,16 +135,16 @@ describe("Delete workflow common handler", () => {
                             })
                         },
                         data: {
-                            setMessage: jest.fn((setMsgArgs) => {
-                                apiMessage = setMsgArgs;
+                            setMessage: jest.fn((_setMsgArgs) => {
+                                // Do nothing
                             }),
-                            setObj: jest.fn((setObjArgs) => {
-                                jsonObj = setObjArgs;
+                            setObj: jest.fn((_setObjArgs) => {
+                                // Do nothing
                             })
                         },
                         console: {
-                            log: jest.fn((logArgs) => {
-                                logMessage += "\n" + logArgs;
+                            log: jest.fn((_logArgs) => {
+                                // Do nothing
                             })
                         }
                     },
@@ -175,9 +169,6 @@ describe("Delete workflow common handler", () => {
 
             // Vars populated by the mocked function
             let error;
-            let apiMessage = "";
-            let jsonObj;
-            let logMessage = "";
             let fakeSession = null;
 
             // Mock the delete function
@@ -187,7 +178,7 @@ describe("Delete workflow common handler", () => {
             });
 
             // Mocked function references
-            const profFunc = jest.fn((args) => {
+            const profFunc = jest.fn((_args) => {
                 return {
                     host: "fake",
                     port: "fake",
@@ -208,16 +199,16 @@ describe("Delete workflow common handler", () => {
                     },
                     response: {
                         data: {
-                            setMessage: jest.fn((setMsgArgs) => {
-                                apiMessage = setMsgArgs;
+                            setMessage: jest.fn((_setMsgArgs) => {
+                                // Do nothing
                             }),
-                            setObj: jest.fn((setObjArgs) => {
-                                jsonObj = setObjArgs;
+                            setObj: jest.fn((_setObjArgs) => {
+                                // Do nothing
                             })
                         },
                         console: {
-                            log: jest.fn((logArgs) => {
-                                logMessage += "\n" + logArgs;
+                            log: jest.fn((_logArgs) => {
+                                // Do nothing
                             })
                         }
                     },
@@ -243,14 +234,9 @@ describe("Delete workflow common handler", () => {
 
             // Vars populated by the mocked function
             let error;
-            let apiMessage = "";
-            let jsonObj;
-            let logMessage = "";
-            let fakeSession = null;
 
             // Mock the delete function
-            ArchivedDeleteWorkflow.archivedDeleteWorkflow = jest.fn(async (session): Promise<any> => {
-                fakeSession = session;
+            ArchivedDeleteWorkflow.archivedDeleteWorkflow = jest.fn(async (_session): Promise<any> => {
                 return {
                     success: true,
                     commandResponse: "deleted"
@@ -258,13 +244,12 @@ describe("Delete workflow common handler", () => {
             });
 
             // Mock the list function
-            ListArchivedWorkflows.listArchivedWorkflows = jest.fn(async (session) => {
-                fakeSession = session;
+            ListArchivedWorkflows.listArchivedWorkflows = jest.fn(async (_session) => {
                 return {archivedWorkflows: [{workflowKey: `${workflowKey}`, workflowName: `${workflowName}_fake`}]};
             });
 
             // Mocked function references
-            const profFunc = jest.fn((args) => {
+            const profFunc = jest.fn((_args) => {
                 return {
                     host: "fake",
                     port: "fake",
@@ -290,16 +275,16 @@ describe("Delete workflow common handler", () => {
                             })
                         },
                         data: {
-                            setMessage: jest.fn((setMsgArgs) => {
-                                apiMessage = setMsgArgs;
+                            setMessage: jest.fn((_setMsgArgs) => {
+                                // Do nothing
                             }),
-                            setObj: jest.fn((setObjArgs) => {
-                                jsonObj = setObjArgs;
+                            setObj: jest.fn((_setObjArgs) => {
+                                // Do nothing
                             })
                         },
                         console: {
-                            log: jest.fn((logArgs) => {
-                                logMessage += "\n" + logArgs;
+                            log: jest.fn((_logArgs) => {
+                                // Do nothing
                             })
                         }
                     },
@@ -324,9 +309,6 @@ describe("Delete workflow common handler", () => {
 
             // Vars populated by the mocked function
             let error;
-            let apiMessage = "";
-            let jsonObj;
-            let logMessage = "";
             let fakeSession = null;
 
             // Mock the delete function
@@ -342,7 +324,7 @@ describe("Delete workflow common handler", () => {
             });
 
             // Mocked function references
-            const profFunc = jest.fn((args) => {
+            const profFunc = jest.fn((_args) => {
                 return {
                     host: "fake",
                     port: "fake",
@@ -368,16 +350,16 @@ describe("Delete workflow common handler", () => {
                             })
                         },
                         data: {
-                            setMessage: jest.fn((setMsgArgs) => {
-                                apiMessage = setMsgArgs;
+                            setMessage: jest.fn((_setMsgArgs) => {
+                                // Do nothing
                             }),
-                            setObj: jest.fn((setObjArgs) => {
-                                jsonObj = setObjArgs;
+                            setObj: jest.fn((_setObjArgs) => {
+                                // Do nothing
                             })
                         },
                         console: {
-                            log: jest.fn((logArgs) => {
-                                logMessage += "\n" + logArgs;
+                            log: jest.fn((_logArgs) => {
+                                // Do nothing
                             })
                         }
                     },
@@ -403,25 +385,19 @@ describe("Delete workflow common handler", () => {
 
             // Vars populated by the mocked function
             let error;
-            let apiMessage = "";
-            let jsonObj;
-            let logMessage = "";
-            let fakeSession = null;
 
             // Mock the delete function
-            ArchivedDeleteWorkflow.archivedDeleteWorkflow = jest.fn(async (session) => {
-                fakeSession = session;
+            ArchivedDeleteWorkflow.archivedDeleteWorkflow = jest.fn(async (_session) => {
                 throw new ImperativeError ({msg: `deletion failed`});
             });
 
             // Mock the list function
-            ListArchivedWorkflows.listArchivedWorkflows = jest.fn(async (session) => {
-                fakeSession = session;
+            ListArchivedWorkflows.listArchivedWorkflows = jest.fn(async (_session) => {
                 return {archivedWorkflows: [{workflowKey: `${workflowKey}`, workflowName: `${workflowName}`}]};
             });
 
             // Mocked function references
-            const profFunc = jest.fn((args) => {
+            const profFunc = jest.fn((_args) => {
                 return {
                     host: "fake",
                     port: "fake",
@@ -447,16 +423,16 @@ describe("Delete workflow common handler", () => {
                             })
                         },
                         data: {
-                            setMessage: jest.fn((setMsgArgs) => {
-                                apiMessage = setMsgArgs;
+                            setMessage: jest.fn((_setMsgArgs) => {
+                                // Do nothing
                             }),
-                            setObj: jest.fn((setObjArgs) => {
-                                jsonObj = setObjArgs;
+                            setObj: jest.fn((_setObjArgs) => {
+                                // Do nothing
                             })
                         },
                         console: {
-                            log: jest.fn((logArgs) => {
-                                logMessage += "\n" + logArgs;
+                            log: jest.fn((_logArgs) => {
+                                // Do nothing
                             })
                         }
                     },

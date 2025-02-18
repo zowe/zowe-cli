@@ -29,7 +29,6 @@ let REAL_SESSION: Session;
 let REAL_TARGET_SESSION: Session;
 let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 let defaultSystem: ITestPropertiesSchema;
-let defaultTargetSystem: ITestPropertiesSchema;
 let fromDataSetName: string;
 let fromDataSetNameTracks: string;
 let fromDataSetNameCylinders: string;
@@ -43,7 +42,6 @@ describe("Copy", () => {
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({ testName: "zos_file_copy" });
         defaultSystem = testEnvironment.systemTestProperties;
-        defaultTargetSystem = defaultSystem;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
         REAL_TARGET_SESSION = REAL_SESSION;

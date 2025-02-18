@@ -127,7 +127,7 @@ describe("Missing workflow key", () => {
     });
     it("Undefined workflow key", async () => {
         try {
-            const response = await ArchiveWorkflow.archiveWorkflowByKey(session, undefined, WorkflowConstants.ZOSMF_VERSION);
+            await ArchiveWorkflow.archiveWorkflowByKey(session, undefined, WorkflowConstants.ZOSMF_VERSION);
             expect(false).toBeTruthy();
         } catch (error) {
             Imperative.console.info(error);
@@ -137,7 +137,7 @@ describe("Missing workflow key", () => {
     });
     it("Null workflow key", async () => {
         try {
-            const response = await ArchiveWorkflow.archiveWorkflowByKey(session, null, WorkflowConstants.ZOSMF_VERSION);
+            await ArchiveWorkflow.archiveWorkflowByKey(session, null, WorkflowConstants.ZOSMF_VERSION);
             expect(false).toBeTruthy();
         } catch (error) {
             Imperative.console.info(error);
@@ -147,7 +147,7 @@ describe("Missing workflow key", () => {
     });
     it("Empty workflow key", async () => {
         try {
-            const response = await ArchiveWorkflow.archiveWorkflowByKey(session, "", WorkflowConstants.ZOSMF_VERSION);
+            await ArchiveWorkflow.archiveWorkflowByKey(session, "", WorkflowConstants.ZOSMF_VERSION);
             expect(false).toBeTruthy();
         } catch (error) {
             Imperative.console.info(error);
