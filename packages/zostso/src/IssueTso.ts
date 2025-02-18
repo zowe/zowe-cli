@@ -72,10 +72,7 @@ export class IssueTso {
                 };
                 return response;
             } catch (e) {
-                if (e.message?.includes("status 404")) {
-                    // Continue to the old API behavior
-                } else {
-                    // Re-throw for other exceptions
+                if (e.message == null || !e.message.includes("status 404")) {
                     throw e;
                 }
             }
