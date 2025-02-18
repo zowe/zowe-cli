@@ -12,7 +12,8 @@
 import { AbstractSession, IHandlerParameters } from "@zowe/imperative";
 import { IZosFilesResponse, Create, CreateDataSetTypeEnum } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
-import { generateZosmfOptions } from "../Create.utils";
+import { mapArgumentsToOptions } from "../../../Utils";
+import { CPDSDefinition } from "./CPDS.definition";
 
 /**
  * Handler to create a C-PDS data set
@@ -23,7 +24,7 @@ export default class CPDSHandler extends ZosFilesBaseHandler {
             session,
             CreateDataSetTypeEnum.DATA_SET_C,
             commandParameters.arguments.dataSetName,
-            generateZosmfOptions(commandParameters.arguments)
+            mapArgumentsToOptions(commandParameters.arguments, CPDSDefinition.options)
         );
     }
 }

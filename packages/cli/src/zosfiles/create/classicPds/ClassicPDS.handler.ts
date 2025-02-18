@@ -13,6 +13,8 @@ import { AbstractSession, IHandlerParameters } from "@zowe/imperative";
 import { Create, CreateDataSetTypeEnum, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
 import { generateZosmfOptions } from "../Create.utils";
+import { mapArgumentsToOptions } from "../../../Utils";
+import { ClassicPDSDefinition } from "./ClassicPDS.definition";
 
 /**
  * Handler to create a Classic-PDS data set
@@ -23,7 +25,7 @@ export default class ClassicPDSHandler extends ZosFilesBaseHandler {
             session,
             CreateDataSetTypeEnum.DATA_SET_CLASSIC,
             commandParameters.arguments.dataSetName,
-            generateZosmfOptions(commandParameters.arguments)
+            mapArgumentsToOptions(commandParameters.arguments, ClassicPDSDefinition.options)
         );
     }
 }

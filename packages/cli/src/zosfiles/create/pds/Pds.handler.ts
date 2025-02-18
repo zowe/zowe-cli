@@ -12,7 +12,8 @@
 import { AbstractSession, IHandlerParameters } from "@zowe/imperative";
 import { IZosFilesResponse, Create, CreateDataSetTypeEnum } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
-import { generateZosmfOptions } from "../Create.utils";
+import { mapArgumentsToOptions } from "../../../Utils";
+import { PdsDefinition } from "./Pds.definition";
 
 /**
  * Handler to create a PDS data set
@@ -23,7 +24,7 @@ export default class PdsHandler extends ZosFilesBaseHandler {
             session,
             CreateDataSetTypeEnum.DATA_SET_PARTITIONED,
             commandParameters.arguments.dataSetName,
-            generateZosmfOptions(commandParameters.arguments)
+            mapArgumentsToOptions(commandParameters.arguments, PdsDefinition.options)
         );
     }
 }

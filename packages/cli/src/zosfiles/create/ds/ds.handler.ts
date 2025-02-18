@@ -12,7 +12,8 @@
 import { AbstractSession, IHandlerParameters } from "@zowe/imperative";
 import { Create, CreateDataSetTypeEnum, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
-import { generateZosmfOptions } from "../Create.utils";
+import { mapArgumentsToOptions } from "../../../Utils";
+import { DsDefinition } from "./ds.definition";
 
 /**
  * Handler to like a data set
@@ -25,7 +26,7 @@ export default class DataSetHandler extends ZosFilesBaseHandler {
                 session,
                 CreateDataSetTypeEnum.DATA_SET_BLANK,
                 commandParameters.arguments.dataSetName,
-                generateZosmfOptions(commandParameters.arguments)
+                mapArgumentsToOptions(commandParameters.arguments, DsDefinition.options)
             );
 
         }
@@ -34,7 +35,7 @@ export default class DataSetHandler extends ZosFilesBaseHandler {
                 session,
                 commandParameters.arguments.dataSetName,
                 commandParameters.arguments.like,
-                generateZosmfOptions(commandParameters.arguments)
+                mapArgumentsToOptions(commandParameters.arguments, DsDefinition.options)
             );
         }
 

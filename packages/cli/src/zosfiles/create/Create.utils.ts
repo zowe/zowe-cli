@@ -18,6 +18,7 @@ import { ICreateDataSetOptions } from "@zowe/zos-files-for-zowe-sdk";
  * Generate the appropriate options object to create a dataset before sending it to the z/OS MF APIs
  * @param {yargs.Arguments} commandArguments - The provided command arguments
  * @return {ICreateDataSetOptions} Object to be sent
+ * @deprecated Use Utils.mapArgumentsToOptions instead
  */
 export function generateZosmfOptions(commandArguments: Arguments): ICreateDataSetOptions {
     return JSON.parse(JSON.stringify({
