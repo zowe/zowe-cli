@@ -15,19 +15,13 @@ import { IO, Logger, IHeaderContent, AbstractSession, ImperativeExpect, Headers 
 import { ZosFilesConstants } from "../constants/ZosFiles.constants";
 import { ZosFilesMessages } from "../constants/ZosFiles.messages";
 import { IZosFilesResponse } from "../doc/IZosFilesResponse";
-import { ZosmfHeaders, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
+import { ZosmfRestClient, ZosmfHeaders } from "@zowe/core-for-zowe-sdk";
 import { IDeleteOptions } from "../methods/hDelete";
 import { IOptions } from "../doc/IOptions";
 import { IDataSet } from "../doc/IDataSet";
-import { ZosFilesHeaders } from "./ZosFilesHeaders";
 
-interface ExtendedOptions extends IOptions {
-    etag?: string;
-    returnEtag?: boolean;
-    recall?: string;
-}
 /**
- * Common ZosFiles Utilities
+ * Common IO utilities
  */
 export class ZosFilesUtils {
     /**
@@ -59,6 +53,7 @@ export class ZosFilesUtils {
         }
         return localDirectory;
     }
+
 
     /**
      * Get fullpath name from input path.
@@ -119,90 +114,40 @@ export class ZosFilesUtils {
     }
 
     /**
-     * Generate headers for z/OSMF requests
-     * - Sets binary/record/text for X-IBM-Data-Type
-     * - Adds gzip if not binary or record
-     * - Adds responseTimeout if needed
-     * - Optionally calculates Content-Length if a payload is supplied
-     * - Optionally includes ETag headers if passed
+     * Common method to build headers given input options object
      * @private
      * @static
      * @param {IOptions} options - various options
-     * @param payload - Optional request body to compute Content-Length
-
      * @returns {IHeaderContent[]}
      * @memberof ZosFilesUtils
-     * @deprecated in favor of unified header creation across all SDK methods in ZosFilesHeaders.generateHeaders
      */
-    public static generateHeadersBasedOnOptions<T extends ExtendedOptions>(
-        options: T,
-        payload?: any
-    ): IHeaderContent[] {
+    public static generateHeadersBasedOnOptions(options: IOptions): IHeaderContent[] {
         const reqHeaders: IHeaderContent[] = [];
 
-        // If request body, add Content-Length
-        if (payload) {
-            const contentLength = JSON.stringify(payload).length.toString();
-            reqHeaders.push({ [Headers.CONTENT_LENGTH]: contentLength });
-        }
-
-        // Decide X-IBM-Data-Type + Content-Type
-        if (!options.binary && !options.record) {
-            reqHeaders.push({ [Headers.CONTENT_TYPE]: "application/json" });
-        } else if (options.binary) {
-            reqHeaders.push({ [Headers.CONTENT_TYPE]: "application/octet-stream" });
-            reqHeaders.push({ "X-IBM-Data-Type": "binary" });
-        } else if (options.encoding) {
-            reqHeaders.push({ "X-IBM-Data-Type": `text;fileEncoding=${options.encoding}` });
-            reqHeaders.push({ [Headers.CONTENT_TYPE]: `text/plain;fileEncoding=${options.encoding}` });
-        } else if (options.record) {
-            reqHeaders.push({ "X-IBM-Data-Type": "record" });
-            reqHeaders.push({ [Headers.CONTENT_TYPE]: "text/plain" });
-        }
-
         if (options.binary) {
-            reqHeaders.push({ "X-IBM-Data-Type": "binary" });
-            reqHeaders.push({ [Headers.CONTENT_TYPE]: "application/octet-stream" });
+            reqHeaders.push(ZosmfHeaders.X_IBM_BINARY);
         } else if (options.record) {
-            reqHeaders.push({ "X-IBM-Data-Type": "record" });
-            reqHeaders.push({ [Headers.CONTENT_TYPE]: "text/plain" });
+            reqHeaders.push(ZosmfHeaders.X_IBM_RECORD);
         } else if (options.encoding) {
-            reqHeaders.push({ "X-IBM-Data-Type": `text;fileEncoding=${options.encoding}` });
-            reqHeaders.push({ [Headers.CONTENT_TYPE]: `text/plain;fileEncoding=${options.encoding}` });
+
+            const keys: string[] = Object.keys(ZosmfHeaders.X_IBM_TEXT);
+            const value = ZosmfHeaders.X_IBM_TEXT[keys[0]] + ZosmfHeaders.X_IBM_TEXT_ENCODING + options.encoding;
+            const header: any = Object.create(ZosmfHeaders.X_IBM_TEXT);
+            header[keys[0]] = value;
+            reqHeaders.push(header);
+
         } else {
-            reqHeaders.push({ [Headers.CONTENT_TYPE]: "application/json" });
+            // do nothing
         }
 
-        // Enable gzip if not binary or record
+        // TODO:gzip Always accept encoding after z/OSMF truncating gzipped binary data is fixed
+        // See https://github.com/zowe/zowe-cli/issues/1170
         if (!options.binary && !options.record) {
             reqHeaders.push(ZosmfHeaders.ACCEPT_ENCODING);
         }
 
-        // Include response timeout if specified
         if (options.responseTimeout != null) {
-            reqHeaders.push({
-                [ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()
-            });
-        }
-
-        // ETag handling
-        if (options.etag) {
-            reqHeaders.push({ "If-Match": options.etag });
-        }
-        if (options.returnEtag) {
-            reqHeaders.push({ "X-IBM-Return-Etag": "true" });
-        }
-
-        // Support additional options like recall and volume if needed
-        if (options.recall) {
-            switch (options.recall.toLowerCase()) {
-                case "wait":   reqHeaders.push({ "X-IBM-Migrated-Recall": "wait" });   break;
-                case "nowait": reqHeaders.push({ "X-IBM-Migrated-Recall": "nowait" }); break;
-                case "error":  reqHeaders.push({ "X-IBM-Migrated-Recall": "error" });  break;
-            }
-        }
-        if (options.volume) {
-            reqHeaders.push({ "X-IBM-Volume": options.volume });
+            reqHeaders.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
         }
 
         return reqHeaders;
@@ -310,10 +255,17 @@ export class ZosFilesUtils {
                 payload.purge = options.purge;
             }
 
-            const reqHeaders = ZosFilesHeaders.generateHeaders({options, dataLength: JSON.stringify(payload).length});
+            const headers: IHeaderContent[] = [
+                Headers.APPLICATION_JSON,
+                { "Content-Length": JSON.stringify(payload).length.toString() },
+                ZosmfHeaders.ACCEPT_ENCODING
+            ];
 
+            if (options.responseTimeout != null) {
+                headers.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
+            }
 
-            await ZosmfRestClient.putExpectString(session, endpoint, reqHeaders, payload);
+            await ZosmfRestClient.putExpectString(session, endpoint, headers, payload);
 
             return {
                 success: true,

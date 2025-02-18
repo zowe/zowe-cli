@@ -104,7 +104,7 @@ export class Rename {
         const reqHeaders = ZosFilesHeaders.generateHeaders({
             options,
             dataLength: JSON.stringify(payload).length.toString()
-        })
+        });
 
         try {
             await ZosmfRestClient.putExpectString(session, endpoint, reqHeaders, payload);

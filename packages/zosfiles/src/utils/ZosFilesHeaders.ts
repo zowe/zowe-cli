@@ -149,7 +149,8 @@ export class ZosFilesHeaders {
      *    - `headers`: The array of generated headers.
      *    - `updatedOptions`: The options object with already-processed properties removed.
      */
-    private static addContextHeaders<T>(options: T, context?: ZosFilesContext, dataLength?: number | string): {headers: IHeaderContent[], updatedOptions: T} {
+    private static addContextHeaders<T>(options: T, context?: ZosFilesContext, dataLength?: number | string):
+    {headers: IHeaderContent[], updatedOptions: T} {
         const headers: IHeaderContent[] = [];
         const updatedOptions: any = { ...options || {} };
 
@@ -206,7 +207,7 @@ export class ZosFilesHeaders {
                 break;
             default: {
                 // Add text X-IBM-Data-Type if no content header is present
-                    // only if options don't include dsntype LIBRARY
+                // only if options don't include dsntype LIBRARY
                 if (!(updatedOptions.dsntype && updatedOptions.dsntype.toUpperCase() === "LIBRARY")) {
                     this.addHeader(headers, "X-IBM-Data-Type", "text", true);
                 }

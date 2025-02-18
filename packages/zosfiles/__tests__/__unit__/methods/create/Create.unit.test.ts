@@ -518,14 +518,15 @@ describe("Create data set", () => {
                 endpoint,
                 expect.arrayContaining([ZosmfHeaders.ACCEPT_ENCODING]),
                 JSON.stringify({
-                ...CreateDefaults.DATA_SET.BINARY,
-                ...dsClassicOptions,
-                ...{
-                    size: undefined,
-                    primary: 3,
-                    alcunit: "TRK"
-                }
-            }));
+                    ...CreateDefaults.DATA_SET.BINARY,
+                    ...dsClassicOptions,
+                    ...{
+                        size: undefined,
+                        primary: 3,
+                        alcunit: "TRK"
+                    }
+                })
+            );
         });
 
         it("should be able to create a classic data set using the primary allocation and secondary allocation options", async () => {
@@ -636,13 +637,14 @@ describe("Create data set", () => {
                 endpoint,
                 expect.arrayContaining([ZosmfHeaders.ACCEPT_ENCODING]),
                 JSON.stringify({
-                ...CreateDefaults.DATA_SET.BINARY,
-                ...dsCOptions,
-                ...{
-                    size: undefined,
-                    alcunit: "TRK"
-                }
-            }));
+                    ...CreateDefaults.DATA_SET.BINARY,
+                    ...dsCOptions,
+                    ...{
+                        size: undefined,
+                        alcunit: "TRK"
+                    }
+                })
+            );
         });
 
         it("should be able to create a C data set using the primary allocation and secondary allocation options", async () => {
@@ -752,14 +754,15 @@ describe("Create data set", () => {
                 endpoint,
                 expect.arrayContaining([ZosmfHeaders.ACCEPT_ENCODING]),
                 JSON.stringify({
-                ...CreateDefaults.DATA_SET.BINARY,
-                ...dsBinaryOptions,
-                ...{
-                    size: undefined,
-                    primary: 55,
-                    secondary: 6
-                }
-            }));
+                    ...CreateDefaults.DATA_SET.BINARY,
+                    ...dsBinaryOptions,
+                    ...{
+                        size: undefined,
+                        primary: 55,
+                        secondary: 6
+                    }
+                })
+            );
         });
 
         it("should be able to create a binary data set and override multiple options. Secondary will be set to 10% (rounded down)", async () => {
@@ -781,14 +784,15 @@ describe("Create data set", () => {
                 endpoint,
                 expect.arrayContaining([ZosmfHeaders.ACCEPT_ENCODING]),
                 JSON.stringify({
-                ...CreateDefaults.DATA_SET.BINARY,
-                ...dsBinaryOptions,
-                ...{
-                    size: undefined,
-                    primary: 54,
-                    secondary: 5
-                }
-            }));
+                    ...CreateDefaults.DATA_SET.BINARY,
+                    ...dsBinaryOptions,
+                    ...{
+                        size: undefined,
+                        primary: 54,
+                        secondary: 5
+                    }
+                })
+            );
         });
 
         it("should be able to create a binary data set using the primary allocation and secondary allocation options", async () => {
@@ -1014,9 +1018,10 @@ describe("Create data set", () => {
             endpoint,
             expect.arrayContaining([ZosmfHeaders.ACCEPT_ENCODING]),
             JSON.stringify({
-            ...CreateDefaults.DATA_SET.BLANK,
-            ...dsBlankOptions
-        }));
+                ...CreateDefaults.DATA_SET.BLANK,
+                ...dsBlankOptions
+            })
+        );
     });
 
     describe("Expected failures", () => {

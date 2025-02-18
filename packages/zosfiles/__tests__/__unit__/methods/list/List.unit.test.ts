@@ -277,7 +277,7 @@ describe("z/OS Files - List", () => {
             expect(expectStringSpy).toHaveBeenCalledWith(
                 dummySession,
                 endpoint.concat(query),
-                expect.arrayContaining([ZosmfHeaders.ACCEPT_ENCODING, ])
+                expect.arrayContaining([ZosmfHeaders.ACCEPT_ENCODING])
             );
         });
 

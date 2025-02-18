@@ -189,7 +189,7 @@ export class Delete {
 
         // Format the endpoint to send the request to
         const endpoint = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_ZFS_FILES + "/" + encodeURIComponent(fileSystemName);
-        const reqHeaders = ZosFilesHeaders.generateHeaders({ options, context: ZosFilesContext.ZFS })
+        const reqHeaders = ZosFilesHeaders.generateHeaders({ options, context: ZosFilesContext.ZFS });
         const data = await ZosmfRestClient.deleteExpectString(session, endpoint, reqHeaders);
 
         return {

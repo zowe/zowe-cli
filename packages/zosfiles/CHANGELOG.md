@@ -4,7 +4,7 @@ All notable changes to the Zowe z/OS files SDK package will be documented in thi
 
 ## Recent Changes
 
-- Enhancement: Create a centralized header class to be used across the files SDK with `ZosFilesHeaders.ts`. [#2436](https://github.com/zowe/zowe-cli/pull/2436)
+- Enhancement: Created a centralized header class to be used across the files SDK with `ZosFilesHeaders.ts`. [#2436](https://github.com/zowe/zowe-cli/pull/2436)
 
 ## `8.13.0`
 
