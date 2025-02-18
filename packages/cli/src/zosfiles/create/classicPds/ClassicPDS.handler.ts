@@ -12,7 +12,6 @@
 import { AbstractSession, IHandlerParameters } from "@zowe/imperative";
 import { Create, CreateDataSetTypeEnum, IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
-import { generateZosmfOptions } from "../Create.utils";
 import { mapArgumentsToOptions } from "../../../Utils";
 import { ClassicPDSDefinition } from "./ClassicPDS.definition";
 
