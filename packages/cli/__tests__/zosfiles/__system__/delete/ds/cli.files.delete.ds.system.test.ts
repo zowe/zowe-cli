@@ -58,7 +58,7 @@ describe("Delete Data Set", () => {
         });
 
         it("should delete a data set", async () => {
-            let response = runCliScript(__dirname + "/__scripts__/command/command_create_data_set.sh",
+            runCliScript(__dirname + "/__scripts__/command/command_create_data_set.sh",
                 TEST_ENVIRONMENT, [dsname]);
 
             const ZOWE_OPT_BASE_PATH = "ZOWE_OPT_BASE_PATH";
@@ -69,7 +69,7 @@ describe("Delete Data Set", () => {
                 TEST_ENVIRONMENT_NO_PROF.env[ZOWE_OPT_BASE_PATH] = defaultSys.zosmf.basePath;
             }
 
-            response = runCliScript(__dirname + "/__scripts__/command/command_delete_ds_fully_qualified.sh",
+            const response = runCliScript(__dirname + "/__scripts__/command/command_delete_ds_fully_qualified.sh",
                 TEST_ENVIRONMENT_NO_PROF, [dsname, "--for-sure",
                     defaultSys.zosmf.host,
                     defaultSys.zosmf.port,
@@ -84,9 +84,9 @@ describe("Delete Data Set", () => {
     describe("Success scenarios", () => {
 
         it("should delete a data set", async () => {
-            let response = runCliScript(__dirname + "/__scripts__/command/command_create_data_set.sh",
+            runCliScript(__dirname + "/__scripts__/command/command_create_data_set.sh",
                 TEST_ENVIRONMENT, [dsname]);
-            response = runCliScript(__dirname + "/__scripts__/command/command_delete_data_set.sh",
+            const response = runCliScript(__dirname + "/__scripts__/command/command_delete_data_set.sh",
                 TEST_ENVIRONMENT, [dsname, "--for-sure"]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
@@ -94,9 +94,9 @@ describe("Delete Data Set", () => {
         });
 
         it("should delete a data set with response timeout", async () => {
-            let response = runCliScript(__dirname + "/__scripts__/command/command_create_data_set.sh",
+            runCliScript(__dirname + "/__scripts__/command/command_create_data_set.sh",
                 TEST_ENVIRONMENT, [dsname, "--responseTimeout 5"]);
-            response = runCliScript(__dirname + "/__scripts__/command/command_delete_data_set.sh",
+            const response = runCliScript(__dirname + "/__scripts__/command/command_delete_data_set.sh",
                 TEST_ENVIRONMENT, [dsname, "--responseTimeout 5 --for-sure"]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
@@ -104,9 +104,9 @@ describe("Delete Data Set", () => {
         });
 
         it("should delete a partitioned data set and print attributes", async () => {
-            let response = runCliScript(__dirname + "/__scripts__/command/command_create_data_set.sh",
+            runCliScript(__dirname + "/__scripts__/command/command_create_data_set.sh",
                 TEST_ENVIRONMENT, [dsname]);
-            response = runCliScript(__dirname + "/__scripts__/command/command_delete_data_set.sh",
+            const response = runCliScript(__dirname + "/__scripts__/command/command_delete_data_set.sh",
                 TEST_ENVIRONMENT, [dsname, "--for-sure", "--rfj"]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
@@ -114,13 +114,13 @@ describe("Delete Data Set", () => {
         });
 
         it("should delete a partitioned data set member", async () => {
-            let response = runCliScript(__dirname + "/__scripts__/command/command_create_data_set.sh",
+            runCliScript(__dirname + "/__scripts__/command/command_create_data_set.sh",
                 TEST_ENVIRONMENT, [dsname]);
             const dsnameWithMember = dsname + "(TESTMEM)";
             const fileLocation = __dirname + "/__scripts__/command/file.txt";
-            response = runCliScript(__dirname + "/__scripts__/command/command_create_data_set_member.sh",
+            runCliScript(__dirname + "/__scripts__/command/command_create_data_set_member.sh",
                 TEST_ENVIRONMENT, [dsnameWithMember, fileLocation]);
-            response = runCliScript(__dirname + "/__scripts__/command/command_delete_data_set.sh",
+            const response = runCliScript(__dirname + "/__scripts__/command/command_delete_data_set.sh",
                 TEST_ENVIRONMENT, [dsnameWithMember, "--for-sure", "--rfj"]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);

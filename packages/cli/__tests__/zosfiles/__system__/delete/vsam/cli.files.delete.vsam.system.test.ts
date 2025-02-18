@@ -59,7 +59,7 @@ describe("Delete VSAM Data Set", () => {
         });
 
         it("should delete a data set", async () => {
-            let response = runCliScript(__dirname + "/__scripts__/command/command_invoke_ams_define_statement.sh",
+            runCliScript(__dirname + "/__scripts__/command/command_invoke_ams_define_statement.sh",
                 TEST_ENVIRONMENT, [dsname, volume]);
 
             const ZOWE_OPT_BASE_PATH = "ZOWE_OPT_BASE_PATH";
@@ -70,7 +70,7 @@ describe("Delete VSAM Data Set", () => {
                 TEST_ENVIRONMENT_NO_PROF.env[ZOWE_OPT_BASE_PATH] = systemProps.zosmf.basePath;
             }
 
-            response = runCliScript(__dirname + "/__scripts__/command/command_delete_vsam_data_set_fully_qualified.sh",
+            const response = runCliScript(__dirname + "/__scripts__/command/command_delete_vsam_data_set_fully_qualified.sh",
                 TEST_ENVIRONMENT_NO_PROF, [dsname, "--for-sure",
                     systemProps.zosmf.host,
                     systemProps.zosmf.port,
@@ -85,9 +85,9 @@ describe("Delete VSAM Data Set", () => {
     describe("Success scenarios", () => {
 
         it("should delete a VSAM data set", async () => {
-            let response = runCliScript(__dirname + "/__scripts__/command/command_invoke_ams_define_statement.sh",
+            runCliScript(__dirname + "/__scripts__/command/command_invoke_ams_define_statement.sh",
                 TEST_ENVIRONMENT, [dsname, volume]);
-            response = runCliScript(__dirname + "/__scripts__/command/command_delete_vsam_data_set.sh",
+            const response = runCliScript(__dirname + "/__scripts__/command/command_delete_vsam_data_set.sh",
                 TEST_ENVIRONMENT, [dsname, "--for-sure"]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
@@ -95,9 +95,9 @@ describe("Delete VSAM Data Set", () => {
         });
 
         it("should delete a VSAM data set with response timeout", async () => {
-            let response = runCliScript(__dirname + "/__scripts__/command/command_invoke_ams_define_statement.sh",
+            runCliScript(__dirname + "/__scripts__/command/command_invoke_ams_define_statement.sh",
                 TEST_ENVIRONMENT, [dsname, volume]);
-            response = runCliScript(__dirname + "/__scripts__/command/command_delete_vsam_data_set.sh",
+            const response = runCliScript(__dirname + "/__scripts__/command/command_delete_vsam_data_set.sh",
                 TEST_ENVIRONMENT, [dsname, "--for-sure", "--responseTimeout 5"]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
@@ -105,18 +105,18 @@ describe("Delete VSAM Data Set", () => {
         });
 
         it("should delete a VSAM data set And print attributes", async () => {
-            let response = runCliScript(__dirname + "/__scripts__/command/command_invoke_ams_define_statement.sh",
+            runCliScript(__dirname + "/__scripts__/command/command_invoke_ams_define_statement.sh",
                 TEST_ENVIRONMENT, [dsname, volume]);
-            response = runCliScript(__dirname + "/__scripts__/command/command_delete_vsam_data_set.sh",
+            const response = runCliScript(__dirname + "/__scripts__/command/command_delete_vsam_data_set.sh",
                 TEST_ENVIRONMENT, [dsname, "--for-sure", "--rfj"]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
         });
 
         it("should delete a VSAM data set that has a retention period", async () => {
-            let response = runCliScript(__dirname + "/__scripts__/command/command_invoke_ams_define_for_statement.sh",
+            runCliScript(__dirname + "/__scripts__/command/command_invoke_ams_define_for_statement.sh",
                 TEST_ENVIRONMENT, [dsname, volume]);
-            response = runCliScript(__dirname + "/__scripts__/command/command_delete_vsam_data_set.sh",
+            const response = runCliScript(__dirname + "/__scripts__/command/command_delete_vsam_data_set.sh",
                 TEST_ENVIRONMENT, [dsname, "--for-sure", "--purge"]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
@@ -162,10 +162,10 @@ describe("Delete VSAM Data Set", () => {
         });
 
         it("should fail due to retention period not being exceeded", async () => {
-            let response = runCliScript(__dirname + "/__scripts__/command/command_invoke_ams_define_for_statement.sh",
+            runCliScript(__dirname + "/__scripts__/command/command_invoke_ams_define_for_statement.sh",
                 TEST_ENVIRONMENT, [dsname, volume]);
             // delete without --purge should fail
-            response = runCliScript(__dirname + "/__scripts__/command/command_delete_vsam_data_set.sh",
+            let response = runCliScript(__dirname + "/__scripts__/command/command_delete_vsam_data_set.sh",
                 TEST_ENVIRONMENT, [dsname, "--for-sure"]);
             expect(response.status).toBe(1);
             expect(stripNewLines(response.stderr.toString())).toContain("IDC3023I UNEXPIRED PURGE DATE");

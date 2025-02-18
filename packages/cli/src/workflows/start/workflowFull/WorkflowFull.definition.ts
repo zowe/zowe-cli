@@ -43,12 +43,12 @@ export const WorkflowFull: ICommandDefinition = {
             options: "--workflow-key \"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\""
         },
         {
-            description: "To start a workflow instance in z/OSMF with workflow key \"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\" and wait for" +
+            description: "To start a workflow instance in z/OSMF with workflow key \"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\" and wait for " +
                 "it to be finished",
             options: "--workflow-key \"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\" --wait"
         },
         {
-            description: "To start a workflow instance in z/OSMF with workflow key \"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\"" +
+            description: "To start a workflow instance in z/OSMF with workflow key \"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\" " +
                 "and if there is a conflict in variable's value use the value that is in output file",
             options: "--workflow-key \"d043b5f1-adab-48e7-b7c3-d41cd95fa4b0\" --resolve-conflict-by \"outputFileValue\""
         },
