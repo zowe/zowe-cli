@@ -649,23 +649,28 @@ export default {
                     TIMEOUT: "The number of seconds to search before timing out.",
                     ENCODING: "Search the file content with encoding mode, which means that data conversion is performed using the file encoding " +
                     "specified.",
+                    REGEX: "Whether the search string is a regular expression.",
                 },
                 EXAMPLES: {
                     EX1: {
-                        DESCRIPTION: "Search all of IBMUSER's, data sets for 'ZOWE'",
+                        DESCRIPTION: "Search all of IBMUSER's data sets for 'ZOWE'",
                         OPTIONS: "'IBMUSER.*' 'ZOWE'"
                     },
                     EX2: {
-                        DESCRIPTION: "Search all of IBMUSER's, data sets for 'ZOWE' in uppercase only",
+                        DESCRIPTION: "Search all of IBMUSER's data sets for 'ZOWE' in uppercase only",
                         OPTIONS: "'IBMUSER.*' 'ZOWE' --case-sensitive"
                     },
                     EX3: {
-                        DESCRIPTION: "Search all of IBMUSER's, data sets for 'ZOWE', and time out in 1 minute",
+                        DESCRIPTION: "Search all of IBMUSER's data sets for 'ZOWE', and time out in 1 minute",
                         OPTIONS: "'IBMUSER.*' 'ZOWE' --timeout 60"
                     },
                     EX4: {
-                        DESCRIPTION: "Search all of IBMUSER's, data sets for 'ZOWE', and perform 8 parallel tasks",
+                        DESCRIPTION: "Search all of IBMUSER's data sets for 'ZOWE', and perform 8 parallel tasks",
                         OPTIONS: "'IBMUSER.*' 'ZOWE' --max-concurrent-requests 8"
+                    },
+                    EX5: {
+                        DESCRIPTION: "Search all of IBMUSER's data sets using a regular expression",
+                        OPTIONS: "'IBMUSER.*' 'Z([A-Za-z]){3}' --regex"
                     }
                 }
             }

@@ -267,7 +267,14 @@ export class Search {
                 }
 
                 // Set up the query
-                let queryParams = "?search=" + encodeURIComponent(searchOptions.searchString) + "&maxreturnsize=1";
+                let queryParams = "";
+                if (searchOptions.regex) {
+                    queryParams = "?research=" + encodeURIComponent(searchOptions.searchString);
+                } else {
+                    queryParams = "?search=" + encodeURIComponent(searchOptions.searchString);
+                }
+                queryParams += "&maxreturnsize=1";
+
                 if (searchOptions.caseSensitive === true) { queryParams += "&insensitive=false"; }
                 let dsn = searchItem.dsn;
                 if (searchItem.member) { dsn += "(" + searchItem.member + ")"; }
@@ -367,16 +374,24 @@ export class Search {
                         searchLine = line.toLowerCase();
                     }
 
-                    if (searchLine.includes(searchOptions.searchString)) {
-                        let lastCol = 0;
-                        let lastColIndexPlusLen = 0;
-                        while (lastCol != -1) {
-                            const column = searchLine.indexOf(searchOptions.searchString, lastColIndexPlusLen);
-                            lastCol = column;
-                            lastColIndexPlusLen = column + searchOptions.searchString.length;
-                            if (column != -1) {
-                                // Append the real line - 1 indexed
-                                indicies.push({line: lineNum + 1, column: column + 1, contents: line});
+                    if (searchOptions.regex) {
+                        const regex = new RegExp(searchOptions.searchString, searchOptions.caseSensitive ? "" : "i");
+                        let match;
+                        while ((match = regex.exec(searchLine)) !== null) {
+                            indicies.push({ line: lineNum + 1, column: match.index + 1, contents: line });
+                        }
+                    } else {
+                        if (searchLine.includes(searchOptions.searchString)) {
+                            let lastCol = 0;
+                            let lastColIndexPlusLen = 0;
+                            while (lastCol != -1) {
+                                const column = searchLine.indexOf(searchOptions.searchString, lastColIndexPlusLen);
+                                lastCol = column;
+                                lastColIndexPlusLen = column + searchOptions.searchString.length;
+                                if (column != -1) {
+                                    // Append the real line - 1 indexed
+                                    indicies.push({ line: lineNum + 1, column: column + 1, contents: line });
+                                }
                             }
                         }
                     }
@@ -397,6 +412,6 @@ export class Search {
             }
         };
         await asyncPool(searchOptions.maxConcurrentRequests || 1, searchItems, createFindPromise);
-        return {responses: matchedItems, failures};
+        return { responses: matchedItems, failures };
     }
 }
