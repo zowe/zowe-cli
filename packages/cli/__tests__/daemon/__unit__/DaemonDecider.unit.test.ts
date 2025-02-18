@@ -321,7 +321,6 @@ describe("DaemonDecider tests", () => {
 
         let existTimes;
         if (process.platform === "win32") {
-            existsSyncSpy.mockImplementationOnce;
             existTimes = 2;
         } else {
             existTimes = 3;

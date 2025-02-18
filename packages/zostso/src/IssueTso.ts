@@ -39,7 +39,7 @@ export class IssueTso {
             session,
             ZosmfConstants.VERSIONS.V2R4
         );
-        let useNewApi =
+        const useNewApi =
             opts.addressSpaceOptions == null ||
             versionCheck && opts.suppressStartupMessages;
 
@@ -73,63 +73,59 @@ export class IssueTso {
                 return response;
             } catch (e) {
                 if (e.message?.includes("status 404")) {
-                    // Set useNewApi to false to handle fallback logic
-                    useNewApi = false;
+                    // Continue to the old API behavior
                 } else {
                     // Re-throw for other exceptions
                     throw e;
                 }
             }
         }
+
         // Deprecated API Behavior [former issueTsoCommand() behavior]
-        if (!useNewApi) {
-            TsoValidator.validateSession(session);
-            TsoValidator.validateNotEmptyString(
+        TsoValidator.validateSession(session);
+        TsoValidator.validateNotEmptyString(
+            opts.addressSpaceOptions?.account,
+            noAccountNumber.message
+        );
+        TsoValidator.validateNotEmptyString(
+            command as string,
+            noCommandInput.message
+        );
+
+        const response: IIssueResponse = {
+            success: false,
+            startResponse: await StartTso.start(
+                session,
                 opts.addressSpaceOptions?.account,
-                noAccountNumber.message
-            );
-            TsoValidator.validateNotEmptyString(
-                command as string,
-                noCommandInput.message
-            );
+                opts.addressSpaceOptions || {}
+            ),
+            startReady: false,
+            zosmfResponse: null,
+            commandResponse: null,
+            stopResponse: null,
+        };
 
-            const response: IIssueResponse = {
-                success: false,
-                startResponse: await StartTso.start(
-                    session,
-                    opts.addressSpaceOptions?.account,
-                    opts.addressSpaceOptions || {}
-                ),
-                startReady: false,
-                zosmfResponse: null,
-                commandResponse: null,
-                stopResponse: null,
-            };
-
-            if (!response.startResponse.success) {
-                throw new ImperativeError({
-                    msg: `TSO address space failed to start.`,
-                    additionalDetails:
-                        response.startResponse.failureResponse?.message,
-                });
-            }
-
-            const sendResponse = await SendTso.sendDataToTSOCollect(
-                session,
-                response.startResponse.servletKey,
-                command as string
-            );
-            response.success = sendResponse.success;
-            response.zosmfResponse = sendResponse.zosmfResponse;
-            response.commandResponse = sendResponse.commandResponse;
-            response.stopResponse = await StopTso.stop(
-                session,
-                response.startResponse.servletKey
-            );
-            return response;
-        } else {
-            throw "ERROR";
+        if (!response.startResponse.success) {
+            throw new ImperativeError({
+                msg: `TSO address space failed to start.`,
+                additionalDetails:
+                    response.startResponse.failureResponse?.message,
+            });
         }
+
+        const sendResponse = await SendTso.sendDataToTSOCollect(
+            session,
+            response.startResponse.servletKey,
+            command as string
+        );
+        response.success = sendResponse.success;
+        response.zosmfResponse = sendResponse.zosmfResponse;
+        response.commandResponse = sendResponse.commandResponse;
+        response.stopResponse = await StopTso.stop(
+            session,
+            response.startResponse.servletKey
+        );
+        return response;
     }
 
     /**

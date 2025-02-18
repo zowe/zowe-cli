@@ -133,6 +133,7 @@ export class CompareBaseHelper {
         try {
             try {
                 // check if the path given is of a file or not
+                // eslint-disable-next-line @typescript-eslint/no-magic-numbers
                 localFileHandle = fs.openSync(localFile, 'r');
                 if(!fs.fstatSync(localFileHandle).isFile()){
                     throw new ImperativeError({

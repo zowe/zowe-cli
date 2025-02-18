@@ -130,7 +130,7 @@ describe("Command Response", () => {
     });
 
     it("If we create a progress bar, an interval should be set to update the bar. " +
-        "If we finish the bar, the interval should be stopped and no longer stored" +
+        "If we finish the bar, the interval should be stopped and no longer stored " +
         "in the command response. ", (done) => {  // eslint-disable-line jest/no-done-callback
         process.env.FORCE_COLOR = "1";
         const response = new CommandResponse({ silent: false, responseFormat: "default" });
