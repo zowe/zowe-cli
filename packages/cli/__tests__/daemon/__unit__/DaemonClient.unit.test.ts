@@ -173,7 +173,7 @@ describe("DaemonClient tests", () => {
             // do nothing
         });
 
-        const parse = jest.fn( (data, context) => {
+        const parse = jest.fn( (_data, _context) => {
             // do nothing
         });
 

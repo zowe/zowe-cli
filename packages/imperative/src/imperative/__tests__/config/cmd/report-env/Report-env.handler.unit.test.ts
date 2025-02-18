@@ -26,9 +26,6 @@ describe("Handler for config report-env", () => {
 
         // fake command parms passed to process()
         let stdoutMsg = "";
-        let stderrMsg = "";
-        let apiMessage = "";
-        let jsonObj;
         const cmdParms = {
             arguments: {
                 $0: "fake",
@@ -36,11 +33,11 @@ describe("Handler for config report-env", () => {
             },
             response: {
                 data: {
-                    setMessage: jest.fn((setMsgArgs) => {
-                        apiMessage = setMsgArgs;
+                    setMessage: jest.fn((_setMsgArgs) => {
+                        // Do nothing
                     }),
-                    setObj: jest.fn((setObjArgs) => {
-                        jsonObj = setObjArgs;
+                    setObj: jest.fn((_setObjArgs) => {
+                        // Do nothing
                     }),
                     setExitCode: jest.fn((exitCode) => {
                         return exitCode;
@@ -50,8 +47,8 @@ describe("Handler for config report-env", () => {
                     log: jest.fn((logArgs) => {
                         stdoutMsg += "\n" + logArgs;
                     }),
-                    error: jest.fn((logArgs) => {
-                        stderrMsg += "\n" + logArgs;
+                    error: jest.fn((_logArgs) => {
+                        // Do nothing
                     })
                 },
                 progress: {}
@@ -61,7 +58,6 @@ describe("Handler for config report-env", () => {
 
         it("should report the output of getEnvItemVal", async () => {
             stdoutMsg = "";
-            stderrMsg = "";
             let caughtErr;
 
             const getEnvItemValOrig = EnvQuery.getEnvItemVal;

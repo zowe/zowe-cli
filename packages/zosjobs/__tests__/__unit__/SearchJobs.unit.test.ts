@@ -17,8 +17,8 @@ import { GetJobsData } from "../__resources__/api/GetJobsData";
 const pretendSession = new Session({user: "test", password: "test", hostname: "Test"});
 
 function mockGetJobsJSONData(data: object) {
-    const mock = jest.fn((session: AbstractSession, resource: string, headers?: any[]): Promise<object> => {
-        return new Promise<object>((resolve, reject) => {
+    const mock = jest.fn((_session: AbstractSession, _resource: string, _headers?: any[]): Promise<object> => {
+        return new Promise<object>((resolve, _reject) => {
             ProcessUtils.nextTick(() => {
                 resolve(data);
             });
@@ -28,8 +28,8 @@ function mockGetJobsJSONData(data: object) {
 }
 
 function mockSearchJobsJSONData(data: object) {
-    const mock = jest.fn((session: AbstractSession, resource: string, headers?: any[]): Promise<object> => {
-        return new Promise<object>((resolve, reject) => {
+    const mock = jest.fn((_session: AbstractSession, _resource: string, _headers?: any[]): Promise<object> => {
+        return new Promise<object>((resolve, _reject) => {
             ProcessUtils.nextTick(() => {
                 resolve(data);
             });

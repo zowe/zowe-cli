@@ -144,7 +144,7 @@ export class LoggerUtils {
         };
 
         for (const profile of LoggerUtils.profileSchemas) {
-            // eslint-disable-next-line unused-imports/no-unused-vars
+            // eslint-disable-next-line unused-imports/no-unused-vars,@typescript-eslint/no-unused-vars
             for (const [_, prop] of Object.entries(profile.schema.properties)) {
                 if (prop.secure) specialValues = lodash.union(specialValues, getPropertyNames(prop));
             }

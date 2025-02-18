@@ -37,7 +37,7 @@ describe("AutoInitCommandBuilder", () => {
     it("should fail to initialize if missing auto init config", () => {
         let caughtError;
         try {
-            const builder = new AutoInitCommandBuilder(Logger.getImperativeLogger(), null, "base");
+            new AutoInitCommandBuilder(Logger.getImperativeLogger(), null, "base");
         } catch (error) {
             caughtError = error;
         }

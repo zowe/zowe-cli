@@ -19,7 +19,6 @@ import ListHandler from "../../../../src/config/cmd/list/list.handler";
 let dataObj: any;
 let formatObj: any;
 let errorText: string;
-let logText: string;
 
 // "Mocked" version of the handler parameters for a config list command
 const handlerParms: any = {
@@ -35,8 +34,8 @@ const handlerParms: any = {
             })
         },
         console: {
-            log: jest.fn((msgText) => {
-                logText = msgText;
+            log: jest.fn((_msgText) => {
+                // Do nothing
             }),
             error: jest.fn((msgText) => {
                 errorText = msgText;
@@ -93,7 +92,6 @@ describe("Configuration List command handler", () => {
         dataObj = null;
         formatObj = null;
         errorText = null;
-        logText = null;
     });
 
     it("should output empty object when there is no config", async () => {

@@ -31,12 +31,12 @@ describe("list instance variables handler tests", () => {
     });
     it("should be able to list instance vars", async () => {
         ListRegistryInstances.listFilteredRegistry = jest.fn(
-            async (session, zOSMFVersion, instanceId) => {
+            async (_session, _zOSMFVersion, _instanceId) => {
                 return ProvisioningListMocks.LIST_REGISTRY_INSTANCES_RESPONSE;
             }
         );
         ListInstanceVariables.listVariablesCommon = jest.fn(
-            async (session, zOSMFVersion, instanceId) => {
+            async (_session, _zOSMFVersion, _instanceId) => {
                 return {} as any;
             }
         );

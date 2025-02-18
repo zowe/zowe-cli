@@ -50,24 +50,20 @@ describe("Get", () => {
         describe("Physical sequential data set", () => {
 
             beforeEach(async () => {
-                let error;
-                let response;
 
                 try {
-                    response = await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dsname);
+                    await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dsname);
                 } catch (err) {
-                    error = err;
+                    // Do nothing
                 }
             });
 
             afterEach(async () => {
-                let error;
-                let response;
 
                 try {
-                    response = await Delete.dataSet(REAL_SESSION, dsname);
+                    await Delete.dataSet(REAL_SESSION, dsname);
                 } catch (err) {
-                    error = err;
+                    // Do nothing
                 }
             });
 

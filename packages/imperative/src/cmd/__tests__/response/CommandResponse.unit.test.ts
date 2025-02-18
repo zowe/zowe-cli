@@ -341,7 +341,7 @@ describe("Command Response", () => {
     it("should allow us to create an instance", () => {
         let caughtError;
         try {
-            const response = new CommandResponse();
+            new CommandResponse();
         } catch (error) {
             caughtError = error;
         }
@@ -351,7 +351,7 @@ describe("Command Response", () => {
     it("should detect invalid primary color", () => {
         let error;
         try {
-            const response = new CommandResponse({ primaryTextColor: "" });
+            new CommandResponse({ primaryTextColor: "" });
         } catch (e) {
             error = e;
         }
@@ -364,7 +364,7 @@ describe("Command Response", () => {
         let error;
         try {
             const parms: any = { responseFormat: "crazy" };
-            const response = new CommandResponse(parms);
+            new CommandResponse(parms);
         } catch (e) {
             error = e;
         }
@@ -447,7 +447,7 @@ describe("Command Response", () => {
 
         // ignore writestream, we just make sure that it's called, it will send a request to our
         // simulated daemon client asking for a response.
-        const writeStream = jest.fn((data) => {
+        const writeStream = jest.fn((_data) => {
             // do nothing
         });
 
@@ -462,7 +462,7 @@ describe("Command Response", () => {
         const response = new CommandResponse({stream: socket});
 
         // method to simulate writing
-        const write = jest.fn((data) => {
+        const write = jest.fn((_data) => {
             // do nothing
             return false;
         });
@@ -490,13 +490,13 @@ describe("Command Response", () => {
         const response = new CommandResponse();
 
         // method to simulate writing
-        const write = jest.fn((data) => {
+        const write = jest.fn((_data) => {
             // do nothing
             return false;
         });
         process.stdout.write = write;
 
-        const normalPrompt = jest.fn((test, opts) => {
+        const normalPrompt = jest.fn((_test, _opts) => {
             return new Promise<string>((resolve) => {
                 resolve(responseMessage);
             });
@@ -506,7 +506,7 @@ describe("Command Response", () => {
 
         // prompt the user
         const msg: string = "please give me a message";
-        const answer = await response.console.prompt(msg);
+        await response.console.prompt(msg);
 
         // restore
         process.stdout.write = ORIGINAL_STDOUT_WRITE;
@@ -773,10 +773,8 @@ describe("Command Response", () => {
     });
 
     it("should allow us to set a JSON message", () => {
-        let messages: string = "";
         const response = new CommandResponse();
-        process.stdout.write = jest.fn((data) => {
-            messages += data;
+        process.stdout.write = jest.fn((_data) => {
             return true;
         });
         const msg: string = "JSON object message";
@@ -788,10 +786,8 @@ describe("Command Response", () => {
     });
 
     it("should allow us to set an exit code", () => {
-        let messages: string = "";
         const response = new CommandResponse();
-        process.stdout.write = jest.fn((data) => {
-            messages += data;
+        process.stdout.write = jest.fn((_data) => {
             return true;
         });
         const exitCode = 143;
@@ -802,10 +798,8 @@ describe("Command Response", () => {
     });
 
     it("should overwrite the message if set multiple times", () => {
-        let messages: string = "";
         const response = new CommandResponse();
-        process.stdout.write = jest.fn((data) => {
-            messages += data;
+        process.stdout.write = jest.fn((_data) => {
             return true;
         });
         const firstMsg: string = "The First Message";
@@ -819,10 +813,8 @@ describe("Command Response", () => {
     });
 
     it("should allow us to set the data object in the response as a string", () => {
-        let messages: string = "";
         const response = new CommandResponse();
-        process.stdout.write = jest.fn((data) => {
-            messages += data;
+        process.stdout.write = jest.fn((_data) => {
             return true;
         });
         const testData: string = "test data";
@@ -834,10 +826,8 @@ describe("Command Response", () => {
     });
 
     it("should allow us to set the data object in the response as an object", () => {
-        let messages: string = "";
         const response = new CommandResponse();
-        process.stdout.write = jest.fn((data) => {
-            messages += data;
+        process.stdout.write = jest.fn((_data) => {
             return true;
         });
         const testData: any = { theData: "test data" };
@@ -849,10 +839,8 @@ describe("Command Response", () => {
     });
 
     it("should allow us to set the data object in the response as an array", () => {
-        let messages: string = "";
         const response = new CommandResponse();
-        process.stdout.write = jest.fn((data) => {
-            messages += data;
+        process.stdout.write = jest.fn((_data) => {
             return true;
         });
         const testData: any = [{ theData: "test data" }];
@@ -864,10 +852,8 @@ describe("Command Response", () => {
     });
 
     it("should allow us to merge the data object in the response as an array", () => {
-        let messages: string = "";
         const response = new CommandResponse();
-        process.stdout.write = jest.fn((stdoutData) => {
-            messages += stdoutData;
+        process.stdout.write = jest.fn((_stdoutData) => {
             return true;
         });
         const data: any = { theData: "test data" };
@@ -885,10 +871,8 @@ describe("Command Response", () => {
     });
 
     it("should overwrite the first object if set obj is called again", () => {
-        let messages: string = "";
         const response = new CommandResponse();
-        process.stdout.write = jest.fn((data) => {
-            messages += data;
+        process.stdout.write = jest.fn((_data) => {
             return true;
         });
         const data1: any = { theData: "test data 1" };
@@ -902,10 +886,8 @@ describe("Command Response", () => {
     });
 
     it("should allow us to set the message and the data", () => {
-        let messages: string = "";
         const response = new CommandResponse();
-        process.stdout.write = jest.fn((data) => {
-            messages += data;
+        process.stdout.write = jest.fn((_data) => {
             return true;
         });
         const msg: string = "The JSON message";

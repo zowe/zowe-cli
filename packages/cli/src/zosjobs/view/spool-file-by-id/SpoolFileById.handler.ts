@@ -25,7 +25,7 @@ export default class SpoolFileByIdHandler extends ZosmfBaseHandler {
      * @returns {Promise<void>} - Fulfilled when the command completes successfully OR rejected with imperative error
      * @memberof SubmitDataSetHandler
      */
-    public async processCmd(params: IHandlerParameters): Promise<void> {
+    public async processCmd(_params: IHandlerParameters): Promise<void> {
 
         // Get the job details and spool files
         const job: IJob = await GetJobs.getJob(this.mSession, this.mArguments.jobid);

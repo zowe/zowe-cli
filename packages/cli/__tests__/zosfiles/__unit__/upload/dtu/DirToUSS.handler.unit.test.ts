@@ -56,7 +56,7 @@ describe("Upload dir-to-uss handler", () => {
                     })
                 },
                 progress: {
-                    startBar: jest.fn((parms) => {
+                    startBar: jest.fn((_parms) => {
                         // do nothing
                     }),
                     endBar: jest.fn(() => {
@@ -93,7 +93,7 @@ describe("Upload dir-to-uss handler", () => {
                     })
                 },
                 progress: {
-                    startBar: jest.fn((parms) => {
+                    startBar: jest.fn((_parms) => {
                         // do nothing
                     }),
                     endBar: jest.fn(() => {

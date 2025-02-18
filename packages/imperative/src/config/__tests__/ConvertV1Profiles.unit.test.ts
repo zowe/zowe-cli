@@ -1284,10 +1284,9 @@ describe("ConvertV1Profiles tests", () => {
                 }));
 
                 // call the function that we want to test
-                let pluginInfo: any;
                 let caughtErr: any;
                 try {
-                    pluginInfo = ConvertV1Profiles["getOldPluginInfo"]();
+                    ConvertV1Profiles["getOldPluginInfo"]();
                 } catch (err) {
                     caughtErr = err;
                 }

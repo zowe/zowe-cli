@@ -804,14 +804,13 @@ describe("ConnectionPropsForSessCfg tests", () => {
             },
         };
 
-        const sessCfgWithConnProps: ISession =
-            await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
-                initialSessCfg,
-                args,
-                {
-                    parms: parms as any, // treat this as a CLI-based prompt
-                }
-            );
+        await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
+            initialSessCfg,
+            args,
+            {
+                parms: parms as any, // treat this as a CLI-based prompt
+            }
+        );
 
         expect(commandHandlerPrompt).toHaveBeenCalled(); // we are only testing that we call an already tested prompt method if in CLI mode
         expect((mockClientPrompt.mock.calls[0][1] as any).parms).toBe(parms); // toBe is important here, parms object must be same as original
@@ -1377,14 +1376,12 @@ describe("ConnectionPropsForSessCfg tests", () => {
             password: "FakePassword",
         };
 
-        let sessCfgWithConnProps: ISession;
         let caughtError;
         try {
-            sessCfgWithConnProps =
-                await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
-                    initialSessCfg,
-                    args
-                );
+            await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
+                initialSessCfg,
+                args
+            );
         } catch (thrownError) {
             caughtError = thrownError;
         }
@@ -1411,14 +1408,12 @@ describe("ConnectionPropsForSessCfg tests", () => {
             user: "FakeUser",
         };
 
-        let sessCfgWithConnProps: ISession;
         let caughtError;
         try {
-            sessCfgWithConnProps =
-                await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
-                    initialSessCfg,
-                    args
-                );
+            await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
+                initialSessCfg,
+                args
+            );
         } catch (thrownError) {
             caughtError = thrownError;
         }
@@ -1445,14 +1440,12 @@ describe("ConnectionPropsForSessCfg tests", () => {
             password: "FakePassword",
         };
 
-        let sessCfgWithConnProps: ISession;
         let caughtError;
         try {
-            sessCfgWithConnProps =
-                await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
-                    initialSessCfg,
-                    args
-                );
+            await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
+                initialSessCfg,
+                args
+            );
         } catch (thrownError) {
             caughtError = thrownError;
         }
@@ -1479,14 +1472,12 @@ describe("ConnectionPropsForSessCfg tests", () => {
             password: "FakePassword",
         };
 
-        let sessCfgWithConnProps: ISession;
         let caughtError;
         try {
-            sessCfgWithConnProps =
-                await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
-                    initialSessCfg,
-                    args
-                );
+            await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
+                initialSessCfg,
+                args
+            );
         } catch (thrownError) {
             caughtError = thrownError;
         }
@@ -1679,17 +1670,16 @@ describe("ConnectionPropsForSessCfg tests", () => {
                 },
             },
         };
-        const sessCfgWithConnProps: ISshSession =
-            await ConnectionPropsForSessCfg.addPropsOrPrompt<ISshSession>(
-                initialSessCfg,
-                args,
-                {
-                    doPrompting: true,
-                    propertyOverrides: overrides,
-                    propsToPromptFor: [{name: "keyPassphrase",isGivenValueValid: string => true}],
-                    parms: parms as any,
-                }
-            );
+        await ConnectionPropsForSessCfg.addPropsOrPrompt<ISshSession>(
+            initialSessCfg,
+            args,
+            {
+                doPrompting: true,
+                propertyOverrides: overrides,
+                propsToPromptFor: [{name: "keyPassphrase",isGivenValueValid: _string => true}],
+                parms: parms as any,
+            }
+        );
         expect((ConnectionPropsForSessCfg as any).secureSessCfgProps).toContain("keyPassphrase");
     });
     describe("getValuesBack private function", () => {

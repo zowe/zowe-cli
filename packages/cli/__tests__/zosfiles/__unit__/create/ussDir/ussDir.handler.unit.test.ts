@@ -62,7 +62,7 @@ describe("Create USS Directory", () => {
                             })
                         },
                         progress: {
-                            startBar: jest.fn((parms) => {
+                            startBar: jest.fn((_parms) => {
                                 // do nothing
                             }),
                             endBar: jest.fn(() => {

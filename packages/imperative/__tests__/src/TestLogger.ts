@@ -121,7 +121,6 @@ export class TestLogger {
 
     private static getCallersFile(): string {
         const stack: string[] = new Error().stack.split("\n");
-        const currentFileName: string = path.basename(__filename);
         stack.splice(0, 1);
         for (const entry of stack) {
             const removeCloseParen: string = entry.split(")").join("");

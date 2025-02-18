@@ -9,21 +9,15 @@
 *
 */
 
-import { Session } from "@zowe/imperative";
 import * as path from "path";
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/ITestEnvironment";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { getUniqueDatasetName } from "../../../../../../../__tests__/__src__/TestUtils";
 import { runCliScript } from "@zowe/cli-test-utils";
 
-let REAL_SESSION: Session;
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
 let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment<ITestPropertiesSchema>;
-let defaultSystem: ITestPropertiesSchema;
-let dsname: string;
-const testString = "test";
 
 describe("List all mounted filesystems", () => {
 
@@ -32,12 +26,6 @@ describe("List all mounted filesystems", () => {
             tempProfileTypes: ["zosmf"],
             testName: "list_fs"
         });
-
-        defaultSystem = TEST_ENVIRONMENT.systemTestProperties;
-
-        REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
-
-        dsname = getUniqueDatasetName(defaultSystem.zosmf.user);
     });
 
     afterAll(async () => {

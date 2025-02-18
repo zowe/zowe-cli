@@ -16,32 +16,14 @@ import { ValidationTestCommand } from "../ValidationTestCommand";
 import { Constants } from "../../../../../src/constants/index";
 import { Imperative } from "../../../../../src/imperative/src/Imperative";
 import { TestLogger } from "../../../../src/TestLogger";
-import { createUniqueTestDataDir, rimraf } from "../../../TestUtil";
+import { rimraf } from "../../../TestUtil";
 import { AbstractHelpGenerator } from "../../../../../src/cmd/src/help/abstract/AbstractHelpGenerator";
 import { DefaultHelpGenerator } from "../../../../../src/cmd/src/help/DefaultHelpGenerator";
-import { IProfileTypeConfiguration, ImperativeConfig } from "../../../../../src/index";
+import { ImperativeConfig } from "../../../../../src/index";
 
 const ENV_PREFIX = "INTEGRATION_TEST";
-const TEST_HOME = createUniqueTestDataDir();
 const logger = TestLogger.getTestLogger();
-const DUMMY_PROFILE_TYPE_CONFIG: IProfileTypeConfiguration[] = [
-    {
-        type: "banana",
-        schema: {
-            title: "The simple banana configuration",
-            description: "The simple banana configuration",
-            type: "object",
-            properties: {
-                description: {
-                    type: "string"
-                },
-                bundle: {
-                    type: "boolean"
-                }
-            }
-        }
-    }
-];
+
 describe("Imperative should provide advanced syntax validation rules", function () {
     const home = __dirname + "/validationtests";
 
@@ -61,7 +43,6 @@ describe("Imperative should provide advanced syntax validation rules", function 
         rimraf(home);
     });
     describe("Advanced syntax validation for commands using a test command", function () {
-        const yargs = require("yargs");
         const alwaysRequired = "--always-required-boolean --always-required-string blah ";
         const minValidOptions = "--option-to-specify-1 --implied-by-absence " +
             alwaysRequired;

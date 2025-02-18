@@ -67,7 +67,7 @@ describe("Create VSAM Data Set", () => {
 
             deleteOptions.purge = true;
 
-            const response = await Delete.vsam(REAL_SESSION, dsname, deleteOptions);
+            await Delete.vsam(REAL_SESSION, dsname, deleteOptions);
         });
 
         it("should create a VSAM data set", () => {
@@ -99,7 +99,7 @@ describe("Create VSAM Data Set", () => {
 
             deleteOptions.purge = true;
 
-            const response = await Delete.vsam(REAL_SESSION, dsname, deleteOptions);
+            await Delete.vsam(REAL_SESSION, dsname, deleteOptions);
         });
 
         it("should create a VSAM data set", () => {

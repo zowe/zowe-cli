@@ -160,7 +160,7 @@ describe("z/OS Files - Download", () => {
             }
 
             const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, `-(${volume})`, dsname);
-            const newDsContent = IO.processNewlines(dsContent.toString());
+            IO.processNewlines(dsContent.toString());
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -369,7 +369,6 @@ describe("z/OS Files - Download", () => {
         it("should download a data set specifying preserveOriginalLetterCase", async () => {
             let response;
             let caughtError;
-            const binary = true;
             const destination = dsFolder.toUpperCase() + ".txt";
 
             try {

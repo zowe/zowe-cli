@@ -16,10 +16,6 @@ import { CancelJobsData } from "../__resources__/api/CancelJobsData";
 
 jest.mock("@zowe/core-for-zowe-sdk");
 
-const returnDeleteJobsDataAsync = async (): Promise<any> => {
-    return CancelJobsData.SAMPLE_JOB_FEEDBACK_ASYNC;
-};
-
 const mockErrorText = "My fake error for unit tests has this text - Delete Jobs unit tests";
 const throwImperativeError = async () => {
     throw new ImperativeError({msg: mockErrorText});

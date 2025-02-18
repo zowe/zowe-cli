@@ -241,20 +241,19 @@ describe("ProcessUtils tests", () => {
         it("should open file in graphical editor", async () => {
             jest.spyOn(ProcessUtils, "isGuiAvailable").mockReturnValueOnce(GuiResult.GUI_AVAILABLE);
             const mockOpener = require("opener");
-            await ProcessUtils.openInEditor("filePath");
+            ProcessUtils.openInEditor("filePath");
             expect(mockOpener).toHaveBeenCalledWith("filePath");
         });
 
         it("should open file in custom graphical editor", async () => {
             jest.spyOn(ProcessUtils, "isGuiAvailable").mockReturnValueOnce(GuiResult.GUI_AVAILABLE);
-            const mockOpener = require("opener");
-            await ProcessUtils.openInEditor("filePath", "fakeEdit");
+            ProcessUtils.openInEditor("filePath", "fakeEdit");
             expect(spawn.spawn).toHaveBeenCalledWith("fakeEdit", ["filePath"], { stdio: "inherit" });
         });
 
         it("should open file in custom command-line editor", async () => {
             jest.spyOn(ProcessUtils, "isGuiAvailable").mockReturnValueOnce(GuiResult.NO_GUI_NO_DISPLAY);
-            await ProcessUtils.openInEditor("filePath", "fakeEdit");
+            ProcessUtils.openInEditor("filePath", "fakeEdit");
             expect(spawn.spawn).toHaveBeenCalledWith("fakeEdit", ["filePath"], { stdio: "inherit" });
         });
 
@@ -263,7 +262,7 @@ describe("ProcessUtils tests", () => {
             jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({
                 loadedConfig: {}
             } as any);
-            await ProcessUtils.openInEditor("filePath");
+            ProcessUtils.openInEditor("filePath");
             expect(spawn.spawn).toHaveBeenCalledWith("vi", ["filePath"], { stdio: "inherit" });
         });
     });
