@@ -112,12 +112,10 @@ export class AddressSpaceApps {
         let combinedResponse: IASAppResponse | null = null;
         let endKeyword = false;
         const startTime = Date.now();
-        let timeoutReached = false;
 
         do {
             // eslint-disable-next-line @typescript-eslint/no-magic-numbers
             if (Date.now() - startTime > TIMEOUT_SECONDS * 1000) {
-                timeoutReached = true;
                 break;
             }
 
@@ -143,7 +141,7 @@ export class AddressSpaceApps {
                 }
                 throw error;
             }
-        } while (!endKeyword && params.receiveUntilReady && !timeoutReached);
+        } while (!endKeyword && params.receiveUntilReady);
 
         return combinedResponse!;
     }

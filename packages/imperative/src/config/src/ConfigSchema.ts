@@ -208,14 +208,13 @@ export class ConfigSchema {
     private static _updateSchemaAll(opts: IConfigUpdateSchemaHelperOptions): IConfigUpdateSchemaPaths {
         let updatedPaths = opts.updatedPaths;
         // Loop through layers starting at the initial one
-        let currentLayer = opts.layer;
         let nextSchemaLocation = opts.layer.path;
 
         //___________________________________________________________________________________
         // Traverse UP
         while (nextSchemaLocation != null) {
             opts.config.api.layers.activate(true, false, path.dirname(nextSchemaLocation));
-            currentLayer = opts.config.api.layers.get();
+            const currentLayer = opts.config.api.layers.get();
 
             // Update the current layer
             updatedPaths = { ...updatedPaths, ...this._updateSchemaActive(opts) };
