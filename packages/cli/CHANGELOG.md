@@ -1,6 +1,10 @@
 # Change Log
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Added the ability to see secure properties when running `zowe config list` when the `ZOWE_SHOW_SECURE_ARGS` environment variable is set to `true`. [#2259](https://github.com/zowe/zowe-cli/issues/2259)
+
 ## `8.13.0`
 
 - Enhancement: Added the `--data-set-type` flag to create sequential data set command to allow for creating extended and large formatted sequential data sets. [#2141](https://github.com/zowe/zowe-cli/issues/2141)
