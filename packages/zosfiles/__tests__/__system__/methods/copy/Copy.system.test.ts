@@ -135,8 +135,6 @@ describe("Copy", () => {
                 it("Should copy a partitioned data set", async () => {
                     let error;
                     let response;
-                    let contents1;
-                    let contents2;
 
                     try {
                         response = await Copy.dataSet(
@@ -146,8 +144,6 @@ describe("Copy", () => {
                                 dsn:fromDataSetName
                             }}
                         );
-                        contents1 = await Get.dataSet(REAL_SESSION, fromDataSetName);
-                        contents2 = await Get.dataSet(REAL_SESSION, toDataSetName);
                         Imperative.console.info(`Response: ${inspect(response)}`);
                     } catch (err) {
                         error = err;
