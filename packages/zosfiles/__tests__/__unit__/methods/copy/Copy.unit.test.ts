@@ -18,6 +18,7 @@ import { Copy, Create, Get, List, Upload, ZosFilesConstants, ZosFilesMessages, I
 import { ZosmfHeaders, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import path = require("path");
 import { tmpdir } from "os";
+import { first } from "lodash";
 
 describe("Copy", () => {
     const dummySession = new Session({
@@ -916,13 +917,16 @@ describe("Copy", () => {
                 }
             };
             const fileList = ["mem1", "mem2"];
+            const firstTenMembers = fileList.slice(0, 10);
             listAllMembersSpy.mockImplementation(async (): Promise<any>  => sourceResponse);
             downloadAllMembersSpy.mockImplementation(async (): Promise<any> => undefined);
             fileListPathSpy.mockReturnValue(fileList);
-            generateMemName.mockReturnValue("mem1");
+            generateMemName.mockImplementation((m) => m);
             readStream.mockReturnValue("test" as any);
+            const numMembers = fileList.length - firstTenMembers.length;
+
             uploadSpy.mockImplementation((dummySession, readStream, dsn) => {
-                if (dsn.includes("mem1")) {
+                if (["mem1", "mem2"].some(m => dsn.includes(m))) {
                     return Promise.reject(new Error("Truncation of a record occurred during an I/O operation"));
                 }
                 return Promise.resolve() as any;
@@ -934,7 +938,10 @@ describe("Copy", () => {
                 caughtError = e;
             }
             expect(response.commandResponse).toContain(ZosFilesMessages.datasetCopiedSuccessfully.message + " " +
-                util.format(ZosFilesMessages.membersContentTruncated.message, truncatedMembersFilePath));
+                ZosFilesMessages.membersContentTruncated.message + "\n\n" +
+                firstTenMembers.join('\n') +
+                `\n... and ${numMembers} more` +
+                util.format(ZosFilesMessages.viewMembersListfile.message, truncatedMembersFilePath));
         });
 
         describe("hasIdenticalMemberNames", () => {

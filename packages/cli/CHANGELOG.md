@@ -1,12 +1,12 @@
 # Change Log
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## `8.13.0`
-
 ## Recent Changes
 
 - BugFix: When using the `copy` command, when a target partitioned data set has less record lines than a source partitioned data set, it no longer stops the operation for subsequent members. The user can now view the affected members in a local file.
-- Enhancement: When copying PDSs that have identical member names, the user is now prompted to confirm before the operation occurs in case of data loss. [#2349] (https://github.com/zowe/zowe-cli/issues/2349)
+
+## `8.13.0`
+
 - Enhancement: Added the `--data-set-type` flag to create sequential data set command to allow for creating extended and large formatted sequential data sets. [#2141](https://github.com/zowe/zowe-cli/issues/2141)
 - Enhancement: Added `--recordRange` flag to `zowe jobs download output` command to allow users to select a specific range of records to output from a spool file. [#2411](https://github.com/zowe/zowe-cli/pull/2411)
 - BugFix: The `zowe zos-files copy data-set` command overwrites the contents of the target data set without user confirmation. A `--safe-replace` option was added which prompts the user to confirm before overwriting the contents of the target data set. [#2369] (https://github.com/zowe/zowe-cli/issues/2369)

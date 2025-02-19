@@ -2,17 +2,15 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
-## `8.13.0`
-
 ## Recent Changes
 
 - BugFix: When using the `copy` command, when a target partitioned data set has less record lines than a source partitioned data set, it no longer stops the operation for subsequent members. The user can now view the affected members in a local file.
-- Enhancement: When copying PDSs that have identical member names, the user is now prompted to confirm before the operation occurs in case of data loss. [#2349] (https://github.com/zowe/zowe-cli/issues/2349)
+
+## `8.13.0`
+
 - BugFix: The `Create.dataSetValidateOptions()` function now correctly handles data set creation when the `dsorg` attribute is set to `PS-L` by automatically updating the `dsntype` attribute to `LARGE`. [#2141](https://github.com/zowe/zowe-cli/issues/2141)
 - BugFix: Fixed an issue in the `Copy.dataSetCrossLPAR()` function where the `spacu` attribute of the copied data set was always set to `TRK`, regardless of the source data set's attributes. [#2412](https://github.com/zowe/zowe-cli/issues/2412)
 - BugFix: The `Copy.data.set` function now prompts the user to confirm before overwriting the contents of the target data set with the addition of the `--safe-replace` option. [#2369] (https://github.com/zowe/zowe-cli/issues/2369)
-
-## `8.12.0`
 
 ## `8.12.0`
 - Enhancement: The `Copy.dataset` function now creates a new data set if the entered target data set does not exist. [#2349](https://github.com/zowe/zowe-cli/issues/2349)

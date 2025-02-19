@@ -247,11 +247,17 @@ export class Copy {
             }
             const truncatedMembersFile = path.join(tmpdir(), 'truncatedMembers.txt');
             if(truncatedMembers.length > 0) {
+                const firstTenMembers = truncatedMembers.slice(0, 10);
                 fs.writeFileSync(truncatedMembersFile, truncatedMembers.join('\n'));
+                const numMembers = truncatedMembers.length - firstTenMembers.length;
                 return {
                     success: true,
-                    commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message + " " +
-                    util.format(ZosFilesMessages.membersContentTruncated.message, truncatedMembersFile)
+                    commandResponse:
+                        ZosFilesMessages.datasetCopiedSuccessfully.message + " " +
+                        ZosFilesMessages.membersContentTruncated.message + "\n\n" +
+                        firstTenMembers.join('\n') +
+                        `\n... and ${numMembers} more` +
+                        util.format(ZosFilesMessages.viewMembersListfile.message, truncatedMembersFile)
                 };
             }
             fs.rmSync(downloadDir, {recursive: true});
