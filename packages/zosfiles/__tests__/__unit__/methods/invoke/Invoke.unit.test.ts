@@ -241,7 +241,7 @@ describe("Invoke", () => {
             expect(invokeExpectJsonSpy).toHaveBeenCalledWith(
                 dummySession,
                 posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_AMS),
-                localHeaders,
+                expect.arrayContaining(localHeaders),
                 reqPayload
             );
         });
@@ -296,7 +296,7 @@ describe("Invoke", () => {
             expect(invokeExpectJsonSpy).toHaveBeenCalledWith(
                 dummySession,
                 posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_AMS),
-                localHeaders,
+                expect.arrayContaining(localHeaders),
                 reqPayload
             );
         });

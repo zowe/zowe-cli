@@ -60,7 +60,7 @@ describe("Rename", () => {
                 expect(putExpectStringSpy).toHaveBeenLastCalledWith(
                     dummySession,
                     expectedEndpoint,
-                    expectedHeaders,
+                    expect.arrayContaining(expectedHeaders),
                     expectedPayload
                 );
             });
@@ -87,7 +87,7 @@ describe("Rename", () => {
                 expect(putExpectStringSpy).toHaveBeenLastCalledWith(
                     dummySession,
                     expectedEndpoint,
-                    expectedHeaders,
+                    expect.arrayContaining(expectedHeaders),
                     expectedPayload
                 );
             });
@@ -155,7 +155,7 @@ describe("Rename", () => {
                 expect(putExpectStringSpy).toHaveBeenLastCalledWith(
                     dummySession,
                     expectedEndpoint,
-                    expectedHeaders,
+                    expect.arrayContaining(expectedHeaders),
                     expectedPayload
                 );
                 expect(error.message).toContain(errorMessage);
@@ -197,7 +197,7 @@ describe("Rename", () => {
                 expect(putExpectStringSpy).toHaveBeenLastCalledWith(
                     dummySession,
                     expectedEndpoint,
-                    expectedHeaders,
+                    expect.arrayContaining(expectedHeaders),
                     expectedPayload
                 );
             });
@@ -231,7 +231,7 @@ describe("Rename", () => {
                 expect(putExpectStringSpy).toHaveBeenLastCalledWith(
                     dummySession,
                     expectedEndpoint,
-                    expectedHeaders,
+                    expect.arrayContaining(expectedHeaders),
                     expectedPayload
                 );
             });
@@ -288,7 +288,7 @@ describe("Rename", () => {
                 expect(putExpectStringSpy).toHaveBeenLastCalledWith(
                     dummySession,
                     expectedEndpoint,
-                    expectedHeaders,
+                    expect.arrayContaining(expectedHeaders),
                     expectedPayload
                 );
                 expect(error.message).toContain(errorMessage);

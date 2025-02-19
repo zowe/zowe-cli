@@ -1,6 +1,10 @@
 # Change Log
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Created a centralized header class with `packages/zosfiles/src/utils/ZosFilesHeaders.ts` to be used across all methods in the ZosFiles SDK. [#2436](https://github.com/zowe/zowe-cli/pull/2436)
+
 ## `8.13.0`
 
 - Enhancement: Added the `--data-set-type` flag to create sequential data set command to allow for creating extended and large formatted sequential data sets. [#2141](https://github.com/zowe/zowe-cli/issues/2141)

@@ -63,7 +63,7 @@ describe("hRecall data set", () => {
             expect(putExpectStringSpy).toHaveBeenLastCalledWith(
                 dummySession,
                 expectedEndpoint,
-                expectedHeaders,
+                expect.arrayContaining(expectedHeaders),
                 expectedPayload
             );
         });
@@ -95,7 +95,7 @@ describe("hRecall data set", () => {
             expect(putExpectStringSpy).toHaveBeenLastCalledWith(
                 dummySession,
                 expectedEndpoint,
-                expectedHeaders,
+                expect.arrayContaining(expectedHeaders),
                 expectedPayload
             );
         });
@@ -127,7 +127,7 @@ describe("hRecall data set", () => {
             expect(putExpectStringSpy).toHaveBeenLastCalledWith(
                 dummySession,
                 expectedEndpoint,
-                expectedHeaders,
+                expect.arrayContaining(expectedHeaders),
                 expectedPayload
             );
         });
@@ -164,7 +164,7 @@ describe("hRecall data set", () => {
             expect(putExpectStringSpy).toHaveBeenLastCalledWith(
                 dummySession,
                 expectedEndpoint,
-                expectedHeaders,
+                expect.arrayContaining(expectedHeaders),
                 expectedPayload
             );
             expect(error).toContain(errorMessage);

@@ -14,7 +14,7 @@ import { AbstractSession, IHeaderContent, ImperativeError, ImperativeExpect, JSO
 import { posix } from "path";
 import * as util from "util";
 
-import { ZosmfRestClient, ZosmfHeaders, asyncPool } from "@zowe/core-for-zowe-sdk";
+import { ZosmfRestClient, asyncPool } from "@zowe/core-for-zowe-sdk";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 import { IZosFilesResponse } from "../../doc/IZosFilesResponse";
@@ -23,6 +23,7 @@ import { IUSSListOptions } from "./doc/IUSSListOptions";
 import { IFsOptions } from "./doc/IFsOptions";
 import { IZosmfListResponse } from "./doc/IZosmfListResponse";
 import { IDsmListOptions } from "./doc/IDsmListOptions";
+import { ZosFilesHeaders } from "../../utils/ZosFilesHeaders";
 
 /**
  * This class holds helper functions that are used to list data sets and its members through the z/OS MF APIs
@@ -62,18 +63,7 @@ export class List {
                 params.set("start", options.start);
             }
 
-            const reqHeaders: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING];
-            if (options.attributes) {
-                reqHeaders.push(ZosmfHeaders.X_IBM_ATTRIBUTES_BASE);
-            }
-            if (options.maxLength) {
-                reqHeaders.push({"X-IBM-Max-Items": `${options.maxLength}`});
-            } else {
-                reqHeaders.push(ZosmfHeaders.X_IBM_MAX_ITEMS);
-            }
-            if (options.responseTimeout != null) {
-                reqHeaders.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
-            }
+            const reqHeaders: IHeaderContent[] = ZosFilesHeaders.generateHeaders({options});
 
             this.log.debug(`Endpoint: ${endpoint}`);
 
@@ -194,33 +184,7 @@ export class List {
                 endpoint = `${endpoint}&start=${encodeURIComponent(options.start)}`;
             }
 
-            const reqHeaders: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING];
-            if (options.attributes) {
-                reqHeaders.push(ZosmfHeaders.X_IBM_ATTRIBUTES_BASE);
-            }
-            if (options.maxLength) {
-                reqHeaders.push({"X-IBM-Max-Items": `${options.maxLength}`});
-            } else {
-                reqHeaders.push(ZosmfHeaders.X_IBM_MAX_ITEMS);
-            }
-            if (options.responseTimeout != null) {
-                reqHeaders.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
-            }
-
-            // Migrated recall options
-            if (options.recall) {
-                switch (options.recall.toLowerCase()) {
-                    case "wait":
-                        reqHeaders.push(ZosmfHeaders.X_IBM_MIGRATED_RECALL_WAIT);
-                        break;
-                    case "nowait":
-                        reqHeaders.push(ZosmfHeaders.X_IBM_MIGRATED_RECALL_NO_WAIT);
-                        break;
-                    case "error":
-                        reqHeaders.push(ZosmfHeaders.X_IBM_MIGRATED_RECALL_ERROR);
-                        break;
-                }
-            }
+            const reqHeaders: IHeaderContent[] = ZosFilesHeaders.generateHeaders({options});
 
             this.log.debug(`Endpoint: ${endpoint}`);
 
@@ -268,15 +232,7 @@ export class List {
             let endpoint = posix.join(ZosFilesConstants.RESOURCE,
                 `${ZosFilesConstants.RES_USS_FILES}?${ZosFilesConstants.RES_PATH}=${encodeURIComponent(path)}`);
 
-            const reqHeaders: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING];
-            if (options.maxLength) {
-                reqHeaders.push({"X-IBM-Max-Items": `${options.maxLength}`});
-            } else {
-                reqHeaders.push(ZosmfHeaders.X_IBM_MAX_ITEMS);
-            }
-            if (options.responseTimeout != null) {
-                reqHeaders.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
-            }
+            const reqHeaders: IHeaderContent[] = ZosFilesHeaders.generateHeaders({options});
 
             // Start modifying the endpoint with the query parameters that were passed in
             if (options.group) { endpoint += `&${ZosFilesConstants.RES_GROUP}=${encodeURIComponent(options.group)}`; }
@@ -330,18 +286,7 @@ export class List {
                 endpoint = posix.join(endpoint, `?${ZosFilesConstants.RES_FSNAME}=${encodeURIComponent(options.fsname)}`);
             }
 
-            const reqHeaders: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING];
-            // if (options.path) {
-            //     reqHeaders.push(ZosmfHeaders.X_IBM_ATTRIBUTES_BASE);
-            // }
-            if (options.maxLength) {
-                reqHeaders.push({"X-IBM-Max-Items": `${options.maxLength}`});
-            } else {
-                reqHeaders.push(ZosmfHeaders.X_IBM_MAX_ITEMS);
-            }
-            if (options.responseTimeout != null) {
-                reqHeaders.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
-            }
+            const reqHeaders: IHeaderContent[] = ZosFilesHeaders.generateHeaders({options});
 
             this.log.debug(`Endpoint: ${endpoint}`);
 
@@ -378,15 +323,7 @@ export class List {
                 endpoint = posix.join(endpoint, `?${ZosFilesConstants.RES_PATH}=${encodeURIComponent(options.path)}`);
             }
 
-            const reqHeaders: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING];
-            if (options.maxLength) {
-                reqHeaders.push({"X-IBM-Max-Items": `${options.maxLength}`});
-            } else {
-                reqHeaders.push(ZosmfHeaders.X_IBM_MAX_ITEMS);
-            }
-            if (options.responseTimeout != null) {
-                reqHeaders.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
-            }
+            const reqHeaders: IHeaderContent[] = ZosFilesHeaders.generateHeaders({options});
 
             this.log.debug(`Endpoint: ${endpoint}`);
 

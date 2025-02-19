@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Created a centralized header class with `packages/zosfiles/src/utils/ZosFilesHeaders.ts` to be used across all methods in the ZosFiles SDK. [#2436](https://github.com/zowe/zowe-cli/pull/2436)
+
 ## `8.13.0`
 
 - BugFix: The `Create.dataSetValidateOptions()` function now correctly handles data set creation when the `dsorg` attribute is set to `PS-L` by automatically updating the `dsntype` attribute to `LARGE`. [#2141](https://github.com/zowe/zowe-cli/issues/2141)

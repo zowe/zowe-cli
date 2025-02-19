@@ -33,6 +33,13 @@ export class ZosmfHeaders {
 
 
     /**
+     * header indicating recursive = true
+     * @static
+     * @memberof ZosmfHeaders
+     */
+    public static readonly X_IBM_RECURSIVE = {"X-IBM-Option": "recursive"};
+
+    /**
      * recfm header
      * @static
      * @memberof ZosmfHeaders
@@ -115,7 +122,7 @@ export class ZosmfHeaders {
      * @static
      * @memberof ZosmfHeaders
      */
-    public static readonly X_CSRF_ZOSMF_HEADER: object = { "X-CSRF-ZOSMF-HEADER": true }; // "the value does not matter"
+    public static readonly X_CSRF_ZOSMF_HEADER: object = { "X-CSRF-ZOSMF-HEADER": "true" }; // "the value does not matter"
 
     /**
      * binary transfer header
@@ -165,6 +172,8 @@ export class ZosmfHeaders {
      * @memberof ZosmfHeaders
      */
     public static readonly TEXT_PLAIN: IHeaderContent = { "Content-Type": "text/plain" };
+
+    public static readonly APPLICATION_JSON: IHeaderContent = { "Content-Type": "application/json" };
 
     /**
      * This header value specifies the maximum number of items to return.

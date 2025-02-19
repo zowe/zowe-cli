@@ -12,10 +12,11 @@
 import { AbstractSession, ImperativeExpect, ImperativeError } from "@zowe/imperative";
 
 import { IMountFsOptions } from "./doc/IMountFsOptions";
-import { ZosmfRestClient, ZosmfHeaders } from "@zowe/core-for-zowe-sdk";
+import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 import { IZosFilesResponse } from "../../doc/IZosFilesResponse";
+import { ZosFilesHeaders } from "../../utils/ZosFilesHeaders";
 
 /**
  * This class holds helper functions that are used to mount file systems through the z/OS MF APIs
@@ -56,12 +57,9 @@ export class Mount {
         const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_MFS + "/" + encodeURIComponent(fileSystemName);
 
         const jsonContent = JSON.stringify(tempOptions);
-        const headers = [{"Content-Length": jsonContent.length}, ZosmfHeaders.ACCEPT_ENCODING];
-        if (options && options.responseTimeout != null) {
-            headers.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
-        }
+        const reqHeaders = ZosFilesHeaders.generateHeaders({options, dataLength: jsonContent.length});
 
-        const data = await ZosmfRestClient.putExpectString(session, endpoint, headers, jsonContent);
+        const data = await ZosmfRestClient.putExpectString(session, endpoint, reqHeaders, jsonContent);
 
         return {
             success: true,

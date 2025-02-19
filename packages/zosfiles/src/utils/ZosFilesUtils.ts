@@ -120,6 +120,7 @@ export class ZosFilesUtils {
      * @param {IOptions} options - various options
      * @returns {IHeaderContent[]}
      * @memberof ZosFilesUtils
+     * @deprecated in favor of automatic application of headers via ZosmfFilesHeaders.generateHeaders
      */
     public static generateHeadersBasedOnOptions(options: IOptions): IHeaderContent[] {
         const reqHeaders: IHeaderContent[] = [];
