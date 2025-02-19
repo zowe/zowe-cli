@@ -133,9 +133,9 @@ export class ZosFilesHeaders {
         }
     }
 
-    // ============================================//
-    // CONTEXT HEADERS CREATION: USS, ZFS, Dataset //
-    // ============================================//
+    // =============================================================//
+    // CONTEXT HEADERS CREATION: Upload/Download, USS, ZFS, Dataset //
+    // =============================================================//
 
     /**
      * Adds headers based on the operation context (USS, ZFS or Datasets).
@@ -225,8 +225,8 @@ export class ZosFilesHeaders {
      * Generates an array of headers based on provided options and context.
      *
      * @param options - The request options.
-     * @param context - The operation context from enum (optional) ie STREAM or ZFS.
-     * @param dataLength - The content length (optional).
+     * @param context - (optional) The operation context from enum ie STREAM or ZFS.
+     * @param dataLength - (optional) The content length.
      * @returns An array of generated headers.
      */
     public static generateHeaders<T>({
