@@ -19,10 +19,8 @@ describe("View USS file handler", () => {
             const handlerReq = require("../../../../../src/zosfiles/view/uss/USSFile.handler");
             const handler = new handlerReq.default();
             const file = "testing";
-            const binary = true;
 
             // Vars populated by the mocked function
-            let error;
             let apiMessage = "";
             let jsonObj;
             let logMessage = "";
@@ -32,18 +30,6 @@ describe("View USS file handler", () => {
             Get.USSFile = jest.fn(async (session) => {
                 fakeSession = session;
                 return Buffer.from("Retrieved");
-            });
-
-            // Mocked function references
-            const profFunc = jest.fn((args) => {
-                return {
-                    host: "fake",
-                    port: "fake",
-                    user: "fake",
-                    password: "fake",
-                    auth: "fake",
-                    rejectUnauthorized: "fake",
-                };
             });
 
             try {
@@ -70,7 +56,7 @@ describe("View USS file handler", () => {
                             })
                         },
                         progress: {
-                            startBar: jest.fn((parms) => {
+                            startBar: jest.fn((_parms) => {
                                 // do nothing
                             }),
                             endBar: jest.fn(() => {
@@ -80,7 +66,7 @@ describe("View USS file handler", () => {
                     }
                 } as any);
             } catch (e) {
-                error = e;
+                // Do nothing
             }
 
             //expect(error).toBeUndefined();

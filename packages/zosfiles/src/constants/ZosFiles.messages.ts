@@ -202,7 +202,7 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
      * @type {IMessageDefinition}
      */
     membersContentTruncated: {
-        message: "Member(s)' contents were truncated due to insufficient record lines. You can view the list of members here: %s"
+        message: "Member(s)' contents were truncated due to insufficient record length. You can view the list of members here: %s"
     },
     /**
      * Message indicating that the uss file was downloaded successfully

@@ -18,7 +18,7 @@ jest.mock("@zowe/imperative");
 import * as net from "net";
 import * as os from "os";
 import * as path from "path";
-import Mock = jest.Mock;
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Imperative, IO } from "@zowe/imperative";  // eslint-disable-line unused-imports/no-unused-imports
 import { DaemonDecider } from "../../../src/daemon/DaemonDecider";
 
@@ -37,7 +37,7 @@ describe("DaemonDecider tests", () => {
             // do nothing
         });
 
-        const on = jest.fn((event, func) => {
+        const on = jest.fn((_event, _func) => {
             // do nothing
         });
 
@@ -55,7 +55,7 @@ describe("DaemonDecider tests", () => {
             parse
         };
         const fn = jest.mocked(net.createServer);
-        fn.mockImplementation((unusedclient, ...args: any[]): any => {
+        fn.mockImplementation((_unusedclient, ..._args: any[]): any => {
             return {on};
         });
 
@@ -72,7 +72,7 @@ describe("DaemonDecider tests", () => {
             // do nothing
         });
 
-        const on = jest.fn((event, func) => {
+        const on = jest.fn((_event, _func) => {
             // do nothing
         });
 
@@ -100,7 +100,7 @@ describe("DaemonDecider tests", () => {
             parse
         };
         const fn = jest.mocked(net.createServer);
-        fn.mockImplementation((method: any, ...args: any[]): any => {
+        fn.mockImplementation((method: any, ..._args: any[]): any => {
             method("fakeClient", "fakeServer");
             return {on, listen};
         });
@@ -139,7 +139,7 @@ describe("DaemonDecider tests", () => {
 
         const envWinPipeName = "MyWinPipeName";
         const envDaemonDir = path.normalize("./testOutput/daemonDir");
-        let expectedCommChannel: string = "NotAssignedYet";
+        let expectedCommChannel: string;
 
         if (process.platform === "win32") {
             process.env.ZOWE_DAEMON_PIPE = envWinPipeName;
@@ -159,11 +159,11 @@ describe("DaemonDecider tests", () => {
             // do nothing
         });
 
-        const on = jest.fn((event, func) => {
+        const on = jest.fn((_event, _func) => {
             // do nothing
         });
 
-        const listen = jest.fn((event, func) => {
+        const listen = jest.fn((_event, _func) => {
             // do nothing
         });
 
@@ -187,7 +187,7 @@ describe("DaemonDecider tests", () => {
         };
 
         const fn = jest.mocked(net.createServer);
-        fn.mockImplementation((unusedclient, ...args: any[]): any => {
+        fn.mockImplementation((_unusedclient, ..._args: any[]): any => {
             return {on, listen};
         });
 
@@ -203,11 +203,11 @@ describe("DaemonDecider tests", () => {
             // do nothing
         });
 
-        const on = jest.fn((event, func) => {
+        const on = jest.fn((_event, _func) => {
             // do nothing
         });
 
-        const listen = jest.fn((event, func) => {
+        const listen = jest.fn((_event, _func) => {
             // do nothing
         });
 
@@ -231,14 +231,14 @@ describe("DaemonDecider tests", () => {
         };
 
         const fn = jest.mocked(net.createServer);
-        fn.mockImplementation((unusedclient, ...args: any[]): any => {
+        fn.mockImplementation((_unusedclient, ..._args: any[]): any => {
             return {on, listen};
         });
 
         const daemonDecider = new DaemonDecider(["node", "zowe", "--daemon"]);
         daemonDecider.init();
 
-        let expectedCommChannel: string = "NotAssignedYet";
+        let expectedCommChannel: string;
         if (process.platform === "win32") {
             expectedCommChannel = `\\\\.\\pipe\\${os.userInfo().username}\\ZoweDaemon`;
         } else {
@@ -253,11 +253,11 @@ describe("DaemonDecider tests", () => {
             // do nothing
         });
 
-        const on = jest.fn((event, func) => {
+        const on = jest.fn((_event, _func) => {
             // do nothing
         });
 
-        const listen = jest.fn((event, func) => {
+        const listen = jest.fn((_event, _func) => {
             // do nothing
         });
 
@@ -281,7 +281,7 @@ describe("DaemonDecider tests", () => {
         };
 
         const fn = jest.mocked(net.createServer);
-        fn.mockImplementation((unusedclient, ...args: any[]): any => {
+        fn.mockImplementation((_unusedclient, ..._args: any[]): any => {
             return {on, listen};
         });
 
@@ -321,7 +321,6 @@ describe("DaemonDecider tests", () => {
 
         let existTimes;
         if (process.platform === "win32") {
-            existsSyncSpy.mockImplementationOnce;
             existTimes = 2;
         } else {
             existTimes = 3;
@@ -338,11 +337,11 @@ describe("DaemonDecider tests", () => {
             // do nothing
         });
 
-        const on = jest.fn((event, func) => {
+        const on = jest.fn((_event, _func) => {
             // do nothing
         });
 
-        const listen = jest.fn((event, func) => {
+        const listen = jest.fn((_event, _func) => {
             // do nothing
         });
 
@@ -366,7 +365,7 @@ describe("DaemonDecider tests", () => {
         };
 
         const fn = jest.mocked(net.createServer);
-        fn.mockImplementation((unusedclient, ...args: any[]): any => {
+        fn.mockImplementation((_unusedclient, ..._args: any[]): any => {
             return {on, listen};
         });
 
@@ -402,11 +401,11 @@ describe("DaemonDecider tests", () => {
             recordedLogMsg += logMsg;
         });
 
-        const on = jest.fn((event, func) => {
+        const on = jest.fn((_event, _func) => {
             // do nothing
         });
 
-        const listen = jest.fn((event, func) => {
+        const listen = jest.fn((_event, _func) => {
             // do nothing
         });
 
@@ -430,7 +429,7 @@ describe("DaemonDecider tests", () => {
         };
 
         const fn = jest.mocked(net.createServer);
-        fn.mockImplementation((unusedclient, ...args: any[]): any => {
+        fn.mockImplementation((_unusedclient, ..._args: any[]): any => {
             return {on, listen};
         });
 

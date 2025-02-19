@@ -268,7 +268,7 @@ export class ImperativeExpect {
      * @param {string} [msg] - The message to throw - overrides the default message
      * @memberof ImperativeExpect
      */
-    public static keysToBeOfType(obj: { [key: string]: any } | any, type: string, keys: string[], msg?: string) {
+    public static keysToBeOfType(obj: { [key: string]: any } | any, type: string, keys: string[], _msg?: string) {
         ImperativeExpect.keysToBeDefined(obj, keys);
         const objParser = new DataObjectParser(obj);
         keys.forEach((key) => {

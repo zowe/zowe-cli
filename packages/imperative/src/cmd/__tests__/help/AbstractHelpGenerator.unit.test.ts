@@ -18,7 +18,6 @@ const chalkColor: string = "blue";
 const oldForceColorOption = process.env.FORCE_COLOR;
 
 describe("Abstract Help Generator Unit Tests", () => {
-    const displayName = "dummy";
     beforeAll(async () => {
         process.env.FORCE_COLOR = "0";
     });

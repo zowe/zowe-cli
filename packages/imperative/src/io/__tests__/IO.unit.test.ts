@@ -9,8 +9,6 @@
 *
 */
 
-import Mock = jest.Mock;
-
 jest.mock("fs");
 jest.mock("path");
 import * as fs from "fs";
@@ -44,7 +42,7 @@ describe("IO tests", () => {
 
     it("should return true for fs.stats says input is directory", () => {
         const fn = jest.mocked(fs.statSync);
-        fn.mockImplementation(((somePath: fs.PathLike) => {
+        fn.mockImplementation(((_somePath: fs.PathLike) => {
             return {
                 isDirectory: () => true,
             };
@@ -54,7 +52,7 @@ describe("IO tests", () => {
 
     it("should return false for fs.stats says input is not directory", () => {
         const fn = jest.mocked(fs.statSync);
-        fn.mockImplementation(((somePath: fs.PathLike) => {
+        fn.mockImplementation(((_somePath: fs.PathLike) => {
             return {
                 isDirectory: () => false,
             };
@@ -112,7 +110,7 @@ describe("IO tests", () => {
     it("should create a dir if file doesn't exist", () => {
         existsSyncSpy = jest.spyOn(fs, "existsSync").mockReturnValue(false);
         const fnFm = jest.mocked(fs.mkdirSync);
-        fnFm.mockImplementation(((file: fs.PathLike) => {
+        fnFm.mockImplementation(((_file: fs.PathLike) => {
             return; // do nothing but pretend to write
         }) as any);
         IO.createDirSync("pretend/to/create");
@@ -133,7 +131,7 @@ describe("IO tests", () => {
     it("should create several dirs if dirs do not exist", () => {
         existsSyncSpy = jest.spyOn(fs, "existsSync").mockReturnValue(false);
         const fnFm = jest.mocked(fs.mkdirSync);
-        fnFm.mockImplementation(((file: fs.PathLike) => {
+        fnFm.mockImplementation(((_file: fs.PathLike) => {
             return; // do nothing but pretend to write
         }) as any);
         const fnPr = jest.mocked(path.resolve);
@@ -150,7 +148,7 @@ describe("IO tests", () => {
     it("should create several dirs if dirs do not exist from input file", () => {
         existsSyncSpy = jest.spyOn(fs, "existsSync").mockReturnValue(false);
         const fnFm = jest.mocked(fs.mkdirSync);
-        fnFm.mockImplementation(((file: fs.PathLike) => {
+        fnFm.mockImplementation(((_file: fs.PathLike) => {
             return; // do nothing but pretend to write
         }) as any);
         const fnPr = jest.mocked(path.resolve);

@@ -38,18 +38,18 @@ const getIHandlerParametersObject = (): IHandlerParameters => {
     const x: any = {
         response: {
             data: {
-                setMessage: jest.fn((setMsgArgs) => {
+                setMessage: jest.fn((_setMsgArgs) => {
                     // Nothing
                 }),
-                setObj: jest.fn((setObjArgs) => {
+                setObj: jest.fn((_setObjArgs) => {
                     // Nothing
                 }),
             },
             console: {
-                log: jest.fn((logs) => {
+                log: jest.fn((_logs) => {
                     // Nothing
                 }),
-                error: jest.fn((errors) => {
+                error: jest.fn((_errors) => {
                     // Nothing
                 }),
                 errorHeader: jest.fn(() => undefined),
@@ -70,14 +70,8 @@ const credentialManager: ICredentialManagerInit = {
 
 const fakeConfig = config as IImperativeConfig;
 const fakeProjPath = path.join(__dirname, "fakeapp.config.json");
-const fakeSchemaPath = path.join(__dirname, "fakeapp.schema.json");
 const fakeProjUserPath = path.join(__dirname, "fakeapp.config.user.json");
 const fakeGblProjPath = path.join(__dirname, ".fakeapp", "fakeapp.config.json");
-const fakeGblSchemaPath = path.join(
-    __dirname,
-    ".fakeapp",
-    "fakeapp.schema.json"
-);
 const fakeGblProjUserPath = path.join(
     __dirname,
     ".fakeapp",
@@ -105,7 +99,6 @@ describe("Configuration Secure command handler", () => {
     let writeFileSyncSpy: any;
     let existsSyncSpy: any;
     let searchSpy: any;
-    let setSchemaSpy: any;
     let keytarGetPasswordSpy: any;
     let keytarSetPasswordSpy: any;
     let keytarDeletePasswordSpy: any;
@@ -192,10 +185,6 @@ describe("Configuration Secure command handler", () => {
         existsSyncSpy.mockClear();
         readFileSyncSpy.mockClear();
 
-        setSchemaSpy = jest.spyOn(
-            ImperativeConfig.instance.config,
-            "setSchema"
-        );
         (params.response.console as any).prompt = jest.fn(
             () => "fakePromptingData"
         );
@@ -271,11 +260,6 @@ describe("Configuration Secure command handler", () => {
         writeFileSyncSpy.mockClear();
         existsSyncSpy.mockClear();
         readFileSyncSpy.mockClear();
-
-        setSchemaSpy = jest.spyOn(
-            ImperativeConfig.instance.config,
-            "setSchema"
-        );
 
         await handler.process(params);
 
@@ -353,11 +337,6 @@ describe("Configuration Secure command handler", () => {
         existsSyncSpy.mockClear();
         readFileSyncSpy.mockClear();
 
-        setSchemaSpy = jest.spyOn(
-            ImperativeConfig.instance.config,
-            "setSchema"
-        );
-
         await handler.process(params);
 
         const fakeSecureDataExpectedJson: { [key: string]: any } =
@@ -433,11 +412,6 @@ describe("Configuration Secure command handler", () => {
         writeFileSyncSpy.mockClear();
         existsSyncSpy.mockClear();
         readFileSyncSpy.mockClear();
-
-        setSchemaSpy = jest.spyOn(
-            ImperativeConfig.instance.config,
-            "setSchema"
-        );
 
         await handler.process(params);
 
@@ -515,11 +489,6 @@ describe("Configuration Secure command handler", () => {
         existsSyncSpy.mockClear();
         readFileSyncSpy.mockClear();
 
-        setSchemaSpy = jest.spyOn(
-            ImperativeConfig.instance.config,
-            "setSchema"
-        );
-
         await handler.process(params);
 
         expect(keytarDeletePasswordSpy).toHaveBeenCalledTimes(0);
@@ -568,11 +537,6 @@ describe("Configuration Secure command handler", () => {
         writeFileSyncSpy.mockClear();
         existsSyncSpy.mockClear();
         readFileSyncSpy.mockClear();
-
-        setSchemaSpy = jest.spyOn(
-            ImperativeConfig.instance.config,
-            "setSchema"
-        );
 
         await handler.process(params);
 

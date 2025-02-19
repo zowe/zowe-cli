@@ -24,8 +24,6 @@ let REAL_SESSION: Session;
 let JOB_NAME: string;
 const jobNameRegex = /jobname: (\w+)/;
 
-let account: string;
-let jclMember: string;
 let ussFile: string;
 
 describe("zos-jobs submit uss-file command", () => {
@@ -36,7 +34,6 @@ describe("zos-jobs submit uss-file command", () => {
             tempProfileTypes: ["zosmf"]
         });
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
-        account = TEST_ENVIRONMENT.systemTestProperties.tso.account;
         ussFile = TEST_ENVIRONMENT.systemTestProperties.zosjobs.iefbr14USSFile;
     });
 

@@ -32,7 +32,6 @@ describe("LoggerConfigBuilder tests", () => {
 
     it("Should add console appender to basic log4js configuration", () => {
         const config = LoggerConfigBuilder.getDefaultIConfigLogging();
-        const testKey = "sampleConsole";
         expect(config).toMatchSnapshot();
     });
 

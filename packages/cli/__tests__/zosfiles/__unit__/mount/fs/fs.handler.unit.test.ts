@@ -65,7 +65,7 @@ describe("Mount file system handler", () => {
                             })
                         },
                         progress: {
-                            startBar: jest.fn((parms) => {
+                            startBar: jest.fn((_parms) => {
                                 // do nothing
                             }),
                             endBar: jest.fn(() => {
@@ -96,9 +96,6 @@ describe("Mount file system handler", () => {
 
         // Vars populated by the mocked function
         let error: any;
-        let apiMessage = "";
-        let jsonObj;
-        let logMessage = "";
         let fakeSession = null;
 
         // Mock the fs function
@@ -123,16 +120,16 @@ describe("Mount file system handler", () => {
                 },
                 response: {
                     data: {
-                        setMessage: jest.fn((setMsgArgs) => {
-                            apiMessage = setMsgArgs;
+                        setMessage: jest.fn((_setMsgArgs) => {
+                            // Do nothing
                         }),
-                        setObj: jest.fn((setObjArgs) => {
-                            jsonObj = setObjArgs;
+                        setObj: jest.fn((_setObjArgs) => {
+                            // Do nothing
                         })
                     },
                     console: {
-                        log: jest.fn((logArgs) => {
-                            logMessage += "\n" + logArgs;
+                        log: jest.fn((_logArgs) => {
+                            // Do nothing
                         })
                     }
                 }

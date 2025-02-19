@@ -84,7 +84,7 @@ describe("Download AllMembersMatching handler", () => {
                 apiResponse: fakeListResponse
             };
         });
-        Download.allMembers = jest.fn(async (session) => {
+        Download.allMembers = jest.fn(async (_session) => {
             return {
                 success: true,
                 commandResponse: "downloaded"
@@ -117,7 +117,7 @@ describe("Download AllMembersMatching handler", () => {
                 apiResponse: fakeListResponse
             };
         });
-        Download.allMembers = jest.fn(async (session) => {
+        Download.allMembers = jest.fn(async (_session) => {
             return {
                 success: true,
                 commandResponse: "downloaded"

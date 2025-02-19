@@ -34,7 +34,7 @@ describe("view job-status-by-jobid handler tests", () => {
     });
 
     it("should be able to get a job", async () => {
-        GetJobs.getJob = jest.fn(async (session, jobid) => {
+        GetJobs.getJob = jest.fn(async (_session, _jobid) => {
             return GetJobsData.SAMPLE_COMPLETE_JOB;
         });
         const handler = new JobStatusByJobidHandler.default();
@@ -47,7 +47,7 @@ describe("view job-status-by-jobid handler tests", () => {
     it("should be able respond with error message", async () => {
         const failMessage = "You fail";
         let error;
-        GetJobs.getJob = jest.fn(async (session, jobid) => {
+        GetJobs.getJob = jest.fn(async (_session, _jobid) => {
             throw new ImperativeError({msg: failMessage});
         });
         const handler = new JobStatusByJobidHandler.default();

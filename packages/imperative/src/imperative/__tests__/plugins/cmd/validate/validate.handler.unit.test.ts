@@ -23,7 +23,6 @@ import ValidateHandler from "../../../../src/plugins/cmd/validate/validate.handl
 
 describe("Plugin validate command handler", () => {
 
-    const pluginName = "sample-plugin";
     const pluginIssues: PluginIssues = PluginIssues.instance;
 
     /* Put a base CLI config into ImperativeConfig. It is required by infrastructure

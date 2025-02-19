@@ -11,14 +11,6 @@
 
 import { ICommandDefinition } from "../../../../../../../lib/index";
 
-// Range for option length-range
-const LENGTH_RANGE_START: number = 2;
-const LENGTH_RANGE_END: number = 8;
-
-// Range for option eggs
-const EGGS_RANGE_START: number = 1;
-const EGGS_RANGE_END: number = 12;
-
 export const stringOrEmptyTestCommand: ICommandDefinition = {
     name: "string-or-empty",
     description: "Test string or empty option.",

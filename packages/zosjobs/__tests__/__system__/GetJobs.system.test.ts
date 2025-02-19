@@ -55,7 +55,7 @@ async function cleanTestJobs(prefix: string) {
     if (jobs.length > 0) {
         for (const job of jobs) {
             try {
-                const response = await DeleteJobs.deleteJob(REAL_SESSION, job.jobname, job.jobid);
+                await DeleteJobs.deleteJob(REAL_SESSION, job.jobname, job.jobid);
             } catch (e) {
                 // Don't worry about it
             }
@@ -236,7 +236,7 @@ describe("Get Jobs - System Tests", () => {
             it("should detect and surface an error for an invalid user", async () => {
                 let err;
                 try {
-                    const resp = await GetJobs.getJobsByPrefix(INVALID_SESSION, "TEST");
+                    await GetJobs.getJobsByPrefix(INVALID_SESSION, "TEST");
                 } catch (e) {
                     err = e;
                 }
@@ -850,7 +850,7 @@ describe("Get Jobs - System Tests", () => {
                 await wait(3000);
                 let error;
                 try {
-                    const content = await GetJobs.getSpoolContent(REAL_SESSION, files[0]);
+                    await GetJobs.getSpoolContent(REAL_SESSION, files[0]);
                 } catch (thrownError) {
                     error = thrownError;
                 }

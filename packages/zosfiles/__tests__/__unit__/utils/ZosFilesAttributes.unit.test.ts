@@ -300,7 +300,7 @@ describe("ZosFilesAttributes", () => {
         it("should complain if there are more than 3 fields per line", () => {
             let error: Error;
             try {
-                const attributes = new ZosFilesAttributes("foo.stuff ISO8859-1 ISO8859-1\n" +
+                new ZosFilesAttributes("foo.stuff ISO8859-1 ISO8859-1\n" +
                                         "bar binary binary breakme");
             } catch (err) {
                 error = err;
@@ -313,7 +313,7 @@ describe("ZosFilesAttributes", () => {
         it("should complain if there are less than 2 fields per line", () => {
             let error: Error;
             try {
-                const attributes = new ZosFilesAttributes("foo.stuff ISO8859-1 ISO8859-1\n" +
+                new ZosFilesAttributes("foo.stuff ISO8859-1 ISO8859-1\n" +
                                         "breakme");
             } catch (err) {
                 error = err;
