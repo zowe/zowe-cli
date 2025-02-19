@@ -30,7 +30,8 @@ describe("EnvironmentalVariableSettings tests", () => {
             cliHome: getSetting(prefix + EnvironmentalVariableSettings.CLI_HOME_SUFFIX),
             promptPhrase: getSetting(prefix + EnvironmentalVariableSettings.PROMPT_PHRASE_SUFFIX),
             maskOutput: getSetting(prefix + EnvironmentalVariableSettings.APP_MASK_OUTPUT_SUFFIX, Constants.DEFAULT_MASK_OUTPUT),
-            pluginsDir: getSetting(prefix + EnvironmentalVariableSettings.CLI_PLUGINS_DIR_SUFFIX)
+            pluginsDir: getSetting(prefix + EnvironmentalVariableSettings.CLI_PLUGINS_DIR_SUFFIX),
+            showSecureArgs: getSetting(prefix + EnvironmentalVariableSettings.ENV_SHOW_SECURE_SUFFIX, Constants.DEFAULT_SHOW_SECURE),
         };
     };
 

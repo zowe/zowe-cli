@@ -22,6 +22,7 @@ const EnvironmentalVariableSettings: any =
 (EnvironmentalVariableSettings.CLI_HOME_SUFFIX as any) = envActual.CLI_HOME_SUFFIX;
 (EnvironmentalVariableSettings.PROMPT_PHRASE_SUFFIX as any) = envActual.PROMPT_PHRASE_SUFFIX;
 (EnvironmentalVariableSettings.APP_MASK_OUTPUT_SUFFIX as any) = envActual.APP_MASK_OUTPUT_SUFFIX;
+(EnvironmentalVariableSettings.ENV_SHOW_SECURE_SUFFIX as any) = envActual.ENV_SHOW_SECURE_SUFFIX;
 
 (EnvironmentalVariableSettings.read as Mock).mockImplementation((prefix: string): IImperativeEnvironmentalVariableSettings => {
     const getSetting = (key: string) => {
@@ -34,6 +35,7 @@ const EnvironmentalVariableSettings: any =
         cliHome: getSetting(EnvironmentalVariableSettings.CLI_HOME_SUFFIX),
         promptPhrase: getSetting(EnvironmentalVariableSettings.PROMPT_PHRASE_SUFFIX),
         maskOutput: getSetting(EnvironmentalVariableSettings.APP_MASK_OUTPUT_SUFFIX),
+        showSecureArgs: getSetting(EnvironmentalVariableSettings.ENV_SHOW_SECURE_SUFFIX),
     };
 });
 

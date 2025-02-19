@@ -9,7 +9,7 @@
 *
 */
 
-import { IConfigOpts, IConfigSchemaInfo } from "../..";
+import { IConfig, IConfigOpts, IConfigSchemaInfo } from "../..";
 import { IConfigLayer } from "../../src/doc/IConfigLayer";
 
 export class Config {
@@ -22,10 +22,16 @@ export class Config {
 
     public get api() {
         return {
-            // profiles: new ConfigProfiles(this),
+            profiles: {
+                get: () => [] as any
+            },
             plugins: {
                 get: () => [] as any
             },
+            secure: {
+                securePropsForProfile: () => [] as any ,
+                findSecure: () => [] as any
+            }
             // layers: new ConfigLayers(this),
             // secure: new ConfigSecure(this)
         };
@@ -61,5 +67,13 @@ export class Config {
             resolved: "/some/path/to/schema.json",
             original: "/some/path/to/schema.json"
         };
+    }
+
+    public get mProperties() {
+        const config: IConfig = {
+            profiles: {},
+            defaults: {}
+        }
+        return config;
     }
 }

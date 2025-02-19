@@ -53,4 +53,9 @@ export interface IImperativeEnvironmentalVariableSettings {
      * Default is `${cliHome}/plugins`.
      */
     pluginsDir?: IImperativeEnvironmentalVariableSetting;
+
+    /**
+     * Whether or not to show secure args.
+     */
+    showSecureArgs?: IImperativeEnvironmentalVariableSetting;
 }

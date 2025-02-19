@@ -69,6 +69,13 @@ export class EnvironmentalVariableSettings {
      */
     public static readonly CLI_PLUGINS_DIR_SUFFIX = "_CLI_PLUGINS_DIR";
 
+    /**
+     * Show secure fields in the output of the command ENV var suffix
+     * @type {string}
+     * @memberof EnvironmentalVariableSettings
+     */
+    public static readonly ENV_SHOW_SECURE_SUFFIX = `_SHOW_SECURE_ARGS`;
+
 
     /**
      * Read all environmental variable settings for a CLI
@@ -97,7 +104,9 @@ export class EnvironmentalVariableSettings {
             maskOutput:
                 getSetting(prefix + this.APP_MASK_OUTPUT_SUFFIX, Constants.DEFAULT_MASK_OUTPUT),
             pluginsDir:
-                getSetting(prefix + this.CLI_PLUGINS_DIR_SUFFIX)
+                getSetting(prefix + this.CLI_PLUGINS_DIR_SUFFIX),
+            showSecureArgs:
+                getSetting(prefix + this.ENV_SHOW_SECURE_SUFFIX, Constants.DEFAULT_SHOW_SECURE),
         };
     }
 }
