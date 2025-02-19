@@ -101,7 +101,11 @@ export class ImperativeConfig {
      * @returns {string} - the configured or default prefix for environmental variables for use in the environmental variable service
      */
     public get envVariablePrefix(): string {
-        return this.loadedConfig.envVariablePrefix == null ? this.loadedConfig.name : this.loadedConfig.envVariablePrefix;
+        if (this.loadedConfig) {
+            return this.loadedConfig.envVariablePrefix == null ? this.loadedConfig.name : this.loadedConfig.envVariablePrefix;
+        } else {
+            return "ZOWE"; // Turns out this doesn't always return something, so set a default.
+        }
     }
 
     /**

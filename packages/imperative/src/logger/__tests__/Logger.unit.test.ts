@@ -102,7 +102,7 @@ describe("Logger tests", () => {
 
     it("Should allow all service function to store message in memory", () => {
         const logger = Logger.getImperativeLogger();
-        const expectedSize = 6;
+        const expectedSize = 7;
         Logger.setLogInMemory(true);
 
         logger.trace("test");
@@ -111,6 +111,7 @@ describe("Logger tests", () => {
         logger.warn("test");
         logger.error("test");
         logger.fatal("test");
+        logger.simple("test");
 
         expect(LoggerManager.instance.QueuedMessages.length).toBe(expectedSize);
     });
@@ -169,6 +170,7 @@ describe("Logger tests", () => {
         (logger as any).logService.warn = jest.fn<string, any>((data: string) => data);
         (logger as any).logService.error = jest.fn<string, any>((data: string) => data);
         (logger as any).logService.fatal = jest.fn<string, any>((data: string) => data);
+        (logger as any).logService.simple = jest.fn<string, any>((data: string) => data);
 
         const error = new ImperativeError({msg: "sample error"});
 
@@ -180,6 +182,7 @@ describe("Logger tests", () => {
         expect((logger as any).logService.warn).not.toHaveBeenCalledTimes(1);
         expect((logger as any).logService.fatal).not.toHaveBeenCalled();
         expect((logger as any).logService.error).toHaveBeenCalledTimes(2);
+        expect((logger as any).logService.simple).not.toHaveBeenCalled();
     });
 
     it("Should get the correct requested logger appender", () => {
@@ -269,7 +272,7 @@ describe("Logger tests", () => {
 
     it("Should support writing all of the message in memory to file", () => {
         const logger = Logger.getImperativeLogger();
-        const expectedSize = 6;
+        const expectedSize = 7;
         Logger.setLogInMemory(true);
 
         logger.trace("test");
@@ -278,6 +281,7 @@ describe("Logger tests", () => {
         logger.warn("test");
         logger.error("test");
         logger.fatal("test");
+        logger.simple("test");
 
         expect(LoggerManager.instance.QueuedMessages.length).toBe(expectedSize);
 

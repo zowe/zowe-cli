@@ -11,7 +11,7 @@
 
 import { Create, Upload, Delete, CreateDataSetTypeEnum, Copy, ZosFilesMessages, Get, IDataSet,
     ICrossLparCopyDatasetOptions, IGetOptions, IZosFilesResponse,
-    ZosFilesUtils, List} from "../../../../src";
+    ZosFilesUtils, List } from "../../../../src";
 import { Imperative, IO, Session } from "@zowe/imperative";
 import { inspect } from "util";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";

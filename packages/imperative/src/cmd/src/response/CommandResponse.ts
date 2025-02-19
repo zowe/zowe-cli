@@ -35,7 +35,7 @@ import { IPromptOptions } from "../doc/response/api/handler/IPromptOptions";
 import { DaemonRequest } from "../../../utilities/src/DaemonRequest";
 import { IDaemonResponse } from "../../../utilities/src/doc/IDaemonResponse";
 import { Logger } from "../../../logger";
-import { LoggerUtils } from "../../../logger/src/LoggerUtils";
+import { Censor } from "../../../censor";
 
 const DataObjectParser = require("dataobject-parser");
 
@@ -549,7 +549,7 @@ export class CommandResponse implements ICommandResponseApi {
                  * @returns {string} - The formatted data or the original data.toString() if a buffer was passed
                  */
                 public log(message: string | Buffer, ...values: any[]): string {
-                    let msg: string = LoggerUtils.censorRawData(message.toString(), Logger.DEFAULT_CONSOLE_NAME);
+                    let msg: string = Censor.censorRawData(message.toString(), Logger.DEFAULT_CONSOLE_NAME);
                     if (!Buffer.isBuffer(message)) {
                         msg = outer.formatMessage(msg.toString(), ...values) + "\n";
                     }
@@ -565,7 +565,7 @@ export class CommandResponse implements ICommandResponseApi {
                  * @returns {string} - The formatted data, or the original data.toString() if a buffer was passed
                  */
                 public error(message: string | Buffer, ...values: any[]): string {
-                    let msg: string = LoggerUtils.censorRawData(message.toString(), Logger.DEFAULT_CONSOLE_NAME);
+                    let msg: string = Censor.censorRawData(message.toString(), Logger.DEFAULT_CONSOLE_NAME);
                     if (!Buffer.isBuffer(message)) {
                         msg = outer.formatMessage(msg.toString(), ...values) + "\n";
                     }
@@ -581,7 +581,7 @@ export class CommandResponse implements ICommandResponseApi {
                  * @returns {string} - The string that is printed (including the color codes)
                  */
                 public errorHeader(message: string, delimeter = ":"): string {
-                    let msg: string = LoggerUtils.censorRawData(message.toString(), Logger.DEFAULT_CONSOLE_NAME);
+                    let msg: string = Censor.censorRawData(message.toString(), Logger.DEFAULT_CONSOLE_NAME);
                     msg = TextUtils.chalk.red(msg + `${delimeter}\n`);
                     outer.writeAndBufferStderr(msg);
                     return msg;
@@ -594,7 +594,7 @@ export class CommandResponse implements ICommandResponseApi {
                  * @returns {Promise<string>}
                  */
                 public prompt(questionText: string, opts?: IPromptOptions): Promise<string> {
-                    const msg: string = LoggerUtils.censorRawData(questionText.toString(), Logger.DEFAULT_CONSOLE_NAME);
+                    const msg: string = Censor.censorRawData(questionText.toString(), Logger.DEFAULT_CONSOLE_NAME);
 
                     if (outer.mStream) {
                         return new Promise<string>((resolve) => {
@@ -954,9 +954,9 @@ export class CommandResponse implements ICommandResponseApi {
             response = this.buildJsonResponse();
             (response.stderr as any) = response.stderr.toString();
             (response.stdout as any) = response.stdout.toString();
-            response.message = LoggerUtils.censorRawData(response.message, "json");
-            response.data =  response.data ? JSON.parse(LoggerUtils.censorRawData(JSON.stringify(response.data), "json")) : undefined;
-            response.error = response.error ? JSON.parse(LoggerUtils.censorRawData(JSON.stringify(response.error), "json")) : undefined;
+            response.message = Censor.censorRawData(response.message, "json");
+            response.data =  response.data ? JSON.parse(Censor.censorRawData(JSON.stringify(response.data), "json")) : undefined;
+            response.error = response.error ? JSON.parse(Censor.censorRawData(JSON.stringify(response.error), "json")) : undefined;
 
             if (!this.mSilent) {
                 this.writeStdout(JSON.stringify(response, null, 2));
