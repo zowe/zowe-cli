@@ -10,7 +10,8 @@
 */
 
 import { Create, Upload, Delete, CreateDataSetTypeEnum, Copy, ZosFilesMessages, Get, IDataSet,
-    ICrossLparCopyDatasetOptions, IGetOptions, IZosFilesResponse} from "../../../../src";
+    ICrossLparCopyDatasetOptions, IGetOptions, IZosFilesResponse,
+    ZosFilesUtils, List} from "../../../../src";
 import { Imperative, IO, Session } from "@zowe/imperative";
 import { inspect } from "util";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
@@ -20,7 +21,6 @@ import { readFileSync } from "fs";
 import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/ITestEnvironment";
 import path = require("path");
 import * as fs from "fs";
-import { List, ZosFilesUtils } from "@zowe/zos-files-for-zowe-sdk";
 import * as util from "util";
 import { tmpdir } from "os";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
