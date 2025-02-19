@@ -2,7 +2,7 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
-## Recent Changes
+## `8.14.0`
 
 - BugFix: Fixed inconsistent behavior with the `ZOWE_SHOW_SECURE_ARGS` environment variable continuing to mask secure properties when it should not. [#2430](https://github.com/zowe/zowe-cli/issues/2430)
 - Enhancement: Added the `Censor` class, consolidating all sensitive data hiding logic into one class. [#2424](https://github.com/zowe/zowe-cli/pull/2424)
