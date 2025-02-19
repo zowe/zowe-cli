@@ -4,7 +4,7 @@ All notable changes to the Zowe core SDK package will be documented in this file
 
 ## Recent Changes
 
-- Enhancement: Added recursive optional header to `ZosmfHeaders`. [#2436](https://github.com/zowe/zowe-cli/pull/2436)
+- Enhancement: Added the recursive header option, `X_IBM_RECURSIVE`, to `packages/core/src/rest/ZosmfHeaders.ts`. [#2436](https://github.com/zowe/zowe-cli/pull/2436)
 
 ## `8.1.1`
 

@@ -33,7 +33,7 @@ export class ZosmfHeaders {
 
 
     /**
-     * recursive true header
+     * header indicating recursive = true
      * @static
      * @memberof ZosmfHeaders
      */
