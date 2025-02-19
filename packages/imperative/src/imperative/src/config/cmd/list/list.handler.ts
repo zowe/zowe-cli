@@ -55,7 +55,7 @@ export default class ListHandler implements ICommandHandler {
                     obj = config.maskedProperties;
                 }
                 if (property != null)
-                    obj = (obj as any)[property];
+                    obj = obj[property];
             }
         }
 
