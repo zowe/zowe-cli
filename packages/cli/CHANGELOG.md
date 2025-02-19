@@ -3,7 +3,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## Recent Changes
 
-- Enhancement: Created a centralized header class to be used across the files SDK with `ZosFilesHeaders.ts`. [#2436](https://github.com/zowe/zowe-cli/pull/2436)
+- Enhancement: Created a centralized header class with `packages/zosfiles/src/utils/ZosFilesHeaders.ts` to be used across all methods in the ZosFiles SDK. [#2436](https://github.com/zowe/zowe-cli/pull/2436)
 
 ## `8.13.0`
 
