@@ -374,7 +374,7 @@ describe("MonitorJobs", () => {
 
                 it("should produce a 'wrapped' error message if getJobs throws an error", async () => {
                     const ERROR_MSG: string = `ERROR GETTING JOBS!`;
-                    const mockedGetJobsCommon = jest.fn(async (args) => {
+                    const mockedGetJobsCommon = jest.fn(async (_args) => {
                         throw new ImperativeError({msg: ERROR_MSG});
                     });
                     getStatusCommonSpy.mockResolvedValueOnce(mockedGetJobsCommon);
@@ -394,11 +394,11 @@ describe("MonitorJobs", () => {
                 // eslint-disable-next-line jest/no-done-callback
                 it("should produce a 'wrapped' error message if getJobs throws an error - then/catch", (done) => {
                     const ERROR_MSG: string = `ERROR GETTING JOBS!`;
-                    const mockedGetJobsCommon = jest.fn(async (args) => {
+                    const mockedGetJobsCommon = jest.fn(async (_args) => {
                         throw new ImperativeError({msg: ERROR_MSG});
                     });
                     getStatusCommonSpy.mockResolvedValueOnce(mockedGetJobsCommon);
-                    MonitorJobs.waitForOutputStatus(new Session({hostname: "FAKE", port: 443}), "FAKE", "FAKE").then((response) => {
+                    MonitorJobs.waitForOutputStatus(new Session({hostname: "FAKE", port: 443}), "FAKE", "FAKE").then((_response) => {
                         done("Monitor jobs should not have fulfilled the promise because getJobs should have thrown and error");
                     }).catch((error) => {
                         expect(error).toBeDefined();
@@ -412,13 +412,13 @@ describe("MonitorJobs", () => {
                 // eslint-disable-next-line jest/no-done-callback
                 it("should produce a 'wrapped' error message if getJobs throws a non imperative error - then/catch", (done) => {
                     const ERROR_MSG: string = `ERROR GETTING JOBS!`;
-                    const mockedGetJobsCommon = jest.fn(async (args) => {
+                    const mockedGetJobsCommon = jest.fn(async (_args) => {
                         throw new ImperativeError({msg: ERROR_MSG});
                     });
                     getStatusCommonSpy.mockResolvedValueOnce(mockedGetJobsCommon);
 
                     MonitorJobs.waitForStatusCommon(new Session({hostname: "fake", port: 443}),
-                        {jobname: "FAKE", jobid: "FAKE", status: "OUTPUT"}).then((response) => {
+                        {jobname: "FAKE", jobid: "FAKE", status: "OUTPUT"}).then((_response) => {
                         done("Monitor jobs should not have fulfilled the promise because getJobs should have throw and error");
                     }).catch((error) => {
                         expect(error).toBeDefined();
@@ -699,7 +699,7 @@ describe("MonitorJobs", () => {
                 it("should detect missing session", async () => {
                     let error;
                     try {
-                        const response = await MonitorJobs.waitForJobOutputStatus(undefined as any, {
+                        await MonitorJobs.waitForJobOutputStatus(undefined as any, {
                             jobname: "FAKE",
                             jobid  : "FAKE"
                         } as any);
@@ -714,7 +714,7 @@ describe("MonitorJobs", () => {
                 it("should detect missing IJob", async () => {
                     let error;
                     try {
-                        const response = await MonitorJobs.waitForJobOutputStatus(session, undefined as any);
+                        await MonitorJobs.waitForJobOutputStatus(session, undefined as any);
                     } catch (e) {
                         error = e;
                     }
@@ -946,7 +946,7 @@ describe("MonitorJobs", () => {
                     getStatusCommonSpy.mockResolvedValue({jobname: "FAKE", jobid: "FAKE", status: "INPUT"});
                     let error: any;
                     try {
-                        const response = await MonitorJobs.waitForStatusCommon(new Session({hostname: "FAKE", port: 443}),
+                        await MonitorJobs.waitForStatusCommon(new Session({hostname: "FAKE", port: 443}),
                             {jobname: "FAKE", jobid: "FAKE", status: "ACTIVE", attempts, watchDelay: 1});
                     } catch (e) {
                         error = e;
@@ -959,13 +959,13 @@ describe("MonitorJobs", () => {
 
                 it("should expire after the specified number of max attempts and use the default watch delay", async () => {
                     const attempts: number = 2;
-                    const mockedGetJobsCommon = async (args: any): Promise<any> => {
+                    const mockedGetJobsCommon = async (_args: any): Promise<any> => {
                         return {jobname: "FAKE", jobid: "FAKE", status: "INPUT"};
                     };
                     getStatusCommonSpy.mockImplementation(mockedGetJobsCommon);
                     let error: any;
                     try {
-                        const response = await MonitorJobs.waitForStatusCommon(new Session({hostname: "FAKE", port: 443}),
+                        await MonitorJobs.waitForStatusCommon(new Session({hostname: "FAKE", port: 443}),
                             {jobname: "FAKE", jobid: "FAKE", status: "ACTIVE", attempts});
                     } catch (e) {
                         error = e;
@@ -979,7 +979,7 @@ describe("MonitorJobs", () => {
                 it("should return after the status has changed from INPUT to ACTIVE", async () => {
                     const CHANGE_AT_ATTEMPT = 10;
                     let attempts = 0;
-                    const mockedGetJobsCommon = async (args: any): Promise<any> => {
+                    const mockedGetJobsCommon = async (_args: any): Promise<any> => {
                         attempts++;
                         if (attempts < CHANGE_AT_ATTEMPT) {
                             return {jobname: "FAKE", jobid: "FAKE", status: "INPUT"};
@@ -1004,7 +1004,7 @@ describe("MonitorJobs", () => {
                 it("should return after the status has changed from INPUT to OUTPUT", async () => {
                     const CHANGE_AT_ATTEMPT = 2;
                     let attempts = 0;
-                    const mockedGetJobsCommon = async (args: any): Promise<any> => {
+                    const mockedGetJobsCommon = async (_args: any): Promise<any> => {
                         attempts++;
                         if (attempts < CHANGE_AT_ATTEMPT) {
                             return {jobname: "FAKE", jobid: "FAKE", status: "INPUT"};
@@ -1028,7 +1028,7 @@ describe("MonitorJobs", () => {
                 it("should return after the status has changed from ACTIVE to OUTPUT", async () => {
                     const CHANGE_AT_ATTEMPT = 2;
                     let attempts = 0;
-                    const mockedGetJobsCommon = async (args: any): Promise<any> => {
+                    const mockedGetJobsCommon = async (_args: any): Promise<any> => {
                         attempts++;
                         if (attempts < CHANGE_AT_ATTEMPT) {
                             return {jobname: "FAKE", jobid: "FAKE", status: "ACTIVE"};
@@ -1054,7 +1054,7 @@ describe("MonitorJobs", () => {
                 it("should expire after the max attempts and the total time should exceed the attempts multiplied by the delay", async () => {
                     const attempts: number = 4;
                     sleepMock.mockImplementation(jest.requireActual("@zowe/core-for-zowe-sdk").sleep);
-                    const mockedGetJobsCommon = async (args: any): Promise<any> => {
+                    const mockedGetJobsCommon = async (_args: any): Promise<any> => {
                         return {jobname: "FAKE", jobid: "FAKE", status: "INPUT"};
                     };
                     getStatusCommonSpy.mockImplementation(mockedGetJobsCommon);
@@ -1066,7 +1066,7 @@ describe("MonitorJobs", () => {
                     const start = Date.now();
                     let error;
                     try {
-                        const response = await MonitorJobs.waitForOutputStatus(session, "FAKE", "FAKE");
+                        await MonitorJobs.waitForOutputStatus(session, "FAKE", "FAKE");
                     } catch (e) {
                         error = e;
                     }
@@ -1088,7 +1088,7 @@ describe("MonitorJobs", () => {
                     const ERROR_AT_ATTEMPT = 2;
                     let attempts = 0;
                     const ERROR_MSG: string = `ERROR GETTING JOBS!`;
-                    const mockedGetJobsCommon = async (args: any): Promise<any> => {
+                    const mockedGetJobsCommon = async (_args: any): Promise<any> => {
                         attempts++;
                         if (attempts < ERROR_AT_ATTEMPT) {
                             return {jobname: "FAKE", jobid: "FAKE", status: "ACTIVE"};
@@ -1098,9 +1098,8 @@ describe("MonitorJobs", () => {
                     };
                     getStatusCommonSpy.mockImplementation(mockedGetJobsCommon);
                     let error;
-                    let response;
                     try {
-                        response = await MonitorJobs.waitForOutputStatus(new Session({hostname: "FAKE", port: 443}), "FAKE", "FAKE");
+                        await MonitorJobs.waitForOutputStatus(new Session({hostname: "FAKE", port: 443}), "FAKE", "FAKE");
                     } catch (e) {
                         error = e;
                     }
@@ -1113,8 +1112,7 @@ describe("MonitorJobs", () => {
                 it("should produce a 'wrapped' error message if a follow-up poll does not return a status", async () => {
                     const ERROR_AT_ATTEMPT = 2;
                     let attempts = 0;
-                    const ERROR_MSG: string = `ERROR GETTING JOBS!`;
-                    const mockedGetJobsCommon = async (args: any): Promise<any> => {
+                    const mockedGetJobsCommon = async (_args: any): Promise<any> => {
                         attempts++;
                         if (attempts < ERROR_AT_ATTEMPT) {
                             return {jobname: "FAKE", jobid: "FAKE", status: "ACTIVE"};
@@ -1124,9 +1122,8 @@ describe("MonitorJobs", () => {
                     };
                     getStatusCommonSpy.mockImplementation(mockedGetJobsCommon);
                     let error;
-                    let response;
                     try {
-                        response = await MonitorJobs.waitForOutputStatus(new Session({hostname: "FAKE", port: 443}), "FAKE", "FAKE");
+                        await MonitorJobs.waitForOutputStatus(new Session({hostname: "FAKE", port: 443}), "FAKE", "FAKE");
                     } catch (e) {
                         error = e;
                     }

@@ -17,9 +17,6 @@ describe("Start workflow common handler", () => {
     describe("Successful tests", () => {
         // Vars populated by the mocked function
         let error: any;
-        let apiMessage = "";
-        let jsonObj;
-        let logMessage = "";
         let fakeSession: AbstractSession;
 
         it("should start a workflow using workflow key", async () => {
@@ -38,7 +35,7 @@ describe("Start workflow common handler", () => {
             });
 
             // Mocked function references
-            const profFunc = jest.fn((args) => {
+            const profFunc = jest.fn((_args) => {
                 return {
                     host: "fake",
                     port: "fake",
@@ -59,16 +56,16 @@ describe("Start workflow common handler", () => {
                     },
                     response: {
                         data: {
-                            setMessage: jest.fn((setMsgArgs) => {
-                                apiMessage = setMsgArgs;
+                            setMessage: jest.fn((_setMsgArgs) => {
+                                // Do nothing
                             }),
-                            setObj: jest.fn((setObjArgs) => {
-                                jsonObj = setObjArgs;
+                            setObj: jest.fn((_setObjArgs) => {
+                                // Do nothing
                             })
                         },
                         console: {
-                            log: jest.fn((logArgs) => {
-                                logMessage += "\n" + logArgs;
+                            log: jest.fn((_logArgs) => {
+                                // Do nothing
                             })
                         }
                     },
@@ -91,7 +88,6 @@ describe("Start workflow common handler", () => {
             const handlerReq = require("../../../../../src/workflows/start/workflowFull/WorkflowFull.handler");
             const handler = new handlerReq.default();
             const workflowKey = "fake-workflow-key";
-            const workflowName = "fake-workflow-name";
 
             // Mock the start function
             StartWorkflow.startWorkflow = jest.fn(async (session): Promise<any> => {
@@ -108,7 +104,7 @@ describe("Start workflow common handler", () => {
             });
 
             // Mocked function references
-            const profFunc = jest.fn((args) => {
+            const profFunc = jest.fn((_args) => {
                 return {
                     host: "fake",
                     port: "fake",
@@ -129,16 +125,16 @@ describe("Start workflow common handler", () => {
                     },
                     response: {
                         data: {
-                            setMessage: jest.fn((setMsgArgs) => {
-                                apiMessage = setMsgArgs;
+                            setMessage: jest.fn((_setMsgArgs) => {
+                                // Do nothing
                             }),
-                            setObj: jest.fn((setObjArgs) => {
-                                jsonObj = setObjArgs;
+                            setObj: jest.fn((_setObjArgs) => {
+                                // Do nothing
                             })
                         },
                         console: {
-                            log: jest.fn((logArgs) => {
-                                logMessage += "\n" + logArgs;
+                            log: jest.fn((_logArgs) => {
+                                // Do nothing
                             })
                         }
                     },
@@ -173,7 +169,7 @@ describe("Start workflow common handler", () => {
             });
 
             // Mocked function references
-            const profFunc = jest.fn((args) => {
+            const profFunc = jest.fn((_args) => {
                 return {
                     host: "fake",
                     port: "fake",
@@ -195,16 +191,16 @@ describe("Start workflow common handler", () => {
                     },
                     response: {
                         data: {
-                            setMessage: jest.fn((setMsgArgs) => {
-                                apiMessage = setMsgArgs;
+                            setMessage: jest.fn((_setMsgArgs) => {
+                                // Do nothing
                             }),
-                            setObj: jest.fn((setObjArgs) => {
-                                jsonObj = setObjArgs;
+                            setObj: jest.fn((_setObjArgs) => {
+                                // Do nothing
                             })
                         },
                         console: {
-                            log: jest.fn((logArgs) => {
-                                logMessage += "\n" + logArgs;
+                            log: jest.fn((_logArgs) => {
+                                // Do nothing
                             })
                         }
                     },
@@ -250,7 +246,7 @@ describe("Start workflow common handler", () => {
             });
 
             // Mocked function references
-            const profFunc = jest.fn((args) => {
+            const profFunc = jest.fn((_args) => {
                 return {
                     host: "fake",
                     port: "fake",
@@ -272,16 +268,16 @@ describe("Start workflow common handler", () => {
                     },
                     response: {
                         data: {
-                            setMessage: jest.fn((setMsgArgs) => {
-                                apiMessage = setMsgArgs;
+                            setMessage: jest.fn((_setMsgArgs) => {
+                                // Do nothing
                             }),
-                            setObj: jest.fn((setObjArgs) => {
-                                jsonObj = setObjArgs;
+                            setObj: jest.fn((_setObjArgs) => {
+                                // Do nothing
                             })
                         },
                         console: {
-                            log: jest.fn((logArgs) => {
-                                logMessage += "\n" + logArgs;
+                            log: jest.fn((_logArgs) => {
+                                // Do nothing
                             })
                         }
                     },
@@ -325,7 +321,7 @@ describe("Start workflow common handler", () => {
             });
 
             // Mocked function references
-            const profFunc = jest.fn((args) => {
+            const profFunc = jest.fn((_args) => {
                 return {
                     host: "fake",
                     port: "fake",
@@ -347,16 +343,16 @@ describe("Start workflow common handler", () => {
                     },
                     response: {
                         data: {
-                            setMessage: jest.fn((setMsgArgs) => {
-                                apiMessage = setMsgArgs;
+                            setMessage: jest.fn((_setMsgArgs) => {
+                                // Do nothing
                             }),
-                            setObj: jest.fn((setObjArgs) => {
-                                jsonObj = setObjArgs;
+                            setObj: jest.fn((_setObjArgs) => {
+                                // Do nothing
                             })
                         },
                         console: {
-                            log: jest.fn((logArgs) => {
-                                logMessage += "\n" + logArgs;
+                            log: jest.fn((_logArgs) => {
+                                // Do nothing
                             })
                         }
                     },

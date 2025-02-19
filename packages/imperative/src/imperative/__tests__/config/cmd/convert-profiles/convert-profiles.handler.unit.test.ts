@@ -21,10 +21,10 @@ const getIHandlerParametersObject = (): IHandlerParameters => {
     const x: any = {
         response: {
             data: {
-                setMessage: jest.fn((setMsgArgs) => {
+                setMessage: jest.fn((_setMsgArgs) => {
                     // Nothing
                 }),
-                setObj: jest.fn((setObjArgs) => {
+                setObj: jest.fn((_setObjArgs) => {
                     // Nothing
                 })
             },

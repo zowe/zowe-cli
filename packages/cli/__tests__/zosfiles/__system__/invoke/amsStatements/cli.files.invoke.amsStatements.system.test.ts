@@ -9,7 +9,6 @@
 *
 */
 
-import { Session } from "@zowe/imperative";
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/ITestEnvironment";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
@@ -17,13 +16,11 @@ import { stripNewLines } from "../../../../../../../__tests__/__src__/TestUtils"
 import { ZosFilesMessages } from "@zowe/zos-files-for-zowe-sdk";
 import { runCliScript } from "@zowe/cli-test-utils";
 
-let REAL_SESSION: Session;
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
 let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment<ITestPropertiesSchema>;
 let defaultSystem: ITestPropertiesSchema;
 let user: string;
-let volume: string;
 
 describe("Invoke AMS CLI", () => {
 
@@ -36,10 +33,7 @@ describe("Invoke AMS CLI", () => {
 
         defaultSystem = TEST_ENVIRONMENT.systemTestProperties;
 
-        REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
-
         user = defaultSystem.zosmf.user.trim().toUpperCase();
-        volume = defaultSystem.datasets.vol;
 
     });
 
@@ -59,7 +53,6 @@ describe("Invoke AMS CLI", () => {
             defaultSys = TEST_ENVIRONMENT_NO_PROF.systemTestProperties;
 
             user = defaultSys.zosmf.user.trim().toUpperCase();
-            volume = defaultSys.datasets.vol;
         });
 
         afterAll(async () => {

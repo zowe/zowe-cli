@@ -15,7 +15,6 @@ import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 
 describe("Check Status api", () => {
     const dummySession: any = {};
-    const endpoint = ZosmfConstants.RESOURCE + ZosmfConstants.INFO;
     const dummyResponse: IZosmfInfoResponse = {};
     let mySpy: any;
     const restErrMsgText = "The error message thrown by our Rest API";

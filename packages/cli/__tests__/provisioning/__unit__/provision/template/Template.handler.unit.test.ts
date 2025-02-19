@@ -34,7 +34,7 @@ describe("provision template handler tests", () => {
 
     it("should be able to provision a template", async () => {
         ProvisionPublishedTemplate.provisionTemplate = jest.fn(
-            async (session, zOSMFVersion, templateName) => {
+            async (_session, _zOSMFVersion, _templateName) => {
                 return ProvisionTemplateData.PROVISION_TEMPLATE_RESPONSE;
             }
         );
@@ -54,7 +54,7 @@ describe("provision template handler tests", () => {
             " and the identifier or name is some_bad_name.";
         let error;
         ProvisionPublishedTemplate.provisionTemplate = jest.fn(
-            async (session, zOSMFVersion, templateName) => {
+            async (_session, _zOSMFVersion, _templateName) => {
                 throw new ImperativeError({ msg: failMessage });
             }
         );

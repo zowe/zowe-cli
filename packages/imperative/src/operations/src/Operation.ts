@@ -389,7 +389,7 @@ export abstract class Operation<T> implements ITaskWithStatus {
             this.mOperationResults = result;
             this.log.debug("Queued first operation to result list: " + result.operationName);
         } else {
-            let prevResult: IOperationResult<any> = this.mOperationResults;
+            let prevResult: IOperationResult<any>;
             let currentResult: IOperationResult<any> = this.mOperationResults;
             do {
                 prevResult = currentResult;

@@ -14,13 +14,11 @@ import { ITestEnvironment, runCliScript } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import * as fs from "fs";
-import { Session } from "@zowe/imperative";
 import { ProvisioningTestUtils } from "../../../../../../../packages/provisioning/__tests__/__resources__/utils/ProvisioningTestUtils";
 import { ITestZosmfSchema } from "../../../../../../../__tests__/__src__/properties/ITestZosmfSchema";
 
 let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
 let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment<ITestPropertiesSchema>;
-let REAL_SESSION: Session;
 let TEMPLATE_NAME: string;
 
 describe("provisioning list template-info", () => {
@@ -32,7 +30,6 @@ describe("provisioning list template-info", () => {
             tempProfileTypes: ["zosmf"]
         });
         TEMPLATE_NAME = TEST_ENVIRONMENT.systemTestProperties.provisioning.templateName;
-        REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
     });
 
     it("should display template info", async () => {

@@ -23,12 +23,11 @@ describe("Tests for EnvQuery module", () => {
     const fakeCliHomeDir = "this_is_a_fake_cli_home_dir";
     let impCfg: ImperativeConfig;
     let pluginIssInst: PluginIssues;
-    let getPluginsSpy;
 
     beforeAll(() => {
         // set list of installed plugins
         pluginIssInst = PluginIssues.instance;
-        getPluginsSpy = jest.spyOn(pluginIssInst as any, "getInstalledPlugins")
+        jest.spyOn(pluginIssInst as any, "getInstalledPlugins")
             .mockReturnValue({
                 "@zowe/cics-for-zowe-cli": {
                     package: "@zowe/cics-for-zowe-cli",
@@ -326,7 +325,7 @@ describe("Tests for EnvQuery module", () => {
         it("should catch errors thrown by spawnSync", async () => {
             const spawn = require("cross-spawn");
             const spawnError = new Error("Pretend this was thrown by spawnSync");
-            const isDirSpy = jest.spyOn(spawn, "sync").mockImplementation(() => {
+            jest.spyOn(spawn, "sync").mockImplementation(() => {
                 throw spawnError;
             });
 

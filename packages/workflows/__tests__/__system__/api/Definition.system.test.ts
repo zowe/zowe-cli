@@ -25,9 +25,7 @@ let REAL_SESSION: Session;
 let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 let defaultSystem: ITestPropertiesSchema;
 let definitionFile: string;
-let system: string;
 let owner: string;
-let wfName: string;
 
 const workflow = __dirname + "/../testfiles/demo.xml";
 const wfVersion = "1.0";
@@ -51,9 +49,7 @@ describe("Properties workflow", () => {
             testName: "properties_workflow"
         });
         defaultSystem = testEnvironment.systemTestProperties;
-        system = testEnvironment.systemTestProperties.workflows.system;
         owner = defaultSystem.zosmf.user;
-        wfName = `${getUniqueDatasetName(owner)}`;
         definitionFile = `${defaultSystem.unix.testdir}/${getUniqueDatasetName(owner)}.xml`;
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
     });

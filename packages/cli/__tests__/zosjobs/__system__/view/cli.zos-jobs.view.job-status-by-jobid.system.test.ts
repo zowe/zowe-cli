@@ -21,10 +21,7 @@ let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
 let REAL_SESSION: Session;
 
 // Pulled from test properties file
-let account: string;
-let systemProps: ITestPropertiesSchema;
 let jclMember: string;
-let psJclDataSet: string;
 let JOB_NAME: string;
 
 // Regex to match any job name that starts with "IEFBR14"
@@ -38,12 +35,8 @@ describe("zos-jobs view job-status-by-jobid command", () => {
             testName: "zos_jobs_view_job_status_by_jobid_command"
         });
 
-        systemProps = TEST_ENVIRONMENT.systemTestProperties;
-
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
-        account = systemProps.tso.account;
         jclMember = TEST_ENVIRONMENT.systemTestProperties.zosjobs.iefbr14Member;
-        psJclDataSet = TEST_ENVIRONMENT.systemTestProperties.zosjobs.iefbr14PSDataSet;
     });
 
     afterAll(async () => {

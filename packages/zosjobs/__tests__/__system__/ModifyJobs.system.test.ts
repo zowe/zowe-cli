@@ -21,7 +21,6 @@ let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 let systemProps: ITestPropertiesSchema;
 let REAL_SESSION: Session;
 let account: string;
-let jobclass: string;
 let modifiedJobClass: string;
 let iefbr14Job: IJob;
 let sleepJCLJob: IJob;
@@ -36,7 +35,6 @@ describe("Modify Jobs - System Tests", () => {
         systemProps = testEnvironment.systemTestProperties;
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
         account = systemProps.tso.account;
-        jobclass = testEnvironment.systemTestProperties.zosjobs.jobclass;
         modifiedJobClass = testEnvironment.systemTestProperties.zosjobs.modifiedJobclass;
         iefbr14Job = await SubmitJobs.submitJob(REAL_SESSION,
             testEnvironment.systemTestProperties.zosjobs.iefbr14Member
@@ -112,7 +110,6 @@ describe("Modify Jobs - System Tests - Encoded", () => {
         systemProps = testEnvironment.systemTestProperties;
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
         account = systemProps.tso.account;
-        jobclass = systemProps.zosjobs.jobclass;
         modifiedJobClass = systemProps.zosjobs.modifiedJobclass;
 
         const maxStepNum = 6;

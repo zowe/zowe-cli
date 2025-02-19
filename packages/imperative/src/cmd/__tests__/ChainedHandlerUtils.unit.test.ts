@@ -131,7 +131,7 @@ describe("Chained Handler Service", () => {
         let caughtError;
 
         try {
-            const args = ChainedHandlerService.getArguments(binName,
+            ChainedHandlerService.getArguments(binName,
                 normalConfig,
                 correctIndex,
                 responses,
@@ -174,7 +174,7 @@ describe("Chained Handler Service", () => {
             ]
         }];
         try {
-            const args = ChainedHandlerService.getArguments(binName,
+            ChainedHandlerService.getArguments(binName,
                 config,
                 correctIndex,
                 responses,
@@ -201,7 +201,7 @@ describe("Chained Handler Service", () => {
             mapping: []
         }];
         try {
-            const args = ChainedHandlerService.getArguments(binName,
+            ChainedHandlerService.getArguments(binName,
                 config,
                 correctIndex,
                 responses,
@@ -283,7 +283,7 @@ describe("Chained Handler Service", () => {
             mapping: []
         }];
         try {
-            const args = ChainedHandlerService.getArguments(binName,
+            ChainedHandlerService.getArguments(binName,
                 config,
                 correctIndex,
                 responses,

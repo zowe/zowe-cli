@@ -18,11 +18,6 @@ import { join } from "path";
 import { chmodSync } from "fs";
 
 let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
-let host: string;
-let port: number;
-let user: string;
-let pass: string;
-
 
 describe("zosmf list systems", () => {
 
@@ -32,11 +27,6 @@ describe("zosmf list systems", () => {
             tempProfileTypes: ["zosmf"],
             testName: "zos_list_systems"
         });
-
-        host = testEnvironment.systemTestProperties.zosmf.host;
-        port = testEnvironment.systemTestProperties.zosmf.port;
-        user = testEnvironment.systemTestProperties.zosmf.user;
-        pass = testEnvironment.systemTestProperties.zosmf.password;
     });
 
     afterAll(async () => {

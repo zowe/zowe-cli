@@ -33,11 +33,6 @@ let system: string;
 let owner: string;
 let wfName: string;
 
-const vendor = "Broadcom";
-const category = "General";
-const statusName = "in-progress";
-const badString = "Ba?d";
-const badString1 = "Ba&d";
 const workflow = __dirname + "/../testfiles/demo.xml";
 
 

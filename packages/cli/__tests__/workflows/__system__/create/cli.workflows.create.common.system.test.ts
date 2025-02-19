@@ -62,7 +62,6 @@ describe("Create workflow cli system tests", () => {
         });
         describe("Success Scenarios", () => {
             afterEach(async () => {
-                let error;
                 const response: any = await ZosmfRestClient.getExpectJSON(REAL_SESSION, "/zosmf/workflow/rest/1.0/workflows?workflowName=" + wfName);
                 for (const element of response.workflows) {
                     if (element.workflowName === wfName) {
@@ -70,7 +69,7 @@ describe("Create workflow cli system tests", () => {
                         try {
                             await DeleteWorkflow.deleteWorkflow(REAL_SESSION, wfKey);
                         } catch (err) {
-                            error = err;
+                            // Do nothing
                         }
                     }
                 }
@@ -112,7 +111,6 @@ describe("Create workflow cli system tests", () => {
     describe("Create workflow using local file", () => {
         describe("Success Scenarios", () => {
             afterEach(async () =>{
-                let error;
                 const response: any = await ZosmfRestClient.getExpectJSON(REAL_SESSION, "/zosmf/workflow/rest/1.0/workflows?workflowName=" + wfName);
                 let deleteWorkflow: any;
                 for (deleteWorkflow of response.workflows) {
@@ -121,7 +119,7 @@ describe("Create workflow cli system tests", () => {
                         try {
                             await DeleteWorkflow.deleteWorkflow(REAL_SESSION, wfKey);
                         } catch (err) {
-                            error = err;
+                            // Do nothing
                         }
                     }
                 }
@@ -163,21 +161,18 @@ describe("Create workflow cli system tests", () => {
     describe("Create workflow using dataset", () => {
         beforeAll(async () => {
             // Upload files only for successful scenarios
-            let error;
-            let response;
 
             try {
-                response = await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, definitionDs,
+                await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, definitionDs,
                     {recfm: "VB", lrecl: 512, blksize: 32760});
             } catch (err) {
-                error = err;
+                // Do nothing
             }
             await Upload.fileToDataset(REAL_SESSION, workflowDs, definitionDs);
             testEnvironment.resources.datasets.push(definitionDs);
         });
         describe("Success Scenarios", () => {
             afterEach(async () => {
-                let error;
                 const response: any = await ZosmfRestClient.getExpectJSON(REAL_SESSION, "/zosmf/workflow/rest/1.0/workflows?workflowName=" + wfName);
                 for (const element of response.workflows) {
                     if (element.workflowName === wfName) {
@@ -185,7 +180,7 @@ describe("Create workflow cli system tests", () => {
                         try {
                             await DeleteWorkflow.deleteWorkflow(REAL_SESSION, wfKey);
                         } catch (err) {
-                            error = err;
+                            // Do nothing
                         }
                     }
                 }

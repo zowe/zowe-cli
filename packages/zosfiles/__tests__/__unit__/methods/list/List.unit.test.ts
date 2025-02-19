@@ -1401,14 +1401,12 @@ describe("z/OS Files - List", () => {
             });
 
             it("should fail to add the depth parameter because it is missing a required parameter", async () => {
-                let response;
                 let error;
 
-                const endpoint = endpointTemplate + `&${ZosFilesConstants.RES_DEPTH}=1`;
                 expectJsonSpy.mockResolvedValue(testApiResponse);
 
                 try {
-                    response = await List.fileList(dummySession, path, {depth: 1});
+                    await List.fileList(dummySession, path, {depth: 1});
                 } catch (err) {
                     error = err;
                 }

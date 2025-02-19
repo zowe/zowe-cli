@@ -74,7 +74,7 @@ export default class ArchiveHandler extends ZosmfBaseHandler {
                 const failedWfs: IWorkflowsInfo[] = [];
                 for(const element of getWfKey.workflows){
                     try {
-                        resp = await ArchiveWorkflow.archiveWorkflowByKey(this.mSession, element.workflowKey);
+                        await ArchiveWorkflow.archiveWorkflowByKey(this.mSession, element.workflowKey);
                         successWfs.push(element);
                     } catch (err) {
                         failedWfs.push(element);

@@ -22,7 +22,6 @@ import { ITestEnvironment } from "../../../../../../__tests__/__src__/environmen
 
 const resolveConflict: startT = "outputFileValue";
 const stepName = "echo";
-const performFollowingSteps = false;
 
 let REAL_SESSION: Session;
 let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;

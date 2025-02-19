@@ -14,7 +14,7 @@
 import { Imperative, ImperativeError } from "../../../../lib/index";
 import { inspect } from "util";
 
-Imperative.init().then((response) => {
+Imperative.init().then((_response) => {
     Imperative.parse();
 }).catch((error) => {
     process.stderr.write("Imperative Failed to Initialize: " + error + "\n");

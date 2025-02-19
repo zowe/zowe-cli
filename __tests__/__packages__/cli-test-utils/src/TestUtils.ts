@@ -126,7 +126,7 @@ export function mockHandlerParameters(params: PartialHandlerParameters): IHandle
                 prompt: jest.fn(async () => null) as any
             },
             progress: {
-                startBar: jest.fn((parms) => undefined),
+                startBar: jest.fn((_parms) => undefined),
                 endBar: jest.fn(() => undefined),
                 startSpinner: jest.fn(() => undefined),
                 endSpinner: jest.fn(() => undefined)

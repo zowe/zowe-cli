@@ -29,7 +29,7 @@ describe("Upload file-to-uss handler", () => {
             let fakeSession = null;
 
             // Mock the submit JCL function
-            Upload.uploadFile = jest.fn(async (session, file, name, options = {}) => {
+            Upload.uploadFile = jest.fn(async (session, _file, _name, _options = {}) => {
                 fakeSession = session;
                 return {
                     success: true,
@@ -65,7 +65,7 @@ describe("Upload file-to-uss handler", () => {
                             })
                         },
                         progress: {
-                            startBar: jest.fn((parms) => {
+                            startBar: jest.fn((_parms) => {
                                 // do nothing
                             }),
                             endBar: jest.fn(() => {
@@ -121,7 +121,7 @@ describe("Upload file-to-uss handler", () => {
                 zosAttributes.basePath = undefined;
                 return zosAttributes;
             });
-            Upload.uploadFile = jest.fn(async (session, file, name, options = {}) => {
+            Upload.uploadFile = jest.fn(async (session, _file, _name, _options = {}) => {
                 fakeSession = session;
                 return {
                     success: true,
@@ -211,7 +211,7 @@ describe("Upload file-to-uss handler", () => {
                 zosAttributes.basePath = undefined;
                 return zosAttributes;
             });
-            Upload.uploadFile = jest.fn(async (session, file, name, options = {}) => {
+            Upload.uploadFile = jest.fn(async (session, _file, _name, _options = {}) => {
                 fakeSession = session;
                 return {
                     success: true,

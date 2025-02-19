@@ -345,7 +345,7 @@ export abstract class AbstractCommandYargs {
                     tempOpPath = path.substring(0, path.length - "options".length);
                     if (completeName) {
                         tempOp = `${completeName} ${value}`;
-                    } else if(topLevelName && !completeName) {
+                    } else if (topLevelName) {
                         tempOp = `${topLevelName} ${value}`;
                     } else {
                         tempOp = value;

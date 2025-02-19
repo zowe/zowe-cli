@@ -15,7 +15,7 @@ jest.mock("@zowe/core-for-zowe-sdk");
 
 import { Headers, Session } from "@zowe/imperative";
 import { posix } from "path";
-import { Invoke, IZosFilesResponse, ZosFilesConstants, ZosFilesMessages } from "../../../../src";
+import { Invoke, ZosFilesConstants, ZosFilesMessages } from "../../../../src";
 import { stripNewLines } from "../../../../../../__tests__/__src__/TestUtils";
 import { ZosmfRestClient, getErrorContext, ZosmfHeaders } from "@zowe/core-for-zowe-sdk";
 import { IZosFilesOptions } from "../../../../src/doc/IZosFilesOptions";
@@ -60,11 +60,6 @@ describe("Invoke", () => {
     ];
 
     describe("ams", () => {
-        const dummyReturnObject: IZosFilesResponse = {
-            success        : true,
-            commandResponse: "GOOD",
-            apiResponse    : {}
-        };
 
         it("should throw an error when options/keys are null, undefined or empty string/array", async () => {
             let caughtError;

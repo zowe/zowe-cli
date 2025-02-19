@@ -75,27 +75,6 @@ describe("Default Help Generator", () => {
         }
     };
 
-    const EXAMPLE_COMMAND: ICommandDefinition = {
-        name: "an-example-command",
-        aliases: ["aec"],
-        type: "command",
-        description: "This is an example command for help generation. " + LOREM,
-        options: [EXAMPLE_APPLE_OPTION,
-            EXAMPLE_STRAWBERRY_OPTION,
-            EXAMPLE_PICK_OPTION]
-    };
-
-    const EXAMPLE_EXPERIMENTAL_COMMAND: ICommandDefinition = {
-        name: "an-experimental-command",
-        aliases: ["axc"],
-        type: "command",
-        description: "This is an example command marked experimental for help generation. " + LOREM,
-        options: [EXAMPLE_APPLE_OPTION,
-            EXAMPLE_STRAWBERRY_OPTION,
-            EXAMPLE_PICK_OPTION],
-        experimental: true
-    };
-
     const COMMAND_WITH_MARKDOWN_SPECIAL_CHRACTERS: ICommandDefinition = {
         name: "an-example-command",
         aliases: ["aec"],
@@ -104,16 +83,6 @@ describe("Default Help Generator", () => {
         options: [EXAMPLE_APPLE_OPTION,
             EXAMPLE_STRAWBERRY_OPTION,
             EXAMPLE_PICK_OPTION]
-    };
-
-    const EXAMPLE_TREE: ICommandDefinition = {
-        name: "example-group",
-        aliases: ["eg"],
-        type: "group",
-        description: "This is an example tree group with multiple children",
-        summary: "The example tree",
-        children: [EXAMPLE_COMMAND,
-            EXAMPLE_EXPERIMENTAL_COMMAND]
     };
 
     const deprecatedGroup: ICommandDefinition = {

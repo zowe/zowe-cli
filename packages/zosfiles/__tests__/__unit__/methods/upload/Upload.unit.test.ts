@@ -187,7 +187,6 @@ describe("z/OS Files - Upload", () => {
         });
         it("should throw error if PDS name is not specified", async () => {
             const testDir = "path/to/a/file";
-            const dsname = "TEST.DSN";
             try {
                 response = await Upload.dirToPds(dummySession, testDir, undefined);
             } catch (err) {
