@@ -1708,7 +1708,7 @@ describe("Create ZFS", () => {
             expect.arrayContaining([
                 {"X-IBM-Response-Timeout": "5"},
                 {"Accept-Encoding": "gzip"},
-                {"Content-Length": jsonContent.length },
+                {"Content-Length": jsonContent.length.toString()},
                 {"Content-Type": "application/json"}
             ]),
             JSON.stringify(options)
