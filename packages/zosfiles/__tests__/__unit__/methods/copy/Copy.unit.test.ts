@@ -941,10 +941,10 @@ describe("Copy", () => {
                 // Do nothing
             }
             expect(response.commandResponse).toContain(ZosFilesMessages.datasetCopiedSuccessfully.message + " " +
-                ZosFilesMessages.membersContentTruncated.message + "\n\n" +
+                ZosFilesMessages.membersContentTruncated.message + "\n" +
                 firstTenMembers.join('\n') +
-                `\n... and ${numMembers} more` +
-                util.format(ZosFilesMessages.viewMembersListfile.message, truncatedMembersFilePath));
+                (numMembers > 0 ? `\n... and ${numMembers} more` +
+                    util.format(ZosFilesMessages.viewMembersListfile.message, truncatedMembersFilePath) : ''));
         });
 
         describe("hasIdenticalMemberNames", () => {

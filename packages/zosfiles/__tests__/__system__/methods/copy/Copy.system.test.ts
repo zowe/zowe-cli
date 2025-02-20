@@ -134,7 +134,7 @@ describe("Copy", () => {
                     } catch (err) {
                         Imperative.console.info(`Error: ${inspect(err)}`);
                     }
-                })
+                });
 
                 it("Should copy a partitioned data set", async () => {
                     let error;
