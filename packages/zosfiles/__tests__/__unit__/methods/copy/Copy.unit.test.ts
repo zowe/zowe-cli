@@ -18,7 +18,6 @@ import { Copy, Create, Get, List, Upload, ZosFilesConstants, ZosFilesMessages, I
 import { ZosmfHeaders, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import path = require("path");
 import { tmpdir } from "os";
-import { first } from "lodash";
 
 describe("Copy", () => {
     const dummySession = new Session({
@@ -41,7 +40,8 @@ describe("Copy", () => {
         const hasIdenticalMemberNames = jest.spyOn(Copy as any, "hasIdenticalMemberNames");
         let dataSetExistsSpy: jest.SpyInstance;
         const promptFn = jest.fn();
-        const promptForLikeNamedMembers = jest.fn();
+        const promptForIdenticalNamedMembers = jest.fn();
+        const listAllMembersSpy = jest.spyOn(List, "allMembers");
 
         beforeEach(() => {
             copyPDSSpy.mockClear();
@@ -49,7 +49,7 @@ describe("Copy", () => {
             isPDSSpy.mockClear().mockResolvedValue(false);
             dataSetExistsSpy = jest.spyOn(Copy as any, "dataSetExists").mockResolvedValue(true);
             hasIdenticalMemberNames.mockClear().mockResolvedValue(false);
-            promptForLikeNamedMembers.mockClear();
+            promptForIdenticalNamedMembers.mockClear();
         });
         afterAll(() => {
             isPDSSpy.mockRestore();
@@ -518,6 +518,14 @@ describe("Copy", () => {
             describe("Partitioned > Partitioned", () => {
                 let createSpy: jest.SpyInstance;
                 let dataSetExistsSpy: jest.SpyInstance;
+                const sourceResponse = {
+                    apiResponse: {
+                        items: [
+                            { member: "mem1" },
+                            { member: "mem2" },
+                        ]
+                    }
+                };
                 beforeEach(() => {
                     isPDSSpy.mockClear().mockResolvedValue(true);
                     copyPDSSpy.mockClear().mockResolvedValue({success: true, commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message});
@@ -526,6 +534,7 @@ describe("Copy", () => {
                         commandResponse: ZosFilesMessages.dataSetCreatedSuccessfully.message
                     });
                     dataSetExistsSpy = jest.spyOn(Copy as any, "dataSetExists");
+                    listAllMembersSpy.mockImplementation(async (): Promise<any>  => sourceResponse);
                 });
                 afterAll(() => {
                     copyPDSSpy.mockRestore();
@@ -546,8 +555,6 @@ describe("Copy", () => {
                     expect(isPDSSpy).toHaveBeenNthCalledWith(2, dummySession, toDataSetName);
 
                     expect(copyPDSSpy).toHaveBeenCalledTimes(1);
-                    expect(copyPDSSpy).toHaveBeenCalledWith(dummySession, fromDataSetName, toDataSetName);
-
                     expect(response).toEqual({
                         success: true,
                         commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message
@@ -628,7 +635,7 @@ describe("Copy", () => {
                 it("should display a prompt for identical member names if there are identical member names and" +
                     "--safe-replace and --replace flags are not used", async () => {
                     hasIdenticalMemberNames.mockResolvedValue(true);
-                    promptForLikeNamedMembers.mockClear().mockResolvedValue(true);
+                    promptForIdenticalNamedMembers.mockClear().mockResolvedValue(true);
 
                     const response = await Copy.dataSet(
                         dummySession,
@@ -636,9 +643,9 @@ describe("Copy", () => {
                         { "from-dataset": { dsn: fromDataSetName },
                             safeReplace: false,
                             replace: false,
-                            promptForLikeNamedMembers }
+                            promptForIdenticalNamedMembers }
                     );
-                    expect(promptForLikeNamedMembers).toHaveBeenCalledWith();
+                    expect(promptForIdenticalNamedMembers).toHaveBeenCalledWith();
                     expect(response.success).toEqual(true);
 
                 });
@@ -649,14 +656,14 @@ describe("Copy", () => {
                         { "from-dataset": { dsn: fromDataSetName },
                             safeReplace: false,
                             replace: false,
-                            promptForLikeNamedMembers }
+                            promptForIdenticalNamedMembers }
                     );
                     expect(response.success).toEqual(true);
-                    expect(promptForLikeNamedMembers).not.toHaveBeenCalled();
+                    expect(promptForIdenticalNamedMembers).not.toHaveBeenCalled();
                 });
                 it("should throw error if user declines to replace the dataset", async () => {
                     hasIdenticalMemberNames.mockResolvedValue(true);
-                    promptForLikeNamedMembers.mockClear().mockResolvedValue(false);
+                    promptForIdenticalNamedMembers.mockClear().mockResolvedValue(false);
 
                     await expect(Copy.dataSet(
                         dummySession,
@@ -664,10 +671,10 @@ describe("Copy", () => {
                         { "from-dataset": { dsn: fromDataSetName },
                             safeReplace: false,
                             replace: false,
-                            promptForLikeNamedMembers }
+                            promptForIdenticalNamedMembers }
                     )).rejects.toThrow(new ImperativeError({ msg: ZosFilesMessages.datasetCopiedAborted.message }));
 
-                    expect(promptForLikeNamedMembers).toHaveBeenCalled();
+                    expect(promptForIdenticalNamedMembers).toHaveBeenCalled();
                 });
             });
             it("should return early if the source and target data sets are identical", async () => {
@@ -788,7 +795,6 @@ describe("Copy", () => {
         };
 
         it("should detect PDS datasets correctly during copy", async () => {
-            let caughtError;
             let response;
             listDatasetSpy.mockImplementation(async (): Promise<any>  => {
                 return {
@@ -801,7 +807,7 @@ describe("Copy", () => {
                 response = await Copy.isPDS(dummySession, dsPO.dsname);
             }
             catch(e) {
-                caughtError = e;
+                // Do nothing
             }
             expect(response).toEqual(true);
             expect(listDatasetSpy).toHaveBeenCalledWith(dummySession, dsPO.dsname, { attributes: true });
@@ -809,7 +815,6 @@ describe("Copy", () => {
 
         it("should return false if the data set is not partitioned", async () => {
             let response;
-            let caughtError;
             listDatasetSpy.mockImplementation(async (): Promise<any>  => {
                 return {
                     apiResponse: {
@@ -821,13 +826,12 @@ describe("Copy", () => {
                 response = await Copy.isPDS(dummySession, dsPS.dsname);
             }
             catch(e) {
-                caughtError = e;
+                // Do nothing
             }
             expect(response).toEqual(false);
             expect(listDatasetSpy).toHaveBeenCalledWith(dummySession, dsPS.dsname, { attributes: true });
         });
         it("should return true if the data set exists", async () => {
-            let caughtError;
             let response;
             listDatasetSpy.mockImplementation(async (): Promise<any>  => {
                 return {
@@ -841,14 +845,13 @@ describe("Copy", () => {
                 response = await (Copy as any).dataSetExists(dummySession, dsPO.dsname);
             }
             catch(e) {
-                caughtError = e;
+                // Do nothing
             }
             expect(response).toEqual(true);
             expect(listDatasetSpy).toHaveBeenCalledWith(dummySession, dsPO.dsname, {start: dsPO.dsname});
         });
 
         it("should return false if the data set does not exist", async () => {
-            let caughtError;
             let response;
             listDatasetSpy.mockImplementation(async (): Promise<any>  => {
                 return {
@@ -862,13 +865,12 @@ describe("Copy", () => {
                 response = await (Copy as any).dataSetExists(dummySession, dsPO.dsname);
             }
             catch(e) {
-                caughtError = e;
+                // Do nothing
             }
             expect(response).toEqual(false);
             expect(listDatasetSpy).toHaveBeenCalledWith(dummySession, dsPO.dsname, {start: dsPO.dsname});
         });
         it("should successfully copy members from source to target PDS", async () => {
-            let caughtError;
             let response;
             const sourceResponse = {
                 apiResponse: {
@@ -878,6 +880,7 @@ describe("Copy", () => {
                     ]
                 }
             };
+            const sourceMemberList = sourceResponse.apiResponse.items.map((item: { member: any; }) => item.member);
             const fileList = ["mem1", "mem2"];
             listAllMembersSpy.mockImplementation(async (): Promise<any>  => sourceResponse);
             downloadAllMembersSpy.mockImplementation(async (): Promise<any> => undefined);
@@ -889,10 +892,10 @@ describe("Copy", () => {
 
 
             try{
-                response = await Copy.copyPDS(dummySession, fromDataSetName, toDataSetName);
+                response = await Copy.copyPDS(dummySession, sourceMemberList, fromDataSetName, toDataSetName);
             }
             catch(e) {
-                caughtError = e;
+                // Do nothing
             }
             expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, fromDataSetName);
             expect(downloadAllMembersSpy).toHaveBeenCalledWith(dummySession, fromDataSetName, expect.any(Object));
@@ -906,7 +909,6 @@ describe("Copy", () => {
         });
         it("should handle truncation errors and log them to a file", async () => {
             const truncatedMembersFilePath = path.join(tmpdir(), "truncatedMembers.txt");
-            let caughtError;
             let response;
             const sourceResponse = {
                 apiResponse: {
@@ -917,6 +919,7 @@ describe("Copy", () => {
                 }
             };
             const fileList = ["mem1", "mem2"];
+            const sourceMemberList = sourceResponse.apiResponse.items.map((item: { member: any; }) => item.member);
             const firstTenMembers = fileList.slice(0, 10);
             listAllMembersSpy.mockImplementation(async (): Promise<any>  => sourceResponse);
             downloadAllMembersSpy.mockImplementation(async (): Promise<any> => undefined);
@@ -932,10 +935,10 @@ describe("Copy", () => {
                 return Promise.resolve() as any;
             });
             try{
-                response = await Copy.copyPDS(dummySession, fromDataSetName, toDataSetName);
+                response = await Copy.copyPDS(dummySession, sourceMemberList, fromDataSetName, toDataSetName);
             }
             catch(e) {
-                caughtError = e;
+                // Do nothing
             }
             expect(response.commandResponse).toContain(ZosFilesMessages.datasetCopiedSuccessfully.message + " " +
                 ZosFilesMessages.membersContentTruncated.message + "\n\n" +
@@ -951,28 +954,31 @@ describe("Copy", () => {
                 jest.clearAllMocks();
             });
             it("should return true if the source and target have identical member names", async () => {
-                listAllMembersSpy.mockImplementation(async (_session, dsName): Promise<any> => {
+                const sourceResponse = {
+                    apiResponse: {
+                        items: [
+                            { member: "mem1" },
+                            { member: "mem2" },
+                        ]
+                    }
+                };
+                const targetResponse = {
+                    apiResponse: {
+                        items: [
+                            { member: "mem1" },
+                        ]
+                    }
+                };
+                listAllMembersSpy.mockImplementation(async (session, dsName): Promise<any> => {
                     if (dsName === fromDataSetName) {
-                        return {
-                            apiResponse: {
-                                items: [
-                                    { member: "mem1" },
-                                    { member: "mem2" },
-                                ]
-                            }
-                        };
+                        return sourceResponse;
                     } else if (dsName === toDataSetName) {
-                        return {
-                            apiResponse: {
-                                items: [{ member: "mem1" }]
-                            }
-                        };
+                        return targetResponse;
                     }
                 });
-
-                const response = await Copy["hasIdenticalMemberNames"](dummySession, fromDataSetName, toDataSetName);
+                const sourceMemberList = sourceResponse.apiResponse.items.map((item: { member: any; }) => item.member);
+                const response = await Copy["hasIdenticalMemberNames"](dummySession, sourceMemberList, toDataSetName);
                 expect(response).toBe(true);
-                expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, fromDataSetName);
                 expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, toDataSetName);
             });
             it("should return false if the source and target do not have identcal member names", async () => {
@@ -998,11 +1004,10 @@ describe("Copy", () => {
                         return targetResponse;
                     }
                 });
-
-                const response = await Copy["hasIdenticalMemberNames"](dummySession, fromDataSetName, toDataSetName);
+                const sourceMemberList = sourceResponse.apiResponse.items.map((item: { member: any; }) => item.member);
+                const response = await Copy["hasIdenticalMemberNames"](dummySession, sourceMemberList, toDataSetName);
 
                 expect(response).toBe(false);
-                expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, fromDataSetName);
                 expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, toDataSetName);
             });
         });
@@ -1125,7 +1130,6 @@ describe("Copy", () => {
             describe("Member > Member", () => {
                 it("should send a request", async () => {
                     let response;
-                    let caughtError;
 
                     listDatasetSpy.mockImplementation(async (): Promise<any>  => {
                         return {
@@ -1151,7 +1155,7 @@ describe("Copy", () => {
                             dummySession
                         );
                     } catch (e) {
-                        caughtError = e;
+                        // Do nothing
                     }
 
                     expect(response).toEqual({
@@ -1248,7 +1252,6 @@ describe("Copy", () => {
 
                 describe("Sequential > Member", () => {
                     it("should send a request", async () => {
-                        let caughtError;
 
                         listDatasetSpy.mockReturnValueOnce({
                             apiResponse: {
@@ -1292,7 +1295,6 @@ describe("Copy", () => {
                 describe("Member > Sequential", () => {
                     it("should send a request", async () => {
                         let response;
-                        let caughtError;
 
                         listDatasetSpy.mockReturnValueOnce({
                             apiResponse: {
@@ -1315,7 +1317,7 @@ describe("Copy", () => {
                                 dummySession
                             );
                         } catch (e) {
-                            caughtError = e;
+                            // Do nothing
                         }
 
                         expect(response).toEqual({
@@ -1371,7 +1373,6 @@ describe("Copy", () => {
                 describe("Sequential > Member - create target", () => {
                     it("should send a request", async () => {
                         let response;
-                        let caughtError;
 
                         listDatasetSpy.mockReturnValueOnce({
                             apiResponse: {
@@ -1393,7 +1394,7 @@ describe("Copy", () => {
                                 dummySession
                             );
                         } catch (e) {
-                            caughtError = e;
+                            // Do nothing
                         }
 
                         expect(response).toEqual({
@@ -1409,7 +1410,6 @@ describe("Copy", () => {
                 describe("Member > Sequential - create target", () => {
                     it("should send a request", async () => {
                         let response;
-                        let caughtError;
 
                         listDatasetSpy.mockReturnValueOnce({
                             apiResponse: {
@@ -1430,7 +1430,7 @@ describe("Copy", () => {
                                 dummySession
                             );
                         } catch (e) {
-                            caughtError = e;
+                            // Do nothing
                         }
 
                         expect(response).toEqual({

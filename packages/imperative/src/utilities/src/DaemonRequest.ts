@@ -31,9 +31,7 @@ export class DaemonRequest {
      * @param {IDaemonRequest} request
      * @memberof DaemonRequest
      */
-    constructor(private request: IDaemonRequest) {
-        this.request = request;
-    }
+    constructor(private request: IDaemonRequest) {}
 
     /**
      * Create daemon request from input options

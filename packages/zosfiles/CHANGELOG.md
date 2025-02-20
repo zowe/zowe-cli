@@ -4,7 +4,8 @@ All notable changes to the Zowe z/OS files SDK package will be documented in thi
 
 ## Recent Changes
 
-- BugFix: When using the `copy` command, when a target partitioned data set has less record lines than a source partitioned data set, it no longer stops the operation for subsequent members. The user can now view the affected members in a local file.
+- BugFix: When using the `copy` command, when a target partitioned data set has less record lines than a source partitioned data set, it no longer stops the operation for subsequent members. The user can now view the affected members in a local file. [#2349] (https://github.com/zowe/zowe-cli/issues/2349)
+- BugFix: Users were not warned when copying partitioned data sets with identical member names. Now, the user is prompted to confirm before continuing the copy operation to avoid potential data loss. [#2349] (https://github.com/zowe/zowe-cli/issues/2349)
 
 ## `8.13.0`
 

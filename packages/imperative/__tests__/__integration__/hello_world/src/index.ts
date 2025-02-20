@@ -13,6 +13,6 @@
 
 import { Imperative } from "../../../../lib/index";
 
-Imperative.init().then((response) => {
+Imperative.init().then((_response) => {
     Imperative.parse();
 });

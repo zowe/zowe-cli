@@ -25,7 +25,6 @@ let REAL_SESSION: Session;
 let JOB_NAME: string;
 const jobNameRegex = /jobname: (\w+)/;
 
-let account: string;
 let jclMember: string;
 let psJclDataSet: string;
 describe("zos-jobs submit data-set command", () => {
@@ -36,7 +35,6 @@ describe("zos-jobs submit data-set command", () => {
             tempProfileTypes: ["zosmf"]
         });
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
-        account = TEST_ENVIRONMENT.systemTestProperties.tso.account;
         jclMember = TEST_ENVIRONMENT.systemTestProperties.zosjobs.iefbr14Member;
         psJclDataSet = TEST_ENVIRONMENT.systemTestProperties.zosjobs.iefbr14PSDataSet;
     });

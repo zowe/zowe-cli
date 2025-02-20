@@ -31,18 +31,18 @@ const getIHandlerParametersObject = (): IHandlerParameters => {
     const x: any = {
         response: {
             data: {
-                setMessage: jest.fn((setMsgArgs) => {
+                setMessage: jest.fn((_setMsgArgs) => {
                     // Nothing
                 }),
-                setObj: jest.fn((setObjArgs) => {
+                setObj: jest.fn((_setObjArgs) => {
                     // Nothing
                 })
             },
             console: {
-                log: jest.fn((logs) => {
+                log: jest.fn((_logs) => {
                     // Nothing
                 }),
-                error: jest.fn((errors) => {
+                error: jest.fn((_errors) => {
                     // Nothing
                 }),
                 errorHeader: jest.fn(() => undefined)
@@ -77,7 +77,6 @@ describe("Configuration Set command handler", () => {
     let writeFileSyncSpy: any;
     let existsSyncSpy: any;
     let searchSpy: any;
-    let setSchemaSpy: any;
     let keytarGetPasswordSpy: any;
     let keytarSetPasswordSpy: any;
     let keytarDeletePasswordSpy: any;
@@ -158,8 +157,6 @@ describe("Configuration Set command handler", () => {
         existsSyncSpy.mockClear();
         readFileSyncSpy.mockClear();
 
-        setSchemaSpy = jest.spyOn(ImperativeConfig.instance.config, "setSchema");
-
         await handler.process(params);
 
         const fakeSecureDataExpectedJson: { [key: string]: any} = lodash.cloneDeep(fakeSecureDataJson);
@@ -224,8 +221,6 @@ describe("Configuration Set command handler", () => {
         existsSyncSpy.mockClear();
         readFileSyncSpy.mockClear();
 
-        setSchemaSpy = jest.spyOn(ImperativeConfig.instance.config, "setSchema");
-
         await handler.process(params);
 
         const fakeSecureDataExpectedJson: { [key: string]: any} = lodash.cloneDeep(fakeSecureDataJson);
@@ -288,8 +283,6 @@ describe("Configuration Set command handler", () => {
         writeFileSyncSpy.mockClear();
         existsSyncSpy.mockClear();
         readFileSyncSpy.mockClear();
-
-        setSchemaSpy = jest.spyOn(ImperativeConfig.instance.config, "setSchema");
 
         await handler.process(params);
 
@@ -356,8 +349,6 @@ describe("Configuration Set command handler", () => {
         existsSyncSpy.mockClear();
         readFileSyncSpy.mockClear();
 
-        setSchemaSpy = jest.spyOn(ImperativeConfig.instance.config, "setSchema");
-
         await handler.process(params);
 
         const fakeSecureDataExpectedJson: { [key: string]: any} = lodash.cloneDeep(fakeSecureDataJson);
@@ -420,8 +411,6 @@ describe("Configuration Set command handler", () => {
         existsSyncSpy.mockClear();
         readFileSyncSpy.mockClear();
 
-        setSchemaSpy = jest.spyOn(ImperativeConfig.instance.config, "setSchema");
-
         await handler.process(params);
 
         const fakeSecureDataExpectedJson: { [key: string]: any} = lodash.cloneDeep(fakeSecureDataJson);
@@ -479,8 +468,6 @@ describe("Configuration Set command handler", () => {
         writeFileSyncSpy.mockClear();
         existsSyncSpy.mockClear();
         readFileSyncSpy.mockClear();
-
-        setSchemaSpy = jest.spyOn(ImperativeConfig.instance.config, "setSchema");
 
         await handler.process(params);
 
@@ -540,8 +527,6 @@ describe("Configuration Set command handler", () => {
         existsSyncSpy.mockClear();
         readFileSyncSpy.mockClear();
 
-        setSchemaSpy = jest.spyOn(ImperativeConfig.instance.config, "setSchema");
-
         await handler.process(params);
 
         const fakeSecureDataExpectedJson: { [key: string]: any} = lodash.cloneDeep(fakeSecureDataJson);
@@ -600,8 +585,6 @@ describe("Configuration Set command handler", () => {
         writeFileSyncSpy.mockClear();
         existsSyncSpy.mockClear();
         readFileSyncSpy.mockClear();
-
-        setSchemaSpy = jest.spyOn(ImperativeConfig.instance.config, "setSchema");
 
         await handler.process(params);
 
@@ -665,8 +648,6 @@ describe("Configuration Set command handler", () => {
         existsSyncSpy.mockClear();
         readFileSyncSpy.mockClear();
 
-        setSchemaSpy = jest.spyOn(ImperativeConfig.instance.config, "setSchema");
-
         await handler.process(params);
 
         const fakeSecureDataExpectedJson: { [key: string]: any} = lodash.cloneDeep(fakeSecureDataJson);
@@ -728,8 +709,6 @@ describe("Configuration Set command handler", () => {
         writeFileSyncSpy.mockClear();
         existsSyncSpy.mockClear();
         readFileSyncSpy.mockClear();
-
-        setSchemaSpy = jest.spyOn(ImperativeConfig.instance.config, "setSchema");
 
         await handler.process(params);
 
@@ -796,8 +775,6 @@ describe("Configuration Set command handler", () => {
         existsSyncSpy.mockClear();
         readFileSyncSpy.mockClear();
 
-        setSchemaSpy = jest.spyOn(ImperativeConfig.instance.config, "setSchema");
-
         await handler.process(params);
 
         const fakeSecureDataExpectedJson: { [key: string]: any} = lodash.cloneDeep(fakeSecureDataJson);
@@ -859,8 +836,6 @@ describe("Configuration Set command handler", () => {
         writeFileSyncSpy.mockClear();
         existsSyncSpy.mockClear();
         readFileSyncSpy.mockClear();
-
-        setSchemaSpy = jest.spyOn(ImperativeConfig.instance.config, "setSchema");
 
         await handler.process(params);
 
@@ -926,8 +901,6 @@ describe("Configuration Set command handler", () => {
         existsSyncSpy.mockClear();
         readFileSyncSpy.mockClear();
 
-        setSchemaSpy = jest.spyOn(ImperativeConfig.instance.config, "setSchema");
-
         await handler.process(params);
 
         const fakeSecureDataExpectedJson: { [key: string]: any} = lodash.cloneDeep(fakeSecureDataJson);
@@ -991,8 +964,6 @@ describe("Configuration Set command handler", () => {
         writeFileSyncSpy.mockClear();
         existsSyncSpy.mockClear();
         readFileSyncSpy.mockClear();
-
-        setSchemaSpy = jest.spyOn(ImperativeConfig.instance.config, "setSchema");
         let error: any;
 
         try {

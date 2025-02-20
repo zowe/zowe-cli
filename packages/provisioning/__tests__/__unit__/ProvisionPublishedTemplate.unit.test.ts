@@ -21,12 +21,6 @@ const domainName: string = "domain-name1";
 const tenantName: string = "tenant-name1";
 const accountInfo: string = "DEFAULT";
 
-
-let RESOURCES_QUERY: string = `${ProvisioningConstants.RESOURCE}/${ProvisioningConstants.ZOSMF_VERSION}/`;
-RESOURCES_QUERY += `${ProvisioningConstants.TEMPLATES_RESOURCES}/${templateName}/`;
-RESOURCES_QUERY += `${ProvisioningConstants.ACTIONS_RESOURCES}/${ProvisioningConstants.RESOURCE_PROVISION_RUN}`;
-
-
 const PRETEND_SESSION = new Session({
     user: "usr",
     password: "pasword",

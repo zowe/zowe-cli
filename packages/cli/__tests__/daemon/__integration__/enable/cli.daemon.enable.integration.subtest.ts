@@ -21,8 +21,6 @@ import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/prope
 
 describe("daemon enable", () => {
     const rimrafSync = require("rimraf").sync;
-    const fakeExeContent = "This is not a real executable";
-    const EXIT_CODE_CANT_RUN_DAEMON_CMD: number = 107;
 
     let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
     let exePath: string;

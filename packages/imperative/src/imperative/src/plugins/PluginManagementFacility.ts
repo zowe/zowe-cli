@@ -1135,7 +1135,7 @@ export class PluginManagementFacility {
     ): void {
         for (const pluginCmdDef of pluginCmdDefs) {
             // check for name property
-            let pluginCmdName: string = "NotYetAssigned";
+            let pluginCmdName: string;
             if (Object.prototype.hasOwnProperty.call(pluginCmdDef, "name")) {
                 pluginCmdName = pluginCmdDef.name + " (at depth = " + cmdTreeDepth + ")";
             } else {

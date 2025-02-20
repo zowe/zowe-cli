@@ -208,7 +208,7 @@ export class Services {
         const _genCommentsHelper = (key: string, elements: string[]): string => {
             if (elements == null || elements.length === 0) return "";
 
-            return elements.reduce((all, current: string, index) => {
+            return elements.reduce((all, current: string, _index) => {
                 return all.concat(key.includes("base") ? `\n//"${key}": "${current}"` : `\n//"${key}": "${current}",`);
             }, "");
         };

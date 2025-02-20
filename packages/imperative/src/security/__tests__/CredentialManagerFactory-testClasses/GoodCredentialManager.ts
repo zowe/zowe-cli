@@ -24,15 +24,15 @@ export = class NoInitializeCredentialManager extends AbstractCredentialManager {
         super(NoInitializeCredentialManager.hardcodeService, displayname);
     }
 
-    protected async deleteCredentials(account: string): Promise<void> {
+    protected async deleteCredentials(_account: string): Promise<void> {
         return;
     }
 
-    protected async loadCredentials(account: string): Promise<SecureCredential> {
+    protected async loadCredentials(_account: string): Promise<SecureCredential> {
         return this.credentials;
     }
 
-    protected async saveCredentials(account: string, credentials: SecureCredential): Promise<void> {
+    protected async saveCredentials(_account: string, _credentials: SecureCredential): Promise<void> {
         return;
     }
 };

@@ -34,10 +34,10 @@ describe("zos-jobs list spool-files-by-jobid handler", () => {
     });
 
     it("should be able to get spool files", async () => {
-        GetJobs.getJob = jest.fn(async (session, jobid) => {
+        GetJobs.getJob = jest.fn(async (_session, _jobid) => {
             return GetJobsData.SAMPLE_COMPLETE_JOB;
         });
-        GetJobs.getSpoolFilesForJob = jest.fn(async (session, ijob) => {
+        GetJobs.getSpoolFilesForJob = jest.fn(async (_session, _ijob) => {
             return GetJobsData.SAMPLE_SPOOL_FILES;
         });
         const handler = new SpoolFilesHandler.default();
@@ -51,7 +51,7 @@ describe("zos-jobs list spool-files-by-jobid handler", () => {
     it("should not transform an error thrown from get jobs getJob API", async () => {
         const failMessage = "You fail";
         let error;
-        GetJobs.getJob = jest.fn((session, jobid) => {
+        GetJobs.getJob = jest.fn((_session, _jobid) => {
             throw new ImperativeError({ msg: failMessage});
         });
         const handler = new SpoolFilesHandler.default();
@@ -71,10 +71,10 @@ describe("zos-jobs list spool-files-by-jobid handler", () => {
     it("should not transform an error thrown from get jobs getSpoolFilesForJob API", async () => {
         const failMessage = "You fail";
         let error;
-        GetJobs.getJob = jest.fn(async (session, jobid) => {
+        GetJobs.getJob = jest.fn(async (_session, _jobid) => {
             return GetJobsData.SAMPLE_COMPLETE_JOB;
         });
-        GetJobs.getSpoolFilesForJob = jest.fn((session, jobid) => {
+        GetJobs.getSpoolFilesForJob = jest.fn((_session, _jobid) => {
             throw new ImperativeError({ msg: failMessage});
         });
         const handler = new SpoolFilesHandler.default();

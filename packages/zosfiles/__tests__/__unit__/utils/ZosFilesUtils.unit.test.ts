@@ -126,7 +126,6 @@ describe("ZosFilesUtils", () => {
         it("should ignore hidden files when input is a directory", () => {
             const inputPath = "testDir";
             const mockFileList = ["file1", ".file2"];
-            const expectResult = ["file1"];
 
             isDirSpy.mockReturnValueOnce(true);
             readDirSyncSpy.mockReturnValueOnce(mockFileList as any);

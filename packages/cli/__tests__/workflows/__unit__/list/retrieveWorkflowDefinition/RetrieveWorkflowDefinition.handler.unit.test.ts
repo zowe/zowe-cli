@@ -33,9 +33,6 @@ describe("List workflow definition file details handler", () => {
 
             // Vars populated by the mocked function
             let error;
-            let apiMessage = "";
-            let jsonObj;
-            let logMessage = "";
             let fakeSession = null;
 
             // Mock the create function
@@ -59,7 +56,7 @@ describe("List workflow definition file details handler", () => {
             });
 
             // Mocked function references
-            const profFunc = jest.fn((args) => {
+            const profFunc = jest.fn((_args) => {
                 return {
                     host: "fake",
                     port: "fake",
@@ -85,16 +82,16 @@ describe("List workflow definition file details handler", () => {
                             })
                         },
                         data: {
-                            setMessage: jest.fn((setMsgArgs) => {
-                                apiMessage = setMsgArgs;
+                            setMessage: jest.fn((_setMsgArgs) => {
+                                // Do nothing
                             }),
-                            setObj: jest.fn((setObjArgs) => {
-                                jsonObj = setObjArgs;
+                            setObj: jest.fn((_setObjArgs) => {
+                                // Do nothing
                             })
                         },
                         console: {
-                            log: jest.fn((logArgs) => {
-                                logMessage += "\n" + logArgs;
+                            log: jest.fn((_logArgs) => {
+                                // Do nothing
                             })
                         }
                     },

@@ -23,7 +23,6 @@ let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
 let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment<ITestPropertiesSchema>;
 let defaultSystem: ITestPropertiesSchema;
 let ussname: string;
-let user: string;
 
 describe("Delete File", () => {
 
@@ -37,7 +36,6 @@ describe("Delete File", () => {
         defaultSystem = TEST_ENVIRONMENT.systemTestProperties;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
-        user = defaultSystem.zosmf.user.trim();
         ussname = `${defaultSystem.zosmf.user.trim()}.aTestUssFileDelete.txt`;
         ussname = `${defaultSystem.unix.testdir}/${ussname}`;
     });
@@ -56,13 +54,10 @@ describe("Delete File", () => {
             });
 
             defaultSys = TEST_ENVIRONMENT_NO_PROF.systemTestProperties;
-            let error;
-            let response;
             try {
-                response = await Create.uss(REAL_SESSION, ussname, "file");
+                await Create.uss(REAL_SESSION, ussname, "file");
             } catch (err) {
-                error = err;
-                Imperative.console.info("Error: " + inspect(error));
+                Imperative.console.info("Error: " + inspect(err));
             }
         });
 
@@ -92,7 +87,6 @@ describe("Delete File", () => {
     });
 
     describe("Success scenarios", () => {
-        let defaultSys: ITestPropertiesSchema;
 
         // Create the unique test environment
         beforeEach(async () => {
@@ -100,15 +94,10 @@ describe("Delete File", () => {
                 testName: "zos_files_delete_uss_file_without_profile"
             });
 
-            defaultSys = TEST_ENVIRONMENT_NO_PROF.systemTestProperties;
-            let error;
-            let response;
-
             try {
-                response = await Create.uss(REAL_SESSION, ussname, "file");
+                await Create.uss(REAL_SESSION, ussname, "file");
             } catch (err) {
-                error = err;
-                Imperative.console.info("Error: " + inspect(error));
+                Imperative.console.info("Error: " + inspect(err));
             }
         });
 

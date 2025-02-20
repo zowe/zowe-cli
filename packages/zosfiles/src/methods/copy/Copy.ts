@@ -87,15 +87,18 @@ export class Copy {
             const targetIsPds = await this.isPDS(session, toDataSetName);
 
             if (sourceIsPds && targetIsPds) {
-                const hasIdenticalMemberNames = await this.hasIdenticalMemberNames(session, options["from-dataset"].dsn, toDataSetName);
+                const sourceResponse = await List.allMembers(session, options["from-dataset"].dsn);
+                const sourceMemberList = sourceResponse.apiResponse.items.map((item: { member: any; }) => item.member);
+
+                const hasIdenticalMemberNames = await this.hasIdenticalMemberNames(session, sourceMemberList, toDataSetName);
                 if(!safeReplace && hasIdenticalMemberNames && !overwriteMembers) {
-                    const userResponse = await options.promptForLikeNamedMembers();
+                    const userResponse = await options.promptForIdenticalNamedMembers();
 
                     if(!userResponse) {
                         throw new ImperativeError({ msg: ZosFilesMessages.datasetCopiedAborted.message});
                     }
                 }
-                const response = await this.copyPDS(session, options["from-dataset"].dsn, toDataSetName);
+                const response = await this.copyPDS(session, sourceMemberList, options["from-dataset"].dsn, toDataSetName);
                 return {
                     success: true,
                     commandResponse: newDataSet
@@ -185,11 +188,9 @@ export class Copy {
     */
     private static async hasIdenticalMemberNames (
         session: AbstractSession,
-        fromPds: string,
+        sourceMemberList: string[],
         toPds: string
     ): Promise <boolean> {
-        const sourceResponse = await List.allMembers(session, fromPds);
-        const sourceMemberList = sourceResponse.apiResponse.items.map((item: { member: any; }) => item.member);
         const targetResponse = await List.allMembers(session, toPds);
         const targetMemberList = targetResponse.apiResponse.items.map((item: { member: any; }) => item.member);
 
@@ -211,10 +212,8 @@ export class Copy {
      * @see https://www.ibm.com/support/knowledgecenter/en/SSLTBW_2.1.0/com.ibm.zos.v2r1.izua700/IZUHPINFO_API_PutDataSetMemberUtilities.htm
      */
     public static async copyPDS (
-        session: AbstractSession, fromPds: string, toPds: string): Promise<IZosFilesResponse> {
+        session: AbstractSession, sourceMemberList: string[], fromPds: string, toPds: string): Promise<IZosFilesResponse> {
         try {
-            const sourceResponse = await List.allMembers(session, fromPds);
-            const sourceMemberList: Array<{ member: string }> = sourceResponse.apiResponse.items;
 
             if(sourceMemberList.length == 0) {
                 return {

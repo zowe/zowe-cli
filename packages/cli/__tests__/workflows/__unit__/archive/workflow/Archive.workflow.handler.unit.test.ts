@@ -35,9 +35,6 @@ describe("Archive workflow details handler", () => {
 
             // Vars populated by the mocked function
             let error;
-            let apiMessage = "";
-            let jsonObj;
-            let logMessage = "";
             let fakeSession = null;
 
             // Mock the create function
@@ -50,7 +47,7 @@ describe("Archive workflow details handler", () => {
             });
 
             // Mocked function references
-            const profFunc = jest.fn((args) => {
+            const profFunc = jest.fn((_args) => {
                 return {
                     host: "fake",
                     port: "fake",
@@ -71,16 +68,16 @@ describe("Archive workflow details handler", () => {
                     },
                     response: {
                         data: {
-                            setMessage: jest.fn((setMsgArgs) => {
-                                apiMessage = setMsgArgs;
+                            setMessage: jest.fn((_setMsgArgs) => {
+                                return;
                             }),
-                            setObj: jest.fn((setObjArgs) => {
-                                jsonObj = setObjArgs;
+                            setObj: jest.fn((_setObjArgs) => {
+                                return;
                             })
                         },
                         console: {
-                            log: jest.fn((logArgs) => {
-                                logMessage += "\n" + logArgs;
+                            log: jest.fn((_logArgs) => {
+                                return;
                             })
                         }
                     },
@@ -107,9 +104,6 @@ describe("Archive workflow details handler", () => {
 
             // Vars populated by the mocked function
             let error;
-            let apiMessage = "";
-            let jsonObj;
-            let logMessage = "";
             let fakeSession = null;
 
             // Mock the archive function
@@ -128,7 +122,7 @@ describe("Archive workflow details handler", () => {
             });
 
             // Mocked function references
-            const profFunc = jest.fn((args) => {
+            const profFunc = jest.fn((_args) => {
                 return {
                     host: "fake",
                     port: "fake",
@@ -154,16 +148,16 @@ describe("Archive workflow details handler", () => {
                             })
                         },
                         data: {
-                            setMessage: jest.fn((setMsgArgs) => {
-                                apiMessage = setMsgArgs;
+                            setMessage: jest.fn((_setMsgArgs) => {
+                                return;
                             }),
-                            setObj: jest.fn((setObjArgs) => {
-                                jsonObj = setObjArgs;
+                            setObj: jest.fn((_setObjArgs) => {
+                                return;
                             })
                         },
                         console: {
-                            log: jest.fn((logArgs) => {
-                                logMessage += "\n" + logArgs;
+                            log: jest.fn((_logArgs) => {
+                                return;
                             })
                         }
                     },
@@ -191,9 +185,6 @@ describe("Archive workflow details handler", () => {
 
             // Vars populated by the mocked function
             let error;
-            let apiMessage = "";
-            let jsonObj;
-            let logMessage = "";
             let fakeSession = null;
 
             // Mock the list function
@@ -209,7 +200,7 @@ describe("Archive workflow details handler", () => {
             });
 
             // Mocked function references
-            const profFunc = jest.fn((args) => {
+            const profFunc = jest.fn((_args) => {
                 return {
                     host: "fake",
                     port: "fake",
@@ -230,16 +221,16 @@ describe("Archive workflow details handler", () => {
                     },
                     response: {
                         data: {
-                            setMessage: jest.fn((setMsgArgs) => {
-                                apiMessage = setMsgArgs;
+                            setMessage: jest.fn((_setMsgArgs) => {
+                                return;
                             }),
-                            setObj: jest.fn((setObjArgs) => {
-                                jsonObj = setObjArgs;
+                            setObj: jest.fn((_setObjArgs) => {
+                                return;
                             })
                         },
                         console: {
-                            log: jest.fn((logArgs) => {
-                                logMessage += "\n" + logArgs;
+                            log: jest.fn((_logArgs) => {
+                                return;
                             })
                         }
                     },
@@ -260,30 +251,23 @@ describe("Archive workflow details handler", () => {
             // Require the handler and create a new instance
             const handlerReq = require("../../../../../src/workflows/archive/Archive.handler");
             const handler = new handlerReq.default();
-            const workflowKey = "fake-workflow-key";
             const workflowName = "fake-name";
 
             // Vars populated by the mocked function
             let error;
-            let apiMessage = "";
-            let jsonObj;
-            let logMessage = "";
-            let fakeSession = null;
 
             // Mock the archive function
-            ArchiveWorkflow.archiveWorkflowByKey = jest.fn(async (session) => {
-                fakeSession = session;
+            ArchiveWorkflow.archiveWorkflowByKey = jest.fn(async (_session) => {
                 throw new ImperativeError ({msg: `archive failed`});
             });
 
             // Mock the list function
-            ListWorkflows.getWorkflows = jest.fn(async (session) => {
-                fakeSession = session;
+            ListWorkflows.getWorkflows = jest.fn(async (_session) => {
                 return {workflows: []};
             });
 
             // Mocked function references
-            const profFunc = jest.fn((args) => {
+            const profFunc = jest.fn((_args) => {
                 return {
                     host: "fake",
                     port: "fake",
@@ -309,16 +293,16 @@ describe("Archive workflow details handler", () => {
                             })
                         },
                         data: {
-                            setMessage: jest.fn((setMsgArgs) => {
-                                apiMessage = setMsgArgs;
+                            setMessage: jest.fn((_setMsgArgs) => {
+                                return;
                             }),
-                            setObj: jest.fn((setObjArgs) => {
-                                jsonObj = setObjArgs;
+                            setObj: jest.fn((_setObjArgs) => {
+                                return;
                             })
                         },
                         console: {
-                            log: jest.fn((logArgs) => {
-                                logMessage += "\n" + logArgs;
+                            log: jest.fn((_logArgs) => {
+                                return;
                             })
                         }
                     },
@@ -343,9 +327,6 @@ describe("Archive workflow details handler", () => {
 
             // Vars populated by the mocked function
             let error;
-            let apiMessage = "";
-            let jsonObj;
-            let logMessage = "";
             let fakeSession = null;
 
             // Mock the archive function
@@ -361,7 +342,7 @@ describe("Archive workflow details handler", () => {
             });
 
             // Mocked function references
-            const profFunc = jest.fn((args) => {
+            const profFunc = jest.fn((_args) => {
                 return {
                     host: "fake",
                     port: "fake",
@@ -387,16 +368,16 @@ describe("Archive workflow details handler", () => {
                             })
                         },
                         data: {
-                            setMessage: jest.fn((setMsgArgs) => {
-                                apiMessage = setMsgArgs;
+                            setMessage: jest.fn((_setMsgArgs) => {
+                                return;
                             }),
-                            setObj: jest.fn((setObjArgs) => {
-                                jsonObj = setObjArgs;
+                            setObj: jest.fn((_setObjArgs) => {
+                                return;
                             })
                         },
                         console: {
-                            log: jest.fn((logArgs) => {
-                                logMessage += "\n" + logArgs;
+                            log: jest.fn((_logArgs) => {
+                                return;
                             })
                         }
                     },
@@ -416,23 +397,18 @@ describe("Archive workflow details handler", () => {
             // Require the handler and create a new instance
             const handlerReq = require("../../../../../src/workflows/archive/Archive.handler");
             const handler = new handlerReq.default();
-            const workflowKey = "fake-workflow-key";
-            const workflowName = "fake-name";
             const workflowNothing = "fake-option";
 
             // Vars populated by the mocked function
             let error;
-            let apiMessage = "";
-            let jsonObj;
-            let logMessage = "";
 
             // Mock the archive function
-            ArchiveWorkflow.archiveWorkflowByKey = jest.fn((session) => {
+            ArchiveWorkflow.archiveWorkflowByKey = jest.fn((_session) => {
                 throw new ImperativeError ({msg: `archive failed`});
             });
 
             // Mocked function references
-            const profFunc = jest.fn((args) => {
+            const profFunc = jest.fn((_args) => {
                 return {
                     host: "fake",
                     port: "fake",
@@ -458,16 +434,16 @@ describe("Archive workflow details handler", () => {
                             })
                         },
                         data: {
-                            setMessage: jest.fn((setMsgArgs) => {
-                                apiMessage = setMsgArgs;
+                            setMessage: jest.fn((_setMsgArgs) => {
+                                return;
                             }),
-                            setObj: jest.fn((setObjArgs) => {
-                                jsonObj = setObjArgs;
+                            setObj: jest.fn((_setObjArgs) => {
+                                return;
                             })
                         },
                         console: {
-                            log: jest.fn((logArgs) => {
-                                logMessage += "\n" + logArgs;
+                            log: jest.fn((_logArgs) => {
+                                return;
                             })
                         }
                     },

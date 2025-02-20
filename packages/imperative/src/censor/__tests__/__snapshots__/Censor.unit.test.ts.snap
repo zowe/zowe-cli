@@ -1,0 +1,34 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Censor tests should not change the censor response 1`] = `"****"`;
+
+exports[`Censor tests should not change the default main censored options 1`] = `
+Array [
+  "auth",
+  "authentication",
+  "basicAuth",
+  "basic-auth",
+  "certFilePassphrase",
+  "cert-file-passphrase",
+  "credentials",
+  "pw",
+  "pass",
+  "password",
+  "passphrase",
+  "tv",
+  "tokenValue",
+  "token-value",
+]
+`;
+
+exports[`Censor tests should not change the default secure prompt options 1`] = `
+Array [
+  "keyPassphrase",
+  "key-passphrase",
+  "password",
+  "passphrase",
+  "tokenValue",
+  "token-value",
+  "user",
+]
+`;

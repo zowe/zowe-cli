@@ -25,7 +25,7 @@ import { setupConfigToLoad } from "../../../__tests__/src/TestUtil";
 import { EnvFileUtils } from "../../utilities";
 import { join } from "path";
 import { Config } from "../../config";
-import { LoggerUtils } from "../../logger/src/LoggerUtils";
+import { Censor } from "../../censor";
 
 jest.mock("../src/syntax/SyntaxValidator");
 jest.mock("../src/utils/SharedOptions");
@@ -191,6 +191,7 @@ const FAKE_HELP_GENERATOR: IHelpGenerator = {
 
 const ENV_VAR_PREFIX: string = "UNIT_TEST";
 
+/* eslint-disable deprecation/deprecation */
 describe("Command Processor", () => {
     describe("Command Processor with --help and --version flags", () => {
         let faultyConfigProcessor: CommandProcessor;
@@ -238,7 +239,7 @@ describe("Command Processor", () => {
         let caughtError;
 
         try {
-            const processor: CommandProcessor = new CommandProcessor({
+            new CommandProcessor({
                 envVariablePrefix: ENV_VAR_PREFIX,
                 definition: SAMPLE_COMMAND_DEFINITION,
                 helpGenerator: FAKE_HELP_GENERATOR,
@@ -256,7 +257,7 @@ describe("Command Processor", () => {
     it("should detect that no parameters have been supplied", () => {
         let error;
         try {
-            const processor: CommandProcessor = new CommandProcessor(undefined);
+            new CommandProcessor(undefined);
         } catch (e) {
             error = e;
         }
@@ -268,7 +269,7 @@ describe("Command Processor", () => {
     it("should detect no command definition supplied", () => {
         let error;
         try {
-            const processor: CommandProcessor = new CommandProcessor({
+            new CommandProcessor({
                 envVariablePrefix: ENV_VAR_PREFIX,
                 definition: undefined,
                 helpGenerator: FAKE_HELP_GENERATOR,
@@ -287,7 +288,7 @@ describe("Command Processor", () => {
     it("should detect no help generator supplied", () => {
         let error;
         try {
-            const processor: CommandProcessor = new CommandProcessor({
+            new CommandProcessor({
                 envVariablePrefix: ENV_VAR_PREFIX,
                 definition: SAMPLE_COMMAND_DEFINITION,
                 helpGenerator: undefined,
@@ -306,7 +307,7 @@ describe("Command Processor", () => {
     it("should detect no root command supplied", () => {
         let error;
         try {
-            const processor: CommandProcessor = new CommandProcessor({
+            new CommandProcessor({
                 envVariablePrefix: ENV_VAR_PREFIX,
                 definition: SAMPLE_COMMAND_DEFINITION,
                 helpGenerator: FAKE_HELP_GENERATOR,
@@ -325,7 +326,7 @@ describe("Command Processor", () => {
     it("should detect blank root command supplied", () => {
         let error;
         try {
-            const processor: CommandProcessor = new CommandProcessor({
+            new CommandProcessor({
                 envVariablePrefix: ENV_VAR_PREFIX,
                 definition: SAMPLE_COMMAND_DEFINITION,
                 helpGenerator: FAKE_HELP_GENERATOR,
@@ -344,7 +345,7 @@ describe("Command Processor", () => {
     it("should detect missing ENV var prefix", () => {
         let error;
         try {
-            const processor: CommandProcessor = new CommandProcessor({
+            new CommandProcessor({
                 envVariablePrefix: undefined,
                 definition: SAMPLE_COMMAND_DEFINITION,
                 helpGenerator: FAKE_HELP_GENERATOR,
@@ -436,8 +437,6 @@ describe("Command Processor", () => {
     });
 
     it("should build the help if requested", () => {
-        let stdoutMessages: string = "";
-        let stderrMessages: string = "";
 
         // Allocate the command processor
         const processor: CommandProcessor = new CommandProcessor({
@@ -450,11 +449,11 @@ describe("Command Processor", () => {
         });
 
         // Mock the process write
-        (process.stdout.write as any) = jest.fn((data) => {
-            stdoutMessages += data;
+        (process.stdout.write as any) = jest.fn((_data) => {
+            return;
         });
-        (process.stderr.write as any) = jest.fn((data) => {
-            stderrMessages += data;
+        (process.stderr.write as any) = jest.fn((_data) => {
+            return;
         });
 
         const helpResponse: ICommandResponse = processor.help(new CommandResponse());
@@ -475,7 +474,7 @@ describe("Command Processor", () => {
 
         let error;
         try {
-            const helpResponse: ICommandResponse = processor.help(undefined);
+            processor.help(undefined);
         } catch (e) {
             error = e;
         }
@@ -485,8 +484,6 @@ describe("Command Processor", () => {
     });
 
     it("should build the web help if requested", () => {
-        let stdoutMessages: string = "";
-        let stderrMessages: string = "";
 
         // Allocate the command processor
         const processor: CommandProcessor = new CommandProcessor({
@@ -499,11 +496,11 @@ describe("Command Processor", () => {
         });
 
         // Mock the process write
-        (process.stdout.write as any) = jest.fn((data) => {
-            stdoutMessages += data;
+        (process.stdout.write as any) = jest.fn((_data) => {
+            return;
         });
-        (process.stderr.write as any) = jest.fn((data) => {
-            stderrMessages += data;
+        (process.stderr.write as any) = jest.fn((_data) => {
+            return;
         });
         WebHelpManager.instance.openHelp = jest.fn();
 
@@ -565,7 +562,7 @@ describe("Command Processor", () => {
 
         let error;
         try {
-            const validateResponse: ICommandValidatorResponse = await processor.validate(undefined, new CommandResponse());
+            await processor.validate(undefined, new CommandResponse());
         } catch (e) {
             error = e;
         }
@@ -587,7 +584,7 @@ describe("Command Processor", () => {
 
         let error;
         try {
-            const validateResponse: ICommandValidatorResponse = await processor.validate({
+            await processor.validate({
                 _: [],
                 $0: "",
                 valid: true
@@ -613,7 +610,7 @@ describe("Command Processor", () => {
 
         let error;
         try {
-            const validateResponse: ICommandResponse = await processor.invoke(undefined);
+            await processor.invoke(undefined);
         } catch (e) {
             error = e;
         }
@@ -635,7 +632,7 @@ describe("Command Processor", () => {
 
         let error;
         try {
-            const validateResponse: ICommandResponse = await processor.invoke({ arguments: undefined });
+            await processor.invoke({ arguments: undefined });
         } catch (e) {
             error = e;
         }
@@ -658,7 +655,7 @@ describe("Command Processor", () => {
         let error;
         try {
             const parms: any = { arguments: { _: [], $0: "" }, responseFormat: "blah", silent: true };
-            const validateResponse: ICommandResponse = await processor.invoke(parms);
+            await processor.invoke(parms);
         } catch (e) {
             error = e;
         }
@@ -681,7 +678,7 @@ describe("Command Processor", () => {
         let error;
         try {
             const parms: any = { arguments: { _: undefined, $0: "" }, responseFormat: "json", silent: true };
-            const validateResponse: ICommandResponse = await processor.invoke(parms);
+            await processor.invoke(parms);
         } catch (e) {
             error = e;
         }
@@ -789,7 +786,7 @@ describe("Command Processor", () => {
         expect(commandResponse.error?.additionalDetails).toEqual("Syntax validation error!");
     });
 
-    it("should mask sensitive CLI options like user and password in log output", async () => {
+    it("should mask sensitive CLI options like user and password in log output 1", async () => {
         // Allocate the command processor
         const processor: CommandProcessor = new CommandProcessor({
             envVariablePrefix: ENV_VAR_PREFIX,
@@ -817,10 +814,47 @@ describe("Command Processor", () => {
         });
 
         const parms: any = { arguments: { _: [], $0: "", syntaxThrow: true }, responseFormat: "json", silent: true };
-        const commandResponse: ICommandResponse = await processor.invoke(parms);
+        await processor.invoke(parms);
 
         expect(mockLogInfo).toHaveBeenCalled();
-        expect(logOutput).toContain("--user **** --password **** --token-value **** --cert-file-passphrase **** --cert-key-file ****");
+        expect(logOutput).toContain("--user fakeUser --password **** --token-value **** --cert-file-passphrase **** --cert-key-file /fake/path");
+    });
+
+    it("should mask sensitive CLI options like user and password in log output 2", async () => {
+        const realCensoredOptions = Censor.CENSORED_OPTIONS;
+        jest.spyOn(Censor, "CENSORED_OPTIONS", "get").mockReturnValueOnce([...realCensoredOptions, "u"]);
+
+        // Allocate the command processor
+        const processor: CommandProcessor = new CommandProcessor({
+            envVariablePrefix: ENV_VAR_PREFIX,
+            fullDefinition: SAMPLE_COMPLEX_COMMAND,
+            definition: SAMPLE_COMMAND_DEFINITION,
+            helpGenerator: FAKE_HELP_GENERATOR,
+            rootCommandName: SAMPLE_ROOT_COMMAND,
+            commandLine: "-u fakeUser --password fakePass --token-value fakeToken " +
+                "--cert-file-passphrase fakePassphrase --cert-key-file /fake/path",
+            promptPhrase: "dummydummy"
+        });
+
+        // Mock log.info call
+        let logOutput: string = "";
+        const mockLogInfo = jest.fn((line) => {
+            logOutput += line + "\n";
+        });
+        Object.defineProperty(processor, "log", {
+            get: () => ({
+                debug: jest.fn(),
+                error: jest.fn(),
+                info: mockLogInfo,
+                trace: jest.fn()
+            })
+        });
+
+        const parms: any = { arguments: { _: [], $0: "", syntaxThrow: true }, responseFormat: "json", silent: true };
+        await processor.invoke(parms);
+
+        expect(mockLogInfo).toHaveBeenCalled();
+        expect(logOutput).toContain("-u **** --password **** --token-value **** --cert-file-passphrase **** --cert-key-file /fake/path");
     });
 
     it("should handle not being able to instantiate the handler", async () => {
@@ -1447,7 +1481,7 @@ describe("Command Processor", () => {
         expect(commandResponse.data.requiredProfiles).toBeUndefined();
     });
 
-    it.each(LoggerUtils.SECURE_PROMPT_OPTIONS)("should mask input value for secure parm %s when --show-inputs-only flag is set", async (propName) => {
+    it.each(Censor.SECURE_PROMPT_OPTIONS)("should mask input value for secure parm %s when --show-inputs-only flag is set", async (propName) => {
 
         // values to test
         const parm1Key = CliUtils.getOptionFormat(propName).kebabCase;
@@ -1461,8 +1495,10 @@ describe("Command Processor", () => {
                     }
                 },
                 layers: [{ exists: true, path: "zowe.config.json" }],
-                properties: Config.empty()
-            }
+                properties: Config.empty(),
+                mProperties: Config.empty()
+            },
+            envVariablePrefix: "ZOWE"
         } as any);
 
         // Allocate the command processor
@@ -1838,7 +1874,7 @@ describe("Command Processor", () => {
     it("should fail the creation of the command processor if a definition of type command has no handler", async () => {
         let error;
         try {
-            const processor: CommandProcessor = new CommandProcessor({
+            new CommandProcessor({
                 envVariablePrefix: ENV_VAR_PREFIX,
                 fullDefinition: SAMPLE_COMPLEX_COMMAND,
                 definition: SAMPLE_COMMAND_WIH_NO_HANDLER,

@@ -85,7 +85,7 @@ describe("get logs handler tests", () => {
     it("should not transform an error from the zosmf rest client", async () => {
         const failMessage = "You fail";
         let error;
-        GetZosLog.getZosLog = jest.fn(async (session, parms) => {
+        GetZosLog.getZosLog = jest.fn(async (_session, _parms) => {
             throw new ImperativeError({ msg: failMessage });
         });
         const handler = new LogsHandler.default();

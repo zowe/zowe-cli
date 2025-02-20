@@ -59,7 +59,7 @@ export default class CreateCommonHandler extends ZosmfBaseHandler {
             );
             if (wfKey) {
                 try {
-                    resp = await DeleteWorkflow.deleteWorkflow(
+                    await DeleteWorkflow.deleteWorkflow(
                         this.mSession,
                         wfKey
                     );

@@ -203,7 +203,6 @@ describe("Utilities.putUSSPayload", () => {
         it("should get chtag response", async () => {
             let response;
             let caughtError;
-            const binary = true;
 
             try {
                 response = await Utilities.putUSSPayload(dummySession, filename, payload);
@@ -263,7 +262,6 @@ describe("Utilities.putUSSPayload", () => {
         it("should get a positive indication to ISO references", async () => {
             let response;
             let caughtError;
-            const binary = true;
 
             try {
                 response = await Utilities.isFileTagBinOrAscii(dummySession, filename);

@@ -36,17 +36,6 @@ const ZOSMF_RESPONSE: IZosmfPingResponse = {
     reused: false,
     timeout: false
 };
-const BAD_ZOSMF_RESPONSE: IZosmfPingResponse = {
-    servletKey: "UZUST01-154-aacaaaae",
-    ver: "0100",
-    msgData: [{
-        messageText: "IZUG1126E: z/OSMF cannot correlate the request for key",
-        messageId: "IZUG1126E",
-        stackTrace: "Exception error"
-    }],
-    reused: false,
-    timeout: false
-};
 
 function expectZosmfResponseSucceeded(response: IPingResponse, error: ImperativeError) {
     expect(error).not.toBeDefined();

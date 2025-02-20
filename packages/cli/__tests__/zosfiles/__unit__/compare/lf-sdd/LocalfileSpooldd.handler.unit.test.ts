@@ -38,7 +38,7 @@ describe("Compare localfile-spooldd handler", () => {
         const getSpoolSpy = jest.spyOn(GetJobs, "getSpoolContentById");
         const getDiffStringSpy = jest.spyOn(DiffUtils, "getDiffString");
         const openDiffInbrowserSpy = jest.spyOn(DiffUtils, "openDiffInbrowser");
-        const profFunc = jest.fn((args) => {
+        const profFunc = jest.fn((_args) => {
             return {
                 host: "fake",
                 port: "fake",
@@ -72,7 +72,7 @@ describe("Compare localfile-spooldd handler", () => {
                     })
                 },
                 progress: {
-                    startBar: jest.fn((parms) => {
+                    startBar: jest.fn((_parms) => {
                         // do nothing
                     }),
                     endBar: jest.fn(() => {

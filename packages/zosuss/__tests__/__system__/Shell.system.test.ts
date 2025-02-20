@@ -70,10 +70,9 @@ describe("zowe uss issue ssh api call test", () => {
 
     it("should receive return code for valid command", async () => {
         const command = "ls";
-        let stdoutData = "";
         const COMMAND_RC = 0;
-        const rc = await Shell.executeSsh(SSH_SESSION, command, (data: string) => {
-            stdoutData += data;
+        const rc = await Shell.executeSsh(SSH_SESSION, command, (_data: string) => {
+            return;
         });
         expect(rc).toBe(COMMAND_RC);
 
@@ -81,10 +80,9 @@ describe("zowe uss issue ssh api call test", () => {
 
     it("should receive return code for invalid command", async () => {
         const command = "invalidCommand";
-        let stdoutData = "";
         const COMMAND_NOT_FOUND_RC = 127;
-        const rc = await Shell.executeSsh(SSH_SESSION, command, (data: string) => {
-            stdoutData += data;
+        const rc = await Shell.executeSsh(SSH_SESSION, command, (_data: string) => {
+            return;
         });
         expect(rc).toBe(COMMAND_NOT_FOUND_RC);
 
@@ -93,10 +91,9 @@ describe("zowe uss issue ssh api call test", () => {
     it("should receive return code for valid command with cwd option", async () => {
         const command = "ls";
         const cwd =  `${defaultSystem.unix.testdir}`;
-        let stdoutData = "";
         const COMMAND_RC = 0;
-        const rc = await Shell.executeSshCwd(SSH_SESSION, command, cwd, (data: string) => {
-            stdoutData += data;
+        const rc = await Shell.executeSshCwd(SSH_SESSION, command, cwd, (_data: string) => {
+            return;
         });
         expect(rc).toBe(COMMAND_RC);
 
@@ -105,10 +102,9 @@ describe("zowe uss issue ssh api call test", () => {
     it("should receive return code for invalid command with cwd option", async () => {
         const command = "invalidCommand";
         const cwd =  `${defaultSystem.unix.testdir}`;
-        let stdoutData = "";
         const COMMAND_NOT_FOUND_RC = 127;
-        const rc = await Shell.executeSshCwd(SSH_SESSION, command, cwd, (data: string) => {
-            stdoutData += data;
+        const rc = await Shell.executeSshCwd(SSH_SESSION, command, cwd, (_data: string) => {
+            return;
         });
         expect(rc).toBe(COMMAND_NOT_FOUND_RC);
 
@@ -125,9 +121,8 @@ describe("zowe uss issue ssh api call test", () => {
         let error;
         try {
             const command = "uname";
-            let stdoutData = "";
-            await Shell.executeSsh(invalidSshSession, command, (data: string) => {
-                stdoutData += data;
+            await Shell.executeSsh(invalidSshSession, command, (_data: string) => {
+                return;
             });
         } catch (err) {
             error = err;
@@ -148,9 +143,8 @@ describe("zowe uss issue ssh api call test", () => {
         let error;
         try {
             const command = "uname";
-            let stdoutData = "";
-            await Shell.executeSsh(invalidSshSession, command, (data: string) => {
-                stdoutData += data;
+            await Shell.executeSsh(invalidSshSession, command, (_data: string) => {
+                return;
             });
         } catch (err) {
             error = err;

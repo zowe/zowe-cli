@@ -83,7 +83,7 @@ describe("Search", () => {
 
         getDataSetSpy.mockClear();
 
-        getDataSetSpy.mockImplementation(async (session, dsn, options) => {
+        getDataSetSpy.mockImplementation(async (_session, _dsn, _options) => {
             return Buffer.from(testDataString);
         });
 
@@ -119,7 +119,7 @@ describe("Search", () => {
     });
 
     afterAll(() => {
-        process.env.FORCE_COLOR = "0";
+        process.env.FORCE_COLOR = oldForceColor;
         jest.restoreAllMocks();
     });
 
@@ -164,7 +164,7 @@ describe("Search", () => {
                     return {responses: [], failures};
                 }
             });
-            listDataSetsMatchingPatternSpy.mockImplementation(async (session, patterns, options) => {
+            listDataSetsMatchingPatternSpy.mockImplementation(async (_session, _patterns, _options) => {
                 return {
                     success: true,
                     commandResponse: "",
@@ -172,7 +172,7 @@ describe("Search", () => {
                     errorMessage: undefined
                 } as IZosFilesResponse;
             });
-            listAllMembersSpy.mockImplementation(async (session, dsn, options) => {
+            listAllMembersSpy.mockImplementation(async (_session, _dsn, _options) => {
                 return {
                     success: true,
                     commandResponse: "",
@@ -180,7 +180,7 @@ describe("Search", () => {
                     errorMessage: undefined
                 } as IZosFilesResponse;
             });
-            getDataSetSpy.mockImplementation(async (session, dsn, options) => {
+            getDataSetSpy.mockImplementation(async (_session, _dsn, _options) => {
                 return Buffer.from(testDataString);
             });
         }
@@ -691,7 +691,7 @@ describe("Search", () => {
         });
 
         it("Should handle a migrated data set", async () => {
-            listDataSetsMatchingPatternSpy.mockImplementation(async (session, patterns, options) => {
+            listDataSetsMatchingPatternSpy.mockImplementation(async (_session, _patterns, _options) => {
                 return {
                     success: true,
                     commandResponse: "",
@@ -722,7 +722,7 @@ describe("Search", () => {
         });
 
         it("Should handle a PO-E data set", async () => {
-            listDataSetsMatchingPatternSpy.mockImplementation(async (session, patterns, options) => {
+            listDataSetsMatchingPatternSpy.mockImplementation(async (_session, _patterns, _options) => {
                 return {
                     success: true,
                     commandResponse: "",
@@ -856,7 +856,7 @@ describe("Search", () => {
         });
 
         it("Should handle if a PDS list fails", async () => {
-            listAllMembersSpy.mockImplementation(async (session, dsn, options) => {
+            listAllMembersSpy.mockImplementation(async (_session, _dsn, _options) => {
                 throw new ImperativeError({msg: "Something went terribly wrong"});
             });
 
@@ -883,7 +883,7 @@ describe("Search", () => {
         });
 
         it("Should handle if a PDS list is empty", async () => {
-            listAllMembersSpy.mockImplementation(async (session, dsn, options) => {
+            listAllMembersSpy.mockImplementation(async (_session, _dsn, _options) => {
                 return {
                     success: true,
                     commandResponse: "",
@@ -915,7 +915,7 @@ describe("Search", () => {
         });
 
         it("Should handle if listing data sets returns nothing", async () => {
-            listDataSetsMatchingPatternSpy.mockImplementation(async (session, patterns, options) => {
+            listDataSetsMatchingPatternSpy.mockImplementation(async (_session, _patterns, _options) => {
                 return {
                     success: true,
                     commandResponse: "",
@@ -940,7 +940,7 @@ describe("Search", () => {
 
         it("Should terminate if listing data sets fails", async () => {
             const impErr = new ImperativeError({msg: "Something went terribly wrong"});
-            listDataSetsMatchingPatternSpy.mockImplementation(async (session, patterns, options) => {
+            listDataSetsMatchingPatternSpy.mockImplementation(async (_session, _patterns, _options) => {
                 throw impErr;
             });
 
@@ -1053,7 +1053,7 @@ describe("Search", () => {
         });
 
         it("Should handle timing out 3", async () => {
-            listAllMembersSpy.mockImplementation(async (session, dsn, options) => {
+            listAllMembersSpy.mockImplementation(async (_session, _dsn, _options) => {
                 delay(1100);
                 return {
                     success: true,
@@ -1090,7 +1090,7 @@ describe("Search", () => {
         });
 
         it("Should handle timing out 4", async () => {
-            listDataSetsMatchingPatternSpy.mockImplementation(async (session, patterns, options) => {
+            listDataSetsMatchingPatternSpy.mockImplementation(async (_session, _patterns, _options) => {
                 delay(1100);
                 return {
                     success: true,
@@ -1150,7 +1150,7 @@ describe("Search", () => {
 
         it("Should return a list of members that contain the search term (none)", async () => {
             // Return empty buffers for all entries
-            getDataSetSpy.mockImplementation(async (session, dsn, options) => {
+            getDataSetSpy.mockImplementation(async (_session, _dsn, _options) => {
                 return Buffer.from("");
             });
 
@@ -1169,13 +1169,13 @@ describe("Search", () => {
 
         it("Should return a list of members that contain the search term (some)", async () => {
             // Return empty buffers for the final 2 entries
-            getDataSetSpy.mockImplementation(async (session, dsn, options) => {
+            getDataSetSpy.mockImplementation(async (_session, _dsn, _options) => {
                 return Buffer.from("");
-            }).mockImplementationOnce(async (session, dsn, options) => {
+            }).mockImplementationOnce(async (_session, _dsn, _options) => {
                 return Buffer.from(testDataString);
-            }).mockImplementationOnce(async (session, dsn, options) => {
+            }).mockImplementationOnce(async (_session, _dsn, _options) => {
                 return Buffer.from(testDataString);
-            }).mockImplementationOnce(async (session, dsn, options) => {
+            }).mockImplementationOnce(async (_session, _dsn, _options) => {
                 return Buffer.from(testDataString);
             });
 
@@ -1221,11 +1221,11 @@ describe("Search", () => {
         });
 
         it("Should handle a data set get failure", async () => {
-            getDataSetSpy.mockImplementation(async (session, dsn, options) => {
+            getDataSetSpy.mockImplementation(async (_session, _dsn, _options) => {
                 return Buffer.from(testDataString);
-            }).mockImplementationOnce(async (session, dsn, options) => {
+            }).mockImplementationOnce(async (_session, _dsn, _options) => {
                 return Buffer.from(testDataString);
-            }).mockImplementationOnce(async (session, dsn, options) => {
+            }).mockImplementationOnce(async (_session, _dsn, _options) => {
                 throw new ImperativeError({msg: "Failed to retrieve contents of data set"});
             });
 
@@ -1393,7 +1393,7 @@ describe("Search", () => {
 
         it("Should return a list of members that contain the search term (none)", async () => {
             // Return non-matching buffers for all entries
-            getDataSetSpy.mockImplementation(async (session, dsn, options) => {
+            getDataSetSpy.mockImplementation(async (_session, _dsn, _options) => {
                 return Buffer.from("This data set does not contain any test data.");
             });
 
@@ -1410,13 +1410,13 @@ describe("Search", () => {
 
         it("Should return a list of members that contain the search term (some)", async () => {
             // Return empty buffers for the final 2 entries
-            getDataSetSpy.mockImplementation(async (session, dsn, options) => {
+            getDataSetSpy.mockImplementation(async (_session, _dsn, _options) => {
                 return Buffer.from("");
-            }).mockImplementationOnce(async (session, dsn, options) => {
+            }).mockImplementationOnce(async (_session, _dsn, _options) => {
                 return Buffer.from(testDataString);
-            }).mockImplementationOnce(async (session, dsn, options) => {
+            }).mockImplementationOnce(async (_session, _dsn, _options) => {
                 return Buffer.from(testDataString);
-            }).mockImplementationOnce(async (session, dsn, options) => {
+            }).mockImplementationOnce(async (_session, _dsn, _options) => {
                 return Buffer.from(testDataString);
             });
 
@@ -1460,11 +1460,11 @@ describe("Search", () => {
         });
 
         it("Should handle a data set get failure", async () => {
-            getDataSetSpy.mockImplementation(async (session, dsn, options) => {
+            getDataSetSpy.mockImplementation(async (_session, _dsn, _options) => {
                 return Buffer.from(testDataString);
-            }).mockImplementationOnce(async (session, dsn, options) => {
+            }).mockImplementationOnce(async (_session, _dsn, _options) => {
                 return Buffer.from(testDataString);
-            }).mockImplementationOnce(async (session, dsn, options) => {
+            }).mockImplementationOnce(async (_session, _dsn, _options) => {
                 throw new ImperativeError({msg: "Failed to retrieve contents of data set"});
             });
 
@@ -1547,13 +1547,13 @@ describe("Search", () => {
         it("Should handle case sensitivity 1", async () => {
             searchOptions.caseSensitive = true;
             // Return empty buffers for the final 2 entries
-            getDataSetSpy.mockImplementation(async (session, dsn, options) => {
+            getDataSetSpy.mockImplementation(async (_session, _dsn, _options) => {
                 return Buffer.from(testDataString.toLowerCase());
-            }).mockImplementationOnce(async (session, dsn, options) => {
+            }).mockImplementationOnce(async (_session, _dsn, _options) => {
                 return Buffer.from(testDataString);
-            }).mockImplementationOnce(async (session, dsn, options) => {
+            }).mockImplementationOnce(async (_session, _dsn, _options) => {
                 return Buffer.from(testDataString);
-            }).mockImplementationOnce(async (session, dsn, options) => {
+            }).mockImplementationOnce(async (_session, _dsn, _options) => {
                 return Buffer.from(testDataString);
             });
 

@@ -34,8 +34,6 @@ import { sync } from "cross-spawn";
 /**
  * Requires for non-typed.
  */
-const yargs = require("yargs").argv;
-const yaml = require("js-yaml");
 const diff = require("deep-diff").diff;
 import { v4 as uuidv4 } from "uuid";
 
@@ -241,7 +239,7 @@ export function findExpectedOutputInCommand(cliBinModule: string,
         ignoreSpaces?: boolean
     } = {ignoreCase: false, ignoreSpaces: false},
     pipeContent?: string | Buffer,
-    env: { [key: string]: string } = process.env): ICommandResponse {
+    _env: { [key: string]: string } = process.env): ICommandResponse {
 
     let interactiveCommand: SpawnSyncReturns<string>;
     const testLogger = TestLogger.getTestLogger();

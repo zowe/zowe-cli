@@ -268,7 +268,6 @@ describe("CredentialManagerOverride", () => {
     describe("recordCredMgrInConfig", () => {
         const knownCredMgr = CredentialManagerOverride.getKnownCredMgrs()[1];
         const knownCredMgrDisplayNm = knownCredMgr.credMgrDisplayName as string;
-        const knownCredMgrPluginNm = knownCredMgr.credMgrPluginName as string;
 
         it("should throw an error when trying to override with an unknown credMgr", () => {
             const unknownCredMgrName = "A credential manager name that is not known";
@@ -290,7 +289,7 @@ describe("CredentialManagerOverride", () => {
         it("should throw an error when getSettingsFileJson fails", () => {
             // Force an error when reading our settings
             const readJsonErrText = "Pretend that readJsonSync threw an error";
-            const readJsonSync = jest.spyOn(fsExtra, "readJsonSync").mockImplementation(() => {
+            jest.spyOn(fsExtra, "readJsonSync").mockImplementation(() => {
                 throw new Error(readJsonErrText);
             });
 
@@ -317,13 +316,13 @@ describe("CredentialManagerOverride", () => {
 
         it("should throw an override error due to error in writeJsonSync", () => {
             // make readJsonSync return what we want
-            const readJsonSync = jest.spyOn(fsExtra, "readJsonSync").mockImplementation(() => {
+            jest.spyOn(fsExtra, "readJsonSync").mockImplementation(() => {
                 return expectedSettings.json;
             });
 
             // Force an error when writing our settings
             const writeJsonErrText = "Pretend that writeJsonSync threw an error";
-            const writeJsonSync = jest.spyOn(fsExtra, "writeJsonSync").mockImplementation(() => {
+            jest.spyOn(fsExtra, "writeJsonSync").mockImplementation(() => {
                 throw new Error(writeJsonErrText);
             });
 
@@ -363,7 +362,7 @@ describe("CredentialManagerOverride", () => {
         it("should throw a replacement error due to error in getSettingsFileJson", () => {
             // Force an error when reading our settings
             const readJsonErrText = "Pretend that readJsonSync threw an error";
-            const readJsonSync = jest.spyOn(fsExtra, "readJsonSync").mockImplementation(() => {
+            jest.spyOn(fsExtra, "readJsonSync").mockImplementation(() => {
                 throw new Error(readJsonErrText);
             });
 
@@ -391,7 +390,7 @@ describe("CredentialManagerOverride", () => {
 
         it("should fail when the plugin is not the current cred mgr", () => {
             // make readJsonSync return what we want
-            const readJsonSync = jest.spyOn(fsExtra, "readJsonSync").mockImplementation(() => {
+            jest.spyOn(fsExtra, "readJsonSync").mockImplementation(() => {
                 return expectedSettings.json;
             });
 
@@ -421,13 +420,13 @@ describe("CredentialManagerOverride", () => {
 
         it("should throw a replacement error due to error in writeJsonSync", () => {
             // make readJsonSync return what we want
-            const readJsonSync = jest.spyOn(fsExtra, "readJsonSync").mockImplementation(() => {
+            jest.spyOn(fsExtra, "readJsonSync").mockImplementation(() => {
                 return expectedSettings.json;
             });
 
             // Force an error when writing our settings
             const writeJsonErrText = "Pretend that writeJsonSync threw an error";
-            const writeJsonSync = jest.spyOn(fsExtra, "writeJsonSync").mockImplementation(() => {
+            jest.spyOn(fsExtra, "writeJsonSync").mockImplementation(() => {
                 throw new Error(writeJsonErrText);
             });
 

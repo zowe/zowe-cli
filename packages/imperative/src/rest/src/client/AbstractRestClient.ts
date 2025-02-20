@@ -430,7 +430,7 @@ export abstract class AbstractRestClient {
      * @memberof AbstractRestClient
      * @returns {IImperativeError} processedError - the error with the fields set the way you want them
      */
-    protected processError(error: IImperativeError): IImperativeError {
+    protected processError(_error: IImperativeError): IImperativeError {
         this.log.debug("Default stub for processError was called for rest client %s - processError was not overwritten",
             this.constructor.name);
         return undefined; // do nothing by default

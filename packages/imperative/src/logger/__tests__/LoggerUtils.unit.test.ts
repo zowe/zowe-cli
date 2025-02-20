@@ -9,10 +9,19 @@
 *
 */
 
+// Mock out config APIs
+jest.mock("../../config/src/Config");
+
 import { EnvironmentalVariableSettings } from "../../imperative/src/env/EnvironmentalVariableSettings";
 import { LoggerUtils } from "../src/LoggerUtils";
 import { ImperativeConfig } from "../../utilities/src/ImperativeConfig";
+import { Censor } from "../..";
 
+afterAll(() => {
+    jest.restoreAllMocks();
+});
+
+/* eslint-disable deprecation/deprecation */
 describe("LoggerUtils tests", () => {
 
     it("Should hide --password operand", () => {
@@ -35,8 +44,8 @@ describe("LoggerUtils tests", () => {
         expect(data).toContain(LoggerUtils.CENSOR_RESPONSE);
     });
 
-    it("Should hide -p operand", () => {
-        const data = LoggerUtils.censorCLIArgs(["-p", "cantSeeMe"]);
+    it("Should hide --pw operand", () => {
+        const data = LoggerUtils.censorCLIArgs(["--pw", "cantSeeMe"]);
         expect(data).toContain(LoggerUtils.CENSOR_RESPONSE);
     });
 
@@ -59,22 +68,20 @@ describe("LoggerUtils tests", () => {
         const secrets = ["secret0", "secret1"];
         let impConfigSpy: jest.SpyInstance = null;
         let envSettingsReadSpy: jest.SpyInstance = null;
-        let secureFields: jest.SpyInstance = null;
-        let layersGet: jest.SpyInstance = null;
+        let findSecure: jest.SpyInstance = null;
         let impConfig: any = null; // tried Partial<ImperativeConfig> but some properties complain about missing functionality
         beforeEach(() => {
             jest.restoreAllMocks();
-            secureFields = jest.fn();
-            layersGet = jest.fn();
+            findSecure = jest.fn();
             impConfigSpy = jest.spyOn(ImperativeConfig, "instance", "get");
             envSettingsReadSpy = jest.spyOn(EnvironmentalVariableSettings, "read");
             impConfig = {
                 config: {
                     exists: true,
                     api: {
-                        layers: { get: layersGet },
-                        secure: { secureFields }
-                    }
+                        secure: { findSecure }
+                    },
+                    mProperties: {}
                 }
             };
             LoggerUtils.setProfileSchemas(new Map());
@@ -87,20 +94,23 @@ describe("LoggerUtils tests", () => {
             });
 
             it("Console Output if the MASK_OUTPUT env var is FALSE", () => {
-                impConfigSpy.mockReturnValue({ config: { exists: true } });
+                impConfigSpy.mockReturnValue({ config: { exists: true, api: { secure: { findSecure }}, mProperties: { profiles: []}}});
+                findSecure.mockReturnValue([]);
                 envSettingsReadSpy.mockReturnValue({ maskOutput: { value: "FALSE" } });
                 expect(LoggerUtils.censorRawData(secrets[1], "console")).toEqual(secrets[1]);
             });
 
             describe("special value:", () => {
                 beforeEach(() => {
+                    impConfig.config.mProperties = {profiles: {secret: { properties: {}}}, defaults: {}};
                     impConfigSpy.mockReturnValue(impConfig);
                     envSettingsReadSpy.mockReturnValue({ maskOutput: { value: "TRUE" } });
+                    (Censor as any).addCensoredOption("secret");
                 });
 
                 const _lazyTest = (prop: string): [string, string] => {
-                    secureFields.mockReturnValue([`secret.${prop}`, "secret.secret"]);
-                    layersGet.mockReturnValue({ properties: { secret: { [prop]: secrets[0], secret: secrets[1] } } });
+                    findSecure.mockReturnValue([`profiles.secret.properties.${prop}`, "profiles.secret.properties.secret"]);
+                    impConfig.config.mProperties.profiles.secret.properties = {[prop]: secrets[0], secret: secrets[1] };
 
                     const received = LoggerUtils.censorRawData(`visible secret: ${secrets[0]}, masked secret: ${secrets[1]}`);
                     const expected = `visible secret: ${secrets[0]}, masked secret: ${LoggerUtils.CENSOR_RESPONSE}`;
@@ -124,16 +134,38 @@ describe("LoggerUtils tests", () => {
 
         describe("should censor", () => {
             beforeEach(() => {
+                impConfig.config.mProperties = {profiles: {secret: { properties: {}}}};
                 impConfigSpy.mockReturnValue(impConfig);
                 envSettingsReadSpy.mockReturnValue({ maskOutput: { value: "FALSE" } });
             });
             it("data if the logger category is not console, regardless of the MASK_OUTPUT env var value", () => {
-                secureFields.mockReturnValue(["secret.secret"]);
-                layersGet.mockReturnValue({ properties: { secret: { secret: secrets[1] } } });
+                findSecure.mockReturnValue(["profiles.secret.properties.secret"]);
+                impConfig.config.mProperties.profiles.secret.properties = {secret: secrets[1] };
                 const received = LoggerUtils.censorRawData(`masked secret: ${secrets[1]}`, "This is not the console");
                 const expected = `masked secret: ${LoggerUtils.CENSOR_RESPONSE}`;
                 expect(received).toEqual(expected);
             });
         });
+    });
+
+    describe("isSpecialValue", () => {
+
+        beforeEach(() => {
+            (Censor as any).mSchema = null;
+        });
+
+        afterAll(() => {
+            (Censor as any).mSchema = null;
+        });
+
+        it("should check if user is a special value", () => {
+            expect(LoggerUtils.isSpecialValue("profiles.test.properties.user")).toBe(true);
+        });
+    });
+
+    it("should get profile schemas from Censor", () => {
+        const schemaSpy = jest.spyOn(Censor, "profileSchemas", "get");
+        expect(LoggerUtils.profileSchemas).toEqual(Censor.profileSchemas);
+        expect(schemaSpy).toHaveBeenCalledTimes(2);
     });
 });

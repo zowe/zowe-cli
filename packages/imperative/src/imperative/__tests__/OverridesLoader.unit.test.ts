@@ -145,15 +145,14 @@ describe("OverridesLoader", () => {
                                 super(service, TEST_MANAGER_NAME);
                             }
 
-                            protected async deleteCredentials(account: string): Promise<void> {
+                            protected async deleteCredentials(_account: string): Promise<void> {
                                 return;
                             }
 
-                            protected async loadCredentials(account: string): Promise<string> {
+                            protected async loadCredentials(_account: string): Promise<string> {
                                 return "PASSWORD";
                             }
-
-                            protected async saveCredentials(account: string, password: string): Promise<void> {
+                            protected async saveCredentials(_account: string, _password: string): Promise<void> {
                                 return;
                             }
                         }

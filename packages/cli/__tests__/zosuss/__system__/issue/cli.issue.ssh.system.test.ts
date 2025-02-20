@@ -9,7 +9,6 @@
 *
 */
 
-import { Session } from "@zowe/imperative";
 import * as path from "path";
 import { runCliScript, TempTestProfiles } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
@@ -20,7 +19,6 @@ import { ITestEnvironment } from "../../../../../../__tests__/__src__/environmen
 
 // Test environment will be populated in the "beforeAll"
 let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
-let REAL_SESSION: Session;
 let defaultSystem: ITestPropertiesSchema;
 let ussname: string;
 
@@ -28,7 +26,6 @@ let host: string;
 let port: number;
 let user: string;
 let password: string;
-let privateKey: string;
 let keyPassphrase: string;
 
 function checkResponse(response: any, expectStatus: number) {
@@ -148,8 +145,6 @@ describe("zowe uss issue ssh running bash scripts", () => {
 
         defaultSystem = TEST_ENVIRONMENT.systemTestProperties;
 
-        REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
-
         // upload required test files
         const shellScript = path.join(__dirname, "__scripts__", "command_upload_ftu.sh");
         let localFileName: string;
@@ -216,7 +211,6 @@ describe("zowe uss issue ssh passwords and passkeys", () => {
         port = defaultSystem.ssh.port;
         user = defaultSystem.ssh.user;
         password = defaultSystem.ssh.password;
-        privateKey = defaultSystem.ssh.privateKey;
         keyPassphrase = defaultSystem.ssh.keyPassphrase;
     });
 

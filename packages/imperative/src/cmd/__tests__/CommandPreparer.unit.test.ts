@@ -200,7 +200,7 @@ describe("Command Preparer", () => {
             property: "stdinOptionDescription",
         }];
         try {
-            const prepared: ICommandDefinition = CommandPreparer.prepare(newDef);
+            CommandPreparer.prepare(newDef);
             expect(0).toBe(1);
         } catch (e) {
             TestLogger.info(e.message);

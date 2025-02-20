@@ -10,7 +10,6 @@
 *
 */
 
-import { Session } from "@zowe/imperative";
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/ITestEnvironment";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
@@ -19,12 +18,10 @@ import { runCliScript } from "@zowe/cli-test-utils";
 
 const ZOWE_OPT_BASE_PATH = "ZOWE_OPT_BASE_PATH";
 
-let REAL_SESSION: Session;
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
 let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment<ITestPropertiesSchema>;
 let defaultSystem: ITestPropertiesSchema;
-let volume: string;
 
 describe("Mount and unmount file system", () => {
     let fsname: string;
@@ -38,9 +35,6 @@ describe("Mount and unmount file system", () => {
         });
 
         defaultSystem = TEST_ENVIRONMENT.systemTestProperties;
-        volume = defaultSystem.datasets.vol;
-
-        REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
         fsname = getUniqueDatasetName(defaultSystem.zosmf.user);
 
         const dirname = getUniqueDatasetName(defaultSystem.zosmf.user).split(".")[1];

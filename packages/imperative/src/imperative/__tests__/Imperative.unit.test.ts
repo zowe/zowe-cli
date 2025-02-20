@@ -320,7 +320,7 @@ describe("Imperative", () => {
 
             describe("Parsing", () => {
                 it("should reset yargs context", async () => {
-                    const parse = jest.fn((parm1, parm2) => {
+                    const parse = jest.fn((_parm1, _parm2) => {
                         // do nothing
                     });
 
@@ -414,7 +414,7 @@ describe("Imperative", () => {
 
         describe("Environment Config", () => {
             it("should not surface failures if there is an error in environment variable file", async () => {
-                mocks.EnvFileUtils.setEnvironmentForApp.mockImplementation((appName: string) => {
+                mocks.EnvFileUtils.setEnvironmentForApp.mockImplementation((_appName: string) => {
                     throw new ImperativeError({msg: "Environment Setup Error"});
                 });
                 mocks.Logger.prototype.warn.mockClear();

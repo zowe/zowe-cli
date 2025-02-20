@@ -104,7 +104,7 @@ describe("zosmf utils", () => {
 
         let error;
         try {
-            const session: Session = new Session(sessCfg);
+            new Session(sessCfg);
         } catch (err) {
             error = err;
         }
@@ -128,7 +128,7 @@ describe("zosmf utils", () => {
 
         let error;
         try {
-            const session: Session = new Session(sessCfg);
+            new Session(sessCfg);
         } catch (err) {
             error = err;
         }
@@ -153,7 +153,7 @@ describe("zosmf utils", () => {
 
         let error;
         try {
-            const session: Session = new Session(sessCfg);
+            new Session(sessCfg);
         } catch (err) {
             error = err;
         }

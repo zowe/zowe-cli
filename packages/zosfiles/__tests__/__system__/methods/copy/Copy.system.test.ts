@@ -11,7 +11,7 @@
 
 import { Create, Upload, Delete, CreateDataSetTypeEnum, Copy, ZosFilesMessages, Get, IDataSet,
     ICrossLparCopyDatasetOptions, IGetOptions, IZosFilesResponse,
-    List} from "../../../../src";
+    List } from "../../../../src";
 import { Imperative, Session } from "@zowe/imperative";
 import { inspect } from "util";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
@@ -19,16 +19,13 @@ import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/prope
 import { join } from "path";
 import { readFileSync } from "fs";
 import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/ITestEnvironment";
-import path = require("path");
 import * as util from "util";
-import { ZosmfRestClient} from "@zowe/core-for-zowe-sdk";
-
+import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 
 let REAL_SESSION: Session;
 let REAL_TARGET_SESSION: Session;
 let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 let defaultSystem: ITestPropertiesSchema;
-let defaultTargetSystem: ITestPropertiesSchema;
 let fromDataSetName: string;
 let fromDataSetNameTracks: string;
 let fromDataSetNameCylinders: string;
@@ -37,12 +34,12 @@ let toDataSetName: string;
 const file1 = "file1";
 const file2 = "file2";
 const fileLocation = join(__dirname, "testfiles", `${file1}.txt`);
+const fileLocation2 = join(__dirname, "testfiles", `${file2}.txt`);
 
 describe("Copy", () => {
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({ testName: "zos_file_copy" });
         defaultSystem = testEnvironment.systemTestProperties;
-        defaultTargetSystem = defaultSystem;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
         REAL_TARGET_SESSION = REAL_SESSION;
@@ -79,7 +76,8 @@ describe("Copy", () => {
                     try {
                         await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, fromDataSetName);
                         await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, toDataSetName);
-                        await Upload.bufferToDataSet(REAL_SESSION, Buffer.from("1234"), fromDataSetName);
+                        await Upload.bufferToDataSet(REAL_SESSION, Buffer.from("abc"), fromDataSetName);
+                        await Upload.bufferToDataSet(REAL_SESSION, Buffer.from("1234"), toDataSetName);
                     } catch (err) {
                         Imperative.console.info(`Error: ${inspect(err)}`);
                     }
@@ -115,7 +113,7 @@ describe("Copy", () => {
                     expect(contents1.toString()).toEqual(contents2.toString());
                 });
             });
-            describe("Partioned > Partioned", () => {
+            describe("Partitioned > Partitioned", () => {
                 beforeEach(async () => {
                     try {
                         await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, fromDataSetName);
@@ -125,12 +123,18 @@ describe("Copy", () => {
                         Imperative.console.info(`Error: ${inspect(err)}`);
                     }
                 });
+                afterEach(async () => {
+                    try {
+                        await Delete.dataSet(REAL_SESSION, fromDataSetName);
+                        await Delete.dataSet(REAL_SESSION, toDataSetName);
+                    } catch (err) {
+                        Imperative.console.info(`Error: ${inspect(err)}`);
+                    }
+                })
 
                 it("Should copy a partitioned data set", async () => {
                     let error;
                     let response;
-                    let contents1;
-                    let contents2;
                     try {
                         response = await Copy.dataSet(
                             REAL_SESSION,
@@ -139,8 +143,6 @@ describe("Copy", () => {
                                 dsn:fromDataSetName
                             }}
                         );
-                        contents1 = await Get.dataSet(REAL_SESSION, fromDataSetName);
-                        contents2 = await Get.dataSet(REAL_SESSION, toDataSetName);
                         Imperative.console.info(`Response: ${inspect(response)}`);
                     } catch (err) {
                         error = err;
@@ -648,7 +650,9 @@ describe("Copy", () => {
             }
         });
         it("should return true if the source and target data sets have identical member names", async () => {
-            const response = await Copy["hasIdenticalMemberNames"](REAL_SESSION, fromDataSetName, toDataSetName);
+            const sourceResponse = await List.allMembers(REAL_SESSION, fromDataSetName);
+            const sourceMemberList = sourceResponse.apiResponse.items.map((item: { member: any; }) => item.member);
+            const response = await Copy["hasIdenticalMemberNames"](REAL_SESSION, sourceMemberList, toDataSetName);
             expect(response).toBe(true);
         });
 
@@ -656,7 +660,10 @@ describe("Copy", () => {
             await Delete.dataSet(REAL_SESSION, toDataSetName);
             await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, toDataSetName);
 
-            const response = await Copy["hasIdenticalMemberNames"](REAL_SESSION, fromDataSetName, toDataSetName);
+            const sourceResponse = await List.allMembers(REAL_SESSION, fromDataSetName);
+            const sourceMemberList = sourceResponse.apiResponse.items.map((item: { member: any; }) => item.member);
+
+            const response = await Copy["hasIdenticalMemberNames"](REAL_SESSION, sourceMemberList, toDataSetName);
             expect(response).toBe(false);
         });
     });
