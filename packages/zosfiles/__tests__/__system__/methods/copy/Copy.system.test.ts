@@ -37,7 +37,6 @@ let toDataSetName: string;
 const file1 = "file1";
 const file2 = "file2";
 const fileLocation = join(__dirname, "testfiles", `${file1}.txt`);
-const fileLocation2 = join(__dirname, "testfiles", `${file2}.txt`);
 
 describe("Copy", () => {
     beforeAll(async () => {
