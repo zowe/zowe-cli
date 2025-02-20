@@ -47,4 +47,10 @@ export interface ICopyDatasetOptions extends IZosFilesOptions {
      * @returns True if target data set should be overwritten
      */
     promptFn?: (targetDSN: string) => Promise<boolean>;
+
+    /**
+     * Prompt for duplicates
+     * @returns True if target data set members
+     */
+    promptForIdenticalNamedMembers?: () => Promise<boolean>;
 }

@@ -189,7 +189,6 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
         message: "Member(s) downloaded successfully."
     },
 
-
     /**
      * Message indicating that the member was downloaded successfully
      * @type {IMessageDefinition}
@@ -198,6 +197,13 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
         message: "Member(s) downloaded successfully.\nDestination: %s"
     },
 
+    /**
+     * Message indicating that the members contents were truncated due to lrecl
+     * @type {IMessageDefinition}
+     */
+    membersContentTruncated: {
+        message: "Member(s)' contents were truncated due to insufficient record length. You can view the list of members here: %s"
+    },
     /**
      * Message indicating that the uss file was downloaded successfully
      * @type {IMessageDefinition}

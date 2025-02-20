@@ -58,6 +58,7 @@ export class Copy {
         ImperativeExpect.toBeDefinedAndNonBlank(options["from-dataset"].dsn, "fromDataSetName");
         ImperativeExpect.toBeDefinedAndNonBlank(toDataSetName, "toDataSetName");
         const safeReplace: boolean = options.safeReplace;
+        const overwriteMembers: boolean = options.replace;
 
         if(options["from-dataset"].dsn === toDataSetName && toMemberName === options["from-dataset"].member) {
             return {
@@ -84,8 +85,20 @@ export class Copy {
         if(!toMemberName && !options["from-dataset"].member) {
             const sourceIsPds = await this.isPDS(session, options["from-dataset"].dsn);
             const targetIsPds = await this.isPDS(session, toDataSetName);
+
             if (sourceIsPds && targetIsPds) {
-                const response = await this.copyPDS(session, options["from-dataset"].dsn, toDataSetName);
+                const sourceResponse = await List.allMembers(session, options["from-dataset"].dsn);
+                const sourceMemberList = sourceResponse.apiResponse.items.map((item: { member: any; }) => item.member);
+
+                const hasIdenticalMemberNames = await this.hasIdenticalMemberNames(session, sourceMemberList, toDataSetName);
+                if(!safeReplace && hasIdenticalMemberNames && !overwriteMembers) {
+                    const userResponse = await options.promptForIdenticalNamedMembers();
+
+                    if(!userResponse) {
+                        throw new ImperativeError({ msg: ZosFilesMessages.datasetCopiedAborted.message});
+                    }
+                }
+                const response = await this.copyPDS(session, sourceMemberList, options["from-dataset"].dsn, toDataSetName);
                 return {
                     success: true,
                     commandResponse: newDataSet
@@ -171,6 +184,20 @@ export class Copy {
     }
 
     /**
+     * Function that checks if source and target data sets have identical member names
+    */
+    private static async hasIdenticalMemberNames (
+        session: AbstractSession,
+        sourceMemberList: string[],
+        toPds: string
+    ): Promise <boolean> {
+        const targetResponse = await List.allMembers(session, toPds);
+        const targetMemberList = targetResponse.apiResponse.items.map((item: { member: any; }) => item.member);
+
+        return sourceMemberList.some((mem: any) => targetMemberList.includes(mem));
+    }
+
+    /**
      * Copy the members of a Partitioned dataset into another Partitioned dataset
      *
      * @param {AbstractSession}   session        - z/OSMF connection info
@@ -186,10 +213,8 @@ export class Copy {
      */
 
     public static async copyPDS (
-        session: AbstractSession, fromPds: string, toPds: string): Promise<IZosFilesResponse> {
+        session: AbstractSession, sourceMemberList: string[], fromPds: string, toPds: string): Promise<IZosFilesResponse> {
         try {
-            const sourceResponse = await List.allMembers(session, fromPds);
-            const sourceMemberList: Array<{ member: string }> = sourceResponse.apiResponse.items;
 
             if(sourceMemberList.length == 0) {
                 return {
@@ -203,7 +228,8 @@ export class Copy {
             const uploadFileList: string[] = ZosFilesUtils.getFileListFromPath(downloadDir);
 
             for (const file of uploadFileList) {
-                const uploadingDsn = `${toPds}(${ZosFilesUtils.generateMemberName(file)})`;
+                const memName = ZosFilesUtils.generateMemberName(file);
+                const uploadingDsn = `${toPds}(${memName})`;
                 const uploadStream = IO.createReadStream(file);
                 await Upload.streamToDataSet(session, uploadStream, uploadingDsn);
             }
