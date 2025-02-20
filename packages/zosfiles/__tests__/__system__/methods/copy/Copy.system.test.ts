@@ -21,6 +21,9 @@ import { readFileSync } from "fs";
 import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/ITestEnvironment";
 import * as util from "util";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
+import { tmpdir } from "os";
+import path = require("path");
+import * as fs from "fs";
 
 let REAL_SESSION: Session;
 let REAL_TARGET_SESSION: Session;
@@ -122,6 +125,7 @@ describe("Copy", () => {
                     } catch (err) {
                         Imperative.console.info(`Error: ${inspect(err)}`);
                     }
+
                 });
                 afterEach(async () => {
                     try {
@@ -135,6 +139,8 @@ describe("Copy", () => {
                 it("Should copy a partitioned data set", async () => {
                     let error;
                     let response;
+                    const truncatedMembersFile = path.join(tmpdir(), 'truncatedMembers.txt');
+                    fs.writeFileSync(truncatedMembersFile, "");
                     try {
                         response = await Copy.dataSet(
                             REAL_SESSION,
