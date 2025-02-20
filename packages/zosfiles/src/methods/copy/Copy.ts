@@ -253,10 +253,10 @@ export class Copy {
                     success: true,
                     commandResponse:
                         ZosFilesMessages.datasetCopiedSuccessfully.message + " " +
-                        ZosFilesMessages.membersContentTruncated.message + "\n\n" +
+                        ZosFilesMessages.membersContentTruncated.message + "\n" +
                         firstTenMembers.join('\n') +
-                        `\n... and ${numMembers} more` +
-                        util.format(ZosFilesMessages.viewMembersListfile.message, truncatedMembersFile)
+                        (numMembers > 0 ? `\n... and ${numMembers} more` +
+                        util.format(ZosFilesMessages.viewMembersListfile.message, truncatedMembersFile) : '')
                 };
             }
             fs.rmSync(downloadDir, {recursive: true});
