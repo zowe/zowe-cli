@@ -130,6 +130,7 @@ describe("Copy", () => {
                     try {
                         await Delete.dataSet(REAL_SESSION, fromDataSetName);
                         await Delete.dataSet(REAL_SESSION, toDataSetName);
+                        fs.rmSync(join(tmpdir(), 'truncatedMembers.txt'));
                     } catch (err) {
                         Imperative.console.info(`Error: ${inspect(err)}`);
                     }
