@@ -106,12 +106,12 @@ export const config: IImperativeConfig = {
                     info: {
                         type: "string",
                         includeInTemplate: true,
-                        optionDefinition: {...infoOption, required: true}
+                        optionDefinition: infoOption
                     },
                     secret: {
                         type: "string",
                         secure: true,
-                        optionDefinition: {...secretOption, required: true}
+                        optionDefinition: secretOption
                     }
                 }
             }

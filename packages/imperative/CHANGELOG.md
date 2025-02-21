@@ -2,7 +2,19 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Fixed inconsistent behavior with the `ZOWE_SHOW_SECURE_ARGS` environment variable continuing to mask secure properties when it should not. [#2430](https://github.com/zowe/zowe-cli/issues/2430)
+- Enhancement: Added the `Censor` class, consolidating all sensitive data hiding logic into one class. [#2424](https://github.com/zowe/zowe-cli/pull/2424)
+- Enhancement: Added the `showSecureArgs` environment variable to the `EnvironmentalVariableSettings` class to allow extenders to determine if they should mask secure values. [#2424](https://github.com/zowe/zowe-cli/pull/2424)
+- Deprecated: The `LoggerUtils` class has been deprecated. Use the `Censor` class instead. [#2424](https://github.com/zowe/zowe-cli/pull/2424)
+- Deprecated: The `CliUtils.CENSOR_RESPONSE` property has been deprecated. Use the `Censor.CENSOR_RESPONSE` property instead. [#2424](https://github.com/zowe/zowe-cli/pull/2424)
+- Deprecated: The `CliUtils.CENSORED_OPTIONS` property has been deprecated. Use the `Censor.CENSORED_OPTIONS` property instead. [#2424](https://github.com/zowe/zowe-cli/pull/2424)
+- Deprecated: The `CliUtils.censorCLIArgs` function has been deprecated. Use the `Censor.censorCLIArgs` function instead. [#2424](https://github.com/zowe/zowe-cli/pull/2424)
+- Deprecated: The `CliUtils.censorYargsArguments` function has been deprecated. Use the `Censor.censorYargsArguments` function instead. [#2424](https://github.com/zowe/zowe-cli/pull/2424)
+
 ## `8.13.0`
+
 - Format fix: `DeferredPromise` and `DeferredPromise.unit.test` comment format changed to match standard.
 
 ## `8.11.0`
