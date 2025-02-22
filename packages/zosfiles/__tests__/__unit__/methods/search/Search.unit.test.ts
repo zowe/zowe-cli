@@ -1182,11 +1182,11 @@ describe("Search", () => {
                 // Return empty buffers for the final 2 entries
                 getDataSetSpy.mockImplementation(async (_session, _dsn, _options) => {
                     return Buffer.from("");
-                }).mockImplementationOnce(async (session, dsn, options) => {
+                }).mockImplementationOnce(async (_session, _dsn, _options) => {
                     return Buffer.from(testDataString);
-                }).mockImplementationOnce(async (session, dsn, options) => {
+                }).mockImplementationOnce(async (_session, _dsn, _options) => {
                     return Buffer.from(testDataString);
-                }).mockImplementationOnce(async (session, dsn, options) => {
+                }).mockImplementationOnce(async (_session, _dsn, _options) => {
                     return Buffer.from(testDataString);
                 });
 
@@ -1234,9 +1234,9 @@ describe("Search", () => {
             it("Should handle a data set get failure", async () => {
                 getDataSetSpy.mockImplementation(async (_session, _dsn, _options) => {
                     return Buffer.from(testDataString);
-                }).mockImplementationOnce(async (session, dsn, options) => {
+                }).mockImplementationOnce(async (_session, _dsn, _options) => {
                     return Buffer.from(testDataString);
-                }).mockImplementationOnce(async (session, dsn, options) => {
+                }).mockImplementationOnce(async (_session, _dsn, _options) => {
                     throw new ImperativeError({msg: "Failed to retrieve contents of data set"});
                 });
 
@@ -1599,11 +1599,11 @@ describe("Search", () => {
                 // Return empty buffers for the final 2 entries
                 getDataSetSpy.mockImplementation(async (_session, _dsn, _options) => {
                     return Buffer.from("");
-                }).mockImplementationOnce(async (session, dsn, options) => {
+                }).mockImplementationOnce(async (_session, _dsn, _options) => {
                     return Buffer.from(testDataString);
-                }).mockImplementationOnce(async (session, dsn, options) => {
+                }).mockImplementationOnce(async (_session, _dsn, _options) => {
                     return Buffer.from(testDataString);
-                }).mockImplementationOnce(async (session, dsn, options) => {
+                }).mockImplementationOnce(async (_session, _dsn, _options) => {
                     return Buffer.from(testDataString);
                 });
 
@@ -1653,9 +1653,9 @@ describe("Search", () => {
 
                 getDataSetSpy.mockImplementation(async (_session, _dsn, _options) => {
                     return Buffer.from(testDataString);
-                }).mockImplementationOnce(async (session, dsn, options) => {
+                }).mockImplementationOnce(async (_session, _dsn, _options) => {
                     return Buffer.from(testDataString);
-                }).mockImplementationOnce(async (session, dsn, options) => {
+                }).mockImplementationOnce(async (_session, _dsn, _options) => {
                     throw new ImperativeError({msg: "Failed to retrieve contents of data set"});
                 });
 
@@ -1742,11 +1742,11 @@ describe("Search", () => {
                 // Return empty buffers for the final 2 entries
                 getDataSetSpy.mockImplementation(async (_session, _dsn, _options) => {
                     return Buffer.from(testDataString.toLowerCase());
-                }).mockImplementationOnce(async (session, dsn, options) => {
+                }).mockImplementationOnce(async (_session, _dsn, _options) => {
                     return Buffer.from(testDataString);
-                }).mockImplementationOnce(async (session, dsn, options) => {
+                }).mockImplementationOnce(async (_session, _dsn, _options) => {
                     return Buffer.from(testDataString);
-                }).mockImplementationOnce(async (session, dsn, options) => {
+                }).mockImplementationOnce(async (_session, _dsn, _options) => {
                     return Buffer.from(testDataString);
                 });
 
