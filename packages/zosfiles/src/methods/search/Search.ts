@@ -206,7 +206,7 @@ export class Search {
                 const colLen = maxCol.toString().length;
 
                 for (const [index, {line, column, contents}] of entry.matchList.entries()) {
-                    const matchLength = response.matchLengths[index];
+                    const matchLength = response.matchLengths[index] !== undefined ? response.matchLengths[index] : 0;
 
                     // eslint-disable-next-line no-control-regex
                     let localContents = contents.replace(/[\u0000-\u001F\u007F-\u009F]/g, "\uFFFD");
