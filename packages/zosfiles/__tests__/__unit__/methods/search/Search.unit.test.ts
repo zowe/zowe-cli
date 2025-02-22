@@ -1161,7 +1161,7 @@ describe("Search", () => {
 
             it("Should return a list of members that contain the search term (none)", async () => {
                 // Return empty buffers for all entries
-                getDataSetSpy.mockImplementation(async (session, dsn, options) => {
+                getDataSetSpy.mockImplementation(async (_session, _dsn, _options) => {
                     return Buffer.from("");
                 });
 
@@ -1180,7 +1180,7 @@ describe("Search", () => {
 
             it("Should return a list of members that contain the search term (some)", async () => {
                 // Return empty buffers for the final 2 entries
-                getDataSetSpy.mockImplementation(async (session, dsn, options) => {
+                getDataSetSpy.mockImplementation(async (_session, _dsn, _options) => {
                     return Buffer.from("");
                 }).mockImplementationOnce(async (session, dsn, options) => {
                     return Buffer.from(testDataString);
@@ -1232,7 +1232,7 @@ describe("Search", () => {
             });
 
             it("Should handle a data set get failure", async () => {
-                getDataSetSpy.mockImplementation(async (session, dsn, options) => {
+                getDataSetSpy.mockImplementation(async (_session, _dsn, _options) => {
                     return Buffer.from(testDataString);
                 }).mockImplementationOnce(async (session, dsn, options) => {
                     return Buffer.from(testDataString);
@@ -1578,7 +1578,7 @@ describe("Search", () => {
 
             it("Should return a list of members that contain the search term (none)", async () => {
                 // Return non-matching buffers for all entries
-                getDataSetSpy.mockImplementation(async (session, dsn, options) => {
+                getDataSetSpy.mockImplementation(async (_session, _dsn, _options) => {
                     return Buffer.from("This data set does not contain any test data.");
                 });
 
@@ -1597,7 +1597,7 @@ describe("Search", () => {
                 expectedMatchLengths = [8, 8, 8];
 
                 // Return empty buffers for the final 2 entries
-                getDataSetSpy.mockImplementation(async (session, dsn, options) => {
+                getDataSetSpy.mockImplementation(async (_session, _dsn, _options) => {
                     return Buffer.from("");
                 }).mockImplementationOnce(async (session, dsn, options) => {
                     return Buffer.from(testDataString);
@@ -1651,7 +1651,7 @@ describe("Search", () => {
             it("Should handle a data set get failure", async () => {
                 expectedMatchLengths = [8, 8, 8, 8];
 
-                getDataSetSpy.mockImplementation(async (session, dsn, options) => {
+                getDataSetSpy.mockImplementation(async (_session, _dsn, _options) => {
                     return Buffer.from(testDataString);
                 }).mockImplementationOnce(async (session, dsn, options) => {
                     return Buffer.from(testDataString);
@@ -1740,7 +1740,7 @@ describe("Search", () => {
                 expectedMatchLengths = [8, 8, 8];
                 searchOptions.caseSensitive = true;
                 // Return empty buffers for the final 2 entries
-                getDataSetSpy.mockImplementation(async (session, dsn, options) => {
+                getDataSetSpy.mockImplementation(async (_session, _dsn, _options) => {
                     return Buffer.from(testDataString.toLowerCase());
                 }).mockImplementationOnce(async (session, dsn, options) => {
                     return Buffer.from(testDataString);
