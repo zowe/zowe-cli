@@ -24,7 +24,8 @@ import { ISearchResponse } from "./doc/ISearchResponse";
 // This interface isn't used outside of the private functions, so just keeping it here.
 interface IInternalSearchResponse {
     responses: ISearchItem[],
-    failures: string[]
+    failures: string[],
+    matchLengths?: number[]
 }
 
 /**
@@ -203,14 +204,15 @@ export class Search {
 
                 const lineLen = maxLine.toString().length;
                 const colLen = maxCol.toString().length;
-                const searchLen = searchOptions.searchString.length;
 
-                for (const {line, column, contents} of entry.matchList) {
+                for (const [index, {line, column, contents}] of entry.matchList.entries()) {
+                    const matchLength = response.matchLengths[index];
+
                     // eslint-disable-next-line no-control-regex
                     let localContents = contents.replace(/[\u0000-\u001F\u007F-\u009F]/g, "\uFFFD");
                     const beforeString = chalk.grey(localContents.substring(0, column - 1));
-                    const selectedString = chalk.white.bold(localContents.substring(column - 1, column - 1 + searchLen));
-                    const afterString = chalk.grey(localContents.substring(column - 1 + searchLen, localContents.length + 1));
+                    const selectedString = chalk.white.bold(localContents.substring(column - 1, column - 1 + matchLength));
+                    const afterString = chalk.grey(localContents.substring(column - 1 + matchLength, localContents.length + 1));
                     localContents = beforeString + selectedString + afterString;
                     apiResponse.commandResponse += chalk.yellow("Line:") + " " + line.toString().padStart(lineLen) +
                         ", " + chalk.yellow("Column:") + " " + column.toString().padStart(colLen) + ", " + chalk.yellow("Contents:") +
@@ -320,6 +322,7 @@ export class Search {
     Promise<IInternalSearchResponse> {
         const matchedItems: ISearchItem[] = [];
         const failures: string[] = [];
+        const matchLengths: number[] = [];
         const total = searchItems.length;
         let complete = 0;
         let searchAborted: boolean = searchOptions.abortSearch?.();
@@ -375,10 +378,11 @@ export class Search {
                     }
 
                     if (searchOptions.regex) {
-                        const regex = new RegExp(searchOptions.searchString, searchOptions.caseSensitive ? "" : "i");
-                        let match;
-                        while ((match = regex.exec(searchLine)) !== null) {
+                        const regex = new RegExp(searchOptions.searchString, searchOptions.caseSensitive ? "g" : "gi");
+                        const matches = searchLine.matchAll(regex);
+                        for (const match of matches) {
                             indicies.push({ line: lineNum + 1, column: match.index + 1, contents: line });
+                            matchLengths.push(match[0].length);
                         }
                     } else {
                         if (searchLine.includes(searchOptions.searchString)) {
@@ -391,6 +395,7 @@ export class Search {
                                 if (column != -1) {
                                     // Append the real line - 1 indexed
                                     indicies.push({ line: lineNum + 1, column: column + 1, contents: line });
+                                    matchLengths.push(searchOptions.searchString.length);
                                 }
                             }
                         }
@@ -412,6 +417,6 @@ export class Search {
             }
         };
         await asyncPool(searchOptions.maxConcurrentRequests || 1, searchItems, createFindPromise);
-        return { responses: matchedItems, failures };
+        return { responses: matchedItems, failures, matchLengths };
     }
 }
