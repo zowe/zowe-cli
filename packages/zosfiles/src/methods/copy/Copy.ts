@@ -10,7 +10,8 @@
 */
 
 import { AbstractSession, ImperativeError, ImperativeExpect, ITaskWithStatus,
-    Logger, Headers, IHeaderContent, TaskStage, IO} from "@zowe/imperative";
+    Logger, Headers, IHeaderContent, TaskStage, IO,
+    TaskProgress} from "@zowe/imperative";
 import { posix } from "path";
 import * as fs from "fs";
 import { Create, CreateDataSetTypeEnum, ICreateDataSetOptions } from "../create";
@@ -59,6 +60,7 @@ export class Copy {
         ImperativeExpect.toBeDefinedAndNonBlank(toDataSetName, "toDataSetName");
         const safeReplace: boolean = options.safeReplace;
         const overwriteMembers: boolean = options.replace;
+        const task = options.task;
 
         if(options["from-dataset"].dsn === toDataSetName && toMemberName === options["from-dataset"].member) {
             return {
@@ -80,8 +82,12 @@ export class Copy {
                 if(!userResponse) {
                     throw new ImperativeError({ msg: ZosFilesMessages.datasetCopiedAborted.message });
                 }
+                else {
+                    options.progress.startBar({task});
+                }
             }
         }
+        options.progress.endBar();
         if(!toMemberName && !options["from-dataset"].member) {
             const sourceIsPds = await this.isPDS(session, options["from-dataset"].dsn);
             const targetIsPds = await this.isPDS(session, toDataSetName);
@@ -97,8 +103,14 @@ export class Copy {
                     if(!userResponse) {
                         throw new ImperativeError({ msg: ZosFilesMessages.datasetCopiedAborted.message});
                     }
+                    else {
+                        options.progress.startBar({task});
+                    }
                 }
-                const response = await this.copyPDS(session, sourceMemberList, options["from-dataset"].dsn, toDataSetName);
+                options.progress.endBar();
+                options.progress.startBar({task});
+                const response = await this.copyPDS(session, sourceMemberList, options["from-dataset"].dsn, toDataSetName, options);
+                options.progress.endBar();
                 return {
                     success: true,
                     commandResponse: newDataSet
@@ -212,7 +224,7 @@ export class Copy {
      * @see https://www.ibm.com/support/knowledgecenter/en/SSLTBW_2.1.0/com.ibm.zos.v2r1.izua700/IZUHPINFO_API_PutDataSetMemberUtilities.htm
      */
     public static async copyPDS (
-        session: AbstractSession, sourceMemberList: string[], fromPds: string, toPds: string): Promise<IZosFilesResponse> {
+        session: AbstractSession, sourceMemberList: string[], fromPds: string, toPds: string, options: ICopyDatasetOptions): Promise<IZosFilesResponse> {
         try {
 
             if(sourceMemberList.length == 0) {
@@ -226,10 +238,19 @@ export class Copy {
             await Download.allMembers(session, fromPds, {directory:downloadDir});
             const uploadFileList: string[] = ZosFilesUtils.getFileListFromPath(downloadDir);
             const truncatedMembers: string[] = [];
+            let membersInitiated = 0;
 
             for (const file of uploadFileList) {
                 const memName = ZosFilesUtils.generateMemberName(file);
                 const uploadingDsn = `${toPds}(${memName})`;
+                if (options.task != null) {
+                    const LAST_FIFTEEN_CHARS = -16;
+                    const abbreviatedFile = file.slice(LAST_FIFTEEN_CHARS);
+                    options.task.statusMessage = "Copying... " + abbreviatedFile;
+                    options.task.percentComplete = Math.floor(TaskProgress.ONE_HUNDRED_PERCENT *
+                        (membersInitiated / uploadFileList.length));
+                    membersInitiated++;
+                }
                 try {
                     const uploadStream = IO.createReadStream(file);
                     await Upload.streamToDataSet(session, uploadStream, uploadingDsn);
@@ -247,7 +268,7 @@ export class Copy {
             const truncatedMembersFile = path.join(tmpdir(), 'truncatedMembers.txt');
             if(truncatedMembers.length > 0) {
                 const firstTenMembers = truncatedMembers.slice(0, 10);
-                fs.writeFileSync(truncatedMembersFile, truncatedMembers.join('\n'));
+                fs.writeFileSync(truncatedMembersFile, truncatedMembers.join('\n'), {flag: 'w'});
                 const numMembers = truncatedMembers.length - firstTenMembers.length;
                 return {
                     success: true,
@@ -260,7 +281,7 @@ export class Copy {
                 };
             }
             fs.rmSync(downloadDir, {recursive: true});
-            fs.rmSync(truncatedMembersFile);
+            fs.rmSync(truncatedMembersFile, {force: true});
             return {
                 success:true,
                 commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message
