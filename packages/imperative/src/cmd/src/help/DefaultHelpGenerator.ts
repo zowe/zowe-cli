@@ -499,7 +499,9 @@ export class DefaultHelpGenerator extends AbstractHelpGenerator {
                 const exampleHyphen = this.mProduceMarkdown ? "" : "-";
                 const options = example.options.length > 0 ? ` ${example.options}` : "";
                 const description = this.mProduceMarkdown ? this.escapeMarkdown(example.description) : example.description;
-                let exampleText = exampleHyphen + " " + description + ":\n\n";
+                let exampleText = this.mProduceMarkdown
+                ? "{{bullet}}" + exampleHyphen + " {{space}}" + description + ":\n\n"
+                : exampleHyphen + " " + description + ":\n\n";
 
                 if (this.skipTextWrap) {
                     exampleText = TextUtils.indentLines(exampleText, this.mProduceMarkdown ? "" : DefaultHelpGenerator.HELP_INDENT);
@@ -508,12 +510,13 @@ export class DefaultHelpGenerator extends AbstractHelpGenerator {
                         undefined,
                         this.mProduceMarkdown ? "" : DefaultHelpGenerator.HELP_INDENT);
                 }
-                console.log(exampleText);
+                // console.log(exampleText);
                 exampleText += "      {{bullet}}{{space}}{{codeBegin}}$ {{space}}" +
                     prefix +
                     this.mRootCommandName + " " +
                     CommandUtils.getFullCommandName(this.mCommandDefinition,
                         this.mDefinitionTree) + options + "{{codeEnd}}\n";
+                console.log(exampleText);
                 return exampleText;
             }).join("\n");
             if (this.mCommandDefinition.examples.length > 0) {
