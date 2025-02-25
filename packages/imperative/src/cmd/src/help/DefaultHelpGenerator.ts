@@ -499,7 +499,10 @@ export class DefaultHelpGenerator extends AbstractHelpGenerator {
                 const exampleHyphen = this.mProduceMarkdown ? "" : "-";
                 const options = example.options.length > 0 ? ` ${example.options}` : "";
                 const description = this.mProduceMarkdown ? this.escapeMarkdown(example.description) : example.description;
-                let exampleText = "{{bullet}}" + exampleHyphen + " {{space}}" + description + ":\n\n";
+                let exampleText = this.mProduceMarkdown
+                    ? "{{bullet}}" + exampleHyphen + " {{space}}" + description + ":\n\n"
+                    : exampleHyphen + " " + description + ":\n\n";
+
                 if (this.skipTextWrap) {
                     exampleText = TextUtils.indentLines(exampleText, this.mProduceMarkdown ? "" : DefaultHelpGenerator.HELP_INDENT);
                 } else {
@@ -507,6 +510,7 @@ export class DefaultHelpGenerator extends AbstractHelpGenerator {
                         undefined,
                         this.mProduceMarkdown ? "" : DefaultHelpGenerator.HELP_INDENT);
                 }
+
                 exampleText += "      {{bullet}}{{space}}{{codeBegin}}$ {{space}}" +
                     prefix +
                     this.mRootCommandName + " " +
