@@ -512,7 +512,7 @@ describe("Copy", () => {
                     )).rejects.toThrow(new ImperativeError({ msg: ZosFilesMessages.datasetCopiedAborted.message }));
 
                     expect(startBar).not.toHaveBeenCalled();
-                    expect(startBar).not.toHaveBeenCalled();
+                    expect(endBar).not.toHaveBeenCalled();
                     expect(promptFn).toHaveBeenCalledWith(toDataSetName);
 
                 });
