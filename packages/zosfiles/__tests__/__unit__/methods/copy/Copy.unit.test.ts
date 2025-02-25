@@ -475,14 +475,20 @@ describe("Copy", () => {
                 it("should not throw error if safeReplace has value of true", async () => {
                     promptFn.mockResolvedValue(true);
 
+                    const startBar = jest.fn();
+                    const endBar = jest.fn();
+                    const mockProgress = { startBar, endBar};
+
                     const response = await Copy.dataSet(
                         dummySession,
                         { dsn: toDataSetName },
                         { "from-dataset": { dsn: fromDataSetName },
                             safeReplace: true,
-                            promptFn }
+                            promptFn,
+                            progress: mockProgress }
                     );
-
+                    expect(startBar).toHaveBeenCalled();
+                    expect(endBar).toHaveBeenCalled();
                     expect(copyExpectStringSpy).toHaveBeenCalledTimes(1);
                     const argumentsOfCall = copyExpectStringSpy.mock.calls[0];
                     const lastArgumentOfCall = argumentsOfCall[argumentsOfCall.length - 1];
@@ -493,15 +499,20 @@ describe("Copy", () => {
 
                 it("should throw error if user declines to replace the dataset", async () => {
                     promptFn.mockResolvedValue(false);
+                    const startBar = jest.fn();
+                    const endBar = jest.fn();
 
                     await expect(Copy.dataSet(
                         dummySession,
                         { dsn: toDataSetName },
                         { "from-dataset": { dsn: fromDataSetName },
                             safeReplace: true,
-                            promptFn }
+                            promptFn,
+                            progress: undefined}
                     )).rejects.toThrow(new ImperativeError({ msg: ZosFilesMessages.datasetCopiedAborted.message }));
 
+                    expect(startBar).not.toHaveBeenCalled();
+                    expect(startBar).not.toHaveBeenCalled();
                     expect(promptFn).toHaveBeenCalledWith(toDataSetName);
 
                 });
@@ -522,6 +533,9 @@ describe("Copy", () => {
 
             });
             describe("Partitioned > Partitioned", () => {
+                const startBar = jest.fn();
+                const endBar = jest.fn();
+                const mockProgress = { startBar, endBar};
                 let createSpy: jest.SpyInstance;
                 let dataSetExistsSpy: jest.SpyInstance;
                 const sourceResponse = {
@@ -555,8 +569,11 @@ describe("Copy", () => {
                         {dsn: toDataSetName},
                         {"from-dataset": {
                             dsn:fromDataSetName
-                        }}
+                        },
+                        progress: mockProgress}
                     );
+                    expect(startBar).toHaveBeenCalled();
+                    expect(endBar).toHaveBeenCalled();
                     expect(isPDSSpy).toHaveBeenNthCalledWith(1, dummySession, fromDataSetName);
                     expect(isPDSSpy).toHaveBeenNthCalledWith(2, dummySession, toDataSetName);
                     expect(copyPDSSpy).toHaveBeenCalledTimes(1);
@@ -772,57 +789,6 @@ describe("Copy", () => {
             });
         });
     });
-
-    describe('Copy Progress Bar Tests', () => {
-        let startBar: any;
-        let endBar: any;
-        let mockProgress: any;
-        const fromDataSetName = "USER.DATA.FROM";
-        const toDataSetName = "USER.DATA.TO";
-
-        beforeEach(() => {
-            startBar = jest.fn();
-            endBar = jest.fn();
-            mockProgress = { startBar, endBar};
-        });
-
-        it('scenario of where progress is provided', async () => {
-            const copyDataSetSpy = jest.spyOn(Copy, 'dataSet').mockResolvedValue({
-                success: true,
-                commandResponse: 'Dataset copied successfully',
-            });
-
-            await Copy.dataSet(dummySession, { dsn: toDataSetName },{
-                "from-dataset": { dsn: fromDataSetName },
-                progress: mockProgress
-            });
-
-            expect(copyDataSetSpy).toHaveBeenCalled();
-            expect(copyDataSetSpy).toHaveBeenCalledWith(dummySession, { dsn: toDataSetName }, expect.objectContaining({
-                progress: mockProgress
-            }));
-        });
-
-        it('scenario of where no progress is provided', async () => {
-            const copyDataSetSpy = jest.spyOn(Copy, 'dataSet').mockResolvedValue({
-                success: true,
-                commandResponse: 'Dataset copied successfully',
-            });
-
-            await Copy.dataSet(dummySession, { dsn: toDataSetName }, {
-                "from-dataset": { dsn: fromDataSetName },
-                progress: undefined
-            });
-
-            expect(startBar).not.toHaveBeenCalled();
-            expect(endBar).not.toHaveBeenCalled();
-            expect(copyDataSetSpy).toHaveBeenCalled();
-            expect(copyDataSetSpy).toHaveBeenCalledWith(dummySession, { dsn: toDataSetName }, expect.objectContaining({
-                progress: undefined
-            }));
-        });
-    });
-
 
     describe("Partitioned Data Set", () => {
         const listAllMembersSpy   = jest.spyOn(List, "allMembers");
