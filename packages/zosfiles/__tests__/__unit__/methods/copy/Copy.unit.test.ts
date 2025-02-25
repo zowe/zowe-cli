@@ -773,6 +773,57 @@ describe("Copy", () => {
         });
     });
 
+    describe('Copy Progress Bar Tests', () => {
+        let startBar: any;
+        let endBar: any;
+        let mockProgress: any;
+        const fromDataSetName = "USER.DATA.FROM";
+        const toDataSetName = "USER.DATA.TO";
+
+        beforeEach(() => {
+            startBar = jest.fn();
+            endBar = jest.fn();
+            mockProgress = { startBar, endBar};
+        });
+
+        it('scenario of where progress is provided', async () => {
+            const copyDataSetSpy = jest.spyOn(Copy, 'dataSet').mockResolvedValue({
+                success: true,
+                commandResponse: 'Dataset copied successfully',
+            });
+
+            await Copy.dataSet(dummySession, { dsn: toDataSetName },{
+                "from-dataset": { dsn: fromDataSetName },
+                progress: mockProgress
+            });
+
+            expect(copyDataSetSpy).toHaveBeenCalled();
+            expect(copyDataSetSpy).toHaveBeenCalledWith(dummySession, { dsn: toDataSetName }, expect.objectContaining({
+                progress: mockProgress
+            }));
+        });
+
+        it('scenario of where no progress is provided', async () => {
+            const copyDataSetSpy = jest.spyOn(Copy, 'dataSet').mockResolvedValue({
+                success: true,
+                commandResponse: 'Dataset copied successfully',
+            });
+
+            await Copy.dataSet(dummySession, { dsn: toDataSetName }, {
+                "from-dataset": { dsn: fromDataSetName },
+                progress: undefined
+            });
+
+            expect(startBar).not.toHaveBeenCalled();
+            expect(endBar).not.toHaveBeenCalled();
+            expect(copyDataSetSpy).toHaveBeenCalled();
+            expect(copyDataSetSpy).toHaveBeenCalledWith(dummySession, { dsn: toDataSetName }, expect.objectContaining({
+                progress: undefined
+            }));
+        });
+    });
+
+
     describe("Partitioned Data Set", () => {
         const listAllMembersSpy   = jest.spyOn(List, "allMembers");
         const downloadAllMembersSpy = jest.spyOn(Download, "allMembers");

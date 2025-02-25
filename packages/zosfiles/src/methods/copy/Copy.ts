@@ -87,19 +87,13 @@ export class Copy {
                 if(!userResponse) {
                     throw new ImperativeError({ msg: ZosFilesMessages.datasetCopiedAborted.message });
                 }
-                else {
-                    if(options.progress) {
-                        if(options.progress.startBar) {
-                            options.progress.startBar({task});
-                        }
-                    }
+                else if(options.progress && options.progress.startBar) {
+                    options.progress.startBar({task});
                 }
             }
         }
-        if(options.progress) {
-            if(options.progress.endBar) {
-                options.progress.endBar();
-            }
+        if(options.progress && options.progress.endBar) {
+            options.progress.endBar();
         }
         if(!toMemberName && !options["from-dataset"].member) {
             const sourceIsPds = await this.isPDS(session, options["from-dataset"].dsn);
@@ -116,12 +110,8 @@ export class Copy {
                     if(!userResponse) {
                         throw new ImperativeError({ msg: ZosFilesMessages.datasetCopiedAborted.message});
                     }
-                    else {
-                        if(options.progress) {
-                            if(options.progress.startBar) {
-                                options.progress.startBar({task});
-                            }
-                        }
+                    else if(options.progress && options.progress.startBar) {
+                        options.progress.startBar({task});
                     }
                 }
                 if(options.progress) {
@@ -133,10 +123,8 @@ export class Copy {
                     }
                 }
                 const response = await this.copyPDS(session, sourceMemberList, options["from-dataset"].dsn, toDataSetName, task);
-                if(options.progress) {
-                    if(options.progress.endBar) {
-                        options.progress.endBar();
-                    }
+                if(options.progress && options.progress.endBar) {
+                    options.progress.endBar();
                 }
                 return {
                     success: true,
