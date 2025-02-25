@@ -13,7 +13,6 @@ import { ImperativeError, Session, TaskStage } from "@zowe/imperative";
 import { Get, IDataSet, ISearchItem, ISearchOptions, IZosFilesResponse, List, Search } from "../../../../src";
 
 describe("Search", () => {
-
     const getDataSetSpy = jest.spyOn(Get, "dataSet");
     const dummySession = new Session({
         user: "ibmuser",
@@ -1363,9 +1362,6 @@ describe("Search", () => {
         });
 
         describe("regular expression", () => {
-            // This is required when the regex matches on several columns on the same line
-            let expectedCols: number[];
-
             beforeEach(() => {
                 searchOptions.regex = true;
             });
@@ -1416,7 +1412,6 @@ describe("Search", () => {
             it("Should return a list of members that contain matches on the number search term (all)", async () => {
                 testDataString = "FIND NUMBERS LIKE 1234 AND 567890";
                 searchOptions.searchString = "\\d+";
-                expectedCols = [19, 28];
                 const response = await (Search as any).searchOnMainframe(dummySession, searchOptions, searchItems);
                 const queryParams = "?research=" + encodeURIComponent(searchOptions.searchString) + "&maxreturnsize=1";
 
@@ -1435,10 +1430,9 @@ describe("Search", () => {
                 ], failures: []});
             });
 
-            it("Should return a list of members that contain matches on all words beginning with a capital C (regardless of case) (all)", async () => {
+            it("Should return list of members that contain matches on all words beginning with a capital C (regardless of case) (all)", async () => {
                 testDataString = "CAPITAL LETTERS ARE cool";
                 searchOptions.searchString = "\\bC\\w+";
-                expectedCols = [1, 21];
                 const response = await (Search as any).searchOnMainframe(dummySession, searchOptions, searchItems);
                 const queryParams = "?research=" + encodeURIComponent(searchOptions.searchString) + "&maxreturnsize=1";
 
@@ -1484,7 +1478,6 @@ describe("Search", () => {
                 testDataString = "FIND NUMBERS LIKE 1234 and 567890";
                 searchOptions.searchString = "\\d+";
                 searchOptions.caseSensitive = true;
-                expectedCols = [19, 28];
                 const response = await (Search as any).searchOnMainframe(dummySession, searchOptions, searchItems);
                 const queryParams = "?research=" + encodeURIComponent(searchOptions.searchString) + "&maxreturnsize=1&insensitive=false";
 
@@ -1918,7 +1911,7 @@ describe("Search", () => {
                 ], failures: [], matchLengths: expectedMatchLengths});
             });
 
-            it("Should return a list of members that contain matches on all words beginning with a capital C (regardless of case) (all)", async () => {
+            it("Should return list of members that contain matches on all words beginning with a capital C (regardless of case) (all)", async () => {
                 testDataString = "CAPITAL LETTERS ARE cool";
                 searchOptions.searchString = "\\bC\\w+";
                 expectedCols = [1, 21];
