@@ -49,26 +49,39 @@ Array [
     "name": "timeout",
     "type": "number",
   },
+  Object {
+    "aliases": Array [
+      "re",
+    ],
+    "defaultValue": false,
+    "description": "Whether the search string is a regular expression.",
+    "name": "regex",
+    "type": "boolean",
+  },
 ]
 `;
 
 exports[`zos-files search ds command definition should not have changed 2`] = `
 Array [
   Object {
-    "description": "Search all of IBMUSER's, data sets for 'ZOWE'",
+    "description": "Search all of IBMUSER's data sets for 'ZOWE'",
     "options": "'IBMUSER.*' 'ZOWE'",
   },
   Object {
-    "description": "Search all of IBMUSER's, data sets for 'ZOWE' in uppercase only",
+    "description": "Search all of IBMUSER's data sets for 'ZOWE' in uppercase only",
     "options": "'IBMUSER.*' 'ZOWE' --case-sensitive",
   },
   Object {
-    "description": "Search all of IBMUSER's, data sets for 'ZOWE', and time out in 1 minute",
+    "description": "Search all of IBMUSER's data sets for 'ZOWE', and time out in 1 minute",
     "options": "'IBMUSER.*' 'ZOWE' --timeout 60",
   },
   Object {
-    "description": "Search all of IBMUSER's, data sets for 'ZOWE', and perform 8 parallel tasks",
+    "description": "Search all of IBMUSER's data sets for 'ZOWE', and perform 8 parallel tasks",
     "options": "'IBMUSER.*' 'ZOWE' --max-concurrent-requests 8",
+  },
+  Object {
+    "description": "Search all of IBMUSER's data sets using a regular expression",
+    "options": "'IBMUSER.*' 'Z([A-Za-z]){3}' --regex",
   },
 ]
 `;

@@ -4,6 +4,7 @@ All notable changes to the Zowe z/OS files SDK package will be documented in thi
 
 ## Recent Changes
 - BugFix: Users were not warned when copying partitioned data sets with identical member names. Now, the user is prompted to confirm before continuing the copy operation to avoid potential data loss. [#2349] (https://github.com/zowe/zowe-cli/issues/2349)
+- Enhancement: Add the ability to search data sets with regex patterns by passing `--regex` into the search command. [#2432](https://github.com/zowe/zowe-cli/issues/2432)
 
 ## `8.13.0`
 
