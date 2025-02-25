@@ -510,7 +510,7 @@ export class DefaultHelpGenerator extends AbstractHelpGenerator {
                         undefined,
                         this.mProduceMarkdown ? "" : DefaultHelpGenerator.HELP_INDENT);
                 }
-                // console.log(exampleText);
+
                 exampleText += "      {{bullet}}{{space}}{{codeBegin}}$ {{space}}" +
                     prefix +
                     this.mRootCommandName + " " +
