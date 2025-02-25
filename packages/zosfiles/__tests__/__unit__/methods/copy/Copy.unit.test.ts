@@ -9,7 +9,7 @@
 *
 */
 
-import { Session, ImperativeError, IO } from "@zowe/imperative";
+import { Session, ImperativeError, IO, ITaskWithStatus, TaskStage } from "@zowe/imperative";
 import { posix } from "path";
 import * as fs from "fs";
 import { error } from "console";
@@ -28,6 +28,11 @@ describe("Copy", () => {
         protocol: "https",
         type: "basic"
     });
+    const task: ITaskWithStatus = {
+        percentComplete: 0,
+        statusMessage: "Copying data set",
+        stageName: TaskStage.IN_PROGRESS
+    };
 
     describe("Data Set", () => {
         const copyExpectStringSpy = jest.spyOn(ZosmfRestClient, "putExpectString");
@@ -498,6 +503,7 @@ describe("Copy", () => {
                     )).rejects.toThrow(new ImperativeError({ msg: ZosFilesMessages.datasetCopiedAborted.message }));
 
                     expect(promptFn).toHaveBeenCalledWith(toDataSetName);
+
                 });
 
                 it("should not throw error if safeReplace has value of false", async () => {
@@ -553,7 +559,6 @@ describe("Copy", () => {
                     );
                     expect(isPDSSpy).toHaveBeenNthCalledWith(1, dummySession, fromDataSetName);
                     expect(isPDSSpy).toHaveBeenNthCalledWith(2, dummySession, toDataSetName);
-
                     expect(copyPDSSpy).toHaveBeenCalledTimes(1);
                     expect(response).toEqual({
                         success: true,
@@ -892,7 +897,7 @@ describe("Copy", () => {
 
 
             try{
-                response = await Copy.copyPDS(dummySession, sourceMemberList, fromDataSetName, toDataSetName);
+                response = await Copy.copyPDS(dummySession, sourceMemberList, fromDataSetName, toDataSetName, task);
             }
             catch(e) {
                 // Do nothing
@@ -935,7 +940,7 @@ describe("Copy", () => {
                 return Promise.resolve() as any;
             });
             try{
-                response = await Copy.copyPDS(dummySession, sourceMemberList, fromDataSetName, toDataSetName);
+                response = await Copy.copyPDS(dummySession, sourceMemberList, fromDataSetName, toDataSetName, task);
             }
             catch(e) {
                 // Do nothing

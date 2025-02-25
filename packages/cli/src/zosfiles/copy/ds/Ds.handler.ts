@@ -12,18 +12,12 @@
 import { AbstractSession, IHandlerParameters, IHandlerResponseConsoleApi, ITaskWithStatus, TaskStage } from "@zowe/imperative";
 import { Copy, IZosFilesResponse, IDataSet, ICopyDatasetOptions, ZosFilesUtils } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
-import { t } from "tar";
 
 /**
  * Handler to copy a data set.
  */
 export default class DsHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters, session: AbstractSession): Promise<IZosFilesResponse> {
-        const task: ITaskWithStatus = {
-            percentComplete: 0,
-            statusMessage: "Copying data set",
-            stageName: TaskStage.IN_PROGRESS
-        };
         const fromDataSet: IDataSet = ZosFilesUtils.getDataSetFromName(commandParameters.arguments.fromDataSetName);
         const toDataSet: IDataSet = ZosFilesUtils.getDataSetFromName(commandParameters.arguments.toDataSetName);
         const options: ICopyDatasetOptions = {
@@ -35,7 +29,6 @@ export default class DsHandler extends ZosFilesBaseHandler {
             promptFn: this.promptForSafeReplace(commandParameters.response.console),
             promptForIdenticalNamedMembers: this.promptForIdenticalNamedMembers(commandParameters.response.console),
             progress: commandParameters.response.progress,
-            task:task,
         };
         const response = await Copy.dataSet(session, toDataSet, options);
         return response;

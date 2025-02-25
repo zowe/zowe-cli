@@ -1,4 +1,4 @@
-import { ITaskWithStatus } from "@zowe/imperative";
+import { IHandlerProgressApi, ITaskWithStatus } from "@zowe/imperative";
 import { IDataSet } from "../../../doc/IDataSet";
 import { IZosFilesOptions } from "../../../doc/IZosFilesOptions";
 
@@ -63,7 +63,9 @@ export interface ICopyDatasetOptions extends IZosFilesOptions {
     task?: ITaskWithStatus;
 
     /**
-     * progress
-     **/
-    progress?: any;
+     * Apis to create and destroy progress bars during the command.
+     * @type {IHandlerProgressApi}
+     * @memberof IHandlerResponseApi
+     */
+    progress?: IHandlerProgressApi;
 }

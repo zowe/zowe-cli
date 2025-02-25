@@ -60,7 +60,12 @@ export class Copy {
         ImperativeExpect.toBeDefinedAndNonBlank(toDataSetName, "toDataSetName");
         const safeReplace: boolean = options.safeReplace;
         const overwriteMembers: boolean = options.replace;
-        const task = options.task;
+
+        const task: ITaskWithStatus = {
+            percentComplete: 0,
+            statusMessage: "Copying data set",
+            stageName: TaskStage.IN_PROGRESS
+        };
 
         if(options["from-dataset"].dsn === toDataSetName && toMemberName === options["from-dataset"].member) {
             return {
@@ -83,11 +88,19 @@ export class Copy {
                     throw new ImperativeError({ msg: ZosFilesMessages.datasetCopiedAborted.message });
                 }
                 else {
-                    options.progress.startBar({task});
+                    if(options.progress) {
+                        if(options.progress.startBar) {
+                            options.progress.startBar({task});
+                        }
+                    }
                 }
             }
         }
-        options.progress.endBar();
+        if(options.progress) {
+            if(options.progress.endBar) {
+                options.progress.endBar();
+            }
+        }
         if(!toMemberName && !options["from-dataset"].member) {
             const sourceIsPds = await this.isPDS(session, options["from-dataset"].dsn);
             const targetIsPds = await this.isPDS(session, toDataSetName);
@@ -104,13 +117,27 @@ export class Copy {
                         throw new ImperativeError({ msg: ZosFilesMessages.datasetCopiedAborted.message});
                     }
                     else {
+                        if(options.progress) {
+                            if(options.progress.startBar) {
+                                options.progress.startBar({task});
+                            }
+                        }
+                    }
+                }
+                if(options.progress) {
+                    if(options.progress.endBar) {
+                        options.progress.endBar();
+                    }
+                    if(options.progress.startBar) {
                         options.progress.startBar({task});
                     }
                 }
-                options.progress.endBar();
-                options.progress.startBar({task});
-                const response = await this.copyPDS(session, sourceMemberList, options["from-dataset"].dsn, toDataSetName, options);
-                options.progress.endBar();
+                const response = await this.copyPDS(session, sourceMemberList, options["from-dataset"].dsn, toDataSetName, task);
+                if(options.progress) {
+                    if(options.progress.endBar) {
+                        options.progress.endBar();
+                    }
+                }
                 return {
                     success: true,
                     commandResponse: newDataSet
@@ -224,7 +251,7 @@ export class Copy {
      * @see https://www.ibm.com/support/knowledgecenter/en/SSLTBW_2.1.0/com.ibm.zos.v2r1.izua700/IZUHPINFO_API_PutDataSetMemberUtilities.htm
      */
     public static async copyPDS (
-        session: AbstractSession, sourceMemberList: string[], fromPds: string, toPds: string, options: ICopyDatasetOptions): Promise<IZosFilesResponse> {
+        session: AbstractSession, sourceMemberList: string[], fromPds: string, toPds: string, task: ITaskWithStatus): Promise<IZosFilesResponse> {
         try {
 
             if(sourceMemberList.length == 0) {
@@ -243,11 +270,11 @@ export class Copy {
             for (const file of uploadFileList) {
                 const memName = ZosFilesUtils.generateMemberName(file);
                 const uploadingDsn = `${toPds}(${memName})`;
-                if (options.task != null) {
+                if (task != null) {
                     const LAST_FIFTEEN_CHARS = -16;
                     const abbreviatedFile = file.slice(LAST_FIFTEEN_CHARS);
-                    options.task.statusMessage = "Copying... " + abbreviatedFile;
-                    options.task.percentComplete = Math.floor(TaskProgress.ONE_HUNDRED_PERCENT *
+                    task.statusMessage = "Copying... " + abbreviatedFile;
+                    task.percentComplete = Math.floor(TaskProgress.ONE_HUNDRED_PERCENT *
                         (membersInitiated / uploadFileList.length));
                     membersInitiated++;
                 }
