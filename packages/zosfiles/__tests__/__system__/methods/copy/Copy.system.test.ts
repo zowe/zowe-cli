@@ -11,19 +11,19 @@
 
 import { Create, Upload, Delete, CreateDataSetTypeEnum, Copy, ZosFilesMessages, Get, IDataSet,
     ICrossLparCopyDatasetOptions, IGetOptions, IZosFilesResponse,
-    ZosFilesUtils, List } from "../../../../src";
-import { Imperative, IO, Session } from "@zowe/imperative";
+    List } from "../../../../src";
+import { Imperative, Session } from "@zowe/imperative";
 import { inspect } from "util";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { join } from "path";
 import { readFileSync } from "fs";
 import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/ITestEnvironment";
+import * as util from "util";
+import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
+import { tmpdir } from "os";
 import path = require("path");
 import * as fs from "fs";
-import * as util from "util";
-import { tmpdir } from "os";
-import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 
 let REAL_SESSION: Session;
 let REAL_TARGET_SESSION: Session;
@@ -78,7 +78,8 @@ describe("Copy", () => {
                     try {
                         await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, fromDataSetName);
                         await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, toDataSetName);
-                        await Upload.bufferToDataSet(REAL_SESSION, Buffer.from("1234"), fromDataSetName);
+                        await Upload.bufferToDataSet(REAL_SESSION, Buffer.from("abc"), fromDataSetName);
+                        await Upload.bufferToDataSet(REAL_SESSION, Buffer.from("1234"), toDataSetName);
                     } catch (err) {
                         Imperative.console.info(`Error: ${inspect(err)}`);
                     }
@@ -115,27 +116,31 @@ describe("Copy", () => {
                 });
             });
             describe("Partitioned > Partitioned", () => {
-                let downloadDir: string;
                 beforeEach(async () => {
                     try {
-                        downloadDir = path.join(tmpdir(), fromDataSetName);
-                        fs.mkdirSync(downloadDir, { recursive: true });
-                        const mockFile = path.join(downloadDir, "mockFile.txt");
-                        fs.writeFileSync(mockFile, "test file content");
+                        await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, fromDataSetName);
+                        await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, toDataSetName);
+                        await Upload.fileToDataset(REAL_SESSION, fileLocation, fromDataSetName);
+                    } catch (err) {
+                        Imperative.console.info(`Error: ${inspect(err)}`);
+                    }
 
-                        const uploadFileList: string[] = ZosFilesUtils.getFileListFromPath(downloadDir);
-                        const stream = IO.createReadStream(uploadFileList[0]);
-                        await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, fromDataSetName);
-                        await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, toDataSetName);
-                        await Upload.streamToDataSet(REAL_SESSION, stream, fromDataSetName);
+                });
+                afterEach(async () => {
+                    try {
+                        await Delete.dataSet(REAL_SESSION, fromDataSetName);
+                        await Delete.dataSet(REAL_SESSION, toDataSetName);
+                        fs.rmSync(join(tmpdir(), 'truncatedMembers.txt'));
                     } catch (err) {
                         Imperative.console.info(`Error: ${inspect(err)}`);
                     }
                 });
+
                 it("Should copy a partitioned data set", async () => {
                     let error;
                     let response;
-
+                    const truncatedMembersFile = path.join(tmpdir(), 'truncatedMembers.txt');
+                    fs.writeFileSync(truncatedMembersFile, "");
                     try {
                         response = await Copy.dataSet(
                             REAL_SESSION,

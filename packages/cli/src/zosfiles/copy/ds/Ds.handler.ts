@@ -27,10 +27,11 @@ export default class DsHandler extends ZosFilesBaseHandler {
             responseTimeout: commandParameters.arguments.responseTimeout,
             safeReplace: commandParameters.arguments.safeReplace,
             promptFn: this.promptForSafeReplace(commandParameters.response.console),
-            promptForIdenticalNamedMembers: this.promptForIdenticalNamedMembers(commandParameters.response.console)
+            promptForIdenticalNamedMembers: this.promptForIdenticalNamedMembers(commandParameters.response.console),
+            progress: commandParameters.response.progress,
         };
-
-        return Copy.dataSet(session, toDataSet, options);
+        const response = await Copy.dataSet(session, toDataSet, options);
+        return response;
     }
 
     private promptForSafeReplace(console: IHandlerResponseConsoleApi) {
