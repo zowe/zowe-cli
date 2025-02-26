@@ -360,7 +360,7 @@ export class Download {
                 }
 
                 if (options.directory == null) {
-                    if (dataSetObj.dsorg && dataSetObj.dsorg.startsWith("PO")) {
+                    if (dataSetObj.dsorg?.startsWith("PO")) {
                         mutableOptions.directory = ZosFilesUtils.getDirsFromDataSet(dataSetObj.dsname);
                     } else {
                         mutableOptions.file = `${dataSetObj.dsname}.` +
@@ -371,7 +371,7 @@ export class Download {
                         mutableOptions.directory = undefined;
                         mutableOptions.extension = undefined;
                     }
-                } else if (dataSetObj.dsorg && dataSetObj.dsorg.startsWith("PO")) {
+                } else if (dataSetObj.dsorg?.startsWith("PO")) {
                     mutableOptions.directory = `${mutableOptions.directory}/${ZosFilesUtils.getDirsFromDataSet(dataSetObj.dsname)}`;
                 } else {
                     mutableOptions.file = `${dataSetObj.dsname}.${mutableOptions.extension ?? ZosFilesUtils.DEFAULT_FILE_EXTENSION}`;
