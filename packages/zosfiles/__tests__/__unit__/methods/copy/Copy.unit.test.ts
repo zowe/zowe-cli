@@ -600,8 +600,10 @@ describe("Copy", () => {
                         expectedPayload
                     );
                 });
+
                 it("should call Create.dataSetLike and create a new data set if the target data set inputted does not exist", async() => {
-                    dataSetExistsSpy.mockResolvedValue(false);
+                    dataSetExistsSpy.mockResolvedValueOnce(true);
+                    dataSetExistsSpy.mockResolvedValueOnce(false);
                     const response = await Copy.dataSet(
                         dummySession,
                         {dsn: toDataSetName},
@@ -609,14 +611,16 @@ describe("Copy", () => {
                             dsn:fromDataSetName
                         }}
                     );
-                    expect(createSpy).toHaveBeenCalled();
+
+                    expect(createSpy).toHaveBeenCalledWith(dummySession, toDataSetName, fromDataSetName);
                     expect(response).toEqual({
                         success: true,
                         commandResponse: util.format(ZosFilesMessages.dataSetCopiedIntoNew.message, toDataSetName)
                     });
                 });
                 it("should not create a new data set if the target data set inputted exists", async() => {
-                    dataSetExistsSpy.mockResolvedValue(true);
+                    dataSetExistsSpy.mockResolvedValueOnce(true);
+                    dataSetExistsSpy.mockResolvedValueOnce(true);
                     const response = await Copy.dataSet(
                         dummySession,
                         {dsn: toDataSetName},
@@ -687,6 +691,21 @@ describe("Copy", () => {
                 expect(response).toEqual({
                     success: false,
                     commandResponse: `The source and target data sets are identical.`
+                });
+            });
+            it("should return early if the source data set does not exist", async() => {
+                dataSetExistsSpy.mockResolvedValueOnce(false);
+                dataSetExistsSpy.mockResolvedValueOnce(true);
+                const response = await Copy.dataSet(
+                    dummySession,
+                    {dsn: toDataSetName},
+                    {"from-dataset": {
+                        dsn: fromDataSetName
+                    }}
+                );
+                expect(response).toEqual({
+                    success: false,
+                    commandResponse: `Data set copied aborted. The source data set was not found.`
                 });
             });
         });

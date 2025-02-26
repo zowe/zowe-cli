@@ -160,7 +160,7 @@ describe("Copy", () => {
                     let error;
                     let response;
 
-                    const uploadFileToDatasetSpy = jest.spyOn(Upload, 'fileToDataset').mockImplementation(async (session, filePath, dsn) => {
+                    const uploadFileToDatasetSpy = jest.spyOn(Upload, 'fileToDataset').mockImplementation(async (session, filePath) => {
                         if (filePath === fileLocation) {
                             throw new Error("Truncation of a record occurred during an I/O operation");
                         }

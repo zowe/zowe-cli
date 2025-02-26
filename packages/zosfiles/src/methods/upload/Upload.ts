@@ -348,19 +348,16 @@ export class Upload {
                 // If dsnameIndex === -1, it means we could not find the given data set.
                 // We will attempt the upload anyways so that we can forward/throw the proper error from z/OS MF
                 const dsInfo = listResponse.apiResponse.items[dsnameIndex];
-                switch (dsInfo.dsorg) {
-                    case "PO":
-                    case "PO-E":
-                        isUploadToPds = true;
-                        break;
-                    default:
+                if(dsInfo.dsorg.startsWith("PO")) {
+                    isUploadToPds = true;
+                }
+                else {
                     // if loading to a physical sequential data set and multiple files found then error
-                        if (uploadFileList.length > 1) {
-                            throw new ImperativeError({
-                                msg: ZosFilesMessages.uploadDirectoryToPhysicalSequentialDataSet.message
-                            });
-                        }
-                        break;
+                    if (uploadFileList.length > 1) {
+                        throw new ImperativeError({
+                            msg: ZosFilesMessages.uploadDirectoryToPhysicalSequentialDataSet.message
+                        });
+                    }
                 }
             }
         }
