@@ -2,6 +2,9 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+- BugFix: Fixed help text example section's wrapping issue where the first line of the description is wrapped differently than the rest of the lines. [#1945] (https://github.com/zowe/zowe-cli/issues/1945).
+
 ## `8.14.0`
 
 - BugFix: Fixed inconsistent behavior with the `ZOWE_SHOW_SECURE_ARGS` environment variable continuing to mask secure properties when it should not. [#2430](https://github.com/zowe/zowe-cli/issues/2430)
