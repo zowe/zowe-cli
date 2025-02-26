@@ -201,8 +201,17 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
      * @type {IMessageDefinition}
      */
     membersContentTruncated: {
-        message: "Member(s)' contents were truncated due to insufficient record length. You can view the list of members here: %s"
+        message: "The following member(s) were truncated due to insufficient record length."
     },
+
+    /**
+     * Message indicating that a local file containing a list of members can be viewed
+     * @type {IMessageDefinition}
+     */
+    viewMembersListfile: {
+        message: "\nYou can view the list of members in this file: %s"
+    },
+
     /**
      * Message indicating that the uss file was downloaded successfully
      * @type {IMessageDefinition}
