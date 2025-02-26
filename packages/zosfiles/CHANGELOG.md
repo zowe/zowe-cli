@@ -3,6 +3,7 @@
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
 ## Recent Changes
+-BugFix: When using the copy command with a non existent source data set, an unclear error is displayed to the user. Now, the user is shown a user-friendly error.
 - BugFix: Users were not warned when copying partitioned data sets with identical member names. Now, the user is prompted to confirm before continuing the copy operation to avoid potential data loss. [#2349] (https://github.com/zowe/zowe-cli/issues/2349)
 
 ## `8.13.0`
