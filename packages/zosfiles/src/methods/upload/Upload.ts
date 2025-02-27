@@ -348,7 +348,7 @@ export class Upload {
                 // If dsnameIndex === -1, it means we could not find the given data set.
                 // We will attempt the upload anyways so that we can forward/throw the proper error from z/OS MF
                 const dsInfo = listResponse.apiResponse.items[dsnameIndex];
-                if(dsInfo.dsorg.startsWith("PO")) {
+                if(dsInfo.dsorg?.startsWith("PO")) {
                     isUploadToPds = true;
                 }
                 else {
