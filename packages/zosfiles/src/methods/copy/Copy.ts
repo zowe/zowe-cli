@@ -67,6 +67,14 @@ export class Copy {
             stageName: TaskStage.IN_PROGRESS
         };
 
+        const sourceDataSetExists = await this.dataSetExists(session, options["from-dataset"].dsn);
+        if(!sourceDataSetExists) {
+            return {
+                success: false,
+                commandResponse: ZosFilesMessages.datasetCopiedAbortedNoTargetDS.message
+            };
+        }
+
         if(options["from-dataset"].dsn === toDataSetName && toMemberName === options["from-dataset"].member) {
             return {
                 success: false,
