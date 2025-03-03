@@ -768,7 +768,7 @@ describe("Copy", () => {
                     }
                     expect(response?.success).toBeFalsy();
                     expect(error).toBeDefined();
-                    expect(error.message).toContain("Data set copied aborted. The source data set was not found.");
+                    expect(error.message).toContain("Data set copy aborted. The source data set was not found.");
                 });
 
                 it("should warn and fail if the destination data set exists", async() => {

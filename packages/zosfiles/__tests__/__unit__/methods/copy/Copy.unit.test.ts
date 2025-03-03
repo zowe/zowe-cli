@@ -729,7 +729,7 @@ describe("Copy", () => {
                 );
                 expect(response).toEqual({
                     success: false,
-                    commandResponse: `Data set copied aborted. The source data set was not found.`
+                    commandResponse: `Data set copy aborted. The source data set was not found.`
                 });
             });
         });
