@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
-## Recent Changes
+## `8.14.1`
 
 -BugFix: When using the copy command with a non existent source data set, an unclear error was displayed to the user.  Now, a more user-friendly message is provided [#2447] (https://github.com/zowe/zowe-cli/issues/2447).
 -BugFix: The updated logic to determine whether a data set is a partitioned data set now ensures that the `dsorg` attributes of types `PO-E`, `PO-L`, `PO-U` are handled correctly. [#2390] (https://github.com/zowe/zowe-cli/issues/2390).
