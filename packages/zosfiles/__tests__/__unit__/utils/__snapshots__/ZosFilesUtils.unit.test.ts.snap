@@ -88,13 +88,13 @@ Object {
     "message": "Data set copy aborted. The existing target data set was not overwritten.",
   },
   "datasetCopiedAbortedNoPDS": Object {
-    "message": "Data set copied aborted. Copying from a PDS to PDS is not supported when using the 'dsclp' option.",
+    "message": "Data set copy aborted. Copying from a PDS to PDS is not supported when using the 'dsclp' option.",
   },
   "datasetCopiedAbortedNoTargetDS": Object {
-    "message": "Data set copied aborted. The source data set was not found.",
+    "message": "Data set copy aborted. The source data set was not found.",
   },
   "datasetCopiedAbortedTargetNotPDSMember": Object {
-    "message": "Data set copied aborted. Copying to a PDS without a member name is not supported when using the 'dsclp' option.",
+    "message": "Data set copy aborted. Copying to a PDS without a member name is not supported when using the 'dsclp' option.",
   },
   "datasetCopiedSuccessfully": Object {
     "message": "Data set copied successfully.",
@@ -117,7 +117,7 @@ Object {
 Destination: %s",
   },
   "datasetMemberCopiedAborted": Object {
-    "message": "Data set copied aborted. The existing target data set member was not overwritten.",
+    "message": "Data set copy aborted. The existing target data set member was not overwritten.",
   },
   "datasetMigrationRequested": Object {
     "message": "Data set migration requested.",
