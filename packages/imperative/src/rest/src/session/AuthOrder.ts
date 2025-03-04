@@ -205,14 +205,14 @@ export class AuthOrder {
         for (const nextAuth of AuthOrder.m_authOrder) {
             switch (nextAuth) {
                 case SessConstants.AUTH_TYPE_BASIC:
-                    // We put our preferred basic auth in the session.
-                    // However, historical logic later puts the other in the session.
-                    if (AuthOrder.m_availableCreds.base64EncodedAuth) {
-                        sessCfg.base64EncodedAuth = AuthOrder.m_availableCreds.base64EncodedAuth;
-                        sessTypeToUse = SessConstants.AUTH_TYPE_BASIC;
-                    } else if (AuthOrder.m_availableCreds.user && AuthOrder.m_availableCreds.password) {
+                    if (AuthOrder.m_availableCreds.user && AuthOrder.m_availableCreds.password) {
                         sessCfg.user = AuthOrder.m_availableCreds.user;
                         sessCfg.password = AuthOrder.m_availableCreds.password;
+                        // always regenerate b64Auth in case it is out-of date with user & password
+                        sessCfg.base64EncodedAuth = Buffer.from(sessCfg.user + ":" + sessCfg.password).toString("base64")
+                        sessTypeToUse = SessConstants.AUTH_TYPE_BASIC;
+                    } else if (AuthOrder.m_availableCreds.base64EncodedAuth) {
+                        sessCfg.base64EncodedAuth = AuthOrder.m_availableCreds.base64EncodedAuth;
                         sessTypeToUse = SessConstants.AUTH_TYPE_BASIC;
                     }
                     if (sessTypeToUse === SessConstants.AUTH_TYPE_BASIC && sessCfg.authTypeToRequestToken) {
@@ -436,7 +436,7 @@ export class AuthOrder {
         if (sessCfg?.type) {
             switch (sessCfg.type) {
                 case SessConstants.AUTH_TYPE_BASIC:
-                    // only keep one of our basic creds
+                    // only keep one of our basic creds, giving preference to B64Auth
                     if (sessCfg.base64EncodedAuth) {
                         AuthOrder.keepCred("base64EncodedAuth", credsToRemove);
                     } else {
