@@ -420,6 +420,8 @@ describe("z/OS Files - Upload", () => {
             expect(zosmfPutFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
                 reqHeaders: expect.arrayContaining(reqHeaders),
                 writeData: buffer});
+            // Ensure same set of headers but allow any order:
+            expect(extractSpyHeaders(zosmfPutFullSpy)).toIncludeSameMembers(reqHeaders);
         });
         it("should return with proper response when upload buffer to a PDS member", async () => {
             const buffer: Buffer = Buffer.from("testing");
@@ -440,6 +442,8 @@ describe("z/OS Files - Upload", () => {
             expect(zosmfPutFullSpy).toHaveBeenCalledWith(dummySession, {resource:endpoint,
                 reqHeaders: expect.arrayContaining(reqHeaders),
                 writeData: buffer});
+            // Ensure same set of headers but allow any order:
+            expect(extractSpyHeaders(zosmfPutFullSpy)).toIncludeSameMembers(reqHeaders);
         });
         it("should normalize new lines when upload buffer to a data set", async () => {
             const buffer: Buffer = Buffer.from("testing\r\ntesting2");
@@ -461,6 +465,8 @@ describe("z/OS Files - Upload", () => {
             expect(zosmfPutFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
                 reqHeaders: expect.arrayContaining(reqHeaders),
                 writeData: normalizedData});
+            // Ensure same set of headers but allow any order:
+            expect(extractSpyHeaders(zosmfPutFullSpy)).toIncludeSameMembers(reqHeaders);
         });
         describe("Using optional parameters", () => {
             let buffer: Buffer;
@@ -495,6 +501,8 @@ describe("z/OS Files - Upload", () => {
                 expect(zosmfPutFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
                     reqHeaders: expect.arrayContaining(reqHeaders),
                     writeData: buffer});
+                // Ensure same set of headers but allow any order:
+                expect(extractSpyHeaders(zosmfPutFullSpy)).toIncludeSameMembers(reqHeaders);
             });
             it("should return with proper response when uploading with 'binary' and 'record' options", async () => {
                 uploadOptions.binary = true;
@@ -514,6 +522,8 @@ describe("z/OS Files - Upload", () => {
                 expect(zosmfPutFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
                     reqHeaders: expect.arrayContaining(reqHeaders),
                     writeData: buffer});
+                // Ensure same set of headers but allow any order:
+                expect(extractSpyHeaders(zosmfPutFullSpy)).toIncludeSameMembers(reqHeaders);
             });
             it("should return with proper response when uploading with 'record' option", async () => {
                 uploadOptions.record = true;
@@ -532,6 +542,8 @@ describe("z/OS Files - Upload", () => {
                 expect(zosmfPutFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
                     reqHeaders: expect.arrayContaining(reqHeaders),
                     writeData: buffer});
+                // Ensure same set of headers but allow any order:
+                expect(extractSpyHeaders(zosmfPutFullSpy)).toIncludeSameMembers(reqHeaders);
             });
             it("should return with proper response when uploading with 'encoding' option", async () => {
                 const anotherEncoding = "285";
@@ -551,6 +563,8 @@ describe("z/OS Files - Upload", () => {
                 expect(zosmfPutFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
                     reqHeaders: expect.arrayContaining(reqHeaders),
                     writeData: buffer});
+                // Ensure same set of headers but allow any order:
+                expect(extractSpyHeaders(zosmfPutFullSpy)).toIncludeSameMembers(reqHeaders);
             });
             it("should return with proper response when uploading with 'recall wait' option", async () => {
 
@@ -571,6 +585,8 @@ describe("z/OS Files - Upload", () => {
                 expect(zosmfPutFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
                     reqHeaders: expect.arrayContaining(reqHeaders),
                     writeData: buffer});
+                // Ensure same set of headers but allow any order:
+                expect(extractSpyHeaders(zosmfPutFullSpy)).toIncludeSameMembers(reqHeaders);
             });
             it("should return with proper response when uploading with 'recall nowait' option", async () => {
                 // Unit test for no wait option
@@ -590,6 +606,8 @@ describe("z/OS Files - Upload", () => {
                 expect(zosmfPutFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
                     reqHeaders: expect.arrayContaining(reqHeaders),
                     writeData: buffer});
+                // Ensure same set of headers but allow any order:
+                expect(extractSpyHeaders(zosmfPutFullSpy)).toIncludeSameMembers(reqHeaders);
             });
             it("should return with proper response when uploading with 'recall error' option", async () => {
                 // Unit test for no error option
@@ -609,6 +627,8 @@ describe("z/OS Files - Upload", () => {
                 expect(zosmfPutFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
                     reqHeaders: expect.arrayContaining(reqHeaders),
                     writeData: buffer});
+                // Ensure same set of headers but allow any order:
+                expect(extractSpyHeaders(zosmfPutFullSpy)).toIncludeSameMembers(reqHeaders);
             });
             it("should return with proper response when uploading with non-exiting recall option", async () => {
                 // Unit test default value
@@ -628,6 +648,8 @@ describe("z/OS Files - Upload", () => {
                 expect(zosmfPutFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
                     reqHeaders: expect.arrayContaining(reqHeaders),
                     writeData: buffer});
+                // Ensure same set of headers but allow any order:
+                expect(extractSpyHeaders(zosmfPutFullSpy)).toIncludeSameMembers(reqHeaders);
             });
             it("should return with proper response when uploading with pass 'etag' option", async () => {
                 // Unit test for pass etag option
@@ -647,6 +669,8 @@ describe("z/OS Files - Upload", () => {
                 expect(zosmfPutFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
                     reqHeaders: expect.arrayContaining(reqHeaders),
                     writeData: buffer});
+                // Ensure same set of headers but allow any order:
+                expect(extractSpyHeaders(zosmfPutFullSpy)).toIncludeSameMembers(reqHeaders);
             });
             it("should return with proper response when uploading with return 'etag' option", async () => {
                 zosmfPutFullSpy.mockImplementationOnce(async () => fakeResponseWithEtag);
@@ -667,6 +691,8 @@ describe("z/OS Files - Upload", () => {
                     reqHeaders: expect.arrayContaining(reqHeaders),
                     writeData: buffer,
                     dataToReturn: [CLIENT_PROPERTY.response]});
+                // Ensure same set of headers but allow any order:
+                expect(extractSpyHeaders(zosmfPutFullSpy)).toIncludeSameMembers(reqHeaders);
             });
             it("should return with proper response when uploading with responseTimeout option", async () => {
                 uploadOptions.responseTimeout = 5;
@@ -685,6 +711,8 @@ describe("z/OS Files - Upload", () => {
                 expect(zosmfPutFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
                     reqHeaders: expect.arrayContaining(reqHeaders),
                     writeData: buffer});
+                // Ensure same set of headers but allow any order:
+                expect(extractSpyHeaders(zosmfPutFullSpy)).toIncludeSameMembers(reqHeaders);
             });
         });
         it("should return with proper response when upload dataset with specify volume option", async () => {
@@ -707,6 +735,8 @@ describe("z/OS Files - Upload", () => {
             expect(zosmfPutFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
                 reqHeaders: expect.arrayContaining(reqHeaders),
                 writeData: buffer});
+            // Ensure same set of headers but allow any order:
+            expect(extractSpyHeaders(zosmfPutFullSpy)).toIncludeSameMembers(reqHeaders);            
         });
     });
     describe("streamToDataSet", () => {
@@ -774,6 +804,8 @@ describe("z/OS Files - Upload", () => {
                 normalizeRequestNewLines: true,
                 reqHeaders: expect.arrayContaining(reqHeaders),
                 requestStream: inputStream});
+            // Ensure same set of headers but allow any order:
+            expect(extractSpyHeaders(zosmfPutFullSpy)).toIncludeSameMembers(reqHeaders);
         });
         it("should return with proper response when upload stream to a PDS member", async () => {
             const testDsName = `${dsName}(member)`;
@@ -794,6 +826,8 @@ describe("z/OS Files - Upload", () => {
                 normalizeRequestNewLines: true,
                 reqHeaders: expect.arrayContaining(reqHeaders),
                 requestStream: inputStream});
+            // Ensure same set of headers but allow any order:
+            expect(extractSpyHeaders(zosmfPutFullSpy)).toIncludeSameMembers(reqHeaders);
         });
         it("should return with proper response when upload stream to a data set with optional parameters 1", async () => {
             const uploadOptions: IUploadOptions = {
@@ -816,6 +850,9 @@ describe("z/OS Files - Upload", () => {
                 normalizeRequestNewLines: false,
                 reqHeaders: expect.arrayContaining(reqHeaders),
                 requestStream: inputStream});
+            // Ensure same set of headers but allow any order:
+            expect(extractSpyHeaders(zosmfPutFullSpy)).toIncludeSameMembers(reqHeaders);
+
             zosmfPutFullSpy.mockClear();
 
             // Unit test for wait option
@@ -836,6 +873,9 @@ describe("z/OS Files - Upload", () => {
                 normalizeRequestNewLines: false,
                 reqHeaders: expect.arrayContaining(reqHeaders),
                 requestStream: inputStream});
+            // Ensure same set of headers but allow any order:
+            expect(extractSpyHeaders(zosmfPutFullSpy)).toIncludeSameMembers(reqHeaders);
+
             zosmfPutFullSpy.mockClear();
 
             // Unit test for no wait option
@@ -856,6 +896,9 @@ describe("z/OS Files - Upload", () => {
                 normalizeRequestNewLines: false,
                 reqHeaders: expect.arrayContaining(reqHeaders),
                 requestStream: inputStream});
+            // Ensure same set of headers but allow any order:
+            expect(extractSpyHeaders(zosmfPutFullSpy)).toIncludeSameMembers(reqHeaders);
+
             zosmfPutFullSpy.mockClear();
 
             // Unit test for no error option
@@ -876,6 +919,9 @@ describe("z/OS Files - Upload", () => {
                 normalizeRequestNewLines: false,
                 reqHeaders: expect.arrayContaining(reqHeaders),
                 requestStream: inputStream});
+            // Ensure same set of headers but allow any order:
+            expect(extractSpyHeaders(zosmfPutFullSpy)).toIncludeSameMembers(reqHeaders);
+
             zosmfPutFullSpy.mockClear();
 
             // Unit test default value
@@ -896,6 +942,9 @@ describe("z/OS Files - Upload", () => {
                 normalizeRequestNewLines: false,
                 reqHeaders: expect.arrayContaining(reqHeaders),
                 requestStream: inputStream});
+            // Ensure same set of headers but allow any order:
+            expect(extractSpyHeaders(zosmfPutFullSpy)).toIncludeSameMembers(reqHeaders);
+
             zosmfPutFullSpy.mockClear();
 
             // Unit test for pass etag option
@@ -916,6 +965,9 @@ describe("z/OS Files - Upload", () => {
                 normalizeRequestNewLines: false,
                 reqHeaders: expect.arrayContaining(reqHeaders),
                 requestStream: inputStream});
+            // Ensure same set of headers but allow any order:
+            expect(extractSpyHeaders(zosmfPutFullSpy)).toIncludeSameMembers(reqHeaders);
+
             zosmfPutFullSpy.mockClear();
             zosmfPutFullSpy.mockImplementationOnce(async () => fakeResponseWithEtag);
 
@@ -941,6 +993,9 @@ describe("z/OS Files - Upload", () => {
                 reqHeaders: expect.arrayContaining(reqHeaders),
                 requestStream: inputStream,
                 dataToReturn: [CLIENT_PROPERTY.response]});
+            // Ensure same set of headers but allow any order:
+            expect(extractSpyHeaders(zosmfPutFullSpy)).toIncludeSameMembers(reqHeaders);
+
             zosmfPutFullSpy.mockClear();
             zosmfPutFullSpy.mockImplementationOnce(async () => fakeResponseWithEtag);
 
@@ -968,6 +1023,8 @@ describe("z/OS Files - Upload", () => {
                 reqHeaders: expect.arrayContaining(reqHeaders),
                 requestStream: inputStream,
                 dataToReturn: [CLIENT_PROPERTY.response]});
+            // Ensure same set of headers but allow any order:
+            expect(extractSpyHeaders(zosmfPutFullSpy)).toIncludeSameMembers(reqHeaders);
         });
         it("should return with proper response when upload stream to a data set with optional parameters 2", async () => {
             const uploadOptions: IUploadOptions = {
@@ -990,6 +1047,8 @@ describe("z/OS Files - Upload", () => {
                 normalizeRequestNewLines: false,
                 reqHeaders: expect.arrayContaining(reqHeaders),
                 requestStream: inputStream});
+            // Ensure same set of headers but allow any order:
+            expect(extractSpyHeaders(zosmfPutFullSpy)).toIncludeSameMembers(reqHeaders);
             zosmfPutFullSpy.mockClear();
 
             // Unit test for wait option
@@ -1010,6 +1069,9 @@ describe("z/OS Files - Upload", () => {
                 normalizeRequestNewLines: false,
                 reqHeaders: expect.arrayContaining(reqHeaders),
                 requestStream: inputStream});
+            // Ensure same set of headers but allow any order:
+            expect(extractSpyHeaders(zosmfPutFullSpy)).toIncludeSameMembers(reqHeaders);
+
             zosmfPutFullSpy.mockClear();
 
             // Unit test for no wait option
@@ -1030,6 +1092,9 @@ describe("z/OS Files - Upload", () => {
                 normalizeRequestNewLines: false,
                 reqHeaders: expect.arrayContaining(reqHeaders),
                 requestStream: inputStream});
+            // Ensure same set of headers but allow any order:
+            expect(extractSpyHeaders(zosmfPutFullSpy)).toIncludeSameMembers(reqHeaders);
+
             zosmfPutFullSpy.mockClear();
 
             // Unit test for no error option
@@ -1050,6 +1115,9 @@ describe("z/OS Files - Upload", () => {
                 normalizeRequestNewLines: false,
                 reqHeaders: expect.arrayContaining(reqHeaders),
                 requestStream: inputStream});
+            // Ensure same set of headers but allow any order:
+            expect(extractSpyHeaders(zosmfPutFullSpy)).toIncludeSameMembers(reqHeaders);
+
             zosmfPutFullSpy.mockClear();
 
             // Unit test default value
@@ -1070,6 +1138,9 @@ describe("z/OS Files - Upload", () => {
                 normalizeRequestNewLines: false,
                 reqHeaders: expect.arrayContaining(reqHeaders),
                 requestStream: inputStream});
+            // Ensure same set of headers but allow any order:
+            expect(extractSpyHeaders(zosmfPutFullSpy)).toIncludeSameMembers(reqHeaders);
+
             zosmfPutFullSpy.mockClear();
 
             // Unit test for pass etag option
@@ -1091,6 +1162,9 @@ describe("z/OS Files - Upload", () => {
                 normalizeRequestNewLines: false,
                 reqHeaders: expect.arrayContaining(reqHeaders),
                 requestStream: inputStream});
+            // Ensure same set of headers but allow any order:
+            expect(extractSpyHeaders(zosmfPutFullSpy)).toIncludeSameMembers(reqHeaders);
+
             zosmfPutFullSpy.mockClear();
             zosmfPutFullSpy.mockImplementationOnce(async () => fakeResponseWithEtag);
 
@@ -1115,6 +1189,9 @@ describe("z/OS Files - Upload", () => {
                 reqHeaders: expect.arrayContaining(reqHeaders),
                 requestStream: inputStream,
                 dataToReturn: [CLIENT_PROPERTY.response]});
+            // Ensure same set of headers but allow any order:
+            expect(extractSpyHeaders(zosmfPutFullSpy)).toIncludeSameMembers(reqHeaders);
+
             zosmfPutFullSpy.mockClear();
             zosmfPutFullSpy.mockImplementationOnce(async () => fakeResponseWithEtag);
 
@@ -1141,6 +1218,8 @@ describe("z/OS Files - Upload", () => {
                 reqHeaders: expect.arrayContaining(reqHeaders),
                 requestStream: inputStream,
                 dataToReturn: [CLIENT_PROPERTY.response]});
+            // Ensure same set of headers but allow any order:
+            expect(extractSpyHeaders(zosmfPutFullSpy)).toIncludeSameMembers(reqHeaders);
         });
         it("should return with proper response when upload dataset with specify volume option", async () => {
             const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, `-(TEST)`, dsName);
@@ -1162,6 +1241,8 @@ describe("z/OS Files - Upload", () => {
                 normalizeRequestNewLines: true,
                 reqHeaders: expect.arrayContaining(reqHeaders),
                 requestStream: inputStream});
+            // Ensure same set of headers but allow any order:
+            expect(extractSpyHeaders(zosmfPutFullSpy)).toIncludeSameMembers(reqHeaders);
         });
 
         it("should allow uploading a data set with encoding", async () => {
@@ -1184,6 +1265,8 @@ describe("z/OS Files - Upload", () => {
             expect(zosmfPutFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
                 reqHeaders: expect.arrayContaining(reqHeaders),
                 writeData: buffer});
+            // Ensure same set of headers but allow any order:
+            expect(extractSpyHeaders(zosmfPutFullSpy)).toIncludeSameMembers(reqHeaders);
         });
     });
     describe("pathToDataSet", () => {
@@ -1646,6 +1729,8 @@ describe("z/OS Files - Upload", () => {
                     writeData: data
                 }
             );
+            // Ensure same set of headers but allow any order:
+            expect(extractSpyHeaders(zosmfExpectSpy)).toIncludeSameMembers(reqHeaders);
         });
         it("should return with proper response when upload USS file with responseTimeout", async () => {
             const data: Buffer = Buffer.from("testing");
@@ -1677,6 +1762,8 @@ describe("z/OS Files - Upload", () => {
                     writeData: data
                 }
             );
+            // Ensure same set of headers but allow any order:
+            expect(extractSpyHeaders(zosmfExpectSpy)).toIncludeSameMembers(reqHeaders);
         });
         it("should return with proper response when upload USS file in binary", async () => {
             const chtagSpy = jest.spyOn(Utilities, "chtag");
@@ -1704,6 +1791,8 @@ describe("z/OS Files - Upload", () => {
                     writeData: data
                 }
             );
+            // Ensure same set of headers but allow any order:
+            expect(extractSpyHeaders(zosmfExpectSpy)).toIncludeSameMembers(reqHeaders);
         });
 
         it("should return with proper response when upload USS file with Etag", async () => {
@@ -1733,6 +1822,8 @@ describe("z/OS Files - Upload", () => {
                     writeData: data
                 }
             );
+            // Ensure same set of headers but allow any order:
+            expect(extractSpyHeaders(zosmfExpectSpy)).toIncludeSameMembers(reqHeaders);
         });
         it("should return with proper response when upload USS file and request Etag back", async () => {
             const data: Buffer = Buffer.from("testing");
@@ -1761,6 +1852,8 @@ describe("z/OS Files - Upload", () => {
                     dataToReturn: [CLIENT_PROPERTY.response]
                 }
             );
+            // Ensure same set of headers but allow any order:
+            expect(extractSpyHeaders(zosmfExpectSpy)).toIncludeSameMembers(reqHeaders);
         });
         it("should set local encoding if specified", async () => {
             const data: Buffer = Buffer.from("testing");
@@ -1788,6 +1881,8 @@ describe("z/OS Files - Upload", () => {
                     writeData: data
                 }
             );
+            // Ensure same set of headers but allow any order:
+            expect(extractSpyHeaders(zosmfExpectSpy)).toIncludeSameMembers(reqHeaders);
         });
         it("should normalize new lines when upload USS file", async () => {
             const data: Buffer = Buffer.from("testing\r\ntesting2");
@@ -1815,6 +1910,8 @@ describe("z/OS Files - Upload", () => {
                     writeData: normalizedData
                 }
             );
+            // Ensure same set of headers but allow any order:
+            expect(extractSpyHeaders(zosmfExpectSpy)).toIncludeSameMembers(reqHeaders);
         });
     });
 
@@ -1893,6 +1990,9 @@ describe("z/OS Files - Upload", () => {
                 reqHeaders: expect.arrayContaining(reqHeaders),
                 requestStream: inputStream,
                 normalizeRequestNewLines: true});
+            );
+            // Ensure same set of headers but allow any order:
+            expect(extractSpyHeaders(zosmfExpectFullSpy)).toIncludeSameMembers(reqHeaders);
             expect(chtagSpy).toHaveBeenCalledTimes(0);
         });
         it("should return with proper response when upload USS file with responseTimeout", async () => {
@@ -1915,6 +2015,8 @@ describe("z/OS Files - Upload", () => {
                 reqHeaders: expect.arrayContaining(reqHeaders),
                 requestStream: inputStream,
                 normalizeRequestNewLines: true});
+            // Ensure same set of headers but allow any order:
+            expect(extractSpyHeaders(zosmfExpectFullSpy)).toIncludeSameMembers(reqHeaders);
             expect(chtagSpy).toHaveBeenCalledTimes(0);
         });
         it("should return with proper response when upload USS file in binary", async () => {
@@ -1937,6 +2039,8 @@ describe("z/OS Files - Upload", () => {
                 reqHeaders: expect.arrayContaining(reqHeaders),
                 requestStream: inputStream,
                 normalizeRequestNewLines: false});
+            // Ensure same set of headers but allow any order:
+            expect(extractSpyHeaders(zosmfExpectFullSpy)).toIncludeSameMembers(reqHeaders);
             expect(chtagSpy).toHaveBeenCalledTimes(1);
             expect(chtagSpy).toHaveBeenCalledWith(dummySession, dsName, Tag.BINARY);
         });
@@ -1960,6 +2064,8 @@ describe("z/OS Files - Upload", () => {
                 reqHeaders: expect.arrayContaining(reqHeaders),
                 requestStream: inputStream,
                 normalizeRequestNewLines: true});
+            // Ensure same set of headers but allow any order:
+            expect(extractSpyHeaders(zosmfExpectFullSpy)).toIncludeSameMembers(reqHeaders);
             expect(chtagSpy).toHaveBeenCalledTimes(0);
         });
         it("should return with proper response when upload USS file and request Etag back", async () => {
@@ -1985,6 +2091,8 @@ describe("z/OS Files - Upload", () => {
                 requestStream: inputStream,
                 normalizeRequestNewLines: true,
                 dataToReturn: [CLIENT_PROPERTY.response]});
+            // Ensure same set of headers but allow any order:
+            expect(extractSpyHeaders(zosmfExpectFullSpy)).toIncludeSameMembers(reqHeaders);
             expect(chtagSpy).toHaveBeenCalledTimes(0);
         });
         it("should set local encoding if specified", async () => {
@@ -2006,6 +2114,8 @@ describe("z/OS Files - Upload", () => {
                 reqHeaders: expect.arrayContaining(reqHeaders),
                 requestStream: inputStream,
                 normalizeRequestNewLines: true});
+            // Ensure same set of headers but allow any order:
+            expect(extractSpyHeaders(zosmfExpectFullSpy)).toIncludeSameMembers(reqHeaders);
             expect(chtagSpy).toHaveBeenCalledTimes(0);
         });
         it("should chtag remote encoding even when binary is specified", async () => {
