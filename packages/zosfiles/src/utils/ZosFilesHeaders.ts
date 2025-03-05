@@ -11,6 +11,7 @@
 
 import { IHeaderContent } from "@zowe/imperative";
 import { ZosmfHeaders } from "@zowe/core-for-zowe-sdk";
+import { Headers } from "@zowe/imperative";
 
 /**
  * Enumeration of operation contexts (USS,ZFS or Dataset-related) used when generating content-type headers.
@@ -51,7 +52,7 @@ export class ZosFilesHeaders {
     static initializeHeaderMap() {
         this.headerMap.set("from-dataset", (context?) => {
             // For dataset operations, use APPLICATION_JSON unless context is "zfs"
-            return context === ZosFilesContext.ZFS ? {} : ZosmfHeaders.APPLICATION_JSON;
+            return context === ZosFilesContext.ZFS ? {} : Headers.APPLICATION_JSON;
         });
         this.headerMap.set("binary", () => ZosmfHeaders.X_IBM_BINARY);
         this.headerMap.set("responseTimeout", (options) => this.createHeader(ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT, (options as any).responseTimeout));
