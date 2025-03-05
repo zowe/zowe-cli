@@ -11,7 +11,6 @@
 
 import { IHeaderContent } from "@zowe/imperative";
 import { ZosmfHeaders } from "@zowe/core-for-zowe-sdk";
-import { Headers } from "@zowe/imperative";
 
 /**
  * Enumeration of operation contexts (USS,ZFS or Dataset-related) used when generating content-type headers.
@@ -35,8 +34,8 @@ export enum ZosFilesContext {
  * Utility class for generating REST request headers for ZosFiles operations.
  *
  * This class centralizes header creation logic across all SDK methods. It uses a header map
- * to associate specific options as keys with header generation functions as values. To add a new global header,
- * simply add a new entry to the header map in the `initializeHeaderMap()` method.
+ * to associate specific options as keys with header generation functions as values.
+ * Extending this map with a new entry in `initializeHeaderMap()` will extend available SDK headers.
  */
 export class ZosFilesHeaders {
 
@@ -52,7 +51,7 @@ export class ZosFilesHeaders {
     static initializeHeaderMap() {
         this.headerMap.set("from-dataset", (context?) => {
             // For dataset operations, use APPLICATION_JSON unless context is "zfs"
-            return context === ZosFilesContext.ZFS ? {} : Headers.APPLICATION_JSON;
+            return context === ZosFilesContext.ZFS ? {} : {"Content-Type": "application/json"};
         });
         this.headerMap.set("binary", () => ZosmfHeaders.X_IBM_BINARY);
         this.headerMap.set("responseTimeout", (options) => this.createHeader(ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT, (options as any).responseTimeout));
@@ -82,6 +81,7 @@ export class ZosFilesHeaders {
 
     /**
      * Returns a header for remote text encoding if an encoding is provided.
+     *
      * @param encoding - The remote encoding string.
      * @returns A header object or null.
      */
@@ -151,13 +151,12 @@ export class ZosFilesHeaders {
         }
     }
 
-    // =============================================================//
-    // CONTEXT HEADERS CREATION: Upload/Download, USS, ZFS, Dataset //
-    // =============================================================//
+    // ======================================================================//
+    // CONTEXT HEADERS CREATION: USS, Dataset or no-content-type (ZFS, LIST) //
+    // ======================================================================//
 
     /**
      * Adds headers based on the operation context (USS, ZFS or Datasets).
-     *
      *
      * @template T - Variably-typed options object.
      * @param options - The request options.
@@ -169,100 +168,99 @@ export class ZosFilesHeaders {
      */
     private static addContextHeaders<T>(options: T, context?: ZosFilesContext, dataLength?: number | string):
         { headers: IHeaderContent[], updatedOptions: T } {
-    const headers: IHeaderContent[] = [];
-    const updatedOptions: any = { ...options || {} };
+        const headers: IHeaderContent[] = [];
+        const updatedOptions: any = { ...options || {} };
 
-    if (dataLength !== undefined) {
-        // if content length is provided, then use JSON content type regardless of context
-        this.addHeader(headers, "Content-Length", String(dataLength));
-        this.addHeader(headers, "Content-Type", "application/json");
-        delete updatedOptions["from-dataset"];
-        return { headers, updatedOptions };
-    }
+        if (dataLength !== undefined) {
+            // if content length is provided, then use JSON content type regardless of context
+            this.addHeader(headers, "Content-Length", String(dataLength));
+            this.addHeader(headers, "Content-Type", "application/json");
+            delete updatedOptions["from-dataset"];
+            return { headers, updatedOptions };
+        }
 
-    // Determine Type headers:
-    switch (context) {
-        case ZosFilesContext.DATASET:
-            // For dataset transfers, allow binary, record, encoding and localEncoding options.
-            if (updatedOptions.binary) {
-                if (updatedOptions.binary === true) {
+        // Determine Type headers:
+        switch (context) {
+            case ZosFilesContext.DATASET:
+                // For dataset transfers, allow binary, record, encoding and localEncoding options.
+                if (updatedOptions.binary) {
+                    if (updatedOptions.binary === true) {
+                        headers.push(ZosmfHeaders.X_IBM_BINARY);
+                        delete updatedOptions["binary"];
+                    }
+                } else if (updatedOptions.record) {
+                    if (updatedOptions.record === true) {
+                        headers.push(ZosmfHeaders.X_IBM_RECORD);
+                        delete updatedOptions["record"];
+                    }
+                } else {
+                    if (updatedOptions.encoding) {
+                        const keys: string[] = Object.keys(ZosmfHeaders.X_IBM_TEXT);
+                        const value = ZosmfHeaders.X_IBM_TEXT[keys[0]] +
+                                        ZosmfHeaders.X_IBM_TEXT_ENCODING +
+                                        updatedOptions.encoding;
+                        const encodingHeader: any = {};
+                        encodingHeader[keys[0]] = value;
+                        headers.push(encodingHeader);
+                        delete updatedOptions["encoding"];
+                    }
+                    if (updatedOptions.localEncoding) {
+                        headers.push({ "Content-Type": updatedOptions.localEncoding });
+                        delete updatedOptions["localEncoding"];
+                    } else {
+                        // Add text X-IBM-Data-Type if no content header is present
+                        // only if options don't include dsntype LIBRARY
+                        if (!(updatedOptions.dsntype && updatedOptions.dsntype.toUpperCase() === "LIBRARY")) {
+                            this.addHeader(headers, "X-IBM-Data-Type", "text", true);
+                        }
+                    }
+                }
+                break;
+            case ZosFilesContext.USS_MULTIPLE:
+                // For multiple USS files, force JSON content type.
+                this.addHeader(headers, "Content-Type", "application/json");
+                // Remove localEncoding to avoid adding a fallback later.
+                delete updatedOptions["localEncoding"];
+                break;
+            case ZosFilesContext.USS_SINGLE:
+                // For a single USS file, allow similar processing to dataset transfers
+                // but with USS-specific logic.
+                if (updatedOptions.binary) {
                     headers.push(ZosmfHeaders.X_IBM_BINARY);
                     delete updatedOptions["binary"];
-                }
-            } else if (updatedOptions.record) {
-                if (updatedOptions.record === true) {
-                    headers.push(ZosmfHeaders.X_IBM_RECORD);
-                    delete updatedOptions["record"];
-                }
-            } else {
-                if (updatedOptions.encoding) {
+                } else if (updatedOptions.encoding) {
                     const keys: string[] = Object.keys(ZosmfHeaders.X_IBM_TEXT);
                     const value = ZosmfHeaders.X_IBM_TEXT[keys[0]] +
-                                    ZosmfHeaders.X_IBM_TEXT_ENCODING +
-                                    updatedOptions.encoding;
+                                ZosmfHeaders.X_IBM_TEXT_ENCODING +
+                                updatedOptions.encoding;
                     const encodingHeader: any = {};
                     encodingHeader[keys[0]] = value;
                     headers.push(encodingHeader);
                     delete updatedOptions["encoding"];
-                }
-                if (updatedOptions.localEncoding) {
-                    headers.push({ "Content-Type": updatedOptions.localEncoding });
-                    delete updatedOptions["localEncoding"];
+                    // Use provided localEncoding if present; otherwise default to TEXT_PLAIN.
+                    if (updatedOptions.localEncoding) {
+                        headers.push({ "Content-Type": updatedOptions.localEncoding });
+                    } else {
+                        headers.push(ZosmfHeaders.TEXT_PLAIN);
+                    }
                 } else {
-                    // Add text X-IBM-Data-Type if no content header is present
-                    // only if options don't include dsntype LIBRARY
-                    if (!(updatedOptions.dsntype && updatedOptions.dsntype.toUpperCase() === "LIBRARY")) {
-                        this.addHeader(headers, "X-IBM-Data-Type", "text", true);
+                    // No encoding provided: use localEncoding if available; otherwise default.
+                    if (updatedOptions.localEncoding) {
+                        headers.push({ "Content-Type": updatedOptions.localEncoding });
+                    } else {
+                        headers.push(ZosmfHeaders.TEXT_PLAIN);
                     }
                 }
-            }
-            break;
-        case ZosFilesContext.USS_MULTIPLE:
-            // For multiple USS files, force JSON content type.
-            this.addHeader(headers, "Content-Type", "application/json");
-            // Remove localEncoding to avoid adding a fallback later.
-            delete updatedOptions["localEncoding"];
-            break;
-        case ZosFilesContext.USS_SINGLE:
-            // For a single USS file, allow similar processing to dataset transfers
-            // but with USS-specific logic.
-            if (updatedOptions.binary) {
-                headers.push(ZosmfHeaders.X_IBM_BINARY);
-                delete updatedOptions["binary"];
-            } else if (updatedOptions.encoding) {
-                const keys: string[] = Object.keys(ZosmfHeaders.X_IBM_TEXT);
-                const value = ZosmfHeaders.X_IBM_TEXT[keys[0]] +
-                            ZosmfHeaders.X_IBM_TEXT_ENCODING +
-                            updatedOptions.encoding;
-                const encodingHeader: any = {};
-                encodingHeader[keys[0]] = value;
-                headers.push(encodingHeader);
-                delete updatedOptions["encoding"];
-                // Use provided localEncoding if present; otherwise default to TEXT_PLAIN.
-                if (updatedOptions.localEncoding) {
-                    headers.push({ "Content-Type": updatedOptions.localEncoding });
-                } else {
-                    headers.push(ZosmfHeaders.TEXT_PLAIN);
+                delete updatedOptions["localEncoding"];
+                break;
+            // no content type is needed for zfs and list operations:
+            case ZosFilesContext.ZFS:
+            case ZosFilesContext.LIST:
+                if (!updatedOptions.maxLength) {
+                    updatedOptions.maxLength = 0;
                 }
-            } else {
-                // No encoding provided: use localEncoding if available; otherwise default.
-                if (updatedOptions.localEncoding) {
-                    headers.push({ "Content-Type": updatedOptions.localEncoding });
-                } else {
-                    headers.push(ZosmfHeaders.TEXT_PLAIN);
-                }
-            }
-            delete updatedOptions["localEncoding"];
-            break;
-        // no content type is needed for zfs and list operations:
-        case ZosFilesContext.ZFS:
-        case ZosFilesContext.LIST:
-            if (!updatedOptions.maxLength) {
-                updatedOptions.maxLength = 0;
-            }
-            break;
-    }
-
+                break;
+        }
         return { headers, updatedOptions };
     }
 
