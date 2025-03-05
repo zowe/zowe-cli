@@ -59,6 +59,12 @@ export const DsDefinition: ICommandDefinition = {
             aliases: ["safe-rep", "sr"],
             description: strings.OPTIONS.SAFE_REPLACE,
             type: "boolean",
+        },
+        {
+            name: "overwrite",
+            aliases: ["o", "ow"],
+            description: strings.OPTIONS.OVERWRITE,
+            type: "boolean",
         }
     ] as ICommandOptionDefinition[]).sort((a, b) =>
         a.name.localeCompare(b.name)

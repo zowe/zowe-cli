@@ -37,6 +37,12 @@ export interface ICopyDatasetOptions extends IZosFilesOptions {
     replace?: boolean;
 
     /**
+     * Overwrite option
+     * @type {boolean}
+     */
+    overwrite?: boolean;
+
+    /**
      * Safe replace option
      * @type {boolean};
      */

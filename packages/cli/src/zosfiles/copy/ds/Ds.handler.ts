@@ -24,6 +24,7 @@ export default class DsHandler extends ZosFilesBaseHandler {
             "from-dataset": fromDataSet,
             enq: commandParameters.arguments.enq,
             replace: commandParameters.arguments.replace,
+            overwrite: commandParameters.arguments.overwrite,
             responseTimeout: commandParameters.arguments.responseTimeout,
             safeReplace: commandParameters.arguments.safeReplace,
             promptFn: this.promptForSafeReplace(commandParameters.response.console),
