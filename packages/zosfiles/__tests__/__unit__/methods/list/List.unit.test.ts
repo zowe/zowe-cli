@@ -17,6 +17,8 @@ import { posix } from "path";
 import { ZosFilesConstants } from "../../../../src/constants/ZosFiles.constants";
 import { IListOptions } from "../../../../src";
 import * as util from "util";
+import {extractSpyHeaders} from "../../../extractSpyHeaders";
+import 'jest-extended';
 
 describe("z/OS Files - List", () => {
     const expectJsonSpy = jest.spyOn(ZosmfRestClient, "getExpectJSON");
@@ -30,13 +32,12 @@ describe("z/OS Files - List", () => {
         ]
     };
     const listApiResponseString = `{
-    "items": [
-        {"member": "m1"},
-        {"member": "m2"}
-    ]
-}`;
+        "items": [
+            {"member": "m1"},
+            {"member": "m2"}
+        ]
+    }`;
     const fsname = "USER.DATA.SET";
-
     const dummySession = new Session({
         user: "fake",
         password: "fake",
@@ -45,12 +46,13 @@ describe("z/OS Files - List", () => {
         protocol: "https",
         type: "basic"
     });
+    const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname, ZosFilesConstants.RES_DS_MEMBERS);
+    const headers_2 = [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_MAX_ITEMS];
+    const headers_3 = [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_ATTRIBUTES_BASE, ZosmfHeaders.X_IBM_MAX_ITEMS];
 
     afterAll(() => {
         jest.restoreAllMocks();
     });
-
-    const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname, ZosFilesConstants.RES_DS_MEMBERS);
 
     describe("allMembers", () => {
         beforeEach(() => {
@@ -60,15 +62,18 @@ describe("z/OS Files - List", () => {
 
         it("should use X-IBM-Max-Items to limit the number of members returned for a data set", async () => {
             const maxLength = 100;
+            const headers = [ZosmfHeaders.ACCEPT_ENCODING, { "X-IBM-Max-Items": maxLength.toString() }];
+
             await List.allMembers(dummySession, dsname, { maxLength });
 
             expect(expectStringSpy).toHaveBeenCalledTimes(1);
-            expect(expectStringSpy).toHaveBeenCalledWith(dummySession, endpoint,
-                expect.arrayContaining([
-                    ZosmfHeaders.ACCEPT_ENCODING,
-                    { "X-IBM-Max-Items": maxLength.toString() }
-                ])
+            expect(expectStringSpy).toHaveBeenCalledWith(
+                dummySession,
+                endpoint,
+                expect.arrayContaining(headers)
             );
+            // Ensure same set of headers but allow any order:
+            expect(extractSpyHeaders(expectStringSpy)).toIncludeSameMembers(headers);
         });
 
         it("should pass start option in URL search params if provided", async () => {
@@ -78,11 +83,10 @@ describe("z/OS Files - List", () => {
             expect(expectStringSpy).toHaveBeenCalledWith(
                 dummySession,
                 endpoint.concat("?start=MEMBER1"),
-                expect.arrayContaining([
-                    ZosmfHeaders.ACCEPT_ENCODING,
-
-                ])
+                expect.arrayContaining(headers_2)
             );
+            // Ensure same set of headers but allow any order:
+            expect(extractSpyHeaders(expectStringSpy)).toIncludeSameMembers(headers_2);
         });
 
         it("should throw an error if the data set name is not specified", async () => {
@@ -147,11 +151,10 @@ describe("z/OS Files - List", () => {
             expect(expectStringSpy).toHaveBeenCalledWith(
                 dummySession,
                 endpoint,
-                expect.arrayContaining([
-                    ZosmfHeaders.ACCEPT_ENCODING,
-
-                ])
+                expect.arrayContaining(headers_2)
             );
+            // Ensure same set of headers but allow any order:
+            expect(extractSpyHeaders(expectStringSpy)).toIncludeSameMembers(headers_2);
         });
 
         it("should list members from given data set", async () => {
@@ -174,17 +177,21 @@ describe("z/OS Files - List", () => {
             expect(expectStringSpy).toHaveBeenCalledWith(
                 dummySession,
                 endpoint,
-                expect.arrayContaining([
-                    ZosmfHeaders.ACCEPT_ENCODING,
-
-                ])
+                expect.arrayContaining(headers_2)
             );
+            // Ensure same set of headers but allow any order:
+            expect(extractSpyHeaders(expectStringSpy)).toIncludeSameMembers(headers_2);
         });
 
         it("should list members from given data set with responseTimeout", async () => {
             let response;
             let caughtError;
             const options: IListOptions = {responseTimeout: 5};
+            const headers = [
+                ZosmfHeaders.ACCEPT_ENCODING,
+                ZosmfHeaders.X_IBM_MAX_ITEMS,
+                {[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: "5"}
+            ];
 
             try {
                 response = await List.allMembers(dummySession, dsname, options);
@@ -202,11 +209,10 @@ describe("z/OS Files - List", () => {
             expect(expectStringSpy).toHaveBeenCalledWith(
                 dummySession,
                 endpoint,
-                expect.arrayContaining([
-                    ZosmfHeaders.ACCEPT_ENCODING,
-                    {[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: "5"}
-                ])
+                expect.arrayContaining(headers)
             );
+            // Ensure same set of headers but allow any order:
+            expect(extractSpyHeaders(expectStringSpy)).toIncludeSameMembers(headers);
         });
 
         it("should list members from given data set that contains a member with an invalid name", async () => {
@@ -244,12 +250,11 @@ describe("z/OS Files - List", () => {
             expect(expectStringSpy).toHaveBeenCalledWith(
                 dummySession,
                 endpoint,
-                expect.arrayContaining([
-                    ZosmfHeaders.ACCEPT_ENCODING,
-
-                ])
+                expect.arrayContaining(headers_2)
             );
             expect(loggerWarnSpy.mock.calls[0][0]).toContain("members failed to load due to invalid name errors");
+            // Ensure same set of headers but allow any order:
+            expect(extractSpyHeaders(expectStringSpy)).toIncludeSameMembers(headers_2);
         });
 
         it("should list members from given data set with a matching pattern", async () => {
@@ -277,8 +282,10 @@ describe("z/OS Files - List", () => {
             expect(expectStringSpy).toHaveBeenCalledWith(
                 dummySession,
                 endpoint.concat(query),
-                expect.arrayContaining([ZosmfHeaders.ACCEPT_ENCODING])
+                expect.arrayContaining(headers_2)
             );
+            // Ensure same set of headers but allow any order:
+            expect(extractSpyHeaders(expectStringSpy)).toIncludeSameMembers(headers_2);
         });
 
         it("should list members from given data set with additional attributes", async () => {
@@ -303,11 +310,10 @@ describe("z/OS Files - List", () => {
             expect(expectStringSpy).toHaveBeenCalledWith(
                 dummySession,
                 endpoint,
-                expect.arrayContaining([
-                    ZosmfHeaders.ACCEPT_ENCODING,
-
-                ])
+                expect.arrayContaining(headers_3)
             );
+            // Ensure same set of headers but allow any order:
+            expect(extractSpyHeaders(expectStringSpy)).toIncludeSameMembers(headers_3);
         });
 
         it("should handle a Zosmf REST client error", async () => {
@@ -413,11 +419,10 @@ describe("z/OS Files - List", () => {
             expect(expectJsonSpy).toHaveBeenCalledWith(
                 dummySession,
                 endpoint,
-                expect.arrayContaining([
-                    ZosmfHeaders.ACCEPT_ENCODING,
-
-                ])
+                expect.arrayContaining(headers_2)
             );
+            // Ensure same set of headers but allow any order:
+            expect(extractSpyHeaders(expectJsonSpy)).toIncludeSameMembers(headers_2);
         });
 
         it("should return with data when input data set name is valid", async () => {
@@ -446,11 +451,10 @@ describe("z/OS Files - List", () => {
             expect(expectJsonSpy).toHaveBeenCalledWith(
                 dummySession,
                 endpoint,
-                expect.arrayContaining([
-                    ZosmfHeaders.ACCEPT_ENCODING,
-
-                ])
+                expect.arrayContaining(headers_2)
             );
+            // Ensure same set of headers but allow any order:
+            expect(extractSpyHeaders(expectJsonSpy)).toIncludeSameMembers(headers_2);
         });
 
         it("should return with data when input data set name is valid with responseTimeout", async () => {
@@ -461,8 +465,12 @@ describe("z/OS Files - List", () => {
             };
             const endpoint = posix.join(ZosFilesConstants.RESOURCE,
                 `${ZosFilesConstants.RES_DS_FILES}?${ZosFilesConstants.RES_DS_LEVEL}=${dsname}`);
-
             const options: IListOptions = {responseTimeout: 5};
+            const headers = [
+                ZosmfHeaders.ACCEPT_ENCODING,
+                ZosmfHeaders.X_IBM_MAX_ITEMS,
+                {[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: "5"}
+            ];
 
             expectJsonSpy.mockResolvedValue(testApiResponse);
 
@@ -481,12 +489,10 @@ describe("z/OS Files - List", () => {
             expect(expectJsonSpy).toHaveBeenCalledWith(
                 dummySession,
                 endpoint,
-                expect.arrayContaining([
-                    ZosmfHeaders.ACCEPT_ENCODING,
-
-                    {[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: "5"}
-                ])
+                expect.arrayContaining(headers)
             );
+            // Ensure same set of headers but allow any order:
+            expect(extractSpyHeaders(expectJsonSpy)).toIncludeSameMembers(headers);
         });
 
         it("should return with data when specify attribute option", async () => {
@@ -515,12 +521,10 @@ describe("z/OS Files - List", () => {
             expect(expectJsonSpy).toHaveBeenCalledWith(
                 dummySession,
                 endpoint,
-                expect.arrayContaining([
-                    ZosmfHeaders.ACCEPT_ENCODING,
-                    ZosmfHeaders.X_IBM_ATTRIBUTES_BASE,
-
-                ])
+                expect.arrayContaining(headers_3)
             );
+            // Ensure same set of headers but allow any order:
+            expect(extractSpyHeaders(expectJsonSpy)).toIncludeSameMembers(headers_3);
         });
 
         it("should return with data when specify start and attributes options", async () => {
@@ -549,12 +553,10 @@ describe("z/OS Files - List", () => {
             expect(expectJsonSpy).toHaveBeenCalledWith(
                 dummySession,
                 endpoint,
-                expect.arrayContaining([
-                    ZosmfHeaders.ACCEPT_ENCODING,
-                    ZosmfHeaders.X_IBM_ATTRIBUTES_BASE,
-
-                ])
+                expect.arrayContaining(headers_3)
             );
+            // Ensure same set of headers but allow any order:
+            expect(extractSpyHeaders(expectJsonSpy)).toIncludeSameMembers(headers_3);
         });
 
         it("should return with data when specify recall and attributes options", async () => {
@@ -565,6 +567,13 @@ describe("z/OS Files - List", () => {
             };
             const endpoint = posix.join(ZosFilesConstants.RESOURCE,
                 `${ZosFilesConstants.RES_DS_FILES}?${ZosFilesConstants.RES_DS_LEVEL}=${dsname}`);
+
+            const wait_headers =
+                headers_3.concat(ZosmfHeaders.X_IBM_MIGRATED_RECALL_WAIT);
+            const no_wait_headers =
+                headers_3.concat(ZosmfHeaders.X_IBM_MIGRATED_RECALL_NO_WAIT);
+            const error_headers =
+                headers_3.concat(ZosmfHeaders.X_IBM_MIGRATED_RECALL_ERROR);
 
             expectJsonSpy.mockResolvedValue(testApiResponse);
 
@@ -584,13 +593,10 @@ describe("z/OS Files - List", () => {
             expect(expectJsonSpy).toHaveBeenCalledWith(
                 dummySession,
                 endpoint,
-                expect.arrayContaining([
-                    ZosmfHeaders.ACCEPT_ENCODING,
-                    ZosmfHeaders.X_IBM_ATTRIBUTES_BASE,
-                    ZosmfHeaders.X_IBM_MIGRATED_RECALL_WAIT
-                ])
+                expect.arrayContaining(wait_headers)
             );
-
+            // Ensure same set of headers but allow any order:
+            expect(extractSpyHeaders(expectJsonSpy)).toIncludeSameMembers(wait_headers);
             expectJsonSpy.mockClear();
 
             // Unit test for nowait option
@@ -606,7 +612,13 @@ describe("z/OS Files - List", () => {
             expect(response.commandResponse).toBe(null);
             expect(response.apiResponse).toBe(testApiResponse);
             expect(expectJsonSpy).toHaveBeenCalledTimes(1);
-
+            expect(expectJsonSpy).toHaveBeenCalledWith(
+                dummySession,
+                endpoint,
+                expect.arrayContaining(no_wait_headers)
+            );
+            // Ensure same set of headers but allow any order:
+            expect(extractSpyHeaders(expectJsonSpy)).toIncludeSameMembers(no_wait_headers);
             expectJsonSpy.mockClear();
 
             // Unit test for error option
@@ -625,13 +637,10 @@ describe("z/OS Files - List", () => {
             expect(expectJsonSpy).toHaveBeenCalledWith(
                 dummySession,
                 endpoint,
-                expect.arrayContaining([
-                    ZosmfHeaders.ACCEPT_ENCODING,
-                    ZosmfHeaders.X_IBM_ATTRIBUTES_BASE,
-
-                    ZosmfHeaders.X_IBM_MIGRATED_RECALL_ERROR
-                ])
+                expect.arrayContaining(error_headers)
             );
+            // Ensure same set of headers but allow any order:
+            expect(extractSpyHeaders(expectJsonSpy)).toIncludeSameMembers(error_headers);
             expectJsonSpy.mockClear();
         });
 
@@ -661,12 +670,10 @@ describe("z/OS Files - List", () => {
             expect(expectJsonSpy).toHaveBeenCalledWith(
                 dummySession,
                 endpoint,
-                expect.arrayContaining([
-                    ZosmfHeaders.ACCEPT_ENCODING,
-                    ZosmfHeaders.X_IBM_ATTRIBUTES_BASE,
-
-                ])
+                expect.arrayContaining(headers_3)
             );
+            // Ensure same set of headers but allow any order:
+            expect(extractSpyHeaders(expectJsonSpy)).toIncludeSameMembers(headers_3);
         });
     });
 
@@ -752,11 +759,10 @@ describe("z/OS Files - List", () => {
             expect(expectJsonSpy).toHaveBeenCalledWith(
                 dummySession,
                 endpoint,
-                expect.arrayContaining([
-                    ZosmfHeaders.ACCEPT_ENCODING,
-
-                ])
+                expect.arrayContaining(headers_2)
             );
+            // Ensure same set of headers but allow any order:
+            expect(extractSpyHeaders(expectJsonSpy)).toIncludeSameMembers(headers_2);
         });
 
         it("should return with files when input path name is valid", async () => {
@@ -810,16 +816,16 @@ describe("z/OS Files - List", () => {
             expect(expectJsonSpy).toHaveBeenCalledWith(
                 dummySession,
                 endpoint,
-                expect.arrayContaining([
-                    ZosmfHeaders.ACCEPT_ENCODING,
-
-                ])
+                expect.arrayContaining(headers_2)
             );
+            // Ensure same set of headers but allow any order:
+            expect(extractSpyHeaders(expectJsonSpy)).toIncludeSameMembers(headers_2);
         });
 
         it("should return with files when input path name is valid and max items set", async () => {
             let response;
             let error;
+            const headers = [ZosmfHeaders.ACCEPT_ENCODING, {"X-IBM-Max-Items": "2"}]
             const testApiResponse = {
                 items: [
                     {
@@ -849,19 +855,18 @@ describe("z/OS Files - List", () => {
             expect(response.commandResponse).toBe(null);
             expect(response.apiResponse).toBe(testApiResponse);
             expect(expectJsonSpy).toHaveBeenCalledTimes(1);
-            expect(expectJsonSpy).toHaveBeenCalledWith(
-                dummySession,
-                endpoint,
-                expect.arrayContaining([
-                    ZosmfHeaders.ACCEPT_ENCODING,
-                    {"X-IBM-Max-Items": "2"}
-                ])
-            );
+            expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint, headers);
+            expect(extractSpyHeaders(expectJsonSpy)).toIncludeSameMembers(headers); //ensure same set of headers
         });
 
         it("should return with files when input path name is valid with responseTimeout and max items set", async () => {
             let response;
             let error;
+            const headers = [
+                ZosmfHeaders.ACCEPT_ENCODING,
+                {"X-IBM-Max-Items": "2"},
+                {[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: "5"}
+            ];
             const testApiResponse = {
                 items: [
                     {
@@ -891,15 +896,8 @@ describe("z/OS Files - List", () => {
             expect(response.commandResponse).toBe(null);
             expect(response.apiResponse).toBe(testApiResponse);
             expect(expectJsonSpy).toHaveBeenCalledTimes(1);
-            expect(expectJsonSpy).toHaveBeenCalledWith(
-                dummySession,
-                endpoint,
-                expect.arrayContaining([
-                    ZosmfHeaders.ACCEPT_ENCODING,
-                    {"X-IBM-Max-Items": "2"},
-                    {[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: "5"}
-                ])
-            );
+            expect(expectJsonSpy).toHaveBeenCalledWith(dummySession, endpoint, headers);
+            expect(extractSpyHeaders(expectJsonSpy)).toIncludeSameMembers(headers); //ensure same set of headers
         });
 
         describe("options", () => {
@@ -957,11 +955,10 @@ describe("z/OS Files - List", () => {
                 expect(expectJsonSpy).toHaveBeenCalledWith(
                     dummySession,
                     endpoint,
-                    expect.arrayContaining([
-                        ZosmfHeaders.ACCEPT_ENCODING,
-
-                    ])
+                    expect.arrayContaining(headers_2)
                 );
+                // Ensure same set of headers but allow any order:
+                expect(extractSpyHeaders(expectJsonSpy)).toIncludeSameMembers(headers_2);
             });
 
             it("should add the group ID parameter to the URI", async () => {
@@ -986,11 +983,10 @@ describe("z/OS Files - List", () => {
                 expect(expectJsonSpy).toHaveBeenCalledWith(
                     dummySession,
                     endpoint,
-                    expect.arrayContaining([
-                        ZosmfHeaders.ACCEPT_ENCODING,
-
-                    ])
+                    expect.arrayContaining(headers_2)
                 );
+                // Ensure same set of headers but allow any order:
+                expect(extractSpyHeaders(expectJsonSpy)).toIncludeSameMembers(headers_2);
             });
 
             it("should add the user name parameter to the URI", async () => {
@@ -1015,11 +1011,10 @@ describe("z/OS Files - List", () => {
                 expect(expectJsonSpy).toHaveBeenCalledWith(
                     dummySession,
                     endpoint,
-                    expect.arrayContaining([
-                        ZosmfHeaders.ACCEPT_ENCODING,
-
-                    ])
+                    expect.arrayContaining(headers_2)
                 );
+                // Ensure same set of headers but allow any order:
+                expect(extractSpyHeaders(expectJsonSpy)).toIncludeSameMembers(headers_2);
             });
 
             it("should add the user ID parameter to the URI", async () => {
@@ -1044,11 +1039,10 @@ describe("z/OS Files - List", () => {
                 expect(expectJsonSpy).toHaveBeenCalledWith(
                     dummySession,
                     endpoint,
-                    expect.arrayContaining([
-                        ZosmfHeaders.ACCEPT_ENCODING,
-
-                    ])
+                    expect.arrayContaining(headers_2)
                 );
+                // Ensure same set of headers but allow any order:
+                expect(extractSpyHeaders(expectJsonSpy)).toIncludeSameMembers(headers_2);
             });
 
 
@@ -1074,11 +1068,10 @@ describe("z/OS Files - List", () => {
                 expect(expectJsonSpy).toHaveBeenCalledWith(
                     dummySession,
                     endpoint,
-                    expect.arrayContaining([
-                        ZosmfHeaders.ACCEPT_ENCODING,
-
-                    ])
+                    expect.arrayContaining(headers_2)
                 );
+                // Ensure same set of headers but allow any order:
+                expect(extractSpyHeaders(expectJsonSpy)).toIncludeSameMembers(headers_2);
             });
 
             it("should add the mtime parameter to the URI - number", async () => {
@@ -1103,11 +1096,10 @@ describe("z/OS Files - List", () => {
                 expect(expectJsonSpy).toHaveBeenCalledWith(
                     dummySession,
                     endpoint,
-                    expect.arrayContaining([
-                        ZosmfHeaders.ACCEPT_ENCODING,
-
-                    ])
+                    expect.arrayContaining(headers_2)
                 );
+                // Ensure same set of headers but allow any order:
+                expect(extractSpyHeaders(expectJsonSpy)).toIncludeSameMembers(headers_2);
             });
 
             it("should add the mtime parameter to the URI - string", async () => {
@@ -1132,11 +1124,10 @@ describe("z/OS Files - List", () => {
                 expect(expectJsonSpy).toHaveBeenCalledWith(
                     dummySession,
                     endpoint,
-                    expect.arrayContaining([
-                        ZosmfHeaders.ACCEPT_ENCODING,
-
-                    ])
+                    expect.arrayContaining(headers_2)
                 );
+                // Ensure same set of headers but allow any order:
+                expect(extractSpyHeaders(expectJsonSpy)).toIncludeSameMembers(headers_2);
             });
 
             it("should add the size parameter to the URI - number", async () => {
@@ -1161,11 +1152,10 @@ describe("z/OS Files - List", () => {
                 expect(expectJsonSpy).toHaveBeenCalledWith(
                     dummySession,
                     endpoint,
-                    expect.arrayContaining([
-                        ZosmfHeaders.ACCEPT_ENCODING,
-
-                    ])
+                    expect.arrayContaining(headers_2)
                 );
+                // Ensure same set of headers but allow any order:
+                expect(extractSpyHeaders(expectJsonSpy)).toIncludeSameMembers(headers_2);
             });
 
             it("should add the size parameter to the URI - string", async () => {
@@ -1190,11 +1180,10 @@ describe("z/OS Files - List", () => {
                 expect(expectJsonSpy).toHaveBeenCalledWith(
                     dummySession,
                     endpoint,
-                    expect.arrayContaining([
-                        ZosmfHeaders.ACCEPT_ENCODING,
-
-                    ])
+                    expect.arrayContaining(headers_2)
                 );
+                // Ensure same set of headers but allow any order:
+                expect(extractSpyHeaders(expectJsonSpy)).toIncludeSameMembers(headers_2);
             });
 
             it("should add the perm parameter to the URI", async () => {
@@ -1219,11 +1208,10 @@ describe("z/OS Files - List", () => {
                 expect(expectJsonSpy).toHaveBeenCalledWith(
                     dummySession,
                     endpoint,
-                    expect.arrayContaining([
-                        ZosmfHeaders.ACCEPT_ENCODING,
-
-                    ])
+                    expect.arrayContaining(headers_2)
                 );
+                // Ensure same set of headers but allow any order:
+                expect(extractSpyHeaders(expectJsonSpy)).toIncludeSameMembers(headers_2);
             });
 
             it("should add the type parameter to the URI", async () => {
@@ -1248,11 +1236,10 @@ describe("z/OS Files - List", () => {
                 expect(expectJsonSpy).toHaveBeenCalledWith(
                     dummySession,
                     endpoint,
-                    expect.arrayContaining([
-                        ZosmfHeaders.ACCEPT_ENCODING,
-
-                    ])
+                    expect.arrayContaining(headers_2)
                 );
+                // Ensure same set of headers but allow any order:
+                expect(extractSpyHeaders(expectJsonSpy)).toIncludeSameMembers(headers_2);
             });
 
             it("should add the depth parameter to the URI", async () => {
@@ -1277,11 +1264,10 @@ describe("z/OS Files - List", () => {
                 expect(expectJsonSpy).toHaveBeenCalledWith(
                     dummySession,
                     endpoint,
-                    expect.arrayContaining([
-                        ZosmfHeaders.ACCEPT_ENCODING,
-
-                    ])
+                    expect.arrayContaining(headers_2)
                 );
+                // Ensure same set of headers but allow any order:
+                expect(extractSpyHeaders(expectJsonSpy)).toIncludeSameMembers(headers_2);
             });
 
             it("should add the filesys parameter to the URI - true", async () => {
@@ -1306,11 +1292,10 @@ describe("z/OS Files - List", () => {
                 expect(expectJsonSpy).toHaveBeenCalledWith(
                     dummySession,
                     endpoint,
-                    expect.arrayContaining([
-                        ZosmfHeaders.ACCEPT_ENCODING,
-
-                    ])
+                    expect.arrayContaining(headers_2)
                 );
+                // Ensure same set of headers but allow any order:
+                expect(extractSpyHeaders(expectJsonSpy)).toIncludeSameMembers(headers_2);
             });
 
             it("should add the filesys parameter to the URI - false", async () => {
@@ -1335,11 +1320,10 @@ describe("z/OS Files - List", () => {
                 expect(expectJsonSpy).toHaveBeenCalledWith(
                     dummySession,
                     endpoint,
-                    expect.arrayContaining([
-                        ZosmfHeaders.ACCEPT_ENCODING,
-
-                    ])
+                    expect.arrayContaining(headers_2)
                 );
+                // Ensure same set of headers but allow any order:
+                expect(extractSpyHeaders(expectJsonSpy)).toIncludeSameMembers(headers_2);
             });
 
             it("should add the symlinks parameter to the URI - true", async () => {
@@ -1364,11 +1348,10 @@ describe("z/OS Files - List", () => {
                 expect(expectJsonSpy).toHaveBeenCalledWith(
                     dummySession,
                     endpoint,
-                    expect.arrayContaining([
-                        ZosmfHeaders.ACCEPT_ENCODING,
-
-                    ])
+                    expect.arrayContaining(headers_2)
                 );
+                // Ensure same set of headers but allow any order:
+                expect(extractSpyHeaders(expectJsonSpy)).toIncludeSameMembers(headers_2);
             });
 
             it("should add the symlinks parameter to the URI - false", async () => {
@@ -1393,11 +1376,10 @@ describe("z/OS Files - List", () => {
                 expect(expectJsonSpy).toHaveBeenCalledWith(
                     dummySession,
                     endpoint,
-                    expect.arrayContaining([
-                        ZosmfHeaders.ACCEPT_ENCODING,
-
-                    ])
+                    expect.arrayContaining(headers_2)
                 );
+                // Ensure same set of headers but allow any order:
+                expect(extractSpyHeaders(expectJsonSpy)).toIncludeSameMembers(headers_2);
             });
 
             it("should fail to add the depth parameter because it is missing a required parameter", async () => {
@@ -1444,7 +1426,7 @@ describe("z/OS Files - List", () => {
         it("should return 2 records of all mounted filesystems", async () => {
             let response;
             let error;
-
+            const headers = [ZosmfHeaders.ACCEPT_ENCODING, {"X-IBM-Max-Items": "2"}];
             const endpoint = posix.join(ZosFilesConstants.RESOURCE, `${ZosFilesConstants.RES_MFS}`);
 
             try {
@@ -1459,17 +1441,20 @@ describe("z/OS Files - List", () => {
             expect(expectJsonSpy).toHaveBeenCalledWith(
                 dummySession,
                 endpoint,
-                expect.arrayContaining([
-                    ZosmfHeaders.ACCEPT_ENCODING,
-                    {"X-IBM-Max-Items": "2"}
-                ])
+                expect.arrayContaining(headers)
             );
-        });
+                // Ensure same set of headers but allow any order:
+                expect(extractSpyHeaders(expectJsonSpy)).toIncludeSameMembers(headers);
+            });
 
         it("should return 2 records of all mounted filesystems with responseTimeout", async () => {
             let response;
             let error;
-
+            const headers = [
+                ZosmfHeaders.ACCEPT_ENCODING,
+                {"X-IBM-Max-Items": "2"},
+                {[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: "5"}
+            ];
             const endpoint = posix.join(ZosFilesConstants.RESOURCE, `${ZosFilesConstants.RES_MFS}`);
 
             try {
@@ -1484,11 +1469,10 @@ describe("z/OS Files - List", () => {
             expect(expectJsonSpy).toHaveBeenCalledWith(
                 dummySession,
                 endpoint,
-                expect.arrayContaining([
-                    ZosmfHeaders.ACCEPT_ENCODING, {"X-IBM-Max-Items": "2"},
-                    {[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: "5"}
-                ])
+                expect.arrayContaining(headers)
             );
+            // Ensure same set of headers but allow any order:
+            expect(extractSpyHeaders(expectJsonSpy)).toIncludeSameMembers(headers);
         });
 
         it("should throw error when zosmfRestClient.getExpectJSON error", async () => {
@@ -1553,11 +1537,10 @@ describe("z/OS Files - List", () => {
             expect(expectJsonSpy).toHaveBeenCalledWith(
                 dummySession,
                 endpoint,
-                expect.arrayContaining([
-                    ZosmfHeaders.ACCEPT_ENCODING,
-
-                ])
+                expect.arrayContaining(headers_2)
             );
+            // Ensure same set of headers but allow any order:
+            expect(extractSpyHeaders(expectJsonSpy)).toIncludeSameMembers(headers_2);
         });
 
         it("should return with list when input fsname is valid", async () => {
@@ -1602,11 +1585,10 @@ describe("z/OS Files - List", () => {
             expect(expectJsonSpy).toHaveBeenCalledWith(
                 dummySession,
                 endpoint,
-                expect.arrayContaining([
-                    ZosmfHeaders.ACCEPT_ENCODING,
-
-                ])
+                expect.arrayContaining(headers_2)
             );
+            // Ensure same set of headers but allow any order:
+            expect(extractSpyHeaders(expectJsonSpy)).toIncludeSameMembers(headers_2);
         });
 
     });

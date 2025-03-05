@@ -249,14 +249,14 @@ export class ZosFilesHeaders {
             }
             delete updatedOptions["localEncoding"];
             break;
-        // no content type is needed for zfs and list operations
+        // no content type is needed for zfs and list operations:
         case ZosFilesContext.ZFS:
         case ZosFilesContext.LIST:
             if (!updatedOptions.maxLength) {
                 updatedOptions.maxLength = 0;
             }
             break;
-        }
+    }
 
         return { headers, updatedOptions };
     }
