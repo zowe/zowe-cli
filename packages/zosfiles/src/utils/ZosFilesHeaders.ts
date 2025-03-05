@@ -208,10 +208,10 @@ export class ZosFilesHeaders {
                         headers.push({ "Content-Type": updatedOptions.localEncoding });
                         delete updatedOptions["localEncoding"];
                     } else {
-                        // Add text Content-Type if no content header is present
+                        // Add text X-IBM-Data-Type if no content header is present
                         // only if options don't include dsntype LIBRARY
                         if (!(updatedOptions.dsntype && updatedOptions.dsntype.toUpperCase() === "LIBRARY")) {
-                            this.addHeader(headers, "Content-Type", "text/plain", true);
+                            this.addHeader(headers, "X-IBM-Data-Type", "text", true);
                         }
                     }
                 }
