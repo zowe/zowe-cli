@@ -90,7 +90,7 @@ export class Copy {
         const overwriteDataset = options.overwrite;
 
         if(overwriteDataset){
-            await Delete.dataSet(session,toDataSetName)
+            await Delete.dataSet(session,toDataSetName);
             newDataSet = true;
         }
 
