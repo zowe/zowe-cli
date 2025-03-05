@@ -23,7 +23,7 @@ import { IUSSListOptions } from "./doc/IUSSListOptions";
 import { IFsOptions } from "./doc/IFsOptions";
 import { IZosmfListResponse } from "./doc/IZosmfListResponse";
 import { IDsmListOptions } from "./doc/IDsmListOptions";
-import { ZosFilesHeaders } from "../../utils/ZosFilesHeaders";
+import { ZosFilesContext, ZosFilesHeaders } from "../../utils/ZosFilesHeaders";
 
 /**
  * This class holds helper functions that are used to list data sets and its members through the z/OS MF APIs
@@ -62,8 +62,11 @@ export class List {
             if (options.start) {
                 params.set("start", options.start);
             }
+            if (!options.maxLength) {
+                options.maxLength = 0;
+            }
 
-            const reqHeaders: IHeaderContent[] = ZosFilesHeaders.generateHeaders({options});
+            const reqHeaders: IHeaderContent[] = ZosFilesHeaders.generateHeaders({options, context: ZosFilesContext.LIST});
 
             this.log.debug(`Endpoint: ${endpoint}`);
 
@@ -184,7 +187,7 @@ export class List {
                 endpoint = `${endpoint}&start=${encodeURIComponent(options.start)}`;
             }
 
-            const reqHeaders: IHeaderContent[] = ZosFilesHeaders.generateHeaders({options});
+            const reqHeaders: IHeaderContent[] = ZosFilesHeaders.generateHeaders({options, context: ZosFilesContext.LIST});
 
             this.log.debug(`Endpoint: ${endpoint}`);
 
@@ -232,7 +235,7 @@ export class List {
             let endpoint = posix.join(ZosFilesConstants.RESOURCE,
                 `${ZosFilesConstants.RES_USS_FILES}?${ZosFilesConstants.RES_PATH}=${encodeURIComponent(path)}`);
 
-            const reqHeaders: IHeaderContent[] = ZosFilesHeaders.generateHeaders({options});
+                const reqHeaders: IHeaderContent[] = ZosFilesHeaders.generateHeaders({options, context: ZosFilesContext.LIST});
 
             // Start modifying the endpoint with the query parameters that were passed in
             if (options.group) { endpoint += `&${ZosFilesConstants.RES_GROUP}=${encodeURIComponent(options.group)}`; }
@@ -286,7 +289,7 @@ export class List {
                 endpoint = posix.join(endpoint, `?${ZosFilesConstants.RES_FSNAME}=${encodeURIComponent(options.fsname)}`);
             }
 
-            const reqHeaders: IHeaderContent[] = ZosFilesHeaders.generateHeaders({options});
+            const reqHeaders: IHeaderContent[] = ZosFilesHeaders.generateHeaders({options, context: ZosFilesContext.LIST});
 
             this.log.debug(`Endpoint: ${endpoint}`);
 
@@ -323,7 +326,7 @@ export class List {
                 endpoint = posix.join(endpoint, `?${ZosFilesConstants.RES_PATH}=${encodeURIComponent(options.path)}`);
             }
 
-            const reqHeaders: IHeaderContent[] = ZosFilesHeaders.generateHeaders({options});
+            const reqHeaders: IHeaderContent[] = ZosFilesHeaders.generateHeaders({options, context: ZosFilesContext.LIST});
 
             this.log.debug(`Endpoint: ${endpoint}`);
 

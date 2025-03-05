@@ -18,7 +18,7 @@ import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 import { IZosFilesResponse } from "../../doc/IZosFilesResponse";
 import { IDataSet } from "../../doc/IDataSet";
 import { IZosFilesOptions } from "../../doc/IZosFilesOptions";
-import { ZosFilesHeaders } from "../../utils/ZosFilesHeaders";
+import { ZosFilesContext, ZosFilesHeaders } from "../../utils/ZosFilesHeaders";
 /**
  * Class to handle renaming data sets
  */
@@ -103,6 +103,7 @@ export class Rename {
 
         const reqHeaders = ZosFilesHeaders.generateHeaders({
             options,
+            context: ZosFilesContext.DATASET,
             dataLength: JSON.stringify(payload).length.toString()
         });
 

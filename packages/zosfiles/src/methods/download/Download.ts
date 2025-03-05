@@ -97,8 +97,6 @@ export class Download {
 
             Logger.getAppLogger().debug(`Endpoint: ${endpoint}`);
 
-            const reqHeaders = ZosFilesHeaders.generateHeaders({ options, context: ZosFilesContext.STREAM });
-
             // Get contents of the data set
             let extension = ZosFilesUtils.DEFAULT_FILE_EXTENSION;
             if (options.extension != null) {
@@ -128,6 +126,7 @@ export class Download {
             }
 
             const writeStream = options.stream ?? IO.createWriteStream(destination);
+            const reqHeaders = ZosFilesHeaders.generateHeaders({ options, context: ZosFilesContext.DATASET });
 
             // Use specific options to mimic ZosmfRestClient.getStreamed()
             const requestOptions: IOptionsFullResponse = {
@@ -507,6 +506,7 @@ export class Download {
         ImperativeExpect.toNotBeEqual(options.record, true, ZosFilesMessages.unsupportedDataType.message);
         try {
             let destination: string;
+            const context = options?.multipleFiles ? ZosFilesContext.USS_MULTIPLE : ZosFilesContext.USS_SINGLE;
 
             if (options.stream == null) {
                 destination = options.file || posix.normalize(posix.basename(ussFileName));
@@ -531,7 +531,7 @@ export class Download {
             ussFileName = ZosFilesUtils.sanitizeUssPathForRestCall(ussFileName);
             const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, ussFileName);
 
-            const reqHeaders = ZosFilesHeaders.generateHeaders({ options, context: ZosFilesContext.STREAM });
+            const reqHeaders = ZosFilesHeaders.generateHeaders({ options, context });
 
             // Use specific options to mimic ZosmfRestClient.getStreamed()
             const requestOptions: IOptionsFullResponse = {
@@ -674,6 +674,7 @@ export class Download {
                         file: item.name,
                         options: {
                             ...mutableOptions,
+                            multipleFiles: true,
                             ...this.parseAttributeOptions(item.name, fileOptions)
                         },
                     });

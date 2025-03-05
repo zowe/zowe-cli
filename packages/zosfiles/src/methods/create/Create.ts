@@ -124,7 +124,7 @@ export class Create {
             }
 
             const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + encodeURIComponent(dataSetName);
-            const reqHeaders = ZosFilesHeaders.generateHeaders({options});
+            const reqHeaders = ZosFilesHeaders.generateHeaders({options, context: ZosFilesContext.DATASET});
             Create.dataSetValidateOptions(tempOptions);
 
             await ZosmfRestClient.postExpectString(session, endpoint, reqHeaders, JSON.stringify(tempOptions));
@@ -145,7 +145,7 @@ export class Create {
         ImperativeExpect.toNotBeNullOrUndefined(likeDataSetName, ZosFilesMessages.missingDatasetLikeName.message);
 
         const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + encodeURIComponent(dataSetName);
-        const reqHeaders = ZosFilesHeaders.generateHeaders({options});
+        const reqHeaders = ZosFilesHeaders.generateHeaders({options, context: ZosFilesContext.DATASET});
         const tempOptions = JSON.parse(JSON.stringify({ like: likeDataSetName, ...options || {} }));
         Create.dataSetValidateOptions(tempOptions);
 
@@ -433,7 +433,7 @@ export class Create {
         ussPath = ussPath.charAt(0) === "/" ? ussPath.substring(1) : ussPath;
         ussPath = encodeURIComponent(ussPath);
         const parameters: string = `${ZosFilesConstants.RESOURCE}${ZosFilesConstants.RES_USS_FILES}/${ussPath}`;
-        const reqHeaders = ZosFilesHeaders.generateHeaders({ options, context: ZosFilesContext.USS });
+        const reqHeaders = ZosFilesHeaders.generateHeaders({ options, context: ZosFilesContext.USS_MULTIPLE });
 
         let payload: object = { type };
         if (mode) {
@@ -491,7 +491,11 @@ export class Create {
 
         // Use the original options copy for header generation.
         const headerOptions = JSON.parse(JSON.stringify(originalOptions));
-        const reqHeaders = ZosFilesHeaders.generateHeaders({ options: headerOptions, context: ZosFilesContext.ZFS, dataLength: jsonContent.length });
+        const reqHeaders = ZosFilesHeaders.generateHeaders({
+            options: headerOptions,
+            context: ZosFilesContext.ZFS,
+            dataLength: jsonContent.length
+        });
 
         const data = await ZosmfRestClient.postExpectString(session, endpoint, reqHeaders, jsonContent);
 

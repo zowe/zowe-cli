@@ -13,6 +13,8 @@ import { Session, ImperativeError } from "@zowe/imperative";
 import { posix } from "path";
 import { Rename, ZosFilesConstants, ZosFilesMessages } from "../../../../src";
 import { ZosmfHeaders, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
+import {extractSpyHeaders} from "../../../extractSpyHeaders";
+import 'jest-extended';
 
 describe("Rename", () => {
     const putExpectStringSpy = jest.spyOn(ZosmfRestClient, "putExpectString");
@@ -63,6 +65,8 @@ describe("Rename", () => {
                     expect.arrayContaining(expectedHeaders),
                     expectedPayload
                 );
+                // Ensure same set of headers but allow any order:
+                expect(extractSpyHeaders(putExpectStringSpy)).toIncludeSameMembers(expectedHeaders);
             });
             it("Should send a request to rename a data set with response timeout", async () => {
                 const expectedPayload = { "request": "rename", "from-dataset": { dsn: beforeDataSetName } };
@@ -90,6 +94,8 @@ describe("Rename", () => {
                     expect.arrayContaining(expectedHeaders),
                     expectedPayload
                 );
+                // Ensure same set of headers but allow any order:
+                expect(extractSpyHeaders(putExpectStringSpy)).toIncludeSameMembers(expectedHeaders);
             });
         });
         describe("Failure Scenarios", () => {
@@ -158,6 +164,8 @@ describe("Rename", () => {
                     expect.arrayContaining(expectedHeaders),
                     expectedPayload
                 );
+                // Ensure same set of headers but allow any order:
+                expect(extractSpyHeaders(putExpectStringSpy)).toIncludeSameMembers(expectedHeaders);
                 expect(error.message).toContain(errorMessage);
             });
         });
@@ -200,6 +208,8 @@ describe("Rename", () => {
                     expect.arrayContaining(expectedHeaders),
                     expectedPayload
                 );
+                // Ensure same set of headers but allow any order:
+                expect(extractSpyHeaders(putExpectStringSpy)).toIncludeSameMembers(expectedHeaders);
             });
             it("Should send a request to rename a data set member with response timeout", async () => {
                 const expectedPayload = {
@@ -234,6 +244,8 @@ describe("Rename", () => {
                     expect.arrayContaining(expectedHeaders),
                     expectedPayload
                 );
+                // Ensure same set of headers but allow any order:
+                expect(extractSpyHeaders(putExpectStringSpy)).toIncludeSameMembers(expectedHeaders);
             });
         });
         describe("Failure Scenarios", () => {
@@ -291,6 +303,8 @@ describe("Rename", () => {
                     expect.arrayContaining(expectedHeaders),
                     expectedPayload
                 );
+                // Ensure same set of headers but allow any order:
+                expect(extractSpyHeaders(putExpectStringSpy)).toIncludeSameMembers(expectedHeaders);
                 expect(error.message).toContain(errorMessage);
             });
         });

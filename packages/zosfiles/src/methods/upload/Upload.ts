@@ -165,7 +165,7 @@ export class Upload {
         endpoint = path.posix.join(endpoint, encodeURIComponent(dataSetName));
 
         // Construct request header parameters
-        const reqHeaders: IHeaderContent[] = ZosFilesHeaders.generateHeaders({ options, context: ZosFilesContext.BUFFER });
+        const reqHeaders: IHeaderContent[] = ZosFilesHeaders.generateHeaders({ options, context: ZosFilesContext.DATASET });
 
         if (!options.binary) {
             fileBuffer = ZosFilesUtils.normalizeNewline(fileBuffer);
@@ -235,7 +235,7 @@ export class Upload {
         endpoint = path.posix.join(endpoint, encodeURIComponent(dataSetName));
 
         // Construct request header parameters
-        const reqHeaders: IHeaderContent[] = ZosFilesHeaders.generateHeaders({ options, context: ZosFilesContext.STREAM });
+        const reqHeaders: IHeaderContent[] = ZosFilesHeaders.generateHeaders({ options, context: ZosFilesContext.DATASET });
 
         const requestOptions: IOptionsFullResponse = {
             resource: endpoint,
@@ -476,7 +476,7 @@ export class Upload {
         ussname = ZosFilesUtils.sanitizeUssPathForRestCall(ussname);
 
         const endpoint = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + ussname;
-        const reqHeaders: IHeaderContent[] = ZosFilesHeaders.generateHeaders({ options, context: ZosFilesContext.BUFFER });
+        const reqHeaders: IHeaderContent[] = ZosFilesHeaders.generateHeaders({ options, context: ZosFilesContext.USS_SINGLE });
 
         if (!options.binary) {
             fileBuffer = ZosFilesUtils.normalizeNewline(fileBuffer);
@@ -544,7 +544,7 @@ export class Upload {
         ussname = ZosFilesUtils.sanitizeUssPathForRestCall(ussname);
         const parameters: string = ZosFilesConstants.RES_USS_FILES + "/" + ussname;
 
-        const reqHeaders: IHeaderContent[] = ZosFilesHeaders.generateHeaders({ options, context: ZosFilesContext.STREAM });
+        const reqHeaders: IHeaderContent[] = ZosFilesHeaders.generateHeaders({ options, context: ZosFilesContext.USS_SINGLE });
 
         // Options to use the stream to write a file
         const restOptions: IOptionsFullResponse = {

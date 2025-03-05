@@ -12,9 +12,10 @@
 import { Session, ImperativeError } from "@zowe/imperative";
 import { posix } from "path";
 import { HDelete, ZosFilesConstants, ZosFilesMessages } from "../../../../src";
-
 import { ZosmfHeaders, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { IDeleteOptions } from "../../../../src/methods/hDelete/doc/IDeleteOptions";
+import {extractSpyHeaders} from "../../../extractSpyHeaders";
+import 'jest-extended';
 
 describe("hDelete data set", () => {
     const putExpectStringSpy = jest.spyOn(ZosmfRestClient, "putExpectString");
@@ -67,6 +68,9 @@ describe("hDelete data set", () => {
                 expect.arrayContaining(expectedHeaders),
                 expectedPayload
             );
+            // Ensure same set of headers but allow any order:
+            const receivedHeaders = extractSpyHeaders(putExpectStringSpy);
+            expect(receivedHeaders).toIncludeSameMembers(expectedHeaders);
         });
         it("should send a request with wait = true", async () => {
             const options: IDeleteOptions = { wait: true };
@@ -99,6 +103,9 @@ describe("hDelete data set", () => {
                 expect.arrayContaining(expectedHeaders),
                 expectedPayload
             );
+            // Ensure same set of headers but allow any order:
+            const receivedHeaders = extractSpyHeaders(putExpectStringSpy);
+            expect(receivedHeaders).toIncludeSameMembers(expectedHeaders);
         });
         it("should send a request with purge = true", async () => {
             const options: IDeleteOptions = { purge: true };
@@ -131,6 +138,9 @@ describe("hDelete data set", () => {
                 expect.arrayContaining(expectedHeaders),
                 expectedPayload
             );
+            // Ensure same set of headers but allow any order:
+            const receivedHeaders = extractSpyHeaders(putExpectStringSpy);
+            expect(receivedHeaders).toIncludeSameMembers(expectedHeaders);
         });
         it("should send a request with responseTimeout", async () => {
             const options: IDeleteOptions = { responseTimeout: 5 };
@@ -163,6 +173,9 @@ describe("hDelete data set", () => {
                 expect.arrayContaining(expectedHeaders),
                 expectedPayload
             );
+            // Ensure same set of headers but allow any order:
+            const receivedHeaders = extractSpyHeaders(putExpectStringSpy);
+            expect(receivedHeaders).toIncludeSameMembers(expectedHeaders);
         });
     });
     describe("Failure Scenarios", () => {
@@ -201,6 +214,9 @@ describe("hDelete data set", () => {
                 expectedPayload
             );
             expect(error).toContain(errorMessage);
+            // Ensure same set of headers but allow any order:
+            const receivedHeaders = extractSpyHeaders(putExpectStringSpy);
+            expect(receivedHeaders).toIncludeSameMembers(expectedHeaders);
         });
     });
 });

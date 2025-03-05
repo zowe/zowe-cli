@@ -60,7 +60,7 @@ export class Delete {
                 endpoint = posix.join(endpoint, `-(${encodeURIComponent(options.volume)})`);
             }
 
-            const reqHeaders = ZosFilesHeaders.generateHeaders({ options });
+            const reqHeaders = ZosFilesHeaders.generateHeaders({ options, context: ZosFilesContext.DATASET });
 
 
             endpoint = posix.join(endpoint, encodeURIComponent(dataSetName));
@@ -152,8 +152,7 @@ export class Delete {
         endpoint = posix.join(endpoint, fileName);
         Logger.getAppLogger().debug(`Endpoint: ${endpoint}`);
 
-        const reqHeaders = ZosFilesHeaders.generateHeaders({ options, context: ZosFilesContext.USS });
-        // TO DO: make recursive an option on IDeleteOptions
+        const reqHeaders = ZosFilesHeaders.generateHeaders({ options, context: ZosFilesContext.USS_SINGLE });
         if (recursive && recursive === true) {
             reqHeaders.push({"X-IBM-Option": "recursive"});
         }

@@ -15,16 +15,19 @@ import { ZosmfHeaders } from "@zowe/core-for-zowe-sdk";
 /**
  * Enumeration of operation contexts (USS,ZFS or Dataset-related) used when generating content-type headers.
  *
- * - **Stream** or **Buffer**: Used when uploading/downloading USS files.
- * - **Uss**: Forces JSON content type for USS operations.
- * - **Zfs**: Use for ZFS operations; no default content-type header is added.
- * - **Undefined**: When no context is provided, the default is to treat the operation as a Dataset creation.
+ * - **DATASET**: Used for transferring datasets (ie upload/download). Headers added based on options (binary, encoding, etc).
+ * - **USS_SINGLE**: Used when transferring a single USS file. USS-specific headers for encoding and file naming.
+ * - **USS_MULTIPLE**: Used when handling multiple USS files in one operation. In this context, JSON content-type is forced.
+ * - **ZFS**: Used for ZFS operations. No content-type headers needed
+ * - **LIST**: Used getting metadata for files or datasets. No content-type headers needed.
  */
 export enum ZosFilesContext {
-    STREAM = "stream",
-    BUFFER = "buffer",
-    USS = "uss",
-    ZFS = "zfs"
+    DATASET = "dataset",
+    USS_SINGLE = "uss_single",
+    USS_MULTIPLE = "uss_multiple",
+    //no content-type headers:
+    ZFS = "zfs",
+    LIST = "list"
 }
 
 /**
@@ -55,8 +58,7 @@ export class ZosFilesHeaders {
         this.headerMap.set("recall", (options) => this.getRecallHeader(((options as any).recall || "").toString()));
         this.headerMap.set("etag", (options) => this.createHeader("If-Match", (options as any).etag));
         this.headerMap.set("returnEtag", (options) => this.createHeader("X-IBM-Return-Etag", (options as any).returnEtag));
-        this.headerMap.set("maxLength", (options) => this.createHeader("X-IBM-Max-Items", (options as any).maxLength));
-        this.headerMap.set("attributes", () => ZosmfHeaders.X_IBM_ATTRIBUTES_BASE);
+        this.headerMap.set("attributes", (options: any) => options.attributes === true ? ZosmfHeaders.X_IBM_ATTRIBUTES_BASE : undefined);
         this.headerMap.set("recursive", () => ZosmfHeaders.X_IBM_RECURSIVE);
         this.headerMap.set("record", () => ZosmfHeaders.X_IBM_RECORD);
         this.headerMap.set("encoding", (options) => this.getEncodingHeader((options as any).encoding));
@@ -64,6 +66,10 @@ export class ZosFilesHeaders {
             this.createHeader("Content-Type", (options as any).localEncoding || ZosmfHeaders.TEXT_PLAIN)
         );
         this.headerMap.set("range", (options) => this.createHeader(ZosmfHeaders.X_IBM_RECORD_RANGE, (options as any).range));
+        this.headerMap.set("maxLength", (options) => {
+            const max = (options as any).maxLength;
+            return max !== undefined ? this.createHeader("X-IBM-Max-Items", max.toString()) : {};
+          });
     }
     static {
         this.initializeHeaderMap();
@@ -97,7 +103,18 @@ export class ZosFilesHeaders {
     private static addHeader(headers: IHeaderContent[], key: string, value: any, search?: boolean): void {
         const reqKeys = headers.flatMap(headerObj => Object.keys(headerObj));
         if (reqKeys.includes(key) && !search) {
-            headers[key as any] = value;
+            let add = true;
+            if (key.toString().toLowerCase().includes("type")) {
+                const existingKeys = headers.flatMap(headerObj => Object.keys(headerObj));
+                if (!existingKeys.includes("X-IBM-TYPE") && !existingKeys.includes("Content-Type")) {
+                    headers[key as any] = value;
+                } else {
+                    add = false;
+                }
+            }
+            if (add) {
+                headers[key as any] = value;
+            }
         }else {
             headers.push({ [key]: value });
         }
@@ -150,72 +167,100 @@ export class ZosFilesHeaders {
      *    - `updatedOptions`: The options object with already-processed properties removed.
      */
     private static addContextHeaders<T>(options: T, context?: ZosFilesContext, dataLength?: number | string):
-    {headers: IHeaderContent[], updatedOptions: T} {
-        const headers: IHeaderContent[] = [];
-        const updatedOptions: any = { ...options || {} };
+        { headers: IHeaderContent[], updatedOptions: T } {
+    const headers: IHeaderContent[] = [];
+    const updatedOptions: any = { ...options || {} };
 
-        if (dataLength !== undefined) {
-            //if content length, then application/json as well and context switch is irrelevant
-            this.addHeader(headers, "Content-Length", String(dataLength));
-            this.addHeader(headers, "Content-Type", "application/json");
-            return {headers, updatedOptions};
-        }
+    if (dataLength !== undefined) {
+        // if content length is provided, then use JSON content type regardless of context
+        this.addHeader(headers, "Content-Length", String(dataLength));
+        this.addHeader(headers, "Content-Type", "application/json");
+        delete updatedOptions["from-dataset"];
+        return { headers, updatedOptions };
+    }
 
-        // Add headers based on context: Upload/download, USS, ZFS or DS headers
-        switch (context) {
-            case ZosFilesContext.STREAM:
-            case ZosFilesContext.BUFFER:
-                if (updatedOptions.binary) {
-                    if (updatedOptions.binary === true) {
-                        headers.push(ZosmfHeaders.OCTET_STREAM);
-                        headers.push(ZosmfHeaders.X_IBM_BINARY);
-                        delete updatedOptions["binary"];
-                    }
-                } else if (updatedOptions.record) {
-                    if (updatedOptions.record === true) {
-                        headers.push(ZosmfHeaders.X_IBM_RECORD);
-                        delete updatedOptions["record"];
-                    }
-                } else {
-                    if (updatedOptions.encoding) {
-                        const keys: string[] = Object.keys(ZosmfHeaders.X_IBM_TEXT);
-                        const value =
-                            ZosmfHeaders.X_IBM_TEXT[keys[0]] +
-                            ZosmfHeaders.X_IBM_TEXT_ENCODING +
-                            updatedOptions.encoding;
-                        const header: any = Object.create(ZosmfHeaders.X_IBM_TEXT);
-                        header[keys[0]] = value;
-                        headers.push(header);
-                        delete updatedOptions["encoding"];
-                    } else {
-                        headers.push(ZosmfHeaders.X_IBM_TEXT);
-                    }
-                    if (updatedOptions.localEncoding) {
-                        headers.push({ "Content-Type": updatedOptions.localEncoding });
-                        delete updatedOptions["localEncoding"];
-                    } else {
-                        headers.push(ZosmfHeaders.TEXT_PLAIN);
-                    }
+    // Determine Type headers:
+    switch (context) {
+        case ZosFilesContext.DATASET:
+            // For dataset transfers, allow binary, record, encoding and localEncoding options.
+            if (updatedOptions.binary) {
+                if (updatedOptions.binary === true) {
+                    headers.push(ZosmfHeaders.X_IBM_BINARY);
+                    delete updatedOptions["binary"];
                 }
-                break;
-            case ZosFilesContext.USS:
-                // For USS operations, force JSON content type.
-                headers.push(ZosmfHeaders.APPLICATION_JSON);
-                break;
-            case ZosFilesContext.ZFS:
-                // For ZFS operations, do not add any content-type header.
-                break;
-            default: {
-                // Add text X-IBM-Data-Type if no content header is present
-                // only if options don't include dsntype LIBRARY
-                if (!(updatedOptions.dsntype && updatedOptions.dsntype.toUpperCase() === "LIBRARY")) {
-                    this.addHeader(headers, "X-IBM-Data-Type", "text", true);
+            } else if (updatedOptions.record) {
+                if (updatedOptions.record === true) {
+                    headers.push(ZosmfHeaders.X_IBM_RECORD);
+                    delete updatedOptions["record"];
+                }
+            } else {
+                if (updatedOptions.encoding) {
+                    const keys: string[] = Object.keys(ZosmfHeaders.X_IBM_TEXT);
+                    const value = ZosmfHeaders.X_IBM_TEXT[keys[0]] +
+                                    ZosmfHeaders.X_IBM_TEXT_ENCODING +
+                                    updatedOptions.encoding;
+                    const encodingHeader: any = {};
+                    encodingHeader[keys[0]] = value;
+                    headers.push(encodingHeader);
+                    delete updatedOptions["encoding"];
+                }
+                if (updatedOptions.localEncoding) {
+                    headers.push({ "Content-Type": updatedOptions.localEncoding });
+                    delete updatedOptions["localEncoding"];
+                } else {
+                    headers.push(ZosmfHeaders.TEXT_PLAIN);
                 }
             }
+            break;
+        case ZosFilesContext.USS_MULTIPLE:
+            // For multiple USS files, force JSON content type.
+            this.addHeader(headers, "Content-Type", "application/json");
+            // Remove localEncoding to avoid adding a fallback later.
+            delete updatedOptions["localEncoding"];
+            break;
+        case ZosFilesContext.USS_SINGLE:
+            // For a single USS file, allow similar processing to dataset transfers
+            // but with USS-specific logic.
+            if (updatedOptions.binary) {
+                headers.push(ZosmfHeaders.X_IBM_BINARY);
+                delete updatedOptions["binary"];
+            } else if (updatedOptions.encoding) {
+                const keys: string[] = Object.keys(ZosmfHeaders.X_IBM_TEXT);
+                const value = ZosmfHeaders.X_IBM_TEXT[keys[0]] +
+                            ZosmfHeaders.X_IBM_TEXT_ENCODING +
+                            updatedOptions.encoding;
+                const encodingHeader: any = {};
+                encodingHeader[keys[0]] = value;
+                headers.push(encodingHeader);
+                delete updatedOptions["encoding"];
+                // Use provided localEncoding if present; otherwise default to TEXT_PLAIN.
+                if (updatedOptions.localEncoding) {
+                    headers.push({ "Content-Type": updatedOptions.localEncoding });
+                } else {
+                    headers.push(ZosmfHeaders.TEXT_PLAIN);
+                }
+            } else {
+                // No encoding provided: use localEncoding if available; otherwise default.
+                if (updatedOptions.localEncoding) {
+                    headers.push({ "Content-Type": updatedOptions.localEncoding });
+                } else {
+                    headers.push(ZosmfHeaders.TEXT_PLAIN);
+                }
+            }
+            delete updatedOptions["localEncoding"];
+            break;
+        // no content type is needed for zfs and list operations
+        case ZosFilesContext.ZFS:
+        case ZosFilesContext.LIST:
+            if (!updatedOptions.maxLength) {
+                updatedOptions.maxLength = 0;
+            }
+            break;
         }
 
-        return {headers, updatedOptions};
+        return { headers, updatedOptions };
     }
+
 
     // ============//
     // MAIN METHOD //
@@ -225,7 +270,7 @@ export class ZosFilesHeaders {
      * Generates an array of headers based on provided options and context.
      *
      * @param options - The request options.
-     * @param context - (optional) The operation context from enum ie STREAM or ZFS.
+     * @param context - The operation context from {@link ZosFilesContext}.
      * @param dataLength - (optional) The content length.
      * @returns An array of generated headers.
      */
@@ -233,7 +278,7 @@ export class ZosFilesHeaders {
         options,
         context,
         dataLength,
-    }: { options: T; context?: ZosFilesContext; dataLength?: number | string }): IHeaderContent[] {
+    }: { options: T; context: ZosFilesContext; dataLength?: number | string }): IHeaderContent[] {
         // Apply headers related to content-type
         const { headers: reqHeaders, updatedOptions } = this.addContextHeaders(options, context, dataLength);
         this.addHeader(reqHeaders, "Accept-Encoding", "gzip");
@@ -244,7 +289,13 @@ export class ZosFilesHeaders {
             .forEach(([key]) => {
                 const result = this.headerMap.get(key)?.(updatedOptions, context);
                 if (result) {
-                    this.addHeader(reqHeaders, Object.keys(result)[0], Object.values(result)[0]);
+                    const headerKey = Object.keys(result)[0];
+                    const headerValue = Object.values(result)[0];
+
+                    // Only add the header if the value is defined
+                    if (headerValue !== undefined) {
+                        this.addHeader(reqHeaders, headerKey, headerValue);
+                    }
                 }
             });
 

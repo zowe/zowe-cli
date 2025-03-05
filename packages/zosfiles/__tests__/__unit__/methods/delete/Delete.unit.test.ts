@@ -19,6 +19,8 @@ import { IDeleteDatasetOptions } from "../../../../src/methods/delete/doc/IDelet
 import { IDeleteVsamOptions } from "../../../../src/methods/delete/doc/IDeleteVsamOptions";
 import { Invoke } from "../../../../src/methods/invoke";
 import { IZosFilesOptions } from "../../../../src/doc/IZosFilesOptions";
+import {extractSpyHeaders} from "../../../extractSpyHeaders";
+import 'jest-extended';
 
 describe("Delete", () => {
     const deleteExpectStringSpy = jest.spyOn(ZosmfRestClient, "deleteExpectString");
@@ -82,6 +84,7 @@ describe("Delete", () => {
 
         it("should send a request without volume", async () => {
             const apiResponse = await Delete.dataSet(dummySession, dataset);
+            const headers = [ZosmfHeaders.ACCEPT_ENCODING, {"X-IBM-Data-Type": "text"}];
 
             expect(apiResponse).toEqual({
                 success: true,
@@ -92,15 +95,18 @@ describe("Delete", () => {
             expect(deleteExpectStringSpy).toHaveBeenLastCalledWith(
                 dummySession,
                 posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dataset),
-                expect.arrayContaining([ZosmfHeaders.ACCEPT_ENCODING])
+                expect.arrayContaining(headers)
             );
+            // Ensure same set of headers but allow any order:
+            const receivedHeaders = extractSpyHeaders(deleteExpectStringSpy);
+            expect(receivedHeaders).toIncludeSameMembers(headers);
         });
 
         it("should send a request with volume", async () => {
             const options: IDeleteDatasetOptions = {
                 volume: "ABCD"
             };
-
+            const headers = [ZosmfHeaders.ACCEPT_ENCODING, {"X-IBM-Data-Type": "text"}];
             const apiResponse = await Delete.dataSet(dummySession, dataset, options);
 
             expect(apiResponse).toEqual({
@@ -112,8 +118,11 @@ describe("Delete", () => {
             expect(deleteExpectStringSpy).toHaveBeenLastCalledWith(
                 dummySession,
                 posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, `-(${options.volume})`, dataset),
-                expect.arrayContaining([ZosmfHeaders.ACCEPT_ENCODING])
+                expect.arrayContaining(headers)
             );
+            // Ensure same set of headers but allow any order:
+            const receivedHeaders = extractSpyHeaders(deleteExpectStringSpy);
+            expect(receivedHeaders).toIncludeSameMembers(headers);
         });
 
         it("should send a request with responseTimeout", async () => {
@@ -121,7 +130,7 @@ describe("Delete", () => {
                 volume: "ABCD",
                 responseTimeout: 5
             };
-
+            const headers = [ZosmfHeaders.ACCEPT_ENCODING, {"X-IBM-Response-Timeout": "5"}, {"X-IBM-Data-Type": "text"}]
             const apiResponse = await Delete.dataSet(dummySession, dataset, options);
 
             expect(apiResponse).toEqual({
@@ -133,8 +142,11 @@ describe("Delete", () => {
             expect(deleteExpectStringSpy).toHaveBeenLastCalledWith(
                 dummySession,
                 posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, `-(${options.volume})`, dataset),
-                expect.arrayContaining([ZosmfHeaders.ACCEPT_ENCODING, {"X-IBM-Response-Timeout": "5"}])
+                expect.arrayContaining(headers)
             );
+            // Ensure same set of headers but allow any order:
+            const receivedHeaders = extractSpyHeaders(deleteExpectStringSpy);
+            expect(receivedHeaders).toIncludeSameMembers(headers);
         });
 
         it("should handle an error from the ZosmfRestClient", async () => {

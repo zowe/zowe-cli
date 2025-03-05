@@ -28,6 +28,8 @@ import { Create } from "../../../../src/methods/create";
 import { Tag, TransferMode, ZosFilesMessages } from "../../../../src";
 import { CLIENT_PROPERTY } from "../../../../src/doc/types/ZosmfRestClientProperties";
 import { Readable } from "stream";
+import {extractSpyHeaders} from "../../../extractSpyHeaders";
+import 'jest-extended';
 
 describe("z/OS Files - Upload", () => {
 
@@ -396,6 +398,8 @@ describe("z/OS Files - Upload", () => {
             expect(zosmfPutFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
                 reqHeaders: expect.arrayContaining(reqHeaders),
                 writeData: buffer});
+            // Ensure same set of headers but allow any order:
+            expect(extractSpyHeaders(zosmfPutFullSpy)).toIncludeSameMembers(reqHeaders);
         });
         it("should return with proper response when upload buffer to a data set - buffer more than 10 chars", async () => {
             const buffer: Buffer = Buffer.from("bufferLargerThan10Chars");
@@ -2023,6 +2027,8 @@ describe("z/OS Files - Upload", () => {
                 reqHeaders: expect.arrayContaining(reqHeaders),
                 requestStream: inputStream,
                 normalizeRequestNewLines: false});
+            // Ensure same set of headers but allow any order:
+            expect(extractSpyHeaders(zosmfExpectFullSpy)).toIncludeSameMembers(reqHeaders);
             expect(chtagSpy).toHaveBeenCalledTimes(1);
             expect(chtagSpy).toHaveBeenCalledWith(dummySession, dsName, Tag.TEXT, "IBM-1047");
         });

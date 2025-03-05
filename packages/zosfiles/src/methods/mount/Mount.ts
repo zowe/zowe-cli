@@ -16,7 +16,7 @@ import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 import { IZosFilesResponse } from "../../doc/IZosFilesResponse";
-import { ZosFilesHeaders } from "../../utils/ZosFilesHeaders";
+import { ZosFilesContext, ZosFilesHeaders } from "../../utils/ZosFilesHeaders";
 
 /**
  * This class holds helper functions that are used to mount file systems through the z/OS MF APIs
@@ -57,7 +57,11 @@ export class Mount {
         const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_MFS + "/" + encodeURIComponent(fileSystemName);
 
         const jsonContent = JSON.stringify(tempOptions);
-        const reqHeaders = ZosFilesHeaders.generateHeaders({options, dataLength: jsonContent.length});
+        const reqHeaders = ZosFilesHeaders.generateHeaders({
+            options,
+            context: ZosFilesContext.USS_SINGLE,
+            dataLength: jsonContent.length
+        });
 
         const data = await ZosmfRestClient.putExpectString(session, endpoint, reqHeaders, jsonContent);
 

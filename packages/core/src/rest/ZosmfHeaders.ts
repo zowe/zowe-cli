@@ -173,6 +173,11 @@ export class ZosmfHeaders {
      */
     public static readonly TEXT_PLAIN: IHeaderContent = { "Content-Type": "text/plain" };
 
+    /**
+     * JSON content-type header
+     * @static
+     * @memberof ZosmfHeaders
+     */
     public static readonly APPLICATION_JSON: IHeaderContent = { "Content-Type": "application/json" };
 
     /**

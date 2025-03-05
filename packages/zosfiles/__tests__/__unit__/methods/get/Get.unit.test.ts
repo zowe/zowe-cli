@@ -15,11 +15,14 @@ import { ZosFilesMessages } from "../../../../src";
 import { ZosmfHeaders, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { Get, IGetOptions } from "../../../../src/methods/get";
 import { ZosFilesConstants } from "../../../../src/constants/ZosFiles.constants";
+import {extractSpyHeaders} from "../../../extractSpyHeaders";
+import 'jest-extended';
 
 describe("z/OS Files - View", () => {
     const dsname = "USER.DATA.SET";
     const ussfile = "USER.TXT";
     const content = Buffer.from("This\nis\r\na\ntest");
+    const expectedHeaders = [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.TEXT_PLAIN];
 
     const dummySession = new Session({
         user: "fake",
@@ -101,12 +104,14 @@ describe("z/OS Files - View", () => {
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual(content);
-
             expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
             expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, expect.objectContaining({
-                reqHeaders: expect.arrayContaining([ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.TEXT_PLAIN]),
+                reqHeaders: expect.arrayContaining(expectedHeaders),
                 resource: endpoint
             }));
+            // Ensure same set of headers but allow any order:
+            const receivedHeaders = extractSpyHeaders(zosmfExpectSpy);
+            expect(receivedHeaders).toIncludeSameMembers(expectedHeaders);
         });
 
         it("should get data set content when empty", async () => {
@@ -127,12 +132,14 @@ describe("z/OS Files - View", () => {
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual(Buffer.alloc(0));
-
             expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
             expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, expect.objectContaining({
-                reqHeaders: expect.arrayContaining([ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.TEXT_PLAIN]),
+                reqHeaders: expect.arrayContaining(expectedHeaders),
                 resource: endpoint
             }));
+            // Ensure same set of headers but allow any order:
+            const receivedHeaders = extractSpyHeaders(zosmfExpectSpy);
+            expect(receivedHeaders).toIncludeSameMembers(expectedHeaders);
         });
 
         it("should get data set content in binary mode", async () => {
@@ -150,14 +157,14 @@ describe("z/OS Files - View", () => {
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual(content);
-
             expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
-            // TODO:gzip
-            // expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.ACCEPT_ENCODING]);
             expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, expect.objectContaining({
-                reqHeaders: expect.arrayContaining([ZosmfHeaders.X_IBM_BINARY]),
+                reqHeaders: expect.arrayContaining([ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.ACCEPT_ENCODING]),
                 resource: endpoint
             }));
+            // Ensure same set of headers but allow any order:
+            const receivedHeaders = extractSpyHeaders(zosmfExpectSpy);
+            expect(receivedHeaders).toIncludeSameMembers([ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.ACCEPT_ENCODING]);
         });
 
         it("should get data set content in binary mode if record is specified", async () => {
@@ -176,14 +183,14 @@ describe("z/OS Files - View", () => {
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual(content);
-
             expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
-            // TODO:gzip
-            // expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.ACCEPT_ENCODING]);
             expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, expect.objectContaining({
-                reqHeaders: expect.arrayContaining([ZosmfHeaders.X_IBM_BINARY]),
+                reqHeaders: expect.arrayContaining([ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.ACCEPT_ENCODING]),
                 resource: endpoint
             }));
+            // Ensure same set of headers but allow any order:
+            const receivedHeaders = extractSpyHeaders(zosmfExpectSpy);
+            expect(receivedHeaders).toIncludeSameMembers([ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.ACCEPT_ENCODING]);
         });
 
         it("should get data set content in record mode", async () => {
@@ -201,12 +208,14 @@ describe("z/OS Files - View", () => {
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual(content);
-
             expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
             expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, expect.objectContaining({
-                reqHeaders: expect.arrayContaining([ZosmfHeaders.X_IBM_RECORD]),
+                reqHeaders: expect.arrayContaining([ZosmfHeaders.X_IBM_RECORD, ZosmfHeaders.ACCEPT_ENCODING]),
                 resource: endpoint
             }));
+            // Ensure same set of headers but allow any order:
+            const receivedHeaders = extractSpyHeaders(zosmfExpectSpy);
+            expect(receivedHeaders).toIncludeSameMembers([ZosmfHeaders.X_IBM_RECORD, ZosmfHeaders.ACCEPT_ENCODING]);
         });
 
         it("should get data set content with encoding", async () => {
@@ -221,19 +230,22 @@ describe("z/OS Files - View", () => {
             }
 
             const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
+            const headers = [
+                { "X-IBM-Data-Type": "text;fileEncoding=285" },
+                ZosmfHeaders.ACCEPT_ENCODING,
+                ZosmfHeaders.TEXT_PLAIN
+            ];
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual(content);
-
             expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
             expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, expect.objectContaining({
-                reqHeaders: expect.arrayContaining([
-                    { "X-IBM-Data-Type": "text;fileEncoding=285" },
-                    ZosmfHeaders.ACCEPT_ENCODING,
-                    ZosmfHeaders.TEXT_PLAIN
-                ]),
+                reqHeaders: expect.arrayContaining(expectedHeaders.concat(headers)),
                 resource: endpoint
             }));
+            // Ensure same set of headers but allow any order:
+            const receivedHeaders = extractSpyHeaders(zosmfExpectSpy);
+            expect(receivedHeaders).toIncludeSameMembers(headers);
         });
 
         it("should send range header when range option is specified", async () => {
@@ -247,18 +259,21 @@ describe("z/OS Files - View", () => {
             }
 
             const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
+            const headers = [
+                ZosmfHeaders.ACCEPT_ENCODING,
+                ZosmfHeaders.TEXT_PLAIN,
+                { [ZosmfHeaders.X_IBM_RECORD_RANGE]: range }
+            ];
 
             expect(caughtError).toBeUndefined();
-
             expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
             expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, expect.objectContaining({
-                reqHeaders: expect.arrayContaining([
-                    ZosmfHeaders.ACCEPT_ENCODING,
-                    ZosmfHeaders.TEXT_PLAIN,
-                    { [ZosmfHeaders.X_IBM_RECORD_RANGE]: range }
-                ]),
+                reqHeaders: expect.arrayContaining(headers),
                 resource: endpoint
             }));
+            // Ensure same set of headers but allow any order:
+            const receivedHeaders = extractSpyHeaders(zosmfExpectSpy);
+            expect(receivedHeaders).toIncludeSameMembers(headers);
         });
 
         it("should get data set content with responseTimeout", async () => {
@@ -273,19 +288,22 @@ describe("z/OS Files - View", () => {
             }
 
             const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
+            const headers = [
+                ZosmfHeaders.ACCEPT_ENCODING,
+                { "X-IBM-Response-Timeout": "5" },
+                ZosmfHeaders.TEXT_PLAIN
+            ];
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual(content);
-
             expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
             expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, expect.objectContaining({
-                reqHeaders: expect.arrayContaining([
-                    ZosmfHeaders.ACCEPT_ENCODING,
-                    { "X-IBM-Response-Timeout": "5" },
-                    ZosmfHeaders.TEXT_PLAIN
-                ]),
+                reqHeaders: expect.arrayContaining(headers),
                 resource: endpoint
             }));
+            // Ensure same set of headers but allow any order:
+            const receivedHeaders = extractSpyHeaders(zosmfExpectSpy);
+            expect(receivedHeaders).toIncludeSameMembers(headers);
         });
 
         it("should get data set content with volume option", async () => {
@@ -302,18 +320,16 @@ describe("z/OS Files - View", () => {
 
             const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, `-(${options.volume})`, dsname);
 
-
             expect(caughtError).toBeUndefined();
             expect(response).toEqual(content);
-
             expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
             expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, expect.objectContaining({
-                reqHeaders: expect.arrayContaining([
-                    ZosmfHeaders.ACCEPT_ENCODING,
-                    ZosmfHeaders.TEXT_PLAIN
-                ]),
+                reqHeaders: expect.arrayContaining(expectedHeaders),
                 resource: endpoint
             }));
+            // Ensure same set of headers but allow any order:
+            const receivedHeaders = extractSpyHeaders(zosmfExpectSpy);
+            expect(receivedHeaders).toIncludeSameMembers(expectedHeaders);
         });
     });
 
@@ -404,12 +420,12 @@ describe("z/OS Files - View", () => {
 
             expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
             expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, expect.objectContaining({
-                reqHeaders: expect.arrayContaining([
-                    ZosmfHeaders.ACCEPT_ENCODING,
-                    ZosmfHeaders.TEXT_PLAIN
-                ]),
+                reqHeaders: expect.arrayContaining(expectedHeaders),
                 resource: endpoint
             }));
+            // Ensure same set of headers but allow any order:
+            const receivedHeaders = extractSpyHeaders(zosmfExpectSpy);
+            expect(receivedHeaders).toIncludeSameMembers(expectedHeaders);
         });
 
         it("should get uss file content when empty", async () => {
@@ -430,15 +446,14 @@ describe("z/OS Files - View", () => {
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual(Buffer.alloc(0));
-
             expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
             expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, expect.objectContaining({
-                reqHeaders: expect.arrayContaining([
-                    ZosmfHeaders.ACCEPT_ENCODING,
-                    ZosmfHeaders.TEXT_PLAIN
-                ]),
+                reqHeaders: expect.arrayContaining(expectedHeaders),
                 resource: endpoint
             }));
+            // Ensure same set of headers but allow any order:
+            const receivedHeaders = extractSpyHeaders(zosmfExpectSpy);
+            expect(receivedHeaders).toIncludeSameMembers(expectedHeaders);
         });
 
         it("should get uss file content in binary mode", async () => {
@@ -456,12 +471,14 @@ describe("z/OS Files - View", () => {
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual(content);
-
             expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
             expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, expect.objectContaining({
-                reqHeaders: expect.arrayContaining([ZosmfHeaders.X_IBM_BINARY]),
+                reqHeaders: expect.arrayContaining([ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.ACCEPT_ENCODING]),
                 resource: endpoint
             }));
+            // Ensure same set of headers but allow any order:
+            const receivedHeaders = extractSpyHeaders(zosmfExpectSpy);
+            expect(receivedHeaders).toIncludeSameMembers([ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.ACCEPT_ENCODING]);
         });
 
         it("should get uss file content with a specific encoding", async () => {
@@ -479,18 +496,21 @@ describe("z/OS Files - View", () => {
             const header: any = Object.create(ZosmfHeaders.X_IBM_TEXT);
             const keys: string[] = Object.keys(ZosmfHeaders.X_IBM_TEXT);
             header[keys[0]] = ZosmfHeaders.X_IBM_TEXT[keys[0]] + ZosmfHeaders.X_IBM_TEXT_ENCODING + encoding;
-
+            const headers = [
+                header,
+                ZosmfHeaders.ACCEPT_ENCODING,
+                ZosmfHeaders.TEXT_PLAIN
+            ];
             expect(caughtError).toBeUndefined();
             expect(response).toEqual(content);
             expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
             expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, expect.objectContaining({
-                reqHeaders: expect.arrayContaining([
-                    header,
-                    ZosmfHeaders.ACCEPT_ENCODING,
-                    ZosmfHeaders.TEXT_PLAIN
-                ]),
+                reqHeaders: expect.arrayContaining(headers),
                 resource: endpoint
             }));
+            // Ensure same set of headers but allow any order:
+            const receivedHeaders = extractSpyHeaders(zosmfExpectSpy);
+            expect(receivedHeaders).toIncludeSameMembers(headers);
         });
 
         it("should get uss file content with a set range", async () => {
@@ -505,18 +525,22 @@ describe("z/OS Files - View", () => {
             }
 
             const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, ussfile);
+            const headers = [
+                ZosmfHeaders.ACCEPT_ENCODING,
+                ZosmfHeaders.TEXT_PLAIN,
+                { [ZosmfHeaders.X_IBM_RECORD_RANGE]: range }
+            ];
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual(content);
             expect(zosmfExpectSpy).toHaveBeenCalledTimes(1);
             expect(zosmfExpectSpy).toHaveBeenCalledWith(dummySession, expect.objectContaining({
-                reqHeaders: expect.arrayContaining([
-                    ZosmfHeaders.ACCEPT_ENCODING,
-                    ZosmfHeaders.TEXT_PLAIN,
-                    { [ZosmfHeaders.X_IBM_RECORD_RANGE]: range }
-                ]),
+                reqHeaders: expect.arrayContaining(headers),
                 resource: endpoint
             }));
+            // Ensure same set of headers but allow any order:
+            const receivedHeaders = extractSpyHeaders(zosmfExpectSpy);
+            expect(receivedHeaders).toIncludeSameMembers(headers);
         });
     });
 });

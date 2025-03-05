@@ -16,6 +16,8 @@ import { error } from "console";
 import * as util from "util";
 import { Copy, Create, Get, List, Upload, ZosFilesConstants, ZosFilesMessages, IZosFilesResponse, Download, ZosFilesUtils } from "../../../../src";
 import { ZosmfHeaders, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
+import {extractSpyHeaders} from "../../../extractSpyHeaders";
+import 'jest-extended';
 
 describe("Copy", () => {
     const dummySession = new Session({
@@ -87,6 +89,9 @@ describe("Copy", () => {
                         expect.arrayContaining(expectedHeaders),
                         expectedPayload
                     );
+                    // Ensure same set of headers but allow any order:
+                    const receivedHeaders = extractSpyHeaders(copyExpectStringSpy);
+                    expect(receivedHeaders).toIncludeSameMembers(expectedHeaders);
                 });
                 it("should send a request with timeout", async () => {
                     const expectedPayload = {
@@ -126,6 +131,9 @@ describe("Copy", () => {
                         expect.arrayContaining(expectedHeaders),
                         expectedPayload
                     );
+                    // Ensure same set of headers but allow any order:
+                    const receivedHeaders = extractSpyHeaders(copyExpectStringSpy);
+                    expect(receivedHeaders).toIncludeSameMembers(expectedHeaders);
                 });
             });
             describe("Member > Member", () => {
@@ -166,6 +174,9 @@ describe("Copy", () => {
                         expect.arrayContaining(expectedHeaders),
                         expectedPayload
                     );
+                    // Ensure same set of headers but allow any order:
+                    const receivedHeaders = extractSpyHeaders(copyExpectStringSpy);
+                    expect(receivedHeaders).toIncludeSameMembers(expectedHeaders);
                 });
                 it("should send a request with a timeout", async () => {
                     const expectedPayload = {
@@ -206,6 +217,9 @@ describe("Copy", () => {
                         expect.arrayContaining(expectedHeaders),
                         expectedPayload
                     );
+                    // Ensure same set of headers but allow any order:
+                    const receivedHeaders = extractSpyHeaders(copyExpectStringSpy);
+                    expect(receivedHeaders).toIncludeSameMembers(expectedHeaders);
                 });
             });
             describe("Sequential > Member", () => {
@@ -245,6 +259,9 @@ describe("Copy", () => {
                         expect.arrayContaining(expectedHeaders),
                         expectedPayload
                     );
+                    // Ensure same set of headers but allow any order:
+                    const receivedHeaders = extractSpyHeaders(copyExpectStringSpy);
+                    expect(receivedHeaders).toIncludeSameMembers(expectedHeaders);
                 });
                 it("should send a request with a timeout", async () => {
                     const expectedPayload = {
@@ -284,6 +301,9 @@ describe("Copy", () => {
                         expect.arrayContaining(expectedHeaders),
                         expectedPayload
                     );
+                    // Ensure same set of headers but allow any order:
+                    const receivedHeaders = extractSpyHeaders(copyExpectStringSpy);
+                    expect(receivedHeaders).toIncludeSameMembers(expectedHeaders);
                 });
             });
             describe("Member > Sequential", () => {
@@ -324,6 +344,9 @@ describe("Copy", () => {
                         expect.arrayContaining(expectedHeaders),
                         expectedPayload
                     );
+                    // Ensure same set of headers but allow any order:
+                    const receivedHeaders = extractSpyHeaders(copyExpectStringSpy);
+                    expect(receivedHeaders).toIncludeSameMembers(expectedHeaders);
                 });
                 it("should send a request with a timeout", async () => {
                     const expectedPayload = {
@@ -364,6 +387,9 @@ describe("Copy", () => {
                         expect.arrayContaining(expectedHeaders),
                         expectedPayload
                     );
+                    // Ensure same set of headers but allow any order:
+                    const receivedHeaders = extractSpyHeaders(copyExpectStringSpy);
+                    expect(receivedHeaders).toIncludeSameMembers(expectedHeaders);
                 });
             });
             describe("enq option", () => {
@@ -588,6 +614,9 @@ describe("Copy", () => {
                         expect.arrayContaining(expectedHeaders),
                         expectedPayload
                     );
+                    // Ensure same set of headers but allow any order:
+                    const receivedHeaders = extractSpyHeaders(copyExpectStringSpy);
+                    expect(receivedHeaders).toIncludeSameMembers(expectedHeaders);
                 });
                 it("should call Create.dataSetLike and create a new data set if the target data set inputted does not exist", async() => {
                     dataSetExistsSpy.mockResolvedValue(false);
@@ -676,6 +705,9 @@ describe("Copy", () => {
                     expect.arrayContaining(expectedHeaders),
                     expectedPayload
                 );
+                // Ensure same set of headers but allow any order:
+                const receivedHeaders = extractSpyHeaders(copyExpectStringSpy);
+                expect(receivedHeaders).toIncludeSameMembers(expectedHeaders);
                 expect(error.message).toContain(errorMessage);
             });
             it("should fail if an empty data set name is supplied", async () => {

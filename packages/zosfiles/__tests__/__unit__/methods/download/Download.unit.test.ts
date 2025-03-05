@@ -21,6 +21,8 @@ import { IUSSListOptions, List } from "../../../../src/methods/list";
 import { CLIENT_PROPERTY } from "../../../../src/doc/types/ZosmfRestClientProperties";
 import { IDownloadDsmResult } from "../../../../src/methods/download/doc/IDownloadDsmResult";
 import { PassThrough } from "stream";
+import {extractSpyHeaders} from "../../../extractSpyHeaders";
+import 'jest-extended';
 
 describe("z/OS Files - Download", () => {
     const dsname = "USER.DATA.SET";
@@ -116,6 +118,10 @@ describe("z/OS Files - Download", () => {
             const volume = "testVs";
             const extension = ".test";
             const destination = dsFolder + extension;
+            const expectedHeaders = [
+                ZosmfHeaders.TEXT_PLAIN,
+                ZosmfHeaders.ACCEPT_ENCODING
+            ];
 
             try {
                 response = await Download.dataSet(dummySession, dsname, {volume, extension});
@@ -131,21 +137,19 @@ describe("z/OS Files - Download", () => {
                 commandResponse: util.format(ZosFilesMessages.datasetDownloadedWithDestination.message, destination),
                 apiResponse: {}
             });
-
-
             expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
             expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
-                reqHeaders: expect.arrayContaining([
-                    ZosmfHeaders.ACCEPT_ENCODING,
-                    ZosmfHeaders.TEXT_PLAIN
-                ]),
+                reqHeaders: expect.arrayContaining(expectedHeaders),
                 responseStream: fakeWriteStream,
                 normalizeResponseNewLines: true,
-                task: undefined});
+                task: undefined}
+            );
+            // Ensure same set of headers but allow any order:
+            const receivedHeaders = extractSpyHeaders(zosmfGetFullSpy);
+            expect(receivedHeaders).toIncludeSameMembers(expectedHeaders);
 
             expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);
             expect(ioCreateDirSpy).toHaveBeenCalledWith(destination);
-
             expect(ioWriteStreamSpy).toHaveBeenCalledTimes(1);
         });
 
@@ -172,19 +176,24 @@ describe("z/OS Files - Download", () => {
                 apiResponse: {}
             });
 
+            const expectedHeaders = [
+                ZosmfHeaders.TEXT_PLAIN,
+                ZosmfHeaders.ACCEPT_ENCODING
+            ];
+
             expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
             expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
-                reqHeaders: expect.arrayContaining([
-                    ZosmfHeaders.ACCEPT_ENCODING,
-                    ZosmfHeaders.TEXT_PLAIN
-                ]),
+                reqHeaders: expect.arrayContaining(expectedHeaders),
                 responseStream: fakeWriteStream,
                 normalizeResponseNewLines: true,
-                task: undefined});
+                task: undefined}
+            );
+            // Ensure same set of headers but allow any order:
+            const receivedHeaders = extractSpyHeaders(zosmfGetFullSpy);
+            expect(receivedHeaders).toIncludeSameMembers(expectedHeaders);
 
             expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);
             expect(ioCreateDirSpy).toHaveBeenCalledWith(destination);
-
             expect(ioWriteStreamSpy).toHaveBeenCalledTimes(1);
         });
 
@@ -209,20 +218,26 @@ describe("z/OS Files - Download", () => {
                 apiResponse: {}
             });
 
+            const expectedHeaders = [
+                ZosmfHeaders.X_IBM_BINARY,
+                ZosmfHeaders.ACCEPT_ENCODING
+            ];
+
             expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
             expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
-                reqHeaders: expect.arrayContaining([
-                    ZosmfHeaders.ACCEPT_ENCODING,
-                    ZosmfHeaders.X_IBM_BINARY
-                ]),
+                reqHeaders: expect.arrayContaining(expectedHeaders),
                 responseStream: fakeWriteStream,
                 normalizeResponseNewLines: false /* don't normalize newlines, binary mode*/,
-                task: undefined /* no progress task */});
+                task: undefined /* no progress task */}
+            );
 
             expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);
             expect(ioCreateDirSpy).toHaveBeenCalledWith(destination);
-
             expect(ioWriteStreamSpy).toHaveBeenCalledTimes(1);
+
+            // Ensure same set of headers but allow any order:
+            const receivedHeaders = extractSpyHeaders(zosmfGetFullSpy);
+            expect(receivedHeaders).toIncludeSameMembers(expectedHeaders);
         });
 
         it("should download a data set to the given file in binary mode", async () => {
@@ -246,21 +261,27 @@ describe("z/OS Files - Download", () => {
                 apiResponse: {}
             });
 
+            const expectedHeaders = [
+                ZosmfHeaders.X_IBM_BINARY,
+                ZosmfHeaders.ACCEPT_ENCODING
+            ];
+
             expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
             expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
-                reqHeaders: expect.arrayContaining([
-                    ZosmfHeaders.ACCEPT_ENCODING,
-                    ZosmfHeaders.X_IBM_BINARY
-                ]),
+                reqHeaders: expect.arrayContaining(expectedHeaders),
                 responseStream: fakeWriteStream,
                 normalizeResponseNewLines: false, /* no normalizing new lines, binary mode*/
-                task: undefined /*no progress task*/});
+                task: undefined /*no progress task*/}
+            );
 
             expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);
             expect(ioCreateDirSpy).toHaveBeenCalledWith(file);
-
             expect(ioWriteStreamSpy).toHaveBeenCalledTimes(1);
             expect(ioWriteStreamSpy).toHaveBeenCalledWith(file);
+
+            // Ensure same set of headers but allow any order:
+            const receivedHeaders = extractSpyHeaders(zosmfGetFullSpy);
+            expect(receivedHeaders).toIncludeSameMembers(expectedHeaders);
         });
 
         it("should download a data set to the given file in binary mode if record specified", async () => {
@@ -285,21 +306,27 @@ describe("z/OS Files - Download", () => {
                 apiResponse: {}
             });
 
+            const expectedHeaders = [
+                ZosmfHeaders.X_IBM_BINARY,
+                ZosmfHeaders.ACCEPT_ENCODING
+            ];
+
             expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
             expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
-                reqHeaders: expect.arrayContaining([
-                    ZosmfHeaders.ACCEPT_ENCODING,
-                    ZosmfHeaders.X_IBM_BINARY
-                ]),
+                reqHeaders: expect.arrayContaining(expectedHeaders),
                 responseStream: fakeWriteStream,
                 normalizeResponseNewLines: false, /* no normalizing new lines, binary mode*/
-                task: undefined /*no progress task*/});
+                task: undefined /*no progress task*/}
+            );
 
             expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);
             expect(ioCreateDirSpy).toHaveBeenCalledWith(file);
-
             expect(ioWriteStreamSpy).toHaveBeenCalledTimes(1);
             expect(ioWriteStreamSpy).toHaveBeenCalledWith(file);
+
+            // Ensure same set of headers but allow any order:
+            const receivedHeaders = extractSpyHeaders(zosmfGetFullSpy);
+            expect(receivedHeaders).toIncludeSameMembers(expectedHeaders);
         });
 
         it("should download a data set in record mode and default extension", async () => {
@@ -322,20 +349,19 @@ describe("z/OS Files - Download", () => {
                 commandResponse: util.format(ZosFilesMessages.datasetDownloadedWithDestination.message, destination),
                 apiResponse: {}
             });
-
+            const expectedHeaders = [
+                ZosmfHeaders.X_IBM_RECORD,
+                ZosmfHeaders.ACCEPT_ENCODING
+            ];
             expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
             expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
-                reqHeaders: expect.arrayContaining([
-                    ZosmfHeaders.ACCEPT_ENCODING,
-                    ZosmfHeaders.X_IBM_RECORD
-                ]),
+                reqHeaders: expect.arrayContaining(expectedHeaders),
                 responseStream: fakeWriteStream,
                 normalizeResponseNewLines: false /* don't normalize newlines, record mode*/,
                 task: undefined /* no progress task */});
 
             expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);
             expect(ioCreateDirSpy).toHaveBeenCalledWith(destination);
-
             expect(ioWriteStreamSpy).toHaveBeenCalledTimes(1);
         });
 
@@ -360,21 +386,27 @@ describe("z/OS Files - Download", () => {
                 apiResponse: {}
             });
 
+            const expectedHeaders = [
+                ZosmfHeaders.X_IBM_RECORD,
+                ZosmfHeaders.ACCEPT_ENCODING
+            ];
+
             expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
             expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
-                reqHeaders: expect.arrayContaining([
-                    ZosmfHeaders.ACCEPT_ENCODING,
-                    ZosmfHeaders.X_IBM_RECORD
-                ]),
+                reqHeaders: expect.arrayContaining(expectedHeaders),
                 responseStream: fakeWriteStream,
                 normalizeResponseNewLines: false, /* no normalizing new lines, record mode*/
-                task: undefined /*no progress task*/});
+                task: undefined /*no progress task*/}
+            );
 
             expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);
             expect(ioCreateDirSpy).toHaveBeenCalledWith(file);
-
             expect(ioWriteStreamSpy).toHaveBeenCalledTimes(1);
             expect(ioWriteStreamSpy).toHaveBeenCalledWith(file);
+
+            // Ensure same set of headers but allow any order:
+            const receivedHeaders = extractSpyHeaders(zosmfGetFullSpy);
+            expect(receivedHeaders).toIncludeSameMembers(expectedHeaders);
         });
 
         it("should download a data set specifying preserveOriginalLetterCase", async () => {
@@ -397,19 +429,20 @@ describe("z/OS Files - Download", () => {
                 apiResponse: {}
             });
 
+            const expectedHeaders = [
+                ZosmfHeaders.TEXT_PLAIN,
+                ZosmfHeaders.ACCEPT_ENCODING
+            ];
+
             expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
             expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
-                reqHeaders: expect.arrayContaining([
-                    ZosmfHeaders.ACCEPT_ENCODING,
-                    ZosmfHeaders.TEXT_PLAIN
-                ]),
+                reqHeaders: expect.arrayContaining(expectedHeaders),
                 responseStream: fakeWriteStream,
                 normalizeResponseNewLines: true,
                 task: undefined /* no progress task */});
 
             expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);
             expect(ioCreateDirSpy).toHaveBeenCalledWith(destination);
-
             expect(ioWriteStreamSpy).toHaveBeenCalledTimes(1);
         });
 
@@ -434,14 +467,16 @@ describe("z/OS Files - Download", () => {
                 apiResponse: {}
             });
 
+            const expectedHeaders = [
+                { "X-IBM-Data-Type": "text;fileEncoding=285" },
+                ZosmfHeaders.ACCEPT_ENCODING,
+                ZosmfHeaders.TEXT_PLAIN
+            ];
+
             expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
             expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {
                 resource: endpoint,
-                reqHeaders: expect.arrayContaining([
-                    { "X-IBM-Data-Type": "text;fileEncoding=285" },
-                    ZosmfHeaders.ACCEPT_ENCODING,
-                    ZosmfHeaders.TEXT_PLAIN
-                ]),
+                reqHeaders: expect.arrayContaining(expectedHeaders),
                 responseStream: fakeWriteStream,
                 normalizeResponseNewLines: true,
                 task: undefined /* no progress task */
@@ -449,9 +484,12 @@ describe("z/OS Files - Download", () => {
 
             expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);
             expect(ioCreateDirSpy).toHaveBeenCalledWith(file);
-
             expect(ioWriteStreamSpy).toHaveBeenCalledTimes(1);
             expect(ioWriteStreamSpy).toHaveBeenCalledWith(file);
+
+            // Ensure same set of headers but allow any order:
+            const receivedHeaders = extractSpyHeaders(zosmfGetFullSpy);
+            expect(receivedHeaders).toIncludeSameMembers(expectedHeaders);
         });
 
         it("should download a data set using responseTimeout", async () => {
@@ -475,22 +513,27 @@ describe("z/OS Files - Download", () => {
                 apiResponse: {}
             });
 
+            const expectedHeaders = [
+                ZosmfHeaders.ACCEPT_ENCODING,
+                { "X-IBM-Response-Timeout": "5" },
+                ZosmfHeaders.TEXT_PLAIN
+            ];
+
             expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
             expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
-                reqHeaders: expect.arrayContaining([
-                    ZosmfHeaders.ACCEPT_ENCODING,
-                    { "X-IBM-Response-Timeout": "5" },
-                    ZosmfHeaders.TEXT_PLAIN
-                ]),
+                reqHeaders: expect.arrayContaining(expectedHeaders),
                 responseStream: fakeWriteStream,
                 normalizeResponseNewLines: true,
                 task: undefined /* no progress task */});
 
             expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);
             expect(ioCreateDirSpy).toHaveBeenCalledWith(destination);
-
             expect(ioWriteStreamSpy).toHaveBeenCalledTimes(1);
             expect(ioWriteStreamSpy).toHaveBeenCalledWith(destination);
+
+            // Ensure same set of headers but allow any order:
+            const receivedHeaders = extractSpyHeaders(zosmfGetFullSpy);
+            expect(receivedHeaders).toIncludeSameMembers(expectedHeaders);
         });
 
         it("should download a data set and return Etag", async () => {
@@ -516,14 +559,15 @@ describe("z/OS Files - Download", () => {
                 apiResponse: {etag: etagValue}
             });
 
+            const expectedHeaders = [
+                ZosmfHeaders.ACCEPT_ENCODING,
+                ZosmfHeaders.TEXT_PLAIN,
+                ZosmfHeaders.X_IBM_RETURN_ETAG
+            ];
 
             expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
             expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
-                reqHeaders: expect.arrayContaining([
-                    ZosmfHeaders.ACCEPT_ENCODING,
-                    ZosmfHeaders.TEXT_PLAIN,
-                    ZosmfHeaders.X_IBM_RETURN_ETAG
-                ]),
+                reqHeaders: expect.arrayContaining(expectedHeaders),
                 responseStream: fakeWriteStream,
                 normalizeResponseNewLines: true,
                 task: undefined,
@@ -558,15 +602,18 @@ describe("z/OS Files - Download", () => {
             expect(response).toBeUndefined();
             expect(caughtError).toEqual(dummyError);
 
+            const expectedHeaders = [
+                ZosmfHeaders.ACCEPT_ENCODING,
+                ZosmfHeaders.TEXT_PLAIN
+            ];
+
             expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
             expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
-                reqHeaders: expect.arrayContaining([
-                    ZosmfHeaders.ACCEPT_ENCODING,
-                    ZosmfHeaders.TEXT_PLAIN
-                ]),
+                reqHeaders: expect.arrayContaining(expectedHeaders),
                 responseStream: fakeWriteStream,
                 normalizeResponseNewLines: true,
-                task: undefined /*no progress task*/});
+                task: undefined /*no progress task*/}
+            );
 
         });
 
@@ -590,15 +637,18 @@ describe("z/OS Files - Download", () => {
                 apiResponse: {}
             });
 
+            const expectedHeaders = [
+                ZosmfHeaders.ACCEPT_ENCODING,
+                ZosmfHeaders.TEXT_PLAIN
+            ];
+
             expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
             expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
-                reqHeaders: expect.arrayContaining([
-                    ZosmfHeaders.ACCEPT_ENCODING,
-                    ZosmfHeaders.TEXT_PLAIN
-                ]),
+                reqHeaders: expect.arrayContaining(expectedHeaders),
                 responseStream,
                 normalizeResponseNewLines: true,
-                task: undefined /*no progress task*/});
+                task: undefined /*no progress task*/}
+            );
 
             expect(ioCreateDirSpy).not.toHaveBeenCalled();
             expect(ioWriteStreamSpy).not.toHaveBeenCalled();
@@ -623,13 +673,14 @@ describe("z/OS Files - Download", () => {
                 commandResponse: util.format(ZosFilesMessages.datasetDownloadedWithDestination.message, destination),
                 apiResponse: {}
             });
+            const expectedHeaders = [
+                ZosmfHeaders.ACCEPT_ENCODING,
+                ZosmfHeaders.TEXT_PLAIN
+            ];
 
             expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
             expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
-                reqHeaders: expect.arrayContaining([
-                    ZosmfHeaders.ACCEPT_ENCODING,
-                    ZosmfHeaders.TEXT_PLAIN
-                ]),
+                reqHeaders: expect.arrayContaining(expectedHeaders),
                 responseStream: fakeWriteStream,
                 normalizeResponseNewLines: true,
                 task: undefined});
@@ -1919,22 +1970,27 @@ describe("z/OS Files - Download", () => {
                 apiResponse: {}
             });
 
+            const expectedHeaders = [
+                ZosmfHeaders.ACCEPT_ENCODING,
+                ZosmfHeaders.TEXT_PLAIN
+            ];
+
             expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
             // expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, endpoint, [], fakeStream, true, undefined);
             expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
-                reqHeaders: expect.arrayContaining([
-                    ZosmfHeaders.ACCEPT_ENCODING,
-                    ZosmfHeaders.TEXT_PLAIN
-                ]),
+                reqHeaders: expect.arrayContaining(expectedHeaders),
                 responseStream: fakeStream,
                 normalizeResponseNewLines: true
             });
 
             expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);
             expect(ioCreateDirSpy).toHaveBeenCalledWith(destination);
-
             expect(ioWriteStreamSpy).toHaveBeenCalledTimes(1);
             expect(ioWriteStreamSpy).toHaveBeenCalledWith(destination);
+
+            // Ensure same set of headers but allow any order:
+            const receivedHeaders = extractSpyHeaders(zosmfGetFullSpy);
+            expect(receivedHeaders).toIncludeSameMembers(expectedHeaders);
         });
 
         it("should download uss file in binary mode", async () => {
@@ -1956,24 +2012,30 @@ describe("z/OS Files - Download", () => {
                 apiResponse: {}
             });
 
+            const expectedHeaders = [
+                ZosmfHeaders.ACCEPT_ENCODING,
+                ZosmfHeaders.X_IBM_BINARY
+            ];
+
             expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
             // expect(zosmfStreamSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_BINARY], fakeStream,
             //     false, /* don't normalize new lines in binary*/
             //     undefined /* no progress task */);
             expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
-                reqHeaders: expect.arrayContaining([
-                    ZosmfHeaders.ACCEPT_ENCODING,
-                    ZosmfHeaders.X_IBM_BINARY
-                ]),
+                reqHeaders: expect.arrayContaining(expectedHeaders),
                 responseStream: fakeStream,
                 normalizeResponseNewLines: false, /* don't normalize new lines in binary*/
-                task: undefined /* no progress task */});
+                task: undefined /* no progress task */}
+            );
 
             expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);
             expect(ioCreateDirSpy).toHaveBeenCalledWith(destination);
-
             expect(ioWriteStreamSpy).toHaveBeenCalledTimes(1);
             expect(ioWriteStreamSpy).toHaveBeenCalledWith(destination);
+
+            // Ensure same set of headers but allow any order:
+            const receivedHeaders = extractSpyHeaders(zosmfGetFullSpy);
+            expect(receivedHeaders).toIncludeSameMembers(expectedHeaders);
         });
 
         it("should download uss file with encoding mode", async () => {
@@ -1994,14 +2056,16 @@ describe("z/OS Files - Download", () => {
                 commandResponse: util.format(ZosFilesMessages.ussFileDownloadedWithDestination.message, destination),
                 apiResponse: {}
             });
+            const expectedHeaders = [
+                { "X-IBM-Data-Type": "text;fileEncoding=285" },
+                ZosmfHeaders.ACCEPT_ENCODING,
+                ZosmfHeaders.TEXT_PLAIN
+            ];
 
             expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
             expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {
                 resource: endpoint,
-                reqHeaders: expect.arrayContaining([
-                    { "X-IBM-Data-Type": "text;fileEncoding=285" },
-                    ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.TEXT_PLAIN
-                ]),
+                reqHeaders: expect.arrayContaining(expectedHeaders),
                 responseStream: fakeStream,
                 normalizeResponseNewLines: true,
                 task: undefined /* no progress task */
@@ -2009,9 +2073,12 @@ describe("z/OS Files - Download", () => {
 
             expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);
             expect(ioCreateDirSpy).toHaveBeenCalledWith(destination);
-
             expect(ioWriteStreamSpy).toHaveBeenCalledTimes(1);
             expect(ioWriteStreamSpy).toHaveBeenCalledWith(destination);
+
+            // Ensure same set of headers but allow any order:
+            const receivedHeaders = extractSpyHeaders(zosmfGetFullSpy);
+            expect(receivedHeaders).toIncludeSameMembers(expectedHeaders);
         });
 
         it("should download ISO8859-1 uss file in binary mode", async () => {
@@ -2035,25 +2102,30 @@ describe("z/OS Files - Download", () => {
                 commandResponse: util.format(ZosFilesMessages.ussFileDownloadedWithDestination.message, destination),
                 apiResponse: {}
             });
+            const expectedHeaders = [
+                ZosmfHeaders.ACCEPT_ENCODING,
+                ZosmfHeaders.X_IBM_BINARY
+            ];
 
             expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
             // expect(zosmfStreamSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_BINARY], fakeStream,
             //     false, /* don't normalize new lines in binary*/
             //     undefined /* no progress task */);
             expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
-                reqHeaders: expect.arrayContaining([
-                    ZosmfHeaders.ACCEPT_ENCODING,
-                    ZosmfHeaders.X_IBM_BINARY
-                ]),
+                reqHeaders: expect.arrayContaining(expectedHeaders),
                 responseStream: fakeStream,
                 normalizeResponseNewLines: false, /* don't normalize new lines in binary*/
-                task: undefined /* no progress task */});
+                task: undefined /* no progress task */}
+            );
 
             expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);
             expect(ioCreateDirSpy).toHaveBeenCalledWith(destination);
-
             expect(ioWriteStreamSpy).toHaveBeenCalledTimes(1);
             expect(ioWriteStreamSpy).toHaveBeenCalledWith(destination);
+
+            // Ensure same set of headers but allow any order:
+            const receivedHeaders = extractSpyHeaders(zosmfGetFullSpy);
+            expect(receivedHeaders).toIncludeSameMembers(expectedHeaders);
         });
 
         it("should download IBM-1147 uss file with encoding mode", async () => {
@@ -2078,13 +2150,16 @@ describe("z/OS Files - Download", () => {
                 apiResponse: {}
             });
 
+            const expectedHeaders = [
+                { "X-IBM-Data-Type": "text;fileEncoding=IBM-1147" },
+                ZosmfHeaders.ACCEPT_ENCODING,
+                ZosmfHeaders.TEXT_PLAIN
+            ];
+
             expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
             expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {
                 resource: endpoint,
-                reqHeaders: expect.arrayContaining([
-                    { "X-IBM-Data-Type": "text;fileEncoding=IBM-1147" },
-                    ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.TEXT_PLAIN
-                ]),
+                reqHeaders: expect.arrayContaining(expectedHeaders),
                 responseStream: fakeStream,
                 normalizeResponseNewLines: true,
                 task: undefined /* no progress task */
@@ -2092,9 +2167,12 @@ describe("z/OS Files - Download", () => {
 
             expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);
             expect(ioCreateDirSpy).toHaveBeenCalledWith(destination);
-
             expect(ioWriteStreamSpy).toHaveBeenCalledTimes(1);
             expect(ioWriteStreamSpy).toHaveBeenCalledWith(destination);
+
+            // Ensure same set of headers but allow any order:
+            const receivedHeaders = extractSpyHeaders(zosmfGetFullSpy);
+            expect(receivedHeaders).toIncludeSameMembers(expectedHeaders);
         });
 
         it("should download uss file using responseTimeout", async () => {
@@ -2117,22 +2195,28 @@ describe("z/OS Files - Download", () => {
                 apiResponse: {}
             });
 
+            const expectedHeaders = [
+                ZosmfHeaders.ACCEPT_ENCODING,
+                { "X-IBM-Response-Timeout": "5" },
+                ZosmfHeaders.TEXT_PLAIN
+            ];
+
             expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
             expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
-                reqHeaders: expect.arrayContaining([
-                    ZosmfHeaders.ACCEPT_ENCODING,
-                    { "X-IBM-Response-Timeout": "5" },
-                    ZosmfHeaders.TEXT_PLAIN
-                ]),
+                reqHeaders: expect.arrayContaining(expectedHeaders),
                 responseStream: fakeStream,
                 normalizeResponseNewLines: true,
-                task: undefined /* no progress task */});
+                task: undefined /* no progress task */}
+            );
 
             expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);
             expect(ioCreateDirSpy).toHaveBeenCalledWith(destination);
-
             expect(ioWriteStreamSpy).toHaveBeenCalledTimes(1);
             expect(ioWriteStreamSpy).toHaveBeenCalledWith(destination);
+
+            // Ensure same set of headers but allow any order:
+            const receivedHeaders = extractSpyHeaders(zosmfGetFullSpy);
+            expect(receivedHeaders).toIncludeSameMembers(expectedHeaders);
         });
 
         it("should download uss file content to a local file in binary mode", async () => {
@@ -2153,22 +2237,26 @@ describe("z/OS Files - Download", () => {
                 commandResponse: util.format(ZosFilesMessages.ussFileDownloadedWithDestination.message, file),
                 apiResponse: {}
             });
-
+            const expectedHeaders = [
+                ZosmfHeaders.ACCEPT_ENCODING,
+                ZosmfHeaders.X_IBM_BINARY
+            ];
             expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
             expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
-                reqHeaders: expect.arrayContaining([
-                    ZosmfHeaders.ACCEPT_ENCODING,
-                    ZosmfHeaders.X_IBM_BINARY
-                ]),
+                reqHeaders: expect.arrayContaining(expectedHeaders),
                 responseStream: fakeStream,
                 normalizeResponseNewLines: false, /* don't normalize new lines in binary */
-                task: undefined /* no progress task */});
+                task: undefined /* no progress task */}
+            );
 
             expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);
             expect(ioCreateDirSpy).toHaveBeenCalledWith(file);
-
             expect(ioWriteStreamSpy).toHaveBeenCalledTimes(1);
             expect(ioWriteStreamSpy).toHaveBeenCalledWith(file);
+
+            // Ensure same set of headers but allow any order:
+            const receivedHeaders = extractSpyHeaders(zosmfGetFullSpy);
+            expect(receivedHeaders).toIncludeSameMembers(expectedHeaders);
         });
 
         it("should download uss file and return Etag", async () => {
@@ -2191,22 +2279,28 @@ describe("z/OS Files - Download", () => {
                 apiResponse: {etag: etagValue}
             });
 
+            const expectedHeaders = [
+                ZosmfHeaders.ACCEPT_ENCODING,
+                ZosmfHeaders.TEXT_PLAIN,
+                ZosmfHeaders.X_IBM_RETURN_ETAG
+            ];
+
             expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
             expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
-                reqHeaders: expect.arrayContaining([
-                    ZosmfHeaders.ACCEPT_ENCODING,
-                    ZosmfHeaders.TEXT_PLAIN,
-                    ZosmfHeaders.X_IBM_RETURN_ETAG
-                ]),
+                reqHeaders: expect.arrayContaining(expectedHeaders),
                 responseStream: fakeStream,
                 normalizeResponseNewLines: true,
-                dataToReturn: [CLIENT_PROPERTY.response]});
+                dataToReturn: [CLIENT_PROPERTY.response]}
+            );
 
             expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);
             expect(ioCreateDirSpy).toHaveBeenCalledWith(destination);
-
             expect(ioWriteStreamSpy).toHaveBeenCalledTimes(1);
             expect(ioWriteStreamSpy).toHaveBeenCalledWith(destination);
+
+            // Ensure same set of headers but allow any order:
+            const receivedHeaders = extractSpyHeaders(zosmfGetFullSpy);
+            expect(receivedHeaders).toIncludeSameMembers(expectedHeaders);
         });
 
         it("should download uss file to a stream", async () => {
@@ -2229,18 +2323,24 @@ describe("z/OS Files - Download", () => {
                 apiResponse: {}
             });
 
+            const expectedHeaders = [
+                ZosmfHeaders.ACCEPT_ENCODING,
+                ZosmfHeaders.TEXT_PLAIN
+            ];
+
             expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
             expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
-                reqHeaders: expect.arrayContaining([
-                    ZosmfHeaders.ACCEPT_ENCODING,
-                    ZosmfHeaders.TEXT_PLAIN
-                ]),
+                reqHeaders: expect.arrayContaining(expectedHeaders),
                 responseStream,
                 normalizeResponseNewLines: true,
                 task: undefined /* no progress task */});
 
             expect(ioCreateDirSpy).not.toHaveBeenCalled();
             expect(ioWriteStreamSpy).not.toHaveBeenCalled();
+
+            // Ensure same set of headers but allow any order:
+            const receivedHeaders = extractSpyHeaders(zosmfGetFullSpy);
+            expect(receivedHeaders).toIncludeSameMembers(expectedHeaders);
         });
         it("should download uss file using .zosattributes file", async () => {
             let response;
@@ -2268,15 +2368,15 @@ describe("z/OS Files - Download", () => {
                 commandResponse: util.format(ZosFilesMessages.ussFileDownloadedWithDestination.message, destination),
                 apiResponse: {}
             });
-
+            const expectedHeaders = [
+                { "X-IBM-Data-Type": "text;fileEncoding=IBM-1047" },
+                ZosmfHeaders.ACCEPT_ENCODING,
+                { "Content-Type": "UTF-8" }
+            ];
             expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
             expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {
                 resource: endpoint,
-                reqHeaders: expect.arrayContaining([
-                    { "X-IBM-Data-Type": "text;fileEncoding=IBM-1047" },
-                    ZosmfHeaders.ACCEPT_ENCODING,
-                    {"Content-Type": "UTF-8"}
-                ]),
+                reqHeaders: expect.arrayContaining(expectedHeaders),
                 responseStream: fakeStream,
                 normalizeResponseNewLines: true,
                 task: undefined /* no progress task */
@@ -2284,9 +2384,12 @@ describe("z/OS Files - Download", () => {
 
             expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);
             expect(ioCreateDirSpy).toHaveBeenCalledWith(destination);
-
             expect(ioWriteStreamSpy).toHaveBeenCalledTimes(1);
             expect(ioWriteStreamSpy).toHaveBeenCalledWith(destination);
+
+            // Ensure same set of headers but allow any order:
+            const receivedHeaders = extractSpyHeaders(zosmfGetFullSpy);
+            expect(receivedHeaders).toIncludeSameMembers(expectedHeaders);
         });
         it("should download uss file using .zosattributes file - binary", async () => {
             let response;
@@ -2300,6 +2403,11 @@ describe("z/OS Files - Download", () => {
                 ['*.md', { ignore: false, localEncoding: 'UTF-8', remoteEncoding: 'UTF-8' }],
                 ['*.txt', { ignore: false, localEncoding: 'binary', remoteEncoding: 'binary' }]
             ]);
+            const expectedHeaders = [
+                ZosmfHeaders.X_IBM_BINARY,
+                ZosmfHeaders.ACCEPT_ENCODING
+            ];
+
             try {
                 response = await Download.ussFile(dummySession, ussname, { attributes: zosAttributes });
             } catch (e) {
@@ -2318,7 +2426,7 @@ describe("z/OS Files - Download", () => {
             expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
             expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {
                 resource: endpoint,
-                reqHeaders: expect.arrayContaining([{ "X-IBM-Data-Type": "binary" }]),
+                reqHeaders: expect.arrayContaining(expectedHeaders),
                 responseStream: fakeStream,
                 normalizeResponseNewLines: false,
                 task: undefined /* no progress task */
@@ -2326,9 +2434,12 @@ describe("z/OS Files - Download", () => {
 
             expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);
             expect(ioCreateDirSpy).toHaveBeenCalledWith(destination);
-
             expect(ioWriteStreamSpy).toHaveBeenCalledTimes(1);
             expect(ioWriteStreamSpy).toHaveBeenCalledWith(destination);
+
+            // Ensure same set of headers but allow any order:
+            const receivedHeaders = extractSpyHeaders(zosmfGetFullSpy);
+            expect(receivedHeaders).toIncludeSameMembers(expectedHeaders);
         });
     });
 
@@ -2379,9 +2490,14 @@ describe("z/OS Files - Download", () => {
             expect(caughtError.causeErrors).toEqual(dummyError);
 
             expect(downloadUssFileSpy).toHaveBeenCalledTimes(1);
-            expect(downloadUssFileSpy).toHaveBeenCalledWith(dummySession, ussDirName + "/file1", {
-                file: path.join(process.cwd(), "file1")
-            });
+            expect(downloadUssFileSpy).toHaveBeenCalledWith(
+                dummySession,
+                ussDirName + "/file1",
+                expect.objectContaining({
+                    file: path.join(process.cwd(), "file1"),
+                    multipleFiles: true,
+                })
+            );
         });
 
         it("should handle an error from create directory promise", async () => {
@@ -2447,8 +2563,14 @@ describe("z/OS Files - Download", () => {
             });
             expect(List.fileList).toHaveBeenCalledWith(dummySession, ussDirName,
                 { name: "*", ...listOptions });
-            expect(Download.ussFile).toHaveBeenCalledWith(dummySession, ussDirName + "/file1",
-                { file: path.join(process.cwd(), "file1"), ...fileOptions });
+            expect(downloadUssFileSpy).toHaveBeenCalledWith(
+                dummySession,
+                ussDirName + "/file1",
+                expect.objectContaining({
+                    file: path.join(process.cwd(), "file1"),
+                    multipleFiles: true,
+                })
+            );
         });
 
         it("should download USS directory when failFast is false", async () => {
@@ -2520,8 +2642,14 @@ describe("z/OS Files - Download", () => {
                 }, {}),
                 apiResponse: [fakeFileResponse]
             });
-            expect(Download.ussFile).toHaveBeenCalledWith(dummySession, ussDirName + "/file1",
-                { file: path.join(process.cwd(), "file1"), maxConcurrentRequests: 0 });
+            expect(downloadUssFileSpy).toHaveBeenCalledWith(
+                dummySession,
+                ussDirName + "/file1",
+                expect.objectContaining({
+                    file: path.join(process.cwd(), "file1"),
+                    multipleFiles: true,
+                })
+            );
         });
 
         it("should download USS directory excluding hidden files", async () => {
