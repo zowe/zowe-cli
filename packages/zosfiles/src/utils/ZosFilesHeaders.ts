@@ -50,8 +50,8 @@ export class ZosFilesHeaders {
     private static headerMap = new Map<string, <T>(options: T, context?: ZosFilesContext) => IHeaderContent | IHeaderContent[]>();
     static initializeHeaderMap() {
         this.headerMap.set("from-dataset", (context?) => {
-            // For dataset operations, use APPLICATION_JSON unless context is "zfs"
-            return context === ZosFilesContext.ZFS ? {} : {"Content-Type": "application/json"};
+            // For dataset operations, apply json header unless context is "zfs" or "list"
+            return context === ZosFilesContext.ZFS || context === ZosFilesContext.LIST ? {} : {"Content-Type": "application/json"};
         });
         this.headerMap.set("binary", () => ZosmfHeaders.X_IBM_BINARY);
         this.headerMap.set("responseTimeout", (options) => this.createHeader(ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT, (options as any).responseTimeout));
@@ -208,10 +208,10 @@ export class ZosFilesHeaders {
                         headers.push({ "Content-Type": updatedOptions.localEncoding });
                         delete updatedOptions["localEncoding"];
                     } else {
-                        // Add text X-IBM-Data-Type if no content header is present
+                        // Add text Content-Type if no content header is present
                         // only if options don't include dsntype LIBRARY
                         if (!(updatedOptions.dsntype && updatedOptions.dsntype.toUpperCase() === "LIBRARY")) {
-                            this.addHeader(headers, "X-IBM-Data-Type", "text", true);
+                            this.addHeader(headers, "Content-Type", "text/plain", true);
                         }
                     }
                 }
