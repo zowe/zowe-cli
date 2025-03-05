@@ -4,6 +4,15 @@ exports[`DsDefinition should use the correct object for strings 1`] = `
 Array [
   Object {
     "aliases": Array [
+      "o",
+      "ow",
+    ],
+    "description": "Specify this option as true if you wish to replace the entire target data set with the source data set. All members, even those with no naming overlap, will be overwritten",
+    "name": "overwrite",
+    "type": "boolean",
+  },
+  Object {
+    "aliases": Array [
       "rep",
     ],
     "description": "Specify this option as true if you wish to replace members with identical names in the target data set",

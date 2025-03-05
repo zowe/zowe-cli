@@ -32,6 +32,7 @@ import { ZosFilesUtils } from "../../utils/ZosFilesUtils";
 import { tmpdir } from "os";
 import path = require("path");
 import * as util from "util";
+import { Delete } from "../delete";
 /**
  * This class holds helper functions that are used to copy the contents of datasets through the
  * z/OSMF APIs.
@@ -84,10 +85,19 @@ export class Copy {
 
         const targetDataSetExists = await this.dataSetExists(session, toDataSetName);
 
-        const newDataSet = !targetDataSetExists;
+        let newDataSet = !targetDataSetExists;
+
+        const overwriteDataset = options.overwrite;
+
+        if(overwriteDataset){
+            await Delete.dataSet(session,toDataSetName)
+            newDataSet = true;
+        }
+
         if (newDataSet) {
             await Create.dataSetLike(session, toDataSetName, options["from-dataset"].dsn);
         }
+
         else if(safeReplace) {
             if (options.promptFn != null) {
                 const userResponse = await options.promptFn(toDataSetName);
@@ -136,7 +146,7 @@ export class Copy {
                 }
                 return {
                     success: true,
-                    commandResponse: newDataSet
+                    commandResponse: newDataSet && !overwriteDataset
                         ? util.format(ZosFilesMessages.dataSetCopiedIntoNew.message, toDataSetName)
                         : response.commandResponse
                 };

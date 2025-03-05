@@ -198,7 +198,9 @@ export default {
                 OPTIONS: {
                     REPLACE: "Specify this option as true if you wish to replace members with identical names in the target data set",
                     SAFE_REPLACE: "Specify this option as true if you wish to replace members with identical names or the " +
-                     "content of the target data set. This option will prompt to confirm."
+                     "content of the target data set. This option will prompt to confirm.",
+                     OVERWRITE: "Specify this option as true if you wish to replace the entire target data set with the source data set. " +
+                     "All members, even those with no naming overlap, will be overwritten"
                 },
                 EXAMPLES: {
                     EX1: "Copy the data set named 'USER.FROM.SET' to the data set named 'USER.TO.SET'",
