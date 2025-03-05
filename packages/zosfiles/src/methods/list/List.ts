@@ -62,9 +62,6 @@ export class List {
             if (options.start) {
                 params.set("start", options.start);
             }
-            if (!options.maxLength) {
-                options.maxLength = 0;
-            }
 
             const reqHeaders: IHeaderContent[] = ZosFilesHeaders.generateHeaders({options, context: ZosFilesContext.LIST});
 
