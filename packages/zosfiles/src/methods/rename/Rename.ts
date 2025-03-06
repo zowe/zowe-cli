@@ -103,7 +103,6 @@ export class Rename {
 
         const reqHeaders = ZosFilesHeaders.generateHeaders({
             options,
-            context: ZosFilesContext.DATASET_MODIFY,
             dataLength: JSON.stringify(payload).length.toString()
         });
 

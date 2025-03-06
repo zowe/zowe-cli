@@ -60,7 +60,7 @@ export class Delete {
                 endpoint = posix.join(endpoint, `-(${encodeURIComponent(options.volume)})`);
             }
 
-            const reqHeaders = ZosFilesHeaders.generateHeaders({ options, context: ZosFilesContext.DATASET_MODIFY });
+            const reqHeaders = ZosFilesHeaders.generateHeaders({ options });
 
 
             endpoint = posix.join(endpoint, encodeURIComponent(dataSetName));
@@ -152,7 +152,7 @@ export class Delete {
         endpoint = posix.join(endpoint, fileName);
         Logger.getAppLogger().debug(`Endpoint: ${endpoint}`);
 
-        const reqHeaders = ZosFilesHeaders.generateHeaders({ options, context: ZosFilesContext.USS_SINGLE });
+        const reqHeaders = ZosFilesHeaders.generateHeaders({ options });
         if (recursive && recursive === true) {
             reqHeaders.push({"X-IBM-Option": "recursive"});
         }

@@ -506,7 +506,7 @@ export class Download {
         ImperativeExpect.toNotBeEqual(options.record, true, ZosFilesMessages.unsupportedDataType.message);
         try {
             let destination: string;
-            const context = options?.multipleFiles ? ZosFilesContext.USS_MULTIPLE : ZosFilesContext.USS_SINGLE;
+            const context = options?.multipleFiles ? ZosFilesContext.USS_MULTIPLE : undefined;
 
             if (options.stream == null) {
                 destination = options.file || posix.normalize(posix.basename(ussFileName));

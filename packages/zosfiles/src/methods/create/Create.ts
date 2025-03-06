@@ -124,7 +124,7 @@ export class Create {
             }
 
             const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + encodeURIComponent(dataSetName);
-            const reqHeaders = ZosFilesHeaders.generateHeaders({options, context: ZosFilesContext.DATASET_MODIFY});
+            const reqHeaders = ZosFilesHeaders.generateHeaders({options});
             Create.dataSetValidateOptions(tempOptions);
 
             await ZosmfRestClient.postExpectString(session, endpoint, reqHeaders, JSON.stringify(tempOptions));
@@ -145,7 +145,7 @@ export class Create {
         ImperativeExpect.toNotBeNullOrUndefined(likeDataSetName, ZosFilesMessages.missingDatasetLikeName.message);
 
         const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + encodeURIComponent(dataSetName);
-        const reqHeaders = ZosFilesHeaders.generateHeaders({options, context: ZosFilesContext.DATASET_MODIFY});
+        const reqHeaders = ZosFilesHeaders.generateHeaders({options});
         const tempOptions = JSON.parse(JSON.stringify({ like: likeDataSetName, ...options || {} }));
         Create.dataSetValidateOptions(tempOptions);
 

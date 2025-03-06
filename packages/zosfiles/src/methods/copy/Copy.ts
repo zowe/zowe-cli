@@ -31,7 +31,7 @@ import { ZosFilesUtils } from "../../utils/ZosFilesUtils";
 import { tmpdir } from "os";
 import path = require("path");
 import * as util from "util";
-import { ZosFilesContext, ZosFilesHeaders } from "../../utils/ZosFilesHeaders";
+import { ZosFilesHeaders } from "../../utils/ZosFilesHeaders";
 /**
  * This class holds helper functions that are used to copy the contents of datasets through the
  * z/OSMF APIs.
@@ -113,7 +113,6 @@ export class Copy {
         const contentLength = JSON.stringify(payload).length.toString();
         const reqHeaders = ZosFilesHeaders.generateHeaders({
             options,
-            context: ZosFilesContext.DATASET_MODIFY,
             dataLength: contentLength
         });
         delete payload.fromDataSet;

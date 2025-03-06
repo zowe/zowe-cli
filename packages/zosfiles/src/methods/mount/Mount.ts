@@ -59,7 +59,6 @@ export class Mount {
         const jsonContent = JSON.stringify(tempOptions);
         const reqHeaders = ZosFilesHeaders.generateHeaders({
             options,
-            context: ZosFilesContext.USS_SINGLE,
             dataLength: jsonContent.length
         });
 

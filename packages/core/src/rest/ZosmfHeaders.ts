@@ -160,7 +160,7 @@ export class ZosmfHeaders {
     public static readonly X_IBM_TEXT_ENCODING: string = ";fileEncoding=";
 
     /**
-     * octet stream header
+     * octet stream header, related to binary encoding
      * @static
      * @memberof ZosmfHeaders
      */

@@ -527,7 +527,7 @@ describe("z/OS Files - Upload", () => {
             });
             it("should return with proper response when uploading with 'record' option", async () => {
                 uploadOptions.record = true;
-                reqHeaders = [ZosmfHeaders.X_IBM_RECORD];
+                reqHeaders = [ZosmfHeaders.X_IBM_RECORD, {"Accept-Encoding": "gzip"}];
 
                 try {
                     response = await Upload.bufferToDataSet(dummySession, buffer, dsName, uploadOptions);
@@ -736,7 +736,7 @@ describe("z/OS Files - Upload", () => {
                 reqHeaders: expect.arrayContaining(reqHeaders),
                 writeData: buffer});
             // Ensure same set of headers but allow any order:
-            expect(extractSpyHeaders(zosmfPutFullSpy)).toIncludeSameMembers(reqHeaders);
+            expect(extractSpyHeaders(zosmfPutFullSpy)).toIncludeSameMembers(reqHeaders);            
         });
     });
     describe("streamToDataSet", () => {
@@ -1031,7 +1031,7 @@ describe("z/OS Files - Upload", () => {
                 record: true
             };
             const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsName);
-            let reqHeaders = [ZosmfHeaders.X_IBM_RECORD];
+            let reqHeaders = [ZosmfHeaders.X_IBM_RECORD, {"Accept-Encoding": "gzip"}];
 
             try {
                 response = await Upload.streamToDataSet(dummySession, inputStream, dsName, uploadOptions);
@@ -1709,7 +1709,7 @@ describe("z/OS Files - Upload", () => {
         it("should return with proper response when upload USS file", async () => {
             const data: Buffer = Buffer.from("testing");
             const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, dsName);
-            const headers = [ZosmfHeaders.X_IBM_TEXT, ZosmfHeaders.TEXT_PLAIN, ZosmfHeaders.ACCEPT_ENCODING];
+            const headers = [ZosmfHeaders.X_IBM_TEXT, ZosmfHeaders.ACCEPT_ENCODING];
 
             try {
                 USSresponse = await Upload.bufferToUssFile(dummySession, dsName, data);
@@ -1736,7 +1736,7 @@ describe("z/OS Files - Upload", () => {
             const data: Buffer = Buffer.from("testing");
             const responseTimeout = 5;
             const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, dsName);
-            const headers = [ZosmfHeaders.X_IBM_TEXT, ZosmfHeaders.TEXT_PLAIN, ZosmfHeaders.ACCEPT_ENCODING,
+            const headers = [ZosmfHeaders.X_IBM_TEXT, ZosmfHeaders.ACCEPT_ENCODING,
                 {[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: "5"}];
 
             try {
@@ -1798,7 +1798,7 @@ describe("z/OS Files - Upload", () => {
         it("should return with proper response when upload USS file with Etag", async () => {
             const data: Buffer = Buffer.from("testing");
             const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, dsName);
-            const headers = [ZosmfHeaders.X_IBM_TEXT, ZosmfHeaders.TEXT_PLAIN, ZosmfHeaders.ACCEPT_ENCODING, {"If-Match": etagValue}];
+            const headers = [ZosmfHeaders.X_IBM_TEXT, ZosmfHeaders.ACCEPT_ENCODING, {"If-Match": etagValue}];
 
             try {
                 USSresponse = await Upload.bufferToUssFile(dummySession, dsName, data, {
@@ -1887,7 +1887,7 @@ describe("z/OS Files - Upload", () => {
         it("should normalize new lines when upload USS file", async () => {
             const data: Buffer = Buffer.from("testing\r\ntesting2");
             const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, dsName);
-            const headers = [ZosmfHeaders.X_IBM_TEXT, ZosmfHeaders.TEXT_PLAIN, ZosmfHeaders.ACCEPT_ENCODING];
+            const headers = [ZosmfHeaders.X_IBM_TEXT, ZosmfHeaders.ACCEPT_ENCODING];
 
             try {
                 USSresponse = await Upload.bufferToUssFile(dummySession, dsName, data);
@@ -1972,7 +1972,7 @@ describe("z/OS Files - Upload", () => {
         });
         it("should return with proper response when upload USS file", async () => {
             const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, dsName);
-            const reqHeaders = [ZosmfHeaders.X_IBM_TEXT, ZosmfHeaders.TEXT_PLAIN, ZosmfHeaders.ACCEPT_ENCODING];
+            const reqHeaders = [ZosmfHeaders.X_IBM_TEXT, ZosmfHeaders.ACCEPT_ENCODING];
 
             try {
                 USSresponse = await Upload.streamToUssFile(dummySession, dsName, inputStream);
@@ -1996,7 +1996,7 @@ describe("z/OS Files - Upload", () => {
         });
         it("should return with proper response when upload USS file with responseTimeout", async () => {
             const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, dsName);
-            const headers = [ZosmfHeaders.X_IBM_TEXT, ZosmfHeaders.TEXT_PLAIN, ZosmfHeaders.ACCEPT_ENCODING,
+            const headers = [ZosmfHeaders.X_IBM_TEXT, ZosmfHeaders.ACCEPT_ENCODING,
                 {[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: "5"}];
 
             try {
@@ -2045,7 +2045,7 @@ describe("z/OS Files - Upload", () => {
         });
         it("should return with proper response when upload USS file with Etag", async () => {
             const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, dsName);
-            const reqHeaders = [ZosmfHeaders.X_IBM_TEXT, ZosmfHeaders.TEXT_PLAIN, ZosmfHeaders.ACCEPT_ENCODING, {"If-Match": etagValue}];
+            const reqHeaders = [ZosmfHeaders.X_IBM_TEXT, ZosmfHeaders.ACCEPT_ENCODING, {"If-Match": etagValue}];
 
             try {
                 USSresponse = await Upload.streamToUssFile(dummySession, dsName, inputStream, {etag: etagValue});
@@ -2069,7 +2069,7 @@ describe("z/OS Files - Upload", () => {
         });
         it("should return with proper response when upload USS file and request Etag back", async () => {
             const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, dsName);
-            const reqHeaders = [ZosmfHeaders.X_IBM_TEXT, ZosmfHeaders.TEXT_PLAIN, ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_RETURN_ETAG];
+            const reqHeaders = [ZosmfHeaders.X_IBM_TEXT, ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.X_IBM_RETURN_ETAG];
             zosmfExpectFullSpy.mockImplementationOnce(async () => fakeResponseWithEtag);
             try {
                 USSresponse = await Upload.streamToUssFile(dummySession, dsName, inputStream, {returnEtag: true});

@@ -16,7 +16,7 @@ import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 import { IZosFilesResponse } from "../../doc/IZosFilesResponse";
 import { IZosFilesOptions } from "../../doc/IZosFilesOptions";
-import { ZosFilesContext, ZosFilesHeaders } from "../../utils/ZosFilesHeaders";
+import { ZosFilesHeaders } from "../../utils/ZosFilesHeaders";
 
 /**
  * This class holds helper functions that are used to unmount file systems through the z/OS MF APIs
@@ -51,7 +51,6 @@ export class Unmount {
 
         const reqHeaders = ZosFilesHeaders.generateHeaders({
             options,
-            context:ZosFilesContext.USS_SINGLE,
             dataLength: jsonContent.length
         });
 
