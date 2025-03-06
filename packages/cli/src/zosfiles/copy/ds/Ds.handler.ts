@@ -26,16 +26,28 @@ export default class DsHandler extends ZosFilesBaseHandler {
             replace: commandParameters.arguments.replace,
             responseTimeout: commandParameters.arguments.responseTimeout,
             safeReplace: commandParameters.arguments.safeReplace,
-            promptFn: this.promptForSafeReplace(commandParameters.response.console)
+            promptFn: this.promptForSafeReplace(commandParameters.response.console),
+            promptForIdenticalNamedMembers: this.promptForIdenticalNamedMembers(commandParameters.response.console),
+            progress: commandParameters.response.progress,
         };
-
-        return Copy.dataSet(session, toDataSet, options);
+        const response = await Copy.dataSet(session, toDataSet, options);
+        return response;
     }
 
     private promptForSafeReplace(console: IHandlerResponseConsoleApi) {
         return async (targetDSN: string) => {
             const answer: string = await console.prompt(
-                `The dataset '${targetDSN}' exists on the target system. This copy will result in data loss.` +
+                `The dataset '${targetDSN}' exists on the target system. This copy can result in data loss.` +
+                ` Are you sure you want to continue? [y/N]: `
+            );
+            return answer != null && (answer.toLowerCase() === "y" || answer.toLowerCase() === "yes");
+        };
+    }
+
+    private promptForIdenticalNamedMembers(console: IHandlerResponseConsoleApi) {
+        return async() => {
+            const answer: string = await console.prompt (
+                `The source and target data sets have identical member names. The contents of the target members will be overwritten.` +
                 ` Are you sure you want to continue? [y/N]: `
             );
             return answer != null && (answer.toLowerCase() === "y" || answer.toLowerCase() === "yes");

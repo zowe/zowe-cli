@@ -1,3 +1,4 @@
+import { IHandlerProgressApi, ITaskWithStatus } from "@zowe/imperative";
 import { IDataSet } from "../../../doc/IDataSet";
 import { IZosFilesOptions } from "../../../doc/IZosFilesOptions";
 
@@ -47,4 +48,24 @@ export interface ICopyDatasetOptions extends IZosFilesOptions {
      * @returns True if target data set should be overwritten
      */
     promptFn?: (targetDSN: string) => Promise<boolean>;
+
+    /**
+     * Prompt for duplicates
+     * @returns `True` if the copy operation will overwrite an existing member; `false` otherwise
+     */
+    promptForIdenticalNamedMembers?: () => Promise<boolean>;
+
+    /**
+     * Task status object used by CLI handlers to create progress bars
+     * Optional
+     * @type {ITaskWithStatus}
+     */
+    task?: ITaskWithStatus;
+
+    /**
+     * Apis to create and destroy progress bars during the command.
+     * @type {IHandlerProgressApi}
+     * @memberof IHandlerResponseApi
+     */
+    progress?: IHandlerProgressApi;
 }

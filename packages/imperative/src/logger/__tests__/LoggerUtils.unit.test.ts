@@ -152,7 +152,6 @@ describe("LoggerUtils tests", () => {
 
         beforeEach(() => {
             (Censor as any).mSchema = null;
-            jest.spyOn(ImperativeConfig, "instance", "get");
         });
 
         afterAll(() => {

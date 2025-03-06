@@ -6,7 +6,7 @@ Array [
     "aliases": Array [
       "rep",
     ],
-    "description": "Specify this option as true if you wish to replace like-named members in the target data set",
+    "description": "Specify this option as true if you wish to replace members with identical names in the target data set",
     "name": "replace",
     "type": "boolean",
   },
@@ -15,7 +15,7 @@ Array [
       "safe-rep",
       "sr",
     ],
-    "description": "Specify this option as true if you wish to replace like-named members or the content of the target data set. This option will prompt to confirm.",
+    "description": "Specify this option as true if you wish to replace members with identical names or the content of the target data set. This option will prompt to confirm.",
     "name": "safe-replace",
     "type": "boolean",
   },
@@ -41,7 +41,7 @@ Array [
     "options": "\\"USER.FROM.SET(mem1)\\" \\"USER.TO.SET\\"",
   },
   Object {
-    "description": "Copy the data set named 'USER.FROM.SET' to the data set named 'USER.TO.SET' and replace like-named members",
+    "description": "Copy the data set named 'USER.FROM.SET' to the data set named 'USER.TO.SET' and replace members with identical names",
     "options": "\\"USER.FROM.SET\\" \\"USER.TO.SET\\" --replace",
   },
   Object {

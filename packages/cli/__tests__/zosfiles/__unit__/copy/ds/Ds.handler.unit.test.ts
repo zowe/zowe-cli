@@ -50,7 +50,7 @@ describe("DsHandler", () => {
 
             },
             response: {
-                console: { promptFn: jest.fn() }
+                console: { promptFn: jest.fn(), promptForIdenticalNamedMembers: jest.fn() }
             }
         };
 
@@ -68,7 +68,8 @@ describe("DsHandler", () => {
                 "replace": commandParameters.arguments.replace,
                 "responseTimeout": commandParameters.arguments.responseTimeout,
                 "safeReplace": commandParameters.arguments.safeReplace,
-                "promptFn": expect.any(Function)
+                "promptFn": expect.any(Function),
+                "promptForIdenticalNamedMembers": expect.any(Function)
             }
         );
         expect(response).toBe(defaultReturn);
@@ -98,7 +99,7 @@ describe("DsHandler", () => {
                 responseTimeout
             },
             response: {
-                console: { promptFn: jest.fn() }
+                console: { promptFn: jest.fn(), promptForIdenticalNamedMembers: jest.fn() }
             }
         };
 
@@ -116,7 +117,8 @@ describe("DsHandler", () => {
                 "replace": commandParameters.arguments.replace,
                 "responseTimeout": commandParameters.arguments.responseTimeout,
                 "safeReplace": commandParameters.arguments.safeReplace,
-                "promptFn": expect.any(Function)
+                "promptFn": expect.any(Function),
+                "promptForIdenticalNamedMembers": expect.any(Function)
             }
         );
         expect(response).toBe(defaultReturn);
@@ -162,7 +164,8 @@ describe("DsHandler", () => {
                 "replace": commandParameters.arguments.replace,
                 "responseTimeout": commandParameters.arguments.responseTimeout,
                 "safeReplace": commandParameters.arguments.safeReplace,
-                "promptFn": expect.any(Function)
+                "promptFn": expect.any(Function),
+                "promptForIdenticalNamedMembers": expect.any(Function)
             }
         );
         expect(response).toBe(defaultReturn);
@@ -198,7 +201,7 @@ describe("DsHandler", () => {
         const result = await promptFn(commandParameters.arguments.toDataSetName);
 
         expect(promptMock).toHaveBeenCalledWith(
-            `The dataset '${toDataSetName}' exists on the target system. This copy will result in data loss.` +
+            `The dataset '${toDataSetName}' exists on the target system. This copy can result in data loss.` +
             ` Are you sure you want to continue? [y/N]: `
         );
         expect(result).toBe(true);
@@ -234,7 +237,79 @@ describe("DsHandler", () => {
         const result = await promptFn(commandParameters.arguments.toDataSetName);
 
         expect(promptMock).toHaveBeenCalledWith(
-            `The dataset '${toDataSetName}' exists on the target system. This copy will result in data loss.` +
+            `The dataset '${toDataSetName}' exists on the target system. This copy can result in data loss.` +
+            ` Are you sure you want to continue? [y/N]: `
+        );
+        expect(result).toBe(false);
+    });
+    it("should prompt the user about duplicate member names and return true when input is 'y", async () => {
+        const handler = new DsHandler();
+
+        expect(handler).toBeInstanceOf(ZosFilesBaseHandler);
+        const fromDataSetName = "ABCD";
+        const toDataSetName = "EFGH";
+        const enq = "SHR";
+        const replace = false;
+        const safeReplace = false;
+        const responseTimeout: any = undefined;
+
+        const commandParameters: any = {
+            arguments: {
+                fromDataSetName,
+                toDataSetName,
+                enq,
+                replace,
+                safeReplace,
+                responseTimeout
+            },
+            response: {
+                console: { promptFn: jest.fn() }
+            }
+        };
+        const promptMock = jest.fn();
+        promptMock.mockResolvedValue("y");
+
+        const promptForDuplicates = (handler as any)["promptForIdenticalNamedMembers"]({ prompt: promptMock });
+        const result = await promptForDuplicates();
+
+        expect(promptMock).toHaveBeenCalledWith(
+            `The source and target data sets have identical member names. The contents of the target members will be overwritten.` +
+            ` Are you sure you want to continue? [y/N]: `
+        );
+        expect(result).toBe(true);
+    });
+    it("should prompt the user about duplicate member names and return false when input is 'N'", async () => {
+        const handler = new DsHandler();
+
+        expect(handler).toBeInstanceOf(ZosFilesBaseHandler);
+        const fromDataSetName = "ABCD";
+        const toDataSetName = "EFGH";
+        const enq = "SHR";
+        const replace = false;
+        const safeReplace = false;
+        const responseTimeout: any = undefined;
+
+        const commandParameters: any = {
+            arguments: {
+                fromDataSetName,
+                toDataSetName,
+                enq,
+                replace,
+                safeReplace,
+                responseTimeout
+            },
+            response: {
+                console: { promptFn: jest.fn() }
+            }
+        };
+        const promptMock = jest.fn();
+        promptMock.mockResolvedValue("N");
+
+        const promptForDuplicates = (handler as any)["promptForIdenticalNamedMembers"]({ prompt: promptMock });
+        const result = await promptForDuplicates();
+
+        expect(promptMock).toHaveBeenCalledWith(
+            `The source and target data sets have identical member names. The contents of the target members will be overwritten.` +
             ` Are you sure you want to continue? [y/N]: `
         );
         expect(result).toBe(false);

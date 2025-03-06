@@ -353,7 +353,7 @@ export class Download {
                 }
 
                 if (options.directory == null) {
-                    if (dataSetObj.dsorg === "PO" || dataSetObj.dsorg === "PO-E") {
+                    if (dataSetObj.dsorg?.startsWith("PO")) {
                         mutableOptions.directory = ZosFilesUtils.getDirsFromDataSet(dataSetObj.dsname);
                     } else {
                         mutableOptions.file = `${dataSetObj.dsname}.` +
@@ -364,7 +364,7 @@ export class Download {
                         mutableOptions.directory = undefined;
                         mutableOptions.extension = undefined;
                     }
-                } else if (dataSetObj.dsorg === "PO" || dataSetObj.dsorg === "PO-E") {
+                } else if (dataSetObj.dsorg?.startsWith("PO")) {
                     mutableOptions.directory = `${mutableOptions.directory}/${ZosFilesUtils.getDirsFromDataSet(dataSetObj.dsname)}`;
                 } else {
                     mutableOptions.file = `${dataSetObj.dsname}.${mutableOptions.extension ?? ZosFilesUtils.DEFAULT_FILE_EXTENSION}`;
@@ -390,7 +390,7 @@ export class Download {
                             dataSetObj.status = downloadResponse.commandResponse;
                         }
                     });
-                } else if (dataSetObj.dsorg === "PO" || dataSetObj.dsorg === "PO-E") {
+                } else if (dataSetObj.dsorg.startsWith("PO")) {
                     poDownloadTasks.push({
                         handler: Download.allMembers.bind(this),
                         dsname: dataSetObj.dsname,

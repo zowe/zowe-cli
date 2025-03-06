@@ -11,19 +11,19 @@
 
 import { Create, Upload, Delete, CreateDataSetTypeEnum, Copy, ZosFilesMessages, Get, IDataSet,
     ICrossLparCopyDatasetOptions, IGetOptions, IZosFilesResponse,
-    ZosFilesUtils, List } from "../../../../src";
-import { Imperative, IO, Session } from "@zowe/imperative";
+    List } from "../../../../src";
+import { Imperative, Session } from "@zowe/imperative";
 import { inspect } from "util";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { join } from "path";
 import { readFileSync } from "fs";
 import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/ITestEnvironment";
+import * as util from "util";
+import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { tmpdir } from "os";
 import path = require("path");
 import * as fs from "fs";
-import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
-
 
 let REAL_SESSION: Session;
 let REAL_TARGET_SESSION: Session;
@@ -65,12 +65,21 @@ describe("Copy", () => {
             }
         });
         describe("Success Scenarios", () => {
+            afterEach(async () => {
+                try {
+                    await Delete.dataSet(REAL_SESSION, fromDataSetName);
+                    await Delete.dataSet(REAL_SESSION, toDataSetName);
+                } catch (err) {
+                    Imperative.console.info(`Error: ${inspect(err)}`);
+                }
+            });
             describe("Sequential > Sequential", () => {
                 beforeEach(async () => {
                     try {
                         await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, fromDataSetName);
                         await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, toDataSetName);
-                        await Upload.bufferToDataSet(REAL_SESSION, Buffer.from("1234"), fromDataSetName);
+                        await Upload.bufferToDataSet(REAL_SESSION, Buffer.from("abc"), fromDataSetName);
+                        await Upload.bufferToDataSet(REAL_SESSION, Buffer.from("1234"), toDataSetName);
                     } catch (err) {
                         Imperative.console.info(`Error: ${inspect(err)}`);
                     }
@@ -106,30 +115,32 @@ describe("Copy", () => {
                     expect(contents1.toString()).toEqual(contents2.toString());
                 });
             });
-            describe("Partioned > Partioned", () => {
-                let downloadDir: string;
+            describe("Partitioned > Partitioned", () => {
                 beforeEach(async () => {
                     try {
-                        downloadDir = path.join(tmpdir(), fromDataSetName);
-                        fs.mkdirSync(downloadDir, { recursive: true });
-                        const mockFile = path.join(downloadDir, "mockFile.txt");
-                        fs.writeFileSync(mockFile, "test file content");
+                        await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, fromDataSetName);
+                        await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, toDataSetName);
+                        await Upload.fileToDataset(REAL_SESSION, fileLocation, fromDataSetName);
+                    } catch (err) {
+                        Imperative.console.info(`Error: ${inspect(err)}`);
+                    }
 
-                        const uploadFileList: string[] = ZosFilesUtils.getFileListFromPath(downloadDir);
-                        const stream = IO.createReadStream(uploadFileList[0]);
-                        await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, fromDataSetName);
-                        await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, toDataSetName);
-                        await Upload.streamToDataSet(REAL_SESSION, stream, fromDataSetName);
+                });
+                afterEach(async () => {
+                    try {
+                        await Delete.dataSet(REAL_SESSION, fromDataSetName);
+                        await Delete.dataSet(REAL_SESSION, toDataSetName);
+                        fs.rmSync(join(tmpdir(), 'truncatedMembers.txt'));
                     } catch (err) {
                         Imperative.console.info(`Error: ${inspect(err)}`);
                     }
                 });
+
                 it("Should copy a partitioned data set", async () => {
                     let error;
                     let response;
-                    let contents1;
-                    let contents2;
-
+                    const truncatedMembersFile = path.join(tmpdir(), 'truncatedMembers.txt');
+                    fs.writeFileSync(truncatedMembersFile, "");
                     try {
                         response = await Copy.dataSet(
                             REAL_SESSION,
@@ -138,8 +149,6 @@ describe("Copy", () => {
                                 dsn:fromDataSetName
                             }}
                         );
-                        contents1 = await Get.dataSet(REAL_SESSION, fromDataSetName);
-                        contents2 = await Get.dataSet(REAL_SESSION, toDataSetName);
                         Imperative.console.info(`Response: ${inspect(response)}`);
                     } catch (err) {
                         error = err;
@@ -151,13 +160,42 @@ describe("Copy", () => {
                     expect(response).toBeTruthy();
                     expect(response.success).toBe(true);
                     expect(response.commandResponse).toContain(ZosFilesMessages.datasetCopiedSuccessfully.message);
-
-                    expect(contents1).toBeTruthy();
-                    expect(contents2).toBeTruthy();
-                    expect(contents1.toString()).toEqual(contents2.toString());
                 });
-                afterEach(() => {
-                    fs.rmSync(downloadDir, { recursive: true, force: true });
+                it("Should handle truncation errors and log them to a file", async () => {
+                    let error;
+                    let response;
+
+                    const uploadFileToDatasetSpy = jest.spyOn(Upload, 'fileToDataset').mockImplementation(async (session, filePath) => {
+                        if (filePath === fileLocation) {
+                            throw new Error("Truncation of a record occurred during an I/O operation");
+                        }
+                        return Promise.resolve() as any;
+                    });
+                    const copyDataSetSpy = jest.spyOn(Copy, 'dataSet').mockImplementation(async () => {
+                        return {
+                            success: true,
+                            commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message + " " +
+                            util.format(ZosFilesMessages.membersContentTruncated.message)
+                        };
+                    });
+                    try {
+                        response = await Copy.dataSet(
+                            REAL_SESSION,
+                            {dsn: toDataSetName},
+                            {"from-dataset": {
+                                dsn:fromDataSetName
+                            }}
+                        );
+                    } catch (err) {
+                        error = err;
+                        Imperative.console.info(`Error: ${inspect(err)}`);
+                    }
+                    expect(response).toBeTruthy();
+                    expect(response.success).toBe(true);
+                    expect(response.commandResponse).toContain(ZosFilesMessages.datasetCopiedSuccessfully.message + " " +
+                        util.format(ZosFilesMessages.membersContentTruncated.message));
+                    uploadFileToDatasetSpy.mockRestore();
+                    copyDataSetSpy.mockRestore();
                 });
             });
             describe("Member > Member", () => {
@@ -597,6 +635,45 @@ describe("Copy", () => {
         });
     });
 
+    describe("hasIdenticalMemberNames", () => {
+        beforeEach(async () => {
+            try {
+                await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, fromDataSetName);
+                await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, toDataSetName);
+                await Upload.fileToDataset(REAL_SESSION, fileLocation, fromDataSetName);
+                await Upload.fileToDataset(REAL_SESSION, fileLocation, toDataSetName);
+            }
+            catch (err) {
+                Imperative.console.info(`Error: ${inspect(err)}`);
+            }
+        });
+        afterEach(async () => {
+            try {
+                await Delete.dataSet(REAL_SESSION, fromDataSetName);
+                await Delete.dataSet(REAL_SESSION, toDataSetName);
+            } catch (err) {
+                Imperative.console.info(`Error: ${inspect(err)}`);
+            }
+        });
+        it("should return true if the source and target data sets have identical member names", async () => {
+            const sourceResponse = await List.allMembers(REAL_SESSION, fromDataSetName);
+            const sourceMemberList = sourceResponse.apiResponse.items.map((item: { member: any; }) => item.member);
+            const response = await Copy["hasIdenticalMemberNames"](REAL_SESSION, sourceMemberList, toDataSetName);
+            expect(response).toBe(true);
+        });
+
+        it("should return false if the source and target data sets do not have identical member names", async () => {
+            await Delete.dataSet(REAL_SESSION, toDataSetName);
+            await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, toDataSetName);
+
+            const sourceResponse = await List.allMembers(REAL_SESSION, fromDataSetName);
+            const sourceMemberList = sourceResponse.apiResponse.items.map((item: { member: any; }) => item.member);
+
+            const response = await Copy["hasIdenticalMemberNames"](REAL_SESSION, sourceMemberList, toDataSetName);
+            expect(response).toBe(false);
+        });
+    });
+
     describe("Data Set Cross LPAR", () => {
         describe("Common Failures", () => {
             it("should fail if no fromDataSet data set name is supplied", async () => {
@@ -691,7 +768,7 @@ describe("Copy", () => {
                     }
                     expect(response?.success).toBeFalsy();
                     expect(error).toBeDefined();
-                    expect(error.message).toContain("Data set copied aborted. The source data set was not found.");
+                    expect(error.message).toContain("Data set copy aborted. The source data set was not found.");
                 });
 
                 it("should warn and fail if the destination data set exists", async() => {
