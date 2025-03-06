@@ -93,6 +93,10 @@ export const DsDefinition: ICommandDefinition = {
         {
             description: strings.EXAMPLES.EX6,
             options: `"USER.FROM.SET" "USER.TO.SET" --safe-replace`
+        },
+        {
+            description: strings.EXAMPLES.EX8,
+            options: `"USER.FROM.SET" "USER.TO.SET" --overwrite`
         }
     ]
 };

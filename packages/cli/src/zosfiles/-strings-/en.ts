@@ -209,7 +209,8 @@ export default {
                     EX4: "Copy the data set member named 'USER.FROM.SET(MEM1)' to the data set named 'USER.TO.SET'",
                     EX5: "Copy the data set named 'USER.FROM.SET' to the data set named 'USER.TO.SET' and replace members with identical names",
                     EX6: "Copy the partitioned data set named 'TEST.PDS1' to the partitioned data set named 'TEST.PDS2'",
-                    EX7: "Copy the partitioned data set named 'EXISTING.PDS' to a non-existent target 'NEW.PDS'"
+                    EX7: "Copy the partitioned data set named 'EXISTING.PDS' to a non-existent target 'NEW.PDS'",
+                    EX8: "Copy the partitioned data set named 'USER.FROM.SET' to the partitioned data set named 'USER.FROM.SET' and overwrite the original contents",
                 }
             },
             DATA_SET_CROSS_LPAR: {

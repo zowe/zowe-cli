@@ -3,7 +3,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## Recent Changes
 
-- Enhancement: Added `--overwrite` flag to `Copy.DataSet()` command to allow for overwriting all members of target data set with source data set members [#2450] (https://github.com/zowe/zowe-cli/pull/2450)
+- Enhancement: Added `overwrite` parameter to `Copy.DataSet()` command to allow for overwriting all members of target data set with source data set members [#2450] (https://github.com/zowe/zowe-cli/pull/2450)
 
 ## `8.14.1`
 
