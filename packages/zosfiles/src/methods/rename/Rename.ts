@@ -18,7 +18,7 @@ import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 import { IZosFilesResponse } from "../../doc/IZosFilesResponse";
 import { IDataSet } from "../../doc/IDataSet";
 import { IZosFilesOptions } from "../../doc/IZosFilesOptions";
-import { ZosFilesContext, ZosFilesHeaders } from "../../utils/ZosFilesHeaders";
+import { ZosFilesHeaders } from "../../utils/ZosFilesHeaders";
 /**
  * Class to handle renaming data sets
  */

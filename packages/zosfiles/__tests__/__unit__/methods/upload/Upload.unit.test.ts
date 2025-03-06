@@ -736,7 +736,7 @@ describe("z/OS Files - Upload", () => {
                 reqHeaders: expect.arrayContaining(reqHeaders),
                 writeData: buffer});
             // Ensure same set of headers but allow any order:
-            expect(extractSpyHeaders(zosmfPutFullSpy)).toIncludeSameMembers(reqHeaders);            
+            expect(extractSpyHeaders(zosmfPutFullSpy)).toIncludeSameMembers(reqHeaders);
         });
     });
     describe("streamToDataSet", () => {

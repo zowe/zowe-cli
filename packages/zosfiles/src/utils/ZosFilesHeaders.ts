@@ -46,7 +46,8 @@ export class ZosFilesHeaders {
                 ? {}
                 : { "Content-Type": "application/json" };
         });
-        this.headerMap.set("binary", (options) => (options as any).binary === true ? [ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.OCTET_STREAM] : undefined);
+        this.headerMap.set("binary", (options) => (options as any).binary === true ?
+            [ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.OCTET_STREAM] : undefined);
         this.headerMap.set("record", (options) => (options as any).binary !== true ? ZosmfHeaders.X_IBM_RECORD : undefined);
         this.headerMap.set("responseTimeout", (options) => this.createHeader(ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT, (options as any).responseTimeout));
         this.headerMap.set("recall", (options) => this.getRecallHeader(((options as any).recall || "").toString()));

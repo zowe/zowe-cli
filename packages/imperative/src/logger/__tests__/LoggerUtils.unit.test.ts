@@ -149,11 +149,10 @@ describe("LoggerUtils tests", () => {
     });
 
     describe("isSpecialValue", () => {
-        let impConfigSpy: jest.SpyInstance = null;
 
         beforeEach(() => {
             (Censor as any).mSchema = null;
-            impConfigSpy = jest.spyOn(ImperativeConfig, "instance", "get");
+            jest.spyOn(ImperativeConfig, "instance", "get");
         });
 
         afterAll(() => {
