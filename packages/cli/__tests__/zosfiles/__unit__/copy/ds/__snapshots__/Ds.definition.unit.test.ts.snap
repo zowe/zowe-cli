@@ -57,5 +57,9 @@ Array [
     "description": "Copy the partitioned data set named 'TEST.PDS1' to the partitioned data set named 'TEST.PDS2'",
     "options": "\\"USER.FROM.SET\\" \\"USER.TO.SET\\" --safe-replace",
   },
+  Object {
+    "description": "Copy the partitioned data set named 'USER.FROM.SET' to the partitioned data set named 'USER.FROM.SET' and overwrite the original contents",
+    "options": "\\"USER.FROM.SET\\" \\"USER.TO.SET\\" --overwrite",
+  },
 ]
 `;
