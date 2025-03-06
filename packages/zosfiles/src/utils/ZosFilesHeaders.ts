@@ -52,7 +52,7 @@ export class ZosFilesHeaders {
     static initializeHeaderMap() {
         // "from-dataset" always uses JSON (unless no body is needed)
         this.headerMap.set("from-dataset", (context?) => {
-            return (context === ZosFilesContext.ZFS || context === ZosFilesContext.LIST)
+            return context === ZosFilesContext.ZFS || context === ZosFilesContext.LIST
                 ? {}
                 : { "Content-Type": "application/json" };
         });
@@ -188,7 +188,7 @@ export class ZosFilesHeaders {
      * "X-IBM-Data-Type": "text" is used.
      */
     private static addContextHeaders<T>(options: T, context?: ZosFilesContext, dataLength?: number | string):
-        { headers: IHeaderContent[], updatedOptions: T } {
+    { headers: IHeaderContent[], updatedOptions: T } {
         const headers: IHeaderContent[] = [];
         const updatedOptions: any = { ...options || {} };
 

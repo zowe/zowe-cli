@@ -232,7 +232,7 @@ export class List {
             let endpoint = posix.join(ZosFilesConstants.RESOURCE,
                 `${ZosFilesConstants.RES_USS_FILES}?${ZosFilesConstants.RES_PATH}=${encodeURIComponent(path)}`);
 
-                const reqHeaders: IHeaderContent[] = ZosFilesHeaders.generateHeaders({options, context: ZosFilesContext.LIST});
+            const reqHeaders: IHeaderContent[] = ZosFilesHeaders.generateHeaders({options, context: ZosFilesContext.LIST});
 
             // Start modifying the endpoint with the query parameters that were passed in
             if (options.group) { endpoint += `&${ZosFilesConstants.RES_GROUP}=${encodeURIComponent(options.group)}`; }
