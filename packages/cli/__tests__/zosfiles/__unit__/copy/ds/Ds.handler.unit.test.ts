@@ -246,26 +246,6 @@ describe("DsHandler", () => {
         const handler = new DsHandler();
 
         expect(handler).toBeInstanceOf(ZosFilesBaseHandler);
-        const fromDataSetName = "ABCD";
-        const toDataSetName = "EFGH";
-        const enq = "SHR";
-        const replace = false;
-        const safeReplace = false;
-        const responseTimeout: any = undefined;
-
-        const commandParameters: any = {
-            arguments: {
-                fromDataSetName,
-                toDataSetName,
-                enq,
-                replace,
-                safeReplace,
-                responseTimeout
-            },
-            response: {
-                console: { promptFn: jest.fn() }
-            }
-        };
         const promptMock = jest.fn();
         promptMock.mockResolvedValue("y");
 
@@ -282,26 +262,6 @@ describe("DsHandler", () => {
         const handler = new DsHandler();
 
         expect(handler).toBeInstanceOf(ZosFilesBaseHandler);
-        const fromDataSetName = "ABCD";
-        const toDataSetName = "EFGH";
-        const enq = "SHR";
-        const replace = false;
-        const safeReplace = false;
-        const responseTimeout: any = undefined;
-
-        const commandParameters: any = {
-            arguments: {
-                fromDataSetName,
-                toDataSetName,
-                enq,
-                replace,
-                safeReplace,
-                responseTimeout
-            },
-            response: {
-                console: { promptFn: jest.fn() }
-            }
-        };
         const promptMock = jest.fn();
         promptMock.mockResolvedValue("N");
 
