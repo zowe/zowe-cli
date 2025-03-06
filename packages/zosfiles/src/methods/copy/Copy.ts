@@ -113,7 +113,7 @@ export class Copy {
         const contentLength = JSON.stringify(payload).length.toString();
         const reqHeaders = ZosFilesHeaders.generateHeaders({
             options,
-            context: ZosFilesContext.DATASET,
+            context: ZosFilesContext.DATASET_MODIFY,
             dataLength: contentLength
         });
         delete payload.fromDataSet;

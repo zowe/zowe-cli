@@ -126,7 +126,7 @@ export class Download {
             }
 
             const writeStream = options.stream ?? IO.createWriteStream(destination);
-            const reqHeaders = ZosFilesHeaders.generateHeaders({ options, context: ZosFilesContext.DATASET });
+            const reqHeaders = ZosFilesHeaders.generateHeaders({ options });
 
             // Use specific options to mimic ZosmfRestClient.getStreamed()
             const requestOptions: IOptionsFullResponse = {

@@ -165,7 +165,7 @@ export class Upload {
         endpoint = path.posix.join(endpoint, encodeURIComponent(dataSetName));
 
         // Construct request header parameters
-        const reqHeaders: IHeaderContent[] = ZosFilesHeaders.generateHeaders({ options, context: ZosFilesContext.DATASET });
+        const reqHeaders: IHeaderContent[] = ZosFilesHeaders.generateHeaders({ options, context: ZosFilesContext.DATASET_MODIFY });
 
         if (!options.binary) {
             fileBuffer = ZosFilesUtils.normalizeNewline(fileBuffer);
@@ -235,7 +235,7 @@ export class Upload {
         endpoint = path.posix.join(endpoint, encodeURIComponent(dataSetName));
 
         // Construct request header parameters
-        const reqHeaders: IHeaderContent[] = ZosFilesHeaders.generateHeaders({ options, context: ZosFilesContext.DATASET });
+        const reqHeaders: IHeaderContent[] = ZosFilesHeaders.generateHeaders({ options, context: ZosFilesContext.DATASET_MODIFY });
 
         const requestOptions: IOptionsFullResponse = {
             resource: endpoint,
