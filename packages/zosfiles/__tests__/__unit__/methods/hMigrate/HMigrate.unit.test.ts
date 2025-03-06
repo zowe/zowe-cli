@@ -12,9 +12,10 @@
 import { Session, ImperativeError } from "@zowe/imperative";
 import { posix } from "path";
 import { HMigrate, ZosFilesConstants, ZosFilesMessages } from "../../../../src";
-
 import { ZosmfHeaders, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { IMigrateOptions } from "../../../../src/methods/hMigrate/doc/IMigrateOptions";
+import {extractSpyHeaders} from "../../../extractSpyHeaders";
+import 'jest-extended';
 
 describe("hMigrate data set", () => {
     const putExpectStringSpy = jest.spyOn(ZosmfRestClient, "putExpectString");
@@ -64,9 +65,12 @@ describe("hMigrate data set", () => {
             expect(putExpectStringSpy).toHaveBeenLastCalledWith(
                 dummySession,
                 expectedEndpoint,
-                expectedHeaders,
+                expect.arrayContaining(expectedHeaders),
                 expectedPayload
             );
+            // Ensure same set of headers but allow any order:
+            const receivedHeaders = extractSpyHeaders(putExpectStringSpy);
+            expect(receivedHeaders).toIncludeSameMembers(expectedHeaders);
         });
         it("should send a request with wait = true", async () => {
             const options: IMigrateOptions = { wait: true };
@@ -96,9 +100,12 @@ describe("hMigrate data set", () => {
             expect(putExpectStringSpy).toHaveBeenLastCalledWith(
                 dummySession,
                 expectedEndpoint,
-                expectedHeaders,
+                expect.arrayContaining(expectedHeaders),
                 expectedPayload
             );
+            // Ensure same set of headers but allow any order:
+            const receivedHeaders = extractSpyHeaders(putExpectStringSpy);
+            expect(receivedHeaders).toIncludeSameMembers(expectedHeaders);
         });
         it("should send a request with responseTimeout", async () => {
             const options: IMigrateOptions = { responseTimeout: 5 };
@@ -128,9 +135,12 @@ describe("hMigrate data set", () => {
             expect(putExpectStringSpy).toHaveBeenLastCalledWith(
                 dummySession,
                 expectedEndpoint,
-                expectedHeaders,
+                expect.arrayContaining(expectedHeaders),
                 expectedPayload
             );
+            // Ensure same set of headers but allow any order:
+            const receivedHeaders = extractSpyHeaders(putExpectStringSpy);
+            expect(receivedHeaders).toIncludeSameMembers(expectedHeaders);
         });
     });
     describe("Failure Scenarios", () => {
@@ -165,10 +175,13 @@ describe("hMigrate data set", () => {
             expect(putExpectStringSpy).toHaveBeenLastCalledWith(
                 dummySession,
                 expectedEndpoint,
-                expectedHeaders,
+                expect.arrayContaining(expectedHeaders),
                 expectedPayload
             );
             expect(error).toContain(errorMessage);
+            // Ensure same set of headers but allow any order:
+            const receivedHeaders = extractSpyHeaders(putExpectStringSpy);
+            expect(receivedHeaders).toIncludeSameMembers(expectedHeaders);
         });
     });
 });

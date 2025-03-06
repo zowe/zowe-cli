@@ -1,6 +1,10 @@
 # Change Log
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Created a centralized header class with `packages/zosfiles/src/utils/ZosFilesHeaders.ts` to be used across all methods in the ZosFiles SDK. [#2436](https://github.com/zowe/zowe-cli/pull/2436)
+
 ## `8.14.1`
 
 - BugFix: When using the `copy` command, if a target partitioned data set has a smaller record length than a source partitioned data set, the operation for subsequent members no longer stops. The user can now view the affected members in a local file. [#2349] (https://github.com/zowe/zowe-cli/issues/2349)

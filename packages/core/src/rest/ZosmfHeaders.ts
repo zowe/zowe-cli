@@ -33,6 +33,13 @@ export class ZosmfHeaders {
 
 
     /**
+     * header indicating recursive = true
+     * @static
+     * @memberof ZosmfHeaders
+     */
+    public static readonly X_IBM_RECURSIVE: IHeaderContent = {"X-IBM-Option": "recursive"};
+
+    /**
      * recfm header
      * @static
      * @memberof ZosmfHeaders
@@ -115,7 +122,7 @@ export class ZosmfHeaders {
      * @static
      * @memberof ZosmfHeaders
      */
-    public static readonly X_CSRF_ZOSMF_HEADER: object = { "X-CSRF-ZOSMF-HEADER": true }; // "the value does not matter"
+    public static readonly X_CSRF_ZOSMF_HEADER: IHeaderContent = { "X-CSRF-ZOSMF-HEADER": "true" }; //value doesn't matter
 
     /**
      * binary transfer header
@@ -153,7 +160,7 @@ export class ZosmfHeaders {
     public static readonly X_IBM_TEXT_ENCODING: string = ";fileEncoding=";
 
     /**
-     * octet stream header
+     * octet stream header, related to binary encoding
      * @static
      * @memberof ZosmfHeaders
      */

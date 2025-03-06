@@ -9,14 +9,12 @@
 *
 */
 
-import { AbstractSession, Headers, ImperativeExpect, IO, Logger, TaskProgress, ImperativeError,
-    TextUtils, IHeaderContent, IOptionsFullResponse, IRestClientResponse } from "@zowe/imperative";
-
+import { AbstractSession, ImperativeExpect, IO, Logger, TaskProgress, ImperativeError,
+    TextUtils, IOptionsFullResponse, IRestClientResponse } from "@zowe/imperative";
 import { posix, join, relative } from "path";
 import * as fs from "fs";
 import * as util from "util";
-
-import { ZosmfRestClient, ZosmfHeaders, asyncPool } from "@zowe/core-for-zowe-sdk";
+import { ZosmfRestClient, asyncPool } from "@zowe/core-for-zowe-sdk";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 import { IZosFilesResponse } from "../../doc/IZosFilesResponse";
@@ -30,6 +28,7 @@ import { IDownloadDsmResult } from "./doc/IDownloadDsmResult";
 import { IDownloadUssDirResult } from "./doc/IDownloadUssDirResult";
 import { IUSSListOptions } from "../list";
 import { TransferMode } from "../../utils/ZosFilesAttributes";
+import { ZosFilesContext, ZosFilesHeaders } from "../../utils/ZosFilesHeaders";
 
 type IZosmfListResponseWithStatus = IZosmfListResponse & { error?: Error; status?: string };
 
@@ -98,8 +97,6 @@ export class Download {
 
             Logger.getAppLogger().debug(`Endpoint: ${endpoint}`);
 
-            const reqHeaders: IHeaderContent[] = this.generateHeadersBasedOnOptions(options);
-
             // Get contents of the data set
             let extension = ZosFilesUtils.DEFAULT_FILE_EXTENSION;
             if (options.extension != null) {
@@ -129,6 +126,7 @@ export class Download {
             }
 
             const writeStream = options.stream ?? IO.createWriteStream(destination);
+            const reqHeaders = ZosFilesHeaders.generateHeaders({ options });
 
             // Use specific options to mimic ZosmfRestClient.getStreamed()
             const requestOptions: IOptionsFullResponse = {
@@ -139,13 +137,8 @@ export class Download {
                 task: options.task
             };
 
-            if (options.range) {
-                reqHeaders.push({ [ZosmfHeaders.X_IBM_RECORD_RANGE]: options.range});
-            }
-
-            // If requestor needs etag, add header + get "response" back
+            // If requestor needs etag, get "response" back
             if (options.returnEtag) {
-                requestOptions.reqHeaders.push(ZosmfHeaders.X_IBM_RETURN_ETAG);
                 requestOptions.dataToReturn = [CLIENT_PROPERTY.response];
             }
 
@@ -513,6 +506,7 @@ export class Download {
         ImperativeExpect.toNotBeEqual(options.record, true, ZosFilesMessages.unsupportedDataType.message);
         try {
             let destination: string;
+            const context = options?.multipleFiles ? ZosFilesContext.USS_MULTIPLE : undefined;
 
             if (options.stream == null) {
                 destination = options.file || posix.normalize(posix.basename(ussFileName));
@@ -537,7 +531,7 @@ export class Download {
             ussFileName = ZosFilesUtils.sanitizeUssPathForRestCall(ussFileName);
             const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, ussFileName);
 
-            const reqHeaders: IHeaderContent[] = this.generateHeadersBasedOnOptions(options);
+            const reqHeaders = ZosFilesHeaders.generateHeaders({ options, context });
 
             // Use specific options to mimic ZosmfRestClient.getStreamed()
             const requestOptions: IOptionsFullResponse = {
@@ -548,13 +542,8 @@ export class Download {
                 task: options.task
             };
 
-            if (options.range) {
-                reqHeaders.push({ [ZosmfHeaders.X_IBM_RECORD_RANGE]: options.range});
-            }
-
-            // If requestor needs etag, add header + get "response" back
+            // If requestor needs etag, get "response" back
             if (options.returnEtag) {
-                requestOptions.reqHeaders.push(ZosmfHeaders.X_IBM_RETURN_ETAG);
                 requestOptions.dataToReturn = [CLIENT_PROPERTY.response];
             }
 
@@ -685,6 +674,7 @@ export class Download {
                         file: item.name,
                         options: {
                             ...mutableOptions,
+                            multipleFiles: true,
                             ...this.parseAttributeOptions(item.name, fileOptions)
                         },
                     });
@@ -833,18 +823,6 @@ export class Download {
             }
         }
         return responseLines.join("\n") + "\n";
-    }
-
-    private static generateHeadersBasedOnOptions(options: IDownloadOptions) {
-        const reqHeaders = ZosFilesUtils.generateHeadersBasedOnOptions(options);
-        if (!options.binary && !options.record) {
-            if (options.localEncoding) {
-                reqHeaders.push({ [Headers.CONTENT_TYPE]: options.localEncoding });
-            } else {
-                reqHeaders.push(ZosmfHeaders.TEXT_PLAIN);
-            }
-        }
-        return reqHeaders;
     }
 
     private static parseAttributeOptions(filename: string, options: IDownloadOptions): Partial<IDownloadOptions> {
