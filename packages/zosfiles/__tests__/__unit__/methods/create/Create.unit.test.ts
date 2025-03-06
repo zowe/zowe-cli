@@ -1427,10 +1427,10 @@ describe("Create unit tests", () => {
             });
 
             it("should be able to create a VSAM data set and over-ride multiple options", async () => {
-
-                const expectedCommand: string[] =
-                    [`DEFINE CLUSTER -\n(NAME('${dataSetName}') -\nNONINDEXED -\nCYL(${THIRTY} ${TEN})
-                         -\nFOR(${TEN}) -\nVOLUMES(STG100, STG101) -\n)`];
+                const expectedCommand: string[] = [
+                    `DEFINE CLUSTER -\n(NAME('${dataSetName}') -\nNONINDEXED -\nCYL(${THIRTY} ${TEN}) -\nFOR(${TEN}) -\n` +
+                    `VOLUMES(STG100, STG101) -\n)`
+                ];
                 const options: IZosFilesOptions = {responseTimeout: undefined};
 
                 dsOptions.dsorg = "NONINDEXED";

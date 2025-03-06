@@ -544,7 +544,7 @@ export class Upload {
         ussname = ZosFilesUtils.sanitizeUssPathForRestCall(ussname);
         const parameters: string = ZosFilesConstants.RES_USS_FILES + "/" + ussname;
 
-        const reqHeaders: IHeaderContent[] = ZosFilesHeaders.generateHeaders({ options, context: ZosFilesContext.USS_SINGLE });
+        const reqHeaders: IHeaderContent[] = ZosFilesHeaders.generateHeaders({ options, context: ZosFilesContext.USS_MULTIPLE });
 
         // Options to use the stream to write a file
         const restOptions: IOptionsFullResponse = {

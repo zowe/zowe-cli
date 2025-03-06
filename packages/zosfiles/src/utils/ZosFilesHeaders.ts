@@ -125,10 +125,6 @@ export class ZosFilesHeaders {
     */
     private static addHeader(headers: IHeaderContent[], key: string, value: any, search?: boolean): void {
         const existingKeys = headers.flatMap(headerObj => Object.keys(headerObj));
-        // If trying to add X-IBM-Data-Type but a Content-Type already exists, skip it.
-        if (key === "X-IBM-Data-Type" && existingKeys.includes("Content-Type")) {
-            return;
-        }
         if (existingKeys.includes(key) && !search) {
             let add = true;
             if (key.toString().toLowerCase().includes("type")) {
@@ -183,9 +179,9 @@ export class ZosFilesHeaders {
     /**
      * Adds headers based on the operation context.
      *
-     * For dataset operations, if context is not provided (i.e. Download) then the default header is
-     * "Content-Type": "text/plain". If context is explicitly DATASET_MODIFY, then the IBM header
-     * "X-IBM-Data-Type": "text" is used.
+     * For USS_SINGLE, USS_MULTIPLE, ZFS, and LIST contexts, headers are handled separately.
+     * For dataset operations (default branch), if the context is DATASET_MODIFY the IBM header is used;
+     * otherwise, the default download behavior applies.
      */
     private static addContextHeaders<T>(options: T, context?: ZosFilesContext, dataLength?: number | string):
     { headers: IHeaderContent[], updatedOptions: T } {
@@ -199,7 +195,6 @@ export class ZosFilesHeaders {
             return { headers, updatedOptions };
         }
 
-        // If context is USS_SINGLE, USS_MULTIPLE, ZFS, or LIST, handle them separately.
         if (context === ZosFilesContext.USS_MULTIPLE) {
             this.addHeader(headers, "Content-Type", "application/json");
             delete updatedOptions["localEncoding"];
@@ -210,8 +205,8 @@ export class ZosFilesHeaders {
             } else if (updatedOptions.encoding) {
                 const keys: string[] = Object.keys(ZosmfHeaders.X_IBM_TEXT);
                 const value = ZosmfHeaders.X_IBM_TEXT[keys[0]] +
-                              ZosmfHeaders.X_IBM_TEXT_ENCODING +
-                              updatedOptions.encoding;
+                            ZosmfHeaders.X_IBM_TEXT_ENCODING +
+                            updatedOptions.encoding;
                 const encodingHeader: any = {};
                 encodingHeader[keys[0]] = value;
                 headers.push(encodingHeader);
@@ -234,8 +229,8 @@ export class ZosFilesHeaders {
                 updatedOptions.maxLength = 0;
             }
         } else {
-            // Default: dataset operations.
-            // If context is DATASET_MODIFY then use IBM header; otherwise, use download defaults.
+            // Default dataset operation branch.
+            // If context is DATASET_MODIFY then use legacy header; otherwise, use standard download defaults.
             const useLegacy = context === ZosFilesContext.DATASET_MODIFY;
             if (updatedOptions.binary) {
                 if (updatedOptions.binary === true) {
@@ -251,8 +246,8 @@ export class ZosFilesHeaders {
                 if (updatedOptions.encoding) {
                     const keys: string[] = Object.keys(ZosmfHeaders.X_IBM_TEXT);
                     const value = ZosmfHeaders.X_IBM_TEXT[keys[0]] +
-                                  ZosmfHeaders.X_IBM_TEXT_ENCODING +
-                                  updatedOptions.encoding;
+                                ZosmfHeaders.X_IBM_TEXT_ENCODING +
+                                updatedOptions.encoding;
                     const encodingHeader: any = {};
                     encodingHeader[keys[0]] = value;
                     headers.push(encodingHeader);
@@ -266,7 +261,7 @@ export class ZosFilesHeaders {
                     }
                     delete updatedOptions["localEncoding"];
                 } else {
-                    // If dsntype is LIBRARY, no header is added.
+                    // For non-library datasets, add a default header.
                     if (!(updatedOptions.dsntype && updatedOptions.dsntype.toUpperCase() === "LIBRARY")) {
                         if (useLegacy) {
                             this.addHeader(headers, "X-IBM-Data-Type", "text", true);
@@ -279,6 +274,7 @@ export class ZosFilesHeaders {
         }
         return { headers, updatedOptions };
     }
+
 
     // ============//
     // MAIN METHOD //
