@@ -85,14 +85,12 @@ export class Copy {
 
         const targetDataSetExists = await this.dataSetExists(session, toDataSetName);
 
-        let newDataSet = !targetDataSetExists;
-
         const overwriteDataset = options.overwrite;
 
         if(overwriteDataset){
             await Delete.dataSet(session,toDataSetName);
-            newDataSet = true;
         }
+        const newDataSet = !targetDataSetExists || overwriteDataset;
 
         if (newDataSet) {
             await Create.dataSetLike(session, toDataSetName, options["from-dataset"].dsn);
