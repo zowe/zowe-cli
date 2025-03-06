@@ -13,7 +13,7 @@
  * Helper to extract the headers from the last call of a spy.
  * Assumes that headers are passed as the third argument, else flattens object and searches for headers.
  */
-export const extractSpyHeaders = (spy: jest.SpyInstance): any[] => {
+  export const extractSpyHeaders = (spy: jest.SpyInstance): any[] => {
     if (spy.mock.calls.length === 0) {
       throw new Error("Spy has not been called.");
     }
