@@ -16,7 +16,6 @@ import { ZosmfHeaders } from "@zowe/core-for-zowe-sdk";
  * Enumeration of operation contexts used when generating content-type headers.
  *
  * For USS, ZFS and LIST operations the context is required.
- *
  * For dataset operations the context is optional. If no context is provided,
  * the default behavior applies (i.e. standard "Content-Type" is used).
  *
@@ -41,9 +40,9 @@ export enum ZosFilesContext {
  */
 export class ZosFilesHeaders {
 
-    // ===========================//
+    // ============================//
     // INITIALIZATION & HEADER MAP //
-    // ===========================//
+    // ============================//
 
     /**
      * Initializes the header map with predefined header generation functions.
@@ -177,9 +176,9 @@ export class ZosFilesHeaders {
         }
     }
 
-    // =========================//
+    // ==========================//
     // CONTEXT-BASED HEADER LOGIC//
-    // =========================//
+    // ==========================//
 
     /**
      * Adds headers based on the operation context.
@@ -281,9 +280,9 @@ export class ZosFilesHeaders {
         return { headers, updatedOptions };
     }
 
-    // =================//
+    // ============//
     // MAIN METHOD //
-    // =================//
+    // ============//
 
     /**
      * Generates an array of headers based on provided options and context.
