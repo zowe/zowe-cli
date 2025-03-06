@@ -14,7 +14,8 @@ import { posix } from "path";
 import * as fs from "fs";
 import { error } from "console";
 import * as util from "util";
-import { Copy, Create, Get, List, Upload, ZosFilesConstants, ZosFilesMessages, IZosFilesResponse, Download, ZosFilesUtils, Delete } from "../../../../src";
+import { Copy, Create, Get, List, Upload, ZosFilesConstants,
+    ZosFilesMessages, IZosFilesResponse, Download, ZosFilesUtils, Delete } from "../../../../src";
 import { ZosmfHeaders, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import path = require("path");
 import { tmpdir } from "os";
@@ -429,7 +430,7 @@ describe("Copy", () => {
                 });
             });
             describe("Overwrite option", () => {
-                it("should run Copy.dataSet() with overwrite flag", async () => {
+                it("should run Copy.dataSet() with overwrite: true", async () => {
                     await Copy.dataSet(
                         dummySession,
                         { dsn: toDataSetName },
@@ -439,7 +440,7 @@ describe("Copy", () => {
                     expect(deleteDSSpy).toHaveBeenCalledWith(dummySession,"USER.DATA.TO");
                     expect(createDSLikeSpy).toHaveBeenCalledWith(dummySession,"USER.DATA.TO","USER.DATA.FROM");
                 });
-                it("should run Copy.dataSet() with overwrite flag", async () => {
+                it("should run Copy.dataSet() with overwrite: false", async () => {
                     await Copy.dataSet(
                         dummySession,
                         { dsn: toDataSetName },

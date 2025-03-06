@@ -165,7 +165,6 @@ describe("Copy", () => {
                     expect(response.commandResponse).toContain(ZosFilesMessages.datasetCopiedSuccessfully.message);
                 });
                 it("Should handle truncation errors and log them to a file", async () => {
-                    let error;
                     let response;
 
                     const uploadFileToDatasetSpy = jest.spyOn(Upload, 'fileToDataset').mockImplementation(async (session, filePath) => {
@@ -190,7 +189,6 @@ describe("Copy", () => {
                             }}
                         );
                     } catch (err) {
-                        error = err;
                         Imperative.console.info(`Error: ${inspect(err)}`);
                     }
                     expect(response).toBeTruthy();
