@@ -436,10 +436,8 @@ export class AuthOrder {
         if (sessCfg?.type) {
             switch (sessCfg.type) {
                 case SessConstants.AUTH_TYPE_BASIC:
-                    // only keep one of our basic creds, giving preference to B64Auth
                     if (sessCfg.base64EncodedAuth) {
                         AuthOrder.keepCred("base64EncodedAuth", credsToRemove);
-                    } else {
                         AuthOrder.keepCred("user", credsToRemove);
                         AuthOrder.keepCred("password", credsToRemove);
                     }
@@ -453,13 +451,10 @@ export class AuthOrder {
                         AuthOrder.keepCred("tokenValue", credsToRemove);
                     } else if (sessCfg.authTypeToRequestToken == SessConstants.AUTH_TYPE_BASIC) {
                         // We are requesting a token using basic creds.
-                        // Keep only one of our basic creds and allow tokenValue to be removed.
-                        if (sessCfg.base64EncodedAuth) {
-                            AuthOrder.keepCred("base64EncodedAuth", credsToRemove);
-                        } else {
-                            AuthOrder.keepCred("user", credsToRemove);
-                            AuthOrder.keepCred("password", credsToRemove);
-                        }
+                        // Keep our basic creds and allow tokenValue to be removed.
+                        AuthOrder.keepCred("base64EncodedAuth", credsToRemove);
+                        AuthOrder.keepCred("user", credsToRemove);
+                        AuthOrder.keepCred("password", credsToRemove);
                     } else if (sessCfg.authTypeToRequestToken == SessConstants.AUTH_TYPE_CERT_PEM) {
                         // We are requesting a token using a cert.
                         // Keep the cert creds and allow tokenValue to be removed
