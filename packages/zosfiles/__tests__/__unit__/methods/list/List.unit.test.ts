@@ -825,7 +825,7 @@ describe("z/OS Files - List", () => {
         it("should return with files when input path name is valid and max items set", async () => {
             let response;
             let error;
-            const headers = [ZosmfHeaders.ACCEPT_ENCODING, {"X-IBM-Max-Items": "2"}]
+            const headers = [ZosmfHeaders.ACCEPT_ENCODING, {"X-IBM-Max-Items": "2"}];
             const testApiResponse = {
                 items: [
                     {
@@ -1443,9 +1443,9 @@ describe("z/OS Files - List", () => {
                 endpoint,
                 expect.arrayContaining(headers)
             );
-                // Ensure same set of headers but allow any order:
-                expect(extractSpyHeaders(expectJsonSpy)).toIncludeSameMembers(headers);
-            });
+            // Ensure same set of headers but allow any order:
+            expect(extractSpyHeaders(expectJsonSpy)).toIncludeSameMembers(headers);
+        });
 
         it("should return 2 records of all mounted filesystems with responseTimeout", async () => {
             let response;

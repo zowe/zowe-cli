@@ -130,7 +130,7 @@ describe("Delete", () => {
                 volume: "ABCD",
                 responseTimeout: 5
             };
-            const headers = [ZosmfHeaders.ACCEPT_ENCODING, {"X-IBM-Response-Timeout": "5"}, {"X-IBM-Data-Type": "text"}]
+            const headers = [ZosmfHeaders.ACCEPT_ENCODING, {"X-IBM-Response-Timeout": "5"}, {"X-IBM-Data-Type": "text"}];
             const apiResponse = await Delete.dataSet(dummySession, dataset, options);
 
             expect(apiResponse).toEqual({

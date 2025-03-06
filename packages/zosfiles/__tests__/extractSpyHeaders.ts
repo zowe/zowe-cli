@@ -15,37 +15,37 @@
  * and searches for the `reqHeaders` property.
  */
 export const extractSpyHeaders = (spy: jest.SpyInstance): any[] => {
-  if (spy.mock.calls.length === 0) {
-    throw new Error("Spy has not been called.");
-  }
-  // If headers are provided at index 2, return them
-  const lastCall = spy.mock.calls[spy.mock.calls.length - 1];
-  if (lastCall[2]) {
-    return lastCall[2];
-  }
-  // Otherwise, recursively search for headers
-  const extractedHeaders = findReqHeaders(spy.mock.calls);
-  if (!extractedHeaders) {
-    throw new Error("No headers found in the spy call");
-  }
-  return extractedHeaders;
+    if (spy.mock.calls.length === 0) {
+        throw new Error("Spy has not been called.");
+    }
+    // If headers are provided at index 2, return them.
+    const lastCall = spy.mock.calls[spy.mock.calls.length - 1];
+    if (lastCall[2]) {
+        return lastCall[2];
+    }
+    // Otherwise, recursively search for headers.
+    const extractedHeaders = findReqHeaders(spy.mock.calls);
+    if (!extractedHeaders) {
+        throw new Error("No headers found in the spy call");
+    }
+    return extractedHeaders;
 };
 
 /**
- * Recursively searches for the `reqHeaders` property within an object and returns its value if found.
- * @param obj - The object to search within.
- * @returns An array of request headers if found, otherwise `null`.
- */
+* Recursively searches for the `reqHeaders` property within an object and returns its value if found.
+* @param obj - The object to search within.
+* @returns An array of request headers if found, otherwise `null`.
+*/
 const findReqHeaders = (obj: any): any[] | null => {
-  if (!obj || typeof obj !== "object") return null;
-  if (obj.reqHeaders) {
-    return obj.reqHeaders;
-  }
-  for (const key in obj) {
-    if (Object.prototype.hasOwnProperty.call(obj, key)) {
-      const result = findReqHeaders(obj[key]);
-      if (result) return result;
+    if (!obj || typeof obj !== "object") return null;
+    if (obj.reqHeaders) {
+        return obj.reqHeaders;
     }
-  }
-  return null;
+    for (const key in obj) {
+        if (Object.prototype.hasOwnProperty.call(obj, key)) {
+            const result = findReqHeaders(obj[key]);
+            if (result) return result;
+        }
+    }
+    return null;
 };

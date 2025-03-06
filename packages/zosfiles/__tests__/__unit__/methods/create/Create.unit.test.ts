@@ -182,7 +182,7 @@ describe("Create unit tests", () => {
             });
 
             it("should be able to create a sequential data set (PS) with responseTimeout", async () => {
-                headers = [ZosmfHeaders.ACCEPT_ENCODING, {"X-IBM-Data-Type": "text"}, { [ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: "5" }]
+                headers = [ZosmfHeaders.ACCEPT_ENCODING, {"X-IBM-Data-Type": "text"}, { [ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: "5" }];
                 dsOptions.dsntype = "PDS";
                 dsOptions.responseTimeout = 5;
                 let response: IZosFilesResponse;
@@ -243,7 +243,7 @@ describe("Create unit tests", () => {
             });
 
             it("should be able to create a dataSetLike with responseTimeout", async () => {
-                headers = [ZosmfHeaders.ACCEPT_ENCODING, { [ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: "5" }, {"X-IBM-Data-Type": "text"}]
+                headers = [ZosmfHeaders.ACCEPT_ENCODING, { [ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: "5" }, {"X-IBM-Data-Type": "text"}];
                 dsOptions.alcunit = undefined;
                 dsOptions.dsntype = undefined;
                 dsOptions.recfm = undefined;
@@ -459,7 +459,7 @@ describe("Create unit tests", () => {
                 expect(receivedHeaders).toIncludeSameMembers(headers);
             });
 
-            it("should be able to create a fixed sequential data set using a block size that is too small without specifying the alcunit", async () => {
+            it("should be able to create a fixed seq data set using a block size that is too small without the alcunit", async () => {
                 const custOptions = {
                     dsorg: "PS",
                     alcunit: "CYL",
@@ -1225,7 +1225,8 @@ describe("Create unit tests", () => {
 
                 Create.dataSetValidateOptions(testOptions);
 
-                expect(testOptions.blksize).toEqual(testOptions.blksize);  // Should be changed during create validation to zOSMF default of lrecl value
+                expect(testOptions.blksize).toEqual(testOptions.blksize);
+                // Should be changed during create validation to zOSMF default of lrecl value
             });
 
             it("secondary should default to 0 if not specified", async () => {
@@ -1428,7 +1429,8 @@ describe("Create unit tests", () => {
             it("should be able to create a VSAM data set and over-ride multiple options", async () => {
 
                 const expectedCommand: string[] =
-                    [`DEFINE CLUSTER -\n(NAME('${dataSetName}') -\nNONINDEXED -\nCYL(${THIRTY} ${TEN}) -\nFOR(${TEN}) -\nVOLUMES(STG100, STG101) -\n)`];
+                    [`DEFINE CLUSTER -\n(NAME('${dataSetName}') -\nNONINDEXED -\nCYL(${THIRTY} ${TEN})
+                         -\nFOR(${TEN}) -\nVOLUMES(STG100, STG101) -\n)`];
                 const options: IZosFilesOptions = {responseTimeout: undefined};
 
                 dsOptions.dsorg = "NONINDEXED";
@@ -1865,7 +1867,7 @@ describe("Create unit tests", () => {
         const endpoint = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + ussPath;
 
         let mySpy: any;
-        let headers: any
+        let headers: any;
 
         beforeEach(() => {
             mySpy = jest.spyOn(ZosmfRestClient, "postExpectString").mockResolvedValue("");
