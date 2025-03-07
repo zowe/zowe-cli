@@ -126,7 +126,7 @@ export class Download {
             }
 
             const writeStream = options.stream ?? IO.createWriteStream(destination);
-            const reqHeaders = ZosFilesHeaders.generateHeaders({ options, context: ZosFilesContext.DS_DOWNLOAD });
+            const reqHeaders = ZosFilesHeaders.generateHeaders({ options, context: ZosFilesContext.DOWNLOAD });
 
             // Use specific options to mimic ZosmfRestClient.getStreamed()
             const requestOptions: IOptionsFullResponse = {
@@ -531,7 +531,7 @@ export class Download {
             ussFileName = ZosFilesUtils.sanitizeUssPathForRestCall(ussFileName);
             const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, ussFileName);
 
-            const reqHeaders = ZosFilesHeaders.generateHeaders({ options, context: ZosFilesContext.USS_DOWNLOAD });
+            const reqHeaders = ZosFilesHeaders.generateHeaders({ options, context: ZosFilesContext.DOWNLOAD });
 
             // Use specific options to mimic ZosmfRestClient.getStreamed()
             const requestOptions: IOptionsFullResponse = {

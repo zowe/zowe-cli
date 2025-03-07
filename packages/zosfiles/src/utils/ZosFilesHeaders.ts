@@ -20,12 +20,10 @@ import { ZosmfHeaders } from "@zowe/core-for-zowe-sdk";
  */
 export enum ZosFilesContext {
     USS_MULTIPLE = "uss_multiple", //content header = json
-    USS_DOWNLOAD = "uss_download", //no content-headers
+    DOWNLOAD = "download", //deterministic header based on binary/record options
     USS_UPLOAD = "uss_upload", // octet-stream header
-    DS_DOWNLOAD = "ds_download", //content header = text/plain
     ZFS = "zfs", //no content-headers
     LIST = "list",//no content-headers
-    DOWNLOAD = "download" //content header = text/plain
 }
 
 /**
@@ -168,13 +166,18 @@ export class ZosFilesHeaders {
 
         switch (context) {
             case ZosFilesContext.ZFS: break; //no content headers
-            case ZosFilesContext.USS_DOWNLOAD:
+            case ZosFilesContext.DOWNLOAD:
                 if (updatedOptions.binary === true) {
                     this.addHeader(headers, "X-IBM-Data-Type", "binary" );
                     delete updatedOptions["binary"]; //remove option to prevent duplication
                 }else{
                     if (!updatedOptions.record){
-                        this.addHeader(headers, "Content-Type", updatedOptions.localEncoding || "text/plain");
+                        if (!(updatedOptions.dsntype && updatedOptions.dsntype.toUpperCase() === "LIBRARY")) {
+                            if (typeof(updatedOptions.localEncoding) === "string" || updatedOptions.localEncoding === undefined) {
+                                this.addHeader(headers, "Content-Type", updatedOptions.localEncoding || "text/plain");
+                                delete updatedOptions["localEncoding"]; //remove option to prevent duplication
+                            }
+                        }
                     }
                 }
                 break;
@@ -182,16 +185,6 @@ export class ZosFilesHeaders {
                 //check to prevent a future null assignment
                 if (!updatedOptions.maxLength) {
                     updatedOptions.maxLength = 0;
-                }
-                break;
-            case ZosFilesContext.DS_DOWNLOAD:
-                if (updatedOptions.binary === true) {
-                    this.addHeader(headers, "X-IBM-Data-Type", "binary" );
-                    delete updatedOptions["binary"]; //remove option to prevent duplication
-                }else{
-                    if (!updatedOptions.record){
-                        this.addHeader(headers, "Content-Type", "text/plain");
-                    }
                 }
                 break;
             case ZosFilesContext.USS_MULTIPLE:
