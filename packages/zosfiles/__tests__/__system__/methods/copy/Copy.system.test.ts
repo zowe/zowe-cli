@@ -11,19 +11,19 @@
 
 import { Create, Upload, Delete, CreateDataSetTypeEnum, Copy, ZosFilesMessages, Get, IDataSet,
     ICrossLparCopyDatasetOptions, IGetOptions, IZosFilesResponse,
-    ZosFilesUtils, List } from "../../../../src";
-import { Imperative, IO, Session } from "@zowe/imperative";
+    List } from "../../../../src";
+import { Imperative, Session } from "@zowe/imperative";
 import { inspect } from "util";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { join } from "path";
 import { readFileSync } from "fs";
 import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/ITestEnvironment";
+import * as util from "util";
+import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
+import { tmpdir } from "os";
 import path = require("path");
 import * as fs from "fs";
-import * as util from "util";
-import { tmpdir } from "os";
-import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 
 let REAL_SESSION: Session;
 let REAL_TARGET_SESSION: Session;
@@ -36,7 +36,10 @@ let toDataSetName: string;
 
 const file1 = "file1";
 const file2 = "file2";
+const file3 = "file3";
 const fileLocation = join(__dirname, "testfiles", `${file1}.txt`);
+const file2Location = join(__dirname, "testfiles", `${file2}.txt`);
+const file3Location = join(__dirname, "testfiles", `${file3}.txt`);
 
 describe("Copy", () => {
     beforeAll(async () => {
@@ -78,7 +81,8 @@ describe("Copy", () => {
                     try {
                         await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, fromDataSetName);
                         await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, toDataSetName);
-                        await Upload.bufferToDataSet(REAL_SESSION, Buffer.from("1234"), fromDataSetName);
+                        await Upload.bufferToDataSet(REAL_SESSION, Buffer.from("abc"), fromDataSetName);
+                        await Upload.bufferToDataSet(REAL_SESSION, Buffer.from("1234"), toDataSetName);
                     } catch (err) {
                         Imperative.console.info(`Error: ${inspect(err)}`);
                     }
@@ -115,27 +119,31 @@ describe("Copy", () => {
                 });
             });
             describe("Partitioned > Partitioned", () => {
-                let downloadDir: string;
                 beforeEach(async () => {
                     try {
-                        downloadDir = path.join(tmpdir(), fromDataSetName);
-                        fs.mkdirSync(downloadDir, { recursive: true });
-                        const mockFile = path.join(downloadDir, "mockFile.txt");
-                        fs.writeFileSync(mockFile, "test file content");
+                        await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, fromDataSetName);
+                        await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, toDataSetName);
+                        await Upload.fileToDataset(REAL_SESSION, fileLocation, fromDataSetName);
+                    } catch (err) {
+                        Imperative.console.info(`Error: ${inspect(err)}`);
+                    }
 
-                        const uploadFileList: string[] = ZosFilesUtils.getFileListFromPath(downloadDir);
-                        const stream = IO.createReadStream(uploadFileList[0]);
-                        await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, fromDataSetName);
-                        await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, toDataSetName);
-                        await Upload.streamToDataSet(REAL_SESSION, stream, fromDataSetName);
+                });
+                afterEach(async () => {
+                    try {
+                        await Delete.dataSet(REAL_SESSION, fromDataSetName);
+                        await Delete.dataSet(REAL_SESSION, toDataSetName);
+                        fs.rmSync(join(tmpdir(), 'truncatedMembers.txt'));
                     } catch (err) {
                         Imperative.console.info(`Error: ${inspect(err)}`);
                     }
                 });
+
                 it("Should copy a partitioned data set", async () => {
                     let error;
                     let response;
-
+                    const truncatedMembersFile = path.join(tmpdir(), 'truncatedMembers.txt');
+                    fs.writeFileSync(truncatedMembersFile, "");
                     try {
                         response = await Copy.dataSet(
                             REAL_SESSION,
@@ -157,10 +165,9 @@ describe("Copy", () => {
                     expect(response.commandResponse).toContain(ZosFilesMessages.datasetCopiedSuccessfully.message);
                 });
                 it("Should handle truncation errors and log them to a file", async () => {
-                    let error;
                     let response;
 
-                    const uploadFileToDatasetSpy = jest.spyOn(Upload, 'fileToDataset').mockImplementation(async (session, filePath, dsn) => {
+                    const uploadFileToDatasetSpy = jest.spyOn(Upload, 'fileToDataset').mockImplementation(async (session, filePath) => {
                         if (filePath === fileLocation) {
                             throw new Error("Truncation of a record occurred during an I/O operation");
                         }
@@ -182,7 +189,6 @@ describe("Copy", () => {
                             }}
                         );
                     } catch (err) {
-                        error = err;
                         Imperative.console.info(`Error: ${inspect(err)}`);
                     }
                     expect(response).toBeTruthy();
@@ -431,6 +437,105 @@ describe("Copy", () => {
                 expect(response).toBeFalsy();
             });
         });
+
+        describe("Overwrite option", () => {
+            beforeEach(async () => {
+                try {
+                    await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, fromDataSetName);
+                    await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, toDataSetName);
+                } catch (err) {
+                    Imperative.console.info(`Error: ${inspect(err)}`);
+                }
+            });
+            it("should overwrite all target directory contents with source directory contents", async () => {
+                let contents1;
+                let contents2;
+                let contents3;
+
+                let err;
+
+                await Upload.fileToDataset(REAL_SESSION, fileLocation, fromDataSetName);
+                await Upload.fileToDataset(REAL_SESSION, file2Location, fromDataSetName);
+                await Upload.fileToDataset(REAL_SESSION, file3Location, toDataSetName);
+
+                try {
+                    await Copy.dataSet(
+                        REAL_SESSION,
+                        { dsn: toDataSetName },
+                        { "from-dataset": { dsn: fromDataSetName }, overwrite: true }
+                    );
+                    contents1 = await Get.dataSet(REAL_SESSION, `${toDataSetName}(${file1})`);
+                    contents2 = await Get.dataSet(REAL_SESSION, `${toDataSetName}(${file2})`);
+                    contents3 = await Get.dataSet(REAL_SESSION, `${toDataSetName}(${file3})`);
+                } catch(e){
+                    err = e;
+                }
+
+                expect(`${err}`).toContain(`\n${toDataSetName}(${file3.toUpperCase()})\nMember not found`);
+                expect(contents1).toBeDefined();
+                expect(contents2).toBeDefined();
+                expect(contents3).toBeUndefined();
+            });
+            it("should overwrite with empty source directory", async () => {
+                let contents1;
+                let contents2;
+                let contents3;
+
+                let err;
+
+                await Upload.fileToDataset(REAL_SESSION, fileLocation, toDataSetName);
+                await Upload.fileToDataset(REAL_SESSION, file2Location, toDataSetName);
+                await Upload.fileToDataset(REAL_SESSION, file3Location, toDataSetName);
+
+                try {
+                    await Copy.dataSet(
+                        REAL_SESSION,
+                        { dsn: toDataSetName },
+                        { "from-dataset": { dsn: fromDataSetName }, overwrite: true }
+                    );
+                    contents1 = await Get.dataSet(REAL_SESSION, `${toDataSetName}(${file1})`);
+                    contents2 = await Get.dataSet(REAL_SESSION, `${toDataSetName}(${file2})`);
+                    contents3 = await Get.dataSet(REAL_SESSION, `${toDataSetName}(${file3})`);
+                } catch(e){
+                    err = e;
+                }
+
+                expect(`${err}`).toBeDefined();
+                expect(contents1).toBeUndefined();
+                expect(contents2).toBeUndefined();
+                expect(contents3).toBeUndefined();
+            });
+            it("should overwrite with empty target directory", async () => {
+                let contents1;
+                let contents2;
+                let contents3;
+
+                let err;
+
+                await Upload.fileToDataset(REAL_SESSION, fileLocation, fromDataSetName);
+                await Upload.fileToDataset(REAL_SESSION, file2Location, fromDataSetName);
+                await Upload.fileToDataset(REAL_SESSION, file3Location, fromDataSetName);
+
+                try {
+                    await Copy.dataSet(
+                        REAL_SESSION,
+                        { dsn: toDataSetName },
+                        { "from-dataset": { dsn: fromDataSetName }, overwrite: true }
+                    );
+                    contents1 = await Get.dataSet(REAL_SESSION, `${toDataSetName}(${file1})`);
+                    contents2 = await Get.dataSet(REAL_SESSION, `${toDataSetName}(${file2})`);
+                    contents3 = await Get.dataSet(REAL_SESSION, `${toDataSetName}(${file3})`);
+                } catch(e){
+                    err = e;
+                }
+
+                expect(`${err}`).toBeDefined();
+                expect(contents1).toBeDefined();
+                expect(contents2).toBeDefined();
+                expect(contents3).toBeDefined();
+            });
+        });
+
         describe("Replace option", () => {
             beforeEach(async () => {
                 try {
@@ -763,7 +868,7 @@ describe("Copy", () => {
                     }
                     expect(response?.success).toBeFalsy();
                     expect(error).toBeDefined();
-                    expect(error.message).toContain("Data set copied aborted. The source data set was not found.");
+                    expect(error.message).toContain("Data set copy aborted. The source data set was not found.");
                 });
 
                 it("should warn and fail if the destination data set exists", async() => {

@@ -88,7 +88,7 @@ export class Search {
                 if (resp.dsorg && !(resp.migr && resp.migr.toLowerCase() === "yes")) {
                     if (resp.dsorg === "PS") {                                      // Sequential
                         searchItemsQueue.push({dsn: resp.dsname});
-                    } else if (resp.dsorg === "PO" || resp.dsorg === "PO-E") {      // Partitioned
+                    } else if (resp.dsorg.startsWith("PO")) {      // Partitioned
                         partitionedDataSets.push(resp.dsname);
                     }
                 }

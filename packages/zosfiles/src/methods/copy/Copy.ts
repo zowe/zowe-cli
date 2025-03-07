@@ -10,7 +10,8 @@
 */
 
 import { AbstractSession, ImperativeError, ImperativeExpect, ITaskWithStatus,
-    Logger, Headers, IHeaderContent, TaskStage, IO} from "@zowe/imperative";
+    Logger, Headers, IHeaderContent, TaskStage, IO,
+    TaskProgress} from "@zowe/imperative";
 import { posix } from "path";
 import * as fs from "fs";
 import { Create, CreateDataSetTypeEnum, ICreateDataSetOptions } from "../create";
@@ -31,6 +32,7 @@ import { ZosFilesUtils } from "../../utils/ZosFilesUtils";
 import { tmpdir } from "os";
 import path = require("path");
 import * as util from "util";
+import { Delete } from "../delete";
 /**
  * This class holds helper functions that are used to copy the contents of datasets through the
  * z/OSMF APIs.
@@ -60,6 +62,20 @@ export class Copy {
         const safeReplace: boolean = options.safeReplace;
         const overwriteMembers: boolean = options.replace;
 
+        const task: ITaskWithStatus = {
+            percentComplete: 0,
+            statusMessage: "Copying data set",
+            stageName: TaskStage.IN_PROGRESS
+        };
+
+        const sourceDataSetExists = await this.dataSetExists(session, options["from-dataset"].dsn);
+        if(!sourceDataSetExists) {
+            return {
+                success: false,
+                commandResponse: ZosFilesMessages.datasetCopiedAbortedNoTargetDS.message
+            };
+        }
+
         if(options["from-dataset"].dsn === toDataSetName && toMemberName === options["from-dataset"].member) {
             return {
                 success: false,
@@ -69,10 +85,17 @@ export class Copy {
 
         const targetDataSetExists = await this.dataSetExists(session, toDataSetName);
 
-        const newDataSet = !targetDataSetExists;
+        const overwriteDataset = options.overwrite;
+
+        if(overwriteDataset){
+            await Delete.dataSet(session,toDataSetName);
+        }
+        const newDataSet = !targetDataSetExists || overwriteDataset;
+
         if (newDataSet) {
             await Create.dataSetLike(session, toDataSetName, options["from-dataset"].dsn);
         }
+
         else if(safeReplace) {
             if (options.promptFn != null) {
                 const userResponse = await options.promptFn(toDataSetName);
@@ -80,7 +103,13 @@ export class Copy {
                 if(!userResponse) {
                     throw new ImperativeError({ msg: ZosFilesMessages.datasetCopiedAborted.message });
                 }
+                else if(options.progress && options.progress.startBar) {
+                    options.progress.startBar({task});
+                }
             }
+        }
+        if(options.progress && options.progress.endBar) {
+            options.progress.endBar();
         }
         if(!toMemberName && !options["from-dataset"].member) {
             const sourceIsPds = await this.isPDS(session, options["from-dataset"].dsn);
@@ -97,11 +126,25 @@ export class Copy {
                     if(!userResponse) {
                         throw new ImperativeError({ msg: ZosFilesMessages.datasetCopiedAborted.message});
                     }
+                    else if(options.progress && options.progress.startBar) {
+                        options.progress.startBar({task});
+                    }
                 }
-                const response = await this.copyPDS(session, sourceMemberList, options["from-dataset"].dsn, toDataSetName);
+                if(options.progress) {
+                    if(options.progress.endBar) {
+                        options.progress.endBar();
+                    }
+                    if(options.progress.startBar) {
+                        options.progress.startBar({task});
+                    }
+                }
+                const response = await this.copyPDS(session, sourceMemberList, options["from-dataset"].dsn, toDataSetName, task);
+                if(options.progress && options.progress.endBar) {
+                    options.progress.endBar();
+                }
                 return {
                     success: true,
-                    commandResponse: newDataSet
+                    commandResponse: newDataSet && !overwriteDataset
                         ? util.format(ZosFilesMessages.dataSetCopiedIntoNew.message, toDataSetName)
                         : response.commandResponse
                 };
@@ -211,9 +254,8 @@ export class Copy {
      *
      * @see https://www.ibm.com/support/knowledgecenter/en/SSLTBW_2.1.0/com.ibm.zos.v2r1.izua700/IZUHPINFO_API_PutDataSetMemberUtilities.htm
      */
-
     public static async copyPDS (
-        session: AbstractSession, sourceMemberList: string[], fromPds: string, toPds: string): Promise<IZosFilesResponse> {
+        session: AbstractSession, sourceMemberList: string[], fromPds: string, toPds: string, task: ITaskWithStatus): Promise<IZosFilesResponse> {
         try {
 
             if(sourceMemberList.length == 0) {
@@ -226,14 +268,51 @@ export class Copy {
             const downloadDir = path.join(tmpdir(), fromPds);
             await Download.allMembers(session, fromPds, {directory:downloadDir});
             const uploadFileList: string[] = ZosFilesUtils.getFileListFromPath(downloadDir);
+            const truncatedMembers: string[] = [];
+            let membersInitiated = 0;
 
             for (const file of uploadFileList) {
                 const memName = ZosFilesUtils.generateMemberName(file);
                 const uploadingDsn = `${toPds}(${memName})`;
-                const uploadStream = IO.createReadStream(file);
-                await Upload.streamToDataSet(session, uploadStream, uploadingDsn);
+                if (task != null) {
+                    const LAST_FIFTEEN_CHARS = -16;
+                    const abbreviatedFile = file.slice(LAST_FIFTEEN_CHARS);
+                    task.statusMessage = "Copying... " + abbreviatedFile;
+                    task.percentComplete = Math.floor(TaskProgress.ONE_HUNDRED_PERCENT *
+                        (membersInitiated / uploadFileList.length));
+                    membersInitiated++;
+                }
+                try {
+                    const uploadStream = IO.createReadStream(file);
+                    await Upload.streamToDataSet(session, uploadStream, uploadingDsn);
+                }
+                catch(error) {
+                    if(error.message && error.message.includes("Truncation of a record occurred during an I/O operation")) {
+                        truncatedMembers.push(memName);
+                    }
+                    else {
+                        Logger.getAppLogger().error(error);
+                    }
+                    continue;
+                }
+            }
+            const truncatedMembersFile = path.join(tmpdir(), 'truncatedMembers.txt');
+            if(truncatedMembers.length > 0) {
+                const firstTenMembers = truncatedMembers.slice(0, 10);
+                fs.writeFileSync(truncatedMembersFile, truncatedMembers.join('\n'), {flag: 'w'});
+                const numMembers = truncatedMembers.length - firstTenMembers.length;
+                return {
+                    success: true,
+                    commandResponse:
+                        ZosFilesMessages.datasetCopiedSuccessfully.message + " " +
+                        ZosFilesMessages.membersContentTruncated.message + "\n" +
+                        firstTenMembers.join('\n') +
+                        (numMembers > 0 ? `\n... and ${numMembers} more` +
+                        util.format(ZosFilesMessages.viewMembersListfile.message, truncatedMembersFile) : '')
+                };
             }
             fs.rmSync(downloadDir, {recursive: true});
+            fs.rmSync(truncatedMembersFile, {force: true});
             return {
                 success:true,
                 commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message

@@ -148,7 +148,6 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
     dataSetCopiedIntoNew: {
         message: `Source contents were successfully copied into a new data set - %s`
     },
-
     /**
      * Message indicating that the data set was created successfully
      * @type {IMessageDefinition}
@@ -202,8 +201,17 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
      * @type {IMessageDefinition}
      */
     membersContentTruncated: {
-        message: "Member(s)' contents were truncated due to insufficient record length. You can view the list of members here: %s"
+        message: "The following member(s) were truncated due to insufficient record length."
     },
+
+    /**
+     * Message indicating that a local file containing a list of members can be viewed
+     * @type {IMessageDefinition}
+     */
+    viewMembersListfile: {
+        message: "\nYou can view the list of members in this file: %s"
+    },
+
     /**
      * Message indicating that the uss file was downloaded successfully
      * @type {IMessageDefinition}
@@ -676,7 +684,7 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
      * @type {IMessageDefinition}
      */
     datasetCopiedAbortedNoTargetDS: {
-        message: "Data set copied aborted. The source data set was not found."
+        message: "Data set copy aborted. The source data set was not found."
     },
 
     /**
@@ -692,7 +700,7 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
      * @type {IMessageDefinition}
      */
     datasetMemberCopiedAborted: {
-        message: "Data set copied aborted. The existing target data set member was not overwritten."
+        message: "Data set copy aborted. The existing target data set member was not overwritten."
     },
 
     /**
@@ -700,7 +708,7 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
      * @type {IMessageDefinition}
      */
     datasetCopiedAbortedNoPDS: {
-        message: "Data set copied aborted. Copying from a PDS to PDS is not supported when using the 'dsclp' option."
+        message: "Data set copy aborted. Copying from a PDS to PDS is not supported when using the 'dsclp' option."
     },
 
     /**
@@ -708,7 +716,7 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
      * @type {IMessageDefinition}
      */
     datasetCopiedAbortedTargetNotPDSMember: {
-        message: "Data set copied aborted. Copying to a PDS without a member name is not supported when using the 'dsclp' option."
+        message: "Data set copy aborted. Copying to a PDS without a member name is not supported when using the 'dsclp' option."
     },
 
     /**

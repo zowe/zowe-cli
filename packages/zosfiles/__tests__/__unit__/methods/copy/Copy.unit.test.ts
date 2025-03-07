@@ -9,13 +9,16 @@
 *
 */
 
-import { Session, ImperativeError, IO } from "@zowe/imperative";
+import { Session, ImperativeError, IO, ITaskWithStatus, TaskStage } from "@zowe/imperative";
 import { posix } from "path";
 import * as fs from "fs";
 import { error } from "console";
 import * as util from "util";
-import { Copy, Create, Get, List, Upload, ZosFilesConstants, ZosFilesMessages, IZosFilesResponse, Download, ZosFilesUtils } from "../../../../src";
+import { Copy, Create, Get, List, Upload, ZosFilesConstants,
+    ZosFilesMessages, IZosFilesResponse, Download, ZosFilesUtils, Delete } from "../../../../src";
 import { ZosmfHeaders, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
+import path = require("path");
+import { tmpdir } from "os";
 
 describe("Copy", () => {
     const dummySession = new Session({
@@ -26,10 +29,17 @@ describe("Copy", () => {
         protocol: "https",
         type: "basic"
     });
+    const task: ITaskWithStatus = {
+        percentComplete: 0,
+        statusMessage: "Copying data set",
+        stageName: TaskStage.IN_PROGRESS
+    };
 
     describe("Data Set", () => {
         const copyExpectStringSpy = jest.spyOn(ZosmfRestClient, "putExpectString");
         const copyPDSSpy = jest.spyOn(Copy, "copyPDS");
+        const deleteDSSpy = jest.spyOn(Delete, "dataSet");
+        const createDSLikeSpy = jest.spyOn(Create, "dataSetLike");
         const fromDataSetName = "USER.DATA.FROM";
         const fromMemberName = "mem1";
         const toDataSetName = "USER.DATA.TO";
@@ -43,6 +53,8 @@ describe("Copy", () => {
 
         beforeEach(() => {
             copyPDSSpy.mockClear();
+            deleteDSSpy.mockClear().mockImplementation(async () => { return undefined; });
+            createDSLikeSpy.mockClear().mockImplementation(async () => { return undefined; });
             copyExpectStringSpy.mockClear().mockImplementation(async () => { return ""; });
             isPDSSpy.mockClear().mockResolvedValue(false);
             dataSetExistsSpy = jest.spyOn(Copy as any, "dataSetExists").mockResolvedValue(true);
@@ -417,6 +429,28 @@ describe("Copy", () => {
                     expect(lastArgumentOfCall).toHaveProperty("enq", "AnyThing");
                 });
             });
+            describe("Overwrite option", () => {
+                it("should run Copy.dataSet() with overwrite: true", async () => {
+                    await Copy.dataSet(
+                        dummySession,
+                        { dsn: toDataSetName },
+                        { "from-dataset": { dsn: fromDataSetName }, overwrite: true}
+                    );
+
+                    expect(deleteDSSpy).toHaveBeenCalledWith(dummySession,"USER.DATA.TO");
+                    expect(createDSLikeSpy).toHaveBeenCalledWith(dummySession,"USER.DATA.TO","USER.DATA.FROM");
+                });
+                it("should run Copy.dataSet() with overwrite: false", async () => {
+                    await Copy.dataSet(
+                        dummySession,
+                        { dsn: toDataSetName },
+                        { "from-dataset": { dsn: fromDataSetName }, overwrite: false}
+                    );
+
+                    expect(deleteDSSpy).not.toHaveBeenCalled();
+                    expect(createDSLikeSpy).not.toHaveBeenCalled();
+                });
+            });
             describe("Replace option", () => {
                 it("should not contain replace in payload", async () => {
                     await Copy.dataSet(
@@ -468,14 +502,20 @@ describe("Copy", () => {
                 it("should not throw error if safeReplace has value of true", async () => {
                     promptFn.mockResolvedValue(true);
 
+                    const startBar = jest.fn();
+                    const endBar = jest.fn();
+                    const mockProgress = { startBar, endBar};
+
                     const response = await Copy.dataSet(
                         dummySession,
                         { dsn: toDataSetName },
                         { "from-dataset": { dsn: fromDataSetName },
                             safeReplace: true,
-                            promptFn }
+                            promptFn,
+                            progress: mockProgress }
                     );
-
+                    expect(startBar).toHaveBeenCalled();
+                    expect(endBar).toHaveBeenCalled();
                     expect(copyExpectStringSpy).toHaveBeenCalledTimes(1);
                     const argumentsOfCall = copyExpectStringSpy.mock.calls[0];
                     const lastArgumentOfCall = argumentsOfCall[argumentsOfCall.length - 1];
@@ -486,16 +526,22 @@ describe("Copy", () => {
 
                 it("should throw error if user declines to replace the dataset", async () => {
                     promptFn.mockResolvedValue(false);
+                    const startBar = jest.fn();
+                    const endBar = jest.fn();
 
                     await expect(Copy.dataSet(
                         dummySession,
                         { dsn: toDataSetName },
                         { "from-dataset": { dsn: fromDataSetName },
                             safeReplace: true,
-                            promptFn }
+                            promptFn,
+                            progress: undefined}
                     )).rejects.toThrow(new ImperativeError({ msg: ZosFilesMessages.datasetCopiedAborted.message }));
 
+                    expect(startBar).not.toHaveBeenCalled();
+                    expect(endBar).not.toHaveBeenCalled();
                     expect(promptFn).toHaveBeenCalledWith(toDataSetName);
+
                 });
 
                 it("should not throw error if safeReplace has value of false", async () => {
@@ -514,6 +560,9 @@ describe("Copy", () => {
 
             });
             describe("Partitioned > Partitioned", () => {
+                const startBar = jest.fn();
+                const endBar = jest.fn();
+                const mockProgress = { startBar, endBar};
                 let createSpy: jest.SpyInstance;
                 let dataSetExistsSpy: jest.SpyInstance;
                 const sourceResponse = {
@@ -547,11 +596,13 @@ describe("Copy", () => {
                         {dsn: toDataSetName},
                         {"from-dataset": {
                             dsn:fromDataSetName
-                        }}
+                        },
+                        progress: mockProgress}
                     );
+                    expect(startBar).toHaveBeenCalled();
+                    expect(endBar).toHaveBeenCalled();
                     expect(isPDSSpy).toHaveBeenNthCalledWith(1, dummySession, fromDataSetName);
                     expect(isPDSSpy).toHaveBeenNthCalledWith(2, dummySession, toDataSetName);
-
                     expect(copyPDSSpy).toHaveBeenCalledTimes(1);
                     expect(response).toEqual({
                         success: true,
@@ -600,8 +651,10 @@ describe("Copy", () => {
                         expectedPayload
                     );
                 });
+
                 it("should call Create.dataSetLike and create a new data set if the target data set inputted does not exist", async() => {
-                    dataSetExistsSpy.mockResolvedValue(false);
+                    dataSetExistsSpy.mockResolvedValueOnce(true);
+                    dataSetExistsSpy.mockResolvedValueOnce(false);
                     const response = await Copy.dataSet(
                         dummySession,
                         {dsn: toDataSetName},
@@ -609,14 +662,16 @@ describe("Copy", () => {
                             dsn:fromDataSetName
                         }}
                     );
-                    expect(createSpy).toHaveBeenCalled();
+
+                    expect(createSpy).toHaveBeenCalledWith(dummySession, toDataSetName, fromDataSetName);
                     expect(response).toEqual({
                         success: true,
                         commandResponse: util.format(ZosFilesMessages.dataSetCopiedIntoNew.message, toDataSetName)
                     });
                 });
                 it("should not create a new data set if the target data set inputted exists", async() => {
-                    dataSetExistsSpy.mockResolvedValue(true);
+                    dataSetExistsSpy.mockResolvedValueOnce(true);
+                    dataSetExistsSpy.mockResolvedValueOnce(true);
                     const response = await Copy.dataSet(
                         dummySession,
                         {dsn: toDataSetName},
@@ -687,6 +742,21 @@ describe("Copy", () => {
                 expect(response).toEqual({
                     success: false,
                     commandResponse: `The source and target data sets are identical.`
+                });
+            });
+            it("should return early if the source data set does not exist", async() => {
+                dataSetExistsSpy.mockResolvedValueOnce(false);
+                dataSetExistsSpy.mockResolvedValueOnce(true);
+                const response = await Copy.dataSet(
+                    dummySession,
+                    {dsn: toDataSetName},
+                    {"from-dataset": {
+                        dsn: fromDataSetName
+                    }}
+                );
+                expect(response).toEqual({
+                    success: false,
+                    commandResponse: `Data set copy aborted. The source data set was not found.`
                 });
             });
         });
@@ -890,7 +960,7 @@ describe("Copy", () => {
 
 
             try{
-                response = await Copy.copyPDS(dummySession, sourceMemberList, fromDataSetName, toDataSetName);
+                response = await Copy.copyPDS(dummySession, sourceMemberList, fromDataSetName, toDataSetName, task);
             }
             catch(e) {
                 // Do nothing
@@ -904,6 +974,45 @@ describe("Copy", () => {
                 success: true,
                 commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message,
             });
+        });
+        it("should handle truncation errors and log them to a file", async () => {
+            const truncatedMembersFilePath = path.join(tmpdir(), "truncatedMembers.txt");
+            let response;
+            const sourceResponse = {
+                apiResponse: {
+                    items: [
+                        { member: "mem1" },
+                        { member: "mem2" },
+                    ]
+                }
+            };
+            const fileList = ["mem1", "mem2"];
+            const sourceMemberList = sourceResponse.apiResponse.items.map((item: { member: any; }) => item.member);
+            const firstTenMembers = fileList.slice(0, 10);
+            listAllMembersSpy.mockImplementation(async (): Promise<any>  => sourceResponse);
+            downloadAllMembersSpy.mockImplementation(async (): Promise<any> => undefined);
+            fileListPathSpy.mockReturnValue(fileList);
+            generateMemName.mockImplementation((m) => m);
+            readStream.mockReturnValue("test" as any);
+            const numMembers = fileList.length - firstTenMembers.length;
+
+            uploadSpy.mockImplementation((dummySession, readStream, dsn) => {
+                if (["mem1", "mem2"].some(m => dsn.includes(m))) {
+                    return Promise.reject(new Error("Truncation of a record occurred during an I/O operation"));
+                }
+                return Promise.resolve() as any;
+            });
+            try{
+                response = await Copy.copyPDS(dummySession, sourceMemberList, fromDataSetName, toDataSetName, task);
+            }
+            catch(e) {
+                // Do nothing
+            }
+            expect(response.commandResponse).toContain(ZosFilesMessages.datasetCopiedSuccessfully.message + " " +
+                ZosFilesMessages.membersContentTruncated.message + "\n" +
+                firstTenMembers.join('\n') +
+                (numMembers > 0 ? `\n... and ${numMembers} more` +
+                    util.format(ZosFilesMessages.viewMembersListfile.message, truncatedMembersFilePath) : ''));
         });
 
         describe("hasIdenticalMemberNames", () => {
@@ -956,7 +1065,7 @@ describe("Copy", () => {
                         ]
                     }
                 };
-                listAllMembersSpy.mockImplementation(async (session, dsName): Promise<any> => {
+                listAllMembersSpy.mockImplementation(async (_session, dsName): Promise<any> => {
                     if (dsName === fromDataSetName) {
                         return sourceResponse;
                     } else if (dsName === toDataSetName) {
