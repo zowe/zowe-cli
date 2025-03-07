@@ -3,6 +3,7 @@
 All notable changes to the Imperative package will be documented in this file.
 
 ## Recent Changes
+
 - BugFix: When in daemon mode, the user would not see imperative initialization errors, but now the errors are passed back to the user terminal window.
 
 ## `8.14.1`
