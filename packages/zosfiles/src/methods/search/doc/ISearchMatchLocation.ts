@@ -27,4 +27,9 @@ export interface ISearchMatchLocation {
      * The contents of that line where the search term was found
      */
     contents: string;
+
+    /**
+     * The length of the match
+     */
+    length?: number;
 }
