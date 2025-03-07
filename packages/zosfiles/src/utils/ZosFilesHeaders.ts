@@ -171,9 +171,13 @@ export class ZosFilesHeaders {
             case ZosFilesContext.USS_DOWNLOAD:
                 if (updatedOptions.binary === true) {
                     this.addHeader(headers, "X-IBM-Data-Type", "binary" );
+                    delete updatedOptions["binary"]; //remove option to prevent duplication
+                }else{
+                    if (!updatedOptions.record){
+                        this.addHeader(headers, "Content-Type", updatedOptions.localEncoding || "text/plain");
+                    }
                 }
-                delete updatedOptions["binary"]; //remove option to prevent duplication
-                break; //no content headers
+                break;
             case ZosFilesContext.LIST: //no content headers
                 //check to prevent a future null assignment
                 if (!updatedOptions.maxLength) {
@@ -181,9 +185,14 @@ export class ZosFilesHeaders {
                 }
                 break;
             case ZosFilesContext.DS_DOWNLOAD:
-                // if (!(updatedOptions.dsntype && updatedOptions.dsntype.toUpperCase() === "LIBRARY")) {
-                //     this.addHeader(headers, "Content-Type", "text/plain", true);
-                // }
+                if (updatedOptions.binary === true) {
+                    this.addHeader(headers, "X-IBM-Data-Type", "binary" );
+                    delete updatedOptions["binary"]; //remove option to prevent duplication
+                }else{
+                    if (!updatedOptions.record){
+                        this.addHeader(headers, "Content-Type", "text/plain");
+                    }
+                }
                 break;
             case ZosFilesContext.USS_MULTIPLE:
                 this.addHeader(headers, "Content-Type", "application/json");
