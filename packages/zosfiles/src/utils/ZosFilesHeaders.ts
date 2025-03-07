@@ -20,6 +20,9 @@ import { ZosmfHeaders } from "@zowe/core-for-zowe-sdk";
  */
 export enum ZosFilesContext {
     USS_MULTIPLE = "uss_multiple", //content header = json
+    USS_DOWNLOAD = "uss_download", //no content-headers
+    USS_UPLOAD = "uss_upload", // octet-stream header
+    DS_DOWNLOAD = "ds_download", //content header = text/plain
     ZFS = "zfs", //no content-headers
     LIST = "list",//no content-headers
     DOWNLOAD = "download" //content header = text/plain
@@ -46,8 +49,7 @@ export class ZosFilesHeaders {
                 ? {}
                 : { "Content-Type": "application/json" };
         });
-        this.headerMap.set("binary", (options) => (options as any).binary === true ?
-            [ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.OCTET_STREAM] : undefined);
+        this.headerMap.set("binary", (options) => (options as any).binary === true ? ZosmfHeaders.X_IBM_BINARY : undefined);
         this.headerMap.set("record", (options) => (options as any).binary !== true ? ZosmfHeaders.X_IBM_RECORD : undefined);
         this.headerMap.set("responseTimeout", (options) => this.createHeader(ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT, (options as any).responseTimeout));
         this.headerMap.set("recall", (options) => this.getRecallHeader(((options as any).recall || "").toString()));
@@ -166,16 +168,22 @@ export class ZosFilesHeaders {
 
         switch (context) {
             case ZosFilesContext.ZFS: break; //no content headers
+            case ZosFilesContext.USS_DOWNLOAD:
+                if (updatedOptions.binary === true) {
+                    this.addHeader(headers, "X-IBM-Data-Type", "binary" );
+                }
+                delete updatedOptions["binary"]; //remove option to prevent duplication
+                break; //no content headers
             case ZosFilesContext.LIST: //no content headers
                 //check to prevent a future null assignment
                 if (!updatedOptions.maxLength) {
                     updatedOptions.maxLength = 0;
                 }
                 break;
-            case ZosFilesContext.DOWNLOAD:
-                if (!(updatedOptions.dsntype && updatedOptions.dsntype.toUpperCase() === "LIBRARY")) {
-                    this.addHeader(headers, "Content-Type", "text/plain", true);
-                }
+            case ZosFilesContext.DS_DOWNLOAD:
+                // if (!(updatedOptions.dsntype && updatedOptions.dsntype.toUpperCase() === "LIBRARY")) {
+                //     this.addHeader(headers, "Content-Type", "text/plain", true);
+                // }
                 break;
             case ZosFilesContext.USS_MULTIPLE:
                 this.addHeader(headers, "Content-Type", "application/json");
@@ -216,13 +224,14 @@ export class ZosFilesHeaders {
             .filter(([key]) => this.headerMap.has(key))
             .forEach(([key]) => {
                 const result = this.headerMap.get(key)?.(updatedOptions, context);
-                if (result){
-                    Object.keys(result).forEach((key, index) => {
-                        const headerValue = Object.values(result)[index];
-                        if (headerValue !== undefined) {
-                            this.addHeader(reqHeaders, key, headerValue);
-                        }
-                    });
+                if (result) {
+                    const headerKey = Object.keys(result)[0];
+                    const headerValue = Object.values(result)[0];
+
+                    // Only add the header if the value is defined
+                    if (headerValue !== undefined) {
+                        this.addHeader(reqHeaders, headerKey, headerValue);
+                    }
                 }
             });
         return reqHeaders;

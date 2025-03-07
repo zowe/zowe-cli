@@ -126,7 +126,7 @@ export class Download {
             }
 
             const writeStream = options.stream ?? IO.createWriteStream(destination);
-            const reqHeaders = ZosFilesHeaders.generateHeaders({ options });
+            const reqHeaders = ZosFilesHeaders.generateHeaders({ options, context: ZosFilesContext.DS_DOWNLOAD });
 
             // Use specific options to mimic ZosmfRestClient.getStreamed()
             const requestOptions: IOptionsFullResponse = {
@@ -506,7 +506,7 @@ export class Download {
         ImperativeExpect.toNotBeEqual(options.record, true, ZosFilesMessages.unsupportedDataType.message);
         try {
             let destination: string;
-            const context = options?.multipleFiles ? ZosFilesContext.USS_MULTIPLE : undefined;
+            // const context = options?.multipleFiles ? ZosFilesContext.USS_ : undefined;
 
             if (options.stream == null) {
                 destination = options.file || posix.normalize(posix.basename(ussFileName));
@@ -531,7 +531,7 @@ export class Download {
             ussFileName = ZosFilesUtils.sanitizeUssPathForRestCall(ussFileName);
             const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, ussFileName);
 
-            const reqHeaders = ZosFilesHeaders.generateHeaders({ options, context });
+            const reqHeaders = ZosFilesHeaders.generateHeaders({ options, context: ZosFilesContext.USS_DOWNLOAD });
 
             // Use specific options to mimic ZosmfRestClient.getStreamed()
             const requestOptions: IOptionsFullResponse = {
