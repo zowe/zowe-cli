@@ -16,7 +16,7 @@ import { readFileSync, writeFileSync } from "jsonfile";
 import { IPluginJson } from "../../doc/IPluginJson";
 import { Logger } from "../../../../../logger";
 import { ImperativeError } from "../../../../../error";
-import { ExecUtils, TextUtils } from "../../../../../utilities";
+import { DaemonRequest, ExecUtils, ImperativeConfig, TextUtils } from "../../../../../utilities";
 import { StdioOptions } from "child_process";
 import { findNpmOnPath } from "../NpmFunctions";
 import { ConfigSchema, ConfigUtils } from "../../../../../config";
@@ -101,14 +101,16 @@ export function uninstall(packageName: string): void {
     try {
         // We need to capture stdout but apparently stderr also gives us a progress
         // bar from the npm install.
-        const pipe: StdioOptions = ["pipe", "pipe", process.stderr];
+        const daemonStream = ImperativeConfig.instance.daemonContext?.stream;
+        const stderrBuffer: string[] = [];
+        const pipe: StdioOptions = ["pipe", "pipe", "pipe"];
 
         // Perform the npm uninstall, somehow piping stdout and inheriting stderr gives
         // some form of a half-assed progress bar. This progress bar doesn't have any
         // formatting or colors but at least I can get the output of stdout right. (comment from install handler)
         iConsole.info("Uninstalling package...this may take some time.");
 
-        ExecUtils.spawnAndGetOutput(npmCmd,
+        const output = ExecUtils.spawnAndGetOutput(npmCmd,
             [
                 "uninstall",
                 npmPackage,
@@ -122,6 +124,9 @@ export function uninstall(packageName: string): void {
                 stdio: pipe
             }
         );
+        if(output) {
+            stderrBuffer.push(output.toString());
+        }
 
         const installFolder = path.join(PMFConstants.instance.PLUGIN_HOME_LOCATION, npmPackage);
         if (fs.existsSync(installFolder)) {
@@ -162,6 +167,13 @@ export function uninstall(packageName: string): void {
         });
 
         iConsole.info("Plugin successfully uninstalled.");
+
+        if(stderrBuffer.length > 0 && daemonStream) {
+            daemonStream.write(DaemonRequest.create({stderr: stderrBuffer.toString()}));
+        }
+        else {
+            process.stderr.write(stderrBuffer.join(""));
+        }
     } catch (e) {
         throw new ImperativeError({
             msg: e.message,

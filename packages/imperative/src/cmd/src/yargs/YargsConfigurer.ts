@@ -86,8 +86,13 @@ export class YargsConfigurer {
                             Logger.getImperativeLogger().debug("Root help complete.");
                         })
                         .catch((rejected) => {
-                            process.stderr.write("Internal Imperative Error: Root command help error occurred: "
-                                + rejected.message + "\n");
+                            const daemonStream = ImperativeConfig.instance.daemonContext?.stream;
+                            if(daemonStream) {
+                                daemonStream.write(`Internal Imperative Error: Root command help error occurred: ${rejected.message}\n`);
+                            } else {
+                                process.stderr.write("Internal Imperative Error: Root command help error occurred: "
+                                    + rejected.message + "\n");
+                            }
                             Logger.getImperativeLogger().error(`Root unexpected help error: ${inspect(rejected)}`);
                         });
                 } else {
