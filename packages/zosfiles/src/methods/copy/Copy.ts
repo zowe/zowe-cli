@@ -258,7 +258,7 @@ export class Copy {
         session: AbstractSession, fromPds: string, toPds: string, task: ITaskWithStatus, sourceMemberList?: string[]): Promise<IZosFilesResponse> {
         try {
 
-            if(sourceMemberList.length == 0) {
+            if(sourceMemberList?.length === 0) {
                 return {
                     success: true,
                     commandResponse: `Source dataset (${fromPds}) - ` + ZosFilesMessages.noMembersFound.message
