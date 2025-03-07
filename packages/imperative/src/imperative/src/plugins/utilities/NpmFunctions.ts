@@ -57,9 +57,9 @@ export function installPackages(npmPackage: string, npmArgs: INpmInstallArgs): s
     });
     const daemonStream = ImperativeConfig.instance.daemonContext?.stream;
     if (daemonStream != null) {
-        return (daemonStream.write(DaemonRequest.create({ stderr: execOutput.toString() }))).toString();
+        return daemonStream.write(DaemonRequest.create({ stderr: execOutput.toString() })).toString();
     } else {
-        return (process.stderr.write(execOutput.toString())).toString();
+        return process.stderr.write(execOutput.toString()).toString();
     }
 }
 

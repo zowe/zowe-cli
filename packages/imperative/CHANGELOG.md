@@ -2,6 +2,9 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+- BugFix: When in daemon mode, the user would not see imperative initialization errors, but now the errors are passed back to the user terminal window.
+
 ## `8.14.1`
 - BugFix: Fixed help text example section's wrapping issue where the first line of the description is wrapped differently than the rest of the lines. [#1945] (https://github.com/zowe/zowe-cli/issues/1945).
 

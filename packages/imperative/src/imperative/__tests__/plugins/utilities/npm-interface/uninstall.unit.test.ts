@@ -26,7 +26,7 @@ import { findNpmOnPath } from "../../../../src/plugins/utilities/NpmFunctions";
 import { uninstall } from "../../../../src/plugins/utilities/npm-interface";
 import { ConfigSchema, ConfigUtils } from "../../../../../config";
 import mockTypeConfig from "../../__resources__/typeConfiguration";
-import { DaemonRequest, ExecUtils, ImperativeConfig } from "../../../../../utilities";
+import { ExecUtils, ImperativeConfig } from "../../../../../utilities";
 import { IExtendersJsonOpts } from "../../../../../config/src/doc/IExtenderOpts";
 import { updateAndGetRemovedTypes } from "../../../../src/plugins/utilities/npm-interface/uninstall";
 
@@ -52,7 +52,7 @@ describe("PMF: Uninstall Interface", () => {
     });
     afterEach(() => {
         jest.restoreAllMocks();
-    })
+    });
 
     afterAll(() => {
         jest.restoreAllMocks();
@@ -102,7 +102,6 @@ describe("PMF: Uninstall Interface", () => {
     };
 
     describe("Basic uninstall", () => {
-        let writeMock: jest.Mock;
 
         beforeEach(() => {
             mocks.spawnSync.mockReturnValue({
