@@ -26,7 +26,7 @@ import { findNpmOnPath } from "../../../../src/plugins/utilities/NpmFunctions";
 import { uninstall } from "../../../../src/plugins/utilities/npm-interface";
 import { ConfigSchema, ConfigUtils } from "../../../../../config";
 import mockTypeConfig from "../../__resources__/typeConfiguration";
-import { ExecUtils } from "../../../../../utilities";
+import { DaemonRequest, ExecUtils, ImperativeConfig } from "../../../../../utilities";
 import { IExtendersJsonOpts } from "../../../../../config/src/doc/IExtenderOpts";
 import { updateAndGetRemovedTypes } from "../../../../src/plugins/utilities/npm-interface/uninstall";
 
@@ -50,6 +50,9 @@ describe("PMF: Uninstall Interface", () => {
         // This needs to be mocked before running uninstall
         jest.spyOn(Logger, "getImperativeLogger").mockReturnValue(new Logger(new Console()));
     });
+    afterEach(() => {
+        jest.restoreAllMocks();
+    })
 
     afterAll(() => {
         jest.restoreAllMocks();
@@ -70,7 +73,7 @@ describe("PMF: Uninstall Interface", () => {
                 "-g"
             ], {
                 cwd  : PMFConstants.instance.PMF_ROOT,
-                stdio: ["pipe", "pipe", process.stderr]
+                stdio: ["pipe", "pipe", "pipe"]
             }
         );
     };
@@ -99,6 +102,8 @@ describe("PMF: Uninstall Interface", () => {
     };
 
     describe("Basic uninstall", () => {
+        let writeMock: jest.Mock;
+
         beforeEach(() => {
             mocks.spawnSync.mockReturnValue({
                 status: 0,
@@ -128,6 +133,40 @@ describe("PMF: Uninstall Interface", () => {
             // Validate the install
             wasSpawnSyncCallValid(packageName);
             wasWriteFileSyncCallValid();
+        });
+        it("should uninstall and check daemon stream if available", () => {
+            const writeMock = jest.fn();
+            jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({
+                envVariablePrefix: "MOCK_PREFIX",
+                cliHome: "/mock/home",
+                daemonContext: {
+                    stream: {
+                        write: writeMock
+                    }
+                }
+            } as any);
+
+            const pluginJsonFile: IPluginJson = {
+                a: {
+                    package: "a",
+                    location: packageRegistry,
+                    version: "3.2.1"
+                },
+                plugin2: {
+                    package: "plugin1",
+                    location: packageRegistry,
+                    version: "1.2.3"
+                }
+            };
+
+            mocks.readFileSync.mockReturnValue(pluginJsonFile);
+
+            uninstall(packageName);
+
+            wasSpawnSyncCallValid(packageName);
+            wasWriteFileSyncCallValid();
+
+            expect(writeMock).toHaveBeenCalled();
         });
 
         it("should uninstall imperative-sample-plugin", () => {
