@@ -5,6 +5,7 @@ All notable changes to the Zowe z/OS files SDK package will be documented in thi
 ## Recent Changes
 
 - Enhancement: Added the `overwrite` parameter to the `Copy.DataSet()` command to allow for overwriting all members of a target data set with source data set members. [#2450] (https://github.com/zowe/zowe-cli/pull/2450)
+- Enhancement: Add the ability to search data sets with regex patterns setting `ISearchOptions.regex` to `true`. [#2432](https://github.com/zowe/zowe-cli/issues/2432)
 
 ## `8.14.1`
 
@@ -12,7 +13,6 @@ All notable changes to the Zowe z/OS files SDK package will be documented in thi
 -BugFix: The updated logic to determine whether a data set is a partitioned data set now ensures that the `dsorg` attributes of types `PO-E`, `PO-L`, `PO-U` are handled correctly. [#2390] (https://github.com/zowe/zowe-cli/issues/2390).
 - BugFix: When using the `copy` command, if a target partitioned data set has a smaller record length than a source partitioned data set, the operation for subsequent members no longer stops. The user can now view the affected members in a local file. [#2349] (https://github.com/zowe/zowe-cli/issues/2349)
 - BugFix: Users were not warned when copying partitioned data sets with identical member names. Now, the user is prompted to confirm before continuing the copy operation to avoid potential data loss. [#2349] (https://github.com/zowe/zowe-cli/issues/2349)
-- Enhancement: Add the ability to search data sets with regex patterns by passing `--regex` into the search command. [#2432](https://github.com/zowe/zowe-cli/issues/2432)
 
 ## `8.13.0`
 

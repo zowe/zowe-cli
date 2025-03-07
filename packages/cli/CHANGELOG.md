@@ -4,6 +4,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 ## Recent Changes
 
 - Enhancement: Added the `overwrite` parameter to the `Copy.DataSet()` command to allow for overwriting all members of a target data set with source data set members. [#2450] (https://github.com/zowe/zowe-cli/pull/2450)
+- Enhancement: Add the ability to search data sets with regex patterns by passing `--regex` into the search command. [#2432](https://github.com/zowe/zowe-cli/issues/2432)
 
 ## `8.14.1`
 
