@@ -22,6 +22,7 @@ export enum ZosFilesContext {
     USS_MULTIPLE = "uss_multiple", //content header = json
     DOWNLOAD = "download", //deterministic header based on binary/record options
     USS_UPLOAD = "uss_upload", // octet-stream header
+    DS_UPLOAD = "ds_upload",
     ZFS = "zfs", //no content-headers
     LIST = "list",//no content-headers
 }
@@ -64,9 +65,9 @@ export class ZosFilesHeaders {
         this.headerMap.set("encoding", (options) => this.getEncodingHeader((options as any).encoding));
         this.headerMap.set("localEncoding", (options, context) => {
             const opt = options as any;
-            if (context === ZosFilesContext.DOWNLOAD) {
+            if (context === ZosFilesContext.DOWNLOAD || context === ZosFilesContext.DS_UPLOAD) {
                 // Use Content-Type header for download context
-                return this.addContextHeaders("Content-Type", opt.localEncoding || ZosmfHeaders.TEXT_PLAIN);
+                return this.createHeader("Content-Type", opt.localEncoding || ZosmfHeaders.TEXT_PLAIN);
             } else {
                 // Use default IBM-Data-Type header
                 return this.createHeader("X-IBM-Data-Type", opt.localEncoding || "text");
@@ -181,6 +182,17 @@ export class ZosFilesHeaders {
                     }
                 }
                 break;
+            case ZosFilesContext.USS_UPLOAD:
+                if (updatedOptions.binary === true) {
+                    this.addHeader(headers, "X-IBM-Data-Type", "binary" );
+                    this.addHeader(headers, "Content-Type", "application/octet-stream");
+                    delete updatedOptions["binary"]; //remove option to prevent duplication
+                }else{
+                    if (!updatedOptions.record){
+                        this.addHeader(headers, "X-IBM-Data-Type", "text");
+                    }
+                }
+                break;
             case ZosFilesContext.LIST: //no content headers
                 //check to prevent a future null assignment
                 if (!updatedOptions.maxLength) {
@@ -193,7 +205,7 @@ export class ZosFilesHeaders {
             default:
                 //default content-type header
                 if (!(updatedOptions.dsntype && updatedOptions.dsntype.toUpperCase() === "LIBRARY")) {
-                    this.addHeader(headers, "X-IBM-Data-Type", "text", true);
+                    this.addHeader(headers, "X-IBM-Data-Type", "text");
                 }
         }
 
@@ -232,7 +244,7 @@ export class ZosFilesHeaders {
 
                     // Only add the header if the value is defined
                     if (headerValue !== undefined) {
-                        this.addHeader(reqHeaders, headerKey, headerValue);
+                        this.addHeader(reqHeaders, headerKey, headerValue, true);
                     }
                 }
             });
