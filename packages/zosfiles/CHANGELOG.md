@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Added the `overwrite` parameter to the `Copy.DataSet()` command to allow for overwriting all members of a target data set with source data set members. [#2450] (https://github.com/zowe/zowe-cli/pull/2450)
+
 ## `8.14.1`
 
 -BugFix: When using the copy command with a non existent source data set, an unclear error was displayed to the user.  Now, a more user-friendly message is provided [#2447] (https://github.com/zowe/zowe-cli/issues/2447).
