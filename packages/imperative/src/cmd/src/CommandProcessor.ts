@@ -668,29 +668,34 @@ export class CommandProcessor {
                 // make sure the new chained response preserves output
                 chainedResponse.bufferStdout(bufferedStdOut);
                 chainedResponse.bufferStderr(bufferedStdErr);
+                const handlerParms: IHandlerParameters = {
+                    response: chainedResponse,
+                    arguments: ChainedHandlerService.getArguments(
+                        this.mCommandRootName,
+                        this.definition.chainedHandlers,
+                        chainedHandlerIndex,
+                        chainedResponses,
+                        preparedArgs,
+                        this.log
+                    ),
+                    positionals: preparedArgs._,
+                    definition: this.definition,
+                    fullDefinition: this.fullDefinition,
+                    stdin: this.getStdinStream(),
+                    isChained: true
+                };
                 try {
-                    await handler.process({
-                        response: chainedResponse,
-                        arguments: ChainedHandlerService.getArguments(
-                            this.mCommandRootName,
-                            this.definition.chainedHandlers,
-                            chainedHandlerIndex,
-                            chainedResponses,
-                            preparedArgs,
-                            this.log
-                        ),
-                        positionals: preparedArgs._,
-                        definition: this.definition,
-                        fullDefinition: this.fullDefinition,
-                        stdin: this.getStdinStream(),
-                        isChained: true
-                    });
-                    const builtResponse = chainedResponse.buildJsonResponse();
-                    chainedResponses.push(builtResponse.data);
-                    // save the stdout and stderr to pass to the next chained handler (if any)
-                    bufferedStdOut = builtResponse.stdout;
-                    bufferedStdErr = builtResponse.stderr;
-
+                    // showInputsOnly gets lost on handlerParms.arguments, so use preparedArgs instead
+                    if (preparedArgs.showInputsOnly) {
+                        this.showInputsOnly(chainedResponse, handlerParms);
+                    } else {
+                        await handler.process(handlerParms);
+                        const builtResponse = chainedResponse.buildJsonResponse();
+                        chainedResponses.push(builtResponse.data);
+                        // save the stdout and stderr to pass to the next chained handler (if any)
+                        bufferedStdOut = builtResponse.stdout;
+                        bufferedStdErr = builtResponse.stderr;
+                    }
                 } catch (processErr) {
                     this.handleHandlerError(processErr, chainedResponse, chainedHandler.handler);
 
