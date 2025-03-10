@@ -44,13 +44,13 @@ export class ZosFilesHeaders {
         this.headerMap.set("from-dataset", (context?) => {
             return context === ZosFilesContext.ZFS || context === ZosFilesContext.LIST ? {} : { "Content-Type": "application/json" };
         });
-        this.headerMap.set("binary", (options) => ((options as any).binary === true ? ZosmfHeaders.X_IBM_BINARY : undefined));
-        this.headerMap.set("record", (options) => ((options as any).binary !== true ? ZosmfHeaders.X_IBM_RECORD : undefined));
+        this.headerMap.set("binary", (options) => (options as any).binary === true ? ZosmfHeaders.X_IBM_BINARY : undefined);
+        this.headerMap.set("record", (options) => (options as any).binary !== true ? ZosmfHeaders.X_IBM_RECORD : undefined);
         this.headerMap.set("responseTimeout", (options) => this.createHeader(ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT, (options as any).responseTimeout));
         this.headerMap.set("recall", (options) => this.getRecallHeader(((options as any).recall || "").toString()));
         this.headerMap.set("etag", (options) => this.createHeader("If-Match", (options as any).etag));
         this.headerMap.set("returnEtag", (options) => this.createHeader("X-IBM-Return-Etag", (options as any).returnEtag));
-        this.headerMap.set("attributes", (options: any) => (options.attributes === true ? ZosmfHeaders.X_IBM_ATTRIBUTES_BASE : undefined));
+        this.headerMap.set("attributes", (options: any) => options.attributes === true ? ZosmfHeaders.X_IBM_ATTRIBUTES_BASE : undefined);
         this.headerMap.set("recursive", () => ZosmfHeaders.X_IBM_RECURSIVE);
         this.headerMap.set("record", () => ZosmfHeaders.X_IBM_RECORD);
         this.headerMap.set("range", (options) => this.createHeader(ZosmfHeaders.X_IBM_RECORD_RANGE, (options as any).range));
@@ -159,7 +159,7 @@ export class ZosFilesHeaders {
         dataLength?: number | string
     ): { headers: IHeaderContent[]; updatedOptions: T } {
         const headers: IHeaderContent[] = [];
-        const updatedOptions: any = { ...(options || {}) };
+        const updatedOptions: any = { ...options || {} };
 
         if (dataLength !== undefined) {
             this.addHeader(headers, "Content-Length", String(dataLength));
