@@ -960,7 +960,7 @@ describe("Copy", () => {
 
 
             try{
-                response = await Copy.copyPDS(dummySession, sourceMemberList, fromDataSetName, toDataSetName, task);
+                response = await Copy.copyPDS(dummySession, fromDataSetName, toDataSetName, task, sourceMemberList);
             }
             catch(e) {
                 // Do nothing
@@ -1003,7 +1003,7 @@ describe("Copy", () => {
                 return Promise.resolve() as any;
             });
             try{
-                response = await Copy.copyPDS(dummySession, sourceMemberList, fromDataSetName, toDataSetName, task);
+                response = await Copy.copyPDS(dummySession, fromDataSetName, toDataSetName, task, sourceMemberList);
             }
             catch(e) {
                 // Do nothing
