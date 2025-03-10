@@ -15,14 +15,13 @@ import { ZosmfHeaders } from "@zowe/core-for-zowe-sdk";
 /**
  * Enumeration of operation contexts used when generating content-type headers.
  *
- * These different contexts apply some other header besides the default content-type header.
- * Default content-type header = { "X-IBM-Data-Type": "text" }
+ * These different contexts along with passed in options are used to apply the appropriate
+ * content-type header, with the default being: { "X-IBM-Data-Type": "text" }
  */
 export enum ZosFilesContext {
-    USS_MULTIPLE = "uss_multiple", //content header = json
-    DOWNLOAD = "download", //deterministic header based on binary/record options
-    USS_UPLOAD = "uss_upload", // octet-stream header
-    DS_UPLOAD = "ds_upload", // octet-stream header
+    USS_MULTIPLE = "uss_multiple", //general content-header (json)
+    DOWNLOAD = "download", // options.localEncoding matters
+    UPLOAD = "upload", // might add an octet-stream header, options.encoding matters
     ZFS = "zfs", //no content-headers
     LIST = "list",//no content-headers
 }
@@ -68,8 +67,7 @@ export class ZosFilesHeaders {
             let header: IHeaderContent | IHeaderContent[] = [];
             if (opt.localEncoding != null) {
               if (context === ZosFilesContext.DOWNLOAD ||
-                  context === ZosFilesContext.DS_UPLOAD ||
-                  context === ZosFilesContext.USS_UPLOAD) {
+                  context === ZosFilesContext.UPLOAD) {
                 // Use Content-Type header for download/upload context
                 header = this.createHeader("Content-Type", opt.localEncoding);
               } else {
@@ -91,21 +89,21 @@ export class ZosFilesHeaders {
     /**
      * Returns a header for remote text encoding if an encoding is provided.
      *
-     * @param encoding - The remote encoding string.
-     * @returns A header object or null.
+     * @param encoding - Option indicating remote string's encoding.
+     * @returns A header object.
      */
     private static getEncodingHeader(encoding: string): IHeaderContent {
-        if (encoding) {
+        if (encoding != null) {
             return { "X-IBM-Data-Type": `text;fileEncoding=${encoding}` };
         }
-        return null;
+        return { "X-IBM-Data-Type": "text"};
     }
 
     /**
      * Adds a header to the headers array.
      *
      * If a header with the same key already exists, it is replaced.
-     * Unless the "replace" flag is false, then the header is only added if it's key isn't in existingKeys.
+     * Unless the "replace" flag is false, then the header is added if it's key isn't in existingKeys.
      *
      * @param headers - The array of header objects.
      * @param key - The header key.
@@ -156,7 +154,7 @@ export class ZosFilesHeaders {
     // ==========================//
 
     /**
-     * Adds type-headers based on the operation context. (IBM-Data-Type or Content-Type)
+     * Adds type-headers based on the operation context
      *
      */
     private static addContextHeaders<T>(options: T, context?: ZosFilesContext, dataLength?: number | string):
@@ -172,11 +170,11 @@ export class ZosFilesHeaders {
         }
 
         switch (context) {
-            case ZosFilesContext.ZFS: break; //no content headers
             case ZosFilesContext.DOWNLOAD:
                 if (updatedOptions.binary === true) {
                     this.addHeader(headers, "X-IBM-Data-Type", "binary" );
                     delete updatedOptions["binary"]; //remove option to prevent duplication
+                    delete updatedOptions["encoding"]; //remove option to prevent duplication
                     delete updatedOptions["record"]; // binary conflicts with record and takes precedence
                 }else{
                     if (!updatedOptions.record){
@@ -189,26 +187,7 @@ export class ZosFilesHeaders {
                     }
                 }
                 break;
-            case ZosFilesContext.DS_UPLOAD:
-                if (updatedOptions.binary === true) {
-                    this.addHeader(headers, "X-IBM-Data-Type", "binary" );
-                    this.addHeader(headers, "Content-Type", "application/octet-stream");
-                    delete updatedOptions["binary"]; //remove option to prevent duplication
-                    delete updatedOptions["encoding"]; //remove option to prevent duplication
-                    delete updatedOptions["record"]; // binary conflicts with record and takes precedence
-                } else {
-                    if (!updatedOptions.record) {
-                        if (updatedOptions.encoding) {
-                            let encodingHeader = this.getEncodingHeader(updatedOptions.encoding);
-                            this.addHeader(headers, Object.keys(encodingHeader)[0], Object.values(encodingHeader)[0]);
-                            delete updatedOptions["encoding"]; //remove option to prevent duplication
-                        } else {
-                            this.addHeader(headers, "X-IBM-Data-Type", "text");
-                        }
-                    }
-                }
-                break;
-            case ZosFilesContext.USS_UPLOAD:
+            case ZosFilesContext.UPLOAD:
                 if (updatedOptions.binary === true) {
                     this.addHeader(headers, "X-IBM-Data-Type", "binary" );
                     this.addHeader(headers, "Content-Type", "application/octet-stream");
@@ -218,21 +197,23 @@ export class ZosFilesHeaders {
                 }else{
                     if (!updatedOptions.record){
                         if (typeof(updatedOptions.encoding) === "string" || updatedOptions.encoding === undefined) {
-                            this.addHeader(headers, "X-IBM-Data-Type", updatedOptions.encoding || "text");
+                            const encodingHeader = this.getEncodingHeader((options as any).encoding);
+                            this.addHeader(headers, "X-IBM-Data-Type", encodingHeader["X-IBM-Data-Type"]);
                             delete updatedOptions["encoding"]; //remove option to prevent duplication
                         } else {
-                            this.addHeader(headers, "Content-Type", "text/plain");
+                            this.addHeader(headers, "X-IBM-Data-Type", "text");
                         }
                     }
                 }
                 break;
+            case ZosFilesContext.ZFS: break; //no content headers
             case ZosFilesContext.LIST: //no content headers
-                //check to prevent a future null assignment
+                //check to prevent a potential null assignment
                 if (!updatedOptions.maxLength) {
                     updatedOptions.maxLength = 0;
                 }
                 break;
-            case ZosFilesContext.USS_MULTIPLE:
+            case ZosFilesContext.USS_MULTIPLE: //general content-header
                 this.addHeader(headers, "Content-Type", "application/json");
                 break;
             default:
