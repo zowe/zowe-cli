@@ -17,6 +17,35 @@ jest.mock("yargs");
 jest.mock("../../src/CommandProcessor");
 
 describe("YargsConfigurer tests", () => {
+
+    afterEach(() => {
+        jest.restoreAllMocks();
+    });
+
+    it("should write error message to daemon stream", async () => {
+        const rejectedError = new Error("Root command help error occurred");
+        const writeMock = jest.fn();
+        jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({
+            envVariablePrefix: "MOCK_PREFIX",
+            cliHome: "/mock/home",
+            daemonContext: {
+                stream: {
+                    write: writeMock
+                }
+            }
+        } as any);
+
+        const mockedYargs = require("yargs");
+        const config = new YargsConfigurer({ name: "any", description: "any", type: "command", children: []},
+            mockedYargs, undefined as any, { getHelpGenerator: jest.fn() }, undefined as any, "fake", "fake", "ZOWE", "fake");
+        try {
+            config.configure();
+        } catch (err) {
+            expect(writeMock).toHaveBeenCalledWith(
+                `Internal Imperative Error: Root command help error occurred: ${rejectedError.message}\n`
+            );
+        }
+    });
     it("should build a failure message", () => {
 
         const config = new YargsConfigurer({ name: "any", description: "any", type: "command", children: []},
