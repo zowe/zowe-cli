@@ -246,6 +246,7 @@ describe("DsHandler", () => {
         const handler = new DsHandler();
 
         expect(handler).toBeInstanceOf(ZosFilesBaseHandler);
+
         const promptMock = jest.fn();
         promptMock.mockResolvedValue("y");
 
@@ -262,6 +263,7 @@ describe("DsHandler", () => {
         const handler = new DsHandler();
 
         expect(handler).toBeInstanceOf(ZosFilesBaseHandler);
+
         const promptMock = jest.fn();
         promptMock.mockResolvedValue("N");
 

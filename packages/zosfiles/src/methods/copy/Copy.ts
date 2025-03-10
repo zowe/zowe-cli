@@ -32,6 +32,7 @@ import { tmpdir } from "os";
 import path = require("path");
 import * as util from "util";
 import { ZosFilesHeaders } from "../../utils/ZosFilesHeaders";
+import { Delete } from "../delete";
 /**
  * This class holds helper functions that are used to copy the contents of datasets through the
  * z/OSMF APIs.
@@ -84,10 +85,17 @@ export class Copy {
 
         const targetDataSetExists = await this.dataSetExists(session, toDataSetName);
 
-        const newDataSet = !targetDataSetExists;
+        const overwriteDataset = options.overwrite;
+
+        if(overwriteDataset){
+            await Delete.dataSet(session,toDataSetName);
+        }
+        const newDataSet = !targetDataSetExists || overwriteDataset;
+
         if (newDataSet) {
             await Create.dataSetLike(session, toDataSetName, options["from-dataset"].dsn);
         }
+
         else if(safeReplace) {
             if (options.promptFn != null) {
                 const userResponse = await options.promptFn(toDataSetName);
@@ -130,13 +138,13 @@ export class Copy {
                         options.progress.startBar({task});
                     }
                 }
-                const response = await this.copyPDS(session, sourceMemberList, options["from-dataset"].dsn, toDataSetName, task);
+                const response = await this.copyPDS(session, options["from-dataset"].dsn, toDataSetName, task, sourceMemberList);
                 if(options.progress && options.progress.endBar) {
                     options.progress.endBar();
                 }
                 return {
                     success: true,
-                    commandResponse: newDataSet
+                    commandResponse: newDataSet && !overwriteDataset
                         ? util.format(ZosFilesMessages.dataSetCopiedIntoNew.message, toDataSetName)
                         : response.commandResponse
                 };
@@ -242,10 +250,10 @@ export class Copy {
      * @see https://www.ibm.com/support/knowledgecenter/en/SSLTBW_2.1.0/com.ibm.zos.v2r1.izua700/IZUHPINFO_API_PutDataSetMemberUtilities.htm
      */
     public static async copyPDS (
-        session: AbstractSession, sourceMemberList: string[], fromPds: string, toPds: string, task: ITaskWithStatus): Promise<IZosFilesResponse> {
+        session: AbstractSession, fromPds: string, toPds: string, task: ITaskWithStatus, sourceMemberList?: string[]): Promise<IZosFilesResponse> {
         try {
 
-            if(sourceMemberList.length == 0) {
+            if(sourceMemberList?.length === 0) {
                 return {
                     success: true,
                     commandResponse: `Source dataset (${fromPds}) - ` + ZosFilesMessages.noMembersFound.message

@@ -14,7 +14,8 @@ import { posix } from "path";
 import * as fs from "fs";
 import { error } from "console";
 import * as util from "util";
-import { Copy, Create, Get, List, Upload, ZosFilesConstants, ZosFilesMessages, IZosFilesResponse, Download, ZosFilesUtils } from "../../../../src";
+import { Copy, Create, Get, List, Upload, ZosFilesConstants,
+    ZosFilesMessages, IZosFilesResponse, Download, ZosFilesUtils, Delete } from "../../../../src";
 import { ZosmfHeaders, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import {extractSpyHeaders} from "../../../extractSpyHeaders";
 import 'jest-extended';
@@ -39,6 +40,8 @@ describe("Copy", () => {
     describe("Data Set", () => {
         const copyExpectStringSpy = jest.spyOn(ZosmfRestClient, "putExpectString");
         const copyPDSSpy = jest.spyOn(Copy, "copyPDS");
+        const deleteDSSpy = jest.spyOn(Delete, "dataSet");
+        const createDSLikeSpy = jest.spyOn(Create, "dataSetLike");
         const fromDataSetName = "USER.DATA.FROM";
         const fromMemberName = "mem1";
         const toDataSetName = "USER.DATA.TO";
@@ -52,6 +55,8 @@ describe("Copy", () => {
 
         beforeEach(() => {
             copyPDSSpy.mockClear();
+            deleteDSSpy.mockClear().mockImplementation(async () => { return undefined; });
+            createDSLikeSpy.mockClear().mockImplementation(async () => { return undefined; });
             copyExpectStringSpy.mockClear().mockImplementation(async () => { return ""; });
             isPDSSpy.mockClear().mockResolvedValue(false);
             dataSetExistsSpy = jest.spyOn(Copy as any, "dataSetExists").mockResolvedValue(true);
@@ -448,6 +453,28 @@ describe("Copy", () => {
                     const lastArgumentOfCall = argumentsOfCall[argumentsOfCall.length - 1];
                     expect(copyPDSSpy).not.toHaveBeenCalled();
                     expect(lastArgumentOfCall).toHaveProperty("enq", "AnyThing");
+                });
+            });
+            describe("Overwrite option", () => {
+                it("should run Copy.dataSet() with overwrite: true", async () => {
+                    await Copy.dataSet(
+                        dummySession,
+                        { dsn: toDataSetName },
+                        { "from-dataset": { dsn: fromDataSetName }, overwrite: true}
+                    );
+
+                    expect(deleteDSSpy).toHaveBeenCalledWith(dummySession,"USER.DATA.TO");
+                    expect(createDSLikeSpy).toHaveBeenCalledWith(dummySession,"USER.DATA.TO","USER.DATA.FROM");
+                });
+                it("should run Copy.dataSet() with overwrite: false", async () => {
+                    await Copy.dataSet(
+                        dummySession,
+                        { dsn: toDataSetName },
+                        { "from-dataset": { dsn: fromDataSetName }, overwrite: false}
+                    );
+
+                    expect(deleteDSSpy).not.toHaveBeenCalled();
+                    expect(createDSLikeSpy).not.toHaveBeenCalled();
                 });
             });
             describe("Replace option", () => {
@@ -965,7 +992,7 @@ describe("Copy", () => {
 
 
             try{
-                response = await Copy.copyPDS(dummySession, sourceMemberList, fromDataSetName, toDataSetName, task);
+                response = await Copy.copyPDS(dummySession, fromDataSetName, toDataSetName, task, sourceMemberList);
             }
             catch(e) {
                 // Do nothing
@@ -1008,7 +1035,7 @@ describe("Copy", () => {
                 return Promise.resolve() as any;
             });
             try{
-                response = await Copy.copyPDS(dummySession, sourceMemberList, fromDataSetName, toDataSetName, task);
+                response = await Copy.copyPDS(dummySession, fromDataSetName, toDataSetName, task, sourceMemberList);
             }
             catch(e) {
                 // Do nothing

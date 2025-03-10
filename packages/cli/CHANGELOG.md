@@ -1,9 +1,14 @@
 # Change Log
+
 All notable changes to the Zowe CLI package will be documented in this file.
 
 ## Recent Changes
 
 - Enhancement: Created a centralized header class with `packages/zosfiles/src/utils/ZosFilesHeaders.ts` to be used across all methods in the ZosFiles SDK. [#2436](https://github.com/zowe/zowe-cli/pull/2436)
+
+## `8.15.0`
+
+- Enhancement: Added the `overwrite` parameter to the `Copy.DataSet()` command to allow for overwriting all members of a target data set with source data set members. [#2450] (https://github.com/zowe/zowe-cli/pull/2450)
 
 ## `8.14.1`
 
@@ -25,6 +30,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 - Enhancement: The `zowe zos-files copy data-set` command no longer requires the target data set to be preallocated. [##2349] (https://github.com/zowe/zowe-cli/issues/2349)
 
 ## `8.10.4`
+
 - BugFix: Fixed an issue where the `zowe files upload dir-to-uss` command was missing progress bar to track progress of file uploads. [#2344](https://github.com/zowe/zowe-cli/issues/2344)
 
 ## `8.10.3`
@@ -32,9 +38,11 @@ All notable changes to the Zowe CLI package will be documented in this file.
 - BugFix: The `zowe files copy data-set` command no longer copies all partitioned data set members if a member is specified. [#2402](https://github.com/zowe/zowe-cli/pull/2402)
 
 ## `8.10.0`
+
 -Enhancement: The `zowe zos-files copy data-set` command now copies members from a source partitioned data set to an existing target partitioned data set.[#2386](https://github.com/zowe/zowe-cli/pull/2386)
 
 ## `8.9.0`
+
 - Enhancement: Added new command zowe zos-files download all-members-matching, (zowe files dl amm), to download members matching specified pattern(s). The success message for the Download.allMembers API was changed from originally "Data set downloaded successfully" to "Member(s) downloaded successfully." The change also alters the commandResponse when using the --rfj flag. [#2359](https://github.com/zowe/zowe-cli/pull/2359)
 
 ## `8.8.0`
@@ -60,11 +68,9 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 - Enhancement: Added support for running applications on TSO/E address spaces. Start applications and receive/transmit messages using the new `tso start`, `tso receive` and `tso send` commands. [#2280](https://github.com/zowe/zowe-cli/pull/2280)
 
-
 ## `8.4.0`
 
 - Enhancement: Added optional `--attributes` flag to `zowe zos-files upload file-to-uss` to allow passing a .zosattributes file path for upload encoding format. [#2319](https://github.com/zowe/zowe-cli/pull/2319)
-
 
 ## `8.3.0`
 
@@ -76,7 +82,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## `8.1.0`
 
-- Enhancement: Added `--stateful` flag to `zos-tso issue cmd` to allow declaring the statefulness of the address space being created.  [#2240](https://github.com/zowe/zowe-cli/pull/2240)
+- Enhancement: Added `--stateful` flag to `zos-tso issue cmd` to allow declaring the statefulness of the address space being created. [#2240](https://github.com/zowe/zowe-cli/pull/2240)
 - Enhancement: `--suppress-startup-messages` flag default value changed to `true`. [#2240](https://github.com/zowe/zowe-cli/pull/2240)
 
 ## `8.0.0`
@@ -186,21 +192,22 @@ All notable changes to the Zowe CLI package will be documented in this file.
 ## `8.0.0-next.202402021649`
 
 LTS Breaking: Removed the following previously deprecated items: [#1981](https://github.com/zowe/zowe-cli/pull/1981)
-  - Moved the many constants from `zowe-cli/packages/cli/src/Constants.ts` to `zowe-cli/packages/core/src/constants/Core.constants.ts`
-  - Removing `ZosFilesCreateExtraOptions.showAttributes` without replacement
-  - Moved all constants from `zowe-cli/packages/cli/src/zostso/constants/ZosTso.constants.ts` to  `@zowe/zos-tso-for-zowe-sdk`
-  - Removed `isStderrEmptyForProfilesCommand` use `stripProfileDeprecationMessages` from `zowe-cli/__tests__/__packages__/cli-test-utils/src/TestUtils.ts` instead
-  - Removed  `allDataSetsArchived`, `datasetsDownloadedSuccessfully`, `noDataSetsMatchingPatternRemain` and `onlyEmptyPartitionedDataSets` from    ZosFiles.messages.ts
-  - Removed `getSpoolDownloadFile` use `getSpoolDownloadFilePath` instead
-  - Removed constants from ZosmfSession
-    - ZOSMF_OPTION_HOST_PROFILE use ZOSMF_OPTION_HOST instead
-    - ZOSMF_OPTION_USER_PROFILE use ZOSMF_OPTION_USER instead
-    - ZOSMF_OPTION_PASSWORD_PROFILE use ZOSMF_OPTION_PASSWORD instead
-  - Removed constants from SshSession.ts
-    - SSH_OPTION_USER_PROFILE use SSH_OPTION_USER
-    - SSH_OPTION_HOST_PROFILE use SSH_OPTION_HOST
-  - Removed zosmfProfile from `ZosFilesBase.handler.ts`
-  - Removed statCmdFlag as an export from Shell.ts
+
+- Moved the many constants from `zowe-cli/packages/cli/src/Constants.ts` to `zowe-cli/packages/core/src/constants/Core.constants.ts`
+- Removing `ZosFilesCreateExtraOptions.showAttributes` without replacement
+- Moved all constants from `zowe-cli/packages/cli/src/zostso/constants/ZosTso.constants.ts` to `@zowe/zos-tso-for-zowe-sdk`
+- Removed `isStderrEmptyForProfilesCommand` use `stripProfileDeprecationMessages` from `zowe-cli/__tests__/__packages__/cli-test-utils/src/TestUtils.ts` instead
+- Removed `allDataSetsArchived`, `datasetsDownloadedSuccessfully`, `noDataSetsMatchingPatternRemain` and `onlyEmptyPartitionedDataSets` from ZosFiles.messages.ts
+- Removed `getSpoolDownloadFile` use `getSpoolDownloadFilePath` instead
+- Removed constants from ZosmfSession
+  - ZOSMF_OPTION_HOST_PROFILE use ZOSMF_OPTION_HOST instead
+  - ZOSMF_OPTION_USER_PROFILE use ZOSMF_OPTION_USER instead
+  - ZOSMF_OPTION_PASSWORD_PROFILE use ZOSMF_OPTION_PASSWORD instead
+- Removed constants from SshSession.ts
+  - SSH_OPTION_USER_PROFILE use SSH_OPTION_USER
+  - SSH_OPTION_HOST_PROFILE use SSH_OPTION_HOST
+- Removed zosmfProfile from `ZosFilesBase.handler.ts`
+- Removed statCmdFlag as an export from Shell.ts
 
 ## `8.0.0-next.202401262128`
 
@@ -230,7 +237,7 @@ LTS Breaking: Removed the following previously deprecated items: [#1981](https:/
 ## `8.0.0-next.202311141517`
 
 - LTS Breaking: Alter the format of error messages to be more clear and actionable.
-- LTS Breaking: Remove the ```bright``` command from the product.
+- LTS Breaking: Remove the `bright` command from the product.
 
 ## `8.0.0-next.202311132045`
 
@@ -365,7 +372,6 @@ LTS Breaking: Removed the following previously deprecated items: [#1981](https:/
 
 - BugFix: Fixed `secondary` option being specified as `1` on `BLANK` type datasets with the `zowe files create data-set` command [#1595](https://github.com/zowe/zowe-cli/issues/1595)
 
-
 ## `7.16.3`
 
 - BugFix: Updated `imperative` to fix undesired behavior in the `zowe config list` command in certain situations.
@@ -386,7 +392,7 @@ LTS Breaking: Removed the following previously deprecated items: [#1981](https:/
 
 ## `7.15.0`
 
-- Enhancement: Added the `zowe files copy dsclp` command to copy a dataset from one LPAR to another.  [#1098](https://github.com/zowe/zowe-cli/issues/1098)
+- Enhancement: Added the `zowe files copy dsclp` command to copy a dataset from one LPAR to another. [#1098](https://github.com/zowe/zowe-cli/issues/1098)
 
 ## `7.14.1`:
 
@@ -421,16 +427,20 @@ LTS Breaking: Removed the following previously deprecated items: [#1981](https:/
 - BugFix: Solved daemon issue where Windows usernames were treated as case-sensitive when checking the daemon process owner during Zowe commands.
 
 ## `7.11.0`
+
 - Enhancement: Added support for a CLI specific environment variable file. [#1484](https://github.com/zowe/zowe-cli/issues/1484)
 - BugFix: Enabled option to download output from a submitted job with the -d flag. The -e flag now enables changes to file extension as originally intended. [#729](https://github.com/zowe/zowe-cli/issues/729)
 
 ## `7.10.4`
+
 - BugFix: Changed default value for modify-jobs option in the zowe jobs command group to 2.0. This change results in calls to z/OSMF becoming synchronous, and a successful response from the modify, cancel, and delete commands indicates the requested action was completed successfully. [#1459](https://github.com/zowe/zowe-cli/issues/1459)
 
 ## `7.10.3`
+
 - BugFix: Fix in employing `--context-lines` option for all diff/compare commands. Fixed broken `--seqnum` option implementation.[#1529](https://github.com/zowe/zowe-cli/issues/1529)
 
 ## `7.10.2`
+
 - BugFix: Updated Imperative to include bugfixes in version `5.8.2`.
 
 ## `7.10.0`
@@ -547,7 +557,7 @@ LTS Breaking: Removed the following previously deprecated items: [#1981](https:/
 
 - BugFix: Fixed name of the positional in `zowe zos-jobs submit uss-file` command.
 - BugFix: Updated the description of the `zowe zos-jobs view all-spool-content` command.
-- BugFix: Updated the descriptions of the `zowe zos-files view uss-file` and  `zowe zos-files view data-set` commands.
+- BugFix: Updated the descriptions of the `zowe zos-files view uss-file` and `zowe zos-files view data-set` commands.
 - BugFix: Removed the `zowe zos-files view uss-file <file> --record` option.
 - BugFix: Fixed description of the `zowe zos-jobs delete` command group.
 - BugFix: Added `--modify-version` option to `zowe zos-jobs delete old-jobs` command for feature parity with `zowe zos-jobs delete job`.
@@ -698,7 +708,7 @@ LTS Breaking: Removed the following previously deprecated items: [#1981](https:/
 
 ## `7.0.0-next.202112281543`
 
-- Enhancement: update a "show attributes" flag to be `-a` instead of `--pa`.  `--pa` is a "hidden" alias.
+- Enhancement: update a "show attributes" flag to be `-a` instead of `--pa`. `--pa` is a "hidden" alias.
 
 ## `7.0.0-next.202112201801`
 
@@ -724,14 +734,14 @@ LTS Breaking: Removed the following previously deprecated items: [#1981](https:/
 ## `7.0.0-next.202111111904`
 
 - Daemon mode updates:
-    - Enhancements:
-        - Renamed the platform-specific executable from zowex to zowe, so that existing zowe commands used from the command line or in scripts do not have to change when running in daemon mode.
-        - Automatically launch the background daemon when one is not running.
-        - The daemon no longer has its own visible window, making it much more daemon-like.
-        - An environment variable named ZOWE_USE_DAEMON can be set to "no" to prevent the use of the daemon. Commands are then passed to the traditional zowe-CLI command. Thus, you can temporarily use the traditional Zowe CLI command to correct some display limitations (like displaying colors).
-    - Bug fixes:
-        - Eliminate the display of escape characters when colors are displayed while running in daemon mode. [#938](https://github.com/zowe/zowe-cli/issues/938). Currently accomplished by not displaying colors in daemon mode.
-        - Command-line arguments that contain spaces no longer require extra quotes or escapes. [#978](https://github.com/zowe/zowe-cli/issues/978)
+  - Enhancements:
+    - Renamed the platform-specific executable from zowex to zowe, so that existing zowe commands used from the command line or in scripts do not have to change when running in daemon mode.
+    - Automatically launch the background daemon when one is not running.
+    - The daemon no longer has its own visible window, making it much more daemon-like.
+    - An environment variable named ZOWE_USE_DAEMON can be set to "no" to prevent the use of the daemon. Commands are then passed to the traditional zowe-CLI command. Thus, you can temporarily use the traditional Zowe CLI command to correct some display limitations (like displaying colors).
+  - Bug fixes:
+    - Eliminate the display of escape characters when colors are displayed while running in daemon mode. [#938](https://github.com/zowe/zowe-cli/issues/938). Currently accomplished by not displaying colors in daemon mode.
+    - Command-line arguments that contain spaces no longer require extra quotes or escapes. [#978](https://github.com/zowe/zowe-cli/issues/978)
 
 ## `7.0.0-next.202111111709`
 
@@ -798,7 +808,6 @@ LTS Breaking: Removed the following previously deprecated items: [#1981](https:/
 ## `6.39.1`
 
 - BugFix: Updated Imperative to consume security updates in `4.18.2`.
-
 
 ## `6.39.0`
 
@@ -902,7 +911,7 @@ LTS Breaking: Removed the following previously deprecated items: [#1981](https:/
 
 ## `6.31.2`
 
-- Enhancement: Added new aliases for zos-files commands in delete, download, and list relating to USS files. You can now interact with `uf` or `uss`.  [#983](https://github.com/zowe/zowe-cli/issues/983)
+- Enhancement: Added new aliases for zos-files commands in delete, download, and list relating to USS files. You can now interact with `uf` or `uss`. [#983](https://github.com/zowe/zowe-cli/issues/983)
 
 ## `6.31.0`
 
@@ -910,7 +919,7 @@ LTS Breaking: Removed the following previously deprecated items: [#1981](https:/
 
 ## `6.30.0`
 
-- Enhancement: made changes to definition files for zowe ssh commands  [#603](https://github.com/zowe/zowe-cli/issues/603)
+- Enhancement: made changes to definition files for zowe ssh commands [#603](https://github.com/zowe/zowe-cli/issues/603)
 
 ## `6.29.0`
 
