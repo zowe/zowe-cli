@@ -645,66 +645,75 @@ export class CommandProcessor {
 
             let bufferedStdOut = Buffer.from([]);
             let bufferedStdErr = Buffer.from([]);
-            this.log.debug("Attempting to invoke %d chained handlers for command: '%s'", this.definition.chainedHandlers.length,
-                this.definition.name);
-            for (let chainedHandlerIndex = 0; chainedHandlerIndex < this.definition.chainedHandlers.length; chainedHandlerIndex++) {
-                const chainedHandler = this.definition.chainedHandlers[chainedHandlerIndex];
-                this.log.debug("Loading chained handler '%s' (%d of %d)",
-                    chainedHandler.handler, chainedHandlerIndex + 1, this.definition.chainedHandlers.length);
-                const handler: ICommandHandler = this.attemptHandlerLoad(response, chainedHandler.handler);
-                if (handler == null) {
-                    // if the handler load failed
-                    this.log.fatal("failed to load a chained handler! aborting chained handler sequence.");
-                    return this.finishResponse(response);
-                }
-                this.log.debug("Constructing new response object for handler '%s': silent?: %s. json?: %s",
-                    chainedHandler.handler, chainedHandler.silent + "", params.arguments[Constants.JSON_OPTION] + "");
-                chainedResponse = this.constructResponseObject({
-                    arguments: params.arguments,
-                    silent: chainedHandler.silent,
-                    responseFormat: params.arguments[Constants.JSON_OPTION] ? "json" : "default"
-                });
-
-                // make sure the new chained response preserves output
-                chainedResponse.bufferStdout(bufferedStdOut);
-                chainedResponse.bufferStderr(bufferedStdErr);
-                const handlerParms: IHandlerParameters = {
-                    response: chainedResponse,
-                    arguments: ChainedHandlerService.getArguments(
-                        this.mCommandRootName,
-                        this.definition.chainedHandlers,
-                        chainedHandlerIndex,
-                        chainedResponses,
-                        preparedArgs,
-                        this.log
-                    ),
+            if (preparedArgs.showInputsOnly) {
+                this.showInputsOnly(response, {
+                    response,
+                    arguments: preparedArgs,
                     positionals: preparedArgs._,
                     definition: this.definition,
                     fullDefinition: this.fullDefinition,
-                    stdin: this.getStdinStream(),
-                    isChained: true
-                };
-                try {
-                    // showInputsOnly gets lost on handlerParms.arguments, so use preparedArgs instead
-                    if (preparedArgs.showInputsOnly) {
-                        this.showInputsOnly(chainedResponse, handlerParms);
-                    } else {
-                        await handler.process(handlerParms);
+                    stdin: this.getStdinStream()
+                });
+                response.succeeded();
+                response.endProgressBar();
+                return this.finishResponse(response);
+            } else {
+                this.log.debug("Attempting to invoke %d chained handlers for command: '%s'", this.definition.chainedHandlers.length,
+                    this.definition.name);
+                for (let chainedHandlerIndex = 0; chainedHandlerIndex < this.definition.chainedHandlers.length; chainedHandlerIndex++) {
+                    const chainedHandler = this.definition.chainedHandlers[chainedHandlerIndex];
+                    this.log.debug("Loading chained handler '%s' (%d of %d)",
+                        chainedHandler.handler, chainedHandlerIndex + 1, this.definition.chainedHandlers.length);
+                    const handler: ICommandHandler = this.attemptHandlerLoad(response, chainedHandler.handler);
+                    if (handler == null) {
+                        // if the handler load failed
+                        this.log.fatal("failed to load a chained handler! aborting chained handler sequence.");
+                        return this.finishResponse(response);
+                    }
+                    this.log.debug("Constructing new response object for handler '%s': silent?: %s. json?: %s",
+                        chainedHandler.handler, chainedHandler.silent + "", params.arguments[Constants.JSON_OPTION] + "");
+                    chainedResponse = this.constructResponseObject({
+                        arguments: params.arguments,
+                        silent: chainedHandler.silent,
+                        responseFormat: params.arguments[Constants.JSON_OPTION] ? "json" : "default"
+                    });
+
+                    // make sure the new chained response preserves output
+                    chainedResponse.bufferStdout(bufferedStdOut);
+                    chainedResponse.bufferStderr(bufferedStdErr);
+
+                    try {
+                        await handler.process({
+                            response: chainedResponse,
+                            arguments: ChainedHandlerService.getArguments(
+                                this.mCommandRootName,
+                                this.definition.chainedHandlers,
+                                chainedHandlerIndex,
+                                chainedResponses,
+                                preparedArgs,
+                                this.log
+                            ),
+                            positionals: preparedArgs._,
+                            definition: this.definition,
+                            fullDefinition: this.fullDefinition,
+                            stdin: this.getStdinStream(),
+                            isChained: true
+                        });
                         const builtResponse = chainedResponse.buildJsonResponse();
                         chainedResponses.push(builtResponse.data);
                         // save the stdout and stderr to pass to the next chained handler (if any)
                         bufferedStdOut = builtResponse.stdout;
                         bufferedStdErr = builtResponse.stderr;
+                    } catch (processErr) {
+                        this.handleHandlerError(processErr, chainedResponse, chainedHandler.handler);
+
+                        // Return the failed response to the caller
+                        return this.finishResponse(chainedResponse);
                     }
-                } catch (processErr) {
-                    this.handleHandlerError(processErr, chainedResponse, chainedHandler.handler);
-
-                    // Return the failed response to the caller
-                    return this.finishResponse(chainedResponse);
                 }
-            }
 
-            this.log.info(`Chained handlers for command "${this.definition.name}" succeeded.`);
+                this.log.info(`Chained handlers for command "${this.definition.name}" succeeded.`);
+            }
             response.succeeded();
             response.endProgressBar();
 
@@ -815,8 +824,8 @@ export class CommandProcessor {
         /**
          * Show the inputs
          */
-        commandParameters.response.console.log(TextUtils.prettyJson(showInputsOnly).trim());
-        commandParameters.response.data.setObj(showInputsOnly);
+        response.console.log(TextUtils.prettyJson(showInputsOnly).trim());
+        response.data.setObj(showInputsOnly);
 
         return;
     }
