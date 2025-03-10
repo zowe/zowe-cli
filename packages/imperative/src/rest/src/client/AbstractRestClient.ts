@@ -255,7 +255,7 @@ export abstract class AbstractRestClient {
             this.constructor.name !== "ZosmfRestClient") {
             // Maintain the historic behavior where other classes which extend from
             // from AbstractRestClient have a default order with token at the top.
-            AuthOrder.cacheDefaultAuthOrder(SessConstants.AUTH_TYPE_TOKEN);
+            AuthOrder.cacheDefaultAuthOrder(mSession.ISession, SessConstants.AUTH_TYPE_TOKEN);
 
             // Ensure that no other creds are in the session.
             AuthOrder.putTopAuthInSession(mSession.ISession);
@@ -510,7 +510,7 @@ export abstract class AbstractRestClient {
          * order of precedence) into the session options.
          */
         let credsAreSet: boolean = false;
-        for (const nextAuthType of AuthOrder.getAuthOrder()) {
+        for (const nextAuthType of AuthOrder.getAuthOrder(this.session.ISession)) {
             if (nextAuthType === SessConstants.AUTH_TYPE_TOKEN) {
                 credsAreSet ||= this.setTokenAuth(options);
 

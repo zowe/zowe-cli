@@ -16,44 +16,83 @@ import { Logger } from "../../../logger";
 import * as SessConstants from "./SessConstants";
 
 /**
- * The purpose of this class is to detect an authentication order property
- * supplied by a user in a profile, command line, or environment variable.
- * That authOrder is then used to place the correct set of credentials into
- * a session for authentication.
+ * Structure for a cache of the available credentials and the authentication order
+ * which are applicable for a given session.
+ *
+ * The combination of profile and command arguments provide the set of creds
+ * and authentication order to be cached.
  */
-export class AuthOrder {
-
-    /**
-     * This array of authentication types specifies the order of preferred
-     * authentication. It contains the user-specified order, or a default order
-     * if the user does not specify an order. m_authOrder[0] is the highest
-     * preferred authentication.
-     */
-    private static m_authOrder: SessConstants.AUTH_TYPE_CHOICES[] = null;
-
-    /**
-     * Contains the authentication to be placed at the top of a default auth order.
-     * If no caller changes the top auth, we use BASIC.
-     */
-    private static m_topDefaultAuth:
-        typeof SessConstants.AUTH_TYPE_BASIC | typeof SessConstants.AUTH_TYPE_TOKEN
-        = SessConstants.AUTH_TYPE_BASIC;
-
-    /**
-     * Indicates whether the user has supplied the authentication order.
-     */
-    private static m_didUserGiveOrder: boolean = false;
-
+interface AuthForSession {
     /**
      * This property holds the set of all credentials that are available for
      * the REST request currently being processed.
      */
-    private static m_availableCreds: any = {};
+    availableCreds: {
+        [credName: string]: string;
+    }
+
+    /**
+     * This array of authentication types specifies the order of preferred
+     * authentication. It contains the user-specified order, or a default order
+     * if the user does not specify an order. authOrder[0] is the highest
+     * preferred authentication.
+     */
+    authOrder: SessConstants.AUTH_TYPE_CHOICES[];
+
+    /**
+     * Indicates whether the user has supplied the authentication order.
+     */
+    didUserSetAuthOrder: boolean;
+
+    /**
+     * Contains the authentication to be placed at the top of a default auth order.
+     */
+    topDefaultAuth: typeof SessConstants.AUTH_TYPE_BASIC | typeof SessConstants.AUTH_TYPE_TOKEN;
+}
+
+/**
+ * The set of creds and authentication order for each created session.
+ * The key for each cached item is the time at which the item was cached.
+ * Time is used to differentiate among asynchronous operations that may
+ * be performed against different profiles.
+ */
+interface AuthCache {
+    [timeCached: number]: AuthForSession
+}
+
+/**
+ * The purpose of this class is to detect an authentication order property
+ * supplied by a user in a profile, command line, or environment variable.
+ * That authOrder is then used to place the correct set of credentials into
+ * a session for authentication.
+ *
+ * To accomplish this behavior, we call AuthOrder.cacheCredsAndAuthOrder
+ * early in the processing of a command (when both a session
+ * configuration and command arguments are available). For example in:
+ *      ConnectionPropsForSessCfg.addPropsOrPrompt or
+ *      ProfileInfo.createSession
+ *
+ * Later, before we use the session, we call AuthOrder.putTopAuthInSession.
+ * For example in:
+ *      RestClient.constructor
+ *      AbstractRestClient.constructor
+ *      AbstractRestClient.request
+ * AuthOrder.putTopAuthInSession ensures that the session only contains the
+ * credentials for the desired type of authentication.
+ */
+export class AuthOrder {
+
+    /**
+     * Our cache of creds and authentication orders.
+     */
+    private static m_authCache: AuthCache = {};
+
 
     // ***********************************************************************
     /**
      * Cache all of the credentials that are available in either the supplied
-     * sessCfg object or in the command arguments.
+     * sessCfg object or in the supplied command arguments. Also cache the
+     * authOrder that is specified in the supplied command arguments.
      *
      * Downstream logic uses this cache to determine which auth type should be
      * used in the final session used by a client REST request.
@@ -61,7 +100,7 @@ export class AuthOrder {
      * @internal - Cannot be used outside of the imperative package
      *
      * @param sessCfg - Input.
-     *      A session configuration object.
+     *      A session configuration object to which we associate the cached creds.
      *
      * @param cmdArgs - Input.
      *      The set of arguments with which the calling function is operating.
@@ -69,15 +108,17 @@ export class AuthOrder {
      *      environment. Other apps can place relevant arguments into this
      *      object to be processed by this function.
      */
-    public static cacheAvailableCreds<SessCfgType extends ISession>(
+    public static cacheCredsAndAuthOrder<SessCfgType extends ISession>(
         sessCfg: SessCfgType,
         cmdArgs: ICommandArguments
     ): void {
-        AuthOrder.m_availableCreds = {};
+        // create a new item in the cache (as needed) and record its key into the session config
+        AuthOrder.findOrCreateAuthCacheItem(sessCfg);
 
-        // cache the correct authOrder to use
-        AuthOrder.cacheAuthOrder(cmdArgs);
+        // add any discovered authOrder to the cache
+        AuthOrder.cacheAuthOrder(sessCfg, cmdArgs);
 
+        // add every available cred to the cache
         AuthOrder.cacheCred("user", sessCfg, cmdArgs);
         AuthOrder.cacheCred("password", sessCfg, cmdArgs);
         AuthOrder.cacheCred("base64EncodedAuth", sessCfg, cmdArgs);
@@ -86,15 +127,15 @@ export class AuthOrder {
         AuthOrder.cacheCred("certFile", sessCfg, cmdArgs);
         AuthOrder.cacheCred("certKeyFile", sessCfg, cmdArgs);
 
-        Logger.getImperativeLogger().debug("AuthOrder.m_availableCreds = " +
-            JSON.stringify(AuthOrder.m_availableCreds, null, 2)
+        Logger.getImperativeLogger().debug(`Newly defined auth cache at ${sessCfg.timeOfAuthCacheItem} = ` +
+            JSON.stringify(AuthOrder.m_authCache[sessCfg.timeOfAuthCacheItem], null, 2)
         );
     }
 
     // ***********************************************************************
     /**
-     * Cache the default authentication order when the user has not specified
-     * the order.
+     * Cache the default authentication order to be used when the user has not
+     * specified the order.
      *
      * For historical reason, we have 2 default orders. Thus, the caller can
      * specify which of 2 creds to use as the top cred in the authentication order:
@@ -109,10 +150,15 @@ export class AuthOrder {
      *         False when the user supplied an order, because you cannot
      *         override the user-supplied order with any default.
      */
-    public static cacheDefaultAuthOrder(
+    public static cacheDefaultAuthOrder<SessCfgType extends ISession>(
+        sessCfg: SessCfgType,
         topDefaultAuth: typeof SessConstants.AUTH_TYPE_BASIC | typeof SessConstants.AUTH_TYPE_TOKEN
     ): boolean {
-        if (AuthOrder.m_didUserGiveOrder) {
+        // create a new item in the cache (as needed) and record its key into the session config
+        AuthOrder.findOrCreateAuthCacheItem(sessCfg);
+
+        const authForSession: AuthForSession = AuthOrder.m_authCache[sessCfg.timeOfAuthCacheItem];
+        if (authForSession.didUserSetAuthOrder) {
             // nobody can change what the user specified
             Logger.getImperativeLogger().info(
                 `Because user set authOrder, an attempt to put ${topDefaultAuth} at the top of the order was ignored.`
@@ -121,25 +167,41 @@ export class AuthOrder {
         }
 
         // record the top auth that was requested for use in the default order
-        AuthOrder.m_topDefaultAuth = topDefaultAuth;
+        authForSession.topDefaultAuth = topDefaultAuth;
 
         // start over with an empty auth order.
-        AuthOrder.m_authOrder = [];
+        authForSession.authOrder = [];
 
-        if (AuthOrder.m_topDefaultAuth === SessConstants.AUTH_TYPE_BASIC) {
+        if (authForSession.topDefaultAuth === SessConstants.AUTH_TYPE_BASIC) {
             // we want user & password auth as the top choice
-            AuthOrder.m_authOrder.push(SessConstants.AUTH_TYPE_BASIC);
-            AuthOrder.m_authOrder.push(SessConstants.AUTH_TYPE_TOKEN);
+            authForSession.authOrder.push(SessConstants.AUTH_TYPE_BASIC);
+            authForSession.authOrder.push(SessConstants.AUTH_TYPE_TOKEN);
         } else {
             // we want token auth as the top choice
-            AuthOrder.m_authOrder.push(SessConstants.AUTH_TYPE_TOKEN);
-            AuthOrder.m_authOrder.push(SessConstants.AUTH_TYPE_BASIC);
+            authForSession.authOrder.push(SessConstants.AUTH_TYPE_TOKEN);
+            authForSession.authOrder.push(SessConstants.AUTH_TYPE_BASIC);
         }
         // add remaining auth types. We do not include 'none' in our defaults.
-        AuthOrder.m_authOrder.push(SessConstants.AUTH_TYPE_BEARER);
-        AuthOrder.m_authOrder.push(SessConstants.AUTH_TYPE_CERT_PEM);
+        authForSession.authOrder.push(SessConstants.AUTH_TYPE_BEARER);
+        authForSession.authOrder.push(SessConstants.AUTH_TYPE_CERT_PEM);
 
         return true;
+    }
+
+    // ***********************************************************************
+    /**
+     * Clears the authentication cache.
+     *
+     * To get the right creds and auth order in your session after calling this
+     * function you must once again call the appropriate sequence of:
+     *      AuthOrder.cacheCredsAndAuthOrder
+     *      AuthOrder.cacheDefaultAuthOrder
+     *      AuthOrder.putTopAuthInSession
+     *
+     * @internal - Cannot be used outside of the imperative package
+     */
+    public static clearAuthCache(): void {
+        AuthOrder.m_authCache = {};
     }
 
     // ***********************************************************************
@@ -151,14 +213,20 @@ export class AuthOrder {
      * @return {SessConstants.AUTH_TYPE_CHOICES[]} The cached authentication order.
      * @throws {ImperativeError} If the authentication order has not been cached yet.
      */
-    public static getAuthOrder(): SessConstants.AUTH_TYPE_CHOICES[] {
-        if (AuthOrder.m_authOrder == null) {
+    public static getAuthOrder<SessCfgType extends ISession>(
+        sessCfg: SessCfgType
+    ): SessConstants.AUTH_TYPE_CHOICES[] {
+        // find auth item in the cache for the supplied session config
+        AuthOrder.findOrCreateAuthCacheItem(sessCfg);
+
+        const authForSession: AuthForSession = AuthOrder.m_authCache[sessCfg.timeOfAuthCacheItem];
+        if (authForSession.authOrder.length === 0) {
             const errMsg = "cacheAuthOrder() must be called before calling getAuthOrder().";
             Logger.getImperativeLogger().error(errMsg);
             throw new ImperativeError({ msg: errMsg });
         }
 
-        return AuthOrder.m_authOrder;
+        return authForSession.authOrder;
     }
 
     // ***********************************************************************
@@ -185,7 +253,11 @@ export class AuthOrder {
     public static putTopAuthInSession<SessCfgType extends ISession>(
         sessCfg: SessCfgType
     ): void {
-        if (AuthOrder.m_authOrder == null) {
+        // find auth item in the cache for the supplied session config
+        AuthOrder.findOrCreateAuthCacheItem(sessCfg);
+
+        const authForSession: AuthForSession = AuthOrder.m_authCache[sessCfg.timeOfAuthCacheItem];
+        if (authForSession.authOrder.length === 0) {
             const errMsg = "cacheAuthOrder() must be called before calling putTopAuthInSession().";
             Logger.getImperativeLogger().error(errMsg);
             throw new ImperativeError({ msg: errMsg });
@@ -194,7 +266,7 @@ export class AuthOrder {
         let sessTypeToUse: SessConstants.AUTH_TYPE_CHOICES = null;
 
         Logger.getImperativeLogger().debug("AuthOrder.m_availableCreds = " +
-            JSON.stringify(AuthOrder.m_availableCreds, null, 2)
+            JSON.stringify(authForSession.availableCreds, null, 2)
         );
         Logger.getImperativeLogger().debug("Starting sessCfg = " + JSON.stringify(sessCfg, null, 2));
 
@@ -202,17 +274,17 @@ export class AuthOrder {
         // Ensure that the auth properties are placed in the session config.
         // Record the detected auth type for use as the session type.
         let errMsg: string;
-        for (const nextAuth of AuthOrder.m_authOrder) {
+        for (const nextAuth of authForSession.authOrder) {
             switch (nextAuth) {
                 case SessConstants.AUTH_TYPE_BASIC:
-                    if (AuthOrder.m_availableCreds.user && AuthOrder.m_availableCreds.password) {
-                        sessCfg.user = AuthOrder.m_availableCreds.user;
-                        sessCfg.password = AuthOrder.m_availableCreds.password;
+                    if (authForSession.availableCreds.user && authForSession.availableCreds.password) {
+                        sessCfg.user = authForSession.availableCreds.user;
+                        sessCfg.password = authForSession.availableCreds.password;
                         // always regenerate b64Auth in case it is out-of date with user & password
                         sessCfg.base64EncodedAuth = Buffer.from(sessCfg.user + ":" + sessCfg.password).toString("base64")
                         sessTypeToUse = SessConstants.AUTH_TYPE_BASIC;
-                    } else if (AuthOrder.m_availableCreds.base64EncodedAuth) {
-                        sessCfg.base64EncodedAuth = AuthOrder.m_availableCreds.base64EncodedAuth;
+                    } else if (authForSession.availableCreds.base64EncodedAuth) {
+                        sessCfg.base64EncodedAuth = authForSession.availableCreds.base64EncodedAuth;
                         sessTypeToUse = SessConstants.AUTH_TYPE_BASIC;
                     }
                     if (sessTypeToUse === SessConstants.AUTH_TYPE_BASIC && sessCfg.authTypeToRequestToken) {
@@ -228,11 +300,11 @@ export class AuthOrder {
                         // you cannot use a token to retrieve a new token
                         continue;
                     }
-                    if (AuthOrder.m_availableCreds.tokenType) {
-                        sessCfg.tokenType = AuthOrder.m_availableCreds.tokenType;
+                    if (authForSession.availableCreds.tokenType) {
+                        sessCfg.tokenType = authForSession.availableCreds.tokenType;
                     }
-                    if (AuthOrder.m_availableCreds.tokenValue) {
-                        sessCfg.tokenValue = AuthOrder.m_availableCreds.tokenValue;
+                    if (authForSession.availableCreds.tokenValue) {
+                        sessCfg.tokenValue = authForSession.availableCreds.tokenValue;
                     }
                     if (sessCfg.tokenType && sessCfg.tokenValue) {
                         sessTypeToUse = SessConstants.AUTH_TYPE_TOKEN;
@@ -243,11 +315,11 @@ export class AuthOrder {
                         // you cannot use a token to retrieve a new token
                         continue;
                     }
-                    if (AuthOrder.m_availableCreds.tokenType) {
-                        sessCfg.tokenType = AuthOrder.m_availableCreds.tokenType;
+                    if (authForSession.availableCreds.tokenType) {
+                        sessCfg.tokenType = authForSession.availableCreds.tokenType;
                     }
-                    if (AuthOrder.m_availableCreds.tokenValue) {
-                        sessCfg.tokenValue = AuthOrder.m_availableCreds.tokenValue;
+                    if (authForSession.availableCreds.tokenValue) {
+                        sessCfg.tokenValue = authForSession.availableCreds.tokenValue;
                     }
                     // a tokenValue with no tokenType implies a bearer token
                     if (!sessCfg.tokenType && sessCfg.tokenValue) {
@@ -255,9 +327,9 @@ export class AuthOrder {
                     }
                     break;
                 case SessConstants.AUTH_TYPE_CERT_PEM:
-                    if (AuthOrder.m_availableCreds.certFile && AuthOrder.m_availableCreds.certKeyFile) {
-                        sessCfg.cert = AuthOrder.m_availableCreds.certFile;
-                        sessCfg.certKey = AuthOrder.m_availableCreds.certKeyFile;
+                    if (authForSession.availableCreds.certFile && authForSession.availableCreds.certKeyFile) {
+                        sessCfg.cert = authForSession.availableCreds.certFile;
+                        sessCfg.certKey = authForSession.availableCreds.certKeyFile;
                         if (sessCfg.authTypeToRequestToken) {
                             // The existence of authTypeToRequestToken indicates that we want
                             // to request a token. We record how we will authenticate,
@@ -296,7 +368,7 @@ export class AuthOrder {
         AuthOrder.removeExtraCredsFromSess(sessCfg);
 
         // copy our authOrder into the session object
-        sessCfg.authTypeOrder = [...AuthOrder.m_authOrder];
+        sessCfg.authTypeOrder = [...authForSession.authOrder];
 
         Logger.getImperativeLogger().debug("Ending sessCfg = " + JSON.stringify(sessCfg, null, 2));
     }
@@ -306,17 +378,25 @@ export class AuthOrder {
      * Cache the authOrder property from the supplied cmdArgs. If no authOrder exists
      * in cmdArgs, a default authOrder is created and cached.
      *
+     * @param sessCfg - Input.
+     *      A session configuration object containing a timeOfNewAuthCacheItem,
+     *      which is the key into the auth cache.
+     *
      * @param cmdArgs - Input.
      *      The set of arguments that the calling function is using.
      */
-    private static cacheAuthOrder(cmdArgs: ICommandArguments): void {
+    private static cacheAuthOrder<SessCfgType extends ISession>(
+        sessCfg: SessCfgType,
+        cmdArgs: ICommandArguments
+    ): void {
         // have we already cached the authOrder?
-        if (AuthOrder.m_authOrder !== null) {
+        const authForSession: AuthForSession = AuthOrder.m_authCache[sessCfg.timeOfAuthCacheItem];
+        if (authForSession.authOrder.length > 0) {
             // start over with an empty auth order.
-            AuthOrder.m_authOrder = null;
+            authForSession.authOrder = [];
         }
 
-        AuthOrder.m_didUserGiveOrder = false;
+        authForSession.didUserSetAuthOrder = false;
         if (cmdArgs.authOrder) {
             if (typeof cmdArgs.authOrder === "string") {
                 if (cmdArgs.authOrder.length > 0) {
@@ -333,10 +413,7 @@ export class AuthOrder {
                             case SessConstants.AUTH_TYPE_BEARER:
                             case SessConstants.AUTH_TYPE_CERT_PEM:
                             case SessConstants.AUTH_TYPE_NONE:
-                                if (AuthOrder.m_authOrder === null) {
-                                    AuthOrder.m_authOrder = [];
-                                }
-                                AuthOrder.m_authOrder.push(nextUserAuth);
+                                authForSession.authOrder.push(nextUserAuth);
                                 break;
                             default:
                                 Logger.getImperativeLogger().error(
@@ -353,17 +430,17 @@ export class AuthOrder {
             }
         }
 
-        if (AuthOrder.m_authOrder === null) {
+        if (authForSession.authOrder.length === 0) {
             // fall back to a default authOrder
-            AuthOrder.cacheDefaultAuthOrder(AuthOrder.m_topDefaultAuth);
+            AuthOrder.cacheDefaultAuthOrder(sessCfg, authForSession.topDefaultAuth);
             return;
         }
 
         // The user supplied an authOrder. Record that we used it.
-        AuthOrder.m_didUserGiveOrder = true;
+        authForSession.didUserSetAuthOrder = true;
 
         // remove any duplicates
-        AuthOrder.m_authOrder = Array.from(new Set(AuthOrder.m_authOrder));
+        authForSession.authOrder = Array.from(new Set(authForSession.authOrder));
     }
 
     // ***********************************************************************
@@ -386,10 +463,44 @@ export class AuthOrder {
         sessCfg: SessCfgType,
         cmdArgs: ICommandArguments
     ): void {
+        const authForSession: AuthForSession = AuthOrder.m_authCache[sessCfg.timeOfAuthCacheItem];
+
         if ((sessCfg as any)[credName]) {
-            AuthOrder.m_availableCreds[credName] = (sessCfg as any)[credName];
+            authForSession.availableCreds[credName] = (sessCfg as any)[credName];
         } else if (cmdArgs[credName]) {
-            AuthOrder.m_availableCreds[credName] = cmdArgs[credName];
+            authForSession.availableCreds[credName] = cmdArgs[credName];
+        }
+    }
+
+    // ***********************************************************************
+    /**
+     * Find the auth cache item associated with an existing entry in the
+     * session config. If there is no item recorded in the session config,
+     * create a new auth cache entry and record it in the session. The
+     * property within the session to identify the auth cache item is the
+     * time at which the new auth cache item is created.
+     *
+     * @param sessCfg - Input.
+     *      A session configuration object into which we record any newly created cache.
+     */
+    private static findOrCreateAuthCacheItem<SessCfgType extends ISession>(
+        sessCfg: SessCfgType,
+    ): void {
+        // When the session config has no timestamp key into the cache,
+        // or that key does not exist in the cache, then we must create a
+        // new item in the cache and store its key into the session.
+        if (!sessCfg.timeOfAuthCacheItem || !AuthOrder.m_authCache[sessCfg.timeOfAuthCacheItem]) {
+            // create a new item in the cache
+            const timeOfNewAuthCacheItem = new Date().getTime();
+            AuthOrder.m_authCache[timeOfNewAuthCacheItem] = {
+                availableCreds: {},
+                authOrder: [],
+                didUserSetAuthOrder : false,
+                topDefaultAuth: SessConstants.AUTH_TYPE_BASIC
+            }
+
+            // record the key for the cached item into the session config
+            sessCfg.timeOfAuthCacheItem = timeOfNewAuthCacheItem;
         }
     }
 
@@ -419,7 +530,7 @@ export class AuthOrder {
     private static removeExtraCredsFromSess<SessCfgType extends ISession>(
         sessCfg: SessCfgType
     ): void {
-        if (AuthOrder.cacheAuthOrder == null) {
+        if (AuthOrder.m_authCache[sessCfg.timeOfAuthCacheItem].authOrder.length === 0) {
             const errMsg = "AuthOrder.cacheAuthOrder must be called before AuthOrder.removeExtraCredsFromSess";
             Logger.getImperativeLogger().error(errMsg);
             throw new ImperativeError({ msg: errMsg });

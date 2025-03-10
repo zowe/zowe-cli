@@ -41,7 +41,7 @@ export class RestClient extends AbstractRestClient {
      */
     constructor(session: AbstractSession) {
         super(session);
-        AuthOrder.cacheDefaultAuthOrder(SessConstants.AUTH_TYPE_BASIC);
+        AuthOrder.cacheDefaultAuthOrder(session.ISession, SessConstants.AUTH_TYPE_BASIC);
 
         // Ensure that no other creds are in the session.
         AuthOrder.putTopAuthInSession(session.ISession);

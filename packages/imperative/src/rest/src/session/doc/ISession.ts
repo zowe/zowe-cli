@@ -200,6 +200,16 @@ export interface ISession {
     authTypeOrder?: string[];
 
     /**
+     * Records the time of the creation of the authentication cache item associated
+     * with this session. That time represents the key into an AuthOrder cache of
+     * credentials and preferred authentication order to be used for this session.
+     *
+     * @type number
+     * @memberof ISession
+     */
+    timeOfAuthCacheItem?: number;
+
+    /**
      * Specifies external proxy settings
      * values will override environment variable proxy settings
      *

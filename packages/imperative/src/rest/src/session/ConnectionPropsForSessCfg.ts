@@ -203,7 +203,7 @@ export class ConnectionPropsForSessCfg {
         }
 
         // cache all available creds. Only the right set will later be kept in the session.
-        AuthOrder.cacheAvailableCreds(sessCfgToUse, cmdArgs);
+        AuthOrder.cacheCredsAndAuthOrder(sessCfgToUse, cmdArgs);
 
         impLogger.debug("Session config after any prompting for missing values:");
         ConnectionPropsForSessCfg.logSessCfg(sessCfgToUse);
