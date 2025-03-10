@@ -1853,7 +1853,6 @@ describe("Command Processor", () => {
 
             // values to test
             const parm1Key = CliUtils.getOptionFormat(propName).kebabCase;
-            const parm1KeyCamel = CliUtils.getOptionFormat(propName).camelCase;
             const parm1Value = `secret`;
             const secure = `(secure value)`;
             jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({
