@@ -59,7 +59,7 @@ export function installPackages(npmPackage: string, npmArgs: INpmInstallArgs): s
     if (daemonStream != null) {
         return daemonStream.write(DaemonRequest.create({ stderr: execOutput.toString() })).toString();
     } else {
-        return process.stderr.write(execOutput.toString()).toString();
+        return execOutput.toString();
     }
 }
 

@@ -46,7 +46,7 @@ describe("NpmFunctions", () => {
         expect(spawnSyncSpy.mock.calls[0][1]).toEqual(expect.arrayContaining(["install", "samplePlugin"]));
         expect(spawnSyncSpy.mock.calls[0][1]).toEqual(expect.arrayContaining(["--prefix", "fakePrefix"]));
         expect(spawnSyncSpy.mock.calls[0][1]).toEqual(expect.arrayContaining(["--registry", fakeRegistry]));
-        expect(result).toBe("true");
+        expect(result).toBe(stdoutBuffer.toString());
     });
     it("should write output to daemon stream if available", () => {
         const writeMock = jest.fn().mockReturnValue("true");

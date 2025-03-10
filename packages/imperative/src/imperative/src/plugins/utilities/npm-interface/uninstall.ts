@@ -171,9 +171,7 @@ export function uninstall(packageName: string): void {
         if(stderrBuffer.length > 0 && daemonStream) {
             daemonStream.write(DaemonRequest.create({stderr: stderrBuffer.toString()}));
         }
-        else {
-            process.stderr.write(stderrBuffer.join(""));
-        }
+
     } catch (e) {
         throw new ImperativeError({
             msg: e.message,
