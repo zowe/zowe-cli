@@ -614,7 +614,7 @@ export class CommandProcessor {
             };
             try {
                 if (handlerParms.arguments.showInputsOnly) {
-                    this.showInputsOnly(response, handlerParms);
+                    this.showInputsOnly(handlerParms);
                 } else {
                     await handler.process(handlerParms);
                 }
@@ -646,7 +646,7 @@ export class CommandProcessor {
             let bufferedStdOut = Buffer.from([]);
             let bufferedStdErr = Buffer.from([]);
             if (preparedArgs.showInputsOnly) {
-                this.showInputsOnly(response, {
+                this.showInputsOnly({
                     response,
                     arguments: preparedArgs,
                     positionals: preparedArgs._,
@@ -711,9 +711,8 @@ export class CommandProcessor {
                         return this.finishResponse(chainedResponse);
                     }
                 }
-
-                this.log.info(`Chained handlers for command "${this.definition.name}" succeeded.`);
             }
+            this.log.info(`Chained handlers for command "${this.definition.name}" succeeded.`);
             response.succeeded();
             response.endProgressBar();
 
@@ -730,7 +729,7 @@ export class CommandProcessor {
      * @returns
      * @memberof CommandProcessor
      */
-    private showInputsOnly(response: IHandlerResponseApi, commandParameters: IHandlerParameters) {
+    private showInputsOnly(commandParameters: IHandlerParameters) {
 
         /**
          * Determine if we should display secure values.  If the ENV variable is set to true,
@@ -813,8 +812,8 @@ export class CommandProcessor {
          * Show warning if we censored output and we were not instructed to show secure values
          */
         if (censored && !showSecure) {
-            response.console.errorHeader("Some inputs are not displayed");
-            response.console.error(
+            commandParameters.response.console.errorHeader("Some inputs are not displayed");
+            commandParameters.response.console.error(
                 `Inputs below may be displayed as '${ConfigConstants.SECURE_VALUE}'. ` +
                 `Properties identified as secure fields are not displayed by default.\n\n` +
                 `Set the environment variable ` +
@@ -824,8 +823,8 @@ export class CommandProcessor {
         /**
          * Show the inputs
          */
-        response.console.log(TextUtils.prettyJson(showInputsOnly).trim());
-        response.data.setObj(showInputsOnly);
+        commandParameters.response.console.log(TextUtils.prettyJson(showInputsOnly).trim());
+        commandParameters.response.data.setObj(showInputsOnly);
 
         return;
     }
