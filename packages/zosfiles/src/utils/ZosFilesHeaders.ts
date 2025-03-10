@@ -22,7 +22,7 @@ export enum ZosFilesContext {
     USS_MULTIPLE = "uss_multiple", //content header = json
     DOWNLOAD = "download", //deterministic header based on binary/record options
     USS_UPLOAD = "uss_upload", // octet-stream header
-    DS_UPLOAD = "ds_upload",
+    DS_UPLOAD = "ds_upload", // octet-stream header
     ZFS = "zfs", //no content-headers
     LIST = "list",//no content-headers
 }
@@ -65,14 +65,20 @@ export class ZosFilesHeaders {
         this.headerMap.set("encoding", (options) => this.getEncodingHeader((options as any).encoding));
         this.headerMap.set("localEncoding", (options, context) => {
             const opt = options as any;
-            if (context === ZosFilesContext.DOWNLOAD || context === ZosFilesContext.DS_UPLOAD) {
-                // Use Content-Type header for download context
-                return this.createHeader("Content-Type", opt.localEncoding || ZosmfHeaders.TEXT_PLAIN);
-            } else {
+            let header: IHeaderContent | IHeaderContent[] = [];
+            if (opt.localEncoding != null) {
+              if (context === ZosFilesContext.DOWNLOAD ||
+                  context === ZosFilesContext.DS_UPLOAD ||
+                  context === ZosFilesContext.USS_UPLOAD) {
+                // Use Content-Type header for download/upload context
+                header = this.createHeader("Content-Type", opt.localEncoding);
+              } else {
                 // Use default IBM-Data-Type header
-                return this.createHeader("X-IBM-Data-Type", opt.localEncoding || "text");
+                header = this.createHeader("X-IBM-Data-Type", opt.localEncoding);
+              }
             }
-        });
+            return header;
+          });
     }
     static {
         this.initializeHeaderMap();
@@ -171,6 +177,7 @@ export class ZosFilesHeaders {
                 if (updatedOptions.binary === true) {
                     this.addHeader(headers, "X-IBM-Data-Type", "binary" );
                     delete updatedOptions["binary"]; //remove option to prevent duplication
+                    delete updatedOptions["record"]; // binary conflicts with record and takes precedence
                 }else{
                     if (!updatedOptions.record){
                         if (!(updatedOptions.dsntype && updatedOptions.dsntype.toUpperCase() === "LIBRARY")) {
@@ -182,14 +189,40 @@ export class ZosFilesHeaders {
                     }
                 }
                 break;
+            case ZosFilesContext.DS_UPLOAD:
+                if (updatedOptions.binary === true) {
+                    this.addHeader(headers, "X-IBM-Data-Type", "binary" );
+                    this.addHeader(headers, "Content-Type", "application/octet-stream");
+                    delete updatedOptions["binary"]; //remove option to prevent duplication
+                    delete updatedOptions["encoding"]; //remove option to prevent duplication
+                    delete updatedOptions["record"]; // binary conflicts with record and takes precedence
+                } else {
+                    if (!updatedOptions.record) {
+                        if (updatedOptions.encoding) {
+                            let encodingHeader = this.getEncodingHeader(updatedOptions.encoding);
+                            this.addHeader(headers, Object.keys(encodingHeader)[0], Object.values(encodingHeader)[0]);
+                            delete updatedOptions["encoding"]; //remove option to prevent duplication
+                        } else {
+                            this.addHeader(headers, "X-IBM-Data-Type", "text");
+                        }
+                    }
+                }
+                break;
             case ZosFilesContext.USS_UPLOAD:
                 if (updatedOptions.binary === true) {
                     this.addHeader(headers, "X-IBM-Data-Type", "binary" );
                     this.addHeader(headers, "Content-Type", "application/octet-stream");
                     delete updatedOptions["binary"]; //remove option to prevent duplication
+                    delete updatedOptions["encoding"]; //remove option to prevent duplication
+                    delete updatedOptions["record"]; // binary conflicts with record and takes precedence
                 }else{
                     if (!updatedOptions.record){
-                        this.addHeader(headers, "X-IBM-Data-Type", "text");
+                        if (typeof(updatedOptions.encoding) === "string" || updatedOptions.encoding === undefined) {
+                            this.addHeader(headers, "X-IBM-Data-Type", updatedOptions.encoding || "text");
+                            delete updatedOptions["encoding"]; //remove option to prevent duplication
+                        } else {
+                            this.addHeader(headers, "Content-Type", "text/plain");
+                        }
                     }
                 }
                 break;
