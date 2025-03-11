@@ -119,7 +119,7 @@ export class WebHelpGenerator {
         }
 
         // Copy files from dist folder to .zowe home dir
-        const dirsToCopy: string[] = [distDir, path.join(distDir, "css"), path.join(distDir, "js")];
+        const dirsToCopy: string[] = [distDir, path.join(distDir, "css"), path.join(distDir, "js"), path.join(distDir, "assets")];
         dirsToCopy.forEach((dir: string) => {
             const destDir = path.join(webHelpDir, path.relative(distDir, dir));
 
