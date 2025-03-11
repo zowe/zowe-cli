@@ -17,7 +17,7 @@ import { ICommandHandler, IHandlerParameters } from "../../../../../cmd";
 import { ImperativeError } from "../../../../../error";
 import { ImperativeConfig, TextUtils } from "../../../../../utilities";
 import { IConfig } from "../../../../../config";
-import { RestClient, Session, SessConstants } from "../../../../../rest";
+import { AuthOrder, RestClient, Session, SessConstants } from "../../../../../rest";
 
 /**
  * Import config
@@ -82,6 +82,7 @@ export default class ImportHandler implements ICommandHandler {
      */
     private buildSession(url: URL): Session {
         let session = Session.createFromUrl(url, false);
+
         if (this.params.arguments.user != null && this.params.arguments.password != null) {
             const { protocol, hostname, port } = session.ISession;
             session = new Session({
@@ -91,6 +92,7 @@ export default class ImportHandler implements ICommandHandler {
                 password: this.params.arguments.password
             });
         }
+        AuthOrder.cacheCredsAndAuthOrder(session.ISession, this.params.arguments);
         session.ISession.rejectUnauthorized = this.params.arguments.rejectUnauthorized;
         return session;
     }
