@@ -2,7 +2,12 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Fixed the `--show-inputs-only` option on commands with chained command handlers. [#2446](https://github.com/zowe/zowe-cli/issues/2446)
+
 ## `8.14.1`
+
 - BugFix: Fixed help text example section's wrapping issue where the first line of the description is wrapped differently than the rest of the lines. [#1945] (https://github.com/zowe/zowe-cli/issues/1945).
 
 ## `8.14.0`
