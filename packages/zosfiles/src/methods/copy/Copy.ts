@@ -298,6 +298,7 @@ export class Copy {
             }
             const truncatedMembersFile = path.join(tmpdir(), 'truncatedMembers.txt');
             if(truncatedMembers.length > 0) {
+                // eslint-disable-next-line @typescript-eslint/no-magic-numbers
                 const firstTenMembers = truncatedMembers.slice(0, 10);
                 fs.writeFileSync(truncatedMembersFile, truncatedMembers.join('\n'), {flag: 'w'});
                 const numMembers = truncatedMembers.length - firstTenMembers.length;
