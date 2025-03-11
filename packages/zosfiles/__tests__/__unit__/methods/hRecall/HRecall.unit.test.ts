@@ -12,8 +12,9 @@
 import { Session, ImperativeError } from "@zowe/imperative";
 import { posix } from "path";
 import { ZosFilesConstants, ZosFilesMessages, HRecall, IRecallOptions } from "../../../../src";
-
 import { ZosmfHeaders, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
+import {extractSpyHeaders} from "../../../extractSpyHeaders";
+import 'jest-extended';
 
 describe("hRecall data set", () => {
     const putExpectStringSpy = jest.spyOn(ZosmfRestClient, "putExpectString");
@@ -63,9 +64,12 @@ describe("hRecall data set", () => {
             expect(putExpectStringSpy).toHaveBeenLastCalledWith(
                 dummySession,
                 expectedEndpoint,
-                expectedHeaders,
+                expect.arrayContaining(expectedHeaders),
                 expectedPayload
             );
+            // Ensure same set of headers but allow any order:
+            const receivedHeaders = extractSpyHeaders(putExpectStringSpy);
+            expect(receivedHeaders).toIncludeSameMembers(expectedHeaders);
         });
         it("should send a request with wait = true", async () => {
             const options: IRecallOptions = { wait: true };
@@ -95,9 +99,12 @@ describe("hRecall data set", () => {
             expect(putExpectStringSpy).toHaveBeenLastCalledWith(
                 dummySession,
                 expectedEndpoint,
-                expectedHeaders,
+                expect.arrayContaining(expectedHeaders),
                 expectedPayload
             );
+            // Ensure same set of headers but allow any order:
+            const receivedHeaders = extractSpyHeaders(putExpectStringSpy);
+            expect(receivedHeaders).toIncludeSameMembers(expectedHeaders);
         });
         it("should send a request with responseTimeout", async () => {
             const options: IRecallOptions = { responseTimeout: 5 };
@@ -127,9 +134,12 @@ describe("hRecall data set", () => {
             expect(putExpectStringSpy).toHaveBeenLastCalledWith(
                 dummySession,
                 expectedEndpoint,
-                expectedHeaders,
+                expect.arrayContaining(expectedHeaders),
                 expectedPayload
             );
+            // Ensure same set of headers but allow any order:
+            const receivedHeaders = extractSpyHeaders(putExpectStringSpy);
+            expect(receivedHeaders).toIncludeSameMembers(expectedHeaders);
         });
     });
     describe("Failure Scenarios", () => {
@@ -164,10 +174,13 @@ describe("hRecall data set", () => {
             expect(putExpectStringSpy).toHaveBeenLastCalledWith(
                 dummySession,
                 expectedEndpoint,
-                expectedHeaders,
+                expect.arrayContaining(expectedHeaders),
                 expectedPayload
             );
             expect(error).toContain(errorMessage);
+            // Ensure same set of headers but allow any order:
+            const receivedHeaders = extractSpyHeaders(putExpectStringSpy);
+            expect(receivedHeaders).toIncludeSameMembers(expectedHeaders);
         });
     });
 });

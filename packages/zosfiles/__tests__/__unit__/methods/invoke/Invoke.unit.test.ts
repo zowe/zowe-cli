@@ -19,6 +19,8 @@ import { Invoke, ZosFilesConstants, ZosFilesMessages } from "../../../../src";
 import { stripNewLines } from "../../../../../../__tests__/__src__/TestUtils";
 import { ZosmfRestClient, getErrorContext, ZosmfHeaders } from "@zowe/core-for-zowe-sdk";
 import { IZosFilesOptions } from "../../../../src/doc/IZosFilesOptions";
+import {extractSpyHeaders} from "../../../extractSpyHeaders";
+import 'jest-extended';
 
 const fs = require("fs");
 
@@ -244,6 +246,9 @@ describe("Invoke", () => {
                 localHeaders,
                 reqPayload
             );
+            // Ensure same set of headers but allow any order:
+            const receivedHeaders = extractSpyHeaders(invokeExpectJsonSpy);
+            expect(receivedHeaders).toIncludeSameMembers(localHeaders);
         });
 
         it("should process statements from the specified file path", async () => {
@@ -299,6 +304,9 @@ describe("Invoke", () => {
                 localHeaders,
                 reqPayload
             );
+            // Ensure same set of headers but allow any order:
+            const receivedHeaders = extractSpyHeaders(invokeExpectJsonSpy);
+            expect(receivedHeaders).toIncludeSameMembers(localHeaders);
         });
 
         it("should handle an error from the ZosmfRestClient", async () => {

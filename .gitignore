@@ -14,6 +14,7 @@ package-lock.json
 /packages/cli/npm-shrinkwrap.json
 /zowe-cli
 /dist/
+.prettierrc
 # Sonar Files
 .sonar_lock
 .scannerwork/

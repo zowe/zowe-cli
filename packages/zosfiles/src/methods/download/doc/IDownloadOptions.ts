@@ -70,6 +70,11 @@ export interface IDownloadSingleOptions extends IGetOptions {
      * The ZosFilesAttributes instance describe upload attributes for the files and directories
      */
     attributes?: ZosFilesAttributes;
+
+    /**
+     * Used when calling download.ussFile from download.ussDir so that the correct reqheaders are set.
+     */
+    multipleFiles?: boolean;
 }
 
 /**

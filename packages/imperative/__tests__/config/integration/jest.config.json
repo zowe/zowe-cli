@@ -26,6 +26,8 @@
     ],
     "testRegex": "__integration__.*(test|spec)\\.(ts|js)",
     "setupFilesAfterEnv": [
-        "<rootDir>/__tests__/beforeTests.js"
+        "<rootDir>/__tests__/beforeTests.js",
+        "<rootDir>/jest.setup.ts",
+        "jest-extended/all"
     ]
 }
