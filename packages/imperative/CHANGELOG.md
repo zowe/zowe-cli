@@ -4,7 +4,7 @@ All notable changes to the Imperative package will be documented in this file.
 
 ## Recent Changes
 
-- Enhancement: Added favicon to webhelp [#801] (https://github.com/zowe/zowe-cli/issues/801).
+- Enhancement: Added a favicon to the Web Help that displays in browser tabs. [#801] (https://github.com/zowe/zowe-cli/issues/801)
 
 ## `8.14.1`
 
