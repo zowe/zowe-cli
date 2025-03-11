@@ -12,7 +12,6 @@
 import { CommandProcessor } from "../../src/CommandProcessor";
 import { Constants, DaemonRequest, ImperativeConfig } from "../../..";
 import { YargsConfigurer } from "../../src/yargs/YargsConfigurer";
-import { stderr } from "process";
 
 jest.mock("yargs");
 jest.mock("../../src/CommandProcessor");
@@ -52,10 +51,6 @@ describe("YargsConfigurer tests", () => {
         ImperativeConfig.instance.daemonContext = {} as any;
 
         const rejectedError = new Error("Test error");
-        const config = new YargsConfigurer(
-            { name: "any", description: "any", type: "command", children: [] },
-            undefined as any, undefined as any, undefined as any, undefined as any, "fake", "fake", "ZOWE", "fake"
-        );
 
         const stderrWriteSpy = jest.spyOn(process.stderr, "write").mockImplementation();
 
