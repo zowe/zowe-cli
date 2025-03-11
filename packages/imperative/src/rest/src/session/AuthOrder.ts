@@ -281,7 +281,7 @@ export class AuthOrder {
                         sessCfg.user = authForSession.availableCreds.user;
                         sessCfg.password = authForSession.availableCreds.password;
                         // always regenerate b64Auth in case it is out-of date with user & password
-                        sessCfg.base64EncodedAuth = Buffer.from(sessCfg.user + ":" + sessCfg.password).toString("base64")
+                        sessCfg.base64EncodedAuth = Buffer.from(sessCfg.user + ":" + sessCfg.password).toString("base64");
                         sessTypeToUse = SessConstants.AUTH_TYPE_BASIC;
                     } else if (authForSession.availableCreds.base64EncodedAuth) {
                         sessCfg.base64EncodedAuth = authForSession.availableCreds.base64EncodedAuth;
@@ -497,7 +497,7 @@ export class AuthOrder {
                 authOrder: [],
                 didUserSetAuthOrder : false,
                 topDefaultAuth: SessConstants.AUTH_TYPE_BASIC
-            }
+            };
 
             // record the key for the cached item into the session config
             sessCfg.timeOfAuthCacheItem = timeOfNewAuthCacheItem;
