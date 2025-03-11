@@ -52,7 +52,6 @@ export class ZosFilesHeaders {
         this.headerMap.set("returnEtag", (options) => this.createHeader("X-IBM-Return-Etag", (options as any).returnEtag));
         this.headerMap.set("attributes", (options: any) => options.attributes === true ? ZosmfHeaders.X_IBM_ATTRIBUTES_BASE : undefined);
         this.headerMap.set("recursive", () => ZosmfHeaders.X_IBM_RECURSIVE);
-        this.headerMap.set("record", () => ZosmfHeaders.X_IBM_RECORD);
         this.headerMap.set("range", (options) => this.createHeader(ZosmfHeaders.X_IBM_RECORD_RANGE, (options as any).range));
         this.headerMap.set("maxLength", (options) => {
             const max = (options as any).maxLength;
