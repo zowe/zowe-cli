@@ -2,7 +2,12 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Added favicon to webhelp [#801] (https://github.com/zowe/zowe-cli/issues/801).
+
 ## `8.14.1`
+
 - BugFix: Fixed help text example section's wrapping issue where the first line of the description is wrapped differently than the rest of the lines. [#1945] (https://github.com/zowe/zowe-cli/issues/1945).
 
 ## `8.14.0`
@@ -40,7 +45,6 @@ All notable changes to the Imperative package will be documented in this file.
 ## `8.10.0`
 
 - BugFix: Modified location of Proxy-Authorization header to be located in the agent instead of the request. [#2389](https://github.com/zowe/zowe-cli/issues/2389)
-
 
 ## `8.8.3`
 
