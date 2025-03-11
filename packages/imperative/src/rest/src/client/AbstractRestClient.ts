@@ -292,12 +292,12 @@ export abstract class AbstractRestClient {
             ImperativeExpect.toBeDefinedAndNonBlank(options.request, "request");
             ImperativeExpect.toBeEqual(options.requestStream != null && options.writeData != null, false,
                 "You cannot specify both writeData and writeStream");
-            const buildOptions = this.buildOptions(options.resource, options.request, options.reqHeaders);
 
-            // This was originally done in the RestClient constructor. As a safety net
-            // to ensure that no logic has placed a different cred in the session since then,
-            // we again place only the top cred in the session.
+            // putTopAuthInSession was originally done in the RestClient constructor.
+            // As a safety net to ensure that no logic has placed a different cred in the
+            // session since then, we again place only the top cred in the session.
             AuthOrder.putTopAuthInSession(this.session.ISession);
+            const buildOptions = this.buildOptions(options.resource, options.request, options.reqHeaders);
 
             /**
              * Perform the actual http request
