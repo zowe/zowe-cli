@@ -41,16 +41,24 @@ describe("ZosmfRestClient tests", () => {
 
     describe("Authentication errors", () => {
 
-        it("should handle basic auth error with empty string causeErrors", () => {
-            // ensure that some available creds are cached
-            (AuthOrder as any).cacheAvailableCreds({}, { user: "fakeUser", password: "fakePass", "$0": "zowe", "_": [""] });
+        afterEach(() => {
+            (AuthOrder as any).clearAuthCache();
+        });
 
-            const zosmfRestClient = new ZosmfRestClient(new Session({
+        it("should handle basic auth error with empty string causeErrors", () => {
+            const fakeSess = new Session({
                 hostname: "dummy",
                 type: SessConstants.AUTH_TYPE_BASIC,
                 user: "fakeUser",
                 password: "fakePass"
-            }));
+            });
+
+            // ensure that some available creds are cached
+            (AuthOrder as any).cacheCredsAndAuthOrder(fakeSess.ISession,
+                { user: "fakeUser", password: "fakePass", "$0": "zowe", "_": [""] }
+            );
+
+            const zosmfRestClient = new ZosmfRestClient(fakeSess);
             (zosmfRestClient as any).mResponse = {
                 statusCode: RestConstants.HTTP_STATUS_401
             };
@@ -76,15 +84,19 @@ describe("ZosmfRestClient tests", () => {
         });
 
         it("should handle basic auth error with JSON causeErrors", () => {
-            // ensure that some available creds are cached
-            (AuthOrder as any).cacheAvailableCreds({}, { user: "fakeUser", password: "fakePass", "$0": "zowe", "_": [""] });
-
-            const zosmfRestClient = new ZosmfRestClient(new Session({
+            const fakeSess = new Session({
                 hostname: "dummy",
                 type: SessConstants.AUTH_TYPE_BASIC,
                 user: "fakeUser",
                 password: "fakePass"
-            }));
+            });
+
+            // ensure that some available creds are cached
+            (AuthOrder as any).cacheCredsAndAuthOrder(fakeSess.ISession,
+                { user: "fakeUser", password: "fakePass", "$0": "zowe", "_": [""] }
+            );
+
+            const zosmfRestClient = new ZosmfRestClient(fakeSess);
             (zosmfRestClient as any).mResponse = {
                 statusCode: RestConstants.HTTP_STATUS_401
             };
@@ -113,15 +125,19 @@ describe("ZosmfRestClient tests", () => {
         });
 
         it("should handle error for token auth", () => {
-            // ensure that some available creds are cached
-            (AuthOrder as any).cacheAvailableCreds({}, { tokenType: SessConstants.TOKEN_TYPE_JWT, tokenValue: "fakeToken", "$0": "zowe", "_": [""] });
-
-            const zosmfRestClient = new ZosmfRestClient(new Session({
+            const fakeSess = new Session({
                 hostname: "dummy",
                 type: SessConstants.AUTH_TYPE_TOKEN,
                 tokenType: SessConstants.TOKEN_TYPE_JWT,
                 tokenValue: "fakeToken"
-            }));
+            });
+
+            // ensure that some available creds are cached
+            (AuthOrder as any).cacheCredsAndAuthOrder(fakeSess.ISession,
+                { tokenType: SessConstants.TOKEN_TYPE_JWT, tokenValue: "fakeToken", "$0": "zowe", "_": [""] }
+            );
+
+            const zosmfRestClient = new ZosmfRestClient(fakeSess);
             (zosmfRestClient as any).mResponse = {
                 statusCode: RestConstants.HTTP_STATUS_401
             };
@@ -137,15 +153,19 @@ describe("ZosmfRestClient tests", () => {
         });
 
         it("should handle error for APIML token auth and missing base path", () => {
-            // ensure that some available creds are cached
-            (AuthOrder as any).cacheAvailableCreds({}, { tokenType: SessConstants.TOKEN_TYPE_APIML, tokenValue: "fakeToken", "$0": "zowe", "_": [""] });
-
-            const zosmfRestClient = new ZosmfRestClient(new Session({
+            const fakeSess = new Session({
                 hostname: "dummy",
                 type: SessConstants.AUTH_TYPE_TOKEN,
                 tokenType: SessConstants.TOKEN_TYPE_APIML,
                 tokenValue: "fakeToken"
-            }));
+            });
+
+            // ensure that some available creds are cached
+            (AuthOrder as any).cacheCredsAndAuthOrder(fakeSess.ISession,
+                { tokenType: SessConstants.TOKEN_TYPE_APIML, tokenValue: "fakeToken", "$0": "zowe", "_": [""] }
+            );
+
+            const zosmfRestClient = new ZosmfRestClient(fakeSess);
             (zosmfRestClient as any).mResponse = {
                 statusCode: RestConstants.HTTP_STATUS_401
             };
@@ -160,15 +180,19 @@ describe("ZosmfRestClient tests", () => {
         });
 
         it("should handle error for cert auth", () => {
-            // ensure that some available creds are cached
-            (AuthOrder as any).cacheAvailableCreds({}, { certFile: "fakeCert", certKeyFile: "fakeKey", "$0": "zowe", "_": [""] });
-
-            const zosmfRestClient = new ZosmfRestClient(new Session({
+            const fakeSess = new Session({
                 hostname: "dummy",
                 type: SessConstants.AUTH_TYPE_CERT_PEM,
                 cert: "fakeCert",
                 certKey: "fakeKey"
-            }));
+            });
+
+            // ensure that some available creds are cached
+            (AuthOrder as any).cacheCredsAndAuthOrder(fakeSess.ISession,
+                { certFile: "fakeCert", certKeyFile: "fakeKey", "$0": "zowe", "_": [""] }
+            );
+
+            const zosmfRestClient = new ZosmfRestClient(fakeSess);
             (zosmfRestClient as any).mResponse = {
                 statusCode: RestConstants.HTTP_STATUS_401
             };

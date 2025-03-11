@@ -15,6 +15,8 @@ import { ZosFilesBaseHandler } from "../../../src/zosfiles/ZosFilesBase.handler"
 
 describe("ZosFilesBaseHandler", () => {
     class TestClass extends ZosFilesBaseHandler {
+        public timeOfAuthCacheItem: number;
+
         constructor(private readonly returnResponse: IZosFilesResponse) {
             super();
         }
@@ -23,6 +25,9 @@ describe("ZosFilesBaseHandler", () => {
             commandParameters: IHandlerParameters,
             session: AbstractSession
         ): Promise<IZosFilesResponse> {
+            // The time was added by the super class.
+            // This is the only way that we can get it.
+            this.timeOfAuthCacheItem = session.ISession.timeOfAuthCacheItem;
             return this.returnResponse;
         }
     }
@@ -46,12 +51,11 @@ describe("ZosFilesBaseHandler", () => {
             password: zosmfProfile.password,
             rejectUnauthorized: zosmfProfile.rejectUnauthorized
         };
-        const expectedSession = new Session(sessionArgs);
-        const args = {...sessionArgs, host: zosmfProfile.host, password: zosmfProfile.password};
 
         /**
          * This object is used as a dummy command parameters object
          */
+        const args = { ...sessionArgs, host: zosmfProfile.host, password: zosmfProfile.password };
         const commandParameters: any = {
             profiles: {
                 get: (type: string) => {
@@ -93,6 +97,11 @@ describe("ZosFilesBaseHandler", () => {
         await testClass.process(commandParameters);
 
         expect(spy).toHaveBeenCalledTimes(1);
+
+        // The original sessionArgs (with the timeOfAuthCacheItem added to it)
+        // should be the session passed to "processWithSession"
+        sessionArgs.timeOfAuthCacheItem = testClass.timeOfAuthCacheItem;
+        const expectedSession = new Session(sessionArgs);
         expect(spy).toHaveBeenLastCalledWith(commandParameters, expectedSession);
 
         expect(commandParameters.response.console.log).toHaveBeenCalledTimes(1);
