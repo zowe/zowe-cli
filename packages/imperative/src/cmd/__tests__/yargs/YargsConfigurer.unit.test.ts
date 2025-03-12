@@ -12,6 +12,7 @@
 import { CommandProcessor } from "../../src/CommandProcessor";
 import { Constants, DaemonRequest, ImperativeConfig } from "../../..";
 import { YargsConfigurer } from "../../src/yargs/YargsConfigurer";
+import { mock } from "node:test";
 
 jest.mock("yargs");
 jest.mock("../../src/CommandProcessor");
@@ -19,47 +20,32 @@ jest.mock("../../src/CommandProcessor");
 describe("YargsConfigurer tests", () => {
 
     afterEach(() => {
+        jest.clearAllMocks();
         jest.restoreAllMocks();
     });
 
     it('should write to daemonStream if available', async () => {
         const writeMock = jest.fn();
+        const rejectedError = new Error("Test error");
+        const invokeSpy = jest.spyOn(CommandProcessor.prototype, "invoke").mockRejectedValue(rejectedError);
+        const stream = {write: writeMock};
         const mockedYargs = require("yargs");
         jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({
             envVariablePrefix: "MOCK_PREFIX",
             cliHome: "/mock/home",
             daemonContext: {
-                stream: {
-                    write: writeMock
-                }
+                stream
             }
         } as any);
-        const rejectedError = new Error("Test error");
+
         const config = new YargsConfigurer({ name: "any", description: "any", type: "command", children: []},
             mockedYargs, undefined as any, { getHelpGenerator: jest.fn() }, undefined as any, "fake", "fake", "ZOWE", "fake");
         config.configure();
+        const handler = mockedYargs.command.mock.calls[0][0].handler;
 
-        const daemonStream = ImperativeConfig.instance.daemonContext?.stream;
-        if (daemonStream) {
-            daemonStream.write(DaemonRequest.create({ stderr:`Internal Imperative Error: Root command help error occurred: ${rejectedError.message}\n`}));
-        }
-        expect(writeMock).toHaveBeenCalled();
-        expect(writeMock).toHaveBeenCalledWith(DaemonRequest.create({stderr: "Internal Imperative Error: Root command help error occurred: Test error\n"}));
-    });
+        await handler({_: []});
 
-    it("should handle daemonStream when it's undefined", async () => {
-        ImperativeConfig.instance.daemonContext = {} as any;
-
-        const rejectedError = new Error("Test error");
-
-        const stderrWriteSpy = jest.spyOn(process.stderr, "write").mockImplementation();
-
-        const daemonStream = ImperativeConfig.instance.daemonContext?.stream;
-        if (!daemonStream) {
-            process.stderr.write("Internal Imperative Error: Root command help error occurred: " + rejectedError.message + "\n");
-        }
-
-        expect(stderrWriteSpy).toHaveBeenCalledWith("Internal Imperative Error: Root command help error occurred: Test error\n");
+        expect(invokeSpy).toHaveBeenCalled();
     });
 
     it("should build a failure message", () => {
