@@ -138,7 +138,7 @@ export class Copy {
                         options.progress.startBar({task});
                     }
                 }
-                const response = await this.copyPDS(session, sourceMemberList, options["from-dataset"].dsn, toDataSetName, task);
+                const response = await this.copyPDS(session, options["from-dataset"].dsn, toDataSetName, task, sourceMemberList);
                 if(options.progress && options.progress.endBar) {
                     options.progress.endBar();
                 }
@@ -255,10 +255,10 @@ export class Copy {
      * @see https://www.ibm.com/support/knowledgecenter/en/SSLTBW_2.1.0/com.ibm.zos.v2r1.izua700/IZUHPINFO_API_PutDataSetMemberUtilities.htm
      */
     public static async copyPDS (
-        session: AbstractSession, sourceMemberList: string[], fromPds: string, toPds: string, task: ITaskWithStatus): Promise<IZosFilesResponse> {
+        session: AbstractSession, fromPds: string, toPds: string, task: ITaskWithStatus, sourceMemberList?: string[]): Promise<IZosFilesResponse> {
         try {
 
-            if(sourceMemberList.length == 0) {
+            if(sourceMemberList?.length === 0) {
                 return {
                     success: true,
                     commandResponse: `Source dataset (${fromPds}) - ` + ZosFilesMessages.noMembersFound.message
@@ -298,6 +298,7 @@ export class Copy {
             }
             const truncatedMembersFile = path.join(tmpdir(), 'truncatedMembers.txt');
             if(truncatedMembers.length > 0) {
+                // eslint-disable-next-line @typescript-eslint/no-magic-numbers
                 const firstTenMembers = truncatedMembers.slice(0, 10);
                 fs.writeFileSync(truncatedMembersFile, truncatedMembers.join('\n'), {flag: 'w'});
                 const numMembers = truncatedMembers.length - firstTenMembers.length;

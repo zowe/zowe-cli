@@ -2,8 +2,9 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
-## Recent Changes
+## `8.15.0`
 
+- BugFix: Modified the `Copy.copyPDS()` function to have `sourceMemberList` as an optional parameter to avoid a breaking change. [#2453](https://github.com/zowe/zowe-cli/pull/2453)
 - Enhancement: Added the `overwrite` parameter to the `Copy.DataSet()` command to allow for overwriting all members of a target data set with source data set members. [#2450] (https://github.com/zowe/zowe-cli/pull/2450)
 
 ## `8.14.1`

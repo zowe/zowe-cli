@@ -1284,6 +1284,61 @@ describe("Command Processor", () => {
         expect(commandResponse.data.commandValues[parm1Key]).toBe(parm1Value);
     });
 
+    it("should display input value for simple parm when --show-inputs-only flag is set with a chained handler", async () => {
+
+        // values to test
+        const parm1Key = `parm1`;
+        const parm1Value = `value1`;
+
+        // Allocate the command processor
+        const processor: CommandProcessor = new CommandProcessor({
+            envVariablePrefix: ENV_VAR_PREFIX,
+            fullDefinition: SAMPLE_COMPLEX_COMMAND, // `group action`
+            definition: { // `object`
+                name: "banana",
+                description: "The banana command",
+                type: "command",
+                chainedHandlers: [
+                    {
+                        handler: __dirname + "/__model__/TestCmdHandler",
+                        mapping: [
+                            {
+                                from: parm1Key,
+                                to: parm1Key,
+                                mapFromArguments: true,
+                                applyToHandlers: [0]
+                            }
+                        ]
+                    }
+                ],
+                options: [
+                    {
+                        name: parm1Key,
+                        type: "string",
+                        description: "The first parameter",
+                    }
+                ],
+            },
+            helpGenerator: FAKE_HELP_GENERATOR,
+            rootCommandName: SAMPLE_ROOT_COMMAND,
+            commandLine: "",
+            promptPhrase: "dummydummy"
+        });
+
+        const parms: any = {
+            arguments: {
+                _: ["check", "for", "banana"],
+                $0: "",
+                [parm1Key]: parm1Value,
+                valid: true,
+                showInputsOnly: true,
+            },
+            silent: true
+        };
+        const commandResponse: ICommandResponse = await processor.invoke(parms);
+        expect(commandResponse.data.commandValues[parm1Key]).toBe(parm1Value);
+    });
+
     it("should display input value for simple parm when --show-inputs-only flag is set and team config exists", async () => {
 
         // values to test
@@ -1337,6 +1392,124 @@ describe("Command Processor", () => {
                 description: "The banana command",
                 type: "command",
                 handler: __dirname + "/__model__/TestArgHandler",
+                options: [
+                    {
+                        name: "boolean-opt",
+                        type: "boolean",
+                        description: "A boolean option.",
+                    },
+                    {
+                        name: "color",
+                        type: "string",
+                        description: "The banana color.",
+                        required: true
+                    }
+                ],
+                profile: {
+                    optional: ["banana"]
+                }
+            },
+            helpGenerator: FAKE_HELP_GENERATOR,
+            rootCommandName: SAMPLE_ROOT_COMMAND,
+            commandLine: "",
+            promptPhrase: "dummydummy",
+            config: ImperativeConfig.instance.config
+        });
+
+        const parms: any = {
+            arguments: {
+                _: ["check", "for", "banana"],
+                $0: "",
+                [parm1Key]: parm1Value,
+                valid: true,
+                showInputsOnly: true,
+            },
+            silent: true
+        };
+        const commandResponse: ICommandResponse = await processor.invoke(parms);
+        expect(commandResponse.data.locations.length).toBeGreaterThan(0);
+        expect(commandResponse.data.optionalProfiles[0]).toBe(`banana`);
+        expect(commandResponse.data.requiredProfiles).toBeUndefined();
+    });
+
+    it("should display input value for simple parm when --show-inputs-only flag is set and team config exists with a chained handler", async () => {
+
+        // values to test
+        const parm1Key = `parm1`;
+        const parm1Value = `value1`;
+
+        await setupConfigToLoad({
+            "profiles": {
+                "fruit": {
+                    "properties": {
+                        "origin": "California"
+                    },
+                    "profiles": {
+                        "apple": {
+                            "type": "fruit",
+                            "properties": {
+                                "color": "red"
+                            }
+                        },
+                        "banana": {
+                            "type": "fruit",
+                            "properties": {
+                                "color": "yellow"
+                            }
+                        },
+                        "orange": {
+                            "type": "fruit",
+                            "properties": {
+                                "color": "orange"
+                            }
+                        }
+                    },
+                    "secure": []
+                }
+            },
+            "defaults": {
+                "fruit": "fruit.apple",
+                "banana": "fruit.banana"
+            },
+            "plugins": [
+                "@zowe/fruit-for-imperative"
+            ]
+        });
+
+        // Allocate the command processor
+        const processor: CommandProcessor = new CommandProcessor({
+            envVariablePrefix: ENV_VAR_PREFIX,
+            fullDefinition: SAMPLE_CMD_WITH_OPTS_AND_PROF, // `group action`
+            definition: {
+                name: "banana",
+                description: "The banana command",
+                type: "command",
+                chainedHandlers: [
+                    {
+                        handler: __dirname + "/__model__/TestArgHandler",
+                        mapping: [
+                            {
+                                from: parm1Key,
+                                to: parm1Key,
+                                mapFromArguments: true,
+                                applyToHandlers: [0]
+                            },
+                            {
+                                from: "boolean-opt",
+                                to: "boolean-opt",
+                                mapFromArguments: true,
+                                applyToHandlers: [0],
+                                optional: true
+                            },
+                            {
+                                from: "color",
+                                to: "color",
+                                mapFromArguments: true,
+                                applyToHandlers: [0]
+                            }
+                        ]
+                    }
+                ],
                 options: [
                     {
                         name: "boolean-opt",
@@ -1481,6 +1654,135 @@ describe("Command Processor", () => {
         expect(commandResponse.data.requiredProfiles).toBeUndefined();
     });
 
+    it("should mask input value for a default secure parm when --show-inputs-only flag is set with chained handlers", async () => {
+
+        // values to test
+        const secretParmKey = `brownSpots`;
+        const secretParmValue = true;
+        const secure = `(secure value)`;
+
+        await setupConfigToLoad({
+            "profiles": {
+                "fruit": {
+                    "properties": {
+                        "origin": "California"
+                    },
+                    "profiles": {
+                        "apple": {
+                            "type": "fruit",
+                            "properties": {
+                                "color": "red"
+                            }
+                        },
+                        "banana": {
+                            "type": "fruit",
+                            "properties": {
+                                "color": "yellow",
+                                secretParmKey : secretParmValue
+                            },
+                            "secure": [
+                                secretParmKey
+                            ]
+                        },
+                        "orange": {
+                            "type": "fruit",
+                            "properties": {
+                                "color": "orange"
+                            }
+                        }
+                    }
+                }
+            },
+            "defaults": {
+                "fruit": "fruit.apple",
+                "banana": "fruit.banana"
+            },
+            "plugins": [
+                "@zowe/fruit-for-imperative"
+            ]
+        });
+
+        // Allocate the command processor
+        const processor: CommandProcessor = new CommandProcessor({
+            envVariablePrefix: ENV_VAR_PREFIX,
+            fullDefinition: SAMPLE_CMD_WITH_OPTS_AND_PROF, // `group action`
+            definition: {
+                name: "banana",
+                description: "The banana command",
+                type: "command",
+                chainedHandlers: [
+                    {
+                        handler: __dirname + "/__model__/TestArgHandler",
+                        mapping: [
+                            {
+                                from: "boolean-opt",
+                                to: "boolean-opt",
+                                mapFromArguments: true,
+                                applyToHandlers: [0],
+                                optional: true
+                            },
+                            {
+                                from: "color",
+                                to: "color",
+                                mapFromArguments: true,
+                                applyToHandlers: [0]
+                            },
+                            {
+                                from: secretParmKey,
+                                to: secretParmKey,
+                                mapFromArguments: true,
+                                applyToHandlers: [0]
+                            }
+                        ]
+                    }
+                ],
+                options: [
+                    {
+                        name: "boolean-opt",
+                        type: "boolean",
+                        description: "A boolean option.",
+                    },
+                    {
+                        name: "color",
+                        type: "string",
+                        description: "The banana color.",
+                        required: true
+                    },
+                    {
+                        name: secretParmKey,
+                        type: "boolean",
+                        description: "Whether or not the banana has brown spots"
+                    },
+                ],
+                profile: {
+                    optional: ["banana"]
+                }
+            },
+            helpGenerator: FAKE_HELP_GENERATOR,
+            rootCommandName: SAMPLE_ROOT_COMMAND,
+            commandLine: "",
+            promptPhrase: "dummydummy",
+            config: ImperativeConfig.instance.config
+        });
+
+        const parms: any = {
+            arguments: {
+                _: ["check", "for", "banana"],
+                $0: "",
+                [secretParmKey]: secretParmValue,
+                valid: true,
+                showInputsOnly: true,
+            },
+            silent: true
+        };
+
+        const commandResponse: ICommandResponse = await processor.invoke(parms);
+        expect(commandResponse.data.locations.length).toBeGreaterThan(0);
+        expect(commandResponse.data.optionalProfiles[0]).toBe(`banana`);
+        expect(commandResponse.data.commandValues[secretParmKey]).toBe(secure);
+        expect(commandResponse.data.requiredProfiles).toBeUndefined();
+    });
+
     it.each(Censor.SECURE_PROMPT_OPTIONS)("should mask input value for secure parm %s when --show-inputs-only flag is set", async (propName) => {
 
         // values to test
@@ -1546,6 +1848,84 @@ describe("Command Processor", () => {
         expect(commandResponse.stderr.toString()).toContain(`Some inputs are not displayed`);
     });
 
+    it.each(Censor.SECURE_PROMPT_OPTIONS)("should mask input value for secure parm %s when --show-inputs-only flag is set with chained handlers",
+        async (propName) => {
+
+            // values to test
+            const parm1Key = CliUtils.getOptionFormat(propName).kebabCase;
+            const parm1Value = `secret`;
+            const secure = `(secure value)`;
+            jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({
+                config: {
+                    api: {
+                        secure: {
+                            securePropsForProfile: jest.fn(() => [propName])
+                        }
+                    },
+                    layers: [{ exists: true, path: "zowe.config.json" }],
+                    properties: Config.empty(),
+                    mProperties: Config.empty()
+                },
+                envVariablePrefix: "ZOWE"
+            } as any);
+
+            // Allocate the command processor
+            const processor: CommandProcessor = new CommandProcessor({
+                envVariablePrefix: ENV_VAR_PREFIX,
+                fullDefinition: SAMPLE_COMPLEX_COMMAND, // `group action`
+                definition: { // `object`
+                    name: "banana",
+                    description: "The banana command",
+                    type: "command",
+                    chainedHandlers: [
+                        {
+                            handler: __dirname + "/__model__/TestCmdHandler",
+                            mapping: [
+                                {
+                                    from: parm1Key,
+                                    to: parm1Key,
+                                    mapFromArguments: true,
+                                    applyToHandlers: [0]
+                                }
+                            ]
+                        }
+                    ],
+                    options: [
+                        {
+                            name: parm1Key,
+                            type: "string",
+                            description: "The first parameter",
+                        }
+                    ],
+                    profile: {
+                        optional: ["fruit"]
+                    }
+                },
+                helpGenerator: FAKE_HELP_GENERATOR,
+                rootCommandName: SAMPLE_ROOT_COMMAND,
+                commandLine: "",
+                promptPhrase: "dummydummy",
+                config: ImperativeConfig.instance.config
+            });
+
+            // return the "fake" args object with values from profile
+            jest.spyOn(CliUtils, "getOptValuesFromConfig").mockReturnValueOnce({});
+
+            const parms: any = {
+                arguments: {
+                    _: ["check", "for", "banana"],
+                    $0: "",
+                    [parm1Key]: parm1Value,
+                    valid: true,
+                    showInputsOnly: true,
+                },
+                silent: true
+            };
+            const commandResponse: ICommandResponse = await processor.invoke(parms);
+            expect(commandResponse.data.commandValues[parm1Key]).toBe(secure);
+            expect(commandResponse.stderr.toString()).toContain(`Some inputs are not displayed`);
+        });
+
     it("should not mask input value for a secure parm when --show-inputs-only flag is set with env setting", async () => {
 
         // values to test
@@ -1563,6 +1943,66 @@ describe("Command Processor", () => {
                 description: "The banana command",
                 type: "command",
                 handler: __dirname + "/__model__/TestCmdHandler",
+                options: [
+                    {
+                        name: parm1Key,
+                        type: "string",
+                        description: "The first parameter",
+                    }
+                ],
+            },
+            helpGenerator: FAKE_HELP_GENERATOR,
+            rootCommandName: SAMPLE_ROOT_COMMAND,
+            commandLine: "",
+            promptPhrase: "dummydummy"
+        });
+
+        const parms: any = {
+            arguments: {
+                _: ["check", "for", "banana"],
+                $0: "",
+                [parm1Key]: parm1Value,
+                valid: true,
+                showInputsOnly: true,
+            },
+            silent: true
+        };
+        const commandResponse: ICommandResponse = await processor.invoke(parms);
+        expect(commandResponse.data.commandValues[parm1Key]).toBe(parm1Value);
+        expect(commandResponse.stderr.toString()).not.toContain(`Some inputs are not displayed`);
+
+        delete process.env["test-cli_SHOW_SECURE_ARGS"];
+    });
+
+    it("should not mask input value for a secure parm when --show-inputs-only flag is set with env setting and chained handlers", async () => {
+
+        // values to test
+        const parm1Key = `user`;
+        const parm1Value = `secret`;
+
+        process.env["test-cli_SHOW_SECURE_ARGS"] = "true";
+
+        // Allocate the command processor
+        const processor: CommandProcessor = new CommandProcessor({
+            envVariablePrefix: ENV_VAR_PREFIX,
+            fullDefinition: SAMPLE_COMPLEX_COMMAND, // `group action`
+            definition: { // `object`
+                name: "banana",
+                description: "The banana command",
+                type: "command",
+                chainedHandlers: [
+                    {
+                        handler: __dirname + "/__model__/TestCmdHandler",
+                        mapping: [
+                            {
+                                from: parm1Key,
+                                to: parm1Key,
+                                mapFromArguments: true,
+                                applyToHandlers: [0]
+                            }
+                        ]
+                    }
+                ],
                 options: [
                     {
                         name: parm1Key,
