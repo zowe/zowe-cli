@@ -88,7 +88,8 @@ export class YargsConfigurer {
                         .catch((rejected) => {
                             const daemonStream = ImperativeConfig.instance.daemonContext?.stream;
                             if(daemonStream) {
-                                daemonStream.write(DaemonRequest.create({ stderr:`Internal Imperative Error: Root command help error occurred: ${rejected.message}\n`}));
+                                daemonStream.write(DaemonRequest.create({ stderr:`Internal Imperative Error: Root command help ` +
+                                    `error occurred: ${rejected.message}\n`}));
                             } else {
                                 process.stderr.write("Internal Imperative Error: Root command help error occurred: "
                                     + rejected.message + "\n");

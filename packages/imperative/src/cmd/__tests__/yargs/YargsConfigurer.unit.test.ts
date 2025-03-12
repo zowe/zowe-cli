@@ -47,7 +47,7 @@ describe("YargsConfigurer tests", () => {
         expect(invokeSpy).toHaveBeenCalled();
     });
 
-    it('should write to daemonStream if available', async () => {
+    it('should not write to daemonStream if not available', async () => {
         const rejectedError = new Error("Test error");
         const invokeSpy = jest.spyOn(CommandProcessor.prototype, "invoke").mockRejectedValue(rejectedError);
         const mockedYargs = require("yargs");
