@@ -19,7 +19,7 @@ import { ICommandResponseParms } from "../doc/response/parms/ICommandResponsePar
 import { CommandProcessor } from "../CommandProcessor";
 import { CommandUtils } from "../utils/CommandUtils";
 import { IHelpGeneratorFactory } from "../help/doc/IHelpGeneratorFactory";
-import { ImperativeConfig } from "../../../utilities";
+import { DaemonRequest, ImperativeConfig } from "../../../utilities";
 import { closest } from "fastest-levenshtein";
 import { COMMAND_RESPONSE_FORMAT } from "../doc/response/api/processor/ICommandResponseApi";
 
@@ -80,14 +80,20 @@ export class YargsConfigurer {
                         rootCommandName: this.rootCommandName,
                         commandLine: this.commandLine,
                         envVariablePrefix: this.envVariablePrefix,
-                        promptPhrase: this.promptPhrase
+                        promptPhrase: this.promptPhrase,
                     }).invoke({ arguments: argv, silent: false, responseFormat: this.getResponseFormat(argv) })
                         .then((_response) => {
                             Logger.getImperativeLogger().debug("Root help complete.");
                         })
                         .catch((rejected) => {
-                            process.stderr.write("Internal Imperative Error: Root command help error occurred: "
-                                + rejected.message + "\n");
+                            const daemonStream = ImperativeConfig.instance.daemonContext?.stream;
+                            if(daemonStream) {
+                                daemonStream.write(DaemonRequest.create({ stderr:`Internal Imperative Error: Root command help ` +
+                                    `error occurred: ${rejected.message}\n`}));
+                            } else {
+                                process.stderr.write("Internal Imperative Error: Root command help error occurred: "
+                                    + rejected.message + "\n");
+                            }
                             Logger.getImperativeLogger().error(`Root unexpected help error: ${inspect(rejected)}`);
                         });
                 } else {
