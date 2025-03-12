@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Added a favicon to the Web Help that displays in browser tabs. [#801] (https://github.com/zowe/zowe-cli/issues/801)
+
 ## `8.15.1`
 
 - BugFix: Fixed the `--show-inputs-only` option on commands with chained command handlers. [#2446](https://github.com/zowe/zowe-cli/issues/2446)
@@ -45,7 +49,6 @@ All notable changes to the Imperative package will be documented in this file.
 ## `8.10.0`
 
 - BugFix: Modified location of Proxy-Authorization header to be located in the agent instead of the request. [#2389](https://github.com/zowe/zowe-cli/issues/2389)
-
 
 ## `8.8.3`
 
