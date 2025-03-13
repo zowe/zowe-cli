@@ -38,7 +38,7 @@ describe("Mount and unmount file system", () => {
         fsname = getUniqueDatasetName(defaultSystem.zosmf.user);
 
         const dirname = getUniqueDatasetName(defaultSystem.zosmf.user).split(".")[1];
-        mountPoint = "//tmp/" + dirname;
+        mountPoint = defaultSystem.unix.testdir + dirname;
         const sshCommand = "mkdir " + mountPoint;
 
         runCliScript(__dirname + "/__scripts__/command/command_setup.sh",
@@ -46,7 +46,9 @@ describe("Mount and unmount file system", () => {
                 defaultSystem.ssh.host,
                 defaultSystem.ssh.port,
                 defaultSystem.ssh.user,
-                defaultSystem.ssh.password]);
+                defaultSystem.ssh.password,
+                defaultSystem.datasets.vol
+            ]);
     });
 
     afterAll(async () => {

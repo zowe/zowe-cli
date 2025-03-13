@@ -23,6 +23,7 @@ import { wait } from "../../../../__tests__/__src__/TestUtils";
 // long running test timeout
 const LONG_TIMEOUT = 100000;
 const TIMEOUT_TEST_CHECK = 10000;
+const waitTime = 1000;
 
 // Original get jobs status
 const ORIG_JOBS_STATUS = GetJobs.getStatusCommon;
@@ -46,7 +47,7 @@ let MONITOR_JOB_NAME: string;
 // Utility function to cleanup
 async function cleanTestJobs() {
     // The tests may submit jobs - we will clean every job that may have been left by failures, etc.
-    await wait(1000); // Wait for jobs to register in z/OSMF
+    await wait(waitTime); // Wait for jobs to register in z/OSMF
     const jobs: IJob[] = await GetJobs.getJobsCommon(REAL_SESSION, {owner: REAL_SESSION.ISession.user, prefix: MONITOR_JOB_NAME});
     if (jobs.length > 0) {
         for (const job of jobs) {
