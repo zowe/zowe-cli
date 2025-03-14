@@ -42,7 +42,7 @@ const findReqHeaders = (obj: any): any[] | null => {
         return obj.reqHeaders;
     }
     for (const key in obj) {
-        if (Object.prototype.hasOwnProperty.call(obj, key)) {
+        if (Object.hasOwn(obj, key)) {
             const result = findReqHeaders(obj[key]);
             if (result) return result;
         }

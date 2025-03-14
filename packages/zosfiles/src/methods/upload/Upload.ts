@@ -31,7 +31,7 @@ import { Readable } from "stream";
 import { CLIENT_PROPERTY } from "../../doc/types/ZosmfRestClientProperties";
 import { TransferMode } from "../../utils/ZosFilesAttributes";
 import { inspect } from "util";
-import { ZosFilesContext as ZosFilesContext, ZosFilesHeaders } from "../../utils/ZosFilesHeaders";
+import { ZosFilesContext, ZosFilesHeaders } from "../../utils/ZosFilesHeaders";
 
 export class Upload {
 
