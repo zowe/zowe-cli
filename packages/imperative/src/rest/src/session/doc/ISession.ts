@@ -11,6 +11,7 @@
 
 import * as SessConstants from "../SessConstants";
 import { ProxyVariables } from "./ProxyVariables";
+import { IAuthCache } from "./IAuthCache";
 
 /**
  * Session interface for maintaining cookie and protocol information
@@ -84,18 +85,6 @@ export interface ISession {
      * @memberof ISession
      */
     type?: SessConstants.AUTH_TYPE_CHOICES;
-
-    /**
-     * When present, authTypeToRequestToken indicates that we want to request a token.
-     * It also tells us what type of authentication should be used to get that token.
-     * AUTH_TYPE_NONE is an early placeholder (when needed), which Zowe API logic
-     * automatically replaces with an appropriate value.
-     * This property applies during a login command. Otherwise, this property is not
-     * placed into an ISession object.
-     */
-    authTypeToRequestToken?: typeof SessConstants.AUTH_TYPE_NONE |
-        typeof SessConstants.AUTH_TYPE_BASIC |
-        typeof SessConstants.AUTH_TYPE_CERT_PEM;
 
     /**
      * Base 64 encoded authentication materials created by base 64 encoding:
@@ -191,23 +180,27 @@ export interface ISession {
      * The type in authTypeOrder[0] is used first, authTypeOrder[1] second, etc.
      * Values are specified using SessConstants.AUTH_TYPE_XXX values.
      *
-     * The authTypeOrder property is currently controlled (hard-coded) within Zowe SDK functions.
-     * More control for Zowe consumers is anticipated in the future.
+     * The authTypeOrder property is specified by the end user and is managed by
+     * Zowe SDK functions. Consuming applications should not modify the contents
+     * of the authTypeOrder property.
      *
      * @type {string[]}
      * @memberof ISession
      */
-    authTypeOrder?: string[];
+    authTypeOrder?: SessConstants.AUTH_TYPE_CHOICES[];
 
     /**
-     * Records the time of the creation of the authentication cache item associated
-     * with this session. That time represents the key into an AuthOrder cache of
-     * credentials and preferred authentication order to be used for this session.
+     * The _authCache property contains a cache of credentials which are available
+     * for authentication. It also contains properties related to whether the user
+     * supplied the authentication order or whether we are using a default order.
+     *
+     * The _authCache property is created and managed by Zowe SDK functions.
+     * Consuming applications should not modify the contents of the _authCache property.
      *
      * @type number
      * @memberof ISession
      */
-    timeOfAuthCacheItem?: number;
+    _authCache?: IAuthCache;
 
     /**
      * Specifies external proxy settings

@@ -37,12 +37,6 @@ describe("issue command handler tests", () => {
     it("should issue command", async () => {
         IssueTso.issueTsoCmd = jest.fn((session, cmd) => {
             expect(session).toBeDefined();
-
-            // confirm that timeOfAuthCacheItem was created
-            expect(session.ISession.timeOfAuthCacheItem).toBeGreaterThan(0);
-
-            // the time will always be different, so remove it before snapshotting
-            delete session.ISession.timeOfAuthCacheItem;
             expect(session.ISession).toMatchSnapshot();
 
             return StartTsoData.SAMPLE_ISSUE_RESPONSE_WITH_MSG;

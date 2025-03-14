@@ -9,13 +9,14 @@
 *
 */
 
-import { AbstractSession, IHandlerParameters, Session } from "@zowe/imperative";
+import { AbstractSession, IAuthCache, IHandlerParameters, Session, SessConstants } from "@zowe/imperative";
 import { IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosFilesBaseHandler } from "../../../src/zosfiles/ZosFilesBase.handler";
 
 describe("ZosFilesBaseHandler", () => {
     class TestClass extends ZosFilesBaseHandler {
-        public timeOfAuthCacheItem: number;
+        public authCache: IAuthCache;
+        public authTypeOrder: SessConstants.AUTH_TYPE_CHOICES[];
 
         constructor(private readonly returnResponse: IZosFilesResponse) {
             super();
@@ -25,9 +26,10 @@ describe("ZosFilesBaseHandler", () => {
             commandParameters: IHandlerParameters,
             session: AbstractSession
         ): Promise<IZosFilesResponse> {
-            // The time was added by the super class.
-            // This is the only way that we can get it.
-            this.timeOfAuthCacheItem = session.ISession.timeOfAuthCacheItem;
+            // The authCache and authTypeOrder was added to the session by the super class.
+            // This is the only way that we can get them.
+            this.authCache = session.ISession._authCache;
+            this.authTypeOrder = session.ISession.authTypeOrder;
             return this.returnResponse;
         }
     }
@@ -91,18 +93,17 @@ describe("ZosFilesBaseHandler", () => {
         };
 
         const testClass = new TestClass(apiResponse);
-
-        const spy = jest.spyOn(testClass, "processWithSession");
+        const processWithSessionSpy = jest.spyOn(testClass, "processWithSession");
 
         await testClass.process(commandParameters);
+        expect(processWithSessionSpy).toHaveBeenCalledTimes(1);
 
-        expect(spy).toHaveBeenCalledTimes(1);
-
-        // The original sessionArgs (with the timeOfAuthCacheItem added to it)
-        // should be the session passed to "processWithSession"
-        sessionArgs.timeOfAuthCacheItem = testClass.timeOfAuthCacheItem;
+        // The session passed to "processWithSession" should contain the
+        // original sessionArgs (with an authCache and authOrder added to it).
         const expectedSession = new Session(sessionArgs);
-        expect(spy).toHaveBeenLastCalledWith(commandParameters, expectedSession);
+        expectedSession["mISession"]._authCache = testClass.authCache;
+        expectedSession["mISession"].authTypeOrder = testClass.authTypeOrder;
+        expect(processWithSessionSpy).toHaveBeenLastCalledWith(commandParameters, expectedSession);
 
         expect(commandParameters.response.console.log).toHaveBeenCalledTimes(1);
         expect(commandParameters.response.console.log).toHaveBeenLastCalledWith(apiResponse.commandResponse);

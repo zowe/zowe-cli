@@ -41,10 +41,6 @@ describe("ZosmfRestClient tests", () => {
 
     describe("Authentication errors", () => {
 
-        afterEach(() => {
-            (AuthOrder as any).clearAuthCache();
-        });
-
         it("should handle basic auth error with empty string causeErrors", () => {
             const fakeSess = new Session({
                 hostname: "dummy",

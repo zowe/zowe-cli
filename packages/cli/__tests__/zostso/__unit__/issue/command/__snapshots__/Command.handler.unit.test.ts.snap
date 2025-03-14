@@ -7,6 +7,20 @@ with an active z/OS application session."
 
 exports[`issue command handler tests should issue command 1`] = `
 Object {
+  "_authCache": Object {
+    "availableCreds": Object {
+      "password": "fake",
+      "user": "someone",
+    },
+    "didUserSetAuthOrder": false,
+    "topDefaultAuth": "basic",
+  },
+  "authTypeOrder": Array [
+    "basic",
+    "token",
+    "bearer",
+    "cert-pem",
+  ],
   "base64EncodedAuth": "c29tZW9uZTpmYWtl",
   "basePath": "",
   "hostname": "somewhere.com",
