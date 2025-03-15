@@ -2,8 +2,9 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
-## Recent Changes
+## `8.15.0`
 
+- BugFix: Modified the `Copy.copyPDS()` function to have `sourceMemberList` as an optional parameter to avoid a breaking change. [#2453](https://github.com/zowe/zowe-cli/pull/2453)
 - Enhancement: Added the `overwrite` parameter to the `Copy.DataSet()` command to allow for overwriting all members of a target data set with source data set members. [#2450] (https://github.com/zowe/zowe-cli/pull/2450)
 - Enhancement: Added the ability to search data sets with regex patterns by setting `ISearchOptions.regex` to `true`. [#2432](https://github.com/zowe/zowe-cli/issues/2432)
 - Ehancement: Added optional field `ISearchMatchLocation.length` which provides the length of the match on a string. [#2443](https://github.com/zowe/zowe-cli/pull/2443)
