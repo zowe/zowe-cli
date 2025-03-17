@@ -20,15 +20,15 @@ jest.mock("../../src/GetJobs");
 // Unit tests for DownloadJobs API
 describe("DownloadJobs", () => {
 
-    IO.writeFileAsync = jest.fn(async (file: any, content: any) => {
+    IO.writeFileAsync = jest.fn(async (_file: any, _content: any) => {
         // do nothing
     });
 
-    IO.createFileSync = jest.fn((directory: string) => {
+    IO.createFileSync = jest.fn((_directory: string) => {
         // do nothing;
     });
 
-    IO.createWriteStream = jest.fn((file: string): any => {
+    IO.createWriteStream = jest.fn((_file: string): any => {
         // do nothing;
     });
 
@@ -60,13 +60,13 @@ describe("DownloadJobs", () => {
 
     describe("Positive tests", () => {
         beforeEach(() => {
-            GetJobs.getSpoolFiles = jest.fn(async (session: any, jobname: string, jobid: string) => {
+            GetJobs.getSpoolFiles = jest.fn(async (_session: any, _jobname: string, _jobid: string) => {
                 return jobFiles;
             });
-            ZosmfRestClient.getStreamed = jest.fn(async (session: AbstractSession, resource: string, reqHeaders?: any[]): Promise<any> => {
+            ZosmfRestClient.getStreamed = jest.fn(async (_session: AbstractSession, _resource: string, _reqHeaders?: any[]): Promise<any> => {
                 // do nothing; method called within DowloadJobs.downloadSpoolContentCommon
             });
-            IO.createDirsSyncFromFilePath = jest.fn((directory: string) => {
+            IO.createDirsSyncFromFilePath = jest.fn((_directory: string) => {
                 // do nothing; method called within DowloadJobs.downloadSpoolContentCommon
             });
         });
@@ -170,7 +170,7 @@ describe("DownloadJobs", () => {
 
             it("should allow users to call downloadAllSpoolContentCommon with a job containing duplicate step names", async () => {
                 const sampJobFile = JSON.parse(JSON.stringify(jobFiles[0]));
-                GetJobs.getSpoolFiles = jest.fn(async (session: any, jobname: string, jobid: string) => {
+                GetJobs.getSpoolFiles = jest.fn(async (_session: any, _jobname: string, _jobid: string) => {
                     return [sampJobFile, sampJobFile, sampJobFile];
                 });
                 const allSpoolParms: IDownloadAllSpoolContentParms = {
@@ -228,7 +228,7 @@ describe("DownloadJobs", () => {
 
             it("should allow users to call downloadSpoolContentCommon with correct parameters (default outDir and binary mode)", async () => {
                 let uri: string = "";
-                ZosmfRestClient.getStreamed = jest.fn(async (session: AbstractSession, resource: string, reqHeaders?: any[]): Promise<any> => {
+                ZosmfRestClient.getStreamed = jest.fn(async (_session: AbstractSession, resource: string, _reqHeaders?: any[]): Promise<any> => {
                     uri = resource;
                 });
                 const jobFile: IJobFile = JSON.parse(JSON.stringify(jobFiles[0]));
@@ -247,9 +247,8 @@ describe("DownloadJobs", () => {
             });
 
             it("should allow users to call downloadSpoolContentCommon with correct params (default outDir and waitForJobOutputStatus)", async () => {
-                let uri: string = "";
-                ZosmfRestClient.getStreamed = jest.fn(async (session: AbstractSession, resource: string, reqHeaders?: any[]): Promise<any> => {
-                    uri = resource;
+                ZosmfRestClient.getStreamed = jest.fn(async (_session: AbstractSession, _resource: string, _reqHeaders?: any[]): Promise<any> => {
+                    return;
                 });
                 const jobFile: IJobFile = JSON.parse(JSON.stringify(jobFiles[0]));
                 const spoolParms: IDownloadSpoolContentParms = {
@@ -277,9 +276,8 @@ describe("DownloadJobs", () => {
             });
 
             it("should allow users to call downloadSpoolContentCommon with correct params (default outDir and waitForActiveStatus)", async () => {
-                let uri: string = "";
-                ZosmfRestClient.getStreamed = jest.fn(async (session: AbstractSession, resource: string, reqHeaders?: any[]): Promise<any> => {
-                    uri = resource;
+                ZosmfRestClient.getStreamed = jest.fn(async (_session: AbstractSession, _resource: string, _reqHeaders?: any[]): Promise<any> => {
+                    return;
                 });
                 const jobFile: IJobFile = JSON.parse(JSON.stringify(jobFiles[0]));
                 const spoolParms: IDownloadSpoolContentParms = {
@@ -439,7 +437,7 @@ describe("DownloadJobs", () => {
 
             it("should allow users to call downloadSpoolContentCommon with correct parameters (default outDir and record mode)", async () => {
                 let uri: string = "";
-                ZosmfRestClient.getStreamed = jest.fn(async (session: AbstractSession, resource: string, reqHeaders?: any[]): Promise<any> => {
+                ZosmfRestClient.getStreamed = jest.fn(async (_session: AbstractSession, resource: string, _reqHeaders?: any[]): Promise<any> => {
                     uri = resource;
                 });
                 const jobFile: IJobFile = JSON.parse(JSON.stringify(jobFiles[0]));
@@ -472,6 +470,22 @@ describe("DownloadJobs", () => {
 
                 expect(IO.createDirsSyncFromFilePath).toHaveBeenCalledWith(downloadFilePath);
                 expect(downloadFilePath).not.toContain(spoolParms.jobid);
+            });
+
+            it("should allow users to call downloadSpoolContentCommon with correct parameters (record range)", async () => {
+                const jobFile: IJobFile = JSON.parse(JSON.stringify(jobFiles[0]));
+                const spoolParms: IDownloadSpoolContentParms = {
+                    jobFile: jobFile,
+                    jobid: fakeJobID,
+                    jobname: fakeJobName,
+                    recordRange: "0-100"
+                };
+                const downloadFilePath = DownloadJobs.getSpoolDownloadFilePath(spoolParms);
+
+                await DownloadJobs.downloadSpoolContentCommon(fakeSession, spoolParms);
+
+                expect(IO.createDirsSyncFromFilePath).toHaveBeenCalledWith(downloadFilePath);
+                expect(downloadFilePath).toContain(DownloadJobs.DEFAULT_JOBS_OUTPUT_DIR);
             });
         });
     });
@@ -566,6 +580,44 @@ describe("DownloadJobs", () => {
             });
         });
         /* eslint-enable jest/no-done-callback */
+
+        it("should throw error regarding record range on spoolParms (0 100)", async () => {
+            const jobFile: IJobFile = JSON.parse(JSON.stringify(jobFiles[0]));
+            const spoolParms: IDownloadSpoolContentParms = {
+                jobFile: jobFile,
+                jobid: fakeJobID,
+                jobname: fakeJobName,
+                recordRange: "0 100"
+            };
+            let err;
+            try {
+                await DownloadJobs.downloadSpoolContentCommon(fakeSession, spoolParms);
+            } catch (e) {
+                err = e;
+            }
+
+            expect(err).toBeDefined();
+            expect(err.message).toContain(`Invalid record range format: ${spoolParms.recordRange}. Expected format is x-y.`);
+        });
+
+        it("should throw error regarding record range on spoolParms (100-0)", async () => {
+            const jobFile: IJobFile = JSON.parse(JSON.stringify(jobFiles[0]));
+            const spoolParms: IDownloadSpoolContentParms = {
+                jobFile: jobFile,
+                jobid: fakeJobID,
+                jobname: fakeJobName,
+                recordRange: "100-0"
+            };
+            let err;
+            try {
+                await DownloadJobs.downloadSpoolContentCommon(fakeSession, spoolParms);
+            } catch (e) {
+                err = e;
+            }
+
+            expect(err).toBeDefined();
+            expect(err.message).toContain(`Invalid record range specified: ${spoolParms.recordRange}. Ensure the format is x-y with x < y.`);
+        });
     });
 
     describe("Parameter validation tests", () => {

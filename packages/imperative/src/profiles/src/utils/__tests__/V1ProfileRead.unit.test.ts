@@ -61,7 +61,7 @@ describe("V1 Profile Conversion", () => {
             }
         };
 
-        mocks.safeLoad.mockImplementation((args: any) => {
+        mocks.safeLoad.mockImplementation((_args: any) => {
             return meta;
         });
 
@@ -71,7 +71,7 @@ describe("V1 Profile Conversion", () => {
     });
 
     it("should throw an imperative error if an error occurs reading the meta file", () => {
-        mocks.safeLoad.mockImplementation((args: any) => {
+        mocks.safeLoad.mockImplementation((_args: any) => {
             throw new Error(err);
         });
 
@@ -89,10 +89,10 @@ describe("V1 Profile Conversion", () => {
 
     it("should return a list of profile types", () => {
         const types: string[] = [BLUEBERRY_PROFILE_TYPE, STRAWBERRY_PROFILE_TYPE, BANANA_PROFILE_TYPE];
-        mocks.readdirSync.mockImplementationOnce(((path: any) => {
+        mocks.readdirSync.mockImplementationOnce(((_path: any) => {
             return types;
         }) as any);
-        mocks.statSync.mockImplementation(((filePath: string) => {
+        mocks.statSync.mockImplementation(((_filePath: string) => {
             return {
                 isDirectory: jest.fn(() => {
                     return true;
@@ -106,7 +106,7 @@ describe("V1 Profile Conversion", () => {
 
     it("should return a list of profile types but filter out non directory entries", () => {
         const types: string[] = [BLUEBERRY_PROFILE_TYPE, STRAWBERRY_PROFILE_TYPE, BANANA_PROFILE_TYPE];
-        mocks.readdirSync.mockImplementationOnce(((path: any) => {
+        mocks.readdirSync.mockImplementationOnce(((_path: any) => {
             return types;
         }) as any);
         mocks.statSync.mockImplementation(((filePath: string) => {
@@ -126,7 +126,7 @@ describe("V1 Profile Conversion", () => {
     });
 
     it("should throw an imperative error if the read directory IO error occurs", () => {
-        mocks.readdirSync.mockImplementation((path: any) => {
+        mocks.readdirSync.mockImplementation((_path: any) => {
             throw new Error(err);
         });
         let error;
@@ -145,7 +145,7 @@ describe("V1 Profile Conversion", () => {
     it("should return a list of profile names", () => {
         const fileNames: string[] = ["rotten.yaml", "fresh.yaml", "apple_meta.yaml"];
         const names: string[] = ["rotten", "fresh"];
-        mocks.readdirSync.mockImplementation(((path: any) => {
+        mocks.readdirSync.mockImplementation(((_path: any) => {
             return fileNames;
         }) as any);
         const returnedTypes: string[] = V1ProfileRead.getAllProfileNames(TEST_DIR_PATH, ".yaml", "apple_meta");
@@ -154,7 +154,7 @@ describe("V1 Profile Conversion", () => {
     });
 
     it("should throw an imperative error if an IO error occurs getting profile names", () => {
-        mocks.readdirSync.mockImplementation((path: any) => {
+        mocks.readdirSync.mockImplementation((_path: any) => {
             throw new Error(err);
         });
         let error;
@@ -176,7 +176,7 @@ describe("V1 Profile Conversion", () => {
             type: "strawberry",
             amount: 1000
         };
-        mocks.safeLoad.mockImplementation((args: any) => {
+        mocks.safeLoad.mockImplementation((_args: any) => {
             return prof;
         });
         const profile = V1ProfileRead.readProfileFile(TEST_DIR_PATH, "strawberry");
@@ -185,7 +185,7 @@ describe("V1 Profile Conversion", () => {
     });
 
     it("should throw an imperative error if a V1 Profile Conversion read error occurs", () => {
-        mocks.safeLoad.mockImplementation((args: any) => {
+        mocks.safeLoad.mockImplementation((_args: any) => {
             throw new Error(err);
         });
         let error;

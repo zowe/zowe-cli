@@ -32,7 +32,7 @@ describe("send address-space handler tests", () => {
     });
 
     it("should be able to send data to address-space", async () => {
-        SendTso.sendDataToTSOCollect = jest.fn(async (session, servletKey, data) => {
+        SendTso.sendDataToTSOCollect = jest.fn(async (_session, _servletKey, _data) => {
             return SendTsoData.SAMPLE_SEND_RESPONSE;
         });
         const handler = new SendToAddressSpace.default();
@@ -47,7 +47,7 @@ describe("send address-space handler tests", () => {
         const failMessage = "IZUG1126E: z/OSMF cannot correlate the request for key \"ZOSMFAD-SYS2-55-aaakaaac\"\n" +
             "with an active z/OS application session.";
         let error;
-        SendTso.sendDataToTSOCollect = jest.fn((session, servletKey) => {
+        SendTso.sendDataToTSOCollect = jest.fn((_session, _servletKey) => {
             throw new ImperativeError({msg: failMessage});
         });
         const handler = new SendToAddressSpace.default();

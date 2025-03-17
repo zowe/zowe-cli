@@ -23,6 +23,7 @@ import { wait } from "../../../../__tests__/__src__/TestUtils";
 // long running test timeout
 const LONG_TIMEOUT = 100000;
 const TIMEOUT_TEST_CHECK = 10000;
+const waitTime = 1000;
 
 // Original get jobs status
 const ORIG_JOBS_STATUS = GetJobs.getStatusCommon;
@@ -46,12 +47,12 @@ let MONITOR_JOB_NAME: string;
 // Utility function to cleanup
 async function cleanTestJobs() {
     // The tests may submit jobs - we will clean every job that may have been left by failures, etc.
-    await wait(1000); // Wait for jobs to register in z/OSMF
+    await wait(waitTime); // Wait for jobs to register in z/OSMF
     const jobs: IJob[] = await GetJobs.getJobsCommon(REAL_SESSION, {owner: REAL_SESSION.ISession.user, prefix: MONITOR_JOB_NAME});
     if (jobs.length > 0) {
         for (const job of jobs) {
             try {
-                const response = await DeleteJobs.deleteJob(REAL_SESSION, job.jobname, job.jobid);
+                await DeleteJobs.deleteJob(REAL_SESSION, job.jobname, job.jobid);
             } catch (e) {
                 // Don't worry about it
             }
@@ -107,7 +108,7 @@ describe.each([false, true])("System Tests - Monitor Jobs - Encoded: %s", (encod
             it("should detect and surface an error if the job requested is not found", async () => {
                 let error;
                 try {
-                    const response = await MonitorJobs.waitForOutputStatus(REAL_SESSION, "JOB1", "JOB123");
+                    await MonitorJobs.waitForOutputStatus(REAL_SESSION, "JOB1", "JOB123");
                 } catch (e) {
                     error = e;
                 }
@@ -165,7 +166,7 @@ describe.each([false, true])("System Tests - Monitor Jobs - Encoded: %s", (encod
                                 request: "release",
                                 version: "2.0"
                             }
-                        }).then((response) => {
+                        }).then((_response) => {
                             // Nothing to do here
                         }).catch((releaseErr) => {
                             if (!doneCalled) {
@@ -192,7 +193,7 @@ describe.each([false, true])("System Tests - Monitor Jobs - Encoded: %s", (encod
                 let error;
                 try {
                     const params: any = {jobname: "JOB1", jobid: "JOB123"};
-                    const response = await MonitorJobs.waitForJobOutputStatus(REAL_SESSION, params);
+                    await MonitorJobs.waitForJobOutputStatus(REAL_SESSION, params);
                 } catch (e) {
                     error = e;
                 }
@@ -250,7 +251,7 @@ describe.each([false, true])("System Tests - Monitor Jobs - Encoded: %s", (encod
                                 request: "release",
                                 version: "2.0"
                             }
-                        }).then((response) => {
+                        }).then((_response) => {
                             // Nothing to do here
                         }).catch((releaseErr) => {
                             if (!doneCalled) {
@@ -276,7 +277,7 @@ describe.each([false, true])("System Tests - Monitor Jobs - Encoded: %s", (encod
             it("should detect and surface an error message if an invalid jobname is specified", async () => {
                 let error;
                 try {
-                    const response = await MonitorJobs.waitForStatusCommon(REAL_SESSION, {jobid: "JOB123", jobname: "((((("});
+                    await MonitorJobs.waitForStatusCommon(REAL_SESSION, {jobid: "JOB123", jobname: "((((("});
                 } catch (e) {
                     error = e;
                 }
@@ -297,7 +298,7 @@ describe.each([false, true])("System Tests - Monitor Jobs - Encoded: %s", (encod
             it("should detect and surface an error message if an invalid jobid is specified", async () => {
                 let error;
                 try {
-                    const response = await MonitorJobs.waitForStatusCommon(REAL_SESSION, {jobid: "(", jobname: "JOB1"});
+                    await MonitorJobs.waitForStatusCommon(REAL_SESSION, {jobid: "(", jobname: "JOB1"});
                 } catch (e) {
                     error = e;
                 }
@@ -318,7 +319,7 @@ describe.each([false, true])("System Tests - Monitor Jobs - Encoded: %s", (encod
             it("should detect and surface an error if the job requested is not found", async () => {
                 let error;
                 try {
-                    const response = await MonitorJobs.waitForStatusCommon(REAL_SESSION, {jobid: "JOB123", jobname: "JOB1"});
+                    await MonitorJobs.waitForStatusCommon(REAL_SESSION, {jobid: "JOB123", jobname: "JOB1"});
                 } catch (e) {
                     error = e;
                 }
@@ -465,7 +466,7 @@ describe.each([false, true])("System Tests - Monitor Jobs - Encoded: %s", (encod
                     let doneCalled: boolean = false;
                     MonitorJobs.waitForStatusCommon(REAL_SESSION, {
                         jobname: jobInfo.jobname, jobid: jobInfo.jobid, status: "OUTPUT"
-                    }).then((status) => {
+                    }).then((_status) => {
                         if (!doneCalled) {
                             doneCalled = true;
                             done(`Error - we should not have received a status of OUTPUT`);
@@ -523,7 +524,7 @@ describe.each([false, true])("System Tests - Monitor Jobs - Encoded: %s", (encod
                     // start checking the job status
                     MonitorJobs.waitForStatusCommon(REAL_SESSION, {
                         jobname: jobInfo.jobname, jobid: jobInfo.jobid, status: "OUTPUT", attempts: ATTEMPTS
-                    }).then((status) => {
+                    }).then((_status) => {
                         done(`Error - we should not have received a status of OUTPUT`);
                     }).catch((error) => {
                         expect(error instanceof ImperativeError).toBe(true);
@@ -576,7 +577,7 @@ describe.each([false, true])("System Tests - Monitor Jobs - Encoded: %s", (encod
                                 request: "release",
                                 version: "2.0"
                             }
-                        }).then((response) => {
+                        }).then((_response) => {
                             // Nothing to do here
                         }).catch((releaseErr) => {
                             if (!doneCalled) {
@@ -629,7 +630,7 @@ describe.each([false, true])("System Tests - Monitor Jobs - Encoded: %s", (encod
                                 request: "release",
                                 version: "2.0"
                             }
-                        }).then((response) => {
+                        }).then((_response) => {
                             // Nothing to do here
                         }).catch((releaseErr) => {
                             if (!doneCalled) {

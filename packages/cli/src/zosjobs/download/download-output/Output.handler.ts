@@ -26,7 +26,7 @@ export default class OutputHandler extends ZosmfBaseHandler {
      * @returns {Promise<void>} - Fulfilled when the command completes successfully OR rejected with imperative error
      * @memberof OutputHandler
      */
-    public async processCmd(params: IHandlerParameters): Promise<void> {
+    public async processCmd(_params: IHandlerParameters): Promise<void> {
         const response: any = {};
         const jobid: string = this.mArguments.jobid + "";
         const outDir: string = this.mArguments.directory;
@@ -37,6 +37,8 @@ export default class OutputHandler extends ZosmfBaseHandler {
         const encoding: string = this.mArguments.encoding;
         const waitForActive: boolean = this.mArguments.waitForActive;
         const waitForOutput: boolean = this.mArguments.waitForOutput;
+        const recordRange: string = this.mArguments.recordRange;
+
         // Get the job details
         const job: IJob = await GetJobs.getJob(this.mSession, jobid);
         const options: IDownloadAllSpoolContentParms = {
@@ -49,7 +51,8 @@ export default class OutputHandler extends ZosmfBaseHandler {
             record,
             encoding,
             waitForActive,
-            waitForOutput
+            waitForOutput,
+            recordRange
         };
         // Download 'em all
         await DownloadJobs.downloadAllSpoolContentCommon(this.mSession, options);

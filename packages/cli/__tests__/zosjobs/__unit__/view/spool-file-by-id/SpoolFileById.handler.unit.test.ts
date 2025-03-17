@@ -37,10 +37,10 @@ describe("zos-jobs view spool-file-by-id handler", () => {
     });
 
     it("should be able to get the content of a spool file", async () => {
-        GetJobs.getJob = jest.fn(async (session, jobid) => {
+        GetJobs.getJob = jest.fn(async (_session, _jobid) => {
             return GetJobsData.SAMPLE_COMPLETE_JOB;
         });
-        GetJobs.getSpoolContentById = jest.fn(async (session, jobname, jobid, spoolId) => {
+        GetJobs.getSpoolContentById = jest.fn(async (_session, _jobname, _jobid, _spoolId) => {
             return fs.readFileSync(TEST_RESOURCES_DIR + "/spool/example_spool_content.txt").toString();
         });
         const handler = new SpoolFileByIdHandler.default();
@@ -56,10 +56,10 @@ describe("zos-jobs view spool-file-by-id handler", () => {
     });
 
     it("should be able to get the content of a spool file with encoding", async () => {
-        GetJobs.getJob = jest.fn(async (session, jobid) => {
+        GetJobs.getJob = jest.fn(async (_session, _jobid) => {
             return GetJobsData.SAMPLE_COMPLETE_JOB;
         });
-        GetJobs.getSpoolContentById = jest.fn(async (session, jobname, jobid, spoolId) => {
+        GetJobs.getSpoolContentById = jest.fn(async (_session, _jobname, _jobid, _spoolId) => {
             return fs.readFileSync(TEST_RESOURCES_DIR + "/spool/example_spool_content.txt").toString();
         });
         const handler = new SpoolFileByIdHandler.default();
@@ -78,7 +78,7 @@ describe("zos-jobs view spool-file-by-id handler", () => {
     it("should not transform an error thrown from get jobs getJob API", async () => {
         const failMessage = "You fail";
         let error;
-        GetJobs.getJob = jest.fn((session, jobid) => {
+        GetJobs.getJob = jest.fn((_session, _jobid) => {
             throw new ImperativeError({ msg: failMessage});
         });
         const handler = new SpoolFileByIdHandler.default();
@@ -98,10 +98,10 @@ describe("zos-jobs view spool-file-by-id handler", () => {
     it("should not transform an error thrown from get jobs getSpoolFilesForJob API", async () => {
         const failMessage = "You fail";
         let error;
-        GetJobs.getJob = jest.fn(async (session, jobid) => {
+        GetJobs.getJob = jest.fn(async (_session, _jobid) => {
             return GetJobsData.SAMPLE_COMPLETE_JOB;
         });
-        GetJobs.getSpoolContentById = jest.fn((session, jobname, jobid, spoolId) => {
+        GetJobs.getSpoolContentById = jest.fn((_session, _jobname, _jobid, _spoolId) => {
             throw new ImperativeError({ msg: failMessage});
         });
         const handler = new SpoolFileByIdHandler.default();

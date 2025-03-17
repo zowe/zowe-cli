@@ -68,7 +68,8 @@ export default {
                 SUMMARY: "Create physical sequential data sets (PS)",
                 DESCRIPTION: "Create physical sequential data sets (PS).",
                 EXAMPLES: {
-                    EX1: "Create an empty physical sequential data set with default parameters"
+                    EX1: "Create an empty physical sequential data set with default parameters",
+                    EX2: "Create a LARGE format sequential data set with default parameters"
                 }
             },
             VSAM: {
@@ -195,16 +196,22 @@ export default {
                     TODSNAME: "The name of the data set that you want to copy to"
                 },
                 OPTIONS: {
-                    REPLACE: "Specify this option as true if you wish to replace like-named members in the target data set"
+                    REPLACE: "Specify this option as true if you wish to replace members with identical names in the target data set",
+                    SAFE_REPLACE: "Specify this option as true if you wish to replace members with identical names or the " +
+                    "content of the target data set. This option will prompt to confirm.",
+                    OVERWRITE: "Specify this option as true if you wish to replace the entire target data set with the source data set. " +
+                    "All members, even those with no naming overlap, will be overwritten"
                 },
                 EXAMPLES: {
                     EX1: "Copy the data set named 'USER.FROM.SET' to the data set named 'USER.TO.SET'",
                     EX2: "Copy the data set member named 'USER.FROM.SET(MEM1)' to the data set member named 'USER.TO.SET(MEM2)'",
                     EX3: "Copy the data set named 'USER.FROM.SET' to the data set member named 'USER.TO.SET(MEM2)'",
                     EX4: "Copy the data set member named 'USER.FROM.SET(MEM1)' to the data set named 'USER.TO.SET'",
-                    EX5: "Copy the data set named 'USER.FROM.SET' to the data set named 'USER.TO.SET' and replace like-named members",
+                    EX5: "Copy the data set named 'USER.FROM.SET' to the data set named 'USER.TO.SET' and replace members with identical names",
                     EX6: "Copy the partitioned data set named 'TEST.PDS1' to the partitioned data set named 'TEST.PDS2'",
-                    EX7: "Copy the partionted data set named 'EXISTING.PDS' to a non-existent target 'NEW.PDS'"
+                    EX7: "Copy the partitioned data set named 'EXISTING.PDS' to a non-existent target 'NEW.PDS'",
+                    EX8: "Copy the partitioned data set named 'USER.FROM.SET' to the partitioned data set named 'USER.FROM.SET' and " +
+                        "overwrite the original contents",
                 }
             },
             DATA_SET_CROSS_LPAR: {

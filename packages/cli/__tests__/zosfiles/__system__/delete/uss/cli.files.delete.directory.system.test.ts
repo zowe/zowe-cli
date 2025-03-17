@@ -23,7 +23,6 @@ let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
 let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment<ITestPropertiesSchema>;
 let defaultSystem: ITestPropertiesSchema;
 let ussname: string;
-let user: string;
 
 describe("Delete Directory", () => {
 
@@ -37,7 +36,6 @@ describe("Delete Directory", () => {
         defaultSystem = TEST_ENVIRONMENT.systemTestProperties;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
-        user = defaultSystem.zosmf.user.trim();
         ussname = `${defaultSystem.zosmf.user.trim()}.aTestUssDirectory`;
         ussname = `${defaultSystem.unix.testdir}/${ussname}`;
     });
@@ -56,19 +54,15 @@ describe("Delete Directory", () => {
             });
 
             defaultSys = TEST_ENVIRONMENT_NO_PROF.systemTestProperties;
-            let error;
-            let response;
             try {
-                response = await Create.uss(REAL_SESSION, ussname, "directory");
+                await Create.uss(REAL_SESSION, ussname, "directory");
             } catch (err) {
-                error = err;
-                Imperative.console.info("Error: " + inspect(error));
+                Imperative.console.info("Error: " + inspect(err));
             }
             try {
-                response = await Create.uss(REAL_SESSION, `${ussname}/appendFile.txt`, "directory");
+                await Create.uss(REAL_SESSION, `${ussname}/appendFile.txt`, "directory");
             } catch (err) {
-                error = err;
-                Imperative.console.info("Error: " + inspect(error));
+                Imperative.console.info("Error: " + inspect(err));
             }
         });
 
@@ -98,7 +92,6 @@ describe("Delete Directory", () => {
     });
 
     describe("Success scenarios", () => {
-        let defaultSys: ITestPropertiesSchema;
 
         // Create the unique test environment
         beforeEach(async () => {
@@ -106,12 +99,10 @@ describe("Delete Directory", () => {
                 testName: "zos_files_delete_uss_directory_without_profile"
             });
 
-            defaultSys = TEST_ENVIRONMENT_NO_PROF.systemTestProperties;
             let error;
-            let response;
 
             try {
-                response = await Create.uss(REAL_SESSION, ussname, "directory");
+                await Create.uss(REAL_SESSION, ussname, "directory");
             } catch (err) {
                 error = err;
                 Imperative.console.info("Error: " + inspect(error));

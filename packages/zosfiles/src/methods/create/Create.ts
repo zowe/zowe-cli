@@ -249,19 +249,18 @@ export class Create {
                         break;
 
                     case "dirblk":
-                    // Validate non-zero if dsorg is PS
-                        if (tempOptions.dirblk !== 0 && tempOptions.dsorg === "PS") {
+                        // Validate non-zero if dsorg starts with "PS"
+                        if (tempOptions.dirblk !== 0 && tempOptions.dsorg.startsWith("PS")) {
                             throw new ImperativeError({ msg: ZosFilesMessages.invalidPSDsorgDirblkCombination.message });
                         }
-                        // Validate non-zero if 'dsorg' is PO
-                        if (tempOptions.dirblk === 0 && tempOptions.dsorg === "PO") {
+                        // Validate non-zero if dsorg starts with "PO"
+                        if (tempOptions.dirblk === 0 && tempOptions.dsorg.startsWith("PO")) {
                             throw new ImperativeError({ msg: ZosFilesMessages.invalidPODsorgDirblkCombination.message });
                         }
-
                         break;
 
                     case "dsntype": {
-                    // Key to create a PDSE.
+                        // Key to create a PDSE.
                         const type: string = tempOptions.dsntype.toUpperCase();
                         const availableTypes = ["BASIC", "EXTPREF", "EXTREQ", "HFS", "LARGE", "PDS", "LIBRARY", "PIPE"];
                         if (availableTypes.indexOf(type) === -1) {
@@ -269,15 +268,15 @@ export class Create {
                         }
                         break;
                     }
-                    case "dsorg":
-                    // Only PO and PS valid
-                        switch (tempOptions.dsorg.toUpperCase()) {
-                            case "PO":
-                            case "PS":
-                                break;
 
-                            default:
-                                throw new ImperativeError({ msg: ZosFilesMessages.invalidDsorgOption.message + tempOptions.dsorg });
+                    case "dsorg":
+                    // Check if dsorg is PS-L, if it is change it to "PS" and the dsntype to "LARGE".
+                    // Since the create endpoint does not see "PS-L" as a valid creation option
+
+                        if(tempOptions.dsorg === "PS-L")
+                        {
+                            tempOptions.dsorg = "PS";
+                            tempOptions.dsntype = "LARGE";
                         }
 
                         break;

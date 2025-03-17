@@ -38,7 +38,6 @@ import { IProfileLoaded, IProfileProperty, IProfileSchema } from "../../profiles
 import { CliUtils, ImperativeConfig } from "../../utilities";
 import { ImperativeExpect } from "../../expect";
 import { Logger } from "../../logger";
-import { LoggerUtils } from "../../logger/src/LoggerUtils";
 import {
     IOptionsForAddConnProps, ISession, Session, SessConstants, ConnectionPropsForSessCfg
 } from "../../rest";
@@ -52,6 +51,7 @@ import { ConfigBuilder } from "./ConfigBuilder";
 import { IAddProfTypeResult, IExtenderTypeInfo, IExtendersJsonOpts } from "./doc/IExtenderOpts";
 import { IConfigLayer } from "..";
 import { Constants } from "../../constants";
+import { Censor } from "../../censor";
 
 /**
  * This class provides functions to retrieve profile-related information.
@@ -1066,7 +1066,9 @@ export class ProfileInfo {
                     } else {
                         schemaJson = lastSchema.json;
                     }
-                    for (const { type, schema } of ConfigSchema.loadSchema(schemaJson)) {
+                    const loadedSchemas = ConfigSchema.loadSchema(schemaJson);
+                    Censor.setProfileSchemas(loadedSchemas);
+                    for (const { type, schema } of loadedSchemas) {
                         this.mProfileSchemaCache.set(`${layer.path}:${type}`, schema);
                     }
                 } catch (error) {
@@ -1080,7 +1082,6 @@ export class ProfileInfo {
         }
 
         this.mHasValidSchema = lastSchema.path != null;
-        LoggerUtils.setProfileSchemas(this.mProfileSchemaCache);
     }
 
     /**
@@ -1118,7 +1119,7 @@ export class ProfileInfo {
         const profileSchema = [...this.getTeamConfig().mLayers].reverse()
             .reduce((prev: IProfileSchema, cfgLayer) => {
                 const cachedSchema = [...this.mProfileSchemaCache.entries()]
-                    .filter(([typeWithPath, schema]) => typeWithPath.includes(`${cfgLayer.path}:${profileType}`))[0];
+                    .filter(([typeWithPath, _schema]) => typeWithPath.includes(`${cfgLayer.path}:${profileType}`))[0];
                 if (cachedSchema != null) {
                     prev = cachedSchema[1];
                 }
@@ -1362,7 +1363,7 @@ export class ProfileInfo {
 
         let schemaEntries = Object.entries(finalSchema);
         if (sources?.length > 0) {
-            schemaEntries = schemaEntries.filter(([typ, sch]) => {
+            schemaEntries = schemaEntries.filter(([typ, _sch]) => {
                 if (!(typ in this.mExtendersJson.profileTypes)) {
                     return false;
                 }
@@ -1431,7 +1432,7 @@ export class ProfileInfo {
         let finalSchema: IProfileSchema = undefined;
         for (let i = this.getTeamConfig().mLayers.length - 1; i > 0; i--) {
             const layer = this.getTeamConfig().mLayers[i];
-            const profileTypesFromLayer = [...this.mProfileSchemaCache.entries()].filter(([key, value]) => key.includes(`${layer.path}:`));
+            const profileTypesFromLayer = [...this.mProfileSchemaCache.entries()].filter(([key, _value]) => key.includes(`${layer.path}:`));
             for (const [layerType, schema] of profileTypesFromLayer) {
                 const type = layerType.split(":").pop();
                 if (type !== profileType) {

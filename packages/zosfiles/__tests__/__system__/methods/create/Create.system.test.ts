@@ -20,7 +20,6 @@ import { getUniqueDatasetName } from "../../../../../../__tests__/__src__/TestUt
 import { ICreateZfsOptions } from "../../../../src/methods/create/doc/ICreateZfsOptions";
 import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/ITestEnvironment";
 
-
 let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 let defaultSystem: ITestPropertiesSchema;
 let REAL_SESSION: Session;
@@ -58,18 +57,16 @@ describe("Create data set", () => {
     });
 
     beforeEach(async () => {
-        let response;
         try {
-            response = await Delete.dataSet(REAL_SESSION, dsname);
+            await Delete.dataSet(REAL_SESSION, dsname);
         } catch (error) {
             Imperative.console.info("Error: " + inspect(error));
         }
     });
 
     afterEach(async () => {
-        let response;
         try {
-            response = await Delete.dataSet(REAL_SESSION, dsname);
+            await Delete.dataSet(REAL_SESSION, dsname);
         } catch (error) {
             Imperative.console.info("Error: " + inspect(error));
         }
@@ -134,6 +131,31 @@ describe("Create data set", () => {
 
         expect(response.success).toBe(true);
         expect(response.commandResponse).toContain(ZosFilesMessages.dataSetCreatedSuccessfully.message);
+    }, LONGER_TIMEOUT);
+
+    it("should create a large sequential data set (PS-L)", async () => {
+        let error;
+        let response;
+
+        try {
+            response = await Create.dataSet(
+                REAL_SESSION,
+                CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL,
+                dsname,
+                {primary:1,recfm:"FB",blksize:6160,lrecl:80,dsntype:"LARGE",showAttributes:true}
+            );
+            Imperative.console.info("Response: " + inspect(response));
+        } catch (err) {
+            error = err;
+            Imperative.console.info("Error: " + inspect(error));
+        }
+
+        expect(error).toBeFalsy();
+        expect(response).toBeTruthy();
+
+        expect(response.success).toBe(true);
+        expect(response.commandResponse).toContain(ZosFilesMessages.dataSetCreatedSuccessfully.message);
+        expect(response.commandResponse).toContain("LARGE");
     }, LONGER_TIMEOUT);
 
     it("should create a sequential data set with response timeout", async () => {
@@ -375,18 +397,16 @@ describe("Create VSAM", () => {
     });
 
     beforeEach(async () => {
-        let response;
         try {
-            response = await Delete.vsam(REAL_SESSION, dsname);
+            await Delete.vsam(REAL_SESSION, dsname);
         } catch (error) {
             Imperative.console.info("Error: " + inspect(error));
         }
     });
 
     afterEach(async () => {
-        let response;
         try {
-            response = await Delete.vsam(REAL_SESSION, dsname);
+            await Delete.vsam(REAL_SESSION, dsname);
         } catch (error) {
             Imperative.console.info("Error: " + inspect(error));
         }
@@ -516,9 +536,8 @@ describe("Create z/OS file system", () => {
     });
 
     beforeEach(async () => {
-        let response;
         try {
-            response = await Delete.zfs(REAL_SESSION, fsname);
+            await Delete.zfs(REAL_SESSION, fsname);
             await waitFiveSeconds();
         } catch (error) {
             Imperative.console.info("Error: " + inspect(error));
@@ -526,9 +545,8 @@ describe("Create z/OS file system", () => {
     });
 
     afterEach(async () => {
-        let response;
         try {
-            response = await Delete.zfs(REAL_SESSION, fsname);
+            await Delete.zfs(REAL_SESSION, fsname);
             await waitFiveSeconds();
         } catch (error) {
             Imperative.console.info("Error: " + inspect(error));
@@ -570,7 +588,7 @@ describe("Create z/OS file system", () => {
         let error;
         let response;
 
-        const tempOptions = { ...options, responseTimeout: 5 };
+        const tempOptions = { ...options, responseTimeout: 60 };
 
         try {
             response = await Create.zfs(REAL_SESSION, fsname, tempOptions);
@@ -676,24 +694,20 @@ describe("Create uss file", () => {
     });
 
     beforeEach(async () => {
-        let response;
         try {
-            response = await Delete.ussFile(REAL_SESSION, filename);
+            await Delete.ussFile(REAL_SESSION, filename);
         } catch (error) {
             Imperative.console.info("Error: " + inspect(error));
         }
     });
 
     afterEach(async () => {
-        let response;
         try {
-            response = await Delete.ussFile(REAL_SESSION, filename);
+            await Delete.ussFile(REAL_SESSION, filename);
         } catch (error) {
             Imperative.console.info("Error: " + inspect(error));
         }
     });
-
-    const options: ICreateDataSetOptions = {} as any;
 
     it("should create a uss file", async () => {
         let error;
@@ -821,8 +835,6 @@ describe("Create uss directory", () => {
             Imperative.console.info("Error: " + inspect(error));
         }
     });
-
-    const options: ICreateDataSetOptions = {} as any;
 
     it("should create a uss directory", async () => {
         let error;

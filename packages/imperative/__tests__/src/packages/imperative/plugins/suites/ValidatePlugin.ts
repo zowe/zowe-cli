@@ -112,7 +112,6 @@ describe("Validate plugin", () => {
 
     describe("should display proper error message", () => {
         it("when no plugin is installed", () => {
-            const pluginName: string = "noninstalled-plugin";
             const cmd = `plugins validate`;
             const result = T.executeTestCLICommand(cliBin, this, cmd.split(" "));
             expect(result.stdout).toContain("No plugins have been installed");

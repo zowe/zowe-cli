@@ -17,8 +17,11 @@ export const MaskingDefinition: ICommandDefinition = {
     summary: "Test imperative masking",
     type: "command",
     handler: __dirname + "/Masking.handler",
+    profile: {
+        optional: ["secured"]
+    },
     positionals: [{
-        name: "test-argument",
+        name: "info",
         description: "test argument",
         type: "string",
         required: true,

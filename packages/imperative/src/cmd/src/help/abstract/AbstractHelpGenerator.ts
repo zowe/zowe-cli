@@ -135,7 +135,7 @@ export abstract class AbstractHelpGenerator implements IHelpGenerator {
                         (alias.length === 1 ? "-" : "--") + alias + "{{codeEnd}}");
                 }
                 else {
-                    this.log.warn("The aliases for option " + option.name + " contained a null or empty alias." +
+                    this.log.warn("The aliases for option " + option.name + " contained a null or empty alias. " +
                         "This has been ignored; please take corrective action in your option definition.");
                 }
             }

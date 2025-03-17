@@ -68,8 +68,8 @@ describe("Create Binary Data Set", () => {
         afterEach(async () => {
             // use DELETE APIs
             if (dsnameSuffix !== "") {
-                await wait(waitTime); //wait 2 seconds
-                const response = await Delete.dataSet(REAL_SESSION, dsname + "." + dsnameSuffix);
+                await wait(waitTime);
+                await Delete.dataSet(REAL_SESSION, dsname + "." + dsnameSuffix);
             }
         });
 
@@ -103,8 +103,8 @@ describe("Create Binary Data Set", () => {
         afterEach(async () => {
             // use DELETE APIs
             if (dsnameSuffix !== "") {
-                await wait(waitTime); //wait 2 seconds
-                const response = await Delete.dataSet(REAL_SESSION, dsname + "." + dsnameSuffix);
+                await wait(waitTime);
+                await Delete.dataSet(REAL_SESSION, dsname + "." + dsnameSuffix);
             }
         });
 

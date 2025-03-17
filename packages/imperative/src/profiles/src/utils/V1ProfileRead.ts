@@ -128,7 +128,7 @@ export class V1ProfileRead {
      * @returns {IProfile} - The profile object.
      * @memberof V1ProfileRead
      */
-    public static readProfileFile(filePath: string, type: string): IProfile {
+    public static readProfileFile(filePath: string, _type: string): IProfile {
         V1ProfileRead.crashInTeamConfigMode();
 
         let profile: IProfile;

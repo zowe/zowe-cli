@@ -41,7 +41,9 @@ import { Config } from "../../config/src/Config";
 import { ConfigUtils } from "../../config/src/ConfigUtils";
 import { ConfigConstants } from "../../config/src/ConfigConstants";
 import { IDaemonContext } from "../../imperative/src/doc/IDaemonContext";
-import { IHandlerResponseApi } from "../..";
+import { IHandlerResponseApi } from "./doc/response/api/handler/IHandlerResponseApi";
+import { Censor } from "../../censor/src/Censor";
+import { EnvironmentalVariableSettings } from "../../imperative/src/env/EnvironmentalVariableSettings";
 
 
 /**
@@ -86,13 +88,6 @@ interface IResolvedArgsResponse {
  * @class CommandProcessor
  */
 export class CommandProcessor {
-    /**
-     * Show secure fields in the output of the command ENV var suffix
-     * @private
-     * @static
-     * @memberof CommandProcessor
-     */
-    private static readonly ENV_SHOW_SECURE_SUFFIX = `_SHOW_SECURE_ARGS`;
     /**
      * The error tag for imperative errors.
      * @private
@@ -357,41 +352,30 @@ export class CommandProcessor {
                 `${CommandProcessor.ERROR_TAG} invoke(): Cannot invoke the handler for command "${this.definition.name}". The handler is blank.`);
         }
 
+        // Set up the censored options
+        Censor.setCensoredOptions({
+            profiles: ImperativeConfig.instance.loadedConfig?.profiles,
+            config: ImperativeConfig.instance.config,
+            commandDefinition: this.definition,
+            commandArguments: params.arguments
+        });
+
         let commandLine = ImperativeConfig.instance.commandLine || this.commandLine;
 
-        // determine if the command has the user option and mask the user value
-        let regEx = /--(user|u) ([^\s]+)/gi;
-
-        if (commandLine.search(regEx) >= 0) {
-            commandLine = commandLine.replace(regEx, "--$1 ****");
-        }
-
-        // determine if the command has the password option and mask the password value
-        regEx = /--(password|pass|pw) ([^\s]+)/gi;
-
-        if (commandLine.search(regEx) >= 0) {
-            commandLine = commandLine.replace(regEx, "--$1 ****");
-        }
-
-        // determine if the command has the token value option and mask the token value
-        regEx = /--(token-value|tokenValue|tv) ([^\s]+)/gi;
-
-        if (commandLine.search(regEx) >= 0) {
-            commandLine = commandLine.replace(regEx, "--$1 ****");
-        }
-
-        // determine if the command has the cert key file option and mask the value
-        regEx = /--(cert-key-file|certKeyFile) ([^\s]+)/gi;
-
-        if (commandLine.search(regEx) >= 0) {
-            commandLine = commandLine.replace(regEx, "--$1 ****");
-        }
-
-        // determine if the command has the cert file passphrase option and mask the value
-        regEx = /--(cert-file-passphrase|certFilePassphrase) ([^\s]+)/gi;
-
-        if (commandLine.search(regEx) >= 0) {
-            commandLine = commandLine.replace(regEx, "--$1 ****");
+        for (const secureArg of Censor.CENSORED_OPTIONS) {
+            let regex: RegExp;
+            if (secureArg.length > 1) {
+                regex = new RegExp(`--${secureArg} ([^\\s]+)`, "gi");
+            } else {
+                regex = new RegExp(`-${secureArg} ([^\\s]+)`, "gi");
+            }
+            if (commandLine.search(regex) >= 0) {
+                if (secureArg.length > 1) {
+                    commandLine = commandLine.replace(regex, `--${secureArg} ${Censor.CENSOR_RESPONSE}`);
+                } else {
+                    commandLine = commandLine.replace(regex, `-${secureArg} ${Censor.CENSOR_RESPONSE}`);
+                }
+            }
         }
 
         // this.log.info(`post commandLine issued:\n\n${TextUtils.prettyJson(commandLine)}`);
@@ -630,7 +614,7 @@ export class CommandProcessor {
             };
             try {
                 if (handlerParms.arguments.showInputsOnly) {
-                    this.showInputsOnly(response, handlerParms);
+                    this.showInputsOnly(handlerParms);
                 } else {
                     await handler.process(handlerParms);
                 }
@@ -661,60 +645,73 @@ export class CommandProcessor {
 
             let bufferedStdOut = Buffer.from([]);
             let bufferedStdErr = Buffer.from([]);
-            this.log.debug("Attempting to invoke %d chained handlers for command: '%s'", this.definition.chainedHandlers.length,
-                this.definition.name);
-            for (let chainedHandlerIndex = 0; chainedHandlerIndex < this.definition.chainedHandlers.length; chainedHandlerIndex++) {
-                const chainedHandler = this.definition.chainedHandlers[chainedHandlerIndex];
-                this.log.debug("Loading chained handler '%s' (%d of %d)",
-                    chainedHandler.handler, chainedHandlerIndex + 1, this.definition.chainedHandlers.length);
-                const handler: ICommandHandler = this.attemptHandlerLoad(response, chainedHandler.handler);
-                if (handler == null) {
-                    // if the handler load failed
-                    this.log.fatal("failed to load a chained handler! aborting chained handler sequence.");
-                    return this.finishResponse(response);
-                }
-                this.log.debug("Constructing new response object for handler '%s': silent?: %s. json?: %s",
-                    chainedHandler.handler, chainedHandler.silent + "", params.arguments[Constants.JSON_OPTION] + "");
-                chainedResponse = this.constructResponseObject({
-                    arguments: params.arguments,
-                    silent: chainedHandler.silent,
-                    responseFormat: params.arguments[Constants.JSON_OPTION] ? "json" : "default"
+            if (preparedArgs.showInputsOnly) {
+                this.showInputsOnly({
+                    response,
+                    arguments: preparedArgs,
+                    positionals: preparedArgs._,
+                    definition: this.definition,
+                    fullDefinition: this.fullDefinition,
+                    stdin: this.getStdinStream()
                 });
-
-                // make sure the new chained response preserves output
-                chainedResponse.bufferStdout(bufferedStdOut);
-                chainedResponse.bufferStderr(bufferedStdErr);
-                try {
-                    await handler.process({
-                        response: chainedResponse,
-                        arguments: ChainedHandlerService.getArguments(
-                            this.mCommandRootName,
-                            this.definition.chainedHandlers,
-                            chainedHandlerIndex,
-                            chainedResponses,
-                            preparedArgs,
-                            this.log
-                        ),
-                        positionals: preparedArgs._,
-                        definition: this.definition,
-                        fullDefinition: this.fullDefinition,
-                        stdin: this.getStdinStream(),
-                        isChained: true
+                response.succeeded();
+                response.endProgressBar();
+                return this.finishResponse(response);
+            } else {
+                this.log.debug("Attempting to invoke %d chained handlers for command: '%s'", this.definition.chainedHandlers.length,
+                    this.definition.name);
+                for (let chainedHandlerIndex = 0; chainedHandlerIndex < this.definition.chainedHandlers.length; chainedHandlerIndex++) {
+                    const chainedHandler = this.definition.chainedHandlers[chainedHandlerIndex];
+                    this.log.debug("Loading chained handler '%s' (%d of %d)",
+                        chainedHandler.handler, chainedHandlerIndex + 1, this.definition.chainedHandlers.length);
+                    const handler: ICommandHandler = this.attemptHandlerLoad(response, chainedHandler.handler);
+                    if (handler == null) {
+                        // if the handler load failed
+                        this.log.fatal("failed to load a chained handler! aborting chained handler sequence.");
+                        return this.finishResponse(response);
+                    }
+                    this.log.debug("Constructing new response object for handler '%s': silent?: %s. json?: %s",
+                        chainedHandler.handler, chainedHandler.silent + "", params.arguments[Constants.JSON_OPTION] + "");
+                    chainedResponse = this.constructResponseObject({
+                        arguments: params.arguments,
+                        silent: chainedHandler.silent,
+                        responseFormat: params.arguments[Constants.JSON_OPTION] ? "json" : "default"
                     });
-                    const builtResponse = chainedResponse.buildJsonResponse();
-                    chainedResponses.push(builtResponse.data);
-                    // save the stdout and stderr to pass to the next chained handler (if any)
-                    bufferedStdOut = builtResponse.stdout;
-                    bufferedStdErr = builtResponse.stderr;
 
-                } catch (processErr) {
-                    this.handleHandlerError(processErr, chainedResponse, chainedHandler.handler);
+                    // make sure the new chained response preserves output
+                    chainedResponse.bufferStdout(bufferedStdOut);
+                    chainedResponse.bufferStderr(bufferedStdErr);
 
-                    // Return the failed response to the caller
-                    return this.finishResponse(chainedResponse);
+                    try {
+                        await handler.process({
+                            response: chainedResponse,
+                            arguments: ChainedHandlerService.getArguments(
+                                this.mCommandRootName,
+                                this.definition.chainedHandlers,
+                                chainedHandlerIndex,
+                                chainedResponses,
+                                preparedArgs,
+                                this.log
+                            ),
+                            positionals: preparedArgs._,
+                            definition: this.definition,
+                            fullDefinition: this.fullDefinition,
+                            stdin: this.getStdinStream(),
+                            isChained: true
+                        });
+                        const builtResponse = chainedResponse.buildJsonResponse();
+                        chainedResponses.push(builtResponse.data);
+                        // save the stdout and stderr to pass to the next chained handler (if any)
+                        bufferedStdOut = builtResponse.stdout;
+                        bufferedStdErr = builtResponse.stderr;
+                    } catch (processErr) {
+                        this.handleHandlerError(processErr, chainedResponse, chainedHandler.handler);
+
+                        // Return the failed response to the caller
+                        return this.finishResponse(chainedResponse);
+                    }
                 }
             }
-
             this.log.info(`Chained handlers for command "${this.definition.name}" succeeded.`);
             response.succeeded();
             response.endProgressBar();
@@ -732,7 +729,7 @@ export class CommandProcessor {
      * @returns
      * @memberof CommandProcessor
      */
-    private showInputsOnly(response: IHandlerResponseApi, commandParameters: IHandlerParameters) {
+    private showInputsOnly(commandParameters: IHandlerParameters) {
 
         /**
          * Determine if we should display secure values.  If the ENV variable is set to true,
@@ -743,8 +740,8 @@ export class CommandProcessor {
         let showSecure = false;
 
         // ZOWE_SHOW_SECURE_ARGS
-        const SECRETS_ENV = `${ImperativeConfig.instance.envVariablePrefix}${CommandProcessor.ENV_SHOW_SECURE_SUFFIX}`;
-        const env = (process.env[SECRETS_ENV] || "false").toUpperCase();
+        const SECRETS_ENV = `${ImperativeConfig.instance.envVariablePrefix}${EnvironmentalVariableSettings.ENV_SHOW_SECURE_SUFFIX}`;
+        const env = EnvironmentalVariableSettings.read(ImperativeConfig.instance.envVariablePrefix).showSecureArgs.value.toUpperCase();
 
         if (env === "TRUE" || env === "1") {
             showSecure = true;
@@ -815,8 +812,8 @@ export class CommandProcessor {
          * Show warning if we censored output and we were not instructed to show secure values
          */
         if (censored && !showSecure) {
-            response.console.errorHeader("Some inputs are not displayed");
-            response.console.error(
+            commandParameters.response.console.errorHeader("Some inputs are not displayed");
+            commandParameters.response.console.error(
                 `Inputs below may be displayed as '${ConfigConstants.SECURE_VALUE}'. ` +
                 `Properties identified as secure fields are not displayed by default.\n\n` +
                 `Set the environment variable ` +

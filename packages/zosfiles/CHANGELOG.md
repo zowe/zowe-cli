@@ -2,8 +2,25 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
-## Recent Changes
+## `8.15.0`
 
+- BugFix: Modified the `Copy.copyPDS()` function to have `sourceMemberList` as an optional parameter to avoid a breaking change. [#2453](https://github.com/zowe/zowe-cli/pull/2453)
+- Enhancement: Added the `overwrite` parameter to the `Copy.DataSet()` command to allow for overwriting all members of a target data set with source data set members. [#2450] (https://github.com/zowe/zowe-cli/pull/2450)
+
+## `8.14.1`
+
+-BugFix: When using the copy command with a non existent source data set, an unclear error was displayed to the user.  Now, a more user-friendly message is provided [#2447] (https://github.com/zowe/zowe-cli/issues/2447).
+-BugFix: The updated logic to determine whether a data set is a partitioned data set now ensures that the `dsorg` attributes of types `PO-E`, `PO-L`, `PO-U` are handled correctly. [#2390] (https://github.com/zowe/zowe-cli/issues/2390).
+- BugFix: When using the `copy` command, if a target partitioned data set has a smaller record length than a source partitioned data set, the operation for subsequent members no longer stops. The user can now view the affected members in a local file. [#2349] (https://github.com/zowe/zowe-cli/issues/2349)
+- BugFix: Users were not warned when copying partitioned data sets with identical member names. Now, the user is prompted to confirm before continuing the copy operation to avoid potential data loss. [#2349] (https://github.com/zowe/zowe-cli/issues/2349)
+
+## `8.13.0`
+
+- BugFix: The `Create.dataSetValidateOptions()` function now correctly handles data set creation when the `dsorg` attribute is set to `PS-L` by automatically updating the `dsntype` attribute to `LARGE`. [#2141](https://github.com/zowe/zowe-cli/issues/2141)
+- BugFix: Fixed an issue in the `Copy.dataSetCrossLPAR()` function where the `spacu` attribute of the copied data set was always set to `TRK`, regardless of the source data set's attributes. [#2412](https://github.com/zowe/zowe-cli/issues/2412)
+- BugFix: The `Copy.data.set` function now prompts the user to confirm before overwriting the contents of the target data set with the addition of the `--safe-replace` option. [#2369] (https://github.com/zowe/zowe-cli/issues/2369)
+
+## `8.12.0`
 - Enhancement: The `Copy.dataset` function now creates a new data set if the entered target data set does not exist. [#2349](https://github.com/zowe/zowe-cli/issues/2349)
 - Enhancement: Added the `maxLength` option to List SDK functions (`allMembers`, `dataSetsMatchingPattern`, `membersMatchingPattern`) to specify the maximum number of items to return. [#2409](https://github.com/zowe/zowe-cli/pull/2409)
 - Enhancement: Added the `start` option to List SDK functions (`allMembers`, `dataSetsMatchingPattern`, `membersMatchingPattern`) to specify the first data set/member name to return in the response. [#2409](https://github.com/zowe/zowe-cli/pull/2409)

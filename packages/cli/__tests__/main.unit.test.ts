@@ -10,17 +10,13 @@
 */
 
 import { resolve } from "path";
-import { ITestEnvironment } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../__tests__/__src__/environment/TestEnvironment";
-import { ITestPropertiesSchema } from "../../../__tests__/__src__/properties/ITestPropertiesSchema";
-
-let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 
 describe("behavior of main.ts", () => {
 
     // Create the unique test environment
     beforeAll(async () => {
-        testEnvironment = await TestEnvironment.setUp({
+        await TestEnvironment.setUp({
             testName: "imperative_integration_tests",
             skipProperties: true
         });
@@ -45,7 +41,7 @@ describe("behavior of main.ts", () => {
             const errMsg = "This should fail zowe!";
             let loggedMsg = "";
 
-            fatalLogMock.mockImplementation((message: any, ...args: any[]) => {
+            fatalLogMock.mockImplementation((message: any, ..._args: any[]) => {
                 loggedMsg = message;
             });
 

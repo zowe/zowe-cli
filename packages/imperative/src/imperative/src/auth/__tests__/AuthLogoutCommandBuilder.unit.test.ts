@@ -28,7 +28,7 @@ describe("AuthLogoutCommandBuilder", () => {
     it("should fail to initialize if missing auth config", () => {
         let caughtError;
         try {
-            const builder = new AuthLogoutCommandBuilder("base", Logger.getImperativeLogger(), null);
+            new AuthLogoutCommandBuilder("base", Logger.getImperativeLogger(), null);
         } catch (error) {
             caughtError = error;
         }

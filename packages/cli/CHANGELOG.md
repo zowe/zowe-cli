@@ -1,7 +1,31 @@
 # Change Log
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `8.15.1`
+
+- BugFix: Fixed the `--show-inputs-only` option on commands with chained command handlers, such as `zowe zos-files copy data-set-cross-lpar`. [#2446](https://github.com/zowe/zowe-cli/issues/2446)
+
+## `8.15.0`
+
+- Enhancement: Added the `overwrite` parameter to the `Copy.DataSet()` command to allow for overwriting all members of a target data set with source data set members. [#2450] (https://github.com/zowe/zowe-cli/pull/2450)
+
+## `8.14.1`
+
+- BugFix: When using the `copy` command, if a target partitioned data set has a smaller record length than a source partitioned data set, the operation for subsequent members no longer stops. The user can now view the affected members in a local file. [#2349] (https://github.com/zowe/zowe-cli/issues/2349)
+- BugFix: Users were not warned when copying partitioned data sets with identical member names. Now, the user is prompted to confirm before continuing the copy operation to avoid potential data loss. [#2349] (https://github.com/zowe/zowe-cli/issues/2349)
+
+## `8.14.0`
+
+- Enhancement: Added the ability to see secure properties when running `zowe config list` when the `ZOWE_SHOW_SECURE_ARGS` environment variable is set to `true`. [#2259](https://github.com/zowe/zowe-cli/issues/2259)
+
+## `8.13.0`
+
+- Enhancement: Added the `--data-set-type` flag to create sequential data set command to allow for creating extended and large formatted sequential data sets. [#2141](https://github.com/zowe/zowe-cli/issues/2141)
+- Enhancement: Added `--recordRange` flag to `zowe jobs download output` command to allow users to select a specific range of records to output from a spool file. [#2411](https://github.com/zowe/zowe-cli/pull/2411)
+- BugFix: The `zowe zos-files copy data-set` command overwrites the contents of the target data set without user confirmation. A `--safe-replace` option was added which prompts the user to confirm before overwriting the contents of the target data set. [#2369] (https://github.com/zowe/zowe-cli/issues/2369)
+
+## `8.12.0`
+
 - Enhancement: The `zowe zos-files copy data-set` command no longer requires the target data set to be preallocated. [##2349] (https://github.com/zowe/zowe-cli/issues/2349)
 
 ## `8.10.4`
@@ -924,7 +948,7 @@ LTS Breaking: Removed the following previously deprecated items: [#1981](https:/
 
 ## `6.25.0`
 
-- Enhancement: Added a `--replace` option to the `zowe zos-files copy data-set` command. Use this option if you want to replace like-named members in the target data set. [#808](https://github.com/zowe/zowe-cli/issues/808)
+- Enhancement: Added a `--replace` option to the `zowe zos-files copy data-set` command. Use this option if you want to replace members with identical names in the target data set. [#808](https://github.com/zowe/zowe-cli/issues/808)
 - Enhancement: Improved a cryptic error message that was shown if TSO address space failed to start for the `zowe zos-tso issue command` command. [#28](https://github.com/zowe/zowe-cli/issues/28)
 - Bugfix: Removed "[object Object]" text that appeared in some error messages. The proper text "Imperative API Error" is now displayed. [#836](https://github.com/zowe/zowe-cli/pull/836)
 

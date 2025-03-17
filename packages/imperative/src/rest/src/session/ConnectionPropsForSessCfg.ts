@@ -21,6 +21,7 @@ import { IProfileProperty } from "../../../profiles";
 import { ConfigAutoStore } from "../../../config/src/ConfigAutoStore";
 import { ConfigUtils } from "../../../config/src/ConfigUtils";
 import { AuthOrder } from "./AuthOrder";
+import { Censor } from "../../../censor/src/Censor";
 
 /**
  * Extend options for IPromptOptions for internal wrapper method
@@ -364,11 +365,8 @@ export class ConnectionPropsForSessCfg {
     /**
      * List of properties on `sessCfg` object that should be kept secret and
      * may not appear in Imperative log files.
-     *
-     * NOTE(Kelosky): redundant from LoggerUtils.SECURE_PROMPT_OPTIONS - leaving
-     * for future date to consolidate
      */
-    private static secureSessCfgProps: Set<string> = new Set(["user", "password", "tokenValue", "passphrase"]);
+    private static readonly secureSessCfgProps: Set<string> = new Set(Censor.SECURE_PROMPT_OPTIONS);
 
     /**
      * List of prompt messages that is used when the CLI prompts for session

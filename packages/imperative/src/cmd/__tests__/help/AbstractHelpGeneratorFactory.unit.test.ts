@@ -50,7 +50,7 @@ describe("Abstract Help Generator Factory", () => {
     it("should detect missing parameters", () => {
         let error;
         try {
-            const factory = new TestHelpGeneratorFactory(undefined);
+            new TestHelpGeneratorFactory(undefined);
         } catch (e) {
             error = e;
         }
@@ -62,7 +62,7 @@ describe("Abstract Help Generator Factory", () => {
     it("should detect missing root command name", () => {
         let error;
         try {
-            const factory = new TestHelpGeneratorFactory({
+            new TestHelpGeneratorFactory({
                 rootCommandName: undefined
             });
         } catch (e) {
@@ -76,7 +76,7 @@ describe("Abstract Help Generator Factory", () => {
     it("should detect missing command definition when getting a factory", () => {
         let error;
         try {
-            const factory = new TestHelpGeneratorFactory({
+            new TestHelpGeneratorFactory({
                 rootCommandName: "fruits"
             }).getHelpGenerator({commandDefinition: undefined, fullCommandTree: SAMPLE_COMMAND_TREE});
         } catch (e) {
@@ -90,7 +90,7 @@ describe("Abstract Help Generator Factory", () => {
     it("should detect missing command definition tree when getting a factory", () => {
         let error;
         try {
-            const factory = new TestHelpGeneratorFactory({
+            new TestHelpGeneratorFactory({
                 rootCommandName: "fruits"
             }).getHelpGenerator({commandDefinition: SAMPLE_COMMAND, fullCommandTree: undefined});
         } catch (e) {

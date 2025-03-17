@@ -54,27 +54,23 @@ describe("Upload Data Set", () => {
         describe("Physical sequential", () => {
 
             beforeEach(async () => {
-                let error;
-                let response;
                 uploadOptions.etag = undefined;
                 uploadOptions.returnEtag = undefined;
 
                 try {
-                    response = await Create.dataSet(REAL_SESSION,
+                    await Create.dataSet(REAL_SESSION,
                         CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dsname);
                 } catch (err) {
-                    error = err;
+                    // Do nothing
                 }
             });
 
             afterEach(async () => {
-                let error;
-                let response;
 
                 try {
-                    response = await Delete.dataSet(REAL_SESSION, dsname);
+                    await Delete.dataSet(REAL_SESSION, dsname);
                 } catch (err) {
-                    error = err;
+                    // Do nothing
                 }
             });
 
@@ -289,24 +285,20 @@ describe("Upload Data Set", () => {
         describe("Partitioned data set", () => {
 
             beforeEach(async () => {
-                let error;
-                let response;
 
                 try {
-                    response = await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname);
+                    await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname);
                 } catch (err) {
-                    error = err;
+                    // Do nothing
                 }
             });
 
             afterEach(async () => {
-                let error;
-                let response;
 
                 try {
-                    response = await Delete.dataSet(REAL_SESSION, dsname);
+                    await Delete.dataSet(REAL_SESSION, dsname);
                 } catch (err) {
-                    error = err;
+                    // Do nothing
                 }
             });
 
@@ -522,24 +514,20 @@ describe("Upload Data Set", () => {
     describe("Failure Scenarios", () => {
 
         beforeEach(async () => {
-            let error;
-            let response;
 
             try {
-                response = await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname);
+                await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname);
             } catch (err) {
-                error = err;
+                // Do nothing
             }
         });
 
         afterEach(async () => {
-            let error;
-            let response;
 
             try {
-                response = await Delete.dataSet(REAL_SESSION, dsname);
+                await Delete.dataSet(REAL_SESSION, dsname);
             } catch (err) {
-                error = err;
+                // Do nothing
             }
         });
 
@@ -825,14 +813,13 @@ describe("Upload USS file", () => {
 
         it("should upload a USS file in binary mode", async () => {
             let error;
-            let uploadResponse;
             let getResponse;
             let tagResponse;
 
             const data: Buffer = Buffer.from(testdata);
 
             try {
-                uploadResponse = await Upload.bufferToUssFile(REAL_SESSION, ussname, data, { binary: true });
+                await Upload.bufferToUssFile(REAL_SESSION, ussname, data, { binary: true });
                 getResponse = await Get.USSFile(REAL_SESSION, ussname, {binary: true});
                 tagResponse = await Utilities.isFileTagBinOrAscii(REAL_SESSION, ussname);
             } catch (err) {

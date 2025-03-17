@@ -32,7 +32,7 @@ export class MockHttpRequestResponse extends EventEmitter {
         // simulate ending the request
     }
 
-    public write(data: string) {
+    public write(_data: string) {
         // doing important stuff with input data here
     }
 

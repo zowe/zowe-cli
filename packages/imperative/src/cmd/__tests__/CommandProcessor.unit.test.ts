@@ -25,7 +25,7 @@ import { setupConfigToLoad } from "../../../__tests__/src/TestUtil";
 import { EnvFileUtils } from "../../utilities";
 import { join } from "path";
 import { Config } from "../../config";
-import { LoggerUtils } from "../../logger/src/LoggerUtils";
+import { Censor } from "../../censor";
 
 jest.mock("../src/syntax/SyntaxValidator");
 jest.mock("../src/utils/SharedOptions");
@@ -191,6 +191,7 @@ const FAKE_HELP_GENERATOR: IHelpGenerator = {
 
 const ENV_VAR_PREFIX: string = "UNIT_TEST";
 
+/* eslint-disable deprecation/deprecation */
 describe("Command Processor", () => {
     describe("Command Processor with --help and --version flags", () => {
         let faultyConfigProcessor: CommandProcessor;
@@ -238,7 +239,7 @@ describe("Command Processor", () => {
         let caughtError;
 
         try {
-            const processor: CommandProcessor = new CommandProcessor({
+            new CommandProcessor({
                 envVariablePrefix: ENV_VAR_PREFIX,
                 definition: SAMPLE_COMMAND_DEFINITION,
                 helpGenerator: FAKE_HELP_GENERATOR,
@@ -256,7 +257,7 @@ describe("Command Processor", () => {
     it("should detect that no parameters have been supplied", () => {
         let error;
         try {
-            const processor: CommandProcessor = new CommandProcessor(undefined);
+            new CommandProcessor(undefined);
         } catch (e) {
             error = e;
         }
@@ -268,7 +269,7 @@ describe("Command Processor", () => {
     it("should detect no command definition supplied", () => {
         let error;
         try {
-            const processor: CommandProcessor = new CommandProcessor({
+            new CommandProcessor({
                 envVariablePrefix: ENV_VAR_PREFIX,
                 definition: undefined,
                 helpGenerator: FAKE_HELP_GENERATOR,
@@ -287,7 +288,7 @@ describe("Command Processor", () => {
     it("should detect no help generator supplied", () => {
         let error;
         try {
-            const processor: CommandProcessor = new CommandProcessor({
+            new CommandProcessor({
                 envVariablePrefix: ENV_VAR_PREFIX,
                 definition: SAMPLE_COMMAND_DEFINITION,
                 helpGenerator: undefined,
@@ -306,7 +307,7 @@ describe("Command Processor", () => {
     it("should detect no root command supplied", () => {
         let error;
         try {
-            const processor: CommandProcessor = new CommandProcessor({
+            new CommandProcessor({
                 envVariablePrefix: ENV_VAR_PREFIX,
                 definition: SAMPLE_COMMAND_DEFINITION,
                 helpGenerator: FAKE_HELP_GENERATOR,
@@ -325,7 +326,7 @@ describe("Command Processor", () => {
     it("should detect blank root command supplied", () => {
         let error;
         try {
-            const processor: CommandProcessor = new CommandProcessor({
+            new CommandProcessor({
                 envVariablePrefix: ENV_VAR_PREFIX,
                 definition: SAMPLE_COMMAND_DEFINITION,
                 helpGenerator: FAKE_HELP_GENERATOR,
@@ -344,7 +345,7 @@ describe("Command Processor", () => {
     it("should detect missing ENV var prefix", () => {
         let error;
         try {
-            const processor: CommandProcessor = new CommandProcessor({
+            new CommandProcessor({
                 envVariablePrefix: undefined,
                 definition: SAMPLE_COMMAND_DEFINITION,
                 helpGenerator: FAKE_HELP_GENERATOR,
@@ -436,8 +437,6 @@ describe("Command Processor", () => {
     });
 
     it("should build the help if requested", () => {
-        let stdoutMessages: string = "";
-        let stderrMessages: string = "";
 
         // Allocate the command processor
         const processor: CommandProcessor = new CommandProcessor({
@@ -450,11 +449,11 @@ describe("Command Processor", () => {
         });
 
         // Mock the process write
-        (process.stdout.write as any) = jest.fn((data) => {
-            stdoutMessages += data;
+        (process.stdout.write as any) = jest.fn((_data) => {
+            return;
         });
-        (process.stderr.write as any) = jest.fn((data) => {
-            stderrMessages += data;
+        (process.stderr.write as any) = jest.fn((_data) => {
+            return;
         });
 
         const helpResponse: ICommandResponse = processor.help(new CommandResponse());
@@ -475,7 +474,7 @@ describe("Command Processor", () => {
 
         let error;
         try {
-            const helpResponse: ICommandResponse = processor.help(undefined);
+            processor.help(undefined);
         } catch (e) {
             error = e;
         }
@@ -485,8 +484,6 @@ describe("Command Processor", () => {
     });
 
     it("should build the web help if requested", () => {
-        let stdoutMessages: string = "";
-        let stderrMessages: string = "";
 
         // Allocate the command processor
         const processor: CommandProcessor = new CommandProcessor({
@@ -499,11 +496,11 @@ describe("Command Processor", () => {
         });
 
         // Mock the process write
-        (process.stdout.write as any) = jest.fn((data) => {
-            stdoutMessages += data;
+        (process.stdout.write as any) = jest.fn((_data) => {
+            return;
         });
-        (process.stderr.write as any) = jest.fn((data) => {
-            stderrMessages += data;
+        (process.stderr.write as any) = jest.fn((_data) => {
+            return;
         });
         WebHelpManager.instance.openHelp = jest.fn();
 
@@ -565,7 +562,7 @@ describe("Command Processor", () => {
 
         let error;
         try {
-            const validateResponse: ICommandValidatorResponse = await processor.validate(undefined, new CommandResponse());
+            await processor.validate(undefined, new CommandResponse());
         } catch (e) {
             error = e;
         }
@@ -587,7 +584,7 @@ describe("Command Processor", () => {
 
         let error;
         try {
-            const validateResponse: ICommandValidatorResponse = await processor.validate({
+            await processor.validate({
                 _: [],
                 $0: "",
                 valid: true
@@ -613,7 +610,7 @@ describe("Command Processor", () => {
 
         let error;
         try {
-            const validateResponse: ICommandResponse = await processor.invoke(undefined);
+            await processor.invoke(undefined);
         } catch (e) {
             error = e;
         }
@@ -635,7 +632,7 @@ describe("Command Processor", () => {
 
         let error;
         try {
-            const validateResponse: ICommandResponse = await processor.invoke({ arguments: undefined });
+            await processor.invoke({ arguments: undefined });
         } catch (e) {
             error = e;
         }
@@ -658,7 +655,7 @@ describe("Command Processor", () => {
         let error;
         try {
             const parms: any = { arguments: { _: [], $0: "" }, responseFormat: "blah", silent: true };
-            const validateResponse: ICommandResponse = await processor.invoke(parms);
+            await processor.invoke(parms);
         } catch (e) {
             error = e;
         }
@@ -681,7 +678,7 @@ describe("Command Processor", () => {
         let error;
         try {
             const parms: any = { arguments: { _: undefined, $0: "" }, responseFormat: "json", silent: true };
-            const validateResponse: ICommandResponse = await processor.invoke(parms);
+            await processor.invoke(parms);
         } catch (e) {
             error = e;
         }
@@ -789,7 +786,7 @@ describe("Command Processor", () => {
         expect(commandResponse.error?.additionalDetails).toEqual("Syntax validation error!");
     });
 
-    it("should mask sensitive CLI options like user and password in log output", async () => {
+    it("should mask sensitive CLI options like user and password in log output 1", async () => {
         // Allocate the command processor
         const processor: CommandProcessor = new CommandProcessor({
             envVariablePrefix: ENV_VAR_PREFIX,
@@ -817,10 +814,47 @@ describe("Command Processor", () => {
         });
 
         const parms: any = { arguments: { _: [], $0: "", syntaxThrow: true }, responseFormat: "json", silent: true };
-        const commandResponse: ICommandResponse = await processor.invoke(parms);
+        await processor.invoke(parms);
 
         expect(mockLogInfo).toHaveBeenCalled();
-        expect(logOutput).toContain("--user **** --password **** --token-value **** --cert-file-passphrase **** --cert-key-file ****");
+        expect(logOutput).toContain("--user fakeUser --password **** --token-value **** --cert-file-passphrase **** --cert-key-file /fake/path");
+    });
+
+    it("should mask sensitive CLI options like user and password in log output 2", async () => {
+        const realCensoredOptions = Censor.CENSORED_OPTIONS;
+        jest.spyOn(Censor, "CENSORED_OPTIONS", "get").mockReturnValueOnce([...realCensoredOptions, "u"]);
+
+        // Allocate the command processor
+        const processor: CommandProcessor = new CommandProcessor({
+            envVariablePrefix: ENV_VAR_PREFIX,
+            fullDefinition: SAMPLE_COMPLEX_COMMAND,
+            definition: SAMPLE_COMMAND_DEFINITION,
+            helpGenerator: FAKE_HELP_GENERATOR,
+            rootCommandName: SAMPLE_ROOT_COMMAND,
+            commandLine: "-u fakeUser --password fakePass --token-value fakeToken " +
+                "--cert-file-passphrase fakePassphrase --cert-key-file /fake/path",
+            promptPhrase: "dummydummy"
+        });
+
+        // Mock log.info call
+        let logOutput: string = "";
+        const mockLogInfo = jest.fn((line) => {
+            logOutput += line + "\n";
+        });
+        Object.defineProperty(processor, "log", {
+            get: () => ({
+                debug: jest.fn(),
+                error: jest.fn(),
+                info: mockLogInfo,
+                trace: jest.fn()
+            })
+        });
+
+        const parms: any = { arguments: { _: [], $0: "", syntaxThrow: true }, responseFormat: "json", silent: true };
+        await processor.invoke(parms);
+
+        expect(mockLogInfo).toHaveBeenCalled();
+        expect(logOutput).toContain("-u **** --password **** --token-value **** --cert-file-passphrase **** --cert-key-file /fake/path");
     });
 
     it("should handle not being able to instantiate the handler", async () => {
@@ -1250,6 +1284,61 @@ describe("Command Processor", () => {
         expect(commandResponse.data.commandValues[parm1Key]).toBe(parm1Value);
     });
 
+    it("should display input value for simple parm when --show-inputs-only flag is set with a chained handler", async () => {
+
+        // values to test
+        const parm1Key = `parm1`;
+        const parm1Value = `value1`;
+
+        // Allocate the command processor
+        const processor: CommandProcessor = new CommandProcessor({
+            envVariablePrefix: ENV_VAR_PREFIX,
+            fullDefinition: SAMPLE_COMPLEX_COMMAND, // `group action`
+            definition: { // `object`
+                name: "banana",
+                description: "The banana command",
+                type: "command",
+                chainedHandlers: [
+                    {
+                        handler: __dirname + "/__model__/TestCmdHandler",
+                        mapping: [
+                            {
+                                from: parm1Key,
+                                to: parm1Key,
+                                mapFromArguments: true,
+                                applyToHandlers: [0]
+                            }
+                        ]
+                    }
+                ],
+                options: [
+                    {
+                        name: parm1Key,
+                        type: "string",
+                        description: "The first parameter",
+                    }
+                ],
+            },
+            helpGenerator: FAKE_HELP_GENERATOR,
+            rootCommandName: SAMPLE_ROOT_COMMAND,
+            commandLine: "",
+            promptPhrase: "dummydummy"
+        });
+
+        const parms: any = {
+            arguments: {
+                _: ["check", "for", "banana"],
+                $0: "",
+                [parm1Key]: parm1Value,
+                valid: true,
+                showInputsOnly: true,
+            },
+            silent: true
+        };
+        const commandResponse: ICommandResponse = await processor.invoke(parms);
+        expect(commandResponse.data.commandValues[parm1Key]).toBe(parm1Value);
+    });
+
     it("should display input value for simple parm when --show-inputs-only flag is set and team config exists", async () => {
 
         // values to test
@@ -1303,6 +1392,124 @@ describe("Command Processor", () => {
                 description: "The banana command",
                 type: "command",
                 handler: __dirname + "/__model__/TestArgHandler",
+                options: [
+                    {
+                        name: "boolean-opt",
+                        type: "boolean",
+                        description: "A boolean option.",
+                    },
+                    {
+                        name: "color",
+                        type: "string",
+                        description: "The banana color.",
+                        required: true
+                    }
+                ],
+                profile: {
+                    optional: ["banana"]
+                }
+            },
+            helpGenerator: FAKE_HELP_GENERATOR,
+            rootCommandName: SAMPLE_ROOT_COMMAND,
+            commandLine: "",
+            promptPhrase: "dummydummy",
+            config: ImperativeConfig.instance.config
+        });
+
+        const parms: any = {
+            arguments: {
+                _: ["check", "for", "banana"],
+                $0: "",
+                [parm1Key]: parm1Value,
+                valid: true,
+                showInputsOnly: true,
+            },
+            silent: true
+        };
+        const commandResponse: ICommandResponse = await processor.invoke(parms);
+        expect(commandResponse.data.locations.length).toBeGreaterThan(0);
+        expect(commandResponse.data.optionalProfiles[0]).toBe(`banana`);
+        expect(commandResponse.data.requiredProfiles).toBeUndefined();
+    });
+
+    it("should display input value for simple parm when --show-inputs-only flag is set and team config exists with a chained handler", async () => {
+
+        // values to test
+        const parm1Key = `parm1`;
+        const parm1Value = `value1`;
+
+        await setupConfigToLoad({
+            "profiles": {
+                "fruit": {
+                    "properties": {
+                        "origin": "California"
+                    },
+                    "profiles": {
+                        "apple": {
+                            "type": "fruit",
+                            "properties": {
+                                "color": "red"
+                            }
+                        },
+                        "banana": {
+                            "type": "fruit",
+                            "properties": {
+                                "color": "yellow"
+                            }
+                        },
+                        "orange": {
+                            "type": "fruit",
+                            "properties": {
+                                "color": "orange"
+                            }
+                        }
+                    },
+                    "secure": []
+                }
+            },
+            "defaults": {
+                "fruit": "fruit.apple",
+                "banana": "fruit.banana"
+            },
+            "plugins": [
+                "@zowe/fruit-for-imperative"
+            ]
+        });
+
+        // Allocate the command processor
+        const processor: CommandProcessor = new CommandProcessor({
+            envVariablePrefix: ENV_VAR_PREFIX,
+            fullDefinition: SAMPLE_CMD_WITH_OPTS_AND_PROF, // `group action`
+            definition: {
+                name: "banana",
+                description: "The banana command",
+                type: "command",
+                chainedHandlers: [
+                    {
+                        handler: __dirname + "/__model__/TestArgHandler",
+                        mapping: [
+                            {
+                                from: parm1Key,
+                                to: parm1Key,
+                                mapFromArguments: true,
+                                applyToHandlers: [0]
+                            },
+                            {
+                                from: "boolean-opt",
+                                to: "boolean-opt",
+                                mapFromArguments: true,
+                                applyToHandlers: [0],
+                                optional: true
+                            },
+                            {
+                                from: "color",
+                                to: "color",
+                                mapFromArguments: true,
+                                applyToHandlers: [0]
+                            }
+                        ]
+                    }
+                ],
                 options: [
                     {
                         name: "boolean-opt",
@@ -1447,7 +1654,136 @@ describe("Command Processor", () => {
         expect(commandResponse.data.requiredProfiles).toBeUndefined();
     });
 
-    it.each(LoggerUtils.SECURE_PROMPT_OPTIONS)("should mask input value for secure parm %s when --show-inputs-only flag is set", async (propName) => {
+    it("should mask input value for a default secure parm when --show-inputs-only flag is set with chained handlers", async () => {
+
+        // values to test
+        const secretParmKey = `brownSpots`;
+        const secretParmValue = true;
+        const secure = `(secure value)`;
+
+        await setupConfigToLoad({
+            "profiles": {
+                "fruit": {
+                    "properties": {
+                        "origin": "California"
+                    },
+                    "profiles": {
+                        "apple": {
+                            "type": "fruit",
+                            "properties": {
+                                "color": "red"
+                            }
+                        },
+                        "banana": {
+                            "type": "fruit",
+                            "properties": {
+                                "color": "yellow",
+                                secretParmKey : secretParmValue
+                            },
+                            "secure": [
+                                secretParmKey
+                            ]
+                        },
+                        "orange": {
+                            "type": "fruit",
+                            "properties": {
+                                "color": "orange"
+                            }
+                        }
+                    }
+                }
+            },
+            "defaults": {
+                "fruit": "fruit.apple",
+                "banana": "fruit.banana"
+            },
+            "plugins": [
+                "@zowe/fruit-for-imperative"
+            ]
+        });
+
+        // Allocate the command processor
+        const processor: CommandProcessor = new CommandProcessor({
+            envVariablePrefix: ENV_VAR_PREFIX,
+            fullDefinition: SAMPLE_CMD_WITH_OPTS_AND_PROF, // `group action`
+            definition: {
+                name: "banana",
+                description: "The banana command",
+                type: "command",
+                chainedHandlers: [
+                    {
+                        handler: __dirname + "/__model__/TestArgHandler",
+                        mapping: [
+                            {
+                                from: "boolean-opt",
+                                to: "boolean-opt",
+                                mapFromArguments: true,
+                                applyToHandlers: [0],
+                                optional: true
+                            },
+                            {
+                                from: "color",
+                                to: "color",
+                                mapFromArguments: true,
+                                applyToHandlers: [0]
+                            },
+                            {
+                                from: secretParmKey,
+                                to: secretParmKey,
+                                mapFromArguments: true,
+                                applyToHandlers: [0]
+                            }
+                        ]
+                    }
+                ],
+                options: [
+                    {
+                        name: "boolean-opt",
+                        type: "boolean",
+                        description: "A boolean option.",
+                    },
+                    {
+                        name: "color",
+                        type: "string",
+                        description: "The banana color.",
+                        required: true
+                    },
+                    {
+                        name: secretParmKey,
+                        type: "boolean",
+                        description: "Whether or not the banana has brown spots"
+                    },
+                ],
+                profile: {
+                    optional: ["banana"]
+                }
+            },
+            helpGenerator: FAKE_HELP_GENERATOR,
+            rootCommandName: SAMPLE_ROOT_COMMAND,
+            commandLine: "",
+            promptPhrase: "dummydummy",
+            config: ImperativeConfig.instance.config
+        });
+
+        const parms: any = {
+            arguments: {
+                _: ["check", "for", "banana"],
+                $0: "",
+                [secretParmKey]: secretParmValue,
+                valid: true,
+                showInputsOnly: true,
+            },
+            silent: true
+        };
+
+        const commandResponse: ICommandResponse = await processor.invoke(parms);
+        expect(commandResponse.data.locations.length).toBeGreaterThan(0);
+        expect(commandResponse.data.optionalProfiles[0]).toBe(`banana`);
+        expect(commandResponse.data.commandValues[secretParmKey]).toBe(secure);
+        expect(commandResponse.data.requiredProfiles).toBeUndefined();
+    });
+
+    it.each(Censor.SECURE_PROMPT_OPTIONS)("should mask input value for secure parm %s when --show-inputs-only flag is set", async (propName) => {
 
         // values to test
         const parm1Key = CliUtils.getOptionFormat(propName).kebabCase;
@@ -1461,8 +1797,10 @@ describe("Command Processor", () => {
                     }
                 },
                 layers: [{ exists: true, path: "zowe.config.json" }],
-                properties: Config.empty()
-            }
+                properties: Config.empty(),
+                mProperties: Config.empty()
+            },
+            envVariablePrefix: "ZOWE"
         } as any);
 
         // Allocate the command processor
@@ -1510,6 +1848,84 @@ describe("Command Processor", () => {
         expect(commandResponse.stderr.toString()).toContain(`Some inputs are not displayed`);
     });
 
+    it.each(Censor.SECURE_PROMPT_OPTIONS)("should mask input value for secure parm %s when --show-inputs-only flag is set with chained handlers",
+        async (propName) => {
+
+            // values to test
+            const parm1Key = CliUtils.getOptionFormat(propName).kebabCase;
+            const parm1Value = `secret`;
+            const secure = `(secure value)`;
+            jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({
+                config: {
+                    api: {
+                        secure: {
+                            securePropsForProfile: jest.fn(() => [propName])
+                        }
+                    },
+                    layers: [{ exists: true, path: "zowe.config.json" }],
+                    properties: Config.empty(),
+                    mProperties: Config.empty()
+                },
+                envVariablePrefix: "ZOWE"
+            } as any);
+
+            // Allocate the command processor
+            const processor: CommandProcessor = new CommandProcessor({
+                envVariablePrefix: ENV_VAR_PREFIX,
+                fullDefinition: SAMPLE_COMPLEX_COMMAND, // `group action`
+                definition: { // `object`
+                    name: "banana",
+                    description: "The banana command",
+                    type: "command",
+                    chainedHandlers: [
+                        {
+                            handler: __dirname + "/__model__/TestCmdHandler",
+                            mapping: [
+                                {
+                                    from: parm1Key,
+                                    to: parm1Key,
+                                    mapFromArguments: true,
+                                    applyToHandlers: [0]
+                                }
+                            ]
+                        }
+                    ],
+                    options: [
+                        {
+                            name: parm1Key,
+                            type: "string",
+                            description: "The first parameter",
+                        }
+                    ],
+                    profile: {
+                        optional: ["fruit"]
+                    }
+                },
+                helpGenerator: FAKE_HELP_GENERATOR,
+                rootCommandName: SAMPLE_ROOT_COMMAND,
+                commandLine: "",
+                promptPhrase: "dummydummy",
+                config: ImperativeConfig.instance.config
+            });
+
+            // return the "fake" args object with values from profile
+            jest.spyOn(CliUtils, "getOptValuesFromConfig").mockReturnValueOnce({});
+
+            const parms: any = {
+                arguments: {
+                    _: ["check", "for", "banana"],
+                    $0: "",
+                    [parm1Key]: parm1Value,
+                    valid: true,
+                    showInputsOnly: true,
+                },
+                silent: true
+            };
+            const commandResponse: ICommandResponse = await processor.invoke(parms);
+            expect(commandResponse.data.commandValues[parm1Key]).toBe(secure);
+            expect(commandResponse.stderr.toString()).toContain(`Some inputs are not displayed`);
+        });
+
     it("should not mask input value for a secure parm when --show-inputs-only flag is set with env setting", async () => {
 
         // values to test
@@ -1527,6 +1943,66 @@ describe("Command Processor", () => {
                 description: "The banana command",
                 type: "command",
                 handler: __dirname + "/__model__/TestCmdHandler",
+                options: [
+                    {
+                        name: parm1Key,
+                        type: "string",
+                        description: "The first parameter",
+                    }
+                ],
+            },
+            helpGenerator: FAKE_HELP_GENERATOR,
+            rootCommandName: SAMPLE_ROOT_COMMAND,
+            commandLine: "",
+            promptPhrase: "dummydummy"
+        });
+
+        const parms: any = {
+            arguments: {
+                _: ["check", "for", "banana"],
+                $0: "",
+                [parm1Key]: parm1Value,
+                valid: true,
+                showInputsOnly: true,
+            },
+            silent: true
+        };
+        const commandResponse: ICommandResponse = await processor.invoke(parms);
+        expect(commandResponse.data.commandValues[parm1Key]).toBe(parm1Value);
+        expect(commandResponse.stderr.toString()).not.toContain(`Some inputs are not displayed`);
+
+        delete process.env["test-cli_SHOW_SECURE_ARGS"];
+    });
+
+    it("should not mask input value for a secure parm when --show-inputs-only flag is set with env setting and chained handlers", async () => {
+
+        // values to test
+        const parm1Key = `user`;
+        const parm1Value = `secret`;
+
+        process.env["test-cli_SHOW_SECURE_ARGS"] = "true";
+
+        // Allocate the command processor
+        const processor: CommandProcessor = new CommandProcessor({
+            envVariablePrefix: ENV_VAR_PREFIX,
+            fullDefinition: SAMPLE_COMPLEX_COMMAND, // `group action`
+            definition: { // `object`
+                name: "banana",
+                description: "The banana command",
+                type: "command",
+                chainedHandlers: [
+                    {
+                        handler: __dirname + "/__model__/TestCmdHandler",
+                        mapping: [
+                            {
+                                from: parm1Key,
+                                to: parm1Key,
+                                mapFromArguments: true,
+                                applyToHandlers: [0]
+                            }
+                        ]
+                    }
+                ],
                 options: [
                     {
                         name: parm1Key,
@@ -1838,7 +2314,7 @@ describe("Command Processor", () => {
     it("should fail the creation of the command processor if a definition of type command has no handler", async () => {
         let error;
         try {
-            const processor: CommandProcessor = new CommandProcessor({
+            new CommandProcessor({
                 envVariablePrefix: ENV_VAR_PREFIX,
                 fullDefinition: SAMPLE_COMPLEX_COMMAND,
                 definition: SAMPLE_COMMAND_WIH_NO_HANDLER,

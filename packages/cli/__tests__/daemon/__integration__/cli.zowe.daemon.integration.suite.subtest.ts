@@ -51,8 +51,6 @@ describe("Zowe daemon suite", () => {
                 break;
             }
             default: {
-                zoweExeFileNm = "exeForUnknownOs";
-                zoweExeTgzPath += "unknownOs.tgz";
                 throw "cli.zowe.daemon.integration.suite.test.ts: beforeAll: " +
                     sysInfo.platform + " is not a known OS.";
             }

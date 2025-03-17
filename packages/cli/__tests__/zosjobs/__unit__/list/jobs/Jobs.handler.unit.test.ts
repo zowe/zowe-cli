@@ -45,10 +45,8 @@ describe("list jobs handler tests", () => {
     });
 
     it("should be able to get a list of jobs for a specific owner", async () => {
-        let passedSession: Session;
         let passedParms: IGetJobsParms;
-        GetJobs.getJobsCommon = jest.fn(async (session, parms) => {
-            passedSession = session;
+        GetJobs.getJobsCommon = jest.fn(async (_session, parms) => {
             passedParms = parms;
             return GetJobsData.SAMPLE_JOBS;
         });
@@ -62,10 +60,8 @@ describe("list jobs handler tests", () => {
     });
 
     it("should be able to get a list of jobs for a specific prefix", async () => {
-        let passedSession: Session;
         let passedParms: IGetJobsParms;
-        GetJobs.getJobsCommon = jest.fn(async (session, parms) => {
-            passedSession = session;
+        GetJobs.getJobsCommon = jest.fn(async (_session, parms) => {
             passedParms = parms;
             return GetJobsData.SAMPLE_JOBS;
         });
@@ -82,7 +78,7 @@ describe("list jobs handler tests", () => {
     it("should not transform an error from the zosmf rest client", async () => {
         const failMessage = "You fail";
         let error;
-        GetJobs.getJobsCommon = jest.fn(async (session, parms) => {
+        GetJobs.getJobsCommon = jest.fn(async (_session, _parms) => {
             throw new ImperativeError({msg: failMessage});
         });
         const handler = new JobsHandler.default();

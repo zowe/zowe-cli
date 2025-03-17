@@ -23,8 +23,8 @@ describe("ZosFilesBaseHandler", () => {
         }
 
         public async processWithSession(
-            commandParameters: IHandlerParameters,
-            session: AbstractSession
+            _commandParameters: IHandlerParameters,
+            _session: AbstractSession
         ): Promise<IZosFilesResponse> {
             // The authCache and authTypeOrder was added to the session by the super class.
             // This is the only way that we can get them.
@@ -76,7 +76,7 @@ describe("ZosFilesBaseHandler", () => {
                     setObj: jest.fn()
                 },
                 progress: {
-                    startBar: jest.fn((parms) => {
+                    startBar: jest.fn((_parms) => {
                         // do nothing
                     }),
                     endBar: jest.fn(() => {

@@ -25,6 +25,7 @@ import { IPluginJson } from "../../../plugins/doc/IPluginJson";
 import { PluginIssues } from "../../../plugins/utilities/PluginIssues";
 
 import { ItemId, IProbTest, probTests } from "./EnvItems";
+import { Censor } from "../../../../../censor";
 
 /**
  * This interface represents the result from getEnvItemVal().
@@ -151,7 +152,7 @@ export class EnvQuery {
      * @returns True if we find a problem. False otherwise.
      */
     private static detectProbVal(value: string, probTest: IProbTest): boolean {
-        /* eslint-disable unused-imports/no-unused-vars */
+        // eslint-disable-next-line unused-imports/no-unused-vars,@typescript-eslint/no-unused-vars
         const semver = require('semver');
         const probExprWithVals = probTest.probExpr.replace(/{val}/g, value);
         return eval(probExprWithVals);
@@ -476,18 +477,16 @@ export class EnvQuery {
     private static getOtherZoweEnvVars(getResult: IGetItemVal): void {
         getResult.itemValMsg = "";
         const envVars = process.env;
+        const secureCredsList = Censor.CENSORED_OPTIONS.map(opt => opt.toUpperCase().replaceAll("-", "_"));
         for (const nextVar of Object.keys(envVars)) {
             if (nextVar.startsWith("ZOWE_") && nextVar != "ZOWE_CLI_HOME" &&
                 nextVar != "ZOWE_APP_LOG_LEVEL" && nextVar != "ZOWE_IMPERATIVE_LOG_LEVEL")
             {
                 getResult.itemValMsg += nextVar + " = " ;
-                if (nextVar.toUpperCase().includes("PASSWORD") ||
-                    nextVar.toUpperCase().includes("TOKEN"))
-                {
+                if (secureCredsList.some(secureOpt => nextVar.toUpperCase().includes(secureOpt))) {
                     getResult.itemValMsg += "******";
                 } else {
                     getResult.itemValMsg += envVars[nextVar];
-
                 }
                 getResult.itemValMsg += os.EOL;
             }

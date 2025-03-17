@@ -33,73 +33,24 @@ describe("DsHandler", () => {
 
         const fromDataSetName = "ABCD";
         const toDataSetName = "EFGH";
-
-        const commandParameters: any = {
-            arguments: {
-                fromDataSetName,
-                toDataSetName
-            }
-        };
-
-        const dummySession = {};
-
-        const response = await handler.processWithSession(commandParameters, dummySession as any);
-
-        expect(copyDatasetSpy).toHaveBeenCalledTimes(1);
-        expect(copyDatasetSpy).toHaveBeenLastCalledWith(
-            dummySession,
-            { dsn: commandParameters.arguments.toDataSetName },
-            { "from-dataset": { dsn: commandParameters.arguments.fromDataSetName } }
-        );
-        expect(response).toBe(defaultReturn);
-    });
-
-    it("should call Copy.dataSet with members", async () => {
-        const handler = new DsHandler();
-
-        expect(handler).toBeInstanceOf(ZosFilesBaseHandler);
-
-        const fromDataSetName = "ABCD";
-        const fromMemberName = "mem1";
-        const toDataSetName = "EFGH";
-        const toMemberName = "mem2";
-
-        const commandParameters: any = {
-            arguments: {
-                fromDataSetName: `${fromDataSetName}(${fromMemberName})`,
-                toDataSetName: `${toDataSetName}(${toMemberName})`
-            }
-        };
-
-        const dummySession = {};
-
-        const response = await handler.processWithSession(commandParameters, dummySession as any);
-
-        expect(copyDatasetSpy).toHaveBeenCalledTimes(1);
-        expect(copyDatasetSpy).toHaveBeenLastCalledWith(
-            dummySession,
-            { dsn: toDataSetName, member: toMemberName },
-            { "from-dataset": { dsn: fromDataSetName, member: fromMemberName } }
-        );
-        expect(response).toBe(defaultReturn);
-    });
-
-    it("should call Copy.dataSet with options", async () => {
-        const handler = new DsHandler();
-
-        expect(handler).toBeInstanceOf(ZosFilesBaseHandler);
-
-        const fromDataSetName = "ABCD";
-        const toDataSetName = "EFGH";
         const enq = "SHR";
         const replace = true;
+        const safeReplace = true;
+        const responseTimeout: any = undefined;
+
 
         const commandParameters: any = {
             arguments: {
                 fromDataSetName,
                 toDataSetName,
                 enq,
-                replace
+                replace,
+                safeReplace,
+                responseTimeout
+
+            },
+            response: {
+                console: { promptFn: jest.fn(), promptForIdenticalNamedMembers: jest.fn() }
             }
         };
 
@@ -114,9 +65,215 @@ describe("DsHandler", () => {
             {
                 "from-dataset": { dsn: commandParameters.arguments.fromDataSetName },
                 "enq": commandParameters.arguments.enq,
-                "replace": commandParameters.arguments.replace
+                "replace": commandParameters.arguments.replace,
+                "responseTimeout": commandParameters.arguments.responseTimeout,
+                "safeReplace": commandParameters.arguments.safeReplace,
+                "promptFn": expect.any(Function),
+                "promptForIdenticalNamedMembers": expect.any(Function)
             }
         );
         expect(response).toBe(defaultReturn);
+    });
+
+    it("should call Copy.dataSet with members", async () => {
+        const handler = new DsHandler();
+
+        expect(handler).toBeInstanceOf(ZosFilesBaseHandler);
+
+        const fromDataSetName = "ABCD";
+        const fromMemberName = "mem1";
+        const toDataSetName = "EFGH";
+        const toMemberName = "mem2";
+        const enq = "SHR";
+        const replace = true;
+        const safeReplace = true;
+        const responseTimeout: any = undefined;
+
+        const commandParameters: any = {
+            arguments: {
+                fromDataSetName: `${fromDataSetName}(${fromMemberName})`,
+                toDataSetName: `${toDataSetName}(${toMemberName})`,
+                enq,
+                replace,
+                safeReplace,
+                responseTimeout
+            },
+            response: {
+                console: { promptFn: jest.fn(), promptForIdenticalNamedMembers: jest.fn() }
+            }
+        };
+
+        const dummySession = {};
+
+        const response = await handler.processWithSession(commandParameters, dummySession as any);
+
+        expect(copyDatasetSpy).toHaveBeenCalledTimes(1);
+        expect(copyDatasetSpy).toHaveBeenLastCalledWith(
+            dummySession,
+            { dsn: toDataSetName, member: toMemberName },
+            {
+                "from-dataset": { dsn: fromDataSetName, member: fromMemberName },
+                "enq": commandParameters.arguments.enq,
+                "replace": commandParameters.arguments.replace,
+                "responseTimeout": commandParameters.arguments.responseTimeout,
+                "safeReplace": commandParameters.arguments.safeReplace,
+                "promptFn": expect.any(Function),
+                "promptForIdenticalNamedMembers": expect.any(Function)
+            }
+        );
+        expect(response).toBe(defaultReturn);
+    });
+
+    it("should call Copy.dataSet with options", async () => {
+        const handler = new DsHandler();
+
+        expect(handler).toBeInstanceOf(ZosFilesBaseHandler);
+
+        const fromDataSetName = "ABCD";
+        const toDataSetName = "EFGH";
+        const enq = "SHR";
+        const replace = true;
+        const safeReplace = true;
+        const responseTimeout: any = undefined;
+
+        const commandParameters: any = {
+            arguments: {
+                fromDataSetName,
+                toDataSetName,
+                enq,
+                replace,
+                safeReplace,
+                responseTimeout
+            },
+            response: {
+                console: { promptFn: jest.fn() }
+            }
+        };
+
+        const dummySession = {};
+
+        const response = await handler.processWithSession(commandParameters, dummySession as any);
+
+        expect(copyDatasetSpy).toHaveBeenCalledTimes(1);
+        expect(copyDatasetSpy).toHaveBeenLastCalledWith(
+            dummySession,
+            { dsn: commandParameters.arguments.toDataSetName },
+            {
+                "from-dataset": { dsn: commandParameters.arguments.fromDataSetName },
+                "enq": commandParameters.arguments.enq,
+                "replace": commandParameters.arguments.replace,
+                "responseTimeout": commandParameters.arguments.responseTimeout,
+                "safeReplace": commandParameters.arguments.safeReplace,
+                "promptFn": expect.any(Function),
+                "promptForIdenticalNamedMembers": expect.any(Function)
+            }
+        );
+        expect(response).toBe(defaultReturn);
+    });
+    it("should prompt the user and return true when input is 'y'", async () => {
+        const handler = new DsHandler();
+
+        expect(handler).toBeInstanceOf(ZosFilesBaseHandler);
+        const fromDataSetName = "ABCD";
+        const toDataSetName = "EFGH";
+        const enq = "SHR";
+        const replace = true;
+        const safeReplace = true;
+        const responseTimeout: any = undefined;
+
+        const commandParameters: any = {
+            arguments: {
+                fromDataSetName,
+                toDataSetName,
+                enq,
+                replace,
+                safeReplace,
+                responseTimeout
+            },
+            response: {
+                console: { promptFn: jest.fn() }
+            }
+        };
+        const promptMock = jest.fn();
+        promptMock.mockResolvedValue("y");
+
+        const promptFn = (handler as any)["promptForSafeReplace"]({ prompt: promptMock });
+        const result = await promptFn(commandParameters.arguments.toDataSetName);
+
+        expect(promptMock).toHaveBeenCalledWith(
+            `The dataset '${toDataSetName}' exists on the target system. This copy can result in data loss.` +
+            ` Are you sure you want to continue? [y/N]: `
+        );
+        expect(result).toBe(true);
+    });
+    it("should prompt the user and return true when input is 'N'", async () => {
+        const handler = new DsHandler();
+
+        expect(handler).toBeInstanceOf(ZosFilesBaseHandler);
+        const fromDataSetName = "ABCD";
+        const toDataSetName = "EFGH";
+        const enq = "SHR";
+        const replace = true;
+        const safeReplace = true;
+        const responseTimeout: any = undefined;
+
+        const commandParameters: any = {
+            arguments: {
+                fromDataSetName,
+                toDataSetName,
+                enq,
+                replace,
+                safeReplace,
+                responseTimeout
+            },
+            response: {
+                console: { promptFn: jest.fn() }
+            }
+        };
+        const promptMock = jest.fn();
+        promptMock.mockResolvedValue("N");
+
+        const promptFn = (handler as any)["promptForSafeReplace"]({ prompt: promptMock });
+        const result = await promptFn(commandParameters.arguments.toDataSetName);
+
+        expect(promptMock).toHaveBeenCalledWith(
+            `The dataset '${toDataSetName}' exists on the target system. This copy can result in data loss.` +
+            ` Are you sure you want to continue? [y/N]: `
+        );
+        expect(result).toBe(false);
+    });
+    it("should prompt the user about duplicate member names and return true when input is 'y", async () => {
+        const handler = new DsHandler();
+
+        expect(handler).toBeInstanceOf(ZosFilesBaseHandler);
+
+        const promptMock = jest.fn();
+        promptMock.mockResolvedValue("y");
+
+        const promptForDuplicates = (handler as any)["promptForIdenticalNamedMembers"]({ prompt: promptMock });
+        const result = await promptForDuplicates();
+
+        expect(promptMock).toHaveBeenCalledWith(
+            `The source and target data sets have identical member names. The contents of the target members will be overwritten.` +
+            ` Are you sure you want to continue? [y/N]: `
+        );
+        expect(result).toBe(true);
+    });
+    it("should prompt the user about duplicate member names and return false when input is 'N'", async () => {
+        const handler = new DsHandler();
+
+        expect(handler).toBeInstanceOf(ZosFilesBaseHandler);
+
+        const promptMock = jest.fn();
+        promptMock.mockResolvedValue("N");
+
+        const promptForDuplicates = (handler as any)["promptForIdenticalNamedMembers"]({ prompt: promptMock });
+        const result = await promptForDuplicates();
+
+        expect(promptMock).toHaveBeenCalledWith(
+            `The source and target data sets have identical member names. The contents of the target members will be overwritten.` +
+            ` Are you sure you want to continue? [y/N]: `
+        );
+        expect(result).toBe(false);
     });
 });

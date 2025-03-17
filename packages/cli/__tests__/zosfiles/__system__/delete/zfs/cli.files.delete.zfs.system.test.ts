@@ -9,7 +9,6 @@
 *
 */
 
-import { Session } from "@zowe/imperative";
 import { TestEnvironment } from "../../../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestEnvironment } from "../../../../../../../__tests__/__src__/environment/ITestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
@@ -19,7 +18,6 @@ import { runCliScript } from "@zowe/cli-test-utils";
 
 const ZOWE_OPT_BASE_PATH = "ZOWE_OPT_BASE_PATH";
 
-let REAL_SESSION: Session;
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
 let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment<ITestPropertiesSchema>;
@@ -36,8 +34,6 @@ describe("Delete z/OS File System", () => {
         });
 
         defaultSystem = TEST_ENVIRONMENT.systemTestProperties;
-
-        REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
 
         fsname = getUniqueDatasetName(defaultSystem.zosmf.user);
         volume = defaultSystem.datasets.vol;
@@ -71,14 +67,14 @@ describe("Delete z/OS File System", () => {
                 TEST_ENVIRONMENT_NO_PROF.env[ZOWE_OPT_BASE_PATH] = defaultSys.zosmf.basePath;
             }
 
-            let response = runCliScript(__dirname + "/__scripts__/command/command_create_zfs_fully_qualified.sh",
+            runCliScript(__dirname + "/__scripts__/command/command_create_zfs_fully_qualified.sh",
                 TEST_ENVIRONMENT_NO_PROF, [fsname, volume,
                     defaultSys.zosmf.host,
                     defaultSys.zosmf.port,
                     defaultSys.zosmf.user,
                     defaultSys.zosmf.password]);
 
-            response = runCliScript(__dirname + "/__scripts__/command/command_delete_zfs_fully_qualified.sh",
+            const response = runCliScript(__dirname + "/__scripts__/command/command_delete_zfs_fully_qualified.sh",
                 TEST_ENVIRONMENT_NO_PROF, [fsname, "--for-sure",
                     defaultSys.zosmf.host,
                     defaultSys.zosmf.port,
@@ -93,10 +89,10 @@ describe("Delete z/OS File System", () => {
 
     describe("Success scenarios", () => {
         it("should delete a ZFS", async () => {
-            let response = runCliScript(__dirname + "/__scripts__/command/command_create_zfs.sh",
+            runCliScript(__dirname + "/__scripts__/command/command_create_zfs.sh",
                 TEST_ENVIRONMENT, [fsname, volume]);
 
-            response = runCliScript(__dirname + "/__scripts__/command/command_delete_zfs.sh",
+            const response = runCliScript(__dirname + "/__scripts__/command/command_delete_zfs.sh",
                 TEST_ENVIRONMENT, [fsname, "--for-sure"]);
 
             expect(response.stderr.toString()).toBe("");
@@ -105,10 +101,10 @@ describe("Delete z/OS File System", () => {
         });
 
         it("should delete a ZFS with response timeout", async () => {
-            let response = runCliScript(__dirname + "/__scripts__/command/command_create_zfs.sh",
+            runCliScript(__dirname + "/__scripts__/command/command_create_zfs.sh",
                 TEST_ENVIRONMENT, [fsname, volume, "--responseTimeout 5"]);
 
-            response = runCliScript(__dirname + "/__scripts__/command/command_delete_zfs.sh",
+            const response = runCliScript(__dirname + "/__scripts__/command/command_delete_zfs.sh",
                 TEST_ENVIRONMENT, [fsname, "--for-sure", "--responseTimeout 5"]);
 
             expect(response.stderr.toString()).toBe("");

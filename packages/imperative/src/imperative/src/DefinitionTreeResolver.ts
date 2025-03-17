@@ -43,7 +43,7 @@ export class DefinitionTreeResolver {
         if (childrenDefinitions == null && childrenModuleGlobs == null) {
             throw new ImperativeError({
                 msg: "No command definitions have been provided " +
-                "to Imperative. Specify modules and/or definitions on your Imperative" +
+                "to Imperative. Specify modules and/or definitions on your Imperative " +
                 "configuration."
             });
         } else if (childrenDefinitions == null) {

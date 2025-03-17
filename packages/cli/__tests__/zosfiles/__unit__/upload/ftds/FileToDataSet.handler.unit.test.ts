@@ -65,7 +65,7 @@ describe("Upload file-to-data-set handler", () => {
                             })
                         },
                         progress: {
-                            startBar: jest.fn((parms) => {
+                            startBar: jest.fn((_parms) => {
                                 // do nothing
                             }),
                             endBar: jest.fn(() => {
@@ -145,7 +145,7 @@ describe("Upload file-to-data-set handler", () => {
                             })
                         },
                         progress: {
-                            startBar: jest.fn((parms) => {
+                            startBar: jest.fn((_parms) => {
                                 // do nothing
                             }),
                             endBar: jest.fn(() => {
@@ -226,7 +226,7 @@ describe("Upload file-to-data-set handler", () => {
                             })
                         },
                         progress: {
-                            startBar: jest.fn((parms) => {
+                            startBar: jest.fn((_parms) => {
                                 // do nothing
                             }),
                             endBar: jest.fn(() => {
@@ -264,7 +264,6 @@ describe("Upload file-to-data-set handler", () => {
             // Vars populated by the mocked function
             let error;
             let apiMessage = "";
-            let jsonObj;
             let logMessage = "";
             let fakeSession = null;
 
@@ -295,8 +294,8 @@ describe("Upload file-to-data-set handler", () => {
                             setMessage: jest.fn((setMsgArgs) => {
                                 apiMessage = setMsgArgs;
                             }),
-                            setObj: jest.fn((setObjArgs) => {
-                                jsonObj = setObjArgs;
+                            setObj: jest.fn((_setObjArgs) => {
+                                // Do nothing
                             })
                         },
                         console: {

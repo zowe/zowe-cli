@@ -9,6 +9,7 @@
 *
 */
 
+export * from "./censor";
 export * from "./cmd";
 export * from "./config";
 export * from "./console";

@@ -62,7 +62,7 @@ describe("Download DataSetMatching handler", () => {
                 apiResponse: fakeListResponse
             };
         });
-        Download.allDataSets = jest.fn(async (session) => {
+        Download.allDataSets = jest.fn(async (_session) => {
             return {
                 success: true,
                 commandResponse: "downloaded"
@@ -94,7 +94,7 @@ describe("Download DataSetMatching handler", () => {
                 apiResponse: fakeListResponse
             };
         });
-        Download.allDataSets = jest.fn(async (session) => {
+        Download.allDataSets = jest.fn(async (_session) => {
             return {
                 success: true,
                 commandResponse: "downloaded"
@@ -154,7 +154,7 @@ describe("Download DataSetMatching handler", () => {
                 apiResponse: fakeListResponse
             };
         });
-        Download.allDataSets = jest.fn(async (session) => {
+        Download.allDataSets = jest.fn(async (_session) => {
             return {
                 success: true,
                 commandResponse: "downloaded"

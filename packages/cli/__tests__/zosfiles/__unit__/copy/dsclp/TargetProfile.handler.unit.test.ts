@@ -50,9 +50,10 @@ describe("TargetProfileHandler", () => {
                 api: {
                     layers: { get: jest.fn() },
                     profiles: { get: getProfileMock },
-                    secure: { secureFields: jest.fn().mockReturnValue([]) }
+                    secure: { findSecure: jest.fn().mockReturnValue([]), securePropsForProfile: jest.fn().mockReturnValue([]) }
                 },
-                exists: true
+                exists: true,
+                mProperties: { profiles: {} }
             },
             envVariablePrefix: "ZOWE",
             loadedConfig: {}

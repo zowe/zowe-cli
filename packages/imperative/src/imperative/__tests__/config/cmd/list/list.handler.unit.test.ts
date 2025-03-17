@@ -15,11 +15,11 @@ import { Config, ConfigConstants, IConfig, IConfigLayer } from "../../../../../c
 import { ImperativeConfig } from "../../../../../utilities";
 import { cloneDeep } from "lodash";
 import ListHandler from "../../../../src/config/cmd/list/list.handler";
+import { EnvironmentalVariableSettings } from "../../../../src/env/EnvironmentalVariableSettings";
 
 let dataObj: any;
 let formatObj: any;
 let errorText: string;
-let logText: string;
 
 // "Mocked" version of the handler parameters for a config list command
 const handlerParms: any = {
@@ -35,8 +35,8 @@ const handlerParms: any = {
             })
         },
         console: {
-            log: jest.fn((msgText) => {
-                logText = msgText;
+            log: jest.fn((_msgText) => {
+                // Do nothing
             }),
             error: jest.fn((msgText) => {
                 errorText = msgText;
@@ -81,19 +81,27 @@ configMaskedProps.profiles.email.properties.user = ConfigConstants.SECURE_VALUE;
 
 describe("Configuration List command handler", () => {
     const fakeConfig: Config = new (Config as any)();
+    let envVariableSettingsMock: jest.SpyInstance;
 
     beforeAll(() => {
         (fakeConfig as any).mActive = { user: false, global: false };
-        Object.defineProperty(ImperativeConfig.instance, "config", {
-            get: jest.fn(() => fakeConfig)
-        });
+        jest.spyOn(ImperativeConfig.instance, "config", "get").mockReturnValue(fakeConfig);
+        jest.spyOn(ImperativeConfig.instance, "envVariablePrefix", "get").mockReturnValue("ZOWE");
     });
 
     beforeEach(() => {
         dataObj = null;
         formatObj = null;
         errorText = null;
-        logText = null;
+        envVariableSettingsMock = jest.spyOn(EnvironmentalVariableSettings, "read");
+    });
+
+    afterEach(() => {
+        envVariableSettingsMock.mockRestore();
+    });
+
+    afterAll(() => {
+        jest.restoreAllMocks();
     });
 
     it("should output empty object when there is no config", async () => {
@@ -114,6 +122,19 @@ describe("Configuration List command handler", () => {
         expect(errorText).toBeNull();
         expect(dataObj).toEqual(configMaskedProps);
         expect(dataObj.profiles.email.properties.user).toBe(ConfigConstants.SECURE_VALUE);
+        expect(dataObj.profiles.email.properties.password).toBeUndefined();
+        expect(formatObj).toEqual(dataObj);
+    });
+
+    it("should output entire config while showing secure variables", async () => {
+        (fakeConfig as any).mLayers = configLayers;
+        handlerParms.arguments = {};
+        envVariableSettingsMock.mockReturnValue({showSecureArgs: {key: "ZOWE_SHOW_SECURE_ARGS", value: "TRUE"}});
+
+        await new ListHandler().process(handlerParms);
+        expect(errorText).toBeNull();
+        expect(dataObj).toEqual(configLayers[0].properties);
+        expect(dataObj.profiles.email.properties.user).toBe("admin");
         expect(dataObj.profiles.email.properties.password).toBeUndefined();
         expect(formatObj).toEqual(dataObj);
     });
@@ -140,6 +161,19 @@ describe("Configuration List command handler", () => {
         expect(formatObj).toEqual(dataObj);
     });
 
+    it("should output entire config listed by location while showing secure values", async () => {
+        (fakeConfig as any).mLayers = configLayers;
+        handlerParms.arguments = { locations: true };
+        envVariableSettingsMock.mockReturnValue({showSecureArgs: {key: "ZOWE_SHOW_SECURE_ARGS", value: "TRUE"}});
+
+        await new ListHandler().process(handlerParms);
+        expect(errorText).toBeNull();
+        expect(dataObj.fakePath).toEqual(configLayers[0].properties);
+        expect(dataObj.fakePath.profiles.email.properties.user).toBe("admin");
+        expect(dataObj.fakePath.profiles.email.properties.password).toBeUndefined();
+        expect(formatObj).toEqual(dataObj);
+    });
+
     it("should output config property listed by location 1", async () => {
         (fakeConfig as any).mLayers = configLayers;
         handlerParms.arguments = { locations: true, property: "plugins" };
@@ -158,6 +192,19 @@ describe("Configuration List command handler", () => {
         expect(errorText).toBeNull();
         expect(dataObj.fakePath).toEqual(configMaskedProps.profiles);
         expect(dataObj.fakePath.email.properties.user).toBe(ConfigConstants.SECURE_VALUE);
+        expect(dataObj.fakePath.email.properties.password).toBeUndefined();
+        expect(formatObj).toEqual(dataObj);
+    });
+
+    it("should output config property listed by location 3", async () => {
+        (fakeConfig as any).mLayers = configLayers;
+        handlerParms.arguments = { locations: true, property: "profiles" };
+        envVariableSettingsMock.mockReturnValue({showSecureArgs: {key: "ZOWE_SHOW_SECURE_ARGS", value: "TRUE"}});
+
+        await new ListHandler().process(handlerParms);
+        expect(errorText).toBeNull();
+        expect(dataObj.fakePath).toEqual(configLayers[0].properties.profiles);
+        expect(dataObj.fakePath.email.properties.user).toBe("admin");
         expect(dataObj.fakePath.email.properties.password).toBeUndefined();
         expect(formatObj).toEqual(dataObj);
     });

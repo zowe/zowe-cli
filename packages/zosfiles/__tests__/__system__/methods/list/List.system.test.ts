@@ -55,17 +55,17 @@ describe("List command group", () => {
             beforeEach(async () => {
                 await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname,
                     { volser: defaultSystem.datasets.vol });
-                await wait(waitTime); //wait 2 seconds
+                await wait(waitTime);
                 // first data set member
                 await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(memberOne), `${dsname}(${memberOne})`);
                 // second data set member
                 await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(memberOne), `${dsname}(${memberTwo})`);
-                await wait(waitTime); //wait 2 seconds
+                await wait(waitTime);
             });
 
             afterEach(async () => {
                 await Delete.dataSet(REAL_SESSION, dsname);
-                await wait(waitTime); //wait 2 seconds
+                await wait(waitTime);
             });
 
             it("should list all members of a data set", async () => {
@@ -178,7 +178,7 @@ describe("List command group", () => {
                 try {
                     await Delete.dataSet(REAL_SESSION, `${dsname}(${memberOne})`);
                     await Delete.dataSet(REAL_SESSION, `${dsname}(${memberTwo})`);
-                    await wait(waitTime); //wait 2 seconds
+                    await wait(waitTime);
                     response = await List.allMembers(REAL_SESSION, dsname);
                 } catch (err) {
                     error = err;
@@ -230,13 +230,13 @@ describe("List command group", () => {
                     { volser: defaultSystem.datasets.vol });
                 await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dsname2,
                     { volser: defaultSystem.datasets.vol });
-                await wait(waitTime); //wait 2 seconds
+                await wait(waitTime);
             });
 
             afterEach(async () => {
                 await Delete.dataSet(REAL_SESSION, dsname);
                 await Delete.dataSet(REAL_SESSION, dsname2);
-                await wait(waitTime); //wait 2 seconds
+                await wait(waitTime);
             });
 
             it("should list data set matching dsname", async () => {
@@ -363,16 +363,13 @@ describe("List command group", () => {
 
         describe("Success scenarios", () => {
             beforeAll(async () => {
-                let error;
-                let response;
                 try {
-                    response = await Create.uss(REAL_SESSION, path, "directory");
-                    await wait(waitTime); //wait 2 seconds
-                    response = await Create.uss(REAL_SESSION, `${path}/${filename}`, "file");
-                    await wait(waitTime); //wait 2 seconds
+                    await Create.uss(REAL_SESSION, path, "directory");
+                    await wait(waitTime);
+                    await Create.uss(REAL_SESSION, `${path}/${filename}`, "file");
+                    await wait(waitTime);
                 } catch (err) {
-                    error = err;
-                    Imperative.console.info("Error: " + inspect(error));
+                    Imperative.console.info("Error: " + inspect(err));
                 }
             });
 
@@ -662,17 +659,17 @@ describe("List command group", () => {
         beforeEach(async () => {
             await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dsname,
                 { volser: defaultSystem.datasets.vol });
-            await wait(waitTime); //wait 2 seconds
+            await wait(waitTime);
             await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dsname + ".LIKE",
                 { volser: defaultSystem.datasets.vol });
-            await wait(waitTime); //wait 2 seconds
+            await wait(waitTime);
         });
 
         afterEach(async () => {
             await Delete.dataSet(REAL_SESSION, dsname);
-            await wait(waitTime); //wait 2 seconds
+            await wait(waitTime);
             await Delete.dataSet(REAL_SESSION, dsname + ".LIKE");
-            await wait(waitTime); //wait 2 seconds
+            await wait(waitTime);
         });
 
         it("should find data sets that match a pattern", async () => {
@@ -735,16 +732,16 @@ describe("List command group", () => {
         beforeEach(async () => {
             await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname,
                 { volser: defaultSystem.datasets.vol });
-            await wait(waitTime); //wait 2 seconds
+            await wait(waitTime);
             for(const mem of members) {
                 await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(mem), `${dsname}(${mem})`);
             }
-            await wait(waitTime); //wait 2 seconds
+            await wait(waitTime);
         });
 
         afterEach(async () => {
             await Delete.dataSet(REAL_SESSION, dsname);
-            await wait(waitTime); //wait 2 seconds
+            await wait(waitTime);
         });
 
         it("should find data sets that match a pattern", async () => {
@@ -869,14 +866,14 @@ describe("List command group - encoded", () => {
             beforeEach(async () => {
                 await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname,
                     { volser: defaultSystem.datasets.vol });
-                await wait(waitTime); //wait 2 seconds
+                await wait(waitTime);
                 await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testString), `${dsname}(${testString})`);
-                await wait(waitTime); //wait 2 seconds
+                await wait(waitTime);
             });
 
             afterEach(async () => {
                 await Delete.dataSet(REAL_SESSION, dsname);
-                await wait(waitTime); //wait 2 seconds
+                await wait(waitTime);
             });
 
             it("should list all members of a data set", async () => {
@@ -928,12 +925,12 @@ describe("List command group - encoded", () => {
             beforeEach(async () => {
                 await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dsname,
                     { volser: defaultSystem.datasets.vol });
-                await wait(waitTime); //wait 2 seconds
+                await wait(waitTime);
             });
 
             afterEach(async () => {
                 await Delete.dataSet(REAL_SESSION, dsname);
-                await wait(waitTime); //wait 2 seconds
+                await wait(waitTime);
             });
 
             it("should list a data set", async () => {
@@ -1011,9 +1008,9 @@ describe("List command group - encoded", () => {
             beforeAll(async () => {
                 try {
                     await Create.uss(REAL_SESSION, path, "directory");
-                    await wait(waitTime); //wait 2 seconds
+                    await wait(waitTime);
                     await Create.uss(REAL_SESSION, `${path}/${filename}`, "file");
-                    await wait(waitTime); //wait 2 seconds
+                    await wait(waitTime);
                 } catch (err) {
                     Imperative.console.info("Error: " + inspect(err));
                 }
@@ -1109,17 +1106,17 @@ describe("List command group - encoded", () => {
         beforeEach(async () => {
             await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dsname,
                 { volser: defaultSystem.datasets.vol });
-            await wait(waitTime); //wait 2 seconds
+            await wait(waitTime);
             await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dsname + ".LIKE",
                 { volser: defaultSystem.datasets.vol });
-            await wait(waitTime); //wait 2 seconds
+            await wait(waitTime);
         });
 
         afterEach(async () => {
             await Delete.dataSet(REAL_SESSION, dsname);
-            await wait(waitTime); //wait 2 seconds
+            await wait(waitTime);
             await Delete.dataSet(REAL_SESSION, dsname + ".LIKE");
-            await wait(waitTime); //wait 2 seconds
+            await wait(waitTime);
         });
 
         it("should find data sets that match a pattern", async () => {
@@ -1139,6 +1136,24 @@ describe("List command group - encoded", () => {
             expect(response.apiResponse.length).toBe(2);
             expect(response.apiResponse[0].dsname).toBe(dsname);
             expect(response.apiResponse[1].dsname).toBe(dsname + ".LIKE");
+        });
+
+        it("should find one data set when listing 2 patterns with maxLength = 1", async () => {
+            let response;
+            let caughtError;
+
+            try {
+                response = await List.dataSetsMatchingPattern(REAL_SESSION, [dsname, dsname + ".LIKE"], { maxLength: 1 });
+            } catch (error) {
+                caughtError = error;
+            }
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toBeDefined();
+            expect(response.success).toBe(true);
+            expect(response.commandResponse).toContain(format(ZosFilesMessages.dataSetsMatchedPattern.message, 1));
+            expect(response.apiResponse.length).toBe(1);
+            expect(response.apiResponse[0].dsname).toBe(dsname);
         });
 
         it("should exclude data sets that do not match a pattern", async () => {

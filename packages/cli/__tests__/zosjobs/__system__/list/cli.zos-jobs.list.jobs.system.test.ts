@@ -13,24 +13,9 @@ import { TestEnvironment } from "../../../../../../__tests__/__src__/environment
 import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/ITestEnvironment";
 import { runCliScript } from "@zowe/cli-test-utils";
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { Session } from "@zowe/imperative";
 
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment<ITestPropertiesSchema>;
-let IEFBR14_JOB: string;
-let REAL_SESSION: Session;
-let ACCOUNT: string;
-let JOB_NAME: string;
-let NON_HELD_JOBCLASS;
-
-// Long test timeout
-const LONG_TIMEOUT = 100000;
-
-const trimMessage = (message: string) => {
-    // don't use more than one space or tab when checking error details
-    // this allows us to expect things like "reason: 6" regardless of how prettyjson aligns the text
-    return message.replace(/( {2,})|\t/g, " ");
-};
 
 describe("zos-jobs list jobs command", () => {
     const scriptDir = __dirname + "/__scripts__/list-jobs/";
@@ -40,14 +25,7 @@ describe("zos-jobs list jobs command", () => {
             testName: "zos_jobs_list_jobs_command",
             tempProfileTypes: ["zosmf"]
         });
-        const systemProps = TEST_ENVIRONMENT.systemTestProperties;
-        IEFBR14_JOB = systemProps.zosjobs.iefbr14Member;
-        REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
 
-        ACCOUNT = systemProps.tso.account;
-        const JOB_LENGTH = 6;
-        JOB_NAME = REAL_SESSION.ISession.user.substring(0, JOB_LENGTH).toUpperCase() + "SF";
-        NON_HELD_JOBCLASS = TEST_ENVIRONMENT.systemTestProperties.zosjobs.jobclass;
     });
 
     afterAll(async () => {

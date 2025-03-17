@@ -10,7 +10,8 @@
 */
 
 import { AbstractSession, ImperativeError, ImperativeExpect, ITaskWithStatus,
-    Logger, Headers, IHeaderContent, TaskStage, IO} from "@zowe/imperative";
+    Logger, Headers, IHeaderContent, TaskStage, IO,
+    TaskProgress} from "@zowe/imperative";
 import { posix } from "path";
 import * as fs from "fs";
 import { Create, CreateDataSetTypeEnum, ICreateDataSetOptions } from "../create";
@@ -31,6 +32,7 @@ import { ZosFilesUtils } from "../../utils/ZosFilesUtils";
 import { tmpdir } from "os";
 import path = require("path");
 import * as util from "util";
+import { Delete } from "../delete";
 /**
  * This class holds helper functions that are used to copy the contents of datasets through the
  * z/OSMF APIs.
@@ -57,6 +59,22 @@ export class Copy {
     ): Promise<IZosFilesResponse> {
         ImperativeExpect.toBeDefinedAndNonBlank(options["from-dataset"].dsn, "fromDataSetName");
         ImperativeExpect.toBeDefinedAndNonBlank(toDataSetName, "toDataSetName");
+        const safeReplace: boolean = options.safeReplace;
+        const overwriteMembers: boolean = options.replace;
+
+        const task: ITaskWithStatus = {
+            percentComplete: 0,
+            statusMessage: "Copying data set",
+            stageName: TaskStage.IN_PROGRESS
+        };
+
+        const sourceDataSetExists = await this.dataSetExists(session, options["from-dataset"].dsn);
+        if(!sourceDataSetExists) {
+            return {
+                success: false,
+                commandResponse: ZosFilesMessages.datasetCopiedAbortedNoTargetDS.message
+            };
+        }
 
         if(options["from-dataset"].dsn === toDataSetName && toMemberName === options["from-dataset"].member) {
             return {
@@ -67,18 +85,66 @@ export class Copy {
 
         const targetDataSetExists = await this.dataSetExists(session, toDataSetName);
 
-        const newDataSet = !targetDataSetExists;
+        const overwriteDataset = options.overwrite;
+
+        if(overwriteDataset){
+            await Delete.dataSet(session,toDataSetName);
+        }
+        const newDataSet = !targetDataSetExists || overwriteDataset;
+
         if (newDataSet) {
             await Create.dataSetLike(session, toDataSetName, options["from-dataset"].dsn);
+        }
+
+        else if(safeReplace) {
+            if (options.promptFn != null) {
+                const userResponse = await options.promptFn(toDataSetName);
+
+                if(!userResponse) {
+                    throw new ImperativeError({ msg: ZosFilesMessages.datasetCopiedAborted.message });
+                }
+                else if(options.progress && options.progress.startBar) {
+                    options.progress.startBar({task});
+                }
+            }
+        }
+        if(options.progress && options.progress.endBar) {
+            options.progress.endBar();
         }
         if(!toMemberName && !options["from-dataset"].member) {
             const sourceIsPds = await this.isPDS(session, options["from-dataset"].dsn);
             const targetIsPds = await this.isPDS(session, toDataSetName);
+
             if (sourceIsPds && targetIsPds) {
-                const response = await this.copyPDS(session, options["from-dataset"].dsn, toDataSetName);
+                const sourceResponse = await List.allMembers(session, options["from-dataset"].dsn);
+                const sourceMemberList = sourceResponse.apiResponse.items.map((item: { member: any; }) => item.member);
+
+                const hasIdenticalMemberNames = await this.hasIdenticalMemberNames(session, sourceMemberList, toDataSetName);
+                if(!safeReplace && hasIdenticalMemberNames && !overwriteMembers) {
+                    const userResponse = await options.promptForIdenticalNamedMembers();
+
+                    if(!userResponse) {
+                        throw new ImperativeError({ msg: ZosFilesMessages.datasetCopiedAborted.message});
+                    }
+                    else if(options.progress && options.progress.startBar) {
+                        options.progress.startBar({task});
+                    }
+                }
+                if(options.progress) {
+                    if(options.progress.endBar) {
+                        options.progress.endBar();
+                    }
+                    if(options.progress.startBar) {
+                        options.progress.startBar({task});
+                    }
+                }
+                const response = await this.copyPDS(session, options["from-dataset"].dsn, toDataSetName, task, sourceMemberList);
+                if(options.progress && options.progress.endBar) {
+                    options.progress.endBar();
+                }
                 return {
                     success: true,
-                    commandResponse: newDataSet
+                    commandResponse: newDataSet && !overwriteDataset
                         ? util.format(ZosFilesMessages.dataSetCopiedIntoNew.message, toDataSetName)
                         : response.commandResponse
                 };
@@ -161,6 +227,20 @@ export class Copy {
     }
 
     /**
+     * Function that checks if source and target data sets have identical member names
+    */
+    private static async hasIdenticalMemberNames (
+        session: AbstractSession,
+        sourceMemberList: string[],
+        toPds: string
+    ): Promise <boolean> {
+        const targetResponse = await List.allMembers(session, toPds);
+        const targetMemberList = targetResponse.apiResponse.items.map((item: { member: any; }) => item.member);
+
+        return sourceMemberList.some((mem: any) => targetMemberList.includes(mem));
+    }
+
+    /**
      * Copy the members of a Partitioned dataset into another Partitioned dataset
      *
      * @param {AbstractSession}   session        - z/OSMF connection info
@@ -174,14 +254,11 @@ export class Copy {
      *
      * @see https://www.ibm.com/support/knowledgecenter/en/SSLTBW_2.1.0/com.ibm.zos.v2r1.izua700/IZUHPINFO_API_PutDataSetMemberUtilities.htm
      */
-
     public static async copyPDS (
-        session: AbstractSession, fromPds: string, toPds: string): Promise<IZosFilesResponse> {
+        session: AbstractSession, fromPds: string, toPds: string, task: ITaskWithStatus, sourceMemberList?: string[]): Promise<IZosFilesResponse> {
         try {
-            const sourceResponse = await List.allMembers(session, fromPds);
-            const sourceMemberList: Array<{ member: string }> = sourceResponse.apiResponse.items;
 
-            if(sourceMemberList.length == 0) {
+            if(sourceMemberList?.length === 0) {
                 return {
                     success: true,
                     commandResponse: `Source dataset (${fromPds}) - ` + ZosFilesMessages.noMembersFound.message
@@ -191,13 +268,52 @@ export class Copy {
             const downloadDir = path.join(tmpdir(), fromPds);
             await Download.allMembers(session, fromPds, {directory:downloadDir});
             const uploadFileList: string[] = ZosFilesUtils.getFileListFromPath(downloadDir);
+            const truncatedMembers: string[] = [];
+            let membersInitiated = 0;
 
             for (const file of uploadFileList) {
-                const uploadingDsn = `${toPds}(${ZosFilesUtils.generateMemberName(file)})`;
-                const uploadStream = IO.createReadStream(file);
-                await Upload.streamToDataSet(session, uploadStream, uploadingDsn);
+                const memName = ZosFilesUtils.generateMemberName(file);
+                const uploadingDsn = `${toPds}(${memName})`;
+                if (task != null) {
+                    const LAST_FIFTEEN_CHARS = -16;
+                    const abbreviatedFile = file.slice(LAST_FIFTEEN_CHARS);
+                    task.statusMessage = "Copying... " + abbreviatedFile;
+                    task.percentComplete = Math.floor(TaskProgress.ONE_HUNDRED_PERCENT *
+                        (membersInitiated / uploadFileList.length));
+                    membersInitiated++;
+                }
+                try {
+                    const uploadStream = IO.createReadStream(file);
+                    await Upload.streamToDataSet(session, uploadStream, uploadingDsn);
+                }
+                catch(error) {
+                    if(error.message && error.message.includes("Truncation of a record occurred during an I/O operation")) {
+                        truncatedMembers.push(memName);
+                    }
+                    else {
+                        Logger.getAppLogger().error(error);
+                    }
+                    continue;
+                }
+            }
+            const truncatedMembersFile = path.join(tmpdir(), 'truncatedMembers.txt');
+            if(truncatedMembers.length > 0) {
+                // eslint-disable-next-line @typescript-eslint/no-magic-numbers
+                const firstTenMembers = truncatedMembers.slice(0, 10);
+                fs.writeFileSync(truncatedMembersFile, truncatedMembers.join('\n'), {flag: 'w'});
+                const numMembers = truncatedMembers.length - firstTenMembers.length;
+                return {
+                    success: true,
+                    commandResponse:
+                        ZosFilesMessages.datasetCopiedSuccessfully.message + " " +
+                        ZosFilesMessages.membersContentTruncated.message + "\n" +
+                        firstTenMembers.join('\n') +
+                        (numMembers > 0 ? `\n... and ${numMembers} more` +
+                        util.format(ZosFilesMessages.viewMembersListfile.message, truncatedMembersFile) : '')
+                };
             }
             fs.rmSync(downloadDir, {recursive: true});
+            fs.rmSync(truncatedMembersFile, {force: true});
             return {
                 success:true,
                 commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message
@@ -272,7 +388,7 @@ export class Copy {
                 /*
                 * If the source is a PDS and no member was specified then abort the copy.
                 */
-                if((sourceDataSetObj.dsorg == "PO" || sourceDataSetObj.dsorg == "POE") && sourceMember == undefined){
+                if(sourceDataSetObj.dsorg.startsWith("PO") && sourceMember == undefined){
                     throw new ImperativeError({ msg: ZosFilesMessages.datasetCopiedAbortedNoPDS.message });
                 }
             }
@@ -316,7 +432,7 @@ export class Copy {
                     targetDataSetObj = TargetDsList.apiResponse.items[dsnameIndex];
                     targetFound = true;
 
-                    if((targetDataSetObj.dsorg == "PO" || targetDataSetObj.dsorg == "POE") && targetMember == undefined)
+                    if(targetDataSetObj.dsorg.startsWith("PO") && targetMember == undefined)
                     {
                         throw new ImperativeError({ msg: ZosFilesMessages.datasetCopiedAbortedTargetNotPDSMember.message });
                     }
@@ -346,11 +462,11 @@ export class Copy {
                 * If this is a PDS but the target is the sequential dataset and does not exist,
                 * create a new sequential dataset with the same parameters as the original PDS.
                 */
-                if((createOptions.dsorg == "PO" || createOptions.dsorg == "POE") && targetMember == undefined){
+                if(createOptions.dsorg.startsWith("PO") && targetMember == undefined){
                     createOptions.dsorg ="PS";
                     createOptions.dirblk = 0;
                 }
-                else if(targetMember != undefined &&  (createOptions.dsorg != "PO" && createOptions.dsorg != "POE"))
+                else if(targetMember != undefined &&  !createOptions.dsorg.startsWith("PO"))
                 {
                     createOptions.dsorg ="PO";
                     createOptions.dirblk = 1;
@@ -419,21 +535,27 @@ export class Copy {
             storclass: targetOptions.targetStorageClass,
             mgntclass: targetOptions.targetManagementClass,
             dataclass: targetOptions.targetDataClass,
-            dirblk: parseInt(dsInfo.dsorg == "PO" || dsInfo.dsorg == "POE"  ? "10" : "0")
+            dirblk: parseInt(dsInfo.dsorg.startsWith("PO") ? "10" : "0")
         }));
     }
 
     /**
-     *  Private function to convert the ALC value from the format returned by the Get() call in to the format used by the Create() call
+     * Converts the ALC value from the format returned by the Get() call to the format used by the Create() call.
+     * @param {string} getValue - The ALC value from the Get() call.
+     * @returns {string} - The ALC value in the format used by the Create() call.
      */
-    private static convertAlcTozOSMF( zosmfValue: string): string {
+    private static convertAlcTozOSMF(getValue: string): string {
         /**
          *  Create dataset only accepts tracks or cylinders as allocation units.
          *  When the get() call retreives the dataset info, it will convert size
          *  allocations of the other unit types in to tracks. So we will always
          *  allocate the new target in tracks.
         */
-        return "TRK";
+        const alcMap: Record<string, string> = {
+            "TRACKS": "TRK",
+            "CYLINDERS": "CYL"
+        };
+        return alcMap[getValue.toUpperCase()] || "TRK";
     }
 }
 

@@ -1161,14 +1161,12 @@ describe("z/OS Files - List", () => {
             });
 
             it("should fail to add the depth parameter because it is missing a required parameter", async () => {
-                let response;
                 let error;
 
-                const endpoint = endpointTemplate + `&${ZosFilesConstants.RES_DEPTH}=1`;
                 expectJsonSpy.mockResolvedValue(testApiResponse);
 
                 try {
-                    response = await List.fileList(dummySession, path, {depth: 1});
+                    await List.fileList(dummySession, path, {depth: 1});
                 } catch (err) {
                     error = err;
                 }
@@ -1514,6 +1512,22 @@ describe("z/OS Files - List", () => {
 
             expect(listDataSetSpy).toHaveBeenCalledTimes(1);
             expect(listDataSetSpy).toHaveBeenCalledWith(dummySession, dataSetPS.dsname, {attributes: true});
+        });
+
+        it("should skip listing data sets if totalCount exceeds maxLength param", async () => {
+            listDataSetSpy.mockResolvedValueOnce({
+                success: true,
+                apiResponse: {
+                    items: ["TEST.PS.DATA.SET.ONE", "TEST.PS.DATA.SET.TWO"]
+                },
+                commandResponse: ""
+            });
+
+            const response = await List.dataSetsMatchingPattern(dummySession, [`${dataSetPS.dsname}.*`, dataSetPO.dsname], { maxLength: 2 });
+            expect(response).not.toBeUndefined();
+
+            expect(listDataSetSpy).toHaveBeenCalledTimes(1);
+            expect(listDataSetSpy.mock.calls[0][1]).toBe(`${dataSetPS.dsname}.*`);
         });
 
         it("should handle an error from the List.dataSet API 2", async () => {

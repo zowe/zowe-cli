@@ -29,7 +29,7 @@ describe("AuthLoginCommandBuilder", () => {
     it("should fail to initialize if missing auth config", () => {
         let caughtError;
         try {
-            const builder = new AuthLoginCommandBuilder("base", Logger.getImperativeLogger(), null);
+            new AuthLoginCommandBuilder("base", Logger.getImperativeLogger(), null);
         } catch (error) {
             caughtError = error;
         }

@@ -2,6 +2,34 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Added a favicon to the Web Help that displays in browser tabs. [#801] (https://github.com/zowe/zowe-cli/issues/801)
+
+## `8.15.1`
+
+- BugFix: Fixed the `--show-inputs-only` option on commands with chained command handlers. [#2446](https://github.com/zowe/zowe-cli/issues/2446)
+
+## `8.14.1`
+
+- BugFix: Fixed help text example section's wrapping issue where the first line of the description is wrapped differently than the rest of the lines. [#1945] (https://github.com/zowe/zowe-cli/issues/1945).
+
+## `8.14.0`
+
+- BugFix: Fixed inconsistent behavior with the `ZOWE_SHOW_SECURE_ARGS` environment variable continuing to mask secure properties when it should not. [#2430](https://github.com/zowe/zowe-cli/issues/2430)
+- Enhancement: Added the `Censor` class, consolidating all sensitive data hiding logic into one class. [#2424](https://github.com/zowe/zowe-cli/pull/2424)
+- Enhancement: Added the `showSecureArgs` environment variable to the `EnvironmentalVariableSettings` class to allow extenders to determine if they should mask secure values. [#2424](https://github.com/zowe/zowe-cli/pull/2424)
+- Enhancement: Added the ability to see secure properties when running `zowe config list` when the `ZOWE_SHOW_SECURE_ARGS` environment variable is set to `true`. [#2259](https://github.com/zowe/zowe-cli/issues/2259)
+- Deprecated: The `LoggerUtils` class has been deprecated. Use the `Censor` class instead. [#2424](https://github.com/zowe/zowe-cli/pull/2424)
+- Deprecated: The `CliUtils.CENSOR_RESPONSE` property has been deprecated. Use the `Censor.CENSOR_RESPONSE` property instead. [#2424](https://github.com/zowe/zowe-cli/pull/2424)
+- Deprecated: The `CliUtils.CENSORED_OPTIONS` property has been deprecated. Use the `Censor.CENSORED_OPTIONS` property instead. [#2424](https://github.com/zowe/zowe-cli/pull/2424)
+- Deprecated: The `CliUtils.censorCLIArgs` function has been deprecated. Use the `Censor.censorCLIArgs` function instead. [#2424](https://github.com/zowe/zowe-cli/pull/2424)
+- Deprecated: The `CliUtils.censorYargsArguments` function has been deprecated. Use the `Censor.censorYargsArguments` function instead. [#2424](https://github.com/zowe/zowe-cli/pull/2424)
+
+## `8.13.0`
+
+- Format fix: `DeferredPromise` and `DeferredPromise.unit.test` comment format changed to match standard.
+
 ## `8.11.0`
 
 - Enhancement: Added `DeferredPromise` class to Imperative to provide utilities for data synchronization. [#2405](https://github.com/zowe/zowe-cli/pull/2405)
@@ -21,7 +49,6 @@ All notable changes to the Imperative package will be documented in this file.
 ## `8.10.0`
 
 - BugFix: Modified location of Proxy-Authorization header to be located in the agent instead of the request. [#2389](https://github.com/zowe/zowe-cli/issues/2389)
-
 
 ## `8.8.3`
 
