@@ -40,7 +40,7 @@ import { text } from "stream/consumers";
 import { runCliScript } from "@zowe/cli-test-utils";
 
 const rimraf = require("rimraf").sync;
-const delayTime = 2000;
+const waitTime = 2000;
 const testData = "abcdefghijklmnopqrstuvwxyz";
 const specialCharTestData = fs.readFileSync(__dirname+"/__resources__/testfiles/specialCharTestData.txt");
 
@@ -90,7 +90,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
 
                 try {
                     await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dsname);
-                    await wait(delayTime);
+                    await wait(waitTime);
                 } catch (err) {
                     // Do nothing
                 }
@@ -100,7 +100,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
 
                 try {
                     await Delete.dataSet(REAL_SESSION, dsname);
-                    await wait(delayTime);
+                    await wait(waitTime);
                 } catch (err) {
                     // Do nothing
                 }
@@ -120,7 +120,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
 
                 // upload data to the newly created data set
                 await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname);
-                await wait(delayTime);
+                await wait(waitTime);
 
                 try {
                     response = await Download.dataSet(REAL_SESSION, dsname);
@@ -149,7 +149,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
                 let response: IZosFilesResponse;
 
                 await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname);
-                await wait(delayTime);
+                await wait(waitTime);
 
                 try {
                     response = await Download.dataSet(REAL_SESSION, dsname, {responseTimeout: 5});
@@ -179,7 +179,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
 
                 // upload data to the newly created data set
                 await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname);
-                await wait(delayTime);
+                await wait(waitTime);
 
                 try {
                     response = await Download.dataSet(REAL_SESSION, dsname, { preserveOriginalLetterCase: true });
@@ -268,7 +268,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
                 let response: IZosFilesResponse;
 
                 await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname);
-                await wait(delayTime);
+                await wait(waitTime);
 
                 const options: IDownloadOptions = {
                     returnEtag: true
@@ -308,7 +308,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
 
                 // upload data to the newly created data set
                 await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname);
-                await wait(delayTime);
+                await wait(waitTime);
 
                 try {
                     response = await Download.dataSet(REAL_SESSION, dsname, options);
@@ -339,7 +339,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
 
                 // upload data to the newly created data set
                 await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname);
-                await wait(delayTime);
+                await wait(waitTime);
 
                 try {
                     response = await Download.dataSet(REAL_SESSION, dsname, { stream: responseStream });
@@ -366,7 +366,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
 
                 try {
                     await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname);
-                    await wait(delayTime);
+                    await wait(waitTime);
                 } catch (err) {
                     // Do nothing
                 }
@@ -376,7 +376,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
 
                 try {
                     await Delete.dataSet(REAL_SESSION, dsname);
-                    await wait(delayTime);
+                    await wait(waitTime);
                 } catch (err) {
                     // Do nothing
                 }
@@ -392,7 +392,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
 
                 // upload data to the newly created data set
                 await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname + "(member)");
-                await wait(delayTime);
+                await wait(waitTime);
 
                 try {
                     response = await Download.allMembers(REAL_SESSION, dsname);
@@ -422,7 +422,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
 
                 // upload data to the newly created data set
                 await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname + "(member)");
-                await wait(delayTime);
+                await wait(waitTime);
 
                 try {
                     response = await Download.allMembers(REAL_SESSION, dsname, {responseTimeout: 5});
@@ -452,7 +452,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
 
                 // upload data to the newly created data set
                 await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname + "(member)");
-                await wait(delayTime);
+                await wait(waitTime);
 
                 try {
                     response = await Download.allMembers(REAL_SESSION, dsname, { preserveOriginalLetterCase: true });
@@ -489,7 +489,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
 
                 // upload data to the newly created data set
                 await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname + "(member)");
-                await wait(delayTime);
+                await wait(waitTime);
 
                 const options: IDownloadOptions = {
                     binary: true
@@ -519,7 +519,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
 
                 // upload data to the newly created data set
                 await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname + "(member)");
-                await wait(delayTime);
+                await wait(waitTime);
 
                 const options: IDownloadOptions = {
                     record: true
@@ -549,7 +549,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
 
                 // upload data to the newly created data set
                 await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname + "(member)");
-                await wait(delayTime);
+                await wait(waitTime);
 
                 const options: IDownloadOptions = {
                     extension: "dat"
@@ -578,7 +578,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
 
                 // upload data to the newly created data set
                 await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(specialCharTestData), dsname + "(member)");
-                await wait(delayTime);
+                await wait(waitTime);
 
                 try {
                     response = await Download.allMembers(REAL_SESSION, dsname);
@@ -614,7 +614,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
 
                 try {
                     await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname);
-                    await wait(delayTime);
+                    await wait(waitTime);
                 } catch (err) {
                     // Do nothing
                 }
@@ -623,7 +623,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
             afterEach(async () => {
                 try {
                     await Delete.dataSet(REAL_SESSION, dsname);
-                    await wait(delayTime);
+                    await wait(waitTime);
                 } catch (err) {
                     Imperative.console.info("Error: " + inspect(err));
                 }
@@ -789,7 +789,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
 
                 try {
                     await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dsname);
-                    await wait(delayTime);
+                    await wait(waitTime);
                 } catch (err) {
                     // Do nothing
                 }
@@ -798,7 +798,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
             afterEach(async () => {
                 try {
                     await Delete.dataSet(REAL_SESSION, dsname);
-                    await wait(delayTime);
+                    await wait(waitTime);
                 } catch (err) {
                     // Do nothing
                 }
@@ -1035,7 +1035,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
                 let response: IZosFilesResponse;
 
                 await Upload.bufferToUssFile(REAL_SESSION, ussname, Buffer.from(testData));
-                await wait(delayTime);
+                await wait(waitTime);
 
                 try {
                     response = await Download.ussFile(REAL_SESSION, ussname);
@@ -1056,7 +1056,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
                 let response: IZosFilesResponse;
 
                 await Upload.bufferToUssFile(REAL_SESSION, ussname, Buffer.from(testData));
-                await wait(delayTime);
+                await wait(waitTime);
 
                 try {
                     response = await Download.ussFile(REAL_SESSION, ussname, {responseTimeout: 5});
@@ -1077,7 +1077,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
                 let response: IZosFilesResponse;
 
                 await Upload.bufferToUssFile(REAL_SESSION, ussname, Buffer.from(testData));
-                await wait(delayTime);
+                await wait(waitTime);
 
                 const options: IDownloadOptions = {
                     returnEtag: true
@@ -1193,7 +1193,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
                 const data = Buffer.from(buffer);
 
                 await Upload.bufferToUssFile(REAL_SESSION, ussname, data);
-                await wait(delayTime);
+                await wait(waitTime);
 
                 const options: IDownloadOptions = {
                     returnEtag: true
@@ -1219,7 +1219,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
                 };
 
                 await Upload.bufferToUssFile(REAL_SESSION, ussname, Buffer.from(testData), { binary: true });
-                await wait(delayTime);
+                await wait(waitTime);
 
                 try {
                     response = await Download.ussFile(REAL_SESSION, ussname, options);
@@ -1242,7 +1242,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
 
                 await Upload.bufferToUssFile(REAL_SESSION, ussname, Buffer.from(testData), { binary: true });
                 await Utilities.chtag(REAL_SESSION, ussname, Tag.TEXT, "ISO8859-1");
-                await wait(delayTime);
+                await wait(waitTime);
 
                 try {
                     response = await Download.ussFile(REAL_SESSION, ussname, options);
@@ -1266,7 +1266,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
                 const data: string = "Hello, world¤";
                 await Upload.bufferToUssFile(REAL_SESSION, ussname, Buffer.from(data));
                 await Utilities.chtag(REAL_SESSION, ussname, Tag.TEXT, "IBM-1147");
-                await wait(delayTime);
+                await wait(waitTime);
 
                 try {
                     response = await Download.ussFile(REAL_SESSION, ussname, options);
@@ -1290,7 +1290,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
                 const options: IDownloadOptions = {file: `test1.txt`};
 
                 await Upload.bufferToUssFile(REAL_SESSION, ussname, Buffer.from(testData));
-                await wait(delayTime);
+                await wait(waitTime);
 
                 try {
                     response = await Download.ussFile(REAL_SESSION, ussname, options);
@@ -1314,7 +1314,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
                 const responseStream = new PassThrough();
 
                 await Upload.bufferToUssFile(REAL_SESSION, ussname, Buffer.from(testData));
-                await wait(delayTime);
+                await wait(waitTime);
 
                 try {
                     response = await Download.ussFile(REAL_SESSION, ussname, { stream: responseStream });
@@ -1453,12 +1453,16 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
 
                 // Create directories
                 for (const directory of [ussDirname, emptyFolder, parentFolder, childFolder, mountFolder]) {
-                    await Create.uss(REAL_SESSION, directory, "directory");
+                    try {
+                        await Create.uss(REAL_SESSION, directory, "directory");
+                    } catch (err) {
+                        // Do nothing - if it already exists, great. If not, the test will fail.
+                    }
                 }
 
                 // Create and mount file system
                 zfsName = getUniqueDatasetName(defaultSystem.zosmf.user, encoded);
-                await Create.zfs(REAL_SESSION, zfsName, createZfsOptions);
+                await Create.zfs(REAL_SESSION, zfsName, { ...createZfsOptions, volumes: [defaultSystem.datasets.vol]} );
                 await Mount.fs(REAL_SESSION, zfsName, mountFolder, mountZfsOptions);
 
                 // Upload files
