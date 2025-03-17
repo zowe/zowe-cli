@@ -35,4 +35,11 @@ export interface IProfOpts {
      * from the caller app's node_modules folder.
      */
     credMgrOverride?: ICredentialManagerInit;
+
+    /**
+     * This option forces the isSecured method to return validate if the user and non-user layer have secure properties
+     * Setting this to true will check if either user or non-user layer have secure properties
+     * Default: false
+     */
+    checkLevelLayers?: boolean;
 }
