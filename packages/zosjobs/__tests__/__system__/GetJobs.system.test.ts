@@ -10,7 +10,7 @@
 */
 
 import { JOB_STATUS } from "./../../src/types/JobStatus";
-import { ImperativeError, Session, TextUtils } from "@zowe/imperative";
+import { ImperativeError, ISession, Session, TextUtils } from "@zowe/imperative";
 import { DeleteJobs, GetJobs, IJob, JOB_STATUS_ORDER, SubmitJobs } from "../../src";
 import * as fs from "fs";
 import { TEST_RESOURCES_DIR } from "../__src__/ZosJobsTestConstants";
@@ -78,7 +78,7 @@ describe("Get Jobs - System Tests", () => {
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
 
-        INVALID_SESSION = new Session({
+        const invalidSessCfg: ISession = {
             user: "fakeuser",
             password: "fake",
             hostname: defaultSystem.zosmf.host,
@@ -86,7 +86,9 @@ describe("Get Jobs - System Tests", () => {
             basePath: defaultSystem.zosmf.basePath,
             type: "basic",
             rejectUnauthorized: false
-        });
+        }
+        AuthOrder.cacheCredsAndAuthOrder(invalidSessCfg, {});
+        INVALID_SESSION = new Session(invalidSessCfg);
 
         ACCOUNT = defaultSystem.tso.account;
         MONITOR_JOB_NAME = REAL_SESSION.ISession.user?.toUpperCase().substring(0, SIX_CHARS) + "G";
@@ -103,12 +105,10 @@ describe("Get Jobs - System Tests", () => {
     // Cleanup before & after each test - this will ensure that hopefully no jobs are left outstanding (or are currently
     // outstanding) when the tests run
     beforeEach(async () => {
-        AuthOrder.cacheCredsAndAuthOrder(REAL_SESSION["mISession"], {});
         await cleanTestJobs(MONITOR_JOB_NAME);
         await cleanTestJobs(TEST_JOB_NAME);
     });
     afterEach(async () => {
-        AuthOrder.cacheCredsAndAuthOrder(REAL_SESSION["mISession"], {});
         await cleanTestJobs(MONITOR_JOB_NAME);
         await cleanTestJobs(TEST_JOB_NAME);
     });
@@ -122,7 +122,6 @@ describe("Get Jobs - System Tests", () => {
         describe("get jobs API", () => {
             describe("invalid request error handling", () => {
                 it("should detect and surface an error for an invalid user", async () => {
-                    AuthOrder.cacheCredsAndAuthOrder(INVALID_SESSION["mISession"], {});
                     let err;
                     try {
                         await GetJobs.getJobs(INVALID_SESSION);
@@ -240,7 +239,6 @@ describe("Get Jobs - System Tests", () => {
     describe("get jobs by prefix API", () => {
         describe("invalid request handling", () => {
             it("should detect and surface an error for an invalid user", async () => {
-                AuthOrder.cacheCredsAndAuthOrder(INVALID_SESSION["mISession"], {});
                 let err;
                 try {
                     const resp = await GetJobs.getJobsByPrefix(INVALID_SESSION, "TEST");
@@ -379,7 +377,6 @@ describe("Get Jobs - System Tests", () => {
     describe("get jobs by owner API", () => {
         describe("invalid request handling", () => {
             it("should detect and surface an error for an invalid user", async () => {
-                AuthOrder.cacheCredsAndAuthOrder(INVALID_SESSION["mISession"], {});
                 let err;
                 try {
                     await GetJobs.getJobsByPrefix(INVALID_SESSION, "TEST");
@@ -470,7 +467,6 @@ describe("Get Jobs - System Tests", () => {
             describe("invalid request error handling", () => {
                 it("should detect and surface an error for an invalid user",
                     async () => {
-                        AuthOrder.cacheCredsAndAuthOrder(INVALID_SESSION["mISession"], {});
                         let err;
                         try {
                             await GetJobs.getStatus(INVALID_SESSION, "FAKE", "FAKE");
@@ -592,7 +588,6 @@ describe("Get Jobs - System Tests", () => {
         describe("get status common API", () => {
             describe("invalid request error handling", () => {
                 it("should detect and surface an error for an invalid user", async () => {
-                    AuthOrder.cacheCredsAndAuthOrder(INVALID_SESSION["mISession"], {});
                     let err;
                     try {
                         await GetJobs.getStatusCommon(INVALID_SESSION, {jobname: "FAKE", jobid: "FAKE"});
@@ -714,7 +709,6 @@ describe("Get Jobs - System Tests", () => {
         describe("get status for job API", () => {
             describe("invalid request error handling", () => {
                 it("should detect and surface an error for an invalid user", async () => {
-                    AuthOrder.cacheCredsAndAuthOrder(INVALID_SESSION["mISession"], {});
                     let err;
                     try {
                         const job: any = {jobname: "FAKE", jobid: "fake"};
