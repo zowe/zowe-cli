@@ -18,9 +18,10 @@ jest.mock("../../security/src/CredentialManagerFactory");
 jest.mock("../../security/src/DefaultCredentialManager");
 jest.mock("../../utilities/src/ImperativeConfig");
 
-function mockConfigApi(secureApi: Partial<ConfigSecure>): any {
+function mockConfigApi(secureApi: Partial<ConfigSecure>, opts?: any): any {
     return {
-        api: { secure: secureApi }
+        api: { secure: secureApi },
+        layerActive: opts?.layerActive,
     };
 }
 
@@ -44,6 +45,42 @@ describe("ProfileCredentials tests", () => {
             } as any);
             jest.spyOn(profCreds as any, "isCredentialManagerInAppSettings").mockReturnValueOnce(false);
             expect(profCreds.isSecured).toBe(true);
+        });
+
+        it("should be true when overriding the credential manager if team config is secure but CredentialManager is not set", () => {
+            const profCreds = new ProfileCredentials({
+                getTeamConfig: () => mockConfigApi({ secureFields: () => ["myAwesomeProperty"] })
+            } as any, jest.fn());
+            jest.spyOn(profCreds as any, "isCredentialManagerInAppSettings").mockReturnValueOnce(false);
+            expect(profCreds.isSecured).toBe(true);
+        });
+
+        it("should be true when checkLevelLayers is true if non-user config is secure and user config is not secure", () => {
+            const profCreds = new ProfileCredentials({
+                getTeamConfig: () => mockConfigApi({
+                    secureFields: (opts) => opts?.user ? [] : ["myAwesomeProperty"],
+                }, {
+                    layerActive: () => ({ user: true, global: false })
+                })
+            } as any, {
+                checkLevelLayers: true
+            });
+            jest.spyOn(profCreds as any, "isCredentialManagerInAppSettings").mockReturnValueOnce(false);
+            expect(profCreds.isSecured).toBe(true);
+        });
+
+        it("should be false when checkLevelLayers is true if non-user and user config are not secure", () => {
+            const profCreds = new ProfileCredentials({
+                getTeamConfig: () => mockConfigApi({
+                    secureFields: () => [],
+                }, {
+                    layerActive: () => ({ user: true, global: false })
+                })
+            } as any, {
+                checkLevelLayers: true
+            });
+            jest.spyOn(profCreds as any, "isCredentialManagerInAppSettings").mockReturnValueOnce(false);
+            expect(profCreds.isSecured).toBe(false);
         });
 
         it("should be false if team config is not secure and CredentialManager is not set", () => {
