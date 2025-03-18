@@ -224,18 +224,18 @@ export class AuthOrder {
     public static putTopAuthInSession<SessCfgType extends ISession>(
         sessCfg: SessCfgType
     ): void {
-        // find auth cache in the supplied session config
-        AuthOrder.findOrCreateAuthCache(sessCfg);
-        if (sessCfg.authTypeOrder?.length === 0) {
-            // we have no auth order, so create a default authOrder that we can use
-            sessCfg._authCache.didUserSetAuthOrder = false;
-            AuthOrder.chooseDefaultAuthOrder(sessCfg);
+        // If our caller did not follow best practices in their use of imperative functions,
+        // then cacheCredsAndAuthOrder may not have been called, and availableCreds may be empty.
+        if (sessCfg._authCache?.availableCreds && Object.keys(sessCfg._authCache.availableCreds).length === 0) {
+            // As a last resort, cache our creds now with an empty set of command args.
+            // This will cache any creds from the sessCfg and use a default auth order.
+            AuthOrder.cacheCredsAndAuthOrder(sessCfg, { "$0": "NameNotUsed", "_": [] });
         }
-        Logger.getImperativeLogger().debug("Starting sessCfg = " + JSON.stringify(sessCfg, null, 2));
 
         // Detect the first auth type (from our auth order) within our available credentials.
         // Ensure that the auth properties are placed in the session config.
         // Record the detected auth type for use as the session type.
+        Logger.getImperativeLogger().debug("Starting sessCfg = " + JSON.stringify(sessCfg, null, 2));
         let sessTypeToUse: SessConstants.AUTH_TYPE_CHOICES = null;
         let errMsg: string;
         for (const nextAuth of sessCfg.authTypeOrder) {
