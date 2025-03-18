@@ -13,7 +13,7 @@ import * as path from "path";
 import * as lodash from "lodash";
 
 import { ZosmfSession } from "@zowe/zosmf-for-zowe-sdk";
-import { BaseAutoInitHandler, AbstractSession, ICommandArguments, IConfig, IConfigProfile,
+import { BaseAutoInitHandler, AbstractSession, AuthOrder, ICommandArguments, IConfig, IConfigProfile,
     ISession, IHandlerResponseApi, IHandlerParameters, SessConstants, ImperativeConfig,
     ImperativeError, RestClientError, TextUtils, Config, ConfigUtils
 } from "@zowe/imperative";
@@ -79,15 +79,21 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
             session.ISession.storeCookie = true;
             session.ISession.tokenValue = await Login.apimlLogin(session);
             session.ISession.storeCookie = false;
-            session.ISession.type = SessConstants.AUTH_TYPE_TOKEN;
 
-            session.ISession.base64EncodedAuth =
-            session.ISession.user = session.ISession.password =
-            session.ISession.cert = session.ISession.certKey = undefined;
+            // now that we have a token, cache the token for our next REST request
+            if (session.ISession._authCache) {
+                delete session.ISession._authCache.authTypeToRequestToken;
+            }
+            AuthOrder.cacheCredsAndAuthOrder(session.ISession, {"$0": "NameNotUsed", "_": [],
+                "authOrder": "token",
+                "tokenType": SessConstants.TOKEN_TYPE_APIML,
+                "tokenValue": session.ISession.tokenValue
+            });
         }
 
         const restErrUnauthorized = 403;
         const configs = Services.getPluginApimlConfigs();
+
         let profileInfos;
         try {
             profileInfos = await Services.getServicesByConfig(session, configs);

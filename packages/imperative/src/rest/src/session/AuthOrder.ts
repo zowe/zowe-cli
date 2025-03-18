@@ -47,8 +47,6 @@ export class AuthOrder {
      * Downstream logic uses this cache to determine which auth type should be
      * used in the final session used by a client REST request.
      *
-     * @internal - Cannot be used outside of the imperative package
-     *
      * @param sessCfg - Modified.
      *      A session configuration object to which we place the cached creds.
      *
@@ -185,8 +183,6 @@ export class AuthOrder {
     /**
      * Record that the session is being used to make a request for a token
      * (ie logging into APIML).
-     *
-     * @internal - Cannot be used outside of the imperative package
      *
      * @param sessCfg - Modified.
      *      The session config into which we record that we are requesting a token.
@@ -445,10 +441,10 @@ export class AuthOrder {
         if (sessCfg._authCache.didUserSetAuthOrder) {
             return;
         }
-        if (sessCfg._authCache.topDefaultAuth) {
-            AuthOrder.cacheDefaultAuthOrder(sessCfg, sessCfg._authCache.topDefaultAuth);
-        } else {
+        if (sessCfg._authCache.topDefaultAuth === undefined) {
             AuthOrder.cacheDefaultAuthOrder(sessCfg, SessConstants.AUTH_TYPE_BASIC);
+        } else {
+            AuthOrder.cacheDefaultAuthOrder(sessCfg, sessCfg._authCache.topDefaultAuth);
         }
     }
 
@@ -468,12 +464,8 @@ export class AuthOrder {
         if (!sessCfg._authCache) {
             sessCfg._authCache = {
                 availableCreds: {},
-                didUserSetAuthOrder : false
-                // We purposely did not set topDefaultAuth. It's absence
-                // will tell us that no other Zowe API function set the
-                // topDefaultAuth and we are free to use "basic" as the
-                // topDefaultAuth.
-                //
+                didUserSetAuthOrder : false,
+                topDefaultAuth: undefined
                 // We purposely did not create authTypeToRequestToken.
                 // That property is only set when a consumer of this class
                 // calls makingRequestForToken().

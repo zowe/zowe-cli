@@ -35,7 +35,7 @@ export interface IAuthCache {
     /**
      * Contains the authentication to be placed at the top of a default auth order.
      */
-    topDefaultAuth?: typeof SessConstants.AUTH_TYPE_BASIC | typeof SessConstants.AUTH_TYPE_TOKEN;
+    topDefaultAuth: typeof SessConstants.AUTH_TYPE_BASIC | typeof SessConstants.AUTH_TYPE_TOKEN;
 
     /**
      * When present, authTypeToRequestToken indicates that we want to request a token.
