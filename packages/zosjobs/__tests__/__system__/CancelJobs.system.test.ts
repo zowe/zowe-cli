@@ -15,6 +15,7 @@ import { JobTestsUtils } from "./JobTestsUtils";
 import { ITestEnvironment } from "../../../../__tests__/__src__/environment/ITestEnvironment";
 import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../__tests__/__src__/properties/ITestPropertiesSchema";
+import { wait } from "../../../../__tests__/__src__/TestUtils";
 
 let REAL_SESSION: Session;
 let sleepJCL: string;
@@ -23,6 +24,7 @@ let systemProps: ITestPropertiesSchema;
 let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 const LONG_TIMEOUT = 100000; // 100 second timeout - jobs could take a while to complete due to system load
 const modifyVersionDefaultUsesCIM = false;
+const waitTime = 3000;
 
 describe("CancelJobs System tests", () => {
 
@@ -59,6 +61,7 @@ describe("CancelJobs System tests", () => {
         it("should be able to cancel a job using cancelJob (modify version 2)", async () => {
             const job = await SubmitJobs.submitJclNotifyCommon(REAL_SESSION, {jcl: sleepJCL, status: "INPUT"});
             expect(job.retcode).toBeNull(); // job is not complete, no CC
+            await wait(waitTime);
             const response = await CancelJobs.cancelJob(REAL_SESSION, job.jobname, job.jobid, "2.0");
             expect(response).not.toBeUndefined();
             expect(response?.status).toEqual("0"); // intermittent failure
@@ -71,6 +74,7 @@ describe("CancelJobs System tests", () => {
             } else {
                 const job = await SubmitJobs.submitJclNotifyCommon(REAL_SESSION, {jcl: sleepJCL, status: "INPUT"});
                 expect(job.retcode).toBeNull(); // job is not complete, no CC
+                await wait(waitTime);
                 const response = await CancelJobs.cancelJob(REAL_SESSION, job.jobname, job.jobid);
                 expect(response).not.toBeUndefined();
                 expect(response?.status).toEqual("0"); // intermittent failure
@@ -93,6 +97,7 @@ describe("CancelJobs System tests", () => {
         it("should be able to cancel a job using cancelJobForJob (modify version 2)", async () => {
             const job = await SubmitJobs.submitJclNotifyCommon(REAL_SESSION, {jcl: sleepJCL, status: "INPUT"});
             expect(job.retcode).toBeNull(); // job is not complete, no CC
+            await wait(waitTime);
             const response = await CancelJobs.cancelJobForJob(REAL_SESSION, job, "2.0");
             expect(response).not.toBeUndefined();
             expect(response?.status).toEqual("0"); // intermittent failure
@@ -105,6 +110,7 @@ describe("CancelJobs System tests", () => {
             } else {
                 const job = await SubmitJobs.submitJclNotifyCommon(REAL_SESSION, {jcl: sleepJCL, status: "INPUT"});
                 expect(job.retcode).toBeNull(); // job is not complete, no CC
+                await wait(waitTime);
                 const response = await CancelJobs.cancelJobForJob(REAL_SESSION, job);
                 expect(response).not.toBeUndefined();
                 expect(response?.status).toEqual("0"); // intermittent failure
@@ -127,6 +133,7 @@ describe("CancelJobs System tests", () => {
         it("should be able to cancel a job using cancelJobCommon (job version 2.0 - synchronous)", async () => {
             const job = await SubmitJobs.submitJclNotifyCommon(REAL_SESSION, {jcl: sleepJCL, status: "INPUT"});
             expect(job.retcode).toBeNull(); // job is not complete, no CC
+            await wait(waitTime);
             const response = await CancelJobs.cancelJobCommon(REAL_SESSION, {jobname: job.jobname, jobid: job.jobid, version: "2.0"});
             expect(response).toBeDefined();
             expect(response?.status).toEqual("0"); // intermittent failure
@@ -139,6 +146,7 @@ describe("CancelJobs System tests", () => {
             } else {
                 const job = await SubmitJobs.submitJclNotifyCommon(REAL_SESSION, {jcl: sleepJCL, status: "INPUT"});
                 expect(job.retcode).toBeNull(); // job is not complete, no CC
+                await wait(waitTime);
                 const response = await CancelJobs.cancelJobCommon(REAL_SESSION, {jobname: job.jobname, jobid: job.jobid});
                 expect(response?.status).toEqual("0"); // intermittent failure
                 testEnvironment.resources.jobs.push(job);
@@ -148,8 +156,10 @@ describe("CancelJobs System tests", () => {
         it("should be able to cancel a job using cancelJobCommon (job version 2.0 - synchronous) and return an error feedback object", async () => {
             const job = await SubmitJobs.submitJclNotifyCommon(REAL_SESSION, {jcl: sleepJCL, status: "INPUT"});
             expect(job.retcode).toBeNull(); // job is not complete, no CC
+            await wait(waitTime);
             let response = await CancelJobs.cancelJobCommon(REAL_SESSION, {jobname: job.jobname, jobid: job.jobid, version: "2.0"});
             expect(response?.status).toEqual("0");
+            await wait(waitTime);
             response = await CancelJobs.cancelJobCommon(REAL_SESSION, {jobname: job.jobname, jobid: job.jobid, version: "2.0"});
             expect(response?.status).toEqual("156");
             testEnvironment.resources.jobs.push(job);
@@ -236,6 +246,7 @@ describe("CancelJobs System tests - encoded", () => {
             } else {
                 const job = await SubmitJobs.submitJclNotifyCommon(REAL_SESSION, {jcl: sleepJCL, status: "INPUT"});
                 expect(job.retcode).toBeNull(); // job is not complete, no CC
+                await wait(waitTime);
                 const response = await CancelJobs.cancelJob(REAL_SESSION, job.jobname, job.jobid);
                 expect(response).not.toBeUndefined();
                 expect(response?.status).toEqual("0"); // intermittent failure
@@ -249,6 +260,7 @@ describe("CancelJobs System tests - encoded", () => {
             } else {
                 const job = await SubmitJobs.submitJclNotifyCommon(REAL_SESSION, {jcl: sleepJCL, status: "INPUT"});
                 expect(job.retcode).toBeNull(); // job is not complete, no CC
+                await wait(waitTime);
                 const response = await CancelJobs.cancelJobForJob(REAL_SESSION, job);
                 expect(response).not.toBeUndefined();
                 expect(response?.status).toEqual("0"); // intermittent failure
@@ -262,6 +274,7 @@ describe("CancelJobs System tests - encoded", () => {
             } else {
                 const job = await SubmitJobs.submitJclNotifyCommon(REAL_SESSION, {jcl: sleepJCL, status: "INPUT"});
                 expect(job.retcode).toBeNull(); // job is not complete, no CC
+                await wait(waitTime);
                 const response = await CancelJobs.cancelJobCommon(REAL_SESSION, {jobname: job.jobname, jobid: job.jobid});
                 expect(response?.status).toEqual("0"); // intermittent failure
                 testEnvironment.resources.jobs.push(job);
@@ -271,8 +284,10 @@ describe("CancelJobs System tests - encoded", () => {
         it("should be able to cancel a job using cancelJobCommon (job version 2.0 - synchronous) and return an error feedback object", async () => {
             const job = await SubmitJobs.submitJclNotifyCommon(REAL_SESSION, {jcl: sleepJCL, status: "INPUT"});
             expect(job.retcode).toBeNull(); // job is not complete, no CC
+            await wait(waitTime);
             let response = await CancelJobs.cancelJobCommon(REAL_SESSION, {jobname: job.jobname, jobid: job.jobid, version: "2.0"});
             expect(response?.status).toEqual("0");
+            await wait(waitTime);
             response = await CancelJobs.cancelJobCommon(REAL_SESSION, {jobname: job.jobname, jobid: job.jobid, version: "2.0"});
             expect(response?.status).toEqual("156");
             testEnvironment.resources.jobs.push(job);

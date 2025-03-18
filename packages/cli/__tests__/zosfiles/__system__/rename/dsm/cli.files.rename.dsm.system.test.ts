@@ -61,7 +61,7 @@ describe("Rename data set member", () => {
                         TEST_ENVIRONMENT,
                         [dataSetName, beforeMemberName, afterMemberName]
                     );
-                    await wait(waitTime); //wait 2 seconds
+                    await wait(waitTime);
                     contents = await Get.dataSet(REAL_SESSION, `${dataSetName}(${afterMemberName})`);
                 } catch(err) {
                     error = err;
@@ -83,7 +83,7 @@ describe("Rename data set member", () => {
                         TEST_ENVIRONMENT,
                         [dataSetName, beforeMemberName, afterMemberName, "--responseTimeout 5"]
                     );
-                    await wait(waitTime); //wait 2 seconds
+                    await wait(waitTime);
                     contents = await Get.dataSet(REAL_SESSION, `${dataSetName}(${afterMemberName})`);
                 } catch(err) {
                     error = err;

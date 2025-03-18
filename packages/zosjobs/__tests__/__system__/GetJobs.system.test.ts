@@ -47,6 +47,7 @@ const trimMessage = (message: string) => {
 
 let defaultSystem: ITestPropertiesSchema;
 let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
+const waitTime = 3000;
 
 // Utility function to cleanup
 async function cleanTestJobs(prefix: string) {
@@ -152,7 +153,7 @@ describe("Get Jobs - System Tests", () => {
                     }
                     // TODO: this is a workaround for an issue where listing jobs immediately after they are completed
                     // results in the jobs being omitted from the results
-                    await wait(3000);
+                    await wait(waitTime);
 
                     // Obtain all jobs for the user
                     const allJobs: IJob[] = await GetJobs.getJobs(REAL_SESSION);
@@ -189,7 +190,7 @@ describe("Get Jobs - System Tests", () => {
 
                     // TODO: this is a workaround for an issue where listing jobs immediately after they are completed
                     // results in the jobs being omitted from the results
-                    await wait(3000);
+                    await wait(waitTime);
 
                     // Search all jobs returned for each of the submitted jobs
                     const foundJob = await GetJobs.getJob(REAL_SESSION, job.jobid);
@@ -217,7 +218,7 @@ describe("Get Jobs - System Tests", () => {
 
                 // TODO: this is a workaround for an issue where listing jobs immediately after they are completed
                 // results in the jobs being omitted from the results
-                await wait(3000);
+                await wait(waitTime);
 
                 // Search all jobs returned for each of the submitted jobs
                 const foundJobs = await GetJobs.getJobsCommon(REAL_SESSION, {jobid: job.jobid});
@@ -288,7 +289,7 @@ describe("Get Jobs - System Tests", () => {
 
                 // TODO: this is a workaround for an issue where listing jobs immediately after they are completed
                 // results in the jobs being omitted from the results
-                await wait(3000);
+                await wait(waitTime);
 
                 // Obtain the three jobs submitted
                 const allJobs: IJob[] = await GetJobs.getJobsByPrefix(REAL_SESSION, MONITOR_JOB_NAME + "*");
@@ -346,7 +347,7 @@ describe("Get Jobs - System Tests", () => {
 
                 // TODO: this is a workaround for an issue where listing jobs immediately after they are completed
                 // results in the jobs being omitted from the results
-                await wait(3000);
+                await wait(waitTime);
 
                 // Obtain the three jobs submitted
                 const allJobs: IJob[] = await GetJobs.getJobsByPrefix(REAL_SESSION, TEST_JOB_NAME + "*");
@@ -432,7 +433,7 @@ describe("Get Jobs - System Tests", () => {
 
                 // TODO: this is a workaround for an issue where listing jobs immediately after they are completed
                 // results in the jobs being omitted from the results
-                await wait(3000);
+                await wait(waitTime);
                 // Obtain all jobs for ***REMOVED***
                 const allJobs: IJob[] = await GetJobs.getJobsByOwner(REAL_SESSION, REAL_SESSION.ISession.user);
                 expect(allJobs.length).toBeGreaterThanOrEqual(NUM_JOBS);
@@ -719,9 +720,9 @@ describe("Get Jobs - System Tests", () => {
 
                 it("should be able to get a job that was submitted and get proper error when the job is deleted", async () => {
                     const job = await SubmitJobs.submitJcl(REAL_SESSION, JCL);
-                    await wait(3000);
+                    await wait(waitTime);
                     await DeleteJobs.deleteJobForJob(REAL_SESSION, job);
-                    await wait(3000); // make sure jobs is deleted
+                    await wait(waitTime); // make sure jobs is deleted
                     let error;
                     try {
                         await GetJobs.getStatusForJob(REAL_SESSION, job);
@@ -847,7 +848,7 @@ describe("Get Jobs - System Tests", () => {
                 const job = await SubmitJobs.submitJclNotify(REAL_SESSION, JCL);
                 const files = await GetJobs.getSpoolFilesForJob(REAL_SESSION, job);
                 await DeleteJobs.deleteJobForJob(REAL_SESSION, job);
-                await wait(3000);
+                await wait(waitTime);
                 let error;
                 try {
                     await GetJobs.getSpoolContent(REAL_SESSION, files[0]);
@@ -977,9 +978,9 @@ describe("Get Jobs - System Tests", () => {
         describe("invalid request error handling", () => {
             it("should detect and surface an error for getting JCL that doesnt exist", async () => {
                 const job = await SubmitJobs.submitJcl(REAL_SESSION, JCL);
-                await wait(3000);
+                await wait(waitTime);
                 await DeleteJobs.deleteJobForJob(REAL_SESSION, job);
-                await wait(3000);
+                await wait(waitTime);
                 let error;
                 try {
                     await GetJobs.getJclForJob(REAL_SESSION, job);
@@ -999,6 +1000,7 @@ describe("Get Jobs - System Tests", () => {
         describe("download JCL", () => {
             it("should be able to get jcl from a job that was submitted", async () => {
                 const job = await SubmitJobs.submitJcl(REAL_SESSION, JCL);
+                await wait(waitTime);
                 const jcl = await GetJobs.getJclForJob(REAL_SESSION, job);
                 expect(jcl).toContain("EXEC PGM=IEFBR14");
                 expect(jcl).toContain("JOB");
@@ -1079,7 +1081,7 @@ describe("Get Jobs - System Tests", () => {
                         }
                         // TODO: this is a workaround for an issue where listing jobs immediately after they are completed
                         // results in the jobs being omitted from the results
-                        await wait(3000);
+                        await wait(waitTime);
 
                         // Obtain all jobs for the user
                         const allJobs: IJob[] = await GetJobs.getJobs(REAL_SESSION);
@@ -1116,7 +1118,7 @@ describe("Get Jobs - System Tests", () => {
 
                         // TODO: this is a workaround for an issue where listing jobs immediately after they are completed
                         // results in the jobs being omitted from the results
-                        await wait(3000);
+                        await wait(waitTime);
 
                         // Search all jobs returned for each of the submitted jobs
                         const foundJob = await GetJobs.getJob(REAL_SESSION, job.jobid);
@@ -1144,7 +1146,7 @@ describe("Get Jobs - System Tests", () => {
 
                     // TODO: this is a workaround for an issue where listing jobs immediately after they are completed
                     // results in the jobs being omitted from the results
-                    await wait(3000);
+                    await wait(waitTime);
 
                     // Search all jobs returned for each of the submitted jobs
                     const foundJobs = await GetJobs.getJobsCommon(REAL_SESSION, {jobid: job.jobid});
@@ -1183,7 +1185,7 @@ describe("Get Jobs - System Tests", () => {
 
                     // TODO: this is a workaround for an issue where listing jobs immediately after they are completed
                     // results in the jobs being omitted from the results
-                    await wait(3000);
+                    await wait(waitTime);
 
                     // Obtain the three jobs submitted
                     const allJobs: IJob[] = await GetJobs.getJobsByPrefix(REAL_SESSION, MONITOR_JOB_NAME + "*");
@@ -1241,7 +1243,7 @@ describe("Get Jobs - System Tests", () => {
 
                     // TODO: this is a workaround for an issue where listing jobs immediately after they are completed
                     // results in the jobs being omitted from the results
-                    await wait(3000);
+                    await wait(waitTime);
 
                     // Obtain the three jobs submitted
                     const allJobs: IJob[] = await GetJobs.getJobsByPrefix(REAL_SESSION, TEST_JOB_NAME + "*");
@@ -1295,7 +1297,7 @@ describe("Get Jobs - System Tests", () => {
 
                     // TODO: this is a workaround for an issue where listing jobs immediately after they are completed
                     // results in the jobs being omitted from the results
-                    await wait(3000);
+                    await wait(waitTime);
                     // Obtain all jobs for ***REMOVED***
                     const allJobs: IJob[] = await GetJobs.getJobsByOwner(REAL_SESSION, REAL_SESSION.ISession.user);
                     expect(allJobs.length).toBeGreaterThanOrEqual(NUM_JOBS);
@@ -1599,6 +1601,7 @@ describe("Get Jobs - System Tests", () => {
         describe("download JCL", () => {
             it("should be able to get jcl from a job that was submitted", async () => {
                 const job = await SubmitJobs.submitJcl(REAL_SESSION, JCL);
+                await wait(waitTime);
                 const jcl = await GetJobs.getJclForJob(REAL_SESSION, job);
                 expect(jcl).toContain("EXEC PGM=IEFBR14");
                 expect(jcl).toContain("JOB");

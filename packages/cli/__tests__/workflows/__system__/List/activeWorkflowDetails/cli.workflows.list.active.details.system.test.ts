@@ -45,7 +45,7 @@ describe("List active workflow details cli system tests", () => {
         fakeDefFile = definitionFile + "fakefile";
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
-        await wait(waitTime); //wait 2 seconds
+        await wait(waitTime);
     });
 
     afterAll(async () => {
@@ -55,7 +55,7 @@ describe("List active workflow details cli system tests", () => {
         beforeAll(async () => {
             // Upload files only for successful scenarios
             await Upload.fileToUssFile(REAL_SESSION, workflow, definitionFile, { binary: true });
-            await wait(waitTime); //wait 2 seconds
+            await wait(waitTime);
             testEnvironment.resources.files.push(definitionFile);
 
             // Create a workflow instance in zOS/MF to list

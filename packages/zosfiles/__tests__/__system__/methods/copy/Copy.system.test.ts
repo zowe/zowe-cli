@@ -111,7 +111,7 @@ describe("Copy", () => {
 
                     expect(response).toBeTruthy();
                     expect(response.success).toBe(true);
-                    expect(response.commandResponse).toContain(ZosFilesMessages.datasetCopiedSuccessfully.message);
+                    expect(response.commandResponse).toContain(ZosFilesMessages.dataSetCopiedIntoNew.message.replace("%s", toDataSetName));
 
                     expect(contents1).toBeTruthy();
                     expect(contents2).toBeTruthy();
