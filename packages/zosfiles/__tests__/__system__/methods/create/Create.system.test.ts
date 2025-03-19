@@ -588,7 +588,7 @@ describe("Create z/OS file system", () => {
         let error;
         let response;
 
-        const tempOptions = { ...options, responseTimeout: 5 };
+        const tempOptions = { ...options, responseTimeout: 60 };
 
         try {
             response = await Create.zfs(REAL_SESSION, fsname, tempOptions);

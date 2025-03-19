@@ -29,6 +29,7 @@ const badJCL = "thIsIs BaDJCL!";
 const badDataSet = "DOES.NOT.EXIST(FAKE)";
 const badUSSFile = "/tmp/does/not/exist/fake.txt";
 const LONG_TIMEOUT = 100000; // 100 second timeout - jobs could take a while to complete due to system load
+const waitTime = 3000;
 
 describe("Submit Jobs - System Tests", () => {
 
@@ -99,7 +100,7 @@ describe("Submit Jobs - System Tests", () => {
                 );
                 expect(job.jobid).toBeDefined();
                 expect(job.jobname).toBeDefined();
-                await wait(3000); // Waits for 3 seconds
+                await wait(waitTime);
                 testEnvironment.resources.jobs.push(job);
             }, LONG_TIMEOUT);
 

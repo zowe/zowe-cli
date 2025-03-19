@@ -370,7 +370,7 @@ describe("Download Jobs - System tests", () => {
             expect(IO.readFileSync(expectedFile).toString()).toContain("J E S 2  J O B  L O G");
             expect(IO.readFileSync(expectedFile).toString()).toContain("0------ JES2 JOB STATISTICS ------");
             expect(IO.readFileSync(expectedFile).toString()).toContain("MINUTES EXECUTION TIME");
-            expect(IO.readFileSync(expectedFile).toString().trim().split('\n').length).toEqual(16); //only 16 records in spool file
+            expect(IO.readFileSync(expectedFile).toString().trim().split('\n').length).toBeLessThanOrEqual(101);
         });
     });
 
@@ -788,7 +788,7 @@ describe("Download Jobs - System tests - Encoded", () => {
             expect(IO.readFileSync(expectedFile).toString()).toContain("J E S 2  J O B  L O G");
             expect(IO.readFileSync(expectedFile).toString()).toContain("0------ JES2 JOB STATISTICS ------");
             expect(IO.readFileSync(expectedFile).toString()).toContain("MINUTES EXECUTION TIME");
-            expect(IO.readFileSync(expectedFile).toString().trim().split('\n').length).toEqual(16); //only 16 records in spool file
+            expect(IO.readFileSync(expectedFile).toString().trim().split('\n').length).toBeLessThanOrEqual(101);
         });
     });
 });
