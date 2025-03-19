@@ -22,7 +22,7 @@ import { getUniqueDatasetName } from "../../../../../../__tests__/__src__/TestUt
 import { ICreateZfsOptions } from "../../../../src/methods/create/doc/ICreateZfsOptions";
 import { SshSession, Shell } from "@zowe/zos-uss-for-zowe-sdk";
 import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/ITestEnvironment";
-import path from "path";
+import * as path from "path";
 
 
 let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
