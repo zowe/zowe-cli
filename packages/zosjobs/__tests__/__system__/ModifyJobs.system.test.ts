@@ -25,6 +25,7 @@ let modifiedJobClass: string;
 let iefbr14Job: IJob;
 let sleepJCLJob: IJob;
 const badJobName = "Job1234";
+const waitTime = 1000;
 
 describe("Modify Jobs - System Tests", () => {
 
@@ -47,7 +48,7 @@ describe("Modify Jobs - System Tests", () => {
     });
 
     beforeEach(async () => {
-        await wait(1000);
+        await wait(waitTime);
     });
 
     describe("Positive tests", () => {
@@ -123,7 +124,7 @@ describe("Modify Jobs - System Tests - Encoded", () => {
     });
 
     beforeEach(async () => {
-        await wait(1000);
+        await wait(waitTime);
     });
 
     describe("Positive tests", () => {
