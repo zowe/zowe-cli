@@ -1,13 +1,13 @@
 /*
- * This program and the accompanying materials are made available under the terms of the
- * Eclipse Public License v2.0 which accompanies this distribution, and is available at
- * https://www.eclipse.org/legal/epl-v20.html
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Copyright Contributors to the Zowe Project.
- *
- */
+* This program and the accompanying materials are made available under the terms of the
+* Eclipse Public License v2.0 which accompanies this distribution, and is available at
+* https://www.eclipse.org/legal/epl-v20.html
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Copyright Contributors to the Zowe Project.
+*
+*/
 
 import { IHeaderContent } from "@zowe/imperative";
 import { ZosmfHeaders } from "@zowe/core-for-zowe-sdk";
@@ -40,10 +40,6 @@ export class ZosFilesHeaders {
      */
     private static headerMap = new Map<string, <T>(options: T, context?: ZosFilesContext) => IHeaderContent | IHeaderContent[]>();
     static initializeHeaderMap() {
-        // "from-dataset" always uses JSON (unless context is ZFS or LIST)
-        this.headerMap.set("from-dataset", (context?) => {
-            return context === ZosFilesContext.ZFS || context === ZosFilesContext.LIST ? {} : { "Content-Type": "application/json" };
-        });
         this.headerMap.set("binary", (options) => (options as any).binary === true ? ZosmfHeaders.X_IBM_BINARY : undefined);
         this.headerMap.set("record", (options) => (options as any).binary !== true ? ZosmfHeaders.X_IBM_RECORD : undefined);
         this.headerMap.set("responseTimeout", (options) => this.createHeader(ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT, (options as any).responseTimeout));
@@ -53,11 +49,14 @@ export class ZosFilesHeaders {
         this.headerMap.set("attributes", (options: any) => options.attributes === true ? ZosmfHeaders.X_IBM_ATTRIBUTES_BASE : undefined);
         this.headerMap.set("recursive", () => ZosmfHeaders.X_IBM_RECURSIVE);
         this.headerMap.set("range", (options) => this.createHeader(ZosmfHeaders.X_IBM_RECORD_RANGE, (options as any).range));
+        this.headerMap.set("encoding", (options) => this.getEncodingHeader((options as any).encoding));
+        this.headerMap.set("from-dataset", (context?) => {
+            return context === ZosFilesContext.ZFS || context === ZosFilesContext.LIST ? {} : { "Content-Type": "application/json" };
+        });
         this.headerMap.set("maxLength", (options) => {
             const max = (options as any).maxLength;
             return max !== undefined ? this.createHeader("X-IBM-Max-Items", max.toString()) : {};
         });
-        this.headerMap.set("encoding", (options) => this.getEncodingHeader((options as any).encoding));
         this.headerMap.set("localEncoding", (options, context) => {
             const opt = options as any;
             let header: IHeaderContent | IHeaderContent[] = [];
