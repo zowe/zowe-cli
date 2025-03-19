@@ -27,6 +27,7 @@ let defaultSystem: ITestPropertiesSchema;
 let dsname: string;
 let dsnameSuffix: string;
 let user: string;
+let hlq: string;
 
 describe("Create C Data Set", () => {
 
@@ -41,7 +42,8 @@ describe("Create C Data Set", () => {
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
 
         user = defaultSystem.zosmf.user.trim().toUpperCase();
-        dsname = `${user}.ZOSTEST.TEST.DATA.SET`;
+        hlq = user + ".ZOSTEST";
+        dsname = `${hlq}.TEST.DATA.SET`;
 
     });
 
@@ -84,7 +86,7 @@ describe("Create C Data Set", () => {
 
             const response = runCliScript(__dirname + "/__scripts__/command/command_create_c_pds_fully_qualified.sh",
                 TEST_ENVIRONMENT_NO_PROF,
-                [user,
+                [hlq,
                     defaultSys.zosmf.host,
                     defaultSys.zosmf.port,
                     defaultSys.zosmf.user,
@@ -112,7 +114,7 @@ describe("Create C Data Set", () => {
         it("should create a c partitioned data set", () => {
             dsnameSuffix = "c";
             const response = runCliScript(__dirname + "/__scripts__/command/command_create_c_pds.sh",
-                TEST_ENVIRONMENT, [user]);
+                TEST_ENVIRONMENT, [hlq]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toMatchSnapshot();
@@ -121,7 +123,7 @@ describe("Create C Data Set", () => {
         it("should create a c partitioned data set with response timeout", () => {
             dsnameSuffix = "c";
             const response = runCliScript(__dirname + "/__scripts__/command/command_create_c_pds.sh",
-                TEST_ENVIRONMENT, [user, "--responseTimeout 5"]);
+                TEST_ENVIRONMENT, [hlq, "--responseTimeout 5"]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toMatchSnapshot();
@@ -130,7 +132,7 @@ describe("Create C Data Set", () => {
         it("should create a c partitioned data set and print attributes", () => {
             dsnameSuffix = "c";
             const response = runCliScript(__dirname + "/__scripts__/command/command_create_c_pds_rfj.sh",
-                TEST_ENVIRONMENT, [user]);
+                TEST_ENVIRONMENT, [hlq]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toMatchSnapshot();
@@ -139,7 +141,7 @@ describe("Create C Data Set", () => {
         it("should create a c partitioned data set with specified size", () => {
             dsnameSuffix = "c.size";
             const response = runCliScript(__dirname + "/__scripts__/command/command_create_c_pds_with_size.sh",
-                TEST_ENVIRONMENT, [user]);
+                TEST_ENVIRONMENT, [hlq]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toMatchSnapshot();
@@ -148,7 +150,7 @@ describe("Create C Data Set", () => {
         it("should create a c partitioned data set with specified primary allocation", () => {
             dsnameSuffix = "c.primary";
             const response = runCliScript(__dirname + "/__scripts__/command/command_create_c_pds_with_primary.sh",
-                TEST_ENVIRONMENT, [user]);
+                TEST_ENVIRONMENT, [hlq]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toMatchSnapshot();
@@ -157,7 +159,7 @@ describe("Create C Data Set", () => {
         it("should create a c partitioned data set with specified primary and secondary allocation", () => {
             dsnameSuffix = "c.second";
             const response = runCliScript(__dirname + "/__scripts__/command/command_create_c_pds_with_primary_secondary.sh",
-                TEST_ENVIRONMENT, [user]);
+                TEST_ENVIRONMENT, [hlq]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toMatchSnapshot();
