@@ -26,6 +26,7 @@ let defaultSystem: ITestPropertiesSchema;
 let dsname: string;
 let dsnameSuffix: string;
 let user: string;
+let hlq: string;
 
 describe("Create Classic Data Set", () => {
     // Create the unique test environment
@@ -40,7 +41,8 @@ describe("Create Classic Data Set", () => {
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
 
         user = defaultSystem.zosmf.user.trim().toUpperCase();
-        dsname = `${user}.ZOSTEST.TEST.DATA.SET`;
+        hlq = user + ".ZOSTEST";
+        dsname = `${hlq}.TEST.DATA.SET`;
 
     });
 
@@ -83,7 +85,7 @@ describe("Create Classic Data Set", () => {
 
             const response = runCliScript(__dirname + "/__scripts__/command/command_create_classic_pds_fully_qualified.sh",
                 TEST_ENVIRONMENT_NO_PROF,
-                [user,
+                [hlq,
                     defaultSys.zosmf.host,
                     defaultSys.zosmf.port,
                     defaultSys.zosmf.user,
@@ -111,7 +113,7 @@ describe("Create Classic Data Set", () => {
         it("should create a classic partitioned data set", () => {
             dsnameSuffix = "classic";
             const response = runCliScript(__dirname + "/__scripts__/command/command_create_classic_pds.sh",
-                TEST_ENVIRONMENT, [user]);
+                TEST_ENVIRONMENT, [hlq]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toMatchSnapshot();
@@ -120,7 +122,7 @@ describe("Create Classic Data Set", () => {
         it("should create a classic partitioned data set with response timeout", () => {
             dsnameSuffix = "classic";
             const response = runCliScript(__dirname + "/__scripts__/command/command_create_classic_pds.sh",
-                TEST_ENVIRONMENT, [user, "--responseTimeout 5"]);
+                TEST_ENVIRONMENT, [hlq, "--responseTimeout 5"]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toMatchSnapshot();
@@ -129,7 +131,7 @@ describe("Create Classic Data Set", () => {
         it("should create a classic partitioned data set and print attributes", () => {
             dsnameSuffix = "classic";
             const response = runCliScript(__dirname + "/__scripts__/command/command_create_classic_pds_rfj.sh",
-                TEST_ENVIRONMENT, [user]);
+                TEST_ENVIRONMENT, [hlq]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toMatchSnapshot();
@@ -138,7 +140,7 @@ describe("Create Classic Data Set", () => {
         it("should create a classic partitioned data set with specified size", () => {
             dsnameSuffix = "classic.size";
             const response = runCliScript(__dirname + "/__scripts__/command/command_create_classic_pds_with_size.sh",
-                TEST_ENVIRONMENT, [user]);
+                TEST_ENVIRONMENT, [hlq]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toMatchSnapshot();
@@ -147,7 +149,7 @@ describe("Create Classic Data Set", () => {
         it("should create a classic partitioned data set with specified primary allocation", () => {
             dsnameSuffix = "classic.primary";
             const response = runCliScript(__dirname + "/__scripts__/command/command_create_classic_pds_with_primary.sh",
-                TEST_ENVIRONMENT, [user]);
+                TEST_ENVIRONMENT, [hlq]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toMatchSnapshot();
@@ -156,7 +158,7 @@ describe("Create Classic Data Set", () => {
         it("should create a classic partitioned data set with specified primary and secondary allocation", () => {
             dsnameSuffix = "classic.second";
             const response = runCliScript(__dirname + "/__scripts__/command/command_create_classic_pds_with_primary_secondary.sh",
-                TEST_ENVIRONMENT, [user]);
+                TEST_ENVIRONMENT, [hlq]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toMatchSnapshot();

@@ -26,6 +26,7 @@ let defaultSystem: ITestPropertiesSchema;
 let dsname: string;
 let dsnameSuffix: string;
 let user: string;
+let hlq: string;
 
 describe("Create Binary Data Set", () => {
     // Create the unique test environment
@@ -40,7 +41,8 @@ describe("Create Binary Data Set", () => {
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
 
         user = defaultSystem.zosmf.user.trim().toUpperCase();
-        dsname = `${user}.TEST.DATA.SET`;
+        hlq = user + ".ZOSTEST";
+        dsname = `${hlq}.TEST.DATA.SET`;
 
     });
 
@@ -83,7 +85,7 @@ describe("Create Binary Data Set", () => {
 
             const response = runCliScript(__dirname + "/__scripts__/command/command_create_binary_pds_fully_qualified.sh",
                 TEST_ENVIRONMENT_NO_PROF,
-                [user,
+                [hlq,
                     defaultSys.zosmf.host,
                     defaultSys.zosmf.port,
                     defaultSys.zosmf.user,
@@ -110,7 +112,7 @@ describe("Create Binary Data Set", () => {
         it("should create a binary partitioned data set", () => {
             dsnameSuffix = "binary";
             const response = runCliScript(__dirname + "/__scripts__/command/command_create_binary_pds.sh",
-                TEST_ENVIRONMENT, [user]);
+                TEST_ENVIRONMENT, [hlq]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toMatchSnapshot();
@@ -119,7 +121,7 @@ describe("Create Binary Data Set", () => {
         it("should create a binary partitioned data set with response timeout", () => {
             dsnameSuffix = "binary";
             const response = runCliScript(__dirname + "/__scripts__/command/command_create_binary_pds.sh",
-                TEST_ENVIRONMENT, [user, "--responseTimeout 5"]);
+                TEST_ENVIRONMENT, [hlq, "--responseTimeout 5"]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toMatchSnapshot();
@@ -128,7 +130,7 @@ describe("Create Binary Data Set", () => {
         it("should create a binary partitioned data set and print attributes", () => {
             dsnameSuffix = "binary";
             const response = runCliScript(__dirname + "/__scripts__/command/command_create_binary_pds_rfj.sh",
-                TEST_ENVIRONMENT, [user]);
+                TEST_ENVIRONMENT, [hlq]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toMatchSnapshot();
@@ -137,7 +139,7 @@ describe("Create Binary Data Set", () => {
         it("should create a binary partitioned data set with specified size", () => {
             dsnameSuffix = "binary.size";
             const response = runCliScript(__dirname + "/__scripts__/command/command_create_binary_pds_with_size.sh",
-                TEST_ENVIRONMENT, [user]);
+                TEST_ENVIRONMENT, [hlq]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toMatchSnapshot();
@@ -146,7 +148,7 @@ describe("Create Binary Data Set", () => {
         it("should create a binary partitioned data set with specified primary allocation", () => {
             dsnameSuffix = "binary.primary";
             const response = runCliScript(__dirname + "/__scripts__/command/command_create_binary_pds_with_primary.sh",
-                TEST_ENVIRONMENT, [user]);
+                TEST_ENVIRONMENT, [hlq]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toMatchSnapshot();
@@ -155,7 +157,7 @@ describe("Create Binary Data Set", () => {
         it("should create a binary partitioned data set with specified primary and secondary allocation", () => {
             dsnameSuffix = "binary.second";
             const response = runCliScript(__dirname + "/__scripts__/command/command_create_binary_pds_with_primary_secondary.sh",
-                TEST_ENVIRONMENT, [user]);
+                TEST_ENVIRONMENT, [hlq]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toMatchSnapshot();
