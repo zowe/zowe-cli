@@ -42,7 +42,7 @@ describe("Create Classic Data Set", () => {
 
         user = defaultSystem.zosmf.user.trim().toUpperCase();
         hlq = user + ".ZOSTEST";
-        dsname = `${hlq}.TEST.DATA.SET`;
+        dsname = `${hlq}.DATA.SET`;
 
     });
 
