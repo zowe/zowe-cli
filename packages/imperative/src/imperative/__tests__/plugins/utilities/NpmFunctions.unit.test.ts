@@ -64,7 +64,7 @@ describe("NpmFunctions", () => {
         jest.spyOn(ExecUtils, "spawnAndGetOutput").mockReturnValue(Buffer.from("Install Succeeded"));
         const result = npmFunctions.installPackages("samplePlugin", { prefix: "fakePrefix" });
         expect(writeMock).toHaveBeenCalledWith(DaemonRequest.create({ stderr: "Install Succeeded" }));
-        expect(result).toBe("true");
+        expect(result).toBe("Install Succeeded");
     });
 
     it("getRegistry should run npm config command", () => {
