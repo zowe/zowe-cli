@@ -37,7 +37,7 @@ describe("Delete VSAM Data Set", () => {
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
 
         user = systemProps.zosmf.user.toUpperCase();
-        dsname = getUniqueDatasetName(`${user}.ZOSFILE.VSAM`);
+        dsname = getUniqueDatasetName(`${user}.ZOSTEST.VSAM`);
         volume = systemProps.datasets.vol;
 
     });

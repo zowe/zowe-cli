@@ -39,7 +39,7 @@ describe("Mount and unmount file system", () => {
         volume = defaultSystem.datasets.vol;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
-        fsname = getUniqueDatasetName(defaultSystem.zosmf.user);
+        fsname = getUniqueDatasetName(defaultSystem.zosmf.user + ".ZOSTEST");
 
         const dirname = getUniqueDatasetName(defaultSystem.zosmf.user).split(".")[1];
         mountPoint = "//tmp/" + dirname;

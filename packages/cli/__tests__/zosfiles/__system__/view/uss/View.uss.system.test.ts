@@ -35,7 +35,7 @@ describe("View uss file", () => {
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
 
-        dsname = getUniqueDatasetName(defaultSystem.zosmf.user);
+        dsname = getUniqueDatasetName(defaultSystem.zosmf.user + ".ZOSTEST");
         // using unique DS function to generate unique USS file name
         ussname = dsname.replace(/\./g, "");
         ussname = `${defaultSystem.unix.testdir}/${ussname}`;
