@@ -527,7 +527,7 @@ describe("Create z/OS file system", () => {
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
 
-        fsname = getUniqueDatasetName(defaultSystem.zosmf.user);
+        fsname = getUniqueDatasetName(defaultSystem.zosmf.user + ".ZOSTEST");
         volume = defaultSystem.datasets.vol;
     });
 
@@ -617,7 +617,7 @@ describe("Create z/OS file system - encoded", () => {
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
 
-        fsname = getUniqueDatasetName(defaultSystem.zosmf.user, true);
+        fsname = getUniqueDatasetName(defaultSystem.zosmf.user + ".ZOSTEST", true);
         volume = defaultSystem.datasets.vol;
     });
 
