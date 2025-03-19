@@ -42,9 +42,9 @@ describe("Migrate Dataset", () => {
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
 
         user = defaultSystem.zosmf.user.trim().toUpperCase();
-        dataSetName1 = `${user}.SDATAC.MIGR`;
-        dataSetName2 = `${user}.PDATAC.MIGR`;
-        dataSetName3 = `${user}.FAIL.MIGR`;
+        dataSetName1 = `${user}.ZOSTEST.SDATAC.MIGR`;
+        dataSetName2 = `${user}.ZOSTEST.PDATAC.MIGR`;
+        dataSetName3 = `${user}.ZOSTEST.FAIL.MIGR`;
     });
 
     afterAll(async () => {

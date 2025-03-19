@@ -50,7 +50,7 @@ describe("Create data set", () => {
         defaultSystem = testEnvironment.systemTestProperties;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
-        dsname = `${defaultSystem.zosmf.user.trim().toUpperCase()}.TEST.DATA.SET`;
+        dsname = `${defaultSystem.zosmf.user.trim().toUpperCase()}.ZOSTEST.DATA.SET`;
     });
 
     afterAll(async () => {
@@ -167,7 +167,7 @@ describe("Create data set - encoded", () => {
         defaultSystem = testEnvironment.systemTestProperties;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
-        dsname = `${defaultSystem.zosmf.user.trim().toUpperCase()}.TEST.ENCO#ED.DATA.SET`;
+        dsname = `${defaultSystem.zosmf.user.trim().toUpperCase()}.ZOSTEST.ENCO#ED.DATA.SET`;
     });
 
     afterAll(async () => {
@@ -369,7 +369,7 @@ describe("Create VSAM", () => {
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
 
         volume = defaultSystem.datasets.vol;
-        dsname = getUniqueDatasetName(defaultSystem.zosmf.user);
+        dsname = getUniqueDatasetName(defaultSystem.zosmf.user + ".ZOSTEST");
     });
 
     afterAll(async () => {
@@ -450,7 +450,7 @@ describe("Create VSAM - encoded", () => {
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
 
         volume = defaultSystem.datasets.vol;
-        dsname = getUniqueDatasetName(defaultSystem.zosmf.user, true);
+        dsname = getUniqueDatasetName(defaultSystem.zosmf.user + ".ZOSTEST", true);
     });
 
     afterAll(async () => {

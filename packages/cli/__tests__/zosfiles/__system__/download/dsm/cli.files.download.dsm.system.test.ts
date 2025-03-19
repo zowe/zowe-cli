@@ -38,7 +38,7 @@ describe("Download Dataset Matching", () => {
 
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
 
-        const dsnPrefix = getUniqueDatasetName(defaultSystem.zosmf.user);
+        const dsnPrefix = getUniqueDatasetName(defaultSystem.zosmf.user + ".ZOSTEST");
         dsnames = [dsnPrefix, dsnPrefix+".T01", dsnPrefix+".T02", dsnPrefix+".T03"];
         pattern = dsnPrefix + "*";
     });

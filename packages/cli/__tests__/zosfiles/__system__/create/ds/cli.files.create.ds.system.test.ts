@@ -43,7 +43,7 @@ describe("Create Data Set", () => {
         user = defaultSystem.zosmf.user.trim();
         pass = defaultSystem.zosmf.password.trim();
         host = defaultSystem.zosmf.host.trim();
-        dsname = `${user.toUpperCase()}.TEST.DATA.SET`;
+        dsname = `${user.toUpperCase()}.ZOSTEST.TEST.DATA.SET`;
 
     });
 

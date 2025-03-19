@@ -32,14 +32,14 @@ export function stripNewLines(str: string): string {
  * @param {string} hlq User specified high level qualify
  * @returns {string} A generated data set name
  */
-export function getUniqueDatasetName(hlq: string, encoded = false): string {
+export function getUniqueDatasetName(hlq: string, encoded = false, maxNodes = 2): string {
     let generatedName: string = "";
     const randomNumber = Math.random();
     const timestampInMsNum = Date.now();
     let timestampInMs = Math.floor(randomNumber * timestampInMsNum).toString();
     let tempStr: string;
     const MAX_NODE_LENGTH = 7;
-    let MAX_NODES = 2;
+    let MAX_NODES = maxNodes;
     let currNodes = 0;
 
     if (encoded) {MAX_NODES = 1;}

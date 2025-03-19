@@ -66,7 +66,7 @@ describe("Download Data Set", () => {
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
 
-        dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.DOWNLOAD`);
+        dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSTEST.DOWNLOAD`);
         Imperative.console.info("Using dsname:" + dsname);
 
         // using unique DS function to generate unique USS file name
@@ -1397,8 +1397,8 @@ describe("Download Data Set", () => {
                 }
 
                 // Create and mount file system
-                zfsName = getUniqueDatasetName(defaultSystem.zosmf.user);
-                await Create.zfs(REAL_SESSION, zfsName, createZfsOptions);
+                zfsName = getUniqueDatasetName(defaultSystem.zosmf.user + ".ZOSTEST");
+                await Create.zfs(REAL_SESSION, zfsName, { ...createZfsOptions, volumes: [defaultSystem.datasets.vol]});
                 await Mount.fs(REAL_SESSION, zfsName, mountFolder, mountZfsOptions);
 
                 // Upload files

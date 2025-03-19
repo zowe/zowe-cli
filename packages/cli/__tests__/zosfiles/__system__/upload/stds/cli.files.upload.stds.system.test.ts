@@ -35,7 +35,7 @@ describe("Upload Data Set", () => {
 
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
 
-        dsname = getUniqueDatasetName(systemProperties.zosmf.user);
+        dsname = getUniqueDatasetName(systemProperties.zosmf.user + ".ZOSTEST");
     });
 
     afterAll(async () => {

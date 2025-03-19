@@ -40,7 +40,7 @@ describe("Create C Data Set", () => {
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
 
         user = defaultSystem.zosmf.user.trim().toUpperCase();
-        dsname = `${user}.TEST.DATA.SET`;
+        dsname = `${user}.ZOSTEST.TEST.DATA.SET`;
 
     });
 

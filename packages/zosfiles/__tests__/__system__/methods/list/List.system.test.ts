@@ -35,7 +35,7 @@ describe("List command group", () => {
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
 
-        dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.LIST`);
+        dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSTEST.LIST`, false, 1);
         Imperative.console.info("Using dsname:" + dsname);
 
         const user = `${defaultSystem.zosmf.user.trim()}`.replace(/\./g, "");
@@ -671,8 +671,7 @@ describe("List command group - encoded", () => {
         });
         defaultSystem = testEnvironment.systemTestProperties;
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
-
-        dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.LIST`, true);
+        dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSTEST.LIST`, true);
         Imperative.console.info("Using dsname:" + dsname);
 
         const user = `${defaultSystem.zosmf.user.trim()}`.replace(/\./g, "");
