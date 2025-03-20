@@ -40,7 +40,7 @@ describe("Upload directory to USS", () => {
 
         defaultSystem = TEST_ENVIRONMENT.systemTestProperties;
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
-        dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILES.UPLOAD`);
+        dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSTEST.UPLOAD`);
         dsname = dsname.replace(/\./g, "");
         ussname = `${defaultSystem.unix.testdir}/${dsname}`;
         Imperative.console.info("Using ussDir:" + ussname);

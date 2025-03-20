@@ -33,8 +33,8 @@ describe("Rename", () => {
         defaultSystem = testEnvironment.systemTestProperties;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
-        beforeDataSetName = `${defaultSystem.zosmf.user.trim().toUpperCase()}.BEFORE.SET`;
-        afterDataSetName = `${defaultSystem.zosmf.user.trim().toUpperCase()}.AFTER.SET`;
+        beforeDataSetName = `${defaultSystem.zosmf.user.trim().toUpperCase()}.ZOSTEST.BEFORE.SET`;
+        afterDataSetName = `${defaultSystem.zosmf.user.trim().toUpperCase()}.ZOSTEST.AFTER.SET`;
     });
 
     afterAll(async () => {

@@ -27,6 +27,7 @@ let defaultSystem: ITestPropertiesSchema;
 let dsname: string;
 let dsnameSuffix: string;
 let user: string;
+let hlq: string;
 
 describe("Create Physical Sequential Data Set", () => {
 
@@ -42,7 +43,8 @@ describe("Create Physical Sequential Data Set", () => {
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
 
         user = defaultSystem.zosmf.user.trim().toUpperCase();
-        dsname = `${user}.TEST.DATA.SET`;
+        hlq = user + ".ZOSTEST";
+        dsname = `${hlq}.TEST.DATA.SET`;
 
     });
 
@@ -85,7 +87,7 @@ describe("Create Physical Sequential Data Set", () => {
 
             const response = runCliScript(__dirname + "/__scripts__/command/command_create_ps_fully_qualified.sh",
                 TEST_ENVIRONMENT_NO_PROF,
-                [user,
+                [hlq,
                     defaultSys.zosmf.host,
                     defaultSys.zosmf.port,
                     defaultSys.zosmf.user,
@@ -113,7 +115,7 @@ describe("Create Physical Sequential Data Set", () => {
         it("should create a physical sequential data set", () => {
             dsnameSuffix = "ps";
             const response = runCliScript(__dirname + "/__scripts__/command/command_create_ps.sh",
-                TEST_ENVIRONMENT, [user]);
+                TEST_ENVIRONMENT, [hlq]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toMatchSnapshot();
@@ -122,7 +124,7 @@ describe("Create Physical Sequential Data Set", () => {
         it("should create a physical sequential data set with response timeout", () => {
             dsnameSuffix = "ps";
             const response = runCliScript(__dirname + "/__scripts__/command/command_create_ps.sh",
-                TEST_ENVIRONMENT, [user, "--responseTimeout 5"]);
+                TEST_ENVIRONMENT, [hlq, "--responseTimeout 5"]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toMatchSnapshot();
@@ -131,7 +133,7 @@ describe("Create Physical Sequential Data Set", () => {
         it("should create a physical sequential data set and print attributes", () => {
             dsnameSuffix = "ps";
             const response = runCliScript(__dirname + "/__scripts__/command/command_create_ps_rfj.sh",
-                TEST_ENVIRONMENT, [user]);
+                TEST_ENVIRONMENT, [hlq]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toMatchSnapshot();
@@ -140,7 +142,7 @@ describe("Create Physical Sequential Data Set", () => {
         it("should create a physical sequential data set with specified size", () => {
             dsnameSuffix = "ps.size";
             const response = runCliScript(__dirname + "/__scripts__/command/command_create_ps_with_size.sh",
-                TEST_ENVIRONMENT, [user]);
+                TEST_ENVIRONMENT, [hlq]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toMatchSnapshot();
@@ -149,7 +151,7 @@ describe("Create Physical Sequential Data Set", () => {
         it("should create a physical sequential data set with specified primary allocation", () => {
             dsnameSuffix = "ps.primary";
             const response = runCliScript(__dirname + "/__scripts__/command/command_create_ps_with_primary.sh",
-                TEST_ENVIRONMENT, [user]);
+                TEST_ENVIRONMENT, [hlq]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toMatchSnapshot();
@@ -158,7 +160,7 @@ describe("Create Physical Sequential Data Set", () => {
         it("should create a physical sequential data set with specified primary and secondary allocation", () => {
             dsnameSuffix = "ps.second";
             const response = runCliScript(__dirname + "/__scripts__/command/command_create_ps_with_primary_secondary.sh",
-                TEST_ENVIRONMENT, [user]);
+                TEST_ENVIRONMENT, [hlq]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toMatchSnapshot();
@@ -169,7 +171,7 @@ describe("Create Physical Sequential Data Set", () => {
 
         it("should fail creating a physical sequential data set due to directory-blocks specified", () => {
             const response = runCliScript(__dirname + "/__scripts__/command/command_create_ps_fail_dirblk.sh",
-                TEST_ENVIRONMENT, [user]);
+                TEST_ENVIRONMENT, [hlq]);
             expect(stripNewLines(response.stderr.toString())).toContain("'PS' data set organization (dsorg) specified and the directory " +
                 "blocks (dirblk) is not zero.");
         });
