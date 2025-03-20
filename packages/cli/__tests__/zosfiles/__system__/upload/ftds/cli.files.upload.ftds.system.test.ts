@@ -34,7 +34,7 @@ describe("Upload file to data set", () => {
 
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
 
-        dsname = getUniqueDatasetName(defaultSystem.zosmf.user);
+        dsname = getUniqueDatasetName(defaultSystem.zosmf.user + ".ZOSTEST");
     });
 
     afterAll(async () => {
@@ -160,7 +160,7 @@ describe("Upload file to data set", () => {
         it("should upload a member to a PDS-E/Library data set from local file", async () => {
             /** @see issue #148 */
             const dsnLibrary: string = getUniqueDatasetName(
-                defaultSystem.zosmf.user
+                defaultSystem.zosmf.user + ".ZOSTEST"
             );
             const dsnOptions: ICreateDataSetOptions = {
                 dsntype: "LIBRARY",

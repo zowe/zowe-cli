@@ -39,8 +39,8 @@ describe("Copy", () => {
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
         REAL_TARGET_SESSION = REAL_SESSION;
-        fromDataSetName = `${defaultSystem.zosmf.user.trim().toUpperCase()}.DATA.ORIGINAL`;
-        toDataSetName = `${defaultSystem.zosmf.user.trim().toUpperCase()}.DATA.COPY`;
+        fromDataSetName = `${defaultSystem.zosmf.user.trim().toUpperCase()}.ZOSTEST.DATA.ORIGINAL`;
+        toDataSetName = `${defaultSystem.zosmf.user.trim().toUpperCase()}.ZOSTEST.DATA.COPY`;
     });
 
     afterAll(async () => {

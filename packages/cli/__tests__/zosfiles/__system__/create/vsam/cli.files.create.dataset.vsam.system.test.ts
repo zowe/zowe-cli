@@ -39,7 +39,7 @@ describe("Create VSAM Data Set", () => {
 
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
 
-        dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.VSAM`);
+        dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSTEST.VSAM`);
         volume = defaultSystem.datasets.vol;
 
     });

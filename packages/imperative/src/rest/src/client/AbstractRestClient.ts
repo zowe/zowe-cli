@@ -347,7 +347,7 @@ export abstract class AbstractRestClient {
                     });
                 } else {
                     reject(this.populateError({
-                        msg: "Failed to send an HTTP request.",
+                        msg: errMsg,
                         causeErrors: errorResponse,
                         source: "client"
                     }));

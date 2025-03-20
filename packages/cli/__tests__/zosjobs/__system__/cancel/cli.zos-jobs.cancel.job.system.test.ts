@@ -14,7 +14,7 @@ import { TestEnvironment } from "../../../../../../__tests__/__src__/environment
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { JobTestsUtils } from "../../../../../zosjobs/__tests__/__system__/JobTestsUtils";
 import { IO } from "@zowe/imperative";
-import { DeleteJobs, IJob } from "@zowe/zos-jobs-for-zowe-sdk";
+import { DeleteJobs } from "@zowe/zos-jobs-for-zowe-sdk";
 import { Session } from "@zowe/imperative";
 
 // Test Environment populated in the beforeAll();

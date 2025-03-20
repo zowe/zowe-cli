@@ -37,7 +37,7 @@ describe("Download All Member", () => {
 
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
 
-        dsname = getUniqueDatasetName(defaultSystem.zosmf.user);
+        dsname = getUniqueDatasetName(defaultSystem.zosmf.user + ".ZOSTEST");
     });
 
     afterAll(async () => {
@@ -144,7 +144,7 @@ describe("Download All Member", () => {
         });
 
         it("should download all data set members of a large data set with --max-concurrent-requests 2", async () => {
-            const bigDsname = getUniqueDatasetName(defaultSystem.zosmf.user);
+            const bigDsname = getUniqueDatasetName(defaultSystem.zosmf.user + ".ZOSTEST");
             await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, bigDsname);
             const members = ["a1", "a2", "a3", "a4", "a5", "a6", "a7", "a8", "a9", "a10", "a11", "a12", "a13"];
             const memberContent = Buffer.from("ABCDEFGHIJKLMNOPQRSTUVWXYZ\nABCDEFGHIJKLMNOPQRSTUVWXYZ\nABCDEFGHIJKLMNOPQRSTUVWXYZ");

@@ -34,7 +34,7 @@ describe("View Data Set", () => {
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
 
-        dsname = getUniqueDatasetName(defaultSystem.zosmf.user);
+        dsname = getUniqueDatasetName(defaultSystem.zosmf.user + ".ZOSTEST");
     });
 
     afterAll(async () => {

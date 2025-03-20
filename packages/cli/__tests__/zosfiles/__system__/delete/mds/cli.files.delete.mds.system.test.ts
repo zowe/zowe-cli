@@ -41,9 +41,9 @@ describe("Delete migrated Dataset", () => {
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
 
         user = defaultSystem.zosmf.user.trim().toUpperCase();
-        dataSetName1 = `${user}.SDATAC.DEL`;
-        dataSetName2 = `${user}.PDATAC.DEL`;
-        dataSetName3 = `${user}.FAIL.DEL`;
+        dataSetName1 = `${user}.ZOSTEST.SDATAC.DEL`;
+        dataSetName2 = `${user}.ZOSTEST.PDATAC.DEL`;
+        dataSetName3 = `${user}.ZOSTEST.FAIL.DEL`;
     });
 
     afterAll(async () => {

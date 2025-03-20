@@ -37,7 +37,7 @@ describe("Rename data set member", () => {
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
 
         user = defaultSystem.zosmf.user.trim().toUpperCase();
-        dataSetName = `${user}.PUBLIC.DATA.SET`;
+        dataSetName = `${user}.ZOSTEST.PUBLIC.DATA.SET`;
     });
     afterAll(async () => {
         await TestEnvironment.cleanUp(TEST_ENVIRONMENT);

@@ -41,7 +41,7 @@ describe("Upload Data Set", () => {
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
 
-        dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.UPLOAD`);
+        dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSTEST.UPLOAD`);
         Imperative.console.info("Using dsname:" + dsname);
     });
 
