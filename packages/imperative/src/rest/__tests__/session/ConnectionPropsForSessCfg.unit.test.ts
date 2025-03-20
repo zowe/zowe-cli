@@ -95,6 +95,49 @@ describe("ConnectionPropsForSessCfg tests", () => {
         expect(sessCfgWithConnProps.certKey).toBeUndefined();
     });
 
+    it("should not log secure properties of session config", async () => {
+        const initialSessCfg = {
+            rejectUnauthorized: true,
+        };
+        const args = {
+            $0: "zowe",
+            _: [""],
+            host: "SomeHost",
+            port: 11,
+            user: "FakeUser",
+            password: "FakePassword",
+            tokenType: SessConstants.TOKEN_TYPE_JWT,
+            tokenValue: "FakeToken"
+        };
+        const mockLoggerDebug = jest.fn();
+        const getImperativeLoggerSpy = jest
+            .spyOn(Logger, "getImperativeLogger")
+            .mockReturnValueOnce({ debug: mockLoggerDebug } as any);
+
+        const sessCfgWithConnProps =
+            await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
+                initialSessCfg,
+                args
+            );
+        expect(sessCfgWithConnProps.hostname).toBe("SomeHost");
+        expect(sessCfgWithConnProps.port).toBe(11);
+        expect(sessCfgWithConnProps.user).toBe("FakeUser");
+        expect(sessCfgWithConnProps.password).toBe("FakePassword");
+        expect(sessCfgWithConnProps.type).toBe(SessConstants.AUTH_TYPE_BASIC);
+        expect(sessCfgWithConnProps.tokenValue).toBeUndefined();
+        expect(sessCfgWithConnProps.tokenType).toBeUndefined();
+        expect(sessCfgWithConnProps.cert).toBeUndefined();
+        expect(sessCfgWithConnProps.certKey).toBeUndefined();
+
+        getImperativeLoggerSpy.mockRestore();
+        expect(mockLoggerDebug).toHaveBeenCalledTimes(1);
+        const logOutput = mockLoggerDebug.mock.calls[0][0];
+        expect(logOutput).toContain("SomeHost");
+        expect(logOutput).not.toContain("FakeUser");
+        expect(logOutput).not.toContain("FakePassword");
+        expect(logOutput).not.toContain("FakeToken");
+    });
+
     it("authenticate with user, pass, and tokenType to get token", async () => {
         const initialSessCfg = {
             hostname: "SomeHost",
@@ -1485,28 +1528,6 @@ describe("ConnectionPropsForSessCfg tests", () => {
         CliUtils.readPrompt = readPromptReal;
         expect(caughtError instanceof ImperativeError).toBe(true);
         expect(caughtError.message).toBe("Timed out waiting for port.");
-    });
-
-    it("should not log secure properties of session config", async () => {
-        const mockLoggerDebug = jest.fn();
-        const getImperativeLoggerSpy = jest
-            .spyOn(Logger, "getImperativeLogger")
-            .mockReturnValueOnce({ debug: mockLoggerDebug } as any);
-        (ConnectionPropsForSessCfg as any).logSessCfg({
-            host: "SomeHost",
-            port: 11,
-            user: "FakeUser",
-            password: "FakePassword",
-            tokenType: SessConstants.TOKEN_TYPE_JWT,
-            tokenValue: "FakeToken",
-        });
-        getImperativeLoggerSpy.mockRestore();
-        expect(mockLoggerDebug).toHaveBeenCalledTimes(1);
-        const logOutput = mockLoggerDebug.mock.calls[0][0];
-        expect(logOutput).toContain("SomeHost");
-        expect(logOutput).not.toContain("FakeUser");
-        expect(logOutput).not.toContain("FakePassword");
-        expect(logOutput).not.toContain("FakeToken");
     });
 
     it("SSO CallBack with getValuesBack", async () => {
