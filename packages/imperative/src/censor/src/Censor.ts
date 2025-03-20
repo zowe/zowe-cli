@@ -365,12 +365,13 @@ export class Censor {
         // create copy of sessObj so that we can replace values in a censored object
         let censoredSessObj;
         if (createCopy) {
-            censoredSessObj = JSON.parse(JSON.stringify(sessObj));
+            try {
+                censoredSessObj = JSON.parse(JSON.stringify(sessObj));
+            } catch(_error) {
+                return "Invalid session object";
+            }
         } else {
             censoredSessObj = sessObj;
-        }
-        if (!censoredSessObj) {
-            return "Invalid session object";
         }
 
         // Censor values in the top level of the supplied object
