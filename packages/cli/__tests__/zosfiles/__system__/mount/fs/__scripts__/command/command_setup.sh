@@ -5,6 +5,7 @@ HOST=$3
 PORT=$4
 USER=$5
 PASS=$6
+VOLS=$7
 set -e
 
 echo "================Z/OS USS ISSUE SSH==============="
@@ -15,5 +16,5 @@ then
 fi
 
 echo "================Z/OS FILES CREATE ZOS-FILE-SYSTEM==============="
-zowe zos-files create zos-file-system "$fsn"
+zowe zos-files create zos-file-system "$fsn" --volumes "$VOLS"
 exit $?

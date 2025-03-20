@@ -100,7 +100,7 @@ describe("Create z/OS File System", () => {
 
         it("should create a ZFS with response timeout", () => {
             const response = runCliScript(__dirname + "/__scripts__/command/command_create_zfs.sh",
-                TEST_ENVIRONMENT, [fsname, volume, "--responseTimeout 5"]);
+                TEST_ENVIRONMENT, [fsname, volume, "--responseTimeout 60"]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
         });
