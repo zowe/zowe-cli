@@ -41,7 +41,10 @@ export class ZosFilesHeaders {
     private static headerMap = new Map<string, <T>(options: T, context?: ZosFilesContext) => IHeaderContent | IHeaderContent[]>();
     static initializeHeaderMap() {
         this.headerMap.set("binary", (options) => (options as any).binary === true ? ZosmfHeaders.X_IBM_BINARY : undefined);
-        this.headerMap.set("record", (options) => (options as any).binary !== true ? ZosmfHeaders.X_IBM_RECORD : undefined);
+        this.headerMap.set("record", (options) => {
+            const opt = options as any;
+            return opt.binary !== true  && opt.binary ? ZosmfHeaders.X_IBM_RECORD : undefined;
+        });
         this.headerMap.set("responseTimeout", (options) => this.createHeader(ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT, (options as any).responseTimeout));
         this.headerMap.set("recall", (options) => this.getRecallHeader(((options as any).recall || "").toString()));
         this.headerMap.set("etag", (options) => this.createHeader("If-Match", (options as any).etag));
