@@ -52,25 +52,26 @@ export function installPackages(npmPackage: string, npmArgs: INpmInstallArgs): s
             args.push(...k.startsWith("@") ? [`--${k}=${v}`] : [`--${k}`, v]);
         }
     }
-    let execOutput;
+    let execOutput = "";
     const daemonStream = ImperativeConfig.instance.daemonContext?.stream;
     try {
         execOutput = ExecUtils.spawnAndGetOutput(npmCmd, args, {
             cwd: PMFConstants.instance.PMF_ROOT,
             stdio: pipe
-        });
+        }).toString();
+
+        if(daemonStream != null) {
+            daemonStream.write(DaemonRequest.create({ stdout: execOutput}));
+        }
     }
     catch (error) {
         if (daemonStream != null) {
-            daemonStream.write(DaemonRequest.create({ stderr: execOutput.toString() }));
+            daemonStream.write(DaemonRequest.create({ stderr: error.message }));
         } else {
-            process.stderr.write(execOutput.toString());
+            process.stderr.write(error.message);
         }
     }
-    if(daemonStream != null) {
-        daemonStream.write(DaemonRequest.create({ stdout: execOutput.toString() }));
-    }
-    return execOutput.toString();
+    return execOutput;
 }
 
 /**
