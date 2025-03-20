@@ -32,7 +32,7 @@ describe("Get", () => {
         defaultSystem = testEnvironment.systemTestProperties;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
-        dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.VIEW`);
+        dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSTEST.VIEW`);
         Imperative.console.info("Using dsname:" + dsname);
 
         // using unique DS function to generate unique USS file name
@@ -333,7 +333,7 @@ describe("Get - encoded", () => {
         defaultSystem = testEnvironment.systemTestProperties;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
-        dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.VIEW`, true);
+        dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSTEST.VIEW`, true);
         Imperative.console.info("Using dsname:" + dsname);
 
         // using unique DS function to generate unique USS file name

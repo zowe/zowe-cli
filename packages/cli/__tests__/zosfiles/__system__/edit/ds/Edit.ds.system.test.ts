@@ -44,7 +44,7 @@ describe("Edit Data Set", () => {
             // user = defaultSystem.zosmf.user.trim().toUpperCase();
             // dsname = `${user}.EDIT.DS`;
             const data = "1234";
-            dsname = getUniqueDatasetName(defaultSystem.zosmf.user);
+            dsname = getUniqueDatasetName(defaultSystem.zosmf.user + ".ZOSTEST");
             await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname);
             await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(data), `${dsname}(member1)`);
         });

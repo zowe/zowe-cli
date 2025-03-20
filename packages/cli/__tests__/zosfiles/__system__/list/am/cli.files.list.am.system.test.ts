@@ -38,7 +38,7 @@ describe("List all members of data set", () => {
 
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
 
-        dsname = getUniqueDatasetName(defaultSystem.zosmf.user);
+        dsname = getUniqueDatasetName(defaultSystem.zosmf.user + ".ZOSTEST");
     });
 
     afterAll(async () => {

@@ -32,7 +32,7 @@ describe("USS Utilities", () => {
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
 
         const defaultSystem = testEnvironment.systemTestProperties;
-        let dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.UPLOAD`);
+        let dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSTEST.UPLOAD`);
         dsname = dsname.replace(/\./g, "");
         ussname = `${defaultSystem.unix.testdir}/${dsname}`;
         Imperative.console.info("Using ussDir:" + ussname);
@@ -77,11 +77,11 @@ describe("USS Utilities", () => {
     it("should rename USS file", async () => {
         const defaultSystem = testEnvironment.systemTestProperties;
 
-        let createdName = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.CREATED`);
+        let createdName = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSTEST.CREATED`);
         createdName = createdName.replace(/\./g, "");
         createdName = `${defaultSystem.unix.testdir}/${createdName}`;
 
-        let newName = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.RENAMED`);
+        let newName = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSTEST.RENAMED`);
         newName = newName.replace(/\./g, "");
         newName = `${defaultSystem.unix.testdir}/${newName}`;
 
@@ -100,11 +100,11 @@ describe("USS Utilities", () => {
     it("should rename USS file - encoded", async () => {
         const defaultSystem = testEnvironment.systemTestProperties;
 
-        let createdName = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.ENCO#ED.CREATED`);
+        let createdName = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSTEST.ENCO#ED.CREATED`);
         createdName = createdName.replace(/\./g, "");
         createdName = `${defaultSystem.unix.testdir}/${createdName}`;
 
-        let newName = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.ENCO#ED.RENAMED`);
+        let newName = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSTEST.ENCO#ED.RENAMED`);
         newName = newName.replace(/\./g, "");
         newName = `${defaultSystem.unix.testdir}/${newName}`;
 

@@ -22,6 +22,7 @@ import { getUniqueDatasetName } from "../../../../../../__tests__/__src__/TestUt
 import { ICreateZfsOptions } from "../../../../src/methods/create/doc/ICreateZfsOptions";
 import { SshSession, Shell } from "@zowe/zos-uss-for-zowe-sdk";
 import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/ITestEnvironment";
+import * as path from "path";
 
 
 let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
@@ -59,9 +60,9 @@ describe("Mount and unmount a file system", () => {
         volume = defaultSystem.datasets.vol;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
-        fsname = getUniqueDatasetName(defaultSystem.zosmf.user);
+        fsname = getUniqueDatasetName(defaultSystem.zosmf.user + ".ZOSTEST");
         const dirname = getUniqueDatasetName(defaultSystem.zosmf.user).split(".")[1];
-        mountPoint = "/tmp/" + dirname;
+        mountPoint = path.posix.join(defaultSystem.unix.testdir, dirname);
 
         let error;
 
@@ -261,9 +262,9 @@ describe("Mount and unmount a file system - encoded", () => {
         volume = defaultSystem.datasets.vol;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
-        fsname = getUniqueDatasetName(defaultSystem.zosmf.user, true);
+        fsname = getUniqueDatasetName(defaultSystem.zosmf.user + ".ZOSTEST", true);
         const dirname = getUniqueDatasetName(defaultSystem.zosmf.user, true).split(".")[1];
-        mountPoint = "/tmp/" + dirname;
+        mountPoint = path.posix.join(defaultSystem.unix.testdir, dirname);
 
         let error;
 
