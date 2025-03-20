@@ -62,15 +62,15 @@ export function installPackages(npmPackage: string, npmArgs: INpmInstallArgs): s
     }
     catch (error) {
         if (daemonStream != null) {
-            return daemonStream.write(DaemonRequest.create({ stderr: execOutput.toString() })).toString();
+            daemonStream.write(DaemonRequest.create({ stderr: execOutput.toString() }));
         } else {
-            return process.stderr.write(execOutput.toString()).toString();
+            process.stderr.write(execOutput.toString());
         }
     }
     if(daemonStream != null) {
-        return daemonStream.write(DaemonRequest.create({ stdout: execOutput.toString() })).toString();
+        daemonStream.write(DaemonRequest.create({ stdout: execOutput.toString() }));
     }
-    return (execOutput.toString());
+    return execOutput.toString();
 }
 
 /**
