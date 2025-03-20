@@ -20,6 +20,7 @@ import { DaemonRequest, ExecUtils, ImperativeConfig } from "../../../../utilitie
 import { INpmInstallArgs } from "../doc/INpmInstallArgs";
 import { IPluginJsonObject } from "../doc/IPluginJsonObject";
 import { INpmRegistryInfo } from "../doc/INpmRegistryInfo";
+
 const npmCmd = findNpmOnPath();
 
 /**
@@ -51,17 +52,25 @@ export function installPackages(npmPackage: string, npmArgs: INpmInstallArgs): s
             args.push(...k.startsWith("@") ? [`--${k}=${v}`] : [`--${k}`, v]);
         }
     }
-    const execOutput = ExecUtils.spawnAndGetOutput(npmCmd, args, {
-        cwd: PMFConstants.instance.PMF_ROOT,
-        stdio: pipe
-    });
+    let execOutput;
     const daemonStream = ImperativeConfig.instance.daemonContext?.stream;
-    if (daemonStream != null) {
-        daemonStream.write(DaemonRequest.create({ stderr: execOutput.toString() }));
-    } else {
-        process.stderr.write(execOutput.toString());
+    try {
+        execOutput = ExecUtils.spawnAndGetOutput(npmCmd, args, {
+            cwd: PMFConstants.instance.PMF_ROOT,
+            stdio: pipe
+        });
     }
-    return execOutput.toString();
+    catch (error) {
+        if (daemonStream != null) {
+            return daemonStream.write(DaemonRequest.create({ stderr: execOutput.toString() })).toString();
+        } else {
+            return process.stderr.write(execOutput.toString()).toString();
+        }
+    }
+    if(daemonStream != null) {
+        return daemonStream.write(DaemonRequest.create({ stdout: execOutput.toString() })).toString();
+    }
+    return (execOutput.toString());
 }
 
 /**
