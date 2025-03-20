@@ -413,6 +413,10 @@ export abstract class AbstractRestClient {
                 clientRequest.end();
             }
 
+            // A request-for-token is completed after a REST request completes.
+            // Remove the request-for-token so it is not used on future requests
+            // with this same session.
+            AuthOrder.removeRequestForToken(this.session.ISession);
         });
     }
 

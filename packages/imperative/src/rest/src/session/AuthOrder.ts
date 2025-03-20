@@ -187,8 +187,6 @@ export class AuthOrder {
      *
      * @param sessCfg - Modified.
      *      The session config into which we record that we are requesting a token.
-     *
-     * @return {SessConstants.AUTH_TYPE_CHOICES[]} The cached authentication order.
      */
     public static makingRequestForToken<SessCfgType extends ISession>(
         sessCfg: SessCfgType
@@ -199,6 +197,23 @@ export class AuthOrder {
         // Just create the property with a placeholder value.
         // putTopAuthInSession() will later place the correct value into this property
         sessCfg._authCache.authTypeToRequestToken = SessConstants.AUTH_TYPE_NONE;
+    }
+
+    // ***********************************************************************
+    /**
+     * Remove any request-for-token from the session config.
+     *
+     * @internal - Cannot be used outside of the imperative package
+     *
+     * @param sessCfg - Modified.
+     *      The session config from which we remove a request-for-token.
+     */
+    public static removeRequestForToken<SessCfgType extends ISession>(
+        sessCfg: SessCfgType
+    ): void {
+        if (sessCfg?._authCache?.authTypeToRequestToken) {
+            delete sessCfg._authCache.authTypeToRequestToken
+        }
     }
 
     // ***********************************************************************

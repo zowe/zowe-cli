@@ -17,6 +17,9 @@ import { Login } from "../../../src/auth/Login";
 import { Logout } from "../../../src/auth/Logout";
 import { ZosmfRestClient } from "../../../src/rest/ZosmfRestClient";
 
+// import non-exported modules
+const AuthOrder = jest.requireActual("../../../../imperative/lib/rest/src/session/AuthOrder").AuthOrder;
+
 let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 let REAL_SESSION: Session;
 let token: string;
@@ -52,12 +55,9 @@ describe("Logout system test", () => {
     it("should succeed with correct parameters and invalidate token using APIML", async () => {
         let error: ImperativeError;
         const client = new ZosmfRestClient(REAL_SESSION);
+        AuthOrder.cacheCredsAndAuthOrder(REAL_SESSION.ISession, {"authOrder": "token", "tokenValue": token});
 
         try {
-            client.session.ISession.type = "token";
-            client.session.ISession.tokenType = "apimlAuthenticationToken";
-            client.session.ISession.tokenValue = token;
-
             await client.request({request: "GET", resource: "/gateway/api/v1/auth/query"});
         } catch (thrownError) {
             error = thrownError;
