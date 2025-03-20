@@ -21,9 +21,16 @@ import { ProfileInfo } from "./ProfileInfo";
 export class ProfileCredentials {
     private mSecured: boolean;
     private mCredMgrOverride?: ICredentialManagerInit;
+    private mCheckLevelLayers?: boolean;
 
     constructor(private mProfileInfo: ProfileInfo, opts?: IProfOpts | (() => NodeModule)) {
-        this.mCredMgrOverride = typeof opts === "function" ? ProfileCredentials.defaultCredMgrWithKeytar(opts) : opts?.credMgrOverride;
+        if (typeof opts === "function") {
+            this.mCredMgrOverride = ProfileCredentials.defaultCredMgrWithKeytar(opts);
+            this.mCheckLevelLayers = false;
+        } else {
+            this.mCredMgrOverride = opts?.credMgrOverride;
+            this.mCheckLevelLayers = opts?.checkLevelLayers;
+        }
     }
 
     /**
@@ -109,7 +116,18 @@ export class ProfileCredentials {
      * @returns False if not using teamConfig or there are no secure fields
      */
     private isTeamConfigSecure(): boolean {
-        if (this.mProfileInfo.getTeamConfig().api.secure.secureFields().length === 0) return false;
+        const config = this.mProfileInfo.getTeamConfig();
+        if (this.mCheckLevelLayers) {
+            const layer = config.layerActive();
+            if (layer.user) {
+                if (config.api.secure.secureFields({ user: true, global: layer.global }).length === 0 &&
+                    config.api.secure.secureFields({ user: false, global: layer.global }).length === 0) {
+                    return false;
+                }
+                return true;
+            }
+        }
+        if (config.api.secure.secureFields().length === 0) return false;
         return true;
     }
 
