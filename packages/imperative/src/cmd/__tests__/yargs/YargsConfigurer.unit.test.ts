@@ -17,6 +17,59 @@ jest.mock("yargs");
 jest.mock("../../src/CommandProcessor");
 
 describe("YargsConfigurer tests", () => {
+
+    afterEach(() => {
+        jest.clearAllMocks();
+        jest.restoreAllMocks();
+    });
+
+    it('should write to daemonStream if available', async () => {
+        const writeMock = jest.fn();
+        const rejectedError = new Error("Test error");
+        const invokeSpy = jest.spyOn(CommandProcessor.prototype, "invoke").mockRejectedValue(rejectedError);
+        const stream = {write: writeMock};
+        const mockedYargs = require("yargs");
+        jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({
+            envVariablePrefix: "MOCK_PREFIX",
+            cliHome: "/mock/home",
+            daemonContext: {
+                stream
+            }
+        } as any);
+
+        const config = new YargsConfigurer({ name: "any", description: "any", type: "command", children: []},
+            mockedYargs, undefined as any, { getHelpGenerator: jest.fn() }, undefined as any, "fake", "fake", "ZOWE", "fake");
+        config.configure();
+        const handler = mockedYargs.command.mock.calls[0][0].handler;
+
+        await handler({_: []});
+
+        expect(invokeSpy).toHaveBeenCalled();
+    });
+
+    it('should not write to daemonStream if not available', async () => {
+        const rejectedError = new Error("Test error");
+        const invokeSpy = jest.spyOn(CommandProcessor.prototype, "invoke").mockRejectedValue(rejectedError);
+        const mockedYargs = require("yargs");
+        jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({
+            envVariablePrefix: "MOCK_PREFIX",
+            cliHome: "/mock/home",
+            daemonContext: {
+                stream: undefined
+            }
+        } as any);
+
+        const config = new YargsConfigurer({ name: "any", description: "any", type: "command", children: []},
+            mockedYargs, undefined as any, { getHelpGenerator: jest.fn() }, undefined as any, "fake", "fake", "ZOWE", "fake");
+        config.configure();
+        const handler = mockedYargs.command.mock.calls[0][0].handler;
+
+        await handler({_: []});
+
+        expect(invokeSpy).toHaveBeenCalled();
+    });
+
+
     it("should build a failure message", () => {
 
         const config = new YargsConfigurer({ name: "any", description: "any", type: "command", children: []},
