@@ -87,7 +87,7 @@ describe("Get Jobs - System Tests", () => {
             basePath: defaultSystem.zosmf.basePath,
             type: "basic",
             rejectUnauthorized: false
-        }
+        };
         AuthOrder.cacheCredsAndAuthOrder(invalidSessCfg, {});
         INVALID_SESSION = new Session(invalidSessCfg);
 
