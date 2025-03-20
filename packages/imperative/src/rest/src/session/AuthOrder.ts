@@ -9,6 +9,7 @@
 *
 */
 
+import { Censor } from "../../../censor";
 import { ICommandArguments } from "../../../cmd";
 import { ImperativeError } from "../../../error";
 import { ISession } from "./doc/ISession";
@@ -227,11 +228,11 @@ export class AuthOrder {
             // This will cache any creds from the sessCfg and use a default auth order.
             AuthOrder.cacheCredsAndAuthOrder(sessCfg, { "$0": "NameNotUsed", "_": [] });
         }
+        Logger.getImperativeLogger().debug("Starting sessCfg = " + Censor.censorSession(sessCfg));
 
         // Detect the first auth type (from our auth order) within our available credentials.
         // Ensure that the auth properties are placed in the session config.
         // Record the detected auth type for use as the session type.
-        Logger.getImperativeLogger().debug("Starting sessCfg = " + JSON.stringify(sessCfg, null, 2));
         let sessTypeToUse: SessConstants.AUTH_TYPE_CHOICES = null;
         let errMsg: string;
         for (const nextAuth of sessCfg.authTypeOrder) {
@@ -326,7 +327,7 @@ export class AuthOrder {
 
         // remove all extra auth creds from the session
         AuthOrder.removeExtraCredsFromSess(sessCfg);
-        Logger.getImperativeLogger().debug("Ending sessCfg = " + JSON.stringify(sessCfg, null, 2));
+        Logger.getImperativeLogger().debug("Ending sessCfg = " + Censor.censorSession(sessCfg));
     }
 
     // ***********************************************************************

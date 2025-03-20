@@ -206,8 +206,9 @@ export class ConnectionPropsForSessCfg {
         // cache all available creds. Only the right set will later be kept in the session.
         AuthOrder.cacheCredsAndAuthOrder(sessCfgToUse, cmdArgs);
 
-        impLogger.debug("Session config after any prompting for missing values:");
-        ConnectionPropsForSessCfg.logSessCfg(sessCfgToUse);
+        impLogger.debug("Session config after any prompting for missing values:\n" +
+            Censor.censorSession(sessCfgToUse)
+        );
         return sessCfgToUse;
     }
 
@@ -339,7 +340,9 @@ export class ConnectionPropsForSessCfg {
             sessCfg.type = SessConstants.AUTH_TYPE_BASIC;
         }
         ConnectionPropsForSessCfg.setTypeForTokenRequest<SessCfgType>(sessCfg, connOpts, cmdArgs.tokenType);
-        ConnectionPropsForSessCfg.logSessCfg(sessCfg);
+        impLogger.debug("Creating a session config with these properties:\n" +
+            Censor.censorSession(sessCfg)
+        );
     }
 
     // ***********************************************************************
@@ -490,29 +493,6 @@ export class ConnectionPropsForSessCfg {
             }
             sessCfg.tokenType = tokenType || sessCfg.tokenType || options.defaultTokenType;
         }
-    }
-
-    // ***********************************************************************
-    /**
-     * Log the session configuration that resulted from the addition of
-     * credentials. Hide the password.
-     *
-     * @param sessCfg
-     *       The session configuration to be logged.
-     */
-    private static logSessCfg(sessCfg: any) {
-        const impLogger = Logger.getImperativeLogger();
-
-        // create copy of sessCfg and obscure secure fields for displaying in the log
-        const sanitizedSessCfg = JSON.parse(JSON.stringify(sessCfg));
-        for (const secureProp of ConnectionPropsForSessCfg.secureSessCfgProps) {
-            if (sanitizedSessCfg[secureProp] != null) {
-                sanitizedSessCfg[secureProp] = `${secureProp}_is_hidden`;
-            }
-        }
-        impLogger.debug("Creating a session config with these properties:\n" +
-            JSON.stringify(sanitizedSessCfg, null, 2)
-        );
     }
 
     // ***********************************************************************
