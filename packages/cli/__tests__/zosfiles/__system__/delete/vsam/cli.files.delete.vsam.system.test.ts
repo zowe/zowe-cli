@@ -35,7 +35,7 @@ describe("Delete VSAM Data Set", () => {
 
 
         user = systemProps.zosmf.user.toUpperCase();
-        dsname = getUniqueDatasetName(`${user}.ZOSFILE.VSAM`);
+        dsname = getUniqueDatasetName(`${user}.ZOSTEST.VSAM`);
         volume = systemProps.datasets.vol;
 
     });

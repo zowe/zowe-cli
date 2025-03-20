@@ -31,9 +31,9 @@ describe("Migrate Dataset", () => {
         defaultSystem = testEnvironment.systemTestProperties;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
-        dataSet1 = `${defaultSystem.zosmf.user.trim().toUpperCase()}.SDATA.MIGR`;
-        dataSet2 = `${defaultSystem.zosmf.user.trim().toUpperCase()}.PDATA.MIGR`;
-        dataSet3 = `${defaultSystem.zosmf.user.trim().toUpperCase()}.FAIL.MIGR`;
+        dataSet1 = `${defaultSystem.zosmf.user.trim().toUpperCase()}.ZOSTEST.SDATA.MIGR`;
+        dataSet2 = `${defaultSystem.zosmf.user.trim().toUpperCase()}.ZOSTEST.PDATA.MIGR`;
+        dataSet3 = `${defaultSystem.zosmf.user.trim().toUpperCase()}.ZOSTEST.FAIL.MIGR`;
     });
 
     afterAll(async () => {

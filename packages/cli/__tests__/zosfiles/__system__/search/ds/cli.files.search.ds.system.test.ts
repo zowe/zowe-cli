@@ -49,12 +49,12 @@ describe("Search Data Sets", () => {
 
         defaultSystem = TEST_ENVIRONMENT.systemTestProperties;
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
-        searchHLQ = defaultSystem.zosmf.user + ".SEARCH";
+        searchHLQ = defaultSystem.zosmf.user + ".ZOSTEST.SEARCH";
 
         oldForceColor = process.env.FORCE_COLOR;
         process.env.FORCE_COLOR = "0";
 
-        dsnPrefix = getUniqueDatasetName(searchHLQ);
+        dsnPrefix = getUniqueDatasetName(searchHLQ, false, 1);
         pattern = dsnPrefix + ".*";
 
         goodDsNames = [`${dsnPrefix}.SEQ1`, `${dsnPrefix}.SEQ4`, `${dsnPrefix}.SEQ5`];
