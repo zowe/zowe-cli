@@ -1250,7 +1250,8 @@ describe("TeamConfig ProfileInfo tests", () => {
             expect(caughtError).toBeUndefined();
             expect(targetProfile).toBeDefined();
             expect(targetProfile?.profLoc?.osLoc?.[0]).toEqual(path.join(testDir,"/ProfInfoApp_proj_nested_global_empty/ProfInfoApp.config.json"));
-            expect(targetProfile?.profLoc?.osLoc?.[0]).not.toEqual(path.join(testDir,"/ProfInfoApp_proj_nested_global_empty_proj/ProfInfoApp.config.json"));
+            expect(targetProfile?.profLoc?.osLoc?.[0]).not.toEqual(
+                path.join(testDir,"/ProfInfoApp_proj_nested_global_empty_proj/ProfInfoApp.config.json"));
         });
     });
 
