@@ -218,11 +218,11 @@ export class AuthOrder {
 
     // ***********************************************************************
     /**
-     * Find the highest auth type (according to the authOrder) which exists
-     * in either the supplied session config or command line arguments.
+     * Find the highest auth type (according to the authOrder) that exists
+     * in availableCreds within the supplied session config.
      * Then place the credentials associated with that auth type into the
-     * supplied session config. Credentials for all other auth types are
-     * removed from the session config.
+     * top-level of the session config. Finally, remove credentials
+     * for all other auth types from the top-level of session config.
      *
      * @internal - Cannot be used outside of the imperative package
      *
@@ -525,7 +525,7 @@ export class AuthOrder {
     ): void {
         // Initially set all creds to be removed from the session.
         // Then delete from this set the creds that we want to keep.
-        const credsToRemove = new Set(["user", "password", "base64EncodedAuth", "tokenType", "tokenValue", "cert", "certKey"]);
+        const credsToRemove = new Set(["user", "password", "base64EncodedAuth", "tokenType", "tokenValue", "certFile", "certKeyFile"]);
 
         // Select the creds that we want to keep.
         // If we have no type, it is because we had no creds,
@@ -556,8 +556,8 @@ export class AuthOrder {
                     } else if (sessCfg._authCache.authTypeToRequestToken == SessConstants.AUTH_TYPE_CERT_PEM) {
                         // We are requesting a token using a cert.
                         // Keep the cert creds and allow tokenValue to be removed
-                        AuthOrder.keepCred("cert", credsToRemove);
-                        AuthOrder.keepCred("certKey", credsToRemove);
+                        AuthOrder.keepCred("certFile", credsToRemove);
+                        AuthOrder.keepCred("certKeyFile", credsToRemove);
                     } else {
                         // Our own code supplied a bad value for authTypeToRequestToken.
                         errMsg = "The requested session contains an invalid value for " +
@@ -570,8 +570,8 @@ export class AuthOrder {
                     AuthOrder.keepCred("tokenValue", credsToRemove);
                     break;
                 case SessConstants.AUTH_TYPE_CERT_PEM:
-                    AuthOrder.keepCred("cert", credsToRemove);
-                    AuthOrder.keepCred("certKey", credsToRemove);
+                    AuthOrder.keepCred("certFile", credsToRemove);
+                    AuthOrder.keepCred("certKeyFile", credsToRemove);
                     break;
                 case SessConstants.AUTH_TYPE_NONE:
                     break;
