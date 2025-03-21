@@ -73,7 +73,7 @@ describe("Invoke AMS CLI", () => {
         });
 
         it("should invoke ams to create and then delete a VSAM cluster using files containing the appropriate control statement", async () => {
-            const dsname = getUniqueDatasetName(defaultSys.zosmf.user);
+            const dsname = getUniqueDatasetName(defaultSys.zosmf.user + ".ZOSTEST");
 
             // create a temporary file from the template file that has the proper high level qualifier to create the VSAM file
             let controlStatementFile: string = createTestAMSStatementFileFromTemplate(
@@ -122,7 +122,7 @@ describe("Invoke AMS CLI", () => {
     describe("Success scenarios", () => {
 
         it("should invoke ams to create and then delete a VSAM cluster using files containing the appropriate control statement", async () => {
-            const dsname = getUniqueDatasetName(defaultSystem.zosmf.user);
+            const dsname = getUniqueDatasetName(defaultSystem.zosmf.user + ".ZOSTEST");
 
             // create a temporary file from the template file that has the proper high level qualifier to create the VSAM file
             let controlStatementFile: string = createTestAMSStatementFileFromTemplate(
@@ -149,7 +149,7 @@ describe("Invoke AMS CLI", () => {
             expect(testOutput).toContain(ZosFilesMessages.amsCommandExecutedSuccessfully.message);
         });
         it("should invoke ams to create and then delete a VSAM cluster using files with response timeout", async () => {
-            const dsname = getUniqueDatasetName(defaultSystem.zosmf.user);
+            const dsname = getUniqueDatasetName(defaultSystem.zosmf.user + ".ZOSTEST");
 
             // create a temporary file from the template file that has the proper high level qualifier to create the VSAM file
             let controlStatementFile: string = createTestAMSStatementFileFromTemplate(

@@ -60,8 +60,8 @@ describe("Copy data set", () => {
         REAL_SESSION = TestEnvironment.createZosmfSession(TEST_ENVIRONMENT);
 
         user = defaultSystem.zosmf.user.trim().toUpperCase();
-        fromDataSetName = `${user}.COPY.FROM.SET`;
-        toDataSetName = `${user}.COPY.TO.SET`;
+        fromDataSetName = `${user}.ZOSTEST.COPY.FROM.SET`;
+        toDataSetName = `${user}.ZOSTEST.COPY.TO.SET`;
     });
     afterAll(async () => {
         await TestEnvironment.cleanUp(TEST_ENVIRONMENT);

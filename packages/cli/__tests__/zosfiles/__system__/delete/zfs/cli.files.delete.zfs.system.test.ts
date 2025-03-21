@@ -35,7 +35,7 @@ describe("Delete z/OS File System", () => {
 
         defaultSystem = TEST_ENVIRONMENT.systemTestProperties;
 
-        fsname = getUniqueDatasetName(defaultSystem.zosmf.user);
+        fsname = getUniqueDatasetName(defaultSystem.zosmf.user + ".ZOSTEST");
         volume = defaultSystem.datasets.vol;
     });
 

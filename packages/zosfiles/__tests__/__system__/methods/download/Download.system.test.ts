@@ -63,7 +63,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
 
-        dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSFILE.DOWNLOAD`, encoded);
+        dsname = getUniqueDatasetName(`${defaultSystem.zosmf.user}.ZOSTEST.DOWNLOAD`, encoded);
         Imperative.console.info("Using dsname:" + dsname);
 
         // using unique DS function to generate unique USS file name
@@ -1461,7 +1461,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
                 }
 
                 // Create and mount file system
-                zfsName = getUniqueDatasetName(defaultSystem.zosmf.user, encoded);
+                zfsName = getUniqueDatasetName(defaultSystem.zosmf.user + ".ZOSTEST", encoded);
                 await Create.zfs(REAL_SESSION, zfsName, { ...createZfsOptions, volumes: [defaultSystem.datasets.vol]} );
                 await Mount.fs(REAL_SESSION, zfsName, mountFolder, mountZfsOptions);
 

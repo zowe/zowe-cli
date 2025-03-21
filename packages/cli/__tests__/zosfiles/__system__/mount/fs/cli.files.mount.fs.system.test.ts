@@ -35,7 +35,7 @@ describe("Mount and unmount file system", () => {
         });
 
         defaultSystem = TEST_ENVIRONMENT.systemTestProperties;
-        fsname = getUniqueDatasetName(defaultSystem.zosmf.user);
+        fsname = getUniqueDatasetName(defaultSystem.zosmf.user + ".ZOSTEST");
 
         const dirname = getUniqueDatasetName(defaultSystem.zosmf.user).split(".")[1];
         mountPoint = defaultSystem.unix.testdir + dirname;
