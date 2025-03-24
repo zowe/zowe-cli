@@ -400,7 +400,7 @@ export class Upload {
                         const uploadStream = IO.createReadStream(uploadingFile);
 
                         const streamUploadOptions = JSON.parse(JSON.stringify(options)); // copy the options
-                        
+
                         if (uploadFileList.length > 1) {
                             // don't update the progress bar in the streamToDataSet function if we
                             // are uploading more than one file because we already update it  with the member name
