@@ -4,7 +4,7 @@ All notable changes to the Imperative package will be documented in this file.
 
 ## Recent Changes
 
-- Enhancement: Added a line to the command response for `--show-inputs-only` to display the authentication type. [#2462] (https://github.com/zowe/zowe-cli/issues/2462)
+- Enhancement: Added a line to the output to display the authentication type when using the `--show-inputs-only` option. [#2462] (https://github.com/zowe/zowe-cli/issues/2462)
 
 - BugFix: When in daemon mode, the user would not see Imperative initialization errors, but now the errors are passed back to the user's terminal window. [#1875](https://github.com/zowe/zowe-cli/issues/1875).
 - Enhancement: Added a favicon to the Web Help that displays in browser tabs. [#801] (https://github.com/zowe/zowe-cli/issues/801)
