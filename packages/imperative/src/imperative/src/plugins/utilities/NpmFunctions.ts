@@ -16,10 +16,11 @@ import { StdioOptions } from "child_process";
 import { readFileSync } from "jsonfile";
 import * as npmPackageArg from "npm-package-arg";
 import * as pacote from "pacote";
-import { ExecUtils } from "../../../../utilities";
+import { DaemonRequest, ExecUtils, ImperativeConfig } from "../../../../utilities";
 import { INpmInstallArgs } from "../doc/INpmInstallArgs";
 import { IPluginJsonObject } from "../doc/IPluginJsonObject";
 import { INpmRegistryInfo } from "../doc/INpmRegistryInfo";
+
 const npmCmd = findNpmOnPath();
 
 /**
@@ -43,7 +44,7 @@ export function findNpmOnPath(): string {
  *
  */
 export function installPackages(npmPackage: string, npmArgs: INpmInstallArgs): string {
-    const pipe: StdioOptions = ["pipe", "pipe", process.stderr];
+    const pipe: StdioOptions = ["pipe", "pipe", "pipe"];
     const args = ["install", npmPackage, "-g", "--legacy-peer-deps"];
     for (const [k, v] of Object.entries(npmArgs)) {
         if (v != null) {
@@ -51,12 +52,26 @@ export function installPackages(npmPackage: string, npmArgs: INpmInstallArgs): s
             args.push(...k.startsWith("@") ? [`--${k}=${v}`] : [`--${k}`, v]);
         }
     }
-    const execOutput = ExecUtils.spawnAndGetOutput(npmCmd, args, {
-        cwd: PMFConstants.instance.PMF_ROOT,
-        stdio: pipe
-    });
+    let execOutput = "";
+    const daemonStream = ImperativeConfig.instance.daemonContext?.stream;
+    try {
+        execOutput = ExecUtils.spawnAndGetOutput(npmCmd, args, {
+            cwd: PMFConstants.instance.PMF_ROOT,
+            stdio: pipe
+        }).toString();
 
-    return execOutput.toString();
+        if(daemonStream != null) {
+            daemonStream.write(DaemonRequest.create({ stdout: execOutput}));
+        }
+    }
+    catch (error) {
+        if (daemonStream != null) {
+            daemonStream.write(DaemonRequest.create({ stderr: error.message }));
+        } else {
+            process.stderr.write(error.message);
+        }
+    }
+    return execOutput;
 }
 
 /**
