@@ -37,6 +37,12 @@ import * as SessConstants from "./SessConstants";
  * credentials for the desired type of authentication.
  */
 export class AuthOrder {
+    private static readonly SESS_CERT_NAME = "cert";
+    private static readonly SESS_CERT_KEY_NAME = "certKey";
+    private static readonly ARRAY_OF_CREDS = [
+        "user", "password", "base64EncodedAuth", "tokenType", "tokenValue",
+        AuthOrder.SESS_CERT_NAME, AuthOrder.SESS_CERT_KEY_NAME
+    ];
 
     // ***********************************************************************
     /**
@@ -68,13 +74,9 @@ export class AuthOrder {
         AuthOrder.cacheAuthOrder(sessCfg, cmdArgs);
 
         // add every available cred to the cache
-        AuthOrder.cacheCred("user", sessCfg, cmdArgs);
-        AuthOrder.cacheCred("password", sessCfg, cmdArgs);
-        AuthOrder.cacheCred("base64EncodedAuth", sessCfg, cmdArgs);
-        AuthOrder.cacheCred("tokenType", sessCfg, cmdArgs);
-        AuthOrder.cacheCred("tokenValue", sessCfg, cmdArgs);
-        AuthOrder.cacheCred("certFile", sessCfg, cmdArgs);
-        AuthOrder.cacheCred("certKeyFile", sessCfg, cmdArgs);
+        for (const sessCredName of AuthOrder.ARRAY_OF_CREDS) {
+            AuthOrder.cacheCred(sessCredName, sessCfg, cmdArgs);
+        }
     }
 
     // ***********************************************************************
@@ -303,9 +305,11 @@ export class AuthOrder {
                     }
                     break;
                 case SessConstants.AUTH_TYPE_CERT_PEM:
-                    if (sessCfg._authCache.availableCreds.certFile && sessCfg._authCache.availableCreds.certKeyFile) {
-                        sessCfg.cert = sessCfg._authCache.availableCreds.certFile;
-                        sessCfg.certKey = sessCfg._authCache.availableCreds.certKeyFile;
+                    if (sessCfg._authCache.availableCreds[AuthOrder.SESS_CERT_NAME] &&
+                        sessCfg._authCache.availableCreds[AuthOrder.SESS_CERT_KEY_NAME])
+                    {
+                        sessCfg[AuthOrder.SESS_CERT_NAME] = sessCfg._authCache.availableCreds[AuthOrder.SESS_CERT_NAME];
+                        sessCfg[AuthOrder.SESS_CERT_KEY_NAME] = sessCfg._authCache.availableCreds[AuthOrder.SESS_CERT_KEY_NAME];
                         if (sessCfg._authCache.authTypeToRequestToken) {
                             // The existence of authTypeToRequestToken indicates that we want
                             // to request a token. We record how we will authenticate,
@@ -416,7 +420,8 @@ export class AuthOrder {
     /**
      * Cache the named credential into our cache of available credentials.
      *
-     * @param credName - Input.
+     * @param sessCredName - Input.
+     *      The name of a cred to be cached in a session.
      *
      * @param sessCfg - Modified.
      *      A session configuration object.
@@ -425,14 +430,27 @@ export class AuthOrder {
      *      The set of arguments with which the calling function is operating.
      */
     private static cacheCred<SessCfgType extends ISession>(
-        credName: string,
+        sessCredName: string,
         sessCfg: SessCfgType,
         cmdArgs: ICommandArguments
     ): void {
-        if ((sessCfg as any)[credName]) {
-            sessCfg._authCache.availableCreds[credName] = (sessCfg as any)[credName];
-        } else if (cmdArgs[credName]) {
-            sessCfg._authCache.availableCreds[credName] = cmdArgs[credName];
+        // cert-related properties have different names in command args and in a session
+        const CMD_ARGS_CERT_NAME = "certFile";
+        const CMD_ARGS_CERT_KEY_NAME = "certKeyFile";
+        let cmdArgsCredName;
+
+        if (sessCredName === AuthOrder.SESS_CERT_NAME) {
+            cmdArgsCredName = CMD_ARGS_CERT_NAME;
+        } else if (sessCredName === AuthOrder.SESS_CERT_KEY_NAME) {
+            cmdArgsCredName = CMD_ARGS_CERT_KEY_NAME;
+        } else {
+            cmdArgsCredName = sessCredName;
+        }
+
+        if ((sessCfg as any)[sessCredName]) {
+            sessCfg._authCache.availableCreds[sessCredName] = (sessCfg as any)[sessCredName];
+        } else if (cmdArgs[cmdArgsCredName]) {
+            sessCfg._authCache.availableCreds[sessCredName] = cmdArgs[cmdArgsCredName];
         }
     }
 
@@ -525,10 +543,10 @@ export class AuthOrder {
     ): void {
         // Initially set all creds to be removed from the session.
         // Then delete from this set the creds that we want to keep.
-        const credsToRemove = new Set(["user", "password", "base64EncodedAuth", "tokenType", "tokenValue", "certFile", "certKeyFile"]);
+        const credsToRemove = new Set(AuthOrder.ARRAY_OF_CREDS);
 
         // Select the creds that we want to keep.
-        // If we have no type, it is because we had no creds,
+        // If we have no type, it is because no creds were provided,
         // so we we have no creds to keep or remove.
         let errMsg: string;
         if (sessCfg?.type) {
@@ -556,8 +574,8 @@ export class AuthOrder {
                     } else if (sessCfg._authCache.authTypeToRequestToken == SessConstants.AUTH_TYPE_CERT_PEM) {
                         // We are requesting a token using a cert.
                         // Keep the cert creds and allow tokenValue to be removed
-                        AuthOrder.keepCred("certFile", credsToRemove);
-                        AuthOrder.keepCred("certKeyFile", credsToRemove);
+                        AuthOrder.keepCred(AuthOrder.SESS_CERT_NAME, credsToRemove);
+                        AuthOrder.keepCred(AuthOrder.SESS_CERT_KEY_NAME, credsToRemove);
                     } else {
                         // Our own code supplied a bad value for authTypeToRequestToken.
                         errMsg = "The requested session contains an invalid value for " +
@@ -570,8 +588,8 @@ export class AuthOrder {
                     AuthOrder.keepCred("tokenValue", credsToRemove);
                     break;
                 case SessConstants.AUTH_TYPE_CERT_PEM:
-                    AuthOrder.keepCred("certFile", credsToRemove);
-                    AuthOrder.keepCred("certKeyFile", credsToRemove);
+                    AuthOrder.keepCred(AuthOrder.SESS_CERT_NAME, credsToRemove);
+                    AuthOrder.keepCred(AuthOrder.SESS_CERT_KEY_NAME, credsToRemove);
                     break;
                 case SessConstants.AUTH_TYPE_NONE:
                     break;
