@@ -44,6 +44,8 @@ import { IDaemonContext } from "../../imperative/src/doc/IDaemonContext";
 import { IHandlerResponseApi } from "./doc/response/api/handler/IHandlerResponseApi";
 import { Censor } from "../../censor/src/Censor";
 import { EnvironmentalVariableSettings } from "../../imperative/src/env/EnvironmentalVariableSettings";
+import { AbstractSession } from "../../rest/src/session/AbstractSession";
+import { ConnectionPropsForSessCfg, ISession } from "../../rest";
 
 
 /**
@@ -78,7 +80,7 @@ interface IResolvedArgsResponse {
      * @type {string[]}
      * @memberof IResolvedArgsResponse
      */
-    locations?: string[]
+    locations?: string[];
 }
 
 /**
@@ -782,12 +784,16 @@ export class CommandProcessor {
         const secureInputs: Set<string> = new Set([...configSecureProps]);
         let censored = false;
 
+        const sessCfg: ISession = {};
+        ConnectionPropsForSessCfg.resolveSessCfgProps(sessCfg, commandParameters.arguments);
+        showInputsOnly.commandValues["authentication type"] = sessCfg.type;
+
         /**
          * Only attempt to show the input if it is in the command definition
          */
         for (let i = 0; i < commandParameters.definition.options?.length; i++) {
             const name = commandParameters.definition.options[i].name;
-
+            // console.log(commandParameters.definition.options[i]);
             if (commandParameters.arguments[name] != null) {
 
                 if (showSecure || !secureInputs.has(name)) {
