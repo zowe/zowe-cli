@@ -844,6 +844,9 @@ export class Download {
                 reqHeaders.push(ZosmfHeaders.TEXT_PLAIN);
             }
         }
+        if (options.responseTimeout != null) {
+            reqHeaders.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
+        }
         return reqHeaders;
     }
 
