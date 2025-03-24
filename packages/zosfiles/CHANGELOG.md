@@ -4,7 +4,7 @@ All notable changes to the Zowe z/OS files SDK package will be documented in thi
 
 ## Recent Changes
 
-- Enhancement: Adding the `responseTimeout` option to missing areas in the ZosFiles SDK so that the option is allowable on all methods.
+- Enhancement: Adding the `responseTimeout` option to missing areas in the ZosFiles SDK so that the option is allowable on all methods. [#2467](https://github.com/zowe/zowe-cli/pull/2467)
 
 ## `8.15.0`
 
