@@ -791,7 +791,7 @@ export class CommandProcessor {
          */
         for (let i = 0; i < commandParameters.definition.options?.length; i++) {
             const name = commandParameters.definition.options[i].name;
-            // console.log(commandParameters.definition.options[i]);
+
             if (commandParameters.arguments[name] != null) {
 
                 if (showSecure || !secureInputs.has(name)) {
