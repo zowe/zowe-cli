@@ -49,7 +49,7 @@ export class Utilities {
             { [Headers.CONTENT_LENGTH]: JSON.stringify(payload).length.toString() },
             ZosmfHeaders.ACCEPT_ENCODING
         ];
-        if (responseTimeout) {
+        if (responseTimeout != null) {
             reqHeaders.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: responseTimeout.toString()});
         }
         const response: any = await ZosmfRestClient.putExpectBuffer(session, endpoint, reqHeaders, payload);
