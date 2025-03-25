@@ -9,7 +9,7 @@
 *
 */
 
-import { Utilities, IZosFilesResponse, ZosFilesMessages, Tag, ZosFilesConstants } from "../../../../src";
+import { Utilities, IZosFilesResponse, ZosFilesMessages, Tag, ZosFilesConstants, IOptions } from "../../../../src";
 import { Session, Headers } from "@zowe/imperative";
 import { ZosmfHeaders, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { posix } from "path";
@@ -138,6 +138,24 @@ describe("Utilities.putUSSPayload", () => {
             zosmfExpectSecondSpy.mockImplementation(async () => content);
         });
 
+        it("should include X-IBM-Response-Timeout header when responseTimeout is provided", async () => {
+            const responseTimeout = 5;
+            const payload = { request: "test", action: "doSomething" };
+            // Spy on the underlying REST client call.
+            const restClientSpy = jest.spyOn(ZosmfRestClient, "putExpectBuffer")
+                .mockResolvedValue(Buffer.from("dummy"));
+
+            await Utilities.putUSSPayload(dummySession, "/u/testfile", payload, responseTimeout);
+
+            // The third parameter in the call should be reqHeaders.
+            const reqHeaders = restClientSpy.mock.calls[0][2];
+            const timeoutHeader = reqHeaders.find((h: any) =>
+                Object.keys(h).includes(ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT)
+            );
+            expect(timeoutHeader).toBeDefined();
+            expect(timeoutHeader[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]).toEqual(responseTimeout.toString());
+        });
+
         it("should throw an error if the uss file name is null", async () => {
             let response;
             let caughtError;
@@ -226,6 +244,22 @@ describe("Utilities.putUSSPayload", () => {
         beforeEach(() => {
             zosmfExpectSecondSpy.mockClear();
             zosmfExpectSecondSpy.mockImplementation(async () => content);
+        });
+
+        it("should pass responseTimeout to putUSSPayload", async () => {
+            const responseTimeout = 5;
+            //simulated response from a binary file.
+            const simulatedResponse = Buffer.from(JSON.stringify({ stdout: ["b binary T=on /u/testfile"] }));
+            const spy = jest.spyOn(Utilities, "putUSSPayload")
+                .mockResolvedValue(simulatedResponse);
+            const result = await Utilities.isFileTagBinOrAscii(dummySession, "/u/testfile", responseTimeout);
+            expect(result).toEqual(true);
+            expect(spy).toHaveBeenCalledWith(
+                dummySession,
+                "/u/testfile",
+                expect.any(Object),
+                responseTimeout
+            );
         });
 
         it("should throw an error if the uss file name is null", async () => {
@@ -377,6 +411,23 @@ describe("Utilities.putUSSPayload", () => {
         });
         const ussname = "/u/zowe/test";
 
+        it("should pass responseTimeout to putUSSPayload", async () => {
+            const responseTimeout = 5;
+            // simulated response from a binary file
+            const simulatedResponse = Buffer.from(JSON.stringify({ stdout: ["b binary T=on /u/testfile"] }));
+            const spy = jest.spyOn(Utilities, "putUSSPayload")
+                .mockResolvedValue(simulatedResponse);
+            const options: IOptions = {};
+            await Utilities.applyTaggedEncoding(dummySession, "/u/testfile", options, responseTimeout);
+            expect(options.binary).toEqual(true);
+            expect(spy).toHaveBeenCalledWith(
+                dummySession,
+                "/u/testfile",
+                expect.any(Object),
+                responseTimeout
+            );
+        });
+
         it("should set binary property if file is tagged as binary", async () => {
             jest.spyOn(Utilities, "putUSSPayload").mockResolvedValueOnce(Buffer.from(JSON.stringify({
                 stdout: ["b binary\tT=off\t" + ussname]
@@ -447,6 +498,22 @@ describe("Utilities.putUSSPayload", () => {
             protocol: "https",
             type: "basic"
         });
+
+        it("should pass responseTimeout to putUSSPayload", async () => {
+            const responseTimeout = 5;
+            const spy = jest.spyOn(Utilities, "putUSSPayload")
+                .mockResolvedValue(Buffer.from("dummy"));
+            const oldPath = "/u/old";
+            const newPath = "/u/new";
+            await Utilities.renameUSSFile(dummySession, oldPath, newPath, responseTimeout);
+            expect(spy).toHaveBeenCalledWith(
+                dummySession,
+                newPath,
+                expect.any(Object),
+                responseTimeout
+            );
+        });
+
         it("should fail if new file path is not passed in", async () => {
             let error: Error;
             try {
@@ -474,6 +541,22 @@ describe("Utilities.putUSSPayload", () => {
             expect(renameResponse).toBeTruthy();
             const payload = { request: "move", from: oldPath };
             expect(zosmfExpectSecondSpy).toHaveBeenLastCalledWith(dummySession, newPath, payload);
+        });
+    });
+
+    describe("Utilities.chtag", () => {
+        it("should pass responseTimeout to putUSSPayload", async () => {
+            const responseTimeout = 5;
+            const spy = jest.spyOn(Utilities, "putUSSPayload")
+                .mockResolvedValue(Buffer.from("dummy"));
+            // Call chtag with responseTimeout.
+            await Utilities.chtag(dummySession, "/u/testfile", Tag.TEXT, "IBM-1047", responseTimeout);
+            expect(spy).toHaveBeenCalledWith(
+                dummySession,
+                "/u/testfile",
+                expect.any(Object),
+                responseTimeout
+            );
         });
     });
 });
