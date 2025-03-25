@@ -33,7 +33,7 @@ export class Utilities {
      *
      * @throws {ImperativeError}
      */
-    public static async putUSSPayload(session: AbstractSession, USSFileName: string, payload: any): Promise<Buffer> {
+    public static async putUSSPayload(session: AbstractSession, USSFileName: string, payload: any, responseTimeout?: number): Promise<Buffer> {
         ImperativeExpect.toNotBeNullOrUndefined(USSFileName, ZosFilesMessages.missingUSSFileName.message);
         ImperativeExpect.toNotBeEqual(USSFileName, "", ZosFilesMessages.missingUSSFileName.message);
         ImperativeExpect.toNotBeNullOrUndefined(payload, ZosFilesMessages.missingPayload.message);
@@ -43,13 +43,15 @@ export class Utilities {
         // If the "file" is not provided, we create a folder structure similar to the uss file structure
         USSFileName = ZosFilesUtils.formatUnixFilepath(USSFileName);
         USSFileName = encodeURIComponent(USSFileName);
-
         const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, USSFileName);
         const reqHeaders: IHeaderContent[] = [
             Headers.APPLICATION_JSON,
             { [Headers.CONTENT_LENGTH]: JSON.stringify(payload).length.toString() },
             ZosmfHeaders.ACCEPT_ENCODING
         ];
+        if (responseTimeout) {
+            reqHeaders.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: responseTimeout.toString()});
+        }
         const response: any = await ZosmfRestClient.putExpectBuffer(session, endpoint, reqHeaders, payload);
         return response;
     }
@@ -67,7 +69,13 @@ export class Utilities {
      *
      * @throws {ImperativeError}
      */
-    public static async chtag(session: AbstractSession, ussFileName: string, type: Tag, codeset?: string): Promise<IZosFilesResponse> {
+    public static async chtag(
+        session: AbstractSession,
+        ussFileName: string,
+        type: Tag,
+        codeset?: string,
+        responseTimeout?: number
+    ): Promise<IZosFilesResponse> {
         ImperativeExpect.toNotBeNullOrUndefined(ussFileName, ZosFilesMessages.missingUSSFileName.message);
 
         if (type === Tag.BINARY) {
@@ -78,7 +86,7 @@ export class Utilities {
         if (codeset) {
             payload.codeset = codeset;
         }
-        await Utilities.putUSSPayload(session, ussFileName, payload);
+        await Utilities.putUSSPayload(session, ussFileName, payload, responseTimeout);
 
         return {
             success: true,
@@ -102,9 +110,9 @@ export class Utilities {
      *
      * @throws {ImperativeError}
      */
-    public static async isFileTagBinOrAscii(session: AbstractSession, USSFileName: string): Promise<boolean> {
+    public static async isFileTagBinOrAscii(session: AbstractSession, USSFileName: string, responseTimeout?: number): Promise<boolean> {
         const payload = {request:"chtag", action:"list"};
-        const response = await Utilities.putUSSPayload(session, USSFileName, payload);
+        const response = await Utilities.putUSSPayload(session, USSFileName, payload, responseTimeout);
         const jsonObj = JSON.parse(response.toString());
         if (Object.prototype.hasOwnProperty.call(jsonObj, "stdout")) {
             const stdout = jsonObj.stdout[0];
@@ -122,9 +130,9 @@ export class Utilities {
      * @param USSFileName Path to USS file
      * @param options Options for downloading a USS file
      */
-    public static async applyTaggedEncoding(session: AbstractSession, USSFileName: string, options: IOptions): Promise<void> {
+    public static async applyTaggedEncoding(session: AbstractSession, USSFileName: string, options: IOptions, responseTimeout?: number): Promise<void> {
         const payload = { request: "chtag", action: "list" };
-        const response = await Utilities.putUSSPayload(session, USSFileName, payload);
+        const response = await Utilities.putUSSPayload(session, USSFileName, payload, responseTimeout);
         const jsonObj = JSON.parse(response.toString());
         if (Object.prototype.hasOwnProperty.call(jsonObj, "stdout")) {
             const columns = (jsonObj.stdout[0] as string).trim().split(/\s+/);
@@ -148,11 +156,11 @@ export class Utilities {
      *
      * @throws {ImperativeError}
      */
-    public static async renameUSSFile(session: AbstractSession, USSFilePath: string, newFilePath: string): Promise<Buffer> {
+    public static async renameUSSFile(session: AbstractSession, USSFilePath: string, newFilePath: string, responseTimeout?: number): Promise<Buffer> {
         ImperativeExpect.toNotBeNullOrUndefined(newFilePath, ZosFilesMessages.missingUSSFileName.message);
         const oldFilePath = USSFilePath.charAt(0) === "/" ? USSFilePath : "/" + USSFilePath;
         const payload = { request: "move", from: path.posix.normalize(oldFilePath) };
-        const response = await Utilities.putUSSPayload(session, newFilePath, payload);
+        const response = await Utilities.putUSSPayload(session, newFilePath, payload, responseTimeout);
         return response;
     }
 }
