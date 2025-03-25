@@ -15,7 +15,7 @@ import * as npmPackageArg from "npm-package-arg";
 import * as pacote from "pacote";
 import * as npmFunctions from "../../../src/plugins/utilities/NpmFunctions";
 import { PMFConstants } from "../../../src/plugins/utilities/PMFConstants";
-import { ExecUtils } from "../../../../utilities";
+import { DaemonRequest, ExecUtils, ImperativeConfig } from "../../../../utilities";
 
 jest.mock("cross-spawn");
 jest.mock("jsonfile");
@@ -26,6 +26,7 @@ describe("NpmFunctions", () => {
     const npmCmd = npmFunctions.findNpmOnPath();
 
     afterEach(() => {
+        jest.restoreAllMocks();
         jest.clearAllMocks();
     });
 
@@ -46,6 +47,24 @@ describe("NpmFunctions", () => {
         expect(spawnSyncSpy.mock.calls[0][1]).toEqual(expect.arrayContaining(["--prefix", "fakePrefix"]));
         expect(spawnSyncSpy.mock.calls[0][1]).toEqual(expect.arrayContaining(["--registry", fakeRegistry]));
         expect(result).toBe(stdoutBuffer.toString());
+    });
+    it("should write output to daemon stream if available", () => {
+        const writeMock = jest.fn().mockReturnValue("true");
+
+        jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({
+            envVariablePrefix: "MOCK_PREFIX",
+            cliHome: "/mock/home",
+            daemonContext: {
+                stream: {
+                    write: writeMock
+                }
+            }
+        } as any);
+
+        jest.spyOn(ExecUtils, "spawnAndGetOutput").mockReturnValue(Buffer.from("Install Succeeded"));
+        const result = npmFunctions.installPackages("samplePlugin", { prefix: "fakePrefix" });
+        expect(writeMock).toHaveBeenCalledWith(DaemonRequest.create({ stdout: "Install Succeeded" }));
+        expect(result).toBe("Install Succeeded");
     });
 
     it("getRegistry should run npm config command", () => {
