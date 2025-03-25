@@ -1,7 +1,7 @@
 # Change Log
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `8.16.0`
 
 - Enhancement: Add the ability to search data sets with regex patterns by passing `--regex` into the search command. [#2432](https://github.com/zowe/zowe-cli/issues/2432)
 
