@@ -174,7 +174,7 @@ export class AuthOrder {
     public static getAuthOrder<SessCfgType extends ISession>(
         sessCfg: SessCfgType
     ): SessConstants.AUTH_TYPE_CHOICES[] {
-        if (sessCfg.authTypeOrder?.length === 0) {
+        if (!sessCfg.authTypeOrder || sessCfg.authTypeOrder.length === 0) {
             // we have no auth order, so create a default authOrder that we can return
             sessCfg._authCache.didUserSetAuthOrder = false;
             AuthOrder.chooseDefaultAuthOrder(sessCfg);
@@ -240,7 +240,7 @@ export class AuthOrder {
     ): void {
         // If our caller did not follow best practices in their use of imperative functions,
         // then cacheCredsAndAuthOrder may not have been called, and availableCreds may be empty.
-        if (sessCfg._authCache?.availableCreds && Object.keys(sessCfg._authCache.availableCreds).length === 0) {
+        if (!sessCfg._authCache?.availableCreds || Object.keys(sessCfg._authCache.availableCreds).length === 0) {
             // As a last resort, cache our creds now with an empty set of command args.
             // This will cache any creds from the sessCfg and use a default auth order.
             AuthOrder.cacheCredsAndAuthOrder(sessCfg, { "$0": "NameNotUsed", "_": [] });
@@ -541,6 +541,12 @@ export class AuthOrder {
     private static removeExtraCredsFromSess<SessCfgType extends ISession>(
         sessCfg: SessCfgType
     ): void {
+        if (!sessCfg) {
+            const errMsg = "The supplied session is null or undefined.";
+            Logger.getImperativeLogger().error(errMsg);
+            throw new ImperativeError({ msg: errMsg });
+        }
+
         // Initially set all creds to be removed from the session.
         // Then delete from this set the creds that we want to keep.
         const credsToRemove = new Set(AuthOrder.ARRAY_OF_CREDS);
@@ -549,7 +555,7 @@ export class AuthOrder {
         // If we have no type, it is because no creds were provided,
         // so we we have no creds to keep or remove.
         let errMsg: string;
-        if (sessCfg?.type) {
+        if (sessCfg.type) {
             switch (sessCfg.type) {
                 case SessConstants.AUTH_TYPE_BASIC:
                     if (sessCfg.base64EncodedAuth) {
