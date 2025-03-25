@@ -2724,24 +2724,4 @@ describe("z/OS Files - Download", () => {
             expect(response).not.toContain("Some files may have been skipped because --fail-fast is true");
         });
     });
-
-    describe("Download.generateHeadersBasedOnOptions", () => {
-        it("should include the responseTimeout header when responseTimeout is provided in options", () => {
-          const timeoutValue = 5;
-          const options: IDownloadOptions = {
-            responseTimeout: timeoutValue
-          };
-
-          // Since generateHeadersBasedOnOptions is a private static method,
-          // we access it via a type cast to 'any'
-          const headers = (Download as any).generateHeadersBasedOnOptions(options);
-
-          const timeoutHeader = headers.find(
-            (header: any) => Object.keys(header).includes("X-IBM-Response-Timeout")
-          );
-
-          expect(timeoutHeader).toBeDefined();
-          expect(timeoutHeader["X-IBM-Response-Timeout"]).toEqual(timeoutValue.toString());
-        });
-      });
 });

@@ -1046,11 +1046,6 @@ export class Upload {
             reqHeaders.push(ZosmfHeaders.X_IBM_RETURN_ETAG);
         }
 
-        const headerKeys = reqHeaders.flatMap(headerObj => Object.keys(headerObj));
-        if (!headerKeys.includes('X-IBM-Response-Timeout') && options.responseTimeout != null) {
-            reqHeaders.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: options.responseTimeout.toString()});
-        }
-
         return reqHeaders;
     }
 }

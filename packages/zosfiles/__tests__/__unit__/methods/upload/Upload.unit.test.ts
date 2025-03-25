@@ -2605,25 +2605,5 @@ describe("z/OS Files - Upload", () => {
                 expect(chtagSpy).toHaveBeenCalledWith(dummySession, `${dsName}/asciifile`, Tag.TEXT, "ISO8859-1");
             });
         });
-        });
-    describe("Upload.generateHeadersBasedOnOptions", () => {
-        it("should include the responseTimeout header when responseTimeout is provided in options", () => {
-            const timeoutValue = 5;
-            const options: IUploadOptions = {
-            responseTimeout: timeoutValue
-            };
-
-            // Since generateHeadersBasedOnOptions is a private static method,
-            // we access it using a type cast to 'any'
-            const headers = (Upload as any).generateHeadersBasedOnOptions(options);
-
-            const timeoutHeader = headers.find(
-            (header: any) => Object.keys(header).includes("X-IBM-Response-Timeout")
-            );
-
-            expect(timeoutHeader).toBeDefined();
-            expect(timeoutHeader["X-IBM-Response-Timeout"]).toEqual(timeoutValue.toString());
-        });
     });
-
 });
