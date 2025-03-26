@@ -79,6 +79,12 @@ interface IResolvedArgsResponse {
      * @memberof IResolvedArgsResponse
      */
     locations?: string[];
+
+    /**
+     * @type {string}
+     * @memberof IResolvedArgsResponse
+     */
+    authenticationType?: string;
 }
 
 /**
@@ -755,6 +761,10 @@ export class CommandProcessor {
             commandValues: {} as ICommandArguments
         };
 
+        const sessCfg: ISession = {};
+        ConnectionPropsForSessCfg.resolveSessCfgProps(sessCfg, commandParameters.arguments);
+        showInputsOnly.authenticationType = sessCfg.type;
+
         /**
          * Append profile information
          */
@@ -782,9 +792,6 @@ export class CommandProcessor {
         const secureInputs: Set<string> = new Set([...configSecureProps]);
         let censored = false;
 
-        const sessCfg: ISession = {};
-        ConnectionPropsForSessCfg.resolveSessCfgProps(sessCfg, commandParameters.arguments);
-        showInputsOnly.commandValues["authentication type"] = sessCfg.type;
 
         /**
          * Only attempt to show the input if it is in the command definition
