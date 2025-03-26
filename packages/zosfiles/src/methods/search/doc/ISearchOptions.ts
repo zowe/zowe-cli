@@ -42,6 +42,9 @@ export interface ISearchOptions {
     /* The search should be case sensitive */
     caseSensitive?: boolean;
 
+    /* Whether the search string is a regular expression */
+    regex?: boolean;
+
     /* A function that, if provided, is called with a list of data sets and members that are about to be searched. */
     /* If true, continue search. If false, terminate search. */
     continueSearch?: (dataSets: IDataSet[]) => Promise<boolean> | boolean;
