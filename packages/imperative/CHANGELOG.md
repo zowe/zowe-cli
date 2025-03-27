@@ -6,8 +6,9 @@ All notable changes to the Imperative package will be documented in this file.
 
 - Enhancement: Added a line to the output to display the authentication type when using the `--show-inputs-only` option. [#2462] (https://github.com/zowe/zowe-cli/issues/2462)
 
+- Enhancement: Added a favicon to the Web Help that displays in browser tabs. [#801](https://github.com/zowe/zowe-cli/issues/801)
 - BugFix: When in daemon mode, the user would not see Imperative initialization errors, but now the errors are passed back to the user's terminal window. [#1875](https://github.com/zowe/zowe-cli/issues/1875).
-- Enhancement: Added a favicon to the Web Help that displays in browser tabs. [#801] (https://github.com/zowe/zowe-cli/issues/801)
+- Enhancement: Allowed instances of the `ProfileCredentials` class to check the user and non-user layers for secure fields. [#2460](https://github.com/zowe/zowe-cli/issues/2460)
 
 ## `8.15.1`
 
@@ -15,7 +16,7 @@ All notable changes to the Imperative package will be documented in this file.
 
 ## `8.14.1`
 
-- BugFix: Fixed help text example section's wrapping issue where the first line of the description is wrapped differently than the rest of the lines. [#1945] (https://github.com/zowe/zowe-cli/issues/1945).
+- BugFix: Fixed help text example section's wrapping issue where the first line of the description is wrapped differently than the rest of the lines. [#1945](https://github.com/zowe/zowe-cli/issues/1945).
 
 ## `8.14.0`
 
