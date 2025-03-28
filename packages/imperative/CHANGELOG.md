@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Fixed a bug that resulted in daemon commands running slower with every additional command. [#2470](https://github.com/zowe/zowe-cli/issues/2470)
+
 ## `8.16.0`
 
 - Enhancement: Added a line to the output to display the authentication type when using the `--show-inputs-only` option. [#2462] (https://github.com/zowe/zowe-cli/issues/2462)

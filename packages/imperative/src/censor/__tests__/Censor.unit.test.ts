@@ -790,6 +790,79 @@ describe("Censor tests", () => {
             expect(Censor.CENSORED_OPTIONS).not.toContain("t");
         });
 
+        it("should clear a previously stored schema if a new one is specified", () => {
+            (Censor as any).mSchema = [{
+                type: "test",
+                schema: {
+                    title: "Fake Profile Type",
+                    description: "Fake Profile Description",
+                    type: "object",
+                    properties: {
+                        test: {
+                            type: "string",
+                            secure: true,
+                            optionDefinitions: [{
+                                name: "test1",
+                                type: "string",
+                                description: "Fake Test Description"
+                            }, {
+                                name: "test2",
+                                type: "string",
+                                description: "Fake Test Description",
+                                aliases: ["t"]
+                            }, {
+                                name: "test3",
+                                type: "string",
+                                description: "Fake Test Description"
+                            }]
+                        }
+                    }
+                }
+            }];
+
+            const censorOpts: ICensorOptions = {
+                profiles: [{
+                    type: "test",
+                    schema: {
+                        title: "Fake Profile Type",
+                        description: "Fake Profile Description",
+                        type: "object",
+                        properties: {
+                            test: {
+                                type: "string",
+                                secure: true,
+                                optionDefinitions: [{
+                                    name: "test1",
+                                    type: "string",
+                                    description: "Fake Test Description"
+                                }, {
+                                    name: "test2",
+                                    type: "string",
+                                    description: "Fake Test Description",
+                                    aliases: ["t"]
+                                }]
+                            }
+                        }
+                    }
+                }],
+                commandDefinition: {
+                    name: "test",
+                    description: "test",
+                    type: "command",
+                    profile: {
+                        required: ["test"]
+                    }
+                },
+            };
+
+            Censor.setCensoredOptions(censorOpts);
+
+            expect(Censor.CENSORED_OPTIONS).toContain("test1");
+            expect(Censor.CENSORED_OPTIONS).toContain("test2");
+            expect(Censor.CENSORED_OPTIONS).toContain("t");
+            expect(Censor.CENSORED_OPTIONS).not.toContain("test3");
+        });
+
         it("should apply a config without command definitions", () => {
             const censorOpts: ICensorOptions = {
                 config: {
