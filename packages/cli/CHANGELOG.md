@@ -1,7 +1,7 @@
 # Change Log
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `8.17.0`
 
 - BugFix: Fixed a bug that resulted in daemon commands running slower with every additional command. [#2470](https://github.com/zowe/zowe-cli/issues/2470)
 
