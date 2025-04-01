@@ -41,9 +41,9 @@ import { Config } from "../../config/src/Config";
 import { ConfigUtils } from "../../config/src/ConfigUtils";
 import { ConfigConstants } from "../../config/src/ConfigConstants";
 import { IDaemonContext } from "../../imperative/src/doc/IDaemonContext";
-import { IHandlerResponseApi } from "./doc/response/api/handler/IHandlerResponseApi";
 import { Censor } from "../../censor/src/Censor";
 import { EnvironmentalVariableSettings } from "../../imperative/src/env/EnvironmentalVariableSettings";
+import { ConnectionPropsForSessCfg, ISession } from "../../rest";
 
 
 /**
@@ -78,7 +78,13 @@ interface IResolvedArgsResponse {
      * @type {string[]}
      * @memberof IResolvedArgsResponse
      */
-    locations?: string[]
+    locations?: string[];
+
+    /**
+     * @type {string}
+     * @memberof IResolvedArgsResponse
+     */
+    authenticationType?: string;
 }
 
 /**
@@ -755,6 +761,10 @@ export class CommandProcessor {
             commandValues: {} as ICommandArguments
         };
 
+        const sessCfg: ISession = {};
+        ConnectionPropsForSessCfg.resolveSessCfgProps(sessCfg, commandParameters.arguments);
+        showInputsOnly.authenticationType = sessCfg.type;
+
         /**
          * Append profile information
          */
@@ -781,6 +791,7 @@ export class CommandProcessor {
          */
         const secureInputs: Set<string> = new Set([...configSecureProps]);
         let censored = false;
+
 
         /**
          * Only attempt to show the input if it is in the command definition
