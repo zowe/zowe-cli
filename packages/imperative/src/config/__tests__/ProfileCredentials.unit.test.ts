@@ -13,15 +13,15 @@ import * as fs from "fs";
 import { CredentialManagerFactory, DefaultCredentialManager, ICredentialManagerInit } from "../../security";
 import { ConfigSecure } from "../src/api/ConfigSecure";
 import { ProfileCredentials } from "../src/ProfileCredentials";
+import { Config } from "../src/Config";
 
 jest.mock("../../security/src/CredentialManagerFactory");
 jest.mock("../../security/src/DefaultCredentialManager");
 jest.mock("../../utilities/src/ImperativeConfig");
 
-function mockConfigApi(secureApi: Partial<ConfigSecure>, opts?: any): any {
+function mockConfigApi(secureApi: Partial<ConfigSecure>): any {
     return {
-        api: { secure: secureApi },
-        layerActive: opts?.layerActive,
+        api: { secure: secureApi }
     };
 }
 
@@ -55,32 +55,41 @@ describe("ProfileCredentials tests", () => {
             expect(profCreds.isSecured).toBe(true);
         });
 
-        it("should be true when checkLevelLayers is true if non-user config is secure and user config is not secure", () => {
-            const profCreds = new ProfileCredentials({
-                getTeamConfig: () => mockConfigApi({
-                    secureFields: (opts) => opts?.user ? [] : ["myAwesomeProperty"],
-                }, {
-                    layerActive: () => ({ user: true, global: false })
-                })
-            } as any, {
-                checkLevelLayers: true
+        describe("by loading a real project config to test the onlyCheckActiveLayer parameter, isSecured", () => {
+            let testConfig: Config;
+            beforeEach(async () => {
+                testConfig = await Config.load("project", {
+                    homeDir: __dirname + "/__resources__",
+                    projectDir: false
+                });
             });
-            jest.spyOn(profCreds as any, "isCredentialManagerInAppSettings").mockReturnValueOnce(false);
-            expect(profCreds.isSecured).toBe(true);
-        });
+            it("should be false when onlyCheckActiveLayer is true if non-user config is secure and user config is not secure", async () => {
+                const profCreds = new ProfileCredentials({
+                    getTeamConfig: () => testConfig
+                } as any, {
+                    onlyCheckActiveLayer: true
+                });
+                jest.spyOn(profCreds as any, "isCredentialManagerInAppSettings").mockReturnValueOnce(false);
+                expect(profCreds.isSecured).toBe(false);
+            });
 
-        it("should be false when checkLevelLayers is true if non-user and user config are not secure", () => {
-            const profCreds = new ProfileCredentials({
-                getTeamConfig: () => mockConfigApi({
-                    secureFields: () => [],
-                }, {
-                    layerActive: () => ({ user: true, global: false })
-                })
-            } as any, {
-                checkLevelLayers: true
+            it("should be true when onlyCheckActiveLayer is false if non-user config is secure and user config is not secure", async () => {
+                const profCreds = new ProfileCredentials({
+                    getTeamConfig: () => testConfig
+                } as any, {
+                    onlyCheckActiveLayer: false
+                });
+                jest.spyOn(profCreds as any, "isCredentialManagerInAppSettings").mockReturnValueOnce(false);
+                expect(profCreds.isSecured).toBe(true);
             });
-            jest.spyOn(profCreds as any, "isCredentialManagerInAppSettings").mockReturnValueOnce(false);
-            expect(profCreds.isSecured).toBe(false);
+
+            it("should be true when onlyCheckActiveLayer is not specified if non-user config is secure and user config is not secure", async () => {
+                const profCreds = new ProfileCredentials({
+                    getTeamConfig: () => testConfig
+                } as any);
+                jest.spyOn(profCreds as any, "isCredentialManagerInAppSettings").mockReturnValueOnce(false);
+                expect(profCreds.isSecured).toBe(true);
+            });
         });
 
         it("should be false if team config is not secure and CredentialManager is not set", () => {

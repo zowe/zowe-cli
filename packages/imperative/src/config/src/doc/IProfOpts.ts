@@ -37,9 +37,10 @@ export interface IProfOpts {
     credMgrOverride?: ICredentialManagerInit;
 
     /**
-     * This option forces the isSecured method to return validate if the user and non-user layer have secure properties
-     * Setting this to true will check if either user or non-user layer have secure properties
+     * This option allows the old behavior of only checking the active layer
+     * in order to determine if credentials are to be stored securely.
+     * When this option is true, the `isSecured` getter will return false if the active layer does not have secure properties
      * Default: false
      */
-    checkLevelLayers?: boolean;
+    onlyCheckActiveLayer?: boolean;
 }

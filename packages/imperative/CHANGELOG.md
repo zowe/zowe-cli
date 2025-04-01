@@ -2,17 +2,20 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Ensured that the `ProfileCredentials` class evaluates all layers to determine if the credentials are secure. [#2460](https://github.com/zowe/zowe-cli/issues/2460)
+- Enhancement: Allowed instances of the `ProfileCredentials` class to check only for the active layer to determine if the credentials are secure. [#2460](https://github.com/zowe/zowe-cli/issues/2460)
+
 ## `8.17.0`
 
 - BugFix: Fixed a bug that resulted in daemon commands running slower with every additional command. [#2470](https://github.com/zowe/zowe-cli/issues/2470)
 
 ## `8.16.0`
 
-- Enhancement: Added a line to the output to display the authentication type when using the `--show-inputs-only` option. [#2462] (https://github.com/zowe/zowe-cli/issues/2462)
-
+- Enhancement: Added a line to the output to display the authentication type when using the `--show-inputs-only` option. [#2462](https://github.com/zowe/zowe-cli/issues/2462)
 - Enhancement: Added a favicon to the Web Help that displays in browser tabs. [#801](https://github.com/zowe/zowe-cli/issues/801)
 - BugFix: When in daemon mode, the user would not see Imperative initialization errors, but now the errors are passed back to the user's terminal window. [#1875](https://github.com/zowe/zowe-cli/issues/1875).
-- Enhancement: Allowed instances of the `ProfileCredentials` class to check the user and non-user layers for secure fields. [#2460](https://github.com/zowe/zowe-cli/issues/2460)
 
 ## `8.15.1`
 
