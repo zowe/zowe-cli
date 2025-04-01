@@ -214,7 +214,7 @@ export class AuthOrder {
         sessCfg: SessCfgType
     ): void {
         if (sessCfg?._authCache?.authTypeToRequestToken) {
-            delete sessCfg._authCache.authTypeToRequestToken
+            delete sessCfg._authCache.authTypeToRequestToken;
         }
     }
 
