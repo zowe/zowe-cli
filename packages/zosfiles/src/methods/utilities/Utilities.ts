@@ -49,8 +49,8 @@ export class Utilities {
             { [Headers.CONTENT_LENGTH]: JSON.stringify(payload).length.toString() },
             ZosmfHeaders.ACCEPT_ENCODING
         ];
-        if (responseTimeout != null && responseTimeout >= 5) {
-            reqHeaders.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: responseTimeout.toString()});
+        if (responseTimeout != null) {
+            reqHeaders.push({ [ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: responseTimeout.toString() });
         }
         const response: any = await ZosmfRestClient.putExpectBuffer(session, endpoint, reqHeaders, payload);
         return response;
@@ -87,11 +87,7 @@ export class Utilities {
             payload.codeset = codeset;
         }
 
-        if (responseTimeout != null && responseTimeout >= 5) {
-            await Utilities.putUSSPayload(session, ussFileName, payload, responseTimeout);
-        } else {
-            await Utilities.putUSSPayload(session, ussFileName, payload)
-        }
+        await Utilities.putUSSPayload(session, ussFileName, payload, responseTimeout);
         return {
             success: true,
             commandResponse: "File tagged successfully."
@@ -115,13 +111,8 @@ export class Utilities {
      * @throws {ImperativeError}
      */
     public static async isFileTagBinOrAscii(session: AbstractSession, USSFileName: string, responseTimeout?: number): Promise<boolean> {
-        const payload = {request:"chtag", action:"list"};
-        let response;
-        if (responseTimeout != null && responseTimeout >= 5) {
-            response = await Utilities.putUSSPayload(session, USSFileName, payload, responseTimeout);
-        } else {
-            response = await Utilities.putUSSPayload(session, USSFileName, payload)
-        }
+        const payload = { request: "chtag", action: "list" };
+        const response = await Utilities.putUSSPayload(session, USSFileName, payload, responseTimeout);
         const jsonObj = JSON.parse(response.toString());
         if (Object.prototype.hasOwnProperty.call(jsonObj, "stdout")) {
             const stdout = jsonObj.stdout[0];
@@ -139,14 +130,14 @@ export class Utilities {
      * @param USSFileName Path to USS file
      * @param options Options for downloading a USS file
      */
-    public static async applyTaggedEncoding(session: AbstractSession, USSFileName: string, options: IOptions, responseTimeout?: number): Promise<void> {
+    public static async applyTaggedEncoding(
+        session: AbstractSession,
+        USSFileName: string,
+        options: IOptions,
+        responseTimeout?: number
+    ): Promise<void> {
         const payload = { request: "chtag", action: "list" };
-        let response;
-        if (responseTimeout != null && responseTimeout >= 5) {
-            response = await Utilities.putUSSPayload(session, USSFileName, payload, responseTimeout);
-        } else {
-            response = await Utilities.putUSSPayload(session, USSFileName, payload)
-        }
+        const response = await Utilities.putUSSPayload(session, USSFileName, payload, responseTimeout);
         const jsonObj = JSON.parse(response.toString());
         if (Object.prototype.hasOwnProperty.call(jsonObj, "stdout")) {
             const columns = (jsonObj.stdout[0] as string).trim().split(/\s+/);
@@ -174,12 +165,7 @@ export class Utilities {
         ImperativeExpect.toNotBeNullOrUndefined(newFilePath, ZosFilesMessages.missingUSSFileName.message);
         const oldFilePath = USSFilePath.charAt(0) === "/" ? USSFilePath : "/" + USSFilePath;
         const payload = { request: "move", from: path.posix.normalize(oldFilePath) };
-        let response;
-        if (responseTimeout != null && responseTimeout >= 5) {
-            response = await Utilities.putUSSPayload(session, newFilePath, payload, responseTimeout);
-        } else {
-            response = await Utilities.putUSSPayload(session, newFilePath, payload)
-        }
+        const response = await Utilities.putUSSPayload(session, newFilePath, payload, responseTimeout);
         return response;
     }
 }
