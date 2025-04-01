@@ -352,6 +352,7 @@ describe("Utilities", () => {
             const zosmfExpectSpy = jest.spyOn(Utilities, "putUSSPayload").mockResolvedValue(Buffer.from("dummyBuffer"));
             const oldPath = "/u/zowe/test";
             const newPath = "/u/zowe/test1";
+            const rto: any = undefined;
             try {
                 response = await Utilities.renameUSSFile(localDummySession, oldPath, newPath);
             } catch (e) {
@@ -362,7 +363,7 @@ describe("Utilities", () => {
             expect(Buffer.isBuffer(response)).toBeTruthy();
             expect(response.toString()).toEqual("dummyBuffer");
             const payloadRename = { request: "move", from: oldPath };
-            expect(zosmfExpectSpy).toHaveBeenLastCalledWith(localDummySession, newPath, payloadRename);
+            expect(zosmfExpectSpy).toHaveBeenLastCalledWith(localDummySession, newPath, payloadRename, rto);
         });
         it("should pass responseTimeout to putUSSPayload", async () => {
             const responseTimeout = 6;
