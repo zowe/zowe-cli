@@ -215,7 +215,7 @@ describe("Search", () => {
             const response = await Search.dataSets(dummySession, searchOptions);
 
             expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledTimes(1);
-            expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledWith(dummySession, ["TEST*"], {maxConcurrentRequests: 1});
+            expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledWith(dummySession, ["TEST*"], {attributes: true, maxConcurrentRequests: 1});
             expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
             expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS", {});
             expect(searchOnMainframeSpy).toHaveBeenCalledTimes(1);
@@ -261,7 +261,7 @@ describe("Search", () => {
             const response = await Search.dataSets(dummySession, searchOptions);
 
             expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledTimes(1);
-            expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledWith(dummySession, ["TEST*"], {maxConcurrentRequests: 1});
+            expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledWith(dummySession, ["TEST*"], {attributes: true, maxConcurrentRequests: 1});
             expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
             expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS", {});
             expect(searchOnMainframeSpy).toHaveBeenCalledTimes(1);
@@ -318,7 +318,7 @@ describe("Search", () => {
             const response = await Search.dataSets(dummySession, searchOptions);
 
             expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledTimes(1);
-            expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledWith(dummySession, ["TEST*"], {maxConcurrentRequests: 1});
+            expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledWith(dummySession, ["TEST*"], {attributes: true, maxConcurrentRequests: 1});
             expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
             expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS", {});
             expect(searchOnMainframeSpy).toHaveBeenCalledTimes(1);
@@ -370,7 +370,7 @@ describe("Search", () => {
             const response = await Search.dataSets(dummySession, searchOptions);
 
             expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledTimes(1);
-            expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledWith(dummySession, ["TEST*"], {maxConcurrentRequests: 1});
+            expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledWith(dummySession, ["TEST*"], {attributes: true, maxConcurrentRequests: 1});
             expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
             expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS", {});
             expect(searchOnMainframeSpy).toHaveBeenCalledTimes(1);
@@ -424,7 +424,7 @@ describe("Search", () => {
             const response = await Search.dataSets(dummySession, searchOptions);
 
             expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledTimes(1);
-            expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledWith(dummySession, ["TEST*"], {maxConcurrentRequests: 1});
+            expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledWith(dummySession, ["TEST*"], {attributes: true, maxConcurrentRequests: 1});
             expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
             expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS", {});
             expect(searchOnMainframeSpy).toHaveBeenCalledTimes(0);
@@ -452,7 +452,7 @@ describe("Search", () => {
             const response = await Search.dataSets(dummySession, searchOptions);
 
             expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledTimes(1);
-            expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledWith(dummySession, ["TEST*"], {maxConcurrentRequests: 1});
+            expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledWith(dummySession, ["TEST*"], {attributes: true, maxConcurrentRequests: 1});
             expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
             expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS", {});
             expect(searchOnMainframeSpy).toHaveBeenCalledTimes(0);
@@ -480,7 +480,7 @@ describe("Search", () => {
             const response = await Search.dataSets(dummySession, searchOptions);
 
             expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledTimes(1);
-            expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledWith(dummySession, ["TEST*"], {maxConcurrentRequests: 1});
+            expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledWith(dummySession, ["TEST*"], {attributes: true, maxConcurrentRequests: 1});
             expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
             expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS", {});
             expect(searchOnMainframeSpy).toHaveBeenCalledTimes(0);
@@ -513,7 +513,7 @@ describe("Search", () => {
             const response = await Search.dataSets(dummySession, searchOptions);
 
             expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledTimes(1);
-            expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledWith(dummySession, ["TEST*"], {maxConcurrentRequests: 1});
+            expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledWith(dummySession, ["TEST*"], {attributes: true, maxConcurrentRequests: 1});
             expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
             expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS", {});
             expect(searchOnMainframeSpy).toHaveBeenCalledTimes(1);
@@ -572,7 +572,7 @@ describe("Search", () => {
             const response = await Search.dataSets(dummySession, searchOptions);
 
             expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledTimes(1);
-            expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledWith(dummySession, ["TEST*"], {maxConcurrentRequests: 1});
+            expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledWith(dummySession, ["TEST*"], {attributes: true, maxConcurrentRequests: 1});
             expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
             expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS", {});
             expect(searchOnMainframeSpy).toHaveBeenCalledTimes(0);
@@ -605,7 +605,7 @@ describe("Search", () => {
             const response = await Search.dataSets(dummySession, searchOptions);
 
             expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledTimes(1);
-            expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledWith(dummySession, ["TEST*"], {maxConcurrentRequests: 1});
+            expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledWith(dummySession, ["TEST*"], {attributes: true, maxConcurrentRequests: 1});
             expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
             expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS", {});
             expect(searchOnMainframeSpy).toHaveBeenCalledTimes(0);
@@ -638,7 +638,7 @@ describe("Search", () => {
             const response = await Search.dataSets(dummySession, searchOptions);
 
             expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledTimes(1);
-            expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledWith(dummySession, ["TEST*"], {maxConcurrentRequests: 1});
+            expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledWith(dummySession, ["TEST*"], {attributes: true, maxConcurrentRequests: 1});
             expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
             expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS", {});
             expect(searchOnMainframeSpy).toHaveBeenCalledTimes(0);
@@ -664,7 +664,7 @@ describe("Search", () => {
             const response = await Search.dataSets(dummySession, searchOptions);
 
             expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledTimes(1);
-            expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledWith(dummySession, ["TEST*"], {maxConcurrentRequests: 1});
+            expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledWith(dummySession, ["TEST*"], {attributes: true, maxConcurrentRequests: 1});
             expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
             expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS", {});
             expect(searchOnMainframeSpy).toHaveBeenCalledTimes(1);
@@ -695,7 +695,7 @@ describe("Search", () => {
             const response = await Search.dataSets(dummySession, searchOptions);
 
             expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledTimes(1);
-            expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledWith(dummySession, ["TEST*"], {maxConcurrentRequests: 1});
+            expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledWith(dummySession, ["TEST*"], {attributes: true, maxConcurrentRequests: 1});
             expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
             expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS", {});
             expect(searchOnMainframeSpy).toHaveBeenCalledTimes(1);
@@ -725,7 +725,7 @@ describe("Search", () => {
             const response = await Search.dataSets(dummySession, searchOptions);
 
             expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledTimes(1);
-            expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledWith(dummySession, ["TEST*"], {maxConcurrentRequests: 1});
+            expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledWith(dummySession, ["TEST*"], {attributes: true, maxConcurrentRequests: 1});
             expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
             expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS", {});
             expect(searchOnMainframeSpy).toHaveBeenCalledTimes(1);
@@ -776,7 +776,7 @@ describe("Search", () => {
             const response = await Search.dataSets(dummySession, searchOptions);
 
             expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledTimes(1);
-            expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledWith(dummySession, ["TEST*"], {maxConcurrentRequests: 1});
+            expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledWith(dummySession, ["TEST*"], {attributes: true, maxConcurrentRequests: 1});
             expect(listAllMembersSpy).toHaveBeenCalledTimes(0);
             expect(searchOnMainframeSpy).toHaveBeenCalledTimes(1);
             expect(searchLocalSpy).toHaveBeenCalledTimes(1);
@@ -811,7 +811,7 @@ describe("Search", () => {
             const response = await Search.dataSets(dummySession, searchOptions);
 
             expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledTimes(1);
-            expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledWith(dummySession, ["TEST*"], {maxConcurrentRequests: 1});
+            expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledWith(dummySession, ["TEST*"], {attributes: true, maxConcurrentRequests: 1});
             expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
             expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS", {});
             expect(searchOnMainframeSpy).toHaveBeenCalledTimes(1);
@@ -858,7 +858,7 @@ describe("Search", () => {
             const response = await Search.dataSets(dummySession, searchOptions);
 
             expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledTimes(1);
-            expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledWith(dummySession, ["TEST*"], {maxConcurrentRequests: 1});
+            expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledWith(dummySession, ["TEST*"], {attributes: true, maxConcurrentRequests: 1});
             expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
             expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS", {});
             expect(searchOnMainframeSpy).toHaveBeenCalledTimes(1);
@@ -925,7 +925,7 @@ describe("Search", () => {
             const response = await Search.dataSets(dummySession, searchOptions);
 
             expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledTimes(1);
-            expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledWith(dummySession, ["TEST*"], {maxConcurrentRequests: 1});
+            expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledWith(dummySession, ["TEST*"], {attributes: true, maxConcurrentRequests: 1});
             expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
             expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS", {});
             expect(searchOnMainframeSpy).toHaveBeenCalledTimes(1);
@@ -975,7 +975,7 @@ describe("Search", () => {
             const response = await Search.dataSets(dummySession, searchOptions);
 
             expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledTimes(1);
-            expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledWith(dummySession, ["TEST*"], {maxConcurrentRequests: 1});
+            expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledWith(dummySession, ["TEST*"], {attributes: true, maxConcurrentRequests: 1});
             expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
             expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS", {});
             expect(searchOnMainframeSpy).toHaveBeenCalledTimes(1);
@@ -1011,7 +1011,7 @@ describe("Search", () => {
             const response = await Search.dataSets(dummySession, searchOptions);
 
             expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledTimes(1);
-            expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledWith(dummySession, ["TEST*"], {maxConcurrentRequests: 1});
+            expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledWith(dummySession, ["TEST*"], {attributes: true, maxConcurrentRequests: 1});
             expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
             expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS", {});
             expect(searchOnMainframeSpy).toHaveBeenCalledTimes(1);
@@ -1047,7 +1047,7 @@ describe("Search", () => {
             const response = await Search.dataSets(dummySession, searchOptions);
 
             expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledTimes(1);
-            expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledWith(dummySession, ["TEST*"], {maxConcurrentRequests: 1});
+            expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledWith(dummySession, ["TEST*"], {attributes: true, maxConcurrentRequests: 1});
             expect(listAllMembersSpy).toHaveBeenCalledTimes(0);
             expect(searchOnMainframeSpy).toHaveBeenCalledTimes(1);
             expect(searchLocalSpy).toHaveBeenCalledTimes(1);
@@ -1072,7 +1072,7 @@ describe("Search", () => {
             }
 
             expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledTimes(1);
-            expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledWith(dummySession, ["TEST*"], {maxConcurrentRequests: 1});
+            expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledWith(dummySession, ["TEST*"], {attributes: true, maxConcurrentRequests: 1});
             expect(listAllMembersSpy).toHaveBeenCalledTimes(0);
             expect(searchOnMainframeSpy).toHaveBeenCalledTimes(0);
             expect(searchLocalSpy).toHaveBeenCalledTimes(0);
@@ -1111,7 +1111,7 @@ describe("Search", () => {
             const response = await Search.dataSets(dummySession, searchOptions);
 
             expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledTimes(1);
-            expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledWith(dummySession, ["TEST*"], {maxConcurrentRequests: 1});
+            expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledWith(dummySession, ["TEST*"], {attributes: true, maxConcurrentRequests: 1});
             expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
             expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS", {});
             expect(searchOnMainframeSpy).toHaveBeenCalledTimes(1);
@@ -1155,7 +1155,7 @@ describe("Search", () => {
             const response = await Search.dataSets(dummySession, searchOptions);
 
             expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledTimes(1);
-            expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledWith(dummySession, ["TEST*"], {maxConcurrentRequests: 1});
+            expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledWith(dummySession, ["TEST*"], {attributes: true, maxConcurrentRequests: 1});
             expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
             expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS", {});
             expect(searchOnMainframeSpy).toHaveBeenCalledTimes(1);
@@ -1192,7 +1192,7 @@ describe("Search", () => {
             const response = await Search.dataSets(dummySession, searchOptions);
 
             expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledTimes(1);
-            expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledWith(dummySession, ["TEST*"], {maxConcurrentRequests: 1});
+            expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledWith(dummySession, ["TEST*"], {attributes: true, maxConcurrentRequests: 1});
             expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
             expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS", {});
             expect(searchOnMainframeSpy).toHaveBeenCalledTimes(1);
@@ -1229,7 +1229,7 @@ describe("Search", () => {
             const response = await Search.dataSets(dummySession, searchOptions);
 
             expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledTimes(1);
-            expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledWith(dummySession, ["TEST*"], {maxConcurrentRequests: 1});
+            expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledWith(dummySession, ["TEST*"], {attributes: true, maxConcurrentRequests: 1});
             expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
             expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, "TEST3.PDS", {});
             expect(searchOnMainframeSpy).toHaveBeenCalledTimes(1);
