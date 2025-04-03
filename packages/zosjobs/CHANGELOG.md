@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS jobs SDK package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Fixed an issue where a numeric `encoding` value caused `DownloadJobs.downloadSpoolContentCommon` method to fail. [#2474](https://github.com/zowe/zowe-cli/pull/2474)
+
 ## `7.29.3`
 
 - BugFix: Fixed error in `DownloadJobs.downloadSpoolContentCommon` method causing binary spool files to be corrupted by newline normalization. [#2282](https://github.com/zowe/zowe-cli/issues/2282)
