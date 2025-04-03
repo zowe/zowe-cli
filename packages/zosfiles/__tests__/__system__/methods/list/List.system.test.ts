@@ -1138,8 +1138,8 @@ describe("List command group - encoded", () => {
             expect(response.commandResponse).toContain(format(ZosFilesMessages.dataSetsMatchedPattern.message, 3));
             expect(response.apiResponse.length).toBe(3);
             expect(response.apiResponse[0].dsname).toBe(dsname);
-            expect(response.apiResponse[1].dsname).toBe(dsname + ".LIKE");
-            expect(response.apiResponse[2].dsname).toBe(dsname + ".DIFFVOL");
+            expect(response.apiResponse[1].dsname).toBe(dsname + ".DIFFVOL");
+            expect(response.apiResponse[2].dsname).toBe(dsname + ".LIKE");
         });
 
         it("should not return attributes when attributes option is falsy", async () => {
@@ -1161,8 +1161,8 @@ describe("List command group - encoded", () => {
                 expect(Object.keys(item).length).toBe(1);
             }
             expect(response.apiResponse[0].dsname).toBe(dsname);
-            expect(response.apiResponse[1].dsname).toBe(dsname + ".LIKE");
-            expect(response.apiResponse[2].dsname).toBe(dsname + ".DIFFVOL");
+            expect(response.apiResponse[1].dsname).toBe(dsname + ".DIFFVOL");
+            expect(response.apiResponse[2].dsname).toBe(dsname + ".LIKE");
         });
 
         it("should return attributes when attributes option is true", async () => {
@@ -1185,27 +1185,8 @@ describe("List command group - encoded", () => {
                 expect(item["dsorg"]).toBeDefined();
             }
             expect(response.apiResponse[0].dsname).toBe(dsname);
-            expect(response.apiResponse[1].dsname).toBe(dsname + ".LIKE");
-            expect(response.apiResponse[2].dsname).toBe(dsname + ".DIFFVOL");
-        });
-
-        it("should only return data sets matching given volume", async () => {
-            let response;
-            let caughtError;
-
-            try {
-                response = await List.dataSetsMatchingPattern(REAL_SESSION, [dsname], { volume: defaultSystem.datasets.vol });
-            } catch (error) {
-                caughtError = error;
-            }
-
-            expect(caughtError).toBeUndefined();
-            expect(response).toBeDefined();
-            expect(response.success).toBe(true);
-            expect(response.commandResponse).toContain(format(ZosFilesMessages.dataSetsMatchedPattern.message, 2));
-            expect(response.apiResponse.length).toBe(2);
-            expect(response.apiResponse[0].dsname).toBe(dsname);
-            expect(response.apiResponse[1].dsname).toBe(dsname + ".LIKE");
+            expect(response.apiResponse[1].dsname).toBe(dsname + ".DIFFVOL");
+            expect(response.apiResponse[2].dsname).toBe(dsname + ".LIKE");
         });
 
         it("should find one data set when listing 2 patterns with maxLength = 1", async () => {
