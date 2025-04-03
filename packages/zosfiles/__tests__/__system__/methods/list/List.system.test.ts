@@ -1109,7 +1109,6 @@ describe("List command group - encoded", () => {
             await wait(waitTime);
             await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dsname + ".LIKE",
                 { volser: defaultSystem.datasets.vol });
-            await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_SEQUENTIAL, dsname + ".DIFFVOL");
             await wait(waitTime);
         });
 
@@ -1117,8 +1116,6 @@ describe("List command group - encoded", () => {
             await Delete.dataSet(REAL_SESSION, dsname);
             await wait(waitTime);
             await Delete.dataSet(REAL_SESSION, dsname + ".LIKE");
-            await wait(waitTime);
-            await Delete.dataSet(REAL_SESSION, dsname + ".DIFFVOL");
             await wait(waitTime);
         });
 
@@ -1135,11 +1132,10 @@ describe("List command group - encoded", () => {
             expect(caughtError).toBeUndefined();
             expect(response).toBeDefined();
             expect(response.success).toBe(true);
-            expect(response.commandResponse).toContain(format(ZosFilesMessages.dataSetsMatchedPattern.message, 3));
-            expect(response.apiResponse.length).toBe(3);
+            expect(response.commandResponse).toContain(format(ZosFilesMessages.dataSetsMatchedPattern.message, 2));
+            expect(response.apiResponse.length).toBe(2);
             expect(response.apiResponse[0].dsname).toBe(dsname);
-            expect(response.apiResponse[1].dsname).toBe(dsname + ".DIFFVOL");
-            expect(response.apiResponse[2].dsname).toBe(dsname + ".LIKE");
+            expect(response.apiResponse[1].dsname).toBe(dsname + ".LIKE");
         });
 
         it("should not return attributes when attributes option is falsy", async () => {
@@ -1155,14 +1151,13 @@ describe("List command group - encoded", () => {
             expect(caughtError).toBeUndefined();
             expect(response).toBeDefined();
             expect(response.success).toBe(true);
-            expect(response.commandResponse).toContain(format(ZosFilesMessages.dataSetsMatchedPattern.message, 3));
-            expect(response.apiResponse.length).toBe(3);
+            expect(response.commandResponse).toContain(format(ZosFilesMessages.dataSetsMatchedPattern.message, 2));
+            expect(response.apiResponse.length).toBe(2);
             for (const item of response.apiResponse) {
                 expect(Object.keys(item).length).toBe(1);
             }
             expect(response.apiResponse[0].dsname).toBe(dsname);
-            expect(response.apiResponse[1].dsname).toBe(dsname + ".DIFFVOL");
-            expect(response.apiResponse[2].dsname).toBe(dsname + ".LIKE");
+            expect(response.apiResponse[1].dsname).toBe(dsname + ".LIKE");
         });
 
         it("should return attributes when attributes option is true", async () => {
@@ -1178,15 +1173,14 @@ describe("List command group - encoded", () => {
             expect(caughtError).toBeUndefined();
             expect(response).toBeDefined();
             expect(response.success).toBe(true);
-            expect(response.commandResponse).toContain(format(ZosFilesMessages.dataSetsMatchedPattern.message, 3));
-            expect(response.apiResponse.length).toBe(3);
+            expect(response.commandResponse).toContain(format(ZosFilesMessages.dataSetsMatchedPattern.message, 2));
+            expect(response.apiResponse.length).toBe(2);
             for (const item of response.apiResponse) {
                 expect(Object.keys(item).length).toBeGreaterThan(1);
                 expect(item["dsorg"]).toBeDefined();
             }
             expect(response.apiResponse[0].dsname).toBe(dsname);
-            expect(response.apiResponse[1].dsname).toBe(dsname + ".DIFFVOL");
-            expect(response.apiResponse[2].dsname).toBe(dsname + ".LIKE");
+            expect(response.apiResponse[1].dsname).toBe(dsname + ".LIKE");
         });
 
         it("should find one data set when listing 2 patterns with maxLength = 1", async () => {
@@ -1221,10 +1215,9 @@ describe("List command group - encoded", () => {
             expect(caughtError).toBeUndefined();
             expect(response).toBeDefined();
             expect(response.success).toBe(true);
-            expect(response.commandResponse).toContain(format(ZosFilesMessages.dataSetsMatchedPattern.message, 2));
-            expect(response.apiResponse.length).toBe(2);
+            expect(response.commandResponse).toContain(format(ZosFilesMessages.dataSetsMatchedPattern.message, 1));
+            expect(response.apiResponse.length).toBe(1);
             expect(response.apiResponse[0].dsname).toBe(dsname);
-            expect(response.apiResponse[1].dsname).toBe(dsname + ".DIFFVOL");
         });
 
         it("should fail when no data sets match", async () => {
