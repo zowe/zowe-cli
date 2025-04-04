@@ -79,6 +79,13 @@ export const DataSetsDefinition: ICommandDefinition = {
             aliases: ["to"],
             description: dataSetStrings.OPTIONS.TIMEOUT,
             type: "number"
+        },
+        {
+            name: "regex",
+            aliases: ["re"],
+            description: dataSetStrings.OPTIONS.REGEX,
+            type: "boolean",
+            defaultValue: false
         }
     ],
     examples: [
@@ -97,6 +104,10 @@ export const DataSetsDefinition: ICommandDefinition = {
         {
             description: dataSetStrings.EXAMPLES.EX4.DESCRIPTION,
             options: dataSetStrings.EXAMPLES.EX4.OPTIONS
+        },
+        {
+            description: dataSetStrings.EXAMPLES.EX5.DESCRIPTION,
+            options: dataSetStrings.EXAMPLES.EX5.OPTIONS
         }
     ]
 };

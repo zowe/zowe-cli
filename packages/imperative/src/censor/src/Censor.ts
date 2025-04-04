@@ -209,7 +209,7 @@ export class Censor {
             this.mConfig = censorOpts.config;
 
             // If we have a ProfileTypeConfiguration (i.e. ImperativeConfig.instance.loadedConfig.profiles)
-            if (censorOpts.profiles) { this.setProfileSchemas(censorOpts.profiles); }
+            if (censorOpts.profiles) { this.mSchema = []; this.setProfileSchemas(censorOpts.profiles); }
 
             for (const profileType of this.profileSchemas ?? []) {
                 // If we know the command we are running, and we know the profile types that the command uses
