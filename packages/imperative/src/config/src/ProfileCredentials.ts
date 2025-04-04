@@ -21,9 +21,16 @@ import { ProfileInfo } from "./ProfileInfo";
 export class ProfileCredentials {
     private mSecured: boolean;
     private mCredMgrOverride?: ICredentialManagerInit;
+    private mOnlyCheckActiveLayer?: boolean;
 
     constructor(private mProfileInfo: ProfileInfo, opts?: IProfOpts | (() => NodeModule)) {
-        this.mCredMgrOverride = typeof opts === "function" ? ProfileCredentials.defaultCredMgrWithKeytar(opts) : opts?.credMgrOverride;
+        if (typeof opts === "function") {
+            this.mCredMgrOverride = ProfileCredentials.defaultCredMgrWithKeytar(opts);
+            this.mOnlyCheckActiveLayer = false;
+        } else {
+            this.mCredMgrOverride = opts?.credMgrOverride;
+            this.mOnlyCheckActiveLayer = opts?.onlyCheckActiveLayer;
+        }
     }
 
     /**
@@ -109,8 +116,7 @@ export class ProfileCredentials {
      * @returns False if not using teamConfig or there are no secure fields
      */
     private isTeamConfigSecure(): boolean {
-        if (this.mProfileInfo.getTeamConfig().api.secure.secureFields().length === 0) return false;
-        return true;
+        return this.mProfileInfo.getTeamConfig().api.secure.secureFields(!this.mOnlyCheckActiveLayer).length > 0;
     }
 
     /**

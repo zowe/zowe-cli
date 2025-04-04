@@ -154,6 +154,7 @@ describe("Config secure tests", () => {
         expect(config.properties).toMatchSnapshot();
     });
 
+    // Original test: `secureFields` only looks at he active layer by default
     it("should list all secure fields in config layer", async () => {
         jest.spyOn(Config, "search").mockReturnValue(projectConfigPath);
         jest.spyOn(fs, "existsSync")
@@ -167,6 +168,56 @@ describe("Config secure tests", () => {
             "profiles.fruit.properties.secret",
             "profiles.fruit.profiles.grape.properties.secret2"
         ]);
+    });
+
+    describe("secureFields", () => {
+        let testConfig: Config;
+        const configPath = __dirname + "/__resources__/ProfInfoApp_simple";
+
+        beforeEach(async () => {
+            testConfig = await Config.load("ProfInfoApp", {
+                homeDir: configPath + "/global",
+                projectDir: configPath + "/project"
+            });
+        });
+
+        it("should list all secure fields in DEFAULT config layer", async () => {
+            expect(testConfig.api.secure.secureFields()).toEqual([]);
+        });
+
+        it("should list all secure fields in ACTIVE config layer", async () => {
+            expect(testConfig.api.secure.secureFields(false)).toEqual([]);
+        });
+
+        it("should list all secure fields in ALL config layers", async () => {
+            expect(testConfig.api.secure.secureFields(true)).toEqual([
+                "profiles.project_base.properties.tokenValue",
+                "profiles.global_base.properties.tokenValue",
+                "profiles.global_user_base.properties.user",
+                "profiles.global_user_base.properties.password"
+            ]);
+        });
+
+        it("should list all secure fields in SPECIFIC config layers", async () => {
+            // Project user layer
+            expect(testConfig.api.secure.secureFields({ user: true, global: false })).toEqual([]);
+
+            // Project layer
+            expect(testConfig.api.secure.secureFields({ user: false, global: false })).toEqual([
+                "profiles.project_base.properties.tokenValue"
+            ]);
+
+            // Global user layer
+            expect(testConfig.api.secure.secureFields({ user: true, global: true })).toEqual([
+                "profiles.global_user_base.properties.user",
+                "profiles.global_user_base.properties.password"
+            ]);
+
+            // Global layer
+            expect(testConfig.api.secure.secureFields({ user: false, global: true })).toEqual([
+                "profiles.global_base.properties.tokenValue"
+            ]);
+        });
     });
 
     it("should list all secure fields for a layer", async () => {
