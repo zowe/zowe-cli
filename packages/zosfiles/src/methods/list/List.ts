@@ -438,8 +438,13 @@ export class List {
             }
             let response: any;
             try {
-                response = await List.dataSet(session, pattern,
-                    { attributes: true, maxLength: maxLength ? maxLength - totalCount : undefined, start: options.start });
+                response = await List.dataSet(session, pattern, {
+                    attributes: options.attributes,
+                    volume: options.volume,
+                    recall: options.recall,
+                    maxLength: maxLength ? maxLength - totalCount : undefined,
+                    start: options.start
+                });
             } catch (err) {
                 if (!(err instanceof ImperativeError && err.errorCode?.toString().startsWith("5"))) {
                     throw err;

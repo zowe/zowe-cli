@@ -1376,7 +1376,7 @@ describe("z/OS Files - List", () => {
             });
 
             try {
-                response = await List.dataSetsMatchingPattern(dummySession, [pattern], { maxLength: 2 });
+                response = await List.dataSetsMatchingPattern(dummySession, [pattern], { attributes: true, maxLength: 2 });
             } catch (e) {
                 caughtError = e;
             }
@@ -1390,6 +1390,96 @@ describe("z/OS Files - List", () => {
 
             expect(listDataSetSpy).toHaveBeenCalledTimes(1);
             expect(listDataSetSpy).toHaveBeenCalledWith(dummySession, pattern, { attributes: true, maxLength: 2 });
+        });
+
+        it("should pass attributes option to List.dataSet API", async () => {
+            const pattern = "TEST.**.DATA.SET";
+            let response;
+            let caughtError;
+
+            listDataSetSpy.mockImplementation(async (): Promise<any> => {
+                return {
+                    apiResponse: {
+                        items: [{ dsname: dataSetPS.dsname }, { dsname: dataSetPO.dsname }]
+                    }
+                };
+            });
+
+            try {
+                response = await List.dataSetsMatchingPattern(dummySession, [pattern], { attributes: false });
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: util.format(ZosFilesMessages.dataSetsMatchedPattern.message, 2),
+                apiResponse: [{ dsname: dataSetPS.dsname }, { dsname: dataSetPO.dsname }]
+            });
+
+            expect(listDataSetSpy).toHaveBeenCalledTimes(1);
+            expect(listDataSetSpy).toHaveBeenCalledWith(dummySession, pattern, { attributes: false });
+        });
+
+        it("should pass volume option to List.dataSet API", async () => {
+            const pattern = "TEST.**.DATA.SET";
+            let response;
+            let caughtError;
+
+            listDataSetSpy.mockImplementation(async (): Promise<any> => {
+                return {
+                    apiResponse: {
+                        items: [{ dsname: dataSetPS.dsname }, { dsname: dataSetPO.dsname }]
+                    }
+                };
+            });
+
+            try {
+                response = await List.dataSetsMatchingPattern(dummySession, [pattern], { volume: "USER01" });
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: util.format(ZosFilesMessages.dataSetsMatchedPattern.message, 2),
+                apiResponse: [{ dsname: dataSetPS.dsname }, { dsname: dataSetPO.dsname }]
+            });
+
+            expect(listDataSetSpy).toHaveBeenCalledTimes(1);
+            expect(listDataSetSpy).toHaveBeenCalledWith(dummySession, pattern, { volume: "USER01" });
+        });
+
+        it("should pass recall option to List.dataSet API", async () => {
+            const pattern = "TEST.**.DATA.SET";
+            let response;
+            let caughtError;
+
+            listDataSetSpy.mockImplementation(async (): Promise<any> => {
+                return {
+                    apiResponse: {
+                        items: [{ dsname: dataSetPS.dsname }, { dsname: dataSetPO.dsname }]
+                    }
+                };
+            });
+
+            try {
+                response = await List.dataSetsMatchingPattern(dummySession, [pattern], { recall: "nowait" });
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: util.format(ZosFilesMessages.dataSetsMatchedPattern.message, 2),
+                apiResponse: [{ dsname: dataSetPS.dsname }, { dsname: dataSetPO.dsname }]
+            });
+
+            expect(listDataSetSpy).toHaveBeenCalledTimes(1);
+            expect(listDataSetSpy).toHaveBeenCalledWith(dummySession, pattern, { recall: "nowait" });
         });
 
         it("should pass start option to List.dataSet API", async () => {
@@ -1406,7 +1496,7 @@ describe("z/OS Files - List", () => {
             });
 
             try {
-                response = await List.dataSetsMatchingPattern(dummySession, [pattern], { start: dataSetPO.dsname });
+                response = await List.dataSetsMatchingPattern(dummySession, [pattern], { attributes: true, start: dataSetPO.dsname });
             } catch (e) {
                 caughtError = e;
             }
@@ -1436,7 +1526,7 @@ describe("z/OS Files - List", () => {
             });
 
             try {
-                response = await List.dataSetsMatchingPattern(dummySession, [pattern]);
+                response = await List.dataSetsMatchingPattern(dummySession, [pattern], { attributes: true });
             } catch (e) {
                 caughtError = e;
             }
@@ -1449,7 +1539,7 @@ describe("z/OS Files - List", () => {
             });
 
             expect(listDataSetSpy).toHaveBeenCalledTimes(1);
-            expect(listDataSetSpy).toHaveBeenCalledWith(dummySession, pattern, {attributes: true});
+            expect(listDataSetSpy).toHaveBeenCalledWith(dummySession, pattern, { attributes: true });
         });
 
         it("should throw an error if the data set name is not specified", async () => {
@@ -1502,7 +1592,7 @@ describe("z/OS Files - List", () => {
             });
 
             try {
-                response = await List.dataSetsMatchingPattern(dummySession, [dataSetPS.dsname]);
+                response = await List.dataSetsMatchingPattern(dummySession, [dataSetPS.dsname], { attributes: true });
             } catch (e) {
                 caughtError = e;
             }
@@ -1540,7 +1630,7 @@ describe("z/OS Files - List", () => {
             });
 
             try {
-                response = await List.dataSetsMatchingPattern(dummySession, [dataSetPS.dsname]);
+                response = await List.dataSetsMatchingPattern(dummySession, [dataSetPS.dsname], { attributes: true });
             } catch (e) {
                 caughtError = e;
             }

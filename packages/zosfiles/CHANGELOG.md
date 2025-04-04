@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Added support for the `attributes`, `recall`, and `volume` options to the `List.dataSetsMatchingPattern` function. [#2476](https://github.com/zowe/zowe-cli/issues/2476)
+
 ## `8.17.0`
 
 - Enhancement: Adding the `responseTimeout` option to missing areas in the ZosFiles SDK so that the option is allowable on all methods. [#2467](https://github.com/zowe/zowe-cli/pull/2467)

@@ -1138,6 +1138,51 @@ describe("List command group - encoded", () => {
             expect(response.apiResponse[1].dsname).toBe(dsname + ".LIKE");
         });
 
+        it("should not return attributes when attributes option is falsy", async () => {
+            let response;
+            let caughtError;
+
+            try {
+                response = await List.dataSetsMatchingPattern(REAL_SESSION, [dsname]);
+            } catch (error) {
+                caughtError = error;
+            }
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toBeDefined();
+            expect(response.success).toBe(true);
+            expect(response.commandResponse).toContain(format(ZosFilesMessages.dataSetsMatchedPattern.message, 2));
+            expect(response.apiResponse.length).toBe(2);
+            for (const item of response.apiResponse) {
+                expect(Object.keys(item).length).toBe(1);
+            }
+            expect(response.apiResponse[0].dsname).toBe(dsname);
+            expect(response.apiResponse[1].dsname).toBe(dsname + ".LIKE");
+        });
+
+        it("should return attributes when attributes option is true", async () => {
+            let response;
+            let caughtError;
+
+            try {
+                response = await List.dataSetsMatchingPattern(REAL_SESSION, [dsname], { attributes: true });
+            } catch (error) {
+                caughtError = error;
+            }
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toBeDefined();
+            expect(response.success).toBe(true);
+            expect(response.commandResponse).toContain(format(ZosFilesMessages.dataSetsMatchedPattern.message, 2));
+            expect(response.apiResponse.length).toBe(2);
+            for (const item of response.apiResponse) {
+                expect(Object.keys(item).length).toBeGreaterThan(1);
+                expect(item["dsorg"]).toBeDefined();
+            }
+            expect(response.apiResponse[0].dsname).toBe(dsname);
+            expect(response.apiResponse[1].dsname).toBe(dsname + ".LIKE");
+        });
+
         it("should find one data set when listing 2 patterns with maxLength = 1", async () => {
             let response;
             let caughtError;

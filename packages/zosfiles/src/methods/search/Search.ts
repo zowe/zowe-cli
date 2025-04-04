@@ -80,6 +80,7 @@ export class Search {
         try {
             const response = await List.dataSetsMatchingPattern(session, [searchOptions.pattern], {
                 ...searchOptions.listOptions,
+                attributes: true,
                 maxConcurrentRequests: searchOptions.maxConcurrentRequests
             });
             for (const resp of response.apiResponse) {
