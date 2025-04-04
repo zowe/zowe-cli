@@ -2,7 +2,7 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
-## Recent Changes
+## `8.18.0`
 
 - BugFix: Ensured that the `ProfileCredentials` class evaluates all layers to determine if the credentials are secure. [#2460](https://github.com/zowe/zowe-cli/issues/2460)
 - Enhancement: Allowed instances of the `ProfileCredentials` class to check only for the active layer to determine if the credentials are secure. [#2460](https://github.com/zowe/zowe-cli/issues/2460)
