@@ -278,7 +278,7 @@ The set of candidates for modification consist of all functions that contain the
 - cli\src\config\auto-init\ApimlAutoInitHandler
   
   - doAutoInit - This function may logins into APIML with either user & password or cert. After login, the function needs to use the resulting APIML token to make an additional REST request of APIML to get its services. The doAutoInit function must be modified to switch the authOrder and the creds between those two calls.
-    - **Modify doAutoInit ?  <span style="color:orange">yes</span>**
+    - **Modify doAutoInit ?  <span style="color:orange">yes - done</span>**
 
 - core\src\rest\ZosmfRestClient.ts
   
@@ -293,7 +293,7 @@ The set of candidates for modification consist of all functions that contain the
 - imperative\src\imperative\src\config\cmd\import\import.handler.ts
   
   - buildSession - This function is used to import a config from a URL. That URL is an arbitrary location at a customer site where a config file is kept. It is not the target of a REST request to a mainframe service. By design, the only authentication that it will use is user & password. Supporting more authentication types in the 'import' command is beyond the scope of this authentication-order feature. None-the-less, because the **process** function of the import handler does not call ConnectionPropsForSessCfg.addPropsOrPrompt, the AuthOrder cache of credentials is not initialized. As a result, the buildSession function must call AuthOrder.cacheCredsAndAuthOrder to ensure that the cache is properly initialized.
-    - **Modify buildSession ? <span style="color:orange">yes</span>**
+    - **Modify buildSession ? <span style="color:orange">yes - done</span>**
 
 - imperative\src\rest\src\client\AbstractRestClient.ts
   
@@ -301,17 +301,17 @@ The set of candidates for modification consist of all functions that contain the
   
   - buildOptions - This function currently tests for the authentication based their the order in the ISession.authTypeOrder property of the session config. This must be modified to instead get the authentication order from AuthOrder.getAuthOrder.
     
-    - **Modify buildOptions ? <span style="color:orange">yes</span>**
+    - **Modify buildOptions ? <span style="color:orange">yes - done</span>**
   
   - constructor - This function currently hard-codes an order of authentication types into the ISession.authTypeOrder array contained in the supplied session. It must be modified to instead call AuthOrder.cacheDefaultAuthOrder with a topDefaultAuth of token.
     
-    - **Modify constructor?   <span style="color:orange">yes</span>**
+    - **Modify constructor?   <span style="color:orange">yes - done</span>**
   
   - request - Before calling the https.request() function, the AbstractRestClient.request function must call AuthOrder.putTopAuthInSession to scrub the session configuration before making the actual REST request.
     
-    - **Modify request? <span style="color:orange">yes</span>**
+    - **Modify request? <span style="color:orange">yes - done</span>**
   
-  - Each of the following functions reference AUTH_TYPE_XXX to a place an identified type into the ISession.type property of the session. Since buildOptions calls just one of the following functions based on being the first available authentication provided by AuthOrder.getAuthOrder, none of the following functions need to change.
+  - Each of the following functions reference AUTH_TYPE_XXX to place an identified type into the ISession.type property of the session. Since buildOptions calls just one of the following functions based on being the first available authentication provided by AuthOrder.getAuthOrder, none of the following functions need to change.
     
     - **Modify setBearerAuth ? <span style="color:green">No</span>**
     
@@ -323,27 +323,27 @@ The set of candidates for modification consist of all functions that contain the
 
 - imperative\src\rest\src\session\AbstractSession.ts
   
-  - buildSession - This private function is called by the constructor, which accepts an Isession object. A caller could populate multiple authentications (and related properties) into that supplied session. Ideally the caller of the Session.constructor will have already called ConnectionPropsForSessCfg.addPropsOrPrompt() which will have already cached the available credentials and cached the authOrder. We should confirm that this always true. If not, buildSession may have to call AuthOrder.cacheCredsAndAuthOrder.
+  - buildSession - This private function is called by the constructor, which accepts an Isession object. The caller of the Session.constructor will have already called ConnectionPropsForSessCfg.addPropsOrPrompt() which will have already cached the available credentials and cached the authOrder. We should confirm that this always true. 
     
-    - **Modify buildSession ? <span style="color:cyan">Maybe</span>**
+    - **Modify buildSession ? <span style="color:green">No</span>**
   
-  - DEFAULT_TYPE - This is simply a constant definition set to AUTH_TYPE_NONE. It is not used in any CLI or ZE code outside of this AbstractSession class. Because it is a public property, it cannot be removed without risk of breaking change. If AUTH_TYPE_NONE is added to the ISession.authTypeOrder array, DEFAULT_TYPE should be deprecated.
+  - DEFAULT_TYPE - This is simply a constant definition set to AUTH_TYPE_NONE. It is not used in any CLI or ZE code outside of this AbstractSession class. Because it is a public property, it cannot be removed without risk of breaking change. 
     
-    - **Modify DEFAULT_TYPE ? <span style="color:orange">Yes</span>**
+    - **Modify DEFAULT_TYPE ? <span style="color:green">No</span>**
 
 - imperative\src\rest\src\session\ConnectionPropsForSessCfg.ts
   
   - addPropsOrPrompt - Near the end of this function, a call to AuthOrder.cacheCredsAndAuthOrder will ensure that the right authentication resides in the session.
     
-    - **Modify addPropsOrPrompt ? <span style="color:orange">Yes</span>**
+    - **Modify addPropsOrPrompt ? <span style="color:orange">Yes - done</span>**
   
-  - resolveSessCfgProps - Several functions call this function before creating a new session. Either this function must call AuthOrder.cacheCredsAndAuthOrder, or each caller of resolveSessCfgProps must first cacacheCredsAndAuthOrdereds.
+  - resolveSessCfgProps - When connection options specify that the session is intended to make a request for a token, then this function must record that intention within the authentication cache stored in the sesion.
     
-    - **Modify resolveSessCfgProps ? <span style="color:cyan">Maybe</span>**
+    - **Modify resolveSessCfgProps ? <span style="color:orange">Yes - done</span>**
   
-  - setTypeForTokenRequest - This function handles setting authentication to AUTH_TYPE_TOKEN to get a token back from user & password. This does not appear to require any change, but it should be revisited after resolveSessCfgProps is refactored.
+  - setTypeForTokenRequest - This function handles setting authentication to AUTH_TYPE_TOKEN to get a token back from user & password. This should not require any change.
     
-    - **Modify setTypeForTokenRequest ? <span style="color:cyan">Maybe</span>**
+    - **Modify setTypeForTokenRequest ? <span style="color:green">No</span>**
 
 - imperative\src\rest\src\client\RestClient.ts
   
@@ -351,7 +351,7 @@ The set of candidates for modification consist of all functions that contain the
   
   - constructor - RestClient did not previously have a constructor. A new constructor must be added to call the super class constructor (from AbstractRestRestClient) and then call AuthOrder.cacheDefaultAuthOrder(basic) to change the inherited top authentication order. It seems a little weird, but this just reflects past behavior and avoids a breaking change.
     
-    - **Add constructor? <span style="color:orange">Yes</span>**
+    - **Add constructor? <span style="color:orange">Yes - done</span>**
 
 - imperative\src\rest\src\session\SessConstants.ts
   
@@ -370,19 +370,19 @@ The set of candidates for modification consist of all functions that contain the
 
 - imperative\src\rest\src\session\doc\ISession.ts
   
-  - authTypeOrder - This property is used to hold the order of authentication types. It is currently populated by hard-coded login and is only used in AbstractRestClient.constructor & AbstractRestClient.buildOptions. There is no reason to change this property. AuthOrder.putTopAuthInSession should populate authTypeOrder's set of values based on customer input. The only change for authTypeOrder will be to remove the comment that states that this property is hard-coded.
+  - authTypeOrder - This property is used to hold the order of authentication types. It is currently populated by hard-coded login and is only used in AbstractRestClient.constructor & AbstractRestClient.buildOptions. There is no reason to change this property. However, a new property must be added to cache the complete set of available credentials within the session object .
     
-    - **Modify authTypeOrder ? <span style="color:orange">Yes</span>**
+    - **Modify authTypeOrder ? <span style="color:orange">Yes - done</span>**
 
 - packages\zosuss\src\SshBaseHandler.ts
   
-  - process - This function explicitly sets a property named **supportedAuthTypes** to AUTH_TYPE_BASIC. It is unclear why there is no option in this logic to use an ssh-key.
-    - **Modify process ? <span style="color:cyan">Maybe</span>**
+  - process - This function explicitly sets a property named **supportedAuthTypes** to AUTH_TYPE_BASIC. It is unclear why there is no option in this logic to use an ssh-key. While enabling SSH to also adhere to a customer-specified authentication order might be beneficial, it will not be done at this time to limit the scope of these efforts.
+    - **Modify process ? <span style="color:green">No</span>**
   
   packages\zosuss\src\Shell.ts
   
-  - connect - This function explicitly checks for an ssh key (first) or a password (second) in a hard-coded fashion. If we want the user's authOrder to apply to ssh connections, this function must call the proposed combination of AuthOrder.cacheCredsAndAuthOrder and AuthOrder.putTopAuthInSession to to make the right authentication choice.
-    - **Modify connect ? <span style="color:orange">Yes</span>**
+  - connect - This function explicitly checks for an ssh key (first) or a password (second) in a hard-coded fashion. If we want the user's authOrder to apply to ssh connections, this function must call the proposed combination of AuthOrder.cacheCredsAndAuthOrder and AuthOrder.putTopAuthInSession to to make the right authentication choice. This will not be done at this time to limit the scope of these efforts.
+    - **Modify connect ? <span style="color:green">No</span>**
 
 ## Functions that reference rejectUnauthorized may need modification
 
@@ -391,32 +391,32 @@ If we treat **authOrder** like other connection properties, those functions that
 - packages\cli\src\config\auto-init\ApimlAutoInitHandler.ts
   
   - doAutoInit - This function was analyzed in the previous section of this document.
-    - **Modify doAutoInit ? <span style="color:orange">yes</span>**
+    - **Modify doAutoInit ? <span style="color:orange">yes - done</span>**
 
 - packages\cli\src\imperative.ts
   
-  - This class provides definitions used to create the Zowe command tree and other CLI operating properties. It includes command-line options for connection properties (like host, port, user, and password). We must add **authOrder** as a new command line option into this class.
-    - **Modify imperative.ts? <span style="color:orange">Yes</span>**
+  - This class provides definitions used to create the Zowe command tree and other CLI operating properties. It includes command-line options for connection properties (like host, port, user, and password). We could add **authOrder** as a new command line option into this class. Because this could place a requirement on plugins to re-program their apps to accept a global option for `--auth-order`. To avoid breaking changes we will not make this change. We will accept the fact that auth-order is not part of the schema and will not be included in VSCode IntelliSense.
+    - **Modify imperative.ts? <span style="color:green">No</span>**
 
 - packages\core\src\constants\Core.constants.ts
   
-  - BaseProfile - This object contains a schema definition for a base profile. An authOrder property must be added to this object.
-    - **Modify BaseProfile ? <span style="color:orange">Yes</span>**
+  - BaseProfile - This object contains a schema definition for a base profile. An authOrder property must be added to this object. To limit the scope of the current efforts, we will not make this change. We will accept the fact that auth-order is not part of the schema and will not be included in VSCode IntelliSense.
+    - **Modify BaseProfile ? <span style="color:green">No</span>**
 
 - packages\imperative\src\config\src\ProfileInfo.ts
   
   - createSession - This function creates a session with key connection properties. Depending on the modification choices made for ConnectionPropsForSessCfg.resolveSessCfgProps, this function may have to call AuthOrder.cacheCredsAndAuthOrder.
-    - **Modify createSession ? <span style="color:orange">Yes</span>**
+    - **Modify createSession ? <span style="color:orange">Yes - must be implemented</span>**
 
 - packages\imperative\src\imperative\src\config\cmd\import\import.handler.ts
   
   - buildSession - This function was analyzed in the previous section of this document.
-    - **Modify buildSession ? <span style="color:orange">Yes</span>**
+    - **Modify buildSession ? <span style="color:orange">Yes - done</span>**
 
 - packages\imperative\src\rest\src\client\AbstractRestClient.ts
   
   - buildOptions - This function was analyzed in the previous section of this document.
-    - **Modify buildOptions ? <span style="color:green">No</span>**
+    - **Modify buildOptions ? <span style="color:orange">Yes - done</span>**
 
 - packages\imperative\src\rest\src\client\ProxySettings.ts
   
@@ -431,12 +431,12 @@ If we treat **authOrder** like other connection properties, those functions that
 - packages\imperative\src\rest\src\session\AbstractSession.ts
   
   - buildSession - This function was analyzed in the previous section of this document.
-    - **Modify buildSession ? <span style="color:cyan">Maybe</span>**
+    - **Modify buildSession ? <span style="color:green">No</span>**
 
 - packages\imperative\src\rest\src\session\doc\ISession.ts
   
   - authTypeOrder - This property was analyzed in the previous section of this document.
-    - **Modify authTypeOrder ? <span style="color:green">No</span>**
+    - **Modify authTypeOrder ? <span style="color:orange">Yes - done</span>**
 
 - packages\zosjobs\src\GetJobs.ts
   
@@ -446,7 +446,10 @@ If we treat **authOrder** like other connection properties, those functions that
 - packages\zosmf\src\ZosmfSession.ts
   
   - This Class contains option definitions for connection properties that can be defined in profiles. A definition of the authOrder connection property with a name like ZOSMF_OPTION_AUTH_ORDER should be added.
-    - **Modify ZosmfSession.ts ? <span style="color:orange">Yes</span>**
+    
+    We could add **authOrder** as a new property. However, to limit the scope of this work, we will not make this change. We will accept the fact that auth-order is not part of the schema and will not be included in VSCode IntelliSense.
+    
+    - **Modify ZosmfSession.ts ? <span style="color:green">No</span>**
 
 - packages\zosmf\src\constants\Zosmf.messages.ts
   
@@ -455,7 +458,8 @@ If we treat **authOrder** like other connection properties, those functions that
 
 - packages\zosmf\src\constants\Zosmf.profile.ts
   
-  - ZosmfProfile - This class provides the property definitions for a zosmf profile type. We must add a definition for the authOrder property.
-    - **Modify Zosmf.profile.ts ? <span style="color:orange">Yes</span>**
+  - ZosmfProfile - This class provides the property definitions for a zosmf profile type. We could add **authOrder** as a new property. This could place a requirement on plugins to re-program their apps to accept an **authOrder** property. To avoid breaking changes we will not make this change. We will accept the fact that **authOrder** is not part of the schema and will not be included in VSCode IntelliSense.
+    
+    - **Modify Zosmf.profile.ts ? <span style="color:green">No</span>**
 
 ## 
