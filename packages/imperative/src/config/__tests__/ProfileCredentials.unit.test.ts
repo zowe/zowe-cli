@@ -13,6 +13,7 @@ import * as fs from "fs";
 import { CredentialManagerFactory, DefaultCredentialManager, ICredentialManagerInit } from "../../security";
 import { ConfigSecure } from "../src/api/ConfigSecure";
 import { ProfileCredentials } from "../src/ProfileCredentials";
+import { Config } from "../src/Config";
 
 jest.mock("../../security/src/CredentialManagerFactory");
 jest.mock("../../security/src/DefaultCredentialManager");
@@ -44,6 +45,51 @@ describe("ProfileCredentials tests", () => {
             } as any);
             jest.spyOn(profCreds as any, "isCredentialManagerInAppSettings").mockReturnValueOnce(false);
             expect(profCreds.isSecured).toBe(true);
+        });
+
+        it("should be true when overriding the credential manager if team config is secure but CredentialManager is not set", () => {
+            const profCreds = new ProfileCredentials({
+                getTeamConfig: () => mockConfigApi({ secureFields: () => ["myAwesomeProperty"] })
+            } as any, jest.fn());
+            jest.spyOn(profCreds as any, "isCredentialManagerInAppSettings").mockReturnValueOnce(false);
+            expect(profCreds.isSecured).toBe(true);
+        });
+
+        describe("by loading a real project config to test the onlyCheckActiveLayer parameter, isSecured", () => {
+            let testConfig: Config;
+            beforeEach(async () => {
+                testConfig = await Config.load("project", {
+                    homeDir: __dirname + "/__resources__",
+                    projectDir: false
+                });
+            });
+            it("should be false when onlyCheckActiveLayer is true if non-user config is secure and user config is not secure", async () => {
+                const profCreds = new ProfileCredentials({
+                    getTeamConfig: () => testConfig
+                } as any, {
+                    onlyCheckActiveLayer: true
+                });
+                jest.spyOn(profCreds as any, "isCredentialManagerInAppSettings").mockReturnValueOnce(false);
+                expect(profCreds.isSecured).toBe(false);
+            });
+
+            it("should be true when onlyCheckActiveLayer is false if non-user config is secure and user config is not secure", async () => {
+                const profCreds = new ProfileCredentials({
+                    getTeamConfig: () => testConfig
+                } as any, {
+                    onlyCheckActiveLayer: false
+                });
+                jest.spyOn(profCreds as any, "isCredentialManagerInAppSettings").mockReturnValueOnce(false);
+                expect(profCreds.isSecured).toBe(true);
+            });
+
+            it("should be true when onlyCheckActiveLayer is not specified if non-user config is secure and user config is not secure", async () => {
+                const profCreds = new ProfileCredentials({
+                    getTeamConfig: () => testConfig
+                } as any);
+                jest.spyOn(profCreds as any, "isCredentialManagerInAppSettings").mockReturnValueOnce(false);
+                expect(profCreds.isSecured).toBe(true);
+            });
         });
 
         it("should be false if team config is not secure and CredentialManager is not set", () => {

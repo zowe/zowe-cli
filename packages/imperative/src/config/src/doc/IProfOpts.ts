@@ -35,4 +35,12 @@ export interface IProfOpts {
      * from the caller app's node_modules folder.
      */
     credMgrOverride?: ICredentialManagerInit;
+
+    /**
+     * This option allows the old behavior of only checking the active layer
+     * in order to determine if credentials are to be stored securely.
+     * When this option is true, the `isSecured` getter will return false if the active layer does not have secure properties
+     * Default: false
+     */
+    onlyCheckActiveLayer?: boolean;
 }
