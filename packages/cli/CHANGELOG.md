@@ -1,6 +1,10 @@
 # Change Log
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## `8.18.1`
+
+- BugFix: Updated the Daemon binary version for technical currency. [#2479](https://github.com/zowe/zowe-cli/pull/2479)
+
 ## `8.17.0`
 
 - BugFix: Fixed a bug that resulted in daemon commands running slower with every additional command. [#2470](https://github.com/zowe/zowe-cli/issues/2470)

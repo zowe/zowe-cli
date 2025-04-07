@@ -40,6 +40,7 @@ export default class DataSetMatchingHandler extends ZosFilesBaseHandler {
             stageName: TaskStage.IN_PROGRESS
         };
         const listOptions: IDsmListOptions = {
+            attributes: true,
             excludePatterns: commandParameters.arguments.excludePatterns?.split(","),
             maxConcurrentRequests: commandParameters.arguments.maxConcurrentRequests,
             task: listStatus,

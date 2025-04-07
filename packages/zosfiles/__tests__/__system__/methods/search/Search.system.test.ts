@@ -110,13 +110,13 @@ describe("Search", () => {
             };
 
             expectedApiResponse = [
-                {dsn: `${dsnPrefix}.PDS1`, member: "MEM2", matchList: [{line: 1, column: 39, contents: goodTestString}]},
-                {dsn: `${dsnPrefix}.PDS1`, member: "MEM3", matchList: [{line: 1, column: 39, contents: goodTestString}]},
-                {dsn: `${dsnPrefix}.PDS2`, member: "MEM2", matchList: [{line: 1, column: 39, contents: goodTestString}]},
-                {dsn: `${dsnPrefix}.PDS2`, member: "MEM3", matchList: [{line: 1, column: 39, contents: goodTestString}]},
-                {dsn: `${dsnPrefix}.SEQ1`, matchList: [{line: 1, column: 39, contents: goodTestString}]},
-                {dsn: `${dsnPrefix}.SEQ4`, matchList: [{line: 1, column: 39, contents: goodTestString}]},
-                {dsn: `${dsnPrefix}.SEQ5`, matchList: [{line: 1, column: 39, contents: goodTestString}]},
+                {dsn: `${dsnPrefix}.PDS1`, member: "MEM2", matchList: [{line: 1, column: 39, contents: goodTestString, length: 8}]},
+                {dsn: `${dsnPrefix}.PDS1`, member: "MEM3", matchList: [{line: 1, column: 39, contents: goodTestString, length: 8}]},
+                {dsn: `${dsnPrefix}.PDS2`, member: "MEM2", matchList: [{line: 1, column: 39, contents: goodTestString, length: 8}]},
+                {dsn: `${dsnPrefix}.PDS2`, member: "MEM3", matchList: [{line: 1, column: 39, contents: goodTestString, length: 8}]},
+                {dsn: `${dsnPrefix}.SEQ1`, matchList: [{line: 1, column: 39, contents: goodTestString, length: 8}]},
+                {dsn: `${dsnPrefix}.SEQ4`, matchList: [{line: 1, column: 39, contents: goodTestString, length: 8}]},
+                {dsn: `${dsnPrefix}.SEQ5`, matchList: [{line: 1, column: 39, contents: goodTestString, length: 8}]},
             ];
 
             jest.restoreAllMocks();
