@@ -43,7 +43,7 @@ import { ConfigConstants } from "../../config/src/ConfigConstants";
 import { IDaemonContext } from "../../imperative/src/doc/IDaemonContext";
 import { Censor } from "../../censor/src/Censor";
 import { EnvironmentalVariableSettings } from "../../imperative/src/env/EnvironmentalVariableSettings";
-import { ConnectionPropsForSessCfg, ISession } from "../../rest";
+import { AuthOrder, ConnectionPropsForSessCfg, ISession } from "../../rest";
 
 
 /**
@@ -763,6 +763,7 @@ export class CommandProcessor {
 
         const sessCfg: ISession = {};
         ConnectionPropsForSessCfg.resolveSessCfgProps(sessCfg, commandParameters.arguments);
+        AuthOrder.putTopAuthInSession(sessCfg);
         showInputsOnly.authenticationType = sessCfg.type;
 
         /**
