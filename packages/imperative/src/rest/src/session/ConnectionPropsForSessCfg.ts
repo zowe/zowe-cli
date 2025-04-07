@@ -203,7 +203,9 @@ export class ConnectionPropsForSessCfg {
             }
         }
 
-        // cache all available creds. Only the right set will later be kept in the session.
+        // resolveSessCfgProps previously cached creds, but this function may have added more creds
+        // after prompting. So, we cache all available creds again. AuthOrder.PutTopAuthInSession
+        // will later ensure that only one set of creds remain in the session.
         AuthOrder.cacheCredsAndAuthOrder(sessCfgToUse, cmdArgs);
 
         impLogger.debug("Session config after any prompting for missing values:\n" +
@@ -339,7 +341,9 @@ export class ConnectionPropsForSessCfg {
             impLogger.debug("Using basic authentication");
             sessCfg.type = SessConstants.AUTH_TYPE_BASIC;
         }
+
         ConnectionPropsForSessCfg.setTypeForTokenRequest<SessCfgType>(sessCfg, connOpts, cmdArgs.tokenType);
+        AuthOrder.cacheCredsAndAuthOrder(sessCfg, cmdArgs);
         impLogger.debug("Creating a session config with these properties:\n" +
             Censor.censorSession(sessCfg)
         );
