@@ -62,10 +62,13 @@ export class AuthOrder {
      *      For CLI, the cmdArgs come from the command line, profile, or
      *      environment. Other apps can place relevant arguments into this
      *      object to be processed by this function.
+     *
+     *      If cmdArgs is not supplied, we only cache creds found in the sessCfg.
      */
     public static cacheCredsAndAuthOrder<SessCfgType extends ISession>(
         sessCfg: SessCfgType,
-        cmdArgs: ICommandArguments
+        cmdArgs: ICommandArguments = { "$0": "NameNotUsed", "_": [] }
+        // when no cmdArgs are provided, use an empty set of cmdArgs
     ): void {
         // create a new auth cache (if needed) in the session config
         AuthOrder.findOrCreateAuthCache(sessCfg);
@@ -336,10 +339,10 @@ export class AuthOrder {
             }
         }
 
-        // When no creds are in the session and AUTH_TYPE_NONE is not in the user's authOrder,
-        // remove the session type from the session. Otherwise set the type that we found.
         if (sessTypeToUse === null) {
-            delete sessCfg.type;
+            // When no creds are in the session, record the auth type as none.
+            sessCfg.type = SessConstants.AUTH_TYPE_NONE;
+
         } else {
             sessCfg.type = sessTypeToUse;
         }

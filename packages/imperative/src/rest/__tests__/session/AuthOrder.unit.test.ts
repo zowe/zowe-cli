@@ -737,16 +737,17 @@ describe("AuthOrder", () => {
             );
         });
 
-        it("should result in no session type when authTypeOrder is empty", () => {
+        it("should result in session type none when authTypeOrder is empty", () => {
             AuthOrder.cacheCredsAndAuthOrder(sessCfgForTest, cmdArgsForTest);
             expect(sessCfgForTest.type).toEqual(AUTH_TYPE_BASIC);
 
-            // removing authTypeOrder triggers this edge case.
+            // Removing authTypeOrder triggers this edge case.
+            // Our logic should not allow this to happen. This test is just for code coverage.
             sessCfgForTest.authTypeOrder = [];
             AuthOrder.putTopAuthInSession(sessCfgForTest);
 
             // The resulting session config should have no type.
-            expect(sessCfgForTest).not.toHaveProperty("type");
+            expect(sessCfgForTest.type).toEqual(AUTH_TYPE_NONE);
         });
 
         it("should ensure that cacheCredsAndAuthOrder is called when availableCreds does not exist", () => {
