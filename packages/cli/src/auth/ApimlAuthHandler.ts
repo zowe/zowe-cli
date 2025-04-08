@@ -10,7 +10,10 @@
 */
 
 import { ZosmfSession } from "@zowe/zosmf-for-zowe-sdk";
-import { BaseAuthHandler, AbstractSession, ICommandArguments, ISession, SessConstants } from "@zowe/imperative";
+import {
+    BaseAuthHandler, AbstractSession, ICommandArguments, IHandlerParameters,
+    ImperativeConfig, ISession, SessConstants
+} from "@zowe/imperative";
 import { Logout, Login } from "@zowe/core-for-zowe-sdk";
 
 /**
@@ -40,6 +43,63 @@ export default class ApimlAuthHandler extends BaseAuthHandler {
      * @returns {ISession} The session object built from the command line arguments.
      */
     protected createSessCfgFromArgs: (args: ICommandArguments) => ISession = ZosmfSession.createSessCfgFromArgs;
+
+    /**
+     * Extends the functionality of BaseAuthHandler.processLogin to place a property of
+     * authOrder: "token" into the default zosmf profile.
+     * @param {IHandlerParameters} params Command parameters sent by imperative.
+     */
+    protected async processLogin(params: IHandlerParameters) {
+        await super.processLogin(params);
+
+        // get the name of the default zosmf profile
+        const addAuthOrderMsg = 'Add the following authOrder property to a zosmf profile that contains a basePath property.\n' +
+            '    "authOrder": "token"';
+        const zosmfProfNm = ImperativeConfig.instance.config?.properties.defaults["zosmf"];
+        if (!zosmfProfNm) {
+            params.response.console.log(`\nYou have no default zosmf profile. ${addAuthOrderMsg}`);
+            return;
+        }
+
+        const config = ImperativeConfig.instance.config;
+        if (!config.api.profiles.exists(zosmfProfNm)) {
+            params.response.console.log(
+                `\nYour default zosmf profile (${zosmfProfNm}) does not exist. ${addAuthOrderMsg}`
+            );
+            return;
+        }
+
+        const zosmfProfObj = config.api.profiles.get(zosmfProfNm, true);
+        if (!zosmfProfObj?.basePath) {
+            params.response.console.log(
+                `\nYour default zosmf profile (${zosmfProfNm}) has no basePath, thus it cannot be used with APIML. ` +
+                `${addAuthOrderMsg}`
+            );
+            return;
+        }
+
+        if (zosmfProfObj?.authOrder) {
+            // we already have an authOrder in this zosmf profile
+            if (zosmfProfObj.authOrder.search(/ *token/) >= 0) {
+                // token is at the start of the authOrder, so no need to add or replace authOrder
+                return;
+            }
+        }
+
+        // Ensure that the zosmf profile uses the newly acquired token by setting authOrder to token
+        const beforeLayer = config.api.layers.get();
+        const layer = config.api.layers.find(zosmfProfNm);
+        if (layer != null) {
+            const { user, global } = layer;
+            config.api.layers.activate(user, global);
+        }
+        const profilePath = config.api.profiles.getProfilePathFromName(zosmfProfNm);
+        config.set(`${profilePath}.properties.authOrder`, "token");
+        await config.save();
+
+        // Restore the original layer
+        config.api.layers.activate(beforeLayer.user, beforeLayer.global);
+    }
 
     /**
      * This is called by the "auth login" command after it creates a session, to
