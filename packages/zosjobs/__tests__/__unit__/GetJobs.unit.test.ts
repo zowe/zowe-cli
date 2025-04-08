@@ -556,6 +556,13 @@ describe("GetJobs tests", () => {
             expect(content).toEqual(GetJobsData.SAMPLE_JES_MSG_LG);
         });
 
+        it("should return spool content from getSpoolContentById with encoding as a number if z/OSMF response is mocked", async () => {
+            (ZosmfRestClient.getExpectString as any) = mockGetJobsStringData(GetJobsData.SAMPLE_JES_MSG_LG);
+            const content = await GetJobs.getSpoolContentById(pretendSession, "MYJOB1", "JOB0123", 1, 278 as any);
+            expect((ZosmfRestClient.getExpectString as any).mock.calls[0][1]).toContain("fileEncoding=278");
+            expect(content).toEqual(GetJobsData.SAMPLE_JES_MSG_LG);
+        });
+
         it("should error if spoolID is omitted from getSpoolContentById", async () => {
             let err: Error;
             try {
