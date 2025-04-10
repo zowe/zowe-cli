@@ -130,6 +130,7 @@ describe("BaseAuthHandler config", () => {
 
                 expect(caughtError).toBeUndefined();
                 expect(doLoginSpy).toHaveBeenCalledTimes(1);
+                expect(profileExistsSpy).toHaveBeenCalledTimes(1);
                 expect(params.response.console.prompt).toHaveBeenCalledTimes(1);
                 expect(writeFileSpy).not.toHaveBeenCalled();
                 expect(mockSetObj).toHaveBeenCalledTimes(1);
@@ -156,6 +157,7 @@ describe("BaseAuthHandler config", () => {
 
                 expect(caughtError).toBeUndefined();
                 expect(doLoginSpy).toHaveBeenCalledTimes(1);
+                expect(profileExistsSpy).toHaveBeenCalledTimes(1);
                 expect(params.response.console.prompt).toHaveBeenCalledTimes(1);
                 expect(writeFileSpy).not.toHaveBeenCalled();
                 expect(mockSetObj).toHaveBeenCalledTimes(1);
@@ -206,6 +208,7 @@ describe("BaseAuthHandler config", () => {
 
                 expect(caughtError).toBeUndefined();
                 expect(doLoginSpy).toHaveBeenCalledTimes(1);
+                expect(profileExistsSpy).toHaveBeenCalledTimes(1);
                 expect(params.response.console.prompt).toHaveBeenCalledTimes(1);
                 expect(writeFileSpy).toHaveBeenCalledTimes(1);
                 expect(fakeVault.save).toHaveBeenCalledTimes(1);
