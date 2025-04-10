@@ -61,7 +61,7 @@ pub fn set_password(
     password: &String,
 ) -> Result<bool, KeyringError> {
     let keychain = SecKeychain::default().unwrap();
-    let _lock = keyring_mutex().unwrap();
+    let _lock = keyring_mutex()?;
     match keychain.set_password(service.as_str(), account.as_str(), password.as_bytes()) {
         Ok(()) => Ok(true),
         Err(err) => Err(KeyringError::from(err)),
@@ -80,7 +80,7 @@ pub fn set_password(
 ///
 pub fn get_password(service: &String, account: &String) -> Result<Option<String>, KeyringError> {
     let keychain = SecKeychain::default().unwrap();
-    let _lock = keyring_mutex().unwrap();
+    let _lock = keyring_mutex()?;
     match keychain.find_password(service.as_str(), account.as_str()) {
         Ok((pw, _)) => Ok(Some(String::from_utf8(pw.to_owned())?)),
         Err(err) if err.code() == ERR_SEC_ITEM_NOT_FOUND => Ok(None),
@@ -108,7 +108,7 @@ pub fn find_password(service: &String) -> Result<Option<String>, KeyringError> {
     }
 
     let keychain = SecKeychain::default().unwrap();
-    let _lock = keyring_mutex().unwrap();
+    let _lock = keyring_mutex()?;
     match keychain.find_password(cred_attrs[0], cred_attrs[1]) {
         Ok((pw, _)) => {
             let pw_str = String::from_utf8(pw.to_owned())?;
@@ -130,7 +130,7 @@ pub fn find_password(service: &String) -> Result<Option<String>, KeyringError> {
 ///
 pub fn delete_password(service: &String, account: &String) -> Result<bool, KeyringError> {
     let keychain = SecKeychain::default().unwrap();
-    let _lock = keyring_mutex().unwrap();
+    let _lock = keyring_mutex()?;
     match keychain.find_password(service.as_str(), account.as_str()) {
         Ok((_, item)) => {
             item.delete()?;
@@ -155,7 +155,7 @@ pub fn find_credentials(
     service: &String,
     credentials: &mut Vec<(String, String)>,
 ) -> Result<bool, KeyringError> {
-    let _lock = keyring_mutex().unwrap();
+    let _lock = keyring_mutex()?;
     match KeychainSearch::new()
         .label(service.as_str())
         .with_attrs()
