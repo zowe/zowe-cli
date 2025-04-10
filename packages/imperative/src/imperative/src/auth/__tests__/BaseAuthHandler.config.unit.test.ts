@@ -578,7 +578,8 @@ describe("BaseAuthHandler config", () => {
             const params = lodash.cloneDeep(logoutParams);
 
             const doLogoutSpy = jest.spyOn(handler as any, "doLogout");
-            const writeFileSpy = jest.spyOn(fs, "writeFileSync");
+            const writeFileSpy = jest.spyOn(fs, "writeFileSync").mockReturnValueOnce(undefined);
+
             let caughtError;
 
             try {
@@ -589,7 +590,7 @@ describe("BaseAuthHandler config", () => {
 
             expect(caughtError).toBeUndefined();
             expect(doLogoutSpy).toHaveBeenCalledTimes(1);
-            expect(writeFileSpy).not.toHaveBeenCalled();
+            expect(writeFileSpy).toHaveBeenCalledTimes(1);
         });
 
         it("should not logout without a token", async () => {
