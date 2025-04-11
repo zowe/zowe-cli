@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe Secrets SDK package will be documented in this file.
 
-## Recent Changes
+## `8.18.3`
 
 - BugFix: Fixed an error when accessing secrets on MacOS caused by socket file paths exceeding the maximum allowed length. [#2482](https://github.com/zowe/zowe-cli/pull/2482)
 
