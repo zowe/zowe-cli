@@ -104,7 +104,7 @@ describe("auth login/logout apiml show token", () => {
         expect(responseData.tokenType).toEqual("apimlAuthenticationToken");
         expect(responseData.tokenValue).toBeDefined();
         expect(responseData.tokenValue.length).toBeGreaterThan(100);
-        let stdOutTokenMatch = response.stdout.toString().match(/will not be stored in your profile:\\n(.*)\\n\\nLogin successful/);
+        const stdOutTokenMatch = response.stdout.toString().match(/will not be stored in your profile:\\n(.*)\\n\\nLogin successful/);
         expect(responseData.tokenValue).toEqual(stdOutTokenMatch[1]);
     });
 
