@@ -105,7 +105,7 @@ export class Console implements IConsole {
         }
         let adjustedMessage = message;
         if (this.prefix) {
-            adjustedMessage = this.buildPrefix("INFO") + message;
+            adjustedMessage = Console.buildPrefix("INFO") + message;
         }
         if (this.color) {
             adjustedMessage = TextUtils.chalk.grey(adjustedMessage);
@@ -119,7 +119,7 @@ export class Console implements IConsole {
         }
         let adjustedMessage = message;
         if (this.prefix) {
-            adjustedMessage = this.buildPrefix("TRACE") + message;
+            adjustedMessage = Console.buildPrefix("TRACE") + message;
         }
         if (this.color) {
             adjustedMessage = TextUtils.chalk.cyan(adjustedMessage);
@@ -133,7 +133,7 @@ export class Console implements IConsole {
         }
         let adjustedMessage = message;
         if (this.prefix) {
-            adjustedMessage = this.buildPrefix("DEBUG") + message;
+            adjustedMessage = Console.buildPrefix("DEBUG") + message;
         }
         if (this.color) {
             adjustedMessage = TextUtils.chalk.blue(adjustedMessage);
@@ -147,7 +147,7 @@ export class Console implements IConsole {
         }
         let adjustedMessage = message;
         if (this.prefix) {
-            adjustedMessage = this.buildPrefix("WARN") + message;
+            adjustedMessage = Console.buildPrefix("WARN") + message;
         }
         if (this.color) {
             adjustedMessage = TextUtils.chalk.yellow(adjustedMessage);
@@ -161,7 +161,7 @@ export class Console implements IConsole {
         }
         let adjustedMessage = message;
         if (this.prefix) {
-            adjustedMessage = this.buildPrefix("ERROR") + message;
+            adjustedMessage = Console.buildPrefix("ERROR") + message;
         }
         if (this.color) {
             adjustedMessage = TextUtils.chalk.red(adjustedMessage);
@@ -175,7 +175,7 @@ export class Console implements IConsole {
         }
         let adjustedMessage = message;
         if (this.prefix) {
-            adjustedMessage = this.buildPrefix("FATAL") + message;
+            adjustedMessage = Console.buildPrefix("FATAL") + message;
         }
         if (this.color) {
             adjustedMessage = TextUtils.chalk.magenta(adjustedMessage);
@@ -220,7 +220,7 @@ export class Console implements IConsole {
         return formatted + "\n";
     }
 
-    private buildPrefix(type: string) {
+    public static buildPrefix(type: string) {
         // eslint-disable-next-line @typescript-eslint/no-magic-numbers
         const tzOffset = new Date().getTimezoneOffset() * 60000;
         const dateString = new Date(Date.now() - tzOffset).toISOString()
