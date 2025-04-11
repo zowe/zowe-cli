@@ -8,7 +8,7 @@ Users might not intentionally specify multiple credentials for the same operatio
 
 A user may use the same user and password to authenticate to most of their services. It makes sense to place that user & password in a base profile so that they are automatically available to every service. This reduces redundancy and reduces maintenance efforts. If one service requires a token for authentication, the user might also store a token value within the base profile associated with API Mediation Layer (API-ML). Then, when connecting to that service through API-ML, both the user & password and a token will be available when Zowe CLI attempts to make a connection to that service. For this example, the token is the right choice for this service.  For historical reasons, Zowe always selects a user & password over a token when both are available. The use of user & password does not give the desired results.
 
-In another example, sites gradually deploy API-ML and can easily encounter another (but opposite) authentication issue. Sites login to APIML to obtain a token, which is then used to authenticate all future requests to services through API-ML. The API-ML token is typically stored in a base profile so that connections to all services are done through API-ML with its token. When a new service is brought on-line at a site, it is common for that service to not be immediately integrated with API-ML. For at least a period of time, the site makes a direct connection to that service. The site adds user/password properties to that service's profile to authenticate that direct connection. Once again, both user & password and a token are available when Zowe attempts to connect to the service for that profile. In this case, the user & password are the right choice for this service. However, this is the opposite choice from the previous example.
+In another example, sites gradually deploy API-ML and can easily encounter another (but opposite) authentication issue. Sites login to API-ML to obtain a token, which is then used to authenticate all future requests to services through API-ML. The API-ML token is typically stored in a base profile so that connections to all services are done through API-ML with its token. When a new service is brought on-line at a site, it is common for that service to not be immediately integrated with API-ML. For at least a period of time, the site makes a direct connection to that service. The site adds user/password properties to that service's profile to authenticate that direct connection. Once again, both user & password and a token are available when Zowe attempts to connect to the service for that profile. In this case, the user & password are the right choice for this service. However, this is the opposite choice from the previous example.
 
 As these examples demonstrate, Zowe cannot simply change which authentication type should be given preference. It varies based on what a site is trying to do. That order might also change from one part of the customer's configuration to another. The preferred order in which credentials are chosen is further complicated when we consider that certificates may also be used by a site for some of its services.
 
@@ -151,6 +151,18 @@ The internal programmatic definition of authOrder would be:
 authOrder: SessConstants.AUTH_TYPE_CHOICES[]
 ```
 
+## New auth login behavior
+
+The `zowe auth login apiml` command previously created a new base profile named **YourCurrentBaseProfileName_apiml** whenever your current base profile contained a user and password. The reason for this is that the **login** command stored the newly acquired token into the base profile. Old hard-coded logic to select authentication credentials selected user and password over a token when all were available. Thus, the resulting configuration could not be used to login to API-ML with the token that the user just requested. As a work-around, the **login** command created a new base profile and appended **_apiml** to the name. It then placed the token into that new profile. The user and password remained in the old base profile.
+
+While this kept the user/password and token separate, it required users to switch their base profile whenever the user wanted to use a profile that connected directly to a service versus using a profile that connected through API-ML. Alternatively the user could edit their configuration file to move user and password out of the existing base profile and then place a token into that existing base profile. All of these techniques were confusing, error-prone, and inconvenient.
+
+Because the new authOrder property enables a user to select which credentials should be used, every type of credential can co-exist on the same base profile. As a result, the `zowe auth login apiml` command now places the resulting token into the current default base profile (or into the base profile specified on the command line).
+
+The **login** command now also automatically places an **authOrder** property with a value of "token" into the default zosmf profile, so the token can be used immediately after logging into API-ML.
+
+- Note that the **login** command will only add an **authOrder** property if the zosmf profile contains an **basePath** property (which indicates that the profile will be used to communicate with API-ML).
+
 ## Documentation Impact
 
 - We must describe the purpose and function of the new authOrder property.
@@ -163,13 +175,15 @@ authOrder: SessConstants.AUTH_TYPE_CHOICES[]
 
 - We must notify extenders to guide their customers to supply an appropriate authOrder property if their extension needs a non-default order.
 
+- We must update any documentation on the `zowe auth login apiml` command which contradicts the new behavior of that command.
+
 ## Edge cases that must be confirmed during implementation
 
 Every edge case was not included in the protype used to confirm the validity of this design document. The following edge cases must be confirmed and appropriate logic must be written during the implementation of this design.
 
 - As an alternative to user & password, a property named base64EncodedAuth can be used in a session. The new APIs must handle this alternative.
 
-- To login to APIML, a user supplies a user & password (or cert) and receives a token. The new APIs must determine the correct authentication type for such a session which kind of morphs its authentication type during the transaction.
+- To login to API-ML, a user supplies a user & password (or cert) and receives a token. The new APIs must determine the correct authentication type for such a session which kind of morphs its authentication type during the transaction.
 
 - Zowe Explorer currently inherits the same hard-coded order as the CLI from the client SDKs. The new authentication order APIs must be integrated into the APIs used by Zowe Explorer. We must confirm whether any additional logic changes must be made within Zowe Explorer itself.
 
@@ -296,7 +310,6 @@ stateDiagram-v2
     ProfileInfo.initSessCfg<br/>(public_but_only_called_from_createSession) --> AuthOrder.cacheDefaultAuthOrder
 
     ConnectionPropsForSessCfg.resolveSessCfgProps --> AuthOrder.cacheDefaultAuthOrder
-
 ```
 
 ## Functions that reference AUTH_TYPE may need modification
