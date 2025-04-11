@@ -312,7 +312,34 @@ describe("AuthOrder", () => {
             expect(sessCfgForTest._authCache?.availableCreds[sessCertPropNm]).toEqual(cmdsArgsCertFileVal);
             expect(sessCfgForTest._authCache?.availableCreds[sessCertKeyPropNm]).toEqual(cmdsArgsCertKeyFileVal);
         });
-    });
+
+        it("should cache creds and authOrder only from sessCfg when no cmdArgs are supplied", () => {
+            AuthOrder.cacheCredsAndAuthOrder(sessCfgForTest);
+
+            // confirm that auth order was recorded
+            expect(sessCfgForTest).toHaveProperty("authTypeOrder");
+            expect(sessCfgForTest.authTypeOrder?.length).toEqual(4);
+            expect((sessCfgForTest as any).authTypeOrder[0]).toEqual(AUTH_TYPE_BASIC);
+            expect((sessCfgForTest as any).authTypeOrder[1]).toEqual(AUTH_TYPE_TOKEN);
+            expect((sessCfgForTest as any).authTypeOrder[2]).toEqual(AUTH_TYPE_BEARER);
+            expect((sessCfgForTest as any).authTypeOrder[3]).toEqual(AUTH_TYPE_CERT_PEM);
+
+            expect(sessCfgForTest).toHaveProperty("_authCache");
+            expect(sessCfgForTest._authCache).toHaveProperty("didUserSetAuthOrder");
+            expect(sessCfgForTest._authCache?.didUserSetAuthOrder).toEqual(false);
+
+            // confirm that only creds from sessCfg have been recorded
+            expect(sessCfgForTest._authCache).toHaveProperty("availableCreds");
+            expect(Object.keys((sessCfgForTest as any)._authCache.availableCreds).length).toEqual(2);
+            expect(sessCfgForTest._authCache?.availableCreds["user"]).toEqual(sessCfgUserVal);
+            expect(sessCfgForTest._authCache?.availableCreds["password"]).toEqual(sessCfgPassVal);
+            expect(sessCfgForTest._authCache?.availableCreds["base64EncodedAuth"]).not.toBeDefined();
+            expect(sessCfgForTest._authCache?.availableCreds["tokenType"]).not.toBeDefined();
+            expect(sessCfgForTest._authCache?.availableCreds["tokenValue"]).not.toBeDefined();
+            expect(sessCfgForTest._authCache?.availableCreds[sessCertPropNm]).not.toBeDefined();
+            expect(sessCfgForTest._authCache?.availableCreds[sessCertKeyPropNm]).not.toBeDefined();
+        });
+});
 
     describe("clearAuthCache", () => {
         it("should clear the authentication cache", () => {
