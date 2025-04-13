@@ -58,11 +58,11 @@ export const JobsDefinition: ICommandDefinition = {
                     " The command returns jobs owned by your user ID with any job name"
             },
             {
-                options: "-o \"ibmu*\" -p \"myjo*\"",
+                options: "--owner \"ibmu*\" -prefix \"myjo*\"",
                 description: "List all jobs owned by user IDs starting with 'ibmu' and job names starting with 'myjo'"
             },
             {
-                options: "--rff jobid --rft table",
+                options: "--response-format-filter jobid --response-format-type table",
                 description: "List all jobs with default owner and prefix settings, displaying only the job ID of each job"
             },
             {
@@ -70,11 +70,11 @@ export const JobsDefinition: ICommandDefinition = {
                 description: "List all jobs and return job execution data along with the default information"
             },
             {
-                options: "-o \"ibmu*\" --exec-data",
+                options: "--owner \"ibmu*\" --exec-data",
                 description: "List all jobs owned by user IDs starting with 'ibmu' and return job execution data along with the default information"
             },
             {
-                options: "-o \"ibmu*\" -p \"myjo*\" --exec-data",
+                options: "--owner \"ibmu*\" -prefix \"myjo*\" --exec-data",
                 description: "List all jobs owned by user IDs starting with 'ibmu' and job names starting with 'myjo' and " +
                     "return job execution data along with the default information"
             }

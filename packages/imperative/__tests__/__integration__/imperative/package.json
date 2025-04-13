@@ -36,7 +36,8 @@
   },
   "dependencies": {
     "@zowe/imperative": "../../..",
-    "@zowe/secrets-for-zowe-sdk": "7.18.0"
+    "@zowe/secrets-for-zowe-sdk": "7.18.0",
+    "imperative-test-cli": "file:"
   },
   "engines": {
     "node": ">=8.0.0"

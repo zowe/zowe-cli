@@ -59,7 +59,7 @@ export const DirToPdsDefinition: ICommandDefinition = {
         },
         {
             description: strings.EXAMPLES.EX2,
-            options: `"src" "ibmuser.src" --mr wait`
+            options: `"src" "ibmuser.src" --migrated-recall wait`
         }
     ]
 };

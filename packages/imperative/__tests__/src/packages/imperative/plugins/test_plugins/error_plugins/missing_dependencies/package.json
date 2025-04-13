@@ -34,5 +34,8 @@
   "private": false,
   "publishConfig": {
     "registry": "http://imperative-npm-registry:4873"
+  },
+  "dependencies": {
+    "missing_dependencies": "file:"
   }
 }

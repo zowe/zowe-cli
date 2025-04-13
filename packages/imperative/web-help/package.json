@@ -20,7 +20,8 @@
     "jstree": "^3.3.16",
     "scroll-into-view-if-needed": "2.2.29",
     "split.js": "^1.6.5",
-    "url-search-params-polyfill": "^8.2.5"
+    "url-search-params-polyfill": "^8.2.5",
+    "web-help": "file:"
   },
   "devDependencies": {
     "@types/jquery": "^3.5.30",

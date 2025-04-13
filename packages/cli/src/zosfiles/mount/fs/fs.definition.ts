@@ -53,7 +53,7 @@ export const FsDefinition: ICommandDefinition = {
         },
         {
             description: fsStrings.EXAMPLES.EX2,
-            options: "MY.HFS /a/ibmuser/mountdir --ft HFS -m rdwr"
+            options: "MY.HFS /a/ibmuser/mountdir --file-system-type HFS --mode rdwr"
         }
     ]
 };

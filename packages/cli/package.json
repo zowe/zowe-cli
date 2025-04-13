@@ -58,6 +58,7 @@
     "preshrinkwrap": "node ../../scripts/rewriteShrinkwrap.js"
   },
   "dependencies": {
+    "@zowe/cli": "file:",
     "@zowe/core-for-zowe-sdk": "8.18.3",
     "@zowe/imperative": "8.18.3",
     "@zowe/provisioning-for-zowe-sdk": "8.18.3",

@@ -52,11 +52,11 @@ export const AllMembersDefinition: ICommandDefinition = {
     examples: [
         {
             description: strings.EXAMPLES.EX1,
-            options: `"ibmuser.loadlib" -b -d loadlib`
+            options: `"ibmuser.loadlib" --binary --directory loadlib`
         },
         {
             description: strings.EXAMPLES.EX2,
-            options: `"ibmuser.cntl" -d jcl`
+            options: `"ibmuser.cntl" --directory jcl`
         }
     ]
 };

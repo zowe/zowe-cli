@@ -45,7 +45,7 @@ export const UssFileDefinition: ICommandDefinition = {
         },
         {
             description: ussStrings.EXAMPLES.SPECIFY_MODE,
-            options: "text.txt -m rwxrwxrwx"
+            options: "text.txt --mode rwxrwxrwx"
         }
     ]
 };

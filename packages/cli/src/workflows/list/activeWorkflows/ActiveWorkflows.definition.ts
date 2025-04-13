@@ -44,15 +44,15 @@ export const ActiveWorkflows: ICommandDefinition = {
     examples: [
         {
             description: "List the workflow with name \"testworkflow\"",
-            options: "--wn \"testworkflow\""
+            options: "--workflow-name \"testworkflow\""
         },
         {
             description: "List multiple active workflows on the entire syspex with names containing\"workflow\"",
-            options: "--wn \".*workflow.*\""
+            options: "--workflow-name \".*workflow.*\""
         },
         {
             description: "List multiple active workflows on system \"IBMSYS\" with names beginnig with \"testW\" that are in status \"complete\"",
-            options: "--wn \"test.*\" --sys \"IBMSYS\" --sn \"complete\""
+            options: "--workflow-name \"test.*\" --system \"IBMSYS\" --status-name \"complete\""
         }
     ]
 };

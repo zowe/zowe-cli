@@ -46,6 +46,7 @@
     "prepack": "node ../../scripts/prepareLicenses.js"
   },
   "dependencies": {
+    "@zowe/zos-files-for-zowe-sdk": "file:",
     "lodash": "^4.17.21",
     "minimatch": "^9.0.5"
   },
