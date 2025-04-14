@@ -11,6 +11,7 @@ use error::Error;
 
 use crate::os::mac::error::ERR_SEC_ITEM_NOT_FOUND;
 use crate::os::mac::keychain_search::{KeychainSearch, SearchResult};
+use adler::Adler32;
 use fmutex::Guard;
 use keychain::SecKeychain;
 
@@ -33,12 +34,12 @@ fn keyring_mutex() -> Result<Guard, KeyringError> {
     // MacOS shows keychain prompt after secret has been modified by another process. We use cross-process mutex to
     // block keychain access if there are multiple concurrent keychain operations invoked by the same process. This
     // prevents multiple instances of the same app (e.g. VS Code) from triggering several keychain prompts at once.
-    let exe_path = std::env::current_exe()
-        .unwrap()
-        .to_string_lossy()
-        .replace(std::path::MAIN_SEPARATOR, "_");
+    // Use checksum since path length is limited: https://nodejs.org/api/net.html#identifying-paths-for-ipc-connections
+    let exe_path = std::env::current_exe().unwrap();
+    let mut hasher = Adler32::new();
+    hasher.write_slice(exe_path.to_string_lossy().as_bytes());
     let lock_path = std::env::temp_dir()
-        .join(format!("zowe_{}_{}.lock", env!("CARGO_PKG_NAME"), exe_path));
+        .join(format!("zowe_{}_{:08x}.lock", env!("CARGO_PKG_NAME"), hasher.checksum()));
     std::fs::OpenOptions::new().create(true).write(true).open(&lock_path)
         .and_then(|_| fmutex::lock(lock_path))
         .map_err(KeyringError::from)
@@ -60,7 +61,7 @@ pub fn set_password(
     password: &String,
 ) -> Result<bool, KeyringError> {
     let keychain = SecKeychain::default().unwrap();
-    let _lock = keyring_mutex().unwrap();
+    let _lock = keyring_mutex()?;
     match keychain.set_password(service.as_str(), account.as_str(), password.as_bytes()) {
         Ok(()) => Ok(true),
         Err(err) => Err(KeyringError::from(err)),
@@ -79,7 +80,7 @@ pub fn set_password(
 ///
 pub fn get_password(service: &String, account: &String) -> Result<Option<String>, KeyringError> {
     let keychain = SecKeychain::default().unwrap();
-    let _lock = keyring_mutex().unwrap();
+    let _lock = keyring_mutex()?;
     match keychain.find_password(service.as_str(), account.as_str()) {
         Ok((pw, _)) => Ok(Some(String::from_utf8(pw.to_owned())?)),
         Err(err) if err.code() == ERR_SEC_ITEM_NOT_FOUND => Ok(None),
@@ -107,7 +108,7 @@ pub fn find_password(service: &String) -> Result<Option<String>, KeyringError> {
     }
 
     let keychain = SecKeychain::default().unwrap();
-    let _lock = keyring_mutex().unwrap();
+    let _lock = keyring_mutex()?;
     match keychain.find_password(cred_attrs[0], cred_attrs[1]) {
         Ok((pw, _)) => {
             let pw_str = String::from_utf8(pw.to_owned())?;
@@ -129,7 +130,7 @@ pub fn find_password(service: &String) -> Result<Option<String>, KeyringError> {
 ///
 pub fn delete_password(service: &String, account: &String) -> Result<bool, KeyringError> {
     let keychain = SecKeychain::default().unwrap();
-    let _lock = keyring_mutex().unwrap();
+    let _lock = keyring_mutex()?;
     match keychain.find_password(service.as_str(), account.as_str()) {
         Ok((_, item)) => {
             item.delete()?;
@@ -154,7 +155,7 @@ pub fn find_credentials(
     service: &String,
     credentials: &mut Vec<(String, String)>,
 ) -> Result<bool, KeyringError> {
-    let _lock = keyring_mutex().unwrap();
+    let _lock = keyring_mutex()?;
     match KeychainSearch::new()
         .label(service.as_str())
         .with_attrs()
