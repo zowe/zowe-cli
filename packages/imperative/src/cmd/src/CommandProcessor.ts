@@ -85,6 +85,12 @@ interface IResolvedArgsResponse {
      * @memberof IResolvedArgsResponse
      */
     authenticationType?: string;
+
+    /**
+     * @type {string}
+     * @memberof IResolvedArgsResponse
+     */
+    authTypeOrder?: string;
 }
 
 /**
@@ -765,6 +771,7 @@ export class CommandProcessor {
         ConnectionPropsForSessCfg.resolveSessCfgProps(sessCfg, commandParameters.arguments);
         AuthOrder.putTopAuthInSession(sessCfg);
         showInputsOnly.authenticationType = sessCfg.type;
+        showInputsOnly.authTypeOrder = sessCfg.authTypeOrder.toString();
 
         /**
          * Append profile information
