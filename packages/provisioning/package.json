@@ -45,7 +45,6 @@
     "prepack": "node ../../scripts/prepareLicenses.js"
   },
   "dependencies": {
-    "@zowe/provisioning-for-zowe-sdk": "file:",
     "js-yaml": "^4.1.0"
   },
   "devDependencies": {
