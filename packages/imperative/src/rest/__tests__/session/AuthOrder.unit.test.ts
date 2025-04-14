@@ -339,7 +339,7 @@ describe("AuthOrder", () => {
             expect(sessCfgForTest._authCache?.availableCreds[sessCertPropNm]).not.toBeDefined();
             expect(sessCfgForTest._authCache?.availableCreds[sessCertKeyPropNm]).not.toBeDefined();
         });
-});
+    });
 
     describe("clearAuthCache", () => {
         it("should clear the authentication cache", () => {
