@@ -90,8 +90,5 @@
     ],
     "coverageLink": "../unit/coverage/lcov-report/index.html",
     "resultDir": "__tests__/__results__/jest-stare"
-  },
-  "dependencies": {
-    "@zowe/cli_monorepo": "file:"
   }
 }
