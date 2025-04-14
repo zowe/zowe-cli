@@ -54,8 +54,5 @@
   },
   "engines": {
     "node": ">=18.12.0"
-  },
-  "dependencies": {
-    "@zowe/zosmf-for-zowe-sdk": "file:"
   }
 }
