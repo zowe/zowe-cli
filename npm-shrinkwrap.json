@@ -10,9 +10,6 @@
         "packages/*",
         "__tests__/__packages__/*"
       ],
-      "dependencies": {
-        "@zowe/cli_monorepo": "file:"
-      },
       "devDependencies": {
         "@lerna-lite/changed": "^3.6.0",
         "@lerna-lite/cli": "^3.6.0",
