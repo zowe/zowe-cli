@@ -35,7 +35,6 @@
     "prepack": "node ../../../scripts/prepareLicenses.js"
   },
   "dependencies": {
-    "@zowe/cli-test-utils": "file:",
     "find-up": "^5.0.0",
     "js-yaml": "^4.0.0",
     "rimraf": "^5.0.0",
