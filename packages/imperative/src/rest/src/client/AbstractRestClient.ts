@@ -930,6 +930,8 @@ export abstract class AbstractRestClient {
         "\nHeaders:           " + headerDetails +
         "\nPayload:           " + payloadDetails +
         "\nAuth type:         " + this.mSession.ISession.type +
+        "\nAuth order:        " + this.mSession.ISession.authTypeOrder +
+        "\nAvailable creds:   " + Object.keys(this.mSession.ISession._authCache.availableCreds) +
         "\nAllow Unauth Cert: " + !this.mSession.ISession.rejectUnauthorized;
         finalError.additionalDetails = detailMessage;
 
