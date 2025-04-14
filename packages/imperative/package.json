@@ -46,7 +46,6 @@
   },
   "dependencies": {
     "@types/yargs": "^17.0.32",
-    "@zowe/imperative": "file:",
     "chalk": "^4.1.2",
     "cli-table3": "^0.6.3",
     "comment-json": "~4.2.3",
