@@ -21,9 +21,6 @@
   "main": "lib/index.js",
   "typings": "lib/index.d.ts",
   "scripts": {},
-  "dependencies": {
-    "profile-example-cli-with-bin": "file:"
-  },
   "engines": {
     "node": ">=6.0.0"
   }
