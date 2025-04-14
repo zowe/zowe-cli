@@ -47,7 +47,6 @@
   },
   "dependencies": {
     "@zowe/zos-files-for-zowe-sdk": "8.18.3",
-    "@zowe/zos-jobs-for-zowe-sdk": "file:"
   },
   "devDependencies": {
     "@zowe/cli-test-utils": "8.18.3",
