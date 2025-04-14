@@ -45,7 +45,6 @@
     "prepack": "node ../../scripts/prepareLicenses.js"
   },
   "dependencies": {
-    "@zowe/zos-tso-for-zowe-sdk": "file:",
     "@zowe/zosmf-for-zowe-sdk": "8.18.3"
   },
   "devDependencies": {
