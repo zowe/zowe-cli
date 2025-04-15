@@ -279,7 +279,7 @@
           },
           "createProfileExamples": [
             {
-              "options": "ndvrLoc --environment ENV --system SYS --subsystem SUBSYS --type COBOL --stage-number 1 -instance ENDEVOR",
+              "options": "ndvrLoc --environment ENV --system SYS --subsystem SUBSYS --type COBOL --stage-number 1 --instance ENDEVOR",
               "description": "Create a location profile called 'ndvrLoc' to work at CA Endevor SCM location ENV/1/SYS/SUBSYS, with elements of type COBOL, using CA Endevor SCM web services configuration ENDEVOR"
             },
             {
