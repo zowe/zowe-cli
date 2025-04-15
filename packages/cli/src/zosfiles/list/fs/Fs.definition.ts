@@ -48,7 +48,7 @@ export const FsDefinition: ICommandDefinition = {
         },
         {
             description: strings.EXAMPLES.EX3,
-            options: "--file-system-name MY.ZFS"
+            options: "--fsname MY.ZFS"
         }
     ]
 };
