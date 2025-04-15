@@ -576,7 +576,7 @@
         },
         {
           "description": "Create a tso profile called 'largeregion' with a region size of 8192, a logon procedure of MYPROC, and JES accounting information of '1234'",
-          "options": "largeregion --account 1234 --rs 8192"
+          "options": "largeregion --account 1234 --region-size 8192"
         },
         {
           "description": "Create a tso profile called 'myprof2' with default settings and region size of 8192, without storing the user account on disk",
