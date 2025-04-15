@@ -176,7 +176,7 @@ export const syntaxTestCommand: ICommandDefinition = {
         },
         {
             description: "example 3",
-            options: `"file.txt" "ibmuser.ps" --mr wait` 
+            options: `"file.txt" "ibmuser.ps" --mr wait`
         },
     ],
     mustSpecifyOne: ["option-to-specify-1", "option-to-specify-2", "option-to-specify-3", "option-to-specify-4"]
