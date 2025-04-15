@@ -51,7 +51,7 @@ export const UssFileDefinition: ICommandDefinition = {
         },
         {
             description: strings.EXAMPLES.EX2,
-            options: `"/a/ibmuser/MyJava.class" --binary -file "java/MyJava.class"`
+            options: `"/a/ibmuser/MyJava.class" --binary --file "java/MyJava.class"`
         },
         {
             description: strings.EXAMPLES.EX3,
