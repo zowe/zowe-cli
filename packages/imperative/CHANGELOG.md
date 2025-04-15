@@ -2,6 +2,12 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Added a connection timeout to the Imperative REST Client, with a default of 60 seconds. []()
+- Enhancement: Added the `SOCKET_CONNECT_TIMEOUT` environment variable to the `EnvironmentalVariableSettings` class to allow extenders to determine how long to wait for a socket connection before timing out. []()
+- BugFix: Added checks to `AbstractRestClient` to ensure the `hostname` parameter does not contain a protocol. []()
+
 ## `8.18.0`
 
 - BugFix: Ensured that the `ProfileCredentials` class evaluates all layers to determine if the credentials are secure. [#2460](https://github.com/zowe/zowe-cli/issues/2460)
