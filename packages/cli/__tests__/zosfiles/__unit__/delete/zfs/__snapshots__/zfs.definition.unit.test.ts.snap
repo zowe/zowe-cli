@@ -28,11 +28,11 @@ exports[`zos-files delete zfs command definition should not have changed 2`] = `
 Array [
   Object {
     "description": "Delete the z/OS file system 'HLQ.MYNEW.ZFS'",
-    "options": "\\"HLQ.MYNEW.ZFS\\" -f",
+    "options": "\\"HLQ.MYNEW.ZFS\\" --for-sure",
   },
   Object {
     "description": "Quietly delete a z/OS file, suppressing errors if the file doesn't exist",
-    "options": "\\"HLQ.MYNEW.ZFS\\" -fi",
+    "options": "\\"HLQ.MYNEW.ZFS\\" --for-sure --ignore-not-found",
   },
 ]
 `;

@@ -63,7 +63,7 @@ export const ZfsDefinition: ICommandDefinition = {
         },
         {
             description: strings.EXAMPLES.EX2,
-            options: `"HLQ.MYNEW.ZFS" --for-sure --ignore-not-found` 
+            options: `"HLQ.MYNEW.ZFS" --for-sure --ignore-not-found`
         }
     ]
 };

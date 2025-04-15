@@ -9,7 +9,7 @@ Object {
   "examples": Array [
     Object {
       "description": "Delete all of your jobs in output status with a job name starting with \\"ibmuser\\"",
-      "options": "-p \\"ibmuser*\\"",
+      "options": "--prefix \\"ibmuser*\\"",
     },
   ],
   "name": "old-jobs",
