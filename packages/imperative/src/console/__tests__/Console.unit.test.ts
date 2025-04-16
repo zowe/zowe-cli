@@ -83,6 +83,6 @@ describe("Console tests", () => {
         const cons = new Console();
         jest.spyOn(Date.prototype, "getTimezoneOffset").mockReturnValueOnce(0);
         jest.spyOn(Date, "now").mockReturnValueOnce(45296789);
-        expect((cons as any).buildPrefix("test")).toBe("[1970/01/01 12:34:56.789] [test] ");
+        expect(Console.buildPrefix("test")).toBe("[1970/01/01 12:34:56.789] [test] ");
     });
 });
