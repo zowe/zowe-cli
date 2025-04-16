@@ -65,15 +65,15 @@ export const DsDefinition: ICommandDefinition = {
     examples: [
         {
             description: strings.EXAMPLES.EX1,
-            options: `"ibmuser.cntl" -f`
+            options: `"ibmuser.cntl" --for-sure`
         },
         {
             description: strings.EXAMPLES.EX2,
-            options: `"ibmuser.cntl(mem)" -f`
+            options: `"ibmuser.cntl(mem)" --for-sure`
         },
         {
             description: strings.EXAMPLES.EX3,
-            options: `"ibmuser.cntl(mem)" -fi`
+            options: `"ibmuser.cntl(mem)" --for-sure --ignore-not-found`
         }
     ]
 };

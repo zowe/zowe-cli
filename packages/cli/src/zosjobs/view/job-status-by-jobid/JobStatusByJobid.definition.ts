@@ -39,7 +39,7 @@ export const JobStatusByJobidDefinition: ICommandDefinition = {
                 description: "View status and other details of the job with the job ID JOB00123"
             },
             {
-                options: "j123 --rff status --rft string",
+                options: "j123 --response-format-filter status --response-format-type string",
                 description: "Print only the status (for example, \"OUTPUT\" or \"ACTIVE\") of the job with the job ID JOB00123"
             }
         ],

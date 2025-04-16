@@ -55,11 +55,11 @@ export const ZfsDefinition: ICommandDefinition = {
         },
         {
             description: zfsStrings.EXAMPLES.SPECIFY_CYLS,
-            options: "HLQ.MYNEW.ZFS --cp 100 --cs 10"
+            options: "HLQ.MYNEW.ZFS --cyls-pri 100 --cyls-sec 10"
         },
         {
             description: zfsStrings.EXAMPLES.SPECIFY_VOLUMES,
-            options: "HLQ.MYNEW.ZFS -v ZFS001 ZFS002"
+            options: "HLQ.MYNEW.ZFS --volumes ZFS001 ZFS002"
         }
     ]
 };

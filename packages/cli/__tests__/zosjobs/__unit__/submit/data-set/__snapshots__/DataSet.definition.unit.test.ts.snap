@@ -13,7 +13,7 @@ Object {
     },
     Object {
       "description": "Submit the JCL in the data set \\"ibmuser.cntl(deploy)\\", wait for the job to complete and print all output from the job",
-      "options": "\\"ibmuser.cntl(deploy)\\" --vasc",
+      "options": "\\"ibmuser.cntl(deploy)\\" --view-all-spool-content",
     },
   ],
   "name": "data-set",

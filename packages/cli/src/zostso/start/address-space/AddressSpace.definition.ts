@@ -38,11 +38,11 @@ export const AddressSpaceDefinition: ICommandDefinition = {
         },
         {
             description: "Start TSO/E address space, and receive response in JSON format",
-            options: "--rfj"
+            options: "--response-format-json"
         },
         {
             description: "Start TSO/E address space, and print only the servlet key",
-            options: "--sko"
+            options: "--servlet-key-only"
         }
     ]
 };

@@ -73,23 +73,23 @@ export const VsamDefinition: ICommandDefinition = {
     examples: [
         {
             description: strings.EXAMPLES.EX1,
-            options: `"ibmuser.cntl.vsam" -f`
+            options: `"ibmuser.cntl.vsam" --for-sure`
         },
         {
             description: strings.EXAMPLES.EX2,
-            options: `"ibmuser.AAA.**.FFF" -f`
+            options: `"ibmuser.AAA.**.FFF" --for-sure`
         },
         {
             description: strings.EXAMPLES.EX3,
-            options: `"ibmuser.cntl.vsam" -f --purge`
+            options: `"ibmuser.cntl.vsam" --for-sure --purge`
         },
         {
             description: strings.EXAMPLES.EX4,
-            options: `"ibmuser.cntl.vsam" -f --erase`
+            options: `"ibmuser.cntl.vsam" --for-sure --erase`
         },
         {
             description: strings.EXAMPLES.EX2,
-            options: `"ibmuser.cntl.vsam" -fi`
+            options: `"ibmuser.cntl.vsam" --for-sure --ignore-not-found`
         },
     ]
 };

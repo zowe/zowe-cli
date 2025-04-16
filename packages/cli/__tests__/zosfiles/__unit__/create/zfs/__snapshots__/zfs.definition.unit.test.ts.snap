@@ -97,11 +97,11 @@ Array [
   },
   Object {
     "description": "Create a ZFS with 100 primary and 10 secondary cylinders allocated",
-    "options": "HLQ.MYNEW.ZFS --cp 100 --cs 10",
+    "options": "HLQ.MYNEW.ZFS --cyls-pri 100 --cyls-sec 10",
   },
   Object {
     "description": "Create a ZFS specifying the volumes that should be used",
-    "options": "HLQ.MYNEW.ZFS -v ZFS001 ZFS002",
+    "options": "HLQ.MYNEW.ZFS --volumes ZFS001 ZFS002",
   },
 ]
 `;

@@ -57,7 +57,7 @@ Array [
   },
   Object {
     "description": "Upload a directory named \\"src\\" to a migrated PDS named \\"ibmuser.src\\" and wait for it to be recalled",
-    "options": "\\"src\\" \\"ibmuser.src\\" --mr wait",
+    "options": "\\"src\\" \\"ibmuser.src\\" --migrated-recall wait",
   },
 ]
 `;

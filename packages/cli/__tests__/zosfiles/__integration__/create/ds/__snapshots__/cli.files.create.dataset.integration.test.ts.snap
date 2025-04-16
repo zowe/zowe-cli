@@ -196,7 +196,7 @@ exports[`Create  Data Set should display the help 1`] = `
 
    - Create a data set with default parameters and like flag and lrecl flag:
 
-      $ zowe zos-files create data-set NEW.DATASET --like EXISTING.DATASET --lrecl 1024
+      $ zowe zos-files create data-set NEW.DATASET --like EXISTING.DATASET --record-length 1024
 
    - Create a data set with type LIBRARY:
 

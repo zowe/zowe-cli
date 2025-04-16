@@ -61,7 +61,7 @@ Array [
   },
   Object {
     "description": "Upload file contents to a migrated data set and wait for it to be recalled",
-    "options": "\\"file.txt\\" \\"ibmuser.ps\\" --mr wait",
+    "options": "\\"file.txt\\" \\"ibmuser.ps\\" --migrated-recall wait",
   },
 ]
 `;

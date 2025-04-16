@@ -173,11 +173,11 @@ exports[`zos-tso stop address-space should display the help 1`] = `
 
    - Start TSO/E address space, and receive response in JSON format:
 
-      $ zowe zos-tso start address-space --rfj
+      $ zowe zos-tso start address-space --response-format-json
 
    - Start TSO/E address space, and print only the servlet key:
 
-      $ zowe zos-tso start address-space --sko
+      $ zowe zos-tso start address-space --servlet-key-only
 
 {
   \\"success\\": true,

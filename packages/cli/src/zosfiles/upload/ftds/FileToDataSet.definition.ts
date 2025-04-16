@@ -63,7 +63,7 @@ export const FileToDataSetDefinition: ICommandDefinition = {
         },
         {
             description: strings.EXAMPLES.EX3,
-            options: `"file.txt" "ibmuser.ps" --mr wait`
+            options: `"file.txt" "ibmuser.ps" --migrated-recall wait`
         }
     ]
 };

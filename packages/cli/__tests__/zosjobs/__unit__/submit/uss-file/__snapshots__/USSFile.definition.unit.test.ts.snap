@@ -14,7 +14,7 @@ Object {
     },
     Object {
       "description": "Submit the JCL in the USS file \\"/a/ibmuser/compile.jcl\\", wait for the job to complete and print all output from the job",
-      "options": "\\"/a/ibmuser/compile.jcl\\" --vasc",
+      "options": "\\"/a/ibmuser/compile.jcl\\" --view-all-spool-content",
     },
   ],
   "name": "uss-file",

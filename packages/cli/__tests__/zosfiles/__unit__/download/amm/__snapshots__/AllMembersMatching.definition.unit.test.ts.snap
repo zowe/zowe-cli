@@ -92,11 +92,11 @@ exports[`zos-files download amm command definition should not have changed 2`] =
 Array [
   Object {
     "description": "Download the members of the data set \\"ibmuser.loadlib\\" in binary mode to the directory \\"loadlib/\\"",
-    "options": "\\"ibmuser.loadlib\\" -b -d loadlib",
+    "options": "\\"ibmuser.loadlib\\" --binary --directory loadlib",
   },
   Object {
     "description": "Download the members of the data set \\"ibmuser.cntl\\" in text mode to the directory \\"jcl/\\"",
-    "options": "\\"ibmuser.cntl\\" -d jcl",
+    "options": "\\"ibmuser.cntl\\" --directory jcl",
   },
 ]
 `;

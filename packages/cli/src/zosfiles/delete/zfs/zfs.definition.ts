@@ -59,11 +59,11 @@ export const ZfsDefinition: ICommandDefinition = {
     examples: [
         {
             description: strings.EXAMPLES.EX1,
-            options: `"HLQ.MYNEW.ZFS" -f`
+            options: `"HLQ.MYNEW.ZFS" --for-sure`
         },
         {
             description: strings.EXAMPLES.EX2,
-            options: `"HLQ.MYNEW.ZFS" -fi`
+            options: `"HLQ.MYNEW.ZFS" --for-sure --ignore-not-found`
         }
     ]
 };

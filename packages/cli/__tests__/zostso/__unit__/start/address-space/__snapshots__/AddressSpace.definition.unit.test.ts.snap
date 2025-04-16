@@ -13,11 +13,11 @@ Object {
     },
     Object {
       "description": "Start TSO/E address space, and receive response in JSON format",
-      "options": "--rfj",
+      "options": "--response-format-json",
     },
     Object {
       "description": "Start TSO/E address space, and print only the servlet key",
-      "options": "--sko",
+      "options": "--servlet-key-only",
     },
   ],
   "name": "address-space",

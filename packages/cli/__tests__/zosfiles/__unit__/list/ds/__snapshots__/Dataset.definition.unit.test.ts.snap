@@ -49,7 +49,7 @@ Array [
   },
   Object {
     "description": "Show attributes of the data set \\"ibmuser.cntl\\"",
-    "options": "\\"ibmuser.cntl\\" -a",
+    "options": "\\"ibmuser.cntl\\" --attributes",
   },
   Object {
     "description": "Show all data sets of the user \\"ibmuser\\"",
@@ -57,7 +57,7 @@ Array [
   },
   Object {
     "description": "Show attributes of all data sets of the user \\"ibmuser\\"",
-    "options": "\\"ibmuser.*\\" -a",
+    "options": "\\"ibmuser.*\\" --attributes",
   },
   Object {
     "description": "Show the first 5 data sets of the user \\"ibmuser\\"",

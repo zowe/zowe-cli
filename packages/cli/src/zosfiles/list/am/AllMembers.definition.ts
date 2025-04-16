@@ -50,7 +50,7 @@ export const AllMembersDefinition: ICommandDefinition = {
         },
         {
             description: strings.EXAMPLES.EX2,
-            options: `"ibmuser.cntl" -a`
+            options: `"ibmuser.cntl" --attributes`
         },
         {
             description: strings.EXAMPLES.EX3,

@@ -59,11 +59,11 @@ export const AllMembersMatchingDefinition: ICommandDefinition = {
     examples: [
         {
             description: strings.EXAMPLES.EX1,
-            options: `"ibmuser.loadlib" "Test*" -d loadlib`
+            options: `"ibmuser.loadlib" "Test*" --directory loadlib`
         },
         {
             description: strings.EXAMPLES.EX2,
-            options: `"ibmuser.cntl" "test*,M*" --exclude-patterns "M2*" -d output`
+            options: `"ibmuser.cntl" "test*,M*" --exclude-patterns "M2*" --directory output`
         }
     ]
 };

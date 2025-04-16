@@ -16,7 +16,7 @@ Array [
   },
   Object {
     "description": "Stream content from stdin to a migrated data set and wait for it to be recalled from a Windows console",
-    "options": "\\"ibmuser.ps\\" --mr wait",
+    "options": "\\"ibmuser.ps\\" --migrated-recall wait",
     "prefix": "echo \\"hello world\\" |",
   },
 ]

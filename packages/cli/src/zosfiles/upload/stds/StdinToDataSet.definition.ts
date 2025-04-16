@@ -58,7 +58,7 @@ export const StdinToDataSetDefinition: ICommandDefinition = {
         },
         {
             description: strings.EXAMPLES.EX3,
-            options: `"ibmuser.ps" --mr wait`,
+            options: `"ibmuser.ps" --migrated-recall wait`,
             prefix: `echo "hello world" |`
         }
     ]

@@ -40,11 +40,11 @@ Array [
   },
   Object {
     "description": "To list filesystems mounted to a specific path",
-    "options": "-p /a/ibmuser",
+    "options": "--path /a/ibmuser",
   },
   Object {
     "description": "To list filesystems mounted with a specific name",
-    "options": "-f MY.ZFS",
+    "options": "--fsname MY.ZFS",
   },
 ]
 `;

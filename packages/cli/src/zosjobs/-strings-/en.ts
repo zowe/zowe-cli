@@ -149,7 +149,7 @@ export default {
                 EXAMPLES: {
                     EX1: {
                         DESCRIPTION: "Delete all of your jobs in output status with a job name starting with \"ibmuser\"",
-                        OPTIONS: "-p \"ibmuser*\""
+                        OPTIONS: "--prefix \"ibmuser*\""
                     }
                 }
             }
@@ -209,7 +209,7 @@ export default {
                     EX2: {
                         DESCRIPTION: "Submit the JCL in the data set \"ibmuser.cntl(deploy)\", wait for the job to " +
                         "complete and print all output from the job",
-                        OPTIONS: "\"ibmuser.cntl(deploy)\" --vasc"
+                        OPTIONS: "\"ibmuser.cntl(deploy)\" --view-all-spool-content"
                     }
                 }
             },
@@ -229,7 +229,7 @@ export default {
                     EX2: {
                         DESCRIPTION: "Submit the JCL in the USS file \"/a/ibmuser/compile.jcl\", wait for the job to " +
                         "complete and print all output from the job",
-                        OPTIONS: "\"/a/ibmuser/compile.jcl\" --vasc"
+                        OPTIONS: "\"/a/ibmuser/compile.jcl\" --view-all-spool-content"
                     }
                 }
             },

@@ -45,7 +45,7 @@ export const UssDirDefinition: ICommandDefinition = {
         },
         {
             description: ussStrings.EXAMPLES.SPECIFY_MODE,
-            options: "testDir -m rwxrwxrwx"
+            options: "testDir --mode rwxrwxrwx"
         }
     ]
 };

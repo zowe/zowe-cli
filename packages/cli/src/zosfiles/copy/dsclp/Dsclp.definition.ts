@@ -176,15 +176,15 @@ export const DsclpDefinition: ICommandDefinition = {
     examples: [
         {
             description: strings.EXAMPLES.EX1,
-            options: `"USER.FROM.SET" "USER.TO.SET" --target-zosmf-p SYS1`
+            options: `"USER.FROM.SET" "USER.TO.SET" --target-zosmf-profile SYS1`
         },
         {
             description: strings.EXAMPLES.EX2,
-            options: `"USER.FROM.SET(mem1)" "USER.TO.SET(mem2)" --target-zosmf-p SYS1`
+            options: `"USER.FROM.SET(mem1)" "USER.TO.SET(mem2)" --target-zosmf-profile SYS1`
         },
         {
             description: strings.EXAMPLES.EX3,
-            options: `"USER.FROM.SET" "USER.TO.SET(mem2)" --target-zosmf-p SYS1`
+            options: `"USER.FROM.SET" "USER.TO.SET(mem2)" --target-zosmf-profile SYS1`
         },
         {
             description: strings.EXAMPLES.EX4,
