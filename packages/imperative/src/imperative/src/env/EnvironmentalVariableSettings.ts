@@ -76,6 +76,13 @@ export class EnvironmentalVariableSettings {
      */
     public static readonly ENV_SHOW_SECURE_SUFFIX = `_SHOW_SECURE_ARGS`;
 
+    /**
+     * Set the socket connection timeout in milliseconds
+     * @type {string}
+     * @memberof EnvironmentalVariableSettings
+     */
+    public static readonly ENV_SOCKET_CONNECT_TIMEOUT_SUFFIX = "_SOCKET_CONNECT_TIMEOUT";
+
 
     /**
      * Read all environmental variable settings for a CLI
@@ -107,6 +114,8 @@ export class EnvironmentalVariableSettings {
                 getSetting(prefix + this.CLI_PLUGINS_DIR_SUFFIX),
             showSecureArgs:
                 getSetting(prefix + this.ENV_SHOW_SECURE_SUFFIX, Constants.DEFAULT_SHOW_SECURE),
+            socketConnectTimeout:
+                getSetting(prefix + this.ENV_SOCKET_CONNECT_TIMEOUT_SUFFIX, Constants.DEFAULT_SOCKET_CONNECT_TIMEOUT),
         };
     }
 }

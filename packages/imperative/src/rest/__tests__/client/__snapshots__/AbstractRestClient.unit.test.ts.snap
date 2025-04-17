@@ -16,6 +16,7 @@ Object {
   "path": "/baseURL/resource",
   "port": 8080,
   "rejectUnauthorized": true,
+  "timeout": 60000,
 }
 `;
 
@@ -35,6 +36,7 @@ Object {
   "path": "/baseURL/resource",
   "port": 8080,
   "rejectUnauthorized": true,
+  "timeout": 60000,
 }
 `;
 

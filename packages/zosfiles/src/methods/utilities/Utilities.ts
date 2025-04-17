@@ -20,6 +20,8 @@ import * as path from "path";
 import { ZosFilesUtils } from "../../utils/ZosFilesUtils";
 
 export class Utilities {
+    private static readonly minimumTimeout = 5;
+
     /**
      * Retrieve various details from USS file functions
      *
@@ -49,7 +51,7 @@ export class Utilities {
             { [Headers.CONTENT_LENGTH]: JSON.stringify(payload).length.toString() },
             ZosmfHeaders.ACCEPT_ENCODING
         ];
-        if (responseTimeout != null && responseTimeout >= 5) {
+        if (responseTimeout != null && responseTimeout >= Utilities.minimumTimeout) {
             reqHeaders.push({[ZosmfHeaders.X_IBM_RESPONSE_TIMEOUT]: responseTimeout.toString()});
         }
         const response: any = await ZosmfRestClient.putExpectBuffer(session, endpoint, reqHeaders, payload);
@@ -87,10 +89,10 @@ export class Utilities {
             payload.codeset = codeset;
         }
 
-        if (responseTimeout != null && responseTimeout >= 5) {
+        if (responseTimeout != null && responseTimeout >= Utilities.minimumTimeout) {
             await Utilities.putUSSPayload(session, ussFileName, payload, responseTimeout);
         } else {
-            await Utilities.putUSSPayload(session, ussFileName, payload)
+            await Utilities.putUSSPayload(session, ussFileName, payload);
         }
         return {
             success: true,
@@ -117,10 +119,10 @@ export class Utilities {
     public static async isFileTagBinOrAscii(session: AbstractSession, USSFileName: string, responseTimeout?: number): Promise<boolean> {
         const payload = {request:"chtag", action:"list"};
         let response;
-        if (responseTimeout != null && responseTimeout >= 5) {
+        if (responseTimeout != null && responseTimeout >= Utilities.minimumTimeout) {
             response = await Utilities.putUSSPayload(session, USSFileName, payload, responseTimeout);
         } else {
-            response = await Utilities.putUSSPayload(session, USSFileName, payload)
+            response = await Utilities.putUSSPayload(session, USSFileName, payload);
         }
         const jsonObj = JSON.parse(response.toString());
         if (Object.prototype.hasOwnProperty.call(jsonObj, "stdout")) {
@@ -139,13 +141,17 @@ export class Utilities {
      * @param USSFileName Path to USS file
      * @param options Options for downloading a USS file
      */
-    public static async applyTaggedEncoding(session: AbstractSession, USSFileName: string, options: IOptions, responseTimeout?: number): Promise<void> {
+    public static async applyTaggedEncoding(
+        session: AbstractSession,
+        USSFileName: string,
+        options: IOptions,
+        responseTimeout?: number): Promise<void> {
         const payload = { request: "chtag", action: "list" };
         let response;
-        if (responseTimeout != null && responseTimeout >= 5) {
+        if (responseTimeout != null && responseTimeout >= Utilities.minimumTimeout) {
             response = await Utilities.putUSSPayload(session, USSFileName, payload, responseTimeout);
         } else {
-            response = await Utilities.putUSSPayload(session, USSFileName, payload)
+            response = await Utilities.putUSSPayload(session, USSFileName, payload);
         }
         const jsonObj = JSON.parse(response.toString());
         if (Object.prototype.hasOwnProperty.call(jsonObj, "stdout")) {
@@ -175,10 +181,10 @@ export class Utilities {
         const oldFilePath = USSFilePath.charAt(0) === "/" ? USSFilePath : "/" + USSFilePath;
         const payload = { request: "move", from: path.posix.normalize(oldFilePath) };
         let response;
-        if (responseTimeout != null && responseTimeout >= 5) {
+        if (responseTimeout != null && responseTimeout >= Utilities.minimumTimeout) {
             response = await Utilities.putUSSPayload(session, newFilePath, payload, responseTimeout);
         } else {
-            response = await Utilities.putUSSPayload(session, newFilePath, payload)
+            response = await Utilities.putUSSPayload(session, newFilePath, payload);
         }
         return response;
     }

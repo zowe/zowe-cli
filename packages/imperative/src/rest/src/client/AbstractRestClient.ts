@@ -18,10 +18,10 @@ import * as http from "http";
 import { readFileSync } from "fs";
 import { ContentEncoding, Headers } from "./Headers";
 import { RestConstants } from "./RestConstants";
-import { ImperativeReject } from "../../../interfaces";
+import { ImperativeReject } from "../../../interfaces/src/types/ImperativeReject";
 import { IHTTPSOptions } from "./doc/IHTTPSOptions";
 import { HTTP_VERB } from "./types/HTTPVerb";
-import { ImperativeExpect } from "../../../expect";
+import { ImperativeExpect } from "../../../expect/src/ImperativeExpect";
 import { Session } from "../session/Session";
 import * as path from "path";
 import { IRestClientError } from "./doc/IRestClientError";
@@ -29,11 +29,12 @@ import { RestClientError } from "./RestClientError";
 import { Readable, Writable } from "stream";
 import { IO } from "../../../io";
 import { ITaskWithStatus, TaskProgress, TaskStage } from "../../../operations";
-import { TextUtils } from "../../../utilities";
+import { ImperativeConfig, TextUtils } from "../../../utilities";
 import { IRestOptions } from "./doc/IRestOptions";
 import * as SessConstants from "../session/SessConstants";
 import { CompressionUtils } from "./CompressionUtils";
 import { ProxySettings } from "./ProxySettings";
+import { EnvironmentalVariableSettings } from "../../../imperative/src/env/EnvironmentalVariableSettings";
 
 export type RestClientResolve = (data: string) => void;
 
@@ -326,6 +327,13 @@ export abstract class AbstractRestClient {
                 }
             }
 
+            clientRequest.on("timeout", () => {
+                if (clientRequest.socket.connecting) {
+                    // We timed out. Destroy the request.
+                    clientRequest.destroy(new Error("Connection timed out. Check the host, port, and firewall rules."));
+                }
+            });
+
             /**
              * Invoke any onError method whenever an error occurs on writing
              */
@@ -443,9 +451,19 @@ export abstract class AbstractRestClient {
      * @param {string} request - REST request type GET|PUT|POST|DELETE
      * @param {any[]} reqHeaders - option headers to include with request
      * @returns {IHTTPSOptions} - completed options object
+     * @throws {ImperativeError} - if the hostname is invalid or credentials are not passed to a session that requires auth
      * @memberof AbstractRestClient
      */
     private buildOptions(resource: string, request: string, reqHeaders?: any[]): IHTTPSOptions {
+
+        this.validateRestHostname(this.session.ISession.hostname);
+
+        let socketConnectTimeout: number;
+        if (ImperativeConfig.instance.envVariablePrefix) {
+            const envValue = EnvironmentalVariableSettings.read(ImperativeConfig.instance.envVariablePrefix).socketConnectTimeout.value;
+            socketConnectTimeout = isNaN(Number(envValue)) ? undefined : Number(envValue);
+        }
+        socketConnectTimeout = this.session.ISession.socketConnectTimeout ?? socketConnectTimeout;
 
         /**
          * HTTPS REST request options
@@ -464,7 +482,9 @@ export abstract class AbstractRestClient {
                 resource.trim()
             ),
             port: this.session.ISession.port,
-            rejectUnauthorized: this.session.ISession.rejectUnauthorized
+            rejectUnauthorized: this.session.ISession.rejectUnauthorized,
+            // Timeout after failing to connect for 60 seconds, or sooner if specified
+            timeout: socketConnectTimeout
         };
 
         // NOTE(Kelosky): This cannot be set for http requests
@@ -964,6 +984,22 @@ export abstract class AbstractRestClient {
             } else if (contentType === Headers.OCTET_STREAM[Headers.CONTENT_TYPE]) {
                 this.log.debug("Found octet-stream header in request. Will write in binary mode");
             }
+        }
+    }
+
+    /**
+     * Determine if the hostname parameter is valid before attempting the request
+     *
+     * @private
+     * @param {String} hostname - the hostname to check
+     * @memberof AbstractRestClient
+     * @throws {ImperativeError} - if the hostname is invalid
+     */
+    private validateRestHostname(hostname: string): void {
+        if (!hostname) {
+            throw new ImperativeError({msg: "The hostname is required."});
+        } else if (URL.canParse(hostname)) {
+            throw new ImperativeError({msg: "The hostname should not contain the protocol."});
         }
     }
 

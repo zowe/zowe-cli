@@ -43,7 +43,8 @@ import { ConfigConstants } from "../../config/src/ConfigConstants";
 import { IDaemonContext } from "../../imperative/src/doc/IDaemonContext";
 import { Censor } from "../../censor/src/Censor";
 import { EnvironmentalVariableSettings } from "../../imperative/src/env/EnvironmentalVariableSettings";
-import { ConnectionPropsForSessCfg, ISession } from "../../rest";
+import { ConnectionPropsForSessCfg } from "../../rest/src/session/ConnectionPropsForSessCfg";
+import { ISession } from "../../rest/src/session/doc/ISession";
 
 
 /**
