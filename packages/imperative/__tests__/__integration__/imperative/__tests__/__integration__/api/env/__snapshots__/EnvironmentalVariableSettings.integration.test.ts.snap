@@ -30,5 +30,9 @@ Object {
     "key": "IMP_INTEGRATION_TESTING_SHOW_SECURE_ARGS",
     "value": "FALSE",
   },
+  "socketConnectTimeout": Object {
+    "key": "IMP_INTEGRATION_TESTING_SOCKET_CONNECT_TIMEOUT",
+    "value": "60000",
+  },
 }
 `;
