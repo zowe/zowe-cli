@@ -10,6 +10,7 @@ Object {
   "path": "/mocked",
   "port": 443,
   "rejectUnauthorized": true,
+  "timeout": 60000,
 }
 `;
 
@@ -23,5 +24,6 @@ Object {
   "path": "/mocked",
   "port": 443,
   "rejectUnauthorized": true,
+  "timeout": 60000,
 }
 `;
