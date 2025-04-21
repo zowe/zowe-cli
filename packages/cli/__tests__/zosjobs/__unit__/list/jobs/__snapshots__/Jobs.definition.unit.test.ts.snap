@@ -13,11 +13,11 @@ Object {
     },
     Object {
       "description": "List all jobs owned by user IDs starting with 'ibmu' and job names starting with 'myjo'",
-      "options": "-o \\"ibmu*\\" -p \\"myjo*\\"",
+      "options": "--owner \\"ibmu*\\" --prefix \\"myjo*\\"",
     },
     Object {
       "description": "List all jobs with default owner and prefix settings, displaying only the job ID of each job",
-      "options": "--rff jobid --rft table",
+      "options": "--response-format-filter jobid --response-format-type table",
     },
     Object {
       "description": "List all jobs and return job execution data along with the default information",
@@ -25,11 +25,11 @@ Object {
     },
     Object {
       "description": "List all jobs owned by user IDs starting with 'ibmu' and return job execution data along with the default information",
-      "options": "-o \\"ibmu*\\" --exec-data",
+      "options": "--owner \\"ibmu*\\" --exec-data",
     },
     Object {
       "description": "List all jobs owned by user IDs starting with 'ibmu' and job names starting with 'myjo' and return job execution data along with the default information",
-      "options": "-o \\"ibmu*\\" -p \\"myjo*\\" --exec-data",
+      "options": "--owner \\"ibmu*\\" --prefix \\"myjo*\\" --exec-data",
     },
   ],
   "name": "jobs",

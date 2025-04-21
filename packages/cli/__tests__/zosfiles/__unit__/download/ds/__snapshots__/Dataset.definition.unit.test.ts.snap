@@ -69,7 +69,7 @@ exports[`zos-files download ds command definition should not have changed 2`] = 
 Array [
   Object {
     "description": "Download the data set \\"ibmuser.loadlib(main)\\" in binary mode to the local file \\"main.obj\\"",
-    "options": "\\"ibmuser.loadlib(main)\\" -b -f main.obj",
+    "options": "\\"ibmuser.loadlib(main)\\" --binary --file main.obj",
   },
 ]
 `;

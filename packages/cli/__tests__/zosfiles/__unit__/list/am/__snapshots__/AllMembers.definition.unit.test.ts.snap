@@ -34,7 +34,7 @@ Array [
   },
   Object {
     "description": "Show attributes of members of the data set \\"ibmuser.cntl\\"",
-    "options": "\\"ibmuser.cntl\\" -a",
+    "options": "\\"ibmuser.cntl\\" --attributes",
   },
   Object {
     "description": "Show the first 5 members of the data set \\"ibmuser.cntl\\"",

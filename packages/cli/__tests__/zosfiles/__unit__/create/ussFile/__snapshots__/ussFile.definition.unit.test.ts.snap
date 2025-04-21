@@ -25,7 +25,7 @@ Array [
   },
   Object {
     "description": "Create a USS file named \\"text.txt\\" with mode \\"rwxrwxrwx\\" ",
-    "options": "text.txt -m rwxrwxrwx",
+    "options": "text.txt --mode rwxrwxrwx",
   },
 ]
 `;
