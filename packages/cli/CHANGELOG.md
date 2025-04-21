@@ -1,8 +1,9 @@
 # Change Log
 All notable changes to the Zowe CLI package will be documented in this file.
 
-# Recent Changes
-- Enhancement : Updated help examples to replace short option aliases (e.g. `-h`) with full option names (e.g. `--help`) for improved clarity and consistency in documentation. [#2484](https://github.com/zowe/zowe-cli/pull/2484)
+## Recent Changes
+
+- Enhancement: Updated help examples to replace short option aliases (e.g. `-h`) with full option names (e.g. `--help`) for improved clarity and consistency in documentation. [#2484](https://github.com/zowe/zowe-cli/pull/2484)
 
 ## `8.18.1`
 
