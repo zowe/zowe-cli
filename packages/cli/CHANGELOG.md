@@ -1,10 +1,6 @@
 # Change Log
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
-
-- Enhancement: Exposed private buildPrefix as a replacement for imperative's implementation of moment.format(...) [#2478](https://github.com/zowe/zowe-cli/pull/2478)
-
 ## `8.18.1`
 
 - BugFix: Updated the Daemon binary version for technical currency. [#2479](https://github.com/zowe/zowe-cli/pull/2479)

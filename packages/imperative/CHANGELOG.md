@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Exposed the private `buildPrefix` function as a replacement for imperative's implementation of moment.format(...) [#2478](https://github.com/zowe/zowe-cli/pull/2478)
+
 ## `8.18.0`
 
 - BugFix: Ensured that the `ProfileCredentials` class evaluates all layers to determine if the credentials are secure. [#2460](https://github.com/zowe/zowe-cli/issues/2460)
