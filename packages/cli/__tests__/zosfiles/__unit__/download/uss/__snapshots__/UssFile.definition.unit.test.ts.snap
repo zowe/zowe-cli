@@ -45,15 +45,15 @@ exports[`zos-files download uss-file command definition should not have changed 
 Array [
   Object {
     "description": "Download the file \\"/a/ibmuser/my_text.txt\\" to ./my_text.txt",
-    "options": "\\"/a/ibmuser/my_text.txt\\" -f ./my_text.txt",
+    "options": "\\"/a/ibmuser/my_text.txt\\" --file ./my_text.txt",
   },
   Object {
     "description": "Download the file \\"/a/ibmuser/MyJava.class\\" to \\"java/MyJava.class\\" in binary mode",
-    "options": "\\"/a/ibmuser/MyJava.class\\" -b -f \\"java/MyJava.class\\"",
+    "options": "\\"/a/ibmuser/MyJava.class\\" --binary --file \\"java/MyJava.class\\"",
   },
   Object {
     "description": "Download the file \\"/a/ibmuser/MyJava.class\\" to \\"java/MyJava.class\\" using a .zosattributes file",
-    "options": "\\"/a/ibmuser/MyJava.class\\" --attributes /path/to/.zosattributes -f \\"java/MyJava.class\\"",
+    "options": "\\"/a/ibmuser/MyJava.class\\" --attributes /path/to/.zosattributes --file \\"java/MyJava.class\\"",
   },
 ]
 `;

@@ -50,7 +50,7 @@ export const DatasetDefinition: ICommandDefinition = {
     examples: [
         {
             description: strings.EXAMPLES.EX1,
-            options: `"ibmuser.loadlib(main)" -b -f main.obj`
+            options: `"ibmuser.loadlib(main)" --binary --file main.obj`
         }
     ]
 };

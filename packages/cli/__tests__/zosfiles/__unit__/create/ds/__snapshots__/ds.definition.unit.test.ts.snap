@@ -140,7 +140,7 @@ Array [
   },
   Object {
     "description": "Create a data set with default parameters and like flag and lrecl flag",
-    "options": "NEW.DATASET --like EXISTING.DATASET --lrecl 1024",
+    "options": "NEW.DATASET --like EXISTING.DATASET --record-length 1024",
   },
   Object {
     "description": "Create a data set with type LIBRARY",
