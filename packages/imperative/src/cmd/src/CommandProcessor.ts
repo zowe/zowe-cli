@@ -43,8 +43,9 @@ import { ConfigConstants } from "../../config/src/ConfigConstants";
 import { IDaemonContext } from "../../imperative/src/doc/IDaemonContext";
 import { Censor } from "../../censor/src/Censor";
 import { EnvironmentalVariableSettings } from "../../imperative/src/env/EnvironmentalVariableSettings";
-import { AuthOrder, ConnectionPropsForSessCfg, ISession } from "../../rest";
-
+import { AuthOrder } from "../../rest/src/session/AuthOrder";
+import { ConnectionPropsForSessCfg } from "../../rest/src/session/ConnectionPropsForSessCfg";
+import { ISession } from "../../rest/src/session/doc/ISession";
 
 /**
  * Internal interface for the command processor that is used by the CLI for `--show-inputs-only`

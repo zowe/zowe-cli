@@ -19,10 +19,10 @@ import {
 } from "../../src/session/SessConstants";
 import { RestClient } from "../../src/client/RestClient";
 import { Headers } from "../../src/client/Headers";
-import { ProcessUtils } from "../../../utilities";
+import { ProcessUtils } from "../../../utilities/src/ProcessUtils";
 import { MockHttpRequestResponse } from "./__model__/MockHttpRequestResponse";
 import { EventEmitter } from "events";
-import { ImperativeError } from "../../../error";
+import { ImperativeError } from "../../../error/src/ImperativeError";
 import { IOptionsFullResponse } from "../../src/client/doc/IOptionsFullResponse";
 import { CLIENT_PROPERTY } from "../../src/client/types/AbstractRestClientProperties";
 import { PassThrough } from "stream";
@@ -477,7 +477,42 @@ describe("AbstractRestClient tests", () => {
 
         expect(error).not.toBeDefined();
         expect(response).toEqual("\"response data\"");
-        expect(requestFnc).toHaveBeenCalledTimes(2);
+    });
+
+    it("should handle a socket connection timeout", async () => {
+        let destroySpy: jest.SpyInstance;
+        const requestFnc = jest.fn((options, callback) => {
+            const emitter = new MockHttpRequestResponse();
+            destroySpy = jest.spyOn(emitter, "destroy");
+            emitter.socket = {connecting: true};
+
+            ProcessUtils.nextTick(() => {
+                callback(emitter);
+
+                ProcessUtils.nextTick(() => {
+                    emitter.emit("timeout");
+                });
+            });
+            return emitter;
+        });
+
+        (https.request as any) = requestFnc;
+
+        let error;
+
+        try {
+            const session = new Session({hostname: "test"});
+            session.ISession.socketConnectTimeout = 1;
+            await RestClient.getExpectString(session, "/resource");
+        } catch (thrownError) {
+            error = thrownError;
+        }
+
+        expect(error).toBeDefined();
+        expect(error.message).toContain("Failed to send an HTTP request");
+        expect(error.causeErrors.message).toContain("Connection timed out");
+        expect(requestFnc).toHaveBeenCalledTimes(1);
+        expect(destroySpy).toHaveBeenCalledTimes(1);
     });
 
     it("should call http request for http requests", async () => {
@@ -1498,6 +1533,65 @@ describe("AbstractRestClient tests", () => {
                 setCertPemAuthSpy.mockReturnValue(true);
                 const result = privateRestClient.buildOptions(resource, request, reqHeaders);
                 expect(Object.keys(result)).toContain('agent');
+            });
+
+            it('Should add to options if a connection timeout is in use', () => {
+                const resource = '/resource';
+                const request = '';
+                const reqHeaders: any[] = [];
+                getSystemProxyUrlSpy.mockReturnValue(undefined);
+                getProxyAgentSpy.mockReturnValue(undefined);
+                setCertPemAuthSpy.mockReturnValue(true);
+                privateRestClient["mSession"]["mISession"].socketConnectTimeout = 15000;
+
+                const result = privateRestClient.buildOptions(resource, request, reqHeaders);
+                expect(Object.keys(result)).toContain('timeout');
+                expect(result.timeout).toEqual(15000);
+            });
+        });
+
+        describe('validateRestHostname', () => {
+            const restSession = new Session({
+                hostname: "FakeHostName",
+                type: AUTH_TYPE_CERT_PEM,
+                cert: "FakePemCert",
+                certKey: "FakePemCertKey"
+            });
+            const privateRestClient = new RestClient(restSession) as any;
+
+            it('Should validate a hostname is not undefined', () => {
+                let error: Error;
+                const hostname: any = undefined;
+                try {
+                    privateRestClient.validateRestHostname(hostname);
+                } catch (e) {
+                    error = e;
+                }
+                expect(error).toBeDefined();
+                expect(error.message).toEqual("The hostname is required.");
+            });
+
+            it('Should validate a hostname should not contain a protocol', () => {
+                let error: Error;
+                const hostname = "http://www.example.com";
+                try {
+                    privateRestClient.validateRestHostname(hostname);
+                } catch (e) {
+                    error = e;
+                }
+                expect(error).toBeDefined();
+                expect(error.message).toEqual("The hostname should not contain the protocol.");
+            });
+
+            it('Should validate a hostname is okay without a protocol', () => {
+                let error: Error;
+                const hostname = "www.example.com";
+                try {
+                    privateRestClient.validateRestHostname(hostname);
+                } catch (e) {
+                    error = e;
+                }
+                expect(error).not.toBeDefined();
             });
         });
     });

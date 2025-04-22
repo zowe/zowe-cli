@@ -58,4 +58,9 @@ export interface IImperativeEnvironmentalVariableSettings {
      * Whether or not to show secure args.
      */
     showSecureArgs?: IImperativeEnvironmentalVariableSetting;
+
+    /**
+     * The socket connection timeout, in milliseconds
+     */
+    socketConnectTimeout?: IImperativeEnvironmentalVariableSetting;
 }

@@ -44,11 +44,11 @@ export const FsDefinition: ICommandDefinition = {
         },
         {
             description: strings.EXAMPLES.EX2,
-            options: "-p /a/ibmuser"
+            options: "--path /a/ibmuser"
         },
         {
             description: strings.EXAMPLES.EX3,
-            options: "-f MY.ZFS"
+            options: "--fsname MY.ZFS"
         }
     ]
 };

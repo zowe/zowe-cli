@@ -13,7 +13,7 @@ Object {
     },
     Object {
       "description": "Print only the status (for example, \\"OUTPUT\\" or \\"ACTIVE\\") of the job with the job ID JOB00123",
-      "options": "j123 --rff status --rft string",
+      "options": "j123 --response-format-filter status --response-format-type string",
     },
   ],
   "name": "job-status-by-jobid",

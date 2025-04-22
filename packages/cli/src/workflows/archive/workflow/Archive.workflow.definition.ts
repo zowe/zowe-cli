@@ -36,15 +36,15 @@ export const Workflow: ICommandDefinition = {
     examples: [
         {
             description: "Archive a workflow with workflow name \"testworkflow\"",
-            options: "--wn \"testworkflow\" "
+            options: "--workflow-name \"testworkflow\" "
         },
         {
             description: "Archive multiple workflows with workflow names starting with \"test\"",
-            options: "--wn \"test.*\" "
+            options: "--workflow-name \"test.*\" "
         },
         {
             description: "Archive a workflow with workflow key \"123-456-abv-xyz\"",
-            options: "--wk \"123-456-abv-xyz\" "
+            options: "--workflow-key \"123-456-abv-xyz\" "
         }
     ]
 };

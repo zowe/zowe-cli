@@ -210,4 +210,12 @@ export interface ISession {
      * @memberof ISession
      */
     proxy?: ProxyVariables;
+
+    /**
+     * Specifies the number of milliseconds to wait for the initial socket connection to be established
+     *
+     * @type {number}
+     * @memberof ISession
+     */
+    socketConnectTimeout?: number;
 }

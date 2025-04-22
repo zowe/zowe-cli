@@ -80,9 +80,9 @@ describe("Console tests", () => {
     });
 
     it("Should default to the same prefix as log4js", () => {
-        const cons = new Console();
+        new Console();
         jest.spyOn(Date.prototype, "getTimezoneOffset").mockReturnValueOnce(0);
         jest.spyOn(Date, "now").mockReturnValueOnce(45296789);
-        expect((cons as any).buildPrefix("test")).toBe("[1970/01/01 12:34:56.789] [test] ");
+        expect(Console.buildPrefix("test")).toBe("[1970/01/01 12:34:56.789] [test] ");
     });
 });
