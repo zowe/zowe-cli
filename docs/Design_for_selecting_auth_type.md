@@ -307,9 +307,9 @@ stateDiagram-v2
 
     Unknown_App_2 --> ProfileInfo.initSessCfg<br/>(public_but_only_called_from_createSession)
 
-    ProfileInfo.initSessCfg<br/>(public_but_only_called_from_createSession) --> AuthOrder.cacheDefaultAuthOrder
+    ProfileInfo.initSessCfg<br/>(public_but_only_called_from_createSession) --> AuthOrder.cacheCredsAndAuthOrder
 
-    ConnectionPropsForSessCfg.resolveSessCfgProps --> AuthOrder.cacheDefaultAuthOrder
+    ConnectionPropsForSessCfg.resolveSessCfgProps --> AuthOrder.cacheCredsAndAuthOrder
 ```
 
 ## Functions that reference AUTH_TYPE may need modification
