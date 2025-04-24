@@ -23,7 +23,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## `8.15.0`
 
-- Enhancement: Added `--overwrite` flag to the `zowe files copy ds` command to allow for overwriting all members of a target data set. [#2450] (https://github.com/zowe/zowe-cli/pull/2450)
+- Enhancement: Added the `--overwrite` flag to the `zowe files copy ds` command to allow for overwriting all members of a target data set with source data set members. [#2450] (https://github.com/zowe/zowe-cli/pull/2450)
 
 ## `8.14.1`
 
