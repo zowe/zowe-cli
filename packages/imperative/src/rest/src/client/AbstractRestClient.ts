@@ -24,7 +24,7 @@ import { HTTP_VERB } from "./types/HTTPVerb";
 import { ImperativeExpect } from "../../../expect/src/ImperativeExpect";
 import { Session } from "../session/Session";
 import * as path from "path";
-import { IRestClientError } from "./doc/IRestClientError";
+import { completionTimeoutErrorMessage, IRestClientError } from "./doc/IRestClientError";
 import { RestClientError } from "./RestClientError";
 import { Readable, Writable } from "stream";
 import { IO } from "../../../io";
@@ -327,10 +327,18 @@ export abstract class AbstractRestClient {
                 }
             }
 
+            // Set up the request timeout
+            if (this.mSession.ISession.requestCompletionTimeout && this.mSession.ISession.requestCompletionTimeout > 0) {
+                clientRequest.setTimeout(this.mSession.ISession.requestCompletionTimeout);
+            }
+
             clientRequest.on("timeout", () => {
                 if (clientRequest.socket.connecting) {
                     // We timed out. Destroy the request.
                     clientRequest.destroy(new Error("Connection timed out. Check the host, port, and firewall rules."));
+                } else if (this.mSession.ISession.requestCompletionTimeout && this.mSession.ISession.requestCompletionTimeout > 0) {
+                    this.mSession.ISession.requestCompletionTimeoutCallback?.();
+                    clientRequest.destroy(new ImperativeError({msg: completionTimeoutErrorMessage}));
                 }
             });
 
@@ -345,6 +353,12 @@ export abstract class AbstractRestClient {
                     }).catch((err) => {
                         reject(err);
                     });
+                } else if (errorResponse instanceof ImperativeError && errorResponse.message === completionTimeoutErrorMessage) {
+                    reject(this.populateError({
+                        msg: "HTTP request timed out after connecting.",
+                        causeErrors: errorResponse,
+                        source: "timeout"
+                    }));
                 } else {
                     reject(this.populateError({
                         msg: "Failed to send an HTTP request.",
@@ -458,12 +472,21 @@ export abstract class AbstractRestClient {
 
         this.validateRestHostname(this.session.ISession.hostname);
 
-        let socketConnectTimeout: number;
-        if (ImperativeConfig.instance.envVariablePrefix) {
+        if (ImperativeConfig.instance.envVariablePrefix && !this.session.ISession.socketConnectTimeout) {
             const envValue = EnvironmentalVariableSettings.read(ImperativeConfig.instance.envVariablePrefix).socketConnectTimeout.value;
-            socketConnectTimeout = isNaN(Number(envValue)) ? undefined : Number(envValue);
+            this.session.ISession.socketConnectTimeout ??= isNaN(Number(envValue)) ? undefined : Number(envValue);
+            Logger.getImperativeLogger().info(
+                "Setting socket connection timeout ms: " + String(this.mSession.ISession.requestCompletionTimeout)
+            );
         }
-        socketConnectTimeout = this.session.ISession.socketConnectTimeout ?? socketConnectTimeout;
+
+        if (ImperativeConfig.instance.envVariablePrefix && !this.session.ISession.requestCompletionTimeout) {
+            const envValue = EnvironmentalVariableSettings.read(ImperativeConfig.instance.envVariablePrefix).requestCompletionTimeout.value;
+            this.session.ISession.requestCompletionTimeout ??= isNaN(Number(envValue)) ? undefined : Number(envValue);
+            Logger.getImperativeLogger().info(
+                "Setting request completion timeout ms: " + String(this.mSession.ISession.requestCompletionTimeout)
+            );
+        }
 
         /**
          * HTTPS REST request options
@@ -484,7 +507,7 @@ export abstract class AbstractRestClient {
             port: this.session.ISession.port,
             rejectUnauthorized: this.session.ISession.rejectUnauthorized,
             // Timeout after failing to connect for 60 seconds, or sooner if specified
-            timeout: socketConnectTimeout
+            timeout: this.session.ISession.socketConnectTimeout
         };
 
         // NOTE(Kelosky): This cannot be set for http requests
@@ -917,6 +940,8 @@ export abstract class AbstractRestClient {
             detailMessage =
                 `HTTP(S) client encountered an error. Request could not be initiated to host.\n` +
                 `Review connection details (host, port) and ensure correctness.`;
+        } else if (finalError.source === "timeout") {
+            detailMessage = `HTTP(S) client encountered an error. Request timed out.`;
         } else {
             detailMessage =
                 `Received HTTP(S) error ${finalError.httpStatus} = ${http.STATUS_CODES[finalError.httpStatus]}.`;

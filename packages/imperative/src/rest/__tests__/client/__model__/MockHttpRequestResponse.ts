@@ -40,6 +40,10 @@ export class MockHttpRequestResponse extends EventEmitter {
         if (err) { this.emit("error", err); }
     }
 
+    public setTimeout(_timeout: number) {
+        // do nothing
+    }
+
     /**
      * Methods for response
      */

@@ -33,6 +33,7 @@ import { join } from "path";
 import { IO } from "../../../io";
 import { ProxySettings } from "../../src/client/ProxySettings";
 import { HttpsProxyAgent } from "https-proxy-agent";
+import { completionTimeoutErrorMessage } from "../../src/client/doc/IRestClientError";
 
 /**
  * To test the AbstractRestClient, we use the existing default RestClient which
@@ -508,6 +509,81 @@ describe("AbstractRestClient tests", () => {
         expect(error.message).toContain("Failed to send an HTTP request");
         expect(error.causeErrors.message).toContain("Connection timed out");
         expect(requestFnc).toHaveBeenCalledTimes(1);
+        expect(destroySpy).toHaveBeenCalledTimes(1);
+    });
+
+    it("should handle a request completion timeout", async () => {
+        let destroySpy: jest.SpyInstance;
+        const requestFnc = jest.fn((options, callback) => {
+            const emitter = new MockHttpRequestResponse();
+            destroySpy = jest.spyOn(emitter, "destroy");
+            emitter.socket = {connnecting: false};
+
+            ProcessUtils.nextTick(() => {
+                callback(emitter);
+
+                ProcessUtils.nextTick(() => {
+                    emitter.emit("timeout", new ImperativeError({msg: completionTimeoutErrorMessage}));
+                });
+            });
+            return emitter;
+        });
+
+        (https.request as any) = requestFnc;
+
+        let error;
+
+        try {
+            const session = new Session({hostname: "test"});
+            session.ISession.requestCompletionTimeout = 1;
+            await RestClient.getExpectString(session, "/resource");
+        } catch (thrownError) {
+            error = thrownError;
+        }
+
+        expect(error).toBeDefined();
+        expect(error.message).toContain("HTTP request timed out after connecting.");
+        expect(error.causeErrors.message).toContain("The request exceeded the specified request completion timeout.");
+        expect(requestFnc).toHaveBeenCalledTimes(1);
+        expect(destroySpy).toHaveBeenCalledTimes(1);
+    });
+
+    it("should handle a request completion timeout and use the provided callback", async () => {
+        let destroySpy: jest.SpyInstance;
+        const requestFnc = jest.fn((options, callback) => {
+            const emitter = new MockHttpRequestResponse();
+            destroySpy = jest.spyOn(emitter, "destroy");
+            emitter.socket = {connnecting: false};
+
+            ProcessUtils.nextTick(() => {
+                callback(emitter);
+
+                ProcessUtils.nextTick(() => {
+                    emitter.emit("timeout", new ImperativeError({msg: completionTimeoutErrorMessage}));
+                });
+            });
+            return emitter;
+        });
+
+        (https.request as any) = requestFnc;
+
+        let error;
+        let callback;
+
+        try {
+            const session = new Session({hostname: "test"});
+            session.ISession.requestCompletionTimeout = 1;
+            callback = session.ISession.requestCompletionTimeoutCallback = jest.fn();
+            await RestClient.getExpectString(session, "/resource");
+        } catch (thrownError) {
+            error = thrownError;
+        }
+
+        expect(error).toBeDefined();
+        expect(error.message).toContain("HTTP request timed out after connecting.");
+        expect(error.causeErrors.message).toContain("The request exceeded the specified request completion timeout.");
+        expect(requestFnc).toHaveBeenCalledTimes(1);
+        expect(callback).toHaveBeenCalledTimes(1);
         expect(destroySpy).toHaveBeenCalledTimes(1);
     });
 

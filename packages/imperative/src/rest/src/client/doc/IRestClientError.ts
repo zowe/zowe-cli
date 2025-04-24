@@ -11,7 +11,7 @@
 
 import { IImperativeError } from "../../../../error";
 
-export type RestErrorSource = "client" | "http";
+export type RestErrorSource = "client" | "http" | "timeout";
 
 /**
  * REST client error interface. Extends IImperativeError to provide additional
@@ -87,3 +87,6 @@ export interface IRestClientError extends IImperativeError {
      */
     source: RestErrorSource;
 }
+
+// Export completion timeout error message
+export const completionTimeoutErrorMessage: string = "The request exceeded the specified request completion timeout.";

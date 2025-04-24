@@ -83,6 +83,13 @@ export class EnvironmentalVariableSettings {
      */
     public static readonly ENV_SOCKET_CONNECT_TIMEOUT_SUFFIX = "_SOCKET_CONNECT_TIMEOUT";
 
+    /**
+     * Set the request completion timeout, in milliseconds
+     * @type {string}
+     * @memberof EnvironmentalVariableSettings
+     */
+    public static readonly ENV_REQUEST_COMPLETION_TIMEOUT_SUFFIX = "_REQUEST_COMPLETION_TIMEOUT";
+
 
     /**
      * Read all environmental variable settings for a CLI
@@ -116,6 +123,8 @@ export class EnvironmentalVariableSettings {
                 getSetting(prefix + this.ENV_SHOW_SECURE_SUFFIX, Constants.DEFAULT_SHOW_SECURE),
             socketConnectTimeout:
                 getSetting(prefix + this.ENV_SOCKET_CONNECT_TIMEOUT_SUFFIX, Constants.DEFAULT_SOCKET_CONNECT_TIMEOUT),
+            requestCompletionTimeout:
+                getSetting(prefix + this.ENV_REQUEST_COMPLETION_TIMEOUT_SUFFIX),
         };
     }
 }
