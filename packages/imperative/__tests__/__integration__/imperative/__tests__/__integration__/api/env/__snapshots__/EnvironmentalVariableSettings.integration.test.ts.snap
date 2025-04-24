@@ -26,6 +26,10 @@ Object {
     "key": "IMP_INTEGRATION_TESTING_PROMPT_PHRASE",
     "value": undefined,
   },
+  "requestCompletionTimeout": Object {
+    "key": "IMP_INTEGRATION_TESTING_REQUEST_COMPLETION_TIMEOUT",
+    "value": undefined,
+  },
   "showSecureArgs": Object {
     "key": "IMP_INTEGRATION_TESTING_SHOW_SECURE_ARGS",
     "value": "FALSE",
