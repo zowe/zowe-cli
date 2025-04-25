@@ -124,7 +124,7 @@ describe("zosmf list systems", () => {
             expect(response.status).toBe(0);
             // now check the status
             response = runCliScript(__dirname + "/__scripts__/command/zosmf_list_systems.sh", testEnvironment);
-            expect(stripNewLines(response.stderr.toString())).toMatch(/.*(ECONNREFUSED|ECONNRESET|ETIMEDOUT).*/);
+            expect(stripNewLines(response.stderr.toString())).toContain("Connection timed out.");
         });
     });
 });

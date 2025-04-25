@@ -122,8 +122,7 @@ describe("Check Status Api", () => {
             expect(error).toBeTruthy();
             expect(response).toBeFalsy();
             const jsonCauseErrors = error.causeErrors;
-            expect(jsonCauseErrors.code).toMatch(/(ECONNREFUSED|ECONNRESET|ETIMEDOUT)/);
-            expect(jsonCauseErrors.syscall).toEqual("connect");
+            expect(jsonCauseErrors.message).toContain("Connection timed out.");
             expect(jsonCauseErrors.port).toEqual(badPort);
         }, 300000);
     });
