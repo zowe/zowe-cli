@@ -80,10 +80,12 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
             session.ISession.tokenValue = await Login.apimlLogin(session);
             session.ISession.storeCookie = false;
 
-            // now that we have a token, cache the token for our next REST request
+            // now that we requested a token, remove any request-for-token from the session
             if (session.ISession._authCache) {
                 delete session.ISession._authCache.authTypeToRequestToken;
             }
+
+            // now that we have a token, cache the token for our next REST request
             AuthOrder.cacheCredsAndAuthOrder(session.ISession, {"$0": "NameNotUsed", "_": [],
                 "authOrder": "token",
                 "tokenType": SessConstants.TOKEN_TYPE_APIML,

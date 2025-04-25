@@ -340,6 +340,76 @@ describe("ApimlAutoInitHandler", () => {
         expect(response.defaults.base).toBe("base");
     });
 
+    it("should remove a request for a token from the session", async () => {
+        const mockCreateZosmfSession = jest.fn();
+        const mockGetPluginApimlConfigs = jest.fn().mockReturnValue([]);
+        const mockGetServicesByConfig = jest.fn().mockResolvedValue([]);
+        jest.spyOn(ConfigUtils, "getActiveProfileName").mockReturnValueOnce("base");
+        const mockConfigValue: any = {
+            defaults: { base: "base" },
+            profiles: {
+                "base": {
+                    properties: {
+                        host: "fake",
+                        port: 12345,
+                        user: "fake",
+                        password: "fake"
+                    },
+                    secure: [
+                        "user",
+                        "password"
+                    ],
+                    profiles: {}
+                }
+            },
+            plugins: []
+        };
+        const mockConvertApimlProfileInfoToProfileConfig = jest.fn().mockReturnValue(mockConfigValue);
+        const mockLogin = jest.fn().mockResolvedValue("fakeToken");
+        jest.spyOn(ImperativeConfig.instance, "config", "get").mockReturnValue(mockConfigApi(mockConfigValue));
+
+        ZosmfSession.createSessCfgFromArgs = mockCreateZosmfSession;
+        Services.getPluginApimlConfigs = mockGetPluginApimlConfigs;
+        Services.getServicesByConfig = mockGetServicesByConfig;
+        Services.convertApimlProfileInfoToProfileConfig = mockConvertApimlProfileInfoToProfileConfig;
+        Login.apimlLogin = mockLogin;
+
+        const handler: any = new ApimlAutoInitHandler();
+        expect(handler.mProfileType).toBe("base");
+
+        handler.createSessCfgFromArgs();
+        expect(mockCreateZosmfSession).toHaveBeenCalledTimes(1);
+
+        const iSessObj = {
+            hostname: "fake",
+            port: 1234,
+            user: "fake",
+            password: "fake",
+            type: SessConstants.AUTH_TYPE_BASIC,
+            tokenType: undefined as any,
+            _authCache: {
+                availableCreds: {
+                    user: "fake",
+                    password: "fake",
+                },
+                didUserSetAuthOrder: false,
+                topDefaultAuth: SessConstants.AUTH_TYPE_BASIC,
+                authTypeToRequestToken: SessConstants.AUTH_TYPE_BASIC
+            }
+        }
+
+        const response = await handler.doAutoInit(
+            {
+                ISession: iSessObj
+            }, {
+            arguments: {
+                $0: "fake",
+                _: ["fake"]
+            }
+        });
+        expect(iSessObj._authCache.authTypeToRequestToken).toBe(undefined);
+    });
+
     it("should not have changed - rejectUnauthorized flag true", async () => {
         const mockCreateZosmfSession = jest.fn();
         const mockGetPluginApimlConfigs = jest.fn().mockReturnValue([]);
