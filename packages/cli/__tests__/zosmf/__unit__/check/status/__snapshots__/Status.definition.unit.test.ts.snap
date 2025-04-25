@@ -105,6 +105,15 @@ Object {
       "name": "cert-key-file",
       "type": "existingLocalFile",
     },
+    Object {
+      "aliases": Array [
+        "cto",
+      ],
+      "description": "The amount in time, in milliseconds, a REST operation should wait before timing out",
+      "group": "Zosmf Connection Options",
+      "name": "completion-timeout",
+      "type": "number",
+    },
   ],
   "profile": Object {
     "optional": Array [

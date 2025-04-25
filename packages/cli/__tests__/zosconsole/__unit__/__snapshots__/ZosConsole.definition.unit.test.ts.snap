@@ -105,6 +105,15 @@ Important! Before you use commands in the zos-console command group, ensure that
           "name": "cert-key-file",
           "type": "existingLocalFile",
         },
+        Object {
+          "aliases": Array [
+            "cto",
+          ],
+          "description": "The amount in time, in milliseconds, a REST operation should wait before timing out",
+          "group": "Zosmf Connection Options",
+          "name": "completion-timeout",
+          "type": "number",
+        },
       ],
     },
   ],

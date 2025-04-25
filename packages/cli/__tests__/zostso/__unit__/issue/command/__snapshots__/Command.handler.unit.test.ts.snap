@@ -14,6 +14,7 @@ Object {
   "port": "43443",
   "protocol": "https",
   "rejectUnauthorized": true,
+  "requestCompletionTimeout": undefined,
   "secureProtocol": "SSLv23_method",
   "strictSSL": true,
   "type": "basic",

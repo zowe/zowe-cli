@@ -140,6 +140,17 @@ export class ZosmfSession {
     // };
 
     /**
+     * Option to specify a request completion timeout
+     */
+    public static ZOSMF_OPTION_COMPLETION_TIMEOUT: ICommandOptionDefinition = {
+        name: "completion-timeout",
+        aliases: ["cto"],
+        description: "The amount in time, in milliseconds, a REST operation should wait before timing out",
+        type: "number",
+        group: ZosmfSession.ZOSMF_CONNECTION_OPTION_GROUP
+    };
+
+    /**
      * Options related to connecting to z/OSMF
      * These options can be filled in if the user creates a profile
      */
@@ -152,7 +163,8 @@ export class ZosmfSession {
         ZosmfSession.ZOSMF_OPTION_BASE_PATH,
         ZosmfSession.ZOSMF_OPTION_PROTOCOL,
         ZosmfSession.ZOSMF_OPTION_CERT_FILE,
-        ZosmfSession.ZOSMF_OPTION_CERT_KEY_FILE
+        ZosmfSession.ZOSMF_OPTION_CERT_KEY_FILE,
+        ZosmfSession.ZOSMF_OPTION_COMPLETION_TIMEOUT
         // ZosmfSession.ZOSMF_OPTION_CERT_FILE_PASSPHRASE
     ];
 
@@ -165,7 +177,8 @@ export class ZosmfSession {
         return {
             rejectUnauthorized: args.rejectUnauthorized,
             basePath: args.basePath,
-            protocol: args.protocol ? args.protocol.toLowerCase() : 'https'
+            protocol: args.protocol ? args.protocol.toLowerCase() : 'https',
+            requestCompletionTimeout: args.completionTimeout
         };
     }
 
