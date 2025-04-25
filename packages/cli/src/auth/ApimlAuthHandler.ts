@@ -80,7 +80,7 @@ export default class ApimlAuthHandler extends BaseAuthHandler {
 
         if (zosmfProfObj?.authOrder) {
             // we already have an authOrder in this zosmf profile
-            if (zosmfProfObj.authOrder.search(/ *token/) >= 0) {
+            if (zosmfProfObj.authOrder.search(/^ *token/) >= 0) {
                 // token is at the start of the authOrder, so no need to add or replace authOrder
                 return;
             }
