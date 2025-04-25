@@ -478,14 +478,14 @@ export abstract class AbstractRestClient {
             const requestCompletionTimeout = envValues.requestCompletionTimeout?.value;
 
             this.session.ISession.socketConnectTimeout ??= isNaN(Number(socketConnectTimeout)) ? undefined : Number(socketConnectTimeout);
-            if (this.session.ISession.socketConnectTimeout) {
+            if (!this.session.ISession.socketConnectTimeout == null) {
                 Logger.getImperativeLogger().info(
                     "Setting socket connection timeout ms: " + String(this.mSession.ISession.requestCompletionTimeout)
                 );
             }
 
             this.session.ISession.requestCompletionTimeout ??= isNaN(Number(requestCompletionTimeout)) ? undefined : Number(requestCompletionTimeout);
-            if (this.session.ISession.requestCompletionTimeout) {
+            if (!this.session.ISession.requestCompletionTimeout == null) {
                 Logger.getImperativeLogger().info(
                     "Setting request completion timeout ms: " + String(this.mSession.ISession.requestCompletionTimeout)
                 );
