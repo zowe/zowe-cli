@@ -552,7 +552,7 @@ describe("AbstractRestClient tests", () => {
         expect(error.causeErrors.message).toContain("Connection timed out");
         expect(requestFnc).toHaveBeenCalledTimes(1);
         expect(destroySpy).toHaveBeenCalledTimes(1);
-        expect(readEnvSpy).toHaveBeenCalledTimes(2);
+        expect(readEnvSpy).toHaveBeenCalledTimes(1);
         expect(session.ISession.socketConnectTimeout).toEqual(1);
     });
 
@@ -581,7 +581,7 @@ describe("AbstractRestClient tests", () => {
 
 
         expect(requestFnc).toHaveBeenCalledTimes(1);
-        expect(readEnvSpy).toHaveBeenCalledTimes(2);
+        expect(readEnvSpy).toHaveBeenCalledTimes(1);
         expect(session.ISession.socketConnectTimeout).toBeUndefined();
     });
 
@@ -659,7 +659,7 @@ describe("AbstractRestClient tests", () => {
         expect(error.causeErrors.message).toContain("The request exceeded the specified request completion timeout.");
         expect(requestFnc).toHaveBeenCalledTimes(1);
         expect(destroySpy).toHaveBeenCalledTimes(1);
-        expect(readEnvSpy).toHaveBeenCalledTimes(2);
+        expect(readEnvSpy).toHaveBeenCalledTimes(1);
         expect(session.ISession.requestCompletionTimeout).toEqual(1);
     });
 
@@ -687,7 +687,7 @@ describe("AbstractRestClient tests", () => {
         await RestClient.getExpectString(session, "/resource");
 
         expect(requestFnc).toHaveBeenCalledTimes(1);
-        expect(readEnvSpy).toHaveBeenCalledTimes(2);
+        expect(readEnvSpy).toHaveBeenCalledTimes(1);
         expect(session.ISession.requestCompletionTimeout).toBeUndefined();
     });
 

@@ -472,20 +472,24 @@ export abstract class AbstractRestClient {
 
         this.validateRestHostname(this.session.ISession.hostname);
 
-        if (ImperativeConfig.instance.envVariablePrefix && !this.session.ISession.socketConnectTimeout) {
-            const envValue = EnvironmentalVariableSettings.read(ImperativeConfig.instance.envVariablePrefix).socketConnectTimeout.value;
-            this.session.ISession.socketConnectTimeout ??= isNaN(Number(envValue)) ? undefined : Number(envValue);
-            Logger.getImperativeLogger().info(
-                "Setting socket connection timeout ms: " + String(this.mSession.ISession.requestCompletionTimeout)
-            );
-        }
+        if (ImperativeConfig.instance.envVariablePrefix) {
+            const envValues = EnvironmentalVariableSettings.read(ImperativeConfig.instance.envVariablePrefix);
+            const socketConnectTimeout = envValues.socketConnectTimeout?.value;
+            const requestCompletionTimeout = envValues.requestCompletionTimeout?.value;
 
-        if (ImperativeConfig.instance.envVariablePrefix && !this.session.ISession.requestCompletionTimeout) {
-            const envValue = EnvironmentalVariableSettings.read(ImperativeConfig.instance.envVariablePrefix).requestCompletionTimeout.value;
-            this.session.ISession.requestCompletionTimeout ??= isNaN(Number(envValue)) ? undefined : Number(envValue);
-            Logger.getImperativeLogger().info(
-                "Setting request completion timeout ms: " + String(this.mSession.ISession.requestCompletionTimeout)
-            );
+            this.session.ISession.socketConnectTimeout ??= isNaN(Number(socketConnectTimeout)) ? undefined : Number(socketConnectTimeout);
+            if (this.session.ISession.socketConnectTimeout) {
+                Logger.getImperativeLogger().info(
+                    "Setting socket connection timeout ms: " + String(this.mSession.ISession.requestCompletionTimeout)
+                );
+            }
+
+            this.session.ISession.requestCompletionTimeout ??= isNaN(Number(requestCompletionTimeout)) ? undefined : Number(requestCompletionTimeout);
+            if (this.session.ISession.requestCompletionTimeout) {
+                Logger.getImperativeLogger().info(
+                    "Setting request completion timeout ms: " + String(this.mSession.ISession.requestCompletionTimeout)
+                );
+            }
         }
 
         /**
