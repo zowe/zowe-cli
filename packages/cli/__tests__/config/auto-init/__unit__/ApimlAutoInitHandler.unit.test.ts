@@ -396,9 +396,9 @@ describe("ApimlAutoInitHandler", () => {
                 topDefaultAuth: SessConstants.AUTH_TYPE_BASIC,
                 authTypeToRequestToken: SessConstants.AUTH_TYPE_BASIC
             }
-        }
+        };
 
-        const response = await handler.doAutoInit(
+        await handler.doAutoInit(
             {
                 ISession: iSessObj
             }, {
