@@ -576,9 +576,7 @@ describe("AbstractRestClient tests", () => {
 
         (https.request as any) = requestFnc;
 
-        let session: Session;
-
-        session = new Session({hostname: "test"});
+        const session = new Session({hostname: "test"});
         await RestClient.getExpectString(session, "/resource");
 
 
@@ -685,9 +683,7 @@ describe("AbstractRestClient tests", () => {
 
         (https.request as any) = requestFnc;
 
-        let session: Session;
-
-        session = new Session({hostname: "test"});
+        const session = new Session({hostname: "test"});
         await RestClient.getExpectString(session, "/resource");
 
         expect(requestFnc).toHaveBeenCalledTimes(1);
