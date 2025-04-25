@@ -164,6 +164,22 @@ describe("Censor tests", () => {
             expect(censoredISessObj._authCache.availableCreds.tokenValue).toEqual(Censor.CENSOR_RESPONSE);
         });
 
+        it("should throw an error when passed an invalid ISession object", () => {
+            const parseSpy = jest.spyOn(JSON, 'parse').mockImplementation(() => {
+                throw new Error("Invalid JSON");
+            });
+            let censoredString: string = "Not what we expect";
+            let caughtErr: any;
+            try {
+                censoredString = Censor.censorSession(fakeISess);
+            } catch(error) {
+                caughtErr = error;
+            }
+            expect(caughtErr).toBe(undefined);
+            expect(censoredString).toContain("Invalid session object");
+            parseSpy.mockRestore(); // JSON.parse back to original app implementation
+        });
+
         it("should censor data in an availableCreds object", () => {
             const censoredAvailCredsObj = JSON.parse(Censor.censorSession(fakeAvailCreds));
             expect(censoredAvailCredsObj.tokenType).toEqual(unCensoredTokenType);
