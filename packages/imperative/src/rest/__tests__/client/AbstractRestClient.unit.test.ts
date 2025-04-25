@@ -478,7 +478,7 @@ describe("AbstractRestClient tests", () => {
         expect(response).toEqual("\"response data\"");
     });
 
-    it("should handle a socket connection timeout 1", async () => {
+    it("should handle a socket connection timeout", async () => {
         let destroySpy: jest.SpyInstance;
         const requestFnc = jest.fn((options, callback) => {
             const emitter = new MockHttpRequestResponse();
@@ -514,7 +514,7 @@ describe("AbstractRestClient tests", () => {
         expect(destroySpy).toHaveBeenCalledTimes(1);
     });
 
-    it("should handle a socket connection timeout 2", async () => {
+    it("should handle a socket connection timeout - good env variable", async () => {
         let destroySpy: jest.SpyInstance;
         const readEnvSpy = jest.spyOn(EnvironmentalVariableSettings, "read").mockReturnValue({
             socketConnectTimeout: {key: "test", value: "1"},
@@ -556,7 +556,7 @@ describe("AbstractRestClient tests", () => {
         expect(session.ISession.socketConnectTimeout).toEqual(1);
     });
 
-    it("should handle a socket connection timeout 3", async () => {
+    it("should handle a socket connection timeout - bad env variable", async () => {
         const readEnvSpy = jest.spyOn(EnvironmentalVariableSettings, "read").mockReturnValue({
             socketConnectTimeout: {key: "test", value: "garbage"},
             requestCompletionTimeout: {key: "test", value: undefined}
@@ -585,7 +585,7 @@ describe("AbstractRestClient tests", () => {
         expect(session.ISession.socketConnectTimeout).toBeUndefined();
     });
 
-    it("should handle a request completion timeout 1", async () => {
+    it("should handle a request completion timeout", async () => {
         let destroySpy: jest.SpyInstance;
         const requestFnc = jest.fn((options, callback) => {
             const emitter = new MockHttpRequestResponse();
@@ -621,7 +621,7 @@ describe("AbstractRestClient tests", () => {
         expect(destroySpy).toHaveBeenCalledTimes(1);
     });
 
-    it("should handle a request completion timeout 2", async () => {
+    it("should handle a request completion timeout - good env variable", async () => {
         let destroySpy: jest.SpyInstance;
         const readEnvSpy = jest.spyOn(EnvironmentalVariableSettings, "read").mockReturnValue({
             socketConnectTimeout: {key: "test", value: "60000"},
@@ -663,7 +663,7 @@ describe("AbstractRestClient tests", () => {
         expect(session.ISession.requestCompletionTimeout).toEqual(1);
     });
 
-    it("should handle a request completion timeout 3", async () => {
+    it("should handle a request completion timeout - bad env variable", async () => {
         const readEnvSpy = jest.spyOn(EnvironmentalVariableSettings, "read").mockReturnValue({
             socketConnectTimeout: {key: "test", value: "60000"},
             requestCompletionTimeout: {key: "test", value: "garbage"}
