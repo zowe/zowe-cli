@@ -147,8 +147,13 @@ exports[`Create  Data Set should display the help 1`] = `
 
    --completion-timeout | --cto (number)
 
-      The amount in time, in milliseconds, a REST operation should wait before timing
-      out
+      The amount in time, in milliseconds, a REST operation should wait to complete
+      before timing out
+
+   --establish-connection-timeout | --ecto (number)
+
+      The amount of time, in milliseconds, a REST operation should wait while
+      connecting to the server before timing out
 
  PROFILE OPTIONS
  ---------------

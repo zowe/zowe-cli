@@ -16,6 +16,7 @@ Object {
   "rejectUnauthorized": true,
   "requestCompletionTimeout": undefined,
   "secureProtocol": "SSLv23_method",
+  "socketConnectTimeout": undefined,
   "strictSSL": true,
   "type": "basic",
   "user": "someone",

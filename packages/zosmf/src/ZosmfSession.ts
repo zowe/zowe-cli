@@ -145,7 +145,18 @@ export class ZosmfSession {
     public static ZOSMF_OPTION_COMPLETION_TIMEOUT: ICommandOptionDefinition = {
         name: "completion-timeout",
         aliases: ["cto"],
-        description: "The amount in time, in milliseconds, a REST operation should wait before timing out",
+        description: "The amount in time, in milliseconds, a REST operation should wait to complete before timing out",
+        type: "number",
+        group: ZosmfSession.ZOSMF_CONNECTION_OPTION_GROUP
+    };
+
+    /**
+     * Option to specify a request establishment timeout
+     */
+    public static ZOSMF_OPTION_ESTABLISH_CONNECTION_TIMEOUT: ICommandOptionDefinition = {
+        name: "establish-connection-timeout",
+        aliases: ["ecto"],
+        description: "The amount of time, in milliseconds, a REST operation should wait while connecting to the server before timing out",
         type: "number",
         group: ZosmfSession.ZOSMF_CONNECTION_OPTION_GROUP
     };
@@ -164,7 +175,8 @@ export class ZosmfSession {
         ZosmfSession.ZOSMF_OPTION_PROTOCOL,
         ZosmfSession.ZOSMF_OPTION_CERT_FILE,
         ZosmfSession.ZOSMF_OPTION_CERT_KEY_FILE,
-        ZosmfSession.ZOSMF_OPTION_COMPLETION_TIMEOUT
+        ZosmfSession.ZOSMF_OPTION_COMPLETION_TIMEOUT,
+        ZosmfSession.ZOSMF_OPTION_ESTABLISH_CONNECTION_TIMEOUT,
         // ZosmfSession.ZOSMF_OPTION_CERT_FILE_PASSPHRASE
     ];
 
@@ -178,7 +190,8 @@ export class ZosmfSession {
             rejectUnauthorized: args.rejectUnauthorized,
             basePath: args.basePath,
             protocol: args.protocol ? args.protocol.toLowerCase() : 'https',
-            requestCompletionTimeout: args.completionTimeout
+            requestCompletionTimeout: args.completionTimeout,
+            socketConnectTimeout: args.establishConnectionTimeout
         };
     }
 
