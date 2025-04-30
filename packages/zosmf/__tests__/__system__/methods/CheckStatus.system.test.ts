@@ -123,7 +123,7 @@ describe("Check Status Api", () => {
             expect(response).toBeFalsy();
             const jsonCauseErrors = error.causeErrors;
             expect(jsonCauseErrors.message).toContain("EPROTO");
-            expect(jsonCauseErrors.port).toEqual(badPort);
+            expect(error.port).toContain(badPort);
         }, 300000);
     });
 });
