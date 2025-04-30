@@ -23,8 +23,8 @@ describe("zosmf utils", () => {
             basePath: "fakeBasePath",
             tokenValue: "fake",
             tokenType: "fake",
-            completionTimeout: 60000,
-            establishConnectionTimeout: 30000
+            completionTimeout: 60,
+            establishConnectionTimeout: 30
         };
         const sessIntface: ISession = ZosmfSession.createSessCfgFromArgs(args);
         expect(sessIntface.basePath).toBe("fakeBasePath");

@@ -145,7 +145,7 @@ export class ZosmfSession {
     public static ZOSMF_OPTION_COMPLETION_TIMEOUT: ICommandOptionDefinition = {
         name: "completion-timeout",
         aliases: ["cto"],
-        description: "The amount in time, in milliseconds, a REST operation should wait to complete before timing out",
+        description: "The amount in time, in seconds, a REST operation should wait to complete before timing out",
         type: "number",
         group: ZosmfSession.ZOSMF_CONNECTION_OPTION_GROUP
     };
@@ -156,7 +156,7 @@ export class ZosmfSession {
     public static ZOSMF_OPTION_ESTABLISH_CONNECTION_TIMEOUT: ICommandOptionDefinition = {
         name: "establish-connection-timeout",
         aliases: ["ecto"],
-        description: "The amount of time, in milliseconds, a REST operation should wait while connecting to the server before timing out",
+        description: "The amount of time, in seconds, a REST operation should wait while connecting to the server before timing out",
         type: "number",
         group: ZosmfSession.ZOSMF_CONNECTION_OPTION_GROUP
     };
@@ -186,12 +186,13 @@ export class ZosmfSession {
      * @returns {ISession} - A session configuration to be used for a session.
      */
     public static createSessCfgFromArgs(args: ICommandArguments): ISession {
+        const msToSecs = 1000;
         return {
             rejectUnauthorized: args.rejectUnauthorized,
             basePath: args.basePath,
             protocol: args.protocol ? args.protocol.toLowerCase() : 'https',
-            requestCompletionTimeout: args.completionTimeout,
-            socketConnectTimeout: args.establishConnectionTimeout
+            requestCompletionTimeout: isNaN(args.completionTimeout) ? undefined : args.completionTimeout * msToSecs,
+            socketConnectTimeout: isNaN(args.establishConnectionTimeout) ? undefined : args.establishConnectionTimeout * msToSecs,
         };
     }
 

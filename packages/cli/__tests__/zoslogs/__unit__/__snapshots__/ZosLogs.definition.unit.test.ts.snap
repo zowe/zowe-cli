@@ -107,7 +107,7 @@ Object {
           "aliases": Array [
             "cto",
           ],
-          "description": "The amount in time, in milliseconds, a REST operation should wait to complete before timing out",
+          "description": "The amount in time, in seconds, a REST operation should wait to complete before timing out",
           "group": "Zosmf Connection Options",
           "name": "completion-timeout",
           "type": "number",
@@ -116,7 +116,7 @@ Object {
           "aliases": Array [
             "ecto",
           ],
-          "description": "The amount of time, in milliseconds, a REST operation should wait while connecting to the server before timing out",
+          "description": "The amount of time, in seconds, a REST operation should wait while connecting to the server before timing out",
           "group": "Zosmf Connection Options",
           "name": "establish-connection-timeout",
           "type": "number",
