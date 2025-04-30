@@ -145,6 +145,16 @@ exports[`Create  Data Set should display the help 1`] = `
 
       The file path to a certificate key file to use for authentication
 
+   --completion-timeout | --cto (number)
+
+      The amount in time, in seconds, a REST operation should wait to complete before
+      timing out
+
+   --establish-connection-timeout | --ecto (number)
+
+      The amount of time, in seconds, a REST operation should wait while connecting to
+      the server before timing out
+
  PROFILE OPTIONS
  ---------------
 

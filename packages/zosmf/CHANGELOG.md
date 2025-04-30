@@ -2,6 +2,11 @@
 
 All notable changes to the Zowe z/OSMF SDK package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Added the `ZOSMF_OPTION_ESTABLISH_CONNECTION_TIMEOUT` option to `ZOSMF_CONNECTION_OPTIONS` on `ZosmfSession`. This allows users to specify a maximum limit for how long the REST client should attempt to establish a connection to the server, and returns an error if the request takes too long. [#2490](https://github.com/zowe/zowe-cli/pull/2490)
+- Enhancement: Added the `ZOSMF_OPTION_COMPLETION_TIMEOUT` option to `ZOSMF_CONNECTION_OPTIONS` on `ZosmfSession`. This allows users to specify a maximum limit for how long a REST request should take, and returns an error if the request takes too long. [#2490](https://github.com/zowe/zowe-cli/pull/2490)
+
 ## `8.1.1`
 
 - BugFix: Updated peer dependencies to `^8.0.0`, dropping support for versions tagged `next`. [#2287](https://github.com/zowe/zowe-cli/pull/2287)

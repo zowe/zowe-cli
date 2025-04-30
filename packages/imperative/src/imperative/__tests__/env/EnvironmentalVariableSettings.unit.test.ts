@@ -34,6 +34,7 @@ describe("EnvironmentalVariableSettings tests", () => {
             showSecureArgs: getSetting(prefix + EnvironmentalVariableSettings.ENV_SHOW_SECURE_SUFFIX, Constants.DEFAULT_SHOW_SECURE),
             socketConnectTimeout: getSetting(prefix + EnvironmentalVariableSettings.ENV_SOCKET_CONNECT_TIMEOUT_SUFFIX,
                 Constants.DEFAULT_SOCKET_CONNECT_TIMEOUT),
+            requestCompletionTimeout: getSetting(prefix + EnvironmentalVariableSettings.ENV_REQUEST_COMPLETION_TIMEOUT_SUFFIX),
         };
     };
 

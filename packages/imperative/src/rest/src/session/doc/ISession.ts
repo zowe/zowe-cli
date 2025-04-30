@@ -203,4 +203,20 @@ export interface ISession {
      * @memberof ISession
      */
     socketConnectTimeout?: number;
+
+    /**
+     * Specifies the number of milliseconds to wait for the request to complete
+     *
+     * @type {number}
+     * @memberof ISession
+     */
+    requestCompletionTimeout?: number;
+
+    /**
+     * The callback if the request completion timeout occurs. Must be synchronous.
+     *
+     * @type {function}
+     * @memberof ISession
+     */
+    requestCompletionTimeoutCallback?: () => void;
 }

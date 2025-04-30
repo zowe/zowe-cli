@@ -9,53 +9,90 @@
 *
 */
 
-import * as dns from "dns";
-import { promisify } from "util";
-import { RestClient } from "../../src/rest/src/client/RestClient";
-import { Session } from "../../src/rest/src/session/Session";
-import { TestLogger } from "../src/TestLogger";
+import { RestClient, Session, ISession } from "../../src/rest";
 
 describe("AbstractRestClient system tests", () => {
-    const exampleDomain = "dns.google.com";
-    const removeHash = (html: string) => html.replace(/(?<=nonce)=".+"/g, "");
-    let exampleHtml: string;
-
-    it("should get response when host is domain name", async () => {
-        const session = new Session({ hostname: exampleDomain });
-        let caughtError;
+    it("should time out before connecting if given a connection timeout", async () => {
+        const mISession: ISession = {
+            hostname: "www.zowe.org",
+            protocol: "https",
+            socketConnectTimeout: 1
+        };
+        const mSession = new Session(mISession);
+        const restClient = new RestClient(mSession);
+        let error;
         try {
-            exampleHtml = removeHash(await RestClient.getExpectString(session, "/"));
-        } catch (error) {
-            caughtError = error;
+            await restClient.request({resource: "/", request: "GET"});
+        } catch (err) {
+            error = err;
         }
-        expect(caughtError).toBeUndefined();
-        expect(exampleHtml).toContain("<!DOCTYPE html>");
+        expect(error).toBeDefined();
+        expect(error.message).toContain("Failed to send an HTTP request");
+        expect(error.causeErrors.message).toContain("Connection timed out. Check the host, port, and firewall rules.");
     });
-
-    it("should get response when host is IPv4 address", async () => {
-        const [ipv4] = await promisify(dns.resolve4)(exampleDomain);
-        const session = new Session({ hostname: ipv4 });
-        let responseText, caughtError;
+    it("should time out before getting a response with the request timeout", async () => {
+        const mISession: ISession = {
+            hostname: "www.zowe.org",
+            protocol: "https",
+            requestCompletionTimeout: 1
+        };
+        const mSession = new Session(mISession);
+        const restClient = new RestClient(mSession);
+        let error;
         try {
-            responseText = await RestClient.getExpectString(session, "/", [{ "Host": exampleDomain }]);
-        } catch (error) {
-            caughtError = error;
+            await restClient.request({resource: "/", request: "GET"});
+        } catch (err) {
+            error = err;
         }
-        expect(caughtError).toBeUndefined();
-        expect(removeHash(responseText)).toBe(exampleHtml);
+        expect(error).toBeDefined();
+        expect(error.message).toContain("HTTP request timed out after connecting.");
     });
-
-    it("should get response when host is IPv6 address", async () => {
-        const [ipv6] = await promisify(dns.resolve6)(exampleDomain);
-        const session = new Session({ hostname: ipv6 });
-        let responseText, caughtError;
+    it("should fail to send a request if the hostname contains a protocol", async () => {
+        const mISession: ISession = {
+            hostname: "https://www.zowe.org",
+            protocol: "https"
+        };
+        const mSession = new Session(mISession);
+        const restClient = new RestClient(mSession);
+        let error;
         try {
-            responseText = await RestClient.getExpectString(session, "/", [{ "Host": exampleDomain }]);
-        } catch (error) {
-            caughtError = error;
-            TestLogger.info("To run this test, your network must support connecting to external IPv6 addresses.");
+            await restClient.request({resource: "/", request: "GET"});
+        } catch (err) {
+            error = err;
         }
-        expect(caughtError).toBeUndefined();
-        expect(removeHash(responseText)).toBe(exampleHtml);
+        expect(error).toBeDefined();
+        expect(error.message).toContain("The hostname should not contain the protocol.");
+    });
+    it("should fail to send a request if the hostname is blank", async () => {
+        const mISession: ISession = {
+            hostname: "www.zowe.org",
+            protocol: "https"
+        };
+        const mSession = new Session(mISession);
+        mISession.hostname = "";
+        const restClient = new RestClient(mSession);
+        let error;
+        try {
+            await restClient.request({resource: "/", request: "GET"});
+        } catch (err) {
+            error = err;
+        }
+        expect(error).toBeDefined();
+        expect(error.message).toContain("The hostname is required");
+    });
+    it("should connect successfully", async () => {
+        const mISession: ISession = {
+            hostname: "www.zowe.org",
+            protocol: "https"
+        };
+        const mSession = new Session(mISession);
+        const restClient = new RestClient(mSession);
+        let error;
+        try {
+            await restClient.request({resource: "/", request: "GET"});
+        } catch (err) {
+            error = err;
+        }
+        expect(error).not.toBeDefined();
     });
 });

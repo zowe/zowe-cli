@@ -99,7 +99,7 @@ describe("Check Status Api", () => {
         });
 
         (!process.env.HTTP_PROXY && !process.env.HTTPS_PROXY ? it : it.skip)("should return with proper message for invalid port", async () => {
-            const badPort = 51342;
+            const badPort = 22;
             const badSession = new Session({
                 user: defaultSystem.zosmf.user,
                 password: defaultSystem.zosmf.password,
@@ -122,8 +122,7 @@ describe("Check Status Api", () => {
             expect(error).toBeTruthy();
             expect(response).toBeFalsy();
             const jsonCauseErrors = error.causeErrors;
-            expect(jsonCauseErrors.code).toMatch(/(ECONNREFUSED|ECONNRESET|ETIMEDOUT)/);
-            expect(jsonCauseErrors.syscall).toEqual("connect");
+            expect(jsonCauseErrors.message).toContain("EPROTO");
             expect(jsonCauseErrors.port).toEqual(badPort);
         }, 300000);
     });
