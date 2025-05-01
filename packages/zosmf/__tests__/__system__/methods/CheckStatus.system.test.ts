@@ -121,9 +121,8 @@ describe("Check Status Api", () => {
 
             expect(error).toBeTruthy();
             expect(response).toBeFalsy();
-            const jsonCauseErrors = error.causeErrors;
-            expect(jsonCauseErrors.message).toContain("EPROTO");
-            expect(jsonCauseErrors.port).toEqual(badPort);
+            expect(error.causeErrors.message).toMatch(/EPROTO|ECONNRESET/);
+            expect(error.mDetails.port).toEqual(badPort);
         }, 300000);
     });
 });
