@@ -401,12 +401,14 @@ describe("ApimlAutoInitHandler", () => {
         await handler.doAutoInit(
             {
                 ISession: iSessObj
-            }, {
-            arguments: {
-                $0: "fake",
-                _: ["fake"]
+            },
+            {
+                arguments: {
+                    $0: "fake",
+                    _: ["fake"]
+                }
             }
-        });
+        );
         expect(iSessObj._authCache.authTypeToRequestToken).toBe(undefined);
     });
 
