@@ -3,9 +3,13 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## Recent Changes
 
-- Enhancement: Updated the `zowe config auto-init` command to obey the choice of authentication specified by a user. [#2491](https://github.com/zowe/zowe-cli/pull/2491)
 - BugFix: Updated the `zowe auth login apiml` command to place its retrieved token into the current base profile instead of creating a new base profile. [#2181](https://github.com/zowe/zowe-cli/issues/2181) & [#1650](https://github.com/zowe/zowe-cli/issues/1650)
   - The update also places a directive to use token authentication for the default `zosmf` profile if that profile is configured to connect to API-ML.
+
+## `8.20.0`
+
+- Enhancement: Added the `--establish-connection-timeout` option to the `z/OSMF Connection Options`. This allows users to specify a maximum limit for how long the REST client should attempt to establish a connection to the server, and returns an error if the request takes too long. [#2490](https://github.com/zowe/zowe-cli/pull/2490)
+- Enhancement: Added the `--completion-timeout` option to the `z/OSMF Connection Options`. This allows users to specify a maximum limit for how long a REST request should take, and returns an error if the request takes too long. [#2490](https://github.com/zowe/zowe-cli/pull/2490)
 
 ## `8.19.0`
 

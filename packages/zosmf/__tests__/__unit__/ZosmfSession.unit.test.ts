@@ -22,12 +22,16 @@ describe("zosmf utils", () => {
             rejectUnauthorized: false,
             basePath: "fakeBasePath",
             tokenValue: "fake",
-            tokenType: "fake"
+            tokenType: "fake",
+            completionTimeout: 60,
+            establishConnectionTimeout: 30
         };
         const sessIntface: ISession = ZosmfSession.createSessCfgFromArgs(args);
         expect(sessIntface.basePath).toBe("fakeBasePath");
         expect(sessIntface.rejectUnauthorized).toBe(false);
         expect(sessIntface.protocol).toBe("https");
+        expect(sessIntface.requestCompletionTimeout).toBe(60000);
+        expect(sessIntface.socketConnectTimeout).toBe(30000);
     });
 
     it("Should create a session object when tokenValue and tokenType are present", async () => {

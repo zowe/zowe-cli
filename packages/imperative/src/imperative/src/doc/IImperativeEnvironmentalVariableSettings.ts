@@ -63,4 +63,9 @@ export interface IImperativeEnvironmentalVariableSettings {
      * The socket connection timeout, in milliseconds
      */
     socketConnectTimeout?: IImperativeEnvironmentalVariableSetting;
+
+    /**
+     * Request completion timeout, in milliseconds
+     */
+    requestCompletionTimeout?: IImperativeEnvironmentalVariableSetting;
 }

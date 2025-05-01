@@ -140,6 +140,28 @@ export class ZosmfSession {
     // };
 
     /**
+     * Option to specify a request completion timeout
+     */
+    public static ZOSMF_OPTION_COMPLETION_TIMEOUT: ICommandOptionDefinition = {
+        name: "completion-timeout",
+        aliases: ["cto"],
+        description: "The amount in time, in seconds, a REST operation should wait to complete before timing out",
+        type: "number",
+        group: ZosmfSession.ZOSMF_CONNECTION_OPTION_GROUP
+    };
+
+    /**
+     * Option to specify a request establishment timeout
+     */
+    public static ZOSMF_OPTION_ESTABLISH_CONNECTION_TIMEOUT: ICommandOptionDefinition = {
+        name: "establish-connection-timeout",
+        aliases: ["ecto"],
+        description: "The amount of time, in seconds, a REST operation should wait while connecting to the server before timing out",
+        type: "number",
+        group: ZosmfSession.ZOSMF_CONNECTION_OPTION_GROUP
+    };
+
+    /**
      * Options related to connecting to z/OSMF
      * These options can be filled in if the user creates a profile
      */
@@ -152,7 +174,9 @@ export class ZosmfSession {
         ZosmfSession.ZOSMF_OPTION_BASE_PATH,
         ZosmfSession.ZOSMF_OPTION_PROTOCOL,
         ZosmfSession.ZOSMF_OPTION_CERT_FILE,
-        ZosmfSession.ZOSMF_OPTION_CERT_KEY_FILE
+        ZosmfSession.ZOSMF_OPTION_CERT_KEY_FILE,
+        ZosmfSession.ZOSMF_OPTION_COMPLETION_TIMEOUT,
+        ZosmfSession.ZOSMF_OPTION_ESTABLISH_CONNECTION_TIMEOUT,
         // ZosmfSession.ZOSMF_OPTION_CERT_FILE_PASSPHRASE
     ];
 
@@ -162,10 +186,13 @@ export class ZosmfSession {
      * @returns {ISession} - A session configuration to be used for a session.
      */
     public static createSessCfgFromArgs(args: ICommandArguments): ISession {
+        const msToSecs = 1000;
         return {
             rejectUnauthorized: args.rejectUnauthorized,
             basePath: args.basePath,
-            protocol: args.protocol ? args.protocol.toLowerCase() : 'https'
+            protocol: args.protocol ? args.protocol.toLowerCase() : 'https',
+            requestCompletionTimeout: isNaN(args.completionTimeout) ? undefined : args.completionTimeout * msToSecs,
+            socketConnectTimeout: isNaN(args.establishConnectionTimeout) ? undefined : args.establishConnectionTimeout * msToSecs,
         };
     }
 

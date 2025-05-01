@@ -24,6 +24,7 @@ const EnvironmentalVariableSettings: any =
 (EnvironmentalVariableSettings.APP_MASK_OUTPUT_SUFFIX as any) = envActual.APP_MASK_OUTPUT_SUFFIX;
 (EnvironmentalVariableSettings.ENV_SHOW_SECURE_SUFFIX as any) = envActual.ENV_SHOW_SECURE_SUFFIX;
 (EnvironmentalVariableSettings.ENV_SOCKET_CONNECT_TIMEOUT_SUFFIX as any) = envActual.ENV_SOCKET_CONNECT_TIMEOUT_SUFFIX;
+(EnvironmentalVariableSettings.ENV_REQUEST_COMPLETION_TIMEOUT_SUFFIX as any) = envActual.ENV_REQUEST_COMPLETION_TIMEOUT_SUFFIX;
 
 (EnvironmentalVariableSettings.read as Mock).mockImplementation((prefix: string): IImperativeEnvironmentalVariableSettings => {
     const getSetting = (key: string) => {
@@ -38,6 +39,7 @@ const EnvironmentalVariableSettings: any =
         maskOutput: getSetting(EnvironmentalVariableSettings.APP_MASK_OUTPUT_SUFFIX),
         showSecureArgs: getSetting(EnvironmentalVariableSettings.ENV_SHOW_SECURE_SUFFIX),
         socketConnectTimeout: getSetting(EnvironmentalVariableSettings.ENV_SOCKET_CONNECT_TIMEOUT_SUFFIX),
+        requestCompletionTimeout: getSetting(EnvironmentalVariableSettings.ENV_REQUEST_COMPLETION_TIMEOUT_SUFFIX),
     };
 });
 

@@ -6,6 +6,11 @@ All notable changes to the Imperative package will be documented in this file.
 
 - Enhancement: Updated the Zowe Client REST APIs to obey the choice of authentication specified by a user. [#2491](https://github.com/zowe/zowe-cli/pull/2491)
 
+## `8.20.0`
+
+- Enhancement: Added a request timeout to the Imperative REST client. [#2490](https://github.com/zowe/zowe-cli/pull/2490)
+- Enhancement: Added the `ZOWE_REQUEST_COMPLETION_TIMEOUT` environment variable to the `EnvironmentalVariableSettings` class to allow extenders to determine how long to wait for a request to complete before timing out. [#2490](https://github.com/zowe/zowe-cli/pull/2490)
+
 ## `8.19.0`
 
 - Enhancement: Added a connection timeout to the Imperative REST Client, with a default of 60 seconds. [#2486](https://github.com/zowe/zowe-cli/pull/2486)
