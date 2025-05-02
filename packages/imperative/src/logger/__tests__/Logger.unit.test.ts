@@ -9,9 +9,7 @@
 *
 */
 
-jest.mock("log4js");
 jest.mock("fs");
-import * as log4js from "log4js";
 import { LoggingConfigurer } from "../../imperative/src/LoggingConfigurer";
 import { IConfigLogging, ILog4jsConfig, Logger } from "../../logger";
 import { LoggerManager } from "../../logger/src/LoggerManager";
@@ -31,38 +29,6 @@ describe("Logger tests", () => {
     // (Logger as any).writeToLog = jest.fn<string>((data: string) => data);
 
     beforeAll(() => {
-        let configuration: ILog4jsConfig;
-        (log4js.configure as any) = jest.fn((config: any) => {
-            configuration = config;
-        });
-
-        class MockedLoggerInstance {
-            private mLevel: string;
-
-            public set level(newLevel: any) {
-                this.mLevel = newLevel;
-            }
-
-            public get level(): any {
-                return this.mLevel;
-            }
-        }
-
-        (log4js.getLogger as any) = jest.fn((category: string) => {
-            let configuredLevel = "debug";
-            if (category !== null) {
-                for (const configuredCategory of Object.keys(configuration.categories)) {
-                    if (configuredCategory === category) {
-                        configuredLevel = configuration.categories[configuredCategory].level;
-                    }
-                }
-            }
-            const newLogger = new MockedLoggerInstance();
-            newLogger.level = configuredLevel;
-            return newLogger;
-        }
-        );
-
         jest.spyOn(os, "homedir").mockImplementation(() => fakeHome);
         jest.spyOn(path, "normalize").mockImplementation((p: string) => p);
         jest.spyOn(IO, "createDirsSync").mockImplementation();

@@ -17,7 +17,8 @@ import { TextUtils } from "../../utilities/src/TextUtils";
 import { IO } from "../../io";
 import { IConfigLogging } from "./doc/IConfigLogging";
 import { LoggerManager } from "./LoggerManager";
-import * as log4js from "log4js";
+import * as winston from "winston";
+import { log4jsConfigToWinstonConfig } from "./log4jsToWinston";
 import { Console } from "../../console/src/Console";
 import { Censor } from "../../censor";
 
@@ -41,7 +42,10 @@ export class Logger {
         if (category === Logger.DEFAULT_CONSOLE_NAME) {
             return new Logger(new Console(), Logger.DEFAULT_CONSOLE_NAME);
         } else {
-            return new Logger(log4js.getLogger(category), category);
+            // For winston, create a logger for the category
+            return new Logger(winston.loggers.has(category)
+                ? winston.loggers.get(category)
+                : winston.createLogger({ transports: [new winston.transports.Console()] }), category);
         }
     }
 
@@ -125,18 +129,34 @@ export class Logger {
             throw new ImperativeError({msg: "Input logging config is incomplete, does not contain log4jsConfig.appenders"});
         }
 
-        let logger: log4js.Logger;
+        let logger: winston.Logger;
 
         try {
             for (const appenderName of Object.keys(loggingConfig.log4jsConfig.appenders)) {
                 const appender = loggingConfig.log4jsConfig.appenders[appenderName];
-                if (appender.type === "file" || appender.type === "fileSync") {
+                if (
+                    typeof appender === "object" &&
+                    appender !== null &&
+                    "type" in appender &&
+                    (appender.type === "file" || appender.type === "fileSync") &&
+                    "filename" in appender
+                ) {
                     IO.createDirsSyncFromFilePath(appender.filename);
                 }
             }
-            log4js.configure(loggingConfig.log4jsConfig as any);
-            logger = log4js.getLogger();
-            logger.level = "debug";
+            const winstonConfig = log4jsConfigToWinstonConfig(loggingConfig.log4jsConfig);
+            logger = winston.createLogger(winstonConfig);
+            // Register logger for categories if needed
+            if (loggingConfig.log4jsConfig.categories) {
+                for (const category of Object.keys(loggingConfig.log4jsConfig.categories)) {
+                    winston.loggers.add(category, winstonConfig);
+                    // Set the logger's level to the category's level if specified
+                    const catConfig = loggingConfig.log4jsConfig.categories[category];
+                    if (catConfig && typeof catConfig.level === "string") {
+                        winston.loggers.get(category).level = catConfig.level.toLowerCase();
+                    }
+                }
+            }
             LoggerManager.instance.isLoggerInit = true;
             return new Logger(logger);
         } catch (err) {
@@ -152,7 +172,7 @@ export class Logger {
      */
     private initStatus: boolean;
 
-    constructor(private mJsLogger: log4js.Logger | Console, private category?: string) {
+    constructor(private mJsLogger: winston.Logger | Console, private category?: string) {
 
         if (LoggerManager.instance.isLoggerInit && LoggerManager.instance.QueuedMessages.length > 0) {
             LoggerManager.instance.QueuedMessages.slice().reverse().forEach((value) => {
@@ -178,7 +198,11 @@ export class Logger {
     public trace(message: string, ...args: any[]): string {
         const finalMessage = TextUtils.formatMessage.apply(this, [message].concat(args));
         if (LoggerManager.instance.isLoggerInit || this.category === Logger.DEFAULT_CONSOLE_NAME) {
-            this.logService.trace(this.getCallerFileAndLineTag() + finalMessage);
+            if (typeof (this.logService as any).trace === "function") {
+                (this.logService as any).trace(this.getCallerFileAndLineTag() + finalMessage);
+            } else if (typeof (this.logService as any).log === "function") {
+                (this.logService as any).log("trace", this.getCallerFileAndLineTag() + finalMessage);
+            }
         } else {
             LoggerManager.instance.queueMessage(this.category, "trace", this.getCallerFileAndLineTag() + finalMessage);
         }
@@ -266,7 +290,11 @@ export class Logger {
     public fatal(message: string, ...args: any[]): string {
         const finalMessage = Censor.censorRawData(TextUtils.formatMessage.apply(this, [message].concat(args)), this.category);
         if (LoggerManager.instance.isLoggerInit || this.category === Logger.DEFAULT_CONSOLE_NAME) {
-            this.logService.fatal(this.getCallerFileAndLineTag() + finalMessage);
+            if (typeof (this.logService as any).fatal === "function") {
+                (this.logService as any).fatal(this.getCallerFileAndLineTag() + finalMessage);
+            } else if (typeof (this.logService as any).log === "function") {
+                (this.logService as any).log("fatal", this.getCallerFileAndLineTag() + finalMessage);
+            }
         } else {
             LoggerManager.instance.queueMessage(this.category, "fatal", this.getCallerFileAndLineTag() + finalMessage);
         }
@@ -400,7 +428,7 @@ export class Logger {
     /**
      * Set underlying logger service
      */
-    private set logService(service: log4js.Logger | Console) {
+    private set logService(service: winston.Logger | Console) {
         this.mJsLogger = service;
     }
 }

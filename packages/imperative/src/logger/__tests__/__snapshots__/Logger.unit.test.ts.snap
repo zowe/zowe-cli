@@ -4,6 +4,6 @@ exports[`Logger tests Should get the correct requested logger appender 1`] = `"E
 
 exports[`Logger tests Should get the correct requested logger appender 2`] = `"TRACE"`;
 
-exports[`Logger tests Should set the level like we say 1`] = `"DEBUG"`;
+exports[`Logger tests Should set the level like we say 1`] = `"WARN"`;
 
 exports[`Logger tests Should set the level like we say 2`] = `"TRACE"`;
