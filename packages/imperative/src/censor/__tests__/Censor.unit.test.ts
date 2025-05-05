@@ -191,7 +191,12 @@ describe("Censor tests", () => {
 
         it("should handle a null object", () => {
             const censoredNullStr = Censor.censorSession(null);
-            expect(censoredNullStr).toEqual("Empty session object");
+            expect(censoredNullStr).toEqual(Censor["NULL_SESS_OBJ_MSG"] + " censorSession");
+        });
+
+        it("should also handle a null object in replaceValsInSess", () => {
+            const censoredNullStr = Censor["replaceValsInSess"](null, true);
+            expect(censoredNullStr).toEqual(Censor["NULL_SESS_OBJ_MSG"] + " replaceValsInSess");
         });
 
         it("should handle a bogus JSON object", () => {

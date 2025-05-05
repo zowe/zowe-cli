@@ -41,6 +41,10 @@ export class Censor {
     // The censor response.
     public static readonly CENSOR_RESPONSE = "****";
 
+
+    // The censor response.
+    public static readonly NULL_SESS_OBJ_MSG = "Null session object was passed to API";
+
     // A set of default censored options.
     public static get DEFAULT_CENSORED_OPTIONS(): string[] {
         const censoredList = new Set<string>();
@@ -345,7 +349,7 @@ export class Censor {
      */
     public static censorSession(sessObj: any): string {
         if (!sessObj) {
-            return "Empty session object";
+            return Censor.NULL_SESS_OBJ_MSG + " censorSession";
         }
         return Censor.replaceValsInSess(sessObj, true);
     }
@@ -360,6 +364,10 @@ export class Censor {
      * @returns - The censored object as a string.
      */
     private static replaceValsInSess(sessObj: any, createCopy: boolean): string {
+        if (!sessObj) {
+            return Censor.NULL_SESS_OBJ_MSG + " replaceValsInSess";
+        }
+
         const propsToBeCensored = [...Censor.SECURE_PROMPT_OPTIONS, ...Censor.DEFAULT_CENSORED_OPTIONS];
 
         // create copy of sessObj so that we can replace values in a censored object
@@ -367,8 +375,8 @@ export class Censor {
         if (createCopy) {
             try {
                 censoredSessObj = JSON.parse(JSON.stringify(sessObj));
-            } catch(_error) {
-                return "Invalid session object";
+            } catch(error) {
+                return "Invalid session object was passed to API replaceValsInSess. Reason = " + error.toString();
             }
         } else {
             censoredSessObj = sessObj;
