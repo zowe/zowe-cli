@@ -11,6 +11,7 @@
 
 import { transports, format, LoggerOptions, addColors } from "winston";
 import * as os from "os";
+import * as dayjs from "dayjs";
 
 const customLevels = {
     levels: {
@@ -39,63 +40,89 @@ const tokenRegex = /(%d(?:\{[^}]+\})?|%p|%c|%m|%n|%h|%z|%%|%\[|%\])/g;
 /**
  * Translates a log4js pattern string into a Winston format object.
  * Handles common tokens like %d, %p, %m, %c, %n, %h, %z, %%.
- * Basic support for %d{ISO8601_WITH_TZ_OFFSET} or other format strings.
+ * Supports multiple %d tokens with different format specifiers (e.g., %d{yyyy/MM/dd}, %d{hh:mm:ss}).
  * Strips color codes (%[ and %]).
  * @param pattern The log4js pattern string.
  * @returns A Winston format object.
  */
 function translateLog4jsPattern(pattern: string): ReturnType<typeof format.combine> {
-    let timestampFormat: string | undefined = undefined;
-    const isoRegex = /%d\{([^}]+)\}/;
-    const match = pattern.match(isoRegex);
+    // Regex to extract format from %d{...} token
+    const dateFormatRegex = /^%d(?:\{([^}]+)\})?$/;
 
-    if (match && match[1]) {
-        // Basic mapping for common formats, needs refinement
-        if (match[1] === "ISO8601_WITH_TZ_OFFSET") {
-            // Attempt to map to a format winston understands by default
-            // This might require luxon or moment if not built-in
-            timestampFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZZ";
-        } else {
-            timestampFormat = match[1]; // Assume it's a format string winston understands
+    // Mapping from log4js date format specifiers to dayjs format specifiers
+    const mapLog4jsToDayjsFormat = (log4jsFormat: string): string => {
+        if (log4jsFormat === "ISO8601_WITH_TZ_OFFSET") {
+            // dayjs format for ISO8601 with timezone offset
+            return "YYYY-MM-DDTHH:mm:ss.SSSZZ";
         }
-        // Remove the format specifier from the pattern string for simpler replacement later
-        pattern = pattern.replace(isoRegex, "%d");
-    }
+        // Basic replacements - dayjs uses similar tokens to log4js/fecha for common cases
+        return log4jsFormat
+            .replace(/yyyy/g, "YYYY") // Year
+            .replace(/yy/g, "YY")   // Year, two digits
+            // MM is month (already correct)
+            // dd is day (use DD for dayjs)
+            .replace(/dd/g, "DD")
+            // hh is hour (use HH for 24-hour format in dayjs)
+            .replace(/hh/g, "HH")
+            // mm is minute (already correct)
+            // ss is seconds (already correct)
+            // SSS is milliseconds (already correct)
+            .replace(/O/g, "ZZ"); // Timezone offset
+    };
 
     return format.combine(
-        format.timestamp({ format: timestampFormat }), // Apply timestamp format if found
+        format.timestamp(), // Add timestamp to the info object, default format (ISO)
         format.printf(info => {
+            // Process the pattern for each log entry
             let output = pattern;
-            // Handle colorization tokens (%[ and %]) - simple removal for now
-            output = output.replace(/%\[/g, "").replace(/%\]/g, "");
 
-            // Replace standard tokens
-            // Use a function for replacement to handle different info properties
-            // Ensure the callback always returns a string
-            output = output.replace(tokenRegex, (token): string => {
+            // Handle colorization tokens first (%[ and %]) - simple removal
+            output = output.replace(/%\[/g, "").replace(/%\]/g, ""); // Colors first
+
+            const dateTokenRegex = /%d(?:\{([^}]+)\})?/g; // Regex specifically for date tokens
+            output = output.replace(dateTokenRegex, (dateToken, capturedFormat): string => {
+                 // Default format for plain %d
+                 let formatString = "YYYY-MM-DD HH:mm:ss.SSS";
+                 if (capturedFormat) {
+                     // If a format like %d{...} is found, map it
+                     formatString = mapLog4jsToDayjsFormat(capturedFormat);
+                 }
+                 try {
+                     // Use dayjs to format the timestamp with the specific format for this token
+                     return dayjs(info.timestamp as string).format(formatString);
+                 } catch (e) {
+                     // eslint-disable-next-line no-console
+                     console.error("Error formatting date with dayjs:", e);
+                     // Fallback to ISO string on error
+                     return dayjs(info.timestamp as string).toISOString();
+                 }
+            });
+
+            // Regex for non-date, non-color tokens handled previously
+            const otherTokenRegex = /(%p|%c|%m|%n|%h|%z|%%)/g;
+            output = output.replace(otherTokenRegex, (token): string => {
+                // Handle other tokens
                 switch (token) {
-                    case "%d": return String(info.timestamp); // Ensure string
-                    case "%p": return String(info.level);     // Ensure string
-                    case "%m": return String(info.message);   // Ensure string
+                    case "%p": return String(info.level).toLocaleUpperCase();
+                    case "%m": return String(info.message);
                     case "%n": return "\n";
-                    case "%c": return String(info.category || "default"); // Ensure string
+                    case "%c": return String(info.category || "default");
                     case "%h": return os.hostname();
                     case "%z": return String(process.pid);
                     case "%%": return "%";
-                    default:
-                        // Handle %d{...} case if not already replaced (though it should be)
-                        if (token.startsWith("%d{")) return String(info.timestamp); // Ensure string
-                        return token; // Keep unrecognized tokens as is (already string)
+                    default: return token; // Keep unrecognized tokens (shouldn't be many left)
                 }
             });
-            // Add category to info object if not present, for %c token
+
+            // Add category to info object if not present and %c is in the original pattern
             if (!info.category && pattern.includes("%c")) {
-                info.category = "default"; // Or derive from somewhere if possible
+                info.category = "default";
             }
             return output;
         })
     );
 }
+
 
 /**
  * Type guard for log4js appender with a pattern layout.

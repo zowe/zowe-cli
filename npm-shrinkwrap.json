@@ -7152,6 +7152,12 @@
         "node": ">=6"
       }
     },
+    "node_modules/dayjs": {
+      "version": "1.11.13",
+      "resolved": "https://registry.npmjs.org/dayjs/-/dayjs-1.11.13.tgz",
+      "integrity": "sha512-oaMBel6gjolK862uaPQOVTA7q3TZhuSvuMQAAglQDOWYO9A91IrAOUJEyKVlqJlHE0vq5p5UXxzdPfMH/x6xNg==",
+      "license": "MIT"
+    },
     "node_modules/debug": {
       "version": "4.3.4",
       "license": "MIT",
@@ -16426,6 +16432,7 @@
         "comment-json": "~4.2.3",
         "cross-spawn": "^7.0.5",
         "dataobject-parser": "^1.2.25",
+        "dayjs": "1.11.13",
         "deepmerge": "^4.3.1",
         "diff": "^5.2.0",
         "diff2html": "3.4.20-usewontache.1.60e7a2e",
