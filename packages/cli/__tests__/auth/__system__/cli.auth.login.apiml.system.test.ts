@@ -157,11 +157,7 @@ describe("auth login/logout apiml create profile", () => {
         await TestEnvironment.cleanUp(TEST_ENVIRONMENT_CREATE_PROF);
     });
 
-    /* Resurrect the following test after this Git issue is fixed:
-       https://github.com/zowe/zowe-cli/issues/2005
-    */
-    // eslint-disable-next-line jest/no-disabled-tests
-    it.skip("TODO: After 2005 is fixed: should successfully login with password and create a team config", () => {
+    it("should successfully login with password and create a team config", () => {
         const response = runCliScript(__dirname + "/__scripts__/auth_login_apiml_create.sh",
             TEST_ENVIRONMENT_CREATE_PROF,
             [
