@@ -380,7 +380,7 @@ export class AuthOrder {
                     // user supplied an authOrder
                     // convert user's comma-separated string into an array of auth types, and remove whitespace
                     const userAuthOrder = cmdArgs.authOrder.split(',');
-                    for (let nextUserAuth of userAuthOrder.map((val) => val.trim())) {
+                    for (const nextUserAuth of userAuthOrder.map((val) => val.trim())) {
                         // validate each user-supplied type of authentication
                         switch (nextUserAuth) {
                             case SessConstants.AUTH_TYPE_BASIC:
