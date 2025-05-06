@@ -12,6 +12,19 @@
 import { format, inspect } from "util";
 import { ImperativeError } from "../../error/src/ImperativeError";
 import * as StackTrace from "stack-trace";
+
+// Define custom log levels for Winston
+const customLevels = {
+    fatal: 0,
+    error: 1,
+    warn: 2,
+    info: 3,
+    mark: 4,
+    debug: 5,
+    trace: 6,
+    all: 7
+};
+
 import * as path from "path";
 import { TextUtils } from "../../utilities/src/TextUtils";
 import { IO } from "../../io";
@@ -42,10 +55,13 @@ export class Logger {
         if (category === Logger.DEFAULT_CONSOLE_NAME) {
             return new Logger(new Console(), Logger.DEFAULT_CONSOLE_NAME);
         } else {
-            // For winston, create a logger for the category
+            // For winston, create a logger for the category with custom levels
             return new Logger(winston.loggers.has(category)
                 ? winston.loggers.get(category)
-                : winston.createLogger({ transports: [new winston.transports.Console()] }), category);
+                : winston.createLogger({
+                    levels: customLevels,
+                    transports: [new winston.transports.Console()]
+                }), category);
         }
     }
 
@@ -167,6 +183,9 @@ export class Logger {
                         categoryAppenders
                     );
 
+                    // Add custom levels to the generated config
+                    categoryWinstonConfig.levels = customLevels;
+
                     // Add the logger with its specific configuration
                     winston.loggers.add(categoryName, categoryWinstonConfig);
 
@@ -210,14 +229,17 @@ export class Logger {
      */
     public static fromWinstonConfig(config: winston.LoggerOptions, category?: string): Logger {
         try {
-            const winstonLogger = winston.createLogger(config);
+            // Add custom levels to the provided config
+            const configWithCustomLevels = { ...config, levels: customLevels };
+            const winstonLogger = winston.createLogger(configWithCustomLevels);
+
             // Optionally register the logger if a category is provided and categories are managed
-            if (category && config.levels && config.level) { // Basic check if category management might be relevant
+            if (category && configWithCustomLevels.levels && configWithCustomLevels.level) {
                 if (!winston.loggers.has(category)) {
-                    winston.loggers.add(category, config);
+                    winston.loggers.add(category, configWithCustomLevels);
                 }
                 // Ensure the created logger instance reflects the specified level for the category
-                winstonLogger.level = config.level;
+                winstonLogger.level = configWithCustomLevels.level;
             }
             return new Logger(winstonLogger, category);
         } catch (err) {
@@ -260,11 +282,7 @@ export class Logger {
     public trace(message: string, ...args: any[]): string {
         const finalMessage = TextUtils.formatMessage.apply(this, [message].concat(args));
         if (LoggerManager.instance.isLoggerInit || this.category === Logger.DEFAULT_CONSOLE_NAME) {
-            if (typeof (this.logService as any).trace === "function") {
-                (this.logService as any).trace(this.getCallerFileAndLineTag() + finalMessage);
-            } else if (typeof (this.logService as any).log === "function") {
-                (this.logService as any).log("silly", this.getCallerFileAndLineTag() + finalMessage);
-            }
+            (this.logService as any).log("trace", this.getCallerFileAndLineTag() + finalMessage);
         } else {
             LoggerManager.instance.queueMessage(this.category, "trace", this.getCallerFileAndLineTag() + finalMessage);
         }
@@ -352,11 +370,7 @@ export class Logger {
     public fatal(message: string, ...args: any[]): string {
         const finalMessage = Censor.censorRawData(TextUtils.formatMessage.apply(this, [message].concat(args)), this.category);
         if (LoggerManager.instance.isLoggerInit || this.category === Logger.DEFAULT_CONSOLE_NAME) {
-            if (typeof (this.logService as any).fatal === "function") {
-                (this.logService as any).fatal(this.getCallerFileAndLineTag() + finalMessage);
-            } else if (typeof (this.logService as any).log === "function") {
-                (this.logService as any).log("fatal", this.getCallerFileAndLineTag() + finalMessage);
-            }
+            (this.logService as any).log("fatal", this.getCallerFileAndLineTag() + finalMessage);
         } else {
             LoggerManager.instance.queueMessage(this.category, "fatal", this.getCallerFileAndLineTag() + finalMessage);
         }
@@ -460,7 +474,15 @@ export class Logger {
      * @param {string} level - new level to set
      */
     set level(level: string) {
+        // Update the level of the current logger instance
         this.logService.level = level;
+
+        // If this is a Winston logger, update the level on the registered transports
+        if (this.logService instanceof winston.Logger) {
+            for (const transport of this.logService.transports) {
+                transport.level = level;
+            }
+        }
     }
 
     /**
@@ -468,7 +490,7 @@ export class Logger {
      * @return {string} - level of current log setting
      */
     get level() {
-        return this.logService.level.toString();
+        return this.logService.level.toString().toUpperCase();
     }
 
     /**

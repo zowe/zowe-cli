@@ -30,6 +30,18 @@ jest.mock("../../io", () => ({
         createDirsSync: jest.fn(),
     },
 }));
+// Define custom log levels for Winston (must match the definition in Logger.ts)
+const customLevels = {
+    fatal: 0,
+    error: 1,
+    warn: 2,
+    info: 3,
+    mark: 4,
+    debug: 5,
+    trace: 6,
+    all: 7
+};
+
 jest.mock("winston", () => ({
     format: {
         printf: jest.fn(),
@@ -45,9 +57,10 @@ jest.mock("winston", () => ({
         metadata: jest.fn(),
         logstash: jest.fn(),
     },
-    // Adjust createLogger mock to respect the passed config level
+    // Adjust createLogger mock to respect the passed config level and custom levels
     createLogger: jest.fn().mockImplementation((config) => ({
         level: config?.level || "info", // Use level from config or default to info
+        levels: config?.levels || customLevels, // Use custom levels if provided, otherwise default
         format: config?.format || jest.fn(),
         // Add other necessary properties if the code under test uses them
         transports: config?.transports || [],
@@ -59,6 +72,7 @@ jest.mock("winston", () => ({
         error: jest.fn(),
         trace: jest.fn(),
         fatal: jest.fn(),
+        mark: jest.fn(),
     })),
     loggers: (() => {
         // Cache for mock loggers per category
@@ -68,6 +82,7 @@ jest.mock("winston", () => ({
                 // Always set or overwrite the logger configuration in the cache
                 loggerCache[category] = {
                     level: config?.level || "info", // Use level from the provided config
+                    levels: config?.levels || customLevels, // Use custom levels if provided, otherwise default
                     format: config?.format || jest.fn(),
                     log: jest.fn(),
                     debug: jest.fn(),
@@ -75,7 +90,8 @@ jest.mock("winston", () => ({
                     warn: jest.fn(),
                     error: jest.fn(),
                     trace: jest.fn(),
-                    fatal: jest.fn()
+                    fatal: jest.fn(),
+                    mark: jest.fn(),
                 };
             }),
             get: jest.fn().mockImplementation((category: string) => {
@@ -83,6 +99,7 @@ jest.mock("winston", () => ({
                 if (!loggerCache[category]) {
                     loggerCache[category] = {
                         level: "info", // Default level if not added first
+                        levels: customLevels, // Use custom levels for default logger
                         format: jest.fn(),
                         log: jest.fn(),
                         debug: jest.fn(),
@@ -91,6 +108,7 @@ jest.mock("winston", () => ({
                         error: jest.fn(),
                         trace: jest.fn(),
                         fatal: jest.fn(),
+                        mark: jest.fn(),
                     };
                 }
                 return loggerCache[category];
@@ -124,10 +142,11 @@ jest.mock("winston", () => ({
             },
         },
     },
+    Logger: jest.requireActual("winston").Logger
 }));
 jest.mock("../src/log4jsToWinston", () => ({
     log4jsConfigToWinstonConfig: jest.fn().mockImplementation((log4jsConfig, level, includeAppenders) => ({
-        levels: winston.config.npm.levels, // Use mocked levels from the winston mock
+        levels: customLevels, // Use custom levels in the converted config
         level: level || "info", // Use the passed level or default to 'info'
         transports: [], // Keep transports simple for the mock
         format: jest.fn(), // Mock format function
@@ -146,6 +165,7 @@ jest.mock("../../console/src/Console", () => {
         "error",
         "fatal",
         "off",
+        "mark",
     ];
 
     // Define the mock instance structure
@@ -156,6 +176,7 @@ jest.mock("../../console/src/Console", () => {
         warn: jest.fn(),
         trace: jest.fn(),
         fatal: jest.fn(),
+        mark: jest.fn(),
         level: "info",
     };
 
@@ -224,11 +245,13 @@ describe("Logger tests", () => {
         logger.fatal("test");
 
         // expect((logger as any).writeToLog).toBeCalled();
+        // Update expectations to check for 'log' calls with custom levels
+        expect((logger as any).logService.log).toHaveBeenCalledWith("trace", expect.any(String));
         expect((logger as any).logService.info).toHaveBeenCalled();
         expect((logger as any).logService.debug).toHaveBeenCalled();
         expect((logger as any).logService.warn).toHaveBeenCalled();
         expect((logger as any).logService.error).toHaveBeenCalled();
-        expect((logger as any).logService.fatal).toHaveBeenCalled();
+        expect((logger as any).logService.log).toHaveBeenCalledWith("fatal", expect.any(String));
     });
 
     it("Should allow all service function to store message in memory", () => {
@@ -286,11 +309,10 @@ describe("Logger tests", () => {
     it("Should set the level like we say", () => {
         const config = LoggingConfigurer.configureLogger(fakeHome, { name });
         const logger = Logger.initLogger(config);
-        const level = logger.level;
 
-        expect((level as any).toUpperCase()).toMatchSnapshot();
+        expect(logger.level.toUpperCase()).toMatchSnapshot();
         logger.level = "trace";
-        expect((logger.level as any).toUpperCase()).toMatchSnapshot();
+        expect(logger.level.toUpperCase()).toMatchSnapshot();
     });
 
     it("Should call underlying services for logError function", () => {
@@ -318,16 +340,22 @@ describe("Logger tests", () => {
         (logger as any).logService.simple = jest.fn<string, any>(
             (data: string) => data
         );
+        // Add mock for 'mark' level
+        (logger as any).logService.mark = jest.fn<string, any>(
+            (data: string) => data
+        );
+
 
         const error = new ImperativeError({ msg: "sample error" });
 
         logger.logError(error);
 
-        expect((logger as any).logService.trace).not.toHaveBeenCalled();
+        // Update expectations to check for 'log' calls with custom levels
+        expect((logger as any).logService.log).not.toHaveBeenCalledWith("trace", expect.any(String));
         expect((logger as any).logService.info).not.toHaveBeenCalled();
         expect((logger as any).logService.debug).toHaveBeenCalled();
         expect((logger as any).logService.warn).not.toHaveBeenCalledTimes(1);
-        expect((logger as any).logService.fatal).not.toHaveBeenCalled();
+        expect((logger as any).logService.log).not.toHaveBeenCalledWith("fatal", expect.any(String));
         expect((logger as any).logService.error).toHaveBeenCalledTimes(2);
         expect((logger as any).logService.simple).not.toHaveBeenCalled();
     });
@@ -482,7 +510,7 @@ describe("log4js config migration in initLogger", () => {
         };
 
         const expectedWinstonConfig = {
-            levels: expect.any(Object),
+            levels: customLevels,
             level: "debug",
             transports: new Array<winston.transport>(),
             format: expect.any(Function),
@@ -524,7 +552,7 @@ describe("log4js config migration in initLogger", () => {
             log4jsConfig: fileLog4jsConfig,
         };
         const expectedWinstonConfig = {
-            levels: expect.any(Object),
+            levels: customLevels,
             level: "info",
             transports: new Array<winston.transport>(),
             format: expect.any(Function),
@@ -561,7 +589,7 @@ describe("log4js config migration in initLogger", () => {
             log4jsConfig: fileSyncLog4jsConfig,
         };
         const expectedWinstonConfig = {
-            levels: expect.any(Object),
+            levels: customLevels,
             level: "warn",
             transports: new Array<winston.transport>(),
             format: expect.any(Function),
@@ -600,7 +628,7 @@ describe("log4js config migration in initLogger", () => {
             log4jsConfig: multiCategoryLog4jsConfig,
         };
         const expectedWinstonConfig = {
-            levels: expect.any(Object),
+            levels: customLevels,
             level: "info",
             transports: new Array<winston.transport>(),
             format: expect.any(Function),
@@ -704,6 +732,7 @@ describe("Logger.fromWinstonConfig tests", () => {
     it("should create a Logger instance from a valid Winston config", () => {
         const winstonConfig: winston.LoggerOptions = {
             level: "debug",
+            levels: customLevels,
             transports: [new mockWinston.transports.Console()],
         };
         const mockCreatedLogger = { level: "debug", info: jest.fn() }; // Mock the logger object returned by createLogger
@@ -723,7 +752,7 @@ describe("Logger.fromWinstonConfig tests", () => {
         const category = "testCategory";
         const winstonConfig: winston.LoggerOptions = {
             level: "warn",
-            levels: winston.config.npm.levels, // Need levels for category logic
+            levels: customLevels,
             transports: [new mockWinston.transports.Console()],
         };
         const mockCreatedLogger = { level: "info", warn: jest.fn() }; // Initial level might differ before setting
@@ -750,7 +779,7 @@ describe("Logger.fromWinstonConfig tests", () => {
         const category = "existingCategory";
         const winstonConfig: winston.LoggerOptions = {
             level: "error",
-            levels: winston.config.npm.levels, // Need levels for category logic
+            levels: customLevels,
             transports: [new mockWinston.transports.Console()],
         };
         const mockCreatedLogger = { level: "info", error: jest.fn() }; // Initial level
@@ -785,7 +814,7 @@ describe("Logger.fromWinstonConfig tests", () => {
 
         const logger = Logger.fromWinstonConfig(winstonConfig);
 
-        expect(mockWinston.createLogger).toHaveBeenCalledWith(winstonConfig);
+        expect(mockWinston.createLogger).toHaveBeenCalledWith({ ...winstonConfig, levels: customLevels });
         expect(mockConsole).toHaveBeenCalledTimes(1); // Fallback Console created
         expect(mockConsoleInstance.error).toHaveBeenCalledWith(
             expect.stringContaining(
@@ -811,7 +840,7 @@ describe("Logger.fromWinstonConfig tests", () => {
 
         const logger = Logger.fromWinstonConfig(winstonConfig, category);
 
-        expect(mockWinston.createLogger).toHaveBeenCalledWith(winstonConfig);
+        expect(mockWinston.createLogger).toHaveBeenCalledWith({ ...winstonConfig, levels: customLevels });
         expect(mockConsole).toHaveBeenCalledTimes(1); // Fallback Console created
         expect(mockConsoleInstance.error).toHaveBeenCalledWith(
             expect.stringContaining(
