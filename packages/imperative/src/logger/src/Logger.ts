@@ -144,27 +144,62 @@ export class Logger {
                     IO.createDirsSyncFromFilePath(appender.filename);
                 }
             }
-            const winstonConfig = log4jsConfigToWinstonConfig(loggingConfig.log4jsConfig);
-            logger = winston.createLogger(winstonConfig);
-            // Register logger for categories if needed
+
+            let newLoggerInst: winston.Logger | undefined;
+
+            // Process categories to create specific logger configurations
             if (loggingConfig.log4jsConfig.categories) {
-                for (const category of Object.keys(loggingConfig.log4jsConfig.categories)) {
-                    winston.loggers.add(category, winstonConfig);
-                    // Set the logger's level to the category's level if specified
-                    const catConfig = loggingConfig.log4jsConfig.categories[category];
-                    if (catConfig && typeof catConfig.level === "string") {
-                        winston.loggers.get(category).level = catConfig.level.toLowerCase();
+                for (const categoryName of Object.keys(loggingConfig.log4jsConfig.categories)) {
+                    const catConfig = loggingConfig.log4jsConfig.categories[categoryName];
+                    const categoryLevel = (catConfig?.level || "info").toLowerCase(); // Default to info if level not specified
+                    const categoryAppenders = catConfig?.appenders || [];
+
+                    if (categoryAppenders.length === 0) {
+                        // eslint-disable-next-line no-console
+                        console.warn(`Category "${categoryName}" has no appenders defined. Skipping.`);
+                        continue;
+                    }
+
+                    // Generate a Winston config specifically for this category's appenders and level
+                    const categoryWinstonConfig = log4jsConfigToWinstonConfig(
+                        loggingConfig.log4jsConfig, // Pass the full original config for appender lookup
+                        categoryLevel,
+                        categoryAppenders
+                    );
+
+                    // Add the logger with its specific configuration
+                    winston.loggers.add(categoryName, categoryWinstonConfig);
+
+                    // If this is the 'default' category, keep its instance to return later
+                    if (categoryName === "default") {
+                        newLoggerInst = winston.loggers.get(categoryName);
                     }
                 }
+            } else {
+                 // If no categories are defined, create a basic default logger?
+                 // Or should we throw an error? Log4js usually requires a default category.
+                 // For now, let's log a warning and proceed, which might result in no logger being returned.
+                 // eslint-disable-next-line no-console
+                 console.warn("No categories defined in log4jsConfig. Logger initialization might be incomplete.");
             }
+
             LoggerManager.instance.isLoggerInit = true;
-            return new Logger(logger);
+
+            // Return the 'default' logger instance if found, otherwise create a fallback console logger
+            if (newLoggerInst) {
+                return new Logger(newLoggerInst);
+            } else {
+                // Fallback if 'default' category wasn't defined or initialization failed partially
+                const fallbackLogger = winston.loggers.get(Logger.DEFAULT_APP_NAME) || // Try app logger
+                                       winston.loggers.get(Logger.DEFAULT_IMPERATIVE_NAME) || // Try imperative logger
+                                       new Console(); // Final fallback to basic console
+                return new Logger(fallbackLogger);
+            }
         } catch (err) {
             const cons = new Console();
             cons.error("Couldn't make desired logger: %s", inspect(err));
             return new Logger(cons);
         }
-
     }
 
     /**
@@ -228,7 +263,7 @@ export class Logger {
             if (typeof (this.logService as any).trace === "function") {
                 (this.logService as any).trace(this.getCallerFileAndLineTag() + finalMessage);
             } else if (typeof (this.logService as any).log === "function") {
-                (this.logService as any).log("trace", this.getCallerFileAndLineTag() + finalMessage);
+                (this.logService as any).log("silly", this.getCallerFileAndLineTag() + finalMessage);
             }
         } else {
             LoggerManager.instance.queueMessage(this.category, "trace", this.getCallerFileAndLineTag() + finalMessage);

@@ -152,16 +152,25 @@ const defaultWinstonFileFormat = format.combine(
 
 /**
  * Translates a log4js-style config to a winston LoggerOptions config.
- * Supports basic "console" and "file" appenders and categories.
+ * Supports basic "console" and "file" appenders.
  * Handles basic log4js pattern layouts.
+ * @param log4jsConfig The full log4js configuration object.
+ * @param level The desired log level for this specific logger configuration.
+ * @param includeAppenders An array of appender names to include in the returned transports.
  */
-export function log4jsConfigToWinstonConfig(log4jsConfig: any): LoggerOptions {
+export function log4jsConfigToWinstonConfig(log4jsConfig: any, level: string, includeAppenders: string[]): LoggerOptions {
     const winstonTransports: any[] = [];
-    const appenders = log4jsConfig.appenders || {};
-    const categories = log4jsConfig.categories || {};
+    const allAppenders = log4jsConfig.appenders || {};
 
-    // Map appenders to winston transports
-    for (const [name, appender] of Object.entries(appenders)) {
+    // Map only the specified appenders to winston transports
+    for (const appenderName of includeAppenders) {
+        const appender = allAppenders[appenderName];
+        if (!appender) {
+            // eslint-disable-next-line no-console
+            console.warn(`Appender "${appenderName}" specified for category not found in log4jsConfig.appenders. Skipping.`);
+            continue;
+        }
+
         let winstonFormat = defaultWinstonFormat; // Default for console
         let winstonFileFormat = defaultWinstonFileFormat; // Default for file
 
@@ -176,23 +185,26 @@ export function log4jsConfigToWinstonConfig(log4jsConfig: any): LoggerOptions {
             } catch (error: any) {
                 // Log an error or warning if translation fails, and fall back to default
                 // eslint-disable-next-line no-console
-                console.warn(`Failed to translate log4js pattern for appender "${name}". Falling back to default format. Error: ${error.message}`);
-                // Keep default
+                console.warn(`Failed to translate log4js pattern for appender "${appenderName}". Falling back to default format. Error: ${error.message}`);
+                // Keep defaults
             }
         }
+
+        // Use the level passed specifically for this configuration
+        const transportLevel = level;
 
         if (isAppenderWithType(appender, "console")) {
             winstonTransports.push(
                 new transports.Console({
-                    level: getCategoryLevel(categories, name) || "info",
-                    format: winstonFormat // Use potentially translated format
+                    level: transportLevel,
+                    format: winstonFormat
                 })
             );
         } else if (isAppenderWithType(appender, "file") || isAppenderWithType(appender, "fileSync")) {
             winstonTransports.push(
                 new transports.File({
                     filename: (appender as { filename: string }).filename,
-                    level: getCategoryLevel(categories, name) || "info",
+                    level: transportLevel,
                     format: winstonFileFormat // Use potentially translated format (no color)
                 })
             );
@@ -200,41 +212,32 @@ export function log4jsConfigToWinstonConfig(log4jsConfig: any): LoggerOptions {
         // Add more mappings as needed
     }
 
-    // Determine the default level: use "debug" unless the "default" category is present and has a level
-    let defaultLevel = "debug";
-    if (
-        categories &&
-        typeof categories.default === "object" &&
-        categories.default !== null &&
-        (categories.default as any).level
-    ) {
-        defaultLevel = String((categories.default as any).level).toLowerCase();
-    }
-
+    // Use the level passed into the function for this specific logger config
     return {
         levels: customLevels.levels,
-        level: defaultLevel,
+        level: level,
         transports: winstonTransports,
         exitOnError: false
     };
 }
 
-/**
- * Helper to get the log level for a given appender/category.
- */
-function getCategoryLevel(categories: any, appenderName: string): string | undefined {
-    for (const config of Object.values(categories)) {
-        if (
-            typeof config === "object" &&
-            config !== null &&
-            Array.isArray((config as any).appenders) &&
-            ((config as any).appenders as any[]).includes(appenderName)
-        ) {
-            return (config as any).level?.toLowerCase();
-        }
-    }
-    return undefined;
-}
+// Remove unused helper function
+// /**
+//  * Helper to get the log level for a given appender/category.
+//  */
+// function getCategoryLevel(categories: any, appenderName: string): string | undefined {
+//     for (const config of Object.values(categories)) {
+//         if (
+//             typeof config === "object" &&
+//             config !== null &&
+//             Array.isArray((config as any).appenders) &&
+//             ((config as any).appenders as any[]).includes(appenderName)
+//         ) {
+//             return (config as any).level?.toLowerCase();
+//         }
+//     }
+//     return undefined;
+// }
 
 /**
  * Type guard for log4js appender with a specific type.

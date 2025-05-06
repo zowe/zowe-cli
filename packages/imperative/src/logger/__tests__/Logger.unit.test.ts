@@ -65,20 +65,18 @@ jest.mock("winston", () => ({
         const loggerCache: { [key: string]: any } = {};
         return {
             add: jest.fn((category: string, config: any) => {
-                // Optionally pre-populate cache if add is called before get
-                if (!loggerCache[category]) {
-                    loggerCache[category] = {
-                        level: config?.level || "info",
-                        format: config?.format || jest.fn(),
-                        log: jest.fn(),
-                        debug: jest.fn(),
-                        info: jest.fn(),
-                        warn: jest.fn(),
-                        error: jest.fn(),
-                        trace: jest.fn(),
-                        fatal: jest.fn(),
-                    };
-                }
+                // Always set or overwrite the logger configuration in the cache
+                loggerCache[category] = {
+                    level: config?.level || "info", // Use level from the provided config
+                    format: config?.format || jest.fn(),
+                    log: jest.fn(),
+                    debug: jest.fn(),
+                    info: jest.fn(),
+                    warn: jest.fn(),
+                    error: jest.fn(),
+                    trace: jest.fn(),
+                    fatal: jest.fn()
+                };
             }),
             get: jest.fn().mockImplementation((category: string) => {
                 // Return existing mock from cache or create a new one
@@ -128,12 +126,11 @@ jest.mock("winston", () => ({
     },
 }));
 jest.mock("../src/log4jsToWinston", () => ({
-    // Corrected path
-    log4jsConfigToWinstonConfig: jest.fn().mockImplementation((config) => ({
-        levels: winston.config.npm.levels, // Use mocked levels
-        level: config?.categories?.default?.level?.toLowerCase() || "info",
-        transports: [], // Simplified
-        format: jest.fn(), // Add mock format
+    log4jsConfigToWinstonConfig: jest.fn().mockImplementation((log4jsConfig, level, includeAppenders) => ({
+        levels: winston.config.npm.levels, // Use mocked levels from the winston mock
+        level: level || "info", // Use the passed level or default to 'info'
+        transports: [], // Keep transports simple for the mock
+        format: jest.fn(), // Mock format function
     })),
 }));
 // Mock Console class, including static and instance methods used in tests
@@ -498,10 +495,7 @@ describe("log4js config migration in initLogger", () => {
 
         expect(
             mockLog4jsToWinston.log4jsConfigToWinstonConfig
-        ).toHaveBeenCalledWith(basicLog4jsConfig);
-        expect(mockWinston.createLogger).toHaveBeenCalledWith(
-            expectedWinstonConfig
-        );
+        ).toHaveBeenCalledWith(basicLog4jsConfig, "debug", ["console"]);
         expect(mockWinston.loggers.add).toHaveBeenCalledWith(
             "default",
             expectedWinstonConfig
@@ -546,10 +540,7 @@ describe("log4js config migration in initLogger", () => {
         );
         expect(
             mockLog4jsToWinston.log4jsConfigToWinstonConfig
-        ).toHaveBeenCalledWith(fileLog4jsConfig);
-        expect(mockWinston.createLogger).toHaveBeenCalledWith(
-            expectedWinstonConfig
-        );
+        ).toHaveBeenCalledWith(fileLog4jsConfig, "info", ["fileApp"]);
         expect(LoggerManager.instance.isLoggerInit).toBe(true);
     });
 
@@ -586,10 +577,8 @@ describe("log4js config migration in initLogger", () => {
         );
         expect(
             mockLog4jsToWinston.log4jsConfigToWinstonConfig
-        ).toHaveBeenCalledWith(fileSyncLog4jsConfig);
-        expect(mockWinston.createLogger).toHaveBeenCalledWith(
-            expectedWinstonConfig
-        );
+        ).toHaveBeenCalledWith(fileSyncLog4jsConfig, "warn", ["fileSyncApp"]);
+        expect(mockWinston.loggers.add).toHaveBeenCalledWith("default", expectedWinstonConfig);
         expect(LoggerManager.instance.isLoggerInit).toBe(true);
     });
 
@@ -637,11 +626,7 @@ describe("log4js config migration in initLogger", () => {
 
         expect(
             mockLog4jsToWinston.log4jsConfigToWinstonConfig
-        ).toHaveBeenCalledWith(multiCategoryLog4jsConfig);
-        expect(mockWinston.createLogger).toHaveBeenCalledWith(
-            expectedWinstonConfig
-        );
-
+        ).toHaveBeenCalledWith(multiCategoryLog4jsConfig, "info", ["console"]);
         // Check categories were added
         expect(mockWinston.loggers.add).toHaveBeenCalledWith(
             "default",
@@ -656,10 +641,9 @@ describe("log4js config migration in initLogger", () => {
             expectedWinstonConfig
         );
 
-        expect(mockWinston.loggers.get).toHaveBeenCalledTimes(3);
+        // function returns the default instance when it is initialized
+        expect(mockWinston.loggers.get).toHaveBeenCalledTimes(1);
         expect(mockWinston.loggers.get).toHaveBeenCalledWith("default");
-        expect(mockWinston.loggers.get).toHaveBeenCalledWith("imperative");
-        expect(mockWinston.loggers.get).toHaveBeenCalledWith("app");
         expect(LoggerManager.instance.isLoggerInit).toBe(true);
     });
 
@@ -687,7 +671,7 @@ describe("log4js config migration in initLogger", () => {
 
         expect(
             mockLog4jsToWinston.log4jsConfigToWinstonConfig
-        ).toHaveBeenCalledWith(errorLog4jsConfig);
+        ).toHaveBeenCalledWith(errorLog4jsConfig, "info", ["console"]);
         expect(mockWinston.createLogger).not.toHaveBeenCalled();
 
         // Check that the mock Console constructor was called (fallback occurred)
