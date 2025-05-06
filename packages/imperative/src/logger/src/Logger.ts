@@ -168,6 +168,33 @@ export class Logger {
     }
 
     /**
+     * Creates a new Logger instance from a given Winston configuration.
+     * @param {winston.LoggerOptions} config - The Winston logger configuration options.
+     * @param {string} [category] - Optional category name for the logger.
+     * @returns {Logger} A new Logger instance.
+     */
+    public static fromWinstonConfig(config: winston.LoggerOptions, category?: string): Logger {
+        try {
+            const winstonLogger = winston.createLogger(config);
+            // Optionally register the logger if a category is provided and categories are managed
+            if (category && config.levels && config.level) { // Basic check if category management might be relevant
+                if (!winston.loggers.has(category)) {
+                    winston.loggers.add(category, config);
+                }
+                // Ensure the created logger instance reflects the specified level for the category
+                winstonLogger.level = config.level;
+            }
+            return new Logger(winstonLogger, category);
+        } catch (err) {
+            // Fallback or error handling, potentially log using a default console logger
+            const cons = new Console();
+            cons.error("Failed to create logger from Winston config: %s", inspect(err));
+            // Return a console logger as a fallback
+            return new Logger(cons, category || Logger.DEFAULT_CONSOLE_NAME);
+        }
+    }
+
+    /**
      * This flag is being used to monitor the log4js configure status.
      */
     private initStatus: boolean;
