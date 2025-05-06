@@ -11,16 +11,12 @@
 
 import * as nodePath from "path";
 
-import { AbstractSession, ISession, Session } from "@zowe/imperative";
-
+import { AuthOrder, AbstractSession, ISession, Session } from "@zowe/imperative";
 import { ITestPropertiesSchema } from "../properties/ITestPropertiesSchema";
 import { ISetupEnvironmentParms, TestEnvironment as BaseTestEnvironment } from "../../__packages__/cli-test-utils";
 import { ITestEnvironment }  from "./ITestEnvironment";
 import { SshSession } from "../../../packages/zosuss/src/SshSession";
 import { deleteLocalFile, deleteFiles, deleteJob, deleteDataset } from "../TestUtils";
-
-// import non-exported modules
-const AuthOrder = jest.requireActual("../../../packages/imperative/lib/rest/src/session/AuthOrder").AuthOrder;
 
 /**
  * Use the utility methods here to setup the test environment for running APIs
@@ -117,7 +113,7 @@ export class TestEnvironment extends BaseTestEnvironment {
             rejectUnauthorized: SYSTEM_PROPS.zosmf.rejectUnauthorized,
             basePath: SYSTEM_PROPS.zosmf.basePath
         };
-        (AuthOrder as any).cacheCredsAndAuthOrder(sessCfg, {});
+        AuthOrder.cacheCredsAndAuthOrder(sessCfg, { "$0": "test", "_": ["test"] });
 
         return new Session(sessCfg);
     }
@@ -139,7 +135,7 @@ export class TestEnvironment extends BaseTestEnvironment {
             tokenType: "apimlAuthenticationToken",
             rejectUnauthorized: SYSTEM_PROPS.base.rejectUnauthorized
         };
-        (AuthOrder as any).cacheCredsAndAuthOrder(sessCfg, {});
+        AuthOrder.cacheCredsAndAuthOrder(sessCfg, { "$0": "test", "_": ["test"] });
 
         return new Session(sessCfg);
     }

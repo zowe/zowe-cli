@@ -50,7 +50,7 @@ describe("ZosmfRestClient tests", () => {
             });
 
             // ensure that some available creds are cached
-            (AuthOrder as any).cacheCredsAndAuthOrder(fakeSess.ISession,
+            AuthOrder.cacheCredsAndAuthOrder(fakeSess.ISession,
                 { user: "fakeUser", password: "fakePass", "$0": "zowe", "_": [""] }
             );
 
@@ -88,7 +88,7 @@ describe("ZosmfRestClient tests", () => {
             });
 
             // ensure that some available creds are cached
-            (AuthOrder as any).cacheCredsAndAuthOrder(fakeSess.ISession,
+            AuthOrder.cacheCredsAndAuthOrder(fakeSess.ISession,
                 { user: "fakeUser", password: "fakePass", "$0": "zowe", "_": [""] }
             );
 
@@ -129,7 +129,7 @@ describe("ZosmfRestClient tests", () => {
             });
 
             // ensure that some available creds are cached
-            (AuthOrder as any).cacheCredsAndAuthOrder(fakeSess.ISession,
+            AuthOrder.cacheCredsAndAuthOrder(fakeSess.ISession,
                 { tokenType: SessConstants.TOKEN_TYPE_JWT, tokenValue: "fakeToken", "$0": "zowe", "_": [""] }
             );
 
@@ -157,7 +157,7 @@ describe("ZosmfRestClient tests", () => {
             });
 
             // ensure that some available creds are cached
-            (AuthOrder as any).cacheCredsAndAuthOrder(fakeSess.ISession,
+            AuthOrder.cacheCredsAndAuthOrder(fakeSess.ISession,
                 { tokenType: SessConstants.TOKEN_TYPE_APIML, tokenValue: "fakeToken", "$0": "zowe", "_": [""] }
             );
 
@@ -184,7 +184,7 @@ describe("ZosmfRestClient tests", () => {
             });
 
             // ensure that some available creds are cached
-            (AuthOrder as any).cacheCredsAndAuthOrder(fakeSess.ISession,
+            AuthOrder.cacheCredsAndAuthOrder(fakeSess.ISession,
                 { certFile: "fakeCert", certKeyFile: "fakeKey", "$0": "zowe", "_": [""] }
             );
 

@@ -12,13 +12,10 @@
 import { ITestEnvironment } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { Session, ImperativeError, Imperative } from "@zowe/imperative";
+import { AuthOrder, Session, ImperativeError, Imperative } from "@zowe/imperative";
 import { Login } from "../../../src/auth/Login";
 import { Logout } from "../../../src/auth/Logout";
 import { ZosmfRestClient } from "../../../src/rest/ZosmfRestClient";
-
-// import non-exported modules
-const AuthOrder = jest.requireActual("../../../../imperative/lib/rest/src/session/AuthOrder").AuthOrder;
 
 let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
 let REAL_SESSION: Session;
@@ -55,7 +52,9 @@ describe("Logout system test", () => {
     it("should succeed with correct parameters and invalidate token using APIML", async () => {
         let error: ImperativeError;
         const client = new ZosmfRestClient(REAL_SESSION);
-        AuthOrder.cacheCredsAndAuthOrder(REAL_SESSION.ISession, {"authOrder": "token", "tokenValue": token});
+        AuthOrder.cacheCredsAndAuthOrder(REAL_SESSION.ISession, {
+            "authOrder": "token", "tokenValue": token, "$0": "test", "_": ["test"]
+        });
 
         try {
             await client.request({request: "GET", resource: "/gateway/api/v1/auth/query"});

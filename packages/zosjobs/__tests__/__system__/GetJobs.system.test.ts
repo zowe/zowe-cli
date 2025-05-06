@@ -10,7 +10,7 @@
 */
 
 import { JOB_STATUS } from "./../../src/types/JobStatus";
-import { ImperativeError, ISession, Session, TextUtils } from "@zowe/imperative";
+import { AuthOrder, ImperativeError, ISession, Session, TextUtils } from "@zowe/imperative";
 import { DeleteJobs, GetJobs, IJob, JOB_STATUS_ORDER, SubmitJobs } from "../../src";
 import * as fs from "fs";
 import { TEST_RESOURCES_DIR } from "../__src__/ZosJobsTestConstants";
@@ -19,9 +19,6 @@ import { TestEnvironment } from "../../../../__tests__/__src__/environment/TestE
 import { ITestPropertiesSchema } from "../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { ITestEnvironment } from "../../../../__tests__/__src__/environment/ITestEnvironment";
 import { wait } from "../../../../__tests__/__src__/TestUtils";
-
-// import non-exported modules
-const AuthOrder = jest.requireActual("../../../imperative/lib/rest/src/session/AuthOrder").AuthOrder;
 
 /**********************************************************************************/
 let ACCOUNT: string;
