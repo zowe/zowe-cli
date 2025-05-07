@@ -226,25 +226,35 @@ export abstract class AbstractRestClient {
     /**
      * Creates an instance of AbstractRestClient.
      * @param {AbstractSession} mSession - representing connection to this api
+     * @param topDefaultAuth
+     *      The type of authentication used as the top selection in a default
+     *      authentication order (when the user has not specified authOrder).
+     *      The default value of AUTH_TYPE_TOKEN maintains backward compatibility
+     *      with previous releases.
      * @memberof AbstractRestClient
      */
-    constructor(private mSession: AbstractSession) {
+    constructor(
+        private mSession: AbstractSession,
+        topDefaultAuth:
+            typeof SessConstants.AUTH_TYPE_BASIC | typeof SessConstants.AUTH_TYPE_TOKEN
+            = SessConstants.AUTH_TYPE_TOKEN
+    ) {
         ImperativeExpect.toNotBeNullOrUndefined(mSession);
         this.mLogger = Logger.getImperativeLogger();
         this.mIsJson = false;
 
         // When a user specifies an authentication order, it will always be used.
         // When a user does NOT specify an authentication order, the following call
-        // to cacheDefaultAuthOrder will set a default order with token at the top.
-        // This is done to avoid introducing a breaking change to historical behavior.
+        // to cacheDefaultAuthOrder will set a default order in a way that avoids a
+        // breaking change to historical behavior.
         //
         // Note that the RestClient class (and by extension, the ZosmfRestClient class)
         // overrides the default order to place basic auth at the top.
         // Our Zowe client APIs use those two classes, and expect basic authentication
         // to be placed at the top.
         //
-        // Only consumers who extend their own class directly from AbstractRestClient
-        // will have a default order with token at the top.
+        // Consumers who extend their own class directly from AbstractRestClient
+        // will have (by default) a token at the top of the authentication order.
         //
         // The current best practice for consumers of any of these APIs is to let the
         // default order maintain backward compatibility. If your app needs a credential
@@ -252,15 +262,10 @@ export abstract class AbstractRestClient {
         // instruct your end users to specify an 'authOrder' property in the profile
         // related to your app within their zowe.config.json file.
 
-        if (this.constructor.name !== "RestClient" &&
-            this.constructor.name !== "ZosmfRestClient") {
-            // Maintain the historic behavior where other classes which extend from
-            // from AbstractRestClient have a default order with token at the top.
-            AuthOrder.cacheDefaultAuthOrder(mSession.ISession, SessConstants.AUTH_TYPE_TOKEN);
+        AuthOrder.cacheDefaultAuthOrder(mSession.ISession, topDefaultAuth);
 
-            // Ensure that no other creds are in the session.
-            AuthOrder.putTopAuthInSession(mSession.ISession);
-        }
+        // Ensure that no other creds are in the session.
+        AuthOrder.putTopAuthInSession(mSession.ISession);
     }
 
     /**
