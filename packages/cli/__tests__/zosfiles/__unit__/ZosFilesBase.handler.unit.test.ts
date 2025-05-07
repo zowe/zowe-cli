@@ -24,12 +24,12 @@ describe("ZosFilesBaseHandler", () => {
 
         public async processWithSession(
             _commandParameters: IHandlerParameters,
-            _session: AbstractSession
+            session: AbstractSession
         ): Promise<IZosFilesResponse> {
             // The authCache and authTypeOrder was added to the session by the super class.
             // This is the only way that we can get them.
-            this.authCache = _session.ISession._authCache;
-            this.authTypeOrder = _session.ISession.authTypeOrder;
+            this.authCache = session.ISession._authCache;
+            this.authTypeOrder = session.ISession.authTypeOrder;
             return this.returnResponse;
         }
     }
