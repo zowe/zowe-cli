@@ -168,7 +168,7 @@ export class Logger {
                 for (const categoryName of Object.keys(loggingConfig.log4jsConfig.categories)) {
                     const catConfig = loggingConfig.log4jsConfig.categories[categoryName];
                     const categoryLevel = (catConfig?.level || "info").toLowerCase(); // Default to info if level not specified
-                    const categoryAppenders = catConfig?.appenders || [];
+                    const categoryAppenders = catConfig?.appenders ?? [];
 
                     // Generate a Winston config specifically for this category's appenders and level
                     const categoryWinstonConfig = log4jsConfigToWinstonConfig(
@@ -191,14 +191,15 @@ export class Logger {
             }
             LoggerManager.instance.isLoggerInit = true;
 
-            // Return the 'default' logger instance if found, otherwise create a fallback console logger
+            // Return the new logger instance if built, otherwise fallback to an available logger
             if (newLoggerInst) {
                 return new Logger(newLoggerInst);
             } else {
-                // Fallback if 'default' category wasn't defined or initialization failed partially
-                const fallbackLogger = winston.loggers.get(Logger.DEFAULT_APP_NAME) ?? // Try app logger
-                                       winston.loggers.get(Logger.DEFAULT_IMPERATIVE_NAME) ?? // Try imperative logger
-                                       new Console(); // Final fallback to basic console
+                // Fallback if new logger wasn't created or initialization failed
+                // First try the app winston logger, then the imperative winston logger - use a new console instance as last resort
+                const fallbackLogger = winston.loggers.get(Logger.DEFAULT_APP_NAME) ??
+                                       winston.loggers.get(Logger.DEFAULT_IMPERATIVE_NAME) ??
+                                       new Console();
                 return new Logger(fallbackLogger);
             }
         } catch (err) {
@@ -234,7 +235,7 @@ export class Logger {
             const cons = new Console();
             cons.error("Failed to create logger from Winston config: %s", inspect(err));
             // Return a console logger as a fallback
-            return new Logger(cons, category || Logger.DEFAULT_CONSOLE_NAME);
+            return new Logger(cons, category ?? Logger.DEFAULT_CONSOLE_NAME);
         }
     }
 
@@ -248,7 +249,11 @@ export class Logger {
         if (LoggerManager.instance.isLoggerInit && LoggerManager.instance.QueuedMessages.length > 0) {
             LoggerManager.instance.QueuedMessages.slice().reverse().forEach((value) => {
                 if (this.category === value.category) {
-                    (mJsLogger as any)[value.method](value.message);
+                    if (mJsLogger instanceof Console) {
+                        (mJsLogger as any)[value.method](value.message);
+                    } else {
+                        mJsLogger.log(value.method, value.message);
+                    }
                     LoggerManager.instance.QueuedMessages.splice(LoggerManager.instance.QueuedMessages.indexOf(value), 1);
                 }
             });
@@ -269,7 +274,7 @@ export class Logger {
     public trace(message: string, ...args: any[]): string {
         const finalMessage = TextUtils.formatMessage.apply(this, [message].concat(args));
         if (LoggerManager.instance.isLoggerInit || this.category === Logger.DEFAULT_CONSOLE_NAME) {
-            (this.logService as any).log("trace", this.getCallerFileAndLineTag() + finalMessage);
+            this.logService.log("trace", this.getCallerFileAndLineTag() + finalMessage);
         } else {
             LoggerManager.instance.queueMessage(this.category, "trace", this.getCallerFileAndLineTag() + finalMessage);
         }
@@ -357,7 +362,7 @@ export class Logger {
     public fatal(message: string, ...args: any[]): string {
         const finalMessage = Censor.censorRawData(TextUtils.formatMessage.apply(this, [message].concat(args)), this.category);
         if (LoggerManager.instance.isLoggerInit || this.category === Logger.DEFAULT_CONSOLE_NAME) {
-            (this.logService as any).log("fatal", this.getCallerFileAndLineTag() + finalMessage);
+            this.logService.log("fatal", this.getCallerFileAndLineTag() + finalMessage);
         } else {
             LoggerManager.instance.queueMessage(this.category, "fatal", this.getCallerFileAndLineTag() + finalMessage);
         }

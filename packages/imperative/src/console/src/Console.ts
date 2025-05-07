@@ -183,6 +183,25 @@ export class Console implements IConsole {
         return this.writeStderr(adjustedMessage, args);
     }
 
+    public log(level: string, message: any, ...args: any[]) {
+        switch (level.toLowerCase()) {
+            case "trace":
+                return this.trace(message, args);
+            case "debug":
+                return this.debug(message, args);
+            case "info":
+                return this.info(message, args);
+            case "warn":
+                return this.warn(message, args);
+            case "error":
+                return this.error(message, args);
+            case "fatal":
+                return this.fatal(message, args);
+            default:
+                return;
+        }
+    }
+
     private writeStderr(message: string, ...args: any[]) {
         const data = this.format(message, args);
         if (this.on) {
