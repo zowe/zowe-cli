@@ -10,7 +10,6 @@
 */
 
 import { AbstractSession } from "../session/AbstractSession";
-import { AuthOrder } from "../session/AuthOrder";
 import { RestConstants } from "./RestConstants";
 import { HTTP_VERB } from "./types/HTTPVerb";
 import { AbstractRestClient } from "./AbstractRestClient";

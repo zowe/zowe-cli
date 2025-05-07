@@ -235,9 +235,8 @@ export abstract class AbstractRestClient {
      */
     constructor(
         private mSession: AbstractSession,
-        topDefaultAuth:
-            typeof SessConstants.AUTH_TYPE_BASIC | typeof SessConstants.AUTH_TYPE_TOKEN
-            = SessConstants.AUTH_TYPE_TOKEN
+        topDefaultAuth: typeof SessConstants.AUTH_TYPE_BASIC | typeof SessConstants.AUTH_TYPE_TOKEN
+        = SessConstants.AUTH_TYPE_TOKEN
     ) {
         ImperativeExpect.toNotBeNullOrUndefined(mSession);
         this.mLogger = Logger.getImperativeLogger();
