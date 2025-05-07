@@ -58,6 +58,45 @@ describe("Console tests", () => {
         expect(cons.prefix).toBeFalsy();
     });
 
+    it("should reroute log calls to appropriate function for given level", () => {
+        const cons = new Console();
+        const traceMock = jest.spyOn(cons, "trace").mockImplementation();
+        const debugMock = jest.spyOn(cons, "debug").mockImplementation();
+        const infoMock = jest.spyOn(cons, "info").mockImplementation();
+        const warnMock = jest.spyOn(cons, "warn").mockImplementation();
+        const errorMock = jest.spyOn(cons, "error").mockImplementation();
+        const fatalMock = jest.spyOn(cons, "fatal").mockImplementation();
+
+        // calling log with off should do nothing (default case)
+        cons.log("off", "no-op");
+        expect(traceMock).toHaveBeenCalledTimes(0);
+        expect(debugMock).toHaveBeenCalledTimes(0);
+        expect(infoMock).toHaveBeenCalledTimes(0);
+        expect(warnMock).toHaveBeenCalledTimes(0);
+        expect(errorMock).toHaveBeenCalledTimes(0);
+        expect(fatalMock).toHaveBeenCalledTimes(0);
+
+        cons.log("trace", "trace msg");
+        cons.log("debug", "debug msg");
+        cons.log("info", "info msg");
+        cons.log("warn", "warn msg");
+        cons.log("error", "error msg: %s", "details");
+        cons.log("fatal", "fatal msg");
+
+        expect(traceMock).toHaveBeenCalledTimes(1);
+        expect(traceMock).toHaveBeenCalledWith("trace msg", []);
+        expect(debugMock).toHaveBeenCalledTimes(1);
+        expect(debugMock).toHaveBeenCalledWith("debug msg", []);
+        expect(infoMock).toHaveBeenCalledTimes(1);
+        expect(infoMock).toHaveBeenCalledWith("info msg", []);
+        expect(warnMock).toHaveBeenCalledTimes(1);
+        expect(warnMock).toHaveBeenCalledWith("warn msg", []);
+        expect(errorMock).toHaveBeenCalledTimes(1);
+        expect(errorMock).toHaveBeenCalledWith("error msg: %s", ["details"]);
+        expect(fatalMock).toHaveBeenCalledTimes(1);
+        expect(fatalMock).toHaveBeenCalledWith("fatal msg", []);
+    });
+
     it("Should call stdout and stderr three times each", () => {
         const cons = new Console();
 

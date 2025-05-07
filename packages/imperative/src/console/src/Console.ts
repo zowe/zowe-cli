@@ -20,8 +20,9 @@ import { TextUtils } from "../../utilities/src/TextUtils";
 import { format } from "util";
 import { ImperativeError } from "../../error";
 
-export class Console implements IConsole {
+export type ConsoleLevels = "trace" | "debug" | "info" | "warn" | "error" | "fatal" | "off";
 
+export class Console implements IConsole {
     public static readonly LEVELS = ["trace", "debug", "info", "warn", "error", "fatal", "off"];
     public static readonly LEVEL_DEFAULT = "warn";
 
@@ -183,8 +184,8 @@ export class Console implements IConsole {
         return this.writeStderr(adjustedMessage, args);
     }
 
-    public log(level: string, message: any, ...args: any[]) {
-        switch (level.toLowerCase()) {
+    public log(level: ConsoleLevels, message: any, ...args: any[]) {
+        switch (level) {
             case "trace":
                 return this.trace(message, args);
             case "debug":
