@@ -145,8 +145,6 @@ export class Logger {
             throw new ImperativeError({msg: "Input logging config is incomplete, does not contain log4jsConfig.appenders"});
         }
 
-        let logger: winston.Logger;
-
         try {
             for (const appenderName of Object.keys(loggingConfig.log4jsConfig.appenders)) {
                 const appender = loggingConfig.log4jsConfig.appenders[appenderName];
@@ -195,13 +193,12 @@ export class Logger {
                     }
                 }
             } else {
-                 // If no categories are defined, create a basic default logger?
-                 // Or should we throw an error? Log4js usually requires a default category.
-                 // For now, let's log a warning and proceed, which might result in no logger being returned.
-                 // eslint-disable-next-line no-console
-                 console.warn("No categories defined in log4jsConfig. Logger initialization might be incomplete.");
+                // If no categories are defined, create a basic default logger?
+                // Or should we throw an error? Log4js usually requires a default category.
+                // For now, let's log a warning and proceed, which might result in no logger being returned.
+                // eslint-disable-next-line no-console
+                console.warn("No categories defined in log4jsConfig. Logger initialization might be incomplete.");
             }
-
             LoggerManager.instance.isLoggerInit = true;
 
             // Return the 'default' logger instance if found, otherwise create a fallback console logger
