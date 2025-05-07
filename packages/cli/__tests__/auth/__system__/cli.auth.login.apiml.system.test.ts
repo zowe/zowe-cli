@@ -9,6 +9,7 @@
 *
 */
 
+import { ConfigUtils } from "@zowe/imperative";
 import { ITestEnvironment, runCliScript, TempTestProfiles } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
@@ -103,7 +104,7 @@ describe("auth login/logout apiml show token", () => {
         const responseData = JSON.parse(response.stdout.toString()).data;
         expect(responseData.tokenType).toEqual("apimlAuthenticationToken");
         expect(responseData.tokenValue).toBeDefined();
-        expect(responseData.tokenValue.length).toBeGreaterThan(100);
+        expect(ConfigUtils.hasTokenExpired(responseData.tokenValue)).toBe(false);
         const stdOutTokenMatch = response.stdout.toString().match(/will not be stored in your profile:\\n(.*)\\n\\nLogin successful/);
         expect(responseData.tokenValue).toEqual(stdOutTokenMatch[1]);
     });
