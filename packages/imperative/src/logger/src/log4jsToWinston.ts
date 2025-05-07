@@ -106,7 +106,7 @@ export function translateLog4jsPattern(
                     case "%n":
                         return "\n";
                     case "%c":
-                        return String(info.category || "default");
+                        return String(info.category ?? "default");
                     case "%h":
                         return os.hostname();
                     case "%z":
@@ -171,7 +171,7 @@ export function log4jsConfigToWinstonConfig(
     includeAppenders: string[]
 ): LoggerOptions {
     const winstonTransports: any[] = [];
-    const allAppenders = log4jsConfig.appenders || {};
+    const allAppenders = log4jsConfig.appenders ?? {};
 
     // Map only the specified appenders to winston transports
     for (const appenderName of includeAppenders) {

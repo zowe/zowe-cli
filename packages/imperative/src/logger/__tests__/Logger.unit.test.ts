@@ -282,12 +282,25 @@ describe("Logger tests", () => {
         expect(errorMessage).toBe(expectMessage);
     });
 
-    it("Should error if given a partially config on initialization", () => {
+    it("Should error if given a config with no appenders on initialization", () => {
         const expectMessage =
-            "Input logging config is incomplete, does not contain log4jsConfig.appenders";
+            "Input logging config is incomplete, does not contain log4jsConfig.appenders or log4jsConfig.categories";
         let errorMessage = "";
         try {
             const config = { log4jsConfig: {} };
+            Logger.initLogger(config as IConfigLogging);
+        } catch (error) {
+            errorMessage = error.message;
+        }
+        expect(errorMessage).toBe(expectMessage);
+    });
+
+    it("Should error if given a config with no categories on initialization", () => {
+        const expectMessage =
+            "Input logging config is incomplete, does not contain log4jsConfig.appenders or log4jsConfig.categories";
+        let errorMessage = "";
+        try {
+            const config = { log4jsConfig: { appenders: {} } };
             Logger.initLogger(config as IConfigLogging);
         } catch (error) {
             errorMessage = error.message;
