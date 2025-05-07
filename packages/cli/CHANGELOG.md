@@ -3,7 +3,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## Recent Changes
 
-- BugFix: Updated the `zowe auth login apiml` command to place its retrieved token into the current base profile instead of creating a new base profile. [#2181](https://github.com/zowe/zowe-cli/issues/2181) & [#1650](https://github.com/zowe/zowe-cli/issues/1650)
+- BugFix: Updated the `zowe auth login apiml` command to place its retrieved token into the specified (or default) base profile instead of creating a new base profile. [#2181](https://github.com/zowe/zowe-cli/issues/2181) & [#1650](https://github.com/zowe/zowe-cli/issues/1650)
   - The update also places a directive to use token authentication for the default `zosmf` profile if that profile is configured to connect to API-ML.
 
 ## `8.20.0`
