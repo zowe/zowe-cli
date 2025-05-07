@@ -75,7 +75,7 @@ export function translateLog4jsPattern(
             let output = pattern;
 
             // Handle colorization tokens first (%[ and %]) - simple removal
-            output = output.replace(/%\[/g, "").replace(/%\]/g, ""); // Colors first
+            output = output.replace(/%\[/g, "").replace(/%\]/g, "");
 
             const dateTokenRegex = /%d(?:\{([^}]+)\})?/g; // Regex specifically for date tokens
             output = output.replace(
@@ -97,7 +97,7 @@ export function translateLog4jsPattern(
             // Regex for non-date, non-color tokens handled previously
             const otherTokenRegex = /(%p|%c|%m|%n|%h|%z|%%)/g;
             output = output.replace(otherTokenRegex, (token): string => {
-                // Handle other tokens
+                // Handle remaining tokens
                 switch (token) {
                     case "%p":
                         return String(info.level).toLocaleUpperCase();
@@ -142,21 +142,19 @@ export function hasPatternLayout(
     );
 }
 
+export const defaultPrintfFormat = 
+({ timestamp, level, message }: { timestamp: unknown, level: string, message: unknown }) =>
+    `[${timestamp}] [${level}] ${message}`;
+
 // Define default formats outside the main function
 const defaultWinstonFormat = format.combine(
     format.colorize(),
     format.timestamp(),
-    format.printf(
-        ({ timestamp, level, message }) =>
-            `[${timestamp}] [${level}] ${message}`
-    )
+    format.printf(defaultPrintfFormat)
 );
 const defaultWinstonFileFormat = format.combine(
     format.timestamp(),
-    format.printf(
-        ({ timestamp, level, message }) =>
-            `[${timestamp}] [${level}] ${message}`
-    )
+    format.printf(defaultPrintfFormat)
 );
 
 /**
@@ -186,8 +184,8 @@ export function log4jsConfigToWinstonConfig(
             continue;
         }
 
-        let winstonFormat = defaultWinstonFormat; // Default for console
-        let winstonFileFormat = defaultWinstonFileFormat; // Default for file
+        let winstonFormat = defaultWinstonFormat;
+        let winstonFileFormat = defaultWinstonFileFormat;
 
         // Check for layout pattern
         if (hasPatternLayout(appender)) {
@@ -233,7 +231,6 @@ export function log4jsConfigToWinstonConfig(
                 })
             );
         }
-        // Add more mappings as needed
     }
 
     // Use the level passed into the function for this specific logger config
@@ -244,24 +241,6 @@ export function log4jsConfigToWinstonConfig(
         exitOnError: false,
     };
 }
-
-// Remove unused helper function
-// /**
-//  * Helper to get the log level for a given appender/category.
-//  */
-// function getCategoryLevel(categories: any, appenderName: string): string | undefined {
-//     for (const config of Object.values(categories)) {
-//         if (
-//             typeof config === "object" &&
-//             config !== null &&
-//             Array.isArray((config as any).appenders) &&
-//             ((config as any).appenders as any[]).includes(appenderName)
-//         ) {
-//             return (config as any).level?.toLowerCase();
-//         }
-//     }
-//     return undefined;
-// }
 
 /**
  * Type guard for log4js appender with a specific type.

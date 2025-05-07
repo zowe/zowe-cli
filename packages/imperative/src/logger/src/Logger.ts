@@ -141,8 +141,9 @@ export class Logger {
             throw new ImperativeError({msg: "Input logging config is incomplete, does not contain log4jsConfig"});
         }
 
-        if (loggingConfig.log4jsConfig.appenders == null) {
-            throw new ImperativeError({msg: "Input logging config is incomplete, does not contain log4jsConfig.appenders"});
+        // log4js doc: When defining your appenders through a configuration, at least one category must be defined.
+        if (loggingConfig.log4jsConfig.appenders == null || !loggingConfig.log4jsConfig.categories?.length) {
+            throw new ImperativeError({msg: "Input logging config is incomplete, does not contain log4jsConfig.appenders or log4jsConfig.categories"});
         }
 
         try {
@@ -168,12 +169,6 @@ export class Logger {
                     const categoryLevel = (catConfig?.level || "info").toLowerCase(); // Default to info if level not specified
                     const categoryAppenders = catConfig?.appenders || [];
 
-                    if (categoryAppenders.length === 0) {
-                        // eslint-disable-next-line no-console
-                        console.warn(`Category "${categoryName}" has no appenders defined. Skipping.`);
-                        continue;
-                    }
-
                     // Generate a Winston config specifically for this category's appenders and level
                     const categoryWinstonConfig = log4jsConfigToWinstonConfig(
                         loggingConfig.log4jsConfig, // Pass the full original config for appender lookup
@@ -192,12 +187,6 @@ export class Logger {
                         newLoggerInst = winston.loggers.get(categoryName);
                     }
                 }
-            } else {
-                // If no categories are defined, create a basic default logger?
-                // Or should we throw an error? Log4js usually requires a default category.
-                // For now, let's log a warning and proceed, which might result in no logger being returned.
-                // eslint-disable-next-line no-console
-                console.warn("No categories defined in log4jsConfig. Logger initialization might be incomplete.");
             }
             LoggerManager.instance.isLoggerInit = true;
 

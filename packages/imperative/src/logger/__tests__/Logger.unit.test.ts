@@ -23,6 +23,7 @@ import * as path from "path";
 import * as fs from "fs";
 import { IO } from "../../io";
 import * as dayjs from "dayjs";
+import { defaultPrintfFormat } from "../src/log4jsToWinston";
 
 jest.mock("../../io", () => ({
     IO: {
@@ -464,6 +465,15 @@ describe("Logger tests", () => {
         Logger.writeInMemoryMessages("testing.txt");
         expect(fs.appendFileSync).toHaveBeenCalledTimes(expectedSize);
     });
+
+    it("logService setter/getter should reflect new mJsLogger on a logger instance", () => {
+        const consoleA = new Console();
+        const consoleB = new Console();
+        const logger = new Logger(consoleA);
+        expect((logger as any).logService).toBe(consoleA);
+        (logger as any).logService = consoleB;
+        expect((logger as any).logService).toBe(consoleB);
+    });
 });
 
 describe("log4jsToWinston tests", () => {
@@ -486,6 +496,12 @@ describe("log4jsToWinston tests", () => {
 
     afterEach(() => {
         jest.restoreAllMocks();
+    });
+
+    describe("defaultPrintfFormat", () => {
+        it("should print the log message in format: [timestamp] [level] <message>", () => {
+            expect(defaultPrintfFormat({ timestamp: "2023-10-27 10:00:00", level: "INFO", message: "Hello world" })).toBe("[2023-10-27 10:00:00] [INFO] Hello world");
+        });
     });
 
     it("should translate log4js pattern with ISO8601_WITH_TZ_OFFSET date format", () => {
