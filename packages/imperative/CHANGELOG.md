@@ -2,6 +2,11 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Updated the `Logger` class to use the `winston` library instead of `log4js` and introduced migration tools. Log4js configs are migrated automatically for use with Winston. For more information on how to configure your logger instance to use winston, please refer to the Imperative wiki page "Migrating from log4js to winston."
+- BugFix: Fixed a bug where downstream dependencies using log4js may have their logging configuration replaced when using classes such as `ProfileInfo`.
+
 ## `8.20.0`
 
 - Enhancement: Added a request timeout to the Imperative REST client. [#2490](https://github.com/zowe/zowe-cli/pull/2490)
