@@ -1,13 +1,13 @@
 /*
- * This program and the accompanying materials are made available under the terms of the
- * Eclipse Public License v2.0 which accompanies this distribution, and is available at
- * https://www.eclipse.org/legal/epl-v20.html
- *
- * SPDX-License-Identifier: EPL-2.0
- *
- * Copyright Contributors to the Zowe Project.
- *
- */
+* This program and the accompanying materials are made available under the terms of the
+* Eclipse Public License v2.0 which accompanies this distribution, and is available at
+* https://www.eclipse.org/legal/epl-v20.html
+*
+* SPDX-License-Identifier: EPL-2.0
+*
+* Copyright Contributors to the Zowe Project.
+*
+*/
 
 jest.mock("fs");
 import { LoggingConfigurer } from "../../imperative/src/LoggingConfigurer";
@@ -385,7 +385,9 @@ describe("Logger tests", () => {
         const app = Logger.getAppLogger();
 
         expect((imperative.level as any).toUpperCase()).toMatchSnapshot();
+        expect((imperative as any).category).toBe(Logger.DEFAULT_IMPERATIVE_NAME);
         expect((app.level as any).toUpperCase()).toMatchSnapshot();
+        expect((app as any).category).toBe(Logger.DEFAULT_APP_NAME);
 
         expect((imperative.level as any).toUpperCase()).toBe(
             (imperativeCategory.level as any).toUpperCase()
