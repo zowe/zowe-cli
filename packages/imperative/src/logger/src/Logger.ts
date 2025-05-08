@@ -32,8 +32,9 @@ import { IConfigLogging } from "./doc/IConfigLogging";
 import { LoggerManager } from "./LoggerManager";
 import * as winston from "winston";
 import { log4jsConfigToWinstonConfig } from "./log4jsToWinston";
-import { Console } from "../../console/src/Console";
+import { Console, ConsoleLevels } from "../../console/src/Console";
 import { Censor } from "../../censor";
+import { IQueuedMessage } from "./doc/IQueuedMessage";
 
 /**
  * Note(Kelosky): it seems from the log4js doc that you only get a single
@@ -247,13 +248,9 @@ export class Logger {
     constructor(private mJsLogger: winston.Logger | Console, private category?: string) {
 
         if (LoggerManager.instance.isLoggerInit && LoggerManager.instance.QueuedMessages.length > 0) {
-            LoggerManager.instance.QueuedMessages.slice().reverse().forEach((value) => {
+            LoggerManager.instance.QueuedMessages.slice().reverse().forEach((value: IQueuedMessage<Exclude<ConsoleLevels, "off">>) => {
                 if (this.category === value.category) {
-                    if (mJsLogger instanceof Console) {
-                        (mJsLogger as any)[value.method](value.message);
-                    } else {
-                        mJsLogger.log(value.method, value.message);
-                    }
+                    mJsLogger.log(value.method, value.message);
                     LoggerManager.instance.QueuedMessages.splice(LoggerManager.instance.QueuedMessages.indexOf(value), 1);
                 }
             });
