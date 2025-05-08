@@ -73,27 +73,27 @@ export class Console implements IConsole {
     }
 
     public isTraceEnabled() {
-        return Console.LEVELS.indexOf("trace") >= Console.LEVELS.indexOf(this.level) ? true : false;
+        return Console.LEVELS.indexOf("trace") >= Console.LEVELS.indexOf(this.level);
     }
 
     public isDebugEnabled() {
-        return Console.LEVELS.indexOf("debug") >= Console.LEVELS.indexOf(this.level) ? true : false;
+        return Console.LEVELS.indexOf("debug") >= Console.LEVELS.indexOf(this.level);
     }
 
     public isInfoEnabled() {
-        return Console.LEVELS.indexOf("info") >= Console.LEVELS.indexOf(this.level) ? true : false;
+        return Console.LEVELS.indexOf("info") >= Console.LEVELS.indexOf(this.level);
     }
 
     public isWarnEnabled() {
-        return Console.LEVELS.indexOf("warn") >= Console.LEVELS.indexOf(this.level) ? true : false;
+        return Console.LEVELS.indexOf("warn") >= Console.LEVELS.indexOf(this.level);
     }
 
     public isErrorEnabled() {
-        return Console.LEVELS.indexOf("error") >= Console.LEVELS.indexOf(this.level) ? true : false;
+        return Console.LEVELS.indexOf("error") >= Console.LEVELS.indexOf(this.level);
     }
 
     public isFatalEnabled() {
-        return Console.LEVELS.indexOf("fatal") >= Console.LEVELS.indexOf(this.level) ? true : false;
+        return Console.LEVELS.indexOf("fatal") >= Console.LEVELS.indexOf(this.level);
     }
 
     public isFormatEnabled() {
@@ -184,29 +184,14 @@ export class Console implements IConsole {
         return this.writeStderr(adjustedMessage, args);
     }
 
-    public log(level: ConsoleLevels, message: any, ...args: any[]) {
-        switch (level) {
-            case "trace":
-                return this.trace(message, args);
-            case "debug":
-                return this.debug(message, args);
-            case "info":
-                return this.info(message, args);
-            case "warn":
-                return this.warn(message, args);
-            case "error":
-                return this.error(message, args);
-            case "fatal":
-                return this.fatal(message, args);
-            default:
-                return;
-        }
+    public log(level: Exclude<ConsoleLevels, "off">, message: any, ...args: any[]) {
+        return this[level]?.(message, args);
     }
 
     private writeStderr(message: string, ...args: any[]) {
         const data = this.format(message, args);
         if (this.on) {
-            process.stderr.write(this.format(message, args));
+            process.stderr.write(data);
         }
         return data;
     }

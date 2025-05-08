@@ -9,8 +9,10 @@
 *
 */
 
-import { Console } from "../../console";
+import { Console, ConsoleLevels } from "../../console";
 describe("Console tests", () => {
+    // Update this if adding or renaming a console level!
+    const CONSOLE_LEVELS: Exclude<ConsoleLevels, "off">[] = ["trace", "debug", "info", "warn", "error", "fatal"];
 
     it("Should allow for checking if a level is valid", () => {
         expect(Console.isValidLevel("trace")).toBeTruthy();
@@ -33,15 +35,7 @@ describe("Console tests", () => {
     });
 
     it("Should throw error if setting invalid level", () => {
-        const cons = new Console();
-        const expectMessage = "Invalid level specified";
-        let errorMessage = "";
-        try {
-            cons.level = "crazy";
-        } catch (error) {
-            errorMessage = error.message;
-        }
-        expect(errorMessage).toBe(expectMessage);
+        expect(() => new Console().level = "crazy").toThrow("Invalid level specified");
     });
 
     it("Should allow turning off colors", () => {
@@ -60,41 +54,13 @@ describe("Console tests", () => {
 
     it("should reroute log calls to appropriate function for given level", () => {
         const cons = new Console();
-        const traceMock = jest.spyOn(cons, "trace").mockImplementation();
-        const debugMock = jest.spyOn(cons, "debug").mockImplementation();
-        const infoMock = jest.spyOn(cons, "info").mockImplementation();
-        const warnMock = jest.spyOn(cons, "warn").mockImplementation();
-        const errorMock = jest.spyOn(cons, "error").mockImplementation();
-        const fatalMock = jest.spyOn(cons, "fatal").mockImplementation();
 
-        // calling log with off should do nothing (default case)
-        cons.log("off", "no-op");
-        expect(traceMock).toHaveBeenCalledTimes(0);
-        expect(debugMock).toHaveBeenCalledTimes(0);
-        expect(infoMock).toHaveBeenCalledTimes(0);
-        expect(warnMock).toHaveBeenCalledTimes(0);
-        expect(errorMock).toHaveBeenCalledTimes(0);
-        expect(fatalMock).toHaveBeenCalledTimes(0);
-
-        cons.log("trace", "trace msg");
-        cons.log("debug", "debug msg");
-        cons.log("info", "info msg");
-        cons.log("warn", "warn msg");
-        cons.log("error", "error msg: %s", "details");
-        cons.log("fatal", "fatal msg");
-
-        expect(traceMock).toHaveBeenCalledTimes(1);
-        expect(traceMock).toHaveBeenCalledWith("trace msg", []);
-        expect(debugMock).toHaveBeenCalledTimes(1);
-        expect(debugMock).toHaveBeenCalledWith("debug msg", []);
-        expect(infoMock).toHaveBeenCalledTimes(1);
-        expect(infoMock).toHaveBeenCalledWith("info msg", []);
-        expect(warnMock).toHaveBeenCalledTimes(1);
-        expect(warnMock).toHaveBeenCalledWith("warn msg", []);
-        expect(errorMock).toHaveBeenCalledTimes(1);
-        expect(errorMock).toHaveBeenCalledWith("error msg: %s", ["details"]);
-        expect(fatalMock).toHaveBeenCalledTimes(1);
-        expect(fatalMock).toHaveBeenCalledWith("fatal msg", []);
+        for (const level of CONSOLE_LEVELS) {
+            const levelMock = jest.spyOn(cons, level).mockImplementation();
+            cons.log(level, `${level} msg: %s`, "hello world");
+            expect(levelMock).toHaveBeenCalledTimes(1);
+            expect(levelMock).toHaveBeenCalledWith(`${level} msg: %s`, ["hello world"]);
+        }
     });
 
     it("Should call stdout and stderr three times each", () => {
