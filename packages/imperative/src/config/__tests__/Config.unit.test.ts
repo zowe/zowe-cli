@@ -43,9 +43,16 @@ const generateNestedLayer = (currentDepth: number, maxDepth: number): any => {
     const profileName = `layer${currentDepth}`;
     const layerData: any = {};
 
-    // Add 'properties' only to the very first layer (depth 0)
+    // Add some sample properties to different layers to verify proper inheritance
     if (currentDepth === 0) {
-        layerData.properties = { user: "testuser", responseTimeout: 30 };
+        // Add "user" to first layer
+        layerData.properties = { user: "testuser" };
+    } else if (currentDepth === 1) {
+        // Add "responseTimeout" to second layer
+        layerData.properties = { responseTimeout: 30 };
+    } else if (currentDepth === 2) {
+        // Add "account" to third layer
+        layerData.properties = { account: "IZUACCT" };
     }
 
     // Recursively generate the content for the next level's 'profiles' object
@@ -255,7 +262,6 @@ describe("Config tests", () => {
         it.each([3, 4, 10, 100])("should merge properties from a deeply nested configuration with %i layers", async (numLayers) => {
             const nestedConfig: any = {
                 profiles: generateNestedLayer(0, numLayers),
-                properties: {},
                 defaults: {}
             };
 
@@ -272,7 +278,16 @@ describe("Config tests", () => {
                     throw new Error(`Could not navigate to profile at depth ${i + 1}`);
                 }
                 expect(profile["user"]).toBe("testuser");
+                if (i === 0) {
+                    // responseTimeout is only on profiles within layer1
+                    continue;
+                }
                 expect(profile["responseTimeout"]).toBe(30);
+                if (i === 1) {
+                    // account is only on profiles within layer2
+                    continue;
+                }
+                expect(profile["account"]).toBe("IZUACCT");
             }
         });
     });
