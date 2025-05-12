@@ -53,6 +53,9 @@ const generateNestedLayer = (currentDepth: number, maxDepth: number): any => {
     } else if (currentDepth === 2) {
         // Add "account" to third layer
         layerData.properties = { account: "IZUACCT" };
+    } else if (currentDepth === 5) {
+        // Add "socketConnectTimeout" to sixth layer
+        layerData.properties = { socketConnectTimeout: 60 };
     }
 
     // Recursively generate the content for the next level's 'profiles' object
@@ -288,6 +291,11 @@ describe("Config tests", () => {
                     continue;
                 }
                 expect(profile["account"]).toBe("IZUACCT");
+                if (i < 5) {
+                    // first 5 layers do not have socketConnectTimeout
+                    continue;
+                }
+                expect(profile["socketConnectTimeout"]).toBe(60);
             }
         });
     });
