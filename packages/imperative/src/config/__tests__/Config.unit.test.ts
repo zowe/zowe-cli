@@ -283,16 +283,19 @@ describe("Config tests", () => {
                 expect(profile["user"]).toBe("testuser");
                 if (i === 0) {
                     // responseTimeout is only on profiles within layer1
+                    expect(profile["responseTimeout"]).toBeUndefined();
                     continue;
                 }
                 expect(profile["responseTimeout"]).toBe(30);
                 if (i === 1) {
                     // account is only on profiles within layer2
+                    expect(profile["account"]).toBeUndefined();
                     continue;
                 }
                 expect(profile["account"]).toBe("IZUACCT");
                 if (i < 5) {
                     // first 5 layers do not have socketConnectTimeout
+                    expect(profile["socketConnectTimeout"]).toBeUndefined();
                     continue;
                 }
                 expect(profile["socketConnectTimeout"]).toBe(60);
