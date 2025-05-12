@@ -47,22 +47,7 @@ jest.mock("winston", () => ({
     addColors: jest.requireActual("winston").addColors,
     format: jest.requireActual("winston").format,
 
-    createLogger: jest.fn().mockImplementation((config) => ({
-        level: config?.level || "info",
-        levels: config?.levels || customLevels,
-        format: config?.format || jest.fn(),
-
-        transports: config?.transports || [],
-
-        log: jest.fn(),
-        debug: jest.fn(),
-        info: jest.fn(),
-        warn: jest.fn(),
-        error: jest.fn(),
-        trace: jest.fn(),
-        fatal: jest.fn(),
-        mark: jest.fn(),
-    })),
+    createLogger: jest.fn().mockImplementation(jest.requireActual("winston").createLogger),
     loggers: (() => {
         const loggerCache: { [key: string]: any } = {};
         return {
@@ -111,10 +96,7 @@ jest.mock("winston", () => ({
                 ),
         };
     })(),
-    transports: {
-        Console: jest.fn().mockImplementation(() => ({ format: jest.fn() })),
-        File: jest.fn().mockImplementation(() => ({ format: jest.fn() })),
-    },
+    transports: jest.requireActual("winston").transports,
     config: {
         npm: {
             levels: {
@@ -482,6 +464,20 @@ describe("Logger tests", () => {
         (logger as any).logService = consoleB;
         expect((logger as any).logService).toBe(consoleB);
     });
+
+    it("level setter should update winston transports", () => {
+        const consoleTransport = new winston.transports.Console();
+        const testLogger = winston.createLogger({
+            transports: [consoleTransport]
+        });
+        testLogger.level = consoleTransport.level = "debug";
+        const logger = new Logger(testLogger);
+        expect((logger as any).logService).toBe(testLogger);
+        expect(consoleTransport.level).toBe("debug");
+        logger.level = "warn";
+        expect((logger as any).logService.level).toBe("warn");
+        expect(consoleTransport.level).toBe("warn");
+    });
 });
 
 describe("log4jsToWinston tests", () => {
@@ -711,6 +707,32 @@ describe("Logger.fromLog4jsToWinston", () => {
         try {
             const config = { log4jsConfig: { appenders: {} } };
             Logger.fromLog4jsToWinston(config as IConfigLogging);
+        } catch (error) {
+            errorMessage = error.message;
+        }
+        expect(errorMessage).toBe(expectMessage);
+    });
+
+    it("Should error if given a config with no log4jsConfig property", () => {
+        const expectMessage =
+            "Input logging config is incomplete, does not contain log4jsConfig";
+        let errorMessage = "";
+        try {
+            const config = {};
+            Logger.fromLog4jsToWinston(config as IConfigLogging);
+        } catch (error) {
+            errorMessage = error.message;
+        }
+        expect(errorMessage).toBe(expectMessage);
+    });
+
+    it("Should error if not given a config", () => {
+        const expectMessage =
+            "Input logging config document is required";
+        let errorMessage = "";
+        try {
+            // replicating possible scenario when developer is not invoking w/ TypeScript
+            Logger.fromLog4jsToWinston(null as unknown as IConfigLogging);
         } catch (error) {
             errorMessage = error.message;
         }
