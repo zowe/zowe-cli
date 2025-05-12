@@ -67,6 +67,7 @@
     "jsonschema": "^1.4.1",
     "lodash": "^4.17.21",
     "lodash-deep": "^2.0.0",
+    "log4js": "^6.9.1",
     "markdown-it": "^14.1.0",
     "mustache": "^4.2.0",
     "npm-package-arg": "^11.0.1",

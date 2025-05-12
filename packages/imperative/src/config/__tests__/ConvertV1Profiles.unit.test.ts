@@ -37,7 +37,7 @@ describe("ConvertV1Profiles tests", () => {
 
     beforeAll(() => {
         // do not attempt to do any logging configuration
-        Logger.initLogger = jest.fn();
+        Logger.fromLog4jsToWinston = jest.fn();
         LoggingConfigurer.configureLogger = jest.fn();
     });
 

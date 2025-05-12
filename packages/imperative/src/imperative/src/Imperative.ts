@@ -512,7 +512,7 @@ export class Imperative {
         /**
          * Setup log4js
          */
-        Logger.initLogger(loggingConfig);
+        Logger.fromLog4jsToWinston(loggingConfig);
     }
 
     /**

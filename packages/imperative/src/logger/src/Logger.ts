@@ -30,6 +30,7 @@ import { TextUtils } from "../../utilities/src/TextUtils";
 import { IO } from "../../io";
 import { IConfigLogging } from "./doc/IConfigLogging";
 import { LoggerManager } from "./LoggerManager";
+import * as log4js from "log4js";
 import * as winston from "winston";
 import { log4jsConfigToWinstonConfig } from "./log4jsToWinston";
 import { Console, ConsoleLevels } from "../../console/src/Console";
@@ -55,14 +56,10 @@ export class Logger {
     public static getLoggerCategory(category: string) {
         if (category === Logger.DEFAULT_CONSOLE_NAME) {
             return new Logger(new Console(), Logger.DEFAULT_CONSOLE_NAME);
+        } else if (winston.loggers.has(category)) {
+            return new Logger(winston.loggers.get(category));
         } else {
-            // For winston, create a logger for the category with custom levels
-            return new Logger(winston.loggers.has(category)
-                ? winston.loggers.get(category)
-                : winston.createLogger({
-                    levels: customLevels,
-                    transports: [new winston.transports.Console()]
-                }), category);
+            return new Logger(log4js.getLogger(category), category);
         }
     }
 
@@ -128,12 +125,50 @@ export class Logger {
     }
 
     /**
-     * Get an instance of logging and adjust for config if config is present;
-     * otherwise, use defaults.
-     * @param  {IConfigLogging} loggingConfig [description]
-     * @return {[type]}                       [description]
+     * Initializes a Logger powered by log4js, given a configuration.
+     * @param  {IConfigLogging} loggingConfig The log4js configuration to use
+     * @return {Logger} A new logger instance
      */
     public static initLogger(loggingConfig: IConfigLogging) {
+        if (loggingConfig == null) {
+            throw new ImperativeError({msg: "Input logging config document is required"});
+        }
+
+        if (loggingConfig.log4jsConfig == null) {
+            throw new ImperativeError({msg: "Input logging config is incomplete, does not contain log4jsConfig"});
+        }
+
+        if (loggingConfig.log4jsConfig.appenders == null) {
+            throw new ImperativeError({msg: "Input logging config is incomplete, does not contain log4jsConfig.appenders"});
+        }
+
+        let logger: log4js.Logger;
+
+        try {
+            for (const appenderName of Object.keys(loggingConfig.log4jsConfig.appenders)) {
+                const appender = loggingConfig.log4jsConfig.appenders[appenderName];
+                if (appender.type === "file" || appender.type === "fileSync") {
+                    IO.createDirsSyncFromFilePath(appender.filename);
+                }
+            }
+            log4js.configure(loggingConfig.log4jsConfig as any);
+            logger = log4js.getLogger();
+            logger.level = "debug";
+            LoggerManager.instance.isLoggerInit = true;
+            return new Logger(logger);
+        } catch (err) {
+            const cons = new Console();
+            cons.error("Couldn't make desired logger: %s", inspect(err));
+            return new Logger(cons);
+        }
+    }
+
+    /**
+     * Creates an instance of a Logger powered by Winston, based on a log4js config.
+     * @param  {IConfigLogging} loggingConfig The log4js configuration to use
+     * @return {Logger} A new logger instance           
+     */
+    public static fromLog4jsToWinston(loggingConfig: IConfigLogging) {
         if (loggingConfig == null) {
             throw new ImperativeError({msg: "Input logging config document is required"});
         }
@@ -241,12 +276,11 @@ export class Logger {
     }
 
     /**
-     * This flag is being used to monitor the log4js configure status.
+     * This flag is being used to monitor the logger configure status.
      */
     private initStatus: boolean;
 
-    constructor(private mJsLogger: winston.Logger | Console, private category?: string) {
-
+    constructor(private mJsLogger: log4js.Logger | winston.Logger | Console, private category?: string) {
         if (LoggerManager.instance.isLoggerInit && LoggerManager.instance.QueuedMessages.length > 0) {
             LoggerManager.instance.QueuedMessages.slice().reverse().forEach((value: IQueuedMessage<Exclude<ConsoleLevels, "off">>) => {
                 if (this.category === value.category) {
@@ -501,7 +535,7 @@ export class Logger {
     /**
      * Set underlying logger service
      */
-    private set logService(service: winston.Logger | Console) {
+    private set logService(service: log4js.Logger | winston.Logger | Console) {
         this.mJsLogger = service;
     }
 }

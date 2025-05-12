@@ -203,6 +203,9 @@ describe("Logger tests", () => {
         const config = LoggingConfigurer.configureLogger(fakeHome, { name });
         const logger = Logger.initLogger(config);
 
+        (logger as any).logService.log = jest.fn<string, any>(
+            (level: string, data: string) => data
+        );
         (logger as any).logService.trace = jest.fn<string, any>(
             (data: string) => data
         );
@@ -284,23 +287,10 @@ describe("Logger tests", () => {
 
     it("Should error if given a config with no appenders on initialization", () => {
         const expectMessage =
-            "Input logging config is incomplete, does not contain log4jsConfig.appenders or log4jsConfig.categories";
+            "Input logging config is incomplete, does not contain log4jsConfig.appenders";
         let errorMessage = "";
         try {
             const config = { log4jsConfig: {} };
-            Logger.initLogger(config as IConfigLogging);
-        } catch (error) {
-            errorMessage = error.message;
-        }
-        expect(errorMessage).toBe(expectMessage);
-    });
-
-    it("Should error if given a config with no categories on initialization", () => {
-        const expectMessage =
-            "Input logging config is incomplete, does not contain log4jsConfig.appenders or log4jsConfig.categories";
-        let errorMessage = "";
-        try {
-            const config = { log4jsConfig: { appenders: {} } };
             Logger.initLogger(config as IConfigLogging);
         } catch (error) {
             errorMessage = error.message;
@@ -321,6 +311,9 @@ describe("Logger tests", () => {
         const config = LoggingConfigurer.configureLogger(fakeHome, { name });
         const logger = Logger.initLogger(config);
 
+        (logger as any).logService.log = jest.fn<string, any>(
+            (_level: string, data: string) => data
+        );
         (logger as any).logService.trace = jest.fn<string, any>(
             (data: string) => data
         );
@@ -694,7 +687,7 @@ describe("log4jsToWinston tests", () => {
     });
 });
 
-describe("log4js config migration in initLogger", () => {
+describe("Logger.fromLog4jsToWinston", () => {
     let mockWinston: jest.Mocked<typeof winston>;
     let mockIo: jest.Mocked<typeof IO>;
     let mockLog4jsToWinston: jest.Mocked<
@@ -709,6 +702,19 @@ describe("log4js config migration in initLogger", () => {
         mockLog4jsToWinston = require("../src/log4jsToWinston");
         mockConsole = require("../../console/src/Console").Console;
         LoggerManager.instance.isLoggerInit = false;
+    });
+
+    it("Should error if given a config with no categories on initialization", () => {
+        const expectMessage =
+            "Input logging config is incomplete, does not contain log4jsConfig.appenders or log4jsConfig.categories";
+        let errorMessage = "";
+        try {
+            const config = { log4jsConfig: { appenders: {} } };
+            Logger.fromLog4jsToWinston(config as IConfigLogging);
+        } catch (error) {
+            errorMessage = error.message;
+        }
+        expect(errorMessage).toBe(expectMessage);
     });
 
     it("should initialize winston with converted basic log4js config", () => {
@@ -735,7 +741,7 @@ describe("log4js config migration in initLogger", () => {
             expectedWinstonConfig
         );
 
-        Logger.initLogger(loggingConfig);
+        Logger.fromLog4jsToWinston(loggingConfig);
 
         expect(
             mockLog4jsToWinston.log4jsConfigToWinstonConfig
@@ -777,7 +783,7 @@ describe("log4js config migration in initLogger", () => {
             expectedWinstonConfig
         );
 
-        Logger.initLogger(loggingConfig);
+        Logger.fromLog4jsToWinston(loggingConfig);
 
         expect(mockIo.createDirsSyncFromFilePath).toHaveBeenCalledWith(
             "/path/to/logfile.log"
@@ -814,7 +820,7 @@ describe("log4js config migration in initLogger", () => {
             expectedWinstonConfig
         );
 
-        Logger.initLogger(loggingConfig);
+        Logger.fromLog4jsToWinston(loggingConfig);
 
         expect(mockIo.createDirsSyncFromFilePath).toHaveBeenCalledWith(
             "/another/path/syncfile.log"
@@ -868,7 +874,7 @@ describe("log4js config migration in initLogger", () => {
             (category: string) => mockLoggers(category)
         );
 
-        Logger.initLogger(loggingConfig);
+        Logger.fromLog4jsToWinston(loggingConfig);
 
         expect(
             mockLog4jsToWinston.log4jsConfigToWinstonConfig
@@ -912,7 +918,7 @@ describe("log4js config migration in initLogger", () => {
             }
         );
 
-        const logger = Logger.initLogger(loggingConfig);
+        const logger = Logger.fromLog4jsToWinston(loggingConfig);
 
         expect(
             mockLog4jsToWinston.log4jsConfigToWinstonConfig
