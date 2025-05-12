@@ -12,19 +12,6 @@
 import { format, inspect } from "util";
 import { ImperativeError } from "../../error/src/ImperativeError";
 import * as StackTrace from "stack-trace";
-
-// Define custom log levels for Winston
-const customLevels = {
-    fatal: 0,
-    error: 1,
-    warn: 2,
-    info: 3,
-    mark: 4,
-    debug: 5,
-    trace: 6,
-    all: 7
-};
-
 import * as path from "path";
 import { TextUtils } from "../../utilities/src/TextUtils";
 import { IO } from "../../io";
@@ -32,7 +19,7 @@ import { IConfigLogging } from "./doc/IConfigLogging";
 import { LoggerManager } from "./LoggerManager";
 import * as log4js from "log4js";
 import * as winston from "winston";
-import { log4jsConfigToWinstonConfig } from "./log4jsToWinston";
+import { customLevels, log4jsConfigToWinstonConfig } from "./log4jsToWinston";
 import { Console, ConsoleLevels } from "../../console/src/Console";
 import { Censor } from "../../censor";
 import { IQueuedMessage } from "./doc/IQueuedMessage";
@@ -214,7 +201,7 @@ export class Logger {
                     );
 
                     // Add custom levels to the generated config
-                    categoryWinstonConfig.levels = customLevels;
+                    categoryWinstonConfig.levels = customLevels.levels;
 
                     // Add the logger with its specific configuration
                     winston.loggers.add(categoryName, categoryWinstonConfig);
@@ -254,7 +241,7 @@ export class Logger {
     public static fromWinstonConfig(config: winston.LoggerOptions, category?: string): Logger {
         try {
             // Add custom levels to the provided config
-            const configWithCustomLevels = { ...config, levels: customLevels };
+            const configWithCustomLevels = { ...config, levels: customLevels.levels };
             const winstonLogger = winston.createLogger(configWithCustomLevels);
 
             // Optionally register the logger if a category is provided and categories are managed

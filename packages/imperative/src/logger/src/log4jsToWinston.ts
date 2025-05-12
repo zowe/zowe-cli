@@ -13,20 +13,23 @@ import { transports, format, LoggerOptions, addColors } from "winston";
 import * as os from "os";
 import * as dayjs from "dayjs";
 
-const customLevels = {
+export const customLevels = {
     levels: {
         fatal: 0,
         error: 1,
         warn: 2,
         info: 3,
-        debug: 4,
-        trace: 5,
+        mark: 4,
+        debug: 5,
+        trace: 6,
+        all: 7
     },
     colors: {
         fatal: "magenta",
         error: "red",
         warn: "yellow",
         info: "green",
+        mark: "white",
         debug: "blue",
         trace: "gray",
     },
