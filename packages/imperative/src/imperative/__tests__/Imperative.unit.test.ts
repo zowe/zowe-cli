@@ -312,8 +312,8 @@ describe("Imperative", () => {
                     mocks.ImperativeConfig.instance.loadedConfig
                 );
 
-                expect(mocks.Logger.fromLog4jsToWinston).toHaveBeenCalledTimes(1);
-                expect(mocks.Logger.fromLog4jsToWinston).toHaveBeenCalledWith(
+                expect(mocks.Logger.initLogger).toHaveBeenCalledTimes(1);
+                expect(mocks.Logger.initLogger).toHaveBeenCalledWith(
                     mocks.LoggingConfigurer.configureLogger("a", {})
                 );
             });
@@ -360,8 +360,8 @@ describe("Imperative", () => {
                     expect(mocks.Logger.isValidLevel).toHaveBeenCalledTimes(1);
                     expect(mocks.Logger.isValidLevel).toHaveBeenCalledWith(goodLevel);
 
-                    expect(mocks.Logger.fromLog4jsToWinston).toHaveBeenCalledTimes(1);
-                    expect(mocks.Logger.fromLog4jsToWinston).toHaveBeenCalledWith(loggingConfig);
+                    expect(mocks.Logger.initLogger).toHaveBeenCalledTimes(1);
+                    expect(mocks.Logger.initLogger).toHaveBeenCalledWith(loggingConfig);
                 });
 
                 it("should handle an invalid imperative log level", async () => {
@@ -375,8 +375,8 @@ describe("Imperative", () => {
                     expect(mocks.Logger.isValidLevel).toHaveBeenCalledTimes(1);
                     expect(mocks.Logger.isValidLevel).toHaveBeenCalledWith(badLevel);
 
-                    expect(mocks.Logger.fromLog4jsToWinston).toHaveBeenCalledTimes(1);
-                    expect(mocks.Logger.fromLog4jsToWinston).toHaveBeenCalledWith(loggingConfig);
+                    expect(mocks.Logger.initLogger).toHaveBeenCalledTimes(1);
+                    expect(mocks.Logger.initLogger).toHaveBeenCalledWith(loggingConfig);
                 });
 
                 it("should handle a valid app log level", async () => {
@@ -391,8 +391,8 @@ describe("Imperative", () => {
                     expect(mocks.Logger.isValidLevel).toHaveBeenCalledTimes(1);
                     expect(mocks.Logger.isValidLevel).toHaveBeenCalledWith(goodLevel);
 
-                    expect(mocks.Logger.fromLog4jsToWinston).toHaveBeenCalledTimes(1);
-                    expect(mocks.Logger.fromLog4jsToWinston).toHaveBeenCalledWith(loggingConfig);
+                    expect(mocks.Logger.initLogger).toHaveBeenCalledTimes(1);
+                    expect(mocks.Logger.initLogger).toHaveBeenCalledWith(loggingConfig);
                 });
 
                 it("should handle an invalid app log level", async () => {
@@ -406,8 +406,8 @@ describe("Imperative", () => {
                     expect(mocks.Logger.isValidLevel).toHaveBeenCalledTimes(1);
                     expect(mocks.Logger.isValidLevel).toHaveBeenCalledWith(badLevel);
 
-                    expect(mocks.Logger.fromLog4jsToWinston).toHaveBeenCalledTimes(1);
-                    expect(mocks.Logger.fromLog4jsToWinston).toHaveBeenCalledWith(loggingConfig);
+                    expect(mocks.Logger.initLogger).toHaveBeenCalledTimes(1);
+                    expect(mocks.Logger.initLogger).toHaveBeenCalledWith(loggingConfig);
                 });
             });
         }); // End Logging
