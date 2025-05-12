@@ -215,6 +215,68 @@ describe("Config tests", () => {
             expect(readError).toBeDefined();
             expect(config.properties).toMatchSnapshot();
         });
+
+        it("should merge properties from a deeply nested configuration with over 100 layers", async () => {
+            /**
+             * Recursively generates the nested profile structure for a given level.
+             * Uses "layerN" for profile names.
+             *
+             * @param currentDepth - The current nesting level (0-based).
+             * @param maxDepth - The total number of nested profile layers required.
+             * @returns The nested structure for the current level and its children,
+             * formatted as { "layerN": { properties?, profiles: { ... } } }
+             * or just {} for the level beyond maxDepth.
+             */
+            const generateNestedLayer = (currentDepth: number, maxDepth: number): any => {
+                // Base case: If we've reached the desired depth, the next 'profiles' object is empty.
+                if (currentDepth >= maxDepth) {
+                    return {};
+                }
+
+                // Use the layerN naming convention
+                const profileName = `layer${currentDepth}`;
+                const layerData: any = {};
+
+                // Add 'properties' only to the very first layer (depth 0)
+                if (currentDepth === 0) {
+                    layerData.properties = { user: "testuser" };
+                }
+
+                // Recursively generate the content for the *next* level's 'profiles' object
+                const nextLevelProfiles = generateNestedLayer(currentDepth + 1, maxDepth);
+
+                // Assign the generated nested structure to the 'profiles' key of the current layer
+                layerData.profiles = nextLevelProfiles;
+
+                // Return the structure for this level, keyed by its profile name
+                // e.g., { "layer0": { properties: ..., profiles: { ... } } }
+                return { [profileName]: layerData };
+            };
+
+            const nestedConfig: any = {
+                ...generateNestedLayer(0, 101)
+            };
+
+            const nestedConfigString = JSON.stringify(nestedConfig);
+
+            jest.spyOn(Config, "search").mockReturnValue("/fake/path/to/nested.config.json");
+            jest.spyOn(fs, "existsSync").mockReturnValue(true);
+            jest.spyOn(fs, "readFileSync").mockReturnValue(nestedConfigString);
+
+            const config = await Config.load(MY_APP);
+
+            // Navigate to the deepest nested profile
+            let currentProfile = config.properties.profiles;
+            for (let i = 0; i < 100; i++) {
+                const profileName = `layer${i}`;
+                const profilePath = config.api.profiles.getProfilePathFromName(profileName);
+                const profile = config.api.profiles.get(profilePath);
+                if (!profile) {
+                    throw new Error(`Could not navigate to profile at depth ${i + 1}`);
+                }
+                expect(profile["user"]).toBe("testuser");
+            }
+        });
     });
 
     it("should reload config in new project directory", async () => {
