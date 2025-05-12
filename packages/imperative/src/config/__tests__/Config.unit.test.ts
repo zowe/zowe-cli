@@ -252,9 +252,9 @@ describe("Config tests", () => {
             expect(config.properties).toMatchSnapshot();
         });
 
-        it("should merge properties from a deeply nested configuration with over 100 layers", async () => {
+        it.each([3, 4, 10, 100])("should merge properties from a deeply nested configuration with %i layers", async (numLayers) => {
             const nestedConfig: any = {
-                profiles: generateNestedLayer(0, 101),
+                profiles: generateNestedLayer(0, numLayers),
                 properties: {},
                 defaults: {}
             };
@@ -265,55 +265,7 @@ describe("Config tests", () => {
 
             const config = await Config.load(MY_APP);
 
-            for (let i = 0; i <= 100; i++) {
-                const profilePath = i === 0 ? "layer0" : Array.from({ length: i }).map((v, i) => (i + 1).toString()).reduce((all, cur) => all + `.layer${cur}`, "layer0");
-                const profile = config.api.profiles.get(profilePath, true);
-                if (!profile) {
-                    throw new Error(`Could not navigate to profile at depth ${i + 1}`);
-                }
-                expect(profile["user"]).toBe("testuser");
-                expect(profile["responseTimeout"]).toBe(30);
-            }
-        });
-
-        it("should merge properties from a deeply nested configuration with over 10 layers", async () => {
-            const nestedConfig: any = {
-                profiles: generateNestedLayer(0, 11),
-                properties: {},
-                defaults: {}
-            };
-
-            jest.spyOn(Config, "search").mockReturnValue("/fake/path/to/nested.config.json");
-            jest.spyOn(fs, "existsSync").mockReturnValue(true);
-            jest.spyOn(fs, "readFileSync").mockReturnValue(JSON.stringify(nestedConfig));
-
-            const config = await Config.load(MY_APP);
-
-            for (let i = 0; i <= 10; i++) {
-                const profilePath = i === 0 ? "layer0" : Array.from({ length: i }).map((v, i) => (i + 1).toString()).reduce((all, cur) => all + `.layer${cur}`, "layer0");
-                const profile = config.api.profiles.get(profilePath, true);
-                if (!profile) {
-                    throw new Error(`Could not navigate to profile at depth ${i + 1}`);
-                }
-                expect(profile["user"]).toBe("testuser");
-                expect(profile["responseTimeout"]).toBe(30);
-            }
-        });
-
-        it("should merge properties from a deeply nested configuration with 3 layers", async () => {
-            const nestedConfig: any = {
-                profiles: generateNestedLayer(0, 3),
-                properties: {},
-                defaults: {}
-            };
-
-            jest.spyOn(Config, "search").mockReturnValue("/fake/path/to/nested.config.json");
-            jest.spyOn(fs, "existsSync").mockReturnValue(true);
-            jest.spyOn(fs, "readFileSync").mockReturnValue(JSON.stringify(nestedConfig));
-
-            const config = await Config.load(MY_APP);
-
-            for (let i = 0; i <= 2; i++) {
+            for (let i = 0; i < numLayers; i++) {
                 const profilePath = i === 0 ? "layer0" : Array.from({ length: i }).map((v, i) => (i + 1).toString()).reduce((all, cur) => all + `.layer${cur}`, "layer0");
                 const profile = config.api.profiles.get(profilePath, true);
                 if (!profile) {
