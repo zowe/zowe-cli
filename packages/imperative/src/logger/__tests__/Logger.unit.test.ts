@@ -915,8 +915,10 @@ describe("Logger.fromLog4jsToWinston", () => {
             expectedWinstonConfig
         );
 
-        expect(mockWinston.loggers.get).toHaveBeenCalledTimes(1);
+        expect(mockWinston.loggers.get).toHaveBeenCalledTimes(3);
         expect(mockWinston.loggers.get).toHaveBeenCalledWith("default");
+        expect(mockWinston.loggers.get).toHaveBeenCalledWith("imperative");
+        expect(mockWinston.loggers.get).toHaveBeenCalledWith("app");
         expect(LoggerManager.instance.isLoggerInit).toBe(true);
     });
 

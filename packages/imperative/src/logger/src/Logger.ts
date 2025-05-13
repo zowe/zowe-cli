@@ -205,11 +205,7 @@ export class Logger {
 
                     // Add the logger with its specific configuration
                     winston.loggers.add(categoryName, categoryWinstonConfig);
-
-                    // If this is the 'default' category, keep its instance to return later
-                    if (categoryName === "default") {
-                        newLoggerInst = winston.loggers.get(categoryName);
-                    }
+                    newLoggerInst = winston.loggers.get(categoryName);
                 }
             }
             LoggerManager.instance.isLoggerInit = true;
