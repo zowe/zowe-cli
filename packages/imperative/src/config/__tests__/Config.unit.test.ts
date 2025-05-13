@@ -44,18 +44,25 @@ const generateNestedLayer = (currentDepth: number, maxDepth: number): any => {
     const layerData: any = {};
 
     // Add some sample properties to different layers to verify proper inheritance
-    if (currentDepth === 0) {
-        // Add "user" to first layer
-        layerData.properties = { user: "testuser" };
-    } else if (currentDepth === 1) {
-        // Add "responseTimeout" to second layer
-        layerData.properties = { responseTimeout: 30 };
-    } else if (currentDepth === 2) {
-        // Add "account" to third layer
-        layerData.properties = { account: "IZUACCT" };
-    } else if (currentDepth === 5) {
-        // Add "socketConnectTimeout" to sixth layer
-        layerData.properties = { socketConnectTimeout: 60 };
+    switch (currentDepth) {
+        case 0:
+            // Add "user" to first layer
+            layerData.properties = { user: "testuser" };
+            break;
+        case 1:
+            // Add "responseTimeout" to second layer
+            layerData.properties = { responseTimeout: 30 };
+            break;
+        case 2:
+            // Add "account" to third layer
+            layerData.properties = { account: "IZUACCT" };
+            break;
+        case 5:
+            // Add "socketConnectTimeout" to sixth layer
+            layerData.properties = { socketConnectTimeout: 60 };
+            break;
+        default:
+            break;
     }
 
     // Recursively generate the content for the next level's 'profiles' object
