@@ -4,8 +4,8 @@ All notable changes to the Imperative package will be documented in this file.
 
 ## Recent Changes
 
-- Enhancement: Updated the `Logger` class to use the `winston` library instead of `log4js` and introduced migration tools. Log4js configs are migrated automatically for use with Winston. For more information on how to configure your logger instance to use winston, please refer to the Imperative wiki page "Migrating from log4js to winston."
-- BugFix: Fixed a bug where downstream dependencies using log4js may have their logging configuration replaced when using classes such as `ProfileInfo`.
+- Enhancement: Updated the `Logger` class to support the `winston` library, and introduced migration tools to switch from `log4js` to `winston`. For more information on how to migrate your logger instance to use the `winston` library, please refer to the ["Configuring logging" page](https://github.com/zowe/zowe-cli/wiki/Configuring-Logging) on the Zowe CLI wiki. [#2488](https://github.com/zowe/zowe-cli/issues/2488)
+- BugFix: Fixed an issue where downstream dependencies using `log4js` have their log output redirected after creating an instance of the `ProfileInfo` class. [#2488](https://github.com/zowe/zowe-cli/issues/2488)
 
 ## `8.20.0`
 
