@@ -24,7 +24,7 @@ Imperative.init().then((_response) => {
     Imperative.api.imperativeLogger.fatal("This is a fatal message after init!");
 
     // ensure that AuthOrder has some creds cached to put in a session later
-    AuthOrder.cacheCredsAndAuthOrder({}, { user: "fakeUser", password: "fakePass", "$0": "zowe", "_": [""] });
+    AuthOrder.addCredsToSession({}, { user: "fakeUser", password: "fakePass", "$0": "zowe", "_": [""] });
 
     // Parse the command
     Imperative.parse();

@@ -1021,7 +1021,7 @@ export class ProfileInfo {
         }
 
         // Cache all creds that were placed into the session config.
-        AuthOrder.cacheCredsAndAuthOrder(sessCfg);
+        AuthOrder.addCredsToSession(sessCfg);
         return sessCfg;
     }
 

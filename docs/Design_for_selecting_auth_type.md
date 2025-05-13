@@ -201,19 +201,19 @@ This class is declared **@internal** which will limit its use to the imperative 
 
 Functions in the AuthOrder class include:
 
-- cacheCredsAndAuthOrder - This function will find all known types of credentials from the supplied command line arguments parameter. At this point in the processing of the request, those arguments will contain all of the already-merged properties from the actual command line, the profiles within the zowe.config.json file, and environment variables. All of the available credential properties are cached for later use by the putTopAuthInSession function. The cacheCredsAndAuthOrder function also calls the cacheAuthOrder function.
+- addCredsToSession - This function will find all known types of credentials from the supplied command line arguments parameter. At this point in the processing of the request, those arguments will contain all of the already-merged properties from the actual command line, the profiles within the zowe.config.json file, and environment variables. All of the available credential properties are cached for later use by the putTopAuthInSession function. The addCredsToSession function also calls the cacheAuthOrder and putTopAuthInSession functions.
 
-  cacheCredsAndAuthOrder will be called early in the operation, while putTopAuthInSession will be called as late as possible before the REST request is transmitted.
+  addCredsToSession will be called early in the operation. The putTopAuthInSession will be called an additional time as late as possible before the REST request is transmitted.
 
-  The function ConnectionPropsForSessCfg.addPropsOrPrompt is the primary location that will call cacheCredsAndAuthOrder.
+  The function ConnectionPropsForSessCfg.addPropsOrPrompt is the primary location that will call addCredsToSession.
 
   - It might also be called from ProfileInfo.createSession.
 
-  - While apps like ZE do not take command line arguments, they do form an ICommandArguments object. The createSesion function already has such an object, so it can be passed to cacheCredsAndAuthOrder.
+  - While apps like ZE do not take command line arguments, they do form an ICommandArguments object. The createSesion function already has such an object, so it can be passed to addCredsToSession.
 
-  - Any other location in ZE-related code which needs to call cacheCredsAndAuthOrder will need to form an ICommandArguments object.
+  - Any other location in ZE-related code which needs to call addCredsToSession will need to form an ICommandArguments object.
 
-- cacheAuthOrder - This function stores the authOrder property from the supplied command arguments for later use. In the prototype, it is only called from cacheCredsAndAuthOrder. However, cacheAuthOrder is available should we find that we need to to call it from other locations (like at the end of the CommandProcessor.prepare function).
+- cacheAuthOrder - This function stores the authOrder property from the supplied command arguments for later use. In the prototype, it is only called from addCredsToSession. However, cacheAuthOrder is available should we find that we need to to call it from other locations (like at the end of the CommandProcessor.prepare function).
 
 - cacheDefaultAuthOrder - This function will cache the default order of authentication selection that will be used only when a user does not supply an auth order. This function will specify the top authentication choice (either basic or token) when a default authOrder must be created because the user did not supply an auth order. The two choices for the top authentication exist so that our logic can maintain backward compatibility with two existing hard-coded sequences of authentication selections
 
@@ -249,10 +249,6 @@ Functions in the AuthOrder class include:
 
 - putTopAuthInSession - This function will find the credential available in the cache that is the highest priority credential as specified by the cached authOrder. It places that credential into the supplied session config, and removes the credentials for all other auth types from the supplied session config. It also places the cached authOrder into the session config.
 
-  - The function AbstractRestClient.request is the primary location that will call cacheCredsAndAuthOrder.
-
-  - It might be called from other existing locations as needed.
-
 - removeExtraCredsFromSess - This function removes all credential properties from the supplied session except for the top available authentication type. In the prototype, it is only called from putTopAuthInSession. However, removeExtraCredsFromSess is available should we find that we must scrub unneeded credentials from a session in other location in existing Zowe code.
 
 ## Deployment of AuthOrder functions within the Zowe client APIs
@@ -262,27 +258,35 @@ The following diagram shows how the functions of the AuthOrder class will be dep
 ```mermaid
 stateDiagram-v2
 
-    CallingApp --> ConnectionPropsForSessCfg.addPropsOrPrompt
+    MostApps --> ConnectionPropsForSessCfg.addPropsOrPrompt
 
-    ConnectionPropsForSessCfg.addPropsOrPrompt --> AuthOrder.cacheCredsAndAuthOrder
+    ConnectionPropsForSessCfg.addPropsOrPrompt --> AuthOrder.addCredsToSession
 
-    CallingApp --> AbstractRestClient.constructor
+    AuthOrder.addCredsToSession --> AuthOrder.putTopAuthInSession<br>called_after_setting_top_default_or_overriding_creds
 
-    AbstractRestClient.constructor --> AuthOrder.cacheDefaultAuthOrder(token)<br/>(for_apps_that_don't_use_RestClient)
 
-    AbstractRestClient.constructor --> AuthOrder.putTopAuthInSession<br/>(for_apps_that_don't_use_RestClient): Earliest place we can put creds in the session
+    ConnectionPropsForSessCfg.addPropsOrPrompt --> ConnectionPropsForSessCfg.resolveSessCfgProps
 
-    AbstractRestClient.constructor --> RestClient.constructor: Extended by
+    SomeApps --> ConnectionPropsForSessCfg.resolveSessCfgProps
 
-    RestClient.constructor --> AuthOrder.cacheDefaultAuthOrder(basic)
+    ConnectionPropsForSessCfg.resolveSessCfgProps --> AuthOrder.addCredsToSession
 
-    RestClient.constructor --> AuthOrder.putTopAuthInSession: Earliest place we can put creds in the session
+    MostApps --> RestClient.constructor<br>overrides_top_auth_to_basic
 
-    CallingApp --> AbstractRestClient.request
+    RestClient.constructor<br>overrides_top_auth_to_basic --> AbstractRestClient.constructor<br>default_top_auth_is_token
 
-    AbstractRestClient.request --> AuthOrder.putTopAuthInSession: Last place we can put creds in the session again (failsafe)
+    SomeOtherApps --> AbstractRestClient.constructor<br>default_top_auth_is_token
 
-    AbstractRestClient.request --> https.request
+    AbstractRestClient.constructor<br>default_top_auth_is_token--> AuthOrder.cacheDefaultAuthOrder
+
+    AbstractRestClient.constructor<br>default_top_auth_is_token --> AuthOrder.putTopAuthInSession<br>called_after_setting_top_default_or_overriding_creds
+
+
+    MostApps --> AbstractRestClient.request<br>Last_failsafe_opportunity_to_put_creds_in_session
+
+    AbstractRestClient.request<br>Last_failsafe_opportunity_to_put_creds_in_session --> AuthOrder.putTopAuthInSession<br>called_after_setting_top_default_or_overriding_creds
+
+    AbstractRestClient.request<br>Last_failsafe_opportunity_to_put_creds_in_session --> https.request
 ```
 
 <br/><br/><br/>
@@ -307,9 +311,9 @@ stateDiagram-v2
 
     Unknown_App_2 --> ProfileInfo.initSessCfg<br/>(public_but_only_called_from_createSession)
 
-    ProfileInfo.initSessCfg<br/>(public_but_only_called_from_createSession) --> AuthOrder.cacheCredsAndAuthOrder
+    ProfileInfo.initSessCfg<br/>(public_but_only_called_from_createSession) --> AuthOrder.addCredsToSession
 
-    ConnectionPropsForSessCfg.resolveSessCfgProps --> AuthOrder.cacheCredsAndAuthOrder
+    ConnectionPropsForSessCfg.resolveSessCfgProps --> AuthOrder.addCredsToSession
 ```
 
 ## Functions that reference AUTH_TYPE may need modification
@@ -333,7 +337,7 @@ The set of candidates for modification consist of all functions that contain the
 
 - imperative\src\imperative\src\config\cmd\import\import.handler.ts
 
-  - buildSession - This function is used to import a config from a URL. That URL is an arbitrary location at a customer site where a config file is kept. It is not the target of a REST request to a mainframe service. By design, the only authentication that it will use is user & password. Supporting more authentication types in the 'import' command is beyond the scope of this authentication-order feature. None-the-less, because the **process** function of the import handler does not call ConnectionPropsForSessCfg.addPropsOrPrompt, the AuthOrder cache of credentials is not initialized. As a result, the buildSession function must call AuthOrder.cacheCredsAndAuthOrder to ensure that the cache is properly initialized.
+  - buildSession - This function is used to import a config from a URL. That URL is an arbitrary location at a customer site where a config file is kept. It is not the target of a REST request to a mainframe service. By design, the only authentication that it will use is user & password. Supporting more authentication types in the 'import' command is beyond the scope of this authentication-order feature. None-the-less, because the **process** function of the import handler does not call ConnectionPropsForSessCfg.addPropsOrPrompt, the AuthOrder cache of credentials is not initialized. As a result, the buildSession function must call AuthOrder.addCredsToSession to ensure that the cache is properly initialized.
     - **Modify buildSession ? <span style="color:orange">yes - done</span>**
 
 - imperative\src\rest\src\client\AbstractRestClient.ts
@@ -374,7 +378,7 @@ The set of candidates for modification consist of all functions that contain the
 
 - imperative\src\rest\src\session\ConnectionPropsForSessCfg.ts
 
-  - addPropsOrPrompt - Near the end of this function, a call to AuthOrder.cacheCredsAndAuthOrder will ensure that the right authentication resides in the session.
+  - addPropsOrPrompt - Within this function, calls to AuthOrder.addCredsToSession will ensure that the right authentication resides in the session.
 
     - **Modify addPropsOrPrompt ? <span style="color:orange">Yes - done</span>**
 
@@ -422,7 +426,7 @@ The set of candidates for modification consist of all functions that contain the
 
   packages\zosuss\src\Shell.ts
 
-  - connect - This function explicitly checks for an ssh key (first) or a password (second) in a hard-coded fashion. If we want the user's authOrder to apply to ssh connections, this function must call the proposed combination of AuthOrder.cacheCredsAndAuthOrder and AuthOrder.putTopAuthInSession to to make the right authentication choice. This will not be done at this time to limit the scope of these efforts.
+  - connect - This function explicitly checks for an ssh key (first) or a password (second) in a hard-coded fashion. If we want the user's authOrder to apply to ssh connections, this function must call the proposed combination of AuthOrder.addCredsToSession and AuthOrder.putTopAuthInSession to to make the right authentication choice. This will not be done at this time to limit the scope of these efforts.
     - **Modify connect ? <span style="color:green">No</span>**
 
 ## Functions that reference rejectUnauthorized may need modification
@@ -446,8 +450,8 @@ If we treat **authOrder** like other connection properties, those functions that
 
 - packages\imperative\src\config\src\ProfileInfo.ts
 
-  - createSession - This function creates a session with key connection properties. Depending on the modification choices made for ConnectionPropsForSessCfg.resolveSessCfgProps, this function may have to call AuthOrder.cacheCredsAndAuthOrder.
-    - **Modify createSession ? <span style="color:orange">Yes - must be implemented</span>**
+  - createSession - This function creates a session with key connection properties. Depending on the modification choices made for ConnectionPropsForSessCfg.resolveSessCfgProps, this function may have to call AuthOrder.addCredsToSession.
+    - **Modify createSession ? <span style="color:orange">Yes - done</span>**
 
 - packages\imperative\src\imperative\src\config\cmd\import\import.handler.ts
 

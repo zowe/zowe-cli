@@ -22,15 +22,14 @@ import * as SessConstants from "./SessConstants";
  * That authOrder is then used to place the correct set of credentials into
  * a session for authentication.
  *
- * To accomplish this behavior, we call AuthOrder.cacheCredsAndAuthOrder
+ * To accomplish this behavior, we call AuthOrder.addCredsToSession
  * early in the processing of a command (when both a session
  * configuration and command arguments are available). For example in:
  *      ConnectionPropsForSessCfg.addPropsOrPrompt or
  *      ProfileInfo.createSession
  *
- * Later, before we use the session, we call AuthOrder.putTopAuthInSession.
+ * Before we use the session, we call AuthOrder.putTopAuthInSession.
  * For example in:
- *      RestClient.constructor
  *      AbstractRestClient.constructor
  *      AbstractRestClient.request
  * AuthOrder.putTopAuthInSession ensures that the session only contains the
@@ -46,16 +45,14 @@ export class AuthOrder {
 
     // ***********************************************************************
     /**
-     * Cache all of the credentials that are available in either the supplied
-     * sessCfg object or in the supplied command arguments. Also cache the
-     * authOrder that is specified in the supplied command arguments. The
-     * cache properties are stored into the sessCfg object itself.
-     *
-     * Downstream logic uses this cache to determine which auth type should be
-     * used in the final session used by a client REST request.
+     * Add available credentials (and the authentication order in which
+     * credentials should be chosen) into a cache within the specified session.
+     * Using that cached information put only the top selected credential as
+     * the credential to be used by the session.
      *
      * @param sessCfg - Modified.
-     *      A session configuration object to which we place the cached creds.
+     *      A session configuration object into which we place cached creds
+     *      and the selected creds.
      *
      * @param cmdArgs - Input.
      *      The set of arguments with which the calling function is operating.
@@ -65,21 +62,18 @@ export class AuthOrder {
      *
      *      If cmdArgs is not supplied, we only cache creds found in the sessCfg.
      */
-    public static cacheCredsAndAuthOrder<SessCfgType extends ISession>(
+    public static addCredsToSession<SessCfgType extends ISession>(
         sessCfg: SessCfgType,
         cmdArgs: ICommandArguments = { "$0": "NameNotUsed", "_": [] }
         // when no cmdArgs are provided, use an empty set of cmdArgs
     ): void {
-        // create a new auth cache (if needed) in the session config
-        AuthOrder.findOrCreateAuthCache(sessCfg);
+        AuthOrder.cacheCredsAndAuthOrder(sessCfg, cmdArgs);
 
-        // add any discovered authOrder to the cache
-        AuthOrder.cacheAuthOrder(sessCfg, cmdArgs);
-
-        // add every available cred to the cache
-        for (const sessCredName of AuthOrder.ARRAY_OF_CREDS) {
-            AuthOrder.cacheCred(sessCredName, sessCfg, cmdArgs);
-        }
+        // Now that we know our authOrder and available creds, we place
+        // only the top creds into the session. The putTopAuthInSession function
+        // is also called later if our default top auth is modified. It is also
+        // called just before making our REST request (as a failsafe).
+        AuthOrder.putTopAuthInSession(sessCfg);
     }
 
     // ***********************************************************************
@@ -147,7 +141,7 @@ export class AuthOrder {
      *
      * To get the right creds and auth order in your session after calling this
      * function you must once again call the appropriate combination of:
-     *      AuthOrder.cacheCredsAndAuthOrder
+     *      AuthOrder.addCredsToSession
      *      AuthOrder.cacheDefaultAuthOrder
      *      AuthOrder.putTopAuthInSession
      *
@@ -242,7 +236,7 @@ export class AuthOrder {
         sessCfg: SessCfgType
     ): void {
         // If our caller did not follow best practices in their use of imperative functions,
-        // then cacheCredsAndAuthOrder may not have been called, and availableCreds may be empty.
+        // then addCredsToSession may not have been called, and availableCreds may be empty.
         if (!sessCfg._authCache?.availableCreds || Object.keys(sessCfg._authCache.availableCreds).length === 0) {
             // As a last resort, cache our creds now with an empty set of command args.
             // This will cache any creds from the sessCfg and use a default auth order.
@@ -350,6 +344,44 @@ export class AuthOrder {
         // remove all extra auth creds from the session
         AuthOrder.removeExtraCredsFromSess(sessCfg);
         Logger.getImperativeLogger().debug("Ending sessCfg = " + Censor.censorSession(sessCfg));
+    }
+
+    // ***********************************************************************
+    /**
+     * Cache all of the credentials that are available in either the supplied
+     * sessCfg object or in the supplied command arguments. Also cache the
+     * authOrder that is specified in the supplied command arguments. The
+     * cache properties are stored into the sessCfg object itself.
+     *
+     * Downstream logic uses this cache to determine which auth type should be
+     * used in the final session used by a client REST request.
+     *
+     * @param sessCfg - Modified.
+     *      A session configuration object to which we place the cached creds.
+     *
+     * @param cmdArgs - Input.
+     *      The set of arguments with which the calling function is operating.
+     *      For CLI, the cmdArgs come from the command line, profile, or
+     *      environment. Other apps can place relevant arguments into this
+     *      object to be processed by this function.
+     *
+     *      If cmdArgs is not supplied, we only cache creds found in the sessCfg.
+     */
+    private static cacheCredsAndAuthOrder<SessCfgType extends ISession>(
+        sessCfg: SessCfgType,
+        cmdArgs: ICommandArguments = { "$0": "NameNotUsed", "_": [] }
+        // when no cmdArgs are provided, use an empty set of cmdArgs
+    ): void {
+        // create a new auth cache (if needed) in the session config
+        AuthOrder.findOrCreateAuthCache(sessCfg);
+
+        // add any discovered authOrder to the cache
+        AuthOrder.cacheAuthOrder(sessCfg, cmdArgs);
+
+        // add every available cred to the cache
+        for (const sessCredName of AuthOrder.ARRAY_OF_CREDS) {
+            AuthOrder.cacheCred(sessCredName, sessCfg, cmdArgs);
+        }
     }
 
     // ***********************************************************************

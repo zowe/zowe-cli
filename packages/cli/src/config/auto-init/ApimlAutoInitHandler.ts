@@ -86,7 +86,7 @@ export default class ApimlAutoInitHandler extends BaseAutoInitHandler {
             }
 
             // now that we have a token, cache the token for our next REST request
-            AuthOrder.cacheCredsAndAuthOrder(session.ISession, {"$0": "NameNotUsed", "_": [],
+            AuthOrder.addCredsToSession(session.ISession, {"$0": "NameNotUsed", "_": [],
                 "authOrder": "token",
                 "tokenType": SessConstants.TOKEN_TYPE_APIML,
                 "tokenValue": session.ISession.tokenValue

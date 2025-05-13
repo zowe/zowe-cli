@@ -85,7 +85,7 @@ describe("Get Jobs - System Tests", () => {
             type: "basic",
             rejectUnauthorized: false
         };
-        AuthOrder.cacheCredsAndAuthOrder(invalidSessCfg);
+        AuthOrder.addCredsToSession(invalidSessCfg);
         INVALID_SESSION = new Session(invalidSessCfg);
 
         ACCOUNT = defaultSystem.tso.account;

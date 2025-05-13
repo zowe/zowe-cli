@@ -52,7 +52,7 @@ describe("Logout system test", () => {
     it("should succeed with correct parameters and invalidate token using APIML", async () => {
         let error: ImperativeError;
         const client = new ZosmfRestClient(REAL_SESSION);
-        AuthOrder.cacheCredsAndAuthOrder(REAL_SESSION.ISession, {
+        AuthOrder.addCredsToSession(REAL_SESSION.ISession, {
             "authOrder": "token", "tokenValue": token, "$0": "test", "_": ["test"]
         });
 

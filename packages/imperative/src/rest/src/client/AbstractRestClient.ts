@@ -973,6 +973,10 @@ export abstract class AbstractRestClient {
                 `Received HTTP(S) error ${finalError.httpStatus} = ${http.STATUS_CODES[finalError.httpStatus]}.`;
         }
 
+        let availCredsMsg = Object.keys(this.mSession.ISession._authCache.availableCreds).toString();
+        if (availCredsMsg.length === 0) {
+            availCredsMsg = "No credentials were supplied";
+        }
         detailMessage += "\n" +
         "\nProtocol:          " + finalError.protocol +
         "\nHost:              " + finalError.host +
@@ -984,7 +988,7 @@ export abstract class AbstractRestClient {
         "\nPayload:           " + payloadDetails +
         "\nAuth type:         " + this.mSession.ISession.type +
         "\nAuth order:        " + this.mSession.ISession.authTypeOrder +
-        "\nAvailable creds:   " + Object.keys(this.mSession.ISession._authCache.availableCreds) +
+        "\nAvailable creds:   " + availCredsMsg +
         "\nAllow Unauth Cert: " + !this.mSession.ISession.rejectUnauthorized;
         finalError.additionalDetails = detailMessage;
 

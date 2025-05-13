@@ -113,7 +113,7 @@ export class TestEnvironment extends BaseTestEnvironment {
             rejectUnauthorized: SYSTEM_PROPS.zosmf.rejectUnauthorized,
             basePath: SYSTEM_PROPS.zosmf.basePath
         };
-        AuthOrder.cacheCredsAndAuthOrder(sessCfg, { "$0": "test", "_": ["test"] });
+        AuthOrder.addCredsToSession(sessCfg, { "$0": "test", "_": ["test"] });
 
         return new Session(sessCfg);
     }
@@ -135,7 +135,7 @@ export class TestEnvironment extends BaseTestEnvironment {
             tokenType: "apimlAuthenticationToken",
             rejectUnauthorized: SYSTEM_PROPS.base.rejectUnauthorized
         };
-        AuthOrder.cacheCredsAndAuthOrder(sessCfg, { "$0": "test", "_": ["test"] });
+        AuthOrder.addCredsToSession(sessCfg, { "$0": "test", "_": ["test"] });
 
         return new Session(sessCfg);
     }

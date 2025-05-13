@@ -283,10 +283,10 @@ describe("AuthOrder", () => {
         });
     });
 
-    describe("cacheCredsAndAuthOrder", () => {
+    describe("addCredsToSession", () => {
         it("should cache both available creds and authOrder", () => {
             cmdArgsForTest.authOrder = "cert-pem,basic,bearer,token,none";
-            AuthOrder.cacheCredsAndAuthOrder(sessCfgForTest, cmdArgsForTest);
+            AuthOrder.addCredsToSession(sessCfgForTest, cmdArgsForTest);
 
             // confirm that auth order was recorded
             expect(sessCfgForTest).toHaveProperty("authTypeOrder");
@@ -314,7 +314,7 @@ describe("AuthOrder", () => {
         });
 
         it("should cache creds and authOrder only from sessCfg when no cmdArgs are supplied", () => {
-            AuthOrder.cacheCredsAndAuthOrder(sessCfgForTest);
+            AuthOrder.addCredsToSession(sessCfgForTest);
 
             // confirm that auth order was recorded
             expect(sessCfgForTest).toHaveProperty("authTypeOrder");
@@ -346,7 +346,7 @@ describe("AuthOrder", () => {
             cmdArgsForTest.authOrder = "cert-pem,basic,bearer,token,none";
 
             // create a cache to setup our test
-            AuthOrder.cacheCredsAndAuthOrder(sessCfgForTest, cmdArgsForTest);
+            AuthOrder.addCredsToSession(sessCfgForTest, cmdArgsForTest);
             expect(sessCfgForTest._authCache?.availableCreds["user"]).toEqual(sessCfgUserVal);
             expect(sessCfgForTest._authCache?.availableCreds["password"]).toEqual(sessCfgPassVal);
             expect(sessCfgForTest._authCache?.availableCreds["base64EncodedAuth"]).toEqual(cmdArgsB64AuthVal);
@@ -519,7 +519,7 @@ describe("AuthOrder", () => {
             delete sessCfgForTest.password;
             delete sessCfgForTest.base64EncodedAuth;
 
-            AuthOrder.cacheCredsAndAuthOrder(sessCfgForTest, cmdArgsForTest);
+            AuthOrder.addCredsToSession(sessCfgForTest, cmdArgsForTest);
             AuthOrder.putTopAuthInSession(sessCfgForTest);
 
             expect(sessCfgForTest.type).toEqual(AUTH_TYPE_BASIC);
@@ -544,7 +544,7 @@ describe("AuthOrder", () => {
             delete sessCfgForTest.tokenType;
             delete sessCfgForTest.tokenValue;
 
-            AuthOrder.cacheCredsAndAuthOrder(sessCfgForTest, cmdArgsForTest);
+            AuthOrder.addCredsToSession(sessCfgForTest, cmdArgsForTest);
             AuthOrder.putTopAuthInSession(sessCfgForTest);
 
             expect(sessCfgForTest.type).toEqual(AUTH_TYPE_TOKEN);
@@ -567,7 +567,7 @@ describe("AuthOrder", () => {
             sessCfgForTest[sessCertPropNm] = "certShouldNotRemain";
             sessCfgForTest[sessCertKeyPropNm] = "certKeyShouldNotRemain";
 
-            AuthOrder.cacheCredsAndAuthOrder(sessCfgForTest, cmdArgsForTest);
+            AuthOrder.addCredsToSession(sessCfgForTest, cmdArgsForTest);
             AuthOrder.putTopAuthInSession(sessCfgForTest);
 
             expect(sessCfgForTest.type).toEqual(AUTH_TYPE_BEARER);
@@ -589,7 +589,7 @@ describe("AuthOrder", () => {
             sessCfgForTest.tokenType = "tokenTypeShouldNotRemain";
             sessCfgForTest.tokenValue = "tokenValueShouldNotRemain";
 
-            AuthOrder.cacheCredsAndAuthOrder(sessCfgForTest, cmdArgsForTest);
+            AuthOrder.addCredsToSession(sessCfgForTest, cmdArgsForTest);
             AuthOrder.putTopAuthInSession(sessCfgForTest);
 
             expect(sessCfgForTest.type).toEqual(AUTH_TYPE_CERT_PEM);
@@ -613,7 +613,7 @@ describe("AuthOrder", () => {
             delete sessCfgForTest[sessCertPropNm];
             delete sessCfgForTest[sessCertKeyPropNm];
 
-            AuthOrder.cacheCredsAndAuthOrder(sessCfgForTest, cmdArgsForTest);
+            AuthOrder.addCredsToSession(sessCfgForTest, cmdArgsForTest);
             AuthOrder.putTopAuthInSession(sessCfgForTest);
 
             expect(sessCfgForTest.type).toEqual(AUTH_TYPE_CERT_PEM);
@@ -637,7 +637,7 @@ describe("AuthOrder", () => {
             sessCfgForTest[sessCertPropNm] = "certShouldNotRemain";
             sessCfgForTest[sessCertKeyPropNm] = "certKeyShouldNotRemain";
 
-            AuthOrder.cacheCredsAndAuthOrder(sessCfgForTest, cmdArgsForTest);
+            AuthOrder.addCredsToSession(sessCfgForTest, cmdArgsForTest);
             AuthOrder.putTopAuthInSession(sessCfgForTest);
 
             expect(sessCfgForTest.type).toEqual(AUTH_TYPE_NONE);
@@ -664,7 +664,7 @@ describe("AuthOrder", () => {
             delete sessCfgForTest.user;
             delete sessCfgForTest.password;
 
-            AuthOrder.cacheCredsAndAuthOrder(sessCfgForTest, cmdArgsForTest);
+            AuthOrder.addCredsToSession(sessCfgForTest, cmdArgsForTest);
             AuthOrder.putTopAuthInSession(sessCfgForTest);
 
             expect(sessCfgForTest.type).toEqual(AUTH_TYPE_BASIC);
@@ -680,7 +680,7 @@ describe("AuthOrder", () => {
         it("should reset type to token when using basic auth and authTypeToRequestToken exists", () => {
             cmdArgsForTest.authOrder = `${AUTH_TYPE_BASIC}, ${AUTH_TYPE_CERT_PEM}, ${AUTH_TYPE_TOKEN}, ${AUTH_TYPE_BEARER}`;
 
-            AuthOrder.cacheCredsAndAuthOrder(sessCfgForTest, cmdArgsForTest);
+            AuthOrder.addCredsToSession(sessCfgForTest, cmdArgsForTest);
             AuthOrder.makingRequestForToken(sessCfgForTest);
             AuthOrder.putTopAuthInSession(sessCfgForTest);
 
@@ -699,7 +699,7 @@ describe("AuthOrder", () => {
         it("should reset type to token when using cert auth and authTypeToRequestToken exists", () => {
             cmdArgsForTest.authOrder = `${AUTH_TYPE_CERT_PEM}, ${AUTH_TYPE_BASIC}, ${AUTH_TYPE_TOKEN}, ${AUTH_TYPE_BEARER}`;
 
-            AuthOrder.cacheCredsAndAuthOrder(sessCfgForTest, cmdArgsForTest);
+            AuthOrder.addCredsToSession(sessCfgForTest, cmdArgsForTest);
             AuthOrder.makingRequestForToken(sessCfgForTest);
             AuthOrder.putTopAuthInSession(sessCfgForTest);
 
@@ -716,7 +716,7 @@ describe("AuthOrder", () => {
         it("should skip using top auth of token when authTypeToRequestToken exists", () => {
             cmdArgsForTest.authOrder = `${AUTH_TYPE_TOKEN},  ${AUTH_TYPE_CERT_PEM}, ${AUTH_TYPE_BASIC}, ${AUTH_TYPE_BEARER}`;
 
-            AuthOrder.cacheCredsAndAuthOrder(sessCfgForTest, cmdArgsForTest);
+            AuthOrder.addCredsToSession(sessCfgForTest, cmdArgsForTest);
             AuthOrder.makingRequestForToken(sessCfgForTest);
             AuthOrder.putTopAuthInSession(sessCfgForTest);
 
@@ -733,7 +733,7 @@ describe("AuthOrder", () => {
         it("should skip using top auth of bearer when authTypeToRequestToken exists", () => {
             cmdArgsForTest.authOrder = `${AUTH_TYPE_BEARER}, ${AUTH_TYPE_CERT_PEM}, ${AUTH_TYPE_TOKEN}, ${AUTH_TYPE_BASIC}`;
 
-            AuthOrder.cacheCredsAndAuthOrder(sessCfgForTest, cmdArgsForTest);
+            AuthOrder.addCredsToSession(sessCfgForTest, cmdArgsForTest);
             AuthOrder.makingRequestForToken(sessCfgForTest);
             AuthOrder.putTopAuthInSession(sessCfgForTest);
 
@@ -749,7 +749,7 @@ describe("AuthOrder", () => {
 
         it("should throw an error if an invalid auth is in the authOrder cache", () => {
             const bogusAuth = "InvalidAuthType";
-            AuthOrder.cacheCredsAndAuthOrder(sessCfgForTest, cmdArgsForTest);
+            AuthOrder.addCredsToSession(sessCfgForTest, cmdArgsForTest);
             sessCfgForTest.authTypeOrder = [(bogusAuth as any)];
 
             let thrownError;
@@ -765,7 +765,7 @@ describe("AuthOrder", () => {
         });
 
         it("should result in session type none when authTypeOrder is empty", () => {
-            AuthOrder.cacheCredsAndAuthOrder(sessCfgForTest, cmdArgsForTest);
+            AuthOrder.addCredsToSession(sessCfgForTest, cmdArgsForTest);
             expect(sessCfgForTest.type).toEqual(AUTH_TYPE_BASIC);
 
             // Removing authTypeOrder triggers this edge case.
@@ -777,14 +777,14 @@ describe("AuthOrder", () => {
             expect(sessCfgForTest.type).toEqual(AUTH_TYPE_NONE);
         });
 
-        it("should ensure that cacheCredsAndAuthOrder is called when availableCreds does not exist", () => {
-            const cacheCredsAndAuthOrder = jest.spyOn(AuthOrder, "cacheCredsAndAuthOrder");
+        it("should ensure that addCredsToSession is called when availableCreds does not exist", () => {
+            const addCredsToSession = jest.spyOn(AuthOrder, "addCredsToSession");
             delete sessCfgForTest._authCache;
             expect(sessCfgForTest).not.toHaveProperty("_authCache");
 
             AuthOrder.putTopAuthInSession(sessCfgForTest);
 
-            expect(cacheCredsAndAuthOrder).toHaveBeenCalledTimes(1);
+            expect(addCredsToSession).toHaveBeenCalledTimes(1);
             expect(sessCfgForTest).toHaveProperty("_authCache");
             expect(sessCfgForTest._authCache).toHaveProperty("availableCreds");
             expect(Object.keys((sessCfgForTest as any)._authCache.availableCreds).length).toEqual(2);
@@ -796,7 +796,7 @@ describe("AuthOrder", () => {
             cmdArgsForTest.authOrder = `${AUTH_TYPE_TOKEN},  ${AUTH_TYPE_CERT_PEM}, ${AUTH_TYPE_BASIC}, ${AUTH_TYPE_BEARER}`;
 
             // an invalid authTypeToRequestToken with a session type of token triggers the edge case
-            AuthOrder.cacheCredsAndAuthOrder(sessCfgForTest, cmdArgsForTest);
+            AuthOrder.addCredsToSession(sessCfgForTest, cmdArgsForTest);
             sessCfgForTest.type = AUTH_TYPE_TOKEN;
             const bogusAuthToRequestToken = "InvalidAuthToRequestToken";
             (sessCfgForTest._authCache as any).authTypeToRequestToken = bogusAuthToRequestToken;
@@ -818,7 +818,7 @@ describe("AuthOrder", () => {
             cmdArgsForTest.authOrder = `${AUTH_TYPE_TOKEN},  ${AUTH_TYPE_CERT_PEM}, ${AUTH_TYPE_BASIC}, ${AUTH_TYPE_BEARER}`;
 
             // an invalid session type triggers the edge case
-            AuthOrder.cacheCredsAndAuthOrder(sessCfgForTest, cmdArgsForTest);
+            AuthOrder.addCredsToSession(sessCfgForTest, cmdArgsForTest);
             const bogusSessType = "BadSessionType";
             (sessCfgForTest.type as any) = bogusSessType;
 

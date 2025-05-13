@@ -136,6 +136,11 @@ export class ConnectionPropsForSessCfg {
             }
         }
 
+        // resolveSessCfgProps prviously added creds to our session, but
+        // our caller's overrides may have changed the available creds,
+        // so again add the creds that are currently available.
+        AuthOrder.addCredsToSession(sessCfgToUse, cmdArgs);
+
         // Set default values on propsToPromptFor
         if(connOpts.propsToPromptFor?.length > 0) {
             connOpts.propsToPromptFor.forEach(obj => {
@@ -155,18 +160,13 @@ export class ConnectionPropsForSessCfg {
             promptForValues.push("port");
         }
 
-        const isTokenIrrelevant = ConnectionPropsForSessCfg.propHasValue(sessCfgToUse.tokenValue) === false ||
-            connOpts.supportedAuthTypes && !connOpts.supportedAuthTypes.includes(SessConstants.AUTH_TYPE_TOKEN);
-        const isCertIrrelevant = ConnectionPropsForSessCfg.propHasValue(sessCfgToUse.cert) === false ||
-            connOpts.supportedAuthTypes && !connOpts.supportedAuthTypes.includes(SessConstants.AUTH_TYPE_CERT_PEM);
-
-        // when we do not have a token, cert, or base64EncodedAuth; then we must have user and password
-        if (isTokenIrrelevant && isCertIrrelevant && !sessCfgToUse.base64EncodedAuth) {
-            if (ConnectionPropsForSessCfg.propHasValue(sessCfgToUse.user) === false && !doNotPromptForValues.includes("user")) {
+        // when no creds were found, we must ask for user and password
+        if (sessCfgToUse.type === SessConstants.AUTH_TYPE_NONE ||
+            sessCfgToUse.type === SessConstants.AUTH_TYPE_BASIC && !sessCfgToUse.base64EncodedAuth) {
+            if (!sessCfgToUse._authCache?.availableCreds?.user && !doNotPromptForValues.includes("user")) {
                 promptForValues.push("user");
             }
-
-            if (ConnectionPropsForSessCfg.propHasValue(sessCfgToUse.password) === false && !doNotPromptForValues.includes("password")) {
+            if (!sessCfgToUse._authCache?.availableCreds?.password && !doNotPromptForValues.includes("password")) {
                 promptForValues.push("password");
             }
         }
@@ -203,10 +203,9 @@ export class ConnectionPropsForSessCfg {
             }
         }
 
-        // resolveSessCfgProps previously cached creds, but this function may have added more creds
-        // after prompting. So, we cache all available creds again. AuthOrder.PutTopAuthInSession
-        // will later ensure that only one set of creds remain in the session.
-        AuthOrder.cacheCredsAndAuthOrder(sessCfgToUse, cmdArgs);
+        // We previously added creds, but this function may have added more creds
+        // after prompting. So, we add available creds again.
+        AuthOrder.addCredsToSession(sessCfgToUse, cmdArgs);
 
         impLogger.debug("Session config after any prompting for missing values:\n" +
             Censor.censorSession(sessCfgToUse)
@@ -343,7 +342,7 @@ export class ConnectionPropsForSessCfg {
         }
 
         ConnectionPropsForSessCfg.setTypeForTokenRequest<SessCfgType>(sessCfg, connOpts, cmdArgs.tokenType);
-        AuthOrder.cacheCredsAndAuthOrder(sessCfg, cmdArgs);
+        AuthOrder.addCredsToSession(sessCfg, cmdArgs);
         impLogger.debug("Creating a session config with these properties:\n" +
             Censor.censorSession(sessCfg)
         );

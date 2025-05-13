@@ -92,7 +92,7 @@ export default class ImportHandler implements ICommandHandler {
                 password: this.params.arguments.password
             });
         }
-        AuthOrder.cacheCredsAndAuthOrder(session.ISession, this.params.arguments);
+        AuthOrder.addCredsToSession(session.ISession, this.params.arguments);
         session.ISession.rejectUnauthorized = this.params.arguments.rejectUnauthorized;
         return session;
     }
