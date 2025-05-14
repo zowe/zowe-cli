@@ -203,7 +203,7 @@ export class ConfigUtils {
             const loggingConfig = LoggingConfigurer.configureLogger(
                 ImperativeConfig.instance.cliHome, ImperativeConfig.instance.loadedConfig
             );
-            Logger.initLogger(loggingConfig);
+            Logger.fromLog4jsToWinston(loggingConfig);
         }
         return Logger.getImperativeLogger();
     }

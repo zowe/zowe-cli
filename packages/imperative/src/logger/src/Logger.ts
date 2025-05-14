@@ -18,8 +18,11 @@ import { IO } from "../../io";
 import { IConfigLogging } from "./doc/IConfigLogging";
 import { LoggerManager } from "./LoggerManager";
 import * as log4js from "log4js";
-import { Console } from "../../console/src/Console";
+import * as winston from "winston";
+import { customLevels, log4jsConfigToWinstonConfig } from "./log4jsToWinston";
+import { Console, ConsoleLevels } from "../../console/src/Console";
 import { Censor } from "../../censor";
+import { IQueuedMessage } from "./doc/IQueuedMessage";
 
 /**
  * Note(Kelosky): it seems from the log4js doc that you only get a single
@@ -40,6 +43,8 @@ export class Logger {
     public static getLoggerCategory(category: string) {
         if (category === Logger.DEFAULT_CONSOLE_NAME) {
             return new Logger(new Console(), Logger.DEFAULT_CONSOLE_NAME);
+        } else if (winston.loggers.has(category)) {
+            return new Logger(winston.loggers.get(category));
         } else {
             return new Logger(log4js.getLogger(category), category);
         }
@@ -107,10 +112,9 @@ export class Logger {
     }
 
     /**
-     * Get an instance of logging and adjust for config if config is present;
-     * otherwise, use defaults.
-     * @param  {IConfigLogging} loggingConfig [description]
-     * @return {[type]}                       [description]
+     * Initializes a Logger powered by log4js, given a configuration.
+     * @param  {IConfigLogging} loggingConfig The log4js configuration to use
+     * @return {Logger} A new logger instance
      */
     public static initLogger(loggingConfig: IConfigLogging) {
         if (loggingConfig == null) {
@@ -144,20 +148,126 @@ export class Logger {
             cons.error("Couldn't make desired logger: %s", inspect(err));
             return new Logger(cons);
         }
-
     }
 
     /**
-     * This flag is being used to monitor the log4js configure status.
+     * Creates an instance of a Logger powered by Winston, based on a log4js config.
+     * @param  {IConfigLogging} loggingConfig The log4js configuration to use
+     * @return {Logger} A new logger instance           
+     */
+    public static fromLog4jsToWinston(loggingConfig: IConfigLogging) {
+        if (loggingConfig == null) {
+            throw new ImperativeError({msg: "Input logging config document is required"});
+        }
+
+        if (loggingConfig.log4jsConfig == null) {
+            throw new ImperativeError({msg: "Input logging config is incomplete, does not contain log4jsConfig"});
+        }
+
+        // log4js doc: When defining your appenders through a configuration, at least one category must be defined.
+        if (loggingConfig.log4jsConfig.appenders == null || loggingConfig.log4jsConfig.categories == null ||
+            Object.keys(loggingConfig.log4jsConfig.categories).length === 0) {
+            throw new ImperativeError({msg: "Input logging config is incomplete, does not contain log4jsConfig.appenders or log4jsConfig.categories"});
+        }
+
+        try {
+            for (const appenderName of Object.keys(loggingConfig.log4jsConfig.appenders)) {
+                const appender = loggingConfig.log4jsConfig.appenders[appenderName];
+                if (
+                    typeof appender === "object" &&
+                    appender !== null &&
+                    "type" in appender &&
+                    (appender.type === "file" || appender.type === "fileSync") &&
+                    "filename" in appender
+                ) {
+                    IO.createDirsSyncFromFilePath(appender.filename);
+                }
+            }
+
+            let newLoggerInst: winston.Logger | undefined;
+
+            // Process categories to create specific logger configurations
+            if (loggingConfig.log4jsConfig.categories) {
+                for (const categoryName of Object.keys(loggingConfig.log4jsConfig.categories)) {
+                    const catConfig = loggingConfig.log4jsConfig.categories[categoryName];
+                    const categoryLevel = (catConfig?.level || "info").toLowerCase(); // Default to info if level not specified
+                    const categoryAppenders = catConfig?.appenders ?? [];
+
+                    // Generate a Winston config specifically for this category's appenders and level
+                    const categoryWinstonConfig = log4jsConfigToWinstonConfig(
+                        loggingConfig.log4jsConfig, // Pass the full original config for appender lookup
+                        categoryLevel,
+                        categoryAppenders
+                    );
+
+                    // Add custom levels to the generated config
+                    categoryWinstonConfig.levels = customLevels.levels;
+
+                    // Add the logger with its specific configuration
+                    winston.loggers.add(categoryName, categoryWinstonConfig);
+                    newLoggerInst = winston.loggers.get(categoryName);
+                }
+            }
+            LoggerManager.instance.isLoggerInit = true;
+
+            // Return the new logger instance if built, otherwise fallback to an available logger
+            if (newLoggerInst) {
+                return new Logger(newLoggerInst);
+            } else {
+                // Fallback if new logger wasn't created or initialization failed
+                // First try the app winston logger, then the imperative winston logger - use a new console instance as last resort
+                const fallbackLogger = winston.loggers.get(Logger.DEFAULT_APP_NAME) ??
+                                       winston.loggers.get(Logger.DEFAULT_IMPERATIVE_NAME) ??
+                                       new Console();
+                return new Logger(fallbackLogger);
+            }
+        } catch (err) {
+            const cons = new Console();
+            cons.error("Couldn't make desired logger: %s", inspect(err));
+            return new Logger(cons);
+        }
+    }
+
+    /**
+     * Creates a new Logger instance from a given Winston configuration.
+     * @param {winston.LoggerOptions} config - The Winston logger configuration options.
+     * @param {string} [category] - Optional category name for the logger.
+     * @returns {Logger} A new Logger instance.
+     */
+    public static fromWinstonConfig(config: winston.LoggerOptions, category?: string): Logger {
+        try {
+            // Add custom levels to the provided config
+            const configWithCustomLevels = { ...config, levels: customLevels.levels };
+            const winstonLogger = winston.createLogger(configWithCustomLevels);
+
+            // Optionally register the logger if a category is provided and categories are managed
+            if (category && configWithCustomLevels.levels && configWithCustomLevels.level) {
+                if (!winston.loggers.has(category)) {
+                    winston.loggers.add(category, configWithCustomLevels);
+                }
+                // Ensure the created logger instance reflects the specified level for the category
+                winstonLogger.level = configWithCustomLevels.level;
+            }
+            return new Logger(winstonLogger, category);
+        } catch (err) {
+            // Fallback or error handling, potentially log using a default console logger
+            const cons = new Console();
+            cons.error("Failed to create logger from Winston config: %s", inspect(err));
+            // Return a console logger as a fallback
+            return new Logger(cons, category ?? Logger.DEFAULT_CONSOLE_NAME);
+        }
+    }
+
+    /**
+     * This flag is being used to monitor the logger configure status.
      */
     private initStatus: boolean;
 
-    constructor(private mJsLogger: log4js.Logger | Console, private category?: string) {
-
+    constructor(private mJsLogger: log4js.Logger | winston.Logger | Console, private category?: string) {
         if (LoggerManager.instance.isLoggerInit && LoggerManager.instance.QueuedMessages.length > 0) {
-            LoggerManager.instance.QueuedMessages.slice().reverse().forEach((value) => {
+            LoggerManager.instance.QueuedMessages.slice().reverse().forEach((value: IQueuedMessage<Exclude<ConsoleLevels, "off">>) => {
                 if (this.category === value.category) {
-                    (mJsLogger as any)[value.method](value.message);
+                    mJsLogger.log(value.method, value.message);
                     LoggerManager.instance.QueuedMessages.splice(LoggerManager.instance.QueuedMessages.indexOf(value), 1);
                 }
             });
@@ -178,7 +288,7 @@ export class Logger {
     public trace(message: string, ...args: any[]): string {
         const finalMessage = TextUtils.formatMessage.apply(this, [message].concat(args));
         if (LoggerManager.instance.isLoggerInit || this.category === Logger.DEFAULT_CONSOLE_NAME) {
-            this.logService.trace(this.getCallerFileAndLineTag() + finalMessage);
+            this.logService.log("trace", this.getCallerFileAndLineTag() + finalMessage);
         } else {
             LoggerManager.instance.queueMessage(this.category, "trace", this.getCallerFileAndLineTag() + finalMessage);
         }
@@ -266,7 +376,7 @@ export class Logger {
     public fatal(message: string, ...args: any[]): string {
         const finalMessage = Censor.censorRawData(TextUtils.formatMessage.apply(this, [message].concat(args)), this.category);
         if (LoggerManager.instance.isLoggerInit || this.category === Logger.DEFAULT_CONSOLE_NAME) {
-            this.logService.fatal(this.getCallerFileAndLineTag() + finalMessage);
+            this.logService.log("fatal", this.getCallerFileAndLineTag() + finalMessage);
         } else {
             LoggerManager.instance.queueMessage(this.category, "fatal", this.getCallerFileAndLineTag() + finalMessage);
         }
@@ -370,7 +480,15 @@ export class Logger {
      * @param {string} level - new level to set
      */
     set level(level: string) {
+        // Update the level of the current logger instance
         this.logService.level = level;
+
+        // If this is a Winston logger, update the level on the registered transports
+        if (this.logService instanceof winston.Logger) {
+            for (const transport of this.logService.transports) {
+                transport.level = level;
+            }
+        }
     }
 
     /**
@@ -378,7 +496,7 @@ export class Logger {
      * @return {string} - level of current log setting
      */
     get level() {
-        return this.logService.level.toString();
+        return this.logService.level.toString().toUpperCase();
     }
 
     /**
@@ -400,7 +518,7 @@ export class Logger {
     /**
      * Set underlying logger service
      */
-    private set logService(service: log4js.Logger | Console) {
+    private set logService(service: log4js.Logger | winston.Logger | Console) {
         this.mJsLogger = service;
     }
 }

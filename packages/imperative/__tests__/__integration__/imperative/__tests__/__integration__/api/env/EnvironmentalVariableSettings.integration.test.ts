@@ -52,9 +52,8 @@ describe("environmental variable integration", () => {
         // Init and check the logger settings
         await Imperative.init(config);
 
-        // TODO: I think this is a defect - level is defined as type "string", but returns an object
-        expect(Imperative.api.imperativeLogger.level as any).toBe("ERROR");
-        expect(Imperative.api.appLogger.level as any).toBe("WARN");
+        expect(Imperative.api.imperativeLogger.level).toBe("ERROR");
+        expect(Imperative.api.appLogger.level).toBe("WARN");
 
         process.env[vars.appLogLevel.key] = "";
         process.env[vars.imperativeLogLevel.key] = "";
