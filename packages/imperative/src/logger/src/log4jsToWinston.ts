@@ -76,7 +76,7 @@ export function mapLog4jsToDayjsFormat(log4jsFormat: string): string {
             // SSS is milliseconds (already correct)
             .replace(/O/g, "ZZ")
     ); // Timezone offset
-};
+}
 
 /**
  * Translates a log4js pattern string into a Winston format object.
@@ -150,12 +150,12 @@ export type PatternLayout = { type: "pattern"; pattern: string };
 export type AppenderWithPatternLayout = { layout: PatternLayout };
 
 export function isPatternLayout(layout: unknown): layout is PatternLayout {
-    return (typeof layout === "object" &&
+    return typeof layout === "object" &&
         layout !== null &&
         "type" in layout &&
         "pattern" in layout &&
         layout.type === "pattern" &&
-        typeof layout.pattern === "string");
+        typeof layout.pattern === "string";
 }
 
 /**
