@@ -38,6 +38,47 @@ export const customLevels = {
 addColors(customLevels.colors);
 
 /**
+ * Maps log4js date formatting specifiers to dayjs format
+ * @param log4jsFormat The log4js date formatting to convert to dayjs format.
+ * @returns The corresponding dayjs format.
+ */
+export function mapLog4jsToDayjsFormat(log4jsFormat: string): string {    
+    // 
+    // https://github.com/log4js-node/log4js-node/issues/1012#issuecomment-1017144708
+
+    // Support reserved log4js -> date-format strings in pattern options
+    switch (log4jsFormat) {
+        case "ISO8601":
+            return "YYYY-MM-DDTHH:mm:ss.SSS";
+        case "ISO8601_WITH_TZ_OFFSET":
+            // dayjs format for ISO8601 with timezone offset
+            return "YYYY-MM-DDTHH:mm:ss.SSSZZ";
+        case "ABSOLUTE":
+            return "HH:mm:ss.SSS";
+        case "DATE":
+            return "DD MM YYYY HH:mm:ss.SSS";
+        default:
+            break;
+    }
+    
+    // Basic replacements - dayjs uses similar tokens to log4js/fecha for common cases
+    return (
+        log4jsFormat
+            .replace(/yyyy/g, "YYYY") // Year
+            .replace(/yy/g, "YY") // Year, two digits
+            // MM is month (already correct)
+            // dd is day (use DD for dayjs)
+            .replace(/dd/g, "DD")
+            // hh is hour (use HH for 24-hour format in dayjs)
+            .replace(/hh/g, "HH")
+            // mm is minute (already correct)
+            // ss is seconds (already correct)
+            // SSS is milliseconds (already correct)
+            .replace(/O/g, "ZZ")
+    ); // Timezone offset
+};
+
+/**
  * Translates a log4js pattern string into a Winston format object.
  * Handles common tokens like %d, %p, %m, %c, %n, %h, %z, %%.
  * Supports multiple %d tokens with different format specifiers (e.g., %d{yyyy/MM/dd}, %d{hh:mm:ss}).
@@ -48,41 +89,6 @@ addColors(customLevels.colors);
 export function translateLog4jsPattern(
     pattern: string
 ): ReturnType<typeof format.combine> {
-    // Mapping from log4js date format specifiers to dayjs format specifiers
-    // https://github.com/log4js-node/log4js-node/issues/1012#issuecomment-1017144708
-    const mapLog4jsToDayjsFormat = (log4jsFormat: string): string => {
-        // Support reserved log4js -> date-format strings in pattern options
-        switch (log4jsFormat) {
-            case "ISO8601":
-                return "YYYY-MM-DDTHH:mm:ss.SSS";
-            case "ISO8601_WITH_TZ_OFFSET":
-                // dayjs format for ISO8601 with timezone offset
-                return "YYYY-MM-DDTHH:mm:ss.SSSZZ";
-            case "ABSOLUTE":
-                return "HH:mm:ss.SSS";
-            case "DATE":
-                return "DD MM YYYY HH:mm:ss.SSS";
-            default:
-                break;
-        }
-        
-        // Basic replacements - dayjs uses similar tokens to log4js/fecha for common cases
-        return (
-            log4jsFormat
-                .replace(/yyyy/g, "YYYY") // Year
-                .replace(/yy/g, "YY") // Year, two digits
-                // MM is month (already correct)
-                // dd is day (use DD for dayjs)
-                .replace(/dd/g, "DD")
-                // hh is hour (use HH for 24-hour format in dayjs)
-                .replace(/hh/g, "HH")
-                // mm is minute (already correct)
-                // ss is seconds (already correct)
-                // SSS is milliseconds (already correct)
-                .replace(/O/g, "ZZ")
-        ); // Timezone offset
-    };
-
     return format.combine(
         format.timestamp(), // Add timestamp to the info object, default format (ISO)
         format.printf((info) => {
@@ -140,20 +146,28 @@ export function translateLog4jsPattern(
     );
 }
 
+export type PatternLayout = { type: "pattern"; pattern: string };
+export type AppenderWithPatternLayout = { layout: PatternLayout };
+
+export function isPatternLayout(layout: unknown): layout is PatternLayout {
+    return (typeof layout === "object" &&
+        layout !== null &&
+        "type" in layout &&
+        "pattern" in layout &&
+        layout.type === "pattern" &&
+        typeof layout.pattern === "string");
+}
+
 /**
  * Type guard for log4js appender with a pattern layout.
  */
 export function hasPatternLayout(
     appender: unknown
-): appender is { layout: { type: "pattern"; pattern: string } } {
+): appender is AppenderWithPatternLayout {
     return (
         typeof appender === "object" &&
         appender !== null &&
-        "layout" in appender &&
-        typeof (appender as any).layout === "object" &&
-        (appender as any).layout !== null &&
-        (appender as any).layout.type === "pattern" &&
-        typeof (appender as any).layout.pattern === "string"
+        "layout" in appender && isPatternLayout(appender.layout)
     );
 }
 
@@ -257,17 +271,19 @@ export function log4jsConfigToWinstonConfig(
     };
 }
 
+export type AppenderWithType = { type: string; filename?: string };
+
 /**
  * Type guard for log4js appender with a specific type.
  */
 export function isAppenderWithType(
     appender: unknown,
     type: string
-): appender is { type: string; filename?: string } {
+): appender is AppenderWithType {
     return (
         typeof appender === "object" &&
         appender !== null &&
         "type" in appender &&
-        (appender as any).type === type
+        appender.type === type
     );
 }
