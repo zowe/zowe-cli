@@ -12,7 +12,6 @@
 import { AbstractSession, IHandlerParameters, Session } from "@zowe/imperative";
 import { IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosFilesBaseHandler } from "../../../src/zosfiles/ZosFilesBase.handler";
-import { Logger } from "@zowe/imperative";
 
 describe("ZosFilesBaseHandler", () => {
     class TestClass extends ZosFilesBaseHandler {
@@ -45,9 +44,7 @@ describe("ZosFilesBaseHandler", () => {
             port: zosmfProfile.port,
             user: zosmfProfile.user,
             password: zosmfProfile.password,
-            rejectUnauthorized: zosmfProfile.rejectUnauthorized,
-            requestCompletionTimeout: undefined,
-            socketConnectTimeout: undefined
+            rejectUnauthorized: zosmfProfile.rejectUnauthorized
         };
         const expectedSession = new Session(sessionArgs);
         const args = {...sessionArgs, host: zosmfProfile.host, password: zosmfProfile.password};
@@ -96,10 +93,7 @@ describe("ZosFilesBaseHandler", () => {
         await testClass.process(commandParameters);
 
         expect(spy).toHaveBeenCalledTimes(1);
-        expect(spy).toHaveBeenLastCalledWith(commandParameters, expect.objectContaining({
-            mISession: expect.objectContaining(sessionArgs),
-            mLog: expect.objectContaining({ category: Logger.DEFAULT_IMPERATIVE_NAME })
-        }));
+        expect(spy).toHaveBeenLastCalledWith(commandParameters, expectedSession);
 
         expect(commandParameters.response.console.log).toHaveBeenCalledTimes(1);
         expect(commandParameters.response.console.log).toHaveBeenLastCalledWith(apiResponse.commandResponse);

@@ -10,7 +10,7 @@
 */
 
 jest.mock("@zowe/zos-jobs-for-zowe-sdk");
-import { ConnectionPropsForSessCfg, IHandlerParameters, ImperativeError, Session, ISession, Logger } from "@zowe/imperative";
+import { ConnectionPropsForSessCfg, IHandlerParameters, ImperativeError, Session, ISession } from "@zowe/imperative";
 import { GetJobs } from "@zowe/zos-jobs-for-zowe-sdk";
 import { GetJobsData } from "../../../__resources__/GetJobsData";
 import { AllSpoolContentDefinition } from "../../../../../src/zosjobs/view/all-spool-content/AllSpoolContent.definition";
@@ -59,18 +59,9 @@ describe("zos-jobs view all-spool-content handler", () => {
             ZosmfSession.createSessCfgFromArgs(DEFAULT_PARAMETERS.arguments),
             DEFAULT_PARAMETERS.arguments
         );
-        sessCfg.requestCompletionTimeout = undefined;
-        sessCfg.socketConnectTimeout = undefined;
         const fakeSession: Session = new Session(sessCfg);
         const lastSpoolFile = GetJobsData.SAMPLE_SPOOL_FILES[GetJobsData.SAMPLE_SPOOL_FILES.length - 1];
-        expect(GetJobs.getSpoolContent).toHaveBeenLastCalledWith(
-            expect.objectContaining({
-                mISession: expect.objectContaining(sessCfg),
-                mLog: expect.objectContaining({ category: Logger.DEFAULT_IMPERATIVE_NAME })
-            }),
-            lastSpoolFile,
-            undefined
-        );
+        expect(GetJobs.getSpoolContent).toHaveBeenLastCalledWith(fakeSession, lastSpoolFile, undefined);
     });
 
     it("should be able to get the content of a spool file with encoding", async () => {
@@ -98,14 +89,7 @@ describe("zos-jobs view all-spool-content handler", () => {
         );
         const fakeSession: Session = new Session(sessCfg);
         const lastSpoolFile = GetJobsData.SAMPLE_SPOOL_FILES[GetJobsData.SAMPLE_SPOOL_FILES.length - 1];
-        expect(GetJobs.getSpoolContent).toHaveBeenLastCalledWith(
-            expect.objectContaining({
-                mISession: expect.objectContaining(sessCfg),
-                mLog: expect.objectContaining({ category: Logger.DEFAULT_IMPERATIVE_NAME })
-            }),
-            lastSpoolFile,
-            "IBM-037"
-        );
+        expect(GetJobs.getSpoolContent).toHaveBeenLastCalledWith(fakeSession, lastSpoolFile, "IBM-037");
     });
 
     it("should be able to get the content of a spool file with procstep", async () => {
@@ -132,14 +116,7 @@ describe("zos-jobs view all-spool-content handler", () => {
         );
         const fakeSession: Session = new Session(sessCfg);
         const lastSpoolFile = GetJobsData.SAMPLE_SPOOL_FILES_WITH_PROCSTEP[GetJobsData.SAMPLE_SPOOL_FILES_WITH_PROCSTEP.length - 1];
-        expect(GetJobs.getSpoolContent).toHaveBeenLastCalledWith(
-            expect.objectContaining({
-                mISession: expect.objectContaining(sessCfg),
-                mLog: expect.objectContaining({ category: Logger.DEFAULT_IMPERATIVE_NAME })
-            }),
-            lastSpoolFile,
-            undefined
-        );
+        expect(GetJobs.getSpoolContent).toHaveBeenLastCalledWith(fakeSession, lastSpoolFile, undefined);
     });
 
     it("should not transform an error thrown from get jobs getJob API", async () => {
@@ -215,14 +192,7 @@ describe("zos-jobs view all-spool-content handler", () => {
         );
         const fakeSession: Session = new Session(sessCfg);
         const firstSpoolFile = GetJobsData.SAMPLE_SPOOL_FILES[0];
-        expect(GetJobs.getSpoolContent).toHaveBeenCalledWith(
-            expect.objectContaining({
-                mISession: expect.objectContaining(sessCfg),
-                mLog: expect.objectContaining({ category: Logger.DEFAULT_IMPERATIVE_NAME })
-            }),
-            firstSpoolFile,
-            undefined
-        );
+        expect(GetJobs.getSpoolContent).toHaveBeenCalledWith(fakeSession, firstSpoolFile, undefined);
         expect(error).toBeDefined();
         expect(error instanceof ImperativeError).toBe(true);
         expect(error.message).toMatchSnapshot();
