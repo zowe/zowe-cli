@@ -681,6 +681,69 @@ describe("log4jsToWinston tests", () => {
         expect(isAppenderWithType(nullObj, "console")).toBe(false);
         expect(isAppenderWithType(undefinedObj, "console")).toBe(false);
     });
+
+    it("should translate log4js pattern with ISO8601 date format", () => {
+        const pattern = "%d{ISO8601} %p %m";
+        const translatedFormat = (
+            mockLog4jsToWinston as any
+        ).translateLog4jsPattern(pattern);
+
+        const info = {
+            timestamp: "2023-10-27T10:00:00.000Z",
+            level: "error",
+            message: "iso8601 message",
+        };
+        const formattedMessage = translatedFormat.transform(info);
+
+        const expectedTimestamp = dayjs(info.timestamp).format(
+            "YYYY-MM-DDTHH:mm:ss.SSS"
+        );
+        expect(
+            formattedMessage[Object.getOwnPropertySymbols(formattedMessage)[0]]
+        ).toBe(`${expectedTimestamp} ERROR iso8601 message`);
+    });
+
+    it("should translate log4js pattern with ABSOLUTE date format", () => {
+        const pattern = "%d{ABSOLUTE} %p %m";
+        const translatedFormat = (
+            mockLog4jsToWinston as any
+        ).translateLog4jsPattern(pattern);
+
+        const info = {
+            timestamp: "2023-10-27T10:00:00.000Z",
+            level: "warn",
+            message: "absolute message",
+        };
+        const formattedMessage = translatedFormat.transform(info);
+
+        const expectedTimestamp = dayjs(info.timestamp).format(
+            "HH:mm:ss.SSS"
+        );
+        expect(
+            formattedMessage[Object.getOwnPropertySymbols(formattedMessage)[0]]
+        ).toBe(`${expectedTimestamp} WARN absolute message`);
+    });
+
+    it("should translate log4js pattern with DATE date format", () => {
+        const pattern = "%d{DATE} %p %m";
+        const translatedFormat = (
+            mockLog4jsToWinston as any
+        ).translateLog4jsPattern(pattern);
+
+        const info = {
+            timestamp: "2023-10-27T10:00:00.000Z",
+            level: "info",
+            message: "date message",
+        };
+        const formattedMessage = translatedFormat.transform(info);
+
+        const expectedTimestamp = dayjs(info.timestamp).format(
+            "DD MM YYYY HH:mm:ss.SSS"
+        );
+        expect(
+            formattedMessage[Object.getOwnPropertySymbols(formattedMessage)[0]]
+        ).toBe(`${expectedTimestamp} INFO date message`);
+    });
 });
 
 describe("Logger.fromLog4jsToWinston", () => {

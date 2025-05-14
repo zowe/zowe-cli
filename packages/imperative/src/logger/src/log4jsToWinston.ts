@@ -49,11 +49,23 @@ export function translateLog4jsPattern(
     pattern: string
 ): ReturnType<typeof format.combine> {
     // Mapping from log4js date format specifiers to dayjs format specifiers
+    // https://github.com/log4js-node/log4js-node/issues/1012#issuecomment-1017144708
     const mapLog4jsToDayjsFormat = (log4jsFormat: string): string => {
-        if (log4jsFormat === "ISO8601_WITH_TZ_OFFSET") {
-            // dayjs format for ISO8601 with timezone offset
-            return "YYYY-MM-DDTHH:mm:ss.SSSZZ";
+        // Support reserved log4js -> date-format strings in pattern options
+        switch (log4jsFormat) {
+            case "ISO8601":
+                return "YYYY-MM-DDTHH:mm:ss.SSS";
+            case "ISO8601_WITH_TZ_OFFSET":
+                // dayjs format for ISO8601 with timezone offset
+                return "YYYY-MM-DDTHH:mm:ss.SSSZZ";
+            case "ABSOLUTE":
+                return "HH:mm:ss.SSS";
+            case "DATE":
+                return "DD MM YYYY HH:mm:ss.SSS";
+            default:
+                break;
         }
+        
         // Basic replacements - dayjs uses similar tokens to log4js/fecha for common cases
         return (
             log4jsFormat
