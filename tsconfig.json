@@ -5,7 +5,8 @@
       "jest"
     ],
     "lib": [
-      "esnext"
+      "esnext",
+      "dom"
     ],
     "target": "es2015",
     "module": "commonjs",

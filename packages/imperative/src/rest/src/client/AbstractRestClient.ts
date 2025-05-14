@@ -13,7 +13,6 @@ import { inspect } from "util";
 import { Logger } from "../../../logger";
 import { IImperativeError, ImperativeError } from "../../../error";
 import { AbstractSession } from "../session/AbstractSession";
-import * as https from "https";
 import * as http from "http";
 import { readFileSync } from "fs";
 import { ContentEncoding, Headers } from "./Headers";
@@ -24,7 +23,7 @@ import { HTTP_VERB } from "./types/HTTPVerb";
 import { ImperativeExpect } from "../../../expect/src/ImperativeExpect";
 import { Session } from "../session/Session";
 import * as path from "path";
-import { completionTimeoutErrorMessage, IRestClientError } from "./doc/IRestClientError";
+import { IRestClientError } from "./doc/IRestClientError";
 import { RestClientError } from "./RestClientError";
 import { Readable, Writable } from "stream";
 import { IO } from "../../../io";
@@ -35,6 +34,9 @@ import * as SessConstants from "../session/SessConstants";
 import { CompressionUtils } from "./CompressionUtils";
 import { ProxySettings } from "./ProxySettings";
 import { EnvironmentalVariableSettings } from "../../../imperative/src/env/EnvironmentalVariableSettings";
+import { IRequestAdapter } from "./adapters/IRequestAdapter";
+import { NodeRequestAdapter } from "./adapters/NodeRequestAdapter";
+import { WebRequestAdapter } from "./adapters/WebRequestAdapter";
 
 export type RestClientResolve = (data: string) => void;
 
@@ -255,6 +257,20 @@ export abstract class AbstractRestClient {
     }
 
     /**
+     * Get the appropriate request adapter for the current environment
+     * @private
+     * @returns {IRequestAdapter} The request adapter to use
+     */
+    private getRequestAdapter(): IRequestAdapter {
+        // Check if we're in a web environment
+        if (typeof window !== "undefined" && typeof window.fetch === "function") {
+            return new WebRequestAdapter(this.mSession);
+        }
+        // Default to Node.js adapter
+        return new NodeRequestAdapter(this.mSession);
+    }
+
+    /**
      * Perform the actual http REST call with appropriate user input
      * @param {IRestOptions} options
      * @returns {Promise<string>}
@@ -264,7 +280,6 @@ export abstract class AbstractRestClient {
      */
     public request(options: IRestOptions): Promise<string> {
         return new Promise<string>((resolve: RestClientResolve, reject: ImperativeReject) => {
-
             // save for logging
             this.mResource = options.resource;
             this.mRequest = options.request;
@@ -284,143 +299,20 @@ export abstract class AbstractRestClient {
             ImperativeExpect.toBeDefinedAndNonBlank(options.request, "request");
             ImperativeExpect.toBeEqual(options.requestStream != null && options.writeData != null, false,
                 "You cannot specify both writeData and writeStream");
-            const buildOptions = this.buildOptions(options.resource, options.request, options.reqHeaders);
 
-            /**
-             * Perform the actual http request
-             */
-            let clientRequest: http.ClientRequest;
-            if (this.session.ISession.protocol === SessConstants.HTTPS_PROTOCOL) {
-                clientRequest = https.request(buildOptions, this.requestHandler.bind(this));
-                // try {
-                //     clientRequest = https.request(buildOptions, this.requestHandler.bind(this));
-                // } catch (err) {
-                //     if (err.message === "mac verify failure") {
-                //         throw new ImperativeError({
-                //             msg: "Failed to decrypt PFX file - verify your certificate passphrase is correct.",
-                //             causeErrors: err,
-                //             additionalDetails: err.message,
-                //             stack: err.stack
-                //         });
-                //     } else { throw err; }
-                // }
-            } else if (this.session.ISession.protocol === SessConstants.HTTP_PROTOCOL) {
-                clientRequest = http.request(buildOptions, this.requestHandler.bind(this));
-            }
-
-            /**
-             * For a REST request which includes writing raw data to the http server,
-             * write the data via http request.
-             */
-            if (options.writeData != null) {
-
-                this.log.debug("will write data for request");
-                /**
-                 * If the data is JSON, translate to text before writing
-                 */
-                if (this.mIsJson) {
-                    this.log.debug("writing JSON for request");
-                    this.log.trace("JSON body: %s", JSON.stringify(options.writeData));
-                    clientRequest.write(JSON.stringify(options.writeData));
-                } else {
-                    clientRequest.write(options.writeData);
-                }
-            }
-
-            // Set up the request timeout
-            if (this.mSession.ISession.requestCompletionTimeout && this.mSession.ISession.requestCompletionTimeout > 0) {
-                clientRequest.setTimeout(this.mSession.ISession.requestCompletionTimeout);
-            }
-
-            clientRequest.on("timeout", () => {
-                if (clientRequest.socket.connecting) {
-                    // We timed out. Destroy the request.
-                    clientRequest.destroy(new Error("Connection timed out. Check the host, port, and firewall rules."));
-                } else if (this.mSession.ISession.requestCompletionTimeout && this.mSession.ISession.requestCompletionTimeout > 0) {
-                    this.mSession.ISession.requestCompletionTimeoutCallback?.();
-                    clientRequest.destroy(new ImperativeError({msg: completionTimeoutErrorMessage}));
-                }
-            });
-
-            /**
-             * Invoke any onError method whenever an error occurs on writing
-             */
-            clientRequest.on("error", (errorResponse: any) => {
-                // Handle the HTTP 1.1 Keep-Alive race condition
-                if (errorResponse.code === "ECONNRESET" && clientRequest.reusedSocket) {
-                    this.request(options).then((response: string) => {
-                        resolve(response);
-                    }).catch((err) => {
-                        reject(err);
-                    });
-                } else if (errorResponse instanceof ImperativeError && errorResponse.message === completionTimeoutErrorMessage) {
-                    reject(this.populateError({
-                        msg: "HTTP request timed out after connecting.",
-                        causeErrors: errorResponse,
-                        source: "timeout"
-                    }));
-                } else {
-                    reject(this.populateError({
-                        msg: "Failed to send an HTTP request.",
-                        causeErrors: errorResponse,
-                        source: "client"
-                    }));
-                }
-            });
-
-            if (options.requestStream != null) {
-                // if the user requested streaming write of data to the request,
-                // write the data chunk by chunk to the server
-                let bytesUploaded = 0;
-                let heldByte: string;
-                options.requestStream.on("data", (data: Buffer) => {
-                    this.log.debug("Writing data chunk of length %d from requestStream to clientRequest", data.byteLength);
-                    if (this.mNormalizeRequestNewlines) {
-                        this.log.debug("Normalizing new lines in request chunk to \\n");
-                        let dataString = data.toString();
-                        if (heldByte != null) {
-                            dataString = heldByte + dataString;
-                            heldByte = undefined;
-                        }
-                        if (dataString.charAt(dataString.length - 1) === "\r") {
-                            heldByte = dataString.charAt(dataString.length - 1);
-                            dataString = dataString.slice(0,-1);
-                        }
-                        data = Buffer.from(dataString.replace(/\r?\n/g, "\n"));
-                    }
-                    if (this.mTask != null) {
-                        bytesUploaded += data.byteLength;
-                        this.mTask.statusMessage = TextUtils.formatMessage("Uploading %d B", bytesUploaded);
-                        if (this.mTask.percentComplete < TaskProgress.NINETY_PERCENT) {
-                            // we don't know how far along we are but increment the percentage to
-                            // show we are making progress
-                            this.mTask.percentComplete++;
-                        }
-                    }
-                    clientRequest.write(data);
-                });
-                options.requestStream.on("error", (streamError: any) => {
-                    this.log.error("Error encountered reading requestStream: " + streamError);
-                    reject(this.populateError({
-                        msg: "Error reading requestStream",
-                        causeErrors: streamError,
-                        source: "client"
-                    }));
-                });
-                options.requestStream.on("end", () => {
-                    if (heldByte != null) {
-                        clientRequest.write(Buffer.from(heldByte));
-                        heldByte = undefined;
-                    }
-                    this.log.debug("Finished reading requestStream");
-                    // finish the request
-                    clientRequest.end();
-                });
-            } else {
-                // otherwise we're done with the request
-                clientRequest.end();
-            }
-
+            // Use the appropriate request adapter
+            const adapter = this.getRequestAdapter();
+            adapter.request(
+                options.resource,
+                options.request,
+                options.reqHeaders,
+                options.writeData,
+                options.responseStream,
+                options.requestStream,
+                options.normalizeResponseNewLines,
+                options.normalizeRequestNewLines,
+                options.task
+            ).then(resolve).catch(reject);
         });
     }
 
@@ -849,7 +741,7 @@ export abstract class AbstractRestClient {
         this.log.debug("onEnd() called for rest client %s", this.constructor.name);
 
         // Concatenate the chunks, then toss the pieces
-        this.mData = Buffer.concat(this.mChunks);
+        this.mData = Buffer.concat(this.mChunks as unknown as Uint8Array[]);
         this.mChunks = [];
 
         if (this.mTask != null) {
