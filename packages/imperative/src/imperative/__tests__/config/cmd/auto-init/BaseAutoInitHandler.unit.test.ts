@@ -143,7 +143,8 @@ describe("BaseAutoInitHandler", () => {
                 user: "toBeDeleted",
                 password: "toBeDeleted",
                 cert: "toBeDeleted",
-                certKey: "toBeDeleted"
+                certKey: "toBeDeleted",
+                authOrder: "token"
             }
         } as any;
 
