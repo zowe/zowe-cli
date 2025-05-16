@@ -271,7 +271,7 @@ export class AuthOrder {
 
                         // we also need the tokenType in the session to request the token
                         if (sessCfg._authCache.availableCreds.tokenType) {
-                            sessCfg.tokenType = sessCfg._authCache.availableCreds.tokenType
+                            sessCfg.tokenType = sessCfg._authCache.availableCreds.tokenType;
                         }
                     }
                     break;
@@ -321,7 +321,7 @@ export class AuthOrder {
 
                             // we also need the tokenType in the session to request the token
                             if (sessCfg._authCache.availableCreds.tokenType) {
-                                sessCfg.tokenType = sessCfg._authCache.availableCreds.tokenType
+                                sessCfg.tokenType = sessCfg._authCache.availableCreds.tokenType;
                             }
                         } else {
                             sessTypeToUse = SessConstants.AUTH_TYPE_CERT_PEM;
