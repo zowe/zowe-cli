@@ -649,11 +649,8 @@ export class AuthOrder {
                     AuthOrder.keepCred(AuthOrder.SESS_CERT_KEY_NAME, credsToRemove);
                     break;
                 case SessConstants.AUTH_TYPE_NONE:
-                    // we never call removeExtraCredsFromSess when authType is none, so we should never get here
-                    errMsg = "An attempt to remove extra creds is invalid for auth type = " +
-                        SessConstants.AUTH_TYPE_NONE;
-                    Logger.getImperativeLogger().error(errMsg);
-                    throw new ImperativeError({ msg: errMsg });
+                    // when user explicitly selects none, remove all creds
+                    break;
                 default:
                     // User's authOrder was validated. A wrong value now is due to our programming error.
                     errMsg = `The requested session contains an invalid value for 'type' = ${sessCfg.type}.`;
