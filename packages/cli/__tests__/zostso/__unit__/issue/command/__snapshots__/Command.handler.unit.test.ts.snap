@@ -9,6 +9,7 @@ exports[`issue command handler tests should issue command 1`] = `
 Object {
   "_authCache": Object {
     "availableCreds": Object {
+      "base64EncodedAuth": "c29tZW9uZTpmYWtl",
       "password": "fake",
       "user": "someone",
     },
