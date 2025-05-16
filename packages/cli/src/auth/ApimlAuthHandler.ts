@@ -80,8 +80,9 @@ export default class ApimlAuthHandler extends BaseAuthHandler {
 
         if (zosmfProfObj?.authOrder) {
             // we already have an authOrder in this zosmf profile
-            if (zosmfProfObj.authOrder.search(/^ *token/) >= 0) {
-                // token is at the start of the authOrder, so no need to add or replace authOrder
+            if (zosmfProfObj.authOrder.search(/^ *token, *bearer/) >= 0 ||
+                zosmfProfObj.authOrder.search(/^ *bearer, *token/) >= 0) {
+                // when both bearer and token are at the start of the authOrder, there is no need to replace authOrder
                 return;
             }
         }
@@ -94,7 +95,7 @@ export default class ApimlAuthHandler extends BaseAuthHandler {
             config.api.layers.activate(user, global);
         }
         const profilePath = config.api.profiles.getProfilePathFromName(zosmfProfNm);
-        config.set(`${profilePath}.properties.authOrder`, "token");
+        config.set(`${profilePath}.properties.authOrder`, "token, bearer");
         await config.save();
 
         // Restore the original layer
