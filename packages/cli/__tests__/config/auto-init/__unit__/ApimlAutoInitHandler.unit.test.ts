@@ -10,7 +10,7 @@
 */
 
 import ApimlAutoInitHandler from "../../../../src/config/auto-init/ApimlAutoInitHandler";
-import { SessConstants, RestClientError, IRestClientError, ImperativeConfig, IConfig, ConfigUtils, Config } from "@zowe/imperative";
+import { AuthOrder, SessConstants, RestClientError, IRestClientError, ImperativeConfig, IConfig, ConfigUtils, Config } from "@zowe/imperative";
 import { ZosmfSession } from "@zowe/zosmf-for-zowe-sdk";
 import { IApimlProfileInfo, IProfileRpt, Login, Services } from "@zowe/core-for-zowe-sdk";
 import * as lodash from "lodash";
@@ -41,6 +41,10 @@ function mockConfigApi(properties: IConfig | undefined): any {
 }
 
 describe("ApimlAutoInitHandler", () => {
+    beforeEach(() => {
+        AuthOrder.addCredsToSession = jest.fn();
+    });
+
     afterEach(() => {
         jest.clearAllMocks();
     });
