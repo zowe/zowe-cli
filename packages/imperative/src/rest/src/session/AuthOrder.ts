@@ -242,7 +242,7 @@ export class AuthOrder {
             // This will cache any creds from the sessCfg and use a default auth order.
             AuthOrder.cacheCredsAndAuthOrder(sessCfg, { "$0": "NameNotUsed", "_": [] });
         }
-        Logger.getImperativeLogger().debug("Starting sessCfg = " + Censor.censorSession(sessCfg));
+        Logger.getImperativeLogger().debug("SessCfg before setting top auth = " + Censor.censorSession(sessCfg));
 
         // Detect the first auth type (from our auth order) within our available credentials.
         // Ensure that the auth properties are placed in the session config.
@@ -268,6 +268,11 @@ export class AuthOrder {
                         // but we change the session type to token (old requirement).
                         sessCfg._authCache.authTypeToRequestToken = SessConstants.AUTH_TYPE_BASIC;
                         sessTypeToUse = SessConstants.AUTH_TYPE_TOKEN;
+
+                        // we also need the tokenType in the session to request the token
+                        if (sessCfg._authCache.availableCreds.tokenType) {
+                            sessCfg.tokenType = sessCfg._authCache.availableCreds.tokenType
+                        }
                     }
                     break;
                 case SessConstants.AUTH_TYPE_TOKEN:
@@ -313,6 +318,11 @@ export class AuthOrder {
                             // but we still record the session type as token (old requirements).
                             sessCfg._authCache.authTypeToRequestToken = SessConstants.AUTH_TYPE_CERT_PEM;
                             sessTypeToUse = SessConstants.AUTH_TYPE_TOKEN;
+
+                            // we also need the tokenType in the session to request the token
+                            if (sessCfg._authCache.availableCreds.tokenType) {
+                                sessCfg.tokenType = sessCfg._authCache.availableCreds.tokenType
+                            }
                         } else {
                             sessTypeToUse = SessConstants.AUTH_TYPE_CERT_PEM;
                         }
@@ -343,7 +353,7 @@ export class AuthOrder {
 
         // remove all extra auth creds from the session
         AuthOrder.removeExtraCredsFromSess(sessCfg);
-        Logger.getImperativeLogger().debug("Ending sessCfg = " + Censor.censorSession(sessCfg));
+        Logger.getImperativeLogger().debug("SessCfg after setting top auth = " + Censor.censorSession(sessCfg));
     }
 
     // ***********************************************************************
@@ -399,13 +409,15 @@ export class AuthOrder {
         sessCfg: SessCfgType,
         cmdArgs: ICommandArguments
     ): void {
-        // have we already cached an authOrder?
-        if (sessCfg.authTypeOrder.length > 0) {
-            // start over with an empty auth order.
-            sessCfg.authTypeOrder = [];
+        // have we already cached an authOrder set by user (or calling service)?
+        if (sessCfg.authTypeOrder.length > 0 && sessCfg._authCache.didUserSetAuthOrder) {
+            // We do not reset an auth order set by the user
+            return;
         }
 
+        sessCfg.authTypeOrder = [];
         sessCfg._authCache.didUserSetAuthOrder = false;
+
         if (cmdArgs.authOrder) {
             if (typeof cmdArgs.authOrder === "string") {
                 if (cmdArgs.authOrder.length > 0) {
@@ -480,10 +492,10 @@ export class AuthOrder {
             cmdArgsCredName = sessCredName;
         }
 
-        if ((sessCfg as any)[sessCredName]) {
-            sessCfg._authCache.availableCreds[sessCredName] = (sessCfg as any)[sessCredName];
-        } else if (cmdArgs[cmdArgsCredName]) {
+        if (cmdArgs[cmdArgsCredName]) {
             sessCfg._authCache.availableCreds[sessCredName] = cmdArgs[cmdArgsCredName];
+        } else if ((sessCfg as any)[sessCredName]) {
+            sessCfg._authCache.availableCreds[sessCredName] = (sessCfg as any)[sessCredName];
         }
     }
 
@@ -606,13 +618,13 @@ export class AuthOrder {
                         AuthOrder.keepCred("tokenValue", credsToRemove);
                     } else if (sessCfg._authCache.authTypeToRequestToken == SessConstants.AUTH_TYPE_BASIC) {
                         // We are requesting a token using basic creds.
-                        // Keep our basic creds and allow tokenValue to be removed.
+                        // Keep our basic creds, but allow tokenValue to be removed.
                         AuthOrder.keepCred("base64EncodedAuth", credsToRemove);
                         AuthOrder.keepCred("user", credsToRemove);
                         AuthOrder.keepCred("password", credsToRemove);
                     } else if (sessCfg._authCache.authTypeToRequestToken == SessConstants.AUTH_TYPE_CERT_PEM) {
                         // We are requesting a token using a cert.
-                        // Keep the cert creds and allow tokenValue to be removed
+                        // Keep the cert creds, but allow tokenValue to be removed
                         AuthOrder.keepCred(AuthOrder.SESS_CERT_NAME, credsToRemove);
                         AuthOrder.keepCred(AuthOrder.SESS_CERT_KEY_NAME, credsToRemove);
                     } else {
