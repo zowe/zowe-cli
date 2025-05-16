@@ -147,8 +147,6 @@ export class ConnectionPropsForSessCfg {
         // so again add the creds that are currently available.
         AuthOrder.addCredsToSession(sessCfgToUse, cmdArgs);
 
-        console.log("addPropsOrPrompt:zzz: sessCfgToUse after addCredsToSession:\n" + JSON.stringify(sessCfgToUse, null, 2));
-
         // Set default values on propsToPromptFor
         if(connOpts.propsToPromptFor?.length > 0) {
             connOpts.propsToPromptFor.forEach(obj => {
