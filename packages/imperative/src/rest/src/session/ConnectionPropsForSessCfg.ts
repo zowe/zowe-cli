@@ -128,16 +128,26 @@ export class ConnectionPropsForSessCfg {
                     for (const prop of override.propertiesOverridden) {
                         // Make sure we do not prompt for the overridden property.
                         if (!doNotPromptForValues.includes(prop)) { doNotPromptForValues.push(prop); }
+                        // remove the property from the session
                         if (prop in sessCfgToUse) { (sessCfgToUse as any)[prop] = undefined; }
+                        // remove the property from command arguments
+                        if (prop in cmdArgs) { (cmdArgs as any)[prop] = undefined; }
+                        // remove the property from the cached creds
+                        if (sessCfgToUse._authCache?.availableCreds) {
+                            if (prop in sessCfgToUse._authCache.availableCreds) {
+                                (sessCfgToUse._authCache.availableCreds as any)[prop] = undefined;
+                            }
+                        }
                     }
                 }
             }
         }
-
         // resolveSessCfgProps previously added creds to our session, but
         // our caller's overrides may have changed the available creds,
         // so again add the creds that are currently available.
         AuthOrder.addCredsToSession(sessCfgToUse, cmdArgs);
+
+        console.log("addPropsOrPrompt:zzz: sessCfgToUse after addCredsToSession:\n" + JSON.stringify(sessCfgToUse, null, 2));
 
         // Set default values on propsToPromptFor
         if(connOpts.propsToPromptFor?.length > 0) {

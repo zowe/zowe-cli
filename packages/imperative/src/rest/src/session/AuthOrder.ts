@@ -345,14 +345,20 @@ export class AuthOrder {
 
         if (sessTypeToUse === null) {
             // When no creds are in the session, record the auth type as none.
+            // We know that we do not have a enough standard cred properties to successfully authenticate.
+            // However, some modules (like SSH) use overrides to eliminate some cred properties (like password),
+            // leave some cred properties (like user), and use another cred (like SSH-key).
+            // Therefore, we place every still-available cred into the session.
             sessCfg.type = SessConstants.AUTH_TYPE_NONE;
-
+            for (const nextCred of Object.keys(sessCfg._authCache.availableCreds)) {
+                (sessCfg as any)[nextCred] = sessCfg._authCache.availableCreds[nextCred];
+            }
         } else {
+            // remove all extra auth creds from the session
             sessCfg.type = sessTypeToUse;
+            AuthOrder.removeExtraCredsFromSess(sessCfg);
         }
 
-        // remove all extra auth creds from the session
-        AuthOrder.removeExtraCredsFromSess(sessCfg);
         Logger.getImperativeLogger().debug("SessCfg after setting top auth = " + Censor.censorSession(sessCfg));
     }
 
@@ -643,7 +649,11 @@ export class AuthOrder {
                     AuthOrder.keepCred(AuthOrder.SESS_CERT_KEY_NAME, credsToRemove);
                     break;
                 case SessConstants.AUTH_TYPE_NONE:
-                    break;
+                    // we never call removeExtraCredsFromSess when authType is none, so we should never get here
+                    errMsg = "An attempt to remove extra creds is invalid for auth type = " +
+                        SessConstants.AUTH_TYPE_NONE;
+                    Logger.getImperativeLogger().error(errMsg);
+                    throw new ImperativeError({ msg: errMsg });
                 default:
                     // User's authOrder was validated. A wrong value now is due to our programming error.
                     errMsg = `The requested session contains an invalid value for 'type' = ${sessCfg.type}.`;
