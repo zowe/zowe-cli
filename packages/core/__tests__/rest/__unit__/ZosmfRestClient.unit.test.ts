@@ -141,7 +141,7 @@ describe("ZosmfRestClient tests", () => {
             const processedError = (zosmfRestClient as any).processError(error);
             expect(processedError.msg).toContain("Fake token error");
             expect(processedError.msg).toContain("This operation requires authentication.");
-            expect(processedError.msg).toContain("Token is not valid or expired");
+            expect(processedError.msg).toContain("Token type = 'jwtToken' is not valid, token is invalid, or token is expired");
             expect(processedError.msg).toContain("To obtain a new valid token, use the following command: `zowe config secure`");
             expect(processedError.msg).toContain("For CLI usage, see `zowe config secure --help`");
             expect(processedError.causeErrors).toEqual('{"Error": "Fake token error"}');
