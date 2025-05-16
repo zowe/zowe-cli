@@ -101,8 +101,6 @@ export class ConnectionPropsForSessCfg {
         cmdArgs: ICommandArguments,
         connOpts: IOptionsForAddConnProps <SessCfgType> = {}
     ): Promise<SessCfgType> {
-        const impLogger = Logger.getImperativeLogger();
-
         /* Create copies of our initialSessCfg and connOpts so that
          * we can modify them without changing the caller's copy.
          */
@@ -136,7 +134,7 @@ export class ConnectionPropsForSessCfg {
             }
         }
 
-        // resolveSessCfgProps prviously added creds to our session, but
+        // resolveSessCfgProps previously added creds to our session, but
         // our caller's overrides may have changed the available creds,
         // so again add the creds that are currently available.
         AuthOrder.addCredsToSession(sessCfgToUse, cmdArgs);
@@ -206,10 +204,6 @@ export class ConnectionPropsForSessCfg {
         // We previously added creds, but this function may have added more creds
         // after prompting. So, we add available creds again.
         AuthOrder.addCredsToSession(sessCfgToUse, cmdArgs);
-
-        impLogger.debug("Session config after any prompting for missing values:\n" +
-            Censor.censorSession(sessCfgToUse)
-        );
         return sessCfgToUse;
     }
 
@@ -246,8 +240,6 @@ export class ConnectionPropsForSessCfg {
         cmdArgs: ICommandArguments = { $0: "", _: [] },
         connOpts: IOptionsForAddConnProps <SessCfgType> = {}
     ) {
-        const impLogger = Logger.getImperativeLogger();
-
         // use defaults if caller has not specified these properties.
         if (!Object.prototype.hasOwnProperty.call(connOpts, "requestToken")) {
             connOpts.requestToken = false;
@@ -260,8 +252,14 @@ export class ConnectionPropsForSessCfg {
         }
 
         if (connOpts.requestToken) {
-            // record that we want to request a token.
+            // record in the session that we want to request a token.
             AuthOrder.makingRequestForToken(sessCfg);
+
+            // When no token type is specified in the command args or in the session,
+            // store our defaultTokenType in the session.
+            if (!cmdArgs.tokenType && !sessCfg.tokenType && connOpts.defaultTokenType) {
+                sessCfg.tokenType = connOpts.defaultTokenType;
+            }
         }
 
         /* Override properties from our caller's sessCfg
@@ -280,72 +278,22 @@ export class ConnectionPropsForSessCfg {
             sessCfg.password = cmdArgs.password;
         }
 
-        if (connOpts.requestToken) {
-            // deleting any tokenValue, ensures that basic creds are used to authenticate and get token
-            delete sessCfg.tokenValue;
-        } else if (ConnectionPropsForSessCfg.propHasValue(sessCfg.user) === false &&
-            ConnectionPropsForSessCfg.propHasValue(sessCfg.password) === false &&
-            ConnectionPropsForSessCfg.propHasValue(cmdArgs.tokenValue)) {
-            // set tokenValue if token is in args, and user and password are NOT supplied.
-            sessCfg.tokenValue = cmdArgs.tokenValue;
-        }
-
-        // we use a cert when none of user, password, or token are supplied
-        if (ConnectionPropsForSessCfg.propHasValue(sessCfg.user) === false &&
-            ConnectionPropsForSessCfg.propHasValue(sessCfg.password) === false &&
-            ConnectionPropsForSessCfg.propHasValue(sessCfg.tokenValue) === false &&
-            ConnectionPropsForSessCfg.propHasValue(cmdArgs.certFile)) {
-            if (ConnectionPropsForSessCfg.propHasValue(cmdArgs.certKeyFile)) {
-                sessCfg.cert = cmdArgs.certFile;
-                sessCfg.certKey = cmdArgs.certKeyFile;
-            }
-            // else if (ConnectionPropsForSessCfg.propHasValue(cmdArgs.certFilePassphrase)) {
-            //     sessCfg.cert = cmdArgs.certFile;
-            //     sessCfg.passphrase = cmdArgs.certFilePassphrase;
-            // }
-        }
-
-        const isTokenUsed = ConnectionPropsForSessCfg.propHasValue(sessCfg.tokenValue) &&
-            (connOpts.supportedAuthTypes == null || connOpts.supportedAuthTypes.includes(SessConstants.AUTH_TYPE_TOKEN));
-        const isCertUsed = ConnectionPropsForSessCfg.propHasValue(sessCfg.cert) &&
-            (connOpts.supportedAuthTypes == null || connOpts.supportedAuthTypes.includes(SessConstants.AUTH_TYPE_CERT_PEM));
-        if (isTokenUsed) {
-            // when tokenValue is set at this point, we are definitely using the token.
-            impLogger.debug("Using token authentication");
-
-            // override any token type in sessCfg with cmdArgs value
-            if (ConnectionPropsForSessCfg.propHasValue(cmdArgs.tokenType)) {
-                sessCfg.tokenType = cmdArgs.tokenType;
-            }
-
-            // set the auth type based on token type
-            if (ConnectionPropsForSessCfg.propHasValue(sessCfg.tokenType)) {
-                sessCfg.type = SessConstants.AUTH_TYPE_TOKEN;
-            } else {
-                // When no tokenType supplied, user wants bearer
-                sessCfg.type = SessConstants.AUTH_TYPE_BEARER;
-            }
-        } else if (isCertUsed) {
-            // when cert property is set at this point, we will use the certificate
-            if (ConnectionPropsForSessCfg.propHasValue(sessCfg.certKey)) {
-                impLogger.debug("Using PEM Certificate authentication");
-                sessCfg.type = SessConstants.AUTH_TYPE_CERT_PEM;
-            }
-            // else if (ConnectionPropsForSessCfg.propHasValue(sessCfg.passphrase)) {
-            //  impLogger.debug("Using PFX Certificate authentication");
-            //  sessCfg.type = SessConstants.AUTH_TYPE_CERT_PFX;
-            // }
-        } else {
-            // we are using basic auth
-            impLogger.debug("Using basic authentication");
-            sessCfg.type = SessConstants.AUTH_TYPE_BASIC;
-        }
-
-        ConnectionPropsForSessCfg.setTypeForTokenRequest<SessCfgType>(sessCfg, connOpts, cmdArgs.tokenType);
+        // record all of the currently available credential information into the session
         AuthOrder.addCredsToSession(sessCfg, cmdArgs);
-        impLogger.debug("Creating a session config with these properties:\n" +
-            Censor.censorSession(sessCfg)
-        );
+
+        // When our caller only supports limited authTypes, limit the authTypes in the session
+        if (connOpts.supportedAuthTypes) {
+            Logger.getImperativeLogger().warn(`Overriding existing authOrder = ${sessCfg.authTypeOrder} ` +
+                `because a service only supports these limited authTypes = ${connOpts.supportedAuthTypes}`
+            );
+            sessCfg.authTypeOrder = Array.from(connOpts.supportedAuthTypes);
+
+            // ensure that our newly set authOrder will not be overridden in the future
+            sessCfg._authCache.didUserSetAuthOrder = true;
+
+            // now that we changed the criteria, ensure that the top creds are recorded in the session
+            AuthOrder.putTopAuthInSession(sessCfg);
+        }
     }
 
     // ***********************************************************************
@@ -465,36 +413,6 @@ export class ConnectionPropsForSessCfg {
             return opts.parms.response.console.prompt(promptText, opts);
         } else {
             return CliUtils.readPrompt(promptText, opts);
-        }
-    }
-
-    // ***********************************************************************
-    /**
-     * Determine if we want to request a token.
-     * Set the session's type and tokenType accordingly.
-     *
-     * @param sessCfg
-     *       The session configuration to be updated.
-     *
-     * @param options
-     *       Options that alter our actions. See IOptionsForAddConnProps.
-     *
-     * @param tokenType
-     *       The type of token that we expect to receive.
-     */
-    private static setTypeForTokenRequest<SessCfgType extends ISession=ISession>(
-        sessCfg: SessCfgType,
-        options: IOptionsForAddConnProps<SessCfgType>,
-        tokenType: SessConstants.TOKEN_TYPE_CHOICES
-    )  {
-        const impLogger = Logger.getImperativeLogger();
-        if (options.requestToken) {
-            impLogger.debug("Requesting a token");
-            if (sessCfg.type === SessConstants.AUTH_TYPE_BASIC) {
-                // Set our type to token to get a token from user and pass
-                sessCfg.type = SessConstants.AUTH_TYPE_TOKEN;
-            }
-            sessCfg.tokenType = tokenType || sessCfg.tokenType || options.defaultTokenType;
         }
     }
 
