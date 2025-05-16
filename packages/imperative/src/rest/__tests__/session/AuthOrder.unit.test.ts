@@ -224,6 +224,9 @@ describe("AuthOrder", () => {
             expect(sessCfgForTest._authCache?.didUserSetAuthOrder).toBe(true);
 
             // cache the auth order for this session a second time
+            if (sessCfgForTest._authCache?.didUserSetAuthOrder) {
+                sessCfgForTest._authCache.didUserSetAuthOrder = false;
+            }
             cmdArgsForTest.authOrder = "token,basic";
             authOrder  = [AUTH_TYPE_TOKEN, AUTH_TYPE_BASIC];
 
@@ -271,7 +274,7 @@ describe("AuthOrder", () => {
         it("should cache a cred from sessCfg when it is in both cmdArgs and sessCfg", () => {
             const credName = "password";
             AuthOrder["cacheCred"](credName, sessCfgForTest, cmdArgsForTest);
-            expect(sessCfgForTest._authCache?.availableCreds[credName]).toEqual(sessCfgPassVal);
+            expect(sessCfgForTest._authCache?.availableCreds[credName]).toEqual(cmdArgPassVal);
         });
 
         it("should cache a cred from cmdArgs when it is NOT in sessCfg", () => {
@@ -283,72 +286,14 @@ describe("AuthOrder", () => {
         });
     });
 
-    describe("addCredsToSession", () => {
-        it("should cache both available creds and authOrder", () => {
-            cmdArgsForTest.authOrder = "cert-pem,basic,bearer,token,none";
-            AuthOrder.addCredsToSession(sessCfgForTest, cmdArgsForTest);
-
-            // confirm that auth order was recorded
-            expect(sessCfgForTest).toHaveProperty("authTypeOrder");
-            expect(sessCfgForTest.authTypeOrder?.length).toEqual(5);
-            expect((sessCfgForTest as any).authTypeOrder[0]).toEqual(AUTH_TYPE_CERT_PEM);
-            expect((sessCfgForTest as any).authTypeOrder[1]).toEqual(AUTH_TYPE_BASIC);
-            expect((sessCfgForTest as any).authTypeOrder[2]).toEqual(AUTH_TYPE_BEARER);
-            expect((sessCfgForTest as any).authTypeOrder[3]).toEqual(AUTH_TYPE_TOKEN);
-            expect((sessCfgForTest as any).authTypeOrder[4]).toEqual(AUTH_TYPE_NONE);
-
-            expect(sessCfgForTest).toHaveProperty("_authCache");
-            expect(sessCfgForTest._authCache).toHaveProperty("didUserSetAuthOrder");
-            expect(sessCfgForTest._authCache?.didUserSetAuthOrder).toEqual(true);
-
-            // confirm that all available creds have been recorded
-            expect(sessCfgForTest._authCache).toHaveProperty("availableCreds");
-            expect(Object.keys((sessCfgForTest as any)._authCache.availableCreds).length).toEqual(7);
-            expect(sessCfgForTest._authCache?.availableCreds["user"]).toEqual(sessCfgUserVal);
-            expect(sessCfgForTest._authCache?.availableCreds["password"]).toEqual(sessCfgPassVal);
-            expect(sessCfgForTest._authCache?.availableCreds["base64EncodedAuth"]).toEqual(cmdArgsB64AuthVal);
-            expect(sessCfgForTest._authCache?.availableCreds["tokenType"]).toEqual(cmdsArgsApimlAuthTokenTypeVal);
-            expect(sessCfgForTest._authCache?.availableCreds["tokenValue"]).toEqual(cmdArgsTokenValueVal);
-            expect(sessCfgForTest._authCache?.availableCreds[sessCertPropNm]).toEqual(cmdsArgsCertFileVal);
-            expect(sessCfgForTest._authCache?.availableCreds[sessCertKeyPropNm]).toEqual(cmdsArgsCertKeyFileVal);
-        });
-
-        it("should cache creds and authOrder only from sessCfg when no cmdArgs are supplied", () => {
-            AuthOrder.addCredsToSession(sessCfgForTest);
-
-            // confirm that auth order was recorded
-            expect(sessCfgForTest).toHaveProperty("authTypeOrder");
-            expect(sessCfgForTest.authTypeOrder?.length).toEqual(4);
-            expect((sessCfgForTest as any).authTypeOrder[0]).toEqual(AUTH_TYPE_BASIC);
-            expect((sessCfgForTest as any).authTypeOrder[1]).toEqual(AUTH_TYPE_TOKEN);
-            expect((sessCfgForTest as any).authTypeOrder[2]).toEqual(AUTH_TYPE_BEARER);
-            expect((sessCfgForTest as any).authTypeOrder[3]).toEqual(AUTH_TYPE_CERT_PEM);
-
-            expect(sessCfgForTest).toHaveProperty("_authCache");
-            expect(sessCfgForTest._authCache).toHaveProperty("didUserSetAuthOrder");
-            expect(sessCfgForTest._authCache?.didUserSetAuthOrder).toEqual(false);
-
-            // confirm that only creds from sessCfg have been recorded
-            expect(sessCfgForTest._authCache).toHaveProperty("availableCreds");
-            expect(Object.keys((sessCfgForTest as any)._authCache.availableCreds).length).toEqual(2);
-            expect(sessCfgForTest._authCache?.availableCreds["user"]).toEqual(sessCfgUserVal);
-            expect(sessCfgForTest._authCache?.availableCreds["password"]).toEqual(sessCfgPassVal);
-            expect(sessCfgForTest._authCache?.availableCreds["base64EncodedAuth"]).not.toBeDefined();
-            expect(sessCfgForTest._authCache?.availableCreds["tokenType"]).not.toBeDefined();
-            expect(sessCfgForTest._authCache?.availableCreds["tokenValue"]).not.toBeDefined();
-            expect(sessCfgForTest._authCache?.availableCreds[sessCertPropNm]).not.toBeDefined();
-            expect(sessCfgForTest._authCache?.availableCreds[sessCertKeyPropNm]).not.toBeDefined();
-        });
-    });
-
     describe("clearAuthCache", () => {
         it("should clear the authentication cache", () => {
             cmdArgsForTest.authOrder = "cert-pem,basic,bearer,token,none";
 
             // create a cache to setup our test
             AuthOrder.addCredsToSession(sessCfgForTest, cmdArgsForTest);
-            expect(sessCfgForTest._authCache?.availableCreds["user"]).toEqual(sessCfgUserVal);
-            expect(sessCfgForTest._authCache?.availableCreds["password"]).toEqual(sessCfgPassVal);
+            expect(sessCfgForTest._authCache?.availableCreds["user"]).toEqual(cmdArgUserVal);
+            expect(sessCfgForTest._authCache?.availableCreds["password"]).toEqual(cmdArgPassVal);
             expect(sessCfgForTest._authCache?.availableCreds["base64EncodedAuth"]).toEqual(cmdArgsB64AuthVal);
             expect(sessCfgForTest._authCache?.availableCreds["tokenType"]).toEqual(cmdsArgsApimlAuthTokenTypeVal);
             expect(sessCfgForTest._authCache?.availableCreds["tokenValue"]).toEqual(cmdArgsTokenValueVal);
@@ -508,7 +453,63 @@ describe("AuthOrder", () => {
         });
     });
 
-    describe("putTopAuthInSession", () => {
+    describe("addCredsToSession", () => {
+        it("should cache both available creds and authOrder", () => {
+            cmdArgsForTest.authOrder = "cert-pem,basic,bearer,token,none";
+            AuthOrder.addCredsToSession(sessCfgForTest, cmdArgsForTest);
+
+            // confirm that auth order was recorded
+            expect(sessCfgForTest).toHaveProperty("authTypeOrder");
+            expect(sessCfgForTest.authTypeOrder?.length).toEqual(5);
+            expect((sessCfgForTest as any).authTypeOrder[0]).toEqual(AUTH_TYPE_CERT_PEM);
+            expect((sessCfgForTest as any).authTypeOrder[1]).toEqual(AUTH_TYPE_BASIC);
+            expect((sessCfgForTest as any).authTypeOrder[2]).toEqual(AUTH_TYPE_BEARER);
+            expect((sessCfgForTest as any).authTypeOrder[3]).toEqual(AUTH_TYPE_TOKEN);
+            expect((sessCfgForTest as any).authTypeOrder[4]).toEqual(AUTH_TYPE_NONE);
+
+            expect(sessCfgForTest).toHaveProperty("_authCache");
+            expect(sessCfgForTest._authCache).toHaveProperty("didUserSetAuthOrder");
+            expect(sessCfgForTest._authCache?.didUserSetAuthOrder).toEqual(true);
+
+            // confirm that all available creds have been recorded
+            expect(sessCfgForTest._authCache).toHaveProperty("availableCreds");
+            expect(Object.keys((sessCfgForTest as any)._authCache.availableCreds).length).toEqual(7);
+            expect(sessCfgForTest._authCache?.availableCreds["user"]).toEqual(cmdArgUserVal);
+            expect(sessCfgForTest._authCache?.availableCreds["password"]).toEqual(cmdArgPassVal);
+            expect(sessCfgForTest._authCache?.availableCreds["base64EncodedAuth"]).toEqual(cmdArgsB64AuthVal);
+            expect(sessCfgForTest._authCache?.availableCreds["tokenType"]).toEqual(cmdsArgsApimlAuthTokenTypeVal);
+            expect(sessCfgForTest._authCache?.availableCreds["tokenValue"]).toEqual(cmdArgsTokenValueVal);
+            expect(sessCfgForTest._authCache?.availableCreds[sessCertPropNm]).toEqual(cmdsArgsCertFileVal);
+            expect(sessCfgForTest._authCache?.availableCreds[sessCertKeyPropNm]).toEqual(cmdsArgsCertKeyFileVal);
+        });
+
+        it("should cache creds and authOrder only from sessCfg when no cmdArgs are supplied", () => {
+            AuthOrder.addCredsToSession(sessCfgForTest);
+
+            // confirm that auth order was recorded
+            expect(sessCfgForTest).toHaveProperty("authTypeOrder");
+            expect(sessCfgForTest.authTypeOrder?.length).toEqual(4);
+            expect((sessCfgForTest as any).authTypeOrder[0]).toEqual(AUTH_TYPE_BASIC);
+            expect((sessCfgForTest as any).authTypeOrder[1]).toEqual(AUTH_TYPE_TOKEN);
+            expect((sessCfgForTest as any).authTypeOrder[2]).toEqual(AUTH_TYPE_BEARER);
+            expect((sessCfgForTest as any).authTypeOrder[3]).toEqual(AUTH_TYPE_CERT_PEM);
+
+            expect(sessCfgForTest).toHaveProperty("_authCache");
+            expect(sessCfgForTest._authCache).toHaveProperty("didUserSetAuthOrder");
+            expect(sessCfgForTest._authCache?.didUserSetAuthOrder).toEqual(false);
+
+            // confirm that only creds from sessCfg have been recorded
+            expect(sessCfgForTest._authCache).toHaveProperty("availableCreds");
+            expect(Object.keys((sessCfgForTest as any)._authCache.availableCreds).length).toEqual(2);
+            expect(sessCfgForTest._authCache?.availableCreds["user"]).toEqual(sessCfgUserVal);
+            expect(sessCfgForTest._authCache?.availableCreds["password"]).toEqual(sessCfgPassVal);
+            expect(sessCfgForTest._authCache?.availableCreds["base64EncodedAuth"]).not.toBeDefined();
+            expect(sessCfgForTest._authCache?.availableCreds["tokenType"]).not.toBeDefined();
+            expect(sessCfgForTest._authCache?.availableCreds["tokenValue"]).not.toBeDefined();
+            expect(sessCfgForTest._authCache?.availableCreds[sessCertPropNm]).not.toBeDefined();
+            expect(sessCfgForTest._authCache?.availableCreds[sessCertKeyPropNm]).not.toBeDefined();
+        });
+
         it("should remove all creds except basic when basic is the top auth order", () => {
             cmdArgsForTest.authOrder = `${AUTH_TYPE_BASIC}, ${AUTH_TYPE_TOKEN}, ${AUTH_TYPE_BEARER}, ${AUTH_TYPE_CERT_PEM}`;
             sessCfgForTest.tokenType = "tokenTypeShouldNotRemain";
@@ -520,7 +521,6 @@ describe("AuthOrder", () => {
             delete sessCfgForTest.base64EncodedAuth;
 
             AuthOrder.addCredsToSession(sessCfgForTest, cmdArgsForTest);
-            AuthOrder.putTopAuthInSession(sessCfgForTest);
 
             expect(sessCfgForTest.type).toEqual(AUTH_TYPE_BASIC);
             expect(sessCfgForTest.user).toEqual(cmdArgUserVal);
@@ -545,7 +545,6 @@ describe("AuthOrder", () => {
             delete sessCfgForTest.tokenValue;
 
             AuthOrder.addCredsToSession(sessCfgForTest, cmdArgsForTest);
-            AuthOrder.putTopAuthInSession(sessCfgForTest);
 
             expect(sessCfgForTest.type).toEqual(AUTH_TYPE_TOKEN);
             expect(sessCfgForTest.tokenType).toEqual(cmdsArgsApimlAuthTokenTypeVal);
@@ -568,7 +567,6 @@ describe("AuthOrder", () => {
             sessCfgForTest[sessCertKeyPropNm] = "certKeyShouldNotRemain";
 
             AuthOrder.addCredsToSession(sessCfgForTest, cmdArgsForTest);
-            AuthOrder.putTopAuthInSession(sessCfgForTest);
 
             expect(sessCfgForTest.type).toEqual(AUTH_TYPE_BEARER);
             expect(sessCfgForTest.tokenValue).toEqual(cmdArgsTokenValueVal);
@@ -590,7 +588,6 @@ describe("AuthOrder", () => {
             sessCfgForTest.tokenValue = "tokenValueShouldNotRemain";
 
             AuthOrder.addCredsToSession(sessCfgForTest, cmdArgsForTest);
-            AuthOrder.putTopAuthInSession(sessCfgForTest);
 
             expect(sessCfgForTest.type).toEqual(AUTH_TYPE_CERT_PEM);
             expect(sessCfgForTest[sessCertPropNm]).toEqual(cmdsArgsCertFileVal);
@@ -614,7 +611,6 @@ describe("AuthOrder", () => {
             delete sessCfgForTest[sessCertKeyPropNm];
 
             AuthOrder.addCredsToSession(sessCfgForTest, cmdArgsForTest);
-            AuthOrder.putTopAuthInSession(sessCfgForTest);
 
             expect(sessCfgForTest.type).toEqual(AUTH_TYPE_CERT_PEM);
             expect(sessCfgForTest[sessCertPropNm]).toEqual(cmdsArgsCertFileVal);
@@ -638,7 +634,6 @@ describe("AuthOrder", () => {
             sessCfgForTest[sessCertKeyPropNm] = "certKeyShouldNotRemain";
 
             AuthOrder.addCredsToSession(sessCfgForTest, cmdArgsForTest);
-            AuthOrder.putTopAuthInSession(sessCfgForTest);
 
             expect(sessCfgForTest.type).toEqual(AUTH_TYPE_NONE);
             expect(sessCfgForTest).not.toHaveProperty("user");
@@ -655,8 +650,6 @@ describe("AuthOrder", () => {
             delete cmdArgsForTest.user;
             delete cmdArgsForTest.password;
 
-            const b64AuthThatIsKept = "PretendThisIsB64EncodedAuth";
-            sessCfgForTest.base64EncodedAuth = b64AuthThatIsKept;
             sessCfgForTest.tokenType = "tokenTypeShouldNotRemain";
             sessCfgForTest.tokenValue = "tokenValueShouldNotRemain";
             sessCfgForTest[sessCertPropNm] = "certShouldNotRemain";
@@ -665,10 +658,9 @@ describe("AuthOrder", () => {
             delete sessCfgForTest.password;
 
             AuthOrder.addCredsToSession(sessCfgForTest, cmdArgsForTest);
-            AuthOrder.putTopAuthInSession(sessCfgForTest);
 
             expect(sessCfgForTest.type).toEqual(AUTH_TYPE_BASIC);
-            expect(sessCfgForTest.base64EncodedAuth).toEqual(b64AuthThatIsKept);
+            expect(sessCfgForTest.base64EncodedAuth).toEqual(cmdArgsB64AuthVal);
             expect(sessCfgForTest).not.toHaveProperty("user");
             expect(sessCfgForTest).not.toHaveProperty("password");
             expect(sessCfgForTest).not.toHaveProperty("tokenType");
@@ -685,12 +677,12 @@ describe("AuthOrder", () => {
             AuthOrder.putTopAuthInSession(sessCfgForTest);
 
             expect(sessCfgForTest.type).toEqual(AUTH_TYPE_TOKEN);
-            expect(sessCfgForTest.user).toEqual(sessCfgUserVal);
-            expect(sessCfgForTest.password).toEqual(sessCfgPassVal);
+            expect(sessCfgForTest.user).toEqual(cmdArgUserVal);
+            expect(sessCfgForTest.password).toEqual(cmdArgPassVal);
             expect(sessCfgForTest.base64EncodedAuth).toEqual(
-                Buffer.from(sessCfgForTest.user + ":" + sessCfgForTest.password).toString("base64")
+                Buffer.from(cmdArgsForTest.user + ":" + cmdArgsForTest.password).toString("base64")
             );
-            expect(sessCfgForTest).not.toHaveProperty("tokenType");
+            expect(sessCfgForTest.tokenType).toEqual(cmdsArgsApimlAuthTokenTypeVal);
             expect(sessCfgForTest).not.toHaveProperty("tokenValue");
             expect(sessCfgForTest).not.toHaveProperty(sessCertPropNm);
             expect(sessCfgForTest).not.toHaveProperty(sessCertKeyPropNm);
@@ -706,10 +698,10 @@ describe("AuthOrder", () => {
             expect(sessCfgForTest.type).toEqual(AUTH_TYPE_TOKEN);
             expect(sessCfgForTest[sessCertPropNm]).toEqual(cmdsArgsCertFileVal);
             expect(sessCfgForTest[sessCertKeyPropNm]).toEqual(cmdsArgsCertKeyFileVal);
+            expect(sessCfgForTest.tokenType).toEqual(cmdsArgsApimlAuthTokenTypeVal);
             expect(sessCfgForTest).not.toHaveProperty("user");
             expect(sessCfgForTest).not.toHaveProperty("password");
             expect(sessCfgForTest).not.toHaveProperty("base64EncodedAuth");
-            expect(sessCfgForTest).not.toHaveProperty("tokenType");
             expect(sessCfgForTest).not.toHaveProperty("tokenValue");
         });
 
@@ -723,10 +715,10 @@ describe("AuthOrder", () => {
             expect(sessCfgForTest.type).toEqual(AUTH_TYPE_TOKEN);
             expect(sessCfgForTest[sessCertPropNm]).toEqual(cmdsArgsCertFileVal);
             expect(sessCfgForTest[sessCertKeyPropNm]).toEqual(cmdsArgsCertKeyFileVal);
+            expect(sessCfgForTest.tokenType).toEqual(cmdsArgsApimlAuthTokenTypeVal);
             expect(sessCfgForTest).not.toHaveProperty("user");
             expect(sessCfgForTest).not.toHaveProperty("password");
             expect(sessCfgForTest).not.toHaveProperty("base64EncodedAuth");
-            expect(sessCfgForTest).not.toHaveProperty("tokenType");
             expect(sessCfgForTest).not.toHaveProperty("tokenValue");
         });
 
@@ -740,12 +732,15 @@ describe("AuthOrder", () => {
             expect(sessCfgForTest.type).toEqual(AUTH_TYPE_TOKEN);
             expect(sessCfgForTest[sessCertPropNm]).toEqual(cmdsArgsCertFileVal);
             expect(sessCfgForTest[sessCertKeyPropNm]).toEqual(cmdsArgsCertKeyFileVal);
+            expect(sessCfgForTest.tokenType).toEqual(cmdsArgsApimlAuthTokenTypeVal);
             expect(sessCfgForTest).not.toHaveProperty("user");
             expect(sessCfgForTest).not.toHaveProperty("password");
             expect(sessCfgForTest).not.toHaveProperty("base64EncodedAuth");
-            expect(sessCfgForTest).not.toHaveProperty("tokenType");
             expect(sessCfgForTest).not.toHaveProperty("tokenValue");
         });
+    }); // end addCredsToSession
+
+    describe("putTopAuthInSession", () => {
 
         it("should throw an error if an invalid auth is in the authOrder cache", () => {
             const bogusAuth = "InvalidAuthType";
@@ -777,19 +772,19 @@ describe("AuthOrder", () => {
             expect(sessCfgForTest.type).toEqual(AUTH_TYPE_NONE);
         });
 
-        it("should ensure that addCredsToSession is called when availableCreds does not exist", () => {
-            const addCredsToSession = jest.spyOn(AuthOrder, "addCredsToSession");
+        it("should ensure that cacheCredsAndAuthOrder is called when availableCreds does not exist", () => {
+            const cacheCredsAndAuthOrderSpy = jest.spyOn(AuthOrder as any, "cacheCredsAndAuthOrder");
             delete sessCfgForTest._authCache;
             expect(sessCfgForTest).not.toHaveProperty("_authCache");
 
             AuthOrder.putTopAuthInSession(sessCfgForTest);
 
-            expect(addCredsToSession).toHaveBeenCalledTimes(1);
+            expect(cacheCredsAndAuthOrderSpy).toHaveBeenCalledTimes(1);
             expect(sessCfgForTest).toHaveProperty("_authCache");
             expect(sessCfgForTest._authCache).toHaveProperty("availableCreds");
             expect(Object.keys((sessCfgForTest as any)._authCache.availableCreds).length).toEqual(2);
         });
-    });
+    }); // putTopAuthInSession
 
     describe("removeExtraCredsFromSess", () => {
         it("should throw an error when an invalid authTypeToRequestToken is specified", () => {
