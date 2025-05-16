@@ -186,7 +186,7 @@ describe("ApimlAuthHandler", () => {
                                     return {
                                         exists: true,
                                         basePath: "PretendThisBasePathWorks",
-                                        authOrder: "token, basic"
+                                        authOrder: "token, bearer, basic"
                                     };
                                 })
                             } as any,
@@ -257,7 +257,7 @@ describe("ApimlAuthHandler", () => {
             expect(layersFindSpy).toHaveBeenCalled();
             expect(layersActivateSpy).toHaveBeenCalled();
             expect(profGetProfPathSpy).toHaveBeenCalled();
-            expect(configSetSpy).toHaveBeenCalledWith("Fake.Profile.Path.properties.authOrder", "token");
+            expect(configSetSpy).toHaveBeenCalledWith("Fake.Profile.Path.properties.authOrder", "token, bearer");
             expect(configSaveSpy).toHaveBeenCalled();
         });
 
@@ -293,7 +293,7 @@ describe("ApimlAuthHandler", () => {
                                     return {
                                         exists: true,
                                         basePath: "PretendThisBasePathWorks",
-                                        authOrder: "basic, token"
+                                        authOrder: "basic, token, bearer"
                                     };
                                 }),
                                 getProfilePathFromName: profGetProfPathSpy
@@ -315,7 +315,7 @@ describe("ApimlAuthHandler", () => {
             expect(layersFindSpy).toHaveBeenCalled();
             expect(layersActivateSpy).toHaveBeenCalled();
             expect(profGetProfPathSpy).toHaveBeenCalled();
-            expect(configSetSpy).toHaveBeenCalledWith("Fake.Profile.Path.properties.authOrder", "token");
+            expect(configSetSpy).toHaveBeenCalledWith("Fake.Profile.Path.properties.authOrder", "token, bearer");
             expect(configSaveSpy).toHaveBeenCalled();
         });
     });
