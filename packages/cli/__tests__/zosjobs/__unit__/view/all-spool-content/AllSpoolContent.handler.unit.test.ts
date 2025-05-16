@@ -10,12 +10,11 @@
 */
 
 jest.mock("@zowe/zos-jobs-for-zowe-sdk");
-import { ConnectionPropsForSessCfg, IHandlerParameters, ImperativeError, Session, ISession } from "@zowe/imperative";
+import { IHandlerParameters, ImperativeError } from "@zowe/imperative";
 import { GetJobs } from "@zowe/zos-jobs-for-zowe-sdk";
 import { GetJobsData } from "../../../__resources__/GetJobsData";
 import { AllSpoolContentDefinition } from "../../../../../src/zosjobs/view/all-spool-content/AllSpoolContent.definition";
 import * as fs from "fs";
-import { ZosmfSession } from "@zowe/zosmf-for-zowe-sdk";
 import { UNIT_TEST_ZOSMF_PROF_OPTS } from "../../../../../../../__tests__/__src__/TestConstants";
 import { mockHandlerParameters } from "@zowe/cli-test-utils";
 import * as AllSpoolContentHandler from "../../../../../src/zosjobs/view/all-spool-content/AllSpoolContent.handler";
@@ -52,16 +51,12 @@ describe("zos-jobs view all-spool-content handler", () => {
         const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
         params.arguments.jobid = "JOB65536";
         await handler.process(params);
+        const jobSession = handler["mSession"];
         expect(GetJobs.getJob).toHaveBeenCalledTimes(1);
         expect(GetJobs.getSpoolFilesForJob).toHaveBeenCalledTimes(1);
         expect(GetJobs.getSpoolContent).toHaveBeenCalledTimes(GetJobsData.SAMPLE_SPOOL_FILES.length);
-        const sessCfg = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
-            ZosmfSession.createSessCfgFromArgs(DEFAULT_PARAMETERS.arguments),
-            DEFAULT_PARAMETERS.arguments
-        );
-        const fakeSession: Session = new Session(sessCfg);
         const lastSpoolFile = GetJobsData.SAMPLE_SPOOL_FILES[GetJobsData.SAMPLE_SPOOL_FILES.length - 1];
-        expect(GetJobs.getSpoolContent).toHaveBeenLastCalledWith(fakeSession, lastSpoolFile, undefined);
+        expect(GetJobs.getSpoolContent).toHaveBeenLastCalledWith(jobSession, lastSpoolFile, undefined);
     });
 
     it("should be able to get the content of a spool file with encoding", async () => {
@@ -80,16 +75,12 @@ describe("zos-jobs view all-spool-content handler", () => {
         params.arguments.jobid = "JOB65536";
         params.arguments.encoding = "IBM-037";
         await handler.process(params);
+        const jobSession = handler["mSession"];
         expect(GetJobs.getJob).toHaveBeenCalledTimes(1);
         expect(GetJobs.getSpoolFilesForJob).toHaveBeenCalledTimes(1);
         expect(GetJobs.getSpoolContent).toHaveBeenCalledTimes(GetJobsData.SAMPLE_SPOOL_FILES.length);
-        const sessCfg = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
-            ZosmfSession.createSessCfgFromArgs(DEFAULT_PARAMETERS.arguments),
-            DEFAULT_PARAMETERS.arguments
-        );
-        const fakeSession: Session = new Session(sessCfg);
         const lastSpoolFile = GetJobsData.SAMPLE_SPOOL_FILES[GetJobsData.SAMPLE_SPOOL_FILES.length - 1];
-        expect(GetJobs.getSpoolContent).toHaveBeenLastCalledWith(fakeSession, lastSpoolFile, "IBM-037");
+        expect(GetJobs.getSpoolContent).toHaveBeenLastCalledWith(jobSession, lastSpoolFile, "IBM-037");
     });
 
     it("should be able to get the content of a spool file with procstep", async () => {
@@ -107,16 +98,12 @@ describe("zos-jobs view all-spool-content handler", () => {
         const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
         params.arguments.jobid = "JOB65536";
         await handler.process(params);
+        const jobSession = handler["mSession"];
         expect(GetJobs.getJob).toHaveBeenCalledTimes(1);
         expect(GetJobs.getSpoolFilesForJob).toHaveBeenCalledTimes(1);
         expect(GetJobs.getSpoolContent).toHaveBeenCalledTimes(GetJobsData.SAMPLE_SPOOL_FILES_WITH_PROCSTEP.length);
-        const sessCfg = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
-            ZosmfSession.createSessCfgFromArgs(DEFAULT_PARAMETERS.arguments),
-            DEFAULT_PARAMETERS.arguments
-        );
-        const fakeSession: Session = new Session(sessCfg);
         const lastSpoolFile = GetJobsData.SAMPLE_SPOOL_FILES_WITH_PROCSTEP[GetJobsData.SAMPLE_SPOOL_FILES_WITH_PROCSTEP.length - 1];
-        expect(GetJobs.getSpoolContent).toHaveBeenLastCalledWith(fakeSession, lastSpoolFile, undefined);
+        expect(GetJobs.getSpoolContent).toHaveBeenLastCalledWith(jobSession, lastSpoolFile, undefined);
     });
 
     it("should not transform an error thrown from get jobs getJob API", async () => {
@@ -183,16 +170,13 @@ describe("zos-jobs view all-spool-content handler", () => {
         } catch (thrownError) {
             error = thrownError;
         }
+        const jobSession = handler["mSession"];
+
         expect(GetJobs.getJob).toHaveBeenCalledTimes(1);
         expect(GetJobs.getSpoolFilesForJob).toHaveBeenCalledTimes(1);
         expect(GetJobs.getSpoolContent).toHaveBeenCalledTimes(1);
-        const sessCfg = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
-            ZosmfSession.createSessCfgFromArgs(DEFAULT_PARAMETERS.arguments),
-            DEFAULT_PARAMETERS.arguments
-        );
-        const fakeSession: Session = new Session(sessCfg);
         const firstSpoolFile = GetJobsData.SAMPLE_SPOOL_FILES[0];
-        expect(GetJobs.getSpoolContent).toHaveBeenCalledWith(fakeSession, firstSpoolFile, undefined);
+        expect(GetJobs.getSpoolContent).toHaveBeenCalledWith(jobSession, firstSpoolFile, undefined);
         expect(error).toBeDefined();
         expect(error instanceof ImperativeError).toBe(true);
         expect(error.message).toMatchSnapshot();

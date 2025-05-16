@@ -10,7 +10,7 @@
 */
 
 import { JOB_STATUS } from "./../../src/types/JobStatus";
-import { ImperativeError, Session, TextUtils } from "@zowe/imperative";
+import { AuthOrder, ImperativeError, ISession, Session, TextUtils } from "@zowe/imperative";
 import { DeleteJobs, GetJobs, IJob, JOB_STATUS_ORDER, SubmitJobs } from "../../src";
 import * as fs from "fs";
 import { TEST_RESOURCES_DIR } from "../__src__/ZosJobsTestConstants";
@@ -76,7 +76,7 @@ describe("Get Jobs - System Tests", () => {
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
 
-        INVALID_SESSION = new Session({
+        const invalidSessCfg: ISession = {
             user: "fakeuser",
             password: "fake",
             hostname: defaultSystem.zosmf.host,
@@ -84,7 +84,9 @@ describe("Get Jobs - System Tests", () => {
             basePath: defaultSystem.zosmf.basePath,
             type: "basic",
             rejectUnauthorized: false
-        });
+        };
+        AuthOrder.addCredsToSession(invalidSessCfg);
+        INVALID_SESSION = new Session(invalidSessCfg);
 
         ACCOUNT = defaultSystem.tso.account;
         MONITOR_JOB_NAME = REAL_SESSION.ISession.user?.toUpperCase().substring(0, SIX_CHARS) + "G";

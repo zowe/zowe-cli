@@ -179,13 +179,6 @@ describe("Config Utils", () => {
     });
 
     describe("formGlobOrProjProfileNm", () => {
-        afterEach(() => {
-            /* zzz
-            jest.restoreAllMocks(); // restore spies
-            jest.clearAllMocks();   // set counts back to zero
-            */
-        });
-
         it("should return the type name if the type is not base", () => {
             const baseProfileName = ConfigUtils.formGlobOrProjProfileNm("zosmf", false);
             expect(baseProfileName).toEqual("zosmf");

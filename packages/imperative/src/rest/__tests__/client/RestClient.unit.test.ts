@@ -13,6 +13,7 @@ jest.mock("path");
 import * as path from "path";
 import * as https from "https";
 import { Session } from "../../src/session/Session";
+import { AuthOrder } from "../../src/session/AuthOrder";
 import { EventEmitter } from "events";
 import { ProcessUtils } from "../../../utilities";
 import { MockHttpRequestResponse } from "./__model__/MockHttpRequestResponse";
@@ -32,6 +33,9 @@ import { AbstractRestClient } from "../../src/client/AbstractRestClient";
 
 describe("RestClient tests", () => {
     let setPasswordAuthSpy: any;
+
+    // never run putTopAuthInSession. It has its own unit test.
+    AuthOrder.putTopAuthInSession = jest.fn();
 
     beforeEach(() => {
         jest.clearAllMocks();

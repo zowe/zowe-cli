@@ -8,6 +8,8 @@ Array [
   "authentication",
   "basicAuth",
   "basic-auth",
+  "base64EncodedAuth",
+  "base64-encoded-auth",
   "certFilePassphrase",
   "cert-file-passphrase",
   "credentials",
