@@ -310,21 +310,17 @@ export class AuthOrder {
                     if (sessCfg._authCache.availableCreds[AuthOrder.SESS_CERT_NAME] &&
                         sessCfg._authCache.availableCreds[AuthOrder.SESS_CERT_KEY_NAME])
                     {
+                        sessTypeToUse = SessConstants.AUTH_TYPE_CERT_PEM;
                         sessCfg[AuthOrder.SESS_CERT_NAME] = sessCfg._authCache.availableCreds[AuthOrder.SESS_CERT_NAME];
                         sessCfg[AuthOrder.SESS_CERT_KEY_NAME] = sessCfg._authCache.availableCreds[AuthOrder.SESS_CERT_KEY_NAME];
                         if (sessCfg._authCache.authTypeToRequestToken) {
-                            // The existence of authTypeToRequestToken indicates that we want
-                            // to request a token. We record how we will authenticate,
-                            // but we still record the session type as token (old requirements).
+                            // Record that we are authenticating with a cert to request a token.
                             sessCfg._authCache.authTypeToRequestToken = SessConstants.AUTH_TYPE_CERT_PEM;
-                            sessTypeToUse = SessConstants.AUTH_TYPE_TOKEN;
 
                             // we also need the tokenType in the session to request the token
                             if (sessCfg._authCache.availableCreds.tokenType) {
                                 sessCfg.tokenType = sessCfg._authCache.availableCreds.tokenType;
                             }
-                        } else {
-                            sessTypeToUse = SessConstants.AUTH_TYPE_CERT_PEM;
                         }
                     }
                     break;
@@ -587,7 +583,7 @@ export class AuthOrder {
      *      Authentication credentials are removed from this session configuration.
      *
      * @throws {ImperativeError}
-     *      If an invalid session type or an invalid authTypeToRequestToken is encountered.
+     *      If an invalid combination of session type and authTypeToRequestToken is encountered.
      */
     private static removeExtraCredsFromSess<SessCfgType extends ISession>(
         sessCfg: SessCfgType
@@ -605,6 +601,7 @@ export class AuthOrder {
         // Select the creds that we want to keep.
         // If we have no type, it is because no creds were provided,
         // so we we have no creds to keep or remove.
+        let invalidTokenRequest: boolean = false;
         let errMsg: string;
         if (sessCfg.type) {
             switch (sessCfg.type) {
@@ -622,23 +619,14 @@ export class AuthOrder {
                     if (!sessCfg._authCache.authTypeToRequestToken) {
                         // we want to actually use the token, so keep its value
                         AuthOrder.keepCred("tokenValue", credsToRemove);
-                    } else if (sessCfg._authCache.authTypeToRequestToken == SessConstants.AUTH_TYPE_BASIC) {
+                    } else if (sessCfg._authCache.authTypeToRequestToken === SessConstants.AUTH_TYPE_BASIC) {
                         // We are requesting a token using basic creds.
                         // Keep our basic creds, but allow tokenValue to be removed.
                         AuthOrder.keepCred("base64EncodedAuth", credsToRemove);
                         AuthOrder.keepCred("user", credsToRemove);
                         AuthOrder.keepCred("password", credsToRemove);
-                    } else if (sessCfg._authCache.authTypeToRequestToken == SessConstants.AUTH_TYPE_CERT_PEM) {
-                        // We are requesting a token using a cert.
-                        // Keep the cert creds, but allow tokenValue to be removed
-                        AuthOrder.keepCred(AuthOrder.SESS_CERT_NAME, credsToRemove);
-                        AuthOrder.keepCred(AuthOrder.SESS_CERT_KEY_NAME, credsToRemove);
                     } else {
-                        // Our own code supplied a bad value for authTypeToRequestToken.
-                        errMsg = "The requested session contains an invalid value for " +
-                            `'authTypeToRequestToken' = ${sessCfg._authCache.authTypeToRequestToken}.`;
-                        Logger.getImperativeLogger().error(errMsg);
-                        throw new ImperativeError({ msg: errMsg });
+                        invalidTokenRequest = true;
                     }
                     break;
                 case SessConstants.AUTH_TYPE_BEARER:
@@ -647,6 +635,14 @@ export class AuthOrder {
                 case SessConstants.AUTH_TYPE_CERT_PEM:
                     AuthOrder.keepCred(AuthOrder.SESS_CERT_NAME, credsToRemove);
                     AuthOrder.keepCred(AuthOrder.SESS_CERT_KEY_NAME, credsToRemove);
+                    if (sessCfg._authCache.authTypeToRequestToken) {
+                        if (sessCfg._authCache.authTypeToRequestToken === SessConstants.AUTH_TYPE_CERT_PEM) {
+                            // the token type must be in the session when we are requesting a token
+                            AuthOrder.keepCred("tokenType", credsToRemove);
+                        } else {
+                            invalidTokenRequest = true;
+                        }
+                    }
                     break;
                 case SessConstants.AUTH_TYPE_NONE:
                     // when user explicitly selects none, remove all creds
@@ -657,6 +653,15 @@ export class AuthOrder {
                     Logger.getImperativeLogger().error(errMsg);
                     throw new ImperativeError({ msg: errMsg });
             } // end switch
+
+            if (invalidTokenRequest) {
+                // Our own code created a bad combination for requesting a token
+                errMsg = "The requested session contains an invalid property combination for requesting a token:\n" +
+                    `session type = ${sessCfg.type}\n` +
+                    `authTypeToRequestToken = ${sessCfg._authCache.authTypeToRequestToken}`;
+                Logger.getImperativeLogger().error(errMsg);
+                throw new ImperativeError({ msg: errMsg });
+            }
 
             // remove all auth creds from the session, except the creds related to the selected auth type
             const credIter = credsToRemove.values();

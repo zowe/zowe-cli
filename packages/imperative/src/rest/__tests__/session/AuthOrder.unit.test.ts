@@ -669,7 +669,7 @@ describe("AuthOrder", () => {
             expect(sessCfgForTest).not.toHaveProperty(sessCertKeyPropNm);
         });
 
-        it("should reset type to token when using basic auth and authTypeToRequestToken exists", () => {
+        it("should reset type to token when using basic auth to request a token", () => {
             cmdArgsForTest.authOrder = `${AUTH_TYPE_BASIC}, ${AUTH_TYPE_CERT_PEM}, ${AUTH_TYPE_TOKEN}, ${AUTH_TYPE_BEARER}`;
 
             AuthOrder.addCredsToSession(sessCfgForTest, cmdArgsForTest);
@@ -688,14 +688,14 @@ describe("AuthOrder", () => {
             expect(sessCfgForTest).not.toHaveProperty(sessCertKeyPropNm);
         });
 
-        it("should reset type to token when using cert auth and authTypeToRequestToken exists", () => {
+        it("should keep the type as cert when using cert auth to request a token", () => {
             cmdArgsForTest.authOrder = `${AUTH_TYPE_CERT_PEM}, ${AUTH_TYPE_BASIC}, ${AUTH_TYPE_TOKEN}, ${AUTH_TYPE_BEARER}`;
 
             AuthOrder.addCredsToSession(sessCfgForTest, cmdArgsForTest);
             AuthOrder.makingRequestForToken(sessCfgForTest);
             AuthOrder.putTopAuthInSession(sessCfgForTest);
 
-            expect(sessCfgForTest.type).toEqual(AUTH_TYPE_TOKEN);
+            expect(sessCfgForTest.type).toEqual(AUTH_TYPE_CERT_PEM);
             expect(sessCfgForTest[sessCertPropNm]).toEqual(cmdsArgsCertFileVal);
             expect(sessCfgForTest[sessCertKeyPropNm]).toEqual(cmdsArgsCertKeyFileVal);
             expect(sessCfgForTest.tokenType).toEqual(cmdsArgsApimlAuthTokenTypeVal);
@@ -705,14 +705,14 @@ describe("AuthOrder", () => {
             expect(sessCfgForTest).not.toHaveProperty("tokenValue");
         });
 
-        it("should skip using top auth of token when authTypeToRequestToken exists", () => {
+        it("should skip using top auth of token when requesting a token", () => {
             cmdArgsForTest.authOrder = `${AUTH_TYPE_TOKEN},  ${AUTH_TYPE_CERT_PEM}, ${AUTH_TYPE_BASIC}, ${AUTH_TYPE_BEARER}`;
 
             AuthOrder.addCredsToSession(sessCfgForTest, cmdArgsForTest);
             AuthOrder.makingRequestForToken(sessCfgForTest);
             AuthOrder.putTopAuthInSession(sessCfgForTest);
 
-            expect(sessCfgForTest.type).toEqual(AUTH_TYPE_TOKEN);
+            expect(sessCfgForTest.type).toEqual(AUTH_TYPE_CERT_PEM);
             expect(sessCfgForTest[sessCertPropNm]).toEqual(cmdsArgsCertFileVal);
             expect(sessCfgForTest[sessCertKeyPropNm]).toEqual(cmdsArgsCertKeyFileVal);
             expect(sessCfgForTest.tokenType).toEqual(cmdsArgsApimlAuthTokenTypeVal);
@@ -722,14 +722,14 @@ describe("AuthOrder", () => {
             expect(sessCfgForTest).not.toHaveProperty("tokenValue");
         });
 
-        it("should skip using top auth of bearer when authTypeToRequestToken exists", () => {
+        it("should skip using top auth of bearer when requesting a token", () => {
             cmdArgsForTest.authOrder = `${AUTH_TYPE_BEARER}, ${AUTH_TYPE_CERT_PEM}, ${AUTH_TYPE_TOKEN}, ${AUTH_TYPE_BASIC}`;
 
             AuthOrder.addCredsToSession(sessCfgForTest, cmdArgsForTest);
             AuthOrder.makingRequestForToken(sessCfgForTest);
             AuthOrder.putTopAuthInSession(sessCfgForTest);
 
-            expect(sessCfgForTest.type).toEqual(AUTH_TYPE_TOKEN);
+            expect(sessCfgForTest.type).toEqual(AUTH_TYPE_CERT_PEM);
             expect(sessCfgForTest[sessCertPropNm]).toEqual(cmdsArgsCertFileVal);
             expect(sessCfgForTest[sessCertKeyPropNm]).toEqual(cmdsArgsCertKeyFileVal);
             expect(sessCfgForTest.tokenType).toEqual(cmdsArgsApimlAuthTokenTypeVal);
@@ -803,10 +803,9 @@ describe("AuthOrder", () => {
                 thrownError = err;
             }
             expect(thrownError).toBeInstanceOf(ImperativeError);
-            expect(thrownError.message).toContain(
-                `The requested session contains an invalid value for ` +
-                `'authTypeToRequestToken' = ${bogusAuthToRequestToken}`
-            );
+            expect(thrownError.message).toContain("The requested session contains an invalid property combination for requesting a token");
+            expect(thrownError.message).toContain(`session type = ${AUTH_TYPE_TOKEN}`);
+            expect(thrownError.message).toContain(`authTypeToRequestToken = ${bogusAuthToRequestToken}`);
         });
 
         it("should throw an error when an invalid session type is specified", () => {
