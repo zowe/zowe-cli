@@ -480,7 +480,7 @@ export abstract class AbstractRestClient {
             this.session.ISession.socketConnectTimeout ??= isNaN(Number(socketConnectTimeout)) ? undefined : Number(socketConnectTimeout);
             if (this.session.ISession.socketConnectTimeout != null) {
                 Logger.getImperativeLogger().info(
-                    "Setting socket connection timeout ms: " + String(this.mSession.ISession.requestCompletionTimeout)
+                    "Setting socket connection timeout ms: " + String(this.mSession.ISession.socketConnectTimeout)
                 );
             }
 
