@@ -10,7 +10,7 @@
 */
 
 import { ImperativeConfig } from "../../../../utilities";
-import { dirname, join } from "path";
+import { dirname, join } from "node:path";
 import { Config } from "../../../../config";
 import { EnvironmentalVariableSettings } from "../../env/EnvironmentalVariableSettings";
 

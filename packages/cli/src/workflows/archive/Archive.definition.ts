@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandDefinition } from "@zowe/imperative";
+import { ICommandDefinition } from "npm:@zowe/imperative";
 import { Workflow } from "./workflow/Archive.workflow.definition";
 
 /**

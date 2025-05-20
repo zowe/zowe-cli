@@ -14,7 +14,7 @@
  * You should not need to call this from your CLI.
  */
 import { IImperativeConfig } from "./doc/IImperativeConfig";
-import * as os from "os";
+import * as os from "node:os";
 import { ImperativeError } from "../../error";
 
 export class ConfigurationLoader {

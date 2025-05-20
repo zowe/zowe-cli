@@ -9,8 +9,8 @@
 *
 */
 
-import * as fs from "fs";
-import * as path from "path";
+import * as fs from "node:fs";
+import * as path from "node:path";
 
 import { Constants } from "../../../constants/src/Constants";
 import { ProcessUtils, GuiResult } from "../../../utilities/src/ProcessUtils";

@@ -9,9 +9,9 @@
 *
 */
 
-import { ICommandDefinition } from "@zowe/imperative";
+import { ICommandDefinition } from "npm:@zowe/imperative";
 import { ListActiveWorkflowsOptions } from "./ActiveWorkflows.options";
-import { join } from "path";
+import { join } from "node:path";
 
 
 /**

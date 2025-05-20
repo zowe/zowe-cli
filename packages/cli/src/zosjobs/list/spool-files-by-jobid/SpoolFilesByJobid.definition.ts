@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandDefinition } from "@zowe/imperative";
+import { ICommandDefinition } from "npm:@zowe/imperative";
 
 export const SpoolFilesByJobidDefinition: ICommandDefinition = {
     name: "spool-files-by-jobid",

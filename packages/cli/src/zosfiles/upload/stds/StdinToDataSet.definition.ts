@@ -9,8 +9,8 @@
 *
 */
 
-import * as path from "path";
-import { ICommandDefinition } from "@zowe/imperative";
+import * as path from "node:path";
+import { ICommandDefinition } from "npm:@zowe/imperative";
 import { UploadOptions } from "../Upload.options";
 import i18nTypings from "../../-strings-/en";
 

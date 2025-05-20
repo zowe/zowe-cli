@@ -9,8 +9,8 @@
 *
 */
 
-import { AbstractSession, ImperativeError, ImperativeExpect, Logger } from "@zowe/imperative";
-import { inspect } from "util";
+import { AbstractSession, ImperativeError, ImperativeExpect, Logger } from "npm:@zowe/imperative";
+import { inspect } from "node:util";
 import { GetJobs } from "./GetJobs";
 import { JOB_STATUS, JOB_STATUS_ORDER } from "./types/JobStatus";
 import { sleep } from "@zowe/core-for-zowe-sdk";

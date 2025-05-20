@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandDefinition } from "@zowe/imperative";
+import { ICommandDefinition } from "npm:@zowe/imperative";
 import { AddressSpaceDefinition } from "./address-space/AddressSpace.definition";
 import { StartASApp } from "./as-app/StartASApp.definition";
 

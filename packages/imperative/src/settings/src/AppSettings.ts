@@ -9,14 +9,14 @@
 *
 */
 
-import * as DeepMerge from "deepmerge";
-import { existsSync } from "fs";
-import { ISettingsFile } from "./doc/ISettingsFile";
-import { Logger } from "../../logger";
-import { ISettingsFilePersistence } from "./persistance/ISettingsFilePersistence";
-import { JSONSettingsFilePersistence } from "./persistance/JSONSettingsFilePersistence";
-import { IO } from "../../io";
-import { ImperativeError } from "../../error";
+import DeepMerge from "deepmerge";
+import { existsSync } from "node:fs";
+import { ISettingsFile } from "./doc/ISettingsFile.ts";
+import { Logger } from "../../logger/index.ts";
+import { ISettingsFilePersistence } from "./persistance/ISettingsFilePersistence.ts";
+import { JSONSettingsFilePersistence } from "./persistance/JSONSettingsFilePersistence.ts";
+import { IO } from "../../io/index.ts";
+import { ImperativeError } from "../../error/index.ts";
 
 type SettingValue = false | string;
 
@@ -34,7 +34,7 @@ export class AppSettings {
      */
     public static initialize(settingsFile: string, defaults: ISettingsFile): AppSettings {
         if (AppSettings.mInstance) {
-            const {SettingsAlreadyInitialized} = require("./errors/index");
+            const {SettingsAlreadyInitialized} = require("./errors/index.ts");
 
             throw new SettingsAlreadyInitialized();
         }
@@ -53,7 +53,7 @@ export class AppSettings {
                 persistence.write(defaults);
             } else {
                 Logger.getImperativeLogger().error("Unable to recover from load failure");
-                Logger.getImperativeLogger().error(up.toString());
+                Logger.getImperativeLogger().error(up instanceof Error ? up.toString() : "Details unknown");
 
                 throw up;
             }
@@ -108,7 +108,7 @@ export class AppSettings {
         if (AppSettings.mInstance == null) {
             // Throw an error imported at runtime so that we minimize file that get included
             // on startup.
-            const {SettingsNotInitialized} = require("./errors/index");
+            const {SettingsNotInitialized} = require("./errors/index.ts");
             throw new SettingsNotInitialized();
         }
 
@@ -169,7 +169,7 @@ export class AppSettings {
             this.persistence.write(this.settings);
         } catch (err) {
             Logger.getImperativeLogger().error("Unable to save settings");
-            Logger.getImperativeLogger().error(err.toString());
+            Logger.getImperativeLogger().error(err instanceof Error ? err.toString() : "Details unknown");
 
             throw err;
         }

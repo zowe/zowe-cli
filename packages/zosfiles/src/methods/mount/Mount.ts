@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, ImperativeExpect, ImperativeError } from "@zowe/imperative";
+import { AbstractSession, ImperativeExpect, ImperativeError } from "npm:@zowe/imperative";
 
 import { IMountFsOptions } from "./doc/IMountFsOptions";
 import { ZosmfRestClient, ZosmfHeaders } from "@zowe/core-for-zowe-sdk";

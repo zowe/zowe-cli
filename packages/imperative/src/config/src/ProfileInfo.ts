@@ -9,7 +9,7 @@
 *
 */
 
-import * as fs from "fs";
+import * as fs from "node:fs";
 import * as url from "url";
 import * as jsonfile from "jsonfile";
 import * as lodash from "lodash";

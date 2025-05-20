@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandOptionDefinition } from "@zowe/imperative";
+import { ICommandOptionDefinition } from "npm:@zowe/imperative";
 
 import i18nTypings from "../../-strings-/en";
 

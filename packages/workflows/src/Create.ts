@@ -10,7 +10,7 @@
 */
 
 
-import { AbstractSession, Headers, ImperativeError } from "@zowe/imperative";
+import { AbstractSession, Headers, ImperativeError } from "npm:@zowe/imperative";
 import { ZosmfRestClient, nozOSMFVersion } from "@zowe/core-for-zowe-sdk";
 import {
     WorkflowConstants,
@@ -26,7 +26,7 @@ import { ICreatedWorkflow } from "./doc/ICreatedWorkflow";
 import { ICreatedWorkflowLocal } from "./doc/ICreatedWorkflowLocal";
 import { IVariable } from "./doc/IVariable";
 import { Upload, Delete } from "@zowe/zos-files-for-zowe-sdk";
-import { basename } from "path";
+import { basename } from "node:path";
 
 /**
  * Class to handle creation of zOSMF workflow instance

@@ -11,10 +11,10 @@
 
 import { ImperativeError } from "../../../error";
 import { ImperativeConfig } from "../../../utilities";
-import * as fs from "fs";
+import * as fs from "node:fs";
 import { IProfile } from "../doc/definition/IProfile";
 import { IMetaProfile } from "../doc/definition/IMetaProfile";
-import * as pathPackage from "path";
+import * as pathPackage from "node:path";
 import { IProfileTypeConfiguration } from "../doc/config/IProfileTypeConfiguration";
 
 const readYaml = require("js-yaml");

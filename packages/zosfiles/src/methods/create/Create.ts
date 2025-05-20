@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, Headers, IHeaderContent, ImperativeError, ImperativeExpect, Logger, TextUtils } from "@zowe/imperative";
+import { AbstractSession, Headers, IHeaderContent, ImperativeError, ImperativeExpect, Logger, TextUtils } from "npm:@zowe/imperative";
 import { ZosmfHeaders, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
@@ -20,7 +20,7 @@ import { ICreateDataSetOptions } from "./doc/ICreateDataSetOptions";
 import { Invoke } from "../invoke";
 import { ICreateVsamOptions } from "./doc/ICreateVsamOptions";
 import { ICreateZfsOptions } from "./doc/ICreateZfsOptions";
-import * as path from "path";
+import * as path from "node:path";
 import { IZosFilesOptions } from "../../doc/IZosFilesOptions";
 import { List } from "../list";
 import { IZosmfListResponse } from "../list/doc/IZosmfListResponse";

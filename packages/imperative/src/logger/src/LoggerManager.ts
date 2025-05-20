@@ -11,7 +11,7 @@
 
 import { IQueuedMessage } from "./doc/IQueuedMessage";
 import { Console } from "../../console";
-import { appendFileSync } from "fs";
+import { appendFileSync } from "node:fs";
 
 /**
  * LoggerManager is a singleton class used to contain logger information.

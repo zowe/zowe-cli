@@ -49,7 +49,7 @@ import { OverridesLoader } from "./OverridesLoader";
 import { DefinitionTreeResolver } from "./DefinitionTreeResolver";
 import { EnvironmentalVariableSettings } from "./env/EnvironmentalVariableSettings";
 import { AppSettings } from "../../settings/src/AppSettings";
-import { dirname, join } from "path";
+import { dirname, join } from "node:path";
 
 import { Console } from "../../console/src/Console";
 import { ISettingsFile } from "../../settings/src/doc/ISettingsFile";

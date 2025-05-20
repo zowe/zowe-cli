@@ -9,5 +9,5 @@
 *
 */
 
-export * from "./src/doc/IImperativeError";
-export * from "./src/ImperativeError";
+export * from "./src/doc/IImperativeError.ts";
+export * from "./src/ImperativeError.ts";

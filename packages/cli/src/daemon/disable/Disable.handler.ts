@@ -9,13 +9,13 @@
 *
 */
 
-import * as nodeJsPath from "path";
-import * as os from "os";
+import * as nodeJsPath from "node:path";
+import * as os from "node:os";
 
 import {
     ICommandHandler, IHandlerParameters, ImperativeConfig, ImperativeError,
     IO, ISystemInfo, Logger, ProcessUtils
-} from "@zowe/imperative";
+} from "npm:@zowe/imperative";
 
 /**
  * Handler to disable daemon mode.

@@ -9,7 +9,7 @@
 *
 */
 
-import { Duplex } from "stream";
+import { Duplex } from "node:stream";
 
 export class BufferBuilder extends Duplex {
     private chunks: Uint8Array[];

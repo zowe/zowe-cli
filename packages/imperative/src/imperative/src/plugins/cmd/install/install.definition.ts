@@ -10,7 +10,7 @@
 */
 
 import { ICommandDefinition } from "../../../../../cmd";
-import { join } from "path";
+import { join } from "node:path";
 import { PMFConstants } from "../../utilities/PMFConstants";
 import { ImperativeConfig } from "../../../../../utilities";
 

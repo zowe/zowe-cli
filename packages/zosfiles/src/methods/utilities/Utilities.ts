@@ -11,12 +11,12 @@
 
 import { IOptions } from "../../doc/IOptions";
 import { IZosFilesResponse } from "../../doc/IZosFilesResponse";
-import { AbstractSession, ImperativeExpect, Headers, IHeaderContent } from "@zowe/imperative";
+import { AbstractSession, ImperativeExpect, Headers, IHeaderContent } from "npm:@zowe/imperative";
 import { Tag } from "./doc/Tag";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
 import { ZosmfRestClient, ZosmfHeaders } from "@zowe/core-for-zowe-sdk";
-import * as path from "path";
+import * as path from "node:path";
 import { ZosFilesUtils } from "../../utils/ZosFilesUtils";
 
 export class Utilities {

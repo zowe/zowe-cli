@@ -9,7 +9,7 @@
 *
 */
 
-import { TextUtils } from "@zowe/imperative";
+import { TextUtils } from "npm:@zowe/imperative";
 import { Constants } from "../../Constants";
 
 export default {

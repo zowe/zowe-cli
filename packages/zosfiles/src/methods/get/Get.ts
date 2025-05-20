@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, BufferBuilder, ImperativeExpect } from "@zowe/imperative";
+import { AbstractSession, BufferBuilder, ImperativeExpect } from "npm:@zowe/imperative";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 import { Download } from "../download/Download";
 import { IGetOptions } from "./doc/IGetOptions";

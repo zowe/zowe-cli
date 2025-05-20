@@ -14,7 +14,7 @@ import {
     ICommandOptionDefinition,
     Logger,
     ISession
-} from "@zowe/imperative";
+} from "npm:@zowe/imperative";
 
 /**
  * Utility Methods for Zowe

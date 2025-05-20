@@ -9,9 +9,9 @@
 *
 */
 
-import { ICommandDefinition } from "@zowe/imperative";
+import { ICommandDefinition } from "npm:@zowe/imperative";
 import { RetrieveWorkflowDefinitionCommonOptions } from "./RetrieveWorkflowDefinition.options";
-import { join } from "path";
+import { join } from "node:path";
 
 /**
  * This object defines the command for retrieving workflow contents of zosworkflow definition.

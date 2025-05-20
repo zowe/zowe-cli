@@ -9,7 +9,7 @@
 *
 */
 
-import { IHandlerParameters, TextUtils } from "@zowe/imperative";
+import { IHandlerParameters, TextUtils } from "npm:@zowe/imperative";
 import { CheckStatus, IZosmfInfoResponse, ZosmfBaseHandler } from "@zowe/zosmf-for-zowe-sdk";
 import { CheckStatusMessages } from "../../constants/CheckStatus.messages";
 

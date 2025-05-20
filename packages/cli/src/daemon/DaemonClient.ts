@@ -9,10 +9,10 @@
 *
 */
 
-import * as net from "net";
-import * as path from "path";
-import { PassThrough, Readable } from "stream";
-import { DaemonRequest, IDaemonContext, IDaemonResponse, Imperative, ImperativeError, IO } from "@zowe/imperative";
+import * as net from "node:net";
+import * as path from "node:path";
+import { PassThrough, Readable } from "node:stream";
+import { DaemonRequest, IDaemonContext, IDaemonResponse, Imperative, ImperativeError, IO } from "npm:@zowe/imperative";
 import { DaemonUtil } from "./DaemonUtil";
 
 /**

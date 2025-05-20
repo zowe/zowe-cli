@@ -9,7 +9,7 @@
 *
 */
 
-import { IHandlerParameters, TextUtils } from "@zowe/imperative";
+import { IHandlerParameters, TextUtils } from "npm:@zowe/imperative";
 import { ZosTsoBaseHandler, AddressSpaceApps } from "@zowe/zos-tso-for-zowe-sdk";
 
 /**

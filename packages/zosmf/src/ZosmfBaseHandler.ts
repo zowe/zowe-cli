@@ -23,7 +23,7 @@ import {
     ISession,
     Session,
     ConnectionPropsForSessCfg
-} from "@zowe/imperative";
+} from "npm:@zowe/imperative";
 import { ZosmfSession } from "./ZosmfSession";
 
 /**

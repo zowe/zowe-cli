@@ -25,11 +25,11 @@ import { Logger } from "../../logger";
 import { IInvokeCommandParms } from "./doc/parms/IInvokeCommandParms";
 import { ICommandProcessorParms } from "./doc/processor/ICommandProcessorParms";
 import { ImperativeExpect } from "../../expect";
-import { inspect } from "util";
+import { inspect } from "node:util";
 import { EnvFileUtils, ImperativeConfig, TextUtils } from "../../utilities";
-import * as nodePath from "path";
-import * as os from "os";
-import * as stream from "stream";
+import * as nodePath from "node:path";
+import * as os from "node:os";
+import * as stream from "node:stream";
 import { ICommandHandlerRequire } from "./doc/handler/ICommandHandlerRequire";
 import { IHandlerParameters } from "../../cmd";
 import { ChainedHandlerService } from "./ChainedHandlerUtils";
@@ -45,6 +45,7 @@ import { Censor } from "../../censor/src/Censor";
 import { EnvironmentalVariableSettings } from "../../imperative/src/env/EnvironmentalVariableSettings";
 import { ConnectionPropsForSessCfg } from "../../rest/src/session/ConnectionPropsForSessCfg";
 import { ISession } from "../../rest/src/session/doc/ISession";
+import { Buffer } from "node:buffer";
 
 
 /**
@@ -709,8 +710,8 @@ export class CommandProcessor {
                         const builtResponse = chainedResponse.buildJsonResponse();
                         chainedResponses.push(builtResponse.data);
                         // save the stdout and stderr to pass to the next chained handler (if any)
-                        bufferedStdOut = builtResponse.stdout;
-                        bufferedStdErr = builtResponse.stderr;
+                        bufferedStdOut = builtResponse.stdout as unknown as Buffer<ArrayBuffer>;
+                        bufferedStdErr = builtResponse.stderr as unknown as Buffer<ArrayBuffer>;
                     } catch (processErr) {
                         this.handleHandlerError(processErr, chainedResponse, chainedHandler.handler);
 

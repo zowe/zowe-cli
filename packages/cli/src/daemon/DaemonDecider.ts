@@ -9,14 +9,14 @@
 *
 */
 
-import * as fs from "fs";
-import * as net from "net";
-import * as os from "os";
-import * as path from "path";
-import { Console, Imperative, IO } from "@zowe/imperative";
-import { DaemonClient } from "./DaemonClient";
-import { DaemonUtil } from "./DaemonUtil";
-import { IDaemonPidForUser } from "./doc/IDaemonPidForUser";
+import * as fs from "node:fs";
+import * as net from "node:net";
+import * as os from "node:os";
+import * as path from "node:path";
+import { Console, Imperative, IO } from "npm:@zowe/imperative";
+import { DaemonClient } from "./DaemonClient.ts";
+import { DaemonUtil } from "./DaemonUtil.ts";
+import { IDaemonPidForUser } from "./doc/IDaemonPidForUser.ts";
 
 
 // TODO(Kelosky): handle prompting cases from login command

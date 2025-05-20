@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandDefinition } from "@zowe/imperative";
+import { ICommandDefinition } from "npm:@zowe/imperative";
 import { StatusDefinition } from "./status/Status.definition";
 
 export const CheckCommand: ICommandDefinition = {

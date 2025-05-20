@@ -9,7 +9,7 @@
 *
 */
 
-import { IMessageDefinition } from "@zowe/imperative";
+import { IMessageDefinition } from "npm:@zowe/imperative";
 
 /**
  * Messages to be used as command responses for different scenarios

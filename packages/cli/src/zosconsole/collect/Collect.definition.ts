@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandDefinition } from "@zowe/imperative";
+import { ICommandDefinition } from "npm:@zowe/imperative";
 import { SyncResponseCommandDefinition } from "./response/Response.definition";
 
 export const CollectCommand: ICommandDefinition = {

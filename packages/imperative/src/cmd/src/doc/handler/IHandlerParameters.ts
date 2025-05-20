@@ -9,7 +9,7 @@
 *
 */
 
-import * as stream from "stream";
+import * as stream from "node:stream";
 import { ICommandDefinition } from "../ICommandDefinition";
 import { IHandlerResponseApi } from "../../doc/response/api/handler/IHandlerResponseApi";
 import { ICommandArguments } from "../args/ICommandArguments";

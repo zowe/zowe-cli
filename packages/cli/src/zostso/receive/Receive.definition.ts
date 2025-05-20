@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandDefinition } from "@zowe/imperative";
+import { ICommandDefinition } from "npm:@zowe/imperative";
 import { ReceiveASApp } from "./app/ReceiveASApp.definition";
 
 export const ReceiveCommand: ICommandDefinition = {

@@ -10,7 +10,7 @@
 */
 
 import { IZosmfTsoResponse } from "./zosmf/IZosmfTsoResponse";
-import { ImperativeError } from "@zowe/imperative";
+import { ImperativeError } from "npm:@zowe/imperative";
 
 export interface IStartStopResponse {
     /**

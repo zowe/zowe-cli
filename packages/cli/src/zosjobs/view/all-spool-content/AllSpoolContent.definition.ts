@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandDefinition } from "@zowe/imperative";
+import { ICommandDefinition } from "npm:@zowe/imperative";
 
 export const AllSpoolContentDefinition: ICommandDefinition = {
     name: "all-spool-content",

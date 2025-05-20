@@ -40,7 +40,7 @@ Alternatively, install the following:
 **Check disk space on file system containing home directory**
 
 ```typescript
-import { ProfileInfo } from "@zowe/imperative";
+import { ProfileInfo } from "npm:@zowe/imperative";
 import { Shell, SshSession } from "@zowe/zos-uss-for-zowe-sdk";
 
 (async () => {
@@ -64,7 +64,7 @@ import { Shell, SshSession } from "@zowe/zos-uss-for-zowe-sdk";
 **Make a script executable**
 
 ```typescript
-import { ProfileInfo } from "@zowe/imperative";
+import { ProfileInfo } from "npm:@zowe/imperative";
 import { Shell, SshSession } from "@zowe/zos-uss-for-zowe-sdk";
 
 (async () => {

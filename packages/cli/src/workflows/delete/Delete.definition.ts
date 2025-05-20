@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandDefinition } from "@zowe/imperative";
+import { ICommandDefinition } from "npm:@zowe/imperative";
 import { DeleteActiveWorkflow } from "./deleteActiveWorkflow/DeleteActiveWorkflow.definition";
 import { DeleteArchivedWorkflow } from "./deleteArchivedWorkflow/DeleteArchivedWorkflow.definition";
 

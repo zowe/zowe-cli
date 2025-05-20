@@ -9,13 +9,13 @@
 *
 */
 
-import { inspect } from "util";
+import { inspect } from "node:util";
 import { Logger } from "../../../logger";
 import { IImperativeError, ImperativeError } from "../../../error";
 import { AbstractSession } from "../session/AbstractSession";
 import * as https from "https";
 import * as http from "http";
-import { readFileSync } from "fs";
+import { readFileSync } from "node:fs";
 import { ContentEncoding, Headers } from "./Headers";
 import { RestConstants } from "./RestConstants";
 import { ImperativeReject } from "../../../interfaces/src/types/ImperativeReject";
@@ -23,10 +23,10 @@ import { IHTTPSOptions } from "./doc/IHTTPSOptions";
 import { HTTP_VERB } from "./types/HTTPVerb";
 import { ImperativeExpect } from "../../../expect/src/ImperativeExpect";
 import { Session } from "../session/Session";
-import * as path from "path";
+import * as path from "node:path";
 import { completionTimeoutErrorMessage, IRestClientError } from "./doc/IRestClientError";
 import { RestClientError } from "./RestClientError";
-import { Readable, Writable } from "stream";
+import { Readable, Writable } from "node:stream";
 import { IO } from "../../../io";
 import { ITaskWithStatus, TaskProgress, TaskStage } from "../../../operations";
 import { ImperativeConfig, TextUtils } from "../../../utilities";

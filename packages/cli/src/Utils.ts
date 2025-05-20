@@ -9,7 +9,7 @@
 *
 */
 
-import { IImperativeConfig } from "@zowe/imperative";
+import { IImperativeConfig } from "npm:@zowe/imperative";
 
 /**
  * Get the Imperative config object which defines properties of the CLI.

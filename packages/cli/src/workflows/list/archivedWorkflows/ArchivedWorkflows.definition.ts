@@ -9,8 +9,8 @@
 *
 */
 
-import { ICommandDefinition } from "@zowe/imperative";
-import { join } from "path";
+import { ICommandDefinition } from "npm:@zowe/imperative";
+import { join } from "node:path";
 
 /**
  * This object defines the command for listing archived z/OSMF workflows for a system or sysplex.

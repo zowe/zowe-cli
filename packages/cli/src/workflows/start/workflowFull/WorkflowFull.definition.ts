@@ -10,8 +10,8 @@
 */
 
 
-import { ICommandDefinition } from "@zowe/imperative";
-import { join } from "path";
+import { ICommandDefinition } from "npm:@zowe/imperative";
+import { join } from "node:path";
 import { StartCommonOptions } from "../Start.common.options";
 
 /**

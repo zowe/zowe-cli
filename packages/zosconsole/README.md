@@ -7,7 +7,7 @@ Contains APIs to interact with the z/OS console (using z/OSMF console REST endpo
 **Submit a command to the z/OS console**
 
 ```typescript
-import { ProfileInfo } from "@zowe/imperative";
+import { ProfileInfo } from "npm:@zowe/imperative";
 import { IIssueParms, IssueCommand } from "@zowe/zos-console-for-zowe-sdk";
 
 (async () => {
@@ -36,7 +36,7 @@ import { IIssueParms, IssueCommand } from "@zowe/zos-console-for-zowe-sdk";
 **Get the response from a command sent to the z/OS console**
 
 ```typescript
-import { ProfileInfo } from "@zowe/imperative";
+import { ProfileInfo } from "npm:@zowe/imperative";
 import { CollectCommand, ICollectParms } from "@zowe/zos-console-for-zowe-sdk";
 
 (async () => {

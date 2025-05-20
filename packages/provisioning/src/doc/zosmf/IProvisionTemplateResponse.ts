@@ -9,7 +9,7 @@
 *
 */
 
-import { IExplanationMap } from "@zowe/imperative";
+import { IExplanationMap } from "npm:@zowe/imperative";
 import { explainTemplateRegistryInfoResponse, ITemplateRegistryInfo } from "./ITemplateRegistryInfo";
 import { explainTemplateWorkflowInfoResponse, ITemplateWorkflowInfo } from "./ITemplateWorkflowInfo";
 

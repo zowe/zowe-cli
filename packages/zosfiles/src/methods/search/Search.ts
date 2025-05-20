@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, TextUtils, ImperativeError, ImperativeExpect, TaskStage } from "@zowe/imperative";
+import { AbstractSession, TextUtils, ImperativeError, ImperativeExpect, TaskStage } from "npm:@zowe/imperative";
 
 import { List } from "../list";
 import { ISearchItem } from "./doc/ISearchItem";

@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandDefinition } from "@zowe/imperative";
+import { ICommandDefinition } from "npm:@zowe/imperative";
 import { DataSetsDefinition } from "./ds/DataSets.definition";
 
 import i18nTypings from "../-strings-/en";

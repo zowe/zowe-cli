@@ -9,7 +9,7 @@
 *
 */
 
-import * as path from "path";
+import * as path from "node:path";
 import * as lodash from "lodash";
 import { IExplanationMap, TextUtils } from "../../utilities/src/TextUtils";
 import { ICommandProfileProperty } from "../../cmd";

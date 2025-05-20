@@ -9,7 +9,7 @@
 *
 */
 
-import { ITaskWithStatus } from "@zowe/imperative";
+import { ITaskWithStatus } from "npm:@zowe/imperative";
 import { ISubmitParmsCommon } from "./ISubmitParmsCommon";
 
 /**

@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, ImperativeExpect } from "@zowe/imperative";
+import { AbstractSession, ImperativeExpect } from "npm:@zowe/imperative";
 
 import { ZosmfRestClient, ZosmfHeaders } from "@zowe/core-for-zowe-sdk";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";

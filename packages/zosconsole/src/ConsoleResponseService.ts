@@ -9,8 +9,8 @@
 *
 */
 
-import { ImperativeError, Logger, TextUtils } from "@zowe/imperative";
-import { inspect } from "util";
+import { ImperativeError, Logger, TextUtils } from "npm:@zowe/imperative";
+import { inspect } from "node:util";
 import { IZosmfIssueResponse } from "./doc/zosmf/IZosmfIssueResponse";
 import { IConsoleResponse } from "./doc/IConsoleResponse";
 import { displayError, displayResponse } from "./ConsoleConstants";

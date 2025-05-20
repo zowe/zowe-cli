@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandDefinition } from "@zowe/imperative";
+import { ICommandDefinition } from "npm:@zowe/imperative";
 import { DataSetDefinition } from "./data-set/DataSet.definition";
 import { LocalFileDefinition } from "./local-file/localFile.definition";
 import { StdinDefinition } from "./stdin/stdin.definition";

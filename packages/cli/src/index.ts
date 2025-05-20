@@ -9,8 +9,8 @@
 *
 */
 
-export { Constants } from "./Constants";
-export * from "./Utils";
+export { Constants } from "./Constants.ts";
+export * from "./Utils.ts";
 export * from "@zowe/core-for-zowe-sdk";
 export * from "@zowe/provisioning-for-zowe-sdk";
 export * from "@zowe/zos-console-for-zowe-sdk";
@@ -20,4 +20,4 @@ export * from "@zowe/zos-tso-for-zowe-sdk";
 export * from "@zowe/zos-uss-for-zowe-sdk";
 export * from "@zowe/zos-workflows-for-zowe-sdk";
 export * from "@zowe/zosmf-for-zowe-sdk";
-export * as imperative from "@zowe/imperative";
+export * as imperative from "npm:@zowe/imperative";

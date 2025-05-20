@@ -26,5 +26,5 @@ export * from "./operations";
 export * from "./profiles";
 export * from "./rest";
 export * from "./security";
-export * from "./settings";
-export * from "./utilities";
+export * from "./settings/index.ts";
+export * from "./utilities/index.ts";

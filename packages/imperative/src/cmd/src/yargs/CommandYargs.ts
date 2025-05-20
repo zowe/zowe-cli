@@ -10,7 +10,7 @@
 */
 
 import { Arguments, Argv, Options } from "yargs";
-import { inspect } from "util";
+import { inspect } from "node:util";
 import { Constants } from "../../../constants";
 import { IYargsResponse } from "./doc/IYargsResponse";
 import { AbstractCommandYargs, YargsCommandCompleted } from "./AbstractCommandYargs";

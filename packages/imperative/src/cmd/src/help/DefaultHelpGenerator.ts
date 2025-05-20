@@ -9,7 +9,7 @@
 *
 */
 
-import { format } from "util";
+import { format } from "node:util";
 import { AbstractHelpGenerator } from "./abstract/AbstractHelpGenerator";
 import { TextUtils } from "../../../utilities";
 import { Constants } from "../../../constants";

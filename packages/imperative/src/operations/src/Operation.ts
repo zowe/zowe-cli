@@ -12,7 +12,7 @@
 /* eslint-disable deprecation/deprecation */
 import { IOperationResult } from "./doc/IOperationResult";
 import { TaskStage } from "./TaskStage";
-import * as fs from "fs";
+import * as fs from "node:fs";
 import { TextUtils } from "../../utilities";
 import { ITaskWithStatus } from "./doc/ITaskWithStatus";
 import { TaskProgress } from "./TaskProgress";

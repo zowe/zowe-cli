@@ -10,7 +10,7 @@
 */
 
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
-import { AbstractSession, IHandlerParameters, ITaskWithStatus, TaskStage } from "@zowe/imperative";
+import { AbstractSession, IHandlerParameters, ITaskWithStatus, TaskStage } from "npm:@zowe/imperative";
 import { Download, IZosFilesResponse, ZosFilesAttributes } from "@zowe/zos-files-for-zowe-sdk";
 
 /**

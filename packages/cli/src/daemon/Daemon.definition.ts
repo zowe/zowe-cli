@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandDefinition } from "@zowe/imperative";
+import { ICommandDefinition } from "npm:@zowe/imperative";
 import { EnableCommand } from "./enable/Enable.definition";
 import { DisableCommand } from "./disable/Disable.definition";
 import { RestartCommand } from "./restart/Restart.definition";

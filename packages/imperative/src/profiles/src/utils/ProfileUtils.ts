@@ -11,7 +11,7 @@
 
 import { IProfileTypeConfiguration } from "../doc/config/IProfileTypeConfiguration";
 import { IProfileLoaded } from "../doc/response/IProfileLoaded";
-import * as nodePath from "path";
+import * as nodePath from "node:path";
 
 /**
  * Set of static utility methods to assist with creating profile option names from profile types, constructing the

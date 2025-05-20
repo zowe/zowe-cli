@@ -9,7 +9,7 @@
 *
 */
 
-import { Duplex, Transform, Writable } from "stream";
+import { Duplex, Transform, Writable } from "node:stream";
 import * as zlib from "zlib";
 import { ImperativeError } from "../../../error";
 import { IO } from "../../../io";

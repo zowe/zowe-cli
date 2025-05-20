@@ -12,7 +12,7 @@
 import { IImperativeOverrides } from "./doc/IImperativeOverrides";
 import { CredentialManagerFactory, DefaultCredentialManager } from "../../security";
 import { IImperativeConfig } from "./doc/IImperativeConfig";
-import { isAbsolute, resolve } from "path";
+import { isAbsolute, resolve } from "node:path";
 import { AppSettings } from "../../settings";
 import { ImperativeConfig } from "../../utilities";
 import { IConfigVault } from "../../config";

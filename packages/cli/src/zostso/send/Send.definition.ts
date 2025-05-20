@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandDefinition } from "@zowe/imperative";
+import { ICommandDefinition } from "npm:@zowe/imperative";
 import {
     SendToAddressSpaceCommandDefinition
 } from "./address_space/SendToAddressSpace.definition";

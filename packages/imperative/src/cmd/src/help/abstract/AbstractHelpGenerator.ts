@@ -10,7 +10,7 @@
 */
 
 import { TextUtils } from "../../../../utilities";
-import { format } from "util";
+import { format } from "node:util";
 import { ImperativeError } from "../../../../error/src/ImperativeError";
 import { Logger } from "../../../../logger/src/Logger";
 import { IHelpGeneratorParms } from "../doc/IHelpGeneratorParms";

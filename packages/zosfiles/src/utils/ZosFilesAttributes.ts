@@ -9,11 +9,11 @@
 *
 */
 
-import * as fs from "fs";
+import * as fs from "node:fs";
 import { minimatch } from "minimatch";
-import { ImperativeError, Logger, TextUtils } from "@zowe/imperative";
+import { ImperativeError, Logger, TextUtils } from "npm:@zowe/imperative";
 import { ZosFilesMessages } from "../constants/ZosFiles.messages";
-import * as pathUtils from "path";
+import * as pathUtils from "node:path";
 import { Tag } from "../methods/utilities";
 
 export enum TransferMode {BINARY, TEXT}

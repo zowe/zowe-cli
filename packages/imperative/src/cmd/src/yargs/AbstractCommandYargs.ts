@@ -210,7 +210,11 @@ export abstract class AbstractCommandYargs {
      */
     public constructDefinitionTree(): ICommandDefinition {
         const parents: GroupCommandYargs[] = this.parents;
-        return parents[0] ? JSON.parse(JSON.stringify(parents[0].definition)) : {};
+        return parents[0] ? JSON.parse(JSON.stringify(parents[0].definition)) : {
+            name: "unknown",
+            description: "unknown",
+            type: "command",
+        };
     }
 
     /**

@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandDefinition } from "@zowe/imperative";
+import { ICommandDefinition } from "npm:@zowe/imperative";
 import { IssueCommandDefinition } from "./command/Command.definition";
 
 export const IssueCommand: ICommandDefinition = {

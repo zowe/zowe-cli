@@ -10,7 +10,7 @@
 */
 
 import { ICommandDefinition } from "../../../../../cmd";
-import { join } from "path";
+import { join } from "node:path";
 
 const pluginDescription =
   "The name of the plug-in to update.\n\n" +

@@ -9,7 +9,7 @@
 *
 */
 
-import { IHandlerParameters } from "@zowe/imperative";
+import { IHandlerParameters } from "npm:@zowe/imperative";
 import { ListDefinedSystems, IZosmfListDefinedSystemsResponse, ZosmfBaseHandler } from "@zowe/zosmf-for-zowe-sdk";
 
 /**

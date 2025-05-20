@@ -9,8 +9,8 @@
 *
 */
 
-import { ICommandDefinition } from "@zowe/imperative";
-import * as path from "path";
+import { ICommandDefinition } from "npm:@zowe/imperative";
+import * as path from "node:path";
 
 export const instanceInfo: ICommandDefinition = {
     name: "instance-info",

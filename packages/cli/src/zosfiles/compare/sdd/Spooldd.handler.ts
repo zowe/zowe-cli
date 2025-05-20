@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, ICommandArguments } from "@zowe/imperative";
+import { AbstractSession, ICommandArguments } from "npm:@zowe/imperative";
 import { GetJobs } from "@zowe/zos-jobs-for-zowe-sdk";
 import { CompareBaseHandler } from "../CompareBase.handler";
 import {CompareBaseHelper } from "../CompareBaseHelper";

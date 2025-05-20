@@ -9,9 +9,9 @@
 *
 */
 
-import { ICommandDefinition } from "@zowe/imperative";
+import { ICommandDefinition } from "npm:@zowe/imperative";
 import { ActiveWorkflowDetailsCommonOptions } from "./ActiveWorkflowDetails.common.options";
-import { join } from "path";
+import { join } from "node:path";
 
 /**
  * This object defines the command for listing active workflow details within zosworkflows.

@@ -9,7 +9,7 @@
 *
 */
 
-import { IExplanationMap } from "@zowe/imperative";
+import { IExplanationMap } from "npm:@zowe/imperative";
 
 /**
  * Interface for provisioned instance variables.

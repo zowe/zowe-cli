@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession } from "@zowe/imperative";
+import { AbstractSession } from "npm:@zowe/imperative";
 import { IZosFilesResponse } from "../../doc/IZosFilesResponse";
 import { IDeleteOptions } from "./doc/IDeleteOptions";
 import { ZosFilesUtils } from "../../utils/ZosFilesUtils";

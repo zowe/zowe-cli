@@ -9,8 +9,8 @@
 *
 */
 
-import { AbstractSession, ImperativeExpect, Logger } from "@zowe/imperative";
-import { posix } from "path";
+import { AbstractSession, ImperativeExpect, Logger } from "npm:@zowe/imperative";
+import { posix } from "node:path";
 import { ZosmfConstants } from "./constants/Zosmf.constants";
 import { ZosmfMessages } from "./constants/Zosmf.messages";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";

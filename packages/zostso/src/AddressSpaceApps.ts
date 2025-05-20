@@ -12,7 +12,7 @@
 import { noAccountNumber, TsoConstants } from "./TsoConstants";
 import { ITsoAppCommunicationParms } from "./doc/input/ITsoAppCommunicationParms";
 import { IASAppResponse } from "./doc/IASAppResponse";
-import { AbstractSession, Headers } from "@zowe/imperative";
+import { AbstractSession, Headers } from "npm:@zowe/imperative";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { IStartTsoParms } from "./doc/input/IStartTsoParms";
 import { TsoValidator } from "./TsoValidator";

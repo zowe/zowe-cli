@@ -9,9 +9,9 @@
 *
 */
 
-import * as path from "path";
+import * as path from "node:path";
 
-import { IImperativeConfig } from "@zowe/imperative";
+import { IImperativeConfig } from "npm:@zowe/imperative";
 import { Constants } from "./Constants";
 
 import { ZosmfProfile } from "@zowe/zosmf-for-zowe-sdk";

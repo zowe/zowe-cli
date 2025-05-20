@@ -11,9 +11,9 @@
 
 import { AbstractSession, ImperativeError, ImperativeExpect, ITaskWithStatus,
     Logger, Headers, IHeaderContent, TaskStage, IO,
-    TaskProgress} from "@zowe/imperative";
-import { posix } from "path";
-import * as fs from "fs";
+    TaskProgress} from "npm:@zowe/imperative";
+import { posix } from "node:path";
+import * as fs from "node:fs";
 import { Create, CreateDataSetTypeEnum, ICreateDataSetOptions } from "../create";
 import { Get } from "../get";
 import { Upload } from "../upload";
@@ -29,9 +29,9 @@ import { ICopyDatasetOptions } from "./doc/ICopyDatasetOptions";
 import { ICrossLparCopyDatasetOptions } from "./doc/ICrossLparCopyDatasetOptions";
 import { Download } from "../download";
 import { ZosFilesUtils } from "../../utils/ZosFilesUtils";
-import { tmpdir } from "os";
+import { tmpdir } from "node:os";
 import path = require("path");
-import * as util from "util";
+import * as util from "node:util";
 import { Delete } from "../delete";
 /**
  * This class holds helper functions that are used to copy the contents of datasets through the

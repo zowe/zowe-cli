@@ -10,7 +10,7 @@
 */
 
 import { IZosmfIssueResponse } from "./zosmf/IZosmfIssueResponse";
-import { ImperativeError } from "@zowe/imperative";
+import { ImperativeError } from "npm:@zowe/imperative";
 
 /**
  * The Console API response.

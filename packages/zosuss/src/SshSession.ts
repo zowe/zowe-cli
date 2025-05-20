@@ -13,7 +13,7 @@ import {
     ICommandArguments,
     ICommandOptionDefinition,
     Logger
-} from "@zowe/imperative";
+} from "npm:@zowe/imperative";
 import { ISshSession } from "./doc/ISshSession";
 
 

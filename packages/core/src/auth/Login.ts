@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, ImperativeExpect, Logger, RestConstants, SessConstants, ImperativeError } from "@zowe/imperative";
+import { AbstractSession, ImperativeExpect, Logger, RestConstants, SessConstants, ImperativeError } from "npm:@zowe/imperative";
 import { ZosmfRestClient } from "../rest/ZosmfRestClient";
 import { LoginConstants } from "./LoginConstants";
 

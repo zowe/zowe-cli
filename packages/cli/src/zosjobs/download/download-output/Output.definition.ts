@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandDefinition, ICommandOptionDefinition } from "@zowe/imperative";
+import { ICommandDefinition, ICommandOptionDefinition } from "npm:@zowe/imperative";
 
 export const OutputDefinition: ICommandDefinition = {
     name: "output",

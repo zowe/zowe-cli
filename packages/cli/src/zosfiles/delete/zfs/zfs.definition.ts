@@ -9,8 +9,8 @@
 *
 */
 
-import { ICommandDefinition, ICommandOptionDefinition } from "@zowe/imperative";
-import { join } from "path";
+import { ICommandDefinition, ICommandOptionDefinition } from "npm:@zowe/imperative";
+import { join } from "node:path";
 import i18nTypings from "../../-strings-/en";
 
 // Does not use the import in anticipation of some internationalization work to be done later.

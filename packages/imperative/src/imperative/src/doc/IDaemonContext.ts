@@ -9,8 +9,8 @@
 *
 */
 
-import * as net from "net";
-import * as stream from "stream";
+import * as net from "node:net";
+import * as stream from "node:stream";
 import { IDaemonResponse } from "../../../utilities";
 
 /**

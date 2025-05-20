@@ -11,11 +11,11 @@
 
 import { Download, Upload, IZosFilesResponse, IDownloadOptions, IUploadOptions } from "@zowe/zos-files-for-zowe-sdk";
 import { AbstractSession, IHandlerParameters, ImperativeError, ProcessUtils, GuiResult,
-    TextUtils, IDiffNameOptions, CliUtils } from "@zowe/imperative";
+    TextUtils, IDiffNameOptions, CliUtils } from "npm:@zowe/imperative";
 import { CompareBaseHelper } from "../compare/CompareBaseHelper";
-import { existsSync, unlinkSync } from "fs";
-import { tmpdir } from "os";
-import * as path from "path";
+import { existsSync, unlinkSync } from "node:fs";
+import { tmpdir } from "node:os";
+import * as path from "node:path";
 import LocalfileDatasetHandler from "../compare/lf-ds/LocalfileDataset.handler";
 import LocalfileUssHandler from "../compare/lf-uss/LocalfileUss.handler";
 

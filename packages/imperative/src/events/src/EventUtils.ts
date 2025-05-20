@@ -10,9 +10,9 @@
 */
 
 import { ImperativeError } from "../../error/src/ImperativeError";
-import { join } from "path";
+import { join } from "node:path";
 import { ZoweUserEvents, ZoweSharedEvents, EventTypes, EventCallback } from "./EventConstants";
-import * as fs from "fs";
+import * as fs from "node:fs";
 import { ConfigUtils } from "../../config/src/ConfigUtils";
 import { IEventDisposable, IEventJson } from "./doc";
 import { Event } from "./Event";

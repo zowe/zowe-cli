@@ -9,9 +9,9 @@
 *
 */
 
-import * as fs from "fs";
+import * as fs from "node:fs";
 import * as readYaml from "js-yaml";
-import { ImperativeError } from "@zowe/imperative";
+import { ImperativeError } from "npm:@zowe/imperative";
 import { IPropertiesInput, IProvisionOptionals } from "./";
 
 /**

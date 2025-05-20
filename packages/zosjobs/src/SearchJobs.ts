@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, ImperativeError, IRestClientResponse, IOptionsFullResponse, Headers, Logger} from "@zowe/imperative";
+import { AbstractSession, ImperativeError, IRestClientResponse, IOptionsFullResponse, Headers, Logger} from "npm:@zowe/imperative";
 import { ZosmfRestClient, ZosmfHeaders } from "@zowe/core-for-zowe-sdk";
 import { GetJobs} from "./GetJobs";
 import { ISearchJobsParms } from "./doc/input/ISearchJobsParms";

@@ -9,7 +9,7 @@
 *
 */
 
-import { Writable } from "stream";
+import { Writable } from "node:stream";
 import { IJobFile } from "../response/IJobFile";
 import { IDownloadAllSpoolContentParms } from "./IDownloadAllSpoolContentParms";
 

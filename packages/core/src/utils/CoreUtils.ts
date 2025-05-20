@@ -9,8 +9,8 @@
 *
 */
 
-import * as fs from "fs";
-import { IImperativeError, Logger, TextUtils } from "@zowe/imperative";
+import * as fs from "node:fs";
+import { IImperativeError, Logger, TextUtils } from "npm:@zowe/imperative";
 
 const stringWidth = require("string-width");
 

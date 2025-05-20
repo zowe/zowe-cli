@@ -9,7 +9,7 @@
 *
 */
 
-import {ICommandDefinition} from "@zowe/imperative";
+import {ICommandDefinition} from "npm:@zowe/imperative";
 import { EditOptions } from "../Edit.options";
 import i18nTypings from "../../-strings-/en";
 

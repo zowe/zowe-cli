@@ -9,7 +9,7 @@
 *
 */
 
-import {relative} from "path";
+import {relative} from "node:path";
 
 // Since yargs uses path.relative and somehow mocking fails because of this,
 // we need to check if relative is a mocked function. If it is, reinstall the

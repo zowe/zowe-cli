@@ -9,17 +9,17 @@
 *
 */
 
-import { format, inspect } from "util";
-import { ImperativeError } from "../../error/src/ImperativeError";
+import { format, inspect } from "node:util";
+import { ImperativeError } from "../../error/src/ImperativeError.ts";
 import * as StackTrace from "stack-trace";
-import * as path from "path";
-import { TextUtils } from "../../utilities/src/TextUtils";
-import { IO } from "../../io";
-import { IConfigLogging } from "./doc/IConfigLogging";
-import { LoggerManager } from "./LoggerManager";
+import * as path from "node:path";
+import { TextUtils } from "../../utilities/src/TextUtils.ts";
+import { IO } from "../../io/index.ts";
+import { IConfigLogging } from "./doc/IConfigLogging.ts";
+import { LoggerManager } from "./LoggerManager.ts";
 import * as log4js from "log4js";
-import { Console } from "../../console/src/Console";
-import { Censor } from "../../censor";
+import { Console } from "../../console/src/Console.ts";
+import { Censor } from "../../censor/index.ts";
 
 /**
  * Note(Kelosky): it seems from the log4js doc that you only get a single

@@ -12,7 +12,7 @@
 import Module = require("module");
 
 import { ImperativeConfig } from "../../../utilities";
-import * as path from "path";
+import * as path from "node:path";
 import * as findUp from "find-up";
 import * as lodash from "lodash";
 
@@ -160,7 +160,7 @@ export class PluginRequireProvider {
          */
         const regex = this.regex = new RegExp(`^(${internalModules.join("|")})(?:\\/.*)?$`, "gm");
         const origRequire = this.origRequire = Module.prototype.require;
-        const origMain = this.origRequire.main;
+        const origMain = (this.origRequire as NodeJS.Require).main;
 
         // Timerify the function if needed
         // Gave it a name so that we can more easily track it

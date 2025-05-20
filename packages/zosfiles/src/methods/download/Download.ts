@@ -10,11 +10,11 @@
 */
 
 import { AbstractSession, Headers, ImperativeExpect, IO, Logger, TaskProgress, ImperativeError,
-    TextUtils, IHeaderContent, IOptionsFullResponse, IRestClientResponse } from "@zowe/imperative";
+    TextUtils, IHeaderContent, IOptionsFullResponse, IRestClientResponse } from "npm:@zowe/imperative";
 
-import { posix, join, relative } from "path";
-import * as fs from "fs";
-import * as util from "util";
+import { posix, join, relative } from "node:path";
+import * as fs from "node:fs";
+import * as util from "node:util";
 
 import { ZosmfRestClient, ZosmfHeaders, asyncPool } from "@zowe/core-for-zowe-sdk";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";

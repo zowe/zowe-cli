@@ -9,9 +9,9 @@
 *
 */
 
-import { AbstractSession, ImperativeExpect, Logger, IHeaderContent } from "@zowe/imperative";
+import { AbstractSession, ImperativeExpect, Logger, IHeaderContent } from "npm:@zowe/imperative";
 
-import { posix } from "path";
+import { posix } from "node:path";
 
 import { ZosmfRestClient, ZosmfHeaders } from "@zowe/core-for-zowe-sdk";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";

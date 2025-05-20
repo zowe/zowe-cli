@@ -10,9 +10,9 @@
 */
 
 import { AbstractSession, Headers, ImperativeError, ImperativeExpect, IO, Logger,
-    TaskProgress, IHeaderContent, IOptionsFullResponse, IRestClientResponse } from "@zowe/imperative";
-import * as fs from "fs";
-import * as path from "path";
+    TaskProgress, IHeaderContent, IOptionsFullResponse, IRestClientResponse } from "npm:@zowe/imperative";
+import * as fs from "node:fs";
+import * as path from "node:path";
 
 import { ZosmfHeaders, ZosmfRestClient, asyncPool } from "@zowe/core-for-zowe-sdk";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
@@ -27,10 +27,10 @@ import { Create } from "../create";
 import { IUploadFile } from "./doc/IUploadFile";
 import { IUploadDir } from "./doc/IUploadDir";
 import { Utilities, Tag } from "../utilities";
-import { Readable } from "stream";
+import { Readable } from "node:stream";
 import { CLIENT_PROPERTY } from "../../doc/types/ZosmfRestClientProperties";
 import { TransferMode } from "../../utils/ZosFilesAttributes";
-import { inspect } from "util";
+import { inspect } from "node:util";
 
 export class Upload {
 

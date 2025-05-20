@@ -9,7 +9,7 @@
 *
 */
 
-import * as path from "path";
+import * as path from "node:path";
 import { readJsonSync, writeJsonSync } from "fs-extra";
 
 import { ICredentialManagerNameMap } from "./doc/ICredentialManagerNameMap";

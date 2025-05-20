@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandOptionDefinition } from "@zowe/imperative";
+import { ICommandOptionDefinition } from "npm:@zowe/imperative";
 import { maxConcurrentRequestsMaxValue } from "../download/Download.options";
 
 import i18nTypings from "../-strings-/en";

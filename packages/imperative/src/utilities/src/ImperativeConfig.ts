@@ -10,7 +10,7 @@
 */
 
 import { Constants } from "../../constants";
-import { join } from "path";
+import { join } from "node:path";
 import { IImperativeConfig } from "../../imperative/src/doc/IImperativeConfig";
 import { ImperativeError } from "../../error";
 import { EnvironmentalVariableSettings } from "../../imperative/src/env/EnvironmentalVariableSettings";

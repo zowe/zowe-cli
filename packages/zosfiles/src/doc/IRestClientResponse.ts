@@ -10,7 +10,7 @@
 *
 */
 
-import { Session, Logger } from "@zowe/imperative";
+import { Session, Logger } from "npm:@zowe/imperative";
 
 /**
  * Interface to map client's REST call response

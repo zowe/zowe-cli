@@ -10,7 +10,7 @@
 */
 
 import { EventTypes } from "../EventConstants";
-import * as fs from "fs";
+import * as fs from "node:fs";
 
 /**
  * Imperative Event JSON representation for user interpretation

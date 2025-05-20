@@ -11,10 +11,10 @@
 
 import { IImperativeConfig } from "../doc/IImperativeConfig";
 import { UpdateImpConfig } from "../UpdateImpConfig";
-import { isAbsolute, join } from "path";
+import { isAbsolute, join } from "node:path";
 import { ImperativeConfig, JsUtils } from "../../../utilities";
 import { Logger } from "../../../logger";
-import { existsSync } from "fs";
+import { existsSync } from "node:fs";
 import { PMFConstants } from "./utilities/PMFConstants";
 import { readFileSync, writeFileSync } from "jsonfile";
 import { IPluginCfgProps } from "./doc/IPluginCfgProps";

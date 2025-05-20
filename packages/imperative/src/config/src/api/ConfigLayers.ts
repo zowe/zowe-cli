@@ -9,8 +9,8 @@
 *
 */
 
-import * as fs from "fs";
-import * as path from "path";
+import * as fs from "node:fs";
+import * as path from "node:path";
 import * as JSONC from "comment-json";
 import * as lodash from "lodash";
 import { ImperativeError } from "../../../error";

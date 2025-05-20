@@ -10,7 +10,7 @@
 */
 
 import { Argv } from "yargs";
-import { inspect } from "util";
+import { inspect } from "node:util";
 import { Logger } from "../../../logger";
 import { ICommandDefinition } from "../../../cmd/src/doc/ICommandDefinition";
 import { YargsCommandCompleted } from "./AbstractCommandYargs";

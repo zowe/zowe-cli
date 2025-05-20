@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, Logger, TextUtils } from "@zowe/imperative";
+import { AbstractSession, Logger, TextUtils } from "npm:@zowe/imperative";
 
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { ConsoleValidator } from "./ConsoleValidator";

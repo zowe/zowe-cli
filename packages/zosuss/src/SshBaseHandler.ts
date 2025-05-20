@@ -23,11 +23,11 @@ import {
     ImperativeError,
     ConnectionPropsForSessCfg,
     SessConstants,
-} from "@zowe/imperative";
+} from "npm:@zowe/imperative";
 import { SshSession } from "./SshSession";
 import { ISshSession } from "./doc/ISshSession";
 import { utils } from "ssh2";
-import * as fs from "fs";
+import * as fs from "node:fs";
 
 /**
  * This class is used by the various handlers in the project as the base class for their implementation.

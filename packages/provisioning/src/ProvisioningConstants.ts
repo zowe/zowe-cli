@@ -9,7 +9,7 @@
 *
 */
 
-import { IMessageDefinition, apiErrorHeader } from "@zowe/imperative";
+import { IMessageDefinition, apiErrorHeader } from "npm:@zowe/imperative";
 
 /**
  * Constants for provisioning related info.

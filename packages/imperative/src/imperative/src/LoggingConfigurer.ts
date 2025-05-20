@@ -9,7 +9,7 @@
 *
 */
 
-import * as path from "path";
+import * as path from "node:path";
 import { IConfigLogging } from "../../logger/src/doc/IConfigLogging";
 import { Logger } from "../../logger/src/Logger";
 import { LoggerConfigBuilder } from "../../logger/src/LoggerConfigBuilder";

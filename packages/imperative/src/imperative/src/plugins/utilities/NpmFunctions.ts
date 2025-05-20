@@ -10,7 +10,7 @@
 */
 
 import { PMFConstants } from "./PMFConstants";
-import * as path from "path";
+import * as path from "node:path";
 import * as which from "which";
 import { StdioOptions } from "child_process";
 import { readFileSync } from "jsonfile";

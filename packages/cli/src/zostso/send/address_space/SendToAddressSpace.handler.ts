@@ -9,7 +9,7 @@
 *
 */
 
-import { IHandlerParameters } from "@zowe/imperative";
+import { IHandlerParameters } from "npm:@zowe/imperative";
 import { SendTso, ISendResponse, ZosTsoBaseHandler } from "@zowe/zos-tso-for-zowe-sdk";
 
 /**

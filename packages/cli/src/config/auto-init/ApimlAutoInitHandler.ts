@@ -9,14 +9,14 @@
 *
 */
 
-import * as path from "path";
+import * as path from "node:path";
 import * as lodash from "lodash";
 
 import { ZosmfSession } from "@zowe/zosmf-for-zowe-sdk";
 import { BaseAutoInitHandler, AbstractSession, ICommandArguments, IConfig, IConfigProfile,
     ISession, IHandlerResponseApi, IHandlerParameters, SessConstants, ImperativeConfig,
     ImperativeError, RestClientError, TextUtils, Config, ConfigUtils
-} from "@zowe/imperative";
+} from "npm:@zowe/imperative";
 import { IApimlProfileInfo, IAutoInitRpt, IProfileRpt, Login, Services } from "@zowe/core-for-zowe-sdk";
 
 /**

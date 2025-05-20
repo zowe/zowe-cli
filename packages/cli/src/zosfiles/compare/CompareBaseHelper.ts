@@ -9,9 +9,9 @@
 *
 */
 
-import * as path from "path";
-import * as fs from "fs";
-import { IHandlerParameters, DiffUtils, ITaskWithStatus, ImperativeError, IDiffOptions, IDiffNameOptions } from "@zowe/imperative";
+import * as path from "node:path";
+import * as fs from "node:fs";
+import { IHandlerParameters, DiffUtils, ITaskWithStatus, ImperativeError, IDiffOptions, IDiffNameOptions } from "npm:@zowe/imperative";
 import {  IZosFilesResponse } from "@zowe/zos-files-for-zowe-sdk";
 import { ICompareFileOptions } from "./doc/ICompareFileOptions";
 

@@ -9,7 +9,7 @@
 *
 */
 
-import { join } from "path";
+import { join } from "node:path";
 import { ICommandDefinition } from "../../../../../cmd";
 
 /**

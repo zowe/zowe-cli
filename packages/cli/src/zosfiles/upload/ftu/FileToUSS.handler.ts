@@ -15,7 +15,7 @@ import {
     ITaskWithStatus,
     TaskStage,
     TextUtils,
-} from "@zowe/imperative";
+} from "npm:@zowe/imperative";
 import { Upload, IZosFilesResponse, IUploadOptions, ZosFilesAttributes } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosFilesBaseHandler } from "../../ZosFilesBase.handler";
 

@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandDefinition } from "@zowe/imperative";
+import { ICommandDefinition } from "npm:@zowe/imperative";
 import { SubmitDefinition } from "./submit/Submit.definition";
 import { ViewDefinition } from "./view/View.definition";
 import { ListDefinition } from "./list/List.definition";

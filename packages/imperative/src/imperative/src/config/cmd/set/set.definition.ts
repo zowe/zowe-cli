@@ -10,7 +10,7 @@
 */
 
 import { ICommandDefinition } from "../../../../../cmd";
-import { join } from "path";
+import { join } from "node:path";
 
 export const setDefinition: ICommandDefinition = {
     name: "set",

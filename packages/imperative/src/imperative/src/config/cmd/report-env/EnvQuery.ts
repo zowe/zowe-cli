@@ -9,9 +9,9 @@
 *
 */
 
-import * as os from "os";
+import * as os from "node:os";
 import * as lodash from "lodash";
-import * as path from "path";
+import * as path from "node:path";
 import * as spawn from "cross-spawn";
 import { StdioOptions } from "child_process";
 

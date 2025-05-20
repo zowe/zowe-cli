@@ -9,7 +9,7 @@
 *
 */
 
-import { IHandlerParameters, ImperativeExpect } from "@zowe/imperative";
+import { IHandlerParameters, ImperativeExpect } from "npm:@zowe/imperative";
 import { ModifyJobs, GetJobs, IJob } from "@zowe/zos-jobs-for-zowe-sdk";
 import { ZosmfBaseHandler } from "@zowe/zosmf-for-zowe-sdk";
 

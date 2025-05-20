@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandExampleDefinition, ICommandOptionDefinition, ICommandProfileTypeConfiguration, SessConstants } from "@zowe/imperative";
+import { ICommandExampleDefinition, ICommandOptionDefinition, ICommandProfileTypeConfiguration, SessConstants } from "npm:@zowe/imperative";
 
 
 /**

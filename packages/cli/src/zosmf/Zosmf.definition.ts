@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandDefinition } from "@zowe/imperative";
+import { ICommandDefinition } from "npm:@zowe/imperative";
 import { CheckCommand } from "./check/Check.definition";
 import { ListCommand } from "./list/List.definition";
 

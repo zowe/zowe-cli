@@ -9,8 +9,8 @@
 *
 */
 
-import { IHandlerParameters, ImperativeError, ITaskWithStatus, TaskProgress, TaskStage } from "@zowe/imperative";
-import * as  fs from "fs";
+import { IHandlerParameters, ImperativeError, ITaskWithStatus, TaskProgress, TaskStage } from "npm:@zowe/imperative";
+import * as  fs from "node:fs";
 import { ISubmitParms, SubmitJobs, IJob, ISpoolFile, ZosJobsMessages } from "@zowe/zos-jobs-for-zowe-sdk";
 import { IDownloadOptions, Get } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosmfBaseHandler } from "@zowe/zosmf-for-zowe-sdk";

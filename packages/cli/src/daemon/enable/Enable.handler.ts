@@ -9,15 +9,15 @@
 *
 */
 
-import * as fs from "fs";
-import * as nodeJsPath from "path";
+import * as fs from "node:fs";
+import * as nodeJsPath from "node:path";
 import * as tar from "tar";
 import { spawnSync, StdioOptions } from "child_process";
 
 import {
     CliUtils, ICommandHandler, IHandlerParameters, ImperativeConfig, ImperativeError,
     IO, ISystemInfo, ProcessUtils
-} from "@zowe/imperative";
+} from "npm:@zowe/imperative";
 
 import { IDaemonEnableQuestions } from "../doc/IDaemonEnableQuestions";
 

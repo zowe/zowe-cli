@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, Headers } from "@zowe/imperative";
+import { AbstractSession, Headers } from "npm:@zowe/imperative";
 
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { SendTso } from "./SendTso";

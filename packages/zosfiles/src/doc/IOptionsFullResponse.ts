@@ -9,8 +9,8 @@
 *
 */
 
-import { Writable, Readable } from "stream";
-import { ITaskWithStatus } from "@zowe/imperative";
+import { Writable, Readable } from "node:stream";
+import { ITaskWithStatus } from "npm:@zowe/imperative";
 import { CLIENT_PROPERTY } from "./types/ZosmfRestClientProperties";
 /**
  * Interface to define input options for RestClient GET|POST|PUT|DELETE ExpectFullResponse methods

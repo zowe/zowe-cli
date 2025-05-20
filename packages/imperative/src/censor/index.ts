@@ -9,5 +9,5 @@
 *
 */
 
-export * from "./src/Censor";
-export * from "./src/doc/ICensorOptions";
+export * from "./src/Censor.ts";
+export * from "./src/doc/ICensorOptions.ts";

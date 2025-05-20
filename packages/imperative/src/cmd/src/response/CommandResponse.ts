@@ -26,10 +26,10 @@ import { ICommandOutputFormat, OUTPUT_FORMAT } from "../doc/response/response/IC
 import { Arguments } from "yargs";
 import { ICommandDefinition } from "../doc/ICommandDefinition";
 import { OptionConstants } from "../constants/OptionConstants";
-import { inspect } from "util";
+import { inspect } from "node:util";
 import * as DeepMerge from "deepmerge";
 import * as ProgressBar from "progress";
-import * as net from "net";
+import * as net from "node:net";
 import * as tty from "tty";
 import { IPromptOptions } from "../doc/response/api/handler/IPromptOptions";
 import { DaemonRequest } from "../../../utilities/src/DaemonRequest";

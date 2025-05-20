@@ -9,9 +9,9 @@
 *
 */
 
-import * as path from "path";
-import * as fs from "fs";
-import { IO, Logger, IHeaderContent, AbstractSession, ImperativeExpect, Headers } from "@zowe/imperative";
+import * as path from "node:path";
+import * as fs from "node:fs";
+import { IO, Logger, IHeaderContent, AbstractSession, ImperativeExpect, Headers } from "npm:@zowe/imperative";
 import { ZosFilesConstants } from "../constants/ZosFiles.constants";
 import { ZosFilesMessages } from "../constants/ZosFiles.messages";
 import { IZosFilesResponse } from "../doc/IZosFilesResponse";

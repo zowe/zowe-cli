@@ -9,7 +9,7 @@
 *
 */
 
-import { FSWatcher } from "fs";
+import { FSWatcher } from "node:fs";
 import { EventTypes } from "./EventConstants";
 import { IEventJson } from "./doc";
 

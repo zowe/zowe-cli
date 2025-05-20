@@ -9,8 +9,8 @@
 *
 */
 
-import * as fs from "fs";
-import { inspect } from "util";
+import * as fs from "node:fs";
+import { inspect } from "node:util";
 import { syntaxErrorHeader } from "../../../messages";
 import { CliUtils } from "../../../utilities/src/CliUtils";
 import { Constants } from "../../../constants";

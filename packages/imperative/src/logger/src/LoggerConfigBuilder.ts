@@ -10,8 +10,8 @@
 */
 
 import { IConfigLogging } from "./doc/IConfigLogging";
-import * as path from "path";
-import * as os from "os";
+import * as path from "node:path";
+import * as os from "node:os";
 
 export class LoggerConfigBuilder {
 

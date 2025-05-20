@@ -1,4 +1,4 @@
-import { IHandlerProgressApi, ITaskWithStatus } from "@zowe/imperative";
+import { IHandlerProgressApi, ITaskWithStatus } from "npm:@zowe/imperative";
 import { IDataSet } from "../../../doc/IDataSet";
 import { IZosFilesOptions } from "../../../doc/IZosFilesOptions";
 

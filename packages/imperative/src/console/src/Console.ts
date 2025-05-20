@@ -17,7 +17,7 @@
  */
 import { IConsole } from "./doc/IConsole";
 import { TextUtils } from "../../utilities/src/TextUtils";
-import { format } from "util";
+import { format } from "node:util";
 import { ImperativeError } from "../../error";
 
 export class Console implements IConsole {

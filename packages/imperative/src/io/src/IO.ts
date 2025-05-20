@@ -9,15 +9,15 @@
 *
 */
 
-import * as fs from "fs";
-import * as path from "path";
-import * as os from "os";
+import * as fs from "node:fs";
+import * as path from "node:path";
+import * as os from "node:os";
 import { ImperativeReject } from "../../interfaces";
 import { ImperativeError } from "../../error";
 import { ImperativeExpect } from "../../expect";
 // use complete path to ExecUtils to avoid circular dependency that results from utilities/index
 import { ExecUtils } from "../../utilities/src/ExecUtils";
-import { Readable, Writable } from "stream";
+import { Readable, Writable } from "node:stream";
 
 /**
  * This class will handle common sequences of node I/O and issue messages /

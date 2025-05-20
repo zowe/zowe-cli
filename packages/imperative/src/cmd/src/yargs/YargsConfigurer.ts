@@ -9,7 +9,7 @@
 *
 */
 
-import { format, inspect } from "util";
+import { format, inspect } from "node:util";
 import { Arguments } from "yargs";
 import { Logger } from "../../../logger";
 import { Constants } from "../../../constants";

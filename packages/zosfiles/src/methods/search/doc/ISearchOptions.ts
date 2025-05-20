@@ -9,7 +9,7 @@
 *
 */
 
-import { ITaskWithStatus } from "@zowe/imperative";
+import { ITaskWithStatus } from "npm:@zowe/imperative";
 import { IGetOptions } from "../../get";
 import { IListOptions } from "../../list";
 import { IDataSet } from "../../../doc/IDataSet";

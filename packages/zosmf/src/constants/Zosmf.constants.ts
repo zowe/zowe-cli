@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandOptionDefinition } from "@zowe/imperative";
+import { ICommandOptionDefinition } from "npm:@zowe/imperative";
 
 /**
  * Constants to be used by the z/OSMF API

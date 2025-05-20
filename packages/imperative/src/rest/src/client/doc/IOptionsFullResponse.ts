@@ -9,7 +9,7 @@
 *
 */
 
-import { Writable, Readable } from "stream";
+import { Writable, Readable } from "node:stream";
 import { ITaskWithStatus } from "../../../../operations";
 import { CLIENT_PROPERTY } from "../types/AbstractRestClientProperties";
 /**

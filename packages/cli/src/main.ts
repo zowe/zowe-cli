@@ -10,11 +10,11 @@
 *
 */
 
-import { IImperativeConfig, Imperative } from "@zowe/imperative";
+import { IImperativeConfig, Imperative } from "npm:@zowe/imperative";
 import { Constants } from "./Constants";
-import { inspect } from "util";
+import { inspect } from "node:util";
 import { DaemonDecider } from "./daemon/DaemonDecider";
-import { join } from "path";
+import { join } from "node:path";
 
 // TODO(Kelosky): if we remove this, imperative fails to find config in package.json & we must debug this.
 const config: IImperativeConfig = {

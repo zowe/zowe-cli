@@ -9,9 +9,9 @@
 *
 */
 
-import { join } from "path";
+import { join } from "node:path";
 import { CliUtils, IChainedHandlerArgumentMapping, ICommandDefinition, ICommandOptionDefinition,
-    ICommandPositionalDefinition } from "@zowe/imperative";
+    ICommandPositionalDefinition } from "npm:@zowe/imperative";
 import { ZosmfSession } from "@zowe/zosmf-for-zowe-sdk";
 import { ZosFilesOptionDefinitions } from "../../ZosFiles.options";
 

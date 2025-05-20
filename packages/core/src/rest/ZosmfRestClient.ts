@@ -12,7 +12,7 @@
 import {
     IImperativeError, Logger, RestClient,
     RestConstants, SessConstants
-} from "@zowe/imperative";
+} from "npm:@zowe/imperative";
 import { ZosmfHeaders } from "./ZosmfHeaders";
 
 /**

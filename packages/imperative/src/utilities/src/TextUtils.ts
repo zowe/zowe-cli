@@ -9,7 +9,7 @@
 *
 */
 
-import { format } from "util";
+import { format } from "node:util";
 
 /**
  * Interface of an explanation map object

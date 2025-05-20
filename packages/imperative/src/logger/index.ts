@@ -9,10 +9,10 @@
 *
 */
 
-export * from "./src/doc/IConfigLogging";
-export * from "./src/doc/ILog4jsAppender";
-export * from "./src/doc/ILog4jsConfig";
-export * from "./src/doc/ILog4jsLayout";
-export * from "./src/Logger";
+export * from "./src/doc/IConfigLogging.ts";
+export * from "./src/doc/ILog4jsAppender.ts";
+export * from "./src/doc/ILog4jsConfig.ts";
+export * from "./src/doc/ILog4jsLayout.ts";
+export * from "./src/Logger.ts";
 // export * from "./src/LoggerConfigBuilder";
 // export * from "./src/LoggerUtils";

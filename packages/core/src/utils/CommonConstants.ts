@@ -9,7 +9,7 @@
 *
 */
 
-import { IMessageDefinition, apiErrorHeader } from "@zowe/imperative";
+import { IMessageDefinition, apiErrorHeader } from "npm:@zowe/imperative";
 
 /**
  * Error message that no z/OSMF version parameter string was supplied.

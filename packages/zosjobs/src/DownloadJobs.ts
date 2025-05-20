@@ -9,8 +9,8 @@
 *
 */
 
-import * as path from "path";
-import { AbstractSession, ImperativeExpect, IO, Logger, Headers} from "@zowe/imperative";
+import * as path from "node:path";
+import { AbstractSession, ImperativeExpect, IO, Logger, Headers} from "npm:@zowe/imperative";
 import { JobsConstants } from "./JobsConstants";
 import { IDownloadAllSpoolContentParms } from "./doc/input/IDownloadAllSpoolContentParms";
 import { IJobFile } from "./doc/response/IJobFile";

@@ -10,7 +10,7 @@
 */
 
 import { HTTP_VERB } from "../types/HTTPVerb";
-import { Writable, Readable } from "stream";
+import { Writable, Readable } from "node:stream";
 import { ITaskWithStatus } from "../../../../operations";
 
 /**

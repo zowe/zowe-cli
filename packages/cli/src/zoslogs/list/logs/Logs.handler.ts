@@ -9,7 +9,7 @@
 *
 */
 
-import { IHandlerParameters, TextUtils } from "@zowe/imperative";
+import { IHandlerParameters, TextUtils } from "npm:@zowe/imperative";
 import { ZosmfBaseHandler } from "@zowe/zosmf-for-zowe-sdk";
 import { GetZosLog, IZosLogParms, IZosLogType, IZosLogItemType } from "@zowe/zos-logs-for-zowe-sdk";
 /**

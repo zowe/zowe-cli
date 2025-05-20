@@ -9,8 +9,8 @@
 *
 */
 
-import * as path from "path";
-import { AbstractSession, ImperativeExpect, Logger } from "@zowe/imperative";
+import * as path from "node:path";
+import { AbstractSession, ImperativeExpect, Logger } from "npm:@zowe/imperative";
 import { JobsConstants } from "./JobsConstants";
 import { ZosmfHeaders, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { IJob } from "./doc/response/IJob";

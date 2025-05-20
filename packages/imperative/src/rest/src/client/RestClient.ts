@@ -14,7 +14,7 @@ import { RestConstants } from "./RestConstants";
 import { HTTP_VERB } from "./types/HTTPVerb";
 import { AbstractRestClient } from "./AbstractRestClient";
 import { JSONUtils } from "../../../utilities";
-import { Readable, Writable } from "stream";
+import { Readable, Writable } from "node:stream";
 import { ITaskWithStatus } from "../../../operations";
 import { IRestClientResponse } from "./doc/IRestClientResponse";
 import { IOptionsFullResponse } from "./doc/IOptionsFullResponse";

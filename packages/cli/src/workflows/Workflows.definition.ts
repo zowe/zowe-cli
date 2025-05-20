@@ -9,7 +9,7 @@
 *
 */
 
-import { ICommandDefinition } from "@zowe/imperative";
+import { ICommandDefinition } from "npm:@zowe/imperative";
 import { DeleteDefinition } from "./delete/Delete.definition";
 import { CreateDefinition } from "./create/Create.definition";
 import { StartDefinition } from "./start/Start.definition";

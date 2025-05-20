@@ -9,7 +9,7 @@
 *
 */
 
-import { Writable } from "stream";
+import { Writable } from "node:stream";
 import { IGetOptions } from "../../get/doc/IGetOptions";
 import { ZosFilesAttributes } from "../../../utils/ZosFilesAttributes";
 

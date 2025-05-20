@@ -9,7 +9,7 @@
 *
 */
 
-import { IHandlerParameters } from "@zowe/imperative";
+import { IHandlerParameters } from "npm:@zowe/imperative";
 import { IPingResponse, PingTso, ZosTsoBaseHandler } from "@zowe/zos-tso-for-zowe-sdk";
 
 /**

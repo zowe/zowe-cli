@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, TextUtils, ImperativeExpect } from "@zowe/imperative";
+import { AbstractSession, TextUtils, ImperativeExpect } from "npm:@zowe/imperative";
 import { noSessionProvisioning } from "./ProvisioningConstants";
 
 /**
