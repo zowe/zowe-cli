@@ -22,6 +22,59 @@ import { ConfigLayers, ConfigSecure } from "../src/api";
 
 const MY_APP = "my_app";
 
+
+/**
+ * Recursively generates the nested profile structure for a given level.
+ * Uses "layerN" for profile names.
+ *
+ * @param currentDepth - The current nesting level (0-based).
+ * @param maxDepth - The total number of nested profile layers required.
+ * @returns The nested structure for the current level and its children,
+ * formatted as { "layerN": { properties?, profiles: { ... } } }
+ * or just {} for the level beyond maxDepth.
+ */
+const generateNestedLayer = (currentDepth: number, maxDepth: number): any => {
+    // Base case: If we've reached the desired depth, the next 'profiles' object is empty.
+    if (currentDepth >= maxDepth) {
+        return {};
+    }
+
+    // Use the layerN naming convention
+    const profileName = `layer${currentDepth}`;
+    const layerData: any = {};
+
+    // Add some sample properties to different layers to verify proper inheritance
+    switch (currentDepth) {
+        case 0:
+            // Add "user" to first layer
+            layerData.properties = { user: "testuser" };
+            break;
+        case 1:
+            // Add "responseTimeout" to second layer
+            layerData.properties = { responseTimeout: 30 };
+            break;
+        case 2:
+            // Add "account" to third layer
+            layerData.properties = { account: "IZUACCT" };
+            break;
+        case 5:
+            // Add "socketConnectTimeout" to sixth layer
+            layerData.properties = { socketConnectTimeout: 60 };
+            break;
+        default:
+            break;
+    }
+
+    // Recursively generate the content for the next level's 'profiles' object
+    const nextLevelProfiles = generateNestedLayer(currentDepth + 1, maxDepth);
+
+    // Assign the generated nested structure to the 'profiles' key of the current layer
+    layerData.profiles = nextLevelProfiles;
+
+    // Final format: { "layer0": { properties: { ... }, profiles: { ... } } }
+    return { [profileName]: layerData };
+};
+
 describe("Config tests", () => {
     afterEach(() => {
         jest.restoreAllMocks();
@@ -214,6 +267,46 @@ describe("Config tests", () => {
             }
             expect(readError).toBeDefined();
             expect(config.properties).toMatchSnapshot();
+        });
+
+        it.each([3, 4, 10, 100])("should merge properties from a deeply nested configuration with %i layers", async (numLayers) => {
+            const nestedConfig: any = {
+                profiles: generateNestedLayer(0, numLayers),
+                defaults: {}
+            };
+
+            jest.spyOn(Config, "search").mockReturnValue("/fake/path/to/nested.config.json");
+            jest.spyOn(fs, "existsSync").mockReturnValue(true);
+            jest.spyOn(fs, "readFileSync").mockReturnValue(JSON.stringify(nestedConfig));
+
+            const config = await Config.load(MY_APP);
+
+            for (let i = 0; i < numLayers; i++) {
+                const profilePath = i === 0 ? "layer0" : Array.from({ length: i }).map((v, i) => (i + 1).toString()).reduce((all, cur) => all + `.layer${cur}`, "layer0");
+                const profile = config.api.profiles.get(profilePath, true);
+                if (!profile) {
+                    throw new Error(`Could not navigate to profile at depth ${i + 1}`);
+                }
+                expect(profile["user"]).toBe("testuser");
+                if (i === 0) {
+                    // responseTimeout is only on profiles within layer1
+                    expect(profile["responseTimeout"]).toBeUndefined();
+                    continue;
+                }
+                expect(profile["responseTimeout"]).toBe(30);
+                if (i === 1) {
+                    // account is only on profiles within layer2
+                    expect(profile["account"]).toBeUndefined();
+                    continue;
+                }
+                expect(profile["account"]).toBe("IZUACCT");
+                if (i < 5) {
+                    // first 5 layers do not have socketConnectTimeout
+                    expect(profile["socketConnectTimeout"]).toBeUndefined();
+                    continue;
+                }
+                expect(profile["socketConnectTimeout"]).toBe(60);
+            }
         });
     });
 

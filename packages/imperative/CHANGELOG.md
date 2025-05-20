@@ -6,6 +6,11 @@ All notable changes to the Imperative package will be documented in this file.
 
 - Enhancement: Updated the Zowe Client REST APIs to obey the choice of authentication specified by a user. [#2491](https://github.com/zowe/zowe-cli/pull/2491)
 
+## `8.20.1`
+
+- Enhancement: Updated the `Logger` class to support the `winston` library, and introduced migration tools to switch from `log4js` to `winston`. For more information on how to migrate your logger instance to use the `winston` library, refer to the ["Configuring logging" page](https://github.com/zowe/zowe-cli/wiki/Configuring-Logging) on the Zowe CLI wiki. [#2488](https://github.com/zowe/zowe-cli/issues/2488)
+- BugFix: Fixed an issue where downstream dependencies using `log4js` have their log output redirected after creating an instance of the `ProfileInfo` class. [#2488](https://github.com/zowe/zowe-cli/issues/2488)
+
 ## `8.20.0`
 
 - Enhancement: Added a request timeout to the Imperative REST client. [#2490](https://github.com/zowe/zowe-cli/pull/2490)

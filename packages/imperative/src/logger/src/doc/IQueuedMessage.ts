@@ -9,8 +9,8 @@
 *
 */
 
-export interface IQueuedMessage {
+export interface IQueuedMessage<Method = string> {
     category: string;
-    method: string;
+    method: Method;
     message: string;
 }

@@ -51,6 +51,7 @@
     "comment-json": "~4.2.3",
     "cross-spawn": "^7.0.5",
     "dataobject-parser": "^1.2.25",
+    "dayjs": "1.11.13",
     "deepmerge": "^4.3.1",
     "diff": "^5.2.0",
     "diff2html": "3.4.20-usewontache.1.60e7a2e",
@@ -79,6 +80,7 @@
     "stack-trace": "^0.0.10",
     "strip-ansi": "^6.0.1",
     "which": "^4.0.0",
+    "winston": "^3.17.0",
     "wrap-ansi": "^7.0.0",
     "yargs": "^17.7.2"
   },
