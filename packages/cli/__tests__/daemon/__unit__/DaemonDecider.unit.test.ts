@@ -245,11 +245,7 @@ describe("DaemonDecider tests", () => {
             expectedCommChannel = path.join(os.homedir(), ".zowe/daemon/daemon.sock");
         }
 
-        if (process.platform === "win32") {
-            expect((daemonDecider as any).mSocket).toEqual(expectedCommChannel);
-        } else {
-            expect((daemonDecider as any).mSocket).toEqual(expectedCommChannel);
-        }
+        expect((daemonDecider as any).mSocket).toEqual(expectedCommChannel);
     });
 
     it("should try to delete an existing socket on Posix", () => {
