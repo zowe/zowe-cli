@@ -31,6 +31,11 @@ describe("Logout system test", () => {
 
         REAL_SESSION = TestEnvironment.createBaseSession(testEnvironment);
 
+        // TestEnvironment has no means to make a request for a token, so
+        // we update the session with a request for a token
+        AuthOrder.makingRequestForToken(REAL_SESSION.ISession);
+        AuthOrder.addCredsToSession(REAL_SESSION.ISession, { "$0": "NameNotUsed", "_": [] });
+
         try {
             token = await Login.apimlLogin(REAL_SESSION);
             if (token === null || token === undefined) {
