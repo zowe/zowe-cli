@@ -1821,3 +1821,61 @@ describe("ConnectionPropsForSessCfg tests", () => {
         });
     });
 });
+
+describe("sessHasCreds tests", () => {
+    it("should be truthy if a token is in the session", () => {
+        const sessCfg = {
+            hostname: "SomeHost",
+            port: 11,
+            rejectUnauthorized: true,
+            tokenType: "FakeTokenType",
+            tokenValue: "FakeTokenValue"
+        };
+        expect(ConnectionPropsForSessCfg.sessHasCreds(sessCfg)).toBeTruthy();
+    });
+
+    it("should be truthy if a cert is in the session", () => {
+        const sessCfg = {
+            hostname: "SomeHost",
+            port: 11,
+            rejectUnauthorized: true,
+            certKey: "FakeCertKey",
+            cert: "FakeCert"
+        };
+        expect(ConnectionPropsForSessCfg.sessHasCreds(sessCfg)).toBeTruthy();
+    });
+
+    it("should be truthy if a base64 encoded user and password is in the session", () => {
+        const sessCfg = {
+            hostname: "SomeHost",
+            port: 11,
+            rejectUnauthorized: true,
+            base64EncodedAuth: "FakeBase64BasicCreds"
+        };
+        expect(ConnectionPropsForSessCfg.sessHasCreds(sessCfg)).toBeTruthy();
+    });
+
+    it("should be truthy if user and password are in the session", () => {
+        const sessCfg = {
+            hostname: "SomeHost",
+            port: 11,
+            rejectUnauthorized: true,
+            user: "FakeUser",
+            password: "FakePassword"
+        };
+        expect(ConnectionPropsForSessCfg.sessHasCreds(sessCfg)).toBeTruthy();
+    });
+
+    it("should be false if no creds are in the session", () => {
+        const sessCfg = {
+            hostname: "SomeHost",
+            port: 11,
+            rejectUnauthorized: true
+        };
+        expect(ConnectionPropsForSessCfg.sessHasCreds(sessCfg)).toBe(false);
+    });
+
+    it("should be false if the session is null", () => {
+        expect(ConnectionPropsForSessCfg.sessHasCreds((null as unknown as ISession))).toBe(false);
+    });
+});

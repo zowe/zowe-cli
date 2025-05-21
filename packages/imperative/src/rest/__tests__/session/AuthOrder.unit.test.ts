@@ -237,6 +237,36 @@ describe("AuthOrder", () => {
             expect(sessCfgForTest).toHaveProperty("_authCache");
             expect(sessCfgForTest._authCache?.didUserSetAuthOrder).toBe(true);
         });
+
+        it("should not reset authOrder if it was set by a user", () => {
+            cmdArgsForTest.authOrder = "cert-pem,basic,bearer,token,none";
+            const userAuthOrder = [
+                AUTH_TYPE_CERT_PEM, AUTH_TYPE_BASIC, AUTH_TYPE_BEARER, AUTH_TYPE_TOKEN, AUTH_TYPE_NONE
+            ];
+
+            // cache the auth order for this session using a private static method
+            AuthOrder["cacheAuthOrder"](sessCfgForTest, cmdArgsForTest);
+            let retrievedAuthOrder = AuthOrder.getAuthOrder(sessCfgForTest);
+            expect(retrievedAuthOrder).toEqual(userAuthOrder);
+            expect(sessCfgForTest).toHaveProperty("_authCache");
+            expect(sessCfgForTest._authCache?.didUserSetAuthOrder).toBe(true);
+
+            // record that this authOrder was set by a user
+            if (sessCfgForTest._authCache?.didUserSetAuthOrder) {
+                sessCfgForTest._authCache.didUserSetAuthOrder = true;
+            }
+
+            // cache an auth order for this session a second time
+            cmdArgsForTest.authOrder = "token,basic";
+            const newAuthOrder = [AUTH_TYPE_TOKEN, AUTH_TYPE_BASIC];
+
+            AuthOrder["cacheAuthOrder"](sessCfgForTest, cmdArgsForTest);
+            retrievedAuthOrder = AuthOrder.getAuthOrder(sessCfgForTest);
+            expect(retrievedAuthOrder.length).toEqual(5);
+            expect(retrievedAuthOrder).toEqual(userAuthOrder);
+            expect(sessCfgForTest).toHaveProperty("_authCache");
+            expect(sessCfgForTest._authCache?.didUserSetAuthOrder).toBe(true);
+        });
     });
 
     describe("getAuthOrder", () => {
@@ -787,7 +817,7 @@ describe("AuthOrder", () => {
     }); // putTopAuthInSession
 
     describe("removeExtraCredsFromSess", () => {
-        it("should throw an error when an invalid authTypeToRequestToken is specified", () => {
+        it("should throw an error when an invalid authTypeToRequestToken is specified using basic auth", () => {
             cmdArgsForTest.authOrder = `${AUTH_TYPE_TOKEN},  ${AUTH_TYPE_CERT_PEM}, ${AUTH_TYPE_BASIC}, ${AUTH_TYPE_BEARER}`;
 
             // an invalid authTypeToRequestToken with a session type of token triggers the edge case
@@ -805,6 +835,27 @@ describe("AuthOrder", () => {
             expect(thrownError).toBeInstanceOf(ImperativeError);
             expect(thrownError.message).toContain("The requested session contains an invalid property combination for requesting a token");
             expect(thrownError.message).toContain(`session type = ${AUTH_TYPE_TOKEN}`);
+            expect(thrownError.message).toContain(`authTypeToRequestToken = ${bogusAuthToRequestToken}`);
+        });
+
+        it("should throw an error when an invalid authTypeToRequestToken is specified using cert auth", () => {
+            cmdArgsForTest.authOrder = `${AUTH_TYPE_TOKEN},  ${AUTH_TYPE_CERT_PEM}, ${AUTH_TYPE_BASIC}, ${AUTH_TYPE_BEARER}`;
+
+            // an invalid authTypeToRequestToken with a session type of token triggers the edge case
+            AuthOrder.addCredsToSession(sessCfgForTest, cmdArgsForTest);
+            sessCfgForTest.type = AUTH_TYPE_CERT_PEM;
+            const bogusAuthToRequestToken = "InvalidAuthToRequestToken";
+            (sessCfgForTest._authCache as any).authTypeToRequestToken = bogusAuthToRequestToken;
+
+            let thrownError;
+            try {
+                AuthOrder["removeExtraCredsFromSess"](sessCfgForTest);
+            } catch (err) {
+                thrownError = err;
+            }
+            expect(thrownError).toBeInstanceOf(ImperativeError);
+            expect(thrownError.message).toContain("The requested session contains an invalid property combination for requesting a token");
+            expect(thrownError.message).toContain(`session type = ${AUTH_TYPE_CERT_PEM}`);
             expect(thrownError.message).toContain(`authTypeToRequestToken = ${bogusAuthToRequestToken}`);
         });
 
