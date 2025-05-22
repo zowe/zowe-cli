@@ -650,8 +650,8 @@ export class CommandProcessor {
 
             let chainedResponse: CommandResponse;
 
-            let bufferedStdOut = Buffer.from([]);
-            let bufferedStdErr = Buffer.from([]);
+            let bufferedStdOut: Buffer<ArrayBufferLike> = Buffer.from([]);
+            let bufferedStdErr: Buffer<ArrayBufferLike> = Buffer.from([]);
             if (preparedArgs.showInputsOnly) {
                 this.showInputsOnly({
                     response,
