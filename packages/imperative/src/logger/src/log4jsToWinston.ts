@@ -42,8 +42,8 @@ addColors(customLevels.colors);
  * @param log4jsFormat The log4js date formatting to convert to dayjs format.
  * @returns The corresponding dayjs format.
  */
-export function mapLog4jsToDayjsFormat(log4jsFormat: string): string {    
-    // 
+export function mapLog4jsToDayjsFormat(log4jsFormat: string): string {
+    //
     // https://github.com/log4js-node/log4js-node/issues/1012#issuecomment-1017144708
 
     // Support reserved log4js -> date-format strings in pattern options
@@ -60,7 +60,7 @@ export function mapLog4jsToDayjsFormat(log4jsFormat: string): string {
         default:
             break;
     }
-    
+
     // Basic replacements - dayjs uses similar tokens to log4js/fecha for common cases
     return (
         log4jsFormat
@@ -171,7 +171,7 @@ export function hasPatternLayout(
     );
 }
 
-export const defaultPrintfFormat = 
+export const defaultPrintfFormat =
 ({ timestamp, level, message }: { timestamp: unknown, level: string, message: unknown }) =>
     `[${timestamp}] [${level}] ${message}`;
 

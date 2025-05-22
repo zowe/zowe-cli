@@ -79,6 +79,21 @@ export interface IRestClientError extends IImperativeError {
      */
     request?: string;
     /**
+     * The type of authentication used by this request
+     * @type {string}
+     */
+    authType?: string;
+    /**
+     * The order in which authentication was selected
+     * @type {string}
+     */
+    authTypeOrder?: string;
+    /**
+     * The credentials that were available for this request
+     * @type {string}
+     */
+    availableCreds?: string;
+    /**
      * The error "source". Indicates where the error occurred in the REST client.
      * "client" indicates that the error occurred before the request to the remote
      * system could be fulfilled (normally due to network, bad host/port, etc.).

@@ -38,6 +38,7 @@ describe("issue command handler tests", () => {
         IssueTso.issueTsoCmd = jest.fn((session, _cmd) => {
             expect(session).toBeDefined();
             expect(session.ISession).toMatchSnapshot();
+
             return StartTsoData.SAMPLE_ISSUE_RESPONSE_WITH_MSG;
         });
         const handler = new Command.default();
