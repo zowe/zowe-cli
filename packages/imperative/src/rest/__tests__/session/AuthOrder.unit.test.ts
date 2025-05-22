@@ -257,8 +257,8 @@ describe("AuthOrder", () => {
             }
 
             // cache an auth order for this session a second time
+            // the authOrder count should remain at 5 not reduced to 2
             cmdArgsForTest.authOrder = "token,basic";
-            const newAuthOrder = [AUTH_TYPE_TOKEN, AUTH_TYPE_BASIC];
 
             AuthOrder["cacheAuthOrder"](sessCfgForTest, cmdArgsForTest);
             retrievedAuthOrder = AuthOrder.getAuthOrder(sessCfgForTest);
