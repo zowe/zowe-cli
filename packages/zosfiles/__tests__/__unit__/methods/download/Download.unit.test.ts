@@ -1083,6 +1083,145 @@ describe("z/OS Files - Download", () => {
                 file: path.posix.join(dsFolder, secondItem.member.toLowerCase() + ".txt")
             });
         });
+
+        it("should use extensionMap to determine file extension for each member", async () => {
+            let response;
+            let caughtError;
+
+            const directory = "my/test/path/";
+            // Map member names to extensions
+            const extensionMap = {
+                m1: ".abc",
+                m2: "def"
+            };
+
+            try {
+                response = await Download.allMembers(dummySession, dsname, { directory, extensionMap });
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: util.format(ZosFilesMessages.memberDownloadedWithDestination.message, directory),
+                apiResponse: listApiResponse
+            });
+
+            expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
+            expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, dsname, {});
+
+            expect(downloadDatasetSpy).toHaveBeenCalledTimes(2);
+
+            // M1 should use ".abc" (with dot, should be normalized)
+            expect(downloadDatasetSpy).toHaveBeenCalledWith(
+                dummySession,
+                `${dsname}(M1)`,
+                {
+                    file: path.posix.join(directory, "m1.abc")
+                }
+            );
+            // M2 should use "def" (no dot, should be normalized to ".def")
+            expect(downloadDatasetSpy).toHaveBeenCalledWith(
+                dummySession,
+                `${dsname}(M2)`,
+                {
+                    file: path.posix.join(directory, "m2.def")
+                }
+            );
+        });
+
+        it("should use extensionMap with preserveOriginalLetterCase", async () => {
+            let response;
+            let caughtError;
+
+            const directory = "my/test/path/";
+            // Map member names to extensions, using uppercase keys
+            const extensionMap = {
+                M1: "UPPER",
+                M2: ".LOWER"
+            };
+
+            try {
+                response = await Download.allMembers(dummySession, dsname, { directory, extensionMap, preserveOriginalLetterCase: true });
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: util.format(ZosFilesMessages.memberDownloadedWithDestination.message, directory),
+                apiResponse: listApiResponse
+            });
+
+            expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
+            expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, dsname, {});
+
+            expect(downloadDatasetSpy).toHaveBeenCalledTimes(2);
+
+            // M1 should use "UPPER" (no dot, should be normalized to ".UPPER")
+            expect(downloadDatasetSpy).toHaveBeenCalledWith(
+                dummySession,
+                `${dsname}(M1)`,
+                {
+                    file: path.posix.join(directory, "M1.UPPER")
+                }
+            );
+            // M2 should use ".LOWER" (with dot, should be normalized)
+            expect(downloadDatasetSpy).toHaveBeenCalledWith(
+                dummySession,
+                `${dsname}(M2)`,
+                {
+                    file: path.posix.join(directory, "M2.LOWER")
+                }
+            );
+        });
+
+        it("should fall back to default extension if extensionMap does not match", async () => {
+            let response;
+            let caughtError;
+
+            const directory = "my/test/path/";
+            // Map does not contain keys for M1 or M2
+            const extensionMap = {
+                other: "zzz"
+            };
+
+            try {
+                response = await Download.allMembers(dummySession, dsname, { directory, extensionMap });
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: util.format(ZosFilesMessages.memberDownloadedWithDestination.message, directory),
+                apiResponse: listApiResponse
+            });
+
+            expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
+            expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, dsname, {});
+
+            expect(downloadDatasetSpy).toHaveBeenCalledTimes(2);
+
+            // Should use default extension ".txt"
+            expect(downloadDatasetSpy).toHaveBeenCalledWith(
+                dummySession,
+                `${dsname}(M1)`,
+                {
+                    file: path.posix.join(directory, "m1.txt")
+                }
+            );
+            expect(downloadDatasetSpy).toHaveBeenCalledWith(
+                dummySession,
+                `${dsname}(M2)`,
+                {
+                    file: path.posix.join(directory, "m2.txt")
+                }
+            );
+        });
     });
 
     describe("allDataSets", () => {
