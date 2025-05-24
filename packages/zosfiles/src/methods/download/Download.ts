@@ -240,9 +240,9 @@ export class Download {
             const failedMembers: string[] = [];
             let downloadsInitiated = 0;
 
-            let extension = ZosFilesUtils.DEFAULT_FILE_EXTENSION;
+            let defaultExtension = ZosFilesUtils.DEFAULT_FILE_EXTENSION;
             if (options.extension != null) {
-                extension = options.extension;
+                defaultExtension = options.extension;
             }
 
             /**
@@ -259,6 +259,18 @@ export class Download {
                 }
 
                 const fileName = options.preserveOriginalLetterCase ? mem.member : mem.member.toLowerCase();
+
+                // Determine extension using extensionMap if provided
+                let extension = defaultExtension;
+                if (options.extensionMap != null) {
+                    // Use the member name as the key, lowercased if preserveOriginalLetterCase is false
+                    extension = options.extensionMap[fileName] ?? extension;
+                }
+                // Normalize the extension, remove leading periods
+                if (extension && extension.startsWith(".")) {
+                    extension = extension.replace(/^\.+/g, "");
+                }
+
                 return this.dataSet(session, `${dataSetName}(${mem.member})`, {
                     volume: options.volume,
                     file: posix.join(baseDir, fileName + IO.normalizeExtension(extension)),
