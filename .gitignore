@@ -123,3 +123,6 @@ packages/imperative/web-help/dist/js/
 
 jest-stare/
 jest.user.config.js
+
+# Bun lockfile (bun.lock, bun.lockb). Remove in v4 if we switch to bun
+bun.lock*
