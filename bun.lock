@@ -27,6 +27,7 @@
         "jest": "^29.0.0",
         "jest-environment-node": "^29.0.0",
         "jest-environment-node-debug": "^2.0.0",
+        "jest-extended": "^5.0.3",
         "jest-html-reporter": "^3.6.0",
         "jest-junit": "^16.0.0",
         "jest-sonar-reporter": "^2.0.0",
@@ -1488,6 +1489,8 @@
     "jest-environment-node": ["jest-environment-node@29.7.0", "", { "dependencies": { "@jest/environment": "^29.7.0", "@jest/fake-timers": "^29.7.0", "@jest/types": "^29.6.3", "@types/node": "*", "jest-mock": "^29.7.0", "jest-util": "^29.7.0" } }, "sha512-DOSwCRqXirTOyheM+4d5YZOrWcdu0LNZ87ewUoywbcb2XR4wKgqiG8vNeYwhjFMbEkfju7wx2GYH0P2gevGvFw=="],
 
     "jest-environment-node-debug": ["jest-environment-node-debug@2.0.0", "", {}, "sha512-qiYRQBCwf/x+E88VsJbkBiyX95N3i5PaqABDiRPkeBjfU4yEVoZvDdg+V8qglV2+aDq6cE0JDBtPv16SWTRDLw=="],
+
+    "jest-extended": ["jest-extended@5.0.3", "", { "dependencies": { "jest-diff": "^29.0.0" }, "peerDependencies": { "jest": ">=27.2.5" }, "optionalPeers": ["jest"] }, "sha512-sxrNxTvHd5S0qFSchkYdr7WhLQb55qhr5sHcllPaPXXGhv0kXy/0VTtFbrFUPOLHyZRDpNoEmhzcPRT7b90MZA=="],
 
     "jest-get-type": ["jest-get-type@29.6.3", "", {}, "sha512-zrteXnqYxfQh7l5FHyL38jL39di8H8rHoecLH3JNxH3BwOrBsNeabdap5e0I23lD4HHI8W5VFBZqG4Eaq5LNcw=="],
 

@@ -12,6 +12,7 @@
 import * as fs from "fs";
 import * as glob from "glob";
 import * as jsonfile from "jsonfile";
+import "jest-extended";
 import { keyring as keytar } from "@zowe/secrets-for-zowe-sdk";
 import { IConfig } from "../../../../../../../../src";
 import { IConfigSecureProperties } from "../../../../../../../../src/config/src/doc/IConfigSecure";
@@ -85,7 +86,7 @@ describe("cmd-cli config auto-init", () => {
         expect(response.status).toBe(0);
 
         expect(glob.sync("*.json", { cwd: TEST_ENVIRONMENT.workingDir + "/testDir" }))
-            .toContain(["imperative-test-cli.config.json", "imperative-test-cli.schema.json"]);
+            .toIncludeSameMembers(["imperative-test-cli.config.json", "imperative-test-cli.schema.json"]);
         const configJson: IConfig = jsonfile.readFileSync(TEST_ENVIRONMENT.workingDir + "/testDir/imperative-test-cli.config.json");
         expect(configJson.profiles.base_fruit).toBeDefined();
         expect(configJson.profiles.base_fruit.properties.tokenValue).toBeUndefined();
@@ -101,7 +102,7 @@ describe("cmd-cli config auto-init", () => {
         expect(response.status).toBe(0);
 
         expect(glob.sync("*.json", { cwd: TEST_ENVIRONMENT.workingDir + "/testDir" }))
-            .toContain(["imperative-test-cli.config.user.json", "imperative-test-cli.schema.json"]);
+            .toIncludeSameMembers(["imperative-test-cli.config.user.json", "imperative-test-cli.schema.json"]);
         const configJson: IConfig = jsonfile.readFileSync(TEST_ENVIRONMENT.workingDir + "/testDir/imperative-test-cli.config.user.json");
         expect(configJson.profiles.base_fruit).toBeDefined();
         expect(configJson.profiles.base_fruit.properties.tokenValue).toBeUndefined();
@@ -118,7 +119,7 @@ describe("cmd-cli config auto-init", () => {
         expect(response.status).toBe(0);
 
         expect(glob.sync("*.json", { cwd: TEST_ENVIRONMENT.workingDir }))
-            .toContain(["extenders.json", "imperative-test-cli.config.json", "imperative-test-cli.schema.json"]);
+            .toIncludeSameMembers(["extenders.json", "imperative-test-cli.config.json", "imperative-test-cli.schema.json"]);
         const configJson: IConfig = jsonfile.readFileSync(TEST_ENVIRONMENT.workingDir + "/imperative-test-cli.config.json");
         expect(configJson.profiles.base_fruit).toBeDefined();
         expect(configJson.profiles.base_fruit.properties.tokenValue).toBeUndefined();
@@ -135,7 +136,7 @@ describe("cmd-cli config auto-init", () => {
         expect(response.status).toBe(0);
 
         expect(glob.sync("*.json", { cwd: TEST_ENVIRONMENT.workingDir }))
-            .toContain(["extenders.json", "imperative-test-cli.config.user.json", "imperative-test-cli.schema.json"]);
+            .toIncludeSameMembers(["extenders.json", "imperative-test-cli.config.user.json", "imperative-test-cli.schema.json"]);
         const configJson: IConfig = jsonfile.readFileSync(TEST_ENVIRONMENT.workingDir + "/imperative-test-cli.config.user.json");
         expect(configJson.profiles.base_fruit).toBeDefined();
         expect(configJson.profiles.base_fruit.properties.tokenValue).toBeUndefined();
@@ -150,7 +151,7 @@ describe("cmd-cli config auto-init", () => {
         expect(response.status).toBe(0);
 
         expect(glob.sync("*.json", { cwd: TEST_ENVIRONMENT.workingDir + "/testDir" }))
-            .toContain(["imperative-test-cli.config.json", "imperative-test-cli.schema.json"]);
+            .toIncludeSameMembers(["imperative-test-cli.config.json", "imperative-test-cli.schema.json"]);
         const configJson: IConfig = jsonfile.readFileSync(TEST_ENVIRONMENT.workingDir + "/testDir/imperative-test-cli.config.json");
         expect(configJson.profiles.base_fruit).toBeDefined();
         expect(configJson.profiles.base_fruit.properties.host).toBe("fakeInput");
@@ -163,7 +164,7 @@ describe("cmd-cli config auto-init", () => {
         expect(response.status).toBe(0);
 
         expect(glob.sync("*.json", { cwd: TEST_ENVIRONMENT.workingDir + "/testDir" }))
-            .toContain(["imperative-test-cli.config.json", "imperative-test-cli.schema.json"]);
+            .toIncludeSameMembers(["imperative-test-cli.config.json", "imperative-test-cli.schema.json"]);
         const configJson: IConfig = jsonfile.readFileSync(TEST_ENVIRONMENT.workingDir + "/testDir/imperative-test-cli.config.json");
         expect(configJson.profiles.base_fruit).toBeDefined();
         expect(configJson.profiles.base_fruit.properties.tokenValue).toBeUndefined();
@@ -179,7 +180,7 @@ describe("cmd-cli config auto-init", () => {
         expect(response.status).toBe(0);
 
         expect(glob.sync("*.json", { cwd: TEST_ENVIRONMENT.workingDir + "/testDir" }))
-            .toContain(["imperative-test-cli.config.json", "imperative-test-cli.schema.json"]);
+            .toIncludeSameMembers(["imperative-test-cli.config.json", "imperative-test-cli.schema.json"]);
         const configJson: IConfig = jsonfile.readFileSync(TEST_ENVIRONMENT.workingDir + "/testDir/imperative-test-cli.config.json");
         expect(configJson.profiles.base_fruit).toBeDefined();
         expect(configJson.profiles.base_fruit.properties.tokenValue).toBeUndefined();
@@ -206,7 +207,7 @@ describe("cmd-cli config auto-init", () => {
         expect(response.status).toBe(0);
 
         expect(glob.sync("*.json", { cwd: TEST_ENVIRONMENT.workingDir + "/testDir" }))
-            .toContain(["imperative-test-cli.config.json", "imperative-test-cli.schema.json"]);
+            .toIncludeSameMembers(["imperative-test-cli.config.json", "imperative-test-cli.schema.json"]);
         const configJson: IConfig = jsonfile.readFileSync(TEST_ENVIRONMENT.workingDir + "/testDir/imperative-test-cli.config.json");
         expect(configJson.profiles.base).toBeDefined();
         expect(configJson.profiles.base.properties.info).toBe("origConfig");
@@ -224,7 +225,7 @@ describe("cmd-cli config auto-init", () => {
         expect(response.status).toBe(0);
 
         expect(glob.sync("*.json", { cwd: TEST_ENVIRONMENT.workingDir + "/testDir" }))
-            .toContain(["imperative-test-cli.config.json", "imperative-test-cli.schema.json"]);
+            .toIncludeSameMembers(["imperative-test-cli.config.json", "imperative-test-cli.schema.json"]);
         const configJson: IConfig = jsonfile.readFileSync(TEST_ENVIRONMENT.workingDir + "/testDir/imperative-test-cli.config.json");
         expect(configJson.profiles.base).toBeDefined();
         expect(configJson.profiles.base.properties.info).toBe("origConfig");
@@ -239,7 +240,7 @@ describe("cmd-cli config auto-init", () => {
         expect(response.status).toBe(0);
 
         expect(glob.sync("*.json", { cwd: TEST_ENVIRONMENT.workingDir + "/testDir" }))
-            .toContain(["imperative-test-cli.config.json", "imperative-test-cli.schema.json"]);
+            .toIncludeSameMembers(["imperative-test-cli.config.json", "imperative-test-cli.schema.json"]);
         const configJson: IConfig = jsonfile.readFileSync(TEST_ENVIRONMENT.workingDir + "/testDir/imperative-test-cli.config.json");
         expect(configJson.profiles.base).toBeUndefined();
         expect(configJson.profiles.base_fruit).toBeDefined();
