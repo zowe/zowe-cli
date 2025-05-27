@@ -82,6 +82,46 @@ pub fn util_get_nodejs_zowe_path() -> String {
 }
 
 /**
+ * Check if the user wants to use Bun for the daemon server.
+ * 
+ * @returns true if ZOWE_CLI_DAEMON_BUN environment variable is set, false otherwise.
+ */
+pub fn util_should_use_bun_for_daemon() -> bool {
+    env::var("ZOWE_CLI_DAEMON_BUN").is_ok()
+}
+
+/**
+ * Get the file path to the Bun executable.
+ *
+ * @returns File path to the Bun executable.
+ */
+pub fn util_get_bun_path() -> String {
+    let bun_cmd = if env::consts::OS == "windows" {
+        "bun.exe"
+    } else {
+        "bun"
+    };
+
+    // find bun executable in PATH
+    const NOT_FOUND: &str = "notFound";
+    let mut bun_path: String = NOT_FOUND.to_string();
+    let path = env::var_os("PATH");
+    let path_ext = env::var_os("PATHEXT");
+    for bun_path_buf in PathSearcher::new(bun_cmd, path.as_deref(), path_ext.as_deref()) {
+        bun_path = bun_path_buf.to_string_lossy().to_string();
+        break; // use the first bun executable found
+    }
+    
+    if bun_path == NOT_FOUND {
+        eprintln!("Could not find Bun executable on your path.");
+        eprintln!("ZOWE_CLI_DAEMON_BUN is set but Bun is not available. Terminating.");
+        std::process::exit(EXIT_CODE_NO_NODEJS_ZOWE_ON_PATH);
+    }
+
+    bun_path
+}
+
+/**
  * Get the path to the zowe daemon directory (defaults to ~/.zowe/daemon).
  * Ensures that the directory exists, or we create it.
  *

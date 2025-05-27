@@ -135,12 +135,18 @@ pub fn proc_get_daemon_info() -> DaemonProcInfo {
     let mut sys = System::new_all();
     sys.refresh_all();
     for (next_pid, next_process) in sys.processes() {
-        // is this a zowe daemon process?
-        if next_process.name().to_lowercase().contains("node")
+        // is this a zowe daemon process? Check for both Node.js and Bun
+        let is_node_daemon = next_process.name().to_lowercase().contains("node")
             && next_process.cmd().len() > 2
             && next_process.cmd()[1].to_lowercase().contains("zowe")
-            && next_process.cmd()[2].to_lowercase() == LAUNCH_DAEMON_OPTION
-        {
+            && next_process.cmd()[2].to_lowercase() == LAUNCH_DAEMON_OPTION;
+            
+        let is_bun_daemon = next_process.name().to_lowercase().contains("bun")
+            && next_process.cmd().len() > 2
+            && next_process.cmd()[1].to_lowercase().contains("zowe")
+            && next_process.cmd()[2].to_lowercase() == LAUNCH_DAEMON_OPTION;
+        
+        if is_node_daemon || is_bun_daemon {
             // ensure we have found the daemon for the current user
             if my_daemon_pid_opt.is_some() && &my_daemon_pid_opt.unwrap() == next_pid {
                 // convert the process's command line from a vector to a string
@@ -236,6 +242,9 @@ fn read_pid_for_user() -> Option<sysinfo::Pid> {
 /**
  * Start the zowe daemon.
  *
+ * @param runtime_path
+ *      Full path to the runtime executable (Node.js or Bun).
+ *
  * @param njs_zowe_path
  *      Full path to the NodeJS zowe command.
  *
@@ -272,18 +281,24 @@ fn read_pid_for_user() -> Option<sysinfo::Pid> {
  *      If you use Stdio::inherit(), you get double output. If use use Stdio::null(), you get no color.
  */
 
-pub fn proc_start_daemon(njs_zowe_path: &str) -> String {
-    eprintln!("Starting a background process to increase performance ...");
+pub fn proc_start_daemon(runtime_path: &str, njs_zowe_path: &str) -> String {
+    let runtime_name = std::path::Path::new(runtime_path)
+        .file_name()
+        .and_then(|name| name.to_str())
+        .unwrap_or("node");
+    
+    eprintln!("Starting a background process with {} to increase performance ...", runtime_name);
 
     let daemon_arg = LAUNCH_DAEMON_OPTION;
-    let mut cmd = Command::new(njs_zowe_path);
+    let mut cmd = Command::new(runtime_path);
 
     // Uses creation flags from https://learn.microsoft.com/en-us/windows/win32/procthread/process-creation-flags
     // Flags are CREATE_NO_WINDOW, CREATE_NEW_PROCESS_GROUP, and CREATE_UNICODE_ENVIRONMENT
     #[cfg(target_family = "windows")]
     cmd.creation_flags(0x08000600);
 
-    cmd.arg(daemon_arg)
+    cmd.arg(njs_zowe_path)
+       .arg(daemon_arg)
        .stdout(Stdio::null())
        .stderr(Stdio::null());
 
@@ -292,8 +307,8 @@ pub fn proc_start_daemon(njs_zowe_path: &str) -> String {
         Ok(_unused) => { /* nothing to do */ }
         Err(error) => {
             eprintln!(
-                "Failed to start the following process:\n    {} {}",
-                njs_zowe_path, daemon_arg
+                "Failed to start the following process:\n    {} {} {}",
+                runtime_path, njs_zowe_path, daemon_arg
             );
             eprintln!("Due to this error:\n    {}", error);
             std::process::exit(EXIT_CODE_CANNOT_START_DAEMON);
@@ -301,7 +316,9 @@ pub fn proc_start_daemon(njs_zowe_path: &str) -> String {
     };
 
     // return the command that we run (for display purposes)
-    let mut cmd_to_show: String = njs_zowe_path.to_owned();
+    let mut cmd_to_show: String = runtime_path.to_owned();
+    cmd_to_show.push(' ');
+    cmd_to_show.push_str(njs_zowe_path);
     cmd_to_show.push(' ');
     cmd_to_show.push_str(daemon_arg);
     cmd_to_show

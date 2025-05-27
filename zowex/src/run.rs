@@ -104,8 +104,15 @@ pub async fn run_restart_command(njs_zowe_path: &str) -> Result<i32, i32> {
         }
     }
 
+    // Determine which runtime to use for the daemon
+    let runtime_path = if util_should_use_bun_for_daemon() {
+        util_get_bun_path()
+    } else {
+        njs_zowe_path.to_string()
+    };
+
     // Start a new daemon. Note that proc_start_daemon() exits on failure.
-    proc_start_daemon(njs_zowe_path);
+    proc_start_daemon(&runtime_path, njs_zowe_path);
     eprintln!("A new daemon has started.");
     Ok(EXIT_CODE_SUCCESS)
 }

@@ -38,6 +38,8 @@ use rpassword::read_password;
 use crate::defs::*;
 use crate::proc::*;
 use crate::util::util_get_username;
+use crate::util::util_should_use_bun_for_daemon;
+use crate::util::util_get_bun_path;
 
 #[cfg(target_family = "unix")]
 type DaemonClient = tokio::net::UnixStream;
@@ -94,7 +96,15 @@ pub async fn comm_establish_connection(
             if conn_retries == 0 {
                 // start the daemon and continue trying to connect
                 we_started_daemon = true;
-                cmd_to_show = proc_start_daemon(njs_zowe_path);
+                
+                // Determine which runtime to use for the daemon
+                let runtime_path = if util_should_use_bun_for_daemon() {
+                    util_get_bun_path()
+                } else {
+                    njs_zowe_path.to_string()
+                };
+                
+                cmd_to_show = proc_start_daemon(&runtime_path, njs_zowe_path);
             } else if we_started_daemon && conn_retries > THREE_MIN_OF_RETRIES {
                 eprintln!(
                     "The Zowe daemon that we started is not running on socket: {}.",
