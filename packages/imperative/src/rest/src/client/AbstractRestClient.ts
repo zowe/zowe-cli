@@ -234,7 +234,7 @@ export abstract class AbstractRestClient {
      * @memberof AbstractRestClient
      */
     constructor(
-        private mSession: AbstractSession,
+        private readonly mSession: AbstractSession,
         topDefaultAuth: typeof SessConstants.AUTH_TYPE_BASIC | typeof SessConstants.AUTH_TYPE_TOKEN
         = SessConstants.AUTH_TYPE_TOKEN
     ) {
