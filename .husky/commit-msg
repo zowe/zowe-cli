@@ -1,6 +1,3 @@
-#!/bin/sh
-. "$(dirname "$0")/_/husky.sh"
-
 # If not a merge commit, require commit to be signed off
 if [ ! -e $(git rev-parse --git-dir)/MERGE_MSG ] && ! grep -q "^Signed-off-by: " "$1"; then
   echo >&2 "Commit message must be signed off with your user name and email."
