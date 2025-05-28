@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Fixed issue where Imperative integration tests can fail due to a missing `glob` dependency. [#2511](https://github.com/zowe/zowe-cli/pull/2511)
+
 ## `8.21.0`
 
 - Enhancement: Updated the `Logger` class to support the `winston` library, and introduced migration tools to switch from `log4js` to `winston`. For more information on how to migrate your logger instance to use the `winston` library, refer to the ["Configuring logging" page](https://github.com/zowe/zowe-cli/wiki/Configuring-Logging) on the Zowe CLI wiki. [#2488](https://github.com/zowe/zowe-cli/issues/2488)
