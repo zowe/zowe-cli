@@ -2,10 +2,6 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
-## Recent Changes
-
-- BugFix: Fixed an issue where `List.allMembers` options `start` and `pattern` do not work with Zowe Explorer on their supported versions of VSCode, which run Node 18. []()
-
 ## `8.18.0`
 
 - Enhancement: Added support for the `attributes`, `recall`, and `volume` options to the `List.dataSetsMatchingPattern` function. [#2476](https://github.com/zowe/zowe-cli/issues/2476)

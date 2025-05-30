@@ -1027,7 +1027,7 @@ export abstract class AbstractRestClient {
     private validateRestHostname(hostname: string): void {
         if (!hostname) {
             throw new ImperativeError({msg: "The hostname is required."});
-        } else if (hostname.match(/\w+:\/\//)) {
+        } else if (URL.canParse(hostname)) {
             throw new ImperativeError({msg: "The hostname should not contain the protocol."});
         }
     }
