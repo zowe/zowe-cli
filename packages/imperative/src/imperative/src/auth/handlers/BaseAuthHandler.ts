@@ -104,17 +104,11 @@ export abstract class BaseAuthHandler extends AbstractAuthHandler {
             // update the profile given
             // TODO Should config be added to IHandlerParameters?
             const config = ImperativeConfig.instance.config;
-            let profileName = this.getBaseProfileName(params);
+            const profileName = this.getBaseProfileName(params);
             const profileProps = Object.keys(config.api.profiles.get(profileName, false));
-            let profileExists = config.api.profiles.exists(profileName) && profileProps.length > 0;
+            const profileExists = config.api.profiles.exists(profileName);
             profileProps.push(...config.api.secure.securePropsForProfile(profileName));
             const beforeLayer = config.api.layers.get();
-
-            // Check if existing base profile is reusable (does it include user/password?)
-            if (profileExists && (profileProps.includes("user") || profileProps.includes("password"))) {
-                profileName = `${profileName}_${params.positionals[2]}`;
-                profileExists = false;
-            }
 
             // If base profile is null or empty, prompt user before saving token to disk
             if (!profileExists) {
@@ -156,7 +150,7 @@ export abstract class BaseAuthHandler extends AbstractAuthHandler {
     }
 
     private getBaseProfileName(params: IHandlerParameters): string {
-        return ConfigUtils.getActiveProfileName(this.mProfileType, params.arguments, `${this.mProfileType}_${params.positionals[2]}`);
+        return ConfigUtils.getActiveProfileName(this.mProfileType, params.arguments, `${this.mProfileType}`);
     }
 
     private async promptForBaseProfile(params: IHandlerParameters, profileName: string): Promise<boolean> {

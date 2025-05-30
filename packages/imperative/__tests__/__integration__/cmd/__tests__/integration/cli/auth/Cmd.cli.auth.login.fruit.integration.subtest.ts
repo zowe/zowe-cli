@@ -33,10 +33,10 @@ describe("imperative-test-cli auth login", () => {
 
         // the output of the command should include token value
         expect(response.stderr.toString()).toBe("");
-        expect(response.stdout.toString()).toContain("user:     fakeUser");
-        expect(response.stdout.toString()).toContain("password: fakePass");
-        expect(response.stdout.toString()).toContain("tokenType:  jwtToken");
-        expect(response.stdout.toString()).toContain("tokenValue: (secure value)");
+        expect(response.stdout.toString()).toMatch(/user:  +fakeUser/);
+        expect(response.stdout.toString()).toMatch(/password: +fakePass/);
+        expect(response.stdout.toString()).toMatch(/tokenType: +jwtToken/);
+        expect(response.stdout.toString()).toMatch(/tokenValue: +\(secure value\)/);
         expect(response.status).toBe(0);
     });
 
@@ -46,10 +46,10 @@ describe("imperative-test-cli auth login", () => {
 
         // the output of the command should include token value
         expect(response.stderr.toString()).toBe("");
-        expect(response.stdout.toString()).toContain("user:     fakeUser");
-        expect(response.stdout.toString()).toContain("password: fakePass");
-        expect(response.stdout.toString()).toContain("tokenType:  jwtToken");
-        expect(response.stdout.toString()).toContain("tokenValue: (secure value)");
+        expect(response.stdout.toString()).toMatch(/user:  +fakeUser/);
+        expect(response.stdout.toString()).toMatch(/password: +fakePass/);
+        expect(response.stdout.toString()).toMatch(/tokenType: +jwtToken/);
+        expect(response.stdout.toString()).toMatch(/tokenValue: +\(secure value\)/);
         expect(response.status).toBe(0);
     });
 
@@ -59,10 +59,11 @@ describe("imperative-test-cli auth login", () => {
 
         // the output of the command should include token value
         expect(response.stderr.toString()).toBe("");
-        expect(response.stdout.toString()).toContain("certFile:    " + fakeCertPath);
-        expect(response.stdout.toString()).toContain("certKeyFile: " + fakeCertKeyPath);
-        expect(response.stdout.toString()).toContain("tokenType:   jwtToken");
-        expect(response.stdout.toString()).toContain("tokenValue:  (secure value)");
+        const stdOutStr = response.stdout.toString();
+        expect(stdOutStr).toMatch(new RegExp(`certFile: +${fakeCertPath}`));
+        expect(stdOutStr).toMatch(new RegExp(`certKeyFile: +${fakeCertKeyPath}`));
+        expect(stdOutStr).toMatch(/tokenType: +jwtToken/);
+        expect(stdOutStr).toMatch(/tokenValue: +\(secure value\)/);
         expect(response.status).toBe(0);
     });
 
@@ -137,10 +138,8 @@ describe("imperative-test-cli auth login", () => {
 
         response = runCliScript(__dirname + "/__scripts__/show_profiles.sh", TEST_ENVIRONMENT.workingDir);
         expect(response.stderr.toString()).toBe("");
-        expect(response.stdout.toString()).toContain("host:       fakeHost");
-        expect(response.stdout.toString()).toContain("port:       3000");
-        expect(response.stdout.toString()).toContain("tokenType:  jwtToken");
-        expect(response.stdout.toString()).toContain("tokenValue: (secure value)");
+        expect(response.stdout.toString()).toMatch(/tokenType: +jwtToken/);
+        expect(response.stdout.toString()).toMatch(/tokenValue: +\(secure value\)/);
         expect(response.stdout.toString()).not.toContain("user:");
         expect(response.stdout.toString()).not.toContain("password:");
         expect(response.status).toBe(0);
@@ -157,10 +156,8 @@ describe("imperative-test-cli auth login", () => {
 
         response = runCliScript(__dirname + "/__scripts__/show_profiles.sh", TEST_ENVIRONMENT.workingDir);
         expect(response.stderr.toString()).toBe("");
-        expect(response.stdout.toString()).toContain("host:       fakeHost");
-        expect(response.stdout.toString()).toContain("port:       3000");
-        expect(response.stdout.toString()).toContain("tokenType:  jwtToken");
-        expect(response.stdout.toString()).toContain("tokenValue: (secure value)");
+        expect(response.stdout.toString()).toMatch(/tokenType: +jwtToken/);
+        expect(response.stdout.toString()).toMatch(/tokenValue: +\(secure value\)/);
         expect(response.stdout.toString()).not.toContain("user:");
         expect(response.stdout.toString()).not.toContain("password:");
         expect(response.status).toBe(0);
@@ -177,55 +174,11 @@ describe("imperative-test-cli auth login", () => {
 
         response = runCliScript(__dirname + "/__scripts__/show_profiles.sh", TEST_ENVIRONMENT.workingDir);
         expect(response.stderr.toString()).toBe("");
-        expect(response.stdout.toString()).toContain("host:       fakeHost");
-        expect(response.stdout.toString()).toContain("port:       3000");
-        expect(response.stdout.toString()).toContain("tokenType:  jwtToken");
+        expect(response.stdout.toString()).toMatch(/tokenType: +jwtToken/);
+        expect(response.stdout.toString()).toMatch(/tokenValue: +\(secure value\)/);
         expect(response.stdout.toString()).toContain("secure");
-        expect(response.stdout.toString()).toContain("tokenValue");
         expect(response.stdout.toString()).not.toContain("user:");
         expect(response.stdout.toString()).not.toContain("password:");
-        expect(response.stdout.toString()).not.toContain("certFile:");
-        expect(response.stdout.toString()).not.toContain("certKeyFile:");
-        expect(response.status).toBe(0);
-    });
-
-    it("should NOT store token from user & password, if requested", () => {
-        let response = runCliScript(__dirname + "/__scripts__/auth_login_cmd_line_password.sh",
-            TEST_ENVIRONMENT.workingDir, ["n", "fakeUser", "fakePass"]);
-        expect(response.stderr.toString()).toBe("");
-        expect(response.stdout.toString()).toContain("Login successful.");
-        expect(response.stdout.toString()).toContain("will not be stored in your profile");
-        expect(response.stdout.toString()).toContain("fakeUser:fakePass@fakeToken");
-        expect(response.status).toBe(0);
-
-        response = runCliScript(__dirname + "/__scripts__/show_profiles.sh", TEST_ENVIRONMENT.workingDir);
-        expect(response.stderr.toString()).toBe("");
-        expect(response.stdout.toString()).not.toContain("user:");
-        expect(response.stdout.toString()).not.toContain("password:");
-        expect(response.stdout.toString()).not.toContain("host:");
-        expect(response.stdout.toString()).not.toContain("port:");
-        expect(response.stdout.toString()).not.toContain("tokenType:");
-        expect(response.stdout.toString()).not.toContain("tokenValue:");
-        expect(response.status).toBe(0);
-    });
-
-    it("should NOT store token from cert, if requested", () => {
-        let response = runCliScript(__dirname + "/__scripts__/auth_login_cmd_line_cert.sh",
-            TEST_ENVIRONMENT.workingDir, ["n", fakeCertPath, fakeCertKeyPath]);
-        expect(response.stderr.toString()).toBe("");
-        expect(response.stdout.toString()).toContain("Login successful.");
-        expect(response.stdout.toString()).toContain("will not be stored in your profile");
-        expect(response.stdout.toString()).toContain("fakeCertificate@fakeToken");
-        expect(response.status).toBe(0);
-
-        response = runCliScript(__dirname + "/__scripts__/show_profiles.sh", TEST_ENVIRONMENT.workingDir);
-        expect(response.stderr.toString()).toBe("");
-        expect(response.stdout.toString()).not.toContain("user:");
-        expect(response.stdout.toString()).not.toContain("password:");
-        expect(response.stdout.toString()).not.toContain("host:");
-        expect(response.stdout.toString()).not.toContain("port:");
-        expect(response.stdout.toString()).not.toContain("tokenType:");
-        expect(response.stdout.toString()).not.toContain("tokenValue:");
         expect(response.stdout.toString()).not.toContain("certFile:");
         expect(response.stdout.toString()).not.toContain("certKeyFile:");
         expect(response.status).toBe(0);

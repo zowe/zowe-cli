@@ -23,14 +23,19 @@ const mockErrorText = "Fake error for Auth Login APIML unit tests";
 const throwImperativeError = async () => {
     throw new ImperativeError({msg: mockErrorText});
 };
-const fakeSession: any = {
-    ISession: {
-        tokenType: "apimlAuthenticationToken",
-        tokenValue: "fakeToken"
-    }
-};
+
+let fakeSession: any;
 
 describe("Auth Login APIML unit tests", () => {
+
+    beforeEach(() => {
+        fakeSession = {
+            ISession: {
+                tokenType: "apimlAuthenticationToken",
+                tokenValue: "fakeToken"
+            }
+        };
+    });
 
     describe("Positive tests", () => {
         it("should allow users to call apimlLogin with correct parameters", async () => {

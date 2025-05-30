@@ -88,6 +88,124 @@ describe("Censor tests", () => {
         }
     });
 
+    describe("censorSession", () => {
+        const fakeUser = "fakeUser";
+        const fakePassword = "fakePassword";
+        const fakeB64Auth = "fakeBase64EncodedAuth";
+        const unCensoredTokenType = "apimlAuthenticationToken";
+
+        const fakeAvailCreds = {
+            "user": fakeUser,
+            "password": fakePassword,
+            "base64EncodedAuth": fakeB64Auth,
+            "tokenType": unCensoredTokenType,
+            "tokenValue": "fakeTokenValue",
+            "certFile": "./certFile.txt",
+            "certKeyFile": "./certKeyFile.txt"
+        };
+
+        const fakeISess = {
+            "rejectUnauthorized": false,
+            "basePath": "",
+            "protocol": "https",
+            "hostname": "fakeHostName",
+            "port": 1234,
+            "user": fakeUser,
+            "password": fakePassword,
+            "type": "basic",
+            "_authCache": {
+                "availableCreds": fakeAvailCreds,
+                "didUserSetAuthOrder": false
+            },
+            "authTypeOrder": [
+                "basic",
+                "cert-pem",
+                "token"
+            ],
+            "strictSSL": true,
+            "secureProtocol": "SSLv23_method",
+            "base64EncodedAuth": fakeB64Auth
+        };
+
+        const fakeSession = {
+            "mISession": fakeISess,
+            "mLog": {
+                "mJsLogger": {
+                    "category": "imperative",
+                    "context": {},
+                    "callStackSkipIndex": 0
+                },
+                "category": "imperative",
+                "initStatus": true
+            }
+        };
+
+        it("should censor data in a Session object", () => {
+            const censoredSessObj = JSON.parse(Censor.censorSession(fakeSession));
+            expect(censoredSessObj.mISession._authCache.availableCreds.tokenType).toEqual(unCensoredTokenType);
+            expect(censoredSessObj.mISession.user).toEqual(Censor.CENSOR_RESPONSE);
+            expect(censoredSessObj.mISession.password).toEqual(Censor.CENSOR_RESPONSE);
+            expect(censoredSessObj.mISession.base64EncodedAuth).toEqual(Censor.CENSOR_RESPONSE);
+            expect(censoredSessObj.mISession._authCache.availableCreds.user).toEqual(Censor.CENSOR_RESPONSE);
+            expect(censoredSessObj.mISession._authCache.availableCreds.password).toEqual(Censor.CENSOR_RESPONSE);
+            expect(censoredSessObj.mISession._authCache.availableCreds.base64EncodedAuth).toEqual(Censor.CENSOR_RESPONSE);
+            expect(censoredSessObj.mISession._authCache.availableCreds.tokenValue).toEqual(Censor.CENSOR_RESPONSE);
+        });
+
+        it("should censor data in an ISession object", () => {
+            const censoredISessObj = JSON.parse(Censor.censorSession(fakeISess));
+            expect(censoredISessObj._authCache.availableCreds.tokenType).toEqual(unCensoredTokenType);
+            expect(censoredISessObj.user).toEqual(Censor.CENSOR_RESPONSE);
+            expect(censoredISessObj.password).toEqual(Censor.CENSOR_RESPONSE);
+            expect(censoredISessObj.base64EncodedAuth).toEqual(Censor.CENSOR_RESPONSE);
+            expect(censoredISessObj._authCache.availableCreds.user).toEqual(Censor.CENSOR_RESPONSE);
+            expect(censoredISessObj._authCache.availableCreds.password).toEqual(Censor.CENSOR_RESPONSE);
+            expect(censoredISessObj._authCache.availableCreds.base64EncodedAuth).toEqual(Censor.CENSOR_RESPONSE);
+            expect(censoredISessObj._authCache.availableCreds.tokenValue).toEqual(Censor.CENSOR_RESPONSE);
+        });
+
+        it("should throw an error when passed an invalid ISession object", () => {
+            const parseSpy = jest.spyOn(JSON, 'parse').mockImplementation(() => {
+                throw new Error("Invalid JSON");
+            });
+            let censoredString: string = "Not what we expect";
+            let caughtErr: any;
+            try {
+                censoredString = Censor.censorSession(fakeISess);
+            } catch(error) {
+                caughtErr = error;
+            }
+            expect(caughtErr).toBe(undefined);
+            expect(censoredString).toContain("Invalid session object");
+            parseSpy.mockRestore(); // JSON.parse back to original app implementation
+        });
+
+        it("should censor data in an availableCreds object", () => {
+            const censoredAvailCredsObj = JSON.parse(Censor.censorSession(fakeAvailCreds));
+            expect(censoredAvailCredsObj.tokenType).toEqual(unCensoredTokenType);
+            expect(censoredAvailCredsObj.user).toEqual(Censor.CENSOR_RESPONSE);
+            expect(censoredAvailCredsObj.password).toEqual(Censor.CENSOR_RESPONSE);
+            expect(censoredAvailCredsObj.base64EncodedAuth).toEqual(Censor.CENSOR_RESPONSE);
+            expect(censoredAvailCredsObj.tokenValue).toEqual(Censor.CENSOR_RESPONSE);
+        });
+
+        it("should handle a null object", () => {
+            const censoredNullStr = Censor.censorSession(null);
+            expect(censoredNullStr).toEqual(Censor["NULL_SESS_OBJ_MSG"] + " censorSession");
+        });
+
+        it("should also handle a null object in replaceValsInSess", () => {
+            const censoredNullStr = Censor["replaceValsInSess"](null, true);
+            expect(censoredNullStr).toEqual(Censor["NULL_SESS_OBJ_MSG"] + " replaceValsInSess");
+        });
+
+        it("should handle a bogus JSON object", () => {
+            const invalidJson = "{'invalidJson': true]";
+            const censoredNullStr = Censor.censorSession(invalidJson);
+            expect(censoredNullStr).toContain(invalidJson);
+        });
+    });
+
     describe("censorRawData", () => {
         const secrets = ["secret0", "secret1"];
         let impConfigSpy: jest.SpyInstance = null;

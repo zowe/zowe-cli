@@ -38,6 +38,9 @@ describe("RestClientError tests", () => {
             basePath: "base/path",
             headers: ["header"],
             payload: "the payload",
+            authType: "AuthTypeThatWeSelected",
+            authTypeOrder: "ProvidedAuthOrder",
+            availableCreds: "CredsThatWeFound",
             httpStatus: 200
         });
         try {
