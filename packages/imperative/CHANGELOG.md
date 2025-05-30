@@ -5,6 +5,7 @@ All notable changes to the Imperative package will be documented in this file.
 ## Recent Changes
 
 - BugFix: Fixed issue where Imperative integration tests can fail due to a missing `glob` dependency. [#2511](https://github.com/zowe/zowe-cli/pull/2511)
+- BugFix: Fixed an issue where URL.canParse does not work with Zowe Explorer on their supported versions of VSCode, which run Node 16. []()
 
 ## `8.21.0`
 
