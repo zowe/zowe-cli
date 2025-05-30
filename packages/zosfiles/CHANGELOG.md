@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Added support for the `IDownloadOptions.extensionMap` property to the `Download.allMembers` method to allow for specifying the file extension for each downloaded member. [#2507](https://github.com/zowe/zowe-cli/pull/2507)
+
 ## `8.18.0`
 
 - Enhancement: Added support for the `attributes`, `recall`, and `volume` options to the `List.dataSetsMatchingPattern` function. [#2476](https://github.com/zowe/zowe-cli/issues/2476)
@@ -13,7 +17,7 @@ All notable changes to the Zowe z/OS files SDK package will be documented in thi
 ## `8.16.0`
 
 - Enhancement: Added the ability to search data sets with regex patterns by setting `ISearchOptions.regex` to `true`. [#2432](https://github.com/zowe/zowe-cli/issues/2432)
-- Ehancement: Added optional field `ISearchMatchLocation.length` which provides the length of the match on a string. [#2443](https://github.com/zowe/zowe-cli/pull/2443)
+- Enhancement: Added optional field `ISearchMatchLocation.length` which provides the length of the match on a string. [#2443](https://github.com/zowe/zowe-cli/pull/2443)
 
 ## `8.15.0`
 

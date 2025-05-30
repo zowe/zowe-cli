@@ -382,8 +382,10 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
                 }
 
                 // delete the top-level folder and the folders and file below
-                const folders = file.split("/");
-                rimraf(folders[0]);
+                if (file != null) {
+                    const folders = file.split("/");
+                    rimraf(folders[0]);
+                }
             });
 
             it("should download a data set member", async () => {
@@ -606,6 +608,131 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
                 // Ensure the file only contains the unique characters and nothing else
                 expect(uniqueFileChars).toEqual(expectedUniqueChars);
             });
+
+            it("should download a data set member using extensionMap with dot and without dot", async () => {
+                let error;
+                let response: IZosFilesResponse;
+
+                // upload data to the newly created data set
+                await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname + "(MEMX)");
+                await wait(waitTime);
+
+                // Use extensionMap with and without dot
+                const options: IDownloadOptions = {
+                    extensionMap: {
+                        memx: ".abc",
+                        MEMX: "xyz"
+                    }
+                };
+
+                try {
+                    response = await Download.allMembers(REAL_SESSION, dsname, options);
+                    Imperative.console.info("Response: " + inspect(response));
+                } catch (err) {
+                    error = err;
+                    Imperative.console.info("Error: " + inspect(error));
+                }
+                expect(error).toBeFalsy();
+                expect(response).toBeTruthy();
+                expect(response.success).toBeTruthy();
+                expect(response.commandResponse).toContain(
+                    ZosFilesMessages.memberDownloadedSuccessfully.message.substring(0, "Member(s) downloaded successfully".length + 1)
+                );
+
+                // convert the data set name to use as a path/file
+                const regex = /\./gi;
+                const baseDir = dsname.replace(regex, "/").toLowerCase();
+                // Should use ".abc" for memx (lowercase) by default
+                const memxAbc = fs.existsSync(`${baseDir}/memx.abc`);
+                const memxXyz = fs.existsSync(`${baseDir}/memx.xyz`);
+                const MEMXAbc = fs.existsSync(`${baseDir}/MEMX.abc`);
+                const MEMXXyz = fs.existsSync(`${baseDir}/MEMX.xyz`);
+                expect(memxAbc || memxXyz || MEMXAbc || MEMXXyz).toBeTruthy();
+                // Check file contents
+                const filePath = fs.existsSync(`${baseDir}/memx.abc`) ? `${baseDir}/memx.abc`
+                    : fs.existsSync(`${baseDir}/memx.xyz`) ? `${baseDir}/memx.xyz`
+                        : fs.existsSync(`${baseDir}/MEMX.abc`) ? `${baseDir}/MEMX.abc`
+                            : `${baseDir}/MEMX.xyz`;
+                const fileContents = stripNewLines(fs.readFileSync(filePath).toString());
+                expect(fileContents).toEqual(testData);
+            });
+
+            it("should download a data set member using extensionMap with preserveOriginalLetterCase", async () => {
+                let error;
+                let response: IZosFilesResponse;
+
+                // upload data to the newly created data set
+                await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname + "(MEMUP)");
+                await wait(waitTime);
+
+                // Use extensionMap with uppercase key and preserveOriginalLetterCase
+                const options: IDownloadOptions = {
+                    extensionMap: {
+                        MEMUP: "UPP"
+                    },
+                    preserveOriginalLetterCase: true
+                };
+
+                try {
+                    response = await Download.allMembers(REAL_SESSION, dsname, options);
+                    Imperative.console.info("Response: " + inspect(response));
+                } catch (err) {
+                    error = err;
+                    Imperative.console.info("Error: " + inspect(error));
+                }
+                expect(error).toBeFalsy();
+                expect(response).toBeTruthy();
+                expect(response.success).toBeTruthy();
+                expect(response.commandResponse).toContain(
+                    ZosFilesMessages.memberDownloadedSuccessfully.message.substring(0, "Member(s) downloaded successfully".length + 1)
+                );
+
+                // convert the data set name to use as a path/file
+                const regex = /\./gi;
+                const baseDir = dsname.replace(regex, "/") + "/";
+                // Should use "UPP" extension for MEMUP
+                expect(fs.existsSync(`${baseDir}MEMUP.UPP`)).toBeTruthy();
+                const fileContents = stripNewLines(fs.readFileSync(`${baseDir}MEMUP.UPP`).toString());
+                expect(fileContents).toEqual(testData);
+            });
+
+            it("should fall back to default extension if extensionMap does not match", async () => {
+                let error;
+                let response: IZosFilesResponse;
+
+                // upload data to the newly created data set
+                await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname + "(MEMDEF)");
+                await wait(waitTime);
+
+                // Use extensionMap with no matching key
+                const options: IDownloadOptions = {
+                    extensionMap: {
+                        other: "zzz"
+                    }
+                };
+
+                try {
+                    response = await Download.allMembers(REAL_SESSION, dsname, options);
+                    Imperative.console.info("Response: " + inspect(response));
+                } catch (err) {
+                    error = err;
+                    Imperative.console.info("Error: " + inspect(error));
+                }
+                expect(error).toBeFalsy();
+                expect(response).toBeTruthy();
+                expect(response.success).toBeTruthy();
+                expect(response.commandResponse).toContain(
+                    ZosFilesMessages.memberDownloadedSuccessfully.message.substring(0, "Member(s) downloaded successfully".length + 1)
+                );
+
+                // convert the data set name to use as a path/file
+                const regex = /\./gi;
+                const baseDir = dsname.replace(regex, "/").toLowerCase();
+                // Should use default extension ".txt"
+                expect(fs.existsSync(`${baseDir}/memdef.txt`)).toBeTruthy();
+                const fileContents = stripNewLines(fs.readFileSync(`${baseDir}/memdef.txt`).toString());
+                expect(fileContents).toEqual(testData);
+            });
         });
 
         describe("Data sets matching - all data sets - PO", () => {
@@ -804,9 +931,11 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
                 }
 
                 // delete the top-level folder and the folders and file below
-                const folders = file.split("/");
-                rimraf(folders[0]);
-                rimraf(file);
+                if (file != null) {
+                    const folders = file.split("/");
+                    rimraf(folders[0]);
+                    rimraf(file);
+                }
             });
 
             it("should download a data set", async () => {
@@ -950,8 +1079,10 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
     describe("Failure Scenarios", () => {
         afterAll(() => {
             // delete the top-level folder and the folders and file below
-            const folders = dsname.split(".");
-            rimraf(folders[0].toLowerCase());
+            if (file != null) {
+                const folders = dsname.split(".");
+                rimraf(folders[0].toLowerCase());
+            }
         });
 
         describe("Physical sequential data set", () => {
