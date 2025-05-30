@@ -7,6 +7,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 - BugFix: Avoid prompting for a password, when a token is available for authentication [#2500](https://github.com/zowe/zowe-cli/issues/2500)
 - BugFix: Updated the `zowe auth login apiml` command to place its retrieved token into the specified (or default) base profile instead of creating a new base profile. [#2181](https://github.com/zowe/zowe-cli/issues/2181) & [#1650](https://github.com/zowe/zowe-cli/issues/1650)
   - The update also places a directive to use token authentication for the default `zosmf` profile if that profile is configured to connect to API-ML.
+- Enhancement: Updated Node.js types for technical currency. [#2511](https://github.com/zowe/zowe-cli/pull/2511)
 
 ## `8.20.0`
 

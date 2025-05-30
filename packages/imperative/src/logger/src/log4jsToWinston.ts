@@ -43,7 +43,6 @@ addColors(customLevels.colors);
  * @returns The corresponding dayjs format.
  */
 export function mapLog4jsToDayjsFormat(log4jsFormat: string): string {
-    //
     // https://github.com/log4js-node/log4js-node/issues/1012#issuecomment-1017144708
 
     // Support reserved log4js -> date-format strings in pattern options

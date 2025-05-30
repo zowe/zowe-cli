@@ -11,19 +11,19 @@
 
 const childProcess = require("child_process");
 const path = require("path");
-const glob = require("glob");
+const fastGlob = require("fast-glob");
 
 process.chdir(__dirname + "/..");
 const npmPrefix = path.join(process.cwd(), ".npm-global");
 
 function runAll(callback, parallel=false) {
     if (!parallel) {
-        glob.sync("packages/imperative/__tests__/__integration__/*").forEach((dir) => {
+        fastGlob.sync("packages/imperative/__tests__/__integration__/*", { onlyFiles: false }).forEach((dir) => {
             const command = callback(dir);
             childProcess.execSync(command.command, { cwd: command.cwd, stdio: "inherit" });
         });
     } else {
-        require("concurrently")(glob.sync("packages/imperative/__tests__/__integration__/*").map((dir) => callback(dir)));
+        require("concurrently")(fastGlob.sync("packages/imperative/__tests__/__integration__/*", { onlyFiles: false }).map((dir) => callback(dir)));
     }
 }
 
