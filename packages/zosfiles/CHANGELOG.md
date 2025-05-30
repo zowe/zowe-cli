@@ -4,7 +4,7 @@ All notable changes to the Zowe z/OS files SDK package will be documented in thi
 
 ## Recent Changes
 
-- BugFix: Fixed an issue where `List.allMemebers` options `start` and `pattern` do not work with Zowe Explorer on their supported versions of VSCode, which run Node 18. []()
+- BugFix: Fixed an issue where `List.allMembers` options `start` and `pattern` do not work with Zowe Explorer on their supported versions of VSCode, which run Node 18. []()
 
 ## `8.18.0`
 
