@@ -159,7 +159,7 @@ While this kept the user/password and token separate, it required users to switc
 
 Because the new authOrder property enables a user to select which credentials should be used, every type of credential can co-exist on the same base profile. As a result, the `zowe auth login apiml` command now places the resulting token into the current default base profile (or into the base profile specified on the command line).
 
-The **login** command now also automatically places an **authOrder** property with a value of "token" into the default zosmf profile, so the token can be used immediately after logging into API-ML.
+The **login** command now also automatically places an **authOrder** property with a value of "token, bearer" into the default zosmf profile, so the token can be used immediately after logging into API-ML.
 
 - Note that the **login** command will only add an **authOrder** property if the zosmf profile contains an **basePath** property (which indicates that the profile will be used to communicate with API-ML).
 

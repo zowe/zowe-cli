@@ -54,7 +54,7 @@ export default class ApimlAuthHandler extends BaseAuthHandler {
 
         // get the name of the default zosmf profile
         const addAuthOrderMsg = 'Add the following authOrder property to a zosmf profile that contains a basePath property.\n' +
-            '    "authOrder": "token"';
+            '    "authOrder": "token, bearer"';
         const zosmfProfNm = ImperativeConfig.instance.config?.properties.defaults["zosmf"];
         if (!zosmfProfNm) {
             params.response.console.log(`\nYou have no default zosmf profile. ${addAuthOrderMsg}`);

@@ -90,7 +90,7 @@ describe("ApimlAuthHandler", () => {
             expect(logMessage).toContain("You have no default zosmf profile. " +
                 "Add the following authOrder property to a zosmf profile that contains a basePath property"
             );
-            expect(logMessage).toContain('"authOrder": "token"');
+            expect(logMessage).toContain('"authOrder": "token, bearer"');
         });
 
         it("should handle non-existent zosmf profile", async () => {
@@ -121,7 +121,7 @@ describe("ApimlAuthHandler", () => {
             await handler.processLogin(loginParams);
             expect(logMessage).toContain("Your default zosmf profile (ThisZosmfProfileDoesNotExist) does not exist");
             expect(logMessage).toContain("Add the following authOrder property to a zosmf profile that contains a basePath property");
-            expect(logMessage).toContain('"authOrder": "token"');
+            expect(logMessage).toContain('"authOrder": "token, bearer"');
         });
 
         it("should handle zosmf profile with no basePath", async () => {
@@ -159,7 +159,7 @@ describe("ApimlAuthHandler", () => {
             expect(logMessage).toContain("Your default zosmf profile (ThisZosmfProfileDoesNotExist) has no basePath");
             expect(logMessage).toContain("thus it cannot be used with APIML");
             expect(logMessage).toContain("Add the following authOrder property to a zosmf profile that contains a basePath property");
-            expect(logMessage).toContain('"authOrder": "token"');
+            expect(logMessage).toContain('"authOrder": "token, bearer"');
         });
 
         it("should do nothing if zosmf profile already has token at start of authOrder", async () => {
