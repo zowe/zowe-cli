@@ -10,7 +10,7 @@
 */
 
 import * as fs from "fs";
-import * as glob from "glob";
+import * as glob from "fast-glob";
 import * as jsonfile from "jsonfile";
 import { keyring as keytar } from "@zowe/secrets-for-zowe-sdk";
 import { IConfig } from "../../../../../../../../src";

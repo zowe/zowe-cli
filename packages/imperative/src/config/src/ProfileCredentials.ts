@@ -23,7 +23,7 @@ export class ProfileCredentials {
     private mCredMgrOverride?: ICredentialManagerInit;
     private mOnlyCheckActiveLayer?: boolean;
 
-    constructor(private mProfileInfo: ProfileInfo, opts?: IProfOpts | (() => NodeModule)) {
+    constructor(private mProfileInfo: ProfileInfo, opts?: IProfOpts | (() => NodeJS.Module)) {
         if (typeof opts === "function") {
             this.mCredMgrOverride = ProfileCredentials.defaultCredMgrWithKeytar(opts);
             this.mOnlyCheckActiveLayer = false;
@@ -41,7 +41,7 @@ export class ProfileCredentials {
      * @param requireKeytar Callback to require Keytar module for managing secure credentials
      * @returns Credential manager settings with Keytar module overridden
      */
-    public static defaultCredMgrWithKeytar(requireKeytar: () => NodeModule): ICredentialManagerInit {
+    public static defaultCredMgrWithKeytar(requireKeytar: () => NodeJS.Module): ICredentialManagerInit {
         return {
             service: null,
             Manager: class extends DefaultCredentialManager {

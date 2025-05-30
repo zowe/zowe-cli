@@ -167,9 +167,9 @@ describe("PluginRequireProvider", () => {
         type MockedRequire = {
             (id: string): any;
             resolve: (id: string) => string;
-            cache: NodeModule['require']['cache'];
-            extensions: NodeModule['require'];
-            main: NodeModule['require']['main'];
+            cache: NodeJS.Require['cache'];
+            extensions: NodeJS.Require['extensions'];
+            main: NodeJS.Require['main'];
         };
 
         return Module.prototype.require = jest.fn(function(...args: any[]) {
