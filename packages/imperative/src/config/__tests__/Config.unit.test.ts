@@ -282,7 +282,8 @@ describe("Config tests", () => {
             const config = await Config.load(MY_APP);
 
             for (let i = 0; i < numLayers; i++) {
-                const profilePath = i === 0 ? "layer0" : Array.from({ length: i }).map((v, i) => (i + 1).toString()).reduce((all, cur) => all + `.layer${cur}`, "layer0");
+                const profilePath = i === 0 ? "layer0" :
+                    Array.from({ length: i }).map((v, i) => (i + 1).toString()).reduce((all, cur) => all + `.layer${cur}`, "layer0");
                 const profile = config.api.profiles.get(profilePath, true);
                 if (!profile) {
                     throw new Error(`Could not navigate to profile at depth ${i + 1}`);
