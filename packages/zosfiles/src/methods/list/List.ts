@@ -77,7 +77,9 @@ export class List {
 
             this.log.debug(`Endpoint: ${endpoint}`);
 
-            const data = await ZosmfRestClient.getExpectString(session, endpoint.concat(params.size > 0 ? `?${params.toString()}` : ""), reqHeaders);
+            const data = await ZosmfRestClient.getExpectString(session, endpoint.concat(
+                params.toString().length > 0 ? `?${params.toString()}` : ""
+            ), reqHeaders);
             let response: any;
             try {
                 response = JSONUtils.parse(data);
