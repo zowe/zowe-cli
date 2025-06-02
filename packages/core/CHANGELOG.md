@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe core SDK package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Updated the `Login.apimlLogin` API function to record that it is making a request for a token into the session associated with its REST request. [#2491](https://github.com/zowe/zowe-cli/pull/2491)
+
 ## `8.19.0`
 - Enhancement: Updated help examples to replace short option aliases (e.g. `-h`) with full option names (e.g. `--help`) for improved clarity and consistency in documentation. [#2484](https://github.com/zowe/zowe-cli/pull/2484)
 

@@ -10,7 +10,7 @@
 */
 
 import { ZosmfSession } from "../../src/ZosmfSession";
-import { ConnectionPropsForSessCfg, Session, ISession, ICommandArguments } from "@zowe/imperative";
+import { ConnectionPropsForSessCfg, Session, ISession, ICommandArguments, SessConstants } from "@zowe/imperative";
 
 describe("zosmf utils", () => {
     it("should create a session config from cmd args",  () => {
@@ -106,6 +106,9 @@ describe("zosmf utils", () => {
             args, {doPrompting: false}
         );
 
+        // ConnectionPropsForSessCfg now returns "none". To cover this scenario, set session type to basic.
+        sessCfg.type = SessConstants.AUTH_TYPE_BASIC;
+
         let error;
         try {
             new Session(sessCfg);
@@ -154,6 +157,9 @@ describe("zosmf utils", () => {
             ZosmfSession.createSessCfgFromArgs(args),
             args, {doPrompting: false}
         );
+
+        // ConnectionPropsForSessCfg now returns "none". To cover this scenario, set session type to basic.
+        sessCfg.type = SessConstants.AUTH_TYPE_BASIC;
 
         let error;
         try {

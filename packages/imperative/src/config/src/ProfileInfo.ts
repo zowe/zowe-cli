@@ -39,7 +39,7 @@ import { CliUtils, ImperativeConfig } from "../../utilities";
 import { ImperativeExpect } from "../../expect";
 import { Logger } from "../../logger";
 import {
-    IOptionsForAddConnProps, ISession, Session, SessConstants, ConnectionPropsForSessCfg
+    AuthOrder, IOptionsForAddConnProps, ISession, Session, SessConstants, ConnectionPropsForSessCfg
 } from "../../rest";
 import { IProfInfoUpdateKnownPropOpts, IProfInfoUpdatePropOpts } from "./doc/IProfInfoUpdatePropOpts";
 import { ConfigAutoStore } from "./ConfigAutoStore";
@@ -1020,6 +1020,8 @@ export class ProfileInfo {
             }
         }
 
+        // Cache all creds that were placed into the session config.
+        AuthOrder.addCredsToSession(sessCfg);
         return sessCfg;
     }
 

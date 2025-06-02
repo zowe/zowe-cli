@@ -40,7 +40,7 @@ describe("imperative-test-cli auth logout", () => {
         // the output of the command should NOT include token value
         expect(response.stderr.toString()).toBe("");
         expect(response.stdout.toString()).toContain("Logout successful. The authentication token has been revoked");
-        expect(response.stdout.toString()).toContain("Token was removed from your 'baseProfName_fruit' base profile");
+        expect(response.stdout.toString()).toContain("Token was removed from your 'baseProfName' base profile");
         expect(response.stdout.toString()).not.toContain("tokenType:");
         expect(response.stdout.toString()).not.toContain("tokenValue:");
         expect(response.status).toBe(0);
@@ -62,7 +62,7 @@ describe("imperative-test-cli auth logout", () => {
         // the output of the command should NOT include token value
         expect(response.stderr.toString()).toBe("");
         expect(response.stdout.toString()).toContain("Logout successful. The authentication token has been revoked");
-        expect(response.stdout.toString()).toContain("Token was removed from your 'baseProfName_fruit' base profile");
+        expect(response.stdout.toString()).toContain("Token was removed from your 'baseProfName' base profile");
         expect(response.stdout.toString()).not.toContain("tokenType:");
         expect(response.stdout.toString()).not.toContain("tokenValue:");
         expect(response.status).toBe(0);
@@ -85,7 +85,7 @@ describe("imperative-test-cli auth logout", () => {
         // the output of the command should still include token value
         expect(response.stderr.toString()).toBe("");
         expect(response.stdout.toString()).toContain("Logout successful. The authentication token has been revoked");
-        expect(response.stdout.toString()).toContain("Token was not removed from your 'baseProfName_fruit' base profile");
+        expect(response.stdout.toString()).toContain("Token was not removed from your 'baseProfName' base profile");
         expect(response.stdout.toString()).toContain("Reason: Token value does not match the securely stored value");
         expect(response.stdout.toString()).toContain("tokenType:  jwtToken");
         expect(response.stdout.toString()).toContain("tokenValue: (secure value)");
