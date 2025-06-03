@@ -11,7 +11,7 @@
 
 import { ZosmfHeaders } from "../../../src/rest/ZosmfHeaders";
 import { ZosmfRestClient } from "../../../src/rest/ZosmfRestClient";
-import { IImperativeError, RestConstants, SessConstants, Session } from "@zowe/imperative";
+import { AuthOrder, IImperativeError, RestConstants, SessConstants, Session } from "@zowe/imperative";
 
 describe("ZosmfRestClient tests", () => {
 
@@ -42,12 +42,19 @@ describe("ZosmfRestClient tests", () => {
     describe("Authentication errors", () => {
 
         it("should handle basic auth error with empty string causeErrors", () => {
-            const zosmfRestClient = new ZosmfRestClient(new Session({
+            const fakeSess = new Session({
                 hostname: "dummy",
                 type: SessConstants.AUTH_TYPE_BASIC,
                 user: "fakeUser",
                 password: "fakePass"
-            }));
+            });
+
+            // ensure that some available creds are cached
+            AuthOrder.addCredsToSession(fakeSess.ISession,
+                { user: "fakeUser", password: "fakePass", "$0": "zowe", "_": [""] }
+            );
+
+            const zosmfRestClient = new ZosmfRestClient(fakeSess);
             (zosmfRestClient as any).mResponse = {
                 statusCode: RestConstants.HTTP_STATUS_401
             };
@@ -60,6 +67,7 @@ describe("ZosmfRestClient tests", () => {
                     'Allow Unauth Cert: true' +
                 '}'
             };
+
             const processedError = (zosmfRestClient as any).processError(error);
             expect(processedError.msg).toContain("Rest API failure with HTTP(S) status 401");
             expect(processedError.msg).toContain("This operation requires authentication.");
@@ -72,12 +80,19 @@ describe("ZosmfRestClient tests", () => {
         });
 
         it("should handle basic auth error with JSON causeErrors", () => {
-            const zosmfRestClient = new ZosmfRestClient(new Session({
+            const fakeSess = new Session({
                 hostname: "dummy",
                 type: SessConstants.AUTH_TYPE_BASIC,
                 user: "fakeUser",
                 password: "fakePass"
-            }));
+            });
+
+            // ensure that some available creds are cached
+            AuthOrder.addCredsToSession(fakeSess.ISession,
+                { user: "fakeUser", password: "fakePass", "$0": "zowe", "_": [""] }
+            );
+
+            const zosmfRestClient = new ZosmfRestClient(fakeSess);
             (zosmfRestClient as any).mResponse = {
                 statusCode: RestConstants.HTTP_STATUS_401
             };
@@ -106,12 +121,19 @@ describe("ZosmfRestClient tests", () => {
         });
 
         it("should handle error for token auth", () => {
-            const zosmfRestClient = new ZosmfRestClient(new Session({
+            const fakeSess = new Session({
                 hostname: "dummy",
                 type: SessConstants.AUTH_TYPE_TOKEN,
                 tokenType: SessConstants.TOKEN_TYPE_JWT,
                 tokenValue: "fakeToken"
-            }));
+            });
+
+            // ensure that some available creds are cached
+            AuthOrder.addCredsToSession(fakeSess.ISession,
+                { tokenType: SessConstants.TOKEN_TYPE_JWT, tokenValue: "fakeToken", "$0": "zowe", "_": [""] }
+            );
+
+            const zosmfRestClient = new ZosmfRestClient(fakeSess);
             (zosmfRestClient as any).mResponse = {
                 statusCode: RestConstants.HTTP_STATUS_401
             };
@@ -119,7 +141,7 @@ describe("ZosmfRestClient tests", () => {
             const processedError = (zosmfRestClient as any).processError(error);
             expect(processedError.msg).toContain("Fake token error");
             expect(processedError.msg).toContain("This operation requires authentication.");
-            expect(processedError.msg).toContain("Token is not valid or expired");
+            expect(processedError.msg).toContain("Token type = 'jwtToken' is not valid, token is invalid, or token is expired");
             expect(processedError.msg).toContain("To obtain a new valid token, use the following command: `zowe config secure`");
             expect(processedError.msg).toContain("For CLI usage, see `zowe config secure --help`");
             expect(processedError.causeErrors).toEqual('{"Error": "Fake token error"}');
@@ -127,12 +149,19 @@ describe("ZosmfRestClient tests", () => {
         });
 
         it("should handle error for APIML token auth and missing base path", () => {
-            const zosmfRestClient = new ZosmfRestClient(new Session({
+            const fakeSess = new Session({
                 hostname: "dummy",
                 type: SessConstants.AUTH_TYPE_TOKEN,
                 tokenType: SessConstants.TOKEN_TYPE_APIML,
                 tokenValue: "fakeToken"
-            }));
+            });
+
+            // ensure that some available creds are cached
+            AuthOrder.addCredsToSession(fakeSess.ISession,
+                { tokenType: SessConstants.TOKEN_TYPE_APIML, tokenValue: "fakeToken", "$0": "zowe", "_": [""] }
+            );
+
+            const zosmfRestClient = new ZosmfRestClient(fakeSess);
             (zosmfRestClient as any).mResponse = {
                 statusCode: RestConstants.HTTP_STATUS_401
             };
@@ -147,12 +176,19 @@ describe("ZosmfRestClient tests", () => {
         });
 
         it("should handle error for cert auth", () => {
-            const zosmfRestClient = new ZosmfRestClient(new Session({
+            const fakeSess = new Session({
                 hostname: "dummy",
                 type: SessConstants.AUTH_TYPE_CERT_PEM,
                 cert: "fakeCert",
                 certKey: "fakeKey"
-            }));
+            });
+
+            // ensure that some available creds are cached
+            AuthOrder.addCredsToSession(fakeSess.ISession,
+                { certFile: "fakeCert", certKeyFile: "fakeKey", "$0": "zowe", "_": [""] }
+            );
+
+            const zosmfRestClient = new ZosmfRestClient(fakeSess);
             (zosmfRestClient as any).mResponse = {
                 statusCode: RestConstants.HTTP_STATUS_401
             };

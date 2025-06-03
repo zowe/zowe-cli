@@ -11,13 +11,12 @@
 
 import * as nodePath from "path";
 
-import { AbstractSession, Imperative, ImperativeError, Session } from "@zowe/imperative";
-
+import { AuthOrder, AbstractSession, ISession, Session } from "@zowe/imperative";
 import { ITestPropertiesSchema } from "../properties/ITestPropertiesSchema";
 import { ISetupEnvironmentParms, TestEnvironment as BaseTestEnvironment } from "../../__packages__/cli-test-utils";
 import { ITestEnvironment }  from "./ITestEnvironment";
 import { SshSession } from "../../../packages/zosuss/src/SshSession";
-import { deleteLocalFile, deleteFiles, deleteJob, deleteJobCommon, deleteDataset } from "../TestUtils";
+import { deleteLocalFile, deleteFiles, deleteJob, deleteDataset } from "../TestUtils";
 
 /**
  * Use the utility methods here to setup the test environment for running APIs
@@ -103,7 +102,9 @@ export class TestEnvironment extends BaseTestEnvironment {
      */
     public static createZosmfSession(testEnvironment: ITestEnvironment<ITestPropertiesSchema>): Session {
         const SYSTEM_PROPS = testEnvironment.systemTestProperties;
-        return new Session({
+
+        // ensure that available creds are cached
+        const sessCfg: ISession = {
             user: SYSTEM_PROPS.zosmf.user,
             password: SYSTEM_PROPS.zosmf.password,
             hostname: SYSTEM_PROPS.zosmf.host,
@@ -111,7 +112,10 @@ export class TestEnvironment extends BaseTestEnvironment {
             type: "basic",
             rejectUnauthorized: SYSTEM_PROPS.zosmf.rejectUnauthorized,
             basePath: SYSTEM_PROPS.zosmf.basePath
-        });
+        };
+        AuthOrder.addCredsToSession(sessCfg, { "$0": "test", "_": ["test"] });
+
+        return new Session(sessCfg);
     }
 
     /**
@@ -120,7 +124,9 @@ export class TestEnvironment extends BaseTestEnvironment {
      */
     public static createBaseSession(testEnvironment: ITestEnvironment<ITestPropertiesSchema>): AbstractSession {
         const SYSTEM_PROPS = testEnvironment.systemTestProperties;
-        return new Session({
+
+        // ensure that available creds are cached
+        const sessCfg: ISession = {
             user: SYSTEM_PROPS.base.user,
             password: SYSTEM_PROPS.base.password,
             hostname: SYSTEM_PROPS.base.host,
@@ -128,7 +134,10 @@ export class TestEnvironment extends BaseTestEnvironment {
             type: "token",
             tokenType: "apimlAuthenticationToken",
             rejectUnauthorized: SYSTEM_PROPS.base.rejectUnauthorized
-        });
+        };
+        AuthOrder.addCredsToSession(sessCfg, { "$0": "test", "_": ["test"] });
+
+        return new Session(sessCfg);
     }
 
     /**

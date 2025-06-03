@@ -1,6 +1,14 @@
 # Change Log
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## `8.22.0`
+
+- Enhancement: Added a new configuration property named authOrder with which a user can specify a desired choice of authentication. [#1794](https://github.com/zowe/zowe-cli/issues/1794)
+- BugFix: Avoid prompting for a password, when a token is available for authentication [#2500](https://github.com/zowe/zowe-cli/issues/2500)
+- BugFix: Updated the `zowe auth login apiml` command to place its retrieved token into the specified (or default) base profile instead of creating a new base profile. [#2181](https://github.com/zowe/zowe-cli/issues/2181) & [#1650](https://github.com/zowe/zowe-cli/issues/1650)
+  - The update also places a directive to use token authentication for the default `zosmf` profile if that profile is configured to connect to API-ML.
+- Enhancement: Updated Node.js types for technical currency. [#2511](https://github.com/zowe/zowe-cli/pull/2511)
+
 ## `8.20.0`
 
 - Enhancement: Added the `--establish-connection-timeout` option to the `z/OSMF Connection Options`. This allows users to specify a maximum limit for how long the REST client should attempt to establish a connection to the server, and returns an error if the request takes too long. [#2490](https://github.com/zowe/zowe-cli/pull/2490)

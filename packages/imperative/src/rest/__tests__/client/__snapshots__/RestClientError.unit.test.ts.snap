@@ -3,6 +3,9 @@
 exports[`RestClientError tests should have connection details available 1`] = `
 Object {
   "additionalDetails": "This is an error message",
+  "authType": "AuthTypeThatWeSelected",
+  "authTypeOrder": "ProvidedAuthOrder",
+  "availableCreds": "CredsThatWeFound",
   "basePath": "base/path",
   "headers": Array [
     "header",

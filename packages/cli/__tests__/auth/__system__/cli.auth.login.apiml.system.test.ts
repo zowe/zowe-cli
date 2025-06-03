@@ -9,6 +9,7 @@
 *
 */
 
+import { ConfigUtils } from "@zowe/imperative";
 import { ITestEnvironment, runCliScript, TempTestProfiles } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
@@ -44,7 +45,7 @@ describe("auth login/logout apiml with profile", () => {
         expect(response.stdout.toString()).toContain("To revoke this token and remove it from your profile, review the 'zowe auth logout' command.");
     });
 
-    it("should successfully issue the logout command", () => {
+    it("should successfully logout with no command line options", () => {
         const response = runCliScript(__dirname + "/__scripts__/auth_logout_apiml.sh", TEST_ENVIRONMENT);
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
@@ -57,7 +58,6 @@ describe("auth login/logout apiml with profile", () => {
 describe("auth login/logout apiml show token", () => {
     let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment<ITestPropertiesSchema>;
     let base: ITestBaseSchema;
-    let token: string[];
 
     beforeEach(async () => {
         TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
@@ -71,7 +71,7 @@ describe("auth login/logout apiml show token", () => {
         await TestEnvironment.cleanUp(TEST_ENVIRONMENT_NO_PROF);
     });
 
-    it("should successfully issue the login command and show token", () => {
+    it("should successfully login with password and show token", () => {
         const response = runCliScript(__dirname + "/__scripts__/auth_login_apiml_show_token.sh",
             TEST_ENVIRONMENT_NO_PROF,
             [
@@ -82,14 +82,13 @@ describe("auth login/logout apiml show token", () => {
                 base.rejectUnauthorized,
                 "true"
             ]);
-        token = response.stdout.toString().trim().split("\n");
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
         expect(response.stdout.toString()).toContain("Received a token of type = apimlAuthenticationToken");
         expect(response.stdout.toString()).toContain("Login successful. To revoke this token, review the 'zowe auth logout' command.");
     });
 
-    it("should successfully issue the login command with rfj and show token", () => {
+    it("should successfully login with password with rfj and show token", () => {
         const response = runCliScript(__dirname + "/__scripts__/auth_login_apiml_show_token_rfj.sh",
             TEST_ENVIRONMENT_NO_PROF,
             [
@@ -104,23 +103,42 @@ describe("auth login/logout apiml show token", () => {
         expect(response.status).toBe(0);
         const responseData = JSON.parse(response.stdout.toString()).data;
         expect(responseData.tokenType).toEqual("apimlAuthenticationToken");
-        expect(responseData.tokenValue).not.toEqual(token[token.length-3]); // Intermittent failure : (
-        expect(responseData.tokenValue.length).toEqual(token[token.length-3].length);
+        expect(responseData.tokenValue).toBeDefined();
+        expect(ConfigUtils.hasTokenExpired(responseData.tokenValue)).toBe(false);
+        const stdOutTokenMatch = response.stdout.toString().match(/will not be stored in your profile:\\n(.*)\\n\\nLogin successful/);
+        expect(responseData.tokenValue).toEqual(stdOutTokenMatch[1]);
     });
 
-    it("should successfully issue the logout command without profiles", () => {
-        const response = runCliScript(__dirname + "/__scripts__/auth_logout_apiml_show_token.sh",
+    it("should successfully logout with token from password without profiles", () => {
+        // first get a token
+        let response = runCliScript(__dirname + "/__scripts__/auth_login_apiml_show_token_rfj.sh",
+            TEST_ENVIRONMENT_NO_PROF,
+            [
+                base.host,
+                base.port,
+                base.user,
+                base.password,
+                base.rejectUnauthorized,
+                "true"
+            ]
+        );
+        const responseData = JSON.parse(response.stdout.toString()).data;
+
+        // now use the token to logout
+        response = runCliScript(__dirname + "/__scripts__/auth_logout_apiml_show_token.sh",
             TEST_ENVIRONMENT_NO_PROF,
             [
                 base.host,
                 base.port,
                 "apimlAuthenticationToken",
-                token[token.length-3],
+                responseData.tokenValue,
                 base.rejectUnauthorized
             ]);
         expect(response.stderr.toString()).toBe("");
         expect(response.status).toBe(0);
         expect(response.stdout.toString()).toContain("Logout successful. The authentication token has been revoked");
+        expect(response.stdout.toString()).toContain("Token was not removed from your 'base' base profile");
+        expect(response.stdout.toString()).toContain("Reason: Empty profile was provided");
     });
 });
 
@@ -140,11 +158,7 @@ describe("auth login/logout apiml create profile", () => {
         await TestEnvironment.cleanUp(TEST_ENVIRONMENT_CREATE_PROF);
     });
 
-    /* Resurrect the following test after this Git issue is fixed:
-       https://github.com/zowe/zowe-cli/issues/2005
-    */
-    // eslint-disable-next-line jest/no-disabled-tests
-    it.skip("TODO: After 2005 is fixed: should successfully issue the login command and create a team config", () => {
+    it("should successfully login with password and create a team config", () => {
         const response = runCliScript(__dirname + "/__scripts__/auth_login_apiml_create.sh",
             TEST_ENVIRONMENT_CREATE_PROF,
             [
@@ -161,7 +175,7 @@ describe("auth login/logout apiml create profile", () => {
         expect(response.status).toBe(0);
     });
 
-    it("should successfully issue the logout command with a created team config", async () => {
+    it("should successfully logout with a created team config", async () => {
         // Form a posix-style path to scripts directory
         let scriptsPosixPath = __dirname + "/__scripts__";
         scriptsPosixPath = scriptsPosixPath.replaceAll("\\", "/");
@@ -213,7 +227,7 @@ describe("auth login/logout apiml do not create profile", () => {
         await TestEnvironment.cleanUp(TEST_ENVIRONMENT_CREATE_PROF);
     });
 
-    it("should successfully issue the login command and not create a profile 1", () => {
+    it("should successfully login with password and not create a profile 1", () => {
         const response = runCliScript(__dirname + "/__scripts__/auth_login_apiml_create.sh",
             TEST_ENVIRONMENT_CREATE_PROF,
             [
@@ -231,7 +245,7 @@ describe("auth login/logout apiml do not create profile", () => {
         expect(response.stdout.toString()).toContain("Login successful.");
     });
 
-    it("should successfully issue the login command and not create a profile 2", () => {
+    it("should successfully login with password and not create a profile 2", () => {
         const response = runCliScript(__dirname + "/__scripts__/auth_login_apiml_create.sh",
             TEST_ENVIRONMENT_CREATE_PROF,
             [
@@ -253,7 +267,6 @@ describe("auth login/logout apiml do not create profile", () => {
 describe("auth login/logout apiml with pem cert", () => {
     let TEST_ENVIRONMENT_NO_PROF: ITestEnvironment<ITestPropertiesSchema>;
     let base: ITestCertPemSchema & ITestBaseSchema;
-    let token: string[];
 
     beforeAll(async () => {
         TEST_ENVIRONMENT_NO_PROF = await TestEnvironment.setUp({
@@ -275,7 +288,7 @@ describe("auth login/logout apiml with pem cert", () => {
         await TestEnvironment.cleanUp(TEST_ENVIRONMENT_NO_PROF);
     });
 
-    it("should successfully issue the login command and show token", () => {
+    it("should successfully login with cert and show token", () => {
         if (base.certFile != null) {
             const response = runCliScript(__dirname + "/__scripts__/auth_login_apiml_show_token_with_pem_cert.sh",
                 TEST_ENVIRONMENT_NO_PROF,
@@ -287,7 +300,6 @@ describe("auth login/logout apiml with pem cert", () => {
                     base.rejectUnauthorized,
                     "true"
                 ]);
-            token = response.stdout.toString().trim().split("\n");
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain("Received a token of type = apimlAuthenticationToken");
@@ -295,15 +307,30 @@ describe("auth login/logout apiml with pem cert", () => {
         }
     });
 
-    it("should successfully issue the logout command without profiles", () => {
+    it("should successfully logout with token from cert without profiles", () => {
         if (base.certFile != null) {
-            const response = runCliScript(__dirname + "/__scripts__/auth_logout_apiml_show_token.sh",
+            // first get a token
+            let response = runCliScript(__dirname + "/__scripts__/auth_login_apiml_show_token_with_pem_cert.sh",
+                TEST_ENVIRONMENT_NO_PROF,
+                [
+                    base.host,
+                    base.port,
+                    base.certFile,
+                    base.certKeyFile,
+                    base.rejectUnauthorized,
+                    "true"
+                ]
+            );
+            const token = response.stdout.toString().trim().split("\n");
+
+            // now use the token to logout
+            response = runCliScript(__dirname + "/__scripts__/auth_logout_apiml_show_token.sh",
                 TEST_ENVIRONMENT_NO_PROF,
                 [
                     base.host,
                     base.port,
                     "apimlAuthenticationToken",
-                    token[token.length-3],
+                    token[token.length - 3],
                     base.rejectUnauthorized
                 ]);
             expect(response.stderr.toString()).toBe("");

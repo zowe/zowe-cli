@@ -9,7 +9,7 @@
     "__tests__/__packages__/*"
   ],
   "scripts": {
-    "build": "lerna run build && node scripts/updateLicenses.js && npm run lint && npm run checkTestsCompile && npm run circularDependencyCheck",
+    "build": "lerna run build && node scripts/updateLicenses.mjs && npm run lint && npm run checkTestsCompile && npm run circularDependencyCheck",
     "postbuild": "node scripts/sampleCliTool.js build",
     "build:exe": "cd zowex && cargo build && cargo clippy && cargo test",
     "clean": "lerna run --parallel clean",
@@ -48,7 +48,7 @@
     "@lerna-lite/run": "^3.6.0",
     "@lerna-lite/version": "^3.6.0",
     "@types/jest": "^29.5.12",
-    "@types/node": "^18.19.17",
+    "@types/node": "^20.0.0",
     "@types/which": "^3.0.4",
     "@typescript-eslint/eslint-plugin": "^7.15.0",
     "@typescript-eslint/parser": "^7.15.0",
@@ -60,6 +60,7 @@
     "eslint-plugin-jest": "^27.0.0",
     "eslint-plugin-unused-imports": "^3.0.0",
     "fancy-log": "^2.0.0",
+    "fast-glob": "^3.3.2",
     "husky": "^9.0.0",
     "jest": "^29.0.0",
     "jest-environment-node": "^29.0.0",
