@@ -30,8 +30,9 @@ try {
         const srcDir = path.join("node_modules", "@zowe", zowePkgDir);
         const destDir = path.join(cliPkgDir, srcDir);
         fs.rmSync(destDir, { recursive: true, force: true });
-        fs.copySync(fs.realpathSync(srcDir), destDir);
+        fs.cpSync(fs.realpathSync(srcDir), destDir, {recursive: true});
     }
+    fs.rmSync(path.join(cliPkgDir, "node_modules", "cpu-features"), { recursive: true, force: true });
 
     // Define bundled dependencies in package.json and package the TGZ
     const pkgJson = JSON.parse(fs.readFileSync(pkgJsonFile, "utf-8"));
