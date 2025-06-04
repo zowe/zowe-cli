@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
-## Recent Changes
+## `8.23.0`
 
 - Enhancement: Added support for the `IDownloadOptions.extensionMap` property to the `Download.allMembers` method to allow for specifying the file extension for each downloaded member. [#2507](https://github.com/zowe/zowe-cli/pull/2507)
 
