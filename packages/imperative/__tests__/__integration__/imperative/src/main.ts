@@ -11,7 +11,7 @@
 */
 
 
-import { Imperative, ImperativeError } from "../../../../lib/index";
+import { AuthOrder, Imperative, ImperativeError } from "../../../../lib/index";
 import { inspect } from "util";
 
 Imperative.init().then((_response) => {
@@ -22,6 +22,9 @@ Imperative.init().then((_response) => {
     Imperative.api.imperativeLogger.warn("This is a warn message after init!");
     Imperative.api.imperativeLogger.error("This is an error message after init!");
     Imperative.api.imperativeLogger.fatal("This is a fatal message after init!");
+
+    // ensure that AuthOrder has some creds cached to put in a session later
+    AuthOrder.addCredsToSession({}, { user: "fakeUser", password: "fakePass", "$0": "zowe", "_": [""] });
 
     // Parse the command
     Imperative.parse();

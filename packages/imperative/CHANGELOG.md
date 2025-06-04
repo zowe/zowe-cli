@@ -2,8 +2,9 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
-## Recent Changes
+## `8.22.0`
 
+- Enhancement: Updated the Zowe Client REST APIs to obey the choice of authentication specified by a user. [#2491](https://github.com/zowe/zowe-cli/pull/2491)
 - BugFix: Fixed issue where Imperative integration tests can fail due to a missing `glob` dependency. [#2511](https://github.com/zowe/zowe-cli/pull/2511)
 
 ## `8.21.0`

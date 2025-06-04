@@ -504,12 +504,8 @@ describe("log4jsToWinston tests", () => {
 
     describe("defaultPrintfFormat", () => {
         it("should print the log message in format: [timestamp] [level] <message>", () => {
-            expect(defaultPrintfFormat(
-                {
-                    timestamp: "2023-10-27 10:00:00",
-                    level: "INFO",
-                    message: "Hello world"
-                })).toBe("[2023-10-27 10:00:00] [INFO] Hello world");
+            expect(defaultPrintfFormat({ timestamp: "2023-10-27 10:00:00", level: "INFO", message: "Hello world" }))
+                .toBe("[2023-10-27 10:00:00] [INFO] Hello world");
         });
     });
 

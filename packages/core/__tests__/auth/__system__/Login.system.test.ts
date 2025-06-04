@@ -12,7 +12,7 @@
 import { ITestEnvironment } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { Session, ImperativeError, Imperative } from "@zowe/imperative";
+import { AuthOrder, Session, ImperativeError, Imperative } from "@zowe/imperative";
 import { Login } from "../../../src/auth/Login";
 
 let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
@@ -24,6 +24,11 @@ describe("Login system test", () => {
             testName: "auth_login"
         });
         REAL_SESSION = TestEnvironment.createBaseSession(testEnvironment);
+
+        // TestEnvironment has no means to make a request for a token, so
+        // we update the session with a request for a token
+        AuthOrder.makingRequestForToken(REAL_SESSION.ISession);
+        AuthOrder.addCredsToSession(REAL_SESSION.ISession, { "$0": "NameNotUsed", "_": [] });
     });
 
     afterAll(async () => {

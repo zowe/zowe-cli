@@ -12,7 +12,7 @@
 import { ITestEnvironment } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../__tests__/__src__/environment/TestEnvironment";
 import { ITestPropertiesSchema } from "../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
-import { Session, ImperativeError, Imperative } from "@zowe/imperative";
+import { AuthOrder, Session, ImperativeError, Imperative } from "@zowe/imperative";
 import { Login } from "../../../src/auth/Login";
 import { Logout } from "../../../src/auth/Logout";
 import { ZosmfRestClient } from "../../../src/rest/ZosmfRestClient";
@@ -30,6 +30,11 @@ describe("Logout system test", () => {
         });
 
         REAL_SESSION = TestEnvironment.createBaseSession(testEnvironment);
+
+        // TestEnvironment has no means to make a request for a token, so
+        // we update the session with a request for a token
+        AuthOrder.makingRequestForToken(REAL_SESSION.ISession);
+        AuthOrder.addCredsToSession(REAL_SESSION.ISession, { "$0": "NameNotUsed", "_": [] });
 
         try {
             token = await Login.apimlLogin(REAL_SESSION);
@@ -52,12 +57,11 @@ describe("Logout system test", () => {
     it("should succeed with correct parameters and invalidate token using APIML", async () => {
         let error: ImperativeError;
         const client = new ZosmfRestClient(REAL_SESSION);
+        AuthOrder.addCredsToSession(REAL_SESSION.ISession, {
+            "authOrder": "token", "tokenValue": token, "$0": "test", "_": ["test"]
+        });
 
         try {
-            client.session.ISession.type = "token";
-            client.session.ISession.tokenType = "apimlAuthenticationToken";
-            client.session.ISession.tokenValue = token;
-
             await client.request({request: "GET", resource: "/gateway/api/v1/auth/query"});
         } catch (thrownError) {
             error = thrownError;

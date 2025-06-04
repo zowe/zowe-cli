@@ -167,9 +167,9 @@ export class Logger {
         // log4js doc: When defining your appenders through a configuration, at least one category must be defined.
         if (loggingConfig.log4jsConfig.appenders == null || loggingConfig.log4jsConfig.categories == null ||
             Object.keys(loggingConfig.log4jsConfig.categories).length === 0) {
-            throw new ImperativeError({
-                msg: "Input logging config is incomplete, does not contain log4jsConfig.appenders or log4jsConfig.categories"
-            });
+            throw new ImperativeError(
+                {msg: "Input logging config is incomplete, does not contain log4jsConfig.appenders or log4jsConfig.categories"}
+            );
         }
 
         try {

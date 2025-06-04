@@ -46,7 +46,6 @@ import { EnvironmentalVariableSettings } from "../../imperative/src/env/Environm
 import { ConnectionPropsForSessCfg } from "../../rest/src/session/ConnectionPropsForSessCfg";
 import { ISession } from "../../rest/src/session/doc/ISession";
 
-
 /**
  * Internal interface for the command processor that is used by the CLI for `--show-inputs-only`
  * @interface IResolvedArgsResponse
@@ -86,6 +85,12 @@ interface IResolvedArgsResponse {
      * @memberof IResolvedArgsResponse
      */
     authenticationType?: string;
+
+    /**
+     * @type {string}
+     * @memberof IResolvedArgsResponse
+     */
+    authTypeOrder?: string;
 }
 
 /**
@@ -765,6 +770,7 @@ export class CommandProcessor {
         const sessCfg: ISession = {};
         ConnectionPropsForSessCfg.resolveSessCfgProps(sessCfg, commandParameters.arguments);
         showInputsOnly.authenticationType = sessCfg.type;
+        showInputsOnly.authTypeOrder = sessCfg.authTypeOrder.toString();
 
         /**
          * Append profile information
