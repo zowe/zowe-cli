@@ -20,7 +20,7 @@ use std::process::{Command, Stdio};
 use std::os::windows::process::CommandExt;
 
 extern crate sysinfo;
-use sysinfo::{Pid, PidExt, ProcessExt, System, SystemExt};
+use sysinfo::{Pid, System};
 
 extern crate simple_error;
 use simple_error::SimpleError;
@@ -196,7 +196,7 @@ fn read_pid_for_user() -> Option<sysinfo::Pid> {
         Ok(ok_val) => ok_val,
         Err(err_val) => {
             // we should not continue if we cannot open an existing pid file
-            println!(
+            eprintln!(
                 "Unable to open file = {}\nDetails = {}",
                 pid_file_path.display(),
                 err_val
@@ -209,7 +209,7 @@ fn read_pid_for_user() -> Option<sysinfo::Pid> {
         Ok(ok_val) => ok_val,
         Err(err_val) => {
             // we should not continue if we cannot read an existing pid file
-            println!(
+            eprintln!(
                 "Unable to read file = {}\nDetails = {}",
                 pid_file_path.display(),
                 err_val
@@ -222,7 +222,7 @@ fn read_pid_for_user() -> Option<sysinfo::Pid> {
 
     if daemon_pid_for_user.user != executor {
         // our pid file should only contain our own user name
-        println!(
+        eprintln!(
             "User name of '{}' in file '{}' does not match current user = '{}'.",
             daemon_pid_for_user.user,
             pid_file_path.display(),
@@ -273,11 +273,11 @@ fn read_pid_for_user() -> Option<sysinfo::Pid> {
  */
 
 pub fn proc_start_daemon(njs_zowe_path: &str) -> String {
-    println!("Starting a background process to increase performance ...");
+    eprintln!("Starting a background process to increase performance ...");
 
     let daemon_arg = LAUNCH_DAEMON_OPTION;
     let mut cmd = Command::new(njs_zowe_path);
-    
+
     // Uses creation flags from https://learn.microsoft.com/en-us/windows/win32/procthread/process-creation-flags
     // Flags are CREATE_NO_WINDOW, CREATE_NEW_PROCESS_GROUP, and CREATE_UNICODE_ENVIRONMENT
     #[cfg(target_family = "windows")]
@@ -291,11 +291,11 @@ pub fn proc_start_daemon(njs_zowe_path: &str) -> String {
     {
         Ok(_unused) => { /* nothing to do */ }
         Err(error) => {
-            println!(
+            eprintln!(
                 "Failed to start the following process:\n    {} {}",
                 njs_zowe_path, daemon_arg
             );
-            println!("Due to this error:\n    {}", error);
+            eprintln!("Due to this error:\n    {}", error);
             std::process::exit(EXIT_CODE_CANNOT_START_DAEMON);
         }
     };
