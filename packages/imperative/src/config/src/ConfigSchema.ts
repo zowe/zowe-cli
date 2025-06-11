@@ -438,18 +438,18 @@ export class ConfigSchema {
         const propertyName = pathSegments.pop();
         const profilePath = pathSegments.slice(0, -1).join(".");
         const profileType: string = lodash.get(config, `${profilePath}.type`);
-        console.log(`--- Profile type: ${profileType}`);
         if (profileType == null) {
+            if (propertyName === "password" || propertyName === "user") {
+                return "string"; // Assume user and password is always a string
+            }
             return;
         }
 
         const profileSchemas = schema ? this.loadSchema(schema) : ImperativeConfig.instance.loadedConfig.profiles;
         const profileSchema = profileSchemas.find(p => p.type === profileType)?.schema;
-        console.log(`--- Profile schema: ${JSON.stringify(profileSchema)}`);
         if (profileSchema != null && profileSchema.properties[propertyName] != null) {
             // TODO How to handle profile property with multiple types
             const property = profileSchema.properties[propertyName];
-            console.log(`--- Property type: ${property.type}`);
             if (property != null) {
                 const propertyType = profileSchema.properties[propertyName].type;
                 return Array.isArray(propertyType) ? propertyType[0] : propertyType;
