@@ -1,6 +1,10 @@
 # Change Log
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Update the `brace-expansion` dependency to resolve technical currency. []()
+
 ## `8.22.0`
 
 - Enhancement: Added a new configuration property named authOrder with which a user can specify a desired choice of authentication. [#1794](https://github.com/zowe/zowe-cli/issues/1794)
