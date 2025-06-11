@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Update the `brace-expansion` dependency to resolve technical currency. [#2524](https://github.com/zowe/zowe-cli/pull/2524)
+
 ## `7.29.12`
 
 - BugFix: Updated the Daemon binary version for technical currency. [#2480](https://github.com/zowe/zowe-cli/pull/2480)
