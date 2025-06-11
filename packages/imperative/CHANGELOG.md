@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated the `brace-expansion` dependency for technical currency. [#2523](https://github.com/zowe/zowe-cli/pull/2523)
+
 ## `8.22.0`
 
 - Enhancement: Updated the Zowe Client REST APIs to obey the choice of authentication specified by a user. [#2491](https://github.com/zowe/zowe-cli/pull/2491)
