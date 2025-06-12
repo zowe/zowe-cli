@@ -437,21 +437,21 @@ export class ConfigSchema {
         const pathSegments = path.split(".");
         const propertyName = pathSegments.pop();
         const profilePath = pathSegments.slice(0, -1).join(".");
-        const profileType: string = lodash.get(config, `${profilePath}.type`);
-        if (profileType == null) {
-            if (propertyName === "password" || propertyName === "user") {
-                return "string"; // Assume user and password is always a string
-            }
-            return;
+        let profileType: string = lodash.get(config, `${profilePath}.type`);
+        if (profileType == null || profileType === "" || Array.isArray(profileType)) {
+            Logger.getAppLogger().warn(`Profile type not found or supported for path: ${path}`);
+            Logger.getAppLogger().debug(`Using default profile type 'base' to determine property type`);
+            profileType = "base"; // Assuming base profile for now
         }
 
         const profileSchemas = schema ? this.loadSchema(schema) : ImperativeConfig.instance.loadedConfig.profiles;
         const profileSchema = profileSchemas.find(p => p.type === profileType)?.schema;
         if (profileSchema != null && profileSchema.properties[propertyName] != null) {
-            // TODO How to handle profile property with multiple types
             const property = profileSchema.properties[propertyName];
             if (property != null) {
                 const propertyType = profileSchema.properties[propertyName].type;
+                Logger.getAppLogger().debug(`Found property type for ${propertyName} in profile ${profileType}: ${propertyType}`);
+                // TODO How to handle profile property with multiple types
                 return Array.isArray(propertyType) ? propertyType[0] : propertyType;
             }
         }
