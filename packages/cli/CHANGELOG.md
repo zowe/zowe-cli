@@ -3,7 +3,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## Recent Changes
 
-- Enhancement: Added a `search-exact-name` option to `zowe zos-files search data-set` to search the contents of one data set or PDS [#2529](https://github.com/zowe/zowe-cli/pull/2529)
+- Enhancement: Added a `search-exact-name` option to the `zowe zos-files search data-set` command to search the contents of one data set or PDS. [#2529](https://github.com/zowe/zowe-cli/pull/2529)
 
 ## `8.23.1`
 
