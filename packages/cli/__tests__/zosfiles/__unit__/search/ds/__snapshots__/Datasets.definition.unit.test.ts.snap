@@ -58,6 +58,15 @@ Array [
     "name": "regex",
     "type": "boolean",
   },
+  Object {
+    "aliases": Array [
+      "sen",
+    ],
+    "defaultValue": false,
+    "description": "The search pattern should match the exact name of the data set to search.",
+    "name": "search-exact-name",
+    "type": "boolean",
+  },
 ]
 `;
 

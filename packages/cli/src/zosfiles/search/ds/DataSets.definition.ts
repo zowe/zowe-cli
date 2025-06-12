@@ -86,6 +86,13 @@ export const DataSetsDefinition: ICommandDefinition = {
             description: dataSetStrings.OPTIONS.REGEX,
             type: "boolean",
             defaultValue: false
+        },
+        {
+            name: "search-exact-name",
+            aliases: ["sen"],
+            description: dataSetStrings.OPTIONS.SEARCHEXACTNAME,
+            type: "boolean",
+            defaultValue: false
         }
     ],
     examples: [

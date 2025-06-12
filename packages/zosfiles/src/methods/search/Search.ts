@@ -81,7 +81,8 @@ export class Search {
             const response = await List.dataSetsMatchingPattern(session, [searchOptions.pattern], {
                 ...searchOptions.listOptions,
                 attributes: true,
-                maxConcurrentRequests: searchOptions.maxConcurrentRequests
+                maxConcurrentRequests: searchOptions.maxConcurrentRequests,
+                maxLength: searchOptions.searchExactName ? 1 : undefined,
             });
             for (const resp of response.apiResponse) {
                 // Skip anything that doesn't have a DSORG or is migrated
