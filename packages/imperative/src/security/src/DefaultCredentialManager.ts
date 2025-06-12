@@ -261,6 +261,7 @@ export class DefaultCredentialManager extends AbstractCredentialManager {
     private async getCredentialsHelper(service: string, account: string): Promise<SecureCredential> {
         // Try to load single-field value from vault
         let value = await this.keytar.getPassword(service, account);
+        Logger.getImperativeLogger().debug(`Loaded credential for service = '${service}' account = '${account}' value = '${value}'`);
 
         // If not found, try to load multiple-field value on Windows
         if (value == null && process.platform === "win32") {
@@ -300,12 +301,14 @@ export class DefaultCredentialManager extends AbstractCredentialManager {
             let index = 1;
             while (value.length > 0) {
                 const tempValue = value.slice(0, this.WIN32_CRED_MAX_STRING_LENGTH);
+                Logger.getImperativeLogger().debug(`Saving credential for service = '${service}' account = '${account}-${index}' contents = '${tempValue}'`);
                 await this.keytar.setPassword(service, `${account}-${index}`, tempValue);
                 value = value.slice(this.WIN32_CRED_MAX_STRING_LENGTH);
                 index++;
             }
         } else {
             // Fall back to simple storage of single-field value
+            Logger.getImperativeLogger().debug(`Saving credential for service = '${service}' account = '${account}' contents = '${value}'`);
             await this.keytar.setPassword(service, account, value);
         }
     }
