@@ -34,7 +34,8 @@ export default class DataSetsHandler extends ZosFilesBaseHandler {
             caseSensitive: commandParameters.arguments.caseSensitive,
             regex: commandParameters.arguments.regex,
             progressTask: task,
-            getOptions: { encoding: commandParameters.arguments.encoding }
+            getOptions: { encoding: commandParameters.arguments.encoding },
+            searchExactName: commandParameters.arguments.searchExactName
         };
 
         commandParameters.response.progress.startBar({task});

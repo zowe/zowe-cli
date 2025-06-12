@@ -45,6 +45,9 @@ export interface ISearchOptions {
     /* Whether the search string is a regular expression */
     regex?: boolean;
 
+    /* Whether the search should only apply to an exact pattern match */
+    searchExactName?: boolean;
+
     /* A function that, if provided, is called with a list of data sets and members that are about to be searched. */
     /* If true, continue search. If false, terminate search. */
     continueSearch?: (dataSets: IDataSet[]) => Promise<boolean> | boolean;

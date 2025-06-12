@@ -118,6 +118,100 @@ describe("Search Datasets handler", () => {
             expect(logMessage).toMatchSnapshot();
         });
 
+        it("should search a data set if requested - with searchExactName", async () => {
+            // Require the handler and create a new instance
+            const handlerReq = require("../../../../../src/zosfiles/search/ds/DataSets.handler");
+            const handler = new handlerReq.default();
+            const pattern = "TEST1.DS";
+            const searchString = "test";
+
+            // Vars populated by the mocked function
+            let apiMessage = "";
+            let jsonObj;
+            let logMessage = "";
+            let fakeSession = null;
+
+            // Mock the submit JCL function
+            Search.dataSets = jest.fn(async (session) => {
+                fakeSession = session;
+                return {
+                    success: true,
+                    commandResponse: "Found \"test\" in 1 data sets and PDS members",
+                    apiResponse: [
+                        {
+                            dsn: "TEST1.DS",
+                            member: "TESTMEM",
+                            matchList: [
+                                {
+                                    line: 1,
+                                    column: 1,
+                                    contents: "TEST CONTENTS"
+                                }
+                            ]
+                        }
+                    ]
+                };
+            });
+
+            // Invoke the handler with a full set of mocked arguments and response functions
+            await handler.process({
+                arguments: {
+                    $0: "fake",
+                    _: ["fake"],
+                    pattern,
+                    searchString,
+                    ...UNIT_TEST_ZOSMF_PROF_OPTS,
+                    searchExactName: true
+                },
+                response: {
+                    data: {
+                        setMessage: jest.fn((setMsgArgs) => {
+                            apiMessage = setMsgArgs;
+                        }),
+                        setObj: jest.fn((setObjArgs) => {
+                            jsonObj = setObjArgs;
+                        })
+                    },
+                    console: {
+                        log: jest.fn((logArgs) => {
+                            logMessage += "\n" + logArgs;
+                        })
+                    },
+                    progress: {
+                        startBar: jest.fn((_parms) => {
+                            // do nothing
+                        }),
+                        endBar: jest.fn(() => {
+                            // do nothing
+                        })
+                    }
+                }
+            } as any);
+
+            expect(Search.dataSets).toHaveBeenCalledTimes(1);
+            expect(Search.dataSets).toHaveBeenCalledWith(fakeSession, {
+                pattern,
+                searchString,
+                caseSensitive: undefined,
+                getOptions: {
+                    encoding: undefined
+                },
+                mainframeSearch: undefined,
+                maxConcurrentRequests: undefined,
+                regex: undefined,
+                searchExactName: true,
+                timeout: undefined,
+                progressTask: {
+                    percentComplete: 0,
+                    statusMessage: "Starting search...",
+                    stageName: TaskStage.NOT_STARTED
+                }
+            });
+            expect(jsonObj).toMatchSnapshot();
+            expect(apiMessage).toMatchSnapshot();
+            expect(logMessage).toMatchSnapshot();
+        });
+
         it("should search a data set if requested - with case sensitive", async () => {
             // Require the handler and create a new instance
             const handlerReq = require("../../../../../src/zosfiles/search/ds/DataSets.handler");

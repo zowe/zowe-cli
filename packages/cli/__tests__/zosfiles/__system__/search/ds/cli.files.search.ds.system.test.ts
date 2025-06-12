@@ -114,6 +114,30 @@ describe("Search Data Sets", () => {
 
         const shellScript = path.join(__dirname, "__scripts__", "command_search_ds_fully_qualified.sh");
 
+        it("should search and find the correct data set", async () => {
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT_NO_PROF, [
+                dsnPrefix + ".PDS1",
+                searchString,
+                defaultSys.zosmf.host,
+                defaultSys.zosmf.port,
+                defaultSys.zosmf.user,
+                defaultSys.zosmf.password,
+                "--searchExactName true"
+            ]);
+
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toContain(`Found "${searchString}" in 2 data sets and PDS members`);
+            expect(response.stdout.toString()).toContain(`Data Set "${dsnPrefix}.PDS1" | Member "MEM2":`);
+            expect(response.stdout.toString()).toContain(`Data Set "${dsnPrefix}.PDS1" | Member "MEM3":`);
+            expect(response.stdout.toString()).not.toContain(`Data Set "${dsnPrefix}.PDS2" | Member "MEM2":`);
+            expect(response.stdout.toString()).not.toContain(`Data Set "${dsnPrefix}.PDS2" | Member "MEM3":`);
+            expect(response.stdout.toString()).not.toContain(`Data Set "${dsnPrefix}.SEQ1":`);
+            expect(response.stdout.toString()).not.toContain(`Data Set "${dsnPrefix}.SEQ4":`);
+            expect(response.stdout.toString()).not.toContain(`Data Set "${dsnPrefix}.SEQ5":`);
+            expect(response.stdout.toString()).toContain(`Line: 1, Column: 41, Contents: ${goodTestString}`);
+        });
+
         it("should search and find the correct data sets", async () => {
             const response = runCliScript(shellScript, TEST_ENVIRONMENT_NO_PROF, [
                 pattern,
