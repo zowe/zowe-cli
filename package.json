@@ -91,8 +91,5 @@
     ],
     "coverageLink": "../unit/coverage/lcov-report/index.html",
     "resultDir": "__tests__/__results__/jest-stare"
-  },
-  "dependencies": {
-    "terminal-kit": "^3.1.2"
   }
 }
