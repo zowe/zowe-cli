@@ -271,7 +271,7 @@ export const config: IImperativeConfig = {
                         type: "string",
                         optionDefinition: {
                             name: "info",
-                            description: "The info the keep in the profile.",
+                            description: "The info to keep in the profile.",
                             type: "string",
                             required: true,
                         }
@@ -281,8 +281,18 @@ export const config: IImperativeConfig = {
                         secure: true,
                         optionDefinition: {
                             name: "secret",
-                            description: "The secret info the keep in the profile.",
+                            description: "The secret info to keep in the profile.",
                             type: "string",
+                            required: true,
+                        }
+                    },
+                    undefined: {
+                        type: undefined,
+                        secure: true,
+                        optionDefinition: {
+                            name: "undefined",
+                            description: "The undefined secret info to keep in the profile.",
+                            type: undefined,
                             required: true,
                         }
                     }

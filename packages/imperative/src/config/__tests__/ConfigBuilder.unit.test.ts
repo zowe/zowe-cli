@@ -44,7 +44,7 @@ function buildProfileProperty(name: string, type: string | Array<string>, missin
             includeInTemplate: true,
             optionDefinition: {
                 name,
-                description: "The info the keep in the profile.",
+                description: "The info to keep in the profile.",
                 type,
                 required: true,
             }
@@ -219,9 +219,10 @@ describe("Config Builder tests", () => {
                 global_base: {
                     type: "base",
                     properties: {
-                        secret: "fake value"
+                        secret: "fake value",
+                        undefined: "fake value",
                     },
-                    secure: ["secret"]
+                    secure: ["secret", "undefined"]
                 }
             };
             expectedConfig.defaults = { base: "global_base", secured: "secured" };

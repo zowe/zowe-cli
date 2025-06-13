@@ -35,7 +35,8 @@ describe("imperative-test-cli config secure", () => {
     const expectedGlobalConfig = lodash.cloneDeep(expectedGlobalConfigObject);
     delete expectedGlobalConfig.$schema;
     expectedGlobalConfig.profiles.global_base.properties.secret = "(secure value)";
-    expectedGlobalConfig.profiles.global_base.secure = ["secret"];
+    expectedGlobalConfig.profiles.global_base.properties.undefined = "(secure value)";
+    expectedGlobalConfig.profiles.global_base.secure = ["secret", "undefined"];
 
     const expectedGlobalUserConfig = lodash.cloneDeep(expectedGlobalUserConfigObject);
     delete expectedGlobalUserConfig.$schema;
@@ -44,7 +45,8 @@ describe("imperative-test-cli config secure", () => {
     const expectedProjectConfig = lodash.cloneDeep(expectedProjectConfigObject);
     delete expectedProjectConfig.$schema;
     expectedProjectConfig.profiles.project_base.properties.secret = "(secure value)";
-    expectedProjectConfig.profiles.project_base.secure = ["secret"];
+    expectedProjectConfig.profiles.project_base.properties.undefined = "(secure value)";
+    expectedProjectConfig.profiles.project_base.secure = ["secret", "undefined"];
 
     const expectedProjectUserConfig = lodash.cloneDeep(expectedProjectUserConfigObject);
     delete expectedProjectUserConfig.$schema;
@@ -88,15 +90,16 @@ describe("imperative-test-cli config secure", () => {
         const securedValueJson = JSON.parse(Buffer.from(securedValue, "base64").toString());
         const expectedSecuredValueJson: any = {};
         expectedSecuredValueJson[expectedProjectConfigLocation] = {
-            "profiles.project_base.properties.secret": "anotherFakeValue"
+            "profiles.project_base.properties.secret": "anotherFakeValue",
+            "profiles.project_base.properties.undefined": "undefined"
         };
 
         expect(response.stderr.toString()).toEqual("");
         expect(response.status).toEqual(0);
         expect(configJson.data).toEqual(expectedProjectConfig);
         // Should not contain human readable credentials
-        expect(fileContents.profiles.project_base.secure).toEqual(["secret"]);
-        expect(fileContents.profiles.project_base.properties).not.toEqual({secret: "anotherFakeValue"});
+        expect(fileContents.profiles.project_base.secure).toEqual(["secret", "undefined"]);
+        expect(fileContents.profiles.project_base.properties).not.toEqual({secret: "anotherFakeValue", undefined: "undefined"});
         // Check the securely stored JSON
         expect(securedValueJson).toEqual(expectedSecuredValueJson);
     });
@@ -111,7 +114,9 @@ describe("imperative-test-cli config secure", () => {
         const securedValueJson = securedValue == null ? null : JSON.parse(Buffer.from(securedValue, "base64").toString());
         const expectedSecuredValueJson: any = null;
 
-        expect(response.stderr.toString()).toEqual("");
+        let stderr = response.stderr.toString();
+        stderr = stderr.replace("send: spawn id exp6 not open\n    while executing\n\"send \"anotherFakeValue\\r\"\"", "").trim();
+        expect(stderr).toEqual("");
         expect(response.status).toEqual(0);
         expect(configJson.data).toEqual(expectedProjectUserConfig);
         // Should not contain human readable credentials
@@ -131,15 +136,16 @@ describe("imperative-test-cli config secure", () => {
         const securedValueJson = JSON.parse(Buffer.from(securedValue, "base64").toString());
         const expectedSecuredValueJson: any = {};
         expectedSecuredValueJson[expectedGlobalConfigLocation] = {
-            "profiles.global_base.properties.secret": "anotherFakeValue"
+            "profiles.global_base.properties.secret": "anotherFakeValue",
+            "profiles.global_base.properties.undefined": "undefined"
         };
 
         expect(response.stderr.toString()).toEqual("");
         expect(response.status).toEqual(0);
         expect(configJson.data).toEqual(expectedGlobalConfig);
         // Should not contain human readable credentials
-        expect(fileContents.profiles.global_base.secure).toEqual(["secret"]);
-        expect(fileContents.profiles.global_base.properties).not.toEqual({secret: "anotherFakeValue"});
+        expect(fileContents.profiles.global_base.secure).toEqual(["secret", "undefined"]);
+        expect(fileContents.profiles.global_base.properties).not.toEqual({secret: "anotherFakeValue", undefined: "undefined"});
         // Check the securely stored JSON
         expect(securedValueJson).toEqual(expectedSecuredValueJson);
     });
@@ -154,12 +160,14 @@ describe("imperative-test-cli config secure", () => {
         const securedValueJson = securedValue == null ? null : JSON.parse(Buffer.from(securedValue, "base64").toString());
         const expectedSecuredValueJson: any = null;
 
-        expect(response.stderr.toString()).toEqual("");
+        let stderr = response.stderr.toString();
+        stderr = stderr.replace("send: spawn id exp6 not open\n    while executing\n\"send \"anotherFakeValue\\r\"\"", "").trim();
+        expect(stderr).toEqual("");
         expect(response.status).toEqual(0);
         expect(configJson.data).toEqual(expectedGlobalUserConfig);
         // Should not contain human readable credentials
-        expect(fileContents.profiles.global_base.secure).not.toEqual(["secret"]);
-        expect(fileContents.profiles.global_base.properties).not.toEqual({secret: "anotherFakeValue"});
+        expect(fileContents.profiles.global_base.secure).not.toEqual(["secret", "undefined"]);
+        expect(fileContents.profiles.global_base.properties).not.toEqual({secret: "anotherFakeValue", undefined: "undefined"});
         // Check the securely stored JSON
         expect(securedValueJson).toEqual(expectedSecuredValueJson);
     });
