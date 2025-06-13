@@ -83,11 +83,11 @@ export const expectedSchemaObject = {
                                         properties: {
                                             info: {
                                                 type: "string",
-                                                description: "The info the keep in the profile."
+                                                description: "The info to keep in the profile."
                                             },
                                             secret: {
                                                 type: "string",
-                                                description: "The secret info the keep in the profile."
+                                                description: "The secret info to keep in the profile."
                                             }
                                         }
                                     },
@@ -118,11 +118,15 @@ export const expectedSchemaObject = {
                                         properties: {
                                             info: {
                                                 type: "string",
-                                                description: "The info the keep in the profile."
+                                                description: "The info to keep in the profile."
                                             },
                                             secret: {
                                                 type: "string",
-                                                description: "The secret info the keep in the profile."
+                                                description: "The secret info to keep in the profile."
+                                            },
+                                            undefined: {
+                                                type: undefined as any,
+                                                description: "The undefined secret info to keep in the profile."
                                             },
                                             host: {
                                                 type: "string",
@@ -162,6 +166,7 @@ export const expectedSchemaObject = {
                                         items: {
                                             enum: [
                                                 "secret",
+                                                "undefined",
                                                 "user",
                                                 "password",
                                                 "tokenValue"
