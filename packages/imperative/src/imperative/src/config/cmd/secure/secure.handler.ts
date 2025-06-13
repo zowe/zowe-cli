@@ -108,7 +108,7 @@ export default class SecureHandler implements ICommandHandler {
                     );
                 }
             } else {
-                let propValue = await params.response.console.prompt(
+                propValue = await params.response.console.prompt(
                     `Enter ${propName} ${ConfigConstants.SKIP_PROMPT}`,
                     { hideText: true }
                 );
