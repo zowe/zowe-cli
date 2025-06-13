@@ -655,7 +655,7 @@ describe("Configuration Secure command handler", () => {
 
             // Create another base profile and mock the loggers to test multiple login operations in a single config-secure
             eco.profiles["base2"] = baseProfile;
-            const dummyLogger: any = { debug: jest.fn(), info: jest.fn() };
+            const dummyLogger: any = { debug: jest.fn(), info: jest.fn(), trace: jest.fn() };
             jest.spyOn(Logger, "getImperativeLogger").mockReturnValue(
                 dummyLogger
             );

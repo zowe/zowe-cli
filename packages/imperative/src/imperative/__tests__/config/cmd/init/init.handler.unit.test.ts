@@ -473,7 +473,7 @@ describe("Configuration Initialization command handler", () => {
         expect(writeFileSyncSpy).toHaveBeenNthCalledWith(2, fakeProjPath, JSON.stringify(compObj, null, ConfigConstants.INDENT));
 
         // Secure value supplied during prompting should be on properties
-        expect(ImperativeConfig.instance.config.properties.profiles[baseProfName].properties.secret).toEqual(true);
+        expect(ImperativeConfig.instance.config.properties.profiles[baseProfName].properties.secret).toEqual("true");
     });
 
     it("should attempt to initialize the project configuration and use boolean false for the prompt", async () => {
@@ -518,7 +518,7 @@ describe("Configuration Initialization command handler", () => {
         expect(writeFileSyncSpy).toHaveBeenNthCalledWith(2, fakeProjPath, JSON.stringify(compObj, null, ConfigConstants.INDENT));
 
         // Secure value supplied during prompting should be on properties
-        expect(ImperativeConfig.instance.config.properties.profiles[baseProfName].properties.secret).toEqual(false);
+        expect(ImperativeConfig.instance.config.properties.profiles[baseProfName].properties.secret).toEqual("false");
     });
 
     it("should attempt to initialize the project configuration and use a number for the prompt", async () => {
@@ -540,7 +540,6 @@ describe("Configuration Initialization command handler", () => {
 
         // initWithSchema
         const randomValueString = "9001";
-        const randomValueNumber = parseInt(randomValueString, 10);
         const readPromptSpy = jest.fn(() => randomValueString);
         (params.response.console as any).prompt = readPromptSpy;
         writeFileSyncSpy.mockImplementation(); // Don't actually write files
@@ -565,7 +564,7 @@ describe("Configuration Initialization command handler", () => {
         expect(writeFileSyncSpy).toHaveBeenNthCalledWith(2, fakeProjPath, JSON.stringify(compObj, null, ConfigConstants.INDENT));
 
         // Secure value supplied during prompting should be on properties
-        expect(ImperativeConfig.instance.config.properties.profiles[baseProfName].properties.secret).toEqual(randomValueNumber);
+        expect(ImperativeConfig.instance.config.properties.profiles[baseProfName].properties.secret).toEqual(randomValueString);
     });
 
     it("should attempt to initialize the project configuration and handle getting nothing from the prompt", async () => {

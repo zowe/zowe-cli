@@ -164,7 +164,6 @@ export class ConfigSecure extends ConfigApi {
                 if (value == null) break;
                 if (x === segments.length - 1) {
                     sp[path] = value;
-                    // sp[path] = path.endsWith("password") || path.endsWith("user") ? value.toString() : value;
                     if (opts?.properties != null) {
                         delete obj[segment];
                     }
