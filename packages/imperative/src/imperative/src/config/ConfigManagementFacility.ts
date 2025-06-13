@@ -11,7 +11,6 @@
 
 import { UpdateImpConfig } from "../UpdateImpConfig";
 import { Logger } from "../../../logger";
-import { buildDefinition } from "./cmd/build/build.definition";
 import { listDefinition } from "./cmd/list/list.definition";
 import { initDefinition } from "./cmd/init/init.definition";
 import { schemaDefinition } from "./cmd/schema/schema.definition";
@@ -66,7 +65,6 @@ export class ConfigManagementFacility {
             description: "Manage JSON project and global configuration.",
             children: [
                 listDefinition,
-                buildDefinition,
                 secureDefinition,
                 setDefinition,
                 initDefinition,
