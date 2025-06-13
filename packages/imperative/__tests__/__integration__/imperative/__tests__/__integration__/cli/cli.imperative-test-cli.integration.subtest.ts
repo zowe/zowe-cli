@@ -16,6 +16,7 @@
 describe("Imperative Test CLI Secure Tests", () => {
     // require("./auth/imperative.test.cli.auth.login.fruit.integration.subtest");
     // require("./auth/imperative.test.cli.auth.logout.fruit.integration.subtest");
+
     require("./config/auto-init/imperative.test.cli.config.auto-init.fruit.integration.subtest");
     require("./config/convert-profiles/cli.imperative-test-cli.config.convert-profiles.integration.subtest");
     require("./config/edit/cli.imperative-test-cli.config.edit.integration.subtest");

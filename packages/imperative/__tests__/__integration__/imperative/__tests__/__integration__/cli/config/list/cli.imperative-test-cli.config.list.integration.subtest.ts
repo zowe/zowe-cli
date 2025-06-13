@@ -76,12 +76,12 @@ describe("imperative-test-cli config list", () => {
                     project_base: {
                         type: "base",
                         properties: {},
-                        secure: ["secret"]
+                        secure: ["secret", "undefined"]
                     },
                     global_base: {
                         properties: {},
                         type: "base",
-                        secure: ["secret"]
+                        secure: ["secret", "undefined"]
                     },
                     secured: {
                         type: "secured",

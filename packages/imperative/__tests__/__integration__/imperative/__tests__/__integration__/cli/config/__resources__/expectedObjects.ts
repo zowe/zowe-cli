@@ -214,7 +214,7 @@ export const expectedGlobalConfigObject: IConfig = {
         global_base: {
             type: "base",
             properties: {},
-            secure: ["secret"]
+            secure: ["secret", "undefined"]
         },
     },
     defaults: {
@@ -235,7 +235,7 @@ export const expectedGlobalUserConfigObject: IConfig = {
         global_base: {
             type: "base",
             properties: {},
-            secure: ["secret"]
+            secure: ["secret", "undefined"]
         },
     },
     defaults: {},
@@ -255,7 +255,7 @@ export const expectedProjectConfigObject: IConfig = {
         project_base: {
             type: "base",
             properties: {},
-            secure: ["secret"]
+            secure: ["secret", "undefined"]
         },
     },
     defaults: {
@@ -276,7 +276,7 @@ export const expectedProjectUserConfigObject: IConfig = {
         project_base: {
             type: "base",
             properties: {},
-            secure: ["secret"]
+            secure: ["secret", "undefined"]
         }
     },
     defaults: {},

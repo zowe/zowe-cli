@@ -196,6 +196,7 @@ describe("Configuration Secure command handler", () => {
         delete fakeSecureDataExpectedJson[fakeProjPath];
         fakeSecureDataExpectedJson[fakeProjPath] = {
             "profiles.project_base.properties.secret": "fakePromptingData",
+            "profiles.project_base.properties.undefined": "fakePromptingData",
         };
         const fakeSecureDataExpected = Buffer.from(
             JSON.stringify(fakeSecureDataExpectedJson)
@@ -206,6 +207,7 @@ describe("Configuration Secure command handler", () => {
         compObj.$schema = "./fakeapp.schema.json"; // Fill in the name of the schema file, and make it first
         lodash.merge(compObj, ImperativeConfig.instance.config.properties); // Add the properties from the config
         delete compObj.profiles.project_base.properties.secret; // Delete the secret
+        delete compObj.profiles.project_base.properties.undefined; // Delete the undefined secret
 
         if (process.platform === "win32") {
             expect(keytarDeletePasswordSpy).toHaveBeenCalledTimes(4);
@@ -267,6 +269,7 @@ describe("Configuration Secure command handler", () => {
             lodash.cloneDeep(fakeSecureDataJson);
         fakeSecureDataExpectedJson[fakeProjUserPath] = {
             "profiles.project_base.properties.secret": "fakePromptingData",
+            "profiles.project_base.properties.undefined": "fakePromptingData",
         };
         const fakeSecureDataExpected = Buffer.from(
             JSON.stringify(fakeSecureDataExpectedJson)
@@ -277,6 +280,7 @@ describe("Configuration Secure command handler", () => {
         compObj.$schema = "./fakeapp.schema.json"; // Fill in the name of the schema file, and make it first
         lodash.merge(compObj, ImperativeConfig.instance.config.properties); // Add the properties from the config
         delete compObj.profiles.project_base.properties.secret; // Delete the secret
+        delete compObj.profiles.project_base.properties.undefined; // Delete the undefined secret
 
         if (process.platform === "win32") {
             expect(keytarDeletePasswordSpy).toHaveBeenCalledTimes(4);
@@ -344,6 +348,7 @@ describe("Configuration Secure command handler", () => {
         delete fakeSecureDataExpectedJson[fakeGblProjPath];
         fakeSecureDataExpectedJson[fakeGblProjPath] = {
             "profiles.global_base.properties.secret": "fakePromptingData",
+            "profiles.global_base.properties.undefined": "fakePromptingData",
         };
         const fakeSecureDataExpected = Buffer.from(
             JSON.stringify(fakeSecureDataExpectedJson)
@@ -354,6 +359,7 @@ describe("Configuration Secure command handler", () => {
         compObj.$schema = "./fakeapp.schema.json"; // Fill in the name of the schema file, and make it first
         lodash.merge(compObj, ImperativeConfig.instance.config.properties); // Add the properties from the config
         delete compObj.profiles.global_base.properties.secret; // Delete the secret
+        delete compObj.profiles.global_base.properties.undefined; // Delete the undefined secret
 
         if (process.platform === "win32") {
             expect(keytarDeletePasswordSpy).toHaveBeenCalledTimes(4);
@@ -420,6 +426,7 @@ describe("Configuration Secure command handler", () => {
         delete fakeSecureDataExpectedJson[fakeGblProjUserPath];
         fakeSecureDataExpectedJson[fakeGblProjUserPath] = {
             "profiles.global_base.properties.secret": "fakePromptingData",
+            "profiles.global_base.properties.undefined": "fakePromptingData",
         };
         const fakeSecureDataExpected = Buffer.from(
             JSON.stringify(fakeSecureDataExpectedJson)
@@ -430,6 +437,7 @@ describe("Configuration Secure command handler", () => {
         compObj.$schema = "./fakeapp.schema.json"; // Fill in the name of the schema file, and make it first
         lodash.merge(compObj, ImperativeConfig.instance.config.properties); // Add the properties from the config
         delete compObj.profiles.global_base.properties.secret; // Delete the secret
+        delete compObj.profiles.global_base.properties.undefined; // Delete the undefined secret
 
         if (process.platform === "win32") {
             expect(keytarDeletePasswordSpy).toHaveBeenCalledTimes(4);
@@ -543,6 +551,7 @@ describe("Configuration Secure command handler", () => {
         const fakeSecureDataExpectedJson: { [key: string]: any } = {
             [fakeProjPath]: {
                 "profiles.project_base.properties.secret": "fakePromptingData",
+                "profiles.project_base.properties.undefined": "fakePromptingData",
             },
         };
         const fakeSecureDataExpected = Buffer.from(
@@ -554,6 +563,7 @@ describe("Configuration Secure command handler", () => {
         compObj.$schema = "./fakeapp.schema.json"; // Fill in the name of the schema file, and make it first
         lodash.merge(compObj, ImperativeConfig.instance.config.properties); // Add the properties from the config
         delete compObj.profiles.project_base.properties.secret; // Delete the secret
+        delete compObj.profiles.project_base.properties.undefined; // Delete the undefined secret
 
         if (process.platform === "win32") {
             expect(keytarDeletePasswordSpy).toHaveBeenCalledTimes(8);
