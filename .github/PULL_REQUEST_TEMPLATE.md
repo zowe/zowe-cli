@@ -6,9 +6,10 @@
 
 **Review Checklist**
 I certify that I have:
-- [ ] tested my changes
-- [ ] added/updated automated tests
 - [ ] updated the changelog
+- [ ] manually tested my changes
+- [ ] added/updated automated unit/integration tests
+- [ ] created/ran system tests (provide build number)
 - [ ] followed the [contribution guidelines](https://github.com/zowe/zowe-cli/blob/master/CONTRIBUTING.md)
 
 
