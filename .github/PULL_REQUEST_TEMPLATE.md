@@ -9,7 +9,7 @@ I certify that I have:
 - [ ] updated the changelog
 - [ ] manually tested my changes
 - [ ] added/updated automated unit/integration tests
-- [ ] created/ran system tests (provide build number)
+- [ ] created/ran system tests (provide build number if applicable)
 - [ ] followed the [contribution guidelines](https://github.com/zowe/zowe-cli/blob/master/CONTRIBUTING.md)
 
 
