@@ -4,7 +4,7 @@ All notable changes to the Imperative package will be documented in this file.
 
 ## Recent Changes
 
-- BugFix: Fixed an issue with the `zowe config` commands, ensuring correct user input handling. [#2519](https://github.com/zowe/zowe-cli/issues/2519)
+- BugFix: Fixed an issue with the `zowe config` commands to ensure correct user input handling. [#2519](https://github.com/zowe/zowe-cli/issues/2519)
 
 ## `8.23.1`
 
