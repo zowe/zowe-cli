@@ -13,8 +13,9 @@ const command = '$command'.trim().split(' ');
 const child = cp.spawn(command.shift(), command, { stdio: "pipe" });
 const values = "$values".split(',');
 child.stdout.on('data', (data) => {
+  console.log(data.toString());
   if (data.toString().includes("Press ENTER to skip:") || data.toString().includes("(will be hidden):")) {
-    child.stdin.write(values.shift() + '\r');
+    child.stdin.write(values.shift() + '\n');
     if (values.length === 0) {
       child.stdin.end();
     }
