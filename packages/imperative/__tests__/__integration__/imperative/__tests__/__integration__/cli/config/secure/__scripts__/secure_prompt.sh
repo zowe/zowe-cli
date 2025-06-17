@@ -4,13 +4,23 @@ FORCE_COLOR=0
 
 mkdir -p test
 cd test
-value1="anotherFakeValue"
-value2="undefined"
-expect -c "
-        spawn imperative-test-cli config secure $1
-        expect "?:"
-        send \"$value1\r\"
-        expect "?:"
-        send \"$value2\r\"
-        expect eof"
+values=${IMPERATIVE_TEST_CLI_SECURE_VALUES:-"anotherFakeValue,undefined"}
+command="imperative-test-cli config secure $1"
+
+cat > node_script.js <<EOF
+const cp = require('child_process');
+const command = '$command'.trim().split(' ');
+const child = cp.spawn(command.shift(), command, { stdio: "pipe" });
+const values = "$values".split(',');
+child.stdout.on('data', (data) => {
+  if (data.toString().includes("Press ENTER to skip:") || data.toString().includes("(will be hidden):")) {
+    child.stdin.write(values.shift() + '\r');
+    if (values.length === 0) {
+      child.stdin.end();
+    }
+  }
+});
+EOF
+
+node node_script.js
 exit $?

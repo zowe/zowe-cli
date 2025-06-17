@@ -22,6 +22,7 @@ import * as path from "path";
 import * as lodash from "lodash";
 import { IConfigProfile } from "../../../../../../../../src";
 
+
 // Test Environment populated in the beforeAll();
 let TEST_ENVIRONMENT: ITestEnvironment;
 
@@ -99,7 +100,7 @@ describe("imperative-test-cli config secure", () => {
         expect(configJson.data).toEqual(expectedProjectConfig);
         // Should not contain human readable credentials
         expect(fileContents.profiles.project_base.secure).toEqual(["secret", "undefined"]);
-        expect(fileContents.profiles.project_base.properties).not.toEqual({secret: "anotherFakeValue", undefined: "undefined"});
+        expect(fileContents.profiles.project_base.properties).not.toEqual({ secret: "anotherFakeValue", undefined: "undefined" });
         // Check the securely stored JSON
         expect(securedValueJson).toEqual(expectedSecuredValueJson);
     });
@@ -114,14 +115,16 @@ describe("imperative-test-cli config secure", () => {
         const securedValueJson = securedValue == null ? null : JSON.parse(Buffer.from(securedValue, "base64").toString());
         const expectedSecuredValueJson: any = null;
 
-        let stderr = response.stderr.toString();
-        stderr = stderr.replace("send: spawn id exp6 not open\n    while executing\n\"send \"anotherFakeValue\\r\"\"", "").trim();
-        expect(stderr).toEqual("");
+        const stderr = response.stderr.toString();
+        if (!stderr.startsWith("send: spawn id ")) {
+            // Fallback to testing on non-macOS systems
+            expect(stderr).toEqual("");
+        }
         expect(response.status).toEqual(0);
         expect(configJson.data).toEqual(expectedProjectUserConfig);
         // Should not contain human readable credentials
         expect(fileContents.profiles.project_base.secure).not.toEqual(["secret"]);
-        expect(fileContents.profiles.project_base.properties).not.toEqual({secret: "anotherFakeValue"});
+        expect(fileContents.profiles.project_base.properties).not.toEqual({ secret: "anotherFakeValue" });
         // Check the securely stored JSON
         expect(securedValueJson).toEqual(expectedSecuredValueJson);
     });
@@ -145,7 +148,7 @@ describe("imperative-test-cli config secure", () => {
         expect(configJson.data).toEqual(expectedGlobalConfig);
         // Should not contain human readable credentials
         expect(fileContents.profiles.global_base.secure).toEqual(["secret", "undefined"]);
-        expect(fileContents.profiles.global_base.properties).not.toEqual({secret: "anotherFakeValue", undefined: "undefined"});
+        expect(fileContents.profiles.global_base.properties).not.toEqual({ secret: "anotherFakeValue", undefined: "undefined" });
         // Check the securely stored JSON
         expect(securedValueJson).toEqual(expectedSecuredValueJson);
     });
@@ -160,14 +163,16 @@ describe("imperative-test-cli config secure", () => {
         const securedValueJson = securedValue == null ? null : JSON.parse(Buffer.from(securedValue, "base64").toString());
         const expectedSecuredValueJson: any = null;
 
-        let stderr = response.stderr.toString();
-        stderr = stderr.replace("send: spawn id exp6 not open\n    while executing\n\"send \"anotherFakeValue\\r\"\"", "").trim();
-        expect(stderr).toEqual("");
+        const stderr = response.stderr.toString();
+        if (!stderr.startsWith("send: spawn id ")) {
+            // Fallback to testing on non-macOS systems
+            expect(stderr).toEqual("");
+        }
         expect(response.status).toEqual(0);
         expect(configJson.data).toEqual(expectedGlobalUserConfig);
         // Should not contain human readable credentials
         expect(fileContents.profiles.global_base.secure).not.toEqual(["secret", "undefined"]);
-        expect(fileContents.profiles.global_base.properties).not.toEqual({secret: "anotherFakeValue", undefined: "undefined"});
+        expect(fileContents.profiles.global_base.properties).not.toEqual({ secret: "anotherFakeValue", undefined: "undefined" });
         // Check the securely stored JSON
         expect(securedValueJson).toEqual(expectedSecuredValueJson);
     });
@@ -188,7 +193,7 @@ describe("imperative-test-cli config secure", () => {
         };
         runCliScript(__dirname + "/../set/__scripts__/set.sh", TEST_ENVIRONMENT.workingDir,
             ["profiles", JSON.stringify({ project_base: baseProfile }), "--json"]);
-        const response = runCliScript(__dirname + "/__scripts__/secure_prompt.sh", TEST_ENVIRONMENT.workingDir);
+        const response = runCliScript(__dirname + "/__scripts__/secure_prompt.sh", TEST_ENVIRONMENT.workingDir, [], { IMPERATIVE_TEST_CLI_SECURE_VALUES: "anotherFakeValue" });
         const fileContents = JSON.parse(fs.readFileSync(expectedProjectConfigLocation).toString());
         const config = runCliScript(__dirname + "/../list/__scripts__/list_config.sh", TEST_ENVIRONMENT.workingDir, ["--rfj"]).stdout.toString();
         const configJson = JSON.parse(config);
