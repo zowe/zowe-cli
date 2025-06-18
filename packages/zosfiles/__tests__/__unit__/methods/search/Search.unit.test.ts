@@ -177,9 +177,7 @@ describe("Search", () => {
             listDataSetsMatchingPatternSpy.mockImplementation(async (_session, patterns, options) => {
                 const responses: Partial<IZosmfListResponse>[] = [];
                 if (options.maxLength) {
-                    for (const pattern of patterns) {
-                        responses.push(generateDS(pattern, true));
-                    }
+                    responses.push(generateDS("TEST3.PDS", true));
                 }
                 else {
                     responses.push(generateDS("TEST1.DS", false));
@@ -266,7 +264,7 @@ describe("Search", () => {
                 expectedLine + ", Column: " + expectedCol + ", Contents: " + testDataString);
         });
 
-        it("Should search for a specific data set containing a word", async () => {
+        it("Should search for a specific data set containing a word 1", async () => {
             searchOptions.searchExactName = true;
             searchOptions.pattern = "TEST3.PDS";
             const response = await Search.dataSets(dummySession, searchOptions);
@@ -305,6 +303,37 @@ describe("Search", () => {
             expect(response.commandResponse).toContain("Data Set \"TEST3.PDS\" | Member \"MEMBER2\":\nLine: " +
                 expectedLine + ", Column: " + expectedCol + ", Contents: " + testDataString);
             expect(response.commandResponse).toContain("Data Set \"TEST3.PDS\" | Member \"MEMBER3\":\nLine: " +
+                expectedLine + ", Column: " + expectedCol + ", Contents: " + testDataString);
+        });
+
+        it("Should search for a specific data set containing a word 2", async () => {
+            searchOptions.searchExactName = true;
+            searchOptions.pattern = "TEST*.PDS";
+            const response = await Search.dataSets(dummySession, searchOptions);
+
+            expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledTimes(1);
+            expect(listDataSetsMatchingPatternSpy).toHaveBeenCalledWith(dummySession, ["TEST*.PDS"], {
+                attributes: true,
+                maxConcurrentRequests: 1,
+                maxLength: 1
+            });
+            expect(listAllMembersSpy).toHaveBeenCalledTimes(0);
+            expect(searchOnMainframeSpy).toHaveBeenCalledTimes(1);
+            expect(searchLocalSpy).toHaveBeenCalledTimes(1);
+
+            expect(response.errorMessage).not.toBeDefined();
+            expect(response.success).toEqual(true);
+            expect(response.apiResponse).toEqual([]);
+            expect(response.commandResponse).toContain("Found \"TESTDATA\" in 0 data sets and PDS members");
+            expect(response.commandResponse).not.toContain("Data Set \"TEST1.DS\":\nLine: " +
+                expectedLine + ", Column: " + expectedCol + ", Contents: " + testDataString);
+            expect(response.commandResponse).not.toContain("Data Set \"TEST2.DS\":\nLine: " +
+                expectedLine + ", Column: " + expectedCol + ", Contents: " + testDataString);
+            expect(response.commandResponse).not.toContain("Data Set \"TEST3.PDS\" | Member \"MEMBER1\":\nLine: " +
+                expectedLine + ", Column: " + expectedCol + ", Contents: " + testDataString);
+            expect(response.commandResponse).not.toContain("Data Set \"TEST3.PDS\" | Member \"MEMBER2\":\nLine: " +
+                expectedLine + ", Column: " + expectedCol + ", Contents: " + testDataString);
+            expect(response.commandResponse).not.toContain("Data Set \"TEST3.PDS\" | Member \"MEMBER3\":\nLine: " +
                 expectedLine + ", Column: " + expectedCol + ", Contents: " + testDataString);
         });
 

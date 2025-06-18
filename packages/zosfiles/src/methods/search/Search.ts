@@ -87,10 +87,13 @@ export class Search {
             for (const resp of response.apiResponse) {
                 // Skip anything that doesn't have a DSORG or is migrated
                 if (resp.dsorg && !(resp.migr && resp.migr.toLowerCase() === "yes")) {
-                    if (resp.dsorg === "PS") {                                      // Sequential
-                        searchItemsQueue.push({dsn: resp.dsname});
-                    } else if (resp.dsorg.startsWith("PO")) {      // Partitioned
-                        partitionedDataSets.push(resp.dsname);
+                    // If we are looking for an exact name, ensure the name matches
+                    if (!searchOptions.searchExactName || resp.dsname == searchOptions.pattern.toUpperCase()) {
+                        if (resp.dsorg === "PS") {                                      // Sequential
+                            searchItemsQueue.push({dsn: resp.dsname});
+                        } else if (resp.dsorg.startsWith("PO")) {      // Partitioned
+                            partitionedDataSets.push(resp.dsname);
+                        }
                     }
                 }
             }
