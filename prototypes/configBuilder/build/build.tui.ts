@@ -330,16 +330,16 @@ export async function runTerminalKitTui() {
         // Property selection mode
         if (showPropertyEdit) {
             let target: any = null;
-            let type: string | undefined = undefined;
+            let type: string = "base"; //exec decision to use base as starting point
             if (profileIndex !== null && lparIdx !== null) {
                 target = sysplexes[sysIdx].lpars[lparIdx].profiles[profileIndex];
                 type = target.profileType || target.type;
             } else if (lparIdx !== null) {
                 target = sysplexes[sysIdx].lpars[lparIdx];
-                type = "base"; //executive decision to treat LPAR level as base profiles
+                // type = "base"; //executive decision to treat LPAR level as base profiles
             } else if (sysplexes[sysIdx]) {
                 target = sysplexes[sysIdx];
-                type = "base"; // executive decision to treat sysplex level as base profiles
+                // type = "base"; // executive decision to treat sysplex level as base profiles
             }
             const allProps = getProfileProperties(type);
 
@@ -517,7 +517,8 @@ async function saveConfigToTestFile() {
     if (!fs.existsSync(zoweDir)) {
         fs.mkdirSync(zoweDir, { recursive: true });
     }
-    fs.writeFileSync(outPath, JSON.stringify(config, null, 4), "utf8");
+    const jsonSpacing = 4; // Use 4 spaces for indentation
+    fs.writeFileSync(outPath, JSON.stringify(config, null, jsonSpacing), "utf8");
 }
 
 // Loop to edit property values for a specific target (sysplex, LPAR, or profile)
