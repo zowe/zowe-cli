@@ -1,8 +1,24 @@
 To continue development on this project:
 
 1. Move the `build` folder into
-   `src/imperative/src/config/cmd<instert /build folder and contents here>`
+   `packages/imperative/src/imperative/src/config/cmd`
+   with the following command:
 
-2. Replace the current `ConfigManagementFacility.ts` in `src/imperative/src/config` with the version found here.
+   ```
+   cp -R prototypes/configBuilder/build packages/imperative/src/imperative/src/config/cmd
+   ```
 
-3. Make sure you do an `npm install` followed by `npm run build` once you move everything over.
+2. Replace `ConfigManagementFacility.ts` with the version found here with the commands:
+
+   ```
+   rm packages/imperative/src/imperative/src/config/ConfigManagementFacility.ts
+   cp prototypes/configBuilder/ConfigManagementFacility.ts packages/imperative/src/imperative/src/config/ConfigManagementFacility.ts
+   ```
+
+3. Add the `terminal-kit` dependency:
+
+   ```
+   cd packages/imperative && npm install --save terminal-kit && npm install --save-dev @types/terminal-kit && cd ../..
+   ```
+
+4. Make sure you do an `npm install` followed by `npm run build` once you move everything over.
