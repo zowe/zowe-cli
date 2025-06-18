@@ -643,6 +643,7 @@ export default {
                 },
                 OPTIONS: {
                     CASESENSITIVE: "The search should be case sensitive",
+                    SEARCHEXACTNAME: "The search pattern must exactly match the data set name.",
                     MAINFRAMESEARCH: "Perform a preliminary search on the mainframe, reducing network traffic. However, this option " +
                     "does not work with data sets that contain binary data. This option should be omitted if any data sets may be in " +
                     "binary format. Failure to do so may result in an incomplete set of search results.",

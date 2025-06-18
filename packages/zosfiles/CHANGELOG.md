@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Added an optional `searchExactName` option to the `ISearchOptions` interface to search the contents of one data set or PDS. [#2529](https://github.com/zowe/zowe-cli/pull/2529)
+
 ## `8.23.0`
 
 - Enhancement: Added support for the `IDownloadOptions.extensionMap` property to the `Download.allMembers` method to allow for specifying the file extension for each downloaded member. [#2507](https://github.com/zowe/zowe-cli/pull/2507)
