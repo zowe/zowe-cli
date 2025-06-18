@@ -10,7 +10,7 @@ command="imperative-test-cli config init $1"
 cat > node_script.js <<EOF
 const cp = require('child_process');
 const os = require('os');
-const command = '$command'.trim().split(' ');
+const command = \`\${process.platform === "win32" ? "sh" : ""} $command\`.trim().split(' ');
 const child = cp.spawn(command.shift(), command, { stdio: "pipe" });
 const values = "$values".split(',');
 child.stdout.on('data', (data) => {
