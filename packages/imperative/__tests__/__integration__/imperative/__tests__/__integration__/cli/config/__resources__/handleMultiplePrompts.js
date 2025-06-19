@@ -61,7 +61,9 @@ child.stdout.on('data', (data) => {
   /**
    * We still need to print the stdout to the console in order for the tests to pass
    */
-  console.log(data.toString());
+  process.stdout.write(data.toString() + os.EOL);
+  // Attempt using `process.stdout.write` instead
+  // console.log(data.toString());
 
   /**
    * If the output includes "Press ENTER to skip:" or "(will be hidden):",

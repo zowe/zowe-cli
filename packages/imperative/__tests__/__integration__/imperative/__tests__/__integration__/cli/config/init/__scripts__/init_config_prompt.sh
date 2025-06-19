@@ -12,7 +12,12 @@ values=${IMPERATIVE_TEST_CLI_SECURE_VALUES:-"fakeValue undefined"}
 # Command should be in the format "executable pos1 pos2 $1 $2 ..."
 command="imperative-test-cli config init $1"
 
+# Copy the handleMultiplePrompts.js script to the test directory
+# This will allow for easier debugging (if needed)
+handleMultiplePrompts=$(dirname $(readlink -f $0))/../../__resources__/handleMultiplePrompts.js
+cat $handleMultiplePrompts > node_script.js
+
 # Run the command using the handleMultiplePrompts.js script
-node $(dirname $(readlink -f $0))/../../__resources__/handleMultiplePrompts.js "$command" "$values"
+node node_script.js "$command" "$values"
 
 exit $?
