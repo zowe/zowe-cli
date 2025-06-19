@@ -10,8 +10,10 @@ command="imperative-test-cli config secure $1"
 cat > node_script.js <<EOF
 const cp = require('child_process');
 const os = require('os');
-const command = \`\${process.platform === "win32" ? "sh" : ""} $command\`.trim().split(' ');
-const child = cp.spawn(command.shift(), command, { stdio: "pipe" });
+const command = "$command".trim().split(' ');
+const testCliPath = cp.spawnSync(process.platform === 'win32' ? 'where' : 'which', [command[0]]).stdout.toString().trim();
+command[0] = testCliPath.length > 0 && !testCliPath.includes("not found") ? testCliPath : command[0];
+const child = cp.spawn(process.platform === 'win32' ? "sh" : command.shift(), command, { stdio: "pipe" });
 const values = "$values".split(',');
 child.stdout.on('data', (data) => {
   console.log(data.toString());
