@@ -1,30 +1,18 @@
 #!/bin/bash
-
 FORCE_COLOR=0
-
 mkdir -p test
 cd test
-values=${IMPERATIVE_TEST_CLI_SECURE_VALUES:-"anotherFakeValue,undefined"}
+
+# Values should be in the format "value1 value2"
+# From within a test file, you can influence how many values are provided to the prompts
+#     by setting the environment variable IMPERATIVE_TEST_CLI_SECURE_VALUES
+# See "cli.imperative-test-cli.config.secure.integration.subtest.ts" for an example
+values=${IMPERATIVE_TEST_CLI_SECURE_VALUES:-"anotherFakeValue undefined"}
+
+# Command should be in the format "executable pos1 pos2 $1 $2 ..."
 command="imperative-test-cli config secure $1"
 
-cat > node_script.js <<EOF
-const cp = require('child_process');
-const os = require('os');
-const command = "$command".trim().split(' ');
-const testCliPath = cp.spawnSync(process.platform === 'win32' ? 'where' : 'which', [command[0]]).stdout.toString().trim();
-command[0] = testCliPath.length > 0 && !testCliPath.includes("not found") ? testCliPath : command[0];
-const child = cp.spawn(process.platform === 'win32' ? "sh" : command.shift(), command, { stdio: "pipe" });
-const values = "$values".split(',');
-child.stdout.on('data', (data) => {
-  console.log(data.toString());
-  if (data.toString().includes("Press ENTER to skip:") || data.toString().includes("(will be hidden):")) {
-    child.stdin.write(values.shift() + os.EOL);
-    if (values.length === 0) {
-      child.stdin.end();
-    }
-  }
-});
-EOF
+# Run the command using the handleMultiplePrompts.js script
+node $(dirname $(readlink -f $0))/../../__resources__/handleMultiplePrompts.js "$command" "$values"
 
-node node_script.js
 exit $?
