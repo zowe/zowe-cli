@@ -169,6 +169,32 @@ describe("all tests", () => {
             expect(error).toBeDefined();
             expect(error.message).toBe("TSO address space failed to start.");
         });
+        // it("throws ImperativeError with IKJ56482I in messages", async () => {
+        //     const startMessage = "IKJ56482I THE PROCEDURE NAME BADPROC HAS NOT BEEN DEFINED FOR USE";
+        //     let response: ISendResponse;
+        //     let error: ImperativeError;
+        //     jest.spyOn(StartTso, "start").mockResolvedValueOnce({
+        //         success: true,
+        //         startResponse: {
+        //             messages: startMessage
+        //         },
+
+        //     } as any);
+
+        //     try {
+        //         response = await IssueTso.issueTsoCommand(
+        //             PRETEND_SESSION,
+        //             "acc",
+        //             "command"
+        //         );
+        //     } catch (thrownError) {
+        //         error = thrownError;
+        //     }
+
+        //     expect(response).not.toBeDefined();
+        //     expect(error).toBeDefined();
+        //     expect(error.message).toBe("Invalid logon procedure.");
+        // });
     });
 
     describe("TsoIssue issueTsoCommand - Deprecated API", () => {
