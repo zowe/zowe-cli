@@ -37,9 +37,8 @@ const values = process.argv[3].trim().split(' ');
 /**
  * Get the full path of the test CLI
  * This is platform dependent since `which` is not available on Windows
- * 
  */
-const testCliPath = cp.spawnSync(process.platform === 'win32' ? 'where' : 'which', [command[0]]).stdout.toString().trim();
+const testCliPath = cp.spawnSync(process.platform === 'win32' ? 'where' : 'which', [command[0]]).stdout.toString().split(os.EOL)[0].trim();
 
 /**
  * Process the output of the which/where command above
@@ -52,7 +51,11 @@ command[0] = testCliPath.length > 0 && !testCliPath.includes("not found") ? test
  * This is also platform dependent since Windows need an interpreter to run the test-cli executable script
  * For other platforms, the script is run directly (by shifting the test-cli out of the command array)
  */
-const child = cp.spawn(process.platform === 'win32' ? "sh" : command.shift(), command, { stdio: "pipe" });
+const child = cp.fork(process.platform === 'win32' ? "sh" : command.shift(), command, { stdio: "pipe" });
+
+// process.on("message", (msg) => {
+//   process.stdout.write(msg + os.EOL);
+// });
 
 /**
  * Process the output of the child process
@@ -61,9 +64,9 @@ child.stdout.on('data', (data) => {
   /**
    * We still need to print the stdout to the console in order for the tests to pass
    */
-  process.stdout.write(data.toString() + os.EOL);
-  // Attempt using `process.stdout.write` instead
   // console.log(data.toString());
+  process.stdout.write(data.toString() + os.EOL);
+  // child.send(data.toString());
 
   /**
    * If the output includes "Press ENTER to skip:" or "(will be hidden):",
