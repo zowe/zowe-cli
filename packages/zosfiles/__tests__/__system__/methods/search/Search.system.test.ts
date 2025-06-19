@@ -106,7 +106,8 @@ describe("Search", () => {
                 progressTask: undefined,
                 maxConcurrentRequests: undefined,
                 timeout: undefined,
-                abortSearch: undefined
+                abortSearch: undefined,
+                searchExactName: undefined,
             };
 
             expectedApiResponse = [
@@ -120,6 +121,30 @@ describe("Search", () => {
             ];
 
             jest.restoreAllMocks();
+        });
+
+        it("should search and find the correct single data set", async () => {
+            searchOptions.pattern = dsnPrefix + ".PDS1";
+            searchOptions.searchExactName = true;
+            const response = await Search.dataSets(REAL_SESSION, searchOptions);
+
+            expect(response.errorMessage).not.toBeDefined();
+            expect(response.success).toBe(true);
+            expect(response.commandResponse).toContain(`Found "${searchString}" in 2 data sets and PDS members`);
+            expect(response.commandResponse).toContain(`Data Set "${dsnPrefix}.PDS1" | Member "MEM2":`);
+            expect(response.commandResponse).toContain(`Data Set "${dsnPrefix}.PDS1" | Member "MEM3":`);
+            expect(response.commandResponse).not.toContain(`Data Set "${dsnPrefix}.PDS2" | Member "MEM2":`);
+            expect(response.commandResponse).not.toContain(`Data Set "${dsnPrefix}.PDS2" | Member "MEM3":`);
+            expect(response.commandResponse).not.toContain(`Data Set "${dsnPrefix}.SEQ1":`);
+            expect(response.commandResponse).not.toContain(`Data Set "${dsnPrefix}.SEQ4":`);
+            expect(response.commandResponse).not.toContain(`Data Set "${dsnPrefix}.SEQ5":`);
+            expect(response.commandResponse).toContain(`Line: 1, Column: 39, Contents: ${goodTestString}`);
+
+            expectedApiResponse = [
+                {dsn: `${dsnPrefix}.PDS1`, member: "MEM2", matchList: [{line: 1, column: 39, contents: goodTestString, length: 8}]},
+                {dsn: `${dsnPrefix}.PDS1`, member: "MEM3", matchList: [{line: 1, column: 39, contents: goodTestString, length: 8}]},
+            ];
+            expect(response.apiResponse).toEqual(expectedApiResponse);
         });
 
         it("should search and find the correct data sets", async () => {
