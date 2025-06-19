@@ -11,14 +11,14 @@
 
 /**
  * This file is used to handle multiple prompts interactively
- * 
+ *
  * For example: `zowe config init` may prompt for host, user, password, etc.
  *    You can call this script with the command and values to provide as input
- * 
+ *
  * `node /path/to/handleMultiplePrompts.js "$command" "$values"`
  * `node /path/to/handleMultiplePrompts.js "zowe config init" "localhost myUser p@ssw0rd"`
- * 
- * Note: 
+ *
+ * Note:
  *    The command and values should be space separated
  */
 
@@ -38,7 +38,38 @@ const values = process.argv[3].trim().split(' ');
  * Get the full path of the test CLI
  * This is platform dependent since `which` is not available on Windows
  */
-const testCliPath = cp.spawnSync(process.platform === 'win32' ? 'where' : 'which', [command[0]]).stdout.toString().split(os.EOL)[0].trim();
+let testCliPath;
+if(process.platform === 'win32') {
+    testCliPath = cp.spawnSync('where', [command[0]]).stdout.toString().split(os.EOL);
+
+    // The Windows 'where' command can report all of: a linux-like shell script, a CMD script, and a Powershell script
+    let shellScriptPath = "";
+    for (nextPath of testCliPath) {
+        if (!nextPath.endsWith(".cmd") && !nextPath.endsWith(".ps1")) {
+            shellScriptPath = nextPath;
+            break;
+        }
+    }
+    if (shellScriptPath.length === 0) {
+        throw Error(`Unable to find a shell-script-style full path for '${command[0]}'`);
+    }
+
+    // Even for the shell script path, the 'where' command returns a Windows-style file path.
+    // Replace backslashes with forward slashes.
+    testCliPath = shellScriptPath;
+    const path = require('path');
+    testCliPath = testCliPath.replaceAll(path.win32.sep, path.posix.sep);
+
+    // replace drive letter with GitBash-style top-level directory
+    const driveRegEx = /^.:/;
+    if (testCliPath.match(driveRegEx)) {
+        lowerDriveLetter = testCliPath[0].toLowerCase();
+        testCliPath = testCliPath.replace(driveRegEx, path.posix.sep + lowerDriveLetter);
+    }
+} else {
+    // Linux & Mac are much simpler
+    testCliPath = cp.spawnSync('which', [command[0]]).stdout.toString().split(os.EOL)[0].trim();
+}
 
 /**
  * Process the output of the which/where command above
@@ -51,11 +82,7 @@ command[0] = testCliPath.length > 0 && !testCliPath.includes("not found") ? test
  * This is also platform dependent since Windows need an interpreter to run the test-cli executable script
  * For other platforms, the script is run directly (by shifting the test-cli out of the command array)
  */
-const child = cp.fork(process.platform === 'win32' ? "sh" : command.shift(), command, { stdio: "pipe" });
-
-// process.on("message", (msg) => {
-//   process.stdout.write(msg + os.EOL);
-// });
+const child = cp.spawn(process.platform === 'win32' ? "sh" : command.shift(), command, { stdio: "pipe" });
 
 /**
  * Process the output of the child process
