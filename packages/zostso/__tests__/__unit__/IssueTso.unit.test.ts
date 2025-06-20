@@ -169,32 +169,45 @@ describe("all tests", () => {
             expect(error).toBeDefined();
             expect(error.message).toBe("TSO address space failed to start.");
         });
-        // it("throws ImperativeError with IKJ56482I in messages", async () => {
-        //     const startMessage = "IKJ56482I THE PROCEDURE NAME BADPROC HAS NOT BEEN DEFINED FOR USE";
-        //     let response: ISendResponse;
-        //     let error: ImperativeError;
-        //     jest.spyOn(StartTso, "start").mockResolvedValueOnce({
-        //         success: true,
-        //         startResponse: {
-        //             messages: startMessage
-        //         },
+        it("should throw ImperativeError when startResponse contains IKJ56482I", async () => {
+            jest.spyOn(CheckStatus, "isZosVersionAtLeast").mockReturnValue(
+                Promise.resolve(false)
+            );
 
-        //     } as any);
+            const startResp = "IKJ56482I THE PROCEDURE NAME BADPROC HAS NOT BEEN DEFINED FOR USE";
 
-        //     try {
-        //         response = await IssueTso.issueTsoCommand(
-        //             PRETEND_SESSION,
-        //             "acc",
-        //             "command"
-        //         );
-        //     } catch (thrownError) {
-        //         error = thrownError;
-        //     }
+            jest.spyOn(StartTso, "start").mockResolvedValueOnce({
+                success: true,
+                messages: startResp,
+                servletKey: "mockServletKey"
+            } as any);
 
-        //     expect(response).not.toBeDefined();
-        //     expect(error).toBeDefined();
-        //     expect(error.message).toBe("Invalid logon procedure.");
-        // });
+            jest.spyOn(SendTso, "sendDataToTSOCollect").mockResolvedValueOnce({
+                success: true,
+                commandResponse: "test",
+                zosmfResponse: {}
+            } as any);
+
+            jest.spyOn(StopTso, "stop").mockResolvedValueOnce({} as any);
+
+            let error: ImperativeError;
+            let response: ISendResponse;
+
+            try {
+                response = await IssueTso.issueTsoCommand(
+                    PRETEND_SESSION,
+                    "acc",
+                    "someCommand"
+                );
+            } catch (thrownError) {
+                error = thrownError;
+            }
+            expect(response).not.toBeDefined();
+            expect(error).toBeDefined();
+            expect(error).toBeInstanceOf(ImperativeError);
+            expect(error.message).toBe("Invalid logon procedure.");
+            expect(error.additionalDetails).toContain("IKJ56482I");
+        });
     });
 
     describe("TsoIssue issueTsoCommand - Deprecated API", () => {
