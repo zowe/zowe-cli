@@ -182,14 +182,6 @@ describe("all tests", () => {
                 servletKey: "mockServletKey"
             } as any);
 
-            jest.spyOn(SendTso, "sendDataToTSOCollect").mockResolvedValueOnce({
-                success: true,
-                commandResponse: "test",
-                zosmfResponse: {}
-            } as any);
-
-            jest.spyOn(StopTso, "stop").mockResolvedValueOnce({} as any);
-
             let error: ImperativeError;
             let response: ISendResponse;
 
