@@ -33,13 +33,17 @@ export class Censor {
     *
     * NOTE(Harn): This list should be kept in sync with the base profile secure definitions and MUST be in camel case.
     */
-    private static readonly MAIN_CENSORED_OPTIONS = ["auth", "authentication", "basicAuth", "certFilePassphrase", "credentials",
+    private static readonly MAIN_CENSORED_OPTIONS = ["auth", "authentication", "basicAuth", "base64EncodedAuth", "certFilePassphrase", "credentials",
         "pw", "pass", "password", "passphrase", "tv", "tokenValue"];
 
     private static readonly MAIN_SECURE_PROMPT_OPTIONS = ["keyPassphrase", "password", "passphrase", "tokenValue", "user"];
 
     // The censor response.
     public static readonly CENSOR_RESPONSE = "****";
+
+
+    // The censor response.
+    public static readonly NULL_SESS_OBJ_MSG = "Null session object was passed to API";
 
     // A set of default censored options.
     public static get DEFAULT_CENSORED_OPTIONS(): string[] {
@@ -209,7 +213,7 @@ export class Censor {
             this.mConfig = censorOpts.config;
 
             // If we have a ProfileTypeConfiguration (i.e. ImperativeConfig.instance.loadedConfig.profiles)
-            if (censorOpts.profiles) { this.setProfileSchemas(censorOpts.profiles); }
+            if (censorOpts.profiles) { this.mSchema = []; this.setProfileSchemas(censorOpts.profiles); }
 
             for (const profileType of this.profileSchemas ?? []) {
                 // If we know the command we are running, and we know the profile types that the command uses
@@ -332,5 +336,68 @@ export class Censor {
             }
         }
         return newArgs;
+    }
+
+    // ***********************************************************************
+    /**
+     * Censor sensitive data from an session object or a sub-object of a session.
+     * The intent is to create a copy of the object that is suitable for logging.
+     *
+     * @param sessObj - A Session object (or ISession, or availableCreds) to be censored.
+     *
+     * @returns - The censored object as a string.
+     */
+    public static censorSession(sessObj: any): string {
+        if (!sessObj) {
+            return Censor.NULL_SESS_OBJ_MSG + " censorSession";
+        }
+        return Censor.replaceValsInSess(sessObj, true);
+    }
+
+    // ***********************************************************************
+    /**
+     * Recursively replace sensitive data in an session-related object
+     * and any relevant sub-objects.
+     *
+     * @param sessObj - A Session object (or ISession, or the availableCreds) to be censored.
+     *
+     * @returns - The censored object as a string.
+     */
+    private static replaceValsInSess(sessObj: any, createCopy: boolean): string {
+        if (!sessObj) {
+            return Censor.NULL_SESS_OBJ_MSG + " replaceValsInSess";
+        }
+
+        const propsToBeCensored = [...Censor.SECURE_PROMPT_OPTIONS, ...Censor.DEFAULT_CENSORED_OPTIONS];
+
+        // create copy of sessObj so that we can replace values in a censored object
+        let censoredSessObj;
+        if (createCopy) {
+            try {
+                censoredSessObj = JSON.parse(JSON.stringify(sessObj));
+            } catch(error) {
+                return "Invalid session object was passed to API replaceValsInSess. Reason = " + error.toString();
+            }
+        } else {
+            censoredSessObj = sessObj;
+        }
+
+        // Censor values in the top level of the supplied object
+        for (const censoredProp of propsToBeCensored) {
+            if (censoredSessObj[censoredProp] != null) {
+                censoredSessObj[censoredProp] = Censor.CENSOR_RESPONSE;
+            }
+        }
+
+        if (censoredSessObj.mISession) {
+            // the object has an ISession sub-object, so censor those values
+            Censor.replaceValsInSess(censoredSessObj.mISession, false);
+        }
+
+        if (censoredSessObj._authCache?.availableCreds) {
+            // the object has an availableCreds sub-object, so censor those values
+            Censor.replaceValsInSess(censoredSessObj._authCache.availableCreds, false);
+        }
+        return JSON.stringify(censoredSessObj, null, 2);
     }
 }

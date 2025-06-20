@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS jobs SDK package will be documented in this file.
 
+## `8.17.0`
+
+- BugFix: Fixed an issue where a numeric `encoding` value caused `DownloadJobs.downloadSpoolContentCommon` method to fail. [#2472](https://github.com/zowe/zowe-cli/pull/2472)
+
 ## `8.13.0`
 
 - Enhancement: Added `--recordRange` flag logic handling to `DownloadJobs.downloadSpoolContentCommon()` to to allow users to select a specific range of records to output from a spool file. [#2411](https://github.com/zowe/zowe-cli/pull/2411)

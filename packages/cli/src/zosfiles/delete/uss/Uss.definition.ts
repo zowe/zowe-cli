@@ -66,19 +66,19 @@ export const UssDefinition: ICommandDefinition = {
     examples: [
         {
             description: strings.EXAMPLES.EX1,
-            options: `"/a/ibmuser/testcases" -f`
+            options: `"/a/ibmuser/testcases" --for-sure`
         },
         {
             description: strings.EXAMPLES.EX2,
-            options: `"/a/ibmuser/testcases/my_text.txt" -f`
+            options: `"/a/ibmuser/testcases/my_text.txt" --for-sure`
         },
         {
             description: strings.EXAMPLES.EX3,
-            options: `"/a/ibmuser/testcases" -rf`
+            options: `"/a/ibmuser/testcases" --recursive --for-sure`
         },
         {
             description: strings.EXAMPLES.EX4,
-            options: `"/a/ibmuser/testcases" -fi`
+            options: `"/a/ibmuser/testcases" --for-sure --ignore-not-found`
         }
     ]
 };

@@ -1,6 +1,6 @@
 {
   "name": "@zowe/imperative",
-  "version": "8.16.0",
+  "version": "8.23.1",
   "description": "framework for building configurable CLIs",
   "author": "Zowe",
   "license": "EPL-2.0",
@@ -51,6 +51,7 @@
     "comment-json": "~4.2.3",
     "cross-spawn": "^7.0.5",
     "dataobject-parser": "^1.2.25",
+    "dayjs": "1.11.13",
     "deepmerge": "^4.3.1",
     "diff": "^5.2.0",
     "diff2html": "3.4.20-usewontache.1.60e7a2e",
@@ -79,6 +80,7 @@
     "stack-trace": "^0.0.10",
     "strip-ansi": "^6.0.1",
     "which": "^4.0.0",
+    "winston": "^3.17.0",
     "wrap-ansi": "^7.0.0",
     "yargs": "^17.7.2"
   },
@@ -95,7 +97,7 @@
     "@types/pacote": "^11.1.8",
     "@types/progress": "^2.0.7",
     "@types/stack-trace": "^0.0.33",
-    "@zowe/secrets-for-zowe-sdk": "8.10.4",
+    "@zowe/secrets-for-zowe-sdk": "8.18.3",
     "concurrently": "^8.0.0",
     "cowsay": "^1.6.0",
     "deep-diff": "^1.0.0",

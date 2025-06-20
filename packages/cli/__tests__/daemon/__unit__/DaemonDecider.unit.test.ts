@@ -240,7 +240,7 @@ describe("DaemonDecider tests", () => {
 
         let expectedCommChannel: string;
         if (process.platform === "win32") {
-            expectedCommChannel = `\\\\.\\pipe\\${os.userInfo().username}\\ZoweDaemon`;
+            expectedCommChannel = `\\\\.\\pipe\\${os.userInfo().username.toLocaleLowerCase()}\\ZoweDaemon`;
         } else {
             expectedCommChannel = path.join(os.homedir(), ".zowe/daemon/daemon.sock");
         }
@@ -447,7 +447,7 @@ describe("DaemonDecider tests", () => {
         daemonDecider.init();
 
         expect(initialParseSpy).toHaveBeenCalledTimes(1);
-        expect(recordedLogMsg).toContain(`daemon server will listen on \\\\.\\pipe\\${os.userInfo().username}\\ZoweDaemon`);
+        expect(recordedLogMsg).toContain(`daemon server will listen on \\\\.\\pipe\\${os.userInfo().username.toLocaleLowerCase()}\\ZoweDaemon`);
 
         // use a custom pipe name
         const envWinPipeName = "MyWinPipeName";

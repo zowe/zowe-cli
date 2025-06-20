@@ -47,15 +47,15 @@ export const UssFileDefinition: ICommandDefinition = {
     examples: [
         {
             description: strings.EXAMPLES.EX1,
-            options: `"/a/ibmuser/my_text.txt" -f ./my_text.txt`
+            options: `"/a/ibmuser/my_text.txt" --file ./my_text.txt`
         },
         {
             description: strings.EXAMPLES.EX2,
-            options: `"/a/ibmuser/MyJava.class" -b -f "java/MyJava.class"`
+            options: `"/a/ibmuser/MyJava.class" --binary --file "java/MyJava.class"`
         },
         {
             description: strings.EXAMPLES.EX3,
-            options: `"/a/ibmuser/MyJava.class" --attributes /path/to/.zosattributes -f "java/MyJava.class"`
+            options: `"/a/ibmuser/MyJava.class" --attributes /path/to/.zosattributes --file "java/MyJava.class"`
         }
     ]
 };

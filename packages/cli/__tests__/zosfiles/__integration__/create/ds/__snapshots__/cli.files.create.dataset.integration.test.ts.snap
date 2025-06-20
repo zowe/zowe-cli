@@ -145,6 +145,16 @@ exports[`Create  Data Set should display the help 1`] = `
 
       The file path to a certificate key file to use for authentication
 
+   --completion-timeout | --cto (number)
+
+      The amount in time, in seconds, a REST operation should wait to complete before
+      timing out
+
+   --establish-connection-timeout | --ecto (number)
+
+      The amount of time, in seconds, a REST operation should wait while connecting to
+      the server before timing out
+
  PROFILE OPTIONS
  ---------------
 
@@ -196,7 +206,7 @@ exports[`Create  Data Set should display the help 1`] = `
 
    - Create a data set with default parameters and like flag and lrecl flag:
 
-      $ zowe zos-files create data-set NEW.DATASET --like EXISTING.DATASET --lrecl 1024
+      $ zowe zos-files create data-set NEW.DATASET --like EXISTING.DATASET --record-length 1024
 
    - Create a data set with type LIBRARY:
 

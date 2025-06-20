@@ -188,14 +188,21 @@ export class ConfigSecure extends ConfigApi {
     /**
      * List full paths of all secure properties found in a team config file.
      *
-     * @param opts The user and global flags that specify one of the four
-     *             config files (aka layers).
+     * @param opts Specify `true` to get secure fields for all layers. Specify `false` to get secure fields for the active layer
+     * @param opts.user The user flag that specifies the user-related config files (aka layers).
+     * @param opts.global The global flag that specifies the project-related config files (aka layers).
+     * @default opts = false
      * @returns Array of secure property paths
      *          (e.g., "profiles.lpar1.properties.password")
      */
-    public secureFields(opts?: { user: boolean; global: boolean }): string[] {
-        const layer = opts ? this.mConfig.findLayer(opts.user, opts.global) : this.mConfig.layerActive();
-        return this.findSecure(layer.properties.profiles, "profiles");
+    public secureFields(opts: { user: boolean; global: boolean } | boolean = false): string[] {
+        if (opts === true) {
+            return this.findSecure(this.mConfig.mProperties.profiles, "profiles");
+        }
+        if (opts === false) {
+            return this.findSecure(this.mConfig.layerActive().properties.profiles, "profiles");
+        }
+        return this.findSecure(this.mConfig.findLayer(opts.user, opts.global).properties.profiles, "profiles");
     }
 
     // _______________________________________________________________________

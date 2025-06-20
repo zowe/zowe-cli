@@ -80,15 +80,20 @@ export class Search {
         try {
             const response = await List.dataSetsMatchingPattern(session, [searchOptions.pattern], {
                 ...searchOptions.listOptions,
-                maxConcurrentRequests: searchOptions.maxConcurrentRequests
+                attributes: true,
+                maxConcurrentRequests: searchOptions.maxConcurrentRequests,
+                maxLength: searchOptions.searchExactName ? 1 : undefined,
             });
             for (const resp of response.apiResponse) {
                 // Skip anything that doesn't have a DSORG or is migrated
                 if (resp.dsorg && !(resp.migr && resp.migr.toLowerCase() === "yes")) {
-                    if (resp.dsorg === "PS") {                                      // Sequential
-                        searchItemsQueue.push({dsn: resp.dsname});
-                    } else if (resp.dsorg.startsWith("PO")) {      // Partitioned
-                        partitionedDataSets.push(resp.dsname);
+                    // If we are looking for an exact name, ensure the name matches
+                    if (!searchOptions.searchExactName || resp.dsname == searchOptions.pattern.toUpperCase()) {
+                        if (resp.dsorg === "PS") {                                      // Sequential
+                            searchItemsQueue.push({dsn: resp.dsname});
+                        } else if (resp.dsorg.startsWith("PO")) {      // Partitioned
+                            partitionedDataSets.push(resp.dsname);
+                        }
                     }
                 }
             }

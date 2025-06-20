@@ -1,6 +1,39 @@
 # Change Log
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## `8.24.0`
+
+- Enhancement: Added a `search-exact-name` option to the `zowe zos-files search data-set` command to search the contents of one data set or PDS. [#2529](https://github.com/zowe/zowe-cli/pull/2529)
+
+## `8.23.1`
+
+- BugFix: Updated the `brace-expansion` dependency for technical currency. [#2523](https://github.com/zowe/zowe-cli/pull/2523)
+
+## `8.22.0`
+
+- Enhancement: Added a new configuration property named authOrder with which a user can specify a desired choice of authentication. [#1794](https://github.com/zowe/zowe-cli/issues/1794)
+- BugFix: Avoid prompting for a password, when a token is available for authentication [#2500](https://github.com/zowe/zowe-cli/issues/2500)
+- BugFix: Updated the `zowe auth login apiml` command to place its retrieved token into the specified (or default) base profile instead of creating a new base profile. [#2181](https://github.com/zowe/zowe-cli/issues/2181) & [#1650](https://github.com/zowe/zowe-cli/issues/1650)
+  - The update also places a directive to use token authentication for the default `zosmf` profile if that profile is configured to connect to API-ML.
+- Enhancement: Updated Node.js types for technical currency. [#2511](https://github.com/zowe/zowe-cli/pull/2511)
+
+## `8.20.0`
+
+- Enhancement: Added the `--establish-connection-timeout` option to the `z/OSMF Connection Options`. This allows users to specify a maximum limit for how long the REST client should attempt to establish a connection to the server, and returns an error if the request takes too long. [#2490](https://github.com/zowe/zowe-cli/pull/2490)
+- Enhancement: Added the `--completion-timeout` option to the `z/OSMF Connection Options`. This allows users to specify a maximum limit for how long a REST request should take, and returns an error if the request takes too long. [#2490](https://github.com/zowe/zowe-cli/pull/2490)
+
+## `8.19.0`
+
+- Enhancement: Updated help examples to replace short option aliases (e.g. `-h`) with full option names (e.g. `--help`) for improved clarity and consistency in documentation. [#2484](https://github.com/zowe/zowe-cli/pull/2484)
+
+## `8.18.1`
+
+- BugFix: Updated the Daemon binary version for technical currency. [#2479](https://github.com/zowe/zowe-cli/pull/2479)
+
+## `8.17.0`
+
+- BugFix: Fixed a bug that resulted in daemon commands running slower with every additional command. [#2470](https://github.com/zowe/zowe-cli/issues/2470)
+
 ## `8.16.0`
 
 - Enhancement: Add the ability to search data sets with regex patterns by passing `--regex` into the search command. [#2432](https://github.com/zowe/zowe-cli/issues/2432)
@@ -11,7 +44,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## `8.15.0`
 
-- Enhancement: Added the `overwrite` parameter to the `Copy.DataSet()` command to allow for overwriting all members of a target data set with source data set members. [#2450] (https://github.com/zowe/zowe-cli/pull/2450)
+- Enhancement: Added the `--overwrite` flag to the `zowe files copy ds` command to allow for overwriting all members of a target data set with source data set members. [#2450] (https://github.com/zowe/zowe-cli/pull/2450)
 
 ## `8.14.1`
 

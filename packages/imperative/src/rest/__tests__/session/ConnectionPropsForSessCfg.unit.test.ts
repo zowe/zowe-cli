@@ -95,6 +95,49 @@ describe("ConnectionPropsForSessCfg tests", () => {
         expect(sessCfgWithConnProps.certKey).toBeUndefined();
     });
 
+    it("should not log secure properties of session config", async () => {
+        const initialSessCfg = {
+            rejectUnauthorized: true,
+        };
+        const args = {
+            $0: "zowe",
+            _: [""],
+            host: "SomeHost",
+            port: 11,
+            user: "FakeUser",
+            password: "FakePassword",
+            tokenType: SessConstants.TOKEN_TYPE_JWT,
+            tokenValue: "FakeToken"
+        };
+        const mockLoggerDebug = jest.fn();
+        const getImperativeLoggerSpy = jest
+            .spyOn(Logger, "getImperativeLogger")
+            .mockReturnValueOnce({ debug: mockLoggerDebug } as any);
+
+        const sessCfgWithConnProps =
+            await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
+                initialSessCfg,
+                args
+            );
+        expect(sessCfgWithConnProps.hostname).toBe("SomeHost");
+        expect(sessCfgWithConnProps.port).toBe(11);
+        expect(sessCfgWithConnProps.user).toBe("FakeUser");
+        expect(sessCfgWithConnProps.password).toBe("FakePassword");
+        expect(sessCfgWithConnProps.type).toBe(SessConstants.AUTH_TYPE_BASIC);
+        expect(sessCfgWithConnProps.tokenValue).toBeUndefined();
+        expect(sessCfgWithConnProps.tokenType).toBeUndefined();
+        expect(sessCfgWithConnProps.cert).toBeUndefined();
+        expect(sessCfgWithConnProps.certKey).toBeUndefined();
+
+        getImperativeLoggerSpy.mockRestore();
+        expect(mockLoggerDebug).toHaveBeenCalledTimes(1);
+        const logOutput = mockLoggerDebug.mock.calls[0][0];
+        expect(logOutput).toContain("SomeHost");
+        expect(logOutput).not.toContain("FakeUser");
+        expect(logOutput).not.toContain("FakePassword");
+        expect(logOutput).not.toContain("FakeToken");
+    });
+
     it("authenticate with user, pass, and tokenType to get token", async () => {
         const initialSessCfg = {
             hostname: "SomeHost",
@@ -316,7 +359,7 @@ describe("ConnectionPropsForSessCfg tests", () => {
                 args,
                 { doPrompting: false }
             );
-        expect(sessCfgWithConnProps.type).toBe(SessConstants.AUTH_TYPE_BASIC);
+        expect(sessCfgWithConnProps.type).toBe(SessConstants.AUTH_TYPE_NONE);
         expect(sessCfgWithConnProps.user).toBeUndefined();
         expect(sessCfgWithConnProps.password).toBeUndefined();
         expect(sessCfgWithConnProps.tokenType).toBeUndefined();
@@ -569,7 +612,7 @@ describe("ConnectionPropsForSessCfg tests", () => {
                     parms: parms as any,
                 }
             );
-        expect(sessCfgWithConnProps.type).toBe(SessConstants.AUTH_TYPE_BASIC);
+        expect(sessCfgWithConnProps.type).toBe(SessConstants.AUTH_TYPE_NONE);
         expect(commandHandlerPrompt).not.toHaveBeenCalled(); // we are only testing that we call an already tested prompt method if in CLI mode
         expect(mockClientPrompt).not.toHaveBeenCalled();
         expect(sessCfgWithConnProps.user).toEqual("FakeUser");
@@ -632,7 +675,7 @@ describe("ConnectionPropsForSessCfg tests", () => {
                     parms: parms as any,
                 }
             );
-        expect(sessCfgWithConnProps.type).toBe(SessConstants.AUTH_TYPE_BASIC);
+        expect(sessCfgWithConnProps.type).toBe(SessConstants.AUTH_TYPE_NONE);
         expect(commandHandlerPrompt).not.toHaveBeenCalled(); // we are only testing that we call an already tested prompt method if in CLI mode
         expect(mockClientPrompt).not.toHaveBeenCalled();
         expect(sessCfgWithConnProps.user).toEqual("FakeUser");
@@ -758,7 +801,7 @@ describe("ConnectionPropsForSessCfg tests", () => {
                     parms: parms as any,
                 }
             );
-        expect(sessCfgWithConnProps.type).toBe(SessConstants.AUTH_TYPE_BASIC);
+        expect(sessCfgWithConnProps.type).toBe(SessConstants.AUTH_TYPE_NONE);
         expect(commandHandlerPrompt).not.toHaveBeenCalled(); // we are only testing that we call an already tested prompt method if in CLI mode
         expect(mockClientPrompt).not.toHaveBeenCalled();
         expect(sessCfgWithConnProps.user).toEqual("FakeUser");
@@ -1487,28 +1530,6 @@ describe("ConnectionPropsForSessCfg tests", () => {
         expect(caughtError.message).toBe("Timed out waiting for port.");
     });
 
-    it("should not log secure properties of session config", async () => {
-        const mockLoggerDebug = jest.fn();
-        const getImperativeLoggerSpy = jest
-            .spyOn(Logger, "getImperativeLogger")
-            .mockReturnValueOnce({ debug: mockLoggerDebug } as any);
-        (ConnectionPropsForSessCfg as any).logSessCfg({
-            host: "SomeHost",
-            port: 11,
-            user: "FakeUser",
-            password: "FakePassword",
-            tokenType: SessConstants.TOKEN_TYPE_JWT,
-            tokenValue: "FakeToken",
-        });
-        getImperativeLoggerSpy.mockRestore();
-        expect(mockLoggerDebug).toHaveBeenCalledTimes(1);
-        const logOutput = mockLoggerDebug.mock.calls[0][0];
-        expect(logOutput).toContain("SomeHost");
-        expect(logOutput).not.toContain("FakeUser");
-        expect(logOutput).not.toContain("FakePassword");
-        expect(logOutput).not.toContain("FakeToken");
-    });
-
     it("SSO CallBack with getValuesBack", async () => {
         const initialSessCfg = {
             rejectUnauthorized: true,
@@ -1798,5 +1819,63 @@ describe("ConnectionPropsForSessCfg tests", () => {
                 "are required to complete your command."
             );
         });
+    });
+});
+
+describe("sessHasCreds tests", () => {
+    it("should be truthy if a token is in the session", () => {
+        const sessCfg = {
+            hostname: "SomeHost",
+            port: 11,
+            rejectUnauthorized: true,
+            tokenType: "FakeTokenType",
+            tokenValue: "FakeTokenValue"
+        };
+        expect(ConnectionPropsForSessCfg.sessHasCreds(sessCfg)).toBeTruthy();
+    });
+
+    it("should be truthy if a cert is in the session", () => {
+        const sessCfg = {
+            hostname: "SomeHost",
+            port: 11,
+            rejectUnauthorized: true,
+            certKey: "FakeCertKey",
+            cert: "FakeCert"
+        };
+        expect(ConnectionPropsForSessCfg.sessHasCreds(sessCfg)).toBeTruthy();
+    });
+
+    it("should be truthy if a base64 encoded user and password is in the session", () => {
+        const sessCfg = {
+            hostname: "SomeHost",
+            port: 11,
+            rejectUnauthorized: true,
+            base64EncodedAuth: "FakeBase64BasicCreds"
+        };
+        expect(ConnectionPropsForSessCfg.sessHasCreds(sessCfg)).toBeTruthy();
+    });
+
+    it("should be truthy if user and password are in the session", () => {
+        const sessCfg = {
+            hostname: "SomeHost",
+            port: 11,
+            rejectUnauthorized: true,
+            user: "FakeUser",
+            password: "FakePassword"
+        };
+        expect(ConnectionPropsForSessCfg.sessHasCreds(sessCfg)).toBeTruthy();
+    });
+
+    it("should be false if no creds are in the session", () => {
+        const sessCfg = {
+            hostname: "SomeHost",
+            port: 11,
+            rejectUnauthorized: true
+        };
+        expect(ConnectionPropsForSessCfg.sessHasCreds(sessCfg)).toBe(false);
+    });
+
+    it("should be false if the session is null", () => {
+        expect(ConnectionPropsForSessCfg.sessHasCreds((null as unknown as ISession))).toBe(false);
     });
 });

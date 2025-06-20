@@ -13,15 +13,16 @@ import * as fs from "fs";
 import * as https from "https";
 import * as http from "http";
 import { Session } from "../../src/session/Session";
+import { AuthOrder } from "../../src/session/AuthOrder";
 import {
     AUTH_TYPE_BASIC, AUTH_TYPE_BEARER, AUTH_TYPE_CERT_PEM, AUTH_TYPE_NONE, AUTH_TYPE_TOKEN
 } from "../../src/session/SessConstants";
 import { RestClient } from "../../src/client/RestClient";
 import { Headers } from "../../src/client/Headers";
-import { ProcessUtils } from "../../../utilities";
+import { ProcessUtils } from "../../../utilities/src/ProcessUtils";
 import { MockHttpRequestResponse } from "./__model__/MockHttpRequestResponse";
 import { EventEmitter } from "events";
-import { ImperativeError } from "../../../error";
+import { ImperativeError } from "../../../error/src/ImperativeError";
 import { IOptionsFullResponse } from "../../src/client/doc/IOptionsFullResponse";
 import { CLIENT_PROPERTY } from "../../src/client/types/AbstractRestClientProperties";
 import { PassThrough } from "stream";
@@ -33,6 +34,8 @@ import { join } from "path";
 import { IO } from "../../../io";
 import { ProxySettings } from "../../src/client/ProxySettings";
 import { HttpsProxyAgent } from "https-proxy-agent";
+import { completionTimeoutErrorMessage } from "../../src/client/doc/IRestClientError";
+import { EnvironmentalVariableSettings } from "../../../imperative";
 
 /**
  * To test the AbstractRestClient, we use the existing default RestClient which
@@ -42,7 +45,11 @@ import { HttpsProxyAgent } from "https-proxy-agent";
 describe("AbstractRestClient tests", () => {
     let setPasswordAuthSpy: any;
 
+    // never run putTopAuthInSession. It has its own unit test.
+    AuthOrder.putTopAuthInSession = jest.fn();
+
     beforeEach(() => {
+        jest.restoreAllMocks();
         // pretend that basic auth was successfully set
         setPasswordAuthSpy = jest.spyOn(AbstractRestClient.prototype as any, "setPasswordAuth");
         setPasswordAuthSpy.mockReturnValue(true);
@@ -473,7 +480,258 @@ describe("AbstractRestClient tests", () => {
 
         expect(error).not.toBeDefined();
         expect(response).toEqual("\"response data\"");
-        expect(requestFnc).toHaveBeenCalledTimes(2);
+    });
+
+    it("should handle a socket connection timeout", async () => {
+        let destroySpy: jest.SpyInstance;
+        const requestFnc = jest.fn((options, callback) => {
+            const emitter = new MockHttpRequestResponse();
+            destroySpy = jest.spyOn(emitter, "destroy");
+            emitter.socket = {connecting: true};
+
+            ProcessUtils.nextTick(() => {
+                callback(emitter);
+
+                ProcessUtils.nextTick(() => {
+                    emitter.emit("timeout");
+                });
+            });
+            return emitter;
+        });
+
+        (https.request as any) = requestFnc;
+
+        let error;
+
+        try {
+            const session = new Session({hostname: "test"});
+            session.ISession.socketConnectTimeout = 1;
+            await RestClient.getExpectString(session, "/resource");
+        } catch (thrownError) {
+            error = thrownError;
+        }
+
+        expect(error).toBeDefined();
+        expect(error.message).toContain("Failed to send an HTTP request");
+        expect(error.causeErrors.message).toContain("Connection timed out");
+        expect(requestFnc).toHaveBeenCalledTimes(1);
+        expect(destroySpy).toHaveBeenCalledTimes(1);
+    });
+
+    it("should handle a socket connection timeout - good env variable", async () => {
+        let destroySpy: jest.SpyInstance;
+        const readEnvSpy = jest.spyOn(EnvironmentalVariableSettings, "read").mockReturnValue({
+            socketConnectTimeout: {key: "test", value: "1"},
+            requestCompletionTimeout: {key: "test", value: undefined}
+        });
+        const requestFnc = jest.fn((options, callback) => {
+            const emitter = new MockHttpRequestResponse();
+            destroySpy = jest.spyOn(emitter, "destroy");
+            emitter.socket = {connecting: true};
+
+            ProcessUtils.nextTick(() => {
+                callback(emitter);
+
+                ProcessUtils.nextTick(() => {
+                    emitter.emit("timeout");
+                });
+            });
+            return emitter;
+        });
+
+        (https.request as any) = requestFnc;
+
+        let error;
+        let session: Session;
+
+        try {
+            session = new Session({hostname: "test"});
+            await RestClient.getExpectString(session, "/resource");
+        } catch (thrownError) {
+            error = thrownError;
+        }
+
+        expect(error).toBeDefined();
+        expect(error.message).toContain("Failed to send an HTTP request");
+        expect(error.causeErrors.message).toContain("Connection timed out");
+        expect(requestFnc).toHaveBeenCalledTimes(1);
+        expect(destroySpy).toHaveBeenCalledTimes(1);
+        expect(readEnvSpy).toHaveBeenCalledTimes(1);
+        expect(session.ISession.socketConnectTimeout).toEqual(1);
+    });
+
+    it("should handle a socket connection timeout - bad env variable", async () => {
+        const readEnvSpy = jest.spyOn(EnvironmentalVariableSettings, "read").mockReturnValue({
+            socketConnectTimeout: {key: "test", value: "garbage"},
+            requestCompletionTimeout: {key: "test", value: undefined}
+        });
+        const requestFnc = jest.fn((options, callback) => {
+            const emitter = new MockHttpRequestResponse();
+            emitter.socket = {connecting: true};
+
+            ProcessUtils.nextTick(() => {
+                callback(emitter);
+                ProcessUtils.nextTick(() => {
+                    emitter.emit("end");
+                });
+            });
+            return emitter;
+        });
+
+        (https.request as any) = requestFnc;
+
+        const session = new Session({hostname: "test"});
+        await RestClient.getExpectString(session, "/resource");
+
+
+        expect(requestFnc).toHaveBeenCalledTimes(1);
+        expect(readEnvSpy).toHaveBeenCalledTimes(1);
+        expect(session.ISession.socketConnectTimeout).toBeUndefined();
+    });
+
+    it("should handle a request completion timeout", async () => {
+        let destroySpy: jest.SpyInstance;
+        const requestFnc = jest.fn((options, callback) => {
+            const emitter = new MockHttpRequestResponse();
+            destroySpy = jest.spyOn(emitter, "destroy");
+            emitter.socket = {connnecting: false};
+
+            ProcessUtils.nextTick(() => {
+                callback(emitter);
+
+                ProcessUtils.nextTick(() => {
+                    emitter.emit("timeout", new ImperativeError({msg: completionTimeoutErrorMessage}));
+                });
+            });
+            return emitter;
+        });
+
+        (https.request as any) = requestFnc;
+
+        let error;
+
+        try {
+            const session = new Session({hostname: "test"});
+            session.ISession.requestCompletionTimeout = 1;
+            await RestClient.getExpectString(session, "/resource");
+        } catch (thrownError) {
+            error = thrownError;
+        }
+
+        expect(error).toBeDefined();
+        expect(error.message).toContain("HTTP request timed out after connecting.");
+        expect(error.causeErrors.message).toContain("The request exceeded the specified request completion timeout.");
+        expect(requestFnc).toHaveBeenCalledTimes(1);
+        expect(destroySpy).toHaveBeenCalledTimes(1);
+    });
+
+    it("should handle a request completion timeout - good env variable", async () => {
+        let destroySpy: jest.SpyInstance;
+        const readEnvSpy = jest.spyOn(EnvironmentalVariableSettings, "read").mockReturnValue({
+            socketConnectTimeout: {key: "test", value: "60000"},
+            requestCompletionTimeout: {key: "test", value: "1"}
+        });
+        const requestFnc = jest.fn((options, callback) => {
+            const emitter = new MockHttpRequestResponse();
+            destroySpy = jest.spyOn(emitter, "destroy");
+            emitter.socket = {connnecting: false};
+
+            ProcessUtils.nextTick(() => {
+                callback(emitter);
+
+                ProcessUtils.nextTick(() => {
+                    emitter.emit("timeout", new ImperativeError({msg: completionTimeoutErrorMessage}));
+                });
+            });
+            return emitter;
+        });
+
+        (https.request as any) = requestFnc;
+
+        let error;
+        let session: Session;
+
+        try {
+            session = new Session({hostname: "test"});
+            await RestClient.getExpectString(session, "/resource");
+        } catch (thrownError) {
+            error = thrownError;
+        }
+
+        expect(error).toBeDefined();
+        expect(error.message).toContain("HTTP request timed out after connecting.");
+        expect(error.causeErrors.message).toContain("The request exceeded the specified request completion timeout.");
+        expect(requestFnc).toHaveBeenCalledTimes(1);
+        expect(destroySpy).toHaveBeenCalledTimes(1);
+        expect(readEnvSpy).toHaveBeenCalledTimes(1);
+        expect(session.ISession.requestCompletionTimeout).toEqual(1);
+    });
+
+    it("should handle a request completion timeout - bad env variable", async () => {
+        const readEnvSpy = jest.spyOn(EnvironmentalVariableSettings, "read").mockReturnValue({
+            socketConnectTimeout: {key: "test", value: "60000"},
+            requestCompletionTimeout: {key: "test", value: "garbage"}
+        });
+        const requestFnc = jest.fn((options, callback) => {
+            const emitter = new MockHttpRequestResponse();
+            emitter.socket = {connnecting: false};
+
+            ProcessUtils.nextTick(() => {
+                callback(emitter);
+                ProcessUtils.nextTick(() => {
+                    emitter.emit("end");
+                });
+            });
+            return emitter;
+        });
+
+        (https.request as any) = requestFnc;
+
+        const session = new Session({hostname: "test"});
+        await RestClient.getExpectString(session, "/resource");
+
+        expect(requestFnc).toHaveBeenCalledTimes(1);
+        expect(readEnvSpy).toHaveBeenCalledTimes(1);
+        expect(session.ISession.requestCompletionTimeout).toBeUndefined();
+    });
+
+    it("should handle a request completion timeout and use the provided callback", async () => {
+        let destroySpy: jest.SpyInstance;
+        const requestFnc = jest.fn((options, callback) => {
+            const emitter = new MockHttpRequestResponse();
+            destroySpy = jest.spyOn(emitter, "destroy");
+            emitter.socket = {connnecting: false};
+
+            ProcessUtils.nextTick(() => {
+                callback(emitter);
+
+                ProcessUtils.nextTick(() => {
+                    emitter.emit("timeout", new ImperativeError({msg: completionTimeoutErrorMessage}));
+                });
+            });
+            return emitter;
+        });
+
+        (https.request as any) = requestFnc;
+
+        let error;
+        let callback;
+
+        try {
+            const session = new Session({hostname: "test"});
+            session.ISession.requestCompletionTimeout = 1;
+            callback = session.ISession.requestCompletionTimeoutCallback = jest.fn();
+            await RestClient.getExpectString(session, "/resource");
+        } catch (thrownError) {
+            error = thrownError;
+        }
+
+        expect(error).toBeDefined();
+        expect(error.message).toContain("HTTP request timed out after connecting.");
+        expect(error.causeErrors.message).toContain("The request exceeded the specified request completion timeout.");
+        expect(requestFnc).toHaveBeenCalledTimes(1);
+        expect(callback).toHaveBeenCalledTimes(1);
+        expect(destroySpy).toHaveBeenCalledTimes(1);
     });
 
     it("should call http request for http requests", async () => {
@@ -1494,6 +1752,65 @@ describe("AbstractRestClient tests", () => {
                 setCertPemAuthSpy.mockReturnValue(true);
                 const result = privateRestClient.buildOptions(resource, request, reqHeaders);
                 expect(Object.keys(result)).toContain('agent');
+            });
+
+            it('Should add to options if a connection timeout is in use', () => {
+                const resource = '/resource';
+                const request = '';
+                const reqHeaders: any[] = [];
+                getSystemProxyUrlSpy.mockReturnValue(undefined);
+                getProxyAgentSpy.mockReturnValue(undefined);
+                setCertPemAuthSpy.mockReturnValue(true);
+                privateRestClient["mSession"]["mISession"].socketConnectTimeout = 15000;
+
+                const result = privateRestClient.buildOptions(resource, request, reqHeaders);
+                expect(Object.keys(result)).toContain('timeout');
+                expect(result.timeout).toEqual(15000);
+            });
+        });
+
+        describe('validateRestHostname', () => {
+            const restSession = new Session({
+                hostname: "FakeHostName",
+                type: AUTH_TYPE_CERT_PEM,
+                cert: "FakePemCert",
+                certKey: "FakePemCertKey"
+            });
+            const privateRestClient = new RestClient(restSession) as any;
+
+            it('Should validate a hostname is not undefined', () => {
+                let error: Error;
+                const hostname: any = undefined;
+                try {
+                    privateRestClient.validateRestHostname(hostname);
+                } catch (e) {
+                    error = e;
+                }
+                expect(error).toBeDefined();
+                expect(error.message).toEqual("The hostname is required.");
+            });
+
+            it('Should validate a hostname should not contain a protocol', () => {
+                let error: Error;
+                const hostname = "http://www.example.com";
+                try {
+                    privateRestClient.validateRestHostname(hostname);
+                } catch (e) {
+                    error = e;
+                }
+                expect(error).toBeDefined();
+                expect(error.message).toEqual("The hostname should not contain the protocol.");
+            });
+
+            it('Should validate a hostname is okay without a protocol', () => {
+                let error: Error;
+                const hostname = "www.example.com";
+                try {
+                    privateRestClient.validateRestHostname(hostname);
+                } catch (e) {
+                    error = e;
+                }
+                expect(error).not.toBeDefined();
             });
         });
     });

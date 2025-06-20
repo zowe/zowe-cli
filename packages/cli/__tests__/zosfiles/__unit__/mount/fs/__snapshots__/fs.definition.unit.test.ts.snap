@@ -38,7 +38,7 @@ Array [
   },
   Object {
     "description": "Mount a hierarchical file system with write access",
-    "options": "MY.HFS /a/ibmuser/mountdir --ft HFS -m rdwr",
+    "options": "MY.HFS /a/ibmuser/mountdir --fs-type HFS --mode rdwr",
   },
 ]
 `;

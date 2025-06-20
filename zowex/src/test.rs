@@ -93,7 +93,7 @@ fn unit_test_util_get_socket_string() {
     // expect to override socket string with env on Linux
     #[cfg(target_family = "unix")]
     {
-        env::set_var("ZOWE_DAEMON_DIR", "~/.zowe/daemon_test_dir");
+        env::set_var("ZOWE_DAEMON_DIR", format!("{}/.zowe/daemon_test_dir", home_dir().unwrap().display()));
         match util_get_socket_string() {
             Ok(ok_val) => {
                 assert!(ok_val.contains("/.zowe/daemon_test_dir/daemon.sock"));

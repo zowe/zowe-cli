@@ -1,0 +1,27 @@
+{
+    "$schema": "./ProfInfoApp.schema.json",
+    "profiles": {
+        "global_user_base": {
+            "type": "base",
+            "properties": {
+                "rejectUnauthorized": false
+            },
+            "secure": [
+                "user",
+                "password"
+            ]
+        },
+        "global_lpar_user": {
+            "type": "zosmf",
+            "properties": {
+                "host": "LPAR1.your.domain.net",
+                "port": 6789
+            }
+        }
+    },
+    "defaults": {
+        "zosmf": "global_lpar_user"
+    },
+    "plugins": [],
+    "autoStore": true
+}

@@ -26,6 +26,7 @@ import { EnvFileUtils } from "../../utilities";
 import { join } from "path";
 import { Config } from "../../config";
 import { Censor } from "../../censor";
+import * as SessConstants from "../../rest/src/session/SessConstants";
 
 jest.mock("../src/syntax/SyntaxValidator");
 jest.mock("../src/utils/SharedOptions");
@@ -1430,6 +1431,7 @@ describe("Command Processor", () => {
         expect(commandResponse.data.locations.length).toBeGreaterThan(0);
         expect(commandResponse.data.optionalProfiles[0]).toBe(`banana`);
         expect(commandResponse.data.requiredProfiles).toBeUndefined();
+        expect(commandResponse.data.authenticationType).toBe(SessConstants.AUTH_TYPE_NONE);
     });
 
     it("should display input value for simple parm when --show-inputs-only flag is set and team config exists with a chained handler", async () => {
@@ -1548,6 +1550,7 @@ describe("Command Processor", () => {
         expect(commandResponse.data.locations.length).toBeGreaterThan(0);
         expect(commandResponse.data.optionalProfiles[0]).toBe(`banana`);
         expect(commandResponse.data.requiredProfiles).toBeUndefined();
+        expect(commandResponse.data.authenticationType).toBe(SessConstants.AUTH_TYPE_NONE);
     });
 
     it("should mask input value for a default secure parm when --show-inputs-only flag is set", async () => {
@@ -1652,6 +1655,7 @@ describe("Command Processor", () => {
         expect(commandResponse.data.optionalProfiles[0]).toBe(`banana`);
         expect(commandResponse.data.commandValues[secretParmKey]).toBe(secure);
         expect(commandResponse.data.requiredProfiles).toBeUndefined();
+        expect(commandResponse.data.authenticationType).toBe(SessConstants.AUTH_TYPE_NONE);
     });
 
     it("should mask input value for a default secure parm when --show-inputs-only flag is set with chained handlers", async () => {
@@ -1781,6 +1785,7 @@ describe("Command Processor", () => {
         expect(commandResponse.data.optionalProfiles[0]).toBe(`banana`);
         expect(commandResponse.data.commandValues[secretParmKey]).toBe(secure);
         expect(commandResponse.data.requiredProfiles).toBeUndefined();
+        expect(commandResponse.data.authenticationType).toBe(SessConstants.AUTH_TYPE_NONE);
     });
 
     it.each(Censor.SECURE_PROMPT_OPTIONS)("should mask input value for secure parm %s when --show-inputs-only flag is set", async (propName) => {

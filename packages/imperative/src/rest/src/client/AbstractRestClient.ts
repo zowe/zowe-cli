@@ -13,27 +13,29 @@ import { inspect } from "util";
 import { Logger } from "../../../logger";
 import { IImperativeError, ImperativeError } from "../../../error";
 import { AbstractSession } from "../session/AbstractSession";
+import { AuthOrder } from "../session/AuthOrder";
 import * as https from "https";
 import * as http from "http";
 import { readFileSync } from "fs";
 import { ContentEncoding, Headers } from "./Headers";
 import { RestConstants } from "./RestConstants";
-import { ImperativeReject } from "../../../interfaces";
+import { ImperativeReject } from "../../../interfaces/src/types/ImperativeReject";
 import { IHTTPSOptions } from "./doc/IHTTPSOptions";
 import { HTTP_VERB } from "./types/HTTPVerb";
-import { ImperativeExpect } from "../../../expect";
+import { ImperativeExpect } from "../../../expect/src/ImperativeExpect";
 import { Session } from "../session/Session";
 import * as path from "path";
-import { IRestClientError } from "./doc/IRestClientError";
+import { completionTimeoutErrorMessage, IRestClientError } from "./doc/IRestClientError";
 import { RestClientError } from "./RestClientError";
 import { Readable, Writable } from "stream";
 import { IO } from "../../../io";
 import { ITaskWithStatus, TaskProgress, TaskStage } from "../../../operations";
-import { TextUtils } from "../../../utilities";
+import { ImperativeConfig, TextUtils } from "../../../utilities";
 import { IRestOptions } from "./doc/IRestOptions";
 import * as SessConstants from "../session/SessConstants";
 import { CompressionUtils } from "./CompressionUtils";
 import { ProxySettings } from "./ProxySettings";
+import { EnvironmentalVariableSettings } from "../../../imperative/src/env/EnvironmentalVariableSettings";
 
 export type RestClientResolve = (data: string) => void;
 
@@ -224,33 +226,45 @@ export abstract class AbstractRestClient {
     /**
      * Creates an instance of AbstractRestClient.
      * @param {AbstractSession} mSession - representing connection to this api
+     * @param topDefaultAuth
+     *      The type of authentication used as the top selection in a default
+     *      authentication order (when the user has not specified authOrder).
+     *      The default value of AUTH_TYPE_TOKEN maintains backward compatibility
+     *      with previous releases.
      * @memberof AbstractRestClient
      */
-    constructor(private mSession: AbstractSession) {
+    constructor(
+        private readonly mSession: AbstractSession,
+        topDefaultAuth: typeof SessConstants.AUTH_TYPE_BASIC | typeof SessConstants.AUTH_TYPE_TOKEN
+        = SessConstants.AUTH_TYPE_TOKEN
+    ) {
         ImperativeExpect.toNotBeNullOrUndefined(mSession);
         this.mLogger = Logger.getImperativeLogger();
         this.mIsJson = false;
 
-        /* Set the order of precedence in which available credentials will be used.
-         *
-         * The Zowe SDK policy is to select password credentials over a token.
-         * However, this class was originally released with the token over password.
-         * The commonly-used ConnectionPropsForSessCfg.resolveSessCfgProps enforces the
-         * order of password over token. None-the-less, consumers which directly extended
-         * AbstractRestClient came to rely on the order of token over password.
-         *
-         * Later changes in this class to adhere to Zowe policy inadvertently broke
-         * such extenders. While we now use a generalized authTypeOrder property to
-         * determine the order, until a means is provided for consumers (and/or end-users)
-         * to customize their credential order of precedence, we hard-code the
-         * original order of token over password to correct the breaking change.
-         */
-        this.mSession.ISession.authTypeOrder = [
-            SessConstants.AUTH_TYPE_TOKEN,
-            SessConstants.AUTH_TYPE_BASIC,
-            SessConstants.AUTH_TYPE_BEARER,
-            SessConstants.AUTH_TYPE_CERT_PEM
-        ];
+        // When a user specifies an authentication order, it will always be used.
+        // When a user does NOT specify an authentication order, the following call
+        // to cacheDefaultAuthOrder will set a default order in a way that avoids a
+        // breaking change to historical behavior.
+        //
+        // Note that the RestClient class (and by extension, the ZosmfRestClient class)
+        // overrides the default order to place basic auth at the top.
+        // Our Zowe client APIs use those two classes, and expect basic authentication
+        // to be placed at the top.
+        //
+        // Consumers who extend their own class directly from AbstractRestClient
+        // will have (by default) a token at the top of the authentication order.
+        //
+        // The current best practice for consumers of any of these APIs is to let the
+        // default order maintain backward compatibility. If your app needs a credential
+        // that conflicts with credentials required by other profiles/services, you should
+        // instruct your end users to specify an 'authOrder' property in the profile
+        // related to your app within their zowe.config.json file.
+
+        AuthOrder.cacheDefaultAuthOrder(mSession.ISession, topDefaultAuth);
+
+        // Ensure that no other creds are in the session.
+        AuthOrder.putTopAuthInSession(mSession.ISession);
     }
 
     /**
@@ -283,6 +297,11 @@ export abstract class AbstractRestClient {
             ImperativeExpect.toBeDefinedAndNonBlank(options.request, "request");
             ImperativeExpect.toBeEqual(options.requestStream != null && options.writeData != null, false,
                 "You cannot specify both writeData and writeStream");
+
+            // putTopAuthInSession was originally done in the RestClient constructor.
+            // As a safety net to ensure that no logic has placed a different cred in the
+            // session since then, we again place only the top cred in the session.
+            AuthOrder.putTopAuthInSession(this.session.ISession);
             const buildOptions = this.buildOptions(options.resource, options.request, options.reqHeaders);
 
             /**
@@ -326,6 +345,21 @@ export abstract class AbstractRestClient {
                 }
             }
 
+            // Set up the request timeout
+            if (this.mSession.ISession.requestCompletionTimeout && this.mSession.ISession.requestCompletionTimeout > 0) {
+                clientRequest.setTimeout(this.mSession.ISession.requestCompletionTimeout);
+            }
+
+            clientRequest.on("timeout", () => {
+                if (clientRequest.socket.connecting) {
+                    // We timed out. Destroy the request.
+                    clientRequest.destroy(new Error("Connection timed out. Check the host, port, and firewall rules."));
+                } else if (this.mSession.ISession.requestCompletionTimeout && this.mSession.ISession.requestCompletionTimeout > 0) {
+                    this.mSession.ISession.requestCompletionTimeoutCallback?.();
+                    clientRequest.destroy(new ImperativeError({msg: completionTimeoutErrorMessage}));
+                }
+            });
+
             /**
              * Invoke any onError method whenever an error occurs on writing
              */
@@ -337,6 +371,12 @@ export abstract class AbstractRestClient {
                     }).catch((err) => {
                         reject(err);
                     });
+                } else if (errorResponse instanceof ImperativeError && errorResponse.message === completionTimeoutErrorMessage) {
+                    reject(this.populateError({
+                        msg: "HTTP request timed out after connecting.",
+                        causeErrors: errorResponse,
+                        source: "timeout"
+                    }));
                 } else {
                     reject(this.populateError({
                         msg: "Failed to send an HTTP request.",
@@ -399,6 +439,10 @@ export abstract class AbstractRestClient {
                 clientRequest.end();
             }
 
+            // A request-for-token is completed after a REST request completes.
+            // Remove the request-for-token so it is not used on future requests
+            // with this same session.
+            AuthOrder.removeRequestForToken(this.session.ISession);
         });
     }
 
@@ -443,9 +487,32 @@ export abstract class AbstractRestClient {
      * @param {string} request - REST request type GET|PUT|POST|DELETE
      * @param {any[]} reqHeaders - option headers to include with request
      * @returns {IHTTPSOptions} - completed options object
+     * @throws {ImperativeError} - if the hostname is invalid or credentials are not passed to a session that requires auth
      * @memberof AbstractRestClient
      */
     private buildOptions(resource: string, request: string, reqHeaders?: any[]): IHTTPSOptions {
+
+        this.validateRestHostname(this.session.ISession.hostname);
+
+        if (ImperativeConfig.instance.envVariablePrefix) {
+            const envValues = EnvironmentalVariableSettings.read(ImperativeConfig.instance.envVariablePrefix);
+            const socketConnectTimeout = envValues.socketConnectTimeout?.value;
+            const requestCompletionTimeout = envValues.requestCompletionTimeout?.value;
+
+            this.session.ISession.socketConnectTimeout ??= isNaN(Number(socketConnectTimeout)) ? undefined : Number(socketConnectTimeout);
+            if (this.session.ISession.socketConnectTimeout != null) {
+                Logger.getImperativeLogger().info(
+                    "Setting socket connection timeout ms: " + String(this.mSession.ISession.socketConnectTimeout)
+                );
+            }
+
+            this.session.ISession.requestCompletionTimeout ??= isNaN(Number(requestCompletionTimeout)) ? undefined : Number(requestCompletionTimeout);
+            if (this.session.ISession.requestCompletionTimeout != null) {
+                Logger.getImperativeLogger().info(
+                    "Setting request completion timeout ms: " + String(this.mSession.ISession.requestCompletionTimeout)
+                );
+            }
+        }
 
         /**
          * HTTPS REST request options
@@ -464,7 +531,9 @@ export abstract class AbstractRestClient {
                 resource.trim()
             ),
             port: this.session.ISession.port,
-            rejectUnauthorized: this.session.ISession.rejectUnauthorized
+            rejectUnauthorized: this.session.ISession.rejectUnauthorized,
+            // Timeout after failing to connect for 60 seconds, or sooner if specified
+            timeout: this.session.ISession.socketConnectTimeout
         };
 
         // NOTE(Kelosky): This cannot be set for http requests
@@ -496,7 +565,7 @@ export abstract class AbstractRestClient {
          * order of precedence) into the session options.
          */
         let credsAreSet: boolean = false;
-        for (const nextAuthType of this.session.ISession.authTypeOrder) {
+        for (const nextAuthType of AuthOrder.getAuthOrder(this.session.ISession)) {
             if (nextAuthType === SessConstants.AUTH_TYPE_TOKEN) {
                 credsAreSet ||= this.setTokenAuth(options);
 
@@ -515,7 +584,7 @@ export abstract class AbstractRestClient {
             }
             /* The following commented code was left as a place-holder for adding support
              * for PFX certificates. The commented code was added when the order of credentials
-             * was specified using hard-coded logic. We now use authTypeOrder to specify
+             * was specified using hard-coded logic. We now use the AuthOrder class to specify
              * the order. When adding support for PFX certs, move this logic into a new function
              * (with a name like setCertPfxAuth). Some conditional logic may have to be reversed
              * in that function. See other such functions for an example. Add a new else-if
@@ -897,11 +966,17 @@ export abstract class AbstractRestClient {
             detailMessage =
                 `HTTP(S) client encountered an error. Request could not be initiated to host.\n` +
                 `Review connection details (host, port) and ensure correctness.`;
+        } else if (finalError.source === "timeout") {
+            detailMessage = `HTTP(S) client encountered an error. Request timed out.`;
         } else {
             detailMessage =
                 `Received HTTP(S) error ${finalError.httpStatus} = ${http.STATUS_CODES[finalError.httpStatus]}.`;
         }
 
+        let availCredsMsg = Object.keys(this.mSession.ISession._authCache.availableCreds).toString();
+        if (availCredsMsg.length === 0) {
+            availCredsMsg = "No credentials were supplied";
+        }
         detailMessage += "\n" +
         "\nProtocol:          " + finalError.protocol +
         "\nHost:              " + finalError.host +
@@ -912,6 +987,8 @@ export abstract class AbstractRestClient {
         "\nHeaders:           " + headerDetails +
         "\nPayload:           " + payloadDetails +
         "\nAuth type:         " + this.mSession.ISession.type +
+        "\nAuth order:        " + this.mSession.ISession.authTypeOrder +
+        "\nAvailable creds:   " + availCredsMsg +
         "\nAllow Unauth Cert: " + !this.mSession.ISession.rejectUnauthorized;
         finalError.additionalDetails = detailMessage;
 
@@ -964,6 +1041,22 @@ export abstract class AbstractRestClient {
             } else if (contentType === Headers.OCTET_STREAM[Headers.CONTENT_TYPE]) {
                 this.log.debug("Found octet-stream header in request. Will write in binary mode");
             }
+        }
+    }
+
+    /**
+     * Determine if the hostname parameter is valid before attempting the request
+     *
+     * @private
+     * @param {String} hostname - the hostname to check
+     * @memberof AbstractRestClient
+     * @throws {ImperativeError} - if the hostname is invalid
+     */
+    private validateRestHostname(hostname: string): void {
+        if (!hostname) {
+            throw new ImperativeError({msg: "The hostname is required."});
+        } else if (URL.canParse(hostname)) {
+            throw new ImperativeError({msg: "The hostname should not contain the protocol."});
         }
     }
 

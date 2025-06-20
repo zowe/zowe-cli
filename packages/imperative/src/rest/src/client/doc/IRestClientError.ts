@@ -11,7 +11,7 @@
 
 import { IImperativeError } from "../../../../error";
 
-export type RestErrorSource = "client" | "http";
+export type RestErrorSource = "client" | "http" | "timeout";
 
 /**
  * REST client error interface. Extends IImperativeError to provide additional
@@ -79,6 +79,21 @@ export interface IRestClientError extends IImperativeError {
      */
     request?: string;
     /**
+     * The type of authentication used by this request
+     * @type {string}
+     */
+    authType?: string;
+    /**
+     * The order in which authentication was selected
+     * @type {string}
+     */
+    authTypeOrder?: string;
+    /**
+     * The credentials that were available for this request
+     * @type {string}
+     */
+    availableCreds?: string;
+    /**
      * The error "source". Indicates where the error occurred in the REST client.
      * "client" indicates that the error occurred before the request to the remote
      * system could be fulfilled (normally due to network, bad host/port, etc.).
@@ -87,3 +102,6 @@ export interface IRestClientError extends IImperativeError {
      */
     source: RestErrorSource;
 }
+
+// Export completion timeout error message
+export const completionTimeoutErrorMessage: string = "The request exceeded the specified request completion timeout.";

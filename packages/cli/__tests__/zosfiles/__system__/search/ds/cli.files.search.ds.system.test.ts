@@ -114,6 +114,30 @@ describe("Search Data Sets", () => {
 
         const shellScript = path.join(__dirname, "__scripts__", "command_search_ds_fully_qualified.sh");
 
+        it("should search and find the correct data set", async () => {
+            const response = runCliScript(shellScript, TEST_ENVIRONMENT_NO_PROF, [
+                dsnPrefix + ".PDS1",
+                searchString,
+                defaultSys.zosmf.host,
+                defaultSys.zosmf.port,
+                defaultSys.zosmf.user,
+                defaultSys.zosmf.password,
+                "--searchExactName true"
+            ]);
+
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toContain(`Found "${searchString}" in 2 data sets and PDS members`);
+            expect(response.stdout.toString()).toContain(`Data Set "${dsnPrefix}.PDS1" | Member "MEM2":`);
+            expect(response.stdout.toString()).toContain(`Data Set "${dsnPrefix}.PDS1" | Member "MEM3":`);
+            expect(response.stdout.toString()).not.toContain(`Data Set "${dsnPrefix}.PDS2" | Member "MEM2":`);
+            expect(response.stdout.toString()).not.toContain(`Data Set "${dsnPrefix}.PDS2" | Member "MEM3":`);
+            expect(response.stdout.toString()).not.toContain(`Data Set "${dsnPrefix}.SEQ1":`);
+            expect(response.stdout.toString()).not.toContain(`Data Set "${dsnPrefix}.SEQ4":`);
+            expect(response.stdout.toString()).not.toContain(`Data Set "${dsnPrefix}.SEQ5":`);
+            expect(response.stdout.toString()).toContain(`Line: 1, Column: 41, Contents: ${goodTestString}`);
+        });
+
         it("should search and find the correct data sets", async () => {
             const response = runCliScript(shellScript, TEST_ENVIRONMENT_NO_PROF, [
                 pattern,
@@ -148,13 +172,13 @@ describe("Search Data Sets", () => {
                 "--rfj"
             ]);
             const expectedApiResponse = [
-                {dsn: `${dsnPrefix}.PDS1`, member: "MEM2", matchList: [{line: 1, column: 41, contents: goodTestString}]},
-                {dsn: `${dsnPrefix}.PDS1`, member: "MEM3", matchList: [{line: 1, column: 41, contents: goodTestString}]},
-                {dsn: `${dsnPrefix}.PDS2`, member: "MEM2", matchList: [{line: 1, column: 41, contents: goodTestString}]},
-                {dsn: `${dsnPrefix}.PDS2`, member: "MEM3", matchList: [{line: 1, column: 41, contents: goodTestString}]},
-                {dsn: `${dsnPrefix}.SEQ1`, matchList: [{line: 1, column: 41, contents: goodTestString}]},
-                {dsn: `${dsnPrefix}.SEQ4`, matchList: [{line: 1, column: 41, contents: goodTestString}]},
-                {dsn: `${dsnPrefix}.SEQ5`, matchList: [{line: 1, column: 41, contents: goodTestString}]},
+                {dsn: `${dsnPrefix}.PDS1`, member: "MEM2", matchList: [{line: 1, column: 41, contents: goodTestString, length: 8 }]},
+                {dsn: `${dsnPrefix}.PDS1`, member: "MEM3", matchList: [{line: 1, column: 41, contents: goodTestString, length: 8 }]},
+                {dsn: `${dsnPrefix}.PDS2`, member: "MEM2", matchList: [{line: 1, column: 41, contents: goodTestString, length: 8 }]},
+                {dsn: `${dsnPrefix}.PDS2`, member: "MEM3", matchList: [{line: 1, column: 41, contents: goodTestString, length: 8 }]},
+                {dsn: `${dsnPrefix}.SEQ1`, matchList: [{line: 1, column: 41, contents: goodTestString, length: 8 }]},
+                {dsn: `${dsnPrefix}.SEQ4`, matchList: [{line: 1, column: 41, contents: goodTestString, length: 8 }]},
+                {dsn: `${dsnPrefix}.SEQ5`, matchList: [{line: 1, column: 41, contents: goodTestString, length: 8 }]},
             ];
 
             expect(response.stderr.toString()).toBe("");
@@ -380,13 +404,13 @@ describe("Search Data Sets", () => {
         it("should search and find the correct data sets rfj", async () => {
             const response = runCliScript(shellScript, TEST_ENVIRONMENT, [pattern, searchString, "--rfj"]);
             const expectedApiResponse = [
-                {dsn: `${dsnPrefix}.PDS1`, member: "MEM2", matchList: [{line: 1, column: 41, contents: goodTestString}]},
-                {dsn: `${dsnPrefix}.PDS1`, member: "MEM3", matchList: [{line: 1, column: 41, contents: goodTestString}]},
-                {dsn: `${dsnPrefix}.PDS2`, member: "MEM2", matchList: [{line: 1, column: 41, contents: goodTestString}]},
-                {dsn: `${dsnPrefix}.PDS2`, member: "MEM3", matchList: [{line: 1, column: 41, contents: goodTestString}]},
-                {dsn: `${dsnPrefix}.SEQ1`, matchList: [{line: 1, column: 41, contents: goodTestString}]},
-                {dsn: `${dsnPrefix}.SEQ4`, matchList: [{line: 1, column: 41, contents: goodTestString}]},
-                {dsn: `${dsnPrefix}.SEQ5`, matchList: [{line: 1, column: 41, contents: goodTestString}]},
+                {dsn: `${dsnPrefix}.PDS1`, member: "MEM2", matchList: [{line: 1, column: 41, contents: goodTestString, length: 8}]},
+                {dsn: `${dsnPrefix}.PDS1`, member: "MEM3", matchList: [{line: 1, column: 41, contents: goodTestString, length: 8}]},
+                {dsn: `${dsnPrefix}.PDS2`, member: "MEM2", matchList: [{line: 1, column: 41, contents: goodTestString, length: 8}]},
+                {dsn: `${dsnPrefix}.PDS2`, member: "MEM3", matchList: [{line: 1, column: 41, contents: goodTestString, length: 8}]},
+                {dsn: `${dsnPrefix}.SEQ1`, matchList: [{line: 1, column: 41, contents: goodTestString, length: 8}]},
+                {dsn: `${dsnPrefix}.SEQ4`, matchList: [{line: 1, column: 41, contents: goodTestString, length: 8}]},
+                {dsn: `${dsnPrefix}.SEQ5`, matchList: [{line: 1, column: 41, contents: goodTestString, length: 8}]},
             ];
 
             expect(response.stderr.toString()).toBe("");

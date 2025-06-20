@@ -20,8 +20,9 @@ import { TextUtils } from "../../utilities/src/TextUtils";
 import { format } from "util";
 import { ImperativeError } from "../../error";
 
-export class Console implements IConsole {
+export type ConsoleLevels = "trace" | "debug" | "info" | "warn" | "error" | "fatal" | "off";
 
+export class Console implements IConsole {
     public static readonly LEVELS = ["trace", "debug", "info", "warn", "error", "fatal", "off"];
     public static readonly LEVEL_DEFAULT = "warn";
 
@@ -72,27 +73,27 @@ export class Console implements IConsole {
     }
 
     public isTraceEnabled() {
-        return Console.LEVELS.indexOf("trace") >= Console.LEVELS.indexOf(this.level) ? true : false;
+        return Console.LEVELS.indexOf("trace") >= Console.LEVELS.indexOf(this.level);
     }
 
     public isDebugEnabled() {
-        return Console.LEVELS.indexOf("debug") >= Console.LEVELS.indexOf(this.level) ? true : false;
+        return Console.LEVELS.indexOf("debug") >= Console.LEVELS.indexOf(this.level);
     }
 
     public isInfoEnabled() {
-        return Console.LEVELS.indexOf("info") >= Console.LEVELS.indexOf(this.level) ? true : false;
+        return Console.LEVELS.indexOf("info") >= Console.LEVELS.indexOf(this.level);
     }
 
     public isWarnEnabled() {
-        return Console.LEVELS.indexOf("warn") >= Console.LEVELS.indexOf(this.level) ? true : false;
+        return Console.LEVELS.indexOf("warn") >= Console.LEVELS.indexOf(this.level);
     }
 
     public isErrorEnabled() {
-        return Console.LEVELS.indexOf("error") >= Console.LEVELS.indexOf(this.level) ? true : false;
+        return Console.LEVELS.indexOf("error") >= Console.LEVELS.indexOf(this.level);
     }
 
     public isFatalEnabled() {
-        return Console.LEVELS.indexOf("fatal") >= Console.LEVELS.indexOf(this.level) ? true : false;
+        return Console.LEVELS.indexOf("fatal") >= Console.LEVELS.indexOf(this.level);
     }
 
     public isFormatEnabled() {
@@ -105,7 +106,7 @@ export class Console implements IConsole {
         }
         let adjustedMessage = message;
         if (this.prefix) {
-            adjustedMessage = this.buildPrefix("INFO") + message;
+            adjustedMessage = Console.buildPrefix("INFO") + message;
         }
         if (this.color) {
             adjustedMessage = TextUtils.chalk.grey(adjustedMessage);
@@ -119,7 +120,7 @@ export class Console implements IConsole {
         }
         let adjustedMessage = message;
         if (this.prefix) {
-            adjustedMessage = this.buildPrefix("TRACE") + message;
+            adjustedMessage = Console.buildPrefix("TRACE") + message;
         }
         if (this.color) {
             adjustedMessage = TextUtils.chalk.cyan(adjustedMessage);
@@ -133,7 +134,7 @@ export class Console implements IConsole {
         }
         let adjustedMessage = message;
         if (this.prefix) {
-            adjustedMessage = this.buildPrefix("DEBUG") + message;
+            adjustedMessage = Console.buildPrefix("DEBUG") + message;
         }
         if (this.color) {
             adjustedMessage = TextUtils.chalk.blue(adjustedMessage);
@@ -147,7 +148,7 @@ export class Console implements IConsole {
         }
         let adjustedMessage = message;
         if (this.prefix) {
-            adjustedMessage = this.buildPrefix("WARN") + message;
+            adjustedMessage = Console.buildPrefix("WARN") + message;
         }
         if (this.color) {
             adjustedMessage = TextUtils.chalk.yellow(adjustedMessage);
@@ -161,7 +162,7 @@ export class Console implements IConsole {
         }
         let adjustedMessage = message;
         if (this.prefix) {
-            adjustedMessage = this.buildPrefix("ERROR") + message;
+            adjustedMessage = Console.buildPrefix("ERROR") + message;
         }
         if (this.color) {
             adjustedMessage = TextUtils.chalk.red(adjustedMessage);
@@ -175,7 +176,7 @@ export class Console implements IConsole {
         }
         let adjustedMessage = message;
         if (this.prefix) {
-            adjustedMessage = this.buildPrefix("FATAL") + message;
+            adjustedMessage = Console.buildPrefix("FATAL") + message;
         }
         if (this.color) {
             adjustedMessage = TextUtils.chalk.magenta(adjustedMessage);
@@ -183,10 +184,14 @@ export class Console implements IConsole {
         return this.writeStderr(adjustedMessage, args);
     }
 
+    public log(level: Exclude<ConsoleLevels, "off">, message: any, ...args: any[]) {
+        return this[level]?.(message, args);
+    }
+
     private writeStderr(message: string, ...args: any[]) {
         const data = this.format(message, args);
         if (this.on) {
-            process.stderr.write(this.format(message, args));
+            process.stderr.write(data);
         }
         return data;
     }
@@ -220,7 +225,7 @@ export class Console implements IConsole {
         return formatted + "\n";
     }
 
-    private buildPrefix(type: string) {
+    public static buildPrefix(type: string) {
         // eslint-disable-next-line @typescript-eslint/no-magic-numbers
         const tzOffset = new Date().getTimezoneOffset() * 60000;
         const dateString = new Date(Date.now() - tzOffset).toISOString()

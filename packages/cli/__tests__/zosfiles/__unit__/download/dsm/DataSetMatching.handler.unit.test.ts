@@ -23,6 +23,7 @@ const DEFAULT_PARAMETERS: IHandlerParameters = mockHandlerParameters({
 });
 
 const fakeListOptions: IDsmListOptions = {
+    attributes: true,
     task: {
         percentComplete: 0,
         stageName: 0,

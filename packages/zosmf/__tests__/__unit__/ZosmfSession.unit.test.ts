@@ -10,7 +10,7 @@
 */
 
 import { ZosmfSession } from "../../src/ZosmfSession";
-import { ConnectionPropsForSessCfg, Session, ISession, ICommandArguments } from "@zowe/imperative";
+import { ConnectionPropsForSessCfg, Session, ISession, ICommandArguments, SessConstants } from "@zowe/imperative";
 
 describe("zosmf utils", () => {
     it("should create a session config from cmd args",  () => {
@@ -22,12 +22,16 @@ describe("zosmf utils", () => {
             rejectUnauthorized: false,
             basePath: "fakeBasePath",
             tokenValue: "fake",
-            tokenType: "fake"
+            tokenType: "fake",
+            completionTimeout: 60,
+            establishConnectionTimeout: 30
         };
         const sessIntface: ISession = ZosmfSession.createSessCfgFromArgs(args);
         expect(sessIntface.basePath).toBe("fakeBasePath");
         expect(sessIntface.rejectUnauthorized).toBe(false);
         expect(sessIntface.protocol).toBe("https");
+        expect(sessIntface.requestCompletionTimeout).toBe(60000);
+        expect(sessIntface.socketConnectTimeout).toBe(30000);
     });
 
     it("Should create a session object when tokenValue and tokenType are present", async () => {
@@ -102,6 +106,9 @@ describe("zosmf utils", () => {
             args, {doPrompting: false}
         );
 
+        // ConnectionPropsForSessCfg now returns "none". To cover this scenario, set session type to basic.
+        sessCfg.type = SessConstants.AUTH_TYPE_BASIC;
+
         let error;
         try {
             new Session(sessCfg);
@@ -150,6 +157,9 @@ describe("zosmf utils", () => {
             ZosmfSession.createSessCfgFromArgs(args),
             args, {doPrompting: false}
         );
+
+        // ConnectionPropsForSessCfg now returns "none". To cover this scenario, set session type to basic.
+        sessCfg.type = SessConstants.AUTH_TYPE_BASIC;
 
         let error;
         try {

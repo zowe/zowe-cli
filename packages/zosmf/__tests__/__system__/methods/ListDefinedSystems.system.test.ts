@@ -122,8 +122,7 @@ describe("List Defined Systems Api", () => {
             expect(error).toBeTruthy();
             expect(response).toBeFalsy();
             const jsonCauseErrors = error.causeErrors;
-            expect(jsonCauseErrors.code).toMatch(/(ECONNREFUSED|ECONNRESET|ETIMEDOUT)/);
-            expect(jsonCauseErrors.syscall).toMatch(/(connect|read)/);
+            expect(jsonCauseErrors.message).toContain("Connection timed out.");
         }, 300000);
     });
 });

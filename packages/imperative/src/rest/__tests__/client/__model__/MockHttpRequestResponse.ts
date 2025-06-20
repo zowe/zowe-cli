@@ -36,6 +36,14 @@ export class MockHttpRequestResponse extends EventEmitter {
         // doing important stuff with input data here
     }
 
+    public destroy(err?: Error) {
+        if (err) { this.emit("error", err); }
+    }
+
+    public setTimeout(_timeout: number) {
+        // do nothing
+    }
+
     /**
      * Methods for response
      */
@@ -71,4 +79,9 @@ export class MockHttpRequestResponse extends EventEmitter {
      * @memberof MockHttpRequestResponse
      */
     public reusedSocket: boolean = false;
+
+    /**
+     * Simulate a socket
+     */
+    public socket: any = {};
 }

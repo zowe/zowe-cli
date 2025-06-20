@@ -32,6 +32,9 @@ describe("EnvironmentalVariableSettings tests", () => {
             maskOutput: getSetting(prefix + EnvironmentalVariableSettings.APP_MASK_OUTPUT_SUFFIX, Constants.DEFAULT_MASK_OUTPUT),
             pluginsDir: getSetting(prefix + EnvironmentalVariableSettings.CLI_PLUGINS_DIR_SUFFIX),
             showSecureArgs: getSetting(prefix + EnvironmentalVariableSettings.ENV_SHOW_SECURE_SUFFIX, Constants.DEFAULT_SHOW_SECURE),
+            socketConnectTimeout: getSetting(prefix + EnvironmentalVariableSettings.ENV_SOCKET_CONNECT_TIMEOUT_SUFFIX,
+                Constants.DEFAULT_SOCKET_CONNECT_TIMEOUT),
+            requestCompletionTimeout: getSetting(prefix + EnvironmentalVariableSettings.ENV_REQUEST_COMPLETION_TIMEOUT_SUFFIX),
         };
     };
 

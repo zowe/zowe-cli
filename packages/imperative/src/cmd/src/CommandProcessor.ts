@@ -41,10 +41,10 @@ import { Config } from "../../config/src/Config";
 import { ConfigUtils } from "../../config/src/ConfigUtils";
 import { ConfigConstants } from "../../config/src/ConfigConstants";
 import { IDaemonContext } from "../../imperative/src/doc/IDaemonContext";
-import { IHandlerResponseApi } from "./doc/response/api/handler/IHandlerResponseApi";
 import { Censor } from "../../censor/src/Censor";
 import { EnvironmentalVariableSettings } from "../../imperative/src/env/EnvironmentalVariableSettings";
-
+import { ConnectionPropsForSessCfg } from "../../rest/src/session/ConnectionPropsForSessCfg";
+import { ISession } from "../../rest/src/session/doc/ISession";
 
 /**
  * Internal interface for the command processor that is used by the CLI for `--show-inputs-only`
@@ -78,7 +78,19 @@ interface IResolvedArgsResponse {
      * @type {string[]}
      * @memberof IResolvedArgsResponse
      */
-    locations?: string[]
+    locations?: string[];
+
+    /**
+     * @type {string}
+     * @memberof IResolvedArgsResponse
+     */
+    authenticationType?: string;
+
+    /**
+     * @type {string}
+     * @memberof IResolvedArgsResponse
+     */
+    authTypeOrder?: string;
 }
 
 /**
@@ -755,6 +767,11 @@ export class CommandProcessor {
             commandValues: {} as ICommandArguments
         };
 
+        const sessCfg: ISession = {};
+        ConnectionPropsForSessCfg.resolveSessCfgProps(sessCfg, commandParameters.arguments);
+        showInputsOnly.authenticationType = sessCfg.type;
+        showInputsOnly.authTypeOrder = sessCfg.authTypeOrder.toString();
+
         /**
          * Append profile information
          */
@@ -781,6 +798,7 @@ export class CommandProcessor {
          */
         const secureInputs: Set<string> = new Set([...configSecureProps]);
         let censored = false;
+
 
         /**
          * Only attempt to show the input if it is in the command definition

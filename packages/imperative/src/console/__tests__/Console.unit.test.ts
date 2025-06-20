@@ -9,8 +9,10 @@
 *
 */
 
-import { Console } from "../../console";
+import { Console, ConsoleLevels } from "../../console";
 describe("Console tests", () => {
+    // Update this if adding or renaming a console level!
+    const CONSOLE_LEVELS: Exclude<ConsoleLevels, "off">[] = ["trace", "debug", "info", "warn", "error", "fatal"];
 
     it("Should allow for checking if a level is valid", () => {
         expect(Console.isValidLevel("trace")).toBeTruthy();
@@ -33,15 +35,7 @@ describe("Console tests", () => {
     });
 
     it("Should throw error if setting invalid level", () => {
-        const cons = new Console();
-        const expectMessage = "Invalid level specified";
-        let errorMessage = "";
-        try {
-            cons.level = "crazy";
-        } catch (error) {
-            errorMessage = error.message;
-        }
-        expect(errorMessage).toBe(expectMessage);
+        expect(() => new Console().level = "crazy").toThrow("Invalid level specified");
     });
 
     it("Should allow turning off colors", () => {
@@ -56,6 +50,17 @@ describe("Console tests", () => {
         expect(cons.prefix).toBeTruthy();
         cons.prefix = false;
         expect(cons.prefix).toBeFalsy();
+    });
+
+    it("should reroute log calls to appropriate function for given level", () => {
+        const cons = new Console();
+
+        for (const level of CONSOLE_LEVELS) {
+            const levelMock = jest.spyOn(cons, level).mockImplementation();
+            cons.log(level, `${level} msg: %s`, "hello world");
+            expect(levelMock).toHaveBeenCalledTimes(1);
+            expect(levelMock).toHaveBeenCalledWith(`${level} msg: %s`, ["hello world"]);
+        }
     });
 
     it("Should call stdout and stderr three times each", () => {
@@ -80,9 +85,8 @@ describe("Console tests", () => {
     });
 
     it("Should default to the same prefix as log4js", () => {
-        const cons = new Console();
         jest.spyOn(Date.prototype, "getTimezoneOffset").mockReturnValueOnce(0);
         jest.spyOn(Date, "now").mockReturnValueOnce(45296789);
-        expect((cons as any).buildPrefix("test")).toBe("[1970/01/01 12:34:56.789] [test] ");
+        expect(Console.buildPrefix("test")).toBe("[1970/01/01 12:34:56.789] [test] ");
     });
 });

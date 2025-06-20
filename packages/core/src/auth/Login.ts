@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, ImperativeExpect, Logger, RestConstants, SessConstants, ImperativeError } from "@zowe/imperative";
+import { AbstractSession, AuthOrder, ImperativeExpect, Logger, RestConstants, SessConstants, ImperativeError } from "@zowe/imperative";
 import { ZosmfRestClient } from "../rest/ZosmfRestClient";
 import { LoginConstants } from "./LoginConstants";
 
@@ -33,6 +33,7 @@ export class Login {
         ImperativeExpect.toMatchRegExp(session.ISession.tokenType, "^apimlAuthenticationToken.*",
             `Token type (${session.ISession.tokenType}) for API ML token login must start with 'apimlAuthenticationToken'.`);
 
+        AuthOrder.makingRequestForToken(session.ISession);
         const client = new ZosmfRestClient(session);
         await client.request({
             request: "POST",

@@ -2,10 +2,47 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## `8.23.1`
+
+- BugFix: Updated the `brace-expansion` dependency for technical currency. [#2523](https://github.com/zowe/zowe-cli/pull/2523)
+
+## `8.22.0`
+
+- Enhancement: Updated the Zowe Client REST APIs to obey the choice of authentication specified by a user. [#2491](https://github.com/zowe/zowe-cli/pull/2491)
+- BugFix: Fixed issue where Imperative integration tests can fail due to a missing `glob` dependency. [#2511](https://github.com/zowe/zowe-cli/pull/2511)
+
+## `8.21.0`
+
+- Enhancement: Updated the `Logger` class to support the `winston` library, and introduced migration tools to switch from `log4js` to `winston`. For more information on how to migrate your logger instance to use the `winston` library, refer to the ["Configuring logging" page](https://github.com/zowe/zowe-cli/wiki/Configuring-Logging) on the Zowe CLI wiki. [#2488](https://github.com/zowe/zowe-cli/issues/2488)
+- BugFix: Fixed an issue where downstream dependencies using `log4js` have their log output redirected after creating an instance of the `ProfileInfo` class. [#2488](https://github.com/zowe/zowe-cli/issues/2488)
+
+## `8.20.0`
+
+- Enhancement: Added a request timeout to the Imperative REST client. [#2490](https://github.com/zowe/zowe-cli/pull/2490)
+- Enhancement: Added the `ZOWE_REQUEST_COMPLETION_TIMEOUT` environment variable to the `EnvironmentalVariableSettings` class to allow extenders to determine how long to wait for a request to complete before timing out. [#2490](https://github.com/zowe/zowe-cli/pull/2490)
+
+## `8.19.0`
+
+- Enhancement: Added a connection timeout to the Imperative REST Client, with a default of 60 seconds. [#2486](https://github.com/zowe/zowe-cli/pull/2486)
+- Enhancement: Added the `ZOWE_SOCKET_CONNECT_TIMEOUT` environment variable to the `EnvironmentalVariableSettings` class to allow extenders to determine how long to wait for a socket connection before timing out. [#2486](https://github.com/zowe/zowe-cli/pull/2486)
+- BugFix: Added checks to the `AbstractRestClient` abstract class to ensure the `hostname` parameter does not contain a protocol. [#2486](https://github.com/zowe/zowe-cli/pull/2486)
+- Enhancement: Updated help examples to replace short option aliases (e.g. `-h`) with full option names (e.g. `--help`) for improved clarity and consistency in documentation. [#2484](https://github.com/zowe/zowe-cli/pull/2484)
+- Enhancement: Exposed the private `buildPrefix` function as a replacement of `moment.format(...)`. [#2478](https://github.com/zowe/zowe-cli/pull/2478)
+
+## `8.18.0`
+
+- BugFix: Ensured that the `ProfileCredentials` class evaluates all layers to determine if the credentials are secure. [#2460](https://github.com/zowe/zowe-cli/issues/2460)
+- Enhancement: Allowed instances of the `ProfileCredentials` class to check only for the active layer to determine if the credentials are secure. [#2460](https://github.com/zowe/zowe-cli/issues/2460)
+
+## `8.17.0`
+
+- BugFix: Fixed a bug that resulted in daemon commands running slower with every additional command. [#2470](https://github.com/zowe/zowe-cli/issues/2470)
+
 ## `8.16.0`
 
+- Enhancement: Added a line to the output to display the authentication type when using the `--show-inputs-only` option. [#2462](https://github.com/zowe/zowe-cli/issues/2462)
+- Enhancement: Added a favicon to the Web Help that displays in browser tabs. [#801](https://github.com/zowe/zowe-cli/issues/801)
 - BugFix: When in daemon mode, the user would not see Imperative initialization errors, but now the errors are passed back to the user's terminal window. [#1875](https://github.com/zowe/zowe-cli/issues/1875).
-- Enhancement: Added a favicon to the Web Help that displays in browser tabs. [#801] (https://github.com/zowe/zowe-cli/issues/801)
 
 ## `8.15.1`
 
@@ -13,7 +50,7 @@ All notable changes to the Imperative package will be documented in this file.
 
 ## `8.14.1`
 
-- BugFix: Fixed help text example section's wrapping issue where the first line of the description is wrapped differently than the rest of the lines. [#1945] (https://github.com/zowe/zowe-cli/issues/1945).
+- BugFix: Fixed help text example section's wrapping issue where the first line of the description is wrapped differently than the rest of the lines. [#1945](https://github.com/zowe/zowe-cli/issues/1945).
 
 ## `8.14.0`
 

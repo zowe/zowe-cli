@@ -25,7 +25,7 @@ Array [
   },
   Object {
     "description": "Create a USS directory named \\"testDir\\" with mode \\"rwxrwxrwx\\" ",
-    "options": "testDir -m rwxrwxrwx",
+    "options": "testDir --mode rwxrwxrwx",
   },
 ]
 `;

@@ -152,6 +152,33 @@ exports[`Search Datasets handler process method should search a data set if requ
 Found \\"test\\" in 2 data sets and PDS members"
 `;
 
+exports[`Search Datasets handler process method should search a data set if requested - with searchExactName 1`] = `
+Object {
+  "apiResponse": Array [
+    Object {
+      "dsn": "TEST1.DS",
+      "matchList": Array [
+        Object {
+          "column": 1,
+          "contents": "TEST CONTENTS",
+          "line": 1,
+        },
+      ],
+      "member": "TESTMEM",
+    },
+  ],
+  "commandResponse": "Found \\"test\\" in 1 data sets and PDS members",
+  "success": true,
+}
+`;
+
+exports[`Search Datasets handler process method should search a data set if requested - with searchExactName 2`] = `""`;
+
+exports[`Search Datasets handler process method should search a data set if requested - with searchExactName 3`] = `
+"
+Found \\"test\\" in 1 data sets and PDS members"
+`;
+
 exports[`Search Datasets handler process method should search a data set if requested - with timeout 1`] = `
 Object {
   "apiResponse": Array [

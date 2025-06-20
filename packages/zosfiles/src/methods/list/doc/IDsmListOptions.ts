@@ -10,12 +10,12 @@
 */
 
 import { ITaskWithStatus } from "@zowe/imperative";
-import { IZosFilesOptions } from "../../../doc/IZosFilesOptions";
+import { IListOptions } from "./IListOptions";
 
 /**
  * This interface defines the options that can be sent into the list data sets matching function
  */
-export interface IDsmListOptions extends IZosFilesOptions {
+export interface IDsmListOptions extends Omit<IListOptions, "pattern"> {
     /**
      * Exclude data sets that match these DSLEVEL patterns. Any data sets that match
      * this pattern will not be listed
@@ -31,16 +31,6 @@ export interface IDsmListOptions extends IZosFilesOptions {
      * Default: 1
      */
     maxConcurrentRequests?: number;
-
-    /**
-     * The indicator that we want to show less data sets or members
-     */
-    maxLength?: number;
-
-    /**
-     * An optional search parameter that specifies the first data set name to return in the response document
-     */
-    start?: string;
 
     /**
      * Task status object used by CLI handlers to create progress bars

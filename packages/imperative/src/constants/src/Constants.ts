@@ -105,6 +105,7 @@ export class Constants {
     public static readonly DEFAULT_PROMPT_PHRASE = "PROMPT*";
     public static readonly DEFAULT_MASK_OUTPUT = "TRUE";
     public static readonly DEFAULT_SHOW_SECURE = "FALSE";
+    public static readonly DEFAULT_SOCKET_CONNECT_TIMEOUT = "60000";
 
     public static readonly WEB_HELP_DIR = "web-help";
     public static readonly WEB_DIFF_DIR = "web-diff";
