@@ -155,13 +155,16 @@ describe("Configuration Initialization command handler", () => {
 
             const compObj: any = { $schema: "./fakeapp.schema.json" }; // Fill in the name of the schema file, and make it first
             lodash.merge(compObj, ImperativeConfig.instance.config.properties); // Add the properties from the config
-            if (!user) delete compObj.profiles[baseProfName].properties.secret; // Delete the secret
+            if (!user) {
+                delete compObj.profiles[baseProfName].properties.secret; // Delete the secret
+                delete compObj.profiles[baseProfName].properties.undefined_type; // Delete the undefined secret
+            }
 
             expect(ensureCredMgrSpy).toHaveBeenCalledTimes(1);
             expect(setSchemaSpy).toHaveBeenCalledTimes(1);
             expect(setSchemaSpy).toHaveBeenCalledWith(expectedSchemaObject);
 
-            expect(readPromptSpy).toHaveBeenCalledTimes(user ? 0 : 1); // User config is a skeleton - no prompting should occur
+            expect(readPromptSpy).toHaveBeenCalledTimes(user ? 0 : 2); // User config is a skeleton - no prompting should occur
             // Prompting for secure property
             if (!user) expect(readPromptSpy).toHaveBeenCalledWith(expect.stringContaining("to skip:"), {"hideText": true});
             expect(editFileSpy).not.toHaveBeenCalled();
@@ -172,7 +175,10 @@ describe("Configuration Initialization command handler", () => {
             expect(writeFileSyncSpy).toHaveBeenNthCalledWith(2, configPath, JSON.stringify(compObj, null, ConfigConstants.INDENT));
 
             // Secure value supplied during prompting should be on properties
-            if (!user) expect(ImperativeConfig.instance.config.properties.profiles[baseProfName].properties.secret).toEqual("fakeValue");
+            if (!user) {
+                expect(ImperativeConfig.instance.config.properties.profiles[baseProfName].properties.secret).toEqual("fakeValue");
+                expect(ImperativeConfig.instance.config.properties.profiles[baseProfName].properties.undefined_type).toEqual("fakeValue");
+            }
         });
 
         it("should attempt to do a dry run of initializing the configuration", async () => {
@@ -246,20 +252,26 @@ describe("Configuration Initialization command handler", () => {
 
             const compObj: any = { $schema: "./fakeapp.schema.json" }; // Fill in the name of the schema file, and make it first
             lodash.merge(compObj, ImperativeConfig.instance.config.properties); // Add the properties from the config
-            if (!user) delete compObj.profiles[baseProfName].properties.secret; // Delete the secret
+            if (!user) {
+                delete compObj.profiles[baseProfName].properties.secret; // Delete the secret
+                delete compObj.profiles[baseProfName].properties.undefined_type; // Delete the undefined secret
+            }
 
             expect(ensureCredMgrSpy).toHaveBeenCalledTimes(1);
             expect(setSchemaSpy).toHaveBeenCalledTimes(1);
             expect(setSchemaSpy).toHaveBeenCalledWith(expectedSchemaObject);
 
-            expect(readPromptSpy).toHaveBeenCalledTimes(user ? 0 : 1);
+            expect(readPromptSpy).toHaveBeenCalledTimes(user ? 0 : 2);
             // Prompting for secure property
             if (!user) expect(readPromptSpy).toHaveBeenCalledWith(expect.stringContaining("to skip:"), {"hideText": true});
 
             expect(writeFileSyncSpy).toHaveBeenCalledTimes(2);
 
             // Secure value supplied during prompting should be on properties
-            if (!user) expect(ImperativeConfig.instance.config.properties.profiles[baseProfName].properties.secret).toEqual("fakeValue");
+            if (!user) {
+                expect(ImperativeConfig.instance.config.properties.profiles[baseProfName].properties.secret).toEqual("fakeValue");
+                expect(ImperativeConfig.instance.config.properties.profiles[baseProfName].properties.undefined_type).toEqual("fakeValue");
+            }
 
             // initWithSchema called with the correct parameters
             expect(initWithSchemaSpy).toHaveBeenCalledTimes(1);
@@ -423,7 +435,7 @@ describe("Configuration Initialization command handler", () => {
 
             expect(ensureCredMgrSpy).toHaveBeenCalledTimes(1);
             expect(setSchemaSpy).toHaveBeenCalledTimes(1);
-            expect(readPromptSpy).toHaveBeenCalledTimes(user ? 0 : 1);
+            expect(readPromptSpy).toHaveBeenCalledTimes(user ? 0 : 2);
             expect(editFileSpy).toHaveBeenCalledWith(ImperativeConfig.instance.config.layerActive().path, undefined);
             expect(writeFileSyncSpy).toHaveBeenCalledTimes(2);
 
@@ -459,11 +471,12 @@ describe("Configuration Initialization command handler", () => {
         const compObj: any = { $schema: "./fakeapp.schema.json" }; // Fill in the name of the schema file, and make it first
         lodash.merge(compObj, ImperativeConfig.instance.config.properties); // Add the properties from the config
         delete compObj.profiles[baseProfName].properties.secret; // Delete the secret
+        delete compObj.profiles[baseProfName].properties.undefined_type; // Delete the undefined secret
 
         expect(setSchemaSpy).toHaveBeenCalledTimes(1);
         expect(setSchemaSpy).toHaveBeenCalledWith(expectedSchemaObject);
 
-        expect(readPromptSpy).toHaveBeenCalledTimes(1);
+        expect(readPromptSpy).toHaveBeenCalledTimes(2);
         // Prompting for secure property
         expect(readPromptSpy).toHaveBeenCalledWith(expect.stringContaining("to skip:"), {"hideText": true});
 
@@ -473,7 +486,8 @@ describe("Configuration Initialization command handler", () => {
         expect(writeFileSyncSpy).toHaveBeenNthCalledWith(2, fakeProjPath, JSON.stringify(compObj, null, ConfigConstants.INDENT));
 
         // Secure value supplied during prompting should be on properties
-        expect(ImperativeConfig.instance.config.properties.profiles[baseProfName].properties.secret).toEqual(true);
+        expect(ImperativeConfig.instance.config.properties.profiles[baseProfName].properties.secret).toEqual("true");
+        expect(ImperativeConfig.instance.config.properties.profiles[baseProfName].properties.undefined_type).toEqual(true);
     });
 
     it("should attempt to initialize the project configuration and use boolean false for the prompt", async () => {
@@ -504,11 +518,12 @@ describe("Configuration Initialization command handler", () => {
         const compObj: any = { $schema: "./fakeapp.schema.json" }; // Fill in the name of the schema file, and make it first
         lodash.merge(compObj, ImperativeConfig.instance.config.properties); // Add the properties from the config
         delete compObj.profiles[baseProfName].properties.secret; // Delete the secret
+        delete compObj.profiles[baseProfName].properties.undefined_type; // Delete the undefined secret
 
         expect(setSchemaSpy).toHaveBeenCalledTimes(1);
         expect(setSchemaSpy).toHaveBeenCalledWith(expectedSchemaObject);
 
-        expect(readPromptSpy).toHaveBeenCalledTimes(1);
+        expect(readPromptSpy).toHaveBeenCalledTimes(2);
         // Prompting for secure property
         expect(readPromptSpy).toHaveBeenCalledWith(expect.stringContaining("to skip:"), {"hideText": true});
 
@@ -518,7 +533,8 @@ describe("Configuration Initialization command handler", () => {
         expect(writeFileSyncSpy).toHaveBeenNthCalledWith(2, fakeProjPath, JSON.stringify(compObj, null, ConfigConstants.INDENT));
 
         // Secure value supplied during prompting should be on properties
-        expect(ImperativeConfig.instance.config.properties.profiles[baseProfName].properties.secret).toEqual(false);
+        expect(ImperativeConfig.instance.config.properties.profiles[baseProfName].properties.secret).toEqual("false");
+        expect(ImperativeConfig.instance.config.properties.profiles[baseProfName].properties.undefined_type).toEqual(false);
     });
 
     it("should attempt to initialize the project configuration and use a number for the prompt", async () => {
@@ -551,11 +567,12 @@ describe("Configuration Initialization command handler", () => {
         const compObj: any = { $schema: "./fakeapp.schema.json" }; // Fill in the name of the schema file, and make it first
         lodash.merge(compObj, ImperativeConfig.instance.config.properties); // Add the properties from the config
         delete compObj.profiles[baseProfName].properties.secret; // Delete the secret
+        delete compObj.profiles[baseProfName].properties.undefined_type; // Delete the undefined secret
 
         expect(setSchemaSpy).toHaveBeenCalledTimes(1);
         expect(setSchemaSpy).toHaveBeenCalledWith(expectedSchemaObject);
 
-        expect(readPromptSpy).toHaveBeenCalledTimes(1);
+        expect(readPromptSpy).toHaveBeenCalledTimes(2);
         // Prompting for secure property
         expect(readPromptSpy).toHaveBeenCalledWith(expect.stringContaining("to skip:"), {"hideText": true});
 
@@ -565,7 +582,8 @@ describe("Configuration Initialization command handler", () => {
         expect(writeFileSyncSpy).toHaveBeenNthCalledWith(2, fakeProjPath, JSON.stringify(compObj, null, ConfigConstants.INDENT));
 
         // Secure value supplied during prompting should be on properties
-        expect(ImperativeConfig.instance.config.properties.profiles[baseProfName].properties.secret).toEqual(randomValueNumber);
+        expect(ImperativeConfig.instance.config.properties.profiles[baseProfName].properties.secret).toEqual(randomValueString);
+        expect(ImperativeConfig.instance.config.properties.profiles[baseProfName].properties.undefined_type).toEqual(randomValueNumber);
     });
 
     it("should attempt to initialize the project configuration and handle getting nothing from the prompt", async () => {
@@ -596,11 +614,12 @@ describe("Configuration Initialization command handler", () => {
         const compObj: any = { $schema: "./fakeapp.schema.json" }; // Fill in the name of the schema file, and make it first
         lodash.merge(compObj, ImperativeConfig.instance.config.properties); // Add the properties from the config
         delete compObj.profiles[baseProfName].properties.secret; // Delete the secret
+        delete compObj.profiles[baseProfName].properties.undefined_type; // Delete the undefined secret
 
         expect(setSchemaSpy).toHaveBeenCalledTimes(1);
         expect(setSchemaSpy).toHaveBeenCalledWith(expectedSchemaObject);
 
-        expect(readPromptSpy).toHaveBeenCalledTimes(1);
+        expect(readPromptSpy).toHaveBeenCalledTimes(2);
         // Prompting for secure property
         expect(readPromptSpy).toHaveBeenCalledWith(expect.stringContaining("to skip:"), {"hideText": true});
 
@@ -611,6 +630,7 @@ describe("Configuration Initialization command handler", () => {
 
         // Secure value supplied during prompting should be on properties
         expect(ImperativeConfig.instance.config.properties.profiles[baseProfName].properties.secret).toEqual(undefined);
+        expect(ImperativeConfig.instance.config.properties.profiles[baseProfName].properties.undefined_type).toEqual(undefined);
     });
 
     it("should attempt to initialize the project configuration and overwrite empty value with prompt", async () => {
@@ -651,11 +671,12 @@ describe("Configuration Initialization command handler", () => {
         const compObj: any = { $schema: "./fakeapp.schema.json" }; // Fill in the name of the schema file, and make it first
         lodash.merge(compObj, ImperativeConfig.instance.config.properties); // Add the properties from the config
         delete compObj.profiles[baseProfName].properties.secret; // Delete the secret
+        delete compObj.profiles[baseProfName].properties.undefined_type; // Delete the undefined secret
 
         expect(setSchemaSpy).toHaveBeenCalledTimes(1);
         expect(setSchemaSpy).toHaveBeenCalledWith(expectedSchemaObject);
 
-        expect(readPromptSpy).toHaveBeenCalledTimes(1);
+        expect(readPromptSpy).toHaveBeenCalledTimes(2);
         // Prompting for secure property
         expect(readPromptSpy).toHaveBeenCalledWith(expect.stringContaining("to skip:"), {"hideText": true});
 
@@ -666,6 +687,7 @@ describe("Configuration Initialization command handler", () => {
 
         // Secure value supplied during prompting should be on properties
         expect(ImperativeConfig.instance.config.properties.profiles[baseProfName].properties.secret).toEqual("area51");
+        expect(ImperativeConfig.instance.config.properties.profiles[baseProfName].properties.undefined_type).toEqual("area51");
     });
 
     it("should attempt to initialize the project configuration and overwrite non-empty value with prompt", async () => {
@@ -706,11 +728,12 @@ describe("Configuration Initialization command handler", () => {
         const compObj: any = { $schema: "./fakeapp.schema.json" }; // Fill in the name of the schema file, and make it first
         lodash.merge(compObj, ImperativeConfig.instance.config.properties); // Add the properties from the config
         delete compObj.profiles[baseProfName].properties.secret; // Delete the secret
+        delete compObj.profiles[baseProfName].properties.undefined_type; // Delete the undefined secret
 
         expect(setSchemaSpy).toHaveBeenCalledTimes(1);
         expect(setSchemaSpy).toHaveBeenCalledWith(expectedSchemaObject);
 
-        expect(readPromptSpy).toHaveBeenCalledTimes(1);
+        expect(readPromptSpy).toHaveBeenCalledTimes(2);
         // Prompting for secure property
         expect(readPromptSpy).toHaveBeenCalledWith(expect.stringContaining("to skip:"), {"hideText": true});
 
@@ -721,6 +744,7 @@ describe("Configuration Initialization command handler", () => {
 
         // Secure value supplied during prompting should be on properties
         expect(ImperativeConfig.instance.config.properties.profiles[baseProfName].properties.secret).toEqual("area51");
+        expect(ImperativeConfig.instance.config.properties.profiles[baseProfName].properties.undefined_type).toEqual("area51");
     });
 
     it("should attempt to initialize the project configuration and not overwrite value when prompt is skipped", async () => {
@@ -737,7 +761,9 @@ describe("Configuration Initialization command handler", () => {
                 project_base: {
                     properties: {
                         info: "fakeValue",
-                        secret: "area51"
+                        secret: "area51",
+                        // Keeping this as `"undefined"` to test that we are not coercing it to the falsy value `undefined`
+                        undefined_type: "undefined"
                     }
                 }
             },
@@ -763,11 +789,12 @@ describe("Configuration Initialization command handler", () => {
         const compObj: any = { $schema: "./fakeapp.schema.json" }; // Fill in the name of the schema file, and make it first
         lodash.merge(compObj, ImperativeConfig.instance.config.properties); // Add the properties from the config
         delete compObj.profiles[baseProfName].properties.secret; // Delete the secret
+        delete compObj.profiles[baseProfName].properties.undefined_type; // Delete the undefined secret
 
         expect(setSchemaSpy).toHaveBeenCalledTimes(1);
         expect(setSchemaSpy).toHaveBeenCalledWith(expectedSchemaObject);
 
-        expect(readPromptSpy).toHaveBeenCalledTimes(2);
+        expect(readPromptSpy).toHaveBeenCalledTimes(3);
         // Prompting for secure property
         expect(readPromptSpy).toHaveBeenCalledWith(expect.stringContaining("to skip:"), {"hideText": true});
 
@@ -779,6 +806,7 @@ describe("Configuration Initialization command handler", () => {
         // Secure value supplied during prompting should be on properties
         expect(ImperativeConfig.instance.config.properties.profiles[baseProfName].properties.info).toEqual("fakeValue");
         expect(ImperativeConfig.instance.config.properties.profiles[baseProfName].properties.secret).toEqual("area51");
+        expect(ImperativeConfig.instance.config.properties.profiles[baseProfName].properties.undefined_type).toEqual("undefined");
     });
 
     it("should display warning if unable to securely save credentials", async () => {
@@ -811,6 +839,7 @@ describe("Configuration Initialization command handler", () => {
         const compObj: any = { $schema: "./fakeapp.schema.json" }; // Fill in the name of the schema file, and make it first
         lodash.merge(compObj, ImperativeConfig.instance.config.properties); // Add the properties from the config
         delete compObj.profiles[baseProfName].properties.secret; // Delete the secret
+        delete compObj.profiles[baseProfName].properties.undefined_type; // Delete the undefined secret
 
         expect(readPromptSpy).toHaveBeenCalledTimes(0);
         expect(writeFileSyncSpy).toHaveBeenCalledTimes(2);

@@ -13,14 +13,20 @@ import { ICommandOptionDefinition, IImperativeConfig } from "../../../../lib/ind
 
 const infoOption: ICommandOptionDefinition = {
     name: "info",
-    description: "The info the keep in the profile.",
+    description: "The info to keep in the profile.",
     type: "string"
 };
 
 const secretOption: ICommandOptionDefinition = {
     name: "secret",
-    description: "The secret info the keep in the profile.",
+    description: "The secret info to keep in the profile.",
     type: "string"
+};
+
+const undefinedTypeOption: ICommandOptionDefinition = {
+    name: "undefined_type",
+    description: "The undefined secret info to keep in the profile.",
+    type: undefined
 };
 
 const hostOption: ICommandOptionDefinition = {
@@ -133,6 +139,12 @@ export const config: IImperativeConfig = {
                     secure: true,
                     includeInTemplate: true,
                     optionDefinition: secretOption
+                },
+                undefined_type: {
+                    type: undefined,
+                    secure: true,
+                    includeInTemplate: true,
+                    optionDefinition: undefinedTypeOption
                 },
                 host: {
                     type: "string",
