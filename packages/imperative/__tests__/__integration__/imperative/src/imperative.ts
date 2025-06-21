@@ -23,8 +23,8 @@ const secretOption: ICommandOptionDefinition = {
     type: "string"
 };
 
-const undefinedOption: ICommandOptionDefinition = {
-    name: "undefined",
+const undefinedTypeOption: ICommandOptionDefinition = {
+    name: "undefined_type",
     description: "The undefined secret info to keep in the profile.",
     type: undefined
 };
@@ -140,11 +140,11 @@ export const config: IImperativeConfig = {
                     includeInTemplate: true,
                     optionDefinition: secretOption
                 },
-                undefined: {
+                undefined_type: {
                     type: undefined,
                     secure: true,
                     includeInTemplate: true,
-                    optionDefinition: undefinedOption
+                    optionDefinition: undefinedTypeOption
                 },
                 host: {
                     type: "string",

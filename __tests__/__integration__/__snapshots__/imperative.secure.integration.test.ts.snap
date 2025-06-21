@@ -13,13 +13,13 @@ exports[`Imperative Secure Tests Imperative Test CLI Secure Tests imperative-tes
     properties: 
     secure: 
       - secret
-      - undefined
+      - undefined_type
   global_base: 
     type:       base
     properties: 
     secure: 
       - secret
-      - undefined
+      - undefined_type
 defaults: 
   secured: secured
   base:    project_base
@@ -41,13 +41,13 @@ exports[`Imperative Secure Tests Imperative Test CLI Secure Tests imperative-tes
       secret: (secure value)
     secure: 
       - secret
-      - undefined
+      - undefined_type
   global_base: 
     type:       base
     properties: 
     secure: 
       - secret
-      - undefined
+      - undefined_type
 defaults: 
   secured: secured
   base:    project_base
@@ -73,13 +73,13 @@ project_base:
   properties: 
   secure: 
     - secret
-    - undefined
+    - undefined_type
 global_base: 
   type:       base
   properties: 
   secure: 
     - secret
-    - undefined
+    - undefined_type
 "
 `;
 

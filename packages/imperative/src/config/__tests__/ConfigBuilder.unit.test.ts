@@ -220,9 +220,9 @@ describe("Config Builder tests", () => {
                     type: "base",
                     properties: {
                         secret: "fake value",
-                        undefined: "fake value",
+                        undefined_type: "fake value",
                     },
-                    secure: ["secret", "undefined"]
+                    secure: ["secret", "undefined_type"]
                 }
             };
             expectedConfig.defaults = { base: "global_base", secured: "secured" };

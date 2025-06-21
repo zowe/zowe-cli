@@ -7,7 +7,7 @@ cd test
 # From within a test file, you can influence how many values are provided to the prompts
 #     by setting the environment variable IMPERATIVE_TEST_CLI_SECURE_VALUES
 # See "cli.imperative-test-cli.config.secure.integration.subtest.ts" for an example
-values=${IMPERATIVE_TEST_CLI_SECURE_VALUES:-"anotherFakeValue undefined"}
+values=${IMPERATIVE_TEST_CLI_SECURE_VALUES:-"anotherFakeValue undefined_value"}
 
 # Command should be in the format "executable pos1 pos2 $1 $2 ..."
 command="imperative-test-cli config secure $1"

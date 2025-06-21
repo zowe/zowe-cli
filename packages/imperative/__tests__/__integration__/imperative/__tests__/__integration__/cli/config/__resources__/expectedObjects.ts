@@ -124,7 +124,7 @@ export const expectedSchemaObject = {
                                                 type: "string",
                                                 description: "The secret info to keep in the profile."
                                             },
-                                            undefined: {
+                                            undefined_type: {
                                                 type: undefined as any,
                                                 description: "The undefined secret info to keep in the profile."
                                             },
@@ -166,7 +166,7 @@ export const expectedSchemaObject = {
                                         items: {
                                             enum: [
                                                 "secret",
-                                                "undefined",
+                                                "undefined_type",
                                                 "user",
                                                 "password",
                                                 "tokenValue"
@@ -214,7 +214,7 @@ export const expectedGlobalConfigObject: IConfig = {
         global_base: {
             type: "base",
             properties: {},
-            secure: ["secret", "undefined"]
+            secure: ["secret", "undefined_type"]
         },
     },
     defaults: {
@@ -235,7 +235,7 @@ export const expectedGlobalUserConfigObject: IConfig = {
         global_base: {
             type: "base",
             properties: {},
-            secure: ["secret", "undefined"]
+            secure: ["secret", "undefined_type"]
         },
     },
     defaults: {},
@@ -255,7 +255,7 @@ export const expectedProjectConfigObject: IConfig = {
         project_base: {
             type: "base",
             properties: {},
-            secure: ["secret", "undefined"]
+            secure: ["secret", "undefined_type"]
         },
     },
     defaults: {
@@ -276,7 +276,7 @@ export const expectedProjectUserConfigObject: IConfig = {
         project_base: {
             type: "base",
             properties: {},
-            secure: ["secret", "undefined"]
+            secure: ["secret", "undefined_type"]
         }
     },
     defaults: {},

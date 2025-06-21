@@ -36,8 +36,8 @@ describe("imperative-test-cli config secure", () => {
     const expectedGlobalConfig = lodash.cloneDeep(expectedGlobalConfigObject);
     delete expectedGlobalConfig.$schema;
     expectedGlobalConfig.profiles.global_base.properties.secret = "(secure value)";
-    expectedGlobalConfig.profiles.global_base.properties.undefined = "(secure value)";
-    expectedGlobalConfig.profiles.global_base.secure = ["secret", "undefined"];
+    expectedGlobalConfig.profiles.global_base.properties.undefined_type = "(secure value)";
+    expectedGlobalConfig.profiles.global_base.secure = ["secret", "undefined_type"];
 
     const expectedGlobalUserConfig = lodash.cloneDeep(expectedGlobalUserConfigObject);
     delete expectedGlobalUserConfig.$schema;
@@ -46,8 +46,8 @@ describe("imperative-test-cli config secure", () => {
     const expectedProjectConfig = lodash.cloneDeep(expectedProjectConfigObject);
     delete expectedProjectConfig.$schema;
     expectedProjectConfig.profiles.project_base.properties.secret = "(secure value)";
-    expectedProjectConfig.profiles.project_base.properties.undefined = "(secure value)";
-    expectedProjectConfig.profiles.project_base.secure = ["secret", "undefined"];
+    expectedProjectConfig.profiles.project_base.properties.undefined_type = "(secure value)";
+    expectedProjectConfig.profiles.project_base.secure = ["secret", "undefined_type"];
 
     const expectedProjectUserConfig = lodash.cloneDeep(expectedProjectUserConfigObject);
     delete expectedProjectUserConfig.$schema;
@@ -92,15 +92,15 @@ describe("imperative-test-cli config secure", () => {
         const expectedSecuredValueJson: any = {};
         expectedSecuredValueJson[expectedProjectConfigLocation] = {
             "profiles.project_base.properties.secret": "anotherFakeValue",
-            "profiles.project_base.properties.undefined": "undefined"
+            "profiles.project_base.properties.undefined_type": "undefined_value"
         };
 
         expect(response.stderr.toString()).toEqual("");
         expect(response.status).toEqual(0);
         expect(configJson.data).toEqual(expectedProjectConfig);
         // Should not contain human readable credentials
-        expect(fileContents.profiles.project_base.secure).toEqual(["secret", "undefined"]);
-        expect(fileContents.profiles.project_base.properties).not.toEqual({ secret: "anotherFakeValue", undefined: "undefined" });
+        expect(fileContents.profiles.project_base.secure).toEqual(["secret", "undefined_type"]);
+        expect(fileContents.profiles.project_base.properties).not.toEqual({ secret: "anotherFakeValue", undefined_type: "undefined_value" });
         // Check the securely stored JSON
         expect(securedValueJson).toEqual(expectedSecuredValueJson);
     });
@@ -140,15 +140,15 @@ describe("imperative-test-cli config secure", () => {
         const expectedSecuredValueJson: any = {};
         expectedSecuredValueJson[expectedGlobalConfigLocation] = {
             "profiles.global_base.properties.secret": "anotherFakeValue",
-            "profiles.global_base.properties.undefined": "undefined"
+            "profiles.global_base.properties.undefined_type": "undefined_value"
         };
 
         expect(response.stderr.toString()).toEqual("");
         expect(response.status).toEqual(0);
         expect(configJson.data).toEqual(expectedGlobalConfig);
         // Should not contain human readable credentials
-        expect(fileContents.profiles.global_base.secure).toEqual(["secret", "undefined"]);
-        expect(fileContents.profiles.global_base.properties).not.toEqual({ secret: "anotherFakeValue", undefined: "undefined" });
+        expect(fileContents.profiles.global_base.secure).toEqual(["secret", "undefined_type"]);
+        expect(fileContents.profiles.global_base.properties).not.toEqual({ secret: "anotherFakeValue", undefined_type: "undefined_value" });
         // Check the securely stored JSON
         expect(securedValueJson).toEqual(expectedSecuredValueJson);
     });
@@ -171,8 +171,8 @@ describe("imperative-test-cli config secure", () => {
         expect(response.status).toEqual(0);
         expect(configJson.data).toEqual(expectedGlobalUserConfig);
         // Should not contain human readable credentials
-        expect(fileContents.profiles.global_base.secure).not.toEqual(["secret", "undefined"]);
-        expect(fileContents.profiles.global_base.properties).not.toEqual({ secret: "anotherFakeValue", undefined: "undefined" });
+        expect(fileContents.profiles.global_base.secure).not.toEqual(["secret", "undefined_type"]);
+        expect(fileContents.profiles.global_base.properties).not.toEqual({ secret: "anotherFakeValue", undefined_type: "undefined_value" });
         // Check the securely stored JSON
         expect(securedValueJson).toEqual(expectedSecuredValueJson);
     });
@@ -193,7 +193,9 @@ describe("imperative-test-cli config secure", () => {
         };
         runCliScript(__dirname + "/../set/__scripts__/set.sh", TEST_ENVIRONMENT.workingDir,
             ["profiles", JSON.stringify({ project_base: baseProfile }), "--json"]);
-        const response = runCliScript(__dirname + "/__scripts__/secure_prompt.sh", TEST_ENVIRONMENT.workingDir, [], { IMPERATIVE_TEST_CLI_SECURE_VALUES: "anotherFakeValue" });
+        const response = runCliScript(__dirname + "/__scripts__/secure_prompt.sh", TEST_ENVIRONMENT.workingDir, [], {
+            IMPERATIVE_TEST_CLI_SECURE_VALUES: "anotherFakeValue"
+        });
         const fileContents = JSON.parse(fs.readFileSync(expectedProjectConfigLocation).toString());
         const config = runCliScript(__dirname + "/../list/__scripts__/list_config.sh", TEST_ENVIRONMENT.workingDir, ["--rfj"]).stdout.toString();
         const configJson = JSON.parse(config);

@@ -286,11 +286,11 @@ export const config: IImperativeConfig = {
                             required: true,
                         }
                     },
-                    undefined: {
+                    undefined_type: {
                         type: undefined,
                         secure: true,
                         optionDefinition: {
-                            name: "undefined",
+                            name: "undefined_type",
                             description: "The undefined secret info to keep in the profile.",
                             type: undefined,
                             required: true,
