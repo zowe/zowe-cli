@@ -36,14 +36,16 @@ describe("imperative-test-cli config set", () => {
     expectedProjJson.profiles.secured.properties.info = "(secure value)";
     expectedProjJson.profiles.secured.secure = ["info"];
     expectedProjJson.profiles.project_base.properties.secret = "(secure value)";
-    expectedProjJson.profiles.project_base.secure = ["secret"];
+    expectedProjJson.profiles.project_base.properties.undefined_type = "(secure value)";
+    expectedProjJson.profiles.project_base.secure = ["secret", "undefined_type"];
 
     const expectedGlobalJson = lodash.cloneDeep(expectedGlobalConfigObject);
     delete expectedGlobalJson.$schema;
     expectedGlobalJson.profiles.secured.properties.info = "(secure value)";
     expectedGlobalJson.profiles.secured.secure = ["info"];
     expectedGlobalJson.profiles.global_base.properties.secret = "(secure value)";
-    expectedGlobalJson.profiles.global_base.secure = ["secret"];
+    expectedGlobalJson.profiles.global_base.properties.undefined_type = "(secure value)";
+    expectedGlobalJson.profiles.global_base.secure = ["secret", "undefined_type"];
 
     const expectedProjUserJson = lodash.cloneDeep(expectedProjectUserConfigObject);
     delete expectedProjUserJson.$schema;
@@ -123,6 +125,7 @@ describe("imperative-test-cli config set", () => {
             const expectedSecuredValueJson: any = {};
             expectedSecuredValueJson[expectedProjectConfigLocation] = {
                 "profiles.project_base.properties.secret": "fakeValue",
+                "profiles.project_base.properties.undefined_type": "undefined_value",
                 "profiles.secured.properties.info": "some_fake_information"
             };
 
@@ -170,6 +173,7 @@ describe("imperative-test-cli config set", () => {
             const expectedSecuredValueJson: any = {};
             expectedSecuredValueJson[expectedGlobalConfigLocation] = {
                 "profiles.global_base.properties.secret": "fakeValue",
+                "profiles.global_base.properties.undefined_type": "undefined_value",
                 "profiles.secured.properties.info": "some_fake_information"
             };
 
@@ -245,13 +249,14 @@ describe("imperative-test-cli config set", () => {
             const securedValueJson = JSON.parse(Buffer.from(securedValue, "base64").toString());
             const expectedSecuredValueJson: any = {};
             expectedSecuredValueJson[expectedProjectConfigLocation] = {
-                "profiles.project_base.properties.secret": "area51"
+                "profiles.project_base.properties.secret": "area51",
+                "profiles.project_base.properties.undefined_type": "undefined_value"
             };
 
             expect(response.stderr.toString()).toEqual("");
             expect(response.status).toEqual(0);
             // Should not contain human readable credentials
-            expect(fileContents.profiles.project_base.secure).toEqual(["secret"]);
+            expect(fileContents.profiles.project_base.secure).toEqual(["secret", "undefined_type"]);
             expect(fileContents.profiles.project_base.properties).toEqual({});
             // Check the securely stored JSON
             expect(securedValueJson).toEqual(expectedSecuredValueJson);
