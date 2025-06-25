@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## `8.24.1`
+
+- BugFix: Fixed an issue with the `zowe config` commands to ensure correct user input handling. [#2519](https://github.com/zowe/zowe-cli/issues/2519)
+
 ## `8.23.1`
 
 - BugFix: Updated the `brace-expansion` dependency for technical currency. [#2523](https://github.com/zowe/zowe-cli/pull/2523)

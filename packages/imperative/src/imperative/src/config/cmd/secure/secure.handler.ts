@@ -53,8 +53,8 @@ export default class SecureHandler implements ICommandHandler {
                 await config.api.secure.directSave();
                 params.response.console.log(
                     "Deleted secure properties for the following missing files:\n\t" +
-                        prunedFiles.join("\n\t") +
-                        "\n"
+                    prunedFiles.join("\n\t") +
+                    "\n"
                 );
             }
         }
@@ -90,13 +90,14 @@ export default class SecureHandler implements ICommandHandler {
         }
         // Prompt for values designated as secure
         for (const propName of secureProps) {
+            let propValue: string;
             if (propName.endsWith(".tokenValue")) {
                 params.response.console.log(
                     `Processing secure properties for profile: ${config.api.profiles.getProfileNameFromPath(
                         propName
                     )}`
                 );
-                let propValue = await this.handlePromptForAuthToken(
+                propValue = await this.handlePromptForAuthToken(
                     config,
                     propName
                 );
@@ -106,13 +107,8 @@ export default class SecureHandler implements ICommandHandler {
                         { hideText: true }
                     );
                 }
-
-                // Save the value in the config securely
-                if (propValue) {
-                    config.set(propName, propValue, { secure: true });
-                }
             } else {
-                let propValue = await params.response.console.prompt(
+                propValue = await params.response.console.prompt(
                     `Enter ${propName} ${ConfigConstants.SKIP_PROMPT}`,
                     { hideText: true }
                 );
@@ -126,11 +122,14 @@ export default class SecureHandler implements ICommandHandler {
                             config.properties
                         )
                     );
-                    config.set(propName, propValue, { secure: true });
                 }
             }
+            // Save the value in the config securely
+            if (propValue) {
+                Logger.getAppLogger().trace(`Setting property ${propName} to ${propValue}`);
+                config.set(propName, propValue, { secure: true });
+            }
         }
-
         // Write the config layer
         await config.save();
     }

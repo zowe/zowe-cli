@@ -201,10 +201,12 @@ export default class InitHandler implements ICommandHandler {
         this.promptProps.push(propName);
         const propValue: any = await this.params.response.console.prompt(
             `Enter ${propDesc} ${ConfigConstants.SKIP_PROMPT}`, { hideText: property.secure });
-
         // coerce to correct type
         if (propValue && propValue.trim().length > 0) {
-            return ConfigUtils.coercePropValue(propValue);
+            // TODO How to handle profile property with multiple types
+            // Same TODO as `private ConfigBuilder.getDefaultValue()`
+            const propType = Array.isArray(property.type)? property.type[0] : property.type;
+            return ConfigUtils.coercePropValue(propValue, propType);
         }
 
         return propValue || null;
