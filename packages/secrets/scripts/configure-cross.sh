@@ -11,11 +11,6 @@ case "$1" in
     "aarch64-unknown-linux-gnu")
         set_env "/usr/lib/aarch64-linux-gnu"
         ;;
-    "aarch64-unknown-linux-musl")
-        CHROOT="/aarch64-linux-musl-cross"
-        RUSTFLAGS="-C linker=$CHROOT/bin/aarch64-linux-musl-gcc"
-        set_env "/usr/lib"
-        ;;
     "armv7-unknown-linux-gnueabihf")
         set_env "/usr/lib/arm-linux-gnueabihf"
         ;;
