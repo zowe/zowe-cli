@@ -113,7 +113,7 @@ export class IssueTso {
         if(response.startResponse?.messages?.includes("IKJ56482I")) {
             throw new ImperativeError({
                 msg: `Invalid logon procedure.`,
-                additionalDetails: response.startResponse?.messages
+                additionalDetails: response.startResponse.messages
             });
         }
 
