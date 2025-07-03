@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe Secrets SDK package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Fixed an issue where the buffer for error handling on Windows was passed by value instead of by reference. [#2545](https://github.com/zowe/zowe-cli/pull/2545)
+
 ## `8.18.3`
 
 - BugFix: Fixed an error when accessing secrets on MacOS caused by socket file paths exceeding the maximum allowed length. [#2482](https://github.com/zowe/zowe-cli/pull/2482)
