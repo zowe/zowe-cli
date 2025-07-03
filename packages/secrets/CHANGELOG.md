@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe Secrets SDK package will be documented in this file.
 
-## Recent Changes
+## `8.24.2`
 
 - BugFix: Fixed an issue where the buffer for error handling on Windows was passed by value instead of by reference. [#2545](https://github.com/zowe/zowe-cli/pull/2545)
 
