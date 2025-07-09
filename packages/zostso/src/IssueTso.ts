@@ -110,6 +110,13 @@ export class IssueTso {
             });
         }
 
+        if(response.startResponse?.messages?.includes("IKJ56482I")) {
+            throw new ImperativeError({
+                msg: `Invalid logon procedure.`,
+                additionalDetails: response.startResponse.messages
+            });
+        }
+
         const sendResponse = await SendTso.sendDataToTSOCollect(
             session,
             response.startResponse.servletKey,
