@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe z/OS TSO SDK package will be documented in this file.
 
-## Recent Changes
+## `8.24.3`
 
 - BugFix: When an invalid Logon Procedure is used, an accurate error is now displayed to the user. [#2528](https://github.com/zowe/zowe-explorer-vscode/issues/2528)
 
