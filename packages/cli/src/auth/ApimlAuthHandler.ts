@@ -11,7 +11,7 @@
 
 import { ZosmfSession } from "@zowe/zosmf-for-zowe-sdk";
 import {
-    BaseAuthHandler, AbstractSession, ICommandArguments, IHandlerParameters,
+    AuthOrder, BaseAuthHandler, AbstractSession, ICommandArguments, IHandlerParameters,
     ImperativeConfig, ISession, SessConstants
 } from "@zowe/imperative";
 import { Logout, Login } from "@zowe/core-for-zowe-sdk";
@@ -78,28 +78,11 @@ export default class ApimlAuthHandler extends BaseAuthHandler {
             return;
         }
 
-        if (zosmfProfObj?.authOrder) {
-            // we already have an authOrder in this zosmf profile
-            if (zosmfProfObj.authOrder.search(/^ *token, *bearer/) >= 0 ||
-                zosmfProfObj.authOrder.search(/^ *bearer, *token/) >= 0) {
-                // when both bearer and token are at the start of the authOrder, there is no need to replace authOrder
-                return;
-            }
-        }
-
         // Ensure that the zosmf profile uses the newly acquired token by setting authOrder to token
-        const beforeLayer = config.api.layers.get();
-        const layer = config.api.layers.find(zosmfProfNm);
-        if (layer != null) {
-            const { user, global } = layer;
-            config.api.layers.activate(user, global);
-        }
-        const profilePath = config.api.profiles.getProfilePathFromName(zosmfProfNm);
-        config.set(`${profilePath}.properties.authOrder`, "token, bearer");
-        await config.save();
-
-        // Restore the original layer
-        config.api.layers.activate(beforeLayer.user, beforeLayer.global);
+        await AuthOrder.putNewAuthsFirstOnDisk(zosmfProfNm,
+            [SessConstants.AUTH_TYPE_TOKEN, SessConstants.AUTH_TYPE_BEARER],
+            { onlyTheseAuths: true, clientConfig: config }
+        );
     }
 
     /**
