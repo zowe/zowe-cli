@@ -1,6 +1,6 @@
 {
   "name": "@zowe/cli",
-  "version": "8.24.2",
+  "version": "8.24.4",
   "zoweVersion": "v3.2.0",
   "description": "Zowe CLI is a command line interface (CLI) that provides a simple and streamlined way to interact with IBM z/OS.",
   "author": "Zowe",
@@ -65,7 +65,7 @@
     "@zowe/zos-files-for-zowe-sdk": "8.24.2",
     "@zowe/zos-jobs-for-zowe-sdk": "8.24.2",
     "@zowe/zos-logs-for-zowe-sdk": "8.24.2",
-    "@zowe/zos-tso-for-zowe-sdk": "8.24.2",
+    "@zowe/zos-tso-for-zowe-sdk": "8.24.3",
     "@zowe/zos-uss-for-zowe-sdk": "8.24.2",
     "@zowe/zos-workflows-for-zowe-sdk": "8.24.2",
     "@zowe/zosmf-for-zowe-sdk": "8.24.2",

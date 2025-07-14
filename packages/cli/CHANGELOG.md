@@ -1,6 +1,10 @@
 # Change Log
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## `8.24.4`
+
+- BugFix: Fixed an issue where inconsistent formatting for an example in the `zowe zos-files create data-set-sequential` command caused the example to be improperly displayed in the Zowe web help. Now, the full example command is shown in the code block when displayed through the web help. [#2557](https://github.com/zowe/zowe-cli/issues/2557)
+
 ## `8.24.0`
 
 - Enhancement: Added a `search-exact-name` option to the `zowe zos-files search data-set` command to search the contents of one data set or PDS. [#2529](https://github.com/zowe/zowe-cli/pull/2529)
