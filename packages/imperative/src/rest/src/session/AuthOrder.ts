@@ -419,7 +419,8 @@ export class AuthOrder {
         }
         sessCfg.authTypeOrder = AuthOrder.formNewAuthOrderArray(sessCfg.authTypeOrder, newFirstAuths, newAuthsOpts);
 
-        // record that this auth order was done by a user request
+        // record that this auth order was done for a user request
+        AuthOrder.findOrCreateAuthCache(sessCfg);
         sessCfg._authCache.didUserSetAuthOrder = true;
 
         // after changing authOrder, ensure that the session uses the top auth
