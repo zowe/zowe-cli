@@ -20,6 +20,7 @@ import * as fs from "fs";
 import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/ITestEnvironment";
 import { runCliScript } from "../../../../../../__tests__/__packages__/cli-test-utils/src";
 import { Readable } from "stream";
+import * as path from "path";
 
 let REAL_SESSION: Session;
 let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
@@ -1022,6 +1023,35 @@ describe("Upload USS file", () => {
 
             // Compare file view with matching upload and view encoding (1047).
             expect(readResponseGood.stdout.toString()).toContain(fileContents);
+        });
+
+        it("should upload a USS file with special characters and verify correct chunked upload/download", async () => {
+            const testFilePath = path.join(__dirname, "testfiles", "specialCharTestData.txt");
+            const targetUssPath = ussname;
+            const file = path.basename(targetUssPath);
+            const localDirname = `${testEnvironment.workingDir}/ussDir`;
+            const downloadedFilePath = path.join(localDirname, file);
+
+            const originalContent = fs.readFileSync(testFilePath, "utf-8");
+            const expectedUniqueChars = new Set(stripNewLines(originalContent));
+
+            await Upload.fileToUssFile(
+                REAL_SESSION,
+                testFilePath,
+                targetUssPath,
+                { encoding: "UTF-8" }
+            );
+
+            await Download.ussFile(
+                REAL_SESSION,
+                targetUssPath,
+                { encoding: "UTF-8", file: downloadedFilePath }
+            );
+
+            const downloadedContent = fs.readFileSync(downloadedFilePath, "utf-8");
+            const downloadedUniqueChars = new Set(stripNewLines(downloadedContent));
+
+            expect(downloadedUniqueChars).toStrictEqual(expectedUniqueChars);
         });
     });
 });
