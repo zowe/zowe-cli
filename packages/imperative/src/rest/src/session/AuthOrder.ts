@@ -419,6 +419,9 @@ export class AuthOrder {
         }
         sessCfg.authTypeOrder = AuthOrder.formNewAuthOrderArray(sessCfg.authTypeOrder, newFirstAuths, newAuthsOpts);
 
+        // record that this auth order was done by a user request
+        sessCfg._authCache.didUserSetAuthOrder = true;
+
         // after changing authOrder, ensure that the session uses the top auth
         AuthOrder.putTopAuthInSession(sessCfg);
     }
@@ -460,13 +463,24 @@ export class AuthOrder {
             clientConfig: ImperativeConfig.instance.config
         }
     ): Promise<void> {
-        if (!profileName || profileName.length === 0) {
-            const errMsg = `The supplied profileName = '${profileName}' is null, undefined, or empty.`;
+        if (!profileName) {
+            const errMsg = "The supplied profileName is null, undefined, or empty.";
             Logger.getImperativeLogger().error(errMsg);
             throw new ImperativeError({ msg: errMsg });
         }
-        if (!newFirstAuths || newFirstAuths.length === 0) {
-            const errMsg = `The supplied newFirstAuths = '${newFirstAuths}' is null, undefined, or empty.`;
+
+        if (newFirstAuths == null) {
+            const errMsg = "The supplied newFirstAuths is null or undefined.";
+            Logger.getImperativeLogger().error(errMsg);
+            throw new ImperativeError({ msg: errMsg });
+        }
+        if (!Array.isArray(newFirstAuths)) {
+            const errMsg = "The supplied newFirstAuths is not an array.";
+            Logger.getImperativeLogger().error(errMsg);
+            throw new ImperativeError({ msg: errMsg });
+        }
+        if (newFirstAuths.length === 0) {
+            const errMsg = "The supplied newFirstAuths is empty.";
             Logger.getImperativeLogger().error(errMsg);
             throw new ImperativeError({ msg: errMsg });
         }
