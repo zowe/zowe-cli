@@ -10,10 +10,9 @@
 */
 
 import ApimlAuthHandler from "../../../src/auth/ApimlAuthHandler";
-import { AuthOrder, BaseAuthHandler, Config, IHandlerParameters, ImperativeConfig, SessConstants } from "@zowe/imperative";
+import { AuthOrder, BaseAuthHandler, IHandlerParameters, ImperativeConfig, SessConstants } from "@zowe/imperative";
 import { ZosmfSession } from "@zowe/zosmf-for-zowe-sdk";
 import { Login, Logout } from "@zowe/core-for-zowe-sdk";
-import { ConfigLayers } from "../../../../imperative/src/config/src/api/ConfigLayers";
 
 describe("ApimlAuthHandler", () => {
     it("should not have changed", () => {
