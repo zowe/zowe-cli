@@ -1047,7 +1047,10 @@ describe("Upload USS file", () => {
 
             try {
                 fs.mkdirSync(path.dirname(testFilePath), { recursive: true });
-                fs.writeFileSync(testFilePath, content, "utf-8");
+                if(!fs.existsSync(testFilePath))
+                {
+                    fs.writeFileSync(testFilePath, content, "utf-8");
+                }
 
                 const expectedUniqueChars = new Set(stripNewLines(content));
 
