@@ -431,6 +431,7 @@ export abstract class AbstractRestClient {
                         heldByte = undefined;
                     }
                     this.log.debug("Finished reading requestStream");
+                    this.lastByteReceivedUpload = 0;
                     // finish the request
                     clientRequest.end();
                 });
