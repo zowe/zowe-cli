@@ -1037,10 +1037,13 @@ describe("Upload USS file", () => {
             if (fs.existsSync(testFilePath)) {
                 fs.unlinkSync(testFilePath);
             }
+            if (fs.existsSync(downloadedFilePath)) {
+                fs.unlinkSync(downloadedFilePath);
+            }
 
             // Create the test file with special characters on each line
-            const line = "ñøçüßΩ中日漢字éâêîôû¡¿☆☂＠＃＆％＋＝" + os.EOL;
-            const content = line.repeat(5000);
+            const line = "ñøçüßΩ中日漢字éâêîôû¡¿☆☂＠＃＆％＋＝";
+            const content = Array(5000).fill(line).join(os.EOL);
 
             try {
                 fs.mkdirSync(path.dirname(testFilePath), { recursive: true });
@@ -1066,9 +1069,12 @@ describe("Upload USS file", () => {
 
                 expect(downloadedUniqueChars).toStrictEqual(expectedUniqueChars);
             } finally {
-                // Clean up test file after test completes
+                // Clean up test files
                 if (fs.existsSync(testFilePath)) {
                     fs.unlinkSync(testFilePath);
+                }
+                if (fs.existsSync(downloadedFilePath)) {
+                    fs.unlinkSync(downloadedFilePath);
                 }
             }
         });
