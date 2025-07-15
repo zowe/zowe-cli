@@ -1,7 +1,7 @@
 use napi::{Env, Error, JsBoolean, JsUnknown, Result, Task};
 use napi_derive::napi;
 
-use secrets_core::os;
+use secrets_core::pass;
 
 pub struct SetPassword {
     pub service: String,
@@ -38,7 +38,7 @@ impl Task for GetPassword {
     type JsValue = JsUnknown;
 
     fn compute(&mut self) -> Result<Self::Output> {
-        match os::get_password(&self.service, &self.account) {
+        match pass::get_password(&self.service, &self.account) {
             Ok(pw) => Ok(pw),
             Err(err) => Err(napi::Error::from_reason(err.to_string())),
         }
@@ -62,7 +62,7 @@ impl Task for SetPassword {
     type JsValue = JsUnknown;
 
     fn compute(&mut self) -> Result<Self::Output> {
-        match os::set_password(&self.service, &self.account, &mut self.password) {
+        match pass::set_password(&self.service, &self.account, &mut self.password) {
             Ok(result) => Ok(result),
             Err(err) => Err(napi::Error::from_reason(err.to_string())),
         }
@@ -83,7 +83,7 @@ impl Task for DeletePassword {
     type JsValue = JsBoolean;
 
     fn compute(&mut self) -> Result<Self::Output> {
-        match os::delete_password(&self.service, &self.account) {
+        match pass::delete_password(&self.service, &self.account) {
             Ok(result) => Ok(result),
             Err(err) => Err(napi::Error::from_reason(err.to_string())),
         }
@@ -105,7 +105,7 @@ impl Task for FindCredentials {
 
     fn compute(&mut self) -> Result<Self::Output> {
         let mut credentials: Self::Output = Vec::new();
-        match os::find_credentials(&self.service, &mut credentials) {
+        match pass::find_credentials(&self.service, &mut credentials) {
             Ok(_result) => Ok(credentials),
             Err(err) => Err(napi::Error::from_reason(err.to_string())),
         }
@@ -134,7 +134,7 @@ impl Task for FindPassword {
     type JsValue = JsUnknown;
 
     fn compute(&mut self) -> Result<Self::Output> {
-        match os::find_password(&self.service) {
+        match pass::find_password(&self.service) {
             Ok(pw) => Ok(pw),
             Err(err) => Err(napi::Error::from_reason(err.to_string())),
         }
