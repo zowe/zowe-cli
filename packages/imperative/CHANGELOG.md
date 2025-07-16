@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Resolved an issue where streaming uploads of special characters could result in data corruption at chunk boundaries [#2556](https://github.com/zowe/zowe-cli/issues/2555)
+
 ## `8.24.1`
 
 - BugFix: Fixed an issue with the `zowe config` commands to ensure correct user input handling. [#2519](https://github.com/zowe/zowe-cli/issues/2519)
