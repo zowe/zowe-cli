@@ -21,7 +21,9 @@ export const ExampleTestDefinition: ICommandDefinition = {
     options: [
         {
             name: "Sample Option",
-            description: "has some allowable options and a default " + "Lorem ipsum dolor sit amet, consectetur adipiscing elit, " +
+            description: "has some allowable options and a default." +
+                "This command has been modified to test for handling hyphens in URLs, such as https://zowe-docs.zowe.org. " +
+                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, " +
                 "sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, " +
                 "quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. " +
                 "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat " +
