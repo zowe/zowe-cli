@@ -100,7 +100,7 @@ pub fn set_password(
             dwLowDateTime: 0,
             dwHighDateTime: 0,
         },
-        Persist: CRED_PERSIST_ENTERPRISE,
+        Persist: CRED_PERSIST_SESSION,
         CredentialBlobSize: password.len() as u32,
         CredentialBlob: password.as_ptr() as *mut u8,
         AttributeCount: 0,
