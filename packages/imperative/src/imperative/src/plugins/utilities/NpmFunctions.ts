@@ -20,6 +20,7 @@ import { DaemonRequest, ExecUtils, ImperativeConfig } from "../../../../utilitie
 import { INpmInstallArgs } from "../doc/INpmInstallArgs";
 import { IPluginJsonObject } from "../doc/IPluginJsonObject";
 import { INpmRegistryInfo } from "../doc/INpmRegistryInfo";
+import { Logger } from "../../../../logger";
 
 const npmCmd = findNpmOnPath();
 
@@ -47,7 +48,8 @@ export function installPackages(npmPackage: string, npmArgs: INpmInstallArgs, ve
     const pipe: StdioOptions = ["pipe", "pipe", "pipe"];
     const args = ["install", npmPackage, "-g", "--legacy-peer-deps"];
     if (verbose) {
-        args.push("--loglevel=debug", "--foreground-scripts=true");
+        const logLevel = Logger.getAppLogger().level === "TRACE" ? "silly" : "debug";
+        args.push(`--loglevel=${logLevel}`, "--foreground-scripts=true");
     }
     for (const [k, v] of Object.entries(npmArgs)) {
         if (v != null) {

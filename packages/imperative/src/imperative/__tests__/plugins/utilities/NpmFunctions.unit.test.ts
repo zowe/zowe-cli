@@ -211,10 +211,10 @@ describe("NpmFunctions", () => {
                 registry: fakeRegistry 
             });
 
-                         const calledArgs = spawnSpy.mock.calls[0]?.[1];
-             expect(calledArgs).not.toContain("--loglevel=debug");
-             expect(calledArgs).not.toContain("--foreground-scripts=true");
-             expect(spawnSpy.mock.calls[0]?.[2]?.stdio).toEqual(["pipe", "pipe", "pipe"]);
+            const calledArgs = spawnSpy.mock.calls[0]?.[1];
+            expect(calledArgs).not.toContain("--loglevel=debug");
+            expect(calledArgs).not.toContain("--foreground-scripts=true");
+            expect(spawnSpy.mock.calls[0]?.[2]?.stdio).toEqual(["pipe", "pipe", "pipe"]);
             expect(result).toBe(stdoutBuffer.toString());
         });
 
