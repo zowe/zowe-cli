@@ -131,7 +131,7 @@ describe("PMF: Install Interface", () => {
      */
     const wasNpmInstallCallValid = (expectedPackage: string, expectedRegistry: string, updateSchema?: boolean) => {
         expect(mocks.installPackages).toHaveBeenCalledWith(expectedPackage,
-            { prefix: PMFConstants.instance.PLUGIN_INSTALL_LOCATION, registry: expectedRegistry });
+            { prefix: PMFConstants.instance.PLUGIN_INSTALL_LOCATION, registry: expectedRegistry }, false);
         shouldUpdateSchema(updateSchema ?? true);
     };
 

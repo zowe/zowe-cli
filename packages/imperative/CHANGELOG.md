@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Added `--verbose` option to the `zowe plugins install` command to make debugging easier. [#2562](https://github.com/zowe/zowe-cli/pull/2562)
+
 ## `8.24.5`
 
 - BugFix: Resolved an issue where streaming uploads of special characters could result in data corruption at chunk boundaries [#2556](https://github.com/zowe/zowe-cli/issues/2555)

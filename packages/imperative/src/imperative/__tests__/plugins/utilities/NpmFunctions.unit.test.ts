@@ -48,24 +48,6 @@ describe("NpmFunctions", () => {
         expect(spawnSyncSpy.mock.calls[0][1]).toEqual(expect.arrayContaining(["--registry", fakeRegistry]));
         expect(result).toBe(stdoutBuffer.toString());
     });
-    it("should write output to daemon stream if available", () => {
-        const writeMock = jest.fn().mockReturnValue("true");
-
-        jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({
-            envVariablePrefix: "MOCK_PREFIX",
-            cliHome: "/mock/home",
-            daemonContext: {
-                stream: {
-                    write: writeMock
-                }
-            }
-        } as any);
-
-        jest.spyOn(ExecUtils, "spawnAndGetOutput").mockReturnValue(Buffer.from("Install Succeeded"));
-        const result = npmFunctions.installPackages("samplePlugin", { prefix: "fakePrefix" });
-        expect(writeMock).toHaveBeenCalledWith(DaemonRequest.create({ stdout: "Install Succeeded" }));
-        expect(result).toBe("Install Succeeded");
-    });
 
     it("getRegistry should run npm config command", () => {
         const stdoutBuffer = Buffer.from(fakeRegistry);
@@ -163,5 +145,180 @@ describe("NpmFunctions", () => {
             expect(spawnSpy).toHaveBeenCalledTimes(1);
         });
 
+    });
+
+    describe("installPackages with verbose option", () => {
+        const stdoutBuffer = Buffer.from("Install Succeeded");
+        
+        beforeEach(() => {
+            jest.spyOn(PMFConstants, "instance", "get").mockReturnValue({ PMF_ROOT: __dirname } as any);
+        });
+
+        it("should run npm install with verbose flags when verbose=true", () => {
+            const spawnSpy = jest.spyOn(ExecUtils, "spawnAndGetOutput").mockReturnValue(stdoutBuffer);
+            
+            const result = npmFunctions.installPackages("samplePlugin", { 
+                prefix: "fakePrefix", 
+                registry: fakeRegistry 
+            }, true);
+
+            expect(spawnSpy).toHaveBeenCalledWith(
+                npmCmd,
+                expect.arrayContaining([
+                    "install", 
+                    "samplePlugin", 
+                    "-g", 
+                    "--legacy-peer-deps",
+                    "--loglevel=debug",
+                    "--foreground-scripts=true",
+                    "--prefix", 
+                    "fakePrefix",
+                    "--registry", 
+                    fakeRegistry
+                ]),
+                expect.objectContaining({
+                    cwd: __dirname,
+                    stdio: ["inherit", "inherit", "pipe"]
+                })
+            );
+            expect(result).toBe(stdoutBuffer.toString());
+        });
+
+        it("should run npm install without verbose flags when verbose=false", () => {
+            const spawnSpy = jest.spyOn(ExecUtils, "spawnAndGetOutput").mockReturnValue(stdoutBuffer);
+            
+            const result = npmFunctions.installPackages("samplePlugin", { 
+                prefix: "fakePrefix", 
+                registry: fakeRegistry 
+            }, false);
+
+            expect(spawnSpy).toHaveBeenCalledWith(
+                npmCmd,
+                expect.not.arrayContaining(["--loglevel=debug", "--foreground-scripts=true"]),
+                expect.objectContaining({
+                    cwd: __dirname,
+                    stdio: ["pipe", "pipe", "pipe"]
+                })
+            );
+            expect(result).toBe(stdoutBuffer.toString());
+        });
+
+        it("should run npm install without verbose flags when verbose is not specified", () => {
+            const spawnSpy = jest.spyOn(ExecUtils, "spawnAndGetOutput").mockReturnValue(stdoutBuffer);
+            
+            const result = npmFunctions.installPackages("samplePlugin", { 
+                prefix: "fakePrefix", 
+                registry: fakeRegistry 
+            });
+
+                         const calledArgs = spawnSpy.mock.calls[0]?.[1];
+             expect(calledArgs).not.toContain("--loglevel=debug");
+             expect(calledArgs).not.toContain("--foreground-scripts=true");
+             expect(spawnSpy.mock.calls[0]?.[2]?.stdio).toEqual(["pipe", "pipe", "pipe"]);
+            expect(result).toBe(stdoutBuffer.toString());
+        });
+
+        it("should write verbose output to daemon stream when daemon context is available", () => {
+            const writeMock = jest.fn();
+            const mockDaemonStream = { write: writeMock };
+
+            jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({
+                envVariablePrefix: "MOCK_PREFIX",
+                cliHome: "/mock/home",
+                daemonContext: {
+                    stream: mockDaemonStream
+                }
+            } as any);
+
+            jest.spyOn(ExecUtils, "spawnAndGetOutput").mockReturnValue(stdoutBuffer);
+            
+            const result = npmFunctions.installPackages("samplePlugin", { 
+                prefix: "fakePrefix" 
+            }, true);
+
+            expect(writeMock).toHaveBeenCalledWith(DaemonRequest.create({ stdout: stdoutBuffer.toString() }));
+            expect(result).toBe(stdoutBuffer.toString());
+        });
+
+        it("should handle errors in verbose mode with daemon stream", () => {
+            const writeMock = jest.fn();
+            const mockDaemonStream = { write: writeMock };
+            const errorMessage = "Install failed";
+
+            jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({
+                envVariablePrefix: "MOCK_PREFIX",
+                cliHome: "/mock/home",
+                daemonContext: {
+                    stream: mockDaemonStream
+                }
+            } as any);
+
+            jest.spyOn(ExecUtils, "spawnAndGetOutput").mockImplementation(() => {
+                throw new Error(errorMessage);
+            });
+            
+            const result = npmFunctions.installPackages("samplePlugin", { 
+                prefix: "fakePrefix" 
+            }, true);
+
+            expect(writeMock).toHaveBeenCalledWith(DaemonRequest.create({ stderr: errorMessage }));
+            expect(result).toBe("");
+        });
+
+        it("should handle errors in verbose mode without daemon stream", () => {
+            const stderrWriteSpy = jest.spyOn(process.stderr, 'write').mockImplementation();
+            const errorMessage = "Install failed";
+
+            jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({
+                envVariablePrefix: "MOCK_PREFIX",
+                cliHome: "/mock/home",
+                daemonContext: null
+            } as any);
+
+            jest.spyOn(ExecUtils, "spawnAndGetOutput").mockImplementation(() => {
+                throw new Error(errorMessage);
+            });
+            
+            const result = npmFunctions.installPackages("samplePlugin", { 
+                prefix: "fakePrefix" 
+            }, true);
+
+            expect(stderrWriteSpy).toHaveBeenCalledWith(errorMessage);
+            expect(result).toBe("");
+            
+            stderrWriteSpy.mockRestore();
+        });
+
+        it("should include scoped registry args with verbose option", () => {
+            const spawnSpy = jest.spyOn(ExecUtils, "spawnAndGetOutput").mockReturnValue(stdoutBuffer);
+            
+            const result = npmFunctions.installPackages("@scope/samplePlugin", { 
+                prefix: "fakePrefix", 
+                registry: fakeRegistry,
+                "@scope:registry": "https://scoped-registry.com"
+            }, true);
+
+            expect(spawnSpy).toHaveBeenCalledWith(
+                npmCmd,
+                expect.arrayContaining([
+                    "install", 
+                    "@scope/samplePlugin", 
+                    "-g", 
+                    "--legacy-peer-deps",
+                    "--loglevel=debug",
+                    "--foreground-scripts=true",
+                    "--prefix", 
+                    "fakePrefix",
+                    "--registry", 
+                    fakeRegistry,
+                    "--@scope:registry=https://scoped-registry.com"
+                ]),
+                expect.objectContaining({
+                    cwd: __dirname,
+                    stdio: ["inherit", "inherit", "pipe"]
+                })
+            );
+            expect(result).toBe(stdoutBuffer.toString());
+        });
     });
 });
