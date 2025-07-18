@@ -326,7 +326,7 @@ export class WebHelpGenerator {
         let htmlContent = "<h2>" + this.genBreadcrumb(rootCommandName, fullCommandName) + this.genPrintButton() + "</h2>\n";
 
         // Make regex check here to fix unintentional escaping in an HTTP(S) link
-        markdownContent = markdownContent.replaceAll(/https?:\/\/.+?(?=[ \n])/g, (match) => {
+        markdownContent = markdownContent.replaceAll(/https?:\/\/.+?(?=[ \n'"`\])}])/g, (match) => {
             return match.replaceAll("\\", "");
         });
 
