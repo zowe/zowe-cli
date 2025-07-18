@@ -62,9 +62,11 @@ describe("cmd-cli gen-webhelp example-test", () => {
             expect(response.stdout.toString()).toContain("Launching web help in browser");
 
             const indexFileNm = path.join(TEST_ENVIRONMENT.workingDir, "web-help", "index.html");
+            const helpFileNm = path.join(TEST_ENVIRONMENT.workingDir, "web-help", "docs", "cmd-cli_gen-help_example-test.html");
             const minSizeOfIndex = 1000;
             const stat = fs.statSync(indexFileNm);
             expect(stat.size).toBeGreaterThan(minSizeOfIndex);
+            expect(fs.readFileSync(helpFileNm).toString()).toContain("https://zowe-docs.zowe.org");
         } else {
             expect(response.stdout.toString()).toContain("You are running in an environment with no graphical interface");
         }
