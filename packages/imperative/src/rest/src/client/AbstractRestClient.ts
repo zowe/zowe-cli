@@ -986,10 +986,10 @@ export abstract class AbstractRestClient {
         "\nRequest:           " + finalError.request +
         "\nHeaders:           " + headerDetails +
         "\nPayload:           " + payloadDetails +
-        "\nAuth type:         " + this.mSession.ISession.type +
-        "\nAuth order:        " + this.mSession.ISession.authTypeOrder +
+        "\nAllow Unauth Cert: " + !this.mSession.ISession.rejectUnauthorized +
         "\nAvailable creds:   " + availCredsMsg +
-        "\nAllow Unauth Cert: " + !this.mSession.ISession.rejectUnauthorized;
+        "\nYour auth order:   " + this.mSession.ISession.authTypeOrder +
+        "\nAuth type used:    " + this.mSession.ISession.type;
         finalError.additionalDetails = detailMessage;
 
         // Allow implementation to modify the error as necessary
