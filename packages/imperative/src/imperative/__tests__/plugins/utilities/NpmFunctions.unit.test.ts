@@ -149,31 +149,31 @@ describe("NpmFunctions", () => {
 
     describe("installPackages with verbose option", () => {
         const stdoutBuffer = Buffer.from("Install Succeeded");
-        
+
         beforeEach(() => {
             jest.spyOn(PMFConstants, "instance", "get").mockReturnValue({ PMF_ROOT: __dirname } as any);
         });
 
         it("should run npm install with verbose flags when verbose=true", () => {
             const spawnSpy = jest.spyOn(ExecUtils, "spawnWithInheritedStdio").mockReturnValue();
-            
-            const result = npmFunctions.installPackages("samplePlugin", { 
-                prefix: "fakePrefix", 
-                registry: fakeRegistry 
+
+            const result = npmFunctions.installPackages("samplePlugin", {
+                prefix: "fakePrefix",
+                registry: fakeRegistry
             }, true);
 
             expect(spawnSpy).toHaveBeenCalledWith(
                 npmCmd,
                 expect.arrayContaining([
-                    "install", 
-                    "samplePlugin", 
-                    "-g", 
+                    "install",
+                    "samplePlugin",
+                    "-g",
                     "--legacy-peer-deps",
                     "--loglevel=debug",
                     "--foreground-scripts",
-                    "--prefix", 
+                    "--prefix",
                     "fakePrefix",
-                    "--registry", 
+                    "--registry",
                     fakeRegistry
                 ]),
                 expect.objectContaining({
@@ -185,10 +185,10 @@ describe("NpmFunctions", () => {
 
         it("should run npm install without verbose flags when verbose=false", () => {
             const spawnSpy = jest.spyOn(ExecUtils, "spawnAndGetOutput").mockReturnValue(stdoutBuffer);
-            
-            const result = npmFunctions.installPackages("samplePlugin", { 
-                prefix: "fakePrefix", 
-                registry: fakeRegistry 
+
+            const result = npmFunctions.installPackages("samplePlugin", {
+                prefix: "fakePrefix",
+                registry: fakeRegistry
             }, false);
 
             expect(spawnSpy).toHaveBeenCalledWith(
@@ -204,10 +204,10 @@ describe("NpmFunctions", () => {
 
         it("should run npm install without verbose flags when verbose is not specified", () => {
             const spawnSpy = jest.spyOn(ExecUtils, "spawnAndGetOutput").mockReturnValue(stdoutBuffer);
-            
-            const result = npmFunctions.installPackages("samplePlugin", { 
-                prefix: "fakePrefix", 
-                registry: fakeRegistry 
+
+            const result = npmFunctions.installPackages("samplePlugin", {
+                prefix: "fakePrefix",
+                registry: fakeRegistry
             });
 
             const calledArgs = spawnSpy.mock.calls[0]?.[1];
@@ -230,9 +230,9 @@ describe("NpmFunctions", () => {
             } as any);
 
             jest.spyOn(ExecUtils, "spawnAndGetOutput").mockReturnValue(stdoutBuffer);
-            
-            const result = npmFunctions.installPackages("samplePlugin", { 
-                prefix: "fakePrefix" 
+
+            const result = npmFunctions.installPackages("samplePlugin", {
+                prefix: "fakePrefix"
             }, true);
 
             expect(writeMock).toHaveBeenCalledWith(DaemonRequest.create({ stdout: stdoutBuffer.toString() }));
@@ -255,9 +255,9 @@ describe("NpmFunctions", () => {
             jest.spyOn(ExecUtils, "spawnAndGetOutput").mockImplementation(() => {
                 throw new Error(errorMessage);
             });
-            
-            const result = npmFunctions.installPackages("samplePlugin", { 
-                prefix: "fakePrefix" 
+
+            const result = npmFunctions.installPackages("samplePlugin", {
+                prefix: "fakePrefix"
             }, true);
 
             expect(writeMock).toHaveBeenCalledWith(DaemonRequest.create({ stderr: errorMessage }));
@@ -277,22 +277,22 @@ describe("NpmFunctions", () => {
             jest.spyOn(ExecUtils, "spawnWithInheritedStdio").mockImplementation(() => {
                 throw new Error(errorMessage);
             });
-            
-            const result = npmFunctions.installPackages("samplePlugin", { 
-                prefix: "fakePrefix" 
+
+            const result = npmFunctions.installPackages("samplePlugin", {
+                prefix: "fakePrefix"
             }, true);
 
             expect(stderrWriteSpy).toHaveBeenCalledWith(errorMessage);
             expect(result).toBe("");
-            
+
             stderrWriteSpy.mockRestore();
         });
 
         it("should include scoped registry args with verbose option", () => {
             const spawnSpy = jest.spyOn(ExecUtils, "spawnWithInheritedStdio").mockReturnValue();
-            
-            const result = npmFunctions.installPackages("@scope/samplePlugin", { 
-                prefix: "fakePrefix", 
+
+            const result = npmFunctions.installPackages("@scope/samplePlugin", {
+                prefix: "fakePrefix",
                 registry: fakeRegistry,
                 "@scope:registry": "https://scoped-registry.com"
             }, true);
@@ -300,15 +300,15 @@ describe("NpmFunctions", () => {
             expect(spawnSpy).toHaveBeenCalledWith(
                 npmCmd,
                 expect.arrayContaining([
-                    "install", 
-                    "@scope/samplePlugin", 
-                    "-g", 
+                    "install",
+                    "@scope/samplePlugin",
+                    "-g",
                     "--legacy-peer-deps",
                     "--loglevel=debug",
                     "--foreground-scripts",
-                    "--prefix", 
+                    "--prefix",
                     "fakePrefix",
-                    "--registry", 
+                    "--registry",
                     fakeRegistry,
                     "--@scope:registry=https://scoped-registry.com"
                 ]),

@@ -27,7 +27,7 @@ export class ExecUtils {
      */
     public static spawnAndGetOutput(command: string, args?: string[], options?: SpawnSyncOptions): Buffer | string {
         const result = spawn.sync(command, args, options);
-        return this.handleSpawnResult(result, [command, ...(args ?? [])]);
+        return this.handleSpawnResult(result, [command, ...args ?? []]);
     }
 
     /**
@@ -39,7 +39,7 @@ export class ExecUtils {
      */
     public static spawnWithInheritedStdio(command: string, args?: string[], options?: SpawnSyncOptions): void {
         const result = spawn.sync(command, args, { ...options, stdio: "inherit" });
-        return this.handleSpawnResult<void>(result, [command, ...(args ?? [])]);
+        return this.handleSpawnResult<void>(result, [command, ...args ?? []]);
     }
 
     private static handleSpawnResult<T = Buffer | string>(result: SpawnSyncReturns<Buffer | string>, argv: string[]): T {

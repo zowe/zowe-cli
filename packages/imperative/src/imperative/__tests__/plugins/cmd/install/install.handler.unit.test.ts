@@ -538,7 +538,7 @@ describe("Plugin Management Facility install handler", () => {
         wasGetRegistryCalled();
 
         expect(mocks.install).toHaveBeenCalledTimes(2);
-        
+
         // Check that install was called with verbose=true for file installs
         wasInstallCallValid(`${fileJson.a.package}@${fileJson.a.version}`, packageRegistry, true, true, {});
         wasInstallCallValid(fileJson.plugin2.package, packageRegistry2, true, true, {});
