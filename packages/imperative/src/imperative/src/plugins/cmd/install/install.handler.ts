@@ -71,6 +71,7 @@ export default class InstallHandler implements ICommandHandler {
      */
     public async process(params: IHandlerParameters): Promise<void> {
         const chalk = TextUtils.chalk;
+        const divider = "_______________________________________________________________";
         this.console.debug(`Root Directory: ${PMFConstants.instance.PLUGIN_INSTALL_LOCATION}`);
 
         if (params.arguments.plugin != null && params.arguments.plugin.length > 0 && typeof params.arguments.file !== "undefined") {
@@ -134,11 +135,11 @@ export default class InstallHandler implements ICommandHandler {
 
                             this.console.debug(`Package: ${packageArgument}`);
 
-                            params.response.console.log("\n_______________________________________________________________");
+                            params.response.console.log(`\n${divider}`);
                             params.response.console.log("Location = " + packageInfo.location + "\n");
                             const pluginName = await install(packageArgument, registryInfo, true, params.arguments.verbose);
                             if (params.arguments.verbose) {
-                                params.response.console.log("_______________________________________________________________");
+                                params.response.console.log(divider);
                             }
                             params.response.console.log("Installed plugin name = '" + pluginName + "'");
                             params.response.console.log(runValidatePlugin(pluginName));
@@ -148,12 +149,12 @@ export default class InstallHandler implements ICommandHandler {
                     // write the json file when done if not the plugin json file
                 } else {
                     for (const packageString of params.arguments.plugin) {
-                        params.response.console.log("\n_______________________________________________________________");
+                        params.response.console.log(`\n${divider}`);
                         const registryInfo = NpmRegistryUtils.buildRegistryInfo(packageString, params.arguments.registry);
                         params.response.console.log("Location = " + registryInfo.location + "\n");
                         const pluginName = await install(packageString, registryInfo, false, params.arguments.verbose);
                         if (params.arguments.verbose) {
-                            params.response.console.log("_______________________________________________________________");
+                            params.response.console.log(divider);
                         }
                         params.response.console.log("Installed plugin name = '" + pluginName + "'");
                         params.response.console.log(runValidatePlugin(pluginName));

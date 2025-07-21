@@ -49,7 +49,7 @@ export function installPackages(npmPackage: string, npmArgs: INpmInstallArgs, ve
     const args = ["install", npmPackage, "-g", "--legacy-peer-deps"];
     if (verbose) {
         const logLevel = Logger.getAppLogger().level === "TRACE" ? "silly" : "debug";
-        args.push(`--loglevel=${logLevel}`, "--foreground-scripts=true");
+        args.push(`--loglevel=${logLevel}`, "--foreground-scripts");
     }
     for (const [k, v] of Object.entries(npmArgs)) {
         if (v != null) {
