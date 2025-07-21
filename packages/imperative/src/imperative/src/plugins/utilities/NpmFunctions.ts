@@ -61,16 +61,18 @@ export function installPackages(npmPackage: string, npmArgs: INpmInstallArgs, ve
     const daemonStream = ImperativeConfig.instance.daemonContext?.stream;
     try {
         if (verbose && daemonStream == null) {
-            pipe[0] = pipe[1] = "inherit";
-        }
+            ExecUtils.spawnWithInheritedStdio(npmCmd, args, {
+                cwd: PMFConstants.instance.PMF_ROOT,
+            });
+        } else {
+            execOutput = ExecUtils.spawnAndGetOutput(npmCmd, args, {
+                cwd: PMFConstants.instance.PMF_ROOT,
+                stdio: pipe
+            }).toString();
 
-        execOutput = (ExecUtils.spawnAndGetOutput(npmCmd, args, {
-            cwd: PMFConstants.instance.PMF_ROOT,
-            stdio: pipe
-        }) ?? "").toString();
-
-        if (verbose && daemonStream != null) {
-            daemonStream.write(DaemonRequest.create({ stdout: execOutput }));
+            if (verbose && daemonStream != null) {
+                daemonStream.write(DaemonRequest.create({ stdout: execOutput }));
+            }
         }
     }
     catch (error) {
