@@ -36,6 +36,15 @@ export interface INewFirstAuthsOnDiskOpts extends INewFirstAuthsOpts {
 }
 
 /**
+ * This enum is used to specify if a property is to be used in
+ * a session or in a config file.
+ */
+export enum PropUse {
+    IN_SESS,
+    IN_CFG
+}
+
+/**
  * The purpose of this class is to detect an authentication order property
  * supplied by a user in a profile, command line, or environment variable.
  * That authOrder is then used to place the correct set of credentials into
@@ -197,6 +206,44 @@ export class AuthOrder {
             AuthOrder.chooseDefaultAuthOrder(sessCfg);
         }
         return sessCfg.authTypeOrder;
+    }
+
+    // ***********************************************************************
+    /**
+     * Get the correct property name for use in either a session
+     * or in a config file. Currently only certificate property names
+     * are different between the two.
+     *
+     * @internal - Cannot be used outside of the imperative package
+     *
+     * @param propName - input.
+     *      The name of a property for which we must select the
+     *      correct name to.
+     *
+     * @param desiredUse - input.
+     *      Specifies where property is to be used.
+     *
+     * @return The cached authentication order.
+     */
+    public static getPropNmFor(propName: string, desiredUse: PropUse): string {
+        let propNmToUse: string;
+        if (propName === AuthOrder.SESS_CERT_NAME || propName === "certFile") {
+            if (desiredUse === PropUse.IN_SESS) {
+                propNmToUse = AuthOrder.SESS_CERT_NAME;
+            } else {
+                propNmToUse = "certFile";
+            }
+        } else if (propName === AuthOrder.SESS_CERT_KEY_NAME || propName === "certKeyFile") {
+            if (desiredUse === PropUse.IN_SESS) {
+                propNmToUse = AuthOrder.SESS_CERT_KEY_NAME;
+            } else {
+                propNmToUse = "certKeyFile";
+            }
+        } else {
+            // all other properties have the same name in the session and in the config
+            propNmToUse = propName;
+        }
+        return propNmToUse;
     }
 
     // ***********************************************************************
@@ -730,19 +777,7 @@ export class AuthOrder {
         sessCfg: SessCfgType,
         cmdArgs: ICommandArguments
     ): void {
-        // cert-related properties have different names in command args and in a session
-        const CMD_ARGS_CERT_NAME = "certFile";
-        const CMD_ARGS_CERT_KEY_NAME = "certKeyFile";
-        let cmdArgsCredName;
-
-        if (sessCredName === AuthOrder.SESS_CERT_NAME) {
-            cmdArgsCredName = CMD_ARGS_CERT_NAME;
-        } else if (sessCredName === AuthOrder.SESS_CERT_KEY_NAME) {
-            cmdArgsCredName = CMD_ARGS_CERT_KEY_NAME;
-        } else {
-            cmdArgsCredName = sessCredName;
-        }
-
+        const cmdArgsCredName = AuthOrder.getPropNmFor(sessCredName, PropUse.IN_CFG);
         if (cmdArgs[cmdArgsCredName]) {
             sessCfg._authCache.availableCreds[sessCredName] = cmdArgs[cmdArgsCredName];
         } else if ((sessCfg as any)[sessCredName]) {
