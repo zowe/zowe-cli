@@ -155,7 +155,7 @@ describe("NpmFunctions", () => {
         });
 
         it("should run npm install with verbose flags when verbose=true", () => {
-            const spawnSpy = jest.spyOn(ExecUtils, "spawnAndGetOutput").mockReturnValue(stdoutBuffer);
+            const spawnSpy = jest.spyOn(ExecUtils, "spawnWithInheritedStdio").mockReturnValue();
             
             const result = npmFunctions.installPackages("samplePlugin", { 
                 prefix: "fakePrefix", 
@@ -170,18 +170,17 @@ describe("NpmFunctions", () => {
                     "-g", 
                     "--legacy-peer-deps",
                     "--loglevel=debug",
-                    "--foreground-scripts=true",
+                    "--foreground-scripts",
                     "--prefix", 
                     "fakePrefix",
                     "--registry", 
                     fakeRegistry
                 ]),
                 expect.objectContaining({
-                    cwd: __dirname,
-                    stdio: ["inherit", "inherit", "pipe"]
+                    cwd: __dirname
                 })
             );
-            expect(result).toBe(stdoutBuffer.toString());
+            expect(result).toBeFalsy();
         });
 
         it("should run npm install without verbose flags when verbose=false", () => {
@@ -194,7 +193,7 @@ describe("NpmFunctions", () => {
 
             expect(spawnSpy).toHaveBeenCalledWith(
                 npmCmd,
-                expect.not.arrayContaining(["--loglevel=debug", "--foreground-scripts=true"]),
+                expect.not.arrayContaining(["--loglevel=debug", "--foreground-scripts"]),
                 expect.objectContaining({
                     cwd: __dirname,
                     stdio: ["pipe", "pipe", "pipe"]
@@ -213,7 +212,7 @@ describe("NpmFunctions", () => {
 
             const calledArgs = spawnSpy.mock.calls[0]?.[1];
             expect(calledArgs).not.toContain("--loglevel=debug");
-            expect(calledArgs).not.toContain("--foreground-scripts=true");
+            expect(calledArgs).not.toContain("--foreground-scripts");
             expect(spawnSpy.mock.calls[0]?.[2]?.stdio).toEqual(["pipe", "pipe", "pipe"]);
             expect(result).toBe(stdoutBuffer.toString());
         });
@@ -275,7 +274,7 @@ describe("NpmFunctions", () => {
                 daemonContext: null
             } as any);
 
-            jest.spyOn(ExecUtils, "spawnAndGetOutput").mockImplementation(() => {
+            jest.spyOn(ExecUtils, "spawnWithInheritedStdio").mockImplementation(() => {
                 throw new Error(errorMessage);
             });
             
@@ -290,7 +289,7 @@ describe("NpmFunctions", () => {
         });
 
         it("should include scoped registry args with verbose option", () => {
-            const spawnSpy = jest.spyOn(ExecUtils, "spawnAndGetOutput").mockReturnValue(stdoutBuffer);
+            const spawnSpy = jest.spyOn(ExecUtils, "spawnWithInheritedStdio").mockReturnValue();
             
             const result = npmFunctions.installPackages("@scope/samplePlugin", { 
                 prefix: "fakePrefix", 
@@ -306,7 +305,7 @@ describe("NpmFunctions", () => {
                     "-g", 
                     "--legacy-peer-deps",
                     "--loglevel=debug",
-                    "--foreground-scripts=true",
+                    "--foreground-scripts",
                     "--prefix", 
                     "fakePrefix",
                     "--registry", 
@@ -314,11 +313,10 @@ describe("NpmFunctions", () => {
                     "--@scope:registry=https://scoped-registry.com"
                 ]),
                 expect.objectContaining({
-                    cwd: __dirname,
-                    stdio: ["inherit", "inherit", "pipe"]
+                    cwd: __dirname
                 })
             );
-            expect(result).toBe(stdoutBuffer.toString());
+            expect(result).toBeFalsy();
         });
     });
 });
