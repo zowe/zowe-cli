@@ -2,7 +2,7 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
-## Recent Changes
+## `8.24.6`
 
 - BugFix: Updated the web help generator logic to fix links with special characters [#2553](https://github.com/zowe/zowe-cli/issues/2553) [#2308](https://github.com/zowe/zowe-cli/issues/2308)
 
