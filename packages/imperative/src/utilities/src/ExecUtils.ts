@@ -27,7 +27,7 @@ export class ExecUtils {
      */
     public static spawnAndGetOutput(command: string, args?: string[], options?: SpawnSyncOptions): Buffer | string {
         const result = spawn.sync(command, args, options);
-        return this.handleSpawnResult(result, `${command} ${args.join(" ")}`);
+        return this.handleSpawnResult(result, [command, ...(args ?? [])]);
     }
 
     /**
@@ -39,16 +39,16 @@ export class ExecUtils {
      */
     public static spawnWithInheritedStdio(command: string, args?: string[], options?: SpawnSyncOptions): void {
         const result = spawn.sync(command, args, { ...options, stdio: "inherit" });
-        return this.handleSpawnResult<void>(result, `${command} ${args.join(" ")}`);
+        return this.handleSpawnResult<void>(result, [command, ...(args ?? [])]);
     }
 
-    private static handleSpawnResult<T = Buffer | string>(result: SpawnSyncReturns<Buffer | string>, cmdLine: string): T {
+    private static handleSpawnResult<T = Buffer | string>(result: SpawnSyncReturns<Buffer | string>, argv: string[]): T {
         // Implementation based on the child_process module
         // https://github.com/nodejs/node/blob/main/lib/child_process.js
         if (result.error != null) {
             throw result.error;
         } else if (result.status !== 0) {
-            let msg = `Command failed: ${cmdLine}`;
+            let msg = `Command failed: ${argv.join(" ")}`;
             if (result.stderr?.length > 0) {
                 msg += `\n${result.stderr.toString()}`;
             }
