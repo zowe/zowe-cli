@@ -20,7 +20,7 @@ import { ISession } from "./doc/ISession";
 import { IProfileProperty } from "../../../profiles";
 import { ConfigAutoStore } from "../../../config/src/ConfigAutoStore";
 import { ConfigUtils } from "../../../config/src/ConfigUtils";
-import { AuthOrder } from "./AuthOrder";
+import { AuthOrder, PropUse } from "./AuthOrder";
 import { Censor } from "../../../censor/src/Censor";
 
 /**
@@ -166,14 +166,41 @@ export class ConnectionPropsForSessCfg {
             promptForValues.push("port");
         }
 
-        // when no creds were found, we must ask for user and password
-        if (sessCfgToUse.type === SessConstants.AUTH_TYPE_NONE ||
-            sessCfgToUse.type === SessConstants.AUTH_TYPE_BASIC && !sessCfgToUse.base64EncodedAuth) {
-            if (!sessCfgToUse._authCache?.availableCreds?.user && !doNotPromptForValues.includes("user")) {
-                promptForValues.push("user");
-            }
-            if (!sessCfgToUse._authCache?.availableCreds?.password && !doNotPromptForValues.includes("password")) {
-                promptForValues.push("password");
+        // When no creds were found and the user has not allowed 'none' as a desired auth type,
+        // we prompt for the creds associated with the first type in the authOrder.
+        if (sessCfgToUse.type === SessConstants.AUTH_TYPE_NONE &&
+            !sessCfgToUse.authTypeOrder.includes(SessConstants.AUTH_TYPE_NONE))
+        {
+            switch (sessCfgToUse.authTypeOrder[0]) {
+                case SessConstants.AUTH_TYPE_BASIC:
+                    if (!sessCfgToUse._authCache?.availableCreds?.user && !doNotPromptForValues.includes("user")) {
+                        promptForValues.push("user");
+                    }
+                    if (!sessCfgToUse._authCache?.availableCreds?.password && !doNotPromptForValues.includes("password")) {
+                        promptForValues.push("password");
+                    }
+                    break;
+                case SessConstants.AUTH_TYPE_TOKEN:
+                    if (!sessCfgToUse._authCache?.availableCreds?.tokenType && !doNotPromptForValues.includes("tokenType")) {
+                        promptForValues.push("tokenType");
+                    }
+                    if (!sessCfgToUse._authCache?.availableCreds?.tokenValue && !doNotPromptForValues.includes("tokenValue")) {
+                        promptForValues.push("tokenValue");
+                    }
+                    break;
+                case SessConstants.AUTH_TYPE_BEARER:
+                    if (!sessCfgToUse._authCache?.availableCreds?.tokenValue && !doNotPromptForValues.includes("tokenValue")) {
+                        promptForValues.push("tokenValue");
+                    }
+                    break;
+                case SessConstants.AUTH_TYPE_CERT_PEM:
+                    if (!sessCfgToUse._authCache?.availableCreds?.cert && !doNotPromptForValues.includes("cert")) {
+                        promptForValues.push("cert");
+                    }
+                    if (!sessCfgToUse._authCache?.availableCreds?.certKey && !doNotPromptForValues.includes("certKey")) {
+                        promptForValues.push("certKey");
+                    }
+                    break;
             }
         }
 
@@ -379,27 +406,29 @@ export class ConnectionPropsForSessCfg {
             const profileSchema = this.loadSchemaForSessCfgProps(connOpts.parms, promptForValues);
             const serviceDescription = connOpts.serviceDescription || "your service";
 
-            for (const value of promptForValues) {
+            for (const propNm of promptForValues) {
+                const sessPropNm = AuthOrder.getPropNmFor(propNm, PropUse.IN_SESS);
+                const cfgPropNm = AuthOrder.getPropNmFor(propNm, PropUse.IN_CFG);
                 let answer;
                 while (answer === undefined) {
-                    const hideText = profileSchema[value]?.secure || this.secureSessCfgProps.has(value);
-                    const valuePrompt = this.promptTextForValues[value] ?? `Enter your ${value} for`;
+                    const hideText = profileSchema[cfgPropNm]?.secure || this.secureSessCfgProps.has(sessPropNm);
+                    const valuePrompt = this.promptTextForValues[sessPropNm] ?? `Enter your ${cfgPropNm} for`;
                     let promptText = `${valuePrompt} ${serviceDescription}`;
                     if (hideText) {
                         promptText += " (will be hidden)";
                     }
                     answer = await this.clientPrompt(`${promptText}: `, { hideText, parms: connOpts.parms });
                     if (answer === null) {
-                        throw new ImperativeError({ msg: `Timed out waiting for ${value}.` });
+                        throw new ImperativeError({ msg: `Timed out waiting for ${cfgPropNm}.` });
                     }
                 }
-                if (profileSchema[value]?.type === "number") {
+                if (profileSchema[cfgPropNm]?.type === "number") {
                     answer = Number(answer);
                     if (isNaN(answer)) {
-                        throw new ImperativeError({ msg: `Specified ${value} was not a number.` });
+                        throw new ImperativeError({ msg: `Specified ${cfgPropNm} was not a number.` });
                     }
                 }
-                answers[value] = answer;
+                answers[sessPropNm] = answer;
             }
 
             return answers;
