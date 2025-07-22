@@ -224,6 +224,14 @@ export abstract class AbstractRestClient {
     protected lastByteReceived: number = 0;
 
     /**
+     * Last byte received when upload is being streamed
+     * @private
+     * @type {number}
+     * @memberof AbstractRestClient
+     */
+    protected lastByteReceivedUpload: number = 0;
+
+    /**
      * Creates an instance of AbstractRestClient.
      * @param {AbstractSession} mSession - representing connection to this api
      * @param topDefaultAuth
@@ -395,16 +403,7 @@ export abstract class AbstractRestClient {
                     this.log.debug("Writing data chunk of length %d from requestStream to clientRequest", data.byteLength);
                     if (this.mNormalizeRequestNewlines) {
                         this.log.debug("Normalizing new lines in request chunk to \\n");
-                        let dataString = data.toString();
-                        if (heldByte != null) {
-                            dataString = heldByte + dataString;
-                            heldByte = undefined;
-                        }
-                        if (dataString.charAt(dataString.length - 1) === "\r") {
-                            heldByte = dataString.charAt(dataString.length - 1);
-                            dataString = dataString.slice(0,-1);
-                        }
-                        data = Buffer.from(dataString.replace(/\r?\n/g, "\n"));
+                        data = IO.processNewlines(data, this.lastByteReceivedUpload);
                     }
                     if (this.mTask != null) {
                         bytesUploaded += data.byteLength;
@@ -416,6 +415,7 @@ export abstract class AbstractRestClient {
                         }
                     }
                     clientRequest.write(data);
+                    this.lastByteReceivedUpload = data[data.byteLength - 1];
                 });
                 options.requestStream.on("error", (streamError: any) => {
                     this.log.error("Error encountered reading requestStream: " + streamError);
@@ -431,6 +431,7 @@ export abstract class AbstractRestClient {
                         heldByte = undefined;
                     }
                     this.log.debug("Finished reading requestStream");
+                    this.lastByteReceivedUpload = 0;
                     // finish the request
                     clientRequest.end();
                 });
