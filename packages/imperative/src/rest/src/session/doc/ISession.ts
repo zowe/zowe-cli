@@ -180,9 +180,8 @@ export interface ISession {
      * The type in authTypeOrder[0] is used first, authTypeOrder[1] second, etc.
      * Values are specified using SessConstants.AUTH_TYPE_XXX values.
      *
-     * The authTypeOrder property is specified by the end user and is managed by
-     * Zowe SDK functions. Consuming applications should not modify the contents
-     * of the authTypeOrder property.
+     * The authTypeOrder property can be specified by the end user and is used by
+     * Zowe SDK functions.
      *
      * @type {string[]}
      * @memberof ISession
