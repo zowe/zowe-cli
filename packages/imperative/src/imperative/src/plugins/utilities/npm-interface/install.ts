@@ -86,7 +86,7 @@ export const updateExtendersJson = (
  *                                          it.
  * @returns {string} The name of the plugin.
  */
-export async function install(packageLocation: string, registryInfo: INpmRegistryInfo, installFromFile = false) {
+export async function install(packageLocation: string, registryInfo: INpmRegistryInfo, installFromFile = false, verbose = false) {
     const iConsole = Logger.getImperativeLogger();
     let npmPackage = packageLocation;
 
@@ -124,7 +124,7 @@ export async function install(packageLocation: string, registryInfo: INpmRegistr
         installPackages(npmPackage, {
             prefix: PMFConstants.instance.PLUGIN_INSTALL_LOCATION,
             ...registryInfo.npmArgs,
-        });
+        }, verbose);
 
         // We fetch the package name and version of newly installed plugin
         const packageInfo = await getPackageInfo(npmPackage);

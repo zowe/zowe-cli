@@ -8,6 +8,11 @@ All notable changes to the Imperative package will be documented in this file.
 - Enhancement: When no credentials are available, prompt for the credentials related to the first entry in the authOrder property instead of arbitrarily prompting for user and password. [#2568](https://github.com/zowe/zowe-cli/pull/2568)
 - Enhancement: Reordered authOrder information in error messages to be easier for a user to follow the effect of the authOrder. [#2568](https://github.com/zowe/zowe-cli/pull/2568)
 
+## `8.25.0`
+
+- Enhancement: Added `--verbose` option to the `zowe plugins install` command to make debugging easier. [#2562](https://github.com/zowe/zowe-cli/pull/2562)
+- Enhancement: Added `spawnWithInheritedStdio` method to `ExecUtils` which inherits output instead of piping it. [#2562](https://github.com/zowe/zowe-cli/pull/2562)
+
 ## `8.24.6`
 
 - BugFix: Updated the web help generator logic to fix links with special characters [#2553](https://github.com/zowe/zowe-cli/issues/2553) [#2308](https://github.com/zowe/zowe-cli/issues/2308)
