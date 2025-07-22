@@ -67,4 +67,55 @@ describe("ExecUtils tests", () => {
             expect(caughtError.message).toBe(`Command failed: cat ${filename}\n${stderrBuffer.toString()}`);
         });
     });
+
+    describe("spawnWithInheritedStdio", () => {
+        afterEach(() => {
+            jest.clearAllMocks();
+        });
+
+        it("returns undefined if command succeeds", () => {
+            const message = "Hello world!";
+            const options: any = { cwd: __dirname, stdio: "inherit" };
+            jest.spyOn(spawn, "sync").mockReturnValueOnce({
+                status: 0,
+                stdout: undefined
+            } as any);
+            const execOutput = ExecUtils.spawnWithInheritedStdio("echo", [message], options);
+            expect(spawn.sync).toHaveBeenCalledWith("echo", [message], options);
+            expect(execOutput).toBeUndefined();
+        });
+
+        it("throws error if command fails and returns error object", () => {
+            const filename = "invalid.txt";
+            const errMsg = `cat: ${filename}: No such file or directory`;
+            jest.spyOn(spawn, "sync").mockReturnValueOnce({
+                error: new Error(errMsg)
+            } as any);
+            let caughtError: any;
+            try {
+                ExecUtils.spawnWithInheritedStdio("cat", [filename]);
+            } catch (error) {
+                caughtError = error;
+            }
+            expect(spawn.sync).toHaveBeenCalledWith("cat", [filename], { stdio: "inherit" });
+            expect(caughtError.message).toBe(errMsg);
+        });
+
+        it("throws error if command fails with non-zero status", () => {
+            const filename = "invalid.txt";
+            const stderrBuffer = Buffer.from(`cat: ${filename}: No such file or directory\n`);
+            jest.spyOn(spawn, "sync").mockReturnValueOnce({
+                status: 1,
+                stderr: stderrBuffer
+            } as any);
+            let caughtError: any;
+            try {
+                ExecUtils.spawnWithInheritedStdio("cat", [filename]);
+            } catch (error) {
+                caughtError = error;
+            }
+            expect(spawn.sync).toHaveBeenCalledWith("cat", [filename], { stdio: "inherit" });
+            expect(caughtError.message).toBe(`Command failed: cat ${filename}\n${stderrBuffer.toString()}`);
+        });
+    });
 });

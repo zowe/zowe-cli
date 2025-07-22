@@ -20,6 +20,7 @@ import { DaemonRequest, ExecUtils, ImperativeConfig } from "../../../../utilitie
 import { INpmInstallArgs } from "../doc/INpmInstallArgs";
 import { IPluginJsonObject } from "../doc/IPluginJsonObject";
 import { INpmRegistryInfo } from "../doc/INpmRegistryInfo";
+import { Logger } from "../../../../logger";
 
 const npmCmd = findNpmOnPath();
 
@@ -43,9 +44,13 @@ export function findNpmOnPath(): string {
  * @return {string} command response
  *
  */
-export function installPackages(npmPackage: string, npmArgs: INpmInstallArgs): string {
+export function installPackages(npmPackage: string, npmArgs: INpmInstallArgs, verbose = false): string {
     const pipe: StdioOptions = ["pipe", "pipe", "pipe"];
     const args = ["install", npmPackage, "-g", "--legacy-peer-deps"];
+    if (verbose) {
+        const logLevel = Logger.getAppLogger().level === "TRACE" ? "silly" : "debug";
+        args.push(`--loglevel=${logLevel}`, "--foreground-scripts");
+    }
     for (const [k, v] of Object.entries(npmArgs)) {
         if (v != null) {
             // If npm arg starts with @ like @zowe:registry, must use = as separator
@@ -55,13 +60,19 @@ export function installPackages(npmPackage: string, npmArgs: INpmInstallArgs): s
     let execOutput = "";
     const daemonStream = ImperativeConfig.instance.daemonContext?.stream;
     try {
-        execOutput = ExecUtils.spawnAndGetOutput(npmCmd, args, {
-            cwd: PMFConstants.instance.PMF_ROOT,
-            stdio: pipe
-        }).toString();
+        if (verbose && daemonStream == null) {
+            ExecUtils.spawnWithInheritedStdio(npmCmd, args, {
+                cwd: PMFConstants.instance.PMF_ROOT,
+            });
+        } else {
+            execOutput = ExecUtils.spawnAndGetOutput(npmCmd, args, {
+                cwd: PMFConstants.instance.PMF_ROOT,
+                stdio: pipe
+            }).toString();
 
-        if(daemonStream != null) {
-            daemonStream.write(DaemonRequest.create({ stdout: execOutput}));
+            if (verbose && daemonStream != null) {
+                daemonStream.write(DaemonRequest.create({ stdout: execOutput }));
+            }
         }
     }
     catch (error) {
