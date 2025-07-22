@@ -2,7 +2,7 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
-## Recent Changes
+## `8.25.0`
 
 - Enhancement: Added `--verbose` option to the `zowe plugins install` command to make debugging easier. [#2562](https://github.com/zowe/zowe-cli/pull/2562)
 - Enhancement: Added `spawnWithInheritedStdio` method to `ExecUtils` which inherits output instead of piping it. [#2562](https://github.com/zowe/zowe-cli/pull/2562)
