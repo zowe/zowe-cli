@@ -1,6 +1,10 @@
 # Change Log
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Replaced logic in ApimlAuthHandler.processLogin with a call to a new common function AuthOrder.putNewAuthsFirstOnDisk. There are no changes to the external API and no changes to the functionality. [#2568](https://github.com/zowe/zowe-cli/pull/2568)
+
 ## `8.24.4`
 
 - BugFix: Fixed an issue where inconsistent formatting for an example in the `zowe zos-files create data-set-sequential` command caused the example to be improperly displayed in the Zowe web help. Now, the full example command is shown in the code block when displayed through the web help. [#2557](https://github.com/zowe/zowe-cli/issues/2557)
