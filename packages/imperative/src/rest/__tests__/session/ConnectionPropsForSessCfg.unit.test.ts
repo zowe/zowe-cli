@@ -14,7 +14,6 @@ jest.mock("../../../logger/src/LoggerUtils");
 import { ConnectionPropsForSessCfg } from "../../src/session/ConnectionPropsForSessCfg";
 import { CliUtils } from "../../../utilities/src/CliUtils";
 import { ImperativeError } from "../../../error";
-import { AuthOrder } from "../../src/session/AuthOrder";
 import * as SessConstants from "../../src/session/SessConstants";
 import { ISession } from "../../src/session/doc/ISession";
 import { Logger } from "../../../logger";
