@@ -9,7 +9,7 @@
 *
 */
 
-import { AuthOrder } from "../../src/session/AuthOrder";
+import { AuthOrder, PropUse } from "../../src/session/AuthOrder";
 import { ISession } from "../../src/session/doc/ISession";
 import {
     AUTH_TYPE_CHOICES, AUTH_TYPE_NONE, AUTH_TYPE_BASIC, AUTH_TYPE_BEARER,
@@ -1077,6 +1077,59 @@ describe("AuthOrder", () => {
                 );
 
                 expect(updatedAuthArray).toEqual(expectedAuthArray);
+            });
+        });
+
+        describe("getPropNmFor", () => {
+            const sessCertName = "cert";
+            const cfgCertName = "certFile";
+            const sessCertKeyName = "certKey";
+            const cfgCertKeyName = "certKeyFile";
+
+            it("should return the session property name when given a cert name from a session", async () => {
+                const returnedPropName = AuthOrder.getPropNmFor(sessCertName, PropUse.IN_SESS);
+                expect(returnedPropName).toEqual(sessCertName);
+            });
+
+            it("should return the session property name when given a cert name from a config", async () => {
+                const returnedPropName = AuthOrder.getPropNmFor(cfgCertName, PropUse.IN_SESS);
+                expect(returnedPropName).toEqual(sessCertName);
+            });
+
+            it("should return the config property name when given a cert name from a session", async () => {
+                const returnedPropName = AuthOrder.getPropNmFor(sessCertName, PropUse.IN_CFG);
+                expect(returnedPropName).toEqual(cfgCertName);
+            });
+
+            it("should return the config property name when given a cert name from a config", async () => {
+                const returnedPropName = AuthOrder.getPropNmFor(cfgCertName, PropUse.IN_CFG);
+                expect(returnedPropName).toEqual(cfgCertName);
+            });
+
+            it("should return the session property name when given a cert key name from a session", async () => {
+                const returnedPropName = AuthOrder.getPropNmFor(sessCertKeyName, PropUse.IN_SESS);
+                expect(returnedPropName).toEqual(sessCertKeyName);
+            });
+
+            it("should return the session property name when given a cert key name from a config", async () => {
+                const returnedPropName = AuthOrder.getPropNmFor(cfgCertKeyName, PropUse.IN_SESS);
+                expect(returnedPropName).toEqual(sessCertKeyName);
+            });
+
+            it("should return the config property name when given a cert key name from a session", async () => {
+                const returnedPropName = AuthOrder.getPropNmFor(sessCertKeyName, PropUse.IN_CFG);
+                expect(returnedPropName).toEqual(cfgCertKeyName);
+            });
+
+            it("should return the config property name when given a cert key name from a config", async () => {
+                const returnedPropName = AuthOrder.getPropNmFor(cfgCertKeyName, PropUse.IN_CFG);
+                expect(returnedPropName).toEqual(cfgCertKeyName);
+            });
+
+            it("should return the same property name when it is not a cert property", async () => {
+                const nonCertName = "user";
+                const returnedPropName = AuthOrder.getPropNmFor(nonCertName, PropUse.IN_SESS);
+                expect(returnedPropName).toEqual(nonCertName);
             });
         });
     });
