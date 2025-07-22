@@ -14,6 +14,7 @@ jest.mock("../../../logger/src/LoggerUtils");
 import { ConnectionPropsForSessCfg } from "../../src/session/ConnectionPropsForSessCfg";
 import { CliUtils } from "../../../utilities/src/CliUtils";
 import { ImperativeError } from "../../../error";
+import { AuthOrder } from "../../src/session/AuthOrder";
 import * as SessConstants from "../../src/session/SessConstants";
 import { ISession } from "../../src/session/doc/ISession";
 import { Logger } from "../../../logger";
@@ -1114,6 +1115,229 @@ describe("ConnectionPropsForSessCfg tests", () => {
         expect(sessCfgWithConnProps.port).toBe(portFromPrompt);
         expect(sessCfgWithConnProps.tokenType).toBeUndefined();
         expect(sessCfgWithConnProps.tokenValue).toBeUndefined();
+    });
+
+    it("should get tokenType from prompt when token is first in authOrder", async () => {
+        const tokenTypeFromPrompt = "FakeTokenType";
+        const tokenValFromArgs = "FakeTokenVal";
+
+        const sleepReal = CliUtils.sleep;
+        CliUtils.sleep = jest.fn();
+        const readPromptReal = CliUtils.readPrompt;
+        CliUtils.readPrompt = jest.fn(() => {
+            return Promise.resolve(tokenTypeFromPrompt);
+        });
+
+        const initialSessCfg = {
+            hostname: "SomeHost",
+            port: 11,
+            rejectUnauthorized: true,
+            authTypeOrder: [
+                SessConstants.AUTH_TYPE_TOKEN,
+                SessConstants.AUTH_TYPE_BASIC,
+                SessConstants.AUTH_TYPE_CERT_PEM
+            ] as SessConstants.AUTH_TYPE_CHOICES[],
+            "_authCache": {
+                "availableCreds": {},
+                "didUserSetAuthOrder": true,
+                "topDefaultAuth": SessConstants.AUTH_TYPE_TOKEN as "basic" | "token"
+            }
+        };
+        const args = {
+            $0: "zowe",
+            _: [""],
+            tokenValue: tokenValFromArgs
+        };
+
+        const sessCfgWithConnProps: ISession =
+            await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
+                initialSessCfg,
+                args
+            );
+        CliUtils.sleep = sleepReal;
+        CliUtils.readPrompt = readPromptReal;
+
+        expect(sessCfgWithConnProps.type).toBe(SessConstants.AUTH_TYPE_TOKEN);
+        expect(sessCfgWithConnProps.tokenType).toBe(tokenTypeFromPrompt);
+        expect(sessCfgWithConnProps.tokenValue).toBe(tokenValFromArgs);
+    });
+
+    it("should get tokenValue from prompt when token is first in authOrder", async () => {
+        const tokenValFromPrompt = "FakeTokenVal";
+        const tokenTypeFromArgs = "FakeTokenType";
+
+        const sleepReal = CliUtils.sleep;
+        CliUtils.sleep = jest.fn();
+        const readPromptReal = CliUtils.readPrompt;
+        CliUtils.readPrompt = jest.fn(() => {
+            return Promise.resolve(tokenValFromPrompt);
+        });
+
+        const initialSessCfg = {
+            hostname: "SomeHost",
+            port: 11,
+            rejectUnauthorized: true,
+            authTypeOrder: [
+                SessConstants.AUTH_TYPE_TOKEN,
+                SessConstants.AUTH_TYPE_BASIC,
+                SessConstants.AUTH_TYPE_CERT_PEM
+            ] as SessConstants.AUTH_TYPE_CHOICES[],
+            "_authCache": {
+                "availableCreds": {},
+                "didUserSetAuthOrder": true,
+                "topDefaultAuth": SessConstants.AUTH_TYPE_TOKEN as "basic" | "token"
+            }
+        };
+        const args = {
+            $0: "zowe",
+            _: [""],
+            tokenType: tokenTypeFromArgs
+        };
+
+        const sessCfgWithConnProps: ISession =
+            await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
+                initialSessCfg,
+                args
+            );
+        CliUtils.sleep = sleepReal;
+        CliUtils.readPrompt = readPromptReal;
+
+        expect(sessCfgWithConnProps.type).toBe(SessConstants.AUTH_TYPE_TOKEN);
+        expect(sessCfgWithConnProps.tokenValue).toBe(tokenValFromPrompt);
+        expect(sessCfgWithConnProps.tokenType).toBe(tokenTypeFromArgs);
+    });
+
+    it("should get tokenValue from prompt when bearer is first in authOrder", async () => {
+        const tokenValFromPrompt = "FakeBearerTokenVal";
+
+        const sleepReal = CliUtils.sleep;
+        CliUtils.sleep = jest.fn();
+        const readPromptReal = CliUtils.readPrompt;
+        CliUtils.readPrompt = jest.fn(() => {
+            return Promise.resolve(tokenValFromPrompt);
+        });
+
+        const initialSessCfg = {
+            hostname: "SomeHost",
+            port: 11,
+            rejectUnauthorized: true,
+            authTypeOrder: [
+                SessConstants.AUTH_TYPE_BEARER,
+                SessConstants.AUTH_TYPE_BASIC,
+                SessConstants.AUTH_TYPE_CERT_PEM
+            ] as SessConstants.AUTH_TYPE_CHOICES[],
+            "_authCache": {
+                "availableCreds": {},
+                "didUserSetAuthOrder": true,
+                "topDefaultAuth": SessConstants.AUTH_TYPE_TOKEN as "basic" | "token"
+            }
+        };
+        const args = {
+            $0: "zowe",
+            _: [""]
+        };
+
+        const sessCfgWithConnProps: ISession =
+            await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
+                initialSessCfg,
+                args
+            );
+        CliUtils.sleep = sleepReal;
+        CliUtils.readPrompt = readPromptReal;
+
+        expect(sessCfgWithConnProps.type).toBe(SessConstants.AUTH_TYPE_BEARER);
+        expect(sessCfgWithConnProps.tokenValue).toBe(tokenValFromPrompt);
+        expect(sessCfgWithConnProps.tokenType).toBe(undefined);
+    });
+
+    it("should get certFile from prompt when cert-pem is first in authOrder", async () => {
+        const certFileFromPrompt = "FakeCertFileVal";
+        const certKeyFileFromArgs = "FakeCertKeyFileVal";
+
+        const sleepReal = CliUtils.sleep;
+        CliUtils.sleep = jest.fn();
+        const readPromptReal = CliUtils.readPrompt;
+        CliUtils.readPrompt = jest.fn(() => {
+            return Promise.resolve(certFileFromPrompt);
+        });
+
+        const initialSessCfg = {
+            hostname: "SomeHost",
+            port: 11,
+            rejectUnauthorized: true,
+            authTypeOrder: [
+                SessConstants.AUTH_TYPE_CERT_PEM,
+                SessConstants.AUTH_TYPE_TOKEN,
+                SessConstants.AUTH_TYPE_BASIC,
+            ] as SessConstants.AUTH_TYPE_CHOICES[],
+            "_authCache": {
+                "availableCreds": {},
+                "didUserSetAuthOrder": true,
+                "topDefaultAuth": SessConstants.AUTH_TYPE_TOKEN as "basic" | "token"
+            }
+        };
+        const args = {
+            $0: "zowe",
+            _: [""],
+            certKeyFile: certKeyFileFromArgs
+        };
+
+        const sessCfgWithConnProps: ISession =
+            await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
+                initialSessCfg,
+                args
+            );
+        CliUtils.sleep = sleepReal;
+        CliUtils.readPrompt = readPromptReal;
+
+        expect(sessCfgWithConnProps.type).toBe(SessConstants.AUTH_TYPE_CERT_PEM);
+        expect(sessCfgWithConnProps.cert).toBe(certFileFromPrompt);
+        expect(sessCfgWithConnProps.certKey).toBe(certKeyFileFromArgs);
+    });
+
+    it("should get certKeyFile from prompt when cert-pem is first in authOrder", async () => {
+        const certKeyFileFromPrompt = "FakeCertKeyFileVal";
+        const certFileFromArgs = "FakeCertFileVal";
+
+        const sleepReal = CliUtils.sleep;
+        CliUtils.sleep = jest.fn();
+        const readPromptReal = CliUtils.readPrompt;
+        CliUtils.readPrompt = jest.fn(() => {
+            return Promise.resolve(certKeyFileFromPrompt);
+        });
+
+        const initialSessCfg = {
+            hostname: "SomeHost",
+            port: 11,
+            rejectUnauthorized: true,
+            authTypeOrder: [
+                SessConstants.AUTH_TYPE_CERT_PEM,
+                SessConstants.AUTH_TYPE_TOKEN,
+                SessConstants.AUTH_TYPE_BASIC,
+            ] as SessConstants.AUTH_TYPE_CHOICES[],
+            "_authCache": {
+                "availableCreds": {},
+                "didUserSetAuthOrder": true,
+                "topDefaultAuth": SessConstants.AUTH_TYPE_TOKEN as "basic" | "token"
+            }
+        };
+        const args = {
+            $0: "zowe",
+            _: [""],
+            certFile: certFileFromArgs
+        };
+
+        const sessCfgWithConnProps: ISession =
+            await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
+                initialSessCfg,
+                args
+            );
+        CliUtils.sleep = sleepReal;
+        CliUtils.readPrompt = readPromptReal;
+
+        expect(sessCfgWithConnProps.type).toBe(SessConstants.AUTH_TYPE_CERT_PEM);
+        expect(sessCfgWithConnProps.certKey).toBe(certKeyFileFromPrompt);
+        expect(sessCfgWithConnProps.cert).toBe(certFileFromArgs);
     });
 
     it("get host name from prompt with custom service description", async () => {
