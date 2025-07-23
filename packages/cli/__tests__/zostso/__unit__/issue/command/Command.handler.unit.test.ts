@@ -89,6 +89,7 @@ describe("issue command handler tests", () => {
 
         params.arguments.cmd = "time";
         params.arguments.logonProcedure = "MYPROC";
+        params.arguments.suppressStartupMessages = true;
 
         IssueTso.issueTsoCmd = jest.fn(() => StartTsoData.SAMPLE_ISSUE_RESPONSE_WITH_MSG);
 
