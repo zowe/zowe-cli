@@ -41,7 +41,7 @@ export default class Handler extends ZosTsoBaseHandler {
         if (params.arguments.logonProcedure && params.arguments.logonProcedure !== defProc && params.arguments.suppressStartupMessages) {
             this.console.log(
                 chalk.yellow(
-                    'Warning: The logon procedure specified is not used when issuing a TSO command with "zowe zos-tso issue command". '
+                    "Warning: The logon procedure specified is not used when issuing a TSO command."
                 )
             );
         }

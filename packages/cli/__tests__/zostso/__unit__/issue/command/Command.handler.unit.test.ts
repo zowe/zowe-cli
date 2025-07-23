@@ -95,7 +95,7 @@ describe("issue command handler tests", () => {
 
         await handler.process(params);
 
-        expect(mockConsoleLog).toHaveBeenCalledWith(expect.stringContaining('Warning: The logon procedure specified is not used when issuing a TSO command with "zowe zos-tso issue command". '));
+        expect(mockConsoleLog).toHaveBeenCalledWith(expect.stringContaining("Warning: The logon procedure specified is not used when issuing a TSO command."));
     });
 
 });
