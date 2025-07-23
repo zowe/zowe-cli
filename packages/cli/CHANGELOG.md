@@ -3,7 +3,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## Recent Changes
 
-- Enhancement: Replaced logic in ApimlAuthHandler.processLogin with a call to a new common function AuthOrder.putNewAuthsFirstOnDisk. There are no changes to the external API and no changes to the functionality. [#2568](https://github.com/zowe/zowe-cli/pull/2568)
+- Enhancement: Replaced logic in `ApimlAuthHandler.processLogin` with a call to a new common function `AuthOrder.putNewAuthsFirstOnDisk`. There are no changes to the external API and no changes to the functionality. [#2568](https://github.com/zowe/zowe-cli/pull/2568)
 
 ## `8.24.4`
 
