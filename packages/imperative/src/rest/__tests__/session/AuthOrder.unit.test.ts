@@ -9,14 +9,15 @@
 *
 */
 
-import { AuthOrder } from "../../src/session/AuthOrder";
+import { AuthOrder, PropUse } from "../../src/session/AuthOrder";
 import { ISession } from "../../src/session/doc/ISession";
 import {
-    AUTH_TYPE_NONE, AUTH_TYPE_BASIC, AUTH_TYPE_BEARER,
+    AUTH_TYPE_CHOICES, AUTH_TYPE_NONE, AUTH_TYPE_BASIC, AUTH_TYPE_BEARER,
     AUTH_TYPE_TOKEN, AUTH_TYPE_CERT_PEM
 } from "../../src/session/SessConstants";
 import { Logger } from "../../../../src/logger/src/Logger";
 import { ImperativeError } from "../../../../src/error/src/ImperativeError";
+import { Config } from "../../../../src/config";
 
 describe("AuthOrder", () => {
     const cmdArgUserVal = "cmdArgUser";
@@ -891,6 +892,245 @@ describe("AuthOrder", () => {
                 "The supplied session is null or undefined"
             );
         });
+    });
 
+    describe("putNewAuthsFirstInSess", () => {
+        it("should throw an error when an invalid sessCfg parameter is specified", () => {
+            let thrownError;
+            try {
+                AuthOrder.putNewAuthsFirstInSess(null as unknown as ISession, []);
+            } catch (err) {
+                thrownError = err;
+            }
+            expect(thrownError).toBeInstanceOf(ImperativeError);
+            expect(thrownError.message).toContain("The supplied sessCfg is null or undefined");
+        });
+
+        it("should replace the auth types in session with those specified", () => {
+            const newFirstAuthsArray: AUTH_TYPE_CHOICES[] = [AUTH_TYPE_CERT_PEM, AUTH_TYPE_BASIC, AUTH_TYPE_BEARER];
+            expect(sessCfgForTest.authTypeOrder).not.toEqual(newFirstAuthsArray);
+            AuthOrder.putNewAuthsFirstInSess(sessCfgForTest, newFirstAuthsArray, {onlyTheseAuths: true});
+            expect(sessCfgForTest._authCache?.didUserSetAuthOrder).toBe(true);
+            expect(sessCfgForTest.authTypeOrder).toEqual(newFirstAuthsArray);
+        });
+    });
+
+    describe("putNewAuthsFirstOnDisk", () => {
+        const dottedPathToProfile = "Fake.Path.To.Profile.In.Config";
+        const newFirstAuthsArray: AUTH_TYPE_CHOICES[] = [AUTH_TYPE_CERT_PEM, AUTH_TYPE_BASIC, AUTH_TYPE_BEARER];
+        let configObj: Config;
+        let configSetSpy: any;
+
+        beforeEach(() => {
+            configObj = {
+                api: {
+                    profiles: {
+                        exists: jest.fn().mockImplementation(() => {
+                            return true;
+                        }),
+                        get: jest.fn(() => {
+                            return {
+                                exists: true,
+                                basePath: "PretendThisBasePathWorks",
+                                authOrder: "basic, token, bearer"
+                            };
+                        }),
+                        getProfilePathFromName: jest.fn().mockImplementation(() => {
+                            return dottedPathToProfile;
+                        }),
+                    },
+                    layers: {
+                        activate: jest.fn(),
+                        find: jest.fn(() => {
+                            return {
+                                user: false,
+                                global: false
+                            };
+                        }),
+                        get: jest.fn(() => {
+                            return {};
+                        })
+                    },
+                },
+                save: jest.fn().mockResolvedValue(Promise.resolve()),
+                set: jest.fn()
+            } as unknown as Config;
+
+            configSetSpy = jest.spyOn(configObj as any, "set").mockReturnValue(undefined);
+        });
+
+        afterEach(() => {
+            configSetSpy.mockClear();  // reset usage counts
+        });
+
+        it("should throw an error when an invalid profileName parameter is specified", async () => {
+            let thrownError;
+            try {
+                await AuthOrder.putNewAuthsFirstOnDisk("", []);
+            } catch (err) {
+                thrownError = err;
+            }
+            expect(thrownError).toBeInstanceOf(ImperativeError);
+            expect(thrownError.message).toContain("The supplied profileName is null, undefined, or empty");
+        });
+
+        it("should throw an error when an newFirstAuths is null or undefined", async () => {
+            let thrownError;
+            try {
+                await AuthOrder.putNewAuthsFirstOnDisk("FakeProfileName", null as unknown as AUTH_TYPE_CHOICES[]);
+            } catch (err) {
+                thrownError = err;
+            }
+            expect(thrownError).toBeInstanceOf(ImperativeError);
+            expect(thrownError.message).toContain("The supplied newFirstAuths is null or undefined");
+        });
+
+        it("should throw an error when an newFirstAuths not an array", async () => {
+            let thrownError;
+            try {
+                await AuthOrder.putNewAuthsFirstOnDisk("FakeProfileName", "SomeString" as unknown as AUTH_TYPE_CHOICES[]);
+            } catch (err) {
+                thrownError = err;
+            }
+            expect(thrownError).toBeInstanceOf(ImperativeError);
+            expect(thrownError.message).toContain("The supplied newFirstAuths is not an array");
+        });
+
+        it("should throw an error when an newFirstAuths is an empty array", async () => {
+            let thrownError;
+            try {
+                await AuthOrder.putNewAuthsFirstOnDisk("FakeProfileName", []);
+            } catch (err) {
+                thrownError = err;
+            }
+            expect(thrownError).toBeInstanceOf(ImperativeError);
+            expect(thrownError.message).toContain("The supplied newFirstAuths is empty");
+        });
+
+        it("should throw an error when the profile does not exist", async () => {
+            // make the config report that the profile does not exist
+            configObj.api.profiles.exists = jest.fn().mockImplementation(() => {
+                return false;
+            });
+
+            let thrownError;
+            try {
+                await AuthOrder.putNewAuthsFirstOnDisk("FakeProfileName", newFirstAuthsArray,
+                    { onlyTheseAuths: true, clientConfig: configObj }
+                );
+            } catch (err) {
+                thrownError = err;
+            }
+            expect(thrownError).toBeInstanceOf(ImperativeError);
+            expect(thrownError.message).toContain("The profile = 'FakeProfileName' does not exist");
+        });
+
+        it("should throw an error when data cannot be read for the profile", async () => {
+            // make the config report that it cannot get data for the profile
+            configObj.api.profiles.get = jest.fn().mockImplementation(() => {
+                return null;
+            });
+
+            let thrownError;
+            try {
+                await AuthOrder.putNewAuthsFirstOnDisk("FakeProfileName", newFirstAuthsArray,
+                    { onlyTheseAuths: true, clientConfig: configObj }
+                );
+            } catch (err) {
+                thrownError = err;
+            }
+            expect(thrownError).toBeInstanceOf(ImperativeError);
+            expect(thrownError.message).toContain("Failed to retrieve the data for profile = 'FakeProfileName'");
+        });
+
+        it("should use only newFirstAuths when onlyTheseAuths is true", async () => {
+            const authOrderCfgVal = newFirstAuthsArray.join(", ");
+            await AuthOrder.putNewAuthsFirstOnDisk("FakeProfileName", newFirstAuthsArray,
+                { onlyTheseAuths: true, clientConfig: configObj }
+            );
+            expect(configSetSpy).toHaveBeenCalledWith(
+                dottedPathToProfile + ".properties.authOrder", authOrderCfgVal
+            );
+        });
+
+        it("should use place newFirstAuths before existing auths when onlyTheseAuths is false", async () => {
+            // token is the only auth not in our newFirstAuthsArray
+            const authOrderCfgVal = newFirstAuthsArray.join(", ") + `, ${AUTH_TYPE_TOKEN}`;
+
+            await AuthOrder.putNewAuthsFirstOnDisk("FakeProfileName", newFirstAuthsArray,
+                { onlyTheseAuths: false, clientConfig: configObj }
+            );
+            expect(configSetSpy).toHaveBeenCalledWith(
+                dottedPathToProfile + ".properties.authOrder", authOrderCfgVal
+            );
+        });
+
+        describe("formNewAuthOrderArray", () => {
+            it("should keep existing auths when newAuthsOpts is not specified", async () => {
+                const existingAuths: AUTH_TYPE_CHOICES[] = [AUTH_TYPE_TOKEN, AUTH_TYPE_BASIC, AUTH_TYPE_BEARER];
+                const newFirstAuthIsCert: AUTH_TYPE_CHOICES[] = [AUTH_TYPE_CERT_PEM];
+                const expectedAuthArray: AUTH_TYPE_CHOICES[] = [...newFirstAuthIsCert, ...existingAuths];
+
+                // using class["name"] notation because it is a private static function
+                const updatedAuthArray = AuthOrder["formNewAuthOrderArray"](
+                    existingAuths, newFirstAuthIsCert
+                );
+
+                expect(updatedAuthArray).toEqual(expectedAuthArray);
+            });
+        });
+
+        describe("getPropNmFor", () => {
+            const sessCertName = "cert";
+            const cfgCertName = "certFile";
+            const sessCertKeyName = "certKey";
+            const cfgCertKeyName = "certKeyFile";
+
+            it("should return the session property name when given a cert name from a session", async () => {
+                const returnedPropName = AuthOrder.getPropNmFor(sessCertName, PropUse.IN_SESS);
+                expect(returnedPropName).toEqual(sessCertName);
+            });
+
+            it("should return the session property name when given a cert name from a config", async () => {
+                const returnedPropName = AuthOrder.getPropNmFor(cfgCertName, PropUse.IN_SESS);
+                expect(returnedPropName).toEqual(sessCertName);
+            });
+
+            it("should return the config property name when given a cert name from a session", async () => {
+                const returnedPropName = AuthOrder.getPropNmFor(sessCertName, PropUse.IN_CFG);
+                expect(returnedPropName).toEqual(cfgCertName);
+            });
+
+            it("should return the config property name when given a cert name from a config", async () => {
+                const returnedPropName = AuthOrder.getPropNmFor(cfgCertName, PropUse.IN_CFG);
+                expect(returnedPropName).toEqual(cfgCertName);
+            });
+
+            it("should return the session property name when given a cert key name from a session", async () => {
+                const returnedPropName = AuthOrder.getPropNmFor(sessCertKeyName, PropUse.IN_SESS);
+                expect(returnedPropName).toEqual(sessCertKeyName);
+            });
+
+            it("should return the session property name when given a cert key name from a config", async () => {
+                const returnedPropName = AuthOrder.getPropNmFor(cfgCertKeyName, PropUse.IN_SESS);
+                expect(returnedPropName).toEqual(sessCertKeyName);
+            });
+
+            it("should return the config property name when given a cert key name from a session", async () => {
+                const returnedPropName = AuthOrder.getPropNmFor(sessCertKeyName, PropUse.IN_CFG);
+                expect(returnedPropName).toEqual(cfgCertKeyName);
+            });
+
+            it("should return the config property name when given a cert key name from a config", async () => {
+                const returnedPropName = AuthOrder.getPropNmFor(cfgCertKeyName, PropUse.IN_CFG);
+                expect(returnedPropName).toEqual(cfgCertKeyName);
+            });
+
+            it("should return the same property name when it is not a cert property", async () => {
+                const nonCertName = "user";
+                const returnedPropName = AuthOrder.getPropNmFor(nonCertName, PropUse.IN_SESS);
+                expect(returnedPropName).toEqual(nonCertName);
+            });
+        });
     });
 });

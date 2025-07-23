@@ -15,6 +15,34 @@ import { ImperativeError } from "../../../error";
 import { ISession } from "./doc/ISession";
 import { Logger } from "../../../logger";
 import * as SessConstants from "./SessConstants";
+import { ImperativeConfig } from "../../../utilities";
+import { Config } from "../../../config";
+
+/**
+ * This interface represents options for the function putNewAuthsFirstInSess.
+ * If true, only the newFirstAuths will be in the result.
+ * If false, any existing auth types will remain later in the array.
+ */
+export interface INewFirstAuthsOpts {
+    onlyTheseAuths?: boolean
+}
+
+/**
+ * This interface adds options for the function putNewAuthsFirstOnDisk.
+ * A client Config object can also be supplied.
+ */
+export interface INewFirstAuthsOnDiskOpts extends INewFirstAuthsOpts {
+    clientConfig?: Config
+}
+
+/**
+ * This enum is used to specify if a property is to be used in
+ * a session or in a config file.
+ */
+export enum PropUse {
+    IN_SESS,
+    IN_CFG
+}
 
 /**
  * The purpose of this class is to detect an authentication order property
@@ -36,6 +64,7 @@ import * as SessConstants from "./SessConstants";
  * credentials for the desired type of authentication.
  */
 export class AuthOrder {
+
     private static readonly SESS_CERT_NAME = "cert";
     private static readonly SESS_CERT_KEY_NAME = "certKey";
     private static readonly ARRAY_OF_CREDS = [
@@ -177,6 +206,44 @@ export class AuthOrder {
             AuthOrder.chooseDefaultAuthOrder(sessCfg);
         }
         return sessCfg.authTypeOrder;
+    }
+
+    // ***********************************************************************
+    /**
+     * Get the correct property name for use in either a session
+     * or in a config file. Currently only certificate property names
+     * are different between the two.
+     *
+     * @internal - Cannot be used outside of the imperative package
+     *
+     * @param propName - input.
+     *      The name of a property for which we must select the
+     *      correct name to.
+     *
+     * @param desiredUse - input.
+     *      Specifies where property is to be used.
+     *
+     * @return The cached authentication order.
+     */
+    public static getPropNmFor(propName: string, desiredUse: PropUse): string {
+        let propNmToUse: string;
+        if (propName === AuthOrder.SESS_CERT_NAME || propName === "certFile") {
+            if (desiredUse === PropUse.IN_SESS) {
+                propNmToUse = AuthOrder.SESS_CERT_NAME;
+            } else {
+                propNmToUse = "certFile";
+            }
+        } else if (propName === AuthOrder.SESS_CERT_KEY_NAME || propName === "certKeyFile") {
+            if (desiredUse === PropUse.IN_SESS) {
+                propNmToUse = AuthOrder.SESS_CERT_KEY_NAME;
+            } else {
+                propNmToUse = "certKeyFile";
+            }
+        } else {
+            // all other properties have the same name in the session and in the config
+            propNmToUse = propName;
+        }
+        return propNmToUse;
     }
 
     // ***********************************************************************
@@ -360,6 +427,235 @@ export class AuthOrder {
 
     // ***********************************************************************
     /**
+     * Put the specified array of auth types first in the authOrder for the
+     * specified session. Duplicates are removed from the resulting authOrder
+     * array. Any existing auth types remain later in the array,
+     * unless newAuthsOpts.onlyTheseAuths is true.
+     *
+     * Calling apps should NOT use this function to impose a hard-coded
+     * authentication order for the session. Users control that decision.
+     * Apps should only call this function if the app is implementing a directive
+     * from the user which implies that the authOrder should be changed. An example
+     * is when a user logs into APIML. The implication is that the user wants to use
+     * a token, and that tokens should be at the front of the authentication order.
+     *
+     * @param sessCfg - Modified.
+     *      The session config into which we place the modified array of auth types.
+     *
+     * @param newFirstAuths - input.
+     *      An array of one or more auth types to be placed at the front of the
+     *      the existing array of auth types.
+     *
+     * @param newAuthsOpts - input.
+     *      Options that control some replacement choices.
+     *
+     * @throws {ImperativeError}
+     *      If sessCfg is null or undefined.
+     */
+    public static putNewAuthsFirstInSess<SessCfgType extends ISession>(
+        sessCfg: SessCfgType,
+        newFirstAuths: SessConstants.AUTH_TYPE_CHOICES[],
+        newAuthsOpts: INewFirstAuthsOpts = {
+            onlyTheseAuths: false
+        }
+    ): void {
+        if (!sessCfg) {
+            const errMsg = "The supplied sessCfg is null or undefined.";
+            Logger.getImperativeLogger().error(errMsg);
+            throw new ImperativeError({ msg: errMsg });
+        }
+        sessCfg.authTypeOrder = AuthOrder.formNewAuthOrderArray(sessCfg.authTypeOrder, newFirstAuths, newAuthsOpts);
+
+        // record that this auth order was done for a user request
+        AuthOrder.findOrCreateAuthCache(sessCfg);
+        sessCfg._authCache.didUserSetAuthOrder = true;
+
+        // after changing authOrder, ensure that the session uses the top auth
+        AuthOrder.putTopAuthInSession(sessCfg);
+    }
+
+    // ***********************************************************************
+    /**
+     * Put the specified array of auth types first in the authOrder property
+     * for the specified profile and save it to the client config file on disk.
+     * A new authOrder property will be created if needed.
+     * Duplicates from any existing authOrder are removed from the resulting authOrder.
+     * Any existing auth types remain later in the property value, unless
+     * newAuthsOpts.onlyTheseAuths is true.
+     *
+     * Calling apps should NOT use this function to impose a hard-coded
+     * authentication order for a profile. Users control that decision.
+     * Apps should only call this function if the app is implementing a directive
+     * from the user which implies that the authOrder should be changed. An example
+     * is when a user logs into APIML. The implication is that the user wants to use
+     * a token, and that tokens should be at the front of the authentication order.
+     *
+     * @param profileName - input.
+     *      The name of the profile into which the authOrder property will be placed.
+     *
+     * @param newFirstAuths - input.
+     *      An array of one or more auth types to be placed at the front of the
+     *      the existing array of auth types.
+     *
+     * @param newAuthsOpts - input.
+     *      Options that control some replacement choices.
+     *
+     * @throws {ImperativeError}
+     *      Any detected error is in the 'message' of the ImperativeError.
+     */
+    public static async putNewAuthsFirstOnDisk(
+        profileName: string,
+        newFirstAuths: SessConstants.AUTH_TYPE_CHOICES[],
+        newAuthsOnDiskOpts: INewFirstAuthsOnDiskOpts = {
+            onlyTheseAuths: false,
+            clientConfig: ImperativeConfig.instance.config
+        }
+    ): Promise<void> {
+        if (!profileName) {
+            const errMsg = "The supplied profileName is null, undefined, or empty.";
+            Logger.getImperativeLogger().error(errMsg);
+            throw new ImperativeError({ msg: errMsg });
+        }
+
+        if (newFirstAuths == null) {
+            const errMsg = "The supplied newFirstAuths is null or undefined.";
+            Logger.getImperativeLogger().error(errMsg);
+            throw new ImperativeError({ msg: errMsg });
+        }
+        if (!Array.isArray(newFirstAuths)) {
+            const errMsg = "The supplied newFirstAuths is not an array.";
+            Logger.getImperativeLogger().error(errMsg);
+            throw new ImperativeError({ msg: errMsg });
+        }
+        if (newFirstAuths.length === 0) {
+            const errMsg = "The supplied newFirstAuths is empty.";
+            Logger.getImperativeLogger().error(errMsg);
+            throw new ImperativeError({ msg: errMsg });
+        }
+
+        const configObj = newAuthsOnDiskOpts.clientConfig;
+        if (!configObj.api.profiles.exists(profileName)) {
+            const errMsg = `The profile = '${profileName}' does not exist.`;
+            Logger.getImperativeLogger().error(errMsg);
+            throw new ImperativeError({ msg: errMsg });
+        }
+
+        const profObj = configObj.api.profiles.get(profileName, true);
+        if (!profObj) {
+            const errMsg = `Failed to retrieve the data for profile = '${profileName}'.`;
+            Logger.getImperativeLogger().error(errMsg);
+            throw new ImperativeError({ msg: errMsg });
+        }
+
+        let newAuthArray: SessConstants.AUTH_TYPE_CHOICES[];
+        if (newAuthsOnDiskOpts.onlyTheseAuths || !profObj.authOrder || profObj.authOrder.length === 0) {
+            // When the caller only wants new auths or no authOrder property currently exists,
+            // new auths are the only ones that we want
+            newAuthArray = newFirstAuths;
+        } else {
+            // convert the old authOrder config value into an array and combine with newFirstAuths
+            const oldAuthArray = AuthOrder.authCfgValToArray(profObj.authOrder);
+            const newAuthsOpts: INewFirstAuthsOpts = {
+                onlyTheseAuths: newAuthsOnDiskOpts.onlyTheseAuths
+            };
+            newAuthArray = AuthOrder.formNewAuthOrderArray(oldAuthArray, newFirstAuths, newAuthsOpts);
+        }
+
+        // Store our newAuthArray as an authOrder config value into the right profile on disk
+        const beforeLayer = configObj.api.layers.get();
+        const layer = configObj.api.layers.find(profileName);
+        if (layer != null) {
+            const { user, global } = layer;
+            configObj.api.layers.activate(user, global);
+        }
+        const profilePath = configObj.api.profiles.getProfilePathFromName(profileName);
+        configObj.set(`${profilePath}.properties.authOrder`, AuthOrder.authArrayToCfgVal(newAuthArray));
+        await configObj.save();
+
+        // Restore the original layer
+        configObj.api.layers.activate(beforeLayer.user, beforeLayer.global);
+    }
+
+    // ***********************************************************************
+    /**
+     * Form a new auth type array from an existing array and a second array
+     * whose members should come first in the new array.
+     * Duplicates are removed from the resulting authOrder array.
+     * Any auth types from the existing array remain later in the array,
+     * unless newAuthsOpts.onlyTheseAuths is true.
+     *
+     * @param existingAuths - input.
+     *      An existing array of auth types.
+     *
+     * @param newFirstAuths - input.
+     *      An array of one or more auth types to be placed at the front of the
+     *      the existing array of auth types.
+     *
+     * @param newAuthsOpts - input.
+     *      Options that control some replacement choices.
+     *
+     * @returns A new array of AUTH_TYPE_CHOICES.
+     */
+    private static formNewAuthOrderArray(
+        existingAuths: SessConstants.AUTH_TYPE_CHOICES[],
+        newFirstAuths: SessConstants.AUTH_TYPE_CHOICES[],
+        newAuthsOpts: INewFirstAuthsOpts = {
+            onlyTheseAuths: false
+        }
+    ): SessConstants.AUTH_TYPE_CHOICES[] {
+        if (newAuthsOpts.onlyTheseAuths || !existingAuths || existingAuths.length === 0) {
+            // When the caller only wants new auths or no old auths currently exist,
+            // new auths are the only ones that we want
+            return newFirstAuths;
+        }
+
+        // start with the existing auth array
+        const resultingAuthTypeOrder: SessConstants.AUTH_TYPE_CHOICES[] = [...existingAuths];
+        for (const nextNewAuth of newFirstAuths) {
+            for (let inxToDel = 0; inxToDel < resultingAuthTypeOrder.length; inxToDel++) {
+                if (nextNewAuth === resultingAuthTypeOrder[inxToDel]) {
+                    // remove any new auth from the existing array
+                    resultingAuthTypeOrder.splice(inxToDel, 1);
+                    break;
+                }
+            }
+        }
+
+        // insert the new first auths to the front of the array
+        resultingAuthTypeOrder.unshift(...newFirstAuths);
+        return resultingAuthTypeOrder;
+    }
+
+    // ***********************************************************************
+    /**
+     * Convert an AUTH_TYPE_CHOICES array to a string that is an appropriate
+     * value for the "authOrder" configuration property.
+     *
+     * @param authTypesArray - input.
+     *      An array of auth types.
+     *
+     * @returns A string containing a valid value for the authOrder configuration property.
+     */
+    private static authArrayToCfgVal(authTypesArray: SessConstants.AUTH_TYPE_CHOICES[]): string {
+        return authTypesArray.join(", ");
+    }
+
+    // ***********************************************************************
+    /**
+     * Convert a string that is an appropriate value for the "authOrder"
+     * configuration property into an array of AUTH_TYPE_CHOICES.
+     *
+     * @param authCfgVal - input.
+     *      An authOrder property value.
+     *
+     * @returns An array of AUTH_TYPE_CHOICES.
+     */
+    private static authCfgValToArray(authCfgVal: string): SessConstants.AUTH_TYPE_CHOICES[] {
+        return authCfgVal.split(/, */) as SessConstants.AUTH_TYPE_CHOICES[];
+    }
+
+    // ***********************************************************************
+    /**
      * Cache all of the credentials that are available in either the supplied
      * sessCfg object or in the supplied command arguments. Also cache the
      * authOrder that is specified in the supplied command arguments. The
@@ -481,19 +777,7 @@ export class AuthOrder {
         sessCfg: SessCfgType,
         cmdArgs: ICommandArguments
     ): void {
-        // cert-related properties have different names in command args and in a session
-        const CMD_ARGS_CERT_NAME = "certFile";
-        const CMD_ARGS_CERT_KEY_NAME = "certKeyFile";
-        let cmdArgsCredName;
-
-        if (sessCredName === AuthOrder.SESS_CERT_NAME) {
-            cmdArgsCredName = CMD_ARGS_CERT_NAME;
-        } else if (sessCredName === AuthOrder.SESS_CERT_KEY_NAME) {
-            cmdArgsCredName = CMD_ARGS_CERT_KEY_NAME;
-        } else {
-            cmdArgsCredName = sessCredName;
-        }
-
+        const cmdArgsCredName = AuthOrder.getPropNmFor(sessCredName, PropUse.IN_CFG);
         if (cmdArgs[cmdArgsCredName]) {
             sessCfg._authCache.availableCreds[sessCredName] = cmdArgs[cmdArgsCredName];
         } else if ((sessCfg as any)[sessCredName]) {
