@@ -39,9 +39,9 @@ export default class Handler extends ZosTsoBaseHandler {
         );
         const defProc = "IZUPROC";
         if (params.arguments.logonProcedure && params.arguments.logonProcedure !== defProc && params.arguments.suppressStartupMessages) {
-            this.console.log(
+            this.console.error(
                 chalk.yellow(
-                    "Warning: The logon procedure specified is not used when issuing a TSO command."
+                    "Warning: The logon procedure specified is not used when issuing a TSO command with the suppressStartupMessages (--ssm) option set to true."
                 )
             );
         }
