@@ -74,8 +74,8 @@ describe("issue command handler tests", () => {
         const handler = new Command.default();
         const mockConsoleLog = jest.fn();
         const mockConsole: IHandlerResponseConsoleApi = {
-            log: mockConsoleLog,
-            error: jest.fn(),
+            log: jest.fn(),
+            error: mockConsoleLog,
             errorHeader: jest.fn(),
             prompt: jest.fn()
         };
@@ -95,7 +95,7 @@ describe("issue command handler tests", () => {
 
         await handler.process(params);
 
-        expect(mockConsoleLog).toHaveBeenCalledWith(expect.stringContaining("Warning: The logon procedure specified is not used when issuing a TSO command."));
+        expect(mockConsoleLog).toHaveBeenCalledWith(expect.stringContaining("Warning: The logon procedure specified is not used when issuing a TSO command with the suppressStartupMessages (--ssm) option set to true."));
     });
 
 });
