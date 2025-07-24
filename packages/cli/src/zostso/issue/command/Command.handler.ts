@@ -37,7 +37,8 @@ export default class Handler extends ZosTsoBaseHandler {
                 addressSpaceOptions: this.mTsoStart
             }
         );
-        const defProc = "IZUPROC";
+        const defProc = "IZUFPROC";
+        const logProc = params.arguments.logonProcedure;
         if (params.arguments.logonProcedure && params.arguments.logonProcedure !== defProc && params.arguments.suppressStartupMessages) {
             this.console.error(
                 chalk.yellow(
