@@ -16,6 +16,7 @@ import * as pacote from "pacote";
 import * as npmFunctions from "../../../src/plugins/utilities/NpmFunctions";
 import { PMFConstants } from "../../../src/plugins/utilities/PMFConstants";
 import { DaemonRequest, ExecUtils, ImperativeConfig } from "../../../../utilities";
+import { Logger } from "../../../../logger";
 
 jest.mock("cross-spawn");
 jest.mock("jsonfile");
@@ -169,7 +170,67 @@ describe("NpmFunctions", () => {
                     "samplePlugin",
                     "-g",
                     "--legacy-peer-deps",
+                    "--loglevel=info",
+                    "--foreground-scripts",
+                    "--prefix",
+                    "fakePrefix",
+                    "--registry",
+                    fakeRegistry
+                ]),
+                expect.objectContaining({
+                    cwd: __dirname
+                })
+            );
+            expect(result).toBeFalsy();
+        });
+
+        it("should run npm install with verbose flags when verbose=true and CLI log level is DEBUG", () => {
+            const spawnSpy = jest.spyOn(ExecUtils, "spawnWithInheritedStdio").mockReturnValue();
+            jest.spyOn(Logger, "getAppLogger").mockReturnValue({ level: "DEBUG" } as any);
+
+            const result = npmFunctions.installPackages("samplePlugin", {
+                prefix: "fakePrefix",
+                registry: fakeRegistry
+            }, true);
+
+            expect(spawnSpy).toHaveBeenCalledWith(
+                npmCmd,
+                expect.arrayContaining([
+                    "install",
+                    "samplePlugin",
+                    "-g",
+                    "--legacy-peer-deps",
                     "--loglevel=verbose",
+                    "--foreground-scripts",
+                    "--prefix",
+                    "fakePrefix",
+                    "--registry",
+                    fakeRegistry
+                ]),
+                expect.objectContaining({
+                    cwd: __dirname
+                })
+            );
+            expect(result).toBeFalsy();
+        });
+
+        it("should run npm install with verbose flags when verbose=true and CLI log level is TRACE", () => {
+            const spawnSpy = jest.spyOn(ExecUtils, "spawnWithInheritedStdio").mockReturnValue();
+            jest.spyOn(Logger, "getAppLogger").mockReturnValue({ level: "TRACE" } as any);
+
+            const result = npmFunctions.installPackages("samplePlugin", {
+                prefix: "fakePrefix",
+                registry: fakeRegistry
+            }, true);
+
+            expect(spawnSpy).toHaveBeenCalledWith(
+                npmCmd,
+                expect.arrayContaining([
+                    "install",
+                    "samplePlugin",
+                    "-g",
+                    "--legacy-peer-deps",
+                    "--loglevel=silly",
                     "--foreground-scripts",
                     "--prefix",
                     "fakePrefix",
@@ -193,7 +254,7 @@ describe("NpmFunctions", () => {
 
             expect(spawnSpy).toHaveBeenCalledWith(
                 npmCmd,
-                expect.not.arrayContaining(["--loglevel=verbose", "--foreground-scripts"]),
+                expect.not.arrayContaining(["--loglevel=info", "--foreground-scripts"]),
                 expect.objectContaining({
                     cwd: __dirname,
                     stdio: ["pipe", "pipe", "pipe"]
@@ -211,7 +272,7 @@ describe("NpmFunctions", () => {
             });
 
             const calledArgs = spawnSpy.mock.calls[0]?.[1];
-            expect(calledArgs).not.toContain("--loglevel=verbose");
+            expect(calledArgs).not.toContain("--loglevel=info");
             expect(calledArgs).not.toContain("--foreground-scripts");
             expect(spawnSpy.mock.calls[0]?.[2]?.stdio).toEqual(["pipe", "pipe", "pipe"]);
             expect(result).toBe(stdoutBuffer.toString());
@@ -304,7 +365,7 @@ describe("NpmFunctions", () => {
                     "@scope/samplePlugin",
                     "-g",
                     "--legacy-peer-deps",
-                    "--loglevel=verbose",
+                    "--loglevel=info",
                     "--foreground-scripts",
                     "--prefix",
                     "fakePrefix",
