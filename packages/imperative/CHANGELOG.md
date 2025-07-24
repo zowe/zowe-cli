@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Fixed invalid value for npm log level when `--verbose` option is true on the `zowe plugins install` command. [#2571](https://github.com/zowe/zowe-cli/pull/2571)
+
 ## `8.25.0`
 
 - Enhancement: Added `--verbose` option to the `zowe plugins install` command to make debugging easier. [#2562](https://github.com/zowe/zowe-cli/pull/2562)

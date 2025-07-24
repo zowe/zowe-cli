@@ -169,7 +169,7 @@ describe("NpmFunctions", () => {
                     "samplePlugin",
                     "-g",
                     "--legacy-peer-deps",
-                    "--loglevel=debug",
+                    "--loglevel=verbose",
                     "--foreground-scripts",
                     "--prefix",
                     "fakePrefix",
@@ -193,7 +193,7 @@ describe("NpmFunctions", () => {
 
             expect(spawnSpy).toHaveBeenCalledWith(
                 npmCmd,
-                expect.not.arrayContaining(["--loglevel=debug", "--foreground-scripts"]),
+                expect.not.arrayContaining(["--loglevel=verbose", "--foreground-scripts"]),
                 expect.objectContaining({
                     cwd: __dirname,
                     stdio: ["pipe", "pipe", "pipe"]
@@ -211,7 +211,7 @@ describe("NpmFunctions", () => {
             });
 
             const calledArgs = spawnSpy.mock.calls[0]?.[1];
-            expect(calledArgs).not.toContain("--loglevel=debug");
+            expect(calledArgs).not.toContain("--loglevel=verbose");
             expect(calledArgs).not.toContain("--foreground-scripts");
             expect(spawnSpy.mock.calls[0]?.[2]?.stdio).toEqual(["pipe", "pipe", "pipe"]);
             expect(result).toBe(stdoutBuffer.toString());
@@ -304,7 +304,7 @@ describe("NpmFunctions", () => {
                     "@scope/samplePlugin",
                     "-g",
                     "--legacy-peer-deps",
-                    "--loglevel=debug",
+                    "--loglevel=verbose",
                     "--foreground-scripts",
                     "--prefix",
                     "fakePrefix",
