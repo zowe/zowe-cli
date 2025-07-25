@@ -3,7 +3,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## Recent Changes
 
-- Enhancement: Added a warning to users using a TSO command. It now warns them that a logon procedure is not being used when a non default logon procedure
+- BugFix: Added a warning to users using a TSO command. It now warns them that a logon procedure is not being used when a non default logon procedure
 and `--ssm` option is used.[#2528](https://github.com/zowe/zowe-explorer-vscode/issues/2528)
 ## `8.24.0`
 
