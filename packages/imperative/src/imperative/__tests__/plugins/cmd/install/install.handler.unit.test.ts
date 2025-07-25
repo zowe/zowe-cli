@@ -128,20 +128,23 @@ describe("Plugin Management Facility install handler", () => {
      * @param {string}   registry               expected registry that install was called with.
      * @param {boolean} [installFromFile=false] was the install expected to have been determined from
      *                                          a file and not passed packages.
+     * @param {boolean} [verbose=false]        was verbose mode expected to be enabled.
+     * @param {object}  [extraNpmArgs={}]      additional npm arguments expected to be passed.
      */
     const wasInstallCallValid = (
         packageLocation: string,
         registry: string,
         installFromFile = false,
-        extraNpmArgs = {}
+        verbose: boolean | undefined = undefined,
+        extraNpmArgs = {},
     ) => {
         if (installFromFile) {
             expect(mocks.install).toHaveBeenCalledWith(
-                packageLocation, { location: registry, npmArgs: { registry, ...extraNpmArgs } }, true
+                packageLocation, { location: registry, npmArgs: { registry, ...extraNpmArgs } }, true, verbose
             );
         } else {
             expect(mocks.install).toHaveBeenCalledWith(
-                packageLocation, { location: registry, npmArgs: { registry, ...extraNpmArgs } }
+                packageLocation, { location: registry, npmArgs: { registry, ...extraNpmArgs } }, false, verbose
             );
         }
     };
@@ -398,7 +401,7 @@ describe("Plugin Management Facility install handler", () => {
             expect(e).toBeUndefined();
         }
 
-        wasInstallCallValid("@public/sample1", packageRegistry, false, { "@public:registry": "publicRegistryUrl" });
+        wasInstallCallValid("@public/sample1", packageRegistry, false, undefined, { "@public:registry": "publicRegistryUrl" });
     });
     it("should handle installed plugins via project/directory", async () => {
         const handler = new InstallHandler();
@@ -413,7 +416,7 @@ describe("Plugin Management Facility install handler", () => {
             expect(e).toBeUndefined();
         }
 
-        wasInstallCallValid("path/to/dir", "path/to/dir", false, { registry: packageRegistry });
+        wasInstallCallValid("path/to/dir", "path/to/dir", false, undefined, { registry: packageRegistry });
     });
     it("should handle installed plugins via tarball file", async () => {
         const handler = new InstallHandler();
@@ -428,7 +431,7 @@ describe("Plugin Management Facility install handler", () => {
             expect(e).toBeUndefined();
         }
 
-        wasInstallCallValid("path/to/dir/file.tgz", "path/to/dir/file.tgz", false, { registry: packageRegistry });
+        wasInstallCallValid("path/to/dir/file.tgz", "path/to/dir/file.tgz", false, undefined, { registry: packageRegistry });
     });
     it("should handle multiple installed plugins via tarball, directory, and registry", async () => {
         const handler = new InstallHandler();
@@ -446,9 +449,171 @@ describe("Plugin Management Facility install handler", () => {
         }
 
         expect(mocks.install).toHaveBeenCalledTimes(params.arguments.plugin.length);
-        wasInstallCallValid("@public/sample1", packageRegistry, false, { "@public:registry": "publicRegistryUrl" });
-        wasInstallCallValid("@private/sample1", packageRegistry, false, { "@private:registry": "privateRegistryUrl" });
-        wasInstallCallValid("path/to/dir", "path/to/dir", false, { registry: packageRegistry });
-        wasInstallCallValid("path/to/dir/file.tgz", "path/to/dir/file.tgz", false, { registry: packageRegistry });
+        wasInstallCallValid("@public/sample1", packageRegistry, false, undefined, { "@public:registry": "publicRegistryUrl" });
+        wasInstallCallValid("@private/sample1", packageRegistry, false, undefined, { "@private:registry": "privateRegistryUrl" });
+        wasInstallCallValid("path/to/dir", "path/to/dir", false, undefined, { registry: packageRegistry });
+        wasInstallCallValid("path/to/dir/file.tgz", "path/to/dir/file.tgz", false, undefined, { registry: packageRegistry });
+    });
+
+    it("should install single package with verbose option", async () => {
+        const handler = new InstallHandler();
+
+        const params = getIHandlerParametersObject();
+        params.arguments.plugin = ["sample1"];
+        params.arguments.verbose = true;
+
+        await handler.process(params as IHandlerParameters);
+
+        // Validate the call to get the registry value
+        wasGetRegistryCalled();
+
+        // Check that install was called with verbose=true
+        wasInstallCallValid(params.arguments.plugin[0], packageRegistry, false, true, {});
+
+        // Check that verbose separator line was printed
+        expect(params.response.console.log).toHaveBeenCalledWith("_______________________________________________________________");
+
+        // Check that success is output
+        wasInstallSuccessful(params);
+    });
+
+    it("should install multiple packages with verbose option", async () => {
+        const handler = new InstallHandler();
+
+        const params = getIHandlerParametersObject();
+        params.arguments.plugin = ["sample1", "sample2"];
+        params.arguments.verbose = true;
+
+        await handler.process(params as IHandlerParameters);
+
+        // Validate the install
+        wasGetRegistryCalled();
+
+        // Validate that install was called with verbose=true for each package
+        expect(mocks.install).toHaveBeenCalledTimes(params.arguments.plugin.length);
+        wasInstallCallValid(params.arguments.plugin[0], packageRegistry, false, true, {});
+        wasInstallCallValid(params.arguments.plugin[1], packageRegistry, false, true, {});
+
+        // Check that verbose separator lines were printed (twice, once for each package)
+        expect(params.response.console.log).toHaveBeenCalledWith("_______________________________________________________________");
+
+        wasInstallSuccessful(params);
+    });
+
+    it("should install from JSON file with verbose option", async () => {
+        // plugin definitions mocking file contents
+        const fileJson: IPluginJson = {
+            a: {
+                package: packageName,
+                location: "",
+                version: packageVersion
+            },
+            plugin2: {
+                package: packageName2,
+                location: packageRegistry2,
+                version: packageVersion2
+            }
+        };
+
+        // Override the return value for this test only
+        mocks.readFileSync.mockReturnValueOnce(fileJson);
+        mocks.install
+            .mockResolvedValueOnce("a")
+            .mockResolvedValueOnce("plugin2");
+
+        const handler = new InstallHandler();
+
+        const params = getIHandlerParametersObject();
+        params.arguments.plugin = [];
+        params.arguments.file = "prod-plugins.json";
+        params.arguments.verbose = true;
+
+        const resolveVal = `/some/test/directory/${params.arguments.file}`;
+        expectedVal = params.arguments.file;
+        returnedVal = resolveVal;
+
+        await handler.process(params as IHandlerParameters);
+
+        // Validate the call to get the registry value
+        wasGetRegistryCalled();
+
+        expect(mocks.install).toHaveBeenCalledTimes(2);
+
+        // Check that install was called with verbose=true for file installs
+        wasInstallCallValid(`${fileJson.a.package}@${fileJson.a.version}`, packageRegistry, true, true, {});
+        wasInstallCallValid(fileJson.plugin2.package, packageRegistry2, true, true, {});
+
+        expect(mocks.runValidatePlugin).toHaveBeenCalledTimes(2);
+        expect(mocks.runValidatePlugin).toHaveBeenCalledWith("a");
+        expect(mocks.runValidatePlugin).toHaveBeenCalledWith("plugin2");
+
+        // Check that verbose separator lines were printed
+        expect(params.response.console.log).toHaveBeenCalledWith("_______________________________________________________________");
+
+        // Validate that the read was correct
+        wasReadFileSyncCallValid(resolveVal);
+
+        wasInstallSuccessful(params);
+    });
+
+    it("should install package with verbose and registry options", async () => {
+        const handler = new InstallHandler();
+
+        const params = getIHandlerParametersObject();
+        params.arguments.plugin = ["sample1"];
+        params.arguments.registry = "http://localhost:4873/";
+        params.arguments.verbose = true;
+
+        await handler.process(params as IHandlerParameters);
+
+        // Validate the call to install with specified plugin, registry, and verbose=true
+        wasInstallCallValid(params.arguments.plugin[0], params.arguments.registry, false, true, {});
+
+        // Check that verbose separator line was printed
+        expect(params.response.console.log).toHaveBeenCalledWith("_______________________________________________________________");
+
+        wasInstallSuccessful(params);
+    });
+
+    it("should install scoped package with verbose option", async () => {
+        const handler = new InstallHandler();
+
+        const params = getIHandlerParametersObject();
+        params.arguments.plugin = ["@public/sample1"];
+        params.arguments.verbose = true;
+
+        mocks.getScopeRegistry.mockReturnValueOnce("publicRegistryUrl");
+
+        await handler.process(params);
+
+        // Check that install was called with verbose=true and scoped registry
+        wasInstallCallValid("@public/sample1", packageRegistry, false, true, { "@public:registry": "publicRegistryUrl" });
+
+        // Check that verbose separator line was printed
+        expect(params.response.console.log).toHaveBeenCalledWith("_______________________________________________________________");
+
+        wasInstallSuccessful(params);
+    });
+
+    it("should install from empty plugins.json with verbose option", async () => {
+        const handler = new InstallHandler();
+
+        const params = getIHandlerParametersObject();
+        params.arguments.plugin = [];
+        params.arguments.verbose = true;
+
+        await handler.process(params as IHandlerParameters);
+
+        // Validate the call to get the registry value
+        wasGetRegistryCalled();
+
+        // Validate that the read was correct
+        wasReadFileSyncCallValid(PMFConstants.instance.PLUGIN_JSON);
+
+        // Should not attempt any installs for empty file
+        expect(mocks.install).not.toHaveBeenCalled();
+
+        expect(params.response.console.log).toHaveBeenCalledWith("No packages were found in " +
+            PMFConstants.instance.PLUGIN_JSON + ", so no plugins were installed.");
     });
 });

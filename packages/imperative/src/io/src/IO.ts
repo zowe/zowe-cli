@@ -274,7 +274,7 @@ export class IO {
             let prevByte = lastByte;
             for (let i = 0; i < original.length; i++) {
                 const currentByte = original[i];
-                //Check if previous byte is not Carriage Return (13) and if current byte is Line Feed (10)
+                // Check if previous byte is not Carriage Return (13) and if current byte is Line Feed (10)
                 // eslint-disable-next-line @typescript-eslint/no-magic-numbers
                 if (currentByte === 10 && prevByte !== 13) {
                     // eslint-disable-next-line @typescript-eslint/no-magic-numbers

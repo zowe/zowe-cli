@@ -86,7 +86,7 @@ export const updateExtendersJson = (
  *                                          it.
  * @returns {string} The name of the plugin.
  */
-export async function install(packageLocation: string, registryInfo: INpmRegistryInfo, installFromFile = false) {
+export async function install(packageLocation: string, registryInfo: INpmRegistryInfo, installFromFile = false, verbose = false) {
     const iConsole = Logger.getImperativeLogger();
     let npmPackage = packageLocation;
 
@@ -124,7 +124,7 @@ export async function install(packageLocation: string, registryInfo: INpmRegistr
         installPackages(npmPackage, {
             prefix: PMFConstants.instance.PLUGIN_INSTALL_LOCATION,
             ...registryInfo.npmArgs,
-        });
+        }, verbose);
 
         // We fetch the package name and version of newly installed plugin
         const packageInfo = await getPackageInfo(npmPackage);
@@ -189,16 +189,15 @@ export async function install(packageLocation: string, registryInfo: INpmRegistr
 
                     // Only update global schema if we were able to load it from disk
                     if (loadedSchema != null) {
-                        const existingTypes = loadedSchema.map((obj) => obj.type);
                         const extendersJson = ConfigUtils.readExtendersJson();
 
                         // Determine new profile types to add to schema
                         let shouldUpdate = false;
                         for (const profile of pluginImpConfig.profiles) {
-                            if (!existingTypes.includes(profile.type)) {
+                            const existingType = loadedSchema.find((obj) => obj.type === profile.type);
+                            if (existingType == null) {
                                 loadedSchema.push(profile);
                             } else {
-                                const existingType = loadedSchema.find((obj) => obj.type === profile.type);
                                 if (semver.valid(existingType.schema.version)) {
                                     if (semver.valid(profile.schema.version) && semver.gt(profile.schema.version, existingType.schema.version)) {
                                         existingType.schema = profile.schema;

@@ -63,7 +63,7 @@ export const PsDefinition: ICommandDefinition = {
         },
         {
             description: strings.ACTIONS.DATA_SET_SEQUENTIAL.EXAMPLES.EX2,
-            options: "--data-set-type `LARGE`"
+            options: "--data-set-type LARGE"
         }
 
     ]

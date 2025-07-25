@@ -913,8 +913,8 @@ describe("AbstractRestClient tests", () => {
             caughtError = error;
         }
         expect(caughtError).toBeUndefined();
-        expect(receivedArray.length).toEqual(3);
-        expect(receivedArray).toEqual(["ChunkOne", "\nChunkTwo", "\r"]);
+        expect(receivedArray.length).toEqual(2);
+        expect(receivedArray).toEqual(["ChunkOne\r", "\nChunkTwo\r"]);
     });
 
     it("should return full response when requested", async () => {

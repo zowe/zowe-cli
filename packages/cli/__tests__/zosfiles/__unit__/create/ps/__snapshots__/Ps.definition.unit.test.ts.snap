@@ -136,7 +136,7 @@ Array [
   },
   Object {
     "description": "Create a LARGE format sequential data set with default parameters",
-    "options": "--data-set-type \`LARGE\`",
+    "options": "--data-set-type LARGE",
   },
 ]
 `;
