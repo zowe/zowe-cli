@@ -3,8 +3,8 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## Recent Changes
 
-- BugFix: Added a warning to users using a TSO command. It now warns them that a logon procedure is not being used when a non default logon procedure
-and `--ssm` option is used.[#2528](https://github.com/zowe/zowe-explorer-vscode/issues/2528)
+- Enhancement: Replaced logic in `ApimlAuthHandler.processLogin` with a call to a new common function `AuthOrder.putNewAuthsFirstOnDisk`. There are no changes to the external API and no changes to the functionality. [#2568](https://github.com/zowe/zowe-cli/pull/2568)
+- BugFix: Added a warning to users using a TSO command. It now warns them that a logon procedure is not being used when a non default logon procedure and `--ssm` option is used.[#2528](https://github.com/zowe/zowe-explorer-vscode/issues/2528)
 
 ## `8.24.4`
 
