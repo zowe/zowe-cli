@@ -2,7 +2,7 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
-## Recent Changes
+## `8.26.0`
 
 - Enhancement: Added the following `AuthOrder` functions: `getPropNmFor`, `putNewAuthsFirstInSess`, `putNewAuthsFirstOnDisk`, `formNewAuthOrderArray`, `authArrayToCfgVal`, `authCfgValToArray`. No external behavior is changed by this addition to/refactoring of the Zowe SDK logic. [#2568](https://github.com/zowe/zowe-cli/pull/2568)
 - Enhancement: When no credentials are available, prompt for the credentials related to the first entry in the `authOrder` property instead of arbitrarily prompting for user and password. [#2568](https://github.com/zowe/zowe-cli/pull/2568)
