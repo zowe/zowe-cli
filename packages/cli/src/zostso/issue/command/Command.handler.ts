@@ -24,6 +24,7 @@ import chalk = require("chalk");
  */
 export default class Handler extends ZosTsoBaseHandler {
     // Process the command and produce the TSO response
+
     public async processCmd(params: IHandlerParameters) {
         // Issue the TSO command
         const response: IIssueResponse = await IssueTso.issueTsoCmd(
@@ -36,6 +37,14 @@ export default class Handler extends ZosTsoBaseHandler {
                 addressSpaceOptions: this.mTsoStart
             }
         );
+        const defProc = "IZUFPROC";
+        if (params.arguments.logonProcedure && params.arguments.logonProcedure !== defProc && params.arguments.suppressStartupMessages) {
+            this.console.error(
+                chalk.yellow(
+                    "Warning: The logon procedure specified is not used when issuing a TSO command with the --suppress-startup-messages (--ssm) option set to true."
+                )
+            );
+        }
 
         // If requested, suppress the startup
         if (

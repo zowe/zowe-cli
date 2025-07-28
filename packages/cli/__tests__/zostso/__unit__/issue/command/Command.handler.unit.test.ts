@@ -12,7 +12,7 @@
 /* eslint-disable deprecation/deprecation */
 jest.mock("../../../../../../zostso/lib/IssueTso");
 import { IssueTso } from "@zowe/zos-tso-for-zowe-sdk";
-import { IHandlerParameters, ImperativeError } from "@zowe/imperative";
+import { IHandlerParameters, IHandlerResponseConsoleApi, ImperativeError } from "@zowe/imperative";
 import * as Command from "../../../../../src/zostso/issue/command/Command.handler";
 import { CommandDefinition } from "../../../../../src/zostso/issue/command/Command.definition";
 import { StartTsoData } from "../../../__resources__/StartTsoData";
@@ -70,4 +70,32 @@ describe("issue command handler tests", () => {
         expect(error instanceof ImperativeError).toBe(true);
         expect(error.message).toMatchSnapshot();
     });
+    it("should log warning when logonProcedure is provided", async () => {
+        const handler = new Command.default();
+        const mockConsoleLog = jest.fn();
+        const mockConsole: IHandlerResponseConsoleApi = {
+            log: jest.fn(),
+            error: mockConsoleLog,
+            errorHeader: jest.fn(),
+            prompt: jest.fn()
+        };
+        const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
+        params.response = {
+            console: { log: mockConsole.log, error: mockConsole.error, errorHeader: mockConsole.errorHeader, prompt: mockConsole.prompt },
+            data: { setExitCode: jest.fn(), setObj: jest.fn(), setMessage: jest.fn() },
+            format: { output: jest.fn() },
+            progress: { startBar: jest.fn(), endBar: jest.fn() }
+        };
+
+        params.arguments.cmd = "time";
+        params.arguments.logonProcedure = "MYPROC";
+        params.arguments.suppressStartupMessages = true;
+
+        IssueTso.issueTsoCmd = jest.fn(() => StartTsoData.SAMPLE_ISSUE_RESPONSE_WITH_MSG);
+
+        await handler.process(params);
+
+        expect(mockConsoleLog).toHaveBeenCalledWith(expect.stringContaining("Warning: The logon procedure specified is not used when issuing a TSO command with the --suppress-startup-messages (--ssm) option set to true."));
+    });
+
 });
