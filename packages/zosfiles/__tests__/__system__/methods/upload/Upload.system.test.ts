@@ -20,6 +20,8 @@ import * as fs from "fs";
 import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/ITestEnvironment";
 import { runCliScript } from "../../../../../../__tests__/__packages__/cli-test-utils/src";
 import { Readable } from "stream";
+import * as path from "path";
+import * as os from "os";
 
 let REAL_SESSION: Session;
 let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
@@ -1022,6 +1024,62 @@ describe("Upload USS file", () => {
 
             // Compare file view with matching upload and view encoding (1047).
             expect(readResponseGood.stdout.toString()).toContain(fileContents);
+        });
+
+        it("should upload a USS file with special characters and verify correct chunked upload/download", async () => {
+            const testFilePath = path.join(__dirname, "testfiles", "specialCharTestData.txt");
+            const targetUssPath = ussname;
+            const file = path.basename(targetUssPath);
+            const localDirname = `${testEnvironment.workingDir}/ussDir`;
+            const downloadedFilePath = path.join(localDirname, file);
+
+            // Ensure clean slate
+            if (fs.existsSync(testFilePath)) {
+                fs.unlinkSync(testFilePath);
+            }
+            if (fs.existsSync(downloadedFilePath)) {
+                fs.unlinkSync(downloadedFilePath);
+            }
+
+            // Create the test file with special characters on each line
+            const line = "ñøçüßΩ中日漢字éâêîôû¡¿☆☂＠＃＆％＋＝";
+            const content = Array(5000).fill(line).join(os.EOL);
+
+            try {
+                fs.mkdirSync(path.dirname(testFilePath), { recursive: true });
+                if(!fs.existsSync(testFilePath))
+                {
+                    fs.writeFileSync(testFilePath, content, "utf-8");
+                }
+
+                const expectedUniqueChars = new Set(stripNewLines(content));
+
+                await Upload.fileToUssFile(
+                    REAL_SESSION,
+                    testFilePath,
+                    targetUssPath,
+                    { encoding: "UTF-8" }
+                );
+
+                await Download.ussFile(
+                    REAL_SESSION,
+                    targetUssPath,
+                    { encoding: "UTF-8", file: downloadedFilePath }
+                );
+
+                const downloadedContent = fs.readFileSync(downloadedFilePath, "utf-8");
+                const downloadedUniqueChars = new Set(stripNewLines(downloadedContent));
+
+                expect(downloadedUniqueChars).toStrictEqual(expectedUniqueChars);
+            } finally {
+                // Clean up test files
+                if (fs.existsSync(testFilePath)) {
+                    fs.unlinkSync(testFilePath);
+                }
+                if (fs.existsSync(downloadedFilePath)) {
+                    fs.unlinkSync(downloadedFilePath);
+                }
+            }
         });
     });
 });

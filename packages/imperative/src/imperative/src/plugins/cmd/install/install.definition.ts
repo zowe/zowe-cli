@@ -60,6 +60,10 @@ const loginDescription =
     "https://docs.npmjs.com/cli/login for NPM >= 9\n" +
     "https://docs.npmjs.com/cli/adduser for NPM < 9";
 
+const verboseDescription =
+    "Specifies that verbose output is printed for npm install.\n" +
+    "This may be useful for debugging errors during plugin installation.";
+
 /**
  * Definition of the install command.
  * @type {ICommandDefinition}
@@ -98,6 +102,12 @@ export const installDefinition: ICommandDefinition = {
             description: loginDescription,
             required: false,
             implies: ["registry"]
+        },
+        {
+            name: "verbose",
+            type: "boolean",
+            description: verboseDescription,
+            required: false
         }
     ],
     examples: [

@@ -5,6 +5,11 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 - BugFix: Added a warning to users using a TSO command. It now warns them that a logon procedure is not being used when a non default logon procedure
 and `--ssm` option is used.[#2528](https://github.com/zowe/zowe-explorer-vscode/issues/2528)
+
+## `8.24.4`
+
+- BugFix: Fixed an issue where inconsistent formatting for an example in the `zowe zos-files create data-set-sequential` command caused the example to be improperly displayed in the Zowe web help. Now, the full example command is shown in the code block when displayed through the web help. [#2557](https://github.com/zowe/zowe-cli/issues/2557)
+
 ## `8.24.0`
 
 - Enhancement: Added a `search-exact-name` option to the `zowe zos-files search data-set` command to search the contents of one data set or PDS. [#2529](https://github.com/zowe/zowe-cli/pull/2529)

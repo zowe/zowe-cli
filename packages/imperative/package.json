@@ -1,6 +1,6 @@
 {
   "name": "@zowe/imperative",
-  "version": "8.24.2",
+  "version": "8.25.0",
   "description": "framework for building configurable CLIs",
   "author": "Zowe",
   "license": "EPL-2.0",
@@ -49,7 +49,7 @@
     "chalk": "^4.1.2",
     "cli-table3": "^0.6.3",
     "comment-json": "~4.2.3",
-    "cross-spawn": "^7.0.5",
+    "cross-spawn": "^7.0.6",
     "dataobject-parser": "^1.2.25",
     "dayjs": "1.11.13",
     "deepmerge": "^4.3.1",
