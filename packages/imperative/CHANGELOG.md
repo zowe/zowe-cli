@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Added a validity check for base profiles when merging in ProfileInfo.mergeArgsForProfile. [#2575](https://github.com/zowe/zowe-cli/pull/2575)
+
 ## `8.26.0`
 
 - Enhancement: Added the following `AuthOrder` functions: `getPropNmFor`, `putNewAuthsFirstInSess`, `putNewAuthsFirstOnDisk`, `formNewAuthOrderArray`, `authArrayToCfgVal`, `authCfgValToArray`. No external behavior is changed by this addition to/refactoring of the Zowe SDK logic. [#2568](https://github.com/zowe/zowe-cli/pull/2568)
