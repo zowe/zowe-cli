@@ -527,6 +527,21 @@ export class ProfileInfo {
         return new Session(sessCfg);
     }
 
+    private static profileExists(profileName: string, profilesObj: any) {
+        if (!profileName || !profilesObj) return false;
+        const segments = profileName.split(".");
+        let obj = profilesObj;
+        for (const seg of segments) {
+            if (obj[seg]) {
+                obj = obj[seg].profiles || obj[seg];
+            } else {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
     // _______________________________________________________________________
     /**
      * Merge all of the available values for arguments defined for the
@@ -600,6 +615,10 @@ export class ProfileInfo {
                 if (!realBaseProfileName && osLoc.user) {
                     layerProperties = this.mLoadedConfig.findLayer(false, osLoc.global)?.properties;
                     realBaseProfileName = layerProperties?.defaults.base;
+                }
+                const profilesObj = layerProperties?.profiles;
+                if (realBaseProfileName && !ProfileInfo.profileExists(realBaseProfileName, profilesObj)) {
+                    realBaseProfileName = null;
                 }
                 if (realBaseProfileName) baseProfile = this.mLoadedConfig.api.profiles.buildProfile(realBaseProfileName, layerProperties?.profiles);
                 else baseProfile = null;
