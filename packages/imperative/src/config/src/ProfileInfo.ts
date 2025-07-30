@@ -527,6 +527,32 @@ export class ProfileInfo {
         return new Session(sessCfg);
     }
 
+    /**
+     * Checks if a profile (including nested subprofiles) exists in the given profiles object.
+     * The profile name can use dot notation for nested profiles (e.g., "main.sub1.sub2").
+     *
+     * @param profileName - The dotted path to the profile (e.g., "main.sub1.sub2")
+     * @param profilesObj - The profiles object to search within
+     * @returns true if the profile exists, false otherwise
+     */
+    private static profileExists(profileName: string, profilesObj: any): boolean {
+        if (!profileName || !profilesObj) return false;
+
+        // Split the profile name into segments for nested traversal
+        const segments = profileName.split(".");
+        let current = profilesObj;
+
+        for (const segment of segments) {
+            // If the segment exists, move deeper; otherwise, profile doesn't exist
+            if (current[segment]) {
+                current = current[segment].profiles || current[segment];
+            } else {
+                return false;
+            }
+        }
+        return true;
+    }
+
     // _______________________________________________________________________
     /**
      * Merge all of the available values for arguments defined for the
@@ -600,6 +626,10 @@ export class ProfileInfo {
                 if (!realBaseProfileName && osLoc.user) {
                     layerProperties = this.mLoadedConfig.findLayer(false, osLoc.global)?.properties;
                     realBaseProfileName = layerProperties?.defaults.base;
+                }
+                const profilesObj = layerProperties?.profiles;
+                if (realBaseProfileName && !ProfileInfo.profileExists(realBaseProfileName, profilesObj)) {
+                    realBaseProfileName = null;
                 }
                 if (realBaseProfileName) baseProfile = this.mLoadedConfig.api.profiles.buildProfile(realBaseProfileName, layerProperties?.profiles);
                 else baseProfile = null;
