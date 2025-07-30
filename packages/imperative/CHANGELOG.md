@@ -4,7 +4,7 @@ All notable changes to the Imperative package will be documented in this file.
 
 ## Recent Changes
 
-- BugFix: Added a validity check for base profiles when merging in ProfileInfo.mergeArgsForProfile. [#2575](https://github.com/zowe/zowe-cli/pull/2575)
+- BugFix: Added a validity check in the `ProfileInfo` class `mergeArgsForProfile` method to ensure the base profile exists before merging its values. This prevents Zowe Explorer UI loading errors when a non-existent base profile is referenced. [#2575](https://github.com/zowe/zowe-cli/pull/2575)
 
 ## `8.26.0`
 
