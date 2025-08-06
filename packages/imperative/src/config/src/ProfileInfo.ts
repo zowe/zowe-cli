@@ -54,6 +54,15 @@ import { Constants } from "../../constants";
 import { Censor } from "../../censor";
 
 /**
+ * Minimal interface for a profile node to support recursive nesting via the `profiles` property.
+ * Enables traversal of nested profiles using dot notation (ie: "base.sub1.sub2").
+ */
+interface IProfileNode {
+    profiles?: { [key: string]: IProfileNode };
+}
+
+
+/**
  * This class provides functions to retrieve profile-related information.
  * It can load the relevant configuration files, merge all possible
  * profile argument values using the Zowe order-of-precedence, and
@@ -529,23 +538,21 @@ export class ProfileInfo {
 
     /**
      * Checks if a profile (including nested subprofiles) exists in the given profiles object.
-     * The profile name can use dot notation for nested profiles (e.g., "main.sub1.sub2").
+     * Traverses recursively through the `profiles` property for nested profile support.
      *
-     * @param profileName - The dotted path to the profile (e.g., "main.sub1.sub2")
-     * @param profilesObj - The profiles object to search within
+     * @param profileName - The dotted path to the profile (ie: "base.sub1.sub2")
+     * @param profilesObj - The profiles object to search in.
      * @returns true if the profile exists, false otherwise
      */
-    private static profileExists(profileName: string, profilesObj: any): boolean {
+    private static profileExists(profileName: string, profilesObj: Record<string, IProfileNode>): boolean {
         if (!profileName || !profilesObj) return false;
 
-        // Split the profile name into segments for nested traversal
-        const segments = profileName.split(".");
-        let current = profilesObj;
+        const levels = profileName.split(".");
+        let current: Record<string, IProfileNode> | IProfileNode = profilesObj;
 
-        for (const segment of segments) {
-            // If the segment exists, move deeper; otherwise, profile doesn't exist
-            if (current[segment]) {
-                current = current[segment].profiles || current[segment];
+        for (const level of levels) {
+            if ((current as Record<string, IProfileNode>)[level]) {
+                current = (current as Record<string, IProfileNode>)[level].profiles || (current as Record<string, IProfileNode>)[level];
             } else {
                 return false;
             }
