@@ -38,11 +38,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [20.9.0, 20.x, 22.x]
+        node-version: [22.x]
         os:
           - windows-latest
-          - ubuntu-22.04
-          - ${{ github.event.inputs.macos-type || 'macos-14'}}
 
     env:
       OS: ${{ matrix.os }}
@@ -62,7 +60,7 @@ jobs:
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v4
       with:
-        node-version: ${{ matrix.node-version }}
+        node-version: '22.17.1'
         check-latest: true
 
     - name: Disable Lint Annotations
@@ -77,6 +75,8 @@ jobs:
       id: install-rust
       if: github.event.inputs.test-type != 'nodejs'
       uses: dtolnay/rust-toolchain@stable
+      with:
+        toolchain: '1.88.0'
 
     - name: Build Source
       id: build
