@@ -54,15 +54,6 @@ import { Constants } from "../../constants";
 import { Censor } from "../../censor";
 
 /**
- * Minimal interface for a profile node to support recursive nesting via the `profiles` property.
- * Enables traversal of nested profiles using dot notation (ie: "base.sub1.sub2").
- */
-interface IProfileNode {
-    profiles?: { [key: string]: IProfileNode };
-}
-
-
-/**
  * This class provides functions to retrieve profile-related information.
  * It can load the relevant configuration files, merge all possible
  * profile argument values using the Zowe order-of-precedence, and
@@ -634,8 +625,7 @@ export class ProfileInfo {
                     layerProperties = this.mLoadedConfig.findLayer(false, osLoc.global)?.properties;
                     realBaseProfileName = layerProperties?.defaults.base;
                 }
-                const profilesObj = layerProperties?.profiles;
-                if (realBaseProfileName && !ProfileInfo.profileExists(realBaseProfileName, profilesObj)) {
+                if (realBaseProfileName && !this.mLoadedConfig.api.profiles.exists(realBaseProfileName)) {
                     realBaseProfileName = null;
                 }
                 if (realBaseProfileName) baseProfile = this.mLoadedConfig.api.profiles.buildProfile(realBaseProfileName, layerProperties?.profiles);
