@@ -527,30 +527,6 @@ export class ProfileInfo {
         return new Session(sessCfg);
     }
 
-    /**
-     * Checks if a profile (including nested subprofiles) exists in the given profiles object.
-     * Traverses recursively through the `profiles` property for nested profile support.
-     *
-     * @param profileName - The dotted path to the profile (ie: "base.sub1.sub2")
-     * @param profilesObj - The profiles object to search in.
-     * @returns true if the profile exists, false otherwise
-     */
-    private static profileExists(profileName: string, profilesObj: Record<string, IProfileNode>): boolean {
-        if (!profileName || !profilesObj) return false;
-
-        const levels = profileName.split(".");
-        let current: Record<string, IProfileNode> | IProfileNode = profilesObj;
-
-        for (const level of levels) {
-            if ((current as Record<string, IProfileNode>)[level]) {
-                current = (current as Record<string, IProfileNode>)[level].profiles || (current as Record<string, IProfileNode>)[level];
-            } else {
-                return false;
-            }
-        }
-        return true;
-    }
-
     // _______________________________________________________________________
     /**
      * Merge all of the available values for arguments defined for the
