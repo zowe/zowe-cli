@@ -981,15 +981,43 @@ describe("TeamConfig ProfileInfo tests", () => {
 
             // Expected args should include those from the global base profile
             const expectedArgs = [
-                {argName: 'host', dataType: 'string', argValue: 'LPAR1.your.domain.net', secure: false},
-                {argName: 'port', dataType: 'number', argValue: 1234, secure: false},
-                {argName: 'responseFormatHeader', dataType: 'boolean', argValue: true, secure: false}
+                { argName: 'host', dataType: 'string', argValue: 'LPAR1.your.domain.net', secure: false },
+                { argName: 'port', dataType: 'number', argValue: 1234, secure: false },
+                { argName: 'responseFormatHeader', dataType: 'boolean', argValue: true, secure: false }
             ];
 
             expect(mergedArgs.knownArgs.length).toBeGreaterThanOrEqual(expectedArgs.length);
             for (const [idx, arg] of expectedArgs.entries()) {
                 expect(mergedArgs.knownArgs[idx]).toMatchObject(arg);
             }
+        });
+
+        it("should not merge values from a non-existent base profile", async () => {
+            const profInfo = createNewProfInfo(teamProjDir);
+            await profInfo.readProfilesFromDisk();
+
+            // fake config with non-existent base profile
+            const activeLayer = profInfo.getTeamConfig().layerActive();
+            activeLayer.properties.defaults.base = "nonexistent_base";
+            activeLayer.properties.profiles = activeLayer.properties.profiles || {};
+
+            // ensure base profile does not exist
+            delete activeLayer.properties.profiles["nonexistent_base"];
+
+            const profAttrs = profInfo.getDefaultProfile("zosmf") as IProfAttrs;
+
+            let mergedArgs;
+            let error;
+            try {
+                mergedArgs = profInfo.mergeArgsForProfile(profAttrs);
+            } catch (err) {
+                error = err;
+            }
+
+            expect(error).toBeUndefined();
+            // confirm knownArgs do not include properties from non-existent base profile
+            const baseProfileArgs = mergedArgs.knownArgs.filter(arg => arg.argLoc.jsonLoc?.includes("nonexistent_base"));
+            expect(baseProfileArgs.length).toBe(0);
         });
     });
 
@@ -1341,7 +1369,7 @@ describe("TeamConfig ProfileInfo tests", () => {
         it("should not add new base to nested project config profile when updating secure creds", async () => {
             process.env[testEnvPrefix + "_CLI_HOME"] = nestedTeamProjDirEmptyBase;
             const profInfo = createNewProfInfo(nestedTeamProjDirEmptyBase);
-            await profInfo.readProfilesFromDisk({ projectDir: nestedTeamProjDirEmptyBaseProj});
+            await profInfo.readProfilesFromDisk({ projectDir: nestedTeamProjDirEmptyBaseProj });
             const upd = { profileName: "lpar1.zosmf", profileType: "zosmf" };
 
             let caughtError;
