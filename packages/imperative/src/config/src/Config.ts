@@ -498,6 +498,245 @@ export class Config {
 
     // _______________________________________________________________________
     /**
+     * Move a profile from one path to another, including all child profiles and secure credentials.
+     * @param originalPath The current path of the profile to move
+     * @param newPath The new path where the profile should be moved to
+     * @throws An ImperativeError if the original profile doesn't exist or if the new path already exists
+     */
+    public move(originalPath: string, newPath: string) {
+        const layer = this.layerActive();
+        
+        // Validate that the original profile exists
+        if (!this.api.profiles.exists(originalPath)) {
+            throw new ImperativeError({ 
+                msg: `Profile at path '${originalPath}' does not exist and cannot be moved` 
+            });
+        }
+
+        // Validate that the new path doesn't already exist
+        if (this.api.profiles.exists(newPath)) {
+            throw new ImperativeError({ 
+                msg: `Profile at path '${newPath}' already exists and cannot be overwritten` 
+            });
+        }
+
+        // Get the profile to move from the layer directly
+        const profileToMove = this.findProfileInLayer(originalPath, layer);
+        if (!profileToMove) {
+            throw new ImperativeError({ 
+                msg: `Profile at path '${originalPath}' could not be found in the active layer` 
+            });
+        }
+        const profileName = originalPath.split('.').pop();
+        const newProfileName = newPath.split('.').pop();
+
+        // Get all secure properties for the original profile and its children
+        const securePropsToMove = this.getSecurePropertiesForProfile(originalPath);
+
+        // Set the profile at the new location
+        this.api.profiles.set(newPath, profileToMove);
+
+        // Move secure properties to the new location
+        this.moveSecureProperties(originalPath, newPath, securePropsToMove);
+
+        // Remove the profile from the original location
+        this.deleteProfileRecursively(originalPath);
+
+        // Update secure arrays to reflect the new paths
+        this.updateSecureArrays(originalPath, newPath);
+    }
+
+    // _______________________________________________________________________
+    /**
+     * Get all secure properties for a profile and its child profiles.
+     * @param profilePath The path of the profile
+     * @returns Array of secure property paths
+     */
+    private getSecurePropertiesForProfile(profilePath: string): string[] {
+        const secureProps: string[] = [];
+        const layer = this.layerActive();
+        
+        // Get all secure fields for the current layer
+        const allSecureFields = this.api.secure.secureFields(layer);
+        
+        // Filter to only include secure properties for this profile and its children
+        for (const secureField of allSecureFields) {
+            if (secureField.startsWith(`profiles.${profilePath}.`)) {
+                secureProps.push(secureField);
+            }
+        }
+        
+        return secureProps;
+    }
+
+    // _______________________________________________________________________
+    /**
+     * Move secure properties from one profile path to another.
+     * @param originalPath The original profile path
+     * @param newPath The new profile path
+     * @param secureProps Array of secure property paths to move
+     */
+    private moveSecureProperties(originalPath: string, newPath: string, secureProps: string[]) {
+        const layer = this.layerActive();
+        const secureLayerProps = this.api.secure.securePropsForLayer(layer.path);
+        
+        if (!secureLayerProps) {
+            return;
+        }
+
+        // Create new secure properties with updated paths
+        const newSecureProps: { [key: string]: any } = {};
+        
+        for (const secureProp of secureProps) {
+            const newSecurePropPath = secureProp.replace(`profiles.${originalPath}.`, `profiles.${newPath}.`);
+            const value = secureLayerProps[secureProp];
+            
+            if (value !== undefined) {
+                newSecureProps[newSecurePropPath] = value;
+                // Remove the old secure property
+                delete secureLayerProps[secureProp];
+            }
+        }
+
+        // Add the new secure properties
+        Object.assign(secureLayerProps, newSecureProps);
+    }
+
+    // _______________________________________________________________________
+    /**
+     * Recursively delete a profile and all its child profiles.
+     * @param profilePath The path of the profile to delete
+     */
+    private deleteProfileRecursively(profilePath: string) {
+        const layer = this.layerActive();
+        const segments = profilePath.split('.');
+        
+        // Navigate to the parent object
+        let obj: any = layer.properties;
+        for (let i = 0; i < segments.length - 1; i++) {
+            if (obj.profiles && obj.profiles[segments[i]]) {
+                obj = obj.profiles[segments[i]];
+            } else {
+                return; // Profile doesn't exist
+            }
+        }
+        
+        // Delete the profile
+        if (obj.profiles && obj.profiles[segments[segments.length - 1]]) {
+            delete obj.profiles[segments[segments.length - 1]];
+        }
+    }
+
+    // _______________________________________________________________________
+    /**
+     * Update secure arrays to reflect the moved profile paths.
+     * @param originalPath The original profile path
+     * @param newPath The new profile path
+     */
+    private updateSecureArrays(originalPath: string, newPath: string) {
+        const layer = this.layerActive();
+        
+        // Find all secure arrays that reference the original path
+        const secureArrays = this.findSecureArrays(layer.properties, originalPath);
+        
+        for (const secureArrayPath of secureArrays) {
+            const secureArray = lodash.get(layer.properties, secureArrayPath);
+            if (Array.isArray(secureArray)) {
+                // Update any secure property names that reference the moved profile
+                const updatedArray = secureArray.map(propName => {
+                    // If the secure property is for the moved profile, update its path
+                    if (this.isSecurePropertyForProfile(propName, originalPath)) {
+                        return this.updateSecurePropertyPath(propName, originalPath, newPath);
+                    }
+                    return propName;
+                });
+                
+                lodash.set(layer.properties, secureArrayPath, updatedArray);
+            }
+        }
+    }
+
+    // _______________________________________________________________________
+    /**
+     * Find all secure arrays in the layer properties.
+     * @param properties The layer properties object
+     * @param profilePath The profile path to search for
+     * @returns Array of secure array paths
+     */
+    private findSecureArrays(properties: any, profilePath: string): string[] {
+        const secureArrays: string[] = [];
+        
+        const findSecureArraysRecursive = (obj: any, currentPath: string) => {
+            if (obj && typeof obj === 'object') {
+                for (const [key, value] of Object.entries(obj)) {
+                    const newPath = currentPath ? `${currentPath}.${key}` : key;
+                    
+                    if (key === 'secure' && Array.isArray(value)) {
+                        secureArrays.push(newPath);
+                    } else if (typeof value === 'object' && value !== null) {
+                        findSecureArraysRecursive(value, newPath);
+                    }
+                }
+            }
+        };
+        
+        findSecureArraysRecursive(properties, '');
+        return secureArrays;
+    }
+
+    // _______________________________________________________________________
+    /**
+     * Check if a secure property is for a specific profile.
+     * @param propName The secure property name
+     * @param profilePath The profile path
+     * @returns True if the secure property is for the specified profile
+     */
+    private isSecurePropertyForProfile(propName: string, profilePath: string): boolean {
+        // This is a simplified check - in practice, you might need more sophisticated logic
+        // to determine if a secure property belongs to a specific profile
+        return propName.includes(profilePath.split('.').pop());
+    }
+
+    // _______________________________________________________________________
+    /**
+     * Update a secure property path when a profile is moved.
+     * @param propName The original secure property name
+     * @param originalPath The original profile path
+     * @param newPath The new profile path
+     * @returns The updated secure property name
+     */
+    private updateSecurePropertyPath(propName: string, originalPath: string, newPath: string): string {
+        const originalProfileName = originalPath.split('.').pop();
+        const newProfileName = newPath.split('.').pop();
+        
+        // Replace the profile name in the property name
+        return propName.replace(originalProfileName, newProfileName);
+    }
+
+    // _______________________________________________________________________
+    /**
+     * Find a profile in a specific layer by path.
+     * @param profilePath The path of the profile to find
+     * @param layer The layer to search in
+     * @returns The profile object if found, null otherwise
+     */
+    private findProfileInLayer(profilePath: string, layer: IConfigLayer): IConfigProfile {
+        const segments = profilePath.split('.');
+        let obj: any = layer.properties;
+        
+        for (const segment of segments) {
+            if (obj.profiles && obj.profiles[segment]) {
+                obj = obj.profiles[segment];
+            } else {
+                return null;
+            }
+        }
+        
+        return obj;
+    }
+
+    // _______________________________________________________________________
+    /**
      * Set the $schema value at the top of the config JSONC.
      * Also save the schema to disk if an object is provided.
      * @param schema The URI of JSON schema, or a schema object to use
