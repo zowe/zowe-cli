@@ -36,6 +36,8 @@ export class Censor {
     private static readonly MAIN_CENSORED_OPTIONS = ["auth", "authentication", "basicAuth", "base64EncodedAuth", "certFilePassphrase", "credentials",
         "pw", "pass", "password", "passphrase", "tv", "tokenValue"];
 
+    private static readonly MAIN_CENSORED_HEADERS = ["Authorization"];
+
     private static readonly MAIN_SECURE_PROMPT_OPTIONS = ["keyPassphrase", "password", "passphrase", "tokenValue", "user"];
 
     // The censor response.
@@ -55,6 +57,14 @@ export class Censor {
         return Array.from(censoredList);
     }
 
+    public static get DEFAULT_CENSORED_HEADERS(): string[] {
+        const censoredList = new Set<string>();
+        for (const option of this.MAIN_CENSORED_HEADERS) {
+            censoredList.add(option);
+        }
+        return Array.from(censoredList);
+    }
+
     // Return a customized list of secure prompt options
     public static get SECURE_PROMPT_OPTIONS(): string[] {
         const censoredList = new Set<string>();
@@ -66,7 +76,7 @@ export class Censor {
     }
 
     // Set a censored options list that can be set and retrieved for each command.
-    private static mCensoredOptions: Set<string> = new Set(this.DEFAULT_CENSORED_OPTIONS);
+    private static mCensoredOptions: Set<string> = new Set([...this.DEFAULT_CENSORED_OPTIONS, ...this.DEFAULT_CENSORED_HEADERS]);
 
     // Return a customized list of censored options (or just the defaults if not set).
     public static get CENSORED_OPTIONS(): string[] {
@@ -206,7 +216,7 @@ export class Censor {
      * @param {ICensorOptions} censorOpts - The objects to use to gather options that should be censored
      */
     public static setCensoredOptions(censorOpts?: ICensorOptions) {
-        this.mCensoredOptions = new Set(this.DEFAULT_CENSORED_OPTIONS);
+        this.mCensoredOptions = new Set([...this.DEFAULT_CENSORED_OPTIONS, ...this.DEFAULT_CENSORED_HEADERS]);
 
         if (censorOpts) {
             // Save off the config object
@@ -317,6 +327,49 @@ export class Censor {
     }
 
     /**
+     * Copy and censor any sensitive CLI arguments before logging/printing
+     * @param {Record<string, any>} data - the data to censor
+     * @returns {Record<string, any>} - the censored data
+     */
+    public static censorObject(data: Record<string, any>): Record<string, any> {
+        const config = this.mConfig ?? ImperativeConfig.instance?.config;
+        const secValues = [];
+
+        if (config?.exists) {
+            const secureFields = config.api.secure.findSecure(config.mProperties.profiles, "profiles");
+            for (const prop of secureFields) {
+                const sec = lodash.get(config.mProperties, prop);
+                if (sec && typeof sec !== "object" && !this.isSpecialValue(prop) && this.isSecureValue(prop.split(".").pop())) {
+                    secValues.push(sec);
+                }
+            }
+        }
+
+        // Do not modify the original data
+        const dataCopy = this.mCensorObject(lodash.cloneDeep(data), secValues);
+        return dataCopy;
+    }
+
+    /**
+     * Copy and censor over an object
+     * @param {Record<string, any>} data - the data to censor
+     * @returns {Record<string, any>} - the censored data
+     */
+    private static mCensorObject(data: Record<string, any>, secureValues: any[]): Record<string, any> {
+        const newData: Record<string, any> = {};
+        for (const [key, value] of Object.entries(data)) {
+            if (this.CENSORED_OPTIONS.includes(key) || secureValues.includes(value)) {
+                newData[key] = this.CENSOR_RESPONSE;
+            } else if (typeof value == "object") {
+                newData[key] = this.mCensorObject(value, secureValues);
+            } else {
+                newData[key] = value;
+            }
+        }
+        return newData;
+    }
+
+    /**
      * Copy and censor a yargs argument object before logging
      * @param {yargs.Arguments} args - the args to censor
      * @returns {yargs.Arguments} - a censored copy of the arguments
@@ -368,7 +421,7 @@ export class Censor {
             return Censor.NULL_SESS_OBJ_MSG + " replaceValsInSess";
         }
 
-        const propsToBeCensored = [...Censor.SECURE_PROMPT_OPTIONS, ...Censor.DEFAULT_CENSORED_OPTIONS];
+        const propsToBeCensored = [...Censor.SECURE_PROMPT_OPTIONS, ...Censor.DEFAULT_CENSORED_OPTIONS, ...Censor.DEFAULT_CENSORED_HEADERS];
 
         // create copy of sessObj so that we can replace values in a censored object
         let censoredSessObj;

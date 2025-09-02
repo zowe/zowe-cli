@@ -36,6 +36,10 @@ import { ProxySettings } from "../../src/client/ProxySettings";
 import { HttpsProxyAgent } from "https-proxy-agent";
 import { completionTimeoutErrorMessage } from "../../src/client/doc/IRestClientError";
 import { EnvironmentalVariableSettings } from "../../../imperative";
+import { Logger } from "../../../logger";
+import { Censor } from "../../../censor";
+import { IHTTPSOptions } from "../../src/client/doc/IHTTPSOptions";
+import { cloneDeep } from "lodash";
 
 /**
  * To test the AbstractRestClient, we use the existing default RestClient which
@@ -59,6 +63,39 @@ describe("AbstractRestClient tests", () => {
         const client = new RestClient(new Session({hostname: "test"}));
         expect((client as any).appendHeaders(["Test"])).toMatchSnapshot();
         expect((client as any).appendHeaders(undefined)).toMatchSnapshot();
+    });
+
+    it("should sanitize header values before they are logged", () => {
+        const zoweLogger = Logger.getImperativeLogger();
+        jest.spyOn(Logger, "getImperativeLogger").mockReturnValue(zoweLogger);
+        const zoweTraceLoggerSpy = jest.spyOn(zoweLogger, "trace");
+        const censorObjectDataSpy = jest.spyOn(Censor, "censorObject");
+        const client = new RestClient(new Session({hostname: "test"}));
+
+        const httpsOptions: IHTTPSOptions = {
+            headers: {
+                Authorization: "Basic testdata"
+            },
+            hostname: "test",
+            method: "GET",
+            path: "/",
+            port: "443",
+            rejectUnauthorized: false
+        };
+        const expectedHttpsOptions = cloneDeep(httpsOptions);
+        expectedHttpsOptions.headers.Authorization = Censor.CENSOR_RESPONSE;
+
+        (client as any).appendInputHeaders(httpsOptions);
+
+        expect(zoweTraceLoggerSpy).toHaveBeenCalledTimes(1);
+        expect(censorObjectDataSpy).toHaveBeenCalledTimes(1);
+        expect(censorObjectDataSpy).toHaveBeenCalledWith(httpsOptions);
+        expect(censorObjectDataSpy).toHaveReturnedWith(expectedHttpsOptions);
+        expect(zoweTraceLoggerSpy).toHaveBeenCalledWith(
+            expect.stringContaining("appendInputHeaders"),
+            JSON.stringify(expectedHttpsOptions),
+            "RestClient"
+        );
     });
 
     it("should give an error when no session is provided", async () => {
