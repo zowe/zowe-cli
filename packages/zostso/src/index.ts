@@ -12,10 +12,13 @@
 export * from "./constants/ZosTso.constants";
 export * from "./constants/ZosTso.profile";
 
+export * from "./doc/input/IIssueTsoCmdOpts";
 export * from "./doc/input/IIssueTsoParms";
 export * from "./doc/input/ISendTsoParms";
+export * from "./doc/input/IStartTsoAppParms";
 export * from "./doc/input/IStartTsoParms";
 export * from "./doc/input/IStopTsoParms";
+export * from "./doc/input/ITsoAppCommunicationParms";
 
 export * from "./doc/types/SendResponse";
 
@@ -35,11 +38,11 @@ export * from "./doc/ISendResponse";
 export * from "./doc/IStartStopResponse";
 export * from "./doc/IStartStopResponses";
 
+export * from "./AddressSpaceApps";
 export * from "./IssueTso";
 export * from "./PingTso";
 export * from "./SendTso";
 export * from "./StartTso";
-export * from "./AddressSpaceApps";
 export * from "./StopTso";
 export * from "./TsoConstants";
 export * from "./TsoResponseService";
