@@ -65,7 +65,7 @@ describe("AbstractRestClient tests", () => {
         expect((client as any).appendHeaders(undefined)).toMatchSnapshot();
     });
 
-    it("should sanitize header values before they are logged", () => {
+    it("should sanitize header values before they are logged 1", () => {
         const zoweLogger = Logger.getImperativeLogger();
         jest.spyOn(Logger, "getImperativeLogger").mockReturnValue(zoweLogger);
         const zoweTraceLoggerSpy = jest.spyOn(zoweLogger, "trace");
@@ -84,6 +84,74 @@ describe("AbstractRestClient tests", () => {
         };
         const expectedHttpsOptions = cloneDeep(httpsOptions);
         expectedHttpsOptions.headers.Authorization = Censor.CENSOR_RESPONSE;
+
+        (client as any).appendInputHeaders(httpsOptions);
+
+        expect(zoweTraceLoggerSpy).toHaveBeenCalledTimes(1);
+        expect(censorObjectDataSpy).toHaveBeenCalledTimes(1);
+        expect(censorObjectDataSpy).toHaveBeenCalledWith(httpsOptions);
+        expect(censorObjectDataSpy).toHaveReturnedWith(expectedHttpsOptions);
+        expect(zoweTraceLoggerSpy).toHaveBeenCalledWith(
+            expect.stringContaining("appendInputHeaders"),
+            JSON.stringify(expectedHttpsOptions),
+            "RestClient"
+        );
+    });
+
+    it("should sanitize header values before they are logged 2", () => {
+        const zoweLogger = Logger.getImperativeLogger();
+        jest.spyOn(Logger, "getImperativeLogger").mockReturnValue(zoweLogger);
+        const zoweTraceLoggerSpy = jest.spyOn(zoweLogger, "trace");
+        const censorObjectDataSpy = jest.spyOn(Censor, "censorObject");
+        const client = new RestClient(new Session({hostname: "test"}));
+
+        const httpsOptions: IHTTPSOptions = {
+            headers: {
+                Cookie: "fakeCookie"
+            },
+            hostname: "test",
+            method: "GET",
+            path: "/",
+            port: "443",
+            rejectUnauthorized: false
+        };
+        const expectedHttpsOptions = cloneDeep(httpsOptions);
+        expectedHttpsOptions.headers.Cookie = Censor.CENSOR_RESPONSE;
+
+        (client as any).appendInputHeaders(httpsOptions);
+
+        expect(zoweTraceLoggerSpy).toHaveBeenCalledTimes(1);
+        expect(censorObjectDataSpy).toHaveBeenCalledTimes(1);
+        expect(censorObjectDataSpy).toHaveBeenCalledWith(httpsOptions);
+        expect(censorObjectDataSpy).toHaveReturnedWith(expectedHttpsOptions);
+        expect(zoweTraceLoggerSpy).toHaveBeenCalledWith(
+            expect.stringContaining("appendInputHeaders"),
+            JSON.stringify(expectedHttpsOptions),
+            "RestClient"
+        );
+    });
+
+    it("should sanitize header values before they are logged 3", () => {
+        const zoweLogger = Logger.getImperativeLogger();
+        jest.spyOn(Logger, "getImperativeLogger").mockReturnValue(zoweLogger);
+        const zoweTraceLoggerSpy = jest.spyOn(zoweLogger, "trace");
+        const censorObjectDataSpy = jest.spyOn(Censor, "censorObject");
+        const client = new RestClient(new Session({hostname: "test"}));
+
+        const httpsOptions: IHTTPSOptions = {
+            headers: {
+                Authorization: "Basic testdata",
+                "Proxy-Authorization": "Basic proxytestdata"
+            },
+            hostname: "test",
+            method: "GET",
+            path: "/",
+            port: "443",
+            rejectUnauthorized: false
+        };
+        const expectedHttpsOptions = cloneDeep(httpsOptions);
+        expectedHttpsOptions.headers.Authorization = Censor.CENSOR_RESPONSE;
+        expectedHttpsOptions.headers["Proxy-Authorization"] = Censor.CENSOR_RESPONSE;
 
         (client as any).appendInputHeaders(httpsOptions);
 

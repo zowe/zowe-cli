@@ -26,6 +26,8 @@ Array [
 exports[`Censor tests should not change the default main censored options and headers 2`] = `
 Array [
   "Authorization",
+  "Cookie",
+  "Proxy-Authorization",
 ]
 `;
 
@@ -48,6 +50,8 @@ Array [
   "tokenValue",
   "token-value",
   "Authorization",
+  "Cookie",
+  "Proxy-Authorization",
 ]
 `;
 

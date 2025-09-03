@@ -36,7 +36,7 @@ export class Censor {
     private static readonly MAIN_CENSORED_OPTIONS = ["auth", "authentication", "basicAuth", "base64EncodedAuth", "certFilePassphrase", "credentials",
         "pw", "pass", "password", "passphrase", "tv", "tokenValue"];
 
-    private static readonly MAIN_CENSORED_HEADERS = ["Authorization"];
+    private static readonly MAIN_CENSORED_HEADERS = ["Authorization", "Cookie", "Proxy-Authorization"];
 
     private static readonly MAIN_SECURE_PROMPT_OPTIONS = ["keyPassphrase", "password", "passphrase", "tokenValue", "user"];
 
