@@ -43,9 +43,11 @@ export class Censor {
     // The censor response.
     public static readonly CENSOR_RESPONSE = "****";
 
-
     // The censor response.
     public static readonly NULL_SESS_OBJ_MSG = "Null session object was passed to API";
+
+    // Internal custom censored headers array
+    private static INTERNAL_CUSTOM_CENSORED_HEADERS: string[] = [];
 
     // A set of default censored options.
     public static get DEFAULT_CENSORED_OPTIONS(): string[] {
@@ -65,6 +67,14 @@ export class Censor {
         return Array.from(censoredList);
     }
 
+    public static get CUSTOM_CENSORED_HEADERS(): string[] {
+        const censoredList = new Set<string>();
+        for (const header of this.INTERNAL_CUSTOM_CENSORED_HEADERS) {
+            censoredList.add(header);
+        }
+        return Array.from(censoredList);
+    }
+
     // Return a customized list of secure prompt options
     public static get SECURE_PROMPT_OPTIONS(): string[] {
         const censoredList = new Set<string>();
@@ -76,7 +86,11 @@ export class Censor {
     }
 
     // Set a censored options list that can be set and retrieved for each command.
-    private static mCensoredOptions: Set<string> = new Set([...this.DEFAULT_CENSORED_OPTIONS, ...this.DEFAULT_CENSORED_HEADERS]);
+    private static mCensoredOptions: Set<string> = new Set([
+        ...this.DEFAULT_CENSORED_OPTIONS,
+        ...this.DEFAULT_CENSORED_HEADERS,
+        ...this.CUSTOM_CENSORED_HEADERS
+    ]);
 
     // Return a customized list of censored options (or just the defaults if not set).
     public static get CENSORED_OPTIONS(): string[] {
@@ -173,6 +187,19 @@ export class Censor {
     }
 
     /**
+     * Add a header to censor
+     * @param {string} header - The name of the header to censor
+     */
+    public static addCensoredHeader(header: string) {
+        if (header != null) {
+            if (!this.INTERNAL_CUSTOM_CENSORED_HEADERS.includes(header)) {
+                this.INTERNAL_CUSTOM_CENSORED_HEADERS.push(header);
+                this.mCensoredOptions.add(header);
+            }
+        }
+    }
+
+    /**
      * Specifies whether a given property path (e.g. "profiles.lpar1.properties.host") is a special value or not.
      * Special value: Refers to any value defined as secure in the schema definition.
      *                These values should be already masked by the application (and/or plugin) developer.
@@ -216,7 +243,7 @@ export class Censor {
      * @param {ICensorOptions} censorOpts - The objects to use to gather options that should be censored
      */
     public static setCensoredOptions(censorOpts?: ICensorOptions) {
-        this.mCensoredOptions = new Set([...this.DEFAULT_CENSORED_OPTIONS, ...this.DEFAULT_CENSORED_HEADERS]);
+        this.mCensoredOptions = new Set([...this.DEFAULT_CENSORED_OPTIONS, ...this.DEFAULT_CENSORED_HEADERS, ...this.CUSTOM_CENSORED_HEADERS]);
 
         if (censorOpts) {
             // Save off the config object
@@ -402,9 +429,9 @@ export class Censor {
      */
     public static censorSession(sessObj: any): string {
         if (!sessObj) {
-            return Censor.NULL_SESS_OBJ_MSG + " censorSession";
+            return this.NULL_SESS_OBJ_MSG + " censorSession";
         }
-        return Censor.replaceValsInSess(sessObj, true);
+        return this.replaceValsInSess(sessObj, true);
     }
 
     // ***********************************************************************
@@ -418,10 +445,15 @@ export class Censor {
      */
     private static replaceValsInSess(sessObj: any, createCopy: boolean): string {
         if (!sessObj) {
-            return Censor.NULL_SESS_OBJ_MSG + " replaceValsInSess";
+            return this.NULL_SESS_OBJ_MSG + " replaceValsInSess";
         }
 
-        const propsToBeCensored = [...Censor.SECURE_PROMPT_OPTIONS, ...Censor.DEFAULT_CENSORED_OPTIONS, ...Censor.DEFAULT_CENSORED_HEADERS];
+        const propsToBeCensored = [
+            ...this.SECURE_PROMPT_OPTIONS,
+            ...this.DEFAULT_CENSORED_OPTIONS,
+            ...this.DEFAULT_CENSORED_HEADERS,
+            ...this.CUSTOM_CENSORED_HEADERS
+        ];
 
         // create copy of sessObj so that we can replace values in a censored object
         let censoredSessObj;
@@ -438,18 +470,18 @@ export class Censor {
         // Censor values in the top level of the supplied object
         for (const censoredProp of propsToBeCensored) {
             if (censoredSessObj[censoredProp] != null) {
-                censoredSessObj[censoredProp] = Censor.CENSOR_RESPONSE;
+                censoredSessObj[censoredProp] = this.CENSOR_RESPONSE;
             }
         }
 
         if (censoredSessObj.mISession) {
             // the object has an ISession sub-object, so censor those values
-            Censor.replaceValsInSess(censoredSessObj.mISession, false);
+            this.replaceValsInSess(censoredSessObj.mISession, false);
         }
 
         if (censoredSessObj._authCache?.availableCreds) {
             // the object has an availableCreds sub-object, so censor those values
-            Censor.replaceValsInSess(censoredSessObj._authCache.availableCreds, false);
+            this.replaceValsInSess(censoredSessObj._authCache.availableCreds, false);
         }
         return JSON.stringify(censoredSessObj, null, 2);
     }

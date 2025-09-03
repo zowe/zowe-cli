@@ -48,6 +48,48 @@ describe("Censor tests", () => {
         expect(Censor.CENSOR_RESPONSE).toMatchSnapshot();
     });
 
+    describe("addCensoredHeader", () => {
+        beforeEach(() => {
+            Censor.setCensoredOptions();
+            (Censor as any).INTERNAL_CUSTOM_CENSORED_HEADERS = [];
+        });
+
+        afterAll(() => {
+            Censor.setCensoredOptions();
+            (Censor as any).INTERNAL_CUSTOM_CENSORED_HEADERS = [];
+        });
+
+        it("should be an empty array by default", () => {
+            expect(Censor.CUSTOM_CENSORED_HEADERS).toHaveLength(0);
+            expect(Censor.CUSTOM_CENSORED_HEADERS).toEqual([]);
+        });
+
+        it("should add a custom header to censor", () => {
+            Censor.addCensoredHeader("SOMEHEADER");
+            expect((Censor as any).INTERNAL_CUSTOM_CENSORED_HEADERS).toHaveLength(1);
+            expect((Censor as any).INTERNAL_CUSTOM_CENSORED_HEADERS).toEqual(["SOMEHEADER"]);
+            expect(Censor.CUSTOM_CENSORED_HEADERS).toIncludeAllMembers(["SOMEHEADER"]);
+            expect(Censor.CENSORED_OPTIONS).toIncludeAllMembers([
+                ...Censor.DEFAULT_CENSORED_HEADERS,
+                ...Censor.DEFAULT_CENSORED_OPTIONS,
+                ...Censor.CUSTOM_CENSORED_HEADERS]
+            );
+        });
+
+        it("should add a custom header to censor and handle duplication", () => {
+            Censor.addCensoredHeader("SOMEHEADER");
+            Censor.addCensoredHeader("SOMEHEADER");
+            expect((Censor as any).INTERNAL_CUSTOM_CENSORED_HEADERS).toHaveLength(1);
+            expect((Censor as any).INTERNAL_CUSTOM_CENSORED_HEADERS).toEqual(["SOMEHEADER"]);
+            expect(Censor.CUSTOM_CENSORED_HEADERS).toIncludeAllMembers(["SOMEHEADER"]);
+            expect(Censor.CENSORED_OPTIONS).toIncludeAllMembers([
+                ...Censor.DEFAULT_CENSORED_HEADERS,
+                ...Censor.DEFAULT_CENSORED_OPTIONS,
+                ...Censor.CUSTOM_CENSORED_HEADERS]
+            );
+        });
+    });
+
     describe("addCensoredOption", () => {
         beforeEach(() => {
             Censor.setCensoredOptions();
