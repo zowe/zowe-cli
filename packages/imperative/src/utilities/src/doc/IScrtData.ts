@@ -15,8 +15,18 @@
  * @interface IScrtData
  */
 export interface IScrtData {
-    productName: string;
-    featureId: string;
-    version: string;
+    // product information
+    productName: string;    // max of 48 characters
+    version: string;        // max of 2 characters
+    release: string;        // max of 2 characters
+    modLevel: string;       // max of 2 characters
     vendor: string;
+
+    // mutually exclusive options
+    lmpKey?: string;        // 2 bytes
+    prodId?: string;        // 2 bytes
+
+    // feature information
+    featureName: string;    // max of 48 bytes
+    featureDesc: string;    // max of 128 bytes
 }
