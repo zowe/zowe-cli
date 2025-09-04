@@ -60,19 +60,11 @@ export class Censor {
     }
 
     public static get DEFAULT_CENSORED_HEADERS(): string[] {
-        const censoredList = new Set<string>();
-        for (const option of this.MAIN_CENSORED_HEADERS) {
-            censoredList.add(option);
-        }
-        return Array.from(censoredList);
+        return [...this.MAIN_CENSORED_HEADERS];
     }
 
     public static get CUSTOM_CENSORED_HEADERS(): string[] {
-        const censoredList = new Set<string>();
-        for (const header of this.INTERNAL_CUSTOM_CENSORED_HEADERS) {
-            censoredList.add(header);
-        }
-        return Array.from(censoredList);
+        return [...this.INTERNAL_CUSTOM_CENSORED_HEADERS];
     }
 
     // Return a customized list of secure prompt options
