@@ -373,8 +373,7 @@ export class Censor {
         }
 
         // Do not modify the original data
-        const dataCopy = this.mCensorObject(lodash.cloneDeep(data), secValues);
-        return dataCopy;
+        return this.mCensorObject(lodash.cloneDeep(data), secValues);
     }
 
     /**
