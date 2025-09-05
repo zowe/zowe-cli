@@ -1,6 +1,10 @@
 # Change Log
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated the daemon binary to use maintained dependencies. [#2600](https://github.com/zowe/zowe-cli/pull/2600)
+
 ## `8.26.0`
 
 - Enhancement: Replaced logic in `ApimlAuthHandler.processLogin` with a call to a new common function `AuthOrder.putNewAuthsFirstOnDisk`. There are no changes to the external API and no changes to the functionality. [#2568](https://github.com/zowe/zowe-cli/pull/2568)
