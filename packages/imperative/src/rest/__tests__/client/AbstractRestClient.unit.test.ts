@@ -1614,6 +1614,7 @@ describe("AbstractRestClient tests", () => {
             if (setPasswordAuthSpy) {
                 setPasswordAuthSpy.mockRestore();
             }
+            if ((Censor as any).mCensoredOptions.has("tokenType")) { (Censor as any).mCensoredOptions.delete("tokenType"); }
         });
 
         describe("setTokenAuth", () => {
@@ -1635,7 +1636,58 @@ describe("AbstractRestClient tests", () => {
                 const tokenWasSet: boolean = restClient["setTokenAuth"](restOptions);
                 expect(tokenWasSet).toEqual(true);
                 expect(restOptions.headers["Cookie"]).toBeDefined();
+            });
 
+            it("should log the token type when it is not a secure value", () => {
+                // Create a logger, then feed that to anything that wants it
+                const zoweLogger = Logger.getImperativeLogger();
+                jest.spyOn(Logger, "getImperativeLogger").mockReturnValue(zoweLogger);
+                const zoweTraceLoggerSpy = jest.spyOn(zoweLogger, "trace");
+
+                const restClient = new RestClient(
+                    new Session({
+                        hostname: "FakeHostName",
+                        type: AUTH_TYPE_TOKEN,
+                        tokenType: "FakeTokenType",
+                        tokenValue: "FakeTokenValue"
+                    })
+                );
+
+                // call the function that we want to test
+                const restOptions: any = {
+                    headers: {}
+                };
+                const tokenWasSet: boolean = (restClient as any).setTokenAuth(restOptions);
+                expect(tokenWasSet).toEqual(true);
+                expect(restOptions.headers["Cookie"]).toBeDefined();
+                expect(zoweTraceLoggerSpy).toHaveBeenCalledWith("Using cookie authentication with token type FakeTokenType");
+            });
+
+            it("should log the token type when it is a secure value", () => {
+                // Create a logger, then feed that to anything that wants it
+                (Censor as any).mCensoredOptions.add("tokenType");
+                const zoweLogger = Logger.getImperativeLogger();
+                jest.spyOn(Logger, "getImperativeLogger").mockReturnValue(zoweLogger);
+                const zoweTraceLoggerSpy = jest.spyOn(zoweLogger, "trace");
+
+                const restClient = new RestClient(
+                    new Session({
+                        hostname: "FakeHostName",
+                        type: AUTH_TYPE_TOKEN,
+                        tokenType: "FakeTokenType",
+                        tokenValue: "FakeTokenValue"
+                    })
+                );
+
+                // call the function that we want to test
+                const restOptions: any = {
+                    headers: {}
+                };
+                const tokenWasSet: boolean = (restClient as any).setTokenAuth(restOptions);
+                expect(tokenWasSet).toEqual(true);
+                expect(restOptions.headers["Cookie"]).toBeDefined();
+                expect(zoweTraceLoggerSpy).toHaveBeenCalledWith("Using cookie authentication with token");
+                expect(zoweTraceLoggerSpy).not.toHaveBeenCalledWith("Using cookie authentication with token type FakeTokenType");
             });
 
             it("should return false when a token session has no token value", () => {

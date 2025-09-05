@@ -646,8 +646,9 @@ export abstract class AbstractRestClient {
         if (!this.session.ISession.tokenValue) {
             return false;
         }
-
-        this.log.trace("Using cookie authentication with token");
+        const logMessage = "Using cookie authentication with token" +
+            (Censor.isSecureValue("tokenType") ? "" : ` type ${this.session.ISession.tokenType}`);
+        this.log.trace(logMessage);
         const headerKeys: string[] = Object.keys(Headers.COOKIE_AUTHORIZATION);
         const authentication: string = `${this.session.ISession.tokenType}=${this.session.ISession.tokenValue}`;
         headerKeys.forEach((property) => {
