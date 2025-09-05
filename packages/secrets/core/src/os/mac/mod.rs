@@ -11,7 +11,7 @@ use error::Error;
 
 use crate::os::mac::error::ERR_SEC_ITEM_NOT_FOUND;
 use crate::os::mac::keychain_search::{KeychainSearch, SearchResult};
-use adler::Adler32;
+use adler2::Adler32;
 use fmutex::Guard;
 use keychain::SecKeychain;
 

@@ -36,6 +36,7 @@ import * as SessConstants from "../session/SessConstants";
 import { CompressionUtils } from "./CompressionUtils";
 import { ProxySettings } from "./ProxySettings";
 import { EnvironmentalVariableSettings } from "../../../imperative/src/env/EnvironmentalVariableSettings";
+import { Censor } from "../../../censor";
 
 export type RestClientResolve = (data: string) => void;
 
@@ -645,8 +646,9 @@ export abstract class AbstractRestClient {
         if (!this.session.ISession.tokenValue) {
             return false;
         }
-
-        this.log.trace("Using cookie authentication with token %s", this.session.ISession.tokenValue);
+        const logMessage = "Using cookie authentication with token" +
+            (Censor.isSecureValue("tokenType") ? "" : ` type ${this.session.ISession.tokenType}`);
+        this.log.trace(logMessage);
         const headerKeys: string[] = Object.keys(Headers.COOKIE_AUTHORIZATION);
         const authentication: string = `${this.session.ISession.tokenType}=${this.session.ISession.tokenValue}`;
         headerKeys.forEach((property) => {
@@ -1016,7 +1018,7 @@ export abstract class AbstractRestClient {
      */
     private appendInputHeaders(options: IHTTPSOptions, reqHeaders?: any[]): IHTTPSOptions {
         this.log.trace("appendInputHeaders called with options on rest client %s",
-            JSON.stringify(options), this.constructor.name);
+            JSON.stringify(Censor.censorObject(options)), this.constructor.name);
         if (reqHeaders && reqHeaders.length > 0) {
             reqHeaders.forEach((reqHeader: any) => {
                 const requestHeaderKeys: string[] = Object.keys(reqHeader);

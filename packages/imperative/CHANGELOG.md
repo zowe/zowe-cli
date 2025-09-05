@@ -2,6 +2,12 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Added the ability to censor headers to the `Censor` class. [#2600](https://github.com/zowe/zowe-cli/pull/2600)
+- BugFix: Censored base64 credential information from the `appendInputHeaders` function's trace log in the `AbstractRestClient` when the `Authorization` header is set. [#2598](https://github.com/zowe/zowe-cli/issues/2598)
+- BugFix: Stopped logging the token into the trace log when using cookie based token authentication in the `AbstractRestClient`. [#2598](https://github.com/zowe/zowe-cli/issues/2598)
+
 ## `8.26.2`
 
 - BugFix: Added a validity check in the `ProfileInfo` class `mergeArgsForProfile` method to ensure the base profile exists before merging its values. This prevents Zowe Explorer UI loading errors when a non-existent base profile is referenced. [#2575](https://github.com/zowe/zowe-cli/pull/2575)

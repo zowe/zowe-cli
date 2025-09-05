@@ -12,6 +12,7 @@
 // Mock out config APIs
 jest.mock("../../config/src/Config");
 
+import 'jest-extended';
 import { EnvironmentalVariableSettings } from "../../imperative/src/env/EnvironmentalVariableSettings";
 import { Censor } from "../src/Censor";
 import { ImperativeConfig } from "../../utilities/src/ImperativeConfig";
@@ -32,8 +33,10 @@ afterAll(() => {
 describe("Censor tests", () => {
     const nonCensoredOptionsList = ["certFile", "cert-file", "certKeyFile", "cert-key-file", "h", "host", "p", "port", "notSecret", "u", "user"];
 
-    it("should not change the default main censored options", () => {
-        expect(Censor.CENSORED_OPTIONS).toEqual(Censor.DEFAULT_CENSORED_OPTIONS);
+    it("should not change the default main censored options and headers", () => {
+        expect(Censor.CENSORED_OPTIONS).toIncludeAllMembers([...Censor.DEFAULT_CENSORED_HEADERS, ...Censor.DEFAULT_CENSORED_OPTIONS]);
+        expect(Censor.DEFAULT_CENSORED_OPTIONS).toMatchSnapshot();
+        expect(Censor.DEFAULT_CENSORED_HEADERS).toMatchSnapshot();
         expect(Censor.CENSORED_OPTIONS).toMatchSnapshot();
     });
 
@@ -43,6 +46,48 @@ describe("Censor tests", () => {
 
     it("should not change the censor response", () => {
         expect(Censor.CENSOR_RESPONSE).toMatchSnapshot();
+    });
+
+    describe("addCensoredHeader", () => {
+        beforeEach(() => {
+            Censor.setCensoredOptions();
+            (Censor as any).INTERNAL_CUSTOM_CENSORED_HEADERS = [];
+        });
+
+        afterAll(() => {
+            Censor.setCensoredOptions();
+            (Censor as any).INTERNAL_CUSTOM_CENSORED_HEADERS = [];
+        });
+
+        it("should be an empty array by default", () => {
+            expect(Censor.CUSTOM_CENSORED_HEADERS).toHaveLength(0);
+            expect(Censor.CUSTOM_CENSORED_HEADERS).toEqual([]);
+        });
+
+        it("should add a custom header to censor", () => {
+            Censor.addCensoredHeader("SOMEHEADER");
+            expect((Censor as any).INTERNAL_CUSTOM_CENSORED_HEADERS).toHaveLength(1);
+            expect((Censor as any).INTERNAL_CUSTOM_CENSORED_HEADERS).toEqual(["SOMEHEADER"]);
+            expect(Censor.CUSTOM_CENSORED_HEADERS).toIncludeAllMembers(["SOMEHEADER"]);
+            expect(Censor.CENSORED_OPTIONS).toIncludeAllMembers([
+                ...Censor.DEFAULT_CENSORED_HEADERS,
+                ...Censor.DEFAULT_CENSORED_OPTIONS,
+                ...Censor.CUSTOM_CENSORED_HEADERS]
+            );
+        });
+
+        it("should add a custom header to censor and handle duplication", () => {
+            Censor.addCensoredHeader("SOMEHEADER");
+            Censor.addCensoredHeader("SOMEHEADER");
+            expect((Censor as any).INTERNAL_CUSTOM_CENSORED_HEADERS).toHaveLength(1);
+            expect((Censor as any).INTERNAL_CUSTOM_CENSORED_HEADERS).toEqual(["SOMEHEADER"]);
+            expect(Censor.CUSTOM_CENSORED_HEADERS).toIncludeAllMembers(["SOMEHEADER"]);
+            expect(Censor.CENSORED_OPTIONS).toIncludeAllMembers([
+                ...Censor.DEFAULT_CENSORED_HEADERS,
+                ...Censor.DEFAULT_CENSORED_OPTIONS,
+                ...Censor.CUSTOM_CENSORED_HEADERS]
+            );
+        });
     });
 
     describe("addCensoredOption", () => {
@@ -355,6 +400,113 @@ describe("Censor tests", () => {
                 const expected = `masked secret: ${Censor.CENSOR_RESPONSE}`;
                 expect(received).toEqual(expected);
             });
+        });
+    });
+
+    describe("censorObject", () => {
+        const secrets = ["secret0", "secret1"];
+        let impConfigSpy: jest.SpyInstance = null;
+        let envSettingsReadSpy: jest.SpyInstance = null;
+        let findSecure: jest.SpyInstance = null;
+        let mCensorObjectSpy: jest.SpyInstance = null;
+        let impConfig: any = null; // tried Partial<ImperativeConfig> but some properties complain about missing functionality
+
+        beforeEach(() => {
+            jest.restoreAllMocks();
+            findSecure = jest.fn();
+            impConfigSpy = jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue(impConfig);
+            envSettingsReadSpy = jest.spyOn(EnvironmentalVariableSettings, "read");
+            mCensorObjectSpy = jest.spyOn(Censor, "mCensorObject" as any);
+
+            envSettingsReadSpy.mockReturnValue({ maskOutput: { value: "FALSE" } });
+            impConfig = {
+                config: {
+                    exists: true,
+                    api: {
+                        secure: { findSecure }
+                    },
+                    mProperties: {profiles: {secret: { properties: {}}}}
+                }
+            };
+            Censor.setProfileSchemas(new Map());
+        });
+
+        afterAll(() => {
+            impConfigSpy.mockRestore();
+            envSettingsReadSpy.mockRestore();
+            (Censor as any).mConfig = null;
+        });
+
+        it("should censor an object if the key is a secure key", () => {
+            findSecure.mockReturnValue(["profiles.secret.properties.secret"]);
+            impConfig.config.mProperties.profiles.secret.properties = {secret: secrets[1] };
+            const received = Censor.censorObject({secret: "some secret value"});
+            const expected = {secret: Censor.CENSOR_RESPONSE};
+            expect(received).toEqual(expected);
+            expect(mCensorObjectSpy).toHaveBeenCalledTimes(1);
+        });
+
+        it("should censor an object if the value is a secure value", () => {
+            findSecure.mockReturnValue(["profiles.secret.properties.secret"]);
+            impConfig.config.mProperties.profiles.secret.properties = {secret: secrets[1] };
+            const received = Censor.censorObject({otherValue: secrets[1]});
+            const expected = {otherValue: Censor.CENSOR_RESPONSE};
+            expect(received).toEqual(expected);
+            expect(mCensorObjectSpy).toHaveBeenCalledTimes(1);
+        });
+
+        it("should replace an object if the key is a secure key", () => {
+            findSecure.mockReturnValue(["profiles.secret.properties.secret"]);
+            impConfig.config.mProperties.profiles.secret.properties = {secret: secrets[1] };
+            const received = Censor.censorObject({secret: {data: "something", other: "something"}});
+            const expected = {secret: Censor.CENSOR_RESPONSE};
+            expect(received).toEqual(expected);
+            expect(mCensorObjectSpy).toHaveBeenCalledTimes(1);
+        });
+
+        it("should iterate over an object and replace a secret key", () => {
+            findSecure.mockReturnValue(["profiles.secret.properties.secret"]);
+            impConfig.config.mProperties.profiles.secret.properties = {secret: secrets[1] };
+            const received = Censor.censorObject({data: {secret: secrets[1], other: "something"}});
+            const expected = {data: {secret: Censor.CENSOR_RESPONSE, other: "something"}};
+            expect(received).toEqual(expected);
+            expect(mCensorObjectSpy).toHaveBeenCalledTimes(2);
+        });
+
+        it("should iterate over an object and replace a secret value", () => {
+            findSecure.mockReturnValue(["profiles.secret.properties.secret"]);
+            impConfig.config.mProperties.profiles.secret.properties = {secret: secrets[1] };
+            const received = Censor.censorObject({data: {data: secrets[1], other: "something"}});
+            const expected = {data: {data: Censor.CENSOR_RESPONSE, other: "something"}};
+            expect(received).toEqual(expected);
+            expect(mCensorObjectSpy).toHaveBeenCalledTimes(2);
+        });
+
+        it("should not censor if nothing is secure", () => {
+            findSecure.mockReturnValue(["profiles.secret.properties.secret"]);
+            impConfig.config.mProperties.profiles.secret.properties = {secret: secrets[1] };
+            const data = {data: {data: "data", other: "something"}};
+            const received = Censor.censorObject(data);
+            expect(received).toEqual(data);
+            expect(mCensorObjectSpy).toHaveBeenCalledTimes(2);
+        });
+
+        it("should censor an object if the key is a secure key with no config", () => {
+            findSecure.mockReturnValue(["profiles.secret.properties.secret"]);
+            impConfig.config.exists = false;
+            const received = Censor.censorObject({secret: "some secret value"});
+            const expected = {secret: Censor.CENSOR_RESPONSE};
+            expect(received).toEqual(expected);
+            expect(mCensorObjectSpy).toHaveBeenCalledTimes(1);
+        });
+
+        it("should iterate over an object and replace a secret key with no config", () => {
+            findSecure.mockReturnValue(["profiles.secret.properties.secret"]);
+            impConfig.config.exists = false;
+            const received = Censor.censorObject({data: {secret: secrets[1], other: "something"}});
+            const expected = {data: {secret: Censor.CENSOR_RESPONSE, other: "something"}};
+            expect(received).toEqual(expected);
+            expect(mCensorObjectSpy).toHaveBeenCalledTimes(2);
         });
     });
 

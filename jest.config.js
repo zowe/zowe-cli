@@ -9,7 +9,8 @@ const sharedConfig = {
         ".*/lib/.*"
     ],
     "setupFilesAfterEnv": [
-        "<rootDir>/__tests__/beforeTests.js"
+        "<rootDir>/__tests__/beforeTests.js",
+        "jest-extended/all"
     ],
     "transformIgnorePatterns": [ "^.+\\.js$", "^.+\\.json$" ],
     "snapshotFormat": {

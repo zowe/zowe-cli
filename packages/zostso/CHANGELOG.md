@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS TSO SDK package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Added missing exports for the `IIssueTsoCmdOpts`, `IStartTsoAppParms`, and `ITsoAppCommunicationParms` interfaces. [#2596](https://github.com/zowe/zowe-cli/issues/2596)
+
 ## `8.24.3`
 
 - BugFix: When an invalid Logon Procedure is used, an accurate error is now displayed to the user. [#2528](https://github.com/zowe/zowe-explorer-vscode/issues/2528)
