@@ -2,7 +2,7 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
-## Recent Changes
+## `8.27.0`
 
 - Enhancement: Added the ability to censor headers to the `Censor` class. [#2600](https://github.com/zowe/zowe-cli/pull/2600)
 - BugFix: Censored base64 credential information from the `appendInputHeaders` function's trace log in the `AbstractRestClient` when the `Authorization` header is set. [#2598](https://github.com/zowe/zowe-cli/issues/2598)

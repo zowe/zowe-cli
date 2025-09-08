@@ -1,7 +1,7 @@
 # Change Log
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `8.27.0`
 
 - BugFix: Updated the daemon binary to use maintained dependencies. [#2600](https://github.com/zowe/zowe-cli/pull/2600)
 
