@@ -36,14 +36,18 @@ export class Censor {
     private static readonly MAIN_CENSORED_OPTIONS = ["auth", "authentication", "basicAuth", "base64EncodedAuth", "certFilePassphrase", "credentials",
         "pw", "pass", "password", "passphrase", "tv", "tokenValue"];
 
+    private static readonly MAIN_CENSORED_HEADERS = ["Authorization", "Cookie", "Proxy-Authorization"];
+
     private static readonly MAIN_SECURE_PROMPT_OPTIONS = ["keyPassphrase", "password", "passphrase", "tokenValue", "user"];
 
     // The censor response.
     public static readonly CENSOR_RESPONSE = "****";
 
-
     // The censor response.
     public static readonly NULL_SESS_OBJ_MSG = "Null session object was passed to API";
+
+    // Internal custom censored headers array
+    private static INTERNAL_CUSTOM_CENSORED_HEADERS: string[] = [];
 
     // A set of default censored options.
     public static get DEFAULT_CENSORED_OPTIONS(): string[] {
@@ -53,6 +57,14 @@ export class Censor {
             censoredList.add(CliUtils.getOptionFormat(option).kebabCase);
         }
         return Array.from(censoredList);
+    }
+
+    public static get DEFAULT_CENSORED_HEADERS(): string[] {
+        return [...this.MAIN_CENSORED_HEADERS];
+    }
+
+    public static get CUSTOM_CENSORED_HEADERS(): string[] {
+        return [...this.INTERNAL_CUSTOM_CENSORED_HEADERS];
     }
 
     // Return a customized list of secure prompt options
@@ -66,7 +78,11 @@ export class Censor {
     }
 
     // Set a censored options list that can be set and retrieved for each command.
-    private static mCensoredOptions: Set<string> = new Set(this.DEFAULT_CENSORED_OPTIONS);
+    private static mCensoredOptions: Set<string> = new Set([
+        ...this.DEFAULT_CENSORED_OPTIONS,
+        ...this.DEFAULT_CENSORED_HEADERS,
+        ...this.CUSTOM_CENSORED_HEADERS
+    ]);
 
     // Return a customized list of censored options (or just the defaults if not set).
     public static get CENSORED_OPTIONS(): string[] {
@@ -163,6 +179,19 @@ export class Censor {
     }
 
     /**
+     * Add a header to censor
+     * @param {string} header - The name of the header to censor
+     */
+    public static addCensoredHeader(header: string) {
+        if (header != null) {
+            if (!this.INTERNAL_CUSTOM_CENSORED_HEADERS.includes(header)) {
+                this.INTERNAL_CUSTOM_CENSORED_HEADERS.push(header);
+                this.mCensoredOptions.add(header);
+            }
+        }
+    }
+
+    /**
      * Specifies whether a given property path (e.g. "profiles.lpar1.properties.host") is a special value or not.
      * Special value: Refers to any value defined as secure in the schema definition.
      *                These values should be already masked by the application (and/or plugin) developer.
@@ -206,7 +235,7 @@ export class Censor {
      * @param {ICensorOptions} censorOpts - The objects to use to gather options that should be censored
      */
     public static setCensoredOptions(censorOpts?: ICensorOptions) {
-        this.mCensoredOptions = new Set(this.DEFAULT_CENSORED_OPTIONS);
+        this.mCensoredOptions = new Set([...this.DEFAULT_CENSORED_OPTIONS, ...this.DEFAULT_CENSORED_HEADERS, ...this.CUSTOM_CENSORED_HEADERS]);
 
         if (censorOpts) {
             // Save off the config object
@@ -317,6 +346,48 @@ export class Censor {
     }
 
     /**
+     * Copy and censor any sensitive CLI arguments before logging/printing
+     * @param {Record<string, any>} data - the data to censor
+     * @returns {Record<string, any>} - the censored data
+     */
+    public static censorObject(data: Record<string, any>): Record<string, any> {
+        const config = this.mConfig ?? ImperativeConfig.instance?.config;
+        const secValues = [];
+
+        if (config?.exists) {
+            const secureFields = config.api.secure.findSecure(config.mProperties.profiles, "profiles");
+            for (const prop of secureFields) {
+                const sec = lodash.get(config.mProperties, prop);
+                if (sec && typeof sec !== "object" && !this.isSpecialValue(prop) && this.isSecureValue(prop.split(".").pop())) {
+                    secValues.push(sec);
+                }
+            }
+        }
+
+        // Do not modify the original data
+        return this.mCensorObject(lodash.cloneDeep(data), secValues);
+    }
+
+    /**
+     * Copy and censor over an object
+     * @param {Record<string, any>} data - the data to censor
+     * @returns {Record<string, any>} - the censored data
+     */
+    private static mCensorObject(data: Record<string, any>, secureValues: any[]): Record<string, any> {
+        const newData: Record<string, any> = {};
+        for (const [key, value] of Object.entries(data)) {
+            if (this.CENSORED_OPTIONS.includes(key) || secureValues.includes(value)) {
+                newData[key] = this.CENSOR_RESPONSE;
+            } else if (typeof value == "object") {
+                newData[key] = this.mCensorObject(value, secureValues);
+            } else {
+                newData[key] = value;
+            }
+        }
+        return newData;
+    }
+
+    /**
      * Copy and censor a yargs argument object before logging
      * @param {yargs.Arguments} args - the args to censor
      * @returns {yargs.Arguments} - a censored copy of the arguments
@@ -349,9 +420,9 @@ export class Censor {
      */
     public static censorSession(sessObj: any): string {
         if (!sessObj) {
-            return Censor.NULL_SESS_OBJ_MSG + " censorSession";
+            return this.NULL_SESS_OBJ_MSG + " censorSession";
         }
-        return Censor.replaceValsInSess(sessObj, true);
+        return this.replaceValsInSess(sessObj, true);
     }
 
     // ***********************************************************************
@@ -365,10 +436,15 @@ export class Censor {
      */
     private static replaceValsInSess(sessObj: any, createCopy: boolean): string {
         if (!sessObj) {
-            return Censor.NULL_SESS_OBJ_MSG + " replaceValsInSess";
+            return this.NULL_SESS_OBJ_MSG + " replaceValsInSess";
         }
 
-        const propsToBeCensored = [...Censor.SECURE_PROMPT_OPTIONS, ...Censor.DEFAULT_CENSORED_OPTIONS];
+        const propsToBeCensored = [
+            ...this.SECURE_PROMPT_OPTIONS,
+            ...this.DEFAULT_CENSORED_OPTIONS,
+            ...this.DEFAULT_CENSORED_HEADERS,
+            ...this.CUSTOM_CENSORED_HEADERS
+        ];
 
         // create copy of sessObj so that we can replace values in a censored object
         let censoredSessObj;
@@ -385,18 +461,18 @@ export class Censor {
         // Censor values in the top level of the supplied object
         for (const censoredProp of propsToBeCensored) {
             if (censoredSessObj[censoredProp] != null) {
-                censoredSessObj[censoredProp] = Censor.CENSOR_RESPONSE;
+                censoredSessObj[censoredProp] = this.CENSOR_RESPONSE;
             }
         }
 
         if (censoredSessObj.mISession) {
             // the object has an ISession sub-object, so censor those values
-            Censor.replaceValsInSess(censoredSessObj.mISession, false);
+            this.replaceValsInSess(censoredSessObj.mISession, false);
         }
 
         if (censoredSessObj._authCache?.availableCreds) {
             // the object has an availableCreds sub-object, so censor those values
-            Censor.replaceValsInSess(censoredSessObj._authCache.availableCreds, false);
+            this.replaceValsInSess(censoredSessObj._authCache.availableCreds, false);
         }
         return JSON.stringify(censoredSessObj, null, 2);
     }

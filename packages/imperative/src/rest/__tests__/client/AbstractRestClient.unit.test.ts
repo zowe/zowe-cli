@@ -36,6 +36,10 @@ import { ProxySettings } from "../../src/client/ProxySettings";
 import { HttpsProxyAgent } from "https-proxy-agent";
 import { completionTimeoutErrorMessage } from "../../src/client/doc/IRestClientError";
 import { EnvironmentalVariableSettings } from "../../../imperative";
+import { Logger } from "../../../logger";
+import { Censor } from "../../../censor";
+import { IHTTPSOptions } from "../../src/client/doc/IHTTPSOptions";
+import { cloneDeep } from "lodash";
 
 /**
  * To test the AbstractRestClient, we use the existing default RestClient which
@@ -59,6 +63,107 @@ describe("AbstractRestClient tests", () => {
         const client = new RestClient(new Session({hostname: "test"}));
         expect((client as any).appendHeaders(["Test"])).toMatchSnapshot();
         expect((client as any).appendHeaders(undefined)).toMatchSnapshot();
+    });
+
+    it("should sanitize header values before they are logged 1", () => {
+        const zoweLogger = Logger.getImperativeLogger();
+        jest.spyOn(Logger, "getImperativeLogger").mockReturnValue(zoweLogger);
+        const zoweTraceLoggerSpy = jest.spyOn(zoweLogger, "trace");
+        const censorObjectDataSpy = jest.spyOn(Censor, "censorObject");
+        const client = new RestClient(new Session({hostname: "test"}));
+
+        const httpsOptions: IHTTPSOptions = {
+            headers: {
+                Authorization: "Basic testdata"
+            },
+            hostname: "test",
+            method: "GET",
+            path: "/",
+            port: "443",
+            rejectUnauthorized: false
+        };
+        const expectedHttpsOptions = cloneDeep(httpsOptions);
+        expectedHttpsOptions.headers.Authorization = Censor.CENSOR_RESPONSE;
+
+        (client as any).appendInputHeaders(httpsOptions);
+
+        expect(zoweTraceLoggerSpy).toHaveBeenCalledTimes(1);
+        expect(censorObjectDataSpy).toHaveBeenCalledTimes(1);
+        expect(censorObjectDataSpy).toHaveBeenCalledWith(httpsOptions);
+        expect(censorObjectDataSpy).toHaveReturnedWith(expectedHttpsOptions);
+        expect(zoweTraceLoggerSpy).toHaveBeenCalledWith(
+            expect.stringContaining("appendInputHeaders"),
+            JSON.stringify(expectedHttpsOptions),
+            "RestClient"
+        );
+    });
+
+    it("should sanitize header values before they are logged 2", () => {
+        const zoweLogger = Logger.getImperativeLogger();
+        jest.spyOn(Logger, "getImperativeLogger").mockReturnValue(zoweLogger);
+        const zoweTraceLoggerSpy = jest.spyOn(zoweLogger, "trace");
+        const censorObjectDataSpy = jest.spyOn(Censor, "censorObject");
+        const client = new RestClient(new Session({hostname: "test"}));
+
+        const httpsOptions: IHTTPSOptions = {
+            headers: {
+                Cookie: "fakeCookie"
+            },
+            hostname: "test",
+            method: "GET",
+            path: "/",
+            port: "443",
+            rejectUnauthorized: false
+        };
+        const expectedHttpsOptions = cloneDeep(httpsOptions);
+        expectedHttpsOptions.headers.Cookie = Censor.CENSOR_RESPONSE;
+
+        (client as any).appendInputHeaders(httpsOptions);
+
+        expect(zoweTraceLoggerSpy).toHaveBeenCalledTimes(1);
+        expect(censorObjectDataSpy).toHaveBeenCalledTimes(1);
+        expect(censorObjectDataSpy).toHaveBeenCalledWith(httpsOptions);
+        expect(censorObjectDataSpy).toHaveReturnedWith(expectedHttpsOptions);
+        expect(zoweTraceLoggerSpy).toHaveBeenCalledWith(
+            expect.stringContaining("appendInputHeaders"),
+            JSON.stringify(expectedHttpsOptions),
+            "RestClient"
+        );
+    });
+
+    it("should sanitize header values before they are logged 3", () => {
+        const zoweLogger = Logger.getImperativeLogger();
+        jest.spyOn(Logger, "getImperativeLogger").mockReturnValue(zoweLogger);
+        const zoweTraceLoggerSpy = jest.spyOn(zoweLogger, "trace");
+        const censorObjectDataSpy = jest.spyOn(Censor, "censorObject");
+        const client = new RestClient(new Session({hostname: "test"}));
+
+        const httpsOptions: IHTTPSOptions = {
+            headers: {
+                Authorization: "Basic testdata",
+                "Proxy-Authorization": "Basic proxytestdata"
+            },
+            hostname: "test",
+            method: "GET",
+            path: "/",
+            port: "443",
+            rejectUnauthorized: false
+        };
+        const expectedHttpsOptions = cloneDeep(httpsOptions);
+        expectedHttpsOptions.headers.Authorization = Censor.CENSOR_RESPONSE;
+        expectedHttpsOptions.headers["Proxy-Authorization"] = Censor.CENSOR_RESPONSE;
+
+        (client as any).appendInputHeaders(httpsOptions);
+
+        expect(zoweTraceLoggerSpy).toHaveBeenCalledTimes(1);
+        expect(censorObjectDataSpy).toHaveBeenCalledTimes(1);
+        expect(censorObjectDataSpy).toHaveBeenCalledWith(httpsOptions);
+        expect(censorObjectDataSpy).toHaveReturnedWith(expectedHttpsOptions);
+        expect(zoweTraceLoggerSpy).toHaveBeenCalledWith(
+            expect.stringContaining("appendInputHeaders"),
+            JSON.stringify(expectedHttpsOptions),
+            "RestClient"
+        );
     });
 
     it("should give an error when no session is provided", async () => {
@@ -1509,6 +1614,7 @@ describe("AbstractRestClient tests", () => {
             if (setPasswordAuthSpy) {
                 setPasswordAuthSpy.mockRestore();
             }
+            if ((Censor as any).mCensoredOptions.has("tokenType")) { (Censor as any).mCensoredOptions.delete("tokenType"); }
         });
 
         describe("setTokenAuth", () => {
@@ -1530,7 +1636,58 @@ describe("AbstractRestClient tests", () => {
                 const tokenWasSet: boolean = restClient["setTokenAuth"](restOptions);
                 expect(tokenWasSet).toEqual(true);
                 expect(restOptions.headers["Cookie"]).toBeDefined();
+            });
 
+            it("should log the token type when it is not a secure value", () => {
+                // Create a logger, then feed that to anything that wants it
+                const zoweLogger = Logger.getImperativeLogger();
+                jest.spyOn(Logger, "getImperativeLogger").mockReturnValue(zoweLogger);
+                const zoweTraceLoggerSpy = jest.spyOn(zoweLogger, "trace");
+
+                const restClient = new RestClient(
+                    new Session({
+                        hostname: "FakeHostName",
+                        type: AUTH_TYPE_TOKEN,
+                        tokenType: "FakeTokenType",
+                        tokenValue: "FakeTokenValue"
+                    })
+                );
+
+                // call the function that we want to test
+                const restOptions: any = {
+                    headers: {}
+                };
+                const tokenWasSet: boolean = (restClient as any).setTokenAuth(restOptions);
+                expect(tokenWasSet).toEqual(true);
+                expect(restOptions.headers["Cookie"]).toBeDefined();
+                expect(zoweTraceLoggerSpy).toHaveBeenCalledWith("Using cookie authentication with token type FakeTokenType");
+            });
+
+            it("should log the token type when it is a secure value", () => {
+                // Create a logger, then feed that to anything that wants it
+                (Censor as any).mCensoredOptions.add("tokenType");
+                const zoweLogger = Logger.getImperativeLogger();
+                jest.spyOn(Logger, "getImperativeLogger").mockReturnValue(zoweLogger);
+                const zoweTraceLoggerSpy = jest.spyOn(zoweLogger, "trace");
+
+                const restClient = new RestClient(
+                    new Session({
+                        hostname: "FakeHostName",
+                        type: AUTH_TYPE_TOKEN,
+                        tokenType: "FakeTokenType",
+                        tokenValue: "FakeTokenValue"
+                    })
+                );
+
+                // call the function that we want to test
+                const restOptions: any = {
+                    headers: {}
+                };
+                const tokenWasSet: boolean = (restClient as any).setTokenAuth(restOptions);
+                expect(tokenWasSet).toEqual(true);
+                expect(restOptions.headers["Cookie"]).toBeDefined();
+                expect(zoweTraceLoggerSpy).toHaveBeenCalledWith("Using cookie authentication with token");
+                expect(zoweTraceLoggerSpy).not.toHaveBeenCalledWith("Using cookie authentication with token type FakeTokenType");
             });
 
             it("should return false when a token session has no token value", () => {
