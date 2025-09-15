@@ -717,7 +717,7 @@ describe("AuthOrder", () => {
 
             expect(sessCfgForTest.type).toEqual(AUTH_TYPE_TOKEN);
             expect(sessCfgForTest.base64EncodedAuth).toEqual(cmdArgsB64AuthVal);
-            expect(sessCfgForTest.tokenType).toEqual(cmdsArgsApimlAuthTokenTypeVal)
+            expect(sessCfgForTest.tokenType).toEqual(cmdsArgsApimlAuthTokenTypeVal);
             expect(sessCfgForTest).not.toHaveProperty("user");
             expect(sessCfgForTest).not.toHaveProperty("password");
             expect(sessCfgForTest).not.toHaveProperty("tokenValue");
