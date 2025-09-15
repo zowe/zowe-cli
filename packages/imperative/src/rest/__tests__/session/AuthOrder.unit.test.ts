@@ -700,6 +700,32 @@ describe("AuthOrder", () => {
             expect(sessCfgForTest).not.toHaveProperty(sessCertKeyPropNm);
         });
 
+        it("should keep token type if making request for token", () => {
+            cmdArgsForTest.authOrder = `${AUTH_TYPE_BASIC}, ${AUTH_TYPE_CERT_PEM}, ${AUTH_TYPE_TOKEN}, ${AUTH_TYPE_BEARER}`;
+            delete cmdArgsForTest.user;
+            delete cmdArgsForTest.password;
+
+            sessCfgForTest.tokenType = cmdsArgsApimlAuthTokenTypeVal;
+            sessCfgForTest.tokenValue = "tokenValueShouldNotRemain";
+            sessCfgForTest[sessCertPropNm] = "certShouldNotRemain";
+            sessCfgForTest[sessCertKeyPropNm] = "certKeyShouldNotRemain";
+            delete sessCfgForTest.user;
+            delete sessCfgForTest.password;
+
+            AuthOrder.makingRequestForToken(sessCfgForTest);
+            AuthOrder.addCredsToSession(sessCfgForTest, cmdArgsForTest);
+
+            expect(sessCfgForTest.type).toEqual(AUTH_TYPE_TOKEN);
+            expect(sessCfgForTest.base64EncodedAuth).toEqual(cmdArgsB64AuthVal);
+            expect(sessCfgForTest.tokenType).toEqual(cmdsArgsApimlAuthTokenTypeVal)
+            expect(sessCfgForTest).not.toHaveProperty("user");
+            expect(sessCfgForTest).not.toHaveProperty("password");
+            expect(sessCfgForTest).not.toHaveProperty("tokenValue");
+            expect(sessCfgForTest).not.toHaveProperty(sessCertPropNm);
+            expect(sessCfgForTest).not.toHaveProperty(sessCertKeyPropNm);
+        });
+
+
         it("should reset type to token when using basic auth to request a token", () => {
             cmdArgsForTest.authOrder = `${AUTH_TYPE_BASIC}, ${AUTH_TYPE_CERT_PEM}, ${AUTH_TYPE_TOKEN}, ${AUTH_TYPE_BEARER}`;
 
