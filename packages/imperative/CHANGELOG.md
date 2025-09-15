@@ -4,7 +4,7 @@ All notable changes to the Imperative package will be documented in this file.
 
 ## Recent Changes
 
-- BugFix: Keep tokenType when application developers are making a request for token. [#2605](https://github.com/zowe/zowe-cli/pull/2605)
+- BugFix: The Imperative framework adds the value in the `set-cookie` response header to the `_availableCreds` and to the root of the `ISession` object. [#2605](https://github.com/zowe/zowe-cli/pull/2605)
 
 ## `8.27.0`
 

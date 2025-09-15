@@ -131,10 +131,22 @@ exports[`Session tests should require user for 'basic' type 1`] = `"Must have us
 
 exports[`Session tests should store cookie token requested 1`] = `
 Object {
-  "base64EncodedAuth": "dXNlcjpwYXNzd29yZA==",
+  "_authCache": Object {
+    "availableCreds": Object {
+      "base64EncodedAuth": "dXNlcjpwYXNzd29yZA==",
+      "password": "password",
+      "tokenType": "LtpaToken2",
+      "tokenValue": "7KM/bf1sE4+4pE5mKgf+slWo9JO6laQF6OOi/POW0C+hRwscFOFjUijI2eWZrMY+jL4F9nl1ubUvcK0hPgWmKH4xCOf1EoNafu40XaiLoO8wZnCo/rHmP2/h7MzSJV1te8dP4VM6NFdQCruuxtcgddTiDXU8gYZERFTnvtYhUuvk1Nne8xwo++sDAmEFVwvJbyg6Z0zT1RAGPIXd6hx8YPNXydAifoQhqI9CaoyZNptByyx2H7uJ0vt0HTNqrdgZclOQkDNMm65ETpdo1u4U7Vd6HPoshHJEQo7p40T9jJfgv7PJ6Bxhp1dAqF5zEkqE",
+      "user": "user",
+    },
+    "didUserSetAuthOrder": true,
+    "topDefaultAuth": undefined,
+  },
+  "authTypeOrder": Array [
+    "token",
+  ],
   "basePath": "",
   "hostname": "localhost",
-  "password": "password",
   "port": 443,
   "protocol": "https",
   "rejectUnauthorized": true,
@@ -143,6 +155,5 @@ Object {
   "tokenType": "LtpaToken2",
   "tokenValue": "7KM/bf1sE4+4pE5mKgf+slWo9JO6laQF6OOi/POW0C+hRwscFOFjUijI2eWZrMY+jL4F9nl1ubUvcK0hPgWmKH4xCOf1EoNafu40XaiLoO8wZnCo/rHmP2/h7MzSJV1te8dP4VM6NFdQCruuxtcgddTiDXU8gYZERFTnvtYhUuvk1Nne8xwo++sDAmEFVwvJbyg6Z0zT1RAGPIXd6hx8YPNXydAifoQhqI9CaoyZNptByyx2H7uJ0vt0HTNqrdgZclOQkDNMm65ETpdo1u4U7Vd6HPoshHJEQo7p40T9jJfgv7PJ6Bxhp1dAqF5zEkqE",
   "type": "token",
-  "user": "user",
 }
 `;

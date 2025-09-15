@@ -894,10 +894,6 @@ export class AuthOrder {
                         AuthOrder.keepCred("base64EncodedAuth", credsToRemove);
                         AuthOrder.keepCred("user", credsToRemove);
                         AuthOrder.keepCred("password", credsToRemove);
-                        if (sessCfg._authCache.authTypeToRequestToken) {
-                            // we want to actually use the token type, so keep its value
-                            AuthOrder.keepCred("tokenType", credsToRemove);
-                        }
                     }
                     break;
                 case SessConstants.AUTH_TYPE_TOKEN:
