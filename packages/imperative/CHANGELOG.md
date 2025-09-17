@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: The Imperative framework adds the value in the `set-cookie` response header to the `_availableCreds` property in the `ISession` object. [#2605](https://github.com/zowe/zowe-cli/pull/2605)
+
 ## `8.27.0`
 
 - Enhancement: Added the ability to censor headers to the `Censor` class. [#2600](https://github.com/zowe/zowe-cli/pull/2600)
