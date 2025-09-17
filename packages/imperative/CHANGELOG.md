@@ -2,7 +2,7 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
-## Recent Changes
+## `8.27.1`
 
 - BugFix: The Imperative framework adds the value in the `set-cookie` response header to the `_availableCreds` property in the `ISession` object. [#2605](https://github.com/zowe/zowe-cli/pull/2605)
 
