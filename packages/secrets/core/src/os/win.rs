@@ -27,7 +27,7 @@ impl From<WIN32_ERROR> for KeyringError {
 /// A `String` object containing the error message
 ///
 fn win32_error_as_string(error: WIN32_ERROR) -> String {
-    let buffer: PWSTR = std::ptr::null_mut();
+    let mut buffer: PWSTR = std::ptr::null_mut();
 
     // https://github.com/microsoft/windows-rs/blob/master/crates/libs/core/src/hresult.rs#L96
     let as_hresult = if error == 0 {
@@ -44,7 +44,7 @@ fn win32_error_as_string(error: WIN32_ERROR) -> String {
             as_hresult as *const c_void,
             as_hresult,
             0,
-            buffer,
+            &mut buffer as *mut PWSTR as PWSTR,
             0,
             std::ptr::null(),
         );
