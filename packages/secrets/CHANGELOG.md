@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe Secrets SDK package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Update dependencies and implementation to resolve Windows build failures. [#2607](https://github.com/zowe/zowe-cli/pull/2607)
+
 ## `7.29.10`
 
 - BugFix: Reduced number of keychain unlock prompts on MacOS for simultaneous access to secrets by multiple instances of the same application. [#2406](https://github.com/zowe/zowe-cli/pull/2406)
