@@ -128,7 +128,6 @@ jobs:
 
     - name: Integration Tests (Daemon)
       if: ${{ always() && steps.build.outcome == 'success' && github.event.inputs.test-type != 'nodejs' }}
-      # Use double double hyphen to work around Windows + Node 22 bug: https://github.com/npm/cli/issues/7375
       run: npm run test:integration -- --runInBand
 
     - name: Archive Results
