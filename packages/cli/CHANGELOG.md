@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated the `minimatch`, `tmp`, and `form-data` dependencies for technical currency. [#2607](https://github.com/zowe/zowe-cli/pull/2607)
+
 ## `7.29.14`
 
 - BugFix: Updated the `brace-expansion` dependency for technical currency. [#2524](https://github.com/zowe/zowe-cli/pull/2524)
