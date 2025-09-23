@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe Secrets SDK package will be documented in this file.
 
-## Recent Changes
+## `7.29.15`
 
 - BugFix: Update dependencies and implementation to resolve Windows build failures. [#2607](https://github.com/zowe/zowe-cli/pull/2607)
 

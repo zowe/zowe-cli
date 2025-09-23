@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
-## Recent Changes
+## `7.29.15`
 
 - BugFix: Updated the `minimatch`, `tmp`, and `form-data` dependencies for technical currency. [#2607](https://github.com/zowe/zowe-cli/pull/2607)
 
