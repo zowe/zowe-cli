@@ -338,10 +338,20 @@ export class GetJobs {
     public static async getJclCommon(session: AbstractSession, parms: ICommonJobParms) {
         Logger.getAppLogger().trace("GetJobs.getJclCommon()");
         ImperativeExpect.keysToBeDefinedAndNonBlank(parms, ["jobname", "jobid"]);
-        const parameters: string = "/" + encodeURIComponent(parms.jobname) + "/" + encodeURIComponent(parms.jobid) +
+        let parameters: string = "/" + encodeURIComponent(parms.jobname) + "/" + encodeURIComponent(parms.jobid) +
             JobsConstants.RESOURCE_SPOOL_FILES + JobsConstants.RESOURCE_JCL_CONTENT + JobsConstants.RESOURCE_SPOOL_CONTENT;
+
+        if (parms.binary) {
+            parameters += "?mode=binary";
+        } else if (parms.record) {
+            parameters += "?mode=record";
+        } else if (parms.encoding != null && String(parms.encoding).trim()) {
+            parameters += "?fileEncoding=" + parms.encoding;
+        }
+
+        const headers = [Headers.TEXT_PLAIN_UTF8];
         Logger.getAppLogger().info("GetJobs.getJclCommon() parameters: " + parameters);
-        return ZosmfRestClient.getExpectString(session, JobsConstants.RESOURCE + parameters);
+        return ZosmfRestClient.getExpectString(session, JobsConstants.RESOURCE + parameters, headers);
     }
 
     /**
