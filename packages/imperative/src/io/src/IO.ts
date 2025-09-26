@@ -274,6 +274,24 @@ export class IO {
             let prevByte = lastByte;
             for (let i = 0; i < original.length; i++) {
                 const currentByte = original[i];
+
+                if (isUploading) {
+                    // eslint-disable-next-line @typescript-eslint/no-magic-numbers
+                    if (currentByte === 13) {
+                        // eslint-disable-next-line @typescript-eslint/no-magic-numbers
+                        const nextByte = i + 1 < original.length ? original[i + 1] : undefined;
+                        // Skip the carriage return if it is followed by a line feed
+                        if (nextByte === 10) {
+                            prevByte = currentByte;
+                            continue;
+                        }
+                    }
+
+                    bufferList.push(currentByte);
+                    prevByte = currentByte;
+                    continue;
+                }
+
                 // Check if previous byte is not Carriage Return (13) and if current byte is Line Feed (10)
                 // eslint-disable-next-line @typescript-eslint/no-magic-numbers
                 if (currentByte === 10 && prevByte !== 13) {
