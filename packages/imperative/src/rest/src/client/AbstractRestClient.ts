@@ -404,7 +404,7 @@ export abstract class AbstractRestClient {
                     this.log.debug("Writing data chunk of length %d from requestStream to clientRequest", data.byteLength);
                     if (this.mNormalizeRequestNewlines) {
                         this.log.debug("Normalizing new lines in request chunk to \\n");
-                        data = IO.processNewlines(data, this.lastByteReceivedUpload);
+                        data = IO.processNewlines(data, this.lastByteReceivedUpload, true);
                     }
                     if (this.mTask != null) {
                         bytesUploaded += data.byteLength;
