@@ -34,7 +34,7 @@ export interface IProfOpts {
      * `require("keytar")` from the caller app's node_modules folder.
      * @deprecated
      */
-    requireKeytar?: () => NodeModule;
+    requireKeytar?: () => NodeJS.Module;
 
     /**
      * Overrides the credential manager class used to load and store secure

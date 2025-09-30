@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated minimum supported version of Node from 18 to 20. Added Node 24 support. []()
+
 ## `5.27.9`
 
 - BugFix: Updated the `brace-expansion` dependency for technical currency. [#2524](https://github.com/zowe/zowe-cli/pull/2524)

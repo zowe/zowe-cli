@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe Secrets SDK package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated minimum supported version of Node from 18 to 20. Added Node 24 support. []()
+
 ## `7.29.15`
 
 - BugFix: Update dependencies and implementation to resolve Windows build failures. [#2607](https://github.com/zowe/zowe-cli/pull/2607)
