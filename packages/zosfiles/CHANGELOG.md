@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated minimum supported version of Node from 18 to 20. Added Node 24 support. []()
+
 ## `8.24.0`
 
 - Enhancement: Added an optional `searchExactName` option to the `ISearchOptions` interface to search the contents of one data set or PDS. [#2529](https://github.com/zowe/zowe-cli/pull/2529)

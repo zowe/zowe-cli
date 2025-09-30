@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS USS SDK package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated minimum supported version of Node from 18 to 20. Added Node 24 support. []()
+
 ## `8.7.0`
 
 - BugFix: Removed unnecessary `$ ` characters in front of most output. [zowe-explorer#3079(comment)](https://github.com/zowe/zowe-explorer-vscode/pull/3079#pullrequestreview-2408842655)
