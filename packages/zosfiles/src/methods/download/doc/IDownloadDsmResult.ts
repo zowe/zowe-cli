@@ -36,4 +36,9 @@ export interface IDownloadDsmResult {
      * sets that failed to download.
      */
     failedWithErrors: { [key: string]: Error };
+
+    /**
+     * List of data set names that were skipped because they already exist locally.
+     */
+    skippedExisting?: string[];
 }

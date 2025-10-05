@@ -125,6 +125,15 @@ export class Download {
                     return generatedFilePath + IO.normalizeExtension(extension);
                 })();
 
+                // If file exists and we should not overwrite, skip downloading with message
+                if (fs.existsSync(destination) && !options.overwrite) {
+                    return {
+                        success: true,
+                        commandResponse: util.format(ZosFilesMessages.datasetDownloadSkipped.message, destination),
+                        apiResponse: {}
+                    };
+                }
+
                 IO.createDirsSyncFromFilePath(destination);
             }
 
@@ -238,6 +247,7 @@ export class Download {
 
             const downloadErrors: Error[] = [];
             const failedMembers: string[] = [];
+            const skippedMembers: string[] = [];
             let downloadsInitiated = 0;
 
             let defaultExtension = ZosFilesUtils.DEFAULT_FILE_EXTENSION;
@@ -271,18 +281,29 @@ export class Download {
                     extension = extension.replace(/^\.+/g, "");
                 }
 
+                const memberFilePath = posix.join(baseDir, fileName + IO.normalizeExtension(extension));
+
+                // Check if file exists and should not be overwritten
+                if (fs.existsSync(memberFilePath) && !options.overwrite) {
+                    skippedMembers.push(fileName);
+                    return Promise.resolve();
+                }
+
                 return this.dataSet(session, `${dataSetName}(${mem.member})`, {
                     volume: options.volume,
-                    file: posix.join(baseDir, fileName + IO.normalizeExtension(extension)),
+                    file: memberFilePath,
                     binary: options.binary,
                     record: options.record,
                     encoding: options.encoding,
-                    responseTimeout: options.responseTimeout
+                    responseTimeout: options.responseTimeout,
+                    overwrite: options.overwrite,
                 }).catch((err) => {
                     downloadErrors.push(err);
                     failedMembers.push(fileName);
+
                     // Delete the file that could not be downloaded
-                    IO.deleteFile(join(baseDir, fileName + IO.normalizeExtension(extension)));
+                    IO.deleteFile(memberFilePath);
+
                     // If we should fail fast, rethrow error
                     if (options.failFast || options.failFast === undefined) {
                         throw err;
@@ -307,9 +328,22 @@ export class Download {
                 });
             }
 
+            let downloadedCount = memberList.length - skippedMembers.length - failedMembers.length;
+            let responseMessage = "";
+            if (downloadedCount > 0) {
+                responseMessage = util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, downloadedCount, baseDir);
+            }
+
+            if (skippedMembers.length > 0) {
+                if (downloadedCount > 0) {
+                    responseMessage += "\n";
+                }
+                responseMessage += util.format(ZosFilesMessages.memberDownloadSkipped.message, skippedMembers.length);
+            }
+
             return {
                 success: true,
-                commandResponse: util.format(ZosFilesMessages.memberDownloadedWithDestination.message, baseDir),
+                commandResponse: responseMessage,
                 apiResponse: response.apiResponse
             };
 
@@ -401,19 +435,37 @@ export class Download {
                     dataSetObj.status = `Skipped: Archived data set or alias - type ${dataSetObj.vol}.`;
                     result.failedArchived.push(dataSetObj.dsname);
                 } else if (dataSetObj.dsorg === "PS") {
-                    psDownloadTasks.push({
-                        handler: Download.dataSet.bind(this),
-                        dsname: dataSetObj.dsname,
-                        options: { ...mutableOptions },
-                        onSuccess: (downloadResponse) => {
-                            dataSetObj.status = downloadResponse.commandResponse;
-                        }
-                    });
+                    const targetFile = mutableOptions.file;
+                    if (targetFile && fs.existsSync(targetFile) && !options.overwrite) {
+                        dataSetObj.status = `Skipped: File already exists - ${targetFile}`;
+                        result.skippedExisting = result.skippedExisting || [];
+                        result.skippedExisting.push(dataSetObj.dsname);
+                    } else {
+                        psDownloadTasks.push({
+                            handler: Download.dataSet.bind(this),
+                            dsname: dataSetObj.dsname,
+                            options: { ...mutableOptions, overwrite: true },
+                            onSuccess: (downloadResponse) => {
+                                dataSetObj.status = downloadResponse.commandResponse;
+                            }
+                        });
+                    }
                 } else if (dataSetObj.dsorg.startsWith("PO")) {
+                    const targetDir = mutableOptions.directory;
+                    if (targetDir && fs.existsSync(targetDir) && !options.overwrite) {
+                        const files = fs.readdirSync(targetDir);
+                        if (files.length > 0) {
+                            dataSetObj.status = `Skipped: Directory already exists with files - ${targetDir}`;
+                            result.skippedExisting = result.skippedExisting || [];
+                            result.skippedExisting.push(dataSetObj.dsname);
+                            continue;
+                        }
+                    }
+
                     poDownloadTasks.push({
                         handler: Download.allMembers.bind(this),
                         dsname: dataSetObj.dsname,
-                        options: { ...mutableOptions },
+                        options: { ...mutableOptions, overwrite: options.overwrite },
                         onSuccess: (downloadResponse, options) => {
                             dataSetObj.status = downloadResponse.commandResponse;
                             const listMembers: string[] = downloadResponse.apiResponse.items.map((item: any) => ` ${item.member}`);
@@ -768,6 +820,13 @@ export class Download {
         if (result.downloaded.length > 0) {
             responseLines.push(TextUtils.chalk.green(`${result.downloaded.length} data set(s) downloaded successfully to `) +
                 (options.directory ?? "./"));
+        }
+
+        if (result.skippedExisting && result.skippedExisting.length > 0) {
+            responseLines.push(
+                TextUtils.chalk.yellow(`${result.skippedExisting.length} data set(s) skipped because they already exist.`),
+                ...result.skippedExisting.map(dsname => `    ${dsname}`)
+            );
         }
 
         if (numFailed > 0) {

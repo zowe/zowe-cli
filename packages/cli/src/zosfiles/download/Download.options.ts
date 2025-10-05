@@ -199,7 +199,7 @@ export const DownloadOptions: { [key: string]: ICommandOptionDefinition } = {
     },
 
     /**
-     * The include hidden option for download
+     * The overwrite option for downloads
      */
     overwrite: {
         name: "overwrite",
