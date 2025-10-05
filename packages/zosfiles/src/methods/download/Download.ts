@@ -82,6 +82,8 @@ export class Download {
         ImperativeExpect.toNotBeNullOrUndefined(dataSetName, ZosFilesMessages.missingDatasetName.message);
         ImperativeExpect.toNotBeEqual(dataSetName, "", ZosFilesMessages.missingDatasetName.message);
         let destination: string;
+        let existedBefore = false;
+        let downloadStarted = false;
 
         try {
             // Format the endpoint to send the request to
@@ -125,6 +127,9 @@ export class Download {
                     return generatedFilePath + IO.normalizeExtension(extension);
                 })();
 
+                // Track if a file at destination already exists before staring the download
+                existedBefore = IO.existsSync(destination);
+
                 IO.createDirsSyncFromFilePath(destination);
             }
 
@@ -149,6 +154,8 @@ export class Download {
                 requestOptions.dataToReturn = [CLIENT_PROPERTY.response];
             }
 
+            downloadStarted = true;
+
             const request: IRestClientResponse = await ZosmfRestClient.getExpectFullResponse(session, requestOptions);
 
             // By default, apiResponse is empty when downloading
@@ -168,8 +175,13 @@ export class Download {
         } catch (error) {
             Logger.getAppLogger().error(error);
 
-            if (destination != null) {
-                IO.deleteFile(destination);
+            // Only delete the file if it did not exist before and error occured during download
+            if (destination != null && downloadStarted && !existedBefore) {
+                try {
+                    IO.deleteFile(destination);
+                } catch (deleteError) {
+                    Logger.getAppLogger().warn(`Failed to clean up partially download file ${destination}: ${deleteError.message}`);
+                }
             }
 
             throw error;
@@ -271,9 +283,12 @@ export class Download {
                     extension = extension.replace(/^\.+/g, "");
                 }
 
+                const memberFilePath = posix.join(baseDir, fileName + IO.normalizeExtension(extension));
+                const memberExistedBefore = IO.existsSync(memberFilePath);
+
                 return this.dataSet(session, `${dataSetName}(${mem.member})`, {
                     volume: options.volume,
-                    file: posix.join(baseDir, fileName + IO.normalizeExtension(extension)),
+                    file: memberFilePath,
                     binary: options.binary,
                     record: options.record,
                     encoding: options.encoding,
@@ -281,8 +296,16 @@ export class Download {
                 }).catch((err) => {
                     downloadErrors.push(err);
                     failedMembers.push(fileName);
-                    // Delete the file that could not be downloaded
-                    IO.deleteFile(join(baseDir, fileName + IO.normalizeExtension(extension)));
+
+                    // Only delete the file if it didn't exist before the download attempt
+                    if (!memberExistedBefore) {
+                        try {
+                            IO.deleteFile(memberFilePath);
+                        } catch (deleteError) {
+                            Logger.getAppLogger().warn(`Failed to clean up partially download file ${memberFilePath}: ${deleteError.message}`);
+                        }
+                    }
+
                     // If we should fail fast, rethrow error
                     if (options.failFast || options.failFast === undefined) {
                         throw err;

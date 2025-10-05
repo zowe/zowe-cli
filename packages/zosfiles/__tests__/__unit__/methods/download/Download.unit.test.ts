@@ -603,6 +603,68 @@ describe("z/OS Files - Download", () => {
             expect(ioCreateDirSpy).toHaveBeenCalledWith(destination);
             expect(ioWriteStreamSpy).toHaveBeenCalledTimes(1);
         });
+
+        it("should not delete existing file when download fails", async () => {
+            let response;
+            let caughtError;
+            const file = "existing/file.txt";
+            const ioExistsSpy = jest.spyOn(IO, "existsSync");
+            const ioDeleteSpy = jest.spyOn(IO, "deleteFile");
+
+            ioExistsSpy.mockReturnValue(true);
+            ioDeleteSpy.mockImplementation(() => null);
+
+            const dummyError = new Error("Connection lost");
+            zosmfGetFullSpy.mockImplementation(() => {
+                throw dummyError;
+            });
+
+            try {
+                response = await Download.dataSet(dummySession, dsname, { file });
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(response).toBeUndefined();
+            expect(caughtError).toEqual(dummyError);
+
+            expect(ioExistsSpy).toHaveBeenCalledWith(file);
+            expect(ioDeleteSpy).not.toHaveBeenCalled();
+
+            ioExistsSpy.mockRestore();
+            ioDeleteSpy.mockRestore();
+        });
+
+        it("should delete new file when download fails", async () => {
+            let response;
+            let caughtError;
+            const file = "new/file.txt";
+            const ioExistsSpy = jest.spyOn(IO, "existsSync");
+            const ioDeleteSpy = jest.spyOn(IO, "deleteFile");
+
+            ioExistsSpy.mockReturnValue(false);
+            ioDeleteSpy.mockImplementation(() => null);
+
+            const dummyError = new Error("Connection lost");
+            zosmfGetFullSpy.mockImplementation(() => {
+                throw dummyError;
+            });
+
+            try {
+                response = await Download.dataSet(dummySession, dsname, { file });
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(response).toBeUndefined();
+            expect(caughtError).toEqual(dummyError);
+
+            expect(ioExistsSpy).toHaveBeenCalledWith(file);
+            expect(ioDeleteSpy).toHaveBeenCalledWith(file);
+
+            ioExistsSpy.mockRestore();
+            ioDeleteSpy.mockRestore();
+        });
     });
 
     describe("allMembers", () => {
@@ -1221,6 +1283,76 @@ describe("z/OS Files - Download", () => {
                     file: path.posix.join(directory, "m2.txt")
                 }
             );
+        });
+
+        it("should not delete existing member files when download fails", async () => {
+            let response;
+            let caughtError;
+            const ioExistsSpy = jest.spyOn(IO, "existsSync");
+            const ioDeleteSpy = jest.spyOn(IO, "deleteFile");
+
+            ioExistsSpy.mockImplementation((filePath) => {
+                const fileName = path.basename(filePath.toString());
+                return fileName === "m1.txt" || fileName === "m2.txt";
+            });
+            ioDeleteSpy.mockImplementation(() => null);
+
+            const dummyError = new Error("Connection lost");
+            downloadDatasetSpy.mockImplementation(async () => {
+                throw dummyError;
+            });
+
+            try {
+                response = await Download.allMembers(dummySession, dsname, { failFast: false });
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(response).toBeUndefined();
+            expect(caughtError).toBeDefined();
+            expect(caughtError.message).toContain(ZosFilesMessages.memberDownloadFailed.message);
+
+            expect(ioExistsSpy).toHaveBeenCalledWith(path.posix.join(dsFolder, "m1.txt"));
+            expect(ioExistsSpy).toHaveBeenCalledWith(path.posix.join(dsFolder, "m2.txt"));
+
+            expect(ioDeleteSpy).not.toHaveBeenCalled();
+
+            ioExistsSpy.mockRestore();
+            ioDeleteSpy.mockRestore();
+        });
+
+        it("should delete new member files when download fails", async () => {
+            let response;
+            let caughtError;
+            const ioExistsSpy = jest.spyOn(IO, "existsSync");
+            const ioDeleteSpy = jest.spyOn(IO, "deleteFile");
+
+            ioExistsSpy.mockReturnValue(false);
+            ioDeleteSpy.mockImplementation(() => null);
+
+            const dummyError = new Error("Connection lost");
+            downloadDatasetSpy.mockImplementation(async () => {
+                throw dummyError;
+            });
+
+            try {
+                response = await Download.allMembers(dummySession, dsname, { failFast: false });
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(response).toBeUndefined();
+            expect(caughtError).toBeDefined();
+            expect(caughtError.message).toContain(ZosFilesMessages.memberDownloadFailed.message);
+
+            expect(ioExistsSpy).toHaveBeenCalledWith(path.posix.join(dsFolder, "m1.txt"));
+            expect(ioExistsSpy).toHaveBeenCalledWith(path.posix.join(dsFolder, "m2.txt"));
+
+            expect(ioDeleteSpy).toHaveBeenCalledWith(path.posix.join(dsFolder, "m1.txt"));
+            expect(ioDeleteSpy).toHaveBeenCalledWith(path.posix.join(dsFolder, "m2.txt"));
+
+            ioExistsSpy.mockRestore();
+            ioDeleteSpy.mockRestore();
         });
     });
 
