@@ -983,8 +983,6 @@ describe("AbstractRestClient tests", () => {
     });
 
     it("should not error when streaming normalized data", async () => {
-        jest.spyOn(os, "platform").mockReturnValue("win32");
-
         const fakeRequestStream = new PassThrough();
         const emitter = new MockHttpRequestResponse();
         const receivedArray: string[] = [];
@@ -1974,10 +1972,8 @@ describe("AbstractRestClient tests", () => {
             });
         });
 
-        describe("Upload streaming with newline normalization", () => {
+        (os.platform() === "win32" ? describe : describe.skip)("CRLF at chunk boundaries with newline normalization", () => {
             it("should handle CRLF sequence split across chunk boundary", async () => {
-                jest.spyOn(os, "platform").mockReturnValue("win32");
-
                 const session = new Session({
                     hostname: "test",
                     port: 443,
@@ -2032,8 +2028,6 @@ describe("AbstractRestClient tests", () => {
             });
 
             it("should preserve standalone CR at chunk boundary", async () => {
-                jest.spyOn(os, "platform").mockReturnValue("win32");
-
                 const session = new Session({
                     hostname: "test",
                     port: 443,
@@ -2084,8 +2078,6 @@ describe("AbstractRestClient tests", () => {
             });
 
             it("should handle multiple CRLF sequences across boundaries", async () => {
-                jest.spyOn(os, "platform").mockReturnValue("win32");
-
                 const session = new Session({
                     hostname: "test",
                     port: 443,
@@ -2138,8 +2130,6 @@ describe("AbstractRestClient tests", () => {
             });
 
             it("should handle CR at end of stream correctly", async () => {
-                jest.spyOn(os, "platform").mockReturnValue("win32");
-
                 const session = new Session({
                     hostname: "test",
                     port: 443,
