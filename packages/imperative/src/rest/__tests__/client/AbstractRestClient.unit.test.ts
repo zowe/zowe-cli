@@ -1975,7 +1975,7 @@ describe("AbstractRestClient tests", () => {
         });
 
         describe("Upload streaming with newline normalization", () => {
-            it("should handle CRLF sequence split across chunk boundary", (done) => {
+            it("should handle CRLF sequence split across chunk boundary", async () => {
                 jest.spyOn(os, "platform").mockReturnValue("win32");
 
                 const session = new Session({
@@ -2018,21 +2018,20 @@ describe("AbstractRestClient tests", () => {
                 requestStream.write(Buffer.from("\ndef\r\n"));
                 requestStream.end();
 
-                client.request({
+                await client.request({
                     resource: "/test",
                     request: "PUT",
                     requestStream,
                     normalizeRequestNewLines: true
-                }).then(() => {
-                    // Verify that CR was stripped (CRLF -> LF)
-                    // "abc\r" becomes "abc" (CR held), "\ndef\r\n" prepends CR to get "\r\ndef\r\n" which becomes "\ndef\n" (CRLF stripped)
-                    const allWritten = Buffer.concat(writtenChunks);
-                    expect(allWritten.toString()).toBe("abc\ndef\n");
-                    done();
-                }).catch(done);
+                });
+
+                // Verify that CR was stripped (CRLF -> LF)
+                // "abc\r" becomes "abc" (CR held), "\ndef\r\n" prepends CR to get "\r\ndef\r\n" which becomes "\ndef\n" (CRLF stripped)
+                const allWritten = Buffer.concat(writtenChunks);
+                expect(allWritten.toString()).toBe("abc\ndef\n");
             });
 
-            it("should preserve standalone CR at chunk boundary", (done) => {
+            it("should preserve standalone CR at chunk boundary", async () => {
                 jest.spyOn(os, "platform").mockReturnValue("win32");
 
                 const session = new Session({
@@ -2072,20 +2071,19 @@ describe("AbstractRestClient tests", () => {
                 requestStream.write(Buffer.from("xyz"));
                 requestStream.end();
 
-                client.request({
+                await client.request({
                     resource: "/test",
                     request: "PUT",
                     requestStream,
                     normalizeRequestNewLines: true
-                }).then(() => {
-                    // Verify that standalone CR is preserved
-                    const allWritten = Buffer.concat(writtenChunks);
-                    expect(allWritten.toString()).toBe("abc\rxyz");
-                    done();
-                }).catch(done);
+                });
+
+                // Verify that standalone CR is preserved
+                const allWritten = Buffer.concat(writtenChunks);
+                expect(allWritten.toString()).toBe("abc\rxyz");
             });
 
-            it("should handle multiple CRLF sequences across boundaries", (done) => {
+            it("should handle multiple CRLF sequences across boundaries", async () => {
                 jest.spyOn(os, "platform").mockReturnValue("win32");
 
                 const session = new Session({
@@ -2127,20 +2125,19 @@ describe("AbstractRestClient tests", () => {
                 requestStream.write(Buffer.from("\n"));
                 requestStream.end();
 
-                client.request({
+                await client.request({
                     resource: "/test",
                     request: "PUT",
                     requestStream,
                     normalizeRequestNewLines: true
-                }).then(() => {
-                    // All CRLF should be converted to LF
-                    const allWritten = Buffer.concat(writtenChunks);
-                    expect(allWritten.toString()).toBe("line1\nline2\nline3\n");
-                    done();
-                }).catch(done);
+                });
+
+                // All CRLF should be converted to LF
+                const allWritten = Buffer.concat(writtenChunks);
+                expect(allWritten.toString()).toBe("line1\nline2\nline3\n");
             });
 
-            it("should handle CR at end of stream correctly", (done) => {
+            it("should handle CR at end of stream correctly", async () => {
                 jest.spyOn(os, "platform").mockReturnValue("win32");
 
                 const session = new Session({
@@ -2179,17 +2176,16 @@ describe("AbstractRestClient tests", () => {
                 requestStream.write(Buffer.from("data\r"));
                 requestStream.end();
 
-                client.request({
+                await client.request({
                     resource: "/test",
                     request: "PUT",
                     requestStream,
                     normalizeRequestNewLines: true
-                }).then(() => {
-                    // CR at end should be preserved
-                    const allWritten = Buffer.concat(writtenChunks);
-                    expect(allWritten.toString()).toBe("data\r");
-                    done();
-                }).catch(done);
+                });
+
+                // CR at end should be preserved
+                const allWritten = Buffer.concat(writtenChunks);
+                expect(allWritten.toString()).toBe("data\r");
             });
         });
     });
