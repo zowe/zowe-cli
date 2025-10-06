@@ -596,6 +596,15 @@ export class Download {
 
             if (options.stream == null) {
                 destination = options.file || posix.normalize(posix.basename(ussFileName));
+
+                if (fs.existsSync(destination) && !options.overwrite) {
+                    return {
+                        success: true,
+                        commandResponse: util.format(ZosFilesMessages.ussFileDownloadSkipped.message, destination),
+                        apiResponse: {}
+                    };
+                }
+
                 IO.createDirsSyncFromFilePath(destination);
             }
 

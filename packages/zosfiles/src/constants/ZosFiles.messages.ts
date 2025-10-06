@@ -253,6 +253,14 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
     },
 
     /**
+     * Message indicating that the uss file download was skipped
+     * @type {IMessageDefinition}
+     */
+    ussFileDownloadSkipped: {
+        message: "USS file %s skipped as it already exists."
+    },
+
+    /**
      * Message indicating that the uss file was uploaded successfully
      * @type {IMessageDefinition}
      */
