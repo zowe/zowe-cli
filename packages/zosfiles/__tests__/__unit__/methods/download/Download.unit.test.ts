@@ -21,6 +21,7 @@ import { IUSSListOptions, List } from "../../../../src/methods/list";
 import { CLIENT_PROPERTY } from "../../../../src/doc/types/ZosmfRestClientProperties";
 import { IDownloadDsmResult } from "../../../../src/methods/download/doc/IDownloadDsmResult";
 import { PassThrough } from "stream";
+import { IDownloadAmResponse } from "../../../../src/methods/download/doc/IDownloadAmResult";
 
 describe("z/OS Files - Download", () => {
     const dsname = "USER.DATA.SET";
@@ -616,6 +617,22 @@ describe("z/OS Files - Download", () => {
             ]
         };
 
+        const defaultResponse: IDownloadAmResponse = {
+            success: true,
+            commandResponse: util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, 2, dsFolder),
+            apiResponse: {
+                ...listApiResponse,
+                downloadResult: {
+                    downloaded: 2,
+                    skipped: 0,
+                    failed: 0,
+                    total: 2,
+                    skippedMembers: [],
+                    failedMembers: []
+                }
+            }
+        }
+
         beforeEach(() => {
             listAllMembersSpy.mockClear();
             listAllMembersSpy.mockImplementation(async (): Promise<any> => {
@@ -703,11 +720,7 @@ describe("z/OS Files - Download", () => {
             }
 
             expect(caughtError).toBeUndefined();
-            expect(response).toEqual({
-                success: true,
-                commandResponse: util.format(ZosFilesMessages.memberDownloadedWithDestination.message, dsFolder),
-                apiResponse: listApiResponse
-            });
+            expect(response).toEqual(defaultResponse);
 
             expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
             expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, dsname, {});
@@ -729,6 +742,8 @@ describe("z/OS Files - Download", () => {
             const extension = ".xyz";
             const binary = true;
 
+            defaultResponse.commandResponse = util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, 2, directory);
+
             try {
                 response = await Download.allMembers(dummySession, dsname, {volume, directory, extension, binary});
             } catch (e) {
@@ -736,11 +751,7 @@ describe("z/OS Files - Download", () => {
             }
 
             expect(caughtError).toBeUndefined();
-            expect(response).toEqual({
-                success: true,
-                commandResponse: util.format(ZosFilesMessages.memberDownloadedWithDestination.message, directory),
-                apiResponse: listApiResponse
-            });
+            expect(response).toEqual(defaultResponse);
 
             expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
             expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, dsname, {volume});
@@ -764,6 +775,8 @@ describe("z/OS Files - Download", () => {
             const extension = ".xyz";
             const record = true;
 
+            defaultResponse.commandResponse = util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, 2, directory);
+
             try {
                 response = await Download.allMembers(dummySession, dsname, {volume, directory, extension, record});
             } catch (e) {
@@ -771,11 +784,7 @@ describe("z/OS Files - Download", () => {
             }
 
             expect(caughtError).toBeUndefined();
-            expect(response).toEqual({
-                success: true,
-                commandResponse: util.format(ZosFilesMessages.memberDownloadedWithDestination.message, directory),
-                apiResponse: listApiResponse
-            });
+            expect(response).toEqual(defaultResponse);
 
             expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
             expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, dsname, {volume});
@@ -800,6 +809,8 @@ describe("z/OS Files - Download", () => {
             const binary = true;
             const responseTimeout = 5;
 
+            defaultResponse.commandResponse = util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, 2, directory);
+
             try {
                 response = await Download.allMembers(dummySession, dsname, {volume, directory, extension, binary, responseTimeout});
             } catch (e) {
@@ -807,11 +818,7 @@ describe("z/OS Files - Download", () => {
             }
 
             expect(caughtError).toBeUndefined();
-            expect(response).toEqual({
-                success: true,
-                commandResponse: util.format(ZosFilesMessages.memberDownloadedWithDestination.message, directory),
-                apiResponse: listApiResponse
-            });
+            expect(response).toEqual(defaultResponse);
 
             expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
             expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, dsname, {volume, responseTimeout});
@@ -838,6 +845,8 @@ describe("z/OS Files - Download", () => {
             const record = true;
             const responseTimeout = 5;
 
+            defaultResponse.commandResponse = util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, 2, directory);
+
             try {
                 response = await Download.allMembers(dummySession, dsname, {volume, directory, extension, record, responseTimeout});
             } catch (e) {
@@ -845,11 +854,7 @@ describe("z/OS Files - Download", () => {
             }
 
             expect(caughtError).toBeUndefined();
-            expect(response).toEqual({
-                success: true,
-                commandResponse: util.format(ZosFilesMessages.memberDownloadedWithDestination.message, directory),
-                apiResponse: listApiResponse
-            });
+            expect(response).toEqual(defaultResponse);
 
             expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
             expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, dsname, {volume, responseTimeout});
@@ -875,6 +880,8 @@ describe("z/OS Files - Download", () => {
             const extension = ".xyz";
             const encoding = "285";
 
+            defaultResponse.commandResponse = util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, 2, directory);
+
             try {
                 response = await Download.allMembers(dummySession, dsname, {volume, directory, extension, encoding});
             } catch (e) {
@@ -882,11 +889,7 @@ describe("z/OS Files - Download", () => {
             }
 
             expect(caughtError).toBeUndefined();
-            expect(response).toEqual({
-                success: true,
-                commandResponse: util.format(ZosFilesMessages.memberDownloadedWithDestination.message, directory),
-                apiResponse: listApiResponse
-            });
+            expect(response).toEqual(defaultResponse);
 
             expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
             expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, dsname, {volume});
@@ -909,6 +912,8 @@ describe("z/OS Files - Download", () => {
             const directory = "My/Test/Path/";
             const extension = ".xyz";
 
+            defaultResponse.commandResponse = util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, 2, directory);
+
             try {
                 response = await Download.allMembers(dummySession, dsname, {volume, directory, extension});
             } catch (e) {
@@ -916,11 +921,7 @@ describe("z/OS Files - Download", () => {
             }
 
             expect(caughtError).toBeUndefined();
-            expect(response).toEqual({
-                success: true,
-                commandResponse: util.format(ZosFilesMessages.memberDownloadedWithDestination.message, directory),
-                apiResponse: listApiResponse
-            });
+            expect(response).toEqual(defaultResponse);
 
             expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
             expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, dsname, {volume});
@@ -943,6 +944,8 @@ describe("z/OS Files - Download", () => {
             const extension = "";
             const binary = true;
 
+            defaultResponse.commandResponse = util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, 2, directory);
+
             try {
                 response = await Download.allMembers(dummySession, dsname, {volume, directory, extension, binary});
             } catch (e) {
@@ -950,11 +953,7 @@ describe("z/OS Files - Download", () => {
             }
 
             expect(caughtError).toBeUndefined();
-            expect(response).toEqual({
-                success: true,
-                commandResponse: util.format(ZosFilesMessages.memberDownloadedWithDestination.message, directory),
-                apiResponse: listApiResponse
-            });
+            expect(response).toEqual(defaultResponse);
 
             expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
             expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, dsname, {volume});
@@ -973,6 +972,8 @@ describe("z/OS Files - Download", () => {
             let response;
             let caughtError;
 
+            defaultResponse.commandResponse = util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, 2, dsFolder.toUpperCase());
+
             try {
                 response = await Download.allMembers(dummySession, dsname, { preserveOriginalLetterCase: true });
             } catch (e) {
@@ -980,11 +981,7 @@ describe("z/OS Files - Download", () => {
             }
 
             expect(caughtError).toBeUndefined();
-            expect(response).toEqual({
-                success: true,
-                commandResponse: util.format(ZosFilesMessages.memberDownloadedWithDestination.message, dsFolder.toUpperCase()),
-                apiResponse: listApiResponse
-            });
+            expect(response).toEqual(defaultResponse);
 
             expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
             expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, dsname, {});
@@ -1095,6 +1092,8 @@ describe("z/OS Files - Download", () => {
                 m2: "def"
             };
 
+            defaultResponse.commandResponse = util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, 2, directory);
+
             try {
                 response = await Download.allMembers(dummySession, dsname, { directory, extensionMap });
             } catch (e) {
@@ -1102,11 +1101,7 @@ describe("z/OS Files - Download", () => {
             }
 
             expect(caughtError).toBeUndefined();
-            expect(response).toEqual({
-                success: true,
-                commandResponse: util.format(ZosFilesMessages.memberDownloadedWithDestination.message, directory),
-                apiResponse: listApiResponse
-            });
+            expect(response).toEqual(defaultResponse);
 
             expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
             expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, dsname, {});
@@ -1142,6 +1137,8 @@ describe("z/OS Files - Download", () => {
                 M2: ".LOWER"
             };
 
+            defaultResponse.commandResponse = util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, 2, directory);
+
             try {
                 response = await Download.allMembers(dummySession, dsname, { directory, extensionMap, preserveOriginalLetterCase: true });
             } catch (e) {
@@ -1149,11 +1146,7 @@ describe("z/OS Files - Download", () => {
             }
 
             expect(caughtError).toBeUndefined();
-            expect(response).toEqual({
-                success: true,
-                commandResponse: util.format(ZosFilesMessages.memberDownloadedWithDestination.message, directory),
-                apiResponse: listApiResponse
-            });
+            expect(response).toEqual(defaultResponse);
 
             expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
             expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, dsname, {});
@@ -1188,6 +1181,8 @@ describe("z/OS Files - Download", () => {
                 other: "zzz"
             };
 
+            defaultResponse.commandResponse = util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, 2, directory);
+
             try {
                 response = await Download.allMembers(dummySession, dsname, { directory, extensionMap });
             } catch (e) {
@@ -1195,11 +1190,7 @@ describe("z/OS Files - Download", () => {
             }
 
             expect(caughtError).toBeUndefined();
-            expect(response).toEqual({
-                success: true,
-                commandResponse: util.format(ZosFilesMessages.memberDownloadedWithDestination.message, directory),
-                apiResponse: listApiResponse
-            });
+            expect(response).toEqual(defaultResponse);
 
             expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
             expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, dsname, {});
@@ -1275,7 +1266,8 @@ describe("z/OS Files - Download", () => {
             expect(downloadDatasetSpy).toHaveBeenCalledWith(dummySession, dataSetPS.dsname, {
                 directory: undefined,
                 extension: undefined,
-                file: `${dataSetPS.dsname.toLocaleLowerCase()}.txt`
+                file: `${dataSetPS.dsname.toLocaleLowerCase()}.txt`,
+                overwrite: true
             });
         });
 
@@ -1337,7 +1329,11 @@ describe("z/OS Files - Download", () => {
                 }, {directory}),
                 apiResponse: [{ ...dataSetPS, status: "Data set downloaded" }]
             });
-            expect(Download.dataSet).toHaveBeenCalledWith(dummySession, dataSetPS.dsname, {binary, file: "my/test/path/test.ps.data.set.xyz"});
+            expect(Download.dataSet).toHaveBeenCalledWith(dummySession, dataSetPS.dsname, {
+                binary,
+                file: "my/test/path/test.ps.data.set.xyz",
+                overwrite: true
+            });
         });
 
         it("should download all datasets specifying preserveOriginalLetterCase", async () => {
@@ -1372,7 +1368,8 @@ describe("z/OS Files - Download", () => {
             });
             expect(Download.dataSet).toHaveBeenCalledWith(dummySession, dataSetPS.dsname, {
                 file: "TEST.PS.DATA.SET.txt",
-                preserveOriginalLetterCase: true
+                preserveOriginalLetterCase: true,
+                overwrite: true
             });
         });
 
@@ -1408,7 +1405,7 @@ describe("z/OS Files - Download", () => {
                 }, {}),
                 apiResponse: [{ ...dataSetPS, status: "Data set downloaded" }]
             });
-            expect(Download.dataSet).toHaveBeenCalledWith(dummySession, dataSetPS.dsname, {file: "test.ps.data.set.xyz"});
+            expect(Download.dataSet).toHaveBeenCalledWith(dummySession, dataSetPS.dsname, {file: "test.ps.data.set.xyz", overwrite: true});
         });
 
         it("should download all datasets with maxConcurrentRequests set to zero", async () => {
@@ -1443,7 +1440,11 @@ describe("z/OS Files - Download", () => {
                 }, {}),
                 apiResponse: [{ ...dataSetPS, status: "Data set downloaded" }]
             });
-            expect(Download.dataSet).toHaveBeenCalledWith(dummySession, dataSetPS.dsname, {file: "test.ps.data.set.txt", maxConcurrentRequests: 0});
+            expect(Download.dataSet).toHaveBeenCalledWith(dummySession, dataSetPS.dsname, {
+                file: "test.ps.data.set.txt",
+                maxConcurrentRequests: 0,
+                overwrite: true
+            });
         });
 
         it("should download all datasets while specifying an extension with a leading dot", async () => {
@@ -1479,7 +1480,7 @@ describe("z/OS Files - Download", () => {
                 }, {directory}),
                 apiResponse: [{ ...dataSetPS, status: "Data set downloaded" }]
             });
-            expect(Download.dataSet).toHaveBeenCalledWith(dummySession, dataSetPS.dsname, {file: "my/test/path/test.ps.data.set.xyz"});
+            expect(Download.dataSet).toHaveBeenCalledWith(dummySession, dataSetPS.dsname, {file: "my/test/path/test.ps.data.set.xyz", overwrite: true});
         });
 
         it("should download all datasets specifying a mixed case directory", async () => {
@@ -1515,7 +1516,11 @@ describe("z/OS Files - Download", () => {
                 }, {directory}),
                 apiResponse: [{ ...dataSetPS, status: "Data set downloaded" }]
             });
-            expect(Download.dataSet).toHaveBeenCalledWith(dummySession, dataSetPS.dsname, {extensionMap, file: "My/Test/Path/test.ps.data.set.file"});
+            expect(Download.dataSet).toHaveBeenCalledWith(dummySession, dataSetPS.dsname, {
+                extensionMap,
+                file: "My/Test/Path/test.ps.data.set.file",
+                overwrite: true
+            });
         });
 
         it("should download all datasets specifying the directory and extension map 1", async () => {
@@ -1551,7 +1556,11 @@ describe("z/OS Files - Download", () => {
                 }, {directory}),
                 apiResponse: [{ ...dataSetPS, status: "Data set downloaded" }]
             });
-            expect(Download.dataSet).toHaveBeenCalledWith(dummySession, dataSetPS.dsname, {extensionMap, file: "my/test/path/test.ps.data.set.file"});
+            expect(Download.dataSet).toHaveBeenCalledWith(dummySession, dataSetPS.dsname, {
+                extensionMap,
+                file: "my/test/path/test.ps.data.set.file",
+                overwrite: true
+            });
         });
 
         it("should download all datasets specifying the directory and extension map 2", async () => {
@@ -1587,7 +1596,11 @@ describe("z/OS Files - Download", () => {
                 }, {directory}),
                 apiResponse: [{ ...dataSetPS, status: "Data set downloaded" }]
             });
-            expect(Download.dataSet).toHaveBeenCalledWith(dummySession, dataSetPS.dsname, {extensionMap, file: "my/test/path/test.ps.data.set.txt"});
+            expect(Download.dataSet).toHaveBeenCalledWith(dummySession, dataSetPS.dsname, {
+                extensionMap,
+                file: "my/test/path/test.ps.data.set.txt",
+                overwrite: true
+            });
         });
 
         it("should download all datasets without any options", async () => {
