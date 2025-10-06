@@ -404,12 +404,12 @@ export abstract class AbstractRestClient {
                     this.log.debug("Writing data chunk of length %d from requestStream to clientRequest", data.byteLength);
 
                     // If we held back a CR from the previous chunk, prepend it to current chunk
-                    if (this.mNormalizeRequestNewlines && heldByte != null) {
-                        data = Buffer.concat([heldByte, data]);
-                        heldByte = undefined;
-                    }
-
                     if (this.mNormalizeRequestNewlines) {
+                        if (heldByte != null) {
+                            data = Buffer.concat([heldByte, data]);
+                            heldByte = undefined;
+                        }
+
                         this.log.debug("Normalizing new lines in request chunk to \\n");
                         data = IO.processNewlines(data, this.lastByteReceivedUpload, true);
 
@@ -434,8 +434,8 @@ export abstract class AbstractRestClient {
 
                     if (data.byteLength > 0) {
                         clientRequest.write(data);
+                        this.lastByteReceivedUpload = data[data.byteLength - 1];
                     }
-                    this.lastByteReceivedUpload = data.byteLength > 0 ? data[data.byteLength - 1] : this.lastByteReceivedUpload;
                 });
                 options.requestStream.on("error", (streamError: any) => {
                     this.log.error("Error encountered reading requestStream: " + streamError);
