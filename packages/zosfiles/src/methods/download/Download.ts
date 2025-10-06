@@ -30,6 +30,7 @@ import { IDownloadDsmResult } from "./doc/IDownloadDsmResult";
 import { IDownloadUssDirResult } from "./doc/IDownloadUssDirResult";
 import { IUSSListOptions } from "../list";
 import { TransferMode } from "../../utils/ZosFilesAttributes";
+import { IDownloadAmResult } from "./doc/IDownloadAmResult";
 
 type IZosmfListResponseWithStatus = IZosmfListResponse & { error?: Error; status?: string };
 
@@ -341,10 +342,22 @@ export class Download {
                 responseMessage += util.format(ZosFilesMessages.memberDownloadSkipped.message, skippedMembers.length);
             }
 
+            const downloadResult: IDownloadAmResult = {
+                downloaded: downloadedCount,
+                skipped: skippedMembers.length,
+                failed: failedMembers.length,
+                total: memberList.length,
+                skippedMembers,
+                failedMembers
+            };
+
             return {
                 success: true,
                 commandResponse: responseMessage,
-                apiResponse: response.apiResponse
+                apiResponse: {
+                    ...response.apiResponse,
+                    downloadResult
+                }
             };
 
         } catch (error) {
@@ -451,17 +464,6 @@ export class Download {
                         });
                     }
                 } else if (dataSetObj.dsorg.startsWith("PO")) {
-                    const targetDir = mutableOptions.directory;
-                    if (targetDir && fs.existsSync(targetDir) && !options.overwrite) {
-                        const files = fs.readdirSync(targetDir);
-                        if (files.length > 0) {
-                            dataSetObj.status = `Skipped: Directory already exists with files - ${targetDir}`;
-                            result.skippedExisting = result.skippedExisting || [];
-                            result.skippedExisting.push(dataSetObj.dsname);
-                            continue;
-                        }
-                    }
-
                     poDownloadTasks.push({
                         handler: Download.allMembers.bind(this),
                         dsname: dataSetObj.dsname,
@@ -503,7 +505,21 @@ export class Download {
 
                 return task.handler(session, task.dsname, task.options).then(
                     (downloadResponse) => {
-                        result.downloaded.push(task.dsname);
+                        const downloadResult = downloadResponse.apiResponse?.downloadResult;
+                        if (downloadResult) {
+                            // This is a PO dataset as it has a download result
+                            if (downloadResult.downloaded > 0) {
+                                result.downloaded.push(task.dsname);
+                            } else if (downloadResult.skipped > 0 && downloadResult.downloaded === 0) {
+                                result.skippedExisting = result.skippedExisting || [];
+                                result.skippedExisting.push(task.dsname);
+                            } else {
+                                result.downloaded.push(task.dsname);
+                            }
+                        } else {
+                            // This is a PS dataset has there is no download result
+                            result.downloaded.push(task.dsname);
+                        }
                         task.onSuccess(downloadResponse, task.options);
                     },
                     (err) => {
@@ -819,7 +835,9 @@ export class Download {
 
         if (result.downloaded.length > 0) {
             responseLines.push(TextUtils.chalk.green(`${result.downloaded.length} data set(s) downloaded successfully to `) +
-                (options.directory ?? "./"));
+                (options.directory ?? "./"),
+                ...result.downloaded.map(dsname => `    ${dsname}`)
+            );
         }
 
         if (result.skippedExisting && result.skippedExisting.length > 0) {
