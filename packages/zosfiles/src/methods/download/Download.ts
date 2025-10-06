@@ -127,7 +127,7 @@ export class Download {
                 })();
 
                 // If file exists and we should not overwrite, skip downloading with message
-                if (fs.existsSync(destination) && !options.overwrite) {
+                if (IO.existsSync(destination) && !options.overwrite) {
                     return {
                         success: true,
                         commandResponse: util.format(ZosFilesMessages.datasetDownloadSkipped.message, destination),
@@ -285,7 +285,7 @@ export class Download {
                 const memberFilePath = posix.join(baseDir, fileName + IO.normalizeExtension(extension));
 
                 // Check if file exists and should not be overwritten
-                if (fs.existsSync(memberFilePath) && !options.overwrite) {
+                if (IO.existsSync(memberFilePath) && !options.overwrite) {
                     skippedMembers.push(fileName);
                     return Promise.resolve();
                 }
@@ -449,7 +449,7 @@ export class Download {
                     result.failedArchived.push(dataSetObj.dsname);
                 } else if (dataSetObj.dsorg === "PS") {
                     const targetFile = mutableOptions.file;
-                    if (targetFile && fs.existsSync(targetFile) && !options.overwrite) {
+                    if (targetFile && IO.existsSync(targetFile) && !options.overwrite) {
                         dataSetObj.status = `Skipped: File already exists - ${targetFile}`;
                         result.skippedExisting = result.skippedExisting || [];
                         result.skippedExisting.push(dataSetObj.dsname);
@@ -597,7 +597,7 @@ export class Download {
             if (options.stream == null) {
                 destination = options.file || posix.normalize(posix.basename(ussFileName));
 
-                if (fs.existsSync(destination) && !options.overwrite) {
+                if (IO.existsSync(destination) && !options.overwrite) {
                     return {
                         success: true,
                         commandResponse: util.format(ZosFilesMessages.ussFileDownloadSkipped.message, destination),
@@ -710,7 +710,7 @@ export class Download {
                 downloadsInitiated++;
             }
             // task.options.file is only null for directories, but we may want to fall back to the filename itself (just in case)
-            if (fs.existsSync(task.options?.file ?? task.file) && !fileOptions.overwrite) {
+            if (IO.existsSync(task.options?.file ?? task.file) && !fileOptions.overwrite) {
                 result.skippedExisting.push(task.file);
             } else {
                 return this.ussFile(session, posix.join(ussDirName, task.file), task.options).then(
@@ -852,7 +852,8 @@ export class Download {
         if (result.skippedExisting && result.skippedExisting.length > 0) {
             responseLines.push(
                 TextUtils.chalk.yellow(`${result.skippedExisting.length} data set(s) skipped because they already exist.`),
-                ...result.skippedExisting.map(dsname => `    ${dsname}`)
+                ...result.skippedExisting.map(dsname => `    ${dsname}`),
+                "\nRerun the command with --overwrite to download the files listed above."
             );
         }
 
