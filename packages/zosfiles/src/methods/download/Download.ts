@@ -843,8 +843,9 @@ export class Download {
         const responseLines = [];
 
         if (result.downloaded.length > 0) {
-            responseLines.push(TextUtils.chalk.green(`${result.downloaded.length} data set(s) downloaded successfully to `) +
-                (options.directory ?? "./"),
+            responseLines.push(
+                TextUtils.chalk.green(`${result.downloaded.length} data set(s) downloaded successfully to `) +
+                    (options.directory ?? "./"),
                 ...result.downloaded.map(dsname => `    ${dsname}`)
             );
         }
