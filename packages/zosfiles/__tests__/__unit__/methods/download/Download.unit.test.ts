@@ -783,7 +783,7 @@ describe("z/OS Files - Download", () => {
             expect(ioWriteStreamSpy).toHaveBeenCalledTimes(1);
         });
 
-        it("should skip or not skip downloading data set with preserveOriginalLetterCase when file exists and overwrite is false (platform dependant)", async () => {
+        it("should skip or not skip downloading data set with preserveOriginalLetterCase when file exists and overwrite is false", async () => {
             let response;
             let caughtError;
             const destination = dsFolder.toUpperCase() + ".txt";
@@ -870,7 +870,7 @@ describe("z/OS Files - Download", () => {
                     failedMembers: []
                 }
             }
-        }
+        };
 
         beforeEach(() => {
             listAllMembersSpy.mockClear();
@@ -1475,11 +1475,10 @@ describe("z/OS Files - Download", () => {
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
                 success: true,
-                commandResponse: (
+                commandResponse:
                     util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, downloaded, dsFolder) +
                     "\n" +
-                    util.format(ZosFilesMessages.memberDownloadSkipped.message, skipped)
-                ),
+                    util.format(ZosFilesMessages.memberDownloadSkipped.message, skipped),
                 apiResponse: {
                     ...listApiResponse,
                     downloadResult: {
@@ -1607,11 +1606,10 @@ describe("z/OS Files - Download", () => {
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
                 success: true,
-                commandResponse: (
+                commandResponse:
                     util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, downloaded, directory) +
                     "\n" +
-                    util.format(ZosFilesMessages.memberDownloadSkipped.message, skipped)
-                ),
+                    util.format(ZosFilesMessages.memberDownloadSkipped.message, skipped),
                 apiResponse: {
                     ...listApiResponse,
                     downloadResult: {
@@ -1640,7 +1638,7 @@ describe("z/OS Files - Download", () => {
                 return filePath.toString().includes("m1.txt");
             });
 
-            downloadDatasetSpy.mockImplementation(async (session, dsname, options) => {
+            downloadDatasetSpy.mockImplementation(async (session, dsname, _) => {
                 if (dsname.includes("M2")) {
                     throw new Error("Download failed for M2");
                 }
@@ -1934,7 +1932,9 @@ describe("z/OS Files - Download", () => {
                 }, {directory}),
                 apiResponse: [{ ...dataSetPS, status: "Data set downloaded" }]
             });
-            expect(Download.dataSet).toHaveBeenCalledWith(dummySession, dataSetPS.dsname, {file: "my/test/path/test.ps.data.set.xyz", overwrite: true});
+            expect(Download.dataSet).toHaveBeenCalledWith(dummySession, dataSetPS.dsname, {
+                file: "my/test/path/test.ps.data.set.xyz", overwrite: true
+            });
         });
 
         it("should download all datasets specifying a mixed case directory", async () => {
@@ -2518,10 +2518,9 @@ describe("z/OS Files - Download", () => {
             let caughtError;
 
             downloadAllMembersSpy.mockResolvedValue({
-                commandResponse: (
+                commandResponse:
                     util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, 1, dsFolder) + "\n" +
-                    util.format(ZosFilesMessages.memberDownloadSkipped.message, 1)
-                ),
+                    util.format(ZosFilesMessages.memberDownloadSkipped.message, 1),
                 apiResponse: {
                     items: [
                         { member: "MEMBER1" },
@@ -2557,10 +2556,9 @@ describe("z/OS Files - Download", () => {
                 }, { overwrite: false }),
                 apiResponse: [{
                     ...dataSetPO,
-                    status: (
+                    status:
                         util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, 1, dsFolder) + "\n" +
                         util.format(ZosFilesMessages.memberDownloadSkipped.message, 1) + "\nMembers:  MEMBER1, MEMBER2;"
-                    )
                 }]
             });
 
@@ -2608,10 +2606,9 @@ describe("z/OS Files - Download", () => {
                 }, { overwrite: true }),
                 apiResponse: [{
                     ...dataSetPO,
-                    status: (
+                    status:
                         util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, 2, dsFolder) +
                         "\nMembers:  MEMBER1, MEMBER2;"
-                    )
                 }]
             });
 
@@ -2637,10 +2634,9 @@ describe("z/OS Files - Download", () => {
                 if (dsname === "TEST.PO.DATA.SET") {
                     return {
                         success: true,
-                        commandResponse: (
+                        commandResponse:
                             util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, 1, dsFolder) + "\n" +
-                            util.format(ZosFilesMessages.memberDownloadSkipped.message, 1)
-                        ),
+                            util.format(ZosFilesMessages.memberDownloadSkipped.message, 1),
                         apiResponse: {
                             items: [{ member: "MEMBER1" }, { member: "MEMBER2" }],
                             downloadResult: { downloaded: 1, skipped: 1, failed: 0, total: 2, skippedMembers: ["member1"], failedMembers: [] }
@@ -2652,7 +2648,14 @@ describe("z/OS Files - Download", () => {
                         commandResponse: util.format(ZosFilesMessages.memberDownloadSkipped.message, 2),
                         apiResponse: {
                             items: [{ member: "MEMBER3" }, { member: "MEMBER4" }],
-                            downloadResult: { downloaded: 0, skipped: 2, failed: 0, total: 2, skippedMembers: ["member3", "member4"], failedMembers: [] }
+                            downloadResult: {
+                                downloaded: 0,
+                                skipped: 2,
+                                failed: 0,
+                                total: 2,
+                                skippedMembers: ["member3", "member4"],
+                                failedMembers: []
+                            }
                         }
                     };
                 }
@@ -2685,13 +2688,13 @@ describe("z/OS Files - Download", () => {
                 apiResponse: [
                     { ...dataSetPS, status: "Skipped: File already exists - test.ps.data.set.txt" },
                     { ...dataSetPS2, status: "Data set downloaded" },
-                    { ...dataSetPO, status: (
+                    { ...dataSetPO, status:
                         util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, 1, dsFolder) + "\n" +
                         util.format(ZosFilesMessages.memberDownloadSkipped.message, 1) + "\nMembers:  MEMBER1, MEMBER2;"
-                    )},
-                    { ...dataSetPO2, status: (
+                    },
+                    { ...dataSetPO2, status:
                         util.format(ZosFilesMessages.memberDownloadSkipped.message, 2)  + "\nMembers:  MEMBER3, MEMBER4;"
-                    )}
+                    }
                 ]
             });
 

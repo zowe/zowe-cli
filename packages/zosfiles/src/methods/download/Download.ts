@@ -329,7 +329,7 @@ export class Download {
                 });
             }
 
-            let downloadedCount = memberList.length - skippedMembers.length - failedMembers.length;
+            const downloadedCount = memberList.length - skippedMembers.length - failedMembers.length;
             let responseMessage = "";
             if (downloadedCount > 0) {
                 responseMessage = util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, downloadedCount, baseDir);
