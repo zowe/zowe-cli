@@ -109,6 +109,9 @@ Object {
     "message": "Failed to download the following data sets: 
 ",
   },
+  "datasetDownloadSkipped": Object {
+    "message": "Data set %s skipped as it already exists.",
+  },
   "datasetDownloadedSuccessfully": Object {
     "message": "Data set downloaded successfully.",
   },
@@ -189,9 +192,16 @@ Destination: %s",
   "maximumAllocationQuantityExceeded": Object {
     "message": "Maximum allocation quantity of 16777215 exceeded",
   },
+  "memberCountDownloadedWithDestination": Object {
+    "message": "%s member(s) downloaded successfully.
+Destination: %s",
+  },
   "memberDownloadFailed": Object {
     "message": "Failed to download the following members: 
 ",
+  },
+  "memberDownloadSkipped": Object {
+    "message": "%s member(s) skipped as they already exist.",
   },
   "memberDownloadedSuccessfully": Object {
     "message": "Member(s) downloaded successfully.",
@@ -325,6 +335,9 @@ Destination: %s",
   },
   "ussFileDeletedSuccessfully": Object {
     "message": "USS File or directory deleted successfully.",
+  },
+  "ussFileDownloadSkipped": Object {
+    "message": "USS file %s skipped as it already exists.",
   },
   "ussFileDownloadedSuccessfully": Object {
     "message": "USS file downloaded successfully.",

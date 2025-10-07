@@ -49,7 +49,8 @@ export const DataSetMatchingDefinition: ICommandDefinition = {
         DownloadOptions.extensionMap,
         DownloadOptions.maxConcurrentRequests,
         DownloadOptions.preserveOriginalLetterCase,
-        DownloadOptions.failFast
+        DownloadOptions.failFast,
+        DownloadOptions.overwrite
     ].sort((a, b) => a.name.localeCompare(b.name)),
     examples: [
         {

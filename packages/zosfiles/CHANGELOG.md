@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Fixed all the `Download` methods to now use the `overwrite` option. The default is no longer always overwriting existing files. Added new interfaces `IDownloadAmResult` and `IDownloadAmResponse` to provide detailed results when downloading all members of a PDS. [#2620](https://github.com/zowe/zowe-cli/pull/2620)
+
 ## `8.24.0`
 
 - Enhancement: Added an optional `searchExactName` option to the `ISearchOptions` interface to search the contents of one data set or PDS. [#2529](https://github.com/zowe/zowe-cli/pull/2529)
