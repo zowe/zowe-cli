@@ -113,7 +113,7 @@
     "yargs-parser": "^18.1.2"
   },
   "engines": {
-    "node": ">=14.0.0"
+    "node": ">=20.9.0"
   },
   "overrides": {
     "yamljs": {

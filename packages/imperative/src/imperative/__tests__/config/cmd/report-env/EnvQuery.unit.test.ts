@@ -335,21 +335,21 @@ describe("Tests for EnvQuery module", () => {
             const prof3 = "_prof_3";
             const readDirSyncSpy = jest.spyOn(fs, "readdirSync")
                 .mockReturnValueOnce([
-                    endvProfDir as unknown as fs.Dirent,
-                    tsoProfDir as unknown as fs.Dirent,
-                    zosmfProfDir as unknown as fs.Dirent
+                    endvProfDir as unknown as fs.Dirent<Buffer>,
+                    tsoProfDir as unknown as fs.Dirent<Buffer>,
+                    zosmfProfDir as unknown as fs.Dirent<Buffer>
                 ]).mockReturnValueOnce([
-                    endvProfDir + prof1 as unknown as fs.Dirent,
-                    endvProfDir + prof2 as unknown as fs.Dirent,
-                    endvProfDir + prof3 as unknown as fs.Dirent
+                    endvProfDir + prof1 as unknown as fs.Dirent<Buffer>,
+                    endvProfDir + prof2 as unknown as fs.Dirent<Buffer>,
+                    endvProfDir + prof3 as unknown as fs.Dirent<Buffer>
                 ]).mockReturnValueOnce([
-                    tsoProfDir + prof1 as unknown as fs.Dirent,
-                    tsoProfDir + prof2 as unknown as fs.Dirent,
-                    tsoProfDir + prof3 as unknown as fs.Dirent
+                    tsoProfDir + prof1 as unknown as fs.Dirent<Buffer>,
+                    tsoProfDir + prof2 as unknown as fs.Dirent<Buffer>,
+                    tsoProfDir + prof3 as unknown as fs.Dirent<Buffer>
                 ]).mockReturnValueOnce([
-                    zosmfProfDir + prof1 as unknown as fs.Dirent,
-                    zosmfProfDir + prof2 as unknown as fs.Dirent,
-                    zosmfProfDir + prof3 as unknown as fs.Dirent
+                    zosmfProfDir + prof1 as unknown as fs.Dirent<Buffer>,
+                    zosmfProfDir + prof2 as unknown as fs.Dirent<Buffer>,
+                    zosmfProfDir + prof3 as unknown as fs.Dirent<Buffer>
                 ]);
 
             const itemObj: IGetItemVal = await EnvQuery.getEnvItemVal(ItemId.ZOWE_CONFIG_TYPE);
