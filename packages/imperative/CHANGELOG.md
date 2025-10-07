@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## `8.27.2`
+
+- BugFix: Fixed an issue where carriage returns before new lines were unexpectedly preserved when uploading to a USS file or data set. [#2606](https://github.com/zowe/zowe-cli/issues/2606)
+
 ## `8.27.1`
 
 - BugFix: The Imperative framework adds the value in the `set-cookie` response header to the `_availableCreds` property in the `ISession` object. [#2605](https://github.com/zowe/zowe-cli/pull/2605)
