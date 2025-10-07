@@ -446,7 +446,7 @@ export class Copy {
                 const targetMemberList = await List.allMembers(targetSession, targetDataset,
                     { attributes: false, maxLength: 1, recall: "wait", start: targetMember });
                 if(targetMemberList.apiResponse.returnedRows > 0 &&
-                    targetMemberList.apiResponse.items.some((item) => item.member.toUpperCase() === targetMember.toUpperCase())){
+                    targetMemberList.apiResponse.items.some((item: { member: string }) => item.member.toUpperCase() === targetMember.toUpperCase())){
                     targetMemberFound = true;
                 }
             }
