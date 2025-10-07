@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS TSO SDK package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated minimum supported version of Node from 18 to 20. Added Node 24 support. [#2616](https://github.com/zowe/zowe-cli/pull/2616)
+
 ## `8.27.0`
 
 - BugFix: Added missing exports for the `IIssueTsoCmdOpts`, `IStartTsoAppParms`, and `ITsoAppCommunicationParms` interfaces. [#2596](https://github.com/zowe/zowe-cli/issues/2596)
