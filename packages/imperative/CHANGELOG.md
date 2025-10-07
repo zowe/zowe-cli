@@ -2,7 +2,7 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
-## Recent Changes
+## `8.27.2`
 
 - BugFix: Fixed an issue where carriage returns before new lines were unexpectedly preserved when uploading to a USS file or data set. [#2606](https://github.com/zowe/zowe-cli/issues/2606)
 
