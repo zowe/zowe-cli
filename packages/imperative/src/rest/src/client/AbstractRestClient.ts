@@ -399,13 +399,29 @@ export abstract class AbstractRestClient {
                 // if the user requested streaming write of data to the request,
                 // write the data chunk by chunk to the server
                 let bytesUploaded = 0;
-                let heldByte: string;
+                let heldByte: Buffer;
                 options.requestStream.on("data", (data: Buffer) => {
                     this.log.debug("Writing data chunk of length %d from requestStream to clientRequest", data.byteLength);
+
+                    // If we held back a CR from the previous chunk, prepend it to current chunk
                     if (this.mNormalizeRequestNewlines) {
+                        if (heldByte != null) {
+                            data = Buffer.concat([heldByte, data]);
+                            heldByte = undefined;
+                        }
+
                         this.log.debug("Normalizing new lines in request chunk to \\n");
-                        data = IO.processNewlines(data, this.lastByteReceivedUpload);
+                        data = IO.processNewlines(data, this.lastByteReceivedUpload, true);
+
+                        // If chunk ends with CR, hold it back until we see the next chunk
+                        // eslint-disable-next-line @typescript-eslint/no-magic-numbers
+                        if (data.byteLength > 0 && data[data.byteLength - 1] === 13) {
+                            heldByte = Buffer.from([data[data.byteLength - 1]]);
+                            data = data.subarray(0, data.byteLength - 1);
+                            this.log.debug("Holding back CR byte at chunk boundary");
+                        }
                     }
+
                     if (this.mTask != null) {
                         bytesUploaded += data.byteLength;
                         this.mTask.statusMessage = TextUtils.formatMessage("Uploading %d B", bytesUploaded);
@@ -415,8 +431,11 @@ export abstract class AbstractRestClient {
                             this.mTask.percentComplete++;
                         }
                     }
-                    clientRequest.write(data);
-                    this.lastByteReceivedUpload = data[data.byteLength - 1];
+
+                    if (data.byteLength > 0) {
+                        clientRequest.write(data);
+                        this.lastByteReceivedUpload = data[data.byteLength - 1];
+                    }
                 });
                 options.requestStream.on("error", (streamError: any) => {
                     this.log.error("Error encountered reading requestStream: " + streamError);
@@ -428,7 +447,7 @@ export abstract class AbstractRestClient {
                 });
                 options.requestStream.on("end", () => {
                     if (heldByte != null) {
-                        clientRequest.write(Buffer.from(heldByte));
+                        clientRequest.write(heldByte);
                         heldByte = undefined;
                     }
                     this.log.debug("Finished reading requestStream");

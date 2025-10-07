@@ -246,15 +246,15 @@ export class IO {
 
     /**
      * Process a string so that its line endings are operating system
-     * appropriate before you save it to disk
-     * (basically, if the user is on Windows, change  \n to \r\n)
+     * appropriate before saving to disk or uploading to target system.
+     * (basically, if the user is on Windows, change \n to \r\n during download and \r\n to \n during upload)
      * @static
      * @param {string} original - original input
      * @param {number} lastByte - last byte of previous input, if it is being processed in chunks
      * @returns {string} - input with removed newlines
      * @memberof IO
      */
-    public static processNewlines<T extends string | Buffer>(original: T, lastByte?: number): T {
+    public static processNewlines<T extends string | Buffer>(original: T, lastByte?: number, isUploading: boolean = false): T {
         ImperativeExpect.toNotBeNullOrUndefined(original, "Required parameter 'original' must not be null or undefined");
 
         if (os.platform() !== IO.OS_WIN32) {
@@ -264,8 +264,8 @@ export class IO {
         let processed: T;
 
         if (typeof original === "string") {
-            processed = original.replace(/([^\r])\n/g, "$1\r\n") as T;
-            if ((lastByte == null || lastByte !== "\r".charCodeAt(0)) && original.startsWith("\n")) {
+            processed = (isUploading ? original.replaceAll("\r\n", "\n") : original.replace(/([^\r])\n/g, "$1\r\n")) as T;
+            if ((lastByte == null || lastByte !== "\r".charCodeAt(0)) && original.startsWith("\n") && !isUploading) {
                 return ("\r" + processed) as T;
             }
             return processed;
@@ -274,6 +274,24 @@ export class IO {
             let prevByte = lastByte;
             for (let i = 0; i < original.length; i++) {
                 const currentByte = original[i];
+
+                if (isUploading) {
+                    // eslint-disable-next-line @typescript-eslint/no-magic-numbers
+                    if (currentByte === 13) {
+                        // eslint-disable-next-line @typescript-eslint/no-magic-numbers
+                        const nextByte = i + 1 < original.length ? original[i + 1] : undefined;
+                        // Skip the carriage return if it is followed by a line feed
+                        if (nextByte === 10) {
+                            prevByte = currentByte;
+                            continue;
+                        }
+                    }
+
+                    bufferList.push(currentByte);
+                    prevByte = currentByte;
+                    continue;
+                }
+
                 // Check if previous byte is not Carriage Return (13) and if current byte is Line Feed (10)
                 // eslint-disable-next-line @typescript-eslint/no-magic-numbers
                 if (currentByte === 10 && prevByte !== 13) {
