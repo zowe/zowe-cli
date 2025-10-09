@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Fixed an issue in the `Copy.dataSetCrossLPAR` function that caused members to be falsely detected in the target PDS, causing some copy operations to fail when the `overwrite` option is not set to `true`. [#2622](https://github.com/zowe/zowe-cli/issues/2622)
+
 ## `8.24.0`
 
 - Enhancement: Added an optional `searchExactName` option to the `ISearchOptions` interface to search the contents of one data set or PDS. [#2529](https://github.com/zowe/zowe-cli/pull/2529)
