@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
-## Recent Changes
+## `8.27.3`
 
 - BugFix: Fixed an issue in the `Copy.dataSetCrossLPAR` function that caused members to be falsely detected in the target PDS, causing some copy operations to fail when the `overwrite` option is `undefined` or `false`. [#2622](https://github.com/zowe/zowe-cli/issues/2622)
 
