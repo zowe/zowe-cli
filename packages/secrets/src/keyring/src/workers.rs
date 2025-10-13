@@ -26,6 +26,11 @@ pub struct FindPassword {
     pub service: String,
 }
 
+pub struct GetCertificate {
+    pub service: String,
+    pub account: String,
+}
+
 #[napi(object)]
 pub struct Credential {
     pub account: String,
@@ -148,6 +153,30 @@ impl Task for FindPassword {
     }
 
     fn reject(&mut self, _env: Env, err: Error) -> Result<Self::JsValue> {
+        Err(err)
+    }
+}
+
+#[napi]
+impl Task for GetCertificate {
+    type Output = Option<Vec<u8>>;
+    type JsValue = napi::JsUnknown;
+
+    fn compute(&mut self) -> napi::Result<Self::Output> {
+        match super::os::get_certificate(&self.service, &self.account) {
+            Ok(cert_opt) => Ok(cert_opt),
+            Err(err) => Err(napi::Error::from_reason(err.to_string())),
+        }
+    }
+
+    fn resolve(&mut self, env: napi::Env, output: Self::Output) -> napi::Result<Self::JsValue> {
+        Ok(match output {
+            Some(bytes) => env.create_buffer_with_data(bytes)?.into_unknown(),
+            None => env.get_null()?.into_unknown(),
+        })
+    }
+
+    fn reject(&mut self, _env: napi::Env, err: napi::Error) -> napi::Result<Self::JsValue> {
         Err(err)
     }
 }

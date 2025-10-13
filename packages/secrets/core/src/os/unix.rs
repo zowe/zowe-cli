@@ -219,3 +219,23 @@ pub fn find_credentials(
         }
     }
 }
+
+///
+/// Returns the certificate (decoded from base64) stored as the password for the given service/account.
+///
+/// - `service`: The service name that matches the certificate entry
+/// - `account`: The account/name for the certificate entry
+///
+/// Returns:
+/// - `Some(Vec<u8>)` with certificate bytes if found; `None` otherwise
+/// - A `KeyringError` if there were any issues interacting with the credential vault or decoding
+///
+pub fn get_certificate(service: &String, account: &String) -> Result<Option<Vec<u8>>, KeyringError> {
+    match get_password(service, account)? {
+        Some(b64) => match base64::decode(&b64) {
+            Ok(bytes) => Ok(Some(bytes)),
+            Err(err) => Err(KeyringError::Utf8(format!("Failed to decode base64 certificate: {}", err))),
+        },
+        None => Ok(None),
+    }
+}
