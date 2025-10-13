@@ -163,7 +163,7 @@ impl Task for GetCertificate {
     type JsValue = napi::JsUnknown;
 
     fn compute(&mut self) -> napi::Result<Self::Output> {
-        match super::os::get_certificate(&self.service, &self.account) {
+        match os::get_certificate(&self.service, &self.account) {
             Ok(cert_opt) => Ok(cert_opt),
             Err(err) => Err(napi::Error::from_reason(err.to_string())),
         }
