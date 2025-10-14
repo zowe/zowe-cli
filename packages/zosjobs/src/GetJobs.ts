@@ -13,6 +13,7 @@ import { AbstractSession, Headers, ImperativeError, ImperativeExpect, Logger, Re
 import { JobsConstants } from "./JobsConstants";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { ICommonJobParms, IGetJobsParms, IJob, IJobFile } from "./";
+import { IGetJclParms } from "./doc/input/IGetJclParms";
 
 /**
  * Class to handle obtaining of z/OS batch job information
@@ -331,11 +332,11 @@ export class GetJobs {
      * Get the JCL that was used to submit a job.
      * @static
      * @param {AbstractSession} session - z/OSMF connection info
-     * @param {ICommonJobParms} parms - parm object (see ICommonJobParms interface for details)
+     * @param {IGetJclParms} parms - parm object (see IGetJclParms interface for details)
      * @returns {Promise<string>} - promise that resolves to the JCL content
      * @memberof GetJobs
      */
-    public static async getJclCommon(session: AbstractSession, parms: ICommonJobParms) {
+    public static async getJclCommon(session: AbstractSession, parms: IGetJclParms) {
         Logger.getAppLogger().trace("GetJobs.getJclCommon()");
         ImperativeExpect.keysToBeDefinedAndNonBlank(parms, ["jobname", "jobid"]);
         let parameters: string = "/" + encodeURIComponent(parms.jobname) + "/" + encodeURIComponent(parms.jobid) +

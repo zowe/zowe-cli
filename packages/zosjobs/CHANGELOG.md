@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS jobs SDK package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Added `encoding` property to `GetJobs.getJclCommon` method for retrieving JCL with custom encoding. [Zowe Explorer #3826](https://github.com/zowe/zowe-explorer-vscode/issues/3826)
+
 ## `8.17.0`
 
 - BugFix: Fixed an issue where a numeric `encoding` value caused `DownloadJobs.downloadSpoolContentCommon` method to fail. [#2472](https://github.com/zowe/zowe-cli/pull/2472)
