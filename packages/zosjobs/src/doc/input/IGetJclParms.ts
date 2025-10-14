@@ -20,21 +20,21 @@ export interface IGetJclParms extends ICommonJobParms {
     /**
      * If you specify true for this field, the file will be downloaded in binary mode
      * @type {boolean}
-     * @memberof ICommonJobParms
+     * @memberof IGetJclParms
      */
     binary?: boolean;
 
     /**
      * If you specify true for this field, the file will be downloaded in record mode
      * @type {boolean}
-     * @memberof ICommonJobParms
+     * @memberof IGetJclParms
      */
     record?: boolean;
 
     /**
      * The codepage to use for translation from EBCDIC
      * @type {string}
-     * @memberof ICommonJobParms
+     * @memberof IGetJclParms
      */
     encoding?: string;
 }
