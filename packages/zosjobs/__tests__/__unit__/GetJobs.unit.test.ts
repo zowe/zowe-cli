@@ -423,7 +423,7 @@ describe("GetJobs tests", () => {
             const getJclMock = mockGetJobsStringData(GetJobsData.SAMPLE_IEFBR14_JCL);
             (ZosmfRestClient.getExpectString as any) = getJclMock;
 
-            const jcl = await GetJobs.getJclCommon(pretendSession, {jobname: "jobname", jobid: "jobid", encoding: "IBM-037"});
+            await GetJobs.getJclCommon(pretendSession, {jobname: "jobname", jobid: "jobid", encoding: "IBM-037"});
             expect(getJclMock).toHaveBeenCalled();
             expect(getJclMock.mock.calls[0][1]).toContain("?fileEncoding=IBM-037");
         });
@@ -432,7 +432,7 @@ describe("GetJobs tests", () => {
             const getJclMock = mockGetJobsStringData(GetJobsData.SAMPLE_IEFBR14_JCL);
             (ZosmfRestClient.getExpectString as any) = getJclMock;
 
-            const jcl = await GetJobs.getJclCommon(pretendSession, {jobname: "jobname", jobid: "jobid", encoding: 1047 as unknown as string});
+            await GetJobs.getJclCommon(pretendSession, {jobname: "jobname", jobid: "jobid", encoding: 1047 as unknown as string});
             expect(getJclMock).toHaveBeenCalled();
             expect(getJclMock.mock.calls[0][1]).toContain("?fileEncoding=1047");
         });
@@ -441,7 +441,7 @@ describe("GetJobs tests", () => {
             const getJclMock = mockGetJobsStringData(GetJobsData.SAMPLE_IEFBR14_JCL);
             (ZosmfRestClient.getExpectString as any) = getJclMock;
 
-            const jcl = await GetJobs.getJclCommon(pretendSession, {jobname: "jobname", jobid: "jobid", binary: true});
+            await GetJobs.getJclCommon(pretendSession, {jobname: "jobname", jobid: "jobid", binary: true});
             expect(getJclMock).toHaveBeenCalled();
             expect(getJclMock.mock.calls[0][1]).toContain("?mode=binary");
         });
@@ -450,7 +450,7 @@ describe("GetJobs tests", () => {
             const getJclMock = mockGetJobsStringData(GetJobsData.SAMPLE_IEFBR14_JCL);
             (ZosmfRestClient.getExpectString as any) = getJclMock;
 
-            const jcl = await GetJobs.getJclCommon(pretendSession, {jobname: "jobname", jobid: "jobid", record: true});
+            await GetJobs.getJclCommon(pretendSession, {jobname: "jobname", jobid: "jobid", record: true});
             expect(getJclMock).toHaveBeenCalled();
             expect(getJclMock.mock.calls[0][1]).toContain("?mode=record");
         });
