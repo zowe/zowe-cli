@@ -162,11 +162,13 @@ describe("Plugin Management Facility update handler", () => {
 
     it("update imperative-sample-plugin", async () => {
 
+        const localPackageRegistry = NpmRegistryUtils.getRegistry();
+
         // plugin definitions mocking file contents
         const fileJson: IPluginJson = {
             "imperative-sample-plugin": {
                 package: resolveVal,
-                location: packageRegistry,
+                location: localPackageRegistry,
                 version: "1.0.1"
             }
         };
@@ -183,7 +185,7 @@ describe("Plugin Management Facility update handler", () => {
 
         // Validate the call to login
         wasWriteFileSyncValid(PMFConstants.instance.PLUGIN_JSON, fileJson);
-        wasUpdateCallValid(resolveVal, packageRegistry);
+        wasUpdateCallValid(resolveVal, localPackageRegistry);
         wasUpdateSuccessful(params);
     });
 });
