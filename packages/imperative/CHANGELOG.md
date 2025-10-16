@@ -2,7 +2,7 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
-## Recent Changes
+## `5.27.11`
 
 - BugFix: Updated minimum supported version of Node from 18 to 20. Added Node 24 support. [#2617](https://github.com/zowe/zowe-cli/pull/2617)
 
