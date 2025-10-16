@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe Secrets SDK package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated minimum supported version of Node from 18 to 20. Added Node 24 support. [#2616](https://github.com/zowe/zowe-cli/pull/2616)
+
 ## `8.27.0`
 
 - BugFix: Updated the `adler` dependency to `adler2` for technical currency on MacOS. [#2600](https://github.com/zowe/zowe-cli/pull/2600)

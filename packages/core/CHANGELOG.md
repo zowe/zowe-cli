@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe core SDK package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated minimum supported version of Node from 18 to 20. Added Node 24 support. [#2616](https://github.com/zowe/zowe-cli/pull/2616)
+
 ## `8.22.0`
 
 - Enhancement: Updated the `Login.apimlLogin` API function to record that it is making a request for a token into the session associated with its REST request. [#2491](https://github.com/zowe/zowe-cli/pull/2491)
