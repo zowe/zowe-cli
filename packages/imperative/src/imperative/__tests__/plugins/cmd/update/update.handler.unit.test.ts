@@ -169,11 +169,14 @@ describe("Plugin Management Facility update handler", () => {
 
     test("update imperative-sample-plugin", async () => {
 
+        const actualNpmFunctions = jest.requireActual("../../../../src/plugins/utilities/NpmFunctions");
+        const localPackageRegistry = actualNpmFunctions.getRegistry().trim();
+
         // plugin definitions mocking file contents
         const fileJson: IPluginJson = {
             "imperative-sample-plugin": {
                 package: resolveVal,
-                registry: packageRegistry,
+                registry: localPackageRegistry,
                 version: "1.0.1"
             }
         };
@@ -189,9 +192,8 @@ describe("Plugin Management Facility update handler", () => {
         await handler.process(params as IHandlerParameters);
 
         // Validate the call to login
-        wasNpmLoginCallValid(packageRegistry);
         wasWriteFileSyncValid(PMFConstants.instance.PLUGIN_JSON, fileJson);
-        wasUpdateCallValid(resolveVal, packageRegistry);
+        wasUpdateCallValid(resolveVal, localPackageRegistry);
         expect(params.response.console.log).toHaveBeenCalledWith(
             `Update of the npm package(${resolveVal}) was successful.\n`);
     });
