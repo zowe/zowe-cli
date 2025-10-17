@@ -13,6 +13,7 @@ import { AbstractSession, Headers, ImperativeError, ImperativeExpect, Logger, Re
 import { JobsConstants } from "./JobsConstants";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { ICommonJobParms, IGetJobsParms, IJob, IJobFile } from "./";
+import { IGetJclParms } from "./doc/input/IGetJclParms";
 
 /**
  * Class to handle obtaining of z/OS batch job information
@@ -331,17 +332,27 @@ export class GetJobs {
      * Get the JCL that was used to submit a job.
      * @static
      * @param {AbstractSession} session - z/OSMF connection info
-     * @param {ICommonJobParms} parms - parm object (see ICommonJobParms interface for details)
+     * @param {IGetJclParms} parms - parm object (see IGetJclParms interface for details)
      * @returns {Promise<string>} - promise that resolves to the JCL content
      * @memberof GetJobs
      */
-    public static async getJclCommon(session: AbstractSession, parms: ICommonJobParms) {
+    public static async getJclCommon(session: AbstractSession, parms: IGetJclParms) {
         Logger.getAppLogger().trace("GetJobs.getJclCommon()");
         ImperativeExpect.keysToBeDefinedAndNonBlank(parms, ["jobname", "jobid"]);
-        const parameters: string = "/" + encodeURIComponent(parms.jobname) + "/" + encodeURIComponent(parms.jobid) +
+        let parameters: string = "/" + encodeURIComponent(parms.jobname) + "/" + encodeURIComponent(parms.jobid) +
             JobsConstants.RESOURCE_SPOOL_FILES + JobsConstants.RESOURCE_JCL_CONTENT + JobsConstants.RESOURCE_SPOOL_CONTENT;
+
+        if (parms.binary) {
+            parameters += "?mode=binary";
+        } else if (parms.record) {
+            parameters += "?mode=record";
+        } else if (parms.encoding != null && String(parms.encoding).trim()) {
+            parameters += "?fileEncoding=" + parms.encoding;
+        }
+
+        const headers = [Headers.TEXT_PLAIN_UTF8];
         Logger.getAppLogger().info("GetJobs.getJclCommon() parameters: " + parameters);
-        return ZosmfRestClient.getExpectString(session, JobsConstants.RESOURCE + parameters);
+        return ZosmfRestClient.getExpectString(session, JobsConstants.RESOURCE + parameters, headers);
     }
 
     /**

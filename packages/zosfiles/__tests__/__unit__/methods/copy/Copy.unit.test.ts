@@ -1199,21 +1199,17 @@ describe("Copy", () => {
                 it("should send a request", async () => {
                     let response;
 
-                    listDatasetSpy.mockImplementation(async (): Promise<any>  => {
-                        return {
-                            apiResponse: {
-                                returnedRows: 1,
-                                items: [dataSetPO]
-                            }
-                        };
-                    });
-                    listAllMembersSpy.mockImplementation(async (): Promise<any>  => {
-                        return {
-                            apiResponse: {
-                                returnedRows: 1
-                            }
-                        };
-                    });
+                    listDatasetSpy.mockResolvedValue({
+                        apiResponse: {
+                            returnedRows: 1,
+                            items: [dataSetPO]
+                        }
+                    } as any);
+                    listAllMembersSpy.mockResolvedValue({
+                        apiResponse: {
+                            returnedRows: 1
+                        }
+                    } as any);
                     try {
                         response = await Copy.dataSetCrossLPAR(
                             dummySession,
@@ -1239,22 +1235,18 @@ describe("Copy", () => {
                 });
 
                 it("should send a request - TRK and validate spacu", async () => {
-                    listDatasetSpy.mockImplementation(async (): Promise<any> => {
-                        return {
-                            apiResponse: {
-                                returnedRows: 1,
-                                items: [dataSetPO],
-                            }
-                        };
-                    });
+                    listDatasetSpy.mockResolvedValue({
+                        apiResponse: {
+                            returnedRows: 1,
+                            items: [dataSetPO],
+                        }
+                    } as any);
 
-                    listAllMembersSpy.mockImplementation(async (): Promise<any> => {
-                        return {
-                            apiResponse: {
-                                returnedRows: 1
-                            }
-                        };
-                    });
+                    listAllMembersSpy.mockResolvedValue({
+                        apiResponse: {
+                            returnedRows: 1
+                        }
+                    } as any);
 
                     const response = await Copy.dataSetCrossLPAR(
                         dummySession,
@@ -1278,23 +1270,18 @@ describe("Copy", () => {
                 });
 
                 it("should send a request - CYL and validate spacu", async () => {
-                    listDatasetSpy.mockImplementation(async (): Promise<any> => {
-                        return {
-                            apiResponse: {
-                                returnedRows: 1,
-                                items: [dataSetPOCYL],
-                            }
-                        };
-                    });
+                    listDatasetSpy.mockResolvedValue({
+                        apiResponse: {
+                            returnedRows: 1,
+                            items: [dataSetPOCYL],
+                        }
+                    } as any);
 
-                    listAllMembersSpy.mockImplementation(async (): Promise<any> => {
-                        return {
-                            apiResponse: {
-                                returnedRows: 1
-                            }
-                        };
-                    });
-
+                    listAllMembersSpy.mockResolvedValue({
+                        apiResponse: {
+                            returnedRows: 1
+                        }
+                    } as any);
 
                     const response = await Copy.dataSetCrossLPAR(
                         dummySession,
@@ -1321,27 +1308,23 @@ describe("Copy", () => {
                 it("should verify exact member name match when checking if target member exists", async () => {
                     const targetMemberName = "MEM1";
 
-                    listDatasetSpy.mockImplementation(async (): Promise<any> => {
-                        return {
-                            apiResponse: {
-                                returnedRows: 1,
-                                items: [dataSetPO]
-                            }
-                        };
-                    });
+                    listDatasetSpy.mockResolvedValue({
+                        apiResponse: {
+                            returnedRows: 1,
+                            items: [dataSetPO]
+                        }
+                    } as any);
 
-                    listAllMembersSpy.mockImplementation(async (session, dsName, options): Promise<any> => {
-                        return {
-                            apiResponse: {
-                                returnedRows: 3,
-                                items: [
-                                    { member: "MEM1" },      // Exact match
-                                    { member: "MEM10" },     // Partial matches
-                                    { member: "MEM11" }
-                                ]
-                            }
-                        };
-                    });
+                    listAllMembersSpy.mockResolvedValue({
+                        apiResponse: {
+                            returnedRows: 3,
+                            items: [
+                                { member: "MEM1" },      // Exact match
+                                { member: "MEM10" },     // Partial matches
+                                { member: "MEM11" }
+                            ]
+                        }
+                    } as any);
 
                     const response = await Copy.dataSetCrossLPAR(
                         dummySession,
@@ -1366,27 +1349,23 @@ describe("Copy", () => {
                 it("should detect when target member does not exist despite partial matches", async () => {
                     const targetMemberName = "MEM1";
 
-                    listDatasetSpy.mockImplementation(async (): Promise<any> => {
-                        return {
-                            apiResponse: {
-                                returnedRows: 1,
-                                items: [dataSetPO]
-                            }
-                        };
-                    });
+                    listDatasetSpy.mockResolvedValue({
+                        apiResponse: {
+                            returnedRows: 1,
+                            items: [dataSetPO]
+                        }
+                    } as any);
 
                     // Scenario where partial matches are present, but no exact match
-                    listAllMembersSpy.mockImplementation(async (session, dsName, options): Promise<any> => {
-                        return {
-                            apiResponse: {
-                                returnedRows: 2,
-                                items: [
-                                    { member: "MEM10" },
-                                    { member: "MEM11" }
-                                ]
-                            }
-                        };
-                    });
+                    listAllMembersSpy.mockResolvedValue({
+                        apiResponse: {
+                            returnedRows: 2,
+                            items: [
+                                { member: "MEM10" },
+                                { member: "MEM11" }
+                            ]
+                        }
+                    } as any);
 
                     const response = await Copy.dataSetCrossLPAR(
                         dummySession,
