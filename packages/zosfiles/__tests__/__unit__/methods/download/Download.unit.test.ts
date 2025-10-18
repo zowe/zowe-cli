@@ -10,7 +10,7 @@
 */
 
 import * as fs from "fs";
-import * as path from "path";
+import { posix, join, basename } from "path";
 import { ImperativeError, IO, Session } from "@zowe/imperative";
 import { IDownloadOptions, TransferMode, Utilities, ZosFilesAttributes, ZosFilesMessages } from "../../../../src";
 import { ZosmfHeaders, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
@@ -128,7 +128,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, `-(${volume})`, dsname);
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, `-(${volume})`, dsname);
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -164,7 +164,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, `-(${volume})`, dsname);
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, `-(${volume})`, dsname);
             IO.processNewlines(dsContent.toString());
 
             expect(caughtError).toBeUndefined();
@@ -199,7 +199,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -235,7 +235,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -273,7 +273,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -310,7 +310,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -346,7 +346,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -382,7 +382,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -416,7 +416,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -453,7 +453,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -490,7 +490,7 @@ describe("z/OS Files - Download", () => {
             } catch (e) {
                 caughtError = e;
             }
-            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, `-(${volume})`, dsname);
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, `-(${volume})`, dsname);
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -532,7 +532,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
 
             expect(response).toBeUndefined();
             expect(caughtError).toEqual(dummyError);
@@ -557,7 +557,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -588,7 +588,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname + "?test=true");
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname + "?test=true");
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -650,7 +650,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -718,7 +718,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -756,7 +756,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -803,7 +803,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
 
             expect(caughtError).toBeUndefined();
 
@@ -963,7 +963,7 @@ describe("z/OS Files - Download", () => {
             expect(downloadDatasetSpy).toHaveBeenCalledTimes(2);
             listApiResponse.items.forEach((mem) => {
                 expect(downloadDatasetSpy).toHaveBeenCalledWith(dummySession, `${dsname}(${mem.member})`, {
-                    file: path.posix.join(dsFolder, mem.member.toLowerCase() + ".txt")
+                    file: posix.join(dsFolder, mem.member.toLowerCase() + ".txt")
                 });
             });
         });
@@ -995,7 +995,7 @@ describe("z/OS Files - Download", () => {
             listApiResponse.items.forEach((mem) => {
                 expect(downloadDatasetSpy).toHaveBeenCalledWith(dummySession, `${dsname}(${mem.member})`, {
                     volume,
-                    file: path.posix.join(directory, mem.member.toLowerCase() + extension),
+                    file: posix.join(directory, mem.member.toLowerCase() + extension),
                     binary
                 });
             });
@@ -1028,7 +1028,7 @@ describe("z/OS Files - Download", () => {
             listApiResponse.items.forEach((mem) => {
                 expect(downloadDatasetSpy).toHaveBeenCalledWith(dummySession, `${dsname}(${mem.member})`, {
                     volume,
-                    file: path.posix.join(directory, mem.member.toLowerCase() + extension),
+                    file: posix.join(directory, mem.member.toLowerCase() + extension),
                     record
                 });
             });
@@ -1062,7 +1062,7 @@ describe("z/OS Files - Download", () => {
             listApiResponse.items.forEach((mem) => {
                 expect(downloadDatasetSpy).toHaveBeenCalledWith(dummySession, `${dsname}(${mem.member})`, {
                     volume,
-                    file: path.posix.join(directory, mem.member.toLowerCase() + extension),
+                    file: posix.join(directory, mem.member.toLowerCase() + extension),
                     binary,
                     encoding: undefined,
                     responseTimeout
@@ -1098,7 +1098,7 @@ describe("z/OS Files - Download", () => {
             listApiResponse.items.forEach((mem) => {
                 expect(downloadDatasetSpy).toHaveBeenCalledWith(dummySession, `${dsname}(${mem.member})`, {
                     volume,
-                    file: path.posix.join(directory, mem.member.toLowerCase() + extension),
+                    file: posix.join(directory, mem.member.toLowerCase() + extension),
                     record,
                     encoding: undefined,
                     responseTimeout
@@ -1133,7 +1133,7 @@ describe("z/OS Files - Download", () => {
             listApiResponse.items.forEach((mem) => {
                 expect(downloadDatasetSpy).toHaveBeenCalledWith(dummySession, `${dsname}(${mem.member})`, {
                     volume,
-                    file: path.posix.join(directory, mem.member.toLowerCase() + extension),
+                    file: posix.join(directory, mem.member.toLowerCase() + extension),
                     encoding
                 });
             });
@@ -1165,7 +1165,7 @@ describe("z/OS Files - Download", () => {
             listApiResponse.items.forEach((mem) => {
                 expect(downloadDatasetSpy).toHaveBeenCalledWith(dummySession, `${dsname}(${mem.member})`, {
                     volume,
-                    file: path.posix.join(directory, mem.member.toLowerCase() + extension)
+                    file: posix.join(directory, mem.member.toLowerCase() + extension)
                 });
             });
         });
@@ -1197,7 +1197,7 @@ describe("z/OS Files - Download", () => {
             listApiResponse.items.forEach((mem) => {
                 expect(downloadDatasetSpy).toHaveBeenCalledWith(dummySession, `${dsname}(${mem.member})`, {
                     volume,
-                    file: path.posix.join(directory, mem.member.toLowerCase() + extension),
+                    file: posix.join(directory, mem.member.toLowerCase() + extension),
                     binary
                 });
             });
@@ -1224,7 +1224,7 @@ describe("z/OS Files - Download", () => {
             expect(downloadDatasetSpy).toHaveBeenCalledTimes(2);
             listApiResponse.items.forEach((mem) => {
                 expect(downloadDatasetSpy).toHaveBeenCalledWith(dummySession, `${dsname}(${mem.member})`, {
-                    file: path.posix.join(dsFolder.toUpperCase(), mem.member + ".txt")
+                    file: posix.join(dsFolder.toUpperCase(), mem.member + ".txt")
                 });
             });
         });
@@ -1277,7 +1277,7 @@ describe("z/OS Files - Download", () => {
             expect(downloadDatasetSpy).toHaveBeenCalledTimes(1);
             const firstItem = listApiResponse.items[0];
             expect(downloadDatasetSpy).toHaveBeenCalledWith(dummySession, `${dsname}(${firstItem.member})`, {
-                file: path.posix.join(dsFolder, firstItem.member.toLowerCase() + ".txt")
+                file: posix.join(dsFolder, firstItem.member.toLowerCase() + ".txt")
             });
         });
 
@@ -1309,10 +1309,10 @@ describe("z/OS Files - Download", () => {
 
             expect(downloadDatasetSpy).toHaveBeenCalledTimes(2);
             expect(downloadDatasetSpy).toHaveBeenCalledWith(dummySession, `${dsname}(${firstItem.member})`, {
-                file: path.posix.join(dsFolder, firstItem.member.toLowerCase() + ".txt")
+                file: posix.join(dsFolder, firstItem.member.toLowerCase() + ".txt")
             });
             expect(downloadDatasetSpy).toHaveBeenCalledWith(dummySession, `${dsname}(${secondItem.member})`, {
-                file: path.posix.join(dsFolder, secondItem.member.toLowerCase() + ".txt")
+                file: posix.join(dsFolder, secondItem.member.toLowerCase() + ".txt")
             });
         });
 
@@ -1348,7 +1348,7 @@ describe("z/OS Files - Download", () => {
                 dummySession,
                 `${dsname}(M1)`,
                 {
-                    file: path.posix.join(directory, "m1.abc")
+                    file: posix.join(directory, "m1.abc")
                 }
             );
             // M2 should use "def" (no dot, should be normalized to ".def")
@@ -1356,7 +1356,7 @@ describe("z/OS Files - Download", () => {
                 dummySession,
                 `${dsname}(M2)`,
                 {
-                    file: path.posix.join(directory, "m2.def")
+                    file: posix.join(directory, "m2.def")
                 }
             );
         });
@@ -1393,7 +1393,7 @@ describe("z/OS Files - Download", () => {
                 dummySession,
                 `${dsname}(M1)`,
                 {
-                    file: path.posix.join(directory, "M1.UPPER")
+                    file: posix.join(directory, "M1.UPPER")
                 }
             );
             // M2 should use ".LOWER" (with dot, should be normalized)
@@ -1401,7 +1401,7 @@ describe("z/OS Files - Download", () => {
                 dummySession,
                 `${dsname}(M2)`,
                 {
-                    file: path.posix.join(directory, "M2.LOWER")
+                    file: posix.join(directory, "M2.LOWER")
                 }
             );
         });
@@ -1437,14 +1437,14 @@ describe("z/OS Files - Download", () => {
                 dummySession,
                 `${dsname}(M1)`,
                 {
-                    file: path.posix.join(directory, "m1.txt")
+                    file: posix.join(directory, "m1.txt")
                 }
             );
             expect(downloadDatasetSpy).toHaveBeenCalledWith(
                 dummySession,
                 `${dsname}(M2)`,
                 {
-                    file: path.posix.join(directory, "m2.txt")
+                    file: posix.join(directory, "m2.txt")
                 }
             );
         });
@@ -1487,7 +1487,7 @@ describe("z/OS Files - Download", () => {
 
             expect(downloadDatasetSpy).toHaveBeenCalledTimes(1);
             expect(downloadDatasetSpy).toHaveBeenCalledWith(dummySession, `${dsname}(M2)`, {
-                file: path.posix.join(dsFolder, "m2.txt"),
+                file: posix.join(dsFolder, "m2.txt"),
                 overwrite: false
             });
         });
@@ -1512,7 +1512,7 @@ describe("z/OS Files - Download", () => {
             expect(downloadDatasetSpy).toHaveBeenCalledTimes(2);
             listApiResponse.items.forEach((mem) => {
                 expect(downloadDatasetSpy).toHaveBeenCalledWith(dummySession, `${dsname}(${mem.member})`, {
-                    file: path.posix.join(dsFolder, mem.member.toLowerCase() + ".txt"),
+                    file: posix.join(dsFolder, mem.member.toLowerCase() + ".txt"),
                     overwrite: true
                 });
             });
@@ -1538,7 +1538,7 @@ describe("z/OS Files - Download", () => {
             expect(downloadDatasetSpy).toHaveBeenCalledTimes(2);
             listApiResponse.items.forEach((mem) => {
                 expect(downloadDatasetSpy).toHaveBeenCalledWith(dummySession, `${dsname}(${mem.member})`, {
-                    file: path.posix.join(dsFolder, mem.member.toLowerCase() + ".txt"),
+                    file: posix.join(dsFolder, mem.member.toLowerCase() + ".txt"),
                     overwrite: false
                 });
             });
@@ -1618,7 +1618,7 @@ describe("z/OS Files - Download", () => {
 
             expect(downloadDatasetSpy).toHaveBeenCalledTimes(1);
             expect(downloadDatasetSpy).toHaveBeenCalledWith(dummySession, `${dsname}(M1)`, {
-                file: path.posix.join(directory, "m1.txt"),
+                file: posix.join(directory, "m1.txt"),
                 overwrite: false
             });
         });
@@ -1650,7 +1650,7 @@ describe("z/OS Files - Download", () => {
 
             expect(downloadDatasetSpy).toHaveBeenCalledTimes(1);
             expect(downloadDatasetSpy).toHaveBeenCalledWith(dummySession, `${dsname}(M2)`, {
-                file: path.posix.join(dsFolder, "m2.txt"),
+                file: posix.join(dsFolder, "m2.txt"),
                 overwrite: false
             });
         });
@@ -2894,7 +2894,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -2928,7 +2928,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -2966,7 +2966,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -3004,7 +3004,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -3045,7 +3045,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -3081,7 +3081,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -3114,7 +3114,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -3150,7 +3150,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -3184,7 +3184,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -3221,7 +3221,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -3263,7 +3263,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -3329,7 +3329,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -3397,7 +3397,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -3434,7 +3434,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -3518,7 +3518,7 @@ describe("z/OS Files - Download", () => {
 
             expect(downloadUssFileSpy).toHaveBeenCalledTimes(1);
             expect(downloadUssFileSpy).toHaveBeenCalledWith(dummySession, ussDirName + "/file1", {
-                file: path.join(process.cwd(), "file1")
+                file: join(process.cwd(), "file1")
             });
         });
 
@@ -3550,7 +3550,7 @@ describe("z/OS Files - Download", () => {
             expect(caughtError.causeErrors).toEqual(dummyError);
 
             expect(mkdirPromiseSpy).toHaveBeenCalledTimes(1);
-            expect(mkdirPromiseSpy).toHaveBeenCalledWith(path.join(process.cwd(), "folder1"), { recursive: true });
+            expect(mkdirPromiseSpy).toHaveBeenCalledWith(join(process.cwd(), "folder1"), { recursive: true });
         });
 
         it("should download USS directory with download and list options", async () => {
@@ -3586,7 +3586,7 @@ describe("z/OS Files - Download", () => {
             expect(List.fileList).toHaveBeenCalledWith(dummySession, ussDirName,
                 { name: "*", ...listOptions });
             expect(Download.ussFile).toHaveBeenCalledWith(dummySession, ussDirName + "/file1",
-                { file: path.join(process.cwd(), "file1"), ...fileOptions });
+                { file: join(process.cwd(), "file1"), ...fileOptions });
         });
 
         it("should download USS directory when failFast is false", async () => {
@@ -3659,7 +3659,7 @@ describe("z/OS Files - Download", () => {
                 apiResponse: [fakeFileResponse]
             });
             expect(Download.ussFile).toHaveBeenCalledWith(dummySession, ussDirName + "/file1",
-                { file: path.join(process.cwd(), "file1"), maxConcurrentRequests: 0 });
+                { file: join(process.cwd(), "file1"), maxConcurrentRequests: 0 });
         });
 
         it("should download USS directory excluding hidden files", async () => {
@@ -3784,7 +3784,7 @@ describe("z/OS Files - Download", () => {
             let response;
             let caughtError;
 
-            existsSyncSpy.mockImplementation((filepath) => path.basename(filepath.toString()) === "file2" );
+            existsSyncSpy.mockImplementation((filepath) => basename(filepath.toString()) === "file2" );
             listFileListSpy.mockResolvedValueOnce({
                 apiResponse: {
                     items: [
@@ -3817,7 +3817,7 @@ describe("z/OS Files - Download", () => {
             let response;
             let caughtError;
 
-            existsSyncSpy.mockImplementation((filepath) => path.basename(filepath.toString()) === "file2" );
+            existsSyncSpy.mockImplementation((filepath) => basename(filepath.toString()) === "file2" );
             listFileListSpy.mockResolvedValueOnce({
                 apiResponse: {
                     items: [
