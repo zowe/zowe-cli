@@ -1,6 +1,6 @@
 {
   "name": "@zowe/zos-tso-for-zowe-sdk",
-  "version": "8.27.1",
+  "version": "8.27.4",
   "description": "Zowe SDK to interact with TSO on z/OS",
   "author": "Zowe",
   "license": "EPL-2.0",
@@ -45,18 +45,18 @@
     "prepack": "node ../../scripts/prepareLicenses.js"
   },
   "dependencies": {
-    "@zowe/zosmf-for-zowe-sdk": "8.27.1"
+    "@zowe/zosmf-for-zowe-sdk": "8.27.4"
   },
   "devDependencies": {
-    "@zowe/cli-test-utils": "8.27.1",
-    "@zowe/core-for-zowe-sdk": "8.27.1",
-    "@zowe/imperative": "8.27.1"
+    "@zowe/cli-test-utils": "8.27.4",
+    "@zowe/core-for-zowe-sdk": "8.27.4",
+    "@zowe/imperative": "8.27.4"
   },
   "peerDependencies": {
     "@zowe/core-for-zowe-sdk": "^8.0.0",
     "@zowe/imperative": "^8.0.0"
   },
   "engines": {
-    "node": ">=18.12.0"
+    "node": ">=20.9.0"
   }
 }

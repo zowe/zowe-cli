@@ -443,9 +443,10 @@ export class Copy {
             * If this is a PDS and it exists, verify if the member also exists.
             */
             if(targetMember != undefined && targetFound == true){
-                const TargetMemberList = await List.allMembers(targetSession, targetDataset,
-                    { attributes: true, maxLength: 1, recall: "wait", start: targetMember });
-                if(TargetMemberList.apiResponse.returnedRows > 0){
+                const targetMemberList = await List.allMembers(targetSession, targetDataset,
+                    { attributes: false, maxLength: 1, recall: "wait", start: targetMember });
+                if(targetMemberList.apiResponse?.returnedRows > 0 &&
+                    targetMemberList.apiResponse.items?.some((item: { member: string }) => item.member.toUpperCase() === targetMember.toUpperCase())){
                     targetMemberFound = true;
                 }
             }

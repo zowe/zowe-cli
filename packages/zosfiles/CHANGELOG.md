@@ -6,6 +6,14 @@ All notable changes to the Zowe z/OS files SDK package will be documented in thi
 
 - BugFix: Fixed all the `Download` methods to now use the `overwrite` option. The default is no longer always overwriting existing files. Added new interfaces `IDownloadAmResult` and `IDownloadAmResponse` to provide detailed results when downloading all members of a PDS. [#2620](https://github.com/zowe/zowe-cli/pull/2620)
 
+## `8.27.4`
+
+- BugFix: Updated minimum supported version of Node from 18 to 20. Added Node 24 support. [#2616](https://github.com/zowe/zowe-cli/pull/2616)
+
+## `8.27.3`
+
+- BugFix: Fixed an issue in the `Copy.dataSetCrossLPAR` function that caused members to be falsely detected in the target PDS, causing some copy operations to fail when the `overwrite` option is `undefined` or `false`. [#2622](https://github.com/zowe/zowe-cli/issues/2622)
+
 ## `8.24.0`
 
 - Enhancement: Added an optional `searchExactName` option to the `ISearchOptions` interface to search the contents of one data set or PDS. [#2529](https://github.com/zowe/zowe-cli/pull/2529)
