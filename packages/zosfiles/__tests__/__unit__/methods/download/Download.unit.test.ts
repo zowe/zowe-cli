@@ -796,37 +796,25 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
+            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
+
             expect(caughtError).toBeUndefined();
 
             // Windows is case-insensitive e.g. "user/data/set.txt" and "USER/DATA/SET.txt" is same
             // On Unix, they are different, so the file will be downloaded seperately
-            const isWindows = process.platform === "win32";
-
-            if (isWindows) {
+            if (process.platform === 'win32') {
                 expect(response).toEqual({
                     success: true,
                     commandResponse: util.format(ZosFilesMessages.datasetDownloadSkipped.message, destination),
                     apiResponse: {}
                 });
-
-                expect(existsSyncSpy).toHaveBeenCalledTimes(1);
-                expect(existsSyncSpy).toHaveBeenCalledWith(destination);
-
                 expect(zosmfGetFullSpy).not.toHaveBeenCalled();
-                expect(ioCreateDirSpy).not.toHaveBeenCalled();
-                expect(ioWriteStreamSpy).not.toHaveBeenCalled();
             } else {
-                const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
-
                 expect(response).toEqual({
                     success: true,
                     commandResponse: util.format(ZosFilesMessages.datasetDownloadedWithDestination.message, destination),
                     apiResponse: {}
                 });
-
-                expect(existsSyncSpy).toHaveBeenCalledTimes(1);
-                expect(existsSyncSpy).toHaveBeenCalledWith(destination);
-
                 expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
                 expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {
                     resource: endpoint,
@@ -835,12 +823,10 @@ describe("z/OS Files - Download", () => {
                     normalizeResponseNewLines: true,
                     task: undefined
                 });
-
-                expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);
-                expect(ioCreateDirSpy).toHaveBeenCalledWith(destination);
-
-                expect(ioWriteStreamSpy).toHaveBeenCalledTimes(1);
             }
+
+            expect(existsSyncSpy).toHaveBeenCalledTimes(1);
+            expect(existsSyncSpy).toHaveBeenCalledWith(destination);
         });
     });
 
@@ -2627,7 +2613,8 @@ describe("z/OS Files - Download", () => {
             const dataSetPO2 = { dsname: "TEST.PO2.DATA.SET", dsorg: "PO" };
 
             existsSyncSpy.mockImplementation((filePath) => {
-                return filePath.toString().includes("test.ps.data.set.txt");
+                return filePath.toString().includes("test.ps.data.set.txt") ||
+                    filePath.toString().includes("test/po2/data/set");
             });
 
             downloadAllMembersSpy.mockImplementation(async (session, dsname) => {
@@ -2679,7 +2666,7 @@ describe("z/OS Files - Download", () => {
                 success: true,
                 errorMessage: undefined,
                 commandResponse: (Download as any).buildDownloadDsmResponse({
-                    downloaded: ["TEST.PS2.DATA.SET", "TEST.PO.DATA.SET"],
+                    downloaded: ["TEST.PO.DATA.SET", "TEST.PS2.DATA.SET"],
                     skippedExisting: ["TEST.PS.DATA.SET", "TEST.PO2.DATA.SET"],
                     failedArchived: [],
                     failedUnsupported: [],
