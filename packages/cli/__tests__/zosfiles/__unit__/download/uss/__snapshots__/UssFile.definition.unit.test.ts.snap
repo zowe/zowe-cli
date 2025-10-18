@@ -38,6 +38,14 @@ Array [
     "name": "file",
     "type": "string",
   },
+  Object {
+    "aliases": Array [
+      "ow",
+    ],
+    "description": "Overwrite files that already exist in your local environment.",
+    "name": "overwrite",
+    "type": "boolean",
+  },
 ]
 `;
 
