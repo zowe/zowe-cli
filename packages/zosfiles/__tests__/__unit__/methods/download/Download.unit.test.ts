@@ -788,7 +788,14 @@ describe("z/OS Files - Download", () => {
             let caughtError;
             const destination = dsFolder.toUpperCase() + ".txt";
 
-            existsSyncSpy.mockReturnValue(true);
+            existsSyncSpy.mockImplementation((filePath) => {
+                if (process.platform === 'win32') {
+                    return filePath.toString().toLowerCase().includes("user/data/set.txt");
+                } else {
+                    // On Unix, only return true if the exact case matches
+                    return filePath.toString().includes(destination);
+                }
+            });
 
             try {
                 response = await Download.dataSet(dummySession, dsname, { preserveOriginalLetterCase: true, overwrite: false });
