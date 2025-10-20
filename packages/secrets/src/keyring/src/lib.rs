@@ -1,4 +1,5 @@
 use napi::bindgen_prelude::AsyncTask;
+use napi::{Env, JsUnknown};
 use napi_derive::napi;
 use workers::{DeletePassword, FindCredentials, FindPassword, GetPassword, SetPassword};
 use workers::GetCertificate;
@@ -30,6 +31,22 @@ fn get_password(service: String, account: String) -> AsyncTask<GetPassword> {
 #[napi(ts_return_type = "Promise<Buffer | null>")]
 fn get_certificate(service: String, account: String) -> AsyncTask<GetCertificate> {
     AsyncTask::new(GetCertificate { service, account })
+}
+
+// Synchronous wrapper for consumers that need a blocking call.
+// Returns Buffer | null synchronously.
+#[napi(ts_return_type = "Buffer | null")]
+fn get_certificate_sync(env: Env, service: String, account: String) -> napi::Result<JsUnknown> {
+    // call into secrets_core OS layer directly
+    match secrets_core::os::get_certificate(&service, &account) {
+        Ok(Some(bytes)) => {
+            // create a buffer from Vec<u8>
+            let buf = env.create_buffer_with_data(bytes)?.into_unknown();
+            Ok(buf)
+        }
+        Ok(None) => Ok(env.get_null()?.into_unknown()),
+        Err(err) => Err(napi::Error::from_reason(err.to_string())),
+    }
 }
 
 #[napi(ts_return_type = "Promise<void>")]

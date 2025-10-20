@@ -522,7 +522,13 @@ export class ProfileInfo {
         }
 
         // resolve the choices among various session config properties
-        ConnectionPropsForSessCfg.resolveSessCfgProps(sessCfg, cmdArgs, connOpts);
+        // Note: resolveSessCfgProps is async (may prompt or auto-store). To keep
+        // createSession synchronous (non-breaking API) we intentionally do not
+        // await it here. Callers that need the resolved/possibly-prompted
+        // properties should call the async APIs directly.
+        // Fire-and-forget the resolver so background work (prompts) can proceed
+        // without changing the synchronous contract.
+        void ConnectionPropsForSessCfg.resolveSessCfgProps(sessCfg, cmdArgs, connOpts);
 
         return new Session(sessCfg);
     }
@@ -1024,6 +1030,7 @@ export class ProfileInfo {
         }
 
         // Cache all creds that were placed into the session config.
+        // Use the synchronous variant so callers remain synchronous.
         AuthOrder.addCredsToSession(sessCfg);
         return sessCfg;
     }

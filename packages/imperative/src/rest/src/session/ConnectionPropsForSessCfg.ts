@@ -108,7 +108,7 @@ export class ConnectionPropsForSessCfg {
         const connOptsToUse = { ...connOpts };
 
         // resolve all values between sessCfg and cmdArgs using option choices
-        ConnectionPropsForSessCfg.resolveSessCfgProps(
+        await ConnectionPropsForSessCfg.resolveSessCfgProps(
             sessCfgToUse, cmdArgs, connOptsToUse
         );
 
@@ -238,7 +238,7 @@ export class ConnectionPropsForSessCfg {
 
         // We previously added creds, but this function may have added more creds
         // after prompting. So, we add available creds again.
-        AuthOrder.addCredsToSession(sessCfgToUse, cmdArgs);
+        await AuthOrder.addCredsToSession(sessCfgToUse, cmdArgs);
         return sessCfgToUse;
     }
 
@@ -270,7 +270,7 @@ export class ConnectionPropsForSessCfg {
      *      ConnectionPropsForSessCfg.resolveSessCfgProps(sessCfg, cmdArgs);
      *      sessionToUse = new Session(sessCfg);
      */
-    public static resolveSessCfgProps<SessCfgType extends ISession>(
+    public static async resolveSessCfgProps<SessCfgType extends ISession>(
         sessCfg: SessCfgType,
         cmdArgs: ICommandArguments = { $0: "", _: [] },
         connOpts: IOptionsForAddConnProps <SessCfgType> = {}
@@ -314,7 +314,7 @@ export class ConnectionPropsForSessCfg {
         }
 
         // record all of the currently available credential information into the session
-        AuthOrder.addCredsToSession(sessCfg, cmdArgs);
+        await AuthOrder.addCredsToSession(sessCfg, cmdArgs);
 
         // When our caller only supports limited authTypes, limit the authTypes in the session
         if (connOpts.supportedAuthTypes) {
