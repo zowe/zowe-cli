@@ -142,10 +142,12 @@ export class ConnectionPropsForSessCfg {
                 }
             }
         }
-        // resolveSessCfgProps previously added creds to our session, but
-        // our caller's overrides may have changed the available creds,
-        // so again add the creds that are currently available.
-        AuthOrder.addCredsToSession(sessCfgToUse, cmdArgs);
+    // resolveSessCfgProps previously added creds to our session, but
+    // our caller's overrides may have changed the available creds,
+    // so again add the creds that are currently available.
+    // Use the async variant because this function is async and callers
+    // may expect certificate lookups to complete before continuing.
+    await AuthOrder.addCredsToSessionAsync(sessCfgToUse, cmdArgs);
 
         // Set default values on propsToPromptFor
         if(connOpts.propsToPromptFor?.length > 0) {
@@ -236,9 +238,9 @@ export class ConnectionPropsForSessCfg {
             }
         }
 
-        // We previously added creds, but this function may have added more creds
-        // after prompting. So, we add available creds again.
-        await AuthOrder.addCredsToSession(sessCfgToUse, cmdArgs);
+    // We previously added creds, but this function may have added more creds
+    // after prompting. So, we add available creds again.
+    await AuthOrder.addCredsToSessionAsync(sessCfgToUse, cmdArgs);
         return sessCfgToUse;
     }
 

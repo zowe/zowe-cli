@@ -746,6 +746,33 @@ export class ProfileInfo {
         return mergedArgs;
     }
 
+    /**
+     * Async variant of mergeArgsForProfile which will await loading secure values
+     * from the configured secure vault/credential manager. Keeps the synchronous
+     * API intact while providing an async implementation for callers that need it.
+     */
+    public async mergeArgsForProfileAsync(
+        profile: IProfAttrs,
+        mergeOpts: IProfMergeArgOpts = { getSecureVals: false }
+    ): Promise<IProfMergedArg> {
+        const mergedArgs = this.mergeArgsForProfile(profile, { ...mergeOpts, getSecureVals: false });
+
+        if (mergeOpts.getSecureVals) {
+            // Load secure values asynchronously where applicable
+            for (const nextArg of mergedArgs.knownArgs) {
+                if (nextArg.secure) {
+                    try {
+                        nextArg.argValue = await this.loadSecureArgAsync(nextArg);
+                    } catch (_err) {
+                        nextArg.argValue = undefined;
+                    }
+                }
+            }
+        }
+
+        return mergedArgs;
+    }
+
     // _______________________________________________________________________
     /**
      * Merge all of the available values for arguments defined for the
@@ -985,6 +1012,45 @@ export class ProfileInfo {
         return argValue;
     }
 
+    /**
+     * Async variant to load secure argument values. Uses the same lookup logic
+     * as loadSecureArg but returns a Promise to allow async credential manager
+     * integrations.
+     */
+    public async loadSecureArgAsync(arg: IProfArgAttrs): Promise<any> {
+        this.ensureReadFromDisk();
+        let argValue;
+
+        switch (arg.argLoc.locType) {
+            case ProfLocType.TEAM_CONFIG:
+                if (arg.argLoc.osLoc?.length > 0 && arg.argLoc.jsonLoc != null) {
+                    for (const layer of this.mLoadedConfig.mLayers) {
+                        if (layer.path === arg.argLoc.osLoc[0]) {
+                            argValue = lodash.get(layer.properties, arg.argLoc.jsonLoc);
+                            break;
+                        }
+                    }
+                }
+                break;
+            default:
+                argValue = arg.argValue;
+        }
+
+        if (argValue === undefined) {
+            throw new ProfInfoErr({
+                errorCode: ProfInfoErr.UNKNOWN_PROP_LOCATION,
+                msg: `Failed to locate the property ${arg.argName}`
+            });
+        }
+
+        // If the stored value is a Promise (e.g., from a secure loader), await it
+        if (argValue && typeof (argValue as any).then === "function") {
+            return await (argValue as any);
+        }
+
+        return argValue;
+    }
+
     // _______________________________________________________________________
     /**
      * Initialize a session configuration object with the arguments
@@ -1005,7 +1071,9 @@ export class ProfileInfo {
         // the set of names of arguments in IProfArgAttrs used in ISession
         const profArgNames = argNames ?? [
             "host", "port", "user", "password", "rejectUnauthorized",
-            "protocol", "basePath", "tokenType", "tokenValue"
+            "protocol", "basePath", "tokenType", "tokenValue",
+            // certificate related args: map cert files and explicit credential-manager account names
+            "certFile", "certKeyFile", "certAccount", "certKeyAccount"
         ];
 
         for (const profArgNm of profArgNames) {

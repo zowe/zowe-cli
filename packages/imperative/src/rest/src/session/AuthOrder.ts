@@ -110,6 +110,23 @@ export class AuthOrder {
         AuthOrder.putTopAuthInSession(sessCfg);
     }
 
+    /**
+     * Async variant of addCredsToSession. Use this when the caller is async
+     * and wants certificate/credential lookups that may perform async I/O.
+     * This preserves the existing synchronous public API while allowing
+     * internal async callsites to await this variant.
+     */
+    public static async addCredsToSessionAsync<SessCfgType extends ISession>(
+        sessCfg: SessCfgType,
+        cmdArgs: ICommandArguments = { "$0": "NameNotUsed", "_": [] }
+    ): Promise<void> {
+        // Use the async cache so callers that await this get fully populated cache
+        await AuthOrder.cacheCredsAndAuthOrder(sessCfg, cmdArgs);
+
+        // Ensure the top auth is placed into the session
+        AuthOrder.putTopAuthInSession(sessCfg);
+    }
+
     // ***********************************************************************
     /**
      * Cache the default authentication order to be used when the user has NOT
@@ -827,28 +844,45 @@ export class AuthOrder {
             // Attempt to load certificate bytes from credential manager when cert/certKey not provided directly.
             try {
                 if (CredentialManagerFactory.initialized) {
-                    // call into credential manager helper we added on DefaultCredentialManager
-                    // Note: this is synchronous path but loadCertificate is async, so we must handle promise.
-                    const acct = (sessCfg as any).account ?? (sessCfg as any).profile ?? "";
-                    // Try to load certificate for known account names: session 'profile' or 'account' may not exist.
-                    // We will try using the default profile/account name if present.
-                    try {
-                        const certBuf = await (CredentialManagerFactory.manager as any).loadCertificate(acct, true);
-                        if (certBuf) {
-                            // Write to temp file (secure mode) and store path in cache so rest client can read it as file path
-                            const tmpDir = os.tmpdir();
-                            const suffix = sessCredName === AuthOrder.SESS_CERT_NAME ? "-cert.pem" : "-key.pem";
-                            const tmpPath = path.join(tmpDir, `zowe-${Date.now()}${Math.random().toString(36).substring(2,8)}${suffix}`);
-                            // write with secure permissions 0o600
-                            fs.writeFileSync(tmpPath, certBuf, { mode: 0o600 });
-                            sessCfg._authCache.availableCreds[sessCredName] = tmpPath;
-                            // track tmp files for cleanup if needed
-                            const authCacheAny: any = sessCfg._authCache;
-                            if (!authCacheAny._tempFiles) authCacheAny._tempFiles = [];
-                            authCacheAny._tempFiles.push(tmpPath);
+                    // Build candidate account names, preferring explicit overrides on the session
+                    const acctCandidates: string[] = [];
+                    if (sessCredName === AuthOrder.SESS_CERT_NAME) {
+                        if (typeof (sessCfg as any).certAccount === "string" && (sessCfg as any).certAccount) {
+                            acctCandidates.push((sessCfg as any).certAccount);
                         }
-                    } catch (_err) {
-                        // ignore errors and continue
+                    } else {
+                        if (typeof (sessCfg as any).certKeyAccount === "string" && (sessCfg as any).certKeyAccount) {
+                            acctCandidates.push((sessCfg as any).certKeyAccount);
+                        }
+                    }
+                    if (typeof (sessCfg as any).profile === "string" && (sessCfg as any).profile) {
+                        acctCandidates.push((sessCfg as any).profile);
+                    }
+                    if (typeof (sessCfg as any).account === "string" && (sessCfg as any).account) {
+                        acctCandidates.push((sessCfg as any).account);
+                    }
+
+                    // Try candidates in order until we find certificate bytes
+                    for (const acct of acctCandidates) {
+                        try {
+                            const certBuf = await (CredentialManagerFactory.manager as any).loadCertificate(acct, true);
+                            if (certBuf) {
+                                // Write to temp file (secure mode) and store path in cache so rest client can read it as file path
+                                const tmpDir = os.tmpdir();
+                                const suffix = sessCredName === AuthOrder.SESS_CERT_NAME ? "-cert.pem" : "-key.pem";
+                                const tmpPath = path.join(tmpDir, `zowe-${Date.now()}${Math.random().toString(36).substring(2,8)}${suffix}`);
+                                // write with secure permissions 0o600
+                                fs.writeFileSync(tmpPath, certBuf, { mode: 0o600 });
+                                sessCfg._authCache.availableCreds[sessCredName] = tmpPath;
+                                // track tmp files for cleanup if needed
+                                const authCacheAny: any = sessCfg._authCache;
+                                if (!authCacheAny._tempFiles) authCacheAny._tempFiles = [];
+                                authCacheAny._tempFiles.push(tmpPath);
+                                break;
+                            }
+                        } catch (_err) {
+                            // ignore and try next candidate
+                        }
                     }
                 }
             } catch (_err) {
@@ -872,27 +906,46 @@ export class AuthOrder {
             // Attempt to load certificate bytes from credential manager when cert/certKey not provided directly.
             try {
                 if (CredentialManagerFactory.initialized) {
-                    const acct = (sessCfg as any).account ?? (sessCfg as any).profile ?? "";
-                    try {
-                        const managerAny: any = CredentialManagerFactory.manager;
-                        // Prefer sync loader
-                        if (managerAny && typeof managerAny.loadCertificateSync === "function") {
-                            const certBuf: Buffer | null = managerAny.loadCertificateSync(acct, true);
-                            if (certBuf) {
-                                const tmpDir = os.tmpdir();
-                                const suffix = sessCredName === AuthOrder.SESS_CERT_NAME ? "-cert.pem" : "-key.pem";
-                                const tmpPath = path.join(tmpDir, `zowe-${Date.now()}${Math.random().toString(36).substring(2,8)}${suffix}`);
-                                fs.writeFileSync(tmpPath, certBuf, { mode: 0o600 });
-                                sessCfg._authCache.availableCreds[sessCredName] = tmpPath;
-                                const authCacheAny: any = sessCfg._authCache;
-                                if (!authCacheAny._tempFiles) authCacheAny._tempFiles = [];
-                                authCacheAny._tempFiles.push(tmpPath);
+                    const managerAny: any = CredentialManagerFactory.manager;
+                    if (managerAny && typeof managerAny.loadCertificateSync === "function") {
+                        // Build candidate account names, preferring explicit overrides on the session
+                        const acctCandidates: string[] = [];
+                        if (sessCredName === AuthOrder.SESS_CERT_NAME) {
+                            if (typeof (sessCfg as any).certAccount === "string" && (sessCfg as any).certAccount) {
+                                acctCandidates.push((sessCfg as any).certAccount);
                             }
                         } else {
-                            // No sync loader available; skip in sync path
+                            if (typeof (sessCfg as any).certKeyAccount === "string" && (sessCfg as any).certKeyAccount) {
+                                acctCandidates.push((sessCfg as any).certKeyAccount);
+                            }
                         }
-                    } catch (_err) {
-                        // ignore errors and continue
+                        if (typeof (sessCfg as any).profile === "string" && (sessCfg as any).profile) {
+                            acctCandidates.push((sessCfg as any).profile);
+                        }
+                        if (typeof (sessCfg as any).account === "string" && (sessCfg as any).account) {
+                            acctCandidates.push((sessCfg as any).account);
+                        }
+
+                        for (const acct of acctCandidates) {
+                            try {
+                                const certBuf: Buffer | null = managerAny.loadCertificateSync(acct, true);
+                                if (certBuf) {
+                                    const tmpDir = os.tmpdir();
+                                    const suffix = sessCredName === AuthOrder.SESS_CERT_NAME ? "-cert.pem" : "-key.pem";
+                                    const tmpPath = path.join(tmpDir, `zowe-${Date.now()}${Math.random().toString(36).substring(2,8)}${suffix}`);
+                                    fs.writeFileSync(tmpPath, certBuf, { mode: 0o600 });
+                                    sessCfg._authCache.availableCreds[sessCredName] = tmpPath;
+                                    const authCacheAny: any = sessCfg._authCache;
+                                    if (!authCacheAny._tempFiles) authCacheAny._tempFiles = [];
+                                    authCacheAny._tempFiles.push(tmpPath);
+                                    break;
+                                }
+                            } catch (_err) {
+                                // ignore and try next candidate
+                            }
+                        }
+                    } else {
+                        // No sync loader available; skip in sync path
                     }
                 }
             } catch (_err) {
