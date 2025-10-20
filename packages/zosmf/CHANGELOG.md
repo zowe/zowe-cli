@@ -4,7 +4,11 @@ All notable changes to the Zowe z/OSMF SDK package will be documented in this fi
 
 ## Unreleased (branch: feat/secure-cert-support)
 
-- Added ZOSMF session option constants and profile fields to support `certAccount` and `certKeyAccount`. Files changed: `packages/zosmf/src/ZosmfSession.ts`, `packages/zosmf/src/constants/Zosmf.profile.ts`.
+- Enhancement: Added ZOSMF session option constants and profile fields to support `certAccount` and `certKeyAccount`. Files changed: `packages/zosmf/src/ZosmfSession.ts`, `packages/zosmf/src/constants/Zosmf.profile.ts`.
+
+## `8.27.4`
+
+- BugFix: Updated minimum supported version of Node from 18 to 20. Added Node 24 support. [#2616](https://github.com/zowe/zowe-cli/pull/2616)
 
 ## `8.20.0`
 
