@@ -18,6 +18,7 @@ export * from "./doc/input/ICommonJobParms";
 export * from "./doc/input/IDeleteJobParms";
 export * from "./doc/input/IDownloadAllSpoolContentParms";
 export * from "./doc/input/IDownloadSpoolContentParms";
+export * from "./doc/input/IGetJclParms";
 export * from "./doc/input/IGetJobsParms";
 export * from "./doc/input/IMonitorJobWaitForParms";
 export * from "./doc/input/ISearchJobsParms";

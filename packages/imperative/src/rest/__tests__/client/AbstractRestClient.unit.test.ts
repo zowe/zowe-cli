@@ -984,7 +984,7 @@ describe("AbstractRestClient tests", () => {
 
     it("should not error when streaming normalized data", async () => {
         jest.spyOn(os, "platform").mockReturnValue("win32");
-        
+
         const fakeRequestStream = new PassThrough();
         const emitter = new MockHttpRequestResponse();
         const receivedArray: string[] = [];
