@@ -12,6 +12,7 @@
 import { AbstractCredentialManager, SecureCredential } from "./abstract/AbstractCredentialManager";
 import { ImperativeError } from "../../error";
 import { Logger } from "../../logger";
+import { ICredentialManagerOptions } from "./doc/ICredentialManagerOptions";
 
 import type { keyring as keytar } from "@zowe/secrets-for-zowe-sdk"; // Used for typing purposes only
 
@@ -82,12 +83,13 @@ export class DefaultCredentialManager extends AbstractCredentialManager {
      *
      * @param {string} service The service string to send to the superclass constructor.
      * @param {string} displayName The display name for this credential manager to send to the superclass constructor
+     * @param {ICredentialManagerOptions} options Optional configuration options for the credential manager
      */
-    constructor(service: string, displayName: string = "default credential manager") {
+    constructor(service: string, displayName: string = "default credential manager", options?: ICredentialManagerOptions) {
         // Always ensure that a manager instantiates the super class, even if the
         // constructor doesn't do anything. Who knows what things might happen in
         // the abstract class initialization in the future.
-        super(service, displayName);
+        super(service, displayName, options);
 
         /* Gather all services. We will load secure properties for the first
         * successful service found in the order that they are placed in this array.
