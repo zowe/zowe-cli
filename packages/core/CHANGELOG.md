@@ -2,11 +2,16 @@
 
 All notable changes to the Zowe core SDK package will be documented in this file.
 
+## Unreleased (branch: feat/secure-cert-support)
+
+- Added profile option constants and BaseProfile schema entries for `certAccount` and `certKeyAccount`. Files changed: `packages/core/src/constants/Core.constants.ts`.
+
 ## `8.22.0`
 
 - Enhancement: Updated the `Login.apimlLogin` API function to record that it is making a request for a token into the session associated with its REST request. [#2491](https://github.com/zowe/zowe-cli/pull/2491)
 
 ## `8.19.0`
+
 - Enhancement: Updated help examples to replace short option aliases (e.g. `-h`) with full option names (e.g. `--help`) for improved clarity and consistency in documentation. [#2484](https://github.com/zowe/zowe-cli/pull/2484)
 
 ## `8.1.1`

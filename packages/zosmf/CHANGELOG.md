@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OSMF SDK package will be documented in this file.
 
+## Unreleased (branch: feat/secure-cert-support)
+
+- Added ZOSMF session option constants and profile fields to support `certAccount` and `certKeyAccount`. Files changed: `packages/zosmf/src/ZosmfSession.ts`, `packages/zosmf/src/constants/Zosmf.profile.ts`.
+
 ## `8.20.0`
 
 - Enhancement: Added the `ZOSMF_OPTION_ESTABLISH_CONNECTION_TIMEOUT` option to `ZOSMF_CONNECTION_OPTIONS` on `ZosmfSession`. This allows users to specify a maximum limit for how long the REST client should attempt to establish a connection to the server, and returns an error if the request takes too long. [#2490](https://github.com/zowe/zowe-cli/pull/2490)

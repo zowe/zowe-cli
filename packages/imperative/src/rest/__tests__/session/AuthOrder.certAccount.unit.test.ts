@@ -15,8 +15,8 @@ import { AuthOrder } from "../../src/session/AuthOrder";
 import { ISession } from "../../src/session/doc/ISession";
 
 describe("AuthOrder certAccount handling", () => {
-    let origManager: any = undefined;
-    let origInit: any = undefined;
+    const _origManager: any = undefined;
+    const _origInit: any = undefined;
 
     let managerSpy: jest.SpyInstance | undefined;
     let initSpy: jest.SpyInstance | undefined;

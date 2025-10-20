@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Unreleased (branch: feat/secure-cert-support)
+
+- Added Profile merge and AuthOrder support to prefer `certAccount` and `certKeyAccount` (per-session and profile-level) and to write secure temporary certificate files when needed. Files changed: `packages/imperative/src/config/src/ProfileInfo.ts`, `packages/imperative/src/rest/src/session/AuthOrder.ts`, `packages/imperative/src/rest/__tests__/session/AuthOrder.certAccount.unit.test.ts`.
+
 ## `8.27.2`
 
 - BugFix: Fixed an issue where carriage returns before new lines were unexpectedly preserved when uploading to a USS file or data set. [#2606](https://github.com/zowe/zowe-cli/issues/2606)
