@@ -64,9 +64,7 @@ impl Task for SetPassword {
 
     fn compute(&mut self) -> Result<Self::Output> {
         let res = if cfg!(target_os = "windows") {
-            use secrets_core::os::win::PERSIST_ENTERPRISE;
-            use secrets_core::os::win::set_password_with_persistence;
-            set_password_with_persistence(&self.service, &self.account, &mut self.password, self.persist_win32.unwrap_or(PERSIST_ENTERPRISE))
+            os::set_password_with_persistence(&self.service, &self.account, &mut self.password, self.persist_win32.unwrap_or(os::PERSIST_ENTERPRISE))
         } else {
             os::set_password(&self.service, &self.account, &mut self.password)
         };
