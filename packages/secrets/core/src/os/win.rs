@@ -20,6 +20,8 @@ impl From<WIN32_ERROR> for KeyringError {
     }
 }
 
+pub const PERSIST_ENTERPRISE: u32 = CRED_PERSIST_ENTERPRISE;
+
 ///
 /// Helper function to convert the last Win32 error into a human-readable error message.
 ///
@@ -72,20 +74,11 @@ fn encode_utf16(str: &str) -> Vec<u16> {
     chars
 }
 
-///
-/// Attempts to set a password for a given service and account.
-///
-/// - `service`: The service name for the new credential
-/// - `account`: The account name for the new credential
-///
-/// Returns:
-/// - `true` if the credential was stored successfully
-/// - A `KeyringError` if there were any issues interacting with the credential vault
-///
-pub fn set_password(
+pub fn set_password_with_persistence(
     service: &String,
     account: &String,
     password: &String,
+    persist: u32
 ) -> Result<bool, KeyringError> {
     // Build WinAPI strings and object parameters from arguments
     let target_bytes = encode_utf16(format!("{}/{}", service, account).as_str());
@@ -100,7 +93,7 @@ pub fn set_password(
             dwLowDateTime: 0,
             dwHighDateTime: 0,
         },
-        Persist: CRED_PERSIST_ENTERPRISE,
+        Persist: persist,
         CredentialBlobSize: password.len() as u32,
         CredentialBlob: password.as_ptr() as *mut u8,
         AttributeCount: 0,
@@ -118,6 +111,24 @@ pub fn set_password(
     }
 
     Ok(true)
+}
+
+///
+/// Attempts to set a password for a given service and account.
+///
+/// - `service`: The service name for the new credential
+/// - `account`: The account name for the new credential
+///
+/// Returns:
+/// - `true` if the credential was stored successfully
+/// - A `KeyringError` if there were any issues interacting with the credential vault
+///
+pub fn set_password(
+    service: &String,
+    account: &String,
+    password: &String,
+) -> Result<bool, KeyringError> {
+    set_password_with_persistence(service, account, password, CRED_PERSIST_ENTERPRISE)
 }
 
 ///
