@@ -788,13 +788,16 @@ describe("z/OS Files - Download", () => {
             let caughtError;
             const destination = dsFolder.toUpperCase() + ".txt";
 
+            const existingPath = `${dsFolder}.txt`;
+
             existsSyncSpy.mockImplementation((filePath) => {
-                if (process.platform === 'win32') {
-                    return filePath.toString().toLowerCase().includes("user/data/set.txt");
-                } else {
-                    // On Unix, only return true if the exact case matches
-                    return filePath.toString().includes(destination);
+                const normalizedPath = filePath.toString();
+                if (process.platform === "win32") {
+                    return normalizedPath.toLowerCase() === existingPath;
                 }
+
+                // On Unix-like systems treat file paths as case-sensitive, so "USER" differs from "user"
+                return normalizedPath === existingPath;
             });
 
             try {

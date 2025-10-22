@@ -8,6 +8,7 @@
 * Copyright Contributors to the Zowe Project.
 *
 */
+
 import { IZosFilesResponse } from "../../../doc/IZosFilesResponse";
 
 /**
