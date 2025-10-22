@@ -63,11 +63,18 @@ impl Task for SetPassword {
     type JsValue = JsUnknown;
 
     fn compute(&mut self) -> Result<Self::Output> {
-        let res = if cfg!(target_os = "windows") {
-            os::set_password_with_persistence(&self.service, &self.account, &mut self.password, self.persist_win32.unwrap_or(os::PERSIST_ENTERPRISE))
-        } else {
-            os::set_password(&self.service, &self.account, &mut self.password)
-        };
+        #[cfg(target_os = "windows")]
+        let res = os::set_password_with_persistence(
+            &self.service,
+            &self.account,
+            &mut self.password,
+            self.persist_win32
+                .unwrap_or(os::PERSIST_ENTERPRISE),
+        );
+
+        #[cfg(not(target_os = "windows"))]
+        let res = os::set_password(&self.service, &self.account, &mut self.password);
+
         match res {
             Ok(result) => Ok(result),
             Err(err) => Err(napi::Error::from_reason(err.to_string()))
