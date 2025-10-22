@@ -10,7 +10,7 @@
 */
 
 import { IImperativeOverrides } from "./doc/IImperativeOverrides";
-import { CredentialManagerFactory, DefaultCredentialManager } from "../../security";
+import { CredentialManagerFactory, DefaultCredentialManager, ICredentialManagerOptions } from "../../security";
 import { IImperativeConfig } from "./doc/IImperativeConfig";
 import { isAbsolute, resolve } from "path";
 import { AppSettings } from "../../settings";
@@ -86,7 +86,28 @@ export class OverridesLoader {
                 Manager = resolve(resolvePath, "../", overrides.CredentialManager);
             }
 
-            await CredentialManagerFactory.initialize({
+            // Load credential manager options from team config if available
+            let credentialManagerOptions: ICredentialManagerOptions | undefined;
+            if (AppSettings.initialized) {
+                const overridesSettings = AppSettings.instance.getNamespace("overrides") as
+                    { CredentialManagerOptions?: ICredentialManagerOptions } | undefined;
+                const settingsOptions = overridesSettings?.CredentialManagerOptions;
+                if (settingsOptions && Object.keys(settingsOptions).length > 0) {
+                    credentialManagerOptions = { ...settingsOptions };
+                }
+            }
+
+            const optionsToUse = credentialManagerOptions && Object.keys(credentialManagerOptions).length > 0
+                ? credentialManagerOptions
+                : undefined;
+
+            const initParams: {
+                Manager: IImperativeOverrides["CredentialManager"];
+                displayName: string;
+                service: string;
+                invalidOnFailure: boolean;
+                options?: ICredentialManagerOptions;
+            } = {
                 // Init the manager with the override specified OR (if null) default to keytar
                 Manager,
                 // The display name will be the plugin name that introduced the override OR it will default to the CLI name
@@ -95,7 +116,13 @@ export class OverridesLoader {
                 service: config.name === this.ZOWE_CLI_PACKAGE_NAME ? DefaultCredentialManager.SVC_NAME : config.name,
                 // If the default is to be used, we won't implant the invalid credential manager
                 invalidOnFailure: !(Manager == null)
-            });
+            };
+
+            if (optionsToUse != null) {
+                initParams.options = optionsToUse;
+            }
+
+            await CredentialManagerFactory.initialize(initParams);
         }
 
         await OverridesLoader.loadSecureConfig();

@@ -32,7 +32,7 @@
  * strings and undefined values.
  */
 
-import { ICredentialManagerConstructor } from "../../../security";
+import { ICredentialManagerConstructor, ICredentialManagerOptions } from "../../../security";
 import { IConstructor } from "../../../interfaces";
 
 /**
@@ -40,7 +40,7 @@ import { IConstructor } from "../../../interfaces";
  * keys of the interface reference a proper constructor definition.
  */
 interface IOverridesRestriction {
-    [key: string]: IConstructor<any>;
+    [key: string]: IConstructor<any> | Record<string, unknown>;
 }
 
 /**
@@ -179,4 +179,9 @@ interface ImperativeOverrides extends IOverridesRestriction {
  *
  * @see {@link ImperativeOverrides} for documentation on the available keys.
  */
-export type IImperativeOverrides = ConstructorOrString<ImperativeOverrides>;
+export type IImperativeOverrides = ConstructorOrString<ImperativeOverrides> & {
+    /**
+     * Optional configuration values supplied to the active credential manager.
+     */
+    CredentialManagerOptions?: ICredentialManagerOptions;
+};

@@ -13,11 +13,13 @@ import * as path from "path";
 import { readJsonSync, writeJsonSync } from "fs-extra";
 
 import { ICredentialManagerNameMap } from "./doc/ICredentialManagerNameMap";
+import { ICredentialManagerOptions } from "./doc/ICredentialManagerOptions";
 import { ImperativeConfig } from "../../utilities";
 import { ImperativeError } from "../../error";
 import { ISettingsFile } from "../../settings/src/doc/ISettingsFile";
 import { ZoweSharedEvents } from "../../events";
 import { EventOperator } from "../../events/src/EventOperator";
+import { AppSettings } from "../../settings";
 
 /**
  * This class provides access to the known set of credential manager overrides
@@ -105,7 +107,7 @@ export class CredentialManagerOverride {
     public static getCurrentCredMgr() : string | false {
         try {
             const settings = this.getSettingsFileJson();
-            return settings.json.overrides.CredentialManager;
+            return settings.json.overrides.CredentialManager as string | false;
         } catch (err) {
             return this.DEFAULT_CRED_MGR_NAME;
         }
@@ -121,7 +123,7 @@ export class CredentialManagerOverride {
      *
      * @throws An ImperativeError upon error.
      */
-    public static recordCredMgrInConfig(newCredMgrName: string | false) : void {
+    public static recordCredMgrInConfig(newCredMgrName: string | false, options?: ICredentialManagerOptions) : void {
         const credMgrInfo: ICredentialManagerNameMap =
             CredentialManagerOverride.getCredMgrInfoByDisplayName(newCredMgrName);
         if (credMgrInfo === null) {
@@ -150,15 +152,8 @@ export class CredentialManagerOverride {
 
         // set to the new credMgr and write the settings file
         settings.json.overrides.CredentialManager = newCredMgrName;
-        try {
-            writeJsonSync(settings.fileName, settings.json, {spaces: 2});
-            EventOperator.getZoweProcessor().emitZoweEvent(ZoweSharedEvents.ON_CREDENTIAL_MANAGER_CHANGED);
-        } catch (error) {
-            throw new ImperativeError({
-                msg: "Unable to write settings file = " + settings.fileName +
-                "\nReason: " + error.message
-            });
-        }
+        settings.json.overrides.CredentialManagerOptions = options ?? {};
+        this.persistSettings(settings);
     }
 
     //________________________________________________________________________
@@ -205,14 +200,73 @@ export class CredentialManagerOverride {
 
         // reset to our default credMgr and write the settings file
         settings.json.overrides.CredentialManager = this.DEFAULT_CRED_MGR_NAME;
+        settings.json.overrides.CredentialManagerOptions = {};
+        this.persistSettings(settings);
+    }
+
+    //________________________________________________________________________
+    /**
+     * Update the credential manager options stored in the settings file.
+     *
+     * @param options Options to persist for the active credential manager.
+     *
+     * @throws An ImperativeError upon error.
+     */
+    public static updateCredentialManagerOptions(options?: ICredentialManagerOptions): void {
+        let settings: ReturnType<typeof CredentialManagerOverride.getSettingsFileJson>;
+        try {
+            settings = this.getSettingsFileJson();
+        } catch (error) {
+            throw new ImperativeError({
+                msg: "Due to error in settings file, unable to update credential manager options." +
+                    "\nReason: " + error.message
+            });
+        }
+
+        settings.json.overrides.CredentialManagerOptions = options ?? {};
+        this.persistSettings(settings);
+    }
+
+    //________________________________________________________________________
+    /**
+     * Retrieve credential manager options stored in the settings file.
+     *
+     * @returns Credential manager options or an empty object when none are configured.
+     */
+    public static getCredentialManagerOptions(): ICredentialManagerOptions {
+        try {
+            const settings = this.getSettingsFileJson();
+            return settings.json.overrides.CredentialManagerOptions as Record<string, unknown> ?? {};
+        } catch {
+            return {};
+        }
+    }
+
+    private static persistSettings(settings: { fileName: string; json: ISettingsFile }): void {
         try {
             writeJsonSync(settings.fileName, settings.json, {spaces: 2});
+            this.syncCachedSettings(settings.json);
             EventOperator.getZoweProcessor().emitZoweEvent(ZoweSharedEvents.ON_CREDENTIAL_MANAGER_CHANGED);
         } catch (error) {
             throw new ImperativeError({
                 msg: "Unable to write settings file = " + settings.fileName +
                 "\nReason: " + error.message
             });
+        }
+    }
+
+    private static syncCachedSettings(updatedSettings: ISettingsFile): void {
+        if (!AppSettings.initialized) {
+            return;
+        }
+
+        try {
+            const cachedSettings = AppSettings.instance.getSettings();
+            cachedSettings.overrides.CredentialManager = updatedSettings.overrides.CredentialManager;
+            cachedSettings.overrides.CredentialManagerOptions = updatedSettings.overrides.CredentialManagerOptions ?
+                { ...updatedSettings.overrides.CredentialManagerOptions as Record<string, unknown> } : {};
+        } catch {
+            // Ignore cache sync errors - settings will be refreshed on next initialization
         }
     }
 
@@ -247,6 +301,7 @@ export class CredentialManagerOverride {
                 settings.fileName
             });
         }
+        settings.json.overrides.CredentialManagerOptions = settings.json.overrides.CredentialManagerOptions ?? {};
         return settings;
     }
 

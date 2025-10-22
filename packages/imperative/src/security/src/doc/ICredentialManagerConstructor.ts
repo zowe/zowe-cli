@@ -22,7 +22,8 @@ import { ICredentialManagerOptions } from "./ICredentialManagerOptions";
  *  2. Your constructor has less than or equal to the number of parameters specified in the interface
  *  3. Your constructor has matching parameter types for all parameters accepted
  */
-export type ICredentialManagerConstructor = new(cliName: string, displayName: string, options?: ICredentialManagerOptions) => AbstractCredentialManager;
+export type ICredentialManagerConstructor =
+     new(cliName: string, displayName: string, options?: ICredentialManagerOptions) => AbstractCredentialManager;
 /**
      * The constructor function for a Credential Manager. All the parameters specified here
      * will be sent in during the {@link CredentialManagerFactory.initialize} function.
