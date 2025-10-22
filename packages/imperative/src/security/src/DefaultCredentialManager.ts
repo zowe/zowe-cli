@@ -73,7 +73,6 @@ export class DefaultCredentialManager extends AbstractCredentialManager {
 
     /**
      * Defines the persistence level for credentials Windows environments.
-     * 
      * The default persistence value is CRED_PERSIST_ENTERPRISE (0x3) for backwards compatibility w/ node-keytar.
      */
     private persistValueWin32 = PersistenceValue.Enterprise;
@@ -100,10 +99,13 @@ export class DefaultCredentialManager extends AbstractCredentialManager {
         switch (options?.persist) {
             case PersistenceLevel.SessionOnly:
                 this.persistValueWin32 = PersistenceValue.SessionOnly;
+                break;
             case PersistenceLevel.LocalMachine:
                 this.persistValueWin32 = PersistenceValue.LocalMachine;
+                break;
             case PersistenceLevel.Enterprise:
                 this.persistValueWin32 = PersistenceValue.Enterprise;
+                break;
             default:
                 break;
         }
