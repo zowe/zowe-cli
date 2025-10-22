@@ -418,6 +418,42 @@ describe("GetJobs tests", () => {
             expect(jclForJob).toMatchSnapshot();
             expect(jclCommon).toMatchSnapshot();
         });
+
+        it("should be able to get JCL with string encoding", async () => {
+            const getJclMock = mockGetJobsStringData(GetJobsData.SAMPLE_IEFBR14_JCL);
+            (ZosmfRestClient.getExpectString as any) = getJclMock;
+
+            await GetJobs.getJclCommon(pretendSession, {jobname: "jobname", jobid: "jobid", encoding: "IBM-037"});
+            expect(getJclMock).toHaveBeenCalled();
+            expect(getJclMock.mock.calls[0][1]).toContain("?fileEncoding=IBM-037");
+        });
+
+        it("should be able to get JCL with numeric encoding", async () => {
+            const getJclMock = mockGetJobsStringData(GetJobsData.SAMPLE_IEFBR14_JCL);
+            (ZosmfRestClient.getExpectString as any) = getJclMock;
+
+            await GetJobs.getJclCommon(pretendSession, {jobname: "jobname", jobid: "jobid", encoding: 1047 as unknown as string});
+            expect(getJclMock).toHaveBeenCalled();
+            expect(getJclMock.mock.calls[0][1]).toContain("?fileEncoding=1047");
+        });
+
+        it("should be able to get JCL with binary mode", async () => {
+            const getJclMock = mockGetJobsStringData(GetJobsData.SAMPLE_IEFBR14_JCL);
+            (ZosmfRestClient.getExpectString as any) = getJclMock;
+
+            await GetJobs.getJclCommon(pretendSession, {jobname: "jobname", jobid: "jobid", binary: true});
+            expect(getJclMock).toHaveBeenCalled();
+            expect(getJclMock.mock.calls[0][1]).toContain("?mode=binary");
+        });
+
+        it("should be able to get JCL with record mode", async () => {
+            const getJclMock = mockGetJobsStringData(GetJobsData.SAMPLE_IEFBR14_JCL);
+            (ZosmfRestClient.getExpectString as any) = getJclMock;
+
+            await GetJobs.getJclCommon(pretendSession, {jobname: "jobname", jobid: "jobid", record: true});
+            expect(getJclMock).toHaveBeenCalled();
+            expect(getJclMock.mock.calls[0][1]).toContain("?mode=record");
+        });
     });
 
     describe("getSpoolFiles APIs", () => {
