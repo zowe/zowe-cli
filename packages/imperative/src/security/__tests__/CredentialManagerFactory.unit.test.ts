@@ -59,7 +59,7 @@ describe("CredentialManagerFactory", () => {
         await CredentialManagerFactory.initialize({ service: cliHome });
 
         expect(DefaultCredentialManager).toHaveBeenCalledTimes(1);
-        expect(DefaultCredentialManager).toHaveBeenCalledWith(cliHome, cliHome);
+        expect(DefaultCredentialManager).toHaveBeenCalledWith(cliHome, cliHome, undefined);
         expect(CredentialManagerFactory.manager).toBeInstanceOf(DefaultCredentialManager);
         expect(CredentialManagerFactory.manager.initialize).toHaveBeenCalledTimes(1);
 
@@ -178,6 +178,34 @@ describe("CredentialManagerFactory", () => {
             expect(CredentialManagerFactory.manager).toBeInstanceOf(GoodCredentialManager);
             expect((CredentialManagerFactory.manager as any).service).toEqual(GoodCredentialManager.hardcodeService);
             expect(CredentialManagerFactory.manager.name).toBe(name);
+        });
+
+        it("should pass options to credential manager when initialized", async () => {
+            const classFile = resolve(__dirname, testClassDir, "GoodCredentialManager.ts");
+            const GoodCredentialManager = await import(classFile);
+            const testOptions = { persistenceFlag: "CRED_PERSIST_ENTERPRISE", customOption: "test-value" };
+
+            await CredentialManagerFactory.initialize({
+                Manager: classFile,
+                service: "efgh",
+                options: testOptions
+            });
+
+            expect(CredentialManagerFactory.manager).toBeInstanceOf(GoodCredentialManager);
+            expect((CredentialManagerFactory.manager as any).credentialManagerOptions).toEqual(testOptions);
+        });
+
+        it("should initialize credential manager with undefined options when not provided", async () => {
+            const classFile = resolve(__dirname, testClassDir, "GoodCredentialManager.ts");
+            const GoodCredentialManager = await import(classFile);
+
+            await CredentialManagerFactory.initialize({
+                Manager: classFile,
+                service: "efgh"
+            });
+
+            expect(CredentialManagerFactory.manager).toBeInstanceOf(GoodCredentialManager);
+            expect((CredentialManagerFactory.manager as any).credentialManagerOptions).toBeUndefined();
         });
     });
 });

@@ -37,7 +37,8 @@ describe("CredentialManagerOverride", () => {
             fileName: path.join(mockImpConfig.cliHome, "settings", "imperative.json"),
             json: {
                 "overrides": {
-                    "CredentialManager": CredentialManagerOverride.DEFAULT_CRED_MGR_NAME
+                    "CredentialManager": CredentialManagerOverride.DEFAULT_CRED_MGR_NAME,
+                    "CredentialManagerOptions": {}
                 }
             } as ISettingsFile
         };
@@ -355,6 +356,25 @@ describe("CredentialManagerOverride", () => {
             expect(readJsonSync).toHaveBeenCalledWith(expectedSettings.fileName);
             expect(writeJsonSync).toHaveBeenCalledTimes(1);
             expect(writtenJsonSettings.overrides.CredentialManager).toEqual(knownCredMgrDisplayNm);
+            expect(writtenJsonSettings.overrides.CredentialManagerOptions).toEqual({});
+        });
+
+        it("should persist credential manager options when provided", () => {
+            const customOptions = { persistenceFlag: "CRED_PERSIST_ENTERPRISE", customOption: "test" };
+            let writtenJsonSettings: ISettingsFile = {} as any;
+
+            jest.spyOn(fsExtra, "readJsonSync").mockImplementation(() => {
+                return expectedSettings.json;
+            });
+            jest.spyOn(fsExtra, "writeJsonSync")
+                .mockImplementation((_fileName, jsonSettings, _options) => {
+                    writtenJsonSettings = jsonSettings;
+                });
+
+            CredentialManagerOverride.recordCredMgrInConfig(knownCredMgrDisplayNm, customOptions);
+
+            expect(writtenJsonSettings.overrides.CredentialManager).toEqual(knownCredMgrDisplayNm);
+            expect(writtenJsonSettings.overrides.CredentialManagerOptions).toEqual(customOptions);
         });
     });
 
@@ -450,6 +470,77 @@ describe("CredentialManagerOverride", () => {
                 "Unable to write settings file = " + expectedSettings.fileName
             );
             expect(thrownErr.message).toContain(`Reason: ${writeJsonErrText}`);
+        });
+
+        it("should restore the default credential manager and clear options", () => {
+            const customOptions = { persistenceFlag: "CRED_PERSIST_LOCAL_MACHINE" };
+            const credMgrToReplace = CredentialManagerOverride.getKnownCredMgrs()[1].credMgrDisplayName as string;
+            expectedSettings.json.overrides.CredentialManager = credMgrToReplace;
+            expectedSettings.json.overrides.CredentialManagerOptions = { ...customOptions };
+
+            jest.spyOn(fsExtra, "readJsonSync").mockImplementation(() => {
+                return expectedSettings.json;
+            });
+            const writeJsonSync = jest.spyOn(fsExtra, "writeJsonSync").mockImplementation(() => undefined);
+
+            CredentialManagerOverride.recordDefaultCredMgrInConfig(credMgrToReplace);
+
+            expect(writeJsonSync).toHaveBeenCalledWith(
+                expectedSettings.fileName,
+                expect.objectContaining({
+                    overrides: expect.objectContaining({
+                        CredentialManager: CredentialManagerOverride.DEFAULT_CRED_MGR_NAME,
+                        CredentialManagerOptions: {}
+                    })
+                }),
+                {spaces: 2}
+            );
+        });
+    });
+
+    describe("updateCredentialManagerOptions", () => {
+        it("should write the provided options to the settings file", () => {
+            const newOptions = { persistenceFlag: "CRED_PERSIST_LOCAL_MACHINE", customOption: "value" };
+            jest.spyOn(fsExtra, "readJsonSync").mockImplementation(() => {
+                return expectedSettings.json;
+            });
+            const writeJsonSync = jest.spyOn(fsExtra, "writeJsonSync").mockImplementation(() => undefined);
+
+            CredentialManagerOverride.updateCredentialManagerOptions(newOptions);
+
+            expect(writeJsonSync).toHaveBeenCalledWith(
+                expectedSettings.fileName,
+                expect.objectContaining({
+                    overrides: expect.objectContaining({
+                        CredentialManagerOptions: newOptions
+                    })
+                }),
+                {spaces: 2}
+            );
+        });
+    });
+
+    describe("getCredentialManagerOptions", () => {
+        it("should return credential manager options from the settings file", () => {
+            const storedOptions = { persistenceFlag: "CRED_PERSIST_LOCAL_MACHINE" };
+            expectedSettings.json.overrides.CredentialManagerOptions = storedOptions;
+            jest.spyOn(fsExtra, "readJsonSync").mockImplementation(() => {
+                return expectedSettings.json;
+            });
+
+            const retrievedOptions = CredentialManagerOverride.getCredentialManagerOptions();
+
+            expect(retrievedOptions).toEqual(storedOptions);
+        });
+
+        it("should return an empty object when settings cannot be loaded", () => {
+            jest.spyOn(fsExtra, "readJsonSync").mockImplementation(() => {
+                throw new Error("file missing");
+            });
+
+            const retrievedOptions = CredentialManagerOverride.getCredentialManagerOptions();
+
+            expect(retrievedOptions).toEqual({});
         });
     });
 });

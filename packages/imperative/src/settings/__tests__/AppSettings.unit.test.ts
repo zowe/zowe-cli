@@ -61,7 +61,8 @@ describe("AppSettings", () => {
 
     const defaultSettings: ISettingsFile = {
         overrides: {
-            CredentialManager: false
+            CredentialManager: false,
+            CredentialManagerOptions: {}
         }
     };
 
@@ -243,6 +244,9 @@ describe("AppSettings", () => {
             it("should override every possible overrides", async () => {
                 // Test each possible overrides key
                 for (const override of Object.keys(defaultSettings.overrides)) {
+                    if (override === "CredentialManagerOptions") {
+                        continue;
+                    }
                     // Generate a random value just to be safe
                     const newValue = Math.random().toString();
 
@@ -266,6 +270,39 @@ describe("AppSettings", () => {
                     // Prepare for the next loop.
                     (appSettings.flush as Mock<typeof Function>).mockClear();
                 }
+            });
+        });
+
+        describe("setting credential manager options", () => {
+            let appSettings: IAppSettingsAllMethods;
+
+            beforeEach(() => {
+                appSettings = mockAppSettingsInternal(new AppSettings(new JSONSettingsFilePersistence("some-file"), defaultSettings));
+            });
+
+            it("should create credential manager options within overrides", () => {
+                appSettings.set("overrides", "CredentialManagerOptions", { persistenceFlag: "CRED_PERSIST_ENTERPRISE" } as any);
+
+                expect(appSettings.getNamespace("overrides")).toEqual({
+                    ...defaultSettings.overrides,
+                    CredentialManagerOptions: { persistenceFlag: "CRED_PERSIST_ENTERPRISE" }
+                });
+            });
+
+            it("should overwrite existing credential manager options", () => {
+                appSettings.set("overrides", "CredentialManagerOptions", { persistenceFlag: "CRED_PERSIST_ENTERPRISE" } as any);
+                appSettings.set("overrides", "CredentialManagerOptions", {
+                    persistenceFlag: "CRED_PERSIST_ENTERPRISE",
+                    customOption: "test-value"
+                } as any);
+
+                expect(appSettings.getNamespace("overrides")).toEqual({
+                    ...defaultSettings.overrides,
+                    CredentialManagerOptions: {
+                        persistenceFlag: "CRED_PERSIST_ENTERPRISE",
+                        customOption: "test-value"
+                    }
+                });
             });
         });
     });

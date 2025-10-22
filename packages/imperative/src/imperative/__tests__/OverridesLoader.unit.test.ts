@@ -135,14 +135,55 @@ describe("OverridesLoader", () => {
             });
         });
 
+        it("should pass credential manager options from settings to the credential manager", async () => {
+            const config: IImperativeConfig = {
+                name: "ABCD",
+                overrides: {},
+                productDisplayName: "a fake CLI"
+            };
+
+            const packageJson = {
+                name: "host-package",
+                dependencies: {
+                    "@zowe/secrets-for-zowe-sdk": "1.0"
+                }
+            };
+
+            const settingsOptions = {
+                persistenceFlag: "CRED_PERSIST_ENTERPRISE",
+                customOption: "test"
+            };
+
+            jest.spyOn(AppSettings, "initialized", "get").mockReturnValue(true);
+            jest.spyOn(AppSettings, "instance", "get").mockReturnValue({
+                getNamespace: (namespace: string) => {
+                    if (namespace === "overrides") {
+                        return {
+                            CredentialManager: "host-package",
+                            CredentialManagerOptions: settingsOptions
+                        };
+                    }
+                    return undefined;
+                },
+                get: () => "host-package"
+            } as any);
+
+            await OverridesLoader.load(config, packageJson);
+
+            expect(CredentialManagerFactory.initialize).toHaveBeenCalledTimes(1);
+            expect(CredentialManagerFactory.initialize).toHaveBeenCalledWith(expect.objectContaining({
+                options: expect.objectContaining(settingsOptions)
+            }));
+        });
+
         describe("should load a credential manager specified by the user", () => {
             it("was passed a class", async () => {
                 const config: IImperativeConfig = {
                     name: "EFGH",
                     overrides: {
                         CredentialManager: class extends AbstractCredentialManager {
-                            constructor(service: string) {
-                                super(service, TEST_MANAGER_NAME);
+                            constructor(service: string, displayName?: string, options?: import("../../security").ICredentialManagerOptions) {
+                                super(service, displayName || TEST_MANAGER_NAME, options);
                             }
 
                             protected async deleteCredentials(_account: string): Promise<void> {

@@ -179,7 +179,7 @@ describe("Imperative", () => {
         });
 
         describe("AppSettings", () => {
-            const defaultSettings = { overrides: { CredentialManager: "host-package" } };
+            const defaultSettings = { overrides: { CredentialManager: "host-package", CredentialManagerOptions: {} } };
             it("should initialize an app settings instance", async () => {
                 await Imperative.init();
 
