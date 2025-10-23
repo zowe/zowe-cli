@@ -3,15 +3,28 @@
  */
 package org.example;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpServletResponse;
+
 public class App {
 
-    public static void main(String[] args) {
-        System.out.println("main: Before frsWriter.incrementFeatCount");
-        JfrsZosWriter frsWriter = new JfrsZosWriter();
-        FrsResult incrFeatResult = frsWriter.incrementFeatCount(
-            "STATEMAN", "System State Manager Feature"
+    public static void main(String[] args) throws Exception {
+        System.out.println("main: Before ScrtFeatHeaderInterceptor");
+
+        MockHttpServletRequest mockRequest = new MockHttpServletRequest();
+        mockRequest.addHeader("Zowe-SCRT-client-feature",
+            "featureName=\"STATEMAN\", featureDescription=\"System State Manager Feature\"");
+
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse();
+        Object handlerObj = new Object();
+
+        boolean interceptResult = new ScrtFeatHeaderInterceptor().preHandle(
+            (MockHttpServletRequest) mockRequest, (HttpServletResponse) mockResponse, handlerObj
         );
-        System.out.println("\nmain: After frsWriter.incrementFeatCount");
-        System.out.println("RC = " + incrFeatResult.getRc() + " RSN = " + incrFeatResult.getRsn());
+        
+        System.out.println("\nmain: After ScrtFeatHeaderInterceptor");
+        System.out.println("main: interceptResult = " + interceptResult);
     }
 } // end App class

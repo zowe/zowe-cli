@@ -3,10 +3,12 @@ package org.example;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.example.ScrtProps;
+
 //************************************************************************
 public class JfrsZosWriter {
     // names for function parameter
-    private static final String INCR_FEAT_COUNT = "Increment feature count";
+    private static final String UPDATE_FEAT_USED = "Update feature used";
     private static final String VALIDATE_PROPS = "Validate JFRS Properties";
     private static final String GET_PROD_TOKEN = "Get product token";
     private static final String GET_FEAT_TOKEN = "Get feature token";
@@ -15,7 +17,7 @@ public class JfrsZosWriter {
     private static final int INVALID_PROPS_RC = 100;
     private static final int REG_PROD_FAILED_RC = 101;
     private static final int Add_FEAT_FAILED_RC = 102;
-    private static final int INCR_FEAT_FAILED_RC = 103;
+    private static final int UPDATE_FEAT_FAILED_RC = 103;
 
     // todo: Determine valid RSN values
     private static final int NULL_RESULT_RSN = 10;
@@ -30,74 +32,63 @@ public class JfrsZosWriter {
     private static Map<String, byte[]> featTokenMap = new HashMap<>();
     private static final Object featTokenMapLock = new Object();
 
-    // Todo: get the real properties from application.yaml
-    private static String productName = "OPS/MVS REST Service"; // from application.yaml serviceName
-    private static String productId = "OPSREST";                // from application.yaml productId
-    
-    // Todo: get the real properties from manifest ImplementationVersion
-    private static String version = "14";
-    private static String release = "2";
-    private static String modLevel = "3";
-
-    private static String prodInstance = JfrsZosWriter.productId;
+    private static String prodInstance;
 
     //------------------------------------------------------------------------
     /**
-     * Increment the use count for the specified feature.
+     * Record the use of the specified feature.
+     * 
+     * @param ScrtProps scrtPropVals The SCRT property values used in recording the use of a feature.
      * 
      * @return An FrsResult with a return code and reason code.
      */
-    public FrsResult incrementFeatCount(String featureName, String featureDesc) {
-        // Todo: remove print statements when integrating into REST SDK API
-        System.out.println("___________________________________\nJfrsZosWriter.incrementCount:");
-        System.out.println("productName = " + JfrsZosWriter.productName);
-        System.out.println("productId = " + JfrsZosWriter.productId);
-        System.out.println("prodId used as prodInstance = " + JfrsZosWriter.prodInstance);
-        System.out.println("version = " + JfrsZosWriter.version);
-        System.out.println("release = " + JfrsZosWriter.release);
-        System.out.println("modLevel = " + JfrsZosWriter.modLevel);
-        System.out.println("featureName = " + featureName);
-        System.out.println("featuredesc = " + featureDesc);
-
+    public FrsResult recordFeatureUse(ScrtProps scrtPropVals) {
         try {
-            // Todo: Remove this block when integrating into REST API SDK 
-            /* Uncomment this block to test exception handling in validateProps()
-            productName = "";
-            productId = null;
-            featureName = "   ";
-            featureDesc = null;
-            JfrsZosWriter.version = "   ";
-            JfrsZosWriter.modLevel = null;
-            */
+            validateProps(scrtPropVals);
 
-            validateProps(featureName, featureDesc);
+            // Todo: remove print statements when integrating into REST SDK API
+            System.out.println("___________________________________");
+            System.out.println("frsZosWriter.recordFeatureUse:");
+            System.out.println("\nUsing these SCRT property values:");
+            System.out.println("prodName = " + scrtPropVals.getProdName());
+            System.out.println("prodId = " + scrtPropVals.getProdId());
+            System.out.println("prodId used as prodInstance = " + JfrsZosWriter.prodInstance);
+            System.out.println("version = " + scrtPropVals.getVersion());
+            System.out.println("release = " + scrtPropVals.getRelease());
+            System.out.println("modLevel = " + scrtPropVals.getModLevel());
+            System.out.println("featName = " + scrtPropVals.getFeatName());
+            System.out.println("featDesc = " + scrtPropVals.getFeatDesc());
 
-            FrsResult incFeatResult = new FrsResult(0, 0, "".getBytes());
+            FrsResult updateFeatResult = new FrsResult(0, 0, "".getBytes());
             try {
-                incFeatResult = FeatureRegistrationServiceWrapper.incrementFeature(
-                    getProdToken(), getFeatToken(featureName, featureDesc), 1
+                updateFeatResult = FeatureRegistrationServiceWrapper.updateFeature(
+                    getProdToken(scrtPropVals), getFeatToken(scrtPropVals),
+                    FeatureStateOption.FL_STATE_ENABLED, FeatureUsedOption.FL_USED_YES
                 );
             } catch (JFRSException except) {
                 logErrThrowRcExcept(
-                    INCR_FEAT_COUNT, featureName, INCR_FEAT_FAILED_RC, JFRS_EXCEPTION_RSN,
-                    "FeatureRegistrationService.incrementFeature threw an exception: " + except.getMessage()
+                    UPDATE_FEAT_USED, scrtPropVals, UPDATE_FEAT_FAILED_RC, JFRS_EXCEPTION_RSN,
+                    "FeatureRegistrationService.updateFeature threw an exception: " + except.getMessage()
                 );
             }
-            if (incFeatResult == null) {
+            if (updateFeatResult == null) {
                 logErrThrowRcExcept(
-                    INCR_FEAT_COUNT, featureName, INCR_FEAT_FAILED_RC, NULL_RESULT_RSN,
-                    "FeatureRegistrationService.incrementFeature returned a null result"
+                    UPDATE_FEAT_USED, scrtPropVals, UPDATE_FEAT_FAILED_RC, NULL_RESULT_RSN,
+                    "FeatureRegistrationService.updateFeature returned a null result"
                 );
             }
-            if (incFeatResult.getRc() == -1 || incFeatResult.getRc() > 4 || incFeatResult.getToken() == null) {
+            if (updateFeatResult.getRc() == -1 || updateFeatResult.getRc() > 4 || updateFeatResult.getToken() == null) {
                 logErrThrowRcExcept(
-                    INCR_FEAT_COUNT, featureName, incFeatResult.getRc(), incFeatResult.getRsn(),
-                    "FeatureRegistrationService.incrementFeature returned a failing return code"
+                    UPDATE_FEAT_USED, scrtPropVals, updateFeatResult.getRc(), updateFeatResult.getRsn(),
+                    "FeatureRegistrationService.updateFeature returned a failing return code"
                 );
             }
-            System.out.println("featureName = '" + featureName + "' usage count was incremented by one.");
+            // Todo: remove print statements when integrating into REST SDK API
+            System.out.println("\nRecorded the use of featureName = '" + scrtPropVals.getFeatName() +
+                "' for SCRT reporting."
+            );
             System.out.println("___________________________________");
-            return incFeatResult;
+            return updateFeatResult;
         } catch (JfrsSdkRcException except) {
             return except.getFrsResult();
         }
@@ -112,45 +103,44 @@ public class JfrsZosWriter {
      * @returns True when properties are valid. False otherwise.
      * @throw JfrsSdkRcException
      */
-    private void validateProps(String featureName, String featureDesc) throws JfrsSdkRcException {
+    private void validateProps(ScrtProps scrtPropVals) throws JfrsSdkRcException {
+        if (scrtPropVals == null) {
+            logErrThrowRcExcept(
+                VALIDATE_PROPS, scrtPropVals, INVALID_PROPS_RC, NULL_EMPTY_BLANK_RSN,
+                "The supplied scrtPropVals parameter is null"
+            );
+        }
+
         String invalidProps = "";
-        
-        if (JfrsZosWriter.productName == null || JfrsZosWriter.productName.isBlank()) {
-            invalidProps += " productName";
-            JfrsZosWriter.productName = "productName_is_null/empty/blank";
+
+        if (scrtPropVals.getProdName() == null || scrtPropVals.getProdName().isBlank()) {
+            invalidProps += " prodName";
         }
-        if (JfrsZosWriter.productId == null || JfrsZosWriter.productId.isBlank()) {
-            invalidProps += " productId";
-            JfrsZosWriter.productId = "productId_is_null/empty/blank";
+        if (scrtPropVals.getProdId() == null || scrtPropVals.getProdId().isBlank()) {
+            invalidProps += " prodId";
+        } else {
+            // Todo: determine if this is right: JfrsZosWriter always uses the product ID as the product instance
+            JfrsZosWriter.prodInstance = scrtPropVals.getProdId();
         }
-        if (JfrsZosWriter.prodInstance == null || JfrsZosWriter.prodInstance.isBlank()) {
-            invalidProps += " prodInstance";
-            JfrsZosWriter.prodInstance = "prodInstance_is_null/empty/blank";
-        }
-        if (JfrsZosWriter.version == null || JfrsZosWriter.version.isBlank()) {
+        if (scrtPropVals.getVersion() == null || scrtPropVals.getVersion().isBlank()) {
             invalidProps += " version";
-            JfrsZosWriter.version = "version_is_null/empty/blank";
         }
-        if (JfrsZosWriter.release == null || JfrsZosWriter.release.isBlank()) {
+        if (scrtPropVals.getRelease() == null || scrtPropVals.getRelease().isBlank()) {
             invalidProps += " release";
-            JfrsZosWriter.release = "release_is_null/empty/blank";
         }
-        if (JfrsZosWriter.modLevel == null || JfrsZosWriter.modLevel.isBlank()) {
+        if (scrtPropVals.getModLevel() == null || scrtPropVals.getModLevel().isBlank()) {
             invalidProps += " modLevel";
-            JfrsZosWriter.modLevel = "modLevel_is_null/empty/blank";
         }
-        if (featureName == null || featureName.isBlank()) {
-            invalidProps += " featureName";
-            featureName = "featureName_is_null/empty/blank";
+        if (scrtPropVals.getFeatName() == null || scrtPropVals.getFeatName().isBlank()) {
+            invalidProps += " featName";
         }
-        if (featureDesc == null || featureDesc.isBlank()) {
-            invalidProps += " featureDesc";
-            featureDesc = "featureDesc_is_null/empty/blank";
+        if (scrtPropVals.getFeatDesc() == null || scrtPropVals.getFeatDesc().isBlank()) {
+            invalidProps += " featDesc";
         }
 
         if (!invalidProps.isEmpty()) {
             logErrThrowRcExcept(
-                VALIDATE_PROPS, featureName, INVALID_PROPS_RC, NULL_EMPTY_BLANK_RSN,
+                VALIDATE_PROPS, scrtPropVals, INVALID_PROPS_RC, NULL_EMPTY_BLANK_RSN,
                 "The following properties are null, empty, or blank:" + invalidProps
             );
         }
@@ -162,34 +152,37 @@ public class JfrsZosWriter {
      * If we have not yet cached the token, call the Jfrs registerProduct
      * function to get a token and store the token into our prodToken property.
      * 
+     * @param ScrtProps scrtPropVals The SCRT property values used in getting a product token.
+     * 
      * @throws JfrsSdkRcException when a token cannot be retrieved
      * 
      * @return A byte array representing the product token.
      */
-    private static byte[] getProdToken() throws JfrsSdkRcException {
+    private static byte[] getProdToken(ScrtProps scrtPropVals) throws JfrsSdkRcException {
         synchronized (prodTokenLock) {
             if (JfrsZosWriter.prodToken == null) {
                 FrsResult prodRegResult = new FrsResult(0, 0, "".getBytes());
                 try {
                     prodRegResult = FeatureRegistrationServiceWrapper.registerProduct(
-                        JfrsZosWriter.productName, JfrsZosWriter.prodInstance, 
-                        JfrsZosWriter.version, JfrsZosWriter.release, JfrsZosWriter.modLevel, RegProdOption.PERSIST
+                        scrtPropVals.getProdName(), JfrsZosWriter.prodInstance, 
+                        scrtPropVals.getVersion(), scrtPropVals.getRelease(), scrtPropVals.getModLevel(),
+                        RegProdOption.PERSIST
                     );
                 } catch (JFRSException except) {
                     logErrThrowRcExcept(
-                        GET_PROD_TOKEN, "No Feature", REG_PROD_FAILED_RC, JFRS_EXCEPTION_RSN,
+                        GET_PROD_TOKEN, scrtPropVals, REG_PROD_FAILED_RC, JFRS_EXCEPTION_RSN,
                         "FeatureRegistrationService.registerProduct threw an exception: " + except.getMessage()
                     );
                 }
                 if (prodRegResult == null) {
                     logErrThrowRcExcept(
-                        GET_PROD_TOKEN, "No Feature", REG_PROD_FAILED_RC, NULL_RESULT_RSN,
+                        GET_PROD_TOKEN, scrtPropVals, REG_PROD_FAILED_RC, NULL_RESULT_RSN,
                         "FeatureRegistrationService.registerProduct returned a null result"
                     );
                 }
                 if (prodRegResult.getRc() == -1 || prodRegResult.getRc() > 4 || prodRegResult.getToken() == null) {
                     logErrThrowRcExcept(
-                        GET_PROD_TOKEN, "No Feature", prodRegResult.getRc(), prodRegResult.getRsn(),
+                        GET_PROD_TOKEN, scrtPropVals, prodRegResult.getRc(), prodRegResult.getRsn(),
                         "FeatureRegistrationService.registerProduct returned a failing return code"
                     );
                 }
@@ -207,41 +200,40 @@ public class JfrsZosWriter {
      * If the feature is not in our map, call the Jfrs addFeature function
      * to get the token, and cache the token in our map.
      * 
-     * @param featureName The name of the desired feature
-     * @param featureDesc The description of the desired feature
+     * @param ScrtProps scrtPropVals The SCRT property values used in getting a feature token.
      * 
      * @throws JfrsSdkRcException when a token cannot be retrieved
      * 
      * @return A byte array representing the product token.
      */
-    private static byte[] getFeatToken(String featureName, String featureDesc) throws JfrsSdkRcException {
+    private static byte[] getFeatToken(ScrtProps scrtPropVals) throws JfrsSdkRcException {
         byte[] desiredFeatToken = null;
         synchronized (featTokenMapLock) {
-            desiredFeatToken = JfrsZosWriter.featTokenMap.get(featureName);
+            desiredFeatToken = JfrsZosWriter.featTokenMap.get(scrtPropVals.getFeatName());
             if (desiredFeatToken == null) {
                 FrsResult addFeatResult = new FrsResult(0, 0, "".getBytes());
                 try {
                     final String noLmpKey = "";
                     Feature featObj = new Feature(
-                        featureName, featureDesc, noLmpKey,  JfrsZosWriter.productId,
+                        scrtPropVals.getFeatName(), scrtPropVals.getFeatDesc(), noLmpKey,  scrtPropVals.getProdId(),
                         FeatureStateOption.FL_STATE_ENABLED, FeatureSCRTOption.FL_SCRT_USED
                     );
-                    addFeatResult = FeatureRegistrationServiceWrapper.addFeature(featObj, getProdToken());
+                    addFeatResult = FeatureRegistrationServiceWrapper.addFeature(featObj, getProdToken(scrtPropVals));
                 } catch (JFRSException except) {
                     logErrThrowRcExcept(
-                        GET_FEAT_TOKEN, featureName, Add_FEAT_FAILED_RC, JFRS_EXCEPTION_RSN,
+                        GET_FEAT_TOKEN, scrtPropVals, Add_FEAT_FAILED_RC, JFRS_EXCEPTION_RSN,
                         "FeatureRegistrationService.addFeature threw an exception: " + except.getMessage()
                     );
                 }
                 if (addFeatResult == null) {
                     logErrThrowRcExcept(
-                        GET_FEAT_TOKEN, featureName, Add_FEAT_FAILED_RC, NULL_RESULT_RSN,
+                        GET_FEAT_TOKEN, scrtPropVals, Add_FEAT_FAILED_RC, NULL_RESULT_RSN,
                         "FeatureRegistrationService.addFeature returned a null result"
                     );
                 }
                 if (addFeatResult.getRc() == -1 || addFeatResult.getRc() > 4 || addFeatResult.getToken() == null) {
                     logErrThrowRcExcept(
-                        GET_PROD_TOKEN, "No Feature", addFeatResult.getRc(), addFeatResult.getRsn(),
+                        GET_PROD_TOKEN, scrtPropVals, addFeatResult.getRc(), addFeatResult.getRsn(),
                         "FeatureRegistrationService.addFeature returned a failing return code"
                     );
                 }
@@ -249,7 +241,7 @@ public class JfrsZosWriter {
                 // Cache the feature token by feature name so that we do not have to add the
                 // feature again each time that we want to use the token for this feature.
                 desiredFeatToken = addFeatResult.getToken();
-                JfrsZosWriter.featTokenMap.put(featureName, desiredFeatToken);
+                JfrsZosWriter.featTokenMap.put(scrtPropVals.getFeatName(), desiredFeatToken);
             }
         }
         return desiredFeatToken;
@@ -269,19 +261,34 @@ public class JfrsZosWriter {
      * @throws JfrsSdkRcException
      */
 	private static void logErrThrowRcExcept(
-        String function, String featureName, int rc, int rsn, String errorText
+        String function, ScrtProps scrtPropVals, int rc, int rsn, String errorText
     ) throws JfrsSdkRcException {
+        if (scrtPropVals == null) {
+            scrtPropVals = new ScrtProps("null_ScrtProps", "null_ScrtProps");
+        }
+        String prodName = scrtPropVals.getProdName();
+        String prodId = scrtPropVals.getProdId();
+        String version = scrtPropVals.getVersion();
+        String release = scrtPropVals.getRelease();
+        String modLevel = scrtPropVals.getModLevel();
+        String featName = scrtPropVals.getFeatName();
+        String featDesc = scrtPropVals.getFeatDesc();
+
         // ToDo: Replace with CommonMessageService.getInstance().createApiMessage
         System.out.println(
             "\n_________________________________________________" +
             "\nlogErrThrowRcExcept:" +
-            "\nFunction = " + function +
-            "\nProductName = " + JfrsZosWriter.productName + 
-            "\nFeatureName = " + featureName +
-            "\nVersion = " + version + "." + release + "." + modLevel +
+            "\nError Msg = " + errorText +
             "\nReturn code = " + rc +
             "\nReason code = " + rsn +
-            "\nError Msg = " + errorText +
+            "\nFunction = " + function +
+            "\nProdName = " + (prodName == null ? "null_prodName" : prodName) +
+            "\nprodId = " + (prodId == null ? "null_prodId" : prodId) +
+            "\nVersion = " + (version == null ? "null_version" : version) + "." + 
+                (release == null ? "null_release": release) + "." + 
+                (modLevel == null ? "null_modLevel" : modLevel) +
+            "\nFeatName = " + (featName == null ? "null_featName" : featName) +
+            "\nFeatDesc = " + (featDesc == null ? "null_featDesc" : featDesc) +
             "\n_________________________________________________"
         );
         throw new JfrsSdkRcException(rc, rsn);
@@ -364,6 +371,10 @@ enum FeatureStateOption {
     FL_STATE_ENABLED
 }
 
+enum FeatureUsedOption {
+    FL_USED_YES
+}
+
 enum FeatureSCRTOption {
     FL_SCRT_USED
 }
@@ -389,8 +400,10 @@ class FeatureRegistrationServiceWrapper {
         return new FrsResult(0, 0, "addFeature Token".getBytes());
     }
 
-   public static FrsResult incrementFeature(byte[] prodToken, byte[] featToken, int count) throws JFRSException {
-        return new FrsResult(0, 0, "incrementFeature result".getBytes());
+    public static FrsResult updateFeature(
+        byte[] prodToken, byte[] featToken, FeatureStateOption featStateOpt, FeatureUsedOption featUsedOpt
+    ) throws JFRSException {
+        return new FrsResult(0, 0, "updateFeature result".getBytes());
     }
 }
 
