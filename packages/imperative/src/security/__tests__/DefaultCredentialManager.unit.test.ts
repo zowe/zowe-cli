@@ -15,6 +15,7 @@ import { Module } from "module";
 import { DefaultCredentialManager } from "..";
 import { keyring as keytar } from "@zowe/secrets-for-zowe-sdk";
 import { ImperativeError } from "../../error";
+import { PersistenceValue } from "../src/doc/IDefaultCredentialManagerOptions";
 
 const winMaxCredentialLength = 2560;
 
@@ -232,7 +233,7 @@ describe("DefaultCredentialManager", () => {
 
                     expect(privateManager.checkForKeytar).toHaveBeenCalledTimes(1);
                     expect(keytar.deletePassword).toHaveBeenCalled();
-                    expect(keytar.setPassword).toHaveBeenLastCalledWith(privateManager.service, values.account, values.credentials);
+                    expect(keytar.setPassword).toHaveBeenLastCalledWith(privateManager.service, values.account, values.credentials, PersistenceValue.Enterprise);
                 });
             });
 
@@ -265,7 +266,7 @@ describe("DefaultCredentialManager", () => {
                     expect(keytar.deletePassword).toHaveBeenCalledWith(privateManager.service, values.account);
                     expect(keytar.setPassword).toHaveBeenCalledTimes(numFields);
                     expect(keytar.setPassword).toHaveBeenCalledWith(privateManager.service, `${values.account}-1`,
-                        longCredentials.slice(0, winMaxCredentialLength));
+                        longCredentials.slice(0, winMaxCredentialLength), PersistenceValue.Enterprise);
                 });
 
                 it("should delete credentials that exceed max length", async () => {
