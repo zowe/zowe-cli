@@ -18,6 +18,7 @@ import { ImperativeConfig } from "../../utilities";
 import { ImperativeError } from "../../error";
 import { ISettingsFile } from "../../settings/src/doc/ISettingsFile";
 import { EventOperator, EventUtils } from "../../events";
+import { PersistenceLevel } from "../src/doc/IDefaultCredentialManagerOptions";
 
 
 describe("CredentialManagerOverride", () => {
@@ -38,8 +39,8 @@ describe("CredentialManagerOverride", () => {
             json: {
                 "overrides": {
                     "CredentialManager": CredentialManagerOverride.DEFAULT_CRED_MGR_NAME,
-                    "CredentialManagerOptions": {}
-                }
+                },
+                "CredentialManagerOptions": {}
             } as ISettingsFile
         };
     });
@@ -360,7 +361,7 @@ describe("CredentialManagerOverride", () => {
         });
 
         it("should persist credential manager options when provided", () => {
-            const customOptions = { persistenceFlag: "CRED_PERSIST_ENTERPRISE", customOption: "test" };
+            const customOptions = { persist: PersistenceLevel.Enterprise, customOption: "test" };
             let writtenJsonSettings: ISettingsFile = {} as any;
 
             jest.spyOn(fsExtra, "readJsonSync").mockImplementation(() => {
@@ -473,7 +474,7 @@ describe("CredentialManagerOverride", () => {
         });
 
         it("should restore the default credential manager and clear options", () => {
-            const customOptions = { persistenceFlag: "CRED_PERSIST_LOCAL_MACHINE" };
+            const customOptions = { persist: PersistenceLevel.LocalMachine };
             const credMgrToReplace = CredentialManagerOverride.getKnownCredMgrs()[1].credMgrDisplayName as string;
             expectedSettings.json.overrides.CredentialManager = credMgrToReplace;
             expectedSettings.json.credentialManagerOptions = { ...customOptions };
@@ -500,7 +501,7 @@ describe("CredentialManagerOverride", () => {
 
     describe("updateCredentialManagerOptions", () => {
         it("should write the provided options to the settings file", () => {
-            const newOptions = { persistenceFlag: "CRED_PERSIST_LOCAL_MACHINE", customOption: "value" };
+            const newOptions = { persist: PersistenceLevel.LocalMachine, customOption: "value" };
             jest.spyOn(fsExtra, "readJsonSync").mockImplementation(() => {
                 return expectedSettings.json;
             });
@@ -520,7 +521,7 @@ describe("CredentialManagerOverride", () => {
 
     describe("getCredentialManagerOptions", () => {
         it("should return credential manager options from the settings file", () => {
-            const storedOptions = { persistenceFlag: "CRED_PERSIST_LOCAL_MACHINE" };
+            const storedOptions = { persist: PersistenceLevel.LocalMachine };
             expectedSettings.json.credentialManagerOptions = storedOptions;
             jest.spyOn(fsExtra, "readJsonSync").mockImplementation(() => {
                 return expectedSettings.json;

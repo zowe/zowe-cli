@@ -233,7 +233,8 @@ describe("DefaultCredentialManager", () => {
 
                     expect(privateManager.checkForKeytar).toHaveBeenCalledTimes(1);
                     expect(keytar.deletePassword).toHaveBeenCalled();
-                    expect(keytar.setPassword).toHaveBeenLastCalledWith(privateManager.service, values.account, values.credentials, PersistenceValue.Enterprise);
+                    expect(keytar.setPassword).toHaveBeenLastCalledWith(
+                        privateManager.service, values.account, values.credentials, PersistenceValue.Enterprise);
                 });
             });
 

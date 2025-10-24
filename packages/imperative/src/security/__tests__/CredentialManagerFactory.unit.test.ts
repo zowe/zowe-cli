@@ -12,6 +12,7 @@
 import { UnitTestUtils } from "../../../__tests__/src/UnitTestUtils";
 import { resolve } from "path";
 import { generateRandomAlphaNumericString } from "../../../__tests__/src/TestUtil";
+import { PersistenceLevel } from "../../security/src/doc/IDefaultCredentialManagerOptions";
 
 const ORIG_ERR = process.stderr.write;
 
@@ -183,7 +184,7 @@ describe("CredentialManagerFactory", () => {
         it("should pass options to credential manager when initialized", async () => {
             const classFile = resolve(__dirname, testClassDir, "GoodCredentialManager.ts");
             const GoodCredentialManager = await import(classFile);
-            const testOptions = { persistenceFlag: "CRED_PERSIST_ENTERPRISE", customOption: "test-value" };
+            const testOptions = { persist: PersistenceLevel.Enterprise, customOption: "test-value" };
 
             await CredentialManagerFactory.initialize({
                 Manager: classFile,

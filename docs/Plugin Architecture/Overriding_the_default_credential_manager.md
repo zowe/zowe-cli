@@ -66,7 +66,7 @@ A credential manager override plugin must call recordCredMgrInConfig() during it
 
 ## Passing options to credential managers
 
-Credential managers can accept configuration options to customize their behavior. These options are passed during initialization and can be configured in multiple ways.
+Credential managers can accept configuration options to customize their behavior. These options are passed during initialization.
 
 ### Configuring options in imperative.json (settings file)
 
@@ -75,11 +75,11 @@ Credential manager options can be configured in the `imperative.json` settings f
 ```json
 {
   "overrides": {
-    "CredentialManager": "my-custom-plugin",
-    "credentialManagerOptions": {
-      "timeout": 5000,
-      "retryAttempts": 3
-    }
+    "CredentialManager": "my-custom-plugin"
+  },
+  "credentialManagerOptions": {
+    "timeout": 5000,
+    "retryAttempts": 3
   }
 }
 ```
@@ -95,16 +95,6 @@ On Windows systems, the `persist` option controls where and how long credentials
 - **`"session"`** (CRED_PERSIST_SESSION): Credentials are stored only for the current logon session and are deleted when the user logs off.
 - **`"local_machine"`** (CRED_PERSIST_LOCAL_MACHINE): Credentials persist on the local machine and are available across logon sessions for the current user on this computer only.
 - **`"enterprise"`** (CRED_PERSIST_ENTERPRISE): Credentials are stored in the user's roaming profile and are available across all computers in the domain (default for backward compatibility).
-
-Example configuration in `zowe.config.json`:
-
-```json
-{
-  "credentialManagerOptions": {
-    "persist": "local_machine"
-  }
-}
-```
 
 **Note:** The `persist` option only affects Windows systems. On macOS and Linux, this option is ignored as those platforms use different credential storage mechanisms (Keychain on macOS and Secret Service API/libsecret on Linux).
 
@@ -149,30 +139,17 @@ export default class MyCredentialManager extends AbstractCredentialManager {
 }
 ```
 
-Users of your custom credential manager can then configure it in their `zowe.config.json`:
-
-```json
-{
-  "credentialManagerOptions": {
-    "serverUrl": "https://vault.example.com",
-    "timeout": 5000,
-    "retryAttempts": 3,
-    "enableLogging": true
-  }
-}
-```
-
-Or in their `imperative.json` settings file:
+Users of your custom credential manager can then configure it in their `imperative.json` settings file:
 
 ```json
 {
   "overrides": {
-    "CredentialManager": "my-custom-plugin",
-    "credentialManagerOptions": {
-      "serverUrl": "https://vault.example.com",
-      "timeout": 5000,
-      "retryAttempts": 3
-    }
+    "CredentialManager": "my-custom-plugin"
+  },
+  "credentialManagerOptions": {
+    "serverUrl": "https://vault.example.com",
+    "timeout": 5000,
+    "retryAttempts": 3
   }
 }
 ```

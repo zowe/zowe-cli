@@ -129,9 +129,14 @@ export class AppSettings {
      * @param value
      */
     public set(namespace: keyof ISettingsFile, key: string, value: SettingValue): void {
-        const namespaceObj = this.settings[namespace];
+        let namespaceObj = this.settings[namespace];
         if (namespaceObj == null || typeof namespaceObj !== "object") {
-            throw new ImperativeError({msg: `Namespace ${namespace} does not exist`});
+            if (namespace === "credentialManagerOptions") {
+                this.settings.credentialManagerOptions = {};
+                namespaceObj = this.settings.credentialManagerOptions;
+            } else {
+                throw new ImperativeError({msg: `Namespace ${namespace} does not exist`});
+            }
         }
 
         (namespaceObj as Record<string, SettingValue>)[key] = value;

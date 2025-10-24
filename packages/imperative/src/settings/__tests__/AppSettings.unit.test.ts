@@ -21,6 +21,7 @@ import { readFileSync, writeFile, writeFileSync } from "jsonfile";
 import { ISettingsFile } from "../src/doc/ISettingsFile";
 import * as DeepMerge from "deepmerge";
 import { JSONSettingsFilePersistence } from "../src/persistance/JSONSettingsFilePersistence";
+import { PersistenceLevel } from "../../security/src/doc/IDefaultCredentialManagerOptions";
 
 /**
  * Type of all the keys in the app settings class
@@ -280,28 +281,11 @@ describe("AppSettings", () => {
                 appSettings = mockAppSettingsInternal(new AppSettings(new JSONSettingsFilePersistence("some-file"), defaultSettings));
             });
 
-            it("should create credential manager options within overrides", () => {
-                appSettings.set("overrides", "CredentialManagerOptions", { persistenceFlag: "CRED_PERSIST_ENTERPRISE" } as any);
+            it("should create credential manager options outside of overrides", () => {
+                appSettings.set("credentialManagerOptions", "persist", PersistenceLevel.Enterprise);
 
-                expect(appSettings.getNamespace("overrides")).toEqual({
-                    ...defaultSettings.overrides,
-                    CredentialManagerOptions: { persistenceFlag: "CRED_PERSIST_ENTERPRISE" }
-                });
-            });
-
-            it("should overwrite existing credential manager options", () => {
-                appSettings.set("overrides", "CredentialManagerOptions", { persistenceFlag: "CRED_PERSIST_ENTERPRISE" } as any);
-                appSettings.set("overrides", "CredentialManagerOptions", {
-                    persistenceFlag: "CRED_PERSIST_ENTERPRISE",
-                    customOption: "test-value"
-                } as any);
-
-                expect(appSettings.getNamespace("overrides")).toEqual({
-                    ...defaultSettings.overrides,
-                    CredentialManagerOptions: {
-                        persistenceFlag: "CRED_PERSIST_ENTERPRISE",
-                        customOption: "test-value"
-                    }
+                expect(appSettings.getNamespace("credentialManagerOptions")).toEqual({
+                    persist: PersistenceLevel.Enterprise
                 });
             });
         });

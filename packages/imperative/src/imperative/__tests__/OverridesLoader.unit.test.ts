@@ -19,6 +19,7 @@ import { CredentialManagerFactory, AbstractCredentialManager } from "../../secur
 import * as path from "path";
 import { ImperativeConfig, Logger } from "../..";
 import { AppSettings } from "../../settings";
+import { PersistenceLevel } from "../../security/src/doc/IDefaultCredentialManagerOptions";
 
 const TEST_MANAGER_NAME = "test manager";
 
@@ -156,7 +157,7 @@ describe("OverridesLoader", () => {
             };
 
             const settingsOptions = {
-                persistenceFlag: "CRED_PERSIST_ENTERPRISE",
+                persist: PersistenceLevel.Enterprise,
                 customOption: "test"
             };
 

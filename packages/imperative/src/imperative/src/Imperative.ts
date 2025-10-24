@@ -447,8 +447,8 @@ export class Imperative {
         const defaultSettings: ISettingsFile = {
             overrides: {
                 CredentialManager: ImperativeConfig.instance.hostPackageName,
-                CredentialManagerOptions: {}
-            }
+            },
+            credentialManagerOptions: {}
         };
 
         AppSettings.initialize(
