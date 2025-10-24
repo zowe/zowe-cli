@@ -169,6 +169,73 @@ describe("AppSettings", () => {
         });
     });
 
+    describe("set", () => {
+        beforeEach(() => {
+            jest.spyOn(JSONSettingsFilePersistence.prototype, "read").mockReturnValueOnce({
+                overrides: {
+                    CredentialManager: "@zowe/cli"
+                }
+            });
+            AppSettings.initialize("file", defaultSettings);
+        });
+
+        it("sets a property in credentialManagerOptions with the given key/value pair", () => {
+            expect(() => AppSettings.instance.set("credentialManagerOptions", "persist", PersistenceLevel.LocalMachine)).not.toThrow();
+        });
+
+        it("throws an error if the given namespace does not exist", () => {
+            expect(() => AppSettings.instance.set("nonexistent" as any, "blah", 123)).toThrow("Namespace nonexistent does not exist");
+        });
+    });
+
+    describe("get", () => {
+        beforeEach(() => {
+            jest.spyOn(JSONSettingsFilePersistence.prototype, "read").mockReturnValueOnce({
+                overrides: {
+                    CredentialManager: false,
+                },
+                credentialManagerOptions: {}
+            });
+            AppSettings.initialize("file", defaultSettings);
+        });
+
+        it("throws an error if the given namespace does not exist", () => {
+            expect(() => AppSettings.instance.get("asdfghjkl" as any, "nonexistent_key")).toThrow("Namespace asdfghjkl does not exist");
+        });
+        
+        it("returns a property in credentialManagerOptions namespace when options are present", () => {
+            AppSettings.instance.set("credentialManagerOptions", "persist", PersistenceLevel.LocalMachine);
+            expect(AppSettings.instance.get("credentialManagerOptions", "persist")).not.toBeUndefined();
+            expect(AppSettings.instance.get("credentialManagerOptions", "persist")).toStrictEqual(PersistenceLevel.LocalMachine);
+        });
+
+        it("returns undefined for a credentialManagerOptions property when no options are present", () => {
+            expect(AppSettings.instance.get("credentialManagerOptions", "persist")).toBeUndefined();
+        });
+    });
+
+    describe("getNamespace", () => {
+        beforeEach(() => {
+            jest.spyOn(JSONSettingsFilePersistence.prototype, "read").mockReturnValueOnce({
+                overrides: {
+                    CredentialManager: false
+                }
+            });
+            AppSettings.initialize("file", defaultSettings);
+        });
+
+        it("returns the object for overrides namespace", () => {
+            expect(AppSettings.instance.getNamespace("overrides")).not.toBeUndefined();
+            expect(AppSettings.instance.getNamespace("overrides")).toStrictEqual(defaultSettings.overrides);
+        });
+
+        it("returns the namespace for credentialManagerOptions when options are present", () => {
+            AppSettings.instance.set("credentialManagerOptions", "persist", PersistenceLevel.LocalMachine);
+            expect(AppSettings.instance.getNamespace("credentialManagerOptions")).not.toBeUndefined();
+            expect(AppSettings.instance.getNamespace("credentialManagerOptions")).toStrictEqual({ persist: PersistenceLevel.LocalMachine });
+        });
+    });
+
     describe("writing settings", () => {
         /**
          * Takes an app settings object and mocks the {@link IAppSettingsAllMethods#writeSettingsFile} method
