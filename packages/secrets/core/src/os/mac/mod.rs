@@ -186,3 +186,19 @@ pub fn find_credentials(
         Err(err) => Err(KeyringError::from(err)),
     }
 }
+
+/// Returns the certificate (decoded from base64) stored as the password for the given service/account.
+pub fn get_certificate(service: &String, account: &String) -> Result<Option<Vec<u8>>, KeyringError> {
+    let keychain = SecKeychain::default().unwrap();
+    match keychain.find_password(service.as_str(), account.as_str()) {
+        Ok((pw, _)) => {
+            let pw_str = String::from_utf8(pw.to_owned())?;
+            match base64::decode(&pw_str) {
+                Ok(bytes) => Ok(Some(bytes)),
+                Err(err) => Err(KeyringError::Utf8(format!("Failed to decode base64 certificate: {}", err))),
+            }
+        }
+        Err(err) if err.code() == ERR_SEC_ITEM_NOT_FOUND => Ok(None),
+        Err(err) => Err(KeyringError::from(err)),
+    }
+}

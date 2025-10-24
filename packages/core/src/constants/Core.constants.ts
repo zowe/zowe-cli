@@ -120,6 +120,26 @@ export class ProfileConstants {
     };
 
     /**
+     * Option used to specify the credential-manager account name that holds the certificate bytes
+     */
+    public static readonly BASE_OPTION_CERT_ACCOUNT: ICommandOptionDefinition = {
+        name: "cert-account",
+        description: "The credential-manager account name that stores the certificate bytes to use for authentication.",
+        type: "string",
+        group: ProfileConstants.BASE_CONNECTION_OPTION_GROUP
+    };
+
+    /**
+     * Option used to specify the credential-manager account name that holds the certificate key bytes
+     */
+    public static readonly BASE_OPTION_CERT_KEY_ACCOUNT: ICommandOptionDefinition = {
+        name: "cert-key-account",
+        description: "The credential-manager account name that stores the certificate key bytes to use for authentication.",
+        type: "string",
+        group: ProfileConstants.BASE_CONNECTION_OPTION_GROUP
+    };
+
+    /**
      * Option used to specify the path to the certificate file for authentication
      */
     // public static readonly BASE_OPTION_CERT_FILE_PASSPHRASE: ICommandOptionDefinition = {
@@ -378,6 +398,15 @@ export class ProfileConstants {
                     //     type: "string",
                     //     secure: true,
                     //     optionDefinition: BASE_OPTION_CERT_FILE_PASSPHRASE
+                }
+                ,
+                certAccount: {
+                    type: "string",
+                    optionDefinition: ProfileConstants.BASE_OPTION_CERT_ACCOUNT
+                },
+                certKeyAccount: {
+                    type: "string",
+                    optionDefinition: ProfileConstants.BASE_OPTION_CERT_KEY_ACCOUNT
                 }
             },
             required: []

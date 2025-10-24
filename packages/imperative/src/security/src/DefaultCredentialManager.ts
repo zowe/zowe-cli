@@ -333,6 +333,88 @@ export class DefaultCredentialManager extends AbstractCredentialManager {
         return wasDeleted;
     }
 
+    /**
+     * Helper to load a certificate (binary or PEM) from the credential vault.
+     * This uses the underlying keyring binding's `getCertificate` which returns a Buffer or null.
+     * If multiple services are configured, the first successful value is returned.
+     * @param account The account name to look up in the credential vault
+     * @param optional If true, failure to find a certificate will return null instead of throwing
+     */
+    public async loadCertificate(account: string, optional?: boolean): Promise<Buffer | null> {
+        this.checkForKeytar();
+
+        // Try to load certificate using the first successful value from our known services
+        let cert: Buffer | null = null;
+        for (const nextService of this.allServices) {
+            try {
+                // keyring.getCertificate returns Promise<Buffer | null>
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+                const candidate: Buffer | null = await (this.keytar as any).getCertificate(nextService, account);
+                if (candidate != null) {
+                    cert = candidate;
+                    break;
+                }
+            } catch (err) {
+                // swallow and try next service
+            }
+        }
+
+        if (cert == null && !optional) {
+            throw new ImperativeError({
+                msg: "Unable to load certificate from credential manager.",
+                additionalDetails: this.getMissingEntryMessage(account)
+            });
+        }
+
+        return cert;
+    }
+
+    /**
+     * Synchronously loads a certificate from the credential vault.
+     * This uses the underlying keyring binding's `getCertificateSync` which returns a Buffer or null.
+     * If multiple services are configured, the first successful value is returned.
+     * @param account The account name to look up in the credential vault
+     * @param optional If true, failure to find a certificate will return null instead of throwing
+     */
+    public loadCertificateSync(account: string, optional?: boolean): Buffer | null {
+        this.checkForKeytar();
+
+        // Try to load certificate using the first successful value from our known services
+        let cert: Buffer | null = null;
+        for (const nextService of this.allServices) {
+            try {
+                // prefer synchronous binding when available so callers remain synchronous
+                if ((this.keytar as any).getCertificateSync) {
+                    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+                    const candidate: Buffer | null = (this.keytar as any).getCertificateSync(nextService, account);
+                    if (candidate != null) {
+                        cert = candidate;
+                        break;
+                    }
+                } else {
+                    // synchronous binding not available; cannot perform async call from a sync method
+                    if (optional) {
+                        return null;
+                    }
+                    throw new ImperativeError({
+                        msg: "Synchronous certificate retrieval is not available in the installed keyring binding. Please ensure the native module is up-to-date or use the async loadCertificate().",
+                        additionalDetails: this.getMissingEntryMessage(account)
+                    });
+                }
+            } catch (err) {
+                // swallow and try next service
+            }
+        }
+
+        if (cert == null && !optional) {
+            throw new ImperativeError({
+                msg: "Unable to load certificate from credential manager.",
+                additionalDetails: this.getMissingEntryMessage(account)
+            });
+        }
+
+        return cert;
+    }
     private getMissingEntryMessage(account: string) {
         let listOfServices = `  Service = `;
         for (const service of this.allServices) {
