@@ -32,7 +32,7 @@
  * strings and undefined values.
  */
 
-import { ICredentialManagerConstructor, ICredentialManagerOptions } from "../../../security";
+import { ICredentialManagerConstructor } from "../../../security";
 import { IConstructor } from "../../../interfaces";
 
 /**
