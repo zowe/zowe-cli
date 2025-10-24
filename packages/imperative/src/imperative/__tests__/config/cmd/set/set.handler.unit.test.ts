@@ -26,6 +26,7 @@ import * as lodash from "lodash";
 import * as fs from "fs";
 import { setupConfigToLoad } from "../../../../../../__tests__/src/TestUtil";
 import { EventOperator, EventUtils } from "../../../../../events";
+import { PersistenceValue } from "../../../../../security/src/doc/IDefaultCredentialManagerOptions";
 
 const getIHandlerParametersObject = (): IHandlerParameters => {
     const x: any = {
@@ -181,7 +182,7 @@ describe("Configuration Set command handler", () => {
         }
         expect(keytarGetPasswordSpy).toHaveBeenCalledTimes(1);
         expect(keytarSetPasswordSpy).toHaveBeenCalledTimes(1);
-        expect(keytarSetPasswordSpy).toHaveBeenCalledWith("Zowe", "secure_config_props", fakeSecureDataExpected);
+        expect(keytarSetPasswordSpy).toHaveBeenCalledWith("Zowe", "secure_config_props", fakeSecureDataExpected, PersistenceValue.Enterprise);
         expect(writeFileSyncSpy).toHaveBeenCalledTimes(1);
         expect(writeFileSyncSpy).toHaveBeenNthCalledWith(1, fakeProjPath, JSON.stringify(compObj, null, 4)); // Config
     });
@@ -243,7 +244,7 @@ describe("Configuration Set command handler", () => {
         }
         expect(keytarGetPasswordSpy).toHaveBeenCalledTimes(1); // No pre-existing secure values, only the combine
         expect(keytarSetPasswordSpy).toHaveBeenCalledTimes(1);
-        expect(keytarSetPasswordSpy).toHaveBeenCalledWith("Zowe", "secure_config_props", fakeSecureDataExpected);
+        expect(keytarSetPasswordSpy).toHaveBeenCalledWith("Zowe", "secure_config_props", fakeSecureDataExpected, PersistenceValue.Enterprise);
         expect(writeFileSyncSpy).toHaveBeenCalledTimes(1);
         expect(writeFileSyncSpy).toHaveBeenNthCalledWith(1, fakeProjUserPath, JSON.stringify(compObj, null, 4)); // Config
     });
@@ -308,7 +309,7 @@ describe("Configuration Set command handler", () => {
         }
         expect(keytarGetPasswordSpy).toHaveBeenCalledTimes(1);
         expect(keytarSetPasswordSpy).toHaveBeenCalledTimes(1);
-        expect(keytarSetPasswordSpy).toHaveBeenCalledWith("Zowe", "secure_config_props", fakeSecureDataExpected);
+        expect(keytarSetPasswordSpy).toHaveBeenCalledWith("Zowe", "secure_config_props", fakeSecureDataExpected, PersistenceValue.Enterprise);
         expect(writeFileSyncSpy).toHaveBeenCalledTimes(1);
         expect(writeFileSyncSpy).toHaveBeenNthCalledWith(1, fakeGlobalPath, JSON.stringify(compObj, null, 4)); // Config
     });
@@ -371,7 +372,7 @@ describe("Configuration Set command handler", () => {
         }
         expect(keytarGetPasswordSpy).toHaveBeenCalledTimes(1); // No pre-existing secure values, only the combine
         expect(keytarSetPasswordSpy).toHaveBeenCalledTimes(1);
-        expect(keytarSetPasswordSpy).toHaveBeenCalledWith("Zowe", "secure_config_props", fakeSecureDataExpected);
+        expect(keytarSetPasswordSpy).toHaveBeenCalledWith("Zowe", "secure_config_props", fakeSecureDataExpected, PersistenceValue.Enterprise);
         expect(writeFileSyncSpy).toHaveBeenCalledTimes(1);
         expect(writeFileSyncSpy).toHaveBeenNthCalledWith(1, fakeGlobalUserPath, JSON.stringify(compObj, null, 4)); // Config
     });
@@ -429,7 +430,7 @@ describe("Configuration Set command handler", () => {
         }
         expect(keytarGetPasswordSpy).toHaveBeenCalledTimes(1);
         expect(keytarSetPasswordSpy).toHaveBeenCalledTimes(1);
-        expect(keytarSetPasswordSpy).toHaveBeenCalledWith("Zowe", "secure_config_props", fakeSecureDataExpected);
+        expect(keytarSetPasswordSpy).toHaveBeenCalledWith("Zowe", "secure_config_props", fakeSecureDataExpected, PersistenceValue.Enterprise);
         expect(writeFileSyncSpy).toHaveBeenCalledTimes(1);
         expect(writeFileSyncSpy).toHaveBeenNthCalledWith(1, fakeProjPath, JSON.stringify(compObj, null, 4)); // Config
     });
@@ -486,7 +487,7 @@ describe("Configuration Set command handler", () => {
         }
         expect(keytarGetPasswordSpy).toHaveBeenCalledTimes(1); // No pre-existing secure values, only the combine
         expect(keytarSetPasswordSpy).toHaveBeenCalledTimes(1);
-        expect(keytarSetPasswordSpy).toHaveBeenCalledWith("Zowe", "secure_config_props", fakeSecureDataExpected);
+        expect(keytarSetPasswordSpy).toHaveBeenCalledWith("Zowe", "secure_config_props", fakeSecureDataExpected, PersistenceValue.Enterprise);
         expect(writeFileSyncSpy).toHaveBeenCalledTimes(1);
         expect(writeFileSyncSpy).toHaveBeenNthCalledWith(1, fakeGlobalUserPath, JSON.stringify(compObj, null, 4)); // Config
     });
@@ -545,7 +546,7 @@ describe("Configuration Set command handler", () => {
         }
         expect(keytarGetPasswordSpy).toHaveBeenCalledTimes(1);
         expect(keytarSetPasswordSpy).toHaveBeenCalledTimes(1);
-        expect(keytarSetPasswordSpy).toHaveBeenCalledWith("Zowe", "secure_config_props", fakeSecureDataExpected);
+        expect(keytarSetPasswordSpy).toHaveBeenCalledWith("Zowe", "secure_config_props", fakeSecureDataExpected, PersistenceValue.Enterprise);
         expect(writeFileSyncSpy).toHaveBeenCalledTimes(1);
         expect(writeFileSyncSpy).toHaveBeenNthCalledWith(1, fakeGlobalPath, JSON.stringify(compObj, null, 4)); // Config
     });
@@ -603,7 +604,7 @@ describe("Configuration Set command handler", () => {
         }
         expect(keytarGetPasswordSpy).toHaveBeenCalledTimes(1); // No pre-existing secure values, only the combine
         expect(keytarSetPasswordSpy).toHaveBeenCalledTimes(1);
-        expect(keytarSetPasswordSpy).toHaveBeenCalledWith("Zowe", "secure_config_props", fakeSecureDataExpected);
+        expect(keytarSetPasswordSpy).toHaveBeenCalledWith("Zowe", "secure_config_props", fakeSecureDataExpected, PersistenceValue.Enterprise);
         expect(writeFileSyncSpy).toHaveBeenCalledTimes(1);
         expect(writeFileSyncSpy).toHaveBeenNthCalledWith(1, fakeGlobalUserPath, JSON.stringify(compObj, null, 4)); // Config
     });
@@ -667,7 +668,7 @@ describe("Configuration Set command handler", () => {
         }
         expect(keytarGetPasswordSpy).toHaveBeenCalledTimes(1);
         expect(keytarSetPasswordSpy).toHaveBeenCalledTimes(1);
-        expect(keytarSetPasswordSpy).toHaveBeenCalledWith("Zowe", "secure_config_props", fakeSecureDataExpected);
+        expect(keytarSetPasswordSpy).toHaveBeenCalledWith("Zowe", "secure_config_props", fakeSecureDataExpected, PersistenceValue.Enterprise);
         expect(writeFileSyncSpy).toHaveBeenCalledTimes(1);
         expect(writeFileSyncSpy).toHaveBeenNthCalledWith(1, fakeProjPath, JSON.stringify(compObj, null, 4)); // Config
     });
@@ -733,7 +734,7 @@ describe("Configuration Set command handler", () => {
         }
         expect(keytarGetPasswordSpy).toHaveBeenCalledTimes(1);
         expect(keytarSetPasswordSpy).toHaveBeenCalledTimes(1);
-        expect(keytarSetPasswordSpy).toHaveBeenCalledWith("Zowe", "secure_config_props", fakeSecureDataExpected);
+        expect(keytarSetPasswordSpy).toHaveBeenCalledWith("Zowe", "secure_config_props", fakeSecureDataExpected, PersistenceValue.Enterprise);
         expect(promptSpy).toHaveBeenCalledTimes(1);
         expect(writeFileSyncSpy).toHaveBeenCalledTimes(1);
         expect(writeFileSyncSpy).toHaveBeenNthCalledWith(1, fakeProjPath, JSON.stringify(compObj, null, 4)); // Config
@@ -797,7 +798,7 @@ describe("Configuration Set command handler", () => {
         }
         expect(keytarGetPasswordSpy).toHaveBeenCalledTimes(1);
         expect(keytarSetPasswordSpy).toHaveBeenCalledTimes(1);
-        expect(keytarSetPasswordSpy).toHaveBeenCalledWith("Zowe", "secure_config_props", fakeSecureDataExpected);
+        expect(keytarSetPasswordSpy).toHaveBeenCalledWith("Zowe", "secure_config_props", fakeSecureDataExpected, PersistenceValue.Enterprise);
         expect(writeFileSyncSpy).toHaveBeenCalledTimes(1);
         expect(writeFileSyncSpy).toHaveBeenNthCalledWith(1, fakeProjPath, JSON.stringify(compObj, null, 4)); // Config
     });
@@ -860,7 +861,7 @@ describe("Configuration Set command handler", () => {
         }
         expect(keytarGetPasswordSpy).toHaveBeenCalledTimes(1);
         expect(keytarSetPasswordSpy).toHaveBeenCalledTimes(1);
-        expect(keytarSetPasswordSpy).toHaveBeenCalledWith("Zowe", "secure_config_props", fakeSecureDataExpected);
+        expect(keytarSetPasswordSpy).toHaveBeenCalledWith("Zowe", "secure_config_props", fakeSecureDataExpected, PersistenceValue.Enterprise);
         expect(writeFileSyncSpy).toHaveBeenCalledTimes(1);
         expect(writeFileSyncSpy).toHaveBeenNthCalledWith(1, fakeProjPath, JSON.stringify(compObj, null, 4)); // Config
     });
@@ -924,7 +925,7 @@ describe("Configuration Set command handler", () => {
         }
         expect(keytarGetPasswordSpy).toHaveBeenCalledTimes(1);
         expect(keytarSetPasswordSpy).toHaveBeenCalledTimes(1);
-        expect(keytarSetPasswordSpy).toHaveBeenCalledWith("Zowe", "secure_config_props", fakeSecureDataExpected);
+        expect(keytarSetPasswordSpy).toHaveBeenCalledWith("Zowe", "secure_config_props", fakeSecureDataExpected, PersistenceValue.Enterprise);
         expect(writeFileSyncSpy).toHaveBeenCalledTimes(1);
         expect(writeFileSyncSpy).toHaveBeenNthCalledWith(1, fakeProjPath, JSON.stringify(compObj, null, 4)); // Config
     });

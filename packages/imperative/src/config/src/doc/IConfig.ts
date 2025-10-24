@@ -10,6 +10,7 @@
 */
 
 import { IConfigProfile } from "./IConfigProfile";
+import { ICredentialManagerOptions } from "../../../security/src/doc/ICredentialManagerOptions";
 
 export interface IConfig {
     $schema?: string;
@@ -17,4 +18,11 @@ export interface IConfig {
     profiles: { [key: string]: IConfigProfile };
     autoStore?: boolean;
     plugins?: string[];
+    /**
+     * Options to pass to the credential manager when it is initialized.
+     * Allows configuration of credential manager behavior without relying on environment variables.
+     * The structure of options depends on the specific credential manager being used.
+     * @type {ICredentialManagerOptions}
+     */
+    credentialManagerOptions?: ICredentialManagerOptions;
 }

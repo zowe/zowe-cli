@@ -19,6 +19,7 @@ import { CredentialManagerFactory, AbstractCredentialManager } from "../../secur
 import * as path from "path";
 import { ImperativeConfig, Logger } from "../..";
 import { AppSettings } from "../../settings";
+import { PersistenceLevel } from "../../security/src/doc/IDefaultCredentialManagerOptions";
 
 const TEST_MANAGER_NAME = "test manager";
 
@@ -122,7 +123,13 @@ describe("OverridesLoader", () => {
 
             jest.spyOn(AppSettings, "initialized", "get").mockReturnValue(true);
             jest.spyOn(AppSettings, "instance", "get").mockReturnValue({
-                getNamespace: () => ({ CredentialManager: "host-package" })
+                getNamespace: (namespace: string) => {
+                    if (namespace === "overrides") {
+                        return { CredentialManager: "host-package" };
+                    }
+
+                    return undefined;
+                }
             } as any);
             await OverridesLoader.load(config, packageJson);
 
@@ -131,8 +138,51 @@ describe("OverridesLoader", () => {
                 Manager: undefined,
                 displayName: config.productDisplayName,
                 invalidOnFailure: false,
-                service: config.name
+                service: config.name,
             });
+        });
+
+        it("should pass credential manager options from settings to the credential manager", async () => {
+            const config: IImperativeConfig = {
+                name: "ABCD",
+                overrides: {},
+                productDisplayName: "a fake CLI"
+            };
+
+            const packageJson = {
+                name: "host-package",
+                dependencies: {
+                    "@zowe/secrets-for-zowe-sdk": "1.0"
+                }
+            };
+
+            const settingsOptions = {
+                persist: PersistenceLevel.Enterprise,
+                customOption: "test"
+            };
+
+            jest.spyOn(AppSettings, "initialized", "get").mockReturnValue(true);
+            const appSettingsMock = jest.spyOn(AppSettings, "instance", "get").mockReturnValue({
+                getNamespace: (namespace: string) => {
+                    if (namespace === "overrides") {
+                        return {
+                            CredentialManager: "host-package"
+                        };
+                    }
+                    if (namespace === "credentialManagerOptions") {
+                        return settingsOptions;
+                    }
+                    return undefined;
+                }
+            } as any);
+
+            await OverridesLoader.load(config, packageJson);
+
+            expect(CredentialManagerFactory.initialize).toHaveBeenCalledTimes(1);
+            expect(CredentialManagerFactory.initialize).toHaveBeenCalledWith(expect.objectContaining({
+                options: expect.objectContaining(settingsOptions)
+            }));
+            appSettingsMock.mockRestore();
         });
 
         describe("should load a credential manager specified by the user", () => {
@@ -141,8 +191,8 @@ describe("OverridesLoader", () => {
                     name: "EFGH",
                     overrides: {
                         CredentialManager: class extends AbstractCredentialManager {
-                            constructor(service: string) {
-                                super(service, TEST_MANAGER_NAME);
+                            constructor(service: string, displayName?: string, options?: import("../../security").ICredentialManagerOptions) {
+                                super(service, displayName || TEST_MANAGER_NAME, options);
                             }
 
                             protected async deleteCredentials(_account: string): Promise<void> {

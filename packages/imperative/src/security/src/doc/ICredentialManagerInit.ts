@@ -10,6 +10,7 @@
 */
 
 import { IImperativeOverrides } from "../../../imperative/src/doc/IImperativeOverrides";
+import { ICredentialManagerOptions } from "./ICredentialManagerOptions";
 
 export interface ICredentialManagerInit {
     /**
@@ -48,4 +49,11 @@ export interface ICredentialManagerInit {
      * @type {boolean}
      */
     invalidOnFailure?: boolean;
+    /**
+     * Options to pass to the credential manager when it is initialized.
+     * Allows configuration of credential manager behavior without relying on environment variables.
+     * The structure of options depends on the specific credential manager being used.
+     * @type {ICredentialManagerOptions}
+     */
+    options?: ICredentialManagerOptions;
 }

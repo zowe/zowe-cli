@@ -14,6 +14,7 @@ import { ImperativeError } from "../../error";
 import { Logger } from "../../logger";
 
 import type { keyring as keytar } from "@zowe/secrets-for-zowe-sdk"; // Used for typing purposes only
+import { IDefaultCredentialManagerOptions, PersistenceLevel, PersistenceValue } from "./doc/IDefaultCredentialManagerOptions";
 
 /**
  * Default Credential Manager is our implementation of the Imperative Credential Manager. This manager invokes methods
@@ -71,6 +72,12 @@ export class DefaultCredentialManager extends AbstractCredentialManager {
     private allServices: string[];
 
     /**
+     * Defines the persistence level for credentials Windows environments.
+     * The default persistence value is CRED_PERSIST_ENTERPRISE (0x3) for backwards compatibility w/ node-keytar.
+     */
+    private persistValueWin32 = PersistenceValue.Enterprise;
+
+    /**
      * Maximum credential length allowed by Windows 7 and newer.
      *
      * We don't support older versions of Windows where the limit is 512 bytes.
@@ -82,12 +89,26 @@ export class DefaultCredentialManager extends AbstractCredentialManager {
      *
      * @param {string} service The service string to send to the superclass constructor.
      * @param {string} displayName The display name for this credential manager to send to the superclass constructor
+     * @param {ICredentialManagerOptions} options Optional configuration options for the credential manager
      */
-    constructor(service: string, displayName: string = "default credential manager") {
+    constructor(service: string, displayName: string = "default credential manager", options?: IDefaultCredentialManagerOptions) {
         // Always ensure that a manager instantiates the super class, even if the
         // constructor doesn't do anything. Who knows what things might happen in
         // the abstract class initialization in the future.
-        super(service, displayName);
+        super(service, displayName, options);
+        switch (options?.persist) {
+            case PersistenceLevel.SessionOnly:
+                this.persistValueWin32 = PersistenceValue.SessionOnly;
+                break;
+            case PersistenceLevel.LocalMachine:
+                this.persistValueWin32 = PersistenceValue.LocalMachine;
+                break;
+            case PersistenceLevel.Enterprise:
+                this.persistValueWin32 = PersistenceValue.Enterprise;
+                break;
+            default:
+                break;
+        }
 
         /* Gather all services. We will load secure properties for the first
         * successful service found in the order that they are placed in this array.
@@ -300,13 +321,13 @@ export class DefaultCredentialManager extends AbstractCredentialManager {
             let index = 1;
             while (value.length > 0) {
                 const tempValue = value.slice(0, this.WIN32_CRED_MAX_STRING_LENGTH);
-                await this.keytar.setPassword(service, `${account}-${index}`, tempValue);
+                await this.keytar.setPassword(service, `${account}-${index}`, tempValue, this.persistValueWin32);
                 value = value.slice(this.WIN32_CRED_MAX_STRING_LENGTH);
                 index++;
             }
         } else {
             // Fall back to simple storage of single-field value
-            await this.keytar.setPassword(service, account, value);
+            await this.keytar.setPassword(service, account, value, this.persistValueWin32);
         }
     }
 

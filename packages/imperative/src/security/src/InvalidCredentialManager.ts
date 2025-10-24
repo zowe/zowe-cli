@@ -11,6 +11,7 @@
 
 import { AbstractCredentialManager, SecureCredential } from "./abstract/AbstractCredentialManager";
 import { BadCredentialManagerError } from "./errors/BadCredentialManagerError";
+import { ICredentialManagerOptions } from "./doc/ICredentialManagerOptions";
 
 /**
  * **NOTE** THIS CLASS SHOULD NOT BE EXPORTED FOR PUBLIC CONSUMPTION.
@@ -23,12 +24,14 @@ export class InvalidCredentialManager extends AbstractCredentialManager {
      * Construct the credential manager object.
      * @param service A service that needs to be passed to the superclass
      * @param causeError The load failure that has occurred
+     * @param options Optional configuration options for the credential manager (not used in this implementation)
      */
     constructor(
         protected readonly service: string,
-        private readonly causeError: Error
+        private readonly causeError: Error,
+        options?: ICredentialManagerOptions
     ) {
-        super(service, "Imperative Invalid Credential Manager");
+        super(service, "Imperative Invalid Credential Manager", options);
     }
 
     protected async deleteCredentials(_account: string): Promise<void> {

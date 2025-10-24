@@ -15,6 +15,7 @@ import { Module } from "module";
 import { DefaultCredentialManager } from "..";
 import { keyring as keytar } from "@zowe/secrets-for-zowe-sdk";
 import { ImperativeError } from "../../error";
+import { PersistenceLevel, PersistenceValue } from "../src/doc/IDefaultCredentialManagerOptions";
 
 const winMaxCredentialLength = 2560;
 
@@ -28,6 +29,49 @@ describe("DefaultCredentialManager", () => {
         const manager = new DefaultCredentialManager(service);
 
         expect((manager as any).service).toEqual(service);
+    });
+
+    describe("constructor switch statement", () => {
+        it("should set persistValueWin32 to SessionOnly when persist option is SessionOnly", () => {
+            const service = "imperative";
+            const manager = new DefaultCredentialManager(service, "test manager", {
+                persist: PersistenceLevel.SessionOnly
+            });
+
+            expect((manager as any).persistValueWin32).toEqual(PersistenceValue.SessionOnly);
+        });
+
+        it("should set persistValueWin32 to LocalMachine when persist option is LocalMachine", () => {
+            const service = "imperative";
+            const manager = new DefaultCredentialManager(service, "test manager", {
+                persist: PersistenceLevel.LocalMachine
+            });
+
+            expect((manager as any).persistValueWin32).toEqual(PersistenceValue.LocalMachine);
+        });
+
+        it("should set persistValueWin32 to Enterprise when persist option is Enterprise", () => {
+            const service = "imperative";
+            const manager = new DefaultCredentialManager(service, "test manager", {
+                persist: PersistenceLevel.Enterprise
+            });
+
+            expect((manager as any).persistValueWin32).toEqual(PersistenceValue.Enterprise);
+        });
+
+        it("should default to Enterprise when no persist option is provided", () => {
+            const service = "imperative";
+            const manager = new DefaultCredentialManager(service, "test manager");
+
+            expect((manager as any).persistValueWin32).toEqual(PersistenceValue.Enterprise);
+        });
+
+        it("should default to Enterprise when options object is undefined", () => {
+            const service = "imperative";
+            const manager = new DefaultCredentialManager(service, "test manager", undefined);
+
+            expect((manager as any).persistValueWin32).toEqual(PersistenceValue.Enterprise);
+        });
     });
 
     describe("instance methods", () => {
@@ -232,7 +276,8 @@ describe("DefaultCredentialManager", () => {
 
                     expect(privateManager.checkForKeytar).toHaveBeenCalledTimes(1);
                     expect(keytar.deletePassword).toHaveBeenCalled();
-                    expect(keytar.setPassword).toHaveBeenLastCalledWith(privateManager.service, values.account, values.credentials);
+                    expect(keytar.setPassword).toHaveBeenLastCalledWith(
+                        privateManager.service, values.account, values.credentials, PersistenceValue.Enterprise);
                 });
             });
 
@@ -265,7 +310,7 @@ describe("DefaultCredentialManager", () => {
                     expect(keytar.deletePassword).toHaveBeenCalledWith(privateManager.service, values.account);
                     expect(keytar.setPassword).toHaveBeenCalledTimes(numFields);
                     expect(keytar.setPassword).toHaveBeenCalledWith(privateManager.service, `${values.account}-1`,
-                        longCredentials.slice(0, winMaxCredentialLength));
+                        longCredentials.slice(0, winMaxCredentialLength), PersistenceValue.Enterprise);
                 });
 
                 it("should delete credentials that exceed max length", async () => {
