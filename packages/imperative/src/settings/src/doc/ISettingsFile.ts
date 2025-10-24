@@ -39,5 +39,12 @@ export interface ISettingsFile {
      * The overrides object determines which items will be used for any overrides in
      * the overrides loader. Overrides can come from the base cli or plugins.
      */
-    overrides: OverrideSettings & { credentialManagerOptions?: Record<string, unknown> };
+    overrides: OverrideSettings;
+
+    /**
+     * Optional configuration values supplied to the active credential manager.
+     * This is stored at the top level (not in overrides) to maintain backward
+     * compatibility with older CLI versions.
+     */
+    credentialManagerOptions?: Record<string, unknown>;
 }

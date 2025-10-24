@@ -356,7 +356,7 @@ describe("CredentialManagerOverride", () => {
             expect(readJsonSync).toHaveBeenCalledWith(expectedSettings.fileName);
             expect(writeJsonSync).toHaveBeenCalledTimes(1);
             expect(writtenJsonSettings.overrides.CredentialManager).toEqual(knownCredMgrDisplayNm);
-            expect(writtenJsonSettings.overrides.CredentialManagerOptions).toEqual({});
+            expect(writtenJsonSettings.credentialManagerOptions).toEqual({});
         });
 
         it("should persist credential manager options when provided", () => {
@@ -374,7 +374,7 @@ describe("CredentialManagerOverride", () => {
             CredentialManagerOverride.recordCredMgrInConfig(knownCredMgrDisplayNm, customOptions);
 
             expect(writtenJsonSettings.overrides.CredentialManager).toEqual(knownCredMgrDisplayNm);
-            expect(writtenJsonSettings.overrides.CredentialManagerOptions).toEqual(customOptions);
+            expect(writtenJsonSettings.credentialManagerOptions).toEqual(customOptions);
         });
     });
 
@@ -476,7 +476,7 @@ describe("CredentialManagerOverride", () => {
             const customOptions = { persistenceFlag: "CRED_PERSIST_LOCAL_MACHINE" };
             const credMgrToReplace = CredentialManagerOverride.getKnownCredMgrs()[1].credMgrDisplayName as string;
             expectedSettings.json.overrides.CredentialManager = credMgrToReplace;
-            expectedSettings.json.overrides.CredentialManagerOptions = { ...customOptions };
+            expectedSettings.json.credentialManagerOptions = { ...customOptions };
 
             jest.spyOn(fsExtra, "readJsonSync").mockImplementation(() => {
                 return expectedSettings.json;
@@ -489,9 +489,9 @@ describe("CredentialManagerOverride", () => {
                 expectedSettings.fileName,
                 expect.objectContaining({
                     overrides: expect.objectContaining({
-                        CredentialManager: CredentialManagerOverride.DEFAULT_CRED_MGR_NAME,
-                        CredentialManagerOptions: {}
-                    })
+                        CredentialManager: CredentialManagerOverride.DEFAULT_CRED_MGR_NAME
+                    }),
+                    credentialManagerOptions: {}
                 }),
                 {spaces: 2}
             );
@@ -511,9 +511,7 @@ describe("CredentialManagerOverride", () => {
             expect(writeJsonSync).toHaveBeenCalledWith(
                 expectedSettings.fileName,
                 expect.objectContaining({
-                    overrides: expect.objectContaining({
-                        CredentialManagerOptions: newOptions
-                    })
+                    credentialManagerOptions: newOptions
                 }),
                 {spaces: 2}
             );
@@ -523,7 +521,7 @@ describe("CredentialManagerOverride", () => {
     describe("getCredentialManagerOptions", () => {
         it("should return credential manager options from the settings file", () => {
             const storedOptions = { persistenceFlag: "CRED_PERSIST_LOCAL_MACHINE" };
-            expectedSettings.json.overrides.CredentialManagerOptions = storedOptions;
+            expectedSettings.json.credentialManagerOptions = storedOptions;
             jest.spyOn(fsExtra, "readJsonSync").mockImplementation(() => {
                 return expectedSettings.json;
             });

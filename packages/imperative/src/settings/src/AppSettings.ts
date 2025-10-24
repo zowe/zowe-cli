@@ -128,7 +128,7 @@ export class AppSettings {
      * @param key Name of a setting option to set
      * @param value
      */
-    public set(namespace: keyof ISettingsFile, key: string , value: SettingValue): void {
+    public set(namespace: keyof ISettingsFile, key: string, value: SettingValue): void {
         const namespaceObj = this.settings[namespace];
         if (namespaceObj == null || typeof namespaceObj !== "object") {
             throw new ImperativeError({msg: `Namespace ${namespace} does not exist`});

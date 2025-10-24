@@ -89,11 +89,10 @@ export class OverridesLoader {
             // Load credential manager options from team config if available
             let credentialManagerOptions: ICredentialManagerOptions | undefined;
             if (AppSettings.initialized) {
-                const overridesSettings = AppSettings.instance.getNamespace("overrides") as
-                    { CredentialManagerOptions?: ICredentialManagerOptions } | undefined;
-                const settingsOptions = overridesSettings?.CredentialManagerOptions;
-                if (settingsOptions && Object.keys(settingsOptions).length > 0) {
-                    credentialManagerOptions = { ...settingsOptions };
+                // Try top-level property first (new location)
+                const topLevelOptions = AppSettings.instance.getNamespace("credentialManagerOptions") as ICredentialManagerOptions | undefined;
+                if (topLevelOptions && Object.keys(topLevelOptions).length > 0) {
+                    credentialManagerOptions = { ...topLevelOptions };
                 }
             }
 

@@ -152,7 +152,7 @@ export class CredentialManagerOverride {
 
         // set to the new credMgr and write the settings file
         settings.json.overrides.CredentialManager = newCredMgrName;
-        settings.json.overrides.CredentialManagerOptions = options ?? {};
+        settings.json.credentialManagerOptions = options ?? {};
         this.persistSettings(settings);
     }
 
@@ -200,7 +200,7 @@ export class CredentialManagerOverride {
 
         // reset to our default credMgr and write the settings file
         settings.json.overrides.CredentialManager = this.DEFAULT_CRED_MGR_NAME;
-        settings.json.overrides.CredentialManagerOptions = {};
+        settings.json.credentialManagerOptions = {};
         this.persistSettings(settings);
     }
 
@@ -223,7 +223,7 @@ export class CredentialManagerOverride {
             });
         }
 
-        settings.json.overrides.CredentialManagerOptions = options ?? {};
+        settings.json.credentialManagerOptions = options ?? {};
         this.persistSettings(settings);
     }
 
@@ -236,7 +236,7 @@ export class CredentialManagerOverride {
     public static getCredentialManagerOptions(): ICredentialManagerOptions {
         try {
             const settings = this.getSettingsFileJson();
-            return settings.json.overrides.CredentialManagerOptions as Record<string, unknown> ?? {};
+            return settings.json.credentialManagerOptions as Record<string, unknown> ?? {};
         } catch {
             return {};
         }

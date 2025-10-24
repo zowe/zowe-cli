@@ -122,7 +122,13 @@ describe("OverridesLoader", () => {
 
             jest.spyOn(AppSettings, "initialized", "get").mockReturnValue(true);
             jest.spyOn(AppSettings, "instance", "get").mockReturnValue({
-                getNamespace: () => ({ CredentialManager: "host-package" })
+                getNamespace: (namespace: string) => {
+                    if (namespace === "overrides") {
+                        return { CredentialManager: "host-package" };
+                    }
+
+                    return undefined;
+                }
             } as any);
             await OverridesLoader.load(config, packageJson);
 
@@ -131,7 +137,7 @@ describe("OverridesLoader", () => {
                 Manager: undefined,
                 displayName: config.productDisplayName,
                 invalidOnFailure: false,
-                service: config.name
+                service: config.name,
             });
         });
 
@@ -155,17 +161,18 @@ describe("OverridesLoader", () => {
             };
 
             jest.spyOn(AppSettings, "initialized", "get").mockReturnValue(true);
-            jest.spyOn(AppSettings, "instance", "get").mockReturnValue({
+            const appSettingsMock = jest.spyOn(AppSettings, "instance", "get").mockReturnValue({
                 getNamespace: (namespace: string) => {
                     if (namespace === "overrides") {
                         return {
-                            CredentialManager: "host-package",
-                            CredentialManagerOptions: settingsOptions
+                            CredentialManager: "host-package"
                         };
                     }
+                    if (namespace === "credentialManagerOptions") {
+                        return settingsOptions;
+                    }
                     return undefined;
-                },
-                get: () => "host-package"
+                }
             } as any);
 
             await OverridesLoader.load(config, packageJson);
@@ -174,6 +181,7 @@ describe("OverridesLoader", () => {
             expect(CredentialManagerFactory.initialize).toHaveBeenCalledWith(expect.objectContaining({
                 options: expect.objectContaining(settingsOptions)
             }));
+            appSettingsMock.mockRestore();
         });
 
         describe("should load a credential manager specified by the user", () => {
