@@ -40,7 +40,7 @@ describe("CredentialManagerOverride", () => {
                 "overrides": {
                     "CredentialManager": CredentialManagerOverride.DEFAULT_CRED_MGR_NAME,
                 },
-                "CredentialManagerOptions": {}
+                "credentialManagerOptions": {}
             } as ISettingsFile
         };
     });

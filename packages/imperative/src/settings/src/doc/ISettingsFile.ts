@@ -31,7 +31,7 @@ type OverrideSettings = {
      *          will be logged to the console, the value will be left unchanged
      *          and we will act as if the key was null.
      */
-    [K in Exclude<keyof IImperativeOverrides, "CredentialManagerOptions">]-?: false | string | Record<string, unknown>;
+    [K in keyof IImperativeOverrides]-?: false | string | Record<string, unknown>;
 };
 
 export interface ISettingsFile {

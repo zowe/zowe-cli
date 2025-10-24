@@ -179,9 +179,4 @@ interface ImperativeOverrides extends IOverridesRestriction {
  *
  * @see {@link ImperativeOverrides} for documentation on the available keys.
  */
-export type IImperativeOverrides = ConstructorOrString<ImperativeOverrides> & {
-    /**
-     * Optional configuration values supplied to the active credential manager.
-     */
-    CredentialManagerOptions?: ICredentialManagerOptions;
-};
+export type IImperativeOverrides = ConstructorOrString<ImperativeOverrides>;

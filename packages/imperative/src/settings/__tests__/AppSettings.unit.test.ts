@@ -63,8 +63,8 @@ describe("AppSettings", () => {
     const defaultSettings: ISettingsFile = {
         overrides: {
             CredentialManager: false,
-            CredentialManagerOptions: {}
-        }
+        },
+        credentialManagerOptions: {}
     };
 
     afterEach(() => {
@@ -245,9 +245,6 @@ describe("AppSettings", () => {
             it("should override every possible overrides", async () => {
                 // Test each possible overrides key
                 for (const override of Object.keys(defaultSettings.overrides)) {
-                    if (override === "CredentialManagerOptions") {
-                        continue;
-                    }
                     // Generate a random value just to be safe
                     const newValue = Math.random().toString();
 
