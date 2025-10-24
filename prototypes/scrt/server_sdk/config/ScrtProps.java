@@ -30,17 +30,38 @@ package org.example;
  * the use of a feature.
  */
 public class ScrtProps {
+    // SCRT property keywords that can be in the Zowe-SCRT-client-feature header
+    public static final String FEAT_NAME_KW = "featureName";
+    public static final String FEAT_DESC_KW = "featureDescription";
+    public static final String PROD_NAME_KW = "productName";
+    public static final String PROD_ID_KW = "productId";
+    public static final String PROD_VER_KW = "version";
+    public static final String PROD_REL_KW = "release";
+    public static final String PROD_MOD_LEV_KW = "modLevel";
+
+    // Todo: get the real default properties from application.yaml
+    // from application.yaml serviceName
+    private static String dfltProdName = "Product name from application.yaml";
+    // from application.yaml productId
+    private static String dfltProdId = "Product ID from application.yaml";
+    
+    // Todo: get the real default properties from manifest ImplementationVersion
+    private static String dfltVersion = "1_from_manifest";
+    private static String dfltRelease = "0_from_manifest";
+    private static String dfltModLevel = "0_from_manifest";
+
     private String featName;
     private String featDesc;
     private String prodName;
     private String prodId;
+    private String prodInstance;
     private String version;
     private String release;
     private String modLevel;
 
     //*********************************************************************
     /**
-     * The constructor accepts the minimum required properties for a feature.
+     * The constructor requires that feature properties be explicitly supplied.
      * 
      * @param featName Name of the feature
      * @param featDesc Description of the feature
@@ -49,6 +70,12 @@ public class ScrtProps {
     ScrtProps(String featName, String featDesc) {
         this.featName = featName;
         this.featDesc = featDesc;
+
+        // assign default product properties until explicitly overridden.
+        setProductInfo(dfltProdName, dfltProdId, dfltVersion, dfltRelease, dfltModLevel);
+    
+        // Todo: determine if this is right: JfrsZosWriter always uses the product ID as the product instance
+        this.prodInstance = dfltProdId;
     }
 
     //*********************************************************************
@@ -62,7 +89,7 @@ public class ScrtProps {
      * @param release   Product release
      * @param modLevel  Product modification level
      */
-    public void addProductInfo(
+    public void setProductInfo(
         String prodName,
         String prodId,
         String version,
@@ -74,7 +101,10 @@ public class ScrtProps {
         this.version = version;
         this.release = release;
         this.modLevel = modLevel;
-    }
+
+        // Todo: determine if this is right: JfrsZosWriter always uses the product ID as the product instance
+        this.prodInstance = prodId;
+ }
 
     //*********************************************************************
     /**
@@ -108,6 +138,13 @@ public class ScrtProps {
         return this.prodId;
     }
 
+    //*********************************************************************
+    /**
+     * Get the SCRT product instance.
+     */
+    public String getProdInstance() {
+        return this.prodInstance;
+    }
     //*********************************************************************
     /**
      * Get the SCRT version.

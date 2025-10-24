@@ -44,6 +44,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import java.util.*;
 
 import org.example.JfrsZosWriter;
+import org.example.ScrtProps;
 
 /**
  * Interceptor class that extracts feature information from a custom header and
@@ -56,16 +57,6 @@ import org.example.JfrsZosWriter;
 @Component
 @ConditionalOnProperty(prefix = "server.jfrs", name = "serviceName")
 public class ScrtFeatHeaderInterceptor implements HandlerInterceptor {
-    // Todo: get the real properties from application.yaml
-    private static String dfltProdName = "OPS/MVS REST Service"; // from application.yaml serviceName
-    private static String dfltProdId = "OPSREST";                // from application.yaml productId
-    
-    // Todo: get the real properties from manifest ImplementationVersion
-    private static String dfltVersion = "14";
-    private static String dfltRelease = "2";
-    private static String dfltModLevel = "3";
-
-    private static String prodInstance = dfltProdId;
 
     //------------------------------------------------------------------------
     /**
@@ -151,91 +142,94 @@ public class ScrtFeatHeaderInterceptor implements HandlerInterceptor {
         // iterate through each property that we can find and record its value
         for (HeaderElement nextProp : elements) {
             String nextPropName = nextProp.getName();
-            if (nextPropName.equalsIgnoreCase("featureName")) {
+            if (nextPropName.equalsIgnoreCase(ScrtProps.FEAT_NAME_KW)) {
                 featName = nextProp.getValue();
             }
-            if (nextPropName.equalsIgnoreCase("featureDescription")) {
+            if (nextPropName.equalsIgnoreCase(ScrtProps.FEAT_DESC_KW)) {
                 featDesc = nextProp.getValue();
             }
-            if (nextPropName.equalsIgnoreCase("productName")) {
+            if (nextPropName.equalsIgnoreCase(ScrtProps.PROD_NAME_KW)) {
                 prodName = nextProp.getValue();
             }
-            if (nextPropName.equalsIgnoreCase("productId")) {
+            if (nextPropName.equalsIgnoreCase(ScrtProps.PROD_ID_KW)) {
                 prodId = nextProp.getValue();
             }
-            if (nextPropName.equalsIgnoreCase("version")) {
+            if (nextPropName.equalsIgnoreCase(ScrtProps.PROD_VER_KW)) {
                 version = nextProp.getValue();
             }
-            if (nextPropName.equalsIgnoreCase("release")) {
+            if (nextPropName.equalsIgnoreCase(ScrtProps.PROD_REL_KW)) {
                 release = nextProp.getValue();
             }
-            if (nextPropName.equalsIgnoreCase("modLevel")) {
+            if (nextPropName.equalsIgnoreCase(ScrtProps.PROD_MOD_LEV_KW)) {
                 modLevel = nextProp.getValue();
             }
         }
 
         // the header must contain at least feature name and feature description
-        String propErrMsg = "";
+        String missingPropErrMsg = "";
         if (featName == null || featName.isEmpty()) {
-            propErrMsg += "featName ";
+            missingPropErrMsg += ScrtProps.FEAT_NAME_KW + " ";
         }
         if (featDesc == null || featDesc.isEmpty()) {
-            propErrMsg += "featDesc ";
+            missingPropErrMsg += ScrtProps.FEAT_DESC_KW + " ";
         }
-        if (!propErrMsg.isEmpty()) {
+        if (!missingPropErrMsg.isEmpty()) {
             // Todo: Replace print with REST API SDK logging method
-            System.out.println("The following missing properties are required: " + propErrMsg);
+            System.out.println(
+                "The SCRT feature properties: '" + missingPropErrMsg +
+                "' are missing from the supplied header text:\n    " + scrtHeaderText
+            );
             return null;
         }
 
-        // create the set of SCRT propertiews that we will use
+        // record which product properties have not been supplied in the header
+        int prodPropCount = 0;
+        missingPropErrMsg = "";
+        if (prodName == null || prodName.isEmpty()) {
+            missingPropErrMsg += ScrtProps.PROD_NAME_KW + " ";
+        } else {
+            prodPropCount++;
+        }
+        if (prodId == null || prodId.isEmpty()) {
+            missingPropErrMsg += ScrtProps.PROD_ID_KW + " ";
+        } else {
+            prodPropCount++;
+        }
+        if (version == null || version.isEmpty()) {
+            missingPropErrMsg += ScrtProps.PROD_VER_KW + " ";
+        } else {
+            prodPropCount++;
+        }
+        if (release == null || release.isEmpty()) {
+            missingPropErrMsg += ScrtProps.PROD_REL_KW + " ";
+        } else {
+            prodPropCount++;
+        }
+        if (modLevel == null || modLevel.isEmpty()) {
+            missingPropErrMsg += ScrtProps.PROD_MOD_LEV_KW + " ";
+        } else {
+            prodPropCount++;
+        }
+
+        // create the set of SCRT properties that we will use
         ScrtProps scrtPropsToUse = new ScrtProps(featName, featDesc);
 
-        // When a product property is not supplied, use a default.
-        // When a product property is supplied but is empty or blank, use a default and log message.
-        propErrMsg = "";
-        if ( prodName == null) {
-            prodName = dfltProdName;
-        } else if (prodName.isEmpty()) {
-            prodName = dfltProdName;
-            propErrMsg += "prodName ";
+        // Either all product properties must be supplied or none should be supplied.
+        if (prodPropCount == 0) {
+            return scrtPropsToUse;
         }
 
-        if ( prodId == null) {
-            prodId = dfltProdId;
-        } else if (prodId.isEmpty()) {
-            prodId = dfltProdId;
-            propErrMsg += "prodId ";
+        final int maxProdPropCount = 5;
+        if (prodPropCount == maxProdPropCount) {
+            scrtPropsToUse.setProductInfo(prodName, prodId, version, release, modLevel);
+            return scrtPropsToUse;
         }
 
-        if ( version == null) {
-            version = dfltVersion;
-        } else if (version.isEmpty()) {
-            version = dfltVersion;
-            propErrMsg += "version ";
-        }
-
-        if ( release == null) {
-            release = dfltRelease;
-        } else if (release.isEmpty()) {
-            release = dfltRelease;
-            propErrMsg += "release ";
-        }
-
-        if ( modLevel == null) {
-            modLevel = dfltModLevel;
-        } else if (modLevel.isEmpty()) {
-            modLevel = dfltModLevel;
-            propErrMsg += "modLevel ";
-        }
-
-        if (!propErrMsg.isEmpty()) {
-            // Todo: Replace print with REST API SDK logging method
-            System.out.println("The following properties were empty or blank: " + propErrMsg);
-        }
-
-        // add the product info to the SCRT properties
-        scrtPropsToUse.addProductInfo(prodName, prodId, version, release, modLevel);
-        return scrtPropsToUse;
- 	}
+        // Todo: Replace print with REST API SDK logging method
+        System.out.println(
+            "The SCRT product properties '" + missingPropErrMsg +
+            "' are missing from the supplied header text:\n    " + scrtHeaderText
+        );
+        return null;
+    }
 }

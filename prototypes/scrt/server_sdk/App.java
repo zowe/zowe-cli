@@ -11,20 +11,91 @@ import org.springframework.mock.web.MockHttpServletResponse;
 public class App {
 
     public static void main(String[] args) throws Exception {
-        System.out.println("main: Before ScrtFeatHeaderInterceptor");
-
-        MockHttpServletRequest mockRequest = new MockHttpServletRequest();
-        mockRequest.addHeader("Zowe-SCRT-client-feature",
-            "featureName=\"STATEMAN\", featureDescription=\"System State Manager Feature\"");
-
+        MockHttpServletRequest mockRequest;
+        boolean interceptResult;
         MockHttpServletResponse mockResponse = new MockHttpServletResponse();
         Object handlerObj = new Object();
 
-        boolean interceptResult = new ScrtFeatHeaderInterceptor().preHandle(
+        System.out.println("______________________________________________________________");
+        System.out.println("Test interceptor with featureName missing from the header\n");
+        mockRequest = new MockHttpServletRequest();
+        mockRequest.addHeader("Zowe-SCRT-client-feature",
+            "featureNameMispelled=\"STATEMAN featureName from header\", " + 
+            "featureDescription=\"STATEMAN featureDescription from header\""
+        );
+        interceptResult = new ScrtFeatHeaderInterceptor().preHandle(
             (MockHttpServletRequest) mockRequest, (HttpServletResponse) mockResponse, handlerObj
         );
-        
-        System.out.println("\nmain: After ScrtFeatHeaderInterceptor");
-        System.out.println("main: interceptResult = " + interceptResult);
+        System.out.println("\ninterceptResult = " + interceptResult);
+
+        System.out.println("______________________________________________________________");
+        System.out.println("Test interceptor with only the required feature properties in the header\n");
+        mockRequest = new MockHttpServletRequest();
+        mockRequest.addHeader("Zowe-SCRT-client-feature",
+            "featureName=\"STATEMAN featureName from header\", " + 
+            "featureDescription=\"STATEMAN featureDescription from header\", "
+        );
+        interceptResult = new ScrtFeatHeaderInterceptor().preHandle(
+            (MockHttpServletRequest) mockRequest, (HttpServletResponse) mockResponse, handlerObj
+        );
+        System.out.println("\ninterceptResult = " + interceptResult);
+
+        System.out.println("______________________________________________________________");
+        System.out.println("Test interceptor with only one product property in the header\n");
+        mockRequest = new MockHttpServletRequest();
+        mockRequest.addHeader("Zowe-SCRT-client-feature",
+            "featureName=\"REXX featureName from header\", " + 
+            "featureDescription=\"REXX featureDescription from header\", " +
+            "productName=\"OPS productName From Header\""
+        );
+        interceptResult = new ScrtFeatHeaderInterceptor().preHandle(
+            (MockHttpServletRequest) mockRequest, (HttpServletResponse) mockResponse, handlerObj
+        );
+        System.out.println("\ninterceptResult = " + interceptResult);
+
+        System.out.println("______________________________________________________________");
+        System.out.println("Test interceptor with all feature and product properties in the header\n");
+        mockRequest = new MockHttpServletRequest();
+        mockRequest.addHeader("Zowe-SCRT-client-feature",
+            "featureName=\"REXX featureName from header\", " + 
+            "featureDescription=\"REXX featureDescription from header\", " +
+            "productName=\"OPS productName From Header\", " +
+            "productId=\"OPS productId From Header\", " +
+            "version=\"OPS version 14 From Header\", " +
+            "release=\"OPS release 2 From Header\", " +
+            "modLevel=\"OPS modLevel 3 From Header\""
+        );
+        interceptResult = new ScrtFeatHeaderInterceptor().preHandle(
+            (MockHttpServletRequest) mockRequest, (HttpServletResponse) mockResponse, handlerObj
+        );
+        System.out.println("\ninterceptResult = " + interceptResult);
+
+        System.out.println("______________________________________________________________");
+        System.out.println("Call recordFeatureUse with null ScrtProps parameter\n");
+        FrsResult recordUseResult = new JfrsZosWriter().recordFeatureUse(null);
+        System.out.println("\nFrsResult rc = " + recordUseResult.getRc() +
+            " rsn = " + recordUseResult.getRsn()
+        );
+
+        System.out.println("______________________________________________________________");
+        System.out.println("Call recordFeatureUse with null and blank feature properties\n");
+        ScrtProps scrtPropsFromPgm = new ScrtProps(null, "   ");
+        recordUseResult = new JfrsZosWriter().recordFeatureUse(scrtPropsFromPgm);
+        System.out.println("\nFrsResult rc = " + recordUseResult.getRc() +
+            " rsn = " + recordUseResult.getRsn()
+        );
+ 
+        System.out.println("______________________________________________________________");
+        System.out.println("Call recordFeatureUse with all product and feature properties\n");
+        scrtPropsFromPgm = new ScrtProps("featNameFromPgm", "featDescFromPgm");
+        scrtPropsFromPgm.setProductInfo(
+            "prodNameFromPgm", "prodIdFromPgm", "ver_11_FromPgm", "rel_6_FromPgm",
+            "modLevel_25_FromPgm"
+        );
+        recordUseResult = new JfrsZosWriter().recordFeatureUse(scrtPropsFromPgm);
+        System.out.println("\nFrsResult rc = " + recordUseResult.getRc() +
+            " rsn = " + recordUseResult.getRsn()
+        );
+        System.out.println("______________________________________________________________");
     }
 } // end App class
