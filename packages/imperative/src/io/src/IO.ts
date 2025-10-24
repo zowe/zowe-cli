@@ -278,9 +278,9 @@ export class IO {
                 if (isUploading) {
                     // eslint-disable-next-line @typescript-eslint/no-magic-numbers
                     if (currentByte === 13) {
-                        // eslint-disable-next-line @typescript-eslint/no-magic-numbers
                         const nextByte = i + 1 < original.length ? original[i + 1] : undefined;
                         // Skip the carriage return if it is followed by a line feed
+                        // eslint-disable-next-line @typescript-eslint/no-magic-numbers
                         if (nextByte === 10) {
                             prevByte = currentByte;
                             continue;
