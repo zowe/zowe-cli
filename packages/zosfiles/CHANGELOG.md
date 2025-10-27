@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Fixed an issue where if a file fails to download and one already exists in the destination, the old file is deleted. [#2617](https://github.com/zowe/zowe-cli/pull/2617)
+
 ## `8.27.4`
 
 - BugFix: Updated minimum supported version of Node from 18 to 20. Added Node 24 support. [#2616](https://github.com/zowe/zowe-cli/pull/2616)
