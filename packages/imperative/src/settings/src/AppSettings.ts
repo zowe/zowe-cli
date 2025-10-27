@@ -132,8 +132,7 @@ export class AppSettings {
         let namespaceObj = this.settings[namespace];
         if (namespaceObj == null || typeof namespaceObj !== "object") {
             if (namespace === "credentialManagerOptions") {
-                this.settings.credentialManagerOptions = {};
-                namespaceObj = this.settings.credentialManagerOptions;
+                namespaceObj = this.settings.credentialManagerOptions = {};
             } else {
                 throw new ImperativeError({msg: `Namespace ${namespace} does not exist`});
             }
