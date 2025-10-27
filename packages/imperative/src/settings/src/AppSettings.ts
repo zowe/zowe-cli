@@ -18,7 +18,7 @@ import { JSONSettingsFilePersistence } from "./persistance/JSONSettingsFilePersi
 import { IO } from "../../io";
 import { ImperativeError } from "../../error";
 
-type SettingValue = false | string | number | boolean | Record<string, unknown>;
+type SettingValue = string | number | boolean | Record<string, unknown>;
 
 /**
  * This class represents settings for an Imperative CLI application that can be configured

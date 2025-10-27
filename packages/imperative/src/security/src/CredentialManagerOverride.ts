@@ -236,7 +236,7 @@ export class CredentialManagerOverride {
     public static getCredentialManagerOptions(): ICredentialManagerOptions {
         try {
             const settings = this.getSettingsFileJson();
-            return settings.json.credentialManagerOptions as Record<string, unknown> ?? {};
+            return settings.json.credentialManagerOptions ?? {};
         } catch {
             return {};
         }
@@ -263,7 +263,7 @@ export class CredentialManagerOverride {
         const cachedSettings = AppSettings.instance.getSettings();
         cachedSettings.overrides.CredentialManager = updatedSettings.overrides.CredentialManager;
         cachedSettings.credentialManagerOptions = updatedSettings.credentialManagerOptions ?
-            { ...updatedSettings.credentialManagerOptions as Record<string, unknown> } : {};
+            { ...updatedSettings.credentialManagerOptions } : {};
     }
 
     //________________________________________________________________________
