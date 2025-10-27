@@ -16,6 +16,7 @@ import { DefaultCredentialManager } from "..";
 import { keyring as keytar } from "@zowe/secrets-for-zowe-sdk";
 import { ImperativeError } from "../../error";
 import { PersistenceLevel, PersistenceValue } from "../src/doc/IDefaultCredentialManagerOptions";
+import { Logger } from "../../logger";
 
 const winMaxCredentialLength = 2560;
 
@@ -71,6 +72,14 @@ describe("DefaultCredentialManager", () => {
             const manager = new DefaultCredentialManager(service, "test manager", undefined);
 
             expect((manager as any).persistValueWin32).toEqual(PersistenceValue.Enterprise);
+        });
+        
+        it("should log warning when given persistence level is invalid", () => {
+            const service = "imperative";
+            const loggerWarnSpy = jest.spyOn(Logger.prototype, "warn");
+            const manager = new DefaultCredentialManager(service, "test manager", { persist: "invalid_value" as any });
+            expect((manager as any).persistValueWin32).toEqual(PersistenceValue.Enterprise);
+            expect(loggerWarnSpy).toHaveBeenCalledWith("[DefaultCredentialManager] Win32 persistence option is invalid, falling back to enterprise.");
         });
     });
 

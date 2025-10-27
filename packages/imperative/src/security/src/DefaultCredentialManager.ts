@@ -96,22 +96,25 @@ export class DefaultCredentialManager extends AbstractCredentialManager {
         // constructor doesn't do anything. Who knows what things might happen in
         // the abstract class initialization in the future.
         super(service, displayName, options);
-        switch (options?.persist) {
-            case PersistenceLevel.SessionOnly:
-                this.persistValueWin32 = PersistenceValue.SessionOnly;
-                break;
-            case PersistenceLevel.LocalMachine:
-                this.persistValueWin32 = PersistenceValue.LocalMachine;
-                break;
-            case PersistenceLevel.Enterprise:
-                this.persistValueWin32 = PersistenceValue.Enterprise;
-                break;
-            default:
-                break;
-        }
 
-        if (process.platform === "win32") {
-            Logger.getImperativeLogger().trace(`[DefaultCredentialManager] Persistence level (win32): ${options?.persist ?? PersistenceLevel.Enterprise}`);
+        if (process.platform === "win32") {    
+            switch (options?.persist) {
+                case PersistenceLevel.SessionOnly:
+                    this.persistValueWin32 = PersistenceValue.SessionOnly;
+                    break;
+                case PersistenceLevel.LocalMachine:
+                    this.persistValueWin32 = PersistenceValue.LocalMachine;
+                    break;
+                case PersistenceLevel.Enterprise:
+                    this.persistValueWin32 = PersistenceValue.Enterprise;
+                    break;
+                default:
+                    if (options?.persist) {
+                        Logger.getImperativeLogger().warn("[DefaultCredentialManager] Win32 persistence option is invalid, falling back to enterprise.");
+                    }
+                    break;
+            }
+            Logger.getImperativeLogger().trace(`[DefaultCredentialManager] Persistence level received (win32): ${options?.persist ?? PersistenceLevel.Enterprise}`);
         }
 
         /* Gather all services. We will load secure properties for the first
