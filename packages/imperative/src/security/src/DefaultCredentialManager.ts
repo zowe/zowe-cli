@@ -110,7 +110,9 @@ export class DefaultCredentialManager extends AbstractCredentialManager {
                 break;
         }
 
-        Logger.getImperativeLogger().trace(`[DefaultCredentialManager] Persist value (win32): ${this.persistValueWin32}`);
+        if (process.platform === "win32") {
+            Logger.getImperativeLogger().trace(`[DefaultCredentialManager] Persistence level (win32): ${options?.persist ?? PersistenceLevel.Enterprise}`);
+        }
 
         /* Gather all services. We will load secure properties for the first
         * successful service found in the order that they are placed in this array.
