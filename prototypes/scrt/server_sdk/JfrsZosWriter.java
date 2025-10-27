@@ -48,7 +48,7 @@ public class JfrsZosWriter {
             System.out.println("Using these SCRT property values:");
             System.out.println("    " + ScrtProps.PROD_NAME_KW  + "\t\t= " + scrtPropVals.getProdName());
             System.out.println("    " + ScrtProps.PROD_ID_KW + "\t\t= " + scrtPropVals.getProdId());
-            System.out.println("    prodInstance\t= " + scrtPropVals.getProdInstance());
+            System.out.println("    productInstance\t= " + scrtPropVals.getProdInstance());
             System.out.println("    " + ScrtProps.PROD_VER_KW + "\t\t= " + scrtPropVals.getVersion());
             System.out.println("    " + ScrtProps.PROD_REL_KW + "\t\t= " + scrtPropVals.getRelease());
             System.out.println("    " + ScrtProps.PROD_MOD_LEV_KW + "\t\t= " + scrtPropVals.getModLevel());
