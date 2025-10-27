@@ -17,7 +17,7 @@ public class App {
         Object handlerObj = new Object();
 
         System.out.println("______________________________________________________________");
-        System.out.println("Test interceptor with featureName missing from the header\n");
+        System.out.println("Call interceptor with featureName missing from the header\n");
         mockRequest = new MockHttpServletRequest();
         mockRequest.addHeader("Zowe-SCRT-client-feature",
             "featureNameMispelled=\"STATEMAN featureName from header\", " + 
@@ -29,7 +29,7 @@ public class App {
         System.out.println("\ninterceptResult = " + interceptResult);
 
         System.out.println("______________________________________________________________");
-        System.out.println("Test interceptor with only the required feature properties in the header\n");
+        System.out.println("Call interceptor with only the required feature properties in the header\n");
         mockRequest = new MockHttpServletRequest();
         mockRequest.addHeader("Zowe-SCRT-client-feature",
             "featureName=\"STATEMAN featureName from header\", " + 
@@ -41,7 +41,7 @@ public class App {
         System.out.println("\ninterceptResult = " + interceptResult);
 
         System.out.println("______________________________________________________________");
-        System.out.println("Test interceptor with only one product property in the header\n");
+        System.out.println("Call interceptor with only one product property in the header\n");
         mockRequest = new MockHttpServletRequest();
         mockRequest.addHeader("Zowe-SCRT-client-feature",
             "featureName=\"REXX featureName from header\", " + 
@@ -54,7 +54,7 @@ public class App {
         System.out.println("\ninterceptResult = " + interceptResult);
 
         System.out.println("______________________________________________________________");
-        System.out.println("Test interceptor with all feature and product properties in the header\n");
+        System.out.println("Call interceptor with all feature and product properties in the header\n");
         mockRequest = new MockHttpServletRequest();
         mockRequest.addHeader("Zowe-SCRT-client-feature",
             "featureName=\"REXX featureName from header\", " + 

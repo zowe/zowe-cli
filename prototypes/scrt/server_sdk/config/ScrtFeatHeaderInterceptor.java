@@ -176,8 +176,8 @@ public class ScrtFeatHeaderInterceptor implements HandlerInterceptor {
         if (!missingPropErrMsg.isEmpty()) {
             // Todo: Replace print with REST API SDK logging method
             System.out.println(
-                "The SCRT feature properties: '" + missingPropErrMsg +
-                "' are missing from the supplied header text:\n    " + scrtHeaderText
+                "These SCRT feature properties are missing from the supplied header text: " + missingPropErrMsg +
+                "\n    " + scrtHeaderText
             );
             return null;
         }
@@ -227,8 +227,8 @@ public class ScrtFeatHeaderInterceptor implements HandlerInterceptor {
 
         // Todo: Replace print with REST API SDK logging method
         System.out.println(
-            "The SCRT product properties '" + missingPropErrMsg +
-            "' are missing from the supplied header text:\n    " + scrtHeaderText
+            "These SCRT product properties are missing from the supplied header text: " + missingPropErrMsg +
+            "\n    " + scrtHeaderText
         );
         return null;
     }

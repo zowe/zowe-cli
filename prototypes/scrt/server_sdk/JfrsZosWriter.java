@@ -25,8 +25,8 @@ public class JfrsZosWriter {
     private static final int NULL_EMPTY_BLANK_RSN = 12;
     
     // we cache the product token for future use
-    private static byte[] prodToken = null;
-    private static final Object prodTokenLock = new Object();
+    private static Map<String, byte[]> prodTokenMap = new HashMap<>();
+    private static final Object prodTokenMapLock = new Object();
 
     // we cache every feature token for future use
     private static Map<String, byte[]> featTokenMap = new HashMap<>();
@@ -143,9 +143,9 @@ public class JfrsZosWriter {
 
     //------------------------------------------------------------------------
     /**
-     * Get the token for the product from our cached prodToken property.
+     * Get the token for the product from our set of cached prodTokens.
      * If we have not yet cached the token, call the Jfrs registerProduct
-     * function to get a token and store the token into our prodToken property.
+     * function to get a token and store the token into our prodTokenMap.
      *
      * @param ScrtProps scrtPropVals The SCRT property values used in getting a product token.
      * 
@@ -154,8 +154,10 @@ public class JfrsZosWriter {
      * @return A byte array representing the product token.
      */
     private static byte[] getProdToken(ScrtProps scrtPropVals) throws JfrsSdkRcException {
-        synchronized (prodTokenLock) {
-            if (JfrsZosWriter.prodToken == null) {
+        byte[] desiredProdToken = null;
+        synchronized (prodTokenMapLock) {
+            desiredProdToken = JfrsZosWriter.prodTokenMap.get(scrtPropVals.getProdName());
+            if (desiredProdToken == null) {
                 FrsResult prodRegResult = new FrsResult(0, 0, "".getBytes());
                 try {
                     prodRegResult = FeatureRegistrationServiceWrapper.registerProduct(
@@ -182,11 +184,14 @@ public class JfrsZosWriter {
                     );
                 }
 
-                // cache the product token for future use.
-                JfrsZosWriter.prodToken = prodRegResult.getToken();
+ 
+                // Cache the product token by product name so that we do not have to register the
+                // product again each time that we want to use the product in this REST service
+                desiredProdToken = prodRegResult.getToken();
+                JfrsZosWriter.prodTokenMap.put(scrtPropVals.getProdName(), desiredProdToken);
             }
         }
-        return JfrsZosWriter.prodToken;
+        return desiredProdToken;
     }
 
     //------------------------------------------------------------------------
