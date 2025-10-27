@@ -32,7 +32,7 @@ describe("DefaultCredentialManager", () => {
         expect((manager as any).service).toEqual(service);
     });
 
-    describe("constructor switch statement", () => {
+    (process.platform === "win32" ? describe : describe.skip)("constructor persistence flag setup", () => {
         it("should set persistValueWin32 to SessionOnly when persist option is SessionOnly", () => {
             const service = "imperative";
             const manager = new DefaultCredentialManager(service, "test manager", {
