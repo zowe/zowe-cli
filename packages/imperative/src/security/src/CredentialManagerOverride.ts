@@ -260,14 +260,10 @@ export class CredentialManagerOverride {
             return;
         }
 
-        try {
-            const cachedSettings = AppSettings.instance.getSettings();
-            cachedSettings.overrides.CredentialManager = updatedSettings.overrides.CredentialManager;
-            cachedSettings.credentialManagerOptions = updatedSettings.credentialManagerOptions ?
-                { ...updatedSettings.credentialManagerOptions as Record<string, unknown> } : {};
-        } catch {
-            // Ignore cache sync errors - settings will be refreshed on next initialization
-        }
+        const cachedSettings = AppSettings.instance.getSettings();
+        cachedSettings.overrides.CredentialManager = updatedSettings.overrides.CredentialManager;
+        cachedSettings.credentialManagerOptions = updatedSettings.credentialManagerOptions ?
+            { ...updatedSettings.credentialManagerOptions as Record<string, unknown> } : {};
     }
 
     //________________________________________________________________________
