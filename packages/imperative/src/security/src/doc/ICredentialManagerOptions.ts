@@ -20,7 +20,7 @@
  * @example
  * // Example for Windows credential persistence configuration
  * const options: ICredentialManagerOptions = {
- *   persist: "CRED_PERSIST_ENTERPRISE"
+ *   persist: "enterprise"
  * };
  *
  * @example
