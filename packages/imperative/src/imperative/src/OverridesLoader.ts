@@ -86,10 +86,9 @@ export class OverridesLoader {
                 Manager = resolve(resolvePath, "../", overrides.CredentialManager);
             }
 
-            // Load credential manager options from team config if available
+            // TODO(v4): Could load credential manager options from team config if available
             let credentialManagerOptions: ICredentialManagerOptions | undefined;
             if (AppSettings.initialized) {
-                // Try top-level property first (new location)
                 const topLevelOptions = AppSettings.instance.getNamespace("credentialManagerOptions") as ICredentialManagerOptions | undefined;
                 if (topLevelOptions && Object.keys(topLevelOptions).length > 0) {
                     credentialManagerOptions = { ...topLevelOptions };
