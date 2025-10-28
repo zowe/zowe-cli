@@ -11,6 +11,7 @@
 
 /* eslint-disable @typescript-eslint/no-unsafe-declaration-merging */
 import { ImperativeError } from "../../../error";
+import { ICredentialManagerOptions } from "../doc/ICredentialManagerOptions";
 /**
  * String credential
  */
@@ -62,14 +63,24 @@ export interface AbstractCredentialManager {
  */
 export abstract class AbstractCredentialManager {
     /**
+     * Options provided to the credential manager for configuration.
+     * Credential managers can use these options to customize their behavior.
+     * @protected
+     */
+    protected credentialManagerOptions?: ICredentialManagerOptions;
+
+    /**
      * This class can not be directly instantiated so the constructor is protected. All extending classes must make a call
      * to `super(...)` with the expected parameters.
      *
      * @param {string} service The service that the Credential Manager is running under. Imperative will set this to the
      *                         cliName
      * @param {string} displayName The display name of this manager. Used in messaging/logging.
+     * @param {ICredentialManagerOptions} options Optional configuration options for the credential manager. The structure depends on the
+     *                         specific credential manager implementation.
      */
-    protected constructor(protected readonly service: string, private displayName: string) {
+    protected constructor(protected readonly service: string, private displayName: string, options?: ICredentialManagerOptions) {
+        this.credentialManagerOptions = options;
     }
 
     /**

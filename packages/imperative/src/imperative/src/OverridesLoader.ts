@@ -10,7 +10,7 @@
 */
 
 import { IImperativeOverrides } from "./doc/IImperativeOverrides";
-import { CredentialManagerFactory, DefaultCredentialManager } from "../../security";
+import { CredentialManagerFactory, DefaultCredentialManager, ICredentialManagerInit, ICredentialManagerOptions } from "../../security";
 import { IImperativeConfig } from "./doc/IImperativeConfig";
 import { isAbsolute, resolve } from "path";
 import { AppSettings } from "../../settings";
@@ -86,7 +86,20 @@ export class OverridesLoader {
                 Manager = resolve(resolvePath, "../", overrides.CredentialManager);
             }
 
-            await CredentialManagerFactory.initialize({
+            // TODO(v4): Could load credential manager options from team config if available
+            let credentialManagerOptions: ICredentialManagerOptions | undefined;
+            if (AppSettings.initialized) {
+                const topLevelOptions = AppSettings.instance.getNamespace("credentialManagerOptions") as ICredentialManagerOptions | undefined;
+                if (topLevelOptions && Object.keys(topLevelOptions).length > 0) {
+                    credentialManagerOptions = { ...topLevelOptions };
+                }
+            }
+
+            const optionsToUse = credentialManagerOptions && Object.keys(credentialManagerOptions).length > 0
+                ? credentialManagerOptions
+                : undefined;
+
+            const initParams: ICredentialManagerInit = {
                 // Init the manager with the override specified OR (if null) default to keytar
                 Manager,
                 // The display name will be the plugin name that introduced the override OR it will default to the CLI name
@@ -94,8 +107,11 @@ export class OverridesLoader {
                 // The service is always the CLI name (Keytar and other plugins can use this to uniquely identify the service)
                 service: config.name === this.ZOWE_CLI_PACKAGE_NAME ? DefaultCredentialManager.SVC_NAME : config.name,
                 // If the default is to be used, we won't implant the invalid credential manager
-                invalidOnFailure: !(Manager == null)
-            });
+                invalidOnFailure: !(Manager == null),
+                options: optionsToUse
+            };
+
+            await CredentialManagerFactory.initialize(initParams);
         }
 
         await OverridesLoader.loadSecureConfig();

@@ -11,4 +11,4 @@ export function deletePassword(service: string, account: string): Promise<boolea
 export function findCredentials(service: string): Promise<Array<Credential>>
 export function findPassword(service: string): Promise<string | null>
 export function getPassword(service: string, account: string): Promise<string | null>
-export function setPassword(service: string, account: string, password: string): Promise<void>
+export function setPassword(service: string, account: string, password: string, persistWin32?: number | undefined | null): Promise<void>

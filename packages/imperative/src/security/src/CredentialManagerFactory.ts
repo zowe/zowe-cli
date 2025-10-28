@@ -106,9 +106,9 @@ export class CredentialManagerFactory {
                 // that exports a manager class. So we'll load that class and initialize it with the same constructor parameters
                 // that we would do with an actual constructor parameter.
                 const LoadedManager = await import(Manager);
-                manager = new LoadedManager(params.service, displayName);
+                manager = new LoadedManager(params.service, displayName, params.options);
             } else {
-                manager = new Manager(params.service, displayName);
+                manager = new Manager(params.service, displayName, params.options);
             }
 
             // After constructing the object, we will ensure that the thing loaded is indeed an

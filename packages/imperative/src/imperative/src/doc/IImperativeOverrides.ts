@@ -40,7 +40,7 @@ import { IConstructor } from "../../../interfaces";
  * keys of the interface reference a proper constructor definition.
  */
 interface IOverridesRestriction {
-    [key: string]: IConstructor<any>;
+    [key: string]: IConstructor<any> | Record<string, unknown>;
 }
 
 /**

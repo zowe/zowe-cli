@@ -18,7 +18,7 @@ import { JSONSettingsFilePersistence } from "./persistance/JSONSettingsFilePersi
 import { IO } from "../../io";
 import { ImperativeError } from "../../error";
 
-type SettingValue = false | string;
+type SettingValue = string | number | boolean | Record<string, unknown>;
 
 /**
  * This class represents settings for an Imperative CLI application that can be configured
@@ -129,8 +129,16 @@ export class AppSettings {
      * @param value
      */
     public set(namespace: keyof ISettingsFile, key: string, value: SettingValue): void {
-        this.settings[namespace][key] = value;
+        let namespaceObj = this.settings[namespace];
+        if (namespaceObj == null || typeof namespaceObj !== "object") {
+            if (namespace === "credentialManagerOptions") {
+                namespaceObj = this.settings.credentialManagerOptions = {};
+            } else {
+                throw new ImperativeError({msg: `Namespace ${namespace} does not exist`});
+            }
+        }
 
+        (namespaceObj as Record<string, SettingValue>)[key] = value;
         this.flush();
     }
 
@@ -140,8 +148,9 @@ export class AppSettings {
      * @param key Name of a setting option to set
      */
     public get(namespace: keyof ISettingsFile, key: string): SettingValue {
-        if (this.settings[namespace]) {
-            return this.settings[namespace][key];
+        const namespaceObj = this.settings[namespace];
+        if (namespaceObj && typeof namespaceObj === "object") {
+            return (namespaceObj as Record<string, SettingValue>)[key];
         }
         throw new ImperativeError({msg: `Namespace ${namespace} does not exist`});
     }
