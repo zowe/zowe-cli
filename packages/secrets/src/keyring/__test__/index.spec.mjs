@@ -34,10 +34,14 @@ const TEST_CREDENTIALS = [
     { service: "TestEmptyAccount", account: "" },
     { service: "", account: "TestEmptyService" },
     { service: "TestKeyring", account: "PwNullTerm" },
-    { service: "TestKeyring", account: "PersistSession", password: "SessionPw" },
-    { service: "TestKeyring", account: "PersistLocalMachine", password: "LocalMachinePw" },
-    { service: "TestKeyring", account: "PersistEnterprise", password: "EnterprisePw" },
 ];
+if (isWin32) {
+    TEST_CREDENTIALS.push(
+        { service: "TestKeyring", account: "PersistSession", password: "SessionPw" },
+        { service: "TestKeyring", account: "PersistLocalMachine", password: "LocalMachinePw" },
+        { service: "TestKeyring", account: "PersistEnterprise", password: "EnterprisePw" },
+    );
+}
 
 test.serial("get/setPassword with binary data", async (t) => {
     const binaryGroups =
