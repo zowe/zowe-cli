@@ -117,6 +117,15 @@ export class Config {
         secure: ConfigSecure
     };
 
+    /**
+     * Environment variable managed properties
+     */
+    private mEnvVarManaged: [{
+        global: boolean,
+        user: boolean,
+        value: string
+    }?] = [];
+
     // _______________________________________________________________________
     /**
      * Constructor for Config class. Don't use this directly. Await `Config.load` instead.
@@ -166,6 +175,7 @@ export class Config {
      */
     public async reload(opts?: IConfigOpts) {
         this.mLayers = [];
+        this.mEnvVarManaged = [];
         this.mHomeDir = opts?.homeDir ?? this.mHomeDir ?? path.join(os.homedir(), `.${this.mApp}`);
         this.mProjectDir = opts?.projectDir ?? process.cwd();
 
@@ -200,6 +210,20 @@ export class Config {
                 // Populate any undefined defaults
                 currLayer.properties.defaults = currLayer.properties.defaults || {};
                 currLayer.properties.profiles = currLayer.properties.profiles || {};
+
+                const deepIterate = (obj: any, path: string = "") => {
+                    Object.keys(obj).forEach(key => {
+                        const propPath = path + "." + key;
+                        if (typeof obj[key] === 'object' && !Array.isArray(obj[key]) && obj[key] != null) {
+                            deepIterate(obj[key], propPath);
+                        } else if (typeof obj[key] == 'string' && obj[key].startsWith("$") && process.env[obj[key].slice(1)] ) {
+                            this.mEnvVarManaged.push({global: currLayer.global, user: currLayer.user, value: propPath});
+                            obj[key] = ConfigUtils.coercePropValue(process.env[obj[key]]);
+                        }
+                    });
+                };
+
+                deepIterate(currLayer.properties.profiles);
             }
         } catch (e) {
             if (e instanceof ImperativeError) {
@@ -437,6 +461,12 @@ export class Config {
         opts = opts || {};
 
         const layer = this.layerActive();
+        this.mEnvVarManaged.find((value) => {
+            if (value.global == layer.global && value.user == layer.user && value.value == propertyPath) {
+                throw new ImperativeError({msg: `The property ${propertyPath} is managed by environment variables and cannot be set.`});
+            }
+        });
+
         let obj: any = layer.properties;
         const segments = propertyPath.split(".");
         propertyPath.split(".").forEach((segment: string) => {
