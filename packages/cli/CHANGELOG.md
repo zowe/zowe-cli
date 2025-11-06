@@ -1,7 +1,7 @@
 # Change Log
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `8.29.0`
 
 - Enhancement: Added support for providing options to both default and custom credential managers. [#2601](https://github.com/zowe/zowe-cli/issues/2601) 
 
