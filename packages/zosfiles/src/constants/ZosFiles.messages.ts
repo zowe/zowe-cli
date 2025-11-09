@@ -181,6 +181,14 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
     },
 
     /**
+     * Message indicating that the data set was skipped because it already exists
+     * @type {IMessageDefinition}
+     */
+    datasetDownloadSkipped: {
+        message: "Data set %s skipped as it already exists."
+    },
+
+    /**
      * Message indicating that the members of a data set were downloaded successfully
      * @type {IMessageDefinition}
      */
@@ -189,11 +197,27 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
     },
 
     /**
-     * Message indicating that the member was downloaded successfully
+     * Message indicating that members were downloaded successfully
      * @type {IMessageDefinition}
      */
     memberDownloadedWithDestination: {
         message: "Member(s) downloaded successfully.\nDestination: %s"
+    },
+
+    /**
+     * Message indicating that a member count were downloaded successfully
+     * @type {IMessageDefinition}
+     */
+    memberCountDownloadedWithDestination: {
+        message: "%s member(s) downloaded successfully.\nDestination: %s"
+    },
+
+    /**
+     * Message indicating that the members of a data set were skipped because they already exist
+     * @type {IMessageDefinition}
+     */
+    memberDownloadSkipped: {
+        message: "%s member(s) skipped as they already exist."
     },
 
     /**
@@ -226,6 +250,14 @@ export const ZosFilesMessages: { [key: string]: IMessageDefinition } = {
      */
     ussFileDownloadedWithDestination: {
         message: "USS file downloaded successfully.\nDestination: %s"
+    },
+
+    /**
+     * Message indicating that the uss file download was skipped
+     * @type {IMessageDefinition}
+     */
+    ussFileDownloadSkipped: {
+        message: "USS file %s skipped as it already exists."
     },
 
     /**
