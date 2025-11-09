@@ -1,7 +1,7 @@
 # Change Log
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `8.29.1`
 
 - BugFix: Added support for `--overwrite` option to all Download methods. The default behavior is no longer to always overwrite existing files. [#2620](https://github.com/zowe/zowe-cli/pull/2620)
 
