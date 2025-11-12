@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
+## `8.29.1`
+
+- BugFix: Fixed all the `Download` methods to now use the `overwrite` option. The default is no longer always overwriting existing files. Added new interfaces `IDownloadAmResult` and `IDownloadAmResponse` to provide detailed results when downloading all members of a PDS. [#2620](https://github.com/zowe/zowe-cli/pull/2620)
+
 ## `8.27.4`
 
 - BugFix: Updated minimum supported version of Node from 18 to 20. Added Node 24 support. [#2616](https://github.com/zowe/zowe-cli/pull/2616)

@@ -50,10 +50,16 @@ fn get_certificate_sync(env: Env, service: String, account: String) -> napi::Res
 }
 
 #[napi(ts_return_type = "Promise<void>")]
-fn set_password(service: String, account: String, password: String) -> AsyncTask<SetPassword> {
+fn set_password(
+    service: String, 
+    account: String, 
+    password: String,
+    persist_win32: Option<u32>
+) -> AsyncTask<SetPassword> {
     AsyncTask::new(SetPassword {
         service,
         account,
         password,
+        persist_win32
     })
 }

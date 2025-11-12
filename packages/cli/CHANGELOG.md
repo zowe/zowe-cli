@@ -6,6 +6,14 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 - Enhancement: Added support for specifying certificate credential manager account names via profile fields and per-session options. See `certAccount` and `certKeyAccount` profile fields (Core/Imperative) and ZOSMF-specific `--cert-account` / `--cert-key-account` session options. Files touched: `packages/core/src/constants/Core.constants.ts`, `packages/imperative/src/config/src/ProfileInfo.ts`, `packages/imperative/src/rest/src/session/AuthOrder.ts`, `packages/zosmf/src/ZosmfSession.ts`, `packages/zosmf/src/constants/Zosmf.profile.ts`.
 
+## `8.29.1`
+
+- BugFix: Added support for `--overwrite` option to all Download methods. The default behavior is no longer to always overwrite existing files. [#2620](https://github.com/zowe/zowe-cli/pull/2620)
+
+## `8.29.0`
+
+- Enhancement: Added support for providing options to both default and custom credential managers. [#2601](https://github.com/zowe/zowe-cli/issues/2601) 
+
 ## `8.27.4`
 
 - BugFix: Updated minimum supported version of Node from 18 to 20. Added Node 24 support. [#2616](https://github.com/zowe/zowe-cli/pull/2616)

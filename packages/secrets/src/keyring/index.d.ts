@@ -13,4 +13,4 @@ export function findPassword(service: string): Promise<string | null>
 export function getPassword(service: string, account: string): Promise<string | null>
 export function getCertificate(service: string, account: string): Promise<Buffer | null>
 export function getCertificateSync(service: string, account: string): Buffer | null
-export function setPassword(service: string, account: string, password: string): Promise<void>
+export function setPassword(service: string, account: string, password: string, persistWin32?: number | undefined | null): Promise<void>

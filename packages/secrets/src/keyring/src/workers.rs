@@ -7,6 +7,7 @@ pub struct SetPassword {
     pub service: String,
     pub account: String,
     pub password: String,
+    pub persist_win32: Option<u32>
 }
 
 pub struct GetPassword {
@@ -67,9 +68,21 @@ impl Task for SetPassword {
     type JsValue = JsUnknown;
 
     fn compute(&mut self) -> Result<Self::Output> {
-        match os::set_password(&self.service, &self.account, &mut self.password) {
+        #[cfg(target_os = "windows")]
+        let res = os::set_password_with_persistence(
+            &self.service,
+            &self.account,
+            &mut self.password,
+            self.persist_win32
+                .unwrap_or(os::PERSIST_ENTERPRISE),
+        );
+
+        #[cfg(not(target_os = "windows"))]
+        let res = os::set_password(&self.service, &self.account, &mut self.password);
+
+        match res {
             Ok(result) => Ok(result),
-            Err(err) => Err(napi::Error::from_reason(err.to_string())),
+            Err(err) => Err(napi::Error::from_reason(err.to_string()))
         }
     }
 

@@ -6,6 +6,10 @@ All notable changes to the Imperative package will be documented in this file.
 
 - Enhancement: Added Profile merge and AuthOrder support to prefer `certAccount` and `certKeyAccount` (per-session and profile-level) and to write secure temporary certificate files when needed. Files changed: `packages/imperative/src/config/src/ProfileInfo.ts`, `packages/imperative/src/rest/src/session/AuthOrder.ts`, `packages/imperative/src/rest/__tests__/session/AuthOrder.certAccount.unit.test.ts`.
 
+## `8.29.0`
+
+- Enhancement: Added support for providing options to both default and custom credential managers. [#2601](https://github.com/zowe/zowe-cli/issues/2601) 
+
 ## `8.27.4`
 
 - BugFix: Updated minimum supported version of Node from 18 to 20. Added Node 24 support. [#2616](https://github.com/zowe/zowe-cli/pull/2616)

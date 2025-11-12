@@ -3,7 +3,7 @@ pub mod error;
 cfg_if::cfg_if! {
     if #[cfg(target_os = "windows")] {
         pub mod win;
-        pub use win::{delete_password, find_credentials, find_password, get_password, set_password, get_certificate};
+        pub use win::{delete_password, find_credentials, find_password, get_password, set_password, set_password_with_persistence, get_certificate, PERSIST_ENTERPRISE};
     } else if #[cfg(target_os = "macos")] {
         pub mod mac;
         pub use mac::{delete_password, find_credentials, find_password, get_password, set_password, get_certificate};
