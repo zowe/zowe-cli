@@ -44,11 +44,11 @@ public class ScrtProps {
     private static String dfltProdName = "Product name from application.yaml";
     // from application.yaml productId
     private static String dfltProdId = "Product ID from application.yaml";
-    
+
     // Todo: get the real default properties from manifest ImplementationVersion
-    private static String dfltVersion = "1_from_manifest";
-    private static String dfltRelease = "0_from_manifest";
-    private static String dfltModLevel = "0_from_manifest";
+    private static String dfltVersion = "1_from_application.yaml";
+    private static String dfltRelease = "2_from_application.yaml";
+    private static String dfltModLevel = "3_from_application.yaml";
 
     private String featName;
     private String featDesc;
@@ -62,10 +62,10 @@ public class ScrtProps {
     //*********************************************************************
     /**
      * The constructor requires that feature properties be explicitly supplied.
-     * 
+     *
      * @param featName Name of the feature
      * @param featDesc Description of the feature
-     * 
+     *
      */
     ScrtProps(String featName, String featDesc) {
         this.featName = featName;
@@ -73,7 +73,7 @@ public class ScrtProps {
 
         // assign default product properties until explicitly overridden.
         setProductInfo(dfltProdName, dfltProdId, dfltVersion, dfltRelease, dfltModLevel);
-    
+
         // Todo: determine if this is right: JfrsZosWriter always uses the product ID as the product instance
         this.prodInstance = dfltProdId;
     }
@@ -82,7 +82,7 @@ public class ScrtProps {
     /**
      * Specify product properties to be used instead of the default product
      * values configured by the REST service.
-     * 
+     *
      * @param prodName  Product name
      * @param prodId    Product ID
      * @param version   Product version

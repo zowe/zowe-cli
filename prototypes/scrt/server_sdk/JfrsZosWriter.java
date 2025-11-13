@@ -12,7 +12,7 @@ public class JfrsZosWriter {
     private static final String VALIDATE_PROPS = "Validate JFRS Properties";
     private static final String GET_PROD_TOKEN = "Get product token";
     private static final String GET_FEAT_TOKEN = "Get feature token";
-    
+
     // todo: Determine valid RC values
     private static final int INVALID_PROPS_RC = 100;
     private static final int REG_PROD_FAILED_RC = 101;
@@ -23,7 +23,7 @@ public class JfrsZosWriter {
     private static final int NULL_RESULT_RSN = 10;
     private static final int JFRS_EXCEPTION_RSN = 11;
     private static final int NULL_EMPTY_BLANK_RSN = 12;
-    
+
     // we cache the product token for future use
     private static Map<String, byte[]> prodTokenMap = new HashMap<>();
     private static final Object prodTokenMapLock = new Object();
@@ -35,9 +35,9 @@ public class JfrsZosWriter {
     //------------------------------------------------------------------------
     /**
      * Record the use of the specified feature.
-     * 
+     *
      * @param ScrtProps scrtPropVals The SCRT property values used in recording the use of a feature.
-     * 
+     *
      * @return An FrsResult with a return code and reason code.
      */
     public FrsResult recordFeatureUse(ScrtProps scrtPropVals) {
@@ -45,7 +45,7 @@ public class JfrsZosWriter {
             validateProps(scrtPropVals);
 
             // Todo: remove print statements when integrating into REST SDK API
-            System.out.println("Using these SCRT property values:");
+            System.out.println("\nrecordFeatureUse: Received these SCRT property values:");
             System.out.println("    " + ScrtProps.PROD_NAME_KW  + "\t\t= " + scrtPropVals.getProdName());
             System.out.println("    " + ScrtProps.PROD_ID_KW + "\t\t= " + scrtPropVals.getProdId());
             System.out.println("    productInstance\t= " + scrtPropVals.getProdInstance());
@@ -80,8 +80,8 @@ public class JfrsZosWriter {
                 );
             }
             // Todo: remove print statements when integrating into REST SDK API
-            System.out.println("\nRecorded the use of featureName = '" + scrtPropVals.getFeatName() +
-                "' for SCRT reporting."
+            System.out.println("\nrecordFeatureUse: Recorded the use of featureName = '" +
+                scrtPropVals.getFeatName() + "' for SCRT reporting."
             );
             return updateFeatResult;
         } catch (JfrsSdkRcException except) {
@@ -94,7 +94,7 @@ public class JfrsZosWriter {
     /**
      * Validate whether the properties supplied to JfrsZosWriter
      * are valid or not. Messages for invalid properties are logged.
-     * 
+     *
      * @returns True when properties are valid. False otherwise.
      * @throw JfrsSdkRcException
      */
@@ -113,10 +113,10 @@ public class JfrsZosWriter {
         }
         if (scrtPropVals.getProdId() == null || scrtPropVals.getProdId().isBlank()) {
             invalidProps += ScrtProps.PROD_ID_KW + " ";
-        } 
+        }
         if (scrtPropVals.getProdInstance() == null || scrtPropVals.getProdInstance().isBlank()) {
             invalidProps += "prodInstance ";
-        } 
+        }
         if (scrtPropVals.getVersion() == null || scrtPropVals.getVersion().isBlank()) {
             invalidProps += ScrtProps.PROD_VER_KW + " ";
         }
@@ -148,9 +148,9 @@ public class JfrsZosWriter {
      * function to get a token and store the token into our prodTokenMap.
      *
      * @param ScrtProps scrtPropVals The SCRT property values used in getting a product token.
-     * 
+     *
      * @throws JfrsSdkRcException when a token cannot be retrieved
-     * 
+     *
      * @return A byte array representing the product token.
      */
     private static byte[] getProdToken(ScrtProps scrtPropVals) throws JfrsSdkRcException {
@@ -161,7 +161,7 @@ public class JfrsZosWriter {
                 FrsResult prodRegResult = new FrsResult(0, 0, "".getBytes());
                 try {
                     prodRegResult = FeatureRegistrationServiceWrapper.registerProduct(
-                        scrtPropVals.getProdName(), scrtPropVals.getProdInstance(), 
+                        scrtPropVals.getProdName(), scrtPropVals.getProdInstance(),
                         scrtPropVals.getVersion(), scrtPropVals.getRelease(), scrtPropVals.getModLevel(),
                         RegProdOption.PERSIST
                     );
@@ -184,7 +184,6 @@ public class JfrsZosWriter {
                     );
                 }
 
- 
                 // Cache the product token by product name so that we do not have to register the
                 // product again each time that we want to use the product in this REST service
                 desiredProdToken = prodRegResult.getToken();
@@ -199,11 +198,11 @@ public class JfrsZosWriter {
      * Get the token for the specified feature from our featTokenMap.
      * If the feature is not in our map, call the Jfrs addFeature function
      * to get the token, and cache the token in our map.
-     * 
+     *
      * @param ScrtProps scrtPropVals The SCRT property values used in getting a feature token.
-     * 
+     *
      * @throws JfrsSdkRcException when a token cannot be retrieved
-     * 
+     *
      * @return A byte array representing the product token.
      */
     private static byte[] getFeatToken(ScrtProps scrtPropVals) throws JfrsSdkRcException {
@@ -257,7 +256,7 @@ public class JfrsZosWriter {
      * @param function The function name to be logged
      * @param featureName The feature name to be logged
      * @param errorText Text to be logged describing the reason for the error
-     * 
+     *
      * @throws JfrsSdkRcException
      */
 	private static void logErrThrowRcExcept(
@@ -269,16 +268,16 @@ public class JfrsZosWriter {
 
         // ToDo: Replace with CommonMessageService.getInstance().createApiMessage
         System.out.println(
-            "logErrThrowRcExcept:" +
+            "\nlogErrThrowRcExcept:" +
             "\n    Error Msg   = " + errorText +
             "\n    Return code = " + rc +
             "\n    Reason code = " + rsn +
             "\n    Function    = " + function +
-            "\n    prodName    = " + scrtPropVals.getProdName() + 
-            "\n    prodId      = " + scrtPropVals.getProdId() + 
-            "\n    version     = " + scrtPropVals.getVersion() + 
-            "\n    release     = " + scrtPropVals.getRelease() + 
-            "\n    modLevel    = " + scrtPropVals.getModLevel() + 
+            "\n    prodName    = " + scrtPropVals.getProdName() +
+            "\n    prodId      = " + scrtPropVals.getProdId() +
+            "\n    version     = " + scrtPropVals.getVersion() +
+            "\n    release     = " + scrtPropVals.getRelease() +
+            "\n    modLevel    = " + scrtPropVals.getModLevel() +
             "\n    FeatName    = " + scrtPropVals.getFeatName() +
             "\n    FeatDesc    = " + scrtPropVals.getFeatDesc()
         );
@@ -316,7 +315,7 @@ class JfrsSdkRcException extends Exception {
     /**
      * Form an FrsResult from this exception.
      *
-     * @return An FrsResult object containing the relevant 
+     * @return An FrsResult object containing the relevant
      *         return code and reason code.
      */
     public FrsResult getFrsResult() {
@@ -326,7 +325,7 @@ class JfrsSdkRcException extends Exception {
 
 
 /*************************************************************************************************
- * Fake FRS classes to enable this prototype to compile before integrating into the REST API SDK. 
+ * Fake FRS classes to enable this prototype to compile before integrating into the REST API SDK.
 *************************************************************************************************/
 // Todo: Remove the following classes and use the real classes when integrating into the REST SDK API
 class FrsResult {

@@ -49,7 +49,7 @@ import org.example.ScrtProps;
 /**
  * Interceptor class that extracts feature information from a custom header and
  * records that data for SCRT reporting.
- * 
+ *
  * The existence of the application.yml property server.jfrs.serviceName enables
  * this inteceptor.
  */
@@ -58,12 +58,15 @@ import org.example.ScrtProps;
 @ConditionalOnProperty(prefix = "server.jfrs", name = "serviceName")
 public class ScrtFeatHeaderInterceptor implements HandlerInterceptor {
 
+    // Todo: replace with the desired URL string
+    public static final String ONLY_RECORD_SCRT_URL = "/apiv1/scrt";
+
     //------------------------------------------------------------------------
     /**
      * Interception point before the execution of a handler. Called after
      * HandlerMapping determined an appropriate handler object, but before
      * HandlerAdapter invokes the handler.
-     * 
+     *
      * This interceptor detects whether the request has a Zowe-SCRT-client-feature
      * header. If so, it parses the content of the header, validates that required
      * prpoerties were contained in the header, and then calls the Jfrs function
@@ -85,6 +88,15 @@ public class ScrtFeatHeaderInterceptor implements HandlerInterceptor {
         @NonNull HttpServletResponse response,
         @NonNull Object handler
     ) throws Exception {
+        // Todo: remove these diagnostic print statements
+        System.out.println(
+            "\npreHandle: Received these request properties:\n" +
+            "    getContextPath = '" + request.getContextPath() + "'\n" +
+            "    getServletPath = '" + request.getServletPath() + "'\n" +
+            "    getRequestURI  = '" + request.getRequestURI() + "'\n" +
+            "    getRequestURL  = '" + request.getRequestURL() + "'"
+        );
+
         // When the request does not have the header, or if the header
         // does not have required fields, we do nothing.
         String scrtHeaderText = request.getHeader("Zowe-SCRT-client-feature");
@@ -97,6 +109,17 @@ public class ScrtFeatHeaderInterceptor implements HandlerInterceptor {
                 new JfrsZosWriter().recordFeatureUse(scrtPropsForFeat);
             }
         }
+        // test for the URL designed to only record SCRT data
+        if (request.getServletPath().equalsIgnoreCase(ONLY_RECORD_SCRT_URL)) {
+            // Do not send this request on to a servlet component
+            // Todo: Form a response and remove the print statement
+            System.out.println("preHandle: This request is not sent to any REST service.");
+            return false;
+        }
+
+        // let this request proceed to the appropriate servlet component
+        // Todo: Remove the print statement
+        System.out.println("preHandle: This request is being sent to the product REST service.");
         return HandlerInterceptor.super.preHandle(request, response, handler);
     }
 
@@ -176,8 +199,8 @@ public class ScrtFeatHeaderInterceptor implements HandlerInterceptor {
         if (!missingPropErrMsg.isEmpty()) {
             // Todo: Replace print with REST API SDK logging method
             System.out.println(
-                "These SCRT feature properties are missing from the supplied header text: " + missingPropErrMsg +
-                "\n    " + scrtHeaderText
+                "\nextractHeaderProps: The following supplied header text:\n    " + scrtHeaderText +
+                "\n    does not contain the following feature properties: " + missingPropErrMsg
             );
             return null;
         }
@@ -227,8 +250,8 @@ public class ScrtFeatHeaderInterceptor implements HandlerInterceptor {
 
         // Todo: Replace print with REST API SDK logging method
         System.out.println(
-            "These SCRT product properties are missing from the supplied header text: " + missingPropErrMsg +
-            "\n    " + scrtHeaderText
+            "\nextractHeaderProps: The following supplied header text:\n    " + scrtHeaderText +
+            "\n    does not contain the following product properties: " + missingPropErrMsg
         );
         return null;
     }

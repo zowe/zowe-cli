@@ -13,51 +13,52 @@ public class App {
     public static void main(String[] args) throws Exception {
         MockHttpServletRequest mockRequest;
         boolean interceptResult;
-        MockHttpServletResponse mockResponse = new MockHttpServletResponse();
         Object handlerObj = new Object();
 
+        MockHttpServletResponse mockResponse = new MockHttpServletResponse();
+
         System.out.println("______________________________________________________________");
-        System.out.println("Call interceptor with featureName missing from the header\n");
-        mockRequest = new MockHttpServletRequest();
+        System.out.println("Call interceptor with featureName missing from the header");
+        mockRequest = createMockRequest(false);
         mockRequest.addHeader("Zowe-SCRT-client-feature",
-            "featureNameMispelled=\"STATEMAN featureName from header\", " + 
+            "featureNameMispelled=\"STATEMAN featureName from header\", " +
             "featureDescription=\"STATEMAN featureDescription from header\""
         );
         interceptResult = new ScrtFeatHeaderInterceptor().preHandle(
             (MockHttpServletRequest) mockRequest, (HttpServletResponse) mockResponse, handlerObj
         );
-        System.out.println("\ninterceptResult = " + interceptResult);
+        System.out.println("interceptResult = " + interceptResult);
 
         System.out.println("______________________________________________________________");
-        System.out.println("Call interceptor with only the required feature properties in the header\n");
-        mockRequest = new MockHttpServletRequest();
+        System.out.println("Call interceptor with only the required feature properties in the header");
+        mockRequest = createMockRequest(false);
         mockRequest.addHeader("Zowe-SCRT-client-feature",
-            "featureName=\"STATEMAN featureName from header\", " + 
+            "featureName=\"STATEMAN featureName from header\", " +
             "featureDescription=\"STATEMAN featureDescription from header\", "
         );
         interceptResult = new ScrtFeatHeaderInterceptor().preHandle(
             (MockHttpServletRequest) mockRequest, (HttpServletResponse) mockResponse, handlerObj
         );
-        System.out.println("\ninterceptResult = " + interceptResult);
+        System.out.println("interceptResult = " + interceptResult);
 
         System.out.println("______________________________________________________________");
-        System.out.println("Call interceptor with only one product property in the header\n");
-        mockRequest = new MockHttpServletRequest();
+        System.out.println("Call interceptor with only one product property in the header");
+        mockRequest = createMockRequest(false);
         mockRequest.addHeader("Zowe-SCRT-client-feature",
-            "featureName=\"REXX featureName from header\", " + 
+            "featureName=\"REXX featureName from header\", " +
             "featureDescription=\"REXX featureDescription from header\", " +
             "productName=\"OPS productName From Header\""
         );
         interceptResult = new ScrtFeatHeaderInterceptor().preHandle(
             (MockHttpServletRequest) mockRequest, (HttpServletResponse) mockResponse, handlerObj
         );
-        System.out.println("\ninterceptResult = " + interceptResult);
+        System.out.println("interceptResult = " + interceptResult);
 
         System.out.println("______________________________________________________________");
-        System.out.println("Call interceptor with all feature and product properties in the header\n");
-        mockRequest = new MockHttpServletRequest();
+        System.out.println("Call interceptor with all feature and product properties in the header");
+        mockRequest = createMockRequest(false);
         mockRequest.addHeader("Zowe-SCRT-client-feature",
-            "featureName=\"REXX featureName from header\", " + 
+            "featureName=\"REXX featureName from header\", " +
             "featureDescription=\"REXX featureDescription from header\", " +
             "productName=\"OPS productName From Header\", " +
             "productId=\"OPS productId From Header\", " +
@@ -68,25 +69,42 @@ public class App {
         interceptResult = new ScrtFeatHeaderInterceptor().preHandle(
             (MockHttpServletRequest) mockRequest, (HttpServletResponse) mockResponse, handlerObj
         );
-        System.out.println("\ninterceptResult = " + interceptResult);
+        System.out.println("interceptResult = " + interceptResult);
 
         System.out.println("______________________________________________________________");
-        System.out.println("Call recordFeatureUse with null ScrtProps parameter\n");
+        System.out.println("Call interceptor with all product and feature props in header and URL for only recording SCRT");
+        mockRequest = createMockRequest(true);
+        mockRequest.addHeader("Zowe-SCRT-client-feature",
+            "featureName=\"REXX featureName from header\", " +
+            "featureDescription=\"REXX featureDescription from header\", " +
+            "productName=\"OPS productName From Header\", " +
+            "productId=\"OPS productId From Header\", " +
+            "version=\"OPS version 14 From Header\", " +
+            "release=\"OPS release 2 From Header\", " +
+            "modLevel=\"OPS modLevel 3 From Header\""
+        );
+        interceptResult = new ScrtFeatHeaderInterceptor().preHandle(
+            (MockHttpServletRequest) mockRequest, (HttpServletResponse) mockResponse, handlerObj
+        );
+        System.out.println("interceptResult = " + interceptResult);
+
+        System.out.println("______________________________________________________________");
+        System.out.println("Call recordFeatureUse with null ScrtProps parameter");
         FrsResult recordUseResult = new JfrsZosWriter().recordFeatureUse(null);
         System.out.println("\nFrsResult rc = " + recordUseResult.getRc() +
             " rsn = " + recordUseResult.getRsn()
         );
 
         System.out.println("______________________________________________________________");
-        System.out.println("Call recordFeatureUse with null and blank feature properties\n");
+        System.out.println("Call recordFeatureUse with null and blank feature properties");
         ScrtProps scrtPropsFromPgm = new ScrtProps(null, "   ");
         recordUseResult = new JfrsZosWriter().recordFeatureUse(scrtPropsFromPgm);
         System.out.println("\nFrsResult rc = " + recordUseResult.getRc() +
             " rsn = " + recordUseResult.getRsn()
         );
- 
+
         System.out.println("______________________________________________________________");
-        System.out.println("Call recordFeatureUse with all product and feature properties\n");
+        System.out.println("Call recordFeatureUse with all product and feature properties");
         scrtPropsFromPgm = new ScrtProps("featNameFromPgm", "featDescFromPgm");
         scrtPropsFromPgm.setProductInfo(
             "prodNameFromPgm", "prodIdFromPgm", "ver_11_FromPgm", "rel_6_FromPgm",
@@ -98,4 +116,19 @@ public class App {
         );
         System.out.println("______________________________________________________________");
     }
+
+    // ________________________________________________________________________________
+    private static MockHttpServletRequest createMockRequest(boolean useUrlForOnlyScrt) {
+        MockHttpServletRequest mockRequest = new MockHttpServletRequest();
+        mockRequest.setMethod("GET");
+        mockRequest.setServerName("GeneMachine");
+        mockRequest.setContextPath("/GeneContextPath");
+        if (useUrlForOnlyScrt) {
+            mockRequest.setServletPath(ScrtFeatHeaderInterceptor.ONLY_RECORD_SCRT_URL);
+        } else {
+            mockRequest.setServletPath("/apiv1/RealAppURL");
+        }
+        return mockRequest;
+    }
+
 } // end App class
