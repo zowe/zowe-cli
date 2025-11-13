@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe Secrets SDK package will be documented in this file.
 
+## `8.29.0`
+
+- Enhancement: Added support for specifying the persistence level as an option when setting credentials. Note that this option only applies for Windows users; when a persistence level is provided and the user's operating system is Linux or MacOS, the option is ignored. [#2601](https://github.com/zowe/zowe-cli/issues/2601)
+
 ## `8.27.4`
 
 - BugFix: Updated minimum supported version of Node from 18 to 20. Added Node 24 support. [#2616](https://github.com/zowe/zowe-cli/pull/2616)

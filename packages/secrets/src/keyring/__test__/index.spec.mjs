@@ -22,6 +22,8 @@ const randomAsciiString = (len) => {
     return str;
 };
 
+const isWin32 = process.platform === "win32";
+
 const TEST_CREDENTIALS = [
     { service: "TestKeyring", account: "TestASCII" },
     { service: "TestKeyring", account: "TestUTF8" },
@@ -33,6 +35,13 @@ const TEST_CREDENTIALS = [
     { service: "", account: "TestEmptyService" },
     { service: "TestKeyring", account: "PwNullTerm" },
 ];
+if (isWin32) {
+    TEST_CREDENTIALS.push(
+        { service: "TestKeyring", account: "PersistSession", password: "SessionPw" },
+        { service: "TestKeyring", account: "PersistLocalMachine", password: "LocalMachinePw" },
+        { service: "TestKeyring", account: "PersistEnterprise", password: "EnterprisePw" },
+    );
+}
 
 test.serial("get/setPassword with binary data", async (t) => {
     const binaryGroups =
@@ -112,6 +121,29 @@ test.serial("get/setPassword fails with null/undefined data", async (t) => {
     }
 });
 
+if (isWin32) {
+    // Unit test specific to Windows API call (needs to be called before rest of Win32 tests)
+    test.serial(
+        "get/setPassword works for all 3 Win32 persistence levels",
+        async (t) => {
+            const credsToSave = TEST_CREDENTIALS.slice(-3).map((c, i) => ({ ...c, persist: i + 1 }));
+
+            try {
+                for (const cred of credsToSave) {
+                    await setPassword(cred.service, cred.account, cred.password, cred.persist);
+                    t.is(await getPassword(cred.service, cred.account), cred.password);
+                }
+            } catch (err) {
+                t.fail(
+                    "setPassword should not throw an exception when setting credentials with a persistence flag"
+                );
+            }
+
+            t.pass();
+        }
+    );
+}
+
 test.serial(
     "get/setPassword with password containing extra null terminators",
     async (t) => {
@@ -145,8 +177,11 @@ test.serial(
                 password: "ᚻᛖ ᚳᚹᚫᚦ ᚦᚫᛏ ᚻᛖ ᛒᚢᛞᛖ ᚩᚾ ᚦᚫᛗ ᛚᚪᚾᛞᛖ ᚾᚩᚱᚦᚹᛖᚪᚱᛞᚢᛗ ᚹᛁᚦ ᚦᚪ ᚹᛖᛥᚫ",
             },
             { account: "TestUTF16", password: "🌞🌙🌟🌴" },
-            { account: "PwNullTerm", password: "PW\x00" },
+            { account: "PwNullTerm", password: "PW\x00" }
         ];
+        if (isWin32) {
+            expected = expected.concat(TEST_CREDENTIALS.slice(-3));
+        }
         const actual = await findCredentials("TestKeyring");
         t.is(
             actual.length,
@@ -219,7 +254,7 @@ test("deletePassword deletes all test credentials", async (t) => {
 });
 
 // Unit tests specific to Windows API calls
-if (process.platform === "win32") {
+if (isWin32) {
     test.serial(
         "setPassword fails when blob exceeds CRED_MAX_CREDENTIAL_BLOB_SIZE",
         async (t) => {

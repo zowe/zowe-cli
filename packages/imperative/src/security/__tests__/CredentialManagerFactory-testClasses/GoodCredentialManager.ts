@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractCredentialManager, SecureCredential } from "../..";
+import { AbstractCredentialManager, SecureCredential, ICredentialManagerOptions } from "../..";
 
 /**
  * This class is used to test the Credential Manager Factory load class method
@@ -20,8 +20,8 @@ export = class NoInitializeCredentialManager extends AbstractCredentialManager {
 
     public readonly credentials = "username:password";
 
-    constructor(service: string, displayname: string) {
-        super(NoInitializeCredentialManager.hardcodeService, displayname);
+    constructor(service: string, displayname: string, options?: ICredentialManagerOptions) {
+        super(NoInitializeCredentialManager.hardcodeService, displayname, options);
     }
 
     protected async deleteCredentials(_account: string): Promise<void> {
