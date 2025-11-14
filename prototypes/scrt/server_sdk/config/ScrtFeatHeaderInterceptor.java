@@ -60,6 +60,7 @@ public class ScrtFeatHeaderInterceptor implements HandlerInterceptor {
 
     // Todo: replace with the desired URL string
     public static final String ONLY_RECORD_SCRT_URL = "/apiv1/scrt";
+    public static final String SCRT_HEADER = "Zowe-SCRT-client-feature";
 
     //------------------------------------------------------------------------
     /**
@@ -69,8 +70,12 @@ public class ScrtFeatHeaderInterceptor implements HandlerInterceptor {
      *
      * This interceptor detects whether the request has a Zowe-SCRT-client-feature
      * header. If so, it parses the content of the header, validates that required
-     * prpoerties were contained in the header, and then calls the Jfrs function
+     * properties were contained in the header, and then calls the Jfrs function
      * to increment the use count of the client feature supplied in the header.
+     *
+     * When the interceptor recognizes that the servlet path is the well-known
+     * ONLY_RECORD_SCRT_URL path, we only record SCRT data, and prevent the
+     * request from being further processed.
      *
      * @param request  current HTTP request
      * @param response current HTTP response
@@ -88,38 +93,51 @@ public class ScrtFeatHeaderInterceptor implements HandlerInterceptor {
         @NonNull HttpServletResponse response,
         @NonNull Object handler
     ) throws Exception {
-        // Todo: remove these diagnostic print statements
-        System.out.println(
-            "\npreHandle: Received these request properties:\n" +
-            "    getContextPath = '" + request.getContextPath() + "'\n" +
-            "    getServletPath = '" + request.getServletPath() + "'\n" +
-            "    getRequestURI  = '" + request.getRequestURI() + "'\n" +
-            "    getRequestURL  = '" + request.getRequestURL() + "'"
-        );
+        // Todo: remove this diagnostic print statement
+        System.out.println("\npreHandle: getServletPath = '" + request.getServletPath());
 
-        // When the request does not have the header, or if the header
-        // does not have required fields, we do nothing.
-        String scrtHeaderText = request.getHeader("Zowe-SCRT-client-feature");
-        if (scrtHeaderText != null) {
-            ScrtProps scrtPropsForFeat = extractHeaderProps(scrtHeaderText);
-            if (scrtPropsForFeat != null) {
-                // Todo: Remove these comments when integrating into REST API SDK.
-                // Uncomment this one line to test exception handling in validateProps().
+        boolean onlyRecordScrt = request.getServletPath().equalsIgnoreCase(ONLY_RECORD_SCRT_URL);
+        String scrtHeaderText = request.getHeader(SCRT_HEADER);
+
+        if (scrtHeaderText == null) {
+            // no SCRT header was supplied
+            if (onlyRecordScrt) {
+                // Todo: Form an error response and remove the print statement
+                System.out.println("preHandle: Should form error response that the URL '" +
+                    ONLY_RECORD_SCRT_URL + "' requires the '" + SCRT_HEADER + "' header."
+                );
+                return false;   // prevent the request from being processed further
+            }
+        } else {
+            // header text was supplied
+            ScrtProps scrtPropsForFeat = extractHeaderProps(scrtHeaderText, onlyRecordScrt);
+            if (scrtPropsForFeat == null) {
+                // the header text was invalid
+                if (onlyRecordScrt) {
+                    // Todo: Form an error response and remove the print statement
+                    System.out.println("\npreHandle: The Should form error response that the '" +
+                        SCRT_HEADER + "' header had bad values for '" + ONLY_RECORD_SCRT_URL + "'"
+                    );
+                    return false;   // prevent the request from being processed further
+                }
+            } else {
+                // we got good SCRT properties from the header
+
+                // Todo: Remove these 3 lines when integrating into REST API SDK.
+                // Uncomment the next one line to test exception handling in JfrsZosWriter.validateProps().
                 // scrtPropsForFeat = null;
+
+                // Record the use of the specified feature
                 new JfrsZosWriter().recordFeatureUse(scrtPropsForFeat);
             }
         }
-        // test for the URL designed to only record SCRT data
-        if (request.getServletPath().equalsIgnoreCase(ONLY_RECORD_SCRT_URL)) {
-            // Do not send this request on to a servlet component
-            // Todo: Form a response and remove the print statement
-            System.out.println("preHandle: This request is not sent to any REST service.");
-            return false;
+
+        if (onlyRecordScrt) {
+            // Todo: Form a successful response (200)
+            return false;   // prevent the request from being processed further
         }
 
         // let this request proceed to the appropriate servlet component
-        // Todo: Remove the print statement
-        System.out.println("preHandle: This request is being sent to the product REST service.");
         return HandlerInterceptor.super.preHandle(request, response, handler);
     }
 
@@ -140,11 +158,12 @@ public class ScrtFeatHeaderInterceptor implements HandlerInterceptor {
      *      modLevel = "Your product modeLevel"
      *
      * @param scrtHeaderText The text content of the header
+     * @param requireAllProps Indicates if all SCRT properties are required in the header
      *
-     * @returns An ScrtProps object when all required properties were
+     * @returns An ScrtProps object when the required properties are
      *          supplied in the header. It returns null otherwise.
      */
-	private static ScrtProps extractHeaderProps(String scrtHeaderText) {
+	private static ScrtProps extractHeaderProps(String scrtHeaderText, boolean requireAllProps) {
         String featName = null;
         String featDesc = null;
         String prodName = null;
@@ -158,7 +177,7 @@ public class ScrtFeatHeaderInterceptor implements HandlerInterceptor {
         buffer.append(scrtHeaderText);
         ParserCursor cursor = new ParserCursor(0, buffer.length());
 
-        // parse the properties winthin the header text
+        // parse the properties within the header text
         BasicHeaderValueParser parser = BasicHeaderValueParser.INSTANCE;
         HeaderElement[] elements = parser.parseElements(buffer, cursor);
 
@@ -200,7 +219,7 @@ public class ScrtFeatHeaderInterceptor implements HandlerInterceptor {
             // Todo: Replace print with REST API SDK logging method
             System.out.println(
                 "\nextractHeaderProps: The following supplied header text:\n    " + scrtHeaderText +
-                "\n    does not contain the following feature properties: " + missingPropErrMsg
+                "\n    does not contain these feature properties: " + missingPropErrMsg
             );
             return null;
         }
@@ -238,20 +257,22 @@ public class ScrtFeatHeaderInterceptor implements HandlerInterceptor {
         ScrtProps scrtPropsToUse = new ScrtProps(featName, featDesc);
 
         // Either all product properties must be supplied or none should be supplied.
-        if (prodPropCount == 0) {
+        if (prodPropCount == 0 && !requireAllProps) {
             return scrtPropsToUse;
         }
 
         final int maxProdPropCount = 5;
         if (prodPropCount == maxProdPropCount) {
+            // we have all required properties
             scrtPropsToUse.setProductInfo(prodName, prodId, version, release, modLevel);
             return scrtPropsToUse;
         }
 
+        // log an error identifying missing properties
         // Todo: Replace print with REST API SDK logging method
         System.out.println(
             "\nextractHeaderProps: The following supplied header text:\n    " + scrtHeaderText +
-            "\n    does not contain the following product properties: " + missingPropErrMsg
+            "\n    does not contain these product properties: " + missingPropErrMsg
         );
         return null;
     }

@@ -27,7 +27,7 @@ public class App {
         interceptResult = new ScrtFeatHeaderInterceptor().preHandle(
             (MockHttpServletRequest) mockRequest, (HttpServletResponse) mockResponse, handlerObj
         );
-        System.out.println("interceptResult = " + interceptResult);
+        showInterceptResult(interceptResult);
 
         System.out.println("______________________________________________________________");
         System.out.println("Call interceptor with only the required feature properties in the header");
@@ -39,7 +39,7 @@ public class App {
         interceptResult = new ScrtFeatHeaderInterceptor().preHandle(
             (MockHttpServletRequest) mockRequest, (HttpServletResponse) mockResponse, handlerObj
         );
-        System.out.println("interceptResult = " + interceptResult);
+        showInterceptResult(interceptResult);
 
         System.out.println("______________________________________________________________");
         System.out.println("Call interceptor with only one product property in the header");
@@ -52,7 +52,7 @@ public class App {
         interceptResult = new ScrtFeatHeaderInterceptor().preHandle(
             (MockHttpServletRequest) mockRequest, (HttpServletResponse) mockResponse, handlerObj
         );
-        System.out.println("interceptResult = " + interceptResult);
+        showInterceptResult(interceptResult);
 
         System.out.println("______________________________________________________________");
         System.out.println("Call interceptor with all feature and product properties in the header");
@@ -69,7 +69,7 @@ public class App {
         interceptResult = new ScrtFeatHeaderInterceptor().preHandle(
             (MockHttpServletRequest) mockRequest, (HttpServletResponse) mockResponse, handlerObj
         );
-        System.out.println("interceptResult = " + interceptResult);
+        showInterceptResult(interceptResult);
 
         System.out.println("______________________________________________________________");
         System.out.println("Call interceptor with all product and feature props in header and URL for only recording SCRT");
@@ -86,7 +86,27 @@ public class App {
         interceptResult = new ScrtFeatHeaderInterceptor().preHandle(
             (MockHttpServletRequest) mockRequest, (HttpServletResponse) mockResponse, handlerObj
         );
-        System.out.println("interceptResult = " + interceptResult);
+        showInterceptResult(interceptResult);
+
+        System.out.println("______________________________________________________________");
+        System.out.println("Call interceptor with only feature props in header and URL for only recording SCRT");
+        mockRequest = createMockRequest(true);
+        mockRequest.addHeader("Zowe-SCRT-client-feature",
+            "featureName=\"AAA featureName from header\", " +
+            "featureDescription=\"AAA featureDescription from header\", "
+        );
+        interceptResult = new ScrtFeatHeaderInterceptor().preHandle(
+            (MockHttpServletRequest) mockRequest, (HttpServletResponse) mockResponse, handlerObj
+        );
+        showInterceptResult(interceptResult);
+
+        System.out.println("______________________________________________________________");
+        System.out.println("Call interceptor with URL for only recording SCRT but no header");
+        mockRequest = createMockRequest(true);
+        interceptResult = new ScrtFeatHeaderInterceptor().preHandle(
+            (MockHttpServletRequest) mockRequest, (HttpServletResponse) mockResponse, handlerObj
+        );
+        showInterceptResult(interceptResult);
 
         System.out.println("______________________________________________________________");
         System.out.println("Call recordFeatureUse with null ScrtProps parameter");
@@ -114,6 +134,19 @@ public class App {
         System.out.println("\nFrsResult rc = " + recordUseResult.getRc() +
             " rsn = " + recordUseResult.getRsn()
         );
+
+        System.out.println("______________________________________________________________");
+        System.out.println("Calling recordFeatureUse with same feature within 1 day should *NOT* record SCRT");
+        Thread.sleep(2000);
+        scrtPropsFromPgm = new ScrtProps("featNameFromPgm", "featDescFromPgm");
+        scrtPropsFromPgm.setProductInfo(
+            "prodNameFromPgm", "prodIdFromPgm", "ver_11_FromPgm", "rel_6_FromPgm",
+            "modLevel_25_FromPgm"
+        );
+        recordUseResult = new JfrsZosWriter().recordFeatureUse(scrtPropsFromPgm);
+        System.out.println("\nFrsResult rc = " + recordUseResult.getRc() +
+            " rsn = " + recordUseResult.getRsn()
+        );
         System.out.println("______________________________________________________________");
     }
 
@@ -129,6 +162,16 @@ public class App {
             mockRequest.setServletPath("/apiv1/RealAppURL");
         }
         return mockRequest;
+    }
+
+    // ________________________________________________________________________________
+    private static void showInterceptResult(boolean interceptResult) {
+        System.out.println("\ninterceptResult = " + interceptResult + "  ->  " +
+            (
+                interceptResult ? "This request is being sent to the product REST service." :
+                "This request is *NOT* sent to any REST service."
+            )
+        );
     }
 
 } // end App class

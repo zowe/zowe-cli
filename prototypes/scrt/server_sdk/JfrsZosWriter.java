@@ -1,5 +1,7 @@
 package org.example;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,8 +30,19 @@ public class JfrsZosWriter {
     private static Map<String, byte[]> prodTokenMap = new HashMap<>();
     private static final Object prodTokenMapLock = new Object();
 
+    // A class to hold a feature token and the time that the feature was last updated for SCRT
+    private static class FeatTokenInfo {
+        public byte[] tokenVal;
+        public Instant lastUpdate;
+
+        public FeatTokenInfo(byte[] tokenVal) {
+            this.tokenVal = tokenVal;
+            lastUpdate = Instant.EPOCH; // not yet updated
+        }
+    }
+
     // we cache every feature token for future use
-    private static Map<String, byte[]> featTokenMap = new HashMap<>();
+    private static Map<String, FeatTokenInfo> featTokenMap = new HashMap<>();
     private static final Object featTokenMapLock = new Object();
 
     //------------------------------------------------------------------------
@@ -57,10 +70,30 @@ public class JfrsZosWriter {
 
             FrsResult updateFeatResult = new FrsResult(0, 0, "".getBytes());
             try {
-                updateFeatResult = FeatureRegistrationServiceWrapper.updateFeature(
-                    getProdToken(scrtPropVals), getFeatToken(scrtPropVals),
-                    FeatureStateOption.FL_STATE_ENABLED, FeatureUsedOption.FL_USED_YES
-                );
+                FeatTokenInfo featTokenInfo = getFeatTokenInfo(scrtPropVals);
+                Instant currentTime = Instant.now();
+                synchronized (featTokenMapLock) {
+                    if (currentTime.isAfter(featTokenInfo.lastUpdate.plus(1, ChronoUnit.DAYS))) {
+                        // Todo: remove print statement when integrating into REST SDK API
+                        System.out.println("\nrecordFeatureUse: last update = " + featTokenInfo.lastUpdate +
+                            "   current time = " + currentTime + "\n    Recorded the use of featureName = '" +
+                            scrtPropVals.getFeatName() + "' for SCRT reporting."
+                        );
+
+                        // do another update since it has been over a day since our last update
+                        featTokenInfo.lastUpdate = currentTime;
+                        updateFeatResult = FeatureRegistrationServiceWrapper.updateFeature(
+                            getProdToken(scrtPropVals), featTokenInfo.tokenVal,
+                            FeatureStateOption.FL_STATE_ENABLED, FeatureUsedOption.FL_USED_YES
+                        );
+                    } else {
+                        // Todo: remove print statement when integrating into REST SDK API
+                        System.out.println("\nrecordFeatureUse: last update = " + featTokenInfo.lastUpdate +
+                            "   current time = " + currentTime + "\n    Did *NOT* recorded SCRT for featureName = '" +
+                            scrtPropVals.getFeatName() + "'. It was done within the last day."
+                        );
+                    }
+                }
             } catch (JFRSException except) {
                 logErrThrowRcExcept(
                     UPDATE_FEAT_USED, scrtPropVals, UPDATE_FEAT_FAILED_RC, JFRS_EXCEPTION_RSN,
@@ -79,10 +112,6 @@ public class JfrsZosWriter {
                     "FeatureRegistrationService.updateFeature returned a failing return code"
                 );
             }
-            // Todo: remove print statements when integrating into REST SDK API
-            System.out.println("\nrecordFeatureUse: Recorded the use of featureName = '" +
-                scrtPropVals.getFeatName() + "' for SCRT reporting."
-            );
             return updateFeatResult;
         } catch (JfrsSdkRcException except) {
             return except.getFrsResult();
@@ -139,6 +168,8 @@ public class JfrsZosWriter {
                 "The following scrtPropVals are null, empty, or blank: " + invalidProps
             );
         }
+
+        // Todo: validate our property values against the product catalog
     }
 
     //------------------------------------------------------------------------
@@ -203,13 +234,14 @@ public class JfrsZosWriter {
      *
      * @throws JfrsSdkRcException when a token cannot be retrieved
      *
-     * @return A byte array representing the product token.
+     * @return A FeatTokenInfo object containing the feature's token and last update time.
      */
-    private static byte[] getFeatToken(ScrtProps scrtPropVals) throws JfrsSdkRcException {
-        byte[] desiredFeatToken = null;
+    private static FeatTokenInfo getFeatTokenInfo(ScrtProps scrtPropVals) throws JfrsSdkRcException {
+        FeatTokenInfo featTokenInfo = null;
         synchronized (featTokenMapLock) {
-            desiredFeatToken = JfrsZosWriter.featTokenMap.get(scrtPropVals.getFeatName());
-            if (desiredFeatToken == null) {
+            featTokenInfo = JfrsZosWriter.featTokenMap.get(scrtPropVals.getFeatName());
+            if (featTokenInfo == null) {
+                // the feature has never been added, so add it now
                 FrsResult addFeatResult = new FrsResult(0, 0, "".getBytes());
                 try {
                     final String noLmpKey = "";
@@ -239,11 +271,11 @@ public class JfrsZosWriter {
 
                 // Cache the feature token by feature name so that we do not have to add the
                 // feature again each time that we want to use the token for this feature.
-                desiredFeatToken = addFeatResult.getToken();
-                JfrsZosWriter.featTokenMap.put(scrtPropVals.getFeatName(), desiredFeatToken);
+                featTokenInfo = new FeatTokenInfo(addFeatResult.getToken());
+                JfrsZosWriter.featTokenMap.put(scrtPropVals.getFeatName(), featTokenInfo);
             }
         }
-        return desiredFeatToken;
+        return featTokenInfo;
     }
 
     //------------------------------------------------------------------------
