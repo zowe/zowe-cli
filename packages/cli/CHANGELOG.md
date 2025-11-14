@@ -1,7 +1,7 @@
 # Change Log
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `8.29.4`
 
 - BugFix: Updated `js-yaml` dependency to resolve technical currency. []()
 
