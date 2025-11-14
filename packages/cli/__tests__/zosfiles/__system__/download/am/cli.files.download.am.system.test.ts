@@ -17,6 +17,7 @@ import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/pr
 import { getUniqueDatasetName } from "../../../../../../../__tests__/__src__/TestUtils";
 import { Create, CreateDataSetTypeEnum, Delete, Upload } from "@zowe/zos-files-for-zowe-sdk";
 import { runCliScript } from "@zowe/cli-test-utils";
+import { readdirSync, rmSync } from "fs";
 
 let REAL_SESSION: Session;
 // Test Environment populated in the beforeAll();
@@ -97,6 +98,14 @@ describe("Download All Member", () => {
         beforeEach(async () => {
             await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname);
             await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testString), `${dsname}(${testString})`);
+            // Cleanup
+            const files = readdirSync(TEST_ENVIRONMENT_NO_PROF.workingDir);
+            for (const file in files) {
+                if (!(file == "zowe.config.json" || file == "zowe.config.user.json" || file.startsWith("."))) {
+                    const filePath = path.join(TEST_ENVIRONMENT_NO_PROF.workingDir, file);
+                    rmSync(filePath, {recursive: true});
+                }
+            }
         });
 
         afterEach(async () => {
@@ -188,6 +197,19 @@ describe("Download All Member", () => {
             expect(result.stdout).toContain("member(s) downloaded successfully.");
             expect(result.stdout).toContain(testDir);
             expect(result.data.apiResponse.items[0]).toEqual(expectedResult);
+        });
+
+        it("should skip downloading all data set member of pds if they already exist", () => {
+            const shellScript = path.join(__dirname, "__scripts__", "command", "command_download_all_member.sh");
+            let response = runCliScript(shellScript, TEST_ENVIRONMENT, [dsname]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toContain("member(s) downloaded successfully.");
+
+            response = runCliScript(shellScript, TEST_ENVIRONMENT, [dsname]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toContain("member(s) skipped as they already exist.");
         });
     });
 

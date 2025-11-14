@@ -406,8 +406,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
                 expect(error).toBeFalsy();
                 expect(response).toBeTruthy();
                 expect(response.success).toBeTruthy();
-                expect(response.commandResponse).toContain(
-                    ZosFilesMessages.memberDownloadedSuccessfully.message.substring(0, "member(s) downloaded successfully".length + 1));
+                expect(response.commandResponse).toContain("member(s) downloaded successfully");
 
                 // convert the data set name to use as a path/file
                 const regex = /\./gi;
@@ -436,8 +435,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
                 expect(error).toBeFalsy();
                 expect(response).toBeTruthy();
                 expect(response.success).toBeTruthy();
-                expect(response.commandResponse).toContain(
-                    ZosFilesMessages.memberDownloadedSuccessfully.message.substring(0, "member(s) downloaded successfully".length + 1));
+                expect(response.commandResponse).toContain("member(s) downloaded successfully");
 
                 // convert the data set name to use as a path/file
                 const regex = /\./gi;
@@ -466,8 +464,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
                 expect(error).toBeFalsy();
                 expect(response).toBeTruthy();
                 expect(response.success).toBeTruthy();
-                expect(response.commandResponse).toContain(
-                    ZosFilesMessages.memberDownloadedSuccessfully.message.substring(0, "member(s) downloaded successfully".length + 1));
+                expect(response.commandResponse).toContain("member(s) downloaded successfully");
 
                 // convert the data set name to use as a path/file
                 const regex = /\./gi;
@@ -507,8 +504,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
                 expect(error).toBeFalsy();
                 expect(response).toBeTruthy();
                 expect(response.success).toBeTruthy();
-                expect(response.commandResponse).toContain(
-                    ZosFilesMessages.memberDownloadedSuccessfully.message.substring(0, "member(s) downloaded successfully".length + 1));
+                expect(response.commandResponse).toContain("member(s) downloaded successfully");
 
                 // convert the data set name to use as a path/file for clean up in AfterEach
                 const regex = /\./gi;
@@ -537,8 +533,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
                 expect(error).toBeFalsy();
                 expect(response).toBeTruthy();
                 expect(response.success).toBeTruthy();
-                expect(response.commandResponse).toContain(
-                    ZosFilesMessages.memberDownloadedSuccessfully.message.substring(0, "member(s) downloaded successfully".length + 1));
+                expect(response.commandResponse).toContain("member(s) downloaded successfully");
 
                 // convert the data set name to use as a path/file for clean up in AfterEach
                 const regex = /\./gi;
@@ -567,8 +562,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
                 expect(error).toBeFalsy();
                 expect(response).toBeTruthy();
                 expect(response.success).toBeTruthy();
-                expect(response.commandResponse).toContain(
-                    ZosFilesMessages.memberDownloadedSuccessfully.message.substring(0, "member(s) downloaded successfully".length + 1));
+                expect(response.commandResponse).toContain("member(s) downloaded successfully");
 
                 // convert the data set name to use as a path/file for clean up in AfterEach
                 const regex = /\./gi;
@@ -592,8 +586,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
                 expect(error).toBeFalsy();
                 expect(response).toBeTruthy();
                 expect(response.success).toBeTruthy();
-                expect(response.commandResponse).toContain(
-                    ZosFilesMessages.memberDownloadedSuccessfully.message.substring(0, "member(s) downloaded successfully".length + 1));
+                expect(response.commandResponse).toContain("member(s) downloaded successfully");
 
                 // Convert the data set name to use as a path/file
                 const regex = /\./gi;
@@ -635,9 +628,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
                 expect(error).toBeFalsy();
                 expect(response).toBeTruthy();
                 expect(response.success).toBeTruthy();
-                expect(response.commandResponse).toContain(
-                    ZosFilesMessages.memberDownloadedSuccessfully.message.substring(0, "member(s) downloaded successfully".length + 1)
-                );
+                expect(response.commandResponse).toContain("member(s) downloaded successfully");
 
                 // convert the data set name to use as a path/file
                 const regex = /\./gi;
@@ -683,9 +674,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
                 expect(error).toBeFalsy();
                 expect(response).toBeTruthy();
                 expect(response.success).toBeTruthy();
-                expect(response.commandResponse).toContain(
-                    ZosFilesMessages.memberDownloadedSuccessfully.message.substring(0, "member(s) downloaded successfully".length + 1)
-                );
+                expect(response.commandResponse).toContain("member(s) downloaded successfully");
 
                 // convert the data set name to use as a path/file
                 const regex = /\./gi;
@@ -721,9 +710,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
                 expect(error).toBeFalsy();
                 expect(response).toBeTruthy();
                 expect(response.success).toBeTruthy();
-                expect(response.commandResponse).toContain(
-                    ZosFilesMessages.memberDownloadedSuccessfully.message.substring(0, "member(s) downloaded successfully".length + 1)
-                );
+                expect(response.commandResponse).toContain("member(s) downloaded successfully");
 
                 // convert the data set name to use as a path/file
                 const regex = /\./gi;

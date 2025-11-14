@@ -17,6 +17,7 @@ import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/pr
 import { deleteFiles, getUniqueDatasetName } from "../../../../../../../__tests__/__src__/TestUtils";
 import { Upload } from "@zowe/zos-files-for-zowe-sdk";
 import { runCliScript } from "@zowe/cli-test-utils";
+import { readdirSync, rmSync } from "fs";
 
 let REAL_SESSION: Session;
 // Test Environment populated in the beforeAll();
@@ -68,6 +69,17 @@ describe("Download USS File", () => {
             await TestEnvironment.cleanUp(TEST_ENVIRONMENT_NO_PROF);
         });
 
+        beforeEach(() => {
+            // Cleanup
+            const files = readdirSync(TEST_ENVIRONMENT_NO_PROF.workingDir);
+            for (const file in files) {
+                if (!(file == "zowe.config.json" || file == "zowe.config.user.json" || file.startsWith("."))) {
+                    const filePath = path.join(TEST_ENVIRONMENT_NO_PROF.workingDir, file);
+                    rmSync(filePath, {recursive: true});
+                }
+            }
+        });
+
         it("should download uss file", async () => {
             const shellScript = path.join(
                 __dirname,
@@ -112,6 +124,17 @@ describe("Download USS File", () => {
 
         afterAll(async () => {
             await deleteFiles(REAL_SESSION, ussname);
+        });
+
+        beforeEach(() => {
+            // Cleanup
+            const files = readdirSync(TEST_ENVIRONMENT.workingDir);
+            for (const file in files) {
+                if (!(file == "zowe.config.json" || file == "zowe.config.user.json" || file.startsWith("."))) {
+                    const filePath = path.join(TEST_ENVIRONMENT.workingDir, file);
+                    rmSync(filePath, {recursive: true});
+                }
+            }
         });
 
         it("should download an uss file", () => {
@@ -167,6 +190,28 @@ describe("Download USS File", () => {
             );
             expect(response.stdout.toString()).toContain(fileName);
             expect(response.status).toBe(0);
+        });
+
+        it("should skip download of an uss file if it already exists", () => {
+            const shellScript = path.join(
+                __dirname,
+                "__scripts__",
+                "command",
+                "command_download_uss_file.sh"
+            );
+            let response = runCliScript(shellScript, TEST_ENVIRONMENT, [ussname]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toContain(
+                "USS file downloaded successfully."
+            );
+
+            response = runCliScript(shellScript, TEST_ENVIRONMENT, [ussname]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toContain(
+                "skipped as it already exists"
+            );
         });
     });
 
