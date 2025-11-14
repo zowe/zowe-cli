@@ -72,7 +72,7 @@ describe("Download USS File", () => {
         beforeEach(() => {
             // Cleanup
             const files = readdirSync(TEST_ENVIRONMENT_NO_PROF.workingDir);
-            for (const file in files) {
+            for (const file of files) {
                 if (!(file == "zowe.config.json" || file == "zowe.config.user.json" || file.startsWith("."))) {
                     const filePath = path.join(TEST_ENVIRONMENT_NO_PROF.workingDir, file);
                     rmSync(filePath, {recursive: true});
@@ -129,7 +129,7 @@ describe("Download USS File", () => {
         beforeEach(() => {
             // Cleanup
             const files = readdirSync(TEST_ENVIRONMENT.workingDir);
-            for (const file in files) {
+            for (const file of files) {
                 if (!(file == "zowe.config.json" || file == "zowe.config.user.json" || file.startsWith("."))) {
                     const filePath = path.join(TEST_ENVIRONMENT.workingDir, file);
                     rmSync(filePath, {recursive: true});
