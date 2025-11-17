@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated `js-yaml` dependency to resolve technical currency. [#2643](https://github.com/zowe/zowe-cli/pull/2643)
+
 ## `7.29.16`
 
 - BugFix: Updated minimum supported version of Node from 18 to 20. Added Node 24 support. [#2617](https://github.com/zowe/zowe-cli/pull/2617)
