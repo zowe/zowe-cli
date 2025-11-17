@@ -4,7 +4,7 @@ All notable changes to the Zowe provisioning SDK package will be documented in t
 
 ## Recent Changes
 
-- BugFix: Updated `js-yaml` dependency to resolve technical currency. []()
+- BugFix: Updated `js-yaml` dependency to resolve technical currency. [#2643](https://github.com/zowe/zowe-cli/pull/2643)
 
 ## `7.28.3`
 
