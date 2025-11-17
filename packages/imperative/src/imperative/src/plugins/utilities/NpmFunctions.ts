@@ -15,7 +15,7 @@ import * as which from "which";
 import { StdioOptions } from "child_process";
 import { readFileSync } from "jsonfile";
 import * as npmPackageArg from "npm-package-arg";
-import * as pacote from "pacote";
+import type * as pacote from "pacote";
 import { DaemonRequest, ExecUtils, ImperativeConfig } from "../../../../utilities";
 import { INpmInstallArgs } from "../doc/INpmInstallArgs";
 import { IPluginJsonObject } from "../doc/IPluginJsonObject";
@@ -31,6 +31,13 @@ const npmCmd = findNpmOnPath();
  */
 export function findNpmOnPath(): string {
     return which.sync("npm");
+}
+
+export function resolvePacotePath(): string {
+    const globalNpmPath = process.platform === "win32" ?
+        path.resolve(path.dirname(npmCmd), "node_modules") :
+        path.resolve(path.dirname(npmCmd), "..", "lib", "node_modules");
+    return path.join(globalNpmPath, "npm", "node_modules", "pacote");
 }
 
 /**
@@ -102,7 +109,8 @@ export async function getPackageInfo(pkgSpec: string): Promise<{ name: string, v
         return readFileSync(path.join(PMFConstants.instance.PLUGIN_HOME_LOCATION, pkgInfo.name, "package.json"));
     } else {
         // Package name is unknown, so fetch name and version with pacote (npm SDK)
-        return pacote.manifest(pkgSpec);
+        const libPacote: typeof pacote = require(resolvePacotePath());
+        return libPacote.manifest(pkgSpec);
     }
 }
 

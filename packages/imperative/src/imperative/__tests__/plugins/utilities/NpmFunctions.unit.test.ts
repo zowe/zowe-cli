@@ -12,7 +12,6 @@
 import * as spawn from "cross-spawn";
 import * as jsonfile from "jsonfile";
 import * as npmPackageArg from "npm-package-arg";
-import * as pacote from "pacote";
 import * as npmFunctions from "../../../src/plugins/utilities/NpmFunctions";
 import { PMFConstants } from "../../../src/plugins/utilities/PMFConstants";
 import { DaemonRequest, ExecUtils, ImperativeConfig } from "../../../../utilities";
@@ -20,7 +19,6 @@ import { Logger } from "../../../../logger";
 
 jest.mock("cross-spawn");
 jest.mock("jsonfile");
-jest.mock("pacote");
 
 describe("NpmFunctions", () => {
     const fakeRegistry = "http://localhost:4873/";
@@ -72,10 +70,12 @@ describe("NpmFunctions", () => {
 
     describe("getPackageInfo", () => {
         const expectedInfo = { name: "@zowe/imperative", version: "latest" };
+        const mockPacoteManifest = jest.fn();
+        jest.mock(npmFunctions.resolvePacotePath(), () => ({ manifest: mockPacoteManifest }));
 
         beforeAll(() => {
             jest.spyOn(jsonfile, "readFileSync").mockResolvedValue(expectedInfo);
-            jest.spyOn(pacote, "manifest").mockResolvedValue(expectedInfo as any);
+            mockPacoteManifest.mockResolvedValue(expectedInfo);
         });
 
         it("should fetch info for package installed from registry 1", async () => {
@@ -108,7 +108,7 @@ describe("NpmFunctions", () => {
 
             const actualInfo = await npmFunctions.getPackageInfo(pkgSpec);
             expect(actualInfo).toBe(expectedInfo);
-            expect(pacote.manifest).toHaveBeenCalledTimes(1);
+            expect(mockPacoteManifest).toHaveBeenCalledTimes(1);
         });
 
         it("should fetch info for package installed from local TGZ", async () => {
@@ -117,7 +117,7 @@ describe("NpmFunctions", () => {
 
             const actualInfo = await npmFunctions.getPackageInfo(pkgSpec);
             expect(actualInfo).toBe(expectedInfo);
-            expect(pacote.manifest).toHaveBeenCalledTimes(1);
+            expect(mockPacoteManifest).toHaveBeenCalledTimes(1);
         });
 
         it("should fetch info for package installed from Git URL", async () => {
@@ -126,7 +126,7 @@ describe("NpmFunctions", () => {
 
             const actualInfo = await npmFunctions.getPackageInfo(pkgSpec);
             expect(actualInfo).toBe(expectedInfo);
-            expect(pacote.manifest).toHaveBeenCalledTimes(1);
+            expect(mockPacoteManifest).toHaveBeenCalledTimes(1);
         });
 
         it("should fetch info for package installed from remote TGZ", async () => {
@@ -135,7 +135,7 @@ describe("NpmFunctions", () => {
 
             const actualInfo = await npmFunctions.getPackageInfo(pkgSpec);
             expect(actualInfo).toBe(expectedInfo);
-            expect(pacote.manifest).toHaveBeenCalledTimes(1);
+            expect(mockPacoteManifest).toHaveBeenCalledTimes(1);
         });
 
         it("getScopeRegistry() should return registry for 'test' scope", () => {
