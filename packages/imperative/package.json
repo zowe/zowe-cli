@@ -61,7 +61,7 @@
     "http-proxy-agent": "7.0.2",
     "https-proxy-agent": "7.0.4",
     "jest-diff": "27.0.6",
-    "js-yaml": "4.1.0",
+    "js-yaml": "4.1.1",
     "jsonfile": "6.1.0",
     "jsonschema": "1.4.1",
     "lodash": "4.17.21",
