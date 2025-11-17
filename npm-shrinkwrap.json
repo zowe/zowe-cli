@@ -883,7 +883,8 @@
       }
     },
     "node_modules/@istanbuljs/load-nyc-config/node_modules/js-yaml": {
-      "version": "3.14.1",
+      "version": "3.14.2",
+      "integrity": "sha512-PMSmkqxr106Xa156c2M265Z+FTrPl+oxd/rgOQy2tijQeK5TxQ43psO1ZCwhVOSdnn+RzkzlRz/eY4BgJBYVpg==",
       "dev": true,
       "license": "MIT",
       "dependencies": {
@@ -14489,7 +14490,8 @@
       }
     },
     "node_modules/supertap/node_modules/js-yaml": {
-      "version": "3.14.1",
+      "version": "3.14.2",
+      "integrity": "sha512-PMSmkqxr106Xa156c2M265Z+FTrPl+oxd/rgOQy2tijQeK5TxQ43psO1ZCwhVOSdnn+RzkzlRz/eY4BgJBYVpg==",
       "dev": true,
       "license": "MIT",
       "dependencies": {
