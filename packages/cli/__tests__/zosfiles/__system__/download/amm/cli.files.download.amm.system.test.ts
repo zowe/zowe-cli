@@ -17,6 +17,7 @@ import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/pr
 import { getUniqueDatasetName } from "../../../../../../../__tests__/__src__/TestUtils";
 import { Create, CreateDataSetTypeEnum, Delete, Upload } from "@zowe/zos-files-for-zowe-sdk";
 import { runCliScript } from "@zowe/cli-test-utils";
+import { readdirSync, rmSync } from "fs";
 
 let REAL_SESSION: Session;
 // Test Environment populated in the beforeAll();
@@ -65,6 +66,15 @@ describe("Download Members Matching Pattern", () => {
             for(const mem of members) {
                 await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(mem), `${dsname}(${mem})`);
             }
+
+            // Cleanup
+            const files = readdirSync(TEST_ENVIRONMENT_NO_PROF.workingDir);
+            for (const file of files) {
+                if (!(file == "zowe.config.json" || file == "zowe.config.user.json" || file.startsWith("."))) {
+                    const filePath = path.join(TEST_ENVIRONMENT_NO_PROF.workingDir, file);
+                    rmSync(filePath, {recursive: true});
+                }
+            }
         });
 
         afterEach(async () => {
@@ -91,7 +101,7 @@ describe("Download Members Matching Pattern", () => {
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain(`${members.length} members(s) were found matching pattern`);
-            expect(response.stdout.toString()).toContain("Member(s) downloaded successfully.");
+            expect(response.stdout.toString()).toContain("member(s) downloaded successfully.");
         });
     });
 
@@ -101,6 +111,15 @@ describe("Download Members Matching Pattern", () => {
             await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname);
             for(const mem of members) {
                 await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(mem), `${dsname}(${mem})`);
+            }
+
+            // Cleanup
+            const files = readdirSync(TEST_ENVIRONMENT.workingDir);
+            for (const file of files) {
+                if (!(file == "zowe.config.json" || file == "zowe.config.user.json" || file.startsWith("."))) {
+                    const filePath = path.join(TEST_ENVIRONMENT.workingDir, file);
+                    rmSync(filePath, {recursive: true});
+                }
             }
         });
 
@@ -114,7 +133,7 @@ describe("Download Members Matching Pattern", () => {
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain(`${members.length} members(s) were found matching pattern`);
-            expect(response.stdout.toString()).toContain("Member(s) downloaded successfully.");
+            expect(response.stdout.toString()).toContain("member(s) downloaded successfully.");
         });
 
         it("should download all data set member of pds in binary format", () => {
@@ -122,7 +141,7 @@ describe("Download Members Matching Pattern", () => {
             const response = runCliScript(shellScript, TEST_ENVIRONMENT, [dsname,pattern, "--binary"]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
-            expect(response.stdout.toString()).toContain("Member(s) downloaded successfully.");
+            expect(response.stdout.toString()).toContain("member(s) downloaded successfully.");
         });
 
         it("should download all data set member of pds in record format", () => {
@@ -130,7 +149,7 @@ describe("Download Members Matching Pattern", () => {
             const response = runCliScript(shellScript, TEST_ENVIRONMENT, [dsname, pattern, "--record"]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
-            expect(response.stdout.toString()).toContain("Member(s) downloaded successfully.");
+            expect(response.stdout.toString()).toContain("member(s) downloaded successfully.");
         });
 
         it("should download all data set member of pds with response timeout", () => {
@@ -138,7 +157,7 @@ describe("Download Members Matching Pattern", () => {
             const response = runCliScript(shellScript, TEST_ENVIRONMENT, [dsname, pattern, "--responseTimeout 5"]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
-            expect(response.stdout.toString()).toContain("Member(s) downloaded successfully.");
+            expect(response.stdout.toString()).toContain("member(s) downloaded successfully.");
         });
 
         it("should download all data set members with --max-concurrent-requests 2", () => {
@@ -146,7 +165,7 @@ describe("Download Members Matching Pattern", () => {
             const response = runCliScript(shellScript, TEST_ENVIRONMENT, [dsname, pattern, 2]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
-            expect(response.stdout.toString()).toContain("Member(s) downloaded successfully.");
+            expect(response.stdout.toString()).toContain("member(s) downloaded successfully.");
         });
 
         it("should download all data set members of a large data set with --max-concurrent-requests 2", async () => {
@@ -162,7 +181,7 @@ describe("Download Members Matching Pattern", () => {
             const response = runCliScript(shellScript, TEST_ENVIRONMENT, [bigDsname, pattern, 2]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
-            expect(response.stdout.toString()).toContain("Member(s) downloaded successfully.");
+            expect(response.stdout.toString()).toContain("member(s) downloaded successfully.");
             await Delete.dataSet(REAL_SESSION, bigDsname);
         });
 
@@ -171,7 +190,7 @@ describe("Download Members Matching Pattern", () => {
             const response = runCliScript(shellScript, TEST_ENVIRONMENT, [dsname, pattern, "--rfj"]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
-            expect(response.stdout.toString()).toContain("Member(s) downloaded successfully.");
+            expect(response.stdout.toString()).toContain("member(s) downloaded successfully.");
         });
 
         it("should download all data set member to specified directory", () => {
@@ -180,7 +199,7 @@ describe("Download Members Matching Pattern", () => {
             const response = runCliScript(shellScript, TEST_ENVIRONMENT, [dsname, pattern,`-d ${testDir}`, "--rfj"]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
-            expect(response.stdout.toString()).toContain("Member(s) downloaded successfully.");
+            expect(response.stdout.toString()).toContain("member(s) downloaded successfully.");
             expect(response.stdout.toString()).toContain(testDir);
         });
 
@@ -192,9 +211,24 @@ describe("Download Members Matching Pattern", () => {
             const expectedResult = {member: "M1"};
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
-            expect(result.stdout).toContain("Member(s) downloaded successfully.");
+            expect(result.stdout).toContain("member(s) downloaded successfully.");
             expect(result.stdout).toContain(testDir);
             expect(result.data.apiResponse.items[0]).toEqual(expectedResult);
+        });
+
+        it("should skip download of all data set member of pds if they exist", () => {
+            const shellScript = path.join(__dirname, "__scripts__", "command_download_amm.sh");
+            let response = runCliScript(shellScript, TEST_ENVIRONMENT, [dsname, pattern]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toContain(`${members.length} members(s) were found matching pattern`);
+            expect(response.stdout.toString()).toContain("member(s) downloaded successfully.");
+
+            response = runCliScript(shellScript, TEST_ENVIRONMENT, [dsname, pattern]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toContain(`${members.length} members(s) were found matching pattern`);
+            expect(response.stdout.toString()).toContain("member(s) skipped as they already exist");
         });
     });
 

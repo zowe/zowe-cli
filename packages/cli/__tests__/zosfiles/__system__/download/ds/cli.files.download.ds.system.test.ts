@@ -17,6 +17,7 @@ import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/pr
 import { getRandomBytes, getUniqueDatasetName } from "../../../../../../../__tests__/__src__/TestUtils";
 import { Create, CreateDataSetTypeEnum, Delete, Upload } from "@zowe/zos-files-for-zowe-sdk";
 import { runCliScript } from "@zowe/cli-test-utils";
+import { readdirSync, rmSync } from "fs";
 
 let REAL_SESSION: Session;
 // Test Environment populated in the beforeAll();
@@ -62,6 +63,14 @@ describe("Download Data Set", () => {
 
         beforeEach(async () => {
             await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname);
+            // Cleanup
+            const files = readdirSync(TEST_ENVIRONMENT_NO_PROF.workingDir);
+            for (const file of files) {
+                if (!(file == "zowe.config.json" || file == "zowe.config.user.json" || file.startsWith("."))) {
+                    const filePath = path.join(TEST_ENVIRONMENT_NO_PROF.workingDir, file);
+                    rmSync(filePath, {recursive: true});
+                }
+            }
         });
 
         afterEach(async () => {
@@ -96,6 +105,14 @@ describe("Download Data Set", () => {
 
         beforeEach(async () => {
             await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname);
+            // Cleanup
+            const files = readdirSync(TEST_ENVIRONMENT.workingDir);
+            for (const file of files) {
+                if (!(file == "zowe.config.json" || file == "zowe.config.user.json" || file.startsWith("."))) {
+                    const filePath = path.join(TEST_ENVIRONMENT.workingDir, file);
+                    rmSync(filePath, {recursive: true});
+                }
+            }
         });
 
         afterEach(async () => {
@@ -176,6 +193,19 @@ describe("Download Data Set", () => {
             expect(response.status).toBe(0);
             expect(response.stdout.toString()).toContain("Data set downloaded successfully.");
             expect(response.stdout.toString()).toContain(dsname.split(".")[2].toLowerCase());
+        });
+
+        it("should skip downloading a data set if it already exists", async () => {
+            const shellScript = path.join(__dirname, "__scripts__", "command", "command_download_data_set.sh");
+            let response = runCliScript(shellScript, TEST_ENVIRONMENT, [dsname]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toContain("Data set downloaded successfully.");
+
+            response = runCliScript(shellScript, TEST_ENVIRONMENT, [dsname]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toContain("skipped as it already exists");
         });
     });
 

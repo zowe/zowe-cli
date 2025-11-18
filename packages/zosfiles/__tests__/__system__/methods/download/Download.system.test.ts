@@ -33,7 +33,7 @@ import { TestEnvironment } from "../../../../../../__tests__/__src__/environment
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { deleteFiles, getUniqueDatasetName, stripNewLines, wait } from "../../../../../../__tests__/__src__/TestUtils";
 import * as fs from "fs";
-import { posix } from "path";
+import { posix, join } from "path";
 import { Shell } from "@zowe/zos-uss-for-zowe-sdk";
 import { PassThrough } from "stream";
 import { text } from "stream/consumers";
@@ -52,6 +52,7 @@ let ussname: string;
 let ussDirname: string;
 let localDirname: string;
 let file: string;
+let currentDir: string;
 
 describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolean) => {
 
@@ -76,9 +77,13 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
             ussDirname = `${defaultSystem.unix.testdir}/zos_file_download`;
             localDirname = `${testEnvironment.workingDir}/ussDir`;
         }
+
+        currentDir = process.cwd();
+        process.chdir(testEnvironment.workingDir);
     });
 
     afterAll(async () => {
+        process.chdir(currentDir);
         await TestEnvironment.cleanUp(testEnvironment);
     });
 
@@ -105,12 +110,13 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
                     // Do nothing
                 }
 
-                // delete the top-level folder and the folders and file below
-                // variable 'file' should be set in the test
-                if (file != null) {
-                    const folders = file.split("/");
-                    rimraf(folders[0]);
-                    rimraf(file);
+                // Cleanup
+                const files = fs.readdirSync(testEnvironment.workingDir);
+                for (const file of files) {
+                    if (!(file == "zowe.config.json" || file == "zowe.config.user.json" || file.startsWith("."))) {
+                        const filePath = join(testEnvironment.workingDir, file);
+                        fs.rmSync(filePath, {recursive: true});
+                    }
                 }
             });
 
@@ -381,10 +387,13 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
                     // Do nothing
                 }
 
-                // delete the top-level folder and the folders and file below
-                if (file != null) {
-                    const folders = file.split("/");
-                    rimraf(folders[0]);
+                // Cleanup
+                const files = fs.readdirSync(testEnvironment.workingDir);
+                for (const file of files) {
+                    if (!(file == "zowe.config.json" || file == "zowe.config.user.json" || file.startsWith("."))) {
+                        const filePath = join(testEnvironment.workingDir, file);
+                        fs.rmSync(filePath, {recursive: true});
+                    }
                 }
             });
 
@@ -406,8 +415,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
                 expect(error).toBeFalsy();
                 expect(response).toBeTruthy();
                 expect(response.success).toBeTruthy();
-                expect(response.commandResponse).toContain(
-                    ZosFilesMessages.memberDownloadedSuccessfully.message.substring(0, "Member(s) downloaded successfully".length + 1));
+                expect(response.commandResponse).toContain("member(s) downloaded successfully");
 
                 // convert the data set name to use as a path/file
                 const regex = /\./gi;
@@ -436,8 +444,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
                 expect(error).toBeFalsy();
                 expect(response).toBeTruthy();
                 expect(response.success).toBeTruthy();
-                expect(response.commandResponse).toContain(
-                    ZosFilesMessages.memberDownloadedSuccessfully.message.substring(0, "Member(s) downloaded successfully".length + 1));
+                expect(response.commandResponse).toContain("member(s) downloaded successfully");
 
                 // convert the data set name to use as a path/file
                 const regex = /\./gi;
@@ -466,8 +473,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
                 expect(error).toBeFalsy();
                 expect(response).toBeTruthy();
                 expect(response.success).toBeTruthy();
-                expect(response.commandResponse).toContain(
-                    ZosFilesMessages.memberDownloadedSuccessfully.message.substring(0, "Member(s) downloaded successfully".length + 1));
+                expect(response.commandResponse).toContain("member(s) downloaded successfully");
 
                 // convert the data set name to use as a path/file
                 const regex = /\./gi;
@@ -507,8 +513,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
                 expect(error).toBeFalsy();
                 expect(response).toBeTruthy();
                 expect(response.success).toBeTruthy();
-                expect(response.commandResponse).toContain(
-                    ZosFilesMessages.memberDownloadedSuccessfully.message.substring(0, "Member(s) downloaded successfully".length + 1));
+                expect(response.commandResponse).toContain("member(s) downloaded successfully");
 
                 // convert the data set name to use as a path/file for clean up in AfterEach
                 const regex = /\./gi;
@@ -537,8 +542,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
                 expect(error).toBeFalsy();
                 expect(response).toBeTruthy();
                 expect(response.success).toBeTruthy();
-                expect(response.commandResponse).toContain(
-                    ZosFilesMessages.memberDownloadedSuccessfully.message.substring(0, "Member(s) downloaded successfully".length + 1));
+                expect(response.commandResponse).toContain("member(s) downloaded successfully");
 
                 // convert the data set name to use as a path/file for clean up in AfterEach
                 const regex = /\./gi;
@@ -567,8 +571,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
                 expect(error).toBeFalsy();
                 expect(response).toBeTruthy();
                 expect(response.success).toBeTruthy();
-                expect(response.commandResponse).toContain(
-                    ZosFilesMessages.memberDownloadedSuccessfully.message.substring(0, "Member(s) downloaded successfully".length + 1));
+                expect(response.commandResponse).toContain("member(s) downloaded successfully");
 
                 // convert the data set name to use as a path/file for clean up in AfterEach
                 const regex = /\./gi;
@@ -592,8 +595,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
                 expect(error).toBeFalsy();
                 expect(response).toBeTruthy();
                 expect(response.success).toBeTruthy();
-                expect(response.commandResponse).toContain(
-                    ZosFilesMessages.memberDownloadedSuccessfully.message.substring(0, "Member(s) downloaded successfully".length + 1));
+                expect(response.commandResponse).toContain("member(s) downloaded successfully");
 
                 // Convert the data set name to use as a path/file
                 const regex = /\./gi;
@@ -635,9 +637,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
                 expect(error).toBeFalsy();
                 expect(response).toBeTruthy();
                 expect(response.success).toBeTruthy();
-                expect(response.commandResponse).toContain(
-                    ZosFilesMessages.memberDownloadedSuccessfully.message.substring(0, "Member(s) downloaded successfully".length + 1)
-                );
+                expect(response.commandResponse).toContain("member(s) downloaded successfully");
 
                 // convert the data set name to use as a path/file
                 const regex = /\./gi;
@@ -683,9 +683,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
                 expect(error).toBeFalsy();
                 expect(response).toBeTruthy();
                 expect(response.success).toBeTruthy();
-                expect(response.commandResponse).toContain(
-                    ZosFilesMessages.memberDownloadedSuccessfully.message.substring(0, "Member(s) downloaded successfully".length + 1)
-                );
+                expect(response.commandResponse).toContain("member(s) downloaded successfully");
 
                 // convert the data set name to use as a path/file
                 const regex = /\./gi;
@@ -721,9 +719,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
                 expect(error).toBeFalsy();
                 expect(response).toBeTruthy();
                 expect(response.success).toBeTruthy();
-                expect(response.commandResponse).toContain(
-                    ZosFilesMessages.memberDownloadedSuccessfully.message.substring(0, "Member(s) downloaded successfully".length + 1)
-                );
+                expect(response.commandResponse).toContain("member(s) downloaded successfully");
 
                 // convert the data set name to use as a path/file
                 const regex = /\./gi;
@@ -755,13 +751,13 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
                     Imperative.console.info("Error: " + inspect(err));
                 }
 
-                // delete the top-level folder and the folders and file below
-                try {
-                    const folders = file.split("/");
-                    rimraf(folders[0]);
-                } catch (err) {
-                    // Do nothing, sometimes the files are not created.
-                    Imperative.console.info("Error: " + inspect(err));
+                // Cleanup
+                const files = fs.readdirSync(testEnvironment.workingDir);
+                for (const file of files) {
+                    if (!(file == "zowe.config.json" || file == "zowe.config.user.json" || file.startsWith("."))) {
+                        const filePath = join(testEnvironment.workingDir, file);
+                        fs.rmSync(filePath, {recursive: true});
+                    }
                 }
             });
 
@@ -930,11 +926,13 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
                     // Do nothing
                 }
 
-                // delete the top-level folder and the folders and file below
-                if (file != null) {
-                    const folders = file.split("/");
-                    rimraf(folders[0]);
-                    rimraf(file);
+                // Cleanup
+                const files = fs.readdirSync(testEnvironment.workingDir);
+                for (const file of files) {
+                    if (!(file == "zowe.config.json" || file == "zowe.config.user.json" || file.startsWith("."))) {
+                        const filePath = join(testEnvironment.workingDir, file);
+                        fs.rmSync(filePath, {recursive: true});
+                    }
                 }
             });
 
@@ -1158,6 +1156,17 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
 
             // Delete created local file
             IO.deleteFile(`./${posix.basename(ussname)}`);
+        });
+
+        afterEach(() => {
+            // Cleanup
+            const files = fs.readdirSync(testEnvironment.workingDir);
+            for (const file of files) {
+                if (!(file == "zowe.config.json" || file == "zowe.config.user.json" || file.startsWith("."))) {
+                    const filePath = join(testEnvironment.workingDir, file);
+                    fs.rmSync(filePath, {recursive: true});
+                }
+            }
         });
 
         describe("Successful scenarios", () => {
@@ -1528,6 +1537,16 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
     });
 
     describe("Download USS Directory", () => {
+        afterEach(() => {
+            // Cleanup
+            const files = fs.readdirSync(testEnvironment.workingDir);
+            for (const file of files) {
+                if (!(file == "zowe.config.json" || file == "zowe.config.user.json" || file.startsWith("."))) {
+                    const filePath = join(testEnvironment.workingDir, file);
+                    fs.rmSync(filePath, {recursive: true});
+                }
+            }
+        });
         describe("Success Scenarios", () => {
             const testFileContents = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
             const anotherTestFileContents = testFileContents.toLowerCase();
