@@ -2178,21 +2178,20 @@
       }
     },
     "node_modules/@lerna-lite/core/node_modules/glob": {
-      "version": "10.3.10",
-      "integrity": "sha512-fa46+tv1Ak0UPK1TOy/pZrIybNNt4HCv7SDzwyfiOZkvZLEbjsZkJBPtDHVshZjbecAoAGSC20MjLDG/qr679g==",
+      "version": "10.5.0",
+      "integrity": "sha512-DfXN8DfhJ7NH3Oe7cFmu3NCu1wKbkReJ8TorzSAFbSKrlNaQSKfIzqYqVY8zlbs2NLBbWpRiU52GX2PbaBVNkg==",
       "dev": true,
+      "license": "ISC",
       "dependencies": {
         "foreground-child": "^3.1.0",
-        "jackspeak": "^2.3.5",
-        "minimatch": "^9.0.1",
-        "minipass": "^5.0.0 || ^6.0.2 || ^7.0.0",
-        "path-scurry": "^1.10.1"
+        "jackspeak": "^3.1.2",
+        "minimatch": "^9.0.4",
+        "minipass": "^7.1.2",
+        "package-json-from-dist": "^1.0.0",
+        "path-scurry": "^1.11.1"
       },
       "bin": {
         "glob": "dist/esm/bin.mjs"
-      },
-      "engines": {
-        "node": ">=16 || 14 >=14.17"
       },
       "funding": {
         "url": "https://github.com/sponsors/isaacs"
@@ -2349,9 +2348,10 @@
       }
     },
     "node_modules/@lerna-lite/core/node_modules/minimatch": {
-      "version": "9.0.3",
-      "integrity": "sha512-RHiac9mvaRw0x3AYRgDC1CxAP7HTcNrrECeA8YYJeWnpo+2Q5CegtZjaotWTWxDG3UeGA1coE05iH1mPjT/2mg==",
+      "version": "9.0.5",
+      "integrity": "sha512-G6T0ZX48xgozx7587koeX9Ys2NYy6Gmv//P89sEte9V9whIapMNF4idKxnW2QtCcLiTWlb/wfCabAtAFWhhBow==",
       "dev": true,
+      "license": "ISC",
       "dependencies": {
         "brace-expansion": "^2.0.1"
       },
@@ -2363,9 +2363,10 @@
       }
     },
     "node_modules/@lerna-lite/core/node_modules/minipass": {
-      "version": "7.0.4",
-      "integrity": "sha512-jYofLM5Dam9279rdkWzqHozUo4ybjdZmCsDHePy5V/PbBcVMiSZR97gmAy45aqi8CK1lG2ECd356FU86avfwUQ==",
+      "version": "7.1.2",
+      "integrity": "sha512-qOOzS1cBTWYF4BH8fVePDBOO9iptMnGUEZwNc/cMWnTV2nVLZ7VoNWEPHkYczZA0pdoA7dl6e7FL659nX9S2aw==",
       "dev": true,
+      "license": "ISC",
       "engines": {
         "node": ">=16 || 14 >=14.17"
       }
@@ -4899,20 +4900,19 @@
       }
     },
     "node_modules/@sigstore/sign/node_modules/glob": {
-      "version": "10.3.10",
-      "integrity": "sha512-fa46+tv1Ak0UPK1TOy/pZrIybNNt4HCv7SDzwyfiOZkvZLEbjsZkJBPtDHVshZjbecAoAGSC20MjLDG/qr679g==",
+      "version": "10.5.0",
+      "integrity": "sha512-DfXN8DfhJ7NH3Oe7cFmu3NCu1wKbkReJ8TorzSAFbSKrlNaQSKfIzqYqVY8zlbs2NLBbWpRiU52GX2PbaBVNkg==",
+      "license": "ISC",
       "dependencies": {
         "foreground-child": "^3.1.0",
-        "jackspeak": "^2.3.5",
-        "minimatch": "^9.0.1",
-        "minipass": "^5.0.0 || ^6.0.2 || ^7.0.0",
-        "path-scurry": "^1.10.1"
+        "jackspeak": "^3.1.2",
+        "minimatch": "^9.0.4",
+        "minipass": "^7.1.2",
+        "package-json-from-dist": "^1.0.0",
+        "path-scurry": "^1.11.1"
       },
       "bin": {
         "glob": "dist/esm/bin.mjs"
-      },
-      "engines": {
-        "node": ">=16 || 14 >=14.17"
       },
       "funding": {
         "url": "https://github.com/sponsors/isaacs"
@@ -4939,8 +4939,9 @@
       }
     },
     "node_modules/@sigstore/sign/node_modules/minimatch": {
-      "version": "9.0.3",
-      "integrity": "sha512-RHiac9mvaRw0x3AYRgDC1CxAP7HTcNrrECeA8YYJeWnpo+2Q5CegtZjaotWTWxDG3UeGA1coE05iH1mPjT/2mg==",
+      "version": "9.0.5",
+      "integrity": "sha512-G6T0ZX48xgozx7587koeX9Ys2NYy6Gmv//P89sEte9V9whIapMNF4idKxnW2QtCcLiTWlb/wfCabAtAFWhhBow==",
+      "license": "ISC",
       "dependencies": {
         "brace-expansion": "^2.0.1"
       },
@@ -4952,8 +4953,9 @@
       }
     },
     "node_modules/@sigstore/sign/node_modules/minipass": {
-      "version": "7.0.4",
-      "integrity": "sha512-jYofLM5Dam9279rdkWzqHozUo4ybjdZmCsDHePy5V/PbBcVMiSZR97gmAy45aqi8CK1lG2ECd356FU86avfwUQ==",
+      "version": "7.1.2",
+      "integrity": "sha512-qOOzS1cBTWYF4BH8fVePDBOO9iptMnGUEZwNc/cMWnTV2nVLZ7VoNWEPHkYczZA0pdoA7dl6e7FL659nX9S2aw==",
+      "license": "ISC",
       "engines": {
         "node": ">=16 || 14 >=14.17"
       }
@@ -5934,8 +5936,8 @@
       }
     },
     "node_modules/@vercel/nft/node_modules/glob": {
-      "version": "10.4.5",
-      "integrity": "sha512-7Bv8RF0k6xjo7d4A/PxYLbUCfb6c+Vpd2/mB2yRDlew7Jb5hEXiCD9ibfO7wpk8i4sevK6DFny9h7EYbM3/sHg==",
+      "version": "10.5.0",
+      "integrity": "sha512-DfXN8DfhJ7NH3Oe7cFmu3NCu1wKbkReJ8TorzSAFbSKrlNaQSKfIzqYqVY8zlbs2NLBbWpRiU52GX2PbaBVNkg==",
       "dev": true,
       "license": "ISC",
       "dependencies": {
@@ -5951,21 +5953,6 @@
       },
       "funding": {
         "url": "https://github.com/sponsors/isaacs"
-      }
-    },
-    "node_modules/@vercel/nft/node_modules/jackspeak": {
-      "version": "3.4.3",
-      "integrity": "sha512-OGlZQpz2yfahA/Rd1Y8Cd9SIEsqvXkLVoSw/cgwhnhFMDbsQFeZYoJJ7bIZBS9BcamUW96asq/npPWugM+RQBw==",
-      "dev": true,
-      "license": "BlueOak-1.0.0",
-      "dependencies": {
-        "@isaacs/cliui": "^8.0.2"
-      },
-      "funding": {
-        "url": "https://github.com/sponsors/isaacs"
-      },
-      "optionalDependencies": {
-        "@pkgjs/parseargs": "^0.11.0"
       }
     },
     "node_modules/@vercel/nft/node_modules/minimatch": {
@@ -5990,22 +5977,6 @@
       "license": "ISC",
       "engines": {
         "node": ">=16 || 14 >=14.17"
-      }
-    },
-    "node_modules/@vercel/nft/node_modules/path-scurry": {
-      "version": "1.11.1",
-      "integrity": "sha512-Xa4Nw17FS9ApQFJ9umLiJS4orGjm7ZzwUrwamcGQuHSzDyth9boKDaycYdDcZDuqYATXw4HFXgaqWTctW/v1HA==",
-      "dev": true,
-      "license": "BlueOak-1.0.0",
-      "dependencies": {
-        "lru-cache": "^10.2.0",
-        "minipass": "^5.0.0 || ^6.0.2 || ^7.0.0"
-      },
-      "engines": {
-        "node": ">=16 || 14 >=14.18"
-      },
-      "funding": {
-        "url": "https://github.com/sponsors/isaacs"
       }
     },
     "node_modules/@vercel/nft/node_modules/picomatch": {
@@ -7128,6 +7099,15 @@
       },
       "funding": {
         "url": "https://github.com/sponsors/isaacs"
+      }
+    },
+    "node_modules/bindings": {
+      "version": "1.5.0",
+      "integrity": "sha512-p2q/t/mhvuOj/UeLlV6566GD/guowlr0hHxClI0W9m7MWYkL1F0hLo+0Aexs9HSPCtR1SXQ0TD3MMKrXZajbiQ==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "file-uri-to-path": "1.0.0"
       }
     },
     "node_modules/bl": {
@@ -9852,6 +9832,12 @@
         "node": "^10.12.0 || >=12.0.0"
       }
     },
+    "node_modules/file-uri-to-path": {
+      "version": "1.0.0",
+      "integrity": "sha512-0Zt+s3L7Vf1biwWZ29aARiVYLx7iMGnEUl9x33fbB/j3jR81u/O2LbqK+Bm1CDSNDKVtJ/YjwY7TUd5SkeLQLw==",
+      "dev": true,
+      "license": "MIT"
+    },
     "node_modules/filing-cabinet": {
       "version": "3.1.0",
       "integrity": "sha512-ZFutWTo14Z1xmog76UoQzDKEza1fSpqc+HvUN6K6GILrfhIn6NbR8fHQktltygF+wbt7PZ/EvfLK6yJnebd40A==",
@@ -11177,13 +11163,11 @@
       }
     },
     "node_modules/jackspeak": {
-      "version": "2.3.6",
-      "integrity": "sha512-N3yCS/NegsOBokc8GAdM8UcmfsKiSS8cipheD/nivzr700H+nsMOxJjQnvwOcRYVuFkdH0wGUvW2WbXGmrZGbQ==",
+      "version": "3.4.3",
+      "integrity": "sha512-OGlZQpz2yfahA/Rd1Y8Cd9SIEsqvXkLVoSw/cgwhnhFMDbsQFeZYoJJ7bIZBS9BcamUW96asq/npPWugM+RQBw==",
+      "license": "BlueOak-1.0.0",
       "dependencies": {
         "@isaacs/cliui": "^8.0.2"
-      },
-      "engines": {
-        "node": ">=14"
       },
       "funding": {
         "url": "https://github.com/sponsors/isaacs"
@@ -14955,20 +14939,19 @@
       }
     },
     "node_modules/npm-registry-fetch/node_modules/glob": {
-      "version": "10.3.10",
-      "integrity": "sha512-fa46+tv1Ak0UPK1TOy/pZrIybNNt4HCv7SDzwyfiOZkvZLEbjsZkJBPtDHVshZjbecAoAGSC20MjLDG/qr679g==",
+      "version": "10.5.0",
+      "integrity": "sha512-DfXN8DfhJ7NH3Oe7cFmu3NCu1wKbkReJ8TorzSAFbSKrlNaQSKfIzqYqVY8zlbs2NLBbWpRiU52GX2PbaBVNkg==",
+      "license": "ISC",
       "dependencies": {
         "foreground-child": "^3.1.0",
-        "jackspeak": "^2.3.5",
-        "minimatch": "^9.0.1",
-        "minipass": "^5.0.0 || ^6.0.2 || ^7.0.0",
-        "path-scurry": "^1.10.1"
+        "jackspeak": "^3.1.2",
+        "minimatch": "^9.0.4",
+        "minipass": "^7.1.2",
+        "package-json-from-dist": "^1.0.0",
+        "path-scurry": "^1.11.1"
       },
       "bin": {
         "glob": "dist/esm/bin.mjs"
-      },
-      "engines": {
-        "node": ">=16 || 14 >=14.17"
       },
       "funding": {
         "url": "https://github.com/sponsors/isaacs"
@@ -15005,8 +14988,9 @@
       }
     },
     "node_modules/npm-registry-fetch/node_modules/minimatch": {
-      "version": "9.0.3",
-      "integrity": "sha512-RHiac9mvaRw0x3AYRgDC1CxAP7HTcNrrECeA8YYJeWnpo+2Q5CegtZjaotWTWxDG3UeGA1coE05iH1mPjT/2mg==",
+      "version": "9.0.5",
+      "integrity": "sha512-G6T0ZX48xgozx7587koeX9Ys2NYy6Gmv//P89sEte9V9whIapMNF4idKxnW2QtCcLiTWlb/wfCabAtAFWhhBow==",
+      "license": "ISC",
       "dependencies": {
         "brace-expansion": "^2.0.1"
       },
@@ -15018,8 +15002,9 @@
       }
     },
     "node_modules/npm-registry-fetch/node_modules/minipass": {
-      "version": "7.0.4",
-      "integrity": "sha512-jYofLM5Dam9279rdkWzqHozUo4ybjdZmCsDHePy5V/PbBcVMiSZR97gmAy45aqi8CK1lG2ECd356FU86avfwUQ==",
+      "version": "7.1.2",
+      "integrity": "sha512-qOOzS1cBTWYF4BH8fVePDBOO9iptMnGUEZwNc/cMWnTV2nVLZ7VoNWEPHkYczZA0pdoA7dl6e7FL659nX9S2aw==",
+      "license": "ISC",
       "engines": {
         "node": ">=16 || 14 >=14.17"
       }
@@ -15273,7 +15258,6 @@
     "node_modules/package-json-from-dist": {
       "version": "1.0.1",
       "integrity": "sha512-UEZIS3/by4OC8vL3P2dTXRETpebLI2NiI5vIrjaD/5UtrkFX/tNbwjTSRAGC/+7CAo2pIcBaRgWmcBBHcsaCIw==",
-      "dev": true,
       "license": "BlueOak-1.0.0"
     },
     "node_modules/pacote": {
@@ -15413,20 +15397,19 @@
       }
     },
     "node_modules/pacote/node_modules/glob": {
-      "version": "10.3.10",
-      "integrity": "sha512-fa46+tv1Ak0UPK1TOy/pZrIybNNt4HCv7SDzwyfiOZkvZLEbjsZkJBPtDHVshZjbecAoAGSC20MjLDG/qr679g==",
+      "version": "10.5.0",
+      "integrity": "sha512-DfXN8DfhJ7NH3Oe7cFmu3NCu1wKbkReJ8TorzSAFbSKrlNaQSKfIzqYqVY8zlbs2NLBbWpRiU52GX2PbaBVNkg==",
+      "license": "ISC",
       "dependencies": {
         "foreground-child": "^3.1.0",
-        "jackspeak": "^2.3.5",
-        "minimatch": "^9.0.1",
-        "minipass": "^5.0.0 || ^6.0.2 || ^7.0.0",
-        "path-scurry": "^1.10.1"
+        "jackspeak": "^3.1.2",
+        "minimatch": "^9.0.4",
+        "minipass": "^7.1.2",
+        "package-json-from-dist": "^1.0.0",
+        "path-scurry": "^1.11.1"
       },
       "bin": {
         "glob": "dist/esm/bin.mjs"
-      },
-      "engines": {
-        "node": ">=16 || 14 >=14.17"
       },
       "funding": {
         "url": "https://github.com/sponsors/isaacs"
@@ -15477,8 +15460,9 @@
       }
     },
     "node_modules/pacote/node_modules/minimatch": {
-      "version": "9.0.3",
-      "integrity": "sha512-RHiac9mvaRw0x3AYRgDC1CxAP7HTcNrrECeA8YYJeWnpo+2Q5CegtZjaotWTWxDG3UeGA1coE05iH1mPjT/2mg==",
+      "version": "9.0.5",
+      "integrity": "sha512-G6T0ZX48xgozx7587koeX9Ys2NYy6Gmv//P89sEte9V9whIapMNF4idKxnW2QtCcLiTWlb/wfCabAtAFWhhBow==",
+      "license": "ISC",
       "dependencies": {
         "brace-expansion": "^2.0.1"
       },
@@ -15490,8 +15474,9 @@
       }
     },
     "node_modules/pacote/node_modules/minipass": {
-      "version": "7.0.4",
-      "integrity": "sha512-jYofLM5Dam9279rdkWzqHozUo4ybjdZmCsDHePy5V/PbBcVMiSZR97gmAy45aqi8CK1lG2ECd356FU86avfwUQ==",
+      "version": "7.1.2",
+      "integrity": "sha512-qOOzS1cBTWYF4BH8fVePDBOO9iptMnGUEZwNc/cMWnTV2nVLZ7VoNWEPHkYczZA0pdoA7dl6e7FL659nX9S2aw==",
+      "license": "ISC",
       "engines": {
         "node": ">=16 || 14 >=14.17"
       }
@@ -15803,14 +15788,15 @@
       "dev": true
     },
     "node_modules/path-scurry": {
-      "version": "1.10.1",
-      "integrity": "sha512-MkhCqzzBEpPvxxQ71Md0b1Kk51W01lrYvlMzSUaIzNsODdd7mqhiimSZlr+VegAz5Z6Vzt9Xg2ttE//XBhH3EQ==",
+      "version": "1.11.1",
+      "integrity": "sha512-Xa4Nw17FS9ApQFJ9umLiJS4orGjm7ZzwUrwamcGQuHSzDyth9boKDaycYdDcZDuqYATXw4HFXgaqWTctW/v1HA==",
+      "license": "BlueOak-1.0.0",
       "dependencies": {
-        "lru-cache": "^9.1.1 || ^10.0.0",
+        "lru-cache": "^10.2.0",
         "minipass": "^5.0.0 || ^6.0.2 || ^7.0.0"
       },
       "engines": {
-        "node": ">=16 || 14 >=14.17"
+        "node": ">=16 || 14 >=14.18"
       },
       "funding": {
         "url": "https://github.com/sponsors/isaacs"
@@ -17794,20 +17780,19 @@
       }
     },
     "node_modules/tuf-js/node_modules/glob": {
-      "version": "10.3.10",
-      "integrity": "sha512-fa46+tv1Ak0UPK1TOy/pZrIybNNt4HCv7SDzwyfiOZkvZLEbjsZkJBPtDHVshZjbecAoAGSC20MjLDG/qr679g==",
+      "version": "10.5.0",
+      "integrity": "sha512-DfXN8DfhJ7NH3Oe7cFmu3NCu1wKbkReJ8TorzSAFbSKrlNaQSKfIzqYqVY8zlbs2NLBbWpRiU52GX2PbaBVNkg==",
+      "license": "ISC",
       "dependencies": {
         "foreground-child": "^3.1.0",
-        "jackspeak": "^2.3.5",
-        "minimatch": "^9.0.1",
-        "minipass": "^5.0.0 || ^6.0.2 || ^7.0.0",
-        "path-scurry": "^1.10.1"
+        "jackspeak": "^3.1.2",
+        "minimatch": "^9.0.4",
+        "minipass": "^7.1.2",
+        "package-json-from-dist": "^1.0.0",
+        "path-scurry": "^1.11.1"
       },
       "bin": {
         "glob": "dist/esm/bin.mjs"
-      },
-      "engines": {
-        "node": ">=16 || 14 >=14.17"
       },
       "funding": {
         "url": "https://github.com/sponsors/isaacs"
@@ -17834,8 +17819,9 @@
       }
     },
     "node_modules/tuf-js/node_modules/minimatch": {
-      "version": "9.0.3",
-      "integrity": "sha512-RHiac9mvaRw0x3AYRgDC1CxAP7HTcNrrECeA8YYJeWnpo+2Q5CegtZjaotWTWxDG3UeGA1coE05iH1mPjT/2mg==",
+      "version": "9.0.5",
+      "integrity": "sha512-G6T0ZX48xgozx7587koeX9Ys2NYy6Gmv//P89sEte9V9whIapMNF4idKxnW2QtCcLiTWlb/wfCabAtAFWhhBow==",
+      "license": "ISC",
       "dependencies": {
         "brace-expansion": "^2.0.1"
       },
@@ -17847,8 +17833,9 @@
       }
     },
     "node_modules/tuf-js/node_modules/minipass": {
-      "version": "7.0.4",
-      "integrity": "sha512-jYofLM5Dam9279rdkWzqHozUo4ybjdZmCsDHePy5V/PbBcVMiSZR97gmAy45aqi8CK1lG2ECd356FU86avfwUQ==",
+      "version": "7.1.2",
+      "integrity": "sha512-qOOzS1cBTWYF4BH8fVePDBOO9iptMnGUEZwNc/cMWnTV2nVLZ7VoNWEPHkYczZA0pdoA7dl6e7FL659nX9S2aw==",
+      "license": "ISC",
       "engines": {
         "node": ">=16 || 14 >=14.17"
       }
@@ -20658,15 +20645,16 @@
           "dev": true
         },
         "glob": {
-          "version": "10.3.10",
-          "integrity": "sha512-fa46+tv1Ak0UPK1TOy/pZrIybNNt4HCv7SDzwyfiOZkvZLEbjsZkJBPtDHVshZjbecAoAGSC20MjLDG/qr679g==",
+          "version": "10.5.0",
+          "integrity": "sha512-DfXN8DfhJ7NH3Oe7cFmu3NCu1wKbkReJ8TorzSAFbSKrlNaQSKfIzqYqVY8zlbs2NLBbWpRiU52GX2PbaBVNkg==",
           "dev": true,
           "requires": {
             "foreground-child": "^3.1.0",
-            "jackspeak": "^2.3.5",
-            "minimatch": "^9.0.1",
-            "minipass": "^5.0.0 || ^6.0.2 || ^7.0.0",
-            "path-scurry": "^1.10.1"
+            "jackspeak": "^3.1.2",
+            "minimatch": "^9.0.4",
+            "minipass": "^7.1.2",
+            "package-json-from-dist": "^1.0.0",
+            "path-scurry": "^1.11.1"
           }
         },
         "glob-parent": {
@@ -20769,16 +20757,16 @@
           "dev": true
         },
         "minimatch": {
-          "version": "9.0.3",
-          "integrity": "sha512-RHiac9mvaRw0x3AYRgDC1CxAP7HTcNrrECeA8YYJeWnpo+2Q5CegtZjaotWTWxDG3UeGA1coE05iH1mPjT/2mg==",
+          "version": "9.0.5",
+          "integrity": "sha512-G6T0ZX48xgozx7587koeX9Ys2NYy6Gmv//P89sEte9V9whIapMNF4idKxnW2QtCcLiTWlb/wfCabAtAFWhhBow==",
           "dev": true,
           "requires": {
             "brace-expansion": "^2.0.1"
           }
         },
         "minipass": {
-          "version": "7.0.4",
-          "integrity": "sha512-jYofLM5Dam9279rdkWzqHozUo4ybjdZmCsDHePy5V/PbBcVMiSZR97gmAy45aqi8CK1lG2ECd356FU86avfwUQ==",
+          "version": "7.1.2",
+          "integrity": "sha512-qOOzS1cBTWYF4BH8fVePDBOO9iptMnGUEZwNc/cMWnTV2nVLZ7VoNWEPHkYczZA0pdoA7dl6e7FL659nX9S2aw==",
           "dev": true
         },
         "minipass-collect": {
@@ -22507,14 +22495,15 @@
           }
         },
         "glob": {
-          "version": "10.3.10",
-          "integrity": "sha512-fa46+tv1Ak0UPK1TOy/pZrIybNNt4HCv7SDzwyfiOZkvZLEbjsZkJBPtDHVshZjbecAoAGSC20MjLDG/qr679g==",
+          "version": "10.5.0",
+          "integrity": "sha512-DfXN8DfhJ7NH3Oe7cFmu3NCu1wKbkReJ8TorzSAFbSKrlNaQSKfIzqYqVY8zlbs2NLBbWpRiU52GX2PbaBVNkg==",
           "requires": {
             "foreground-child": "^3.1.0",
-            "jackspeak": "^2.3.5",
-            "minimatch": "^9.0.1",
-            "minipass": "^5.0.0 || ^6.0.2 || ^7.0.0",
-            "path-scurry": "^1.10.1"
+            "jackspeak": "^3.1.2",
+            "minimatch": "^9.0.4",
+            "minipass": "^7.1.2",
+            "package-json-from-dist": "^1.0.0",
+            "path-scurry": "^1.11.1"
           }
         },
         "make-fetch-happen": {
@@ -22535,15 +22524,15 @@
           }
         },
         "minimatch": {
-          "version": "9.0.3",
-          "integrity": "sha512-RHiac9mvaRw0x3AYRgDC1CxAP7HTcNrrECeA8YYJeWnpo+2Q5CegtZjaotWTWxDG3UeGA1coE05iH1mPjT/2mg==",
+          "version": "9.0.5",
+          "integrity": "sha512-G6T0ZX48xgozx7587koeX9Ys2NYy6Gmv//P89sEte9V9whIapMNF4idKxnW2QtCcLiTWlb/wfCabAtAFWhhBow==",
           "requires": {
             "brace-expansion": "^2.0.1"
           }
         },
         "minipass": {
-          "version": "7.0.4",
-          "integrity": "sha512-jYofLM5Dam9279rdkWzqHozUo4ybjdZmCsDHePy5V/PbBcVMiSZR97gmAy45aqi8CK1lG2ECd356FU86avfwUQ=="
+          "version": "7.1.2",
+          "integrity": "sha512-qOOzS1cBTWYF4BH8fVePDBOO9iptMnGUEZwNc/cMWnTV2nVLZ7VoNWEPHkYczZA0pdoA7dl6e7FL659nX9S2aw=="
         },
         "minipass-collect": {
           "version": "2.0.1",
@@ -23272,8 +23261,8 @@
       },
       "dependencies": {
         "glob": {
-          "version": "10.4.5",
-          "integrity": "sha512-7Bv8RF0k6xjo7d4A/PxYLbUCfb6c+Vpd2/mB2yRDlew7Jb5hEXiCD9ibfO7wpk8i4sevK6DFny9h7EYbM3/sHg==",
+          "version": "10.5.0",
+          "integrity": "sha512-DfXN8DfhJ7NH3Oe7cFmu3NCu1wKbkReJ8TorzSAFbSKrlNaQSKfIzqYqVY8zlbs2NLBbWpRiU52GX2PbaBVNkg==",
           "dev": true,
           "requires": {
             "foreground-child": "^3.1.0",
@@ -23282,15 +23271,6 @@
             "minipass": "^7.1.2",
             "package-json-from-dist": "^1.0.0",
             "path-scurry": "^1.11.1"
-          }
-        },
-        "jackspeak": {
-          "version": "3.4.3",
-          "integrity": "sha512-OGlZQpz2yfahA/Rd1Y8Cd9SIEsqvXkLVoSw/cgwhnhFMDbsQFeZYoJJ7bIZBS9BcamUW96asq/npPWugM+RQBw==",
-          "dev": true,
-          "requires": {
-            "@isaacs/cliui": "^8.0.2",
-            "@pkgjs/parseargs": "^0.11.0"
           }
         },
         "minimatch": {
@@ -23305,15 +23285,6 @@
           "version": "7.1.2",
           "integrity": "sha512-qOOzS1cBTWYF4BH8fVePDBOO9iptMnGUEZwNc/cMWnTV2nVLZ7VoNWEPHkYczZA0pdoA7dl6e7FL659nX9S2aw==",
           "dev": true
-        },
-        "path-scurry": {
-          "version": "1.11.1",
-          "integrity": "sha512-Xa4Nw17FS9ApQFJ9umLiJS4orGjm7ZzwUrwamcGQuHSzDyth9boKDaycYdDcZDuqYATXw4HFXgaqWTctW/v1HA==",
-          "dev": true,
-          "requires": {
-            "lru-cache": "^10.2.0",
-            "minipass": "^5.0.0 || ^6.0.2 || ^7.0.0"
-          }
         },
         "picomatch": {
           "version": "4.0.3",
@@ -24453,6 +24424,14 @@
             "glob": "^7.1.3"
           }
         }
+      }
+    },
+    "bindings": {
+      "version": "1.5.0",
+      "integrity": "sha512-p2q/t/mhvuOj/UeLlV6566GD/guowlr0hHxClI0W9m7MWYkL1F0hLo+0Aexs9HSPCtR1SXQ0TD3MMKrXZajbiQ==",
+      "dev": true,
+      "requires": {
+        "file-uri-to-path": "1.0.0"
       }
     },
     "bl": {
@@ -26359,6 +26338,11 @@
         "flat-cache": "^3.0.4"
       }
     },
+    "file-uri-to-path": {
+      "version": "1.0.0",
+      "integrity": "sha512-0Zt+s3L7Vf1biwWZ29aARiVYLx7iMGnEUl9x33fbB/j3jR81u/O2LbqK+Bm1CDSNDKVtJ/YjwY7TUd5SkeLQLw==",
+      "dev": true
+    },
     "filing-cabinet": {
       "version": "3.1.0",
       "integrity": "sha512-ZFutWTo14Z1xmog76UoQzDKEza1fSpqc+HvUN6K6GILrfhIn6NbR8fHQktltygF+wbt7PZ/EvfLK6yJnebd40A==",
@@ -27266,8 +27250,8 @@
       }
     },
     "jackspeak": {
-      "version": "2.3.6",
-      "integrity": "sha512-N3yCS/NegsOBokc8GAdM8UcmfsKiSS8cipheD/nivzr700H+nsMOxJjQnvwOcRYVuFkdH0wGUvW2WbXGmrZGbQ==",
+      "version": "3.4.3",
+      "integrity": "sha512-OGlZQpz2yfahA/Rd1Y8Cd9SIEsqvXkLVoSw/cgwhnhFMDbsQFeZYoJJ7bIZBS9BcamUW96asq/npPWugM+RQBw==",
       "requires": {
         "@isaacs/cliui": "^8.0.2",
         "@pkgjs/parseargs": "^0.11.0"
@@ -30085,14 +30069,15 @@
           }
         },
         "glob": {
-          "version": "10.3.10",
-          "integrity": "sha512-fa46+tv1Ak0UPK1TOy/pZrIybNNt4HCv7SDzwyfiOZkvZLEbjsZkJBPtDHVshZjbecAoAGSC20MjLDG/qr679g==",
+          "version": "10.5.0",
+          "integrity": "sha512-DfXN8DfhJ7NH3Oe7cFmu3NCu1wKbkReJ8TorzSAFbSKrlNaQSKfIzqYqVY8zlbs2NLBbWpRiU52GX2PbaBVNkg==",
           "requires": {
             "foreground-child": "^3.1.0",
-            "jackspeak": "^2.3.5",
-            "minimatch": "^9.0.1",
-            "minipass": "^5.0.0 || ^6.0.2 || ^7.0.0",
-            "path-scurry": "^1.10.1"
+            "jackspeak": "^3.1.2",
+            "minimatch": "^9.0.4",
+            "minipass": "^7.1.2",
+            "package-json-from-dist": "^1.0.0",
+            "path-scurry": "^1.11.1"
           }
         },
         "hosted-git-info": {
@@ -30120,15 +30105,15 @@
           }
         },
         "minimatch": {
-          "version": "9.0.3",
-          "integrity": "sha512-RHiac9mvaRw0x3AYRgDC1CxAP7HTcNrrECeA8YYJeWnpo+2Q5CegtZjaotWTWxDG3UeGA1coE05iH1mPjT/2mg==",
+          "version": "9.0.5",
+          "integrity": "sha512-G6T0ZX48xgozx7587koeX9Ys2NYy6Gmv//P89sEte9V9whIapMNF4idKxnW2QtCcLiTWlb/wfCabAtAFWhhBow==",
           "requires": {
             "brace-expansion": "^2.0.1"
           }
         },
         "minipass": {
-          "version": "7.0.4",
-          "integrity": "sha512-jYofLM5Dam9279rdkWzqHozUo4ybjdZmCsDHePy5V/PbBcVMiSZR97gmAy45aqi8CK1lG2ECd356FU86avfwUQ=="
+          "version": "7.1.2",
+          "integrity": "sha512-qOOzS1cBTWYF4BH8fVePDBOO9iptMnGUEZwNc/cMWnTV2nVLZ7VoNWEPHkYczZA0pdoA7dl6e7FL659nX9S2aw=="
         },
         "minipass-collect": {
           "version": "2.0.1",
@@ -30299,8 +30284,7 @@
     },
     "package-json-from-dist": {
       "version": "1.0.1",
-      "integrity": "sha512-UEZIS3/by4OC8vL3P2dTXRETpebLI2NiI5vIrjaD/5UtrkFX/tNbwjTSRAGC/+7CAo2pIcBaRgWmcBBHcsaCIw==",
-      "dev": true
+      "integrity": "sha512-UEZIS3/by4OC8vL3P2dTXRETpebLI2NiI5vIrjaD/5UtrkFX/tNbwjTSRAGC/+7CAo2pIcBaRgWmcBBHcsaCIw=="
     },
     "pacote": {
       "version": "17.0.6",
@@ -30406,14 +30390,15 @@
           }
         },
         "glob": {
-          "version": "10.3.10",
-          "integrity": "sha512-fa46+tv1Ak0UPK1TOy/pZrIybNNt4HCv7SDzwyfiOZkvZLEbjsZkJBPtDHVshZjbecAoAGSC20MjLDG/qr679g==",
+          "version": "10.5.0",
+          "integrity": "sha512-DfXN8DfhJ7NH3Oe7cFmu3NCu1wKbkReJ8TorzSAFbSKrlNaQSKfIzqYqVY8zlbs2NLBbWpRiU52GX2PbaBVNkg==",
           "requires": {
             "foreground-child": "^3.1.0",
-            "jackspeak": "^2.3.5",
-            "minimatch": "^9.0.1",
-            "minipass": "^5.0.0 || ^6.0.2 || ^7.0.0",
-            "path-scurry": "^1.10.1"
+            "jackspeak": "^3.1.2",
+            "minimatch": "^9.0.4",
+            "minipass": "^7.1.2",
+            "package-json-from-dist": "^1.0.0",
+            "path-scurry": "^1.11.1"
           }
         },
         "hosted-git-info": {
@@ -30449,15 +30434,15 @@
           }
         },
         "minimatch": {
-          "version": "9.0.3",
-          "integrity": "sha512-RHiac9mvaRw0x3AYRgDC1CxAP7HTcNrrECeA8YYJeWnpo+2Q5CegtZjaotWTWxDG3UeGA1coE05iH1mPjT/2mg==",
+          "version": "9.0.5",
+          "integrity": "sha512-G6T0ZX48xgozx7587koeX9Ys2NYy6Gmv//P89sEte9V9whIapMNF4idKxnW2QtCcLiTWlb/wfCabAtAFWhhBow==",
           "requires": {
             "brace-expansion": "^2.0.1"
           }
         },
         "minipass": {
-          "version": "7.0.4",
-          "integrity": "sha512-jYofLM5Dam9279rdkWzqHozUo4ybjdZmCsDHePy5V/PbBcVMiSZR97gmAy45aqi8CK1lG2ECd356FU86avfwUQ=="
+          "version": "7.1.2",
+          "integrity": "sha512-qOOzS1cBTWYF4BH8fVePDBOO9iptMnGUEZwNc/cMWnTV2nVLZ7VoNWEPHkYczZA0pdoA7dl6e7FL659nX9S2aw=="
         },
         "minipass-collect": {
           "version": "2.0.1",
@@ -30678,10 +30663,10 @@
       "dev": true
     },
     "path-scurry": {
-      "version": "1.10.1",
-      "integrity": "sha512-MkhCqzzBEpPvxxQ71Md0b1Kk51W01lrYvlMzSUaIzNsODdd7mqhiimSZlr+VegAz5Z6Vzt9Xg2ttE//XBhH3EQ==",
+      "version": "1.11.1",
+      "integrity": "sha512-Xa4Nw17FS9ApQFJ9umLiJS4orGjm7ZzwUrwamcGQuHSzDyth9boKDaycYdDcZDuqYATXw4HFXgaqWTctW/v1HA==",
       "requires": {
-        "lru-cache": "^9.1.1 || ^10.0.0",
+        "lru-cache": "^10.2.0",
         "minipass": "^5.0.0 || ^6.0.2 || ^7.0.0"
       },
       "dependencies": {
@@ -32077,14 +32062,15 @@
           }
         },
         "glob": {
-          "version": "10.3.10",
-          "integrity": "sha512-fa46+tv1Ak0UPK1TOy/pZrIybNNt4HCv7SDzwyfiOZkvZLEbjsZkJBPtDHVshZjbecAoAGSC20MjLDG/qr679g==",
+          "version": "10.5.0",
+          "integrity": "sha512-DfXN8DfhJ7NH3Oe7cFmu3NCu1wKbkReJ8TorzSAFbSKrlNaQSKfIzqYqVY8zlbs2NLBbWpRiU52GX2PbaBVNkg==",
           "requires": {
             "foreground-child": "^3.1.0",
-            "jackspeak": "^2.3.5",
-            "minimatch": "^9.0.1",
-            "minipass": "^5.0.0 || ^6.0.2 || ^7.0.0",
-            "path-scurry": "^1.10.1"
+            "jackspeak": "^3.1.2",
+            "minimatch": "^9.0.4",
+            "minipass": "^7.1.2",
+            "package-json-from-dist": "^1.0.0",
+            "path-scurry": "^1.11.1"
           }
         },
         "make-fetch-happen": {
@@ -32105,15 +32091,15 @@
           }
         },
         "minimatch": {
-          "version": "9.0.3",
-          "integrity": "sha512-RHiac9mvaRw0x3AYRgDC1CxAP7HTcNrrECeA8YYJeWnpo+2Q5CegtZjaotWTWxDG3UeGA1coE05iH1mPjT/2mg==",
+          "version": "9.0.5",
+          "integrity": "sha512-G6T0ZX48xgozx7587koeX9Ys2NYy6Gmv//P89sEte9V9whIapMNF4idKxnW2QtCcLiTWlb/wfCabAtAFWhhBow==",
           "requires": {
             "brace-expansion": "^2.0.1"
           }
         },
         "minipass": {
-          "version": "7.0.4",
-          "integrity": "sha512-jYofLM5Dam9279rdkWzqHozUo4ybjdZmCsDHePy5V/PbBcVMiSZR97gmAy45aqi8CK1lG2ECd356FU86avfwUQ=="
+          "version": "7.1.2",
+          "integrity": "sha512-qOOzS1cBTWYF4BH8fVePDBOO9iptMnGUEZwNc/cMWnTV2nVLZ7VoNWEPHkYczZA0pdoA7dl6e7FL659nX9S2aw=="
         },
         "minipass-collect": {
           "version": "2.0.1",
