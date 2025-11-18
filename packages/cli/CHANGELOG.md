@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `7.29.18`
 
 - BugFix: Updated `glob` dependency to resolve technical currency. [#2645](https://github.com/zowe/zowe-cli/pull/2645)
 
