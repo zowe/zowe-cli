@@ -52,6 +52,7 @@ let ussname: string;
 let ussDirname: string;
 let localDirname: string;
 let file: string;
+let currentDir: string;
 
 describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolean) => {
 
@@ -76,9 +77,13 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
             ussDirname = `${defaultSystem.unix.testdir}/zos_file_download`;
             localDirname = `${testEnvironment.workingDir}/ussDir`;
         }
+
+        currentDir = process.cwd();
+        process.chdir(testEnvironment.workingDir);
     });
 
     afterAll(async () => {
+        process.chdir(currentDir);
         await TestEnvironment.cleanUp(testEnvironment);
     });
 
