@@ -15778,8 +15778,8 @@
       }
     },
     "packages/imperative/node_modules/@zowe/secrets-for-zowe-sdk": {
-      "version": "8.27.4",
-      "resolved": "file:packages/secrets/zowe-secrets-for-zowe-sdk-8.27.4.tgz",
+      "version": "8.29.4",
+      "resolved": "file:packages/secrets/zowe-secrets-for-zowe-sdk-8.29.4.tgz",
       "integrity": "sha512-mnP45nVTYwq9HlgbT8M7qz2TmTEOsFhZQnp/+ApuqA6uaiijCNxe4wmuxDJhFLtiQrZ2vc1+LZ0/2nktnApJgw==",
       "dev": true,
       "hasInstallScript": true,
