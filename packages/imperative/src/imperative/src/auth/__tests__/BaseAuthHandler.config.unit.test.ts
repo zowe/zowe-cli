@@ -172,7 +172,10 @@ describe("BaseAuthHandler config", () => {
                 const params = lodash.cloneDeep(loginParams);
 
                 jest.spyOn(CredentialManagerFactory, "initialized", "get").mockReturnValue(false);
-                jest.spyOn(CredentialManagerFactory, "manager", "get").mockReturnValue({ secureErrorDetails: jest.fn(() => "FAKE_OPT_TOKEN_VALUE") } as any);
+                jest.spyOn(CredentialManagerFactory, "manager", "get").mockReturnValue(
+                    {
+                        secureErrorDetails: jest.fn(() => "FAKE_OPT_TOKEN_VALUE")
+                    } as any);
                 // (do not access CredentialManagerFactory here - spies should be consumed by handler)
                 const doLoginSpy = jest.spyOn(handler as any, "doLogin");
                 const writeFileSpy = jest.spyOn(fs, "writeFileSync");

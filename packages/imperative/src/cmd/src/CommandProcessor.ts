@@ -657,7 +657,7 @@ export class CommandProcessor {
 
             let bufferedStdOut = Buffer.from([]);
             let bufferedStdErr = Buffer.from([]);
-                if (preparedArgs.showInputsOnly) {
+            if (preparedArgs.showInputsOnly) {
                 await this.showInputsOnly({
                     response,
                     arguments: preparedArgs,
@@ -767,8 +767,8 @@ export class CommandProcessor {
             commandValues: {} as ICommandArguments
         };
 
-    const sessCfg: ISession = {} as any;
-    await ConnectionPropsForSessCfg.resolveSessCfgProps(sessCfg, commandParameters.arguments);
+        const sessCfg: ISession = {} as any;
+        await ConnectionPropsForSessCfg.resolveSessCfgProps(sessCfg, commandParameters.arguments);
         showInputsOnly.authenticationType = sessCfg.type;
         showInputsOnly.authTypeOrder = sessCfg.authTypeOrder.toString();
 

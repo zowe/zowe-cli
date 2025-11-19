@@ -889,7 +889,6 @@ export class AuthOrder {
                         try {
                             const isKey = sessCredName === AuthOrder.SESS_CERT_KEY_NAME;
                             const credType = isKey ? 'private key' : 'certificate';
-                            const methodName = isKey ? 'loadCertificateKey' : 'loadCertificate';
 
                             // Prompt user for authorization if configured and not already prompted
                             if (shouldPrompt && !authCacheAny._promptedCertAccounts.has(acct)) {

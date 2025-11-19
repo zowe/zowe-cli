@@ -21,7 +21,6 @@ import { IProfileProperty } from "../../../profiles";
 import { ConfigAutoStore } from "../../../config/src/ConfigAutoStore";
 import { ConfigUtils } from "../../../config/src/ConfigUtils";
 import { AuthOrder, PropUse } from "./AuthOrder";
-import { CredentialManagerFactory } from "../../../security";
 import { Censor } from "../../../censor/src/Censor";
 
 /**
@@ -199,13 +198,15 @@ export class ConnectionPropsForSessCfg {
                 case SessConstants.AUTH_TYPE_CERT_PEM:
                     // Check if cert credential is available from cache OR if certAccount property exists.
                     // certAccount indicates intent to retrieve certificate from secure storage.
-                    const hasCertAccount = (sessCfgToUse as any).certAccount && typeof (sessCfgToUse as any).certAccount === "string";
-                    if (!sessCfgToUse._authCache?.availableCreds?.cert && !hasCertAccount && !doNotPromptForValues.includes("cert")) {
+                    if (!sessCfgToUse._authCache?.availableCreds?.cert
+                        && !((sessCfgToUse as any).certAccount && typeof (sessCfgToUse as any)?.certAccount === "string")
+                        && !doNotPromptForValues.includes("cert")) {
                         promptForValues.push("cert");
                     }
                     // Check if certKey credential is available from cache OR if certKeyAccount property exists.
-                    const hasCertKeyAccount = (sessCfgToUse as any).certKeyAccount && typeof (sessCfgToUse as any).certKeyAccount === "string";
-                    if (!sessCfgToUse._authCache?.availableCreds?.certKey && !hasCertKeyAccount && !doNotPromptForValues.includes("certKey")) {
+                    if (!sessCfgToUse._authCache?.availableCreds?.certKey
+                        && !((sessCfgToUse as any).certKeyAccount && typeof (sessCfgToUse as any)?.certKeyAccount === "string")
+                        && !doNotPromptForValues.includes("certKey")) {
                         promptForValues.push("certKey");
                     }
                     break;
