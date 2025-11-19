@@ -16594,7 +16594,18 @@
         "node": ">=20.9.0"
       },
       "optionalDependencies": {
-        "@zowe/secrets-for-zowe-sdk": "8.29.1"
+        "@zowe/secrets-for-zowe-sdk": "/Users/billiesimmons/Documents/Github/zowe/forks/zowe-cli/packages/secrets/zowe-secrets-for-zowe-sdk-8.27.4.tgz"
+      }
+    },
+    "packages/cli/node_modules/@zowe/secrets-for-zowe-sdk": {
+      "version": "8.27.4",
+      "resolved": "file:packages/secrets/zowe-secrets-for-zowe-sdk-8.27.4.tgz",
+      "integrity": "sha512-mnP45nVTYwq9HlgbT8M7qz2TmTEOsFhZQnp/+ApuqA6uaiijCNxe4wmuxDJhFLtiQrZ2vc1+LZ0/2nktnApJgw==",
+      "hasInstallScript": true,
+      "license": "EPL-2.0",
+      "optional": true,
+      "engines": {
+        "node": ">=14"
       }
     },
     "packages/cli/node_modules/isexe": {
@@ -16708,7 +16719,7 @@
         "@types/pacote": "^11.1.8",
         "@types/progress": "^2.0.7",
         "@types/stack-trace": "^0.0.33",
-        "@zowe/secrets-for-zowe-sdk": "8.29.1",
+        "@zowe/secrets-for-zowe-sdk": "/Users/billiesimmons/Documents/Github/zowe/forks/zowe-cli/packages/secrets/zowe-secrets-for-zowe-sdk-8.27.4.tgz",
         "concurrently": "^8.0.0",
         "cowsay": "^1.6.0",
         "deep-diff": "^1.0.0",
@@ -16721,6 +16732,17 @@
       },
       "engines": {
         "node": ">=20.9.0"
+      }
+    },
+    "packages/imperative/node_modules/@zowe/secrets-for-zowe-sdk": {
+      "version": "8.27.4",
+      "resolved": "file:packages/secrets/zowe-secrets-for-zowe-sdk-8.27.4.tgz",
+      "integrity": "sha512-mnP45nVTYwq9HlgbT8M7qz2TmTEOsFhZQnp/+ApuqA6uaiijCNxe4wmuxDJhFLtiQrZ2vc1+LZ0/2nktnApJgw==",
+      "dev": true,
+      "hasInstallScript": true,
+      "license": "EPL-2.0",
+      "engines": {
+        "node": ">=14"
       }
     },
     "packages/imperative/node_modules/agent-base": {

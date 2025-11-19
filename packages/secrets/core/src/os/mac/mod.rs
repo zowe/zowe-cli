@@ -187,18 +187,182 @@ pub fn find_credentials(
     }
 }
 
-/// Returns the certificate (decoded from base64) stored as the password for the given service/account.
+/// Returns the certificate data for the given service/account from the keychain.
+/// Searches for kSecClassIdentity or kSecClassCertificate items.
+/// Falls back to base64-encoded password lookup if keychain items not found.
+/// Uses kSecAttrLabel (the friendly name) to match the account parameter.
 pub fn get_certificate(service: &String, account: &String) -> Result<Option<Vec<u8>>, KeyringError> {
+    get_certificate_or_key(service, account, true)
+}
+
+/// Returns the private key data for the given service/account from the keychain.
+/// Searches for kSecClassIdentity and extracts the private key.
+/// Falls back to base64-encoded password lookup if keychain items not found.
+/// Uses kSecAttrLabel (the friendly name) to match the account parameter.
+pub fn get_certificate_key(service: &String, account: &String) -> Result<Option<Vec<u8>>, KeyringError> {
+    get_certificate_or_key(service, account, false)
+}
+
+/// Helper function that can retrieve either certificate or private key from identity/certificate items.
+fn get_certificate_or_key(service: &String, account: &String, is_certificate: bool) -> Result<Option<Vec<u8>>, KeyringError> {
+    use crate::os::mac::ffi::{
+        kSecAttrLabel, kSecClass, kSecClassCertificate, kSecClassIdentity,
+        kSecMatchLimit, kSecReturnRef, SecCertificateCopyData, SecItemCopyMatching,
+        SecIdentityCopyCertificate, SecItemExport, SecCertificateRef,
+    };
+    use crate::os::mac::misc::{SecCertificate, SecIdentity, SecKey};
+    use core_foundation::base::{CFType, TCFType};
+    use core_foundation::data::CFData;
+    use core_foundation::dictionary::CFDictionary;
+    use core_foundation::number::CFNumber;
+    use core_foundation::string::CFString;
+    use core_foundation_sys::base::{CFGetTypeID, CFTypeRef};
+
+    let _lock = keyring_mutex()?;
+
+    unsafe {
+        // First, try to find an identity (certificate + private key pair)
+        // This is the preferred approach as it gives us access to both
+        let mut params = vec![];
+        params.push((
+            CFString::wrap_under_get_rule(kSecClass),
+            CFType::wrap_under_get_rule(kSecClassIdentity.cast()),
+        ));
+        params.push((
+            CFString::wrap_under_get_rule(kSecAttrLabel),
+            CFString::new(account.as_str()).as_CFType(),
+        ));
+        params.push((
+            CFString::wrap_under_get_rule(kSecReturnRef),
+            core_foundation::boolean::CFBoolean::true_value().into_CFType(),
+        ));
+        params.push((
+            CFString::wrap_under_get_rule(kSecMatchLimit),
+            CFNumber::from(1).into_CFType(),
+        ));
+
+        let params = CFDictionary::from_CFType_pairs(&params);
+        let mut ret: CFTypeRef = std::ptr::null();
+        let status = SecItemCopyMatching(params.as_concrete_TypeRef(), &mut ret);
+        
+        if status == 0 && !ret.is_null() {
+            // Identity found!
+            let type_id = CFGetTypeID(ret);
+            if type_id == SecIdentity::type_id() {
+                let identity = SecIdentity::wrap_under_create_rule(ret as *mut _);
+                
+                if is_certificate {
+                    // Extract certificate from identity
+                    let mut cert_ref: SecCertificateRef = std::ptr::null_mut();
+                    let cert_status = SecIdentityCopyCertificate(identity.as_concrete_TypeRef(), &mut cert_ref);
+                    if cert_status == 0 && !cert_ref.is_null() {
+                        let cert = SecCertificate::wrap_under_create_rule(cert_ref);
+                        let data_ref = SecCertificateCopyData(cert.as_concrete_TypeRef());
+                        if !data_ref.is_null() {
+                            let data = CFData::wrap_under_create_rule(data_ref as *mut _);
+                            let mut bytes = Vec::new();
+                            bytes.extend_from_slice(data.bytes());
+                            return Ok(Some(bytes));
+                        }
+                    }
+                } else {
+                    // Extract private key from identity using SecItemExport
+                    // This is the same API the CLI tools use and will trigger keychain authorization
+                    use crate::os::mac::ffi::SecIdentityCopyPrivateKey;
+                    use core_foundation::data::CFData;
+                    
+                    let mut key_ref: *mut _ = std::ptr::null_mut();
+                    let key_status = SecIdentityCopyPrivateKey(identity.as_concrete_TypeRef(), &mut key_ref);
+                    
+                    if key_status == 0 && !key_ref.is_null() {
+                        let key = SecKey::wrap_under_create_rule(key_ref);
+                        
+                        // Try SecItemExport with OpenSSL format (kSecFormatOpenSSL = 4) which exports as PKCS#1
+                        // This is the closest to what the CLI tools use
+                        let mut exported_data: CFTypeRef = std::ptr::null();
+                        let export_status = SecItemExport(
+                            key.as_CFTypeRef(),
+                            4, // kSecFormatOpenSSL (PKCS#1 DER for RSA keys)
+                            0, // flags - allow prompting
+                            std::ptr::null(),
+                            &mut exported_data
+                        );
+                        
+                        if export_status == 0 && !exported_data.is_null() {
+                            let data = CFData::wrap_under_create_rule(exported_data as *mut _);
+                            let mut bytes = Vec::new();
+                            bytes.extend_from_slice(data.bytes());
+                            return Ok(Some(bytes));
+                        } else {
+                            // Export failed - key is likely non-exportable or user denied access
+                            eprintln!("Private key export failed (status: {}) - identity found but key cannot be exported for account '{}'", export_status, account);
+                            eprintln!("The private key was imported as non-exportable (a macOS security feature).");
+                            eprintln!();
+                            eprintln!("Workarounds:");
+                            eprintln!("  1. Provide certKeyFile path instead of certKeyAccount");
+                            eprintln!("  2. Re-import certificate with exportable private key:");
+                            eprintln!("     security import cert.p12 -k KEYCHAIN_NAME -A");
+                            eprintln!();
+                            eprintln!("For detailed instructions, see:");
+                            eprintln!("  https://github.com/zowe/zowe-cli/blob/master/docs/Certificate_Keychain_Limitations.md");
+                        }
+                    }
+                }
+            }
+        }
+
+        // If identity search failed and we're looking for a certificate,
+        // try standalone certificate item
+        if is_certificate {
+            let mut params = vec![];
+            params.push((
+                CFString::wrap_under_get_rule(kSecClass),
+                CFType::wrap_under_get_rule(kSecClassCertificate.cast()),
+            ));
+            params.push((
+                CFString::wrap_under_get_rule(kSecAttrLabel),
+                CFString::new(account.as_str()).as_CFType(),
+            ));
+            params.push((
+                CFString::wrap_under_get_rule(kSecReturnRef),
+                core_foundation::boolean::CFBoolean::true_value().into_CFType(),
+            ));
+            params.push((
+                CFString::wrap_under_get_rule(kSecMatchLimit),
+                CFNumber::from(1).into_CFType(),
+            ));
+
+            let params = CFDictionary::from_CFType_pairs(&params);
+            let mut ret: CFTypeRef = std::ptr::null();
+            let status = SecItemCopyMatching(params.as_concrete_TypeRef(), &mut ret);
+            
+            if status == 0 && !ret.is_null() {
+                let type_id = CFGetTypeID(ret);
+                if type_id == SecCertificate::type_id() {
+                    let cert = SecCertificate::wrap_under_create_rule(ret as *mut _);
+                    let data_ref = SecCertificateCopyData(cert.as_concrete_TypeRef());
+                    if !data_ref.is_null() {
+                        let data = CFData::wrap_under_create_rule(data_ref as *mut _);
+                        let mut bytes = Vec::new();
+                        bytes.extend_from_slice(data.bytes());
+                        return Ok(Some(bytes));
+                    }
+                }
+            }
+        }
+    }
+
+    // If certificate search failed, try password lookup with base64 decoding
+    // (for private keys stored as passwords)
     let keychain = SecKeychain::default().unwrap();
     match keychain.find_password(service.as_str(), account.as_str()) {
         Ok((pw, _)) => {
             let pw_str = String::from_utf8(pw.to_owned())?;
             match base64::decode(&pw_str) {
                 Ok(bytes) => Ok(Some(bytes)),
-                Err(err) => Err(KeyringError::Utf8(format!("Failed to decode base64 certificate: {}", err))),
+                Err(_) => Ok(None), // Not base64-encoded, treat as not found
             }
         }
-        Err(err) if err.code() == ERR_SEC_ITEM_NOT_FOUND => Ok(None),
-        Err(err) => Err(KeyringError::from(err)),
+        Err(_) => Ok(None), // Not found as password either
     }
 }

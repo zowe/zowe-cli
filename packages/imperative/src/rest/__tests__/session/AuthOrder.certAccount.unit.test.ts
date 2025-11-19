@@ -66,6 +66,46 @@ describe("AuthOrder certAccount handling", () => {
         }
     });
 
+    it("should resolve promise-like certAccount and certKeyAccount values (async)", async () => {
+        // mock manager
+        const fakeManager = {
+            async loadCertificate(acct: string, optional?: boolean) {
+                if (acct === "my-cert-account") return Buffer.from("CERT-BYTES");
+                if (acct === "my-key-account") return Buffer.from("KEY-BYTES");
+                return null;
+            }
+        } as any;
+        managerSpy = jest.spyOn(CredentialManagerFactory, "manager", "get").mockReturnValue(fakeManager);
+        initSpy = jest.spyOn(CredentialManagerFactory, "initialized", "get").mockReturnValue(true);
+
+        const sess: ISession & any = {
+            profile: "p",
+            account: "a",
+            // values returned from secure loaders may be Promises; ensure we handle that
+            certAccount: Promise.resolve("my-cert-account"),
+            certKeyAccount: Promise.resolve("my-key-account"),
+            authTypeOrder: [],
+            _authCache: undefined
+        };
+
+        await AuthOrder.addCredsToSessionAsync(sess as ISession);
+
+        expect(sess._authCache).toBeDefined();
+        expect(sess._authCache.availableCreds).toBeDefined();
+        expect(typeof sess._authCache.availableCreds.cert).toBe("string");
+        expect(typeof sess._authCache.availableCreds.certKey).toBe("string");
+        expect(fs.existsSync(sess._authCache.availableCreds.cert)).toBeTruthy();
+        expect(fs.existsSync(sess._authCache.availableCreds.certKey)).toBeTruthy();
+
+        // cleanup temp files
+        const authCacheAny: any = sess._authCache;
+        if (Array.isArray(authCacheAny._tempFiles)) {
+            for (const tmp of authCacheAny._tempFiles) {
+                try { fs.unlinkSync(tmp); } catch (_e) { /**/ }
+            }
+        }
+    });
+
     it("should prefer certAccount and certKeyAccount when loading certs (sync)", () => {
         // mock manager with sync loader
         const fakeManager = {

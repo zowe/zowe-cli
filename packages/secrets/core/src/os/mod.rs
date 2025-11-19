@@ -6,7 +6,7 @@ cfg_if::cfg_if! {
         pub use win::{delete_password, find_credentials, find_password, get_password, set_password, set_password_with_persistence, get_certificate, PERSIST_ENTERPRISE};
     } else if #[cfg(target_os = "macos")] {
         pub mod mac;
-        pub use mac::{delete_password, find_credentials, find_password, get_password, set_password, get_certificate};
+        pub use mac::{delete_password, find_credentials, find_password, get_password, set_password, get_certificate, get_certificate_key};
     } else if #[cfg(any(target_os = "freebsd", target_os = "linux"))] {
         pub mod unix;
         pub use unix::{delete_password, find_credentials, find_password, get_password, set_password, get_certificate};

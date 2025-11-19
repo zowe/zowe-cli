@@ -844,17 +844,34 @@ export class AuthOrder {
             // Attempt to load certificate bytes from credential manager when cert/certKey not provided directly.
             try {
                 if (CredentialManagerFactory.initialized) {
-                    // Build candidate account names, preferring explicit overrides on the session
+                    // Check if we should prompt user for certificate access authorization
+                    const credMgrOptions = (CredentialManagerFactory.manager as any).options;
+                    const shouldPrompt = credMgrOptions?.promptForCertAccess === true;
+
+                    // Build candidate account names, preferring explicit overrides on the session.
+                    // Only use string account names (NOT thenables which may hang).
                     const acctCandidates: string[] = [];
+
                     if (sessCredName === AuthOrder.SESS_CERT_NAME) {
+                        // prefer explicit certAccount override on the session (only if it's a string)
                         if (typeof (sessCfg as any).certAccount === "string" && (sessCfg as any).certAccount) {
                             acctCandidates.push((sessCfg as any).certAccount);
                         }
                     } else {
+                        // prefer explicit certKeyAccount override on the session (only if it's a string)
                         if (typeof (sessCfg as any).certKeyAccount === "string" && (sessCfg as any).certKeyAccount) {
                             acctCandidates.push((sessCfg as any).certKeyAccount);
                         }
+                        // For private keys, also try certAccount as fallback since macOS identities
+                        // store both certificate and private key under the same account name.
+                        if (typeof (sessCfg as any).certAccount === "string" && (sessCfg as any).certAccount) {
+                            if (!acctCandidates.includes((sessCfg as any).certAccount)) {
+                                acctCandidates.push((sessCfg as any).certAccount);
+                            }
+                        }
                     }
+
+                    // fallback candidates: profile name, then account name (only strings)
                     if (typeof (sessCfg as any).profile === "string" && (sessCfg as any).profile) {
                         acctCandidates.push((sessCfg as any).profile);
                     }
@@ -862,10 +879,35 @@ export class AuthOrder {
                         acctCandidates.push((sessCfg as any).account);
                     }
 
-                    // Try candidates in order until we find certificate bytes
+                    // Track accounts we've already prompted for to avoid re-prompting
+                    const authCacheAny: any = sessCfg._authCache;
+                    if (!authCacheAny._promptedCertAccounts) {
+                        authCacheAny._promptedCertAccounts = new Set<string>();
+                    }
+
                     for (const acct of acctCandidates) {
                         try {
-                            const certBuf = await (CredentialManagerFactory.manager as any).loadCertificate(acct, true);
+                            const isKey = sessCredName === AuthOrder.SESS_CERT_KEY_NAME;
+                            const credType = isKey ? 'private key' : 'certificate';
+                            const methodName = isKey ? 'loadCertificateKey' : 'loadCertificate';
+
+                            // Prompt user for authorization if configured and not already prompted
+                            if (shouldPrompt && !authCacheAny._promptedCertAccounts.has(acct)) {
+                                const { CliUtils } = await import("../../../utilities");
+                                const promptMsg = `Zowe CLI would like to access ${credType} '${acct}' from your system keychain. Allow? [y/N]: `;
+                                const response = await CliUtils.readPrompt(promptMsg, { secToWait: 60 });
+
+                                // Mark this account as prompted (regardless of answer)
+                                authCacheAny._promptedCertAccounts.add(acct);
+
+                                if (response?.toLowerCase() !== 'y') {
+                                    continue; // Skip this candidate and try next
+                                }
+                            }
+
+                            const certBuf = isKey ?
+                                await (CredentialManagerFactory.manager as any).loadCertificateKey(acct, true) :
+                                await (CredentialManagerFactory.manager as any).loadCertificate(acct, true);
                             if (certBuf) {
                                 // Write to temp file (secure mode) and store path in cache so rest client can read it as file path
                                 const tmpDir = os.tmpdir();
@@ -880,7 +922,7 @@ export class AuthOrder {
                                 authCacheAny._tempFiles.push(tmpPath);
                                 break;
                             }
-                        } catch (_err) {
+                        } catch (err) {
                             // ignore and try next candidate
                         }
                     }
@@ -908,6 +950,16 @@ export class AuthOrder {
                 if (CredentialManagerFactory.initialized) {
                     const managerAny: any = CredentialManagerFactory.manager;
                     if (managerAny && typeof managerAny.loadCertificateSync === "function") {
+                        // Check if prompting is configured (can't prompt in sync path, so just log warning)
+                        const credMgrOptions = (CredentialManagerFactory.manager as any).options;
+                        const shouldPrompt = credMgrOptions?.promptForCertAccess === true;
+                        if (shouldPrompt) {
+                            Logger.getImperativeLogger().warn(
+                                `Certificate access prompting is configured but cannot be used in synchronous code path. ` +
+                                `Consider using async API methods for prompted certificate access.`
+                            );
+                        }
+
                         // Build candidate account names, preferring explicit overrides on the session
                         const acctCandidates: string[] = [];
                         if (sessCredName === AuthOrder.SESS_CERT_NAME) {
@@ -917,6 +969,13 @@ export class AuthOrder {
                         } else {
                             if (typeof (sessCfg as any).certKeyAccount === "string" && (sessCfg as any).certKeyAccount) {
                                 acctCandidates.push((sessCfg as any).certKeyAccount);
+                            }
+                            // For private keys, also try certAccount as fallback since macOS identities
+                            // store both certificate and private key under the same account name.
+                            if (typeof (sessCfg as any).certAccount === "string" && (sessCfg as any).certAccount) {
+                                if (!acctCandidates.includes((sessCfg as any).certAccount)) {
+                                    acctCandidates.push((sessCfg as any).certAccount);
+                                }
                             }
                         }
                         if (typeof (sessCfg as any).profile === "string" && (sessCfg as any).profile) {
@@ -928,7 +987,10 @@ export class AuthOrder {
 
                         for (const acct of acctCandidates) {
                             try {
-                                const certBuf: Buffer | null = managerAny.loadCertificateSync(acct, true);
+                                const isKey = sessCredName === AuthOrder.SESS_CERT_KEY_NAME;
+                                const certBuf: Buffer | null = isKey ?
+                                    managerAny.loadCertificateKeySync(acct, true) :
+                                    managerAny.loadCertificateSync(acct, true);
                                 if (certBuf) {
                                     const tmpDir = os.tmpdir();
                                     const suffix = sessCredName === AuthOrder.SESS_CERT_NAME ? "-cert.pem" : "-key.pem";
@@ -944,8 +1006,6 @@ export class AuthOrder {
                                 // ignore and try next candidate
                             }
                         }
-                    } else {
-                        // No sync loader available; skip in sync path
                     }
                 }
             } catch (_err) {

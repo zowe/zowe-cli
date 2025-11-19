@@ -21,6 +21,7 @@ import { IProfileProperty } from "../../../profiles";
 import { ConfigAutoStore } from "../../../config/src/ConfigAutoStore";
 import { ConfigUtils } from "../../../config/src/ConfigUtils";
 import { AuthOrder, PropUse } from "./AuthOrder";
+import { CredentialManagerFactory } from "../../../security";
 import { Censor } from "../../../censor/src/Censor";
 
 /**
@@ -142,9 +143,9 @@ export class ConnectionPropsForSessCfg {
                 }
             }
         }
-    // resolveSessCfgProps previously added creds to our session, but
-    // our caller's overrides may have changed the available creds,
-    // so again add the creds that are currently available.
+    //resolveSessCfgProps previously added creds to our session, but
+    //our caller's overrides may have changed the available creds,
+    //so again add the creds that are currently available.
     // Use the async variant because this function is async and callers
     // may expect certificate lookups to complete before continuing.
     await AuthOrder.addCredsToSessionAsync(sessCfgToUse, cmdArgs);
@@ -196,10 +197,15 @@ export class ConnectionPropsForSessCfg {
                     }
                     break;
                 case SessConstants.AUTH_TYPE_CERT_PEM:
-                    if (!sessCfgToUse._authCache?.availableCreds?.cert && !doNotPromptForValues.includes("cert")) {
+                    // Check if cert credential is available from cache OR if certAccount property exists.
+                    // certAccount indicates intent to retrieve certificate from secure storage.
+                    const hasCertAccount = (sessCfgToUse as any).certAccount && typeof (sessCfgToUse as any).certAccount === "string";
+                    if (!sessCfgToUse._authCache?.availableCreds?.cert && !hasCertAccount && !doNotPromptForValues.includes("cert")) {
                         promptForValues.push("cert");
                     }
-                    if (!sessCfgToUse._authCache?.availableCreds?.certKey && !doNotPromptForValues.includes("certKey")) {
+                    // Check if certKey credential is available from cache OR if certKeyAccount property exists.
+                    const hasCertKeyAccount = (sessCfgToUse as any).certKeyAccount && typeof (sessCfgToUse as any).certKeyAccount === "string";
+                    if (!sessCfgToUse._authCache?.availableCreds?.certKey && !hasCertKeyAccount && !doNotPromptForValues.includes("certKey")) {
                         promptForValues.push("certKey");
                     }
                     break;
@@ -315,8 +321,59 @@ export class ConnectionPropsForSessCfg {
             sessCfg.password = cmdArgs.password;
         }
 
-        // record all of the currently available credential information into the session
-        await AuthOrder.addCredsToSession(sessCfg, cmdArgs);
+        // Capture profile name on the session for downstream credential/account inference.
+        // This helps certificate retrieval logic form candidate account names (profile & account).
+        try {
+            const zosmfProfName: string = (cmdArgs as any).zosmfProfile || (cmdArgs as any)["zosmf-profile"]; // camelCase vs dashed
+            const baseProfName: string = (cmdArgs as any).baseProfile || (cmdArgs as any)["base-profile"]; // camelCase vs dashed
+            if (zosmfProfName && typeof zosmfProfName === "string") {
+                (sessCfg as any).profile = zosmfProfName;
+            }
+            if (baseProfName && typeof baseProfName === "string") {
+                // Expose base profile name as a generic account candidate.
+                (sessCfg as any).account = baseProfName;
+            }
+        } catch (_e) {
+            // ignore
+        }
+
+        // Populate certAccount / certKeyAccount from command args (if user supplied directly)
+        // or fallback to active profile configuration if not present in args.
+        try {
+            const certAcctArg: string = (cmdArgs as any).certAccount || (cmdArgs as any)["cert-account"]; // camelCase vs dashed
+            const certKeyAcctArg: string = (cmdArgs as any).certKeyAccount || (cmdArgs as any)["cert-key-account"]; // camelCase vs dashed
+            if (typeof certAcctArg === "string" && certAcctArg.length > 0) {
+                (sessCfg as any).certAccount = certAcctArg;
+            }
+            if (typeof certKeyAcctArg === "string" && certKeyAcctArg.length > 0) {
+                (sessCfg as any).certKeyAccount = certKeyAcctArg;
+            }
+            // Fallback to profile properties only if not set via args.
+            if (!(sessCfg as any).certAccount || !(sessCfg as any).certKeyAccount) {
+                const configInst = ImperativeConfig.instance.config;
+                // Attempt to locate the active zosmf profile record and read its properties.
+                const activeZosmfProfileName: string = (cmdArgs as any).zosmfProfile || (cmdArgs as any)["zosmf-profile"]; // prefer explicit if supplied
+                if (configInst && activeZosmfProfileName && configInst.api?.profiles?.exists(activeZosmfProfileName)) {
+                    const profData: any = configInst.api.profiles.get(activeZosmfProfileName, true);
+                    const profProps: any = profData?.properties || {};
+                    if (!(sessCfg as any).certAccount && typeof profProps.certAccount === "string" && profProps.certAccount.length > 0) {
+                        (sessCfg as any).certAccount = profProps.certAccount;
+                    }
+                    if (!(sessCfg as any).certKeyAccount && typeof profProps.certKeyAccount === "string" && profProps.certKeyAccount.length > 0) {
+                        (sessCfg as any).certKeyAccount = profProps.certKeyAccount;
+                    }
+                    // If profile specifies an authOrder (e.g. 'cert-pem'), propagate it into cmdArgs so AuthOrder logic honors user choice.
+                    if (!cmdArgs.authOrder && typeof profProps.authOrder === "string" && profProps.authOrder.length > 0) {
+                        (cmdArgs as any).authOrder = profProps.authOrder;
+                    }
+                }
+            }
+        } catch (_e) {
+            // ignore
+        }
+
+    // record all of the currently available credential information into the session
+    AuthOrder.addCredsToSession(sessCfg, cmdArgs);
 
         // When our caller only supports limited authTypes, limit the authTypes in the session
         if (connOpts.supportedAuthTypes) {

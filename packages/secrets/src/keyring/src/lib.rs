@@ -2,7 +2,7 @@ use napi::bindgen_prelude::AsyncTask;
 use napi::{Env, JsUnknown};
 use napi_derive::napi;
 use workers::{DeletePassword, FindCredentials, FindPassword, GetPassword, SetPassword};
-use workers::GetCertificate;
+use workers::{GetCertificate, GetCertificateKey};
 
 extern crate secrets_core;
 
@@ -39,6 +39,25 @@ fn get_certificate(service: String, account: String) -> AsyncTask<GetCertificate
 fn get_certificate_sync(env: Env, service: String, account: String) -> napi::Result<JsUnknown> {
     // call into secrets_core OS layer directly
     match secrets_core::os::get_certificate(&service, &account) {
+        Ok(Some(bytes)) => {
+            // create a buffer from Vec<u8>
+            let buf = env.create_buffer_with_data(bytes)?.into_unknown();
+            Ok(buf)
+        }
+        Ok(None) => Ok(env.get_null()?.into_unknown()),
+        Err(err) => Err(napi::Error::from_reason(err.to_string())),
+    }
+}
+
+#[napi(ts_return_type = "Promise<Buffer | null>")]
+fn get_certificate_key(service: String, account: String) -> AsyncTask<GetCertificateKey> {
+    AsyncTask::new(GetCertificateKey { service, account })
+}
+
+#[napi(ts_return_type = "Buffer | null")]
+fn get_certificate_key_sync(env: Env, service: String, account: String) -> napi::Result<JsUnknown> {
+    // call into secrets_core OS layer directly
+    match secrets_core::os::get_certificate_key(&service, &account) {
         Ok(Some(bytes)) => {
             // create a buffer from Vec<u8>
             let buf = env.create_buffer_with_data(bytes)?.into_unknown();

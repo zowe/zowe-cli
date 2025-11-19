@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe Secrets SDK package will be documented in this file.
 
+## Unreleased (branch: feat/secure-cert-support)
+
+- Enhancement: Added support for secure certificates in keyring.
+
 ## `8.29.0`
 
 - Enhancement: Added support for specifying the persistence level as an option when setting credentials. Note that this option only applies for Windows users; when a persistence level is provided and the user's operating system is Linux or MacOS, the option is ignored. [#2601](https://github.com/zowe/zowe-cli/issues/2601)
