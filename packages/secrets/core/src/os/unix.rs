@@ -239,3 +239,21 @@ pub fn get_certificate(service: &String, account: &String) -> Result<Option<Vec<
         None => Ok(None),
     }
 }
+
+///
+/// Returns a private key for the given service/account.
+/// 
+/// **Note: This feature is not yet supported on Linux/Unix systems.**
+///
+/// - `service`: The service name that matches the private key entry
+/// - `account`: The account/name for the private key entry
+///
+/// Returns:
+/// - A `KeyringError` indicating that this feature is not supported on Linux/Unix
+///
+pub fn get_certificate_key(_service: &String, _account: &String) -> Result<Option<Vec<u8>>, KeyringError> {
+    Err(KeyringError::Os(
+        "Certificate private key retrieval is not yet supported on Linux/Unix systems. \
+        Please use file-based private keys (certKeyFile) instead of keyring-based keys (certKeyAccount).".to_owned()
+    ))
+}
