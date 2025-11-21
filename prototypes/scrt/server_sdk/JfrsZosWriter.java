@@ -5,9 +5,12 @@ import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.example.ScrtProps;
+import lombok.extern.slf4j.Slf4j;
+
+import org.example.ScrtProps;   // Todo: replace when integrating into REST API SDK
 
 //************************************************************************
+@Slf4j
 public class JfrsZosWriter {
     // names for function parameter
     private static final String UPDATE_FEAT_USED = "Update feature used";
@@ -57,40 +60,41 @@ public class JfrsZosWriter {
         try {
             validateProps(scrtPropVals);
 
-            // Todo: remove print statements when integrating into REST SDK API
-            System.out.println("\nrecordFeatureUse: Received these SCRT property values:");
-            System.out.println("    " + ScrtProps.PROD_NAME_KW  + "\t\t= " + scrtPropVals.getProdName());
-            System.out.println("    " + ScrtProps.PROD_ID_KW + "\t\t= " + scrtPropVals.getProdId());
-            System.out.println("    productInstance\t= " + scrtPropVals.getProdInstance());
-            System.out.println("    " + ScrtProps.PROD_VER_KW + "\t\t= " + scrtPropVals.getVersion());
-            System.out.println("    " + ScrtProps.PROD_REL_KW + "\t\t= " + scrtPropVals.getRelease());
-            System.out.println("    " + ScrtProps.PROD_MOD_LEV_KW + "\t\t= " + scrtPropVals.getModLevel());
-            System.out.println("    " + ScrtProps.FEAT_NAME_KW + "\t\t= " + scrtPropVals.getFeatName());
-            System.out.println("    " + ScrtProps.FEAT_DESC_KW + "\t= " + scrtPropVals.getFeatDesc());
-
             FrsResult updateFeatResult = new FrsResult(0, 0, "".getBytes());
             try {
                 FeatTokenInfo featTokenInfo = getFeatTokenInfo(scrtPropVals);
                 Instant currentTime = Instant.now();
                 synchronized (featTokenMapLock) {
                     if (currentTime.isAfter(featTokenInfo.lastUpdate.plus(1, ChronoUnit.DAYS))) {
-                        // Todo: remove print statement when integrating into REST SDK API
-                        System.out.println("\nrecordFeatureUse: last update = " + featTokenInfo.lastUpdate +
-                            "   current time = " + currentTime + "\n    Recorded the use of featureName = '" +
-                            scrtPropVals.getFeatName() + "' for SCRT reporting."
-                        );
-
                         // do another update since it has been over a day since our last update
-                        featTokenInfo.lastUpdate = currentTime;
                         updateFeatResult = FeatureRegistrationServiceWrapper.updateFeature(
                             getProdToken(scrtPropVals), featTokenInfo.tokenVal,
                             FeatureStateOption.FL_STATE_ENABLED, FeatureUsedOption.FL_USED_YES
                         );
+
+                        log.info("Recorded these SCRT properties:" +
+                            "\n    " + ScrtProps.PROD_NAME_KW  + "\t\t= " + scrtPropVals.getProdName() +
+                            "\n    " + ScrtProps.PROD_ID_KW + "\t\t= " + scrtPropVals.getProdId() +
+                            "\n    productInstance\t= " + scrtPropVals.getProdInstance() +
+                            "\n    " + ScrtProps.PROD_VER_KW + "\t\t= " + scrtPropVals.getVersion() +
+                            "\n    " + ScrtProps.PROD_REL_KW + "\t\t= " + scrtPropVals.getRelease() +
+                            "\n    " + ScrtProps.PROD_MOD_LEV_KW + "\t\t= " + scrtPropVals.getModLevel() +
+                            "\n    " + ScrtProps.FEAT_NAME_KW + "\t\t= " + scrtPropVals.getFeatName() +
+                            "\n    " + ScrtProps.FEAT_DESC_KW + "\t= " + scrtPropVals.getFeatDesc() +
+                            "\n    last update = " + featTokenInfo.lastUpdate + "   current time = " + currentTime
+                        );
+                        featTokenInfo.lastUpdate = currentTime;
                     } else {
-                        // Todo: remove print statement when integrating into REST SDK API
-                        System.out.println("\nrecordFeatureUse: last update = " + featTokenInfo.lastUpdate +
-                            "   current time = " + currentTime + "\n    Did *NOT* recorded SCRT for featureName = '" +
-                            scrtPropVals.getFeatName() + "'. It was done within the last day."
+                        log.info("These SCRT properties were *NOT* recorded - less than one day:" +
+                            "\n    " + ScrtProps.PROD_NAME_KW  + "\t\t= " + scrtPropVals.getProdName() +
+                            "\n    " + ScrtProps.PROD_ID_KW + "\t\t= " + scrtPropVals.getProdId() +
+                            "\n    productInstance\t= " + scrtPropVals.getProdInstance() +
+                            "\n    " + ScrtProps.PROD_VER_KW + "\t\t= " + scrtPropVals.getVersion() +
+                            "\n    " + ScrtProps.PROD_REL_KW + "\t\t= " + scrtPropVals.getRelease() +
+                            "\n    " + ScrtProps.PROD_MOD_LEV_KW + "\t\t= " + scrtPropVals.getModLevel() +
+                            "\n    " + ScrtProps.FEAT_NAME_KW + "\t\t= " + scrtPropVals.getFeatName() +
+                            "\n    " + ScrtProps.FEAT_DESC_KW + "\t= " + scrtPropVals.getFeatDesc() +
+                            "\n    last update = " + featTokenInfo.lastUpdate + "   current time = " + currentTime
                         );
                     }
                 }
@@ -298,13 +302,12 @@ public class JfrsZosWriter {
             scrtPropVals = new ScrtProps("null_ScrtProps", "null_ScrtProps");
         }
 
-        // ToDo: Replace with CommonMessageService.getInstance().createApiMessage
-        System.out.println(
-            "\nlogErrThrowRcExcept:" +
+        log.error(
+            "logErrThrowRcExcept" +
+            "\n    Function    = " + function +
             "\n    Error Msg   = " + errorText +
             "\n    Return code = " + rc +
             "\n    Reason code = " + rsn +
-            "\n    Function    = " + function +
             "\n    prodName    = " + scrtPropVals.getProdName() +
             "\n    prodId      = " + scrtPropVals.getProdId() +
             "\n    version     = " + scrtPropVals.getVersion() +
@@ -359,7 +362,7 @@ class JfrsSdkRcException extends Exception {
 /*************************************************************************************************
  * Fake FRS classes to enable this prototype to compile before integrating into the REST API SDK.
 *************************************************************************************************/
-// Todo: Remove the following classes and use the real classes when integrating into the REST SDK API
+// Todo: Remove the following fake classes and use the real classes when integrating into the REST SDK API
 class FrsResult {
     private int rc = 0;
     private int rsn = 0;

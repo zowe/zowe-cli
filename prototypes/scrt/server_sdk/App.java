@@ -17,8 +17,12 @@ public class App {
 
         MockHttpServletResponse mockResponse = new MockHttpServletResponse();
 
+        /* zzz start comment
+
+        zzz end comment */
+
         System.out.println("______________________________________________________________");
-        System.out.println("Call interceptor with featureName missing from the header");
+        System.out.println("Call interceptor with no featureName in the header. Expect error.\n");
         mockRequest = createMockRequest(false);
         mockRequest.addHeader("Zowe-SCRT-client-feature",
             "featureNameMispelled=\"STATEMAN featureName from header\", " +
@@ -30,7 +34,7 @@ public class App {
         showInterceptResult(interceptResult);
 
         System.out.println("______________________________________________________________");
-        System.out.println("Call interceptor with only the required feature properties in the header");
+        System.out.println("Call interceptor with only the required feature properties in the header\n");
         mockRequest = createMockRequest(false);
         mockRequest.addHeader("Zowe-SCRT-client-feature",
             "featureName=\"STATEMAN featureName from header\", " +
@@ -42,7 +46,7 @@ public class App {
         showInterceptResult(interceptResult);
 
         System.out.println("______________________________________________________________");
-        System.out.println("Call interceptor with only one product property in the header");
+        System.out.println("Call interceptor with only one product property in the header. Expect error.\n");
         mockRequest = createMockRequest(false);
         mockRequest.addHeader("Zowe-SCRT-client-feature",
             "featureName=\"REXX featureName from header\", " +
@@ -55,7 +59,7 @@ public class App {
         showInterceptResult(interceptResult);
 
         System.out.println("______________________________________________________________");
-        System.out.println("Call interceptor with all feature and product properties in the header");
+        System.out.println("Call interceptor with all feature and product properties in the header\n");
         mockRequest = createMockRequest(false);
         mockRequest.addHeader("Zowe-SCRT-client-feature",
             "featureName=\"REXX featureName from header\", " +
@@ -72,11 +76,37 @@ public class App {
         showInterceptResult(interceptResult);
 
         System.out.println("______________________________________________________________");
-        System.out.println("Call interceptor with all product and feature props in header and URL for only recording SCRT");
+        System.out.println("Call interceptor with URL '" + ScrtFeatHeaderInterceptor.ONLY_RECORD_SCRT_URL +
+            "' and no header. Expect error.\n"
+        );
+        mockRequest = createMockRequest(true);
+        interceptResult = new ScrtFeatHeaderInterceptor().preHandle(
+            (MockHttpServletRequest) mockRequest, (HttpServletResponse) mockResponse, handlerObj
+        );
+        showInterceptResult(interceptResult);
+
+        System.out.println("______________________________________________________________");
+        System.out.println("Call interceptor with URL '" + ScrtFeatHeaderInterceptor.ONLY_RECORD_SCRT_URL +
+            "' and no product props in header. Expect error.\n"
+        );
         mockRequest = createMockRequest(true);
         mockRequest.addHeader("Zowe-SCRT-client-feature",
-            "featureName=\"REXX featureName from header\", " +
-            "featureDescription=\"REXX featureDescription from header\", " +
+            "featureName=\"AAA featureName from header\", " +
+            "featureDescription=\"AAA featureDescription from header\""
+        );
+        interceptResult = new ScrtFeatHeaderInterceptor().preHandle(
+            (MockHttpServletRequest) mockRequest, (HttpServletResponse) mockResponse, handlerObj
+        );
+        showInterceptResult(interceptResult);
+
+        System.out.println("______________________________________________________________");
+        System.out.println("Call interceptor with URL '" + ScrtFeatHeaderInterceptor.ONLY_RECORD_SCRT_URL +
+            "' and all product and feature props in header\n"
+        );
+        mockRequest = createMockRequest(true);
+        mockRequest.addHeader("Zowe-SCRT-client-feature",
+            "featureName=\"OPS featureName from header for " + ScrtFeatHeaderInterceptor.ONLY_RECORD_SCRT_URL + " \", " +
+            "featureDescription=\"OPS featureDescription from header\", " +
             "productName=\"OPS productName From Header\", " +
             "productId=\"OPS productId From Header\", " +
             "version=\"OPS version 14 From Header\", " +
@@ -89,34 +119,14 @@ public class App {
         showInterceptResult(interceptResult);
 
         System.out.println("______________________________________________________________");
-        System.out.println("Call interceptor with only feature props in header and URL for only recording SCRT");
-        mockRequest = createMockRequest(true);
-        mockRequest.addHeader("Zowe-SCRT-client-feature",
-            "featureName=\"AAA featureName from header\", " +
-            "featureDescription=\"AAA featureDescription from header\", "
-        );
-        interceptResult = new ScrtFeatHeaderInterceptor().preHandle(
-            (MockHttpServletRequest) mockRequest, (HttpServletResponse) mockResponse, handlerObj
-        );
-        showInterceptResult(interceptResult);
-
-        System.out.println("______________________________________________________________");
-        System.out.println("Call interceptor with URL for only recording SCRT but no header");
-        mockRequest = createMockRequest(true);
-        interceptResult = new ScrtFeatHeaderInterceptor().preHandle(
-            (MockHttpServletRequest) mockRequest, (HttpServletResponse) mockResponse, handlerObj
-        );
-        showInterceptResult(interceptResult);
-
-        System.out.println("______________________________________________________________");
-        System.out.println("Call recordFeatureUse with null ScrtProps parameter");
+        System.out.println("Call recordFeatureUse with null ScrtProps parameter. Expect Error.\n");
         FrsResult recordUseResult = new JfrsZosWriter().recordFeatureUse(null);
         System.out.println("\nFrsResult rc = " + recordUseResult.getRc() +
             " rsn = " + recordUseResult.getRsn()
         );
 
         System.out.println("______________________________________________________________");
-        System.out.println("Call recordFeatureUse with null and blank feature properties");
+        System.out.println("Call recordFeatureUse with null and blank feature properties. Expect Error.\n");
         ScrtProps scrtPropsFromPgm = new ScrtProps(null, "   ");
         recordUseResult = new JfrsZosWriter().recordFeatureUse(scrtPropsFromPgm);
         System.out.println("\nFrsResult rc = " + recordUseResult.getRc() +
@@ -124,7 +134,7 @@ public class App {
         );
 
         System.out.println("______________________________________________________________");
-        System.out.println("Call recordFeatureUse with all product and feature properties");
+        System.out.println("Call recordFeatureUse with all product and feature properties\n");
         scrtPropsFromPgm = new ScrtProps("featNameFromPgm", "featDescFromPgm");
         scrtPropsFromPgm.setProductInfo(
             "prodNameFromPgm", "prodIdFromPgm", "ver_11_FromPgm", "rel_6_FromPgm",
@@ -136,7 +146,7 @@ public class App {
         );
 
         System.out.println("______________________________________________________________");
-        System.out.println("Calling recordFeatureUse with same feature within 1 day should *NOT* record SCRT");
+        System.out.println("Calling recordFeatureUse with same feature within 1 day should *NOT* record SCRT\n");
         Thread.sleep(2000);
         scrtPropsFromPgm = new ScrtProps("featNameFromPgm", "featDescFromPgm");
         scrtPropsFromPgm.setProductInfo(
@@ -148,6 +158,10 @@ public class App {
             " rsn = " + recordUseResult.getRsn()
         );
         System.out.println("______________________________________________________________");
+
+        /* zzz start comment
+
+        zzz end comment */
     }
 
     // ________________________________________________________________________________

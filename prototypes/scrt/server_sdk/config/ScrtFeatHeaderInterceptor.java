@@ -38,10 +38,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.NonNull;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.util.*;
+import java.util.stream.Collectors;
 
 import org.example.JfrsZosWriter;
 import org.example.ScrtProps;
@@ -58,9 +62,16 @@ import org.example.ScrtProps;
 @ConditionalOnProperty(prefix = "server.jfrs", name = "serviceName")
 public class ScrtFeatHeaderInterceptor implements HandlerInterceptor {
 
+    // Todo: Replace the following with -> import static com.broadcom.restapi.sdk.CommonMessages.*;
+    private static final String BAD_REQUEST = "com.broadcom.common.rest.badRequest";
+
+    // Todo: obtain objMapper in standard way when integrated into REST API SDK
+    private final ObjectMapper objMapper = new ObjectMapper();
+
     // Todo: replace with the desired URL string
     public static final String ONLY_RECORD_SCRT_URL = "/apiv1/scrt";
-    public static final String SCRT_HEADER = "Zowe-SCRT-client-feature";
+
+    private static final String SCRT_HEADER = "Zowe-SCRT-client-feature";
 
     //------------------------------------------------------------------------
     /**
@@ -71,7 +82,8 @@ public class ScrtFeatHeaderInterceptor implements HandlerInterceptor {
      * This interceptor detects whether the request has a Zowe-SCRT-client-feature
      * header. If so, it parses the content of the header, validates that required
      * properties were contained in the header, and then calls the Jfrs function
-     * to increment the use count of the client feature supplied in the header.
+     * to record the use of the client feature supplied in the header. The request
+     * is then forwarded to its intended target component of the REST service.
      *
      * When the interceptor recognizes that the servlet path is the well-known
      * ONLY_RECORD_SCRT_URL path, we only record SCRT data, and prevent the
@@ -84,61 +96,78 @@ public class ScrtFeatHeaderInterceptor implements HandlerInterceptor {
      * @return {@code true} if the execution chain should proceed with the
      * next interceptor or the handler itself. Else, DispatcherServlet assumes
      * that this interceptor has already dealt with the response itself.
-     *
-     * @throws Exception in case of errors
      */
     @Override
     public boolean preHandle(
         HttpServletRequest request,
         @NonNull HttpServletResponse response,
         @NonNull Object handler
-    ) throws Exception {
-        // Todo: remove this diagnostic print statement
-        System.out.println("\npreHandle: getServletPath = '" + request.getServletPath());
+    ) {
+        boolean weShouldRecordFeat = true;
+        ScrtProps scrtPropsForFeat = null;
+        String errResponseText = null;
 
+        log.debug("preHandle:  ServletPath = " + request.getServletPath());
         boolean onlyRecordScrt = request.getServletPath().equalsIgnoreCase(ONLY_RECORD_SCRT_URL);
-        String scrtHeaderText = request.getHeader(SCRT_HEADER);
 
+        String scrtHeaderText = request.getHeader(SCRT_HEADER);
         if (scrtHeaderText == null) {
-            // no SCRT header was supplied
+            // no SCRT header was supplied. That is ok except for URL for only SCRT.
             if (onlyRecordScrt) {
-                // Todo: Form an error response and remove the print statement
-                System.out.println("preHandle: Should form error response that the URL '" +
-                    ONLY_RECORD_SCRT_URL + "' requires the '" + SCRT_HEADER + "' header."
-                );
-                return false;   // prevent the request from being processed further
+                // form text for an HTTP response
+                errResponseText = "The URL '" + ONLY_RECORD_SCRT_URL +
+                    "' requires the '" + SCRT_HEADER + "' header.";
             }
         } else {
-            // header text was supplied
-            ScrtProps scrtPropsForFeat = extractHeaderProps(scrtHeaderText, onlyRecordScrt);
+            // header text was supplied. extractHeaderProps will log its own errors.
+            scrtPropsForFeat = extractHeaderProps(scrtHeaderText, onlyRecordScrt);
             if (scrtPropsForFeat == null) {
                 // the header text was invalid
                 if (onlyRecordScrt) {
-                    // Todo: Form an error response and remove the print statement
-                    System.out.println("\npreHandle: The Should form error response that the '" +
-                        SCRT_HEADER + "' header had bad values for '" + ONLY_RECORD_SCRT_URL + "'"
-                    );
-                    return false;   // prevent the request from being processed further
+                    // form text for an HTTP response
+                    errResponseText = "The header '" + SCRT_HEADER +
+                        "' had bad values for URL '" + ONLY_RECORD_SCRT_URL + "'";
                 }
             } else {
-                // we got good SCRT properties from the header
-
-                // Todo: Remove these 3 lines when integrating into REST API SDK.
-                // Uncomment the next one line to test exception handling in JfrsZosWriter.validateProps().
-                // scrtPropsForFeat = null;
-
-                // Record the use of the specified feature
+                // We extracted valid values from the header. Record the use of the feature.
                 new JfrsZosWriter().recordFeatureUse(scrtPropsForFeat);
             }
         }
 
+        boolean sendRequestToApp = true;
         if (onlyRecordScrt) {
-            // Todo: Form a successful response (200)
-            return false;   // prevent the request from being processed further
+            // We return an HTTP response only for the URL that ONLY records SCRT data
+            if (errResponseText == null) {
+                // Send a successful response (200)
+                // Even though we return no content, set the type in case the client tries to get the empty content.
+                response.setStatus(HttpServletResponse.SC_OK);
+                response.setContentType(MediaType.TEXT_PLAIN_VALUE);
+            } else {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+                ApiMessage apiMsg = CommonMessageService.getInstance().createApiMessage(BAD_REQUEST, errResponseText);
+                log.error(apiMsg.getMessages().get(0).toReadableText());
+                try {
+                    this.objMapper.writeValue(response.getWriter(), apiMsg);
+                } catch (Exception except) {
+                    log.error("Failed to write HTTP response.\n    Reason = " + except.getMessage());
+                }
+            }
+            // prevent the request from being processed further
+            sendRequestToApp = false;
+        } else {
+            // For all other URLs, we let this request proceed to the appropriate servlet component
+            try {
+                sendRequestToApp = HandlerInterceptor.super.preHandle(request, response, handler);
+            } catch (Exception except) {
+                log.error("SpringFramework HandlerInterceptor.preHandle crashed.\n    Reason = " +
+                    except.getMessage()
+                );
+                sendRequestToApp = true;
+            }
         }
 
-        // let this request proceed to the appropriate servlet component
-        return HandlerInterceptor.super.preHandle(request, response, handler);
+        return sendRequestToApp;
     }
 
     //------------------------------------------------------------------------
@@ -216,10 +245,10 @@ public class ScrtFeatHeaderInterceptor implements HandlerInterceptor {
             missingPropErrMsg += ScrtProps.FEAT_DESC_KW + " ";
         }
         if (!missingPropErrMsg.isEmpty()) {
-            // Todo: Replace print with REST API SDK logging method
-            System.out.println(
-                "\nextractHeaderProps: The following supplied header text:\n    " + scrtHeaderText +
-                "\n    does not contain these feature properties: " + missingPropErrMsg
+            log.error(
+                "The following '" + SCRT_HEADER + "' header text is invalid:" +
+                "\n    Header = " + scrtHeaderText +
+                "\n    It does not contain these feature properties: " + missingPropErrMsg
             );
             return null;
         }
@@ -268,12 +297,70 @@ public class ScrtFeatHeaderInterceptor implements HandlerInterceptor {
             return scrtPropsToUse;
         }
 
-        // log an error identifying missing properties
-        // Todo: Replace print with REST API SDK logging method
-        System.out.println(
-            "\nextractHeaderProps: The following supplied header text:\n    " + scrtHeaderText +
-            "\n    does not contain these product properties: " + missingPropErrMsg
+        // we are missing required properties
+        log.error(
+            "The following '" + SCRT_HEADER + "' header text is invalid:" +
+            "\n    Header = " + scrtHeaderText +
+            "\n    It does not contain these product properties: " + missingPropErrMsg
         );
         return null;
+    }
+}
+
+
+/*************************************************************************************************
+ * Fake classes to enable this prototype to compile before integrating into the REST API SDK.
+*************************************************************************************************/
+// Todo: Remove the following fake classes and use the real classes when integrating into the REST SDK API
+class ApiMessage {
+    List<Msg> messages = new ArrayList<Msg>();
+
+    class Msg {
+        String message;
+
+        public String getMessage() {
+            return this.message;
+        }
+
+        public void setMessage(String msgVal) {
+            this.message = msgVal;
+        }
+
+        public String toReadableText() {
+            return this.message;
+        }
+    }
+
+    public ApiMessage(String msgText) {
+        Msg newMsg = new Msg();
+        newMsg.setMessage(msgText);
+        messages.add(newMsg);
+    }
+
+    public List<Msg> getMessages() {
+        return messages;
+    }
+
+}
+
+class MessageService {
+    public ApiMessage createApiMessage(String key, Object... parameters) {
+        String msgText;
+        msgText = key + " -- ";
+        for (Object parm : parameters) {
+            msgText += parm + " ";
+        }
+        return new ApiMessage(msgText);
+    }
+}
+
+class CommonMessageService {
+    private static MessageService msgSvc = null;
+
+    public static MessageService getInstance() {
+        if (msgSvc == null) {
+            msgSvc = new MessageService();
+        }
+        return msgSvc;
     }
 }

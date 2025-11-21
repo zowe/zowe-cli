@@ -73,8 +73,6 @@ public class ScrtProps {
 
         // assign default product properties until explicitly overridden.
         setProductInfo(dfltProdName, dfltProdId, dfltVersion, dfltRelease, dfltModLevel);
-
-        // Todo: determine if this is right: JfrsZosWriter always uses the product ID as the product instance
         this.prodInstance = dfltProdId;
     }
 
@@ -101,10 +99,8 @@ public class ScrtProps {
         this.version = version;
         this.release = release;
         this.modLevel = modLevel;
-
-        // Todo: determine if this is right: JfrsZosWriter always uses the product ID as the product instance
         this.prodInstance = prodId;
- }
+    }
 
     //*********************************************************************
     /**
