@@ -360,3 +360,90 @@ pub fn get_certificate(service: &String, account: &String) -> Result<Option<Vec<
         None => Ok(None),
     }
 }
+
+/// Returns the private key (decoded from base64) stored as the password for the given service/account.
+/// On Windows, private keys are stored in the credential manager as base64-encoded passwords.
+/// This function first looks for a credential with the exact service/account, then tries 
+/// variations like service/account-key or service-key/account for compatibility.
+pub fn get_certificate_key(service: &String, account: &String) -> Result<Option<Vec<u8>>, KeyringError> {
+    // Try different credential naming patterns for private keys
+    let key_variations = vec![
+        (service.clone(), account.clone()),                           // exact match
+        (service.clone(), format!("{}-key", account)),                // account-key suffix
+        (format!("{}-key", service), account.clone()),                // service-key prefix  
+        (format!("{}/key", service), account.clone()),                // service/key prefix
+        (service.clone(), format!("key-{}", account)),                // key-account prefix
+    ];
+
+    for (svc, acc) in key_variations {
+        match get_password(&svc, &acc)? {
+            Some(b64) => {
+                match base64::decode(&b64) {
+                    Ok(bytes) => {
+                        // Basic validation: check if this looks like a private key
+                        if is_likely_private_key(&bytes) {
+                            return Ok(Some(bytes));
+                        }
+                        // If it doesn't look like a key, continue searching
+                    },
+                    Err(_) => {
+                        // Not base64-encoded, continue searching
+                        continue;
+                    }
+                }
+            },
+            None => continue,
+        }
+    }
+
+    // No private key found in any of the expected locations
+    Ok(None)
+}
+
+/// Helper function to perform basic validation that the decoded bytes look like a private key.
+/// This checks for common private key formats (PEM, DER/PKCS#8, etc.)
+fn is_likely_private_key(bytes: &[u8]) -> bool {
+    if bytes.is_empty() {
+        return false;
+    }
+
+    // Check for PEM format private key headers
+    let content = String::from_utf8_lossy(bytes);
+    if content.contains("-----BEGIN PRIVATE KEY-----") ||
+       content.contains("-----BEGIN RSA PRIVATE KEY-----") ||
+       content.contains("-----BEGIN EC PRIVATE KEY-----") ||
+       content.contains("-----BEGIN OPENSSH PRIVATE KEY-----") {
+        return true;
+    }
+
+    // Check for DER format (binary) - basic heuristics
+    // PKCS#8 private keys typically start with 0x30 (ASN.1 SEQUENCE)
+    if bytes.len() > 10 && bytes[0] == 0x30 {
+        // Additional checks for PKCS#8 structure
+        if bytes.len() > 20 {
+            // Look for common OID patterns in PKCS#8 keys
+            let sample = &bytes[0..std::cmp::min(50, bytes.len())];
+            // RSA OID: 1.2.840.113549.1.1.1 appears in PKCS#8 RSA keys
+            // EC OID patterns also appear
+            return sample.windows(3).any(|w| w == [0x2a, 0x86, 0x48]) || // RSA OID start
+                   sample.windows(2).any(|w| w == [0x2a, 0x86]);         // Other common OIDs
+        }
+        return true;
+    }
+
+    // Check for other common key formats
+    if bytes.len() > 4 {
+        // OpenSSH private key format
+        if bytes.starts_with(b"openssh-key-v1") {
+            return true;
+        }
+        
+        // PKCS#1 RSA private key (older format)
+        if bytes[0] == 0x30 && bytes.len() > 50 {
+            // Look for RSA private key ASN.1 structure
+            return true;
+        }
+    }
+
+    false
+}
