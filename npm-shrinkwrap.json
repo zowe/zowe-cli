@@ -15777,17 +15777,6 @@
         "node": ">=20.9.0"
       }
     },
-    "packages/imperative/node_modules/@zowe/secrets-for-zowe-sdk": {
-      "version": "8.29.4",
-      "resolved": "file:packages/secrets/zowe-secrets-for-zowe-sdk-8.29.4.tgz",
-      "integrity": "sha512-mnP45nVTYwq9HlgbT8M7qz2TmTEOsFhZQnp/+ApuqA6uaiijCNxe4wmuxDJhFLtiQrZ2vc1+LZ0/2nktnApJgw==",
-      "dev": true,
-      "hasInstallScript": true,
-      "license": "EPL-2.0",
-      "engines": {
-        "node": ">=14"
-      }
-    },
     "packages/imperative/node_modules/agent-base": {
       "version": "7.1.1",
       "integrity": "sha512-H0TSyFNDMomMNJQBn8wFV5YC/2eJ+VXECwOadZJT554xP6cODZHPX3H9QMQECxvrgiSOP1pHjy1sMWQVYJOUOA==",
