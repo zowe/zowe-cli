@@ -2,9 +2,9 @@
 
 All notable changes to the Zowe Secrets SDK package will be documented in this file.
 
-## Unreleased (branch: feat/secure-cert-support)
+## Recent Changes
 
-- Enhancement: Added support for secure certificates in keyring.
+- Enhancement: Added support for secure certificates in keyring. [#2325](https://github.com/zowe/zowe-cli/issues/2325)
 
 ## `8.29.0`
 

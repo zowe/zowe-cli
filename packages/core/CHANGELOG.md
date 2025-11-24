@@ -2,9 +2,9 @@
 
 All notable changes to the Zowe core SDK package will be documented in this file.
 
-## Unreleased (branch: feat/secure-cert-support)
+## Recent Changes
 
-- Enhancement: Added profile option constants and BaseProfile schema entries for `certAccount` and `certKeyAccount`. Files changed: `packages/core/src/constants/Core.constants.ts`.
+- Enhancement: Added profile option constants and BaseProfile schema entries for `certAccount` and `certKeyAccount`. [#2325](https://github.com/zowe/zowe-cli/issues/2325)
 
 ## `8.27.4`
 
