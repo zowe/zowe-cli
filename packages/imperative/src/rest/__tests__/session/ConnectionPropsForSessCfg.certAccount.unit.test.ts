@@ -30,11 +30,11 @@ describe("ConnectionPropsForSessCfg certAccount integration", () => {
 
     it("should not prompt for certFile when certAccount certs are available (thenable)", async () => {
         const fakeManager = {
-            async loadCertificate(acct: string, optional?: boolean) {
+            async loadCertificate(acct: string, _optional?: boolean) {
                 if (acct === "my-cert-account") return Buffer.from("CERT-BYTES");
                 return null;
             },
-            async loadCertificateKey(acct: string, optional?: boolean) {
+            async loadCertificateKey(acct: string, _optional?: boolean) {
                 if (acct === "my-key-account") return Buffer.from("KEY-BYTES");
                 return null;
             }

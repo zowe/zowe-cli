@@ -30,11 +30,13 @@ pub struct FindPassword {
 pub struct GetCertificate {
     pub service: String,
     pub account: String,
+    pub optional: bool,
 }
 
 pub struct GetCertificateKey {
     pub service: String,
     pub account: String,
+    pub optional: bool,
 }
 
 #[napi(object)]
@@ -181,7 +183,7 @@ impl Task for GetCertificate {
     type JsValue = napi::JsUnknown;
 
     fn compute(&mut self) -> napi::Result<Self::Output> {
-        match os::get_certificate(&self.service, &self.account) {
+        match os::get_certificate(&self.service, &self.account, self.optional) {
             Ok(cert_opt) => Ok(cert_opt),
             Err(err) => Err(napi::Error::from_reason(err.to_string())),
         }
@@ -205,7 +207,7 @@ impl Task for GetCertificateKey {
     type JsValue = napi::JsUnknown;
 
     fn compute(&mut self) -> napi::Result<Self::Output> {
-        match os::get_certificate_key(&self.service, &self.account) {
+        match os::get_certificate_key(&self.service, &self.account, self.optional) {
             Ok(key_opt) => Ok(key_opt),
             Err(err) => Err(napi::Error::from_reason(err.to_string())),
         }

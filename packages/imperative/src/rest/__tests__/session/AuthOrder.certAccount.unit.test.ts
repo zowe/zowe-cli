@@ -29,11 +29,11 @@ describe("AuthOrder certAccount handling", () => {
     it("should prefer certAccount and certKeyAccount when loading certs (async)", async () => {
         // mock manager
         const fakeManager = {
-            async loadCertificate(acct: string, optional?: boolean) {
+            async loadCertificate(acct: string, _optional?: boolean) {
                 if (acct === "my-cert-account") return Buffer.from("CERT-BYTES");
                 return null;
             },
-            async loadCertificateKey(acct: string, optional?: boolean) {
+            async loadCertificateKey(acct: string, _optional?: boolean) {
                 if (acct === "my-key-account") return Buffer.from("KEY-BYTES");
                 return null;
             }
@@ -72,11 +72,11 @@ describe("AuthOrder certAccount handling", () => {
     it("should resolve promise-like certAccount and certKeyAccount values (async)", async () => {
         // mock manager
         const fakeManager = {
-            async loadCertificate(acct: string, optional?: boolean) {
+            async loadCertificate(acct: string, _optional?: boolean) {
                 if (acct === "my-cert-account") return Buffer.from("CERT-BYTES");
                 return null;
             },
-            async loadCertificateKey(acct: string, optional?: boolean) {
+            async loadCertificateKey(acct: string, _optional?: boolean) {
                 if (acct === "my-key-account") return Buffer.from("KEY-BYTES");
                 return null;
             }
@@ -115,11 +115,11 @@ describe("AuthOrder certAccount handling", () => {
     it("should prefer certAccount and certKeyAccount when loading certs (sync)", () => {
         // mock manager with sync loader
         const fakeManager = {
-            loadCertificateSync(acct: string, optional?: boolean) {
+            loadCertificateSync(acct: string, _optional?: boolean) {
                 if (acct === "sync-cert-account") return Buffer.from("CERT-BYTES");
                 return null;
             },
-            loadCertificateKeySync(acct: string, optional?: boolean) {
+            loadCertificateKeySync(acct: string, _optional?: boolean) {
                 if (acct === "sync-key-account") return Buffer.from("KEY-BYTES");
                 return null;
             }
@@ -157,11 +157,11 @@ describe("AuthOrder certAccount handling", () => {
     it("should fallback to profile/account when explicit certAccount returns null", async () => {
         // explicit certAccount returns null, but profile/account provide certs
         const fakeManager = {
-            async loadCertificate(acct: string, optional?: boolean) {
+            async loadCertificate(acct: string, _optional?: boolean) {
                 if (acct === "p") return Buffer.from("PROFILE-CERT");
                 return null;
             },
-            async loadCertificateKey(acct: string, optional?: boolean) {
+            async loadCertificateKey(acct: string, _optional?: boolean) {
                 if (acct === "a") return Buffer.from("ACCOUNT-KEY");
                 return null;
             }
@@ -202,7 +202,7 @@ describe("AuthOrder certAccount handling", () => {
             async loadCertificate(_acct: string, _optional?: boolean): Promise<Buffer | null> {
                 return null;
             },
-            loadCertificateSync(_acct: string, _optional?: boolean): Buffer | null {
+            loadCertificateSync(acct: string, _optional?: boolean): Buffer | null {
                 return null;
             }
         } as any;

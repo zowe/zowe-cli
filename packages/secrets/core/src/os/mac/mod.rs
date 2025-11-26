@@ -188,23 +188,22 @@ pub fn find_credentials(
 }
 
 /// Returns the certificate data for the given service/account from the keychain.
-/// Searches for kSecClassIdentity or kSecClassCertificate items.
-/// Falls back to base64-encoded password lookup if keychain items not found.
-/// Uses kSecAttrLabel (the friendly name) to match the account parameter.
-pub fn get_certificate(service: &String, account: &String) -> Result<Option<Vec<u8>>, KeyringError> {
-    get_certificate_or_key(service, account, true)
+/// Public wrapper that calls get_certificate_or_key with optional=false.
+pub fn get_certificate(service: &String, account: &String, optional: bool) -> Result<Option<Vec<u8>>, KeyringError> {
+    get_certificate_or_key(service, account, true, optional)
 }
 
 /// Returns the private key data for the given service/account from the keychain.
-/// Searches for kSecClassIdentity and extracts the private key.
-/// Falls back to base64-encoded password lookup if keychain items not found.
-/// Uses kSecAttrLabel (the friendly name) to match the account parameter.
-pub fn get_certificate_key(service: &String, account: &String) -> Result<Option<Vec<u8>>, KeyringError> {
-    get_certificate_or_key(service, account, false)
+/// Public wrapper that calls get_certificate_or_key with optional=false.
+pub fn get_certificate_key(service: &String, account: &String, optional: bool) -> Result<Option<Vec<u8>>, KeyringError> {
+    get_certificate_or_key(service, account, false, optional)
 }
 
 /// Helper function that can retrieve either certificate or private key from identity/certificate items.
-fn get_certificate_or_key(service: &String, account: &String, is_certificate: bool) -> Result<Option<Vec<u8>>, KeyringError> {
+/// Searches for kSecClassIdentity or kSecClassCertificate items.
+/// Falls back to base64-encoded password lookup if keychain items not found.
+/// Uses kSecAttrLabel (the friendly name) to match the account parameter.
+fn get_certificate_or_key(service: &String, account: &String, is_certificate: bool, optional: bool) -> Result<Option<Vec<u8>>, KeyringError> {
     use crate::os::mac::ffi::{
         kSecAttrLabel, kSecClass, kSecClassCertificate, kSecClassIdentity,
         kSecMatchLimit, kSecReturnRef, SecCertificateCopyData, SecItemCopyMatching,
@@ -217,6 +216,10 @@ fn get_certificate_or_key(service: &String, account: &String, is_certificate: bo
     use core_foundation::number::CFNumber;
     use core_foundation::string::CFString;
     use core_foundation_sys::base::{CFGetTypeID, CFTypeRef};
+    use std::sync::Mutex;
+    use std::collections::HashSet;
+
+    static WARNED_ACCOUNTS: Mutex<Option<HashSet<String>>> = Mutex::new(None);
 
     let _lock = keyring_mutex()?;
 
@@ -295,16 +298,28 @@ fn get_certificate_or_key(service: &String, account: &String, is_certificate: bo
                             return Ok(Some(bytes));
                         } else {
                             // Export failed - key is likely non-exportable or user denied access
-                            eprintln!("Private key export failed (status: {}) - identity found but key cannot be exported for account '{}'", export_status, account);
-                            eprintln!("The private key was imported as non-exportable (a macOS security feature).");
-                            eprintln!();
-                            eprintln!("Workarounds:");
-                            eprintln!("  1. Provide certKeyFile path instead of certKeyAccount");
-                            eprintln!("  2. Re-import certificate with exportable private key:");
-                            eprintln!("     security import cert.p12 -k KEYCHAIN_NAME -A");
-                            eprintln!();
-                            eprintln!("For detailed instructions, see:");
-                            eprintln!("  https://github.com/zowe/zowe-cli/blob/master/docs/Certificate_Keychain_Limitations.md");
+                            // Only print error if not optional and once per account to avoid spam
+                            if !optional {
+                                let mut warned = WARNED_ACCOUNTS.lock().unwrap();
+                                if warned.is_none() {
+                                    *warned = Some(HashSet::new());
+                                }
+                                if let Some(ref mut set) = *warned {
+                                    if !set.contains(account.as_str()) {
+                                        set.insert(account.to_string());
+                                        eprintln!("Private key export failed (status: {}) - identity found but key cannot be exported for account '{}'", export_status, account);
+                                        eprintln!("The private key was imported as non-exportable (a macOS security feature).");
+                                        eprintln!();
+                                        eprintln!("Workarounds:");
+                                        eprintln!("  1. Provide certKeyFile path instead of certKeyAccount");
+                                        eprintln!("  2. Re-import certificate with exportable private key:");
+                                        eprintln!("     security import cert.p12 -k KEYCHAIN_NAME -A -x");
+                                        eprintln!();
+                                        eprintln!("For detailed instructions, see:");
+                                        eprintln!("  https://github.com/zowe/zowe-cli/blob/master/docs/Certificate_Keychain_Limitations.md");
+                                    }
+                                }
+                            }
                         }
                     }
                 }

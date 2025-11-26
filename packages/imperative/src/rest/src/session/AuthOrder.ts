@@ -840,7 +840,7 @@ export class AuthOrder {
             sessCfg._authCache.availableCreds[sessCredName] = cmdArgs[cmdArgsCredName];
         } else if ((sessCfg as any)[sessCredName]) {
             sessCfg._authCache.availableCreds[sessCredName] = (sessCfg as any)[sessCredName];
-    } else if (sessCredName === AuthOrder.SESS_CERT_NAME || sessCredName === AuthOrder.SESS_CERT_KEY_NAME) {
+        } else if (sessCredName === AuthOrder.SESS_CERT_NAME || sessCredName === AuthOrder.SESS_CERT_KEY_NAME) {
             // Attempt to load certificate bytes from credential manager when cert/certKey not provided directly.
             try {
                 if (CredentialManagerFactory.initialized) {
@@ -894,7 +894,11 @@ export class AuthOrder {
                         authCacheAny._promptedCertAccounts = new Set<string>();
                     }
 
-                    for (const acct of acctCandidates) {
+                    let lastError: Error | undefined;
+                    let foundCred = false;
+                    for (let i = 0; i < acctCandidates.length; i++) {
+                        const acct = acctCandidates[i];
+                        const isLastAttempt = i === acctCandidates.length - 1;
                         try {
                             const isKey = sessCredName === AuthOrder.SESS_CERT_KEY_NAME;
                             const credType = isKey ? 'private key' : 'certificate';
@@ -914,13 +918,14 @@ export class AuthOrder {
                             }
 
                             const certBuf = isKey ?
-                                await (CredentialManagerFactory.manager as any).loadCertificateKey(acct, true) :
-                                await (CredentialManagerFactory.manager as any).loadCertificate(acct, true);
+                                await (CredentialManagerFactory.manager as any).loadCertificateKey(acct, !isLastAttempt) :
+                                await (CredentialManagerFactory.manager as any).loadCertificate(acct, !isLastAttempt);
                             if (certBuf) {
                                 // Write to temp file (secure mode) and store path in cache so rest client can read it as file path
                                 const tmpDir = os.tmpdir();
                                 const suffix = sessCredName === AuthOrder.SESS_CERT_NAME ? "-cert.pem" : "-key.pem";
-                                const tmpPath = path.join(tmpDir, `zowe-${Date.now()}${Math.random().toString(36).substring(2,8)}${suffix}`);
+                                const randomSuffix = Math.random().toString(36).substring(2, 8);
+                                const tmpPath = path.join(tmpDir, `zowe-${Date.now()}${randomSuffix}${suffix}`);
                                 // write with secure permissions 0o600
                                 fs.writeFileSync(tmpPath, certBuf, { mode: 0o600 });
                                 sessCfg._authCache.availableCreds[sessCredName] = tmpPath;
@@ -928,12 +933,16 @@ export class AuthOrder {
                                 const authCacheAny: any = sessCfg._authCache;
                                 if (!authCacheAny._tempFiles) authCacheAny._tempFiles = [];
                                 authCacheAny._tempFiles.push(tmpPath);
+                                foundCred = true;
                                 break;
                             }
                         } catch (err) {
-                            // ignore and try next candidate
+                            lastError = err as Error;
+                            // continue to try next candidate
                         }
                     }
+
+                    // Error logging is handled in the Rust layer with deduplication
                 }
             } catch (_err) {
                 // ignore
@@ -993,27 +1002,36 @@ export class AuthOrder {
                             acctCandidates.push((sessCfg as any).account);
                         }
 
-                        for (const acct of acctCandidates) {
+                        let lastError: Error | undefined;
+                        let foundCred = false;
+                        for (let i = 0; i < acctCandidates.length; i++) {
+                            const acct = acctCandidates[i];
+                            const isLastAttempt = i === acctCandidates.length - 1;
                             try {
                                 const isKey = sessCredName === AuthOrder.SESS_CERT_KEY_NAME;
                                 const certBuf: Buffer | null = isKey ?
-                                    managerAny.loadCertificateKeySync(acct, true) :
-                                    managerAny.loadCertificateSync(acct, true);
+                                    managerAny.loadCertificateKeySync(acct, !isLastAttempt) :
+                                    managerAny.loadCertificateSync(acct, !isLastAttempt);
                                 if (certBuf) {
                                     const tmpDir = os.tmpdir();
                                     const suffix = sessCredName === AuthOrder.SESS_CERT_NAME ? "-cert.pem" : "-key.pem";
-                                    const tmpPath = path.join(tmpDir, `zowe-${Date.now()}${Math.random().toString(36).substring(2,8)}${suffix}`);
+                                    const randomSuffix = Math.random().toString(36).substring(2, 8);
+                                    const tmpPath = path.join(tmpDir, `zowe-${Date.now()}${randomSuffix}${suffix}`);
                                     fs.writeFileSync(tmpPath, certBuf, { mode: 0o600 });
                                     sessCfg._authCache.availableCreds[sessCredName] = tmpPath;
                                     const authCacheAny: any = sessCfg._authCache;
                                     if (!authCacheAny._tempFiles) authCacheAny._tempFiles = [];
                                     authCacheAny._tempFiles.push(tmpPath);
+                                    foundCred = true;
                                     break;
                                 }
-                            } catch (_err) {
-                                // ignore and try next candidate
+                            } catch (err) {
+                                lastError = err as Error;
+                                // continue to try next candidate
                             }
                         }
+
+                        // Error logging is handled in the Rust layer with deduplication
                     }
                 }
             } catch (_err) {

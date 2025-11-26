@@ -459,8 +459,9 @@ export class DefaultCredentialManager extends AbstractCredentialManager {
         for (const nextService of this.allServices) {
             try {
                 // keyring.getCertificateKey returns Promise<Buffer | null>
+                // Pass optional parameter through to control error messaging
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-                const candidate: Buffer | null = await (this.keytar as any).getCertificateKey(nextService, account);
+                const candidate: Buffer | null = await (this.keytar as any).getCertificateKey(nextService, account, optional);
                 if (candidate != null) {
                     key = candidate;
                     break;
@@ -496,8 +497,9 @@ export class DefaultCredentialManager extends AbstractCredentialManager {
             try {
                 // prefer synchronous binding when available so callers remain synchronous
                 if ((this.keytar as any).getCertificateKeySync) {
+                    // Pass optional parameter through to control error messaging
                     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-                    const candidate: Buffer | null = (this.keytar as any).getCertificateKeySync(nextService, account);
+                    const candidate: Buffer | null = (this.keytar as any).getCertificateKeySync(nextService, account, optional);
                     if (candidate != null) {
                         key = candidate;
                         break;

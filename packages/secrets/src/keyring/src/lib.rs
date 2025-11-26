@@ -29,16 +29,16 @@ fn get_password(service: String, account: String) -> AsyncTask<GetPassword> {
 }
 
 #[napi(ts_return_type = "Promise<Buffer | null>")]
-fn get_certificate(service: String, account: String) -> AsyncTask<GetCertificate> {
-    AsyncTask::new(GetCertificate { service, account })
+fn get_certificate(service: String, account: String, optional: Option<bool>) -> AsyncTask<GetCertificate> {
+    AsyncTask::new(GetCertificate { service, account, optional: optional.unwrap_or(false) })
 }
 
 // Synchronous wrapper for consumers that need a blocking call.
 // Returns Buffer | null synchronously.
 #[napi(ts_return_type = "Buffer | null")]
-fn get_certificate_sync(env: Env, service: String, account: String) -> napi::Result<JsUnknown> {
+fn get_certificate_sync(env: Env, service: String, account: String, optional: Option<bool>) -> napi::Result<JsUnknown> {
     // call into secrets_core OS layer directly
-    match secrets_core::os::get_certificate(&service, &account) {
+    match secrets_core::os::get_certificate(&service, &account, optional.unwrap_or(false)) {
         Ok(Some(bytes)) => {
             // create a buffer from Vec<u8>
             let buf = env.create_buffer_with_data(bytes)?.into_unknown();
@@ -50,14 +50,14 @@ fn get_certificate_sync(env: Env, service: String, account: String) -> napi::Res
 }
 
 #[napi(ts_return_type = "Promise<Buffer | null>")]
-fn get_certificate_key(service: String, account: String) -> AsyncTask<GetCertificateKey> {
-    AsyncTask::new(GetCertificateKey { service, account })
+fn get_certificate_key(service: String, account: String, optional: Option<bool>) -> AsyncTask<GetCertificateKey> {
+    AsyncTask::new(GetCertificateKey { service, account, optional: optional.unwrap_or(false) })
 }
 
 #[napi(ts_return_type = "Buffer | null")]
-fn get_certificate_key_sync(env: Env, service: String, account: String) -> napi::Result<JsUnknown> {
+fn get_certificate_key_sync(env: Env, service: String, account: String, optional: Option<bool>) -> napi::Result<JsUnknown> {
     // call into secrets_core OS layer directly
-    match secrets_core::os::get_certificate_key(&service, &account) {
+    match secrets_core::os::get_certificate_key(&service, &account, optional.unwrap_or(false)) {
         Ok(Some(bytes)) => {
             // create a buffer from Vec<u8>
             let buf = env.create_buffer_with_data(bytes)?.into_unknown();
