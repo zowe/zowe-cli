@@ -377,8 +377,8 @@ export class ConnectionPropsForSessCfg {
     // Use async variant if cert/certKey accounts are thenable (promise-like) values,
     // otherwise use sync variant to preserve backward compatibility with synchronous callers
     const hasThenableCertAccounts =
-        ((sessCfg as any).certAccount && typeof (sessCfg as any).certAccount.then === "function") ||
-        ((sessCfg as any).certKeyAccount && typeof (sessCfg as any).certKeyAccount.then === "function");
+        (sessCfg as any).certAccount && typeof (sessCfg as any).certAccount.then === "function" ||
+        (sessCfg as any).certKeyAccount && typeof (sessCfg as any).certKeyAccount.then === "function";
 
     if (hasThenableCertAccounts) {
         await AuthOrder.addCredsToSessionAsync(sessCfg, cmdArgs);
