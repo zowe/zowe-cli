@@ -31,6 +31,9 @@ describe("AuthOrder certAccount handling", () => {
         const fakeManager = {
             async loadCertificate(acct: string, optional?: boolean) {
                 if (acct === "my-cert-account") return Buffer.from("CERT-BYTES");
+                return null;
+            },
+            async loadCertificateKey(acct: string, optional?: boolean) {
                 if (acct === "my-key-account") return Buffer.from("KEY-BYTES");
                 return null;
             }
@@ -71,6 +74,9 @@ describe("AuthOrder certAccount handling", () => {
         const fakeManager = {
             async loadCertificate(acct: string, optional?: boolean) {
                 if (acct === "my-cert-account") return Buffer.from("CERT-BYTES");
+                return null;
+            },
+            async loadCertificateKey(acct: string, optional?: boolean) {
                 if (acct === "my-key-account") return Buffer.from("KEY-BYTES");
                 return null;
             }
@@ -111,6 +117,9 @@ describe("AuthOrder certAccount handling", () => {
         const fakeManager = {
             loadCertificateSync(acct: string, optional?: boolean) {
                 if (acct === "sync-cert-account") return Buffer.from("CERT-BYTES");
+                return null;
+            },
+            loadCertificateKeySync(acct: string, optional?: boolean) {
                 if (acct === "sync-key-account") return Buffer.from("KEY-BYTES");
                 return null;
             }
@@ -150,6 +159,9 @@ describe("AuthOrder certAccount handling", () => {
         const fakeManager = {
             async loadCertificate(acct: string, optional?: boolean) {
                 if (acct === "p") return Buffer.from("PROFILE-CERT");
+                return null;
+            },
+            async loadCertificateKey(acct: string, optional?: boolean) {
                 if (acct === "a") return Buffer.from("ACCOUNT-KEY");
                 return null;
             }

@@ -32,6 +32,9 @@ describe("ConnectionPropsForSessCfg certAccount integration", () => {
         const fakeManager = {
             async loadCertificate(acct: string, optional?: boolean) {
                 if (acct === "my-cert-account") return Buffer.from("CERT-BYTES");
+                return null;
+            },
+            async loadCertificateKey(acct: string, optional?: boolean) {
                 if (acct === "my-key-account") return Buffer.from("KEY-BYTES");
                 return null;
             }

@@ -848,25 +848,34 @@ export class AuthOrder {
                     const credMgrOptions = (CredentialManagerFactory.manager as any).options;
                     const shouldPrompt = credMgrOptions?.promptForCertAccess === true;
 
+                    // Resolve any promise-like (thenable) values for certAccount and certKeyAccount
+                    let certAccountVal = (sessCfg as any).certAccount;
+                    let certKeyAccountVal = (sessCfg as any).certKeyAccount;
+                    if (certAccountVal && typeof certAccountVal.then === "function") {
+                        certAccountVal = await certAccountVal;
+                    }
+                    if (certKeyAccountVal && typeof certKeyAccountVal.then === "function") {
+                        certKeyAccountVal = await certKeyAccountVal;
+                    }
+
                     // Build candidate account names, preferring explicit overrides on the session.
-                    // Only use string account names (NOT thenables which may hang).
                     const acctCandidates: string[] = [];
 
                     if (sessCredName === AuthOrder.SESS_CERT_NAME) {
-                        // prefer explicit certAccount override on the session (only if it's a string)
-                        if (typeof (sessCfg as any).certAccount === "string" && (sessCfg as any).certAccount) {
-                            acctCandidates.push((sessCfg as any).certAccount);
+                        // prefer explicit certAccount override on the session
+                        if (typeof certAccountVal === "string" && certAccountVal) {
+                            acctCandidates.push(certAccountVal);
                         }
                     } else {
-                        // prefer explicit certKeyAccount override on the session (only if it's a string)
-                        if (typeof (sessCfg as any).certKeyAccount === "string" && (sessCfg as any).certKeyAccount) {
-                            acctCandidates.push((sessCfg as any).certKeyAccount);
+                        // prefer explicit certKeyAccount override on the session
+                        if (typeof certKeyAccountVal === "string" && certKeyAccountVal) {
+                            acctCandidates.push(certKeyAccountVal);
                         }
                         // For private keys, also try certAccount as fallback since macOS identities
                         // store both certificate and private key under the same account name.
-                        if (typeof (sessCfg as any).certAccount === "string" && (sessCfg as any).certAccount) {
-                            if (!acctCandidates.includes((sessCfg as any).certAccount)) {
-                                acctCandidates.push((sessCfg as any).certAccount);
+                        if (typeof certAccountVal === "string" && certAccountVal) {
+                            if (!acctCandidates.includes(certAccountVal)) {
+                                acctCandidates.push(certAccountVal);
                             }
                         }
                     }

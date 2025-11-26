@@ -374,7 +374,17 @@ export class ConnectionPropsForSessCfg {
         }
 
     // record all of the currently available credential information into the session
-    AuthOrder.addCredsToSession(sessCfg, cmdArgs);
+    // Use async variant if cert/certKey accounts are thenable (promise-like) values,
+    // otherwise use sync variant to preserve backward compatibility with synchronous callers
+    const hasThenableCertAccounts =
+        ((sessCfg as any).certAccount && typeof (sessCfg as any).certAccount.then === "function") ||
+        ((sessCfg as any).certKeyAccount && typeof (sessCfg as any).certKeyAccount.then === "function");
+
+    if (hasThenableCertAccounts) {
+        await AuthOrder.addCredsToSessionAsync(sessCfg, cmdArgs);
+    } else {
+        AuthOrder.addCredsToSession(sessCfg, cmdArgs);
+    }
 
         // When our caller only supports limited authTypes, limit the authTypes in the session
         if (connOpts.supportedAuthTypes) {
