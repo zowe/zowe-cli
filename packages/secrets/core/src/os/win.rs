@@ -358,7 +358,7 @@ pub fn find_credentials(
 }
 
 /// Returns the certificate (decoded from base64) stored as the password for the given service/account.
-pub fn get_certificate(service: &String, account: &String) -> Result<Option<Vec<u8>>, KeyringError> {
+pub fn get_certificate(service: &String, account: &String, _optional: bool) -> Result<Option<Vec<u8>>, KeyringError> {
     // First try credential manager for base64 encoded certificates
     match get_password(service, account)? {
         Some(b64) => match base64::engine::general_purpose::STANDARD.decode(&b64) {
@@ -377,7 +377,7 @@ pub fn get_certificate(service: &String, account: &String) -> Result<Option<Vec<
 /// This function first looks for a credential with the exact service/account, then tries 
 /// variations like service/account-key or service-key/account for compatibility.
 /// If not found in Credential Manager, it searches the Windows Certificate Store.
-pub fn get_certificate_key(service: &String, account: &String) -> Result<Option<Vec<u8>>, KeyringError> {
+pub fn get_certificate_key(service: &String, account: &String, _optional: bool) -> Result<Option<Vec<u8>>, KeyringError> {
     // Try different credential naming patterns for private keys in Credential Manager first
     let key_variations = vec![
         (service.clone(), account.clone()),                           // exact match

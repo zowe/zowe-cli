@@ -230,7 +230,7 @@ pub fn find_credentials(
 /// - `Some(Vec<u8>)` with certificate bytes if found; `None` otherwise
 /// - A `KeyringError` if there were any issues interacting with the credential vault or decoding
 ///
-pub fn get_certificate(service: &String, account: &String) -> Result<Option<Vec<u8>>, KeyringError> {
+pub fn get_certificate(service: &String, account: &String, _optional: bool) -> Result<Option<Vec<u8>>, KeyringError> {
     match get_password(service, account)? {
         Some(b64) => match base64::decode(&b64) {
             Ok(bytes) => Ok(Some(bytes)),
@@ -251,7 +251,7 @@ pub fn get_certificate(service: &String, account: &String) -> Result<Option<Vec<
 /// Returns:
 /// - A `KeyringError` indicating that this feature is not supported on Linux/Unix
 ///
-pub fn get_certificate_key(_service: &String, _account: &String) -> Result<Option<Vec<u8>>, KeyringError> {
+pub fn get_certificate_key(_service: &String, _account: &String, _optional: bool) -> Result<Option<Vec<u8>>, KeyringError> {
     Err(KeyringError::Os(
         "Certificate private key retrieval is not yet supported on Linux/Unix systems. \
         Please use file-based private keys (certKeyFile) instead of keyring-based keys (certKeyAccount).".to_owned()
