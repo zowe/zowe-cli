@@ -1,9 +1,13 @@
 # Change Log
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## `8.29.5`
+
+- BugFix: Updated `glob` dependency to resolve technical currency. [#2644](https://github.com/zowe/zowe-cli/pull/2644)
+
 ## `8.29.4`
 
-- BugFix: Updated `js-yaml` dependency to resolve technical currency. []()
+- BugFix: Updated `js-yaml` dependency to resolve technical currency. [#2640](https://github.com/zowe/zowe-cli/pull/2640)
 
 ## `8.29.1`
 
