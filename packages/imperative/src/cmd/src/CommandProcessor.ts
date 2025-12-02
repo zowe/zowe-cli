@@ -768,7 +768,10 @@ export class CommandProcessor {
         };
 
         const sessCfg: ISession = {} as any;
-        await ConnectionPropsForSessCfg.resolveSessCfgProps(sessCfg, commandParameters.arguments);
+        const resolveResult = ConnectionPropsForSessCfg.resolveSessCfgProps(sessCfg, commandParameters.arguments);
+        if (resolveResult) {
+            await resolveResult;
+        }
         showInputsOnly.authenticationType = sessCfg.type;
         showInputsOnly.authTypeOrder = sessCfg.authTypeOrder.toString();
 

@@ -108,9 +108,13 @@ export class ConnectionPropsForSessCfg {
         const connOptsToUse = { ...connOpts };
 
         // resolve all values between sessCfg and cmdArgs using option choices
-        await ConnectionPropsForSessCfg.resolveSessCfgProps(
+        const resolveResult = ConnectionPropsForSessCfg.resolveSessCfgProps(
             sessCfgToUse, cmdArgs, connOptsToUse
         );
+        // If the result is a promise, await it
+        if (resolveResult) {
+            await resolveResult;
+        }
 
         // This function will provide all the needed properties in one array
         let promptForValues: (keyof SessCfgType & string)[] = [];
@@ -279,11 +283,11 @@ export class ConnectionPropsForSessCfg {
      *      ConnectionPropsForSessCfg.resolveSessCfgProps(sessCfg, cmdArgs);
      *      sessionToUse = new Session(sessCfg);
      */
-    public static async resolveSessCfgProps<SessCfgType extends ISession>(
+    public static resolveSessCfgProps<SessCfgType extends ISession>(
         sessCfg: SessCfgType,
         cmdArgs: ICommandArguments = { $0: "", _: [] },
         connOpts: IOptionsForAddConnProps <SessCfgType> = {}
-    ) {
+    ): void | Promise<void> {
         // use defaults if caller has not specified these properties.
         if (!Object.prototype.hasOwnProperty.call(connOpts, "requestToken")) {
             connOpts.requestToken = false;
@@ -373,31 +377,49 @@ export class ConnectionPropsForSessCfg {
             // ignore
         }
 
-    // record all of the currently available credential information into the session
-    // Use async variant if cert/certKey accounts are thenable (promise-like) values,
-    // otherwise use sync variant to preserve backward compatibility with synchronous callers
-    const hasThenableCertAccounts =
-        (sessCfg as any).certAccount && typeof (sessCfg as any).certAccount.then === "function" ||
-        (sessCfg as any).certKeyAccount && typeof (sessCfg as any).certKeyAccount.then === "function";
+        // record all of the currently available credential information into the session
+        // Use async variant if cert/certKey accounts are thenable (promise-like) values,
+        // otherwise use sync variant to preserve backward compatibility with synchronous callers
+        const hasThenableCertAccounts =
+            (sessCfg as any).certAccount && typeof (sessCfg as any).certAccount.then === "function" ||
+            (sessCfg as any).certKeyAccount && typeof (sessCfg as any).certKeyAccount.then === "function";
 
-    if (hasThenableCertAccounts) {
-        await AuthOrder.addCredsToSessionAsync(sessCfg, cmdArgs);
-    } else {
-        AuthOrder.addCredsToSession(sessCfg, cmdArgs);
-    }
+        if (hasThenableCertAccounts) {
+            // Return a promise for async credential resolution
+            return (async () => {
+                await AuthOrder.addCredsToSessionAsync(sessCfg, cmdArgs);
 
-        // When our caller only supports limited authTypes, limit the authTypes in the session
-        if (connOpts.supportedAuthTypes) {
-            Logger.getImperativeLogger().warn(`Overriding existing authOrder = ${sessCfg.authTypeOrder} ` +
-                `because a service only supports these limited authTypes = ${connOpts.supportedAuthTypes}`
-            );
-            sessCfg.authTypeOrder = Array.from(connOpts.supportedAuthTypes);
+                // When our caller only supports limited authTypes, limit the authTypes in the session
+                if (connOpts.supportedAuthTypes) {
+                    Logger.getImperativeLogger().warn(`Overriding existing authOrder = ${sessCfg.authTypeOrder} ` +
+                        `because a service only supports these limited authTypes = ${connOpts.supportedAuthTypes}`
+                    );
+                    sessCfg.authTypeOrder = Array.from(connOpts.supportedAuthTypes);
 
-            // ensure that our newly set authOrder will not be overridden in the future
-            sessCfg._authCache.didUserSetAuthOrder = true;
+                    // ensure that our newly set authOrder will not be overridden in the future
+                    sessCfg._authCache.didUserSetAuthOrder = true;
 
-            // now that we changed the criteria, ensure that the top creds are recorded in the session
-            AuthOrder.putTopAuthInSession(sessCfg);
+                    // now that we changed the criteria, ensure that the top creds are recorded in the session
+                    AuthOrder.putTopAuthInSession(sessCfg);
+                }
+            })();
+        } else {
+            // Synchronous path - no promise returned
+            AuthOrder.addCredsToSession(sessCfg, cmdArgs);
+
+            // When our caller only supports limited authTypes, limit the authTypes in the session
+            if (connOpts.supportedAuthTypes) {
+                Logger.getImperativeLogger().warn(`Overriding existing authOrder = ${sessCfg.authTypeOrder} ` +
+                    `because a service only supports these limited authTypes = ${connOpts.supportedAuthTypes}`
+                );
+                sessCfg.authTypeOrder = Array.from(connOpts.supportedAuthTypes);
+
+                // ensure that our newly set authOrder will not be overridden in the future
+                sessCfg._authCache.didUserSetAuthOrder = true;
+
+                // now that we changed the criteria, ensure that the top creds are recorded in the session
+                AuthOrder.putTopAuthInSession(sessCfg);
+            }
         }
     }
 
