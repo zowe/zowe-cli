@@ -29,7 +29,7 @@ import { IScrtData } from "./doc/IScrtData";
  */
 export class ScrtCache {
 
-    private static scrtData: IScrtData = null;
+    private static scrtDataMap: Map<string, IScrtData> = new Map();
 
     /**
      * Get the cached SCRT data.
@@ -37,18 +37,19 @@ export class ScrtCache {
      * @returns {IScrtData} The SCRT data
      *      If no SCRT data has been set, null is returned.
      */
-    public static get(): IScrtData {
-        return ScrtCache.scrtData;
+    public static get(key: string): IScrtData {
+        return ScrtCache.scrtDataMap.get(key);
     }
 
     /**
      * Set the SCRT data in the cache.
      *
+     * @param {string} key - The connection key (e.g., "https://host:port")
      * @param {IScrtData} scrtData - The data items required for SCRT reporting
      */
-    public static set(scrtData: IScrtData): void {
+    public static set(key: string, scrtData: IScrtData): void {
         // This is only a shallow copy. Change if a deep copy is needed.
-        ScrtCache.scrtData = { ... scrtData };
+        ScrtCache.scrtDataMap.set(key, {...scrtData});
     }
 
     /**
@@ -58,10 +59,20 @@ export class ScrtCache {
      *      A string containing a properly formatted X-Zowe-Client-Usage header.
      *      If no SCRT data has been set, null is returned.
      */
-    public static formHeader(): string {
-        if (ScrtCache.scrtData === null) {
+    public static formHeader(key: string): string | null {
+        if (!ScrtCache.scrtDataMap || ScrtCache.scrtDataMap.size === 0) {
             return null;
         }
-        return "a valid X-Zowe-Client-Usage header"
+        const res = Array.from(ScrtCache.scrtDataMap.keys());
+
+        const scrtData = ScrtCache.scrtDataMap.get(key);
+        if(!scrtData) {
+            return null;
+        }
+        const header = Object.entries(scrtData)
+            .map(([k, v]) => `${k}=${v}`)
+            .join(";");
+
+        return header;
     }
 }

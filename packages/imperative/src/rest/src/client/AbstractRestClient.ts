@@ -36,6 +36,8 @@ import * as SessConstants from "../session/SessConstants";
 import { CompressionUtils } from "./CompressionUtils";
 import { ProxySettings } from "./ProxySettings";
 import { EnvironmentalVariableSettings } from "../../../imperative/src/env/EnvironmentalVariableSettings";
+import { ScrtCache } from "../../../utilities/src/ScrtCache";
+import { option } from "yargs";
 
 export type RestClientResolve = (data: string) => void;
 
@@ -1024,6 +1026,21 @@ export abstract class AbstractRestClient {
                     options.headers[property] = reqHeader[property];
                 });
             });
+        }
+
+        try {
+            const protocol = "https";
+            const host = options.hostname;
+            const port = options.port;
+            const key = protocol + "://" + host + ":" + port;
+
+            const scrtHeader = ScrtCache.formHeader(key);
+            if(scrtHeader) {
+                options.headers["Zowe-SCRT-client-feature"] = scrtHeader;
+            }
+        }
+        catch (err) {
+            return err;
         }
         return options;
     }

@@ -13,6 +13,7 @@ import { ImperativeConfig } from "../../utilities";
 import { IImperativeConfig } from "./doc/IImperativeConfig";
 import { ICommandDefinition, ICommandProfileTypeConfiguration } from "../../cmd";
 import { Logger } from "../../logger";
+import { ScrtCache } from "../../utilities/src/ScrtCache";
 
 /**
  * This class is used to update the imperative config object, that was initially
@@ -48,6 +49,7 @@ export class UpdateImpConfig {
      */
     public static addProfiles(profiles: ICommandProfileTypeConfiguration[]): void {
         const impConfig: IImperativeConfig = ImperativeConfig.instance.loadedConfig;
+        //imperativeconfig.instance.config --> find host, port needed to build URL to pass as key for ScrtCache map
         const impLogger: Logger = Logger.getImperativeLogger();
         if (impConfig) {
             if (!impConfig.profiles) {
@@ -67,6 +69,17 @@ export class UpdateImpConfig {
                     continue;
                 }
                 impLogger.debug("addProfilesToLoadedConfig: Adding " + profileToAdd.type + " profile");
+                if (profileToAdd.scrtUsageData) {
+                    const config = ImperativeConfig.instance.config.api.profiles.defaultGet(profileToAdd.type);
+                    if(config) {
+                        const protocol = config.protocol || "https";
+                        const host = config.host;
+                        const port = config.port;
+                        const url = protocol + "://" + host + ":" + port;
+
+                        ScrtCache.set(url, profileToAdd.scrtUsageData);
+                    }
+                }
                 impConfig.profiles.push(profileToAdd);
             } // end for
         } // end if loadedConfig not null
