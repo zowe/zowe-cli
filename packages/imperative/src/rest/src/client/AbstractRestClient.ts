@@ -36,6 +36,7 @@ import * as SessConstants from "../session/SessConstants";
 import { CompressionUtils } from "./CompressionUtils";
 import { ProxySettings } from "./ProxySettings";
 import { EnvironmentalVariableSettings } from "../../../imperative/src/env/EnvironmentalVariableSettings";
+import { ScrtCache } from "../../../utilities/src/ScrtCache";
 import { Censor } from "../../../censor";
 import { option } from "yargs";
 
