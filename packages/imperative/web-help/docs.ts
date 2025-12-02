@@ -9,22 +9,8 @@
 *
 */
 
-declare const ClipboardJS: any;
-
-// Array.from polyfill for IE11 support
-function arrayFrom(items: any): any[] {
-    if (typeof Array.from === "function") {
-        return Array.from(items);
-    }
-    const tempArray = [];
-    for (let i = 0; i < items.length; i++) {
-        tempArray.push(items[i]);
-    }
-    return tempArray;
-}
-
 const isInIframe: boolean = window.location !== window.parent.location;
-const links: any = arrayFrom(document.getElementsByTagName("a"));
+const links: any = Array.from(document.getElementsByTagName("a"));
 const sameOrigin: string = window.location.protocol !== "file:" ? window.location.origin : "*";
 
 // Process all <a> tags on page
@@ -68,16 +54,27 @@ function setTooltip(btn: any, message: string) {
 }
 
 // Enable clipboard access for copy buttons
-const clipboard = new ClipboardJS(".btn-copy");
-clipboard.on("success", (e: any) => setTooltip(e.trigger, "Copied!"));
-clipboard.on("error", (e: any) => setTooltip(e.trigger, "Failed!"));
+const copyButtons = Array.from(document.getElementsByClassName("btn-copy"));
+copyButtons.forEach((btn: any) => {
+    btn.addEventListener("click", async () => {
+        let success = false;
+        try {
+            const textToCopy = btn.getAttribute("data-clipboard-text");
+            if (textToCopy) {
+                await navigator.clipboard.writeText(textToCopy);
+                success = true;
+            }
+        } catch {}
+        setTooltip(btn, success ? "Copied!" : "Failed!");
+    });
+});
 
 /**
  * Find the currently scrolled to command anchor in iframe
  * @returns Element with <a> tag
  */
 function findCurrentCmdAnchor() {
-    const anchors = arrayFrom(document.getElementsByClassName("cmd-anchor"));
+    const anchors = Array.from(document.getElementsByClassName("cmd-anchor"));
     let lastAnchor: any;
     for (const anchor of anchors) {
         const headerBounds = (anchor.nextElementSibling as any).getBoundingClientRect();
