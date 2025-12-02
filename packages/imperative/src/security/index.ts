@@ -16,4 +16,5 @@ export * from "./src/abstract/AbstractCredentialManager";
 export * from "./src/doc/ICredentialManagerConstructor";
 export * from "./src/doc/ICredentialManagerInit";
 export * from "./src/doc/ICredentialManagerNameMap";
+export * from "./src/doc/ICredentialManagerOptions";
 export * from "./src/errors/BadCredentialManagerError";

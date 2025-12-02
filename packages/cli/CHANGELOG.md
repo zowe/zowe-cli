@@ -1,6 +1,30 @@
 # Change Log
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## `8.29.5`
+
+- BugFix: Updated `glob` dependency to resolve technical currency. [#2644](https://github.com/zowe/zowe-cli/pull/2644)
+
+## `8.29.4`
+
+- BugFix: Updated `js-yaml` dependency to resolve technical currency. [#2640](https://github.com/zowe/zowe-cli/pull/2640)
+
+## `8.29.1`
+
+- BugFix: Added support for `--overwrite` option to all Download methods. The default behavior is no longer to always overwrite existing files. [#2620](https://github.com/zowe/zowe-cli/pull/2620)
+
+## `8.29.0`
+
+- Enhancement: Added support for providing options to both default and custom credential managers. [#2601](https://github.com/zowe/zowe-cli/issues/2601) 
+
+## `8.27.4`
+
+- BugFix: Updated minimum supported version of Node from 18 to 20. Added Node 24 support. [#2616](https://github.com/zowe/zowe-cli/pull/2616)
+
+## `8.27.0`
+
+- BugFix: Updated the daemon binary to use maintained dependencies. [#2600](https://github.com/zowe/zowe-cli/pull/2600)
+
 ## `8.26.0`
 
 - Enhancement: Replaced logic in `ApimlAuthHandler.processLogin` with a call to a new common function `AuthOrder.putNewAuthsFirstOnDisk`. There are no changes to the external API and no changes to the functionality. [#2568](https://github.com/zowe/zowe-cli/pull/2568)

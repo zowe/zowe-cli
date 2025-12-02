@@ -14,6 +14,7 @@ import { Logger } from "../../../logger";
 import { ImperativeError } from "../../../error";
 import { ImperativeExpect } from "../../../expect";
 import * as SessConstants from "./SessConstants";
+import { AuthOrder } from "./AuthOrder";
 
 /**
  * The API session object, serves as the base for sessions and contains the fields that are required by
@@ -185,8 +186,16 @@ export abstract class AbstractSession {
                     // parse off token value, splitting element at first "=".
                     const split = element.indexOf("=");
                     if (split >= 0) {
-                        this.ISession.tokenType  = element.substring(0, split);
-                        this.ISession.tokenValue = element.substring(split + 1);
+                        const tokenType = element.substring(0, split);
+                        const tokenValue = element.substring(split + 1);
+                        AuthOrder.addCredsToSession(this.ISession, {
+                            "$0": "NameNotUsed", "_": [],
+                            "authOrder": "token",
+                            tokenType,
+                            tokenValue,
+                        });
+                        this.ISession.tokenType = tokenType;
+                        this.ISession.tokenValue = tokenValue;
                     }
                 }
             });

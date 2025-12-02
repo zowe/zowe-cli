@@ -10,7 +10,7 @@
 */
 
 import * as fs from "fs";
-import * as path from "path";
+import { posix, join, basename } from "path";
 import { ImperativeError, IO, Session } from "@zowe/imperative";
 import { IDownloadOptions, TransferMode, Utilities, ZosFilesAttributes, ZosFilesMessages } from "../../../../src";
 import { ZosmfHeaders, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
@@ -21,6 +21,7 @@ import { IUSSListOptions, List } from "../../../../src/methods/list";
 import { CLIENT_PROPERTY } from "../../../../src/doc/types/ZosmfRestClientProperties";
 import { IDownloadDsmResult } from "../../../../src/methods/download/doc/IDownloadDsmResult";
 import { PassThrough } from "stream";
+import { IDownloadAmResponse } from "../../../../src/methods/download/doc/IDownloadAmResult";
 
 describe("z/OS Files - Download", () => {
     const dsname = "USER.DATA.SET";
@@ -46,6 +47,7 @@ describe("z/OS Files - Download", () => {
         const ioCreateDirSpy = jest.spyOn(IO, "createDirsSyncFromFilePath");
         const ioWriteFileSpy = jest.spyOn(IO, "writeFile");
         const ioWriteStreamSpy = jest.spyOn(IO, "createWriteStream");
+        const existsSyncSpy = jest.spyOn(IO, "existsSync");
         const fakeWriteStream: any = { fakeWriteStream: true };
         const zosmfGetFullSpy = jest.spyOn(ZosmfRestClient, "getExpectFullResponse");
         const fakeResponseWithEtag = {
@@ -65,6 +67,9 @@ describe("z/OS Files - Download", () => {
 
             ioWriteFileSpy.mockClear();
             ioWriteFileSpy.mockImplementation(() => null);
+
+            existsSyncSpy.mockClear();
+            existsSyncSpy.mockImplementation(() => false);
 
             ioWriteStreamSpy.mockClear();
             ioWriteStreamSpy.mockImplementation(() => fakeWriteStream);
@@ -123,7 +128,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, `-(${volume})`, dsname);
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, `-(${volume})`, dsname);
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -159,7 +164,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, `-(${volume})`, dsname);
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, `-(${volume})`, dsname);
             IO.processNewlines(dsContent.toString());
 
             expect(caughtError).toBeUndefined();
@@ -194,7 +199,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -230,7 +235,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -268,7 +273,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -305,7 +310,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -341,7 +346,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -377,7 +382,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -411,7 +416,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -448,7 +453,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -485,7 +490,7 @@ describe("z/OS Files - Download", () => {
             } catch (e) {
                 caughtError = e;
             }
-            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, `-(${volume})`, dsname);
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, `-(${volume})`, dsname);
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -527,7 +532,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
 
             expect(response).toBeUndefined();
             expect(caughtError).toEqual(dummyError);
@@ -552,7 +557,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -583,7 +588,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname + "?test=true");
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname + "?test=true");
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -603,17 +608,264 @@ describe("z/OS Files - Download", () => {
             expect(ioCreateDirSpy).toHaveBeenCalledWith(destination);
             expect(ioWriteStreamSpy).toHaveBeenCalledTimes(1);
         });
+
+        it("should skip downloading data set when it already exists and overwrite is false", async () => {
+            let response;
+            let caughtError;
+            const destination = dsFolder + ".txt";
+
+            existsSyncSpy.mockReturnValue(true);
+
+            try {
+                response = await Download.dataSet(dummySession, dsname, { overwrite: false });
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: util.format(ZosFilesMessages.datasetDownloadSkipped.message, destination),
+                apiResponse: {}
+            });
+
+            expect(existsSyncSpy).toHaveBeenCalledTimes(1);
+            expect(existsSyncSpy).toHaveBeenCalledWith(destination);
+
+            expect(zosmfGetFullSpy).not.toHaveBeenCalled();
+            expect(ioCreateDirSpy).not.toHaveBeenCalled();
+            expect(ioWriteStreamSpy).not.toHaveBeenCalled();
+        });
+
+        it("should download data set when it already exists and overwrite is true", async () => {
+            let response;
+            let caughtError;
+            const destination = dsFolder + ".txt";
+
+            existsSyncSpy.mockReturnValue(true);
+
+            try {
+                response = await Download.dataSet(dummySession, dsname, { overwrite: true });
+            } catch (e) {
+                caughtError = e;
+            }
+
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: util.format(ZosFilesMessages.datasetDownloadedWithDestination.message, destination),
+                apiResponse: {}
+            });
+
+            expect(existsSyncSpy).toHaveBeenCalledTimes(1);
+            expect(existsSyncSpy).toHaveBeenCalledWith(destination);
+
+            expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
+            expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {
+                resource: endpoint,
+                reqHeaders: [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.TEXT_PLAIN],
+                responseStream: fakeWriteStream,
+                normalizeResponseNewLines: true,
+                task: undefined
+            });
+
+            expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);
+            expect(ioCreateDirSpy).toHaveBeenCalledWith(destination);
+
+            expect(ioWriteStreamSpy).toHaveBeenCalledTimes(1);
+        });
+
+        it("should skip downloading data set with custom file path when it exists and overwrite is false", async () => {
+            let response;
+            let caughtError;
+            const customFile = "my/custom/path/dataset.txt";
+
+            existsSyncSpy.mockReturnValue(true);
+
+            try {
+                response = await Download.dataSet(dummySession, dsname, { file: customFile, overwrite: false });
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: util.format(ZosFilesMessages.datasetDownloadSkipped.message, customFile),
+                apiResponse: {}
+            });
+
+            expect(existsSyncSpy).toHaveBeenCalledTimes(1);
+            expect(existsSyncSpy).toHaveBeenCalledWith(customFile);
+
+            expect(zosmfGetFullSpy).not.toHaveBeenCalled();
+            expect(ioCreateDirSpy).not.toHaveBeenCalled();
+            expect(ioWriteStreamSpy).not.toHaveBeenCalled();
+        });
+
+        it("should not check file existence when downloading to a stream", async () => {
+            let response;
+            let caughtError;
+            const responseStream = new PassThrough();
+
+            existsSyncSpy.mockReturnValue(true);
+
+            try {
+                response = await Download.dataSet(dummySession, dsname, { stream: responseStream, overwrite: false });
+            } catch (e) {
+                caughtError = e;
+            }
+
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: ZosFilesMessages.datasetDownloadedSuccessfully.message,
+                apiResponse: {}
+            });
+
+            expect(existsSyncSpy).not.toHaveBeenCalled();
+
+            expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
+            expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {
+                resource: endpoint,
+                reqHeaders: [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.TEXT_PLAIN],
+                responseStream,
+                normalizeResponseNewLines: true,
+                task: undefined
+            });
+
+            expect(ioCreateDirSpy).not.toHaveBeenCalled();
+            expect(ioWriteStreamSpy).not.toHaveBeenCalled();
+        });
+
+        it("should download data set with custom extension when file exists and overwrite is true", async () => {
+            let response;
+            let caughtError;
+            const extension = ".xyz";
+            const destination = dsFolder + extension;
+
+            existsSyncSpy.mockReturnValue(true);
+
+            try {
+                response = await Download.dataSet(dummySession, dsname, { extension, overwrite: true });
+            } catch (e) {
+                caughtError = e;
+            }
+
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: util.format(ZosFilesMessages.datasetDownloadedWithDestination.message, destination),
+                apiResponse: {}
+            });
+
+            expect(existsSyncSpy).toHaveBeenCalledTimes(1);
+            expect(existsSyncSpy).toHaveBeenCalledWith(destination);
+
+            expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
+            expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {
+                resource: endpoint,
+                reqHeaders: [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.TEXT_PLAIN],
+                responseStream: fakeWriteStream,
+                normalizeResponseNewLines: true,
+                task: undefined
+            });
+
+            expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);
+            expect(ioCreateDirSpy).toHaveBeenCalledWith(destination);
+
+            expect(ioWriteStreamSpy).toHaveBeenCalledTimes(1);
+        });
+
+        it("should skip or not skip downloading data set with preserveOriginalLetterCase when file exists and overwrite is false", async () => {
+            let response;
+            let caughtError;
+            const destination = dsFolder.toUpperCase() + ".txt";
+
+            const existingPath = `${dsFolder}.txt`;
+
+            existsSyncSpy.mockImplementation((filePath) => {
+                const normalizedPath = filePath.toString();
+                if (process.platform === "win32") {
+                    return normalizedPath.toLowerCase() === existingPath;
+                }
+
+                // On Unix-like systems treat file paths as case-sensitive, so "USER" differs from "user"
+                return normalizedPath === existingPath;
+            });
+
+            try {
+                response = await Download.dataSet(dummySession, dsname, { preserveOriginalLetterCase: true, overwrite: false });
+            } catch (e) {
+                caughtError = e;
+            }
+
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
+
+            expect(caughtError).toBeUndefined();
+
+            // Windows is case-insensitive e.g. "user/data/set.txt" and "USER/DATA/SET.txt" is same
+            // On Unix, they are different, so the file will be downloaded seperately
+            if (process.platform === 'win32') {
+                expect(response).toEqual({
+                    success: true,
+                    commandResponse: util.format(ZosFilesMessages.datasetDownloadSkipped.message, destination),
+                    apiResponse: {}
+                });
+                expect(zosmfGetFullSpy).not.toHaveBeenCalled();
+            } else {
+                expect(response).toEqual({
+                    success: true,
+                    commandResponse: util.format(ZosFilesMessages.datasetDownloadedWithDestination.message, destination),
+                    apiResponse: {}
+                });
+                expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
+                expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {
+                    resource: endpoint,
+                    reqHeaders: [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.TEXT_PLAIN],
+                    responseStream: fakeWriteStream,
+                    normalizeResponseNewLines: true,
+                    task: undefined
+                });
+            }
+
+            expect(existsSyncSpy).toHaveBeenCalledTimes(1);
+            expect(existsSyncSpy).toHaveBeenCalledWith(destination);
+        });
     });
 
     describe("allMembers", () => {
         const listAllMembersSpy = jest.spyOn(List, "allMembers");
         const downloadDatasetSpy = jest.spyOn(Download, "dataSet");
+        const existsSyncSpy = jest.spyOn(IO, "existsSync");
 
         const listApiResponse = {
             items: [
                 {member: "M1"},
                 {member: "M2"}
             ]
+        };
+
+        const defaultResponse: IDownloadAmResponse = {
+            success: true,
+            commandResponse: util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, 2, dsFolder),
+            apiResponse: {
+                ...listApiResponse,
+                downloadResult: {
+                    downloaded: 2,
+                    skipped: 0,
+                    failed: 0,
+                    total: 2,
+                    skippedMembers: [],
+                    failedMembers: []
+                }
+            }
         };
 
         beforeEach(() => {
@@ -624,6 +876,9 @@ describe("z/OS Files - Download", () => {
 
             downloadDatasetSpy.mockClear();
             downloadDatasetSpy.mockResolvedValue(null as any);
+
+            existsSyncSpy.mockClear();
+            existsSyncSpy.mockReturnValue(false);
         });
 
         it("should throw and error if the data set name is not specified", async () => {
@@ -703,11 +958,7 @@ describe("z/OS Files - Download", () => {
             }
 
             expect(caughtError).toBeUndefined();
-            expect(response).toEqual({
-                success: true,
-                commandResponse: util.format(ZosFilesMessages.memberDownloadedWithDestination.message, dsFolder),
-                apiResponse: listApiResponse
-            });
+            expect(response).toEqual(defaultResponse);
 
             expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
             expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, dsname, {});
@@ -715,7 +966,7 @@ describe("z/OS Files - Download", () => {
             expect(downloadDatasetSpy).toHaveBeenCalledTimes(2);
             listApiResponse.items.forEach((mem) => {
                 expect(downloadDatasetSpy).toHaveBeenCalledWith(dummySession, `${dsname}(${mem.member})`, {
-                    file: path.posix.join(dsFolder, mem.member.toLowerCase() + ".txt")
+                    file: posix.join(dsFolder, mem.member.toLowerCase() + ".txt")
                 });
             });
         });
@@ -729,6 +980,8 @@ describe("z/OS Files - Download", () => {
             const extension = ".xyz";
             const binary = true;
 
+            defaultResponse.commandResponse = util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, 2, directory);
+
             try {
                 response = await Download.allMembers(dummySession, dsname, {volume, directory, extension, binary});
             } catch (e) {
@@ -736,11 +989,7 @@ describe("z/OS Files - Download", () => {
             }
 
             expect(caughtError).toBeUndefined();
-            expect(response).toEqual({
-                success: true,
-                commandResponse: util.format(ZosFilesMessages.memberDownloadedWithDestination.message, directory),
-                apiResponse: listApiResponse
-            });
+            expect(response).toEqual(defaultResponse);
 
             expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
             expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, dsname, {volume});
@@ -749,7 +998,7 @@ describe("z/OS Files - Download", () => {
             listApiResponse.items.forEach((mem) => {
                 expect(downloadDatasetSpy).toHaveBeenCalledWith(dummySession, `${dsname}(${mem.member})`, {
                     volume,
-                    file: path.posix.join(directory, mem.member.toLowerCase() + extension),
+                    file: posix.join(directory, mem.member.toLowerCase() + extension),
                     binary
                 });
             });
@@ -764,6 +1013,8 @@ describe("z/OS Files - Download", () => {
             const extension = ".xyz";
             const record = true;
 
+            defaultResponse.commandResponse = util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, 2, directory);
+
             try {
                 response = await Download.allMembers(dummySession, dsname, {volume, directory, extension, record});
             } catch (e) {
@@ -771,11 +1022,7 @@ describe("z/OS Files - Download", () => {
             }
 
             expect(caughtError).toBeUndefined();
-            expect(response).toEqual({
-                success: true,
-                commandResponse: util.format(ZosFilesMessages.memberDownloadedWithDestination.message, directory),
-                apiResponse: listApiResponse
-            });
+            expect(response).toEqual(defaultResponse);
 
             expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
             expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, dsname, {volume});
@@ -784,7 +1031,7 @@ describe("z/OS Files - Download", () => {
             listApiResponse.items.forEach((mem) => {
                 expect(downloadDatasetSpy).toHaveBeenCalledWith(dummySession, `${dsname}(${mem.member})`, {
                     volume,
-                    file: path.posix.join(directory, mem.member.toLowerCase() + extension),
+                    file: posix.join(directory, mem.member.toLowerCase() + extension),
                     record
                 });
             });
@@ -800,6 +1047,8 @@ describe("z/OS Files - Download", () => {
             const binary = true;
             const responseTimeout = 5;
 
+            defaultResponse.commandResponse = util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, 2, directory);
+
             try {
                 response = await Download.allMembers(dummySession, dsname, {volume, directory, extension, binary, responseTimeout});
             } catch (e) {
@@ -807,11 +1056,7 @@ describe("z/OS Files - Download", () => {
             }
 
             expect(caughtError).toBeUndefined();
-            expect(response).toEqual({
-                success: true,
-                commandResponse: util.format(ZosFilesMessages.memberDownloadedWithDestination.message, directory),
-                apiResponse: listApiResponse
-            });
+            expect(response).toEqual(defaultResponse);
 
             expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
             expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, dsname, {volume, responseTimeout});
@@ -820,7 +1065,7 @@ describe("z/OS Files - Download", () => {
             listApiResponse.items.forEach((mem) => {
                 expect(downloadDatasetSpy).toHaveBeenCalledWith(dummySession, `${dsname}(${mem.member})`, {
                     volume,
-                    file: path.posix.join(directory, mem.member.toLowerCase() + extension),
+                    file: posix.join(directory, mem.member.toLowerCase() + extension),
                     binary,
                     encoding: undefined,
                     responseTimeout
@@ -838,6 +1083,8 @@ describe("z/OS Files - Download", () => {
             const record = true;
             const responseTimeout = 5;
 
+            defaultResponse.commandResponse = util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, 2, directory);
+
             try {
                 response = await Download.allMembers(dummySession, dsname, {volume, directory, extension, record, responseTimeout});
             } catch (e) {
@@ -845,11 +1092,7 @@ describe("z/OS Files - Download", () => {
             }
 
             expect(caughtError).toBeUndefined();
-            expect(response).toEqual({
-                success: true,
-                commandResponse: util.format(ZosFilesMessages.memberDownloadedWithDestination.message, directory),
-                apiResponse: listApiResponse
-            });
+            expect(response).toEqual(defaultResponse);
 
             expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
             expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, dsname, {volume, responseTimeout});
@@ -858,7 +1101,7 @@ describe("z/OS Files - Download", () => {
             listApiResponse.items.forEach((mem) => {
                 expect(downloadDatasetSpy).toHaveBeenCalledWith(dummySession, `${dsname}(${mem.member})`, {
                     volume,
-                    file: path.posix.join(directory, mem.member.toLowerCase() + extension),
+                    file: posix.join(directory, mem.member.toLowerCase() + extension),
                     record,
                     encoding: undefined,
                     responseTimeout
@@ -875,6 +1118,8 @@ describe("z/OS Files - Download", () => {
             const extension = ".xyz";
             const encoding = "285";
 
+            defaultResponse.commandResponse = util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, 2, directory);
+
             try {
                 response = await Download.allMembers(dummySession, dsname, {volume, directory, extension, encoding});
             } catch (e) {
@@ -882,11 +1127,7 @@ describe("z/OS Files - Download", () => {
             }
 
             expect(caughtError).toBeUndefined();
-            expect(response).toEqual({
-                success: true,
-                commandResponse: util.format(ZosFilesMessages.memberDownloadedWithDestination.message, directory),
-                apiResponse: listApiResponse
-            });
+            expect(response).toEqual(defaultResponse);
 
             expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
             expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, dsname, {volume});
@@ -895,7 +1136,7 @@ describe("z/OS Files - Download", () => {
             listApiResponse.items.forEach((mem) => {
                 expect(downloadDatasetSpy).toHaveBeenCalledWith(dummySession, `${dsname}(${mem.member})`, {
                     volume,
-                    file: path.posix.join(directory, mem.member.toLowerCase() + extension),
+                    file: posix.join(directory, mem.member.toLowerCase() + extension),
                     encoding
                 });
             });
@@ -909,6 +1150,8 @@ describe("z/OS Files - Download", () => {
             const directory = "My/Test/Path/";
             const extension = ".xyz";
 
+            defaultResponse.commandResponse = util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, 2, directory);
+
             try {
                 response = await Download.allMembers(dummySession, dsname, {volume, directory, extension});
             } catch (e) {
@@ -916,11 +1159,7 @@ describe("z/OS Files - Download", () => {
             }
 
             expect(caughtError).toBeUndefined();
-            expect(response).toEqual({
-                success: true,
-                commandResponse: util.format(ZosFilesMessages.memberDownloadedWithDestination.message, directory),
-                apiResponse: listApiResponse
-            });
+            expect(response).toEqual(defaultResponse);
 
             expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
             expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, dsname, {volume});
@@ -929,7 +1168,7 @@ describe("z/OS Files - Download", () => {
             listApiResponse.items.forEach((mem) => {
                 expect(downloadDatasetSpy).toHaveBeenCalledWith(dummySession, `${dsname}(${mem.member})`, {
                     volume,
-                    file: path.posix.join(directory, mem.member.toLowerCase() + extension)
+                    file: posix.join(directory, mem.member.toLowerCase() + extension)
                 });
             });
         });
@@ -943,6 +1182,8 @@ describe("z/OS Files - Download", () => {
             const extension = "";
             const binary = true;
 
+            defaultResponse.commandResponse = util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, 2, directory);
+
             try {
                 response = await Download.allMembers(dummySession, dsname, {volume, directory, extension, binary});
             } catch (e) {
@@ -950,11 +1191,7 @@ describe("z/OS Files - Download", () => {
             }
 
             expect(caughtError).toBeUndefined();
-            expect(response).toEqual({
-                success: true,
-                commandResponse: util.format(ZosFilesMessages.memberDownloadedWithDestination.message, directory),
-                apiResponse: listApiResponse
-            });
+            expect(response).toEqual(defaultResponse);
 
             expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
             expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, dsname, {volume});
@@ -963,7 +1200,7 @@ describe("z/OS Files - Download", () => {
             listApiResponse.items.forEach((mem) => {
                 expect(downloadDatasetSpy).toHaveBeenCalledWith(dummySession, `${dsname}(${mem.member})`, {
                     volume,
-                    file: path.posix.join(directory, mem.member.toLowerCase() + extension),
+                    file: posix.join(directory, mem.member.toLowerCase() + extension),
                     binary
                 });
             });
@@ -973,6 +1210,8 @@ describe("z/OS Files - Download", () => {
             let response;
             let caughtError;
 
+            defaultResponse.commandResponse = util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, 2, dsFolder.toUpperCase());
+
             try {
                 response = await Download.allMembers(dummySession, dsname, { preserveOriginalLetterCase: true });
             } catch (e) {
@@ -980,11 +1219,7 @@ describe("z/OS Files - Download", () => {
             }
 
             expect(caughtError).toBeUndefined();
-            expect(response).toEqual({
-                success: true,
-                commandResponse: util.format(ZosFilesMessages.memberDownloadedWithDestination.message, dsFolder.toUpperCase()),
-                apiResponse: listApiResponse
-            });
+            expect(response).toEqual(defaultResponse);
 
             expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
             expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, dsname, {});
@@ -992,7 +1227,7 @@ describe("z/OS Files - Download", () => {
             expect(downloadDatasetSpy).toHaveBeenCalledTimes(2);
             listApiResponse.items.forEach((mem) => {
                 expect(downloadDatasetSpy).toHaveBeenCalledWith(dummySession, `${dsname}(${mem.member})`, {
-                    file: path.posix.join(dsFolder.toUpperCase(), mem.member + ".txt")
+                    file: posix.join(dsFolder.toUpperCase(), mem.member + ".txt")
                 });
             });
         });
@@ -1045,7 +1280,7 @@ describe("z/OS Files - Download", () => {
             expect(downloadDatasetSpy).toHaveBeenCalledTimes(1);
             const firstItem = listApiResponse.items[0];
             expect(downloadDatasetSpy).toHaveBeenCalledWith(dummySession, `${dsname}(${firstItem.member})`, {
-                file: path.posix.join(dsFolder, firstItem.member.toLowerCase() + ".txt")
+                file: posix.join(dsFolder, firstItem.member.toLowerCase() + ".txt")
             });
         });
 
@@ -1077,10 +1312,10 @@ describe("z/OS Files - Download", () => {
 
             expect(downloadDatasetSpy).toHaveBeenCalledTimes(2);
             expect(downloadDatasetSpy).toHaveBeenCalledWith(dummySession, `${dsname}(${firstItem.member})`, {
-                file: path.posix.join(dsFolder, firstItem.member.toLowerCase() + ".txt")
+                file: posix.join(dsFolder, firstItem.member.toLowerCase() + ".txt")
             });
             expect(downloadDatasetSpy).toHaveBeenCalledWith(dummySession, `${dsname}(${secondItem.member})`, {
-                file: path.posix.join(dsFolder, secondItem.member.toLowerCase() + ".txt")
+                file: posix.join(dsFolder, secondItem.member.toLowerCase() + ".txt")
             });
         });
 
@@ -1095,6 +1330,8 @@ describe("z/OS Files - Download", () => {
                 m2: "def"
             };
 
+            defaultResponse.commandResponse = util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, 2, directory);
+
             try {
                 response = await Download.allMembers(dummySession, dsname, { directory, extensionMap });
             } catch (e) {
@@ -1102,11 +1339,7 @@ describe("z/OS Files - Download", () => {
             }
 
             expect(caughtError).toBeUndefined();
-            expect(response).toEqual({
-                success: true,
-                commandResponse: util.format(ZosFilesMessages.memberDownloadedWithDestination.message, directory),
-                apiResponse: listApiResponse
-            });
+            expect(response).toEqual(defaultResponse);
 
             expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
             expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, dsname, {});
@@ -1118,7 +1351,7 @@ describe("z/OS Files - Download", () => {
                 dummySession,
                 `${dsname}(M1)`,
                 {
-                    file: path.posix.join(directory, "m1.abc")
+                    file: posix.join(directory, "m1.abc")
                 }
             );
             // M2 should use "def" (no dot, should be normalized to ".def")
@@ -1126,7 +1359,7 @@ describe("z/OS Files - Download", () => {
                 dummySession,
                 `${dsname}(M2)`,
                 {
-                    file: path.posix.join(directory, "m2.def")
+                    file: posix.join(directory, "m2.def")
                 }
             );
         });
@@ -1142,6 +1375,8 @@ describe("z/OS Files - Download", () => {
                 M2: ".LOWER"
             };
 
+            defaultResponse.commandResponse = util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, 2, directory);
+
             try {
                 response = await Download.allMembers(dummySession, dsname, { directory, extensionMap, preserveOriginalLetterCase: true });
             } catch (e) {
@@ -1149,11 +1384,7 @@ describe("z/OS Files - Download", () => {
             }
 
             expect(caughtError).toBeUndefined();
-            expect(response).toEqual({
-                success: true,
-                commandResponse: util.format(ZosFilesMessages.memberDownloadedWithDestination.message, directory),
-                apiResponse: listApiResponse
-            });
+            expect(response).toEqual(defaultResponse);
 
             expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
             expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, dsname, {});
@@ -1165,7 +1396,7 @@ describe("z/OS Files - Download", () => {
                 dummySession,
                 `${dsname}(M1)`,
                 {
-                    file: path.posix.join(directory, "M1.UPPER")
+                    file: posix.join(directory, "M1.UPPER")
                 }
             );
             // M2 should use ".LOWER" (with dot, should be normalized)
@@ -1173,7 +1404,7 @@ describe("z/OS Files - Download", () => {
                 dummySession,
                 `${dsname}(M2)`,
                 {
-                    file: path.posix.join(directory, "M2.LOWER")
+                    file: posix.join(directory, "M2.LOWER")
                 }
             );
         });
@@ -1188,6 +1419,8 @@ describe("z/OS Files - Download", () => {
                 other: "zzz"
             };
 
+            defaultResponse.commandResponse = util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, 2, directory);
+
             try {
                 response = await Download.allMembers(dummySession, dsname, { directory, extensionMap });
             } catch (e) {
@@ -1195,11 +1428,7 @@ describe("z/OS Files - Download", () => {
             }
 
             expect(caughtError).toBeUndefined();
-            expect(response).toEqual({
-                success: true,
-                commandResponse: util.format(ZosFilesMessages.memberDownloadedWithDestination.message, directory),
-                apiResponse: listApiResponse
-            });
+            expect(response).toEqual(defaultResponse);
 
             expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
             expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, dsname, {});
@@ -1211,16 +1440,222 @@ describe("z/OS Files - Download", () => {
                 dummySession,
                 `${dsname}(M1)`,
                 {
-                    file: path.posix.join(directory, "m1.txt")
+                    file: posix.join(directory, "m1.txt")
                 }
             );
             expect(downloadDatasetSpy).toHaveBeenCalledWith(
                 dummySession,
                 `${dsname}(M2)`,
                 {
-                    file: path.posix.join(directory, "m2.txt")
+                    file: posix.join(directory, "m2.txt")
                 }
             );
+        });
+
+        it("should skip downloading members that already exist when overwrite is false", async () => {
+            let response;
+            let caughtError;
+            const downloaded = 1;
+            const skipped = 1;
+
+            existsSyncSpy.mockImplementation((filePath) => {
+                return filePath.toString().includes("m1.txt");
+            });
+
+            try {
+                response = await Download.allMembers(dummySession, dsname, { overwrite: false });
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse:
+                    util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, downloaded, dsFolder) +
+                    "\n" +
+                    util.format(ZosFilesMessages.memberDownloadSkipped.message, skipped),
+                apiResponse: {
+                    ...listApiResponse,
+                    downloadResult: {
+                        downloaded,
+                        skipped,
+                        failed: 0,
+                        total: 2,
+                        skippedMembers: ["m1"],
+                        failedMembers: []
+                    }
+                }
+            });
+
+            expect(downloadDatasetSpy).toHaveBeenCalledTimes(1);
+            expect(downloadDatasetSpy).toHaveBeenCalledWith(dummySession, `${dsname}(M2)`, {
+                file: posix.join(dsFolder, "m2.txt"),
+                overwrite: false
+            });
+        });
+
+        it("should download all members when overwrite is true even if files exist", async () => {
+            let response;
+            let caughtError;
+
+            existsSyncSpy.mockReturnValue(true);
+
+            defaultResponse.commandResponse = util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, 2, dsFolder);
+
+            try {
+                response = await Download.allMembers(dummySession, dsname, { overwrite: true });
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual(defaultResponse);
+
+            expect(downloadDatasetSpy).toHaveBeenCalledTimes(2);
+            listApiResponse.items.forEach((mem) => {
+                expect(downloadDatasetSpy).toHaveBeenCalledWith(dummySession, `${dsname}(${mem.member})`, {
+                    file: posix.join(dsFolder, mem.member.toLowerCase() + ".txt"),
+                    overwrite: true
+                });
+            });
+        });
+
+        it("should download members that don't exist regardless of overwrite setting", async () => {
+            let response;
+            let caughtError;
+
+            existsSyncSpy.mockReturnValue(false);
+
+            defaultResponse.commandResponse = util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, 2, dsFolder);
+
+            try {
+                response = await Download.allMembers(dummySession, dsname, { overwrite: false });
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual(defaultResponse);
+
+            expect(downloadDatasetSpy).toHaveBeenCalledTimes(2);
+            listApiResponse.items.forEach((mem) => {
+                expect(downloadDatasetSpy).toHaveBeenCalledWith(dummySession, `${dsname}(${mem.member})`, {
+                    file: posix.join(dsFolder, mem.member.toLowerCase() + ".txt"),
+                    overwrite: false
+                });
+            });
+        });
+
+        it("should skip all members when they all exist and overwrite is false", async () => {
+            let response;
+            let caughtError;
+
+            existsSyncSpy.mockReturnValue(true);
+
+            try {
+                response = await Download.allMembers(dummySession, dsname, { overwrite: false });
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: util.format(ZosFilesMessages.memberDownloadSkipped.message, 2),
+                apiResponse: {
+                    ...listApiResponse,
+                    downloadResult: {
+                        downloaded: 0,
+                        skipped: 2,
+                        failed: 0,
+                        total: 2,
+                        skippedMembers: ["m1", "m2"],
+                        failedMembers: []
+                    }
+                }
+            });
+
+            expect(downloadDatasetSpy).not.toHaveBeenCalled();
+        });
+
+        it("should handle mixed scenario with some existing files, custom directory, and overwrite false", async () => {
+            let response;
+            let caughtError;
+            const directory = "my/test/path/";
+            const downloaded = 1;
+            const skipped = 1;
+
+            existsSyncSpy.mockImplementation((filePath) => {
+                return filePath.toString().includes("my/test/path/m2.txt");
+            });
+
+            try {
+                response = await Download.allMembers(dummySession, dsname, {
+                    directory,
+                    overwrite: false
+                });
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse:
+                    util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, downloaded, directory) +
+                    "\n" +
+                    util.format(ZosFilesMessages.memberDownloadSkipped.message, skipped),
+                apiResponse: {
+                    ...listApiResponse,
+                    downloadResult: {
+                        downloaded,
+                        skipped,
+                        failed: 0,
+                        total: 2,
+                        skippedMembers: ["m2"],
+                        failedMembers: []
+                    }
+                }
+            });
+
+            expect(downloadDatasetSpy).toHaveBeenCalledTimes(1);
+            expect(downloadDatasetSpy).toHaveBeenCalledWith(dummySession, `${dsname}(M1)`, {
+                file: posix.join(directory, "m1.txt"),
+                overwrite: false
+            });
+        });
+
+        it("should handle the case where some downloads fail with overwrite false", async () => {
+            let response;
+            let caughtError;
+
+            existsSyncSpy.mockImplementation((filePath) => {
+                return filePath.toString().includes("m1.txt");
+            });
+
+            downloadDatasetSpy.mockImplementation(async (session, dsname, _) => {
+                if (dsname.includes("M2")) {
+                    throw new Error("Download failed for M2");
+                }
+                return null as any;
+            });
+
+            try {
+                response = await Download.allMembers(dummySession, dsname, { overwrite: false });
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(response).toBeUndefined();
+            expect(caughtError).toBeDefined();
+            expect(caughtError.message).toContain("Download failed for M2");
+
+            expect(downloadDatasetSpy).toHaveBeenCalledTimes(1);
+            expect(downloadDatasetSpy).toHaveBeenCalledWith(dummySession, `${dsname}(M2)`, {
+                file: posix.join(dsFolder, "m2.txt"),
+                overwrite: false
+            });
         });
     });
 
@@ -1229,6 +1664,7 @@ describe("z/OS Files - Download", () => {
         const downloadDatasetSpy = jest.spyOn(Download, "dataSet");
         const downloadAllMembersSpy = jest.spyOn(Download, "allMembers");
         const createDirsSpy = jest.spyOn(IO, "createDirsSyncFromFilePath");
+        const existsSyncSpy = jest.spyOn(IO, "existsSync");
 
         const dataSetPS = {
             dsname: "TEST.PS.DATA.SET",
@@ -1249,6 +1685,9 @@ describe("z/OS Files - Download", () => {
 
             listDataSetSpy.mockClear();
             listDataSetSpy.mockResolvedValue(undefined as any);
+
+            existsSyncSpy.mockClear();
+            existsSyncSpy.mockReturnValue(false);
         });
 
         it("should handle an error from Download.dataSet", async () => {
@@ -1275,7 +1714,8 @@ describe("z/OS Files - Download", () => {
             expect(downloadDatasetSpy).toHaveBeenCalledWith(dummySession, dataSetPS.dsname, {
                 directory: undefined,
                 extension: undefined,
-                file: `${dataSetPS.dsname.toLocaleLowerCase()}.txt`
+                file: `${dataSetPS.dsname.toLocaleLowerCase()}.txt`,
+                overwrite: true
             });
         });
 
@@ -1337,7 +1777,11 @@ describe("z/OS Files - Download", () => {
                 }, {directory}),
                 apiResponse: [{ ...dataSetPS, status: "Data set downloaded" }]
             });
-            expect(Download.dataSet).toHaveBeenCalledWith(dummySession, dataSetPS.dsname, {binary, file: "my/test/path/test.ps.data.set.xyz"});
+            expect(Download.dataSet).toHaveBeenCalledWith(dummySession, dataSetPS.dsname, {
+                binary,
+                file: "my/test/path/test.ps.data.set.xyz",
+                overwrite: true
+            });
         });
 
         it("should download all datasets specifying preserveOriginalLetterCase", async () => {
@@ -1372,7 +1816,8 @@ describe("z/OS Files - Download", () => {
             });
             expect(Download.dataSet).toHaveBeenCalledWith(dummySession, dataSetPS.dsname, {
                 file: "TEST.PS.DATA.SET.txt",
-                preserveOriginalLetterCase: true
+                preserveOriginalLetterCase: true,
+                overwrite: true
             });
         });
 
@@ -1408,7 +1853,7 @@ describe("z/OS Files - Download", () => {
                 }, {}),
                 apiResponse: [{ ...dataSetPS, status: "Data set downloaded" }]
             });
-            expect(Download.dataSet).toHaveBeenCalledWith(dummySession, dataSetPS.dsname, {file: "test.ps.data.set.xyz"});
+            expect(Download.dataSet).toHaveBeenCalledWith(dummySession, dataSetPS.dsname, {file: "test.ps.data.set.xyz", overwrite: true});
         });
 
         it("should download all datasets with maxConcurrentRequests set to zero", async () => {
@@ -1443,7 +1888,11 @@ describe("z/OS Files - Download", () => {
                 }, {}),
                 apiResponse: [{ ...dataSetPS, status: "Data set downloaded" }]
             });
-            expect(Download.dataSet).toHaveBeenCalledWith(dummySession, dataSetPS.dsname, {file: "test.ps.data.set.txt", maxConcurrentRequests: 0});
+            expect(Download.dataSet).toHaveBeenCalledWith(dummySession, dataSetPS.dsname, {
+                file: "test.ps.data.set.txt",
+                maxConcurrentRequests: 0,
+                overwrite: true
+            });
         });
 
         it("should download all datasets while specifying an extension with a leading dot", async () => {
@@ -1479,7 +1928,9 @@ describe("z/OS Files - Download", () => {
                 }, {directory}),
                 apiResponse: [{ ...dataSetPS, status: "Data set downloaded" }]
             });
-            expect(Download.dataSet).toHaveBeenCalledWith(dummySession, dataSetPS.dsname, {file: "my/test/path/test.ps.data.set.xyz"});
+            expect(Download.dataSet).toHaveBeenCalledWith(dummySession, dataSetPS.dsname, {
+                file: "my/test/path/test.ps.data.set.xyz", overwrite: true
+            });
         });
 
         it("should download all datasets specifying a mixed case directory", async () => {
@@ -1515,7 +1966,11 @@ describe("z/OS Files - Download", () => {
                 }, {directory}),
                 apiResponse: [{ ...dataSetPS, status: "Data set downloaded" }]
             });
-            expect(Download.dataSet).toHaveBeenCalledWith(dummySession, dataSetPS.dsname, {extensionMap, file: "My/Test/Path/test.ps.data.set.file"});
+            expect(Download.dataSet).toHaveBeenCalledWith(dummySession, dataSetPS.dsname, {
+                extensionMap,
+                file: "My/Test/Path/test.ps.data.set.file",
+                overwrite: true
+            });
         });
 
         it("should download all datasets specifying the directory and extension map 1", async () => {
@@ -1551,7 +2006,11 @@ describe("z/OS Files - Download", () => {
                 }, {directory}),
                 apiResponse: [{ ...dataSetPS, status: "Data set downloaded" }]
             });
-            expect(Download.dataSet).toHaveBeenCalledWith(dummySession, dataSetPS.dsname, {extensionMap, file: "my/test/path/test.ps.data.set.file"});
+            expect(Download.dataSet).toHaveBeenCalledWith(dummySession, dataSetPS.dsname, {
+                extensionMap,
+                file: "my/test/path/test.ps.data.set.file",
+                overwrite: true
+            });
         });
 
         it("should download all datasets specifying the directory and extension map 2", async () => {
@@ -1587,7 +2046,11 @@ describe("z/OS Files - Download", () => {
                 }, {directory}),
                 apiResponse: [{ ...dataSetPS, status: "Data set downloaded" }]
             });
-            expect(Download.dataSet).toHaveBeenCalledWith(dummySession, dataSetPS.dsname, {extensionMap, file: "my/test/path/test.ps.data.set.txt"});
+            expect(Download.dataSet).toHaveBeenCalledWith(dummySession, dataSetPS.dsname, {
+                extensionMap,
+                file: "my/test/path/test.ps.data.set.txt",
+                overwrite: true
+            });
         });
 
         it("should download all datasets without any options", async () => {
@@ -1914,6 +2377,422 @@ describe("z/OS Files - Download", () => {
                 }]
             });
         });
+
+        it("should skip downloading PS dataset when file exists and overwrite is false", async () => {
+            let response;
+            let caughtError;
+
+            existsSyncSpy.mockReturnValue(true);
+
+            Download.dataSet = jest.fn(async (): Promise<any> => {
+                return {
+                    commandResponse: "Data set downloaded",
+                    apiResponse: {}
+                };
+            });
+
+            try {
+                response = await Download.allDataSets(dummySession, [dataSetPS] as any, { overwrite: false });
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: (Download as any).buildDownloadDsmResponse({
+                    downloaded: [],
+                    skippedExisting: ["TEST.PS.DATA.SET"],
+                    failedArchived: [],
+                    failedUnsupported: [],
+                    failedWithErrors: {}
+                }, { overwrite: false }),
+                apiResponse: [{
+                    ...dataSetPS,
+                    status: "Skipped: File already exists - test.ps.data.set.txt"
+                }]
+            });
+
+            expect(Download.dataSet).not.toHaveBeenCalled();
+        });
+
+        it("should download PS dataset when file exists and overwrite is true", async () => {
+            let response;
+            let caughtError;
+
+            existsSyncSpy.mockReturnValue(true);
+
+            Download.dataSet = jest.fn(async (): Promise<any> => {
+                return {
+                    commandResponse: "Data set downloaded",
+                    apiResponse: {}
+                };
+            });
+
+            try {
+                response = await Download.allDataSets(dummySession, [dataSetPS] as any, { overwrite: true });
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: (Download as any).buildDownloadDsmResponse({
+                    downloaded: ["TEST.PS.DATA.SET"],
+                    skippedExisting: [],
+                    failedArchived: [],
+                    failedUnsupported: [],
+                    failedWithErrors: {}
+                }, { overwrite: true }),
+                apiResponse: [{
+                    ...dataSetPS,
+                    status: "Data set downloaded"
+                }]
+            });
+
+            expect(Download.dataSet).toHaveBeenCalledTimes(1);
+            expect(Download.dataSet).toHaveBeenCalledWith(dummySession, dataSetPS.dsname, {
+                file: "test.ps.data.set.txt",
+                overwrite: true
+            });
+        });
+
+        it("should skip PDS dataset when all members already exist and overwrite is false", async () => {
+            let response;
+            let caughtError;
+
+            downloadAllMembersSpy.mockResolvedValue({
+                commandResponse: util.format(ZosFilesMessages.memberDownloadSkipped.message, 2),
+                apiResponse: {
+                    items: [
+                        { member: "MEMBER1" },
+                        { member: "MEMBER2" }
+                    ],
+                    downloadResult: {
+                        downloaded: 0,
+                        skipped: 2,
+                        failed: 0,
+                        total: 2,
+                        skippedMembers: ["member1", "member2"],
+                        failedMembers: []
+                    }
+                }
+            } as any);
+
+            try {
+                response = await Download.allDataSets(dummySession, [dataSetPO] as any, { overwrite: false });
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: (Download as any).buildDownloadDsmResponse({
+                    downloaded: [],
+                    skippedExisting: ["TEST.PO.DATA.SET"],
+                    failedArchived: [],
+                    failedUnsupported: [],
+                    failedWithErrors: {}
+                }, { overwrite: false }),
+                apiResponse: [{
+                    ...dataSetPO,
+                    status: util.format(ZosFilesMessages.memberDownloadSkipped.message, 2) + "\nMembers:  MEMBER1, MEMBER2;"
+                }]
+            });
+
+            expect(downloadAllMembersSpy).toHaveBeenCalledTimes(1);
+            expect(downloadAllMembersSpy).toHaveBeenCalledWith(dummySession, dataSetPO.dsname, {
+                directory: "test/po/data/set",
+                overwrite: false
+            });
+        });
+
+        it("should download PDS dataset when some members exist but not all and overwrite is false", async () => {
+            let response;
+            let caughtError;
+
+            downloadAllMembersSpy.mockResolvedValue({
+                commandResponse:
+                    util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, 1, dsFolder) + "\n" +
+                    util.format(ZosFilesMessages.memberDownloadSkipped.message, 1),
+                apiResponse: {
+                    items: [
+                        { member: "MEMBER1" },
+                        { member: "MEMBER2" }
+                    ],
+                    downloadResult: {
+                        downloaded: 1,
+                        skipped: 1,
+                        failed: 0,
+                        total: 2,
+                        skippedMembers: ["member1"],
+                        failedMembers: []
+                    }
+                }
+            } as any);
+
+            try {
+                response = await Download.allDataSets(dummySession, [dataSetPO] as any, { overwrite: false });
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                errorMessage: undefined,
+                commandResponse: (Download as any).buildDownloadDsmResponse({
+                    downloaded: ["TEST.PO.DATA.SET"],
+                    skippedExisting: [],
+                    failedArchived: [],
+                    failedUnsupported: [],
+                    failedWithErrors: {}
+                }, { overwrite: false }),
+                apiResponse: [{
+                    ...dataSetPO,
+                    status:
+                        util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, 1, dsFolder) + "\n" +
+                        util.format(ZosFilesMessages.memberDownloadSkipped.message, 1) + "\nMembers:  MEMBER1, MEMBER2;"
+                }]
+            });
+
+            expect(downloadAllMembersSpy).toHaveBeenCalledTimes(1);
+        });
+
+        it("should download all PDS members when overwrite is true even if some exist", async () => {
+            let response;
+            let caughtError;
+
+            downloadAllMembersSpy.mockResolvedValue({
+                commandResponse: util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, 2, dsFolder),
+                apiResponse: {
+                    items: [
+                        { member: "MEMBER1" },
+                        { member: "MEMBER2" }
+                    ],
+                    downloadResult: {
+                        downloaded: 2,
+                        skipped: 0,
+                        failed: 0,
+                        total: 2,
+                        skippedMembers: [],
+                        failedMembers: []
+                    }
+                }
+            } as any);
+
+            try {
+                response = await Download.allDataSets(dummySession, [dataSetPO] as any, { overwrite: true });
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                errorMessage: undefined,
+                commandResponse: (Download as any).buildDownloadDsmResponse({
+                    downloaded: ["TEST.PO.DATA.SET"],
+                    skippedExisting: [],
+                    failedArchived: [],
+                    failedUnsupported: [],
+                    failedWithErrors: {}
+                }, { overwrite: true }),
+                apiResponse: [{
+                    ...dataSetPO,
+                    status:
+                        util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, 2, dsFolder) +
+                        "\nMembers:  MEMBER1, MEMBER2;"
+                }]
+            });
+
+            expect(downloadAllMembersSpy).toHaveBeenCalledTimes(1);
+            expect(downloadAllMembersSpy).toHaveBeenCalledWith(dummySession, dataSetPO.dsname, {
+                directory: "test/po/data/set",
+                overwrite: true
+            });
+        });
+
+        it("should handle mixed PS and PDS datasets with overwrite false", async () => {
+            let response;
+            let caughtError;
+
+            const dataSetPS2 = { dsname: "TEST.PS2.DATA.SET", dsorg: "PS" };
+            const dataSetPO2 = { dsname: "TEST.PO2.DATA.SET", dsorg: "PO" };
+
+            existsSyncSpy.mockImplementation((filePath) => {
+                return filePath.toString().includes("test.ps.data.set.txt") ||
+                    filePath.toString().includes("test/po2/data/set");
+            });
+
+            downloadAllMembersSpy.mockImplementation(async (session, dsname) => {
+                if (dsname === "TEST.PO.DATA.SET") {
+                    return {
+                        success: true,
+                        commandResponse:
+                            util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, 1, dsFolder) + "\n" +
+                            util.format(ZosFilesMessages.memberDownloadSkipped.message, 1),
+                        apiResponse: {
+                            items: [{ member: "MEMBER1" }, { member: "MEMBER2" }],
+                            downloadResult: { downloaded: 1, skipped: 1, failed: 0, total: 2, skippedMembers: ["member1"], failedMembers: [] }
+                        }
+                    };
+                } else {
+                    return {
+                        success: true,
+                        commandResponse: util.format(ZosFilesMessages.memberDownloadSkipped.message, 2),
+                        apiResponse: {
+                            items: [{ member: "MEMBER3" }, { member: "MEMBER4" }],
+                            downloadResult: {
+                                downloaded: 0,
+                                skipped: 2,
+                                failed: 0,
+                                total: 2,
+                                skippedMembers: ["member3", "member4"],
+                                failedMembers: []
+                            }
+                        }
+                    };
+                }
+            });
+
+            Download.dataSet = jest.fn(async (): Promise<any> => {
+                return {
+                    commandResponse: "Data set downloaded",
+                    apiResponse: {}
+                };
+            });
+
+            try {
+                response = await Download.allDataSets(dummySession, [dataSetPS, dataSetPS2, dataSetPO, dataSetPO2] as any, { overwrite: false });
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                errorMessage: undefined,
+                commandResponse: (Download as any).buildDownloadDsmResponse({
+                    downloaded: ["TEST.PO.DATA.SET", "TEST.PS2.DATA.SET"],
+                    skippedExisting: ["TEST.PS.DATA.SET", "TEST.PO2.DATA.SET"],
+                    failedArchived: [],
+                    failedUnsupported: [],
+                    failedWithErrors: {}
+                }, { overwrite: false }),
+                apiResponse: [
+                    { ...dataSetPS, status: "Skipped: File already exists - test.ps.data.set.txt" },
+                    { ...dataSetPS2, status: "Data set downloaded" },
+                    { ...dataSetPO, status:
+                        util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, 1, dsFolder) + "\n" +
+                        util.format(ZosFilesMessages.memberDownloadSkipped.message, 1) + "\nMembers:  MEMBER1, MEMBER2;"
+                    },
+                    { ...dataSetPO2, status:
+                        util.format(ZosFilesMessages.memberDownloadSkipped.message, 2)  + "\nMembers:  MEMBER3, MEMBER4;"
+                    }
+                ]
+            });
+
+            expect(Download.dataSet).toHaveBeenCalledTimes(1);
+            expect(downloadAllMembersSpy).toHaveBeenCalledTimes(2);
+        });
+
+        it("should handle custom directory and file paths with overwrite false", async () => {
+            let response;
+            let caughtError;
+            const directory = "my/custom/dir";
+            const customFile = "my/custom/dir/test.ps.data.set.xyz";
+
+            existsSyncSpy.mockImplementation((filePath) => {
+                return filePath.toString().includes(customFile);
+            });
+
+            downloadAllMembersSpy.mockResolvedValue({
+                commandResponse: util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, 2, "my/custom/dir/test/po/data/set"),
+                apiResponse: {
+                    items: [{ member: "MEMBER1" }, { member: "MEMBER2" }],
+                    downloadResult: { downloaded: 2, skipped: 0, failed: 0, total: 2, skippedMembers: [], failedMembers: [] }
+                }
+            } as any);
+
+            try {
+                response = await Download.allDataSets(dummySession, [dataSetPS, dataSetPO] as any, {
+                    directory,
+                    extension: "xyz",
+                    overwrite: false
+                });
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: (Download as any).buildDownloadDsmResponse({
+                    downloaded: ["TEST.PO.DATA.SET"],
+                    skippedExisting: ["TEST.PS.DATA.SET"],
+                    failedArchived: [],
+                    failedUnsupported: [],
+                    failedWithErrors: {}
+                }, { directory, extension: "xyz", overwrite: false }),
+                apiResponse: [
+                    { ...dataSetPS, status: `Skipped: File already exists - ${customFile}` },
+                    { ...dataSetPO, status: expect.stringContaining("2 member(s) downloaded successfully") }
+                ]
+            });
+
+            expect(downloadAllMembersSpy).toHaveBeenCalledWith(dummySession, dataSetPO.dsname, {
+                directory: "my/custom/dir/test/po/data/set",
+                file: "my/custom/dir/test.ps.data.set.xyz",
+                overwrite: false
+            });
+        });
+
+        it("should handle empty PDS with overwrite false", async () => {
+            let response;
+            let caughtError;
+
+            downloadAllMembersSpy.mockResolvedValue({
+                commandResponse: ZosFilesMessages.noMembersFound.message,
+                apiResponse: {
+                    items: [],
+                    downloadResult: {
+                        downloaded: 0,
+                        skipped: 0,
+                        failed: 0,
+                        total: 0,
+                        skippedMembers: [],
+                        failedMembers: []
+                    }
+                }
+            } as any);
+
+            try {
+                response = await Download.allDataSets(dummySession, [dataSetPO] as any, { overwrite: false });
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: (Download as any).buildDownloadDsmResponse({
+                    downloaded: ["TEST.PO.DATA.SET"],
+                    skippedExisting: [],
+                    failedArchived: [],
+                    failedUnsupported: [],
+                    failedWithErrors: {}
+                }, { overwrite: false }),
+                apiResponse: [{
+                    ...dataSetPO,
+                    status: ZosFilesMessages.noMembersFound.message
+                }]
+            });
+
+            expect(createDirsSpy).toHaveBeenCalledWith("test/po/data/set");
+        });
     });
 
     describe("USS File", () => {
@@ -1921,6 +2800,7 @@ describe("z/OS Files - Download", () => {
         const zosmfExpectBufferSpy = jest.spyOn(ZosmfRestClient, "getExpectBuffer");
         const ioCreateDirSpy = jest.spyOn(IO, "createDirsSyncFromFilePath");
         const ioWriteStreamSpy = jest.spyOn(IO, "createWriteStream");
+        const existsSyncSpy = jest.spyOn(IO, "existsSync");
         const fakeStream: any = {fakeStream: true};
         const zosmfGetFullSpy = jest.spyOn(ZosmfRestClient, "getExpectFullResponse");
         const putUSSPayloadSpy = jest.spyOn(Utilities, "putUSSPayload");
@@ -1944,6 +2824,9 @@ describe("z/OS Files - Download", () => {
 
             ioWriteStreamSpy.mockClear();
             ioWriteStreamSpy.mockImplementation(() => fakeStream);
+
+            existsSyncSpy.mockClear();
+            existsSyncSpy.mockReturnValue(false);
 
             putUSSPayloadSpy.mockClear();
             putUSSPayloadSpy.mockResolvedValue(Buffer.from("{}"));
@@ -2014,7 +2897,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -2048,7 +2931,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -2086,7 +2969,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -2124,7 +3007,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -2165,7 +3048,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -2201,7 +3084,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -2234,7 +3117,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -2270,7 +3153,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -2304,7 +3187,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -2341,7 +3224,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -2383,7 +3266,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -2407,6 +3290,180 @@ describe("z/OS Files - Download", () => {
             expect(ioWriteStreamSpy).toHaveBeenCalledTimes(1);
             expect(ioWriteStreamSpy).toHaveBeenCalledWith(destination);
         });
+
+        it("should skip downloading USS file when it already exists and overwrite is false", async () => {
+            let response;
+            let caughtError;
+            const destination = localFileName;
+
+            existsSyncSpy.mockReturnValue(true);
+
+            try {
+                response = await Download.ussFile(dummySession, ussname, { overwrite: false });
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: util.format(ZosFilesMessages.ussFileDownloadSkipped.message, destination),
+                apiResponse: {}
+            });
+
+            expect(existsSyncSpy).toHaveBeenCalledTimes(1);
+            expect(existsSyncSpy).toHaveBeenCalledWith(destination);
+
+            expect(zosmfGetFullSpy).not.toHaveBeenCalled();
+            expect(ioCreateDirSpy).not.toHaveBeenCalled();
+            expect(ioWriteStreamSpy).not.toHaveBeenCalled();
+        });
+
+        it("should download USS file when it already exists and overwrite is true", async () => {
+            let response;
+            let caughtError;
+            const destination = localFileName;
+
+            existsSyncSpy.mockReturnValue(true);
+
+            try {
+                response = await Download.ussFile(dummySession, ussname, { overwrite: true });
+            } catch (e) {
+                caughtError = e;
+            }
+
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: util.format(ZosFilesMessages.ussFileDownloadedWithDestination.message, destination),
+                apiResponse: {}
+            });
+
+            expect(existsSyncSpy).toHaveBeenCalledTimes(1);
+            expect(existsSyncSpy).toHaveBeenCalledWith(destination);
+
+            expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
+            expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {
+                resource: endpoint,
+                reqHeaders: [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.TEXT_PLAIN],
+                responseStream: fakeStream,
+                normalizeResponseNewLines: true
+            });
+
+            expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);
+            expect(ioCreateDirSpy).toHaveBeenCalledWith(destination);
+
+            expect(ioWriteStreamSpy).toHaveBeenCalledTimes(1);
+            expect(ioWriteStreamSpy).toHaveBeenCalledWith(destination);
+        });
+
+        it("should skip downloading USS file with custom file path when it exists and overwrite is false", async () => {
+            let response;
+            let caughtError;
+            const customFile = "my/custom/path/file.txt";
+
+            existsSyncSpy.mockReturnValue(true);
+
+            try {
+                response = await Download.ussFile(dummySession, ussname, { file: customFile, overwrite: false });
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: util.format(ZosFilesMessages.ussFileDownloadSkipped.message, customFile),
+                apiResponse: {}
+            });
+
+            expect(existsSyncSpy).toHaveBeenCalledTimes(1);
+            expect(existsSyncSpy).toHaveBeenCalledWith(customFile);
+
+            expect(zosmfGetFullSpy).not.toHaveBeenCalled();
+            expect(ioCreateDirSpy).not.toHaveBeenCalled();
+            expect(ioWriteStreamSpy).not.toHaveBeenCalled();
+        });
+
+        it("should not check file existence when downloading to a stream", async () => {
+            let response;
+            let caughtError;
+            const responseStream = new PassThrough();
+
+            existsSyncSpy.mockReturnValue(true);
+
+            try {
+                response = await Download.ussFile(dummySession, ussname, { stream: responseStream, overwrite: false });
+            } catch (e) {
+                caughtError = e;
+            }
+
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: ZosFilesMessages.ussFileDownloadedSuccessfully.message,
+                apiResponse: {}
+            });
+
+            expect(existsSyncSpy).not.toHaveBeenCalled();
+
+            expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
+            expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {
+                resource: endpoint,
+                reqHeaders: [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.TEXT_PLAIN],
+                responseStream,
+                normalizeResponseNewLines: true,
+                task: undefined
+            });
+
+            expect(ioCreateDirSpy).not.toHaveBeenCalled();
+            expect(ioWriteStreamSpy).not.toHaveBeenCalled();
+        });
+
+        it("should download USS file in binary mode when overwrite is true and file exists", async () => {
+            let response;
+            let caughtError;
+            const destination = localFileName;
+
+            existsSyncSpy.mockReturnValue(true);
+
+            try {
+                response = await Download.ussFile(dummySession, ussname, { binary: true, overwrite: true });
+            } catch (e) {
+                caughtError = e;
+            }
+
+            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: util.format(ZosFilesMessages.ussFileDownloadedWithDestination.message, destination),
+                apiResponse: {}
+            });
+
+            expect(existsSyncSpy).toHaveBeenCalledTimes(1);
+            expect(existsSyncSpy).toHaveBeenCalledWith(destination);
+
+            expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
+            expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {
+                resource: endpoint,
+                reqHeaders: [ZosmfHeaders.X_IBM_BINARY],
+                responseStream: fakeStream,
+                normalizeResponseNewLines: false,
+                task: undefined
+            });
+
+            expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);
+            expect(ioCreateDirSpy).toHaveBeenCalledWith(destination);
+
+            expect(ioWriteStreamSpy).toHaveBeenCalledTimes(1);
+            expect(ioWriteStreamSpy).toHaveBeenCalledWith(destination);
+        });
     });
 
     describe("USS Directory", () => {
@@ -2415,11 +3472,18 @@ describe("z/OS Files - Download", () => {
         const listFileListSpy = jest.spyOn(List, "fileList");
         const downloadUssFileSpy = jest.spyOn(Download, "ussFile");
         const mkdirPromiseSpy = jest.spyOn(fs.promises, "mkdir");
-        const existsSyncSpy = jest.spyOn(fs, "existsSync");
+        const existsSyncSpy = jest.spyOn(IO, "existsSync");
 
         beforeEach(() => {
             existsSyncSpy.mockClear();
+            existsSyncSpy.mockReturnValue(false);
+
             listFileListSpy.mockClear();
+            listFileListSpy.mockResolvedValue({
+                apiResponse: {
+                    items: []
+                }
+            } as any);
 
             downloadUssFileSpy.mockClear();
             downloadUssFileSpy.mockResolvedValue(fakeFileResponse as any);
@@ -2457,7 +3521,7 @@ describe("z/OS Files - Download", () => {
 
             expect(downloadUssFileSpy).toHaveBeenCalledTimes(1);
             expect(downloadUssFileSpy).toHaveBeenCalledWith(dummySession, ussDirName + "/file1", {
-                file: path.join(process.cwd(), "file1")
+                file: join(process.cwd(), "file1")
             });
         });
 
@@ -2489,7 +3553,7 @@ describe("z/OS Files - Download", () => {
             expect(caughtError.causeErrors).toEqual(dummyError);
 
             expect(mkdirPromiseSpy).toHaveBeenCalledTimes(1);
-            expect(mkdirPromiseSpy).toHaveBeenCalledWith(path.join(process.cwd(), "folder1"), { recursive: true });
+            expect(mkdirPromiseSpy).toHaveBeenCalledWith(join(process.cwd(), "folder1"), { recursive: true });
         });
 
         it("should download USS directory with download and list options", async () => {
@@ -2525,7 +3589,7 @@ describe("z/OS Files - Download", () => {
             expect(List.fileList).toHaveBeenCalledWith(dummySession, ussDirName,
                 { name: "*", ...listOptions });
             expect(Download.ussFile).toHaveBeenCalledWith(dummySession, ussDirName + "/file1",
-                { file: path.join(process.cwd(), "file1"), ...fileOptions });
+                { file: join(process.cwd(), "file1"), ...fileOptions });
         });
 
         it("should download USS directory when failFast is false", async () => {
@@ -2598,7 +3662,7 @@ describe("z/OS Files - Download", () => {
                 apiResponse: [fakeFileResponse]
             });
             expect(Download.ussFile).toHaveBeenCalledWith(dummySession, ussDirName + "/file1",
-                { file: path.join(process.cwd(), "file1"), maxConcurrentRequests: 0 });
+                { file: join(process.cwd(), "file1"), maxConcurrentRequests: 0 });
         });
 
         it("should download USS directory excluding hidden files", async () => {
@@ -2723,7 +3787,7 @@ describe("z/OS Files - Download", () => {
             let response;
             let caughtError;
 
-            existsSyncSpy.mockImplementation((filepath) => path.basename(filepath.toString()) === "file2" );
+            existsSyncSpy.mockImplementation((filepath) => basename(filepath.toString()) === "file2" );
             listFileListSpy.mockResolvedValueOnce({
                 apiResponse: {
                     items: [
@@ -2756,7 +3820,7 @@ describe("z/OS Files - Download", () => {
             let response;
             let caughtError;
 
-            existsSyncSpy.mockImplementation((filepath) => path.basename(filepath.toString()) === "file2" );
+            existsSyncSpy.mockImplementation((filepath) => basename(filepath.toString()) === "file2" );
             listFileListSpy.mockResolvedValueOnce({
                 apiResponse: {
                     items: [

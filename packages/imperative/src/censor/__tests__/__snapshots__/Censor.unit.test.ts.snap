@@ -2,7 +2,7 @@
 
 exports[`Censor tests should not change the censor response 1`] = `"****"`;
 
-exports[`Censor tests should not change the default main censored options 1`] = `
+exports[`Censor tests should not change the default main censored options and headers 1`] = `
 Array [
   "auth",
   "authentication",
@@ -20,6 +20,38 @@ Array [
   "tv",
   "tokenValue",
   "token-value",
+]
+`;
+
+exports[`Censor tests should not change the default main censored options and headers 2`] = `
+Array [
+  "Authorization",
+  "Cookie",
+  "Proxy-Authorization",
+]
+`;
+
+exports[`Censor tests should not change the default main censored options and headers 3`] = `
+Array [
+  "auth",
+  "authentication",
+  "basicAuth",
+  "basic-auth",
+  "base64EncodedAuth",
+  "base64-encoded-auth",
+  "certFilePassphrase",
+  "cert-file-passphrase",
+  "credentials",
+  "pw",
+  "pass",
+  "password",
+  "passphrase",
+  "tv",
+  "tokenValue",
+  "token-value",
+  "Authorization",
+  "Cookie",
+  "Proxy-Authorization",
 ]
 `;
 

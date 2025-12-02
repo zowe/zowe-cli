@@ -36,6 +36,10 @@ import { ProxySettings } from "../../src/client/ProxySettings";
 import { HttpsProxyAgent } from "https-proxy-agent";
 import { completionTimeoutErrorMessage } from "../../src/client/doc/IRestClientError";
 import { EnvironmentalVariableSettings } from "../../../imperative";
+import { Logger } from "../../../logger";
+import { Censor } from "../../../censor";
+import { IHTTPSOptions } from "../../src/client/doc/IHTTPSOptions";
+import { cloneDeep } from "lodash";
 
 /**
  * To test the AbstractRestClient, we use the existing default RestClient which
@@ -59,6 +63,107 @@ describe("AbstractRestClient tests", () => {
         const client = new RestClient(new Session({hostname: "test"}));
         expect((client as any).appendHeaders(["Test"])).toMatchSnapshot();
         expect((client as any).appendHeaders(undefined)).toMatchSnapshot();
+    });
+
+    it("should sanitize header values before they are logged 1", () => {
+        const zoweLogger = Logger.getImperativeLogger();
+        jest.spyOn(Logger, "getImperativeLogger").mockReturnValue(zoweLogger);
+        const zoweTraceLoggerSpy = jest.spyOn(zoweLogger, "trace");
+        const censorObjectDataSpy = jest.spyOn(Censor, "censorObject");
+        const client = new RestClient(new Session({hostname: "test"}));
+
+        const httpsOptions: IHTTPSOptions = {
+            headers: {
+                Authorization: "Basic testdata"
+            },
+            hostname: "test",
+            method: "GET",
+            path: "/",
+            port: "443",
+            rejectUnauthorized: false
+        };
+        const expectedHttpsOptions = cloneDeep(httpsOptions);
+        expectedHttpsOptions.headers.Authorization = Censor.CENSOR_RESPONSE;
+
+        (client as any).appendInputHeaders(httpsOptions);
+
+        expect(zoweTraceLoggerSpy).toHaveBeenCalledTimes(1);
+        expect(censorObjectDataSpy).toHaveBeenCalledTimes(1);
+        expect(censorObjectDataSpy).toHaveBeenCalledWith(httpsOptions);
+        expect(censorObjectDataSpy).toHaveReturnedWith(expectedHttpsOptions);
+        expect(zoweTraceLoggerSpy).toHaveBeenCalledWith(
+            expect.stringContaining("appendInputHeaders"),
+            JSON.stringify(expectedHttpsOptions),
+            "RestClient"
+        );
+    });
+
+    it("should sanitize header values before they are logged 2", () => {
+        const zoweLogger = Logger.getImperativeLogger();
+        jest.spyOn(Logger, "getImperativeLogger").mockReturnValue(zoweLogger);
+        const zoweTraceLoggerSpy = jest.spyOn(zoweLogger, "trace");
+        const censorObjectDataSpy = jest.spyOn(Censor, "censorObject");
+        const client = new RestClient(new Session({hostname: "test"}));
+
+        const httpsOptions: IHTTPSOptions = {
+            headers: {
+                Cookie: "fakeCookie"
+            },
+            hostname: "test",
+            method: "GET",
+            path: "/",
+            port: "443",
+            rejectUnauthorized: false
+        };
+        const expectedHttpsOptions = cloneDeep(httpsOptions);
+        expectedHttpsOptions.headers.Cookie = Censor.CENSOR_RESPONSE;
+
+        (client as any).appendInputHeaders(httpsOptions);
+
+        expect(zoweTraceLoggerSpy).toHaveBeenCalledTimes(1);
+        expect(censorObjectDataSpy).toHaveBeenCalledTimes(1);
+        expect(censorObjectDataSpy).toHaveBeenCalledWith(httpsOptions);
+        expect(censorObjectDataSpy).toHaveReturnedWith(expectedHttpsOptions);
+        expect(zoweTraceLoggerSpy).toHaveBeenCalledWith(
+            expect.stringContaining("appendInputHeaders"),
+            JSON.stringify(expectedHttpsOptions),
+            "RestClient"
+        );
+    });
+
+    it("should sanitize header values before they are logged 3", () => {
+        const zoweLogger = Logger.getImperativeLogger();
+        jest.spyOn(Logger, "getImperativeLogger").mockReturnValue(zoweLogger);
+        const zoweTraceLoggerSpy = jest.spyOn(zoweLogger, "trace");
+        const censorObjectDataSpy = jest.spyOn(Censor, "censorObject");
+        const client = new RestClient(new Session({hostname: "test"}));
+
+        const httpsOptions: IHTTPSOptions = {
+            headers: {
+                Authorization: "Basic testdata",
+                "Proxy-Authorization": "Basic proxytestdata"
+            },
+            hostname: "test",
+            method: "GET",
+            path: "/",
+            port: "443",
+            rejectUnauthorized: false
+        };
+        const expectedHttpsOptions = cloneDeep(httpsOptions);
+        expectedHttpsOptions.headers.Authorization = Censor.CENSOR_RESPONSE;
+        expectedHttpsOptions.headers["Proxy-Authorization"] = Censor.CENSOR_RESPONSE;
+
+        (client as any).appendInputHeaders(httpsOptions);
+
+        expect(zoweTraceLoggerSpy).toHaveBeenCalledTimes(1);
+        expect(censorObjectDataSpy).toHaveBeenCalledTimes(1);
+        expect(censorObjectDataSpy).toHaveBeenCalledWith(httpsOptions);
+        expect(censorObjectDataSpy).toHaveReturnedWith(expectedHttpsOptions);
+        expect(zoweTraceLoggerSpy).toHaveBeenCalledWith(
+            expect.stringContaining("appendInputHeaders"),
+            JSON.stringify(expectedHttpsOptions),
+            "RestClient"
+        );
     });
 
     it("should give an error when no session is provided", async () => {
@@ -878,6 +983,8 @@ describe("AbstractRestClient tests", () => {
     });
 
     it("should not error when streaming normalized data", async () => {
+        jest.spyOn(os, "platform").mockReturnValue("win32");
+
         const fakeRequestStream = new PassThrough();
         const emitter = new MockHttpRequestResponse();
         const receivedArray: string[] = [];
@@ -913,8 +1020,9 @@ describe("AbstractRestClient tests", () => {
             caughtError = error;
         }
         expect(caughtError).toBeUndefined();
-        expect(receivedArray.length).toEqual(2);
-        expect(receivedArray).toEqual(["ChunkOne\r", "\nChunkTwo\r"]);
+        // With CR holdback logic: "ChunkOne" (CR held), "\nChunkTwo" (CR+LF stripped to LF, then CR held), "\r" (final holdback)
+        expect(receivedArray.length).toEqual(3);
+        expect(receivedArray).toEqual(["ChunkOne", "\nChunkTwo", "\r"]);
     });
 
     it("should return full response when requested", async () => {
@@ -1509,6 +1617,7 @@ describe("AbstractRestClient tests", () => {
             if (setPasswordAuthSpy) {
                 setPasswordAuthSpy.mockRestore();
             }
+            if ((Censor as any).mCensoredOptions.has("tokenType")) { (Censor as any).mCensoredOptions.delete("tokenType"); }
         });
 
         describe("setTokenAuth", () => {
@@ -1530,7 +1639,58 @@ describe("AbstractRestClient tests", () => {
                 const tokenWasSet: boolean = restClient["setTokenAuth"](restOptions);
                 expect(tokenWasSet).toEqual(true);
                 expect(restOptions.headers["Cookie"]).toBeDefined();
+            });
 
+            it("should log the token type when it is not a secure value", () => {
+                // Create a logger, then feed that to anything that wants it
+                const zoweLogger = Logger.getImperativeLogger();
+                jest.spyOn(Logger, "getImperativeLogger").mockReturnValue(zoweLogger);
+                const zoweTraceLoggerSpy = jest.spyOn(zoweLogger, "trace");
+
+                const restClient = new RestClient(
+                    new Session({
+                        hostname: "FakeHostName",
+                        type: AUTH_TYPE_TOKEN,
+                        tokenType: "FakeTokenType",
+                        tokenValue: "FakeTokenValue"
+                    })
+                );
+
+                // call the function that we want to test
+                const restOptions: any = {
+                    headers: {}
+                };
+                const tokenWasSet: boolean = (restClient as any).setTokenAuth(restOptions);
+                expect(tokenWasSet).toEqual(true);
+                expect(restOptions.headers["Cookie"]).toBeDefined();
+                expect(zoweTraceLoggerSpy).toHaveBeenCalledWith("Using cookie authentication with token type FakeTokenType");
+            });
+
+            it("should log the token type when it is a secure value", () => {
+                // Create a logger, then feed that to anything that wants it
+                (Censor as any).mCensoredOptions.add("tokenType");
+                const zoweLogger = Logger.getImperativeLogger();
+                jest.spyOn(Logger, "getImperativeLogger").mockReturnValue(zoweLogger);
+                const zoweTraceLoggerSpy = jest.spyOn(zoweLogger, "trace");
+
+                const restClient = new RestClient(
+                    new Session({
+                        hostname: "FakeHostName",
+                        type: AUTH_TYPE_TOKEN,
+                        tokenType: "FakeTokenType",
+                        tokenValue: "FakeTokenValue"
+                    })
+                );
+
+                // call the function that we want to test
+                const restOptions: any = {
+                    headers: {}
+                };
+                const tokenWasSet: boolean = (restClient as any).setTokenAuth(restOptions);
+                expect(tokenWasSet).toEqual(true);
+                expect(restOptions.headers["Cookie"]).toBeDefined();
+                expect(zoweTraceLoggerSpy).toHaveBeenCalledWith("Using cookie authentication with token");
+                expect(zoweTraceLoggerSpy).not.toHaveBeenCalledWith("Using cookie authentication with token type FakeTokenType");
             });
 
             it("should return false when a token session has no token value", () => {
@@ -1811,6 +1971,213 @@ describe("AbstractRestClient tests", () => {
                     error = e;
                 }
                 expect(error).not.toBeDefined();
+            });
+        });
+
+        (os.platform() === "win32" ? describe : describe.skip)("CRLF at chunk boundaries with newline normalization", () => {
+            it("should handle CRLF sequence split across chunk boundary", async () => {
+                const session = new Session({
+                    hostname: "test",
+                    port: 443,
+                    protocol: "https",
+                });
+
+                const client = new RestClient(session);
+
+                // Create a stream that emits CRLF split across two chunks
+                const requestStream = new PassThrough();
+
+                // Mock the https.request to capture what is written
+                const writtenChunks: Buffer[] = [];
+                const mockRequest: any = new EventEmitter();
+                mockRequest.write = jest.fn((chunk: Buffer) => {
+                    writtenChunks.push(Buffer.from(chunk));
+                });
+                mockRequest.end = jest.fn();
+                mockRequest.setTimeout = jest.fn();
+                mockRequest.on = jest.fn().mockReturnThis();
+
+                jest.spyOn(https, "request").mockImplementation((_options: any, callback: any) => {
+                    // Simulate successful response
+                    setImmediate(() => {
+                        const response: any = new EventEmitter();
+                        response.statusCode = 200;
+                        response.headers = {};
+                        callback(response);
+                        setImmediate(() => {
+                            response.emit("data", Buffer.from("OK"));
+                            response.emit("end");
+                        });
+                    });
+                    return mockRequest as any;
+                });
+
+                requestStream.write(Buffer.from("abc\r"));
+                requestStream.write(Buffer.from("\ndef\r\n"));
+                requestStream.end();
+
+                await client.request({
+                    resource: "/test",
+                    request: "PUT",
+                    requestStream,
+                    normalizeRequestNewLines: true
+                });
+
+                // Verify that CR was stripped (CRLF -> LF)
+                // "abc\r" becomes "abc" (CR held), "\ndef\r\n" prepends CR to get "\r\ndef\r\n" which becomes "\ndef\n" (CRLF stripped)
+                const allWritten = Buffer.concat(writtenChunks);
+                expect(allWritten.toString()).toBe("abc\ndef\n");
+            });
+
+            it("should preserve standalone CR at chunk boundary", async () => {
+                const session = new Session({
+                    hostname: "test",
+                    port: 443,
+                    protocol: "https",
+                });
+
+                const client = new RestClient(session);
+
+                const requestStream = new PassThrough();
+
+                const writtenChunks: Buffer[] = [];
+                const mockRequest: any = new EventEmitter();
+                mockRequest.write = jest.fn((chunk: Buffer) => {
+                    writtenChunks.push(Buffer.from(chunk));
+                });
+                mockRequest.end = jest.fn();
+                mockRequest.setTimeout = jest.fn();
+                mockRequest.on = jest.fn().mockReturnThis();
+
+                jest.spyOn(https, "request").mockImplementation((_options: any, callback: any) => {
+                    setImmediate(() => {
+                        const response: any = new EventEmitter();
+                        response.statusCode = 200;
+                        response.headers = {};
+                        callback(response);
+                        setImmediate(() => {
+                            response.emit("data", Buffer.from("OK"));
+                            response.emit("end");
+                        });
+                    });
+                    return mockRequest as any;
+                });
+
+                requestStream.write(Buffer.from("abc\r"));
+                requestStream.write(Buffer.from("xyz"));
+                requestStream.end();
+
+                await client.request({
+                    resource: "/test",
+                    request: "PUT",
+                    requestStream,
+                    normalizeRequestNewLines: true
+                });
+
+                // Verify that standalone CR is preserved
+                const allWritten = Buffer.concat(writtenChunks);
+                expect(allWritten.toString()).toBe("abc\rxyz");
+            });
+
+            it("should handle multiple CRLF sequences across boundaries", async () => {
+                const session = new Session({
+                    hostname: "test",
+                    port: 443,
+                    protocol: "https",
+                });
+
+                const client = new RestClient(session);
+
+                const requestStream = new PassThrough();
+
+                const writtenChunks: Buffer[] = [];
+                const mockRequest: any = new EventEmitter();
+                mockRequest.write = jest.fn((chunk: Buffer) => {
+                    writtenChunks.push(Buffer.from(chunk));
+                });
+                mockRequest.end = jest.fn();
+                mockRequest.setTimeout = jest.fn();
+                mockRequest.on = jest.fn().mockReturnThis();
+
+                jest.spyOn(https, "request").mockImplementation((_options: any, callback: any) => {
+                    setImmediate(() => {
+                        const response: any = new EventEmitter();
+                        response.statusCode = 200;
+                        response.headers = {};
+                        callback(response);
+                        setImmediate(() => {
+                            response.emit("data", Buffer.from("OK"));
+                            response.emit("end");
+                        });
+                    });
+                    return mockRequest as any;
+                });
+
+                requestStream.write(Buffer.from("line1\r"));
+                requestStream.write(Buffer.from("\nline2\r\n"));
+                requestStream.write(Buffer.from("line3\r"));
+                requestStream.write(Buffer.from("\n"));
+                requestStream.end();
+
+                await client.request({
+                    resource: "/test",
+                    request: "PUT",
+                    requestStream,
+                    normalizeRequestNewLines: true
+                });
+
+                // All CRLF should be converted to LF
+                const allWritten = Buffer.concat(writtenChunks);
+                expect(allWritten.toString()).toBe("line1\nline2\nline3\n");
+            });
+
+            it("should handle CR at end of stream correctly", async () => {
+                const session = new Session({
+                    hostname: "test",
+                    port: 443,
+                    protocol: "https",
+                });
+
+                const client = new RestClient(session);
+
+                const requestStream = new PassThrough();
+
+                const writtenChunks: Buffer[] = [];
+                const mockRequest: any = new EventEmitter();
+                mockRequest.write = jest.fn((chunk: Buffer) => {
+                    writtenChunks.push(Buffer.from(chunk));
+                });
+                mockRequest.end = jest.fn();
+                mockRequest.setTimeout = jest.fn();
+                mockRequest.on = jest.fn().mockReturnThis();
+
+                jest.spyOn(https, "request").mockImplementation((_options: any, callback: any) => {
+                    setImmediate(() => {
+                        const response: any = new EventEmitter();
+                        response.statusCode = 200;
+                        response.headers = {};
+                        callback(response);
+                        setImmediate(() => {
+                            response.emit("data", Buffer.from("OK"));
+                            response.emit("end");
+                        });
+                    });
+                    return mockRequest as any;
+                });
+
+                requestStream.write(Buffer.from("data\r"));
+                requestStream.end();
+
+                await client.request({
+                    resource: "/test",
+                    request: "PUT",
+                    requestStream,
+                    normalizeRequestNewLines: true
+                });
+
+                // CR at end should be preserved
+                const allWritten = Buffer.concat(writtenChunks);
+                expect(allWritten.toString()).toBe("data\r");
             });
         });
     });

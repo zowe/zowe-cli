@@ -1199,21 +1199,17 @@ describe("Copy", () => {
                 it("should send a request", async () => {
                     let response;
 
-                    listDatasetSpy.mockImplementation(async (): Promise<any>  => {
-                        return {
-                            apiResponse: {
-                                returnedRows: 1,
-                                items: [dataSetPO]
-                            }
-                        };
-                    });
-                    listAllMembersSpy.mockImplementation(async (): Promise<any>  => {
-                        return {
-                            apiResponse: {
-                                returnedRows: 1
-                            }
-                        };
-                    });
+                    listDatasetSpy.mockResolvedValue({
+                        apiResponse: {
+                            returnedRows: 1,
+                            items: [dataSetPO]
+                        }
+                    } as any);
+                    listAllMembersSpy.mockResolvedValue({
+                        apiResponse: {
+                            returnedRows: 1
+                        }
+                    } as any);
                     try {
                         response = await Copy.dataSetCrossLPAR(
                             dummySession,
@@ -1239,22 +1235,18 @@ describe("Copy", () => {
                 });
 
                 it("should send a request - TRK and validate spacu", async () => {
-                    listDatasetSpy.mockImplementation(async (): Promise<any> => {
-                        return {
-                            apiResponse: {
-                                returnedRows: 1,
-                                items: [dataSetPO],
-                            }
-                        };
-                    });
+                    listDatasetSpy.mockResolvedValue({
+                        apiResponse: {
+                            returnedRows: 1,
+                            items: [dataSetPO],
+                        }
+                    } as any);
 
-                    listAllMembersSpy.mockImplementation(async (): Promise<any> => {
-                        return {
-                            apiResponse: {
-                                returnedRows: 1
-                            }
-                        };
-                    });
+                    listAllMembersSpy.mockResolvedValue({
+                        apiResponse: {
+                            returnedRows: 1
+                        }
+                    } as any);
 
                     const response = await Copy.dataSetCrossLPAR(
                         dummySession,
@@ -1278,23 +1270,18 @@ describe("Copy", () => {
                 });
 
                 it("should send a request - CYL and validate spacu", async () => {
-                    listDatasetSpy.mockImplementation(async (): Promise<any> => {
-                        return {
-                            apiResponse: {
-                                returnedRows: 1,
-                                items: [dataSetPOCYL],
-                            }
-                        };
-                    });
+                    listDatasetSpy.mockResolvedValue({
+                        apiResponse: {
+                            returnedRows: 1,
+                            items: [dataSetPOCYL],
+                        }
+                    } as any);
 
-                    listAllMembersSpy.mockImplementation(async (): Promise<any> => {
-                        return {
-                            apiResponse: {
-                                returnedRows: 1
-                            }
-                        };
-                    });
-
+                    listAllMembersSpy.mockResolvedValue({
+                        apiResponse: {
+                            returnedRows: 1
+                        }
+                    } as any);
 
                     const response = await Copy.dataSetCrossLPAR(
                         dummySession,
@@ -1316,6 +1303,89 @@ describe("Copy", () => {
                     expect(getDatasetSpy).toHaveBeenCalledTimes(1);
                     expect(uploadDatasetSpy).toHaveBeenCalledTimes(1);
                     expect(dataSetPOCYL.spacu).toBe("CYL");
+                });
+
+                it("should verify exact member name match when checking if target member exists", async () => {
+                    const targetMemberName = "MEM1";
+
+                    listDatasetSpy.mockResolvedValue({
+                        apiResponse: {
+                            returnedRows: 1,
+                            items: [dataSetPO]
+                        }
+                    } as any);
+
+                    listAllMembersSpy.mockResolvedValue({
+                        apiResponse: {
+                            returnedRows: 3,
+                            items: [
+                                { member: "MEM1" },      // Exact match
+                                { member: "MEM10" },     // Partial matches
+                                { member: "MEM11" }
+                            ]
+                        }
+                    } as any);
+
+                    const response = await Copy.dataSetCrossLPAR(
+                        dummySession,
+                        { dsn: poDataSetName, member: targetMemberName },
+                        { "from-dataset": { dsn: poDataSetName, member: memberName }, replace: true },
+                        {},
+                        dummySession
+                    );
+
+                    expect(response).toEqual({
+                        success: true,
+                        commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message
+                    });
+
+                    expect(listDatasetSpy).toHaveBeenCalledTimes(2);
+                    expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
+                    expect(listAllMembersSpy.mock.calls[0][2].start).toBe(targetMemberName);
+                    expect(getDatasetSpy).toHaveBeenCalledTimes(1);
+                    expect(uploadDatasetSpy).toHaveBeenCalledTimes(1);
+                });
+
+                it("should detect when target member does not exist despite partial matches", async () => {
+                    const targetMemberName = "MEM1";
+
+                    listDatasetSpy.mockResolvedValue({
+                        apiResponse: {
+                            returnedRows: 1,
+                            items: [dataSetPO]
+                        }
+                    } as any);
+
+                    // Scenario where partial matches are present, but no exact match
+                    listAllMembersSpy.mockResolvedValue({
+                        apiResponse: {
+                            returnedRows: 2,
+                            items: [
+                                { member: "MEM10" },
+                                { member: "MEM11" }
+                            ]
+                        }
+                    } as any);
+
+                    const response = await Copy.dataSetCrossLPAR(
+                        dummySession,
+                        { dsn: poDataSetName, member: targetMemberName },
+                        { "from-dataset": { dsn: poDataSetName, member: memberName }, replace: false },
+                        {},
+                        dummySession
+                    );
+
+                    expect(response).toEqual({
+                        success: true,
+                        commandResponse: ZosFilesMessages.datasetCopiedSuccessfully.message
+                    });
+
+                    // Member should still upload even if replace=false because exact member doesn't exist
+                    expect(listDatasetSpy).toHaveBeenCalledTimes(2);
+                    expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
+                    expect(listAllMembersSpy.mock.calls[0][2].start).toBe(targetMemberName);
+                    expect(getDatasetSpy).toHaveBeenCalledTimes(1);
+                    expect(uploadDatasetSpy).toHaveBeenCalledTimes(1);
                 });
 
                 describe("Sequential > Member", () => {

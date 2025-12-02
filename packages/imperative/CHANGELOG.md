@@ -2,6 +2,28 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## `8.29.0`
+
+- Enhancement: Added support for providing options to both default and custom credential managers. [#2601](https://github.com/zowe/zowe-cli/issues/2601) 
+
+## `8.27.4`
+
+- BugFix: Updated minimum supported version of Node from 18 to 20. Added Node 24 support. [#2616](https://github.com/zowe/zowe-cli/pull/2616)
+
+## `8.27.2`
+
+- BugFix: Fixed an issue where carriage returns before new lines were unexpectedly preserved when uploading to a USS file or data set. [#2606](https://github.com/zowe/zowe-cli/issues/2606)
+
+## `8.27.1`
+
+- BugFix: The Imperative framework adds the value in the `set-cookie` response header to the `_availableCreds` property in the `ISession` object. [#2605](https://github.com/zowe/zowe-cli/pull/2605)
+
+## `8.27.0`
+
+- Enhancement: Added the ability to censor headers to the `Censor` class. [#2600](https://github.com/zowe/zowe-cli/pull/2600)
+- BugFix: Censored base64 credential information from the `appendInputHeaders` function's trace log in the `AbstractRestClient` when the `Authorization` header is set. [#2598](https://github.com/zowe/zowe-cli/issues/2598)
+- BugFix: Stopped logging the token into the trace log when using cookie based token authentication in the `AbstractRestClient`. [#2598](https://github.com/zowe/zowe-cli/issues/2598)
+
 ## `8.26.2`
 
 - BugFix: Added a validity check in the `ProfileInfo` class `mergeArgsForProfile` method to ensure the base profile exists before merging its values. This prevents Zowe Explorer UI loading errors when a non-existent base profile is referenced. [#2575](https://github.com/zowe/zowe-cli/pull/2575)

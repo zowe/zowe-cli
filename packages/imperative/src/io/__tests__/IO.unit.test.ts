@@ -302,6 +302,14 @@ describe("IO tests", () => {
         expect(processedBuffer.equals(expectedBuffer)).toBe(true);
     });
 
+    it("processNewlines should remove CR before LF when uploading Buffer", () => {
+        jest.spyOn(os, "platform").mockReturnValueOnce(IO.OS_WIN32);
+        const originalBuffer = Buffer.from("abc\r\ndef\r\n");
+        const processedBuffer = IO.processNewlines(originalBuffer, undefined, true);
+        const expectedBuffer = Buffer.from("abc\ndef\n");
+        expect(processedBuffer.equals(expectedBuffer)).toBe(true);
+    });
+
     it("should throw imperative error when getting an IO error writing asynchronously", async () => {
 
         // mock fs.writeFile
