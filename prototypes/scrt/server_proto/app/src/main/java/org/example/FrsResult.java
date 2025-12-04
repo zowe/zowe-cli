@@ -1,5 +1,5 @@
 /*************************************************************************************************
- * Fake FRS classes to enable this prototype to compile before integrating into the REST API SDK.
+ * Fake FrsResult class to enable this prototype to compile before integrating into the REST API SDK.
 *************************************************************************************************/
 // Todo: Remove the following fake class and use the real class when integrating into the REST SDK API
 

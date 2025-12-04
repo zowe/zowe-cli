@@ -55,7 +55,7 @@ public class ScrtProps {
 
     // Todo: get the real default productVersion property from application.yaml
     // server.scrt.productVersion
-    private static String dfltProductVersion = "server.scrt.productVersion_from_application.yaml";
+    private static String dfltProductVersion = "11.22.33";
 
     private String featureName;     // used for featureName and featureDescription
     private String productName;     // retrieved from product catalog using product Id
@@ -126,18 +126,28 @@ public class ScrtProps {
      *
      * @param fullProdVersion The full product version number (version.release.modLevel).
      *
-     * @throws JfrsSdkRcException when fullProdVersion does not have 3 parts is not numeric.
+     * @throws JfrsSdkRcException when fullProdVersion does not have 3 parts or is not numeric.
      */
     private void extractValuesFromFullProdVersion(String fullProdVersion) throws JfrsSdkRcException {
-        // Todo: parse fullProdVersion into version, release, amd modLevel
-        boolean parsingWorked = true;
-        if (parsingWorked) {
-            this.version = "11_zzz";
-            this.release = "22_zzz";
-            this.modLevel = "33_zzz";
-            return;
-        } else {
-            log.error("The supplied fullProdVersion '" + fullProdVersion + "' was bad");
+        if (fullProdVersion == null) {
+            log.error("The supplied fullProdVersion was null");
+            throw new JfrsSdkRcException(JfrsSdkRcException.INVALID_PROPS_RC,
+                JfrsSdkRcException.INVALID_VERSION_FORMAT_RSN
+            );
+        }
+        String[] versionParts = fullProdVersion.split("[.]");
+        if (versionParts.length < 3) {
+            log.error("The supplied fullProdVersion '" + fullProdVersion + "' has less than 3 components");
+            throw new JfrsSdkRcException(JfrsSdkRcException.INVALID_PROPS_RC,
+                JfrsSdkRcException.INVALID_VERSION_FORMAT_RSN
+            );
+        }
+        try {
+            this.version  = String.valueOf(new VersionRegex(versionParts[0]).parse());
+            this.release  = String.valueOf(new VersionRegex(versionParts[1]).parse());
+            this.modLevel = String.valueOf(new VersionRegex(versionParts[2]).parse());
+        } catch (Exception except) {
+            log.error("A component of fullProdVersion '" + fullProdVersion + "' is not numeric.");
             throw new JfrsSdkRcException(JfrsSdkRcException.INVALID_PROPS_RC,
                 JfrsSdkRcException.INVALID_VERSION_FORMAT_RSN
             );
