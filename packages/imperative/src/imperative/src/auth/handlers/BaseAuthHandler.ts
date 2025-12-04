@@ -19,7 +19,6 @@ import {
 } from "../../../../rest";
 import { IImperativeError, ImperativeError } from "../../../../error";
 import { ImperativeConfig } from "../../../../utilities";
-import { CredentialManagerFactory } from "../../../../security";
 import { ConfigUtils } from "../../../../config/src/ConfigUtils";
 import { AbstractAuthHandler } from "./AbstractAuthHandler";
 import { IAuthHandlerApi } from "../doc/IAuthHandlerApi";
@@ -96,117 +95,57 @@ export abstract class BaseAuthHandler extends AbstractAuthHandler {
         if (params.arguments.showToken) {
             // show token instead of updating profile
             this.showToken(params.response, tokenValue);
+        } else if (ImperativeConfig.instance.config.api.secure.loadFailed) {
+            throw ConfigUtils.secureSaveError(`Instead of secure storage, ` +
+                `rerun this command with the "--show-token" flag to print the token to console. ` +
+                `Store the token in an environment variable ${ImperativeConfig.instance.loadedConfig.envVariablePrefix}_OPT_TOKEN_VALUE to use it ` +
+                `in future commands.`);
         } else {
-            // Determine if secure storage is available. Accessing the CredentialManagerFactory
-            // getters can throw in some test environments, so be defensive. Instead of relying on
-            // the `initialized` flag (which would make unit tests fail when no manager is present),
-            // attempt to safely call into the manager to get any human-friendly error details.
-            // If secure storage is unavailable or the manager reports an error, fail immediately
-            // with a secure-save error (tests expect this path in config tests).
-            let secureLoadFailed = false;
-            let managerErrorDetails: string = null;
-
-            try {
-                secureLoadFailed = !!ImperativeConfig.instance.config.api.secure.loadFailed;
-            } catch (_ignore1) {
-                secureLoadFailed = false;
-            }
-
-            try {
-                // Try to read manager and its secureErrorDetails() in a safe way. If the
-                // manager getter throws, we'll ignore it and assume no early failure is needed.
-                const mgr: any = CredentialManagerFactory.manager;
-                if (mgr && typeof mgr.secureErrorDetails === "function") {
-                    managerErrorDetails = mgr.secureErrorDetails();
-                }
-            } catch (_ignore2) {
-                // noop - manager not available or getter threw; don't fail here for unit tests
-            }
-
-            if (secureLoadFailed || managerErrorDetails != null) {
-                try {
-                    const envHint = managerErrorDetails ?? `${ImperativeConfig.instance.loadedConfig?.envVariablePrefix ?? ImperativeConfig.instance.envVariablePrefix}_OPT_TOKEN_VALUE`;
-                    throw ConfigUtils.secureSaveError(`Instead of secure storage, ` +
-                        `rerun this command with the "--show-token" flag to print the token to console. ` +
-                        `Store the token in an environment variable ${envHint} to use it ` +
-                        `in future commands.`);
-                } catch (err) {
-                    throw new ImperativeError({
-                        msg: "Unable to securely save credentials.",
-                        additionalDetails: managerErrorDetails ?? `${ImperativeConfig.instance.loadedConfig?.envVariablePrefix ?? ImperativeConfig.instance.envVariablePrefix}_OPT_TOKEN_VALUE`
-                    });
-                }
-            }
-
             // update the profile given
-                // Attempt to save to the config and only treat failures as secure-save errors.
-                // TODO Should config be added to IHandlerParameters?
-                const config = ImperativeConfig.instance.config;
-                const profileName = this.getBaseProfileName(params);
-                const profileProps = Object.keys(config.api.profiles.get(profileName, false));
-                const profileExists = config.api.profiles.exists(profileName);
-                profileProps.push(...config.api.secure.securePropsForProfile(profileName));
-                const beforeLayer = config.api.layers.get();
+            // TODO Should config be added to IHandlerParameters?
+            const config = ImperativeConfig.instance.config;
+            const profileName = this.getBaseProfileName(params);
+            const profileProps = Object.keys(config.api.profiles.get(profileName, false));
+            const profileExists = config.api.profiles.exists(profileName);
+            profileProps.push(...config.api.secure.securePropsForProfile(profileName));
+            const beforeLayer = config.api.layers.get();
 
-                // If base profile is null or empty, prompt user before saving token to disk
-                if (!profileExists) {
-                    const ok = await this.promptForBaseProfile(params, profileName);
-                    if (!ok) {
-                        this.showToken(params.response, tokenValue);
-                        return;
-                    }
-
-                    config.api.profiles.set(profileName, {
-                        type: this.mProfileType,
-                        properties: {
-                            host: this.mSession.ISession.hostname,
-                            port: this.mSession.ISession.port
-                        }
-                    });
-                    config.api.profiles.defaultSet(this.mProfileType, profileName);
-                } else {
-                    const layer = config.api.layers.find(profileName);
-                    if (layer != null) {
-                        const { user, global } = layer;
-                        config.api.layers.activate(user, global);
-                    }
+            // If base profile is null or empty, prompt user before saving token to disk
+            if (!profileExists) {
+                const ok = await this.promptForBaseProfile(params, profileName);
+                if (!ok) {
+                    this.showToken(params.response, tokenValue);
+                    return;
                 }
 
-                const profilePath = config.api.profiles.getProfilePathFromName(profileName);
-                config.set(`${profilePath}.properties.tokenType`, this.mSession.ISession.tokenType);
-                config.set(`${profilePath}.properties.tokenValue`, tokenValue, { secure: true });
-
-                try {
-                    await config.save();
-                } catch (err) {
-                    // If saving failed, convert to a secure-save ImperativeError. Attempt to build
-                    // the standard error using ConfigUtils.secureSaveError. If that fails (for
-                    // example because the CredentialManagerFactory.manager getter throws), fall
-                    // back to a minimal ImperativeError that includes the env var hint tests expect.
-                    try {
-                        throw ConfigUtils.secureSaveError(`Instead of secure storage, ` +
-                            `rerun this command with the "--show-token" flag to print the token to console. ` +
-                            `Store the token in an environment variable ${ImperativeConfig.instance.envVariablePrefix}_OPT_TOKEN_VALUE to use it ` +
-                            `in future commands.`);
-                    } catch (err2) {
-                        throw new ImperativeError({
-                            msg: "Unable to securely save credentials.",
-                            additionalDetails: `${ImperativeConfig.instance.envVariablePrefix}_OPT_TOKEN_VALUE`
-                        });
+                config.api.profiles.set(profileName, {
+                    type: this.mProfileType,
+                    properties: {
+                        host: this.mSession.ISession.hostname,
+                        port: this.mSession.ISession.port
                     }
-                } finally {
-                    // Restore original active layer
-                    try {
-                        config.api.layers.activate(beforeLayer.user, beforeLayer.global);
-                    } catch (_ignore) {
-                        // noop - restore best-effort
-                    }
+                });
+                config.api.profiles.defaultSet(this.mProfileType, profileName);
+            } else {
+                const layer = config.api.layers.find(profileName);
+                if (layer != null) {
+                    const { user, global } = layer;
+                    config.api.layers.activate(user, global);
                 }
+            }
 
-                params.response.console.log(`\n` +
-                    `Login successful. The authentication token is stored in the '${profileName}' ` +
-                    `${this.mProfileType} profile for future use. To revoke this token and remove it from your profile, review the ` +
-                    `'zowe auth logout' command.`);
+            const profilePath = config.api.profiles.getProfilePathFromName(profileName);
+            config.set(`${profilePath}.properties.tokenType`, this.mSession.ISession.tokenType);
+            config.set(`${profilePath}.properties.tokenValue`, tokenValue, { secure: true });
+
+            await config.save();
+            // Restore original active layer
+            config.api.layers.activate(beforeLayer.user, beforeLayer.global);
+
+            params.response.console.log(`\n` +
+                `Login successful. The authentication token is stored in the '${profileName}' ` +
+                `${this.mProfileType} profile for future use. To revoke this token and remove it from your profile, review the ` +
+                `'zowe auth logout' command.`);
         }
     }
 
