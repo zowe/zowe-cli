@@ -25,8 +25,7 @@ public class App {
         System.out.println("Call interceptor with no featureName in the header. Expect error.\n");
         mockRequest = createMockRequest(false);
         mockRequest.addHeader("Zowe-SCRT-client-feature",
-            "featureNameMispelled=\"STATEMAN featureName from header\", " +
-            "featureDescription=\"STATEMAN featureDescription from header\""
+            "featureNameMispelled=\"STATEMAN featureName from header\""
         );
         interceptResult = new ScrtFeatHeaderInterceptor().preHandle(
             (MockHttpServletRequest) mockRequest, (HttpServletResponse) mockResponse, handlerObj
@@ -37,8 +36,7 @@ public class App {
         System.out.println("Call interceptor with only the required feature properties in the header\n");
         mockRequest = createMockRequest(false);
         mockRequest.addHeader("Zowe-SCRT-client-feature",
-            "featureName=\"STATEMAN featureName from header\", " +
-            "featureDescription=\"STATEMAN featureDescription from header\", "
+            "featureName=\"STATEMAN featureName from header\""
         );
         interceptResult = new ScrtFeatHeaderInterceptor().preHandle(
             (MockHttpServletRequest) mockRequest, (HttpServletResponse) mockResponse, handlerObj
@@ -46,12 +44,11 @@ public class App {
         showInterceptResult(interceptResult);
 
         System.out.println("______________________________________________________________");
-        System.out.println("Call interceptor with only one product property in the header. Expect error.\n");
+        System.out.println("Call interceptor with only productId in the header. Expect error.\n");
         mockRequest = createMockRequest(false);
         mockRequest.addHeader("Zowe-SCRT-client-feature",
             "featureName=\"REXX featureName from header\", " +
-            "featureDescription=\"REXX featureDescription from header\", " +
-            "productName=\"OPS productName From Header\""
+            "productId=\"OPS productId From Header\""
         );
         interceptResult = new ScrtFeatHeaderInterceptor().preHandle(
             (MockHttpServletRequest) mockRequest, (HttpServletResponse) mockResponse, handlerObj
@@ -63,12 +60,8 @@ public class App {
         mockRequest = createMockRequest(false);
         mockRequest.addHeader("Zowe-SCRT-client-feature",
             "featureName=\"REXX featureName from header\", " +
-            "featureDescription=\"REXX featureDescription from header\", " +
-            "productName=\"OPS productName From Header\", " +
             "productId=\"OPS productId From Header\", " +
-            "version=\"OPS version 14 From Header\", " +
-            "release=\"OPS release 2 From Header\", " +
-            "modLevel=\"OPS modLevel 3 From Header\""
+            "productVersion=\"14.2.3\""
         );
         interceptResult = new ScrtFeatHeaderInterceptor().preHandle(
             (MockHttpServletRequest) mockRequest, (HttpServletResponse) mockResponse, handlerObj
@@ -91,8 +84,7 @@ public class App {
         );
         mockRequest = createMockRequest(true);
         mockRequest.addHeader("Zowe-SCRT-client-feature",
-            "featureName=\"AAA featureName from header\", " +
-            "featureDescription=\"AAA featureDescription from header\""
+            "featureName=\"AAA featureName from header\""
         );
         interceptResult = new ScrtFeatHeaderInterceptor().preHandle(
             (MockHttpServletRequest) mockRequest, (HttpServletResponse) mockResponse, handlerObj
@@ -106,12 +98,8 @@ public class App {
         mockRequest = createMockRequest(true);
         mockRequest.addHeader("Zowe-SCRT-client-feature",
             "featureName=\"OPS featureName from header for " + ScrtFeatHeaderInterceptor.ONLY_RECORD_SCRT_URL + " \", " +
-            "featureDescription=\"OPS featureDescription from header\", " +
-            "productName=\"OPS productName From Header\", " +
             "productId=\"OPS productId From Header\", " +
-            "version=\"OPS version 14 From Header\", " +
-            "release=\"OPS release 2 From Header\", " +
-            "modLevel=\"OPS modLevel 3 From Header\""
+            "productVersion=\"14.2.3\""
         );
         interceptResult = new ScrtFeatHeaderInterceptor().preHandle(
             (MockHttpServletRequest) mockRequest, (HttpServletResponse) mockResponse, handlerObj
@@ -126,8 +114,16 @@ public class App {
         );
 
         System.out.println("______________________________________________________________");
-        System.out.println("Call recordFeatureUse with null and blank feature properties. Expect Error.\n");
-        ScrtProps scrtPropsFromPgm = new ScrtProps(null, "   ");
+        System.out.println("Call recordFeatureUse with null feature name. Expect Error.\n");
+        ScrtProps scrtPropsFromPgm = new ScrtProps(null);
+        recordUseResult = new JfrsZosWriter().recordFeatureUse(scrtPropsFromPgm);
+        System.out.println("\nFrsResult rc = " + recordUseResult.getRc() +
+            " rsn = " + recordUseResult.getRsn()
+        );
+
+        System.out.println("______________________________________________________________");
+        System.out.println("Call recordFeatureUse with blank feature name. Expect Error.\n");
+        scrtPropsFromPgm = new ScrtProps("   ");
         recordUseResult = new JfrsZosWriter().recordFeatureUse(scrtPropsFromPgm);
         System.out.println("\nFrsResult rc = " + recordUseResult.getRc() +
             " rsn = " + recordUseResult.getRsn()
@@ -135,11 +131,8 @@ public class App {
 
         System.out.println("______________________________________________________________");
         System.out.println("Call recordFeatureUse with all product and feature properties\n");
-        scrtPropsFromPgm = new ScrtProps("featNameFromPgm", "featDescFromPgm");
-        scrtPropsFromPgm.setProductInfo(
-            "prodNameFromPgm", "prodIdFromPgm", "ver_11_FromPgm", "rel_6_FromPgm",
-            "modLevel_25_FromPgm"
-        );
+        scrtPropsFromPgm = new ScrtProps("featNameFromPgm");
+        scrtPropsFromPgm.setProductInfo("prodIdFromPgm", "11.22.33");
         recordUseResult = new JfrsZosWriter().recordFeatureUse(scrtPropsFromPgm);
         System.out.println("\nFrsResult rc = " + recordUseResult.getRc() +
             " rsn = " + recordUseResult.getRsn()
@@ -148,11 +141,8 @@ public class App {
         System.out.println("______________________________________________________________");
         System.out.println("Calling recordFeatureUse with same feature within 1 day should *NOT* record SCRT\n");
         Thread.sleep(2000);
-        scrtPropsFromPgm = new ScrtProps("featNameFromPgm", "featDescFromPgm");
-        scrtPropsFromPgm.setProductInfo(
-            "prodNameFromPgm", "prodIdFromPgm", "ver_11_FromPgm", "rel_6_FromPgm",
-            "modLevel_25_FromPgm"
-        );
+        scrtPropsFromPgm = new ScrtProps("featNameFromPgm");
+        scrtPropsFromPgm.setProductInfo("prodIdFromPgm", "11.22.33");
         recordUseResult = new JfrsZosWriter().recordFeatureUse(scrtPropsFromPgm);
         System.out.println("\nFrsResult rc = " + recordUseResult.getRc() +
             " rsn = " + recordUseResult.getRsn()

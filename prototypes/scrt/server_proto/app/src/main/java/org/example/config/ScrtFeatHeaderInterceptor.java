@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2024 Broadcom.  All Rights Reserved.  The term
+ * Copyright (c) 2025 Broadcom.  All Rights Reserved.  The term
  * "Broadcom" refers to Broadcom Inc. and/or its subsidiaries.
  *
  * This software and all information contained therein is
@@ -21,9 +21,15 @@
  * EXPRESSLY ADVISED OF SUCH LOSS OR DAMAGE.
  */
 
-// Todo: replace package when integrating into the REST SDK
-// package com.broadcom.restapi.sdk.config;
+// Todo: replace the example packages with the real ones when integrating into REST API SDK
+// package com.broadcom.restapi.sdk.jfrs.config;
 package org.example;
+
+// import com.broadcom.restapi.sdk.jfrs.JfrsZosWriter;
+import org.example.JfrsZosWriter;
+
+// import com.broadcom.restapi.sdk.jfrs.ScrtProps;
+import org.example.ScrtProps;
 
 // for parsing header text
 import org.apache.hc.core5.http.HeaderElement;
@@ -46,9 +52,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.*;
 import java.util.stream.Collectors;
-
-import org.example.JfrsZosWriter;
-import org.example.ScrtProps;
 
 /**
  * Interceptor class that extracts feature information from a custom header and
@@ -181,10 +184,9 @@ public class ScrtFeatHeaderInterceptor implements HandlerInterceptor {
      * The subset of this formatting specification used for the
      * Zowe-SCRT-client-feature header is:
      *
-     *      featName = "Your feature name", featDesc = "Your feature description",
-     *      prodName = "Your product name", prodId = "Your product ID",
-     *      version = "Your product version", release = "Your product release",
-     *      modLevel = "Your product modeLevel"
+     *      featName = "Your feature name",
+     *      productId = "Your product ID",
+     *      productVersion = "Your product version (vv.rr.mm)"
      *
      * @param scrtHeaderText The text content of the header
      * @param requireAllProps Indicates if all SCRT properties are required in the header
@@ -194,12 +196,8 @@ public class ScrtFeatHeaderInterceptor implements HandlerInterceptor {
      */
 	private static ScrtProps extractHeaderProps(String scrtHeaderText, boolean requireAllProps) {
         String featName = null;
-        String featDesc = null;
-        String prodName = null;
-        String prodId = null;
-        String version = null;
-        String release = null;
-        String modLevel = null;
+        String productId = null;
+        String productVersion = null;
 
         // ParserCursor requires a CharArrayBuffer
         CharArrayBuffer buffer = new CharArrayBuffer(scrtHeaderText.length());
@@ -216,39 +214,24 @@ public class ScrtFeatHeaderInterceptor implements HandlerInterceptor {
             if (nextPropName.equalsIgnoreCase(ScrtProps.FEAT_NAME_KW)) {
                 featName = nextProp.getValue();
             }
-            if (nextPropName.equalsIgnoreCase(ScrtProps.FEAT_DESC_KW)) {
-                featDesc = nextProp.getValue();
-            }
-            if (nextPropName.equalsIgnoreCase(ScrtProps.PROD_NAME_KW)) {
-                prodName = nextProp.getValue();
-            }
             if (nextPropName.equalsIgnoreCase(ScrtProps.PROD_ID_KW)) {
-                prodId = nextProp.getValue();
+                productId = nextProp.getValue();
             }
             if (nextPropName.equalsIgnoreCase(ScrtProps.PROD_VER_KW)) {
-                version = nextProp.getValue();
-            }
-            if (nextPropName.equalsIgnoreCase(ScrtProps.PROD_REL_KW)) {
-                release = nextProp.getValue();
-            }
-            if (nextPropName.equalsIgnoreCase(ScrtProps.PROD_MOD_LEV_KW)) {
-                modLevel = nextProp.getValue();
+                productVersion = nextProp.getValue();
             }
         }
 
-        // the header must contain at least feature name and feature description
+        // the header must contain at least feature name
         String missingPropErrMsg = "";
         if (featName == null || featName.isEmpty()) {
             missingPropErrMsg += ScrtProps.FEAT_NAME_KW + " ";
-        }
-        if (featDesc == null || featDesc.isEmpty()) {
-            missingPropErrMsg += ScrtProps.FEAT_DESC_KW + " ";
         }
         if (!missingPropErrMsg.isEmpty()) {
             log.error(
                 "The following '" + SCRT_HEADER + "' header text is invalid:" +
                 "\n    Header = " + scrtHeaderText +
-                "\n    It does not contain these feature properties: " + missingPropErrMsg
+                "\n    It does not contain this feature property: " + missingPropErrMsg
             );
             return null;
         }
@@ -256,44 +239,43 @@ public class ScrtFeatHeaderInterceptor implements HandlerInterceptor {
         // record which product properties have not been supplied in the header
         int prodPropCount = 0;
         missingPropErrMsg = "";
-        if (prodName == null || prodName.isEmpty()) {
-            missingPropErrMsg += ScrtProps.PROD_NAME_KW + " ";
-        } else {
-            prodPropCount++;
-        }
-        if (prodId == null || prodId.isEmpty()) {
+        if (productId == null || productId.isEmpty()) {
             missingPropErrMsg += ScrtProps.PROD_ID_KW + " ";
         } else {
             prodPropCount++;
         }
-        if (version == null || version.isEmpty()) {
+        if (productVersion == null || productVersion.isEmpty()) {
             missingPropErrMsg += ScrtProps.PROD_VER_KW + " ";
-        } else {
-            prodPropCount++;
-        }
-        if (release == null || release.isEmpty()) {
-            missingPropErrMsg += ScrtProps.PROD_REL_KW + " ";
-        } else {
-            prodPropCount++;
-        }
-        if (modLevel == null || modLevel.isEmpty()) {
-            missingPropErrMsg += ScrtProps.PROD_MOD_LEV_KW + " ";
         } else {
             prodPropCount++;
         }
 
         // create the set of SCRT properties that we will use
-        ScrtProps scrtPropsToUse = new ScrtProps(featName, featDesc);
+        ScrtProps scrtPropsToUse;
+        try {
+            scrtPropsToUse = new ScrtProps(featName);
+        } catch (JfrsSdkRcException except) {
+            log.error("Unable to set the default SCRT product information for feature = " + featName);
+            return null;
+        }
 
         // Either all product properties must be supplied or none should be supplied.
         if (prodPropCount == 0 && !requireAllProps) {
             return scrtPropsToUse;
         }
 
-        final int maxProdPropCount = 5;
+        final int maxProdPropCount = 2;
         if (prodPropCount == maxProdPropCount) {
             // we have all required properties
-            scrtPropsToUse.setProductInfo(prodName, prodId, version, release, modLevel);
+            try {
+                scrtPropsToUse.setProductInfo(productId, productVersion);
+            } catch (JfrsSdkRcException except) {
+                log.error("Unable to set product ID = '" + productId +
+                    "' and productVersion = '" + productVersion +
+                    "' for feature = '" + featName + "'"
+                );
+                return null;
+            }
             return scrtPropsToUse;
         }
 
