@@ -8,6 +8,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 
+import org.example.JfrsSdkRcException;
+
 public class App {
 
     public static void main(String[] args) throws Exception {
@@ -33,7 +35,7 @@ public class App {
         showInterceptResult(interceptResult);
 
         System.out.println("______________________________________________________________");
-        System.out.println("Call interceptor with only the required feature properties in the header\n");
+        System.out.println("Call interceptor with only the featureName in the header. Expect success.\n");
         mockRequest = createMockRequest(false);
         mockRequest.addHeader("Zowe-SCRT-client-feature",
             "featureName=\"STATEMAN featureName from header\""
@@ -48,7 +50,7 @@ public class App {
         mockRequest = createMockRequest(false);
         mockRequest.addHeader("Zowe-SCRT-client-feature",
             "featureName=\"REXX featureName from header\", " +
-            "productId=\"OPS productId From Header\""
+            "productId=\"pIdHdr\""
         );
         interceptResult = new ScrtFeatHeaderInterceptor().preHandle(
             (MockHttpServletRequest) mockRequest, (HttpServletResponse) mockResponse, handlerObj
@@ -56,11 +58,11 @@ public class App {
         showInterceptResult(interceptResult);
 
         System.out.println("______________________________________________________________");
-        System.out.println("Call interceptor with all feature and product properties in the header\n");
+        System.out.println("Call interceptor with all feature and product properties in the header. Expect success.\n");
         mockRequest = createMockRequest(false);
         mockRequest.addHeader("Zowe-SCRT-client-feature",
             "featureName=\"REXX featureName from header\", " +
-            "productId=\"OPS productId From Header\", " +
+            "productId=\"pIdHdr\", " +
             "productVersion=\"14.2.3\""
         );
         interceptResult = new ScrtFeatHeaderInterceptor().preHandle(
@@ -93,12 +95,12 @@ public class App {
 
         System.out.println("______________________________________________________________");
         System.out.println("Call interceptor with URL '" + ScrtFeatHeaderInterceptor.ONLY_RECORD_SCRT_URL +
-            "' and all product and feature props in header\n"
+            "' and all product and feature props in header. Expect success.\n"
         );
         mockRequest = createMockRequest(true);
         mockRequest.addHeader("Zowe-SCRT-client-feature",
             "featureName=\"OPS featureName from header for " + ScrtFeatHeaderInterceptor.ONLY_RECORD_SCRT_URL + " \", " +
-            "productId=\"OPS productId From Header\", " +
+            "productId=\"pIdHdr\", " +
             "productVersion=\"14.2.3\""
         );
         interceptResult = new ScrtFeatHeaderInterceptor().preHandle(
@@ -115,7 +117,16 @@ public class App {
 
         System.out.println("______________________________________________________________");
         System.out.println("Call recordFeatureUse with null feature name. Expect Error.\n");
-        ScrtProps scrtPropsFromPgm = new ScrtProps(null);
+        ScrtProps scrtPropsFromPgm = null;
+        try {
+            scrtPropsFromPgm = new ScrtProps(null);
+            System.out.println("\nScrtProps with null feature name should have thrown an exception. We should not reach this statement!!!");
+        } catch (JfrsSdkRcException except) {
+            FrsResult scrtResult = except.getFrsResult();
+            System.out.println("Properly caught exception: RC = " + scrtResult.getRc() +
+                " rsn = " + scrtResult.getRsn()
+            );
+        }
         recordUseResult = new JfrsZosWriter().recordFeatureUse(scrtPropsFromPgm);
         System.out.println("\nFrsResult rc = " + recordUseResult.getRc() +
             " rsn = " + recordUseResult.getRsn()
@@ -123,16 +134,24 @@ public class App {
 
         System.out.println("______________________________________________________________");
         System.out.println("Call recordFeatureUse with blank feature name. Expect Error.\n");
-        scrtPropsFromPgm = new ScrtProps("   ");
+        try {
+            scrtPropsFromPgm = new ScrtProps("   ");
+            System.out.println("\nScrtProps with blank feature name should have thrown an exception. We should not reach this statement!!!");
+        } catch (JfrsSdkRcException except) {
+            FrsResult scrtResult = except.getFrsResult();
+            System.out.println("Properly caught exception: RC = " + scrtResult.getRc() +
+                " rsn = " + scrtResult.getRsn()
+            );
+        }
         recordUseResult = new JfrsZosWriter().recordFeatureUse(scrtPropsFromPgm);
         System.out.println("\nFrsResult rc = " + recordUseResult.getRc() +
             " rsn = " + recordUseResult.getRsn()
         );
 
         System.out.println("______________________________________________________________");
-        System.out.println("Call recordFeatureUse with all product and feature properties\n");
+        System.out.println("Call recordFeatureUse with all product and feature properties. Expect success.\n");
         scrtPropsFromPgm = new ScrtProps("featNameFromPgm");
-        scrtPropsFromPgm.setProductInfo("prodIdFromPgm", "14.15.16");
+        scrtPropsFromPgm.setProductInfo("pIdPgm", "14.15.16");
         recordUseResult = new JfrsZosWriter().recordFeatureUse(scrtPropsFromPgm);
         System.out.println("\nFrsResult rc = " + recordUseResult.getRc() +
             " rsn = " + recordUseResult.getRsn()
@@ -142,7 +161,7 @@ public class App {
         System.out.println("Calling recordFeatureUse with same feature within 1 day should *NOT* record SCRT\n");
         Thread.sleep(2000);
         scrtPropsFromPgm = new ScrtProps("featNameFromPgm");
-        scrtPropsFromPgm.setProductInfo("prodIdFromPgm", "14.15.16");
+        scrtPropsFromPgm.setProductInfo("pIdPgm", "14.15.16");
         recordUseResult = new JfrsZosWriter().recordFeatureUse(scrtPropsFromPgm);
         System.out.println("\nFrsResult rc = " + recordUseResult.getRc() +
             " rsn = " + recordUseResult.getRsn()

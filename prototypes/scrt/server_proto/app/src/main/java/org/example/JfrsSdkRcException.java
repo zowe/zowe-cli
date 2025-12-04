@@ -25,6 +25,8 @@
 // package com.broadcom.restapi.sdk.jfrs;
 package org.example;
 
+import lombok.extern.slf4j.Slf4j;
+
 /*****************************************************************************************
  * The following is a new exception to add to the com.ca.ccs.jfrs.exception package
 /****************************************************************************************/
@@ -35,6 +37,7 @@ package org.example;
  * An FrsResult object can be obtained from this exception so that an FrsResult object
  * can then be returned by the public functions.
  */
+@Slf4j
 public class JfrsSdkRcException extends Exception {
     // todo: Determine valid RC values
     public static final int INVALID_PROPS_RC = 100;
@@ -48,22 +51,26 @@ public class JfrsSdkRcException extends Exception {
     public static final int NULL_EMPTY_BLANK_RSN = 12;
     public static final int PROD_NOT_IN_CATALOG_RSN = 13;
     public static final int INVALID_VERSION_FORMAT_RSN = 14;
+    public static final int TOO_LONG_RSN = 15;
 
     private int rc = 0;
     private int rsn = 0;
 
+    //------------------------------------------------------------------------
     /**
      * Constructor.
      *
      * @param rc The return code to be recorded in the exception
      * @param rsn The reason code to be recorded in the exception
+     * @param message A message associated with this error
      */
-    public JfrsSdkRcException(int rc, int rsn) {
-        super();
+    public JfrsSdkRcException(int rc, int rsn, String message) {
+        super(message);
         this.rc = rc;
         this.rsn = rsn;
     }
 
+    //------------------------------------------------------------------------
     /**
      * Form an FrsResult from this exception.
      *
@@ -73,4 +80,25 @@ public class JfrsSdkRcException extends Exception {
     public FrsResult getFrsResult() {
         return new FrsResult(this.rc, this.rsn, "".getBytes());
     }
+
+    //------------------------------------------------------------------------
+    /**
+     * This utility logs information related to a detected problem and then
+     * throws an exception in which a return code and reason code are recorded.
+     *
+     * @param rc The return code to be logged and recorded in the exception
+     * @param rsn The reason code to be logged recorded in the exception
+     * @param errorText Text to be logged describing the reason for the error
+     *
+     * @throws JfrsSdkRcException
+     */
+	public static void logErrThrowRcExcept(int rc, int rsn, String errorText) throws JfrsSdkRcException {
+        log.error(
+            "logErrThrowRcExcept" +
+            "\n    Return code = " + rc +
+            "\n    Reason code = " + rsn +
+            "\n    Error Msg   = " + errorText
+        );
+        throw new JfrsSdkRcException(rc, rsn, errorText);
+	}
 }

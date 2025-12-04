@@ -51,11 +51,11 @@ public class ScrtProps {
 
     // Todo: get the real default productId property from application.yaml
     // server.scrt.productId
-    private static String dfltProductId = "server.scrt.productId_from_application.yaml";
+    private static final String dfltProductId = "pIdYaml";
 
     // Todo: get the real default productVersion property from application.yaml
     // server.scrt.productVersion
-    private static String dfltProductVersion = "11.22.33";
+    private static final String dfltProductVersion = "1111.2222.33333";
 
     private String featureName;     // used for featureName and featureDescription
     private String productName;     // retrieved from product catalog using product Id
@@ -73,6 +73,16 @@ public class ScrtProps {
      * @throws JfrsSdkRcException when the default productId cannot be found in the product catalog.
      */
     ScrtProps(String featureName) throws JfrsSdkRcException {
+        ensureNotNullEmptyOrBlank(featureName, this.FEAT_NAME_KW);
+
+        final int MAX_FEATURE_NAME_LEN = 48;
+        if (featureName.length() > MAX_FEATURE_NAME_LEN) {
+            JfrsSdkRcException.logErrThrowRcExcept(
+                JfrsSdkRcException.INVALID_PROPS_RC, JfrsSdkRcException.TOO_LONG_RSN,
+                "The supplied featureName '" + featureName +
+                "' is longer than " + MAX_FEATURE_NAME_LEN + " bytes"
+            );
+        }
         this.featureName = featureName;
 
         // assign default product properties until explicitly overridden.
@@ -90,9 +100,20 @@ public class ScrtProps {
      * @throws JfrsSdkRcException when productId cannot be found in the product catalog.
      */
     public void setProductInfo(String productId, String productVersion) throws JfrsSdkRcException {
+        ensureNotNullEmptyOrBlank(productId, this.PROD_ID_KW);
+
+        final int MAX_PRODUCT_ID_LEN = 8;
+        if (productId.length() > MAX_PRODUCT_ID_LEN) {
+            JfrsSdkRcException.logErrThrowRcExcept(
+                JfrsSdkRcException.INVALID_PROPS_RC, JfrsSdkRcException.TOO_LONG_RSN,
+                "The supplied productId '" + productId +
+                "' is longer than " + MAX_PRODUCT_ID_LEN + " bytes"
+            );
+        }
         this.productId = productId;
         this.productName = this.getProdNameFromProdCatalog(productId);
 
+        ensureNotNullEmptyOrBlank(productVersion, this.PROD_VER_KW);
         this.extractValuesFromFullProdVersion(productVersion);
     }
 
@@ -110,14 +131,13 @@ public class ScrtProps {
     private String getProdNameFromProdCatalog(String productId) throws JfrsSdkRcException {
         // Todo: replace with real retrieval from the product catalog
         boolean successFromProdCatalog = true;
-        if (successFromProdCatalog) {
-            return "ProductName_from_product_catalog_for_productId = " + productId;
-        } else {
-            log.error(PROD_ID_KW + " = '" + productId + "' was not found in the product catalog");
-            throw new JfrsSdkRcException(JfrsSdkRcException.INVALID_PROPS_RC,
-                JfrsSdkRcException.PROD_NOT_IN_CATALOG_RSN
+        if (!successFromProdCatalog) {
+            JfrsSdkRcException.logErrThrowRcExcept(
+                JfrsSdkRcException.INVALID_PROPS_RC, JfrsSdkRcException.PROD_NOT_IN_CATALOG_RSN,
+                PROD_ID_KW + " = '" + productId + "' was not found in the product catalog"
             );
         }
+        return "ProductName_from_product_catalog_for_productId = " + productId;
     }
 
     //*********************************************************************
@@ -130,16 +150,16 @@ public class ScrtProps {
      */
     private void extractValuesFromFullProdVersion(String fullProdVersion) throws JfrsSdkRcException {
         if (fullProdVersion == null) {
-            log.error("The supplied fullProdVersion was null");
-            throw new JfrsSdkRcException(JfrsSdkRcException.INVALID_PROPS_RC,
-                JfrsSdkRcException.INVALID_VERSION_FORMAT_RSN
+            JfrsSdkRcException.logErrThrowRcExcept(
+                JfrsSdkRcException.INVALID_PROPS_RC, JfrsSdkRcException.NULL_EMPTY_BLANK_RSN,
+                "The supplied fullProdVersion is null"
             );
         }
         String[] versionParts = fullProdVersion.split("[.]");
         if (versionParts.length < 3) {
-            log.error("The supplied fullProdVersion '" + fullProdVersion + "' has less than 3 components");
-            throw new JfrsSdkRcException(JfrsSdkRcException.INVALID_PROPS_RC,
-                JfrsSdkRcException.INVALID_VERSION_FORMAT_RSN
+            JfrsSdkRcException.logErrThrowRcExcept(
+                JfrsSdkRcException.INVALID_PROPS_RC, JfrsSdkRcException.INVALID_VERSION_FORMAT_RSN,
+                "The supplied fullProdVersion '" + fullProdVersion + "' has less than 3 components"
             );
         }
         try {
@@ -147,9 +167,22 @@ public class ScrtProps {
             this.release  = String.valueOf(new VersionRegex(versionParts[1]).parse());
             this.modLevel = String.valueOf(new VersionRegex(versionParts[2]).parse());
         } catch (Exception except) {
-            log.error("A component of fullProdVersion '" + fullProdVersion + "' is not numeric.");
-            throw new JfrsSdkRcException(JfrsSdkRcException.INVALID_PROPS_RC,
-                JfrsSdkRcException.INVALID_VERSION_FORMAT_RSN
+            JfrsSdkRcException.logErrThrowRcExcept(
+                JfrsSdkRcException.INVALID_PROPS_RC, JfrsSdkRcException.INVALID_VERSION_FORMAT_RSN,
+                "A component of fullProdVersion '" + fullProdVersion + "' is not numeric."
+            );
+        }
+    }
+
+    //*********************************************************************
+    /**
+     * Determine is the supplied string is null empty or blank.
+     */
+    private void ensureNotNullEmptyOrBlank(String strToTest, String nameForString) throws JfrsSdkRcException {
+        if (strToTest == null || strToTest.isBlank()) {
+            JfrsSdkRcException.logErrThrowRcExcept(
+                JfrsSdkRcException.INVALID_PROPS_RC, JfrsSdkRcException.NULL_EMPTY_BLANK_RSN,
+                "The supplied " + nameForString + " = '" + strToTest + "' cannot be null, empty, or blank"
             );
         }
     }
