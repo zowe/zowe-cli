@@ -66,7 +66,7 @@ public class ScrtProps {
 
     //*********************************************************************
     /**
-     * The constructor requires that feature properties be explicitly supplied.
+     * The constructor requires that feature name be explicitly supplied.
      *
      * @param featureName Name of the feature
      *

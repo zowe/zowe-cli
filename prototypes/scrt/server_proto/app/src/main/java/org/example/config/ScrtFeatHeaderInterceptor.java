@@ -72,7 +72,7 @@ public class ScrtFeatHeaderInterceptor implements HandlerInterceptor {
     private final ObjectMapper objMapper = new ObjectMapper();
 
     // Todo: replace with the desired URL string
-    public static final String ONLY_RECORD_SCRT_URL = "/apiv1/scrt";
+    public static final String ONLY_RECORD_SCRT_URL = "/api/v1/scrt";
 
     private static final String SCRT_HEADER = "Zowe-SCRT-client-feature";
 

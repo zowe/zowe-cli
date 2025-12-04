@@ -132,7 +132,7 @@ public class App {
         System.out.println("______________________________________________________________");
         System.out.println("Call recordFeatureUse with all product and feature properties\n");
         scrtPropsFromPgm = new ScrtProps("featNameFromPgm");
-        scrtPropsFromPgm.setProductInfo("prodIdFromPgm", "11.22.33");
+        scrtPropsFromPgm.setProductInfo("prodIdFromPgm", "14.15.16");
         recordUseResult = new JfrsZosWriter().recordFeatureUse(scrtPropsFromPgm);
         System.out.println("\nFrsResult rc = " + recordUseResult.getRc() +
             " rsn = " + recordUseResult.getRsn()
@@ -142,7 +142,7 @@ public class App {
         System.out.println("Calling recordFeatureUse with same feature within 1 day should *NOT* record SCRT\n");
         Thread.sleep(2000);
         scrtPropsFromPgm = new ScrtProps("featNameFromPgm");
-        scrtPropsFromPgm.setProductInfo("prodIdFromPgm", "11.22.33");
+        scrtPropsFromPgm.setProductInfo("prodIdFromPgm", "14.15.16");
         recordUseResult = new JfrsZosWriter().recordFeatureUse(scrtPropsFromPgm);
         System.out.println("\nFrsResult rc = " + recordUseResult.getRc() +
             " rsn = " + recordUseResult.getRsn()
@@ -163,7 +163,7 @@ public class App {
         if (useUrlForOnlyScrt) {
             mockRequest.setServletPath(ScrtFeatHeaderInterceptor.ONLY_RECORD_SCRT_URL);
         } else {
-            mockRequest.setServletPath("/apiv1/RealAppURL");
+            mockRequest.setServletPath("/api/v1/RealAppURL");
         }
         return mockRequest;
     }
