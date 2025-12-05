@@ -751,6 +751,157 @@ export class AuthOrder {
         }
     }
 
+    private static buildCertAccountCandidates(
+        sessCredName: string,
+        sessCfg: ISession,
+        certAccountVal?: string,
+        certKeyAccountVal?: string
+    ): string[] {
+        const candidates: string[] = [];
+        const pushIf = (val?: string) => { if (typeof val === "string" && val) candidates.push(val); };
+
+        if (sessCredName === AuthOrder.SESS_CERT_NAME) {
+            pushIf(certAccountVal);
+        } else {
+            pushIf(certKeyAccountVal);
+            if (certAccountVal && !candidates.includes(certAccountVal)) pushIf(certAccountVal);
+        }
+
+        pushIf((sessCfg as any).profile);
+        pushIf((sessCfg as any).account);
+        return candidates;
+    }
+
+    private static writeCertToTempFile(sessCredName: string, certBuf: Buffer): string {
+        const tmpDir = os.tmpdir();
+        const suffix = sessCredName === AuthOrder.SESS_CERT_NAME ? "-cert.pem" : "-key.pem";
+        const randomSuffix = crypto.randomBytes(4).toString("hex");
+        const tmpPath = path.join(tmpDir, `zowe-${Date.now()}-${randomSuffix}${suffix}`);
+        fs.writeFileSync(tmpPath, certBuf, { mode: 0o600 });
+        return tmpPath;
+    }
+
+    private static trackTempFile(sessCfg: ISession, tmpPath: string): void {
+        const authCacheAny: any = sessCfg._authCache;
+        if (!authCacheAny) return;
+        if (!authCacheAny._tempFiles) authCacheAny._tempFiles = [];
+        authCacheAny._tempFiles.push(tmpPath);
+    }
+
+    private static getCredentialManager(): any | undefined {
+        if (!CredentialManagerFactory.initialized) return undefined;
+        return CredentialManagerFactory.manager as any;
+    }
+
+    private static cacheCertBuffer(sessCredName: string, sessCfg: ISession, certBuf: Buffer): void {
+        const tmpPath = AuthOrder.writeCertToTempFile(sessCredName, certBuf);
+        sessCfg._authCache.availableCreds[sessCredName] = tmpPath;
+        AuthOrder.trackTempFile(sessCfg, tmpPath);
+    }
+
+    private static async cacheCertificateFromManager(
+        sessCredName: string,
+        sessCfg: ISession
+    ): Promise<void> {
+        try {
+            const managerAny = AuthOrder.getCredentialManager();
+            if (!managerAny) return;
+
+            const credMgrOptions = managerAny.options;
+            const shouldPrompt = credMgrOptions?.promptForCertAccess === true;
+
+            let certAccountVal = (sessCfg as any).certAccount;
+            let certKeyAccountVal = (sessCfg as any).certKeyAccount;
+            if (certAccountVal && typeof certAccountVal.then === "function") {
+                certAccountVal = await certAccountVal;
+            }
+            if (certKeyAccountVal && typeof certKeyAccountVal.then === "function") {
+                certKeyAccountVal = await certKeyAccountVal;
+            }
+
+            const acctCandidates = AuthOrder.buildCertAccountCandidates(sessCredName, sessCfg, certAccountVal, certKeyAccountVal);
+            if (acctCandidates.length === 0) return;
+
+            const authCacheAny: any = sessCfg._authCache;
+            if (!authCacheAny._promptedCertAccounts) {
+                authCacheAny._promptedCertAccounts = new Set<string>();
+            }
+
+            for (let i = 0; i < acctCandidates.length; i++) {
+                const acct = acctCandidates[i];
+                const isLastAttempt = i === acctCandidates.length - 1;
+                const isKey = sessCredName === AuthOrder.SESS_CERT_KEY_NAME;
+                const credType = isKey ? "private key" : "certificate";
+
+                if (shouldPrompt && !authCacheAny._promptedCertAccounts.has(acct)) {
+                    const { CliUtils } = await import("../../../utilities");
+                    const promptMsg = `Zowe CLI would like to access ${credType} '${acct}' from your system keychain. Allow? [y/N]: `;
+                    const response = await CliUtils.readPrompt(promptMsg, { secToWait: 60 });
+                    authCacheAny._promptedCertAccounts.add(acct);
+                    if (response?.toLowerCase() !== "y") {
+                        continue;
+                    }
+                }
+
+                try {
+                    const certBuf = isKey ?
+                        await managerAny.loadCertificateKey(acct, !isLastAttempt) :
+                        await managerAny.loadCertificate(acct, !isLastAttempt);
+                    if (certBuf) {
+                        AuthOrder.cacheCertBuffer(sessCredName, sessCfg, certBuf);
+                        return;
+                    }
+                } catch (_error_) {
+                    // continue to next candidate
+                }
+            }
+        } catch (error_) {
+            // ignore
+        }
+    }
+
+    private static cacheCertificateFromManagerSync(
+        sessCredName: string,
+        sessCfg: ISession
+    ): void {
+        try {
+            const managerAny = AuthOrder.getCredentialManager();
+            if (!managerAny || typeof managerAny.loadCertificateSync !== "function") return;
+
+            const credMgrOptions = managerAny.options;
+            const shouldPrompt = credMgrOptions?.promptForCertAccess === true;
+            if (shouldPrompt) {
+                Logger.getImperativeLogger().warn(
+                    "Certificate access prompting is configured but cannot be used in synchronous code path. Consider using async API methods for prompted certificate access."
+                );
+            }
+
+            const certAccountVal = (sessCfg as any).certAccount;
+            const certKeyAccountVal = (sessCfg as any).certKeyAccount;
+            const acctCandidates = AuthOrder.buildCertAccountCandidates(sessCredName, sessCfg, certAccountVal, certKeyAccountVal);
+            if (acctCandidates.length === 0) return;
+
+            for (let i = 0; i < acctCandidates.length; i++) {
+                const acct = acctCandidates[i];
+                const isLastAttempt = i === acctCandidates.length - 1;
+                const isKey = sessCredName === AuthOrder.SESS_CERT_KEY_NAME;
+                try {
+                    const certBuf: Buffer | null = isKey ?
+                        managerAny.loadCertificateKeySync(acct, !isLastAttempt) :
+                        managerAny.loadCertificateSync(acct, !isLastAttempt);
+                    if (certBuf) {
+                        AuthOrder.cacheCertBuffer(sessCredName, sessCfg, certBuf);
+                        return;
+                    }
+                } catch (_error_) {
+                    // continue to next candidate
+                }
+            }
+        } catch (error_) {
+            // ignore
+        }
+    }
+
     // ***********************************************************************
     /**
      * Cache the authOrder property from the supplied cmdArgs. If no authOrder exists
@@ -843,109 +994,7 @@ export class AuthOrder {
             sessCfg._authCache.availableCreds[sessCredName] = (sessCfg as any)[sessCredName];
         } else if (sessCredName === AuthOrder.SESS_CERT_NAME || sessCredName === AuthOrder.SESS_CERT_KEY_NAME) {
             // Attempt to load certificate bytes from credential manager when cert/certKey not provided directly.
-            try {
-                if (CredentialManagerFactory.initialized) {
-                    // Check if we should prompt user for certificate access authorization
-                    const credMgrOptions = (CredentialManagerFactory.manager as any).options;
-                    const shouldPrompt = credMgrOptions?.promptForCertAccess === true;
-
-                    // Resolve any promise-like (thenable) values for certAccount and certKeyAccount
-                    let certAccountVal = (sessCfg as any).certAccount;
-                    let certKeyAccountVal = (sessCfg as any).certKeyAccount;
-                    if (certAccountVal && typeof certAccountVal.then === "function") {
-                        certAccountVal = await certAccountVal;
-                    }
-                    if (certKeyAccountVal && typeof certKeyAccountVal.then === "function") {
-                        certKeyAccountVal = await certKeyAccountVal;
-                    }
-
-                    // Build candidate account names, preferring explicit overrides on the session.
-                    const acctCandidates: string[] = [];
-
-                    if (sessCredName === AuthOrder.SESS_CERT_NAME) {
-                        // prefer explicit certAccount override on the session
-                        if (typeof certAccountVal === "string" && certAccountVal) {
-                            acctCandidates.push(certAccountVal);
-                        }
-                    } else {
-                        // prefer explicit certKeyAccount override on the session
-                        if (typeof certKeyAccountVal === "string" && certKeyAccountVal) {
-                            acctCandidates.push(certKeyAccountVal);
-                        }
-                        // For private keys, also try certAccount as fallback since macOS identities
-                        // store both certificate and private key under the same account name.
-                        if (typeof certAccountVal === "string" && certAccountVal) {
-                            if (!acctCandidates.includes(certAccountVal)) {
-                                acctCandidates.push(certAccountVal);
-                            }
-                        }
-                    }
-
-                    // fallback candidates: profile name, then account name (only strings)
-                    if (typeof (sessCfg as any).profile === "string" && (sessCfg as any).profile) {
-                        acctCandidates.push((sessCfg as any).profile);
-                    }
-                    if (typeof (sessCfg as any).account === "string" && (sessCfg as any).account) {
-                        acctCandidates.push((sessCfg as any).account);
-                    }
-
-                    // Track accounts we've already prompted for to avoid re-prompting
-                    const authCacheAny: any = sessCfg._authCache;
-                    if (!authCacheAny._promptedCertAccounts) {
-                        authCacheAny._promptedCertAccounts = new Set<string>();
-                    }
-
-                    let lastError: Error | undefined;
-                    for (let i = 0; i < acctCandidates.length; i++) {
-                        const acct = acctCandidates[i];
-                        const isLastAttempt = i === acctCandidates.length - 1;
-                        try {
-                            const isKey = sessCredName === AuthOrder.SESS_CERT_KEY_NAME;
-                            const credType = isKey ? 'private key' : 'certificate';
-
-                            // Prompt user for authorization if configured and not already prompted
-                            if (shouldPrompt && !authCacheAny._promptedCertAccounts.has(acct)) {
-                                const { CliUtils } = await import("../../../utilities");
-                                const promptMsg = `Zowe CLI would like to access ${credType} '${acct}' from your system keychain. Allow? [y/N]: `;
-                                const response = await CliUtils.readPrompt(promptMsg, { secToWait: 60 });
-
-                                // Mark this account as prompted (regardless of answer)
-                                authCacheAny._promptedCertAccounts.add(acct);
-
-                                if (response?.toLowerCase() !== 'y') {
-                                    continue; // Skip this candidate and try next
-                                }
-                            }
-
-                            const certBuf = isKey ?
-                                await (CredentialManagerFactory.manager as any).loadCertificateKey(acct, !isLastAttempt) :
-                                await (CredentialManagerFactory.manager as any).loadCertificate(acct, !isLastAttempt);
-                            if (certBuf) {
-                                // Write to temp file (secure mode) and store path in cache so rest client can read it as file path
-                                const tmpDir = os.tmpdir();
-                                const suffix = sessCredName === AuthOrder.SESS_CERT_NAME ? "-cert.pem" : "-key.pem";
-                                const randomSuffix = crypto.randomBytes(4).toString('hex');
-                                const tmpPath = path.join(tmpDir, `zowe-${Date.now()}-${randomSuffix}${suffix}`);
-                                // write with secure permissions 0o600
-                                fs.writeFileSync(tmpPath, certBuf, { mode: 0o600 });
-                                sessCfg._authCache.availableCreds[sessCredName] = tmpPath;
-                                // track tmp files for cleanup if needed
-                                const authCacheAny: any = sessCfg._authCache;
-                                if (!authCacheAny._tempFiles) authCacheAny._tempFiles = [];
-                                authCacheAny._tempFiles.push(tmpPath);
-                                break;
-                            }
-                        } catch (error_) {
-                            lastError = error_ as Error;
-                            // continue to try next candidate
-                        }
-                    }
-
-                    // Error logging is handled in the Rust layer with deduplication
-                }
-            } catch (error_) {
-                // ignore
-            }
+            await AuthOrder.cacheCertificateFromManager(sessCredName, sessCfg);
         }
     }
 
@@ -962,78 +1011,7 @@ export class AuthOrder {
             sessCfg._authCache.availableCreds[sessCredName] = (sessCfg as any)[sessCredName];
         } else if (sessCredName === AuthOrder.SESS_CERT_NAME || sessCredName === AuthOrder.SESS_CERT_KEY_NAME) {
             // Attempt to load certificate bytes from credential manager when cert/certKey not provided directly.
-            try {
-                if (CredentialManagerFactory.initialized) {
-                    const managerAny: any = CredentialManagerFactory.manager;
-                    if (managerAny && typeof managerAny.loadCertificateSync === "function") {
-                        // Check if prompting is configured (can't prompt in sync path, so just log warning)
-                        const credMgrOptions = (CredentialManagerFactory.manager as any).options;
-                        const shouldPrompt = credMgrOptions?.promptForCertAccess === true;
-                        if (shouldPrompt) {
-                            Logger.getImperativeLogger().warn(
-                                `Certificate access prompting is configured but cannot be used in synchronous code path. ` +
-                                `Consider using async API methods for prompted certificate access.`
-                            );
-                        }
-
-                        // Build candidate account names, preferring explicit overrides on the session
-                        const acctCandidates: string[] = [];
-                        if (sessCredName === AuthOrder.SESS_CERT_NAME) {
-                            if (typeof (sessCfg as any).certAccount === "string" && (sessCfg as any).certAccount) {
-                                acctCandidates.push((sessCfg as any).certAccount);
-                            }
-                        } else {
-                            if (typeof (sessCfg as any).certKeyAccount === "string" && (sessCfg as any).certKeyAccount) {
-                                acctCandidates.push((sessCfg as any).certKeyAccount);
-                            }
-                            // For private keys, also try certAccount as fallback since macOS identities
-                            // store both certificate and private key under the same account name.
-                            if (typeof (sessCfg as any).certAccount === "string" && (sessCfg as any).certAccount) {
-                                if (!acctCandidates.includes((sessCfg as any).certAccount)) {
-                                    acctCandidates.push((sessCfg as any).certAccount);
-                                }
-                            }
-                        }
-                        if (typeof (sessCfg as any).profile === "string" && (sessCfg as any).profile) {
-                            acctCandidates.push((sessCfg as any).profile);
-                        }
-                        if (typeof (sessCfg as any).account === "string" && (sessCfg as any).account) {
-                            acctCandidates.push((sessCfg as any).account);
-                        }
-
-                        let lastError: Error | undefined;
-                        for (let i = 0; i < acctCandidates.length; i++) {
-                            const acct = acctCandidates[i];
-                            const isLastAttempt = i === acctCandidates.length - 1;
-                            try {
-                                const isKey = sessCredName === AuthOrder.SESS_CERT_KEY_NAME;
-                                const certBuf: Buffer | null = isKey ?
-                                    managerAny.loadCertificateKeySync(acct, !isLastAttempt) :
-                                    managerAny.loadCertificateSync(acct, !isLastAttempt);
-                                if (certBuf) {
-                                    const tmpDir = os.tmpdir();
-                                    const suffix = sessCredName === AuthOrder.SESS_CERT_NAME ? "-cert.pem" : "-key.pem";
-                                    const randomSuffix = crypto.randomBytes(4).toString('hex');
-                                    const tmpPath = path.join(tmpDir, `zowe-${Date.now()}-${randomSuffix}${suffix}`);
-                                    fs.writeFileSync(tmpPath, certBuf, { mode: 0o600 });
-                                    sessCfg._authCache.availableCreds[sessCredName] = tmpPath;
-                                    const authCacheAny: any = sessCfg._authCache;
-                                    if (!authCacheAny._tempFiles) authCacheAny._tempFiles = [];
-                                    authCacheAny._tempFiles.push(tmpPath);
-                                    break;
-                                }
-                            } catch (error_) {
-                                lastError = error_ as Error;
-                                // continue to try next candidate
-                            }
-                        }
-
-                        // Error logging is handled in the Rust layer with deduplication
-                    }
-                }
-            } catch (error_) {
-                // ignore
-            }
+            AuthOrder.cacheCertificateFromManagerSync(sessCredName, sessCfg);
         }
     }
 
