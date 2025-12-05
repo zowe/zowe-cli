@@ -40,11 +40,14 @@ public class ScrtProps {
     // SCRT property keywords. Some are used in the
     // Zowe-SCRT-client-feature header. Some are just for logging messages.
     public static final String FEAT_NAME_KW = "featureName";
+    public static final int    FEAT_NAME_MAX_LEN = 48;
     public static final String FEAT_DESC_KW = "featureDescription";
     public static final String PROD_ID_KW = "productId";
+    public static final int    PROD_ID_MAX_LEN = 8;
     public static final String PROD_NAME_KW = "productName";
     public static final String PROD_INST_KW = "productInstance";
     public static final String PROD_VER_KW = "productVersion";
+    public static final int    PROD_VER_MAX_LEN = 8; // vv.rr.mm
     public static final String VERSION_KW = "version";
     public static final String RELEASE_KW = "release";
     public static final String MOD_LEV_KW = "modLevel";
@@ -55,7 +58,7 @@ public class ScrtProps {
 
     // Todo: get the real default productVersion property from application.yaml
     // server.scrt.productVersion
-    private static final String dfltProductVersion = "1111.2222.33333";
+    private static final String dfltProductVersion = "11.22.33";
 
     private String featureName;     // used for featureName and featureDescription
     private String productName;     // retrieved from product catalog using product Id
@@ -70,19 +73,13 @@ public class ScrtProps {
      *
      * @param featureName Name of the feature
      *
-     * @throws JfrsSdkRcException when the default productId cannot be found in the product catalog.
+     * @throws JfrsSdkRcException when:
+     *      - featureName is null empty or blank
+     *      - feature name is too long
+     *      - the default productId cannot be found in the product catalog.
      */
     ScrtProps(String featureName) throws JfrsSdkRcException {
-        ensureNotNullEmptyOrBlank(featureName, this.FEAT_NAME_KW);
-
-        final int MAX_FEATURE_NAME_LEN = 48;
-        if (featureName.length() > MAX_FEATURE_NAME_LEN) {
-            JfrsSdkRcException.logErrThrowRcExcept(
-                JfrsSdkRcException.INVALID_PROPS_RC, JfrsSdkRcException.TOO_LONG_RSN,
-                "The supplied featureName '" + featureName +
-                "' is longer than " + MAX_FEATURE_NAME_LEN + " bytes"
-            );
-        }
+        ScrtProps.ensureValueAndLengthIsOk(featureName, this.FEAT_NAME_KW, this.FEAT_NAME_MAX_LEN);
         this.featureName = featureName;
 
         // assign default product properties until explicitly overridden.
@@ -97,23 +94,20 @@ public class ScrtProps {
      * @param productId         Product ID
      * @param productVersion    Product version (vv.rr.mm)
      *
-     * @throws JfrsSdkRcException when productId cannot be found in the product catalog.
+     * @throws JfrsSdkRcException when:
+     *      - productId is null empty or blank
+     *      - productId name is too long
+     *      - productId cannot be found in the product catalog
+     *      - productVersion is null empty or blank
+     *      - productVersion name is too long
+     *      - productVersion components are not numeric
      */
     public void setProductInfo(String productId, String productVersion) throws JfrsSdkRcException {
-        ensureNotNullEmptyOrBlank(productId, this.PROD_ID_KW);
-
-        final int MAX_PRODUCT_ID_LEN = 8;
-        if (productId.length() > MAX_PRODUCT_ID_LEN) {
-            JfrsSdkRcException.logErrThrowRcExcept(
-                JfrsSdkRcException.INVALID_PROPS_RC, JfrsSdkRcException.TOO_LONG_RSN,
-                "The supplied productId '" + productId +
-                "' is longer than " + MAX_PRODUCT_ID_LEN + " bytes"
-            );
-        }
+        ScrtProps.ensureValueAndLengthIsOk(productId, this.PROD_ID_KW, this.PROD_ID_MAX_LEN);
         this.productId = productId;
         this.productName = this.getProdNameFromProdCatalog(productId);
 
-        ensureNotNullEmptyOrBlank(productVersion, this.PROD_VER_KW);
+        ScrtProps.ensureValueAndLengthIsOk(productVersion, this.PROD_VER_KW, this.PROD_VER_MAX_LEN);
         this.extractValuesFromFullProdVersion(productVersion);
     }
 
@@ -176,13 +170,23 @@ public class ScrtProps {
 
     //*********************************************************************
     /**
-     * Determine is the supplied string is null empty or blank.
+     * Throw an exception if the supplied string is null, empty, or blank;
+     * or if its value is too long.
      */
-    private void ensureNotNullEmptyOrBlank(String strToTest, String nameForString) throws JfrsSdkRcException {
+    private static void ensureValueAndLengthIsOk(
+        String strToTest, String nameForString, int maxLenForString
+    ) throws JfrsSdkRcException {
         if (strToTest == null || strToTest.isBlank()) {
             JfrsSdkRcException.logErrThrowRcExcept(
                 JfrsSdkRcException.INVALID_PROPS_RC, JfrsSdkRcException.NULL_EMPTY_BLANK_RSN,
                 "The supplied " + nameForString + " = '" + strToTest + "' cannot be null, empty, or blank"
+            );
+        }
+        if (strToTest.length() > maxLenForString) {
+            JfrsSdkRcException.logErrThrowRcExcept(
+                JfrsSdkRcException.INVALID_PROPS_RC, JfrsSdkRcException.TOO_LONG_RSN,
+                "The supplied " + nameForString + " = '" + strToTest +
+                "' is longer than " + maxLenForString + " bytes"
             );
         }
     }
