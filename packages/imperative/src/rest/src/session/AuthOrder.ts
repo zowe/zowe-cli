@@ -20,6 +20,7 @@ import { Config } from "../../../config";
 import * as fs from "fs";
 import * as os from "os";
 import * as path from "path";
+import * as crypto from "crypto";
 import { CredentialManagerFactory } from "../../../security";
 
 /**
@@ -924,8 +925,8 @@ export class AuthOrder {
                                 // Write to temp file (secure mode) and store path in cache so rest client can read it as file path
                                 const tmpDir = os.tmpdir();
                                 const suffix = sessCredName === AuthOrder.SESS_CERT_NAME ? "-cert.pem" : "-key.pem";
-                                const randomSuffix = Math.random().toString(36).substring(2, 8);
-                                const tmpPath = path.join(tmpDir, `zowe-${Date.now()}${randomSuffix}${suffix}`);
+                                const randomSuffix = crypto.randomBytes(4).toString('hex');
+                                const tmpPath = path.join(tmpDir, `zowe-${Date.now()}-${randomSuffix}${suffix}`);
                                 // write with secure permissions 0o600
                                 fs.writeFileSync(tmpPath, certBuf, { mode: 0o600 });
                                 sessCfg._authCache.availableCreds[sessCredName] = tmpPath;
@@ -1015,8 +1016,8 @@ export class AuthOrder {
                                 if (certBuf) {
                                     const tmpDir = os.tmpdir();
                                     const suffix = sessCredName === AuthOrder.SESS_CERT_NAME ? "-cert.pem" : "-key.pem";
-                                    const randomSuffix = Math.random().toString(36).substring(2, 8);
-                                    const tmpPath = path.join(tmpDir, `zowe-${Date.now()}${randomSuffix}${suffix}`);
+                                    const randomSuffix = crypto.randomBytes(4).toString('hex');
+                                    const tmpPath = path.join(tmpDir, `zowe-${Date.now()}-${randomSuffix}${suffix}`);
                                     fs.writeFileSync(tmpPath, certBuf, { mode: 0o600 });
                                     sessCfg._authCache.availableCreds[sessCredName] = tmpPath;
                                     const authCacheAny: any = sessCfg._authCache;
