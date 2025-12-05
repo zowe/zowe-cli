@@ -409,7 +409,7 @@ pub fn get_certificate_key(service: &String, account: &String, _optional: bool) 
     }
 
     // If not found in Credential Manager, try the Certificate Store
-    get_certificate_key_from_store(service, account)
+    search_certificate_store(account, |cert_context| extract_private_key_from_cert(cert_context))
 }
 
 /// Helper function to perform basic validation that the decoded bytes look like a private key.
