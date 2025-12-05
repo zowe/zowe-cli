@@ -24,7 +24,10 @@ public class App {
         zzz end comment */
 
         System.out.println("______________________________________________________________");
-        System.out.println("Call interceptor with no featureName in the header. Expect error.\n");
+        System.out.println("Interceptor: App URL: No featureName in the header." +
+            "\n    Expect Missing_FeatureName error to be logged." +
+            "\n    Expect request to be forwarded.\n"
+        );
         mockRequest = createMockRequest(false);
         mockRequest.addHeader("Zowe-SCRT-client-feature",
             "featureNameMispelled=\"STATEMAN featureName from header\""
@@ -35,7 +38,10 @@ public class App {
         showInterceptResult(interceptResult);
 
         System.out.println("______________________________________________________________");
-        System.out.println("Call interceptor with only the featureName in the header. Expect success.\n");
+        System.out.println("Interceptor: App URL: Only the featureName in the header." +
+            "\n    Expect success." +
+            "\n    Expect request to be forwarded.\n"
+        );
         mockRequest = createMockRequest(false);
         mockRequest.addHeader("Zowe-SCRT-client-feature",
             "featureName=\"STATEMAN featureName from header\""
@@ -46,7 +52,10 @@ public class App {
         showInterceptResult(interceptResult);
 
         System.out.println("______________________________________________________________");
-        System.out.println("Call interceptor with only productId in the header. Expect error.\n");
+        System.out.println("Interceptor: App URL: Only productId in the header." +
+            "\n    Expect Missing_ProductVersion error to be logged." +
+            "\n    Expect request to be forwarded.\n"
+        );
         mockRequest = createMockRequest(false);
         mockRequest.addHeader("Zowe-SCRT-client-feature",
             "featureName=\"REXX featureName from header\", " +
@@ -58,7 +67,10 @@ public class App {
         showInterceptResult(interceptResult);
 
         System.out.println("______________________________________________________________");
-        System.out.println("Call interceptor with all feature and product properties in the header. Expect success.\n");
+        System.out.println("Interceptor: App URL: All feature and product properties in the header." +
+            "\n    Expect success." +
+            "\n    Expect request to be forwarded.\n"
+        );
         mockRequest = createMockRequest(false);
         mockRequest.addHeader("Zowe-SCRT-client-feature",
             "featureName=\"REXX featureName from header\", " +
@@ -71,8 +83,10 @@ public class App {
         showInterceptResult(interceptResult);
 
         System.out.println("______________________________________________________________");
-        System.out.println("Call interceptor with URL '" + ScrtFeatHeaderInterceptor.ONLY_RECORD_SCRT_URL +
-            "' and no header. Expect error.\n"
+        System.out.println("Interceptor: URL = '" + ScrtFeatHeaderInterceptor.ONLY_RECORD_SCRT_URL +
+            "': No header." +
+            "\n    Expect RequiresHeader error to be logged." +
+            "\n    Expect request to be discarded.\n"
         );
         mockRequest = createMockRequest(true);
         interceptResult = new ScrtFeatHeaderInterceptor().preHandle(
@@ -81,8 +95,10 @@ public class App {
         showInterceptResult(interceptResult);
 
         System.out.println("______________________________________________________________");
-        System.out.println("Call interceptor with URL '" + ScrtFeatHeaderInterceptor.ONLY_RECORD_SCRT_URL +
-            "' and no product props in header. Expect error.\n"
+        System.out.println("Interceptor: URL = '" + ScrtFeatHeaderInterceptor.ONLY_RECORD_SCRT_URL +
+            "': No product props in header." +
+            "\n    Expect Missing_ProdId_ProdVer error to be logged." +
+            "\n    Expect request to be discarded.\n"
         );
         mockRequest = createMockRequest(true);
         mockRequest.addHeader("Zowe-SCRT-client-feature",
@@ -94,8 +110,10 @@ public class App {
         showInterceptResult(interceptResult);
 
         System.out.println("______________________________________________________________");
-        System.out.println("Call interceptor with URL '" + ScrtFeatHeaderInterceptor.ONLY_RECORD_SCRT_URL +
-            "' and all product and feature props in header. Expect success.\n"
+        System.out.println("Interceptor: URL = '" + ScrtFeatHeaderInterceptor.ONLY_RECORD_SCRT_URL +
+            "': All product and feature props in header." +
+            "\n    Expect success." +
+            "\n    Expect request to be discarded.\n"
         );
         mockRequest = createMockRequest(true);
         mockRequest.addHeader("Zowe-SCRT-client-feature",
@@ -109,14 +127,18 @@ public class App {
         showInterceptResult(interceptResult);
 
         System.out.println("______________________________________________________________");
-        System.out.println("Call recordFeatureUse with null ScrtProps parameter. Expect Error.\n");
+        System.out.println("recordFeatureUse: null ScrtProps parameter." +
+            "\n    Expect Null_ScrtPropVals error to be logged.\n"
+        );
         FrsResult recordUseResult = new JfrsZosWriter().recordFeatureUse(null);
         System.out.println("\nFrsResult rc = " + recordUseResult.getRc() +
             " rsn = " + recordUseResult.getRsn()
         );
 
         System.out.println("______________________________________________________________");
-        System.out.println("Call recordFeatureUse with null feature name. Expect Error.\n");
+        System.out.println("recordFeatureUse: null feature name." +
+            "\n    Expect Null_FeatureName error to be logged.\n"
+        );
         ScrtProps scrtPropsFromPgm = null;
         try {
             scrtPropsFromPgm = new ScrtProps(null);
@@ -133,7 +155,9 @@ public class App {
         );
 
         System.out.println("______________________________________________________________");
-        System.out.println("Call recordFeatureUse with blank feature name. Expect Error.\n");
+        System.out.println("recordFeatureUse: blank featureName." +
+            "\n    Expect Blank_FeatureName error to be logged.\n"
+        );
         try {
             scrtPropsFromPgm = new ScrtProps("   ");
             System.out.println("\nScrtProps with blank feature name should have thrown an exception. We should not reach this statement!!!");
@@ -149,7 +173,9 @@ public class App {
         );
 
         System.out.println("______________________________________________________________");
-        System.out.println("Call recordFeatureUse with all product and feature properties. Expect success.\n");
+        System.out.println("recordFeatureUse: All product and feature properties." +
+            "\n    Expect success.\n"
+        );
         scrtPropsFromPgm = new ScrtProps("featNameFromPgm");
         scrtPropsFromPgm.setProductInfo("pIdPgm", "14.15.16");
         recordUseResult = new JfrsZosWriter().recordFeatureUse(scrtPropsFromPgm);
@@ -158,7 +184,9 @@ public class App {
         );
 
         System.out.println("______________________________________________________________");
-        System.out.println("Calling recordFeatureUse with same feature within 1 day should *NOT* record SCRT\n");
+        System.out.println("recordFeatureUse: Same feature within 1 day" +
+            "\n    Expect SCRT to *NOT* be recorded\n"
+        );
         Thread.sleep(2000);
         scrtPropsFromPgm = new ScrtProps("featNameFromPgm");
         scrtPropsFromPgm.setProductInfo("pIdPgm", "14.15.16");
