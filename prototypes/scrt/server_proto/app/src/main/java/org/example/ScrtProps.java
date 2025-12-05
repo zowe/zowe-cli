@@ -48,17 +48,18 @@ public class ScrtProps {
     public static final String PROD_INST_KW = "productInstance";
     public static final String PROD_VER_KW = "productVersion";
     public static final int    PROD_VER_MAX_LEN = 8; // vv.rr.mm
+    public static final int    PROD_VER_PART_MAX_LEN = 2;
     public static final String VERSION_KW = "version";
     public static final String RELEASE_KW = "release";
     public static final String MOD_LEV_KW = "modLevel";
 
     // Todo: get the real default productId property from application.yaml
     // server.scrt.productId
-    private static final String dfltProductId = "pIdYaml";
+    private static String dfltProductId = "pIdYaml";
 
     // Todo: get the real default productVersion property from application.yaml
     // server.scrt.productVersion
-    private static final String dfltProductVersion = "11.22.33";
+    private static String dfltProductVersion = "11.22.33";
 
     private String featureName;     // used for featureName and featureDescription
     private String productName;     // retrieved from product catalog using product Id
@@ -81,6 +82,15 @@ public class ScrtProps {
     ScrtProps(String featureName) throws JfrsSdkRcException {
         ScrtProps.ensureValueAndLengthIsOk(featureName, this.FEAT_NAME_KW, this.FEAT_NAME_MAX_LEN);
         this.featureName = featureName;
+
+        // If productId and productVersion are not in application.yaml, do not fail.
+        // Assign a bogus placeholders, in case our caller later calls setProductInfo.
+        if (dfltProductId == null || dfltProductId.isBlank()) {
+            dfltProductId = "noYmlPid";
+        }
+        if (dfltProductVersion == null || dfltProductVersion.isBlank()) {
+            dfltProductVersion = "noYmlVer";
+        }
 
         // assign default product properties until explicitly overridden.
         setProductInfo(dfltProductId, dfltProductVersion);
@@ -163,7 +173,17 @@ public class ScrtProps {
         } catch (Exception except) {
             JfrsSdkRcException.logErrThrowRcExcept(
                 JfrsSdkRcException.INVALID_PROPS_RC, JfrsSdkRcException.INVALID_VERSION_FORMAT_RSN,
-                "A component of fullProdVersion '" + fullProdVersion + "' is not numeric."
+                "At least 1 of the 3 components of fullProdVersion '" + fullProdVersion + "' is not numeric."
+            );
+        }
+        if (this.version.length()  > this.PROD_VER_PART_MAX_LEN ||
+            this.release.length()  > this.PROD_VER_PART_MAX_LEN ||
+            this.modLevel.length() > this.PROD_VER_PART_MAX_LEN )
+        {
+            JfrsSdkRcException.logErrThrowRcExcept(
+                JfrsSdkRcException.INVALID_PROPS_RC, JfrsSdkRcException.TOO_BIG_RSN,
+                "At least 1 of the 3 components of fullProdVersion '" + fullProdVersion +
+                "' is longer than " + this.PROD_VER_PART_MAX_LEN + " bytes"
             );
         }
     }
@@ -184,7 +204,7 @@ public class ScrtProps {
         }
         if (strToTest.length() > maxLenForString) {
             JfrsSdkRcException.logErrThrowRcExcept(
-                JfrsSdkRcException.INVALID_PROPS_RC, JfrsSdkRcException.TOO_LONG_RSN,
+                JfrsSdkRcException.INVALID_PROPS_RC, JfrsSdkRcException.TOO_BIG_RSN,
                 "The supplied " + nameForString + " = '" + strToTest +
                 "' is longer than " + maxLenForString + " bytes"
             );

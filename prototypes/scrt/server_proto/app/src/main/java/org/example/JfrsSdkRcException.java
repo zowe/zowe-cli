@@ -51,7 +51,7 @@ public class JfrsSdkRcException extends Exception {
     public static final int NULL_EMPTY_BLANK_RSN = 12;
     public static final int PROD_NOT_IN_CATALOG_RSN = 13;
     public static final int INVALID_VERSION_FORMAT_RSN = 14;
-    public static final int TOO_LONG_RSN = 15;
+    public static final int TOO_BIG_RSN = 15;
 
     private int rc = 0;
     private int rsn = 0;

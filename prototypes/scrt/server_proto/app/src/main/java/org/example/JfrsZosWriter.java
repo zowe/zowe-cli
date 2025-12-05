@@ -44,6 +44,7 @@ public class JfrsZosWriter {
     // we cache the product token for future use
     private static Map<String, byte[]> prodTokenMap = new HashMap<>();
     private static final Object prodTokenMapLock = new Object();
+    private static final int MAX_PROD_TOKENS = 300;
 
     // A class to hold a feature token and the time that the feature was last updated for SCRT
     private static class FeatTokenInfo {
@@ -55,6 +56,7 @@ public class JfrsZosWriter {
             lastUpdate = Instant.EPOCH; // not yet updated
         }
     }
+    private static final int MAX_FEAT_TOKENS = 700;
 
     // we cache every feature token for future use
     private static Map<String, FeatTokenInfo> featTokenMap = new HashMap<>();
@@ -163,6 +165,15 @@ public class JfrsZosWriter {
         synchronized (prodTokenMapLock) {
             desiredProdToken = JfrsZosWriter.prodTokenMap.get(scrtPropVals.getProductName());
             if (desiredProdToken == null) {
+                // we must obtain a new product token
+                if (prodTokenMap.size() == JfrsZosWriter.MAX_PROD_TOKENS) {
+                    logScrtPropsAndThrowRcExcept(scrtPropVals,
+                        JfrsSdkRcException.REG_PROD_FAILED_RC, JfrsSdkRcException.TOO_BIG_RSN,
+                        "Reached the maximum number of cached product tokens =  '" +
+                        JfrsZosWriter.MAX_PROD_TOKENS
+                    );
+                }
+
                 FrsResult prodRegResult = new FrsResult(0, 0, "".getBytes());
                 try {
                     prodRegResult = FeatureRegistrationServiceWrapper.registerProduct(
@@ -216,6 +227,14 @@ public class JfrsZosWriter {
             featTokenInfo = JfrsZosWriter.featTokenMap.get(scrtPropVals.getFeatureName());
             if (featTokenInfo == null) {
                 // the feature has never been added, so add it now
+                if (featTokenMap.size() == JfrsZosWriter.MAX_FEAT_TOKENS) {
+                    logScrtPropsAndThrowRcExcept(scrtPropVals,
+                        JfrsSdkRcException.REG_PROD_FAILED_RC, JfrsSdkRcException.TOO_BIG_RSN,
+                        "Reached the maximum number of cached feature tokens =  '" +
+                        JfrsZosWriter.MAX_FEAT_TOKENS
+                    );
+                }
+
                 FrsResult addFeatResult = new FrsResult(0, 0, "".getBytes());
                 try {
                     final String noLmpKey = "";
