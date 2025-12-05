@@ -460,10 +460,85 @@ fn is_likely_private_key(bytes: &[u8]) -> bool {
     false
 }
 
-/// Search for a private key in the Windows Certificate Store based on the certificate subject or account name.
-/// This function looks for certificates in both Current User and Local Machine stores and attempts to 
-/// extract the associated private key.
-fn get_certificate_key_from_store(service: &String, account: &String) -> Result<Option<Vec<u8>>, KeyringError> {
+/// Generic certificate store search helper. Takes a closure that processes each certificate found.
+/// Returns the first successful result from the closure, or None if no certificates match.
+fn search_certificate_store<F>(account: &String, processor: F) -> Result<Option<Vec<u8>>, KeyringError>
+where
+    F: Fn(*const CERT_CONTEXT) -> Result<Option<Vec<u8>>, KeyringError>,
+{
+    // Windows constants for certificate store types
+    const CERT_SYSTEM_STORE_CURRENT_USER: u32 = 0x00010000;
+    const CERT_SYSTEM_STORE_LOCAL_MACHINE: u32 = 0x00020000;
+    
+    // Try both Current User and Local Machine certificate stores  
+    let store_names = ["MY", "Root", "CA", "AddressBook"]; // AddressBook is "Other People" store
+    let store_locations = [
+        CERT_SYSTEM_STORE_CURRENT_USER,
+        CERT_SYSTEM_STORE_LOCAL_MACHINE,
+    ];
+
+    for &_store_location in &store_locations {
+        for store_name in &store_names {
+            let store_name_wide = encode_utf16(store_name);
+            
+            // Open the certificate store
+            let h_store = unsafe {
+                CertOpenSystemStoreW(
+                    0,
+                    store_name_wide.as_ptr()
+                )
+            };
+
+            if h_store.is_null() {
+                continue; // Try next store
+            }
+
+            // Search for certificates by subject name containing the account
+            let search_string = encode_utf16(account);
+            let mut cert_context = unsafe {
+                CertFindCertificateInStore(
+                    h_store,
+                    65537, // X509_ASN_ENCODING | PKCS_7_ASN_ENCODING
+                    0,
+                    CERT_FIND_SUBJECT_STR_W,
+                    search_string.as_ptr() as *const c_void,
+                    std::ptr::null(),
+                )
+            };
+
+            // If not found by subject, try enumerating all certificates
+            if cert_context.is_null() {
+                cert_context = unsafe {
+                    CertEnumCertificatesInStore(h_store, std::ptr::null())
+                };
+            }
+
+            while !cert_context.is_null() {
+                // Try processor on this certificate
+                match processor(cert_context) {
+                    Ok(Some(data)) => {
+                        unsafe { CertCloseStore(h_store, 0) };
+                        return Ok(Some(data));
+                    }
+                    Ok(None) => {
+                        // Get next certificate
+                        cert_context = unsafe {
+                            CertEnumCertificatesInStore(h_store, cert_context)
+                        };
+                    }
+                    Err(e) => {
+                        unsafe { CertCloseStore(h_store, 0) };
+                        return Err(e);
+                    }
+                }
+            }
+
+            unsafe { CertCloseStore(h_store, 0) };
+        }
+    }
+
+    Ok(None)
+}
     // Windows constants for certificate store types
     const CERT_SYSTEM_STORE_CURRENT_USER: u32 = 0x00010000;
     const CERT_SYSTEM_STORE_LOCAL_MACHINE: u32 = 0x00020000;
@@ -580,71 +655,7 @@ fn extract_private_key_from_cert(cert_context: *const CERT_CONTEXT) -> Result<Op
 
 /// Search for a certificate (public key) in the Windows Certificate Store and return it in PEM format
 fn get_certificate_from_store(service: &String, account: &String) -> Result<Option<Vec<u8>>, KeyringError> {
-    // Windows constants for certificate store types
-    const CERT_SYSTEM_STORE_CURRENT_USER: u32 = 0x00010000;
-    const CERT_SYSTEM_STORE_LOCAL_MACHINE: u32 = 0x00020000;
-    
-    // Try both Current User and Local Machine certificate stores  
-    let store_names = ["MY", "Root", "CA", "AddressBook"]; // AddressBook is "Other People" store
-    let store_locations = [
-        CERT_SYSTEM_STORE_CURRENT_USER,
-        CERT_SYSTEM_STORE_LOCAL_MACHINE,
-    ];
-
-    for &_store_location in &store_locations {
-        for store_name in &store_names {
-            let store_name_wide = encode_utf16(store_name);
-            
-            // Open the certificate store
-            let h_store = unsafe {
-                CertOpenSystemStoreW(
-                    0,
-                    store_name_wide.as_ptr()
-                )
-            };
-
-            if h_store.is_null() {
-                continue; // Try next store
-            }
-
-            // Search for certificates by subject name containing the account
-            let search_string = encode_utf16(account);
-            let mut cert_context = unsafe {
-                CertFindCertificateInStore(
-                    h_store,
-                    65537, // X509_ASN_ENCODING | PKCS_7_ASN_ENCODING
-                    0,
-                    CERT_FIND_SUBJECT_STR_W,
-                    search_string.as_ptr() as *const c_void,
-                    std::ptr::null(),
-                )
-            };
-
-            // If not found by subject, try enumerating all certificates
-            if cert_context.is_null() {
-                cert_context = unsafe {
-                    CertEnumCertificatesInStore(h_store, std::ptr::null())
-                };
-            }
-
-            while !cert_context.is_null() {
-                // Extract the certificate data in PEM format
-                if let Ok(Some(cert_bytes)) = extract_certificate_data(cert_context) {
-                    unsafe { CertCloseStore(h_store, 0) };
-                    return Ok(Some(cert_bytes));
-                }
-
-                // Get next certificate
-                cert_context = unsafe {
-                    CertEnumCertificatesInStore(h_store, cert_context)
-                };
-            }
-
-            unsafe { CertCloseStore(h_store, 0) };
-        }
-    }
-
-    Ok(None)
+    search_certificate_store(account, |cert_context| extract_certificate_data(cert_context))
 }
 
 /// Extract certificate data and convert to PEM format
