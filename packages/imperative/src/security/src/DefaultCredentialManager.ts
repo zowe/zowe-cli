@@ -97,7 +97,7 @@ export class DefaultCredentialManager extends AbstractCredentialManager {
         // the abstract class initialization in the future.
         super(service, displayName, options);
 
-        if (process.platform === "win32") {    
+        if (process.platform === "win32") {
             switch (options?.persist) {
                 case PersistenceLevel.SessionOnly:
                     this.persistValueWin32 = PersistenceValue.SessionOnly;
@@ -110,11 +110,15 @@ export class DefaultCredentialManager extends AbstractCredentialManager {
                     break;
                 default:
                     if (options?.persist) {
-                        Logger.getImperativeLogger().warn("[DefaultCredentialManager] Win32 persistence option is invalid, falling back to enterprise.");
+                        Logger.getImperativeLogger().warn(
+                            "[DefaultCredentialManager] Win32 persistence option is invalid, falling back to enterprise."
+                        );
                     }
                     break;
             }
-            Logger.getImperativeLogger().trace(`[DefaultCredentialManager] Persistence level received (win32): ${options?.persist ?? PersistenceLevel.Enterprise}`);
+            Logger.getImperativeLogger().trace(
+                `[DefaultCredentialManager] Persistence level received (win32): ${options?.persist ?? PersistenceLevel.Enterprise}`
+            );
         }
 
         /* Gather all services. We will load secure properties for the first
