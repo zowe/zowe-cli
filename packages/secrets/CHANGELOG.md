@@ -4,7 +4,7 @@ All notable changes to the Zowe Secrets SDK package will be documented in this f
 
 ## Recent Changes
 
-- Enhancement: Added support for secure certificates in keyring. [#2325](https://github.com/zowe/zowe-cli/issues/2325)
+- Enhancement: Added support for secure certificates in keyring for Windows and macOS. [#2325](https://github.com/zowe/zowe-cli/issues/2325)
 
 ## `8.29.0`
 
