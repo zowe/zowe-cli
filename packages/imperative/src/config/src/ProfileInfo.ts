@@ -753,17 +753,21 @@ export class ProfileInfo {
      */
     public async mergeArgsForProfileAsync(
         profile: IProfAttrs,
-        mergeOpts: IProfMergeArgOpts = { getSecureVals: false }
+        mergeOpts?: IProfMergeArgOpts
     ): Promise<IProfMergedArg> {
-        const mergedArgs = this.mergeArgsForProfile(profile, { ...mergeOpts, getSecureVals: false });
+        const opts = mergeOpts ?? { getSecureVals: false };
+        const mergedArgs = this.mergeArgsForProfile(profile, { ...opts, getSecureVals: false });
 
-        if (mergeOpts.getSecureVals) {
+        if (opts.getSecureVals) {
             // Load secure values asynchronously where applicable
             for (const nextArg of mergedArgs.knownArgs) {
                 if (nextArg.secure) {
                     try {
                         nextArg.argValue = await this.loadSecureArgAsync(nextArg);
-                    } catch (_err) {
+                    } catch (error_) {
+                        Logger.getImperativeLogger().debug(
+                            `Failed to load secure value for ${nextArg.argName}: ${(error_ as Error).message}`
+                        );
                         nextArg.argValue = undefined;
                     }
                 }
@@ -1021,19 +1025,17 @@ export class ProfileInfo {
         this.ensureReadFromDisk();
         let argValue;
 
-        switch (arg.argLoc.locType) {
-            case ProfLocType.TEAM_CONFIG:
-                if (arg.argLoc.osLoc?.length > 0 && arg.argLoc.jsonLoc != null) {
-                    for (const layer of this.mLoadedConfig.mLayers) {
-                        if (layer.path === arg.argLoc.osLoc[0]) {
-                            argValue = lodash.get(layer.properties, arg.argLoc.jsonLoc);
-                            break;
-                        }
+        if (arg.argLoc.locType === ProfLocType.TEAM_CONFIG) {
+            if (arg.argLoc.osLoc?.length > 0 && arg.argLoc.jsonLoc != null) {
+                for (const layer of this.mLoadedConfig.mLayers) {
+                    if (layer.path === arg.argLoc.osLoc[0]) {
+                        argValue = lodash.get(layer.properties, arg.argLoc.jsonLoc);
+                        break;
                     }
                 }
-                break;
-            default:
-                argValue = arg.argValue;
+            }
+        } else {
+            argValue = arg.argValue;
         }
 
         if (argValue === undefined) {

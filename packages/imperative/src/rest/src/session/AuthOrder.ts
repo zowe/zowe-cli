@@ -17,10 +17,10 @@ import { Logger } from "../../../logger";
 import * as SessConstants from "./SessConstants";
 import { ImperativeConfig } from "../../../utilities";
 import { Config } from "../../../config";
-import * as fs from "fs";
-import * as os from "os";
-import * as path from "path";
-import * as crypto from "crypto";
+import * as fs from "node:fs";
+import * as os from "node:os";
+import * as path from "node:path";
+import * as crypto from "node:crypto";
 import { CredentialManagerFactory } from "../../../security";
 
 /**
@@ -119,10 +119,10 @@ export class AuthOrder {
      */
     public static async addCredsToSessionAsync<SessCfgType extends ISession>(
         sessCfg: SessCfgType,
-        cmdArgs: ICommandArguments = { "$0": "NameNotUsed", "_": [] }
+        cmdArgs?: ICommandArguments
     ): Promise<void> {
         // Use the async cache so callers that await this get fully populated cache
-        await AuthOrder.cacheCredsAndAuthOrder(sessCfg, cmdArgs);
+        await AuthOrder.cacheCredsAndAuthOrder(sessCfg, cmdArgs ?? { "$0": "NameNotUsed", "_": [] });
 
         // Ensure the top auth is placed into the session
         AuthOrder.putTopAuthInSession(sessCfg);
@@ -208,12 +208,12 @@ export class AuthOrder {
                 for (const tmpPath of authCacheAny._tempFiles) {
                     try {
                         if (fs.existsSync(tmpPath)) fs.unlinkSync(tmpPath);
-                    } catch (_e) {
+                    } catch (error_) {
                         // ignore unlink errors
                     }
                 }
             }
-        } catch (_e) {
+        } catch (error_) {
             // ignore
         }
         delete sessCfg._authCache;
@@ -737,13 +737,13 @@ export class AuthOrder {
     // Synchronous variant used to preserve backward-compatible synchronous API
     private static cacheCredsAndAuthOrderSync<SessCfgType extends ISession>(
         sessCfg: SessCfgType,
-        cmdArgs: ICommandArguments = { "$0": "NameNotUsed", "_": [] }
+        cmdArgs?: ICommandArguments
     ): void {
         // create a new auth cache (if needed) in the session config
         AuthOrder.findOrCreateAuthCache(sessCfg);
 
         // add any discovered authOrder to the cache
-        AuthOrder.cacheAuthOrder(sessCfg, cmdArgs);
+        AuthOrder.cacheAuthOrder(sessCfg, cmdArgs ?? { "$0": "NameNotUsed", "_": [] });
 
         // add every available cred to the cache synchronously
         for (const sessCredName of AuthOrder.ARRAY_OF_CREDS) {
@@ -896,7 +896,6 @@ export class AuthOrder {
                     }
 
                     let lastError: Error | undefined;
-                    let foundCred = false;
                     for (let i = 0; i < acctCandidates.length; i++) {
                         const acct = acctCandidates[i];
                         const isLastAttempt = i === acctCandidates.length - 1;
@@ -934,18 +933,17 @@ export class AuthOrder {
                                 const authCacheAny: any = sessCfg._authCache;
                                 if (!authCacheAny._tempFiles) authCacheAny._tempFiles = [];
                                 authCacheAny._tempFiles.push(tmpPath);
-                                foundCred = true;
                                 break;
                             }
-                        } catch (err) {
-                            lastError = err as Error;
+                        } catch (error_) {
+                            lastError = error_ as Error;
                             // continue to try next candidate
                         }
                     }
 
                     // Error logging is handled in the Rust layer with deduplication
                 }
-            } catch (_err) {
+            } catch (error_) {
                 // ignore
             }
         }
@@ -1004,7 +1002,6 @@ export class AuthOrder {
                         }
 
                         let lastError: Error | undefined;
-                        let foundCred = false;
                         for (let i = 0; i < acctCandidates.length; i++) {
                             const acct = acctCandidates[i];
                             const isLastAttempt = i === acctCandidates.length - 1;
@@ -1023,11 +1020,10 @@ export class AuthOrder {
                                     const authCacheAny: any = sessCfg._authCache;
                                     if (!authCacheAny._tempFiles) authCacheAny._tempFiles = [];
                                     authCacheAny._tempFiles.push(tmpPath);
-                                    foundCred = true;
                                     break;
                                 }
-                            } catch (err) {
-                                lastError = err as Error;
+                            } catch (error_) {
+                                lastError = error_ as Error;
                                 // continue to try next candidate
                             }
                         }
@@ -1035,7 +1031,7 @@ export class AuthOrder {
                         // Error logging is handled in the Rust layer with deduplication
                     }
                 }
-            } catch (_err) {
+            } catch (error_) {
                 // ignore
             }
         }
@@ -1219,13 +1215,13 @@ export class AuthOrder {
                 for (const tmpPath of authCacheAny._tempFiles) {
                     try {
                         if (fs.existsSync(tmpPath)) fs.unlinkSync(tmpPath);
-                    } catch (_e) {
+                    } catch (error_) {
                         // ignore
                     }
                 }
                 authCacheAny._tempFiles = [];
             }
-        } catch (_e) {
+        } catch (error_) {
             // ignore
         }
     }

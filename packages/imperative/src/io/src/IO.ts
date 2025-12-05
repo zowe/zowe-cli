@@ -475,7 +475,7 @@ export class IO {
             // If it's a symlink or file, unlink it
             const topStats = fs.lstatSync(dir);
             if (topStats.isSymbolicLink() || topStats.isFile()) {
-                try { fs.unlinkSync(dir); } catch (e) { /* best-effort */ }
+                try { fs.unlinkSync(dir); } catch (error_) { /* best-effort */ }
                 return;
             }
 
@@ -492,11 +492,11 @@ export class IO {
                     } else {
                         IO.deleteDirTree(moved);
                     }
-                } catch (e) {
+                } catch (error_) {
                     // ignore cleanup errors
                 }
                 return;
-            } catch (renameErr) {
+            } catch (error_) {
                 // If rename fails, fall back to best-effort recursive removal.
             }
 
@@ -508,19 +508,19 @@ export class IO {
                         if (childStats.isDirectory()) {
                             IO.deleteDir(childPath);
                         } else {
-                            try { fs.unlinkSync(childPath); } catch (e) { /* best-effort */ }
+                            try { fs.unlinkSync(childPath); } catch (error_) { /* best-effort */ }
                         }
-                    } catch (e) {
+                    } catch (error_) {
                         // ignore per-file errors
                     }
                 });
-            } catch (e) {
+            } catch (error_) {
                 // ignore read errors
             }
 
             // Finally, try to remove the now-empty directory. If this fails, ignore.
-            try { fs.rmdirSync(dir); } catch (e) { /* best-effort */ }
-        } catch (errObj) {
+            try { fs.rmdirSync(dir); } catch (error_) { /* best-effort */ }
+        } catch (error_) {
             // Swallow cleanup errors during tests. We don't want a best-effort cleanup failure
             // to cause test suites to error out.
             return;
