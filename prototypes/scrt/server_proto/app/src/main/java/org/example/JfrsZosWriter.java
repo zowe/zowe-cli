@@ -163,7 +163,7 @@ public class JfrsZosWriter {
     private static byte[] getProdToken(ScrtProps scrtPropVals) throws JfrsSdkRcException {
         byte[] desiredProdToken = null;
         synchronized (prodTokenMapLock) {
-            desiredProdToken = JfrsZosWriter.prodTokenMap.get(scrtPropVals.getProductName());
+            desiredProdToken = JfrsZosWriter.prodTokenMap.get(scrtPropVals.getProductId());
             if (desiredProdToken == null) {
                 // we must obtain a new product token
                 if (prodTokenMap.size() == JfrsZosWriter.MAX_PROD_TOKENS) {
@@ -200,10 +200,10 @@ public class JfrsZosWriter {
                     );
                 }
 
-                // Cache the product token by product name so that we do not have to register the
+                // Cache the product token by product ID so that we do not have to register the
                 // product again each time that we want to use the product in this REST service
                 desiredProdToken = prodRegResult.getToken();
-                JfrsZosWriter.prodTokenMap.put(scrtPropVals.getProductName(), desiredProdToken);
+                JfrsZosWriter.prodTokenMap.put(scrtPropVals.getProductId(), desiredProdToken);
             }
         }
         return desiredProdToken;
