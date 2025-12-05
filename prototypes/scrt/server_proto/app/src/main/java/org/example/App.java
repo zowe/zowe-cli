@@ -13,193 +13,578 @@ import org.example.JfrsSdkRcException;
 public class App {
 
     public static void main(String[] args) throws Exception {
-        MockHttpServletRequest mockRequest;
-        boolean interceptResult;
+        final boolean testScrtPropsCnstr = true;
+        final boolean testScrtPropsSetProd = true;
+        final boolean testInterceptor = true;
+        final boolean testRecordFeatureUse = true;
+
+        boolean didTestPass = true;
         Object handlerObj = new Object();
+        boolean interceptResult;
+        MockHttpServletRequest mockRequest;
+        ScrtProps scrtPropsFromPgm = null;
 
         MockHttpServletResponse mockResponse = new MockHttpServletResponse();
 
-        /* zzz start comment
-
-        zzz end comment */
-
-        System.out.println("______________________________________________________________");
-        System.out.println("Interceptor: App URL: No featureName in the header." +
-            "\n    Expect Missing_FeatureName error to be logged." +
-            "\n    Expect request to be forwarded.\n"
-        );
-        mockRequest = createMockRequest(false);
-        mockRequest.addHeader("Zowe-SCRT-client-feature",
-            "featureNameMispelled=\"STATEMAN featureName from header\""
-        );
-        interceptResult = new ScrtFeatHeaderInterceptor().preHandle(
-            (MockHttpServletRequest) mockRequest, (HttpServletResponse) mockResponse, handlerObj
-        );
-        showInterceptResult(interceptResult);
-
-        System.out.println("______________________________________________________________");
-        System.out.println("Interceptor: App URL: Only the featureName in the header." +
-            "\n    Expect success." +
-            "\n    Expect request to be forwarded.\n"
-        );
-        mockRequest = createMockRequest(false);
-        mockRequest.addHeader("Zowe-SCRT-client-feature",
-            "featureName=\"STATEMAN featureName from header\""
-        );
-        interceptResult = new ScrtFeatHeaderInterceptor().preHandle(
-            (MockHttpServletRequest) mockRequest, (HttpServletResponse) mockResponse, handlerObj
-        );
-        showInterceptResult(interceptResult);
-
-        System.out.println("______________________________________________________________");
-        System.out.println("Interceptor: App URL: Only productId in the header." +
-            "\n    Expect Missing_ProductVersion error to be logged." +
-            "\n    Expect request to be forwarded.\n"
-        );
-        mockRequest = createMockRequest(false);
-        mockRequest.addHeader("Zowe-SCRT-client-feature",
-            "featureName=\"REXX featureName from header\", " +
-            "productId=\"pIdHdr\""
-        );
-        interceptResult = new ScrtFeatHeaderInterceptor().preHandle(
-            (MockHttpServletRequest) mockRequest, (HttpServletResponse) mockResponse, handlerObj
-        );
-        showInterceptResult(interceptResult);
-
-        System.out.println("______________________________________________________________");
-        System.out.println("Interceptor: App URL: All feature and product properties in the header." +
-            "\n    Expect success." +
-            "\n    Expect request to be forwarded.\n"
-        );
-        mockRequest = createMockRequest(false);
-        mockRequest.addHeader("Zowe-SCRT-client-feature",
-            "featureName=\"REXX featureName from header\", " +
-            "productId=\"pIdHdr\", " +
-            "productVersion=\"14.2.3\""
-        );
-        interceptResult = new ScrtFeatHeaderInterceptor().preHandle(
-            (MockHttpServletRequest) mockRequest, (HttpServletResponse) mockResponse, handlerObj
-        );
-        showInterceptResult(interceptResult);
-
-        System.out.println("______________________________________________________________");
-        System.out.println("Interceptor: URL = '" + ScrtFeatHeaderInterceptor.ONLY_RECORD_SCRT_URL +
-            "': No header." +
-            "\n    Expect RequiresHeader error to be logged." +
-            "\n    Expect request to be discarded.\n"
-        );
-        mockRequest = createMockRequest(true);
-        interceptResult = new ScrtFeatHeaderInterceptor().preHandle(
-            (MockHttpServletRequest) mockRequest, (HttpServletResponse) mockResponse, handlerObj
-        );
-        showInterceptResult(interceptResult);
-
-        System.out.println("______________________________________________________________");
-        System.out.println("Interceptor: URL = '" + ScrtFeatHeaderInterceptor.ONLY_RECORD_SCRT_URL +
-            "': No product props in header." +
-            "\n    Expect Missing_ProdId_ProdVer error to be logged." +
-            "\n    Expect request to be discarded.\n"
-        );
-        mockRequest = createMockRequest(true);
-        mockRequest.addHeader("Zowe-SCRT-client-feature",
-            "featureName=\"AAA featureName from header\""
-        );
-        interceptResult = new ScrtFeatHeaderInterceptor().preHandle(
-            (MockHttpServletRequest) mockRequest, (HttpServletResponse) mockResponse, handlerObj
-        );
-        showInterceptResult(interceptResult);
-
-        System.out.println("______________________________________________________________");
-        System.out.println("Interceptor: URL = '" + ScrtFeatHeaderInterceptor.ONLY_RECORD_SCRT_URL +
-            "': All product and feature props in header." +
-            "\n    Expect success." +
-            "\n    Expect request to be discarded.\n"
-        );
-        mockRequest = createMockRequest(true);
-        mockRequest.addHeader("Zowe-SCRT-client-feature",
-            "featureName=\"OPS featureName from header for " + ScrtFeatHeaderInterceptor.ONLY_RECORD_SCRT_URL + " \", " +
-            "productId=\"pIdHdr\", " +
-            "productVersion=\"14.2.3\""
-        );
-        interceptResult = new ScrtFeatHeaderInterceptor().preHandle(
-            (MockHttpServletRequest) mockRequest, (HttpServletResponse) mockResponse, handlerObj
-        );
-        showInterceptResult(interceptResult);
-
-        System.out.println("______________________________________________________________");
-        System.out.println("recordFeatureUse: null ScrtProps parameter." +
-            "\n    Expect Null_ScrtPropVals error to be logged.\n"
-        );
-        FrsResult recordUseResult = new JfrsZosWriter().recordFeatureUse(null);
-        System.out.println("\nFrsResult rc = " + recordUseResult.getRc() +
-            " rsn = " + recordUseResult.getRsn()
-        );
-
-        System.out.println("______________________________________________________________");
-        System.out.println("recordFeatureUse: null feature name." +
-            "\n    Expect Null_FeatureName error to be logged.\n"
-        );
-        ScrtProps scrtPropsFromPgm = null;
-        try {
-            scrtPropsFromPgm = new ScrtProps(null);
-            System.out.println("\nScrtProps with null feature name should have thrown an exception. We should not reach this statement!!!");
-        } catch (JfrsSdkRcException except) {
-            FrsResult scrtResult = except.getFrsResult();
-            System.out.println("Properly caught exception: RC = " + scrtResult.getRc() +
-                " rsn = " + scrtResult.getRsn()
+        //**************************************************************************************
+        if (testScrtPropsCnstr) {
+            System.out.println("______________________________________________________________");
+            System.out.println("ScrtProps: Constructor: Null feature name." +
+                "\n    Expect Null_FeatureName error to be logged." +
+                "\n    Expect Null_FeatureName exception to be thrown.\n"
             );
-        }
-        recordUseResult = new JfrsZosWriter().recordFeatureUse(scrtPropsFromPgm);
-        System.out.println("\nFrsResult rc = " + recordUseResult.getRc() +
-            " rsn = " + recordUseResult.getRsn()
-        );
+            didTestPass = false;
+            scrtPropsFromPgm = null;
+            try {
+                scrtPropsFromPgm = new ScrtProps(null);
+                System.out.println("\nScrtProps should have thrown an exception. We should not reach this statement!");
+            } catch (JfrsSdkRcException except) {
+                FrsResult scrtResult = except.getFrsResult();
+                System.out.println("\nProperly caught exception: RC = " + scrtResult.getRc() +
+                    " rsn = " + scrtResult.getRsn() +
+                    "\n    Reason: " + except.getMessage()
+                );
+                if (scrtResult.getRc()  == JfrsSdkRcException.INVALID_PROPS_RC &&
+                    scrtResult.getRsn() == JfrsSdkRcException.NULL_EMPTY_BLANK_RSN
+                ) {
+                    didTestPass = true;
+                }
+            }
+            showTestResult(didTestPass, "Got unexpected RC and RSN values");
 
-        System.out.println("______________________________________________________________");
-        System.out.println("recordFeatureUse: blank featureName." +
-            "\n    Expect Blank_FeatureName error to be logged.\n"
-        );
-        try {
-            scrtPropsFromPgm = new ScrtProps("   ");
-            System.out.println("\nScrtProps with blank feature name should have thrown an exception. We should not reach this statement!!!");
-        } catch (JfrsSdkRcException except) {
-            FrsResult scrtResult = except.getFrsResult();
-            System.out.println("Properly caught exception: RC = " + scrtResult.getRc() +
-                " rsn = " + scrtResult.getRsn()
+            System.out.println("______________________________________________________________");
+            System.out.println("ScrtProps: Constructor: Empty featureName." +
+                "\n    Expect Empty_FeatureName error to be logged." +
+                "\n    Expect Empty_FeatureName exception to be thrown.\n"
             );
-        }
-        recordUseResult = new JfrsZosWriter().recordFeatureUse(scrtPropsFromPgm);
-        System.out.println("\nFrsResult rc = " + recordUseResult.getRc() +
-            " rsn = " + recordUseResult.getRsn()
-        );
+            didTestPass = false;
+            try {
+                scrtPropsFromPgm = new ScrtProps("");
+                System.out.println("\nScrtProps should have thrown an exception. We should not reach this statement!");
+            } catch (JfrsSdkRcException except) {
+                FrsResult scrtResult = except.getFrsResult();
+                System.out.println("\nProperly caught exception: RC = " + scrtResult.getRc() +
+                    " rsn = " + scrtResult.getRsn() +
+                    "\n    Reason: " + except.getMessage()
+                );
+                if (scrtResult.getRc()  == JfrsSdkRcException.INVALID_PROPS_RC &&
+                    scrtResult.getRsn() == JfrsSdkRcException.NULL_EMPTY_BLANK_RSN
+                ) {
+                    didTestPass = true;
+                }
+            }
+            showTestResult(didTestPass, "Got unexpected RC and RSN values");
+
+            System.out.println("______________________________________________________________");
+            System.out.println("ScrtProps: Constructor: Blank featureName." +
+                "\n    Expect Blank_FeatureName error to be logged." +
+                "\n    Expect Blank_FeatureName exception to be thrown.\n"
+            );
+            didTestPass = false;
+            try {
+                scrtPropsFromPgm = new ScrtProps("   ");
+                System.out.println("\nScrtProps should have thrown an exception. We should not reach this statement!");
+            } catch (JfrsSdkRcException except) {
+                FrsResult scrtResult = except.getFrsResult();
+                System.out.println("\nProperly caught exception: RC = " + scrtResult.getRc() +
+                    " rsn = " + scrtResult.getRsn() +
+                    "\n    Reason: " + except.getMessage()
+                );
+                if (scrtResult.getRc()  == JfrsSdkRcException.INVALID_PROPS_RC &&
+                    scrtResult.getRsn() == JfrsSdkRcException.NULL_EMPTY_BLANK_RSN
+                ) {
+                    didTestPass = true;
+                }
+            }
+            showTestResult(didTestPass, "Got unexpected RC and RSN values");
+
+            System.out.println("______________________________________________________________");
+            System.out.println("ScrtProps: Constructor: Long featureName." +
+                "\n    Expect Long_FeatureName error to be logged." +
+                "\n    Expect Long_FeatureName exception to be thrown.\n"
+            );
+            didTestPass = false;
+            try {
+                scrtPropsFromPgm = new ScrtProps("This long feature name has more than 48 characters");
+                System.out.println("\nScrtProps should have thrown an exception. We should not reach this statement!");
+            } catch (JfrsSdkRcException except) {
+                FrsResult scrtResult = except.getFrsResult();
+                System.out.println("\nProperly caught exception: RC = " + scrtResult.getRc() +
+                    " rsn = " + scrtResult.getRsn() +
+                    "\n    Reason: " + except.getMessage()
+                );
+                if (scrtResult.getRc()  == JfrsSdkRcException.INVALID_PROPS_RC &&
+                    scrtResult.getRsn() == JfrsSdkRcException.TOO_BIG_RSN
+                ) {
+                    didTestPass = true;
+                }
+            }
+            showTestResult(didTestPass, "Got unexpected RC and RSN values");
+
+            System.out.println("______________________________________________________________");
+            System.out.println("ScrtProps: setProductInfo: Null product ID." +
+                "\n    Expect Null_ProductId error to be logged." +
+                "\n    Expect Null_ProductId exception to be thrown.\n"
+            );
+            didTestPass = false;
+            scrtPropsFromPgm = new ScrtProps("GoodFeatureName");
+            try {
+                scrtPropsFromPgm.setProductInfo(null, "11.22.33");
+                System.out.println("setProductInfo should have thrown an exception. We should not reach this statement!");
+            } catch (JfrsSdkRcException except) {
+                FrsResult scrtResult = except.getFrsResult();
+                System.out.println("\nProperly caught exception: RC = " + scrtResult.getRc() +
+                    " rsn = " + scrtResult.getRsn() +
+                    "\n    Reason: " + except.getMessage()
+                );
+                if (scrtResult.getRc()  == JfrsSdkRcException.INVALID_PROPS_RC &&
+                    scrtResult.getRsn() == JfrsSdkRcException.NULL_EMPTY_BLANK_RSN
+                ) {
+                    didTestPass = true;
+                }
+            }
+            showTestResult(didTestPass, "Got unexpected RC and RSN values");
+
+            System.out.println("______________________________________________________________");
+            System.out.println("ScrtProps: setProductInfo: Empty product ID." +
+                "\n    Expect Empty_ProductId error to be logged." +
+                "\n    Expect Empty_ProductId exception to be thrown.\n"
+            );
+            didTestPass = false;
+            scrtPropsFromPgm = new ScrtProps("GoodFeatureName");
+            try {
+                scrtPropsFromPgm.setProductInfo("", "11.22.33");
+                System.out.println("setProductInfo should have thrown an exception. We should not reach this statement!");
+            } catch (JfrsSdkRcException except) {
+                FrsResult scrtResult = except.getFrsResult();
+                System.out.println("\nProperly caught exception: RC = " + scrtResult.getRc() +
+                    " rsn = " + scrtResult.getRsn() +
+                    "\n    Reason: " + except.getMessage()
+                );
+                if (scrtResult.getRc()  == JfrsSdkRcException.INVALID_PROPS_RC &&
+                    scrtResult.getRsn() == JfrsSdkRcException.NULL_EMPTY_BLANK_RSN
+                ) {
+                    didTestPass = true;
+                }
+            }
+            showTestResult(didTestPass, "Got unexpected RC and RSN values");
+        } // end testScrtPropsCnstr
+
+        //**************************************************************************************
+        if (testScrtPropsSetProd) {
+            System.out.println("______________________________________________________________");
+            System.out.println("ScrtProps: setProductInfo: Blank product ID." +
+                "\n    Expect Blank_ProductId error to be logged." +
+                "\n    Expect Blank_ProductId exception to be thrown.\n"
+            );
+            didTestPass = false;
+            scrtPropsFromPgm = new ScrtProps("GoodFeatureName");
+            try {
+                scrtPropsFromPgm.setProductInfo("   ", "11.22.33");
+                System.out.println("setProductInfo should have thrown an exception. We should not reach this statement!");
+            } catch (JfrsSdkRcException except) {
+                FrsResult scrtResult = except.getFrsResult();
+                System.out.println("\nProperly caught exception: RC = " + scrtResult.getRc() +
+                    " rsn = " + scrtResult.getRsn() +
+                    "\n    Reason: " + except.getMessage()
+                );
+                if (scrtResult.getRc()  == JfrsSdkRcException.INVALID_PROPS_RC &&
+                    scrtResult.getRsn() == JfrsSdkRcException.NULL_EMPTY_BLANK_RSN
+                ) {
+                    didTestPass = true;
+                }
+            }
+            showTestResult(didTestPass, "Got unexpected RC and RSN values");
+
+            System.out.println("______________________________________________________________");
+            System.out.println("ScrtProps: setProductInfo: Long product ID." +
+                "\n    Expect Long_ProductId error to be logged." +
+                "\n    Expect Long_ProductId exception to be thrown.\n"
+            );
+            didTestPass = false;
+            scrtPropsFromPgm = new ScrtProps("GoodFeatureName");
+            try {
+                scrtPropsFromPgm.setProductInfo("prodIdMoreThan8", "11.22.33");
+                System.out.println("setProductInfo should have thrown an exception. We should not reach this statement!");
+            } catch (JfrsSdkRcException except) {
+                FrsResult scrtResult = except.getFrsResult();
+                System.out.println("\nProperly caught exception: RC = " + scrtResult.getRc() +
+                    " rsn = " + scrtResult.getRsn() +
+                    "\n    Reason: " + except.getMessage()
+                );
+                if (scrtResult.getRc()  == JfrsSdkRcException.INVALID_PROPS_RC &&
+                    scrtResult.getRsn() == JfrsSdkRcException.TOO_BIG_RSN
+                ) {
+                    didTestPass = true;
+                }
+            }
+            showTestResult(didTestPass, "Got unexpected RC and RSN values");
+
+            System.out.println("______________________________________________________________");
+            System.out.println("ScrtProps: setProductInfo: Null productVersion." +
+                "\n    Expect Null_ProductVersion error to be logged." +
+                "\n    Expect Null_ProductVersion exception to be thrown.\n"
+            );
+            didTestPass = false;
+            scrtPropsFromPgm = new ScrtProps("GoodFeatureName");
+            try {
+                scrtPropsFromPgm.setProductInfo("goodPid", null);
+                System.out.println("setProductInfo should have thrown an exception. We should not reach this statement!");
+            } catch (JfrsSdkRcException except) {
+                FrsResult scrtResult = except.getFrsResult();
+                System.out.println("\nProperly caught exception: RC = " + scrtResult.getRc() +
+                    " rsn = " + scrtResult.getRsn() +
+                    "\n    Reason: " + except.getMessage()
+                );
+                if (scrtResult.getRc()  == JfrsSdkRcException.INVALID_PROPS_RC &&
+                    scrtResult.getRsn() == JfrsSdkRcException.NULL_EMPTY_BLANK_RSN
+                ) {
+                    didTestPass = true;
+                }
+            }
+            showTestResult(didTestPass, "Got unexpected RC and RSN values");
+
+            System.out.println("______________________________________________________________");
+            System.out.println("ScrtProps: setProductInfo: Empty productVersion." +
+                "\n    Expect Empty_ProductVersion error to be logged." +
+                "\n    Expect Empty_ProductVersion exception to be thrown.\n"
+            );
+            didTestPass = false;
+            scrtPropsFromPgm = new ScrtProps("GoodFeatureName");
+            try {
+                scrtPropsFromPgm.setProductInfo("goodPid", "");
+                System.out.println("setProductInfo should have thrown an exception. We should not reach this statement!");
+            } catch (JfrsSdkRcException except) {
+                FrsResult scrtResult = except.getFrsResult();
+                System.out.println("\nProperly caught exception: RC = " + scrtResult.getRc() +
+                    " rsn = " + scrtResult.getRsn() +
+                    "\n    Reason: " + except.getMessage()
+                );
+                if (scrtResult.getRc()  == JfrsSdkRcException.INVALID_PROPS_RC &&
+                    scrtResult.getRsn() == JfrsSdkRcException.NULL_EMPTY_BLANK_RSN
+                ) {
+                    didTestPass = true;
+                }
+            }
+            showTestResult(didTestPass, "Got unexpected RC and RSN values");
+
+            System.out.println("______________________________________________________________");
+            System.out.println("ScrtProps: setProductInfo: Blank productVersion." +
+                "\n    Expect Blank_ProductVersion error to be logged." +
+                "\n    Expect Blank_ProductVersion exception to be thrown.\n"
+            );
+            didTestPass = false;
+            scrtPropsFromPgm = new ScrtProps("GoodFeatureName");
+            try {
+                scrtPropsFromPgm.setProductInfo("goodPid", "    ");
+                System.out.println("setProductInfo should have thrown an exception. We should not reach this statement!");
+            } catch (JfrsSdkRcException except) {
+                FrsResult scrtResult = except.getFrsResult();
+                System.out.println("\nProperly caught exception: RC = " + scrtResult.getRc() +
+                    " rsn = " + scrtResult.getRsn() +
+                    "\n    Reason: " + except.getMessage()
+                );
+                if (scrtResult.getRc()  == JfrsSdkRcException.INVALID_PROPS_RC &&
+                    scrtResult.getRsn() == JfrsSdkRcException.NULL_EMPTY_BLANK_RSN
+                ) {
+                    didTestPass = true;
+                }
+            }
+            showTestResult(didTestPass, "Got unexpected RC and RSN values");
+
+            System.out.println("______________________________________________________________");
+            System.out.println("ScrtProps: setProductInfo: Long FullProductVersion." +
+                "\n    Expect Long_FullProductVersion error to be logged." +
+                "\n    Expect Long_FullProductVersion exception to be thrown.\n"
+            );
+            didTestPass = false;
+            scrtPropsFromPgm = new ScrtProps("GoodFeatureName");
+            try {
+                scrtPropsFromPgm.setProductInfo("goodPid", "11.22.333");
+                System.out.println("setProductInfo should have thrown an exception. We should not reach this statement!");
+            } catch (JfrsSdkRcException except) {
+                FrsResult scrtResult = except.getFrsResult();
+                System.out.println("\nProperly caught exception: RC = " + scrtResult.getRc() +
+                    " rsn = " + scrtResult.getRsn() +
+                    "\n    Reason: " + except.getMessage()
+                );
+                if (scrtResult.getRc()  == JfrsSdkRcException.INVALID_PROPS_RC &&
+                    scrtResult.getRsn() == JfrsSdkRcException.TOO_BIG_RSN
+                ) {
+                    didTestPass = true;
+                }
+            }
+            showTestResult(didTestPass, "Got unexpected RC and RSN values");
+
+            System.out.println("______________________________________________________________");
+            System.out.println("ScrtProps: setProductInfo: Long productVersion component." +
+                "\n    Expect Long_ProductVersionComponent error to be logged." +
+                "\n    Expect Long_ProductVersionComponent exception to be thrown.\n"
+            );
+            didTestPass = false;
+            scrtPropsFromPgm = new ScrtProps("GoodFeatureName");
+            try {
+                scrtPropsFromPgm.setProductInfo("goodPid", "1.2.333");
+                System.out.println("setProductInfo should have thrown an exception. We should not reach this statement!");
+            } catch (JfrsSdkRcException except) {
+                FrsResult scrtResult = except.getFrsResult();
+                System.out.println("\nProperly caught exception: RC = " + scrtResult.getRc() +
+                    " rsn = " + scrtResult.getRsn() +
+                    "\n    Reason: " + except.getMessage()
+                );
+                if (scrtResult.getRc()  == JfrsSdkRcException.INVALID_PROPS_RC &&
+                    scrtResult.getRsn() == JfrsSdkRcException.TOO_BIG_RSN
+                ) {
+                    didTestPass = true;
+                }
+            }
+            showTestResult(didTestPass, "Got unexpected RC and RSN values");
+
+            System.out.println("______________________________________________________________");
+            System.out.println("ScrtProps: setProductInfo: Non-numeric productVersion." +
+                "\n    Expect NonNumeric_ProductVersion error to be logged." +
+                "\n    Expect NonNumeric_ProductVersion exception to be thrown.\n"
+            );
+            didTestPass = false;
+            scrtPropsFromPgm = new ScrtProps("GoodFeatureName");
+            try {
+                scrtPropsFromPgm.setProductInfo("goodPid", "A.2.333");
+                System.out.println("setProductInfo should have thrown an exception. We should not reach this statement!");
+            } catch (JfrsSdkRcException except) {
+                FrsResult scrtResult = except.getFrsResult();
+                System.out.println("\nProperly caught exception: RC = " + scrtResult.getRc() +
+                    " rsn = " + scrtResult.getRsn() +
+                    "\n    Reason: " + except.getMessage()
+                );
+                if (scrtResult.getRc()  == JfrsSdkRcException.INVALID_PROPS_RC &&
+                    scrtResult.getRsn() == JfrsSdkRcException.INVALID_VERSION_FORMAT_RSN
+                ) {
+                    didTestPass = true;
+                }
+            }
+            showTestResult(didTestPass, "Got unexpected RC and RSN values");
+
+            System.out.println("______________________________________________________________");
+            System.out.println("ScrtProps: setProductInfo: ProductVersion not 3 parts." +
+                "\n    Expect Not3Part_ProductVersion error to be logged." +
+                "\n    Expect Not3Part_ProductVersion exception to be thrown.\n"
+            );
+            didTestPass = false;
+            scrtPropsFromPgm = new ScrtProps("GoodFeatureName");
+            try {
+                scrtPropsFromPgm.setProductInfo("goodPid", "111.2222");
+                System.out.println("setProductInfo should have thrown an exception. We should not reach this statement!");
+            } catch (JfrsSdkRcException except) {
+                FrsResult scrtResult = except.getFrsResult();
+                System.out.println("\nProperly caught exception: RC = " + scrtResult.getRc() +
+                    " rsn = " + scrtResult.getRsn() +
+                    "\n    Reason: " + except.getMessage()
+                );
+                if (scrtResult.getRc()  == JfrsSdkRcException.INVALID_PROPS_RC &&
+                    scrtResult.getRsn() == JfrsSdkRcException.INVALID_VERSION_FORMAT_RSN
+                ) {
+                    didTestPass = true;
+                }
+            }
+            showTestResult(didTestPass, "Got unexpected RC and RSN values");
+        } // end testScrtPropsSetProd
+
+        //**************************************************************************************
+        if (testInterceptor) {
+            System.out.println("______________________________________________________________");
+            System.out.println("Interceptor: App URL: No featureName in the header." +
+                "\n    Expect Missing_FeatureName error to be logged." +
+                "\n    Expect request to be forwarded.\n"
+            );
+            didTestPass = false;
+            mockRequest = createMockRequest(false);
+            mockRequest.addHeader("Zowe-SCRT-client-feature",
+                "featureNameMispelled=\"STATEMAN featureName from header\""
+            );
+            interceptResult = new ScrtFeatHeaderInterceptor().preHandle(
+                (MockHttpServletRequest) mockRequest, (HttpServletResponse) mockResponse, handlerObj
+            );
+            showInterceptResult(interceptResult);
+            if (interceptResult == true) {
+                didTestPass = true;
+            }
+            showTestResult(didTestPass, "Request *SHOULD* have been forwarded");
+
+            System.out.println("______________________________________________________________");
+            System.out.println("Interceptor: App URL: Only the featureName in the header." +
+                "\n    Expect success." +
+                "\n    Expect request to be forwarded.\n"
+            );
+            didTestPass = false;
+            mockRequest = createMockRequest(false);
+            mockRequest.addHeader("Zowe-SCRT-client-feature",
+                "featureName=\"STATEMAN featureName from header\""
+            );
+            interceptResult = new ScrtFeatHeaderInterceptor().preHandle(
+                (MockHttpServletRequest) mockRequest, (HttpServletResponse) mockResponse, handlerObj
+            );
+            showInterceptResult(interceptResult);
+            if (interceptResult == true) {
+                didTestPass = true;
+            }
+            showTestResult(didTestPass, "Request *SHOULD* have been forwarded");
+
+            System.out.println("______________________________________________________________");
+            System.out.println("Interceptor: App URL: Only productId in the header." +
+                "\n    Expect Missing_ProductVersion error to be logged." +
+                "\n    Expect request to be forwarded.\n"
+            );
+            didTestPass = false;
+            mockRequest = createMockRequest(false);
+            mockRequest.addHeader("Zowe-SCRT-client-feature",
+                "featureName=\"REXX featureName from header\", " +
+                "productId=\"pIdHdr\""
+            );
+            interceptResult = new ScrtFeatHeaderInterceptor().preHandle(
+                (MockHttpServletRequest) mockRequest, (HttpServletResponse) mockResponse, handlerObj
+            );
+            showInterceptResult(interceptResult);
+            if (interceptResult == true) {
+                didTestPass = true;
+            }
+            showTestResult(didTestPass, "Request *SHOULD* have been forwarded");
+
+            System.out.println("______________________________________________________________");
+            System.out.println("Interceptor: App URL: All feature and product properties in the header." +
+                "\n    Expect success." +
+                "\n    Expect request to be forwarded.\n"
+            );
+            didTestPass = false;
+            mockRequest = createMockRequest(false);
+            mockRequest.addHeader("Zowe-SCRT-client-feature",
+                "featureName=\"REXX featureName from header\", " +
+                "productId=\"pIdHdr\", " +
+                "productVersion=\"14.2.3\""
+            );
+            interceptResult = new ScrtFeatHeaderInterceptor().preHandle(
+                (MockHttpServletRequest) mockRequest, (HttpServletResponse) mockResponse, handlerObj
+            );
+            showInterceptResult(interceptResult);
+            if (interceptResult == true) {
+                didTestPass = true;
+            }
+            showTestResult(didTestPass, "Request *SHOULD* have been forwarded");
+
+            System.out.println("______________________________________________________________");
+            System.out.println("Interceptor: URL = '" + ScrtFeatHeaderInterceptor.ONLY_RECORD_SCRT_URL +
+                "': No header." +
+                "\n    Expect RequiresHeader error to be logged." +
+                "\n    Expect request to be discarded.\n"
+            );
+            didTestPass = false;
+            mockRequest = createMockRequest(true);
+            interceptResult = new ScrtFeatHeaderInterceptor().preHandle(
+                (MockHttpServletRequest) mockRequest, (HttpServletResponse) mockResponse, handlerObj
+            );
+            showInterceptResult(interceptResult);
+            if (interceptResult == false) {
+                didTestPass = true;
+            }
+            showTestResult(didTestPass, "Request should *NOT* have been forwarded");
+
+            System.out.println("______________________________________________________________");
+            System.out.println("Interceptor: URL = '" + ScrtFeatHeaderInterceptor.ONLY_RECORD_SCRT_URL +
+                "': No product props in header." +
+                "\n    Expect Missing_ProdId_ProdVer error to be logged." +
+                "\n    Expect request to be discarded.\n"
+            );
+            didTestPass = false;
+            mockRequest = createMockRequest(true);
+            mockRequest.addHeader("Zowe-SCRT-client-feature",
+                "featureName=\"AAA featureName from header\""
+            );
+            interceptResult = new ScrtFeatHeaderInterceptor().preHandle(
+                (MockHttpServletRequest) mockRequest, (HttpServletResponse) mockResponse, handlerObj
+            );
+            showInterceptResult(interceptResult);
+            if (interceptResult == false) {
+                didTestPass = true;
+            }
+            showTestResult(didTestPass, "Request should *NOT* have been forwarded");
+
+            System.out.println("______________________________________________________________");
+            System.out.println("Interceptor: URL = '" + ScrtFeatHeaderInterceptor.ONLY_RECORD_SCRT_URL +
+                "': All product and feature props in header." +
+                "\n    Expect success." +
+                "\n    Expect request to be discarded.\n"
+            );
+            didTestPass = false;
+            mockRequest = createMockRequest(true);
+            mockRequest.addHeader("Zowe-SCRT-client-feature",
+                "featureName=\"OPS featureName from header for " + ScrtFeatHeaderInterceptor.ONLY_RECORD_SCRT_URL + " \", " +
+                "productId=\"pIdHdr\", " +
+                "productVersion=\"14.2.3\""
+            );
+            interceptResult = new ScrtFeatHeaderInterceptor().preHandle(
+                (MockHttpServletRequest) mockRequest, (HttpServletResponse) mockResponse, handlerObj
+            );
+            showInterceptResult(interceptResult);
+            if (interceptResult == false) {
+                didTestPass = true;
+            }
+            showTestResult(didTestPass, "Request should *NOT* have been forwarded");
+        } // end testInterceptor
+
+        //**************************************************************************************
+        if (testRecordFeatureUse) {
+            System.out.println("______________________________________________________________");
+            System.out.println("recordFeatureUse: null ScrtProps parameter." +
+                "\n    Expect Null_ScrtPropVals error to be logged.\n"
+            );
+            didTestPass = false;
+            FrsResult recordUseResult = new JfrsZosWriter().recordFeatureUse(null);
+            System.out.println("\nFrsResult rc = " + recordUseResult.getRc() +
+                " rsn = " + recordUseResult.getRsn()
+            );
+            if (recordUseResult.getRc()  == JfrsSdkRcException.INVALID_PROPS_RC &&
+                recordUseResult.getRsn() == JfrsSdkRcException.NULL_EMPTY_BLANK_RSN
+            ) {
+                didTestPass = true;
+            }
+            showTestResult(didTestPass, "Got unexpected RC and RSN values");
+
+            System.out.println("______________________________________________________________");
+            System.out.println("recordFeatureUse: All product and feature properties." +
+                "\n    Expect success.\n"
+            );
+            didTestPass = false;
+            scrtPropsFromPgm = new ScrtProps("featNameFromPgm");
+            scrtPropsFromPgm.setProductInfo("pIdPgm", "14.15.16");
+            recordUseResult = new JfrsZosWriter().recordFeatureUse(scrtPropsFromPgm);
+            System.out.println("\nFrsResult rc = " + recordUseResult.getRc() +
+                " rsn = " + recordUseResult.getRsn()
+            );
+            if (recordUseResult.getRc()  == 0 && recordUseResult.getRsn() == 0) {
+                didTestPass = true;
+            }
+            showTestResult(didTestPass, "Got unexpected RC and RSN values");
+
+            System.out.println("______________________________________________________________");
+            System.out.println("recordFeatureUse: Same feature within 1 day" +
+                "\n    Expect SCRT to *NOT* be recorded\n"
+            );
+            didTestPass = false;
+            Thread.sleep(2000);
+            scrtPropsFromPgm = new ScrtProps("featNameFromPgm");
+            scrtPropsFromPgm.setProductInfo("pIdPgm", "14.15.16");
+            recordUseResult = new JfrsZosWriter().recordFeatureUse(scrtPropsFromPgm);
+            System.out.println("\nFrsResult rc = " + recordUseResult.getRc() +
+                " rsn = " + recordUseResult.getRsn()
+            );
+            if (recordUseResult.getRc()  == 0 && recordUseResult.getRsn() == 0) {
+                didTestPass = true;
+            }
+            showTestResult(didTestPass, "Got unexpected RC and RSN values");
+        } // end testRecordFeatureUse
 
         System.out.println("______________________________________________________________");
-        System.out.println("recordFeatureUse: All product and feature properties." +
-            "\n    Expect success.\n"
-        );
-        scrtPropsFromPgm = new ScrtProps("featNameFromPgm");
-        scrtPropsFromPgm.setProductInfo("pIdPgm", "14.15.16");
-        recordUseResult = new JfrsZosWriter().recordFeatureUse(scrtPropsFromPgm);
-        System.out.println("\nFrsResult rc = " + recordUseResult.getRc() +
-            " rsn = " + recordUseResult.getRsn()
-        );
 
-        System.out.println("______________________________________________________________");
-        System.out.println("recordFeatureUse: Same feature within 1 day" +
-            "\n    Expect SCRT to *NOT* be recorded\n"
-        );
-        Thread.sleep(2000);
-        scrtPropsFromPgm = new ScrtProps("featNameFromPgm");
-        scrtPropsFromPgm.setProductInfo("pIdPgm", "14.15.16");
-        recordUseResult = new JfrsZosWriter().recordFeatureUse(scrtPropsFromPgm);
-        System.out.println("\nFrsResult rc = " + recordUseResult.getRc() +
-            " rsn = " + recordUseResult.getRsn()
-        );
-        System.out.println("______________________________________________________________");
-
-        /* zzz start comment
-
-        zzz end comment */
-    }
+    } // end main
 
     // ________________________________________________________________________________
     private static MockHttpServletRequest createMockRequest(boolean useUrlForOnlyScrt) {
@@ -225,4 +610,15 @@ public class App {
         );
     }
 
+    // ________________________________________________________________________________
+    private static void showTestResult(boolean didTestPass, String failureReason) {
+        if (didTestPass) {
+            System.out.println("\nThis test passed :-)");
+        } else {
+            System.out.println("\nThis test failed :-(");
+            System.out.println("    " + failureReason);
+            System.out.println("    Terminating test suite!");
+            System.exit(666);
+        }
+    }
 } // end App class
