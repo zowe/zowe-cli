@@ -54,7 +54,7 @@
     },
     "__tests__/__packages__/cli-test-utils": {
       "name": "@zowe/cli-test-utils",
-      "version": "8.29.1",
+      "version": "8.29.4",
       "license": "EPL-2.0",
       "dependencies": {
         "find-up": "^5.0.0",
@@ -65,7 +65,7 @@
       "devDependencies": {
         "@types/js-yaml": "^4.0.9",
         "@types/uuid": "^10.0.0",
-        "@zowe/imperative": "8.29.1"
+        "@zowe/imperative": "8.29.4"
       },
       "peerDependencies": {
         "@zowe/imperative": "^8.0.0"
@@ -144,11 +144,6 @@
         "type": "opencollective",
         "url": "https://opencollective.com/babel"
       }
-    },
-    "node_modules/@babel/core/node_modules/convert-source-map": {
-      "version": "2.0.0",
-      "dev": true,
-      "license": "MIT"
     },
     "node_modules/@babel/core/node_modules/semver": {
       "version": "6.3.1",
@@ -725,6 +720,27 @@
       "dev": true,
       "license": "BSD-3-Clause"
     },
+    "node_modules/@inquirer/external-editor": {
+      "version": "1.0.3",
+      "integrity": "sha512-RWbSrDiYmO4LbejWY7ttpxczuwQyZLBUyygsA9Nsv95hpzUWwnNTVQmAq3xuh7vNwCp07UTmE5i11XAEExx4RA==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "chardet": "^2.1.1",
+        "iconv-lite": "^0.7.0"
+      },
+      "engines": {
+        "node": ">=18"
+      },
+      "peerDependencies": {
+        "@types/node": ">=18"
+      },
+      "peerDependenciesMeta": {
+        "@types/node": {
+          "optional": true
+        }
+      }
+    },
     "node_modules/@inquirer/figures": {
       "version": "1.0.3",
       "dev": true,
@@ -867,7 +883,8 @@
       }
     },
     "node_modules/@istanbuljs/load-nyc-config/node_modules/js-yaml": {
-      "version": "3.14.1",
+      "version": "3.14.2",
+      "integrity": "sha512-PMSmkqxr106Xa156c2M265Z+FTrPl+oxd/rgOQy2tijQeK5TxQ43psO1ZCwhVOSdnn+RzkzlRz/eY4BgJBYVpg==",
       "dev": true,
       "license": "MIT",
       "dependencies": {
@@ -938,22 +955,6 @@
         "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
       }
     },
-    "node_modules/@jest/console/node_modules/jest-util": {
-      "version": "29.7.0",
-      "dev": true,
-      "license": "MIT",
-      "dependencies": {
-        "@jest/types": "^29.6.3",
-        "@types/node": "*",
-        "chalk": "^4.0.0",
-        "ci-info": "^3.2.0",
-        "graceful-fs": "^4.2.9",
-        "picomatch": "^2.2.3"
-      },
-      "engines": {
-        "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
-      }
-    },
     "node_modules/@jest/core": {
       "version": "29.7.0",
       "dev": true,
@@ -1000,31 +1001,6 @@
         }
       }
     },
-    "node_modules/@jest/core/node_modules/@jest/transform": {
-      "version": "29.7.0",
-      "dev": true,
-      "license": "MIT",
-      "dependencies": {
-        "@babel/core": "^7.11.6",
-        "@jest/types": "^29.6.3",
-        "@jridgewell/trace-mapping": "^0.3.18",
-        "babel-plugin-istanbul": "^6.1.1",
-        "chalk": "^4.0.0",
-        "convert-source-map": "^2.0.0",
-        "fast-json-stable-stringify": "^2.1.0",
-        "graceful-fs": "^4.2.9",
-        "jest-haste-map": "^29.7.0",
-        "jest-regex-util": "^29.6.3",
-        "jest-util": "^29.7.0",
-        "micromatch": "^4.0.4",
-        "pirates": "^4.0.4",
-        "slash": "^3.0.0",
-        "write-file-atomic": "^4.0.2"
-      },
-      "engines": {
-        "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
-      }
-    },
     "node_modules/@jest/core/node_modules/camelcase": {
       "version": "6.3.0",
       "dev": true,
@@ -1035,11 +1011,6 @@
       "funding": {
         "url": "https://github.com/sponsors/sindresorhus"
       }
-    },
-    "node_modules/@jest/core/node_modules/convert-source-map": {
-      "version": "2.0.0",
-      "dev": true,
-      "license": "MIT"
     },
     "node_modules/@jest/core/node_modules/diff": {
       "version": "4.0.2",
@@ -1096,54 +1067,6 @@
         }
       }
     },
-    "node_modules/@jest/core/node_modules/jest-haste-map": {
-      "version": "29.7.0",
-      "dev": true,
-      "license": "MIT",
-      "dependencies": {
-        "@jest/types": "^29.6.3",
-        "@types/graceful-fs": "^4.1.3",
-        "@types/node": "*",
-        "anymatch": "^3.0.3",
-        "fb-watchman": "^2.0.0",
-        "graceful-fs": "^4.2.9",
-        "jest-regex-util": "^29.6.3",
-        "jest-util": "^29.7.0",
-        "jest-worker": "^29.7.0",
-        "micromatch": "^4.0.4",
-        "walker": "^1.0.8"
-      },
-      "engines": {
-        "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
-      },
-      "optionalDependencies": {
-        "fsevents": "^2.3.2"
-      }
-    },
-    "node_modules/@jest/core/node_modules/jest-regex-util": {
-      "version": "29.6.3",
-      "dev": true,
-      "license": "MIT",
-      "engines": {
-        "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
-      }
-    },
-    "node_modules/@jest/core/node_modules/jest-util": {
-      "version": "29.7.0",
-      "dev": true,
-      "license": "MIT",
-      "dependencies": {
-        "@jest/types": "^29.6.3",
-        "@types/node": "*",
-        "chalk": "^4.0.0",
-        "ci-info": "^3.2.0",
-        "graceful-fs": "^4.2.9",
-        "picomatch": "^2.2.3"
-      },
-      "engines": {
-        "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
-      }
-    },
     "node_modules/@jest/core/node_modules/jest-validate": {
       "version": "29.7.0",
       "dev": true,
@@ -1158,34 +1081,6 @@
       },
       "engines": {
         "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
-      }
-    },
-    "node_modules/@jest/core/node_modules/jest-worker": {
-      "version": "29.7.0",
-      "dev": true,
-      "license": "MIT",
-      "dependencies": {
-        "@types/node": "*",
-        "jest-util": "^29.7.0",
-        "merge-stream": "^2.0.0",
-        "supports-color": "^8.0.0"
-      },
-      "engines": {
-        "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
-      }
-    },
-    "node_modules/@jest/core/node_modules/supports-color": {
-      "version": "8.1.1",
-      "dev": true,
-      "license": "MIT",
-      "dependencies": {
-        "has-flag": "^4.0.0"
-      },
-      "engines": {
-        "node": ">=10"
-      },
-      "funding": {
-        "url": "https://github.com/chalk/supports-color?sponsor=1"
       }
     },
     "node_modules/@jest/core/node_modules/ts-node": {
@@ -1297,22 +1192,6 @@
         "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
       }
     },
-    "node_modules/@jest/fake-timers/node_modules/jest-util": {
-      "version": "29.7.0",
-      "dev": true,
-      "license": "MIT",
-      "dependencies": {
-        "@jest/types": "^29.6.3",
-        "@types/node": "*",
-        "chalk": "^4.0.0",
-        "ci-info": "^3.2.0",
-        "graceful-fs": "^4.2.9",
-        "picomatch": "^2.2.3"
-      },
-      "engines": {
-        "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
-      }
-    },
     "node_modules/@jest/globals": {
       "version": "29.7.0",
       "dev": true,
@@ -1369,36 +1248,6 @@
         }
       }
     },
-    "node_modules/@jest/reporters/node_modules/@jest/transform": {
-      "version": "29.7.0",
-      "dev": true,
-      "license": "MIT",
-      "dependencies": {
-        "@babel/core": "^7.11.6",
-        "@jest/types": "^29.6.3",
-        "@jridgewell/trace-mapping": "^0.3.18",
-        "babel-plugin-istanbul": "^6.1.1",
-        "chalk": "^4.0.0",
-        "convert-source-map": "^2.0.0",
-        "fast-json-stable-stringify": "^2.1.0",
-        "graceful-fs": "^4.2.9",
-        "jest-haste-map": "^29.7.0",
-        "jest-regex-util": "^29.6.3",
-        "jest-util": "^29.7.0",
-        "micromatch": "^4.0.4",
-        "pirates": "^4.0.4",
-        "slash": "^3.0.0",
-        "write-file-atomic": "^4.0.2"
-      },
-      "engines": {
-        "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
-      }
-    },
-    "node_modules/@jest/reporters/node_modules/convert-source-map": {
-      "version": "2.0.0",
-      "dev": true,
-      "license": "MIT"
-    },
     "node_modules/@jest/reporters/node_modules/istanbul-lib-instrument": {
       "version": "6.0.1",
       "dev": true,
@@ -1412,82 +1261,6 @@
       },
       "engines": {
         "node": ">=10"
-      }
-    },
-    "node_modules/@jest/reporters/node_modules/jest-haste-map": {
-      "version": "29.7.0",
-      "dev": true,
-      "license": "MIT",
-      "dependencies": {
-        "@jest/types": "^29.6.3",
-        "@types/graceful-fs": "^4.1.3",
-        "@types/node": "*",
-        "anymatch": "^3.0.3",
-        "fb-watchman": "^2.0.0",
-        "graceful-fs": "^4.2.9",
-        "jest-regex-util": "^29.6.3",
-        "jest-util": "^29.7.0",
-        "jest-worker": "^29.7.0",
-        "micromatch": "^4.0.4",
-        "walker": "^1.0.8"
-      },
-      "engines": {
-        "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
-      },
-      "optionalDependencies": {
-        "fsevents": "^2.3.2"
-      }
-    },
-    "node_modules/@jest/reporters/node_modules/jest-regex-util": {
-      "version": "29.6.3",
-      "dev": true,
-      "license": "MIT",
-      "engines": {
-        "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
-      }
-    },
-    "node_modules/@jest/reporters/node_modules/jest-util": {
-      "version": "29.7.0",
-      "dev": true,
-      "license": "MIT",
-      "dependencies": {
-        "@jest/types": "^29.6.3",
-        "@types/node": "*",
-        "chalk": "^4.0.0",
-        "ci-info": "^3.2.0",
-        "graceful-fs": "^4.2.9",
-        "picomatch": "^2.2.3"
-      },
-      "engines": {
-        "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
-      }
-    },
-    "node_modules/@jest/reporters/node_modules/jest-worker": {
-      "version": "29.7.0",
-      "dev": true,
-      "license": "MIT",
-      "dependencies": {
-        "@types/node": "*",
-        "jest-util": "^29.7.0",
-        "merge-stream": "^2.0.0",
-        "supports-color": "^8.0.0"
-      },
-      "engines": {
-        "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
-      }
-    },
-    "node_modules/@jest/reporters/node_modules/supports-color": {
-      "version": "8.1.1",
-      "dev": true,
-      "license": "MIT",
-      "dependencies": {
-        "has-flag": "^4.0.0"
-      },
-      "engines": {
-        "node": ">=10"
-      },
-      "funding": {
-        "url": "https://github.com/chalk/supports-color?sponsor=1"
       }
     },
     "node_modules/@jest/reporters/node_modules/v8-to-istanbul": {
@@ -1562,80 +1335,30 @@
         "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
       }
     },
-    "node_modules/@jest/test-sequencer/node_modules/jest-haste-map": {
+    "node_modules/@jest/transform": {
       "version": "29.7.0",
+      "integrity": "sha512-ok/BTPFzFKVMwO5eOHRrvnBVHdRy9IrsrW1GpMaQ9MCnilNLXQKmAX8s1YXDFaai9xJpac2ySzV0YeRRECr2Vw==",
       "dev": true,
       "license": "MIT",
       "dependencies": {
+        "@babel/core": "^7.11.6",
         "@jest/types": "^29.6.3",
-        "@types/graceful-fs": "^4.1.3",
-        "@types/node": "*",
-        "anymatch": "^3.0.3",
-        "fb-watchman": "^2.0.0",
+        "@jridgewell/trace-mapping": "^0.3.18",
+        "babel-plugin-istanbul": "^6.1.1",
+        "chalk": "^4.0.0",
+        "convert-source-map": "^2.0.0",
+        "fast-json-stable-stringify": "^2.1.0",
         "graceful-fs": "^4.2.9",
+        "jest-haste-map": "^29.7.0",
         "jest-regex-util": "^29.6.3",
         "jest-util": "^29.7.0",
-        "jest-worker": "^29.7.0",
         "micromatch": "^4.0.4",
-        "walker": "^1.0.8"
+        "pirates": "^4.0.4",
+        "slash": "^3.0.0",
+        "write-file-atomic": "^4.0.2"
       },
       "engines": {
         "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
-      },
-      "optionalDependencies": {
-        "fsevents": "^2.3.2"
-      }
-    },
-    "node_modules/@jest/test-sequencer/node_modules/jest-regex-util": {
-      "version": "29.6.3",
-      "dev": true,
-      "license": "MIT",
-      "engines": {
-        "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
-      }
-    },
-    "node_modules/@jest/test-sequencer/node_modules/jest-util": {
-      "version": "29.7.0",
-      "dev": true,
-      "license": "MIT",
-      "dependencies": {
-        "@jest/types": "^29.6.3",
-        "@types/node": "*",
-        "chalk": "^4.0.0",
-        "ci-info": "^3.2.0",
-        "graceful-fs": "^4.2.9",
-        "picomatch": "^2.2.3"
-      },
-      "engines": {
-        "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
-      }
-    },
-    "node_modules/@jest/test-sequencer/node_modules/jest-worker": {
-      "version": "29.7.0",
-      "dev": true,
-      "license": "MIT",
-      "dependencies": {
-        "@types/node": "*",
-        "jest-util": "^29.7.0",
-        "merge-stream": "^2.0.0",
-        "supports-color": "^8.0.0"
-      },
-      "engines": {
-        "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
-      }
-    },
-    "node_modules/@jest/test-sequencer/node_modules/supports-color": {
-      "version": "8.1.1",
-      "dev": true,
-      "license": "MIT",
-      "dependencies": {
-        "has-flag": "^4.0.0"
-      },
-      "engines": {
-        "node": ">=10"
-      },
-      "funding": {
-        "url": "https://github.com/chalk/supports-color?sponsor=1"
       }
     },
     "node_modules/@jest/types": {
@@ -1960,7 +1683,8 @@
       }
     },
     "node_modules/@lerna-lite/core/node_modules/glob": {
-      "version": "10.4.2",
+      "version": "10.5.0",
+      "integrity": "sha512-DfXN8DfhJ7NH3Oe7cFmu3NCu1wKbkReJ8TorzSAFbSKrlNaQSKfIzqYqVY8zlbs2NLBbWpRiU52GX2PbaBVNkg==",
       "dev": true,
       "license": "ISC",
       "dependencies": {
@@ -1973,9 +1697,6 @@
       },
       "bin": {
         "glob": "dist/esm/bin.mjs"
-      },
-      "engines": {
-        "node": ">=16 || 14 >=14.18"
       },
       "funding": {
         "url": "https://github.com/sponsors/isaacs"
@@ -2036,23 +1757,6 @@
       "license": "ISC",
       "engines": {
         "node": ">=16"
-      }
-    },
-    "node_modules/@lerna-lite/core/node_modules/jackspeak": {
-      "version": "3.4.0",
-      "dev": true,
-      "license": "BlueOak-1.0.0",
-      "dependencies": {
-        "@isaacs/cliui": "^8.0.2"
-      },
-      "engines": {
-        "node": ">=14"
-      },
-      "funding": {
-        "url": "https://github.com/sponsors/isaacs"
-      },
-      "optionalDependencies": {
-        "@pkgjs/parseargs": "^0.11.0"
       }
     },
     "node_modules/@lerna-lite/core/node_modules/json-parse-even-better-errors": {
@@ -3204,10 +2908,10 @@
       }
     },
     "node_modules/@mapbox/node-pre-gyp/node_modules/tar": {
-      "version": "7.5.1",
-      "integrity": "sha512-nlGpxf+hv0v7GkWBK2V9spgactGOp0qvfWRxUMjqHyzrt3SgwE48DIv/FhqPHJYLHpgW1opq3nERbz5Anq7n1g==",
+      "version": "7.5.2",
+      "integrity": "sha512-7NyxrTE4Anh8km8iEy7o0QYPs+0JKBTj5ZaqHg6B39erLg0qYXN3BijtShwbsNSvQ+LN75+KV+C4QR/f6Gwnpg==",
       "dev": true,
-      "license": "ISC",
+      "license": "BlueOak-1.0.0",
       "dependencies": {
         "@isaacs/fs-minipass": "^4.0.0",
         "chownr": "^3.0.0",
@@ -4066,20 +3770,19 @@
       }
     },
     "node_modules/@sigstore/sign/node_modules/glob": {
-      "version": "10.3.10",
+      "version": "10.5.0",
+      "integrity": "sha512-DfXN8DfhJ7NH3Oe7cFmu3NCu1wKbkReJ8TorzSAFbSKrlNaQSKfIzqYqVY8zlbs2NLBbWpRiU52GX2PbaBVNkg==",
       "license": "ISC",
       "dependencies": {
         "foreground-child": "^3.1.0",
-        "jackspeak": "^2.3.5",
-        "minimatch": "^9.0.1",
-        "minipass": "^5.0.0 || ^6.0.2 || ^7.0.0",
-        "path-scurry": "^1.10.1"
+        "jackspeak": "^3.1.2",
+        "minimatch": "^9.0.4",
+        "minipass": "^7.1.2",
+        "package-json-from-dist": "^1.0.0",
+        "path-scurry": "^1.11.1"
       },
       "bin": {
         "glob": "dist/esm/bin.mjs"
-      },
-      "engines": {
-        "node": ">=16 || 14 >=14.17"
       },
       "funding": {
         "url": "https://github.com/sponsors/isaacs"
@@ -4106,7 +3809,8 @@
       }
     },
     "node_modules/@sigstore/sign/node_modules/minimatch": {
-      "version": "9.0.3",
+      "version": "9.0.5",
+      "integrity": "sha512-G6T0ZX48xgozx7587koeX9Ys2NYy6Gmv//P89sEte9V9whIapMNF4idKxnW2QtCcLiTWlb/wfCabAtAFWhhBow==",
       "license": "ISC",
       "dependencies": {
         "brace-expansion": "^2.0.1"
@@ -4119,7 +3823,8 @@
       }
     },
     "node_modules/@sigstore/sign/node_modules/minipass": {
-      "version": "7.0.4",
+      "version": "7.1.2",
+      "integrity": "sha512-qOOzS1cBTWYF4BH8fVePDBOO9iptMnGUEZwNc/cMWnTV2nVLZ7VoNWEPHkYczZA0pdoA7dl6e7FL659nX9S2aw==",
       "license": "ISC",
       "engines": {
         "node": ">=16 || 14 >=14.17"
@@ -4860,8 +4565,8 @@
       }
     },
     "node_modules/@vercel/nft/node_modules/glob": {
-      "version": "10.4.5",
-      "integrity": "sha512-7Bv8RF0k6xjo7d4A/PxYLbUCfb6c+Vpd2/mB2yRDlew7Jb5hEXiCD9ibfO7wpk8i4sevK6DFny9h7EYbM3/sHg==",
+      "version": "10.5.0",
+      "integrity": "sha512-DfXN8DfhJ7NH3Oe7cFmu3NCu1wKbkReJ8TorzSAFbSKrlNaQSKfIzqYqVY8zlbs2NLBbWpRiU52GX2PbaBVNkg==",
       "dev": true,
       "license": "ISC",
       "dependencies": {
@@ -4877,21 +4582,6 @@
       },
       "funding": {
         "url": "https://github.com/sponsors/isaacs"
-      }
-    },
-    "node_modules/@vercel/nft/node_modules/jackspeak": {
-      "version": "3.4.3",
-      "integrity": "sha512-OGlZQpz2yfahA/Rd1Y8Cd9SIEsqvXkLVoSw/cgwhnhFMDbsQFeZYoJJ7bIZBS9BcamUW96asq/npPWugM+RQBw==",
-      "dev": true,
-      "license": "BlueOak-1.0.0",
-      "dependencies": {
-        "@isaacs/cliui": "^8.0.2"
-      },
-      "funding": {
-        "url": "https://github.com/sponsors/isaacs"
-      },
-      "optionalDependencies": {
-        "@pkgjs/parseargs": "^0.11.0"
       }
     },
     "node_modules/@vercel/nft/node_modules/minimatch": {
@@ -5638,112 +5328,6 @@
         "@babel/core": "^7.8.0"
       }
     },
-    "node_modules/babel-jest/node_modules/@jest/transform": {
-      "version": "29.7.0",
-      "dev": true,
-      "license": "MIT",
-      "dependencies": {
-        "@babel/core": "^7.11.6",
-        "@jest/types": "^29.6.3",
-        "@jridgewell/trace-mapping": "^0.3.18",
-        "babel-plugin-istanbul": "^6.1.1",
-        "chalk": "^4.0.0",
-        "convert-source-map": "^2.0.0",
-        "fast-json-stable-stringify": "^2.1.0",
-        "graceful-fs": "^4.2.9",
-        "jest-haste-map": "^29.7.0",
-        "jest-regex-util": "^29.6.3",
-        "jest-util": "^29.7.0",
-        "micromatch": "^4.0.4",
-        "pirates": "^4.0.4",
-        "slash": "^3.0.0",
-        "write-file-atomic": "^4.0.2"
-      },
-      "engines": {
-        "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
-      }
-    },
-    "node_modules/babel-jest/node_modules/convert-source-map": {
-      "version": "2.0.0",
-      "dev": true,
-      "license": "MIT"
-    },
-    "node_modules/babel-jest/node_modules/jest-haste-map": {
-      "version": "29.7.0",
-      "dev": true,
-      "license": "MIT",
-      "dependencies": {
-        "@jest/types": "^29.6.3",
-        "@types/graceful-fs": "^4.1.3",
-        "@types/node": "*",
-        "anymatch": "^3.0.3",
-        "fb-watchman": "^2.0.0",
-        "graceful-fs": "^4.2.9",
-        "jest-regex-util": "^29.6.3",
-        "jest-util": "^29.7.0",
-        "jest-worker": "^29.7.0",
-        "micromatch": "^4.0.4",
-        "walker": "^1.0.8"
-      },
-      "engines": {
-        "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
-      },
-      "optionalDependencies": {
-        "fsevents": "^2.3.2"
-      }
-    },
-    "node_modules/babel-jest/node_modules/jest-regex-util": {
-      "version": "29.6.3",
-      "dev": true,
-      "license": "MIT",
-      "engines": {
-        "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
-      }
-    },
-    "node_modules/babel-jest/node_modules/jest-util": {
-      "version": "29.7.0",
-      "dev": true,
-      "license": "MIT",
-      "dependencies": {
-        "@jest/types": "^29.6.3",
-        "@types/node": "*",
-        "chalk": "^4.0.0",
-        "ci-info": "^3.2.0",
-        "graceful-fs": "^4.2.9",
-        "picomatch": "^2.2.3"
-      },
-      "engines": {
-        "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
-      }
-    },
-    "node_modules/babel-jest/node_modules/jest-worker": {
-      "version": "29.7.0",
-      "dev": true,
-      "license": "MIT",
-      "dependencies": {
-        "@types/node": "*",
-        "jest-util": "^29.7.0",
-        "merge-stream": "^2.0.0",
-        "supports-color": "^8.0.0"
-      },
-      "engines": {
-        "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
-      }
-    },
-    "node_modules/babel-jest/node_modules/supports-color": {
-      "version": "8.1.1",
-      "dev": true,
-      "license": "MIT",
-      "dependencies": {
-        "has-flag": "^4.0.0"
-      },
-      "engines": {
-        "node": ">=10"
-      },
-      "funding": {
-        "url": "https://github.com/chalk/supports-color?sponsor=1"
-      }
-    },
     "node_modules/babel-plugin-istanbul": {
       "version": "6.1.1",
       "dev": true,
@@ -6336,7 +5920,8 @@
       }
     },
     "node_modules/chardet": {
-      "version": "0.7.0",
+      "version": "2.1.1",
+      "integrity": "sha512-PsezH1rqdV9VvyNhxxOW32/d75r01NY7TQCmOqomRo15ZSOKbpTFVsfjghxo6JloQUCGnH4k1LGu0R4yCLlWQQ==",
       "dev": true,
       "license": "MIT"
     },
@@ -6820,6 +6405,12 @@
       "dev": true,
       "license": "ISC"
     },
+    "node_modules/convert-source-map": {
+      "version": "2.0.0",
+      "integrity": "sha512-Kvp459HrV2FEJ1CAsi1Ku+MY3kasH19TFykTz2xWmMeq6bk2NU3XXvfJ+Q61m0xktWwt+1HSYf3JZsTms3aRJg==",
+      "dev": true,
+      "license": "MIT"
+    },
     "node_modules/convert-to-spaces": {
       "version": "2.0.1",
       "dev": true,
@@ -7140,30 +6731,6 @@
         "ts-node": {
           "optional": true
         }
-      }
-    },
-    "node_modules/create-jest/node_modules/jest-regex-util": {
-      "version": "29.6.3",
-      "dev": true,
-      "license": "MIT",
-      "engines": {
-        "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
-      }
-    },
-    "node_modules/create-jest/node_modules/jest-util": {
-      "version": "29.7.0",
-      "dev": true,
-      "license": "MIT",
-      "dependencies": {
-        "@jest/types": "^29.6.3",
-        "@types/node": "*",
-        "chalk": "^4.0.0",
-        "ci-info": "^3.2.0",
-        "graceful-fs": "^4.2.9",
-        "picomatch": "^2.2.3"
-      },
-      "engines": {
-        "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
       }
     },
     "node_modules/create-jest/node_modules/jest-validate": {
@@ -8365,38 +7932,9 @@
         "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
       }
     },
-    "node_modules/expect/node_modules/jest-util": {
-      "version": "29.7.0",
-      "dev": true,
-      "license": "MIT",
-      "dependencies": {
-        "@jest/types": "^29.6.3",
-        "@types/node": "*",
-        "chalk": "^4.0.0",
-        "ci-info": "^3.2.0",
-        "graceful-fs": "^4.2.9",
-        "picomatch": "^2.2.3"
-      },
-      "engines": {
-        "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
-      }
-    },
     "node_modules/exponential-backoff": {
       "version": "3.1.1",
       "license": "Apache-2.0"
-    },
-    "node_modules/external-editor": {
-      "version": "3.1.0",
-      "dev": true,
-      "license": "MIT",
-      "dependencies": {
-        "chardet": "^0.7.0",
-        "iconv-lite": "^0.4.24",
-        "tmp": "^0.0.33"
-      },
-      "engines": {
-        "node": ">=4"
-      }
     },
     "node_modules/fancy-log": {
       "version": "2.0.0",
@@ -9018,12 +8556,13 @@
       "license": "MIT"
     },
     "node_modules/handlebars": {
-      "version": "4.7.7",
+      "version": "4.7.8",
+      "integrity": "sha512-vafaFqs8MZkRrSX7sFVUdo3ap/eNiLnb4IakshzvP56X5Nr1iGKAIqdX6tMlm6HcNRIkr6AxO5jFEoJzzpT8aQ==",
       "dev": true,
       "license": "MIT",
       "dependencies": {
         "minimist": "^1.2.5",
-        "neo-async": "^2.6.0",
+        "neo-async": "^2.6.2",
         "source-map": "^0.6.1",
         "wordwrap": "^1.0.0"
       },
@@ -9302,14 +8841,19 @@
       }
     },
     "node_modules/iconv-lite": {
-      "version": "0.4.24",
+      "version": "0.7.0",
+      "integrity": "sha512-cf6L2Ds3h57VVmkZe+Pn+5APsT7FpqJtEhhieDCvrE2MK5Qk9MyffgQyuxQTm6BChfeZNtcOLHp9IcWRVcIcBQ==",
       "dev": true,
       "license": "MIT",
       "dependencies": {
-        "safer-buffer": ">= 2.1.2 < 3"
+        "safer-buffer": ">= 2.1.2 < 3.0.0"
       },
       "engines": {
         "node": ">=0.10.0"
+      },
+      "funding": {
+        "type": "opencollective",
+        "url": "https://opencollective.com/express"
       }
     },
     "node_modules/ieee754": {
@@ -9460,14 +9004,15 @@
       "license": "ISC"
     },
     "node_modules/inquirer": {
-      "version": "9.3.2",
+      "version": "9.3.8",
+      "integrity": "sha512-pFGGdaHrmRKMh4WoDDSowddgjT1Vkl90atobmTeSmcPGdYiwikch/m/Ef5wRaiamHejtw0cUUMMerzDUXCci2w==",
       "dev": true,
       "license": "MIT",
       "dependencies": {
+        "@inquirer/external-editor": "^1.0.2",
         "@inquirer/figures": "^1.0.3",
         "ansi-escapes": "^4.3.2",
         "cli-width": "^4.1.0",
-        "external-editor": "^3.1.0",
         "mute-stream": "1.0.0",
         "ora": "^5.4.1",
         "run-async": "^3.0.0",
@@ -9475,7 +9020,7 @@
         "string-width": "^4.2.3",
         "strip-ansi": "^6.0.1",
         "wrap-ansi": "^6.2.0",
-        "yoctocolors-cjs": "^2.1.1"
+        "yoctocolors-cjs": "^2.1.2"
       },
       "engines": {
         "node": ">=18"
@@ -9791,13 +9336,11 @@
       }
     },
     "node_modules/jackspeak": {
-      "version": "2.3.6",
+      "version": "3.4.3",
+      "integrity": "sha512-OGlZQpz2yfahA/Rd1Y8Cd9SIEsqvXkLVoSw/cgwhnhFMDbsQFeZYoJJ7bIZBS9BcamUW96asq/npPWugM+RQBw==",
       "license": "BlueOak-1.0.0",
       "dependencies": {
         "@isaacs/cliui": "^8.0.2"
-      },
-      "engines": {
-        "node": ">=14"
       },
       "funding": {
         "url": "https://github.com/sponsors/isaacs"
@@ -9844,22 +9387,6 @@
         "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
       }
     },
-    "node_modules/jest-changed-files/node_modules/jest-util": {
-      "version": "29.7.0",
-      "dev": true,
-      "license": "MIT",
-      "dependencies": {
-        "@jest/types": "^29.6.3",
-        "@types/node": "*",
-        "chalk": "^4.0.0",
-        "ci-info": "^3.2.0",
-        "graceful-fs": "^4.2.9",
-        "picomatch": "^2.2.3"
-      },
-      "engines": {
-        "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
-      }
-    },
     "node_modules/jest-circus": {
       "version": "29.7.0",
       "dev": true,
@@ -9885,22 +9412,6 @@
         "pure-rand": "^6.0.0",
         "slash": "^3.0.0",
         "stack-utils": "^2.0.3"
-      },
-      "engines": {
-        "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
-      }
-    },
-    "node_modules/jest-circus/node_modules/jest-util": {
-      "version": "29.7.0",
-      "dev": true,
-      "license": "MIT",
-      "dependencies": {
-        "@jest/types": "^29.6.3",
-        "@types/node": "*",
-        "chalk": "^4.0.0",
-        "ci-info": "^3.2.0",
-        "graceful-fs": "^4.2.9",
-        "picomatch": "^2.2.3"
       },
       "engines": {
         "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
@@ -10002,30 +9513,6 @@
         "ts-node": {
           "optional": true
         }
-      }
-    },
-    "node_modules/jest-cli/node_modules/jest-regex-util": {
-      "version": "29.6.3",
-      "dev": true,
-      "license": "MIT",
-      "engines": {
-        "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
-      }
-    },
-    "node_modules/jest-cli/node_modules/jest-util": {
-      "version": "29.7.0",
-      "dev": true,
-      "license": "MIT",
-      "dependencies": {
-        "@jest/types": "^29.6.3",
-        "@types/node": "*",
-        "chalk": "^4.0.0",
-        "ci-info": "^3.2.0",
-        "graceful-fs": "^4.2.9",
-        "picomatch": "^2.2.3"
-      },
-      "engines": {
-        "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
       }
     },
     "node_modules/jest-cli/node_modules/jest-validate": {
@@ -10139,22 +9626,6 @@
         "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
       }
     },
-    "node_modules/jest-each/node_modules/jest-util": {
-      "version": "29.7.0",
-      "dev": true,
-      "license": "MIT",
-      "dependencies": {
-        "@jest/types": "^29.6.3",
-        "@types/node": "*",
-        "chalk": "^4.0.0",
-        "ci-info": "^3.2.0",
-        "graceful-fs": "^4.2.9",
-        "picomatch": "^2.2.3"
-      },
-      "engines": {
-        "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
-      }
-    },
     "node_modules/jest-environment-node": {
       "version": "29.7.0",
       "dev": true,
@@ -10174,22 +9645,6 @@
     "node_modules/jest-environment-node-debug": {
       "version": "2.0.0",
       "dev": true
-    },
-    "node_modules/jest-environment-node/node_modules/jest-util": {
-      "version": "29.7.0",
-      "dev": true,
-      "license": "MIT",
-      "dependencies": {
-        "@jest/types": "^29.6.3",
-        "@types/node": "*",
-        "chalk": "^4.0.0",
-        "ci-info": "^3.2.0",
-        "graceful-fs": "^4.2.9",
-        "picomatch": "^2.2.3"
-      },
-      "engines": {
-        "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
-      }
     },
     "node_modules/jest-extended": {
       "version": "6.0.0",
@@ -10220,6 +9675,31 @@
       "license": "MIT",
       "engines": {
         "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
+      }
+    },
+    "node_modules/jest-haste-map": {
+      "version": "29.7.0",
+      "integrity": "sha512-fP8u2pyfqx0K1rGn1R9pyE0/KTn+G7PxktWidOBTqFPLYX0b9ksaMFkhK5vrS3DVun09pckLdlx90QthlW7AmA==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "@jest/types": "^29.6.3",
+        "@types/graceful-fs": "^4.1.3",
+        "@types/node": "*",
+        "anymatch": "^3.0.3",
+        "fb-watchman": "^2.0.0",
+        "graceful-fs": "^4.2.9",
+        "jest-regex-util": "^29.6.3",
+        "jest-util": "^29.7.0",
+        "jest-worker": "^29.7.0",
+        "micromatch": "^4.0.4",
+        "walker": "^1.0.8"
+      },
+      "engines": {
+        "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
+      },
+      "optionalDependencies": {
+        "fsevents": "^2.3.2"
       }
     },
     "node_modules/jest-html-reporter": {
@@ -10322,22 +9802,6 @@
         "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
       }
     },
-    "node_modules/jest-mock/node_modules/jest-util": {
-      "version": "29.7.0",
-      "dev": true,
-      "license": "MIT",
-      "dependencies": {
-        "@jest/types": "^29.6.3",
-        "@types/node": "*",
-        "chalk": "^4.0.0",
-        "ci-info": "^3.2.0",
-        "graceful-fs": "^4.2.9",
-        "picomatch": "^2.2.3"
-      },
-      "engines": {
-        "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
-      }
-    },
     "node_modules/jest-pnp-resolver": {
       "version": "1.2.2",
       "dev": true,
@@ -10352,6 +9816,15 @@
         "jest-resolve": {
           "optional": true
         }
+      }
+    },
+    "node_modules/jest-regex-util": {
+      "version": "29.6.3",
+      "integrity": "sha512-KJJBsRCyyLNWCNBOvZyRDnAIfUiRJ8v+hOBQYGn8gDyF3UegwiP4gwRR3/SDa42g1YbVycTidUF3rKjyLFDWbg==",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
       }
     },
     "node_modules/jest-resolve": {
@@ -10385,14 +9858,6 @@
         "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
       }
     },
-    "node_modules/jest-resolve-dependencies/node_modules/jest-regex-util": {
-      "version": "29.6.3",
-      "dev": true,
-      "license": "MIT",
-      "engines": {
-        "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
-      }
-    },
     "node_modules/jest-resolve/node_modules/camelcase": {
       "version": "6.3.0",
       "dev": true,
@@ -10402,54 +9867,6 @@
       },
       "funding": {
         "url": "https://github.com/sponsors/sindresorhus"
-      }
-    },
-    "node_modules/jest-resolve/node_modules/jest-haste-map": {
-      "version": "29.7.0",
-      "dev": true,
-      "license": "MIT",
-      "dependencies": {
-        "@jest/types": "^29.6.3",
-        "@types/graceful-fs": "^4.1.3",
-        "@types/node": "*",
-        "anymatch": "^3.0.3",
-        "fb-watchman": "^2.0.0",
-        "graceful-fs": "^4.2.9",
-        "jest-regex-util": "^29.6.3",
-        "jest-util": "^29.7.0",
-        "jest-worker": "^29.7.0",
-        "micromatch": "^4.0.4",
-        "walker": "^1.0.8"
-      },
-      "engines": {
-        "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
-      },
-      "optionalDependencies": {
-        "fsevents": "^2.3.2"
-      }
-    },
-    "node_modules/jest-resolve/node_modules/jest-regex-util": {
-      "version": "29.6.3",
-      "dev": true,
-      "license": "MIT",
-      "engines": {
-        "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
-      }
-    },
-    "node_modules/jest-resolve/node_modules/jest-util": {
-      "version": "29.7.0",
-      "dev": true,
-      "license": "MIT",
-      "dependencies": {
-        "@jest/types": "^29.6.3",
-        "@types/node": "*",
-        "chalk": "^4.0.0",
-        "ci-info": "^3.2.0",
-        "graceful-fs": "^4.2.9",
-        "picomatch": "^2.2.3"
-      },
-      "engines": {
-        "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
       }
     },
     "node_modules/jest-resolve/node_modules/jest-validate": {
@@ -10468,40 +9885,12 @@
         "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
       }
     },
-    "node_modules/jest-resolve/node_modules/jest-worker": {
-      "version": "29.7.0",
-      "dev": true,
-      "license": "MIT",
-      "dependencies": {
-        "@types/node": "*",
-        "jest-util": "^29.7.0",
-        "merge-stream": "^2.0.0",
-        "supports-color": "^8.0.0"
-      },
-      "engines": {
-        "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
-      }
-    },
     "node_modules/jest-resolve/node_modules/resolve.exports": {
       "version": "2.0.2",
       "dev": true,
       "license": "MIT",
       "engines": {
         "node": ">=10"
-      }
-    },
-    "node_modules/jest-resolve/node_modules/supports-color": {
-      "version": "8.1.1",
-      "dev": true,
-      "license": "MIT",
-      "dependencies": {
-        "has-flag": "^4.0.0"
-      },
-      "engines": {
-        "node": ">=10"
-      },
-      "funding": {
-        "url": "https://github.com/chalk/supports-color?sponsor=1"
       }
     },
     "node_modules/jest-runner": {
@@ -10535,98 +9924,6 @@
         "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
       }
     },
-    "node_modules/jest-runner/node_modules/@jest/transform": {
-      "version": "29.7.0",
-      "dev": true,
-      "license": "MIT",
-      "dependencies": {
-        "@babel/core": "^7.11.6",
-        "@jest/types": "^29.6.3",
-        "@jridgewell/trace-mapping": "^0.3.18",
-        "babel-plugin-istanbul": "^6.1.1",
-        "chalk": "^4.0.0",
-        "convert-source-map": "^2.0.0",
-        "fast-json-stable-stringify": "^2.1.0",
-        "graceful-fs": "^4.2.9",
-        "jest-haste-map": "^29.7.0",
-        "jest-regex-util": "^29.6.3",
-        "jest-util": "^29.7.0",
-        "micromatch": "^4.0.4",
-        "pirates": "^4.0.4",
-        "slash": "^3.0.0",
-        "write-file-atomic": "^4.0.2"
-      },
-      "engines": {
-        "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
-      }
-    },
-    "node_modules/jest-runner/node_modules/convert-source-map": {
-      "version": "2.0.0",
-      "dev": true,
-      "license": "MIT"
-    },
-    "node_modules/jest-runner/node_modules/jest-haste-map": {
-      "version": "29.7.0",
-      "dev": true,
-      "license": "MIT",
-      "dependencies": {
-        "@jest/types": "^29.6.3",
-        "@types/graceful-fs": "^4.1.3",
-        "@types/node": "*",
-        "anymatch": "^3.0.3",
-        "fb-watchman": "^2.0.0",
-        "graceful-fs": "^4.2.9",
-        "jest-regex-util": "^29.6.3",
-        "jest-util": "^29.7.0",
-        "jest-worker": "^29.7.0",
-        "micromatch": "^4.0.4",
-        "walker": "^1.0.8"
-      },
-      "engines": {
-        "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
-      },
-      "optionalDependencies": {
-        "fsevents": "^2.3.2"
-      }
-    },
-    "node_modules/jest-runner/node_modules/jest-regex-util": {
-      "version": "29.6.3",
-      "dev": true,
-      "license": "MIT",
-      "engines": {
-        "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
-      }
-    },
-    "node_modules/jest-runner/node_modules/jest-util": {
-      "version": "29.7.0",
-      "dev": true,
-      "license": "MIT",
-      "dependencies": {
-        "@jest/types": "^29.6.3",
-        "@types/node": "*",
-        "chalk": "^4.0.0",
-        "ci-info": "^3.2.0",
-        "graceful-fs": "^4.2.9",
-        "picomatch": "^2.2.3"
-      },
-      "engines": {
-        "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
-      }
-    },
-    "node_modules/jest-runner/node_modules/jest-worker": {
-      "version": "29.7.0",
-      "dev": true,
-      "license": "MIT",
-      "dependencies": {
-        "@types/node": "*",
-        "jest-util": "^29.7.0",
-        "merge-stream": "^2.0.0",
-        "supports-color": "^8.0.0"
-      },
-      "engines": {
-        "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
-      }
-    },
     "node_modules/jest-runner/node_modules/source-map-support": {
       "version": "0.5.13",
       "dev": true,
@@ -10634,20 +9931,6 @@
       "dependencies": {
         "buffer-from": "^1.0.0",
         "source-map": "^0.6.0"
-      }
-    },
-    "node_modules/jest-runner/node_modules/supports-color": {
-      "version": "8.1.1",
-      "dev": true,
-      "license": "MIT",
-      "dependencies": {
-        "has-flag": "^4.0.0"
-      },
-      "engines": {
-        "node": ">=10"
-      },
-      "funding": {
-        "url": "https://github.com/chalk/supports-color?sponsor=1"
       }
     },
     "node_modules/jest-runtime": {
@@ -10682,112 +9965,6 @@
         "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
       }
     },
-    "node_modules/jest-runtime/node_modules/@jest/transform": {
-      "version": "29.7.0",
-      "dev": true,
-      "license": "MIT",
-      "dependencies": {
-        "@babel/core": "^7.11.6",
-        "@jest/types": "^29.6.3",
-        "@jridgewell/trace-mapping": "^0.3.18",
-        "babel-plugin-istanbul": "^6.1.1",
-        "chalk": "^4.0.0",
-        "convert-source-map": "^2.0.0",
-        "fast-json-stable-stringify": "^2.1.0",
-        "graceful-fs": "^4.2.9",
-        "jest-haste-map": "^29.7.0",
-        "jest-regex-util": "^29.6.3",
-        "jest-util": "^29.7.0",
-        "micromatch": "^4.0.4",
-        "pirates": "^4.0.4",
-        "slash": "^3.0.0",
-        "write-file-atomic": "^4.0.2"
-      },
-      "engines": {
-        "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
-      }
-    },
-    "node_modules/jest-runtime/node_modules/convert-source-map": {
-      "version": "2.0.0",
-      "dev": true,
-      "license": "MIT"
-    },
-    "node_modules/jest-runtime/node_modules/jest-haste-map": {
-      "version": "29.7.0",
-      "dev": true,
-      "license": "MIT",
-      "dependencies": {
-        "@jest/types": "^29.6.3",
-        "@types/graceful-fs": "^4.1.3",
-        "@types/node": "*",
-        "anymatch": "^3.0.3",
-        "fb-watchman": "^2.0.0",
-        "graceful-fs": "^4.2.9",
-        "jest-regex-util": "^29.6.3",
-        "jest-util": "^29.7.0",
-        "jest-worker": "^29.7.0",
-        "micromatch": "^4.0.4",
-        "walker": "^1.0.8"
-      },
-      "engines": {
-        "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
-      },
-      "optionalDependencies": {
-        "fsevents": "^2.3.2"
-      }
-    },
-    "node_modules/jest-runtime/node_modules/jest-regex-util": {
-      "version": "29.6.3",
-      "dev": true,
-      "license": "MIT",
-      "engines": {
-        "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
-      }
-    },
-    "node_modules/jest-runtime/node_modules/jest-util": {
-      "version": "29.7.0",
-      "dev": true,
-      "license": "MIT",
-      "dependencies": {
-        "@jest/types": "^29.6.3",
-        "@types/node": "*",
-        "chalk": "^4.0.0",
-        "ci-info": "^3.2.0",
-        "graceful-fs": "^4.2.9",
-        "picomatch": "^2.2.3"
-      },
-      "engines": {
-        "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
-      }
-    },
-    "node_modules/jest-runtime/node_modules/jest-worker": {
-      "version": "29.7.0",
-      "dev": true,
-      "license": "MIT",
-      "dependencies": {
-        "@types/node": "*",
-        "jest-util": "^29.7.0",
-        "merge-stream": "^2.0.0",
-        "supports-color": "^8.0.0"
-      },
-      "engines": {
-        "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
-      }
-    },
-    "node_modules/jest-runtime/node_modules/supports-color": {
-      "version": "8.1.1",
-      "dev": true,
-      "license": "MIT",
-      "dependencies": {
-        "has-flag": "^4.0.0"
-      },
-      "engines": {
-        "node": ">=10"
-      },
-      "funding": {
-        "url": "https://github.com/chalk/supports-color?sponsor=1"
-      }
-    },
     "node_modules/jest-snapshot": {
       "version": "29.7.0",
       "dev": true,
@@ -10816,112 +9993,6 @@
       },
       "engines": {
         "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
-      }
-    },
-    "node_modules/jest-snapshot/node_modules/@jest/transform": {
-      "version": "29.7.0",
-      "dev": true,
-      "license": "MIT",
-      "dependencies": {
-        "@babel/core": "^7.11.6",
-        "@jest/types": "^29.6.3",
-        "@jridgewell/trace-mapping": "^0.3.18",
-        "babel-plugin-istanbul": "^6.1.1",
-        "chalk": "^4.0.0",
-        "convert-source-map": "^2.0.0",
-        "fast-json-stable-stringify": "^2.1.0",
-        "graceful-fs": "^4.2.9",
-        "jest-haste-map": "^29.7.0",
-        "jest-regex-util": "^29.6.3",
-        "jest-util": "^29.7.0",
-        "micromatch": "^4.0.4",
-        "pirates": "^4.0.4",
-        "slash": "^3.0.0",
-        "write-file-atomic": "^4.0.2"
-      },
-      "engines": {
-        "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
-      }
-    },
-    "node_modules/jest-snapshot/node_modules/convert-source-map": {
-      "version": "2.0.0",
-      "dev": true,
-      "license": "MIT"
-    },
-    "node_modules/jest-snapshot/node_modules/jest-haste-map": {
-      "version": "29.7.0",
-      "dev": true,
-      "license": "MIT",
-      "dependencies": {
-        "@jest/types": "^29.6.3",
-        "@types/graceful-fs": "^4.1.3",
-        "@types/node": "*",
-        "anymatch": "^3.0.3",
-        "fb-watchman": "^2.0.0",
-        "graceful-fs": "^4.2.9",
-        "jest-regex-util": "^29.6.3",
-        "jest-util": "^29.7.0",
-        "jest-worker": "^29.7.0",
-        "micromatch": "^4.0.4",
-        "walker": "^1.0.8"
-      },
-      "engines": {
-        "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
-      },
-      "optionalDependencies": {
-        "fsevents": "^2.3.2"
-      }
-    },
-    "node_modules/jest-snapshot/node_modules/jest-regex-util": {
-      "version": "29.6.3",
-      "dev": true,
-      "license": "MIT",
-      "engines": {
-        "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
-      }
-    },
-    "node_modules/jest-snapshot/node_modules/jest-util": {
-      "version": "29.7.0",
-      "dev": true,
-      "license": "MIT",
-      "dependencies": {
-        "@jest/types": "^29.6.3",
-        "@types/node": "*",
-        "chalk": "^4.0.0",
-        "ci-info": "^3.2.0",
-        "graceful-fs": "^4.2.9",
-        "picomatch": "^2.2.3"
-      },
-      "engines": {
-        "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
-      }
-    },
-    "node_modules/jest-snapshot/node_modules/jest-worker": {
-      "version": "29.7.0",
-      "dev": true,
-      "license": "MIT",
-      "dependencies": {
-        "@types/node": "*",
-        "jest-util": "^29.7.0",
-        "merge-stream": "^2.0.0",
-        "supports-color": "^8.0.0"
-      },
-      "engines": {
-        "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
-      }
-    },
-    "node_modules/jest-snapshot/node_modules/supports-color": {
-      "version": "8.1.1",
-      "dev": true,
-      "license": "MIT",
-      "dependencies": {
-        "has-flag": "^4.0.0"
-      },
-      "engines": {
-        "node": ">=10"
-      },
-      "funding": {
-        "url": "https://github.com/chalk/supports-color?sponsor=1"
       }
     },
     "node_modules/jest-sonar-reporter": {
@@ -11032,6 +10103,23 @@
         "node": ">=8"
       }
     },
+    "node_modules/jest-util": {
+      "version": "29.7.0",
+      "integrity": "sha512-z6EbKajIpqGKU56y5KBUgy1dt1ihhQJgWzUlZHArA/+X2ad7Cb5iF+AK1EWVL/Bo7Rz9uurpqw6SiBCefUbCGA==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "@jest/types": "^29.6.3",
+        "@types/node": "*",
+        "chalk": "^4.0.0",
+        "ci-info": "^3.2.0",
+        "graceful-fs": "^4.2.9",
+        "picomatch": "^2.2.3"
+      },
+      "engines": {
+        "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
+      }
+    },
     "node_modules/jest-watcher": {
       "version": "29.7.0",
       "dev": true,
@@ -11050,20 +10138,34 @@
         "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
       }
     },
-    "node_modules/jest-watcher/node_modules/jest-util": {
+    "node_modules/jest-worker": {
       "version": "29.7.0",
+      "integrity": "sha512-eIz2msL/EzL9UFTFFx7jBTkeZfku0yUAyZZZmJ93H2TYEiroIx2PQjEXcwYtYl8zXCxb+PAmA2hLIt/6ZEkPHw==",
       "dev": true,
       "license": "MIT",
       "dependencies": {
-        "@jest/types": "^29.6.3",
         "@types/node": "*",
-        "chalk": "^4.0.0",
-        "ci-info": "^3.2.0",
-        "graceful-fs": "^4.2.9",
-        "picomatch": "^2.2.3"
+        "jest-util": "^29.7.0",
+        "merge-stream": "^2.0.0",
+        "supports-color": "^8.0.0"
       },
       "engines": {
         "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
+      }
+    },
+    "node_modules/jest-worker/node_modules/supports-color": {
+      "version": "8.1.1",
+      "integrity": "sha512-MpUEN2OodtUzxvKQl72cUF7RQ5EiHsGvSsVG0ia9c5RbWGL2CI4C7EpPS8UTBIplnlzZiNuV56w+FuNxy3ty2Q==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "has-flag": "^4.0.0"
+      },
+      "engines": {
+        "node": ">=10"
+      },
+      "funding": {
+        "url": "https://github.com/chalk/supports-color?sponsor=1"
       }
     },
     "node_modules/jquery": {
@@ -11087,7 +10189,8 @@
       "license": "MIT"
     },
     "node_modules/js-yaml": {
-      "version": "4.1.0",
+      "version": "4.1.1",
+      "integrity": "sha512-qQKT4zQxXl8lLwBtHMWwaTcGfFOZviOJet3Oy/xmGk2gZH677CJM9EvtfdSkgWcATZhj/55JZ0rmy3myCT5lsA==",
       "license": "MIT",
       "dependencies": {
         "argparse": "^2.0.1"
@@ -12939,7 +12042,8 @@
       }
     },
     "node_modules/npm-registry-fetch/node_modules/glob": {
-      "version": "10.4.2",
+      "version": "10.5.0",
+      "integrity": "sha512-DfXN8DfhJ7NH3Oe7cFmu3NCu1wKbkReJ8TorzSAFbSKrlNaQSKfIzqYqVY8zlbs2NLBbWpRiU52GX2PbaBVNkg==",
       "license": "ISC",
       "dependencies": {
         "foreground-child": "^3.1.0",
@@ -12952,27 +12056,8 @@
       "bin": {
         "glob": "dist/esm/bin.mjs"
       },
-      "engines": {
-        "node": ">=16 || 14 >=14.18"
-      },
       "funding": {
         "url": "https://github.com/sponsors/isaacs"
-      }
-    },
-    "node_modules/npm-registry-fetch/node_modules/jackspeak": {
-      "version": "3.4.0",
-      "license": "BlueOak-1.0.0",
-      "dependencies": {
-        "@isaacs/cliui": "^8.0.2"
-      },
-      "engines": {
-        "node": ">=14"
-      },
-      "funding": {
-        "url": "https://github.com/sponsors/isaacs"
-      },
-      "optionalDependencies": {
-        "@pkgjs/parseargs": "^0.11.0"
       }
     },
     "node_modules/npm-registry-fetch/node_modules/make-fetch-happen": {
@@ -13170,14 +12255,6 @@
       },
       "funding": {
         "url": "https://github.com/sponsors/sindresorhus"
-      }
-    },
-    "node_modules/os-tmpdir": {
-      "version": "1.0.2",
-      "dev": true,
-      "license": "MIT",
-      "engines": {
-        "node": ">=0.10.0"
       }
     },
     "node_modules/p-limit": {
@@ -13402,7 +12479,8 @@
       }
     },
     "node_modules/pacote/node_modules/glob": {
-      "version": "10.4.2",
+      "version": "10.5.0",
+      "integrity": "sha512-DfXN8DfhJ7NH3Oe7cFmu3NCu1wKbkReJ8TorzSAFbSKrlNaQSKfIzqYqVY8zlbs2NLBbWpRiU52GX2PbaBVNkg==",
       "license": "ISC",
       "dependencies": {
         "foreground-child": "^3.1.0",
@@ -13415,9 +12493,6 @@
       "bin": {
         "glob": "dist/esm/bin.mjs"
       },
-      "engines": {
-        "node": ">=16 || 14 >=14.18"
-      },
       "funding": {
         "url": "https://github.com/sponsors/isaacs"
       }
@@ -13427,22 +12502,6 @@
       "license": "ISC",
       "engines": {
         "node": ">=16"
-      }
-    },
-    "node_modules/pacote/node_modules/jackspeak": {
-      "version": "3.4.0",
-      "license": "BlueOak-1.0.0",
-      "dependencies": {
-        "@isaacs/cliui": "^8.0.2"
-      },
-      "engines": {
-        "node": ">=14"
-      },
-      "funding": {
-        "url": "https://github.com/sponsors/isaacs"
-      },
-      "optionalDependencies": {
-        "@pkgjs/parseargs": "^0.11.0"
       }
     },
     "node_modules/pacote/node_modules/json-parse-even-better-errors": {
@@ -14607,20 +13666,19 @@
       }
     },
     "node_modules/rimraf/node_modules/glob": {
-      "version": "10.3.15",
+      "version": "10.5.0",
+      "integrity": "sha512-DfXN8DfhJ7NH3Oe7cFmu3NCu1wKbkReJ8TorzSAFbSKrlNaQSKfIzqYqVY8zlbs2NLBbWpRiU52GX2PbaBVNkg==",
       "license": "ISC",
       "dependencies": {
         "foreground-child": "^3.1.0",
-        "jackspeak": "^2.3.6",
-        "minimatch": "^9.0.1",
-        "minipass": "^7.0.4",
-        "path-scurry": "^1.11.0"
+        "jackspeak": "^3.1.2",
+        "minimatch": "^9.0.4",
+        "minipass": "^7.1.2",
+        "package-json-from-dist": "^1.0.0",
+        "path-scurry": "^1.11.1"
       },
       "bin": {
         "glob": "dist/esm/bin.mjs"
-      },
-      "engines": {
-        "node": ">=16 || 14 >=14.18"
       },
       "funding": {
         "url": "https://github.com/sponsors/isaacs"
@@ -14640,7 +13698,8 @@
       }
     },
     "node_modules/rimraf/node_modules/minipass": {
-      "version": "7.1.1",
+      "version": "7.1.2",
+      "integrity": "sha512-qOOzS1cBTWYF4BH8fVePDBOO9iptMnGUEZwNc/cMWnTV2nVLZ7VoNWEPHkYczZA0pdoA7dl6e7FL659nX9S2aw==",
       "license": "ISC",
       "engines": {
         "node": ">=16 || 14 >=14.17"
@@ -14746,7 +13805,8 @@
       "license": "MIT"
     },
     "node_modules/semver": {
-      "version": "7.6.2",
+      "version": "7.7.3",
+      "integrity": "sha512-SdsKMrI9TdgjdweUSR9MweHA4EJ8YxHn8DFaDisvhVlUOe4BF1tLD7GAj0lIqWVl+dPb/rExr0Btby5loQm20Q==",
       "license": "ISC",
       "bin": {
         "semver": "bin/semver.js"
@@ -15359,7 +14419,8 @@
       }
     },
     "node_modules/supertap/node_modules/js-yaml": {
-      "version": "3.14.1",
+      "version": "3.14.2",
+      "integrity": "sha512-PMSmkqxr106Xa156c2M265Z+FTrPl+oxd/rgOQy2tijQeK5TxQ43psO1ZCwhVOSdnn+RzkzlRz/eY4BgJBYVpg==",
       "dev": true,
       "license": "MIT",
       "dependencies": {
@@ -15510,17 +14571,6 @@
       "dev": true,
       "license": "MIT"
     },
-    "node_modules/tmp": {
-      "version": "0.0.33",
-      "dev": true,
-      "license": "MIT",
-      "dependencies": {
-        "os-tmpdir": "~1.0.2"
-      },
-      "engines": {
-        "node": ">=0.6.0"
-      }
-    },
     "node_modules/tmpl": {
       "version": "1.0.5",
       "dev": true,
@@ -15590,18 +14640,20 @@
       }
     },
     "node_modules/ts-jest": {
-      "version": "29.1.5",
+      "version": "29.4.5",
+      "integrity": "sha512-HO3GyiWn2qvTQA4kTgjDcXiMwYQt68a1Y8+JuLRVpdIzm+UOLSHgl/XqR4c6nzJkq5rOkjc02O2I7P7l/Yof0Q==",
       "dev": true,
       "license": "MIT",
       "dependencies": {
-        "bs-logger": "0.x",
-        "fast-json-stable-stringify": "2.x",
-        "jest-util": "^29.0.0",
+        "bs-logger": "^0.2.6",
+        "fast-json-stable-stringify": "^2.1.0",
+        "handlebars": "^4.7.8",
         "json5": "^2.2.3",
-        "lodash.memoize": "4.x",
-        "make-error": "1.x",
-        "semver": "^7.5.3",
-        "yargs-parser": "^21.0.1"
+        "lodash.memoize": "^4.1.2",
+        "make-error": "^1.3.6",
+        "semver": "^7.7.3",
+        "type-fest": "^4.41.0",
+        "yargs-parser": "^21.1.1"
       },
       "bin": {
         "ts-jest": "cli.js"
@@ -15611,10 +14663,11 @@
       },
       "peerDependencies": {
         "@babel/core": ">=7.0.0-beta.0 <8",
-        "@jest/transform": "^29.0.0",
-        "@jest/types": "^29.0.0",
-        "babel-jest": "^29.0.0",
-        "jest": "^29.0.0",
+        "@jest/transform": "^29.0.0 || ^30.0.0",
+        "@jest/types": "^29.0.0 || ^30.0.0",
+        "babel-jest": "^29.0.0 || ^30.0.0",
+        "jest": "^29.0.0 || ^30.0.0",
+        "jest-util": "^29.0.0 || ^30.0.0",
         "typescript": ">=4.3 <6"
       },
       "peerDependenciesMeta": {
@@ -15632,23 +14685,22 @@
         },
         "esbuild": {
           "optional": true
+        },
+        "jest-util": {
+          "optional": true
         }
       }
     },
-    "node_modules/ts-jest/node_modules/jest-util": {
-      "version": "29.7.0",
+    "node_modules/ts-jest/node_modules/type-fest": {
+      "version": "4.41.0",
+      "integrity": "sha512-TeTSQ6H5YHvpqVwBRcnLDCBnDOHWYu7IvGbHT6N8AOymcr9PJGjc1GTtiWZTYg0NCgYwvnYWEkVChQAr9bjfwA==",
       "dev": true,
-      "license": "MIT",
-      "dependencies": {
-        "@jest/types": "^29.6.3",
-        "@types/node": "*",
-        "chalk": "^4.0.0",
-        "ci-info": "^3.2.0",
-        "graceful-fs": "^4.2.9",
-        "picomatch": "^2.2.3"
-      },
+      "license": "(MIT OR CC0-1.0)",
       "engines": {
-        "node": "^14.15.0 || ^16.10.0 || >=18.0.0"
+        "node": ">=16"
+      },
+      "funding": {
+        "url": "https://github.com/sponsors/sindresorhus"
       }
     },
     "node_modules/ts-node": {
@@ -15785,20 +14837,19 @@
       }
     },
     "node_modules/tuf-js/node_modules/glob": {
-      "version": "10.3.10",
+      "version": "10.5.0",
+      "integrity": "sha512-DfXN8DfhJ7NH3Oe7cFmu3NCu1wKbkReJ8TorzSAFbSKrlNaQSKfIzqYqVY8zlbs2NLBbWpRiU52GX2PbaBVNkg==",
       "license": "ISC",
       "dependencies": {
         "foreground-child": "^3.1.0",
-        "jackspeak": "^2.3.5",
-        "minimatch": "^9.0.1",
-        "minipass": "^5.0.0 || ^6.0.2 || ^7.0.0",
-        "path-scurry": "^1.10.1"
+        "jackspeak": "^3.1.2",
+        "minimatch": "^9.0.4",
+        "minipass": "^7.1.2",
+        "package-json-from-dist": "^1.0.0",
+        "path-scurry": "^1.11.1"
       },
       "bin": {
         "glob": "dist/esm/bin.mjs"
-      },
-      "engines": {
-        "node": ">=16 || 14 >=14.17"
       },
       "funding": {
         "url": "https://github.com/sponsors/isaacs"
@@ -15825,7 +14876,8 @@
       }
     },
     "node_modules/tuf-js/node_modules/minimatch": {
-      "version": "9.0.3",
+      "version": "9.0.5",
+      "integrity": "sha512-G6T0ZX48xgozx7587koeX9Ys2NYy6Gmv//P89sEte9V9whIapMNF4idKxnW2QtCcLiTWlb/wfCabAtAFWhhBow==",
       "license": "ISC",
       "dependencies": {
         "brace-expansion": "^2.0.1"
@@ -15838,7 +14890,8 @@
       }
     },
     "node_modules/tuf-js/node_modules/minipass": {
-      "version": "7.0.4",
+      "version": "7.1.2",
+      "integrity": "sha512-qOOzS1cBTWYF4BH8fVePDBOO9iptMnGUEZwNc/cMWnTV2nVLZ7VoNWEPHkYczZA0pdoA7dl6e7FL659nX9S2aw==",
       "license": "ISC",
       "engines": {
         "node": ">=16 || 14 >=14.17"
@@ -16546,7 +15599,8 @@
       }
     },
     "node_modules/yoctocolors-cjs": {
-      "version": "2.1.1",
+      "version": "2.1.3",
+      "integrity": "sha512-U/PBtDf35ff0D8X8D0jfdzHYEPFxAI7jJlxZXwCSez5M3190m+QobIfh+sWDWSHMCWWJN2AWamkegn6vr6YBTw==",
       "dev": true,
       "license": "MIT",
       "engines": {
@@ -16558,21 +15612,21 @@
     },
     "packages/cli": {
       "name": "@zowe/cli",
-      "version": "8.29.2",
+      "version": "8.29.5",
       "hasInstallScript": true,
       "license": "EPL-2.0",
       "dependencies": {
-        "@zowe/core-for-zowe-sdk": "8.29.1",
-        "@zowe/imperative": "8.29.1",
-        "@zowe/provisioning-for-zowe-sdk": "8.29.1",
-        "@zowe/zos-console-for-zowe-sdk": "8.29.1",
-        "@zowe/zos-files-for-zowe-sdk": "8.29.1",
-        "@zowe/zos-jobs-for-zowe-sdk": "8.29.1",
-        "@zowe/zos-logs-for-zowe-sdk": "8.29.1",
-        "@zowe/zos-tso-for-zowe-sdk": "8.29.1",
-        "@zowe/zos-uss-for-zowe-sdk": "8.29.1",
-        "@zowe/zos-workflows-for-zowe-sdk": "8.29.1",
-        "@zowe/zosmf-for-zowe-sdk": "8.29.1",
+        "@zowe/core-for-zowe-sdk": "8.29.4",
+        "@zowe/imperative": "8.29.4",
+        "@zowe/provisioning-for-zowe-sdk": "8.29.4",
+        "@zowe/zos-console-for-zowe-sdk": "8.29.4",
+        "@zowe/zos-files-for-zowe-sdk": "8.29.4",
+        "@zowe/zos-jobs-for-zowe-sdk": "8.29.4",
+        "@zowe/zos-logs-for-zowe-sdk": "8.29.4",
+        "@zowe/zos-tso-for-zowe-sdk": "8.29.4",
+        "@zowe/zos-uss-for-zowe-sdk": "8.29.4",
+        "@zowe/zos-workflows-for-zowe-sdk": "8.29.4",
+        "@zowe/zosmf-for-zowe-sdk": "8.29.4",
         "find-process": "1.4.7",
         "lodash": "4.17.21",
         "minimatch": "9.0.5",
@@ -16585,7 +15639,7 @@
         "@types/diff": "^5.0.9",
         "@types/lodash": "^4.17.6",
         "@types/tar": "^6.1.11",
-        "@zowe/cli-test-utils": "8.29.1",
+        "@zowe/cli-test-utils": "8.29.4",
         "comment-json": "^4.2.3",
         "strip-ansi": "^6.0.1",
         "which": "^4.0.0"
@@ -16594,7 +15648,7 @@
         "node": ">=20.9.0"
       },
       "optionalDependencies": {
-        "@zowe/secrets-for-zowe-sdk": "8.29.1"
+        "@zowe/secrets-for-zowe-sdk": "8.29.4"
       }
     },
     "packages/cli/node_modules/isexe": {
@@ -16634,15 +15688,15 @@
     },
     "packages/core": {
       "name": "@zowe/core-for-zowe-sdk",
-      "version": "8.29.1",
+      "version": "8.29.4",
       "license": "EPL-2.0",
       "dependencies": {
         "comment-json": "~4.2.3",
         "string-width": "^4.2.3"
       },
       "devDependencies": {
-        "@zowe/cli-test-utils": "8.29.1",
-        "@zowe/imperative": "8.29.1"
+        "@zowe/cli-test-utils": "8.29.4",
+        "@zowe/imperative": "8.29.4"
       },
       "engines": {
         "node": ">=20.9.0"
@@ -16653,7 +15707,7 @@
     },
     "packages/imperative": {
       "name": "@zowe/imperative",
-      "version": "8.29.1",
+      "version": "8.29.4",
       "license": "EPL-2.0",
       "dependencies": {
         "@types/yargs": "^17.0.32",
@@ -16708,7 +15762,7 @@
         "@types/pacote": "^11.1.8",
         "@types/progress": "^2.0.7",
         "@types/stack-trace": "^0.0.33",
-        "@zowe/secrets-for-zowe-sdk": "8.29.1",
+        "@zowe/secrets-for-zowe-sdk": "8.29.4",
         "concurrently": "^8.0.0",
         "cowsay": "^1.6.0",
         "deep-diff": "^1.0.0",
@@ -16846,16 +15900,16 @@
     },
     "packages/provisioning": {
       "name": "@zowe/provisioning-for-zowe-sdk",
-      "version": "8.29.1",
+      "version": "8.29.4",
       "license": "EPL-2.0",
       "dependencies": {
         "js-yaml": "^4.1.0"
       },
       "devDependencies": {
         "@types/js-yaml": "^4.0.9",
-        "@zowe/cli-test-utils": "8.29.1",
-        "@zowe/core-for-zowe-sdk": "8.29.1",
-        "@zowe/imperative": "8.29.1"
+        "@zowe/cli-test-utils": "8.29.4",
+        "@zowe/core-for-zowe-sdk": "8.29.4",
+        "@zowe/imperative": "8.29.4"
       },
       "engines": {
         "node": ">=20.9.0"
@@ -16867,7 +15921,7 @@
     },
     "packages/secrets": {
       "name": "@zowe/secrets-for-zowe-sdk",
-      "version": "8.29.1",
+      "version": "8.29.4",
       "hasInstallScript": true,
       "license": "EPL-2.0",
       "devDependencies": {
@@ -16880,15 +15934,15 @@
     },
     "packages/workflows": {
       "name": "@zowe/zos-workflows-for-zowe-sdk",
-      "version": "8.29.1",
+      "version": "8.29.4",
       "license": "EPL-2.0",
       "dependencies": {
-        "@zowe/zos-files-for-zowe-sdk": "8.29.1"
+        "@zowe/zos-files-for-zowe-sdk": "8.29.4"
       },
       "devDependencies": {
-        "@zowe/cli-test-utils": "8.29.1",
-        "@zowe/core-for-zowe-sdk": "8.29.1",
-        "@zowe/imperative": "8.29.1"
+        "@zowe/cli-test-utils": "8.29.4",
+        "@zowe/core-for-zowe-sdk": "8.29.4",
+        "@zowe/imperative": "8.29.4"
       },
       "engines": {
         "node": ">=20.9.0"
@@ -16900,12 +15954,12 @@
     },
     "packages/zosconsole": {
       "name": "@zowe/zos-console-for-zowe-sdk",
-      "version": "8.29.1",
+      "version": "8.29.4",
       "license": "EPL-2.0",
       "devDependencies": {
-        "@zowe/cli-test-utils": "8.29.1",
-        "@zowe/core-for-zowe-sdk": "8.29.1",
-        "@zowe/imperative": "8.29.1"
+        "@zowe/cli-test-utils": "8.29.4",
+        "@zowe/core-for-zowe-sdk": "8.29.4",
+        "@zowe/imperative": "8.29.4"
       },
       "engines": {
         "node": ">=20.9.0"
@@ -16917,17 +15971,17 @@
     },
     "packages/zosfiles": {
       "name": "@zowe/zos-files-for-zowe-sdk",
-      "version": "8.29.1",
+      "version": "8.29.4",
       "license": "EPL-2.0",
       "dependencies": {
         "lodash": "^4.17.21",
         "minimatch": "^9.0.5"
       },
       "devDependencies": {
-        "@zowe/cli-test-utils": "8.29.1",
-        "@zowe/core-for-zowe-sdk": "8.29.1",
-        "@zowe/imperative": "8.29.1",
-        "@zowe/zos-uss-for-zowe-sdk": "8.29.1"
+        "@zowe/cli-test-utils": "8.29.4",
+        "@zowe/core-for-zowe-sdk": "8.29.4",
+        "@zowe/imperative": "8.29.4",
+        "@zowe/zos-uss-for-zowe-sdk": "8.29.4"
       },
       "engines": {
         "node": ">=20.9.0"
@@ -16952,15 +16006,15 @@
     },
     "packages/zosjobs": {
       "name": "@zowe/zos-jobs-for-zowe-sdk",
-      "version": "8.29.1",
+      "version": "8.29.4",
       "license": "EPL-2.0",
       "dependencies": {
-        "@zowe/zos-files-for-zowe-sdk": "8.29.1"
+        "@zowe/zos-files-for-zowe-sdk": "8.29.4"
       },
       "devDependencies": {
-        "@zowe/cli-test-utils": "8.29.1",
-        "@zowe/core-for-zowe-sdk": "8.29.1",
-        "@zowe/imperative": "8.29.1"
+        "@zowe/cli-test-utils": "8.29.4",
+        "@zowe/core-for-zowe-sdk": "8.29.4",
+        "@zowe/imperative": "8.29.4"
       },
       "engines": {
         "node": ">=20.9.0"
@@ -16972,12 +16026,12 @@
     },
     "packages/zoslogs": {
       "name": "@zowe/zos-logs-for-zowe-sdk",
-      "version": "8.29.1",
+      "version": "8.29.4",
       "license": "EPL-2.0",
       "devDependencies": {
-        "@zowe/cli-test-utils": "8.29.1",
-        "@zowe/core-for-zowe-sdk": "8.29.1",
-        "@zowe/imperative": "8.29.1"
+        "@zowe/cli-test-utils": "8.29.4",
+        "@zowe/core-for-zowe-sdk": "8.29.4",
+        "@zowe/imperative": "8.29.4"
       },
       "engines": {
         "node": ">=20.9.0"
@@ -16989,12 +16043,12 @@
     },
     "packages/zosmf": {
       "name": "@zowe/zosmf-for-zowe-sdk",
-      "version": "8.29.1",
+      "version": "8.29.4",
       "license": "EPL-2.0",
       "devDependencies": {
-        "@zowe/cli-test-utils": "8.29.1",
-        "@zowe/core-for-zowe-sdk": "8.29.1",
-        "@zowe/imperative": "8.29.1"
+        "@zowe/cli-test-utils": "8.29.4",
+        "@zowe/core-for-zowe-sdk": "8.29.4",
+        "@zowe/imperative": "8.29.4"
       },
       "engines": {
         "node": ">=20.9.0"
@@ -17006,15 +16060,15 @@
     },
     "packages/zostso": {
       "name": "@zowe/zos-tso-for-zowe-sdk",
-      "version": "8.29.1",
+      "version": "8.29.4",
       "license": "EPL-2.0",
       "dependencies": {
-        "@zowe/zosmf-for-zowe-sdk": "8.29.1"
+        "@zowe/zosmf-for-zowe-sdk": "8.29.4"
       },
       "devDependencies": {
-        "@zowe/cli-test-utils": "8.29.1",
-        "@zowe/core-for-zowe-sdk": "8.29.1",
-        "@zowe/imperative": "8.29.1"
+        "@zowe/cli-test-utils": "8.29.4",
+        "@zowe/core-for-zowe-sdk": "8.29.4",
+        "@zowe/imperative": "8.29.4"
       },
       "engines": {
         "node": ">=20.9.0"
@@ -17026,15 +16080,15 @@
     },
     "packages/zosuss": {
       "name": "@zowe/zos-uss-for-zowe-sdk",
-      "version": "8.29.1",
+      "version": "8.29.4",
       "license": "EPL-2.0",
       "dependencies": {
         "ssh2": "^1.15.0"
       },
       "devDependencies": {
         "@types/ssh2": "^1.11.19",
-        "@zowe/cli-test-utils": "8.29.1",
-        "@zowe/imperative": "8.29.1"
+        "@zowe/cli-test-utils": "8.29.4",
+        "@zowe/imperative": "8.29.4"
       },
       "engines": {
         "node": ">=20.9.0"
