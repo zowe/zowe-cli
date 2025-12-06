@@ -843,10 +843,9 @@ describe("z/OS Files - Download", () => {
             let response;
             let caughtError;
             const file = "existing/file.txt";
-            const ioExistsSpy = jest.spyOn(IO, "existsSync");
             const ioDeleteSpy = jest.spyOn(IO, "deleteFile");
 
-            ioExistsSpy.mockReturnValue(true);
+            existsSyncSpy.mockReturnValue(true);
             ioDeleteSpy.mockImplementation(() => null);
 
             const dummyError = new Error("Connection lost");
@@ -855,7 +854,7 @@ describe("z/OS Files - Download", () => {
             });
 
             try {
-                response = await Download.dataSet(dummySession, dsname, { file });
+                response = await Download.dataSet(dummySession, dsname, { file, overwrite: true });
             } catch (e) {
                 caughtError = e;
             }
@@ -863,10 +862,9 @@ describe("z/OS Files - Download", () => {
             expect(response).toBeUndefined();
             expect(caughtError).toEqual(dummyError);
 
-            expect(ioExistsSpy).toHaveBeenCalledWith(file);
+            expect(existsSyncSpy).toHaveBeenCalledWith(file);
             expect(ioDeleteSpy).not.toHaveBeenCalled();
 
-            ioExistsSpy.mockRestore();
             ioDeleteSpy.mockRestore();
         });
 
@@ -874,10 +872,9 @@ describe("z/OS Files - Download", () => {
             let response;
             let caughtError;
             const file = "new/file.txt";
-            const ioExistsSpy = jest.spyOn(IO, "existsSync");
             const ioDeleteSpy = jest.spyOn(IO, "deleteFile");
 
-            ioExistsSpy.mockReturnValue(false);
+            existsSyncSpy.mockReturnValue(false);
             ioDeleteSpy.mockImplementation(() => null);
 
             const dummyError = new Error("Connection lost");
@@ -894,10 +891,9 @@ describe("z/OS Files - Download", () => {
             expect(response).toBeUndefined();
             expect(caughtError).toEqual(dummyError);
 
-            expect(ioExistsSpy).toHaveBeenCalledWith(file);
+            expect(existsSyncSpy).toHaveBeenCalledWith(file);
             expect(ioDeleteSpy).toHaveBeenCalledWith(file);
 
-            ioExistsSpy.mockRestore();
             ioDeleteSpy.mockRestore();
         });
     });
@@ -1723,10 +1719,9 @@ describe("z/OS Files - Download", () => {
         it("should not delete existing member files when download fails", async () => {
             let response;
             let caughtError;
-            const ioExistsSpy = jest.spyOn(IO, "existsSync");
             const ioDeleteSpy = jest.spyOn(IO, "deleteFile");
 
-            ioExistsSpy.mockImplementation((filePath) => {
+            existsSyncSpy.mockImplementation((filePath) => {
                 const fileName = basename(filePath.toString());
                 return fileName === "m1.txt" || fileName === "m2.txt";
             });
@@ -1738,7 +1733,7 @@ describe("z/OS Files - Download", () => {
             });
 
             try {
-                response = await Download.allMembers(dummySession, dsname, { failFast: false });
+                response = await Download.allMembers(dummySession, dsname, { failFast: false, overwrite: true });
             } catch (e) {
                 caughtError = e;
             }
@@ -1747,22 +1742,20 @@ describe("z/OS Files - Download", () => {
             expect(caughtError).toBeDefined();
             expect(caughtError.message).toContain(ZosFilesMessages.memberDownloadFailed.message);
 
-            expect(ioExistsSpy).toHaveBeenCalledWith(posix.join(dsFolder, "m1.txt"));
-            expect(ioExistsSpy).toHaveBeenCalledWith(posix.join(dsFolder, "m2.txt"));
+            expect(existsSyncSpy).toHaveBeenCalledWith(posix.join(dsFolder, "m1.txt"));
+            expect(existsSyncSpy).toHaveBeenCalledWith(posix.join(dsFolder, "m2.txt"));
 
             expect(ioDeleteSpy).not.toHaveBeenCalled();
 
-            ioExistsSpy.mockRestore();
             ioDeleteSpy.mockRestore();
         });
 
         it("should delete new member files when download fails", async () => {
             let response;
             let caughtError;
-            const ioExistsSpy = jest.spyOn(IO, "existsSync");
             const ioDeleteSpy = jest.spyOn(IO, "deleteFile");
 
-            ioExistsSpy.mockReturnValue(false);
+            existsSyncSpy.mockReturnValue(false);
             ioDeleteSpy.mockImplementation(() => null);
 
             const dummyError = new Error("Connection lost");
@@ -1780,13 +1773,12 @@ describe("z/OS Files - Download", () => {
             expect(caughtError).toBeDefined();
             expect(caughtError.message).toContain(ZosFilesMessages.memberDownloadFailed.message);
 
-            expect(ioExistsSpy).toHaveBeenCalledWith(posix.join(dsFolder, "m1.txt"));
-            expect(ioExistsSpy).toHaveBeenCalledWith(posix.join(dsFolder, "m2.txt"));
+            expect(existsSyncSpy).toHaveBeenCalledWith(posix.join(dsFolder, "m1.txt"));
+            expect(existsSyncSpy).toHaveBeenCalledWith(posix.join(dsFolder, "m2.txt"));
 
             expect(ioDeleteSpy).toHaveBeenCalledWith(posix.join(dsFolder, "m1.txt"));
             expect(ioDeleteSpy).toHaveBeenCalledWith(posix.join(dsFolder, "m2.txt"));
 
-            ioExistsSpy.mockRestore();
             ioDeleteSpy.mockRestore();
         });
     });
