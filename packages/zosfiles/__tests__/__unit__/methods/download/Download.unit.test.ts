@@ -2403,8 +2403,9 @@ describe("z/OS Files - Download", () => {
                 }, {}),
                 apiResponse: [{
                     ...dataSetPO,
-                    status: util.format(ZosFilesMessages.datasetDownloadedWithDestination.message, "./") + "\nMembers:  TESTDS;"
-                }]
+                    status: util.format(ZosFilesMessages.datasetDownloadedWithDestination.message, "./") + "\nMembers: TESTDS"
+                }],
+                errorMessage: undefined
             });
         });
 
@@ -2497,8 +2498,9 @@ describe("z/OS Files - Download", () => {
                 }, {directory}),
                 apiResponse: [{
                     ...dataSetPO,
-                    status: util.format(ZosFilesMessages.datasetDownloadedWithDestination.message, directory) + "\nMembers:  TESTDS;"
-                }]
+                    status: util.format(ZosFilesMessages.datasetDownloadedWithDestination.message, directory) + "\nMembers: TESTDS"
+                }],
+                errorMessage: undefined
             });
         });
 
@@ -2622,8 +2624,9 @@ describe("z/OS Files - Download", () => {
                 }, { overwrite: false }),
                 apiResponse: [{
                     ...dataSetPO,
-                    status: util.format(ZosFilesMessages.memberDownloadSkipped.message, 2) + "\nMembers:  MEMBER1, MEMBER2;"
-                }]
+                    status: util.format(ZosFilesMessages.memberDownloadSkipped.message, 2) + "\nMembers: MEMBER1, MEMBER2"
+                }],
+                errorMessage: undefined
             });
 
             expect(downloadAllMembersSpy).toHaveBeenCalledTimes(1);
@@ -2678,7 +2681,7 @@ describe("z/OS Files - Download", () => {
                     ...dataSetPO,
                     status:
                         util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, 1, dsFolder) + "\n" +
-                        util.format(ZosFilesMessages.memberDownloadSkipped.message, 1) + "\nMembers:  MEMBER1, MEMBER2;"
+                        util.format(ZosFilesMessages.memberDownloadSkipped.message, 1) + "\nMembers: MEMBER1, MEMBER2"
                 }]
             });
 
@@ -2728,7 +2731,7 @@ describe("z/OS Files - Download", () => {
                     ...dataSetPO,
                     status:
                         util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, 2, dsFolder) +
-                        "\nMembers:  MEMBER1, MEMBER2;"
+                        "\nMembers: MEMBER1, MEMBER2"
                 }]
             });
 
@@ -2811,10 +2814,10 @@ describe("z/OS Files - Download", () => {
                     { ...dataSetPS2, status: "Data set downloaded" },
                     { ...dataSetPO, status:
                         util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, 1, dsFolder) + "\n" +
-                        util.format(ZosFilesMessages.memberDownloadSkipped.message, 1) + "\nMembers:  MEMBER1, MEMBER2;"
+                        util.format(ZosFilesMessages.memberDownloadSkipped.message, 1) + "\nMembers: MEMBER1, MEMBER2"
                     },
                     { ...dataSetPO2, status:
-                        util.format(ZosFilesMessages.memberDownloadSkipped.message, 2)  + "\nMembers:  MEMBER3, MEMBER4;"
+                        util.format(ZosFilesMessages.memberDownloadSkipped.message, 2)  + "\nMembers: MEMBER3, MEMBER4"
                     }
                 ]
             });

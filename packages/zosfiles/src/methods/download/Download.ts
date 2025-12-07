@@ -440,6 +440,9 @@ export class Download {
                 if (options.directory == null) {
                     if (dataSetObj.dsorg?.startsWith("PO")) {
                         mutableOptions.directory = ZosFilesUtils.getDirsFromDataSet(dataSetObj.dsname);
+                        if (options.preserveOriginalLetterCase) {
+                            mutableOptions.directory = mutableOptions.directory.toUpperCase();
+                        }
                     } else {
                         mutableOptions.file = `${dataSetObj.dsname}.` +
                             `${mutableOptions.extension ?? ZosFilesUtils.DEFAULT_FILE_EXTENSION}`;
@@ -450,7 +453,11 @@ export class Download {
                         mutableOptions.extension = undefined;
                     }
                 } else if (dataSetObj.dsorg?.startsWith("PO")) {
-                    mutableOptions.directory = `${mutableOptions.directory}/${ZosFilesUtils.getDirsFromDataSet(dataSetObj.dsname)}`;
+                    let generatedDir = ZosFilesUtils.getDirsFromDataSet(dataSetObj.dsname);
+                    if (options.preserveOriginalLetterCase) {
+                        generatedDir = generatedDir.toUpperCase();
+                    }
+                    mutableOptions.directory = `${mutableOptions.directory}/${generatedDir}`;
                 } else {
                     mutableOptions.file = `${dataSetObj.dsname}.${mutableOptions.extension ?? ZosFilesUtils.DEFAULT_FILE_EXTENSION}`;
                     if (!options.preserveOriginalLetterCase) {
@@ -493,7 +500,7 @@ export class Download {
                             if (listMembers.length === 0) {  // Create directory for empty PO data set
                                 IO.createDirsSyncFromFilePath(options.directory);
                             } else {
-                                dataSetObj.status += `\nMembers: ${listMembers};`;
+                                dataSetObj.status += `\nMembers:${listMembers}`;
                             }
                         }
                     });
@@ -862,11 +869,18 @@ export class Download {
         const responseLines = [];
 
         if (result.downloaded.length > 0) {
-            responseLines.push(
-                TextUtils.chalk.green(`${result.downloaded.length} data set(s) downloaded successfully to `) +
-                    (options.directory ?? "./"),
-                ...result.downloaded.map(dsname => `    ${dsname}`)
-            );
+            if (options.directory) {
+                responseLines.push(
+                    TextUtils.chalk.green(`${result.downloaded.length} data set(s) downloaded successfully to `) +
+                        options.directory,
+                    ...result.downloaded.map(dsname => `    ${dsname}`)
+                );
+            } else {
+                responseLines.push(
+                    TextUtils.chalk.green(`${result.downloaded.length} data set(s) downloaded successfully to ./`),
+                    ...result.downloaded.map(dsname => `    ${dsname}`)
+                );
+            }
         }
 
         if (result.skippedExisting && result.skippedExisting.length > 0) {
