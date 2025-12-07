@@ -4,7 +4,8 @@ All notable changes to the Zowe z/OS files SDK package will be documented in thi
 
 ## Recent Changes
 
-- BugFix: Fixed an issue where if a file fails to download and one already exists in the destination, the old file is deleted. [#2617](https://github.com/zowe/zowe-cli/pull/2617)
+- BugFix: Fixed an issue where if a file fails to download and one already exists in the destination, the old file is deleted. [#2618](https://github.com/zowe/zowe-cli/pull/2618)
+- BugFix: Fixed an issue where the preserve letter case option was not preserving the case in generated directory names in the `Download` `data-sets-matching` command. [#2618](https://github.com/zowe/zowe-cli/pull/2618)
 
 ## `8.29.1`
 
