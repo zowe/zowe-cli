@@ -136,7 +136,7 @@ export class Download {
                     return {
                         success: true,
                         commandResponse: util.format(ZosFilesMessages.datasetDownloadSkipped.message, destination),
-                        apiResponse: { destination: destination }
+                        apiResponse: { destination }
                     };
                 }
 
