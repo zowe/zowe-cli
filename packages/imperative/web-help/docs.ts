@@ -59,7 +59,7 @@ copyButtons.forEach((btn: any) => {
     btn.addEventListener("click", async () => {
         let success = false;
         try {
-            const textToCopy = btn.getAttribute("data-clipboard-text");
+            const textToCopy = btn.dataset.clipboardText;
             if (textToCopy) {
                 await navigator.clipboard.writeText(textToCopy);
                 success = true;
