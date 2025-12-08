@@ -338,8 +338,8 @@ export class ConnectionPropsForSessCfg {
                 // Expose base profile name as a generic account candidate.
                 (sessCfg as any).account = baseProfName;
             }
-        } catch (_e) {
-            // ignore
+        } catch (error_) {
+            Logger.getImperativeLogger().debug(`Failed to extract profile names from command args: ${String(error_)}`);
         }
 
         // Populate certAccount / certKeyAccount from command args (if user supplied directly)
@@ -373,8 +373,8 @@ export class ConnectionPropsForSessCfg {
                     }
                 }
             }
-        } catch (_e) {
-            // ignore
+        } catch (error_) {
+            Logger.getImperativeLogger().debug(`Failed to populate certAccount/certKeyAccount from config: ${String(error_)}`);
         }
 
         // record all of the currently available credential information into the session

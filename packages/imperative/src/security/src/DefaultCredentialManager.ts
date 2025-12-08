@@ -382,8 +382,8 @@ export class DefaultCredentialManager extends AbstractCredentialManager {
                     cert = candidate;
                     break;
                 }
-            } catch (err) {
-                // swallow and try next service
+            } catch (error_) {
+                Logger.getImperativeLogger().debug(`Failed to load certificate from service '${nextService}' for account '${account}': ${String(error_)}`);
             }
         }
 
@@ -429,8 +429,8 @@ export class DefaultCredentialManager extends AbstractCredentialManager {
                         additionalDetails: this.getMissingEntryMessage(account)
                     });
                 }
-            } catch (err) {
-                // swallow and try next service
+            } catch (error_) {
+                Logger.getImperativeLogger().debug(`Failed to load certificate (sync) from service '${nextService}' for account '${account}': ${String(error_)}`);
             }
         }
 
@@ -466,8 +466,8 @@ export class DefaultCredentialManager extends AbstractCredentialManager {
                     key = candidate;
                     break;
                 }
-            } catch (err) {
-                // swallow and try next service
+            } catch (error_) {
+                Logger.getImperativeLogger().debug(`Failed to load private key from service '${nextService}' for account '${account}': ${String(error_)}`);
             }
         }
 
@@ -514,8 +514,8 @@ export class DefaultCredentialManager extends AbstractCredentialManager {
                         additionalDetails: this.getMissingEntryMessage(account)
                     });
                 }
-            } catch (err) {
-                // swallow and try next service
+            } catch (error_) {
+                Logger.getImperativeLogger().debug(`Failed to load private key (sync) from service '${nextService}' for account '${account}': ${String(error_)}`);
             }
         }
 

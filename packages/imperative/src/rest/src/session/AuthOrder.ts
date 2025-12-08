@@ -209,12 +209,16 @@ export class AuthOrder {
                     try {
                         if (fs.existsSync(tmpPath)) fs.unlinkSync(tmpPath);
                     } catch (error_) {
-                        // ignore unlink errors
+                        Logger.getImperativeLogger().debug(
+                            `Failed to remove auth cache temp file '${tmpPath}': ${String(error_)}`
+                        );
                     }
                 }
             }
         } catch (error_) {
-            // ignore
+            Logger.getImperativeLogger().debug(
+                `Failed to clear auth cache temp files: ${String(error_)}`
+            );
         }
         delete sessCfg._authCache;
         AuthOrder.findOrCreateAuthCache(sessCfg);
@@ -822,6 +826,8 @@ export class AuthOrder {
             const acctCandidates = AuthOrder.buildCertAccountCandidates(sessCredName, sessCfg, certAccountVal, certKeyAccountVal);
             if (acctCandidates.length === 0) return;
 
+            const credType = sessCredName === AuthOrder.SESS_CERT_KEY_NAME ? "private key" : "certificate";
+
             const authCacheAny: any = sessCfg._authCache;
             if (!authCacheAny._promptedCertAccounts) {
                 authCacheAny._promptedCertAccounts = new Set<string>();
@@ -851,12 +857,17 @@ export class AuthOrder {
                         AuthOrder.cacheCertBuffer(sessCredName, sessCfg, certBuf);
                         return;
                     }
-                } catch (_error_) {
+                } catch (error_) {
+                    Logger.getImperativeLogger().debug(
+                        `Certificate manager load failed for ${credType} account '${acct}': ${String(error_)}`
+                    );
                     // continue to next candidate
                 }
             }
         } catch (error_) {
-            // ignore
+            Logger.getImperativeLogger().debug(
+                `Failed certificate retrieval via credential manager (async): ${String(error_)}`
+            );
         }
     }
 
@@ -885,6 +896,7 @@ export class AuthOrder {
                 const acct = acctCandidates[i];
                 const isLastAttempt = i === acctCandidates.length - 1;
                 const isKey = sessCredName === AuthOrder.SESS_CERT_KEY_NAME;
+                const credType = isKey ? "private key" : "certificate";
                 try {
                     const certBuf: Buffer | null = isKey ?
                         managerAny.loadCertificateKeySync(acct, !isLastAttempt) :
@@ -893,12 +905,17 @@ export class AuthOrder {
                         AuthOrder.cacheCertBuffer(sessCredName, sessCfg, certBuf);
                         return;
                     }
-                } catch (_error_) {
+                } catch (error_) {
+                    Logger.getImperativeLogger().debug(
+                        `Certificate manager load failed (sync) for ${credType} account '${acct}': ${String(error_)}`
+                    );
                     // continue to next candidate
                 }
             }
         } catch (error_) {
-            // ignore
+            Logger.getImperativeLogger().debug(
+                `Failed certificate retrieval via credential manager (sync): ${String(error_)}`
+            );
         }
     }
 
@@ -1194,13 +1211,17 @@ export class AuthOrder {
                     try {
                         if (fs.existsSync(tmpPath)) fs.unlinkSync(tmpPath);
                     } catch (error_) {
-                        // ignore
+                        Logger.getImperativeLogger().debug(
+                            `Failed to clean temp cert file '${tmpPath}': ${String(error_)}`
+                        );
                     }
                 }
                 authCacheAny._tempFiles = [];
             }
         } catch (error_) {
-            // ignore
+            Logger.getImperativeLogger().debug(
+                `Failed to clean certificate temp files: ${String(error_)}`
+            );
         }
     }
 }
