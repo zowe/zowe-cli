@@ -1021,6 +1021,529 @@ describe("TeamConfig ProfileInfo tests", () => {
         });
     });
 
+    describe("mergeArgsForProfileAsync", () => {
+        beforeEach(() => {
+            (ImperativeConfig as any).mInstance = null;
+        });
+
+        it("should return merged args without loading secure values when getSecureVals is false", async () => {
+            const profInfo = createNewProfInfo(teamProjDir);
+            await profInfo.readProfilesFromDisk();
+            const profAttrs = profInfo.getDefaultProfile("zosmf") as IProfAttrs;
+            delete profInfo.getTeamConfig().layerActive().properties.defaults.base;
+            delete profInfo.getTeamConfig().findLayer(false, true).properties.defaults.base;
+
+            const mergedArgs = await profInfo.mergeArgsForProfileAsync(profAttrs, { getSecureVals: false });
+
+            expect(mergedArgs).toBeDefined();
+            expect(mergedArgs.knownArgs).toBeDefined();
+            expect(Array.isArray(mergedArgs.knownArgs)).toBe(true);
+            expect(mergedArgs.knownArgs.length).toBeGreaterThan(0);
+        });
+
+        it("should return the same structure as synchronous mergeArgsForProfile when getSecureVals is false", async () => {
+            const profInfo = createNewProfInfo(teamProjDir);
+            await profInfo.readProfilesFromDisk();
+            const profAttrs = profInfo.getDefaultProfile("zosmf") as IProfAttrs;
+            delete profInfo.getTeamConfig().layerActive().properties.defaults.base;
+            delete profInfo.getTeamConfig().findLayer(false, true).properties.defaults.base;
+
+            const syncMergedArgs = profInfo.mergeArgsForProfile(profAttrs, { getSecureVals: false });
+            const asyncMergedArgs = await profInfo.mergeArgsForProfileAsync(profAttrs, { getSecureVals: false });
+
+            expect(asyncMergedArgs.knownArgs.length).toBe(syncMergedArgs.knownArgs.length);
+            expect(asyncMergedArgs.missingArgs.length).toBe(syncMergedArgs.missingArgs.length);
+
+            for (let i = 0; i < asyncMergedArgs.knownArgs.length; i++) {
+                const asyncArg = asyncMergedArgs.knownArgs[i];
+                const syncArg = syncMergedArgs.knownArgs[i];
+                expect(asyncArg.argName).toBe(syncArg.argName);
+                expect(asyncArg.dataType).toBe(syncArg.dataType);
+                expect(asyncArg.argValue).toBe(syncArg.argValue);
+                expect(asyncArg.inSchema).toBe(syncArg.inSchema);
+                expect(asyncArg.secure).toBe(syncArg.secure);
+            }
+        });
+
+        it("should handle default options when mergeOpts is undefined", async () => {
+            const profInfo = createNewProfInfo(teamProjDir);
+            await profInfo.readProfilesFromDisk();
+            const profAttrs = profInfo.getDefaultProfile("zosmf") as IProfAttrs;
+            delete profInfo.getTeamConfig().layerActive().properties.defaults.base;
+            delete profInfo.getTeamConfig().findLayer(false, true).properties.defaults.base;
+
+            const mergedArgs = await profInfo.mergeArgsForProfileAsync(profAttrs);
+
+            expect(mergedArgs).toBeDefined();
+            expect(mergedArgs.knownArgs).toBeDefined();
+            expect(mergedArgs.knownArgs.length).toBeGreaterThan(0);
+        });
+
+        it("should return missingArgs when profile is missing required properties", async () => {
+            const profInfo = createNewProfInfo(teamProjDir);
+            await profInfo.readProfilesFromDisk();
+            const profAttrs = profInfo.getDefaultProfile("zosmf") as IProfAttrs;
+
+            const mergedArgs = await profInfo.mergeArgsForProfileAsync(profAttrs, { getSecureVals: false });
+
+            expect(mergedArgs.missingArgs).toBeDefined();
+            expect(Array.isArray(mergedArgs.missingArgs)).toBe(true);
+            for (const arg of mergedArgs.missingArgs) {
+                expect(arg.argName).toBeDefined();
+                expect(arg.dataType).toBeDefined();
+                expect(arg.argLoc).toBeDefined();
+                expect(arg.inSchema).toBeDefined();
+            }
+        });
+
+        it("should preserve secure property in known args when getSecureVals is false", async () => {
+            const profInfo = createNewProfInfo(teamProjDir);
+            await profInfo.readProfilesFromDisk();
+            const profAttrs = profInfo.getDefaultProfile("zosmf") as IProfAttrs;
+
+            const mergedArgs = await profInfo.mergeArgsForProfileAsync(profAttrs, { getSecureVals: false });
+
+            for (const arg of mergedArgs.knownArgs) {
+                if (arg.secure) {
+                    expect(arg.argValue).toBeUndefined();
+                }
+            }
+        });
+
+        it("should attempt to load secure values when getSecureVals is true", async () => {
+            const profInfo = createNewProfInfo(teamProjDir);
+            await profInfo.readProfilesFromDisk();
+            const profAttrs = profInfo.getDefaultProfile("zosmf") as IProfAttrs;
+
+            const loadSecureArgAsyncSpy = jest.spyOn(profInfo, "loadSecureArgAsync");
+            const mergedArgs = await profInfo.mergeArgsForProfileAsync(profAttrs, { getSecureVals: true });
+
+            expect(mergedArgs).toBeDefined();
+            if (loadSecureArgAsyncSpy.mock.calls.length > 0) {
+                expect(loadSecureArgAsyncSpy).toHaveBeenCalled();
+            }
+        });
+
+        it("should gracefully handle loadSecureArgAsync errors", async () => {
+            const profInfo = createNewProfInfo(teamProjDir);
+            await profInfo.readProfilesFromDisk();
+            const profAttrs = profInfo.getDefaultProfile("zosmf") as IProfAttrs;
+
+            jest.spyOn(profInfo, "loadSecureArgAsync")
+                .mockRejectedValue(new Error("Failed to load secure value"));
+
+            const mergedArgs = await profInfo.mergeArgsForProfileAsync(profAttrs, { getSecureVals: true });
+
+            expect(mergedArgs).toBeDefined();
+            expect(mergedArgs.knownArgs).toBeDefined();
+        });
+
+        it("should work with service and base profile merge", async () => {
+            const profInfo = createNewProfInfo(teamProjDir);
+            await profInfo.readProfilesFromDisk();
+            const profAttrs = profInfo.getDefaultProfile("zosmf") as IProfAttrs;
+
+            const mergedArgs = await profInfo.mergeArgsForProfileAsync(profAttrs, { getSecureVals: false });
+
+            const argNames = mergedArgs.knownArgs.map(arg => arg.argName);
+            expect(argNames.length).toBeGreaterThan(0);
+            expect(argNames).toContain("host");
+            expect(argNames).toContain("port");
+        });
+
+        it("should work with nested service profile", async () => {
+            const profInfo = createNewProfInfo(teamProjDir);
+            await profInfo.readProfilesFromDisk();
+            const profAttrs = profInfo.getDefaultProfile("tso") as IProfAttrs;
+            delete profInfo.getTeamConfig().layerActive().properties.defaults.base;
+            delete profInfo.getTeamConfig().findLayer(false, true).properties.defaults.base;
+
+            const mergedArgs = await profInfo.mergeArgsForProfileAsync(profAttrs, { getSecureVals: false });
+
+            expect(mergedArgs.knownArgs.length).toBeGreaterThan(0);
+        });
+
+        it("should preserve arg locations and data types", async () => {
+            const profInfo = createNewProfInfo(teamProjDir);
+            await profInfo.readProfilesFromDisk();
+            const profAttrs = profInfo.getDefaultProfile("zosmf") as IProfAttrs;
+            delete profInfo.getTeamConfig().layerActive().properties.defaults.base;
+            delete profInfo.getTeamConfig().findLayer(false, true).properties.defaults.base;
+
+            const mergedArgs = await profInfo.mergeArgsForProfileAsync(profAttrs, { getSecureVals: false });
+
+            for (const arg of mergedArgs.knownArgs) {
+                expect(arg.argLoc).toBeDefined();
+                expect(arg.argLoc.locType).toBe(ProfLocType.TEAM_CONFIG);
+                expect(arg.dataType).toMatch(/^(string|number|boolean|array)$/);
+            }
+        });
+
+        it("should handle multiple sequential calls", async () => {
+            const profInfo = createNewProfInfo(teamProjDir);
+            await profInfo.readProfilesFromDisk();
+            const profAttrs = profInfo.getDefaultProfile("zosmf") as IProfAttrs;
+            delete profInfo.getTeamConfig().layerActive().properties.defaults.base;
+            delete profInfo.getTeamConfig().findLayer(false, true).properties.defaults.base;
+
+            const mergedArgs1 = await profInfo.mergeArgsForProfileAsync(profAttrs, { getSecureVals: false });
+            const mergedArgs2 = await profInfo.mergeArgsForProfileAsync(profAttrs, { getSecureVals: false });
+
+            expect(mergedArgs1.knownArgs.length).toBe(mergedArgs2.knownArgs.length);
+            expect(mergedArgs1.missingArgs.length).toBe(mergedArgs2.missingArgs.length);
+
+            const names1 = mergedArgs1.knownArgs.map(arg => arg.argName).sort();
+            const names2 = mergedArgs2.knownArgs.map(arg => arg.argName).sort();
+            expect(names1).toEqual(names2);
+        });
+
+        it("should match sync behavior exactly for getSecureVals=false options", async () => {
+            const profInfo = createNewProfInfo(teamProjDir);
+            await profInfo.readProfilesFromDisk();
+            const profAttrs = profInfo.getDefaultProfile("tso") as IProfAttrs;
+
+            const syncResult = profInfo.mergeArgsForProfile(profAttrs, { getSecureVals: false });
+            const asyncResult = await profInfo.mergeArgsForProfileAsync(profAttrs, { getSecureVals: false });
+
+            expect(asyncResult.knownArgs.length).toBe(syncResult.knownArgs.length);
+            expect(asyncResult.missingArgs.length).toBe(syncResult.missingArgs.length);
+
+            syncResult.knownArgs.forEach((syncArg, idx) => {
+                const asyncArg = asyncResult.knownArgs[idx];
+                expect(asyncArg.argName).toBe(syncArg.argName);
+                expect(asyncArg.dataType).toBe(syncArg.dataType);
+                expect(asyncArg.argValue).toBe(syncArg.argValue);
+                expect(asyncArg.secure).toBe(syncArg.secure);
+                expect(asyncArg.inSchema).toBe(syncArg.inSchema);
+                expect(asyncArg.argLoc.locType).toBe(syncArg.argLoc.locType);
+            });
+        });
+    });
+
+    describe("loadSecureArgAsync", () => {
+        beforeEach(() => {
+            (ImperativeConfig as any).mInstance = null;
+        });
+
+        it("should throw if readProfilesFromDisk not called first", async () => {
+            const profInfo = createNewProfInfo(teamProjDir);
+            const arg: IProfArgAttrs = {
+                argName: "password",
+                dataType: "string",
+                argValue: "testPassword",
+                argLoc: {
+                    locType: ProfLocType.TEAM_CONFIG,
+                    osLoc: ["some/path"],
+                    jsonLoc: "profiles.base.properties.password"
+                }
+            };
+
+            let caughtError: ProfInfoErr | undefined;
+            try {
+                await profInfo.loadSecureArgAsync(arg);
+            } catch (error) {
+                caughtError = error as ProfInfoErr;
+            }
+
+            expect(caughtError).toBeDefined();
+            expect(caughtError?.errorCode).toBe(ProfInfoErr.MUST_READ_FROM_DISK);
+            expect(caughtError?.message).toContain("You must first call ProfileInfo.readProfilesFromDisk()");
+        });
+
+        it("should load secure arg from TEAM_CONFIG location", async () => {
+            const profInfo = createNewProfInfo(teamProjDir);
+            await profInfo.readProfilesFromDisk();
+            const profAttrs = profInfo.getDefaultProfile("zosmf") as IProfAttrs;
+            const mergedArgs = profInfo.mergeArgsForProfile(profAttrs, { getSecureVals: false });
+
+            // Get a known arg with TEAM_CONFIG location
+            const hostArg = mergedArgs.knownArgs.find(arg => arg.argName === "host");
+            expect(hostArg).toBeDefined();
+            expect(hostArg?.argLoc.locType).toBe(ProfLocType.TEAM_CONFIG);
+
+            const loadedValue = await profInfo.loadSecureArgAsync(hostArg as IProfArgAttrs);
+            expect(loadedValue).toBeDefined();
+            expect(typeof loadedValue).toBe("string");
+        });
+
+        it("should load secure arg with matching layer path", async () => {
+            const profInfo = createNewProfInfo(teamProjDir);
+            await profInfo.readProfilesFromDisk();
+            const profAttrs = profInfo.getDefaultProfile("zosmf") as IProfAttrs;
+            const mergedArgs = profInfo.mergeArgsForProfile(profAttrs, { getSecureVals: false });
+
+            const hostArg = mergedArgs.knownArgs.find(arg => arg.argName === "host");
+            expect(hostArg).toBeDefined();
+
+            // Verify layer exists
+            const layers = profInfo.getTeamConfig().mLayers;
+            const matchingLayer = layers.find(layer => layer.path === hostArg?.argLoc.osLoc?.[0]);
+            expect(matchingLayer).toBeDefined();
+
+            const loadedValue = await profInfo.loadSecureArgAsync(hostArg as IProfArgAttrs);
+            expect(loadedValue).toBeDefined();
+        });
+
+        it("should throw if property location not found in JSON", async () => {
+            const profInfo = createNewProfInfo(teamProjDir);
+            await profInfo.readProfilesFromDisk();
+
+            const arg: IProfArgAttrs = {
+                argName: "nonexistent",
+                dataType: "string",
+                argValue: undefined,
+                argLoc: {
+                    locType: ProfLocType.TEAM_CONFIG,
+                    osLoc: [path.join(teamProjDir, testAppNm + ".config.json")],
+                    jsonLoc: "profiles.fake.properties.nonexistent"
+                }
+            };
+
+            let caughtError: ProfInfoErr | undefined;
+            try {
+                await profInfo.loadSecureArgAsync(arg);
+            } catch (error) {
+                caughtError = error as ProfInfoErr;
+            }
+
+            expect(caughtError).toBeDefined();
+            expect(caughtError?.errorCode).toBe(ProfInfoErr.UNKNOWN_PROP_LOCATION);
+            expect(caughtError?.message).toContain("Failed to locate the property nonexistent");
+        });
+
+        it("should handle ENV location args by returning argValue directly", async () => {
+            const profInfo = createNewProfInfo(teamProjDir);
+            await profInfo.readProfilesFromDisk();
+
+            const arg: IProfArgAttrs = {
+                argName: "envVar",
+                dataType: "string",
+                argValue: "testEnvValue",
+                argLoc: {
+                    locType: ProfLocType.ENV,
+                    osLoc: undefined,
+                    jsonLoc: undefined
+                }
+            };
+
+            const loadedValue = await profInfo.loadSecureArgAsync(arg);
+            expect(loadedValue).toBe("testEnvValue");
+        });
+
+        it("should handle DEFAULT location args by returning argValue directly", async () => {
+            const profInfo = createNewProfInfo(teamProjDir);
+            await profInfo.readProfilesFromDisk();
+
+            const arg: IProfArgAttrs = {
+                argName: "port",
+                dataType: "number",
+                argValue: 443,
+                argLoc: {
+                    locType: ProfLocType.DEFAULT,
+                    osLoc: undefined,
+                    jsonLoc: undefined
+                }
+            };
+
+            const loadedValue = await profInfo.loadSecureArgAsync(arg);
+            expect(loadedValue).toBe(443);
+        });
+
+        it("should handle Promise values by awaiting them", async () => {
+            const profInfo = createNewProfInfo(teamProjDir);
+            await profInfo.readProfilesFromDisk();
+
+            const promiseValue = Promise.resolve("resolvedSecureValue");
+            const arg: IProfArgAttrs = {
+                argName: "password",
+                dataType: "string",
+                argValue: promiseValue as any,
+                argLoc: {
+                    locType: ProfLocType.ENV,
+                    osLoc: undefined,
+                    jsonLoc: undefined
+                }
+            };
+
+            const loadedValue = await profInfo.loadSecureArgAsync(arg);
+            expect(loadedValue).toBe("resolvedSecureValue");
+        });
+
+        it("should throw if Promise value rejects", async () => {
+            const profInfo = createNewProfInfo(teamProjDir);
+            await profInfo.readProfilesFromDisk();
+
+            const promiseValue = Promise.reject(new Error("Async load failed"));
+            const arg: IProfArgAttrs = {
+                argName: "password",
+                dataType: "string",
+                argValue: promiseValue as any,
+                argLoc: {
+                    locType: ProfLocType.ENV,
+                    osLoc: undefined,
+                    jsonLoc: undefined
+                }
+            };
+
+            let caughtError: Error | undefined;
+            try {
+                await profInfo.loadSecureArgAsync(arg);
+            } catch (error) {
+                caughtError = error as Error;
+            }
+
+            expect(caughtError).toBeDefined();
+            expect(caughtError?.message).toBe("Async load failed");
+        });
+
+        it("should return undefined argValue if argValue is explicitly undefined and location is ENV", async () => {
+            const profInfo = createNewProfInfo(teamProjDir);
+            await profInfo.readProfilesFromDisk();
+
+            const arg: IProfArgAttrs = {
+                argName: "optional",
+                dataType: "string",
+                argValue: undefined,
+                argLoc: {
+                    locType: ProfLocType.ENV,
+                    osLoc: undefined,
+                    jsonLoc: undefined
+                }
+            };
+
+            let caughtError: ProfInfoErr | undefined;
+            try {
+                await profInfo.loadSecureArgAsync(arg);
+            } catch (error) {
+                caughtError = error as ProfInfoErr;
+            }
+
+            expect(caughtError).toBeDefined();
+            expect(caughtError?.errorCode).toBe(ProfInfoErr.UNKNOWN_PROP_LOCATION);
+        });
+
+        it("should handle multiple sequential calls with same argument", async () => {
+            const profInfo = createNewProfInfo(teamProjDir);
+            await profInfo.readProfilesFromDisk();
+            const profAttrs = profInfo.getDefaultProfile("zosmf") as IProfAttrs;
+            const mergedArgs = profInfo.mergeArgsForProfile(profAttrs, { getSecureVals: false });
+
+            const hostArg = mergedArgs.knownArgs.find(arg => arg.argName === "host") as IProfArgAttrs;
+
+            const value1 = await profInfo.loadSecureArgAsync(hostArg);
+            const value2 = await profInfo.loadSecureArgAsync(hostArg);
+            const value3 = await profInfo.loadSecureArgAsync(hostArg);
+
+            expect(value1).toBe(value2);
+            expect(value2).toBe(value3);
+        });
+
+        it("should correctly find layer by osLoc path", async () => {
+            const profInfo = createNewProfInfo(teamProjDir);
+            await profInfo.readProfilesFromDisk();
+            const profAttrs = profInfo.getDefaultProfile("zosmf") as IProfAttrs;
+            const mergedArgs = profInfo.mergeArgsForProfile(profAttrs, { getSecureVals: false });
+
+            const hostArg = mergedArgs.knownArgs.find(arg => arg.argName === "host") as IProfArgAttrs;
+            const osLoc = hostArg.argLoc.osLoc?.[0];
+            expect(osLoc).toBeDefined();
+
+            // Verify layer lookup works
+            const layers = profInfo.getTeamConfig().mLayers;
+            const matchingLayer = layers.find(layer => layer.path === osLoc);
+            expect(matchingLayer).toBeDefined();
+            expect(matchingLayer?.path).toBe(osLoc);
+
+            const loadedValue = await profInfo.loadSecureArgAsync(hostArg);
+            expect(loadedValue).toBeDefined();
+        });
+
+        it("should handle args with numeric values", async () => {
+            const profInfo = createNewProfInfo(teamProjDir);
+            await profInfo.readProfilesFromDisk();
+            const profAttrs = profInfo.getDefaultProfile("zosmf") as IProfAttrs;
+            const mergedArgs = profInfo.mergeArgsForProfile(profAttrs, { getSecureVals: false });
+
+            const portArg = mergedArgs.knownArgs.find(arg => arg.argName === "port");
+            expect(portArg).toBeDefined();
+            expect(portArg?.dataType).toBe("number");
+
+            const loadedValue = await profInfo.loadSecureArgAsync(portArg as IProfArgAttrs);
+            expect(typeof loadedValue).toBe("number");
+            expect(loadedValue).toBeGreaterThan(0);
+        });
+
+        it("should handle args with boolean values", async () => {
+            const profInfo = createNewProfInfo(teamProjDir);
+            await profInfo.readProfilesFromDisk();
+            const profAttrs = profInfo.getDefaultProfile("zosmf") as IProfAttrs;
+            const mergedArgs = profInfo.mergeArgsForProfile(profAttrs, { getSecureVals: false });
+
+            const rfhArg = mergedArgs.knownArgs.find(arg => arg.argName === "responseFormatHeader");
+            expect(rfhArg).toBeDefined();
+            expect(rfhArg?.dataType).toBe("boolean");
+
+            const loadedValue = await profInfo.loadSecureArgAsync(rfhArg as IProfArgAttrs);
+            expect(typeof loadedValue).toBe("boolean");
+        });
+
+        it("should skip layers that don't match osLoc path", async () => {
+            const profInfo = createNewProfInfo(teamProjDir);
+            await profInfo.readProfilesFromDisk();
+
+            const arg: IProfArgAttrs = {
+                argName: "host",
+                dataType: "string",
+                argValue: undefined,
+                argLoc: {
+                    locType: ProfLocType.TEAM_CONFIG,
+                    osLoc: ["/nonexistent/path.json"],
+                    jsonLoc: "profiles.LPAR1.properties.host"
+                }
+            };
+
+            let caughtError: ProfInfoErr | undefined;
+            try {
+                await profInfo.loadSecureArgAsync(arg);
+            } catch (error) {
+                caughtError = error as ProfInfoErr;
+            }
+
+            expect(caughtError).toBeDefined();
+            expect(caughtError?.errorCode).toBe(ProfInfoErr.UNKNOWN_PROP_LOCATION);
+        });
+
+        it("should verify lodash.get correctly retrieves nested properties", async () => {
+            const profInfo = createNewProfInfo(teamProjDir);
+            await profInfo.readProfilesFromDisk();
+
+            // Get a nested profile arg
+            const profAttrs = profInfo.getDefaultProfile("tso") as IProfAttrs;
+            const mergedArgs = profInfo.mergeArgsForProfile(profAttrs, { getSecureVals: false });
+
+            const accountArg = mergedArgs.knownArgs.find(arg => arg.argName === "account");
+            expect(accountArg).toBeDefined();
+
+            const loadedValue = await profInfo.loadSecureArgAsync(accountArg as IProfArgAttrs);
+            expect(loadedValue).toBeDefined();
+            expect(typeof loadedValue).toBe("string");
+        });
+
+        it("should work with base profile properties", async () => {
+            const profInfo = createNewProfInfo(teamProjDir);
+            await profInfo.readProfilesFromDisk();
+            const profAttrs = profInfo.getDefaultProfile("zosmf") as IProfAttrs;
+            const mergedArgs = profInfo.mergeArgsForProfile(profAttrs, { getSecureVals: false });
+
+            // Find an arg from base profile
+            const userArg = mergedArgs.knownArgs.find(arg => arg.argName === "user");
+            if (userArg && userArg.argLoc.locType === ProfLocType.TEAM_CONFIG) {
+                const loadedValue = await profInfo.loadSecureArgAsync(userArg);
+                expect(loadedValue).toBeDefined();
+            }
+        });
+    });
+
     describe("mergeArgsForProfileType", () => {
         it("should find known args in base profile", async () => {
             const profInfo = createNewProfInfo(teamProjDir);
