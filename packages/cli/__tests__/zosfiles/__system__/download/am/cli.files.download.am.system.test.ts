@@ -68,6 +68,14 @@ describe("Download All Member", () => {
 
         afterEach(async () => {
             await Delete.dataSet(REAL_SESSION, dsname);
+            // Cleanup
+            const files = readdirSync(TEST_ENVIRONMENT_NO_PROF.workingDir);
+            for (const file of files) {
+                if (!(file == "zowe.config.json" || file == "zowe.config.user.json" || file.startsWith("."))) {
+                    const filePath = path.join(TEST_ENVIRONMENT_NO_PROF.workingDir, file);
+                    rmSync(filePath, {recursive: true});
+                }
+            }
         });
 
         it("should download all data set member of pds", () => {
@@ -99,10 +107,10 @@ describe("Download All Member", () => {
             await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname);
             await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testString), `${dsname}(${testString})`);
             // Cleanup
-            const files = readdirSync(TEST_ENVIRONMENT_NO_PROF.workingDir);
+            const files = readdirSync(TEST_ENVIRONMENT.workingDir);
             for (const file of files) {
                 if (!(file == "zowe.config.json" || file == "zowe.config.user.json" || file.startsWith("."))) {
-                    const filePath = path.join(TEST_ENVIRONMENT_NO_PROF.workingDir, file);
+                    const filePath = path.join(TEST_ENVIRONMENT.workingDir, file);
                     rmSync(filePath, {recursive: true});
                 }
             }
