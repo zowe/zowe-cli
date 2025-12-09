@@ -25,6 +25,9 @@ import {
     Mount,
     Unmount,
     IUSSListOptions,
+    IDownloadSingleOptions,
+    ZosFilesUtils,
+    IZosmfListResponse,
 } from "../../../../src";
 import { Imperative, IO, Session } from "@zowe/imperative";
 import { inspect } from "util";
@@ -33,7 +36,8 @@ import { TestEnvironment } from "../../../../../../__tests__/__src__/environment
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { deleteFiles, getUniqueDatasetName, stripNewLines, wait } from "../../../../../../__tests__/__src__/TestUtils";
 import * as fs from "fs";
-import { posix } from "path";
+import { cwd } from "process";
+import { posix, sep, join } from "path";
 import { Shell } from "@zowe/zos-uss-for-zowe-sdk";
 import { PassThrough } from "stream";
 import { text } from "stream/consumers";
@@ -53,7 +57,32 @@ let ussDirname: string;
 let localDirname: string;
 let file: string;
 
+function getDestination(dataSetName: string, options?: IDownloadSingleOptions ) {
+    let extension = ZosFilesUtils.DEFAULT_FILE_EXTENSION;
+    if (options?.extension != null) {
+        extension = options.extension;
+    }
+
+    if (options?.file) {
+        return options.file;
+    }
+
+    let generatedFilePath = ZosFilesUtils.getDirsFromDataSet(dataSetName);
+    // Method above lowercased characters.
+    // In case of preserving original letter case, uppercase all characters.
+    if (options?.preserveOriginalLetterCase) {
+        generatedFilePath = generatedFilePath.toUpperCase();
+    } else {
+        generatedFilePath = generatedFilePath.toLowerCase();
+    }
+
+    generatedFilePath = generatedFilePath + IO.normalizeExtension(extension);
+    return join(cwd(), generatedFilePath.split(sep)[0]);
+}
+
 describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolean) => {
+
+    let destination: string;
 
     beforeAll(async () => {
         testEnvironment = await TestEnvironment.setUp({
@@ -82,6 +111,17 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
         await TestEnvironment.cleanUp(testEnvironment);
     });
 
+    afterEach(() => {
+        if (destination) {
+            if (destination.indexOf(sep) > -1 && !destination.startsWith(".") && !destination.startsWith(sep)){
+                rimraf(join(cwd(), destination.split(sep)[0]));
+            } else {
+                rimraf(join(cwd(), destination));
+            }
+            destination = null;
+        }
+    });
+
     describe("Success Scenarios", () => {
 
         describe("Physical sequential data set", () => {
@@ -104,14 +144,6 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
                 } catch (err) {
                     // Do nothing
                 }
-
-                // delete the top-level folder and the folders and file below
-                // variable 'file' should be set in the test
-                if (file != null) {
-                    const folders = file.split("/");
-                    rimraf(folders[0]);
-                    rimraf(file);
-                }
             });
 
             it("should download a data set", async () => {
@@ -124,6 +156,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
 
                 try {
                     response = await Download.dataSet(REAL_SESSION, dsname);
+                    destination = response.apiResponse.destination;
                     Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
@@ -147,12 +180,14 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
             it("should download a data set with response timeout", async () => {
                 let error;
                 let response: IZosFilesResponse;
+                const options: IDownloadSingleOptions = {responseTimeout: 5};
 
                 await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname);
                 await wait(waitTime);
 
                 try {
-                    response = await Download.dataSet(REAL_SESSION, dsname, {responseTimeout: 5});
+                    response = await Download.dataSet(REAL_SESSION, dsname, options);
+                    destination = response.apiResponse.destination;
                     Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
@@ -176,13 +211,15 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
             it("should download a data set and create folders and file in original letter case", async () => {
                 let error;
                 let response: IZosFilesResponse;
+                const options: IDownloadSingleOptions = { preserveOriginalLetterCase: true };
 
                 // upload data to the newly created data set
                 await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname);
                 await wait(waitTime);
 
                 try {
-                    response = await Download.dataSet(REAL_SESSION, dsname, { preserveOriginalLetterCase: true });
+                    response = await Download.dataSet(REAL_SESSION, dsname, options);
+                    destination = response.apiResponse.destination;
                     Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
@@ -220,6 +257,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
 
                 try {
                     response = await Download.dataSet(REAL_SESSION, dsname, options);
+                    destination = response.apiResponse.destination;
                     Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
@@ -246,6 +284,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
 
                 try {
                     response = await Download.dataSet(REAL_SESSION, dsname, options);
+                    destination = response.apiResponse.destination;
                     Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
@@ -276,6 +315,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
 
                 try {
                     response = await Download.dataSet(REAL_SESSION, dsname, options);
+                    destination = response.apiResponse.destination;
                     Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
@@ -312,6 +352,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
 
                 try {
                     response = await Download.dataSet(REAL_SESSION, dsname, options);
+                    destination = response.apiResponse.destination;
                     Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
@@ -336,13 +377,15 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
                 let error;
                 let response: IZosFilesResponse;
                 const responseStream = new PassThrough();
+                const options: IDownloadSingleOptions = { stream: responseStream };
 
                 // upload data to the newly created data set
                 await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname);
                 await wait(waitTime);
 
                 try {
-                    response = await Download.dataSet(REAL_SESSION, dsname, { stream: responseStream });
+                    response = await Download.dataSet(REAL_SESSION, dsname, options);
+                    destination = response.apiResponse.destination;
                     Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
@@ -380,12 +423,6 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
                 } catch (err) {
                     // Do nothing
                 }
-
-                // delete the top-level folder and the folders and file below
-                if (file != null) {
-                    const folders = file.split("/");
-                    rimraf(folders[0]);
-                }
             });
 
             it("should download a data set member", async () => {
@@ -398,6 +435,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
 
                 try {
                     response = await Download.allMembers(REAL_SESSION, dsname);
+                    destination = response.apiResponse.destination;
                     Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
@@ -406,8 +444,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
                 expect(error).toBeFalsy();
                 expect(response).toBeTruthy();
                 expect(response.success).toBeTruthy();
-                expect(response.commandResponse).toContain(
-                    ZosFilesMessages.memberDownloadedSuccessfully.message.substring(0, "Member(s) downloaded successfully".length + 1));
+                expect(response.commandResponse).toContain("member(s) downloaded successfully");
 
                 // convert the data set name to use as a path/file
                 const regex = /\./gi;
@@ -421,13 +458,15 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
             it("should download a data set member with response timeout", async () => {
                 let error;
                 let response: IZosFilesResponse;
+                const options: IDownloadSingleOptions = {responseTimeout: 5};
 
                 // upload data to the newly created data set
                 await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname + "(member)");
                 await wait(waitTime);
 
                 try {
-                    response = await Download.allMembers(REAL_SESSION, dsname, {responseTimeout: 5});
+                    response = await Download.allMembers(REAL_SESSION, dsname, options);
+                    destination = response.apiResponse.destination;
                     Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
@@ -436,8 +475,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
                 expect(error).toBeFalsy();
                 expect(response).toBeTruthy();
                 expect(response.success).toBeTruthy();
-                expect(response.commandResponse).toContain(
-                    ZosFilesMessages.memberDownloadedSuccessfully.message.substring(0, "Member(s) downloaded successfully".length + 1));
+                expect(response.commandResponse).toContain("member(s) downloaded successfully");
 
                 // convert the data set name to use as a path/file
                 const regex = /\./gi;
@@ -451,13 +489,15 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
             it("should download a data set and create folders and file in original letter case", async () => {
                 let error;
                 let response: IZosFilesResponse;
+                const options: IDownloadSingleOptions = { preserveOriginalLetterCase: true };
 
                 // upload data to the newly created data set
                 await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname + "(member)");
                 await wait(waitTime);
 
                 try {
-                    response = await Download.allMembers(REAL_SESSION, dsname, { preserveOriginalLetterCase: true });
+                    response = await Download.allMembers(REAL_SESSION, dsname, options);
+                    destination = response.apiResponse.destination;
                     Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
@@ -466,8 +506,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
                 expect(error).toBeFalsy();
                 expect(response).toBeTruthy();
                 expect(response.success).toBeTruthy();
-                expect(response.commandResponse).toContain(
-                    ZosFilesMessages.memberDownloadedSuccessfully.message.substring(0, "Member(s) downloaded successfully".length + 1));
+                expect(response.commandResponse).toContain("member(s) downloaded successfully");
 
                 // convert the data set name to use as a path/file
                 const regex = /\./gi;
@@ -499,6 +538,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
 
                 try {
                     response = await Download.allMembers(REAL_SESSION, dsname, options);
+                    destination = response.apiResponse.destination;
                     Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
@@ -507,8 +547,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
                 expect(error).toBeFalsy();
                 expect(response).toBeTruthy();
                 expect(response.success).toBeTruthy();
-                expect(response.commandResponse).toContain(
-                    ZosFilesMessages.memberDownloadedSuccessfully.message.substring(0, "Member(s) downloaded successfully".length + 1));
+                expect(response.commandResponse).toContain("member(s) downloaded successfully");
 
                 // convert the data set name to use as a path/file for clean up in AfterEach
                 const regex = /\./gi;
@@ -529,6 +568,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
 
                 try {
                     response = await Download.allMembers(REAL_SESSION, dsname, options);
+                    destination = response.apiResponse.destination;
                     Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
@@ -537,8 +577,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
                 expect(error).toBeFalsy();
                 expect(response).toBeTruthy();
                 expect(response.success).toBeTruthy();
-                expect(response.commandResponse).toContain(
-                    ZosFilesMessages.memberDownloadedSuccessfully.message.substring(0, "Member(s) downloaded successfully".length + 1));
+                expect(response.commandResponse).toContain("member(s) downloaded successfully");
 
                 // convert the data set name to use as a path/file for clean up in AfterEach
                 const regex = /\./gi;
@@ -559,6 +598,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
 
                 try {
                     response = await Download.allMembers(REAL_SESSION, dsname, options);
+                    destination = response.apiResponse.destination;
                     Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
@@ -567,13 +607,13 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
                 expect(error).toBeFalsy();
                 expect(response).toBeTruthy();
                 expect(response.success).toBeTruthy();
-                expect(response.commandResponse).toContain(
-                    ZosFilesMessages.memberDownloadedSuccessfully.message.substring(0, "Member(s) downloaded successfully".length + 1));
+                expect(response.commandResponse).toContain("member(s) downloaded successfully");
 
                 // convert the data set name to use as a path/file for clean up in AfterEach
                 const regex = /\./gi;
                 file = dsname.replace(regex, "/") + "/member.dat";
             });
+
             it("should download a data set member full of special characters to test buffer chunk concatenation", async () => {
                 let error;
                 let response: IZosFilesResponse;
@@ -584,6 +624,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
 
                 try {
                     response = await Download.allMembers(REAL_SESSION, dsname);
+                    destination = response.apiResponse.destination;
                     Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
@@ -592,8 +633,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
                 expect(error).toBeFalsy();
                 expect(response).toBeTruthy();
                 expect(response.success).toBeTruthy();
-                expect(response.commandResponse).toContain(
-                    ZosFilesMessages.memberDownloadedSuccessfully.message.substring(0, "Member(s) downloaded successfully".length + 1));
+                expect(response.commandResponse).toContain("member(s) downloaded successfully");
 
                 // Convert the data set name to use as a path/file
                 const regex = /\./gi;
@@ -627,6 +667,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
 
                 try {
                     response = await Download.allMembers(REAL_SESSION, dsname, options);
+                    destination = response.apiResponse.destination;
                     Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
@@ -635,9 +676,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
                 expect(error).toBeFalsy();
                 expect(response).toBeTruthy();
                 expect(response.success).toBeTruthy();
-                expect(response.commandResponse).toContain(
-                    ZosFilesMessages.memberDownloadedSuccessfully.message.substring(0, "Member(s) downloaded successfully".length + 1)
-                );
+                expect(response.commandResponse).toContain("member(s) downloaded successfully");
 
                 // convert the data set name to use as a path/file
                 const regex = /\./gi;
@@ -675,6 +714,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
 
                 try {
                     response = await Download.allMembers(REAL_SESSION, dsname, options);
+                    destination = response.apiResponse.destination;
                     Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
@@ -683,9 +723,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
                 expect(error).toBeFalsy();
                 expect(response).toBeTruthy();
                 expect(response.success).toBeTruthy();
-                expect(response.commandResponse).toContain(
-                    ZosFilesMessages.memberDownloadedSuccessfully.message.substring(0, "Member(s) downloaded successfully".length + 1)
-                );
+                expect(response.commandResponse).toContain("member(s) downloaded successfully");
 
                 // convert the data set name to use as a path/file
                 const regex = /\./gi;
@@ -713,6 +751,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
 
                 try {
                     response = await Download.allMembers(REAL_SESSION, dsname, options);
+                    destination = response.apiResponse.destination;
                     Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
@@ -721,9 +760,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
                 expect(error).toBeFalsy();
                 expect(response).toBeTruthy();
                 expect(response.success).toBeTruthy();
-                expect(response.commandResponse).toContain(
-                    ZosFilesMessages.memberDownloadedSuccessfully.message.substring(0, "Member(s) downloaded successfully".length + 1)
-                );
+                expect(response.commandResponse).toContain("member(s) downloaded successfully");
 
                 // convert the data set name to use as a path/file
                 const regex = /\./gi;
@@ -736,6 +773,9 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
         });
 
         describe("Data sets matching - all data sets - PO", () => {
+
+            let datasetResponse: IZosmfListResponse[] = [];
+            let downloadOptions: IDownloadOptions = undefined;
 
             beforeEach(async () => {
 
@@ -751,18 +791,33 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
                 try {
                     await Delete.dataSet(REAL_SESSION, dsname);
                     await wait(waitTime);
-                } catch (err) {
-                    Imperative.console.info("Error: " + inspect(err));
-                }
+                    if (datasetResponse) {
+                        if (downloadOptions?.directory) {
+                            rimraf(join(cwd(), downloadOptions.directory));
+                        } else {
+                            for (const response of datasetResponse) {
+                                if (response.dsorg && response.dsorg.startsWith("PO")) {
+                                    const location = getDestination(response.dsname, downloadOptions);
+                                    rimraf(location);
+                                } else {
+                                    let name = response.dsname.toLowerCase();
+                                    if (downloadOptions?.preserveOriginalLetterCase) { name = name.toUpperCase(); }
 
-                // delete the top-level folder and the folders and file below
-                try {
-                    const folders = file.split("/");
-                    rimraf(folders[0]);
+                                    const llq = name.substring(response.dsname.lastIndexOf(".") + 1, name.length);
+                                    const extension = downloadOptions?.extensionMap?.[llq] ??
+                                                    downloadOptions?.extension ??
+                                                    ZosFilesUtils.DEFAULT_FILE_EXTENSION;
+                                    name = name + "." + extension;
+                                    rimraf(join(cwd(), name));
+                                }
+                            }
+                        }
+                    }
                 } catch (err) {
-                    // Do nothing, sometimes the files are not created.
                     Imperative.console.info("Error: " + inspect(err));
                 }
+                downloadOptions = undefined;
+                datasetResponse = [];
             });
 
             it("should download a data set", async () => {
@@ -774,6 +829,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
 
                 try {
                     response = await Download.allDataSets(REAL_SESSION, [{ dsname, dsorg: "PO", vol: "*" }]);
+                    datasetResponse = response.apiResponse;
                     Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
@@ -807,6 +863,8 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
 
                 try {
                     response = await Download.allDataSets(REAL_SESSION, [{ dsname, dsorg: "PO", vol: "*" }], options);
+                    datasetResponse = response.apiResponse;
+                    downloadOptions = options;
                     Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
@@ -837,6 +895,8 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
 
                 try {
                     response = await Download.allDataSets(REAL_SESSION, [{ dsname, dsorg: "PO", vol: "*" }], options);
+                    datasetResponse = response.apiResponse;
+                    downloadOptions = options;
                     Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
@@ -855,12 +915,15 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
             it("should download a data set with a different extension", async () => {
                 let error;
                 let response: IZosFilesResponse;
+                const options = {extension: "jcl"};
 
                 // upload data to the newly created data set
                 await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname + "(member)");
 
                 try {
-                    response = await Download.allDataSets(REAL_SESSION, [{ dsname, dsorg: "PO", vol: "*" }], {extension: "jcl"});
+                    response = await Download.allDataSets(REAL_SESSION, [{ dsname, dsorg: "PO", vol: "*" }], options);
+                    datasetResponse = response.apiResponse;
+                    downloadOptions = options;
                     Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
@@ -888,9 +951,12 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
                 const ending = dsname.split(".").pop().toLowerCase();
                 const extMap: any = {};
                 extMap[ending] = "jcl";
+                const options = {extensionMap: extMap};
 
                 try {
-                    response = await Download.allDataSets(REAL_SESSION, [{ dsname, dsorg: "PO", vol: "*" }], {extensionMap: extMap});
+                    response = await Download.allDataSets(REAL_SESSION, [{ dsname, dsorg: "PO", vol: "*" }], options);
+                    datasetResponse = response.apiResponse;
+                    downloadOptions = options;
                     Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
@@ -912,6 +978,9 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
 
         describe("Data sets matching - all data sets - PS", () => {
 
+            let datasetResponse: IZosmfListResponse[] = [];
+            let downloadOptions: IDownloadOptions = undefined;
+
             beforeEach(async () => {
 
                 try {
@@ -926,16 +995,33 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
                 try {
                     await Delete.dataSet(REAL_SESSION, dsname);
                     await wait(waitTime);
+                    if (datasetResponse) {
+                        if (downloadOptions?.directory) {
+                            rimraf(join(cwd(), downloadOptions.directory));
+                        } else {
+                            for (const response of datasetResponse) {
+                                if (response.dsorg && response.dsorg.startsWith("PO")) {
+                                    const location = getDestination(response.dsname, downloadOptions);
+                                    rimraf(location);
+                                } else {
+                                    let name = response.dsname.toLowerCase();
+                                    if (downloadOptions?.preserveOriginalLetterCase) { name = name.toUpperCase(); }
+
+                                    const llq = name.substring(response.dsname.lastIndexOf(".") + 1, name.length);
+                                    const extension = downloadOptions?.extensionMap?.[llq] ??
+                                                    downloadOptions?.extension ??
+                                                    ZosFilesUtils.DEFAULT_FILE_EXTENSION;
+                                    name = name + "." + extension;
+                                    rimraf(join(cwd(), name));
+                                }
+                            }
+                        }
+                    }
                 } catch (err) {
                     // Do nothing
                 }
-
-                // delete the top-level folder and the folders and file below
-                if (file != null) {
-                    const folders = file.split("/");
-                    rimraf(folders[0]);
-                    rimraf(file);
-                }
+                downloadOptions = undefined;
+                datasetResponse = [];
             });
 
             it("should download a data set", async () => {
@@ -947,6 +1033,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
 
                 try {
                     response = await Download.allDataSets(REAL_SESSION, [{ dsname, dsorg: "PS", vol: "*" }]);
+                    datasetResponse = response.apiResponse;
                     Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
@@ -980,6 +1067,8 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
 
                 try {
                     response = await Download.allDataSets(REAL_SESSION, [{ dsname, dsorg: "PS", vol: "*" }], options);
+                    datasetResponse = response.apiResponse;
+                    downloadOptions = options;
                     Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
@@ -1008,6 +1097,8 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
 
                 try {
                     response = await Download.allDataSets(REAL_SESSION, [{ dsname, dsorg: "PS", vol: "*" }], options);
+                    datasetResponse = response.apiResponse;
+                    downloadOptions = options;
                     Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
@@ -1024,12 +1115,15 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
             it("should download a data set with a different extension", async () => {
                 let error;
                 let response: IZosFilesResponse;
+                const options = {extension: "jcl"};
 
                 // upload data to the newly created data set
                 await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testData), dsname);
 
                 try {
-                    response = await Download.allDataSets(REAL_SESSION, [{ dsname, dsorg: "PS", vol: "*" }], {extension: "jcl"});
+                    response = await Download.allDataSets(REAL_SESSION, [{ dsname, dsorg: "PS", vol: "*" }], options);
+                    datasetResponse = response.apiResponse;
+                    downloadOptions = options;
                     Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
@@ -1055,9 +1149,12 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
                 const ending = dsname.split(".").pop().toLowerCase();
                 const extMap: any = {};
                 extMap[ending] = "jcl";
+                const options = {extensionMap: extMap};
 
                 try {
-                    response = await Download.allDataSets(REAL_SESSION, [{ dsname, dsorg: "PS", vol: "*" }], {extensionMap: extMap});
+                    response = await Download.allDataSets(REAL_SESSION, [{ dsname, dsorg: "PS", vol: "*" }], options);
+                    datasetResponse = response.apiResponse;
+                    downloadOptions = options;
                     Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
@@ -1100,6 +1197,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
                 expect(response).toBeFalsy();
                 expect(error).toBeTruthy();
                 expect(error.message).toContain("Expect Error: Required object must be defined");
+                expect(fs.existsSync(dsname.split(".")[0].toLowerCase())).toBeFalsy();
             });
 
             it("should display proper message when downloading a data set that does not exist", async () => {
@@ -1170,6 +1268,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
 
                 try {
                     response = await Download.ussFile(REAL_SESSION, ussname);
+                    destination = response.apiResponse.destination;
                 } catch (err) {
                     error = err;
                 }
@@ -1191,6 +1290,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
 
                 try {
                     response = await Download.ussFile(REAL_SESSION, ussname, {responseTimeout: 5});
+                    destination = response.apiResponse.destination;
                 } catch (err) {
                     error = err;
                 }
@@ -1216,6 +1316,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
 
                 try {
                     response = await Download.ussFile(REAL_SESSION, ussname, options);
+                    destination = response.apiResponse.destination;
                 } catch (err) {
                     error = err;
                 }
@@ -1292,6 +1393,8 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
                         expect(response).toBeTruthy();
                         expect(downloadResponse).toBeTruthy();
 
+                        destination = `${testEnvironment.workingDir.split(cwd())[1]}/${posix.basename(ussnameAsTxt)}`;
+
                         // Compare the downloaded contents to those uploaded
                         const fileContents = fs
                             .readFileSync(
@@ -1332,6 +1435,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
 
                 try {
                     response = await Download.ussFile(REAL_SESSION, ussname, options);
+                    destination = response.apiResponse.destination;
                 } catch (err) {
                     error = err;
                 }
@@ -1354,6 +1458,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
 
                 try {
                     response = await Download.ussFile(REAL_SESSION, ussname, options);
+                    destination = response.apiResponse.destination;
                 } catch (err) {
                     error = err;
                 }
@@ -1377,6 +1482,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
 
                 try {
                     response = await Download.ussFile(REAL_SESSION, ussname, options);
+                    destination = response.apiResponse.destination;
                 } catch (err) {
                     error = err;
                 }
@@ -1401,6 +1507,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
 
                 try {
                     response = await Download.ussFile(REAL_SESSION, ussname, options);
+                    destination = response.apiResponse.destination;
                 } catch (err) {
                     error = err;
                 }
@@ -1425,6 +1532,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
 
                 try {
                     response = await Download.ussFile(REAL_SESSION, ussname, options);
+                    destination = response.apiResponse.destination;
                 } catch (err) {
                     error = err;
                 }
@@ -1449,6 +1557,7 @@ describe.each([false, true])("Download Data Set - Encoded: %s", (encoded: boolea
 
                 try {
                     response = await Download.ussFile(REAL_SESSION, ussname, { stream: responseStream });
+                    destination = response.apiResponse.destination;
                 } catch (err) {
                     error = err;
                 }
