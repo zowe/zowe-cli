@@ -73,7 +73,7 @@ describe("DefaultCredentialManager", () => {
 
             expect((manager as any).persistValueWin32).toEqual(PersistenceValue.Enterprise);
         });
-        
+
         it("should log warning when given persistence level is invalid", () => {
             const service = "imperative";
             const loggerWarnSpy = jest.spyOn(Logger.prototype, "warn");

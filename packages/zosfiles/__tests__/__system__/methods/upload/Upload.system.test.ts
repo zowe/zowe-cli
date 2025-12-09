@@ -29,6 +29,7 @@ let defaultSystem: ITestPropertiesSchema;
 let dsname: string;
 let ussname: string;
 const inputfile = __dirname + "/testfiles/upload.txt";
+const outputfile = __dirname + "/testfiles/download.txt";
 const testdata = "abcdefghijklmnopqrstuvwxyz";
 const encodedTestData = "á é í ó ú ñ Ç ß 12345 !@#$% ^ [ ] $ £";
 const uploadOptions: IUploadOptions = {} as any;
@@ -83,7 +84,7 @@ describe("Upload Data Set", () => {
                 try {
                     // packages/zosfiles/__tests__/__system__/api/methods/upload/
                     response = await Upload.fileToDataset(REAL_SESSION,
-                        __dirname + "/testfiles/upload.txt", dsname);
+                        inputfile, dsname);
                     Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
@@ -102,7 +103,7 @@ describe("Upload Data Set", () => {
                 try {
                     // packages/zosfiles/__tests__/__system__/api/methods/upload/
                     response = await Upload.fileToDataset(REAL_SESSION,
-                        __dirname + "/testfiles/upload.txt", dsname, {responseTimeout: 5});
+                        inputfile, dsname, {responseTimeout: 5});
                     Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
@@ -119,8 +120,8 @@ describe("Upload Data Set", () => {
                 let response: IZosFilesResponse;
 
                 // first we have to get the Etag, so we can compare it. We do it by preemtively downloading the file and requesting Etag
-                await Upload.fileToDataset(REAL_SESSION, __dirname + "/testfiles/upload.txt", dsname);
-                const downloadOptions = {file: __dirname + "/testfiles/upload.txt", returnEtag: true};
+                await Upload.fileToDataset(REAL_SESSION, inputfile, dsname);
+                const downloadOptions = {file: outputfile, returnEtag: true};
                 const downloadResponse = await Download.dataSet(REAL_SESSION, dsname, downloadOptions);
                 expect(downloadResponse.success).toBeTruthy();
                 expect(downloadResponse.apiResponse.etag).toBeDefined();
@@ -128,13 +129,14 @@ describe("Upload Data Set", () => {
                 try {
                     uploadOptions.etag = downloadResponse.apiResponse.etag;
                     // packages/zosfiles/__tests__/__system__/api/methods/upload/
-                    response = await Upload.fileToDataset(REAL_SESSION, __dirname + "/testfiles/upload.txt", dsname, uploadOptions);
+                    response = await Upload.fileToDataset(REAL_SESSION, outputfile, dsname, uploadOptions);
                     Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
                     Imperative.console.info("Error: " + inspect(error));
                 }
 
+                fs.rmSync(outputfile);
                 expect(error).toBeFalsy();
                 expect(response).toBeTruthy();
                 expect(response.success).toBeTruthy();
@@ -149,7 +151,7 @@ describe("Upload Data Set", () => {
                 try {
                     // packages/zosfiles/__tests__/__system__/api/methods/upload/
                     response = await Upload.fileToDataset(REAL_SESSION,
-                        __dirname + "/testfiles/upload.txt", dsname, uploadOptions);
+                        inputfile, dsname, uploadOptions);
                     Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
@@ -211,7 +213,7 @@ describe("Upload Data Set", () => {
                 try {
                     // packages/zosfiles/__tests__/__system__/api/methods/upload/
                     response = await Upload.fileToDataset(REAL_SESSION,
-                        __dirname + "/testfiles/upload.txt", dsname, uploadOptions);
+                        inputfile, dsname, uploadOptions);
                     Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
@@ -233,7 +235,7 @@ describe("Upload Data Set", () => {
                 try {
                     // packages/zosfiles/__tests__/__system__/api/methods/upload/
                     response = await Upload.fileToDataset(REAL_SESSION,
-                        __dirname + "/testfiles/upload.txt", dsname, uploadOptions);
+                        inputfile, dsname, uploadOptions);
                     Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
@@ -254,7 +256,7 @@ describe("Upload Data Set", () => {
                 try {
                     // packages/zosfiles/__tests__/__system__/api/methods/upload/
                     response = await Upload.fileToDataset(REAL_SESSION,
-                        __dirname + "/testfiles/upload.txt", dsname, uploadOptions);
+                        inputfile, dsname, uploadOptions);
                     Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
@@ -358,7 +360,7 @@ describe("Upload Data Set", () => {
                 try {
                     // packages/zosfiles/__tests__/__system__/api/methods/upload/
                     response = await Upload.fileToDataset(REAL_SESSION,
-                        __dirname + "/testfiles/upload.txt", dsname + "(member)");
+                        inputfile, dsname + "(member)");
                     Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
@@ -377,7 +379,7 @@ describe("Upload Data Set", () => {
                 try {
                     // packages/zosfiles/__tests__/__system__/api/methods/upload/
                     response = await Upload.fileToDataset(REAL_SESSION,
-                        __dirname + "/testfiles/upload.txt", dsname + "(member)", {responseTimeout: 5});
+                        inputfile, dsname + "(member)", {responseTimeout: 5});
                     Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
@@ -438,7 +440,7 @@ describe("Upload Data Set", () => {
                 try {
                     // packages/zosfiles/__tests__/__system__/api/methods/upload/
                     response = await Upload.fileToDataset(REAL_SESSION,
-                        __dirname + "/testfiles/upload.txt", dsname + "(member)", uploadOptions);
+                        inputfile, dsname + "(member)", uploadOptions);
                     Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
@@ -460,7 +462,7 @@ describe("Upload Data Set", () => {
                 try {
                     // packages/zosfiles/__tests__/__system__/api/methods/upload/
                     response = await Upload.fileToDataset(REAL_SESSION,
-                        __dirname + "/testfiles/upload.txt", dsname + "(member)", uploadOptions);
+                        inputfile, dsname + "(member)", uploadOptions);
                     Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
@@ -481,7 +483,7 @@ describe("Upload Data Set", () => {
                 try {
                     // packages/zosfiles/__tests__/__system__/api/methods/upload/
                     response = await Upload.fileToDataset(REAL_SESSION,
-                        __dirname + "/testfiles/upload.txt", dsname + "(member)", uploadOptions);
+                        inputfile, dsname + "(member)", uploadOptions);
                     Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
@@ -573,7 +575,7 @@ describe("Upload Data Set", () => {
 
             try {
                 response = await Upload.dirToPds(REAL_SESSION,
-                    __dirname + "/testfiles/upload.txt", dsname);
+                    inputfile, dsname);
                 Imperative.console.info("Response: " + inspect(response));
             } catch (err) {
                 error = err;
@@ -687,7 +689,7 @@ describe("Upload Data Set - encoded", () => {
                 try {
                     // packages/zosfiles/__tests__/__system__/api/methods/upload/
                     response = await Upload.fileToDataset(REAL_SESSION,
-                        __dirname + "/testfiles/upload.txt", dsname);
+                        inputfile, dsname);
                     Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
@@ -725,7 +727,7 @@ describe("Upload Data Set - encoded", () => {
                 try {
                     // packages/zosfiles/__tests__/__system__/api/methods/upload/
                     response = await Upload.fileToDataset(REAL_SESSION,
-                        __dirname + "/testfiles/upload.txt", dsname + "(member)");
+                        inputfile, dsname + "(member)");
                     Imperative.console.info("Response: " + inspect(response));
                 } catch (err) {
                     error = err;
@@ -876,18 +878,19 @@ describe("Upload USS file", () => {
 
             // first we have to get the Etag, so we can compare it. We do it by preemtively downloading the file and requesting Etag
             await Upload.fileToUssFile(REAL_SESSION, inputfile, ussname, {returnEtag: false});
-            const downloadResponse = await Download.ussFile(REAL_SESSION, ussname, {file: inputfile, returnEtag: true});
+            const downloadResponse = await Download.ussFile(REAL_SESSION, ussname, {file: outputfile, returnEtag: true});
             expect(downloadResponse.success).toBeTruthy();
             expect(downloadResponse.apiResponse.etag).toBeDefined();
 
             try {
-                uploadResponse = await Upload.fileToUssFile(REAL_SESSION, inputfile, ussname, {etag: downloadResponse.apiResponse.etag});
+                uploadResponse = await Upload.fileToUssFile(REAL_SESSION, outputfile, ussname, {etag: downloadResponse.apiResponse.etag});
                 Imperative.console.info("Response: " + inspect(uploadResponse));
             } catch (err) {
                 error = err;
                 Imperative.console.info("Error: " + inspect(error));
             }
 
+            fs.rmSync(outputfile);
             expect(error).toBeFalsy();
             expect(uploadResponse).toBeTruthy();
             expect(uploadResponse.success).toBeTruthy();
