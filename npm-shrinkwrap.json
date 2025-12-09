@@ -6065,16 +6065,6 @@
         "node": ">= 12"
       }
     },
-    "node_modules/clipboard": {
-      "version": "2.0.11",
-      "dev": true,
-      "license": "MIT",
-      "dependencies": {
-        "good-listener": "^1.2.2",
-        "select": "^1.1.2",
-        "tiny-emitter": "^2.0.0"
-      }
-    },
     "node_modules/cliui": {
       "version": "6.0.0",
       "dev": true,
@@ -7014,11 +7004,6 @@
       "engines": {
         "node": ">=0.4.0"
       }
-    },
-    "node_modules/delegate": {
-      "version": "3.2.0",
-      "dev": true,
-      "license": "MIT"
     },
     "node_modules/delegates": {
       "version": "1.0.0",
@@ -8524,14 +8509,6 @@
       },
       "engines": {
         "node": ">=0.6.0"
-      }
-    },
-    "node_modules/good-listener": {
-      "version": "1.2.2",
-      "dev": true,
-      "license": "MIT",
-      "dependencies": {
-        "delegate": "^3.1.2"
       }
     },
     "node_modules/gopd": {
@@ -13799,11 +13776,6 @@
       "dev": true,
       "license": "MIT"
     },
-    "node_modules/select": {
-      "version": "1.1.2",
-      "dev": true,
-      "license": "MIT"
-    },
     "node_modules/semver": {
       "version": "7.7.3",
       "integrity": "sha512-SdsKMrI9TdgjdweUSR9MweHA4EJ8YxHn8DFaDisvhVlUOe4BF1tLD7GAj0lIqWVl+dPb/rExr0Btby5loQm20Q==",
@@ -14566,11 +14538,6 @@
         "node": ">=4"
       }
     },
-    "node_modules/tiny-emitter": {
-      "version": "2.1.0",
-      "dev": true,
-      "license": "MIT"
-    },
     "node_modules/tmpl": {
       "version": "1.0.5",
       "dev": true,
@@ -15166,11 +15133,6 @@
     "node_modules/url-join": {
       "version": "4.0.1",
       "integrity": "sha512-jk1+QP6ZJqyOiuEI9AEWQfju/nB2Pw466kbA0LEZljHwKeMgd9WrAEgEGxjPDD2+TNbbb37rTyhEfrCXfuKXnA==",
-      "dev": true,
-      "license": "MIT"
-    },
-    "node_modules/url-search-params-polyfill": {
-      "version": "8.2.5",
       "dev": true,
       "license": "MIT"
     },
@@ -15883,13 +15845,11 @@
       "dependencies": {
         "balloon-css": "^1.2.0",
         "bootstrap": "^5.3.3",
-        "clipboard": "^2.0.11",
         "github-markdown-css": "^5.6.1",
         "jquery": "^3.7.1",
         "jstree": "^3.3.16",
         "scroll-into-view-if-needed": "2.2.29",
-        "split.js": "^1.6.5",
-        "url-search-params-polyfill": "^8.2.5"
+        "split.js": "^1.6.5"
       },
       "devDependencies": {
         "@types/jquery": "^3.5.30",
