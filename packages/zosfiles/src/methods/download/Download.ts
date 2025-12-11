@@ -30,6 +30,7 @@ import { IDownloadDsmResult } from "./doc/IDownloadDsmResult";
 import { IDownloadUssDirResult } from "./doc/IDownloadUssDirResult";
 import { IUSSListOptions } from "../list";
 import { TransferMode } from "../../utils/ZosFilesAttributes";
+import { IDownloadAmResult } from "./doc/IDownloadAmResult";
 
 type IZosmfListResponseWithStatus = IZosmfListResponse & { error?: Error; status?: string };
 
@@ -81,6 +82,7 @@ export class Download {
         // required
         ImperativeExpect.toNotBeNullOrUndefined(dataSetName, ZosFilesMessages.missingDatasetName.message);
         ImperativeExpect.toNotBeEqual(dataSetName, "", ZosFilesMessages.missingDatasetName.message);
+        ImperativeExpect.toNotBeNullOrUndefined(session);
         let destination: string;
 
         try {
@@ -106,6 +108,9 @@ export class Download {
                 extension = options.extension;
             }
 
+            // By default, apiResponse is empty when downloading
+            const apiResponse: any = {};
+
             if (options.stream == null) {
                 // Get a proper destination for the file to be downloaded
                 // If the "file" is not provided, we create a folder structure similar to the data set name
@@ -124,6 +129,16 @@ export class Download {
 
                     return generatedFilePath + IO.normalizeExtension(extension);
                 })();
+                apiResponse.destination = destination;
+
+                // If file exists and we should not overwrite, skip downloading with message
+                if (IO.existsSync(destination) && !options.overwrite) {
+                    return {
+                        success: true,
+                        commandResponse: util.format(ZosFilesMessages.datasetDownloadSkipped.message, destination),
+                        apiResponse: { destination }
+                    };
+                }
 
                 IO.createDirsSyncFromFilePath(destination);
             }
@@ -150,9 +165,6 @@ export class Download {
             }
 
             const request: IRestClientResponse = await ZosmfRestClient.getExpectFullResponse(session, requestOptions);
-
-            // By default, apiResponse is empty when downloading
-            const apiResponse: any = {};
 
             // Return Etag in apiResponse, if requested
             if (options.returnEtag) {
@@ -238,6 +250,7 @@ export class Download {
 
             const downloadErrors: Error[] = [];
             const failedMembers: string[] = [];
+            const skippedMembers: string[] = [];
             let downloadsInitiated = 0;
 
             let defaultExtension = ZosFilesUtils.DEFAULT_FILE_EXTENSION;
@@ -271,18 +284,29 @@ export class Download {
                     extension = extension.replace(/^\.+/g, "");
                 }
 
+                const memberFilePath = posix.join(baseDir, fileName + IO.normalizeExtension(extension));
+
+                // Check if file exists and should not be overwritten
+                if (IO.existsSync(memberFilePath) && !options.overwrite) {
+                    skippedMembers.push(fileName);
+                    return Promise.resolve();
+                }
+
                 return this.dataSet(session, `${dataSetName}(${mem.member})`, {
                     volume: options.volume,
-                    file: posix.join(baseDir, fileName + IO.normalizeExtension(extension)),
+                    file: memberFilePath,
                     binary: options.binary,
                     record: options.record,
                     encoding: options.encoding,
-                    responseTimeout: options.responseTimeout
+                    responseTimeout: options.responseTimeout,
+                    overwrite: options.overwrite,
                 }).catch((err) => {
                     downloadErrors.push(err);
                     failedMembers.push(fileName);
+
                     // Delete the file that could not be downloaded
-                    IO.deleteFile(join(baseDir, fileName + IO.normalizeExtension(extension)));
+                    IO.deleteFile(memberFilePath);
+
                     // If we should fail fast, rethrow error
                     if (options.failFast || options.failFast === undefined) {
                         throw err;
@@ -307,10 +331,36 @@ export class Download {
                 });
             }
 
+            const downloadedCount = memberList.length - skippedMembers.length - failedMembers.length;
+            let responseMessage = "";
+            if (downloadedCount > 0) {
+                responseMessage = util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, downloadedCount, baseDir);
+            }
+
+            if (skippedMembers.length > 0) {
+                if (downloadedCount > 0) {
+                    responseMessage += "\n";
+                }
+                responseMessage += util.format(ZosFilesMessages.memberDownloadSkipped.message, skippedMembers.length);
+            }
+
+            const downloadResult: IDownloadAmResult = {
+                downloaded: downloadedCount,
+                skipped: skippedMembers.length,
+                failed: failedMembers.length,
+                total: memberList.length,
+                skippedMembers,
+                failedMembers
+            };
+
             return {
                 success: true,
-                commandResponse: util.format(ZosFilesMessages.memberDownloadedWithDestination.message, baseDir),
-                apiResponse: response.apiResponse
+                commandResponse: responseMessage,
+                apiResponse: {
+                    ...response.apiResponse,
+                    downloadResult,
+                    destination: baseDir
+                }
             };
 
         } catch (error) {
@@ -401,19 +451,26 @@ export class Download {
                     dataSetObj.status = `Skipped: Archived data set or alias - type ${dataSetObj.vol}.`;
                     result.failedArchived.push(dataSetObj.dsname);
                 } else if (dataSetObj.dsorg === "PS") {
-                    psDownloadTasks.push({
-                        handler: Download.dataSet.bind(this),
-                        dsname: dataSetObj.dsname,
-                        options: { ...mutableOptions },
-                        onSuccess: (downloadResponse) => {
-                            dataSetObj.status = downloadResponse.commandResponse;
-                        }
-                    });
+                    const targetFile = mutableOptions.file;
+                    if (targetFile && IO.existsSync(targetFile) && !options.overwrite) {
+                        dataSetObj.status = `Skipped: File already exists - ${targetFile}`;
+                        result.skippedExisting = result.skippedExisting || [];
+                        result.skippedExisting.push(dataSetObj.dsname);
+                    } else {
+                        psDownloadTasks.push({
+                            handler: Download.dataSet.bind(this),
+                            dsname: dataSetObj.dsname,
+                            options: { ...mutableOptions, overwrite: true },
+                            onSuccess: (downloadResponse) => {
+                                dataSetObj.status = downloadResponse.commandResponse;
+                            }
+                        });
+                    }
                 } else if (dataSetObj.dsorg.startsWith("PO")) {
                     poDownloadTasks.push({
                         handler: Download.allMembers.bind(this),
                         dsname: dataSetObj.dsname,
-                        options: { ...mutableOptions },
+                        options: { ...mutableOptions, overwrite: options.overwrite },
                         onSuccess: (downloadResponse, options) => {
                             dataSetObj.status = downloadResponse.commandResponse;
                             const listMembers: string[] = downloadResponse.apiResponse.items.map((item: any) => ` ${item.member}`);
@@ -451,7 +508,21 @@ export class Download {
 
                 return task.handler(session, task.dsname, task.options).then(
                     (downloadResponse) => {
-                        result.downloaded.push(task.dsname);
+                        const downloadResult = downloadResponse.apiResponse?.downloadResult;
+                        if (downloadResult) {
+                            // This is a PO dataset as it has a download result
+                            if (downloadResult.downloaded > 0) {
+                                result.downloaded.push(task.dsname);
+                            } else if (downloadResult.skipped > 0 && downloadResult.downloaded === 0) {
+                                result.skippedExisting = result.skippedExisting || [];
+                                result.skippedExisting.push(task.dsname);
+                            } else {
+                                result.downloaded.push(task.dsname);
+                            }
+                        } else {
+                            // This is a PS dataset has there is no download result
+                            result.downloaded.push(task.dsname);
+                        }
                         task.onSuccess(downloadResponse, task.options);
                     },
                     (err) => {
@@ -523,12 +594,27 @@ export class Download {
         ImperativeExpect.toNotBeNullOrUndefined(ussFileName, ZosFilesMessages.missingUSSFileName.message);
         ImperativeExpect.toNotBeEqual(ussFileName, "", ZosFilesMessages.missingUSSFileName.message);
         ImperativeExpect.toNotBeEqual(options.record, true, ZosFilesMessages.unsupportedDataType.message);
+        ImperativeExpect.toNotBeNullOrUndefined(session);
+
         try {
             let destination: string;
 
+            // By default, apiResponse is empty when downloading
+            const apiResponse: any = {};
+
             if (options.stream == null) {
                 destination = options.file || posix.normalize(posix.basename(ussFileName));
+
+                if (IO.existsSync(destination) && !options.overwrite) {
+                    return {
+                        success: true,
+                        commandResponse: util.format(ZosFilesMessages.ussFileDownloadSkipped.message, destination),
+                        apiResponse: {}
+                    };
+                }
+
                 IO.createDirsSyncFromFilePath(destination);
+                apiResponse.destination = destination;
             }
 
             const writeStream = options.stream ?? IO.createWriteStream(destination);
@@ -571,9 +657,6 @@ export class Download {
             }
 
             const request = await ZosmfRestClient.getExpectFullResponse(session, requestOptions);
-
-            // By default, apiResponse is empty when downloading
-            const apiResponse: any = {};
 
             // Return Etag in apiResponse, if requested
             if (options.returnEtag) {
@@ -633,7 +716,7 @@ export class Download {
                 downloadsInitiated++;
             }
             // task.options.file is only null for directories, but we may want to fall back to the filename itself (just in case)
-            if (fs.existsSync(task.options?.file ?? task.file) && !fileOptions.overwrite) {
+            if (IO.existsSync(task.options?.file ?? task.file) && !fileOptions.overwrite) {
                 result.skippedExisting.push(task.file);
             } else {
                 return this.ussFile(session, posix.join(ussDirName, task.file), task.options).then(
@@ -766,8 +849,19 @@ export class Download {
         const responseLines = [];
 
         if (result.downloaded.length > 0) {
-            responseLines.push(TextUtils.chalk.green(`${result.downloaded.length} data set(s) downloaded successfully to `) +
-                (options.directory ?? "./"));
+            responseLines.push(
+                TextUtils.chalk.green(`${result.downloaded.length} data set(s) downloaded successfully to `) +
+                    (options.directory ?? "./"),
+                ...result.downloaded.map(dsname => `    ${dsname}`)
+            );
+        }
+
+        if (result.skippedExisting && result.skippedExisting.length > 0) {
+            responseLines.push(
+                TextUtils.chalk.yellow(`${result.skippedExisting.length} data set(s) skipped because they already exist.`),
+                ...result.skippedExisting.map(dsname => `    ${dsname}`),
+                "\nRerun the command with --overwrite to download the files listed above."
+            );
         }
 
         if (numFailed > 0) {

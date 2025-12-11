@@ -36,6 +36,14 @@ Array [
   },
   Object {
     "aliases": Array [
+      "ow",
+    ],
+    "description": "Overwrite files that already exist in your local environment.",
+    "name": "overwrite",
+    "type": "boolean",
+  },
+  Object {
+    "aliases": Array [
       "po",
     ],
     "defaultValue": false,

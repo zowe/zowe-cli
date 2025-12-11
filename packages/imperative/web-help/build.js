@@ -17,17 +17,13 @@ const bundleJsFiles = [
     "bootstrap/dist/js/bootstrap.min.js",
     "jstree/dist/jstree.min.js",
     "scroll-into-view-if-needed/umd/scroll-into-view-if-needed.min.js",
-    "split.js/dist/split.min.js",
-    "url-search-params-polyfill/index.js"
+    "split.js/dist/split.min.js"
 ];
 const bundleCssFiles = [
     // JSTree must come before Bootstrap
     "jstree/dist/themes/default/style.min.css",
     "jstree/dist/themes/default-dark/style.min.css",
     "bootstrap/dist/css/bootstrap.min.css"
-];
-const bundleDocsJsFiles = [
-    "clipboard/dist/clipboard.min.js"
 ];
 const bundleDocsCssFiles = [
     "balloon-css/balloon.min.css",
@@ -62,6 +58,5 @@ Promise.all([
     fs.mkdir(__dirname + "/dist/js", { recursive: true }),
     concatFiles(bundleJsFiles, __dirname + "/dist/js/bundle.js"),
     concatFiles(bundleCssFiles, __dirname + "/dist/css/bundle.css", postcssTransform),
-    concatFiles(bundleDocsJsFiles, __dirname + "/dist/js/bundle-docs.js"),
     concatFiles(bundleDocsCssFiles, __dirname + "/dist/css/bundle-docs.css")
 ]).then(() => console.log(" done"));
