@@ -32,6 +32,7 @@ import org.example.JfrsZosWriter;
 import org.example.ScrtProps;
 
 // for parsing header text
+// Todo: not previously used in SDK
 import org.apache.hc.core5.http.HeaderElement;
 import org.apache.hc.core5.http.message.BasicHeaderValueParser;
 import org.apache.hc.core5.http.message.ParserCursor;
@@ -45,6 +46,9 @@ import org.springframework.lang.NonNull;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -75,6 +79,12 @@ public class ScrtFeatHeaderInterceptor implements HandlerInterceptor {
     public static final String ONLY_RECORD_SCRT_URL = "/api/v1/scrt";
 
     private static final String SCRT_HEADER = "Zowe-SCRT-client-feature";
+
+    // A class to hold a return value for function isUserAuthenticated
+    private static class UserAuthResult {
+        public boolean isAuthenticated;
+        public String userName;
+    }
 
     //------------------------------------------------------------------------
     /**
@@ -110,8 +120,9 @@ public class ScrtFeatHeaderInterceptor implements HandlerInterceptor {
         ScrtProps scrtPropsForFeat = null;
         String errResponseText = null;
 
-        log.debug("preHandle:  ServletPath = " + request.getServletPath());
-        boolean onlyRecordScrt = request.getServletPath().equalsIgnoreCase(ONLY_RECORD_SCRT_URL);
+        String servletPath = request.getServletPath();
+        log.debug("preHandle:  ServletPath = " + servletPath);
+        boolean onlyRecordScrt = servletPath.equalsIgnoreCase(ONLY_RECORD_SCRT_URL);
 
         String scrtHeaderText = request.getHeader(SCRT_HEADER);
         if (scrtHeaderText == null) {
@@ -132,8 +143,15 @@ public class ScrtFeatHeaderInterceptor implements HandlerInterceptor {
                         "' had bad values for URL '" + ONLY_RECORD_SCRT_URL + "'";
                 }
             } else {
-                // We extracted valid values from the header. Record the use of the feature.
-                new JfrsZosWriter().recordFeatureUse(scrtPropsForFeat);
+                // We extracted valid values from the header
+                ScrtFeatHeaderInterceptor.UserAuthResult authResult = isUserAuthenticated();
+                if(authResult.isAuthenticated) {
+                    // Record the use of the feature.
+                    new JfrsZosWriter().recordFeatureUse(scrtPropsForFeat);
+                } else {
+                    errResponseText = "User = '" + authResult.userName +
+                        "' was not authenticated to URL = '" + servletPath + "'";
+                }
             }
         }
 
@@ -146,6 +164,7 @@ public class ScrtFeatHeaderInterceptor implements HandlerInterceptor {
                 response.setStatus(HttpServletResponse.SC_OK);
                 response.setContentType(MediaType.TEXT_PLAIN_VALUE);
             } else {
+                // send an error response
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 response.setContentType(MediaType.APPLICATION_JSON_VALUE);
                 ApiMessage apiMsg = CommonMessageService.getInstance().createApiMessage(BAD_REQUEST, errResponseText);
@@ -161,6 +180,11 @@ public class ScrtFeatHeaderInterceptor implements HandlerInterceptor {
         } else {
             // For all other URLs, we let this request proceed to the appropriate servlet component
             try {
+                if (errResponseText != null) {
+                    // This interceptor does not send a response when targeting a URL other than ONLY_RECORD_SCRT_URL.
+                    // So instead, log the error that we recorded.
+                    log.error(errResponseText);
+                }
                 sendRequestToApp = HandlerInterceptor.super.preHandle(request, response, handler);
             } catch (Exception except) {
                 log.error("SpringFramework HandlerInterceptor.preHandle crashed.\n    Reason = " +
@@ -287,8 +311,43 @@ public class ScrtFeatHeaderInterceptor implements HandlerInterceptor {
         );
         return null;
     }
-}
 
+    //------------------------------------------------------------------------
+    // Todo: Confirm if this is how the REST API SDK determines that a user is authenticated.
+    /**
+     * Confirm if the user of the current request been authenticated.
+     *
+     * @returns An ScrtFeatHeaderInterceptor.UserAuthResult object.
+     */
+	private static ScrtFeatHeaderInterceptor.UserAuthResult isUserAuthenticated() {
+        ScrtFeatHeaderInterceptor.UserAuthResult authResult = new ScrtFeatHeaderInterceptor.UserAuthResult();
+
+        // Todo: Remove this block after integration into the REST API SDK.
+        // The real stuff does not run as a stand-alone test app.
+        if ("Not yet integrated into REST API SDK".length() > 0) {
+            authResult.isAuthenticated = true;
+            authResult.userName = "A fake good user";
+            return authResult;
+        }
+
+        authResult.isAuthenticated = false;
+        authResult.userName = "Undetermined user";
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null) {
+            return authResult;
+        }
+        if (authentication instanceof AnonymousAuthenticationToken) {
+            authResult.userName = "Anonymous user";
+            return authResult;
+        }
+
+        authResult.userName = authentication.getName();
+        if (authentication.isAuthenticated()) {
+            authResult.isAuthenticated = true;
+        }
+        return authResult;
+    }
+}
 
 /*************************************************************************************************
  * Fake classes to enable this prototype to compile before integrating into the REST API SDK.
