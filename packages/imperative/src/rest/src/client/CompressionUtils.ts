@@ -9,7 +9,7 @@
 *
 */
 
-import { Duplex, Transform, Writable } from "stream";
+import { Duplex, PassThrough, pipeline, Transform, Writable } from "stream";
 import * as zlib from "zlib";
 import { ImperativeError } from "../../../error";
 import { IO } from "../../../io";
@@ -57,25 +57,40 @@ export class CompressionUtils {
         }
 
         try {
-            // First transform handles decompression
-            const transforms = [this.zlibTransform(encoding, !normalizeNewLines)];
+            const inputStream = new PassThrough();
 
-            // Second transform is optional and processes line endings
+            // Build the transform pipeline
+            const transforms: Transform[] = [this.zlibTransform(encoding, !normalizeNewLines)];
             if (normalizeNewLines) {
                 transforms.push(this.newLinesTransform());
             }
 
-            // Chain transforms and response stream together
-            for (const [i, stream] of transforms.entries()) {
-                const next = transforms[i + 1] || responseStream;
-                stream.pipe(next);
-                stream.on("error", (err) => {
-                    responseStream.emit("error", this.decompressError(err, "stream", encoding));
-                });
-            }
+            // Wrapper stream that waits for pipeline completion
+            let finalCallback: ((error?: Error | null) => void) | undefined;
+            const wrapper = new Duplex({
+                write(chunk, encoding, callback) {
+                    if (!inputStream.write(chunk, encoding)) {
+                        inputStream.once("drain", callback);
+                    } else {
+                        callback();
+                    }
+                },
+                final(callback) {
+                    finalCallback = callback;
+                    inputStream.end();
+                },
+                read() { /* write-only from caller's perspective */ }
+            });
 
-            // Return first stream in chain
-            return transforms[0];
+            // Connect pipeline and notify wrapper when complete
+            pipeline([inputStream, ...transforms, responseStream], (err) => {
+                if (err) {
+                    responseStream.emit("error", this.decompressError(err, "stream", encoding));
+                }
+                finalCallback?.(err);
+            });
+
+            return wrapper;
         } catch (err) {
             throw this.decompressError(err, "stream", encoding);
         }
