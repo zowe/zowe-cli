@@ -1,11 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`AbstractRestClient tests content encoding should error when decompressing invalid gzip buffer 1`] = `"Failed to decompress response buffer with content encoding type gzip"`;
-
-exports[`AbstractRestClient tests content encoding should error when decompressing invalid gzip stream 1`] = `"Failed to decompress response stream with content encoding type gzip"`;
-
-exports[`AbstractRestClient tests content encoding should error when decompressing truncated gzip stream with text content 1`] = `"Failed to decompress response stream with content encoding type gzip"`;
-
 exports[`AbstractRestClient tests should create buildOptions according to input parameter options 1 1`] = `
 Object {
   "headers": Object {
