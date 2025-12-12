@@ -78,7 +78,7 @@ export interface IZosmfListResponse extends IZosFilesOptions {
     mvol?: string;
 
     /**
-     * Open virtualization format
+     * Space overflow indicator
      */
     ovf?: string;
 
