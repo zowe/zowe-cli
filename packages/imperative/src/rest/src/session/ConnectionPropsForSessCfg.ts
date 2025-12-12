@@ -401,11 +401,12 @@ export class ConnectionPropsForSessCfg {
                 // Users can type in a token, but typically they will not know how to do that.
                 // Add extra instructions for obtaining a token.
                 if (promptForValues.includes("tokenType") || promptForValues.includes("tokenValue")) {
-                    reasonForPrompts += "\nThe profile for your command is configured to use a token. " +
-                        "You can type the token at the prompt. " +
-                        "However, typically you should terminate this command (Control-C) and " +
-                        "use the `zowe auth login` command " +
-                        "to obtain a new token. You can then re-issue your original command.\n"
+                    reasonForPrompts += "\nYour profile is configured to use a token " +
+                        "for authentication. You can supply a token at the prompt. " +
+                        "Alternatively, terminate this command with Control-C and " +
+                        "login to your service to obtain a token. For example, the command " +
+                        "'zowe auth login apiml' will login to the API ML service. You can then " +
+                        "run your original command again, which will no longer prompt for a token.\n"
                 }
 
                 connOpts.parms.response.console.log(TextUtils.wordWrap(
