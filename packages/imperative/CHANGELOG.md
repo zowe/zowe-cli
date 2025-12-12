@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Stopped supporting IE 11 browser in web help pages for technical currency. [#2654](https://github.com/zowe/zowe-cli/pull/2654)
+
 ## `8.29.0`
 
 - Enhancement: Added support for providing options to both default and custom credential managers. [#2601](https://github.com/zowe/zowe-cli/issues/2601) 
@@ -526,7 +530,7 @@ All notable changes to the Imperative package will be documented in this file.
 
     - @zowe/zos-uss-for-zowe-sdk
       - SshBaseHandler
-        - Removed the unused, protected property ‘mSshProfile’
+        - Removed the unused, protected property `mSshProfile`
 
   - Removed the following obsolete V1 profile constants:
 

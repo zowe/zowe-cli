@@ -22,6 +22,7 @@ import { CLIENT_PROPERTY } from "../../../../src/doc/types/ZosmfRestClientProper
 import { IDownloadDsmResult } from "../../../../src/methods/download/doc/IDownloadDsmResult";
 import { PassThrough } from "stream";
 import { IDownloadAmResponse } from "../../../../src/methods/download/doc/IDownloadAmResult";
+import { cloneDeep } from "lodash";
 
 describe("z/OS Files - Download", () => {
     const dsname = "USER.DATA.SET";
@@ -134,7 +135,7 @@ describe("z/OS Files - Download", () => {
             expect(response).toEqual({
                 success: true,
                 commandResponse: util.format(ZosFilesMessages.datasetDownloadedWithDestination.message, destination),
-                apiResponse: {}
+                apiResponse: { destination: "user/data/set.test" }
             });
 
 
@@ -171,7 +172,7 @@ describe("z/OS Files - Download", () => {
             expect(response).toEqual({
                 success: true,
                 commandResponse: util.format(ZosFilesMessages.datasetDownloadedWithDestination.message, destination),
-                apiResponse: {}
+                apiResponse: { destination: "user/data/set" }
             });
 
             expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
@@ -205,7 +206,7 @@ describe("z/OS Files - Download", () => {
             expect(response).toEqual({
                 success: true,
                 commandResponse: util.format(ZosFilesMessages.datasetDownloadedWithDestination.message, destination),
-                apiResponse: {}
+                apiResponse: { destination: "user/data/set.txt" }
             });
 
             expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
@@ -241,7 +242,7 @@ describe("z/OS Files - Download", () => {
             expect(response).toEqual({
                 success: true,
                 commandResponse: util.format(ZosFilesMessages.datasetDownloadedWithDestination.message, file),
-                apiResponse: {}
+                apiResponse: { destination: "my/test/file.xyz" }
             });
 
             expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
@@ -279,7 +280,7 @@ describe("z/OS Files - Download", () => {
             expect(response).toEqual({
                 success: true,
                 commandResponse: util.format(ZosFilesMessages.datasetDownloadedWithDestination.message, file),
-                apiResponse: {}
+                apiResponse: { destination: "my/test/file.xyz" }
             });
 
             expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
@@ -316,7 +317,7 @@ describe("z/OS Files - Download", () => {
             expect(response).toEqual({
                 success: true,
                 commandResponse: util.format(ZosFilesMessages.datasetDownloadedWithDestination.message, destination),
-                apiResponse: {}
+                apiResponse: { destination: "user/data/set.txt" }
             });
 
             expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
@@ -352,7 +353,7 @@ describe("z/OS Files - Download", () => {
             expect(response).toEqual({
                 success: true,
                 commandResponse: util.format(ZosFilesMessages.datasetDownloadedWithDestination.message, file),
-                apiResponse: {}
+                apiResponse: { destination: "my/test/file.xyz" }
             });
 
             expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
@@ -388,7 +389,7 @@ describe("z/OS Files - Download", () => {
             expect(response).toEqual({
                 success: true,
                 commandResponse: util.format(ZosFilesMessages.datasetDownloadedWithDestination.message, destination),
-                apiResponse: {}
+                apiResponse: { destination: "USER/DATA/SET.txt" }
             });
 
             expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
@@ -422,7 +423,7 @@ describe("z/OS Files - Download", () => {
             expect(response).toEqual({
                 success: true,
                 commandResponse: util.format(ZosFilesMessages.datasetDownloadedWithDestination.message, file),
-                apiResponse: {}
+                apiResponse: { destination: "my/test/file.xyz" }
             });
 
             expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
@@ -459,7 +460,7 @@ describe("z/OS Files - Download", () => {
             expect(response).toEqual({
                 success: true,
                 commandResponse: util.format(ZosFilesMessages.datasetDownloadedWithDestination.message, destination),
-                apiResponse: {}
+                apiResponse: { destination: "user/data/set.txt" }
             });
 
             expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
@@ -496,7 +497,7 @@ describe("z/OS Files - Download", () => {
             expect(response).toEqual({
                 success: true,
                 commandResponse: util.format(ZosFilesMessages.datasetDownloadedWithDestination.message, destination),
-                apiResponse: {etag: etagValue}
+                apiResponse: {destination: "user/data/set.test", etag: etagValue}
             });
 
 
@@ -594,7 +595,7 @@ describe("z/OS Files - Download", () => {
             expect(response).toEqual({
                 success: true,
                 commandResponse: util.format(ZosFilesMessages.datasetDownloadedWithDestination.message, destination),
-                apiResponse: {}
+                apiResponse: { destination: "user/data/set.txt" }
             });
 
             expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
@@ -626,7 +627,7 @@ describe("z/OS Files - Download", () => {
             expect(response).toEqual({
                 success: true,
                 commandResponse: util.format(ZosFilesMessages.datasetDownloadSkipped.message, destination),
-                apiResponse: {}
+                apiResponse: { destination: "user/data/set.txt" }
             });
 
             expect(existsSyncSpy).toHaveBeenCalledTimes(1);
@@ -656,7 +657,7 @@ describe("z/OS Files - Download", () => {
             expect(response).toEqual({
                 success: true,
                 commandResponse: util.format(ZosFilesMessages.datasetDownloadedWithDestination.message, destination),
-                apiResponse: {}
+                apiResponse: { destination: "user/data/set.txt" }
             });
 
             expect(existsSyncSpy).toHaveBeenCalledTimes(1);
@@ -694,7 +695,7 @@ describe("z/OS Files - Download", () => {
             expect(response).toEqual({
                 success: true,
                 commandResponse: util.format(ZosFilesMessages.datasetDownloadSkipped.message, customFile),
-                apiResponse: {}
+                apiResponse: { destination: "my/custom/path/dataset.txt" }
             });
 
             expect(existsSyncSpy).toHaveBeenCalledTimes(1);
@@ -762,7 +763,7 @@ describe("z/OS Files - Download", () => {
             expect(response).toEqual({
                 success: true,
                 commandResponse: util.format(ZosFilesMessages.datasetDownloadedWithDestination.message, destination),
-                apiResponse: {}
+                apiResponse: { destination: "user/data/set.xyz" }
             });
 
             expect(existsSyncSpy).toHaveBeenCalledTimes(1);
@@ -816,14 +817,14 @@ describe("z/OS Files - Download", () => {
                 expect(response).toEqual({
                     success: true,
                     commandResponse: util.format(ZosFilesMessages.datasetDownloadSkipped.message, destination),
-                    apiResponse: {}
+                    apiResponse: { destination: "USER/DATA/SET.txt" }
                 });
                 expect(zosmfGetFullSpy).not.toHaveBeenCalled();
             } else {
                 expect(response).toEqual({
                     success: true,
                     commandResponse: util.format(ZosFilesMessages.datasetDownloadedWithDestination.message, destination),
-                    apiResponse: {}
+                    apiResponse: { destination: "USER/DATA/SET.txt" }
                 });
                 expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
                 expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {
@@ -915,6 +916,7 @@ describe("z/OS Files - Download", () => {
             commandResponse: util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, 2, dsFolder),
             apiResponse: {
                 ...listApiResponse,
+                destination: "user/data/set",
                 downloadResult: {
                     downloaded: 2,
                     skipped: 0,
@@ -1046,8 +1048,11 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
+            const expectedResponse = cloneDeep(defaultResponse);
+            expectedResponse.apiResponse.destination = "my/test/path/";
+
             expect(caughtError).toBeUndefined();
-            expect(response).toEqual(defaultResponse);
+            expect(response).toEqual(expectedResponse);
 
             expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
             expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, dsname, {volume});
@@ -1079,8 +1084,11 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
+            const expectedResponse = cloneDeep(defaultResponse);
+            expectedResponse.apiResponse.destination = "my/test/path/";
+
             expect(caughtError).toBeUndefined();
-            expect(response).toEqual(defaultResponse);
+            expect(response).toEqual(expectedResponse);
 
             expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
             expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, dsname, {volume});
@@ -1113,8 +1121,11 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
+            const expectedResponse = cloneDeep(defaultResponse);
+            expectedResponse.apiResponse.destination = "my/test/path/";
+
             expect(caughtError).toBeUndefined();
-            expect(response).toEqual(defaultResponse);
+            expect(response).toEqual(expectedResponse);
 
             expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
             expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, dsname, {volume, responseTimeout});
@@ -1149,8 +1160,11 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
+            const expectedResponse = cloneDeep(defaultResponse);
+            expectedResponse.apiResponse.destination = "my/test/path/";
+
             expect(caughtError).toBeUndefined();
-            expect(response).toEqual(defaultResponse);
+            expect(response).toEqual(expectedResponse);
 
             expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
             expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, dsname, {volume, responseTimeout});
@@ -1184,8 +1198,11 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
+            const expectedResponse = cloneDeep(defaultResponse);
+            expectedResponse.apiResponse.destination = "my/test/path/";
+
             expect(caughtError).toBeUndefined();
-            expect(response).toEqual(defaultResponse);
+            expect(response).toEqual(expectedResponse);
 
             expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
             expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, dsname, {volume});
@@ -1216,8 +1233,11 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
+            const expectedResponse = cloneDeep(defaultResponse);
+            expectedResponse.apiResponse.destination = "My/Test/Path/";
+
             expect(caughtError).toBeUndefined();
-            expect(response).toEqual(defaultResponse);
+            expect(response).toEqual(expectedResponse);
 
             expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
             expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, dsname, {volume});
@@ -1248,8 +1268,11 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
+            const expectedResponse = cloneDeep(defaultResponse);
+            expectedResponse.apiResponse.destination = "my/test/path/";
+
             expect(caughtError).toBeUndefined();
-            expect(response).toEqual(defaultResponse);
+            expect(response).toEqual(expectedResponse);
 
             expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
             expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, dsname, {volume});
@@ -1276,8 +1299,11 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
+            const expectedResponse = cloneDeep(defaultResponse);
+            expectedResponse.apiResponse.destination = "USER/DATA/SET";
+
             expect(caughtError).toBeUndefined();
-            expect(response).toEqual(defaultResponse);
+            expect(response).toEqual(expectedResponse);
 
             expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
             expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, dsname, {});
@@ -1396,8 +1422,11 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
+            const expectedResponse = cloneDeep(defaultResponse);
+            expectedResponse.apiResponse.destination = "my/test/path/";
+
             expect(caughtError).toBeUndefined();
-            expect(response).toEqual(defaultResponse);
+            expect(response).toEqual(expectedResponse);
 
             expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
             expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, dsname, {});
@@ -1441,8 +1470,11 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
+            const expectedResponse = cloneDeep(defaultResponse);
+            expectedResponse.apiResponse.destination = "my/test/path/";
+
             expect(caughtError).toBeUndefined();
-            expect(response).toEqual(defaultResponse);
+            expect(response).toEqual(expectedResponse);
 
             expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
             expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, dsname, {});
@@ -1485,8 +1517,11 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
+            const expectedResponse = cloneDeep(defaultResponse);
+            expectedResponse.apiResponse.destination = "my/test/path/";
+
             expect(caughtError).toBeUndefined();
-            expect(response).toEqual(defaultResponse);
+            expect(response).toEqual(expectedResponse);
 
             expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
             expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, dsname, {});
@@ -1535,6 +1570,7 @@ describe("z/OS Files - Download", () => {
                     util.format(ZosFilesMessages.memberDownloadSkipped.message, skipped),
                 apiResponse: {
                     ...listApiResponse,
+                    destination: "user/data/set",
                     downloadResult: {
                         downloaded,
                         skipped,
@@ -1623,6 +1659,7 @@ describe("z/OS Files - Download", () => {
                 commandResponse: util.format(ZosFilesMessages.memberDownloadSkipped.message, 2),
                 apiResponse: {
                     ...listApiResponse,
+                    destination: "user/data/set",
                     downloadResult: {
                         downloaded: 0,
                         skipped: 2,
@@ -1666,6 +1703,7 @@ describe("z/OS Files - Download", () => {
                     util.format(ZosFilesMessages.memberDownloadSkipped.message, skipped),
                 apiResponse: {
                     ...listApiResponse,
+                    destination: "my/test/path/",
                     downloadResult: {
                         downloaded,
                         skipped,
@@ -2513,7 +2551,7 @@ describe("z/OS Files - Download", () => {
             Download.dataSet = jest.fn(async (): Promise<any> => {
                 return {
                     commandResponse: "Data set downloaded",
-                    apiResponse: {}
+                    apiResponse: { destination: "user/data/set" }
                 };
             });
 
@@ -2551,7 +2589,7 @@ describe("z/OS Files - Download", () => {
             Download.dataSet = jest.fn(async (): Promise<any> => {
                 return {
                     commandResponse: "Data set downloaded",
-                    apiResponse: {}
+                    apiResponse: { destination: "user/data/set" }
                 };
             });
 
@@ -2788,7 +2826,7 @@ describe("z/OS Files - Download", () => {
             Download.dataSet = jest.fn(async (): Promise<any> => {
                 return {
                     commandResponse: "Data set downloaded",
-                    apiResponse: {}
+                    apiResponse: { destination: "user/data/set" }
                 };
             });
 
@@ -3030,7 +3068,7 @@ describe("z/OS Files - Download", () => {
             expect(response).toEqual({
                 success: true,
                 commandResponse: util.format(ZosFilesMessages.ussFileDownloadedWithDestination.message, destination),
-                apiResponse: {}
+                apiResponse: { destination: "test.txt" }
             });
 
             expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
@@ -3064,7 +3102,7 @@ describe("z/OS Files - Download", () => {
             expect(response).toEqual({
                 success: true,
                 commandResponse: util.format(ZosFilesMessages.ussFileDownloadedWithDestination.message, destination),
-                apiResponse: {}
+                apiResponse: { destination: "test.txt" }
             });
 
             expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
@@ -3102,7 +3140,7 @@ describe("z/OS Files - Download", () => {
             expect(response).toEqual({
                 success: true,
                 commandResponse: util.format(ZosFilesMessages.ussFileDownloadedWithDestination.message, destination),
-                apiResponse: {}
+                apiResponse: { destination: "test.txt" }
             });
 
             expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
@@ -3140,7 +3178,7 @@ describe("z/OS Files - Download", () => {
             expect(response).toEqual({
                 success: true,
                 commandResponse: util.format(ZosFilesMessages.ussFileDownloadedWithDestination.message, destination),
-                apiResponse: {}
+                apiResponse: { destination: "test.txt" }
             });
 
             expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
@@ -3181,7 +3219,7 @@ describe("z/OS Files - Download", () => {
             expect(response).toEqual({
                 success: true,
                 commandResponse: util.format(ZosFilesMessages.ussFileDownloadedWithDestination.message, destination),
-                apiResponse: {}
+                apiResponse: { destination: "test.txt" }
             });
 
             expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
@@ -3217,7 +3255,7 @@ describe("z/OS Files - Download", () => {
             expect(response).toEqual({
                 success: true,
                 commandResponse: util.format(ZosFilesMessages.ussFileDownloadedWithDestination.message, destination),
-                apiResponse: {}
+                apiResponse: { destination: "test.txt" }
             });
 
             expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
@@ -3250,7 +3288,7 @@ describe("z/OS Files - Download", () => {
             expect(response).toEqual({
                 success: true,
                 commandResponse: util.format(ZosFilesMessages.ussFileDownloadedWithDestination.message, file),
-                apiResponse: {}
+                apiResponse: { destination: "a/xyz/test.txt" }
             });
 
             expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
@@ -3286,7 +3324,7 @@ describe("z/OS Files - Download", () => {
             expect(response).toEqual({
                 success: true,
                 commandResponse: util.format(ZosFilesMessages.ussFileDownloadedWithDestination.message, destination),
-                apiResponse: {etag: etagValue}
+                apiResponse: { destination: "test.txt", etag: etagValue }
             });
 
             expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
@@ -3357,7 +3395,7 @@ describe("z/OS Files - Download", () => {
             expect(response).toEqual({
                 success: true,
                 commandResponse: util.format(ZosFilesMessages.ussFileDownloadedWithDestination.message, destination),
-                apiResponse: {}
+                apiResponse: { destination: "test.txt" }
             });
 
             expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
@@ -3399,7 +3437,7 @@ describe("z/OS Files - Download", () => {
             expect(response).toEqual({
                 success: true,
                 commandResponse: util.format(ZosFilesMessages.ussFileDownloadedWithDestination.message, destination),
-                apiResponse: {}
+                apiResponse: { destination: "test.txt" }
             });
 
             expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
@@ -3465,7 +3503,7 @@ describe("z/OS Files - Download", () => {
             expect(response).toEqual({
                 success: true,
                 commandResponse: util.format(ZosFilesMessages.ussFileDownloadedWithDestination.message, destination),
-                apiResponse: {}
+                apiResponse: { destination: "test.txt" }
             });
 
             expect(existsSyncSpy).toHaveBeenCalledTimes(1);
@@ -3570,7 +3608,7 @@ describe("z/OS Files - Download", () => {
             expect(response).toEqual({
                 success: true,
                 commandResponse: util.format(ZosFilesMessages.ussFileDownloadedWithDestination.message, destination),
-                apiResponse: {}
+                apiResponse: { destination: "test.txt" }
             });
 
             expect(existsSyncSpy).toHaveBeenCalledTimes(1);

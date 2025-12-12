@@ -82,6 +82,7 @@ export class Download {
         // required
         ImperativeExpect.toNotBeNullOrUndefined(dataSetName, ZosFilesMessages.missingDatasetName.message);
         ImperativeExpect.toNotBeEqual(dataSetName, "", ZosFilesMessages.missingDatasetName.message);
+        ImperativeExpect.toNotBeNullOrUndefined(session);
         let destination: string;
         let existedBefore = false;
         let downloadStarted = false;
@@ -109,6 +110,9 @@ export class Download {
                 extension = options.extension;
             }
 
+            // By default, apiResponse is empty when downloading
+            const apiResponse: any = {};
+
             if (options.stream == null) {
                 // Get a proper destination for the file to be downloaded
                 // If the "file" is not provided, we create a folder structure similar to the data set name
@@ -127,6 +131,7 @@ export class Download {
 
                     return generatedFilePath + IO.normalizeExtension(extension);
                 })();
+                apiResponse.destination = destination;
 
                 // Track if a file at destination already exists before staring the download
                 existedBefore = IO.existsSync(destination);
@@ -136,7 +141,7 @@ export class Download {
                     return {
                         success: true,
                         commandResponse: util.format(ZosFilesMessages.datasetDownloadSkipped.message, destination),
-                        apiResponse: {}
+                        apiResponse: { destination }
                     };
                 }
 
@@ -167,9 +172,6 @@ export class Download {
             downloadStarted = true;
 
             const request: IRestClientResponse = await ZosmfRestClient.getExpectFullResponse(session, requestOptions);
-
-            // By default, apiResponse is empty when downloading
-            const apiResponse: any = {};
 
             // Return Etag in apiResponse, if requested
             if (options.returnEtag) {
@@ -375,7 +377,8 @@ export class Download {
                 commandResponse: responseMessage,
                 apiResponse: {
                     ...response.apiResponse,
-                    downloadResult
+                    downloadResult,
+                    destination: baseDir
                 }
             };
 
@@ -617,8 +620,13 @@ export class Download {
         ImperativeExpect.toNotBeNullOrUndefined(ussFileName, ZosFilesMessages.missingUSSFileName.message);
         ImperativeExpect.toNotBeEqual(ussFileName, "", ZosFilesMessages.missingUSSFileName.message);
         ImperativeExpect.toNotBeEqual(options.record, true, ZosFilesMessages.unsupportedDataType.message);
+        ImperativeExpect.toNotBeNullOrUndefined(session);
+
         try {
             let destination: string;
+
+            // By default, apiResponse is empty when downloading
+            const apiResponse: any = {};
 
             if (options.stream == null) {
                 destination = options.file || posix.normalize(posix.basename(ussFileName));
@@ -632,6 +640,7 @@ export class Download {
                 }
 
                 IO.createDirsSyncFromFilePath(destination);
+                apiResponse.destination = destination;
             }
 
             const writeStream = options.stream ?? IO.createWriteStream(destination);
@@ -674,9 +683,6 @@ export class Download {
             }
 
             const request = await ZosmfRestClient.getExpectFullResponse(session, requestOptions);
-
-            // By default, apiResponse is empty when downloading
-            const apiResponse: any = {};
 
             // Return Etag in apiResponse, if requested
             if (options.returnEtag) {

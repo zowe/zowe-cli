@@ -11,8 +11,9 @@
 
 import type { ICredentialManagerOptions } from "./ICredentialManagerOptions";
 
-/** 
- * Used to map value in `imperative.json` to respective value for Win32 persistence flag in CredentialA. See {@link PersistenceValue} for flag values. 
+/**
+ * Used to map value in `imperative.json` to respective value for Win32 persistence flag in CredentialA.
+ * See {@link PersistenceValue} for flag values.
  */
 export enum PersistenceLevel {
     SessionOnly = "session",
@@ -20,8 +21,9 @@ export enum PersistenceLevel {
     Enterprise = "enterprise"
 }
 
-/** 
- * Note: Values map to `Persist` variable in [CredentialA](https://learn.microsoft.com/en-us/windows/win32/api/wincred/ns-wincred-credentiala) structure.
+/**
+ * Note: Values map to `Persist` variable in
+ * [CredentialA](https://learn.microsoft.com/en-us/windows/win32/api/wincred/ns-wincred-credentiala) structure.
  */
 export enum PersistenceValue {
     // CRED_PERSIST_SESSION
