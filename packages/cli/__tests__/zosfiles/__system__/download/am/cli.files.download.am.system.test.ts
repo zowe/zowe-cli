@@ -17,6 +17,7 @@ import { ITestPropertiesSchema } from "../../../../../../../__tests__/__src__/pr
 import { getUniqueDatasetName } from "../../../../../../../__tests__/__src__/TestUtils";
 import { Create, CreateDataSetTypeEnum, Delete, Upload } from "@zowe/zos-files-for-zowe-sdk";
 import { runCliScript } from "@zowe/cli-test-utils";
+import { readdirSync, rmSync } from "fs";
 
 let REAL_SESSION: Session;
 // Test Environment populated in the beforeAll();
@@ -67,6 +68,14 @@ describe("Download All Member", () => {
 
         afterEach(async () => {
             await Delete.dataSet(REAL_SESSION, dsname);
+            // Cleanup
+            const files = readdirSync(TEST_ENVIRONMENT_NO_PROF.workingDir);
+            for (const file of files) {
+                if (!(file == "zowe.config.json" || file == "zowe.config.user.json" || file.startsWith("."))) {
+                    const filePath = path.join(TEST_ENVIRONMENT_NO_PROF.workingDir, file);
+                    rmSync(filePath, {recursive: true});
+                }
+            }
         });
 
         it("should download all data set member of pds", () => {
@@ -88,7 +97,7 @@ describe("Download All Member", () => {
                     defaultSys.zosmf.password]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
-            expect(response.stdout.toString()).toContain("Member(s) downloaded successfully.");
+            expect(response.stdout.toString()).toContain("member(s) downloaded successfully.");
         });
     });
 
@@ -97,6 +106,14 @@ describe("Download All Member", () => {
         beforeEach(async () => {
             await Create.dataSet(REAL_SESSION, CreateDataSetTypeEnum.DATA_SET_PARTITIONED, dsname);
             await Upload.bufferToDataSet(REAL_SESSION, Buffer.from(testString), `${dsname}(${testString})`);
+            // Cleanup
+            const files = readdirSync(TEST_ENVIRONMENT.workingDir);
+            for (const file of files) {
+                if (!(file == "zowe.config.json" || file == "zowe.config.user.json" || file.startsWith("."))) {
+                    const filePath = path.join(TEST_ENVIRONMENT.workingDir, file);
+                    rmSync(filePath, {recursive: true});
+                }
+            }
         });
 
         afterEach(async () => {
@@ -108,7 +125,7 @@ describe("Download All Member", () => {
             const response = runCliScript(shellScript, TEST_ENVIRONMENT, [dsname]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
-            expect(response.stdout.toString()).toContain("Member(s) downloaded successfully.");
+            expect(response.stdout.toString()).toContain("member(s) downloaded successfully.");
         });
 
         it("should download all data set member of pds in binary format", () => {
@@ -116,7 +133,7 @@ describe("Download All Member", () => {
             const response = runCliScript(shellScript, TEST_ENVIRONMENT, [dsname, "--binary"]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
-            expect(response.stdout.toString()).toContain("Member(s) downloaded successfully.");
+            expect(response.stdout.toString()).toContain("member(s) downloaded successfully.");
         });
 
         it("should download all data set member of pds in record format", () => {
@@ -124,7 +141,7 @@ describe("Download All Member", () => {
             const response = runCliScript(shellScript, TEST_ENVIRONMENT, [dsname, "--record"]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
-            expect(response.stdout.toString()).toContain("Member(s) downloaded successfully.");
+            expect(response.stdout.toString()).toContain("member(s) downloaded successfully.");
         });
 
         it("should download all data set member of pds with response timeout", () => {
@@ -132,7 +149,7 @@ describe("Download All Member", () => {
             const response = runCliScript(shellScript, TEST_ENVIRONMENT, [dsname, "--responseTimeout 5"]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
-            expect(response.stdout.toString()).toContain("Member(s) downloaded successfully.");
+            expect(response.stdout.toString()).toContain("member(s) downloaded successfully.");
         });
 
         it("should download all data set members with --max-concurrent-requests 2", () => {
@@ -140,7 +157,7 @@ describe("Download All Member", () => {
             const response = runCliScript(shellScript, TEST_ENVIRONMENT, [dsname, 2]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
-            expect(response.stdout.toString()).toContain("Member(s) downloaded successfully.");
+            expect(response.stdout.toString()).toContain("member(s) downloaded successfully.");
         });
 
         it("should download all data set members of a large data set with --max-concurrent-requests 2", async () => {
@@ -155,7 +172,7 @@ describe("Download All Member", () => {
             const response = runCliScript(shellScript, TEST_ENVIRONMENT, [bigDsname, 2]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
-            expect(response.stdout.toString()).toContain("Member(s) downloaded successfully.");
+            expect(response.stdout.toString()).toContain("member(s) downloaded successfully.");
             await Delete.dataSet(REAL_SESSION, bigDsname);
         });
 
@@ -164,7 +181,7 @@ describe("Download All Member", () => {
             const response = runCliScript(shellScript, TEST_ENVIRONMENT, [dsname, "--rfj"]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
-            expect(response.stdout.toString()).toContain("Member(s) downloaded successfully.");
+            expect(response.stdout.toString()).toContain("member(s) downloaded successfully.");
         });
 
         it("should download all data set member to specified directory", () => {
@@ -173,7 +190,7 @@ describe("Download All Member", () => {
             const response = runCliScript(shellScript, TEST_ENVIRONMENT, [dsname, `-d ${testDir}`, "--rfj"]);
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
-            expect(response.stdout.toString()).toContain("Member(s) downloaded successfully.");
+            expect(response.stdout.toString()).toContain("member(s) downloaded successfully.");
             expect(response.stdout.toString()).toContain(testDir);
         });
 
@@ -185,9 +202,22 @@ describe("Download All Member", () => {
             const expectedResult = {member: "TEST"};
             expect(response.stderr.toString()).toBe("");
             expect(response.status).toBe(0);
-            expect(result.stdout).toContain("Member(s) downloaded successfully.");
+            expect(result.stdout).toContain("member(s) downloaded successfully.");
             expect(result.stdout).toContain(testDir);
             expect(result.data.apiResponse.items[0]).toEqual(expectedResult);
+        });
+
+        it("should skip downloading all data set member of pds if they already exist", () => {
+            const shellScript = path.join(__dirname, "__scripts__", "command", "command_download_all_member.sh");
+            let response = runCliScript(shellScript, TEST_ENVIRONMENT, [dsname]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toContain("member(s) downloaded successfully.");
+
+            response = runCliScript(shellScript, TEST_ENVIRONMENT, [dsname]);
+            expect(response.stderr.toString()).toBe("");
+            expect(response.status).toBe(0);
+            expect(response.stdout.toString()).toContain("member(s) skipped as they already exist.");
         });
     });
 

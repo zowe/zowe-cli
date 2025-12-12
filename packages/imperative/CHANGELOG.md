@@ -5,6 +5,7 @@ All notable changes to the Imperative package will be documented in this file.
 ## Recent Changes
 
 - Enhancement: Added instructions for obtaining a token to be displayed when a command prompts for a token. [#2660](https://github.com/zowe/zowe-cli/pull/2660)
+- BugFix: Stopped supporting IE 11 browser in web help pages for technical currency. [#2654](https://github.com/zowe/zowe-cli/pull/2654)
 
 ## `8.29.0`
 
@@ -530,7 +531,7 @@ All notable changes to the Imperative package will be documented in this file.
 
     - @zowe/zos-uss-for-zowe-sdk
       - SshBaseHandler
-        - Removed the unused, protected property ‘mSshProfile’
+        - Removed the unused, protected property `mSshProfile`
 
   - Removed the following obsolete V1 profile constants:
 

@@ -202,7 +202,7 @@ describe("AppSettings", () => {
         it("throws an error if the given namespace does not exist", () => {
             expect(() => AppSettings.instance.get("asdfghjkl" as any, "nonexistent_key")).toThrow("Namespace asdfghjkl does not exist");
         });
-        
+
         it("returns a property in credentialManagerOptions namespace when options are present", () => {
             AppSettings.instance.set("credentialManagerOptions", "persist", PersistenceLevel.LocalMachine);
             expect(AppSettings.instance.get("credentialManagerOptions", "persist")).not.toBeUndefined();
