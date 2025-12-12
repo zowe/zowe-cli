@@ -9,7 +9,7 @@
 *
 */
 
-import { Duplex, PassThrough, pipeline, Transform, Writable } from "stream";
+import { Transform, Writable } from "stream";
 import * as zlib from "zlib";
 import { ImperativeError } from "../../../error";
 import { IO } from "../../../io";
@@ -51,46 +51,31 @@ export class CompressionUtils {
      * @param normalizeNewLines Specifies if line endings should be converted
      * @throws {ImperativeError}
      */
-    public static decompressStream(responseStream: Writable, encoding: ContentEncoding, normalizeNewLines?: boolean): Duplex {
+    public static decompressStream(responseStream: Writable, encoding: ContentEncoding, normalizeNewLines?: boolean): Writable {
         if (!Headers.CONTENT_ENCODING_TYPES.includes(encoding)) {
             throw new ImperativeError({ msg: `Unsupported content encoding type ${encoding}` });
         }
 
         try {
-            const inputStream = new PassThrough();
+            // First transform handles decompression
+            const transforms = [this.zlibTransform(encoding, !normalizeNewLines)];
 
-            // Build the transform pipeline
-            const transforms: Transform[] = [this.zlibTransform(encoding, !normalizeNewLines)];
+            // Second transform is optional and processes line endings
             if (normalizeNewLines) {
                 transforms.push(this.newLinesTransform());
             }
 
-            // Wrapper stream that waits for pipeline completion
-            let finalCallback: ((error?: Error | null) => void) | undefined;
-            const wrapper = new Duplex({
-                write(chunk, encoding, callback) {
-                    if (!inputStream.write(chunk, encoding)) {
-                        inputStream.once("drain", callback);
-                    } else {
-                        callback();
-                    }
-                },
-                final(callback) {
-                    finalCallback = callback;
-                    inputStream.end();
-                },
-                read() { /* write-only from caller's perspective */ }
-            });
-
-            // Connect pipeline and notify wrapper when complete
-            pipeline([inputStream, ...transforms, responseStream], (err) => {
-                if (err) {
+            // Chain transforms and response stream together
+            for (const [i, stream] of transforms.entries()) {
+                const next = transforms[i + 1] || responseStream;
+                stream.pipe(next);
+                stream.on("error", (err) => {
                     responseStream.emit("error", this.decompressError(err, "stream", encoding));
-                }
-                finalCallback?.(err);
-            });
+                });
+            }
 
-            return wrapper;
+            // Return first stream in chain
+            return transforms[0];
         } catch (err) {
             throw this.decompressError(err, "stream", encoding);
         }
