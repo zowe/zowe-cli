@@ -398,17 +398,6 @@ export class ConnectionPropsForSessCfg {
                 reasonForPrompts += "Therefore, you will be asked for the connection properties " +
                     "that are required to complete your command.\n";
 
-                // Users can type in a token, but typically they will not know how to do that.
-                // Add extra instructions for obtaining a token.
-                if (promptForValues.includes("tokenType") || promptForValues.includes("tokenValue")) {
-                    reasonForPrompts += "\nYour profile is configured to use a token " +
-                        "for authentication. You can supply a token at the prompt. " +
-                        "Alternatively, terminate this command with Control-C and " +
-                        "login to your service to obtain a token. For example, the command " +
-                        "'zowe auth login apiml' will login to the API ML service. You can then " +
-                        "run your original command again, which will no longer prompt for a token.\n";
-                }
-
                 connOpts.parms.response.console.log(TextUtils.wordWrap(
                     TextUtils.chalk.yellowBright(reasonForPrompts))
                 );
@@ -417,10 +406,33 @@ export class ConnectionPropsForSessCfg {
             const answers: { [key: string]: any } = {};
             const profileSchema = this.loadSchemaForSessCfgProps(connOpts.parms, promptForValues);
             const serviceDescription = connOpts.serviceDescription || "your service";
+            let tokenInstructions: string = "";
+            let somePromptHasOccurred = false;
 
             for (const propNm of promptForValues) {
                 const sessPropNm = AuthOrder.getPropNmFor(propNm, PropUse.IN_SESS);
                 const cfgPropNm = AuthOrder.getPropNmFor(propNm, PropUse.IN_CFG);
+                if (propNm === "tokenType" || propNm === "tokenValue") {
+                    // Typically users will not know how to type in a token.
+                    // Add extra instructions for obtaining a token and only display them once.
+                    if (tokenInstructions.length === 0) {
+                        // instructions have not yet been displayed
+                        if (somePromptHasOccurred) {
+                            // a prompt for a different property has occurred, so add a newline
+                            tokenInstructions += "\n";
+                        }
+                        tokenInstructions += "Your profile is configured to use a token " +
+                            "for authentication. You can supply a token at the prompt. " +
+                            "Alternatively, terminate this command with Control-C and " +
+                            "login to your service to obtain a token. For example, the command " +
+                            "'zowe auth login apiml' will login to the API ML service. You can then " +
+                            "run your original command again, which will no longer prompt for a token.\n";
+
+                        connOpts.parms.response.console.log(TextUtils.wordWrap(
+                            TextUtils.chalk.yellowBright(tokenInstructions))
+                        );
+                    }
+                }
                 let answer;
                 while (answer === undefined) {
                     const hideText = profileSchema[cfgPropNm]?.secure || this.secureSessCfgProps.has(sessPropNm);
@@ -441,6 +453,7 @@ export class ConnectionPropsForSessCfg {
                     }
                 }
                 answers[sessPropNm] = answer;
+                somePromptHasOccurred = true;
             }
 
             return answers;
