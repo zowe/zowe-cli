@@ -412,7 +412,7 @@ export class ConnectionPropsForSessCfg {
             for (const propNm of promptForValues) {
                 const sessPropNm = AuthOrder.getPropNmFor(propNm, PropUse.IN_SESS);
                 const cfgPropNm = AuthOrder.getPropNmFor(propNm, PropUse.IN_CFG);
-                if (propNm === "tokenType" || propNm === "tokenValue") {
+                if ((propNm === "tokenType" || propNm === "tokenValue") && connOpts.parms?.response.console.log) {
                     // Typically users will not know how to type in a token.
                     // Add extra instructions for obtaining a token and only display them once.
                     if (tokenInstructions.length === 0) {
