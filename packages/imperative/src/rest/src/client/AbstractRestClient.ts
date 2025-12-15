@@ -701,6 +701,7 @@ export abstract class AbstractRestClient {
     private requestHandler(res: any) {
         this.mResponse = res;
         this.mContentEncoding = null;
+        this.mDecodeStream = null;
 
         if (this.response.headers != null) {
             // This is not ideal, but is the only way to avoid introducing a breaking change.
