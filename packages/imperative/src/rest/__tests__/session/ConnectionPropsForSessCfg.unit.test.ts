@@ -1955,6 +1955,17 @@ describe("ConnectionPropsForSessCfg tests", () => {
                 .mockResolvedValue(Promise.resolve("Some fake answer"));
             // clear log messages from last test
             consoleMsgs = "";
+
+            /* Pretend that we do not have any V1 profiles.
+             * onlyV1ProfilesExist is a getter property, thus the elaborate mock.
+             * To test only having v1 profiles, define this property in a test to return true.
+             */
+            Object.defineProperty(ConfigUtils, "onlyV1ProfilesExist", {
+                configurable: true,
+                get: jest.fn(() => {
+                    return false;
+                }),
+            });
         });
 
         afterEach(() => {
@@ -1989,9 +2000,7 @@ describe("ConnectionPropsForSessCfg tests", () => {
                 config: { exists: false },
             } as any);
 
-            /* Pretend that we only have V1 profiles.
-             * onlyV1ProfilesExist is a getter property, so mock the property.
-             */
+            // Pretend that we only have V1 profiles.
             Object.defineProperty(ConfigUtils, "onlyV1ProfilesExist", {
                 configurable: true,
                 get: jest.fn(() => {
@@ -2019,16 +2028,6 @@ describe("ConnectionPropsForSessCfg tests", () => {
                 config: { exists: true },
             } as any);
 
-            /* Pretend that we do not have any V1 profiles.
-             * onlyV1ProfilesExist is a getter property, so mock the property.
-             */
-            Object.defineProperty(ConfigUtils, "onlyV1ProfilesExist", {
-                configurable: true,
-                get: jest.fn(() => {
-                    return false;
-                }),
-            });
-
             // call the function that we want to test
             await getValuesCallBack(["hostname"]);
 
@@ -2048,16 +2047,6 @@ describe("ConnectionPropsForSessCfg tests", () => {
             jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({
                 config: { exists: true },
             } as any);
-
-            /* Pretend that we do not have any V1 profiles.
-             * onlyV1ProfilesExist is a getter property, so mock the property.
-             */
-            Object.defineProperty(ConfigUtils, "onlyV1ProfilesExist", {
-                configurable: true,
-                get: jest.fn(() => {
-                    return false;
-                }),
-            });
 
             const tokenInstructions = "Your profile is configured to use a token for authentication.";
 
