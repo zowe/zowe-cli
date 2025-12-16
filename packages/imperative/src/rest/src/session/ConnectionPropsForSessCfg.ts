@@ -407,7 +407,6 @@ export class ConnectionPropsForSessCfg {
             const profileSchema = this.loadSchemaForSessCfgProps(connOpts.parms, promptForValues);
             const serviceDescription = connOpts.serviceDescription || "your service";
             let tokenInstructions: string = "";
-            let somePromptHasOccurred = false;
 
             for (const propNm of promptForValues) {
                 const sessPropNm = AuthOrder.getPropNmFor(propNm, PropUse.IN_SESS);
@@ -417,7 +416,7 @@ export class ConnectionPropsForSessCfg {
                     // Add extra instructions for obtaining a token and only display them once.
                     if (tokenInstructions.length === 0) {
                         // instructions have not yet been displayed
-                        if (somePromptHasOccurred) {
+                        if (Object.keys(answers).length > 0) {
                             // a prompt for a different property has occurred, so add a newline
                             tokenInstructions += "\n";
                         }
@@ -453,7 +452,6 @@ export class ConnectionPropsForSessCfg {
                     }
                 }
                 answers[sessPropNm] = answer;
-                somePromptHasOccurred = true;
             }
 
             return answers;
