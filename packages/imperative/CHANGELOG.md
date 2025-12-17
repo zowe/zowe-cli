@@ -5,6 +5,7 @@ All notable changes to the Imperative package will be documented in this file.
 ## Recent Changes
 
 - BugFix: Stopped supporting IE 11 browser in web help pages for technical currency. [#2654](https://github.com/zowe/zowe-cli/pull/2654)
+- BugFix: Fixed truncation that could occur when the `AbstractRestClient` request method downloads gzip-encoded data. [#2658](https://github.com/zowe/zowe-cli/pull/2658)
 
 ## `8.29.0`
 
