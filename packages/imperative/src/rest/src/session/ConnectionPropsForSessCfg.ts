@@ -386,8 +386,7 @@ export class ConnectionPropsForSessCfg {
                 // We need to prompt for some values. Determine why we need to prompt.
                 let reasonForPrompts: string = "";
                 if (ImperativeConfig.instance.config?.exists) {
-                    reasonForPrompts += "Some required connection properties have not been specified " +
-                        "in your Zowe client configuration. ";
+                    reasonForPrompts += "Required connection properties are missing in your Zowe client configuration. ";
                 } else if (ConfigUtils.onlyV1ProfilesExist) {
                     reasonForPrompts += "Only V1 profiles exist. V1 profiles are no longer supported. " +
                         "You should convert your V1 profiles to a newer Zowe client configuration. ";
@@ -395,8 +394,7 @@ export class ConnectionPropsForSessCfg {
                     reasonForPrompts += "No Zowe client configuration exists. ";
                 }
 
-                reasonForPrompts += "Therefore, you will be asked for the connection properties " +
-                    "that are required to complete your command.\n";
+                reasonForPrompts += "Provide these properties at the prompts to complete your command.\n";
 
                 connOpts.parms.response.console.log(TextUtils.wordWrap(
                     TextUtils.chalk.yellowBright(reasonForPrompts))
@@ -421,11 +419,9 @@ export class ConnectionPropsForSessCfg {
                             tokenInstructions += "\n";
                         }
                         tokenInstructions += "Your profile is configured to use a token " +
-                            "for authentication. You can supply a token at the prompt. " +
-                            "Alternatively, terminate this command with Control-C and " +
-                            "login to your service to obtain a token. For example, the command " +
-                            "'zowe auth login apiml' will login to the API ML service. You can then " +
-                            "run your original command again, which will no longer prompt for a token.\n";
+                            "for authentication. Supply a token at the prompt. Or terminate this " +
+                            "command with Ctrl-C and log in to your service for a token. " +
+                            "Then reissue your command, which will not prompt for a token.\n";
 
                         connOpts.parms.response.console.log(TextUtils.wordWrap(
                             TextUtils.chalk.yellowBright(tokenInstructions))
