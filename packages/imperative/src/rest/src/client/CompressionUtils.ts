@@ -9,7 +9,7 @@
 *
 */
 
-import { Duplex, Transform, Writable } from "stream";
+import { Transform, Writable } from "stream";
 import * as zlib from "zlib";
 import { ImperativeError } from "../../../error";
 import { IO } from "../../../io";
@@ -51,7 +51,7 @@ export class CompressionUtils {
      * @param normalizeNewLines Specifies if line endings should be converted
      * @throws {ImperativeError}
      */
-    public static decompressStream(responseStream: Writable, encoding: ContentEncoding, normalizeNewLines?: boolean): Duplex {
+    public static decompressStream(responseStream: Writable, encoding: ContentEncoding, normalizeNewLines?: boolean): Writable {
         if (!Headers.CONTENT_ENCODING_TYPES.includes(encoding)) {
             throw new ImperativeError({ msg: `Unsupported content encoding type ${encoding}` });
         }
