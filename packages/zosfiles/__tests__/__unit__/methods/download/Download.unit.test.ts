@@ -839,6 +839,64 @@ describe("z/OS Files - Download", () => {
             expect(existsSyncSpy).toHaveBeenCalledTimes(1);
             expect(existsSyncSpy).toHaveBeenCalledWith(destination);
         });
+
+        it("should not delete existing file when download fails", async () => {
+            let response;
+            let caughtError;
+            const file = "existing/file.txt";
+            const ioDeleteSpy = jest.spyOn(IO, "deleteFile");
+
+            existsSyncSpy.mockReturnValue(true);
+            ioDeleteSpy.mockImplementation(() => null);
+
+            const dummyError = new Error("Connection lost");
+            zosmfGetFullSpy.mockImplementation(() => {
+                throw dummyError;
+            });
+
+            try {
+                response = await Download.dataSet(dummySession, dsname, { file, overwrite: true });
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(response).toBeUndefined();
+            expect(caughtError).toEqual(dummyError);
+
+            expect(existsSyncSpy).toHaveBeenCalledWith(file);
+            expect(ioDeleteSpy).not.toHaveBeenCalled();
+
+            ioDeleteSpy.mockRestore();
+        });
+
+        it("should delete new file when download fails", async () => {
+            let response;
+            let caughtError;
+            const file = "new/file.txt";
+            const ioDeleteSpy = jest.spyOn(IO, "deleteFile");
+
+            existsSyncSpy.mockReturnValue(false);
+            ioDeleteSpy.mockImplementation(() => null);
+
+            const dummyError = new Error("Connection lost");
+            zosmfGetFullSpy.mockImplementation(() => {
+                throw dummyError;
+            });
+
+            try {
+                response = await Download.dataSet(dummySession, dsname, { file });
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(response).toBeUndefined();
+            expect(caughtError).toEqual(dummyError);
+
+            expect(existsSyncSpy).toHaveBeenCalledWith(file);
+            expect(ioDeleteSpy).toHaveBeenCalledWith(file);
+
+            ioDeleteSpy.mockRestore();
+        });
     });
 
     describe("allMembers", () => {
@@ -1695,6 +1753,72 @@ describe("z/OS Files - Download", () => {
                 overwrite: false
             });
         });
+
+        it("should not delete existing member files when download fails", async () => {
+            let response;
+            let caughtError;
+            const ioDeleteSpy = jest.spyOn(IO, "deleteFile");
+
+            existsSyncSpy.mockImplementation((filePath) => {
+                const fileName = basename(filePath.toString());
+                return fileName === "m1.txt" || fileName === "m2.txt";
+            });
+            ioDeleteSpy.mockImplementation(() => null);
+
+            const dummyError = new Error("Connection lost");
+            downloadDatasetSpy.mockImplementation(async () => {
+                throw dummyError;
+            });
+
+            try {
+                response = await Download.allMembers(dummySession, dsname, { failFast: false, overwrite: true });
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(response).toBeUndefined();
+            expect(caughtError).toBeDefined();
+            expect(caughtError.message).toContain(ZosFilesMessages.memberDownloadFailed.message);
+
+            expect(existsSyncSpy).toHaveBeenCalledWith(posix.join(dsFolder, "m1.txt"));
+            expect(existsSyncSpy).toHaveBeenCalledWith(posix.join(dsFolder, "m2.txt"));
+
+            expect(ioDeleteSpy).not.toHaveBeenCalled();
+
+            ioDeleteSpy.mockRestore();
+        });
+
+        it("should delete new member files when download fails", async () => {
+            let response;
+            let caughtError;
+            const ioDeleteSpy = jest.spyOn(IO, "deleteFile");
+
+            existsSyncSpy.mockReturnValue(false);
+            ioDeleteSpy.mockImplementation(() => null);
+
+            const dummyError = new Error("Connection lost");
+            downloadDatasetSpy.mockImplementation(async () => {
+                throw dummyError;
+            });
+
+            try {
+                response = await Download.allMembers(dummySession, dsname, { failFast: false });
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(response).toBeUndefined();
+            expect(caughtError).toBeDefined();
+            expect(caughtError.message).toContain(ZosFilesMessages.memberDownloadFailed.message);
+
+            expect(existsSyncSpy).toHaveBeenCalledWith(posix.join(dsFolder, "m1.txt"));
+            expect(existsSyncSpy).toHaveBeenCalledWith(posix.join(dsFolder, "m2.txt"));
+
+            expect(ioDeleteSpy).toHaveBeenCalledWith(posix.join(dsFolder, "m1.txt"));
+            expect(ioDeleteSpy).toHaveBeenCalledWith(posix.join(dsFolder, "m2.txt"));
+
+            ioDeleteSpy.mockRestore();
+        });
     });
 
     describe("allDataSets", () => {
@@ -2317,8 +2441,9 @@ describe("z/OS Files - Download", () => {
                 }, {}),
                 apiResponse: [{
                     ...dataSetPO,
-                    status: util.format(ZosFilesMessages.datasetDownloadedWithDestination.message, "./") + "\nMembers:  TESTDS;"
-                }]
+                    status: util.format(ZosFilesMessages.datasetDownloadedWithDestination.message, "./") + "\nMembers: TESTDS"
+                }],
+                errorMessage: undefined
             });
         });
 
@@ -2411,8 +2536,9 @@ describe("z/OS Files - Download", () => {
                 }, {directory}),
                 apiResponse: [{
                     ...dataSetPO,
-                    status: util.format(ZosFilesMessages.datasetDownloadedWithDestination.message, directory) + "\nMembers:  TESTDS;"
-                }]
+                    status: util.format(ZosFilesMessages.datasetDownloadedWithDestination.message, directory) + "\nMembers: TESTDS"
+                }],
+                errorMessage: undefined
             });
         });
 
@@ -2536,8 +2662,9 @@ describe("z/OS Files - Download", () => {
                 }, { overwrite: false }),
                 apiResponse: [{
                     ...dataSetPO,
-                    status: util.format(ZosFilesMessages.memberDownloadSkipped.message, 2) + "\nMembers:  MEMBER1, MEMBER2;"
-                }]
+                    status: util.format(ZosFilesMessages.memberDownloadSkipped.message, 2) + "\nMembers: MEMBER1, MEMBER2"
+                }],
+                errorMessage: undefined
             });
 
             expect(downloadAllMembersSpy).toHaveBeenCalledTimes(1);
@@ -2592,7 +2719,7 @@ describe("z/OS Files - Download", () => {
                     ...dataSetPO,
                     status:
                         util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, 1, dsFolder) + "\n" +
-                        util.format(ZosFilesMessages.memberDownloadSkipped.message, 1) + "\nMembers:  MEMBER1, MEMBER2;"
+                        util.format(ZosFilesMessages.memberDownloadSkipped.message, 1) + "\nMembers: MEMBER1, MEMBER2"
                 }]
             });
 
@@ -2642,7 +2769,7 @@ describe("z/OS Files - Download", () => {
                     ...dataSetPO,
                     status:
                         util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, 2, dsFolder) +
-                        "\nMembers:  MEMBER1, MEMBER2;"
+                        "\nMembers: MEMBER1, MEMBER2"
                 }]
             });
 
@@ -2725,10 +2852,10 @@ describe("z/OS Files - Download", () => {
                     { ...dataSetPS2, status: "Data set downloaded" },
                     { ...dataSetPO, status:
                         util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, 1, dsFolder) + "\n" +
-                        util.format(ZosFilesMessages.memberDownloadSkipped.message, 1) + "\nMembers:  MEMBER1, MEMBER2;"
+                        util.format(ZosFilesMessages.memberDownloadSkipped.message, 1) + "\nMembers: MEMBER1, MEMBER2"
                     },
                     { ...dataSetPO2, status:
-                        util.format(ZosFilesMessages.memberDownloadSkipped.message, 2)  + "\nMembers:  MEMBER3, MEMBER4;"
+                        util.format(ZosFilesMessages.memberDownloadSkipped.message, 2)  + "\nMembers: MEMBER3, MEMBER4"
                     }
                 ]
             });
