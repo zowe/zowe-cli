@@ -153,20 +153,17 @@ export default class SecureHandler implements ICommandHandler {
 
         if (authHandlerClass == null) {
             // no auth handler service was associated with the specified profile
-            let tokenTypMsg = "has no associated tokenType";
-            if (profile.tokenType) {
-                tokenTypMsg = `is associated with tokenType = '${profile.tokenType}'`;
-            }
+            let tokenTypMsg = (profile.tokenType) ?
+                `of type '${profile.tokenType}'` : "with no associated tokenType";
             this.params.response.console.log(
                 TextUtils.wordWrap(TextUtils.chalk.yellowBright(
-                    `\nAfter completion of this command, log in to your ` +
-                    `service to record a token for profile ` +
-                    `'${config.api.profiles.getProfileNameFromPath(propPath)}', which ` +
-                    `${tokenTypMsg}.\n`
+                    `\nA profile requires a token ${tokenTypMsg} to be securely stored. ` +
+                    `Supply a token at the prompt. Or press ENTER at the prompt and ` +
+                    `later log in to your service for a token.\n`
                 ))
             );
-            // return null to avoid prompting for tokenValue for this profile
-            return null;
+            // return undefined to allow prompting for tokenValue for this profile
+            return;
         }
 
         // call auth handler service that was associated with the specified profile
