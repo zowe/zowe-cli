@@ -1987,10 +1987,10 @@ describe("ConnectionPropsForSessCfg tests", () => {
                 "No Zowe client configuration exists."
             );
             expect(consoleMsgs).toContain(
-                "Therefore, you will be asked for the"
+                "Provide these properties at the prompts to"
             );
             expect(consoleMsgs).toContain(
-                "connection properties that are required to complete your command."
+                "complete your command."
             );
         });
 
@@ -2015,10 +2015,10 @@ describe("ConnectionPropsForSessCfg tests", () => {
                 "Only V1 profiles exist. V1 profiles are no longer supported. You should convert"
             );
             expect(consoleMsgs).toContain(
-                "your V1 profiles to a newer Zowe client configuration. Therefore, you will be"
+                "your V1 profiles to a newer Zowe client configuration. Provide these properties"
             );
             expect(consoleMsgs).toContain(
-                "asked for the connection properties that are required to complete your command."
+                "at the prompts to complete your command"
             );
         });
 
@@ -2032,13 +2032,10 @@ describe("ConnectionPropsForSessCfg tests", () => {
             await getValuesCallBack(["hostname"]);
 
             expect(consoleMsgs).toContain(
-                "Some required connection properties have not been specified in your Zowe client"
+                "Required connection properties are missing in your Zowe client configuration"
             );
             expect(consoleMsgs).toContain(
-                "configuration. Therefore, you will be asked for the connection properties that"
-            );
-            expect(consoleMsgs).toContain(
-                "are required to complete your command."
+                "Provide these properties at the prompts to complete your command"
             );
         });
 
