@@ -153,7 +153,7 @@ export default class SecureHandler implements ICommandHandler {
 
         if (authHandlerClass == null) {
             // no auth handler service was associated with the specified profile
-            let tokenTypMsg = (profile.tokenType) ?
+            const tokenTypMsg = profile.tokenType ?
                 `of type '${profile.tokenType}'` : "with no associated tokenType";
             this.params.response.console.log(
                 TextUtils.wordWrap(TextUtils.chalk.yellowBright(
