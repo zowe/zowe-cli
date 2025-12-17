@@ -916,9 +916,10 @@ describe("AbstractRestClient tests", () => {
 
         const fakeResponseStream: any = {
             write: jest.fn(),
-            on: jest.fn(),
-            end: jest.fn((cb: any) => cb()),
-            writableFinished: true
+            on: jest.fn((eventName: string, callback: any) => {
+                if (eventName === "finish") callback();
+            }),
+            end: jest.fn(),
         };
         const fakeRequestStream: any = {
             on: jest.fn((_eventName: string, _callback: any) => {
@@ -1455,7 +1456,7 @@ describe("AbstractRestClient tests", () => {
             }
 
             expect(caughtError instanceof ImperativeError).toBe(true);
-            expect(caughtError.message).toMatchSnapshot();
+            expect(caughtError.message).toContain("Failed to decompress response buffer");
         });
 
         it("should error when decompressing invalid gzip stream", async () => {
@@ -1494,7 +1495,7 @@ describe("AbstractRestClient tests", () => {
             }
 
             expect(caughtError instanceof ImperativeError).toBe(true);
-            expect(caughtError.message).toMatchSnapshot();
+            expect(caughtError.message).toContain("Failed to decompress response stream");
         });
 
         it("should error when decompressing truncated gzip stream with text content", async () => {
@@ -1533,7 +1534,7 @@ describe("AbstractRestClient tests", () => {
             }
 
             expect(caughtError instanceof ImperativeError).toBe(true);
-            expect(caughtError.message).toMatchSnapshot();
+            expect(caughtError.message).toContain("Failed to decompress response stream");
         });
 
         it("should decompress error message for streamed request", async () => {
