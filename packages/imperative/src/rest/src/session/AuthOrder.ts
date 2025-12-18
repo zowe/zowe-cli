@@ -1010,8 +1010,13 @@ export class AuthOrder {
         } else if ((sessCfg as any)[sessCredName]) {
             sessCfg._authCache.availableCreds[sessCredName] = (sessCfg as any)[sessCredName];
         } else if (sessCredName === AuthOrder.SESS_CERT_NAME || sessCredName === AuthOrder.SESS_CERT_KEY_NAME) {
-            // Attempt to load certificate bytes from credential manager when cert/certKey not provided directly.
-            await AuthOrder.cacheCertificateFromManager(sessCredName, sessCfg);
+            // Check if file path is already provided before attempting credential manager lookup
+            const filePathProp = sessCredName === AuthOrder.SESS_CERT_NAME ? "certFile" : "certKeyFile";
+            const hasFilePath = (sessCfg as any)[filePathProp] || cmdArgs[filePathProp];
+            if (!hasFilePath) {
+                // Attempt to load certificate bytes from credential manager when cert/certKey not provided directly.
+                await AuthOrder.cacheCertificateFromManager(sessCredName, sessCfg);
+            }
         }
     }
 
@@ -1027,8 +1032,13 @@ export class AuthOrder {
         } else if ((sessCfg as any)[sessCredName]) {
             sessCfg._authCache.availableCreds[sessCredName] = (sessCfg as any)[sessCredName];
         } else if (sessCredName === AuthOrder.SESS_CERT_NAME || sessCredName === AuthOrder.SESS_CERT_KEY_NAME) {
-            // Attempt to load certificate bytes from credential manager when cert/certKey not provided directly.
-            AuthOrder.cacheCertificateFromManagerSync(sessCredName, sessCfg);
+            // Check if file path is already provided before attempting credential manager lookup
+            const filePathProp = sessCredName === AuthOrder.SESS_CERT_NAME ? "certFile" : "certKeyFile";
+            const hasFilePath = (sessCfg as any)[filePathProp] || cmdArgs[filePathProp];
+            if (!hasFilePath) {
+                // Attempt to load certificate bytes from credential manager when cert/certKey not provided directly.
+                AuthOrder.cacheCertificateFromManagerSync(sessCredName, sessCfg);
+            }
         }
     }
 

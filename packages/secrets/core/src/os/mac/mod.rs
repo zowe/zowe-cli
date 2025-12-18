@@ -8,6 +8,7 @@ mod keychain_search;
 mod misc;
 
 use error::Error;
+use base64::Engine;
 
 use crate::os::mac::error::ERR_SEC_ITEM_NOT_FOUND;
 use crate::os::mac::keychain_search::{KeychainSearch, SearchResult};
@@ -196,6 +197,17 @@ pub fn get_certificate(service: &String, account: &String, optional: bool) -> Re
 /// Returns the private key data for the given service/account from the keychain.
 /// Public wrapper that calls get_certificate_or_key with optional=false.
 pub fn get_certificate_key(service: &String, account: &String, optional: bool) -> Result<Option<Vec<u8>>, KeyringError> {
+    // Quick check: if the account name looks like a profile name (simple alphanumeric),
+    // skip keychain search to avoid triggering export errors for non-certificate accounts.
+    // Real certificate account names typically have spaces, "@", or other special chars.
+    let looks_like_profile_name = account.chars().all(|c| c.is_alphanumeric() || c == '-' || c == '_')
+        && !account.contains(" ");
+
+    if looks_like_profile_name {
+        // Account name looks like a profile name, not a certificate subject - skip keychain search
+        return Ok(None);
+    }
+
     get_certificate_or_key(service, account, false, optional)
 }
 
@@ -247,13 +259,13 @@ fn get_certificate_or_key(service: &String, account: &String, is_certificate: bo
         let params = CFDictionary::from_CFType_pairs(&params);
         let mut ret: CFTypeRef = std::ptr::null();
         let status = SecItemCopyMatching(params.as_concrete_TypeRef(), &mut ret);
-        
+
         if status == 0 && !ret.is_null() {
             // Identity found!
             let type_id = CFGetTypeID(ret);
             if type_id == SecIdentity::type_id() {
                 let identity = SecIdentity::wrap_under_create_rule(ret as *mut _);
-                
+
                 if is_certificate {
                     // Extract certificate from identity
                     let mut cert_ref: SecCertificateRef = std::ptr::null_mut();
@@ -263,9 +275,19 @@ fn get_certificate_or_key(service: &String, account: &String, is_certificate: bo
                         let data_ref = SecCertificateCopyData(cert.as_concrete_TypeRef());
                         if !data_ref.is_null() {
                             let data = CFData::wrap_under_create_rule(data_ref as *mut _);
-                            let mut bytes = Vec::new();
-                            bytes.extend_from_slice(data.bytes());
-                            return Ok(Some(bytes));
+                            // Certificate data is in DER format - convert to PEM
+                            let der_bytes = data.bytes();
+                            let base64_cert = base64::engine::general_purpose::STANDARD.encode(der_bytes);
+                            let pem_cert = format!(
+                                "-----BEGIN CERTIFICATE-----\n{}\n-----END CERTIFICATE-----\n",
+                                base64_cert.chars()
+                                    .collect::<Vec<_>>()
+                                    .chunks(64)
+                                    .map(|chunk| chunk.iter().collect::<String>())
+                                    .collect::<Vec<_>>()
+                                    .join("\n")
+                            );
+                            return Ok(Some(pem_cert.into_bytes()));
                         }
                     }
                 } else {
@@ -273,13 +295,13 @@ fn get_certificate_or_key(service: &String, account: &String, is_certificate: bo
                     // This is the same API the CLI tools use and will trigger keychain authorization
                     use crate::os::mac::ffi::SecIdentityCopyPrivateKey;
                     use core_foundation::data::CFData;
-                    
+
                     let mut key_ref: *mut _ = std::ptr::null_mut();
                     let key_status = SecIdentityCopyPrivateKey(identity.as_concrete_TypeRef(), &mut key_ref);
-                    
+
                     if key_status == 0 && !key_ref.is_null() {
                         let key = SecKey::wrap_under_create_rule(key_ref);
-                        
+
                         // Try SecItemExport with OpenSSL format (kSecFormatOpenSSL = 4) which exports as PKCS#1
                         // This is the closest to what the CLI tools use
                         let mut exported_data: CFTypeRef = std::ptr::null();
@@ -290,7 +312,7 @@ fn get_certificate_or_key(service: &String, account: &String, is_certificate: bo
                             std::ptr::null(),
                             &mut exported_data
                         );
-                        
+
                         if export_status == 0 && !exported_data.is_null() {
                             let data = CFData::wrap_under_create_rule(exported_data as *mut _);
                             let mut bytes = Vec::new();
@@ -350,7 +372,7 @@ fn get_certificate_or_key(service: &String, account: &String, is_certificate: bo
             let params = CFDictionary::from_CFType_pairs(&params);
             let mut ret: CFTypeRef = std::ptr::null();
             let status = SecItemCopyMatching(params.as_concrete_TypeRef(), &mut ret);
-            
+
             if status == 0 && !ret.is_null() {
                 let type_id = CFGetTypeID(ret);
                 if type_id == SecCertificate::type_id() {

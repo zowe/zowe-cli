@@ -361,10 +361,14 @@ export class ConnectionPropsForSessCfg {
                 if (configInst && activeZosmfProfileName && configInst.api?.profiles?.exists(activeZosmfProfileName)) {
                     const profData: any = configInst.api.profiles.get(activeZosmfProfileName, true);
                     const profProps: any = profData?.properties || {};
-                    if (!(sessCfg as any).certAccount && typeof profProps.certAccount === "string" && profProps.certAccount.length > 0) {
+                    // Only populate certAccount if certFile is not already provided
+                    const hasCertFile = (sessCfg as any).certFile || cmdArgs.certFile || profProps.certFile;
+                    if (!hasCertFile && !(sessCfg as any).certAccount && typeof profProps.certAccount === "string" && profProps.certAccount.length > 0) {
                         (sessCfg as any).certAccount = profProps.certAccount;
                     }
-                    if (!(sessCfg as any).certKeyAccount && typeof profProps.certKeyAccount === "string" && profProps.certKeyAccount.length > 0) {
+                    // Only populate certKeyAccount if certKeyFile is not already provided
+                    const hasCertKeyFile = (sessCfg as any).certKeyFile || cmdArgs.certKeyFile || profProps.certKeyFile;
+                    if (!hasCertKeyFile && !(sessCfg as any).certKeyAccount && typeof profProps.certKeyAccount === "string" && profProps.certKeyAccount.length > 0) {
                         (sessCfg as any).certKeyAccount = profProps.certKeyAccount;
                     }
                     // If profile specifies an authOrder (e.g. 'cert-pem'), propagate it into cmdArgs so AuthOrder logic honors user choice.
