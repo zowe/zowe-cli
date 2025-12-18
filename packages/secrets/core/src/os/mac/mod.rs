@@ -395,7 +395,7 @@ fn get_certificate_or_key(service: &String, account: &String, is_certificate: bo
     match keychain.find_password(service.as_str(), account.as_str()) {
         Ok((pw, _)) => {
             let pw_str = String::from_utf8(pw.to_owned())?;
-            match base64::decode(&pw_str) {
+            match base64::engine::general_purpose::STANDARD.decode(&pw_str) {
                 Ok(bytes) => Ok(Some(bytes)),
                 Err(_) => Ok(None), // Not base64-encoded, treat as not found
             }
