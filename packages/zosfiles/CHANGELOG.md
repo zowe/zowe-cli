@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
-## Recent Changes
+## `8.29.6`
 
 - Enhancement: Added a download `destination` field to the API response for the `Download.ussFile` and `Download.dataSet` functions. [#2641](https://github.com/zowe/zowe-cli/pull/2641)
 - BugFix: Fixed an issue where if a file failed to download and an older version of it already existed in the destination, the old file was deleted. [#2618](https://github.com/zowe/zowe-cli/pull/2618)

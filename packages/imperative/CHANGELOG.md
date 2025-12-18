@@ -2,10 +2,11 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
-## Recent Changes
+## `8.29.6`
 
 - Enhancement: Added Profile merge and AuthOrder support to prefer `certAccount` and `certKeyAccount` (per-session and profile-level) and to write secure temporary certificate files when needed. [#2325](https://github.com/zowe/zowe-cli/issues/2325)
 - BugFix: Stopped supporting IE 11 browser in web help pages for technical currency. [#2654](https://github.com/zowe/zowe-cli/pull/2654)
+- BugFix: Fixed truncation that could occur when the `AbstractRestClient` request method downloads gzip-encoded data. [#2658](https://github.com/zowe/zowe-cli/pull/2658)
 
 ## `8.29.0`
 
