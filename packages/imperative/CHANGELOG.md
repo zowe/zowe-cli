@@ -2,7 +2,7 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
-## Recent Changes
+## `5.27.13`
 
 - BugFix: Fixed truncation that could occur when the `AbstractRestClient` request method downloads gzip-encoded data. [#2661](https://github.com/zowe/zowe-cli/pull/2661)
 
