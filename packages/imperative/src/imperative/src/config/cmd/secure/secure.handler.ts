@@ -24,7 +24,7 @@ import {
     ISession,
     Session,
 } from "../../../../../rest";
-import { ImperativeConfig } from "../../../../../utilities";
+import { ImperativeConfig, TextUtils } from "../../../../../utilities";
 
 export default class SecureHandler implements ICommandHandler {
     /**
@@ -92,11 +92,6 @@ export default class SecureHandler implements ICommandHandler {
         for (const propName of secureProps) {
             let propValue: string;
             if (propName.endsWith(".tokenValue")) {
-                params.response.console.log(
-                    `Processing secure properties for profile: ${config.api.profiles.getProfileNameFromPath(
-                        propName
-                    )}`
-                );
                 propValue = await this.handlePromptForAuthToken(
                     config,
                     propName
@@ -147,59 +142,77 @@ export default class SecureHandler implements ICommandHandler {
         propPath: string
     ): Promise<string | undefined> {
         const profilePath = propPath.slice(0, propPath.indexOf(".properties"));
+        const profile = config.api.profiles.get(
+            profilePath.replace(/profiles\./g, ""),
+            false
+        );
         const authHandlerClass = ConfigAutoStore.findAuthHandlerForProfile(
             profilePath,
             this.params.arguments
         );
 
-        if (authHandlerClass != null) {
-            const api = authHandlerClass.getAuthHandlerApi();
-            if (api.promptParams.serviceDescription != null) {
-                this.params.response.console.log(
-                    `Logging in to ${api.promptParams.serviceDescription} ${ConfigConstants.SKIP_PROMPT}`
-                );
-            }
+        if (authHandlerClass == null) {
+            // no auth handler service was associated with the specified profile
+            const tokenTypMsg = profile.tokenType ?
+                `of type '${profile.tokenType}'` : "with no associated tokenType";
+            this.params.response.console.log(
+                TextUtils.wordWrap(TextUtils.chalk.yellowBright(
+                    `\nA profile requires a token ${tokenTypMsg} to be securely stored. ` +
+                    `Supply a token at the prompt. Or press ENTER at the prompt and ` +
+                    `later log in to your service for a token.\n`
+                ))
+            );
+            // return undefined to allow prompting for tokenValue for this profile
+            return;
+        }
 
-            const profile = config.api.profiles.get(
-                profilePath.replace(/profiles\./g, ""),
-                false
+        // call auth handler service that was associated with the specified profile
+        const api = authHandlerClass.getAuthHandlerApi();
+        if (api.promptParams.serviceDescription != null) {
+            this.params.response.console.log(
+                TextUtils.wordWrap(TextUtils.chalk.yellowBright(
+                    `\nNow logging in to ${api.promptParams.serviceDescription} to get a token for profile ` +
+                    `'${config.api.profiles.getProfileNameFromPath(propPath)}' ` +
+                    `${ConfigConstants.SKIP_PROMPT}`
+                ))
             );
-            const sessCfg: ISession = api.createSessCfg(
-                profile as ICommandArguments
-            );
-            const sessCfgWithCreds =
-                await ConnectionPropsForSessCfg.addPropsOrPrompt(
-                    sessCfg,
-                    profile as ICommandArguments,
-                    {
-                        parms: this.params,
-                        doPrompting: true,
-                        requestToken: true,
-                        ...api.promptParams,
-                    }
-                );
-            Logger.getAppLogger().info(
-                `Fetching ${profile.tokenType} for ${propPath}`
-            );
+        }
 
-            if (ConnectionPropsForSessCfg.sessHasCreds(sessCfgWithCreds)) {
-                try {
-                    const tokenValue = await api.sessionLogin(
-                        new Session(sessCfgWithCreds)
-                    );
-                    this.params.response.console.log("Logged in successfully");
-                    return tokenValue;
-                } catch (error) {
-                    throw new ImperativeError({
-                        msg: `Failed to fetch ${profile.tokenType} for ${propPath}: ${error.message}`,
-                        causeErrors: error,
-                    });
+        const sessCfg: ISession = api.createSessCfg(
+            profile as ICommandArguments
+        );
+        const sessCfgWithCreds =
+            await ConnectionPropsForSessCfg.addPropsOrPrompt(
+                sessCfg,
+                profile as ICommandArguments,
+                {
+                    parms: this.params,
+                    doPrompting: true,
+                    requestToken: true,
+                    ...api.promptParams,
                 }
-            } else {
-                this.params.response.console.log("No credentials provided.");
-                // return null to avoid propting for .tokenValue for this profile
-                return null;
+            );
+        Logger.getAppLogger().info(
+            `Fetching ${profile.tokenType} for ${propPath}`
+        );
+
+        if (ConnectionPropsForSessCfg.sessHasCreds(sessCfgWithCreds)) {
+            try {
+                const tokenValue = await api.sessionLogin(
+                    new Session(sessCfgWithCreds)
+                );
+                this.params.response.console.log("Logged in successfully\n");
+                return tokenValue;
+            } catch (error) {
+                throw new ImperativeError({
+                    msg: `Failed to fetch ${profile.tokenType} for ${propPath}: ${error.message}`,
+                    causeErrors: error,
+                });
             }
+        } else {
+            this.params.response.console.log("No credentials provided.\n");
+            // return null to avoid prompting for tokenValue for this profile
+            return null;
         }
     }
 }

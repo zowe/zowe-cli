@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Added instructions for obtaining a token to be displayed when a command prompts for a token. [#2660](https://github.com/zowe/zowe-cli/pull/2660)
+
 ## `8.29.6`
 
 - BugFix: Stopped supporting IE 11 browser in web help pages for technical currency. [#2654](https://github.com/zowe/zowe-cli/pull/2654)
@@ -9,7 +13,7 @@ All notable changes to the Imperative package will be documented in this file.
 
 ## `8.29.0`
 
-- Enhancement: Added support for providing options to both default and custom credential managers. [#2601](https://github.com/zowe/zowe-cli/issues/2601) 
+- Enhancement: Added support for providing options to both default and custom credential managers. [#2601](https://github.com/zowe/zowe-cli/issues/2601)
 
 ## `8.27.4`
 
