@@ -1956,6 +1956,17 @@ describe("ConnectionPropsForSessCfg tests", () => {
                 .mockResolvedValue(Promise.resolve("Some fake answer"));
             // clear log messages from last test
             consoleMsgs = "";
+
+            /* Pretend that we do not have any V1 profiles.
+             * onlyV1ProfilesExist is a getter property, thus the elaborate mock.
+             * To test only having v1 profiles, define this property in a test to return true.
+             */
+            Object.defineProperty(ConfigUtils, "onlyV1ProfilesExist", {
+                configurable: true,
+                get: jest.fn(() => {
+                    return false;
+                }),
+            });
         });
 
         afterEach(() => {
@@ -1977,10 +1988,10 @@ describe("ConnectionPropsForSessCfg tests", () => {
                 "No Zowe client configuration exists."
             );
             expect(consoleMsgs).toContain(
-                "Therefore, you will be asked for the"
+                "Provide these properties at the prompts to"
             );
             expect(consoleMsgs).toContain(
-                "connection properties that are required to complete your command."
+                "complete your command."
             );
         });
 
@@ -1990,9 +2001,7 @@ describe("ConnectionPropsForSessCfg tests", () => {
                 config: { exists: false },
             } as any);
 
-            /* Pretend that we only have V1 profiles.
-             * onlyV1ProfilesExist is a getter property, so mock the property.
-             */
+            // Pretend that we only have V1 profiles.
             Object.defineProperty(ConfigUtils, "onlyV1ProfilesExist", {
                 configurable: true,
                 get: jest.fn(() => {
@@ -2007,10 +2016,10 @@ describe("ConnectionPropsForSessCfg tests", () => {
                 "Only V1 profiles exist. V1 profiles are no longer supported. You should convert"
             );
             expect(consoleMsgs).toContain(
-                "your V1 profiles to a newer Zowe client configuration. Therefore, you will be"
+                "your V1 profiles to a newer Zowe client configuration. Provide these properties"
             );
             expect(consoleMsgs).toContain(
-                "asked for the connection properties that are required to complete your command."
+                "at the prompts to complete your command"
             );
         });
 
@@ -2020,28 +2029,54 @@ describe("ConnectionPropsForSessCfg tests", () => {
                 config: { exists: true },
             } as any);
 
-            /* Pretend that we do not have any V1 profiles.
-             * onlyV1ProfilesExist is a getter property, so mock the property.
-             */
-            Object.defineProperty(ConfigUtils, "onlyV1ProfilesExist", {
-                configurable: true,
-                get: jest.fn(() => {
-                    return false;
-                }),
-            });
-
             // call the function that we want to test
             await getValuesCallBack(["hostname"]);
 
             expect(consoleMsgs).toContain(
-                "Some required connection properties have not been specified in your Zowe client"
+                "Required connection properties are missing in your Zowe client configuration"
             );
             expect(consoleMsgs).toContain(
-                "configuration. Therefore, you will be asked for the connection properties that"
+                "Provide these properties at the prompts to complete your command"
             );
-            expect(consoleMsgs).toContain(
-                "are required to complete your command."
-            );
+        });
+
+        it("should give token instructions when prompting for token properties", async () => {
+            // Pretend that we have a zowe config.
+            jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({
+                config: { exists: true },
+            } as any);
+
+            const tokenInstructions = "Your profile is configured to use a token for authentication.";
+
+            // it should not give token instructions when no prompts for token are displayed
+            consoleMsgs = "";
+            clientPromptSpy.mockClear();
+            await getValuesCallBack(["host"]);
+            expect(clientPromptSpy.mock.calls[0][0]).toBe("Enter your host for your service: ");
+            expect(consoleMsgs).not.toContain(tokenInstructions);
+
+            // it should give token instructions when prompting for token type first
+            consoleMsgs = "";
+            clientPromptSpy.mockClear();
+            await getValuesCallBack(["tokenType", "tokenValue"]);
+            expect(clientPromptSpy.mock.calls[0][0]).toBe("Enter your tokenType for your service: ");
+            expect(clientPromptSpy.mock.calls[1][0]).toBe("Enter your tokenValue for your service (will be hidden): ");
+            expect(consoleMsgs).toContain(tokenInstructions);
+
+            // it should give token instructions when prompting for token value first
+            consoleMsgs = "";
+            clientPromptSpy.mockClear();
+            await getValuesCallBack(["tokenValue"]);
+            expect(clientPromptSpy.mock.calls[0][0]).toBe("Enter your tokenValue for your service (will be hidden): ");
+            expect(consoleMsgs).toContain(tokenInstructions);
+
+            // it should give token instructions when prompting for host first and token value later
+            consoleMsgs = "";
+            clientPromptSpy.mockClear();
+            await getValuesCallBack(["host", "tokenValue"]);
+            expect(clientPromptSpy.mock.calls[0][0]).toBe("Enter your host for your service: ");
+            expect(clientPromptSpy.mock.calls[1][0]).toBe("Enter your tokenValue for your service (will be hidden): ");
+            expect(consoleMsgs).toContain(tokenInstructions);
         });
     });
 });

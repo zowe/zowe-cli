@@ -482,8 +482,7 @@ export class ConnectionPropsForSessCfg {
                 // We need to prompt for some values. Determine why we need to prompt.
                 let reasonForPrompts: string = "";
                 if (ImperativeConfig.instance.config?.exists) {
-                    reasonForPrompts += "Some required connection properties have not been specified " +
-                        "in your Zowe client configuration. ";
+                    reasonForPrompts += "Required connection properties are missing in your Zowe client configuration. ";
                 } else if (ConfigUtils.onlyV1ProfilesExist) {
                     reasonForPrompts += "Only V1 profiles exist. V1 profiles are no longer supported. " +
                         "You should convert your V1 profiles to a newer Zowe client configuration. ";
@@ -491,8 +490,8 @@ export class ConnectionPropsForSessCfg {
                     reasonForPrompts += "No Zowe client configuration exists. ";
                 }
 
-                reasonForPrompts += "Therefore, you will be asked for the connection properties " +
-                    "that are required to complete your command.\n";
+                reasonForPrompts += "Provide these properties at the prompts to complete your command.\n";
+
                 connOpts.parms.response.console.log(TextUtils.wordWrap(
                     TextUtils.chalk.yellowBright(reasonForPrompts))
                 );
@@ -501,10 +500,30 @@ export class ConnectionPropsForSessCfg {
             const answers: { [key: string]: any } = {};
             const profileSchema = this.loadSchemaForSessCfgProps(connOpts.parms, promptForValues);
             const serviceDescription = connOpts.serviceDescription || "your service";
+            let tokenInstructions: string = "";
 
             for (const propNm of promptForValues) {
                 const sessPropNm = AuthOrder.getPropNmFor(propNm, PropUse.IN_SESS);
                 const cfgPropNm = AuthOrder.getPropNmFor(propNm, PropUse.IN_CFG);
+                if ((propNm === "tokenType" || propNm === "tokenValue") && connOpts.parms?.response.console.log) {
+                    // Typically users will not know how to type in a token.
+                    // Add extra instructions for obtaining a token and only display them once.
+                    if (tokenInstructions.length === 0) {
+                        // instructions have not yet been displayed
+                        if (Object.keys(answers).length > 0) {
+                            // a prompt for a different property has occurred, so add a newline
+                            tokenInstructions += "\n";
+                        }
+                        tokenInstructions += "Your profile is configured to use a token " +
+                            "for authentication. Supply a token at the prompt. Or terminate this " +
+                            "command with Ctrl-C and log in to your service for a token. " +
+                            "Then reissue your command, which will not prompt for a token.\n";
+
+                        connOpts.parms.response.console.log(TextUtils.wordWrap(
+                            TextUtils.chalk.yellowBright(tokenInstructions))
+                        );
+                    }
+                }
                 let answer;
                 while (answer === undefined) {
                     const hideText = profileSchema[cfgPropNm]?.secure || this.secureSessCfgProps.has(sessPropNm);
