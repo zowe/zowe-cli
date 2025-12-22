@@ -365,6 +365,174 @@ export class DefaultCredentialManager extends AbstractCredentialManager {
         return wasDeleted;
     }
 
+    /**
+     * Helper to load a certificate (binary or PEM) from the credential vault.
+     * This uses the underlying keyring binding's `getCertificate` which returns a Buffer or null.
+     * If multiple services are configured, the first successful value is returned.
+     * @param account The account name to look up in the credential vault
+     * @param optional If true, failure to find a certificate will return null instead of throwing
+     */
+    public async loadCertificate(account: string, optional?: boolean): Promise<Buffer | null> {
+        this.checkForKeytar();
+
+        // Try to load certificate using the first successful value from our known services
+        let cert: Buffer | null = null;
+        for (const nextService of this.allServices) {
+            try {
+                // keyring.getCertificate returns Promise<Buffer | null>
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+                const candidate: Buffer | null = await (this.keytar as any).getCertificate(nextService, account);
+                if (candidate != null) {
+                    cert = candidate;
+                    break;
+                }
+            } catch (error_) {
+                Logger.getImperativeLogger().debug(`Failed to load certificate from service '${nextService}' for account '${account}': ${String(error_)}`);
+            }
+        }
+
+        if (cert == null && !optional) {
+            throw new ImperativeError({
+                msg: "Unable to load certificate from credential manager.",
+                additionalDetails: this.getMissingEntryMessage(account)
+            });
+        }
+
+        return cert;
+    }
+
+    /**
+     * Synchronously loads a certificate from the credential vault.
+     * This uses the underlying keyring binding's `getCertificateSync` which returns a Buffer or null.
+     * If multiple services are configured, the first successful value is returned.
+     * @param account The account name to look up in the credential vault
+     * @param optional If true, failure to find a certificate will return null instead of throwing
+     */
+    public loadCertificateSync(account: string, optional?: boolean): Buffer | null {
+        this.checkForKeytar();
+
+        // Try to load certificate using the first successful value from our known services
+        let cert: Buffer | null = null;
+        for (const nextService of this.allServices) {
+            try {
+                // prefer synchronous binding when available so callers remain synchronous
+                if ((this.keytar as any).getCertificateSync) {
+                    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+                    const candidate: Buffer | null = (this.keytar as any).getCertificateSync(nextService, account);
+                    if (candidate != null) {
+                        cert = candidate;
+                        break;
+                    }
+                } else {
+                    // synchronous binding not available; cannot perform async call from a sync method
+                    if (optional) {
+                        return null;
+                    }
+                    throw new ImperativeError({
+                        msg: "Synchronous certificate retrieval is not available in the installed keyring binding. Please ensure the native module is up-to-date or use the async loadCertificate().",
+                        additionalDetails: this.getMissingEntryMessage(account)
+                    });
+                }
+            } catch (error_) {
+                Logger.getImperativeLogger().debug(`Failed to load certificate (sync) from service '${nextService}' for account '${account}': ${String(error_)}`);
+            }
+        }
+
+        if (cert == null && !optional) {
+            throw new ImperativeError({
+                msg: "Unable to load certificate from credential manager.",
+                additionalDetails: this.getMissingEntryMessage(account)
+            });
+        }
+
+        return cert;
+    }
+
+    /**
+     * Helper to load a private key (binary DER or PEM) associated with a certificate from the credential vault.
+     * This uses the underlying keyring binding's `getCertificateKey` which returns a Buffer or null.
+     * If multiple services are configured, the first successful value is returned.
+     * @param account The account name to look up in the credential vault (typically the certificate's account name)
+     * @param optional If true, failure to find a key will return null instead of throwing
+     */
+    public async loadCertificateKey(account: string, optional?: boolean): Promise<Buffer | null> {
+        this.checkForKeytar();
+
+        // Try to load private key using the first successful value from our known services
+        let key: Buffer | null = null;
+        for (const nextService of this.allServices) {
+            try {
+                // keyring.getCertificateKey returns Promise<Buffer | null>
+                // Pass optional parameter through to control error messaging
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+                const candidate: Buffer | null = await (this.keytar as any).getCertificateKey(nextService, account, optional);
+                if (candidate != null) {
+                    key = candidate;
+                    break;
+                }
+            } catch (error_) {
+                Logger.getImperativeLogger().debug(`Failed to load private key from service '${nextService}' for account '${account}': ${String(error_)}`);
+            }
+        }
+
+        if (key == null && !optional) {
+            throw new ImperativeError({
+                msg: "Unable to load private key from credential manager.",
+                additionalDetails: this.getMissingEntryMessage(account)
+            });
+        }
+
+        return key;
+    }
+
+    /**
+     * Synchronously loads a private key associated with a certificate from the credential vault.
+     * This uses the underlying keyring binding's `getCertificateKeySync` which returns a Buffer or null.
+     * If multiple services are configured, the first successful value is returned.
+     * @param account The account name to look up in the credential vault (typically the certificate's account name)
+     * @param optional If true, failure to find a key will return null instead of throwing
+     */
+    public loadCertificateKeySync(account: string, optional?: boolean): Buffer | null {
+        this.checkForKeytar();
+
+        // Try to load private key using the first successful value from our known services
+        let key: Buffer | null = null;
+        for (const nextService of this.allServices) {
+            try {
+                // prefer synchronous binding when available so callers remain synchronous
+                if ((this.keytar as any).getCertificateKeySync) {
+                    // Pass optional parameter through to control error messaging
+                    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+                    const candidate: Buffer | null = (this.keytar as any).getCertificateKeySync(nextService, account, optional);
+                    if (candidate != null) {
+                        key = candidate;
+                        break;
+                    }
+                } else {
+                    // synchronous binding not available; cannot perform async call from a sync method
+                    if (optional) {
+                        return null;
+                    }
+                    throw new ImperativeError({
+                        msg: "Synchronous private key retrieval is not available in the installed keyring binding. Please ensure the native module is up-to-date or use the async loadCertificateKey().",
+                        additionalDetails: this.getMissingEntryMessage(account)
+                    });
+                }
+            } catch (error_) {
+                Logger.getImperativeLogger().debug(`Failed to load private key (sync) from service '${nextService}' for account '${account}': ${String(error_)}`);
+            }
+        }
+
+        if (key == null && !optional) {
+            throw new ImperativeError({
+                msg: "Unable to load private key from credential manager.",
+                additionalDetails: this.getMissingEntryMessage(account)
+            });
+        }
+
+        return key;
+    }
+
     private getMissingEntryMessage(account: string) {
         let listOfServices = `  Service = `;
         for (const service of this.allServices) {

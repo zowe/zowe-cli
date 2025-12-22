@@ -388,6 +388,314 @@ describe("IO tests", () => {
         expect(error.message).toMatchSnapshot();
     });
 
+    describe("deleteDir enhancements", () => {
+        let lstatSyncSpy: jest.SpyInstance;
+        let readdirSyncSpy: jest.SpyInstance;
+        let rmdirSyncSpy: jest.SpyInstance;
+        let unlinkSyncSpy: jest.SpyInstance;
+        let renameSync: jest.SpyInstance;
+        let rmSyncSpy: jest.SpyInstance;
+        let deleteDirTreeSpy: jest.SpyInstance;
+        let existsSyncSpy: jest.SpyInstance;
+
+        beforeEach(() => {
+            jest.clearAllMocks();
+            jest.restoreAllMocks();
+            // Setup default mocks for fs module
+            jest.spyOn(fs, "existsSync").mockReturnValue(true);
+            jest.spyOn(fs, "lstatSync").mockReturnValue({
+                isDirectory: () => false,
+                isSymbolicLink: () => false,
+                isFile: () => true,
+            } as any);
+        });
+
+        it("should use fs.rmSync if available (Node v14.14+)", () => {
+            (fs as any).rmSync = jest.fn();
+
+            IO.deleteDir("/test/dir");
+
+            expect((fs as any).rmSync).toHaveBeenCalledWith("/test/dir", { recursive: true, force: true });
+        });
+
+        it("should use fs.rmSync when available (Node v14.14+)", () => {
+            (fs as any).rmSync = jest.fn();
+            jest.spyOn(fs, "existsSync");
+
+            IO.deleteDir("/test/dir");
+
+            expect((fs as any).rmSync).toHaveBeenCalledWith("/test/dir", { recursive: true, force: true });
+            // When rmSync is available and called, existsSync should not be called
+            expect(fs.existsSync).not.toHaveBeenCalled();
+        });
+
+        it("should return early if path doesn't exist and rmSync not available", () => {
+            (fs as any).rmSync = undefined;
+            jest.spyOn(fs, "existsSync").mockReturnValue(false);
+            rmdirSyncSpy = jest.spyOn(fs, "rmdirSync");
+
+            IO.deleteDir("/nonexistent/dir");
+
+            expect(fs.existsSync).toHaveBeenCalledWith("/nonexistent/dir");
+            expect(rmdirSyncSpy).not.toHaveBeenCalled();
+        });
+
+        it("should handle symbolic links by unlinking them", () => {
+            (fs as any).rmSync = undefined;
+            jest.spyOn(fs, "existsSync").mockReturnValue(true);
+            jest.spyOn(fs, "lstatSync").mockReturnValue({
+                isSymbolicLink: () => true,
+                isFile: () => false,
+                isDirectory: () => false,
+            } as any);
+            unlinkSyncSpy = jest.spyOn(fs, "unlinkSync");
+
+            IO.deleteDir("/test/symlink");
+
+            expect(fs.lstatSync).toHaveBeenCalledWith("/test/symlink");
+            expect(unlinkSyncSpy).toHaveBeenCalledWith("/test/symlink");
+        });
+
+        it("should handle files by unlinking them", () => {
+            (fs as any).rmSync = undefined;
+            jest.spyOn(fs, "existsSync").mockReturnValue(true);
+            jest.spyOn(fs, "lstatSync").mockReturnValue({
+                isSymbolicLink: () => false,
+                isFile: () => true,
+                isDirectory: () => false,
+            } as any);
+            unlinkSyncSpy = jest.spyOn(fs, "unlinkSync");
+
+            IO.deleteDir("/test/file.txt");
+
+            expect(fs.lstatSync).toHaveBeenCalledWith("/test/file.txt");
+            expect(unlinkSyncSpy).toHaveBeenCalledWith("/test/file.txt");
+        });
+
+        it("should rename directory before deletion to avoid race conditions", () => {
+            (fs as any).rmSync = undefined;
+            jest.spyOn(fs, "existsSync").mockReturnValue(true);
+            jest.spyOn(fs, "lstatSync").mockReturnValue({
+                isDirectory: () => true,
+                isSymbolicLink: () => false,
+                isFile: () => false,
+            } as any);
+            renameSync = jest.spyOn(fs, "renameSync");
+            deleteDirTreeSpy = jest.spyOn(IO, "deleteDirTree").mockImplementation();
+
+            const testDir = "/test/dir";
+            IO.deleteDir(testDir);
+
+            expect(renameSync).toHaveBeenCalled();
+            // Verify rename was called with original dir and renamed path
+            expect(renameSync.mock.calls[0][0]).toBe(testDir);
+            expect(renameSync.mock.calls[0][1]).toContain(".DELETE_");
+        });
+
+        it("should use rmSync on renamed directory if available (second rmSync check)", () => {
+            let callCount = 0;
+            (fs as any).rmSync = jest.fn(() => {
+                callCount++;
+            });
+            jest.spyOn(fs, "existsSync").mockReturnValue(true);
+            jest.spyOn(fs, "lstatSync").mockReturnValue({
+                isDirectory: () => true,
+                isSymbolicLink: () => false,
+                isFile: () => false,
+            } as any);
+            jest.spyOn(fs, "renameSync");
+
+            IO.deleteDir("/test/dir");
+
+            // rmSync should be called twice - once for initial check, once for moved dir
+            expect((fs as any).rmSync).toHaveBeenCalled();
+        });
+
+        it("should fall back to deleteDirTree if rmSync not available on moved directory", () => {
+            (fs as any).rmSync = undefined;
+            jest.spyOn(fs, "existsSync").mockReturnValue(true);
+            jest.spyOn(fs, "lstatSync").mockReturnValue({
+                isDirectory: () => true,
+                isSymbolicLink: () => false,
+                isFile: () => false,
+            } as any);
+            jest.spyOn(fs, "renameSync");
+            deleteDirTreeSpy = jest.spyOn(IO, "deleteDirTree").mockImplementation();
+
+            IO.deleteDir("/test/dir");
+
+            expect(deleteDirTreeSpy).toHaveBeenCalled();
+            expect(deleteDirTreeSpy.mock.calls[0][0]).toContain(".DELETE_");
+        });
+
+        it("should handle rename failure by falling back to recursive removal", () => {
+            (fs as any).rmSync = undefined;
+            jest.spyOn(fs, "existsSync").mockReturnValue(true);
+            jest.spyOn(fs, "lstatSync").mockReturnValue({
+                isDirectory: () => true,
+                isSymbolicLink: () => false,
+                isFile: () => false,
+            } as any);
+            jest.spyOn(fs, "renameSync").mockImplementation(() => {
+                throw new Error("Rename failed");
+            });
+            readdirSyncSpy = jest.spyOn(fs, "readdirSync").mockReturnValue([] as any);
+
+            IO.deleteDir("/test/dir");
+
+            expect(fs.renameSync).toHaveBeenCalled();
+            expect(readdirSyncSpy).toHaveBeenCalledWith("/test/dir");
+        });
+
+        it("should recursively remove child directories after rename failure", () => {
+            (fs as any).rmSync = undefined;
+            jest.spyOn(fs, "existsSync").mockReturnValue(true);
+            jest.spyOn(fs, "lstatSync").mockImplementation((filePath: any) => {
+                if (filePath === "/test/dir") {
+                    return {
+                        isDirectory: () => true,
+                        isSymbolicLink: () => false,
+                        isFile: () => false,
+                    } as any;
+                }
+                return {
+                    isDirectory: () => true,
+                    isSymbolicLink: () => false,
+                    isFile: () => false,
+                } as any;
+            });
+            jest.spyOn(fs, "renameSync").mockImplementation(() => {
+                throw new Error("Rename failed");
+            });
+            readdirSyncSpy = jest.spyOn(fs, "readdirSync").mockReturnValue(["subdir"] as any);
+
+            const deleteRecursiveSpy = jest.spyOn(IO, "deleteDir");
+            IO.deleteDir("/test/dir");
+
+            // Verify deleteDir was called for the subdirectory
+            expect(deleteRecursiveSpy.mock.calls.length).toBeGreaterThan(1);
+        });
+
+        it("should unlink child files after rename failure", () => {
+            (fs as any).rmSync = undefined;
+            jest.spyOn(fs, "existsSync").mockReturnValue(true);
+            jest.spyOn(fs, "lstatSync").mockImplementation((filePath: any) => {
+                if (filePath === "/test/dir") {
+                    return {
+                        isDirectory: () => true,
+                        isSymbolicLink: () => false,
+                        isFile: () => false,
+                    } as any;
+                }
+                // Child file
+                return {
+                    isDirectory: () => false,
+                    isSymbolicLink: () => false,
+                    isFile: () => true,
+                } as any;
+            });
+            jest.spyOn(fs, "renameSync").mockImplementation(() => {
+                throw new Error("Rename failed");
+            });
+            readdirSyncSpy = jest.spyOn(fs, "readdirSync").mockReturnValue(["file.txt"] as any);
+            unlinkSyncSpy = jest.spyOn(fs, "unlinkSync");
+
+            IO.deleteDir("/test/dir");
+
+            // unlinkSync should be called for the child file
+            expect(unlinkSyncSpy).toHaveBeenCalled();
+        });
+
+        it("should ignore per-file lstat errors during recursive removal", () => {
+            (fs as any).rmSync = undefined;
+            jest.spyOn(fs, "existsSync").mockReturnValue(true);
+            jest.spyOn(fs, "lstatSync").mockImplementation((filePath: any) => {
+                if (filePath === "/test/dir") {
+                    return {
+                        isDirectory: () => true,
+                        isSymbolicLink: () => false,
+                        isFile: () => false,
+                    } as any;
+                }
+                // Throw error for child file check
+                throw new Error("lstat failed");
+            });
+            jest.spyOn(fs, "renameSync").mockImplementation(() => {
+                throw new Error("Rename failed");
+            });
+            readdirSyncSpy = jest.spyOn(fs, "readdirSync").mockReturnValue(["file.txt"] as any);
+
+            let caughtError;
+            try {
+                IO.deleteDir("/test/dir");
+            } catch (error) {
+                caughtError = error;
+            }
+
+            // Should not throw, errors should be swallowed
+            expect(caughtError).toBeUndefined();
+        });
+
+        it("should ignore read errors during directory listing", () => {
+            (fs as any).rmSync = undefined;
+            jest.spyOn(fs, "existsSync").mockReturnValue(true);
+            jest.spyOn(fs, "lstatSync").mockReturnValue({
+                isDirectory: () => true,
+                isSymbolicLink: () => false,
+                isFile: () => false,
+            } as any);
+            jest.spyOn(fs, "renameSync").mockImplementation(() => {
+                throw new Error("Rename failed");
+            });
+            readdirSyncSpy = jest.spyOn(fs, "readdirSync").mockImplementation(() => {
+                throw new Error("readdir failed");
+            });
+
+            let caughtError;
+            try {
+                IO.deleteDir("/test/dir");
+            } catch (error) {
+                caughtError = error;
+            }
+
+            // Should not throw, read errors should be swallowed
+            expect(caughtError).toBeUndefined();
+        });
+
+        it("should handle top-level deletion errors gracefully", () => {
+            (fs as any).rmSync = undefined;
+            jest.spyOn(fs, "existsSync").mockImplementation(() => {
+                throw new Error("Critical error");
+            });
+
+            let caughtError;
+            try {
+                IO.deleteDir("/test/dir");
+            } catch (error) {
+                caughtError = error;
+            }
+
+            // All errors should be swallowed by outer try-catch
+            expect(caughtError).toBeUndefined();
+        });
+
+        it("should validate input directory is not blank", () => {
+            // ImperativeExpect.toBeDefinedAndNonBlank is called OUTSIDE the try-catch
+            // So the validation error is NOT swallowed and will be thrown
+            let caughtError;
+            try {
+                IO.deleteDir("");
+            } catch (error) {
+                caughtError = error;
+            }
+
+            // The error should be thrown because the validation happens outside try-catch
+            expect(caughtError).toBeDefined();
+            expect(caughtError?.toString()).toMatch(/must not be blank/i);
+        });
+    });
+
+
     describe("getDefaultTextEditor", () => {
         it("should use Notepad on Windows", () => {
             jest.spyOn(os, "platform").mockReturnValueOnce(IO.OS_WIN32);

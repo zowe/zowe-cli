@@ -11,4 +11,8 @@ export function deletePassword(service: string, account: string): Promise<boolea
 export function findCredentials(service: string): Promise<Array<Credential>>
 export function findPassword(service: string): Promise<string | null>
 export function getPassword(service: string, account: string): Promise<string | null>
+export function getCertificate(service: string, account: string, optional?: boolean | undefined | null): Promise<Buffer | null>
+export function getCertificateSync(service: string, account: string, optional?: boolean | undefined | null): Buffer | null
+export function getCertificateKey(service: string, account: string, optional?: boolean | undefined | null): Promise<Buffer | null>
+export function getCertificateKeySync(service: string, account: string, optional?: boolean | undefined | null): Buffer | null
 export function setPassword(service: string, account: string, password: string, persistWin32?: number | undefined | null): Promise<void>

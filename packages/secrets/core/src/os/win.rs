@@ -1,10 +1,19 @@
 use super::error::KeyringError;
 use std::ffi::c_void;
 use std::result::Result;
+use base64::Engine;
 use windows_sys::{
     core::{PCWSTR, PWSTR},
     Win32::Foundation::*,
     Win32::Security::Credentials::*,
+    Win32::Security::Cryptography::{
+        CERT_CONTEXT, CERT_FIND_SUBJECT_STR_W,
+        CertCloseStore, CertEnumCertificatesInStore, CertFindCertificateInStore,
+        CertOpenSystemStoreW, CryptAcquireCertificatePrivateKey,
+        CRYPT_ACQUIRE_SILENT_FLAG, CRYPT_ACQUIRE_CACHE_FLAG, CRYPT_ACQUIRE_ONLY_NCRYPT_KEY_FLAG,
+        CryptReleaseContext, CryptExportPKCS8,
+        NCryptExportKey, NCryptFreeObject,
+    },
     Win32::System::{
         Diagnostics::Debug::{
             FormatMessageW, FORMAT_MESSAGE_ALLOCATE_BUFFER, FORMAT_MESSAGE_FROM_SYSTEM,
@@ -348,4 +357,407 @@ pub fn find_credentials(
     }
 
     Ok(true)
+}
+
+/// Returns the certificate (decoded from base64) stored as the password for the given service/account.
+pub fn get_certificate(service: &String, account: &String, _optional: bool) -> Result<Option<Vec<u8>>, KeyringError> {
+    // First try credential manager for base64 encoded certificates
+    match get_password(service, account)? {
+        Some(b64) => match base64::engine::general_purpose::STANDARD.decode(&b64) {
+            Ok(bytes) => return Ok(Some(bytes)),
+            Err(_) => {}, // Continue to certificate store search
+        },
+        None => {}, // Continue to certificate store search
+    }
+    
+    // If not found in credential manager, search Windows Certificate Store
+    get_certificate_from_store(service, account)
+}
+
+/// Returns the private key (decoded from base64) stored as the password for the given service/account.
+/// On Windows, private keys are stored in the credential manager as base64-encoded passwords.
+/// This function first looks for a credential with the exact service/account, then tries 
+/// variations like service/account-key or service-key/account for compatibility.
+/// If not found in Credential Manager, it searches the Windows Certificate Store.
+pub fn get_certificate_key(service: &String, account: &String, _optional: bool) -> Result<Option<Vec<u8>>, KeyringError> {
+    // Try different credential naming patterns for private keys in Credential Manager first
+    let key_variations = vec![
+        (service.clone(), account.clone()),                           // exact match
+        (service.clone(), format!("{}-key", account)),                // account-key suffix
+        (format!("{}-key", service), account.clone()),                // service-key prefix  
+        (format!("{}/key", service), account.clone()),                // service/key prefix
+        (service.clone(), format!("key-{}", account)),                // key-account prefix
+    ];
+
+    for (svc, acc) in key_variations {
+        match get_password(&svc, &acc)? {
+            Some(b64) => {
+                match base64::engine::general_purpose::STANDARD.decode(&b64) {
+                    Ok(bytes) => {
+                        // Basic validation: check if this looks like a private key
+                        if is_likely_private_key(&bytes) {
+                            return Ok(Some(bytes));
+                        }
+                        // If it doesn't look like a key, continue searching
+                    },
+                    Err(_) => {
+                        // Not base64-encoded, continue searching
+                        continue;
+                    }
+                }
+            },
+            None => continue,
+        }
+    }
+
+    // If not found in Credential Manager, try the Certificate Store
+    get_certificate_key_from_store(service, account)
+}
+
+/// Helper function to perform basic validation that the decoded bytes look like a private key.
+/// This checks for common private key formats (PEM, DER/PKCS#8, etc.)
+fn is_likely_private_key(bytes: &[u8]) -> bool {
+    if bytes.is_empty() {
+        return false;
+    }
+
+    // Check for PEM format private key headers
+    let content = String::from_utf8_lossy(bytes);
+    if content.contains("-----BEGIN PRIVATE KEY-----") ||
+       content.contains("-----BEGIN RSA PRIVATE KEY-----") ||
+       content.contains("-----BEGIN EC PRIVATE KEY-----") ||
+       content.contains("-----BEGIN OPENSSH PRIVATE KEY-----") {
+        return true;
+    }
+
+    // Check for DER format (binary) - basic heuristics
+    // PKCS#8 private keys typically start with 0x30 (ASN.1 SEQUENCE)
+    if bytes.len() > 10 && bytes[0] == 0x30 {
+        // Additional checks for PKCS#8 structure
+        if bytes.len() > 20 {
+            // Look for common OID patterns in PKCS#8 keys
+            let sample = &bytes[0..std::cmp::min(50, bytes.len())];
+            // RSA OID: 1.2.840.113549.1.1.1 appears in PKCS#8 RSA keys
+            // EC OID patterns also appear
+            return sample.windows(3).any(|w| w == [0x2a, 0x86, 0x48]) || // RSA OID start
+                   sample.windows(2).any(|w| w == [0x2a, 0x86]);         // Other common OIDs
+        }
+        return true;
+    }
+
+    // Check for other common key formats
+    if bytes.len() > 4 {
+        // OpenSSH private key format
+        if bytes.starts_with(b"openssh-key-v1") {
+            return true;
+        }
+        
+        // PKCS#1 RSA private key (older format)
+        if bytes[0] == 0x30 && bytes.len() > 50 {
+            // Look for RSA private key ASN.1 structure
+            return true;
+        }
+    }
+
+    false
+}
+
+/// Search for a private key in the Windows Certificate Store based on the certificate subject or account name.
+/// This function looks for certificates in both Current User and Local Machine stores and attempts to 
+/// extract the associated private key.
+fn get_certificate_key_from_store(service: &String, account: &String) -> Result<Option<Vec<u8>>, KeyringError> {
+    // Windows constants for certificate store types
+    const CERT_SYSTEM_STORE_CURRENT_USER: u32 = 0x00010000;
+    const CERT_SYSTEM_STORE_LOCAL_MACHINE: u32 = 0x00020000;
+    
+    // Try both Current User and Local Machine certificate stores  
+    let store_names = ["MY", "Root", "CA", "AddressBook"]; // AddressBook is "Other People" store
+    let store_locations = [
+        CERT_SYSTEM_STORE_CURRENT_USER,
+        CERT_SYSTEM_STORE_LOCAL_MACHINE,
+    ];
+
+    for &_store_location in &store_locations {
+        for store_name in &store_names {
+            let store_name_wide = encode_utf16(store_name);
+            
+            // Open the certificate store
+            let h_store = unsafe {
+                CertOpenSystemStoreW(
+                    0,
+                    store_name_wide.as_ptr()
+                )
+            };
+
+            if h_store.is_null() {
+                continue; // Try next store
+            }
+
+            // Search for certificates by subject name containing the account
+            let search_string = encode_utf16(account);
+            let mut cert_context = unsafe {
+                CertFindCertificateInStore(
+                    h_store,
+                    65537, // X509_ASN_ENCODING | PKCS_7_ASN_ENCODING
+                    0,
+                    CERT_FIND_SUBJECT_STR_W,
+                    search_string.as_ptr() as *const c_void,
+                    std::ptr::null(),
+                )
+            };
+
+            // If not found by subject, try enumerating all certificates
+            if cert_context.is_null() {
+                cert_context = unsafe {
+                    CertEnumCertificatesInStore(h_store, std::ptr::null())
+                };
+            }
+
+            while !cert_context.is_null() {
+                // Try to get the private key for this certificate
+                if let Ok(Some(key_bytes)) = extract_private_key_from_cert(cert_context) {
+                    unsafe { CertCloseStore(h_store, 0) };
+                    return Ok(Some(key_bytes));
+                }
+
+                // Get next certificate
+                cert_context = unsafe {
+                    CertEnumCertificatesInStore(h_store, cert_context)
+                };
+            }
+
+            unsafe { CertCloseStore(h_store, 0) };
+        }
+    }
+
+    Ok(None)
+}
+
+/// Extract the private key from a certificate context and return it in PEM format
+fn extract_private_key_from_cert(cert_context: *const CERT_CONTEXT) -> Result<Option<Vec<u8>>, KeyringError> {
+    // Helper to wrap DER into PEM header/footer
+    fn der_to_pem(label: &str, der: &[u8]) -> Vec<u8> {
+        let b64 = base64::engine::general_purpose::STANDARD.encode(der);
+        let mut pem = String::new();
+        pem.push_str(&format!("-----BEGIN {}-----\n", label));
+        for chunk in b64.as_bytes().chunks(64) {
+            pem.push_str(&String::from_utf8_lossy(chunk));
+            pem.push('\n');
+        }
+        pem.push_str(&format!("-----END {}-----\n", label));
+        pem.into_bytes()
+    }
+
+    // Try to acquire as CNG (NCrypt) key first, export as PKCS#8 if allowed
+    let mut ncrypt_handle: usize = 0; // NCRYPT_KEY_HANDLE as usize
+    let mut key_spec: u32 = 0;
+    let mut must_free = FALSE;
+
+    unsafe {
+        let res = CryptAcquireCertificatePrivateKey(
+            cert_context,
+            CRYPT_ACQUIRE_SILENT_FLAG | CRYPT_ACQUIRE_CACHE_FLAG | CRYPT_ACQUIRE_ONLY_NCRYPT_KEY_FLAG,
+            std::ptr::null_mut(),
+            &mut ncrypt_handle,
+            &mut key_spec,
+            &mut must_free,
+        );
+        // CERT_NCRYPT_KEY_SPEC indicates an NCrypt handle
+        const CERT_NCRYPT_KEY_SPEC: u32 = 0xFFFFFFFF;
+        if res != FALSE && key_spec == CERT_NCRYPT_KEY_SPEC {
+            // Export as PKCS#8
+            let blob_type = encode_utf16("PKCS8_PRIVATEKEY");
+            let mut required: u32 = 0;
+            let status = NCryptExportKey(
+                ncrypt_handle,
+                0,
+                blob_type.as_ptr(),
+                std::ptr::null_mut(),
+                std::ptr::null_mut(),
+                0,
+                &mut required,
+                0,
+            );
+            if status == 0 && required > 0 {
+                let mut buf = vec![0u8; required as usize];
+                let status2 = NCryptExportKey(
+                    ncrypt_handle,
+                    0,
+                    blob_type.as_ptr(),
+                    std::ptr::null_mut(),
+                    buf.as_mut_ptr(),
+                    required,
+                    &mut required,
+                    0,
+                );
+                if status2 == 0 {
+                    if must_free != FALSE {
+                        NCryptFreeObject(ncrypt_handle);
+                    }
+                    // Return PEM-encoded PKCS#8
+                    return Ok(Some(der_to_pem("PRIVATE KEY", &buf)));
+                }
+            }
+            if must_free != FALSE {
+                NCryptFreeObject(ncrypt_handle);
+            }
+        }
+    }
+
+    // Fall back to legacy CSP provider and export as PKCS#8
+    let mut h_prov: usize = 0; // HCRYPTPROV as usize
+    let mut legacy_key_spec: u32 = 0;
+    let mut legacy_must_free = FALSE;
+    unsafe {
+        let res = CryptAcquireCertificatePrivateKey(
+            cert_context,
+            CRYPT_ACQUIRE_SILENT_FLAG | CRYPT_ACQUIRE_CACHE_FLAG,
+            std::ptr::null_mut(),
+            &mut h_prov,
+            &mut legacy_key_spec,
+            &mut legacy_must_free,
+        );
+        if res == FALSE {
+            return Ok(None);
+        }
+
+        // Query required size
+        let mut cb: u32 = 0;
+        let ok = CryptExportPKCS8(
+            h_prov as usize,
+            legacy_key_spec,
+            std::ptr::null_mut(),
+            0,
+            std::ptr::null_mut(),
+            std::ptr::null_mut(),
+            &mut cb,
+        );
+        if ok == FALSE || cb == 0 {
+            if legacy_must_free != FALSE {
+                CryptReleaseContext(h_prov as usize, 0);
+            }
+            return Ok(None);
+        }
+
+        let mut der = vec![0u8; cb as usize];
+        let ok2 = CryptExportPKCS8(
+            h_prov as usize,
+            legacy_key_spec,
+            std::ptr::null_mut(),
+            0,
+            std::ptr::null_mut(),
+            der.as_mut_ptr(),
+            &mut cb,
+        );
+        if legacy_must_free != FALSE {
+            CryptReleaseContext(h_prov as usize, 0);
+        }
+        if ok2 == FALSE {
+            return Ok(None);
+        }
+        der.truncate(cb as usize);
+        return Ok(Some(der_to_pem("PRIVATE KEY", &der)));
+    }
+}
+
+/// Search for a certificate (public key) in the Windows Certificate Store and return it in PEM format
+fn get_certificate_from_store(service: &String, account: &String) -> Result<Option<Vec<u8>>, KeyringError> {
+    // Windows constants for certificate store types
+    const CERT_SYSTEM_STORE_CURRENT_USER: u32 = 0x00010000;
+    const CERT_SYSTEM_STORE_LOCAL_MACHINE: u32 = 0x00020000;
+    
+    // Try both Current User and Local Machine certificate stores  
+    let store_names = ["MY", "Root", "CA", "AddressBook"]; // AddressBook is "Other People" store
+    let store_locations = [
+        CERT_SYSTEM_STORE_CURRENT_USER,
+        CERT_SYSTEM_STORE_LOCAL_MACHINE,
+    ];
+
+    for &_store_location in &store_locations {
+        for store_name in &store_names {
+            let store_name_wide = encode_utf16(store_name);
+            
+            // Open the certificate store
+            let h_store = unsafe {
+                CertOpenSystemStoreW(
+                    0,
+                    store_name_wide.as_ptr()
+                )
+            };
+
+            if h_store.is_null() {
+                continue; // Try next store
+            }
+
+            // Search for certificates by subject name containing the account
+            let search_string = encode_utf16(account);
+            let mut cert_context = unsafe {
+                CertFindCertificateInStore(
+                    h_store,
+                    65537, // X509_ASN_ENCODING | PKCS_7_ASN_ENCODING
+                    0,
+                    CERT_FIND_SUBJECT_STR_W,
+                    search_string.as_ptr() as *const c_void,
+                    std::ptr::null(),
+                )
+            };
+
+            // If not found by subject, try enumerating all certificates
+            if cert_context.is_null() {
+                cert_context = unsafe {
+                    CertEnumCertificatesInStore(h_store, std::ptr::null())
+                };
+            }
+
+            while !cert_context.is_null() {
+                // Extract the certificate data in PEM format
+                if let Ok(Some(cert_bytes)) = extract_certificate_data(cert_context) {
+                    unsafe { CertCloseStore(h_store, 0) };
+                    return Ok(Some(cert_bytes));
+                }
+
+                // Get next certificate
+                cert_context = unsafe {
+                    CertEnumCertificatesInStore(h_store, cert_context)
+                };
+            }
+
+            unsafe { CertCloseStore(h_store, 0) };
+        }
+    }
+
+    Ok(None)
+}
+
+/// Extract certificate data and convert to PEM format
+fn extract_certificate_data(cert_context: *const CERT_CONTEXT) -> Result<Option<Vec<u8>>, KeyringError> {
+    unsafe {
+        let cert = &*cert_context;
+        
+        // Get the certificate's encoded data (DER format)
+        let cert_data = std::slice::from_raw_parts(
+            cert.pbCertEncoded, 
+            cert.cbCertEncoded as usize
+        );
+        
+        if !cert_data.is_empty() {
+            // Convert DER to PEM format
+            let base64_cert = base64::engine::general_purpose::STANDARD.encode(cert_data);
+            
+            // Format as PEM certificate
+            let pem_cert = format!(
+                "-----BEGIN CERTIFICATE-----\n{}\n-----END CERTIFICATE-----\n",
+                base64_cert.chars()
+                    .collect::<Vec<_>>()
+                    .chunks(64)
+                    .map(|chunk| chunk.iter().collect::<String>())
+                    .collect::<Vec<_>>()
+                    .join("\n")
+            );
+            
+            return Ok(Some(pem_cert.into_bytes()));
+        }
+    }
+
+    Ok(None)
 }

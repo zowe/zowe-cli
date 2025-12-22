@@ -41,6 +41,18 @@ export interface AbstractCredentialManager {
      * @returns {Promise<void>} A promise of the completion of your initialize function.
      */
     initialize?(): Promise<void>;
+    /**
+     * Optional: Load a certificate (binary or PEM) for the specified account.
+     * @param account The account or profile identifier
+     * @param optional When true, failure to find a certificate returns null instead of throwing
+     */
+    loadCertificate?(account: string, optional?: boolean): Promise<Buffer | null>;
+
+    /**
+     * Optional synchronous variant of loadCertificate. Implementations may provide this
+     * to allow callers to retrieve certificate bytes synchronously.
+     */
+    loadCertificateSync?(account: string, optional?: boolean): Buffer | null;
 }
 
 /**

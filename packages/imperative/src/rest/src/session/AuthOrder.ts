@@ -17,6 +17,11 @@ import { Logger } from "../../../logger";
 import * as SessConstants from "./SessConstants";
 import { ImperativeConfig } from "../../../utilities";
 import { Config } from "../../../config";
+import * as fs from "node:fs";
+import * as os from "node:os";
+import * as path from "node:path";
+import * as crypto from "node:crypto";
+import { CredentialManagerFactory } from "../../../security";
 
 /**
  * This interface represents options for the function putNewAuthsFirstInSess.
@@ -96,12 +101,30 @@ export class AuthOrder {
         cmdArgs: ICommandArguments = { "$0": "NameNotUsed", "_": [] }
         // when no cmdArgs are provided, use an empty set of cmdArgs
     ): void {
-        AuthOrder.cacheCredsAndAuthOrder(sessCfg, cmdArgs);
+        // Use the synchronous cache so callers remain synchronous.
+        AuthOrder.cacheCredsAndAuthOrderSync(sessCfg, cmdArgs);
 
         // Now that we know our authOrder and available creds, we place
         // only the top creds into the session. The putTopAuthInSession function
         // is also called later if our default top auth is modified. It is also
         // called just before making our REST request (as a failsafe).
+        AuthOrder.putTopAuthInSession(sessCfg);
+    }
+
+    /**
+     * Async variant of addCredsToSession. Use this when the caller is async
+     * and wants certificate/credential lookups that may perform async I/O.
+     * This preserves the existing synchronous public API while allowing
+     * internal async callsites to await this variant.
+     */
+    public static async addCredsToSessionAsync<SessCfgType extends ISession>(
+        sessCfg: SessCfgType,
+        cmdArgs?: ICommandArguments
+    ): Promise<void> {
+        // Use the async cache so callers that await this get fully populated cache
+        await AuthOrder.cacheCredsAndAuthOrder(sessCfg, cmdArgs ?? { "$0": "NameNotUsed", "_": [] });
+
+        // Ensure the top auth is placed into the session
         AuthOrder.putTopAuthInSession(sessCfg);
     }
 
@@ -179,6 +202,24 @@ export class AuthOrder {
     public static clearAuthCache<SessCfgType extends ISession>(
         sessCfg: SessCfgType
     ): void {
+        try {
+            const authCacheAny: any = sessCfg._authCache;
+            if (authCacheAny && Array.isArray(authCacheAny._tempFiles)) {
+                for (const tmpPath of authCacheAny._tempFiles) {
+                    try {
+                        if (fs.existsSync(tmpPath)) fs.unlinkSync(tmpPath);
+                    } catch (error_) {
+                        Logger.getImperativeLogger().debug(
+                            `Failed to remove auth cache temp file '${tmpPath}': ${String(error_)}`
+                        );
+                    }
+                }
+            }
+        } catch (error_) {
+            Logger.getImperativeLogger().debug(
+                `Failed to clear auth cache temp files: ${String(error_)}`
+            );
+        }
         delete sessCfg._authCache;
         AuthOrder.findOrCreateAuthCache(sessCfg);
     }
@@ -307,7 +348,9 @@ export class AuthOrder {
         if (!sessCfg._authCache?.availableCreds || Object.keys(sessCfg._authCache.availableCreds).length === 0) {
             // As a last resort, cache our creds now with an empty set of command args.
             // This will cache any creds from the sessCfg and use a default auth order.
-            AuthOrder.cacheCredsAndAuthOrder(sessCfg, { "$0": "NameNotUsed", "_": [] });
+            // Use the synchronous variant so callers that expect synchronous behavior
+            // receive a fully populated _authCache.availableCreds immediately.
+            AuthOrder.cacheCredsAndAuthOrderSync(sessCfg, { "$0": "NameNotUsed", "_": [] });
         }
         Logger.getImperativeLogger().debug("SessCfg before setting top auth = " + Censor.censorSession(sessCfg));
 
@@ -675,11 +718,11 @@ export class AuthOrder {
      *
      *      If cmdArgs is not supplied, we only cache creds found in the sessCfg.
      */
-    private static cacheCredsAndAuthOrder<SessCfgType extends ISession>(
+    private static async cacheCredsAndAuthOrder<SessCfgType extends ISession>(
         sessCfg: SessCfgType,
         cmdArgs: ICommandArguments = { "$0": "NameNotUsed", "_": [] }
         // when no cmdArgs are provided, use an empty set of cmdArgs
-    ): void {
+    ): Promise<void> {
         // create a new auth cache (if needed) in the session config
         AuthOrder.findOrCreateAuthCache(sessCfg);
 
@@ -688,7 +731,191 @@ export class AuthOrder {
 
         // add every available cred to the cache
         for (const sessCredName of AuthOrder.ARRAY_OF_CREDS) {
-            AuthOrder.cacheCred(sessCredName, sessCfg, cmdArgs);
+            // cacheCred may perform async certificate lookup
+            // ensure we await it so temp files are available synchronously to callers
+            // eslint-disable-next-line no-await-in-loop
+            await AuthOrder.cacheCred(sessCredName, sessCfg, cmdArgs);
+        }
+    }
+
+    // Synchronous variant used to preserve backward-compatible synchronous API
+    private static cacheCredsAndAuthOrderSync<SessCfgType extends ISession>(
+        sessCfg: SessCfgType,
+        cmdArgs?: ICommandArguments
+    ): void {
+        // create a new auth cache (if needed) in the session config
+        AuthOrder.findOrCreateAuthCache(sessCfg);
+
+        // add any discovered authOrder to the cache
+        AuthOrder.cacheAuthOrder(sessCfg, cmdArgs ?? { "$0": "NameNotUsed", "_": [] });
+
+        // add every available cred to the cache synchronously
+        for (const sessCredName of AuthOrder.ARRAY_OF_CREDS) {
+            AuthOrder.cacheCredSync(sessCredName, sessCfg, cmdArgs);
+        }
+    }
+
+    private static buildCertAccountCandidates(
+        sessCredName: string,
+        sessCfg: ISession,
+        certAccountVal?: string,
+        certKeyAccountVal?: string
+    ): string[] {
+        const candidates: string[] = [];
+        const pushIf = (val?: string) => { if (typeof val === "string" && val) candidates.push(val); };
+
+        if (sessCredName === AuthOrder.SESS_CERT_NAME) {
+            pushIf(certAccountVal);
+        } else {
+            pushIf(certKeyAccountVal);
+            if (certAccountVal && !candidates.includes(certAccountVal)) pushIf(certAccountVal);
+        }
+
+        pushIf((sessCfg as any).profile);
+        pushIf((sessCfg as any).account);
+        return candidates;
+    }
+
+    private static writeCertToTempFile(sessCredName: string, certBuf: Buffer): string {
+        const tmpDir = os.tmpdir();
+        const suffix = sessCredName === AuthOrder.SESS_CERT_NAME ? "-cert.pem" : "-key.pem";
+        const randomSuffix = crypto.randomBytes(4).toString("hex");
+        const tmpPath = path.join(tmpDir, `zowe-${Date.now()}-${randomSuffix}${suffix}`);
+        fs.writeFileSync(tmpPath, certBuf, { mode: 0o600 });
+        return tmpPath;
+    }
+
+    private static trackTempFile(sessCfg: ISession, tmpPath: string): void {
+        const authCacheAny: any = sessCfg._authCache;
+        if (!authCacheAny) return;
+        if (!authCacheAny._tempFiles) authCacheAny._tempFiles = [];
+        authCacheAny._tempFiles.push(tmpPath);
+    }
+
+    private static getCredentialManager(): any | undefined {
+        if (!CredentialManagerFactory.initialized) return undefined;
+        return CredentialManagerFactory.manager as any;
+    }
+
+    private static cacheCertBuffer(sessCredName: string, sessCfg: ISession, certBuf: Buffer): void {
+        const tmpPath = AuthOrder.writeCertToTempFile(sessCredName, certBuf);
+        sessCfg._authCache.availableCreds[sessCredName] = tmpPath;
+        AuthOrder.trackTempFile(sessCfg, tmpPath);
+    }
+
+    private static async cacheCertificateFromManager(
+        sessCredName: string,
+        sessCfg: ISession
+    ): Promise<void> {
+        try {
+            const managerAny = AuthOrder.getCredentialManager();
+            if (!managerAny) return;
+
+            const credMgrOptions = managerAny.options;
+            const shouldPrompt = credMgrOptions?.promptForCertAccess === true;
+
+            let certAccountVal = (sessCfg as any).certAccount;
+            let certKeyAccountVal = (sessCfg as any).certKeyAccount;
+            if (certAccountVal && typeof certAccountVal.then === "function") {
+                certAccountVal = await certAccountVal;
+            }
+            if (certKeyAccountVal && typeof certKeyAccountVal.then === "function") {
+                certKeyAccountVal = await certKeyAccountVal;
+            }
+
+            const acctCandidates = AuthOrder.buildCertAccountCandidates(sessCredName, sessCfg, certAccountVal, certKeyAccountVal);
+            if (acctCandidates.length === 0) return;
+
+            const credType = sessCredName === AuthOrder.SESS_CERT_KEY_NAME ? "private key" : "certificate";
+
+            const authCacheAny: any = sessCfg._authCache;
+            if (!authCacheAny._promptedCertAccounts) {
+                authCacheAny._promptedCertAccounts = new Set<string>();
+            }
+
+            for (let i = 0; i < acctCandidates.length; i++) {
+                const acct = acctCandidates[i];
+                const isLastAttempt = i === acctCandidates.length - 1;
+                const isKey = sessCredName === AuthOrder.SESS_CERT_KEY_NAME;
+                const credType = isKey ? "private key" : "certificate";
+
+                if (shouldPrompt && !authCacheAny._promptedCertAccounts.has(acct)) {
+                    const { CliUtils } = await import("../../../utilities");
+                    const promptMsg = `Zowe CLI would like to access ${credType} '${acct}' from your system keychain. Allow? [y/N]: `;
+                    const response = await CliUtils.readPrompt(promptMsg, { secToWait: 60 });
+                    authCacheAny._promptedCertAccounts.add(acct);
+                    if (response?.toLowerCase() !== "y") {
+                        continue;
+                    }
+                }
+
+                try {
+                    const certBuf = isKey ?
+                        await managerAny.loadCertificateKey(acct, !isLastAttempt) :
+                        await managerAny.loadCertificate(acct, !isLastAttempt);
+                    if (certBuf) {
+                        AuthOrder.cacheCertBuffer(sessCredName, sessCfg, certBuf);
+                        return;
+                    }
+                } catch (error_) {
+                    Logger.getImperativeLogger().debug(
+                        `Certificate manager load failed for ${credType} account '${acct}': ${String(error_)}`
+                    );
+                    // continue to next candidate
+                }
+            }
+        } catch (error_) {
+            Logger.getImperativeLogger().debug(
+                `Failed certificate retrieval via credential manager (async): ${String(error_)}`
+            );
+        }
+    }
+
+    private static cacheCertificateFromManagerSync(
+        sessCredName: string,
+        sessCfg: ISession
+    ): void {
+        try {
+            const managerAny = AuthOrder.getCredentialManager();
+            if (!managerAny || typeof managerAny.loadCertificateSync !== "function") return;
+
+            const credMgrOptions = managerAny.options;
+            const shouldPrompt = credMgrOptions?.promptForCertAccess === true;
+            if (shouldPrompt) {
+                Logger.getImperativeLogger().warn(
+                    "Certificate access prompting is configured but cannot be used in synchronous code path. Consider using async API methods for prompted certificate access."
+                );
+            }
+
+            const certAccountVal = (sessCfg as any).certAccount;
+            const certKeyAccountVal = (sessCfg as any).certKeyAccount;
+            const acctCandidates = AuthOrder.buildCertAccountCandidates(sessCredName, sessCfg, certAccountVal, certKeyAccountVal);
+            if (acctCandidates.length === 0) return;
+
+            for (let i = 0; i < acctCandidates.length; i++) {
+                const acct = acctCandidates[i];
+                const isLastAttempt = i === acctCandidates.length - 1;
+                const isKey = sessCredName === AuthOrder.SESS_CERT_KEY_NAME;
+                const credType = isKey ? "private key" : "certificate";
+                try {
+                    const certBuf: Buffer | null = isKey ?
+                        managerAny.loadCertificateKeySync(acct, !isLastAttempt) :
+                        managerAny.loadCertificateSync(acct, !isLastAttempt);
+                    if (certBuf) {
+                        AuthOrder.cacheCertBuffer(sessCredName, sessCfg, certBuf);
+                        return;
+                    }
+                } catch (error_) {
+                    Logger.getImperativeLogger().debug(
+                        `Certificate manager load failed (sync) for ${credType} account '${acct}': ${String(error_)}`
+                    );
+                    // continue to next candidate
+                }
+            }
+        } catch (error_) {
+            Logger.getImperativeLogger().debug(
+                `Failed certificate retrieval via credential manager (sync): ${String(error_)}`
+            );
         }
     }
 
@@ -772,7 +999,29 @@ export class AuthOrder {
      * @param cmdArgs - Input.
      *      The set of arguments with which the calling function is operating.
      */
-    private static cacheCred<SessCfgType extends ISession>(
+    private static async cacheCred<SessCfgType extends ISession>(
+        sessCredName: string,
+        sessCfg: SessCfgType,
+        cmdArgs: ICommandArguments
+    ): Promise<void> {
+        const cmdArgsCredName = AuthOrder.getPropNmFor(sessCredName, PropUse.IN_CFG);
+        if (cmdArgs[cmdArgsCredName]) {
+            sessCfg._authCache.availableCreds[sessCredName] = cmdArgs[cmdArgsCredName];
+        } else if ((sessCfg as any)[sessCredName]) {
+            sessCfg._authCache.availableCreds[sessCredName] = (sessCfg as any)[sessCredName];
+        } else if (sessCredName === AuthOrder.SESS_CERT_NAME || sessCredName === AuthOrder.SESS_CERT_KEY_NAME) {
+            // Check if file path is already provided before attempting credential manager lookup
+            const filePathProp = sessCredName === AuthOrder.SESS_CERT_NAME ? "certFile" : "certKeyFile";
+            const hasFilePath = (sessCfg as any)[filePathProp] || cmdArgs[filePathProp];
+            if (!hasFilePath) {
+                // Attempt to load certificate bytes from credential manager when cert/certKey not provided directly.
+                await AuthOrder.cacheCertificateFromManager(sessCredName, sessCfg);
+            }
+        }
+    }
+
+    // Synchronous variant of cacheCred that uses synchronous certificate retrieval when available
+    private static cacheCredSync<SessCfgType extends ISession>(
         sessCredName: string,
         sessCfg: SessCfgType,
         cmdArgs: ICommandArguments
@@ -782,6 +1031,14 @@ export class AuthOrder {
             sessCfg._authCache.availableCreds[sessCredName] = cmdArgs[cmdArgsCredName];
         } else if ((sessCfg as any)[sessCredName]) {
             sessCfg._authCache.availableCreds[sessCredName] = (sessCfg as any)[sessCredName];
+        } else if (sessCredName === AuthOrder.SESS_CERT_NAME || sessCredName === AuthOrder.SESS_CERT_KEY_NAME) {
+            // Check if file path is already provided before attempting credential manager lookup
+            const filePathProp = sessCredName === AuthOrder.SESS_CERT_NAME ? "certFile" : "certKeyFile";
+            const hasFilePath = (sessCfg as any)[filePathProp] || cmdArgs[filePathProp];
+            if (!hasFilePath) {
+                // Attempt to load certificate bytes from credential manager when cert/certKey not provided directly.
+                AuthOrder.cacheCertificateFromManagerSync(sessCredName, sessCfg);
+            }
         }
     }
 
@@ -955,5 +1212,26 @@ export class AuthOrder {
                 nextCredToRemove = credIter.next();
             }
         } // end if we have a sessCfg.type
+
+        // If we are not using certificate auth, cleanup any temp files created for certs
+        try {
+            const authCacheAny: any = sessCfg._authCache;
+            if (sessCfg.type !== SessConstants.AUTH_TYPE_CERT_PEM && authCacheAny && Array.isArray(authCacheAny._tempFiles)) {
+                for (const tmpPath of authCacheAny._tempFiles) {
+                    try {
+                        if (fs.existsSync(tmpPath)) fs.unlinkSync(tmpPath);
+                    } catch (error_) {
+                        Logger.getImperativeLogger().debug(
+                            `Failed to clean temp cert file '${tmpPath}': ${String(error_)}`
+                        );
+                    }
+                }
+                authCacheAny._tempFiles = [];
+            }
+        } catch (error_) {
+            Logger.getImperativeLogger().debug(
+                `Failed to clean certificate temp files: ${String(error_)}`
+            );
+        }
     }
 }
