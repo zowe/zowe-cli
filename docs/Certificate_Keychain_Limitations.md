@@ -35,6 +35,7 @@ security export -k ~/Library/Keychains/login.keychain-db -t identities -f pkcs12
 ```
 
 **If you see**:
+
 - `SecKeychainItemExport: The contents of this item cannot be retrieved.` → Your key is **non-exportable**
 - A successful export → Your key is **exportable** (but Zowe CLI may still have issues - see workarounds below)
 
@@ -51,7 +52,7 @@ The simplest workaround is to provide the private key as a file instead of using
 security find-identity -p ssl-client -v
 
 # Export certificate only (not private key)
-security find-certificate -c "User BJSIMM on tvt4002" -p > ~/my-cert.pem
+security find-certificate -c "CertificateName" -p > ~/my-cert.pem
 ```
 
 **Step 2**: Obtain your private key file separately (from wherever you originally received it)
@@ -76,11 +77,13 @@ security find-certificate -c "User BJSIMM on tvt4002" -p > ~/my-cert.pem
 ```
 
 **Pros**:
+
 - ✅ Simple and reliable
 - ✅ Works with any key
 - ✅ No re-import needed
 
 **Cons**:
+
 - ❌ Keys stored as files (less secure than Keychain)
 - ❌ Need to secure file permissions (`chmod 600`)
 
@@ -107,10 +110,10 @@ If this fails, you'll need the original P12 file or separate certificate/key fil
 
 ```bash
 # Find the certificate
-security find-certificate -c "User BJSIMM on tvt4002" -a
+security find-certificate -c "CertificateName" -a
 
 # Delete it (use the identity hash from find-identity output)
-security delete-identity -Z 5C41897F72421CF44341536D44971EA44E8C42C6
+security delete-identity -Z exampleHash:5C41897F72421CF44341536D44971EA44E8C42C6
 ```
 
 **Step 3**: Re-import with exportable flag:
@@ -128,6 +131,7 @@ security import ~/my-identity.p12 \
 ```
 
 **Flags explained**:
+
 - `-x`: Mark private key as **extractable** (exportable)
 - `-T /usr/bin/security`: Allow security command to access without prompt
 - `-T /usr/bin/codesign`: Allow codesign to access without prompt
@@ -147,11 +151,13 @@ Should now succeed!
 **Step 5**: Continue using `certAccount` in your profile (no changes needed)
 
 **Pros**:
+
 - ✅ Keys remain in secure Keychain storage
 - ✅ Works with existing `certAccount` configuration
 - ✅ More secure than file storage
 
 **Cons**:
+
 - ❌ Requires re-importing certificate
 - ❌ Need access to original P12 or key files
 - ❌ Slightly more complex process
@@ -189,11 +195,13 @@ openssl pkcs12 -in my-identity.p12 -nocerts -nodes -out my-key.pem -passin pass:
 Then use Option 1 above with the extracted files.
 
 **Pros**:
+
 - ✅ Portable across systems
 - ✅ Industry-standard format
 - ✅ Can be password-protected
 
 **Cons**:
+
 - ❌ Currently requires extraction to separate files
 - ❌ Files need secure storage
 - ❌ Not using Keychain security
@@ -237,18 +245,20 @@ chmod 600 ~/.zowe/certs/my-key.pem
 ```
 
 **Pros**:
+
 - ✅ Files in known secure location
 - ✅ Proper file permissions
 - ✅ Easy to back up
 
 **Cons**:
+
 - ❌ Not using Keychain encryption
 - ❌ Files accessible if system compromised
 - ❌ Manual permission management
 
 ---
 
-## Future Enhancements
+## Future Enhancement Consideration
 
 ### Planned Features
 
