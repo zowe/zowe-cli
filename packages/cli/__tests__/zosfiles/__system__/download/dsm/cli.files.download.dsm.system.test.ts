@@ -211,7 +211,7 @@ describe("Download Dataset Matching", () => {
                 expect(apiResp.status).toContain("member(s) downloaded successfully.");
                 expect(apiResp.status).toContain("Destination:");
                 expect(apiResp.status).toContain(testDir);
-                expect(apiResp.status).toContain("Members:  TEST;");
+                expect(apiResp.status).toContain("Members: TEST");
             }
         });
 
