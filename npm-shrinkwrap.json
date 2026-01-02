@@ -15677,7 +15677,7 @@
         "dataobject-parser": "^1.2.25",
         "dayjs": "1.11.13",
         "deepmerge": "^4.3.1",
-        "diff": "^5.2.0",
+        "diff": "^7.0.0",
         "diff2html": "^3.4.55",
         "fast-glob": "^3.3.2",
         "fastest-levenshtein": "^1.0.16",
@@ -15710,7 +15710,6 @@
       },
       "devDependencies": {
         "@types/cross-spawn": "^6.0.6",
-        "@types/diff": "^5.0.9",
         "@types/fs-extra": "^11.0.4",
         "@types/glob": "^8.1.0",
         "@types/hogan.js": "^3.0.5",
@@ -15745,13 +15744,6 @@
       },
       "engines": {
         "node": ">= 14"
-      }
-    },
-    "packages/imperative/node_modules/diff": {
-      "version": "5.2.0",
-      "license": "BSD-3-Clause",
-      "engines": {
-        "node": ">=0.3.1"
       }
     },
     "packages/imperative/node_modules/http-proxy-agent": {
