@@ -15,12 +15,12 @@ import * as which from "which";
 import { StdioOptions } from "child_process";
 import { readFileSync } from "jsonfile";
 import * as npmPackageArg from "npm-package-arg";
-import * as pacote from "pacote";
 import { DaemonRequest, ExecUtils, ImperativeConfig } from "../../../../utilities";
 import { INpmInstallArgs } from "../doc/INpmInstallArgs";
 import { IPluginJsonObject } from "../doc/IPluginJsonObject";
 import { INpmRegistryInfo } from "../doc/INpmRegistryInfo";
 import { Logger } from "../../../../logger";
+import { ImperativeError } from "../../../../error";
 
 const npmCmd = findNpmOnPath();
 
@@ -101,8 +101,17 @@ export async function getPackageInfo(pkgSpec: string): Promise<{ name: string, v
         // We already know package name, so read name and version from package.json
         return readFileSync(path.join(PMFConstants.instance.PLUGIN_HOME_LOCATION, pkgInfo.name, "package.json"));
     } else {
-        // Package name is unknown, so fetch name and version with pacote (npm SDK)
-        return pacote.manifest(pkgSpec);
+        // Package name is unknown, so fetch name and version with npm command
+        try {
+            const execOutput = ExecUtils.spawnAndGetOutput(npmCmd, ["pack", pkgSpec, "--dry-run", "--json"]);
+            const metadata = JSON.parse(execOutput.toString())[0];
+            return { name: metadata.name, version: metadata.version };
+        } catch (err) {
+            throw new ImperativeError({
+                msg: `Failed to fetch metadata for package: ${pkgSpec}`,
+                additionalDetails: (err as Error).message,
+            })
+        }
     }
 }
 
