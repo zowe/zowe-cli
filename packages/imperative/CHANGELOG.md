@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Removed large dependency `pacote` for fetching package metadata when installing plug-ins. [#2665](https://github.com/zowe/zowe-cli/pull/2665)
+
 ## `8.29.7`
 
 - Enhancement: Added instructions for obtaining a token to be displayed when a command prompts for a token. [#2660](https://github.com/zowe/zowe-cli/pull/2660)
