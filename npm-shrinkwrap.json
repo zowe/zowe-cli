@@ -2978,6 +2978,7 @@
     },
     "node_modules/@npmcli/agent": {
       "version": "2.2.1",
+      "dev": true,
       "license": "ISC",
       "dependencies": {
         "agent-base": "^7.1.0",
@@ -2992,6 +2993,7 @@
     },
     "node_modules/@npmcli/agent/node_modules/agent-base": {
       "version": "7.1.0",
+      "dev": true,
       "license": "MIT",
       "dependencies": {
         "debug": "^4.3.4"
@@ -3002,6 +3004,7 @@
     },
     "node_modules/@npmcli/agent/node_modules/http-proxy-agent": {
       "version": "7.0.2",
+      "dev": true,
       "license": "MIT",
       "dependencies": {
         "agent-base": "^7.1.0",
@@ -3013,6 +3016,7 @@
     },
     "node_modules/@npmcli/agent/node_modules/https-proxy-agent": {
       "version": "7.0.4",
+      "dev": true,
       "license": "MIT",
       "dependencies": {
         "agent-base": "^7.0.2",
@@ -3024,6 +3028,7 @@
     },
     "node_modules/@npmcli/agent/node_modules/socks-proxy-agent": {
       "version": "8.0.2",
+      "dev": true,
       "license": "MIT",
       "dependencies": {
         "agent-base": "^7.0.2",
@@ -3048,6 +3053,7 @@
     },
     "node_modules/@npmcli/git": {
       "version": "5.0.4",
+      "dev": true,
       "license": "ISC",
       "dependencies": {
         "@npmcli/promise-spawn": "^7.0.0",
@@ -3065,6 +3071,7 @@
     },
     "node_modules/@npmcli/git/node_modules/isexe": {
       "version": "3.1.1",
+      "dev": true,
       "license": "ISC",
       "engines": {
         "node": ">=16"
@@ -3072,6 +3079,7 @@
     },
     "node_modules/@npmcli/git/node_modules/npm-normalize-package-bin": {
       "version": "3.0.1",
+      "dev": true,
       "license": "ISC",
       "engines": {
         "node": "^14.17.0 || ^16.13.0 || >=18.0.0"
@@ -3079,6 +3087,7 @@
     },
     "node_modules/@npmcli/git/node_modules/npm-pick-manifest": {
       "version": "9.0.0",
+      "dev": true,
       "license": "ISC",
       "dependencies": {
         "npm-install-checks": "^6.0.0",
@@ -3092,6 +3101,7 @@
     },
     "node_modules/@npmcli/git/node_modules/proc-log": {
       "version": "3.0.0",
+      "dev": true,
       "license": "ISC",
       "engines": {
         "node": "^14.17.0 || ^16.13.0 || >=18.0.0"
@@ -3099,6 +3109,7 @@
     },
     "node_modules/@npmcli/git/node_modules/which": {
       "version": "4.0.0",
+      "dev": true,
       "license": "ISC",
       "dependencies": {
         "isexe": "^3.1.1"
@@ -3403,6 +3414,7 @@
     },
     "node_modules/@npmcli/promise-spawn": {
       "version": "7.0.1",
+      "dev": true,
       "license": "ISC",
       "dependencies": {
         "which": "^4.0.0"
@@ -3413,6 +3425,7 @@
     },
     "node_modules/@npmcli/promise-spawn/node_modules/isexe": {
       "version": "3.1.1",
+      "dev": true,
       "license": "ISC",
       "engines": {
         "node": ">=16"
@@ -3420,6 +3433,7 @@
     },
     "node_modules/@npmcli/promise-spawn/node_modules/which": {
       "version": "4.0.0",
+      "dev": true,
       "license": "ISC",
       "dependencies": {
         "isexe": "^3.1.1"
@@ -3429,13 +3443,6 @@
       },
       "engines": {
         "node": "^16.13.0 || >=18.0.0"
-      }
-    },
-    "node_modules/@npmcli/redact": {
-      "version": "2.0.1",
-      "license": "ISC",
-      "engines": {
-        "node": "^16.14.0 || >=18.0.0"
       }
     },
     "node_modules/@npmcli/run-script": {
@@ -3691,223 +3698,6 @@
       "dev": true,
       "license": "MIT"
     },
-    "node_modules/@sigstore/bundle": {
-      "version": "2.2.0",
-      "license": "Apache-2.0",
-      "dependencies": {
-        "@sigstore/protobuf-specs": "^0.3.0"
-      },
-      "engines": {
-        "node": "^16.14.0 || >=18.0.0"
-      }
-    },
-    "node_modules/@sigstore/core": {
-      "version": "1.0.0",
-      "license": "Apache-2.0",
-      "engines": {
-        "node": "^16.14.0 || >=18.0.0"
-      }
-    },
-    "node_modules/@sigstore/protobuf-specs": {
-      "version": "0.3.0",
-      "license": "Apache-2.0",
-      "engines": {
-        "node": "^14.17.0 || ^16.13.0 || >=18.0.0"
-      }
-    },
-    "node_modules/@sigstore/sign": {
-      "version": "2.2.3",
-      "license": "Apache-2.0",
-      "dependencies": {
-        "@sigstore/bundle": "^2.2.0",
-        "@sigstore/core": "^1.0.0",
-        "@sigstore/protobuf-specs": "^0.3.0",
-        "make-fetch-happen": "^13.0.0"
-      },
-      "engines": {
-        "node": "^16.14.0 || >=18.0.0"
-      }
-    },
-    "node_modules/@sigstore/sign/node_modules/@npmcli/fs": {
-      "version": "3.1.0",
-      "license": "ISC",
-      "dependencies": {
-        "semver": "^7.3.5"
-      },
-      "engines": {
-        "node": "^14.17.0 || ^16.13.0 || >=18.0.0"
-      }
-    },
-    "node_modules/@sigstore/sign/node_modules/cacache": {
-      "version": "18.0.2",
-      "license": "ISC",
-      "dependencies": {
-        "@npmcli/fs": "^3.1.0",
-        "fs-minipass": "^3.0.0",
-        "glob": "^10.2.2",
-        "lru-cache": "^10.0.1",
-        "minipass": "^7.0.3",
-        "minipass-collect": "^2.0.1",
-        "minipass-flush": "^1.0.5",
-        "minipass-pipeline": "^1.2.4",
-        "p-map": "^4.0.0",
-        "ssri": "^10.0.0",
-        "tar": "^6.1.11",
-        "unique-filename": "^3.0.0"
-      },
-      "engines": {
-        "node": "^16.14.0 || >=18.0.0"
-      }
-    },
-    "node_modules/@sigstore/sign/node_modules/fs-minipass": {
-      "version": "3.0.3",
-      "license": "ISC",
-      "dependencies": {
-        "minipass": "^7.0.3"
-      },
-      "engines": {
-        "node": "^14.17.0 || ^16.13.0 || >=18.0.0"
-      }
-    },
-    "node_modules/@sigstore/sign/node_modules/glob": {
-      "version": "10.5.0",
-      "integrity": "sha512-DfXN8DfhJ7NH3Oe7cFmu3NCu1wKbkReJ8TorzSAFbSKrlNaQSKfIzqYqVY8zlbs2NLBbWpRiU52GX2PbaBVNkg==",
-      "license": "ISC",
-      "dependencies": {
-        "foreground-child": "^3.1.0",
-        "jackspeak": "^3.1.2",
-        "minimatch": "^9.0.4",
-        "minipass": "^7.1.2",
-        "package-json-from-dist": "^1.0.0",
-        "path-scurry": "^1.11.1"
-      },
-      "bin": {
-        "glob": "dist/esm/bin.mjs"
-      },
-      "funding": {
-        "url": "https://github.com/sponsors/isaacs"
-      }
-    },
-    "node_modules/@sigstore/sign/node_modules/make-fetch-happen": {
-      "version": "13.0.0",
-      "license": "ISC",
-      "dependencies": {
-        "@npmcli/agent": "^2.0.0",
-        "cacache": "^18.0.0",
-        "http-cache-semantics": "^4.1.1",
-        "is-lambda": "^1.0.1",
-        "minipass": "^7.0.2",
-        "minipass-fetch": "^3.0.0",
-        "minipass-flush": "^1.0.5",
-        "minipass-pipeline": "^1.2.4",
-        "negotiator": "^0.6.3",
-        "promise-retry": "^2.0.1",
-        "ssri": "^10.0.0"
-      },
-      "engines": {
-        "node": "^16.14.0 || >=18.0.0"
-      }
-    },
-    "node_modules/@sigstore/sign/node_modules/minimatch": {
-      "version": "9.0.5",
-      "integrity": "sha512-G6T0ZX48xgozx7587koeX9Ys2NYy6Gmv//P89sEte9V9whIapMNF4idKxnW2QtCcLiTWlb/wfCabAtAFWhhBow==",
-      "license": "ISC",
-      "dependencies": {
-        "brace-expansion": "^2.0.1"
-      },
-      "engines": {
-        "node": ">=16 || 14 >=14.17"
-      },
-      "funding": {
-        "url": "https://github.com/sponsors/isaacs"
-      }
-    },
-    "node_modules/@sigstore/sign/node_modules/minipass": {
-      "version": "7.1.2",
-      "integrity": "sha512-qOOzS1cBTWYF4BH8fVePDBOO9iptMnGUEZwNc/cMWnTV2nVLZ7VoNWEPHkYczZA0pdoA7dl6e7FL659nX9S2aw==",
-      "license": "ISC",
-      "engines": {
-        "node": ">=16 || 14 >=14.17"
-      }
-    },
-    "node_modules/@sigstore/sign/node_modules/minipass-collect": {
-      "version": "2.0.1",
-      "license": "ISC",
-      "dependencies": {
-        "minipass": "^7.0.3"
-      },
-      "engines": {
-        "node": ">=16 || 14 >=14.17"
-      }
-    },
-    "node_modules/@sigstore/sign/node_modules/minipass-fetch": {
-      "version": "3.0.4",
-      "license": "MIT",
-      "dependencies": {
-        "minipass": "^7.0.3",
-        "minipass-sized": "^1.0.3",
-        "minizlib": "^2.1.2"
-      },
-      "engines": {
-        "node": "^14.17.0 || ^16.13.0 || >=18.0.0"
-      },
-      "optionalDependencies": {
-        "encoding": "^0.1.13"
-      }
-    },
-    "node_modules/@sigstore/sign/node_modules/ssri": {
-      "version": "10.0.5",
-      "license": "ISC",
-      "dependencies": {
-        "minipass": "^7.0.3"
-      },
-      "engines": {
-        "node": "^14.17.0 || ^16.13.0 || >=18.0.0"
-      }
-    },
-    "node_modules/@sigstore/sign/node_modules/unique-filename": {
-      "version": "3.0.0",
-      "license": "ISC",
-      "dependencies": {
-        "unique-slug": "^4.0.0"
-      },
-      "engines": {
-        "node": "^14.17.0 || ^16.13.0 || >=18.0.0"
-      }
-    },
-    "node_modules/@sigstore/sign/node_modules/unique-slug": {
-      "version": "4.0.0",
-      "license": "ISC",
-      "dependencies": {
-        "imurmurhash": "^0.1.4"
-      },
-      "engines": {
-        "node": "^14.17.0 || ^16.13.0 || >=18.0.0"
-      }
-    },
-    "node_modules/@sigstore/tuf": {
-      "version": "2.3.1",
-      "license": "Apache-2.0",
-      "dependencies": {
-        "@sigstore/protobuf-specs": "^0.3.0",
-        "tuf-js": "^2.2.0"
-      },
-      "engines": {
-        "node": "^16.14.0 || >=18.0.0"
-      }
-    },
-    "node_modules/@sigstore/verify": {
-      "version": "1.1.0",
-      "license": "Apache-2.0",
-      "dependencies": {
-        "@sigstore/bundle": "^2.2.0",
-        "@sigstore/core": "^1.0.0",
-        "@sigstore/protobuf-specs": "^0.3.0"
-      },
-      "engines": {
-        "node": "^16.14.0 || >=18.0.0"
-      }
-    },
     "node_modules/@sinclair/typebox": {
       "version": "0.27.8",
       "license": "MIT"
@@ -3978,37 +3768,6 @@
       "license": "MIT",
       "optional": true,
       "peer": true
-    },
-    "node_modules/@tufjs/canonical-json": {
-      "version": "2.0.0",
-      "license": "MIT",
-      "engines": {
-        "node": "^16.14.0 || >=18.0.0"
-      }
-    },
-    "node_modules/@tufjs/models": {
-      "version": "2.0.0",
-      "license": "MIT",
-      "dependencies": {
-        "@tufjs/canonical-json": "2.0.0",
-        "minimatch": "^9.0.3"
-      },
-      "engines": {
-        "node": "^16.14.0 || >=18.0.0"
-      }
-    },
-    "node_modules/@tufjs/models/node_modules/minimatch": {
-      "version": "9.0.3",
-      "license": "ISC",
-      "dependencies": {
-        "brace-expansion": "^2.0.1"
-      },
-      "engines": {
-        "node": ">=16 || 14 >=14.17"
-      },
-      "funding": {
-        "url": "https://github.com/sponsors/isaacs"
-      }
     },
     "node_modules/@types/babel__core": {
       "version": "7.1.19",
@@ -4190,15 +3949,6 @@
         "undici-types": "~6.19.2"
       }
     },
-    "node_modules/@types/node-fetch": {
-      "version": "2.6.11",
-      "dev": true,
-      "license": "MIT",
-      "dependencies": {
-        "@types/node": "*",
-        "form-data": "^4.0.0"
-      }
-    },
     "node_modules/@types/normalize-package-data": {
       "version": "2.4.4",
       "dev": true,
@@ -4208,37 +3958,6 @@
       "version": "6.1.4",
       "dev": true,
       "license": "MIT"
-    },
-    "node_modules/@types/npm-registry-fetch": {
-      "version": "8.0.7",
-      "dev": true,
-      "license": "MIT",
-      "dependencies": {
-        "@types/node": "*",
-        "@types/node-fetch": "*",
-        "@types/npm-package-arg": "*",
-        "@types/npmlog": "*",
-        "@types/ssri": "*"
-      }
-    },
-    "node_modules/@types/npmlog": {
-      "version": "7.0.0",
-      "dev": true,
-      "license": "MIT",
-      "dependencies": {
-        "@types/node": "*"
-      }
-    },
-    "node_modules/@types/pacote": {
-      "version": "11.1.8",
-      "dev": true,
-      "license": "MIT",
-      "dependencies": {
-        "@types/node": "*",
-        "@types/npm-registry-fetch": "*",
-        "@types/npmlog": "*",
-        "@types/ssri": "*"
-      }
     },
     "node_modules/@types/progress": {
       "version": "2.0.7",
@@ -4280,14 +3999,6 @@
       "integrity": "sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA==",
       "dev": true,
       "license": "MIT"
-    },
-    "node_modules/@types/ssri": {
-      "version": "7.1.5",
-      "dev": true,
-      "license": "MIT",
-      "dependencies": {
-        "@types/node": "*"
-      }
     },
     "node_modules/@types/stack-trace": {
       "version": "0.0.33",
@@ -4778,6 +4489,7 @@
     },
     "node_modules/aggregate-error": {
       "version": "3.1.0",
+      "dev": true,
       "license": "MIT",
       "dependencies": {
         "clean-stack": "^2.0.0",
@@ -4986,11 +4698,6 @@
     "node_modules/async-sema": {
       "version": "3.1.1",
       "integrity": "sha512-tLRNUXati5MFePdAk8dw7Qt7DpxPB60ofAgn8WRhW6a2rcimZnYBP9oxHiv0OHy+Wz7kPMG+t4LGdt31+4EmGg==",
-      "dev": true,
-      "license": "MIT"
-    },
-    "node_modules/asynckit": {
-      "version": "0.4.0",
       "dev": true,
       "license": "MIT"
     },
@@ -5967,6 +5674,7 @@
     },
     "node_modules/clean-stack": {
       "version": "2.2.0",
+      "dev": true,
       "license": "MIT",
       "engines": {
         "node": ">=6"
@@ -6227,17 +5935,6 @@
       },
       "engines": {
         "node": ">=8.0.0"
-      }
-    },
-    "node_modules/combined-stream": {
-      "version": "1.0.8",
-      "dev": true,
-      "license": "MIT",
-      "dependencies": {
-        "delayed-stream": "~1.0.0"
-      },
-      "engines": {
-        "node": ">= 0.8"
       }
     },
     "node_modules/commander": {
@@ -6997,14 +6694,6 @@
         "url": "https://github.com/sponsors/ljharb"
       }
     },
-    "node_modules/delayed-stream": {
-      "version": "1.0.0",
-      "dev": true,
-      "license": "MIT",
-      "engines": {
-        "node": ">=0.4.0"
-      }
-    },
     "node_modules/delegates": {
       "version": "1.0.0",
       "dev": true,
@@ -7332,6 +7021,7 @@
     },
     "node_modules/encoding": {
       "version": "0.1.13",
+      "dev": true,
       "license": "MIT",
       "optional": true,
       "dependencies": {
@@ -7340,6 +7030,7 @@
     },
     "node_modules/encoding/node_modules/iconv-lite": {
       "version": "0.6.3",
+      "dev": true,
       "license": "MIT",
       "optional": true,
       "dependencies": {
@@ -7396,6 +7087,7 @@
     },
     "node_modules/env-paths": {
       "version": "2.2.1",
+      "dev": true,
       "license": "MIT",
       "engines": {
         "node": ">=6"
@@ -7403,6 +7095,7 @@
     },
     "node_modules/err-code": {
       "version": "2.0.3",
+      "dev": true,
       "license": "MIT"
     },
     "node_modules/error-ex": {
@@ -7438,21 +7131,6 @@
       "license": "MIT",
       "dependencies": {
         "es-errors": "^1.3.0"
-      },
-      "engines": {
-        "node": ">= 0.4"
-      }
-    },
-    "node_modules/es-set-tostringtag": {
-      "version": "2.1.0",
-      "integrity": "sha512-j6vWzfrGVfyXxge+O0x5sh6cvxAog0a/4Rdd2K36zCMV5eJ+/+tOAngRO8cODMNWbVRdVlmGZQL2YS3yR8bIUA==",
-      "dev": true,
-      "license": "MIT",
-      "dependencies": {
-        "es-errors": "^1.3.0",
-        "get-intrinsic": "^1.2.6",
-        "has-tostringtag": "^1.0.2",
-        "hasown": "^2.0.2"
       },
       "engines": {
         "node": ">= 0.4"
@@ -7919,6 +7597,7 @@
     },
     "node_modules/exponential-backoff": {
       "version": "3.1.1",
+      "dev": true,
       "license": "Apache-2.0"
     },
     "node_modules/fancy-log": {
@@ -8211,22 +7890,6 @@
       },
       "funding": {
         "url": "https://github.com/sponsors/isaacs"
-      }
-    },
-    "node_modules/form-data": {
-      "version": "4.0.4",
-      "integrity": "sha512-KrGhL9Q4zjj0kiUt5OO4Mr/A/jlI2jDYs5eHBpYHPcBEVSiipAvn2Ko2HnPe20rmcuuvMHNdZFp+4IlGTMF0Ow==",
-      "dev": true,
-      "license": "MIT",
-      "dependencies": {
-        "asynckit": "^0.4.0",
-        "combined-stream": "^1.0.8",
-        "es-set-tostringtag": "^2.1.0",
-        "hasown": "^2.0.2",
-        "mime-types": "^2.1.12"
-      },
-      "engines": {
-        "node": ">= 6"
       }
     },
     "node_modules/formdata-polyfill": {
@@ -8591,21 +8254,6 @@
         "url": "https://github.com/sponsors/ljharb"
       }
     },
-    "node_modules/has-tostringtag": {
-      "version": "1.0.2",
-      "integrity": "sha512-NqADB8VjPFLM2V0VvHUewwwsw0ZWBaIdgo+ieHtK3hasLz4qeCRjYcqfB6AQrBggRKppKF8L52/VqdVsO47Dlw==",
-      "dev": true,
-      "license": "MIT",
-      "dependencies": {
-        "has-symbols": "^1.0.3"
-      },
-      "engines": {
-        "node": ">= 0.4"
-      },
-      "funding": {
-        "url": "https://github.com/sponsors/ljharb"
-      }
-    },
     "node_modules/has-unicode": {
       "version": "2.0.1",
       "dev": true,
@@ -8693,6 +8341,7 @@
     },
     "node_modules/http-cache-semantics": {
       "version": "4.1.1",
+      "dev": true,
       "license": "BSD-2-Clause"
     },
     "node_modules/http-proxy": {
@@ -8868,29 +8517,6 @@
         "node": ">=10 <11 || >=12 <13 || >=14"
       }
     },
-    "node_modules/ignore-walk": {
-      "version": "6.0.4",
-      "license": "ISC",
-      "dependencies": {
-        "minimatch": "^9.0.0"
-      },
-      "engines": {
-        "node": "^14.17.0 || ^16.13.0 || >=18.0.0"
-      }
-    },
-    "node_modules/ignore-walk/node_modules/minimatch": {
-      "version": "9.0.3",
-      "license": "ISC",
-      "dependencies": {
-        "brace-expansion": "^2.0.1"
-      },
-      "engines": {
-        "node": ">=16 || 14 >=14.17"
-      },
-      "funding": {
-        "url": "https://github.com/sponsors/isaacs"
-      }
-    },
     "node_modules/import-fresh": {
       "version": "3.3.0",
       "dev": true,
@@ -8934,6 +8560,7 @@
     },
     "node_modules/imurmurhash": {
       "version": "0.1.4",
+      "dev": true,
       "license": "MIT",
       "engines": {
         "node": ">=0.8.19"
@@ -8941,6 +8568,7 @@
     },
     "node_modules/indent-string": {
       "version": "4.0.0",
+      "dev": true,
       "license": "MIT",
       "engines": {
         "node": ">=8"
@@ -9018,6 +8646,7 @@
     },
     "node_modules/ip-address": {
       "version": "9.0.5",
+      "dev": true,
       "license": "MIT",
       "dependencies": {
         "jsbn": "1.1.0",
@@ -9029,6 +8658,7 @@
     },
     "node_modules/ip-address/node_modules/sprintf-js": {
       "version": "1.1.3",
+      "dev": true,
       "license": "BSD-3-Clause"
     },
     "node_modules/irregular-plurals": {
@@ -9111,6 +8741,7 @@
     },
     "node_modules/is-lambda": {
       "version": "1.0.1",
+      "dev": true,
       "license": "MIT"
     },
     "node_modules/is-number": {
@@ -10178,6 +9809,7 @@
     },
     "node_modules/jsbn": {
       "version": "1.1.0",
+      "dev": true,
       "license": "MIT"
     },
     "node_modules/jsesc": {
@@ -10242,6 +9874,7 @@
     },
     "node_modules/jsonparse": {
       "version": "1.3.1",
+      "dev": true,
       "engines": [
         "node >= 0.2.0"
       ],
@@ -10699,25 +10332,6 @@
         "node": ">=4.0.0"
       }
     },
-    "node_modules/mime-db": {
-      "version": "1.52.0",
-      "dev": true,
-      "license": "MIT",
-      "engines": {
-        "node": ">= 0.6"
-      }
-    },
-    "node_modules/mime-types": {
-      "version": "2.1.35",
-      "dev": true,
-      "license": "MIT",
-      "dependencies": {
-        "mime-db": "1.52.0"
-      },
-      "engines": {
-        "node": ">= 0.6"
-      }
-    },
     "node_modules/mimic-fn": {
       "version": "2.1.0",
       "dev": true,
@@ -10802,6 +10416,7 @@
     },
     "node_modules/minipass-flush": {
       "version": "1.0.5",
+      "dev": true,
       "license": "ISC",
       "dependencies": {
         "minipass": "^3.0.0"
@@ -10821,6 +10436,7 @@
     },
     "node_modules/minipass-pipeline": {
       "version": "1.2.4",
+      "dev": true,
       "license": "ISC",
       "dependencies": {
         "minipass": "^3.0.0"
@@ -10831,6 +10447,7 @@
     },
     "node_modules/minipass-sized": {
       "version": "1.0.3",
+      "dev": true,
       "license": "ISC",
       "dependencies": {
         "minipass": "^3.0.0"
@@ -11027,6 +10644,7 @@
     },
     "node_modules/negotiator": {
       "version": "0.6.3",
+      "dev": true,
       "license": "MIT",
       "engines": {
         "node": ">= 0.6"
@@ -11249,6 +10867,7 @@
     },
     "node_modules/normalize-package-data": {
       "version": "6.0.2",
+      "dev": true,
       "license": "BSD-2-Clause",
       "dependencies": {
         "hosted-git-info": "^7.0.0",
@@ -11277,6 +10896,7 @@
     },
     "node_modules/npm-install-checks": {
       "version": "6.3.0",
+      "dev": true,
       "license": "BSD-2-Clause",
       "dependencies": {
         "semver": "^7.1.1"
@@ -11960,186 +11580,6 @@
         "node": "^12.13.0 || ^14.15.0 || >=16.0.0"
       }
     },
-    "node_modules/npm-registry-fetch": {
-      "version": "17.1.0",
-      "license": "ISC",
-      "dependencies": {
-        "@npmcli/redact": "^2.0.0",
-        "jsonparse": "^1.3.1",
-        "make-fetch-happen": "^13.0.0",
-        "minipass": "^7.0.2",
-        "minipass-fetch": "^3.0.0",
-        "minizlib": "^2.1.2",
-        "npm-package-arg": "^11.0.0",
-        "proc-log": "^4.0.0"
-      },
-      "engines": {
-        "node": "^16.14.0 || >=18.0.0"
-      }
-    },
-    "node_modules/npm-registry-fetch/node_modules/@npmcli/fs": {
-      "version": "3.1.1",
-      "license": "ISC",
-      "dependencies": {
-        "semver": "^7.3.5"
-      },
-      "engines": {
-        "node": "^14.17.0 || ^16.13.0 || >=18.0.0"
-      }
-    },
-    "node_modules/npm-registry-fetch/node_modules/cacache": {
-      "version": "18.0.3",
-      "license": "ISC",
-      "dependencies": {
-        "@npmcli/fs": "^3.1.0",
-        "fs-minipass": "^3.0.0",
-        "glob": "^10.2.2",
-        "lru-cache": "^10.0.1",
-        "minipass": "^7.0.3",
-        "minipass-collect": "^2.0.1",
-        "minipass-flush": "^1.0.5",
-        "minipass-pipeline": "^1.2.4",
-        "p-map": "^4.0.0",
-        "ssri": "^10.0.0",
-        "tar": "^6.1.11",
-        "unique-filename": "^3.0.0"
-      },
-      "engines": {
-        "node": "^16.14.0 || >=18.0.0"
-      }
-    },
-    "node_modules/npm-registry-fetch/node_modules/fs-minipass": {
-      "version": "3.0.3",
-      "license": "ISC",
-      "dependencies": {
-        "minipass": "^7.0.3"
-      },
-      "engines": {
-        "node": "^14.17.0 || ^16.13.0 || >=18.0.0"
-      }
-    },
-    "node_modules/npm-registry-fetch/node_modules/glob": {
-      "version": "10.5.0",
-      "integrity": "sha512-DfXN8DfhJ7NH3Oe7cFmu3NCu1wKbkReJ8TorzSAFbSKrlNaQSKfIzqYqVY8zlbs2NLBbWpRiU52GX2PbaBVNkg==",
-      "license": "ISC",
-      "dependencies": {
-        "foreground-child": "^3.1.0",
-        "jackspeak": "^3.1.2",
-        "minimatch": "^9.0.4",
-        "minipass": "^7.1.2",
-        "package-json-from-dist": "^1.0.0",
-        "path-scurry": "^1.11.1"
-      },
-      "bin": {
-        "glob": "dist/esm/bin.mjs"
-      },
-      "funding": {
-        "url": "https://github.com/sponsors/isaacs"
-      }
-    },
-    "node_modules/npm-registry-fetch/node_modules/make-fetch-happen": {
-      "version": "13.0.1",
-      "license": "ISC",
-      "dependencies": {
-        "@npmcli/agent": "^2.0.0",
-        "cacache": "^18.0.0",
-        "http-cache-semantics": "^4.1.1",
-        "is-lambda": "^1.0.1",
-        "minipass": "^7.0.2",
-        "minipass-fetch": "^3.0.0",
-        "minipass-flush": "^1.0.5",
-        "minipass-pipeline": "^1.2.4",
-        "negotiator": "^0.6.3",
-        "proc-log": "^4.2.0",
-        "promise-retry": "^2.0.1",
-        "ssri": "^10.0.0"
-      },
-      "engines": {
-        "node": "^16.14.0 || >=18.0.0"
-      }
-    },
-    "node_modules/npm-registry-fetch/node_modules/minimatch": {
-      "version": "9.0.5",
-      "license": "ISC",
-      "dependencies": {
-        "brace-expansion": "^2.0.1"
-      },
-      "engines": {
-        "node": ">=16 || 14 >=14.17"
-      },
-      "funding": {
-        "url": "https://github.com/sponsors/isaacs"
-      }
-    },
-    "node_modules/npm-registry-fetch/node_modules/minipass": {
-      "version": "7.1.2",
-      "license": "ISC",
-      "engines": {
-        "node": ">=16 || 14 >=14.17"
-      }
-    },
-    "node_modules/npm-registry-fetch/node_modules/minipass-collect": {
-      "version": "2.0.1",
-      "license": "ISC",
-      "dependencies": {
-        "minipass": "^7.0.3"
-      },
-      "engines": {
-        "node": ">=16 || 14 >=14.17"
-      }
-    },
-    "node_modules/npm-registry-fetch/node_modules/minipass-fetch": {
-      "version": "3.0.5",
-      "license": "MIT",
-      "dependencies": {
-        "minipass": "^7.0.3",
-        "minipass-sized": "^1.0.3",
-        "minizlib": "^2.1.2"
-      },
-      "engines": {
-        "node": "^14.17.0 || ^16.13.0 || >=18.0.0"
-      },
-      "optionalDependencies": {
-        "encoding": "^0.1.13"
-      }
-    },
-    "node_modules/npm-registry-fetch/node_modules/proc-log": {
-      "version": "4.2.0",
-      "license": "ISC",
-      "engines": {
-        "node": "^14.17.0 || ^16.13.0 || >=18.0.0"
-      }
-    },
-    "node_modules/npm-registry-fetch/node_modules/ssri": {
-      "version": "10.0.6",
-      "license": "ISC",
-      "dependencies": {
-        "minipass": "^7.0.3"
-      },
-      "engines": {
-        "node": "^14.17.0 || ^16.13.0 || >=18.0.0"
-      }
-    },
-    "node_modules/npm-registry-fetch/node_modules/unique-filename": {
-      "version": "3.0.0",
-      "license": "ISC",
-      "dependencies": {
-        "unique-slug": "^4.0.0"
-      },
-      "engines": {
-        "node": "^14.17.0 || ^16.13.0 || >=18.0.0"
-      }
-    },
-    "node_modules/npm-registry-fetch/node_modules/unique-slug": {
-      "version": "4.0.0",
-      "license": "ISC",
-      "dependencies": {
-        "imurmurhash": "^0.1.4"
-      },
-      "engines": {
-        "node": "^14.17.0 || ^16.13.0 || >=18.0.0"
-      }
-    },
     "node_modules/npm-run-path": {
       "version": "4.0.1",
       "dev": true,
@@ -12262,6 +11702,7 @@
     },
     "node_modules/p-map": {
       "version": "4.0.0",
+      "dev": true,
       "license": "MIT",
       "dependencies": {
         "aggregate-error": "^3.0.0"
@@ -12325,366 +11766,6 @@
     "node_modules/package-json-from-dist": {
       "version": "1.0.0",
       "license": "BlueOak-1.0.0"
-    },
-    "node_modules/pacote": {
-      "version": "18.0.6",
-      "license": "ISC",
-      "dependencies": {
-        "@npmcli/git": "^5.0.0",
-        "@npmcli/installed-package-contents": "^2.0.1",
-        "@npmcli/package-json": "^5.1.0",
-        "@npmcli/promise-spawn": "^7.0.0",
-        "@npmcli/run-script": "^8.0.0",
-        "cacache": "^18.0.0",
-        "fs-minipass": "^3.0.0",
-        "minipass": "^7.0.2",
-        "npm-package-arg": "^11.0.0",
-        "npm-packlist": "^8.0.0",
-        "npm-pick-manifest": "^9.0.0",
-        "npm-registry-fetch": "^17.0.0",
-        "proc-log": "^4.0.0",
-        "promise-retry": "^2.0.1",
-        "sigstore": "^2.2.0",
-        "ssri": "^10.0.0",
-        "tar": "^6.1.11"
-      },
-      "bin": {
-        "pacote": "bin/index.js"
-      },
-      "engines": {
-        "node": "^16.14.0 || >=18.0.0"
-      }
-    },
-    "node_modules/pacote/node_modules/@npmcli/fs": {
-      "version": "3.1.1",
-      "license": "ISC",
-      "dependencies": {
-        "semver": "^7.3.5"
-      },
-      "engines": {
-        "node": "^14.17.0 || ^16.13.0 || >=18.0.0"
-      }
-    },
-    "node_modules/pacote/node_modules/@npmcli/installed-package-contents": {
-      "version": "2.0.2",
-      "license": "ISC",
-      "dependencies": {
-        "npm-bundled": "^3.0.0",
-        "npm-normalize-package-bin": "^3.0.0"
-      },
-      "bin": {
-        "installed-package-contents": "lib/index.js"
-      },
-      "engines": {
-        "node": "^14.17.0 || ^16.13.0 || >=18.0.0"
-      }
-    },
-    "node_modules/pacote/node_modules/@npmcli/node-gyp": {
-      "version": "3.0.0",
-      "license": "ISC",
-      "engines": {
-        "node": "^14.17.0 || ^16.13.0 || >=18.0.0"
-      }
-    },
-    "node_modules/pacote/node_modules/@npmcli/package-json": {
-      "version": "5.2.0",
-      "license": "ISC",
-      "dependencies": {
-        "@npmcli/git": "^5.0.0",
-        "glob": "^10.2.2",
-        "hosted-git-info": "^7.0.0",
-        "json-parse-even-better-errors": "^3.0.0",
-        "normalize-package-data": "^6.0.0",
-        "proc-log": "^4.0.0",
-        "semver": "^7.5.3"
-      },
-      "engines": {
-        "node": "^16.14.0 || >=18.0.0"
-      }
-    },
-    "node_modules/pacote/node_modules/@npmcli/run-script": {
-      "version": "8.1.0",
-      "license": "ISC",
-      "dependencies": {
-        "@npmcli/node-gyp": "^3.0.0",
-        "@npmcli/package-json": "^5.0.0",
-        "@npmcli/promise-spawn": "^7.0.0",
-        "node-gyp": "^10.0.0",
-        "proc-log": "^4.0.0",
-        "which": "^4.0.0"
-      },
-      "engines": {
-        "node": "^16.14.0 || >=18.0.0"
-      }
-    },
-    "node_modules/pacote/node_modules/abbrev": {
-      "version": "2.0.0",
-      "license": "ISC",
-      "engines": {
-        "node": "^14.17.0 || ^16.13.0 || >=18.0.0"
-      }
-    },
-    "node_modules/pacote/node_modules/cacache": {
-      "version": "18.0.3",
-      "license": "ISC",
-      "dependencies": {
-        "@npmcli/fs": "^3.1.0",
-        "fs-minipass": "^3.0.0",
-        "glob": "^10.2.2",
-        "lru-cache": "^10.0.1",
-        "minipass": "^7.0.3",
-        "minipass-collect": "^2.0.1",
-        "minipass-flush": "^1.0.5",
-        "minipass-pipeline": "^1.2.4",
-        "p-map": "^4.0.0",
-        "ssri": "^10.0.0",
-        "tar": "^6.1.11",
-        "unique-filename": "^3.0.0"
-      },
-      "engines": {
-        "node": "^16.14.0 || >=18.0.0"
-      }
-    },
-    "node_modules/pacote/node_modules/fs-minipass": {
-      "version": "3.0.3",
-      "license": "ISC",
-      "dependencies": {
-        "minipass": "^7.0.3"
-      },
-      "engines": {
-        "node": "^14.17.0 || ^16.13.0 || >=18.0.0"
-      }
-    },
-    "node_modules/pacote/node_modules/glob": {
-      "version": "10.5.0",
-      "integrity": "sha512-DfXN8DfhJ7NH3Oe7cFmu3NCu1wKbkReJ8TorzSAFbSKrlNaQSKfIzqYqVY8zlbs2NLBbWpRiU52GX2PbaBVNkg==",
-      "license": "ISC",
-      "dependencies": {
-        "foreground-child": "^3.1.0",
-        "jackspeak": "^3.1.2",
-        "minimatch": "^9.0.4",
-        "minipass": "^7.1.2",
-        "package-json-from-dist": "^1.0.0",
-        "path-scurry": "^1.11.1"
-      },
-      "bin": {
-        "glob": "dist/esm/bin.mjs"
-      },
-      "funding": {
-        "url": "https://github.com/sponsors/isaacs"
-      }
-    },
-    "node_modules/pacote/node_modules/isexe": {
-      "version": "3.1.1",
-      "license": "ISC",
-      "engines": {
-        "node": ">=16"
-      }
-    },
-    "node_modules/pacote/node_modules/json-parse-even-better-errors": {
-      "version": "3.0.2",
-      "license": "MIT",
-      "engines": {
-        "node": "^14.17.0 || ^16.13.0 || >=18.0.0"
-      }
-    },
-    "node_modules/pacote/node_modules/make-fetch-happen": {
-      "version": "13.0.1",
-      "license": "ISC",
-      "dependencies": {
-        "@npmcli/agent": "^2.0.0",
-        "cacache": "^18.0.0",
-        "http-cache-semantics": "^4.1.1",
-        "is-lambda": "^1.0.1",
-        "minipass": "^7.0.2",
-        "minipass-fetch": "^3.0.0",
-        "minipass-flush": "^1.0.5",
-        "minipass-pipeline": "^1.2.4",
-        "negotiator": "^0.6.3",
-        "proc-log": "^4.2.0",
-        "promise-retry": "^2.0.1",
-        "ssri": "^10.0.0"
-      },
-      "engines": {
-        "node": "^16.14.0 || >=18.0.0"
-      }
-    },
-    "node_modules/pacote/node_modules/minimatch": {
-      "version": "9.0.5",
-      "license": "ISC",
-      "dependencies": {
-        "brace-expansion": "^2.0.1"
-      },
-      "engines": {
-        "node": ">=16 || 14 >=14.17"
-      },
-      "funding": {
-        "url": "https://github.com/sponsors/isaacs"
-      }
-    },
-    "node_modules/pacote/node_modules/minipass": {
-      "version": "7.1.2",
-      "license": "ISC",
-      "engines": {
-        "node": ">=16 || 14 >=14.17"
-      }
-    },
-    "node_modules/pacote/node_modules/minipass-collect": {
-      "version": "2.0.1",
-      "license": "ISC",
-      "dependencies": {
-        "minipass": "^7.0.3"
-      },
-      "engines": {
-        "node": ">=16 || 14 >=14.17"
-      }
-    },
-    "node_modules/pacote/node_modules/minipass-fetch": {
-      "version": "3.0.5",
-      "license": "MIT",
-      "dependencies": {
-        "minipass": "^7.0.3",
-        "minipass-sized": "^1.0.3",
-        "minizlib": "^2.1.2"
-      },
-      "engines": {
-        "node": "^14.17.0 || ^16.13.0 || >=18.0.0"
-      },
-      "optionalDependencies": {
-        "encoding": "^0.1.13"
-      }
-    },
-    "node_modules/pacote/node_modules/node-gyp": {
-      "version": "10.1.0",
-      "license": "MIT",
-      "dependencies": {
-        "env-paths": "^2.2.0",
-        "exponential-backoff": "^3.1.1",
-        "glob": "^10.3.10",
-        "graceful-fs": "^4.2.6",
-        "make-fetch-happen": "^13.0.0",
-        "nopt": "^7.0.0",
-        "proc-log": "^3.0.0",
-        "semver": "^7.3.5",
-        "tar": "^6.1.2",
-        "which": "^4.0.0"
-      },
-      "bin": {
-        "node-gyp": "bin/node-gyp.js"
-      },
-      "engines": {
-        "node": "^16.14.0 || >=18.0.0"
-      }
-    },
-    "node_modules/pacote/node_modules/node-gyp/node_modules/proc-log": {
-      "version": "3.0.0",
-      "license": "ISC",
-      "engines": {
-        "node": "^14.17.0 || ^16.13.0 || >=18.0.0"
-      }
-    },
-    "node_modules/pacote/node_modules/nopt": {
-      "version": "7.2.1",
-      "license": "ISC",
-      "dependencies": {
-        "abbrev": "^2.0.0"
-      },
-      "bin": {
-        "nopt": "bin/nopt.js"
-      },
-      "engines": {
-        "node": "^14.17.0 || ^16.13.0 || >=18.0.0"
-      }
-    },
-    "node_modules/pacote/node_modules/npm-bundled": {
-      "version": "3.0.0",
-      "license": "ISC",
-      "dependencies": {
-        "npm-normalize-package-bin": "^3.0.0"
-      },
-      "engines": {
-        "node": "^14.17.0 || ^16.13.0 || >=18.0.0"
-      }
-    },
-    "node_modules/pacote/node_modules/npm-normalize-package-bin": {
-      "version": "3.0.1",
-      "license": "ISC",
-      "engines": {
-        "node": "^14.17.0 || ^16.13.0 || >=18.0.0"
-      }
-    },
-    "node_modules/pacote/node_modules/npm-packlist": {
-      "version": "8.0.2",
-      "license": "ISC",
-      "dependencies": {
-        "ignore-walk": "^6.0.4"
-      },
-      "engines": {
-        "node": "^14.17.0 || ^16.13.0 || >=18.0.0"
-      }
-    },
-    "node_modules/pacote/node_modules/npm-pick-manifest": {
-      "version": "9.0.0",
-      "license": "ISC",
-      "dependencies": {
-        "npm-install-checks": "^6.0.0",
-        "npm-normalize-package-bin": "^3.0.0",
-        "npm-package-arg": "^11.0.0",
-        "semver": "^7.3.5"
-      },
-      "engines": {
-        "node": "^16.14.0 || >=18.0.0"
-      }
-    },
-    "node_modules/pacote/node_modules/proc-log": {
-      "version": "4.2.0",
-      "license": "ISC",
-      "engines": {
-        "node": "^14.17.0 || ^16.13.0 || >=18.0.0"
-      }
-    },
-    "node_modules/pacote/node_modules/ssri": {
-      "version": "10.0.6",
-      "license": "ISC",
-      "dependencies": {
-        "minipass": "^7.0.3"
-      },
-      "engines": {
-        "node": "^14.17.0 || ^16.13.0 || >=18.0.0"
-      }
-    },
-    "node_modules/pacote/node_modules/unique-filename": {
-      "version": "3.0.0",
-      "license": "ISC",
-      "dependencies": {
-        "unique-slug": "^4.0.0"
-      },
-      "engines": {
-        "node": "^14.17.0 || ^16.13.0 || >=18.0.0"
-      }
-    },
-    "node_modules/pacote/node_modules/unique-slug": {
-      "version": "4.0.0",
-      "license": "ISC",
-      "dependencies": {
-        "imurmurhash": "^0.1.4"
-      },
-      "engines": {
-        "node": "^14.17.0 || ^16.13.0 || >=18.0.0"
-      }
-    },
-    "node_modules/pacote/node_modules/which": {
-      "version": "4.0.0",
-      "license": "ISC",
-      "dependencies": {
-        "isexe": "^3.1.1"
-      },
-      "bin": {
-        "node-which": "bin/which.js"
-      },
-      "engines": {
-        "node": "^16.13.0 || >=18.0.0"
-      }
     },
     "node_modules/parent-module": {
       "version": "1.0.1",
@@ -13167,6 +12248,7 @@
     },
     "node_modules/promise-inflight": {
       "version": "1.0.1",
+      "dev": true,
       "license": "ISC"
     },
     "node_modules/promise-polyfill": {
@@ -13176,6 +12258,7 @@
     },
     "node_modules/promise-retry": {
       "version": "2.0.1",
+      "dev": true,
       "license": "MIT",
       "dependencies": {
         "err-code": "^2.0.2",
@@ -13608,6 +12691,7 @@
     },
     "node_modules/retry": {
       "version": "0.12.0",
+      "dev": true,
       "license": "MIT",
       "engines": {
         "node": ">= 4"
@@ -13901,21 +12985,6 @@
       "dev": true,
       "license": "ISC"
     },
-    "node_modules/sigstore": {
-      "version": "2.2.2",
-      "license": "Apache-2.0",
-      "dependencies": {
-        "@sigstore/bundle": "^2.2.0",
-        "@sigstore/core": "^1.0.0",
-        "@sigstore/protobuf-specs": "^0.3.0",
-        "@sigstore/sign": "^2.2.3",
-        "@sigstore/tuf": "^2.3.1",
-        "@sigstore/verify": "^1.1.0"
-      },
-      "engines": {
-        "node": "^16.14.0 || >=18.0.0"
-      }
-    },
     "node_modules/simple-swizzle": {
       "version": "0.2.2",
       "integrity": "sha512-JA//kQgZtbuY83m+xT+tXJkmJncGMTFT+C+g2h2R9uxkYIrE2yy9sgmcLhCnw57/WSD+Eh3J97FPEDFnbXnDUg==",
@@ -13981,6 +13050,7 @@
     },
     "node_modules/smart-buffer": {
       "version": "4.2.0",
+      "dev": true,
       "license": "MIT",
       "engines": {
         "node": ">= 6.0.0",
@@ -13989,6 +13059,7 @@
     },
     "node_modules/socks": {
       "version": "2.7.3",
+      "dev": true,
       "license": "MIT",
       "dependencies": {
         "ip-address": "^9.0.5",
@@ -14058,6 +13129,7 @@
     },
     "node_modules/spdx-correct": {
       "version": "3.1.1",
+      "dev": true,
       "license": "Apache-2.0",
       "dependencies": {
         "spdx-expression-parse": "^3.0.0",
@@ -14066,10 +13138,12 @@
     },
     "node_modules/spdx-exceptions": {
       "version": "2.3.0",
+      "dev": true,
       "license": "CC-BY-3.0"
     },
     "node_modules/spdx-expression-parse": {
       "version": "3.0.1",
+      "dev": true,
       "license": "MIT",
       "dependencies": {
         "spdx-exceptions": "^2.1.0",
@@ -14078,6 +13152,7 @@
     },
     "node_modules/spdx-license-ids": {
       "version": "3.0.11",
+      "dev": true,
       "license": "CC0-1.0"
     },
     "node_modules/split.js": {
@@ -14750,175 +13825,6 @@
         "typescript": ">=2.8.0 || >= 3.2.0-dev || >= 3.3.0-dev || >= 3.4.0-dev || >= 3.5.0-dev || >= 3.6.0-dev || >= 3.6.0-beta || >= 3.7.0-dev || >= 3.7.0-beta"
       }
     },
-    "node_modules/tuf-js": {
-      "version": "2.2.0",
-      "license": "MIT",
-      "dependencies": {
-        "@tufjs/models": "2.0.0",
-        "debug": "^4.3.4",
-        "make-fetch-happen": "^13.0.0"
-      },
-      "engines": {
-        "node": "^16.14.0 || >=18.0.0"
-      }
-    },
-    "node_modules/tuf-js/node_modules/@npmcli/fs": {
-      "version": "3.1.0",
-      "license": "ISC",
-      "dependencies": {
-        "semver": "^7.3.5"
-      },
-      "engines": {
-        "node": "^14.17.0 || ^16.13.0 || >=18.0.0"
-      }
-    },
-    "node_modules/tuf-js/node_modules/cacache": {
-      "version": "18.0.2",
-      "license": "ISC",
-      "dependencies": {
-        "@npmcli/fs": "^3.1.0",
-        "fs-minipass": "^3.0.0",
-        "glob": "^10.2.2",
-        "lru-cache": "^10.0.1",
-        "minipass": "^7.0.3",
-        "minipass-collect": "^2.0.1",
-        "minipass-flush": "^1.0.5",
-        "minipass-pipeline": "^1.2.4",
-        "p-map": "^4.0.0",
-        "ssri": "^10.0.0",
-        "tar": "^6.1.11",
-        "unique-filename": "^3.0.0"
-      },
-      "engines": {
-        "node": "^16.14.0 || >=18.0.0"
-      }
-    },
-    "node_modules/tuf-js/node_modules/fs-minipass": {
-      "version": "3.0.3",
-      "license": "ISC",
-      "dependencies": {
-        "minipass": "^7.0.3"
-      },
-      "engines": {
-        "node": "^14.17.0 || ^16.13.0 || >=18.0.0"
-      }
-    },
-    "node_modules/tuf-js/node_modules/glob": {
-      "version": "10.5.0",
-      "integrity": "sha512-DfXN8DfhJ7NH3Oe7cFmu3NCu1wKbkReJ8TorzSAFbSKrlNaQSKfIzqYqVY8zlbs2NLBbWpRiU52GX2PbaBVNkg==",
-      "license": "ISC",
-      "dependencies": {
-        "foreground-child": "^3.1.0",
-        "jackspeak": "^3.1.2",
-        "minimatch": "^9.0.4",
-        "minipass": "^7.1.2",
-        "package-json-from-dist": "^1.0.0",
-        "path-scurry": "^1.11.1"
-      },
-      "bin": {
-        "glob": "dist/esm/bin.mjs"
-      },
-      "funding": {
-        "url": "https://github.com/sponsors/isaacs"
-      }
-    },
-    "node_modules/tuf-js/node_modules/make-fetch-happen": {
-      "version": "13.0.0",
-      "license": "ISC",
-      "dependencies": {
-        "@npmcli/agent": "^2.0.0",
-        "cacache": "^18.0.0",
-        "http-cache-semantics": "^4.1.1",
-        "is-lambda": "^1.0.1",
-        "minipass": "^7.0.2",
-        "minipass-fetch": "^3.0.0",
-        "minipass-flush": "^1.0.5",
-        "minipass-pipeline": "^1.2.4",
-        "negotiator": "^0.6.3",
-        "promise-retry": "^2.0.1",
-        "ssri": "^10.0.0"
-      },
-      "engines": {
-        "node": "^16.14.0 || >=18.0.0"
-      }
-    },
-    "node_modules/tuf-js/node_modules/minimatch": {
-      "version": "9.0.5",
-      "integrity": "sha512-G6T0ZX48xgozx7587koeX9Ys2NYy6Gmv//P89sEte9V9whIapMNF4idKxnW2QtCcLiTWlb/wfCabAtAFWhhBow==",
-      "license": "ISC",
-      "dependencies": {
-        "brace-expansion": "^2.0.1"
-      },
-      "engines": {
-        "node": ">=16 || 14 >=14.17"
-      },
-      "funding": {
-        "url": "https://github.com/sponsors/isaacs"
-      }
-    },
-    "node_modules/tuf-js/node_modules/minipass": {
-      "version": "7.1.2",
-      "integrity": "sha512-qOOzS1cBTWYF4BH8fVePDBOO9iptMnGUEZwNc/cMWnTV2nVLZ7VoNWEPHkYczZA0pdoA7dl6e7FL659nX9S2aw==",
-      "license": "ISC",
-      "engines": {
-        "node": ">=16 || 14 >=14.17"
-      }
-    },
-    "node_modules/tuf-js/node_modules/minipass-collect": {
-      "version": "2.0.1",
-      "license": "ISC",
-      "dependencies": {
-        "minipass": "^7.0.3"
-      },
-      "engines": {
-        "node": ">=16 || 14 >=14.17"
-      }
-    },
-    "node_modules/tuf-js/node_modules/minipass-fetch": {
-      "version": "3.0.4",
-      "license": "MIT",
-      "dependencies": {
-        "minipass": "^7.0.3",
-        "minipass-sized": "^1.0.3",
-        "minizlib": "^2.1.2"
-      },
-      "engines": {
-        "node": "^14.17.0 || ^16.13.0 || >=18.0.0"
-      },
-      "optionalDependencies": {
-        "encoding": "^0.1.13"
-      }
-    },
-    "node_modules/tuf-js/node_modules/ssri": {
-      "version": "10.0.5",
-      "license": "ISC",
-      "dependencies": {
-        "minipass": "^7.0.3"
-      },
-      "engines": {
-        "node": "^14.17.0 || ^16.13.0 || >=18.0.0"
-      }
-    },
-    "node_modules/tuf-js/node_modules/unique-filename": {
-      "version": "3.0.0",
-      "license": "ISC",
-      "dependencies": {
-        "unique-slug": "^4.0.0"
-      },
-      "engines": {
-        "node": "^14.17.0 || ^16.13.0 || >=18.0.0"
-      }
-    },
-    "node_modules/tuf-js/node_modules/unique-slug": {
-      "version": "4.0.0",
-      "license": "ISC",
-      "dependencies": {
-        "imurmurhash": "^0.1.4"
-      },
-      "engines": {
-        "node": "^14.17.0 || ^16.13.0 || >=18.0.0"
-      }
-    },
     "node_modules/tweetnacl": {
       "version": "0.14.5",
       "license": "Unlicense"
@@ -15158,6 +14064,7 @@
     },
     "node_modules/validate-npm-package-license": {
       "version": "3.0.4",
+      "dev": true,
       "license": "Apache-2.0",
       "dependencies": {
         "spdx-correct": "^3.0.0",
@@ -15699,7 +14606,6 @@
         "mustache": "^4.2.0",
         "npm-package-arg": "^11.0.1",
         "opener": "^1.5.2",
-        "pacote": "^18.0.6",
         "prettyjson": "^1.2.5",
         "progress": "^2.0.3",
         "read": "^3.0.1",
@@ -15721,7 +14627,6 @@
         "@types/lodash-deep": "^2.0.4",
         "@types/mustache": "^4.2.5",
         "@types/npm-package-arg": "^6.1.4",
-        "@types/pacote": "^11.1.8",
         "@types/progress": "^2.0.7",
         "@types/stack-trace": "^0.0.33",
         "@zowe/secrets-for-zowe-sdk": "8.29.4",

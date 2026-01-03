@@ -38,7 +38,7 @@ export async function update(packageName: string, registryInfo: INpmRegistryInfo
     });
 
     // We fetch the package version of newly installed plugin
-    const packageInfo = await getPackageInfo(npmPackage);
+    const packageInfo = getPackageInfo(npmPackage);
     const packageVersion = packageInfo.version;
 
     iConsole.info("Update complete");
