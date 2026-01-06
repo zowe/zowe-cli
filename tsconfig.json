@@ -31,6 +31,6 @@
     "**/*.test.ts"
   ],
   "files": [
-    "./__types__/wontache.d.ts"
+    "./__types__/hogan.d.ts"
   ]
 }
