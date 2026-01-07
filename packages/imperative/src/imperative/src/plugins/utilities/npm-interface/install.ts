@@ -127,7 +127,7 @@ export async function install(packageLocation: string, registryInfo: INpmRegistr
         }, verbose);
 
         // We fetch the package name and version of newly installed plugin
-        const packageInfo = await getPackageInfo(npmPackage);
+        const packageInfo = getPackageInfo(npmPackage);
         const packageName = packageInfo.name;
         let packageVersion = packageInfo.version;
 
