@@ -178,6 +178,16 @@ exports[`Create  Data Set should display the help 1`] = `
 
       The value of the token to pass to the API.
 
+   --cert-account (string)
+
+      The credential-manager account name that stores the certificate bytes to use for
+      authentication.
+
+   --cert-key-account (string)
+
+      The credential-manager account name that stores the certificate key bytes to use
+      for authentication.
+
  GLOBAL OPTIONS
  --------------
 

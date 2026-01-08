@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe core SDK package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Added profile option constants and BaseProfile schema entries for `certAccount` and `certKeyAccount`. [#2325](https://github.com/zowe/zowe-cli/issues/2325)
+
 ## `8.27.4`
 
 - BugFix: Updated minimum supported version of Node from 18 to 20. Added Node 24 support. [#2616](https://github.com/zowe/zowe-cli/pull/2616)
@@ -11,6 +15,7 @@ All notable changes to the Zowe core SDK package will be documented in this file
 - Enhancement: Updated the `Login.apimlLogin` API function to record that it is making a request for a token into the session associated with its REST request. [#2491](https://github.com/zowe/zowe-cli/pull/2491)
 
 ## `8.19.0`
+
 - Enhancement: Updated help examples to replace short option aliases (e.g. `-h`) with full option names (e.g. `--help`) for improved clarity and consistency in documentation. [#2484](https://github.com/zowe/zowe-cli/pull/2484)
 
 ## `8.1.1`

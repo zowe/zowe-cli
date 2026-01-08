@@ -36,4 +36,11 @@ export enum PersistenceValue {
 
 export interface IDefaultCredentialManagerOptions extends ICredentialManagerOptions {
     persist?: PersistenceLevel;
+    /**
+     * When true, prompts user for confirmation before accessing certificates
+     * from the system keychain (e.g., macOS Keychain, Windows Credential Vault).
+     * This provides explicit user consent for certificate access.
+     * Default is false for backward compatibility.
+     */
+    promptForCertAccess?: boolean;
 }

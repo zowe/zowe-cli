@@ -106,6 +106,8 @@ extern "C" {
     pub static kSecAttrService: CFStringRef;
     pub static kSecClass: CFStringRef;
     pub static kSecClassGenericPassword: CFStringRef;
+    pub static kSecClassCertificate: CFStringRef;
+    pub static kSecClassIdentity: CFStringRef;
     pub static kSecMatchLimit: CFStringRef;
     pub static kSecReturnAttributes: CFStringRef;
     pub static kSecReturnData: CFStringRef;
@@ -115,4 +117,18 @@ extern "C" {
     pub fn SecCertificateGetTypeID() -> CFTypeID;
     pub fn SecIdentityGetTypeID() -> CFTypeID;
     pub fn SecKeyGetTypeID() -> CFTypeID;
+    pub fn SecCertificateCopyData(certificate: SecCertificateRef) -> CFTypeRef;
+    pub fn SecIdentityCopyCertificate(identity: SecIdentityRef, certificate: *mut SecCertificateRef) -> OSStatus;
+    pub fn SecIdentityCopyPrivateKey(identity: SecIdentityRef, key: *mut SecKeyRef) -> OSStatus;
+    pub fn SecKeyCopyExternalRepresentation(key: SecKeyRef, error: *mut CFTypeRef) -> CFTypeRef;
+    
+    // SecItemExport for properly exporting keys with authorization prompts
+    // https://developer.apple.com/documentation/security/1394828-secitemexport
+    pub fn SecItemExport(
+        secItemOrArray: CFTypeRef,
+        outputFormat: u32,  // SecExternalFormat
+        flags: u32,          // SecItemImportExportFlags
+        keyParams: *const c_void,  // SecItemImportExportKeyParameters
+        exportedData: *mut CFTypeRef
+    ) -> OSStatus;
 }

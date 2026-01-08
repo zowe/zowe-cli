@@ -57,6 +57,10 @@ const {
     findPassword,
     getPassword,
     setPassword,
+    getCertificate,
+    getCertificateSync,
+    getCertificateKey,
+    getCertificateKeySync,
 } = requireFn(binaryPath);
 
 module.exports.deletePassword = deletePassword;
@@ -64,3 +68,7 @@ module.exports.findCredentials = findCredentials;
 module.exports.findPassword = findPassword;
 module.exports.getPassword = getPassword;
 module.exports.setPassword = setPassword;
+module.exports.getCertificate = getCertificate;
+module.exports.getCertificateSync = getCertificateSync;
+module.exports.getCertificateKey = getCertificateKey;
+module.exports.getCertificateKeySync = getCertificateKeySync;
