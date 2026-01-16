@@ -31,6 +31,8 @@ import { ConfigUtils } from "./ConfigUtils";
 import { IConfigSchemaInfo } from "./doc/IConfigSchema";
 import { JsUtils } from "../../utilities/src/JsUtils";
 import { IConfigMergeOpts } from "./doc/IConfigMergeOpts";
+import { ConfigEnvironmentVariables } from "./ConfigEnvironmentVariables";
+import { IConfigEnvVarManaged } from "./doc/IConfigEnvVarManaged";
 
 /**
  * Enum used by Config class to maintain order of config layers
@@ -118,13 +120,11 @@ export class Config {
     };
 
     /**
-     * Environment variable managed properties
+     * @internal
+     * A list of config properties managed by environment variables.
+     * These should not be saved if the config changes.
      */
-    private mEnvVarManaged: [{
-        global: boolean,
-        user: boolean,
-        value: string
-    }?] = [];
+    public mEnvVarManaged: [IConfigEnvVarManaged?] = [];
 
     // _______________________________________________________________________
     /**
@@ -211,19 +211,30 @@ export class Config {
                 currLayer.properties.defaults = currLayer.properties.defaults || {};
                 currLayer.properties.profiles = currLayer.properties.profiles || {};
 
-                const deepIterate = (obj: any, path: string = "") => {
+                const deepIterate = (obj: any, config: Config, path: string = "") => {
                     Object.keys(obj).forEach(key => {
                         const propPath = path + "." + key;
                         if (typeof obj[key] === 'object' && !Array.isArray(obj[key]) && obj[key] != null) {
-                            deepIterate(obj[key], propPath);
-                        } else if (typeof obj[key] == 'string' && obj[key].startsWith("$") && process.env[obj[key].slice(1)] ) {
-                            this.mEnvVarManaged.push({global: currLayer.global, user: currLayer.user, value: propPath});
-                            obj[key] = ConfigUtils.coercePropValue(process.env[obj[key]]);
+                            deepIterate(obj[key], config, propPath);
+                        } else if (typeof obj[key] == 'string' && obj[key].includes("$") &&
+                        ConfigEnvironmentVariables.findEnvironmentVariables(obj[key]).size > 0) {
+                            const replacementValue = ConfigUtils.coercePropValue(
+                                ConfigEnvironmentVariables.replaceEnvironmentVariablesInString(obj[key])
+                            );
+                            const entry: IConfigEnvVarManaged = {
+                                global: currLayer.global,
+                                user: currLayer.user,
+                                propPath: propPath,
+                                originalValue: obj[key],
+                                replacementValue
+                            };
+                            config.mEnvVarManaged.push(entry);
+                            obj[key] = replacementValue;
                         }
                     });
                 };
 
-                deepIterate(currLayer.properties.profiles);
+                deepIterate(currLayer.properties.profiles, this, "profiles");
             }
         } catch (e) {
             if (e instanceof ImperativeError) {
@@ -250,6 +261,35 @@ export class Config {
 
         try {
             for (const currLayer of this.mLayers) {
+
+                // These operations are expensive - only do them if we NEED to.
+                if (this.mEnvVarManaged.length > 0) {
+                    const envVarCandidates = this.mEnvVarManaged.filter((entry) => {
+                        if (currLayer.global === entry.global && currLayer.user === entry.user) { return true; }
+                        return false;
+                    });
+
+                    if (envVarCandidates.length > 0) {
+
+                        const deepIterate = (obj: any, config: Config, path: string = "") => {
+                            Object.keys(obj).forEach(key => {
+                                const propPath = path + "." + key;
+                                if (typeof obj[key] === 'object' && !Array.isArray(obj[key]) && obj[key] != null) {
+                                    deepIterate(obj[key], config, propPath);
+                                } else if (typeof obj[key] == 'string') {
+                                    const match = envVarCandidates.find((value) => {
+                                        if (value.propPath == propPath) { return true; }
+                                        return false;
+                                    });
+                                    if (match) { obj[key] = match.originalValue; }
+                                }
+                            });
+                        };
+
+                        deepIterate(currLayer.properties.profiles, this, "profiles");
+                    }
+                }
+
                 if (allLayers || currLayer.user === this.mActive.user && currLayer.global === this.mActive.global) {
                     this.api.layers.write(currLayer);
                 }
@@ -462,7 +502,7 @@ export class Config {
 
         const layer = this.layerActive();
         this.mEnvVarManaged.find((value) => {
-            if (value.global == layer.global && value.user == layer.user && value.value == propertyPath) {
+            if (value.global == layer.global && value.user == layer.user && value.propPath == propertyPath) {
                 throw new ImperativeError({msg: `The property ${propertyPath} is managed by environment variables and cannot be set.`});
             }
         });
