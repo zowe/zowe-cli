@@ -218,4 +218,31 @@ describe("imperative-test-cli config secure", () => {
         // Check the securely stored JSON
         expect(securedValueJson).toEqual(expectedSecuredValueJson);
     });
+
+    it("should display instructions when a token must be secured", async () => {
+        runCliScript(__dirname + "/../init/__scripts__/init_config_prompt.sh", TEST_ENVIRONMENT.workingDir);
+        const baseProfile: IConfigProfile = {
+            type: "base",
+            properties: {
+                "host": "example.com",
+                "port": 443,
+                "user": "fakeUser",
+                "tokenType": "ExtenderTokenType"
+            },
+            secure: [
+                "tokenValue"
+            ]
+        };
+        runCliScript(__dirname + "/../set/__scripts__/set.sh", TEST_ENVIRONMENT.workingDir,
+            ["profiles", JSON.stringify({ project_base: baseProfile }), "--json"]);
+        const response = runCliScript(__dirname + "/__scripts__/secure_prompt.sh", TEST_ENVIRONMENT.workingDir, [], {
+            IMPERATIVE_TEST_CLI_SECURE_VALUES: "anotherFakeValue"
+        });
+
+        expect(response.stdout.toString()).toContain("A profile requires a token of type 'ExtenderTokenType' to be securely stored.");
+        expect(response.stdout.toString()).toContain("Supply a token at the prompt. Or press ENTER at the prompt and later log in to");
+        expect(response.stdout.toString()).toContain("your service for a token.");
+        expect(response.stderr.toString()).toEqual("");
+        expect(response.status).toEqual(0);
+    });
 });

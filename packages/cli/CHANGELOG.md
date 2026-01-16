@@ -1,6 +1,10 @@
 # Change Log
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## `8.29.7`
+
+- Enhancement: Added instructions for obtaining a token to be displayed when a command prompts for a token. [#2660](https://github.com/zowe/zowe-cli/pull/2660)
+
 ## `8.29.5`
 
 - BugFix: Updated `glob` dependency to resolve technical currency. [#2644](https://github.com/zowe/zowe-cli/pull/2644)
@@ -15,7 +19,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## `8.29.0`
 
-- Enhancement: Added support for providing options to both default and custom credential managers. [#2601](https://github.com/zowe/zowe-cli/issues/2601) 
+- Enhancement: Added support for providing options to both default and custom credential managers. [#2601](https://github.com/zowe/zowe-cli/issues/2601)
 
 ## `8.27.4`
 
