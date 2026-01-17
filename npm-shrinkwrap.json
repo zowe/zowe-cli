@@ -4025,23 +4025,6 @@
       "dev": true,
       "license": "MIT"
     },
-    "node_modules/@types/tar": {
-      "version": "6.1.13",
-      "dev": true,
-      "license": "MIT",
-      "dependencies": {
-        "@types/node": "*",
-        "minipass": "^4.0.0"
-      }
-    },
-    "node_modules/@types/tar/node_modules/minipass": {
-      "version": "4.2.8",
-      "dev": true,
-      "license": "ISC",
-      "engines": {
-        "node": ">=8"
-      }
-    },
     "node_modules/@types/triple-beam": {
       "version": "1.3.5",
       "integrity": "sha512-6WaYesThRMCl19iryMYP7/x2OVgCtbIVflDGFpWnb9irXI3UjYE4AzmYuiUKY1AJstGijoY+MgUszMgRxIYTYw==",
@@ -14511,7 +14494,6 @@
       "devDependencies": {
         "@types/diff": "^5.0.9",
         "@types/lodash": "^4.17.6",
-        "@types/tar": "^6.1.11",
         "@zowe/cli-test-utils": "8.29.8",
         "comment-json": "^4.2.3",
         "strip-ansi": "^6.0.1",

@@ -77,7 +77,6 @@
   "devDependencies": {
     "@types/diff": "^5.0.9",
     "@types/lodash": "^4.17.6",
-    "@types/tar": "^6.1.11",
     "@zowe/cli-test-utils": "8.29.8",
     "comment-json": "^4.2.3",
     "strip-ansi": "^6.0.1",
