@@ -95,7 +95,7 @@ export function installPackages(npmPackage: string, npmArgs: INpmInstallArgs, ve
  * Fetch name and version of NPM package that was installed
  * @param pkgSpec The package name as specified on NPM install
  */
-export function getPackageInfo(pkgSpec: string): { name: string, version: string, [key: string]: any } {
+export function getPackageInfo(pkgSpec: string): { name: string, version: string, [key: string]: unknown } {
     const pkgInfo = npmPackageArg(pkgSpec);
     let packageName = pkgInfo.name;
     if (!pkgInfo.registry) {
