@@ -824,7 +824,6 @@
     "node_modules/@isaacs/fs-minipass": {
       "version": "4.0.1",
       "integrity": "sha512-wgm9Ehl2jpeqP3zw/7mo3kRHFp5MEDhqAdwy1fTGkHAwnkGOVsgpvQhL8B5n1qlb01jV3n/bI0ZfZp5lWA1k4w==",
-      "dev": true,
       "license": "ISC",
       "dependencies": {
         "minipass": "^7.0.4"
@@ -836,7 +835,6 @@
     "node_modules/@isaacs/fs-minipass/node_modules/minipass": {
       "version": "7.1.2",
       "integrity": "sha512-qOOzS1cBTWYF4BH8fVePDBOO9iptMnGUEZwNc/cMWnTV2nVLZ7VoNWEPHkYczZA0pdoA7dl6e7FL659nX9S2aw==",
-      "dev": true,
       "license": "ISC",
       "engines": {
         "node": ">=16 || 14 >=14.17"
@@ -5659,7 +5657,6 @@
     "node_modules/chownr": {
       "version": "3.0.0",
       "integrity": "sha512-+IxzY9BZOQd/XuYPRmrvEVjF/nqj5kgT4kEq7VofrDoM1MxoRjEWkrCC3EtLi59TVawxTAn+orJwFQcrqEN1+g==",
-      "dev": true,
       "license": "BlueOak-1.0.0",
       "engines": {
         "node": ">=18"
@@ -7913,6 +7910,7 @@
     },
     "node_modules/fs-minipass": {
       "version": "2.1.0",
+      "dev": true,
       "license": "ISC",
       "dependencies": {
         "minipass": "^3.0.0"
@@ -10343,6 +10341,7 @@
     },
     "node_modules/minipass": {
       "version": "3.3.5",
+      "dev": true,
       "license": "ISC",
       "dependencies": {
         "yallist": "^4.0.0"
@@ -10422,10 +10421,12 @@
     },
     "node_modules/minipass/node_modules/yallist": {
       "version": "4.0.0",
+      "dev": true,
       "license": "ISC"
     },
     "node_modules/minizlib": {
       "version": "2.1.2",
+      "dev": true,
       "license": "MIT",
       "dependencies": {
         "minipass": "^3.0.0",
@@ -10437,10 +10438,12 @@
     },
     "node_modules/minizlib/node_modules/yallist": {
       "version": "4.0.0",
+      "dev": true,
       "license": "ISC"
     },
     "node_modules/mkdirp": {
       "version": "1.0.4",
+      "dev": true,
       "license": "MIT",
       "bin": {
         "mkdirp": "bin/cmd.js"
@@ -13546,6 +13549,7 @@
     },
     "node_modules/tar": {
       "version": "6.2.1",
+      "dev": true,
       "license": "ISC",
       "dependencies": {
         "chownr": "^2.0.0",
@@ -13561,6 +13565,7 @@
     },
     "node_modules/tar/node_modules/chownr": {
       "version": "2.0.0",
+      "dev": true,
       "license": "ISC",
       "engines": {
         "node": ">=10"
@@ -13568,6 +13573,7 @@
     },
     "node_modules/tar/node_modules/minipass": {
       "version": "5.0.0",
+      "dev": true,
       "license": "ISC",
       "engines": {
         "node": ">=8"
@@ -13575,6 +13581,7 @@
     },
     "node_modules/tar/node_modules/yallist": {
       "version": "4.0.0",
+      "dev": true,
       "license": "ISC"
     },
     "node_modules/temp-dir": {
@@ -14496,7 +14503,7 @@
         "find-process": "1.4.7",
         "lodash": "4.17.21",
         "minimatch": "9.0.5",
-        "tar": "6.2.1"
+        "tar": "7.5.3"
       },
       "bin": {
         "zowe": "lib/main.js"
@@ -14538,6 +14545,40 @@
         "url": "https://github.com/sponsors/isaacs"
       }
     },
+    "packages/cli/node_modules/minipass": {
+      "version": "7.1.2",
+      "integrity": "sha512-qOOzS1cBTWYF4BH8fVePDBOO9iptMnGUEZwNc/cMWnTV2nVLZ7VoNWEPHkYczZA0pdoA7dl6e7FL659nX9S2aw==",
+      "license": "ISC",
+      "engines": {
+        "node": ">=16 || 14 >=14.17"
+      }
+    },
+    "packages/cli/node_modules/minizlib": {
+      "version": "3.1.0",
+      "integrity": "sha512-KZxYo1BUkWD2TVFLr0MQoM8vUUigWD3LlD83a/75BqC+4qE0Hb1Vo5v1FgcfaNXvfXzr+5EhQ6ing/CaBijTlw==",
+      "license": "MIT",
+      "dependencies": {
+        "minipass": "^7.1.2"
+      },
+      "engines": {
+        "node": ">= 18"
+      }
+    },
+    "packages/cli/node_modules/tar": {
+      "version": "7.5.3",
+      "integrity": "sha512-ENg5JUHUm2rDD7IvKNFGzyElLXNjachNLp6RaGf4+JOgxXHkqA+gq81ZAMCUmtMtqBsoU62lcp6S27g1LCYGGQ==",
+      "license": "BlueOak-1.0.0",
+      "dependencies": {
+        "@isaacs/fs-minipass": "^4.0.0",
+        "chownr": "^3.0.0",
+        "minipass": "^7.1.2",
+        "minizlib": "^3.1.0",
+        "yallist": "^5.0.0"
+      },
+      "engines": {
+        "node": ">=18"
+      }
+    },
     "packages/cli/node_modules/which": {
       "version": "4.0.0",
       "dev": true,
@@ -14550,6 +14591,14 @@
       },
       "engines": {
         "node": "^16.13.0 || >=18.0.0"
+      }
+    },
+    "packages/cli/node_modules/yallist": {
+      "version": "5.0.0",
+      "integrity": "sha512-YgvUTfwqyc7UXVMrB+SImsVYSmTS8X/tSrtdNZMImM+n7+QTriRXyXim0mBrTXNeqzVF0KWGgHPeiyViFFrNDw==",
+      "license": "BlueOak-1.0.0",
+      "engines": {
+        "node": ">=18"
       }
     },
     "packages/core": {
