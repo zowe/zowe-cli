@@ -72,12 +72,11 @@
     "find-process": "1.4.7",
     "lodash": "4.17.21",
     "minimatch": "9.0.5",
-    "tar": "6.2.1"
+    "tar": "7.5.3"
   },
   "devDependencies": {
     "@types/diff": "^5.0.9",
     "@types/lodash": "^4.17.6",
-    "@types/tar": "^6.1.11",
     "@zowe/cli-test-utils": "8.29.8",
     "comment-json": "^4.2.3",
     "strip-ansi": "^6.0.1",
