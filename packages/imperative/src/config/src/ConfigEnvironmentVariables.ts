@@ -11,10 +11,8 @@
 
 export class ConfigEnvironmentVariables {
 
-    private static simpleEnvironmentVariableRegex = /\$([A-Za-z0-9_]*)/;
-    private static simpleEnvironmentVariableRegexGlobal = new RegExp(this.simpleEnvironmentVariableRegex, 'g');
-    private static complexEnvironmentVariableRegex = /\${([^}]*)}/;
-    private static complexEnvironmentVariableRegexGlobal = new RegExp(this.complexEnvironmentVariableRegex, 'g');
+    private static simpleEnvironmentVariableRegexGlobal = /\$([A-Za-z0-9_]+)/g;
+    private static complexEnvironmentVariableRegexGlobal = /\${([^}]+)}/g;
 
     /**
      * Find all environment variables in a given string and return the variable names
@@ -34,7 +32,6 @@ export class ConfigEnvironmentVariables {
 
             // Ensure the environment variable candidate is valid and has a value
             const value = process.env[match[1]];
-            const envValues = process.env;
             if (value != null) {
 
                 // Return list of environment variables
@@ -54,18 +51,38 @@ export class ConfigEnvironmentVariables {
     public static replaceEnvironmentVariablesInString(candidate: string): string {
         let modifiedString = candidate;
 
-        let simpleMatch: RegExpMatchArray | null = modifiedString.match(this.simpleEnvironmentVariableRegex);
+        let simpleMatch: RegExpExecArray | null = this.simpleEnvironmentVariableRegexGlobal.exec(modifiedString);
         while ( simpleMatch != null ) {
-            modifiedString = modifiedString.replace(simpleMatch[0], process.env[simpleMatch[1]]);
-            simpleMatch = modifiedString.match(this.simpleEnvironmentVariableRegex);
+            const environmentMatch = process.env[simpleMatch[1]];
+            if (environmentMatch) {
+                modifiedString = this.sliceText(modifiedString, simpleMatch.index, simpleMatch[0].length, environmentMatch);
+                this.simpleEnvironmentVariableRegexGlobal.lastIndex =
+                this.simpleEnvironmentVariableRegexGlobal.lastIndex -
+                simpleMatch[0].length +
+                environmentMatch.length;
+            }
+            simpleMatch = this.simpleEnvironmentVariableRegexGlobal.exec(modifiedString);
         }
 
-        let advancedMatch: RegExpMatchArray | null = modifiedString.match(this.complexEnvironmentVariableRegex);
+        let advancedMatch: RegExpExecArray | null = this.complexEnvironmentVariableRegexGlobal.exec(modifiedString);
         while (advancedMatch != null) {
-            modifiedString = modifiedString.replace(advancedMatch[0], process.env[advancedMatch[1]]);
-            advancedMatch = modifiedString.match(this.complexEnvironmentVariableRegex);
+            const environmentMatch = process.env[advancedMatch[1]];
+            if (environmentMatch) {
+                modifiedString = this.sliceText(modifiedString, advancedMatch.index, advancedMatch[0].length, environmentMatch);
+                this.complexEnvironmentVariableRegexGlobal.lastIndex =
+                this.complexEnvironmentVariableRegexGlobal.lastIndex -
+                advancedMatch[0].length +
+                environmentMatch.length;
+            }
+            advancedMatch = this.complexEnvironmentVariableRegexGlobal.exec(modifiedString);
         }
 
         return modifiedString;
+    }
+
+    private static sliceText(text: string, index: number, chars: number, newValue: string): string {
+        const before = text.slice(0, index);
+        const after = text.slice(index + chars);
+        return before + newValue + after;
     }
 }
