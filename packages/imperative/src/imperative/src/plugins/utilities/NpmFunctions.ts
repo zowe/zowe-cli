@@ -95,24 +95,22 @@ export function installPackages(npmPackage: string, npmArgs: INpmInstallArgs, ve
  * Fetch name and version of NPM package that was installed
  * @param pkgSpec The package name as specified on NPM install
  */
-export async function getPackageInfo(pkgSpec: string): Promise<{ name: string, version: string }> {
+export function getPackageInfo(pkgSpec: string): { name: string, version: string, [key: string]: any } {
     const pkgInfo = npmPackageArg(pkgSpec);
-    if (pkgInfo.registry) {
-        // We already know package name, so read name and version from package.json
-        return readFileSync(path.join(PMFConstants.instance.PLUGIN_HOME_LOCATION, pkgInfo.name, "package.json"));
-    } else {
-        // Package name is unknown, so fetch name and version with npm command
+    let packageName = pkgInfo.name;
+    if (!pkgInfo.registry) {
+        // Package name is unknown, so fetch it with 'npm pack' command
         try {
             const execOutput = ExecUtils.spawnAndGetOutput(npmCmd, ["pack", pkgSpec, "--dry-run", "--json"]);
-            const metadata = JSON.parse(execOutput.toString())[0];
-            return { name: metadata.name, version: metadata.version };
+            packageName = JSON.parse(execOutput.toString())[0].name;
         } catch (err) {
             throw new ImperativeError({
                 msg: `Failed to fetch metadata for package: ${pkgSpec}`,
                 additionalDetails: (err as Error).message,
-            })
+            });
         }
     }
+    return readFileSync(path.join(PMFConstants.instance.PLUGIN_HOME_LOCATION, packageName, "package.json"));
 }
 
 export class NpmRegistryUtils {

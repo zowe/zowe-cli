@@ -26,8 +26,9 @@ import { UpdateImpConfig } from "../../../UpdateImpConfig";
 import { CredentialManagerOverride, ICredentialManagerNameMap } from "../../../../../security";
 import { IProfileTypeConfiguration } from "../../../../../profiles";
 import * as semver from "semver";
-import { ProfileInfo } from "../../../../../config";
+import { ConfigUtils } from "../../../../../config";
 import { IExtendersJsonOpts } from "../../../../../config/src/doc/IExtenderOpts";
+import { INpmRegistryInfo } from "../../doc/INpmRegistryInfo";
 
 // Helper function to update extenders.json object during plugin install.
 // Returns true if the object was updated, and false otherwise
@@ -74,9 +75,7 @@ export const updateExtendersJson = (
  *                                 be converted to an absolute path prior to being passed to the
  *                                 `npm install` command.
  *
- * @param {string} registry The npm registry to use, this is expected to be passed by every caller
- *                          so if calling functions don't have a registry available, they need
- *                          to get it from npm.
+ * @param {INpmRegistryInfo} registryInfo The npm registry to use.
  *
  * @param {boolean} [installFromFile=false] If installing from a file, the package location is
  *                                          automatically interpreted as an absolute location.
@@ -87,7 +86,7 @@ export const updateExtendersJson = (
  *                                          it.
  * @returns {string} The name of the plugin.
  */
-export async function install(packageLocation: string, registry: string, installFromFile = false) {
+export async function install(packageLocation: string, registryInfo: INpmRegistryInfo, installFromFile = false, verbose = false) {
     const iConsole = Logger.getImperativeLogger();
     let npmPackage = packageLocation;
 
@@ -117,15 +116,18 @@ export async function install(packageLocation: string, registry: string, install
     }
 
     try {
-        iConsole.debug(`Installing from registry ${registry}`);
+        iConsole.debug(`Installing from registry ${registryInfo.location}`);
 
         // Perform the npm install.
         iConsole.info("Installing packages...this may take some time.");
 
-        installPackages(PMFConstants.instance.PLUGIN_INSTALL_LOCATION, registry, npmPackage);
+        installPackages(npmPackage, {
+            prefix: PMFConstants.instance.PLUGIN_INSTALL_LOCATION,
+            ...registryInfo.npmArgs,
+        }, verbose);
 
         // We fetch the package name and version of newly installed plugin
-        const packageInfo = await getPackageInfo(npmPackage);
+        const packageInfo = getPackageInfo(npmPackage);
         const packageName = packageInfo.name;
         let packageVersion = packageInfo.version;
 
@@ -150,7 +152,7 @@ export async function install(packageLocation: string, registry: string, install
 
         const newPlugin: IPluginJsonObject = {
             package: npmPackage,
-            registry,
+            location: registryInfo.location,
             version: packageVersion
         };
         iConsole.debug("Updating the current configuration with new plugin:\n" +
@@ -167,7 +169,7 @@ export async function install(packageLocation: string, registry: string, install
         const requirerFunction = PluginManagementFacility.instance.requirePluginModuleCallback(packageName);
         const pluginImpConfig = ConfigurationLoader.load(null, packageInfo, requirerFunction);
 
-        iConsole.debug(`Checking for global team configuration files to update.`);
+        iConsole.debug(`Checking for global Zowe client configuration files to update.`);
         if (PMFConstants.instance.PLUGIN_USING_CONFIG)
         {
             // Update the Imperative Configuration to add the profiles introduced by the recently installed plugin
@@ -187,16 +189,15 @@ export async function install(packageLocation: string, registry: string, install
 
                     // Only update global schema if we were able to load it from disk
                     if (loadedSchema != null) {
-                        const existingTypes = loadedSchema.map((obj) => obj.type);
-                        const extendersJson = ProfileInfo.readExtendersJsonFromDisk();
+                        const extendersJson = ConfigUtils.readExtendersJson();
 
                         // Determine new profile types to add to schema
                         let shouldUpdate = false;
                         for (const profile of pluginImpConfig.profiles) {
-                            if (!existingTypes.includes(profile.type)) {
+                            const existingType = loadedSchema.find((obj) => obj.type === profile.type);
+                            if (existingType == null) {
                                 loadedSchema.push(profile);
                             } else {
-                                const existingType = loadedSchema.find((obj) => obj.type === profile.type);
                                 if (semver.valid(existingType.schema.version)) {
                                     if (semver.valid(profile.schema.version) && semver.gt(profile.schema.version, existingType.schema.version)) {
                                         existingType.schema = profile.schema;
@@ -212,7 +213,7 @@ export async function install(packageLocation: string, registry: string, install
 
                         if (shouldUpdate) {
                             // Update extenders.json (if necessary) after installing the plugin
-                            ProfileInfo.writeExtendersJson(extendersJson);
+                            ConfigUtils.writeExtendersJson(extendersJson);
                         }
                         const schema = ConfigSchema.buildSchema(loadedSchema);
                         ConfigSchema.updateSchema({ layer: "global", schema });

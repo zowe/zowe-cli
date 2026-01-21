@@ -90,7 +90,7 @@ export default class UninstallHandler implements ICommandHandler {
         const impLogger = Logger.getImperativeLogger();
         try {
             // get the plugin's Imperative config definition
-            const packageInfo = await getPackageInfo(pluginPackageNm);
+            const packageInfo = getPackageInfo(pluginPackageNm);
             const requirerFunction = PluginManagementFacility.instance.requirePluginModuleCallback(pluginPackageNm);
             const pluginImpConfig = ConfigurationLoader.load(null, packageInfo, requirerFunction);
 

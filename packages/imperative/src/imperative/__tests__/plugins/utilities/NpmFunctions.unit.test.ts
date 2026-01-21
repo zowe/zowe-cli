@@ -71,70 +71,70 @@ describe("NpmFunctions", () => {
     describe("getPackageInfo", () => {
         const expectedInfo = { name: "@zowe/imperative", version: "latest" };
 
-        beforeAll(() => {
-            jest.spyOn(jsonfile, "readFileSync").mockResolvedValue(expectedInfo);
-        });
-
-        it("should fetch info for package installed from registry 1", async () => {
-            const pkgSpec = "@zowe/imperative";
-            expect(npmPackageArg(pkgSpec).type).toEqual("range");
-
+        beforeEach(() => {
+            jest.spyOn(jsonfile, "readFileSync").mockReturnValueOnce(expectedInfo);
             jest.spyOn(PMFConstants, "instance", "get").mockReturnValueOnce({
                 PLUGIN_HOME_LOCATION: ""
             } as any);
-            const actualInfo = await npmFunctions.getPackageInfo(pkgSpec);
+        });
+
+        it("should fetch info for package installed from registry 1", () => {
+            const pkgSpec = "@zowe/imperative";
+            expect(npmPackageArg(pkgSpec).type).toEqual("range");
+
+            const actualInfo = npmFunctions.getPackageInfo(pkgSpec);
             expect(actualInfo).toBe(expectedInfo);
             expect(jsonfile.readFileSync).toHaveBeenCalledTimes(1);
         });
 
-        it("should fetch info for package installed from registry 2", async () => {
+        it("should fetch info for package installed from registry 2", () => {
             const pkgSpec = "@zowe/imperative@latest";
             expect(npmPackageArg(pkgSpec).type).toEqual("tag");
 
             jest.spyOn(PMFConstants, "instance", "get").mockReturnValueOnce({
                 PLUGIN_HOME_LOCATION: ""
             } as any);
-            const actualInfo = await npmFunctions.getPackageInfo(pkgSpec);
+            const actualInfo = npmFunctions.getPackageInfo(pkgSpec);
             expect(actualInfo).toBe(expectedInfo);
             expect(jsonfile.readFileSync).toHaveBeenCalledTimes(1);
         });
 
-        it("should fetch info for package installed from local directory", async () => {
+        it("should fetch info for package installed from local directory", () => {
             const pkgSpec = "./imperative";
             expect(npmPackageArg(pkgSpec).type).toEqual("directory");
 
             const spawnSpy = jest.spyOn(ExecUtils, "spawnAndGetOutput").mockReturnValueOnce(JSON.stringify([expectedInfo]));
-            const actualInfo = await npmFunctions.getPackageInfo(pkgSpec);
+            const actualInfo = npmFunctions.getPackageInfo(pkgSpec);
             expect(actualInfo).toEqual(expectedInfo);
             expect(spawnSpy).toHaveBeenCalledWith(npmCmd, expect.arrayContaining(["pack", pkgSpec]));
         });
 
-        it("should fetch info for package installed from local TGZ", async () => {
+        it("should fetch info for package installed from local TGZ", () => {
             const pkgSpec = "imperative.tgz";
             expect(npmPackageArg(pkgSpec).type).toEqual("file");
 
             const spawnSpy = jest.spyOn(ExecUtils, "spawnAndGetOutput").mockReturnValueOnce(JSON.stringify([expectedInfo]));
-            const actualInfo = await npmFunctions.getPackageInfo(pkgSpec);
+            const actualInfo = npmFunctions.getPackageInfo(pkgSpec);
             expect(actualInfo).toEqual(expectedInfo);
             expect(spawnSpy).toHaveBeenCalledWith(npmCmd, expect.arrayContaining(["pack", pkgSpec]));
         });
 
-        it("should fetch info for package installed from Git URL", async () => {
+        it("should fetch info for package installed from Git URL", () => {
             const pkgSpec = "github:zowe/imperative";
             expect(npmPackageArg(pkgSpec).type).toEqual("git");
 
             const spawnSpy = jest.spyOn(ExecUtils, "spawnAndGetOutput").mockReturnValueOnce(JSON.stringify([expectedInfo]));
-            const actualInfo = await npmFunctions.getPackageInfo(pkgSpec);
+            const actualInfo = npmFunctions.getPackageInfo(pkgSpec);
             expect(actualInfo).toEqual(expectedInfo);
             expect(spawnSpy).toHaveBeenCalledWith(npmCmd, expect.arrayContaining(["pack", pkgSpec]));
         });
 
-        it("should fetch info for package installed from remote TGZ", async () => {
+        it("should fetch info for package installed from remote TGZ", () => {
             const pkgSpec = "http://example.com/zowe/imperative.tgz";
             expect(npmPackageArg(pkgSpec).type).toEqual("remote");
 
             const spawnSpy = jest.spyOn(ExecUtils, "spawnAndGetOutput").mockReturnValueOnce(JSON.stringify([expectedInfo]));
-            const actualInfo = await npmFunctions.getPackageInfo(pkgSpec);
+            const actualInfo = npmFunctions.getPackageInfo(pkgSpec);
             expect(actualInfo).toEqual(expectedInfo);
             expect(spawnSpy).toHaveBeenCalledWith(npmCmd, expect.arrayContaining(["pack", pkgSpec]));
         });
@@ -147,12 +147,12 @@ describe("NpmFunctions", () => {
             expect(spawnSpy).toHaveBeenCalledTimes(1);
         });
 
-        it("should throw error if fetching package metadata fails", async () => {
+        it("should throw error if fetching package metadata fails", () => {
             const pkgSpec = "imperative.tgz";
             expect(npmPackageArg(pkgSpec).type).toEqual("file");
 
             jest.spyOn(ExecUtils, "spawnAndGetOutput").mockReturnValueOnce("{}");
-            await expect(npmFunctions.getPackageInfo(pkgSpec)).rejects.toThrow("Failed to fetch metadata for package");
+            expect(() => npmFunctions.getPackageInfo(pkgSpec)).toThrow("Failed to fetch metadata for package");
         });
     });
 
