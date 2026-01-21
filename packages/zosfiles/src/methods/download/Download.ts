@@ -82,7 +82,10 @@ export class Download {
         // required
         ImperativeExpect.toNotBeNullOrUndefined(dataSetName, ZosFilesMessages.missingDatasetName.message);
         ImperativeExpect.toNotBeEqual(dataSetName, "", ZosFilesMessages.missingDatasetName.message);
+        ImperativeExpect.toNotBeNullOrUndefined(session);
         let destination: string;
+        let existedBefore = false;
+        let downloadStarted = false;
 
         try {
             // Format the endpoint to send the request to
@@ -107,6 +110,9 @@ export class Download {
                 extension = options.extension;
             }
 
+            // By default, apiResponse is empty when downloading
+            const apiResponse: any = {};
+
             if (options.stream == null) {
                 // Get a proper destination for the file to be downloaded
                 // If the "file" is not provided, we create a folder structure similar to the data set name
@@ -125,13 +131,17 @@ export class Download {
 
                     return generatedFilePath + IO.normalizeExtension(extension);
                 })();
+                apiResponse.destination = destination;
+
+                // Track if a file at destination already exists before staring the download
+                existedBefore = IO.existsSync(destination);
 
                 // If file exists and we should not overwrite, skip downloading with message
-                if (IO.existsSync(destination) && !options.overwrite) {
+                if (existedBefore && !options.overwrite) {
                     return {
                         success: true,
                         commandResponse: util.format(ZosFilesMessages.datasetDownloadSkipped.message, destination),
-                        apiResponse: {}
+                        apiResponse: { destination }
                     };
                 }
 
@@ -159,10 +169,9 @@ export class Download {
                 requestOptions.dataToReturn = [CLIENT_PROPERTY.response];
             }
 
-            const request: IRestClientResponse = await ZosmfRestClient.getExpectFullResponse(session, requestOptions);
+            downloadStarted = true;
 
-            // By default, apiResponse is empty when downloading
-            const apiResponse: any = {};
+            const request: IRestClientResponse = await ZosmfRestClient.getExpectFullResponse(session, requestOptions);
 
             // Return Etag in apiResponse, if requested
             if (options.returnEtag) {
@@ -178,8 +187,13 @@ export class Download {
         } catch (error) {
             Logger.getAppLogger().error(error);
 
-            if (destination != null) {
-                IO.deleteFile(destination);
+            // Only delete the file if it did not exist before and error occured during download
+            if (destination != null && downloadStarted && !existedBefore) {
+                try {
+                    IO.deleteFile(destination);
+                } catch (deleteError) {
+                    Logger.getAppLogger().warn(`Failed to clean up partially download file ${destination}: ${deleteError.message}`);
+                }
             }
 
             throw error;
@@ -283,9 +297,10 @@ export class Download {
                 }
 
                 const memberFilePath = posix.join(baseDir, fileName + IO.normalizeExtension(extension));
+                const memberExistedBefore = IO.existsSync(memberFilePath);
 
                 // Check if file exists and should not be overwritten
-                if (IO.existsSync(memberFilePath) && !options.overwrite) {
+                if (memberExistedBefore && !options.overwrite) {
                     skippedMembers.push(fileName);
                     return Promise.resolve();
                 }
@@ -302,8 +317,14 @@ export class Download {
                     downloadErrors.push(err);
                     failedMembers.push(fileName);
 
-                    // Delete the file that could not be downloaded
-                    IO.deleteFile(memberFilePath);
+                    // Only delete the file if it didn't exist before the download attempt
+                    if (!memberExistedBefore) {
+                        try {
+                            IO.deleteFile(memberFilePath);
+                        } catch (deleteError) {
+                            Logger.getAppLogger().warn(`Failed to clean up partially download file ${memberFilePath}: ${deleteError.message}`);
+                        }
+                    }
 
                     // If we should fail fast, rethrow error
                     if (options.failFast || options.failFast === undefined) {
@@ -356,7 +377,8 @@ export class Download {
                 commandResponse: responseMessage,
                 apiResponse: {
                     ...response.apiResponse,
-                    downloadResult
+                    downloadResult,
+                    destination: baseDir
                 }
             };
 
@@ -421,6 +443,9 @@ export class Download {
                 if (options.directory == null) {
                     if (dataSetObj.dsorg?.startsWith("PO")) {
                         mutableOptions.directory = ZosFilesUtils.getDirsFromDataSet(dataSetObj.dsname);
+                        if (options.preserveOriginalLetterCase) {
+                            mutableOptions.directory = mutableOptions.directory.toUpperCase();
+                        }
                     } else {
                         mutableOptions.file = `${dataSetObj.dsname}.` +
                             `${mutableOptions.extension ?? ZosFilesUtils.DEFAULT_FILE_EXTENSION}`;
@@ -431,7 +456,11 @@ export class Download {
                         mutableOptions.extension = undefined;
                     }
                 } else if (dataSetObj.dsorg?.startsWith("PO")) {
-                    mutableOptions.directory = `${mutableOptions.directory}/${ZosFilesUtils.getDirsFromDataSet(dataSetObj.dsname)}`;
+                    let generatedDir = ZosFilesUtils.getDirsFromDataSet(dataSetObj.dsname);
+                    if (options.preserveOriginalLetterCase) {
+                        generatedDir = generatedDir.toUpperCase();
+                    }
+                    mutableOptions.directory = `${mutableOptions.directory}/${generatedDir}`;
                 } else {
                     mutableOptions.file = `${dataSetObj.dsname}.${mutableOptions.extension ?? ZosFilesUtils.DEFAULT_FILE_EXTENSION}`;
                     if (!options.preserveOriginalLetterCase) {
@@ -474,7 +503,7 @@ export class Download {
                             if (listMembers.length === 0) {  // Create directory for empty PO data set
                                 IO.createDirsSyncFromFilePath(options.directory);
                             } else {
-                                dataSetObj.status += `\nMembers: ${listMembers};`;
+                                dataSetObj.status += `\nMembers:${listMembers}`;
                             }
                         }
                     });
@@ -591,8 +620,13 @@ export class Download {
         ImperativeExpect.toNotBeNullOrUndefined(ussFileName, ZosFilesMessages.missingUSSFileName.message);
         ImperativeExpect.toNotBeEqual(ussFileName, "", ZosFilesMessages.missingUSSFileName.message);
         ImperativeExpect.toNotBeEqual(options.record, true, ZosFilesMessages.unsupportedDataType.message);
+        ImperativeExpect.toNotBeNullOrUndefined(session);
+
         try {
             let destination: string;
+
+            // By default, apiResponse is empty when downloading
+            const apiResponse: any = {};
 
             if (options.stream == null) {
                 destination = options.file || posix.normalize(posix.basename(ussFileName));
@@ -606,6 +640,7 @@ export class Download {
                 }
 
                 IO.createDirsSyncFromFilePath(destination);
+                apiResponse.destination = destination;
             }
 
             const writeStream = options.stream ?? IO.createWriteStream(destination);
@@ -648,9 +683,6 @@ export class Download {
             }
 
             const request = await ZosmfRestClient.getExpectFullResponse(session, requestOptions);
-
-            // By default, apiResponse is empty when downloading
-            const apiResponse: any = {};
 
             // Return Etag in apiResponse, if requested
             if (options.returnEtag) {

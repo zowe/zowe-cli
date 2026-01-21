@@ -179,7 +179,7 @@ describe("PMF: Install Interface", () => {
 
     describe("Basic install", () => {
         beforeEach(() => {
-            mocks.getPackageInfo.mockResolvedValue({ name: packageName, version: packageVersion });
+            mocks.getPackageInfo.mockReturnValue({ name: packageName, version: packageVersion });
             jest.spyOn(fs, "existsSync").mockReturnValue(true);
             jest.spyOn(fs, "lstatSync").mockReturnValue({
                 isSymbolicLink: jest.fn().mockReturnValue(true)
@@ -298,7 +298,7 @@ describe("PMF: Install Interface", () => {
 
             jest.spyOn(path, "isAbsolute").mockReturnValueOnce(false);
             jest.spyOn(fs, "existsSync").mockReturnValue(true);
-            mocks.getPackageInfo.mockResolvedValue({ name: packageName, version: packageVersion });
+            mocks.getPackageInfo.mockReturnValue({ name: packageName, version: packageVersion });
             jest.spyOn(fs, "lstatSync").mockReturnValue({
                 isSymbolicLink: jest.fn().mockReturnValue(true)
             } as any);
@@ -323,7 +323,7 @@ describe("PMF: Install Interface", () => {
             jest.spyOn(path, "isAbsolute").mockReturnValueOnce(true);
 
             // This is valid under semver ^1.5.2
-            mocks.getPackageInfo.mockResolvedValue({ name: packageName, version: "1.5.16" });
+            mocks.getPackageInfo.mockReturnValue({ name: packageName, version: "1.5.16" });
 
             // Call the install
             setResolve(semverPackage);
@@ -348,7 +348,7 @@ describe("PMF: Install Interface", () => {
                 }
             };
 
-            mocks.getPackageInfo.mockResolvedValue({ name: packageName, version: packageVersion });
+            mocks.getPackageInfo.mockReturnValue({ name: packageName, version: packageVersion });
             jest.spyOn(fs, "existsSync").mockReturnValueOnce(true);
             jest.spyOn(fs, "lstatSync").mockReturnValue({
                 isSymbolicLink: jest.fn().mockReturnValue(true)
@@ -389,7 +389,7 @@ describe("PMF: Install Interface", () => {
                     });
                 }
 
-                mocks.getPackageInfo.mockResolvedValue({ name: packageName, version: packageVersion });
+                mocks.getPackageInfo.mockReturnValue({ name: packageName, version: packageVersion });
                 jest.spyOn(fs, "existsSync").mockReturnValueOnce(true).mockReturnValueOnce(opts.schemaExists);
                 jest.spyOn(fs, "lstatSync").mockReturnValue({
                     isSymbolicLink: jest.fn().mockReturnValue(true)

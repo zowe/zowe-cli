@@ -186,6 +186,15 @@ export abstract class AbstractRestClient {
     protected mResponseStream: Writable;
 
     /**
+     * If content encoding is used, this is the decompression stream that we write to.
+     * It pipes through transforms to mResponseStream.
+     * @private
+     * @type {Writable}
+     * @memberof AbstractRestClient
+     */
+    protected mDecodeStream: Writable;
+
+    /**
      * stream for outgoing request data to the server
      * @private
      * @type {Writable}
@@ -777,6 +786,7 @@ export abstract class AbstractRestClient {
     private requestHandler(res: any) {
         this.mResponse = res;
         this.mContentEncoding = null;
+        this.mDecodeStream = null;
 
         if (this.response.headers != null) {
             // This is not ideal, but is the only way to avoid introducing a breaking change.
@@ -817,7 +827,7 @@ export abstract class AbstractRestClient {
             if (this.mContentEncoding != null) {
                 this.log.debug("Adding decompression transform to response stream");
                 try {
-                    this.mResponseStream = CompressionUtils.decompressStream(this.mResponseStream, this.mContentEncoding,
+                    this.mDecodeStream = CompressionUtils.decompressStream(this.mResponseStream, this.mContentEncoding,
                         this.mNormalizeResponseNewlines);
                 } catch (err) {
                     this.mReject(err);
@@ -880,7 +890,7 @@ export abstract class AbstractRestClient {
                 }
             }
             // write the chunk to the response stream if requested
-            this.mResponseStream.write(respData);
+            (this.mDecodeStream ?? this.mResponseStream).write(respData);
             this.lastByteReceived = respData[respData.byteLength - 1];
         }
     }
@@ -926,7 +936,8 @@ export abstract class AbstractRestClient {
         };
         if (this.mResponseStream != null) {
             this.log.debug("Ending response stream");
-            this.mResponseStream.end(requestEnd);
+            this.mResponseStream.on("finish", requestEnd);
+            (this.mDecodeStream ?? this.mResponseStream).end();
         } else {
             requestEnd();
         }

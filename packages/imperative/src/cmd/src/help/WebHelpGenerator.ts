@@ -226,7 +226,6 @@ export class WebHelpGenerator {
      */
     private genDocsFooter(): string {
         return `</article>
-<script src="../js/bundle-docs.js"></script>
 <script src="../js/docs.js"></script>
 `;
     }

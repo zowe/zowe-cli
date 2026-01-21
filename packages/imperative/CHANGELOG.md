@@ -2,9 +2,26 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## `8.29.9`
+
+- BugFix: Removed large dependency `pacote` for fetching package metadata when installing plug-ins. [#2665](https://github.com/zowe/zowe-cli/pull/2665)
+
+## `8.29.8`
+
+- BugFix: Updated `diff` and `diff2html` dependencies for technical currency. [#2664](https://github.com/zowe/zowe-cli/pull/2664)
+
+## `8.29.7`
+
+- Enhancement: Added instructions for obtaining a token to be displayed when a command prompts for a token. [#2660](https://github.com/zowe/zowe-cli/pull/2660)
+
+## `8.29.6`
+
+- BugFix: Stopped supporting IE 11 browser in web help pages for technical currency. [#2654](https://github.com/zowe/zowe-cli/pull/2654)
+- BugFix: Fixed truncation that could occur when the `AbstractRestClient` request method downloads gzip-encoded data. [#2658](https://github.com/zowe/zowe-cli/pull/2658)
+
 ## `8.29.0`
 
-- Enhancement: Added support for providing options to both default and custom credential managers. [#2601](https://github.com/zowe/zowe-cli/issues/2601) 
+- Enhancement: Added support for providing options to both default and custom credential managers. [#2601](https://github.com/zowe/zowe-cli/issues/2601)
 
 ## `8.27.4`
 
@@ -526,7 +543,7 @@ All notable changes to the Imperative package will be documented in this file.
 
     - @zowe/zos-uss-for-zowe-sdk
       - SshBaseHandler
-        - Removed the unused, protected property ‘mSshProfile’
+        - Removed the unused, protected property `mSshProfile`
 
   - Removed the following obsolete V1 profile constants:
 

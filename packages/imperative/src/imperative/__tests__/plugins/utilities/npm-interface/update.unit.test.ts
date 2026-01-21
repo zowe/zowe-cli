@@ -76,7 +76,7 @@ describe("PMF: update Interface", () => {
             }
         };
 
-        mocks.getPackageInfo.mockResolvedValue({ name: packageName, version: packageVersion });
+        mocks.getPackageInfo.mockReturnValue({ name: packageName, version: packageVersion });
         mocks.readFileSync.mockReturnValue(oneOldPlugin);
 
         const registryInfo = npmFns.NpmRegistryUtils.buildRegistryInfo(oneOldPlugin.plugin1);
@@ -99,7 +99,7 @@ describe("PMF: update Interface", () => {
             }
         };
 
-        mocks.getPackageInfo.mockResolvedValue({ name: scopedPackageName, version: packageVersion });
+        mocks.getPackageInfo.mockReturnValue({ name: scopedPackageName, version: packageVersion });
         mocks.readFileSync.mockReturnValue(oneOldPlugin);
 
         const registryInfo = npmFns.NpmRegistryUtils.buildRegistryInfo(oneOldPlugin.plugin1);
