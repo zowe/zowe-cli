@@ -63,8 +63,6 @@ export class ScrtCache {
         if (!ScrtCache.scrtDataMap || ScrtCache.scrtDataMap.size === 0) {
             return null;
         }
-        const res = Array.from(ScrtCache.scrtDataMap.keys());
-
         const scrtData = ScrtCache.scrtDataMap.get(key);
         if(!scrtData) {
             return null;

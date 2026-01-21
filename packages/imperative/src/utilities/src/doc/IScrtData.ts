@@ -17,8 +17,7 @@
 export interface IScrtData {
     // product information
     productName: string;    // max of 48 characters
-    prodInstance?: string;  // Optional. Up to 16 bytes -> regular instance.
-                            // Greater and 16 bytes  -> long instance (max 128 bytes)
+    prodInstance?: string;  // Optional. Up to 16 bytes -> regular instance. Greater than 16 bytes -> long instance (max 128 bytes)
     version: string;        // max of 2 characters
     release: string;        // max of 2 characters
     modLevel: string;       // max of 2 characters
