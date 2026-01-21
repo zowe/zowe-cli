@@ -157,8 +157,7 @@ export class ConfigSecure extends ConfigApi {
         const sp: IConfigSecureProperties = {};
         for (const path of this.secureFields(layer)) {
             const envVarManaged = this.mConfig.mEnvVarManaged.some((element) => {
-                if (element.global == layer.global && element.user == layer.user && element.propPath == path) { return true; }
-                return false;
+                return element.global == layer.global && element.user == layer.user && element.propPath == path;
             });
             if (envVarManaged) { continue; }
             const segments = path.split(".");
