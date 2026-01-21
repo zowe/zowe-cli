@@ -201,7 +201,7 @@ export default class EnableDaemonHandler implements ICommandHandler {
                         msg: err
                     });
                 })
-                .pipe(new tar.Parse())
+                .pipe(new tar.Parser())
                 .on('entry', function(entry: any) {
                     if (entry.type == "File" && (entry.path as string).includes(fileToExtract)) {
                         const sysInfo: ISystemInfo = ProcessUtils.getBasicSystemInfo();
