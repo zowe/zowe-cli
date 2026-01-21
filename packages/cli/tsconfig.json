@@ -2,7 +2,7 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "outDir": "./lib",
-    "skipLibCheck": true
+    "skipLibCheck": true // Needed for tar package which uses Node 22 types
   },
   "include": [
     "./src"
