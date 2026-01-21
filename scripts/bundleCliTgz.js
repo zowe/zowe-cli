@@ -25,12 +25,13 @@ fs.copyFileSync(pkgJsonFile, pkgJsonFile + ".bak");
 try {
     // Install node_modules directly inside packages/cli
     execCmd("npm run preshrinkwrap");
-    execCmd("npm install --ignore-scripts --workspaces=false");
+    const zoweRegistry = require("../lerna.json").command.publish.registry;
+    const npmArgs = ["--ignore-scripts", "--workspaces=false", `--@zowe:registry=${zoweRegistry}`];
+    execCmd(`npm install ${npmArgs.join(" ")}`);
     for (const zowePkgDir of fs.readdirSync(path.join(cliPkgDir, "node_modules", "@zowe"))) {
         const srcDir = path.join("node_modules", "@zowe", zowePkgDir);
-        const destDir = path.join(cliPkgDir, srcDir);
-        fs.rmSync(destDir, { recursive: true, force: true });
-        fs.cpSync(fs.realpathSync(srcDir), destDir, {recursive: true});
+        const relDir = path.relative(cliPkgDir, fs.realpathSync(srcDir));
+        execCmd(`npm install file:${relDir} --ignore-scripts --install-links --workspaces=false`);
     }
     fs.rmSync(path.join(cliPkgDir, "node_modules", "cpu-features"), { recursive: true, force: true });
 
