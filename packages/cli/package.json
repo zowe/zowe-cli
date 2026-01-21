@@ -69,10 +69,10 @@
     "@zowe/zos-uss-for-zowe-sdk": "8.29.8",
     "@zowe/zos-workflows-for-zowe-sdk": "8.29.8",
     "@zowe/zosmf-for-zowe-sdk": "8.29.8",
-    "find-process": "1.4.7",
-    "lodash": "4.17.21",
-    "minimatch": "9.0.5",
-    "tar": "7.5.3"
+    "find-process": "^1.4.7",
+    "lodash": "^4.17.21",
+    "minimatch": "^9.0.5",
+    "tar": "^7.5.4"
   },
   "devDependencies": {
     "@types/diff": "^5.0.9",
