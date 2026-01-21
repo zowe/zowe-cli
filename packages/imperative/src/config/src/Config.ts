@@ -124,7 +124,7 @@ export class Config {
      * A list of config properties managed by environment variables.
      * These should not be saved if the config changes.
      */
-    public mEnvVarManaged: [IConfigEnvVarManaged?] = [];
+    public mEnvVarManaged: IConfigEnvVarManaged[] = [];
 
     // _______________________________________________________________________
     /**
@@ -211,30 +211,7 @@ export class Config {
                 currLayer.properties.defaults = currLayer.properties.defaults || {};
                 currLayer.properties.profiles = currLayer.properties.profiles || {};
 
-                const deepIterate = (obj: any, config: Config, path: string = "") => {
-                    Object.keys(obj).forEach(key => {
-                        const propPath = path + "." + key;
-                        if (typeof obj[key] === 'object' && !Array.isArray(obj[key]) && obj[key] != null) {
-                            deepIterate(obj[key], config, propPath);
-                        } else if (typeof obj[key] == 'string' && obj[key].includes("$") &&
-                        ConfigEnvironmentVariables.findEnvironmentVariables(obj[key]).size > 0) {
-                            const replacementValue = ConfigUtils.coercePropValue(
-                                ConfigEnvironmentVariables.replaceEnvironmentVariablesInString(obj[key])
-                            );
-                            const entry: IConfigEnvVarManaged = {
-                                global: currLayer.global,
-                                user: currLayer.user,
-                                propPath: propPath,
-                                originalValue: obj[key],
-                                replacementValue
-                            };
-                            config.mEnvVarManaged.push(entry);
-                            obj[key] = replacementValue;
-                        }
-                    });
-                };
-
-                deepIterate(currLayer.properties.profiles, this, "profiles");
+                ConfigEnvironmentVariables.replaceEnvironmentVariablesInConfigLayer(currLayer.properties.profiles, this, currLayer, "profiles");
             }
         } catch (e) {
             if (e instanceof ImperativeError) {
@@ -265,28 +242,16 @@ export class Config {
                 // These operations are expensive - only do them if we NEED to.
                 if (this.mEnvVarManaged.length > 0) {
                     const envVarCandidates = this.mEnvVarManaged.filter((entry) => {
-                        if (currLayer.global === entry.global && currLayer.user === entry.user) { return true; }
-                        return false;
+                        return currLayer.global === entry.global && currLayer.user === entry.user;
                     });
 
                     if (envVarCandidates.length > 0) {
-
-                        const deepIterate = (obj: any, config: Config, path: string = "") => {
-                            Object.keys(obj).forEach(key => {
-                                const propPath = path + "." + key;
-                                if (typeof obj[key] === 'object' && !Array.isArray(obj[key]) && obj[key] != null) {
-                                    deepIterate(obj[key], config, propPath);
-                                } else if (typeof obj[key] == 'string') {
-                                    const match = envVarCandidates.find((value) => {
-                                        if (value.propPath == propPath) { return true; }
-                                        return false;
-                                    });
-                                    if (match) { obj[key] = match.originalValue; }
-                                }
-                            });
-                        };
-
-                        deepIterate(currLayer.properties.profiles, this, "profiles");
+                        ConfigEnvironmentVariables.restoreEnvironmentVariablesInConfigLayer(
+                            currLayer.properties.profiles,
+                            this,
+                            currLayer,
+                            "profiles"
+                        );
                     }
                 }
 
