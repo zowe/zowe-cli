@@ -801,7 +801,6 @@
     "node_modules/@isaacs/fs-minipass": {
       "version": "4.0.1",
       "integrity": "sha512-wgm9Ehl2jpeqP3zw/7mo3kRHFp5MEDhqAdwy1fTGkHAwnkGOVsgpvQhL8B5n1qlb01jV3n/bI0ZfZp5lWA1k4w==",
-      "dev": true,
       "license": "ISC",
       "dependencies": {
         "minipass": "^7.0.4"
@@ -813,7 +812,6 @@
     "node_modules/@isaacs/fs-minipass/node_modules/minipass": {
       "version": "7.1.2",
       "integrity": "sha512-qOOzS1cBTWYF4BH8fVePDBOO9iptMnGUEZwNc/cMWnTV2nVLZ7VoNWEPHkYczZA0pdoA7dl6e7FL659nX9S2aw==",
-      "dev": true,
       "license": "ISC",
       "engines": {
         "node": ">=16 || 14 >=14.17"
@@ -7282,7 +7280,6 @@
     "node_modules/chownr": {
       "version": "3.0.0",
       "integrity": "sha512-+IxzY9BZOQd/XuYPRmrvEVjF/nqj5kgT4kEq7VofrDoM1MxoRjEWkrCC3EtLi59TVawxTAn+orJwFQcrqEN1+g==",
-      "dev": true,
       "license": "BlueOak-1.0.0",
       "engines": {
         "node": ">=18"
@@ -9758,6 +9755,7 @@
     "node_modules/fs-minipass": {
       "version": "2.1.0",
       "integrity": "sha512-V/JgOLFCS+R6Vcq0slCuaeWEdNC3ouDlJMNIsacH2VtALiu9mV4LPrHc5cDl8k5aw6J8jwgWWpiTo5RYhmIzvg==",
+      "dev": true,
       "dependencies": {
         "minipass": "^3.0.0"
       },
@@ -13270,6 +13268,7 @@
     "node_modules/minipass": {
       "version": "3.3.5",
       "integrity": "sha512-rQ/p+KfKBkeNwo04U15i+hOwoVBVmekmm/HcfTkTN2t9pbQKCMm4eN5gFeqgrrSp/kH/7BYYhTIHOxGqzbBPaA==",
+      "dev": true,
       "dependencies": {
         "yallist": "^4.0.0"
       },
@@ -13348,11 +13347,13 @@
     },
     "node_modules/minipass/node_modules/yallist": {
       "version": "4.0.0",
-      "integrity": "sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A=="
+      "integrity": "sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==",
+      "dev": true
     },
     "node_modules/minizlib": {
       "version": "2.1.2",
       "integrity": "sha512-bAxsR8BVfj60DWXHE3u30oHzfl4G7khkSuPW+qvpd7jFRHm7dLxOjUk1EHACJ/hxLY8phGJ0YhYHZo7jil7Qdg==",
+      "dev": true,
       "dependencies": {
         "minipass": "^3.0.0",
         "yallist": "^4.0.0"
@@ -13363,11 +13364,13 @@
     },
     "node_modules/minizlib/node_modules/yallist": {
       "version": "4.0.0",
-      "integrity": "sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A=="
+      "integrity": "sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==",
+      "dev": true
     },
     "node_modules/mkdirp": {
       "version": "1.0.4",
       "integrity": "sha512-vVqVZQyf3WLx2Shd0qJ9xuvqgAyKPLAiqITEtqW0oIUjzo3PePDd6fW9iFz30ef7Ysp/oiWqbhszeGWW2T6Gzw==",
+      "dev": true,
       "bin": {
         "mkdirp": "bin/cmd.js"
       },
@@ -16421,6 +16424,7 @@
     "node_modules/tar": {
       "version": "6.2.1",
       "integrity": "sha512-DZ4yORTwrbTj/7MZYq2w+/ZFdI6OZ/f9SFHR+71gIVUZhOQPHzVCLpvRnPgyaMpfWxxk/4ONva3GQSyNIKRv6A==",
+      "dev": true,
       "dependencies": {
         "chownr": "^2.0.0",
         "fs-minipass": "^2.0.0",
@@ -16436,6 +16440,7 @@
     "node_modules/tar/node_modules/chownr": {
       "version": "2.0.0",
       "integrity": "sha512-bIomtDF5KGpdogkLd9VspvFzk9KfpyyGlS8YFVZl7TGPBHL5snIOnxeshwVgPteQ9b4Eydl+pVbIyE1DcvCWgQ==",
+      "dev": true,
       "engines": {
         "node": ">=10"
       }
@@ -16443,13 +16448,15 @@
     "node_modules/tar/node_modules/minipass": {
       "version": "5.0.0",
       "integrity": "sha512-3FnjYuehv9k6ovOEbyOswadCDPX1piCfhV8ncmYtHOjuPwylVWsghTLo7rabjC3Rx5xD4HDx8Wm1xnMF7S5qFQ==",
+      "dev": true,
       "engines": {
         "node": ">=8"
       }
     },
     "node_modules/tar/node_modules/yallist": {
       "version": "4.0.0",
-      "integrity": "sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A=="
+      "integrity": "sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==",
+      "dev": true
     },
     "node_modules/temp": {
       "version": "0.4.0",
@@ -17351,11 +17358,11 @@
         "@zowe/zos-uss-for-zowe-sdk": "7.29.19",
         "@zowe/zos-workflows-for-zowe-sdk": "7.29.19",
         "@zowe/zosmf-for-zowe-sdk": "7.29.19",
-        "find-process": "1.4.7",
-        "get-stream": "6.0.1",
-        "lodash": "4.17.21",
-        "minimatch": "5.1.6",
-        "tar": "6.2.1"
+        "find-process": "^1.4.7",
+        "get-stream": "^6.0.1",
+        "lodash": "^4.17.21",
+        "minimatch": "^5.1.6",
+        "tar": "^7.5.4"
       },
       "bin": {
         "bright": "lib/main.js",
@@ -17396,6 +17403,48 @@
       },
       "engines": {
         "node": ">=10"
+      }
+    },
+    "packages/cli/node_modules/minipass": {
+      "version": "7.1.2",
+      "integrity": "sha512-qOOzS1cBTWYF4BH8fVePDBOO9iptMnGUEZwNc/cMWnTV2nVLZ7VoNWEPHkYczZA0pdoA7dl6e7FL659nX9S2aw==",
+      "license": "ISC",
+      "engines": {
+        "node": ">=16 || 14 >=14.17"
+      }
+    },
+    "packages/cli/node_modules/minizlib": {
+      "version": "3.1.0",
+      "integrity": "sha512-KZxYo1BUkWD2TVFLr0MQoM8vUUigWD3LlD83a/75BqC+4qE0Hb1Vo5v1FgcfaNXvfXzr+5EhQ6ing/CaBijTlw==",
+      "license": "MIT",
+      "dependencies": {
+        "minipass": "^7.1.2"
+      },
+      "engines": {
+        "node": ">= 18"
+      }
+    },
+    "packages/cli/node_modules/tar": {
+      "version": "7.5.6",
+      "integrity": "sha512-xqUeu2JAIJpXyvskvU3uvQW8PAmHrtXp2KDuMJwQqW8Sqq0CaZBAQ+dKS3RBXVhU4wC5NjAdKrmh84241gO9cA==",
+      "license": "BlueOak-1.0.0",
+      "dependencies": {
+        "@isaacs/fs-minipass": "^4.0.0",
+        "chownr": "^3.0.0",
+        "minipass": "^7.1.2",
+        "minizlib": "^3.1.0",
+        "yallist": "^5.0.0"
+      },
+      "engines": {
+        "node": ">=18"
+      }
+    },
+    "packages/cli/node_modules/yallist": {
+      "version": "5.0.0",
+      "integrity": "sha512-YgvUTfwqyc7UXVMrB+SImsVYSmTS8X/tSrtdNZMImM+n7+QTriRXyXim0mBrTXNeqzVF0KWGgHPeiyViFFrNDw==",
+      "license": "BlueOak-1.0.0",
+      "engines": {
+        "node": ">=18"
       }
     },
     "packages/core": {
@@ -18443,15 +18492,13 @@
     "@isaacs/fs-minipass": {
       "version": "4.0.1",
       "integrity": "sha512-wgm9Ehl2jpeqP3zw/7mo3kRHFp5MEDhqAdwy1fTGkHAwnkGOVsgpvQhL8B5n1qlb01jV3n/bI0ZfZp5lWA1k4w==",
-      "dev": true,
       "requires": {
         "minipass": "^7.0.4"
       },
       "dependencies": {
         "minipass": {
           "version": "7.1.2",
-          "integrity": "sha512-qOOzS1cBTWYF4BH8fVePDBOO9iptMnGUEZwNc/cMWnTV2nVLZ7VoNWEPHkYczZA0pdoA7dl6e7FL659nX9S2aw==",
-          "dev": true
+          "integrity": "sha512-qOOzS1cBTWYF4BH8fVePDBOO9iptMnGUEZwNc/cMWnTV2nVLZ7VoNWEPHkYczZA0pdoA7dl6e7FL659nX9S2aw=="
         }
       }
     },
@@ -21945,12 +21992,12 @@
         "@zowe/zos-workflows-for-zowe-sdk": "7.29.19",
         "@zowe/zosmf-for-zowe-sdk": "7.29.19",
         "comment-json": "^4.1.1",
-        "find-process": "1.4.7",
-        "get-stream": "6.0.1",
-        "lodash": "4.17.21",
-        "minimatch": "5.1.6",
+        "find-process": "^1.4.7",
+        "get-stream": "^6.0.1",
+        "lodash": "^4.17.21",
+        "minimatch": "^5.1.6",
         "strip-ansi": "^6.0.1",
-        "tar": "6.2.1",
+        "tar": "^7.5.4",
         "which": "^2.0.2"
       },
       "dependencies": {
@@ -21965,6 +22012,32 @@
           "requires": {
             "brace-expansion": "^2.0.1"
           }
+        },
+        "minipass": {
+          "version": "7.1.2",
+          "integrity": "sha512-qOOzS1cBTWYF4BH8fVePDBOO9iptMnGUEZwNc/cMWnTV2nVLZ7VoNWEPHkYczZA0pdoA7dl6e7FL659nX9S2aw=="
+        },
+        "minizlib": {
+          "version": "3.1.0",
+          "integrity": "sha512-KZxYo1BUkWD2TVFLr0MQoM8vUUigWD3LlD83a/75BqC+4qE0Hb1Vo5v1FgcfaNXvfXzr+5EhQ6ing/CaBijTlw==",
+          "requires": {
+            "minipass": "^7.1.2"
+          }
+        },
+        "tar": {
+          "version": "7.5.6",
+          "integrity": "sha512-xqUeu2JAIJpXyvskvU3uvQW8PAmHrtXp2KDuMJwQqW8Sqq0CaZBAQ+dKS3RBXVhU4wC5NjAdKrmh84241gO9cA==",
+          "requires": {
+            "@isaacs/fs-minipass": "^4.0.0",
+            "chownr": "^3.0.0",
+            "minipass": "^7.1.2",
+            "minizlib": "^3.1.0",
+            "yallist": "^5.0.0"
+          }
+        },
+        "yallist": {
+          "version": "5.0.0",
+          "integrity": "sha512-YgvUTfwqyc7UXVMrB+SImsVYSmTS8X/tSrtdNZMImM+n7+QTriRXyXim0mBrTXNeqzVF0KWGgHPeiyViFFrNDw=="
         }
       }
     },
@@ -23337,8 +23410,7 @@
     },
     "chownr": {
       "version": "3.0.0",
-      "integrity": "sha512-+IxzY9BZOQd/XuYPRmrvEVjF/nqj5kgT4kEq7VofrDoM1MxoRjEWkrCC3EtLi59TVawxTAn+orJwFQcrqEN1+g==",
-      "dev": true
+      "integrity": "sha512-+IxzY9BZOQd/XuYPRmrvEVjF/nqj5kgT4kEq7VofrDoM1MxoRjEWkrCC3EtLi59TVawxTAn+orJwFQcrqEN1+g=="
     },
     "chunkd": {
       "version": "2.0.1",
@@ -25084,6 +25156,7 @@
     "fs-minipass": {
       "version": "2.1.0",
       "integrity": "sha512-V/JgOLFCS+R6Vcq0slCuaeWEdNC3ouDlJMNIsacH2VtALiu9mV4LPrHc5cDl8k5aw6J8jwgWWpiTo5RYhmIzvg==",
+      "dev": true,
       "requires": {
         "minipass": "^3.0.0"
       }
@@ -27649,13 +27722,15 @@
     "minipass": {
       "version": "3.3.5",
       "integrity": "sha512-rQ/p+KfKBkeNwo04U15i+hOwoVBVmekmm/HcfTkTN2t9pbQKCMm4eN5gFeqgrrSp/kH/7BYYhTIHOxGqzbBPaA==",
+      "dev": true,
       "requires": {
         "yallist": "^4.0.0"
       },
       "dependencies": {
         "yallist": {
           "version": "4.0.0",
-          "integrity": "sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A=="
+          "integrity": "sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==",
+          "dev": true
         }
       }
     },
@@ -27714,6 +27789,7 @@
     "minizlib": {
       "version": "2.1.2",
       "integrity": "sha512-bAxsR8BVfj60DWXHE3u30oHzfl4G7khkSuPW+qvpd7jFRHm7dLxOjUk1EHACJ/hxLY8phGJ0YhYHZo7jil7Qdg==",
+      "dev": true,
       "requires": {
         "minipass": "^3.0.0",
         "yallist": "^4.0.0"
@@ -27721,13 +27797,15 @@
       "dependencies": {
         "yallist": {
           "version": "4.0.0",
-          "integrity": "sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A=="
+          "integrity": "sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==",
+          "dev": true
         }
       }
     },
     "mkdirp": {
       "version": "1.0.4",
-      "integrity": "sha512-vVqVZQyf3WLx2Shd0qJ9xuvqgAyKPLAiqITEtqW0oIUjzo3PePDd6fW9iFz30ef7Ysp/oiWqbhszeGWW2T6Gzw=="
+      "integrity": "sha512-vVqVZQyf3WLx2Shd0qJ9xuvqgAyKPLAiqITEtqW0oIUjzo3PePDd6fW9iFz30ef7Ysp/oiWqbhszeGWW2T6Gzw==",
+      "dev": true
     },
     "mkdirp-infer-owner": {
       "version": "2.0.0",
@@ -29918,6 +29996,7 @@
     "tar": {
       "version": "6.2.1",
       "integrity": "sha512-DZ4yORTwrbTj/7MZYq2w+/ZFdI6OZ/f9SFHR+71gIVUZhOQPHzVCLpvRnPgyaMpfWxxk/4ONva3GQSyNIKRv6A==",
+      "dev": true,
       "requires": {
         "chownr": "^2.0.0",
         "fs-minipass": "^2.0.0",
@@ -29929,15 +30008,18 @@
       "dependencies": {
         "chownr": {
           "version": "2.0.0",
-          "integrity": "sha512-bIomtDF5KGpdogkLd9VspvFzk9KfpyyGlS8YFVZl7TGPBHL5snIOnxeshwVgPteQ9b4Eydl+pVbIyE1DcvCWgQ=="
+          "integrity": "sha512-bIomtDF5KGpdogkLd9VspvFzk9KfpyyGlS8YFVZl7TGPBHL5snIOnxeshwVgPteQ9b4Eydl+pVbIyE1DcvCWgQ==",
+          "dev": true
         },
         "minipass": {
           "version": "5.0.0",
-          "integrity": "sha512-3FnjYuehv9k6ovOEbyOswadCDPX1piCfhV8ncmYtHOjuPwylVWsghTLo7rabjC3Rx5xD4HDx8Wm1xnMF7S5qFQ=="
+          "integrity": "sha512-3FnjYuehv9k6ovOEbyOswadCDPX1piCfhV8ncmYtHOjuPwylVWsghTLo7rabjC3Rx5xD4HDx8Wm1xnMF7S5qFQ==",
+          "dev": true
         },
         "yallist": {
           "version": "4.0.0",
-          "integrity": "sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A=="
+          "integrity": "sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==",
+          "dev": true
         }
       }
     },
