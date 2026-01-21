@@ -10,7 +10,7 @@
 */
 
 const childProcess = require("child_process");
-const fs = require("fs-extra");
+const fs = require("fs");
 const path = require("path");
 
 // Workaround for https://github.com/npm/cli/issues/3466
@@ -18,7 +18,7 @@ process.chdir(__dirname + "/..");
 const cliPkgDir = path.join(process.cwd(), "packages", "cli");
 const pkgJsonFile = path.join(cliPkgDir, "package.json");
 const execCmd = (cmd) => childProcess.execSync(cmd, { cwd: cliPkgDir, stdio: "inherit" });
-fs.mkdirpSync("dist");
+fs.mkdirSync("dist", {recursive: true});
 fs.renameSync(path.join(cliPkgDir, "node_modules"), path.join(cliPkgDir, "node_modules_old"));
 fs.copyFileSync(pkgJsonFile, pkgJsonFile + ".bak");
 
@@ -28,10 +28,10 @@ try {
     execCmd("npm install --ignore-scripts --workspaces=false");
     for (const zowePkgDir of fs.readdirSync(path.join(cliPkgDir, "node_modules", "@zowe"))) {
         const srcDir = path.join("node_modules", "@zowe", zowePkgDir);
-        const destDir = path.join(cliPkgDir, srcDir);
-        fs.rmSync(destDir, { recursive: true, force: true });
-        fs.copySync(fs.realpathSync(srcDir), destDir);
+        const relDir = path.relative(cliPkgDir, fs.realpathSync(srcDir));
+        execCmd(`npm install file:${relDir} --ignore-scripts --install-links --workspaces=false`);
     }
+    fs.rmSync(path.join(cliPkgDir, "node_modules", "cpu-features"), { recursive: true, force: true });
 
     // Define bundled dependencies in package.json and package the TGZ
     const pkgJson = JSON.parse(fs.readFileSync(pkgJsonFile, "utf-8"));
