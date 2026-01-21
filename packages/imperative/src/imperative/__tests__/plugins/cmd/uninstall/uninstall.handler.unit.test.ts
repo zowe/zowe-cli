@@ -36,7 +36,6 @@ import UninstallHandler from "../../../../src/plugins/cmd/uninstall/uninstall.ha
 import * as ChildProcesses from "child_process";
 import * as JsonFile from "jsonfile";
 import * as NpmInterface from "../../../../src/plugins/utilities/npm-interface";
-import * as NpmFunctions from "../../../../src/plugins/utilities/NpmFunctions";
 
 describe("Plugin Management Facility uninstall handler", () => {
 
@@ -181,7 +180,6 @@ describe("callPluginPreUninstall", () => {
     let callPluginPreUninstallPrivate : any;
     let cfgLoaderLoadSpy: any;
     let fakePluginConfig: IImperativeConfig;
-    let getPackageInfoSpy: any;
     let LifeCycleClass: any;
     let preUninstallWorked = false;
     let recordDefaultCredMgrInConfigSpy: any;
@@ -246,14 +244,6 @@ describe("callPluginPreUninstall", () => {
             jest.spyOn(CredentialManagerOverride, "recordDefaultCredMgrInConfig").mockImplementation(() => {
                 return;
             });
-
-        // make getPackageInfo return a fake value
-        getPackageInfoSpy = jest.spyOn(NpmFunctions, "getPackageInfo").mockImplementation(async () => {
-            return {
-                name: knownCredMgrPlugin,
-                version: "9.9.9"
-            };
-        });
 
         // make requirePluginModuleCallback return our fake LifeCycleClass
         requirePluginModuleCallbackSpy = jest.spyOn(

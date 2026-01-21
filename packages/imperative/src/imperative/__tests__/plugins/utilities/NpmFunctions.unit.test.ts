@@ -70,7 +70,7 @@ describe("NpmFunctions", () => {
         const expectedInfo = { name: "@zowe/imperative", version: "latest" };
 
         beforeEach(() => {
-            jest.spyOn(jsonfile, "readFileSync").mockResolvedValue(expectedInfo);
+            jest.spyOn(jsonfile, "readFileSync").mockReturnValue(expectedInfo);
             jest.spyOn(PMFConstants, "instance", "get").mockReturnValueOnce({
                 PLUGIN_HOME_LOCATION: ""
             } as any);
