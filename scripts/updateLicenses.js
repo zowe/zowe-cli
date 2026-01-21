@@ -8,10 +8,10 @@
 * Copyright Contributors to the Zowe Project.
 *
 */
-const ansiColors = require("ansi-colors");
-const fancylog = require("fancy-log");
-const os = require("os");
+
 const fs = require("fs");
+const os = require("os");
+const chalk = require("chalk");
 
 require("glob")(
     "{__mocks__,packages,__tests__,jenkins}{/**/*.js,/**/*.ts}",
@@ -48,7 +48,7 @@ require("glob")(
             result = usedShebang + result; // add the shebang back
             fs.writeFileSync(filePath, result);
         }
-        fancylog(ansiColors.blue("Ensured that %d files had copyright information" +
+        console.log(chalk.blue("Ensured that %d files had copyright information" +
             " (%d already did)."), filePaths.length, alreadyContainedCopyright);
     }
 );
