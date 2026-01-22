@@ -92,6 +92,24 @@ describe("Config secure tests", () => {
         expect(mockSecureSave).toHaveBeenCalledTimes(1);
     });
 
+    it("should not secure save if there are only environment based secure properties", async () => {
+        const config = new (Config as any)();
+        config.mLayers = [
+            {
+                path: "fake fakety fake",
+                user: false,
+                global: false,
+                properties: { profiles: { fake: { secure: ["fake"], properties: { fake: "fake" } } } }
+            }
+        ];
+        config.mVault = mockVault;
+        config.mSecure = {};
+        config.mEnvVarManaged = [{global: false, user: false, propPath: "profiles.fake.properties.fake"}];
+        await (config.api.secure as any).save(true);
+        expect(mockSecureLoad).toHaveBeenCalledTimes(0);
+        expect(mockSecureSave).toHaveBeenCalledTimes(0);
+    });
+
     it("should load and save all secure properties", async () => {
         jest.spyOn(Config, "search").mockReturnValueOnce(projectUserConfigPath).mockReturnValueOnce(projectConfigPath);
         jest.spyOn(fs, "existsSync").mockReturnValueOnce(false).mockReturnValueOnce(true).mockReturnValue(false);
