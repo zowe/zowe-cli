@@ -46,7 +46,7 @@
     "prepack": "node ../../scripts/prepareLicenses.js"
   },
   "dependencies": {
-    "lodash": "^4.17.21",
+    "lodash": "^4.17.23",
     "minimatch": "^9.0.5"
   },
   "devDependencies": {

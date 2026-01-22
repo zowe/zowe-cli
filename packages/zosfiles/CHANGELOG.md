@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated `lodash` dependency to resolve technical currency. [#2669](https://github.com/zowe/zowe-cli/pull/2669)
+
 ## `8.29.6`
 
 - Enhancement: Added a download `destination` field to the API response for the `Download.ussFile` and `Download.dataSet` functions. [#2641](https://github.com/zowe/zowe-cli/pull/2641)
