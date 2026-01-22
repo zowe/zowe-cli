@@ -15280,11 +15280,11 @@
         "@zowe/zos-uss-for-zowe-sdk": "7.29.19",
         "@zowe/zos-workflows-for-zowe-sdk": "7.29.19",
         "@zowe/zosmf-for-zowe-sdk": "7.29.19",
-        "find-process": "^1.4.7",
-        "get-stream": "^6.0.1",
-        "lodash": "^4.17.21",
-        "minimatch": "^5.1.6",
-        "tar": "^7.5.4"
+        "find-process": "1.4.7",
+        "get-stream": "6.0.1",
+        "lodash": "4.17.23",
+        "minimatch": "5.1.6",
+        "tar": "7.5.4"
       },
       "bin": {
         "bright": "lib/main.js",
@@ -15314,6 +15314,11 @@
       "engines": {
         "node": ">= 14"
       }
+    },
+    "packages/cli/node_modules/lodash": {
+      "version": "4.17.23",
+      "integrity": "sha512-LgVTMpQtIopCi79SJeDiP0TfWi5CNEc/L/aRdTh3yIvmZXTnheWpKjSZhnvMl8iXbC1tFg9gdHHDMLoV7CnG+w==",
+      "license": "MIT"
     },
     "packages/cli/node_modules/minimatch": {
       "version": "5.1.6",
@@ -15346,8 +15351,8 @@
       }
     },
     "packages/cli/node_modules/tar": {
-      "version": "7.5.6",
-      "integrity": "sha512-xqUeu2JAIJpXyvskvU3uvQW8PAmHrtXp2KDuMJwQqW8Sqq0CaZBAQ+dKS3RBXVhU4wC5NjAdKrmh84241gO9cA==",
+      "version": "7.5.4",
+      "integrity": "sha512-AN04xbWGrSTDmVwlI4/GTlIIwMFk/XEv7uL8aa57zuvRy6s4hdBed+lVq2fAZ89XDa7Us3ANXcE3Tvqvja1kTA==",
       "license": "BlueOak-1.0.0",
       "dependencies": {
         "@isaacs/fs-minipass": "^4.0.0",
@@ -15408,7 +15413,7 @@
         "js-yaml": "4.1.1",
         "jsonfile": "6.1.0",
         "jsonschema": "1.4.1",
-        "lodash": "4.17.21",
+        "lodash": "4.17.23",
         "lodash-deep": "2.0.0",
         "log4js": "6.4.6",
         "markdown-it": "14.1.0",
@@ -15614,6 +15619,11 @@
       "engines": {
         "node": ">=8"
       }
+    },
+    "packages/imperative/node_modules/lodash": {
+      "version": "4.17.23",
+      "integrity": "sha512-LgVTMpQtIopCi79SJeDiP0TfWi5CNEc/L/aRdTh3yIvmZXTnheWpKjSZhnvMl8iXbC1tFg9gdHHDMLoV7CnG+w==",
+      "license": "MIT"
     },
     "packages/imperative/node_modules/lru-cache": {
       "version": "7.18.3",
@@ -19609,12 +19619,12 @@
         "@zowe/zos-workflows-for-zowe-sdk": "7.29.19",
         "@zowe/zosmf-for-zowe-sdk": "7.29.19",
         "comment-json": "^4.1.1",
-        "find-process": "^1.4.7",
-        "get-stream": "^6.0.1",
-        "lodash": "^4.17.21",
-        "minimatch": "^5.1.6",
+        "find-process": "1.4.7",
+        "get-stream": "6.0.1",
+        "lodash": "4.17.23",
+        "minimatch": "5.1.6",
         "strip-ansi": "^6.0.1",
-        "tar": "^7.5.4",
+        "tar": "7.5.4",
         "which": "^2.0.2"
       },
       "dependencies": {
@@ -19622,6 +19632,10 @@
           "version": "7.18.6",
           "integrity": "sha512-3ElVUd5VYWUxVjXRCeM/jmXh9u1rnWtxobQEpgEZ2iNt+PTt3QajIxUH9MxriELVCp7u39AeAG4lfxs3wnrGzA==",
           "optional": true
+        },
+        "lodash": {
+          "version": "4.17.23",
+          "integrity": "sha512-LgVTMpQtIopCi79SJeDiP0TfWi5CNEc/L/aRdTh3yIvmZXTnheWpKjSZhnvMl8iXbC1tFg9gdHHDMLoV7CnG+w=="
         },
         "minimatch": {
           "version": "5.1.6",
@@ -19642,8 +19656,8 @@
           }
         },
         "tar": {
-          "version": "7.5.6",
-          "integrity": "sha512-xqUeu2JAIJpXyvskvU3uvQW8PAmHrtXp2KDuMJwQqW8Sqq0CaZBAQ+dKS3RBXVhU4wC5NjAdKrmh84241gO9cA==",
+          "version": "7.5.4",
+          "integrity": "sha512-AN04xbWGrSTDmVwlI4/GTlIIwMFk/XEv7uL8aa57zuvRy6s4hdBed+lVq2fAZ89XDa7Us3ANXcE3Tvqvja1kTA==",
           "requires": {
             "@isaacs/fs-minipass": "^4.0.0",
             "chownr": "^3.0.0",
@@ -19730,7 +19744,7 @@
         "js-yaml": "4.1.1",
         "jsonfile": "6.1.0",
         "jsonschema": "1.4.1",
-        "lodash": "4.17.21",
+        "lodash": "4.17.23",
         "lodash-deep": "2.0.0",
         "log4js": "6.4.6",
         "markdown-it": "14.1.0",
@@ -19867,6 +19881,10 @@
           "requires": {
             "p-locate": "^4.1.0"
           }
+        },
+        "lodash": {
+          "version": "4.17.23",
+          "integrity": "sha512-LgVTMpQtIopCi79SJeDiP0TfWi5CNEc/L/aRdTh3yIvmZXTnheWpKjSZhnvMl8iXbC1tFg9gdHHDMLoV7CnG+w=="
         },
         "lru-cache": {
           "version": "7.18.3",
