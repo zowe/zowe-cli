@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated `lodash` dependency to resolve technical currency. [#2669](https://github.com/zowe/zowe-cli/pull/2669)
+
 ## `8.29.9`
 
 - BugFix: Removed large dependency `pacote` for fetching package metadata when installing plug-ins. [#2665](https://github.com/zowe/zowe-cli/pull/2665)
