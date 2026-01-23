@@ -16,8 +16,8 @@ import { ConfigUtils } from "./ConfigUtils";
 
 export class ConfigEnvironmentVariables {
 
-    private static simpleEnvironmentVariableRegexGlobal = /\$([A-Za-z0-9_]+)/g;
-    private static complexEnvironmentVariableRegexGlobal = /\${([^}]+)}/g;
+    private static readonly simpleEnvironmentVariableRegexGlobal = /\$(\w+)/g;
+    private static readonly complexEnvironmentVariableRegexGlobal = /\${([^}]+)}/g;
 
     /**
      * @internal

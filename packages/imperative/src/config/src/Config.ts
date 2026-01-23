@@ -466,7 +466,7 @@ export class Config {
         opts = opts || {};
 
         const layer = this.layerActive();
-        this.mEnvVarManaged.find((value) => {
+        this.mEnvVarManaged.forEach((value) => {
             if (value.global == layer.global && value.user == layer.user && value.propPath == propertyPath) {
                 throw new ImperativeError({msg: `The property ${propertyPath} is managed by environment variables and cannot be set.`});
             }
