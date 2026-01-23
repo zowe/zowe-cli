@@ -15,8 +15,9 @@ import * as which from "which";
 import { StdioOptions } from "child_process";
 import { readFileSync } from "jsonfile";
 import * as npmPackageArg from "npm-package-arg";
-import * as pacote from "pacote";
 import { ExecUtils } from "../../../../utilities";
+import { ImperativeError } from "../../../../error";
+
 const npmCmd = findNpmOnPath();
 
 /**
@@ -87,13 +88,20 @@ export function npmLogin(registry: string) {
  * Fetch name and version of NPM package that was installed
  * @param pkgSpec The package name as specified on NPM install
  */
-export async function getPackageInfo(pkgSpec: string): Promise<{ name: string, version: string }> {
+export function getPackageInfo(pkgSpec: string): { name: string, version: string, [key: string]: unknown } {
     const pkgInfo = npmPackageArg(pkgSpec);
-    if (pkgInfo.registry) {
-        // We already know package name, so read name and version from package.json
-        return readFileSync(path.join(PMFConstants.instance.PLUGIN_HOME_LOCATION, pkgInfo.name, "package.json"));
-    } else {
-        // Package name is unknown, so fetch name and version with pacote (npm SDK)
-        return pacote.manifest(pkgSpec);
+    let packageName = pkgInfo.name;
+    if (!pkgInfo.registry) {
+        // Package name is unknown, so fetch it with 'npm pack' command
+        try {
+            const execOutput = ExecUtils.spawnAndGetOutput(npmCmd, ["pack", pkgSpec, "--dry-run", "--json"]);
+            packageName = JSON.parse(execOutput.toString())[0].name;
+        } catch (err) {
+            throw new ImperativeError({
+                msg: `Failed to fetch metadata for package: ${pkgSpec}`,
+                additionalDetails: (err as Error).message,
+            });
+        }
     }
+    return readFileSync(path.join(PMFConstants.instance.PLUGIN_HOME_LOCATION, packageName, "package.json"));
 }

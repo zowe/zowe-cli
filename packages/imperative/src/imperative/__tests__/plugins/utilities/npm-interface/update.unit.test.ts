@@ -81,7 +81,7 @@ describe("PMF: update Interface", () => {
                 }
             };
 
-            mocks.getPackageInfo.mockResolvedValue({ name: packageName, version: packageVersion } as never);
+            mocks.getPackageInfo.mockReturnValue({ name: packageName, version: packageVersion } as never);
             mocks.readFileSync.mockReturnValue(oneOldPlugin as any);
 
             const data = await update(packageName, packageRegistry);
@@ -102,7 +102,7 @@ describe("PMF: update Interface", () => {
             }
         };
 
-        mocks.getPackageInfo.mockResolvedValue({ name: packageName, version: packageVersion } as never);
+        mocks.getPackageInfo.mockReturnValue({ name: packageName, version: packageVersion } as never);
         mocks.readFileSync.mockReturnValue(oneOldPlugin as any);
 
         const data = await update(packageName, packageRegistry);

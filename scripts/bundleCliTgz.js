@@ -10,7 +10,7 @@
 */
 
 const childProcess = require("child_process");
-const fs = require("fs-extra");
+const fs = require("fs");
 const path = require("path");
 
 // Workaround for https://github.com/npm/cli/issues/3466
@@ -18,28 +18,36 @@ process.chdir(__dirname + "/..");
 const cliPkgDir = path.join(process.cwd(), "packages", "cli");
 const pkgJsonFile = path.join(cliPkgDir, "package.json");
 const execCmd = (cmd) => childProcess.execSync(cmd, { cwd: cliPkgDir, stdio: "inherit" });
-fs.mkdirpSync("dist");
+fs.mkdirSync("dist", {recursive: true});
 fs.renameSync(path.join(cliPkgDir, "node_modules"), path.join(cliPkgDir, "node_modules_old"));
 fs.copyFileSync(pkgJsonFile, pkgJsonFile + ".bak");
 
 try {
     // Install node_modules directly inside packages/cli
     execCmd("npm run preshrinkwrap");
-    execCmd("npm install --ignore-scripts --workspaces=false");
+    const zoweRegistry = require("../lerna.json").command.publish.registry;
+    const npmArgs = ["--ignore-scripts", "--workspaces=false", `--@zowe:registry=${zoweRegistry}`];
+    execCmd(`npm install ${npmArgs.join(" ")}`);
+
+    // Replace SDK packages installed from registry with versions built from source
     for (const zowePkgDir of fs.readdirSync(path.join(cliPkgDir, "node_modules", "@zowe"))) {
         const srcDir = path.join("node_modules", "@zowe", zowePkgDir);
-        const destDir = path.join(cliPkgDir, srcDir);
-        fs.rmSync(destDir, { recursive: true, force: true });
-        fs.copySync(fs.realpathSync(srcDir), destDir);
+        const relDir = path.relative(cliPkgDir, fs.realpathSync(srcDir));
+        execCmd(`npm install file:${relDir} --ignore-scripts --install-links --workspaces=false`);
     }
 
-    // Define bundled dependencies in package.json and package the TGZ
+    // Exclude optional platform-specific packages that can cause install issues if bundled
+    fs.rmSync(path.join(cliPkgDir, "node_modules", "cpu-features"), { recursive: true, force: true });
+
+    // Define bundled dependencies in package.json
     const pkgJson = JSON.parse(fs.readFileSync(pkgJsonFile, "utf-8"));
     pkgJson.bundledDependencies = [
         ...Object.keys(pkgJson.dependencies),
         ...Object.keys(pkgJson.optionalDependencies ?? {})
     ];
     fs.writeFileSync(pkgJsonFile, JSON.stringify(pkgJson, null, 2));
+
+    // Package the TGZ in dist folder
     execCmd("npm pack --pack-destination=../../dist");
 } finally {
     fs.rmSync(path.join(cliPkgDir, "node_modules"), { recursive: true, force: true });

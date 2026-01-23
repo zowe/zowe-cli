@@ -125,7 +125,7 @@ export async function install(packageLocation: string, registry: string, install
         installPackages(PMFConstants.instance.PLUGIN_INSTALL_LOCATION, registry, npmPackage);
 
         // We fetch the package name and version of newly installed plugin
-        const packageInfo = await getPackageInfo(npmPackage);
+        const packageInfo = getPackageInfo(npmPackage);
         const packageName = packageInfo.name;
         let packageVersion = packageInfo.version;
 

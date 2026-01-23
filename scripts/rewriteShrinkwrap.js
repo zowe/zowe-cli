@@ -9,9 +9,9 @@
 *
 */
 
+const childProcess = require("child_process");
 const fs = require("fs");
 const chalk = require("chalk");
-const getLockfile = require("npm-lockfile/getLockfile");
 
 const rootShrinkwrapFile = __dirname + "/../npm-shrinkwrap.json";
 const newShrinkwrapFile = process.cwd() + "/" + (process.argv[2] ?? "npm-shrinkwrap.json");
@@ -27,7 +27,12 @@ fs.writeFileSync(newShrinkwrapFile, JSON.stringify(shrinkwrap, null, 2));
 
 // Build deduped shrinkwrap for subpackage (@zowe/cli or web-help)
 const zoweRegistry = require("../lerna.json").command.publish.registry;
-getLockfile(newShrinkwrapFile, undefined, { "@zowe:registry": zoweRegistry })
-    .then((lockfile) => fs.writeFileSync(newShrinkwrapFile, lockfile))
-    .then(() => console.log(chalk.green("Lockfile contents written!")))
-    .catch((err) => { console.error(err); process.exit(1); });
+const npmArgs = ["--ignore-scripts", "--no-audit", "--package-lock-only", "--workspaces=false", `--@zowe:registry=${zoweRegistry}`];
+childProcess.exec(`npm install ${npmArgs.join(" ")}`, (err) => {
+    if (err) {
+        console.error(err);
+        process.exit(1);
+    } else {
+        console.log(chalk.green("Lockfile contents written!"));
+    }
+});

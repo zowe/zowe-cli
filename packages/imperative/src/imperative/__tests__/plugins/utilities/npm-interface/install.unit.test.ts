@@ -182,7 +182,7 @@ describe("PMF: Install Interface", () => {
 
     describe("Basic install", () => {
         beforeEach(() => {
-            mocks.getPackageInfo.mockResolvedValue({ name: packageName, version: packageVersion } as never);
+            mocks.getPackageInfo.mockReturnValue({ name: packageName, version: packageVersion } as never);
             jest.spyOn(fs, "existsSync").mockReturnValue(true);
             jest.spyOn(path, "normalize").mockReturnValue("testing");
             jest.spyOn(fs, "lstatSync").mockReturnValue({
@@ -302,7 +302,7 @@ describe("PMF: Install Interface", () => {
 
             jest.spyOn(path, "isAbsolute").mockReturnValueOnce(false);
             jest.spyOn(fs, "existsSync").mockReturnValueOnce(true);
-            mocks.getPackageInfo.mockResolvedValue({ name: packageName, version: packageVersion } as never);
+            mocks.getPackageInfo.mockReturnValue({ name: packageName, version: packageVersion } as never);
             jest.spyOn(path, "normalize").mockReturnValue("testing");
             jest.spyOn(fs, "lstatSync").mockReturnValue({
                 isSymbolicLink: jest.fn().mockReturnValue(true)
@@ -329,7 +329,7 @@ describe("PMF: Install Interface", () => {
             jest.spyOn(path, "isAbsolute").mockReturnValueOnce(true);
 
             // This is valid under semver ^1.5.2
-            mocks.getPackageInfo.mockResolvedValue({ name: packageName, version: "1.5.16" } as never);
+            mocks.getPackageInfo.mockReturnValue({ name: packageName, version: "1.5.16" } as never);
 
             // Call the install
             setResolve(semverPackage);
@@ -354,7 +354,7 @@ describe("PMF: Install Interface", () => {
                 }
             };
 
-            mocks.getPackageInfo.mockResolvedValue({ name: packageName, version: packageVersion } as never);
+            mocks.getPackageInfo.mockReturnValue({ name: packageName, version: packageVersion } as never);
             jest.spyOn(fs, "existsSync").mockReturnValueOnce(true);
             jest.spyOn(path, "normalize").mockReturnValue("testing");
             jest.spyOn(fs, "lstatSync").mockReturnValue({
@@ -396,7 +396,7 @@ describe("PMF: Install Interface", () => {
                     } as any);
                 }
 
-                mocks.getPackageInfo.mockResolvedValue({ name: packageName, version: packageVersion } as never);
+                mocks.getPackageInfo.mockReturnValue({ name: packageName, version: packageVersion } as never);
                 jest.spyOn(fs, "existsSync").mockReturnValueOnce(true).mockReturnValueOnce(opts.schemaExists);
                 jest.spyOn(path, "normalize").mockReturnValue("testing");
                 jest.spyOn(fs, "lstatSync").mockReturnValue({

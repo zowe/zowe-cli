@@ -34,7 +34,7 @@ export async function update(packageName: string, registry: string) {
     installPackages(PMFConstants.instance.PLUGIN_INSTALL_LOCATION, registry, npmPackage);
 
     // We fetch the package version of newly installed plugin
-    const packageInfo = await getPackageInfo(npmPackage);
+    const packageInfo = getPackageInfo(npmPackage);
     const packageVersion = packageInfo.version;
 
     iConsole.info("Update complete");
