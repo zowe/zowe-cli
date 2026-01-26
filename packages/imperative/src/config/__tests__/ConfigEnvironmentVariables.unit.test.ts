@@ -10,7 +10,6 @@
 */
 
 import { ConfigEnvironmentVariables } from "../src/ConfigEnvironmentVariables";
-import { cloneDeep } from "lodash";
 import { ConfigUtils, type Config, type IConfigLayer } from "..";
 import type { IConfigEnvVarManaged } from "../src/doc/IConfigEnvVarManaged";
 const originalEnvironment = process.env;
