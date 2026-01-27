@@ -173,6 +173,34 @@ describe("Config secure tests", () => {
         expect(writeFileSpy.mock.calls[0][1]).toContain("$TESTVALUE");
     });
 
+    it("should load and save all secure properties, and work with strings with dollar signs", async () => {
+        jest.spyOn(Config, "search").mockReturnValueOnce(projectUserConfigPath).mockReturnValueOnce(projectConfigEnvPath);
+        jest.spyOn(fs, "existsSync").mockReturnValueOnce(false).mockReturnValueOnce(true).mockReturnValue(false);
+        mockSecureLoad.mockReturnValueOnce(JSON.stringify({fakePath: {
+            [securePropPath]: "area52"
+        }}));
+        const config = await Config.load(MY_APP, { vault: mockVault });
+        // Check that secureLoad was called and secure value was extracted
+        expect(mockSecureLoad).toHaveBeenCalledWith("secure_config_props");
+        expect(config.properties.profiles.fruit.properties.secret).toBe("$TESTVALUE");
+
+        const writeFileSpy = jest.spyOn(fs, "writeFileSync").mockReturnValueOnce(undefined);
+        await config.save(false);
+
+        // Check that secureSave was called, secure value was preserved in
+        // active layer, and the value was excluded from the config file
+        expect(mockSecureSave).toHaveBeenCalledTimes(1);
+        expect(mockSecureSave.mock.calls[0][0]).toBe("secure_config_props");
+        expect(mockSecureSave.mock.calls[0][1]).not.toContain("area51");
+        expect(mockSecureSave.mock.calls[0][1]).not.toContain("aliens");
+        expect(mockSecureSave.mock.calls[0][1]).toContain("$TESTVALUE");
+        expect(config.properties.profiles.fruit.properties.secret).not.toBe("area51");
+        expect(writeFileSpy).toHaveBeenCalled();
+        expect(writeFileSpy.mock.calls[0][1]).not.toContain("area51");
+        expect(writeFileSpy.mock.calls[0][1]).not.toContain("aliens");
+        expect(writeFileSpy.mock.calls[0][1]).not.toContain("$TESTVALUE");
+    });
+
     it("should toggle the security of a property if requested", async () => {
         jest.spyOn(Config, "search").mockReturnValue(projectConfigPath);
         jest.spyOn(fs, "existsSync").mockReturnValueOnce(true).mockReturnValue(false);
