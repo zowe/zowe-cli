@@ -172,7 +172,7 @@ describe("Config Environment Variables", () => {
             expect(fakeConfig.mEnvVarManaged?.[0]).toEqual({
                 global: false,
                 user: false,
-                propPath: ".fake.properties.user",
+                propPath: "fake.properties.user",
                 originalValue: "$TESTVALUE",
                 replacementValue: "notarealuser"
             });
@@ -296,7 +296,7 @@ describe("Config Environment Variables", () => {
             fakeConfig.mEnvVarManaged?.push({
                 global: false,
                 user: false,
-                propPath: ".fake.properties.user",
+                propPath: "fake.properties.user",
                 originalValue: "$TESTVALUE",
                 replacementValue: "fakeuser"
             });

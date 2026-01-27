@@ -29,7 +29,11 @@ export class ConfigEnvironmentVariables {
      */
     public static replaceEnvironmentVariablesInConfigLayer(obj: any, config: Config, layer: IConfigLayer, path: string = "") {
         Object.keys(obj).forEach(key => {
-            const propPath = path + "." + key;
+            let propPath: string;
+
+            if (path) { propPath = path + "." + key; }
+            else { propPath = key; }
+
             if (typeof obj[key] === 'object' && !Array.isArray(obj[key]) && obj[key] != null) {
                 this.replaceEnvironmentVariablesInConfigLayer(obj[key], config, layer, propPath);
             } else if (typeof obj[key] == 'string' && obj[key].includes("$") &&
@@ -60,7 +64,11 @@ export class ConfigEnvironmentVariables {
      */
     public static restoreEnvironmentVariablesInConfigLayer(obj: any, config: Config, layer: IConfigLayer, path: string = "") {
         Object.keys(obj).forEach(key => {
-            const propPath = path + "." + key;
+            let propPath: string;
+
+            if (path) { propPath = path + "." + key; }
+            else { propPath = key; }
+
             if (typeof obj[key] === 'object' && !Array.isArray(obj[key]) && obj[key] != null) {
                 this.restoreEnvironmentVariablesInConfigLayer(obj[key], config, layer, propPath);
             } else if (typeof obj[key] == 'string') {
