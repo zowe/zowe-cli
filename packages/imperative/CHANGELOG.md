@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated `diff` dependency for technical currency. [#2666](https://github.com/zowe/zowe-cli/pull/2666)
+
 ## `8.29.10`
 
 - BugFix: Updated `lodash` dependency to resolve technical currency. [#2669](https://github.com/zowe/zowe-cli/pull/2669)
