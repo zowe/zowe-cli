@@ -208,6 +208,27 @@ describe("Config tests", () => {
             expect(config.properties.profiles).toEqual({});
         });
 
+        it("should load a config that contains environment variables", async () => {
+            const oldProcessValue = process.env["TESTCOLOR"];
+            jest.spyOn(Config, "search").mockReturnValue(null);
+            jest.spyOn(fs, "existsSync")
+                .mockReturnValueOnce(false)     // Project user layer
+                .mockReturnValueOnce(false)     // Project layer
+                .mockReturnValueOnce(true)      // User layer
+                .mockReturnValueOnce(false);    // Global layer
+            process.env["TESTCOLOR"] = "burgandy";
+            let config: Config | undefined;
+            try {
+                config = await Config.load(MY_APP, { homeDir: __dirname + "/__resources__/ProfInfoApp_environment_variables" });
+            } catch (err) {
+                // Do nothing
+            } finally {
+                process.env["TESTCOLOR"] = oldProcessValue;
+                expect(config?.properties).toMatchSnapshot();
+                expect(config?.properties.profiles.fruit.profiles.apple.properties.color).toEqual("burgandy");
+            }
+        });
+
         it("should fail to load config that is not JSON", async () => {
             jest.spyOn(Config, "search").mockReturnValue(__dirname + "/__resources__/project.config.json");
             jest.spyOn(fs, "existsSync")
@@ -472,6 +493,31 @@ describe("Config tests", () => {
             expect(config.properties.profiles.fruit.profiles.apple.properties.secret).toBe("@ppl3");
             expect(layer.properties.profiles.fruit.profiles.apple.secure.length).toBe(1);
             expect(layer.properties.profiles.fruit.profiles.apple.secure[0]).toBe("secret");
+        });
+
+        it("should fail to set a value in the config if it is managed by environment variables", async () => {
+            const config = await Config.load(MY_APP);
+            const layer = (config as any).layerActive();
+            config.set("profiles.fruit.profiles.apple.properties.secret", "@ppl3", { secure: true });
+            config.mEnvVarManaged.push({
+                global: layer.global,
+                user: layer.user,
+                propPath: "profiles.fruit.profiles.apple.properties.secret",
+                originalValue: "$FAKE",
+                replacementValue: "@ppl3"
+            });
+            let error;
+            try {
+                config.set("profiles.fruit.profiles.apple.properties.secret", "@ppl4", { secure: true });
+            } catch (err) {
+                error = err;
+            }
+
+            expect(error).toBeDefined();
+            expect(error).toBeInstanceOf(ImperativeError);
+            expect(error.message).toContain("managed by environment variables");
+            expect(config.properties.profiles.fruit.profiles.apple.properties.secret).toEqual("@ppl3");
+            expect(layer.properties.profiles.fruit.profiles.apple.secure.length).toEqual(1);
         });
 
         it("should set schema URI at top of config", async () => {

@@ -7,6 +7,51 @@ Object {
 }
 `;
 
+exports[`Config tests load should load a config that contains environment variables 1`] = `
+Object {
+  "autoStore": true,
+  "defaults": Object {
+    "fruit": "fruit.apple",
+    "vegetable": "vegetable.artichoke",
+  },
+  "profiles": Object {
+    "fruit": Object {
+      "profiles": Object {
+        "apple": Object {
+          "properties": Object {
+            "color": "burgandy",
+          },
+          "type": "fruit",
+        },
+        "banana": Object {
+          "properties": Object {
+            "color": "yellow",
+          },
+          "type": "fruit",
+        },
+      },
+      "properties": Object {
+        "origin": "California",
+      },
+      "secure": Array [],
+    },
+    "vegetable": Object {
+      "profiles": Object {
+        "artichoke": Object {
+          "properties": Object {
+            "color": "green",
+          },
+          "type": "vegetable",
+        },
+      },
+      "properties": Object {
+        "origin": "Mexico",
+      },
+    },
+  },
+}
+`;
+
 exports[`Config tests load should load global config 1`] = `
 Object {
   "autoStore": true,
