@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated `tar` dependency to resolve technical currency. [#2675](https://github.com/zowe/zowe-cli/pull/2675)
+
 ## `7.29.20`
 
 - BugFix: Updated `tar` dependency to resolve technical currency. [#2668](https://github.com/zowe/zowe-cli/pull/2668)
