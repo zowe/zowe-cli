@@ -15328,7 +15328,7 @@
         "get-stream": "6.0.1",
         "lodash": "4.17.23",
         "minimatch": "5.1.6",
-        "tar": "7.5.4"
+        "tar": "7.5.7"
       },
       "bin": {
         "bright": "lib/main.js",
@@ -15382,8 +15382,8 @@
       }
     },
     "packages/cli/node_modules/tar": {
-      "version": "7.5.4",
-      "integrity": "sha512-AN04xbWGrSTDmVwlI4/GTlIIwMFk/XEv7uL8aa57zuvRy6s4hdBed+lVq2fAZ89XDa7Us3ANXcE3Tvqvja1kTA==",
+      "version": "7.5.7",
+      "integrity": "sha512-fov56fJiRuThVFXD6o6/Q354S7pnWMJIVlDBYijsTNx6jKSE4pvrDTs6lUnmGvNyfJwFQQwWy3owKz1ucIhveQ==",
       "license": "BlueOak-1.0.0",
       "dependencies": {
         "@isaacs/fs-minipass": "^4.0.0",
@@ -19009,7 +19009,7 @@
         "lodash": "4.17.23",
         "minimatch": "5.1.6",
         "strip-ansi": "^6.0.1",
-        "tar": "7.5.4",
+        "tar": "7.5.7",
         "which": "^2.0.2"
       },
       "dependencies": {
@@ -19033,8 +19033,8 @@
           }
         },
         "tar": {
-          "version": "7.5.4",
-          "integrity": "sha512-AN04xbWGrSTDmVwlI4/GTlIIwMFk/XEv7uL8aa57zuvRy6s4hdBed+lVq2fAZ89XDa7Us3ANXcE3Tvqvja1kTA==",
+          "version": "7.5.7",
+          "integrity": "sha512-fov56fJiRuThVFXD6o6/Q354S7pnWMJIVlDBYijsTNx6jKSE4pvrDTs6lUnmGvNyfJwFQQwWy3owKz1ucIhveQ==",
           "requires": {
             "@isaacs/fs-minipass": "^4.0.0",
             "chownr": "^3.0.0",
