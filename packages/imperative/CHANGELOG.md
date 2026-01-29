@@ -6,6 +6,18 @@ All notable changes to the Imperative package will be documented in this file.
 
 - Enhancement: Added Profile merge and AuthOrder support to prefer `certAccount` and `certKeyAccount` (per-session and profile-level) and to write secure temporary certificate files when needed. [#2325](https://github.com/zowe/zowe-cli/issues/2325)
 
+## `8.29.11`
+
+- BugFix: Updated `diff` dependency for technical currency. [#2666](https://github.com/zowe/zowe-cli/pull/2666)
+
+## `8.29.10`
+
+- BugFix: Updated `lodash` dependency to resolve technical currency. [#2669](https://github.com/zowe/zowe-cli/pull/2669)
+
+## `8.29.9`
+
+- BugFix: Removed large dependency `pacote` for fetching package metadata when installing plug-ins. [#2665](https://github.com/zowe/zowe-cli/pull/2665)
+
 ## `8.29.8`
 
 - BugFix: Updated `diff` and `diff2html` dependencies for technical currency. [#2664](https://github.com/zowe/zowe-cli/pull/2664)

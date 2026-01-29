@@ -6,6 +6,18 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 - Enhancement: Added support for specifying certificate credential manager account names via profile fields and per-session options. See `certAccount` and `certKeyAccount` profile fields (Core/Imperative) and ZOSMF-specific `--cert-account` / `--cert-key-account` session options for Windows and macOS. [#2325](https://github.com/zowe/zowe-cli/issues/2325)
 
+## `8.29.12`
+
+- BugFix: Updated `tar` dependency to resolve technical currency. [#2674](https://github.com/zowe/zowe-cli/pull/2674)
+
+## `8.29.10`
+
+- BugFix: Updated `lodash` dependency to resolve technical currency. [#2669](https://github.com/zowe/zowe-cli/pull/2669)
+
+## `8.29.9`
+
+- BugFix: Updated `tar` dependency to resolve technical currency. [#2665](https://github.com/zowe/zowe-cli/pull/2665)
+
 ## `8.29.7`
 
 - Enhancement: Added instructions for obtaining a token to be displayed when a command prompts for a token. [#2660](https://github.com/zowe/zowe-cli/pull/2660)

@@ -25,22 +25,29 @@ fs.copyFileSync(pkgJsonFile, pkgJsonFile + ".bak");
 try {
     // Install node_modules directly inside packages/cli
     execCmd("npm run preshrinkwrap");
-    execCmd("npm install --ignore-scripts --workspaces=false");
+    const zoweRegistry = require("../lerna.json").command.publish.registry;
+    const npmArgs = ["--ignore-scripts", "--workspaces=false", `--@zowe:registry=${zoweRegistry}`];
+    execCmd(`npm install ${npmArgs.join(" ")}`);
+
+    // Replace SDK packages installed from registry with versions built from source
     for (const zowePkgDir of fs.readdirSync(path.join(cliPkgDir, "node_modules", "@zowe"))) {
         const srcDir = path.join("node_modules", "@zowe", zowePkgDir);
-        const destDir = path.join(cliPkgDir, srcDir);
-        fs.rmSync(destDir, { recursive: true, force: true });
-        fs.cpSync(fs.realpathSync(srcDir), destDir, {recursive: true});
+        const relDir = path.relative(cliPkgDir, fs.realpathSync(srcDir));
+        execCmd(`npm install file:${relDir} --ignore-scripts --install-links --workspaces=false`);
     }
+
+    // Exclude optional platform-specific packages that can cause install issues if bundled
     fs.rmSync(path.join(cliPkgDir, "node_modules", "cpu-features"), { recursive: true, force: true });
 
-    // Define bundled dependencies in package.json and package the TGZ
+    // Define bundled dependencies in package.json
     const pkgJson = JSON.parse(fs.readFileSync(pkgJsonFile, "utf-8"));
     pkgJson.bundledDependencies = [
         ...Object.keys(pkgJson.dependencies),
         ...Object.keys(pkgJson.optionalDependencies ?? {})
     ];
     fs.writeFileSync(pkgJsonFile, JSON.stringify(pkgJson, null, 2));
+
+    // Package the TGZ in dist folder
     execCmd("npm pack --pack-destination=../../dist");
 } finally {
     fs.rmSync(path.join(cliPkgDir, "node_modules"), { recursive: true, force: true });

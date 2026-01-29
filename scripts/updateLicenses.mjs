@@ -8,11 +8,11 @@
 * Copyright Contributors to the Zowe Project.
 *
 */
-const ansiColors = (await import("ansi-colors")).default;
-const fancyLog = (await import("fancy-log")).default;
+
 const fs = await import("fs");
-const fastGlob = (await import("fast-glob")).default;
 const os = await import("os");
+const chalk = (await import("chalk")).default;
+const fastGlob = (await import("fast-glob")).default;
 
 // turn the license file into a multi line comment
 let alreadyContainedCopyright = 0;
@@ -45,5 +45,5 @@ for (const filePath of paths) {
     result = usedShebang + result; // add the shebang back
     fs.writeFileSync(filePath, result);
 }
-fancyLog(ansiColors.blue("Ensured that %d files had copyright information" +
+console.log(chalk.blue("Ensured that %d files had copyright information" +
     " (%d already did)."), paths.length, alreadyContainedCopyright);
