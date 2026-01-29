@@ -77,9 +77,8 @@ describe("Handler for daemon enable", () => {
         if (IO.existsSync(preBldTgzPath)) {
             IO.deleteFile(preBldTgzPath);
         }
-        if (IO.existsSync(preBldDir)) {
-            IO.deleteDir(preBldDir);
-        }
+        // Do not attempt to remove the whole prebuilds directory; it may contain
+        // other resources in the repository and removing it can fail with ENOTEMPTY.
     });
 
     describe("process method", () => {

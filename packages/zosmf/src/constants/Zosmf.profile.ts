@@ -57,6 +57,14 @@ export const ZosmfProfile: ICommandProfileTypeConfiguration =
                 type: "string",
                 optionDefinition: ZosmfSession.ZOSMF_OPTION_CERT_KEY_FILE
             },
+            certAccount: {
+                type: "string",
+                optionDefinition: ZosmfSession.ZOSMF_OPTION_CERT_ACCOUNT
+            },
+            certKeyAccount: {
+                type: "string",
+                optionDefinition: ZosmfSession.ZOSMF_OPTION_CERT_KEY_ACCOUNT
+            },
             // certFilePassphrase: {
             //     type: "string",
             //     secure: true,

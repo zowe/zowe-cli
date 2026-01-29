@@ -804,7 +804,7 @@ describe("AuthOrder", () => {
         });
 
         it("should ensure that cacheCredsAndAuthOrder is called when availableCreds does not exist", () => {
-            const cacheCredsAndAuthOrderSpy = jest.spyOn(AuthOrder as any, "cacheCredsAndAuthOrder");
+            const cacheCredsAndAuthOrderSpy = jest.spyOn(AuthOrder as any, "cacheCredsAndAuthOrderSync");
             delete sessCfgForTest._authCache;
             expect(sessCfgForTest).not.toHaveProperty("_authCache");
 

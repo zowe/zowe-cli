@@ -522,7 +522,13 @@ export class ProfileInfo {
         }
 
         // resolve the choices among various session config properties
-        ConnectionPropsForSessCfg.resolveSessCfgProps(sessCfg, cmdArgs, connOpts);
+        // Note: resolveSessCfgProps is async (may prompt or auto-store). To keep
+        // createSession synchronous (non-breaking API) we intentionally do not
+        // await it here. Callers that need the resolved/possibly-prompted
+        // properties should call the async APIs directly.
+        // Fire-and-forget the resolver so background work (prompts) can proceed
+        // without changing the synchronous contract.
+        void ConnectionPropsForSessCfg.resolveSessCfgProps(sessCfg, cmdArgs, connOpts);
 
         return new Session(sessCfg);
     }
@@ -735,6 +741,37 @@ export class ProfileInfo {
                     nextArg.argValue = undefined;
                 }
             });
+        }
+
+        return mergedArgs;
+    }
+
+    /**
+     * Async variant of mergeArgsForProfile which will await loading secure values
+     * from the configured secure vault/credential manager. Keeps the synchronous
+     * API intact while providing an async implementation for callers that need it.
+     */
+    public async mergeArgsForProfileAsync(
+        profile: IProfAttrs,
+        mergeOpts?: IProfMergeArgOpts
+    ): Promise<IProfMergedArg> {
+        const opts = mergeOpts ?? { getSecureVals: false };
+        const mergedArgs = this.mergeArgsForProfile(profile, { ...opts, getSecureVals: false });
+
+        if (opts.getSecureVals) {
+            // Load secure values asynchronously where applicable
+            for (const nextArg of mergedArgs.knownArgs) {
+                if (nextArg.secure) {
+                    try {
+                        nextArg.argValue = await this.loadSecureArgAsync(nextArg);
+                    } catch (error_) {
+                        Logger.getImperativeLogger().debug(
+                            `Failed to load secure value for ${nextArg.argName}: ${(error_ as Error).message}`
+                        );
+                        nextArg.argValue = undefined;
+                    }
+                }
+            }
         }
 
         return mergedArgs;
@@ -979,6 +1016,43 @@ export class ProfileInfo {
         return argValue;
     }
 
+    /**
+     * Async variant to load secure argument values. Uses the same lookup logic
+     * as loadSecureArg but returns a Promise to allow async credential manager
+     * integrations.
+     */
+    public async loadSecureArgAsync(arg: IProfArgAttrs): Promise<any> {
+        this.ensureReadFromDisk();
+        let argValue;
+
+        if (arg.argLoc.locType === ProfLocType.TEAM_CONFIG) {
+            if (arg.argLoc.osLoc?.length > 0 && arg.argLoc.jsonLoc != null) {
+                for (const layer of this.mLoadedConfig.mLayers) {
+                    if (layer.path === arg.argLoc.osLoc[0]) {
+                        argValue = lodash.get(layer.properties, arg.argLoc.jsonLoc);
+                        break;
+                    }
+                }
+            }
+        } else {
+            argValue = arg.argValue;
+        }
+
+        if (argValue === undefined) {
+            throw new ProfInfoErr({
+                errorCode: ProfInfoErr.UNKNOWN_PROP_LOCATION,
+                msg: `Failed to locate the property ${arg.argName}`
+            });
+        }
+
+        // If the stored value is a Promise (e.g., from a secure loader), await it
+        if (argValue && typeof (argValue as any).then === "function") {
+            return await (argValue as any);
+        }
+
+        return argValue;
+    }
+
     // _______________________________________________________________________
     /**
      * Initialize a session configuration object with the arguments
@@ -999,7 +1073,9 @@ export class ProfileInfo {
         // the set of names of arguments in IProfArgAttrs used in ISession
         const profArgNames = argNames ?? [
             "host", "port", "user", "password", "rejectUnauthorized",
-            "protocol", "basePath", "tokenType", "tokenValue"
+            "protocol", "basePath", "tokenType", "tokenValue",
+            // certificate related args: map cert files and explicit credential-manager account names
+            "certFile", "certKeyFile", "certAccount", "certKeyAccount"
         ];
 
         for (const profArgNm of profArgNames) {
@@ -1024,6 +1100,7 @@ export class ProfileInfo {
         }
 
         // Cache all creds that were placed into the session config.
+        // Use the synchronous variant so callers remain synchronous.
         AuthOrder.addCredsToSession(sessCfg);
         return sessCfg;
     }

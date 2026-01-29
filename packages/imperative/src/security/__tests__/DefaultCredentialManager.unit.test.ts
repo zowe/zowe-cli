@@ -332,4 +332,120 @@ describe("DefaultCredentialManager", () => {
             });
         });
     });
+    describe("certificate and key methods", () => {
+        let manager: DefaultCredentialManager;
+        let privateManager: any;
+        const service = DefaultCredentialManager.SVC_NAME;
+        const account = "certAccount";
+        const certBuffer = Buffer.from("CERTDATA");
+        const keyBuffer = Buffer.from("KEYDATA");
+
+        beforeEach(async () => {
+            manager = new DefaultCredentialManager(service);
+            privateManager = manager as any;
+            await manager.initialize();
+            privateManager.keytar = {
+                getCertificate: jest.fn().mockResolvedValue(certBuffer),
+                getCertificateSync: jest.fn().mockReturnValue(certBuffer),
+                getCertificateKey: jest.fn().mockResolvedValue(keyBuffer),
+                getCertificateKeySync: jest.fn().mockReturnValue(keyBuffer)
+            };
+        });
+
+        it("loadCertificate returns Buffer when found", async () => {
+            const result = await manager.loadCertificate(account);
+            expect(result).toBe(certBuffer);
+            expect(privateManager.keytar.getCertificate).toHaveBeenCalledWith(service, account);
+        });
+
+        it("loadCertificate throws when not found and not optional", async () => {
+            privateManager.keytar.getCertificate.mockResolvedValue(null);
+            await expect(manager.loadCertificate(account)).rejects.toThrow("Unable to load certificate from credential manager.");
+        });
+
+        it("loadCertificate returns null when not found and optional", async () => {
+            privateManager.keytar.getCertificate.mockResolvedValue(null);
+            await expect(manager.loadCertificate(account, true)).resolves.toBeNull();
+        });
+
+        it("loadCertificateSync returns Buffer when found", () => {
+            const result = manager.loadCertificateSync(account);
+            expect(result).toBe(certBuffer);
+            expect(privateManager.keytar.getCertificateSync).toHaveBeenCalledWith(service, account);
+        });
+
+        it("loadCertificateSync throws when not found and not optional", () => {
+            privateManager.keytar.getCertificateSync.mockReturnValue(null);
+            expect(() => manager.loadCertificateSync(account)).toThrow("Unable to load certificate from credential manager.");
+        });
+
+        it("loadCertificateSync returns null when not found and optional", () => {
+            privateManager.keytar.getCertificateSync.mockReturnValue(null);
+            expect(manager.loadCertificateSync(account, true)).toBeNull();
+        });
+
+        it("loadCertificateSync throws if sync binding missing and not optional", () => {
+            delete privateManager.keytar.getCertificateSync;
+            expect(() => manager.loadCertificateSync(account)).toThrow("Unable to load certificate from credential manager.");
+        });
+
+        it("loadCertificateSync returns null if sync binding missing and optional", () => {
+            delete privateManager.keytar.getCertificateSync;
+            expect(manager.loadCertificateSync(account, true)).toBeNull();
+        });
+
+        it("loadCertificateKey returns Buffer when found", async () => {
+            const result = await manager.loadCertificateKey(account);
+            expect(result).toBe(keyBuffer);
+            expect(privateManager.keytar.getCertificateKey).toHaveBeenCalledWith(service, account, undefined);
+        });
+
+        it("loadCertificateKey throws when not found and not optional", async () => {
+            privateManager.keytar.getCertificateKey.mockResolvedValue(null);
+            await expect(manager.loadCertificateKey(account)).rejects.toThrow("Unable to load private key from credential manager.");
+        });
+
+        it("loadCertificateKey returns null when not found and optional", async () => {
+            privateManager.keytar.getCertificateKey.mockResolvedValue(null);
+            await expect(manager.loadCertificateKey(account, true)).resolves.toBeNull();
+        });
+
+        it("loadCertificateKeySync returns Buffer when found", () => {
+            const result = manager.loadCertificateKeySync(account);
+            expect(result).toBe(keyBuffer);
+            expect(privateManager.keytar.getCertificateKeySync).toHaveBeenCalledWith(service, account, undefined);
+        });
+
+        it("loadCertificateKeySync throws when not found and not optional", () => {
+            privateManager.keytar.getCertificateKeySync.mockReturnValue(null);
+            expect(() => manager.loadCertificateKeySync(account)).toThrow("Unable to load private key from credential manager.");
+        });
+
+        it("loadCertificateKeySync returns null when not found and optional", () => {
+            privateManager.keytar.getCertificateKeySync.mockReturnValue(null);
+            expect(manager.loadCertificateKeySync(account, true)).toBeNull();
+        });
+
+        it("loadCertificateKeySync throws if sync binding missing and not optional", () => {
+            delete privateManager.keytar.getCertificateKeySync;
+            expect(() => manager.loadCertificateKeySync(account)).toThrow("Unable to load private key from credential manager.");
+        });
+
+        it("loadCertificateKeySync returns null if sync binding missing and optional", () => {
+            delete privateManager.keytar.getCertificateKeySync;
+            expect(manager.loadCertificateKeySync(account, true)).toBeNull();
+        });
+    });
+
+    describe("getMissingEntryMessage", () => {
+        it("returns a helpful message", () => {
+            const manager = new DefaultCredentialManager("svc1");
+            (manager as any).allServices = ["svc1", "svc2"];
+            const msg = (manager as any).getMissingEntryMessage("acct1");
+            expect(msg).toContain("svc1");
+            expect(msg).toContain("svc2");
+            expect(msg).toContain("acct1");
+            expect(msg).toContain("Could not find an entry");
+        });
+    });
 });

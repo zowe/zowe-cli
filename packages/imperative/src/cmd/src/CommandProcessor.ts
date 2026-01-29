@@ -626,7 +626,7 @@ export class CommandProcessor {
             };
             try {
                 if (handlerParms.arguments.showInputsOnly) {
-                    this.showInputsOnly(handlerParms);
+                    await this.showInputsOnly(handlerParms);
                 } else {
                     await handler.process(handlerParms);
                 }
@@ -658,7 +658,7 @@ export class CommandProcessor {
             let bufferedStdOut = Buffer.from([]);
             let bufferedStdErr = Buffer.from([]);
             if (preparedArgs.showInputsOnly) {
-                this.showInputsOnly({
+                await this.showInputsOnly({
                     response,
                     arguments: preparedArgs,
                     positionals: preparedArgs._,
@@ -741,7 +741,7 @@ export class CommandProcessor {
      * @returns
      * @memberof CommandProcessor
      */
-    private showInputsOnly(commandParameters: IHandlerParameters) {
+    private async showInputsOnly(commandParameters: IHandlerParameters) {
 
         /**
          * Determine if we should display secure values.  If the ENV variable is set to true,
@@ -767,8 +767,11 @@ export class CommandProcessor {
             commandValues: {} as ICommandArguments
         };
 
-        const sessCfg: ISession = {};
-        ConnectionPropsForSessCfg.resolveSessCfgProps(sessCfg, commandParameters.arguments);
+        const sessCfg: ISession = {} as any;
+        const resolveResult = ConnectionPropsForSessCfg.resolveSessCfgProps(sessCfg, commandParameters.arguments);
+        if (resolveResult) {
+            await resolveResult;
+        }
         showInputsOnly.authenticationType = sessCfg.type;
         showInputsOnly.authTypeOrder = sessCfg.authTypeOrder.toString();
 

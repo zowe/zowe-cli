@@ -17,6 +17,7 @@ import { ImperativeError } from "../../../error";
 import * as SessConstants from "../../src/session/SessConstants";
 import { ISession } from "../../src/session/doc/ISession";
 import { Logger } from "../../../logger";
+import { AuthOrder } from "../../src/session/AuthOrder";
 import { join } from "path";
 import { ConfigAutoStore } from "../../../config/src/ConfigAutoStore";
 import { setupConfigToLoad } from "../../../../__tests__/src/TestUtil";
@@ -2077,6 +2078,88 @@ describe("ConnectionPropsForSessCfg tests", () => {
             expect(clientPromptSpy.mock.calls[1][0]).toBe("Enter your tokenValue for your service (will be hidden): ");
             expect(consoleMsgs).toContain(tokenInstructions);
         });
+    });
+});
+
+describe("resolveSessCfgProps additions", () => {
+    const baseCmdArgs = { $0: "zowe", _: [] as string[] };
+
+    afterEach(() => {
+        jest.restoreAllMocks();
+    });
+
+    it("captures profile and account names from command args", () => {
+        const sess: ISession & any = { authTypeOrder: [], _authCache: {} };
+        jest.spyOn(AuthOrder, "addCredsToSession").mockImplementation(() => { /* noop */ });
+
+        ConnectionPropsForSessCfg.resolveSessCfgProps(sess, {
+            ...baseCmdArgs,
+            zosmfProfile: "zos-profile-name",
+            baseProfile: "base-profile-name"
+        });
+
+        expect(sess.profile).toBe("zos-profile-name");
+        expect(sess.account).toBe("base-profile-name");
+        expect(AuthOrder.addCredsToSession).toHaveBeenCalled();
+    });
+
+    it("fills cert accounts and authOrder from active profile when args omit them", () => {
+        const exists = jest.fn().mockReturnValue(true);
+        const get = jest.fn().mockReturnValue({ properties: {
+            certAccount: "acct-from-profile",
+            certKeyAccount: "key-from-profile",
+            authOrder: "cert-pem"
+        } });
+        jest.spyOn(ImperativeConfig as any, "instance", "get").mockReturnValue({
+            config: { api: { profiles: { exists, get } } }
+        });
+        jest.spyOn(AuthOrder, "addCredsToSession").mockImplementation(() => { /* noop */ });
+
+        const sess: ISession & any = { authTypeOrder: [], _authCache: {} };
+        const cmdArgs: any = { ...baseCmdArgs, zosmfProfile: "zosmf-prof" };
+
+        ConnectionPropsForSessCfg.resolveSessCfgProps(sess, cmdArgs);
+
+        expect(sess.certAccount).toBe("acct-from-profile");
+        expect(sess.certKeyAccount).toBe("key-from-profile");
+        expect(cmdArgs.authOrder).toBe("cert-pem");
+        expect(exists).toHaveBeenCalledWith("zosmf-prof");
+        expect(get).toHaveBeenCalledWith("zosmf-prof", true);
+        expect(AuthOrder.addCredsToSession).toHaveBeenCalled();
+    });
+
+    it("applies supportedAuthTypes override and marks auth order as user-set", () => {
+        const warn = jest.fn();
+        jest.spyOn(Logger, "getImperativeLogger").mockReturnValue({ warn } as any);
+        jest.spyOn(AuthOrder, "addCredsToSession").mockImplementation(() => { /* noop */ });
+        const putTopSpy = jest.spyOn(AuthOrder, "putTopAuthInSession").mockImplementation(() => { /* noop */ });
+
+        const sess: ISession & any = { authTypeOrder: [SessConstants.AUTH_TYPE_BASIC, SessConstants.AUTH_TYPE_TOKEN], _authCache: {} };
+
+        ConnectionPropsForSessCfg.resolveSessCfgProps(sess, baseCmdArgs, {
+            supportedAuthTypes: [SessConstants.AUTH_TYPE_TOKEN]
+        });
+
+        expect(sess.authTypeOrder).toEqual([SessConstants.AUTH_TYPE_TOKEN]);
+        expect(sess._authCache.didUserSetAuthOrder).toBe(true);
+        expect(putTopSpy).toHaveBeenCalled();
+        expect(warn).toHaveBeenCalled();
+    });
+
+    it("sets default tokenType when requesting a token with none supplied", () => {
+        const makingReqSpy = jest.spyOn(AuthOrder, "makingRequestForToken").mockImplementation(() => { /* noop */ });
+        jest.spyOn(AuthOrder, "addCredsToSession").mockImplementation(() => { /* noop */ });
+
+        const sess: ISession & any = { authTypeOrder: [], _authCache: {} };
+        const cmdArgs = { ...baseCmdArgs } as any;
+
+        ConnectionPropsForSessCfg.resolveSessCfgProps(sess, cmdArgs, {
+            requestToken: true,
+            defaultTokenType: SessConstants.TOKEN_TYPE_JWT
+        });
+
+        expect(sess.tokenType).toBe(SessConstants.TOKEN_TYPE_JWT);
+        expect(makingReqSpy).toHaveBeenCalled();
     });
 });
 

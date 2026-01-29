@@ -1,5 +1,10 @@
 # Change Log
+
 All notable changes to the Zowe CLI package will be documented in this file.
+
+## Recent Changes
+
+- Enhancement: Added support for specifying certificate credential manager account names via profile fields and per-session options. See `certAccount` and `certKeyAccount` profile fields (Core/Imperative) and ZOSMF-specific `--cert-account` / `--cert-key-account` session options for Windows and macOS. [#2325](https://github.com/zowe/zowe-cli/issues/2325)
 
 ## `8.29.12`
 

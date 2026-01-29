@@ -3,6 +3,22 @@ use napi_derive::napi;
 
 use secrets_core::os;
 
+/// Helper to resolve Option<String> output to JS value (null if None, JS string if Some)
+fn resolve_string(env: Env, output: Option<String>) -> Result<JsUnknown> {
+    Ok(match output {
+        Some(s) => env.create_string(s.as_str())?.into_unknown(),
+        None => env.get_null()?.into_unknown(),
+    })
+}
+
+/// Helper to resolve Option<Vec<u8>> output to JS value (null if None, JS Buffer if Some)
+fn resolve_buffer(env: napi::Env, output: Option<Vec<u8>>) -> napi::Result<JsUnknown> {
+    Ok(match output {
+        Some(bytes) => env.create_buffer_with_data(bytes)?.into_unknown(),
+        None => env.get_null()?.into_unknown(),
+    })
+}
+
 pub struct SetPassword {
     pub service: String,
     pub account: String,
@@ -27,6 +43,18 @@ pub struct FindPassword {
     pub service: String,
 }
 
+pub struct GetCertificate {
+    pub service: String,
+    pub account: String,
+    pub optional: bool,
+}
+
+pub struct GetCertificateKey {
+    pub service: String,
+    pub account: String,
+    pub optional: bool,
+}
+
 #[napi(object)]
 pub struct Credential {
     pub account: String,
@@ -46,10 +74,7 @@ impl Task for GetPassword {
     }
 
     fn resolve(&mut self, env: Env, output: Self::Output) -> Result<Self::JsValue> {
-        Ok(match output {
-            Some(pw) => env.create_string(pw.as_str())?.into_unknown(),
-            None => env.get_null()?.into_unknown(),
-        })
+        resolve_string(env, output)
     }
 
     fn reject(&mut self, _env: Env, err: Error) -> Result<Self::JsValue> {
@@ -154,13 +179,52 @@ impl Task for FindPassword {
     }
 
     fn resolve(&mut self, env: Env, output: Self::Output) -> Result<Self::JsValue> {
-        Ok(match output {
-            Some(pw) => env.create_string(pw.as_str())?.into_unknown(),
-            None => env.get_null()?.into_unknown(),
-        })
+        resolve_string(env, output)
     }
 
     fn reject(&mut self, _env: Env, err: Error) -> Result<Self::JsValue> {
+        Err(err)
+    }
+}
+
+#[napi]
+impl Task for GetCertificate {
+    type Output = Option<Vec<u8>>;
+    type JsValue = napi::JsUnknown;
+
+    fn compute(&mut self) -> napi::Result<Self::Output> {
+        match os::get_certificate(&self.service, &self.account, self.optional) {
+            Ok(cert_opt) => Ok(cert_opt),
+            Err(err) => Err(napi::Error::from_reason(err.to_string())),
+        }
+    }
+
+    fn resolve(&mut self, env: napi::Env, output: Self::Output) -> napi::Result<Self::JsValue> {
+        resolve_buffer(env, output)
+    }
+
+    fn reject(&mut self, _env: napi::Env, err: napi::Error) -> napi::Result<Self::JsValue> {
+        Err(err)
+    }
+}
+
+#[napi]
+impl Task for GetCertificateKey {
+    type Output = Option<Vec<u8>>;
+    type JsValue = napi::JsUnknown;
+
+    fn compute(&mut self) -> napi::Result<Self::Output> {
+        match os::get_certificate_key(&self.service, &self.account, self.optional) {
+            Ok(key_opt) => Ok(key_opt),
+            Err(err) => Err(napi::Error::from_reason(err.to_string())),
+        }
+    }
+
+    fn resolve(&mut self, env: napi::Env, output: Self::Output) -> napi::Result<Self::JsValue> {
+        resolve_buffer(env, output)
+    }
+
+    fn reject(&mut self, _env: napi::Env, err: napi::Error) -> napi::Result<Self::JsValue> {
         Err(err)
     }
 }

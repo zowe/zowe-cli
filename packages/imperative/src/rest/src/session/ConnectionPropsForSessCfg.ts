@@ -108,9 +108,13 @@ export class ConnectionPropsForSessCfg {
         const connOptsToUse = { ...connOpts };
 
         // resolve all values between sessCfg and cmdArgs using option choices
-        ConnectionPropsForSessCfg.resolveSessCfgProps(
+        const resolveResult = ConnectionPropsForSessCfg.resolveSessCfgProps(
             sessCfgToUse, cmdArgs, connOptsToUse
         );
+        // If the result is a promise, await it
+        if (resolveResult) {
+            await resolveResult;
+        }
 
         // This function will provide all the needed properties in one array
         let promptForValues: (keyof SessCfgType & string)[] = [];
@@ -142,10 +146,12 @@ export class ConnectionPropsForSessCfg {
                 }
             }
         }
-        // resolveSessCfgProps previously added creds to our session, but
-        // our caller's overrides may have changed the available creds,
-        // so again add the creds that are currently available.
-        AuthOrder.addCredsToSession(sessCfgToUse, cmdArgs);
+    //resolveSessCfgProps previously added creds to our session, but
+    //our caller's overrides may have changed the available creds,
+    //so again add the creds that are currently available.
+    // Use the async variant because this function is async and callers
+    // may expect certificate lookups to complete before continuing.
+    await AuthOrder.addCredsToSessionAsync(sessCfgToUse, cmdArgs);
 
         // Set default values on propsToPromptFor
         if(connOpts.propsToPromptFor?.length > 0) {
@@ -194,10 +200,17 @@ export class ConnectionPropsForSessCfg {
                     }
                     break;
                 case SessConstants.AUTH_TYPE_CERT_PEM:
-                    if (!sessCfgToUse._authCache?.availableCreds?.cert && !doNotPromptForValues.includes("cert")) {
+                    // Check if cert credential is available from cache OR if certAccount property exists.
+                    // certAccount indicates intent to retrieve certificate from secure storage.
+                    if (!sessCfgToUse._authCache?.availableCreds?.cert
+                        && !((sessCfgToUse as any).certAccount && typeof (sessCfgToUse as any)?.certAccount === "string")
+                        && !doNotPromptForValues.includes("cert")) {
                         promptForValues.push("cert");
                     }
-                    if (!sessCfgToUse._authCache?.availableCreds?.certKey && !doNotPromptForValues.includes("certKey")) {
+                    // Check if certKey credential is available from cache OR if certKeyAccount property exists.
+                    if (!sessCfgToUse._authCache?.availableCreds?.certKey
+                        && !((sessCfgToUse as any).certKeyAccount && typeof (sessCfgToUse as any)?.certKeyAccount === "string")
+                        && !doNotPromptForValues.includes("certKey")) {
                         promptForValues.push("certKey");
                     }
                     break;
@@ -236,9 +249,9 @@ export class ConnectionPropsForSessCfg {
             }
         }
 
-        // We previously added creds, but this function may have added more creds
-        // after prompting. So, we add available creds again.
-        AuthOrder.addCredsToSession(sessCfgToUse, cmdArgs);
+    // We previously added creds, but this function may have added more creds
+    // after prompting. So, we add available creds again.
+    await AuthOrder.addCredsToSessionAsync(sessCfgToUse, cmdArgs);
         return sessCfgToUse;
     }
 
@@ -274,7 +287,7 @@ export class ConnectionPropsForSessCfg {
         sessCfg: SessCfgType,
         cmdArgs: ICommandArguments = { $0: "", _: [] },
         connOpts: IOptionsForAddConnProps <SessCfgType> = {}
-    ) {
+    ): void | Promise<void> {
         // use defaults if caller has not specified these properties.
         if (!Object.prototype.hasOwnProperty.call(connOpts, "requestToken")) {
             connOpts.requestToken = false;
@@ -313,21 +326,104 @@ export class ConnectionPropsForSessCfg {
             sessCfg.password = cmdArgs.password;
         }
 
+        // Capture profile name on the session for downstream credential/account inference.
+        // This helps certificate retrieval logic form candidate account names (profile & account).
+        try {
+            const zosmfProfName: string = (cmdArgs as any).zosmfProfile || (cmdArgs as any)["zosmf-profile"]; // camelCase vs dashed
+            const baseProfName: string = (cmdArgs as any).baseProfile || (cmdArgs as any)["base-profile"]; // camelCase vs dashed
+            if (zosmfProfName && typeof zosmfProfName === "string") {
+                (sessCfg as any).profile = zosmfProfName;
+            }
+            if (baseProfName && typeof baseProfName === "string") {
+                // Expose base profile name as a generic account candidate.
+                (sessCfg as any).account = baseProfName;
+            }
+        } catch (error_) {
+            Logger.getImperativeLogger().debug(`Failed to extract profile names from command args: ${String(error_)}`);
+        }
+
+        // Populate certAccount / certKeyAccount from command args (if user supplied directly)
+        // or fallback to active profile configuration if not present in args.
+        try {
+            const certAcctArg: string = (cmdArgs as any).certAccount || (cmdArgs as any)["cert-account"]; // camelCase vs dashed
+            const certKeyAcctArg: string = (cmdArgs as any).certKeyAccount || (cmdArgs as any)["cert-key-account"]; // camelCase vs dashed
+            if (typeof certAcctArg === "string" && certAcctArg.length > 0) {
+                (sessCfg as any).certAccount = certAcctArg;
+            }
+            if (typeof certKeyAcctArg === "string" && certKeyAcctArg.length > 0) {
+                (sessCfg as any).certKeyAccount = certKeyAcctArg;
+            }
+            // Fallback to profile properties only if not set via args.
+            if (!(sessCfg as any).certAccount || !(sessCfg as any).certKeyAccount) {
+                const configInst = ImperativeConfig.instance.config;
+                // Attempt to locate the active zosmf profile record and read its properties.
+                const activeZosmfProfileName: string = (cmdArgs as any).zosmfProfile || (cmdArgs as any)["zosmf-profile"]; // prefer explicit if supplied
+                if (configInst && activeZosmfProfileName && configInst.api?.profiles?.exists(activeZosmfProfileName)) {
+                    const profData: any = configInst.api.profiles.get(activeZosmfProfileName, true);
+                    const profProps: any = profData?.properties || {};
+                    // Only populate certAccount if certFile is not already provided
+                    const hasCertFile = (sessCfg as any).certFile || cmdArgs.certFile || profProps.certFile;
+                    if (!hasCertFile && !(sessCfg as any).certAccount && typeof profProps.certAccount === "string" && profProps.certAccount.length > 0) {
+                        (sessCfg as any).certAccount = profProps.certAccount;
+                    }
+                    // Only populate certKeyAccount if certKeyFile is not already provided
+                    const hasCertKeyFile = (sessCfg as any).certKeyFile || cmdArgs.certKeyFile || profProps.certKeyFile;
+                    if (!hasCertKeyFile && !(sessCfg as any).certKeyAccount && typeof profProps.certKeyAccount === "string" && profProps.certKeyAccount.length > 0) {
+                        (sessCfg as any).certKeyAccount = profProps.certKeyAccount;
+                    }
+                    // If profile specifies an authOrder (e.g. 'cert-pem'), propagate it into cmdArgs so AuthOrder logic honors user choice.
+                    if (!cmdArgs.authOrder && typeof profProps.authOrder === "string" && profProps.authOrder.length > 0) {
+                        (cmdArgs as any).authOrder = profProps.authOrder;
+                    }
+                }
+            }
+        } catch (error_) {
+            Logger.getImperativeLogger().debug(`Failed to populate certAccount/certKeyAccount from config: ${String(error_)}`);
+        }
+
         // record all of the currently available credential information into the session
-        AuthOrder.addCredsToSession(sessCfg, cmdArgs);
+        // Use async variant if cert/certKey accounts are thenable (promise-like) values,
+        // otherwise use sync variant to preserve backward compatibility with synchronous callers
+        const hasThenableCertAccounts =
+            (sessCfg as any).certAccount && typeof (sessCfg as any).certAccount.then === "function" ||
+            (sessCfg as any).certKeyAccount && typeof (sessCfg as any).certKeyAccount.then === "function";
 
-        // When our caller only supports limited authTypes, limit the authTypes in the session
-        if (connOpts.supportedAuthTypes) {
-            Logger.getImperativeLogger().warn(`Overriding existing authOrder = ${sessCfg.authTypeOrder} ` +
-                `because a service only supports these limited authTypes = ${connOpts.supportedAuthTypes}`
-            );
-            sessCfg.authTypeOrder = Array.from(connOpts.supportedAuthTypes);
+        if (hasThenableCertAccounts) {
+            // Return a promise for async credential resolution
+            return (async () => {
+                await AuthOrder.addCredsToSessionAsync(sessCfg, cmdArgs);
 
-            // ensure that our newly set authOrder will not be overridden in the future
-            sessCfg._authCache.didUserSetAuthOrder = true;
+                // When our caller only supports limited authTypes, limit the authTypes in the session
+                if (connOpts.supportedAuthTypes) {
+                    Logger.getImperativeLogger().warn(`Overriding existing authOrder = ${sessCfg.authTypeOrder} ` +
+                        `because a service only supports these limited authTypes = ${connOpts.supportedAuthTypes}`
+                    );
+                    sessCfg.authTypeOrder = Array.from(connOpts.supportedAuthTypes);
 
-            // now that we changed the criteria, ensure that the top creds are recorded in the session
-            AuthOrder.putTopAuthInSession(sessCfg);
+                    // ensure that our newly set authOrder will not be overridden in the future
+                    sessCfg._authCache.didUserSetAuthOrder = true;
+
+                    // now that we changed the criteria, ensure that the top creds are recorded in the session
+                    AuthOrder.putTopAuthInSession(sessCfg);
+                }
+            })();
+        } else {
+            // Synchronous path - no promise returned
+            AuthOrder.addCredsToSession(sessCfg, cmdArgs);
+
+            // When our caller only supports limited authTypes, limit the authTypes in the session
+            if (connOpts.supportedAuthTypes) {
+                Logger.getImperativeLogger().warn(`Overriding existing authOrder = ${sessCfg.authTypeOrder} ` +
+                    `because a service only supports these limited authTypes = ${connOpts.supportedAuthTypes}`
+                );
+                sessCfg.authTypeOrder = Array.from(connOpts.supportedAuthTypes);
+
+                // ensure that our newly set authOrder will not be overridden in the future
+                sessCfg._authCache.didUserSetAuthOrder = true;
+
+                // now that we changed the criteria, ensure that the top creds are recorded in the session
+                AuthOrder.putTopAuthInSession(sessCfg);
+            }
         }
     }
 

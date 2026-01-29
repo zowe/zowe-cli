@@ -219,3 +219,37 @@ pub fn find_credentials(
         }
     }
 }
+
+///
+/// Returns the certificate (decoded from base64) stored as the password for the given service/account.
+///
+/// - `service`: The service name that matches the certificate entry
+/// - `account`: The account/name for the certificate entry
+///
+/// Returns:
+/// - A `KeyringError` indicating that this feature is not supported on Linux/Unix
+///
+pub fn get_certificate(service: &String, account: &String, _optional: bool) -> Result<Option<Vec<u8>>, KeyringError> {
+    Err(KeyringError::Os(
+        "Certificate private key retrieval is not yet supported on Linux/Unix systems. \
+        Please use file-based private keys (certKeyFile) instead of keyring-based keys (certKeyAccount).".to_owned()
+    ))
+}
+
+///
+/// Returns a private key for the given service/account.
+/// 
+/// **Note: This feature is not yet supported on Linux/Unix systems.**
+///
+/// - `service`: The service name that matches the private key entry
+/// - `account`: The account/name for the private key entry
+///
+/// Returns:
+/// - A `KeyringError` indicating that this feature is not supported on Linux/Unix
+///
+pub fn get_certificate_key(_service: &String, _account: &String, _optional: bool) -> Result<Option<Vec<u8>>, KeyringError> {
+    Err(KeyringError::Os(
+        "Certificate private key retrieval is not yet supported on Linux/Unix systems. \
+        Please use file-based private keys (certKeyFile) instead of keyring-based keys (certKeyAccount).".to_owned()
+    ))
+}

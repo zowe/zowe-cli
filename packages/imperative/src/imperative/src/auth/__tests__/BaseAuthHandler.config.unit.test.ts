@@ -37,12 +37,15 @@ describe("BaseAuthHandler config", () => {
     let fakeConfig: Config;
 
     beforeAll(() => {
-        Object.defineProperty(CredentialManagerFactory, "initialized", { get: () => true });
+        Object.defineProperty(CredentialManagerFactory, "initialized", { get: () => true, configurable: true });
         Object.defineProperty(ImperativeConfig, "instance", {
             get: () => ({
                 config: fakeConfig,
-                loadedConfig: { envVariablePrefix: "FAKE" }
-            })
+                loadedConfig: { envVariablePrefix: "FAKE" },
+                envVariablePrefix: "FAKE",
+                cliHome: (): string => "/fake/cli/home/path"
+            }),
+            configurable: true
         });
     });
 
@@ -168,8 +171,12 @@ describe("BaseAuthHandler config", () => {
                 const handler = new FakeAuthHandler();
                 const params = lodash.cloneDeep(loginParams);
 
-                jest.spyOn(CredentialManagerFactory, "initialized", "get").mockReturnValueOnce(false);
-                jest.spyOn(CredentialManagerFactory, "manager", "get").mockReturnValueOnce({ secureErrorDetails: jest.fn() } as any);
+                jest.spyOn(CredentialManagerFactory, "initialized", "get").mockReturnValue(false);
+                jest.spyOn(CredentialManagerFactory, "manager", "get").mockReturnValue(
+                    {
+                        secureErrorDetails: jest.fn(() => "FAKE_OPT_TOKEN_VALUE")
+                    } as any);
+                // (do not access CredentialManagerFactory here - spies should be consumed by handler)
                 const doLoginSpy = jest.spyOn(handler as any, "doLogin");
                 const writeFileSpy = jest.spyOn(fs, "writeFileSync");
                 let caughtError;
