@@ -3326,6 +3326,11 @@
         "@types/node": "*"
       }
     },
+    "node_modules/@types/semver": {
+      "version": "7.7.1",
+      "integrity": "sha512-FmgJfu+MOcQ370SD0ev7EI8TlCAfKYU+B4m5T3yXc1CiRN94g/SZPtsCkk506aUDtlMnFZvasDwHHUcZUEaYuA==",
+      "license": "MIT"
+    },
     "node_modules/@types/sizzle": {
       "version": "2.3.4",
       "dev": true,
@@ -12669,6 +12674,7 @@
       "version": "8.29.11",
       "license": "EPL-2.0",
       "dependencies": {
+        "@types/semver": "^7.5.0",
         "@types/yargs": "^17.0.32",
         "chalk": "^4.1.2",
         "cli-table3": "^0.6.3",
