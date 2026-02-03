@@ -14,6 +14,7 @@ import { Logger } from "../../../logger";
 import { IImperativeError, ImperativeError } from "../../../error";
 import { AbstractSession } from "../session/AbstractSession";
 import { AuthOrder } from "../session/AuthOrder";
+import { IScrtData } from "../session/doc/IScrtData";
 import * as https from "https";
 import * as http from "http";
 import { readFileSync } from "fs";
@@ -36,7 +37,6 @@ import * as SessConstants from "../session/SessConstants";
 import { CompressionUtils } from "./CompressionUtils";
 import { ProxySettings } from "./ProxySettings";
 import { EnvironmentalVariableSettings } from "../../../imperative/src/env/EnvironmentalVariableSettings";
-import { ScrtCache } from "../../../utilities/src/ScrtCache";
 import { Censor } from "../../../censor";
 
 export type RestClientResolve = (data: string) => void;
@@ -296,7 +296,6 @@ export abstract class AbstractRestClient {
      */
     public request(options: IRestOptions): Promise<string> {
         return new Promise<string>((resolve: RestClientResolve, reject: ImperativeReject) => {
-
             // save for logging
             this.mResource = options.resource;
             this.mRequest = options.request;
@@ -321,13 +320,22 @@ export abstract class AbstractRestClient {
             // As a safety net to ensure that no logic has placed a different cred in the
             // session since then, we again place only the top cred in the session.
             AuthOrder.putTopAuthInSession(this.session.ISession);
+
+            // form a header from scrtData and place the header into the options.reqHeaders
+            this.addScrtHeader(options);
+
             const buildOptions = this.buildOptions(options.resource, options.request, options.reqHeaders);
 
-            /**
-             * Perform the actual http request
-             */
+            Logger.getImperativeLogger().error(
+                "request:Todo:Gene:RemoveThisLogMessage:\nSession path = " + buildOptions.path +
+                "\nOur session contains these request headers:\n" +
+                JSON.stringify(buildOptions.headers, null, 2)
+            );
+
+            // Perform the actual http request
             let clientRequest: http.ClientRequest;
             if (this.session.ISession.protocol === SessConstants.HTTPS_PROTOCOL) {
+
                 clientRequest = https.request(buildOptions, this.requestHandler.bind(this));
                 // try {
                 //     clientRequest = https.request(buildOptions, this.requestHandler.bind(this));
@@ -656,6 +664,251 @@ export abstract class AbstractRestClient {
             logResource, this.session.ISession.user ? "as user " + this.session.ISession.user : "");
 
         return options;
+    }
+
+    /**
+     * Adds any existing SCRT data as an SCRT header to the REST request.
+     * If no SCRT data has been supplied, this function does nothing.
+     * If errors exist in the SCRT data, this function just logs an error,
+     * so that the primary function of the REST request can still be accomplished.
+     *
+     * @private
+     * @param {IRestOptions} restReqOpts
+     *      The options for the current REST request.
+     *      Used to get the path and request headers.
+     * @memberof AbstractRestClient
+     */
+    private addScrtHeader(restReqOpts: IRestOptions): void {
+        const funName = "addScrtHeader:";
+        let scrtData: IScrtData = null;
+
+        // Todo:Gene: after testing replace next line with second line
+        const zosmfUrlRegEx: RegExp = /^\/SendHeaderToZosmf\//;
+        // const zosmfUrlRegEx: RegExp = /^\/zosmf\//;
+        if (zosmfUrlRegEx.test(restReqOpts.resource)) {
+            Logger.getImperativeLogger().debug(`${funName} SCRT headers are NOT sent to z/OSMF.`);
+            return;
+        }
+
+        // When scrtData exists in an environment variable, use it instead of scrtData in session
+        scrtData = this.getScrtFromEnv();
+        if (scrtData === null) {
+            // try to get SCRT data that was stored in the session by a Zowe client app
+            if (!Object.hasOwn(this.mSession.ISession, "scrtData")) {
+                // when no ScrtData is supplied, we have nothing to do.
+                return;
+            }
+            scrtData = this.mSession.ISession.scrtData;
+        }
+
+        if (!this.isScrtValid(scrtData)) {
+            Logger.getImperativeLogger().error(`${funName} Invalid SCRT data is NOT recorded.`);
+            return;
+        }
+
+        const scrtHeaderVal = this.formScrtHeaderVal(scrtData);
+        if (scrtHeaderVal === null) {
+            Logger.getImperativeLogger().error(`${funName} Unable to create an SCRT header.`);
+            return;
+        }
+
+        restReqOpts.reqHeaders.push({
+            "Zowe-SCRT-client-feature": scrtHeaderVal
+        });
+    }
+
+    /**
+     * Get SCRT data from an environment variable. An environment variable is
+     * to be used exclusively by orchestrator apps (like an Ansible collection),
+     * which do not make direct REST requests. Instead, they run Zowe CLI commands
+     * to perform their actions. When SCRT data is set in an environment variable,
+     * the SCRT data in the session is ignored.
+     *
+     * @returns {IScrtData}
+     *      A string containing a properly formatted value for a Zowe-SCRT-client-feature header.
+     *      If SCRT data cannot be found, null is returned.
+     */
+    private getScrtFromEnv(): IScrtData | null {
+        const funName = "getScrtFromEnv:";
+        const scrtEnvNm = "ZOWE_SCRT_CLIENT_FEATURE";
+        let scrtData: IScrtData = null;
+
+        const scrtStr = process.env[scrtEnvNm];
+        if (!TextUtils.hasNonBlankValue(scrtStr)) {
+            return null;
+        }
+
+        // parse featureName from the env var value
+        const enclosingQuote = "['|\"]";
+        const valWithinQuotes = "([^'\"]+)";
+        const valAfterEquals = ` *= *${enclosingQuote}${valWithinQuotes}${enclosingQuote}`;
+        let envValRegEx = new RegExp("featureName" + valAfterEquals);
+        let envVal = scrtStr.match(envValRegEx);
+        if (envVal === null) {
+            Logger.getImperativeLogger().error(
+                `${funName} Required property = 'featureName' was not supplied in ` +
+                `environment variable '${scrtEnvNm}'. Value: ${scrtStr}`
+            );
+            return null;
+        }
+        scrtData = {
+            "featureName": envVal[1]
+        }
+
+        // parse productId from the env var value
+        envValRegEx = new RegExp("productId" + valAfterEquals);
+        envVal = scrtStr.match(envValRegEx);
+        if (envVal !== null) {
+            scrtData.productId = envVal[1];
+        }
+
+        // parse productVersion from the env var value
+        envValRegEx = new RegExp("productVersion" + valAfterEquals);
+        envVal = scrtStr.match(envValRegEx);
+        if (envVal !== null) {
+            scrtData.productVersion = envVal[1];
+        }
+        return scrtData;
+    }
+
+    /**
+     * Form an HTTP header containing the SCRT data.
+     *
+     * @returns {IScrtData}
+     *      A string containing a properly formatted value for a Zowe-SCRT-client-feature header.
+     *      If no SCRT data has been set, null is returned.
+     */
+    private formScrtHeaderVal(scrtData: IScrtData): string | null {
+        const header = Object.entries(scrtData)
+            .map(([k, v]) => `${k}='${v}'`)
+            .join(", ");
+
+        return header;
+    }
+
+    /**
+     * Validates the supplied SCRT data.
+     *
+     * @param {IScrtData} scrtData - The data items required for SCRT reporting
+     *
+     * @returns {boolean} True if scrtData contains valid data. False otherwise.
+     */
+    private  isScrtValid(scrtData: IScrtData): boolean {
+        const funName = "isScrtValid:";
+        const MAX_FEAT_NAME_LEN = 48;
+        const PROD_ID_KEYWORD = "productId";
+        const MAX_PROD_ID_LEN = 8;
+        const PROD_VER_KEYWORD = "productVersion";
+        const MAX_VER_LEN = 8;
+        const PROD_VER_SEG_KEYWORDS = ["version", "release", "modLevel"];
+        const MAX_VER_SEG_LEN = 2;
+
+        if (!scrtData) {
+            Logger.getImperativeLogger().error(
+                `${funName} The supplied scrtData is null or undefined.`
+            );
+            return false;
+        }
+
+        // featureName is a required property
+        if (!scrtData.featureName) {
+            Logger.getImperativeLogger().error(`${funName} featureName is null or undefined.`);
+            return false;
+        }
+        if (!TextUtils.hasNonBlankValue(scrtData.featureName)) {
+            Logger.getImperativeLogger().error(`${funName} 'featureName' is blank.`);
+            return false;
+        }
+        if (scrtData.featureName.length > MAX_FEAT_NAME_LEN) {
+            Logger.getImperativeLogger().error(
+                `${funName} 'featureName' is longer than ${MAX_FEAT_NAME_LEN} bytes. ` +
+                `Value = '${scrtData.featureName}'`
+            );
+            return false;
+        }
+
+        // productId is an optional property
+        if (Object.hasOwn(scrtData, PROD_ID_KEYWORD)) {
+            if (scrtData[PROD_ID_KEYWORD] === null) {
+                Logger.getImperativeLogger().error(`${funName} ${PROD_ID_KEYWORD} is null.`);
+                return false;
+            } else {
+                if (!TextUtils.hasNonBlankValue(scrtData[PROD_ID_KEYWORD])) {
+                    Logger.getImperativeLogger().error(
+                        `${funName} '${PROD_ID_KEYWORD}' is blank.`
+                    );
+                    return false;
+                }
+                if (scrtData[PROD_ID_KEYWORD].length > MAX_PROD_ID_LEN) {
+                    Logger.getImperativeLogger().error(
+                        `${funName} '${PROD_ID_KEYWORD}' is longer than ` +
+                        `${MAX_PROD_ID_LEN} bytes. Value = '${scrtData[PROD_ID_KEYWORD]}'`
+                    );
+                    return false;
+                }
+            }
+        }
+
+        // productVersion is an optional property
+        if (Object.hasOwn(scrtData, PROD_VER_KEYWORD)) {
+            if (scrtData[PROD_VER_KEYWORD] === null) {
+                Logger.getImperativeLogger().error(`${funName} ${PROD_VER_KEYWORD} is null.`);
+                return false;
+            } else {
+                if (!TextUtils.hasNonBlankValue(scrtData[PROD_VER_KEYWORD])) {
+                    Logger.getImperativeLogger().error(
+                        `${funName} '${PROD_VER_KEYWORD}' is blank.`
+                    );
+                    return false;
+                }
+                if (scrtData[PROD_VER_KEYWORD].length > MAX_VER_LEN) {
+                    Logger.getImperativeLogger().error(
+                        `${funName} '${PROD_VER_KEYWORD}' is longer than ` +
+                        `${MAX_VER_LEN} bytes. Value = '${scrtData[PROD_VER_KEYWORD]}'`
+                    );
+                    return false;
+                }
+            }
+
+            // validate each segment of the version
+            const numOfVerSegs = 3;
+            const verSegments = scrtData[PROD_VER_KEYWORD].split(".");
+            if (verSegments.length !== numOfVerSegs) {
+                Logger.getImperativeLogger().error(
+                    `${funName} ${PROD_VER_KEYWORD} is not formatted as vv.rr.mm ` +
+                    `Value = '${scrtData[PROD_VER_KEYWORD]}'`
+                );
+                return false;
+            }
+            for (let segInx = 0; segInx <= numOfVerSegs-1; segInx++) {
+                // validate the length of each segment of the version
+                if (verSegments[segInx].length > MAX_VER_SEG_LEN) {
+                    Logger.getImperativeLogger().error(
+                        `${funName} '${PROD_VER_SEG_KEYWORDS[segInx]}' is longer than ` +
+                        `${MAX_VER_SEG_LEN} bytes. ` +
+                        `Value = '${verSegments[segInx]}'`
+                    );
+                    return false;
+                }
+
+                if (!TextUtils.hasNonBlankValue(verSegments[segInx])) {
+                    Logger.getImperativeLogger().error(
+                        `${funName} '${PROD_VER_SEG_KEYWORDS[segInx]}' is blank.`
+                    );
+                    return false;
+                }
+
+                // validate that each segment of the version is numeric
+                if (isNaN(Number(verSegments[segInx]))) {
+                    Logger.getImperativeLogger().error(
+                        `${funName} '${PROD_VER_SEG_KEYWORDS[segInx]}' is not a numeric ` +
+                        `value = '${verSegments[segInx]}'`
+                    );
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     /**
@@ -1057,21 +1310,6 @@ export abstract class AbstractRestClient {
                     options.headers[property] = reqHeader[property];
                 });
             });
-        }
-
-        try {
-            const protocol = "https";
-            const host = options.hostname;
-            const port = options.port;
-            const key = protocol + "://" + host + ":" + port;
-
-            const scrtHeader = ScrtCache.formHeader(key);
-            if(scrtHeader) {
-                options.headers["Zowe-SCRT-client-feature"] = scrtHeader;
-            }
-        }
-        catch (err) {
-            return err;
         }
         return options;
     }

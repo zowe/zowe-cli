@@ -11,7 +11,6 @@
 
 import { IProfileSchema } from "../definition/IProfileSchema";
 import { IProfileDependency } from "../definition/IProfileDependency";
-import { IScrtData } from "../../../../utilities/src/doc/IScrtData";
 
 /**
  * The profile "type" configuration document. Provides all configuration information for the "type". A profile
@@ -60,6 +59,4 @@ export interface IProfileTypeConfiguration {
      * @deprecated Only applies to V1 profiles. For team config, validate with JSON schema instead.
      */
     validationPlanModule?: string;
-
-    scrtUsageData?: IScrtData;
 }
