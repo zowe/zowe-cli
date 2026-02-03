@@ -1,6 +1,14 @@
 # Change Log
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## `8.29.12`
+
+- BugFix: Updated `tar` dependency to resolve technical currency. [#2674](https://github.com/zowe/zowe-cli/pull/2674)
+
+## `8.29.10`
+
+- BugFix: Updated `lodash` dependency to resolve technical currency. [#2669](https://github.com/zowe/zowe-cli/pull/2669)
+
 ## `8.29.9`
 
 - BugFix: Updated `tar` dependency to resolve technical currency. [#2665](https://github.com/zowe/zowe-cli/pull/2665)
