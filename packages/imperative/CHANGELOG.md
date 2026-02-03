@@ -2,6 +2,12 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Updated config files to support environment variables in `$VARIABLE` and `${VARIABLE}` formats.
+  - Properties that contain a valid environment variable cannot be set or changed with `Config.set`. They can only be updated in an editor.
+  - Properties that map to an unset environment variable are treated as a literal string.
+
 ## `8.29.13`
 
 - BugFix: Updated `diff2html` dependency for technical currency. [#2677](https://github.com/zowe/zowe-cli/pull/2677)
