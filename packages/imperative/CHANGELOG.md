@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated `diff2html` dependency for technical currency. [#2677](https://github.com/zowe/zowe-cli/pull/2677)
+
 ## `8.29.11`
 
 - BugFix: Updated `diff` dependency for technical currency. [#2666](https://github.com/zowe/zowe-cli/pull/2666)
