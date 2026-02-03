@@ -751,9 +751,7 @@ export abstract class AbstractRestClient {
             );
             return null;
         }
-        scrtData = {
-            "featureName": envVal[1]
-        }
+        scrtData = {"featureName": envVal[1]};
 
         // parse productId from the env var value
         envValRegEx = new RegExp("productId" + valAfterEquals);
