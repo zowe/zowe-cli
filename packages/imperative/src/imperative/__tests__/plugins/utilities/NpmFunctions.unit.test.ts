@@ -151,7 +151,7 @@ describe("NpmFunctions", () => {
             const pkgSpec = "imperative.tgz";
             expect(npmPackageArg(pkgSpec).type).toEqual("file");
 
-            jest.spyOn(ExecUtils, "spawnAndGetOutput").mockReturnValueOnce("{}");
+            jest.spyOn(ExecUtils, "spawnAndGetOutput").mockReturnValueOnce("[]");
             expect(() => npmFunctions.getPackageInfo(pkgSpec)).toThrow("Failed to fetch metadata for package");
         });
     });
