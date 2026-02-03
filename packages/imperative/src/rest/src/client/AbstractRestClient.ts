@@ -327,8 +327,8 @@ export abstract class AbstractRestClient {
             const buildOptions = this.buildOptions(options.resource, options.request, options.reqHeaders);
 
             Logger.getImperativeLogger().error(
-                "request:Todo:Gene:RemoveThisLogMessage:\nSession path = " + buildOptions.path +
-                "\nOur session contains these request headers:\n" +
+                "request:Todo:Gene:RemoveThisLogMessage:\nHTTP URL path = " + buildOptions.path +
+                "\nOur REST request contains these headers:\n" +
                 JSON.stringify(buildOptions.headers, null, 2)
             );
 
