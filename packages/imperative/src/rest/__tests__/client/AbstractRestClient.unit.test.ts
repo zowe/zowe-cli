@@ -1975,6 +1975,453 @@ describe("AbstractRestClient tests", () => {
             });
         });
 
+        describe("addScrtHeader", () => {
+            const restSession = new Session({
+                hostname: "FakeHostName",
+                scrtData: {
+                    "featureName": "FakeFeatureName",
+                    "productId": "fakeProductId",
+                    "productVersion": "fakeProductVersion"
+                }
+            });
+            const restReqOpts = {
+                "resource": "/NotZosmf/url",
+                "reqHeaders": [] as any
+            };
+            const privateRestClient = new RestClient(restSession) as any;
+            const impLogger = Logger.getImperativeLogger();
+            let impErrorLoggerSpy: jest.SpyInstance;
+
+            beforeEach(() => {
+                jest.clearAllMocks();
+                (restReqOpts as any).resource = "/NotZosmf/url";
+                (restReqOpts as any).resource = [];
+                jest.spyOn(Logger, "getImperativeLogger").mockReturnValue(impLogger);
+                impErrorLoggerSpy = jest.spyOn(impLogger, "error");
+            });
+
+            it("should NOT add a header for a zosmf request", () => {
+                (restReqOpts as any).resource = "/zosmf/url";
+                const impDebugLoggerSpy = jest.spyOn(impLogger, "debug");
+
+                privateRestClient.addScrtHeader(restReqOpts);
+
+                expect(restReqOpts.reqHeaders.length).toBe(0);
+                expect(impDebugLoggerSpy).toHaveBeenCalledWith(
+                    "addScrtHeader: SCRT headers are NOT sent to z/OSMF."
+                );
+            });
+
+            it("should log an error if SCRT data is invalid", () => {
+                const isScrtValidSpy = jest.spyOn(privateRestClient, "isScrtValid").mockReturnValue(false);
+
+                privateRestClient.addScrtHeader(restReqOpts);
+
+                expect(restReqOpts.reqHeaders.length).toBe(0);
+                expect(isScrtValidSpy).toHaveBeenCalled();
+                expect(impErrorLoggerSpy).toHaveBeenCalledWith(
+                    "addScrtHeader: Invalid SCRT data is NOT recorded."
+                );
+            });
+
+            it("should log an error it fails to create a header", () => {
+                const isScrtValidSpy = jest.spyOn(privateRestClient, "isScrtValid").mockReturnValue(true);
+                const formScrtHeaderValSpy = jest.spyOn(privateRestClient, "formScrtHeaderVal")
+                    .mockReturnValue(null);
+
+                privateRestClient.addScrtHeader(restReqOpts);
+
+                expect(restReqOpts.reqHeaders.length).toBe(0);
+                expect(isScrtValidSpy).toHaveBeenCalled();
+                expect(formScrtHeaderValSpy).toHaveBeenCalled();
+                expect(impErrorLoggerSpy).toHaveBeenCalledWith(
+                    "addScrtHeader: Unable to create an SCRT header."
+                );
+            });
+
+            it("should add a header when when SCRT properties are available", () => {
+                privateRestClient["mSession"]["mISession"].scrtData = {
+                    featureName: "Fake Feature name",
+                    productId: 'FkProdId',
+                    productVersion: '12.34.56'
+                };
+                const isScrtValidSpy = jest.spyOn(privateRestClient, "isScrtValid").mockReturnValue(true);
+
+                const scrtHeaderVal = "featureName = 'Fake Feature name', " +
+                    "productId = 'FkProdId', productVersion ='11.22.33'";
+                const formScrtHeaderValSpy = jest.spyOn(privateRestClient, "formScrtHeaderVal")
+                    .mockReturnValue(scrtHeaderVal);
+
+                privateRestClient.addScrtHeader(restReqOpts);
+
+                expect(isScrtValidSpy).toHaveBeenCalled();
+                expect(formScrtHeaderValSpy).toHaveBeenCalled();
+                expect(restReqOpts.reqHeaders.length).toBe(1);
+                expect(restReqOpts.reqHeaders[0]).toEqual({"Zowe-SCRT-client-feature": scrtHeaderVal});
+            });
+        });
+
+        describe("getScrtFromEnv", () => {
+            const scrtEnvVarName = "ZOWE_SCRT_CLIENT_FEATURE";
+            const restSession = new Session({
+                hostname: "FakeHostName"
+            });
+            const privateRestClient = new RestClient(restSession) as any;
+
+            afterEach(() => {
+                jest.clearAllMocks();
+                delete process.env[scrtEnvVarName];
+            });
+
+            it("should return null when scrt is not set in environment", () => {
+                const scrtVal = privateRestClient.getScrtFromEnv();
+                expect(scrtVal).toBe(null);
+            });
+
+            it("should return null when featureName is not supplied", () => {
+                process.env[scrtEnvVarName] = "Env value does not contain featureName";
+                const impLogger = Logger.getImperativeLogger();
+                jest.spyOn(Logger, "getImperativeLogger").mockReturnValue(impLogger);
+                const impErrorLoggerSpy = jest.spyOn(impLogger, "error");
+
+                const scrtVal = privateRestClient.getScrtFromEnv();
+
+                expect(scrtVal).toBe(null);
+                expect(impErrorLoggerSpy).toHaveBeenCalledWith(
+                    "getScrtFromEnv: Required property = 'featureName' was not supplied in environment variable " +
+                    "'ZOWE_SCRT_CLIENT_FEATURE'. Value: Env value does not contain featureName"
+                );
+            });
+
+            it("should return scrtData with only featureName", () => {
+                process.env[scrtEnvVarName] = "featureName = 'Environment Feature Name'";
+                const expectedScrt = {
+                    featureName: 'Environment Feature Name'
+                };
+                const scrtVal = privateRestClient.getScrtFromEnv();
+                expect(scrtVal).toEqual(expectedScrt);
+            });
+
+            it("should return scrtData with featureName and productId", () => {
+                process.env[scrtEnvVarName] = "featureName = 'Environment Feature Name', " +
+                    "productId='envPrdId'";
+                const expectedScrt = {
+                    featureName: 'Environment Feature Name',
+                    productId: 'envPrdId'
+                };
+                const scrtVal = privateRestClient.getScrtFromEnv();
+                expect(scrtVal).toEqual(expectedScrt);
+            });
+
+            it("should return scrtData with featureName, productId, and productVersion", () => {
+                process.env[scrtEnvVarName] = "featureName = 'Environment Feature Name', " +
+                    "productId='envPrdId'   productVersion = \"11.22.33\"";
+                const expectedScrt = {
+                    featureName: 'Environment Feature Name',
+                    productId: 'envPrdId',
+                    productVersion: '11.22.33',
+                };
+                const scrtVal = privateRestClient.getScrtFromEnv();
+                expect(scrtVal).toEqual(expectedScrt);
+            });
+        });
+
+        describe("formScrtHeaderVal", () => {
+            it("should return scrtData with featureName, productId, and productVersion", () => {
+                const restSession = new Session({
+                    hostname: "FakeHostName"
+                });
+                const privateRestClient = new RestClient(restSession) as any;
+
+                const scrtData = {
+                    featureName: 'Fake Feature Name',
+                    productId: 'FakeProductId',
+                    productVersion: 'FakeVersion',
+                };
+
+                const scrtHeaderVal = privateRestClient.formScrtHeaderVal(scrtData);
+                expect(scrtHeaderVal).toEqual("featureName='Fake Feature Name', "+
+                    "productId='FakeProductId', productVersion='FakeVersion'"
+                );
+            });
+        });
+
+        describe("isScrtValid", () => {
+            const restSession = new Session({
+                hostname: "FakeHostName"
+            });
+            const privateRestClient = new RestClient(restSession) as any;
+
+            const impLogger = Logger.getImperativeLogger();
+            let impErrorLoggerSpy: jest.SpyInstance;
+
+            beforeEach(() => {
+                jest.clearAllMocks();
+                jest.spyOn(Logger, "getImperativeLogger").mockReturnValue(impLogger);
+                impErrorLoggerSpy = jest.spyOn(impLogger, "error");
+            });
+
+            it("should return false when scrtData is null", () => {
+                const isValid = privateRestClient.isScrtValid(null);
+                expect(isValid).toBe(false);
+                expect(impErrorLoggerSpy).toHaveBeenCalledWith(
+                    "isScrtValid: The supplied scrtData is null or undefined."
+                );
+            });
+
+            it("should return false if featureName is missing", () => {
+                const scrtData = {
+                    productId: 'FakeProductId',
+                    productVersion: 'FakeVersion',
+                };
+                const isValid = privateRestClient.isScrtValid(scrtData);
+                expect(isValid).toBe(false);
+                expect(impErrorLoggerSpy).toHaveBeenCalledWith(
+                    "isScrtValid: featureName is null or undefined."
+                );
+            });
+
+            it("should return false if featureName is blank", () => {
+                const scrtData = {
+                    featureName: "   ",
+                    productId: 'FakeProductId',
+                    productVersion: 'FakeVersion',
+                };
+                const isValid = privateRestClient.isScrtValid(scrtData);
+                expect(isValid).toBe(false);
+                expect(impErrorLoggerSpy).toHaveBeenCalledWith(
+                    "isScrtValid: 'featureName' is blank."
+                );
+            });
+
+            it("should return true if only featureName is supplied", () => {
+                const scrtData = {
+                    featureName: "Fake Feature name"
+                };
+                const isValid = privateRestClient.isScrtValid(scrtData);
+                expect(isValid).toBe(true);
+            });
+
+            it("should return true if all SCRT properties are valid", () => {
+                const scrtData = {
+                    featureName: "Fake Feature name",
+                    productId: 'FkProdId',
+                    productVersion: '12.34.56',
+                };
+                const isValid = privateRestClient.isScrtValid(scrtData);
+                expect(isValid).toBe(true);
+            });
+
+            it("should return false if featureName is longer than 48", () => {
+                const featNameVal = "This feature name is definitely longer than 48 characters";
+                const scrtData = {
+                    featureName: featNameVal,
+                    productId: 'FakeProductId',
+                    productVersion: 'FakeVersion',
+                };
+                const isValid = privateRestClient.isScrtValid(scrtData);
+                expect(isValid).toBe(false);
+                expect(impErrorLoggerSpy).toHaveBeenCalledWith(
+                    `isScrtValid: 'featureName' is longer than 48 bytes. Value = '${featNameVal}'`
+                );
+            });
+
+            it("should return false when productId is null", () => {
+                const scrtData = {
+                    featureName: "Fake Feature name",
+                    productId: null as any
+                };
+                const isValid = privateRestClient.isScrtValid(scrtData);
+                expect(isValid).toBe(false);
+                expect(impErrorLoggerSpy).toHaveBeenCalledWith(`isScrtValid: productId is null.`);
+            });
+
+            it("should return false if productId is blank", () => {
+                const scrtData = {
+                    featureName: "Fake Feature name",
+                    productId: '    '
+                };
+                const isValid = privateRestClient.isScrtValid(scrtData);
+                expect(isValid).toBe(false);
+                expect(impErrorLoggerSpy).toHaveBeenCalledWith(
+                    "isScrtValid: 'productId' is blank."
+                );
+            });
+
+            it("should return false if productId is longer than 8", () => {
+                const productIdVal = "This product ID is longer than 8 characters";
+                const scrtData = {
+                    featureName: "Fake Feature name",
+                    productId: productIdVal
+                };
+                const isValid = privateRestClient.isScrtValid(scrtData);
+                expect(isValid).toBe(false);
+                expect(impErrorLoggerSpy).toHaveBeenCalledWith(
+                    `isScrtValid: 'productId' is longer than 8 bytes. Value = '${productIdVal}'`
+                );
+            });
+
+            it("should return false when productVersion is null", () => {
+                const scrtData = {
+                    featureName: "Fake Feature name",
+                    productId: 'FakPrdId',
+                    productVersion: null as any
+                };
+                const isValid = privateRestClient.isScrtValid(scrtData);
+                expect(isValid).toBe(false);
+                expect(impErrorLoggerSpy).toHaveBeenCalledWith(`isScrtValid: productVersion is null.`);
+            });
+
+            it("should return false if productVersion is blank", () => {
+                const scrtData = {
+                    featureName: "Fake Feature name",
+                    productVersion: '    '
+                };
+                const isValid = privateRestClient.isScrtValid(scrtData);
+                expect(isValid).toBe(false);
+                expect(impErrorLoggerSpy).toHaveBeenCalledWith(
+                    "isScrtValid: 'productVersion' is blank."
+                );
+            });
+
+            it("should return false if productVersion is longer than 8", () => {
+                const productVersionVal = "This product version is longer than 8 characters";
+                const scrtData = {
+                    featureName: "Fake Feature name",
+                    productVersion: productVersionVal
+                };
+                const isValid = privateRestClient.isScrtValid(scrtData);
+                expect(isValid).toBe(false);
+                expect(impErrorLoggerSpy).toHaveBeenCalledWith(
+                    `isScrtValid: 'productVersion' is longer than 8 bytes. Value = ` +
+                    `'${productVersionVal}'`
+                );
+            });
+
+            it("should return false if productVersion format is not ver.rel.level", () => {
+                const productVersionVal = "123.456";
+                const scrtData = {
+                    featureName: "Fake Feature name",
+                    productVersion: productVersionVal
+                };
+                const isValid = privateRestClient.isScrtValid(scrtData);
+                expect(isValid).toBe(false);
+                expect(impErrorLoggerSpy).toHaveBeenCalledWith(
+                    `isScrtValid: 'productVersion' is not formatted as vv.rr.mm Value = ` +
+                    `'${productVersionVal}'`
+                );
+            });
+
+            it("should return false if version part of productVersion is longer than 2", () => {
+                const scrtData = {
+                    featureName: "Fake Feature name",
+                    productVersion: "123.45.6"
+                };
+                const isValid = privateRestClient.isScrtValid(scrtData);
+                expect(isValid).toBe(false);
+                expect(impErrorLoggerSpy).toHaveBeenCalledWith(
+                    `isScrtValid: 'version' is longer than 2 bytes. Value = '123'`
+                );
+            });
+
+            it("should return false if version part of productVersion is blank", () => {
+                const scrtData = {
+                    featureName: "Fake Feature name",
+                    productVersion: "  .12.34"
+                };
+                const isValid = privateRestClient.isScrtValid(scrtData);
+                expect(isValid).toBe(false);
+                expect(impErrorLoggerSpy).toHaveBeenCalledWith(
+                    `isScrtValid: 'version' is blank.`
+                );
+            });
+
+            it("should return false if version part of productVersion is not numeric", () => {
+                const scrtData = {
+                    featureName: "Fake Feature name",
+                    productVersion: "ab.12.34"
+                };
+                const isValid = privateRestClient.isScrtValid(scrtData);
+                expect(isValid).toBe(false);
+                expect(impErrorLoggerSpy).toHaveBeenCalledWith(
+                    `isScrtValid: 'version' is not a numeric value = 'ab'`
+                );
+            });
+
+            it("should return false if release part of productVersion is longer than 2", () => {
+                const scrtData = {
+                    featureName: "Fake Feature name",
+                    productVersion: "44.123.5"
+                };
+                const isValid = privateRestClient.isScrtValid(scrtData);
+                expect(isValid).toBe(false);
+                expect(impErrorLoggerSpy).toHaveBeenCalledWith(
+                    `isScrtValid: 'release' is longer than 2 bytes. Value = '123'`
+                );
+            });
+
+            it("should return false if release part of productVersion is blank", () => {
+                const scrtData = {
+                    featureName: "Fake Feature name",
+                    productVersion: "12.  .34"
+                };
+                const isValid = privateRestClient.isScrtValid(scrtData);
+                expect(isValid).toBe(false);
+                expect(impErrorLoggerSpy).toHaveBeenCalledWith(
+                    `isScrtValid: 'release' is blank.`
+                );
+            });
+
+            it("should return false if release part of productVersion is not numeric", () => {
+                const scrtData = {
+                    featureName: "Fake Feature name",
+                    productVersion: "12.ab.34"
+                };
+                const isValid = privateRestClient.isScrtValid(scrtData);
+                expect(isValid).toBe(false);
+                expect(impErrorLoggerSpy).toHaveBeenCalledWith(
+                    `isScrtValid: 'release' is not a numeric value = 'ab'`
+                );
+            });
+
+            it("should return false if modLevel part of productVersion is longer than 2", () => {
+                const scrtData = {
+                    featureName: "Fake Feature name",
+                    productVersion: "44.5.123"
+                };
+                const isValid = privateRestClient.isScrtValid(scrtData);
+                expect(isValid).toBe(false);
+                expect(impErrorLoggerSpy).toHaveBeenCalledWith(
+                    `isScrtValid: 'modLevel' is longer than 2 bytes. Value = '123'`
+                );
+            });
+
+            it("should return false if modLevel part of productVersion is blank", () => {
+                const scrtData = {
+                    featureName: "Fake Feature name",
+                    productVersion: "12.34.  "
+                };
+                const isValid = privateRestClient.isScrtValid(scrtData);
+                expect(isValid).toBe(false);
+                expect(impErrorLoggerSpy).toHaveBeenCalledWith(
+                    `isScrtValid: 'modLevel' is blank.`
+                );
+            });
+
+            it("should return false if modLevel part of productVersion is not numeric", () => {
+                const scrtData = {
+                    featureName: "Fake Feature name",
+                    productVersion: "12.34.ab"
+                };
+                const isValid = privateRestClient.isScrtValid(scrtData);
+                expect(isValid).toBe(false);
+                expect(impErrorLoggerSpy).toHaveBeenCalledWith(
+                    `isScrtValid: 'modLevel' is not a numeric value = 'ab'`
+                );
+            });
+        });
+
+
         (os.platform() === "win32" ? describe : describe.skip)("CRLF at chunk boundaries with newline normalization", () => {
             it("should handle CRLF sequence split across chunk boundary", async () => {
                 const session = new Session({

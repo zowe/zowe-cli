@@ -326,12 +326,6 @@ export abstract class AbstractRestClient {
 
             const buildOptions = this.buildOptions(options.resource, options.request, options.reqHeaders);
 
-            Logger.getImperativeLogger().error(
-                "request:Todo:Gene:RemoveThisLogMessage:\nHTTP URL path = " + buildOptions.path +
-                "\nOur REST request contains these headers:\n" +
-                JSON.stringify(buildOptions.headers, null, 2)
-            );
-
             // Perform the actual http request
             let clientRequest: http.ClientRequest;
             if (this.session.ISession.protocol === SessConstants.HTTPS_PROTOCOL) {
@@ -682,9 +676,7 @@ export abstract class AbstractRestClient {
         const funName = "addScrtHeader:";
         let scrtData: IScrtData = null;
 
-        // Todo:Gene: after testing replace next line with second line
-        const zosmfUrlRegEx: RegExp = /^\/SendHeaderToZosmf\//;
-        // const zosmfUrlRegEx: RegExp = /^\/zosmf\//;
+        const zosmfUrlRegEx: RegExp = /^\/zosmf\//;
         if (zosmfUrlRegEx.test(restReqOpts.resource)) {
             Logger.getImperativeLogger().debug(`${funName} SCRT headers are NOT sent to z/OSMF.`);
             return;
@@ -873,7 +865,7 @@ export abstract class AbstractRestClient {
             const verSegments = scrtData[PROD_VER_KEYWORD].split(".");
             if (verSegments.length !== numOfVerSegs) {
                 Logger.getImperativeLogger().error(
-                    `${funName} ${PROD_VER_KEYWORD} is not formatted as vv.rr.mm ` +
+                    `${funName} '${PROD_VER_KEYWORD}' is not formatted as vv.rr.mm ` +
                     `Value = '${scrtData[PROD_VER_KEYWORD]}'`
                 );
                 return false;
