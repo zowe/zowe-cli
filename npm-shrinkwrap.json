@@ -914,8 +914,8 @@
       }
     },
     "node_modules/@isaacs/brace-expansion": {
-      "version": "5.0.0",
-      "integrity": "sha512-ZT55BDLV0yv0RBm2czMiZ+SqCGO7AvmOM3G/w2xhVPH+te0aKgFjmBvGlL1dH+ql2tgGO3MVrbb3jCKyvpgnxA==",
+      "version": "5.0.1",
+      "integrity": "sha512-WMz71T1JS624nWj2n2fnYAuPovhv7EUhk69R6i9dsVyzxt5eM3bjwvgk9L+APE1TRscGysAVMANkB0jh0LQZrQ==",
       "dev": true,
       "license": "MIT",
       "dependencies": {
