@@ -126,6 +126,14 @@ export class Config {
      */
     public mEnvVarManaged: IConfigEnvVarManaged[] = [];
 
+    /**
+     * Getter for the environment variable managed properties array.
+     * Returns a deep clone of the real array to prevent modification.
+     */
+    public get envVarManaged(): IConfigEnvVarManaged[] {
+        return lodash.cloneDeep(this.mEnvVarManaged);
+    }
+
     // _______________________________________________________________________
     /**
      * Constructor for Config class. Don't use this directly. Await `Config.load` instead.

@@ -226,6 +226,20 @@ describe("Config tests", () => {
                 process.env["TESTCOLOR"] = oldProcessValue;
                 expect(config?.properties).toMatchSnapshot();
                 expect(config?.properties.profiles.fruit.profiles.apple.properties.color).toEqual("burgandy");
+                expect(config?.mEnvVarManaged).toEqual([{
+                    user: true,
+                    global: true,
+                    propPath: "profiles.fruit.profiles.apple.properties.color",
+                    replacementValue: "burgandy",
+                    originalValue: "$TESTCOLOR"
+                }]);
+                expect(config?.envVarManaged).toEqual([{
+                    user: true,
+                    global: true,
+                    propPath: "profiles.fruit.profiles.apple.properties.color",
+                    replacementValue: "burgandy",
+                    originalValue: "$TESTCOLOR"
+                }]);
             }
         });
 
