@@ -1995,7 +1995,7 @@ describe("AbstractRestClient tests", () => {
             beforeEach(() => {
                 jest.clearAllMocks();
                 (restReqOpts as any).resource = "/NotZosmf/url";
-                (restReqOpts as any).resource = [];
+                (restReqOpts as any).reqHeaders = [];
                 jest.spyOn(Logger, "getImperativeLogger").mockReturnValue(impLogger);
                 impErrorLoggerSpy = jest.spyOn(impLogger, "error");
             });
