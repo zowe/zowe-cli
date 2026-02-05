@@ -676,8 +676,7 @@ export abstract class AbstractRestClient {
         const funName = "addScrtHeader:";
         let scrtData: IScrtData = null;
 
-        const zosmfUrlRegEx: RegExp = /^\/zosmf\//;
-        if (zosmfUrlRegEx.test(restReqOpts.resource)) {
+        if (restReqOpts.resource.startsWith("/zosmf/")) {
             Logger.getImperativeLogger().debug(`${funName} SCRT headers are NOT sent to z/OSMF.`);
             return;
         }
@@ -889,7 +888,7 @@ export abstract class AbstractRestClient {
                 }
 
                 // validate that each segment of the version is numeric
-                if (isNaN(Number(verSegments[segInx]))) {
+                if (Number.isNaN(Number(verSegments[segInx]))) {
                     Logger.getImperativeLogger().error(
                         `${funName} '${PROD_VER_SEG_KEYWORDS[segInx]}' is not a numeric ` +
                         `value = '${verSegments[segInx]}'`
