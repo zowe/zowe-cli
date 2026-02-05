@@ -102,4 +102,22 @@ describe("TextUtils", () => {
         process.env.FORCE_COLOR = "fake";
         expect(TextUtils.chalk.level).not.toEqual("fake");
     });
+
+    describe("hasNonBlankValue", () => {
+        it("should return false if an undefined variable is supplied", () => {
+            expect(TextUtils.hasNonBlankValue(undefined)).toBe(false);
+        });
+
+        it("should return false if null is supplied", () => {
+            expect(TextUtils.hasNonBlankValue(null)).toBe(false);
+        });
+
+        it("should return false if blank value is supplied", () => {
+            expect(TextUtils.hasNonBlankValue("   ")).toBe(false);
+        });
+
+        it("should return true if non-blank variable is supplied", () => {
+            expect(TextUtils.hasNonBlankValue("   some characters   ")).toBe(true);
+        });
+    });
 });
