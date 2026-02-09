@@ -259,6 +259,7 @@ For example, the following configuration will use the environment variable `USER
 Properties containing environment variables can be specified in the `secure` array. Zowe CLI will treat these properties as secure in all logging mechanisms, but will not store these properties in the Credential Manager.
 
 Note: If a string is specified for a property, and it is in the format of an environment variable, but the environment variable is not set, the string will be used as-is.
+Note: Complex properties, such as arrays and objects, are not supported.
 
 ## Tips for efficient configuration
 
