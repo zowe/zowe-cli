@@ -782,7 +782,7 @@ export abstract class AbstractRestClient {
      *
      * @returns {boolean} True if scrtData contains valid data. False otherwise.
      */
-    private  isScrtValid(scrtData: IScrtData): boolean {
+    private isScrtValid(scrtData: IScrtData): boolean {
         const funName = "isScrtValid:";
         const MAX_FEAT_NAME_LEN = 48;
         const PROD_ID_KEYWORD = "productId";
