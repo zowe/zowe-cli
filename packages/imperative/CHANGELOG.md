@@ -4,7 +4,7 @@ All notable changes to the Imperative package will be documented in this file.
 
 ## Recent Changes
 
-- Enhancement: Added an optional `scrtData` object to the ISession interface for a Session object. The `scrtData` is transmitted as a new new HTTP header named `Zowe-SCRT-client-feature` to the targeted REST service. [#2678](https://github.com/zowe/zowe-cli/pull/2678)
+- Enhancement: Added an optional `scrtData` object to the ISession interface for a Session object. The `scrtData` is transmitted as a new HTTP header named `Zowe-SCRT-client-feature` to the targeted REST service. [#2678](https://github.com/zowe/zowe-cli/pull/2678)
 
 ## `8.29.13`
 
