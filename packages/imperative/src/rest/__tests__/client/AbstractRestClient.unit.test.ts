@@ -2068,7 +2068,7 @@ describe("AbstractRestClient tests", () => {
                     }
                 );
                 expect(impErrorLoggerSpy).toHaveBeenCalledTimes(3);
-                let nonScrtPropNms = ["nonScrtProp1", "nonScrtProp2", "nonScrtProp3"];
+                const nonScrtPropNms = ["nonScrtProp1", "nonScrtProp2", "nonScrtProp3"];
                 for (const propNm of nonScrtPropNms) {
                     expect(impErrorLoggerSpy).toHaveBeenCalledWith(
                         `isScrtValid: The non-SCRT property = '${propNm}' ` +

@@ -760,9 +760,11 @@ export abstract class AbstractRestClient {
      *      If no SCRT data has been set, null is returned.
      */
     private formScrtHeaderVal(scrtData: IScrtData): string | null {
+        const funName = "formScrtHeaderVal:";
         if (!this.isScrtValid(scrtData)) {
             Logger.getImperativeLogger().error(
-                `formScrtHeaderVal: No SCRT header is created when SCRT data is invalid.`);
+                `${funName} No SCRT header is created when SCRT data is invalid.`
+            );
             return null;
         }
 
@@ -775,6 +777,13 @@ export abstract class AbstractRestClient {
                 scrtHeaderVal += ", ";
             }
             scrtHeaderVal += `${scrtPropName}='${valToUse}'`;
+        }
+
+        if (scrtHeaderVal.length === 0) {
+            // this should not occur since scrtData was validated, but we want a safety net
+            Logger.getImperativeLogger().error(
+                `${funName} Failed to form an SCRT header value. Length of value was zero.`);
+            return null;
         }
         return scrtHeaderVal;
     }
