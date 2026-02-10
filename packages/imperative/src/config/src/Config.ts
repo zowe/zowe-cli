@@ -131,7 +131,7 @@ export class Config {
      * Returns a deep clone of the real array to prevent modification.
      */
     public get envVarManaged(): IConfigEnvVarManaged[] {
-        return lodash.cloneDeep(this.mEnvVarManaged);
+        return structuredClone(this.mEnvVarManaged);
     }
 
     // _______________________________________________________________________
