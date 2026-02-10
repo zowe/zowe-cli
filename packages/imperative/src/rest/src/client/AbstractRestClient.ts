@@ -673,11 +673,11 @@ export abstract class AbstractRestClient {
      * @memberof AbstractRestClient
      */
     private addScrtHeader(restReqOpts: IRestOptions): void {
-        const funName = "addScrtHeader:";
         let scrtData: IScrtData = null;
 
         if (restReqOpts.resource.startsWith("/zosmf/")) {
-            Logger.getImperativeLogger().debug(`${funName} SCRT headers are NOT sent to z/OSMF.`);
+            Logger.getImperativeLogger().debug(
+                "addScrtHeader: SCRT headers are NOT sent to z/OSMF.");
             return;
         }
 
@@ -692,20 +692,13 @@ export abstract class AbstractRestClient {
             scrtData = this.mSession.ISession.scrtData;
         }
 
-        if (!this.isScrtValid(scrtData)) {
-            Logger.getImperativeLogger().error(`${funName} Invalid SCRT data is NOT recorded.`);
-            return;
-        }
-
         const scrtHeaderVal = this.formScrtHeaderVal(scrtData);
-        if (scrtHeaderVal === null) {
-            Logger.getImperativeLogger().error(`${funName} Unable to create an SCRT header.`);
-            return;
+        if (scrtHeaderVal !== null) {
+            // we have a header to add to this request
+            restReqOpts.reqHeaders.push({
+                "Zowe-SCRT-client-feature": scrtHeaderVal
+            });
         }
-
-        restReqOpts.reqHeaders.push({
-            "Zowe-SCRT-client-feature": scrtHeaderVal
-        });
     }
 
     /**
@@ -720,7 +713,6 @@ export abstract class AbstractRestClient {
      *      If SCRT data cannot be found, null is returned.
      */
     private getScrtFromEnv(): IScrtData | null {
-        const funName = "getScrtFromEnv:";
         const scrtEnvNm = "ZOWE_SCRT_CLIENT_FEATURE";
         let scrtData: IScrtData = null;
 
@@ -737,7 +729,7 @@ export abstract class AbstractRestClient {
         let envVal = scrtStr.match(envValRegEx);
         if (envVal === null) {
             Logger.getImperativeLogger().error(
-                `${funName} Required property = 'featureName' was not supplied in ` +
+                `getScrtFromEnv: Required property = 'featureName' was not supplied in ` +
                 `environment variable '${scrtEnvNm}'. Value: ${scrtStr}`
             );
             return null;
@@ -768,11 +760,23 @@ export abstract class AbstractRestClient {
      *      If no SCRT data has been set, null is returned.
      */
     private formScrtHeaderVal(scrtData: IScrtData): string | null {
-        const header = Object.entries(scrtData)
-            .map(([k, v]) => `${k}='${v}'`)
-            .join(", ");
+        if (!this.isScrtValid(scrtData)) {
+            Logger.getImperativeLogger().error(
+                `formScrtHeaderVal: No SCRT header is created when SCRT data is invalid.`);
+            return null;
+        }
 
-        return header;
+        // escape any un-escaped quotes in SCRT properties
+        let scrtHeaderVal: string = "";
+        const unEscapedQuotesRegEx = /([^\\])(["'])/g;
+        for (const [scrtPropName, scrtPropVal] of Object.entries(scrtData)) {
+            const valToUse = scrtPropVal.replace(unEscapedQuotesRegEx, "$1\\$2");
+            if (scrtHeaderVal.length > 0) {
+                scrtHeaderVal += ", ";
+            }
+            scrtHeaderVal += `${scrtPropName}='${valToUse}'`;
+        }
+        return scrtHeaderVal;
     }
 
     /**
@@ -784,6 +788,7 @@ export abstract class AbstractRestClient {
      */
     private isScrtValid(scrtData: IScrtData): boolean {
         const funName = "isScrtValid:";
+        const FEAT_NAME_KEYWORD = "featureName";
         const MAX_FEAT_NAME_LEN = 48;
         const PROD_ID_KEYWORD = "productId";
         const MAX_PROD_ID_LEN = 8;
@@ -799,19 +804,35 @@ export abstract class AbstractRestClient {
             return false;
         }
 
+        for (const scrtPropNm of Object.keys(scrtData)) {
+            if (scrtPropNm !== FEAT_NAME_KEYWORD && scrtPropNm !== PROD_ID_KEYWORD &&
+                scrtPropNm !== PROD_VER_KEYWORD)
+            {
+                Logger.getImperativeLogger().error(
+                    `${funName} The non-SCRT property = '${scrtPropNm}' ` +
+                    `will not be placed in an SCRT header.`
+                );
+                delete (scrtData as any)[scrtPropNm];
+            }
+        }
+
         // featureName is a required property
-        if (!scrtData.featureName) {
-            Logger.getImperativeLogger().error(`${funName} featureName is null or undefined.`);
-            return false;
-        }
-        if (!TextUtils.hasNonBlankValue(scrtData.featureName)) {
-            Logger.getImperativeLogger().error(`${funName} 'featureName' is blank.`);
-            return false;
-        }
-        if (scrtData.featureName.length > MAX_FEAT_NAME_LEN) {
+        if (!scrtData[FEAT_NAME_KEYWORD]) {
             Logger.getImperativeLogger().error(
-                `${funName} 'featureName' is longer than ${MAX_FEAT_NAME_LEN} bytes. ` +
-                `Value = '${scrtData.featureName}'`
+                `${funName} ${FEAT_NAME_KEYWORD} is null or undefined.`
+            );
+            return false;
+        }
+        if (!TextUtils.hasNonBlankValue(scrtData[FEAT_NAME_KEYWORD])) {
+            Logger.getImperativeLogger().error(
+                `${funName} '${FEAT_NAME_KEYWORD}' is blank.`
+            );
+            return false;
+        }
+        if (scrtData[FEAT_NAME_KEYWORD].length > MAX_FEAT_NAME_LEN) {
+            Logger.getImperativeLogger().error(
+                `${funName} '${FEAT_NAME_KEYWORD}' is longer than ` +
+                `${MAX_FEAT_NAME_LEN} bytes. Value = '${scrtData[FEAT_NAME_KEYWORD]}'`
             );
             return false;
         }

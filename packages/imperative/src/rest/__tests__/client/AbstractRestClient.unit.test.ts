@@ -2012,30 +2012,17 @@ describe("AbstractRestClient tests", () => {
                 );
             });
 
-            it("should log an error if SCRT data is invalid", () => {
+            it("should log an error if it fails to create a header", () => {
                 const isScrtValidSpy = jest.spyOn(privateRestClient, "isScrtValid").mockReturnValue(false);
+                const formScrtHeaderValSpy = jest.spyOn(privateRestClient, "formScrtHeaderVal");
 
                 privateRestClient.addScrtHeader(restReqOpts);
 
                 expect(restReqOpts.reqHeaders.length).toBe(0);
-                expect(isScrtValidSpy).toHaveBeenCalled();
-                expect(impErrorLoggerSpy).toHaveBeenCalledWith(
-                    "addScrtHeader: Invalid SCRT data is NOT recorded."
-                );
-            });
-
-            it("should log an error it fails to create a header", () => {
-                const isScrtValidSpy = jest.spyOn(privateRestClient, "isScrtValid").mockReturnValue(true);
-                const formScrtHeaderValSpy = jest.spyOn(privateRestClient, "formScrtHeaderVal")
-                    .mockReturnValue(null);
-
-                privateRestClient.addScrtHeader(restReqOpts);
-
-                expect(restReqOpts.reqHeaders.length).toBe(0);
-                expect(isScrtValidSpy).toHaveBeenCalled();
                 expect(formScrtHeaderValSpy).toHaveBeenCalled();
+                expect(isScrtValidSpy).toHaveBeenCalled();
                 expect(impErrorLoggerSpy).toHaveBeenCalledWith(
-                    "addScrtHeader: Unable to create an SCRT header."
+                    "formScrtHeaderVal: No SCRT header is created when SCRT data is invalid."
                 );
             });
 
@@ -2045,19 +2032,49 @@ describe("AbstractRestClient tests", () => {
                     productId: 'FkProdId',
                     productVersion: '12.34.56'
                 };
-                const isScrtValidSpy = jest.spyOn(privateRestClient, "isScrtValid").mockReturnValue(true);
-
-                const scrtHeaderVal = "featureName = 'Fake Feature name', " +
-                    "productId = 'FkProdId', productVersion ='11.22.33'";
-                const formScrtHeaderValSpy = jest.spyOn(privateRestClient, "formScrtHeaderVal")
-                    .mockReturnValue(scrtHeaderVal);
+                const formScrtHeaderValSpy = jest.spyOn(privateRestClient, "formScrtHeaderVal");
 
                 privateRestClient.addScrtHeader(restReqOpts);
 
-                expect(isScrtValidSpy).toHaveBeenCalled();
                 expect(formScrtHeaderValSpy).toHaveBeenCalled();
                 expect(restReqOpts.reqHeaders.length).toBe(1);
-                expect(restReqOpts.reqHeaders[0]).toEqual({"Zowe-SCRT-client-feature": scrtHeaderVal});
+                expect(restReqOpts.reqHeaders[0]).toEqual(
+                    { "Zowe-SCRT-client-feature":   "featureName='Fake Feature name', " +
+                                                    "productId='FkProdId', productVersion='12.34.56'"
+                    }
+                );
+            });
+
+            it("should NOT included non SCRT properties in the header", () => {
+                privateRestClient["mSession"]["mISession"].scrtData = {
+                    featureName: "Valid SCRT property of Feature name",
+                    productId: 'ValPrdId',
+                    productVersion: '11.22.33',
+                    nonScrtProp1: "nonScrtVal1",
+                    nonScrtProp2: "nonScrtVal2",
+                    nonScrtProp3: "nonScrtVal3",
+                };
+                const formScrtHeaderValSpy = jest.spyOn(privateRestClient, "formScrtHeaderVal");
+
+                privateRestClient.addScrtHeader(restReqOpts);
+
+                expect(formScrtHeaderValSpy).toHaveBeenCalled();
+                expect(restReqOpts.reqHeaders.length).toBe(1);
+                expect(restReqOpts.reqHeaders[0]).toEqual(
+                    {
+                        "Zowe-SCRT-client-feature":
+                            "featureName='Valid SCRT property of Feature name', " +
+                            "productId='ValPrdId', productVersion='11.22.33'"
+                    }
+                );
+                expect(impErrorLoggerSpy).toHaveBeenCalledTimes(3);
+                let nonScrtPropNms = ["nonScrtProp1", "nonScrtProp2", "nonScrtProp3"];
+                for (const propNm of nonScrtPropNms) {
+                    expect(impErrorLoggerSpy).toHaveBeenCalledWith(
+                        `isScrtValid: The non-SCRT property = '${propNm}' ` +
+                        `will not be placed in an SCRT header.`
+                    );
+                }
             });
         });
 
@@ -2127,6 +2144,29 @@ describe("AbstractRestClient tests", () => {
         });
 
         describe("formScrtHeaderVal", () => {
+            it("should return null when no SCRT data is supplied", () => {
+                const restSession = new Session({
+                    hostname: "FakeHostName"
+                });
+                const privateRestClient = new RestClient(restSession) as any;
+
+                const impLogger = Logger.getImperativeLogger();
+                const impErrorLoggerSpy = jest.spyOn(impLogger, "error");
+                jest.spyOn(Logger, "getImperativeLogger").mockReturnValue(impLogger);
+
+                const scrtData = null as any;
+                const scrtHeaderVal = privateRestClient.formScrtHeaderVal(scrtData);
+
+                expect(scrtHeaderVal).toBe(null);
+                expect(impErrorLoggerSpy).toHaveBeenCalledTimes(2);
+                expect(impErrorLoggerSpy).toHaveBeenCalledWith(
+                    "isScrtValid: The supplied scrtData is null or undefined."
+                );
+                expect(impErrorLoggerSpy).toHaveBeenCalledWith(
+                    "formScrtHeaderVal: No SCRT header is created when SCRT data is invalid."
+                );
+            });
+
             it("should return scrtData with featureName, productId, and productVersion", () => {
                 const restSession = new Session({
                     hostname: "FakeHostName"
@@ -2135,13 +2175,32 @@ describe("AbstractRestClient tests", () => {
 
                 const scrtData = {
                     featureName: 'Fake Feature Name',
-                    productId: 'FakeProductId',
-                    productVersion: 'FakeVersion',
+                    productId: 'FkProdId',
+                    productVersion: '11.22.33',
                 };
 
                 const scrtHeaderVal = privateRestClient.formScrtHeaderVal(scrtData);
                 expect(scrtHeaderVal).toEqual("featureName='Fake Feature Name', "+
-                    "productId='FakeProductId', productVersion='FakeVersion'"
+                    "productId='FkProdId', productVersion='11.22.33'"
+                );
+            });
+
+            it("should replace unescaped quotes in SCRT values", () => {
+                const restSession = new Session({
+                    hostname: "FakeHostName"
+                });
+                const privateRestClient = new RestClient(restSession) as any;
+
+                const scrtData = {
+                    featureName: "Fake 'Feature' Name",
+                    productId: 'Fk"Pr"Id'
+                };
+
+                const scrtHeaderVal = privateRestClient.formScrtHeaderVal(scrtData);
+                // In the actual header there are only single backslash escape characters.
+                // Jest must use use JSON.stringify, which adds extra backslashes.
+                expect(scrtHeaderVal).toEqual("featureName='Fake \\'Feature\\' Name', " +
+                    "productId='Fk\\\"Pr\\\"Id'"
                 );
             });
         });
