@@ -142,6 +142,9 @@ export class ConfigEnvironmentVariables {
             advancedMatch = this.complexEnvironmentVariableRegexGlobal.exec(modifiedString);
         }
 
+        // Reset the index on the regexes
+        this.simpleEnvironmentVariableRegexGlobal.lastIndex = this.complexEnvironmentVariableRegexGlobal.lastIndex = 0;
+
         return modifiedString;
     }
 
