@@ -2185,22 +2185,20 @@ describe("AbstractRestClient tests", () => {
                 );
             });
 
-            it("should replace unescaped quotes in SCRT values", () => {
+            it("should escape all quotes in SCRT values", () => {
                 const restSession = new Session({
                     hostname: "FakeHostName"
                 });
                 const privateRestClient = new RestClient(restSession) as any;
 
                 const scrtData = {
-                    featureName: "Fake 'Feature' Name",
-                    productId: 'Fk"Pr"Id'
+                    featureName: "'Fake ''Fea\"'ture' \"Name",
+                    productId: '""P\'"I\'d'
                 };
 
                 const scrtHeaderVal = privateRestClient.formScrtHeaderVal(scrtData);
-                // In the actual header there are only single backslash escape characters.
-                // Jest must use use JSON.stringify, which adds extra backslashes.
-                expect(scrtHeaderVal).toEqual("featureName='Fake \\'Feature\\' Name', " +
-                    "productId='Fk\\\"Pr\\\"Id'"
+                expect(scrtHeaderVal).toEqual("featureName='\\'Fake \\'\\'Fea\\\"\\'ture\\' \\\"Name', " +
+                    "productId='\\\"\\\"P\\'\\\"I\\'d'"
                 );
             });
         });

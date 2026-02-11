@@ -722,7 +722,7 @@ export abstract class AbstractRestClient {
         }
 
         // parse featureName from the env var value
-        const enclosingQuote = "['|\"]";
+        const enclosingQuote = "['\"]";
         const valWithinQuotes = "([^'\"]+)";
         const valAfterEquals = ` *= *${enclosingQuote}${valWithinQuotes}${enclosingQuote}`;
         let envValRegEx = new RegExp("featureName" + valAfterEquals);
@@ -768,11 +768,10 @@ export abstract class AbstractRestClient {
             return null;
         }
 
-        // escape any un-escaped quotes in SCRT properties
+        // escape any single or double quotes in SCRT property values
         let scrtHeaderVal: string = "";
-        const unEscapedQuotesRegEx = /([^\\])(["'])/g;
         for (const [scrtPropName, scrtPropVal] of Object.entries(scrtData)) {
-            const valToUse = scrtPropVal.replace(unEscapedQuotesRegEx, "$1\\$2");
+            let valToUse = scrtPropVal.replace(/(["'])/g, "\\$1");
             if (scrtHeaderVal.length > 0) {
                 scrtHeaderVal += ", ";
             }
