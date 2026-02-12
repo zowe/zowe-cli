@@ -768,10 +768,12 @@ export abstract class AbstractRestClient {
             return null;
         }
 
-        // escape any single or double quotes in SCRT property values
+        // escape any escape characters and any single or double quotes in SCRT property values
         let scrtHeaderVal: string = "";
         for (const [scrtPropName, scrtPropVal] of Object.entries(scrtData)) {
-            const valToUse = scrtPropVal.replace(/(["'])/g, "\\$1");
+            const valToUse = String(scrtPropVal)
+                .replace(/\\/g, "\\\\")
+                .replace(/(["'])/g, "\\$1");
             if (scrtHeaderVal.length > 0) {
                 scrtHeaderVal += ", ";
             }
