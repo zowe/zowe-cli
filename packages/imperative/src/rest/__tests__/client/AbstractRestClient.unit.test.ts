@@ -2144,7 +2144,7 @@ describe("AbstractRestClient tests", () => {
         });
 
         describe("formScrtHeaderVal", () => {
-            it("should return null when no SCRT data is supplied", () => {
+            it("should return null when SCRT data is null", () => {
                 const restSession = new Session({
                     hostname: "FakeHostName"
                 });
@@ -2167,6 +2167,28 @@ describe("AbstractRestClient tests", () => {
                 );
             });
 
+            it("should return null when SCRT data is empty", () => {
+                const restSession = new Session({
+                    hostname: "FakeHostName"
+                });
+                const privateRestClient = new RestClient(restSession) as any;
+
+                const isScrtValidSpy = jest.spyOn(privateRestClient, "isScrtValid").mockReturnValue(true);
+
+                const impLogger = Logger.getImperativeLogger();
+                const impErrorLoggerSpy = jest.spyOn(impLogger, "error");
+                jest.spyOn(Logger, "getImperativeLogger").mockReturnValue(impLogger);
+
+                const scrtHeaderVal = privateRestClient.formScrtHeaderVal({});
+
+                expect(scrtHeaderVal).toBe(null);
+                expect(impErrorLoggerSpy).toHaveBeenCalledTimes(1);
+                expect(impErrorLoggerSpy).toHaveBeenCalledWith(
+                    "formScrtHeaderVal: Failed to form an SCRT header value. " +
+                    "Length of header value is zero. scrtData = {}"
+                );
+            });
+
             it("should return scrtData with featureName, productId, and productVersion", () => {
                 const restSession = new Session({
                     hostname: "FakeHostName"
@@ -2182,6 +2204,25 @@ describe("AbstractRestClient tests", () => {
                 const scrtHeaderVal = privateRestClient.formScrtHeaderVal(scrtData);
                 expect(scrtHeaderVal).toEqual("featureName='Fake Feature Name', "+
                     "productId='FkProdId', productVersion='11.22.33'"
+                );
+            });
+
+            it("should remove leading and trailing spaces from an SCRT property value", () => {
+                const restSession = new Session({
+                    hostname: "FakeHostName"
+                });
+                const privateRestClient = new RestClient(restSession) as any;
+
+                const valWithBlanks = '     Fake Feature Name     ';
+                const scrtData = {
+                    featureName: valWithBlanks,
+                    productId: 'FkProdId',
+                    productVersion: '11.22.33',
+                };
+
+                const scrtHeaderVal = privateRestClient.formScrtHeaderVal(scrtData);
+                expect(scrtHeaderVal).toEqual(`featureName='${valWithBlanks.trim()}', ` +
+                    `productId='FkProdId', productVersion='11.22.33'`
                 );
             });
 
@@ -2235,6 +2276,20 @@ describe("AbstractRestClient tests", () => {
                 expect(isValid).toBe(false);
                 expect(impErrorLoggerSpy).toHaveBeenCalledWith(
                     "isScrtValid: featureName is null or undefined."
+                );
+            });
+
+            it("should return false if an SCRT property contains non-printable ASCII", () => {
+                const scrtData = {
+                    featureName: "Feature name has a \n non-printable character",
+                    productId: 'FakeProductId',
+                    productVersion: 'FakeVersion',
+                };
+                const isValid = privateRestClient.isScrtValid(scrtData);
+                expect(isValid).toBe(false);
+                expect(impErrorLoggerSpy).toHaveBeenCalledWith(
+                    "isScrtValid: The SCRT property 'featureName' contains non-printable ASCII " +
+                    "characters = 'Feature name has a \n non-printable character'"
                 );
             });
 

@@ -772,6 +772,7 @@ export abstract class AbstractRestClient {
         let scrtHeaderVal: string = "";
         for (const [scrtPropName, scrtPropVal] of Object.entries(scrtData)) {
             const valToUse = String(scrtPropVal)
+                .trim()
                 .replace(/\\/g, "\\\\")
                 .replace(/(["'])/g, "\\$1");
             if (scrtHeaderVal.length > 0) {
@@ -783,7 +784,9 @@ export abstract class AbstractRestClient {
         if (scrtHeaderVal.length === 0) {
             // this should not occur since scrtData was validated, but we want a safety net
             Logger.getImperativeLogger().error(
-                `${funName} Failed to form an SCRT header value. Length of value was zero.`);
+                `${funName} Failed to form an SCRT header value. Length of header value is zero. ` +
+                `scrtData = ` + JSON.stringify(scrtData, null, 2)
+            );
             return null;
         }
         return scrtHeaderVal;
@@ -815,9 +818,17 @@ export abstract class AbstractRestClient {
         }
 
         for (const scrtPropNm of Object.keys(scrtData)) {
-            if (scrtPropNm !== FEAT_NAME_KEYWORD && scrtPropNm !== PROD_ID_KEYWORD &&
-                scrtPropNm !== PROD_VER_KEYWORD)
+            if (scrtPropNm === FEAT_NAME_KEYWORD || scrtPropNm === PROD_ID_KEYWORD ||
+                scrtPropNm === PROD_VER_KEYWORD)
             {
+                if (/^[\x20-\x7E]*$/.test((scrtData as any)[scrtPropNm]) === false) {
+                    Logger.getImperativeLogger().error(
+                        `${funName} The SCRT property '${scrtPropNm}' ` +
+                        `contains non-printable ASCII characters = '${scrtData[scrtPropNm]}'`
+                    );
+                    return false;
+                }
+            } else {
                 Logger.getImperativeLogger().error(
                     `${funName} The non-SCRT property = '${scrtPropNm}' ` +
                     `will not be placed in an SCRT header.`
