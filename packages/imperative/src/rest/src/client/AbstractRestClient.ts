@@ -773,8 +773,9 @@ export abstract class AbstractRestClient {
         for (const [scrtPropName, scrtPropVal] of Object.entries(scrtData)) {
             const valToUse = String(scrtPropVal)
                 .trim()
-                .replace(/\\/g, "\\\\")
-                .replace(/(["'])/g, "\\$1");
+                .replaceAll("\\", "\\\\")   // backslash to double backslash
+                .replaceAll('"', '\\"')     // doublequote to backslash doublequote
+                .replaceAll("'", "\\'");    // singlequote to backslash singlequote
             if (scrtHeaderVal.length > 0) {
                 scrtHeaderVal += ", ";
             }
