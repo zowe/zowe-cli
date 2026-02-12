@@ -2173,11 +2173,10 @@ describe("AbstractRestClient tests", () => {
                 });
                 const privateRestClient = new RestClient(restSession) as any;
 
-                const isScrtValidSpy = jest.spyOn(privateRestClient, "isScrtValid").mockReturnValue(true);
-
                 const impLogger = Logger.getImperativeLogger();
                 const impErrorLoggerSpy = jest.spyOn(impLogger, "error");
                 jest.spyOn(Logger, "getImperativeLogger").mockReturnValue(impLogger);
+                jest.spyOn(privateRestClient, "isScrtValid").mockReturnValue(true);
 
                 const scrtHeaderVal = privateRestClient.formScrtHeaderVal({});
 
