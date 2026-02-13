@@ -63,7 +63,7 @@
     "jest-diff": "27.0.6",
     "js-yaml": "4.1.1",
     "jsonfile": "6.1.0",
-    "jsonschema": "1.4.1",
+    "jsonschema": "1.5.0",
     "lodash": "4.17.23",
     "lodash-deep": "2.0.0",
     "log4js": "6.4.6",
