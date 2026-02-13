@@ -67,7 +67,7 @@
     "lodash": "4.17.23",
     "lodash-deep": "2.0.0",
     "log4js": "6.4.6",
-    "markdown-it": "14.1.1",
+    "markdown-it": "14.1.0",
     "mustache": "4.2.0",
     "npm-package-arg": "9.1.0",
     "opener": "1.5.2",
