@@ -10,14 +10,13 @@
 */
 
 import { ICommandDefinition } from "@zowe/imperative";
+import * as cmdDef from "../../../../src/zosmf/change-password/ChangePassword.definition";
 
-describe("zosmf group definition", () => {
-    it("should have the right command content", () => {
-        const numZosmfCmds = 3;
-        const definition: ICommandDefinition = require("../../../src/zosmf/Zosmf.definition");
+describe("zosmf change-password definition", () => {
+    it("should not have changed", () => {
+        const definition: ICommandDefinition = cmdDef.ChangePasswordCommand;
+        delete definition.handler;
         expect(definition).toBeDefined();
-        expect(definition.children.length).toBe(numZosmfCmds);
-        delete definition.children;
         expect(definition).toMatchSnapshot();
     });
 });

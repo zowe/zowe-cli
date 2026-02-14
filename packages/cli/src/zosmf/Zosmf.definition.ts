@@ -10,6 +10,7 @@
 */
 
 import { ICommandDefinition } from "@zowe/imperative";
+import { ChangePasswordCommand } from "./change-password/ChangePassword.definition";
 import { CheckCommand } from "./check/Check.definition";
 import { ListCommand } from "./list/List.definition";
 
@@ -19,6 +20,7 @@ const definition: ICommandDefinition = {
     summary: "Interact with z/OSMF",
     description: "Retrieve and show the properties of a z/OSMF web server.",
     children: [
+        ChangePasswordCommand,
         CheckCommand,
         ListCommand
     ]

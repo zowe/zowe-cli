@@ -40,6 +40,12 @@ export const ZosmfConstants: { [key: string]: any } = {
     SYSTEMS: "/systems",
 
     /**
+     * URI for the z/OSMF change password/passphrase
+     * @type {string}
+     */
+    AUTHENTICATE_RESOURCE: "/zosmf/services/authenticate",
+
+    /**
      * Known error codes return by the API
      * @type {object}
      */
