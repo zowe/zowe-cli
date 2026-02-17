@@ -206,6 +206,7 @@ To add a new service, for example add a new instance of z/OSMF that runs on a di
 ```
 
 You can continue to add more LPARs, and more services within each LPAR. After you make changes, save the file and issue a Zowe CLI command to the service to verify connection.
+
 ## Managing credential security
 
 When you first run the `zowe config init --global-config` command, the `profiles.base.properties.user` and `profiles.base.properties.password` fields are defined to the "secure" array in your configuration file. This ensures that username and password are stored securely on your computer.
@@ -215,6 +216,50 @@ Issue the `zowe config secure` command to re-prompt for all secure fields when y
 To secure a specific field, use the command `zowe config set --secure <property-path>`. For example, you can issue `zowe config set --secure profiles.base.properties.password`. If you issue the command for an option that is already secure, the CLI re-prompts you to enter a new option value.
 
 Alternatively, you can use an editor to define options to the secure array in `zowe.config.json` manually. Any option that you define to there becomes secure/prompted-for.
+
+## Using Environment Variables
+
+To better support the use of the Zowe SDKs in web based integrated development environments (IDEs), team configurations support the use of environment variables.
+
+Environment variables can be specified in the configuration in one of two formats:
+- `$<variable>`
+- `${<variable>}`
+
+For example, the following configuration will use the environment variable `USERNAME` for the property `user` on the profile `lpar1.zosmf`:
+
+```json
+{
+    "$schema": "./zowe.schema.json",
+    "profiles": {
+        "lpar1": {
+            "properties": {
+                "host": "example1.com"
+            },
+            "profiles": {
+                "zosmf": {
+                    "type": "zosmf",
+                    "properties": {
+                        "user": "$USERNAME",
+                        "port": 443
+                    }
+                }
+            },
+            "secure": [
+                "password"
+            ]
+        }
+    },
+    "defaults": {
+        "zosmf": "lpar1.zosmf"
+    },
+    "autoStore": true
+}
+```
+
+Properties containing environment variables can be specified in the `secure` array. Zowe CLI will treat these properties as secure in all logging mechanisms, but will not store these properties in the Credential Manager.
+
+Note: If a string is specified for a property, and it is in the format of an environment variable, but the environment variable is not set, the string will be used as-is.
+Note: Complex properties, such as arrays and objects, are not supported.
 
 ## Tips for efficient configuration
 

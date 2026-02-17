@@ -94,6 +94,64 @@ describe("imperative-test-cli config set", () => {
         expect(fileContents.profiles.secured.properties).toEqual({info: "some_fake_information"});
         expect(securedValue).toEqual(Buffer.from("{}").toString("base64"));
     });
+    it("should store a property in plain text, and overwrite an existing environment variable if it is not set", async () => {
+        runCliScript(__dirname + "/../init/__scripts__/init_config.sh", TEST_ENVIRONMENT.workingDir, ["--user-config"]);
+        const response1 = runCliScript(__dirname + "/__scripts__/set.sh", TEST_ENVIRONMENT.workingDir,
+            ["profiles.secured.properties.info", "$FAKEINFO", "--user-config"]);
+        const fileContents1 = JSON.parse(fs.readFileSync(expectedUserConfigLocation).toString());
+        const securedValue1 = await keytar.getPassword(service, "secure_config_props");
+
+        expect(response1.stderr.toString()).toEqual("");
+        expect(response1.status).toEqual(0);
+        // Should contain human readable credentials
+        expect(fileContents1.profiles.secured.secure).toEqual([]);
+        expect(fileContents1.profiles.secured.properties).toEqual({info: "$FAKEINFO"});
+        expect(securedValue1).toEqual(Buffer.from("{}").toString("base64"));
+
+        const oldEnvironment = process.env["FAKEINFO"];
+        delete process.env["FAKEINFO"];
+        const response2 = runCliScript(__dirname + "/__scripts__/set.sh", TEST_ENVIRONMENT.workingDir,
+            ["profiles.secured.properties.info", "some_fake_information", "--user-config"]);
+        const fileContents2 = JSON.parse(fs.readFileSync(expectedUserConfigLocation).toString());
+        const securedValue2 = await keytar.getPassword(service, "secure_config_props");
+
+        process.env["FAKEINFO"] = oldEnvironment;
+        expect(response2.stderr.toString()).not.toContain("managed by environment variables");
+        expect(response2.status).toEqual(0);
+        // Should contain human readable credentials
+        expect(fileContents2.profiles.secured.secure).toEqual([]);
+        expect(fileContents2.profiles.secured.properties).toEqual({info: "some_fake_information"});
+        expect(securedValue2).toEqual(Buffer.from("{}").toString("base64"));
+    });
+    it("should store a property in plain text, and fail to overwrite an existing environment variable", async () => {
+        runCliScript(__dirname + "/../init/__scripts__/init_config.sh", TEST_ENVIRONMENT.workingDir, ["--user-config"]);
+        const response1 = runCliScript(__dirname + "/__scripts__/set.sh", TEST_ENVIRONMENT.workingDir,
+            ["profiles.secured.properties.info", "$FAKEINFO", "--user-config"]);
+        const fileContents1 = JSON.parse(fs.readFileSync(expectedUserConfigLocation).toString());
+        const securedValue1 = await keytar.getPassword(service, "secure_config_props");
+
+        expect(response1.stderr.toString()).toEqual("");
+        expect(response1.status).toEqual(0);
+        // Should contain human readable credentials
+        expect(fileContents1.profiles.secured.secure).toEqual([]);
+        expect(fileContents1.profiles.secured.properties).toEqual({info: "$FAKEINFO"});
+        expect(securedValue1).toEqual(Buffer.from("{}").toString("base64"));
+
+        const oldEnvironment = process.env["FAKEINFO"];
+        process.env["FAKEINFO"] = "fakeinformation";
+        const response2 = runCliScript(__dirname + "/__scripts__/set.sh", TEST_ENVIRONMENT.workingDir,
+            ["profiles.secured.properties.info", "some_fake_information", "--user-config"]);
+        const fileContents2 = JSON.parse(fs.readFileSync(expectedUserConfigLocation).toString());
+        const securedValue2 = await keytar.getPassword(service, "secure_config_props");
+
+        process.env["FAKEINFO"] = oldEnvironment;
+        expect(response2.stderr.toString()).toContain("managed by environment variables");
+        expect(response2.status).toEqual(1);
+        // Should contain human readable credentials
+        expect(fileContents2.profiles.secured.secure).toEqual([]);
+        expect(fileContents2.profiles.secured.properties).toEqual({info: "$FAKEINFO"});
+        expect(securedValue2).toEqual(Buffer.from("{}").toString("base64"));
+    });
     it("should prompt for and store a property in plain text", async () => {
         runCliScript(__dirname + "/../init/__scripts__/init_config.sh", TEST_ENVIRONMENT.workingDir, ["--user-config"]);
         const response = runCliScript(__dirname + "/__scripts__/set_prompt.sh", TEST_ENVIRONMENT.workingDir,

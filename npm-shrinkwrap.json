@@ -914,8 +914,8 @@
       }
     },
     "node_modules/@isaacs/brace-expansion": {
-      "version": "5.0.0",
-      "integrity": "sha512-ZT55BDLV0yv0RBm2czMiZ+SqCGO7AvmOM3G/w2xhVPH+te0aKgFjmBvGlL1dH+ql2tgGO3MVrbb3jCKyvpgnxA==",
+      "version": "5.0.1",
+      "integrity": "sha512-WMz71T1JS624nWj2n2fnYAuPovhv7EUhk69R6i9dsVyzxt5eM3bjwvgk9L+APE1TRscGysAVMANkB0jh0LQZrQ==",
       "dev": true,
       "license": "MIT",
       "dependencies": {
@@ -8963,7 +8963,8 @@
       }
     },
     "node_modules/markdown-it": {
-      "version": "14.1.0",
+      "version": "14.1.1",
+      "integrity": "sha512-BuU2qnTti9YKgK5N+IeMubp14ZUKUUw7yeJbkjtosvHiP0AZ5c8IAgEMk79D0eC8F23r4Ac/q8cAIFdm2FtyoA==",
       "license": "MIT",
       "dependencies": {
         "argparse": "^2.0.1",
@@ -10416,8 +10417,8 @@
       "license": "MIT"
     },
     "node_modules/qs": {
-      "version": "6.14.1",
-      "integrity": "sha512-4EK3+xJl8Ts67nLYNwqw/dsFVnCf+qR7RgXSK9jEEm9unao3njwMDdmsdvoKBKHzxd7tCYz5e5M+SnMjdtXGQQ==",
+      "version": "6.14.2",
+      "integrity": "sha512-V/yCWTTF7VJ9hIh18Ugr2zhJMP01MY7c5kh4J870L7imm6/DIzBsNLTXzMwUA3yZ5b/KBqLx8Kp3uRvd7xSe3Q==",
       "dev": true,
       "license": "BSD-3-Clause",
       "dependencies": {
@@ -12698,7 +12699,7 @@
         "lodash": "^4.17.23",
         "lodash-deep": "^2.0.0",
         "log4js": "^6.9.1",
-        "markdown-it": "^14.1.0",
+        "markdown-it": "^14.1.1",
         "mustache": "^4.2.0",
         "npm-package-arg": "^11.0.1",
         "opener": "^1.5.2",

@@ -5,6 +5,10 @@ All notable changes to the Imperative package will be documented in this file.
 ## Recent Changes
 
 - Enhancement: Added an optional `scrtData` object to the ISession interface for a Session object. The `scrtData` is transmitted as a new HTTP header named `Zowe-SCRT-client-feature` to the targeted REST service. [#2678](https://github.com/zowe/zowe-cli/pull/2678)
+- Enhancement: Updated config files to support environment variables in `$VARIABLE` and `${VARIABLE}` formats. [#2672](https://github.com/zowe/zowe-cli/pull/2672)
+  - Properties that contain a valid environment variable cannot be set or changed with the `Config.set` function. They can only be updated in an editor.
+  - Properties that map to an unset environment variable are treated as a literal string.
+- BugFix: Updated `markdown-it` dependency for technical currency. [#2672](https://github.com/zowe/zowe-cli/pull/2672)
 
 ## `8.29.13`
 
