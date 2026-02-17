@@ -12,6 +12,7 @@
 import * as SessConstants from "../SessConstants";
 import { ProxyVariables } from "./ProxyVariables";
 import { IAuthCache } from "./IAuthCache";
+import { IScrtData } from "./IScrtData";
 
 /**
  * Session interface for maintaining cookie and protocol information
@@ -233,4 +234,10 @@ export interface ISession {
      * @memberof ISession
      */
     requestCompletionTimeoutCallback?: () => void;
+
+    /**
+     * Supplies SCRT data that will be transmitted in a header in a REST request
+     * which is transmitted to a REST service through this session.
+     */
+    scrtData?: IScrtData;
 }
