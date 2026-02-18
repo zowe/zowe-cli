@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated the `jsonschema`, `qs`, and `markdown-it` dependencies for technical currency. [#2680](https://github.com/zowe/zowe-cli/pull/2680)
+
 ## `5.27.14`
 
 - BugFix: Removed large dependency `pacote` for fetching package metadata when installing plug-ins. [#2668](https://github.com/zowe/zowe-cli/pull/2668)
