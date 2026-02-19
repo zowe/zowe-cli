@@ -71,7 +71,7 @@
     "@zowe/zosmf-for-zowe-sdk": "8.30.0",
     "find-process": "^1.4.7",
     "lodash": "^4.17.23",
-    "minimatch": "^9.0.5",
+    "minimatch": "^10.2.1",
     "tar": "^7.5.8"
   },
   "devDependencies": {

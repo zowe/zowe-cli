@@ -12594,7 +12594,7 @@
         "@zowe/zosmf-for-zowe-sdk": "8.30.0",
         "find-process": "^1.4.7",
         "lodash": "^4.17.23",
-        "minimatch": "^9.0.5",
+        "minimatch": "^10.2.1",
         "tar": "^7.5.8"
       },
       "bin": {
@@ -12615,6 +12615,23 @@
         "@zowe/secrets-for-zowe-sdk": "8.29.4"
       }
     },
+    "packages/cli/node_modules/balanced-match": {
+      "version": "4.0.3",
+      "integrity": "sha512-1pHv8LX9CpKut1Zp4EXey7Z8OfH11ONNH6Dhi2WDUt31VVZFXZzKwXcysBgqSumFCmR+0dqjMK5v5JiFHzi0+g==",
+      "engines": {
+        "node": "20 || >=22"
+      }
+    },
+    "packages/cli/node_modules/brace-expansion": {
+      "version": "5.0.2",
+      "integrity": "sha512-Pdk8c9poy+YhOgVWw1JNN22/HcivgKWwpxKq04M/jTmHyCZn12WPJebZxdjSa5TmBqISrUSgNYU3eRORljfCCw==",
+      "dependencies": {
+        "balanced-match": "^4.0.2"
+      },
+      "engines": {
+        "node": "20 || >=22"
+      }
+    },
     "packages/cli/node_modules/isexe": {
       "version": "3.1.1",
       "dev": true,
@@ -12624,13 +12641,13 @@
       }
     },
     "packages/cli/node_modules/minimatch": {
-      "version": "9.0.5",
-      "license": "ISC",
+      "version": "10.2.1",
+      "integrity": "sha512-MClCe8IL5nRRmawL6ib/eT4oLyeKMGCghibcDWK+J0hh0Q8kqSdia6BvbRMVk6mPa6WqUa5uR2oxt6C5jd533A==",
       "dependencies": {
-        "brace-expansion": "^2.0.1"
+        "brace-expansion": "^5.0.2"
       },
       "engines": {
-        "node": ">=16 || 14 >=14.17"
+        "node": "20 || >=22"
       },
       "funding": {
         "url": "https://github.com/sponsors/isaacs"
@@ -12868,7 +12885,7 @@
       "license": "EPL-2.0",
       "dependencies": {
         "lodash": "^4.17.23",
-        "minimatch": "^9.0.5"
+        "minimatch": "^10.2.1"
       },
       "devDependencies": {
         "@zowe/cli-test-utils": "8.30.0",
@@ -12884,14 +12901,31 @@
         "@zowe/imperative": "^8.0.0"
       }
     },
-    "packages/zosfiles/node_modules/minimatch": {
-      "version": "9.0.5",
-      "license": "ISC",
+    "packages/zosfiles/node_modules/balanced-match": {
+      "version": "4.0.3",
+      "integrity": "sha512-1pHv8LX9CpKut1Zp4EXey7Z8OfH11ONNH6Dhi2WDUt31VVZFXZzKwXcysBgqSumFCmR+0dqjMK5v5JiFHzi0+g==",
+      "engines": {
+        "node": "20 || >=22"
+      }
+    },
+    "packages/zosfiles/node_modules/brace-expansion": {
+      "version": "5.0.2",
+      "integrity": "sha512-Pdk8c9poy+YhOgVWw1JNN22/HcivgKWwpxKq04M/jTmHyCZn12WPJebZxdjSa5TmBqISrUSgNYU3eRORljfCCw==",
       "dependencies": {
-        "brace-expansion": "^2.0.1"
+        "balanced-match": "^4.0.2"
       },
       "engines": {
-        "node": ">=16 || 14 >=14.17"
+        "node": "20 || >=22"
+      }
+    },
+    "packages/zosfiles/node_modules/minimatch": {
+      "version": "10.2.1",
+      "integrity": "sha512-MClCe8IL5nRRmawL6ib/eT4oLyeKMGCghibcDWK+J0hh0Q8kqSdia6BvbRMVk6mPa6WqUa5uR2oxt6C5jd533A==",
+      "dependencies": {
+        "brace-expansion": "^5.0.2"
+      },
+      "engines": {
+        "node": "20 || >=22"
       },
       "funding": {
         "url": "https://github.com/sponsors/isaacs"
