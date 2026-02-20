@@ -10,6 +10,7 @@
 */
 
 import * as fs from "fs";
+import * as os from "os";
 import * as path from "path";
 import * as jsonfile from "jsonfile";
 import * as lodash from "lodash";
@@ -989,6 +990,71 @@ describe("TeamConfig ProfileInfo tests", () => {
             expect(mergedArgs.knownArgs.length).toBeGreaterThanOrEqual(expectedArgs.length);
             for (const [idx, arg] of expectedArgs.entries()) {
                 expect(mergedArgs.knownArgs[idx]).toMatchObject(arg);
+            }
+        });
+
+        it("should merge args from global user base when global team base default is empty", async () => {
+            const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "profinfo-global-layers-"));
+            const homeDir = path.join(tempDir, "home");
+            const projectDir = path.join(tempDir, "project");
+            fs.mkdirSync(homeDir, { recursive: true });
+            fs.mkdirSync(projectDir, { recursive: true });
+
+            try {
+                fs.copyFileSync(path.join(teamProjDir, "ProfInfoApp.schema.json"), path.join(homeDir, "ProfInfoApp.schema.json"));
+                fs.writeFileSync(path.join(homeDir, "ProfInfoApp.config.user.json"), JSON.stringify({
+                    $schema: "./ProfInfoApp.schema.json",
+                    profiles: {
+                        global_user: {
+                            type: "base",
+                            properties: {
+                                rejectUnauthorized: false,
+                                user: "user",
+                                password: "pass",
+                                account: "10000000",
+                                port: 333
+                            }
+                        }
+                    },
+                    defaults: {
+                        base: "global_user"
+                    },
+                    autoStore: true
+                }, null, 4));
+                fs.writeFileSync(path.join(homeDir, "ProfInfoApp.config.json"), JSON.stringify({
+                    $schema: "./ProfInfoApp.schema.json",
+                    profiles: {
+                        global_team: {
+                            type: "base",
+                            properties: {}
+                        }
+                    },
+                    defaults: {
+                        base: ""
+                    },
+                    autoStore: true
+                }, null, 4));
+
+                process.env[testEnvPrefix + "_CLI_HOME"] = homeDir;
+                const profInfo = createNewProfInfo(projectDir);
+                await profInfo.readProfilesFromDisk({ projectDir });
+                profInfo.getTeamConfig().api.layers.activate(false, true);
+
+                const globalTeamProfile = profInfo.getAllProfiles().find((prof) => prof.profName === "global_team");
+                expect(globalTeamProfile).toBeDefined();
+
+                const mergedArgs = profInfo.mergeArgsForProfile(globalTeamProfile as IProfAttrs, { getSecureVals: true });
+                const argByName = (argName: string) => mergedArgs.knownArgs.find((arg) => arg.argName === argName);
+
+                expect(argByName("account")?.argValue).toBe("10000000");
+                expect(argByName("port")?.argValue).toBe(333);
+                expect(argByName("rejectUnauthorized")?.argValue).toBe(false);
+                expect(argByName("user")?.argValue).toBe("user");
+                expect(argByName("password")?.argValue).toBe("pass");
+                expect(argByName("user")?.secure).toBe(false);
+                expect(argByName("password")?.secure).toBe(false);
+            } finally {
+                fs.rmSync(tempDir, { recursive: true, force: true });
             }
         });
 
