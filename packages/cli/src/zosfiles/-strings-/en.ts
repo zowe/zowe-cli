@@ -830,7 +830,8 @@ export default {
                 "The maximum number of TSO address spaces have been created. When you specify 0, " +
                 Constants.DISPLAY_NAME + " attempts to upload all members at once" +
                 " without a maximum number of concurrent requests. ",
-            INCLUDE_HIDDEN: "Include hidden files and folders that have names beginning with a dot."
+            INCLUDE_HIDDEN: "Include hidden files and folders that have names beginning with a dot.",
+            MAKE_DIR: "Create the target directory if it does not already exist."
         }
     },
     VIEW: {
