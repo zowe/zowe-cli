@@ -29,6 +29,14 @@ Array [
     "name": "attributes",
     "type": "string",
   },
+  Object {
+    "aliases": Array [
+      "md",
+    ],
+    "description": "Create the target directory if it does not already exist.",
+    "name": "make-dir",
+    "type": "boolean",
+  },
 ]
 `;
 
