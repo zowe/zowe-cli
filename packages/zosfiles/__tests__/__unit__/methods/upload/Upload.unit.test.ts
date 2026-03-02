@@ -2030,7 +2030,7 @@ describe("z/OS Files - Upload", () => {
                     success: true,
                     commandResponse: "Directory created",
                     apiResponse: {}
-         });
+            })
              try {
                 USSresponse = await Upload.fileToUssFile(dummySession, inputFile, "/u/user/dir", {makeDir: true});
             } catch (err) {
@@ -2042,10 +2042,11 @@ describe("z/OS Files - Upload", () => {
             expect(USSresponse.success).toBeTruthy();
 
             expect(createReadStreamSpy).toHaveBeenCalledTimes(1);
+            expect(createUssDirSpy).toHaveBeenCalledTimes(1);
             expect(createReadStreamSpy).toHaveBeenCalledWith(inputFile);
             expect(streamToUssFileSpy).toHaveBeenCalledTimes(1);
             expect(streamToUssFileSpy).toHaveBeenCalledWith(dummySession, "/u/user/dir/file1.txt", null, {makeDir: true});
-        })
+        });
 
         it("should throw an error if local file name is not specified", async () => {
             try {
