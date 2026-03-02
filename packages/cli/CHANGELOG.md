@@ -4,6 +4,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 ## Recent Changes
 
 - BugFix: Updated the `minimatch` dependency to resolve technical currency. [#2685](https://github.com/zowe/zowe-cli/pull/2685)
+- BugFix: Enhanced `zowe zos-files upload file-to-uss` to support uploading a file to a USS directory using its original filename when the target is a directory (similar to UNIX cp) and added a `--make-directories` option to automatically create missing target directories during upload.[#2686](https://github.com/zowe/zowe-cli/pull/2686)
 
 ## `8.30.1`
 
