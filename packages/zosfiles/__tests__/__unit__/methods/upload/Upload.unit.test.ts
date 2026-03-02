@@ -2030,7 +2030,7 @@ describe("z/OS Files - Upload", () => {
                     success: true,
                     commandResponse: "Directory created",
                     apiResponse: {}
-            })
+            });
              try {
                 USSresponse = await Upload.fileToUssFile(dummySession, inputFile, "/u/user/dir", {makeDir: true});
             } catch (err) {
