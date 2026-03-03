@@ -1,10 +1,15 @@
-use crate::os::mac::error::{handle_os_status, Error};
+use crate::os::mac::error::{handle_os_status, Error, ERR_SEC_ITEM_NOT_FOUND};
 use crate::os::mac::ffi::{
+    errSecDataNotAvailable, SecCertificateCopyData, SecIdentityCopyCertificate,
+    SecIdentityCopyPrivateKey, SecItemExport, SecKeyCreateSignature,
     SecKeychainAddGenericPassword, SecKeychainCopyDefault, SecKeychainFindGenericPassword,
-    SecKeychainGetTypeID, SecKeychainRef,
+    SecKeychainGetTypeID, SecKeychainRef, kSecFormatOpenSSL,
 };
 use crate::os::mac::keychain_item::SecKeychainItem;
-use core_foundation::{base::TCFType, declare_TCFType, impl_TCFType};
+use crate::os::mac::keychain_search::{KeychainSearch, Reference, SearchResult};
+use crate::os::mac::misc::{SecCertificate, SecIdentity, SecKey};
+use core_foundation::{base::TCFType, data::CFData, declare_TCFType, impl_TCFType, string::CFString};
+use core_foundation_sys::base::CFTypeRef;
 use std::ops::Deref;
 
 /*
@@ -109,6 +114,180 @@ impl SecKeychain {
                 },
                 SecKeychainItem::wrap_under_create_rule(item),
             ))
+        }
+    }
+
+    ///
+    /// find_identity  
+    /// Attempts to find an identity (certificate + private key) within the keychain
+    /// matching a given label/account.
+    ///
+    /// Returns:
+    /// - A `SecIdentity` object if the identity was found, or
+    /// - An `Error` object if an error was encountered
+    ///
+    pub fn find_identity(&self, label: &str) -> Result<SecIdentity, Error> {
+        let results = KeychainSearch::new()
+            .class_identity()
+            .label(label)
+            .with_refs()
+            .execute()?;
+
+        for result in results {
+            if let SearchResult::Ref(Reference::Identity(identity)) = result {
+                return Ok(identity);
+            }
+        }
+
+        Err(Error::from_code(ERR_SEC_ITEM_NOT_FOUND))
+    }
+
+    ///
+    /// get_certificate_data  
+    /// Retrieves the certificate data (DER-encoded) from an identity.
+    ///
+    /// Returns:
+    /// - A `Vec<u8>` containing the certificate bytes in DER format, or
+    /// - An `Error` object if an error was encountered
+    ///
+    pub fn get_certificate_data(&self, identity: &SecIdentity) -> Result<Vec<u8>, Error> {
+        let mut cert_ref = std::ptr::null_mut();
+        unsafe {
+            handle_os_status(SecIdentityCopyCertificate(
+                identity.as_concrete_TypeRef(),
+                &mut cert_ref,
+            ))?;
+
+            let certificate = SecCertificate::wrap_under_create_rule(cert_ref);
+            let data_ref = SecCertificateCopyData(certificate.as_concrete_TypeRef());
+            
+            if data_ref.is_null() {
+                return Err(Error::from_code(ERR_SEC_ITEM_NOT_FOUND));
+            }
+
+            let cf_data = CFData::wrap_under_create_rule(data_ref as *const _);
+            Ok(cf_data.bytes().to_vec())
+        }
+    }
+
+    ///
+    /// get_certificate
+    /// Retrieves the certificate object from an identity.
+    ///
+    /// Returns:
+    /// - A `SecCertificate` object, or
+    /// - An `Error` object if an error was encountered
+    ///
+    pub fn get_certificate(&self, identity: &SecIdentity) -> Result<SecCertificate, Error> {
+        let mut cert_ref = std::ptr::null_mut();
+        unsafe {
+            handle_os_status(SecIdentityCopyCertificate(
+                identity.as_concrete_TypeRef(),
+                &mut cert_ref,
+            ))?;
+
+            Ok(SecCertificate::wrap_under_create_rule(cert_ref))
+        }
+    }
+
+    ///
+    /// get_private_key  
+    /// Retrieves the private key reference from an identity (non-exportable).
+    ///
+    /// Returns:
+    /// - A `SecKey` object representing the private key, or
+    /// - An `Error` object if an error was encountered
+    ///
+    pub fn get_private_key(&self, identity: &SecIdentity) -> Result<SecKey, Error> {
+        let mut key_ref = std::ptr::null_mut();
+        unsafe {
+            handle_os_status(SecIdentityCopyPrivateKey(
+                identity.as_concrete_TypeRef(),
+                &mut key_ref,
+            ))?;
+
+            Ok(SecKey::wrap_under_create_rule(key_ref))
+        }
+    }
+
+    ///
+    /// export_private_key_data
+    /// Attempts to export the private key data in OpenSSL format.
+    /// This will fail with errSecDataNotAvailable (-25316) if the key is non-exportable.
+    ///
+    /// Returns:
+    /// - A `Vec<u8>` containing the private key data in OpenSSL format, or
+    /// - An `Error` object if an error was encountered (including non-exportable keys)
+    ///
+    pub fn export_private_key_data(&self, key: &SecKey) -> Result<Vec<u8>, Error> {
+        unsafe {
+            let mut data_ref: core_foundation_sys::base::CFTypeRef = std::ptr::null_mut();
+            let status = SecItemExport(
+                key.as_CFTypeRef(),
+                kSecFormatOpenSSL,
+                0, // flags
+                std::ptr::null(),
+                &mut data_ref,
+            );
+
+            // Check if the key is non-exportable
+            if status == errSecDataNotAvailable {
+                return Err(Error::from_code(errSecDataNotAvailable));
+            }
+
+            handle_os_status(status)?;
+
+            if data_ref.is_null() {
+                return Err(Error::from_code(ERR_SEC_ITEM_NOT_FOUND));
+            }
+
+            let cf_data = CFData::wrap_under_create_rule(data_ref as *const _);
+            Ok(cf_data.bytes().to_vec())
+        }
+    }
+
+    ///
+    /// sign_with_private_key
+    /// Signs data using the private key from an identity (works with non-exportable keys).
+    /// This uses SecKeyCreateSignature which keeps the private key in the Keychain.
+    ///
+    /// - `key`: The SecKey reference to the private key
+    /// - `algorithm`: The signing algorithm to use (e.g., RSA with SHA256)
+    /// - `data`: The data to sign (usually a hash)
+    ///
+    /// Returns:
+    /// - A `Vec<u8>` containing the signature bytes, or
+    /// - An `Error` object if an error was encountered
+    ///
+    pub fn sign_with_private_key(
+        &self,
+        key: &SecKey,
+        algorithm: &str,
+        data: &[u8],
+    ) -> Result<Vec<u8>, Error> {
+        unsafe {
+            let algorithm_cf = CFString::new(algorithm);
+            let data_cf = CFData::from_buffer(data);
+            let mut error_ref: core_foundation_sys::base::CFTypeRef = std::ptr::null_mut();
+
+            let signature_ref = SecKeyCreateSignature(
+                key.as_concrete_TypeRef(),
+                algorithm_cf.as_concrete_TypeRef(),
+                data_cf.as_concrete_TypeRef() as CFTypeRef,
+                &mut error_ref,
+            );
+
+            if !error_ref.is_null() {
+                // Extract error information
+                return Err(Error::from_code(-1)); // Generic error for now
+            }
+
+            if signature_ref.is_null() {
+                return Err(Error::from_code(ERR_SEC_ITEM_NOT_FOUND));
+            }
+
+            let signature_data = CFData::wrap_under_create_rule(signature_ref as *const _);
+            Ok(signature_data.bytes().to_vec())
         }
     }
 }

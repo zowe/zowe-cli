@@ -204,6 +204,7 @@ export class ZosmfSession {
             protocol: args.protocol ? args.protocol.toLowerCase() : 'https',
             requestCompletionTimeout: isNaN(args.completionTimeout) ? undefined : args.completionTimeout * msToSecs,
             socketConnectTimeout: isNaN(args.establishConnectionTimeout) ? undefined : args.establishConnectionTimeout * msToSecs,
+            certAccount: args.certAccount,
         };
     }
 
