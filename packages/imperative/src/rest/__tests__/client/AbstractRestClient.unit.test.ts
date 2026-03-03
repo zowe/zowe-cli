@@ -1836,7 +1836,7 @@ describe("AbstractRestClient tests", () => {
                 readFileSyncSpy.mockRestore();
             });
 
-            it("should return true when a session has a PEM cert", () => {
+            it("should return true when a session has a PEM cert", async () => {
                 // pretend that the session was created for a PEM cert
                 const restClient: any = new RestClient(
                     new Session({
@@ -1852,14 +1852,14 @@ describe("AbstractRestClient tests", () => {
                 const restOptions: any = {
                     headers: {}
                 };
-                const pemCertWasSet: boolean = restClient["setCertPemAuth"](restOptions);
+                const pemCertWasSet: boolean = await restClient["setCertPemAuth"](restOptions);
 
                 expect(readFileSyncSpy).toHaveBeenCalledWith(restClient["mSession"]["mISession"].cert);
                 expect(readFileSyncSpy).toHaveBeenCalledWith(restClient["mSession"]["mISession"].certKey);
                 expect(pemCertWasSet).toEqual(true);
             });
 
-            it("should return false when a PEM cert session has no type", () => {
+            it("should return false when a PEM cert session has no type", async () => {
                 // pretend that the session was created for a PEM cert, but with no type
                 const restClient: any = new RestClient(
                     new Session({
@@ -1875,7 +1875,7 @@ describe("AbstractRestClient tests", () => {
                 const restOptions: any = {
                     headers: {}
                 };
-                const pemCertWasSet: boolean = restClient["setCertPemAuth"](restOptions);
+                const pemCertWasSet: boolean = await restClient["setCertPemAuth"](restOptions);
 
                 expect(pemCertWasSet).toEqual(false);
                 expect(readFileSyncSpy).not.toHaveBeenCalledWith(restClient["mSession"]["mISession"].cert);
@@ -1902,7 +1902,7 @@ describe("AbstractRestClient tests", () => {
                 setCertPemAuthSpy = jest.spyOn(privateRestClient, "setCertPemAuth");
             });
 
-            it('Should add to options the proxy agent if proxy URL is in use', () => {
+            it('Should add to options the proxy agent if proxy URL is in use', async () => {
                 const resource = '/resource';
                 const request = '';
                 const reqHeaders: any[] = [];
@@ -1911,11 +1911,11 @@ describe("AbstractRestClient tests", () => {
                 getSystemProxyUrlSpy.mockReturnValue(url);
                 getProxyAgentSpy.mockReturnValue(proxyAgent);
                 setCertPemAuthSpy.mockReturnValue(true);
-                const result = privateRestClient.buildOptions(resource, request, reqHeaders);
+                const result = await privateRestClient.buildOptions(resource, request, reqHeaders);
                 expect(Object.keys(result)).toContain('agent');
             });
 
-            it('Should add to options if a connection timeout is in use', () => {
+            it('Should add to options if a connection timeout is in use', async () => {
                 const resource = '/resource';
                 const request = '';
                 const reqHeaders: any[] = [];
@@ -1924,7 +1924,7 @@ describe("AbstractRestClient tests", () => {
                 setCertPemAuthSpy.mockReturnValue(true);
                 privateRestClient["mSession"]["mISession"].socketConnectTimeout = 15000;
 
-                const result = privateRestClient.buildOptions(resource, request, reqHeaders);
+                const result = await privateRestClient.buildOptions(resource, request, reqHeaders);
                 expect(Object.keys(result)).toContain('timeout');
                 expect(result.timeout).toEqual(15000);
             });

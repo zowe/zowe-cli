@@ -507,11 +507,16 @@ export abstract class AbstractRestClient {
                 AuthOrder.removeRequestForToken(this.session.ISession);
             })().catch((err) => {
                 // Catch any errors from async operations (e.g., getCertificate)
-                reject(this.populateError({
-                    msg: "Error during request preparation",
-                    causeErrors: err,
-                    source: "client"
-                }));
+                // But let ImperativeError pass through unchanged
+                if (err instanceof ImperativeError) {
+                    reject(err);
+                } else {
+                    reject(this.populateError({
+                        msg: "Error during request preparation",
+                        causeErrors: err,
+                        source: "client"
+                    }));
+                }
             });
         });
     }
