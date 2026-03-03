@@ -31,6 +31,8 @@ import { ConfigUtils } from "./ConfigUtils";
 import { IConfigSchemaInfo } from "./doc/IConfigSchema";
 import { JsUtils } from "../../utilities/src/JsUtils";
 import { IConfigMergeOpts } from "./doc/IConfigMergeOpts";
+import { ConfigEnvironmentVariables } from "./ConfigEnvironmentVariables";
+import { IConfigEnvVarManaged } from "./doc/IConfigEnvVarManaged";
 
 /**
  * Enum used by Config class to maintain order of config layers
@@ -117,6 +119,21 @@ export class Config {
         secure: ConfigSecure
     };
 
+    /**
+     * @internal
+     * A list of config properties managed by environment variables.
+     * These should not be saved if the config changes.
+     */
+    public mEnvVarManaged: IConfigEnvVarManaged[] = [];
+
+    /**
+     * Getter for the environment variable managed properties array.
+     * Returns a deep clone of the real array to prevent modification.
+     */
+    public get envVarManaged(): IConfigEnvVarManaged[] {
+        return structuredClone(this.mEnvVarManaged);
+    }
+
     // _______________________________________________________________________
     /**
      * Constructor for Config class. Don't use this directly. Await `Config.load` instead.
@@ -166,6 +183,7 @@ export class Config {
      */
     public async reload(opts?: IConfigOpts) {
         this.mLayers = [];
+        this.mEnvVarManaged = [];
         this.mHomeDir = opts?.homeDir ?? this.mHomeDir ?? path.join(os.homedir(), `.${this.mApp}`);
         this.mProjectDir = opts?.projectDir ?? process.cwd();
 
@@ -200,6 +218,8 @@ export class Config {
                 // Populate any undefined defaults
                 currLayer.properties.defaults = currLayer.properties.defaults || {};
                 currLayer.properties.profiles = currLayer.properties.profiles || {};
+
+                ConfigEnvironmentVariables.replaceEnvironmentVariablesInConfigLayer(currLayer.properties.profiles, this, currLayer, "profiles");
             }
         } catch (e) {
             if (e instanceof ImperativeError) {
@@ -226,6 +246,23 @@ export class Config {
 
         try {
             for (const currLayer of this.mLayers) {
+
+                // These operations are expensive - only do them if we NEED to.
+                if (this.mEnvVarManaged.length > 0) {
+                    const envVarCandidates = this.mEnvVarManaged.filter((entry) => {
+                        return currLayer.global === entry.global && currLayer.user === entry.user;
+                    });
+
+                    if (envVarCandidates.length > 0) {
+                        ConfigEnvironmentVariables.restoreEnvironmentVariablesInConfigLayer(
+                            currLayer.properties.profiles,
+                            this,
+                            currLayer,
+                            "profiles"
+                        );
+                    }
+                }
+
                 if (allLayers || currLayer.user === this.mActive.user && currLayer.global === this.mActive.global) {
                     this.api.layers.write(currLayer);
                 }
@@ -437,6 +474,12 @@ export class Config {
         opts = opts || {};
 
         const layer = this.layerActive();
+        this.mEnvVarManaged.forEach((value) => {
+            if (value.global == layer.global && value.user == layer.user && value.propPath == propertyPath) {
+                throw new ImperativeError({msg: `The property ${propertyPath} is managed by environment variables and cannot be set.`});
+            }
+        });
+
         let obj: any = layer.properties;
         const segments = propertyPath.split(".");
         propertyPath.split(".").forEach((segment: string) => {

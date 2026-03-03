@@ -363,4 +363,16 @@ export class TextUtils {
         return TextUtils.formatMessage(template, mustacheValues);
     }
 
+    /**
+     * Checks if a value is a non-empty string, ignoring strings that contain only whitespace.
+     * Also handles null and undefined inputs safely.
+     * @param str The input value.
+     * @returns True if the string contains at least one non-whitespace character, false otherwise.
+     */
+    public static hasNonBlankValue(str: string | null | undefined): boolean {
+        // Use optional chaining (?.) for safe access to trim(),
+        // then check if the length of the trimmed string is greater than 0
+        return (str?.trim().length ?? 0) > 0;
+    }
+
 }

@@ -11,15 +11,15 @@
 
 import * as lodash from "lodash";
 import { Arguments } from "yargs";
-import { ICommandProfileProperty } from "../../cmd/src/doc/profiles/definition/ICommandProfileProperty";
 import { CliUtils } from "../../utilities/src/CliUtils";
-import { ICensorOptions } from "./doc/ICensorOptions";
-import { Config } from "../../config/src/Config";
 import { ImperativeConfig } from "../../utilities/src/ImperativeConfig";
 import { EnvironmentalVariableSettings } from "../../imperative/src/env/EnvironmentalVariableSettings";
-import { ICommandProfileTypeConfiguration } from "../../cmd/src/doc/profiles/definition/ICommandProfileTypeConfiguration";
-import { IProfileSchema} from "../../profiles/src/doc/definition/IProfileSchema";
-import { IProfileTypeConfiguration } from "../../profiles/src/doc/config/IProfileTypeConfiguration";
+import type { ICommandProfileProperty } from "../../cmd/src/doc/profiles/definition/ICommandProfileProperty";
+import type { ICensorOptions } from "./doc/ICensorOptions";
+import type { ICommandProfileTypeConfiguration } from "../../cmd/src/doc/profiles/definition/ICommandProfileTypeConfiguration";
+import type { IProfileSchema } from "../../profiles/src/doc/definition/IProfileSchema";
+import type { IProfileTypeConfiguration } from "../../profiles/src/doc/config/IProfileTypeConfiguration";
+import type { Config } from "../../config/src/Config";
 
 export class Censor {
 

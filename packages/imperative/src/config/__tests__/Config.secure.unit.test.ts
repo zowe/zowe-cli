@@ -23,6 +23,7 @@ import { EventOperator } from "../../events";
 const MY_APP = "my_app";
 
 const projectConfigPath = path.join(__dirname, "__resources__/project.config.json");
+const projectConfigEnvPath = path.join(__dirname, "__resources__/project.config.env.json");
 const projectUserConfigPath = path.join(__dirname, "__resources__/project.config.user.json");
 const securePropPath = "profiles.fruit.properties.secret";
 const secureConfigs: IConfigSecure = {
@@ -41,9 +42,11 @@ describe("Config secure tests", () => {
         load: mockSecureLoad,
         save: mockSecureSave
     };
+    let environmentVariableStorage: string | undefined;
 
     afterEach(() => {
         jest.restoreAllMocks();
+        delete process.env["TESTVALUE"];
     });
 
     beforeEach(() => {
@@ -54,6 +57,15 @@ describe("Config secure tests", () => {
             save: mockSecureSave
         };
         jest.spyOn(EventOperator, "getZoweProcessor").mockReturnValue({ emitZoweEvent: jest.fn() } as any);
+    });
+
+    afterAll(() => {
+        if (environmentVariableStorage) { process.env["TESTVALUE"] = environmentVariableStorage; }
+        else { delete process.env["TESTVALUE"]; }
+    });
+
+    beforeAll(() => {
+        environmentVariableStorage = process.env["TESTVALUE"];
     });
 
     it("should set vault if provided for secure load", async () => {
@@ -92,6 +104,24 @@ describe("Config secure tests", () => {
         expect(mockSecureSave).toHaveBeenCalledTimes(1);
     });
 
+    it("should not secure save if there are only environment based secure properties", async () => {
+        const config = new (Config as any)();
+        config.mLayers = [
+            {
+                path: "fake fakety fake",
+                user: false,
+                global: false,
+                properties: { profiles: { fake: { secure: ["fake"], properties: { fake: "fake" } } } }
+            }
+        ];
+        config.mVault = mockVault;
+        config.mSecure = {};
+        config.mEnvVarManaged = [{global: false, user: false, propPath: "profiles.fake.properties.fake"}];
+        await (config.api.secure as any).save(true);
+        expect(mockSecureLoad).toHaveBeenCalledTimes(0);
+        expect(mockSecureSave).toHaveBeenCalledTimes(0);
+    });
+
     it("should load and save all secure properties", async () => {
         jest.spyOn(Config, "search").mockReturnValueOnce(projectUserConfigPath).mockReturnValueOnce(projectConfigPath);
         jest.spyOn(fs, "existsSync").mockReturnValueOnce(false).mockReturnValueOnce(true).mockReturnValue(false);
@@ -112,6 +142,63 @@ describe("Config secure tests", () => {
         expect(config.properties.profiles.fruit.properties.secret).toBe("area51");
         expect(writeFileSpy).toHaveBeenCalled();
         expect(writeFileSpy.mock.calls[0][1]).not.toContain("area51");
+    });
+
+    it("should load and save all secure properties, but not store environment variable based secrets", async () => {
+        jest.spyOn(Config, "search").mockReturnValueOnce(projectUserConfigPath).mockReturnValueOnce(projectConfigEnvPath);
+        jest.spyOn(fs, "existsSync").mockReturnValueOnce(false).mockReturnValueOnce(true).mockReturnValue(false);
+        mockSecureLoad.mockReturnValueOnce(JSON.stringify({fakePath: {
+            [securePropPath]: "area52"
+        }}));
+        process.env["TESTVALUE"] = "aliens";
+        const config = await Config.load(MY_APP, { vault: mockVault });
+        // Check that secureLoad was called and secure value was extracted
+        expect(mockSecureLoad).toHaveBeenCalledWith("secure_config_props");
+        expect(config.properties.profiles.fruit.properties.secret).toBe("aliens");
+
+        const writeFileSpy = jest.spyOn(fs, "writeFileSync").mockReturnValueOnce(undefined);
+        await config.save(false);
+
+        // Check that secureSave was called, secure value was preserved in
+        // active layer, and the value was excluded from the config file
+        expect(mockSecureSave).toHaveBeenCalledTimes(1);
+        expect(mockSecureSave.mock.calls[0][0]).toBe("secure_config_props");
+        expect(mockSecureSave.mock.calls[0][1]).not.toContain("area51");
+        expect(mockSecureSave.mock.calls[0][1]).not.toContain("aliens");
+        expect(mockSecureSave.mock.calls[0][1]).not.toContain("$TESTVALUE");
+        expect(config.properties.profiles.fruit.properties.secret).not.toBe("area51");
+        expect(writeFileSpy).toHaveBeenCalled();
+        expect(writeFileSpy.mock.calls[0][1]).not.toContain("area51");
+        expect(writeFileSpy.mock.calls[0][1]).not.toContain("aliens");
+        expect(writeFileSpy.mock.calls[0][1]).toContain("$TESTVALUE");
+    });
+
+    it("should load and save all secure properties, and work with strings with dollar signs", async () => {
+        jest.spyOn(Config, "search").mockReturnValueOnce(projectUserConfigPath).mockReturnValueOnce(projectConfigEnvPath);
+        jest.spyOn(fs, "existsSync").mockReturnValueOnce(false).mockReturnValueOnce(true).mockReturnValue(false);
+        mockSecureLoad.mockReturnValueOnce(JSON.stringify({fakePath: {
+            [securePropPath]: "area52"
+        }}));
+        const config = await Config.load(MY_APP, { vault: mockVault });
+        // Check that secureLoad was called and secure value was extracted
+        expect(mockSecureLoad).toHaveBeenCalledWith("secure_config_props");
+        expect(config.properties.profiles.fruit.properties.secret).toBe("$TESTVALUE");
+
+        const writeFileSpy = jest.spyOn(fs, "writeFileSync").mockReturnValueOnce(undefined);
+        await config.save(false);
+
+        // Check that secureSave was called, secure value was preserved in
+        // active layer, and the value was excluded from the config file
+        expect(mockSecureSave).toHaveBeenCalledTimes(1);
+        expect(mockSecureSave.mock.calls[0][0]).toBe("secure_config_props");
+        expect(mockSecureSave.mock.calls[0][1]).not.toContain("area51");
+        expect(mockSecureSave.mock.calls[0][1]).not.toContain("aliens");
+        expect(mockSecureSave.mock.calls[0][1]).toContain("$TESTVALUE");
+        expect(config.properties.profiles.fruit.properties.secret).not.toBe("area51");
+        expect(writeFileSpy).toHaveBeenCalled();
+        expect(writeFileSpy.mock.calls[0][1]).not.toContain("area51");
+        expect(writeFileSpy.mock.calls[0][1]).not.toContain("aliens");
+        expect(writeFileSpy.mock.calls[0][1]).not.toContain("$TESTVALUE");
     });
 
     it("should toggle the security of a property if requested", async () => {

@@ -1,6 +1,14 @@
 # Change Log
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## `8.30.2`
+
+- BugFix: Updated the `minimatch` dependency to resolve technical currency. [#2685](https://github.com/zowe/zowe-cli/pull/2685)
+
+## `8.30.1`
+
+- BugFix: Updated the `minimatch` and `tar` dependencies to resolve technical currency. [#2683](https://github.com/zowe/zowe-cli/pull/2683)
+
 ## `8.29.12`
 
 - BugFix: Updated `tar` dependency to resolve technical currency. [#2674](https://github.com/zowe/zowe-cli/pull/2674)
