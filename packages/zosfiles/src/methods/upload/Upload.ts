@@ -596,6 +596,36 @@ export class Upload {
         ImperativeExpect.toNotBeEqual(ussname, "", ZosFilesMessages.missingUSSFileName.message);
         ImperativeExpect.toNotBeEqual(options.record, true, ZosFilesMessages.unsupportedDataType.message);
 
+        // Check if ussname is a directory (ends with '/') or if it exists as a directory on z/OS
+        let isUssDirectory = ussname.endsWith('/');
+
+        if (!isUssDirectory) {
+            const isDirectoryExist = await this.isDirectoryExist(session, ussname);
+            if (isDirectoryExist) {
+                isUssDirectory = true;
+            } else if (options.makeDir) {
+                const hasExtension = path.posix.extname(ussname) !== '';
+                if (!hasExtension) {
+                    isUssDirectory = true;
+                }
+            }
+        }
+
+        if (isUssDirectory) {
+            const baseName = path.basename(inputFile);
+            if (!ussname.endsWith(baseName)) {
+                ussname = path.posix.join(ussname, baseName);
+            }
+        }
+
+        if (options.makeDir) {
+            const parentDir = path.posix.dirname(ussname);
+            const parentExists = await this.isDirectoryExist(session, parentDir);
+            if (!parentExists) {
+                await Create.uss(session, parentDir, "directory");
+            }
+        }
+
         const promise = new Promise((resolve, reject) => {
             fs.lstat(inputFile, (err, stats) => {
                 if (err == null && stats.isFile()) {
