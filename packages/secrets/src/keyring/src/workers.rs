@@ -127,6 +127,28 @@ impl Task for GetCertificate {
     }
 }
 
+#[cfg(not(target_os = "macos"))]
+#[napi]
+impl Task for GetCertificate {
+    type Output = Option<Vec<u8>>;
+    type JsValue = JsUnknown;
+
+    fn compute(&mut self) -> Result<Self::Output> {
+        Err(napi::Error::from_reason("get_certificate is not yet supported on this platform".to_owned()))
+    }
+
+    fn resolve(&mut self, env: Env, output: Self::Output) -> Result<Self::JsValue> {
+        Ok(match output {
+            Some(bytes) => env.create_buffer_with_data(bytes)?.into_unknown(),
+            None => env.get_null()?.into_unknown(),
+        })
+    }
+
+    fn reject(&mut self, _env: Env, err: Error) -> Result<Self::JsValue> {
+        Err(err)
+    }
+}
+
 #[cfg(target_os = "macos")]
 #[napi]
 impl Task for GetPrivateKey {
@@ -138,6 +160,28 @@ impl Task for GetPrivateKey {
             Ok(key) => Ok(key),
             Err(err) => Err(napi::Error::from_reason(err.to_string())),
         }
+    }
+
+    fn resolve(&mut self, env: Env, output: Self::Output) -> Result<Self::JsValue> {
+        Ok(match output {
+            Some(bytes) => env.create_buffer_with_data(bytes)?.into_unknown(),
+            None => env.get_null()?.into_unknown(),
+        })
+    }
+
+    fn reject(&mut self, _env: Env, err: Error) -> Result<Self::JsValue> {
+        Err(err)
+    }
+}
+
+#[cfg(not(target_os = "macos"))]
+#[napi]
+impl Task for GetPrivateKey {
+    type Output = Option<Vec<u8>>;
+    type JsValue = JsUnknown;
+
+    fn compute(&mut self) -> Result<Self::Output> {
+        Err(napi::Error::from_reason("get_private_key is not yet supported on this platform".to_owned()))
     }
 
     fn resolve(&mut self, env: Env, output: Self::Output) -> Result<Self::JsValue> {
@@ -285,6 +329,28 @@ impl Task for CreateIdentityContext {
     }
 }
 
+#[cfg(not(target_os = "macos"))]
+#[napi]
+impl Task for CreateIdentityContext {
+    type Output = Option<String>;
+    type JsValue = JsUnknown;
+
+    fn compute(&mut self) -> Result<Self::Output> {
+        Err(napi::Error::from_reason("create_identity_context is not yet supported on this platform".to_owned()))
+    }
+
+    fn resolve(&mut self, env: Env, output: Self::Output) -> Result<Self::JsValue> {
+        Ok(match output {
+            Some(handle) => env.create_string(handle.as_str())?.into_unknown(),
+            None => env.get_null()?.into_unknown(),
+        })
+    }
+
+    fn reject(&mut self, _env: Env, err: Error) -> Result<Self::JsValue> {
+        Err(err)
+    }
+}
+
 #[cfg(target_os = "macos")]
 #[napi]
 impl Task for SignWithIdentity {
@@ -310,6 +376,28 @@ impl Task for SignWithIdentity {
     }
 }
 
+#[cfg(not(target_os = "macos"))]
+#[napi]
+impl Task for SignWithIdentity {
+    type Output = Option<Vec<u8>>;
+    type JsValue = JsUnknown;
+
+    fn compute(&mut self) -> Result<Self::Output> {
+        Err(napi::Error::from_reason("sign_with_identity is not yet supported on this platform".to_owned()))
+    }
+
+    fn resolve(&mut self, env: Env, output: Self::Output) -> Result<Self::JsValue> {
+        Ok(match output {
+            Some(sig) => env.create_buffer_with_data(sig)?.into_unknown(),
+            None => env.get_null()?.into_unknown(),
+        })
+    }
+
+    fn reject(&mut self, _env: Env, err: Error) -> Result<Self::JsValue> {
+        Err(err)
+    }
+}
+
 #[cfg(target_os = "macos")]
 #[napi]
 impl Task for ReleaseIdentityContext {
@@ -321,6 +409,25 @@ impl Task for ReleaseIdentityContext {
             Ok(released) => Ok(released),
             Err(err) => Err(napi::Error::from_reason(err.to_string())),
         }
+    }
+
+    fn resolve(&mut self, env: Env, output: Self::Output) -> Result<Self::JsValue> {
+        env.get_boolean(output)
+    }
+
+    fn reject(&mut self, _env: Env, err: Error) -> Result<Self::JsValue> {
+        Err(err)
+    }
+}
+
+#[cfg(not(target_os = "macos"))]
+#[napi]
+impl Task for ReleaseIdentityContext {
+    type Output = bool;
+    type JsValue = JsBoolean;
+
+    fn compute(&mut self) -> Result<Self::Output> {
+        Err(napi::Error::from_reason("release_identity_context is not yet supported on this platform".to_owned()))
     }
 
     fn resolve(&mut self, env: Env, output: Self::Output) -> Result<Self::JsValue> {
@@ -361,6 +468,25 @@ impl Task for NativeHttpsRequest {
             headers: output.headers,
             body: output.body,
         })
+    }
+
+    fn reject(&mut self, _env: Env, err: Error) -> Result<Self::JsValue> {
+        Err(err)
+    }
+}
+
+#[cfg(not(target_os = "macos"))]
+#[napi]
+impl Task for NativeHttpsRequest {
+    type Output = HttpsResponse;
+    type JsValue = HttpsResponse;
+
+    fn compute(&mut self) -> Result<Self::Output> {
+        Err(napi::Error::from_reason("native_https_request is not yet supported on this platform".to_owned()))
+    }
+
+    fn resolve(&mut self, _env: Env, output: Self::Output) -> Result<Self::JsValue> {
+        Ok(output)
     }
 
     fn reject(&mut self, _env: Env, err: Error) -> Result<Self::JsValue> {
