@@ -164,5 +164,3 @@ pub fn native_https_request_nsurlsession(request: &HttpsRequest) -> Result<Https
         Ok(result)
     }
 }
-
-// Made with Bob

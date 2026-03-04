@@ -269,5 +269,3 @@ void free_nsurlsession_response(HttpsResponseData* response) {
     
     free(response);
 }
-
-// Made with Bob
