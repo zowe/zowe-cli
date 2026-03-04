@@ -7,6 +7,15 @@ Array [
     "name": "cwd",
     "type": "string",
   },
+  Object {
+    "aliases": Array [
+      "e",
+    ],
+    "defaultValue": false,
+    "description": "Use exec channel instead of interactive shell. Faster but does not load ~/.profile or ~/.bashrc.",
+    "name": "exec",
+    "type": "boolean",
+  },
 ]
 `;
 
@@ -14,7 +23,15 @@ exports[`zos-uss issue ssh command definition should not have changed 2`] = `
 Array [
   Object {
     "description": "Issue a simple command, giving the working directory",
-    "options": "\\"npm install express\\" --cwd /u/cicprov/mnt/CICPY01I/bundles/myapp ",
+    "options": "\\"npm install express\\" --cwd /u/cicprov/mnt/CICPY01I/bundles/myapp",
+  },
+  Object {
+    "description": "Issue a command using exec mode (faster, does not load profile files)",
+    "options": "\\"ls -la\\" --exec",
+  },
+  Object {
+    "description": "Issue a command in exec mode with working directory",
+    "options": "\\"pwd\\" --cwd /u/myuser/project --exec",
   },
 ]
 `;
