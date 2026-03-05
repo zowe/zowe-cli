@@ -24,7 +24,12 @@ export class Shell {
     public static executeSsh(session: SshSession,
         command: string,
         stdoutHandler: (data: string) => void,
-        removeExtraCharactersFromOutput = false): Promise<any> {
+        removeExtraCharactersFromOutput = false,
+        useExecMode = false): Promise<any> {
+        // If exec mode is requested, delegate to executeExec
+        if (useExecMode) {
+            return this.executeExec(session, command, stdoutHandler);
+        }
         let hasAuthFailed = false;
         const promise = new Promise<any>((resolve, reject) => {
             const conn = new Client();
@@ -139,6 +144,106 @@ export class Shell {
         return promise;
     }
 
+    /**
+     * Execute a command using exec mode (no shell wrapping, faster)
+     * @param session - SSH session
+     * @param command - Command to execute
+     * @param stdoutHandler - Handler for stdout data
+     * @returns Promise with exit code
+     */
+    public static executeExec(session: SshSession,
+        command: string,
+        stdoutHandler: (data: string) => void): Promise<any> {
+        let hasAuthFailed = false;
+        const promise = new Promise<any>((resolve, reject) => {
+            const conn = new Client();
+            conn.on("ready", () => {
+                conn.exec(command, (err: any, stream: ClientChannel) => {
+                    if (err) {
+                        reject(new ImperativeError({
+                            msg: ZosUssMessages.unexpected.message + ":\n" + err.message
+                        }));
+                        return;
+                    }
+                    let rc: number;
+
+                    stream.on("exit", (exitcode: number) => {
+                        Logger.getAppLogger().debug(`Return Code: ${exitcode}`);
+                        rc = exitcode;
+                    });
+
+                    stream.on("close", () => {
+                        Logger.getAppLogger().debug("SSH connection closed");
+                        if (!hasAuthFailed) stdoutHandler("\n");
+                        conn.end();
+                        resolve(rc);
+                    });
+
+                    stream.on("data", (data: Buffer | string) => {
+                        Logger.getAppLogger().debug("\n[Received data begin]" + data + "[Received data end]\n");
+                        // Check for expired password
+                        if (data.toString().indexOf(this.expiredPasswordFlag) === 0) {
+                            hasAuthFailed = true;
+                            conn.emit("error", new Error(data.toString()));
+                            stream.removeAllListeners("data");
+                            stream.close();
+                            return;
+                        }
+                        stdoutHandler(data.toString());
+                    });
+
+                    stream.stderr.on("data", (data: Buffer | string) => {
+                        Logger.getAppLogger().debug("\n[Received stderr begin]" + data + "[Received stderr end]\n");
+                        stdoutHandler(data.toString());
+                    });
+                });
+            });
+            conn.on("error", (err: Error) => {
+                if (err.message.startsWith(this.expiredPasswordFlag)) {
+                    reject(new ImperativeError({
+                        msg: ZosUssMessages.expiredPassword.message
+                    }));
+                } else if (err.message.includes(ZosUssMessages.allAuthMethodsFailed.message)) {
+                    hasAuthFailed = true;
+                    reject(new ImperativeError({
+                        msg: ZosUssMessages.allAuthMethodsFailed.message
+                    }));
+                } else if (!hasAuthFailed && err.message.includes(ZosUssMessages.handshakeTimeout.message)) {
+                    reject(new ImperativeError({
+                        msg: ZosUssMessages.handshakeTimeout.message
+                    }));
+                } else if (err.message.includes(this.connRefusedFlag)) {
+                    reject(new ImperativeError({
+                        msg: ZosUssMessages.connectionRefused.message + ":\n" + err.message
+                    }));
+                } else {
+                    reject(new ImperativeError({
+                        msg: ZosUssMessages.unexpected.message + ":\n" + err.message
+                    }));
+                }
+            });
+            Shell.connect(conn, session);
+        });
+        return promise;
+    }
+
+    /**
+     * Execute a command in a specific directory using exec mode
+     * @param session - SSH session
+     * @param command - Command to execute
+     * @param cwd - Working directory
+     * @param stdoutHandler - Handler for stdout data
+     * @returns Promise with exit code
+     */
+    public static async executeExecCwd(session: SshSession,
+        command: string,
+        cwd: string,
+        stdoutHandler: (data: string) => void
+    ): Promise<any> {
+        const cwdCommand = `cd ${cwd} && ${command}`;
+        return this.executeExec(session, cwdCommand, stdoutHandler);
+    }
+
     private static connect(connection: Client, session: SshSession) {
         const authsAllowed = ["none"];
 
@@ -150,7 +255,6 @@ export class Shell {
         if (session.ISshSession.password != null && session.ISshSession.password !== "undefined") {
             authsAllowed.push("password");
         }
-
         connection.connect({
             host: session.ISshSession.hostname,
             port: session.ISshSession.port,
@@ -169,8 +273,13 @@ export class Shell {
         command: string,
         cwd: string,
         stdoutHandler: (data: string) => void,
-        removeExtraCharactersFromOutput = false
+        removeExtraCharactersFromOutput = false,
+        useExecMode = false
     ): Promise<any> {
+        // If exec mode is requested, delegate to executeExecCwd
+        if (useExecMode) {
+            return this.executeExecCwd(session, command, cwd, stdoutHandler);
+        }
         const cwdCommand = `cd ${cwd} && ${command}`;
         return this.executeSsh(session, cwdCommand, stdoutHandler, removeExtraCharactersFromOutput);
     }
