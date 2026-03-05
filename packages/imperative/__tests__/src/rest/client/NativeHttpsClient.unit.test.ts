@@ -9,11 +9,11 @@
 *
 */
 
-import { MacOSNativeHttpsClient } from "../../../../src/rest/src/client/MacOSNativeHttpsClient";
+import { NativeHttpsClient } from "../../../../src/rest/src/client/NativeHttpsClient";
 import { ImperativeError } from "../../../../src/error";
 import { ImperativeConfig } from "../../../../src/utilities";
 
-describe("MacOSNativeHttpsClient", () => {
+describe("NativeHttpsClient", () => {
     const originalPlatform = process.platform;
 
     beforeEach(() => {
@@ -34,7 +34,7 @@ describe("MacOSNativeHttpsClient", () => {
             });
 
             const session = { certAccount: "test-cert" };
-            const result = MacOSNativeHttpsClient.isEnabled(session as any);
+            const result = NativeHttpsClient.isEnabled(session as any);
 
             expect(result).toBe(false);
         });
@@ -45,7 +45,7 @@ describe("MacOSNativeHttpsClient", () => {
             });
 
             const session: any = { certAccount: null };
-            const result = MacOSNativeHttpsClient.isEnabled(session);
+            const result = NativeHttpsClient.isEnabled(session);
 
             expect(result).toBe(false);
         });
@@ -56,7 +56,7 @@ describe("MacOSNativeHttpsClient", () => {
             });
 
             const session = {};
-            const result = MacOSNativeHttpsClient.isEnabled(session as any);
+            const result = NativeHttpsClient.isEnabled(session as any);
 
             expect(result).toBe(false);
         });
@@ -68,7 +68,7 @@ describe("MacOSNativeHttpsClient", () => {
             process.env.ZOWE_MACOS_NATIVE_HTTPS = "true";
 
             const session = { certAccount: "test-cert" };
-            const result = MacOSNativeHttpsClient.isEnabled(session as any);
+            const result = NativeHttpsClient.isEnabled(session as any);
 
             expect(result).toBe(true);
         });
@@ -80,7 +80,7 @@ describe("MacOSNativeHttpsClient", () => {
             process.env.ZOWE_MACOS_NATIVE_HTTPS = "1";
 
             const session = { certAccount: "test-cert" };
-            const result = MacOSNativeHttpsClient.isEnabled(session as any);
+            const result = NativeHttpsClient.isEnabled(session as any);
 
             expect(result).toBe(true);
         });
@@ -94,7 +94,7 @@ describe("MacOSNativeHttpsClient", () => {
                 certAccount: "test-cert",
                 _useNativeHttpsForNonExportable: true
             };
-            const result = MacOSNativeHttpsClient.isEnabled(session as any);
+            const result = NativeHttpsClient.isEnabled(session as any);
 
             expect(result).toBe(true);
         });
@@ -109,7 +109,7 @@ describe("MacOSNativeHttpsClient", () => {
                 certAccount: "test-cert",
                 _useNativeHttpsForNonExportable: false
             };
-            const result = MacOSNativeHttpsClient.isEnabled(session as any);
+            const result = NativeHttpsClient.isEnabled(session as any);
 
             expect(result).toBe(false);
         });
@@ -131,7 +131,7 @@ describe("MacOSNativeHttpsClient", () => {
             };
             const session: any = { certAccount: null };
 
-            await expect(MacOSNativeHttpsClient.request(options as any, session as any))
+            await expect(NativeHttpsClient.request(options as any, session as any))
                 .rejects.toThrow(ImperativeError);
         });
 
@@ -148,7 +148,7 @@ describe("MacOSNativeHttpsClient", () => {
                 throw new Error("Module not found");
             });
 
-            await expect(MacOSNativeHttpsClient.request(options as any, session as any))
+            await expect(NativeHttpsClient.request(options as any, session as any))
                 .rejects.toThrow(ImperativeError);
         });
 
@@ -159,7 +159,7 @@ describe("MacOSNativeHttpsClient", () => {
                 body: Buffer.from("")
             });
 
-            jest.spyOn(MacOSNativeHttpsClient as any, "loadNativeRequestFn")
+            jest.spyOn(NativeHttpsClient as any, "loadNativeRequestFn")
                 .mockReturnValue(mockNativeRequest);
             jest.spyOn(ImperativeConfig, "instance", "get")
                 .mockReturnValue({ cliHome: "/test/home" } as any);
@@ -175,7 +175,7 @@ describe("MacOSNativeHttpsClient", () => {
             };
             const session = { certAccount: "test-cert" };
 
-            await MacOSNativeHttpsClient.request(options as any, session as any);
+            await NativeHttpsClient.request(options as any, session as any);
 
             expect(mockNativeRequest).toHaveBeenCalledWith(
                 expect.objectContaining({
@@ -193,7 +193,7 @@ describe("MacOSNativeHttpsClient", () => {
                 body: Buffer.from("")
             });
 
-            jest.spyOn(MacOSNativeHttpsClient as any, "loadNativeRequestFn")
+            jest.spyOn(NativeHttpsClient as any, "loadNativeRequestFn")
                 .mockReturnValue(mockNativeRequest);
             jest.spyOn(ImperativeConfig, "instance", "get")
                 .mockReturnValue({ cliHome: "/test/home" } as any);
@@ -209,7 +209,7 @@ describe("MacOSNativeHttpsClient", () => {
             };
             const session = { certAccount: "test-cert" };
 
-            await MacOSNativeHttpsClient.request(options as any, session as any);
+            await NativeHttpsClient.request(options as any, session as any);
 
             expect(mockNativeRequest).toHaveBeenCalledWith(
                 expect.objectContaining({
@@ -227,7 +227,7 @@ describe("MacOSNativeHttpsClient", () => {
                 body: Buffer.from("")
             });
 
-            jest.spyOn(MacOSNativeHttpsClient as any, "loadNativeRequestFn")
+            jest.spyOn(NativeHttpsClient as any, "loadNativeRequestFn")
                 .mockReturnValue(mockNativeRequest);
             jest.spyOn(ImperativeConfig, "instance", "get")
                 .mockReturnValue({ cliHome: "/test/home" } as any);
@@ -239,7 +239,7 @@ describe("MacOSNativeHttpsClient", () => {
             };
             const session = { certAccount: "test-cert" };
 
-            await MacOSNativeHttpsClient.request(options as any, session as any);
+            await NativeHttpsClient.request(options as any, session as any);
 
             expect(mockNativeRequest).toHaveBeenCalledWith(
                 expect.objectContaining({
@@ -255,7 +255,7 @@ describe("MacOSNativeHttpsClient", () => {
                 body: Buffer.from("")
             });
 
-            jest.spyOn(MacOSNativeHttpsClient as any, "loadNativeRequestFn")
+            jest.spyOn(NativeHttpsClient as any, "loadNativeRequestFn")
                 .mockReturnValue(mockNativeRequest);
             jest.spyOn(ImperativeConfig, "instance", "get")
                 .mockReturnValue({ cliHome: "/test/home" } as any);
@@ -269,7 +269,7 @@ describe("MacOSNativeHttpsClient", () => {
             const session = { certAccount: "test-cert" };
             const writeData = "test body";
 
-            await MacOSNativeHttpsClient.request(options as any, session as any, writeData);
+            await NativeHttpsClient.request(options as any, session as any, writeData);
 
             expect(mockNativeRequest).toHaveBeenCalledWith(
                 expect.objectContaining({
@@ -288,7 +288,7 @@ describe("MacOSNativeHttpsClient", () => {
                 }
             }));
 
-            const result = await MacOSNativeHttpsClient.isKeyExportable("test-cert", "/test/home");
+            const result = await NativeHttpsClient.isKeyExportable("test-cert", "/test/home");
 
             expect(result).toBe(true);
         });
@@ -304,7 +304,7 @@ describe("MacOSNativeHttpsClient", () => {
                 }
             }));
 
-            const result = await MacOSNativeHttpsClient.isKeyExportable("test-cert", "/test/home");
+            const result = await NativeHttpsClient.isKeyExportable("test-cert", "/test/home");
 
             // Should return true as fallback when module is not properly mocked
             expect(typeof result).toBe("boolean");
@@ -315,7 +315,7 @@ describe("MacOSNativeHttpsClient", () => {
                 throw new Error("Module not found");
             });
 
-            const result = await MacOSNativeHttpsClient.isKeyExportable("test-cert", "/test/home");
+            const result = await NativeHttpsClient.isKeyExportable("test-cert", "/test/home");
 
             expect(result).toBe(true);
         });
@@ -325,7 +325,7 @@ describe("MacOSNativeHttpsClient", () => {
                 keyring: {}
             }));
 
-            const result = await MacOSNativeHttpsClient.isKeyExportable("test-cert", "/test/home");
+            const result = await NativeHttpsClient.isKeyExportable("test-cert", "/test/home");
 
             expect(result).toBe(true);
         });

@@ -80,7 +80,7 @@ export class KeychainAgent extends https.Agent {
             const certPem = this.derToPem(certDerBuffer, "CERTIFICATE");
 
             // Get the private key (must be exportable to reach this code path)
-            // Non-exportable keys are automatically handled by MacOSNativeHttpsClient
+            // Non-exportable keys are automatically handled by NativeHttpsClient
             let privateKeyPem: string | null = null;
 
             try {

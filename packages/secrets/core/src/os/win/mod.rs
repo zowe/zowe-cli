@@ -1,3 +1,12 @@
+//! Windows credential and certificate operations
+//!
+//! This module provides Windows-specific implementations for:
+//! - Credential storage via Windows Credential Manager
+//! - Certificate retrieval from Windows Certificate Store
+//! - Non-exportable private key support via CNG
+//! - Identity context caching for signing operations
+//! - Native HTTPS client with client certificate authentication
+
 use super::error::KeyringError;
 use std::ffi::c_void;
 use std::result::Result;
@@ -13,6 +22,16 @@ use windows_sys::{
         Memory::LocalFree,
     },
 };
+
+// Certificate and cryptography submodules
+mod cert_store;
+mod crypto;
+mod identity_cache;
+pub mod https_client;
+
+// Re-export certificate functions
+pub use cert_store::{get_certificate, get_private_key};
+pub use crypto::{create_identity_context, release_identity_context, sign_with_identity};
 
 impl From<WIN32_ERROR> for KeyringError {
     fn from(error: WIN32_ERROR) -> Self {
@@ -348,4 +367,76 @@ pub fn find_credentials(
     }
 
     Ok(true)
+}
+
+///
+/// Performs an HTTPS request with optional client certificate authentication
+///
+/// Parameters:
+/// - `hostname`: The hostname to connect to
+/// - `port`: The port number
+/// - `path`: The request path
+/// - `method`: The HTTP method (GET, POST, etc.)
+/// - `headers`: Request headers as a HashMap
+/// - `body`: Optional request body
+/// - `cert_account`: Certificate subject name for client authentication
+/// - `reject_unauthorized`: Whether to reject unauthorized certificates
+/// - `timeout`: Optional timeout in milliseconds
+///
+/// Returns:
+/// - `HttpsResponse` containing status code, headers, and body
+/// - A `KeyringError` if the request fails
+///
+pub fn native_https_request(
+    hostname: &String,
+    port: u16,
+    path: &String,
+    method: &String,
+    headers: std::collections::HashMap<String, String>,
+    body: Option<Vec<u8>>,
+    cert_account: &String,
+    reject_unauthorized: bool,
+    timeout: Option<u64>,
+) -> Result<https_client::HttpsResponse, KeyringError> {
+    // Build full URL
+    let url = format!("https://{}:{}{}", hostname, port, path);
+    
+    // Convert headers HashMap to Vec of tuples for WinHTTP
+    let headers_vec: Vec<(String, String)> = headers.into_iter().collect();
+    
+    // Get identity context if cert_account is provided
+    let handle_id = if !cert_account.is_empty() {
+        match create_identity_context(&String::new(), cert_account)? {
+            Some(id) => Some(id),
+            None => {
+                return Err(KeyringError::Os(format!(
+                    "Certificate not found for account: {}. Please verify the certificate exists in Windows Certificate Manager (certmgr.msc) under Current User > Personal > Certificates",
+                    cert_account
+                )));
+            }
+        }
+    } else {
+        None
+    };
+    
+    // Convert timeout from Option<u64> to u32 milliseconds
+    let timeout_ms = timeout.unwrap_or(30000) as u32;
+    
+    // Perform the HTTPS request
+    let result = https_client::native_https_request(
+        &url,
+        method,
+        &headers_vec,
+        &body,
+        &handle_id,
+        timeout_ms,
+        reject_unauthorized,
+    );
+    
+    // Release identity context if it was created
+    if let Some(ref id) = handle_id {
+        let _ = release_identity_context(id);
+    }
+    
+    result
 }

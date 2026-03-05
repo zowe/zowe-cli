@@ -38,7 +38,7 @@ import { CompressionUtils } from "./CompressionUtils";
 import { ProxySettings } from "./ProxySettings";
 import { EnvironmentalVariableSettings } from "../../../imperative/src/env/EnvironmentalVariableSettings";
 import { Censor } from "../../../censor";
-import { MacOSNativeHttpsClient } from "./MacOSNativeHttpsClient";
+import { NativeHttpsClient } from "./NativeHttpsClient";
 
 export type RestClientResolve = (data: string) => void;
 
@@ -324,7 +324,7 @@ export abstract class AbstractRestClient {
                 AuthOrder.putTopAuthInSession(this.session.ISession);
                 const buildOptions = await this.buildOptions(options.resource, options.request, options.reqHeaders);
 
-                if (MacOSNativeHttpsClient.isEnabled(this.session.ISession)
+                if (NativeHttpsClient.isEnabled(this.session.ISession)
                     && this.session.ISession.protocol === SessConstants.HTTPS_PROTOCOL) {
                     if (options.requestStream != null || options.responseStream != null) {
                         throw new ImperativeError({
@@ -333,7 +333,7 @@ export abstract class AbstractRestClient {
                         });
                     }
 
-                    const nativeResponse = await MacOSNativeHttpsClient.request(
+                    const nativeResponse = await NativeHttpsClient.request(
                         buildOptions,
                         this.session.ISession,
                         options.writeData
@@ -1093,26 +1093,27 @@ export abstract class AbstractRestClient {
             return false;
         }
 
-        // Handle certAccount (keychain-based certificate) - macOS only
+        // Handle certAccount (keychain/certificate store-based certificate) - macOS and Windows
         if (this.session.ISession.certAccount != null) {
-            this.log.trace("Using keychain-based certificate authentication (certAccount)");
+            this.log.trace("Using certificate store authentication (certAccount)");
 
-            if (process.platform !== "darwin") {
+            if (process.platform !== "darwin" && process.platform !== "win32") {
                 throw new ImperativeError({
-                    msg: "Certificate account authentication (certAccount) is only supported on macOS.",
+                    msg: "Certificate account authentication (certAccount) is only supported on macOS and Windows.",
                 });
             }
 
             // Check if the private key is exportable
-            const isExportable = await MacOSNativeHttpsClient.isKeyExportable(
+            const isExportable = await NativeHttpsClient.isKeyExportable(
                 this.session.ISession.certAccount,
                 ImperativeConfig.instance.cliHome
             );
 
             if (!isExportable) {
                 // Key is non-exportable - automatically enable native HTTPS client
+                const platformName = process.platform === "darwin" ? "macOS" : "Windows";
                 this.log.info(`Certificate '${this.session.ISession.certAccount}' has a non-exportable private key. ` +
-                    `Automatically using macOS native HTTPS client.`);
+                    `Automatically using ${platformName} native HTTPS client.`);
                 (this.session.ISession as any)._useNativeHttpsForNonExportable = true;
 
                 // Don't set up KeychainAgent - the native client will be used instead
@@ -1124,7 +1125,7 @@ export abstract class AbstractRestClient {
             // eslint-disable-next-line @typescript-eslint/no-var-requires
             const { KeychainAgent } = require("./KeychainAgent");
 
-            // Create a custom agent that will handle certificate retrieval from keychain
+            // Create a custom agent that will handle certificate retrieval from keychain/certificate store
             try {
                 const agent = new KeychainAgent(
                     this.session.ISession.certAccount,

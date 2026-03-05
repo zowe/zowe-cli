@@ -102,7 +102,7 @@ impl Task for GetPassword {
     }
 }
 
-#[cfg(target_os = "macos")]
+#[cfg(any(target_os = "macos", target_os = "windows"))]
 #[napi]
 impl Task for GetCertificate {
     type Output = Option<Vec<u8>>;
@@ -127,7 +127,7 @@ impl Task for GetCertificate {
     }
 }
 
-#[cfg(not(target_os = "macos"))]
+#[cfg(not(any(target_os = "macos", target_os = "windows")))]
 #[napi]
 impl Task for GetCertificate {
     type Output = Option<Vec<u8>>;
@@ -149,7 +149,7 @@ impl Task for GetCertificate {
     }
 }
 
-#[cfg(target_os = "macos")]
+#[cfg(any(target_os = "macos", target_os = "windows"))]
 #[napi]
 impl Task for GetPrivateKey {
     type Output = Option<Vec<u8>>;
@@ -174,7 +174,7 @@ impl Task for GetPrivateKey {
     }
 }
 
-#[cfg(not(target_os = "macos"))]
+#[cfg(not(any(target_os = "macos", target_os = "windows")))]
 #[napi]
 impl Task for GetPrivateKey {
     type Output = Option<Vec<u8>>;
@@ -304,7 +304,7 @@ impl Task for FindPassword {
     }
 }
 
-#[cfg(target_os = "macos")]
+#[cfg(any(target_os = "macos", target_os = "windows"))]
 #[napi]
 impl Task for CreateIdentityContext {
     type Output = Option<String>;
@@ -329,7 +329,7 @@ impl Task for CreateIdentityContext {
     }
 }
 
-#[cfg(not(target_os = "macos"))]
+#[cfg(not(any(target_os = "macos", target_os = "windows")))]
 #[napi]
 impl Task for CreateIdentityContext {
     type Output = Option<String>;
@@ -351,7 +351,7 @@ impl Task for CreateIdentityContext {
     }
 }
 
-#[cfg(target_os = "macos")]
+#[cfg(any(target_os = "macos", target_os = "windows"))]
 #[napi]
 impl Task for SignWithIdentity {
     type Output = Option<Vec<u8>>;
@@ -376,7 +376,7 @@ impl Task for SignWithIdentity {
     }
 }
 
-#[cfg(not(target_os = "macos"))]
+#[cfg(not(any(target_os = "macos", target_os = "windows")))]
 #[napi]
 impl Task for SignWithIdentity {
     type Output = Option<Vec<u8>>;
@@ -398,7 +398,7 @@ impl Task for SignWithIdentity {
     }
 }
 
-#[cfg(target_os = "macos")]
+#[cfg(any(target_os = "macos", target_os = "windows"))]
 #[napi]
 impl Task for ReleaseIdentityContext {
     type Output = bool;
@@ -420,7 +420,7 @@ impl Task for ReleaseIdentityContext {
     }
 }
 
-#[cfg(not(target_os = "macos"))]
+#[cfg(not(any(target_os = "macos", target_os = "windows")))]
 #[napi]
 impl Task for ReleaseIdentityContext {
     type Output = bool;
@@ -475,7 +475,43 @@ impl Task for NativeHttpsRequest {
     }
 }
 
-#[cfg(not(target_os = "macos"))]
+#[cfg(target_os = "windows")]
+#[napi]
+impl Task for NativeHttpsRequest {
+    type Output = secrets_core::os::win::https_client::HttpsResponse;
+    type JsValue = HttpsResponse;
+
+    fn compute(&mut self) -> Result<Self::Output> {
+        match os::native_https_request(
+            &self.hostname,
+            self.port,
+            &self.path,
+            &self.method,
+            self.headers.clone(),
+            self.body.clone(),
+            &self.cert_account,
+            self.reject_unauthorized,
+            self.timeout,
+        ) {
+            Ok(response) => Ok(response),
+            Err(err) => Err(napi::Error::from_reason(err.to_string())),
+        }
+    }
+
+    fn resolve(&mut self, _env: Env, output: Self::Output) -> Result<Self::JsValue> {
+        Ok(HttpsResponse {
+            status_code: output.status_code,
+            headers: output.headers,
+            body: output.body,
+        })
+    }
+
+    fn reject(&mut self, _env: Env, err: Error) -> Result<Self::JsValue> {
+        Err(err)
+    }
+}
+
+#[cfg(not(any(target_os = "macos", target_os = "windows")))]
 #[napi]
 impl Task for NativeHttpsRequest {
     type Output = HttpsResponse;
