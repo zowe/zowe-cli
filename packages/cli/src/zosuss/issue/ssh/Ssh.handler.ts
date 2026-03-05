@@ -26,7 +26,7 @@ export default class Handler extends SshBaseHandler {
         let rc;
         this.parameters = commandParameters;
         const useExecMode = commandParameters.arguments.exec;
-        
+
         if (commandParameters.arguments.cwd) {
             rc = await Shell.executeSshCwd(
                 this.mSession,
