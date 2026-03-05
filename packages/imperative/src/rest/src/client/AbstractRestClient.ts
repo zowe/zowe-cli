@@ -38,6 +38,8 @@ import { CompressionUtils } from "./CompressionUtils";
 import { ProxySettings } from "./ProxySettings";
 import { EnvironmentalVariableSettings } from "../../../imperative/src/env/EnvironmentalVariableSettings";
 import { Censor } from "../../../censor";
+import { RequestQueue } from "./RequestQueue";
+import { IRequestThrottleOptions } from "./doc/IRequestThrottleOptions";
 
 export type RestClientResolve = (data: string) => void;
 
@@ -243,6 +245,14 @@ export abstract class AbstractRestClient {
     protected lastByteReceivedUpload: number = 0;
 
     /**
+     * The request queue utility to use
+     * @private
+     * @type {RequestQueue}
+     * @memberof AbstractRestClient
+     */
+    protected mRequestQueue: RequestQueue = undefined;
+
+    /**
      * Creates an instance of AbstractRestClient.
      * @param {AbstractSession} mSession - representing connection to this api
      * @param topDefaultAuth
@@ -286,6 +296,28 @@ export abstract class AbstractRestClient {
         AuthOrder.putTopAuthInSession(mSession.ISession);
     }
 
+    public setThrottlingOptions(options: IRequestThrottleOptions) {
+        if (this.mRequestQueue) { this.mRequestQueue.setThrottlingOptions(options); }
+    }
+
+    /**
+     * Wrap the request for a request into a request queue.
+     * Use the standard implementation if there is no request queue.
+     * @param {IRestOptions} options
+     * @returns {Promise<string>}
+     * @throws  if the request gets a status code outside of the 200 range
+     *          or other connection problems occur (e.g. connection refused)
+     * @memberof AbstractRestClient
+     */
+
+    public request(options: IRestOptions): Promise<string> {
+        if (this.mRequestQueue) {
+            return this.mRequestQueue.enqueue(this._request.bind(this), options, this.mSession.ISession);
+        } else {
+            return this._request(options);
+        }
+    }
+
     /**
      * Perform the actual http REST call with appropriate user input
      * @param {IRestOptions} options
@@ -294,7 +326,7 @@ export abstract class AbstractRestClient {
      *          or other connection problems occur (e.g. connection refused)
      * @memberof AbstractRestClient
      */
-    public request(options: IRestOptions): Promise<string> {
+    private _request(options: IRestOptions): Promise<string> {
         return new Promise<string>((resolve: RestClientResolve, reject: ImperativeReject) => {
             // save for logging
             this.mResource = options.resource;

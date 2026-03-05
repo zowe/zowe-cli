@@ -10,6 +10,7 @@
 */
 
 import {
+    AbstractSession, RequestQueue,
     IImperativeError, Logger, RestClient,
     RestConstants, SessConstants
 } from "@zowe/imperative";
@@ -23,6 +24,19 @@ import { ZosmfHeaders } from "./ZosmfHeaders";
  * @extends {RestClient}
  */
 export class ZosmfRestClient extends RestClient {
+
+    private readonly maxConcurrentRequests = 10;
+
+    /**
+     * Creates an instance of RestClient and sets the maximum concurrent requests to 10.
+     *
+     * @param {AbstractSession} session - a session connection for this api
+     * @memberof ZosmfRestClient
+     */
+    constructor(session: AbstractSession) {
+        super(session);
+        this.mRequestQueue = new RequestQueue(undefined, this.maxConcurrentRequests);
+    }
 
     /**
      * Use the Zowe logger instead of the imperative logger
