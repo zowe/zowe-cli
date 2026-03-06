@@ -9,16 +9,16 @@
 *
 */
 
+import { Constants } from "../../../constants";
 import { ImperativeError } from "../../../error";
 import type { IQueueItem } from "./doc/IQueueItem";
 import type { IQueuePool } from "./doc/IQueuePool";
 import type { IQueueThrottleOptions } from "./doc/IQueueThrottleOptions";
 
 export class Queue {
-    public readonly max32BitIntegerSigned: number = 2147483647;
-    public readonly defaultQueue: string = "default";
-    private mQueueTimeout: number = this.max32BitIntegerSigned;
-    private mMaxConcurrentRequests: number = this.max32BitIntegerSigned;
+    private readonly defaultQueue: string = "default";
+    private mQueueTimeout: number = Constants.MAX_SIGNED_32BIT_NUMBER;
+    private mMaxConcurrentRequests: number = Constants.MAX_SIGNED_32BIT_NUMBER;
     private mQueue: IQueuePool = {};
 
     constructor(queueTimeout?: number, maxConcurrentRequests?: number) {
@@ -27,13 +27,33 @@ export class Queue {
         this.createQueue();
     }
 
+    /**
+     * Changes and existing request queue's throttling options.
+     * @param options - The throttling options to apply to the request queue.
+     * @throws {ImperativeError} - when the options provided are out of bounds.
+     */
     public setThrottlingOptions(options: IQueueThrottleOptions) {
         // Overwrite the throttling options.
         // Timeout changes will only apply to future requests, not ones in progress.
-        this.mMaxConcurrentRequests = options.maxConcurrentRequests;
-        this.mQueueTimeout = options.queueTimeout;
+        if (options.maxConcurrentRequests != null) {
+            if (options.maxConcurrentRequests <= 0) { throw new ImperativeError({msg: "Maximum concurrent requests cannot be 0 or lower."}); }
+            this.mMaxConcurrentRequests = options.maxConcurrentRequests;
+        }
+
+        if (options.queueTimeout != null) {
+            if (options.queueTimeout <= 0 || options.queueTimeout > Constants.MAX_SIGNED_32BIT_NUMBER) {
+                throw new ImperativeError({msg: "Queue timeout must be between 0 and " + Constants.MAX_SIGNED_32BIT_NUMBER.toString() + "."});
+            }
+            this.mQueueTimeout = options.queueTimeout;
+        }
     }
 
+    /**
+     * Add a promise to the queue
+     * @param promiseFunction The promise, bound with all arguments, to execute on its turn in the queue.
+     * @param poolId The queue pool that the promise should execute against
+     * @returns The promise of the promiseFunction
+     */
     public enqueue<T>(promiseFunction: Function, poolId?: string): Promise<T> {
         return new Promise<T>((resolve, reject) => {
             if (!poolId) { poolId = this.defaultQueue; }
@@ -52,6 +72,10 @@ export class Queue {
         });
     }
 
+    /**
+     * Removes an item from the queue, checks if it times out, and executes the promise if valid
+     * @param queue The pool of promises to execute against
+     */
     private async dequeue(queue: string) {
         // Exit if there are no more requests in the queue or we are at the maximum number of requests in progress.
         if (!this.mQueue[queue].requestPool.length || this.mQueue[queue].inProgress >= this.mMaxConcurrentRequests) { return; }

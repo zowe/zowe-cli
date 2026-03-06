@@ -10,6 +10,6 @@
 */
 
 export interface IQueueThrottleOptions {
-    maxConcurrentRequests: number,
-    queueTimeout: number
+    maxConcurrentRequests?: number,
+    queueTimeout?: number
 }
