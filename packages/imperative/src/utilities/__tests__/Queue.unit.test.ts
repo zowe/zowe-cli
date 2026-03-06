@@ -9,9 +9,9 @@
 *
 */
 
-import { ImperativeError } from "../../..";
-import { Constants } from "../../../constants";
-import { Queue } from "../../src/queue";
+import { ImperativeError } from "../../error";
+import { Constants } from "../../constants";
+import { Queue } from "../src/queue";
 
 describe("Queue", () => {
     beforeAll(() => {
@@ -43,6 +43,17 @@ describe("Queue", () => {
 
             (queue as any).createQueue("testQueue");
             expect((queue as any).mQueue).toEqual({"default": {inProgress: 0, requestPool: []}, "testQueue": {inProgress: 0, requestPool: []}});
+        });
+
+        it("should not overwrite an existing queue", () => {
+            const queue = new Queue();
+            expect((queue as any).mQueue).toEqual({"default": {inProgress: 0, requestPool: []}});
+
+            (queue as any).mQueue["default"].inProgress = 1;
+            expect((queue as any).mQueue).toEqual({"default": {inProgress: 1, requestPool: []}});
+
+            (queue as any).createQueue("default");
+            expect((queue as any).mQueue).toEqual({"default": {inProgress: 1, requestPool: []}});
         });
     });
 

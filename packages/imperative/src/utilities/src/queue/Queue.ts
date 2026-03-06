@@ -99,7 +99,11 @@ export class Queue {
         }
     }
 
+    /**
+     * Creates a new queue with the provided name. If none is provided, creates a "default" queue/
+     * @param name The name of the queue to create
+     */
     private createQueue(name: string = this.defaultQueue) {
-        this.mQueue[name] = {inProgress: 0, requestPool: []};
+        if (!this.mQueue[name]) { this.mQueue[name] = {inProgress: 0, requestPool: []}; } // Handle check again in case of race condition
     }
 }
