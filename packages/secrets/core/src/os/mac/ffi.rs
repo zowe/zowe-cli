@@ -115,4 +115,55 @@ extern "C" {
     pub fn SecCertificateGetTypeID() -> CFTypeID;
     pub fn SecIdentityGetTypeID() -> CFTypeID;
     pub fn SecKeyGetTypeID() -> CFTypeID;
+
+    // Certificate and Identity operations:
+    pub fn SecIdentityCopyCertificate(
+        identity_ref: SecIdentityRef,
+        certificate_ref: *mut SecCertificateRef,
+    ) -> OSStatus;
+    pub fn SecIdentityCopyPrivateKey(
+        identity_ref: SecIdentityRef,
+        private_key_ref: *mut SecKeyRef,
+    ) -> OSStatus;
+    pub fn SecCertificateCopyData(certificate: SecCertificateRef) -> CFTypeRef;
+
+    // Additional keychain search constants for identity/certificate search:
+    pub static kSecClassIdentity: CFStringRef;
+    pub static kSecClassCertificate: CFStringRef;
+
+    // Key export operations:
+    pub fn SecItemExport(
+        sec_item_or_array: CFTypeRef,
+        output_format: u32,
+        flags: u32,
+        key_params: *const c_void,
+        out_data: *mut CFTypeRef,
+    ) -> OSStatus;
+    pub fn SecKeyCopyExternalRepresentation(
+        key: SecKeyRef,
+        error: *mut CFTypeRef,
+    ) -> CFTypeRef;
+
+    // Key signing operations (iOS 10.0+, macOS 10.12+):
+    pub fn SecKeyCreateSignature(
+        key: SecKeyRef,
+        algorithm: CFStringRef,
+        data_to_sign: CFTypeRef,
+        error: *mut CFTypeRef,
+    ) -> CFTypeRef;
+    pub fn SecKeyCopyAttributes(key: SecKeyRef) -> CFDictionaryRef;
 }
+
+// Signature algorithm constants
+pub const kSecKeyAlgorithmRSASignatureDigestPKCS1v15SHA256: &str = "algid:sign:RSA:digest-PKCS1v15:SHA256";
+pub const kSecKeyAlgorithmRSASignatureDigestPKCS1v15SHA384: &str = "algid:sign:RSA:digest-PKCS1v15:SHA384";
+pub const kSecKeyAlgorithmRSASignatureDigestPKCS1v15SHA512: &str = "algid:sign:RSA:digest-PKCS1v15:SHA512";
+pub const kSecKeyAlgorithmECDSASignatureDigestX962SHA256: &str = "algid:sign:ECDSA:digest-X962:SHA256";
+pub const kSecKeyAlgorithmECDSASignatureDigestX962SHA384: &str = "algid:sign:ECDSA:digest-X962:SHA384";
+pub const kSecKeyAlgorithmECDSASignatureDigestX962SHA512: &str = "algid:sign:ECDSA:digest-X962:SHA512";
+
+// Error codes
+pub const errSecDataNotAvailable: OSStatus = -25316;
+
+// Export format constants
+pub const kSecFormatOpenSSL: u32 = 3;

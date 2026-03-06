@@ -139,6 +139,16 @@ export interface ISession {
     passphrase?: string;
 
     /**
+     * The account name for a PKCS#12 certificate stored in the credential manager.
+     * When specified, the certificate and private key will be retrieved from the
+     * system keychain instead of from files.
+     * (macOS only - uses non-exportable keys from Keychain Access)
+     * @type {string}
+     * @memberof ISession
+     */
+    certAccount?: string;
+
+    /**
      * todo
      * @type {string}
      * @memberof ISession

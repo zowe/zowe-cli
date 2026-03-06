@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OSMF SDK package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Added `certAccount` option to z/OSMF connection options to support client certificate authentication using certificates stored in system keystores on macOS and Windows platforms.
+
 ## `8.27.4`
 
 - BugFix: Updated minimum supported version of Node from 18 to 20. Added Node 24 support. [#2616](https://github.com/zowe/zowe-cli/pull/2616)

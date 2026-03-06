@@ -26,6 +26,7 @@ describe("Handler for daemon enable", () => {
     let preBldDir: string;
     let preBldTgzPath: string;
     let logMessage = "";
+    let createdPreBldDir = false; // Track if we created the directory
 
     beforeAll(() => {
         // instantiate our handler
@@ -59,6 +60,7 @@ describe("Handler for daemon enable", () => {
         preBldTgzPath = nodeJsPath.resolve(preBldDir, tgzFileName);
         if (!IO.existsSync(preBldDir)) {
             IO.createDirSync(preBldDir);
+            createdPreBldDir = true; // Mark that we created it
         }
         if (!IO.existsSync(preBldTgzPath)) {
             fs.copyFileSync(tgzResourcePath, preBldTgzPath);
@@ -77,8 +79,13 @@ describe("Handler for daemon enable", () => {
         if (IO.existsSync(preBldTgzPath)) {
             IO.deleteFile(preBldTgzPath);
         }
-        if (IO.existsSync(preBldDir)) {
-            IO.deleteDir(preBldDir);
+        // Only delete the directory if we created it (and it's empty)
+        if (createdPreBldDir && IO.existsSync(preBldDir)) {
+            try {
+                IO.deleteDir(preBldDir);
+            } catch (err) {
+                // Ignore errors if directory is not empty (e.g., contains Rust binaries)
+            }
         }
     });
 

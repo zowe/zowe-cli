@@ -55,12 +55,23 @@ const {
     deletePassword,
     findCredentials,
     findPassword,
+    getCertificate,
+    getPrivateKey,
     getPassword,
     setPassword,
+    createIdentityContext,
+    signWithIdentity,
+    releaseIdentityContext,
 } = requireFn(binaryPath);
 
 module.exports.deletePassword = deletePassword;
 module.exports.findCredentials = findCredentials;
 module.exports.findPassword = findPassword;
+module.exports.getCertificate = getCertificate;
+module.exports.getPrivateKey = getPrivateKey;
 module.exports.getPassword = getPassword;
 module.exports.setPassword = setPassword;
+module.exports.createIdentityContext = createIdentityContext;
+module.exports.signWithIdentity = signWithIdentity;
+module.exports.releaseIdentityContext = releaseIdentityContext;
+module.exports.nativeHttpsRequest = requireFn(binaryPath).nativeHttpsRequest;
