@@ -9,7 +9,10 @@
 *
 */
 
-export interface IRequestThrottleOptions {
-    maxRequestCount: number,
-    queueTimeout: number
+export interface IQueueItem {
+    func: Function,
+    timeout: NodeJS.Timeout,
+    timedOut: boolean,
+    resolve: any
+    reject: any
 }
