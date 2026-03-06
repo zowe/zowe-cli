@@ -9,7 +9,7 @@ use windows_sys::Win32::Foundation::*;
 use windows_sys::Win32::Security::Cryptography::*;
 
 /// Helper function to encode a string as a null-terminated UTF-16 string
-fn encode_utf16(s: &str) -> Vec<u16> {
+pub(super) fn encode_utf16(s: &str) -> Vec<u16> {
     let mut chars: Vec<u16> = s.encode_utf16().collect();
     chars.push(0);
     chars
@@ -216,14 +216,3 @@ pub fn get_private_key(
     }
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_encode_utf16() {
-        let encoded = encode_utf16("test");
-        assert_eq!(encoded.len(), 5); // 4 chars + null terminator
-        assert_eq!(encoded[4], 0);
-    }
-}

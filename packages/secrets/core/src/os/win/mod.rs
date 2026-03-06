@@ -29,6 +29,9 @@ mod crypto;
 mod identity_cache;
 pub mod https_client;
 
+#[cfg(test)]
+mod tests;
+
 // Re-export certificate functions
 pub use cert_store::{get_certificate, get_private_key};
 pub use crypto::{create_identity_context, release_identity_context, sign_with_identity};
