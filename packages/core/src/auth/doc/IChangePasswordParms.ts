@@ -9,10 +9,16 @@
 *
 */
 
-export * from "./Login";
-export * from "./LoginConstants";
-export * from "./Logout";
-export * from "./LogoutConstants";
-export * from "./ChangePassword";
-export * from "./doc/IChangePasswordParms";
-export * from "./doc/IChangePasswordResponse";
+/**
+ * Interface for change password parameters.
+ * @export
+ * @interface IChangePasswordParms
+ */
+export interface IChangePasswordParms {
+    /**
+     * The new password to set for the user.
+     * @type {string}
+     * @memberof IChangePasswordParms
+     */
+    newPassword: string;
+}
