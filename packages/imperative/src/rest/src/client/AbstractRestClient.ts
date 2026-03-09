@@ -38,7 +38,7 @@ import { CompressionUtils } from "./CompressionUtils";
 import { ProxySettings } from "./ProxySettings";
 import { EnvironmentalVariableSettings } from "../../../imperative/src/env/EnvironmentalVariableSettings";
 import { Censor } from "../../../censor";
-import { Queue, IQueueThrottleOptions } from "./../../../utilities/src/queue";
+import { Queue } from "./../../../utilities/src/queue";
 
 export type RestClientResolve = (data: string) => void;
 
@@ -295,15 +295,6 @@ export abstract class AbstractRestClient {
      */
     protected get requestQueue(): Queue {
         return undefined; // Must be implemented
-    }
-
-    /**
-     * Function to set throttling options for a request queue, if one exists.
-     * @param {IQueueThrottleOptions} options - the throttling options to apply
-     * @memberof AbstractRestClient
-     */
-    public setThrottlingOptions(options: IQueueThrottleOptions) {
-        if (this.requestQueue) { this.requestQueue.setThrottlingOptions(options); }
     }
 
     /**

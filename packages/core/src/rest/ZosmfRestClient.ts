@@ -11,7 +11,8 @@
 
 import {
     IImperativeError, Logger, RestClient,
-    RestConstants, SessConstants, Queue
+    RestConstants, SessConstants, Queue,
+    IQueueThrottleOptions
 } from "@zowe/imperative";
 import { ZosmfHeaders } from "./ZosmfHeaders";
 
@@ -24,8 +25,6 @@ import { ZosmfHeaders } from "./ZosmfHeaders";
  */
 export class ZosmfRestClient extends RestClient {
 
-    private readonly maxConcurrentRequests = 10;
-
     /**
      * Implementation of a static request queue for all Zosmf Rest clients.
      * Creates a request queue if one does not exist.
@@ -35,13 +34,33 @@ export class ZosmfRestClient extends RestClient {
     private static mRequestQueue: Queue = undefined;
 
     /**
+     * Create a request queue if one does not exist. Set the throttling options if provided and they do exist.
+     * @param { IQueueThrottleOptions } options - The throttling options to apply to the z/OSMF REST client
+     */
+    protected static verifyRequestQueue(options: IQueueThrottleOptions = {}): void {
+        // Create the queue if it is missing. If it is not missing, and we have options, set those options on the queue.
+        if (!ZosmfRestClient.mRequestQueue) {
+            ZosmfRestClient.mRequestQueue = new Queue(options);
+        }
+        else if (options) { ZosmfRestClient.mRequestQueue.setThrottlingOptions(options); }
+    }
+
+    /**
      * Reimplementation of the request queue getter to get the static request queue.
      * @type {Queue}
      * @memberof ZosmfRestClient
      */
     protected get requestQueue(): Queue {
-        if (!ZosmfRestClient.mRequestQueue) { ZosmfRestClient.mRequestQueue = new Queue(undefined, this.maxConcurrentRequests); }
+        ZosmfRestClient.verifyRequestQueue();
         return ZosmfRestClient.mRequestQueue;
+    }
+
+    /**
+     * Set the throttling options on the z/OSMF REST client
+     * @param { IQueueThrottleOptions } options - the throttling options to apply to the z/OSMF REST client
+     */
+    public static setThrottlingOptions(options: IQueueThrottleOptions): void {
+        ZosmfRestClient.verifyRequestQueue(options);
     }
 
     /**
