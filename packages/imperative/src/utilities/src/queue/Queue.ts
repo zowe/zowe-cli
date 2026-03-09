@@ -21,9 +21,8 @@ export class Queue {
     private mMaxConcurrentRequests: number = Constants.MAX_SIGNED_32BIT_NUMBER;
     private mQueue: IQueuePool = {};
 
-    constructor(queueTimeout?: number, maxConcurrentRequests?: number) {
-        if (queueTimeout) { this.mQueueTimeout = queueTimeout; }
-        if (maxConcurrentRequests) { this.mMaxConcurrentRequests = maxConcurrentRequests; }
+    constructor(options?: IQueueThrottleOptions) {
+        if (options) { this.setThrottlingOptions(options); }
         this.createQueue();
     }
 
@@ -62,9 +61,13 @@ export class Queue {
             if (!this.mQueue[poolId]) { this.createQueue(poolId); }
 
             // Create the request, and attach the timeout.
-            const request: IQueueItem = {func: promiseFunction, timeout: undefined, timedOut: false, resolve, reject};
-            const timeout = setTimeout(() => { request.timedOut = true; }, this.mQueueTimeout);
-            request.timeout = timeout;
+            const request: IQueueItem = {
+                func: promiseFunction,
+                timeout: setTimeout(() => { request.timedOut = true; }, this.mQueueTimeout),
+                timedOut: false,
+                resolve,
+                reject
+            };
 
             // Queue the request and run dequeue.
             this.mQueue[poolId].requestPool.push(request);
@@ -87,7 +90,7 @@ export class Queue {
         try {
             // Try to process the item. If it timed out in the queue, throw an error and pick up the next one.
             if (execItem.timedOut) { throw new ImperativeError({msg: "Request timed out while in the request queue."}); }
-            else { execItem.timeout.close(); }
+            else { clearTimeout(execItem.timeout); }
             const result = await execItem.func();
             execItem.resolve(result);
         } catch (err) {
