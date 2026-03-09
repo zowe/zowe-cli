@@ -37,7 +37,7 @@ export class ZosmfRestClient extends RestClient {
      * Create a request queue if one does not exist. Set the throttling options if provided and they do exist.
      * @param { IQueueThrottleOptions } options - The throttling options to apply to the z/OSMF REST client
      */
-    protected static verifyRequestQueue(options: IQueueThrottleOptions = {}): void {
+    private static verifyRequestQueue(options: IQueueThrottleOptions = {}): void {
         // Create the queue if it is missing. If it is not missing, and we have options, set those options on the queue.
         if (!ZosmfRestClient.mRequestQueue) {
             ZosmfRestClient.mRequestQueue = new Queue(options);
