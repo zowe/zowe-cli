@@ -2,6 +2,14 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Added a `Queue` utility to create and manage the processing of `Promise` queues. [#2543](https://github.com/zowe/zowe-cli/pull/2543)
+- Enhancement: Added a `requestQueue` getter to `AbstractRestClient` to allow extenders to create and manage a queue of REST requests to help prevent server overload. [#2543](https://github.com/zowe/zowe-cli/pull/2543)
+- Enhancement: Added handling for `requestQueue` to the `AbstractRestClient`'s `request` function, if the `requestQueue` is present. [#2543](https://github.com/zowe/zowe-cli/pull/2543)
+  - If a `requestQueue` is not present, no queuing is performed.
+  - If a `requestQueue` is present, the request is added to the queue.
+
 ## `8.30.0`
 
 - Enhancement: Added an optional `scrtData` object to the ISession interface for a Session object. The `scrtData` is transmitted as a new HTTP header named `Zowe-SCRT-client-feature` to the targeted REST service. [#2678](https://github.com/zowe/zowe-cli/pull/2678)
