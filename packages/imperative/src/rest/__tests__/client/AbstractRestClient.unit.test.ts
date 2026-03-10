@@ -40,6 +40,8 @@ import { Logger } from "../../../logger";
 import { Censor } from "../../../censor";
 import { IHTTPSOptions } from "../../src/client/doc/IHTTPSOptions";
 import { cloneDeep } from "lodash";
+import { IRestOptions } from "../../src/client/doc/IRestOptions";
+import { Queue } from "../../../utilities";
 
 /**
  * To test the AbstractRestClient, we use the existing default RestClient which
@@ -2738,6 +2740,89 @@ describe("AbstractRestClient tests", () => {
                 const allWritten = Buffer.concat(writtenChunks);
                 expect(allWritten.toString()).toBe("data\r");
             });
+        });
+    });
+
+    describe("request queue", () => {
+        const testSession = new Session({
+            hostname: "test",
+            port: 443,
+            protocol: "https",
+        });
+        const testOptions: IRestOptions = {
+            resource: "/test",
+            request: "GET",
+        };
+
+        beforeAll(() => {
+            jest.spyOn(https, "request").mockImplementation((_options: any, callback: any) => {
+                const mockRequest: any = new EventEmitter();
+                mockRequest.write = jest.fn();
+                mockRequest.end = jest.fn();
+                mockRequest.setTimeout = jest.fn();
+                mockRequest.on = jest.fn().mockReturnThis();
+                
+                setImmediate(() => {
+                    const response: any = new EventEmitter();
+                    response.statusCode = 200;
+                    response.headers = {};
+                    callback(response);
+                    setImmediate(() => {
+                        response.emit("data", Buffer.from("OK"));
+                        response.emit("end");
+                    });
+                });
+                
+                return mockRequest;
+            });
+        });
+
+        afterAll(() => {
+            jest.restoreAllMocks();
+        });
+
+        it("should run requests immediately when there is no request queue", async () => {
+            const client = new RestClient(testSession);
+            const requestSpy = jest.spyOn(client as any, "_request");
+            await client.request(testOptions);
+            expect(requestSpy).toHaveBeenCalledTimes(1);
+            expect(requestSpy).toHaveBeenCalledWith(testOptions);
+        });
+
+        it("should enqueue requests when there is a request queue", async () => {
+            const client = new RestClient(testSession);
+            const queue = new Queue();
+            jest.spyOn(client as any, "requestQueue", "get").mockReturnValue(queue);
+            const enqueueSpy = jest.spyOn(queue, "enqueue");
+            await client.request(testOptions);
+            expect(enqueueSpy).toHaveBeenCalledTimes(1);
+            expect(enqueueSpy).toHaveBeenCalledWith(expect.any(Function), "test:443");
+        });
+
+        it("should enqueue requests when there is a request queue and port is undefined", async () => {
+            const prunedSession = cloneDeep(testSession);
+            prunedSession.ISession.port = undefined;
+            const client = new RestClient(prunedSession);
+            const queue = new Queue();
+            jest.spyOn(client as any, "requestQueue", "get").mockReturnValue(queue);
+            const enqueueSpy = jest.spyOn(queue, "enqueue");
+            await client.request(testOptions);
+            expect(enqueueSpy).toHaveBeenCalledTimes(1);
+            expect(enqueueSpy).toHaveBeenCalledWith(expect.any(Function), "test");
+        });
+
+        it("should enqueue requests when there is a request queue and host and port are undefined", async () => {
+            const prunedSession = cloneDeep(testSession);
+            prunedSession.ISession.hostname = undefined;
+            prunedSession.ISession.port = undefined;
+            const client = new RestClient(prunedSession);
+            const queue = new Queue();
+            jest.spyOn(client as any, "requestQueue", "get").mockReturnValue(queue);
+            jest.spyOn(client as any, "validateRestHostname").mockImplementation();
+            const enqueueSpy = jest.spyOn(queue, "enqueue");
+            await client.request(testOptions);
+            expect(enqueueSpy).toHaveBeenCalledTimes(1);
+            expect(enqueueSpy).toHaveBeenCalledWith(expect.any(Function), undefined);
         });
     });
 });
