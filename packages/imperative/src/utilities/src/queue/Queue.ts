@@ -12,14 +12,14 @@
 import { Constants } from "../../../constants";
 import { ImperativeError } from "../../../error";
 import type { IQueueItem } from "./doc/IQueueItem";
-import type { IQueuePool } from "./doc/IQueuePool";
+import type { IQueuePoolEntry } from "./doc/IQueuePoolEntry";
 import type { IQueueThrottleOptions } from "./doc/IQueueThrottleOptions";
 
 export class Queue {
     private readonly defaultQueue: string = "default";
     private mQueueTimeout: number = Constants.MAX_SIGNED_32BIT_NUMBER;
     private mMaxConcurrentRequests: number = Constants.MAX_SIGNED_32BIT_NUMBER;
-    private mQueue: IQueuePool = {};
+    private mQueue: {[key: string]: IQueuePoolEntry} = {};
 
     constructor(options?: IQueueThrottleOptions) {
         if (options) { this.setThrottlingOptions(options); }

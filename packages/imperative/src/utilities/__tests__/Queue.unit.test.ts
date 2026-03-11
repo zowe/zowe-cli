@@ -11,7 +11,8 @@
 
 import { ImperativeError } from "../../error";
 import { Constants } from "../../constants";
-import { IQueueItem, Queue } from "../src/queue";
+import { Queue } from "../src/queue/Queue";
+import type { IQueueItem } from "../src/queue/doc/IQueueItem";
 
 async function timerPromiseResolve(ms: number = 5) {
     return new Promise<string>((resolve) => {

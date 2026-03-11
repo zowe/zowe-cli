@@ -41,7 +41,7 @@ import { Censor } from "../../../censor";
 import { IHTTPSOptions } from "../../src/client/doc/IHTTPSOptions";
 import { cloneDeep } from "lodash";
 import { IRestOptions } from "../../src/client/doc/IRestOptions";
-import { Queue } from "../../../utilities";
+import { Queue } from "../../../utilities/src/queue/Queue";
 
 /**
  * To test the AbstractRestClient, we use the existing default RestClient which

@@ -10,7 +10,4 @@
 */
 
 export * from "./Queue";
-export * from "./doc/IQueueItem";
-export * from "./doc/IQueuePoolEntry";
-export * from "./doc/IQueuePool";
 export * from "./doc/IQueueThrottleOptions";
