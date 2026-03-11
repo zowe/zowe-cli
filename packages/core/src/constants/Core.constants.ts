@@ -120,6 +120,16 @@ export class ProfileConstants {
     };
 
     /**
+     * Option used to specify the account name for PKCS 12 certificate stored in credential manager
+     */
+    public static readonly BASE_OPTION_CERT_ACCOUNT: ICommandOptionDefinition = {
+        name: "cert-account",
+        description: "The account name for PKCS 12 certificate stored in credential manager",
+        type: "string",
+        group: ProfileConstants.BASE_CONNECTION_OPTION_GROUP
+    };
+
+    /**
      * Option used to specify the path to the certificate file for authentication
      */
     // public static readonly BASE_OPTION_CERT_FILE_PASSPHRASE: ICommandOptionDefinition = {
@@ -210,6 +220,15 @@ export class ProfileConstants {
     public static AUTO_INIT_OPTION_CERT_KEY_FILE: ICommandOptionDefinition = {
         ...ProfileConstants.BASE_OPTION_CERT_KEY_FILE,
         description: "The file path to a certificate key file to use to authenticate to the API Mediation Layer",
+        group: ProfileConstants.AUTO_INIT_OPTION_GROUP
+    };
+
+    /**
+     * Option used in profile creation and commands for cert account
+     */
+    public static AUTO_INIT_OPTION_CERT_ACCOUNT: ICommandOptionDefinition = {
+        ...ProfileConstants.BASE_OPTION_CERT_ACCOUNT,
+        description: "The account name for PKCS 12 certificate stored in credential manager for the API Mediation Layer",
         group: ProfileConstants.AUTO_INIT_OPTION_GROUP
     };
 
@@ -373,6 +392,10 @@ export class ProfileConstants {
                 certKeyFile: {
                     type: "string",
                     optionDefinition: ProfileConstants.BASE_OPTION_CERT_KEY_FILE
+                },
+                certAccount: {
+                    type: "string",
+                    optionDefinition: ProfileConstants.BASE_OPTION_CERT_ACCOUNT
                     // },
                     // certFilePassphrase: {
                     //     type: "string",

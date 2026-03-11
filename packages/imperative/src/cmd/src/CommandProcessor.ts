@@ -515,12 +515,26 @@ export class CommandProcessor {
                 }
                 // prompt for any requested --options
                 if (this.definition.options != null && this.definition.options.length > 0) {
+                    const hasCertAccount = preparedArgs.certAccount != null || preparedArgs["cert-account"] != null;
                     for (const option of this.definition.options) {
                         // check if value provided
                         if (preparedArgs[option.name] != null) {
                             // string processing
                             if (typeof preparedArgs[option.name] === "string" &&
                                 preparedArgs[option.name].toUpperCase() === this.promptPhrase.toUpperCase()) {
+                                if (hasCertAccount && option.name === "password") {
+                                    this.log.debug("Skipping prompt for option %s because certAccount is present in profile",
+                                        option.name);
+                                    preparedArgs[option.name] = undefined;
+                                    const camelCase = CliUtils.getOptionFormat(option.name).camelCase;
+                                    preparedArgs[camelCase] = undefined;
+                                    if (option.aliases != null) {
+                                        for (const alias of option.aliases) {
+                                            preparedArgs[alias] = undefined;
+                                        }
+                                    }
+                                    continue;
+                                }
                                 // prompt has been requested for an --option
                                 this.log.debug("Prompting for option %s which was requested by passing the value %s",
                                     option.name, this.promptPhrase);

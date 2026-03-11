@@ -38,6 +38,7 @@ import { CompressionUtils } from "./CompressionUtils";
 import { ProxySettings } from "./ProxySettings";
 import { EnvironmentalVariableSettings } from "../../../imperative/src/env/EnvironmentalVariableSettings";
 import { Censor } from "../../../censor";
+import { NativeHttpsClient } from "./NativeHttpsClient";
 
 export type RestClientResolve = (data: string) => void;
 
@@ -296,41 +297,70 @@ export abstract class AbstractRestClient {
      */
     public request(options: IRestOptions): Promise<string> {
         return new Promise<string>((resolve: RestClientResolve, reject: ImperativeReject) => {
-            // save for logging
-            this.mResource = options.resource;
-            this.mRequest = options.request;
-            this.mReqHeaders = options.reqHeaders;
-            this.mWriteData = options.writeData;
-            this.mRequestStream = options.requestStream;
-            this.mResponseStream = options.responseStream;
-            this.mNormalizeRequestNewlines = options.normalizeRequestNewLines;
-            this.mNormalizeResponseNewlines = options.normalizeResponseNewLines;
-            this.mTask = options.task;
+            (async () => {
+                // save for logging
+                this.mResource = options.resource;
+                this.mRequest = options.request;
+                this.mReqHeaders = options.reqHeaders;
+                this.mWriteData = options.writeData;
+                this.mRequestStream = options.requestStream;
+                this.mResponseStream = options.responseStream;
+                this.mNormalizeRequestNewlines = options.normalizeRequestNewLines;
+                this.mNormalizeResponseNewlines = options.normalizeResponseNewLines;
+                this.mTask = options.task;
 
-            // got a new promise
-            this.mResolve = resolve;
-            this.mReject = reject;
+                // got a new promise
+                this.mResolve = resolve;
+                this.mReject = reject;
 
-            ImperativeExpect.toBeDefinedAndNonBlank(options.resource, "resource");
-            ImperativeExpect.toBeDefinedAndNonBlank(options.request, "request");
-            ImperativeExpect.toBeEqual(options.requestStream != null && options.writeData != null, false,
-                "You cannot specify both writeData and writeStream");
+                ImperativeExpect.toBeDefinedAndNonBlank(options.resource, "resource");
+                ImperativeExpect.toBeDefinedAndNonBlank(options.request, "request");
+                ImperativeExpect.toBeEqual(options.requestStream != null && options.writeData != null, false,
+                    "You cannot specify both writeData and writeStream");
 
-            // putTopAuthInSession was originally done in the RestClient constructor.
-            // As a safety net to ensure that no logic has placed a different cred in the
-            // session since then, we again place only the top cred in the session.
-            AuthOrder.putTopAuthInSession(this.session.ISession);
+                // putTopAuthInSession was originally done in the RestClient constructor.
+                // As a safety net to ensure that no logic has placed a different cred in the
+                // session since then, we again place only the top cred in the session.
+                AuthOrder.putTopAuthInSession(this.session.ISession);
+                const buildOptions = await this.buildOptions(options.resource, options.request, options.reqHeaders);
 
-            // form a header from scrtData and place the header into the options.reqHeaders
-            this.addScrtHeader(options);
+                if (NativeHttpsClient.isEnabled(this.session.ISession)
+                    && this.session.ISession.protocol === SessConstants.HTTPS_PROTOCOL) {
+                    if (options.requestStream != null || options.responseStream != null) {
+                        throw new ImperativeError({
+                            msg: "macOS native HTTPS client does not yet support streaming requests/responses.",
+                            additionalDetails: "Disable ZOWE_MACOS_NATIVE_HTTPS or avoid streaming for this request.",
+                        });
+                    }
 
-            const buildOptions = this.buildOptions(options.resource, options.request, options.reqHeaders);
+                    const nativeResponse = await NativeHttpsClient.request(
+                        buildOptions,
+                        this.session.ISession,
+                        options.writeData
+                    );
 
-            // Perform the actual http request
-            let clientRequest: http.ClientRequest;
-            if (this.session.ISession.protocol === SessConstants.HTTPS_PROTOCOL) {
+                    const nativeResponseStream = new Readable({ read() { /* no-op */ } });
+                    (nativeResponseStream as any).statusCode = nativeResponse.statusCode;
+                    (nativeResponseStream as any).headers = nativeResponse.headers ?? {};
 
-                clientRequest = https.request(buildOptions, this.requestHandler.bind(this));
+                    this.requestHandler(nativeResponseStream);
+
+                    if (nativeResponse.body != null) {
+                        const bodyBuffer = Buffer.isBuffer(nativeResponse.body)
+                            ? nativeResponse.body
+                            : Buffer.from(nativeResponse.body);
+                        nativeResponseStream.push(bodyBuffer);
+                    }
+                    nativeResponseStream.push(null);
+                    return;
+                }
+
+                /**
+                * Perform the actual http request
+                */
+                let clientRequest: http.ClientRequest;
+                if (this.session.ISession.protocol === SessConstants.HTTPS_PROTOCOL) {
+                    clientRequest = https.request(buildOptions, this.requestHandler.bind(this));
                 // try {
                 //     clientRequest = https.request(buildOptions, this.requestHandler.bind(this));
                 // } catch (err) {
@@ -343,139 +373,152 @@ export abstract class AbstractRestClient {
                 //         });
                 //     } else { throw err; }
                 // }
-            } else if (this.session.ISession.protocol === SessConstants.HTTP_PROTOCOL) {
-                clientRequest = http.request(buildOptions, this.requestHandler.bind(this));
-            }
+                } else if (this.session.ISession.protocol === SessConstants.HTTP_PROTOCOL) {
+                    clientRequest = http.request(buildOptions, this.requestHandler.bind(this));
+                }
 
-            /**
+                /**
              * For a REST request which includes writing raw data to the http server,
              * write the data via http request.
              */
-            if (options.writeData != null) {
+                if (options.writeData != null) {
 
-                this.log.debug("will write data for request");
-                /**
+                    this.log.debug("will write data for request");
+                    /**
                  * If the data is JSON, translate to text before writing
                  */
-                if (this.mIsJson) {
-                    this.log.debug("writing JSON for request");
-                    this.log.trace("JSON body: %s", JSON.stringify(options.writeData));
-                    clientRequest.write(JSON.stringify(options.writeData));
-                } else {
-                    clientRequest.write(options.writeData);
+                    if (this.mIsJson) {
+                        this.log.debug("writing JSON for request");
+                        this.log.trace("JSON body: %s", JSON.stringify(options.writeData));
+                        clientRequest.write(JSON.stringify(options.writeData));
+                    } else {
+                        clientRequest.write(options.writeData);
+                    }
                 }
-            }
 
-            // Set up the request timeout
-            if (this.mSession.ISession.requestCompletionTimeout && this.mSession.ISession.requestCompletionTimeout > 0) {
-                clientRequest.setTimeout(this.mSession.ISession.requestCompletionTimeout);
-            }
+                // Set up the request timeout
+                if (this.mSession.ISession.requestCompletionTimeout && this.mSession.ISession.requestCompletionTimeout > 0) {
+                    clientRequest.setTimeout(this.mSession.ISession.requestCompletionTimeout);
+                }
 
-            clientRequest.on("timeout", () => {
-                if (clientRequest.socket.connecting) {
+                clientRequest.on("timeout", () => {
+                    if (clientRequest.socket.connecting) {
                     // We timed out. Destroy the request.
-                    clientRequest.destroy(new Error("Connection timed out. Check the host, port, and firewall rules."));
-                } else if (this.mSession.ISession.requestCompletionTimeout && this.mSession.ISession.requestCompletionTimeout > 0) {
-                    this.mSession.ISession.requestCompletionTimeoutCallback?.();
-                    clientRequest.destroy(new ImperativeError({msg: completionTimeoutErrorMessage}));
-                }
-            });
+                        clientRequest.destroy(new Error("Connection timed out. Check the host, port, and firewall rules."));
+                    } else if (this.mSession.ISession.requestCompletionTimeout && this.mSession.ISession.requestCompletionTimeout > 0) {
+                        this.mSession.ISession.requestCompletionTimeoutCallback?.();
+                        clientRequest.destroy(new ImperativeError({msg: completionTimeoutErrorMessage}));
+                    }
+                });
 
-            /**
+                /**
              * Invoke any onError method whenever an error occurs on writing
              */
-            clientRequest.on("error", (errorResponse: any) => {
+                clientRequest.on("error", (errorResponse: any) => {
                 // Handle the HTTP 1.1 Keep-Alive race condition
-                if (errorResponse.code === "ECONNRESET" && clientRequest.reusedSocket) {
-                    this.request(options).then((response: string) => {
-                        resolve(response);
-                    }).catch((err) => {
-                        reject(err);
+                    if (errorResponse.code === "ECONNRESET" && clientRequest.reusedSocket) {
+                        this.request(options).then((response: string) => {
+                            resolve(response);
+                        }).catch((err) => {
+                            reject(err);
+                        });
+                    } else if (errorResponse instanceof ImperativeError && errorResponse.message === completionTimeoutErrorMessage) {
+                        reject(this.populateError({
+                            msg: "HTTP request timed out after connecting.",
+                            causeErrors: errorResponse,
+                            source: "timeout"
+                        }));
+                    } else {
+                        reject(this.populateError({
+                            msg: "Failed to send an HTTP request.",
+                            causeErrors: errorResponse,
+                            source: "client"
+                        }));
+                    }
+                });
+
+                if (options.requestStream != null) {
+                // if the user requested streaming write of data to the request,
+                // write the data chunk by chunk to the server
+                    let bytesUploaded = 0;
+                    let heldByte: Buffer;
+                    options.requestStream.on("data", (data: Buffer) => {
+                        this.log.debug("Writing data chunk of length %d from requestStream to clientRequest", data.byteLength);
+
+                        // If we held back a CR from the previous chunk, prepend it to current chunk
+                        if (this.mNormalizeRequestNewlines) {
+                            if (heldByte != null) {
+                                data = Buffer.concat([heldByte, data]);
+                                heldByte = undefined;
+                            }
+
+                            this.log.debug("Normalizing new lines in request chunk to \\n");
+                            data = IO.processNewlines(data, this.lastByteReceivedUpload, true);
+
+                            // If chunk ends with CR, hold it back until we see the next chunk
+                            // eslint-disable-next-line @typescript-eslint/no-magic-numbers
+                            if (data.byteLength > 0 && data[data.byteLength - 1] === 13) {
+                                heldByte = Buffer.from([data[data.byteLength - 1]]);
+                                data = data.subarray(0, data.byteLength - 1);
+                                this.log.debug("Holding back CR byte at chunk boundary");
+                            }
+                        }
+
+                        if (this.mTask != null) {
+                            bytesUploaded += data.byteLength;
+                            this.mTask.statusMessage = TextUtils.formatMessage("Uploading %d B", bytesUploaded);
+                            if (this.mTask.percentComplete < TaskProgress.NINETY_PERCENT) {
+                            // we don't know how far along we are but increment the percentage to
+                            // show we are making progress
+                                this.mTask.percentComplete++;
+                            }
+                        }
+
+                        if (data.byteLength > 0) {
+                            clientRequest.write(data);
+                            this.lastByteReceivedUpload = data[data.byteLength - 1];
+                        }
                     });
-                } else if (errorResponse instanceof ImperativeError && errorResponse.message === completionTimeoutErrorMessage) {
-                    reject(this.populateError({
-                        msg: "HTTP request timed out after connecting.",
-                        causeErrors: errorResponse,
-                        source: "timeout"
-                    }));
+                    options.requestStream.on("error", (streamError: any) => {
+                        this.log.error("Error encountered reading requestStream: " + streamError);
+                        reject(this.populateError({
+                            msg: "Error reading requestStream",
+                            causeErrors: streamError,
+                            source: "client"
+                        }));
+                    });
+                    options.requestStream.on("end", () => {
+                        if (heldByte != null) {
+                            clientRequest.write(heldByte);
+                            heldByte = undefined;
+                        }
+                        this.log.debug("Finished reading requestStream");
+                        this.lastByteReceivedUpload = 0;
+                        // finish the request
+                        clientRequest.end();
+                    });
+                } else {
+                // otherwise we're done with the request
+                    clientRequest.end();
+                }
+
+                // A request-for-token is completed after a REST request completes.
+                // Remove the request-for-token so it is not used on future requests
+                // with this same session.
+                AuthOrder.removeRequestForToken(this.session.ISession);
+            })().catch((err) => {
+                // Catch any errors from async operations (e.g., getCertificate)
+                // But let ImperativeError pass through unchanged
+                if (err instanceof ImperativeError) {
+                    reject(err);
                 } else {
                     reject(this.populateError({
-                        msg: "Failed to send an HTTP request.",
-                        causeErrors: errorResponse,
+                        msg: "Error during request preparation",
+                        causeErrors: err,
                         source: "client"
                     }));
                 }
             });
-
-            if (options.requestStream != null) {
-                // if the user requested streaming write of data to the request,
-                // write the data chunk by chunk to the server
-                let bytesUploaded = 0;
-                let heldByte: Buffer;
-                options.requestStream.on("data", (data: Buffer) => {
-                    this.log.debug("Writing data chunk of length %d from requestStream to clientRequest", data.byteLength);
-
-                    // If we held back a CR from the previous chunk, prepend it to current chunk
-                    if (this.mNormalizeRequestNewlines) {
-                        if (heldByte != null) {
-                            data = Buffer.concat([heldByte, data]);
-                            heldByte = undefined;
-                        }
-
-                        this.log.debug("Normalizing new lines in request chunk to \\n");
-                        data = IO.processNewlines(data, this.lastByteReceivedUpload, true);
-
-                        // If chunk ends with CR, hold it back until we see the next chunk
-                        // eslint-disable-next-line @typescript-eslint/no-magic-numbers
-                        if (data.byteLength > 0 && data[data.byteLength - 1] === 13) {
-                            heldByte = Buffer.from([data[data.byteLength - 1]]);
-                            data = data.subarray(0, data.byteLength - 1);
-                            this.log.debug("Holding back CR byte at chunk boundary");
-                        }
-                    }
-
-                    if (this.mTask != null) {
-                        bytesUploaded += data.byteLength;
-                        this.mTask.statusMessage = TextUtils.formatMessage("Uploading %d B", bytesUploaded);
-                        if (this.mTask.percentComplete < TaskProgress.NINETY_PERCENT) {
-                            // we don't know how far along we are but increment the percentage to
-                            // show we are making progress
-                            this.mTask.percentComplete++;
-                        }
-                    }
-
-                    if (data.byteLength > 0) {
-                        clientRequest.write(data);
-                        this.lastByteReceivedUpload = data[data.byteLength - 1];
-                    }
-                });
-                options.requestStream.on("error", (streamError: any) => {
-                    this.log.error("Error encountered reading requestStream: " + streamError);
-                    reject(this.populateError({
-                        msg: "Error reading requestStream",
-                        causeErrors: streamError,
-                        source: "client"
-                    }));
-                });
-                options.requestStream.on("end", () => {
-                    if (heldByte != null) {
-                        clientRequest.write(heldByte);
-                        heldByte = undefined;
-                    }
-                    this.log.debug("Finished reading requestStream");
-                    this.lastByteReceivedUpload = 0;
-                    // finish the request
-                    clientRequest.end();
-                });
-            } else {
-                // otherwise we're done with the request
-                clientRequest.end();
-            }
-
-            // A request-for-token is completed after a REST request completes.
-            // Remove the request-for-token so it is not used on future requests
-            // with this same session.
-            AuthOrder.removeRequestForToken(this.session.ISession);
         });
     }
 
@@ -519,11 +562,11 @@ export abstract class AbstractRestClient {
      * @param {string} resource - URI for this request
      * @param {string} request - REST request type GET|PUT|POST|DELETE
      * @param {any[]} reqHeaders - option headers to include with request
-     * @returns {IHTTPSOptions} - completed options object
+     * @returns {Promise<IHTTPSOptions>} - completed options object
      * @throws {ImperativeError} - if the hostname is invalid or credentials are not passed to a session that requires auth
      * @memberof AbstractRestClient
      */
-    private buildOptions(resource: string, request: string, reqHeaders?: any[]): IHTTPSOptions {
+    private async buildOptions(resource: string, request: string, reqHeaders?: any[]): Promise<IHTTPSOptions> {
 
         this.validateRestHostname(this.session.ISession.hostname);
 
@@ -609,7 +652,7 @@ export abstract class AbstractRestClient {
                 credsAreSet ||= this.setBearerAuth(options);
 
             } else if (nextAuthType === SessConstants.AUTH_TYPE_CERT_PEM) {
-                credsAreSet ||= this.setCertPemAuth(options);
+                credsAreSet ||= await this.setCertPemAuth(options);
             }
 
             if (credsAreSet) {
@@ -1036,17 +1079,78 @@ export abstract class AbstractRestClient {
 
     /**
      * Set a PEM certificate auth into our REST request authentication options.
+     * This supports both file-based certificates (cert + certKey files) and
+     * keychain-based certificates (certAccount from macOS Keychain).
      *
      * @private
      * @param {any} restOptionsToSet
      *      The set of REST request options into which the credentials will be set.
-     * @returns True if this function sets authentication options. False otherwise.
+     * @returns Promise<boolean> - True if this function sets authentication options. False otherwise.
      * @memberof AbstractRestClient
      */
-    private setCertPemAuth(restOptionsToSet: any): boolean {
+    private async setCertPemAuth(restOptionsToSet: any): Promise<boolean> {
         if (!(this.session.ISession.type === SessConstants.AUTH_TYPE_CERT_PEM)) {
             return false;
         }
+
+        // Handle certAccount (keychain/certificate store-based certificate) - macOS and Windows
+        if (this.session.ISession.certAccount != null) {
+            this.log.trace("Using certificate store authentication (certAccount)");
+
+            if (process.platform !== "darwin" && process.platform !== "win32") {
+                throw new ImperativeError({
+                    msg: "Certificate account authentication (certAccount) is only supported on macOS and Windows.",
+                });
+            }
+
+            // Check if the private key is exportable
+            const isExportable = await NativeHttpsClient.isKeyExportable(
+                this.session.ISession.certAccount,
+                ImperativeConfig.instance.cliHome
+            );
+
+            if (!isExportable) {
+                // Key is non-exportable - automatically enable native HTTPS client
+                const platformName = process.platform === "darwin" ? "macOS" : "Windows";
+                this.log.info(`Certificate '${this.session.ISession.certAccount}' has a non-exportable private key. ` +
+                    `Automatically using ${platformName} native HTTPS client.`);
+                (this.session.ISession as any)._useNativeHttpsForNonExportable = true;
+
+                // Don't set up KeychainAgent - the native client will be used instead
+                // Return true to indicate auth is configured
+                return true;
+            }
+
+            // Key is exportable - use KeychainAgent with Node.js TLS
+            // eslint-disable-next-line @typescript-eslint/no-var-requires
+            const { KeychainAgent } = require("./KeychainAgent");
+
+            // Create a custom agent that will handle certificate retrieval from keychain/certificate store
+            try {
+                const agent = new KeychainAgent(
+                    this.session.ISession.certAccount,
+                    ImperativeConfig.instance.cliHome,
+                    {
+                        rejectUnauthorized: this.session.ISession.rejectUnauthorized,
+                        ca: this.session.ISession.serverCertificate,
+                    }
+                );
+
+                // Set the agent to be used for HTTPS requests
+                restOptionsToSet.agent = agent;
+
+                this.log.debug(`Created KeychainAgent for certificate account: ${this.session.ISession.certAccount}`);
+                return true;
+            } catch (err) {
+                throw new ImperativeError({
+                    msg: `Failed to create KeychainAgent for certificate account '${this.session.ISession.certAccount}'.`,
+                    causeErrors: err,
+                    additionalDetails: err.message,
+                });
+            }
+        }
+
+        // Handle file-based PEM certificates
         this.log.trace("Using PEM Certificate authentication");
         try {
             restOptionsToSet.cert = readFileSync(this.session.ISession.cert);
@@ -1333,8 +1437,14 @@ export abstract class AbstractRestClient {
      * @memberof AbstractRestClient
      */
     private appendInputHeaders(options: IHTTPSOptions, reqHeaders?: any[]): IHTTPSOptions {
+        // Create a copy of options for logging, excluding the agent property
+        // The agent (especially custom agents like KeychainAgent) can have complex internal
+        // structures that break the Censor's Object.entries() calls
+        const optionsForLogging: any = { ...options };
+        delete optionsForLogging.agent;
+
         this.log.trace("appendInputHeaders called with options on rest client %s",
-            JSON.stringify(Censor.censorObject(options)), this.constructor.name);
+            JSON.stringify(Censor.censorObject(optionsForLogging)), this.constructor.name);
         if (reqHeaders && reqHeaders.length > 0) {
             reqHeaders.forEach((reqHeader: any) => {
                 const requestHeaderKeys: string[] = Object.keys(reqHeader);

@@ -304,7 +304,17 @@ export abstract class AbstractSession {
         }
 
         if (session.type === SessConstants.AUTH_TYPE_CERT_PEM) {
-            ImperativeExpect.keysToBeDefinedAndNonBlank(populatedSession, ["cert", "certKey"]);
+            // Support both file-based certificates (cert + certKey) and keychain-based (certAccount)
+            const hasFileCert = populatedSession.cert && populatedSession.certKey;
+            const hasCertAccount = populatedSession.certAccount;
+
+            if (!hasFileCert && !hasCertAccount) {
+                throw new ImperativeError({
+                    msg: "Certificate authentication requires either 'cert' and 'certKey' OR 'certAccount'.",
+                    additionalDetails: "Specify cert and certKey files, or a certAccount from your keychain."
+                });
+            }
+
             ImperativeExpect.keysToBeUndefined(populatedSession, ["tokenValue", "user", "password"] );
             ImperativeExpect.toNotBeEqual(populatedSession.protocol, SessConstants.HTTP_PROTOCOL,
                 "Certificate based authentication cannot be used over HTTP. Please set protocol to HTTPS to use certificate authentication.");
