@@ -76,4 +76,10 @@ export interface IUploadOptions extends IOptions {
      * Specifies whether hidden files whose names begin with a dot should be uploaded.
      */
     includeHidden?: boolean;
+
+    /**
+    * Specifies whether to create parent directories if they do not exist before uploading.
+    * When set to true, any missing directories in the target path will be automatically created.
+    */
+    makeDir?: boolean;
 }
