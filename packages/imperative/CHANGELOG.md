@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Fixed an issue on Windows where non-normalized drive letter casing caused configuration load failures. [#2699](https://github.com/zowe/zowe-cli/pull/2699)
+
 ## `8.30.0`
 
 - Enhancement: Added an optional `scrtData` object to the ISession interface for a Session object. The `scrtData` is transmitted as a new HTTP header named `Zowe-SCRT-client-feature` to the targeted REST service. [#2678](https://github.com/zowe/zowe-cli/pull/2678)
