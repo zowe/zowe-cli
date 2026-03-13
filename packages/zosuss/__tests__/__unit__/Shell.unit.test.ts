@@ -273,7 +273,7 @@ describe("Shell", () => {
             const result = await Shell.executeExecCwd(fakeSshSession, command, cwd, stdoutHandler);
 
             expect(mockConnect).toHaveBeenCalled();
-            expect(mockExec).toHaveBeenCalledWith(`cd ${cwd} && ${command}`, expect.any(Function));
+            expect(mockExec).toHaveBeenCalledWith(`cd '${cwd}' && ${command}`, expect.any(Function));
             expect(result).toBe(0);
         });
 
@@ -290,7 +290,7 @@ describe("Shell", () => {
             const cwd = "/tmp";
             const result = await Shell.executeSshCwd(fakeSshSession, command, cwd, stdoutHandler, false, true);
 
-            expect(mockExec).toHaveBeenCalledWith(`cd ${cwd} && ${command}`, expect.any(Function));
+            expect(mockExec).toHaveBeenCalledWith(`cd '${cwd}' && ${command}`, expect.any(Function));
             expect(result).toBe(0);
         });
 
