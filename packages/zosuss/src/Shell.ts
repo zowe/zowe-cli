@@ -114,30 +114,7 @@ export class Shell {
                 });
             });
             conn.on("error", (err: Error) => {
-                if (err.message.startsWith(this.expiredPasswordFlag)) {
-                    reject(new ImperativeError({
-                        msg: ZosUssMessages.expiredPassword.message
-                    }));
-                } else if (err.message.includes(ZosUssMessages.allAuthMethodsFailed.message)) {
-                    hasAuthFailed = true;
-                    reject(new ImperativeError({
-                        msg: ZosUssMessages.allAuthMethodsFailed.message
-                    }));
-                }
-                // throw error only when authentication didn't fail.
-                else if (!hasAuthFailed && err.message.includes(ZosUssMessages.handshakeTimeout.message)) {
-                    reject(new ImperativeError({
-                        msg: ZosUssMessages.handshakeTimeout.message
-                    }));
-                } else if (err.message.includes(this.connRefusedFlag)) {
-                    reject(new ImperativeError({
-                        msg: ZosUssMessages.connectionRefused.message + ":\n" + err.message
-                    }));
-                } else {
-                    reject(new ImperativeError({
-                        msg: ZosUssMessages.unexpected.message + ":\n" + err.message
-                    }));
-                }
+                this.handleConnectionError(err, hasAuthFailed, reject);
             });
             Shell.connect(conn, session);
         });
@@ -199,28 +176,7 @@ export class Shell {
                 });
             });
             conn.on("error", (err: Error) => {
-                if (err.message.startsWith(this.expiredPasswordFlag)) {
-                    reject(new ImperativeError({
-                        msg: ZosUssMessages.expiredPassword.message
-                    }));
-                } else if (err.message.includes(ZosUssMessages.allAuthMethodsFailed.message)) {
-                    hasAuthFailed = true;
-                    reject(new ImperativeError({
-                        msg: ZosUssMessages.allAuthMethodsFailed.message
-                    }));
-                } else if (!hasAuthFailed && err.message.includes(ZosUssMessages.handshakeTimeout.message)) {
-                    reject(new ImperativeError({
-                        msg: ZosUssMessages.handshakeTimeout.message
-                    }));
-                } else if (err.message.includes(this.connRefusedFlag)) {
-                    reject(new ImperativeError({
-                        msg: ZosUssMessages.connectionRefused.message + ":\n" + err.message
-                    }));
-                } else {
-                    reject(new ImperativeError({
-                        msg: ZosUssMessages.unexpected.message + ":\n" + err.message
-                    }));
-                }
+                this.handleConnectionError(err, hasAuthFailed, reject);
             });
             Shell.connect(conn, session);
         });
@@ -242,6 +198,36 @@ export class Shell {
     ): Promise<any> {
         const cwdCommand = `cd "${cwd}" && ${command}`;
         return this.executeExec(session, cwdCommand, stdoutHandler);
+    }
+
+    /**
+     * Handle SSH connection errors with appropriate error messages
+     * @param err - The error object
+     * @param hasAuthFailed - Flag indicating if authentication has failed
+     * @param reject - Promise reject function
+     */
+    private static handleConnectionError(err: Error, hasAuthFailed: boolean, reject: (reason?: any) => void): void {
+        if (err.message.startsWith(this.expiredPasswordFlag)) {
+            reject(new ImperativeError({
+                msg: ZosUssMessages.expiredPassword.message
+            }));
+        } else if (err.message.includes(ZosUssMessages.allAuthMethodsFailed.message)) {
+            reject(new ImperativeError({
+                msg: ZosUssMessages.allAuthMethodsFailed.message
+            }));
+        } else if (!hasAuthFailed && err.message.includes(ZosUssMessages.handshakeTimeout.message)) {
+            reject(new ImperativeError({
+                msg: ZosUssMessages.handshakeTimeout.message
+            }));
+        } else if (err.message.includes(this.connRefusedFlag)) {
+            reject(new ImperativeError({
+                msg: ZosUssMessages.connectionRefused.message + ":\n" + err.message
+            }));
+        } else {
+            reject(new ImperativeError({
+                msg: ZosUssMessages.unexpected.message + ":\n" + err.message
+            }));
+        }
     }
 
     private static connect(connection: Client, session: SshSession) {
