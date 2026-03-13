@@ -240,7 +240,7 @@ export class Shell {
         cwd: string,
         stdoutHandler: (data: string) => void
     ): Promise<any> {
-        const cwdCommand = `cd ${cwd} && ${command}`;
+        const cwdCommand = `cd "${cwd}" && ${command}`;
         return this.executeExec(session, cwdCommand, stdoutHandler);
     }
 
