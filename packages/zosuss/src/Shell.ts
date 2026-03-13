@@ -130,7 +130,7 @@ export class Shell {
      */
     public static executeExec(session: SshSession,
         command: string,
-        stdoutHandler: (data: string) => void): Promise<any> {
+        stdoutHandler: (data: string) => void): Promise<number> {
         let hasAuthFailed = false;
         const promise = new Promise<any>((resolve, reject) => {
             const conn = new Client();
@@ -195,8 +195,10 @@ export class Shell {
         command: string,
         cwd: string,
         stdoutHandler: (data: string) => void
-    ): Promise<any> {
-        const cwdCommand = `cd "${cwd}" && ${command}`;
+    ): Promise<number> {
+        // Escape cwd to prevent command injection
+        const escapedCwd = `'${cwd.replace(/'/g, "'\\''")}'`;
+        const cwdCommand = `cd ${escapedCwd} && ${command}`;
         return this.executeExec(session, cwdCommand, stdoutHandler);
     }
 
@@ -266,7 +268,9 @@ export class Shell {
         if (useExecMode) {
             return this.executeExecCwd(session, command, cwd, stdoutHandler);
         }
-        const cwdCommand = `cd ${cwd} && ${command}`;
+        // Escape cwd to prevent command injection
+        const escapedCwd = `'${cwd.replace(/'/g, "'\\''")}'`;
+        const cwdCommand = `cd ${escapedCwd} && ${command}`;
         return this.executeSsh(session, cwdCommand, stdoutHandler, removeExtraCharactersFromOutput);
     }
 
