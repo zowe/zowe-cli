@@ -15,6 +15,7 @@
  * @class Constants
  */
 export class Constants {
+    public static readonly MAX_SIGNED_32BIT_NUMBER: number = 2147483647;
     public static readonly FRAMEWORK_DISPLAY_NAME: string = "Imperative";
     public static readonly IMPERATIVE_DEFAULT_HOME: string = "IMPERATIVE_HOME";
     public static readonly IMPERATIVE_DIRECTORY: string = ".imperative";
