@@ -6799,8 +6799,8 @@
       }
     },
     "node_modules/flatted": {
-      "version": "3.3.1",
-      "license": "ISC"
+      "version": "3.4.1",
+      "integrity": "sha512-IxfVbRFVlV8V/yRaGzk0UVIcsKKHMSfYw66T/u4nTwlWteQePsxe//LjudR1AMX4tZW3WFCh3Zqa/sjlqpbURQ=="
     },
     "node_modules/fn.name": {
       "version": "1.1.0",
