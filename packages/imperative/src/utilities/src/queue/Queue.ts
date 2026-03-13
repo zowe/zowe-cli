@@ -27,7 +27,7 @@ export class Queue {
     }
 
     /**
-     * Changes and existing request queue's throttling options.
+     * Changes an existing request queue's throttling options.
      * @param options - The throttling options to apply to the request queue.
      * @throws {ImperativeError} - when the options provided are out of bounds.
      */
@@ -88,9 +88,10 @@ export class Queue {
         this.mQueue[queue].inProgress++;
 
         try {
+            clearTimeout(execItem.timeout);
+
             // Try to process the item. If it timed out in the queue, throw an error and pick up the next one.
             if (execItem.timedOut) { throw new ImperativeError({msg: "Request timed out while in the request queue."}); }
-            else { clearTimeout(execItem.timeout); }
             const result = await execItem.func();
             execItem.resolve(result);
         } catch (err) {

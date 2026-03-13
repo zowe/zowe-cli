@@ -291,9 +291,9 @@ export abstract class AbstractRestClient {
      * Getter for the request queue, if one exists.
      * Must be implemented at the end Rest Client level to be static.
      * @memberof AbstractRestClient
-     * @returns {Queue}
+     * @returns {Queue | undefined}
      */
-    protected get requestQueue(): Queue {
+    protected get requestQueue(): Queue | undefined {
         return undefined; // Must be implemented
     }
 
@@ -315,9 +315,8 @@ export abstract class AbstractRestClient {
                 if (this.session.ISession.port) { requestPool += ":" + this.session.ISession.port.toString(); }
             }
             return this.requestQueue.enqueue(this._request.bind(this, options), requestPool);
-        } else {
-            return this._request(options);
         }
+        return this._request(options);
     }
 
     /**
@@ -421,7 +420,7 @@ export abstract class AbstractRestClient {
             clientRequest.on("error", (errorResponse: any) => {
                 // Handle the HTTP 1.1 Keep-Alive race condition
                 if (errorResponse.code === "ECONNRESET" && clientRequest.reusedSocket) {
-                    this.request(options).then((response: string) => {
+                    this._request(options).then((response: string) => {
                         resolve(response);
                     }).catch((err) => {
                         reject(err);

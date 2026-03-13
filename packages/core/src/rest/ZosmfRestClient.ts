@@ -31,7 +31,7 @@ export class ZosmfRestClient extends RestClient {
      * @type {Queue}
      * @memberof ZosmfRestClient
      */
-    private static mRequestQueue: Queue = undefined;
+    private static mRequestQueue: Queue | undefined = undefined;
 
     /**
      * Create a request queue if one does not exist. Set the throttling options if provided and they do exist.
@@ -42,7 +42,7 @@ export class ZosmfRestClient extends RestClient {
         if (!ZosmfRestClient.mRequestQueue) {
             ZosmfRestClient.mRequestQueue = new Queue(options);
         }
-        else if (options) { ZosmfRestClient.mRequestQueue.setThrottlingOptions(options); }
+        else if (Object.keys(options).length > 0) { ZosmfRestClient.mRequestQueue.setThrottlingOptions(options); }
     }
 
     /**

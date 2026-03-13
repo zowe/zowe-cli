@@ -13,6 +13,6 @@ export interface IQueueItem {
     func: Function,
     timeout: NodeJS.Timeout,
     timedOut: boolean,
-    resolve: any
-    reject: any
+    resolve: (value: unknown) => void,
+    reject: (reason?: unknown) => void
 }
