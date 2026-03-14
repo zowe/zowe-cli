@@ -159,7 +159,125 @@ describe("zowe uss issue ssh api call test", () => {
                 error.toString().includes(ZosUssMessages.connectionRefused.message) ||
                 error.toString().includes(ZosUssMessages.unexpected.message)).toBe(true);
         }
-
     }, TIME_OUT);
 
+    describe("Exec mode (useExecMode=true)", () => {
+
+    it("should execute uname command using exec mode and return OS name", async () => {
+        const command = "uname";
+        let stdoutData = "";
+        await Shell.executeSsh(SSH_SESSION, command, (data: string) => {
+            stdoutData += data;
+        }, false, true);
+        expect(stdoutData).toMatch("OS/390");
+    }, TIME_OUT);
+
+    it("should resolve cwd option in exec mode", async () => {
+        const command = "pwd";
+        const cwd = `${defaultSystem.unix.testdir}`;
+        let stdoutData = "";
+        await Shell.executeSshCwd(SSH_SESSION, command, cwd, (data: string) => {
+            stdoutData += data;
+        }, false, true);
+        expect(stdoutData).toMatch(new RegExp(cwd.substring(1)));
+    }, TIME_OUT);
+
+    it("should receive return code 0 for valid command in exec mode", async () => {
+        const command = "ls";
+        const rc = await Shell.executeSsh(SSH_SESSION, command, (_data: string) => {
+            return;
+        }, false, true);
+        expect(rc).toBe(0);
+    }, TIME_OUT);
+
+    it("should receive return code 127 for invalid command in exec mode", async () => {
+        const command = "invalidCommand";
+        const rc = await Shell.executeSsh(SSH_SESSION, command, (_data: string) => {
+            return;
+        }, false, true);
+        expect(rc).toBe(127);
+    }, TIME_OUT);
+
+    it("should receive return code 0 for valid command with cwd in exec mode", async () => {
+        const command = "ls";
+        const cwd = `${defaultSystem.unix.testdir}`;
+        const rc = await Shell.executeSshCwd(SSH_SESSION, command, cwd, (_data: string) => {
+            return;
+        }, false, true);
+        expect(rc).toBe(0);
+    }, TIME_OUT);
+
+    it("should receive return code 127 for invalid command with cwd in exec mode", async () => {
+        const command = "invalidCommand";
+        const cwd = `${defaultSystem.unix.testdir}`;
+        const rc = await Shell.executeSshCwd(SSH_SESSION, command, cwd, (_data: string) => {
+            return;
+        }, false, true);
+        expect(rc).toBe(127);
+    }, TIME_OUT);
+
+    it("should handle multi-line output in exec mode", async () => {
+        const command = "echo 'line1'; echo 'line2'; echo 'line3'";
+        let stdoutData = "";
+        await Shell.executeSsh(SSH_SESSION, command, (data: string) => {
+            stdoutData += data;
+        }, false, true);
+        expect(stdoutData).toContain("line1");
+        expect(stdoutData).toContain("line2");
+        expect(stdoutData).toContain("line3");
+    }, TIME_OUT);
+
+    it("should handle commands with special characters in exec mode", async () => {
+        const command = "echo 'test with spaces and $pecial ch@rs'";
+        let stdoutData = "";
+        await Shell.executeSsh(SSH_SESSION, command, (data: string) => {
+            stdoutData += data;
+        }, false, true);
+        expect(stdoutData).toContain("test with spaces and $pecial ch@rs");
+    }, TIME_OUT);
+
+    it("should handle connection failure in exec mode", async () => {
+        const invalidSshSession = new SshSession({
+            hostname: "invalidhost",
+            port: 22,
+            user: "",
+            password: ""
+        });
+        let error;
+        try {
+            await Shell.executeSsh(invalidSshSession, "uname", (_data: string) => {
+                return;
+            }, false, true);
+        } catch (err) {
+            error = err;
+        }
+        expect(error).toBeTruthy();
+        expect(error.toString()).toContain(ZosUssMessages.unexpected.message);
+    }, TIME_OUT);
+
+    it("should handle connection refused in exec mode", async () => {
+        const invalidSshSession = new SshSession({
+            hostname: "127.0.0.1",
+            port: 22,
+            user: "root",
+            password: "**ThisPasswordIsExpectedNotToBeTheRealPasswordForRoot**"
+        });
+        let error;
+        try {
+            await Shell.executeSsh(invalidSshSession, "uname", (_data: string) => {
+                return;
+            }, false, true);
+        } catch (err) {
+            error = err;
+        }
+        expect(error).toBeTruthy();
+        if (process.platform === "win32") {
+            expect(error.toString()).toContain(ZosUssMessages.connectionRefused.message);
+        } else {
+            expect(error.toString().includes(ZosUssMessages.allAuthMethodsFailed.message) ||
+                error.toString().includes(ZosUssMessages.connectionRefused.message) ||
+                error.toString().includes(ZosUssMessages.unexpected.message)).toBe(true);
+        }
+    }, TIME_OUT);
+    });
 });
