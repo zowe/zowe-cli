@@ -197,7 +197,7 @@ export class Shell {
         stdoutHandler: (data: string) => void
     ): Promise<number> {
         // Escape cwd to prevent command injection
-        const escapedCwd = `'${cwd.replace(/'/g, "'\\''")}'`;
+        const escapedCwd = `'${cwd.replaceAll("'", String.raw`'\''`)}'`;
         const cwdCommand = `cd ${escapedCwd} && ${command}`;
         return this.executeExec(session, cwdCommand, stdoutHandler);
     }
@@ -269,7 +269,7 @@ export class Shell {
             return this.executeExecCwd(session, command, cwd, stdoutHandler);
         }
         // Escape cwd to prevent command injection
-        const escapedCwd = `'${cwd.replace(/'/g, "'\\''")}'`;
+        const escapedCwd = `'${cwd.replaceAll("'", String.raw`'\''`)}'`;
         const cwdCommand = `cd ${escapedCwd} && ${command}`;
         return this.executeSsh(session, cwdCommand, stdoutHandler, removeExtraCharactersFromOutput);
     }
