@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS USS SDK package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Added `--exec` flag to `zosuss` for faster command execution. Exec mode bypasses shell initialization and profile loading, providing up performance improvement. Shell mode remains the default for backward compatibility. 
+
 ## `8.27.4`
 
 - BugFix: Updated minimum supported version of Node from 18 to 20. Added Node 24 support. [#2616](https://github.com/zowe/zowe-cli/pull/2616)

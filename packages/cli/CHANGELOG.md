@@ -1,6 +1,10 @@
 # Change Log
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Added `--exec` flag to `zosuss` for faster command execution. Exec mode bypasses shell initialization and profile loading, providing up performance improvement. Shell mode remains the default for backward compatibility. 
+
 ## `8.30.3`
 
 - BugFix: Updated the `tar` dependency to resolve technical currency. [#2696](https://github.com/zowe/zowe-cli/pull/2696)
