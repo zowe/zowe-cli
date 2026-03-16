@@ -5,8 +5,8 @@ All notable changes to the Imperative package will be documented in this file.
 ## Recent Changes
 
 - Enhancement: Added a `Queue` utility to create and manage the processing of `Promise` queues. [#2543](https://github.com/zowe/zowe-cli/pull/2543)
-- Enhancement: Added a `requestQueue` getter to `AbstractRestClient` to allow extenders to create and manage a queue of REST requests to help prevent server overload. [#2543](https://github.com/zowe/zowe-cli/pull/2543)
-- Enhancement: Added handling for `requestQueue` to the `AbstractRestClient`'s `request` function, if the `requestQueue` is present. [#2543](https://github.com/zowe/zowe-cli/pull/2543)
+- Enhancement: Added a `requestQueue` getter to the `AbstractRestClient` abstract class to allow extenders to create and manage a queue of REST requests to help prevent server overload. [#2543](https://github.com/zowe/zowe-cli/pull/2543)
+- Enhancement: Added handling for `requestQueue` queue object to the `AbstractRestClient` abstract class's `request` function, if the `requestQueue` object is present. [#2543](https://github.com/zowe/zowe-cli/pull/2543)
   - If a `requestQueue` is not present, no queuing is performed.
   - If a `requestQueue` is present, the request is added to the queue.
 
