@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated the `tar`, `minimatch`, `flatted`, and `underscore` dependencies to resolve technical currency. []()
+
 ## `7.29.21`
 
 - BugFix: Updated `tar` dependency to resolve technical currency. [#2675](https://github.com/zowe/zowe-cli/pull/2675)
