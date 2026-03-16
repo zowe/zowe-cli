@@ -2,9 +2,14 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+
 ## Recent Changes
 
 - BugFix: Fixed an issue on Windows where non-normalized drive letter casing caused configuration load failures. [#2699](https://github.com/zowe/zowe-cli/pull/2699)
+
+## `8.30.4`
+
+- BugFix: Updated `flatted` dependency for technical currency. [#2700](https://github.com/zowe/zowe-cli/pull/2700)
 
 ## `8.30.0`
 
