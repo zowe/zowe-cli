@@ -5,7 +5,7 @@ All notable changes to the Zowe z/OS files SDK package will be documented in thi
 
 ## Recent Changes
 
-- BugFix: Updated the `tar`, `minimatch`, `flatted`, and `underscore` dependencies to resolve technical currency. []()
+- BugFix: Updated the `tar`, `minimatch`, `flatted`, and `underscore` dependencies to resolve technical currency. [#2701](https://github.com/zowe/zowe-cli/pull/2701)
 
 ## `7.29.15`
 
