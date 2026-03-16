@@ -171,13 +171,21 @@ export class ConnectionPropsForSessCfg {
         if (sessCfgToUse.type === SessConstants.AUTH_TYPE_NONE &&
             !sessCfgToUse.authTypeOrder.includes(SessConstants.AUTH_TYPE_NONE))
         {
+            // When the user explicitly set an authOrder that excludes basic auth (e.g., "token,bearer"),
+            // password is not required to fulfill the request — skip user/password prompting.
+            const passwordNotRequiredByAuthOrder =
+                sessCfgToUse._authCache?.didUserSetAuthOrder === true &&
+                !sessCfgToUse.authTypeOrder.includes(SessConstants.AUTH_TYPE_BASIC);
+
             switch (sessCfgToUse.authTypeOrder[0]) {
                 case SessConstants.AUTH_TYPE_BASIC:
                     if (!sessCfgToUse._authCache?.availableCreds?.user && !doNotPromptForValues.includes("user")) {
                         promptForValues.push("user");
                     }
-                    if (!sessCfgToUse._authCache?.availableCreds?.password && !doNotPromptForValues.includes("password")) {
-                        promptForValues.push("password");
+                    if (!passwordNotRequiredByAuthOrder) {
+                        if (!sessCfgToUse._authCache?.availableCreds?.password && !doNotPromptForValues.includes("password")) {
+                            promptForValues.push("password");
+                        }
                     }
                     break;
                 case SessConstants.AUTH_TYPE_TOKEN:
