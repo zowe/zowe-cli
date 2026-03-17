@@ -184,10 +184,10 @@ export class Config {
     public async reload(opts?: IConfigOpts) {
         // Normalize projectDir for Windows before loading the config
         if (process.platform === 'win32') {
-            if(opts?.projectDir){
+            if(opts?.projectDir) {
                 opts.projectDir = fs.realpathSync.native(opts.projectDir);
             }
-            if(opts?.homeDir){
+            if(opts?.homeDir) {
                 opts.homeDir = fs.realpathSync.native(opts.homeDir);
             }
         }

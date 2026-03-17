@@ -877,7 +877,7 @@ describe("Config tests", () => {
 
     describe("reload path normalization", () => {
         it("should normalize projectDir using realpathSync.native on Windows", async () => {
-            Object.defineProperty(process, 'platform', { value: 'win32', configurable: true });
+            jest.replaceProperty(process, 'platform' as any, 'win32');
 
             const rawPath = "C:/users/test/../project";
             const normalizedPath = "C:\\users\\project";
