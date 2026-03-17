@@ -35,8 +35,9 @@ export class Queue {
         // Overwrite the throttling options.
         // Timeout changes will only apply to future requests, not ones in progress.
         if (options.maxConcurrentRequests != null) {
-            if (options.maxConcurrentRequests <= 0) { throw new ImperativeError({msg: "Maximum concurrent requests cannot be 0 or lower."}); }
-            this.mMaxConcurrentRequests = options.maxConcurrentRequests;
+            if (options.maxConcurrentRequests < 0) { throw new ImperativeError({msg: "Maximum concurrent requests cannot be 0 or lower."}); }
+            else if (options.maxConcurrentRequests == 0) { this.mMaxConcurrentRequests = Constants.MAX_SIGNED_32BIT_NUMBER; }
+            else { this.mMaxConcurrentRequests = options.maxConcurrentRequests; }
         }
 
         if (options.queueTimeout != null) {

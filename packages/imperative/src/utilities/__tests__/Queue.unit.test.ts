@@ -146,7 +146,7 @@ describe("Queue", () => {
             let error: any;
 
             try {
-                queue.setThrottlingOptions({maxConcurrentRequests: 0});
+                queue.setThrottlingOptions({maxConcurrentRequests: -1});
             } catch (err) {
                 error = err;
             }
@@ -154,6 +154,20 @@ describe("Queue", () => {
             expect(error).toBeDefined();
             expect(error).toBeInstanceOf(ImperativeError);
             expect(error.message).toContain("0 or lower");
+        });
+
+        it("should apply one throttling option at a time - max concurrent requests - zero", () => {
+            const queue = new Queue({maxConcurrentRequests: 1});
+
+            expect((queue as any).mQueueTimeout).toEqual(Constants.MAX_SIGNED_32BIT_NUMBER);
+            expect((queue as any).mMaxConcurrentRequests).toEqual(1);
+            expect((queue as any).mQueue).toEqual({"default": {inProgress: 0, requestPool: []}});
+
+            queue.setThrottlingOptions({maxConcurrentRequests: 0});
+
+            expect((queue as any).mQueueTimeout).toEqual(Constants.MAX_SIGNED_32BIT_NUMBER);
+            expect((queue as any).mMaxConcurrentRequests).toEqual(Constants.MAX_SIGNED_32BIT_NUMBER);
+            expect((queue as any).mQueue).toEqual({"default": {inProgress: 0, requestPool: []}});
         });
 
         it("should handle an out of bounds exception - timeout - over", () => {
