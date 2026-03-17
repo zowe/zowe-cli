@@ -85,7 +85,7 @@ describe("BaseAuthHandler", () => {
             })
         });
         jest.spyOn(fs, 'realpathSync').mockImplementation((path: any) => path);
-        jest.spyOn(fs.realpathSync, 'native').mockImplementation((path: any) => path);
+        (fs.realpathSync as any).native = jest.fn().mockImplementation((path: any) => path);
     });
 
     afterEach(() => {
