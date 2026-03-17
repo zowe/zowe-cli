@@ -6,6 +6,10 @@ All notable changes to the Imperative package will be documented in this file.
 
 - Enhancement: Added support for client certificate authentication using certificates stored in system keystores. Added `certAccount` profile property to specify certificate subject name for authentication. Implemented cross-platform native HTTPS clients (macOS and Windows) that support certificate-based authentication with both exportable and non-exportable private keys. Updated `AbstractRestClient` to use native HTTPS clients when `certAccount` is specified on macOS or Windows platforms.
 
+## `8.30.4`
+
+- BugFix: Updated `flatted` dependency for technical currency. [#2700](https://github.com/zowe/zowe-cli/pull/2700)
+
 ## `8.30.0`
 
 - Enhancement: Added an optional `scrtData` object to the ISession interface for a Session object. The `scrtData` is transmitted as a new HTTP header named `Zowe-SCRT-client-feature` to the targeted REST service. [#2678](https://github.com/zowe/zowe-cli/pull/2678)
