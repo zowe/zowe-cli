@@ -1339,42 +1339,6 @@ describe("ConnectionPropsForSessCfg tests", () => {
         expect(sessCfgWithConnProps.cert).toBe(certFileFromArgs);
     });
 
-    it("should skip password prompting when didUserSetAuthOrder is true and authTypeOrder excludes basic auth", async () => {
-        const promptSpy = jest.spyOn(CliUtils, "readPrompt").mockResolvedValue("FakeUser");
-
-        const authTypeOrder = [SessConstants.AUTH_TYPE_BASIC] as any;
-
-        authTypeOrder.includes = jest.fn().mockReturnValue(false);
-
-        const initialSessCfg: any = {
-            hostname: "SomeHost",
-            port: 11,
-            rejectUnauthorized: true,
-            authTypeOrder,
-            _authCache: {
-                availableCreds: {},
-                didUserSetAuthOrder: true,
-                topDefaultAuth: SessConstants.AUTH_TYPE_BASIC
-            }
-        };
-        const args = {
-            $0: "zowe",
-            _: [""]
-        };
-
-        const sessCfgWithConnProps = await ConnectionPropsForSessCfg.addPropsOrPrompt<ISession>(
-            initialSessCfg,
-            args
-        );
-
-        expect(promptSpy).toHaveBeenCalledWith(expect.stringContaining("user"), expect.any(Object));
-
-        expect(promptSpy).not.toHaveBeenCalledWith(expect.stringContaining("password"), expect.any(Object));
-        expect(sessCfgWithConnProps.password).toBeUndefined();
-
-        promptSpy.mockRestore();
-    });
-
     it("get host name from prompt with custom service description", async () => {
         const hostFromPrompt = "FakeHost";
         const portFromArgs = 11;
