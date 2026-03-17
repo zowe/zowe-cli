@@ -13,6 +13,7 @@ import { IHandlerParameters } from "../../../../cmd";
 import { ConnectionPropsForSessCfg } from "../../../..";
 import { ImperativeConfig } from "../../../..";
 import FakeAuthHandler from "./__data__/FakeAuthHandler";
+import * as fs from "fs";
 
 describe("BaseAuthHandler", () => {
     const configSaveMock = jest.fn();
@@ -83,6 +84,8 @@ describe("BaseAuthHandler", () => {
                 }
             })
         });
+        jest.spyOn(fs, 'realpathSync').mockImplementation((path: any) => path);
+        jest.spyOn(fs.realpathSync, 'native').mockImplementation((path: any) => path);
     });
 
     afterEach(() => {
