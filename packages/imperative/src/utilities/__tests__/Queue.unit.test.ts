@@ -153,7 +153,7 @@ describe("Queue", () => {
 
             expect(error).toBeDefined();
             expect(error).toBeInstanceOf(ImperativeError);
-            expect(error.message).toContain("0 or lower");
+            expect(error.message).toContain("less than zero");
         });
 
         it("should apply one throttling option at a time - max concurrent requests - zero", () => {
