@@ -4,7 +4,7 @@ All notable changes to the Zowe z/OS USS SDK package will be documented in this 
 
 ## Recent Changes
 
-- Enhancement: Added `--exec` flag to `zosuss` for faster command execution. Exec mode bypasses shell initialization and profile loading, providing up performance improvement. Shell mode remains the default for backward compatibility. 
+- Enhancement: Added `--exec` flag to `zosuss` for faster command execution. Exec mode bypasses shell initialization and profile loading, providing a performance improvement. Shell mode remains the default for backward compatibility. [#2687](https://github.com/zowe/zowe-cli/issues/2687)
 
 ## `8.27.4`
 
