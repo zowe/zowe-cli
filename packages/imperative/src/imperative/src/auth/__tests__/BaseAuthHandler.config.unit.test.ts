@@ -47,6 +47,8 @@ describe("BaseAuthHandler config", () => {
     });
 
     beforeEach(() => {
+        jest.spyOn(fs, 'realpathSync').mockImplementation((path: any) => path);
+        (fs.realpathSync as any).native = jest.fn().mockImplementation((path: any) => path);
         jest.spyOn(EventUtils, "validateAppName").mockImplementation(jest.fn());
         jest.spyOn(EventOperator, "getZoweProcessor").mockReturnValue({emitZoweEvent: jest.fn()} as any);
     });
