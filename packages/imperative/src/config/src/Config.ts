@@ -182,7 +182,7 @@ export class Config {
      * @throws An ImperativeError if the configuration does not load successfully
      */
     public async reload(opts?: IConfigOpts) {
-        // Normalize projectDir for Windows before loading the config
+        // Normalize projectDir and homeDir for Windows before loading the config
         if (process.platform === 'win32') {
             if(opts?.projectDir) {
                 opts.projectDir = fs.realpathSync.native(opts.projectDir);
