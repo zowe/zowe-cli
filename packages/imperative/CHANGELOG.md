@@ -4,7 +4,8 @@ All notable changes to the Imperative package will be documented in this file.
 
 ## Recent Changes
 
-- Enhancement: Added support for client certificate authentication using certificates stored in system keystores. Added `certAccount` profile property to specify certificate subject name for authentication. Implemented cross-platform native HTTPS clients (macOS and Windows) that support certificate-based authentication with both exportable and non-exportable private keys. Updated `AbstractRestClient` to use native HTTPS clients when `certAccount` is specified on macOS or Windows platforms.
+- Enhancement: Added support for client certificate authentication using certificates stored in system keystores. Added `certAccount` profile property to specify certificate subject name for authentication. Implemented cross-platform native HTTPS clients (macOS and Windows) that support certificate-based authentication with both exportable and non-exportable private keys. Updated `AbstractRestClient` to use native HTTPS clients when `certAccount` is specified on macOS or Windows platforms. [#2325](https://github.com/zowe/zowe-cli/issues/2325)
+- BugFix: Fixed an issue on Windows where non-normalized drive letter casing caused configuration load failures. [#2699](https://github.com/zowe/zowe-cli/pull/2699)
 
 ## `8.30.4`
 
