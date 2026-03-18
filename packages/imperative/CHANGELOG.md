@@ -9,6 +9,7 @@ All notable changes to the Imperative package will be documented in this file.
 - Enhancement: Added handling for `requestQueue` queue object to the `AbstractRestClient` abstract class's `request` function, if the `requestQueue` object is present. [#2543](https://github.com/zowe/zowe-cli/pull/2543)
   - If a `requestQueue` is not present, no queuing is performed.
   - If a `requestQueue` is present, the request is added to the queue.
+- BugFix: Fixed an issue on Windows where non-normalized drive letter casing caused configuration load failures. [#2699](https://github.com/zowe/zowe-cli/pull/2699)
 
 ## `8.30.4`
 
