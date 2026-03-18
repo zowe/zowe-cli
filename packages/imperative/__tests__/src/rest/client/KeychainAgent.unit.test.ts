@@ -19,7 +19,7 @@ describe("KeychainAgent", () => {
     describe("constructor", () => {
         it("should create an instance with required parameters", () => {
             const agent = new KeychainAgent(mockCertAccount, mockCliHome);
-            
+
             expect(agent).toBeInstanceOf(KeychainAgent);
             expect(agent).toBeInstanceOf(https.Agent);
         });
@@ -30,15 +30,15 @@ describe("KeychainAgent", () => {
                 maxSockets: 10,
                 rejectUnauthorized: false
             };
-            
+
             const agent = new KeychainAgent(mockCertAccount, mockCliHome, options);
-            
+
             expect(agent).toBeInstanceOf(KeychainAgent);
         });
 
         it("should default rejectUnauthorized to true when not specified", () => {
             const agent = new KeychainAgent(mockCertAccount, mockCliHome);
-            
+
             // Access private property for testing
             expect((agent as any).options.rejectUnauthorized).toBe(true);
         });
@@ -47,7 +47,7 @@ describe("KeychainAgent", () => {
             const agent = new KeychainAgent(mockCertAccount, mockCliHome, {
                 rejectUnauthorized: false
             });
-            
+
             expect((agent as any).options.rejectUnauthorized).toBe(false);
         });
     });
@@ -58,13 +58,13 @@ describe("KeychainAgent", () => {
 
         beforeEach(() => {
             agent = new KeychainAgent(mockCertAccount, mockCliHome);
-            
+
             // Mock socket
             mockSocket = {
                 connect: jest.fn(),
                 on: jest.fn()
             };
-            
+
             // Mock Socket constructor
             jest.spyOn(require("net"), "Socket").mockImplementation(() => mockSocket);
         });
@@ -78,9 +78,9 @@ describe("KeychainAgent", () => {
                 host: "example.com",
                 port: 443
             };
-            
+
             agent.createConnection(options);
-            
+
             expect(mockSocket.connect).toHaveBeenCalledWith(443, "example.com", expect.any(Function));
         });
 
@@ -89,9 +89,9 @@ describe("KeychainAgent", () => {
                 host: "example.com",
                 port: 443
             };
-            
+
             agent.createConnection(options);
-            
+
             expect(mockSocket.on).toHaveBeenCalledWith("error", expect.any(Function));
         });
 
@@ -102,13 +102,13 @@ describe("KeychainAgent", () => {
             };
             const mockError = new Error("Connection failed");
             const callback = jest.fn();
-            
+
             agent.createConnection(options, callback);
-            
+
             // Simulate socket error
             const errorHandler = mockSocket.on.mock.calls.find((call: any) => call[0] === "error")[1];
             errorHandler(mockError);
-            
+
             expect(callback).toHaveBeenCalledWith(mockError);
         });
 
@@ -117,9 +117,9 @@ describe("KeychainAgent", () => {
                 host: "example.com",
                 port: 443
             };
-            
+
             const result = agent.createConnection(options);
-            
+
             expect(result).toBe(mockSocket);
         });
     });
@@ -134,9 +134,9 @@ describe("KeychainAgent", () => {
         it("should convert DER buffer to PEM format for certificate", () => {
             const derBuffer = Buffer.from("test certificate data");
             const expectedBase64 = derBuffer.toString("base64");
-            
+
             const pem = (agent as any).derToPem(derBuffer, "CERTIFICATE");
-            
+
             expect(pem).toContain("-----BEGIN CERTIFICATE-----");
             expect(pem).toContain("-----END CERTIFICATE-----");
             expect(pem).toContain(expectedBase64);
@@ -145,9 +145,9 @@ describe("KeychainAgent", () => {
         it("should convert DER buffer to PEM format for private key", () => {
             const derBuffer = Buffer.from("test private key data");
             const expectedBase64 = derBuffer.toString("base64");
-            
+
             const pem = (agent as any).derToPem(derBuffer, "PRIVATE KEY");
-            
+
             expect(pem).toContain("-----BEGIN PRIVATE KEY-----");
             expect(pem).toContain("-----END PRIVATE KEY-----");
             expect(pem).toContain(expectedBase64);
@@ -156,10 +156,10 @@ describe("KeychainAgent", () => {
         it("should split base64 into 64-character lines", () => {
             // Create a buffer that will result in >64 chars of base64
             const derBuffer = Buffer.alloc(100, "a");
-            
+
             const pem = (agent as any).derToPem(derBuffer, "CERTIFICATE");
             const lines = pem.split("\n");
-            
+
             // Check that middle lines (not BEGIN/END) are <= 64 chars
             for (let i = 1; i < lines.length - 1; i++) {
                 if (!lines[i].startsWith("-----")) {
@@ -170,19 +170,19 @@ describe("KeychainAgent", () => {
 
         it("should handle empty buffer", () => {
             const derBuffer = Buffer.alloc(0);
-            
+
             const pem = (agent as any).derToPem(derBuffer, "CERTIFICATE");
-            
+
             expect(pem).toContain("-----BEGIN CERTIFICATE-----");
             expect(pem).toContain("-----END CERTIFICATE-----");
         });
 
         it("should handle small buffer (< 64 chars base64)", () => {
             const derBuffer = Buffer.from("small");
-            
+
             const pem = (agent as any).derToPem(derBuffer, "CERTIFICATE");
             const lines = pem.split("\n");
-            
+
             expect(lines.length).toBe(3); // BEGIN, content, END
             expect(lines[0]).toBe("-----BEGIN CERTIFICATE-----");
             expect(lines[2]).toBe("-----END CERTIFICATE-----");

@@ -297,7 +297,7 @@ describe("NativeHttpsClient", () => {
             const mockGetPrivateKey = jest.fn().mockRejectedValue(
                 new Error("Private key cannot be exported (non-exportable)")
             );
-            
+
             jest.doMock("@zowe/secrets-for-zowe-sdk", () => ({
                 keyring: {
                     getPrivateKey: mockGetPrivateKey
