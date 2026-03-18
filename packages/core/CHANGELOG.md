@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe core SDK package will be documented in this file.
 
-## Recent Changes
+## `8.31.0`
 
 - Enhancement: Added a `requestQueue` queue object to the `ZosmfRestClient` class. [#2543](https://github.com/zowe/zowe-cli/pull/2543)
 - Enhancement: Added the `ZosmfRestClient.setThrottlingOptions` function to allow extenders to configure REST request throttling settings. [#2543](https://github.com/zowe/zowe-cli/pull/2543)
