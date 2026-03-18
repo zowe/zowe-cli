@@ -2761,7 +2761,7 @@ describe("AbstractRestClient tests", () => {
                 mockRequest.end = jest.fn();
                 mockRequest.setTimeout = jest.fn();
                 mockRequest.on = jest.fn().mockReturnThis();
-                
+
                 setImmediate(() => {
                     const response: any = new EventEmitter();
                     response.statusCode = 200;
@@ -2772,7 +2772,7 @@ describe("AbstractRestClient tests", () => {
                         response.emit("end");
                     });
                 });
-                
+
                 return mockRequest;
             });
         });
