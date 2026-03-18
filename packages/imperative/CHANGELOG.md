@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## `8.30.4`
+
+- BugFix: Updated `flatted` dependency for technical currency. [#2700](https://github.com/zowe/zowe-cli/pull/2700)
+
 ## `8.30.0`
 
 - Enhancement: Added an optional `scrtData` object to the ISession interface for a Session object. The `scrtData` is transmitted as a new HTTP header named `Zowe-SCRT-client-feature` to the targeted REST service. [#2678](https://github.com/zowe/zowe-cli/pull/2678)
