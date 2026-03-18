@@ -2,9 +2,12 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
-## `8.31.0`
+## Recent Changes
 
 - Enhancement: Added support for client certificate authentication using certificates stored in system keystores. Added `certAccount` profile property to specify certificate subject name for authentication. Implemented cross-platform native HTTPS clients (macOS and Windows) that support certificate-based authentication with both exportable and non-exportable private keys. Updated `AbstractRestClient` to use native HTTPS clients when `certAccount` is specified on macOS or Windows platforms. [#2325](https://github.com/zowe/zowe-cli/issues/2325)
+
+## `8.31.0`
+
 - Enhancement: Added a `Queue` utility to create and manage the processing of `Promise` queues. [#2543](https://github.com/zowe/zowe-cli/pull/2543)
 - Enhancement: Added a `requestQueue` getter to the `AbstractRestClient` abstract class to allow extenders to create and manage a queue of REST requests to help prevent server overload. [#2543](https://github.com/zowe/zowe-cli/pull/2543)
 - Enhancement: Added handling for `requestQueue` queue object to the `AbstractRestClient` abstract class's `request` function, if the `requestQueue` object is present. [#2543](https://github.com/zowe/zowe-cli/pull/2543)
