@@ -1,7 +1,7 @@
 # Change Log
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `8.31.0`
 
 - Enhancement: Added `certAccount` option to z/OSMF profile type to support client certificate authentication using certificates stored in system keystores (macOS Keychain or Windows Certificate Store). This enables secure authentication with both exportable and non-exportable private keys on macOS and Windows platforms. [#2325](https://github.com/zowe/zowe-cli/issues/2325)
 - Enhancement: Added `--exec` flag to `zosuss` for faster command execution. Exec mode bypasses shell initialization and profile loading, providing a performance improvement. Shell mode remains the default for backward compatibility. [#2687](https://github.com/zowe/zowe-cli/issues/2687)
