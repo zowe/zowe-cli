@@ -39,6 +39,7 @@ import { ProxySettings } from "./ProxySettings";
 import { EnvironmentalVariableSettings } from "../../../imperative/src/env/EnvironmentalVariableSettings";
 import { Censor } from "../../../censor";
 import { NativeHttpsClient } from "./NativeHttpsClient";
+import { Queue } from "./../../../utilities/src/queue";
 
 export type RestClientResolve = (data: string) => void;
 
@@ -288,6 +289,38 @@ export abstract class AbstractRestClient {
     }
 
     /**
+     * Getter for the request queue, if one exists.
+     * Must be implemented at the end Rest Client level to be static.
+     * @memberof AbstractRestClient
+     * @returns {Queue | undefined}
+     */
+    protected get requestQueue(): Queue | undefined {
+        return undefined; // Must be implemented
+    }
+
+    /**
+     * Wrap the request for a request into a request queue.
+     * Use the standard implementation if there is no request queue.
+     * @param {IRestOptions} options
+     * @returns {Promise<string>}
+     * @throws  if the request gets a status code outside of the 200 range
+     *          or other connection problems occur (e.g. connection refused)
+     * @memberof AbstractRestClient
+     */
+
+    public request(options: IRestOptions): Promise<string> {
+        if (this.requestQueue) {
+            let requestPool: string = undefined;
+            if (this.session.ISession.hostname) {
+                requestPool = this.session.ISession.hostname;
+                if (this.session.ISession.port) { requestPool += ":" + this.session.ISession.port.toString(); }
+            }
+            return this.requestQueue.enqueue(this._request.bind(this, options), requestPool);
+        }
+        return this._request(options);
+    }
+
+    /**
      * Perform the actual http REST call with appropriate user input
      * @param {IRestOptions} options
      * @returns {Promise<string>}
@@ -295,7 +328,7 @@ export abstract class AbstractRestClient {
      *          or other connection problems occur (e.g. connection refused)
      * @memberof AbstractRestClient
      */
-    public request(options: IRestOptions): Promise<string> {
+    protected _request(options: IRestOptions): Promise<string> {
         return new Promise<string>((resolve: RestClientResolve, reject: ImperativeReject) => {
             (async () => {
                 // save for logging
