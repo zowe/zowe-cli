@@ -195,7 +195,7 @@ describe("issue ssh handler tests", () => {
     });
 
     it("should call executeSsh with useExecMode=true when --exec is passed", async () => {
-        Shell.executeSsh = jest.fn(async (session, command, stdoutHandler, removeExtraChars, useExecMode) => {
+        Shell.executeSsh = jest.fn(async (session, command, stdoutHandler, _removeExtraChars, _useExecMode) => {
             stdoutHandler(testOutput);
             return 0;
         });
@@ -216,7 +216,7 @@ describe("issue ssh handler tests", () => {
     });
 
     it("should call executeSshCwd with useExecMode=true when --exec and --cwd are passed", async () => {
-        Shell.executeSshCwd = jest.fn(async (session, command, cwd, stdoutHandler, removeExtraChars, useExecMode) => {
+        Shell.executeSshCwd = jest.fn(async (session, command, cwd, stdoutHandler, _removeExtraChars, _useExecMode) => {
             stdoutHandler(testOutput);
             return 0;
         });
