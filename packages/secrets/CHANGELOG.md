@@ -4,7 +4,7 @@ All notable changes to the Zowe Secrets SDK package will be documented in this f
 
 ## Recent Changes
 
-- Enhancement: Added native certificate authentication support for macOS and Windows platforms. Implemented certificate retrieval from system keystores (macOS Keychain and Windows Certificate Store), identity context caching for signing operations, and native HTTPS clients with client certificate authentication. The implementation supports both exportable and non-exportable private keys through platform-specific cryptographic APIs (macOS Security framework and Windows CNG).
+- Enhancement: Added native certificate authentication support for macOS and Windows platforms. Implemented certificate retrieval from system keystores (macOS Keychain and Windows Certificate Store), identity context caching for signing operations, and native HTTPS clients with client certificate authentication. The implementation supports both exportable and non-exportable private keys through platform-specific cryptographic APIs (macOS Security framework and Windows CNG). [#2325](https://github.com/zowe/zowe-cli/issues/2325)
 
 ## `8.29.0`
 
