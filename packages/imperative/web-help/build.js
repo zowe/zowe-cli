@@ -53,10 +53,10 @@ const inlineUrlsPlugin = () => ({
         const fromDir = path.dirname(decl.source.input.file);
         decl.value = decl.value.replace(urlPattern, (match, filePath) => {
             const absPath = path.resolve(fromDir, filePath);
-            if (!fsSync.existsSync(absPath)) return match;
+            if (!fs.existsSync(absPath)) return match;
             const ext = path.extname(absPath).toLowerCase();
             const mime = mimeTypes[ext] || "application/octet-stream";
-            return `url(data:${mime};base64,${fsSync.readFileSync(absPath).toString("base64")})`;
+            return `url(data:${mime};base64,${fs.readFileSync(absPath).toString("base64")})`;
         });
     }
 });
