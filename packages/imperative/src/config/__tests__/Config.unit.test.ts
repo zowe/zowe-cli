@@ -874,4 +874,45 @@ describe("Config tests", () => {
             expect(spyOnFsWriteFileSync).not.toHaveBeenCalled();
         });
     });
+
+    describe("reload path normalization", () => {
+        it("should normalize projectDir using realpathSync.native on Windows", async () => {
+            Object.defineProperty(process, 'platform', { value: 'win32', configurable: true });
+
+            const rawPath = "C:/users/test/../project";
+            const normalizedPath = "C:\\users\\project";
+            const realPathSpy = jest.spyOn(fs.realpathSync, "native").mockReturnValue(normalizedPath as any);
+
+            const config = new (Config as any)();
+            config.mApp = MY_APP;
+            config.mLayers = [];
+
+            jest.spyOn(ConfigLayers.prototype, "read").mockImplementation(() => {});
+            jest.spyOn(ConfigSecure.prototype, "load").mockResolvedValue(undefined);
+
+            await config.reload({ projectDir: rawPath });
+
+            expect(realPathSpy).toHaveBeenCalledWith(rawPath);
+            expect(config.mProjectDir).toBe(normalizedPath);
+
+            Object.defineProperty(process, 'platform', { value: os.platform(), configurable: true });
+        });
+
+        it("should NOT normalize projectDir if not on Windows", async () => {
+            Object.defineProperty(process, 'platform', { value: 'darwin', configurable: true });
+            const testPath = "/home/user/project";
+            const realPathSpy = jest.spyOn(fs.realpathSync, "native");
+            const config = new (Config as any)();
+            config.mApp = MY_APP;
+            jest.spyOn(ConfigLayers.prototype, "read").mockImplementation(() => {});
+            jest.spyOn(ConfigSecure.prototype, "load").mockResolvedValue(undefined);
+
+            await config.reload({ projectDir: testPath });
+
+            expect(realPathSpy).not.toHaveBeenCalled();
+            expect(config.mProjectDir).toBe(testPath);
+
+            Object.defineProperty(process, 'platform', { value: os.platform(), configurable: true });
+        });
+    });
 });
