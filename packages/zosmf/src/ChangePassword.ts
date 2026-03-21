@@ -109,6 +109,7 @@ export class ZosmfChangePassword {
             }
 
             // Append extra context when the generic 8/2 error is returned
+            // https://www.ibm.com/docs/en/zos/3.2.0?topic=services-change-user-password-passphrase#izuprog_API_PUTWebTokenChangePWService__title__11
             if (err.causeErrors) {
                 try {
                     const errorResponse = JSON.parse(err.causeErrors);
@@ -117,11 +118,8 @@ export class ZosmfChangePassword {
                         errorResponse.reasonCode === this.EXTRA_REASON_CODE
                     ) {
                         const extraDetails =
-                            "\n\nNote: This generic failure message may also indicate:" +
-                            "\n  - The user ID was revoked" +
-                            "\n  - The user ID is not defined in RACF" +
-                            "\n\nThe z/OSMF server setting 'Display error details when login fails' controls " +
-                            "whether these specific errors are shown. Contact your system administrator if needed.";
+                            "\n\nNote: This generic failure message may also indicate " +
+                            "that the user ID was revoked or the user ID is not defined in RACF.";
 
                         const updatedDetails = { ...err.mDetails };
                         updatedDetails.msg += extraDetails;
