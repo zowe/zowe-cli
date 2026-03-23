@@ -9,7 +9,9 @@
 *
 */
 
-const fs = require("fs/promises");
+const fs = require("fs");
+const fsp = require("fs/promises");
+const path = require("path");
 
 const bundleJsFiles = [
     // JQuery must come before Bootstrap
@@ -35,27 +37,41 @@ async function concatFiles(inFiles, outFile, transform) {
     const bundle = [];
     for (const file of inFiles) {
         process.stdout.write(".");
-        const path = require.resolve(file);
-        const data = await fs.readFile(path);
-        bundle.push(transform != null ? await transform(data, path) : data);
+        const filePath = require.resolve(file);
+        const data = await fsp.readFile(filePath);
+        bundle.push(transform != null ? await transform(data, filePath) : data);
     }
-    await fs.writeFile(outFile, bundle.join("\n"));
+    await fsp.writeFile(outFile, bundle.join("\n"));
 }
 
-function postcssTransform(data, path) {
+const inlineUrlsPlugin = () => ({
+    postcssPlugin: "postcss-inline-urls",
+    Declaration(decl) {
+        if (!decl.value.includes("url(") || !decl.source?.input?.file) return;
+        const urlPattern = /url\(["']?(?!data:)([^"')]+)["']?\)/g;
+        const mimeTypes = { ".gif": "image/gif", ".jpg": "image/jpeg", ".png": "image/png", ".svg": "image/svg+xml" };
+        const fromDir = path.dirname(decl.source.input.file);
+        decl.value = decl.value.replace(urlPattern, (match, filePath) => {
+            const absPath = path.resolve(fromDir, filePath);
+            if (!fs.existsSync(absPath)) return match;
+            const ext = path.extname(absPath).toLowerCase();
+            const mime = mimeTypes[ext] || "application/octet-stream";
+            return `url(data:${mime};base64,${fs.readFileSync(absPath).toString("base64")})`;
+        });
+    }
+});
+inlineUrlsPlugin.postcss = true;
+
+function postcssTransform(data, filePath) {
     // Bundle JSTree images inline in the CSS
-    const postcss = require("postcss");
-    const postcssUrl = require("postcss-url")({ url: "inline" });
-    return new Promise((resolve) => {
-        postcss([postcssUrl])
-        .process(data, { from: path, to: path })
-        .then((result) => resolve(result.css));
-    });
+    return require("postcss")([inlineUrlsPlugin])
+        .process(data, { from: filePath, to: filePath })
+        .then((result) => result.css);
 }
 
 process.stdout.write("compiling web help bundle");
 Promise.all([
-    fs.mkdir(__dirname + "/dist/js", { recursive: true }),
+    fsp.mkdir(__dirname + "/dist/js", { recursive: true }),
     concatFiles(bundleJsFiles, __dirname + "/dist/js/bundle.js"),
     concatFiles(bundleCssFiles, __dirname + "/dist/css/bundle.css", postcssTransform),
     concatFiles(bundleDocsCssFiles, __dirname + "/dist/css/bundle-docs.css")

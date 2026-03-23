@@ -16,6 +16,8 @@ import { TestEnvironment } from "../../../../../../__tests__/__src__/environment
 import { ITestPropertiesSchema } from "../../../../../../__tests__/__src__/properties/ITestPropertiesSchema";
 import { getUniqueDatasetName, wait, waitTime } from "../../../../../../__tests__/__src__/TestUtils";
 import { ITestEnvironment } from "../../../../../../__tests__/__src__/environment/ITestEnvironment";
+import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
+import { GetJobs } from "@zowe/zos-jobs-for-zowe-sdk";
 
 let REAL_SESSION: Session;
 let testEnvironment: ITestEnvironment<ITestPropertiesSchema>;
@@ -1233,6 +1235,26 @@ describe("List command group - encoded", () => {
             expect(caughtError).not.toBeDefined();
             expect(response).toBeDefined();
             expect(response.commandResponse).toContain("There are no data sets that match");
+        });
+    });
+
+    describe("REST client request queue", () => {
+        async function countAddressSpaces() {
+            const response = await GetJobs.getJobs(REAL_SESSION);
+            return response.filter((job) => job.type === "TSU").length;
+        }
+
+        it("should not create multiple address spaces when maxConcurrentRequests is 1", async () => {
+            const addressSpacesBefore = await countAddressSpaces();
+            ZosmfRestClient.setThrottlingOptions({ maxConcurrentRequests: 1 });
+            const listResponse = await List.dataSet(REAL_SESSION, "SYS1.*", { attributes: true, maxLength: 100 });
+            expect(listResponse.success).toBe(true);
+            await Promise.all(listResponse.apiResponse.items
+                .filter((item: any) => item.dsorg === "PO")
+                .map((item: any) => List.allMembers(REAL_SESSION, item.dsname))
+            );
+            const addressSpacesAfter = await countAddressSpaces();
+            expect(addressSpacesAfter).toBeLessThanOrEqual(addressSpacesBefore + 1);
         });
     });
 });

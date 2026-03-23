@@ -77,6 +77,7 @@ describe("issue ssh handler tests", () => {
 
     afterEach(() => {
         jest.resetAllMocks();
+        delete (DEFAULT_PARAMETERS as any).arguments.cwd;
     });
 
     it("should be able to get stdout", async () => {
@@ -102,6 +103,7 @@ describe("issue ssh handler tests", () => {
         expect(Shell.executeSsh).toHaveBeenCalledTimes(1);
         expect(testOutput).toMatchSnapshot();
     });
+
     it("should prompt user for keyPassphrase if none is stored and privateKey requires one", async () => {
         Shell.executeSsh = jest.fn(async (session, command, stdoutHandler) => {
             stdoutHandler(testOutput);
@@ -117,6 +119,7 @@ describe("issue ssh handler tests", () => {
         expect(Shell.executeSsh).toHaveBeenCalledTimes(1);
         expect(testOutput).toMatchSnapshot();
     });
+
     it("should reprompt user for keyPassphrase up to 3 times if stored passphrase failed", async () => {
         Shell.executeSsh = jest.fn(async (session, command, stdoutHandler) => {
             stdoutHandler(testOutput);
@@ -132,6 +135,7 @@ describe("issue ssh handler tests", () => {
         expect(Shell.executeSsh).toHaveBeenCalledTimes(1);
         expect(testOutput).toMatchSnapshot();
     });
+
     it("should fail if user fails to enter incorrect key passphrase in 3 attempts", async () => {
         const testOutput = "Maximum retry attempts reached. Authentication failed.";
         Shell.executeSsh = jest.fn(async (session, command, stdoutHandler) => {
@@ -147,6 +151,7 @@ describe("issue ssh handler tests", () => {
         expect(handler.processCmd).toHaveBeenCalledTimes(4);
         expect(testOutput).toMatchSnapshot();
     });
+
     it("should prompt for user and keyPassphrase if neither is stored", async () => {
         const testOutput = "test";
         Shell.executeSsh = jest.fn(async (session, command, stdoutHandler) => {
@@ -163,6 +168,7 @@ describe("issue ssh handler tests", () => {
         expect(Shell.executeSsh).toHaveBeenCalledTimes(1);
         expect(testOutput).toMatchSnapshot();
     });
+
     it("should be able to get stdout with privateKey", async () => {
         Shell.executeSsh = jest.fn(async (session, command, stdoutHandler) => {
             stdoutHandler(testOutput);
@@ -174,6 +180,7 @@ describe("issue ssh handler tests", () => {
         expect(Shell.executeSsh).toHaveBeenCalledTimes(1);
         expect(testOutput).toMatchSnapshot();
     });
+
     it("should be able to get stdout with cwd option", async () => {
         Shell.executeSshCwd = jest.fn(async (session, command, cwd, stdoutHandler) => {
             stdoutHandler(testOutput);
@@ -184,6 +191,50 @@ describe("issue ssh handler tests", () => {
         params.arguments.cwd = "/user/home";
         await handler.process(params);
         expect(Shell.executeSshCwd).toHaveBeenCalledTimes(1);
+        expect(testOutput).toMatchSnapshot();
+    });
+
+    it("should call executeSsh with useExecMode=true when --exec is passed", async () => {
+        Shell.executeSsh = jest.fn(async (session, command, stdoutHandler, _removeExtraChars, _useExecMode) => {
+            stdoutHandler(testOutput);
+            return 0;
+        });
+        const handler = new SshHandler();
+        const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
+        params.arguments.command = "pwd";
+        params.arguments.exec = true;
+        await handler.process(params);
+        expect(Shell.executeSsh).toHaveBeenCalledTimes(1);
+        expect(Shell.executeSsh).toHaveBeenCalledWith(
+            expect.anything(),
+            "pwd",
+            expect.any(Function),
+            false,
+            true
+        );
+        expect(testOutput).toMatchSnapshot();
+    });
+
+    it("should call executeSshCwd with useExecMode=true when --exec and --cwd are passed", async () => {
+        Shell.executeSshCwd = jest.fn(async (session, command, cwd, stdoutHandler, _removeExtraChars, _useExecMode) => {
+            stdoutHandler(testOutput);
+            return 0;
+        });
+        const handler = new SshHandler();
+        const params = Object.assign({}, ...[DEFAULT_PARAMETERS]);
+        params.arguments.command = "ls -la";
+        params.arguments.cwd = "/user/home";
+        params.arguments.exec = true;
+        await handler.process(params);
+        expect(Shell.executeSshCwd).toHaveBeenCalledTimes(1);
+        expect(Shell.executeSshCwd).toHaveBeenCalledWith(
+            expect.anything(),
+            "ls -la",
+            "/user/home",
+            expect.any(Function),
+            false,
+            true
+        );
         expect(testOutput).toMatchSnapshot();
     });
 });

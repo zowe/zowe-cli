@@ -3,7 +3,12 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## Recent Changes
 
+- BugFix: Updated the `flatted` dependency to resolve technical currency. [#2702](https://github.com/zowe/zowe-cli/pull/2702)
 - BugFix: Enhanced the `zowe zos-files upload file-to-uss` command to support uploading a file to a USS directory using its original filename when the target is a directory (similar to UNIX cp) and added the `--make-directories` option to automatically create missing target directories during upload.[#2686](https://github.com/zowe/zowe-cli/pull/2686)
+
+## `8.31.0`
+
+- Enhancement: Added `--exec` flag to `zosuss` for faster command execution. Exec mode bypasses shell initialization and profile loading, providing a performance improvement. Shell mode remains the default for backward compatibility. [#2687](https://github.com/zowe/zowe-cli/issues/2687)
 
 ## `8.30.3`
 
