@@ -355,6 +355,8 @@ export abstract class AbstractRestClient {
                 // As a safety net to ensure that no logic has placed a different cred in the
                 // session since then, we again place only the top cred in the session.
                 AuthOrder.putTopAuthInSession(this.session.ISession);
+                // form a header from scrtData and place the header into the options.reqHeaders
+                this.addScrtHeader(options);
                 const buildOptions = await this.buildOptions(options.resource, options.request, options.reqHeaders);
 
                 if (NativeHttpsClient.isEnabled(this.session.ISession)
@@ -450,7 +452,7 @@ export abstract class AbstractRestClient {
                 clientRequest.on("error", (errorResponse: any) => {
                 // Handle the HTTP 1.1 Keep-Alive race condition
                     if (errorResponse.code === "ECONNRESET" && clientRequest.reusedSocket) {
-                        this.request(options).then((response: string) => {
+                        this._request(options).then((response: string) => {
                             resolve(response);
                         }).catch((err) => {
                             reject(err);
