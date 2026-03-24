@@ -263,6 +263,7 @@ export class Download {
             const downloadErrors: Error[] = [];
             const failedMembers: string[] = [];
             const skippedMembers: string[] = [];
+            let downloadCancelled = false;
             let downloadsInitiated = 0;
 
             let defaultExtension = ZosFilesUtils.DEFAULT_FILE_EXTENSION;
@@ -275,6 +276,11 @@ export class Download {
              * @param mem - an object with a "member" field containing the name of the data set member
              */
             const createDownloadPromise = (mem: { member: string }) => {
+                if (downloadCancelled || options.abortDownload?.()) {
+                    downloadCancelled = true;
+                    return Promise.resolve();
+                }
+
                 // update the progress bar if any
                 if (options.task != null) {
                     options.task.statusMessage = "Downloading " + mem.member;
@@ -340,6 +346,10 @@ export class Download {
                 await asyncPool(maxConcurrentRequests, memberList, createDownloadPromise);
             }
 
+            if (downloadCancelled && options.task != null) {
+                options.task.statusMessage = "Operation cancelled";
+            }
+
             // Handle failed downloads if no errors were thrown yet
             if (downloadErrors.length > 0) {
                 throw new ImperativeError({
@@ -363,6 +373,10 @@ export class Download {
                 responseMessage += util.format(ZosFilesMessages.memberDownloadSkipped.message, skippedMembers.length);
             }
 
+            if (downloadCancelled) {
+                responseMessage = "The download was cancelled.\n" + responseMessage;
+            }
+
             const downloadResult: IDownloadAmResult = {
                 downloaded: downloadedCount,
                 skipped: skippedMembers.length,
@@ -373,7 +387,7 @@ export class Download {
             };
 
             return {
-                success: true,
+                success: !downloadCancelled,
                 commandResponse: responseMessage,
                 apiResponse: {
                     ...response.apiResponse,
@@ -419,6 +433,7 @@ export class Download {
         ImperativeExpect.toNotBeEqual(dataSetObjs.length, 0, ZosFilesMessages.missingDataSets.message);
         const result = this.emptyDownloadDsmResult();
         const zosmfResponses: IZosmfListResponseWithStatus[] = [...dataSetObjs];
+        let downloadCancelled = false;
 
         try {
             // Download data sets
@@ -525,6 +540,11 @@ export class Download {
 
             let downloadsInitiated = 0;
             const createDownloadPromise = (task: IDownloadDsmTask) => {
+                if (downloadCancelled || options.abortDownload?.()) {
+                    downloadCancelled = true;
+                    return Promise.resolve();
+                }
+
                 if (options.task != null) {
                     options.task.statusMessage = "Downloading data set " + task.dsname;
                     options.task.percentComplete = Math.floor(TaskProgress.ONE_HUNDRED_PERCENT *
@@ -569,6 +589,10 @@ export class Download {
             // We execute the promises sequentially to make sure that
             // we do not exceed `--mcr` when downloading multiple members
             for (const task of poDownloadTasks) {
+                if (downloadCancelled || options.abortDownload?.()) {
+                    downloadCancelled = true;
+                    break;
+                }
                 await createDownloadPromise(task);
             }
 
@@ -579,6 +603,10 @@ export class Download {
             } else {
                 await asyncPool(maxConcurrentRequests, psDownloadTasks, createDownloadPromise);
             }
+
+            if (downloadCancelled && options.task != null) {
+                options.task.statusMessage = "Operation cancelled";
+            }
         } catch (error) {
             Logger.getAppLogger().error(error);
 
@@ -586,7 +614,7 @@ export class Download {
         }
 
         // Handle failed downloads if no errors were thrown yet
-        if (Object.keys(result.failedWithErrors).length > 0) {
+        if (!downloadCancelled && Object.keys(result.failedWithErrors).length > 0) {
             throw new ImperativeError({
                 msg: ZosFilesMessages.datasetDownloadFailed.message + Object.keys(result.failedWithErrors).join("\n"),
                 causeErrors: Object.values(result.failedWithErrors),
@@ -595,9 +623,12 @@ export class Download {
         }
 
         const numFailed = result.failedArchived.length + result.failedUnsupported.length + Object.keys(result.failedWithErrors).length;
+        const commandResponse = downloadCancelled
+            ? "The download was cancelled.\n" + this.buildDownloadDsmResponse(result, options)
+            : this.buildDownloadDsmResponse(result, options);
         return {
-            success: numFailed === 0,
-            commandResponse: this.buildDownloadDsmResponse(result, options),
+            success: !downloadCancelled && numFailed === 0,
+            commandResponse,
             apiResponse: zosmfResponses,
             errorMessage: numFailed > 0 ? ZosFilesMessages.someDownloadsFailed.message : undefined
         };
@@ -724,6 +755,7 @@ export class Download {
         const workingDirectory = fileOptions.directory ? fileOptions.directory : process.cwd();
         const responses: IZosFilesResponse[] = [];
         const downloadTasks: IDownloadUssTask[] = [];
+        let downloadCancelled = false;
         let downloadsInitiated = 0;
         let downloadsTotal = 0;
 
@@ -736,6 +768,11 @@ export class Download {
         };
 
         const createFilePromise = (task: IDownloadUssTask) => {
+            if (downloadCancelled || fileOptions.abortDownload?.()) {
+                downloadCancelled = true;
+                return Promise.resolve();
+            }
+
             if (fileOptions.task != null) {
                 fileOptions.task.statusMessage = "Downloading file: " + task.file;
                 fileOptions.task.percentComplete = Math.floor(TaskProgress.ONE_HUNDRED_PERCENT * (downloadsInitiated / downloadsTotal));
@@ -764,6 +801,11 @@ export class Download {
         };
 
         const createDirPromise = (task: IDownloadUssTask) => {
+            if (downloadCancelled || fileOptions.abortDownload?.()) {
+                downloadCancelled = true;
+                return Promise.resolve();
+            }
+
             return fs.promises.mkdir(task.dirName, { recursive: true }).then(
                 () => {
                     result.downloaded.push(task.dirName);
@@ -827,9 +869,17 @@ export class Download {
                 await asyncPool(maxConcurrentRequests, downloadTasks, createPromise);
             }
 
+            if (downloadCancelled && fileOptions.task != null) {
+                fileOptions.task.statusMessage = "Operation cancelled";
+            }
+
+            const commandResponse = downloadCancelled
+                ? "The download was cancelled.\n" + this.buildDownloadUssDirResponse(result, fileOptions)
+                : this.buildDownloadUssDirResponse(result, fileOptions);
+
             return {
-                success: Object.keys(result.failedWithErrors).length === 0,
-                commandResponse: this.buildDownloadUssDirResponse(result, fileOptions),
+                success: !downloadCancelled && Object.keys(result.failedWithErrors).length === 0,
+                commandResponse,
                 apiResponse: responses
             };
         } catch (error) {
