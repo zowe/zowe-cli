@@ -1,7 +1,7 @@
 # Change Log
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `8.31.1`
 
 - BugFix: Updated the `flatted` dependency to resolve technical currency. [#2702](https://github.com/zowe/zowe-cli/pull/2702)
 
