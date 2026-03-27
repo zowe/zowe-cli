@@ -1,6 +1,10 @@
 # Change Log
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated the `picomatch` dependency to resolve technical currency. [#2705](https://github.com/zowe/zowe-cli/pull/2705)
+
 ## `8.31.1`
 
 - BugFix: Updated the `flatted` dependency to resolve technical currency. [#2702](https://github.com/zowe/zowe-cli/pull/2702)
