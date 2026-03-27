@@ -102,11 +102,7 @@ export function getPackageInfo(pkgSpec: string): { name: string, version: string
         // Package name is unknown, so fetch it with 'npm pack' command
         let execOutput: Buffer | string = "No Spawn output retrieved";
         try {
-            const tenSecTimeout = 10000;
-            execOutput = ExecUtils.spawnAndGetOutput(npmCmd,
-                ["pack", pkgSpec, "--dry-run", "--json"],
-                { timeout: tenSecTimeout }
-            );
+            execOutput = ExecUtils.spawnAndGetOutput(npmCmd, ["pack", pkgSpec, "--dry-run", "--json"]);
             packageName = JSON.parse(execOutput.toString())[0].name;
         } catch (err) {
             throw new ImperativeError({
