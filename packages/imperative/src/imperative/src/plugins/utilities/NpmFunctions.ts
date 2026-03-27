@@ -100,13 +100,19 @@ export function getPackageInfo(pkgSpec: string): { name: string, version: string
     let packageName = pkgInfo.name;
     if (!pkgInfo.registry) {
         // Package name is unknown, so fetch it with 'npm pack' command
+        let execOutput: Buffer | string = "No Spawn output retrieved";
         try {
-            const execOutput = ExecUtils.spawnAndGetOutput(npmCmd, ["pack", pkgSpec, "--dry-run", "--json"]);
+            const tenSecTimeout = 10000;
+            execOutput = ExecUtils.spawnAndGetOutput(npmCmd,
+                ["pack", pkgSpec, "--dry-run", "--json"],
+                { timeout: tenSecTimeout }
+            );
             packageName = JSON.parse(execOutput.toString())[0].name;
         } catch (err) {
             throw new ImperativeError({
                 msg: `Failed to fetch metadata for package: ${pkgSpec}`,
-                additionalDetails: (err as Error).message,
+                additionalDetails: "Error.message = " + (err as Error).message +
+                    "\nSpawn output:\n" + execOutput
             });
         }
     }
