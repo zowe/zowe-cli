@@ -106,7 +106,7 @@ describe("NpmFunctions", () => {
             const spawnSpy = jest.spyOn(ExecUtils, "spawnAndGetOutput").mockReturnValueOnce(JSON.stringify([expectedInfo]));
             const actualInfo = npmFunctions.getPackageInfo(pkgSpec);
             expect(actualInfo).toEqual(expectedInfo);
-            expect(spawnSpy).toHaveBeenCalledWith(npmCmd, expect.arrayContaining(["pack", pkgSpec]));
+            expect(spawnSpy).toHaveBeenCalledWith(npmCmd, expect.arrayContaining(["pack", pkgSpec]), {timeout: 10000});
         });
 
         it("should fetch info for package installed from local TGZ", () => {
@@ -116,7 +116,7 @@ describe("NpmFunctions", () => {
             const spawnSpy = jest.spyOn(ExecUtils, "spawnAndGetOutput").mockReturnValueOnce(JSON.stringify([expectedInfo]));
             const actualInfo = npmFunctions.getPackageInfo(pkgSpec);
             expect(actualInfo).toEqual(expectedInfo);
-            expect(spawnSpy).toHaveBeenCalledWith(npmCmd, expect.arrayContaining(["pack", pkgSpec]));
+            expect(spawnSpy).toHaveBeenCalledWith(npmCmd, expect.arrayContaining(["pack", pkgSpec]), {timeout: 10000});
         });
 
         it("should fetch info for package installed from Git URL", () => {
@@ -126,7 +126,7 @@ describe("NpmFunctions", () => {
             const spawnSpy = jest.spyOn(ExecUtils, "spawnAndGetOutput").mockReturnValueOnce(JSON.stringify([expectedInfo]));
             const actualInfo = npmFunctions.getPackageInfo(pkgSpec);
             expect(actualInfo).toEqual(expectedInfo);
-            expect(spawnSpy).toHaveBeenCalledWith(npmCmd, expect.arrayContaining(["pack", pkgSpec]));
+            expect(spawnSpy).toHaveBeenCalledWith(npmCmd, expect.arrayContaining(["pack", pkgSpec]), {timeout: 10000});
         });
 
         it("should fetch info for package installed from remote TGZ", () => {
@@ -136,7 +136,7 @@ describe("NpmFunctions", () => {
             const spawnSpy = jest.spyOn(ExecUtils, "spawnAndGetOutput").mockReturnValueOnce(JSON.stringify([expectedInfo]));
             const actualInfo = npmFunctions.getPackageInfo(pkgSpec);
             expect(actualInfo).toEqual(expectedInfo);
-            expect(spawnSpy).toHaveBeenCalledWith(npmCmd, expect.arrayContaining(["pack", pkgSpec]));
+            expect(spawnSpy).toHaveBeenCalledWith(npmCmd, expect.arrayContaining(["pack", pkgSpec]), {timeout: 10000});
         });
 
         it("getScopeRegistry() should return registry for 'test' scope", () => {
