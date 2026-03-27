@@ -3,7 +3,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## Recent Changes
 
-- BugFix: Updated the `picomatch` dependency to resolve technical currency. [#2705](https://github.com/zowe/zowe-cli/pull/2705)
+- BugFix: Updated the `brace-expansion` and `picomatch` dependencies to resolve technical currency. [#2705](https://github.com/zowe/zowe-cli/pull/2705)
 
 ## `8.31.1`
 
