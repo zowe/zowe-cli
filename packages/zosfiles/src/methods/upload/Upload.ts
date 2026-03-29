@@ -600,7 +600,7 @@ export class Upload {
         const skipDirCheck = options.skipDirectoryCheck === true;
 
         // Check if ussname is a directory (ends with '/') or if it exists as a directory on z/OS
-        let isUssDirectory = ussname.endsWith('/');
+        const isUssDirectory = ussname.endsWith('/');
 
         // If path ends with '/', it's a directory - append the filename
         if (isUssDirectory) {
@@ -610,14 +610,13 @@ export class Upload {
             try {
                 const existsAsDir = await this.isDirectoryExist(session, ussname);
                 if (existsAsDir) {
-                    isUssDirectory = true;
                     const baseName = path.basename(inputFile);
                     if (path.posix.basename(ussname) !== baseName) {
                         ussname = path.posix.join(ussname, baseName);
                     }
                 }
             } catch {
-                isUssDirectory = false;
+                // Directory check failed, continue with ussname as-is
             }
         }
 
@@ -683,26 +682,31 @@ export class Upload {
         dirPath: string,
         skipCheck: boolean = false
     ): Promise<void> {
-        dirPath = dirPath.replace(/\/+$/, '');
+        // Remove trailing slashes efficiently without polynomial regex
+        while (dirPath.endsWith('/')) {
+            dirPath = dirPath.slice(0, -1);
+        }
         if (!dirPath || dirPath === '/') return;
-        
+
         // If skipCheck is false, check if directory exists
         if (!skipCheck) {
             const exists = await this.isDirectoryExist(session, dirPath).catch(() => false);
             if (exists) return;
         }
-        
-        // Recursively create parent directory first
+
+        // Recursively create parent directory first (always check parent directories)
         const parentDir = path.posix.dirname(dirPath);
         if (parentDir && parentDir !== dirPath && parentDir !== '.') {
-            await this.createDirectoriesRecursively(session, parentDir, skipCheck);
+            await this.createDirectoriesRecursively(session, parentDir, false);
         }
-        
         try {
             await Create.uss(session, dirPath, "directory");
-        } catch (err) {
-            throw err;
+        } catch (error) {
+        if ( error?.mDetails?.msg?.includes("already exists")) {
+            return;
         }
+        throw error;
+    }
     }
 
     /**
