@@ -682,31 +682,29 @@ export class Upload {
         dirPath: string,
         skipCheck: boolean = false
     ): Promise<void> {
-        // Remove trailing slashes efficiently without polynomial regex
         while (dirPath.endsWith('/')) {
             dirPath = dirPath.slice(0, -1);
         }
-        if (!dirPath || dirPath === '/') return;
+        if (!dirPath || dirPath === '/' || dirPath === '.') return;
 
-        // If skipCheck is false, check if directory exists
-        if (!skipCheck) {
-            const exists = await this.isDirectoryExist(session, dirPath).catch(() => false);
-            if (exists) return;
-        }
-
-        // Recursively create parent directory first (always check parent directories)
         const parentDir = path.posix.dirname(dirPath);
-        if (parentDir && parentDir !== dirPath && parentDir !== '.') {
-            await this.createDirectoriesRecursively(session, parentDir, false);
+        if (parentDir === dirPath) return;
+
+        await this.createDirectoriesRecursively(session, parentDir, skipCheck);
+
+        if (skipCheck) {
+            await Create.uss(session, dirPath, "directory").catch((err) => {
+                if (err?.mDetails?.msg?.includes("already exists")) {
+                    return;
+                }
+                throw err;
+            });
+        } else {
+            const exists = await this.isDirectoryExist(session, dirPath).catch(() => false);
+            if (!exists) {
+                await Create.uss(session, dirPath, "directory");
+            }
         }
-        try {
-            await Create.uss(session, dirPath, "directory");
-        } catch (error) {
-        if ( error?.mDetails?.msg?.includes("already exists")) {
-            return;
-        }
-        throw error;
-    }
     }
 
     /**
