@@ -82,4 +82,11 @@ export interface IUploadOptions extends IOptions {
     * When set to true, any missing directories in the target path will be automatically created.
     */
     makeDir?: boolean;
+
+    /**
+    * Specifies whether to skip checking if the target path is a directory before uploading.
+    * When set to true, the upload will proceed assuming the target is a file path,
+    * reducing additional network calls and improving performance for bulk operations.
+    */
+    skipDirectoryCheck?: boolean;
 }

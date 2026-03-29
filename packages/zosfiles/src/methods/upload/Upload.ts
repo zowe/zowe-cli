@@ -596,34 +596,41 @@ export class Upload {
         ImperativeExpect.toNotBeEqual(ussname, "", ZosFilesMessages.missingUSSFileName.message);
         ImperativeExpect.toNotBeEqual(options.record, true, ZosFilesMessages.unsupportedDataType.message);
 
+        // User knows the target is already a file
+        const skipDirCheck = options.skipDirectoryCheck === true;
+
         // Check if ussname is a directory (ends with '/') or if it exists as a directory on z/OS
         let isUssDirectory = ussname.endsWith('/');
 
-        if (!isUssDirectory) {
-            const isDirectoryExist = await this.isDirectoryExist(session, ussname);
-            if (isDirectoryExist) {
-                isUssDirectory = true;
-            } else if (options.makeDir) {
-                const hasExtension = path.posix.extname(ussname) !== '';
-                if (!hasExtension) {
-                    isUssDirectory = true;
-                }
-            }
-        }
-
+        // If path ends with '/', it's a directory - append the filename
         if (isUssDirectory) {
             const baseName = path.basename(inputFile);
-            if (!ussname.endsWith(baseName)) {
-                ussname = path.posix.join(ussname, baseName);
+            ussname = path.posix.join(ussname, baseName);
+        } else if (!skipDirCheck && !options.makeDir) {
+            try {
+                const existsAsDir = await this.isDirectoryExist(session, ussname);
+                if (existsAsDir) {
+                    isUssDirectory = true;
+                    const baseName = path.basename(inputFile);
+                    if (path.posix.basename(ussname) !== baseName) {
+                        ussname = path.posix.join(ussname, baseName);
+                    }
+                }
+            } catch {
+                isUssDirectory = false;
             }
         }
 
         if (options.makeDir) {
             const parentDir = path.posix.dirname(ussname);
-            const parentExists = await this.isDirectoryExist(session, parentDir);
-            if (!parentExists) {
-                await Create.uss(session, parentDir, "directory");
+
+            if (!parentDir || parentDir === ussname || parentDir === '.') {
+                throw new ImperativeError({
+                    msg: "Invalid parent directory resolution for USS upload"
+                });
             }
+
+            await this.createDirectoriesRecursively(session, parentDir, skipDirCheck);
         }
 
         const promise = new Promise((resolve, reject) => {
@@ -669,6 +676,33 @@ export class Upload {
             commandResponse: ZosFilesMessages.ussFileUploadedSuccessfully.message,
             apiResponse: result
         };
+    }
+
+    private static async createDirectoriesRecursively(
+        session: AbstractSession,
+        dirPath: string,
+        skipCheck: boolean = false
+    ): Promise<void> {
+        dirPath = dirPath.replace(/\/+$/, '');
+        if (!dirPath || dirPath === '/') return;
+        
+        // If skipCheck is false, check if directory exists
+        if (!skipCheck) {
+            const exists = await this.isDirectoryExist(session, dirPath).catch(() => false);
+            if (exists) return;
+        }
+        
+        // Recursively create parent directory first
+        const parentDir = path.posix.dirname(dirPath);
+        if (parentDir && parentDir !== dirPath && parentDir !== '.') {
+            await this.createDirectoriesRecursively(session, parentDir, skipCheck);
+        }
+        
+        try {
+            await Create.uss(session, dirPath, "directory");
+        } catch (err) {
+            throw err;
+        }
     }
 
     /**
@@ -774,8 +808,8 @@ export class Upload {
      * @return {Promise<boolean>}
      */
     public static async isDirectoryExist(session: AbstractSession, ussname: string): Promise<boolean> {
-        ussname = encodeURIComponent("/") + ZosFilesUtils.sanitizeUssPathForRestCall(ussname);
-        const parameters: string = `${ZosFilesConstants.RES_USS_FILES}?path=${ussname}`;
+        ussname = ZosFilesUtils.sanitizeUssPathForRestCall(ussname);
+        const parameters: string = `${ZosFilesConstants.RES_USS_FILES}?path=${encodeURIComponent("/")}${ussname}`;
         try {
             const response: any = await ZosmfRestClient.getExpectJSON(session, ZosFilesConstants.RESOURCE + parameters,
                 [ZosmfHeaders.ACCEPT_ENCODING]);

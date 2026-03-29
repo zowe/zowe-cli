@@ -50,7 +50,8 @@ export const FileToUSSDefinition: ICommandDefinition = {
         UploadOptions.binary,
         UploadOptions.encoding,
         UploadOptions.attributes,
-        UploadOptions.makeDir
+        UploadOptions.makeDir,
+        UploadOptions.skipDirectoryCheck
     ],
     examples: [
         {
