@@ -95,6 +95,12 @@ export class NativeHttpsClient {
      * @returns Promise<boolean> - true if exportable, false if non-exportable
      */
     public static async isKeyExportable(certAccount: string, cliHome: string): Promise<boolean> {
+        // Windows does not currently support checking key exportability
+        // All Windows keys are treated as non-exportable and use the native HTTPS client
+        if (process.platform === "win32") {
+            return false;
+        }
+
         try {
             // eslint-disable-next-line @typescript-eslint/no-var-requires
             const secretsSdk = require("@zowe/secrets-for-zowe-sdk");

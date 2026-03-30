@@ -110,24 +110,6 @@ didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
     completionHandler(NSURLSessionAuthChallengePerformDefaultHandling, nil);
 }
 
-- (void)URLSession:(NSURLSession *)session
-          dataTask:(NSURLSessionDataTask *)dataTask
-    didReceiveData:(NSData *)data {
-    [self.responseData appendData:data];
-}
-
-- (void)URLSession:(NSURLSession *)session
-              task:(NSURLSessionTask *)task
-didCompleteWithError:(NSError *)error {
-    [self.condition lock];
-    if (error) {
-        self.error = error;
-    }
-    self.completed = YES;
-    [self.condition signal];
-    [self.condition unlock];
-}
-
 @end
 
 // C function to perform HTTPS request

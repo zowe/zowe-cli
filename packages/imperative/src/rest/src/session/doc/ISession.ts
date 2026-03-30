@@ -142,7 +142,7 @@ export interface ISession {
      * The account name for a PKCS#12 certificate stored in the credential manager.
      * When specified, the certificate and private key will be retrieved from the
      * system keychain instead of from files.
-     * (macOS only - uses non-exportable keys from Keychain Access)
+     * (supported for macOS & Windows only)
      * @type {string}
      * @memberof ISession
      */
@@ -250,4 +250,13 @@ export interface ISession {
      * which is transmitted to a REST service through this session.
      */
     scrtData?: IScrtData;
+
+    /**
+     * Flag to indicate if native https should be used for non-exportable connections
+     * @internal
+     *
+     * @type {boolean}
+     * @memberof ISession
+     */
+    _useNativeHttpsForNonExportable?: boolean;
 }

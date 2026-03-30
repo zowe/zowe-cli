@@ -50,7 +50,7 @@ pub const PERSIST_ENTERPRISE: u32 = CRED_PERSIST_ENTERPRISE;
 /// Returns:
 /// A `String` object containing the error message
 ///
-fn win32_error_as_string(error: WIN32_ERROR) -> String {
+pub(super) fn win32_error_as_string(error: WIN32_ERROR) -> String {
     let mut buffer: PWSTR = std::ptr::null_mut();
 
     // https://github.com/microsoft/windows-rs/blob/master/crates/libs/core/src/hresult.rs#L96
@@ -90,7 +90,7 @@ fn win32_error_as_string(error: WIN32_ERROR) -> String {
 /// Returns:
 /// - `Some(val)` if the string was successfully converted to UTF-16, or `None` otherwise.
 ///
-fn encode_utf16(str: &str) -> Vec<u16> {
+pub(super) fn encode_utf16(str: &str) -> Vec<u16> {
     let mut chars: Vec<u16> = str.encode_utf16().collect();
     chars.push(0);
     chars

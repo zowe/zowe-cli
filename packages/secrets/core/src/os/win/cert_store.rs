@@ -4,52 +4,10 @@
 //! from the Windows Certificate Store (User store).
 
 use crate::os::error::KeyringError;
+use super::{encode_utf16, win32_error_as_string};
 use std::ffi::c_void;
 use windows_sys::Win32::Foundation::*;
 use windows_sys::Win32::Security::Cryptography::*;
-
-/// Helper function to encode a string as a null-terminated UTF-16 string
-pub(super) fn encode_utf16(s: &str) -> Vec<u16> {
-    let mut chars: Vec<u16> = s.encode_utf16().collect();
-    chars.push(0);
-    chars
-}
-
-/// Helper function to convert Windows error to string
-fn win32_error_as_string(error: WIN32_ERROR) -> String {
-    use windows_sys::Win32::System::Diagnostics::Debug::*;
-    use windows_sys::Win32::System::Memory::LocalFree;
-    use windows_sys::core::PWSTR;
-    
-    let mut buffer: PWSTR = std::ptr::null_mut();
-    let as_hresult = if error == 0 {
-        0
-    } else {
-        (error & 0x0000_FFFF) | (7 << 16) | 0x8000_0000
-    } as _;
-    
-    let mut str = "No error details available.".to_owned();
-    unsafe {
-        let size = FormatMessageW(
-            FORMAT_MESSAGE_ALLOCATE_BUFFER
-                | FORMAT_MESSAGE_FROM_SYSTEM
-                | FORMAT_MESSAGE_IGNORE_INSERTS,
-            as_hresult as *const c_void,
-            as_hresult,
-            0,
-            &mut buffer as *mut PWSTR as PWSTR,
-            0,
-            std::ptr::null(),
-        );
-        
-        if !buffer.is_null() {
-            str = String::from_utf16(std::slice::from_raw_parts(buffer, size as usize))
-                .unwrap_or(str);
-            LocalFree(buffer as isize);
-        }
-    }
-    str
-}
 
 /// Find a certificate in the Windows Certificate Store by subject name
 ///
@@ -156,17 +114,35 @@ pub fn get_certificate(
 }
 
 /// Returns the private key data (PKCS#1 DER format) for a given identity.
-/// This will fail if the key is non-exportable.
-/// In that case, use create_identity_context + sign_with_identity instead.
+///
+/// # Current Implementation Limitation
+/// This function currently does NOT check whether a key is actually exportable.
+/// Instead, it always returns an error indicating the key cannot be exported.
+/// This is intentional behavior for the initial implementation phase.
+///
+/// # Rationale
+/// Windows certificates can have non-exportable private keys that cannot be extracted
+/// but can still be used for cryptographic operations via CNG APIs. Rather than
+/// attempting to export keys (which may fail or expose security risks), this function
+/// directs users to use the native HTTPS client which can work with non-exportable keys.
+///
+/// # Future Enhancement
+/// A proper implementation could use NCryptExportKey to determine if a key is truly
+/// exportable: https://learn.microsoft.com/en-us/windows/win32/api/ncrypt/nf-ncrypt-ncryptexportkey
 ///
 /// # Arguments
 /// * `_service` - Service name (reserved for future use)
 /// * `account` - The subject name (CN) of the certificate
 ///
 /// # Returns
-/// * `Ok(Some(Vec<u8>))` - Private key data in PKCS#1 DER format
+/// * `Ok(Some(Vec<u8>))` - Private key data in PKCS#1 DER format (not currently returned)
 /// * `Ok(None)` - Certificate not found
-/// * `Err(KeyringError)` - Error accessing key or key is non-exportable
+/// * `Err(KeyringError)` - Always returned if certificate is found, directing users to use
+///   create_identity_context and sign_with_identity for non-exportable keys
+///
+/// # See Also
+/// * `create_identity_context` - Creates a context for non-exportable keys
+/// * `sign_with_identity` - Signs data using non-exportable keys
 pub fn get_private_key(
     _service: &String,
     account: &String,

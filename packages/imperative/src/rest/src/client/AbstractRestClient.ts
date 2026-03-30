@@ -362,9 +362,10 @@ export abstract class AbstractRestClient {
                 if (NativeHttpsClient.isEnabled(this.session.ISession)
                     && this.session.ISession.protocol === SessConstants.HTTPS_PROTOCOL) {
                     if (options.requestStream != null || options.responseStream != null) {
+                        const platformName = process.platform === "win32" ? "WINDOWS" : "MACOS";
                         throw new ImperativeError({
-                            msg: "macOS native HTTPS client does not yet support streaming requests/responses.",
-                            additionalDetails: "Disable ZOWE_MACOS_NATIVE_HTTPS or avoid streaming for this request.",
+                            msg: "Native HTTPS client does not yet support streaming requests/responses.",
+                            additionalDetails: `Disable OS specific environment variable ZOWE_${platformName}_NATIVE_HTTPS or avoid streaming for this request.`,
                         });
                     }
 
@@ -1149,7 +1150,7 @@ export abstract class AbstractRestClient {
                 const platformName = process.platform === "darwin" ? "macOS" : "Windows";
                 this.log.info(`Certificate '${this.session.ISession.certAccount}' has a non-exportable private key. ` +
                     `Automatically using ${platformName} native HTTPS client.`);
-                (this.session.ISession as any)._useNativeHttpsForNonExportable = true;
+                this.session.ISession._useNativeHttpsForNonExportable = true;
 
                 // Don't set up KeychainAgent - the native client will be used instead
                 // Return true to indicate auth is configured
