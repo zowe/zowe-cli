@@ -41,7 +41,7 @@ Array [
     "aliases": Array [
       "sd",
     ],
-    "description": "Specifies whether to skip checking if the target path is a directory before uploading. When set to true, the upload will proceed assuming the target is a file path.",
+    "description": "Specifies whether to skip checking if the target path is a directory before uploading.When set to true, the upload will proceed assuming the target is a file path.",
     "name": "skipDirectoryCheck",
     "type": "boolean",
   },
