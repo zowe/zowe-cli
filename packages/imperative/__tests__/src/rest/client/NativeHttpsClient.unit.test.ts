@@ -280,17 +280,53 @@ describe("NativeHttpsClient", () => {
     });
 
     describe("isKeyExportable", () => {
-        it("should return true when key is exportable", async () => {
-            const mockGetPrivateKey = jest.fn().mockResolvedValue(Buffer.from("key data"));
-            jest.mock("@zowe/secrets-for-zowe-sdk", () => ({
-                keyring: {
-                    getPrivateKey: mockGetPrivateKey
-                }
-            }));
+        const originalPlatform = process.platform;
+
+        beforeEach(() => {
+            // Mock platform as darwin (macOS) to avoid Windows early return
+            Object.defineProperty(process, "platform", {
+                value: "darwin",
+                configurable: true
+            });
+        });
+
+        afterEach(() => {
+            // Restore original platform
+            Object.defineProperty(process, "platform", {
+                value: originalPlatform,
+                configurable: true
+            });
+            jest.resetModules();
+        });
+
+        it("should return false on Windows platform", async () => {
+            Object.defineProperty(process, "platform", {
+                value: "win32",
+                configurable: true
+            });
 
             const result = await NativeHttpsClient.isKeyExportable("test-cert", "/test/home");
 
+            expect(result).toBe(false);
+        });
+
+        it("should return true when key is exportable", async () => {
+            const mockGetPrivateKey = jest.fn().mockResolvedValue(Buffer.from("key data"));
+            
+            jest.doMock("@zowe/secrets-for-zowe-sdk", () => ({
+                keyring: {
+                    getPrivateKey: mockGetPrivateKey
+                }
+            }), { virtual: true });
+
+            // Need to re-import after mocking
+            jest.resetModules();
+            const { NativeHttpsClient: TestClient } = require("../../../../src/rest/src/client/NativeHttpsClient");
+            
+            const result = await TestClient.isKeyExportable("test-cert", "/test/home");
+
             expect(result).toBe(true);
+            expect(mockGetPrivateKey).toHaveBeenCalledWith("/test/home", "test-cert");
         });
 
         it("should return false when key is non-exportable", async () => {
@@ -302,30 +338,38 @@ describe("NativeHttpsClient", () => {
                 keyring: {
                     getPrivateKey: mockGetPrivateKey
                 }
-            }));
+            }), { virtual: true });
 
-            const result = await NativeHttpsClient.isKeyExportable("test-cert", "/test/home");
+            jest.resetModules();
+            const { NativeHttpsClient: TestClient } = require("../../../../src/rest/src/client/NativeHttpsClient");
 
-            // Should return true as fallback when module is not properly mocked
-            expect(typeof result).toBe("boolean");
+            const result = await TestClient.isKeyExportable("test-cert", "/test/home");
+
+            expect(result).toBe(false);
         });
 
         it("should return true when secrets SDK is not available", async () => {
-            jest.mock("@zowe/secrets-for-zowe-sdk", () => {
+            jest.doMock("@zowe/secrets-for-zowe-sdk", () => {
                 throw new Error("Module not found");
-            });
+            }, { virtual: true });
 
-            const result = await NativeHttpsClient.isKeyExportable("test-cert", "/test/home");
+            jest.resetModules();
+            const { NativeHttpsClient: TestClient } = require("../../../../src/rest/src/client/NativeHttpsClient");
+
+            const result = await TestClient.isKeyExportable("test-cert", "/test/home");
 
             expect(result).toBe(true);
         });
 
         it("should return true when getPrivateKey function is not available", async () => {
-            jest.mock("@zowe/secrets-for-zowe-sdk", () => ({
+            jest.doMock("@zowe/secrets-for-zowe-sdk", () => ({
                 keyring: {}
-            }));
+            }), { virtual: true });
 
-            const result = await NativeHttpsClient.isKeyExportable("test-cert", "/test/home");
+            jest.resetModules();
+            const { NativeHttpsClient: TestClient } = require("../../../../src/rest/src/client/NativeHttpsClient");
+
+            const result = await TestClient.isKeyExportable("test-cert", "/test/home");
 
             expect(result).toBe(true);
         });
