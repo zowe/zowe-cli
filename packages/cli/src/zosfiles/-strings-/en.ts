@@ -832,7 +832,8 @@ export default {
                 " without a maximum number of concurrent requests. ",
             INCLUDE_HIDDEN: "Include hidden files and folders that have names beginning with a dot.",
             MAKE_DIR: "Create the target directory if it does not already exist.",
-            SKIP_DIRECTORY_CHECK: "Specifies whether to skip checking if the target path is a directory before uploading. When set to true, the upload will proceed assuming the target is a file path."
+            SKIP_DIRECTORY_CHECK: "Specifies whether to skip checking if the target path is a directory before uploading." +
+             "When set to true, the upload will proceed assuming the target is a file path."
         }
     },
     VIEW: {

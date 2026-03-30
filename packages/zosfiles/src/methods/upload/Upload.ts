@@ -685,7 +685,7 @@ export class Upload {
         while (dirPath.endsWith('/')) {
             dirPath = dirPath.slice(0, -1);
         }
-        if (!dirPath || dirPath === '/' || dirPath === '.') return;
+        if (!dirPath || dirPath === '/' || dirPath === '.' || dirPath === '/u') return;
 
         const parentDir = path.posix.dirname(dirPath);
         if (parentDir === dirPath) return;

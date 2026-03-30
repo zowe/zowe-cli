@@ -1998,184 +1998,6 @@ describe("z/OS Files - Upload", () => {
         });
     });
 
-    describe("fileToUssFile", () => {
-        let USSresponse: IZosFilesResponse;
-        const createReadStreamSpy = jest.spyOn(IO, "createReadStream");
-        const streamToUssFileSpy = jest.spyOn(Upload, "streamToUssFile");
-        const lstatSpy = jest.spyOn(fs, "lstat");
-        const inputFile = "/path/to/file1.txt";
-
-        beforeEach(() => {
-            USSresponse = undefined;
-            error = undefined;
-
-            createReadStreamSpy.mockReset();
-            createReadStreamSpy.mockImplementation((): any => null);
-
-            streamToUssFileSpy.mockReset();
-            streamToUssFileSpy.mockImplementation(async (): Promise<any> => null);
-
-            lstatSpy.mockClear();
-            lstatSpy.mockImplementation((somePath, callback: any) => {
-                callback(null, {isFile: () => true});
-            });
-        });
-
-        afterAll(() => {
-            streamToUssFileSpy.mockRestore();
-        });
-
-        it("should return with proper response when target dir is not existing", async () => {
-            const createUssDirSpy = jest.spyOn(Create, "uss").mockResolvedValue({
-                    success: true,
-                    commandResponse: "Directory created",
-                    apiResponse: {}
-            });
-             try {
-                USSresponse = await Upload.fileToUssFile(dummySession, inputFile, "/u/user/dir", {makeDir: true});
-            } catch (err) {
-                error = err;
-            }
-
-            expect(error).toBeUndefined();
-            expect(USSresponse).toBeDefined();
-            expect(USSresponse.success).toBeTruthy();
-
-            expect(createReadStreamSpy).toHaveBeenCalledTimes(1);
-            expect(createUssDirSpy).toHaveBeenCalledTimes(1);
-            expect(createReadStreamSpy).toHaveBeenCalledWith(inputFile);
-            expect(streamToUssFileSpy).toHaveBeenCalledTimes(1);
-            expect(streamToUssFileSpy).toHaveBeenCalledWith(dummySession, "/u/user/dir/file1.txt", null, {makeDir: true});
-        });
-
-        it("should throw an error if local file name is not specified", async () => {
-            try {
-                USSresponse = await Upload.fileToUssFile(dummySession, undefined, "file");
-            } catch (err) {
-                error = err;
-            }
-
-            expect(USSresponse).toBeUndefined();
-            expect(error).toBeDefined();
-            expect(error.message).toContain(ZosFilesMessages.missingInputFile.message);
-        });
-        it("should throw an error if USS file name is not specified", async () => {
-            try {
-                USSresponse = await Upload.fileToUssFile(dummySession, inputFile, undefined);
-            } catch (err) {
-                error = err;
-            }
-
-            expect(USSresponse).toBeUndefined();
-            expect(error).toBeDefined();
-            expect(error.message).toContain(ZosFilesMessages.missingUSSFileName.message);
-        });
-        it("should throw an error if USS file name is an empty string", async () => {
-            try {
-                USSresponse = await Upload.fileToUssFile(dummySession, inputFile, "");
-            } catch (err) {
-                error = err;
-            }
-
-            expect(USSresponse).toBeUndefined();
-            expect(error).toBeDefined();
-            expect(error.message).toContain(ZosFilesMessages.missingUSSFileName.message);
-        });
-        it("should throw underlying fs error", async () => {
-            const rootError = {
-                code: "test",
-                toString() {
-                    return this.code;
-                }
-            };
-
-            lstatSpy.mockImplementationOnce((somePath, callback: any) => {
-                callback(rootError);
-            });
-            try {
-                USSresponse = await Upload.fileToUssFile(dummySession, inputFile, "file");
-            } catch (err) {
-                error = err;
-            }
-
-            expect(USSresponse).toBeUndefined();
-            expect(error).toBeDefined();
-            expect(error.message).toContain(ZosFilesMessages.nodeJsFsError.message);
-            expect(error.additionalDetails).toEqual(rootError.toString());
-            expect(error.causeErrors).toBe(rootError);
-        });
-        it("should return with proper response when upload USS file", async () => {
-            try {
-                USSresponse = await Upload.fileToUssFile(dummySession, inputFile, "file");
-            } catch (err) {
-                error = err;
-            }
-
-            expect(error).toBeUndefined();
-            expect(USSresponse).toBeDefined();
-            expect(USSresponse.success).toBeTruthy();
-
-            expect(createReadStreamSpy).toHaveBeenCalledTimes(1);
-            expect(createReadStreamSpy).toHaveBeenCalledWith(inputFile);
-            expect(streamToUssFileSpy).toHaveBeenCalledTimes(1);
-            expect(streamToUssFileSpy).toHaveBeenCalledWith(dummySession, "file", null, {});
-        });
-        it("should return with proper response when upload USS file with responseTimeout", async () => {
-            try {
-                USSresponse = await Upload.fileToUssFile(dummySession, inputFile, "file", {responseTimeout: 5});
-            } catch (err) {
-                error = err;
-            }
-
-            expect(error).toBeUndefined();
-            expect(USSresponse).toBeDefined();
-            expect(USSresponse.success).toBeTruthy();
-
-            expect(createReadStreamSpy).toHaveBeenCalledTimes(1);
-            expect(createReadStreamSpy).toHaveBeenCalledWith(inputFile);
-            expect(streamToUssFileSpy).toHaveBeenCalledTimes(1);
-            expect(streamToUssFileSpy).toHaveBeenCalledWith(dummySession, "file", null, {responseTimeout: 5});
-        });
-        it("should return with proper response when upload USS file including Etag", async () => {
-            const streamResponse: IZosFilesResponse = {
-                success: true,
-                commandResponse: undefined as any,
-                apiResponse: { etag: etagValue }
-            };
-            streamToUssFileSpy.mockImplementationOnce(async () => streamResponse);
-            try {
-                USSresponse = await Upload.fileToUssFile(dummySession, inputFile, "file", {returnEtag: true});
-            } catch (err) {
-                error = err;
-            }
-
-            expect(error).toBeUndefined();
-            expect(USSresponse).toBeDefined();
-            expect(USSresponse.success).toBeTruthy();
-            expect(USSresponse.apiResponse.etag).toEqual(etagValue);
-
-            expect(createReadStreamSpy).toHaveBeenCalledTimes(1);
-            expect(createReadStreamSpy).toHaveBeenCalledWith(inputFile);
-            expect(streamToUssFileSpy).toHaveBeenCalledTimes(1);
-            expect(streamToUssFileSpy).toHaveBeenCalledWith(dummySession, "file", null, {returnEtag: true});
-        });
-        it("should throw an error if local file name is not a valid file path", async () => {
-            lstatSpy.mockImplementationOnce((somePath, callback: any) => {
-                callback(null, {isFile: () => false});
-            });
-            try {
-                USSresponse = await Upload.fileToUssFile(dummySession, undefined, "file");
-            } catch (err) {
-                error = err;
-            }
-
-            expect(USSresponse).toBeUndefined();
-            expect(error).toBeDefined();
-            expect(error.message).toContain(ZosFilesMessages.missingInputFile.message);
-            lstatSpy.mockClear();
-        });
-    });
-
     describe("dirToUSSDirRecursive", () => {
         let USSresponse: IZosFilesResponse;
         const isDirSpy = jest.spyOn(IO, "isDir");
@@ -2209,6 +2031,10 @@ describe("z/OS Files - Upload", () => {
             filterDirectoriesSpy.mockClear();
             zosmfExpectSpy.mockImplementation(async (): Promise<any> => null);
             zosmfExpectFullSpy.mockImplementation(async (): Promise<any> => null);
+
+            fileToUssFileSpy.mockResolvedValue(testReturn);
+            isDirectoryExistsSpy.mockResolvedValue(true);
+            createUssDirSpy.mockResolvedValue(testReturn);
         });
 
         afterAll(() => {
@@ -2217,7 +2043,7 @@ describe("z/OS Files - Upload", () => {
 
         it("should upload recursively if option is specified", async () => {
             isDirSpy.mockReturnValue(true);
-            isDirectoryExistsSpy.mockResolvedValueOnce(false).mockResolvedValueOnce(true);
+            isDirectoryExistsSpy.mockResolvedValueOnce(false).mockResolvedValueOnce(false);
             createUssDirSpy.mockResolvedValueOnce(testReturn).mockResolvedValueOnce(testReturn);
             getFileListWithFsSpy.mockReturnValueOnce(["test", "file1.txt", "file2.txt"] as any)
                 .mockReturnValueOnce(["test", "file1.txt", "file2.txt"] as any).mockReturnValueOnce([]);
@@ -2238,7 +2064,7 @@ describe("z/OS Files - Upload", () => {
 
         it("should upload recursively if option is specified and work with responseTimeout", async () => {
             isDirSpy.mockReturnValue(true);
-            isDirectoryExistsSpy.mockResolvedValueOnce(false).mockResolvedValueOnce(true);
+            isDirectoryExistsSpy.mockResolvedValueOnce(false).mockResolvedValueOnce(false);
             createUssDirSpy.mockResolvedValueOnce(testReturn).mockResolvedValueOnce(testReturn);
             getFileListWithFsSpy.mockReturnValueOnce(["test", "file1.txt", "file2.txt"] as any)
                 .mockReturnValueOnce(["test", "file1.txt", "file2.txt"] as any).mockReturnValueOnce([]);
@@ -2627,6 +2453,277 @@ describe("z/OS Files - Upload", () => {
                 expect(chtagSpy).toHaveBeenCalledTimes(1);
                 expect(chtagSpy).toHaveBeenCalledWith(dummySession, `${dsName}/asciifile`, Tag.TEXT, "ISO8859-1");
             });
+        });
+    });
+
+    describe("fileToUssFile", () => {
+        let USSresponse: IZosFilesResponse;
+        const createReadStreamSpy = jest.spyOn(IO, "createReadStream");
+        const streamToUssFileSpy = jest.spyOn(Upload, "streamToUssFile");
+        const isDirectoryExistsSpy = jest.spyOn(Upload as any, "isDirectoryExist");
+        const lstatSpy = jest.spyOn(fs, "lstat");
+        const inputFile = "/path/to/file1.txt";
+
+        beforeEach(() => {
+            USSresponse = undefined;
+            error = undefined;
+
+            createReadStreamSpy.mockReset();
+            createReadStreamSpy.mockImplementation((): any => null);
+
+            streamToUssFileSpy.mockReset();
+            streamToUssFileSpy.mockImplementation(async (): Promise<any> => null);
+
+            lstatSpy.mockReset();
+            lstatSpy.mockImplementation((somePath, callback: any) => {
+                callback(null, { isFile: () => true });
+            });
+
+            isDirectoryExistsSpy.mockReset();
+            isDirectoryExistsSpy.mockResolvedValue(false);
+        });
+
+        afterAll(() => {
+            streamToUssFileSpy.mockReset();
+            isDirectoryExistsSpy.mockRestore();
+        });
+
+        it("should throw an error if local file name is not specified", async () => {
+            try {
+                USSresponse = await Upload.fileToUssFile(dummySession, undefined, "file");
+            } catch (err) {
+                error = err;
+            }
+
+            expect(USSresponse).toBeUndefined();
+            expect(error).toBeDefined();
+            expect(error.message).toContain(ZosFilesMessages.missingInputFile.message);
+        });
+
+        it("should throw an error if USS file name is not specified", async () => {
+            try {
+                USSresponse = await Upload.fileToUssFile(dummySession, inputFile, undefined);
+            } catch (err) {
+                error = err;
+            }
+
+            expect(USSresponse).toBeUndefined();
+            expect(error).toBeDefined();
+            expect(error.message).toContain(ZosFilesMessages.missingUSSFileName.message);
+        });
+
+        it("should throw an error if USS file name is an empty string", async () => {
+            try {
+                USSresponse = await Upload.fileToUssFile(dummySession, inputFile, "");
+            } catch (err) {
+                error = err;
+            }
+
+            expect(USSresponse).toBeUndefined();
+            expect(error).toBeDefined();
+            expect(error.message).toContain(ZosFilesMessages.missingUSSFileName.message);
+        });
+
+        it("should throw underlying fs error", async () => {
+            const rootError = {
+                code: "test",
+                toString() {
+                    return this.code;
+                }
+            };
+
+            lstatSpy.mockImplementationOnce((somePath, callback: any) => {
+                callback(rootError);
+            });
+
+            try {
+                USSresponse = await Upload.fileToUssFile(dummySession, inputFile, "file");
+            } catch (err) {
+                error = err;
+            }
+
+            expect(USSresponse).toBeUndefined();
+            expect(error).toBeDefined();
+            expect(error.message).toContain(ZosFilesMessages.nodeJsFsError.message);
+            expect(error.additionalDetails).toEqual(rootError.toString());
+            expect(error.causeErrors).toBe(rootError);
+        });
+
+        it("should throw an error if local file is not a valid file path", async () => {
+            lstatSpy.mockImplementationOnce((somePath, callback: any) => {
+                callback(null, { isFile: () => false });
+            });
+
+            try {
+                USSresponse = await Upload.fileToUssFile(dummySession, undefined, "file");
+            } catch (err) {
+                error = err;
+            }
+
+            expect(USSresponse).toBeUndefined();
+            expect(error).toBeDefined();
+            expect(error.message).toContain(ZosFilesMessages.missingInputFile.message);
+            lstatSpy.mockClear();
+        });
+
+        it("should return with proper response when upload USS file", async () => {
+            isDirectoryExistsSpy.mockResolvedValueOnce(false);
+            isDirectoryExistsSpy.mockResolvedValueOnce(false);
+            lstatSpy.mockImplementation((somePath, callback: any) => {
+                callback(null, { isFile: () => true });
+            });
+
+            try {
+                USSresponse = await Upload.fileToUssFile(dummySession, inputFile, "file");
+            } catch (err) {
+                error = err;
+            }
+
+            expect(error).toBeUndefined();
+            expect(USSresponse).toBeDefined();
+            expect(USSresponse.success).toBeTruthy();
+            expect(createReadStreamSpy).toHaveBeenCalledTimes(1);
+            expect(createReadStreamSpy).toHaveBeenCalledWith(inputFile);
+            expect(streamToUssFileSpy).toHaveBeenCalledTimes(1);
+            expect(streamToUssFileSpy).toHaveBeenCalledWith(dummySession, "file", null, {});
+        });
+
+        it("should return with proper response when upload USS file with responseTimeout", async () => {
+            try {
+                USSresponse = await Upload.fileToUssFile(dummySession, inputFile, "file", { responseTimeout: 5 });
+            } catch (err) {
+                error = err;
+            }
+
+            expect(error).toBeUndefined();
+            expect(USSresponse).toBeDefined();
+            expect(USSresponse.success).toBeTruthy();
+
+            expect(createReadStreamSpy).toHaveBeenCalledTimes(1);
+            expect(createReadStreamSpy).toHaveBeenCalledWith(inputFile);
+            expect(streamToUssFileSpy).toHaveBeenCalledTimes(1);
+            expect(streamToUssFileSpy).toHaveBeenCalledWith(dummySession, "file", null, { responseTimeout: 5 });
+        });
+
+        it("should return with proper response when upload USS file including Etag", async () => {
+            const streamResponse: IZosFilesResponse = {
+                success: true,
+                commandResponse: undefined as any,
+                apiResponse: { etag: etagValue }
+            };
+            streamToUssFileSpy.mockImplementationOnce(async () => streamResponse);
+
+            try {
+                USSresponse = await Upload.fileToUssFile(dummySession, inputFile, "file", { returnEtag: true });
+            } catch (err) {
+                error = err;
+            }
+
+            expect(error).toBeUndefined();
+            expect(USSresponse).toBeDefined();
+            expect(USSresponse.success).toBeTruthy();
+            expect(USSresponse.apiResponse.etag).toEqual(etagValue);
+
+            expect(createReadStreamSpy).toHaveBeenCalledTimes(1);
+            expect(createReadStreamSpy).toHaveBeenCalledWith(inputFile);
+            expect(streamToUssFileSpy).toHaveBeenCalledTimes(1);
+            expect(streamToUssFileSpy).toHaveBeenCalledWith(dummySession, "file", null, { returnEtag: true });
+        });
+
+        it("should append filename when ussname ends with /", async () => {
+            try {
+                USSresponse = await Upload.fileToUssFile(dummySession, inputFile, "/u/user/dir/");
+            } catch (err) {
+                error = err;
+            }
+
+            expect(error).toBeUndefined();
+            expect(USSresponse).toBeDefined();
+            expect(USSresponse.success).toBeTruthy();
+
+            expect(streamToUssFileSpy).toHaveBeenCalledTimes(1);
+            expect(streamToUssFileSpy).toHaveBeenCalledWith(dummySession, "/u/user/dir/file1.txt", null, {});
+        });
+
+        it("should append filename when ussname is an existing directory", async () => {
+            isDirectoryExistsSpy.mockResolvedValueOnce(true); // ussname is a directory
+
+            try {
+                USSresponse = await Upload.fileToUssFile(dummySession, inputFile, "/u/user/dir");
+            } catch (err) {
+                error = err;
+            }
+
+            expect(error).toBeUndefined();
+            expect(USSresponse).toBeDefined();
+            expect(USSresponse.success).toBeTruthy();
+
+            expect(isDirectoryExistsSpy).toHaveBeenCalledTimes(1);
+            expect(isDirectoryExistsSpy).toHaveBeenCalledWith(dummySession, "/u/user/dir");
+            expect(streamToUssFileSpy).toHaveBeenCalledTimes(1);
+            expect(streamToUssFileSpy).toHaveBeenCalledWith(dummySession, "/u/user/dir/file1.txt", null, {});
+        });
+
+        it("should return with proper response when target dir is not existing (--makeDir)", async () => {
+            const createUssDirSpy = jest.spyOn(Create, "uss").mockResolvedValue({
+                success: true,
+                commandResponse: "Directory created",
+                apiResponse: {}
+            });
+
+            // parentDir of "/u/user/dir" = "/u/user" → only /u/user is checked
+            isDirectoryExistsSpy.mockResolvedValueOnce(true); // /u/user → exists, skip
+
+            try {
+                USSresponse = await Upload.fileToUssFile(dummySession, inputFile, "/u/user/dir", { makeDir: true });
+            } catch (err) {
+                error = err;
+            }
+
+            expect(error).toBeUndefined();
+            expect(USSresponse).toBeDefined();
+            expect(USSresponse.success).toBeTruthy();
+
+            expect(isDirectoryExistsSpy).toHaveBeenCalledTimes(1); // ✅ only /u/user
+            expect(createUssDirSpy).toHaveBeenCalledTimes(0);      // ✅ /u/user exists → nothing created
+            expect(createReadStreamSpy).toHaveBeenCalledTimes(1);
+            expect(createReadStreamSpy).toHaveBeenCalledWith(inputFile);
+            expect(streamToUssFileSpy).toHaveBeenCalledTimes(1);
+            expect(streamToUssFileSpy).toHaveBeenCalledWith(dummySession, "/u/user/dir", null, { makeDir: true });
+
+            createUssDirSpy.mockRestore();
+        });
+
+        it("should skip directory existence check when --sd option is provided (--makeDir --sd)", async () => {
+            const createUssDirSpy = jest.spyOn(Create, "uss").mockResolvedValue({
+                success: true,
+                commandResponse: "Directory created",
+                apiResponse: {}
+            });
+
+            try {
+                USSresponse = await Upload.fileToUssFile(dummySession, inputFile, "/u/user/dir", {
+                    makeDir: true,
+                    skipDirectoryCheck: true
+                });
+            } catch (err) {
+                error = err;
+            }
+
+            expect(error).toBeUndefined();
+            expect(USSresponse).toBeDefined();
+            expect(USSresponse.success).toBeTruthy();
+
+            expect(isDirectoryExistsSpy).not.toHaveBeenCalled();
+            expect(createUssDirSpy).toHaveBeenCalledTimes(1);
+            expect(createUssDirSpy).toHaveBeenCalledWith(dummySession, "/u/user", "directory");
+            expect(streamToUssFileSpy).toHaveBeenCalledTimes(1);
+            expect(streamToUssFileSpy).toHaveBeenCalledWith(dummySession, "/u/user/dir", null, {
+                makeDir: true,
+                skipDirectoryCheck: true
+            });
+
+            createUssDirSpy.mockRestore();
         });
     });
 });
