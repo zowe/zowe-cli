@@ -4,6 +4,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 ## Recent Changes
 
 - Enhancement: Added `certAccount` option to z/OSMF profile type to support client certificate authentication using certificates stored in system keystores (macOS Keychain or Windows Certificate Store). This enables secure authentication with both exportable and non-exportable private keys on macOS and Windows platforms. [#2325](https://github.com/zowe/zowe-cli/issues/2325)
+- BugFix: Updated the `brace-expansion` and `picomatch` dependencies to resolve technical currency. [#2705](https://github.com/zowe/zowe-cli/pull/2705)
 
 ## `8.31.1`
 
