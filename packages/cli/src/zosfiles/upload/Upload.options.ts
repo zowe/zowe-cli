@@ -162,7 +162,7 @@ export const UploadOptions: {[key: string]: ICommandOptionDefinition} = {
      * The skip directory check option for upload
      */
     skipDirectoryCheck: {
-        name: "skipDirectoryCheck",
+        name: "skip-directory-check",
         aliases: ["sd"],
         description: strings.SKIP_DIRECTORY_CHECK,
         type: "boolean"
