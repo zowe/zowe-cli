@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `7.29.24`
 
 - BugFix: Updated the `picomatch`, `brace-expansion`, `flatted`, `handlebars`, and `tar` dependencies to resolve technical currency. [#2707](https://github.com/zowe/zowe-cli/pull/2707)
 
