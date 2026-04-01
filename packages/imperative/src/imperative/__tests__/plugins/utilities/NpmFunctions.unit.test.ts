@@ -147,12 +147,24 @@ describe("NpmFunctions", () => {
             expect(spawnSpy).toHaveBeenCalledTimes(1);
         });
 
-        it("should throw error if fetching package metadata fails", () => {
+        it("should throw error if unable to spawn npm pack command", () => {
+            const pkgSpec = "imperative.tgz";
+            expect(npmPackageArg(pkgSpec).type).toEqual("file");
+
+            jest.spyOn(ExecUtils, "spawnAndGetOutput").mockImplementation(() => {
+                throw new Error("Fake out an error thrown by cross-spawn.sync")
+            });
+            expect(() => npmFunctions.getPackageInfo(pkgSpec)).toThrow(
+                `npm pack command failed for package: '${pkgSpec}'`);
+        });
+
+        it("should throw error if npm pack output is not parsable JSON", () => {
             const pkgSpec = "imperative.tgz";
             expect(npmPackageArg(pkgSpec).type).toEqual("file");
 
             jest.spyOn(ExecUtils, "spawnAndGetOutput").mockReturnValueOnce("[]");
-            expect(() => npmFunctions.getPackageInfo(pkgSpec)).toThrow("Failed to fetch metadata for package");
+            expect(() => npmFunctions.getPackageInfo(pkgSpec)).toThrow(
+                `Unable to parse the following package as JSON: '${pkgSpec}'`);
         });
     });
 
