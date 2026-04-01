@@ -361,10 +361,18 @@ export abstract class AbstractRestClient {
 
                 if (NativeHttpsClient.isEnabled(this.session.ISession)
                     && this.session.ISession.protocol === SessConstants.HTTPS_PROTOCOL) {
-                    
+
                     // Native HTTPS client path - supports streaming by buffering in memory
                     // Handle request streaming by reading the entire stream into a buffer before sending
-                    let requestData = options.writeData;
+                    let requestData: string | Buffer | undefined = options.writeData;
+
+                    // Handle JSON data - stringify objects before sending
+                    if (requestData != null && this.mIsJson && typeof requestData === 'object' && !Buffer.isBuffer(requestData)) {
+                        this.log.debug("writing JSON for native request");
+                        this.log.trace("JSON body: %s", JSON.stringify(requestData));
+                        requestData = JSON.stringify(requestData);
+                    }
+
                     if (options.requestStream != null) {
                         const chunks: Buffer[] = [];
                         for await (const chunk of options.requestStream) {

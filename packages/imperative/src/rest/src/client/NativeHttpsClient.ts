@@ -11,7 +11,6 @@
 
 import * as http from "http";
 import { ImperativeError } from "../../../error";
-import { ImperativeConfig } from "../../../utilities";
 import { IHTTPSOptions } from "./doc/IHTTPSOptions";
 import { ISession } from "../session/doc/ISession";
 
@@ -23,15 +22,13 @@ export interface INativeHttpsResponse {
 
 export interface INativeHttpsRequest {
     hostname: string;
-    port?: number;
+    port: number;
     path: string;
     method: string;
-    headers?: Record<string, string>;
-    body?: string | Buffer;
-    rejectUnauthorized?: boolean;
-    ca?: unknown;
+    headers: Record<string, string>;
+    body?: number[];
+    rejectUnauthorized: boolean;
     certAccount: string;
-    cliHome: string;
     timeout?: number;
 }
 
@@ -93,17 +90,23 @@ export class NativeHttpsClient {
             }
         }
 
+        // Convert body to number array (native code expects Array<number>)
+        let normalizedBody: number[] | undefined;
+        if (writeData != null) {
+            const bodyBuffer = Buffer.isBuffer(writeData) ? writeData : Buffer.from(writeData);
+            normalizedBody = Array.from(bodyBuffer);
+        }
+
+        const DEFAULT_HTTPS_PORT = 443;
         const request: INativeHttpsRequest = {
             hostname: options.hostname,
-            port,
+            port: port ?? DEFAULT_HTTPS_PORT,
             path: options.path,
             method: options.method,
             headers: normalizedHeaders,
-            body: writeData,
-            rejectUnauthorized: options.rejectUnauthorized,
-            ca: (options as any).ca,
+            body: normalizedBody,
+            rejectUnauthorized: options.rejectUnauthorized ?? true,
             certAccount: session.certAccount,
-            cliHome: ImperativeConfig.instance.cliHome,
             timeout: session.requestCompletionTimeout ?? session.socketConnectTimeout,
         };
 

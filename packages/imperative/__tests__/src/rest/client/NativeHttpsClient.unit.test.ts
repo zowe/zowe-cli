@@ -229,8 +229,6 @@ describe("NativeHttpsClient", () => {
 
             jest.spyOn(NativeHttpsClient as any, "loadNativeRequestFn")
                 .mockReturnValue(mockNativeRequest);
-            jest.spyOn(ImperativeConfig, "instance", "get")
-                .mockReturnValue({ cliHome: "/test/home" } as any);
 
             const options = {
                 hostname: "example.com",
@@ -243,7 +241,7 @@ describe("NativeHttpsClient", () => {
 
             expect(mockNativeRequest).toHaveBeenCalledWith(
                 expect.objectContaining({
-                    port: undefined
+                    port: 443  // Default HTTPS port is now applied
                 })
             );
         });
@@ -257,8 +255,6 @@ describe("NativeHttpsClient", () => {
 
             jest.spyOn(NativeHttpsClient as any, "loadNativeRequestFn")
                 .mockReturnValue(mockNativeRequest);
-            jest.spyOn(ImperativeConfig, "instance", "get")
-                .mockReturnValue({ cliHome: "/test/home" } as any);
 
             const options = {
                 hostname: "example.com",
@@ -271,9 +267,11 @@ describe("NativeHttpsClient", () => {
 
             await NativeHttpsClient.request(options as any, session as any, writeData);
 
+            // Body is now converted to number array (byte array)
+            const expectedBody = Array.from(Buffer.from(writeData));
             expect(mockNativeRequest).toHaveBeenCalledWith(
                 expect.objectContaining({
-                    body: writeData
+                    body: expectedBody
                 })
             );
         });
@@ -312,7 +310,7 @@ describe("NativeHttpsClient", () => {
 
         it("should return true when key is exportable", async () => {
             const mockGetPrivateKey = jest.fn().mockResolvedValue(Buffer.from("key data"));
-            
+
             jest.doMock("@zowe/secrets-for-zowe-sdk", () => ({
                 keyring: {
                     getPrivateKey: mockGetPrivateKey
@@ -322,7 +320,7 @@ describe("NativeHttpsClient", () => {
             // Need to re-import after mocking
             jest.resetModules();
             const { NativeHttpsClient: TestClient } = require("../../../../src/rest/src/client/NativeHttpsClient");
-            
+
             const result = await TestClient.isKeyExportable("test-cert", "/test/home");
 
             expect(result).toBe(true);
