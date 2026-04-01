@@ -97,12 +97,13 @@ export function installPackages(npmPackage: string, npmArgs: INpmInstallArgs, ve
  */
 export function getPackageInfo(pkgSpec: string): { name: string, version: string, [key: string]: unknown } {
     const pkgInfo = npmPackageArg(pkgSpec);
+    const maxBuffer = 1024 * 1024 * 10; // 10MB
     let packageName = pkgInfo.name;
     if (!pkgInfo.registry) {
         // Package name is unknown, so fetch it with 'npm pack' command
         let execOutput: Buffer | string = "No Spawn output retrieved";
         try {
-            execOutput = ExecUtils.spawnAndGetOutput(npmCmd, ["pack", pkgSpec, "--dry-run", "--json"]);
+            execOutput = ExecUtils.spawnAndGetOutput(npmCmd, ["pack", pkgSpec, "--dry-run", "--json"], { maxBuffer });
             packageName = JSON.parse(execOutput.toString())[0].name;
         } catch (err) {
             throw new ImperativeError({
