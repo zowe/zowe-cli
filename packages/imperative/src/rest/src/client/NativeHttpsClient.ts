@@ -39,12 +39,34 @@ export class NativeHttpsClient {
     private static readonly ENV_FLAG_MACOS = "ZOWE_MACOS_NATIVE_HTTPS";
     private static readonly ENV_FLAG_WINDOWS = "ZOWE_WINDOWS_NATIVE_HTTPS";
 
+    /**
+     * Check if the Native HTTPS client should be used for the given session.
+     * The Native HTTPS client is used when:
+     * - Running on macOS or Windows
+     * - A certificate account is specified in the session
+     * - Either the environment flag is enabled OR the certificate has a non-exportable private key
+     *
+     * @param session - The session to check
+     * @returns true if Native HTTPS client should be used, false otherwise
+     */
     public static isEnabled(session: ISession): boolean {
         return (process.platform === "darwin" || process.platform === "win32")
             && session?.certAccount != null
             && (this.isFlagEnabled() || (session as any)._useNativeHttpsForNonExportable === true);
     }
 
+    /**
+     * Make an HTTPS request using the native client with certificate authentication.
+     *
+     * Note: This method supports streaming by buffering the entire request/response in memory.
+     * For request streaming, the entire stream is read into memory before making the request.
+     * For response streaming, the response body is returned as a complete buffer.
+     *
+     * @param options - HTTP request options
+     * @param session - Session containing certificate account information
+     * @param writeData - Optional request body data
+     * @returns Promise resolving to the HTTP response
+     */
     public static async request(options: IHTTPSOptions, session: ISession, writeData?: string | Buffer): Promise<INativeHttpsResponse> {
         const nativeHttpsRequest = this.loadNativeRequestFn();
         const platformName = process.platform === "darwin" ? "macOS" : "Windows";

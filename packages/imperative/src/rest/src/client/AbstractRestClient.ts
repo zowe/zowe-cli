@@ -361,18 +361,22 @@ export abstract class AbstractRestClient {
 
                 if (NativeHttpsClient.isEnabled(this.session.ISession)
                     && this.session.ISession.protocol === SessConstants.HTTPS_PROTOCOL) {
-                    if (options.requestStream != null || options.responseStream != null) {
-                        const platformName = process.platform === "win32" ? "WINDOWS" : "MACOS";
-                        throw new ImperativeError({
-                            msg: "Native HTTPS client does not yet support streaming requests/responses.",
-                            additionalDetails: `Disable OS specific environment variable ZOWE_${platformName}_NATIVE_HTTPS or avoid streaming for this request.`,
-                        });
+                    
+                    // Native HTTPS client path - supports streaming by buffering in memory
+                    // Handle request streaming by reading the entire stream into a buffer before sending
+                    let requestData = options.writeData;
+                    if (options.requestStream != null) {
+                        const chunks: Buffer[] = [];
+                        for await (const chunk of options.requestStream) {
+                            chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk));
+                        }
+                        requestData = Buffer.concat(chunks);
                     }
 
                     const nativeResponse = await NativeHttpsClient.request(
                         buildOptions,
                         this.session.ISession,
-                        options.writeData
+                        requestData
                     );
 
                     const nativeResponseStream = new Readable({ read() { /* no-op */ } });
