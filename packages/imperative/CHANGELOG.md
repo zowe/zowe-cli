@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Increased the max buffer size of output for `npm pack` command run during plug-in installation. [#2708](https://github.com/zowe/zowe-cli/pull/2708)
+
 ## `8.31.0`
 
 - Enhancement: Added a `Queue` utility to create and manage the processing of `Promise` queues. [#2543](https://github.com/zowe/zowe-cli/pull/2543)

@@ -64,7 +64,9 @@ describe("ExecUtils tests", () => {
                 caughtError = error;
             }
             expect(spawn.sync).toHaveBeenCalledWith("cat", [filename], undefined);
-            expect(caughtError.message).toBe(`Command failed: cat ${filename}\n${stderrBuffer.toString()}`);
+            expect(caughtError.message).toBe(
+                `Command failed: cat ${filename}\nExit code = 1\nStdErr:\n${stderrBuffer.toString()}`
+            );
         });
     });
 
@@ -115,7 +117,10 @@ describe("ExecUtils tests", () => {
                 caughtError = error;
             }
             expect(spawn.sync).toHaveBeenCalledWith("cat", [filename], { stdio: "inherit" });
-            expect(caughtError.message).toBe(`Command failed: cat ${filename}\n${stderrBuffer.toString()}`);
+            expect(caughtError.message).toBe(
+                `Command failed: cat ${filename}\nExit code = 1\nStdErr:\n${stderrBuffer.toString()}`
+            );
+
         });
     });
 });
