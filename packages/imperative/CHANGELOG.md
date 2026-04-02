@@ -2,7 +2,7 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
-## Recent Changes
+## `8.31.3`
 
 - BugFix: Increased the max buffer size of output for `npm pack` command run during plug-in installation. [#2708](https://github.com/zowe/zowe-cli/pull/2708)
 
