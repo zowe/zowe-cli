@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `8.31.4`
 
 - BugFix: Updated the `lodash` dependency to resolve technical currency. [#2709](https://github.com/zowe/zowe-cli/pull/2709)
 
