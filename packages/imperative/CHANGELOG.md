@@ -6,6 +6,10 @@ All notable changes to the Imperative package will be documented in this file.
 
 - Enhancement: Added support for client certificate authentication using certificates stored in system keystores. Added `certAccount` profile property to specify certificate subject name for authentication. Implemented cross-platform native HTTPS clients (macOS and Windows) that support certificate-based authentication with both exportable and non-exportable private keys. Updated `AbstractRestClient` to use native HTTPS clients when `certAccount` is specified on macOS or Windows platforms. [#2325](https://github.com/zowe/zowe-cli/issues/2325)
 
+## `8.31.3`
+
+- BugFix: Increased the max buffer size of output for `npm pack` command run during plug-in installation. [#2708](https://github.com/zowe/zowe-cli/pull/2708)
+
 ## `8.31.0`
 
 - Enhancement: Added a `Queue` utility to create and manage the processing of `Promise` queues. [#2543](https://github.com/zowe/zowe-cli/pull/2543)

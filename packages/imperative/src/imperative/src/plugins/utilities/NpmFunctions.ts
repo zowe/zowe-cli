@@ -97,18 +97,27 @@ export function installPackages(npmPackage: string, npmArgs: INpmInstallArgs, ve
  */
 export function getPackageInfo(pkgSpec: string): { name: string, version: string, [key: string]: unknown } {
     const pkgInfo = npmPackageArg(pkgSpec);
+    // eslint-disable-next-line @typescript-eslint/no-magic-numbers
+    const maxBuffer = 1024 * 1024 * 10; // 10MB
     let packageName = pkgInfo.name;
     if (!pkgInfo.registry) {
         // Package name is unknown, so fetch it with 'npm pack' command
         let execOutput: Buffer | string = "No Spawn output retrieved";
         try {
-            execOutput = ExecUtils.spawnAndGetOutput(npmCmd, ["pack", pkgSpec, "--dry-run", "--json"]);
+            execOutput = ExecUtils.spawnAndGetOutput(npmCmd, ["pack", pkgSpec, "--dry-run", "--json"], { maxBuffer });
+        } catch (err) {
+            throw new ImperativeError({
+                msg: `npm pack command failed for package: '${pkgSpec}'`,
+                additionalDetails: "Reason = " + (err as Error).message
+            });
+        }
+        // parse the json output of the npm pack command
+        try {
             packageName = JSON.parse(execOutput.toString())[0].name;
         } catch (err) {
             throw new ImperativeError({
-                msg: `Failed to fetch metadata for package: ${pkgSpec}`,
-                additionalDetails: "Error.message = " + (err as Error).message +
-                    "\nSpawn output:\n" + execOutput
+                msg: `Unable to parse the following package as JSON: '${pkgSpec}'`,
+                additionalDetails: "Reason = " + (err as Error).message
             });
         }
     }
