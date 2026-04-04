@@ -10,12 +10,14 @@
 */
 
 import * as https from "https";
+import * as net from "net";
 import * as tls from "tls";
 import { Socket } from "net";
 
 /**
- * Custom HTTPS Agent that supports non-exportable private keys from macOS Keychain.
- * This agent creates TLS connections using certificate identities stored in the system keychain.
+ * Custom HTTPS Agent that supports non-exportable private keys from macOS Keychain and Windows Certificate Store.
+ * This agent delegates TLS connections to the native secrets-for-zowe-sdk using a local pipe bridge if the key is non-exportable.
+ * If the key is exportable, it will fall back to using standard Node.js TLS with the exported key.
  */
 export class KeychainAgent extends https.Agent {
     private certAccount: string;
@@ -24,7 +26,7 @@ export class KeychainAgent extends https.Agent {
     /**
      * Creates a new KeychainAgent
      * @param certAccount - The account/label name for the identity in the keychain
-     * @param cliHome - The CLI home directory (used as service name)
+     * @param cliHome - The CLI home directory (used as service name, not used for native pipe but kept for compatibility)
      * @param options - Additional HTTPS agent options
      */
     constructor(certAccount: string, cliHome: string, options?: https.AgentOptions) {
@@ -41,89 +43,14 @@ export class KeychainAgent extends https.Agent {
      * Override createConnection to use keychain identity for TLS
      */
     public createConnection(options: any, callback?: (err: Error | null, socket?: Socket) => void): Socket {
-        // Create a plain TCP socket first
-        const socket = new Socket();
+        const socket = new net.Socket();
+        
+        // Connect asynchronously and rely on the callback.
+        // We do not return the socket synchronously to prevent Node.js
+        // from writing to it before it's fully connected and duck-typed.
+        this.connectWithBestMethod(socket, options, callback);
 
-        // Connect to the target host
-        socket.connect(options.port, options.host, () => {
-            // Once TCP connection is established, upgrade to TLS using keychain identity
-            this.upgradeToTLS(socket, options, callback);
-        });
-
-        // Handle connection errors
-        socket.on("error", (err) => {
-            if (callback) {
-                callback(err);
-            }
-        });
-
-        return socket;
-    }
-
-    /**
-     * Upgrade a plain socket to TLS using the keychain identity
-     */
-    private async upgradeToTLS(socket: Socket, options: any, callback?: (err: Error | null, socket?: Socket) => void): Promise<void> {
-        try {
-            // Load the keyring module to access certificate
-            // eslint-disable-next-line @typescript-eslint/no-var-requires
-            const { keyring } = require("@zowe/secrets-for-zowe-sdk");
-
-            // Get certificate from keychain
-            const certDerBuffer = await keyring.getCertificate(this.cliHome, this.certAccount);
-
-            if (certDerBuffer == null) {
-                throw new Error(`Certificate account '${this.certAccount}' not found in keychain.`);
-            }
-
-            // Convert DER to PEM format
-            const certPem = this.derToPem(certDerBuffer, "CERTIFICATE");
-
-            // Get the private key (must be exportable to reach this code path)
-            // Non-exportable keys are automatically handled by NativeHttpsClient
-            let privateKeyPem: string | null = null;
-
-            try {
-                const privateKeyDer = await keyring.getPrivateKey(this.cliHome, this.certAccount);
-                if (privateKeyDer) {
-                    privateKeyPem = this.derToPem(privateKeyDer, "PRIVATE KEY");
-                } else {
-                    throw new Error(`No private key data returned for certificate account '${this.certAccount}'`);
-                }
-            } catch (keyErr: any) {
-                throw new Error(`Failed to retrieve private key for '${this.certAccount}': ${keyErr.message}`);
-            }
-
-            // Create TLS options with the certificate
-            const tlsOptions: tls.ConnectionOptions = {
-                socket,
-                cert: certPem,
-                servername: options.servername || options.host,
-                rejectUnauthorized: options.rejectUnauthorized,
-                ca: options.ca,
-            };
-
-            // Set the private key for TLS
-            tlsOptions.key = privateKeyPem;
-
-            // Upgrade the socket to TLS
-            const tlsSocket = tls.connect(tlsOptions, () => {
-                if (callback) {
-                    callback(null, tlsSocket);
-                }
-            });
-
-            tlsSocket.on("error", (err) => {
-                if (callback) {
-                    callback(err);
-                }
-            });
-
-        } catch (err) {
-            if (callback) {
-                callback(err as Error);
-            }
-        }
+        return undefined as any;
     }
 
     /**
@@ -142,5 +69,124 @@ export class KeychainAgent extends https.Agent {
 
         lines.push(`-----END ${type}-----`);
         return lines.join("\n");
+    }
+
+    /**
+     * Connect the socket using either native TLS pipe (for non-exportable) or Node.js TLS (for exportable)
+     */
+    private async connectWithBestMethod(socket: Socket, options: any, callback?: (err: Error | null, socket?: Socket) => void) {
+        try {
+            // eslint-disable-next-line @typescript-eslint/no-var-requires
+            const { keyring } = require("@zowe/secrets-for-zowe-sdk");
+
+            let isExportable = true;
+            let privateKeyDer: Buffer | null = null;
+
+            // Windows currently doesn't support exporting CNG keys cleanly via the secrets SDK
+            if (process.platform === "win32") {
+                isExportable = false;
+            } else {
+                try {
+                    privateKeyDer = await keyring.getPrivateKey(this.cliHome, this.certAccount);
+                    if (!privateKeyDer) {
+                        isExportable = false;
+                    }
+                } catch (err: any) {
+                    if (err.message && err.message.includes("non-exportable")) {
+                        isExportable = false;
+                    } else {
+                        // Key not found or other error, let it propagate
+                        throw err;
+                    }
+                }
+            }
+
+            if (isExportable && privateKeyDer) {
+                // EXPORTABLE KEY PATH: Use standard Node.js TLS (less invasive)
+                socket.connect(options.port, options.host, async () => {
+                    try {
+                        const certDerBuffer = await keyring.getCertificate(this.cliHome, this.certAccount);
+                        if (!certDerBuffer) {
+                            throw new Error(`Certificate account '${this.certAccount}' not found in keychain.`);
+                        }
+
+                        const certPem = this.derToPem(certDerBuffer, "CERTIFICATE");
+                        const privateKeyPem = this.derToPem(privateKeyDer!, "PRIVATE KEY");
+
+                        const tlsOptions: tls.ConnectionOptions = {
+                            socket,
+                            cert: certPem,
+                            key: privateKeyPem,
+                            servername: options.servername || options.host,
+                            rejectUnauthorized: options.rejectUnauthorized ?? true,
+                            ca: options.ca,
+                        };
+
+                        const tlsSocket = tls.connect(tlsOptions, () => {
+                            if (callback) {
+                                callback(null, tlsSocket);
+                            }
+                        });
+
+                        tlsSocket.on("error", (err) => {
+                            if (callback) {
+                                callback(err);
+                            }
+                        });
+
+                    } catch (err) {
+                        if (callback) {
+                            callback(err as Error);
+                        }
+                    }
+                });
+
+                socket.on("error", (err) => {
+                    if (callback) {
+                        callback(err);
+                    }
+                });
+            } else {
+                // NON-EXPORTABLE KEY PATH: Use the native TLS pipe
+                const rejectUnauthorized = options.rejectUnauthorized ?? true;
+                const host = options.servername || options.host || "localhost";
+                const port = options.port || 443;
+
+                if (typeof keyring.createTlsPipe !== "function") {
+                    throw new Error("createTlsPipe is not supported by the current version of @zowe/secrets-for-zowe-sdk. Please rebuild the native bindings.");
+                }
+
+                const localPort = await keyring.createTlsPipe(host, port, this.certAccount, rejectUnauthorized);
+
+                socket.connect(localPort, "127.0.0.1", () => {
+                    // Trick Node.js into thinking this is a secure TLS socket
+                    // so it immediately starts writing cleartext HTTP headers to the local pipe
+                    (socket as any).encrypted = true;
+                    (socket as any).authorized = true;
+                    (socket as any).alpnProtocol = false;
+                    (socket as any).getPeerCertificate = () => ({});
+
+                    // Emulate the 'secureConnect' event which https.request waits for
+                    process.nextTick(() => {
+                        socket.emit("secureConnect");
+                        if (callback) {
+                            callback(null, socket);
+                        }
+                    });
+                });
+
+                socket.on("error", (err) => {
+                    if (callback) {
+                        callback(err);
+                    }
+                });
+            }
+        } catch (err) {
+            if (callback) {
+                callback(err as Error);
+            } else {
+                socket.emit("error", err);
+            }
+        }
     }
 }

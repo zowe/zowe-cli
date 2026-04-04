@@ -250,13 +250,4 @@ export interface ISession {
      * which is transmitted to a REST service through this session.
      */
     scrtData?: IScrtData;
-
-    /**
-     * Flag to indicate if native https should be used for non-exportable connections
-     * @internal
-     *
-     * @type {boolean}
-     * @memberof ISession
-     */
-    _useNativeHttpsForNonExportable?: boolean;
 }
