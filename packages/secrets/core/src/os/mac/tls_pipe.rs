@@ -22,11 +22,15 @@ pub fn create_tls_pipe(
     let remote_addr = format!("{}:{}", remote_host, remote_port);
     let host_name = remote_host.clone();
     
-    use core_foundation::base::TCFType;
+    use core_foundation::base::{TCFType, CFRetain};
     use security_framework::identity::SecIdentity;
-    
+
     let raw_identity = identity.as_concrete_TypeRef();
-    let sf_identity = unsafe { SecIdentity::wrap_under_get_rule(raw_identity as *mut _) };
+    // CFRetain increments the refcount before we hand ownership to sf_identity via
+    // wrap_under_create_rule. When `identity` is dropped at the end of this function
+    // (decrement), sf_identity still holds a valid +1 reference in the spawned thread.
+    unsafe { CFRetain(raw_identity as *const _); }
+    let sf_identity = unsafe { SecIdentity::wrap_under_create_rule(raw_identity as *mut _) };
     
     thread::spawn(move || {
         if let Ok((mut local_stream, _)) = listener.accept() {
