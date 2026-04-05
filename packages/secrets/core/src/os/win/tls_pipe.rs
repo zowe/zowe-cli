@@ -1,9 +1,32 @@
 use crate::os::error::KeyringError;
 use schannel::schannel_cred::{Direction, SchannelCred};
-use schannel::tls_stream::Builder;
+use schannel::tls_stream::{Builder, HandshakeError};
 use std::net::{TcpListener, TcpStream};
 use std::io::{Read, Write};
 use std::thread;
+
+/// Map Windows Schannel HRESULT codes to their documented symbolic name and cause.
+/// Values are verified against winapi/src/shared/winerror.rs.
+fn schannel_error_hint(code: i32) -> &'static str {
+    match code as u32 {
+        0x80090322 => " [SEC_E_WRONG_PRINCIPAL: server name does not match the certificate CN/SAN]",
+        0x80090325 => " [SEC_E_UNTRUSTED_ROOT: certificate chain issued by an untrusted authority — \
+                        intermediate CA certificates may be missing from the Windows cert store]",
+        0x80090326 => " [SEC_E_ILLEGAL_MESSAGE: malformed or unexpected TLS message during handshake]",
+        0x80090327 => " [SEC_E_CERT_UNKNOWN: server does not recognize the client certificate]",
+        0x80090328 => " [SEC_E_CERT_EXPIRED: a certificate in the chain has expired]",
+        0x80090330 => " [SEC_E_DECRYPT_FAILURE: TLS record decryption failure]",
+        0x80090331 => " [SEC_E_ALGORITHM_MISMATCH: no cipher suites in common with the server]",
+        0x8009030E => " [SEC_E_NO_CREDENTIALS: no credentials found — \
+                        certificate or private key may not be in the correct store]",
+        0x800B0101 => " [CERT_E_EXPIRED: a certificate in the chain has expired]",
+        0x800B0109 => " [CERT_E_UNTRUSTEDROOT: certificate chain terminated in an untrusted root]",
+        0x800B010A => " [CERT_E_CHAINING: certificate chain could not be built to a trusted root — \
+                        intermediate CA certificates may be missing from the Windows cert store]",
+        0x800B0110 => " [CERT_E_WRONG_USAGE: certificate is not valid for client authentication]",
+        _ => "",
+    }
+}
 
 pub fn create_tls_pipe(
     remote_host: &String,
@@ -38,7 +61,6 @@ pub fn create_tls_pipe(
 
             macro_rules! fail_proxy {
                 ($msg:expr) => {{
-                    eprintln!("[KeychainAgent/win] {}", $msg);
                     let err_msg = format!("HTTP/1.1 502 Bad Gateway\r\nContent-Type: text/plain\r\nConnection: close\r\n\r\n{}", $msg);
                     let _ = local_stream.write_all(err_msg.as_bytes());
                     // Drain unread bytes before dropping local_stream. Without this,
@@ -77,7 +99,14 @@ pub fn create_tls_pipe(
             // or the mid-handshake recv() calls will time out and cause spurious retries.
             let mut tls_stream = match tls_builder.connect(creds, remote_stream) {
                 Ok(s) => s,
-                Err(e) => fail_proxy!(format!("TLS connect failed with {}: {:?}", host_name, e)),
+                Err(e) => {
+                    let hint = match &e {
+                        HandshakeError::Failure(io_err) =>
+                            schannel_error_hint(io_err.raw_os_error().unwrap_or(0) as i32),
+                        _ => "",
+                    };
+                    fail_proxy!(format!("TLS connect failed with {}: {:?}{}", host_name, e, hint))
+                }
             };
 
             // After the handshake, set a short read timeout on both sides of the proxy.

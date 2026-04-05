@@ -3,7 +3,29 @@ use crate::os::mac::keychain::SecKeychain;
 use std::net::{TcpListener, TcpStream};
 use std::thread;
 use std::io::{Read, Write};
-use security_framework::secure_transport::ClientBuilder;
+use security_framework::secure_transport::{ClientBuilder, HandshakeError};
+
+/// Map Apple Secure Transport OSStatus codes to their documented symbolic name and cause.
+/// Values are verified against security-framework-sys/src/secure_transport.rs.
+fn ssl_error_hint(code: i32) -> &'static str {
+    match code {
+        -9806 => " [errSSLClosedAbort: server aborted the handshake — \
+                   client certificate or its chain was likely rejected; \
+                   check that all intermediate CA certificates are present in the keychain]",
+        -9807 => " [errSSLXCertChainInvalid: invalid or incomplete certificate chain]",
+        -9808 => " [errSSLBadCert: bad certificate format or content]",
+        -9813 => " [errSSLNoRootCert: certificate chain not anchored in a trusted root CA]",
+        -9814 => " [errSSLCertExpired: a certificate in the chain has expired]",
+        -9815 => " [errSSLCertNotYetValid: a certificate in the chain is not yet valid]",
+        -9825 => " [errSSLPeerBadCert: server reported the client certificate is malformed]",
+        -9826 => " [errSSLPeerUnsupportedCert: server does not support the client certificate type]",
+        -9827 => " [errSSLPeerCertRevoked: server reported the client certificate as revoked]",
+        -9829 => " [errSSLPeerCertUnknown: server does not recognize the client certificate]",
+        -9831 => " [errSSLPeerUnknownCA: server cannot verify the certificate chain to a known CA — \
+                   intermediate CA certificates may be missing from the keychain]",
+        _ => "",
+    }
+}
 
 pub fn create_tls_pipe(
     remote_host: &String,
@@ -38,7 +60,6 @@ pub fn create_tls_pipe(
             
                     macro_rules! fail_proxy {
                         ($msg:expr) => {{
-                            eprintln!("[KeychainAgent/mac] {}", $msg);
                             let err_msg = format!("HTTP/1.1 502 Bad Gateway\r\nContent-Type: text/plain\r\nConnection: close\r\n\r\n{}", $msg);
                             let _ = local_stream.write_all(err_msg.as_bytes());
                             // Drain unread bytes before dropping local_stream. Without this,
@@ -72,7 +93,13 @@ pub fn create_tls_pipe(
             // or the mid-handshake recv() calls will time out and cause spurious retries.
             let mut tls_stream = match builder.handshake(&host_name, remote_stream) {
                 Ok(s) => s,
-                Err(e) => fail_proxy!(format!("TLS handshake failed with {}: {:?}", host_name, e)),
+                Err(e) => {
+                    let hint = match &e {
+                        HandshakeError::Failure(err) => ssl_error_hint(err.code()),
+                        _ => "",
+                    };
+                    fail_proxy!(format!("TLS handshake failed with {}: {:?}{}", host_name, e, hint))
+                }
             };
 
             // After the handshake, set a short read timeout on both sides of the proxy.
