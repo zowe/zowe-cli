@@ -55,7 +55,7 @@ export class KeychainAgent extends https.Agent {
      *     synchronously to pick up the real socket.
      */
     public createSocket(req: http.ClientRequest, options: any, cb: (err: Error | null, socket?: any) => void): void {
-        const name = this.getName(options);
+        const name = (this as any).getName(options);
 
         // Hold a pool slot during the async build so maxSockets is respected.
         // When both maxSockets and maxTotalSockets are Infinity, no fake socket is needed.
@@ -223,6 +223,18 @@ export class KeychainAgent extends https.Agent {
             (socket as any).authorized = true;
             (socket as any).alpnProtocol = false;
             (socket as any).getPeerCertificate = () => ({});
+
+            // Attach an error listener early to add context to any socket-level errors
+            // (e.g., ECONNRESET from the Rust pipe). The listener runs before Node's HTTP
+            // machinery listener and annotates the error; it doesn't prevent propagation.
+            socket.on("error", (err: Error) => {
+                if (!(err as any).keychainAgentContext) {
+                    (err as any).keychainAgentContext =
+                        `KeychainAgent TLS pipe — cert: "${this.certAccount}", remote: ${host}:${port}`;
+                    err.message = `${err.message} (${(err as any).keychainAgentContext}). ` +
+                        `Check stderr for the [KeychainAgent] error line from the native module.`;
+                }
+            });
 
             socket.connect(localPort, "127.0.0.1", () => {
                 // Socket is already TCP-connected. Node's onSocketNT sees socket.connecting===false

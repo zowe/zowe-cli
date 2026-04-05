@@ -38,8 +38,20 @@ pub fn create_tls_pipe(
             
                     macro_rules! fail_proxy {
                         ($msg:expr) => {{
+                            eprintln!("[KeychainAgent/mac] {}", $msg);
                             let err_msg = format!("HTTP/1.1 502 Bad Gateway\r\nContent-Type: text/plain\r\nConnection: close\r\n\r\n{}", $msg);
                             let _ = local_stream.write_all(err_msg.as_bytes());
+                            // Drain unread bytes before dropping local_stream. Without this,
+                            // the kernel sends TCP RST for unread data and Node sees ECONNRESET
+                            // instead of parsing the 502 response.
+                            let _ = local_stream.set_read_timeout(Some(std::time::Duration::from_millis(200)));
+                            let mut _drain = [0u8; 1024];
+                            loop {
+                                match local_stream.read(&mut _drain) {
+                                    Ok(0) | Err(_) => break,
+                                    Ok(_) => {}
+                                }
+                            }
                             return;
                         }};
                     }
@@ -111,6 +123,18 @@ pub fn create_tls_pipe(
                 
                 if !progress {
                     thread::sleep(std::time::Duration::from_millis(5));
+                }
+            }
+
+            // Drain any remaining bytes from Node's side before local_stream is dropped.
+            // This ensures the OS sends FIN instead of RST, preventing ECONNRESET on the
+            // Node side when the server closes the connection (e.g., after a full response).
+            let _ = local_stream.set_read_timeout(Some(std::time::Duration::from_millis(50)));
+            let mut _drain = [0u8; 1024];
+            loop {
+                match local_stream.read(&mut _drain) {
+                    Ok(0) | Err(_) => break,
+                    Ok(_) => {}
                 }
             }
         }
