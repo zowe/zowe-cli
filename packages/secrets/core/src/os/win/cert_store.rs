@@ -95,8 +95,8 @@ pub fn get_certificate(
 ) -> Result<Option<Vec<u8>>, KeyringError> {
     match find_certificate_by_subject(account.as_str())? {
         Some(cert_context) => {
-            // to_der() copies the DER bytes; cert_context is dropped (freed) at end of scope
-            let cert_bytes = cert_context.to_der().map_err(|e| KeyringError::Os(e.to_string()))?.to_vec();
+            // to_der() returns &[u8] directly (no Result)
+            let cert_bytes = cert_context.to_der().to_vec();
             Ok(Some(cert_bytes))
         }
         None => Ok(None),
