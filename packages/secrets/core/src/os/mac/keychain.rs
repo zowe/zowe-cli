@@ -120,16 +120,16 @@ impl SecKeychain {
     ///
     /// find_identity  
     /// Attempts to find an identity (certificate + private key) within the keychain
-    /// matching a given label/account.
+    /// where the subject contains the given account string.
     ///
     /// Returns:
     /// - A `SecIdentity` object if the identity was found, or
     /// - An `Error` object if an error was encountered
     ///
-    pub fn find_identity(&self, label: &str) -> Result<SecIdentity, Error> {
+    pub fn find_identity(&self, subject: &str) -> Result<SecIdentity, Error> {
         let results = KeychainSearch::new()
             .class_identity()
-            .label(label)
+            .subject_contains(subject)
             .with_refs()
             .execute()?;
 

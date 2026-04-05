@@ -3,7 +3,7 @@ use crate::os::mac::keychain::SecKeychain;
 use std::net::{TcpListener, TcpStream};
 use std::thread;
 use std::io::{Read, Write};
-use security_framework::secure_transport::{ClientBuilder, HandshakeError};
+use security_framework::secure_transport::{ClientBuilder, ClientHandshakeError};
 
 /// Map Apple Secure Transport OSStatus codes to their documented symbolic name and cause.
 /// Values are verified against security-framework-sys/src/secure_transport.rs.
@@ -46,6 +46,8 @@ pub fn create_tls_pipe(
     
     use core_foundation::base::{TCFType, CFRetain};
     use security_framework::identity::SecIdentity;
+    use security_framework::policy::SecPolicy;
+    use security_framework::trust::SecTrust;
 
     let raw_identity = identity.as_concrete_TypeRef();
     // CFRetain increments the refcount before we hand ownership to sf_identity via
@@ -83,7 +85,32 @@ pub fn create_tls_pipe(
             };
 
             let mut builder = ClientBuilder::new();
-            builder.identity(&sf_identity, &[]);
+            
+            // Try to build the certificate chain to send along with the leaf certificate.
+            // If the server requires intermediates, Secure Transport will only send what we provide.
+            let mut chain = Vec::new();
+            if let Ok(leaf_cert) = sf_identity.certificate() {
+                let policy = SecPolicy::create_x509();
+                if let Ok(mut trust) = SecTrust::create_with_certificates(&[leaf_cert], &[policy]) {
+                    // Prevent macOS from stopping the chain early at a user-trusted intermediate CA.
+                    // By setting anchors to empty and forcing anchor-only trust, SecTrust is forced
+                    // to build the complete chain up to the root from the keychain.
+                    let _ = trust.set_trust_anchor_certificates_only(true);
+                    let _ = trust.set_anchor_certificates(&[]);
+                    let _ = trust.evaluate_with_error();
+                    
+                    // We start from index 1 because index 0 is the leaf certificate,
+                    // and `builder.identity`'s second argument requires only the intermediates.
+                    #[allow(deprecated)]
+                    for i in 1..trust.certificate_count() {
+                        if let Some(cert) = trust.certificate_at_index(i) {
+                            chain.push(cert);
+                        }
+                    }
+                }
+            }
+            
+            builder.identity(&sf_identity, &chain);
 
             if !reject_unauthorized {
                 builder.danger_accept_invalid_certs(true);
@@ -95,7 +122,7 @@ pub fn create_tls_pipe(
                 Ok(s) => s,
                 Err(e) => {
                     let hint = match &e {
-                        HandshakeError::Failure(err) => ssl_error_hint(err.code()),
+                        ClientHandshakeError::Failure(err) => ssl_error_hint(err.code()),
                         _ => "",
                     };
                     fail_proxy!(format!("TLS handshake failed with {}: {:?}{}", host_name, e, hint))

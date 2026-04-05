@@ -2,7 +2,7 @@ use crate::os::mac::error::{handle_os_status, Error};
 use crate::os::mac::ffi::{
     kSecAttrAccount, kSecAttrLabel, kSecAttrService, kSecClass, kSecClassCertificate,
     kSecClassGenericPassword, kSecClassIdentity, kSecMatchLimit, kSecReturnAttributes,
-    kSecReturnData, kSecReturnRef, SecItemCopyMatching,
+    kSecReturnData, kSecReturnRef, SecItemCopyMatching, kSecMatchSubjectContains,
 };
 use crate::os::mac::keychain_item::SecKeychainItem;
 use crate::os::mac::misc::{SecCertificate, SecIdentity, SecKey};
@@ -23,6 +23,7 @@ pub struct KeychainSearch {
     label: Option<CFString>,
     service: Option<CFString>,
     account: Option<CFString>,
+    subject_contains: Option<CFString>,
     class: Option<CFTypeRef>,
     load_attrs: bool,
     load_data: bool,
@@ -147,6 +148,11 @@ impl KeychainSearch {
         self
     }
 
+    pub fn subject_contains(&mut self, subject: &str) -> &mut Self {
+        self.subject_contains = Some(CFString::new(subject));
+        self
+    }
+
     pub fn class_identity(&mut self) -> &mut Self {
         unsafe {
             self.class = Some(kSecClassIdentity.cast());
@@ -194,11 +200,17 @@ impl KeychainSearch {
 
             params.push((CFString::wrap_under_get_rule(kSecClass), class_value));
 
-            // Handle any parameters that were configured before execution (label, service, account)
+            // Handle any parameters that were configured before execution (label, service, account, subject)
             if let Some(ref label) = self.label {
                 params.push((
                     CFString::wrap_under_get_rule(kSecAttrLabel),
                     label.as_CFType(),
+                ));
+            }
+            if let Some(ref subject) = self.subject_contains {
+                params.push((
+                    CFString::wrap_under_get_rule(kSecMatchSubjectContains),
+                    subject.as_CFType(),
                 ));
             }
             if let Some(ref service) = self.service {
