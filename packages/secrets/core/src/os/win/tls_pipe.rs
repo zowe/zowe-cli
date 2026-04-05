@@ -45,11 +45,7 @@ pub fn create_tls_pipe(
             }
 
             let remote_stream = match TcpStream::connect(&remote_addr) {
-                Ok(s) => {
-                    // Short read timeout so the proxy loop doesn't block forever on tls_stream.read()
-                    let _ = s.set_read_timeout(Some(std::time::Duration::from_millis(5)));
-                    s
-                },
+                Ok(s) => s,
                 Err(e) => fail_proxy!(format!("Failed to connect to remote {}: {}", remote_addr, e)),
             };
 
@@ -65,13 +61,20 @@ pub fn create_tls_pipe(
                 }
             });
 
+            // Handshake uses blocking I/O; do NOT set a short read timeout before this
+            // or the mid-handshake recv() calls will time out and cause spurious retries.
             let mut tls_stream = match tls_builder.connect(creds, remote_stream) {
                 Ok(s) => s,
                 Err(e) => fail_proxy!(format!("TLS connect failed with {}: {:?}", host_name, e)),
             };
 
-            local_stream.set_nonblocking(true).unwrap_or(());
-            tls_stream.get_mut().set_nonblocking(true).unwrap_or(());
+            // After the handshake, set a short read timeout on both sides of the proxy.
+            // IMPORTANT: do NOT use set_nonblocking(true) here — write_all() on a
+            // non-blocking socket fails with WouldBlock for larger payloads, which
+            // causes the loop to break early and the OS to send RST (ECONNRESET).
+            let timeout = Some(std::time::Duration::from_millis(5));
+            local_stream.set_read_timeout(timeout).unwrap_or(());
+            tls_stream.get_mut().set_read_timeout(timeout).unwrap_or(());
 
             let mut local_buf = [0u8; 16384];
             let mut remote_buf = [0u8; 16384];

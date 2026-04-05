@@ -45,30 +45,33 @@ pub fn create_tls_pipe(
                     }
             
             let remote_stream = match TcpStream::connect(&remote_addr) {
-                Ok(s) => {
-                    // Set read timeout to 5ms so tls_stream.read() doesn't block forever
-                    // and deadlock the single-threaded proxy loop!
-                    let _ = s.set_read_timeout(Some(std::time::Duration::from_millis(5)));
-                    s
-                },
+                Ok(s) => s,
                 Err(e) => fail_proxy!(format!("Failed to connect to remote {}: {}", remote_addr, e)),
             };
-            
+
             let mut builder = ClientBuilder::new();
-            builder.identity(&sf_identity, &[]); // identity and certs
-            
+            builder.identity(&sf_identity, &[]);
+
             if !reject_unauthorized {
                 builder.danger_accept_invalid_certs(true);
             }
-            
+
+            // Handshake uses blocking I/O; do NOT set a short read timeout before this
+            // or the mid-handshake recv() calls will time out and cause spurious retries.
             let mut tls_stream = match builder.handshake(&host_name, remote_stream) {
                 Ok(s) => s,
                 Err(e) => fail_proxy!(format!("TLS handshake failed with {}: {:?}", host_name, e)),
             };
-            
-            local_stream.set_nonblocking(true).unwrap_or(());
-            // tls_stream from security-framework doesn't have a direct `get_mut()` sometimes.
-            // Let's see if we can do bi-directional blocking/non-blocking copy
+
+            // After the handshake, set a short read timeout on both sides of the proxy.
+            // This lets each read() return promptly when there is no data, without
+            // blocking the single-threaded loop indefinitely.
+            // IMPORTANT: do NOT use set_nonblocking(true) here — write_all() on a
+            // non-blocking socket fails with WouldBlock for larger payloads, which
+            // causes the loop to break early and the OS to send RST (ECONNRESET).
+            let timeout = Some(std::time::Duration::from_millis(5));
+            local_stream.set_read_timeout(timeout).unwrap_or(());
+            tls_stream.get_mut().set_read_timeout(timeout).unwrap_or(());
             
             let mut local_buf = [0u8; 16384];
             let mut remote_buf = [0u8; 16384];
@@ -91,12 +94,6 @@ pub fn create_tls_pipe(
                     Err(_) => break,
                 }
                 
-                // Since tls_stream is blocking, we use set_read_timeout if possible, but 
-                // security-framework doesn't expose the underlying socket easily to set it to non-blocking.
-                // Wait! If remote_stream was already connected, can we set it to non-blocking BEFORE handshake?
-                // Or AFTER?
-                
-                // To avoid hanging on read, we'll try reading
                 match tls_stream.read(&mut remote_buf) {
                     Ok(0) => break,
                     Ok(n) => {

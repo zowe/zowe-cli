@@ -46,18 +46,49 @@ export class KeychainAgent extends https.Agent {
 
     /**
      * Override createSocket (not createConnection) to support async TLS setup.
-     * Builds the socket asynchronously, stashes it in pendingSocket, then delegates
-     * to super.createSocket() which calls createConnection() synchronously to pick it up.
-     * This matches the pattern used by the agent-base package.
+     * Follows the same pattern as agent-base:
+     *  1. Insert a fake socket into the pool immediately (synchronously) to hold the
+     *     slot while async work is in-flight. This prevents concurrent requests from
+     *     racing past a finite maxSockets limit during the async window.
+     *  2. Build the real socket asynchronously, stash it in pendingSocket.
+     *  3. Remove the fake slot and let super.createSocket() call createConnection()
+     *     synchronously to pick up the real socket.
      */
     public createSocket(req: http.ClientRequest, options: any, cb: (err: Error | null, socket?: any) => void): void {
+        const name = this.getName(options);
+
+        // Hold a pool slot during the async build so maxSockets is respected.
+        // When both maxSockets and maxTotalSockets are Infinity, no fake socket is needed.
+        let fakeSocket: net.Socket | null = null;
+        if (this.maxSockets !== Infinity || (this as any).maxTotalSockets !== Infinity) {
+            if (!(this as any).sockets[name]) {
+                (this as any).sockets[name] = [];
+            }
+            fakeSocket = new net.Socket({ writable: false });
+            (this as any).sockets[name].push(fakeSocket);
+            (this as any).totalSocketCount = ((this as any).totalSocketCount ?? 0) + 1;
+        }
+
+        const cleanup = () => {
+            if (fakeSocket === null) return;
+            const arr: net.Socket[] = (this as any).sockets[name] ?? [];
+            const idx = arr.indexOf(fakeSocket!);
+            if (idx !== -1) {
+                arr.splice(idx, 1);
+                (this as any).totalSocketCount--;
+                if (arr.length === 0) delete (this as any).sockets[name];
+            }
+            fakeSocket = null;
+        };
+
         this.buildSocket(options)
             .then((socket) => {
+                cleanup();
                 this.pendingSocket = socket;
                 // createSocket lives on http.Agent but is not in @types/node's typings
                 (http.Agent.prototype as any).createSocket.call(this, req, options, cb);
             })
-            .catch(cb);
+            .catch((err: Error) => { cleanup(); cb(err); });
     }
 
     /**
@@ -194,13 +225,10 @@ export class KeychainAgent extends https.Agent {
             (socket as any).getPeerCertificate = () => ({});
 
             socket.connect(localPort, "127.0.0.1", () => {
-                // Resolve the promise. The call chain:
-                //   buildSocket resolves → super.createSocket() [sync] → createConnection() [sync]
-                //   → oncreate(null, socket) [sync] → cb(null, socket) [sync]
-                //   → req.onSocket(socket) [sync] attaches 'secureConnect' listener
-                //   → nextTick fires → 'secureConnect' is caught by the listener
+                // Socket is already TCP-connected. Node's onSocketNT sees socket.connecting===false
+                // and calls socketOnConnect() immediately — it never waits for 'secureConnect'.
+                // Resolve here so the promise chain runs as a microtask after connect() returns.
                 resolve(socket);
-                process.nextTick(() => socket.emit("secureConnect"));
             });
 
             socket.once("error", reject);
