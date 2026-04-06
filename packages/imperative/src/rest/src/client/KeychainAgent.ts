@@ -10,6 +10,7 @@
 */
 
 import * as http from "http";
+import * as https from "https";
 import * as net from "net";
 import * as tls from "tls";
 import { Agent } from "agent-base";
@@ -32,7 +33,7 @@ export class KeychainAgent extends Agent {
      * @param cliHome - The CLI home directory used as the service name for keyring lookups
      * @param options - Additional HTTPS agent options
      */
-    constructor(certAccount: string, cliHome: string, options?: http.AgentOptions) {
+    constructor(certAccount: string, cliHome: string, options?: https.AgentOptions) {
         super(options);
         this.certAccount = certAccount;
         this.cliHome = cliHome;

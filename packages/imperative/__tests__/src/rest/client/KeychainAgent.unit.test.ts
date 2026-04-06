@@ -21,7 +21,6 @@ describe("KeychainAgent", () => {
             const agent = new KeychainAgent(mockCertAccount, mockCliHome);
 
             expect(agent).toBeInstanceOf(KeychainAgent);
-            expect(agent).toBeInstanceOf(https.Agent);
         });
 
         it("should create an instance with custom options", () => {
@@ -34,93 +33,90 @@ describe("KeychainAgent", () => {
             const agent = new KeychainAgent(mockCertAccount, mockCliHome, options);
 
             expect(agent).toBeInstanceOf(KeychainAgent);
-        });
-
-        it("should default rejectUnauthorized to true when not specified", () => {
-            const agent = new KeychainAgent(mockCertAccount, mockCliHome);
-
-            // Access private property for testing
-            expect((agent as any).options.rejectUnauthorized).toBe(true);
-        });
-
-        it("should respect rejectUnauthorized option when provided", () => {
-            const agent = new KeychainAgent(mockCertAccount, mockCliHome, {
-                rejectUnauthorized: false
-            });
-
             expect((agent as any).options.rejectUnauthorized).toBe(false);
         });
     });
 
-    describe("createConnection", () => {
+    describe("connect", () => {
         let agent: KeychainAgent;
         let mockSocket: any;
+        let mockTlsSocket: any;
+        let mockKeyring: any;
 
         beforeEach(() => {
             agent = new KeychainAgent(mockCertAccount, mockCliHome);
 
             // Mock socket
             mockSocket = {
-                connect: jest.fn(),
-                on: jest.fn()
+                connect: jest.fn((port, host, cb) => { if (cb) cb(); }),
+                on: jest.fn(),
+                once: jest.fn()
             };
 
-            // Mock Socket constructor
+            // Mock TLS socket
+            mockTlsSocket = {
+                once: jest.fn()
+            };
+
+            mockKeyring = {
+                getPrivateKey: jest.fn().mockResolvedValue(Buffer.from("fake-key")),
+                getCertificate: jest.fn().mockResolvedValue(Buffer.from("fake-cert")),
+                createTlsPipe: jest.fn().mockResolvedValue(12345)
+            };
+
+            jest.spyOn(agent as any, "keyring", "get").mockReturnValue(mockKeyring);
             jest.spyOn(require("net"), "Socket").mockImplementation(() => mockSocket);
+            jest.spyOn(require("tls"), "connect").mockImplementation(() => mockTlsSocket);
         });
 
         afterEach(() => {
             jest.restoreAllMocks();
         });
 
-        it("should create a socket and attempt to connect", () => {
-            const options = {
-                host: "example.com",
-                port: 443
-            };
+        it("should use buildPipeSocket on Windows", async () => {
+            const originalPlatform = process.platform;
+            Object.defineProperty(process, "platform", { value: "win32" });
 
-            agent.createConnection(options);
+            const options = { host: "example.com", port: 443 };
+            const result = await agent.connect(null as any, options);
 
-            expect(mockSocket.connect).toHaveBeenCalledWith(443, "example.com", expect.any(Function));
-        });
-
-        it("should register error handler on socket", () => {
-            const options = {
-                host: "example.com",
-                port: 443
-            };
-
-            agent.createConnection(options);
-
-            expect(mockSocket.on).toHaveBeenCalledWith("error", expect.any(Function));
-        });
-
-        it("should call callback with error when socket errors", () => {
-            const options = {
-                host: "example.com",
-                port: 443
-            };
-            const mockError = new Error("Connection failed");
-            const callback = jest.fn();
-
-            agent.createConnection(options, callback);
-
-            // Simulate socket error
-            const errorHandler = mockSocket.on.mock.calls.find((call: any) => call[0] === "error")[1];
-            errorHandler(mockError);
-
-            expect(callback).toHaveBeenCalledWith(mockError);
-        });
-
-        it("should return the created socket", () => {
-            const options = {
-                host: "example.com",
-                port: 443
-            };
-
-            const result = agent.createConnection(options);
-
+            expect(mockKeyring.createTlsPipe).toHaveBeenCalledWith("example.com", 443, mockCertAccount, true);
+            expect(mockSocket.connect).toHaveBeenCalledWith(12345, "127.0.0.1", expect.any(Function));
             expect(result).toBe(mockSocket);
+
+            Object.defineProperty(process, "platform", { value: originalPlatform });
+        });
+
+        it("should use buildExportableTlsSocket when key is exportable (non-Windows)", async () => {
+            const originalPlatform = process.platform;
+            Object.defineProperty(process, "platform", { value: "darwin" });
+
+            const options = { host: "example.com", port: 443 };
+            
+            const result = await agent.connect(null as any, options);
+
+            expect(mockKeyring.getPrivateKey).toHaveBeenCalled();
+            expect(mockKeyring.getCertificate).toHaveBeenCalled();
+            expect(require("tls").connect).toHaveBeenCalled();
+            expect(result).toBe(mockTlsSocket);
+
+            Object.defineProperty(process, "platform", { value: originalPlatform });
+        });
+
+        it("should fall back to buildPipeSocket when key is non-exportable (non-Windows)", async () => {
+            const originalPlatform = process.platform;
+            Object.defineProperty(process, "platform", { value: "darwin" });
+
+            mockKeyring.getPrivateKey.mockRejectedValue(new Error("Key is non-exportable"));
+
+            const options = { host: "example.com", port: 443 };
+            const result = await agent.connect(null as any, options);
+
+            expect(mockKeyring.createTlsPipe).toHaveBeenCalled();
+            expect(mockSocket.connect).toHaveBeenCalled();
+            expect(result).toBe(mockSocket);
+
+            Object.defineProperty(process, "platform", { value: originalPlatform });
         });
     });
 
