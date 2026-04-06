@@ -48,7 +48,7 @@ describe("KeychainAgent", () => {
 
             // Mock socket
             mockSocket = {
-                connect: jest.fn((port, host, cb) => { if (cb) cb(); }),
+                connect: jest.fn((_path, cb) => { if (cb) cb(); }),
                 on: jest.fn(),
                 once: jest.fn()
             };
@@ -113,7 +113,7 @@ describe("KeychainAgent", () => {
             const result = await agent.connect(null as any, options);
 
             expect(mockKeyring.createTlsPipe).toHaveBeenCalled();
-            expect(mockSocket.connect).toHaveBeenCalled();
+            expect(mockSocket.connect).toHaveBeenCalledWith("/tmp/test-pipe.sock", expect.any(Function));
             expect(result).toBe(mockSocket);
 
             Object.defineProperty(process, "platform", { value: originalPlatform });
