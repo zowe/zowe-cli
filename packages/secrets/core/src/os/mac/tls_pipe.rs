@@ -1,9 +1,11 @@
 use crate::os::error::KeyringError;
 use crate::os::mac::keychain::SecKeychain;
-use std::net::{TcpListener, TcpStream};
+use std::os::unix::net::UnixListener;
+use std::net::TcpStream;
 use std::thread;
 use std::io::{Read, Write};
 use security_framework::secure_transport::{ClientBuilder, ClientHandshakeError};
+use std::fs;
 
 /// Map Apple Secure Transport OSStatus codes to their documented symbolic name and cause.
 /// Values are verified against security-framework-sys/src/secure_transport.rs.
@@ -32,14 +34,34 @@ pub fn create_tls_pipe(
     remote_port: u16,
     cert_account: &String,
     reject_unauthorized: bool,
-) -> Result<u16, KeyringError> {
-    let keychain = SecKeychain::default().unwrap();
+) -> Result<String, KeyringError> {
+    let keychain = SecKeychain::default()
+        .map_err(|e| KeyringError::Os(format!("Failed to get default keychain: {:?}", e.message())))?;
     let identity = keychain.find_identity(cert_account.as_str())
         .map_err(|e| KeyringError::Os(format!("Identity not found: {:?}", e.message())))?;
     
-    let listener = TcpListener::bind("127.0.0.1:0")
+    let mut socket_path = std::env::temp_dir();
+    let short_id = &uuid::Uuid::new_v4().as_simple().to_string()[0..8];
+    socket_path.push(format!("zowe_{}_{}.sock", env!("CARGO_PKG_NAME"), short_id));
+    
+    // Clean up just in case
+    let _ = fs::remove_file(&socket_path);
+    
+    let listener = UnixListener::bind(&socket_path)
         .map_err(|e| KeyringError::Os(e.to_string()))?;
-    let local_port = listener.local_addr().unwrap().port();
+    
+    // Set restrictive permissions so only the current user can connect
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::PermissionsExt;
+        if let Ok(metadata) = fs::metadata(&socket_path) {
+            let mut perms = metadata.permissions();
+            perms.set_mode(0o600);
+            let _ = fs::set_permissions(&socket_path, perms);
+        }
+    }
+    
+    let socket_path_ret = socket_path.to_string_lossy().into_owned();
     
     let remote_addr = format!("{}:{}", remote_host, remote_port);
     let host_name = remote_host.clone();
@@ -194,5 +216,5 @@ pub fn create_tls_pipe(
         }
     });
     
-    Ok(local_port)
+    Ok(socket_path_ret)
 }

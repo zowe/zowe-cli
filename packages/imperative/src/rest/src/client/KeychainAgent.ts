@@ -128,7 +128,7 @@ export class KeychainAgent extends Agent {
         const port = options.port || AbstractSession.DEFAULT_HTTPS_PORT;
         const rejectUnauthorized = options.rejectUnauthorized ?? true;
 
-        const localPort: number = await this.keyring.createTlsPipe(host, port, this.certAccount, rejectUnauthorized);
+        const localPath: string = await this.keyring.createTlsPipe(host, port, this.certAccount, rejectUnauthorized);
 
         return new Promise<net.Socket>((resolve, reject) => {
             const socket = new net.Socket();
@@ -148,7 +148,7 @@ export class KeychainAgent extends Agent {
                 }
             });
 
-            socket.connect(localPort, "127.0.0.1", () => resolve(socket));
+            socket.connect(localPath, () => resolve(socket));
             socket.once("error", reject);
         });
     }

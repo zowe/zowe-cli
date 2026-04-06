@@ -17,4 +17,4 @@ export function setPassword(service: string, account: string, password: string, 
 export function createIdentityContext(service: string, account: string): Promise<string | null>
 export function signWithIdentity(handleId: string, algorithm: string, data: Array<number>): Promise<Buffer | null>
 export function releaseIdentityContext(handleId: string): Promise<boolean>
-export function createTlsPipe(remoteHost: string, remotePort: number, certAccount: string, rejectUnauthorized: boolean): Promise<number>
+export function createTlsPipe(remoteHost: string, remotePort: number, certAccount: string, rejectUnauthorized: boolean): Promise<string>

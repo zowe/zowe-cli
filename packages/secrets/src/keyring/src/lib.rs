@@ -67,7 +67,7 @@ fn release_identity_context(handle_id: String) -> AsyncTask<ReleaseIdentityConte
     AsyncTask::new(ReleaseIdentityContext { handle_id })
 }
 
-#[napi(ts_return_type = "Promise<number>")]
+#[napi(ts_return_type = "Promise<string>")]
 fn create_tls_pipe(
     remote_host: String,
     remote_port: u16,

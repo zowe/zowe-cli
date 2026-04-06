@@ -61,7 +61,7 @@ describe("KeychainAgent", () => {
             mockKeyring = {
                 getPrivateKey: jest.fn().mockResolvedValue(Buffer.from("fake-key")),
                 getCertificate: jest.fn().mockResolvedValue(Buffer.from("fake-cert")),
-                createTlsPipe: jest.fn().mockResolvedValue(12345)
+                createTlsPipe: jest.fn().mockResolvedValue("/tmp/test-pipe.sock")
             };
 
             jest.spyOn(agent as any, "keyring", "get").mockReturnValue(mockKeyring);
@@ -81,7 +81,7 @@ describe("KeychainAgent", () => {
             const result = await agent.connect(null as any, options);
 
             expect(mockKeyring.createTlsPipe).toHaveBeenCalledWith("example.com", 443, mockCertAccount, true);
-            expect(mockSocket.connect).toHaveBeenCalledWith(12345, "127.0.0.1", expect.any(Function));
+            expect(mockSocket.connect).toHaveBeenCalledWith("/tmp/test-pipe.sock", expect.any(Function));
             expect(result).toBe(mockSocket);
 
             Object.defineProperty(process, "platform", { value: originalPlatform });
