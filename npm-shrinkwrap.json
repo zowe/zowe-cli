@@ -11374,8 +11374,8 @@
       }
     },
     "node_modules/lodash": {
-      "version": "4.17.23",
-      "integrity": "sha512-LgVTMpQtIopCi79SJeDiP0TfWi5CNEc/L/aRdTh3yIvmZXTnheWpKjSZhnvMl8iXbC1tFg9gdHHDMLoV7CnG+w==",
+      "version": "4.18.1",
+      "integrity": "sha512-dMInicTPVE8d1e5otfwmmjlxkZoUpiVLwyeTdUsi/Caj/gfzzblBcCE5sRHV/AsjuCmxWrte2TNGSYuCeCq+0Q==",
       "license": "MIT"
     },
     "node_modules/lodash-deep": {
@@ -15314,7 +15314,7 @@
         "@zowe/zosmf-for-zowe-sdk": "7.29.22",
         "find-process": "1.4.7",
         "get-stream": "6.0.1",
-        "lodash": "4.17.23",
+        "lodash": "4.18.1",
         "minimatch": "5.1.9",
         "tar": "7.5.11"
       },
@@ -15432,7 +15432,7 @@
         "js-yaml": "4.1.1",
         "jsonfile": "6.1.0",
         "jsonschema": "1.5.0",
-        "lodash": "4.17.23",
+        "lodash": "4.18.1",
         "lodash-deep": "2.0.0",
         "log4js": "6.4.6",
         "markdown-it": "14.1.1",
@@ -19018,7 +19018,7 @@
         "comment-json": "^4.1.1",
         "find-process": "1.4.7",
         "get-stream": "6.0.1",
-        "lodash": "4.17.23",
+        "lodash": "4.18.1",
         "minimatch": "5.1.9",
         "strip-ansi": "^6.0.1",
         "tar": "7.5.11",
@@ -19133,7 +19133,7 @@
         "js-yaml": "4.1.1",
         "jsonfile": "6.1.0",
         "jsonschema": "1.5.0",
-        "lodash": "4.17.23",
+        "lodash": "4.18.1",
         "lodash-deep": "2.0.0",
         "log4js": "6.4.6",
         "markdown-it": "14.1.1",
@@ -24173,8 +24173,8 @@
       }
     },
     "lodash": {
-      "version": "4.17.23",
-      "integrity": "sha512-LgVTMpQtIopCi79SJeDiP0TfWi5CNEc/L/aRdTh3yIvmZXTnheWpKjSZhnvMl8iXbC1tFg9gdHHDMLoV7CnG+w=="
+      "version": "4.18.1",
+      "integrity": "sha512-dMInicTPVE8d1e5otfwmmjlxkZoUpiVLwyeTdUsi/Caj/gfzzblBcCE5sRHV/AsjuCmxWrte2TNGSYuCeCq+0Q=="
     },
     "lodash-deep": {
       "version": "2.0.0",
