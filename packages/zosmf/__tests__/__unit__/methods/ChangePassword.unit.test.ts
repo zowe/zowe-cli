@@ -10,7 +10,7 @@
 */
 
 import { RestClientError, Session } from "@zowe/imperative";
-import { ZosmfRestClient, IChangePasswordResponse } from "@zowe/core-for-zowe-sdk";
+import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { ZosmfChangePassword, IZosmfChangePasswordResponse } from "../../../src";
 
 describe("ZosmfChangePassword", () => {
@@ -24,6 +24,7 @@ describe("ZosmfChangePassword", () => {
     });
 
     const goodZosmfResponse: IZosmfChangePasswordResponse = {
+        success: true,
         returnCode: 0,
         reasonCode: 0,
         message: "Success."
@@ -43,9 +44,9 @@ describe("ZosmfChangePassword", () => {
     it("should change password successfully and return generic response", async () => {
         putSpy.mockResolvedValue(goodZosmfResponse);
 
-        const response: IChangePasswordResponse = await ZosmfChangePassword.changePassword(
+        const response: IZosmfChangePasswordResponse = await ZosmfChangePassword.changePassword(
             testSession,
-            { newPassword: "newPass" }
+            "newPass"
         );
 
         expect(putSpy).toHaveBeenCalledTimes(1);
@@ -57,14 +58,14 @@ describe("ZosmfChangePassword", () => {
         );
 
         expect(response.success).toBe(true);
-        expect(response.data).toBeDefined();
-        expect(response.data!.returnCode).toBe(0);
-        expect(response.data!.reasonCode).toBe(0);
-        expect(response.data!.message).toBe("Success.");
+        expect(response.returnCode).toBe(0);
+        expect(response.reasonCode).toBe(0);
+        expect(response.message).toBe("Success.");
     });
 
     it("should set success to false when z/OSMF returns non-zero codes", async () => {
         const failZosmfResponse: IZosmfChangePasswordResponse = {
+            success: false,
             returnCode: 4,
             reasonCode: 4,
             message: "The user ID is not defined to RACF."
@@ -73,18 +74,18 @@ describe("ZosmfChangePassword", () => {
 
         const response = await ZosmfChangePassword.changePassword(
             testSession,
-            { newPassword: "newPass" }
+            "newPass"
         );
 
         expect(response.success).toBe(false);
-        expect(response.data!.returnCode).toBe(4);
-        expect(response.data!.reasonCode).toBe(4);
+        expect(response.returnCode).toBe(4);
+        expect(response.reasonCode).toBe(4);
     });
 
     it("should throw when session is null", async () => {
         let error: any;
         try {
-            await ZosmfChangePassword.changePassword(null as any, { newPassword: "newPass" });
+            await ZosmfChangePassword.changePassword(null as any, "newPass");
         } catch (err) {
             error = err;
         }
@@ -92,10 +93,10 @@ describe("ZosmfChangePassword", () => {
         expect(error.message).toContain("session");
     });
 
-    it("should throw when parms is null", async () => {
+    it("should throw when newPassword is undefined", async () => {
         let error: any;
         try {
-            await ZosmfChangePassword.changePassword(testSession, null as any);
+            await ZosmfChangePassword.changePassword(testSession, undefined as any);
         } catch (err) {
             error = err;
         }
@@ -105,7 +106,7 @@ describe("ZosmfChangePassword", () => {
     it("should throw when newPassword is null", async () => {
         let error: any;
         try {
-            await ZosmfChangePassword.changePassword(testSession, { newPassword: null as any });
+            await ZosmfChangePassword.changePassword(testSession, null as any);
         } catch (err) {
             error = err;
         }
@@ -121,7 +122,7 @@ describe("ZosmfChangePassword", () => {
         });
         let error: any;
         try {
-            await ZosmfChangePassword.changePassword(noUserSession, { newPassword: "newPass" });
+            await ZosmfChangePassword.changePassword(noUserSession, "newPass");
         } catch (err) {
             error = err;
         }
@@ -138,7 +139,7 @@ describe("ZosmfChangePassword", () => {
         });
         let error: any;
         try {
-            await ZosmfChangePassword.changePassword(noPwdSession, { newPassword: "newPass" });
+            await ZosmfChangePassword.changePassword(noPwdSession, "newPass");
         } catch (err) {
             error = err;
         }
@@ -157,7 +158,7 @@ describe("ZosmfChangePassword", () => {
 
         let error: any;
         try {
-            await ZosmfChangePassword.changePassword(testSession, { newPassword: "newPass" });
+            await ZosmfChangePassword.changePassword(testSession, "newPass");
         } catch (err) {
             error = err;
         }
@@ -177,7 +178,7 @@ describe("ZosmfChangePassword", () => {
 
         let error: any;
         try {
-            await ZosmfChangePassword.changePassword(testSession, { newPassword: "newPass" });
+            await ZosmfChangePassword.changePassword(testSession, "newPass");
         } catch (err) {
             error = err;
         }

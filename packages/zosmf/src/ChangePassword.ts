@@ -11,7 +11,7 @@
 
 import { inspect } from "util";
 import { AbstractSession, Headers, ImperativeExpect, Logger, RestClientError } from "@zowe/imperative";
-import { ChangePassword, IChangePasswordParms, IChangePasswordResponse, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
+import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { ZosmfConstants } from "./constants/Zosmf.constants";
 import { ZosmfMessages } from "./constants/Zosmf.messages";
 import { IZosmfChangePasswordResponse } from "./doc/IZosmfChangePasswordResponse";
@@ -33,22 +33,16 @@ export class ZosmfChangePassword {
     /**
      * Change the password or passphrase for a z/OS user ID via z/OSMF.
      * @param {AbstractSession} session
-     * @param {IChangePasswordParms} parms
-     * @returns {Promise<IChangePasswordResponse>}
+     * @param {string} newPassword
+     * @returns {Promise<IZosmfChangePasswordResponse>}
      */
     public static async changePassword(
         session: AbstractSession,
-        parms: IChangePasswordParms
-    ): Promise<IChangePasswordResponse> {
-        return ChangePassword.changePassword(session, parms, ZosmfChangePassword.zosmfChangeFunc);
-    }
-
-    private static async zosmfChangeFunc(
-        session: AbstractSession,
-        parms: IChangePasswordParms
-    ): Promise<IChangePasswordResponse> {
-        ZosmfChangePassword.log.trace("ZosmfChangePassword.zosmfChangeFunc()");
+        newPassword: string
+    ): Promise<IZosmfChangePasswordResponse> {
+        ZosmfChangePassword.log.trace("ZosmfChangePassword.changePassword()");
         ImperativeExpect.toNotBeNullOrUndefined(session, ZosmfMessages.missingSession.message);
+        ImperativeExpect.toNotBeNullOrUndefined(newPassword, "New password must be defined");
 
         const userID = session.ISession.user;
         const oldPwd = session.ISession.password;
@@ -62,19 +56,17 @@ export class ZosmfChangePassword {
                 session,
                 ZosmfConstants.AUTHENTICATE_RESOURCE,
                 [Headers.APPLICATION_JSON],
-                { userID, oldPwd, newPwd: parms.newPassword }
+                { userID, oldPwd, newPwd: newPassword }
             );
         } catch (err) {
-            throw ZosmfChangePassword.sanitizeError(err, oldPwd, parms.newPassword);
+            throw ZosmfChangePassword.sanitizeError(err, oldPwd, newPassword);
         }
 
         return {
             success: zosmfResponse.returnCode === 0 && zosmfResponse.reasonCode === 0,
-            data: {
-                returnCode: zosmfResponse.returnCode,
-                reasonCode: zosmfResponse.reasonCode,
-                message: zosmfResponse.message
-            }
+            returnCode: zosmfResponse.returnCode,
+            reasonCode: zosmfResponse.reasonCode,
+            message: zosmfResponse.message
         };
     }
 

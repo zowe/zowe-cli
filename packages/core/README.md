@@ -10,7 +10,7 @@ The following libraries are included in this package:
 
 * *apiml* - Defines the `Services` class, which facilitates managing services hosted by the Zowe API Mediation Layer. It defines methods to load API ML config data for installed CLI plug-ins, obtain data from the API ML services endpoint, and convert this data to a config JSON file.
 
-* *auth* - Contains the `Login`, `Logout`, and `ChangePassword` classes. `Login` and `Logout` let you handle login and logout from the Zowe API Mediation Layer (or other token-based authentication services). Use the functions `Login.apimlLogin` and `Logout.apimlLogout` to store a web token in a local "base profile", which enables a secure connection to the server. `ChangePassword` provides a generic API for changing a user's password or passphrase. Consumers (such as `@zowe/zosmf-for-zowe-sdk`) provide their own `changeFunc` delegate and response details.
+* *auth* - Contains the `Login` and `Logout` classes, which let you handle login and logout from the Zowe API Mediation Layer (or other token-based authentication services). Use the functions `Login.apimlLogin` and `Logout.apimlLogout` to store a web token in a local "base profile", which enables a secure connection to the server.
 
 * *rest* - Defines the `ZosmfRestClient` class, which lets you access z/OSMF REST APIs and is an extension of the Imperative CLI Framework `RestClient` class. It provides convenience methods, such as `appendHeaders` and `processError`, that can be used for any z/OSMF request.
 

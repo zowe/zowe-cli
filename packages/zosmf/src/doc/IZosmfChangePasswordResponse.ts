@@ -16,6 +16,12 @@
  */
 export interface IZosmfChangePasswordResponse {
     /**
+     * Whether the password change completed successfully.
+     * @type {boolean}
+     */
+    success: boolean;
+
+    /**
      * Identifies the category of errors (0 = success).
      * @type {number}
      */

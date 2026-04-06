@@ -13,6 +13,3 @@ export * from "./Login";
 export * from "./LoginConstants";
 export * from "./Logout";
 export * from "./LogoutConstants";
-export * from "./ChangePassword";
-export * from "./doc/IChangePasswordParms";
-export * from "./doc/IChangePasswordResponse";
