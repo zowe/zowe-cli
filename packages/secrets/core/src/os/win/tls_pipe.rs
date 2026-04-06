@@ -5,9 +5,14 @@ use std::net::TcpStream;
 use std::io::{Read, Write};
 use std::thread;
 use windows_sys::Win32::System::Pipes::{CreateNamedPipeW, ConnectNamedPipe, PeekNamedPipe};
-use windows_sys::Win32::System::Pipes::{PIPE_ACCESS_DUPLEX, PIPE_TYPE_BYTE, PIPE_READMODE_BYTE, PIPE_WAIT};
-use windows_sys::Win32::Storage::FileSystem::FILE_FLAG_FIRST_PIPE_INSTANCE;
 use windows_sys::Win32::Foundation::{CloseHandle, INVALID_HANDLE_VALUE, GetLastError, ERROR_PIPE_CONNECTED};
+
+// Named pipe constants
+const PIPE_ACCESS_DUPLEX: u32 = 0x00000003;
+const PIPE_TYPE_BYTE: u32 = 0x00000000;
+const PIPE_READMODE_BYTE: u32 = 0x00000000;
+const PIPE_WAIT: u32 = 0x00000000;
+const FILE_FLAG_FIRST_PIPE_INSTANCE: u32 = 0x00080000;
 
 /// Map Windows Schannel HRESULT codes to their documented symbolic name and cause.
 /// Values are verified against winapi/src/shared/winerror.rs.
