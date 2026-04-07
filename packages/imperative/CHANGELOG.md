@@ -2,7 +2,7 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
-## Recent Changes
+## `5.27.16`
 
 - BugFix: Updated the `lodash`, `brace-expansion`, and `diff` dependencies to resolve technical currency. [#2711](https://github.com/zowe/zowe-cli/pull/2711)
 
