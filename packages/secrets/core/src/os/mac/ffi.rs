@@ -130,6 +130,7 @@ extern "C" {
     // Additional keychain search constants for identity/certificate search:
     pub static kSecClassIdentity: CFStringRef;
     pub static kSecClassCertificate: CFStringRef;
+    pub static kSecMatchSubjectContains: CFStringRef;
 
     // Key export operations:
     pub fn SecItemExport(

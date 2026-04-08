@@ -11916,7 +11916,6 @@
     "node_modules/tar": {
       "version": "7.5.11",
       "integrity": "sha512-ChjMH33/KetonMTAtpYdgUFr0tbz69Fp2v7zWxQfYZX4g5ZN2nOBXm1R2xyA+lMIKrLKIoKAwFj93jE/avX9cQ==",
-      "license": "BlueOak-1.0.0",
       "dependencies": {
         "@isaacs/fs-minipass": "^4.0.0",
         "chownr": "^3.0.0",
@@ -13206,6 +13205,7 @@
       "dependencies": {
         "@types/semver": "^7.5.0",
         "@types/yargs": "^17.0.32",
+        "agent-base": "^7.0.0",
         "chalk": "^4.1.2",
         "cli-table3": "^0.6.3",
         "comment-json": "~4.2.3",

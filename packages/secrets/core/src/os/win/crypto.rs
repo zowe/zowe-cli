@@ -5,7 +5,9 @@
 use crate::os::error::KeyringError;
 use super::cert_store::find_certificate_by_subject;
 use super::identity_cache;
+use schannel::RawPointer;
 use std::ffi::c_void;
+use std::mem;
 use windows_sys::Win32::Foundation::*;
 use windows_sys::Win32::Security::Cryptography::*;
 
@@ -56,13 +58,24 @@ pub fn create_identity_context(
 ) -> Result<Option<String>, KeyringError> {
     match find_certificate_by_subject(account.as_str())? {
         Some(cert_context) => {
-            let key_handle = get_cng_key_handle(cert_context)?;
-            match identity_cache::cache_identity(cert_context, key_handle) {
-                Ok(handle_id) => Ok(Some(handle_id)),
+            // Extract the raw pointer before any fallible operations.
+            // SAFETY: as_ptr() returns the inner *const CERT_CONTEXT; it is valid for
+            // the lifetime of cert_context. We must not let cert_context drop while
+            // the cache holds this pointer, so we mem::forget it on the success path.
+            let raw_ptr = unsafe { cert_context.as_ptr() as *const CERT_CONTEXT };
+            let key_handle = get_cng_key_handle(raw_ptr)?;
+            match identity_cache::cache_identity(raw_ptr, key_handle) {
+                Ok(handle_id) => {
+                    // The cache now owns the pointer; release_identity() will call
+                    // CertFreeCertificateContext. Prevent the CertContext drop from
+                    // calling it a second time.
+                    mem::forget(cert_context);
+                    Ok(Some(handle_id))
+                }
                 Err(err) => {
                     unsafe {
                         NCryptFreeObject(key_handle);
-                        CertFreeCertificateContext(cert_context);
+                        // cert_context drop will call CertFreeCertificateContext
                     }
                     Err(KeyringError::Library {
                         name: "Identity cache".to_owned(),

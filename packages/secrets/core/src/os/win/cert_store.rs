@@ -5,6 +5,8 @@
 
 use crate::os::error::KeyringError;
 use super::{encode_utf16, win32_error_as_string};
+use schannel::cert_context::CertContext;
+use schannel::RawPointer;
 use std::ffi::c_void;
 use windows_sys::Win32::Foundation::*;
 use windows_sys::Win32::Security::Cryptography::*;
@@ -15,10 +17,11 @@ use windows_sys::Win32::Security::Cryptography::*;
 /// * `account` - The subject name (CN) to search for
 ///
 /// # Returns
-/// * `Ok(Some(*const CERT_CONTEXT))` - Certificate context pointer
+/// * `Ok(Some(CertContext))` - schannel CertContext (owns the underlying CERT_CONTEXT,
+///   will call CertFreeCertificateContext on drop)
 /// * `Ok(None)` - Certificate not found
 /// * `Err(KeyringError)` - Error accessing certificate store
-pub fn find_certificate_by_subject(account: &str) -> Result<Option<*const CERT_CONTEXT>, KeyringError> {
+pub fn find_certificate_by_subject(account: &str) -> Result<Option<CertContext>, KeyringError> {
     let store_name = encode_utf16("MY");
     let subject_name = encode_utf16(account);
     
@@ -68,8 +71,12 @@ pub fn find_certificate_by_subject(account: &str) -> Result<Option<*const CERT_C
             win32_error_as_string(error)
         )));
     }
-    
-    Ok(Some(cert_context))
+
+    // Safety: cert_context is non-null and owned by us (CertFindCertificateInStore
+    // increments the refcount). schannel's CertContext::from_ptr takes ownership and
+    // will call CertFreeCertificateContext on drop.
+    let ctx = unsafe { CertContext::from_ptr(cert_context as *mut c_void) };
+    Ok(Some(ctx))
 }
 
 /// Returns the certificate data (DER format) for a given identity
@@ -88,26 +95,9 @@ pub fn get_certificate(
 ) -> Result<Option<Vec<u8>>, KeyringError> {
     match find_certificate_by_subject(account.as_str())? {
         Some(cert_context) => {
-            unsafe {
-                let cert_data = (*cert_context).pbCertEncoded;
-                let cert_len = (*cert_context).cbCertEncoded as usize;
-                
-                if cert_data.is_null() || cert_len == 0 {
-                    CertFreeCertificateContext(cert_context);
-                    return Err(KeyringError::Library {
-                        name: "Windows Certificate Store".to_owned(),
-                        details: "Certificate data is empty".to_owned(),
-                    });
-                }
-                
-                // Copy certificate data
-                let cert_bytes = std::slice::from_raw_parts(cert_data, cert_len).to_vec();
-                
-                // Free certificate context
-                CertFreeCertificateContext(cert_context);
-                
-                Ok(Some(cert_bytes))
-            }
+            // to_der() returns &[u8] directly (no Result)
+            let cert_bytes = cert_context.to_der().to_vec();
+            Ok(Some(cert_bytes))
         }
         None => Ok(None),
     }
@@ -149,43 +139,22 @@ pub fn get_private_key(
 ) -> Result<Option<Vec<u8>>, KeyringError> {
     match find_certificate_by_subject(account.as_str())? {
         Some(cert_context) => {
-            unsafe {
-                // Try to get the private key property
-                let mut key_prov_info_size: u32 = 0;
-                
-                // First call to get size
-                let result = CertGetCertificateContextProperty(
-                    cert_context,
-                    CERT_KEY_PROV_INFO_PROP_ID,
-                    std::ptr::null_mut(),
-                    &mut key_prov_info_size,
-                );
-                
-                if result == 0 {
-                    let error = GetLastError();
-                    CertFreeCertificateContext(cert_context);
-                    
-                    if error == CRYPT_E_NOT_FOUND as u32 {
-                        return Err(KeyringError::Library {
-                            name: "Windows Certificate Store".to_owned(),
-                            details: "Certificate does not have an associated private key".to_owned(),
-                        });
-                    }
-                    
-                    return Err(KeyringError::Os(format!(
-                        "Failed to get private key info: {}",
-                        win32_error_as_string(error)
-                    )));
-                }
-                
-                // For non-exportable keys, we cannot export the key data
-                // Return an informative error message
-                CertFreeCertificateContext(cert_context);
-                
-                Err(KeyringError::Library {
+            // Check whether the cert has an associated private key via safe schannel API.
+            // private_key() returns AcquirePrivateKeyOptions; calling acquire() verifies
+            // the key is present and accessible.
+            match cert_context.private_key().acquire() {
+                Err(_) => Err(KeyringError::Library {
                     name: "Windows Certificate Store".to_owned(),
-                    details: "Private key cannot be exported (likely non-exportable). Use create_identity_context and sign_with_identity for non-exportable keys.".to_owned(),
-                })
+                    details: "Certificate does not have an associated private key".to_owned(),
+                }),
+                Ok(_) => {
+                    // Private key exists but cannot be exported from Windows CNG.
+                    // Use create_tls_pipe or sign_with_identity for non-exportable keys.
+                    Err(KeyringError::Library {
+                        name: "Windows Certificate Store".to_owned(),
+                        details: "Private key cannot be exported (likely non-exportable). Use create_identity_context and sign_with_identity for non-exportable keys.".to_owned(),
+                    })
+                }
             }
         }
         None => Ok(None),

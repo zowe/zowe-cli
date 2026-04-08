@@ -2,8 +2,7 @@ use super::error::KeyringError;
 
 mod error;
 mod ffi;
-pub mod https_client;
-pub mod https_client_nsurlsession;
+pub mod tls_pipe;
 mod identity_cache;
 mod keychain;
 mod keychain_item;
@@ -16,7 +15,8 @@ use crate::os::mac::error::ERR_SEC_ITEM_NOT_FOUND;
 use crate::os::mac::keychain_search::{KeychainSearch, SearchResult};
 use adler2::Adler32;
 use fmutex::Guard;
-use keychain::SecKeychain;
+pub use keychain::SecKeychain;
+pub use tls_pipe::create_tls_pipe;
 
 impl From<Error> for KeyringError {
     fn from(error: Error) -> Self {
@@ -347,49 +347,4 @@ pub fn release_identity_context(handle_id: &String) -> Result<bool, KeyringError
             details: err,
         }
     })
-}
-
-///
-/// Makes an HTTPS request using macOS native APIs with certificate-based authentication.
-/// Supports non-exportable private keys from the system keychain.
-///
-/// - `hostname`: The target hostname
-/// - `port`: The target port (typically 443)
-/// - `path`: The request path (e.g., "/api/v1/resource")
-/// - `method`: HTTP method (GET, POST, PUT, DELETE, etc.)
-/// - `headers`: HashMap of HTTP headers
-/// - `body`: Optional request body as bytes
-/// - `cert_account`: The identity label/account name in the keychain
-/// - `reject_unauthorized`: Whether to validate server certificate chain
-/// - `timeout`: Optional timeout in milliseconds
-///
-/// Returns:
-/// - `HttpsResponse` containing status code, headers, and body
-/// - A `KeyringError` if there were any issues
-///
-pub fn native_https_request(
-    hostname: &String,
-    port: u16,
-    path: &String,
-    method: &String,
-    headers: std::collections::HashMap<String, String>,
-    body: Option<Vec<u8>>,
-    cert_account: &String,
-    reject_unauthorized: bool,
-    timeout: Option<u64>,
-) -> Result<https_client::HttpsResponse, KeyringError> {
-    let request = https_client::HttpsRequest {
-        hostname: hostname.clone(),
-        port,
-        path: path.clone(),
-        method: method.clone(),
-        headers,
-        body,
-        cert_account: cert_account.clone(),
-        reject_unauthorized,
-        timeout,
-    };
-
-    // Use NSURLSession implementation which properly supports non-exportable keys
-    https_client_nsurlsession::native_https_request_nsurlsession(&request)
 }

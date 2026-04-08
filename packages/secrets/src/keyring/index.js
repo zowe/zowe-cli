@@ -74,4 +74,4 @@ module.exports.setPassword = setPassword;
 module.exports.createIdentityContext = createIdentityContext;
 module.exports.signWithIdentity = signWithIdentity;
 module.exports.releaseIdentityContext = releaseIdentityContext;
-module.exports.nativeHttpsRequest = requireFn(binaryPath).nativeHttpsRequest;
+module.exports.createTlsPipe = requireFn(binaryPath).createTlsPipe;

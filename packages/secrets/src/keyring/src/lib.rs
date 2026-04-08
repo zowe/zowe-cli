@@ -1,7 +1,7 @@
 use napi::bindgen_prelude::AsyncTask;
 use napi_derive::napi;
 use std::collections::HashMap;
-use workers::{CreateIdentityContext, DeletePassword, FindCredentials, FindPassword, GetCertificate, GetPassword, GetPrivateKey, NativeHttpsRequest, ReleaseIdentityContext, SetPassword, SignWithIdentity};
+use workers::{CreateIdentityContext, DeletePassword, FindCredentials, FindPassword, GetCertificate, GetPassword, GetPrivateKey, ReleaseIdentityContext, SetPassword, SignWithIdentity, CreateTlsPipe};
 
 extern crate secrets_core;
 
@@ -67,30 +67,18 @@ fn release_identity_context(handle_id: String) -> AsyncTask<ReleaseIdentityConte
     AsyncTask::new(ReleaseIdentityContext { handle_id })
 }
 
-#[napi(object)]
-pub struct NativeHttpsRequestOptions {
-    pub hostname: String,
-    pub port: u16,
-    pub path: String,
-    pub method: String,
-    pub headers: HashMap<String, String>,
-    pub body: Option<Vec<u8>>,
-    pub cert_account: String,
-    pub reject_unauthorized: bool,
-    pub timeout: Option<i64>,
-}
-
-#[napi]
-fn native_https_request(options: NativeHttpsRequestOptions) -> AsyncTask<NativeHttpsRequest> {
-    AsyncTask::new(NativeHttpsRequest {
-        hostname: options.hostname,
-        port: options.port,
-        path: options.path,
-        method: options.method,
-        headers: options.headers,
-        body: options.body,
-        cert_account: options.cert_account,
-        reject_unauthorized: options.reject_unauthorized,
-        timeout: options.timeout.map(|t| t as u64),
+#[napi(ts_return_type = "Promise<string>")]
+fn create_tls_pipe(
+    remote_host: String,
+    remote_port: u16,
+    cert_account: String,
+    reject_unauthorized: bool,
+) -> AsyncTask<CreateTlsPipe> {
+    AsyncTask::new(CreateTlsPipe {
+        remote_host,
+        remote_port,
+        cert_account,
+        reject_unauthorized,
     })
 }
+

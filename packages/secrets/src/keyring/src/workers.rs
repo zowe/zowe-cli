@@ -53,24 +53,13 @@ pub struct ReleaseIdentityContext {
     pub handle_id: String,
 }
 
-pub struct NativeHttpsRequest {
-    pub hostname: String,
-    pub port: u16,
-    pub path: String,
-    pub method: String,
-    pub headers: HashMap<String, String>,
-    pub body: Option<Vec<u8>>,
+pub struct CreateTlsPipe {
+    pub remote_host: String,
+    pub remote_port: u16,
     pub cert_account: String,
     pub reject_unauthorized: bool,
-    pub timeout: Option<u64>,
 }
 
-#[napi(object)]
-pub struct HttpsResponse {
-    pub status_code: u16,
-    pub headers: HashMap<String, String>,
-    pub body: Vec<u8>,
-}
 
 #[napi(object)]
 pub struct Credential {
@@ -439,71 +428,21 @@ impl Task for ReleaseIdentityContext {
     }
 }
 
-#[cfg(target_os = "macos")]
+#[cfg(any(target_os = "macos", target_os = "windows"))]
 #[napi]
-impl Task for NativeHttpsRequest {
-    type Output = secrets_core::os::mac::https_client::HttpsResponse;
-    type JsValue = HttpsResponse;
+impl Task for CreateTlsPipe {
+    type Output = String;
+    type JsValue = napi::JsString;
 
     fn compute(&mut self) -> Result<Self::Output> {
-        match os::native_https_request(
-            &self.hostname,
-            self.port,
-            &self.path,
-            &self.method,
-            self.headers.clone(),
-            self.body.clone(),
-            &self.cert_account,
-            self.reject_unauthorized,
-            self.timeout,
-        ) {
-            Ok(response) => Ok(response),
+        match os::create_tls_pipe(&self.remote_host, self.remote_port, &self.cert_account, self.reject_unauthorized) {
+            Ok(path) => Ok(path),
             Err(err) => Err(napi::Error::from_reason(err.to_string())),
         }
     }
 
-    fn resolve(&mut self, _env: Env, output: Self::Output) -> Result<Self::JsValue> {
-        Ok(HttpsResponse {
-            status_code: output.status_code,
-            headers: output.headers,
-            body: output.body,
-        })
-    }
-
-    fn reject(&mut self, _env: Env, err: Error) -> Result<Self::JsValue> {
-        Err(err)
-    }
-}
-
-#[cfg(target_os = "windows")]
-#[napi]
-impl Task for NativeHttpsRequest {
-    type Output = secrets_core::os::win::https_client::HttpsResponse;
-    type JsValue = HttpsResponse;
-
-    fn compute(&mut self) -> Result<Self::Output> {
-        match os::native_https_request(
-            &self.hostname,
-            self.port,
-            &self.path,
-            &self.method,
-            self.headers.clone(),
-            self.body.clone(),
-            &self.cert_account,
-            self.reject_unauthorized,
-            self.timeout,
-        ) {
-            Ok(response) => Ok(response),
-            Err(err) => Err(napi::Error::from_reason(err.to_string())),
-        }
-    }
-
-    fn resolve(&mut self, _env: Env, output: Self::Output) -> Result<Self::JsValue> {
-        Ok(HttpsResponse {
-            status_code: output.status_code,
-            headers: output.headers,
-            body: output.body,
-        })
+    fn resolve(&mut self, env: Env, output: Self::Output) -> Result<Self::JsValue> {
+        env.create_string(output.as_str())
     }
 
     fn reject(&mut self, _env: Env, err: Error) -> Result<Self::JsValue> {
@@ -513,19 +452,20 @@ impl Task for NativeHttpsRequest {
 
 #[cfg(not(any(target_os = "macos", target_os = "windows")))]
 #[napi]
-impl Task for NativeHttpsRequest {
-    type Output = HttpsResponse;
-    type JsValue = HttpsResponse;
+impl Task for CreateTlsPipe {
+    type Output = String;
+    type JsValue = napi::JsString;
 
     fn compute(&mut self) -> Result<Self::Output> {
-        Err(napi::Error::from_reason("native_https_request is not yet supported on this platform".to_owned()))
+        Err(napi::Error::from_reason("create_tls_pipe is not yet supported on this platform".to_owned()))
     }
 
-    fn resolve(&mut self, _env: Env, output: Self::Output) -> Result<Self::JsValue> {
-        Ok(output)
+    fn resolve(&mut self, env: Env, output: Self::Output) -> Result<Self::JsValue> {
+        env.create_string(output.as_str())
     }
 
     fn reject(&mut self, _env: Env, err: Error) -> Result<Self::JsValue> {
         Err(err)
     }
 }
+

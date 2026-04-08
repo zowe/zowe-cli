@@ -47,6 +47,7 @@
   "dependencies": {
     "@types/semver": "^7.5.0",
     "@types/yargs": "^17.0.32",
+    "agent-base": "^7.0.0",
     "chalk": "^4.1.2",
     "cli-table3": "^0.6.3",
     "comment-json": "~4.2.3",

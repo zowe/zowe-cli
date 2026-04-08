@@ -9,122 +9,61 @@
 *
 */
 
+import * as http from "http";
 import * as https from "https";
+import * as net from "net";
 import * as tls from "tls";
-import { Socket } from "net";
+import { Agent } from "agent-base";
+import { AbstractSession } from "../session/AbstractSession";
 
 /**
- * Custom HTTPS Agent that supports non-exportable private keys from macOS Keychain.
- * This agent creates TLS connections using certificate identities stored in the system keychain.
+ * HTTPS Agent that supports certificates stored in the macOS Keychain or Windows Certificate Store,
+ * including non-exportable private keys (e.g. Windows CNG, macOS Secure Enclave).
+ *
+ * On macOS, if the private key is exportable it is used directly by Node's TLS stack.
+ * Otherwise (and always on Windows), TLS is handled by native OS APIs via a Rust helper.
  */
-export class KeychainAgent extends https.Agent {
+export class KeychainAgent extends Agent {
     private certAccount: string;
     private cliHome: string;
 
     /**
      * Creates a new KeychainAgent
      * @param certAccount - The account/label name for the identity in the keychain
-     * @param cliHome - The CLI home directory (used as service name)
+     * @param cliHome - The CLI home directory used as the service name for keyring lookups
      * @param options - Additional HTTPS agent options
      */
     constructor(certAccount: string, cliHome: string, options?: https.AgentOptions) {
-        super({
-            ...options,
-            // Prevent default certificate loading
-            rejectUnauthorized: options?.rejectUnauthorized ?? true
-        });
+        super(options);
         this.certAccount = certAccount;
         this.cliHome = cliHome;
     }
 
     /**
-     * Override createConnection to use keychain identity for TLS
+     * Returns the socket to use for each outgoing request.
+     * On macOS, tries to export the private key and use Node TLS directly.
+     * Falls back to the Rust TLS pipe for non-exportable keys and always on Windows.
      */
-    public createConnection(options: any, callback?: (err: Error | null, socket?: Socket) => void): Socket {
-        // Create a plain TCP socket first
-        const socket = new Socket();
-
-        // Connect to the target host
-        socket.connect(options.port, options.host, () => {
-            // Once TCP connection is established, upgrade to TLS using keychain identity
-            this.upgradeToTLS(socket, options, callback);
-        });
-
-        // Handle connection errors
-        socket.on("error", (err) => {
-            if (callback) {
-                callback(err);
-            }
-        });
-
-        return socket;
-    }
-
-    /**
-     * Upgrade a plain socket to TLS using the keychain identity
-     */
-    private async upgradeToTLS(socket: Socket, options: any, callback?: (err: Error | null, socket?: Socket) => void): Promise<void> {
-        try {
-            // Load the keyring module to access certificate
-            // eslint-disable-next-line @typescript-eslint/no-var-requires
-            const { keyring } = require("@zowe/secrets-for-zowe-sdk");
-
-            // Get certificate from keychain
-            const certDerBuffer = await keyring.getCertificate(this.cliHome, this.certAccount);
-
-            if (certDerBuffer == null) {
-                throw new Error(`Certificate account '${this.certAccount}' not found in keychain.`);
-            }
-
-            // Convert DER to PEM format
-            const certPem = this.derToPem(certDerBuffer, "CERTIFICATE");
-
-            // Get the private key (must be exportable to reach this code path)
-            // Non-exportable keys are automatically handled by NativeHttpsClient
-            let privateKeyPem: string | null = null;
-
+    public async connect(_req: http.ClientRequest, options: any): Promise<net.Socket | tls.TLSSocket> {
+        if (process.platform !== "win32") {
             try {
-                const privateKeyDer = await keyring.getPrivateKey(this.cliHome, this.certAccount);
-                if (privateKeyDer) {
-                    privateKeyPem = this.derToPem(privateKeyDer, "PRIVATE KEY");
-                } else {
-                    throw new Error(`No private key data returned for certificate account '${this.certAccount}'`);
+                const privateKeyDer: Buffer = await this.keyring.getPrivateKey(this.cliHome, this.certAccount);
+                if (privateKeyDer != null) {
+                    return this.buildExportableTlsSocket(options, privateKeyDer);
                 }
-            } catch (keyErr: any) {
-                throw new Error(`Failed to retrieve private key for '${this.certAccount}': ${keyErr.message}`);
-            }
-
-            // Create TLS options with the certificate
-            const tlsOptions: tls.ConnectionOptions = {
-                socket,
-                cert: certPem,
-                servername: options.servername || options.host,
-                rejectUnauthorized: options.rejectUnauthorized,
-                ca: options.ca,
-            };
-
-            // Set the private key for TLS
-            tlsOptions.key = privateKeyPem;
-
-            // Upgrade the socket to TLS
-            const tlsSocket = tls.connect(tlsOptions, () => {
-                if (callback) {
-                    callback(null, tlsSocket);
+            } catch (err: any) {
+                if (!err.message?.includes("non-exportable")) {
+                    throw err;
                 }
-            });
-
-            tlsSocket.on("error", (err) => {
-                if (callback) {
-                    callback(err);
-                }
-            });
-
-        } catch (err) {
-            if (callback) {
-                callback(err as Error);
             }
         }
+
+        return this.buildPipeSocket(options);
     }
+
+    // Loaded on first use via the Node require cache.
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    private get keyring() { return require("@zowe/secrets-for-zowe-sdk").keyring; }
 
     /**
      * Convert DER-encoded data to PEM format
@@ -134,7 +73,7 @@ export class KeychainAgent extends https.Agent {
         const lines: string[] = [];
         lines.push(`-----BEGIN ${type}-----`);
 
-        // Split base64 into 64-character lines (standard PEM format)
+        // Split base64 into 64-character lines per PEM spec
         const PEM_LINE_LENGTH = 64;
         for (let i = 0; i < base64.length; i += PEM_LINE_LENGTH) {
             lines.push(base64.substring(i, i + PEM_LINE_LENGTH));
@@ -142,5 +81,75 @@ export class KeychainAgent extends https.Agent {
 
         lines.push(`-----END ${type}-----`);
         return lines.join("\n");
+    }
+
+    /**
+     * Exportable key path (macOS): use the exported key material with Node's TLS stack directly.
+     */
+    private async buildExportableTlsSocket(options: any, privateKeyDer: Buffer): Promise<tls.TLSSocket> {
+        const certDerBuffer = await this.keyring.getCertificate(this.cliHome, this.certAccount);
+        if (!certDerBuffer) {
+            throw new Error(`Certificate '${this.certAccount}' not found in keychain.`);
+        }
+        const certPem = this.derToPem(certDerBuffer, "CERTIFICATE");
+        const privateKeyPem = this.derToPem(privateKeyDer, "PRIVATE KEY");
+
+        // tls.connect() starts the handshake asynchronously and returns immediately.
+        const tlsSocket = tls.connect({
+            host: options.host,
+            port: options.port,
+            cert: certPem,
+            key: privateKeyPem,
+            servername: options.servername || options.host,
+            rejectUnauthorized: options.rejectUnauthorized ?? true,
+            ca: options.ca,
+        });
+
+        return new Promise<tls.TLSSocket>((resolve, reject) => {
+            tlsSocket.once("error", reject);
+            resolve(tlsSocket);
+        });
+    }
+
+    /**
+     * Non-exportable key path (Windows / macOS Secure Enclave): TLS is handled by a Rust
+     * helper that uses OS APIs (Schannel / Secure Transport) and proxies plaintext over a
+     * local TCP socket, which is returned as a duck-typed TLS socket to Node's HTTP layer.
+     */
+    private async buildPipeSocket(options: any): Promise<net.Socket> {
+        if (typeof this.keyring.createTlsPipe !== "function") {
+            throw new Error(
+                "createTlsPipe is not supported by the current version of @zowe/secrets-for-zowe-sdk. " +
+                "Please rebuild the native bindings."
+            );
+        }
+
+        const host = options.servername || options.host || "localhost";
+        const port = options.port || AbstractSession.DEFAULT_HTTPS_PORT;
+        const rejectUnauthorized = options.rejectUnauthorized ?? true;
+
+        const localPath: string = await this.keyring.createTlsPipe(host, port, this.certAccount, rejectUnauthorized);
+
+        return new Promise<net.Socket>((resolve, reject) => {
+            const socket = new net.Socket();
+
+            // Mark the socket as TLS-like so Node's HTTPS layer accepts it.
+            (socket as any).encrypted = true;
+            (socket as any).authorized = true;
+            (socket as any).alpnProtocol = false;
+            (socket as any).getPeerCertificate = () => ({});
+
+            // Annotate errors with context before they propagate.
+            socket.on("error", (err: Error) => {
+                if (!(err as any).keychainAgentContext) {
+                    (err as any).keychainAgentContext =
+                        `KeychainAgent TLS pipe — cert: "${this.certAccount}", remote: ${host}:${port}`;
+                    err.message = `${err.message} (${(err as any).keychainAgentContext})`;
+                }
+            });
+
+            socket.connect(localPath, () => resolve(socket));
+            socket.once("error", reject);
+        });
     }
 }

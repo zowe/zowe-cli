@@ -38,7 +38,6 @@ import { CompressionUtils } from "./CompressionUtils";
 import { ProxySettings } from "./ProxySettings";
 import { EnvironmentalVariableSettings } from "../../../imperative/src/env/EnvironmentalVariableSettings";
 import { Censor } from "../../../censor";
-import { NativeHttpsClient } from "./NativeHttpsClient";
 import { Queue } from "./../../../utilities/src/queue";
 
 export type RestClientResolve = (data: string) => void;
@@ -358,50 +357,6 @@ export abstract class AbstractRestClient {
                 // form a header from scrtData and place the header into the options.reqHeaders
                 this.addScrtHeader(options);
                 const buildOptions = await this.buildOptions(options.resource, options.request, options.reqHeaders);
-
-                if (NativeHttpsClient.isEnabled(this.session.ISession)
-                    && this.session.ISession.protocol === SessConstants.HTTPS_PROTOCOL) {
-
-                    // Native HTTPS client path - supports streaming by buffering in memory
-                    // Handle request streaming by reading the entire stream into a buffer before sending
-                    let requestData: string | Buffer | undefined = options.writeData;
-
-                    // Handle JSON data - stringify objects before sending
-                    if (requestData != null && this.mIsJson && typeof requestData === 'object' && !Buffer.isBuffer(requestData)) {
-                        this.log.debug("writing JSON for native request");
-                        this.log.trace("JSON body: %s", JSON.stringify(requestData));
-                        requestData = JSON.stringify(requestData);
-                    }
-
-                    if (options.requestStream != null) {
-                        const chunks: Buffer[] = [];
-                        for await (const chunk of options.requestStream) {
-                            chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk));
-                        }
-                        requestData = Buffer.concat(chunks);
-                    }
-
-                    const nativeResponse = await NativeHttpsClient.request(
-                        buildOptions,
-                        this.session.ISession,
-                        requestData
-                    );
-
-                    const nativeResponseStream = new Readable({ read() { /* no-op */ } });
-                    (nativeResponseStream as any).statusCode = nativeResponse.statusCode;
-                    (nativeResponseStream as any).headers = nativeResponse.headers ?? {};
-
-                    this.requestHandler(nativeResponseStream);
-
-                    if (nativeResponse.body != null) {
-                        const bodyBuffer = Buffer.isBuffer(nativeResponse.body)
-                            ? nativeResponse.body
-                            : Buffer.from(nativeResponse.body);
-                        nativeResponseStream.push(bodyBuffer);
-                    }
-                    nativeResponseStream.push(null);
-                    return;
-                }
 
                 /**
                 * Perform the actual http request
@@ -1151,25 +1106,6 @@ export abstract class AbstractRestClient {
                 });
             }
 
-            // Check if the private key is exportable
-            const isExportable = await NativeHttpsClient.isKeyExportable(
-                this.session.ISession.certAccount,
-                ImperativeConfig.instance.cliHome
-            );
-
-            if (!isExportable) {
-                // Key is non-exportable - automatically enable native HTTPS client
-                const platformName = process.platform === "darwin" ? "macOS" : "Windows";
-                this.log.info(`Certificate '${this.session.ISession.certAccount}' has a non-exportable private key. ` +
-                    `Automatically using ${platformName} native HTTPS client.`);
-                this.session.ISession._useNativeHttpsForNonExportable = true;
-
-                // Don't set up KeychainAgent - the native client will be used instead
-                // Return true to indicate auth is configured
-                return true;
-            }
-
-            // Key is exportable - use KeychainAgent with Node.js TLS
             // eslint-disable-next-line @typescript-eslint/no-var-requires
             const { KeychainAgent } = require("./KeychainAgent");
 
