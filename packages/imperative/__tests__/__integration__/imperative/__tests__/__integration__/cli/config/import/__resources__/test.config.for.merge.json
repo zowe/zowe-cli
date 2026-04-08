@@ -1,0 +1,28 @@
+{
+    "profiles": {
+        "base": {
+            "type": "base",
+            "properties": {
+                "host": "team-host.com",
+                "port": 443,
+                "rejectUnauthorized": true
+            },
+            "secure": [
+                "user",
+                "password"
+            ]
+        },
+        "zosmf": {
+            "type": "zosmf",
+            "properties": {
+                "host": "zosmf.team.com"
+            },
+            "secure": []
+        }
+    },
+    "defaults": {
+        "base": "base",
+        "zosmf": "zosmf"
+    },
+    "autoStore": true
+}

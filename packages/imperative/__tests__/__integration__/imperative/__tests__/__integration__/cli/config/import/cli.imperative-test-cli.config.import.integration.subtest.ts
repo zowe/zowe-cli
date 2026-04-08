@@ -85,7 +85,9 @@ describe("imperative-test-cli config import", () => {
                 "File path or URL to import from.",
                 "Target the global config files.",
                 "Target the user config files.",
-                "Overwrite config file if one already exists."
+                "Overwrite config file if one already exists.",
+                "--merge",
+                "--dry-run"
             ];
             expectedLines.forEach((line: string) => expect(response.output.toString()).toContain(line));
             expect(response.error).toBeFalsy();
@@ -211,6 +213,120 @@ describe("imperative-test-cli config import", () => {
                 expect(fs.existsSync(path.join(TEST_ENVIRONMENT.workingDir, "test", "test.schema.good.json"))).toEqual(false);
             });
         });
+    });
+
+    describe("--dry-run scenarios", () => {
+
+        it("should print a preview and not write any files when --dry-run is used", () => {
+            const response = runCliScript(path.join(__dirname, "/__scripts__/import_config.sh"), TEST_ENVIRONMENT.workingDir, [
+                path.join(__dirname, "__resources__", "test.config.good.without.schema.json"),
+                "--user-config false --global-config false --dry-run"
+            ]);
+
+            expect(response.stderr.toString()).toEqual("");
+            expect(response.stdout.toString()).toContain("[Dry Run]");
+            expect(response.stdout.toString()).toContain("No changes were written to disk");
+            expect(response.status).toEqual(0);
+            expect(fs.existsSync(path.join(TEST_ENVIRONMENT.workingDir, "test", "imperative-test-cli.config.json"))).toBe(false);
+        });
+
+        it("should not download schema when --dry-run is used with a config that has a schema", () => {
+            const response = runCliScript(path.join(__dirname, "/__scripts__/import_config.sh"), TEST_ENVIRONMENT.workingDir, [
+                path.join(__dirname, "__resources__", "test.config.good.with.schema.json"),
+                "--user-config false --global-config false --dry-run"
+            ]);
+
+            expect(response.stderr.toString()).toEqual("");
+            expect(response.stdout.toString()).toContain("[Dry Run]");
+            expect(response.status).toEqual(0);
+            expect(fs.existsSync(path.join(TEST_ENVIRONMENT.workingDir, "test", "imperative-test-cli.config.json"))).toBe(false);
+            expect(fs.existsSync(path.join(TEST_ENVIRONMENT.workingDir, "test", "test.schema.good.json"))).toBe(false);
+        });
+
+        it("should print a preview of the merged result when --merge --dry-run is used", () => {
+            // First import a base config
+            runCliScript(path.join(__dirname, "/__scripts__/import_config.sh"), TEST_ENVIRONMENT.workingDir, [
+                path.join(__dirname, "__resources__", "test.config.good.without.schema.json"),
+                "--user-config false --global-config false"
+            ]);
+
+            const originalContent = fs.readFileSync(
+                path.join(TEST_ENVIRONMENT.workingDir, "test", "imperative-test-cli.config.json"), "utf-8"
+            );
+
+            // Preview a merge — should not modify the file
+            const response = runCliScript(path.join(__dirname, "/__scripts__/import_config_no_mkdir.sh"), TEST_ENVIRONMENT.workingDir, [
+                path.join(__dirname, "__resources__", "test.config.for.merge.json"),
+                "--user-config false --global-config false --merge --dry-run"
+            ]);
+
+            expect(response.stderr.toString()).toEqual("");
+            expect(response.stdout.toString()).toContain("[Dry Run]");
+            expect(response.stdout.toString()).toContain("No changes were written to disk");
+            expect(response.status).toEqual(0);
+
+            // File on disk must be unchanged
+            const afterContent = fs.readFileSync(
+                path.join(TEST_ENVIRONMENT.workingDir, "test", "imperative-test-cli.config.json"), "utf-8"
+            );
+            expect(afterContent).toEqual(originalContent);
+        });
+
+    });
+
+    describe("--merge scenarios", () => {
+
+        it("should merge new profiles from imported config without overwriting existing values", () => {
+            // First import the base config (has 'secured' and 'base' profiles, empty defaults)
+            runCliScript(path.join(__dirname, "/__scripts__/import_config.sh"), TEST_ENVIRONMENT.workingDir, [
+                path.join(__dirname, "__resources__", "test.config.good.without.schema.json"),
+                "--user-config false --global-config false"
+            ]);
+
+            // Then merge in a config that adds a 'zosmf' profile and new defaults, and tries to change 'base'
+            const response = runCliScript(path.join(__dirname, "/__scripts__/import_config_no_mkdir.sh"), TEST_ENVIRONMENT.workingDir, [
+                path.join(__dirname, "__resources__", "test.config.for.merge.json"),
+                "--user-config false --global-config false --merge"
+            ]);
+
+            expect(response.stderr.toString()).toEqual("");
+            expect(response.stdout.toString()).toContain("Merged config");
+            expect(response.status).toEqual(0);
+
+            const merged = JSON.parse(fs.readFileSync(
+                path.join(TEST_ENVIRONMENT.workingDir, "test", "imperative-test-cli.config.json"), "utf-8"
+            ));
+
+            // Existing base profile properties must not be overwritten
+            expect(merged.profiles.base.properties.host).toBe("fakeHost");
+            expect(merged.profiles.base.properties.port).toBe(1234);
+            // New property from import should be added to existing profile
+            expect(merged.profiles.base.properties.rejectUnauthorized).toBe(true);
+            // New profile from import should be present
+            expect(merged.profiles.zosmf).toBeDefined();
+            expect(merged.profiles.zosmf.properties.host).toBe("zosmf.team.com");
+            // New defaults from import should be present
+            expect(merged.defaults.zosmf).toBe("zosmf");
+            // autoStore was not set in existing — should be added from import
+            expect(merged.autoStore).toBe(true);
+        });
+
+        it("should write imported config as-is when no existing config file is present", () => {
+            const response = runCliScript(path.join(__dirname, "/__scripts__/import_config.sh"), TEST_ENVIRONMENT.workingDir, [
+                path.join(__dirname, "__resources__", "test.config.for.merge.json"),
+                "--user-config false --global-config false --merge"
+            ]);
+
+            expect(response.stderr.toString()).toEqual("");
+            expect(response.stdout.toString()).toContain("Imported config");
+            expect(response.status).toEqual(0);
+
+            expectFilesAreEqual(
+                path.join(TEST_ENVIRONMENT.workingDir, "test", "imperative-test-cli.config.json"),
+                path.join(__dirname, "__resources__", "test.config.for.merge.json")
+            );
+        });
+
     });
 
     describe("failure scenarios", () => {
