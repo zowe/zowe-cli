@@ -106,7 +106,10 @@ describe("NpmFunctions", () => {
             const spawnSpy = jest.spyOn(ExecUtils, "spawnAndGetOutput").mockReturnValueOnce(JSON.stringify([expectedInfo]));
             const actualInfo = npmFunctions.getPackageInfo(pkgSpec);
             expect(actualInfo).toEqual(expectedInfo);
-            expect(spawnSpy).toHaveBeenCalledWith(npmCmd, expect.arrayContaining(["pack", pkgSpec]), expect.objectContaining({ maxBuffer: expect.any(Number) }));
+            expect(spawnSpy).toHaveBeenCalledWith(npmCmd,
+                expect.arrayContaining(["pack", pkgSpec]),
+                expect.objectContaining({ maxBuffer: expect.any(Number) })
+            );
         });
 
         it("should fetch info for package installed from local TGZ", () => {
@@ -116,7 +119,10 @@ describe("NpmFunctions", () => {
             const spawnSpy = jest.spyOn(ExecUtils, "spawnAndGetOutput").mockReturnValueOnce(JSON.stringify([expectedInfo]));
             const actualInfo = npmFunctions.getPackageInfo(pkgSpec);
             expect(actualInfo).toEqual(expectedInfo);
-            expect(spawnSpy).toHaveBeenCalledWith(npmCmd, expect.arrayContaining(["pack", pkgSpec]), expect.objectContaining({ maxBuffer: expect.any(Number) }));
+            expect(spawnSpy).toHaveBeenCalledWith(npmCmd,
+                expect.arrayContaining(["pack", pkgSpec]),
+                expect.objectContaining({ maxBuffer: expect.any(Number) })
+            );
         });
 
         it("should fetch info for package installed from Git URL", () => {
@@ -126,7 +132,10 @@ describe("NpmFunctions", () => {
             const spawnSpy = jest.spyOn(ExecUtils, "spawnAndGetOutput").mockReturnValueOnce(JSON.stringify([expectedInfo]));
             const actualInfo = npmFunctions.getPackageInfo(pkgSpec);
             expect(actualInfo).toEqual(expectedInfo);
-            expect(spawnSpy).toHaveBeenCalledWith(npmCmd, expect.arrayContaining(["pack", pkgSpec]), expect.objectContaining({ maxBuffer: expect.any(Number) }));
+            expect(spawnSpy).toHaveBeenCalledWith(npmCmd,
+                expect.arrayContaining(["pack", pkgSpec]),
+                expect.objectContaining({ maxBuffer: expect.any(Number) })
+            );
         });
 
         it("should fetch info for package installed from remote TGZ", () => {
@@ -136,7 +145,10 @@ describe("NpmFunctions", () => {
             const spawnSpy = jest.spyOn(ExecUtils, "spawnAndGetOutput").mockReturnValueOnce(JSON.stringify([expectedInfo]));
             const actualInfo = npmFunctions.getPackageInfo(pkgSpec);
             expect(actualInfo).toEqual(expectedInfo);
-            expect(spawnSpy).toHaveBeenCalledWith(npmCmd, expect.arrayContaining(["pack", pkgSpec]), expect.objectContaining({ maxBuffer: expect.any(Number) }));
+            expect(spawnSpy).toHaveBeenCalledWith(npmCmd,
+                expect.arrayContaining(["pack", pkgSpec]),
+                expect.objectContaining({ maxBuffer: expect.any(Number) })
+            );
         });
 
         it("getScopeRegistry() should return registry for 'test' scope", () => {
@@ -152,7 +164,7 @@ describe("NpmFunctions", () => {
             expect(npmPackageArg(pkgSpec).type).toEqual("file");
 
             jest.spyOn(ExecUtils, "spawnAndGetOutput").mockImplementation(() => {
-                throw new Error("Fake out an error thrown by cross-spawn.sync")
+                throw new Error("Fake out an error thrown by cross-spawn.sync");
             });
             expect(() => npmFunctions.getPackageInfo(pkgSpec)).toThrow(
                 `npm pack command failed for package: '${pkgSpec}'`);
