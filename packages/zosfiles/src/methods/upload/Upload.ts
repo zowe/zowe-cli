@@ -815,8 +815,8 @@ export class Upload {
         try {
             const response: any = await ZosmfRestClient.getExpectJSON(session, ZosFilesConstants.RESOURCE + parameters,
                 [ZosmfHeaders.ACCEPT_ENCODING]);
-            if (response.items) {
-                return true;
+            if (response.items && response.items.length > 0) {
+                return response.items[0].mode?.startsWith("d") ?? false;
             }
         } catch (err) {
             if (err) {
