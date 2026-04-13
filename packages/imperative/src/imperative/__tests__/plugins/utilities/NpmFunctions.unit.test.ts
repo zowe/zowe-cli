@@ -126,7 +126,6 @@ describe("NpmFunctions", () => {
         });
 
         it("should discard error message text before valid JSON output", () => {
-            // zzz const errLoggerSpy = jest.spyOn(Logger, "getAppLogger").mockReturnValue({ level: "ERROR" } as any);
             let logMsg = "";
             jest.spyOn(Logger, "getImperativeLogger").mockReturnValueOnce({
                 error: jest.fn((errMsg) => {

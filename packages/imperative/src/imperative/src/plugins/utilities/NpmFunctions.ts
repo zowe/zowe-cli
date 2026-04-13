@@ -121,18 +121,21 @@ export function getPackageInfo(pkgSpec: string): { name: string, version: string
             });
         }
 
-        // In test pipelines, parallel tests are using Git to retrieve source to compile and
-        // for CodeQL analysis. Some conflict causes <YourSourceCodeRootDirectory>/.git/config.lock
+        // In test pipelines, parallel tests use Git to retrieve source to compile and to
+        // run CodeQL analysis. Some conflict causes <YourSourceCodeRootDirectory>/.git/config.lock
         // to be left around. As a result, when the pipeline spawns 'npm pack' to get the contents
-        // of package.json, an error message that looks like this:
+        // of package.json, an error message that looks like the following may be displayed before
+        // the correct contents of package.json.
+        //
         //      "error: could not lock config file .git/config: File exists"
         //          or
         //      "warning: unable to access '.git/config': Permission denied"
-        // may be displayed before the correct contents of package.json.
-        // JSON.parse() throws an error because of that error text. A successful 'npm pack' command
-        // always displays its results in an array. The following code looks for the start of an array
-        // and removes any error messages that occurs before the array of valid JSON. This allows
-        // the JSON to be successfully parsed. Any error message is logged.
+        //
+        // JSON.parse() fails to parse the output because of that error message.
+        // A successful 'npm pack' command always displays its results in an array.
+        // The following code looks for the start of an array and removes any text
+        // that occurs before the array of valid JSON. This allows
+        // the JSON to be successfully parsed. Any removed text is logged.
         let startOfJsonInx = execOutput.indexOf("\n[");
         if (startOfJsonInx > 0) {
             // we had some text before a JSON array
