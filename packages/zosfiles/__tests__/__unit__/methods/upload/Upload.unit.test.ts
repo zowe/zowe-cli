@@ -2703,7 +2703,7 @@ describe("z/OS Files - Upload", () => {
             it("should call API to tag files according to remote encoding", async () => {
                 getFileListFromPathSpy.mockReturnValue(["textfile", "binaryfile"]);
                 fileToUssFileSpy.mockRestore();
-                jest.spyOn(Upload, "streamToUssFile").mockRestore(); 
+                jest.spyOn(Upload, "streamToUssFile").mockRestore();
                 attributesMock.fileShouldBeUploaded = jest.fn(() => true);
 
                 USSresponse = await Upload.dirToUSSDir(dummySession, testPath, dsName, {
@@ -2720,7 +2720,7 @@ describe("z/OS Files - Upload", () => {
 
             it("should call API to tag a file as text that was uploaded in binary mode", async () => {
                 getFileListFromPathSpy.mockReturnValue(["asciifile"]);
-                fileToUssFileSpy.mockRestore(); 
+                fileToUssFileSpy.mockRestore();
                 attributesMock.fileShouldBeUploaded = jest.fn(() => true);
 
                 USSresponse = await Upload.dirToUSSDir(dummySession, testPath, dsName, { attributes: attributesMock });

@@ -152,7 +152,7 @@ describe("NpmFunctions", () => {
             expect(npmPackageArg(pkgSpec).type).toEqual("file");
 
             jest.spyOn(ExecUtils, "spawnAndGetOutput").mockImplementation(() => {
-                throw new Error("Fake out an error thrown by cross-spawn.sync")
+                throw new Error("Fake out an error thrown by cross-spawn.sync");
             });
             expect(() => npmFunctions.getPackageInfo(pkgSpec)).toThrow(
                 `npm pack command failed for package: '${pkgSpec}'`);

@@ -46,7 +46,7 @@ export default class FileToUSSHandler extends ZosFilesBaseHandler {
             makeDir: commandParameters.arguments.makeDir,
             skipDirectoryCheck: commandParameters.arguments.skipDirectoryCheck
         };
-        
+
         const attributes = ZosFilesAttributes.loadFromFile(
             commandParameters.arguments.attributes,
             commandParameters.arguments.inputDir
