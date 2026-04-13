@@ -2,7 +2,7 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
-## Recent Changes
+## `8.31.5`
 
 - BugFix: Removed text which is sometimes displayed by the `npm pack --dry-run --json` command before its valid JSON output, thus avoiding a Zowe error stating that a plugin cannot be installed. This problem occurs mostly in build pipelines. [#2713](https://github.com/zowe/zowe-cli/issues/2713)
 
