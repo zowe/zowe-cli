@@ -49,8 +49,12 @@ export class ExecUtils {
             throw result.error;
         } else if (result.status !== 0) {
             let msg = `Command failed: ${argv.join(" ")}`;
+            msg += `\nExit code = ${result.status.toString()}`;
             if (result.stderr?.length > 0) {
-                msg += `\n${result.stderr.toString()}`;
+                msg += `\nStdErr:\n${result.stderr.toString()}`;
+            }
+            if (result.stdout?.length > 0) {
+                msg += `\nStdOut:\n${result.stdout.toString()}`;
             }
             throw new Error(msg);
         }
