@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe z/OSMF SDK package will be documented in this file.
 
-## `8.32.0`
+## Recent Changes
 
 - Enhancement: Added `ZosmfChangePassword.changePassword` function which allows changing the z/OSMF password or passphrase. [#2703](https://github.com/zowe/zowe-cli/pull/2703)
 
