@@ -97,27 +97,69 @@ export function installPackages(npmPackage: string, npmArgs: INpmInstallArgs, ve
  */
 export function getPackageInfo(pkgSpec: string): { name: string, version: string, [key: string]: unknown } {
     const pkgInfo = npmPackageArg(pkgSpec);
-    // eslint-disable-next-line @typescript-eslint/no-magic-numbers
-    const maxBuffer = 1024 * 1024 * 10; // 10MB
     let packageName = pkgInfo.name;
+
     if (!pkgInfo.registry) {
         // Package name is unknown, so fetch it with 'npm pack' command
-        let execOutput: Buffer | string = "No Spawn output retrieved";
+        const maxOutputInx = 200;
+        let truncationMsg = "\n<Additional output not displayed>";
+        let execOutput:string = "No npm pack output was retrieved";
         try {
-            execOutput = ExecUtils.spawnAndGetOutput(npmCmd, ["pack", pkgSpec, "--dry-run", "--json"], { maxBuffer });
+            // eslint-disable-next-line @typescript-eslint/no-magic-numbers
+            const maxBuffer = 1024 * 1024 * 10; // 10MB
+            execOutput = ExecUtils.spawnAndGetOutput(
+                npmCmd, ["pack", pkgSpec, "--dry-run", "--json"], { maxBuffer }
+            ).toString();
         } catch (err) {
+            if (execOutput.length < maxOutputInx) {
+                truncationMsg = "";
+            }
             throw new ImperativeError({
-                msg: `npm pack command failed for package: '${pkgSpec}'`,
-                additionalDetails: "Reason = " + (err as Error).message
+                msg: `Spawn of 'npm pack' command failed for package: '${pkgSpec}'` +
+                    "\nSpawn error = " + (err as Error).message +
+                    "\nOutput of the spawn action:\n" + execOutput.substring(0, maxOutputInx) + truncationMsg
             });
         }
+
+        // In test pipelines, parallel tests use Git to retrieve source to compile and to
+        // run CodeQL analysis. Some conflict causes <YourSourceCodeRootDirectory>/.git/config.lock
+        // to be left around. As a result, when the pipeline spawns 'npm pack' to get the contents
+        // of package.json, an error message that looks like the following may be displayed before
+        // the correct contents of package.json.
+        //
+        //      "error: could not lock config file .git/config: File exists"
+        //          or
+        //      "warning: unable to access '.git/config': Permission denied"
+        //
+        // JSON.parse() fails to parse the output because of that error message.
+        // A successful 'npm pack' command always displays its results in an array.
+        // The following code looks for the start of an array and removes any text
+        // that occurs before the array of valid JSON. This allows
+        // the JSON to be successfully parsed. Any removed text is logged.
+        let startOfJsonInx = execOutput.indexOf("\n[");
+        if (startOfJsonInx > 0) {
+            // we had some text before a JSON array
+            Logger.getImperativeLogger().error(
+                "The following errors were displayed by 'npm pack' before its JSON output:\n" +
+                execOutput.substring(0, startOfJsonInx)
+            );
+
+            // discard the errors, and keep the JSON array
+            startOfJsonInx++;
+            execOutput = execOutput.substring(startOfJsonInx);
+        }
+
         // parse the json output of the npm pack command
         try {
-            packageName = JSON.parse(execOutput.toString())[0].name;
+            packageName = JSON.parse(execOutput)[0].name;
         } catch (err) {
+            if (execOutput.length < maxOutputInx) {
+                truncationMsg = "";
+            }
             throw new ImperativeError({
-                msg: `Unable to parse the following package as JSON: '${pkgSpec}'`,
-                additionalDetails: "Reason = " + (err as Error).message
+                msg: `Unable to parse the JSON output of 'npm pack' for this package: '${pkgSpec}'` +
+                    "\nJSON.parse error = " + (err as Error).message +
+                    "\nOutput of 'npm pack':\n" + execOutput.substring(0, maxOutputInx) + truncationMsg
             });
         }
     }
