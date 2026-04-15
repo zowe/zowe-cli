@@ -2009,10 +2009,10 @@ describe("z/OS Files - Download", () => {
             expect(response.success).toBe(false);
             expect(response.commandResponse).toContain("The download was cancelled.");
             expect(downloadDatasetSpy).toHaveBeenCalledTimes(1);
-            expect(downloadDatasetSpy).toHaveBeenCalledWith(dummySession, dataSetPS.dsname, {
+            expect(downloadDatasetSpy).toHaveBeenCalledWith(dummySession, dataSetPS.dsname, expect.objectContaining({
                 file: "test.ps.data.set.txt",
                 overwrite: true
-            });
+            }));
             expect(downloadAllMembersSpy).not.toHaveBeenCalled();
         });
 
@@ -3750,6 +3750,9 @@ describe("z/OS Files - Download", () => {
         const mkdirPromiseSpy = jest.spyOn(fs.promises, "mkdir");
         const existsSyncSpy = jest.spyOn(IO, "existsSync");
 
+        // Helper to create expected apiResponse array with downloadResult property
+        const withDownloadResult = (arr: any[], downloadResult: any) => Object.assign([...arr], { downloadResult });
+
         beforeEach(() => {
             existsSyncSpy.mockClear();
             existsSyncSpy.mockReturnValue(false);
@@ -3860,7 +3863,10 @@ describe("z/OS Files - Download", () => {
                     skippedExisting: [],
                     failedWithErrors: {}
                 }, {}),
-                apiResponse: [fakeFileResponse]
+                apiResponse: withDownloadResult([fakeFileResponse], {
+                    downloaded: ["file1"], skippedExisting: [], failedWithErrors: {},
+                    totalCount: 1
+                })
             });
             expect(List.fileList).toHaveBeenCalledWith(dummySession, ussDirName,
                 { name: "*", ...listOptions });
@@ -3921,11 +3927,13 @@ describe("z/OS Files - Download", () => {
             expect(caughtError).toBeUndefined();
             expect(response.success).toBe(false);
             expect(response.commandResponse).toContain("The download was cancelled.");
-            expect(response.apiResponse).toEqual([fakeFileResponse]);
+            expect(response.apiResponse).toEqual(withDownloadResult([fakeFileResponse], expect.objectContaining({
+                downloaded: ["file1"], totalCount: 2
+            })));
             expect(downloadUssFileSpy).toHaveBeenCalledTimes(1);
-            expect(downloadUssFileSpy).toHaveBeenCalledWith(dummySession, ussDirName + "/file1", {
+            expect(downloadUssFileSpy).toHaveBeenCalledWith(dummySession, ussDirName + "/file1", expect.objectContaining({
                 file: join(process.cwd(), "file1")
-            });
+            }));
         });
 
         it("should download USS directory when failFast is false", async () => {
@@ -3964,7 +3972,9 @@ describe("z/OS Files - Download", () => {
                     skippedExisting: [],
                     failedWithErrors: { "badfolder": dummyError, "badfile": dummyError }
                 }, { failFast: false }),
-                apiResponse: [fakeFileResponse]
+                apiResponse: withDownloadResult([fakeFileResponse], expect.objectContaining({
+                    totalCount: 2
+                }))
             });
         });
 
@@ -3995,7 +4005,10 @@ describe("z/OS Files - Download", () => {
                     skippedExisting: [],
                     failedWithErrors: {}
                 }, {}),
-                apiResponse: [fakeFileResponse]
+                apiResponse: withDownloadResult([fakeFileResponse], {
+                    downloaded: ["file1"], skippedExisting: [], failedWithErrors: {},
+                    totalCount: 1
+                })
             });
             expect(Download.ussFile).toHaveBeenCalledWith(dummySession, ussDirName + "/file1",
                 { file: join(process.cwd(), "file1"), maxConcurrentRequests: 0 });
@@ -4032,7 +4045,10 @@ describe("z/OS Files - Download", () => {
                     skippedExisting: [],
                     failedWithErrors: {}
                 }, {}),
-                apiResponse: [fakeFileResponse, fakeFileResponse]
+                apiResponse: withDownloadResult([fakeFileResponse, fakeFileResponse], {
+                    downloaded: ["file1", "file2"], skippedExisting: [], failedWithErrors: {},
+                    totalCount: 2
+                })
             });
             expect(fs.promises.mkdir).toHaveBeenCalledTimes(0);
             expect(Download.ussFile).toHaveBeenCalledTimes(2);
@@ -4069,7 +4085,9 @@ describe("z/OS Files - Download", () => {
                     skippedExisting: [],
                     failedWithErrors: {}
                 }, {}),
-                apiResponse: [fakeFileResponse, fakeFileResponse, fakeFileResponse]
+                apiResponse: withDownloadResult([fakeFileResponse, fakeFileResponse, fakeFileResponse], expect.objectContaining({
+                    totalCount: 3
+                }))
             });
             expect(fs.promises.mkdir).toHaveBeenCalledTimes(1);
             expect(Download.ussFile).toHaveBeenCalledTimes(3);
@@ -4111,7 +4129,10 @@ describe("z/OS Files - Download", () => {
                     skippedExisting: [],
                     failedWithErrors: {}
                 }, {}),
-                apiResponse: [fakeFileResponse, fakeFileResponse]
+                apiResponse: withDownloadResult([fakeFileResponse, fakeFileResponse], {
+                    downloaded: ["binaryfile", "textfile"], skippedExisting: [], failedWithErrors: {},
+                    totalCount: 2
+                })
             });
             expect(Download.ussFile).toHaveBeenNthCalledWith(1, dummySession, ussDirName + "/binaryfile",
                 expect.objectContaining({ binary: true }));
@@ -4147,7 +4168,10 @@ describe("z/OS Files - Download", () => {
                     skippedExisting: ["file2"],
                     failedWithErrors: {}
                 }, {}),
-                apiResponse: [fakeFileResponse]
+                apiResponse: withDownloadResult([fakeFileResponse], {
+                    downloaded: ["file1"], skippedExisting: ["file2"], failedWithErrors: {},
+                    totalCount: 2
+                })
             });
             expect(Download.ussFile).toHaveBeenCalledTimes(1);
         });
@@ -4180,7 +4204,10 @@ describe("z/OS Files - Download", () => {
                     skippedExisting: [],
                     failedWithErrors: {}
                 }, {}),
-                apiResponse: [fakeFileResponse, fakeFileResponse]
+                apiResponse: withDownloadResult([fakeFileResponse, fakeFileResponse], {
+                    downloaded: ["file1", "file2"], skippedExisting: [], failedWithErrors: {},
+                    totalCount: 2
+                })
             });
             expect(Download.ussFile).toHaveBeenCalledTimes(2);
         });

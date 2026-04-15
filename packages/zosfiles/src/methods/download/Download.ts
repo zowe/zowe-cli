@@ -263,6 +263,7 @@ export class Download {
             const downloadErrors: Error[] = [];
             const failedMembers: string[] = [];
             const skippedMembers: string[] = [];
+            let cancelledCount = 0;
             let downloadCancelled = false;
             let downloadsInitiated = 0;
 
@@ -278,6 +279,7 @@ export class Download {
             const createDownloadPromise = (mem: { member: string }) => {
                 if (downloadCancelled || options.abortDownload?.()) {
                     downloadCancelled = true;
+                    cancelledCount++;
                     return Promise.resolve();
                 }
 
@@ -360,7 +362,7 @@ export class Download {
                 });
             }
 
-            const downloadedCount = memberList.length - skippedMembers.length - failedMembers.length;
+            const downloadedCount = memberList.length - skippedMembers.length - failedMembers.length - cancelledCount;
             let responseMessage = "";
             if (downloadedCount > 0) {
                 responseMessage = util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, downloadedCount, baseDir);
@@ -626,6 +628,7 @@ export class Download {
         const commandResponse = downloadCancelled
             ? "The download was cancelled.\n" + this.buildDownloadDsmResponse(result, options)
             : this.buildDownloadDsmResponse(result, options);
+
         return {
             success: !downloadCancelled && numFailed === 0,
             commandResponse,
@@ -877,10 +880,18 @@ export class Download {
                 ? "The download was cancelled.\n" + this.buildDownloadUssDirResponse(result, fileOptions)
                 : this.buildDownloadUssDirResponse(result, fileOptions);
 
+            result.totalCount = downloadsTotal;
+
+            // Because apiResponse was never originally being returned as an object,
+            // this is required to add the downloadResult to the apiResponse without breaking changes to consumers
+            // TODO: In next major release, make apiResponse consistently an object in the future and remove this workaround
+            const apiResponse: any = responses;
+            apiResponse.downloadResult = result;
+
             return {
                 success: !downloadCancelled && Object.keys(result.failedWithErrors).length === 0,
                 commandResponse,
-                apiResponse: responses
+                apiResponse,
             };
         } catch (error) {
             Logger.getAppLogger().error(error);
