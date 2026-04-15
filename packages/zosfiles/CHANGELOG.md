@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Added `abortDownload` predicate to `IDownloadOptions` to allow downloads in `allMembers`, `allDataSets` and `ussDir` functions to be cancelled mid-way. [#2715](https://github.com/zowe/zowe-cli/pull/2715)
+
 ## `8.30.2`
 
 - BugFix: Updated the `minimatch` dependency to resolve technical currency. [#2685](https://github.com/zowe/zowe-cli/pull/2685)
