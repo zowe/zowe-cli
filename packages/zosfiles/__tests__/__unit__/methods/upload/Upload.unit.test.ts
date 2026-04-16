@@ -2276,6 +2276,32 @@ describe("z/OS Files - Upload", () => {
 
             createUssDirSpy.mockRestore();
         });
+
+        it("should throw ImperativeError with file-conflict help text when 'Not a directory' error occurs (--makeDir --sd)", async () => {
+            const createUssDirSpy = jest.spyOn(Create, "uss")
+                .mockRejectedValueOnce({ mDetails: { msg: "Not a directory" } })  // Fail dir creation first
+                .mockResolvedValueOnce({ success: true, commandResponse: "Directory created", apiResponse: {} });  // Subsequent calls if needed
+
+            let USSresponse: IZosFilesResponse;
+            let error: any;
+
+            try {
+                USSresponse = await Upload.fileToUssFile(dummySession, inputFile, "/u/user/dir", {
+                    makeDir: true,
+                    skipDirectoryCheck: true  // Use --sd equivalent
+                });
+            } catch (err) {
+                error = err;
+            }
+
+            expect(USSresponse).toBeUndefined();
+            expect(error).toBeDefined();
+            expect(error).toBeInstanceOf(ImperativeError);
+            expect(error.message).toContain("Failed to create directory");
+            expect(error.message).toContain("A file may exist");  // Ensure help text appears
+
+            createUssDirSpy.mockRestore();
+        });
     });
 
     describe("dirToUSSDirRecursive", () => {
