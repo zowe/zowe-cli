@@ -1106,11 +1106,10 @@ export abstract class AbstractRestClient {
                 });
             }
 
-            // eslint-disable-next-line @typescript-eslint/no-var-requires
-            const { KeychainAgent } = require("./KeychainAgent");
-
             // Create a custom agent that will handle certificate retrieval from keychain/certificate store
             try {
+                // eslint-disable-next-line @typescript-eslint/no-var-requires
+                const { KeychainAgent } = require("./KeychainAgent");
                 const agent = new KeychainAgent(
                     this.session.ISession.certAccount,
                     ImperativeConfig.instance.cliHome,
