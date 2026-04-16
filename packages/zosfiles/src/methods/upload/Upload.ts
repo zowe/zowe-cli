@@ -697,7 +697,20 @@ export class Upload {
                 if (err?.mDetails?.msg?.includes("already exists")) {
                     return;
                 }
-                throw err;
+                // Provide a more descriptive error message when directory creation fails
+                const errorMsg = err?.mDetails?.msg || err.message || "";
+                let helpText = "Verify that the parent path exists and is a valid directory.";
+                
+                // Check if error indicates a file exists where we're trying to create a directory
+                if (errorMsg.includes("Not a directory") || errorMsg.includes("EDC5135I")) {
+                    helpText = "A file may exist in the path where a directory is expected. " +
+                              "Check that all path components are directories, not files.";
+                }
+                
+                throw new ImperativeError({
+                    msg: `Failed to create directory "${dirPath}". ${errorMsg}. ${helpText}`,
+                    causeErrors: err
+                });
             });
         } else {
             const exists = await this.isDirectoryExist(session, dirPath).catch(() => false);
