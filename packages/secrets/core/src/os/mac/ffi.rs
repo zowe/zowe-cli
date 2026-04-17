@@ -144,24 +144,7 @@ extern "C" {
         key: SecKeyRef,
         error: *mut CFTypeRef,
     ) -> CFTypeRef;
-
-    // Key signing operations (iOS 10.0+, macOS 10.12+):
-    pub fn SecKeyCreateSignature(
-        key: SecKeyRef,
-        algorithm: CFStringRef,
-        data_to_sign: CFTypeRef,
-        error: *mut CFTypeRef,
-    ) -> CFTypeRef;
-    pub fn SecKeyCopyAttributes(key: SecKeyRef) -> CFDictionaryRef;
 }
-
-// Signature algorithm constants
-pub const kSecKeyAlgorithmRSASignatureDigestPKCS1v15SHA256: &str = "algid:sign:RSA:digest-PKCS1v15:SHA256";
-pub const kSecKeyAlgorithmRSASignatureDigestPKCS1v15SHA384: &str = "algid:sign:RSA:digest-PKCS1v15:SHA384";
-pub const kSecKeyAlgorithmRSASignatureDigestPKCS1v15SHA512: &str = "algid:sign:RSA:digest-PKCS1v15:SHA512";
-pub const kSecKeyAlgorithmECDSASignatureDigestX962SHA256: &str = "algid:sign:ECDSA:digest-X962:SHA256";
-pub const kSecKeyAlgorithmECDSASignatureDigestX962SHA384: &str = "algid:sign:ECDSA:digest-X962:SHA384";
-pub const kSecKeyAlgorithmECDSASignatureDigestX962SHA512: &str = "algid:sign:ECDSA:digest-X962:SHA512";
 
 // Error codes
 pub const errSecDataNotAvailable: OSStatus = -25316;

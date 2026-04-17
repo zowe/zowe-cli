@@ -3,7 +3,6 @@ use super::error::KeyringError;
 mod error;
 mod ffi;
 pub mod tls_pipe;
-mod identity_cache;
 mod keychain;
 mod keychain_item;
 mod keychain_search;
@@ -213,7 +212,7 @@ pub fn get_certificate(
 ///
 /// Returns the private key data (PKCS#1 DER format) for a given identity.
 /// This will fail with errSecDataNotAvailable (-25316) if the key is non-exportable.
-/// In that case, use create_identity_context + sign_with_identity instead.
+/// In that case, use native TLS via `create_tls_pipe` (non-exportable keys are not exposed as PEM).
 ///
 pub fn get_private_key(
     _service: &String,
@@ -230,7 +229,10 @@ pub fn get_private_key(
                     // If export fails due to non-exportable key, return an informative error
                     Err(KeyringError::Library {
                         name: "Keychain".to_owned(),
-                        details: format!("Private key cannot be exported (error: {}). Use create_identity_context and sign_with_identity for non-exportable keys.", err),
+                        details: format!(
+                            "Private key cannot be exported (error: {}). Use create_tls_pipe for non-exportable keys.",
+                            err
+                        ),
                     })
                 }
             },
@@ -239,112 +241,4 @@ pub fn get_private_key(
         Err(err) if err.code() == ERR_SEC_ITEM_NOT_FOUND => Ok(None),
         Err(err) => Err(KeyringError::from(err)),
     }
-}
-
-///
-/// Creates an identity context handle for use in TLS signing operations.
-/// This caches the identity and returns a handle ID that can be used for signing.
-///
-/// - `service`: The service name (currently unused, reserved for future use)
-/// - `account`: The label/account name for the identity in the keychain
-///
-/// Returns:
-/// - `Some(handle_id)` if the identity was found and cached; `None` if not found
-/// - A `KeyringError` if there were any issues
-///
-pub fn create_identity_context(
-    _service: &String,
-    account: &String,
-) -> Result<Option<String>, KeyringError> {
-    let keychain = SecKeychain::default().unwrap();
-    let _lock = keyring_mutex()?;
-
-    match keychain.find_identity(account.as_str()) {
-        Ok(identity) => {
-            // Cache the identity and return a handle
-            match identity_cache::cache_identity(identity) {
-                Ok(handle_id) => Ok(Some(handle_id)),
-                Err(err) => Err(KeyringError::Library {
-                    name: "Identity cache".to_owned(),
-                    details: err,
-                }),
-            }
-        }
-        Err(err) if err.code() == ERR_SEC_ITEM_NOT_FOUND => Ok(None),
-        Err(err) => Err(KeyringError::from(err)),
-    }
-}
-
-///
-/// Signs data using a cached identity's private key (supports non-exportable keys).
-///
-/// - `handle_id`: The identity handle ID returned from create_identity_context
-/// - `algorithm`: The signing algorithm (e.g., "RSA-SHA256", "ECDSA-SHA256")
-/// - `data`: The data to sign (usually a hash)
-///
-/// Returns:
-/// - `Some(signature_bytes)` if signing succeeded
-/// - A `KeyringError` if there were any issues
-///
-pub fn sign_with_identity(
-    handle_id: &String,
-    algorithm: &String,
-    data: &Vec<u8>,
-) -> Result<Option<Vec<u8>>, KeyringError> {
-    let keychain = SecKeychain::default().unwrap();
-    let _lock = keyring_mutex()?;
-
-    // Get the cached identity
-    let identity = identity_cache::get_cached_identity(handle_id.as_str()).map_err(|err| {
-        KeyringError::Library {
-            name: "Identity cache".to_owned(),
-            details: err,
-        }
-    })?;
-
-    // Get the private key
-    match keychain.get_private_key(&identity) {
-        Ok(key) => {
-            // Map algorithm name to macOS constant
-            let mac_algorithm = match algorithm.as_str() {
-                "RSA-SHA256" => ffi::kSecKeyAlgorithmRSASignatureDigestPKCS1v15SHA256,
-                "RSA-SHA384" => ffi::kSecKeyAlgorithmRSASignatureDigestPKCS1v15SHA384,
-                "RSA-SHA512" => ffi::kSecKeyAlgorithmRSASignatureDigestPKCS1v15SHA512,
-                "ECDSA-SHA256" => ffi::kSecKeyAlgorithmECDSASignatureDigestX962SHA256,
-                "ECDSA-SHA384" => ffi::kSecKeyAlgorithmECDSASignatureDigestX962SHA384,
-                "ECDSA-SHA512" => ffi::kSecKeyAlgorithmECDSASignatureDigestX962SHA512,
-                _ => {
-                    return Err(KeyringError::InvalidArg {
-                        argument: "algorithm".to_owned(),
-                        details: format!("Unsupported signing algorithm: {}", algorithm),
-                    });
-                }
-            };
-
-            // Sign the data
-            match keychain.sign_with_private_key(&key, mac_algorithm, data.as_slice()) {
-                Ok(signature) => Ok(Some(signature)),
-                Err(err) => Err(KeyringError::from(err)),
-            }
-        }
-        Err(err) => Err(KeyringError::from(err)),
-    }
-}
-
-///
-/// Releases a cached identity context.
-///
-/// - `handle_id`: The identity handle ID to release
-///
-/// Returns:
-/// - `true` if the identity was found and removed; `false` otherwise
-/// - A `KeyringError` if there were any issues
-///
-pub fn release_identity_context(handle_id: &String) -> Result<bool, KeyringError> {
-    identity_cache::remove_cached_identity(handle_id.as_str()).map_err(|err| {
-        KeyringError::Library {
-            name: "Identity cache".to_owned(),
-            details: err,
-        }
-    })
 }

@@ -59,9 +59,7 @@ const {
     getPrivateKey,
     getPassword,
     setPassword,
-    createIdentityContext,
-    signWithIdentity,
-    releaseIdentityContext,
+    createTlsPipe,
 } = requireFn(binaryPath);
 
 module.exports.deletePassword = deletePassword;
@@ -71,7 +69,4 @@ module.exports.getCertificate = getCertificate;
 module.exports.getPrivateKey = getPrivateKey;
 module.exports.getPassword = getPassword;
 module.exports.setPassword = setPassword;
-module.exports.createIdentityContext = createIdentityContext;
-module.exports.signWithIdentity = signWithIdentity;
-module.exports.releaseIdentityContext = releaseIdentityContext;
-module.exports.createTlsPipe = requireFn(binaryPath).createTlsPipe;
+module.exports.createTlsPipe = createTlsPipe;

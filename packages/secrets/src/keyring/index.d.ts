@@ -14,7 +14,4 @@ export function getCertificate(service: string, account: string): Promise<Buffer
 export function getPrivateKey(service: string, account: string): Promise<Buffer | null>
 export function getPassword(service: string, account: string): Promise<string | null>
 export function setPassword(service: string, account: string, password: string, persistWin32?: number | undefined | null): Promise<void>
-export function createIdentityContext(service: string, account: string): Promise<string | null>
-export function signWithIdentity(handleId: string, algorithm: string, data: Array<number>): Promise<Buffer | null>
-export function releaseIdentityContext(handleId: string): Promise<boolean>
 export function createTlsPipe(remoteHost: string, remotePort: number, certAccount: string, rejectUnauthorized: boolean): Promise<string>

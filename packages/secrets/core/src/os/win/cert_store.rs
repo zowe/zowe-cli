@@ -128,11 +128,7 @@ pub fn get_certificate(
 /// * `Ok(Some(Vec<u8>))` - Private key data in PKCS#1 DER format (not currently returned)
 /// * `Ok(None)` - Certificate not found
 /// * `Err(KeyringError)` - Always returned if certificate is found, directing users to use
-///   create_identity_context and sign_with_identity for non-exportable keys
-///
-/// # See Also
-/// * `create_identity_context` - Creates a context for non-exportable keys
-/// * `sign_with_identity` - Signs data using non-exportable keys
+///   `create_tls_pipe` for non-exportable keys
 pub fn get_private_key(
     _service: &String,
     account: &String,
@@ -149,10 +145,9 @@ pub fn get_private_key(
                 }),
                 Ok(_) => {
                     // Private key exists but cannot be exported from Windows CNG.
-                    // Use create_tls_pipe or sign_with_identity for non-exportable keys.
                     Err(KeyringError::Library {
                         name: "Windows Certificate Store".to_owned(),
-                        details: "Private key cannot be exported (likely non-exportable). Use create_identity_context and sign_with_identity for non-exportable keys.".to_owned(),
+                        details: "Private key cannot be exported (likely non-exportable). Use create_tls_pipe for TLS with this certificate.".to_owned(),
                     })
                 }
             }
