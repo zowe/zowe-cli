@@ -3,8 +3,7 @@
 //! This module provides Windows-specific implementations for:
 //! - Credential storage via Windows Credential Manager
 //! - Certificate retrieval from Windows Certificate Store
-//! - Non-exportable private key support via CNG
-//! - Identity context caching for signing operations
+//! - Non-exportable private key support via Schannel (TLS pipe)
 //! - Native HTTPS client with client certificate authentication
 
 use super::error::KeyringError;
@@ -23,10 +22,8 @@ use windows_sys::{
     },
 };
 
-// Certificate and cryptography submodules
+// Certificate and TLS submodules
 mod cert_store;
-mod crypto;
-mod identity_cache;
 pub mod tls_pipe;
 
 #[cfg(test)]
@@ -35,7 +32,6 @@ mod tests;
 // Re-export certificate functions
 pub use tls_pipe::create_tls_pipe;
 pub use cert_store::{get_certificate, get_private_key};
-pub use crypto::{create_identity_context, release_identity_context, sign_with_identity};
 
 impl From<WIN32_ERROR> for KeyringError {
     fn from(error: WIN32_ERROR) -> Self {

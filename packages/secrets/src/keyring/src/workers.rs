@@ -1,6 +1,5 @@
 use napi::{Env, Error, JsBoolean, JsUnknown, Result, Task};
 use napi_derive::napi;
-use std::collections::HashMap;
 
 use secrets_core::os;
 
@@ -36,21 +35,6 @@ pub struct FindCredentials {
 }
 pub struct FindPassword {
     pub service: String,
-}
-
-pub struct CreateIdentityContext {
-    pub service: String,
-    pub account: String,
-}
-
-pub struct SignWithIdentity {
-    pub handle_id: String,
-    pub algorithm: String,
-    pub data: Vec<u8>,
-}
-
-pub struct ReleaseIdentityContext {
-    pub handle_id: String,
 }
 
 pub struct CreateTlsPipe {
@@ -286,141 +270,6 @@ impl Task for FindPassword {
             Some(pw) => env.create_string(pw.as_str())?.into_unknown(),
             None => env.get_null()?.into_unknown(),
         })
-    }
-
-    fn reject(&mut self, _env: Env, err: Error) -> Result<Self::JsValue> {
-        Err(err)
-    }
-}
-
-#[cfg(any(target_os = "macos", target_os = "windows"))]
-#[napi]
-impl Task for CreateIdentityContext {
-    type Output = Option<String>;
-    type JsValue = JsUnknown;
-
-    fn compute(&mut self) -> Result<Self::Output> {
-        match os::create_identity_context(&self.service, &self.account) {
-            Ok(handle_id) => Ok(handle_id),
-            Err(err) => Err(napi::Error::from_reason(err.to_string())),
-        }
-    }
-
-    fn resolve(&mut self, env: Env, output: Self::Output) -> Result<Self::JsValue> {
-        Ok(match output {
-            Some(handle) => env.create_string(handle.as_str())?.into_unknown(),
-            None => env.get_null()?.into_unknown(),
-        })
-    }
-
-    fn reject(&mut self, _env: Env, err: Error) -> Result<Self::JsValue> {
-        Err(err)
-    }
-}
-
-#[cfg(not(any(target_os = "macos", target_os = "windows")))]
-#[napi]
-impl Task for CreateIdentityContext {
-    type Output = Option<String>;
-    type JsValue = JsUnknown;
-
-    fn compute(&mut self) -> Result<Self::Output> {
-        Err(napi::Error::from_reason("create_identity_context is not yet supported on this platform".to_owned()))
-    }
-
-    fn resolve(&mut self, env: Env, output: Self::Output) -> Result<Self::JsValue> {
-        Ok(match output {
-            Some(handle) => env.create_string(handle.as_str())?.into_unknown(),
-            None => env.get_null()?.into_unknown(),
-        })
-    }
-
-    fn reject(&mut self, _env: Env, err: Error) -> Result<Self::JsValue> {
-        Err(err)
-    }
-}
-
-#[cfg(any(target_os = "macos", target_os = "windows"))]
-#[napi]
-impl Task for SignWithIdentity {
-    type Output = Option<Vec<u8>>;
-    type JsValue = JsUnknown;
-
-    fn compute(&mut self) -> Result<Self::Output> {
-        match os::sign_with_identity(&self.handle_id, &self.algorithm, &self.data) {
-            Ok(signature) => Ok(signature),
-            Err(err) => Err(napi::Error::from_reason(err.to_string())),
-        }
-    }
-
-    fn resolve(&mut self, env: Env, output: Self::Output) -> Result<Self::JsValue> {
-        Ok(match output {
-            Some(sig) => env.create_buffer_with_data(sig)?.into_unknown(),
-            None => env.get_null()?.into_unknown(),
-        })
-    }
-
-    fn reject(&mut self, _env: Env, err: Error) -> Result<Self::JsValue> {
-        Err(err)
-    }
-}
-
-#[cfg(not(any(target_os = "macos", target_os = "windows")))]
-#[napi]
-impl Task for SignWithIdentity {
-    type Output = Option<Vec<u8>>;
-    type JsValue = JsUnknown;
-
-    fn compute(&mut self) -> Result<Self::Output> {
-        Err(napi::Error::from_reason("sign_with_identity is not yet supported on this platform".to_owned()))
-    }
-
-    fn resolve(&mut self, env: Env, output: Self::Output) -> Result<Self::JsValue> {
-        Ok(match output {
-            Some(sig) => env.create_buffer_with_data(sig)?.into_unknown(),
-            None => env.get_null()?.into_unknown(),
-        })
-    }
-
-    fn reject(&mut self, _env: Env, err: Error) -> Result<Self::JsValue> {
-        Err(err)
-    }
-}
-
-#[cfg(any(target_os = "macos", target_os = "windows"))]
-#[napi]
-impl Task for ReleaseIdentityContext {
-    type Output = bool;
-    type JsValue = JsBoolean;
-
-    fn compute(&mut self) -> Result<Self::Output> {
-        match os::release_identity_context(&self.handle_id) {
-            Ok(released) => Ok(released),
-            Err(err) => Err(napi::Error::from_reason(err.to_string())),
-        }
-    }
-
-    fn resolve(&mut self, env: Env, output: Self::Output) -> Result<Self::JsValue> {
-        env.get_boolean(output)
-    }
-
-    fn reject(&mut self, _env: Env, err: Error) -> Result<Self::JsValue> {
-        Err(err)
-    }
-}
-
-#[cfg(not(any(target_os = "macos", target_os = "windows")))]
-#[napi]
-impl Task for ReleaseIdentityContext {
-    type Output = bool;
-    type JsValue = JsBoolean;
-
-    fn compute(&mut self) -> Result<Self::Output> {
-        Err(napi::Error::from_reason("release_identity_context is not yet supported on this platform".to_owned()))
-    }
-
-    fn resolve(&mut self, env: Env, output: Self::Output) -> Result<Self::JsValue> {
-        env.get_boolean(output)
     }
 
     fn reject(&mut self, _env: Env, err: Error) -> Result<Self::JsValue> {

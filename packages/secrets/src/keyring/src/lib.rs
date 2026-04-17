@@ -1,7 +1,9 @@
 use napi::bindgen_prelude::AsyncTask;
 use napi_derive::napi;
-use std::collections::HashMap;
-use workers::{CreateIdentityContext, DeletePassword, FindCredentials, FindPassword, GetCertificate, GetPassword, GetPrivateKey, ReleaseIdentityContext, SetPassword, SignWithIdentity, CreateTlsPipe};
+use workers::{
+    CreateTlsPipe, DeletePassword, FindCredentials, FindPassword, GetCertificate, GetPassword,
+    GetPrivateKey, SetPassword,
+};
 
 extern crate secrets_core;
 
@@ -39,32 +41,17 @@ fn get_password(service: String, account: String) -> AsyncTask<GetPassword> {
 
 #[napi(ts_return_type = "Promise<void>")]
 fn set_password(
-    service: String, 
-    account: String, 
+    service: String,
+    account: String,
     password: String,
-    persist_win32: Option<u32>
+    persist_win32: Option<u32>,
 ) -> AsyncTask<SetPassword> {
     AsyncTask::new(SetPassword {
         service,
         account,
         password,
-        persist_win32
+        persist_win32,
     })
-}
-
-#[napi(ts_return_type = "Promise<string | null>")]
-fn create_identity_context(service: String, account: String) -> AsyncTask<CreateIdentityContext> {
-    AsyncTask::new(CreateIdentityContext { service, account })
-}
-
-#[napi(ts_return_type = "Promise<Buffer | null>")]
-fn sign_with_identity(handle_id: String, algorithm: String, data: Vec<u8>) -> AsyncTask<SignWithIdentity> {
-    AsyncTask::new(SignWithIdentity { handle_id, algorithm, data })
-}
-
-#[napi(ts_return_type = "Promise<boolean>")]
-fn release_identity_context(handle_id: String) -> AsyncTask<ReleaseIdentityContext> {
-    AsyncTask::new(ReleaseIdentityContext { handle_id })
 }
 
 #[napi(ts_return_type = "Promise<string>")]
@@ -81,4 +68,3 @@ fn create_tls_pipe(
         reject_unauthorized,
     })
 }
-

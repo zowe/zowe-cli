@@ -1,15 +1,13 @@
 use crate::os::mac::error::{handle_os_status, Error, ERR_SEC_ITEM_NOT_FOUND};
 use crate::os::mac::ffi::{
     errSecDataNotAvailable, SecCertificateCopyData, SecIdentityCopyCertificate,
-    SecIdentityCopyPrivateKey, SecItemExport, SecKeyCreateSignature,
-    SecKeychainAddGenericPassword, SecKeychainCopyDefault, SecKeychainFindGenericPassword,
-    SecKeychainGetTypeID, SecKeychainRef, kSecFormatOpenSSL,
+    SecIdentityCopyPrivateKey, SecItemExport, SecKeychainAddGenericPassword, SecKeychainCopyDefault,
+    SecKeychainFindGenericPassword, SecKeychainGetTypeID, SecKeychainRef, kSecFormatOpenSSL,
 };
 use crate::os::mac::keychain_item::SecKeychainItem;
 use crate::os::mac::keychain_search::{KeychainSearch, Reference, SearchResult};
 use crate::os::mac::misc::{SecCertificate, SecIdentity, SecKey};
-use core_foundation::{base::TCFType, data::CFData, declare_TCFType, impl_TCFType, string::CFString};
-use core_foundation_sys::base::CFTypeRef;
+use core_foundation::{base::TCFType, data::CFData, declare_TCFType, impl_TCFType};
 use std::ops::Deref;
 
 /*
@@ -243,51 +241,6 @@ impl SecKeychain {
 
             let cf_data = CFData::wrap_under_create_rule(data_ref as *const _);
             Ok(cf_data.bytes().to_vec())
-        }
-    }
-
-    ///
-    /// sign_with_private_key
-    /// Signs data using the private key from an identity (works with non-exportable keys).
-    /// This uses SecKeyCreateSignature which keeps the private key in the Keychain.
-    ///
-    /// - `key`: The SecKey reference to the private key
-    /// - `algorithm`: The signing algorithm to use (e.g., RSA with SHA256)
-    /// - `data`: The data to sign (usually a hash)
-    ///
-    /// Returns:
-    /// - A `Vec<u8>` containing the signature bytes, or
-    /// - An `Error` object if an error was encountered
-    ///
-    pub fn sign_with_private_key(
-        &self,
-        key: &SecKey,
-        algorithm: &str,
-        data: &[u8],
-    ) -> Result<Vec<u8>, Error> {
-        unsafe {
-            let algorithm_cf = CFString::new(algorithm);
-            let data_cf = CFData::from_buffer(data);
-            let mut error_ref: core_foundation_sys::base::CFTypeRef = std::ptr::null_mut();
-
-            let signature_ref = SecKeyCreateSignature(
-                key.as_concrete_TypeRef(),
-                algorithm_cf.as_concrete_TypeRef(),
-                data_cf.as_concrete_TypeRef() as CFTypeRef,
-                &mut error_ref,
-            );
-
-            if !error_ref.is_null() {
-                // Extract error information
-                return Err(Error::from_code(-1)); // Generic error for now
-            }
-
-            if signature_ref.is_null() {
-                return Err(Error::from_code(ERR_SEC_ITEM_NOT_FOUND));
-            }
-
-            let signature_data = CFData::wrap_under_create_rule(signature_ref as *const _);
-            Ok(signature_data.bytes().to_vec())
         }
     }
 }
