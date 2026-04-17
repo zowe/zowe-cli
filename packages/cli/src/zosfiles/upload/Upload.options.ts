@@ -146,5 +146,25 @@ export const UploadOptions: {[key: string]: ICommandOptionDefinition} = {
         aliases: ["ih"],
         description: strings.INCLUDE_HIDDEN,
         type: "boolean"
+    },
+
+    /**
+     * The make directories option for upload
+     */
+    makeDir: {
+        name: "make-dir",
+        aliases: ["md"],
+        description: strings.MAKE_DIR,
+        type: "boolean"
+    },
+
+    /**
+     * The skip directory check option for upload
+     */
+    skipDirectoryCheck: {
+        name: "skip-directory-check",
+        aliases: ["sd"],
+        description: strings.SKIP_DIRECTORY_CHECK,
+        type: "boolean"
     }
 };

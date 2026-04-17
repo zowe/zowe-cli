@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Enhanced the `Upload.fileToUssFile` method to support uploading a file to a USS directory using its original filename when the target is a directory (similar to UNIX cp) and added the `makeDirectories` option to automatically create missing target directories and the `skipDirectoryCheck` option to skip checking if the target path is a directory during upload. [#2686](https://github.com/zowe/zowe-cli/pull/2686)
+
 ## `8.30.2`
 
 - BugFix: Updated the `minimatch` dependency to resolve technical currency. [#2685](https://github.com/zowe/zowe-cli/pull/2685)
