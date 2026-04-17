@@ -5,6 +5,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 ## Recent Changes
 
 - Enhancement: Added `certAccount` option to z/OSMF profile type to support client certificate authentication using certificates stored in system keystores (macOS Keychain or Windows Certificate Store). This enables secure authentication with both exportable and non-exportable private keys on macOS and Windows platforms. [#2325](https://github.com/zowe/zowe-cli/issues/2325)
+- Enhancement: Enhanced the `zowe zos-files upload file-to-uss` command to support uploading a file to a USS directory using its original filename when the target is a directory (similar to UNIX cp) and added the `--make-directories` option to automatically create missing target directories and the `--skip-directory-check` option to skip checking if the target path is a directory during upload. [#2686](https://github.com/zowe/zowe-cli/pull/2686)
 
 ## `8.31.4`
 

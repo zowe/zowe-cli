@@ -596,6 +596,42 @@ export class Upload {
         ImperativeExpect.toNotBeEqual(ussname, "", ZosFilesMessages.missingUSSFileName.message);
         ImperativeExpect.toNotBeEqual(options.record, true, ZosFilesMessages.unsupportedDataType.message);
 
+        // User knows the target is already a file
+        const skipDirCheck = options.skipDirectoryCheck === true;
+
+        // Check if ussname is a directory (ends with '/') or if it exists as a directory on z/OS
+        const isUssDirectory = ussname.endsWith('/');
+
+        // If path ends with '/', it's a directory - append the filename
+        if (isUssDirectory) {
+            const baseName = path.basename(inputFile);
+            ussname = path.posix.join(ussname, baseName);
+        } else if (!skipDirCheck && !options.makeDir) {
+            try {
+                const existsAsDir = await this.isDirectoryExist(session, ussname);
+                if (existsAsDir) {
+                    const baseName = path.basename(inputFile);
+                    if (path.posix.basename(ussname) !== baseName) {
+                        ussname = path.posix.join(ussname, baseName);
+                    }
+                }
+            } catch {
+                // Directory check failed, continue with ussname as-is
+            }
+        }
+
+        if (options.makeDir) {
+            const parentDir = path.posix.dirname(ussname);
+
+            if (!parentDir || parentDir === ussname || parentDir === '.') {
+                throw new ImperativeError({
+                    msg: "Invalid parent directory resolution for USS upload"
+                });
+            }
+
+            await this.createDirectoriesRecursively(session, parentDir, skipDirCheck);
+        }
+
         const promise = new Promise((resolve, reject) => {
             fs.lstat(inputFile, (err, stats) => {
                 if (err == null && stats.isFile()) {
@@ -639,6 +675,49 @@ export class Upload {
             commandResponse: ZosFilesMessages.ussFileUploadedSuccessfully.message,
             apiResponse: result
         };
+    }
+
+    private static async createDirectoriesRecursively(
+        session: AbstractSession,
+        dirPath: string,
+        skipCheck: boolean = false
+    ): Promise<void> {
+        while (dirPath.endsWith('/')) {
+            dirPath = dirPath.slice(0, -1);
+        }
+        if (!dirPath || dirPath === '/' || dirPath === '.' || dirPath === '/u') return;
+
+        const parentDir = path.posix.dirname(dirPath);
+        if (parentDir === dirPath) return;
+
+        await this.createDirectoriesRecursively(session, parentDir, skipCheck);
+
+        if (skipCheck) {
+            await Create.uss(session, dirPath, "directory").catch((err) => {
+                if (err?.mDetails?.msg?.includes("already exists")) {
+                    return;
+                }
+                // Provide a more descriptive error message when directory creation fails
+                const errorMsg = err?.mDetails?.msg || err.message || "";
+                let helpText = "Verify that the parent path exists and is a valid directory.";
+
+                // Check if error indicates a file exists where we're trying to create a directory
+                if (errorMsg.includes("Not a directory") || errorMsg.includes("EDC5135I")) {
+                    helpText = "A file may exist in the path where a directory is expected. " +
+                              "Check that all path components are directories, not files.";
+                }
+
+                throw new ImperativeError({
+                    msg: `Failed to create directory "${dirPath}". ${errorMsg}. ${helpText}`,
+                    causeErrors: err
+                });
+            });
+        } else {
+            const exists = await this.isDirectoryExist(session, dirPath).catch(() => false);
+            if (!exists) {
+                await Create.uss(session, dirPath, "directory");
+            }
+        }
     }
 
     /**
@@ -744,13 +823,13 @@ export class Upload {
      * @return {Promise<boolean>}
      */
     public static async isDirectoryExist(session: AbstractSession, ussname: string): Promise<boolean> {
-        ussname = encodeURIComponent("/") + ZosFilesUtils.sanitizeUssPathForRestCall(ussname);
-        const parameters: string = `${ZosFilesConstants.RES_USS_FILES}?path=${ussname}`;
+        ussname = ZosFilesUtils.sanitizeUssPathForRestCall(ussname);
+        const parameters: string = `${ZosFilesConstants.RES_USS_FILES}?path=${encodeURIComponent("/")}${ussname}`;
         try {
             const response: any = await ZosmfRestClient.getExpectJSON(session, ZosFilesConstants.RESOURCE + parameters,
                 [ZosmfHeaders.ACCEPT_ENCODING]);
-            if (response.items) {
-                return true;
+            if (response.items && response.items.length > 0) {
+                return response.items[0].mode?.startsWith("d") ?? false;
             }
         } catch (err) {
             if (err) {
