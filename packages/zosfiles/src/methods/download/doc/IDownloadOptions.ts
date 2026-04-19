@@ -77,6 +77,12 @@ export interface IDownloadSingleOptions extends IGetOptions {
  */
 export interface IDownloadOptions extends Omit<IDownloadSingleOptions, "stream"> {
     /**
+     * gets called to validate whether or not a download operation should abort.
+     * If this function returns true, the operation terminates early and returns partial results
+     */
+    abortDownload?: () => boolean;
+
+    /**
      * Map data set names that match your pattern to the desired extension
      * @example cpgm=c,asmpgm=asm
      */
