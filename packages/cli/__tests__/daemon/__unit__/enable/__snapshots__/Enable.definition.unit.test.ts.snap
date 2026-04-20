@@ -2,9 +2,9 @@
 
 exports[`daemon enable definition should not have changed 1`] = `
 Object {
-  "description": "Enable daemon-mode operation of the Zowe CLI. You only need to run the enable command once after each new installation of the Zowe CLI. Afterwards, any zowe command will automatically start a daemon as needed.
+  "description": "Enable daemon-mode operation of the Zowe CLI. You only need to run the enable command once after each new installation of the Zowe CLI. Afterwards, any zowe command automatically starts a daemon as needed.
 
-Ensure the Zowe daemon bin directory is on your PATH. If it isn't, you may be prompted to add it or need to add it manually. Otherwise, you will continue to run the classic Zowe CLI interpreter.",
+Ensure the Zowe daemon bin directory is on your PATH. If it isn't, the command will instruct you to add it manually. Otherwise, you continue to run the classic Zowe CLI interpreter.",
   "examples": Array [
     Object {
       "description": "Enable daemon-mode",

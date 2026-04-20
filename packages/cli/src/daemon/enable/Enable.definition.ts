@@ -17,9 +17,9 @@ export const EnableCommand: ICommandDefinition = {
     description: "Enable daemon-mode operation of the Zowe CLI. " +
         "You only need to run the enable command once after each " +
         "new installation of the Zowe CLI. Afterwards, any zowe command " +
-        "will automatically start a daemon as needed.\n\n" +
+        "automatically starts a daemon as needed.\n\n" +
         "Ensure the Zowe daemon bin directory is on your PATH. " +
-        "If it isn't, you may be prompted to add it, or you may need to add it manually. " +
+        "If it isn't, the command will instruct you to add it manually. " +
         "Otherwise, you continue to run the classic Zowe CLI interpreter.",
     type: "command",
     handler: __dirname + "/Enable.handler",
