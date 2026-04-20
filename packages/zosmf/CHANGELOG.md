@@ -5,6 +5,7 @@ All notable changes to the Zowe z/OSMF SDK package will be documented in this fi
 ## Recent Changes
 
 - Enhancement: Added `certAccount` option to z/OSMF connection options to support client certificate authentication using certificates stored in system keystores on macOS and Windows platforms.
+- Enhancement: Added `ZosmfChangePassword.changePassword` function which allows changing the z/OSMF password or passphrase. [#2703](https://github.com/zowe/zowe-cli/pull/2703)
 
 ## `8.27.4`
 
