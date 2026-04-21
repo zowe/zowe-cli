@@ -6,6 +6,24 @@ use std::thread;
 use std::io::{Read, Write};
 use security_framework::secure_transport::{ClientBuilder, ClientHandshakeError};
 use std::fs;
+use std::path::PathBuf;
+
+/// RAII guard to ensure socket file cleanup on drop
+struct SocketGuard {
+    path: PathBuf,
+}
+
+impl SocketGuard {
+    fn new(path: PathBuf) -> Self {
+        Self { path }
+    }
+}
+
+impl Drop for SocketGuard {
+    fn drop(&mut self) {
+        let _ = fs::remove_file(&self.path);
+    }
+}
 
 /// Map Apple Secure Transport OSStatus codes to their documented symbolic name and cause.
 /// Values are verified against security-framework-sys/src/secure_transport.rs.
@@ -79,6 +97,7 @@ pub fn create_tls_pipe(
     let sf_identity = unsafe { SecIdentity::wrap_under_create_rule(raw_identity as *mut _) };
     
     thread::spawn(move || {
+        let _guard = SocketGuard::new(socket_path.clone());
         if let Ok((mut local_stream, _)) = listener.accept() {
             drop(listener);
             
