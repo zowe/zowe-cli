@@ -1094,30 +1094,18 @@ export abstract class AbstractRestClient {
             }
 
             // Create a custom agent that will handle certificate retrieval from keychain/certificate store
-            try {
-                // eslint-disable-next-line @typescript-eslint/no-var-requires
-                const { KeychainAgent } = require("./KeychainAgent");
-                const agent = new KeychainAgent(
-                    this.session.ISession.certAccount,
-                    ImperativeConfig.instance.cliHome,
-                    {
-                        rejectUnauthorized: this.session.ISession.rejectUnauthorized,
-                        ca: this.session.ISession.serverCertificate,
-                    }
-                );
+            const agent = this.createKeychainAgent(
+                this.session.ISession.certAccount,
+                ImperativeConfig.instance.cliHome,
+                {
+                    rejectUnauthorized: this.session.ISession.rejectUnauthorized,
+                    ca: this.session.ISession.serverCertificate,
+                }
+            );
 
-                // Set the agent to be used for HTTPS requests
-                restOptionsToSet.agent = agent;
-
-                this.log.debug(`Created KeychainAgent for certificate account: ${this.session.ISession.certAccount}`);
-                return true;
-            } catch (err) {
-                throw new ImperativeError({
-                    msg: `Failed to create KeychainAgent for certificate account '${this.session.ISession.certAccount}'.`,
-                    causeErrors: err,
-                    additionalDetails: err.message,
-                });
-            }
+            // Set the agent to be used for HTTPS requests
+            restOptionsToSet.agent = agent;
+            return true;
         }
 
         // Handle file-based PEM certificates
@@ -1505,6 +1493,44 @@ export abstract class AbstractRestClient {
             return undefined;
         }
         return this.data.toString("utf8");
+    }
+
+    /**
+     * Get or create a cached KeychainAgent for certificate-based authentication.
+     * This prevents creating new agents/threads for each request, improving performance
+     * for bulk operations that make multiple requests with the same certificate account.
+     * 
+     * @private
+     * @param {string} certAccount - Certificate account name
+     * @param {string} cliHome - CLI home directory
+     * @param {any} agentOptions - Agent options (rejectUnauthorized, ca, etc.)
+     * @returns {any} Cached or newly created KeychainAgent
+     * @memberof AbstractRestClient
+     */
+    private createKeychainAgent(certAccount: string, cliHome: string, agentOptions: any): any {
+        // Check if we have a cached agent with matching parameters
+        const cachedAgent = this.session.cachedAgent;
+        if (cachedAgent) {
+            return cachedAgent;
+        }
+
+        // Create new agent and cache it for future requests
+        try {
+            // eslint-disable-next-line @typescript-eslint/no-var-requires
+            const { KeychainAgent } = require("./KeychainAgent");
+            const agent = new KeychainAgent(certAccount, cliHome, agentOptions);
+            
+            // Cache the new agent
+            this.session.cachedAgent = agent;
+            this.log.debug(`Created KeychainAgent for certificate account: ${certAccount}`);
+            return agent;
+        } catch (err) {
+            throw new ImperativeError({
+                msg: `Failed to create KeychainAgent for certificate account: ${certAccount}`,
+                causeErrors: err,
+                additionalDetails: err.message,
+            });
+        }
     }
 
     /**
