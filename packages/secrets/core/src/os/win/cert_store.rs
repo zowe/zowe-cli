@@ -20,7 +20,7 @@ use windows_sys::Win32::Security::Cryptography::*;
 /// * `Ok(String)` - The CN from the certificate subject
 /// * `Err(KeyringError)` - Error extracting the CN
 fn extract_certificate_cn(cert: &CertContext) -> Result<String, KeyringError> {
-    let cert_context = cert.as_ptr() as *const CERT_CONTEXT;
+    let cert_context = unsafe { cert.as_ptr() as *const CERT_CONTEXT };
     
     // Get buffer size needed for the CN
     let size = unsafe {
