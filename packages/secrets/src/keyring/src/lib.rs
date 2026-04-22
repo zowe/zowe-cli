@@ -25,13 +25,13 @@ fn find_password(service: String) -> AsyncTask<FindPassword> {
 }
 
 #[napi(ts_return_type = "Promise<Buffer | null>")]
-fn get_certificate(service: String, account: String) -> AsyncTask<GetCertificate> {
-    AsyncTask::new(GetCertificate { service, account })
+fn get_certificate(account: String) -> AsyncTask<GetCertificate> {
+    AsyncTask::new(GetCertificate { account })
 }
 
 #[napi(ts_return_type = "Promise<Buffer | null>")]
-fn get_private_key(service: String, account: String) -> AsyncTask<GetPrivateKey> {
-    AsyncTask::new(GetPrivateKey { service, account })
+fn get_private_key(account: String) -> AsyncTask<GetPrivateKey> {
+    AsyncTask::new(GetPrivateKey { account })
 }
 
 #[napi(ts_return_type = "Promise<string | null>")]

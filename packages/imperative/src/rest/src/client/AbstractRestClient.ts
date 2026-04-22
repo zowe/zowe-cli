@@ -1096,10 +1096,8 @@ export abstract class AbstractRestClient {
             // Create a custom agent that will handle certificate retrieval from keychain/certificate store
             const agent = this.createKeychainAgent(
                 this.session.ISession.certAccount,
-                ImperativeConfig.instance.cliHome,
                 {
                     rejectUnauthorized: this.session.ISession.rejectUnauthorized,
-                    ca: this.session.ISession.serverCertificate,
                 }
             );
 
@@ -1502,23 +1500,21 @@ export abstract class AbstractRestClient {
      * 
      * @private
      * @param {string} certAccount - Certificate account name
-     * @param {string} cliHome - CLI home directory
-     * @param {any} agentOptions - Agent options (rejectUnauthorized, ca, etc.)
+     * @param {https.AgentOptions} agentOptions - Agent options (rejectUnauthorized, etc.)
      * @returns {any} Cached or newly created KeychainAgent
      * @memberof AbstractRestClient
      */
-    private createKeychainAgent(certAccount: string, cliHome: string, agentOptions: any): any {
-        // Check if we have a cached agent with matching parameters
-        const cachedAgent = this.session.cachedAgent;
-        if (cachedAgent) {
-            return cachedAgent;
+    private createKeychainAgent(certAccount: string, agentOptions: https.AgentOptions): any {
+        // Check if we already have a cached agent
+        if (this.session.cachedAgent) {
+            return this.session.cachedAgent;
         }
 
-        // Create new agent and cache it for future requests
+        // Create new agent and cache it
         try {
             // eslint-disable-next-line @typescript-eslint/no-var-requires
             const { KeychainAgent } = require("./KeychainAgent");
-            const agent = new KeychainAgent(certAccount, cliHome, agentOptions);
+            const agent = new KeychainAgent(certAccount, agentOptions);
             
             // Cache the new agent
             this.session.cachedAgent = agent;

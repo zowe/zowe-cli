@@ -14,11 +14,10 @@ import * as https from "https";
 
 describe("KeychainAgent", () => {
     const mockCertAccount = "test-cert";
-    const mockCliHome = "/test/cli/home";
 
     describe("constructor", () => {
         it("should create an instance with required parameters", () => {
-            const agent = new KeychainAgent(mockCertAccount, mockCliHome);
+            const agent = new KeychainAgent(mockCertAccount);
 
             expect(agent).toBeInstanceOf(KeychainAgent);
         });
@@ -30,7 +29,7 @@ describe("KeychainAgent", () => {
                 rejectUnauthorized: false
             };
 
-            const agent = new KeychainAgent(mockCertAccount, mockCliHome, options);
+            const agent = new KeychainAgent(mockCertAccount, options);
 
             expect(agent).toBeInstanceOf(KeychainAgent);
             expect((agent as any).options.rejectUnauthorized).toBe(false);
@@ -44,7 +43,7 @@ describe("KeychainAgent", () => {
         let mockKeyring: any;
 
         beforeEach(() => {
-            agent = new KeychainAgent(mockCertAccount, mockCliHome);
+            agent = new KeychainAgent(mockCertAccount);
 
             // Mock socket
             mockSocket = {
@@ -124,7 +123,7 @@ describe("KeychainAgent", () => {
         let agent: KeychainAgent;
 
         beforeEach(() => {
-            agent = new KeychainAgent(mockCertAccount, mockCliHome);
+            agent = new KeychainAgent(mockCertAccount);
         });
 
         it("should convert DER buffer to PEM format for certificate", () => {

@@ -193,7 +193,6 @@ pub fn find_credentials(
 /// Returns the certificate data (DER format) for a given identity
 ///
 pub fn get_certificate(
-    _service: &String,
     account: &String,
 ) -> Result<Option<Vec<u8>>, KeyringError> {
     let keychain = SecKeychain::default().unwrap();
@@ -215,7 +214,6 @@ pub fn get_certificate(
 /// In that case, use native TLS via `create_tls_pipe` (non-exportable keys are not exposed as PEM).
 ///
 pub fn get_private_key(
-    _service: &String,
     account: &String,
 ) -> Result<Option<Vec<u8>>, KeyringError> {
     let keychain = SecKeychain::default().unwrap();

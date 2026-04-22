@@ -10,8 +10,8 @@ export interface Credential {
 export function deletePassword(service: string, account: string): Promise<boolean>
 export function findCredentials(service: string): Promise<Array<Credential>>
 export function findPassword(service: string): Promise<string | null>
-export function getCertificate(service: string, account: string): Promise<Buffer | null>
-export function getPrivateKey(service: string, account: string): Promise<Buffer | null>
+export function getCertificate(account: string): Promise<Buffer | null>
+export function getPrivateKey(account: string): Promise<Buffer | null>
 export function getPassword(service: string, account: string): Promise<string | null>
 export function setPassword(service: string, account: string, password: string, persistWin32?: number | undefined | null): Promise<void>
 export function createTlsPipe(remoteHost: string, remotePort: number, certAccount: string, rejectUnauthorized: boolean): Promise<string>

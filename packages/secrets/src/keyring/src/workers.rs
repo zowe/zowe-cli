@@ -16,12 +16,10 @@ pub struct GetPassword {
 }
 
 pub struct GetCertificate {
-    pub service: String,
     pub account: String,
 }
 
 pub struct GetPrivateKey {
-    pub service: String,
     pub account: String,
 }
 
@@ -82,7 +80,7 @@ impl Task for GetCertificate {
     type JsValue = JsUnknown;
 
     fn compute(&mut self) -> Result<Self::Output> {
-        match os::get_certificate(&self.service, &self.account) {
+        match os::get_certificate(&self.account) {
             Ok(cert) => Ok(cert),
             Err(err) => Err(napi::Error::from_reason(err.to_string())),
         }
@@ -129,7 +127,7 @@ impl Task for GetPrivateKey {
     type JsValue = JsUnknown;
 
     fn compute(&mut self) -> Result<Self::Output> {
-        match os::get_private_key(&self.service, &self.account) {
+        match os::get_private_key(&self.account) {
             Ok(key) => Ok(key),
             Err(err) => Err(napi::Error::from_reason(err.to_string())),
         }

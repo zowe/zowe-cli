@@ -90,7 +90,6 @@ pub fn find_certificate_by_subject(account: &str) -> Result<Option<CertContext>,
 /// * `Ok(None)` - Certificate not found
 /// * `Err(KeyringError)` - Error accessing certificate
 pub fn get_certificate(
-    _service: &String,
     account: &String,
 ) -> Result<Option<Vec<u8>>, KeyringError> {
     match find_certificate_by_subject(account.as_str())? {
@@ -130,7 +129,6 @@ pub fn get_certificate(
 /// * `Err(KeyringError)` - Always returned if certificate is found, directing users to use
 ///   `create_tls_pipe` for non-exportable keys
 pub fn get_private_key(
-    _service: &String,
     account: &String,
 ) -> Result<Option<Vec<u8>>, KeyringError> {
     match find_certificate_by_subject(account.as_str())? {
