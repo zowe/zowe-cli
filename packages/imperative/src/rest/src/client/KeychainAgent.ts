@@ -12,7 +12,6 @@
 import * as http from "http";
 import * as https from "https";
 import * as net from "net";
-import * as tls from "tls";
 import { Agent } from "agent-base";
 import { AbstractSession } from "../session/AbstractSession";
 
@@ -35,74 +34,17 @@ export class KeychainAgent extends Agent {
 
     /**
      * Returns the socket to use for each outgoing request.
-     * On macOS, tries to export the private key and use Node TLS directly.
-     * Falls back to the Rust TLS pipe for non-exportable keys and always on Windows.
+     * @param _req - The outgoing request
+     * @param options - The HTTPS agent options
+     * @returns The socket to use for the request
      */
-    public async connect(_req: http.ClientRequest, options: https.AgentOptions): Promise<net.Socket | tls.TLSSocket> {
-        if (process.platform !== "win32") {
-            try {
-                const privateKeyDer: Buffer = await this.keyring.getPrivateKey(this.certAccount);
-                if (privateKeyDer != null) {
-                    return this.buildExportableTlsSocket(options, privateKeyDer);
-                }
-            } catch (err: any) {
-                if (!err.message?.includes("non-exportable")) {
-                    throw err;
-                }
-            }
-        }
-
+    public async connect(_req: http.ClientRequest, options: https.AgentOptions): Promise<net.Socket> {
         return this.buildPipeSocket(options);
     }
 
     // Loaded on first use via the Node require cache.
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     private get keyring() { return require("@zowe/secrets-for-zowe-sdk").keyring; }
-
-    /**
-     * Convert DER-encoded data to PEM format
-     */
-    private derToPem(der: Buffer, type: string): string {
-        const base64 = der.toString("base64");
-        const lines: string[] = [];
-        lines.push(`-----BEGIN ${type}-----`);
-
-        // Split base64 into 64-character lines per PEM spec
-        const PEM_LINE_LENGTH = 64;
-        for (let i = 0; i < base64.length; i += PEM_LINE_LENGTH) {
-            lines.push(base64.substring(i, i + PEM_LINE_LENGTH));
-        }
-
-        lines.push(`-----END ${type}-----`);
-        return lines.join("\n");
-    }
-
-    /**
-     * Exportable key path (macOS): use the exported key material with Node's TLS stack directly.
-     */
-    private async buildExportableTlsSocket(options: https.AgentOptions, privateKeyDer: Buffer): Promise<tls.TLSSocket> {
-        const certDerBuffer = await this.keyring.getCertificate(this.certAccount);
-        if (!certDerBuffer) {
-            throw new Error(`Certificate '${this.certAccount}' not found in keychain.`);
-        }
-        const certPem = this.derToPem(certDerBuffer, "CERTIFICATE");
-        const privateKeyPem = this.derToPem(privateKeyDer, "PRIVATE KEY");
-
-        // tls.connect() starts the handshake asynchronously and returns immediately.
-        const tlsSocket = tls.connect({
-            host: options.host,
-            port: options.port,
-            cert: certPem,
-            key: privateKeyPem,
-            servername: options.servername || options.host,
-            rejectUnauthorized: options.rejectUnauthorized ?? true,
-        });
-
-        return new Promise<tls.TLSSocket>((resolve, reject) => {
-            tlsSocket.once("error", reject);
-            resolve(tlsSocket);
-        });
-    }
 
     /**
      * Non-exportable key path (Windows / macOS Secure Enclave): TLS is handled by a Rust

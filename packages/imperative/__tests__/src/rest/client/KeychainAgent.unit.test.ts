@@ -86,22 +86,6 @@ describe("KeychainAgent", () => {
             Object.defineProperty(process, "platform", { value: originalPlatform });
         });
 
-        it("should use buildExportableTlsSocket when key is exportable (non-Windows)", async () => {
-            const originalPlatform = process.platform;
-            Object.defineProperty(process, "platform", { value: "darwin" });
-
-            const options = { host: "example.com", port: 443 };
-            
-            const result = await agent.connect(null as any, options);
-
-            expect(mockKeyring.getPrivateKey).toHaveBeenCalled();
-            expect(mockKeyring.getCertificate).toHaveBeenCalled();
-            expect(require("tls").connect).toHaveBeenCalled();
-            expect(result).toBe(mockTlsSocket);
-
-            Object.defineProperty(process, "platform", { value: originalPlatform });
-        });
-
         it("should fall back to buildPipeSocket when key is non-exportable (non-Windows)", async () => {
             const originalPlatform = process.platform;
             Object.defineProperty(process, "platform", { value: "darwin" });
@@ -116,71 +100,6 @@ describe("KeychainAgent", () => {
             expect(result).toBe(mockSocket);
 
             Object.defineProperty(process, "platform", { value: originalPlatform });
-        });
-    });
-
-    describe("derToPem", () => {
-        let agent: KeychainAgent;
-
-        beforeEach(() => {
-            agent = new KeychainAgent(mockCertAccount);
-        });
-
-        it("should convert DER buffer to PEM format for certificate", () => {
-            const derBuffer = Buffer.from("test certificate data");
-            const expectedBase64 = derBuffer.toString("base64");
-
-            const pem = (agent as any).derToPem(derBuffer, "CERTIFICATE");
-
-            expect(pem).toContain("-----BEGIN CERTIFICATE-----");
-            expect(pem).toContain("-----END CERTIFICATE-----");
-            expect(pem).toContain(expectedBase64);
-        });
-
-        it("should convert DER buffer to PEM format for private key", () => {
-            const derBuffer = Buffer.from("test private key data");
-            const expectedBase64 = derBuffer.toString("base64");
-
-            const pem = (agent as any).derToPem(derBuffer, "PRIVATE KEY");
-
-            expect(pem).toContain("-----BEGIN PRIVATE KEY-----");
-            expect(pem).toContain("-----END PRIVATE KEY-----");
-            expect(pem).toContain(expectedBase64);
-        });
-
-        it("should split base64 into 64-character lines", () => {
-            // Create a buffer that will result in >64 chars of base64
-            const derBuffer = Buffer.alloc(100, "a");
-
-            const pem = (agent as any).derToPem(derBuffer, "CERTIFICATE");
-            const lines = pem.split("\n");
-
-            // Check that middle lines (not BEGIN/END) are <= 64 chars
-            for (let i = 1; i < lines.length - 1; i++) {
-                if (!lines[i].startsWith("-----")) {
-                    expect(lines[i].length).toBeLessThanOrEqual(64);
-                }
-            }
-        });
-
-        it("should handle empty buffer", () => {
-            const derBuffer = Buffer.alloc(0);
-
-            const pem = (agent as any).derToPem(derBuffer, "CERTIFICATE");
-
-            expect(pem).toContain("-----BEGIN CERTIFICATE-----");
-            expect(pem).toContain("-----END CERTIFICATE-----");
-        });
-
-        it("should handle small buffer (< 64 chars base64)", () => {
-            const derBuffer = Buffer.from("small");
-
-            const pem = (agent as any).derToPem(derBuffer, "CERTIFICATE");
-            const lines = pem.split("\n");
-
-            expect(lines.length).toBe(3); // BEGIN, content, END
-            expect(lines[0]).toBe("-----BEGIN CERTIFICATE-----");
-            expect(lines[2]).toBe("-----END CERTIFICATE-----");
         });
     });
 });
