@@ -132,6 +132,9 @@ extern "C" {
     pub static kSecClassCertificate: CFStringRef;
     pub static kSecMatchSubjectContains: CFStringRef;
 
+    // Certificate subject extraction:
+    pub fn SecCertificateCopySubjectSummary(certificate: SecCertificateRef) -> CFStringRef;
+
     // Key export operations:
     pub fn SecItemExport(
         sec_item_or_array: CFTypeRef,

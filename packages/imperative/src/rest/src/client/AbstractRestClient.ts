@@ -1516,7 +1516,6 @@ export abstract class AbstractRestClient {
             const { KeychainAgent } = require("./KeychainAgent");
             const agent = new KeychainAgent(certAccount, agentOptions);
             
-            // Cache the new agent
             this.session.cachedAgent = agent;
             this.log.debug(`Created KeychainAgent for certificate account: ${certAccount}`);
             return agent;

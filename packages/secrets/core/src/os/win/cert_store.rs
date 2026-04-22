@@ -11,6 +11,54 @@ use std::ffi::c_void;
 use windows_sys::Win32::Foundation::*;
 use windows_sys::Win32::Security::Cryptography::*;
 
+/// Extract the Common Name (CN) from a certificate
+///
+/// # Arguments
+/// * `cert` - The certificate context to extract the CN from
+///
+/// # Returns
+/// * `Ok(String)` - The CN from the certificate subject
+/// * `Err(KeyringError)` - Error extracting the CN
+fn extract_certificate_cn(cert: &CertContext) -> Result<String, KeyringError> {
+    let cert_context = cert.as_ptr() as *const CERT_CONTEXT;
+    
+    // Get buffer size needed for the CN
+    let size = unsafe {
+        CertGetNameStringA(
+            cert_context,
+            CERT_NAME_SIMPLE_DISPLAY_TYPE, // Gets CN
+            0,
+            std::ptr::null_mut(),
+            std::ptr::null_mut(),
+            0,
+        )
+    };
+    
+    if size == 0 {
+        return Err(KeyringError::Os("Failed to get certificate subject size".to_owned()));
+    }
+    
+    // Allocate buffer and get actual name
+    let mut buffer = vec![0u8; size as usize];
+    let actual_size = unsafe {
+        CertGetNameStringA(
+            cert_context,
+            CERT_NAME_SIMPLE_DISPLAY_TYPE,
+            0,
+            std::ptr::null_mut(),
+            buffer.as_mut_ptr() as *mut i8,
+            size,
+        )
+    };
+    
+    if actual_size == 0 {
+        return Err(KeyringError::Os("Failed to get certificate subject".to_owned()));
+    }
+    
+    // Convert to string (remove null terminator)
+    Ok(String::from_utf8_lossy(&buffer[..actual_size as usize - 1]).into_owned())
+}
+
 /// Find a certificate in the Windows Certificate Store by subject name
 ///
 /// # Arguments
@@ -44,39 +92,51 @@ pub fn find_certificate_by_subject(account: &str) -> Result<Option<CertContext>,
         )));
     }
     
-    // Search for certificate by subject name
-    let cert_context = unsafe {
-        CertFindCertificateInStore(
-            store,
-            X509_ASN_ENCODING | PKCS_7_ASN_ENCODING,
-            0,
-            CERT_FIND_SUBJECT_STR_W,
-            subject_name.as_ptr() as *const c_void,
-            std::ptr::null(),
-        )
-    };
+    // Search for certificates by subject name (substring match) and validate exact CN
+    let mut cert_context = std::ptr::null();
     
-    // Close the store (certificate context remains valid)
+    loop {
+        cert_context = unsafe {
+            CertFindCertificateInStore(
+                store,
+                X509_ASN_ENCODING | PKCS_7_ASN_ENCODING,
+                0,
+                CERT_FIND_SUBJECT_STR_W,
+                subject_name.as_ptr() as *const c_void,
+                cert_context,
+            )
+        };
+        
+        if cert_context.is_null() {
+            break;
+        }
+        
+        let ctx = unsafe { CertContext::from_ptr(cert_context as *mut c_void) };
+        match extract_certificate_cn(&ctx) {
+            Ok(cn) if cn == account => {
+                unsafe { CertCloseStore(store, 0); }
+                return Ok(Some(ctx));
+            }
+            _ => {
+                // Windows automatically frees the previous `cert_context` in the next iteration.
+                // We use `forget` to prevent `CertContext`'s Drop impl from doing a double free.
+                std::mem::forget(ctx);
+            }
+        }
+    }
+    
+    // Close the store - no exact match found
     unsafe {
         CertCloseStore(store, 0);
     }
     
-    if cert_context.is_null() {
-        let error = unsafe { GetLastError() };
-        if error == CRYPT_E_NOT_FOUND as u32 {
-            return Ok(None);
-        }
-        return Err(KeyringError::Os(format!(
-            "Failed to find certificate: {}",
-            win32_error_as_string(error)
-        )));
-    }
-
-    // Safety: cert_context is non-null and owned by us (CertFindCertificateInStore
-    // increments the refcount). schannel's CertContext::from_ptr takes ownership and
-    // will call CertFreeCertificateContext on drop.
-    let ctx = unsafe { CertContext::from_ptr(cert_context as *mut c_void) };
-    Ok(Some(ctx))
+    Err(KeyringError::Library {
+        name: "Windows Certificate Store".to_owned(),
+        details: format!(
+            "No certificate found with exact Common Name '{}'. Found certificates with partial matches but none with exact CN match.",
+            account
+        ),
+    })
 }
 
 /// Returns the certificate data (DER format) for a given identity

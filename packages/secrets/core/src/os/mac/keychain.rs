@@ -1,13 +1,13 @@
 use crate::os::mac::error::{handle_os_status, Error, ERR_SEC_ITEM_NOT_FOUND};
 use crate::os::mac::ffi::{
-    errSecDataNotAvailable, SecCertificateCopyData, SecIdentityCopyCertificate,
+    errSecDataNotAvailable, SecCertificateCopyData, SecCertificateCopySubjectSummary, SecIdentityCopyCertificate,
     SecIdentityCopyPrivateKey, SecItemExport, SecKeychainAddGenericPassword, SecKeychainCopyDefault,
     SecKeychainFindGenericPassword, SecKeychainGetTypeID, SecKeychainRef, kSecFormatOpenSSL,
 };
 use crate::os::mac::keychain_item::SecKeychainItem;
 use crate::os::mac::keychain_search::{KeychainSearch, Reference, SearchResult};
 use crate::os::mac::misc::{SecCertificate, SecIdentity, SecKey};
-use core_foundation::{base::TCFType, data::CFData, declare_TCFType, impl_TCFType};
+use core_foundation::{base::TCFType, data::CFData, string::CFString, declare_TCFType, impl_TCFType};
 use std::ops::Deref;
 
 /*
@@ -133,7 +133,18 @@ impl SecKeychain {
 
         for result in results {
             if let SearchResult::Ref(Reference::Identity(identity)) = result {
-                return Ok(identity);
+                // Validate this identity has exact subject match
+                if let Ok(cert) = self.get_certificate(&identity) {
+                    unsafe {
+                        let subject_summary = SecCertificateCopySubjectSummary(cert.as_concrete_TypeRef());
+                        if !subject_summary.is_null() {
+                            let cf_summary = CFString::wrap_under_create_rule(subject_summary);
+                            if cf_summary.to_string() == subject {
+                                return Ok(identity);
+                            }
+                        }
+                    }
+                }
             }
         }
 
