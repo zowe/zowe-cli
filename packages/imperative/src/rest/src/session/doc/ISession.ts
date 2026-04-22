@@ -139,7 +139,7 @@ export interface ISession {
     passphrase?: string;
 
     /**
-     * The account name for a PKCS#12 certificate stored in the credential manager.
+     * The subject name for a client certificate stored in the credential manager.
      * When specified, the certificate and private key will be retrieved from the
      * system keychain instead of from files.
      * (supported for macOS & Windows only)
