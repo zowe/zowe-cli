@@ -46,7 +46,7 @@ fn extract_certificate_cn(cert: &CertContext) -> Result<String, KeyringError> {
             CERT_NAME_SIMPLE_DISPLAY_TYPE,
             0,
             std::ptr::null_mut(),
-            buffer.as_mut_ptr() as *mut i8,
+            buffer.as_mut_ptr(),
             size,
         )
     };
