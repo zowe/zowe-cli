@@ -1095,18 +1095,19 @@ export abstract class AbstractRestClient {
                         msg: "Certificate account authentication with certAccount is only supported on macOS and Windows. Use certFile and certKey instead.",
                     });
                 }
-            }
+            } else {
                 // Create a custom agent that will handle certificate retrieval from keychain/certificate store
-            const agent = this.createKeychainAgent(
-                this.session.ISession.certAccount,
-                {
-                    rejectUnauthorized: this.session.ISession.rejectUnauthorized,
-                }
-            );
+                const agent = this.createKeychainAgent(
+                    this.session.ISession.certAccount,
+                    {
+                        rejectUnauthorized: this.session.ISession.rejectUnauthorized,
+                    }
+                );
 
-            // Set the agent to be used for HTTPS requests
-            restOptionsToSet.agent = agent;
-            return true;
+                // Set the agent to be used for HTTPS requests
+                restOptionsToSet.agent = agent;
+                return true;
+            }
         }
 
         // Handle file-based PEM certificates
