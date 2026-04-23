@@ -1088,12 +1088,15 @@ export abstract class AbstractRestClient {
             this.log.trace("Using certificate store authentication (certAccount)");
 
             if (process.platform !== "darwin" && process.platform !== "win32") {
-                throw new ImperativeError({
-                    msg: "Certificate account authentication (certAccount) is only supported on macOS and Windows.",
-                });
+                if (this.session.ISession.cert && this.session.ISession.certKey) {
+                    this.log.warn("Certificate account authentication with certAccount is only supported on macOS and Windows. Using certFile and certKey instead.");
+                } else {
+                    throw new ImperativeError({
+                        msg: "Certificate account authentication with certAccount is only supported on macOS and Windows. Use certFile and certKey instead.",
+                    });
+                }
             }
-
-            // Create a custom agent that will handle certificate retrieval from keychain/certificate store
+                // Create a custom agent that will handle certificate retrieval from keychain/certificate store
             const agent = this.createKeychainAgent(
                 this.session.ISession.certAccount,
                 {
