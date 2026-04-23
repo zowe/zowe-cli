@@ -50,35 +50,6 @@ fn test_find_certificate_invalid_subject() {
     }
 }
 
-#[test]
-fn test_get_certificate_invalid_subject() {
-    let service = String::from("TestService");
-    let account = String::from(INVALID_CERT_SUBJECT);
-
-    let result = get_certificate(&service, &account);
-    match result {
-        Ok(None) => {}
-        Ok(Some(_)) => {
-            panic!("Unexpectedly found certificate data for invalid subject");
-        }
-        Err(_) => {}
-    }
-}
-
-#[test]
-fn test_get_private_key_invalid_subject() {
-    let service = String::from("TestService");
-    let account = String::from(INVALID_CERT_SUBJECT);
-
-    let result = get_private_key(&service, &account);
-    match result {
-        Ok(None) => {}
-        Ok(Some(_)) => {
-            panic!("Unexpectedly found private key for invalid subject");
-        }
-        Err(_) => {}
-    }
-}
 
 // ============================================================================
 // Error Handling Tests
@@ -97,17 +68,3 @@ fn test_error_conversion() {
     }
 }
 
-#[test]
-fn test_get_certificate_empty_account() {
-    let service = String::from("TestService");
-    let account = String::from("");
-
-    let result = get_certificate(&service, &account);
-    match result {
-        Ok(None) => {}
-        Ok(Some(cert_data)) => {
-            assert!(!cert_data.is_empty(), "Certificate data should not be empty if found");
-        }
-        Err(_) => {}
-    }
-}

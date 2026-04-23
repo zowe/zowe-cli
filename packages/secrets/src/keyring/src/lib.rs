@@ -1,8 +1,7 @@
 use napi::bindgen_prelude::AsyncTask;
 use napi_derive::napi;
 use workers::{
-    CreateTlsPipe, DeletePassword, FindCredentials, FindPassword, GetCertificate, GetPassword,
-    GetPrivateKey, SetPassword,
+    CreateTlsPipe, DeletePassword, FindCredentials, FindPassword, GetPassword, SetPassword,
 };
 
 extern crate secrets_core;
@@ -24,15 +23,6 @@ fn find_password(service: String) -> AsyncTask<FindPassword> {
     AsyncTask::new(FindPassword { service })
 }
 
-#[napi(ts_return_type = "Promise<Buffer | null>")]
-fn get_certificate(account: String) -> AsyncTask<GetCertificate> {
-    AsyncTask::new(GetCertificate { account })
-}
-
-#[napi(ts_return_type = "Promise<Buffer | null>")]
-fn get_private_key(account: String) -> AsyncTask<GetPrivateKey> {
-    AsyncTask::new(GetPrivateKey { account })
-}
 
 #[napi(ts_return_type = "Promise<string | null>")]
 fn get_password(service: String, account: String) -> AsyncTask<GetPassword> {

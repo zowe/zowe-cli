@@ -55,8 +55,6 @@ const {
     deletePassword,
     findCredentials,
     findPassword,
-    getCertificate,
-    getPrivateKey,
     getPassword,
     setPassword,
     createTlsPipe,
@@ -65,8 +63,6 @@ const {
 module.exports.deletePassword = deletePassword;
 module.exports.findCredentials = findCredentials;
 module.exports.findPassword = findPassword;
-module.exports.getCertificate = getCertificate;
-module.exports.getPrivateKey = getPrivateKey;
 module.exports.getPassword = getPassword;
 module.exports.setPassword = setPassword;
 module.exports.createTlsPipe = createTlsPipe;

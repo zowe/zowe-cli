@@ -31,7 +31,6 @@ mod tests;
 
 // Re-export certificate functions
 pub use tls_pipe::create_tls_pipe;
-pub use cert_store::{get_certificate, get_private_key};
 
 impl From<WIN32_ERROR> for KeyringError {
     fn from(error: WIN32_ERROR) -> Self {

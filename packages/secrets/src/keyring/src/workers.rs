@@ -15,13 +15,6 @@ pub struct GetPassword {
     pub account: String,
 }
 
-pub struct GetCertificate {
-    pub account: String,
-}
-
-pub struct GetPrivateKey {
-    pub account: String,
-}
 
 pub struct DeletePassword {
     pub service: String,
@@ -73,99 +66,6 @@ impl Task for GetPassword {
     }
 }
 
-#[cfg(any(target_os = "macos", target_os = "windows"))]
-#[napi]
-impl Task for GetCertificate {
-    type Output = Option<Vec<u8>>;
-    type JsValue = JsUnknown;
-
-    fn compute(&mut self) -> Result<Self::Output> {
-        match os::get_certificate(&self.account) {
-            Ok(cert) => Ok(cert),
-            Err(err) => Err(napi::Error::from_reason(err.to_string())),
-        }
-    }
-
-    fn resolve(&mut self, env: Env, output: Self::Output) -> Result<Self::JsValue> {
-        Ok(match output {
-            Some(bytes) => env.create_buffer_with_data(bytes)?.into_unknown(),
-            None => env.get_null()?.into_unknown(),
-        })
-    }
-
-    fn reject(&mut self, _env: Env, err: Error) -> Result<Self::JsValue> {
-        Err(err)
-    }
-}
-
-#[cfg(not(any(target_os = "macos", target_os = "windows")))]
-#[napi]
-impl Task for GetCertificate {
-    type Output = Option<Vec<u8>>;
-    type JsValue = JsUnknown;
-
-    fn compute(&mut self) -> Result<Self::Output> {
-        Err(napi::Error::from_reason("get_certificate is not yet supported on this platform".to_owned()))
-    }
-
-    fn resolve(&mut self, env: Env, output: Self::Output) -> Result<Self::JsValue> {
-        Ok(match output {
-            Some(bytes) => env.create_buffer_with_data(bytes)?.into_unknown(),
-            None => env.get_null()?.into_unknown(),
-        })
-    }
-
-    fn reject(&mut self, _env: Env, err: Error) -> Result<Self::JsValue> {
-        Err(err)
-    }
-}
-
-#[cfg(any(target_os = "macos", target_os = "windows"))]
-#[napi]
-impl Task for GetPrivateKey {
-    type Output = Option<Vec<u8>>;
-    type JsValue = JsUnknown;
-
-    fn compute(&mut self) -> Result<Self::Output> {
-        match os::get_private_key(&self.account) {
-            Ok(key) => Ok(key),
-            Err(err) => Err(napi::Error::from_reason(err.to_string())),
-        }
-    }
-
-    fn resolve(&mut self, env: Env, output: Self::Output) -> Result<Self::JsValue> {
-        Ok(match output {
-            Some(bytes) => env.create_buffer_with_data(bytes)?.into_unknown(),
-            None => env.get_null()?.into_unknown(),
-        })
-    }
-
-    fn reject(&mut self, _env: Env, err: Error) -> Result<Self::JsValue> {
-        Err(err)
-    }
-}
-
-#[cfg(not(any(target_os = "macos", target_os = "windows")))]
-#[napi]
-impl Task for GetPrivateKey {
-    type Output = Option<Vec<u8>>;
-    type JsValue = JsUnknown;
-
-    fn compute(&mut self) -> Result<Self::Output> {
-        Err(napi::Error::from_reason("get_private_key is not yet supported on this platform".to_owned()))
-    }
-
-    fn resolve(&mut self, env: Env, output: Self::Output) -> Result<Self::JsValue> {
-        Ok(match output {
-            Some(bytes) => env.create_buffer_with_data(bytes)?.into_unknown(),
-            None => env.get_null()?.into_unknown(),
-        })
-    }
-
-    fn reject(&mut self, _env: Env, err: Error) -> Result<Self::JsValue> {
-        Err(err)
-    }
-}
 
 #[napi]
 impl Task for SetPassword {

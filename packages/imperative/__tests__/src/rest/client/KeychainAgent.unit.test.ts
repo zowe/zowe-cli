@@ -58,8 +58,6 @@ describe("KeychainAgent", () => {
             };
 
             mockKeyring = {
-                getPrivateKey: jest.fn().mockResolvedValue(Buffer.from("fake-key")),
-                getCertificate: jest.fn().mockResolvedValue(Buffer.from("fake-cert")),
                 createTlsPipe: jest.fn().mockResolvedValue("/tmp/test-pipe.sock")
             };
 
@@ -72,34 +70,13 @@ describe("KeychainAgent", () => {
             jest.restoreAllMocks();
         });
 
-        it("should use buildPipeSocket on Windows", async () => {
-            const originalPlatform = process.platform;
-            Object.defineProperty(process, "platform", { value: "win32" });
-
+        it("should create TLS pipe socket for secure connections", async () => {
             const options = { host: "example.com", port: 443 };
             const result = await agent.connect(null as any, options);
 
             expect(mockKeyring.createTlsPipe).toHaveBeenCalledWith("example.com", 443, mockCertAccount, true);
             expect(mockSocket.connect).toHaveBeenCalledWith("/tmp/test-pipe.sock", expect.any(Function));
             expect(result).toBe(mockSocket);
-
-            Object.defineProperty(process, "platform", { value: originalPlatform });
-        });
-
-        it("should fall back to buildPipeSocket when key is non-exportable (non-Windows)", async () => {
-            const originalPlatform = process.platform;
-            Object.defineProperty(process, "platform", { value: "darwin" });
-
-            mockKeyring.getPrivateKey.mockRejectedValue(new Error("Key is non-exportable"));
-
-            const options = { host: "example.com", port: 443 };
-            const result = await agent.connect(null as any, options);
-
-            expect(mockKeyring.createTlsPipe).toHaveBeenCalled();
-            expect(mockSocket.connect).toHaveBeenCalledWith("/tmp/test-pipe.sock", expect.any(Function));
-            expect(result).toBe(mockSocket);
-
-            Object.defineProperty(process, "platform", { value: originalPlatform });
         });
     });
 });

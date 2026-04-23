@@ -1089,10 +1089,12 @@ export abstract class AbstractRestClient {
 
             if (process.platform !== "darwin" && process.platform !== "win32") {
                 if (this.session.ISession.cert && this.session.ISession.certKey) {
-                    this.log.warn("Certificate account authentication with certAccount is only supported on macOS and Windows. Using certFile and certKey instead.");
+                    this.log.warn("Certificate account authentication with certAccount is only supported on macOS and Windows. " +
+                        "Using certFile and certKey instead.");
                 } else {
                     throw new ImperativeError({
-                        msg: "Certificate account authentication with certAccount is only supported on macOS and Windows. Use certFile and certKey instead.",
+                        msg: "Certificate account authentication with certAccount is only supported on macOS and Windows. " +
+                            "Use certFile and certKey instead.",
                     });
                 }
             } else {
@@ -1501,7 +1503,7 @@ export abstract class AbstractRestClient {
      * Get or create a cached KeychainAgent for certificate-based authentication.
      * This prevents creating new agents/threads for each request, improving performance
      * for bulk operations that make multiple requests with the same certificate account.
-     * 
+     *
      * @private
      * @param {string} certAccount - Certificate account name
      * @param {https.AgentOptions} agentOptions - Agent options (rejectUnauthorized, etc.)
@@ -1519,7 +1521,7 @@ export abstract class AbstractRestClient {
             // eslint-disable-next-line @typescript-eslint/no-var-requires
             const { KeychainAgent } = require("./KeychainAgent");
             const agent = new KeychainAgent(certAccount, agentOptions);
-            
+
             this.session.cachedAgent = agent;
             this.log.debug(`Created KeychainAgent for certificate account: ${certAccount}`);
             return agent;
