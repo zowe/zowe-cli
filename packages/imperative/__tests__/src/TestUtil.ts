@@ -25,7 +25,7 @@ import { ICompareParms } from "./doc/ICompareParms";
 import { TestLogger } from "./TestLogger";
 import * as nodePath from "path";
 import * as fs from "fs";
-import { randomBytes } from "crypto";
+import { randomBytes, randomUUID as uuidv4 } from "crypto";
 import * as os from "os";
 import { Config, IConfig, IConfigOpts } from "../../src/config";
 import { ImperativeConfig } from "../../src/utilities";
@@ -35,7 +35,6 @@ import { sync } from "cross-spawn";
  * Requires for non-typed.
  */
 const diff = require("deep-diff").diff;
-import { randomUUID as uuidv4 } from "crypto";
 
 /**
  * Exports for usage in tests
