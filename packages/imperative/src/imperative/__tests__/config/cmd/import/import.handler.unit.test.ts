@@ -185,6 +185,243 @@ describe("Configuration Import command handler", () => {
             expect(readFileSyncSpy).not.toHaveBeenCalled();
             expect(writeFileSyncSpy).not.toHaveBeenCalled();
         });
+
+        it("should mention --merge and --dry-run in skip message when file already exists", async () => {
+            jest.spyOn(fs, "existsSync").mockReturnValueOnce(true);
+
+            const params: IHandlerParameters = getIHandlerParametersObject();
+            params.arguments.location = __dirname + "/fakeapp.config.json";
+            teamConfig.layerActive().exists = true;
+            await new ImportHandler().process(params);
+
+            const logOutput = (params.response.console.log as jest.Mock).mock.calls.join("\n");
+            expect(logOutput).toContain("--overwrite");
+            expect(logOutput).toContain("--merge");
+            expect(logOutput).toContain("--dry-run");
+            expect(writeFileSyncSpy).not.toHaveBeenCalled();
+        });
+
+        it("should throw an error when both --merge and --overwrite are specified", async () => {
+            jest.spyOn(fs, "existsSync").mockReturnValueOnce(true);
+
+            const params: IHandlerParameters = getIHandlerParametersObject();
+            params.arguments.location = __dirname + "/fakeapp.config.json";
+            params.arguments.merge = true;
+            params.arguments.overwrite = true;
+            teamConfig.layerActive().exists = true;
+
+            let error: any;
+            try {
+                await new ImportHandler().process(params);
+            } catch (err) {
+                error = err;
+            }
+
+            expect(error).toBeDefined();
+            expect(error.message).toContain("mutually exclusive");
+            expect(writeFileSyncSpy).not.toHaveBeenCalled();
+        });
+
+        describe("--dry-run", () => {
+
+            it("should print a preview and not write when --dry-run is used on a new location", async () => {
+                jest.spyOn(fs, "existsSync").mockReturnValueOnce(true);
+                readFileSyncSpy.mockReturnValueOnce(expectedConfigTextWithoutSchema);
+
+                const params: IHandlerParameters = getIHandlerParametersObject();
+                params.arguments.location = __dirname + "/fakeapp.config.json";
+                params.arguments.dryRun = true;
+                await new ImportHandler().process(params);
+
+                expect(readFileSyncSpy).toHaveBeenCalled();
+                expect(writeFileSyncSpy).not.toHaveBeenCalled();
+                expect(downloadSchemaSpy).not.toHaveBeenCalled();
+                const logOutput = (params.response.console.log as jest.Mock).mock.calls.join("\n");
+                expect(logOutput).toContain("[Dry Run]");
+                expect(logOutput).toContain("No changes were written to disk");
+            });
+
+            it("should print a preview and not write when --dry-run is used on an existing config", async () => {
+                jest.spyOn(fs, "existsSync").mockReturnValueOnce(true);
+                readFileSyncSpy.mockReturnValueOnce(expectedConfigTextWithoutSchema);
+
+                const params: IHandlerParameters = getIHandlerParametersObject();
+                params.arguments.location = __dirname + "/fakeapp.config.json";
+                params.arguments.dryRun = true;
+                teamConfig.layerActive().exists = true;
+                await new ImportHandler().process(params);
+
+                expect(writeFileSyncSpy).not.toHaveBeenCalled();
+                const logOutput = (params.response.console.log as jest.Mock).mock.calls.join("\n");
+                expect(logOutput).toContain("[Dry Run]");
+                expect(logOutput).toContain("No changes were written to disk");
+            });
+
+            it("should not download schema during --dry-run", async () => {
+                jest.spyOn(fs, "existsSync").mockReturnValueOnce(true);
+                readFileSyncSpy.mockReturnValueOnce(expectedConfigText);
+
+                const params: IHandlerParameters = getIHandlerParametersObject();
+                params.arguments.location = __dirname + "/fakeapp.config.json";
+                params.arguments.dryRun = true;
+                await new ImportHandler().process(params);
+
+                expect(downloadSchemaSpy).not.toHaveBeenCalled();
+                expect(writeFileSyncSpy).not.toHaveBeenCalled();
+            });
+
+        });
+
+        describe("--merge", () => {
+
+            const existingConfig: IConfig = {
+                profiles: {
+                    base: {
+                        type: "base",
+                        properties: { host: "my-host.com", port: 10443 },
+                        secure: ["user", "password"]
+                    }
+                },
+                defaults: { base: "base" },
+                autoStore: false
+            };
+
+            const importedConfig: IConfig = {
+                profiles: {
+                    base: {
+                        type: "base",
+                        properties: { host: "team-host.com", port: 443, rejectUnauthorized: true },
+                        secure: ["user", "password"]
+                    },
+                    zosmf: {
+                        type: "zosmf",
+                        properties: { host: "zosmf-host.com" },
+                        secure: []
+                    }
+                },
+                defaults: { base: "base", zosmf: "zosmf" },
+                autoStore: true,
+                plugins: ["@zowe/cics-for-zowe-cli"]
+            };
+
+            it("should merge imported config into existing, existing values win", async () => {
+                jest.spyOn(fs, "existsSync").mockReturnValueOnce(true);
+                readFileSyncSpy.mockReturnValueOnce(JSONC.stringify(importedConfig, null, ConfigConstants.INDENT));
+                writeFileSyncSpy.mockReturnValueOnce();
+
+                // Seed the active layer with existing config
+                teamConfig.api.layers.set(existingConfig);
+                teamConfig.layerActive().exists = true;
+
+                const params: IHandlerParameters = getIHandlerParametersObject();
+                params.arguments.location = __dirname + "/fakeapp.config.json";
+                params.arguments.merge = true;
+                await new ImportHandler().process(params);
+
+                expect(writeFileSyncSpy).toHaveBeenCalled();
+                const written = JSONC.parse(writeFileSyncSpy.mock.calls[0][1] as string) as unknown as IConfig;
+
+                // Existing host/port must not be overwritten
+                expect(written.profiles.base.properties.host).toBe("my-host.com");
+                expect(written.profiles.base.properties.port).toBe(10443);
+                // New property from import should be added
+                expect(written.profiles.base.properties.rejectUnauthorized).toBe(true);
+                // New profile from import should be added
+                expect(written.profiles.zosmf).toBeDefined();
+                expect(written.profiles.zosmf.properties.host).toBe("zosmf-host.com");
+                // Existing default must not be overwritten; new default added
+                expect(written.defaults.base).toBe("base");
+                expect(written.defaults.zosmf).toBe("zosmf");
+                // autoStore already false in existing — must stay false
+                expect(written.autoStore).toBe(false);
+                // Plugin from import should be added
+                expect(written.plugins).toContain("@zowe/cics-for-zowe-cli");
+
+                const logOutput = (params.response.console.log as jest.Mock).mock.calls.join("\n");
+                expect(logOutput).toContain("Merged config");
+            });
+
+            it("should write imported config as-is when no existing file", async () => {
+                jest.spyOn(fs, "existsSync").mockReturnValueOnce(true);
+                readFileSyncSpy.mockReturnValueOnce(expectedConfigTextWithoutSchema);
+                writeFileSyncSpy.mockReturnValueOnce();
+
+                const params: IHandlerParameters = getIHandlerParametersObject();
+                params.arguments.location = __dirname + "/fakeapp.config.json";
+                params.arguments.merge = true;
+                // layer.exists is false by default
+                await new ImportHandler().process(params);
+
+                expect(writeFileSyncSpy).toHaveBeenCalledWith(
+                    path.join(process.cwd(), "fakeapp.config.json"),
+                    expectedConfigTextWithoutSchema
+                );
+                const logOutput = (params.response.console.log as jest.Mock).mock.calls.join("\n");
+                expect(logOutput).toContain("Imported config");
+            });
+
+            it("should preview merge without writing when --merge --dry-run", async () => {
+                jest.spyOn(fs, "existsSync").mockReturnValueOnce(true);
+                readFileSyncSpy.mockReturnValueOnce(JSONC.stringify(importedConfig, null, ConfigConstants.INDENT));
+
+                teamConfig.api.layers.set(existingConfig);
+                teamConfig.layerActive().exists = true;
+
+                const params: IHandlerParameters = getIHandlerParametersObject();
+                params.arguments.location = __dirname + "/fakeapp.config.json";
+                params.arguments.merge = true;
+                params.arguments.dryRun = true;
+                await new ImportHandler().process(params);
+
+                expect(writeFileSyncSpy).not.toHaveBeenCalled();
+                const logOutput = (params.response.console.log as jest.Mock).mock.calls.join("\n");
+                expect(logOutput).toContain("[Dry Run]");
+                expect(logOutput).toContain("No changes were written to disk");
+                // Preview should show merged result with existing values preserved
+                expect(logOutput).toContain("my-host.com");
+            });
+
+            it("should not duplicate existing plugins when merging", async () => {
+                const existingWithPlugin: IConfig = {
+                    ...existingConfig,
+                    plugins: ["@zowe/cics-for-zowe-cli"]
+                };
+                jest.spyOn(fs, "existsSync").mockReturnValueOnce(true);
+                readFileSyncSpy.mockReturnValueOnce(JSONC.stringify(importedConfig, null, ConfigConstants.INDENT));
+                writeFileSyncSpy.mockReturnValueOnce();
+
+                teamConfig.api.layers.set(existingWithPlugin);
+                teamConfig.layerActive().exists = true;
+
+                const params: IHandlerParameters = getIHandlerParametersObject();
+                params.arguments.location = __dirname + "/fakeapp.config.json";
+                params.arguments.merge = true;
+                await new ImportHandler().process(params);
+
+                expect(writeFileSyncSpy).toHaveBeenCalled();
+                const written = JSONC.parse(writeFileSyncSpy.mock.calls[0][1] as string) as unknown as IConfig;
+                const pluginCount = written.plugins.filter((p: string) => p === "@zowe/cics-for-zowe-cli").length;
+                expect(pluginCount).toBe(1);
+            });
+
+            it("should not overwrite autoStore when it is already defined as false", async () => {
+                jest.spyOn(fs, "existsSync").mockReturnValueOnce(true);
+                readFileSyncSpy.mockReturnValueOnce(JSONC.stringify(importedConfig, null, ConfigConstants.INDENT));
+                writeFileSyncSpy.mockReturnValueOnce();
+
+                teamConfig.api.layers.set({ ...existingConfig, autoStore: false });
+                teamConfig.layerActive().exists = true;
+
+                const params: IHandlerParameters = getIHandlerParametersObject();
+                params.arguments.location = __dirname + "/fakeapp.config.json";
+                params.arguments.merge = true;
+                await new ImportHandler().process(params);
+
+                const written = JSONC.parse(writeFileSyncSpy.mock.calls[0][1] as string) as unknown as IConfig;
+                expect(written.autoStore).toBe(false);
+            });
+
+        });
     });
 
     describe("fetch config", () => {
