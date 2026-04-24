@@ -13,7 +13,7 @@ import * as fs from "fs";
 import * as nodePath from "path";
 
 import * as yaml from "js-yaml";
-import { v4 as uuidv4 } from "uuid";
+import { randomUUID as uuidv4 } from "crypto";
 import { ImperativeError, ImperativeExpect, IO, Logger, LoggingConfigurer, TextUtils } from "@zowe/imperative";
 
 import { ISetupEnvironmentParms } from "./doc/parms/ISetupEnvironmentParms";

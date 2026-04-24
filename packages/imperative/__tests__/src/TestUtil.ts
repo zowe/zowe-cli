@@ -35,7 +35,7 @@ import { sync } from "cross-spawn";
  * Requires for non-typed.
  */
 const diff = require("deep-diff").diff;
-import { v4 as uuidv4 } from "uuid";
+import { randomUUID as uuidv4 } from "crypto";
 
 /**
  * Exports for usage in tests
