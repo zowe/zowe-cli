@@ -104,7 +104,6 @@
     "get-function-arguments": "^1.0.0",
     "http-server": "^14.1.1",
     "stream-to-string": "^1.2.0",
-    "uuid": "^10.0.0",
     "web-help": "file:web-help",
     "yargs-parser": "^21.1.1"
   },

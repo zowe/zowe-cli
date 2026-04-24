@@ -15,7 +15,7 @@ import * as nodePath from "path";
 import { TEST_RESULT_DATA_DIR } from "../TestConstants";
 import { mkdirSync } from "fs";
 import { ITestEnvironment } from "./doc/response/ITestEnvironment";
-import { v4 as uuidv4 } from "uuid";
+import { randomUUID as uuidv4 } from "crypto";
 
 /**
  * Use the utility methods here to setup the test environment for running APIs
