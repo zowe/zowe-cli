@@ -2,10 +2,14 @@ use super::error::KeyringError;
 
 mod error;
 mod ffi;
+pub mod tls_pipe;
 mod keychain;
 mod keychain_item;
 mod keychain_search;
 mod misc;
+
+#[cfg(test)]
+mod tests;
 
 use error::Error;
 
@@ -13,7 +17,8 @@ use crate::os::mac::error::ERR_SEC_ITEM_NOT_FOUND;
 use crate::os::mac::keychain_search::{KeychainSearch, SearchResult};
 use adler2::Adler32;
 use fmutex::Guard;
-use keychain::SecKeychain;
+pub use keychain::SecKeychain;
+pub use tls_pipe::create_tls_pipe;
 
 impl From<Error> for KeyringError {
     fn from(error: Error) -> Self {
@@ -186,3 +191,4 @@ pub fn find_credentials(
         Err(err) => Err(KeyringError::from(err)),
     }
 }
+
