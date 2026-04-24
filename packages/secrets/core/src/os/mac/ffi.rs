@@ -115,4 +115,42 @@ extern "C" {
     pub fn SecCertificateGetTypeID() -> CFTypeID;
     pub fn SecIdentityGetTypeID() -> CFTypeID;
     pub fn SecKeyGetTypeID() -> CFTypeID;
+
+    // Certificate and Identity operations:
+    pub fn SecIdentityCopyCertificate(
+        identity_ref: SecIdentityRef,
+        certificate_ref: *mut SecCertificateRef,
+    ) -> OSStatus;
+    pub fn SecIdentityCopyPrivateKey(
+        identity_ref: SecIdentityRef,
+        private_key_ref: *mut SecKeyRef,
+    ) -> OSStatus;
+    pub fn SecCertificateCopyData(certificate: SecCertificateRef) -> CFTypeRef;
+
+    // Additional keychain search constants for identity/certificate search:
+    pub static kSecClassIdentity: CFStringRef;
+    pub static kSecClassCertificate: CFStringRef;
+    pub static kSecMatchSubjectContains: CFStringRef;
+
+    // Certificate subject extraction:
+    pub fn SecCertificateCopySubjectSummary(certificate: SecCertificateRef) -> CFStringRef;
+
+    // Key export operations:
+    pub fn SecItemExport(
+        sec_item_or_array: CFTypeRef,
+        output_format: u32,
+        flags: u32,
+        key_params: *const c_void,
+        out_data: *mut CFTypeRef,
+    ) -> OSStatus;
+    pub fn SecKeyCopyExternalRepresentation(
+        key: SecKeyRef,
+        error: *mut CFTypeRef,
+    ) -> CFTypeRef;
 }
+
+// Error codes
+pub const errSecDataNotAvailable: OSStatus = -25316;
+
+// Export format constants
+pub const kSecFormatOpenSSL: u32 = 3;

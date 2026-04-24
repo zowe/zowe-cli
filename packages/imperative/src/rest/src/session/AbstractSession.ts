@@ -15,6 +15,7 @@ import { ImperativeError } from "../../../error";
 import { ImperativeExpect } from "../../../expect";
 import * as SessConstants from "./SessConstants";
 import { AuthOrder } from "./AuthOrder";
+import type { Agent } from "https";
 
 /**
  * The API session object, serves as the base for sessions and contains the fields that are required by
@@ -157,6 +158,11 @@ export abstract class AbstractSession {
      * Logging object
      */
     private mLog: Logger;
+
+    /**
+     * Cached HTTPS agent for certificate-based authentication
+     */
+    private mCachedAgent?: Agent;
 
     /**
      * Creates an instance of AbstractSession.
@@ -304,7 +310,17 @@ export abstract class AbstractSession {
         }
 
         if (session.type === SessConstants.AUTH_TYPE_CERT_PEM) {
-            ImperativeExpect.keysToBeDefinedAndNonBlank(populatedSession, ["cert", "certKey"]);
+            // Support both file-based certificates (cert + certKey) and keychain-based (certAccount)
+            const hasFileCert = populatedSession.cert && populatedSession.certKey;
+            const hasCertAccount = populatedSession.certAccount;
+
+            if (!hasFileCert && !hasCertAccount) {
+                throw new ImperativeError({
+                    msg: "Certificate authentication requires either 'cert' and 'certKey' OR 'certAccount'.",
+                    additionalDetails: "Specify cert and certKey files, or a certAccount from your keychain."
+                });
+            }
+
             ImperativeExpect.keysToBeUndefined(populatedSession, ["tokenValue", "user", "password"] );
             ImperativeExpect.toNotBeEqual(populatedSession.protocol, SessConstants.HTTP_PROTOCOL,
                 "Certificate based authentication cannot be used over HTTP. Please set protocol to HTTPS to use certificate authentication.");
@@ -347,5 +363,23 @@ export abstract class AbstractSession {
      */
     get ISession(): ISession {
         return this.mISession;
+    }
+
+    /**
+     * Get the cached HTTPS agent.
+     * @returns {Agent | undefined} The cached HTTPS agent, or undefined if not cached.
+     * @memberof AbstractSession
+     */
+    public get cachedAgent(): Agent | undefined {
+        return this.mCachedAgent;
+    }
+
+    /**
+     * Set the cached HTTPS agent.
+     * @param {Agent} agent - The HTTPS agent to cache.
+     * @memberof AbstractSession
+     */
+    public set cachedAgent(agent: Agent) {
+        this.mCachedAgent = agent;
     }
 }

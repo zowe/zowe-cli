@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Added support for client certificate authentication using certificates stored in system keystores. Added `certAccount` profile property to specify certificate subject name for authentication. Implemented cross-platform native HTTPS clients (macOS and Windows) that support certificate-based authentication with both exportable and non-exportable private keys. Updated `AbstractRestClient` to use native HTTPS clients when `certAccount` is specified on macOS or Windows platforms. [#2325](https://github.com/zowe/zowe-cli/issues/2325)
+
 ## `8.31.5`
 
 - BugFix: Removed text which is sometimes displayed by the `npm pack --dry-run --json` command before its valid JSON output, thus avoiding a Zowe error stating that a plugin cannot be installed. This problem occurs mostly in build pipelines. [#2713](https://github.com/zowe/zowe-cli/issues/2713)
