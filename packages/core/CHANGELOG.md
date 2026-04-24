@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe core SDK package will be documented in this file.
 
-## Recent Changes
+## `8.32.0`
 
 - Enhancement: Added `certAccount` option to base profile options to support client certificate authentication using certificates stored in system keystores on macOS and Windows platforms. [#2325](https://github.com/zowe/zowe-cli/issues/2325)
 

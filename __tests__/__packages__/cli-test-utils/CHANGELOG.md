@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI test utils package will be documented in this file.
 
-## Recent Changes
+## `8.32.0`
 
 - BugFix: Replaced `uuid` dependency for technical currency. [#2720](https://github.com/zowe/zowe-cli/pull/2720)
 
