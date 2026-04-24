@@ -8,6 +8,9 @@ mod keychain_item;
 mod keychain_search;
 mod misc;
 
+#[cfg(test)]
+mod tests;
+
 use error::Error;
 
 use crate::os::mac::error::ERR_SEC_ITEM_NOT_FOUND;
