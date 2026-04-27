@@ -1069,17 +1069,50 @@ export abstract class AbstractRestClient {
 
     /**
      * Set a PEM certificate auth into our REST request authentication options.
+     * This supports both file-based certificates (cert + certKey files) and
+     * keychain-based certificates (certAccount from macOS Keychain).
      *
      * @private
      * @param {any} restOptionsToSet
      *      The set of REST request options into which the credentials will be set.
-     * @returns True if this function sets authentication options. False otherwise.
+     * @returns {boolean} True if this function sets authentication options. False otherwise.
      * @memberof AbstractRestClient
      */
     private setCertPemAuth(restOptionsToSet: any): boolean {
         if (!(this.session.ISession.type === SessConstants.AUTH_TYPE_CERT_PEM)) {
             return false;
         }
+
+        // Handle certAccount (keychain/certificate store-based certificate) - macOS and Windows
+        if (this.session.ISession.certAccount != null) {
+            this.log.trace("Using certificate store authentication (certAccount)");
+
+            if (process.platform !== "darwin" && process.platform !== "win32") {
+                if (this.session.ISession.cert && this.session.ISession.certKey) {
+                    this.log.warn("Certificate account authentication with certAccount is only supported on macOS and Windows. " +
+                        "Using certFile and certKey instead.");
+                } else {
+                    throw new ImperativeError({
+                        msg: "Certificate account authentication with certAccount is only supported on macOS and Windows. " +
+                            "Use certFile and certKey instead.",
+                    });
+                }
+            } else {
+                // Create a custom agent that will handle certificate retrieval from keychain/certificate store
+                const agent = this.createKeychainAgent(
+                    this.session.ISession.certAccount,
+                    {
+                        rejectUnauthorized: this.session.ISession.rejectUnauthorized,
+                    }
+                );
+
+                // Set the agent to be used for HTTPS requests
+                restOptionsToSet.agent = agent;
+                return true;
+            }
+        }
+
+        // Handle file-based PEM certificates
         this.log.trace("Using PEM Certificate authentication");
         try {
             restOptionsToSet.cert = readFileSync(this.session.ISession.cert);
@@ -1366,8 +1399,14 @@ export abstract class AbstractRestClient {
      * @memberof AbstractRestClient
      */
     private appendInputHeaders(options: IHTTPSOptions, reqHeaders?: any[]): IHTTPSOptions {
+        // Create a copy of options for logging, excluding the agent property
+        // The agent (especially custom agents like KeychainAgent) can have complex internal
+        // structures that break the Censor's Object.entries() calls
+        const optionsForLogging: any = { ...options };
+        delete optionsForLogging.agent;
+
         this.log.trace("appendInputHeaders called with options on rest client %s",
-            JSON.stringify(Censor.censorObject(options)), this.constructor.name);
+            JSON.stringify(Censor.censorObject(optionsForLogging)), this.constructor.name);
         if (reqHeaders && reqHeaders.length > 0) {
             reqHeaders.forEach((reqHeader: any) => {
                 const requestHeaderKeys: string[] = Object.keys(reqHeader);
@@ -1458,6 +1497,41 @@ export abstract class AbstractRestClient {
             return undefined;
         }
         return this.data.toString("utf8");
+    }
+
+    /**
+     * Get or create a cached KeychainAgent for certificate-based authentication.
+     * This prevents creating new agents/threads for each request, improving performance
+     * for bulk operations that make multiple requests with the same certificate account.
+     *
+     * @private
+     * @param {string} certAccount - Certificate account name
+     * @param {https.AgentOptions} agentOptions - Agent options (rejectUnauthorized, etc.)
+     * @returns {any} Cached or newly created KeychainAgent
+     * @memberof AbstractRestClient
+     */
+    private createKeychainAgent(certAccount: string, agentOptions: https.AgentOptions): any {
+        // Check if we already have a cached agent
+        if (this.session.cachedAgent) {
+            return this.session.cachedAgent;
+        }
+
+        // Create new agent and cache it
+        try {
+            // eslint-disable-next-line @typescript-eslint/no-var-requires
+            const { KeychainAgent } = require("./KeychainAgent");
+            const agent = new KeychainAgent(certAccount, agentOptions);
+
+            this.session.cachedAgent = agent;
+            this.log.debug(`Created KeychainAgent for certificate account: ${certAccount}`);
+            return agent;
+        } catch (err) {
+            throw new ImperativeError({
+                msg: `Failed to create KeychainAgent for certificate account: ${certAccount}`,
+                causeErrors: err,
+                additionalDetails: err.message,
+            });
+        }
     }
 
     /**

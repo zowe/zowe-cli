@@ -67,9 +67,10 @@ export class AuthOrder {
 
     private static readonly SESS_CERT_NAME = "cert";
     private static readonly SESS_CERT_KEY_NAME = "certKey";
+    private static readonly SESS_CERT_ACCOUNT_NAME = "certAccount";
     private static readonly ARRAY_OF_CREDS = [
         "user", "password", "base64EncodedAuth", "tokenType", "tokenValue",
-        AuthOrder.SESS_CERT_NAME, AuthOrder.SESS_CERT_KEY_NAME
+        AuthOrder.SESS_CERT_NAME, AuthOrder.SESS_CERT_KEY_NAME, AuthOrder.SESS_CERT_ACCOUNT_NAME
     ];
 
     // ***********************************************************************
@@ -373,13 +374,24 @@ export class AuthOrder {
                         sessTypeToUse = SessConstants.AUTH_TYPE_BEARER;
                     }
                     break;
-                case SessConstants.AUTH_TYPE_CERT_PEM:
-                    if (sessCfg._authCache.availableCreds[AuthOrder.SESS_CERT_NAME] &&
-                        sessCfg._authCache.availableCreds[AuthOrder.SESS_CERT_KEY_NAME])
-                    {
+                case SessConstants.AUTH_TYPE_CERT_PEM: {
+                    // Support both file-based certificates (cert + certKey) and keychain-based (certAccount)
+                    const hasFileCert = sessCfg._authCache.availableCreds[AuthOrder.SESS_CERT_NAME] &&
+                        sessCfg._authCache.availableCreds[AuthOrder.SESS_CERT_KEY_NAME];
+                    const hasCertAccount = sessCfg._authCache.availableCreds[AuthOrder.SESS_CERT_ACCOUNT_NAME];
+
+                    if (hasFileCert || hasCertAccount) {
                         sessTypeToUse = SessConstants.AUTH_TYPE_CERT_PEM;
-                        sessCfg[AuthOrder.SESS_CERT_NAME] = sessCfg._authCache.availableCreds[AuthOrder.SESS_CERT_NAME];
-                        sessCfg[AuthOrder.SESS_CERT_KEY_NAME] = sessCfg._authCache.availableCreds[AuthOrder.SESS_CERT_KEY_NAME];
+
+                        if (hasFileCert) {
+                            sessCfg[AuthOrder.SESS_CERT_NAME] = sessCfg._authCache.availableCreds[AuthOrder.SESS_CERT_NAME];
+                            sessCfg[AuthOrder.SESS_CERT_KEY_NAME] = sessCfg._authCache.availableCreds[AuthOrder.SESS_CERT_KEY_NAME];
+                        }
+
+                        if (hasCertAccount) {
+                            sessCfg[AuthOrder.SESS_CERT_ACCOUNT_NAME] = sessCfg._authCache.availableCreds[AuthOrder.SESS_CERT_ACCOUNT_NAME];
+                        }
+
                         if (sessCfg._authCache.authTypeToRequestToken) {
                             // Record that we are authenticating with a cert to request a token.
                             sessCfg._authCache.authTypeToRequestToken = SessConstants.AUTH_TYPE_CERT_PEM;
@@ -391,6 +403,7 @@ export class AuthOrder {
                         }
                     }
                     break;
+                }
                 case SessConstants.AUTH_TYPE_NONE:
                     sessTypeToUse = SessConstants.AUTH_TYPE_NONE;
                     break;
@@ -919,6 +932,7 @@ export class AuthOrder {
                 case SessConstants.AUTH_TYPE_CERT_PEM:
                     AuthOrder.keepCred(AuthOrder.SESS_CERT_NAME, credsToRemove);
                     AuthOrder.keepCred(AuthOrder.SESS_CERT_KEY_NAME, credsToRemove);
+                    AuthOrder.keepCred(AuthOrder.SESS_CERT_ACCOUNT_NAME, credsToRemove);
                     if (sessCfg._authCache.authTypeToRequestToken) {
                         if (sessCfg._authCache.authTypeToRequestToken === SessConstants.AUTH_TYPE_CERT_PEM) {
                             // the token type must be in the session when we are requesting a token

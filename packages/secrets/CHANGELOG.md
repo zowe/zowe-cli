@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe Secrets SDK package will be documented in this file.
 
+## `8.32.0`
+
+- Enhancement: Added native certificate authentication support for macOS and Windows platforms. Implemented certificate retrieval from system keystores (macOS Keychain and Windows Certificate Store), identity context caching for signing operations, and native HTTPS clients with client certificate authentication. The implementation supports both exportable and non-exportable private keys through platform-specific cryptographic APIs (macOS Security framework and Windows CNG). [#2325](https://github.com/zowe/zowe-cli/issues/2325)
+
 ## `8.29.0`
 
 - Enhancement: Added support for specifying the persistence level as an option when setting credentials. Note that this option only applies for Windows users; when a persistence level is provided and the user's operating system is Linux or MacOS, the option is ignored. [#2601](https://github.com/zowe/zowe-cli/issues/2601)

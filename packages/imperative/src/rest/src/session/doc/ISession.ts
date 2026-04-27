@@ -139,6 +139,16 @@ export interface ISession {
     passphrase?: string;
 
     /**
+     * The subject name for a client certificate stored in the credential manager.
+     * When specified, the certificate and private key will be retrieved from the
+     * system keychain instead of from files.
+     * (supported for macOS & Windows only)
+     * @type {string}
+     * @memberof ISession
+     */
+    certAccount?: string;
+
+    /**
      * todo
      * @type {string}
      * @memberof ISession

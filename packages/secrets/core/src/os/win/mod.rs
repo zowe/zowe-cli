@@ -1,3 +1,11 @@
+//! Windows credential and certificate operations
+//!
+//! This module provides Windows-specific implementations for:
+//! - Credential storage via Windows Credential Manager
+//! - Certificate retrieval from Windows Certificate Store
+//! - Non-exportable private key support via Schannel (TLS pipe)
+//! - Native HTTPS client with client certificate authentication
+
 use super::error::KeyringError;
 use std::ffi::c_void;
 use std::result::Result;
@@ -14,6 +22,16 @@ use windows_sys::{
     },
 };
 
+// Certificate and TLS submodules
+mod cert_store;
+pub mod tls_pipe;
+
+#[cfg(test)]
+mod tests;
+
+// Re-export certificate functions
+pub use tls_pipe::create_tls_pipe;
+
 impl From<WIN32_ERROR> for KeyringError {
     fn from(error: WIN32_ERROR) -> Self {
         KeyringError::Os(win32_error_as_string(error))
@@ -28,7 +46,7 @@ pub const PERSIST_ENTERPRISE: u32 = CRED_PERSIST_ENTERPRISE;
 /// Returns:
 /// A `String` object containing the error message
 ///
-fn win32_error_as_string(error: WIN32_ERROR) -> String {
+pub(super) fn win32_error_as_string(error: WIN32_ERROR) -> String {
     let mut buffer: PWSTR = std::ptr::null_mut();
 
     // https://github.com/microsoft/windows-rs/blob/master/crates/libs/core/src/hresult.rs#L96
@@ -68,7 +86,7 @@ fn win32_error_as_string(error: WIN32_ERROR) -> String {
 /// Returns:
 /// - `Some(val)` if the string was successfully converted to UTF-16, or `None` otherwise.
 ///
-fn encode_utf16(str: &str) -> Vec<u16> {
+pub(super) fn encode_utf16(str: &str) -> Vec<u16> {
     let mut chars: Vec<u16> = str.encode_utf16().collect();
     chars.push(0);
     chars
@@ -349,3 +367,4 @@ pub fn find_credentials(
 
     Ok(true)
 }
+

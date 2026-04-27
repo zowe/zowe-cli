@@ -193,14 +193,21 @@ export class ConnectionPropsForSessCfg {
                         promptForValues.push("tokenValue");
                     }
                     break;
-                case SessConstants.AUTH_TYPE_CERT_PEM:
-                    if (!sessCfgToUse._authCache?.availableCreds?.cert && !doNotPromptForValues.includes("cert")) {
-                        promptForValues.push("cert");
-                    }
-                    if (!sessCfgToUse._authCache?.availableCreds?.certKey && !doNotPromptForValues.includes("certKey")) {
-                        promptForValues.push("certKey");
+                case SessConstants.AUTH_TYPE_CERT_PEM: {
+                    // Check if certAccount is available (for keychain-based certs)
+                    const hasCertAccount = sessCfgToUse._authCache?.availableCreds?.certAccount;
+
+                    // Only prompt for cert/certKey if certAccount is not available
+                    if (!hasCertAccount) {
+                        if (!sessCfgToUse._authCache?.availableCreds?.cert && !doNotPromptForValues.includes("cert")) {
+                            promptForValues.push("cert");
+                        }
+                        if (!sessCfgToUse._authCache?.availableCreds?.certKey && !doNotPromptForValues.includes("certKey")) {
+                            promptForValues.push("certKey");
+                        }
                     }
                     break;
+                }
             }
         }
 

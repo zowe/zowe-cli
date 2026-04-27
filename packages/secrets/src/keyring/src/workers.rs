@@ -15,6 +15,7 @@ pub struct GetPassword {
     pub account: String,
 }
 
+
 pub struct DeletePassword {
     pub service: String,
     pub account: String,
@@ -26,6 +27,14 @@ pub struct FindCredentials {
 pub struct FindPassword {
     pub service: String,
 }
+
+pub struct CreateTlsPipe {
+    pub remote_host: String,
+    pub remote_port: u16,
+    pub cert_account: String,
+    pub reject_unauthorized: bool,
+}
+
 
 #[napi(object)]
 pub struct Credential {
@@ -56,6 +65,7 @@ impl Task for GetPassword {
         Err(err)
     }
 }
+
 
 #[napi]
 impl Task for SetPassword {
@@ -164,3 +174,45 @@ impl Task for FindPassword {
         Err(err)
     }
 }
+
+#[cfg(any(target_os = "macos", target_os = "windows"))]
+#[napi]
+impl Task for CreateTlsPipe {
+    type Output = String;
+    type JsValue = napi::JsString;
+
+    fn compute(&mut self) -> Result<Self::Output> {
+        match os::create_tls_pipe(&self.remote_host, self.remote_port, &self.cert_account, self.reject_unauthorized) {
+            Ok(path) => Ok(path),
+            Err(err) => Err(napi::Error::from_reason(err.to_string())),
+        }
+    }
+
+    fn resolve(&mut self, env: Env, output: Self::Output) -> Result<Self::JsValue> {
+        env.create_string(output.as_str())
+    }
+
+    fn reject(&mut self, _env: Env, err: Error) -> Result<Self::JsValue> {
+        Err(err)
+    }
+}
+
+#[cfg(not(any(target_os = "macos", target_os = "windows")))]
+#[napi]
+impl Task for CreateTlsPipe {
+    type Output = String;
+    type JsValue = napi::JsString;
+
+    fn compute(&mut self) -> Result<Self::Output> {
+        Err(napi::Error::from_reason("create_tls_pipe is not yet supported on this platform".to_owned()))
+    }
+
+    fn resolve(&mut self, env: Env, output: Self::Output) -> Result<Self::JsValue> {
+        env.create_string(output.as_str())
+    }
+
+    fn reject(&mut self, _env: Env, err: Error) -> Result<Self::JsValue> {
+        Err(err)
+    }
+}
+
