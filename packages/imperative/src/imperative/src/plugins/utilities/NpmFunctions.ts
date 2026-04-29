@@ -83,10 +83,11 @@ export function installPackages(npmPackage: string, npmArgs: INpmInstallArgs, ve
     }
     catch (error) {
         if (daemonStream != null) {
-            daemonStream.write(DaemonRequest.create({ stderr: error.message }));
+            daemonStream.write(DaemonRequest.create({ stderr: error.message + "\n" }));
         } else {
-            process.stderr.write(error.message);
+            process.stderr.write(error.message + "\n");
         }
+        throw error;
     }
     return execOutput;
 }
