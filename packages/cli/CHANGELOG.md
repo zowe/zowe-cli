@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `8.32.1`
 
 - BugFix: Updated `zowe daemon enable` help text to warn users that the Zowe bin directory must be on your PATH after enabling daemon mode. [#2717](https://github.com/zowe/zowe-cli/pull/2717)
 
