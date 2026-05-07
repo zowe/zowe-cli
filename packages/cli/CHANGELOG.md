@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated `zowe daemon enable` help text to warn users that the Zowe bin directory must be on your PATH after enabling daemon mode. [#2717](https://github.com/zowe/zowe-cli/pull/2717)
+
 ## `8.32.0`
 
 - Enhancement: Added `certAccount` option to z/OSMF profile type to support client certificate authentication using certificates stored in system keystores (macOS Keychain or Windows Certificate Store). This enables secure authentication with both exportable and non-exportable private keys on macOS and Windows platforms. [#2325](https://github.com/zowe/zowe-cli/issues/2325)
