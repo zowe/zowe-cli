@@ -65,29 +65,19 @@ export function installPackages(npmPackage: string, npmArgs: INpmInstallArgs, ve
     }
     let execOutput = "";
     const daemonStream = ImperativeConfig.instance.daemonContext?.stream;
-    try {
-        if (verbose && daemonStream == null) {
-            ExecUtils.spawnWithInheritedStdio(npmCmd, args, {
-                cwd: PMFConstants.instance.PMF_ROOT,
-            });
-        } else {
-            execOutput = ExecUtils.spawnAndGetOutput(npmCmd, args, {
-                cwd: PMFConstants.instance.PMF_ROOT,
-                stdio: pipe
-            }).toString();
+    if (verbose && daemonStream == null) {
+        ExecUtils.spawnWithInheritedStdio(npmCmd, args, {
+            cwd: PMFConstants.instance.PMF_ROOT,
+        });
+    } else {
+        execOutput = ExecUtils.spawnAndGetOutput(npmCmd, args, {
+            cwd: PMFConstants.instance.PMF_ROOT,
+            stdio: pipe
+        }).toString();
 
-            if (verbose && daemonStream != null) {
-                daemonStream.write(DaemonRequest.create({ stdout: execOutput }));
-            }
+        if (verbose && daemonStream != null) {
+            daemonStream.write(DaemonRequest.create({ stdout: execOutput }));
         }
-    }
-    catch (error) {
-        if (daemonStream != null) {
-            daemonStream.write(DaemonRequest.create({ stderr: error.message + "\n" }));
-        } else {
-            process.stderr.write(error.message + "\n");
-        }
-        throw error;
     }
     return execOutput;
 }
@@ -105,22 +95,12 @@ export function getPackageInfo(pkgSpec: string): { name: string, version: string
         const maxOutputInx = 200;
         let truncationMsg = "\n<Additional output not displayed>";
         let execOutput:string = "No npm pack output was retrieved";
-        try {
-            // eslint-disable-next-line @typescript-eslint/no-magic-numbers
-            const maxBuffer = 1024 * 1024 * 10; // 10MB
-            execOutput = ExecUtils.spawnAndGetOutput(
-                npmCmd, ["pack", pkgSpec, "--dry-run", "--json"], { maxBuffer }
-            ).toString();
-        } catch (err) {
-            if (execOutput.length < maxOutputInx) {
-                truncationMsg = "";
-            }
-            throw new ImperativeError({
-                msg: `Spawn of 'npm pack' command failed for package: '${pkgSpec}'` +
-                    "\nSpawn error = " + (err as Error).message +
-                    "\nOutput of the spawn action:\n" + execOutput.substring(0, maxOutputInx) + truncationMsg
-            });
-        }
+
+        // eslint-disable-next-line @typescript-eslint/no-magic-numbers
+        const maxBuffer = 1024 * 1024 * 10; // 10MB
+        execOutput = ExecUtils.spawnAndGetOutput(
+            npmCmd, ["pack", pkgSpec, "--dry-run", "--json"], { maxBuffer }
+        ).toString();
 
         // In test pipelines, parallel tests use Git to retrieve source to compile and to
         // run CodeQL analysis. Some conflict causes <YourSourceCodeRootDirectory>/.git/config.lock
@@ -158,8 +138,8 @@ export function getPackageInfo(pkgSpec: string): { name: string, version: string
                 truncationMsg = "";
             }
             throw new ImperativeError({
-                msg: `Unable to parse the JSON output of 'npm pack' for this package: '${pkgSpec}'` +
-                    "\nJSON.parse error = " + (err as Error).message +
+                msg: `Unable to parse the JSON output of 'npm pack' for this package: '${pkgSpec}'`,
+                additionalDetails: "JSON.parse error = " + (err as Error).message +
                     "\nOutput of 'npm pack':\n" + execOutput.substring(0, maxOutputInx) + truncationMsg
             });
         }

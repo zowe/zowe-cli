@@ -130,7 +130,11 @@ export function uninstall(packageName: string): void {
 
         const installFolder = path.join(PMFConstants.instance.PLUGIN_HOME_LOCATION, npmPackage);
         if (fs.existsSync(installFolder)) {
-            throw new Error("Failed to uninstall plugin, install folder still exists:\n  " + installFolder);
+            throw new ImperativeError({
+                msg: `Failed to uninstall plugin '${npmPackage}'`,
+                additionalDetails: `The plugin installation folder still exists:\n    ${installFolder}`
+            });
+
         }
 
         if (PMFConstants.instance.PLUGIN_USING_CONFIG) {
@@ -173,9 +177,6 @@ export function uninstall(packageName: string): void {
         }
 
     } catch (e) {
-        throw new ImperativeError({
-            msg: e.message,
-            causeErrors: [e]
-        });
+        throw ImperativeError.newImpErrorFromExistingError(e);
     }
 }
