@@ -385,7 +385,8 @@ describe("Plugin Management Facility install handler", () => {
 
         expect(expectedError).toBeInstanceOf(ImperativeError);
         expect(expectedError.additionalDetails).toContain("Command that failed:");
-        expect(expectedError.additionalDetails).toContain("C:\\pkgs\\nodejs\\npm.CMD config get registry");
+        expect(expectedError.additionalDetails).toContain("npm");
+        expect(expectedError.additionalDetails).toContain("config get registry");
         expect(expectedError.additionalDetails).toContain("Exit code = 1");
         expect(expectedError.additionalDetails).toContain("If you are using an NPM registry, " +
             "confirm that NPM can access the registry with the following command:"

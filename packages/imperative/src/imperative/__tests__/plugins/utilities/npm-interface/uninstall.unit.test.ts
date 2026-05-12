@@ -14,6 +14,7 @@ jest.mock("cross-spawn");
 jest.mock("jsonfile");
 jest.mock("../../../../src/plugins/utilities/PMFConstants");
 
+import * as path from "path";
 import * as fs from "fs";
 import * as jsonfile from "jsonfile";
 import { Console } from "../../../../../console";
@@ -237,9 +238,8 @@ describe("PMF: Uninstall Interface", () => {
             // Validate the install
             wasSpawnSyncCallValid(packageName);
             expect(caughtError.message).toContain("Failed to uninstall plugin 'a'");
-            expect(caughtError.additionalDetails).toContain("The plugin installation folder still exists:\n" +
-                "    \\sample-cli\\install\\lib\\node_modules\\a"
-            );
+            expect(caughtError.additionalDetails).toContain("The plugin installation folder still exists:");
+            expect(caughtError.additionalDetails).toContain(path.normalize("/sample-cli/install/lib/node_modules/a"));
         });
     });
 
