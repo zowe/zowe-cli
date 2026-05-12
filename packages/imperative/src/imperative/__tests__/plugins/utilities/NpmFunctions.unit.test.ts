@@ -229,7 +229,7 @@ describe("NpmFunctions", () => {
                 `Unable to parse the JSON output of 'npm pack' for this package: '${pkgSpec}'`
             );
             expect(caughtError.additionalDetails).toContain(
-                "JSON.parse error = Expected property name or '}' in JSON at position 1 (line 1 column 2)"
+                "JSON.parse error = Expected property name or '}' in JSON at position 1"
             );
             expect(caughtError.additionalDetails).toContain("Output of 'npm pack':");
             expect(caughtError.additionalDetails).toContain(badJsonString);
