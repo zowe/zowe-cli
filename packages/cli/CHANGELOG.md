@@ -2,6 +2,11 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated the error handling for plugin installation to report the first failure that occurs. [#2722](https://github.com/zowe/zowe-cli/pull/2722)
+- BugFix: Updated the display of failures from 3rd party programs to include more diagnostic information while avoiding repeated text. [#2722](https://github.com/zowe/zowe-cli/pull/2722)
+
 ## `8.32.0`
 
 - Enhancement: Added `certAccount` option to z/OSMF profile type to support client certificate authentication using certificates stored in system keystores (macOS Keychain or Windows Certificate Store). This enables secure authentication with both exportable and non-exportable private keys on macOS and Windows platforms. [#2325](https://github.com/zowe/zowe-cli/issues/2325)
