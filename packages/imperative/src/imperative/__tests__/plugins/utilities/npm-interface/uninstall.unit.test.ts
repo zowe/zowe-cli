@@ -225,18 +225,21 @@ describe("PMF: Uninstall Interface", () => {
             };
 
             mocks.readFileSync.mockReturnValue(pluginJsonFile);
-            jest.spyOn(fs, "existsSync").mockReturnValueOnce(true);
-            let caughtError;
+            jest.spyOn(fs, "existsSync").mockReturnValue(true);
+            let caughtError: ImperativeError = {} as ImperativeError;
 
             try {
                 uninstall("a");
             } catch (error) {
-                caughtError = error;
+                caughtError = error as ImperativeError;
             }
 
             // Validate the install
             wasSpawnSyncCallValid(packageName);
-            expect(caughtError.message).toContain("Failed to uninstall plugin, install folder still exists");
+            expect(caughtError.message).toContain("Failed to uninstall plugin 'a'");
+            expect(caughtError.additionalDetails).toContain("The plugin installation folder still exists:\n" +
+                "    \\sample-cli\\install\\lib\\node_modules\\a"
+            );
         });
     });
 

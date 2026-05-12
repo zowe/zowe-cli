@@ -79,7 +79,7 @@ export default class UninstallHandler implements ICommandHandler {
                             params.response.console.log(err.additionalDetails);
                         }
                         params.response.console.log(
-                            "\nThe uninstall operation of a plug-in will continue even with a 'pre-uninstall' failure.\n"
+                            "\nThe uninstall operation of a plug-in will continue even with a 'preUninstall' failure.\n"
                         );
                     }
 
@@ -133,7 +133,7 @@ export default class UninstallHandler implements ICommandHandler {
             const lifeCycleInstance = new lifeCycleClass();
             await lifeCycleInstance.preUninstall();
         } catch (err) {
-            throw ImperativeError.newImpErrorFromExistingError(err, `Unable to perform the 'pre-uninstall' action of plugin '${pluginPackageNm}'`);
+            throw ImperativeError.newImpErrorFromExistingError(err, `Unable to perform the 'preUninstall' action of plugin '${pluginPackageNm}'`);
         }
     }
 }

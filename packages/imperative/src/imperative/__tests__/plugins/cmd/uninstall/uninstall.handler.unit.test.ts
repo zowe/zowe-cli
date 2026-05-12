@@ -100,6 +100,9 @@ describe("Plugin Management Facility uninstall handler", () => {
         // Override the return value for this test only
         mocks.readFileSyncSpy.mockReturnValueOnce(fileJson as any);
 
+        // return a fake plugin configuration with no preUninstall for the plugin
+        jest.spyOn(ConfigurationLoader, "load").mockReturnValue({});
+
         const handler = new UninstallHandler();
 
         const params = getIHandlerParametersObject();
@@ -108,8 +111,7 @@ describe("Plugin Management Facility uninstall handler", () => {
         await handler.process(params as IHandlerParameters);
 
         expect(mocks.uninstallSpy).toHaveBeenCalledWith(fileJson.a.package);
-
-        expect(params.response.console.log).toHaveBeenCalledWith("Removal of the npm package(s) was successful.\n");
+        expect(params.response.console.log).toHaveBeenCalledWith("Removal of the npm package(s) was successful.");
     });
 
     it("should handle an error during the uninstall", async () => {
@@ -254,6 +256,9 @@ describe("callPluginPreUninstall", () => {
         expect(cfgLoaderLoadSpy).toHaveBeenCalledTimes(1);
         expect(thrownErr).not.toBeNull();
         expect(thrownErr.message).toContain(
+            "Unable to perform the 'preUninstall' action of plugin '@zowe/secrets-for-kubernetes-for-zowe-cli'"
+        );
+        expect(thrownErr.causeErrors).toContain(
             `The plugin '${knownCredMgrPlugin}', which overrides the CLI ` +
             `Credential Manager, does not implement the 'pluginLifeCycle' class. ` +
             `The CLI default Credential Manager ` +
@@ -311,6 +316,6 @@ describe("callPluginPreUninstall", () => {
         expect(thrownErr.message).toContain(
             `Unable to perform the 'preUninstall' action of plugin '${knownCredMgrPlugin}'`
         );
-        expect(thrownErr.message).toContain(preUninstallErrText);
+        expect(thrownErr.causeErrors).toContain(preUninstallErrText);
     });
 }); // end callPluginPreUninstall

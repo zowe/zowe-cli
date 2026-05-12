@@ -509,6 +509,7 @@ describe("PMF: Install Interface", () => {
     describe("callPluginPostInstall", () => {
         const knownCredMgr = "@zowe/secrets-for-kubernetes-for-zowe-cli";
         const postInstallErrText = "Pretend that the plugin's postInstall function threw an error";
+        const postInstallErrDetails = "plugin postInstall error additional details";
         let callPluginPostInstall : any;
         let fakePluginConfig: IImperativeConfig;
         let installModule;
@@ -548,7 +549,8 @@ describe("PMF: Install Interface", () => {
                 LifeCycleClass = class extends AbstractPluginLifeCycle {
                     postInstall() {
                         throw new ImperativeError({
-                            msg: postInstallErrText
+                            msg: postInstallErrText,
+                            additionalDetails: postInstallErrDetails
                         });
                     }
                     preUninstall() {
@@ -643,9 +645,11 @@ describe("PMF: Install Interface", () => {
             expect(postInstallWorked).toBe(false);
             expect(thrownErr).toBeDefined();
             expect(thrownErr.message).toContain(
-                "Unable to perform the post-install action for plugin 'FakePluginPackageName'."
+                "The plug-in 'FakePluginPackageName' was installed, but the plug-in's post-install action failed"
             );
-            expect(thrownErr.message).toContain(postInstallErrText);
+            expect(thrownErr.causeErrors).toContain(postInstallErrText);
+            expect(thrownErr.additionalDetails).toContain(postInstallErrDetails);
+
         });
     }); // end callPluginPostInstall
 }); // PMF: Install Interface
