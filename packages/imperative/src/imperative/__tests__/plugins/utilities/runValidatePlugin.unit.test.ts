@@ -12,6 +12,8 @@
 import { runValidatePlugin } from "../../../src/plugins/utilities/runValidatePlugin";
 import { sync } from "cross-spawn";
 import { Imperative } from "../../..";
+import { ImperativeError } from "../../../../error";
+
 import Mock = jest.Mock;
 
 jest.mock("cross-spawn");
@@ -47,5 +49,34 @@ describe("runValidatePlugin", () => {
         const resultMsg = runValidatePlugin(pluginName);
         expect(resultMsg).toContain(cmdOutputJson.stdout);
         expect(resultMsg).toContain(cmdOutputJson.stderr);
+    });
+
+    it("should catch an error from JSON.parse and throw an ImperativeError", () => {
+        // mock the output of executing the validatePlugin command to produce bad JSON
+        const unparsableJson = "{bogusJson: [}";
+        mocks.spawnSync.mockReturnValue({
+            status: 0,
+            stdout: unparsableJson
+        } as any);
+
+        (Imperative as any).mRootCommandName = "dummy";
+
+        let caughtError;
+        try {
+            runValidatePlugin(pluginName);
+        } catch (e) {
+            caughtError = e;
+        }
+
+        expect(caughtError).toBeDefined();
+        expect(caughtError instanceof ImperativeError).toBe(true);
+        expect((caughtError as ImperativeError).message).toContain(
+            "Unable to parse the JSON output of the 'plugins validate' command"
+        );
+        expect((caughtError as ImperativeError).additionalDetails).toContain(
+            "JSON.parse error = Expected property name or '}' in JSON at position 1"
+        );
+        expect((caughtError as ImperativeError).additionalDetails).toContain("Text that failed to parse:");
+        expect((caughtError as ImperativeError).additionalDetails).toContain("{bogusJson: [}");
     });
 });

@@ -194,12 +194,10 @@ export class ImperativeError extends Error {
             }
             outputData.stringVal += propertyVal;
             return true;
-        } else {
+        } else if (Object.keys(outputData.rawVal).length === 0) {
             // only record one raw property
-            if (Object.keys(outputData.rawVal).length === 0) {
-                outputData.rawVal = JSON.stringify(propertyVal);
-                return true;
-            }
+            outputData.rawVal = JSON.stringify(propertyVal);
+            return true;
         }
         return false;
     }
