@@ -144,7 +144,7 @@ describe("Plugin Management Facility uninstall handler", () => {
 
         expect(expectedError).toBeDefined();
         expect((expectedError as ImperativeError).message).toContain("Plug-in uninstall operation failed");
-        expect((expectedError as ImperativeError).causeErrors).toContain("Plugin name");
+        expect((expectedError as ImperativeError).causeErrors).toContain("Plug-in name");
         expect((expectedError as ImperativeError).causeErrors).toContain("pluginThatIsNotInstalled");
         expect((expectedError as ImperativeError).causeErrors).toContain("is not installed");
     });
@@ -183,9 +183,9 @@ describe("Plugin Management Facility uninstall handler", () => {
         const uninstallHndlr = new UninstallHandler();
         jest.spyOn(uninstallHndlr as any, "callPluginPreUninstall").mockImplementation(() => {
             throw new ImperativeError({
-                msg: "The plugin's preUninstall error message",
-                causeErrors: "The plugin's preUninstall causeErrors",
-                additionalDetails: "The plugin's preUninstall additionalDetails"
+                msg: "The plug-in's preUninstall error message",
+                causeErrors: "The plug-in's preUninstall causeErrors",
+                additionalDetails: "The plug-in's preUninstall additionalDetails"
             });
         });
 
@@ -197,11 +197,11 @@ describe("Plugin Management Facility uninstall handler", () => {
         }
 
         expect(expectedError).not.toBeDefined();
-        expect(logMsg).toContain("The plugin's preUninstall error message");
-        expect(logMsg).toContain("The plugin's preUninstall causeErrors");
-        expect(logMsg).toContain("The plugin's preUninstall additionalDetails");
+        expect(logMsg).toContain("The plug-in's preUninstall error message");
+        expect(logMsg).toContain("The plug-in's preUninstall causeErrors");
+        expect(logMsg).toContain("The plug-in's preUninstall additionalDetails");
         expect(logMsg).toContain(
-            "The uninstall operation of a plug-in will continue even with a 'preUninstall' failure"
+            "The uninstall operation of a plug-in continues even with a 'preUninstall' failure"
         );
         expect(logMsg).toContain("Removal of the npm package(s) was successful");
     });

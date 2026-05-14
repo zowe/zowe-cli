@@ -92,7 +92,7 @@ export default class InstallHandler implements ICommandHandler {
                     "Plug-ins within the Imperative CLI Framework can legitimately gain\n" +
                     `control of the ${ImperativeConfig.instance.rootCommandName} CLI application ` +
                     "during the execution of every command.\n" +
-                    "Install 3rd party plug-ins at your own risk."
+                    "Install third party plug-ins at your own risk."
                 );
 
                 // This section determines which npm logic needs to take place

@@ -94,7 +94,7 @@ export function uninstall(packageName: string): void {
         }
     } else {
         throw new ImperativeError({
-            msg: `${chalk.yellow.bold("Plugin name")} '${chalk.red.bold(packageName)}' is not installed.`
+            msg: `${chalk.yellow.bold("Plug-in name")} '${chalk.red.bold(packageName)}' is not installed.`
         });
     }
 

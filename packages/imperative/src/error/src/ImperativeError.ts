@@ -9,7 +9,7 @@
 *
 */
 
-const os = require("os");
+const os = require("node:os");
 import { IImperativeError } from "./doc/IImperativeError";
 import { IImperativeErrorParms } from "./doc/IImperativeErrorParms";
 

@@ -117,7 +117,7 @@ describe("Installing Plugins", () => {
     const defaultCredMgrDisplayNm = "TestCLI";
     const knownCredMgr = CredentialManagerOverride.getKnownCredMgrs()[1];
     const knownCredMgrDisplayNm = knownCredMgr.credMgrDisplayName as string;
-    const knownCredMgrPluginNm = knownCredMgr.credMgrPluginName as string;
+    const knownCredMgrPluginNm = knownCredMgr.credMgrPluginName;
 
     /**
      * Change the pluginLifeCycle property in a plugin's Imperative configuration

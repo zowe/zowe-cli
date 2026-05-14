@@ -60,9 +60,9 @@ export default class UninstallHandler implements ICommandHandler {
                 for (const packageName of params.arguments.plugin) {
                     // confirm that plugin is installed before calling its preUninstall function
                     const installedPlugins: IPluginJson = readFileSync(PMFConstants.instance.PLUGIN_JSON);
-                    if (!Object.prototype.hasOwnProperty.call(installedPlugins, packageName)) {
+                    if (!Object.hasOwn(installedPlugins, packageName)) {
                         throw new ImperativeError({
-                            msg: `${chalk.yellow.bold("Plugin name")} '${chalk.red.bold(packageName)}' is not installed.`
+                            msg: `${chalk.yellow.bold("Plug-in name")} '${chalk.red.bold(packageName)}' is not installed.`
                         });
                     }
 
@@ -79,7 +79,7 @@ export default class UninstallHandler implements ICommandHandler {
                             params.response.console.log(err.additionalDetails);
                         }
                         params.response.console.log(
-                            "\nThe uninstall operation of a plug-in will continue even with a 'preUninstall' failure.\n"
+                            "\nThe uninstall operation of a plug-in continues even with a 'preUninstall' failure.\n"
                         );
                     }
 

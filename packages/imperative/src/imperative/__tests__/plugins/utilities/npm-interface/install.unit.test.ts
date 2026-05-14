@@ -508,8 +508,8 @@ describe("PMF: Install Interface", () => {
 
     describe("callPluginPostInstall", () => {
         const knownCredMgr = "@zowe/secrets-for-kubernetes-for-zowe-cli";
-        const postInstallErrText = "Pretend that the plugin's postInstall function threw an error";
-        const postInstallErrDetails = "plugin postInstall error additional details";
+        const postInstallErrText = "Pretend that the plug-in's postInstall function threw an error";
+        const postInstallErrDetails = "plug-in postInstall error additional details";
         let callPluginPostInstall : any;
         let fakePluginConfig: IImperativeConfig;
         let installModule;

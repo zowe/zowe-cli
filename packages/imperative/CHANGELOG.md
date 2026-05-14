@@ -4,9 +4,9 @@ All notable changes to the Imperative package will be documented in this file.
 
 ## Recent Changes
 
-- BugFix: Updated the NpmFunctions.installPackages function to throw an error when a launched NPM program fails. [#2722](https://github.com/zowe/zowe-cli/pull/2722)
-- BugFix: Updated the ExecUtils.handleSpawnResult function to display more detailed failure information from 3rd party programs. [#2722](https://github.com/zowe/zowe-cli/pull/2722)
-- BugFix: Added the ImperativeError.newImpErrorFromExistingError function and used it to display failures from 3rd party programs with more diagnostic information while avoiding repeated text. [#2722](https://github.com/zowe/zowe-cli/pull/2722)
+- BugFix: Updated the `NpmFunctions.installPackages` function to throw an error when a launched NPM program fails. [#2722](https://github.com/zowe/zowe-cli/pull/2722)
+- BugFix: Updated the `ExecUtils.handleSpawnResult` function to display more detailed failure information from third party programs. [#2722](https://github.com/zowe/zowe-cli/pull/2722)
+- BugFix: Added the `ImperativeError.newImpErrorFromExistingError` function and used it to display failures from third party programs with more diagnostic information while avoiding repeated text. [#2722](https://github.com/zowe/zowe-cli/pull/2722)
 
 ## `8.32.0`
 
