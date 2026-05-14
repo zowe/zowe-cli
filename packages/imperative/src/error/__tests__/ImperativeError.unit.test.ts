@@ -32,7 +32,7 @@ describe("ImperativeError", () => {
         it("should reject a null existing error", () => {
             const newImpErr: ImperativeError = ImperativeError.newImpErrorFromExistingError(
                 null, "first parm cannot be null"
-            )
+            );
             expect(newImpErr.message).toBe(
                 "The supplied parameter 'existingErr' was incorrectly null or undefined"
             );
@@ -43,7 +43,7 @@ describe("ImperativeError", () => {
                 causeErrors: "Fake cause error",
                 additionalDetails: "Fake additional details"
             };
-            const newImpErr: ImperativeError = ImperativeError.newImpErrorFromExistingError(existingErr)
+            const newImpErr: ImperativeError = ImperativeError.newImpErrorFromExistingError(existingErr);
             expect(newImpErr.message).toBe(
                 "No problem text was supplied."
             );
@@ -59,7 +59,8 @@ describe("ImperativeError", () => {
                 additionalDetails: "Fake additional details"
             };
             const newImpErr: ImperativeError = ImperativeError.newImpErrorFromExistingError(
-                existingErr, "Fake main message")
+                existingErr, "Fake main message"
+            );
             expect(newImpErr.causeErrors).toBe(mMessageInCause);
         });
 
@@ -73,7 +74,8 @@ describe("ImperativeError", () => {
                 additionalDetails: "Fake additional details"
             };
             const newImpErr: ImperativeError = ImperativeError.newImpErrorFromExistingError(
-                existingErr, "Fake main message")
+                existingErr, "Fake main message"
+            );
             expect(newImpErr.causeErrors).toBe(messageInCause);
         });
     });
@@ -84,7 +86,7 @@ describe("ImperativeError", () => {
             const errOutputData = {
                 stringVal: "",
                 rawVal: {}
-            }
+            };
             const result = ImperativeError["recordPropForOutput"](
                 RAW_ERR_MSG + "Already stringified property", errOutputData
             );
@@ -95,7 +97,7 @@ describe("ImperativeError", () => {
             const errOutputData = {
                 stringVal: "Some existing text",
                 rawVal: {}
-            }
+            };
             const result = ImperativeError["recordPropForOutput"](
                 "Some new text", errOutputData
             );
@@ -111,7 +113,7 @@ describe("ImperativeError", () => {
                 rawVal: {
                     objProp: "rawVal already contains an object"
                 }
-            }
+            };
             const result = ImperativeError["recordPropForOutput"](
                 {newVal: "some new object"}, errOutputData
             );
