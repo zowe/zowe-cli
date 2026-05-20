@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `8.32.2`
 
 - BugFix: Updated the error handling for plug-in installation to report the first failure that occurs. [#2722](https://github.com/zowe/zowe-cli/pull/2722)
 - BugFix: Updated the display of failures from third party programs to include more diagnostic information while avoiding repeated text. [#2722](https://github.com/zowe/zowe-cli/pull/2722)
