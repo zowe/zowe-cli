@@ -371,9 +371,7 @@ export class IO {
                 fs.chmodSync(fileName, ownerPrivileges);
             }
         } catch(errObj) {
-            throw new ImperativeError({
-                msg: `Failed to restrict access to others on file = ${fileName}\nError Details: ${errObj.message}`
-            });
+            throw ImperativeError.newImpErrorFromExistingError(errObj, `Failed to restrict access to others on file = ${fileName}`);
         }
     }
 

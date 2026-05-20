@@ -436,7 +436,8 @@ describe("IO tests", () => {
             expect(caughtError.message).toContain(
                 "Failed to restrict access to others on file = /this/file/does/not/exist.txt"
             );
-            expect(caughtError.message).toContain("Attempted to restrict access on a non-existent file.");
+            expect(caughtError.causeErrors).toContain("Attempted to restrict access on a non-existent file.");
+            expect(caughtError.additionalDetails).toContain('Raw error data from operation:\n"{}"');
         });
 
         if (sysInfo.platform === "win32") {
@@ -461,8 +462,9 @@ describe("IO tests", () => {
                 }
                 expect(spawnSpy).toHaveBeenCalledTimes(1);
                 expect(caughtError.message).toContain("Failed to restrict access to others on file");
-                expect(caughtError.message).toContain("Who knows what the icacls command might say when it does not like something");
-                expect(caughtError.message).toContain("Successfully processed 0 files; Failed processing 1 files");
+                expect(caughtError.causeErrors).toContain("Who knows what the icacls command might say when it does not like something");
+                expect(caughtError.causeErrors).toContain("Successfully processed 0 files; Failed processing 1 files");
+                expect(caughtError.additionalDetails).toContain('Raw error data from operation:\n"{}"');
             });
         } // end win32
 
@@ -487,7 +489,8 @@ describe("IO tests", () => {
                 }
                 expect(spawnSpy).toHaveBeenCalledTimes(1);
                 expect(caughtError.message).toContain("Failed to restrict access to others on file");
-                expect(caughtError.message).toContain("Pretend that spawn.sync failed to launch the icacls program");
+                expect(caughtError.causeErrors).toContain("Pretend that spawn.sync failed to launch the icacls program");
+                expect(caughtError.additionalDetails).toContain('Raw error data from operation:\n"{}"');
             });
         } // end win32
 

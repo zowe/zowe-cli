@@ -228,10 +228,7 @@ export async function install(packageLocation: string, registryInfo: INpmRegistr
         iConsole.info("Plugin '" + packageName + "' successfully installed.");
         return packageName;
     } catch (e) {
-        throw new ImperativeError({
-            msg: e.message,
-            causeErrors: e
-        });
+        throw ImperativeError.newImpErrorFromExistingError(e);
     }
 }
 
@@ -271,10 +268,10 @@ async function callPluginPostInstall(
         const lifeCycleInstance = new lifeCycleClass();
         await lifeCycleInstance.postInstall();
     } catch (err) {
-        throw new ImperativeError({
-            msg: `Unable to perform the post-install action for plugin '${pluginPackageNm}'.` +
-            `\nReason: ${err.message}`
-        });
+        throw ImperativeError.newImpErrorFromExistingError(err,
+            `The plug-in '${pluginPackageNm}' was installed, but ` +
+            `the plug-in's post-install action failed.`
+        );
     }
 }
 
