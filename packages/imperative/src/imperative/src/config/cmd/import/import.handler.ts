@@ -16,7 +16,8 @@ import * as JSONC from "comment-json";
 import { ICommandHandler, IHandlerParameters } from "../../../../../cmd";
 import { ImperativeError } from "../../../../../error";
 import { ImperativeConfig, TextUtils } from "../../../../../utilities";
-import { IConfig } from "../../../../../config";
+import * as lodash from "lodash";
+import { ConfigConstants, IConfig, IConfigLayer } from "../../../../../config";
 import { AuthOrder, RestClient, Session, SessConstants } from "../../../../../rest";
 
 /**
@@ -41,9 +42,25 @@ export default class ImportHandler implements ICommandHandler {
         config.api.layers.activate(params.arguments.userConfig, params.arguments.globalConfig, configDir);
         const layer = config.api.layers.get();
 
-        if (layer.exists && !params.arguments.overwrite) {
-            params.response.console.log(`Skipping import because ${layer.path} already exists.\n` +
-                `Rerun the command with the --overwrite flag to import anyway.`);
+        const isDryRun = params.arguments.dryRun as boolean;
+        const isMerge = params.arguments.merge as boolean;
+        const isOverwrite = params.arguments.overwrite as boolean;
+
+        if (isMerge && isOverwrite) {
+            throw new ImperativeError({
+                msg: "The --merge and --overwrite options are mutually exclusive. " +
+                    "Use --merge to add missing properties to an existing config, " +
+                    "or --overwrite to replace it entirely."
+            });
+        }
+
+        // Guard: skip when the file already exists and neither --overwrite, --merge, nor --dry-run is given
+        if (layer.exists && !isOverwrite && !isMerge && !isDryRun) {
+            params.response.console.log(
+                `Skipping import because ${layer.path} already exists.\n` +
+                `Rerun the command with --overwrite to replace it, --merge to add missing ` +
+                `properties, or --dry-run to preview what would happen.`
+            );
             return;
         }
 
@@ -53,10 +70,66 @@ export default class ImportHandler implements ICommandHandler {
         const configJson: IConfig = isConfigLocal ?
             JSONC.parse(fs.readFileSync(configFilePath, "utf-8")) as any :
             await this.fetchConfig(new URL(params.arguments.location));
-        config.api.layers.set(configJson);
 
+        // Apply the incoming config to the active layer
+        let previewLayer: IConfigLayer | undefined;
+        if (isMerge && layer.exists) {
+            // Safe merge: existing target values always win over incoming imported values.
+            // We operate on a clone for dry-run so nothing is mutated on disk.
+            const target: IConfigLayer = isDryRun
+                ? JSONC.parse(JSONC.stringify(layer, null, ConfigConstants.INDENT)) as unknown as IConfigLayer
+                : config.api.layers.get();
+
+            // profiles: deep-merge with existing winning — lodash.mergeWith(existing, incoming)
+            target.properties.profiles = lodash.mergeWith(
+                {},
+                configJson.profiles,       // imported (lower priority, applied first)
+                target.properties.profiles, // existing (higher priority, applied second — wins)
+                (existingVal: any, _importedVal: any) => {
+                    // For arrays, keep the existing array as-is
+                    if (lodash.isArray(existingVal)) { return existingVal; }
+                }
+            );
+
+            // defaults: existing key/value pairs win; only add keys missing from target
+            target.properties.defaults = {
+                ...configJson.defaults,        // imported base
+                ...target.properties.defaults  // existing overrides (wins on conflict)
+            };
+
+            // plugins: add any new plugins from the import not already present
+            for (const plugin of configJson.plugins ?? []) {
+                if (target.properties.plugins == null) {
+                    target.properties.plugins = [plugin];
+                } else if (!target.properties.plugins.includes(plugin)) {
+                    target.properties.plugins.push(plugin);
+                }
+            }
+
+            // autoStore: only set if target does not already define it
+            if (target.properties.autoStore == null && configJson.autoStore != null) {
+                target.properties.autoStore = configJson.autoStore;
+            }
+
+            if (isDryRun) {
+                previewLayer = target;
+            } else {
+                config.api.layers.set(target.properties);
+            }
+        } else if (isDryRun) {
+            // Overwrite dry-run: build a clone of the layer with the incoming config applied
+            previewLayer = JSONC.parse(JSONC.stringify(layer, null, ConfigConstants.INDENT)) as unknown as IConfigLayer;
+            previewLayer.properties = configJson;
+            previewLayer.properties.defaults = previewLayer.properties.defaults ?? {};
+            previewLayer.properties.profiles = previewLayer.properties.profiles ?? {};
+        } else {
+            // Normal import (first-time or --overwrite)
+            config.api.layers.set(configJson);
+        }
+
+        // Import schema alongside the config (skip during dry-run — no side effects)
         let schemaImported = false;
-        if (configJson.$schema?.startsWith("./")) {  // Only import schema if relative path
+        if (!isDryRun && configJson.$schema?.startsWith("./")) {  // Only import schema if relative path
             const schemaUri = new URL(configJson.$schema,
                 isConfigLocal ? pathToFileURL(configFilePath) : params.arguments.location);
             const schemaFilePath = path.resolve(path.dirname(layer.path), configJson.$schema);
@@ -69,10 +142,22 @@ export default class ImportHandler implements ICommandHandler {
             }
         }
 
-        // Write the active created/updated config layer
-        config.api.layers.write();
-
-        params.response.console.log(`Imported config${schemaImported ? " and schema" : ""} to ${layer.path}`);
+        if (isDryRun) {
+            // Print a preview of the would-be result without touching disk
+            params.response.console.log(
+                TextUtils.chalk.yellow("[Dry Run]") +
+                ` The following config would be written to ${layer.path}:\n`
+            );
+            params.response.console.log(
+                JSONC.stringify((previewLayer as IConfigLayer).properties, null, ConfigConstants.INDENT)
+            );
+            params.response.console.log("\nNo changes were written to disk. Remove --dry-run to apply.");
+        } else {
+            // Write the active created/updated config layer
+            config.api.layers.write();
+            const action = isMerge && layer.exists ? "Merged config" : "Imported config";
+            params.response.console.log(`${action}${schemaImported ? " and schema" : ""} to ${layer.path}`);
+        }
     }
 
     /**

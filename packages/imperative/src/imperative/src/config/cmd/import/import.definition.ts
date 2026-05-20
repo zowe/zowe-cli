@@ -56,6 +56,24 @@ export const importDefinition: ICommandDefinition = {
             defaultValue: false
         },
         {
+            name: "merge",
+            description: "Merge properties from the imported config into the existing config file " +
+                "instead of overwriting it. Existing values take priority over imported values. " +
+                "If no config file exists yet, the imported config is written as-is.",
+            aliases: ["mg"],
+            type: "boolean",
+            defaultValue: false
+        },
+        {
+            name: "dry-run",
+            description: "Preview the config that would result from the import without writing " +
+                "any changes to disk. Combine with --merge to preview a merge, or use alone to " +
+                "preview a full overwrite.",
+            aliases: ["dr"],
+            type: "boolean",
+            defaultValue: false
+        },
+        {
             name: "user",
             aliases: ["u"],
             description: "User name if authentication is required to download the config from a URL.",
@@ -88,6 +106,18 @@ export const importDefinition: ICommandDefinition = {
         {
             description: "Import global config from Internet URL",
             options: "https://example.com/zowe.config.json --global-config"
+        },
+        {
+            description: "Merge a downloaded team config into the existing project config, adding only missing properties",
+            options: "https://example.com/zowe.config.json --merge"
+        },
+        {
+            description: "Preview what the project config would look like after merging a remote config, without writing any changes",
+            options: "https://example.com/zowe.config.json --merge --dry-run"
+        },
+        {
+            description: "Preview what a full overwrite would produce without writing any changes",
+            options: "~/Downloads/zowe.config.json --overwrite --dry-run"
         }
     ]
 };
