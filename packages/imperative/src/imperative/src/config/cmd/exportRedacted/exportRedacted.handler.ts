@@ -319,17 +319,19 @@ export default class ExportRedactedHandler implements ICommandHandler {
         const lowerName = propertyName.toLowerCase();
         const valueType = typeof value;
 
-        if (lowerName.includes("host")) return "host";
-        if (lowerName.includes("port")) return "port";
-        if (lowerName.includes("path")) return "path";
-        if (lowerName.includes("user")) return "user";
-        if (lowerName.includes("base")) return "base";
-        if (lowerName.includes("profile")) return "profile";
+        const namePrefixes = ["host", "port", "path", "user", "base", "profile"];
+        const matchedPrefix = namePrefixes.find(prefix => lowerName.includes(prefix));
+        if (matchedPrefix) {
+            return matchedPrefix;
+        }
 
-        if (valueType === "boolean") return "bool";
-        if (valueType === "number") return "num";
-        if (valueType === "string") return "str";
-        return "value";
+        const typePrefixes: Record<string, string> = {
+            boolean: "bool",
+            number: "num",
+            string: "str"
+        };
+
+        return typePrefixes[valueType] || "value";
     }
 
     private stripJsonComments(content: string): string {
