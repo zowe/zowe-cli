@@ -37,8 +37,7 @@ export default class ExportRedactedHandler implements ICommandHandler {
 
             if (isDryRun) {
                 const teamConfig = this.profileInfo.getTeamConfig();
-                const MAX_LAYERS = 4;
-                const layers = teamConfig.layers.slice(0, MAX_LAYERS);
+                const layers = teamConfig.layers;
                 const dryRunOutputs: any = {};
                 let hasOutput = false;
 
@@ -82,8 +81,7 @@ export default class ExportRedactedHandler implements ICommandHandler {
         }
 
         const teamConfig = this.profileInfo.getTeamConfig();
-        const MAX_LAYERS = 4;
-        const layers = teamConfig.layers.slice(0, MAX_LAYERS);
+        const layers = teamConfig.layers;
         const exportedFiles: Array<{ source: string, target: string }> = [];
 
         for (const layer of layers) {
