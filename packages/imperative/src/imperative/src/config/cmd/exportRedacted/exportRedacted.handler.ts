@@ -36,15 +36,35 @@ export default class ExportRedactedHandler implements ICommandHandler {
             const isDryRun = params.arguments.dryRun;
 
             if (isDryRun) {
-                const redactedConfig = await this.createRedactedConfig(null, params.arguments);
-                const formattedOutput = JSON.stringify(redactedConfig, null, 2);
-                params.response.console.log(formattedOutput);
-                params.response.data.setObj(redactedConfig);
+                const teamConfig = this.profileInfo.getTeamConfig();
+                const MAX_LAYERS = 4;
+                const layers = teamConfig.layers.slice(0, MAX_LAYERS);
+                const dryRunOutputs: any = {};
+                let hasOutput = false;
+
+                for (const layer of layers) {
+                    if (layer.exists) {
+                        const redactedConfig = await this.createRedactedConfig(layer, params.arguments);
+                        const sourceName = path.join(path.basename(path.dirname(layer.path)), path.basename(layer.path));
+                        const formattedOutput = JSON.stringify(redactedConfig, null, 2);
+                        
+                        if (hasOutput) {
+                            params.response.console.log("\n" + "=".repeat(80) + "\n");
+                        }
+                        params.response.console.log(`--- ${sourceName} ---`);
+                        params.response.console.log(formattedOutput);
+                        dryRunOutputs[sourceName] = redactedConfig;
+                        hasOutput = true;
+                    }
+                }
+                params.response.data.setObj(dryRunOutputs);
             } else {
                 const exportedFiles = await this.exportToDirectory(exportDir, params.arguments);
+                const maxSourceLength = Math.max(...exportedFiles.map(file => file.source.length));
                 for (const file of exportedFiles) {
                     const relativeTarget = path.relative(process.cwd(), file.target);
-                    params.response.console.log(`${file.source} exported to ${relativeTarget}`);
+                    const paddedSource = file.source.padEnd(maxSourceLength);
+                    params.response.console.log(`${paddedSource} exported to ${relativeTarget}`);
                 }
             }
 

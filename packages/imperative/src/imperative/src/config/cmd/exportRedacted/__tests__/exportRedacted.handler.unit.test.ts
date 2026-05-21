@@ -73,7 +73,14 @@ describe("ExportRedactedHandler", () => {
             layerActive: jest.fn().mockReturnValue({
                 path: "/mock/config.json"
             }),
-            layers: []
+            layers: [
+                {
+                    exists: true,
+                    global: false,
+                    user: false,
+                    path: "/mock/config.json"
+                }
+            ]
         } as any);
 
         // Mock fs.readFileSync
@@ -112,7 +119,7 @@ describe("ExportRedactedHandler", () => {
     it("should redact profile names consistently", async () => {
         await handler.process(mockParams);
 
-        const logCall = (mockParams.response.console.log as jest.Mock).mock.calls[0][0];
+        const logCall = (mockParams.response.console.log as jest.Mock).mock.calls[1][0];
         const result = JSON.parse(logCall);
 
         // Profile names should be redacted
@@ -124,7 +131,7 @@ describe("ExportRedactedHandler", () => {
     it("should preserve secure field names when not hidden", async () => {
         await handler.process(mockParams);
 
-        const logCall = (mockParams.response.console.log as jest.Mock).mock.calls[0][0];
+        const logCall = (mockParams.response.console.log as jest.Mock).mock.calls[1][0];
         const result = JSON.parse(logCall);
 
         const profileKey = Object.keys(result.profiles)[0];
@@ -134,7 +141,7 @@ describe("ExportRedactedHandler", () => {
     it("should redact string values but preserve booleans", async () => {
         await handler.process(mockParams);
 
-        const logCall = (mockParams.response.console.log as jest.Mock).mock.calls[0][0];
+        const logCall = (mockParams.response.console.log as jest.Mock).mock.calls[1][0];
         const result = JSON.parse(logCall);
 
         const profileKey = Object.keys(result.profiles)[0];
@@ -155,7 +162,7 @@ describe("ExportRedactedHandler", () => {
     it("should redact schema path", async () => {
         await handler.process(mockParams);
 
-        const logCall = (mockParams.response.console.log as jest.Mock).mock.calls[0][0];
+        const logCall = (mockParams.response.console.log as jest.Mock).mock.calls[1][0];
         const result = JSON.parse(logCall);
 
         expect(result.$schema).toBe("<SCHEMA_PATH_REDACTED>");
@@ -166,7 +173,7 @@ describe("ExportRedactedHandler", () => {
         mockParams.arguments.dryRun = false;
         mockParams.arguments.exportDir = path.join(process.cwd(), "mock");
 
-        // Mock layers in ProfileInfo
+        // Mock layers in ProfileInfo with different source path lengths
         const layers = [
             {
                 exists: true,
@@ -178,7 +185,7 @@ describe("ExportRedactedHandler", () => {
                 exists: true,
                 global: true,
                 user: false,
-                path: path.join(process.cwd(), "mock", "zowe.config.json")
+                path: path.join(process.cwd(), "longer-mock-path", "zowe.config.json")
             }
         ];
 
@@ -196,11 +203,15 @@ describe("ExportRedactedHandler", () => {
         await handler.process(mockParams);
 
         expect(writeSpy).toHaveBeenCalledTimes(2);
+        
+        // Sources: "mock/zowe.config.json" (21 chars) and "longer-mock-path/zowe.config.json" (32 chars)
+        // Source 1 should be padded to 33 chars: "mock/zowe.config.json            "
+        // Source 2 should be padded to 33 chars: "longer-mock-path/zowe.config.json"
         expect(mockParams.response.console.log).toHaveBeenCalledWith(
-            `${path.join("mock", "zowe.config.json")} exported to ${path.join("mock", "project.zowe.config.json")}`
+            `${path.join("mock", "zowe.config.json").padEnd(33)} exported to ${path.join("mock", "project.zowe.config.json")}`
         );
         expect(mockParams.response.console.log).toHaveBeenCalledWith(
-            `${path.join("mock", "zowe.config.json")} exported to ${path.join("mock", "global.zowe.config.json")}`
+            `${path.join("longer-mock-path", "zowe.config.json").padEnd(33)} exported to ${path.join("mock", "global.zowe.config.json")}`
         );
     });
 });
