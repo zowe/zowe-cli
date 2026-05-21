@@ -135,7 +135,8 @@ export default class ExportRedactedHandler implements ICommandHandler {
 
         const redacted: any = {};
 
-        for (const [key, value] of Object.entries(originalConfig)) {
+        for (const [rawKey, value] of Object.entries(originalConfig)) {
+            const key = rawKey.toLowerCase();
             if (key === "profiles") {
                 redacted.profiles = {};
 
@@ -177,13 +178,27 @@ export default class ExportRedactedHandler implements ICommandHandler {
                     redacted.profiles[redactedProfileName] = redactedProfile;
                 }
             } else if (key === "defaults") {
-                if (args.redactProfileNames) {
-                    redacted.defaults = this.redactObject(value, args);
+                if (args.redactProfileNames && value && typeof value === "object" && !Array.isArray(value)) {
+                    const redactedDefaults: any = {};
+                    for (const [defaultKey, defaultValue] of Object.entries(value as any)) {
+                        if (typeof defaultValue === "string" && defaultValue !== "") {
+                            if (defaultValue.includes(".")) {
+                                redactedDefaults[defaultKey] = defaultValue
+                                    .split(".")
+                                    .map(part => this.getOrCreateKey(part, "profile"))
+                                    .join(".");
+                            } else {
+                                redactedDefaults[defaultKey] = this.getOrCreateKey(defaultValue, "profile");
+                            }
+                        } else {
+                            redactedDefaults[defaultKey] = defaultValue;
+                        }
+                    }
+                    redacted.defaults = redactedDefaults;
                 } else {
                     redacted.defaults = value;
                 }
-            } else if (key !== "profiles" && key !== "defaults") {
-                // Process all other properties in their original position
+            } else {
                 if (key === "$schema") {
                     redacted[key] = "<SCHEMA_PATH_REDACTED>";
                 } else {
@@ -232,7 +247,6 @@ export default class ExportRedactedHandler implements ICommandHandler {
     private redactValue(propertyName: string, value: any, schema: any, args: any): any {
         const valueType = typeof value;
 
-        // Apply type-based redaction rules
         switch (valueType) {
             case "string":
                 if (args.redactStrings && value !== "") {
@@ -242,13 +256,13 @@ export default class ExportRedactedHandler implements ICommandHandler {
 
             case "number":
                 if (args.redactNumbers) {
-                    return this.getOrCreateKey(value.toString(), propertyName);
+                    return this.getOrCreateKey(value, propertyName);
                 }
                 return value;
 
             case "boolean":
                 if (args.redactBooleans) {
-                    return this.getOrCreateKey(value.toString(), propertyName);
+                    return this.getOrCreateKey(value, propertyName);
                 }
                 return value;
 
@@ -284,7 +298,7 @@ export default class ExportRedactedHandler implements ICommandHandler {
         return obj;
     }
 
-    private getOrCreateKey(value: string, propertyName: string): string {
+    private getOrCreateKey(value: any, propertyName: string): string {
         const valueStr = String(value);
 
         if (this.valueToKeyMap.has(valueStr)) {
@@ -307,17 +321,15 @@ export default class ExportRedactedHandler implements ICommandHandler {
         const lowerName = propertyName.toLowerCase();
         const valueType = typeof value;
 
-        if (valueType === "boolean") return "bool";
-        if (valueType === "number") return "num";
-
         if (lowerName.includes("host")) return "host";
-        if (lowerName.includes("url") || lowerName.includes("endpoint")) return "url";
         if (lowerName.includes("port")) return "port";
         if (lowerName.includes("path")) return "path";
-        if (lowerName.includes("user") || lowerName.includes("username")) return "user";
+        if (lowerName.includes("user")) return "user";
         if (lowerName.includes("base")) return "base";
         if (lowerName.includes("profile")) return "profile";
 
+        if (valueType === "boolean") return "bool";
+        if (valueType === "number") return "num";
         if (valueType === "string") return "str";
         return "value";
     }

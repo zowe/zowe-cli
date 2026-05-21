@@ -93,14 +93,24 @@ describe("ExportRedactedHandler", () => {
                         host: "example.com",
                         port: 443,
                         secure: true,
+                        connectionTimeout: 10000,
                         user: "$ZOWE_USER",
                         emptyStr: ""
+                    },
+                    profiles: {
+                        "nested-profile": {
+                            type: "zosmf",
+                            properties: {
+                                encoding: "IBM-1047"
+                            }
+                        }
                     },
                     secure: ["user", "password"]
                 }
             },
             defaults: {
-                base: "test-profile"
+                base: "test-profile",
+                zosmf: "test-profile.nested-profile"
             }
         }));
     });
@@ -122,10 +132,48 @@ describe("ExportRedactedHandler", () => {
         const logCall = (mockParams.response.console.log as jest.Mock).mock.calls[1][0];
         const result = JSON.parse(logCall);
 
+        const topProfileKey = Object.keys(result.profiles)[0];
+        const nestedProfileKey = Object.keys(result.profiles[topProfileKey].profiles)[0];
+
         // Profile names should be redacted
-        expect(Object.keys(result.profiles)[0]).toMatch(/<profile\d+>/);
+        expect(topProfileKey).toMatch(/<profile\d+>/);
+        expect(nestedProfileKey).toMatch(/<profile\d+>/);
+
         // Defaults should reference the same redacted profile name
-        expect(result.defaults.base).toMatch(/<profile\d+>/);
+        expect(result.defaults.base).toBe(topProfileKey);
+        // Nested defaults should be dot-separated and match top profile key + nested profile key
+        expect(result.defaults.zosmf).toBe(`${topProfileKey}.${nestedProfileKey}`);
+    });
+
+    it("should redact profile names in defaults section even if redactStrings is false", async () => {
+        mockParams.arguments.redactStrings = false;
+        mockParams.arguments.redactProfileNames = true;
+
+        await handler.process(mockParams);
+
+        const logCall = (mockParams.response.console.log as jest.Mock).mock.calls[1][0];
+        const result = JSON.parse(logCall);
+
+        const topProfileKey = Object.keys(result.profiles)[0];
+        const nestedProfileKey = Object.keys(result.profiles[topProfileKey].profiles)[0];
+
+        expect(topProfileKey).toMatch(/<profile\d+>/);
+        expect(result.defaults.base).toBe(topProfileKey);
+        expect(result.defaults.zosmf).toBe(`${topProfileKey}.${nestedProfileKey}`);
+    });
+
+    it("should not redact profile names in defaults section if redactProfileNames is false", async () => {
+        mockParams.arguments.redactStrings = false;
+        mockParams.arguments.redactProfileNames = false;
+
+        await handler.process(mockParams);
+
+        const logCall = (mockParams.response.console.log as jest.Mock).mock.calls[1][0];
+        const result = JSON.parse(logCall);
+
+        expect(Object.keys(result.profiles)[0]).toBe("test-profile");
+        expect(result.defaults.base).toBe("test-profile");
+        expect(result.defaults.zosmf).toBe("test-profile.nested-profile");
     });
 
     it("should preserve secure field names when not hidden", async () => {
@@ -153,10 +201,27 @@ describe("ExportRedactedHandler", () => {
         expect(properties.user).toMatch(/^\$<user\d+>$/);
         // Empty string should not be redacted
         expect(properties.emptyStr).toBe("");
-        // Number should be redacted
+        // Number should be redacted with specialized prefix "port"
         expect(properties.port).toMatch(/<port\d+>/);
+        // Number connectionTimeout should be redacted with prefix "num" (and NOT fall back to "str")
+        expect(properties.connectionTimeout).toMatch(/<num\d+>/);
         // Boolean should not be redacted
         expect(properties.secure).toBe(true);
+    });
+
+    it("should redact booleans with prefix bool if redactBooleans is true", async () => {
+        mockParams.arguments.redactBooleans = true;
+
+        await handler.process(mockParams);
+
+        const logCall = (mockParams.response.console.log as jest.Mock).mock.calls[1][0];
+        const result = JSON.parse(logCall);
+
+        const profileKey = Object.keys(result.profiles)[0];
+        const properties = result.profiles[profileKey].properties;
+
+        // Boolean secure should be redacted with prefix "bool"
+        expect(properties.secure).toMatch(/<bool\d+>/);
     });
 
     it("should redact schema path", async () => {
