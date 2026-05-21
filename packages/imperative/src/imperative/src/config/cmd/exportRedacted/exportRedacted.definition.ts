@@ -22,20 +22,6 @@ export const exportRedactedDefinition: ICommandDefinition = {
     handler: join(__dirname, "exportRedacted.handler"),
     options: [
         {
-            name: "include-profiles",
-            description: "Include all profile configurations in the export",
-            type: "boolean",
-            aliases: ["ip"],
-            defaultValue: true
-        },
-        {
-            name: "include-defaults",
-            description: "Include default profile settings in the export",
-            type: "boolean",
-            aliases: ["id"],
-            defaultValue: true
-        },
-        {
             name: "redact-strings",
             description: "Redact string values with consistent keys",
             type: "boolean",

@@ -10,9 +10,10 @@
 */
 
 import * as fs from "fs";
-import { ImperativeConfig } from "../../../../../../utilities/src/ImperativeConfig";
+import * as path from "path";
+import { ImperativeConfig } from "../../../../../../";
 import ExportRedactedHandler from "../exportRedacted.handler";
-import { ProfileInfo } from "../../../../../../config/src/ProfileInfo";
+import { ProfileInfo, ConfigUtils } from "../../../../../../config";
 
 describe("ExportRedactedHandler", () => {
     let handler: ExportRedactedHandler;
@@ -23,13 +24,12 @@ describe("ExportRedactedHandler", () => {
         handler = new ExportRedactedHandler();
         mockParams = {
             arguments: {
-                includeProfiles: true,
-                includeDefaults: true,
                 redactStrings: true,
                 redactNumbers: true,
                 redactBooleans: false,
                 hideSecureFields: false,
-                redactProfileNames: true
+                redactProfileNames: true,
+                dryRun: true
             },
             response: {
                 console: {
@@ -58,6 +58,15 @@ describe("ExportRedactedHandler", () => {
             }
         } as any);
 
+        // Mock ConfigUtils.initImpUtils
+        jest.spyOn(ConfigUtils, "initImpUtils").mockReturnValue({
+            log: jest.fn(),
+            info: jest.fn(),
+            warn: jest.fn(),
+            error: jest.fn(),
+            debug: jest.fn()
+        } as any);
+
         // Mock ProfileInfo constructor
         jest.spyOn(ProfileInfo.prototype, "readProfilesFromDisk").mockResolvedValue(undefined);
         jest.spyOn(ProfileInfo.prototype, "getTeamConfig").mockReturnValue({
@@ -76,7 +85,9 @@ describe("ExportRedactedHandler", () => {
                     properties: {
                         host: "example.com",
                         port: 443,
-                        secure: true
+                        secure: true,
+                        user: "$ZOWE_USER",
+                        emptyStr: ""
                     },
                     secure: ["user", "password"]
                 }
@@ -131,6 +142,10 @@ describe("ExportRedactedHandler", () => {
 
         // String should be redacted
         expect(properties.host).toMatch(/<host\d+>/);
+        // Environment variable should preserve $ prefix before angle brackets
+        expect(properties.user).toMatch(/^\$<user\d+>$/);
+        // Empty string should not be redacted
+        expect(properties.emptyStr).toBe("");
         // Number should be redacted
         expect(properties.port).toMatch(/<port\d+>/);
         // Boolean should not be redacted
@@ -144,5 +159,48 @@ describe("ExportRedactedHandler", () => {
         const result = JSON.parse(logCall);
 
         expect(result.$schema).toBe("<SCHEMA_PATH_REDACTED>");
+    });
+
+    it("should export config files to directory and log details", async () => {
+        // Change dryRun to false
+        mockParams.arguments.dryRun = false;
+        mockParams.arguments.exportDir = path.join(process.cwd(), "mock");
+
+        // Mock layers in ProfileInfo
+        const layers = [
+            {
+                exists: true,
+                global: false,
+                user: false,
+                path: path.join(process.cwd(), "mock", "zowe.config.json")
+            },
+            {
+                exists: true,
+                global: true,
+                user: false,
+                path: path.join(process.cwd(), "mock", "zowe.config.json")
+            }
+        ];
+
+        jest.spyOn(ProfileInfo.prototype, "getTeamConfig").mockReturnValue({
+            layerActive: jest.fn().mockReturnValue({
+                path: path.join(process.cwd(), "mock", "zowe.config.json")
+            }),
+            layers
+        } as any);
+
+        // Mock fs.existsSync & fs.writeFileSync
+        jest.spyOn(fs, "existsSync").mockReturnValue(true);
+        const writeSpy = jest.spyOn(fs, "writeFileSync").mockImplementation(() => {});
+
+        await handler.process(mockParams);
+
+        expect(writeSpy).toHaveBeenCalledTimes(2);
+        expect(mockParams.response.console.log).toHaveBeenCalledWith(
+            `${path.join("mock", "zowe.config.json")} exported to ${path.join("mock", "project.zowe.config.json")}`
+        );
+        expect(mockParams.response.console.log).toHaveBeenCalledWith(
+            `${path.join("mock", "zowe.config.json")} exported to ${path.join("mock", "global.zowe.config.json")}`
+        );
     });
 });

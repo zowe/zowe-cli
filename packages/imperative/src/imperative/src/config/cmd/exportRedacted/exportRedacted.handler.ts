@@ -36,15 +36,16 @@ export default class ExportRedactedHandler implements ICommandHandler {
             const isDryRun = params.arguments.dryRun;
 
             if (isDryRun) {
-                // Dry run - output to console
                 const redactedConfig = await this.createRedactedConfig(null, params.arguments);
                 const formattedOutput = JSON.stringify(redactedConfig, null, 2);
                 params.response.console.log(formattedOutput);
                 params.response.data.setObj(redactedConfig);
             } else {
-                // Export to directory
-                await this.exportToDirectory(exportDir, params.arguments);
-                params.response.console.log(`Configuration exported to: ${exportDir}`);
+                const exportedFiles = await this.exportToDirectory(exportDir, params.arguments);
+                for (const file of exportedFiles) {
+                    const relativeTarget = path.relative(process.cwd(), file.target);
+                    params.response.console.log(`${file.source} exported to ${relativeTarget}`);
+                }
             }
 
         } catch (error) {
@@ -55,40 +56,43 @@ export default class ExportRedactedHandler implements ICommandHandler {
         }
     }
 
-    private async exportToDirectory(exportDir: string, args: any): Promise<void> {
+    private async exportToDirectory(exportDir: string, args: any): Promise<Array<{ source: string, target: string }>> {
         if (!fs.existsSync(exportDir)) {
             fs.mkdirSync(exportDir, { recursive: true });
         }
 
         const teamConfig = this.profileInfo.getTeamConfig();
         const MAX_LAYERS = 4;
-        const layers = teamConfig.layers.slice(0, MAX_LAYERS); // Up to 4 layers: global, project, user, env
+        const layers = teamConfig.layers.slice(0, MAX_LAYERS);
+        const exportedFiles: Array<{ source: string, target: string }> = [];
 
         for (const layer of layers) {
             if (layer.exists) {
                 const redactedConfig = await this.createRedactedConfig(layer, args);
                 
-                // Generate proper Zowe config file names with location prefix
                 let filename: string;
                 if (layer.global && layer.user) {
-                    // Global user layer
                     filename = "global.zowe.config.user.json";
                 } else if (layer.global && !layer.user) {
-                    // Global system layer  
                     filename = "global.zowe.config.json";
                 } else if (!layer.global && layer.user) {
-                    // Project user layer
                     filename = "project.zowe.config.user.json";
                 } else {
-                    // Project layer (neither global nor user)
                     filename = "project.zowe.config.json";
                 }
                 
                 const filePath = path.join(exportDir, filename);
                 const formattedOutput = JSON.stringify(redactedConfig, null, 2);
                 await this.writeToFile(formattedOutput, filePath);
+
+                exportedFiles.push({
+                    source: path.join(path.basename(path.dirname(layer.path)), path.basename(layer.path)),
+                    target: filePath
+                });
             }
         }
+
+        return exportedFiles;
     }
 
     private async createRedactedConfig(layer: any, args: any): Promise<any> {
@@ -109,69 +113,53 @@ export default class ExportRedactedHandler implements ICommandHandler {
             });
         }
 
-        // Start with the original structure and redact values
-        // Process properties in the same order as the original config
         const redacted: any = {};
 
-        // Process all properties in their original order
         for (const [key, value] of Object.entries(originalConfig)) {
-            if (key === "profiles" && args.includeProfiles) {
-                // Process profiles - preserve complete original structure including nested profiles
+            if (key === "profiles") {
                 redacted.profiles = {};
 
                 for (const [profileName, profileData] of Object.entries(value as any)) {
                     const profile = profileData as any;
-
-                    // Start with empty profile object
                     const redactedProfile: any = {};
 
-                    // Copy type if it exists
                     if (profile.type) {
                         redactedProfile.type = profile.type;
                     }
 
-                    // Redact properties while preserving exact original structure
-                    // Only process properties that actually exist in the original properties section
                     if (profile.properties) {
                         redactedProfile.properties = {};
                         for (const [propName, propValue] of Object.entries(profile.properties)) {
-                            // Only include properties that are actually defined in the original properties
                             redactedProfile.properties[propName] = this.redactValue(
                                 propName,
                                 propValue,
-                                null, // Schema not needed for basic redaction
+                                null,
                                 args
                             );
                         }
                     }
 
-                    // Recursively handle nested profiles
                     if (profile.profiles) {
                         redactedProfile.profiles = {};
                         for (const [nestedProfileName, nestedProfileData] of Object.entries(profile.profiles)) {
-                            // Use redacted name for nested profiles if profile name redaction is enabled
                             const redactedNestedName = args.redactProfileNames ?
                                 this.getOrCreateKey(nestedProfileName, "profile") : nestedProfileName;
                             redactedProfile.profiles[redactedNestedName] = this.redactProfileObject(nestedProfileData, args);
                         }
                     }
 
-                    // Only include secure fields if they were actually present in the original config
                     if (profile.secure && !args.hideSecureFields) {
                         redactedProfile.secure = profile.secure;
                     }
 
-                    // Use redacted profile name as key if profile name redaction is enabled
                     const redactedProfileName = args.redactProfileNames ?
                         this.getOrCreateKey(profileName, "profile") : profileName;
                     redacted.profiles[redactedProfileName] = redactedProfile;
                 }
-            } else if (key === "defaults" && args.includeDefaults) {
-                // Process defaults - only redact if profile names should be redacted
+            } else if (key === "defaults") {
                 if (args.redactProfileNames) {
                     redacted.defaults = this.redactObject(value, args);
                 } else {
-                    // Don't redact defaults by default - they're just profile references
                     redacted.defaults = value;
                 }
             } else if (key !== "profiles" && key !== "defaults") {
@@ -189,12 +177,10 @@ export default class ExportRedactedHandler implements ICommandHandler {
     private redactProfileObject(profile: any, args: any): any {
         const redactedProfile: any = {};
 
-        // Copy type if it exists
         if (profile.type) {
             redactedProfile.type = profile.type;
         }
 
-        // Redact properties while preserving structure
         if (profile.properties) {
             redactedProfile.properties = {};
             for (const [propName, propValue] of Object.entries(profile.properties)) {
@@ -207,18 +193,15 @@ export default class ExportRedactedHandler implements ICommandHandler {
             }
         }
 
-        // Recursively handle nested profiles
         if (profile.profiles) {
             redactedProfile.profiles = {};
             for (const [nestedProfileName, nestedProfileData] of Object.entries(profile.profiles)) {
-                // Use redacted name for nested profiles if profile name redaction is enabled
                 const redactedNestedName = args.redactProfileNames ?
                     this.getOrCreateKey(nestedProfileName, "profile") : nestedProfileName;
                 redactedProfile.profiles[redactedNestedName] = this.redactProfileObject(nestedProfileData, args);
             }
         }
 
-        // Only include secure fields if they were actually present in the original config
         if (profile.secure && !args.hideSecureFields) {
             redactedProfile.secure = profile.secure;
         }
@@ -232,7 +215,7 @@ export default class ExportRedactedHandler implements ICommandHandler {
         // Apply type-based redaction rules
         switch (valueType) {
             case "string":
-                if (args.redactStrings) {
+                if (args.redactStrings && value !== "") {
                     return this.getOrCreateKey(value, propertyName);
                 }
                 return value;
@@ -282,20 +265,19 @@ export default class ExportRedactedHandler implements ICommandHandler {
     }
 
     private getOrCreateKey(value: string, propertyName: string): string {
-        // Convert value to string for consistent mapping
         const valueStr = String(value);
 
-        // Check if we already have a key for this value
         if (this.valueToKeyMap.has(valueStr)) {
             return this.valueToKeyMap.get(valueStr)!;
         }
 
-        // Create a new key based on the property type and value
         const keyPrefix = this.getKeyPrefix(propertyName, value);
-        const key = `<${keyPrefix}${this.keyCounter}>`;
+        let key = `<${keyPrefix}${this.keyCounter}>`;
+        if (valueStr.startsWith("$")) {
+            key = "$" + key;
+        }
         this.keyCounter++;
 
-        // Store the mapping
         this.valueToKeyMap.set(valueStr, key);
 
         return key;
@@ -305,11 +287,9 @@ export default class ExportRedactedHandler implements ICommandHandler {
         const lowerName = propertyName.toLowerCase();
         const valueType = typeof value;
 
-        // Type-specific prefixes
         if (valueType === "boolean") return "bool";
         if (valueType === "number") return "num";
 
-        // String-specific prefixes based on property name
         if (lowerName.includes("host")) return "host";
         if (lowerName.includes("url") || lowerName.includes("endpoint")) return "url";
         if (lowerName.includes("port")) return "port";
@@ -318,30 +298,24 @@ export default class ExportRedactedHandler implements ICommandHandler {
         if (lowerName.includes("base")) return "base";
         if (lowerName.includes("profile")) return "profile";
 
-        // Default based on type
         if (valueType === "string") return "str";
         return "value";
     }
 
     private stripJsonComments(content: string): string {
-        // Remove single-line comments (// comment)
-        let cleaned = content.replace(/\/\/.*$/gm, '');
-
-        // Remove multi-line comments (/* comment */)
-        cleaned = cleaned.replace(/\/\*[\s\S]*?\*\//g, '');
-
-        return cleaned;
+        return content.replace(/("([^"\\]|\\.)*")|(\/\/.*|\/\*[\s\S]*?\*\/)/g, (match, g1) => {
+            if (g1) return g1;
+            return "";
+        });
     }
 
     private async writeToFile(content: string, filePath: string): Promise<void> {
         try {
-            // Ensure directory exists
             const dir = path.dirname(filePath);
             if (!fs.existsSync(dir)) {
                 fs.mkdirSync(dir, { recursive: true });
             }
 
-            // Write file
             fs.writeFileSync(filePath, content, 'utf8');
         } catch (error) {
             throw new ImperativeError({
