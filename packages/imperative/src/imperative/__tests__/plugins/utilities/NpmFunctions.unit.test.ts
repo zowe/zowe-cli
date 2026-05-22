@@ -16,6 +16,7 @@ import * as npmFunctions from "../../../src/plugins/utilities/NpmFunctions";
 import { PMFConstants } from "../../../src/plugins/utilities/PMFConstants";
 import { DaemonRequest, ExecUtils, ImperativeConfig } from "../../../../utilities";
 import { Logger } from "../../../../logger";
+import { ImperativeError } from "../../../../error";
 
 jest.mock("cross-spawn");
 jest.mock("jsonfile");
@@ -190,28 +191,49 @@ describe("NpmFunctions", () => {
             const pkgSpec = "imperative.tgz";
             expect(npmPackageArg(pkgSpec).type).toEqual("file");
 
+            const spawnErrMsg = "Failed to launch the following command: SomeFakeCommand";
+            const spawnDetails = "Error: spawnSync returns some vague message";
             jest.spyOn(ExecUtils, "spawnAndGetOutput").mockImplementation(() => {
-                throw new Error("Fake out an error thrown by cross-spawn.sync");
+                throw new ImperativeError({
+                    msg: spawnErrMsg,
+                    additionalDetails: spawnDetails
+                });
             });
-            expect(() => npmFunctions.getPackageInfo(pkgSpec)).toThrow(
-                `Spawn of 'npm pack' command failed for package: '${pkgSpec}'` +
-                `\nSpawn error = Fake out an error thrown by cross-spawn.sync` +
-                `\nOutput of the spawn action:` +
-                `\nNo npm pack output was retrieved`
-            );
+
+            let caughtError: ImperativeError = {} as ImperativeError;
+            try {
+                npmFunctions.getPackageInfo(pkgSpec);
+            } catch (thrownError) {
+                caughtError = thrownError as ImperativeError;
+            }
+            expect(caughtError).toBeDefined();
+            expect(caughtError.message).toContain(spawnErrMsg);
+            expect(caughtError.additionalDetails).toContain(spawnDetails);
         });
 
         it("should throw error if npm pack output is not parsable JSON", () => {
             const pkgSpec = "imperative.tgz";
             expect(npmPackageArg(pkgSpec).type).toEqual("file");
 
-            jest.spyOn(ExecUtils, "spawnAndGetOutput").mockReturnValueOnce("[]");
-            expect(() => npmFunctions.getPackageInfo(pkgSpec)).toThrow(
-                `Unable to parse the JSON output of 'npm pack' for this package: '${pkgSpec}'` +
-                `\nJSON.parse error = Cannot read properties of undefined (reading 'name')` +
-                `\nOutput of 'npm pack':` +
-                `\n[]`
+            const badJsonString = "{bogus: [}";
+            jest.spyOn(ExecUtils, "spawnAndGetOutput").mockReturnValueOnce(badJsonString);
+
+            let caughtError: ImperativeError = {} as ImperativeError;
+            try {
+                npmFunctions.getPackageInfo(pkgSpec);
+            } catch (thrownError) {
+                caughtError = thrownError as ImperativeError;
+            }
+            expect(caughtError).toBeDefined();
+            expect(caughtError.message).toContain(
+                `Unable to parse the JSON output of 'npm pack' for this package: '${pkgSpec}'`
             );
+            expect(caughtError.additionalDetails).toContain(
+                "JSON.parse error = Expected property name or '}' in JSON at position 1"
+            );
+            expect(caughtError.additionalDetails).toContain("Output of 'npm pack':");
+            expect(caughtError.additionalDetails).toContain(badJsonString);
+
         });
     });
 
@@ -370,8 +392,6 @@ describe("NpmFunctions", () => {
         it("should handle errors in verbose mode with daemon stream", () => {
             const writeMock = jest.fn();
             const mockDaemonStream = { write: writeMock };
-            const errorMessage = "Install failed";
-
             jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({
                 envVariablePrefix: "MOCK_PREFIX",
                 cliHome: "/mock/home",
@@ -380,21 +400,34 @@ describe("NpmFunctions", () => {
                 }
             } as any);
 
+            const spawnErrMsg = "Failed to launch the following command: SomeFakeCommand";
+            const spawnDetails = "Error: spawnSync message during verbose with daemon stream";
             jest.spyOn(ExecUtils, "spawnAndGetOutput").mockImplementation(() => {
-                throw new Error(errorMessage);
+                throw new ImperativeError({
+                    msg: spawnErrMsg,
+                    additionalDetails: spawnDetails
+                });
             });
 
-            const result = npmFunctions.installPackages("samplePlugin", {
-                prefix: "fakePrefix"
-            }, true);
-
-            expect(writeMock).toHaveBeenCalledWith(DaemonRequest.create({ stderr: errorMessage }));
-            expect(result).toBe("");
+            let caughtError: ImperativeError = {} as ImperativeError;
+            const neverSetValue = "result should never be set";
+            let result = neverSetValue;
+            try {
+                result = npmFunctions.installPackages("samplePlugin", {
+                    prefix: "fakePrefix"
+                }, true);
+            } catch (thrownError) {
+                caughtError = thrownError as ImperativeError;
+            }
+            expect(result).toBe(neverSetValue);
+            expect(writeMock).not.toHaveBeenCalledWith();
+            expect(caughtError).toBeDefined();
+            expect(caughtError.message).toContain(spawnErrMsg);
+            expect(caughtError.additionalDetails).toContain(spawnDetails);
         });
 
         it("should handle errors in verbose mode without daemon stream", () => {
             const stderrWriteSpy = jest.spyOn(process.stderr, 'write').mockImplementation();
-            const errorMessage = "Install failed";
 
             jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({
                 envVariablePrefix: "MOCK_PREFIX",
@@ -402,16 +435,31 @@ describe("NpmFunctions", () => {
                 daemonContext: null
             } as any);
 
+            const spawnErrMsg = "Failed to launch the following command: SomeFakeCommand";
+            const spawnDetails = "Error: spawnSync message during verbose with no daemon stream";
             jest.spyOn(ExecUtils, "spawnWithInheritedStdio").mockImplementation(() => {
-                throw new Error(errorMessage);
+                throw new ImperativeError({
+                    msg: spawnErrMsg,
+                    additionalDetails: spawnDetails
+                });
             });
 
-            const result = npmFunctions.installPackages("samplePlugin", {
-                prefix: "fakePrefix"
-            }, true);
+            let caughtError: ImperativeError = {} as ImperativeError;
+            const neverSetValue = "result should never be set";
+            let result = neverSetValue;
+            try {
+                result = npmFunctions.installPackages("samplePlugin", {
+                    prefix: "fakePrefix"
+                }, true);
+            } catch (thrownError) {
+                caughtError = thrownError as ImperativeError;
+            }
 
-            expect(stderrWriteSpy).toHaveBeenCalledWith(errorMessage);
-            expect(result).toBe("");
+            expect(result).toBe(neverSetValue);
+            expect(stderrWriteSpy).not.toHaveBeenCalledWith();
+            expect(caughtError).toBeDefined();
+            expect(caughtError.message).toContain(spawnErrMsg);
+            expect(caughtError.additionalDetails).toContain(spawnDetails);
 
             stderrWriteSpy.mockRestore();
         });

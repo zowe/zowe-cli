@@ -9,7 +9,9 @@
 *
 */
 
+import { readFileSync } from "jsonfile";
 import { ICommandHandler, IHandlerParameters } from "../../../../../cmd";
+import { IPluginJson } from "../../doc/IPluginJson";
 import { ConfigurationLoader } from "../../../ConfigurationLoader";
 import { CredentialManagerOverride, ICredentialManagerNameMap } from "../../../../../security";
 import { Logger } from "../../../../../logger/";
@@ -56,24 +58,37 @@ export default class UninstallHandler implements ICommandHandler {
         } else {
             try {
                 for (const packageName of params.arguments.plugin) {
+                    // confirm that plugin is installed before calling its preUninstall function
+                    const installedPlugins: IPluginJson = readFileSync(PMFConstants.instance.PLUGIN_JSON);
+                    if (!Object.hasOwn(installedPlugins, packageName)) {
+                        throw new ImperativeError({
+                            msg: `${chalk.yellow.bold("Plug-in name")} '${chalk.red.bold(packageName)}' is not installed.`
+                        });
+                    }
+
                     // let the plugin perform any pre-uninstall operations
                     try {
                         await this.callPluginPreUninstall(packageName);
                     } catch(err) {
                         // We do not stop on preUninstall error. We just show a message.
                         params.response.console.log(err.message);
+                        if (typeof err.causeErrors === "string" && err.causeErrors.length > 0) {
+                            params.response.console.log(err.causeErrors);
+                        }
+                        if (typeof err.additionalDetails === "string" && err.additionalDetails.length > 0) {
+                            params.response.console.log(err.additionalDetails);
+                        }
+                        params.response.console.log(
+                            "\nThe uninstall operation of a plug-in continues even with a 'preUninstall' failure.\n"
+                        );
                     }
 
                     uninstall(packageName);
                 }
-                params.response.console.log("Removal of the npm package(s) was successful.\n"
+                params.response.console.log("Removal of the npm package(s) was successful."
                 );
             } catch (e) {
-                throw new ImperativeError({
-                    msg: "Uninstall Failed",
-                    causeErrors: [e],
-                    additionalDetails: e.message
-                });
+                throw ImperativeError.newImpErrorFromExistingError(e, "Plug-in uninstall operation failed.");
             }
         }
     }
@@ -118,10 +133,7 @@ export default class UninstallHandler implements ICommandHandler {
             const lifeCycleInstance = new lifeCycleClass();
             await lifeCycleInstance.preUninstall();
         } catch (err) {
-            throw new ImperativeError({
-                msg: `Unable to perform the 'preUninstall' action of plugin '${pluginPackageNm}'` +
-                    `\nReason: ${err.message}`
-            });
+            throw ImperativeError.newImpErrorFromExistingError(err, `Unable to perform the 'preUninstall' action of plugin '${pluginPackageNm}'`);
         }
     }
 }

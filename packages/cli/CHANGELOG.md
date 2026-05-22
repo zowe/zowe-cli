@@ -2,9 +2,15 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## `8.32.2`
+
+- BugFix: Updated the error handling for plug-in installation to report the first failure that occurs. [#2722](https://github.com/zowe/zowe-cli/pull/2722)
+- BugFix: Updated the display of failures from third party programs to include more diagnostic information while avoiding repeated text. [#2722](https://github.com/zowe/zowe-cli/pull/2722)
+
 ## `8.32.1`
 
 - BugFix: Updated `zowe daemon enable` help text to warn users that the Zowe bin directory must be on your PATH after enabling daemon mode. [#2717](https://github.com/zowe/zowe-cli/pull/2717)
+
 
 ## `8.32.0`
 

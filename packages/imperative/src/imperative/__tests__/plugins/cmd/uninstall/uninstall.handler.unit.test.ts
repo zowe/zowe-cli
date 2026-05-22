@@ -100,6 +100,9 @@ describe("Plugin Management Facility uninstall handler", () => {
         // Override the return value for this test only
         mocks.readFileSyncSpy.mockReturnValueOnce(fileJson as any);
 
+        // return a fake plugin configuration with no preUninstall for the plugin
+        jest.spyOn(ConfigurationLoader, "load").mockReturnValue({});
+
         const handler = new UninstallHandler();
 
         const params = getIHandlerParametersObject();
@@ -108,8 +111,99 @@ describe("Plugin Management Facility uninstall handler", () => {
         await handler.process(params as IHandlerParameters);
 
         expect(mocks.uninstallSpy).toHaveBeenCalledWith(fileJson.a.package);
+        expect(params.response.console.log).toHaveBeenCalledWith("Removal of the npm package(s) was successful.");
+    });
 
-        expect(params.response.console.log).toHaveBeenCalledWith("Removal of the npm package(s) was successful.\n");
+    it("should throw an error if the package is not installed", async () => {
+        // plugin definitions mocking file contents
+        const fileJson: IPluginJson = {
+            someOtherPlugin: {
+                package: "SomeOtherPkgName",
+                location: "SomeOtherPkgRegistry",
+                version: "SomeOtherPkgVersion"
+            }
+        };
+
+        // Override the return value for this test only
+        mocks.readFileSyncSpy.mockReturnValueOnce(fileJson as any);
+
+        // return a fake plugin configuration with no preUninstall for the plugin
+        jest.spyOn(ConfigurationLoader, "load").mockReturnValue({});
+
+        const handler = new UninstallHandler();
+
+        const params = getIHandlerParametersObject();
+        params.arguments.plugin = ["pluginThatIsNotInstalled"];
+
+        let expectedError;
+        try {
+            await handler.process(params as IHandlerParameters);
+        } catch (e) {
+            expectedError = e;
+        }
+
+        expect(expectedError).toBeDefined();
+        expect((expectedError as ImperativeError).message).toContain("Plug-in uninstall operation failed");
+        expect((expectedError as ImperativeError).causeErrors).toContain("Plug-in name");
+        expect((expectedError as ImperativeError).causeErrors).toContain("pluginThatIsNotInstalled");
+        expect((expectedError as ImperativeError).causeErrors).toContain("is not installed");
+    });
+
+    it("should catch and report a preUninstall error", async () => {
+        // plugin definitions mocking file contents
+        const fileJson: IPluginJson = {
+            testPlugin: {
+                package: packageName,
+                location: "",
+                version: packageVersion
+            },
+            plugin2: {
+                package: packageName2,
+                location: packageRegistry2,
+                version: packageVersion2
+            }
+        };
+
+        // Override the return value for this test only
+        mocks.readFileSyncSpy.mockReturnValueOnce(fileJson as any);
+
+        // record messages that would be logged to the response object
+        let logMsg: string = "";
+        const params = getIHandlerParametersObject();
+        params.arguments.plugin = ["testPlugin"];
+        params.response = {
+            console: {
+                log: jest.fn((logArgs) => {
+                    logMsg += "\n" + logArgs;
+                })
+            }
+        } as any;
+
+        // force callPluginPreUninstall to throw an error
+        const uninstallHndlr = new UninstallHandler();
+        jest.spyOn(uninstallHndlr as any, "callPluginPreUninstall").mockImplementation(() => {
+            throw new ImperativeError({
+                msg: "The plug-in's preUninstall error message",
+                causeErrors: "The plug-in's preUninstall causeErrors",
+                additionalDetails: "The plug-in's preUninstall additionalDetails"
+            });
+        });
+
+        let expectedError;
+        try {
+            await uninstallHndlr.process(params as IHandlerParameters);
+        } catch (e) {
+            expectedError = e;
+        }
+
+        expect(expectedError).not.toBeDefined();
+        expect(logMsg).toContain("The plug-in's preUninstall error message");
+        expect(logMsg).toContain("The plug-in's preUninstall causeErrors");
+        expect(logMsg).toContain("The plug-in's preUninstall additionalDetails");
+        expect(logMsg).toContain(
+            "The uninstall operation of a plug-in continues even with a 'preUninstall' failure"
+        );
+        expect(logMsg).toContain("Removal of the npm package(s) was successful");
     });
 
     it("should handle an error during the uninstall", async () => {
@@ -128,21 +222,6 @@ describe("Plugin Management Facility uninstall handler", () => {
         }
 
         expect(expectedError.message).toBe(`${chalk.yellow.bold("Package name")} is required.`);
-
-        // const installError = new Error("This is a test");
-        // let expectedError: ImperativeError;
-        //
-        // mocks.install.mockImplementationOnce(() => {
-        //   throw installError;
-        // });
-        //
-        // try {
-        //   await handler.process(params);
-        // } catch (e) {
-        //   expectedError = e;
-        // }
-        //
-        // expect(expectedError.message).toBe("Install Failed");
     });
 }); // end Plugin Management Facility uninstall handler
 
@@ -254,6 +333,9 @@ describe("callPluginPreUninstall", () => {
         expect(cfgLoaderLoadSpy).toHaveBeenCalledTimes(1);
         expect(thrownErr).not.toBeNull();
         expect(thrownErr.message).toContain(
+            "Unable to perform the 'preUninstall' action of plugin '@zowe/secrets-for-kubernetes-for-zowe-cli'"
+        );
+        expect(thrownErr.causeErrors).toContain(
             `The plugin '${knownCredMgrPlugin}', which overrides the CLI ` +
             `Credential Manager, does not implement the 'pluginLifeCycle' class. ` +
             `The CLI default Credential Manager ` +
@@ -311,6 +393,6 @@ describe("callPluginPreUninstall", () => {
         expect(thrownErr.message).toContain(
             `Unable to perform the 'preUninstall' action of plugin '${knownCredMgrPlugin}'`
         );
-        expect(thrownErr.message).toContain(preUninstallErrText);
+        expect(thrownErr.causeErrors).toContain(preUninstallErrText);
     });
 }); // end callPluginPreUninstall

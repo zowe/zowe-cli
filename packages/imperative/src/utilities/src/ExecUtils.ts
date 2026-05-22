@@ -11,6 +11,7 @@
 
 import { SpawnSyncOptions, SpawnSyncReturns } from "child_process";
 import * as spawn from "cross-spawn";
+import { ImperativeError } from "../../error/src/ImperativeError";
 
 /**
  * A collection of utilities related to executing a sub-process.
@@ -46,17 +47,36 @@ export class ExecUtils {
         // Implementation based on the child_process module
         // https://github.com/nodejs/node/blob/main/lib/child_process.js
         if (result.error != null) {
-            throw result.error;
+            throw new ImperativeError({
+                msg: `Failed to launch the following command:\n    ${argv.join(" ")}`,
+                additionalDetails: result.error.toString()
+            });
         } else if (result.status !== 0) {
-            let msg = `Command failed: ${argv.join(" ")}`;
-            msg += `\nExit code = ${result.status.toString()}`;
+            // form a detailed message
+            let additionalDetails = `Command that failed:\n    ${argv.join(" ")}`;
+            if (result.status) {
+                additionalDetails += `\nExit code = ${result.status.toString()}`;
+            }
             if (result.stderr?.length > 0) {
-                msg += `\nStdErr:\n${result.stderr.toString()}`;
+                additionalDetails += `\n\nCommand's standard error stream:\n${result.stderr.toString()}`;
             }
             if (result.stdout?.length > 0) {
-                msg += `\nStdOut:\n${result.stdout.toString()}`;
+                additionalDetails += `\nCommand's standard output stream:\n${result.stdout.toString()}`;
             }
-            throw new Error(msg);
+
+            // give additional tips to debug npm commands
+            if (argv[0].toLowerCase().includes("npm")) {
+                additionalDetails += "\nIf you are using an NPM registry, " +
+                    "confirm that NPM can access the registry with the following command:\n" +
+                    "    npm view <your_desired_package_name>\n" +
+                    "Confirm that NPM can download your package from your registry:\n" +
+                    "    npm pack <your_desired_package_name>";
+            }
+
+            throw new ImperativeError({
+                msg: `Errors occurred in this program: ${argv[0]}`,
+                additionalDetails: additionalDetails
+            });
         }
         return result.stdout as T;
     }
