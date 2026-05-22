@@ -95,7 +95,12 @@ describe("ExportRedactedHandler", () => {
                         secure: true,
                         connectionTimeout: 10000,
                         user: "$ZOWE_USER",
-                        emptyStr: ""
+                        emptyStr: "",
+                        arrayOfStrings: ["string1", "string2"],
+                        nestedObject: {
+                            key1: "value1",
+                            nestedNum: 20000
+                        }
                     },
                     profiles: {
                         "nested-profile": {
@@ -222,6 +227,26 @@ describe("ExportRedactedHandler", () => {
 
         // Boolean secure should be redacted with prefix "bool"
         expect(properties.secure).toMatch(/<bool\d+>/);
+    });
+
+    it("should redact array and nested object type properties", async () => {
+        await handler.process(mockParams);
+
+        const logCall = (mockParams.response.console.log as jest.Mock).mock.calls[1][0];
+        const result = JSON.parse(logCall);
+
+        const profileKey = Object.keys(result.profiles)[0];
+        const properties = result.profiles[profileKey].properties;
+
+        // Array elements should be mapped and redacted
+        expect(properties.arrayOfStrings).toBeInstanceOf(Array);
+        expect(properties.arrayOfStrings[0]).toMatch(/<str\d+>/);
+        expect(properties.arrayOfStrings[1]).toMatch(/<str\d+>/);
+
+        // Nested object elements should be mapped and redacted recursively
+        expect(properties.nestedObject).toBeInstanceOf(Object);
+        expect(properties.nestedObject.key1).toMatch(/<str\d+>/);
+        expect(properties.nestedObject.nestedNum).toMatch(/<num\d+>/);
     });
 
     it("should redact schema path", async () => {
