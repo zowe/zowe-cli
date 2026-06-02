@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, ImperativeExpect, ImperativeError } from "@zowe/imperative";
+import { AbstractSession, EncodeUri, ImperativeExpect, ImperativeError } from "@zowe/imperative";
 
 import { IMountFsOptions } from "./doc/IMountFsOptions";
 import { ZosmfRestClient, ZosmfHeaders } from "@zowe/core-for-zowe-sdk";
@@ -53,7 +53,9 @@ export class Mount {
         tempOptions.action = "mount";
         tempOptions["mount-point"] = mountPoint;
 
-        const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_MFS + "/" + encodeURIComponent(fileSystemName);
+        const endpoint: string = EncodeUri.encUriPathForZos(
+            ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_MFS + "/" + fileSystemName
+        );
 
         const jsonContent = JSON.stringify(tempOptions);
         const headers = [{"Content-Length": jsonContent.length}, ZosmfHeaders.ACCEPT_ENCODING];

@@ -9,7 +9,9 @@
 *
 */
 
-import { AbstractSession, ImperativeError, IRestClientResponse, IOptionsFullResponse, Headers, Logger} from "@zowe/imperative";
+import {
+    AbstractSession, EncodeUri, ImperativeError, IRestClientResponse, IOptionsFullResponse, Headers, Logger
+} from "@zowe/imperative";
 import { ZosmfRestClient, ZosmfHeaders } from "@zowe/core-for-zowe-sdk";
 import { GetJobs} from "./GetJobs";
 import { ISearchJobsParms } from "./doc/input/ISearchJobsParms";
@@ -137,8 +139,10 @@ export class SearchJobs {
         Logger.getAppLogger().trace("SearchJobs.searchSpoolContentCommon()");
         const headers: any[] = [Headers.TEXT_PLAIN_UTF8];
 
-        let parameters: string = "/" + encodeURIComponent(jobFile.jobname) + "/" + encodeURIComponent(jobFile.jobid) +
-            JobsConstants.RESOURCE_SPOOL_FILES + "/" + encodeURIComponent(jobFile.id) + JobsConstants.RESOURCE_SPOOL_CONTENT;
+        let parameters: string = EncodeUri.encUriPathForZos(
+            JobsConstants.RESOURCE + "/" + jobFile.jobname + "/" + jobFile.jobid +
+            JobsConstants.RESOURCE_SPOOL_FILES + "/" + jobFile.id + JobsConstants.RESOURCE_SPOOL_CONTENT
+        );
 
         if(searchString != undefined)
             parameters += "?search=" + searchString + "&maxreturnsize=1";
@@ -153,7 +157,7 @@ export class SearchJobs {
         }
 
         const requestOptions: IOptionsFullResponse = {
-            resource: JobsConstants.RESOURCE + parameters,
+            resource: parameters,
             reqHeaders : headers
         };
         const request: IRestClientResponse = await ZosmfRestClient.getExpectFullResponse(session, requestOptions);

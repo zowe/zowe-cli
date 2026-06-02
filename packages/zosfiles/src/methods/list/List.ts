@@ -9,7 +9,10 @@
 *
 */
 
-import { AbstractSession, IHeaderContent, ImperativeError, ImperativeExpect, JSONUtils, Logger, TaskProgress } from "@zowe/imperative";
+import {
+    AbstractSession, EncodeUri, IHeaderContent, ImperativeError, ImperativeExpect,
+    JSONUtils, Logger, TaskProgress
+} from "@zowe/imperative";
 
 import { posix } from "path";
 import * as util from "util";
@@ -48,11 +51,12 @@ export class List {
 
         try {
             // Format the endpoint to send the request to
-            const endpoint = posix.join(
-                ZosFilesConstants.RESOURCE,
-                ZosFilesConstants.RES_DS_FILES,
-                encodeURIComponent(dataSetName),
-                ZosFilesConstants.RES_DS_MEMBERS);
+            const endpoint = EncodeUri.encUriPathForZos(
+                posix.join(
+                    ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES,
+                    dataSetName, ZosFilesConstants.RES_DS_MEMBERS
+                )
+            );
 
             const params = new URLSearchParams();
             if (options.pattern) {

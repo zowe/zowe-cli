@@ -9,7 +9,8 @@
 *
 */
 
-import { AbstractSession, ImperativeError, ImperativeExpect, ITaskWithStatus,
+import {
+    AbstractSession, EncodeUri, ImperativeError, ImperativeExpect, ITaskWithStatus,
     Logger, Headers, IHeaderContent, TaskStage, IO,
     TaskProgress} from "@zowe/imperative";
 import { posix } from "path";
@@ -150,10 +151,12 @@ export class Copy {
                 };
             }
         }
-        const endpoint: string = posix.join(
-            ZosFilesConstants.RESOURCE,
-            ZosFilesConstants.RES_DS_FILES,
-            encodeURIComponent(toMemberName == null ? toDataSetName : `${toDataSetName}(${toMemberName})`)
+
+        const endpoint: string = EncodeUri.encUriPathForZos(
+            posix.join(
+                ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES,
+                toMemberName == null ? toDataSetName : `${toDataSetName}(${toMemberName})`
+            )
         );
         Logger.getAppLogger().debug(`Endpoint: ${endpoint}`);
 
