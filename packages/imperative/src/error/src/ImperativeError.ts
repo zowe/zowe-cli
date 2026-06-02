@@ -10,6 +10,7 @@
 */
 
 const os = require("node:os");
+
 import { IImperativeError } from "./doc/IImperativeError";
 import { IImperativeErrorParms } from "./doc/IImperativeErrorParms";
 
@@ -19,7 +20,7 @@ import { IImperativeErrorParms } from "./doc/IImperativeErrorParms";
  */
 interface IErrOutputData {
     stringVal: string;
-    rawVal: any;
+    rawVal: unknown;
 }
 
 /**
