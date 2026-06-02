@@ -9,7 +9,10 @@
 *
 */
 
-import { AbstractSession, Headers, ImperativeExpect, IO, Logger, TaskProgress, ImperativeError, TextUtils } from "@zowe/imperative";
+import {
+    AbstractSession, EncodeUri, Headers, ImperativeExpect, IO, Logger,
+    TaskProgress, ImperativeError, TextUtils
+} from "@zowe/imperative";
 
 import { posix, join, relative } from "path";
 import * as fs from "fs";
@@ -87,13 +90,10 @@ export class Download {
         try {
             // Format the endpoint to send the request to
             let endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES);
-
             if (options.volume) {
-                endpoint = posix.join(endpoint, `-(${encodeURIComponent(options.volume)})`);
+                endpoint = posix.join(endpoint, `-(${options.volume})`);
             }
-
-            endpoint = posix.join(endpoint, encodeURIComponent(dataSetName));
-
+            endpoint = EncodeUri.encUriPathForZos(posix.join(endpoint, dataSetName));
             Logger.getAppLogger().debug(`Endpoint: ${endpoint}`);
 
             const reqHeaders: IHeaderContent[] = this.generateHeadersBasedOnOptions(options);
@@ -526,8 +526,9 @@ export class Download {
 
             // Get a proper destination for the file to be downloaded
             // If the "file" is not provided, we create a folder structure similar to the uss file structure
-            ussFileName = ZosFilesUtils.sanitizeUssPathForRestCall(ussFileName);
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, ussFileName);
+            const endpoint = EncodeUri.encUriPathForUss(
+                posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, ussFileName)
+            );
 
             const reqHeaders: IHeaderContent[] = this.generateHeadersBasedOnOptions(options);
 

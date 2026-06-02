@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, ImperativeExpect, Logger, Headers } from "@zowe/imperative";
+import { AbstractSession, EncodeUri, ImperativeExpect, Logger, Headers } from "@zowe/imperative";
 import { JobsConstants } from "./JobsConstants";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { IJob } from "./doc/response/IJob";
@@ -79,8 +79,10 @@ export class CancelJobs {
             version: parms.version
         };
 
-        const parameters: string = "/" + encodeURIComponent(parms.jobname) + "/" + encodeURIComponent(parms.jobid);
-        const responseJson = await ZosmfRestClient.putExpectJSON(session, JobsConstants.RESOURCE + parameters, headers, request);
+        const responseJson = await ZosmfRestClient.putExpectJSON(session,
+            EncodeUri.encUriPathForZos(JobsConstants.RESOURCE + "/" + parms.jobname + "/" + parms.jobid),
+            headers, request
+        );
 
         if (parms.version === "2.0") {
             //"2.0" indicates an synchronous request
