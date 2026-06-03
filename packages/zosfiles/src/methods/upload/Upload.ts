@@ -160,11 +160,11 @@ export class Upload {
         ImperativeExpect.toNotBeNullOrUndefined(dataSetName, ZosFilesMessages.missingDatasetName.message);
 
         // Construct zOSMF REST endpoint.
-        let endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES);
+        let endpoint = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES;
         if (options.volume) {
-            endpoint = path.posix.join(endpoint, `-(${options.volume})`);
+            endpoint += `/-(${options.volume})`;
         }
-        endpoint = EncodeUri.encUriPathForZos(path.posix.join(endpoint, dataSetName));
+        endpoint = EncodeUri.encUriPathForZos(endpoint + "/" + dataSetName);
 
         // Construct request header parameters
         const reqHeaders: IHeaderContent[] = this.generateHeadersBasedOnOptions(options);
@@ -220,11 +220,11 @@ export class Upload {
         ImperativeExpect.toNotBeNullOrUndefined(dataSetName, ZosFilesMessages.missingDatasetName.message);
 
         // Construct zOSMF REST endpoint.
-        let endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES);
+        let endpoint = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES;
         if (options.volume) {
-            endpoint = path.posix.join(endpoint, `-(${options.volume})`);
+            endpoint += `/-(${options.volume})`;
         }
-        endpoint = EncodeUri.encUriPathForZos(path.posix.join(endpoint, dataSetName));
+        endpoint = EncodeUri.encUriPathForZos(endpoint + "/" + dataSetName);
 
         // Construct request header parameters
         const reqHeaders: IHeaderContent[] = this.generateHeadersBasedOnOptions(options);

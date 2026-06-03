@@ -41,7 +41,7 @@ export class Utilities {
         // Get a proper destination for the file to be downloaded
         // If the "file" is not provided, we create a folder structure similar to the uss file structure
         const endpoint = EncodeUri.encUriPathForUss(
-            path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, USSFileName)
+            ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + USSFileName
         );
 
         const reqHeaders: IHeaderContent[] = [

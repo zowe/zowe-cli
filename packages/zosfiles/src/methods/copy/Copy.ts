@@ -13,7 +13,6 @@ import {
     AbstractSession, EncodeUri, ImperativeError, ImperativeExpect, ITaskWithStatus,
     Logger, Headers, TaskStage
 } from "@zowe/imperative";
-import { posix } from "path";
 
 import { Create, CreateDataSetTypeEnum, ICreateDataSetOptions } from "../create";
 import { Get } from "../get";
@@ -56,10 +55,8 @@ export class Copy {
         ImperativeExpect.toBeDefinedAndNonBlank(toDataSetName, "toDataSetName");
 
         const endpoint: string = EncodeUri.encUriPathForZos(
-            posix.join(
-                ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES,
-                toMemberName == null ? toDataSetName : `${toDataSetName}(${toMemberName})`
-            )
+            ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" +
+            toMemberName == null ? toDataSetName : `${toDataSetName}(${toMemberName})`
         );
         Logger.getAppLogger().debug(`Endpoint: ${endpoint}`);
 
