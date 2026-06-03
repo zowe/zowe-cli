@@ -11,8 +11,6 @@
 
 import { AbstractSession, EncodeUri, ImperativeExpect, Logger, IHeaderContent } from "@zowe/imperative";
 
-import { posix } from "path";
-
 import { ZosmfRestClient, ZosmfHeaders } from "@zowe/core-for-zowe-sdk";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
@@ -52,11 +50,11 @@ export class Delete {
 
         try {
             // Format the endpoint to send the request to
-            let endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES);
+            let endpoint = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES;
             if (options.volume) {
-                endpoint = posix.join(endpoint, `-(${options.volume})`);
+                endpoint += `/-(${options.volume})`;
             }
-            endpoint = EncodeUri.encUriPathForZos(posix.join(endpoint, dataSetName));
+            endpoint = EncodeUri.encUriPathForZos(endpoint + "/" + dataSetName);
             Logger.getAppLogger().debug(`Endpoint: ${endpoint}`);
 
             const reqHeaders: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING];
@@ -144,7 +142,7 @@ export class Delete {
 
         // Format the endpoint to send the request to
         const endpoint = EncodeUri.encUriPathForUss(
-            posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, fileName)
+            ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + fileName
         );
         Logger.getAppLogger().debug(`Endpoint: ${endpoint}`);
 

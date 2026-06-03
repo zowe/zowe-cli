@@ -91,11 +91,11 @@ export class Download {
 
         try {
             // Format the endpoint to send the request to
-            let endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES);
+            let endpoint = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES;
             if (options.volume) {
-                endpoint = posix.join(endpoint, `-(${options.volume})`);
+                endpoint += `/-(${options.volume})`;
             }
-            endpoint = EncodeUri.encUriPathForZos(posix.join(endpoint, dataSetName));
+            endpoint = EncodeUri.encUriPathForZos(endpoint + "/" + dataSetName);
             if (options.queryParams) {
                 endpoint += options.queryParams;
             }
@@ -692,7 +692,7 @@ export class Download {
             // Get a proper destination for the file to be downloaded
             // If the "file" is not provided, we create a folder structure similar to the uss file structure
             const endpoint = EncodeUri.encUriPathForUss(
-                posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, ussFileName)
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + ussFileName
             );
 
             const reqHeaders: IHeaderContent[] = this.generateHeadersBasedOnOptions(options);

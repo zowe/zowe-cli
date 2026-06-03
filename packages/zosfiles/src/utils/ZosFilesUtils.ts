@@ -247,7 +247,7 @@ export class ZosFilesUtils {
 
         try {
             const endpoint = EncodeUri.encUriPathForZos(
-                path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dataSetName)
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dataSetName
             );
 
             Logger.getAppLogger().debug(`Endpoint: ${endpoint}`);

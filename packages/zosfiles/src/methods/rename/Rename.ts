@@ -10,7 +10,6 @@
 */
 
 import { AbstractSession, EncodeUri, ImperativeExpect, Logger, Headers, IHeaderContent } from "@zowe/imperative";
-import { posix } from "path";
 
 import { ZosmfRestClient, ZosmfHeaders } from "@zowe/core-for-zowe-sdk";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
@@ -87,7 +86,7 @@ export class Rename {
         options?: IZosFilesOptions
     ): Promise<IZosFilesResponse> {
         const endpoint: string = EncodeUri.encUriPathForZos(
-            posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, afterDataSetName)
+            ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + afterDataSetName
         );
         Logger.getAppLogger().debug(`Endpoint: ${endpoint}`);
 
