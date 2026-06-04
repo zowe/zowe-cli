@@ -56,7 +56,7 @@ export class Copy {
 
         const endpoint: string = EncodeUri.encUriPathForZos(
             ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" +
-            toMemberName == null ? toDataSetName : `${toDataSetName}(${toMemberName})`
+            (toMemberName == null ? toDataSetName : `${toDataSetName}(${toMemberName})`)
         );
         Logger.getAppLogger().debug(`Endpoint: ${endpoint}`);
 
