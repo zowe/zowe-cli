@@ -15,6 +15,7 @@ import { EncodeUri, ImperativeError, IO, Session } from "@zowe/imperative";
 import { IDownloadOptions, TransferMode, Utilities, ZosFilesAttributes, ZosFilesMessages } from "../../../../src";
 import { ZosmfHeaders, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { Download } from "../../../../src/methods/download/Download";
+import { join } from "path";
 import { ZosFilesConstants } from "../../../../src/constants/ZosFiles.constants";
 import * as util from "util";
 import { IUSSListOptions, List } from "../../../../src/methods/list";
