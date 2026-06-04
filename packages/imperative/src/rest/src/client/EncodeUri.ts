@@ -54,7 +54,14 @@ export class EncodeUri {
      * @param {string} ussUriPath - the URI path to encode
      */
     public static encUriPathForUss(ussUriPath: string) {
-        return encodeURI(path.posix.normalize(ussUriPath));
+        const firstEncoding = encodeURI(path.posix.normalize(ussUriPath));
+
+        // JavaScript's encodeURI does not encode ? or +
+        // Both should be encoded since this function encodes
+        // the URI path, not a URI query.
+        let finalEncoding = firstEncoding.replaceAll("?", "%3F");
+        finalEncoding = finalEncoding.replaceAll("+", "%2B");
+        return finalEncoding;
     }
 
     /**
