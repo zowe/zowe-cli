@@ -9,7 +9,7 @@
 *
 */
 
-import { Session, ImperativeError, IO, ITaskWithStatus, TaskStage } from "@zowe/imperative";
+import { EncodeUri, Session, ImperativeError, IO, ITaskWithStatus, TaskStage } from "@zowe/imperative";
 import { posix } from "path";
 import * as fs from "fs";
 import { error } from "console";
@@ -74,10 +74,9 @@ describe("Copy", () => {
                             dsn: fromDataSetName
                         }
                     };
-                    const expectedEndpoint = posix.join(
-                        ZosFilesConstants.RESOURCE,
-                        ZosFilesConstants.RES_DS_FILES,
-                        toDataSetName
+                    const expectedEndpoint = EncodeUri.encUriPathForZos(
+                        ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES +
+                        "/" + toDataSetName
                     );
                     const expectedHeaders = [
                         { "Content-Type": "application/json" },
@@ -112,10 +111,9 @@ describe("Copy", () => {
                             dsn: fromDataSetName
                         }
                     };
-                    const expectedEndpoint = posix.join(
-                        ZosFilesConstants.RESOURCE,
-                        ZosFilesConstants.RES_DS_FILES,
-                        toDataSetName
+                    const expectedEndpoint = EncodeUri.encUriPathForZos(
+                        ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES +
+                        "/" + toDataSetName
                     );
                     const expectedHeaders = [
                         { "Content-Type": "application/json" },
@@ -153,10 +151,9 @@ describe("Copy", () => {
                             member: fromMemberName
                         }
                     };
-                    const expectedEndpoint = posix.join(
-                        ZosFilesConstants.RESOURCE,
-                        ZosFilesConstants.RES_DS_FILES,
-                        `${toDataSetName}(${toMemberName})`
+                    const expectedEndpoint = EncodeUri.encUriPathForZos(
+                        ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES +
+                        `/${toDataSetName}(${toMemberName})`
                     );
                     const expectedHeaders = [
                         { "Content-Type": "application/json" },
@@ -192,10 +189,9 @@ describe("Copy", () => {
                             member: fromMemberName
                         }
                     };
-                    const expectedEndpoint = posix.join(
-                        ZosFilesConstants.RESOURCE,
-                        ZosFilesConstants.RES_DS_FILES,
-                        `${toDataSetName}(${toMemberName})`
+                    const expectedEndpoint = EncodeUri.encUriPathForZos(
+                        ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES +
+                        `/${toDataSetName}(${toMemberName})`
                     );
                     const expectedHeaders = [
                         { "Content-Type": "application/json" },
@@ -232,10 +228,9 @@ describe("Copy", () => {
                             dsn: fromDataSetName
                         }
                     };
-                    const expectedEndpoint = posix.join(
-                        ZosFilesConstants.RESOURCE,
-                        ZosFilesConstants.RES_DS_FILES,
-                        `${toDataSetName}(${toMemberName})`
+                    const expectedEndpoint = EncodeUri.encUriPathForZos(
+                        ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES +
+                        `/${toDataSetName}(${toMemberName})`
                     );
                     const expectedHeaders = [
                         { "Content-Type": "application/json" },
@@ -270,10 +265,9 @@ describe("Copy", () => {
                             dsn: fromDataSetName
                         }
                     };
-                    const expectedEndpoint = posix.join(
-                        ZosFilesConstants.RESOURCE,
-                        ZosFilesConstants.RES_DS_FILES,
-                        `${toDataSetName}(${toMemberName})`
+                    const expectedEndpoint = EncodeUri.encUriPathForZos(
+                        ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES +
+                        `/${toDataSetName}(${toMemberName})`
                     );
                     const expectedHeaders = [
                         { "Content-Type": "application/json" },
@@ -311,10 +305,9 @@ describe("Copy", () => {
                             member: fromMemberName
                         }
                     };
-                    const expectedEndpoint = posix.join(
-                        ZosFilesConstants.RESOURCE,
-                        ZosFilesConstants.RES_DS_FILES,
-                        toDataSetName
+                    const expectedEndpoint = EncodeUri.encUriPathForZos(
+                        ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES +
+                        "/" + toDataSetName
                     );
                     const expectedHeaders = [
                         { "Content-Type": "application/json" },
@@ -350,10 +343,9 @@ describe("Copy", () => {
                             member: fromMemberName
                         }
                     };
-                    const expectedEndpoint = posix.join(
-                        ZosFilesConstants.RESOURCE,
-                        ZosFilesConstants.RES_DS_FILES,
-                        toDataSetName
+                    const expectedEndpoint = EncodeUri.encUriPathForZos(
+                        ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES +
+                        "/" + toDataSetName
                     );
                     const expectedHeaders = [
                         { "Content-Type": "application/json" },
@@ -617,10 +609,9 @@ describe("Copy", () => {
                             member: fromMemberName
                         }
                     };
-                    const expectedEndpoint = posix.join(
-                        ZosFilesConstants.RESOURCE,
-                        ZosFilesConstants.RES_DS_FILES,
-                        `${toDataSetName}(${toMemberName})`
+                    const expectedEndpoint = EncodeUri.encUriPathForZos(
+                        ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES +
+                        `/${toDataSetName}(${toMemberName})`
                     );
                     const expectedHeaders = [
                         { "Content-Type": "application/json" },
@@ -775,10 +766,9 @@ describe("Copy", () => {
                         dsn: fromDataSetName
                     }
                 };
-                const expectedEndpoint = posix.join(
-                    ZosFilesConstants.RESOURCE,
-                    ZosFilesConstants.RES_DS_FILES,
-                    toDataSetName
+                const expectedEndpoint = EncodeUri.encUriPathForZos(
+                    ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES +
+                    "/" + toDataSetName
                 );
                 const expectedHeaders = [
                     { "Content-Type": "application/json" },
