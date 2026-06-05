@@ -14,14 +14,16 @@ import { ZosFilesConstants } from "../../../../../zosfiles/src/constants/ZosFile
 
 describe("EncodeUri tests", () => {
     const ussBaseUri = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES;
-    const ussSpecialChars = "-=? +|~{}<>\\,.!;:'\"[]&%$#@^*_";
+    const ussSpecialChars = "-=~,.!;:'&$@*_ #?+|{}<>\\\"[]%^";
 
-    it("should encode nothing for a zos URI path", () => {
-        const suppliedUri = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES +
-            "/-(VOL99)/ALPHA.12345.JCL(T@#$-EST)";
+    it("should encode only # for a zos URI path", () => {
+        const zosBaseUri = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES;
+        const zosSpecialChars = "@$-#"
+        const suppliedUri = zosBaseUri + `/-(VOL99)/ALPHA.12345.JCL(TEST${zosSpecialChars})`;
+        const expectedUri = zosBaseUri + "/-(VOL99)/ALPHA.12345.JCL(TEST@$-%23)";
 
         const encodedUri = EncodeUri.encUriPathForZos(suppliedUri);
-        expect(encodedUri).toEqual(suppliedUri);
+        expect(encodedUri).toEqual(expectedUri);
     });
 
     it("should encode numerous special characters for a uss URI path", () => {
@@ -31,7 +33,7 @@ describe("EncodeUri tests", () => {
         // The resulting file name is truncated starting with the location of the ? character.
         const normalUriChars = ussBaseUri + "/some/dir/file";
         const suppliedUri = normalUriChars + ussSpecialChars;
-        const expectedUri = normalUriChars + "-=%3F%20%2B%7C~%7B%7D%3C%3E%5C,.!;:'%22%5B%5D&%25$#@%5E*_";
+        const expectedUri = normalUriChars + "-=~,.!;:'&$@*_%20%23%3F%2B%7C%7B%7D%3C%3E%5C%22%5B%5D%25%5E";
 
         const encodedUri = EncodeUri.encUriPathForUss(suppliedUri);
         expect(encodedUri).toEqual(expectedUri);
@@ -47,7 +49,7 @@ describe("EncodeUri tests", () => {
 
     it("should encode more special characters for a uss query string", () => {
         const suppliedQuery = "test" + ussSpecialChars;
-        const expectedQuery = "test" + "-%3D%3F%20%2B%7C~%7B%7D%3C%3E%5C%2C.!%3B%3A'%22%5B%5D%26%25%24%23%40%5E*_";
+        const expectedQuery = "test" + "-%3D~%2C.!%3B%3A'%26%24%40*_%20%23%3F%2B%7C%7B%7D%3C%3E%5C%22%5B%5D%25%5E";
         const suppliedUriPath = ussBaseUri + "/some/dir/";
         const expectedUriPath = suppliedUriPath;
 

@@ -29,7 +29,7 @@ export class EncodeUri {
      * @param {string} zosUriPath - the URI path to encode
      */
     public static encUriPathForZos(zosUriPath: string) {
-        // zosmf works with # unencoded, but APIML fails unless it is encoded.
+        // zosmf works with # unencoded, but APIML fails with 400 error unless # is encoded.
         const encodedUriPath = zosUriPath.replaceAll("#", "%23");
         return encodedUriPath;
     }
@@ -63,6 +63,10 @@ export class EncodeUri {
         // a URI path, not a URI query.
         encodedUriPath = encodedUriPath.replaceAll("?", "%3F");
         encodedUriPath = encodedUriPath.replaceAll("+", "%2B");
+
+        // JavaScript's encodeURI does not encode #
+        // zosmf works with # unencoded, but APIML fails with 400 error unless # is encoded.
+        encodedUriPath = encodedUriPath.replaceAll("#", "%23");
         return encodedUriPath;
     }
 
