@@ -10,7 +10,6 @@
 */
 
 import { EncodeUri, Session, ImperativeError, IO, ITaskWithStatus, TaskStage } from "@zowe/imperative";
-import { posix } from "path";
 import * as fs from "fs";
 import { error } from "console";
 import * as util from "util";
