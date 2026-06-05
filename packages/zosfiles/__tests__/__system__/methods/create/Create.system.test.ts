@@ -167,7 +167,7 @@ describe("Create data set - encoded", () => {
         defaultSystem = testEnvironment.systemTestProperties;
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
-        dsname = `${defaultSystem.zosmf.user.trim().toUpperCase()}.ZOSTEST.ENCO#ED.DATA.SET`;
+        dsname = `${defaultSystem.zosmf.user.trim().toUpperCase()}.ZOSTEST.ENC@$-#.DATA.SET`;
     });
 
     afterAll(async () => {
@@ -746,7 +746,7 @@ describe("Create uss file - encoded", () => {
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
         basePath = defaultSystem.unix.testdir; // `${defaultSystem.zosmf.basePath.trim()}`;
-        filename = `${basePath}/enco#edtest.txt`.replace(/\./g, "");
+        filename = `${basePath}/encodedFileNm-=~,.!;:'&$@*_ #?+|{}<>\\\"[]%^.txt`.replace(/\./g, "");
     });
 
     afterAll(async () => {
