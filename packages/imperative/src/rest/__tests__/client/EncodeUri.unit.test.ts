@@ -18,7 +18,7 @@ describe("EncodeUri tests", () => {
 
     it("should encode only # for a zos URI path", () => {
         const zosBaseUri = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES;
-        const zosSpecialChars = "@$-#"
+        const zosSpecialChars = "@$-#";
         const suppliedUri = zosBaseUri + `/-(VOL99)/ALPHA.12345.JCL(TEST${zosSpecialChars})`;
         const expectedUri = zosBaseUri + "/-(VOL99)/ALPHA.12345.JCL(TEST@$-%23)";
 
