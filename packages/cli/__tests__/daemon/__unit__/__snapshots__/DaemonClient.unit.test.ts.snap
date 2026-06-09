@@ -20,6 +20,7 @@ Object {
     },
     "stdin": null,
     "stdinLength": 0,
+    "token": "fakeToken",
     "user": "ZmFrZQ==",
   },
   "stream": Object {
@@ -77,6 +78,7 @@ Object {
     "env": Object {},
     "stdin": null,
     "stdinLength": 1024,
+    "token": "fakeToken",
     "user": "ZmFrZQ==",
   },
   "stdinStream": Promise {},

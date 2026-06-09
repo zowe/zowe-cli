@@ -64,6 +64,7 @@ pub struct DaemonResponse {
     pub stdinLength: Option<i32>,
     pub stdin: Option<String>,
     pub user: Option<String>,
+    pub token: Option<String>,
 }
 
 #[derive(Deserialize)]

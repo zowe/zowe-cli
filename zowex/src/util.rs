@@ -168,6 +168,23 @@ pub fn util_get_username() -> String {
     username()
 }
 
+pub fn util_get_daemon_token() -> Option<String> {
+    let mut token_path = match util_get_daemon_dir() {
+        Ok(dir) => dir,
+        Err(_) => return None,
+    };
+    token_path.push("daemon_token.json");
+    
+    if let Ok(contents) = std::fs::read_to_string(&token_path) {
+        if let Ok(json) = serde_json::from_str::<serde_json::Value>(&contents) {
+            if let Some(token) = json.get("token").and_then(|t| t.as_str()) {
+                return Some(token.to_string());
+            }
+        }
+    }
+    None
+}
+
 pub fn util_terminal_supports_color() -> i32 {
     if let Some(support) = supports_color::on(Stream::Stdout) {
         if support.has_16m {

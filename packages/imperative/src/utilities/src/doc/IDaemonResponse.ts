@@ -47,4 +47,9 @@ export interface IDaemonResponse {
      * The user that initiated the request from the daemon client.
      */
     user?: string;
+
+    /**
+     * Secure token for authenticating the daemon client.
+     */
+    token?: string;
 }

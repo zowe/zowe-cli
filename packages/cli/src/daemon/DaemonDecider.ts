@@ -64,6 +64,14 @@ export class DaemonDecider {
     private mUser: string;
 
     /**
+     * Secure token for authenticating clients
+     * @private
+     * @type {string}
+     * @memberof DaemonDecider
+     */
+    private mToken: string;
+
+    /**
      * Indicator for whether or not to start the server
      * @private
      * @type {boolean}
@@ -86,14 +94,14 @@ export class DaemonDecider {
 
         this.initialParse();
         if (this.startServer) {
+            this.recordDaemonPid();
+
             this.mServer = net.createServer((c) => {
-                new DaemonClient(c, this.mServer, this.mUser).run();
+                new DaemonClient(c, this.mServer, this.mUser, this.mToken).run();
             });
 
             this.mServer.on('error', this.error.bind(this));
             this.mServer.on('close', this.close.bind(this));
-
-            this.recordDaemonPid();
         }
     }
 
@@ -114,6 +122,14 @@ export class DaemonDecider {
 
             this.mServer.maxConnections = 1;
             this.mServer.listen(this.mSocket, () => {
+                if (process.platform !== "win32") {
+                    try {
+                        const ownerReadWrite = 0o600;
+                        fs.chmodSync(this.mSocket, ownerReadWrite);
+                    } catch (err) {
+                        Imperative.api.appLogger.error(`Failed to chmod socket: ${err.message}`);
+                    }
+                }
                 Imperative.api.appLogger.debug(`daemon server bound ${this.mSocket}`);
                 new Console(`info`).info(`server bound ${this.mSocket}`);
             });
@@ -144,6 +160,20 @@ export class DaemonDecider {
             fs.chmodSync(pidFilePath, ownerReadWrite);
         } catch(err) {
             throw new Error("Failed to write file '" + pidFilePath + "'\nDetails = " + err.message);
+        }
+
+        // Generate and save a secure token for authentication
+        const tokenLength = 32;
+        const token = require("crypto").randomBytes(tokenLength).toString("hex");
+        this.mToken = token;
+        const tokenFilePath = path.join(DaemonUtil.getDaemonDir(), "daemon_token.json");
+        const tokenData = JSON.stringify({ token }, null, 2);
+        try {
+            fs.writeFileSync(tokenFilePath, tokenData);
+            const ownerReadWrite = 0o600;
+            fs.chmodSync(tokenFilePath, ownerReadWrite);
+        } catch(err) {
+            throw new Error("Failed to write file '" + tokenFilePath + "'\nDetails = " + err.message);
         }
 
         Imperative.api.appLogger.trace("Recorded daemon process ID into " + pidFilePath +

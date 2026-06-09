@@ -252,6 +252,7 @@ pub async fn comm_talk(message: &[u8], stream: &mut DaemonClient) -> io::Result<
                             stdinLength: None,
                             stdin: Some(s),
                             user: Some(BASE64_STANDARD.encode(executor)),
+                            token: crate::util::util_get_daemon_token(),
                         };
                         let v = serde_json::to_string(&response)?;
                         reader.get_mut().write_all(v.as_bytes()).await?;

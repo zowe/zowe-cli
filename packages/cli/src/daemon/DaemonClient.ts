@@ -37,9 +37,10 @@ export class DaemonClient {
      * @param {net.Socket} mClient
      * @param {net.Server} mServer
      * @param {string} mOwner
+     * @param {string} mToken
      * @memberof DaemonClient
      */
-    constructor(private mClient: net.Socket, private mServer: net.Server, private mOwner: string) {
+    constructor(private mClient: net.Socket, private mServer: net.Server, private mOwner: string, private mToken: string) {
     }
 
     /**
@@ -167,6 +168,20 @@ export class DaemonClient {
             } catch (err) {
                 Imperative.api.appLogger.error("The user field on a daemon request was malformed.");
             }
+        }
+
+        const requestToken: string = jsonData.token;
+
+        if (requestToken !== this.mToken) {
+            // Token mismatch or missing
+            Imperative.api.appLogger.warn("A connection was attempted with an invalid or missing token.");
+            const responsePayload: string = DaemonRequest.create({
+                stderr: "The daemon client did not supply a valid authentication token.\n",
+                exitCode: 1
+            });
+            this.mClient.write(responsePayload);
+            this.mClient.end();
+            return;
         }
 
         if (requestUser == null || requestUser === '') {

@@ -266,6 +266,7 @@ pub async fn run_daemon_command(
     }
 
     let executor = util_get_username();
+    let token = crate::util::util_get_daemon_token();
 
     // create the response structure for this message
     let response: DaemonResponse =
@@ -279,6 +280,7 @@ pub async fn run_daemon_command(
                 stdinLength: Some(0),
                 stdin: Some(control_c),
                 user: Some(BASE64_STANDARD.encode(executor)),
+                token: token,
             }
         } else {
             DaemonResponse {
@@ -288,6 +290,7 @@ pub async fn run_daemon_command(
                 stdinLength: Some(stdin.len() as i32),
                 stdin: None,
                 user: Some(BASE64_STANDARD.encode(executor)),
+                token: token,
             }
         };
 

@@ -326,8 +326,8 @@ describe("DaemonDecider tests", () => {
             existTimes = 3;
         }
 
-        expect(writeFileSyncSpy).toHaveBeenCalledTimes(1);
-        expect(existsSyncSpy).toHaveBeenCalledTimes(existTimes);
+        expect(writeFileSyncSpy).toHaveBeenCalledTimes(2);
+        expect(existsSyncSpy).toHaveBeenCalledTimes(existTimes + 1);
         expect(deleteSyncSpy).toHaveBeenCalledTimes(1);
         writeFileSyncSpy.mockClear();
     });
