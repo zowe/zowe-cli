@@ -521,4 +521,22 @@ export class IO {
         }
         );
     }
+
+    public static isSubPath(parent: string, child: string): boolean {
+        let relativePathSegments: string[] = [];
+        const parentAbsPath = path.resolve(parent);
+        const childAbsPath = path.resolve(child);
+        const relativePath = path.relative(parentAbsPath, childAbsPath);
+        if (relativePath) { relativePathSegments = relativePath.split(path.sep); }
+        if (relativePathSegments.length === 0 || relativePathSegments.includes("..") || path.isAbsolute(relativePath)) { return false; }
+        return true;
+    }
+
+    public static containsPathSep(element: string): boolean {
+        return element.includes(path.sep);
+    }
+
+    public static containsBacktrack(element: string): boolean {
+        return element.split(path.sep)?.includes("..") ? true : false;
+    }
 }
