@@ -4,7 +4,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## Recent Changes
 
-- **Breaking** BugFix: Updated `zowe zos-files (ds/uss) edit` to prompt the user to trust custom editors. [#2740](https://github.com/zowe/zowe-cli/pull/2740)
+- **Breaking** BugFix: Updated the `zowe zos-files (ds/uss) edit` command to prompt the user to trust custom editors. [#2740](https://github.com/zowe/zowe-cli/pull/2740)
 
 ## `8.32.2`
 
