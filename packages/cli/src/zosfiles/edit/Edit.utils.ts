@@ -30,7 +30,8 @@ export enum Prompt {
     viewDiff,
     overwriteRemote,
     viewUpdatedRemote,
-    continueToUpload
+    continueToUpload,
+    trustEditor
 }
 
 /**
@@ -111,7 +112,7 @@ export class EditUtilities {
      * @returns {Promise<boolean>} - promise whose resolution depends on user input
      * @memberof EditUtilities
      */
-    public static async promptUser(prompt: Prompt, conflict?: boolean): Promise<boolean>{
+    public static async promptUser(prompt: Prompt, conflict?: boolean, promptTexts?: string[]): Promise<boolean>{
         let input;
         let promptText;
         const promptPrefix = conflict ? 'CONFLICT: ' : '';
@@ -130,6 +131,9 @@ export class EditUtilities {
                 break;
             case Prompt.continueToUpload:
                 promptText = promptPrefix + 'Ignore conflicts and overwrite remote? y/n';
+                break;
+            case Prompt.trustEditor:
+                promptText = `You are about to edit using '${promptTexts[0]}'. Would you like to trust this editor? y/n`;
                 break;
         }
         do {

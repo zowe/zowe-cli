@@ -77,6 +77,15 @@ export default class EditHandler extends ZosFilesBaseHandler {
         commandParameters.response.console.log(TextUtils.chalk.green(`Temp file location: `) +
         TextUtils.chalk.blue(lfFile.tempPath));
 
+        if(commandParameters.arguments.editor){
+            const trustEditor = await Utils.promptUser(Prompt.trustEditor, false, [commandParameters.arguments.editor]);
+            if (!trustEditor){
+                throw new ImperativeError({
+                    msg: TextUtils.chalk.red(`User did not trust the editor. Command terminated.`),
+                    causeErrors: new Error(`User did not trust the editor.`)
+                });
+            }
+        }
         const overwrite = await Utils.makeEdits(lfFile, commandParameters.arguments.editor);
 
         if (!overwrite){
