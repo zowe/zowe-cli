@@ -27,7 +27,7 @@ describe("z/OS Files - Download", () => {
     const dsname = "USER.DATA.SET";
     const dsFolder = process.platform === 'win32' ? "user\\data\\set" : "user/data/set";
     const dsContent = Buffer.from("This\nis\r\na\ntest");
-    const ussname = process.platform === 'win32' ? "\\a\\user\\test.txt": "/a/user/test.txt";
+    const ussname = "/a/user/test.txt";
     const arrOfUssPath: string[] = ussname.split("/");
     const localFileName = arrOfUssPath[arrOfUssPath.length - 1];
     const ussFileContent = "Test data for unit test";
@@ -786,7 +786,7 @@ describe("z/OS Files - Download", () => {
             listApiResponse.items.forEach((mem) => {
                 expect(downloadDatasetSpy).toHaveBeenCalledWith(dummySession, `${dsname}(${mem.member})`, {
                     volume,
-                    file: `${directory}/${mem.member.toLowerCase()}${extension}`,
+                    file: `${directory}${IO.FILE_DELIM}${mem.member.toLowerCase()}${extension}`,
                     binary
                 });
             });
@@ -821,7 +821,7 @@ describe("z/OS Files - Download", () => {
             listApiResponse.items.forEach((mem) => {
                 expect(downloadDatasetSpy).toHaveBeenCalledWith(dummySession, `${dsname}(${mem.member})`, {
                     volume,
-                    file: `${directory.slice(0, -1)}/${mem.member.toLowerCase()}${extension}`,
+                    file: `${directory.slice(0, -1)}${IO.FILE_DELIM}${mem.member.toLowerCase()}${extension}`,
                     record
                 });
             });
@@ -857,7 +857,7 @@ describe("z/OS Files - Download", () => {
             listApiResponse.items.forEach((mem) => {
                 expect(downloadDatasetSpy).toHaveBeenCalledWith(dummySession, `${dsname}(${mem.member})`, {
                     volume,
-                    file: `${directory.slice(0, -1)}/${mem.member.toLowerCase()}${extension}`,
+                    file: `${directory.slice(0, -1)}${IO.FILE_DELIM}${mem.member.toLowerCase()}${extension}`,
                     binary,
                     encoding: undefined,
                     responseTimeout
@@ -932,7 +932,7 @@ describe("z/OS Files - Download", () => {
             listApiResponse.items.forEach((mem) => {
                 expect(downloadDatasetSpy).toHaveBeenCalledWith(dummySession, `${dsname}(${mem.member})`, {
                     volume,
-                    file: `${directory.slice(0, -1)}/${mem.member.toLowerCase()}${extension}`,
+                    file: `${directory.slice(0, -1)}${IO.FILE_DELIM}${mem.member.toLowerCase()}${extension}`,
                     encoding
                 });
             });
@@ -966,7 +966,7 @@ describe("z/OS Files - Download", () => {
             listApiResponse.items.forEach((mem) => {
                 expect(downloadDatasetSpy).toHaveBeenCalledWith(dummySession, `${dsname}(${mem.member})`, {
                     volume,
-                    file: `${directory.slice(0, -1)}/${mem.member.toLowerCase()}${extension}`
+                    file: `${directory.slice(0, -1)}${IO.FILE_DELIM}${mem.member.toLowerCase()}${extension}`
                 });
             });
         });
