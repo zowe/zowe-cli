@@ -545,4 +545,8 @@ export class IO {
     public static containsBacktrack(element: string): boolean {
         return element.split(path.sep)?.includes("..") ? true : false;
     }
+
+    public static fileEvaluatesToDir(element: string): boolean {
+        return !(path.basename(element) === element);
+    }
 }

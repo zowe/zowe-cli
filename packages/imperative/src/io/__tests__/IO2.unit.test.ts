@@ -64,4 +64,18 @@ describe("IO tests", () => {
             expect(IO.containsBacktrack("path")).toEqual(false);
         });
     });
+    describe("fileEvaluatesToDir", () => {
+        it("should flag an element containing a path seperator", () => {
+            expect(IO.fileEvaluatesToDir("some" + path.sep + "path")).toEqual(true);
+        });
+        it("should not flag an element that does not contain a path seperator", () => {
+            expect(IO.fileEvaluatesToDir("somepath")).toEqual(false);
+        });
+        skipOnWin("should not flag an element containing a Windows path seperator", () => {
+            expect(IO.fileEvaluatesToDir("some" + path.win32.sep + "path")).toEqual(false);
+        });
+        skipOnPosix("should not flag an element containing a posix style path seperator", () => {
+            expect(IO.fileEvaluatesToDir("some" + path.posix.sep + "path")).toEqual(false);
+        });
+    });
 });
