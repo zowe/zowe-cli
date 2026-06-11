@@ -34,7 +34,7 @@ export class IO {
      * @type {string}
      * @memberof IO
      */
-    public static readonly FILE_DELIM: string = path.sep;
+    public static readonly FILE_DELIM: string = "/";
 
     /**
      * UTF8 identifier
@@ -533,7 +533,8 @@ export class IO {
     }
 
     public static containsBacktrack(element: string): boolean {
-        return element.split(path.sep)?.includes("..") ? true : false;
+        if (process.platform === "win32") { element = element.replaceAll("\\", "/"); }
+        return element.split("/")?.includes("..") ? true : false;
     }
 
     public static fileEvaluatesToDir(element: string): boolean {

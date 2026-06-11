@@ -224,6 +224,7 @@ export class Download {
                 if (options.directory) {
                     // Prevent double slashes
                     if (options.directory.endsWith(IO.FILE_DELIM)) { return options.directory.slice(0, -1); }
+                    if (options.directory.endsWith("\\")) { return options.directory.slice(0, -2); }
                     return options.directory;
                 }
 
