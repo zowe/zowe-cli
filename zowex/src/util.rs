@@ -13,7 +13,7 @@
 
 use std::collections::HashMap;
 use std::env;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 extern crate home;
 use home::home_dir;
@@ -113,9 +113,62 @@ pub fn util_get_daemon_dir() -> Result<PathBuf, i32> {
             eprintln!("Reason = {}.", err_val);
             return Err(EXIT_CODE_FILE_IO_ERROR);
         }
+
+        // Restrict the daemon directory to the current user only, since it can
+        // hold sensitive runtime artifacts (pid file, socket, lock file).
+        util_restrict_dir_to_owner(&daemon_dir)?;
     }
 
     Ok(daemon_dir)
+}
+
+/**
+ * Restrict access to a directory so that only the current user can access it.
+ * On POSIX systems this sets the directory mode to 0o700. On Windows it uses
+ * icacls to grant full control to only the current user (best-effort).
+ *
+ * @param dir_path The path to the directory to secure.
+ *
+ * @returns Ok on success, or a failure exit code on a POSIX permission error.
+ */
+#[cfg(target_family = "unix")]
+fn util_restrict_dir_to_owner(dir_path: &Path) -> Result<(), i32> {
+    use std::os::unix::fs::PermissionsExt;
+    if let Err(err_val) =
+        std::fs::set_permissions(dir_path, std::fs::Permissions::from_mode(0o700))
+    {
+        eprintln!(
+            "Unable to restrict access to zowe daemon directory = {}.",
+            dir_path.display()
+        );
+        eprintln!("Reason = {}.", err_val);
+        return Err(EXIT_CODE_FILE_IO_ERROR);
+    }
+    Ok(())
+}
+
+#[cfg(target_family = "windows")]
+fn util_restrict_dir_to_owner(dir_path: &Path) -> Result<(), i32> {
+    use std::process::Command;
+    // Best-effort: remove inherited permissions and grant full control only to the
+    // current user. We only warn on failure so that a missing/locked-down icacls
+    // does not prevent the daemon from functioning.
+    let grant_arg = format!("{}:(OI)(CI)F", util_get_username());
+    if let Err(err_val) = Command::new("icacls")
+        .arg(dir_path)
+        .arg("/inheritancelevel:r")
+        .arg("/grant:r")
+        .arg(grant_arg)
+        .arg("/c")
+        .output()
+    {
+        eprintln!(
+            "Warning: unable to restrict access to zowe daemon directory = {}.",
+            dir_path.display()
+        );
+        eprintln!("Reason = {}.", err_val);
+    }
+    Ok(())
 }
 
 #[cfg(target_family = "unix")]

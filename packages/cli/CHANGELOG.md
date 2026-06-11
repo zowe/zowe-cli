@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Restricted access to daemon-related files and directories to the current user only on all platforms. The daemon directory, `~/.zowe/bin` directory, the extracted native executable, the daemon PID file, and the Unix domain socket are now created with owner-only permissions (`0o700`/`0o600` on POSIX, owner-only ACL on Windows) to prevent other local users from accessing them.
+
 ## `8.32.2`
 
 - BugFix: Updated the error handling for plug-in installation to report the first failure that occurs. [#2722](https://github.com/zowe/zowe-cli/pull/2722)

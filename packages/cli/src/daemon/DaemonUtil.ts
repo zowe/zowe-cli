@@ -9,7 +9,6 @@
 *
 */
 
-import * as fs from "fs";
 import * as os from "os";
 import * as path from "path";
 import { IO } from "@zowe/imperative";
@@ -38,8 +37,9 @@ export class DaemonUtil {
         if (!IO.existsSync(daemonDir)) {
             try {
                 IO.createDirSync(daemonDir);
-                const ownerReadWriteTraverse = 0o700;
-                fs.chmodSync(daemonDir, ownerReadWriteTraverse);
+                // Restrict access to the daemon directory to only the current user.
+                // On Windows this sets an owner-only ACL; on POSIX it sets mode 0o700.
+                IO.giveAccessOnlyToOwner(daemonDir);
             } catch(err) {
                 throw new Error("Failed to create directory '" + daemonDir + "'\nDetails = " + err.message);
             }

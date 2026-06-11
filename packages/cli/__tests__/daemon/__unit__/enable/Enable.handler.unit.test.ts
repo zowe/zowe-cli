@@ -67,11 +67,22 @@ describe("Handler for daemon enable", () => {
         }
     });
 
+    let giveAccessOnlyToOwnerSpy: any;
+
     beforeEach(() => {
         // remove enableDaemon spy & mock between tests
         enableDaemonSpy?.mockRestore();
         unzipTgzSpy?.mockRestore();
         logMessage = "";
+
+        // Prevent real chmod/icacls calls against our fake (non-existent) paths.
+        giveAccessOnlyToOwnerSpy = jest.spyOn(IO, "giveAccessOnlyToOwner").mockImplementation(() => {
+            return;
+        });
+    });
+
+    afterEach(() => {
+        giveAccessOnlyToOwnerSpy?.mockRestore();
     });
 
     afterAll(() => {
@@ -565,6 +576,74 @@ describe("Handler for daemon enable", () => {
 
             IO.existsSync = existsSyncOrig;
             IO.isDir = isDirOrig;
+            IO.createDirSync = createDirSyncOrig;
+        });
+
+        it("should restrict access to the extracted executable to the owner", async () => {
+            // Mock the IO functions to simulate stuff is working
+            const existsSyncOrig = IO.existsSync;
+            IO.existsSync = jest.fn(() => {
+                return true;
+            });
+
+            const isDirOrig = IO.isDir;
+            IO.isDir = jest.fn(() => {
+                return true;
+            });
+
+            const createDirSyncOrig = IO.createDirSync;
+            IO.createDirSync = jest.fn();
+
+            // spy on our handler's private enableDaemon() function
+            unzipTgzSpy = jest.spyOn(EnableDaemonHandler.prototype as any, "unzipTgz");
+            unzipTgzSpy.mockImplementation((_tgzFile: string, _toDir: string, _fileToExtract: string) => {return;});
+
+            let error;
+            try {
+                await enableHandler.enableDaemon(noAskNoAddPath);
+            } catch (e) {
+                error = e;
+            }
+
+            expect(error).toBeUndefined();
+            // the extracted executable should be restricted to the owner
+            expect(giveAccessOnlyToOwnerSpy).toHaveBeenCalled();
+            const restrictedPaths = giveAccessOnlyToOwnerSpy.mock.calls.map((call: any[]) => call[0]);
+            expect(restrictedPaths.some((p: string) => p.includes(nodeJsPath.normalize("/bin/")))).toBe(true);
+
+            IO.existsSync = existsSyncOrig;
+            IO.isDir = isDirOrig;
+            IO.createDirSync = createDirSyncOrig;
+        });
+
+        it("should restrict access to the bin directory when it is created", async () => {
+            const existsSyncOrig = IO.existsSync;
+            // tgz file exists, bin dir does not exist, exe does not exist afterward
+            IO.existsSync = jest.fn()
+                .mockReturnValueOnce(true)      // for tgz file
+                .mockReturnValueOnce(false)     // for bin dir
+                .mockReturnValue(false);        // for exe existence check
+
+            const createDirSyncOrig = IO.createDirSync;
+            IO.createDirSync = jest.fn();
+
+            // spy on our handler's private enableDaemon() function
+            unzipTgzSpy = jest.spyOn(EnableDaemonHandler.prototype as any, "unzipTgz");
+            unzipTgzSpy.mockImplementation((_tgzFile: string, _toDir: string, _fileToExtract: string) => {return;});
+
+            let error;
+            try {
+                await enableHandler.enableDaemon(noAskNoAddPath);
+            } catch (e) {
+                error = e;
+            }
+
+            expect(error).toBeUndefined();
+            expect(IO.createDirSync).toHaveBeenCalledWith(zoweBinDirMock);
+            // the newly created bin directory should be restricted to the owner
+            expect(giveAccessOnlyToOwnerSpy).toHaveBeenCalledWith(zoweBinDirMock);
+
+            IO.existsSync = existsSyncOrig;
             IO.createDirSync = createDirSyncOrig;
         });
     }); // end enableDaemon method

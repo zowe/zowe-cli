@@ -332,6 +332,66 @@ describe("DaemonDecider tests", () => {
         writeFileSyncSpy.mockClear();
     });
 
+    it("should restrict access to the pid file and socket to the owner on Posix", () => {
+        const log = jest.fn(() => {
+            // do nothing
+        });
+
+        const on = jest.fn((_event, _func) => {
+            // do nothing
+        });
+
+        // invoke the listen callback so the socket-restriction logic runs
+        const listen = jest.fn((_socket, method) => {
+            method();
+        });
+
+        const parse = jest.fn();
+
+        (Imperative as any) = {
+            api: {
+                appLogger: {
+                    trace: log,
+                    debug: log,
+                    error: log
+                }
+            },
+            console: {
+                info: log
+            },
+            parse
+        };
+
+        const fn = jest.mocked(net.createServer);
+        fn.mockImplementation((method: any, ..._args: any[]): any => {
+            method("fakeClient", "fakeServer");
+            return { on, listen };
+        });
+
+        const daemonDir = path.normalize("./testOutput/daemonDir");
+        process.env.ZOWE_DAEMON_DIR = daemonDir;
+
+        // fool our function into thinking we are on a Posix system
+        const realPlatform = process.platform;
+        Object.defineProperty(process, "platform", { value: "linux" });
+
+        const giveAccessSpy = jest.spyOn(IO, "giveAccessOnlyToOwner").mockImplementation(() => {
+            return;
+        });
+        jest.spyOn(IO, "existsSync").mockReturnValue(false);
+
+        const daemonDecider = new DaemonDecider(["node", "zowe", "--daemon"]);
+        daemonDecider.init();
+        daemonDecider.runOrUseDaemon();
+
+        // restore our real platform
+        Object.defineProperty(process, "platform", { value: realPlatform });
+
+        const restrictedPaths = giveAccessSpy.mock.calls.map((call) => call[0]);
+        expect(restrictedPaths).toContain(path.join(daemonDir, "daemon_pid.json"));
+        expect(restrictedPaths).toContain(path.join(daemonDir, "daemon.sock"));
+    });
+
     it("should throw an error when it cannot write the process ID file", () => {
         const log = jest.fn(() => {
             // do nothing
