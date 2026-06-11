@@ -538,10 +538,6 @@ export class IO {
         return true;
     }
 
-    public static containsPathSep(element: string): boolean {
-        return element.includes(path.sep);
-    }
-
     public static containsBacktrack(element: string): boolean {
         return element.split(path.sep)?.includes("..") ? true : false;
     }

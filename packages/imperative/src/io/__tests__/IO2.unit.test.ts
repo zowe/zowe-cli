@@ -39,20 +39,6 @@ describe("IO tests", () => {
             expect(result).toEqual(false);
         });
     });
-    describe("containsPathSep", () => {
-        it("should flag an element containing a path seperator", () => {
-            expect(IO.containsPathSep("some" + path.sep + "path")).toEqual(true);
-        });
-        it("should not flag an element that does not contain a path seperator", () => {
-            expect(IO.containsPathSep("somepath")).toEqual(false);
-        });
-        skipOnWin("should not flag an element containing a Windows path seperator", () => {
-            expect(IO.containsPathSep("some" + path.win32.sep + "path")).toEqual(false);
-        });
-        skipOnPosix("should not flag an element containing a posix style path seperator", () => {
-            expect(IO.containsPathSep("some" + path.posix.sep + "path")).toEqual(false);
-        });
-    });
     describe("containsBacktrack", () => {
         it("should return true if path contains backtracking", () => {
             expect(IO.containsBacktrack("path" + path.sep +  ".." + path.sep + "backtracked")).toEqual(true);
