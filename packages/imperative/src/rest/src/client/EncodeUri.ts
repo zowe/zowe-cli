@@ -55,8 +55,11 @@ export class EncodeUri {
      * @param {string} ussUriPath - the URI path to encode
      */
     public static encUriPathForUss(ussUriPath: string) {
+        // eliminate // and /../
+        let encodedUriPath = path.posix.normalize(ussUriPath);
+
         if (ussUriPath.includes("\\")) {
-            // Both encoded and unencoded backslash fails in REST requests
+            // Both encoded and unencoded backslash fail in REST requests
             throw new ImperativeError({
                 msg: `The supplied USS path = '${ussUriPath}' contains a backslash \\ character. ` +
                     `This request will not be processed. In both z/OSMF and API-ML the backslash is either ignored, ` +
@@ -64,15 +67,13 @@ export class EncodeUri {
             });
         }
         if (ussUriPath.includes('"')) {
-            // Both encoded and unencoded double-quote fails in REST requests
+            // Both encoded and unencoded double-quote fail in REST requests
             throw new ImperativeError({
                 msg: `The supplied USS path = '${ussUriPath}' contains a double-quote " character. ` +
                     `This request will not be processed. In both z/OSMF and API-ML the double-quote ` +
                     `fails with an HTTP 400 or 500 error code.`
             });
         }
-
-        let encodedUriPath = ussUriPath;
 
         // Without encoding, % fails in both apiml and zosmf with an HTTP 400 error.
         // This replacement must come first.
