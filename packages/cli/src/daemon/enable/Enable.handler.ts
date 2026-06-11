@@ -243,7 +243,7 @@ export default class EnableDaemonHandler implements ICommandHandler {
     /**
      * Add our .zowe/bin directory to the user's PATH.
      *
-     * @param pathToZoweBin The absolute path to our .zowe/bin drectory.
+     * @param pathToZoweBin The absolute path to our .zowe/bin directory.
      *
      * @param {IDaemonEnableQuestions} userQuestions Questions for user (if permitted)
      *

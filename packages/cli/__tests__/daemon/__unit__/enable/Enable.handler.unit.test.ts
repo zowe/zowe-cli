@@ -460,7 +460,9 @@ describe("Handler for daemon enable", () => {
 
             expect(error).toBeUndefined();
             // the extracted executable should be restricted to the owner
-            const expectedExePath = nodeJsPath.resolve(zoweBinDirMock, "zowe");
+            const platform = ProcessUtils.getBasicSystemInfo().platform;
+            const exeName = platform === "win32" ? "zowe.exe" : "zowe";
+            const expectedExePath = nodeJsPath.resolve(zoweBinDirMock, exeName);
             expect(giveAccessOnlyToOwnerSpy).toHaveBeenCalledWith(expectedExePath);
         });
 
