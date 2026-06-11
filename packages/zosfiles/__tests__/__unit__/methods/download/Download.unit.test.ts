@@ -25,9 +25,9 @@ import { PassThrough } from "stream";
 
 describe("z/OS Files - Download", () => {
     const dsname = "USER.DATA.SET";
-    const dsFolder = "user/data/set";
+    const dsFolder = process.platform === 'win32' ? "user\\data\\set" : "user/data/set";
     const dsContent = Buffer.from("This\nis\r\na\ntest");
-    const ussname = "/a/user/test.txt";
+    const ussname = process.platform === 'win32' ? "\\a\\user\\test.txt": "/a/user/test.txt";
     const arrOfUssPath: string[] = ussname.split("/");
     const localFileName = arrOfUssPath[arrOfUssPath.length - 1];
     const ussFileContent = "Test data for unit test";
@@ -689,7 +689,7 @@ describe("z/OS Files - Download", () => {
             expect(downloadDatasetSpy).toHaveBeenCalledTimes(2);
             listApiResponse.items.forEach((mem) => {
                 expect(downloadDatasetSpy).toHaveBeenCalledWith(dummySession, `${dsname}(${mem.member})`, {
-                    file: `${dsFolder}/${mem.member.toLowerCase()}.txt`
+                    file: `${dsFolder}${IO.FILE_DELIM}${mem.member.toLowerCase()}.txt`
                 });
             });
         });
@@ -717,7 +717,7 @@ describe("z/OS Files - Download", () => {
             expect(downloadDatasetSpy).toHaveBeenCalledTimes(2);
             listApiResponse.items.forEach((mem) => {
                 expect(downloadDatasetSpy).toHaveBeenCalledWith(dummySession, `${dsname}(${mem.member})`, {
-                    file: `${dsFolder}/${mem.member.toLowerCase()}.txt`
+                    file: `${dsFolder}${IO.FILE_DELIM}${mem.member.toLowerCase()}.txt`
                 });
             });
         });
@@ -751,7 +751,7 @@ describe("z/OS Files - Download", () => {
             listApiResponse.items.forEach((mem) => {
                 expect(downloadDatasetSpy).toHaveBeenCalledWith(dummySession, `${dsname}(${mem.member})`, {
                     volume,
-                    file: `${directory.slice(0, -1)}/${mem.member.toLowerCase()}${extension}`,
+                    file: `${directory.slice(0, -1)}${IO.FILE_DELIM}${mem.member.toLowerCase()}${extension}`,
                     binary
                 });
             });
@@ -762,7 +762,7 @@ describe("z/OS Files - Download", () => {
             let caughtError;
 
             const volume = "testVs";
-            const directory = "my/test/path";
+            const directory = `my${IO.FILE_DELIM}test${IO.FILE_DELIM}path`;
             const extension = ".xyz";
             const binary = true;
 
@@ -797,7 +797,7 @@ describe("z/OS Files - Download", () => {
             let caughtError;
 
             const volume = "testVs";
-            const directory = "my/test/path/";
+            const directory = `my${IO.FILE_DELIM}test${IO.FILE_DELIM}path${IO.FILE_DELIM}`;
             const extension = ".xyz";
             const record = true;
 
@@ -832,7 +832,7 @@ describe("z/OS Files - Download", () => {
             let caughtError;
 
             const volume = "testVs";
-            const directory = "my/test/path/";
+            const directory = `my${IO.FILE_DELIM}test${IO.FILE_DELIM}path${IO.FILE_DELIM}`;
             const extension = ".xyz";
             const binary = true;
             const responseTimeout = 5;
@@ -870,7 +870,7 @@ describe("z/OS Files - Download", () => {
             let caughtError;
 
             const volume = "testVs";
-            const directory = "my/test/path/";
+            const directory = `my${IO.FILE_DELIM}test${IO.FILE_DELIM}path${IO.FILE_DELIM}`;
             const extension = ".xyz";
             const record = true;
             const responseTimeout = 5;
@@ -908,7 +908,7 @@ describe("z/OS Files - Download", () => {
             let caughtError;
 
             const volume = "testVs";
-            const directory = "my/test/path/";
+            const directory = `my${IO.FILE_DELIM}test${IO.FILE_DELIM}path${IO.FILE_DELIM}`;
             const extension = ".xyz";
             const encoding = "285";
 
@@ -943,7 +943,7 @@ describe("z/OS Files - Download", () => {
             let caughtError;
 
             const volume = "testVs";
-            const directory = "My/Test/Path/";
+            const directory = `My${IO.FILE_DELIM}Test${IO.FILE_DELIM}Path${IO.FILE_DELIM}`;
             const extension = ".xyz";
 
             try {
@@ -976,7 +976,7 @@ describe("z/OS Files - Download", () => {
             let caughtError;
 
             const volume = "testVs";
-            const directory = "my/test/path/";
+            const directory = `my${IO.FILE_DELIM}test${IO.FILE_DELIM}path${IO.FILE_DELIM}`;
             const extension = "";
             const binary = true;
 
@@ -1000,7 +1000,7 @@ describe("z/OS Files - Download", () => {
             listApiResponse.items.forEach((mem) => {
                 expect(downloadDatasetSpy).toHaveBeenCalledWith(dummySession, `${dsname}(${mem.member})`, {
                     volume,
-                    file: `${directory.slice(0, -1)}/${mem.member.toLowerCase()}${extension}`,
+                    file: `${directory.slice(0, -1)}${IO.FILE_DELIM}${mem.member.toLowerCase()}${extension}`,
                     binary
                 });
             });
@@ -1029,7 +1029,7 @@ describe("z/OS Files - Download", () => {
             expect(downloadDatasetSpy).toHaveBeenCalledTimes(2);
             listApiResponse.items.forEach((mem) => {
                 expect(downloadDatasetSpy).toHaveBeenCalledWith(dummySession, `${dsname}(${mem.member})`, {
-                    file: `${dsFolder.toUpperCase()}/${mem.member}.txt`
+                    file: `${dsFolder.toUpperCase()}${IO.FILE_DELIM}${mem.member}.txt`
                 });
             });
         });
@@ -1082,7 +1082,7 @@ describe("z/OS Files - Download", () => {
             expect(downloadDatasetSpy).toHaveBeenCalledTimes(1);
             const firstItem = listApiResponse.items[0];
             expect(downloadDatasetSpy).toHaveBeenCalledWith(dummySession, `${dsname}(${firstItem.member})`, {
-                file: `${dsFolder}/${firstItem.member.toLowerCase()}.txt`
+                file: `${dsFolder}${IO.FILE_DELIM}${firstItem.member.toLowerCase()}.txt`
             });
         });
 
@@ -1114,10 +1114,10 @@ describe("z/OS Files - Download", () => {
 
             expect(downloadDatasetSpy).toHaveBeenCalledTimes(2);
             expect(downloadDatasetSpy).toHaveBeenCalledWith(dummySession, `${dsname}(${firstItem.member})`, {
-                file: `${dsFolder}/${firstItem.member.toLowerCase()}.txt`
+                file: `${dsFolder}${IO.FILE_DELIM}${firstItem.member.toLowerCase()}.txt`
             });
             expect(downloadDatasetSpy).toHaveBeenCalledWith(dummySession, `${dsname}(${secondItem.member})`, {
-                file: `${dsFolder}/${secondItem.member.toLowerCase()}.txt`
+                file: `${dsFolder}${IO.FILE_DELIM}${secondItem.member.toLowerCase()}.txt`
             });
         });
     });
@@ -1198,7 +1198,9 @@ describe("z/OS Files - Download", () => {
             expect(caughtError.causeErrors).toEqual(dummyError);
 
             expect(downloadAllMembersSpy).toHaveBeenCalledTimes(1);
-            expect(downloadAllMembersSpy).toHaveBeenCalledWith(dummySession, dataSetPO.dsname, {directory: "test/po/data/set"});
+            expect(downloadAllMembersSpy).toHaveBeenCalledWith(dummySession, dataSetPO.dsname, {
+                directory: `test${IO.FILE_DELIM}po${IO.FILE_DELIM}data${IO.FILE_DELIM}set`
+            });
         });
 
         it("should fail to download all datasets with invalid characters 1", async () => {
@@ -1802,7 +1804,7 @@ describe("z/OS Files - Download", () => {
                 }]
             });
             expect(createDirsSpy).toHaveBeenCalledTimes(1);
-            expect(createDirsSpy).toHaveBeenCalledWith("test/po/data/set");
+            expect(createDirsSpy).toHaveBeenCalledWith(`test${IO.FILE_DELIM}po${IO.FILE_DELIM}data${IO.FILE_DELIM}set`);
         });
 
         it("should download datasets when pattern matches a partitioned dataset and directory is supplied", async () => {
