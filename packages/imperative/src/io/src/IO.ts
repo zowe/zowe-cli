@@ -539,7 +539,8 @@ export class IO {
     }
 
     public static containsBacktrack(element: string): boolean {
-        return element.split(path.sep)?.includes("..") ? true : false;
+        if (process.platform === "win32") { element = element.replaceAll("\\", "/"); }
+        return element.split("/")?.includes("..") ? true : false;
     }
 
     public static fileEvaluatesToDir(element: string): boolean {

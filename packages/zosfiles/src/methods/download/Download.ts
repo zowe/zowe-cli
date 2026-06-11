@@ -12,7 +12,7 @@
 import { AbstractSession, Headers, ImperativeExpect, IO, Logger, TaskProgress, ImperativeError,
     TextUtils, IHeaderContent, IOptionsFullResponse, IRestClientResponse } from "@zowe/imperative";
 
-import { posix, join, relative } from "path";
+import { posix, win32, join, relative } from "path";
 import * as fs from "fs";
 import * as util from "util";
 
@@ -248,7 +248,9 @@ export class Download {
             const baseDir = (() => {
                 if (options.directory) {
                     // Prevent double slashes
-                    if (options.directory.endsWith("/")) { return options.directory.slice(0, -1); }
+                    if (options.directory.endsWith(posix.sep) || options.directory.endsWith(win32.sep)) {
+                        return options.directory.slice(0, -1);
+                    }
                     return options.directory;
                 }
 

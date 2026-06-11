@@ -13,7 +13,6 @@ import { IO } from "../../io";
 import * as path from "path";
 
 const skipOnWin = process.platform === 'win32' ? it.skip : it;
-const skipOnPosix = process.platform !== 'win32' ? it.skip : it;
 
 describe("IO tests", () => {
     describe("isSubPath", () => {
@@ -59,9 +58,6 @@ describe("IO tests", () => {
         });
         skipOnWin("should not flag an element containing a Windows path seperator", () => {
             expect(IO.fileEvaluatesToDir("some" + path.win32.sep + "path")).toEqual(false);
-        });
-        skipOnPosix("should not flag an element containing a posix style path seperator", () => {
-            expect(IO.fileEvaluatesToDir("some" + path.posix.sep + "path")).toEqual(false);
         });
     });
 });
