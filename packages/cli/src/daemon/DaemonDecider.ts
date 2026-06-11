@@ -121,7 +121,8 @@ export class DaemonDecider {
             if (process.platform !== "win32") {
                 oldUmask = process.umask(0o077);
             }
-
+            // Slight concern that the umask will apply to other files being created
+            // by this process at the exact same milliseconds, but I this is acceptable.
             this.mServer.listen(this.mSocket, () => {
                 // Restore the original umask immediately after the socket is bound
                 if (oldUmask !== undefined) {

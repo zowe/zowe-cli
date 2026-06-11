@@ -214,12 +214,12 @@ export default class EnableDaemonHandler implements ICommandHandler {
      * @returns A void promise to synchronize this operation.
      */
     private async unzipTgz(tgzFile: string, toDir: string, fileToExtract: string): Promise<void> {
-        return new Promise<void>((resolve) => {
+        return new Promise<void>((resolve, reject) => {
             fs.createReadStream(tgzFile)
                 .on('error', function(err: any) {
-                    throw new ImperativeError({
+                    reject(new ImperativeError({
                         msg: err
-                    });
+                    }));
                 })
                 .pipe(new tar.Parser())
                 .on('entry', function(entry: any) {

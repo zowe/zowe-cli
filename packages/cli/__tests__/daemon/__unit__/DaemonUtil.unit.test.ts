@@ -93,4 +93,27 @@ describe("DaemonUtil tests", () => {
         expect(error.message).toContain(customDir);
         expect(error.message).toContain(badStuffMsg);
     });
+
+    it("should throw an error when the daemon directory cannot be secured when it already exists", () => {
+        const customDir = path.normalize("./testOutput/existingDaemonDir");
+        process.env.ZOWE_DAEMON_DIR = customDir;
+        existsSyncSpy.mockReturnValue(true);
+
+        const badStuffMsg = "Some awful permission error";
+        giveAccessOnlyToOwnerSpy.mockImplementation(() => {
+            throw new Error(badStuffMsg);
+        });
+
+        let error: Error;
+        try {
+            DaemonUtil.getDaemonDir();
+        } catch (e) {
+            error = e;
+        }
+
+        expect(error).toBeDefined();
+        expect(error.message).toContain("Failed to restrict access to directory");
+        expect(error.message).toContain(customDir);
+        expect(error.message).toContain(badStuffMsg);
+    });
 });
