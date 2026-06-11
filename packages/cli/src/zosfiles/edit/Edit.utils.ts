@@ -133,7 +133,8 @@ export class EditUtilities {
                 promptText = promptPrefix + 'Ignore conflicts and overwrite remote? y/n';
                 break;
             case Prompt.trustEditor:
-                promptText = `You are about to edit using '${promptTexts[0]}'. Would you like to trust this editor? y/n`;
+                const editorName = promptTexts?.length > 0 ? promptTexts[0] : "the custom editor";
+                promptText = `You are about to edit using '${editorName}'. Would you like to trust this editor? y/n`;
                 break;
         }
         do {
