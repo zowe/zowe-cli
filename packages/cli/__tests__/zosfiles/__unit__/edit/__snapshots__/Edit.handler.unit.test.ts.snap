@@ -22,6 +22,13 @@ Object {
 }
 `;
 
+exports[`Files Edit Group Handler process method should proceed if the editor argument is provided and the user trusts the editor 1`] = `
+Object {
+  "commandResponse": "[32mSuccessfully uploaded edits to mainframe.[39m",
+  "success": true,
+}
+`;
+
 exports[`Files Edit Group Handler process method should upload edits unsuccessfully 1`] = `"Temp file location: /tmp/dataset.txt"`;
 
 exports[`Files Edit Group Handler process method should upload edits unsuccessfully 2`] = `"Exiting now. Temp file persists for editing."`;
