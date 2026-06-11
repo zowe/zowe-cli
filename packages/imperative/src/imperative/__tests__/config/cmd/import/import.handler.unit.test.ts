@@ -192,6 +192,25 @@ describe("Configuration Import command handler", () => {
             expect(readFileSyncSpy).not.toHaveBeenCalled();
             expect(writeFileSyncSpy).not.toHaveBeenCalled();
         });
+
+        it("should import config from web address but skip schema due to backtracking", async () => {
+            const localConfigObject = structuredClone(expectedConfigObject);
+            localConfigObject.$schema = "./../imperative-test-cli.schema.json";
+            const localConfigText = JSONC.stringify(localConfigObject, null, ConfigConstants.INDENT);
+
+            jest.spyOn(fs, "existsSync").mockReturnValueOnce(false);
+            writeFileSyncSpy.mockReturnValueOnce();
+            fetchConfigSpy.mockResolvedValueOnce(localConfigObject);
+
+            const params: IHandlerParameters = getIHandlerParametersObject();
+            params.arguments.location = "http://example.com/downloads/fakeapp.config.json";
+            await new ImportHandler().process(params);
+
+            expect(fetchConfigSpy).toHaveBeenCalled();
+            expect(downloadSchemaSpy).not.toHaveBeenCalled();
+            expect(writeFileSyncSpy).toHaveBeenCalledWith(path.join(process.cwd(), "fakeapp.config.json"),
+                localConfigText);
+        });
     });
 
     describe("fetch config", () => {

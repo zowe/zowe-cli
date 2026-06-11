@@ -652,5 +652,317 @@ describe("DownloadJobs", () => {
             expect(downloadFilePath).toContain("PROC");
             expect(downloadFilePath).toContain("STEP");
         });
+
+        it("should fail when a file path for a job file contains backtracking 1", () => {
+            const localFakeJobId = `JOB${IO.FILE_DELIM}..${IO.FILE_DELIM}001`;
+            const localFakeJobName = "MYJOB1";
+            const localJobFiles: IJobFile[] = [{
+                "jobid": localFakeJobId,
+                "jobname": localFakeJobName,
+                "id": 0,
+                "recfm": "FB",
+                "lrecl": 80,
+                "byte-count": expectedMockSpoolContent.length,
+                "record-count": expectedMockSpoolContent.split("\n").length,
+                "job-correlator": "hiasdfasdf",
+                "class": "A",
+                "ddname": "JESJCL",
+                "records-url": "notreal.com",
+                "subsystem": "JES2",
+                "stepname": "STEP1",
+                "procstep": "PROC1"
+            }];
+            const spoolParms: IDownloadSpoolContentParms = {
+                jobFile: localJobFiles[0],
+                jobid: fakeJobID,
+                jobname: fakeJobName,
+                omitJobidDirectory: false
+            };
+            GetJobs.getSpoolFiles = jest.fn(async (session: any, jobname: string, jobid: string) => {
+                return localJobFiles;
+            });
+
+            let error: Error;
+            let downloadFilePath: string;
+
+            try {
+                downloadFilePath = DownloadJobs.getSpoolDownloadFilePath(spoolParms);
+            } catch (err) {
+                error = err;
+            }
+
+            expect(downloadFilePath).not.toBeDefined();
+            expect(error).toBeDefined();
+            expect(error.message).toEqual("The generated file path contains illegal characters.");
+        });
+
+        it("should fail when a file path for a job file contains backtracking 2", () => {
+            const localJobFiles: IJobFile[] = [{
+                "jobid": fakeJobID,
+                "jobname": fakeJobName,
+                "id": 0,
+                "recfm": "FB",
+                "lrecl": 80,
+                "byte-count": expectedMockSpoolContent.length,
+                "record-count": expectedMockSpoolContent.split("\n").length,
+                "job-correlator": "hiasdfasdf",
+                "class": "A",
+                "ddname": "JESJCL",
+                "records-url": "notreal.com",
+                "subsystem": "JES2",
+                "stepname": `STEP${IO.FILE_DELIM}..${IO.FILE_DELIM}1`,
+                "procstep": "PROC1"
+            }];
+            const spoolParms: IDownloadSpoolContentParms = {
+                jobFile: localJobFiles[0],
+                jobid: fakeJobID,
+                jobname: fakeJobName,
+                omitJobidDirectory: false
+            };
+            GetJobs.getSpoolFiles = jest.fn(async (session: any, jobname: string, jobid: string) => {
+                return localJobFiles;
+            });
+
+            let error: Error;
+            let downloadFilePath: string;
+
+            try {
+                downloadFilePath = DownloadJobs.getSpoolDownloadFilePath(spoolParms);
+            } catch (err) {
+                error = err;
+            }
+
+            expect(downloadFilePath).not.toBeDefined();
+            expect(error).toBeDefined();
+            expect(error.message).toEqual("The generated file path contains illegal characters.");
+        });
+
+        it("should fail when a file path for a job file contains backtracking 3", () => {
+            const localJobFiles: IJobFile[] = [{
+                "jobid": fakeJobID,
+                "jobname": fakeJobName,
+                "id": 0,
+                "recfm": "FB",
+                "lrecl": 80,
+                "byte-count": expectedMockSpoolContent.length,
+                "record-count": expectedMockSpoolContent.split("\n").length,
+                "job-correlator": "hiasdfasdf",
+                "class": "A",
+                "ddname": "JESJCL",
+                "records-url": "notreal.com",
+                "subsystem": "JES2",
+                "stepname": "STEP1",
+                "procstep": `PROC${IO.FILE_DELIM}..${IO.FILE_DELIM}1`
+            }];
+            const spoolParms: IDownloadSpoolContentParms = {
+                jobFile: localJobFiles[0],
+                jobid: fakeJobID,
+                jobname: fakeJobName,
+                omitJobidDirectory: false
+            };
+            GetJobs.getSpoolFiles = jest.fn(async (session: any, jobname: string, jobid: string) => {
+                return localJobFiles;
+            });
+
+            let error: Error;
+            let downloadFilePath: string;
+
+            try {
+                downloadFilePath = DownloadJobs.getSpoolDownloadFilePath(spoolParms);
+            } catch (err) {
+                error = err;
+            }
+
+            expect(downloadFilePath).not.toBeDefined();
+            expect(error).toBeDefined();
+            expect(error.message).toEqual("The generated file path contains illegal characters.");
+        });
+
+        it("should fail when a file path for a job file contains backtracking 4", () => {
+            const localJobFiles: IJobFile[] = [{
+                "jobid": fakeJobID,
+                "jobname": fakeJobName,
+                "id": 0,
+                "recfm": "FB",
+                "lrecl": 80,
+                "byte-count": expectedMockSpoolContent.length,
+                "record-count": expectedMockSpoolContent.split("\n").length,
+                "job-correlator": "hiasdfasdf",
+                "class": "A",
+                "ddname": `JES${IO.FILE_DELIM}..${IO.FILE_DELIM}JCL`,
+                "records-url": "notreal.com",
+                "subsystem": "JES2",
+                "stepname": "STEP1",
+                "procstep": "PROC1"
+            }];
+            const spoolParms: IDownloadSpoolContentParms = {
+                jobFile: localJobFiles[0],
+                jobid: fakeJobID,
+                jobname: fakeJobName,
+                omitJobidDirectory: false
+            };
+            GetJobs.getSpoolFiles = jest.fn(async (session: any, jobname: string, jobid: string) => {
+                return localJobFiles;
+            });
+
+            let error: Error;
+            let downloadFilePath: string;
+
+            try {
+                downloadFilePath = DownloadJobs.getSpoolDownloadFilePath(spoolParms);
+            } catch (err) {
+                error = err;
+            }
+
+            expect(downloadFilePath).not.toBeDefined();
+            expect(error).toBeDefined();
+            expect(error.message).toEqual("The generated file path contains illegal characters.");
+        });
+
+        it("should fail when a file path for a job file contains backtracking 5", () => {
+            const localFakeJobId = `JOB${IO.FILE_DELIM}..${IO.FILE_DELIM}001`;
+            const localFakeJobName = "MYJOB1";
+            const localJobFiles: IJobFile[] = [{
+                "jobid": localFakeJobId,
+                "jobname": localFakeJobName,
+                "id": 0,
+                "recfm": "FB",
+                "lrecl": 80,
+                "byte-count": expectedMockSpoolContent.length,
+                "record-count": expectedMockSpoolContent.split("\n").length,
+                "job-correlator": "hiasdfasdf",
+                "class": "A",
+                "ddname": "JESJCL",
+                "records-url": "notreal.com",
+                "subsystem": "JES2",
+                "stepname": "STEP1",
+                "procstep": "PROC1"
+            }];
+            GetJobs.getSpoolFiles = jest.fn(async (session: any, jobname: string, jobid: string) => {
+                return localJobFiles;
+            });
+
+            let error: Error;
+            let downloadFilePath: string;
+
+            try {
+                // eslint-disable-next-line deprecation/deprecation
+                downloadFilePath = DownloadJobs.getSpoolDownloadFile(localJobFiles[0]);
+            } catch (err) {
+                error = err;
+            }
+
+            expect(downloadFilePath).not.toBeDefined();
+            expect(error).toBeDefined();
+            expect(error.message).toEqual("The generated file path contains illegal characters.");
+        });
+
+        it("should fail when a file path for a job file contains backtracking 6", () => {
+            const localJobFiles: IJobFile[] = [{
+                "jobid": fakeJobID,
+                "jobname": fakeJobName,
+                "id": 0,
+                "recfm": "FB",
+                "lrecl": 80,
+                "byte-count": expectedMockSpoolContent.length,
+                "record-count": expectedMockSpoolContent.split("\n").length,
+                "job-correlator": "hiasdfasdf",
+                "class": "A",
+                "ddname": "JESJCL",
+                "records-url": "notreal.com",
+                "subsystem": "JES2",
+                "stepname": `STEP${IO.FILE_DELIM}..${IO.FILE_DELIM}1`,
+                "procstep": "PROC1"
+            }];
+            GetJobs.getSpoolFiles = jest.fn(async (session: any, jobname: string, jobid: string) => {
+                return localJobFiles;
+            });
+
+            let error: Error;
+            let downloadFilePath: string;
+
+            try {
+                // eslint-disable-next-line deprecation/deprecation
+                downloadFilePath = DownloadJobs.getSpoolDownloadFile(localJobFiles[0]);
+            } catch (err) {
+                error = err;
+            }
+
+            expect(downloadFilePath).not.toBeDefined();
+            expect(error).toBeDefined();
+            expect(error.message).toEqual("The generated file path contains illegal characters.");
+        });
+
+        it("should fail when a file path for a job file contains backtracking 7", () => {
+            const localJobFiles: IJobFile[] = [{
+                "jobid": fakeJobID,
+                "jobname": fakeJobName,
+                "id": 0,
+                "recfm": "FB",
+                "lrecl": 80,
+                "byte-count": expectedMockSpoolContent.length,
+                "record-count": expectedMockSpoolContent.split("\n").length,
+                "job-correlator": "hiasdfasdf",
+                "class": "A",
+                "ddname": "JESJCL",
+                "records-url": "notreal.com",
+                "subsystem": "JES2",
+                "stepname": "STEP1",
+                "procstep": `PROC${IO.FILE_DELIM}..${IO.FILE_DELIM}1`
+            }];
+            GetJobs.getSpoolFiles = jest.fn(async (session: any, jobname: string, jobid: string) => {
+                return localJobFiles;
+            });
+
+            let error: Error;
+            let downloadFilePath: string;
+
+            try {
+                // eslint-disable-next-line deprecation/deprecation
+                downloadFilePath = DownloadJobs.getSpoolDownloadFile(localJobFiles[0]);
+            } catch (err) {
+                error = err;
+            }
+
+            expect(downloadFilePath).not.toBeDefined();
+            expect(error).toBeDefined();
+            expect(error.message).toEqual("The generated file path contains illegal characters.");
+        });
+
+        it("should fail when a file path for a job file contains backtracking 8", () => {
+            const localJobFiles: IJobFile[] = [{
+                "jobid": fakeJobID,
+                "jobname": fakeJobName,
+                "id": 0,
+                "recfm": "FB",
+                "lrecl": 80,
+                "byte-count": expectedMockSpoolContent.length,
+                "record-count": expectedMockSpoolContent.split("\n").length,
+                "job-correlator": "hiasdfasdf",
+                "class": "A",
+                "ddname": `JES${IO.FILE_DELIM}..${IO.FILE_DELIM}JCL`,
+                "records-url": "notreal.com",
+                "subsystem": "JES2",
+                "stepname": "STEP1",
+                "procstep": "PROC1"
+            }];
+            GetJobs.getSpoolFiles = jest.fn(async (session: any, jobname: string, jobid: string) => {
+                return localJobFiles;
+            });
+
+            let error: Error;
+            let downloadFilePath: string;
+
+            try {
+                // eslint-disable-next-line deprecation/deprecation
+                downloadFilePath = DownloadJobs.getSpoolDownloadFile(localJobFiles[0]);
+            } catch (err) {
+                error = err;
+            }
+
+            expect(downloadFilePath).not.toBeDefined();
+            expect(error).toBeDefined();
+            expect(error.message).toEqual("The generated file path contains illegal characters.");
+        });
     });
 });
