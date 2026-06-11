@@ -60,7 +60,7 @@ describe("DaemonUtil tests", () => {
         expect(giveAccessOnlyToOwnerSpy).toHaveBeenCalledWith(customDir);
     });
 
-    it("should not re-create or re-restrict the daemon directory when it already exists", () => {
+    it("should re-restrict but not re-create the daemon directory when it already exists", () => {
         const customDir = path.normalize("./testOutput/existingDaemonDir");
         process.env.ZOWE_DAEMON_DIR = customDir;
         existsSyncSpy.mockReturnValue(true);
@@ -68,7 +68,7 @@ describe("DaemonUtil tests", () => {
         DaemonUtil.getDaemonDir();
 
         expect(createDirSyncSpy).not.toHaveBeenCalled();
-        expect(giveAccessOnlyToOwnerSpy).not.toHaveBeenCalled();
+        expect(giveAccessOnlyToOwnerSpy).toHaveBeenCalledWith(customDir);
     });
 
     it("should throw an error when the daemon directory cannot be created or secured", () => {

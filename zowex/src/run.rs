@@ -104,6 +104,11 @@ pub async fn run_restart_command(njs_zowe_path: &str) -> Result<i32, i32> {
         }
     }
 
+    // Re-restrict the zowe bin directory and executable to the current user, in
+    // case they were previously created with permissions that allow group/other
+    // access. This is best-effort and never prevents the restart.
+    util_restrict_zowe_bin_to_owner();
+
     // Start a new daemon. Note that proc_start_daemon() exits on failure.
     proc_start_daemon(njs_zowe_path);
     eprintln!("A new daemon has started.");

@@ -116,6 +116,16 @@ export default class EnableDaemonHandler implements ICommandHandler {
                     msg: `The existing file '${pathToZoweBin}' must be a directory.`
                 });
             }
+            // The directory already exists. Re-restrict it to the current user in case
+            // it was previously created with permissions that allow group/other access.
+            try {
+                IO.giveAccessOnlyToOwner(pathToZoweBin);
+            }
+            catch(err) {
+                throw new ImperativeError({
+                    msg: `Unable to restrict access to directory '${pathToZoweBin}'.\nReason: ${err}`
+                });
+            }
         } else {
             // create the directory
             try {

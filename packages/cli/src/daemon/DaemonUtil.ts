@@ -43,6 +43,14 @@ export class DaemonUtil {
             } catch(err) {
                 throw new Error("Failed to create directory '" + daemonDir + "'\nDetails = " + err.message);
             }
+        } else {
+            // The directory already exists. Re-restrict it to the current user in case
+            // it was previously created with permissions that allow group/other access.
+            try {
+                IO.giveAccessOnlyToOwner(daemonDir);
+            } catch(err) {
+                throw new Error("Failed to restrict access to directory '" + daemonDir + "'\nDetails = " + err.message);
+            }
         }
         return daemonDir;
     }
