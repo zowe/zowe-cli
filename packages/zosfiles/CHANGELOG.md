@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Added extra filesystem checks when downloading data sets and USS files. [#2741](https://github.com/zowe/zowe-cli/pull/2741)
+
 
 ## `7.29.23`
 
