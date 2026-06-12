@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- **Breaking** BugFix: Updated the `zowe zos-files (ds/uss) edit` command to prompt the user to trust custom editors. [#2742](https://github.com/zowe/zowe-cli/pull/2742)
+
 ## `7.29.25`
 
 - BugFix: Updated the `lodash`, `brace-expansion`, and `diff` dependencies to resolve technical currency. [#2711](https://github.com/zowe/zowe-cli/pull/2711)
