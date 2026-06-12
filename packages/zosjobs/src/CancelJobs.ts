@@ -80,7 +80,7 @@ export class CancelJobs {
         };
 
         const responseJson = await ZosmfRestClient.putExpectJSON(session,
-            EncodeUri.encUriPathForZos(JobsConstants.RESOURCE + "/" + parms.jobname + "/" + parms.jobid),
+            EncodeUri.encUriPathForZos(session, JobsConstants.RESOURCE + "/" + parms.jobname + "/" + parms.jobid),
             headers, request
         );
 

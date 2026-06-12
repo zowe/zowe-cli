@@ -54,7 +54,7 @@ export class Delete {
             if (options.volume) {
                 endpoint += `/-(${options.volume})`;
             }
-            endpoint = EncodeUri.encUriPathForZos(endpoint + "/" + dataSetName);
+            endpoint = EncodeUri.encUriPathForZos(session, endpoint + "/" + dataSetName);
             Logger.getAppLogger().debug(`Endpoint: ${endpoint}`);
 
             const reqHeaders: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING];
@@ -141,7 +141,7 @@ export class Delete {
         ImperativeExpect.toNotBeEqual(fileName, "", ZosFilesMessages.missingUSSFileName.message);
 
         // Format the endpoint to send the request to
-        const endpoint = EncodeUri.encUriPathForUss(
+        const endpoint = EncodeUri.encUriPathForUss(session,
             ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + fileName
         );
         Logger.getAppLogger().debug(`Endpoint: ${endpoint}`);
@@ -184,7 +184,7 @@ export class Delete {
         ImperativeExpect.toNotBeEqual(fileSystemName, "", ZosFilesMessages.missingFileSystemName.message);
 
         // Format the endpoint to send the request to
-        const endpoint = EncodeUri.encUriPathForZos(
+        const endpoint = EncodeUri.encUriPathForZos(session,
             ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_ZFS_FILES + "/" + fileSystemName
         );
         const reqHeaders: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING];

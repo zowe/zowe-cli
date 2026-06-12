@@ -129,7 +129,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = EncodeUri.encUriPathForZos(
+            const endpoint = EncodeUri.encUriPathForZos(dummySession,
                 ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + `/-(${volume})/` + dsname
             );
 
@@ -167,7 +167,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = EncodeUri.encUriPathForZos(
+            const endpoint = EncodeUri.encUriPathForZos(dummySession,
                 ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + `/-(${volume})/` + dsname
             );
             IO.processNewlines(dsContent.toString());
@@ -204,7 +204,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = EncodeUri.encUriPathForZos(
+            const endpoint = EncodeUri.encUriPathForZos(dummySession,
                 ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname
             );
 
@@ -242,7 +242,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = EncodeUri.encUriPathForZos(
+            const endpoint = EncodeUri.encUriPathForZos(dummySession,
                 ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname
             );
 
@@ -282,7 +282,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = EncodeUri.encUriPathForZos(
+            const endpoint = EncodeUri.encUriPathForZos(dummySession,
                 ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname
             );
 
@@ -321,7 +321,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = EncodeUri.encUriPathForZos(
+            const endpoint = EncodeUri.encUriPathForZos(dummySession,
                 ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname
             );
 
@@ -359,7 +359,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = EncodeUri.encUriPathForZos(
+            const endpoint = EncodeUri.encUriPathForZos(dummySession,
                 ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname
             );
 
@@ -397,7 +397,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = EncodeUri.encUriPathForZos(
+            const endpoint = EncodeUri.encUriPathForZos(dummySession,
                 ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname
             );
 
@@ -433,7 +433,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = EncodeUri.encUriPathForZos(
+            const endpoint = EncodeUri.encUriPathForZos(dummySession,
                 ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname
             );
 
@@ -472,7 +472,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = EncodeUri.encUriPathForZos(
+            const endpoint = EncodeUri.encUriPathForZos(dummySession,
                 ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname
             );
 
@@ -511,7 +511,7 @@ describe("z/OS Files - Download", () => {
             } catch (e) {
                 caughtError = e;
             }
-            const endpoint = EncodeUri.encUriPathForZos(
+            const endpoint = EncodeUri.encUriPathForZos(dummySession,
                 ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + `/-(${volume})/` + dsname
             );
 
@@ -555,7 +555,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = EncodeUri.encUriPathForZos(
+            const endpoint = EncodeUri.encUriPathForZos(dummySession,
                 ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname
             );
 
@@ -582,7 +582,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = EncodeUri.encUriPathForZos(
+            const endpoint = EncodeUri.encUriPathForZos(dummySession,
                 ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname
             );
 
@@ -615,7 +615,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = EncodeUri.encUriPathForZos(
+            const endpoint = EncodeUri.encUriPathForZos(dummySession,
                 ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname + "?test=true"
             );
 
@@ -679,7 +679,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = EncodeUri.encUriPathForZos(
+            const endpoint = EncodeUri.encUriPathForZos(dummySession,
                 ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname
             );
 
@@ -749,7 +749,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = EncodeUri.encUriPathForZos(
+            const endpoint = EncodeUri.encUriPathForZos(dummySession,
                 ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname
             );
 
@@ -789,7 +789,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = EncodeUri.encUriPathForZos(
+            const endpoint = EncodeUri.encUriPathForZos(dummySession,
                 ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname
             );
 
@@ -841,7 +841,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = EncodeUri.encUriPathForZos(
+            const endpoint = EncodeUri.encUriPathForZos(dummySession,
                 ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname
             );
 
@@ -3209,7 +3209,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = EncodeUri.encUriPathForUss(
+            const endpoint = EncodeUri.encUriPathForUss(dummySession,
                 ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + ussname
             );
 
@@ -3245,7 +3245,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = EncodeUri.encUriPathForUss(
+            const endpoint = EncodeUri.encUriPathForUss(dummySession,
                 ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + ussname
             );
 
@@ -3285,7 +3285,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = EncodeUri.encUriPathForUss(
+            const endpoint = EncodeUri.encUriPathForUss(dummySession,
                 ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + ussname
             );
 
@@ -3325,7 +3325,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = EncodeUri.encUriPathForUss(
+            const endpoint = EncodeUri.encUriPathForUss(dummySession,
                 ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + ussname
             );
 
@@ -3368,7 +3368,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = EncodeUri.encUriPathForUss(
+            const endpoint = EncodeUri.encUriPathForUss(dummySession,
                 ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + ussname
             );
 
@@ -3406,7 +3406,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = EncodeUri.encUriPathForUss(
+            const endpoint = EncodeUri.encUriPathForUss(dummySession,
                 ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + ussname
             );
 
@@ -3441,7 +3441,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = EncodeUri.encUriPathForUss(
+            const endpoint = EncodeUri.encUriPathForUss(dummySession,
                 ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + ussname
             );
 
@@ -3479,7 +3479,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = EncodeUri.encUriPathForUss(
+            const endpoint = EncodeUri.encUriPathForUss(dummySession,
                 ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + ussname
             );
 
@@ -3515,7 +3515,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = EncodeUri.encUriPathForUss(
+            const endpoint = EncodeUri.encUriPathForUss(dummySession,
                 ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + ussname
             );
 
@@ -3554,7 +3554,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = EncodeUri.encUriPathForUss(
+            const endpoint = EncodeUri.encUriPathForUss(dummySession,
                 ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + ussname
             );
 
@@ -3598,7 +3598,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = EncodeUri.encUriPathForUss(
+            const endpoint = EncodeUri.encUriPathForUss(dummySession,
                 ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + ussname
             );
 
@@ -3666,7 +3666,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = EncodeUri.encUriPathForUss(
+            const endpoint = EncodeUri.encUriPathForUss(dummySession,
                 ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + ussname
             );
 
@@ -3736,7 +3736,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = EncodeUri.encUriPathForUss(
+            const endpoint = EncodeUri.encUriPathForUss(dummySession,
                 ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + ussname
             );
 
@@ -3775,7 +3775,7 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = EncodeUri.encUriPathForUss(
+            const endpoint = EncodeUri.encUriPathForUss(dummySession,
                 ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + ussname
             );
 

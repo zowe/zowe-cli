@@ -139,7 +139,7 @@ export class SearchJobs {
         Logger.getAppLogger().trace("SearchJobs.searchSpoolContentCommon()");
         const headers: any[] = [Headers.TEXT_PLAIN_UTF8];
 
-        let parameters: string = EncodeUri.encUriPathForZos(
+        let parameters: string = EncodeUri.encUriPathForZos(session,
             JobsConstants.RESOURCE + "/" + jobFile.jobname + "/" + jobFile.jobid +
             JobsConstants.RESOURCE_SPOOL_FILES + "/" + jobFile.id + JobsConstants.RESOURCE_SPOOL_CONTENT
         );

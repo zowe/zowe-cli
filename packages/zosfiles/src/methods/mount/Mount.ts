@@ -53,7 +53,7 @@ export class Mount {
         tempOptions.action = "mount";
         tempOptions["mount-point"] = mountPoint;
 
-        const endpoint: string = EncodeUri.encUriPathForZos(
+        const endpoint: string = EncodeUri.encUriPathForZos(session,
             ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_MFS + "/" + fileSystemName
         );
 

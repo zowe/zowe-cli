@@ -124,7 +124,7 @@ export class Create {
                 }
             }
 
-            const endpoint: string = EncodeUri.encUriPathForZos(
+            const endpoint: string = EncodeUri.encUriPathForZos(session,
                 ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dataSetName
             );
             const headers: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING];
@@ -151,7 +151,7 @@ export class Create {
         ImperativeExpect.toNotBeNullOrUndefined(dataSetName, ZosFilesMessages.missingDatasetName.message);
         ImperativeExpect.toNotBeNullOrUndefined(likeDataSetName, ZosFilesMessages.missingDatasetLikeName.message);
 
-        const endpoint: string = EncodeUri.encUriPathForZos(
+        const endpoint: string = EncodeUri.encUriPathForZos(session,
             ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dataSetName
         );
         const headers: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING];
@@ -442,7 +442,7 @@ export class Create {
         : Promise<IZosFilesResponse> {
         ImperativeExpect.toNotBeNullOrUndefined(type, ZosFilesMessages.missingRequestType.message);
         ImperativeExpect.toNotBeEqual(type, "", ZosFilesMessages.missingRequestType.message);
-        const parameters: string = EncodeUri.encUriPathForUss(
+        const parameters: string = EncodeUri.encUriPathForUss(session,
             `${ZosFilesConstants.RESOURCE}${ZosFilesConstants.RES_USS_FILES}/${ussPath}`
         );
         const headers: IHeaderContent[] = [Headers.APPLICATION_JSON, ZosmfHeaders.ACCEPT_ENCODING];
@@ -473,7 +473,7 @@ export class Create {
         // Removes undefined properties
         const tempOptions = !(options === null || options === undefined) ? JSON.parse(JSON.stringify(options)) : {};
 
-        let endpoint: string = EncodeUri.encUriPathForZos(
+        let endpoint: string = EncodeUri.encUriPathForZos(session,
             ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_ZFS_FILES + "/" + fileSystemName
         );
 

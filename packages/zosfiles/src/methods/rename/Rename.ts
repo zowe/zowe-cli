@@ -85,7 +85,7 @@ export class Rename {
         { dsn: beforeDataSetName, member: beforeMemberName }: IDataSet,
         options?: IZosFilesOptions
     ): Promise<IZosFilesResponse> {
-        const endpoint: string = EncodeUri.encUriPathForZos(
+        const endpoint: string = EncodeUri.encUriPathForZos(session,
             ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + afterDataSetName
         );
         Logger.getAppLogger().debug(`Endpoint: ${endpoint}`);

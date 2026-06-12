@@ -163,7 +163,7 @@ export class Upload {
         if (options.volume) {
             endpoint += `/-(${options.volume})`;
         }
-        endpoint = EncodeUri.encUriPathForZos(endpoint + "/" + dataSetName);
+        endpoint = EncodeUri.encUriPathForZos(session, endpoint + "/" + dataSetName);
 
         // Construct request header parameters
         const reqHeaders: IHeaderContent[] = this.generateHeadersBasedOnOptions(options);
@@ -233,7 +233,7 @@ export class Upload {
         if (options.volume) {
             endpoint += `/-(${options.volume})`;
         }
-        endpoint = EncodeUri.encUriPathForZos(endpoint + "/" + dataSetName);
+        endpoint = EncodeUri.encUriPathForZos(session, endpoint + "/" + dataSetName);
 
         // Construct request header parameters
         const reqHeaders: IHeaderContent[] = this.generateHeadersBasedOnOptions(options);
@@ -479,7 +479,7 @@ export class Upload {
 
         // Options to use the buffer to write a file
         const requestOptions: IOptionsFullResponse = {
-            resource: EncodeUri.encUriPathForUss(
+            resource: EncodeUri.encUriPathForUss(session,
                 ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + ussname
             ),
             reqHeaders,
@@ -542,7 +542,7 @@ export class Upload {
 
         // Options to use the stream to write a file
         const restOptions: IOptionsFullResponse = {
-            resource: EncodeUri.encUriPathForUss(
+            resource: EncodeUri.encUriPathForUss(session,
                 ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + ussname
             ),
             reqHeaders,

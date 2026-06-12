@@ -65,7 +65,7 @@ export class ModifyJobs {
             "You must specify both the jobname and jobid for the job you want to modify.");
 
         const headers: any = [Headers.APPLICATION_JSON];
-        const parameters: string = EncodeUri.encUriPathForZos(
+        const parameters: string = EncodeUri.encUriPathForZos(session,
             JobsConstants.RESOURCE + "/" + parms.jobname + "/" + parms.jobid
         );
         let response: IJobFeedback;

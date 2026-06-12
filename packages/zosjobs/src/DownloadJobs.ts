@@ -130,7 +130,7 @@ export class DownloadJobs {
 
         this.log.debug(debugMessage);
 
-        let parameters: string = EncodeUri.encUriPathForZos(
+        let parameters: string = EncodeUri.encUriPathForZos(session,
             JobsConstants.RESOURCE + "/" + job.jobname + "/" + job.jobid +
             JobsConstants.RESOURCE_SPOOL_FILES + "/" + job.id + JobsConstants.RESOURCE_SPOOL_CONTENT
         );

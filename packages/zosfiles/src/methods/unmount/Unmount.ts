@@ -44,7 +44,7 @@ export class Unmount {
         ImperativeExpect.toNotBeNullOrUndefined(fileSystemName, ZosFilesMessages.missingFileSystemName.message);
         ImperativeExpect.toNotBeEqual(fileSystemName, "", ZosFilesMessages.missingFileSystemName.message);
 
-        const endpoint: string = EncodeUri.encUriPathForZos(
+        const endpoint: string = EncodeUri.encUriPathForZos(session,
             ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_MFS + "/" + fileSystemName
         );
 

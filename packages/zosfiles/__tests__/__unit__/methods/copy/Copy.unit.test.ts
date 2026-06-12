@@ -73,7 +73,7 @@ describe("Copy", () => {
                             dsn: fromDataSetName
                         }
                     };
-                    const expectedEndpoint = EncodeUri.encUriPathForZos(
+                    const expectedEndpoint = EncodeUri.encUriPathForZos(dummySession,
                         ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES +
                         "/" + toDataSetName
                     );
@@ -110,7 +110,7 @@ describe("Copy", () => {
                             dsn: fromDataSetName
                         }
                     };
-                    const expectedEndpoint = EncodeUri.encUriPathForZos(
+                    const expectedEndpoint = EncodeUri.encUriPathForZos(dummySession,
                         ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES +
                         "/" + toDataSetName
                     );
@@ -150,7 +150,7 @@ describe("Copy", () => {
                             member: fromMemberName
                         }
                     };
-                    const expectedEndpoint = EncodeUri.encUriPathForZos(
+                    const expectedEndpoint = EncodeUri.encUriPathForZos(dummySession,
                         ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES +
                         `/${toDataSetName}(${toMemberName})`
                     );
@@ -188,7 +188,7 @@ describe("Copy", () => {
                             member: fromMemberName
                         }
                     };
-                    const expectedEndpoint = EncodeUri.encUriPathForZos(
+                    const expectedEndpoint = EncodeUri.encUriPathForZos(dummySession,
                         ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES +
                         `/${toDataSetName}(${toMemberName})`
                     );
@@ -227,7 +227,7 @@ describe("Copy", () => {
                             dsn: fromDataSetName
                         }
                     };
-                    const expectedEndpoint = EncodeUri.encUriPathForZos(
+                    const expectedEndpoint = EncodeUri.encUriPathForZos(dummySession,
                         ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES +
                         `/${toDataSetName}(${toMemberName})`
                     );
@@ -264,7 +264,7 @@ describe("Copy", () => {
                             dsn: fromDataSetName
                         }
                     };
-                    const expectedEndpoint = EncodeUri.encUriPathForZos(
+                    const expectedEndpoint = EncodeUri.encUriPathForZos(dummySession,
                         ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES +
                         `/${toDataSetName}(${toMemberName})`
                     );
@@ -304,7 +304,7 @@ describe("Copy", () => {
                             member: fromMemberName
                         }
                     };
-                    const expectedEndpoint = EncodeUri.encUriPathForZos(
+                    const expectedEndpoint = EncodeUri.encUriPathForZos(dummySession,
                         ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES +
                         "/" + toDataSetName
                     );
@@ -342,7 +342,7 @@ describe("Copy", () => {
                             member: fromMemberName
                         }
                     };
-                    const expectedEndpoint = EncodeUri.encUriPathForZos(
+                    const expectedEndpoint = EncodeUri.encUriPathForZos(dummySession,
                         ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES +
                         "/" + toDataSetName
                     );
@@ -608,7 +608,7 @@ describe("Copy", () => {
                             member: fromMemberName
                         }
                     };
-                    const expectedEndpoint = EncodeUri.encUriPathForZos(
+                    const expectedEndpoint = EncodeUri.encUriPathForZos(dummySession,
                         ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES +
                         `/${toDataSetName}(${toMemberName})`
                     );
@@ -765,7 +765,7 @@ describe("Copy", () => {
                         dsn: fromDataSetName
                     }
                 };
-                const expectedEndpoint = EncodeUri.encUriPathForZos(
+                const expectedEndpoint = EncodeUri.encUriPathForZos(dummySession,
                     ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES +
                     "/" + toDataSetName
                 );

@@ -151,7 +151,7 @@ export class Copy {
             }
         }
 
-        const endpoint: string = EncodeUri.encUriPathForZos(
+        const endpoint: string = EncodeUri.encUriPathForZos(session,
             ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" +
             (toMemberName == null ? toDataSetName : `${toDataSetName}(${toMemberName})`)
         );

@@ -159,7 +159,7 @@ describe.each([false, true])("System Tests - Monitor Jobs - Encoded: %s", (encod
                     // Change the jobclass after a period of time
                     setTimeout(() => {
                         new ZosmfRestClient(REAL_SESSION).request({
-                            resource: EncodeUri.encUriPathForZos(
+                            resource: EncodeUri.encUriPathForZos(REAL_SESSION,
                                 `/zosmf/restjobs/jobs/${jobInfo.jobname}/${jobInfo.jobid}`
                             ),
                             request: "PUT",
@@ -246,7 +246,7 @@ describe.each([false, true])("System Tests - Monitor Jobs - Encoded: %s", (encod
                     // Release the job
                     setTimeout(() => {
                         new ZosmfRestClient(REAL_SESSION).request({
-                            resource: EncodeUri.encUriPathForZos(
+                            resource: EncodeUri.encUriPathForZos(REAL_SESSION,
                                 `/zosmf/restjobs/jobs/${jobInfo.jobname}/${jobInfo.jobid}`
                             ),
                             request: "PUT",
@@ -574,7 +574,7 @@ describe.each([false, true])("System Tests - Monitor Jobs - Encoded: %s", (encod
                     // Change the jobclass after a period of time
                     setTimeout(() => {
                         new ZosmfRestClient(REAL_SESSION).request({
-                            resource: EncodeUri.encUriPathForZos(
+                            resource: EncodeUri.encUriPathForZos(REAL_SESSION,
                                 `/zosmf/restjobs/jobs/${jobInfo.jobname}/${jobInfo.jobid}`
                             ),
                             request: "PUT",
@@ -629,7 +629,7 @@ describe.each([false, true])("System Tests - Monitor Jobs - Encoded: %s", (encod
                     // Change the jobclass after a period of time
                     setTimeout(() => {
                         new ZosmfRestClient(REAL_SESSION).request({
-                            resource: EncodeUri.encUriPathForZos(
+                            resource: EncodeUri.encUriPathForZos(REAL_SESSION,
                                 `/zosmf/restjobs/jobs/${jobInfo.jobname}/${jobInfo.jobid}`
                             ),
                             request: "PUT",
