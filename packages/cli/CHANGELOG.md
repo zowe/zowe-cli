@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Standardized the help text to use `<The User Home Directory>/.zowe` instead of `~/.zowe`. [#2541](https://github.com/zowe/zowe-cli/issues/2541)
+
 ## `8.32.2`
 
 - BugFix: Updated the error handling for plug-in installation to report the first failure that occurs. [#2722](https://github.com/zowe/zowe-cli/pull/2722)
