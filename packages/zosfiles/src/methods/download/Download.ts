@@ -223,8 +223,7 @@ export class Download {
             const baseDir = (() => {
                 if (options.directory) {
                     // Prevent double slashes
-                    if (options.directory.endsWith(IO.FILE_DELIM)) { return options.directory.slice(0, -1); }
-                    if (options.directory.endsWith("\\")) { return options.directory.slice(0, -2); }
+                    if (options.directory.endsWith(IO.FILE_DELIM) || options.directory.endsWith("\\")) { return options.directory.slice(0, -1); }
                     return options.directory;
                 }
 

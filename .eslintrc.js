@@ -59,7 +59,7 @@ module.exports = {
         "@typescript-eslint/no-explicit-any": "off",
         "@typescript-eslint/no-inferrable-types": "off",
         "@typescript-eslint/no-magic-numbers": ["warn", {
-            "ignore": [-2, -1, 0, 1, 2],
+            "ignore": [-1, 0, 1, 2],
             "ignoreDefaultValues": true,
             "ignoreEnums": true,
             "ignoreReadonlyClassProperties": true
