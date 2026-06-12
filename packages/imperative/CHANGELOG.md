@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Fixed inconsistent error messages when credentials fail to save by using the `secureSaveError` helper in `ConfigAutoStore` and `ConvertV1Profiles`. [#1907](https://github.com/zowe/zowe-cli/issues/1907)
+
 ## `8.32.2`
 
 - BugFix: Updated the `NpmFunctions.installPackages` function to throw an error when a launched NPM program fails. [#2722](https://github.com/zowe/zowe-cli/pull/2722)
