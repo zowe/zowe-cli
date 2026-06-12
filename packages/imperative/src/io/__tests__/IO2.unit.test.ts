@@ -42,6 +42,15 @@ describe("IO tests", () => {
         it("should return true if path contains backtracking", () => {
             expect(IO.containsBacktrack("path" + path.sep +  ".." + path.sep + "backtracked")).toEqual(true);
         });
+        it("should return true if path contains recursive backtracking", () => {
+            expect(IO.containsBacktrack("path" + path.sep +  ".." + path.sep + ".." + path.sep + "backtracked")).toEqual(true);
+        });
+        it("should return true if path contains posix backtracking", () => {
+            expect(IO.containsBacktrack("path/../backtracked")).toEqual(true);
+        });
+        it("should return true if path contains recursive posix backtracking", () => {
+            expect(IO.containsBacktrack("path/../../backtracked")).toEqual(true);
+        });
         it("should return false if path does not contain backtracking", () => {
             expect(IO.containsBacktrack("path" + path.sep + "backtracked")).toEqual(false);
         });
