@@ -11,7 +11,7 @@
 
 import { GuiResult, IHandlerParameters, ImperativeError, ProcessUtils, RestConstants, TextUtils } from "@zowe/imperative";
 import {ILocalFile,
-    EditUtilities} from "../../../../src/zosfiles/edit/Edit.utils";
+    EditUtilities, Prompt } from "../../../../src/zosfiles/edit/Edit.utils";
 import { mockHandlerParameters } from "@zowe/cli-test-utils";
 import { EditDefinition } from "../../../../src/zosfiles/edit/Edit.definition";
 import EditHandler from "../../../../src/zosfiles/edit/Edit.handler";
@@ -133,6 +133,89 @@ describe("Files Edit Group Handler", () => {
                 caughtError = e;
             }
             expect(caughtError).toBeInstanceOf(ImperativeError);
+
+            // Restore original implementation
+            localDownloadSpy.mockImplementation(async () => {
+                return localFile;
+            });
+        });
+
+        it("should throw an error if the editor argument is provided and the user does not trust the editor", async () => {
+            localDownloadSpy.mockImplementation(async () => {
+                return localFile;
+            });
+            const localParams = {
+                ...params,
+                arguments: {
+                    ...params.arguments,
+                    editor: "my-editor"
+                },
+                response: {
+                    ...params.response,
+                    console: {
+                        ...params.response.console,
+                        log: jest.fn()
+                    }
+                }
+            };
+            promptUserSpy.mockImplementation(async (prompt, conflict, promptTexts) => {
+                if (prompt === Prompt.trustEditor) {
+                    return false;
+                }
+                return true;
+            });
+
+            let caughtError;
+            try {
+                await handler.process(localParams);
+            } catch (e) {
+                caughtError = e;
+            }
+            expect(caughtError).toBeInstanceOf(ImperativeError);
+            expect(caughtError.message).toContain("User did not trust the editor. Command terminated.");
+            expect(promptUserSpy).toHaveBeenCalledWith(Prompt.trustEditor, false, ["my-editor"]);
+
+            // Restore original implementation
+            promptUserSpy.mockImplementation(async () => {
+                return true;
+            });
+        });
+
+        it("should proceed if the editor argument is provided and the user trusts the editor", async () => {
+            localDownloadSpy.mockImplementation(async () => {
+                return localFile;
+            });
+            const localParams = {
+                ...params,
+                arguments: {
+                    ...params.arguments,
+                    editor: "my-editor"
+                },
+                response: {
+                    ...params.response,
+                    console: {
+                        ...params.response.console,
+                        log: jest.fn()
+                    }
+                }
+            };
+            promptUserSpy.mockImplementation(async (prompt, conflict, promptTexts) => {
+                if (prompt === Prompt.trustEditor) {
+                    return true;
+                }
+                return true;
+            });
+            jest.spyOn(EditUtilities, "makeEdits").mockResolvedValueOnce(true);
+            jest.spyOn(EditUtilities, "uploadEdits").mockResolvedValueOnce([true, false]);
+
+            await handler.process(localParams);
+            expect(promptUserSpy).toHaveBeenCalledWith(Prompt.trustEditor, false, ["my-editor"]);
+            expect(EditUtilities.makeEdits).toHaveBeenCalledWith(expect.anything(), "my-editor");
+
+            // Restore original implementation
+            promptUserSpy.mockImplementation(async () => {
+                return true;
+            });
         });
     });
 });
