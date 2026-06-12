@@ -540,10 +540,10 @@ export class IO {
 
     public static containsBacktrack(element: string): boolean {
         if (process.platform === "win32") { element = element.replaceAll("\\", "/"); }
-        return element.split("/")?.includes("..") ? true : false;
+        return element.split("/")?.includes("..");
     }
 
     public static fileEvaluatesToDir(element: string): boolean {
-        return !(path.basename(element) === element);
+        return path.basename(element) !== element;
     }
 }
