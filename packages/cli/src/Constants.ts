@@ -89,5 +89,5 @@ For ${Constants.DISPLAY_NAME} support, visit ${Constants.SUPPORT_LINK}
      * @static
      * @memberof Constants
      */
-    public static readonly HOME_DIR = "<The User Home Directory>/.zowe";
+    public static readonly HOME_DIR = "~/.zowe";
 }
