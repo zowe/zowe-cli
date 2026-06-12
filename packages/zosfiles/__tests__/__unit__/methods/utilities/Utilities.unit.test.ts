@@ -90,7 +90,7 @@ describe("USS utiliites", () => {
             response = await Utilities.chtag(dummySession,"/test file",Tag.TEXT,"ISO8859-1");
 
             expect(response.success).toBeTruthy();
-            const expectedUrl = EncodeUri.encUriPathForUss(
+            const expectedUrl = EncodeUri.encUriPathForUss(dummySession,
                 ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/test file"
             );
             expect(restClientSpy).toHaveBeenCalledWith(dummySession, expectedUrl, expect.anything(),
@@ -103,7 +103,7 @@ describe("USS utiliites", () => {
             response = await Utilities.chtag(dummySession,"/testfile",args.type,args.codeset);
 
             expect(response.success).toBeTruthy();
-            const expectedUrl = EncodeUri.encUriPathForUss(
+            const expectedUrl = EncodeUri.encUriPathForUss(dummySession,
                 ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/testfile"
             );
             expect(restClientSpy).toHaveBeenCalledWith(dummySession, expectedUrl,
@@ -214,7 +214,7 @@ describe("Utilities.putUSSPayload", () => {
                 caughtError = e;
             }
 
-            const endpoint = EncodeUri.encUriPathForUss(
+            const endpoint = EncodeUri.encUriPathForUss(dummySession,
                 ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + filename
             );
 
@@ -276,7 +276,7 @@ describe("Utilities.putUSSPayload", () => {
                 caughtError = e;
             }
 
-            const endpoint = EncodeUri.encUriPathForUss(
+            const endpoint = EncodeUri.encUriPathForUss(dummySession,
                 ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + filename
             );
             expect(caughtError).toBeUndefined();
@@ -301,7 +301,7 @@ describe("Utilities.putUSSPayload", () => {
                 caughtError = e;
             }
 
-            const endpoint = EncodeUri.encUriPathForUss(
+            const endpoint = EncodeUri.encUriPathForUss(dummySession,
                 ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + filename
             );
 
@@ -324,7 +324,7 @@ describe("Utilities.putUSSPayload", () => {
                 caughtError = e;
             }
 
-            const endpoint = EncodeUri.encUriPathForUss(
+            const endpoint = EncodeUri.encUriPathForUss(dummySession,
                 ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + filename
             );
 
@@ -347,7 +347,7 @@ describe("Utilities.putUSSPayload", () => {
                 caughtError = e;
             }
 
-            const endpoint = EncodeUri.encUriPathForUss(
+            const endpoint = EncodeUri.encUriPathForUss(dummySession,
                 ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + filename
             );
 
@@ -370,7 +370,7 @@ describe("Utilities.putUSSPayload", () => {
                 caughtError = e;
             }
 
-            const endpoint = EncodeUri.encUriPathForUss(
+            const endpoint = EncodeUri.encUriPathForUss(dummySession,
                 ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + filename
             );
 

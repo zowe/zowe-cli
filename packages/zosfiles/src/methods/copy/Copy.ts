@@ -54,7 +54,7 @@ export class Copy {
         ImperativeExpect.toBeDefinedAndNonBlank(options["from-dataset"].dsn, "fromDataSetName");
         ImperativeExpect.toBeDefinedAndNonBlank(toDataSetName, "toDataSetName");
 
-        const endpoint: string = EncodeUri.encUriPathForZos(
+        const endpoint: string = EncodeUri.encUriPathForZos(session,
             ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" +
             (toMemberName == null ? toDataSetName : `${toDataSetName}(${toMemberName})`)
         );

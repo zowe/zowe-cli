@@ -76,7 +76,7 @@ export class DeleteJobs {
         }
 
         const responseJson = await ZosmfRestClient.deleteExpectJSON(session,
-            EncodeUri.encUriPathForZos(JobsConstants.RESOURCE + "/" + parms.jobname + "/" + parms.jobid),
+            EncodeUri.encUriPathForZos(session, JobsConstants.RESOURCE + "/" + parms.jobname + "/" + parms.jobid),
             headers
         );
 

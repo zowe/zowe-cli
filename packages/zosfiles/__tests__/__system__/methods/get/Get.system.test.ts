@@ -406,7 +406,7 @@ describe("Get - encoded", () => {
                 let response: Buffer;
 
                 const data: string = "abcdefghijklmnopqrstuvwxyz\n";
-                const endpoint: string = EncodeUri.encUriPathForZos(
+                const endpoint: string = EncodeUri.encUriPathForZos(REAL_SESSION,
                     ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname
                 );
 
@@ -426,7 +426,7 @@ describe("Get - encoded", () => {
         describe("USS File", () => {
             beforeEach(async () => {
                 const data = "{\"type\":\"file\",\"mode\":\"RWXRW-RW-\"}";
-                const endpoint: string = EncodeUri.encUriPathForUss(
+                const endpoint: string = EncodeUri.encUriPathForUss(REAL_SESSION,
                     ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + ussname
                 );
 
@@ -438,7 +438,7 @@ describe("Get - encoded", () => {
             });
 
             afterEach(async () => {
-                const endpoint: string = EncodeUri.encUriPathForUss(
+                const endpoint: string = EncodeUri.encUriPathForUss(REAL_SESSION,
                     ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + ussname
                 );
 
@@ -454,7 +454,7 @@ describe("Get - encoded", () => {
                 let response: Buffer;
 
                 const data: string = "abcdefghijklmnopqrstuvwxyz\n";
-                const endpoint: string = EncodeUri.encUriPathForUss(
+                const endpoint: string = EncodeUri.encUriPathForUss(REAL_SESSION,
                     ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + ussname
                 );
                 await ZosmfRestClient.putExpectString(REAL_SESSION, endpoint, [], data);

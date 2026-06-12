@@ -246,7 +246,7 @@ export class ZosFilesUtils {
         ImperativeExpect.toNotBeEqual(dataSetName, "", ZosFilesMessages.missingDatasetName.message);
 
         try {
-            const endpoint = EncodeUri.encUriPathForZos(
+            const endpoint = EncodeUri.encUriPathForZos(session,
                 ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dataSetName
             );
 

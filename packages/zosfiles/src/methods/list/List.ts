@@ -51,7 +51,7 @@ export class List {
 
         try {
             // Format the endpoint to send the request to
-            let endpoint = EncodeUri.encUriPathForZos(
+            let endpoint = EncodeUri.encUriPathForZos(session,
                 ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" +
                 dataSetName + ZosFilesConstants.RES_DS_MEMBERS
             );

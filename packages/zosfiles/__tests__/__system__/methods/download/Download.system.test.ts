@@ -1827,7 +1827,7 @@ describe("Download Data Set - encoded", () => {
     describe("Download USS File", () => {
         afterAll(async () => {
             // Delete created uss file
-            const endpoint = EncodeUri.encUriPathForUss(
+            const endpoint = EncodeUri.encUriPathForUss(REAL_SESSION,
                 ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + ussname
             );
 

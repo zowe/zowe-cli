@@ -10,7 +10,9 @@
 */
 
 import * as path from "path";
+import { AbstractSession } from "../session/AbstractSession";
 import { ImperativeError } from "../../../error";
+import { Logger } from "../../../logger";
 
 /**
  * Common IO utilities
@@ -27,13 +29,17 @@ export class EncodeUri {
      * This function exists to facilitate any special encoding that has to be
      * performed in the future.
      *
+     * @param {string} session - The session used to connect to the server.
      * @param {string} zosUriPath - the URI path to encode
      */
-    public static encUriPathForZos(zosUriPath: string) {
-        // zosmf works with # encoded or unencoded, but APIML fails with
-        // a 400 error unless # is encoded.
-        const encodedUriPath = zosUriPath.replaceAll("#", "%23");
-        return encodedUriPath;
+    public static encUriPathForZos(session: AbstractSession, zosUriPath: string) {
+        if (EncodeUri.shouldEncodeForApiml(session)) {
+            // zosmf works with # encoded or unencoded, but
+            // APIML fails with a 400 error unless # is encoded.
+            Logger.getImperativeLogger().info("Encoding a z/OS URI path for API-ML");
+            return zosUriPath.replaceAll("#", "%23");
+        }
+        return zosUriPath;
     }
 
     /**
@@ -52,9 +58,10 @@ export class EncodeUri {
      * By consolidating URI encoding for USS files in this function, any actions needed to
      * react to future URI encoding changes can be implemented in one place.
      *
+     * @param {string} session - The session used to connect to the server.
      * @param {string} ussUriPath - the URI path to encode
      */
-    public static encUriPathForUss(ussUriPath: string) {
+    public static encUriPathForUss(session: AbstractSession, ussUriPath: string) {
         // eliminate // and /../
         let encodedUriPath = path.posix.normalize(ussUriPath);
 
@@ -89,19 +96,21 @@ export class EncodeUri {
         // Without encoding, ? both apiml and zosmf truncates a file name at the location of the ?
         encodedUriPath = encodedUriPath.replaceAll("?", "%3F");
 
-        // zosmf works with each of the following characters encoded or unencoded,
-        // but APIML fails with an HTTP 400 error unless the character is encoded.
-        encodedUriPath = encodedUriPath.replaceAll("#", "%23");
-        encodedUriPath = encodedUriPath.replaceAll(";", "%3B");
-        encodedUriPath = encodedUriPath.replaceAll("<", "%3C");
-        encodedUriPath = encodedUriPath.replaceAll(">", "%3E");
-        encodedUriPath = encodedUriPath.replaceAll("[", "%5B");
-        encodedUriPath = encodedUriPath.replaceAll("]", "%5D");
-        encodedUriPath = encodedUriPath.replaceAll("^", "%5E");
-        encodedUriPath = encodedUriPath.replaceAll("{", "%7B");
-        encodedUriPath = encodedUriPath.replaceAll("|", "%7C");
-        encodedUriPath = encodedUriPath.replaceAll("}", "%7D");
-
+        if (EncodeUri.shouldEncodeForApiml(session)) {
+            // zosmf works with each of the following characters encoded or unencoded.
+            // However, APIML fails with an HTTP 400 error unless these characters are encoded.
+            Logger.getImperativeLogger().info("Encoding a USS URI path for API-ML");
+            encodedUriPath = encodedUriPath.replaceAll("#", "%23");
+            encodedUriPath = encodedUriPath.replaceAll(";", "%3B");
+            encodedUriPath = encodedUriPath.replaceAll("<", "%3C");
+            encodedUriPath = encodedUriPath.replaceAll(">", "%3E");
+            encodedUriPath = encodedUriPath.replaceAll("[", "%5B");
+            encodedUriPath = encodedUriPath.replaceAll("]", "%5D");
+            encodedUriPath = encodedUriPath.replaceAll("^", "%5E");
+            encodedUriPath = encodedUriPath.replaceAll("{", "%7B");
+            encodedUriPath = encodedUriPath.replaceAll("|", "%7C");
+            encodedUriPath = encodedUriPath.replaceAll("}", "%7D");
+        }
         return encodedUriPath;
     }
 
@@ -114,5 +123,21 @@ export class EncodeUri {
      */
     public static encUriQueryForUss(ussFileNmForQuery: string) {
         return encodeURIComponent(path.posix.normalize(ussFileNmForQuery));
+    }
+
+    /**
+     * Determine if we should encode a URI path for APIML or not.
+     *
+     * Use the higher-level of encoding permitted in URI query strings.
+     *
+     * @param {string} session - The session used to connect to the server.
+     *
+     * @returns {boolean} - True if we must encode for APIML. False otherwise.
+     */
+    private static shouldEncodeForApiml(session: AbstractSession): boolean {
+        if (typeof session?.isUsingApiml === "function") {
+            return session.isUsingApiml();
+        }
+        return false;
     }
 }

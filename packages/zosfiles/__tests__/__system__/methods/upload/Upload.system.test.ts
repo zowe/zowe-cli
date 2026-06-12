@@ -891,7 +891,7 @@ describe("Upload USS file - encoded", () => {
         });
 
         afterEach(async () => {
-            const endpoint: string = EncodeUri.encUriPathForUss(
+            const endpoint: string = EncodeUri.encUriPathForUss(REAL_SESSION,
                 ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + ussname
             );
 
@@ -965,7 +965,7 @@ describe("Upload a local directory to USS directory", () => {
             await TestEnvironment.cleanUp(testEnvironment);
             try {
                 await ZosmfRestClient.deleteExpectString(REAL_SESSION,
-                    EncodeUri.encUriPathForUss(
+                    EncodeUri.encUriPathForUss(REAL_SESSION,
                         ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + ussname + " space dir"
                     ),
                     [{"X-IBM-Option": "recursive"}]);
@@ -976,7 +976,7 @@ describe("Upload a local directory to USS directory", () => {
 
         afterEach(async () => {
             let error;
-            const endpoint: string = EncodeUri.encUriPathForUss(
+            const endpoint: string = EncodeUri.encUriPathForUss(REAL_SESSION,
                 ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + ussname
             );
             try {
@@ -1359,7 +1359,7 @@ describe("Upload a local directory to USS directory - encoded", () => {
             await TestEnvironment.cleanUp(testEnvironment);
             try {
                 await ZosmfRestClient.deleteExpectString(REAL_SESSION,
-                    EncodeUri.encUriPathForUss(
+                    EncodeUri.encUriPathForUss(REAL_SESSION,
                         ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + ussname + " space dir"
                     ),
                     [{"X-IBM-Option": "recursive"}]);
@@ -1369,7 +1369,7 @@ describe("Upload a local directory to USS directory - encoded", () => {
         });
 
         afterEach(async () => {
-            const endpoint: string = EncodeUri.encUriPathForUss(
+            const endpoint: string = EncodeUri.encUriPathForUss(REAL_SESSION,
                 ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + ussname
             );
             try {
