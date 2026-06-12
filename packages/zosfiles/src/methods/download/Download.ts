@@ -222,6 +222,8 @@ export class Download {
             // Otherwise use default directory generated from data set name.
             const baseDir = (() => {
                 if (options.directory) {
+                    // Prevent double slashes
+                    if (options.directory.endsWith(IO.FILE_DELIM) || options.directory.endsWith("\\")) { return options.directory.slice(0, -1); }
                     return options.directory;
                 }
 
@@ -258,9 +260,14 @@ export class Download {
                 }
 
                 const fileName = options.preserveOriginalLetterCase ? mem.member : mem.member.toLowerCase();
+                const filePath = baseDir + IO.FILE_DELIM + fileName + IO.normalizeExtension(extension);
+                if (!IO.isSubPath(baseDir, filePath) || IO.fileEvaluatesToDir(mem.member)) {
+                    throw new ImperativeError({msg: "The generated data set file path contains illegal characters."});
+                }
+
                 return this.dataSet(session, `${dataSetName}(${mem.member})`, {
                     volume: options.volume,
-                    file: baseDir + IO.FILE_DELIM + fileName + IO.normalizeExtension(extension),
+                    file: filePath,
                     binary: options.binary,
                     record: options.record,
                     encoding: options.encoding,
@@ -269,7 +276,7 @@ export class Download {
                     downloadErrors.push(err);
                     failedMembers.push(fileName);
                     // Delete the file that could not be downloaded
-                    IO.deleteFile(baseDir + IO.FILE_DELIM + fileName + IO.normalizeExtension(extension));
+                    IO.deleteFile(filePath);
                     // If we should fail fast, rethrow error
                     if (options.failFast || options.failFast === undefined) {
                         throw err;
@@ -344,6 +351,9 @@ export class Download {
             const mutableOptions: IDownloadOptions = { ...options, task: undefined };
 
             for (const dataSetObj of zosmfResponses) {
+                if (IO.fileEvaluatesToDir(dataSetObj.dsname)) {
+                    throw new ImperativeError({msg: "The data set name contains illegal characters."});
+                }
                 let llq = dataSetObj.dsname.substring(dataSetObj.dsname.lastIndexOf(".") + 1, dataSetObj.dsname.length);
                 if (!options.preserveOriginalLetterCase) {
                     llq = llq.toLowerCase();
@@ -672,6 +682,10 @@ export class Download {
                         // If .zosattributes says to ignore the file, skip it
                         continue;
                     }
+                    if (IO.containsBacktrack(item.name) ||
+                        !IO.isSubPath(workingDirectory, join(workingDirectory, item.name))) {
+                        throw new ImperativeError({msg: "The generated file path contains illegal backtracking."});
+                    }
                     mutableOptions.file = join(workingDirectory, item.name);
                     downloadTasks.push({
                         file: item.name,
@@ -682,6 +696,11 @@ export class Download {
                     });
                     downloadsTotal++;
                 } else if (item.mode.startsWith("d")) {
+                    if (IO.containsBacktrack(item.name) ||
+                        !IO.isSubPath(workingDirectory, join(workingDirectory, item.name))) {
+                        throw new ImperativeError({msg: "The generated file path contains illegal backtracking."});
+                    }
+
                     // If mode starts with d, the item is a directory, create it
                     downloadTasks.push({
                         dirName: join(workingDirectory, item.name),
