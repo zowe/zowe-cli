@@ -34,7 +34,15 @@ export class DaemonUtil {
             // our default location.
             daemonDir = path.join(os.homedir(), ".zowe", "daemon");
         }
-        if (!IO.existsSync(daemonDir)) {
+        if (IO.existsSync(daemonDir)) {
+            // The directory already exists. Re-restrict it to the current user in case
+            // it was previously created with permissions that allow group/other access.
+            try {
+                IO.giveAccessOnlyToOwner(daemonDir);
+            } catch(err) {
+                throw new Error("Failed to restrict access to directory '" + daemonDir + "'\nDetails = " + err.message);
+            }
+        } else {
             try {
                 IO.createDirSync(daemonDir);
                 // Restrict access to the daemon directory to only the current user.
@@ -42,14 +50,6 @@ export class DaemonUtil {
                 IO.giveAccessOnlyToOwner(daemonDir);
             } catch(err) {
                 throw new Error("Failed to create directory '" + daemonDir + "'\nDetails = " + err.message);
-            }
-        } else {
-            // The directory already exists. Re-restrict it to the current user in case
-            // it was previously created with permissions that allow group/other access.
-            try {
-                IO.giveAccessOnlyToOwner(daemonDir);
-            } catch(err) {
-                throw new Error("Failed to restrict access to directory '" + daemonDir + "'\nDetails = " + err.message);
             }
         }
         return daemonDir;
