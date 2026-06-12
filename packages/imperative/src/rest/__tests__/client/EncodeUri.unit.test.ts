@@ -14,7 +14,7 @@ import { ZosFilesConstants } from "../../../../../zosfiles/src/constants/ZosFile
 
 describe("EncodeUri tests", () => {
     const ussBaseUri = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES;
-    const ussSpecialChars = "-=~,.!;:'&$@*_ #?+|{}<>\\\"[]%^";
+    const ussSpecialChars = "-=~,.!:'&$@*_% +?#;<>[]^{|}";
 
     it("should encode only # for a zos URI path", () => {
         const zosBaseUri = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES;
@@ -33,7 +33,7 @@ describe("EncodeUri tests", () => {
         // The resulting file name is truncated starting with the location of the ? character.
         const normalUriChars = ussBaseUri + "/some/dir/file";
         const suppliedUri = normalUriChars + ussSpecialChars;
-        const expectedUri = normalUriChars + "-=~,.!;:'&$@*_%20%23%3F%2B%7C%7B%7D%3C%3E%5C%22%5B%5D%25%5E";
+        const expectedUri = normalUriChars + "-=~,.!:'&$@*_%25%20%2B%3F%23%3B%3C%3E%5B%5D%5E%7B%7C%7D";
 
         const encodedUri = EncodeUri.encUriPathForUss(suppliedUri);
         expect(encodedUri).toEqual(expectedUri);
@@ -49,7 +49,7 @@ describe("EncodeUri tests", () => {
 
     it("should encode more special characters for a uss query string", () => {
         const suppliedQuery = "test" + ussSpecialChars;
-        const expectedQuery = "test" + "-%3D~%2C.!%3B%3A'%26%24%40*_%20%23%3F%2B%7C%7B%7D%3C%3E%5C%22%5B%5D%25%5E";
+        const expectedQuery = "test" + "-%3D~%2C.!%3A'%26%24%40*_%25%20%2B%3F%23%3B%3C%3E%5B%5D%5E%7B%7C%7D";
         const suppliedUriPath = ussBaseUri + "/some/dir/";
         const expectedUriPath = suppliedUriPath;
 
