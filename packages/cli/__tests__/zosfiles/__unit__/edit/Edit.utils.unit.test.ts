@@ -150,6 +150,10 @@ describe("Files Edit Utilities", () => {
                 const response = await EditUtilities.promptUser(Prompt.overwriteRemote);
                 expect(response).toBe(true);
             });
+            it("should understand that user wants to trust the editor - case Prompt.trustEditor", async() => {
+                const response = await EditUtilities.promptUser(Prompt.trustEditor, false, ["my-editor"]);
+                expect(response).toBe(true);
+            });
         });
         describe("falsy prompt responses", () => {
             beforeEach(async () => {
@@ -171,6 +175,10 @@ describe("Files Edit Utilities", () => {
             });
             it("should understand that user does NOT want to overwrite remote - case Prompt.overwriteRemote", async() => {
                 const response = await EditUtilities.promptUser(Prompt.overwriteRemote);
+                expect(response).toBe(false);
+            });
+            it("should understand that user does NOT want to trust the editor - case Prompt.trustEditor", async() => {
+                const response = await EditUtilities.promptUser(Prompt.trustEditor, false, ["my-editor"]);
                 expect(response).toBe(false);
             });
         });
@@ -199,6 +207,14 @@ describe("Files Edit Utilities", () => {
             it("should timeout of the entire command because no user input - case Prompt.viewUpdatedRemote", async() => {
                 try {
                     await EditUtilities.promptUser(Prompt.viewUpdatedRemote);
+                } catch(e) {
+                    caughtError = e;
+                }
+                expect(caughtError).toBeInstanceOf(ImperativeError);
+            });
+            it("should timeout of the entire command because no user input - case Prompt.trustEditor", async() => {
+                try {
+                    await EditUtilities.promptUser(Prompt.trustEditor, false, ["my-editor"]);
                 } catch(e) {
                     caughtError = e;
                 }
