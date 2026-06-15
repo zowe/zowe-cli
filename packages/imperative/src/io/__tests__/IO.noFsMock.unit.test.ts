@@ -13,6 +13,7 @@ import { IO } from "../../io";
 import * as path from "path";
 
 const skipOnWin = process.platform === 'win32' ? it.skip : it;
+const skipOnPosix = process.platform !== 'win32' ? it.skip : it;
 
 describe("IO tests", () => {
     describe("isSubPath", () => {
@@ -67,6 +68,26 @@ describe("IO tests", () => {
         });
         skipOnWin("should not flag an element containing a Windows path seperator", () => {
             expect(IO.fileEvaluatesToDir("some" + path.win32.sep + "path")).toEqual(false);
+        });
+    });
+    describe("isRootDir", () => {
+        skipOnWin("should return true (posix)", () => {
+            expect(IO.isRootDir("/")).toEqual(true);
+        });
+        skipOnWin("should return false for windows on posix", () => {
+            const alphabet = [...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'];
+            for (const letter of alphabet) {
+                expect(IO.isRootDir(`${letter}:\\`)).toEqual(false);
+            }
+        });
+        skipOnPosix("should return true (windows)", () => {
+            const alphabet = [...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'];
+            for (const letter of alphabet) {
+                expect(IO.isRootDir(`${letter}:\\`)).toEqual(true);
+            }
+        });
+        skipOnPosix("should return true for posix on windows", () => {
+            expect(IO.isRootDir("/")).toEqual(false);
         });
     });
 });

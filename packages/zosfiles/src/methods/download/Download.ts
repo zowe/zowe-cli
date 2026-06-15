@@ -248,7 +248,7 @@ export class Download {
             const baseDir = (() => {
                 if (options.directory) {
                     // Prevent double slashes
-                    if (options.directory.endsWith(posix.sep) || options.directory.endsWith(win32.sep)) {
+                    if ((options.directory.endsWith(posix.sep) || options.directory.endsWith(win32.sep)) && !IO.isRootDir(options.directory)) {
                         return options.directory.slice(0, -1);
                     }
                     return options.directory;

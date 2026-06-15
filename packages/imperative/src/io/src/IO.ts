@@ -546,4 +546,10 @@ export class IO {
     public static fileEvaluatesToDir(element: string): boolean {
         return path.basename(element) !== element;
     }
+
+    public static isRootDir(element: string): boolean {
+        let result = false;
+        if (process.platform === 'win32') { result = /^[A-Z]:\\$/.test(element); }
+        return result || element === "/";
+    }
 }

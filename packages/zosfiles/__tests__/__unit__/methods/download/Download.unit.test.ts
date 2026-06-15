@@ -1226,6 +1226,41 @@ describe("z/OS Files - Download", () => {
             });
         });
 
+        it("should download all members specifying directory, volume, extension, and binary mode 4", async () => {
+            let response;
+            let caughtError;
+
+            const volume = "testVs";
+            const directory = "/";
+            const extension = ".xyz";
+            const binary = true;
+
+            try {
+                response = await Download.allMembers(dummySession, dsname, {volume, directory, extension, binary});
+            } catch (e) {
+                caughtError = e;
+            }
+
+            const expectedResponse = cloneDeep(defaultResponse);
+            expectedResponse.apiResponse.destination = "/";
+            expectedResponse.commandResponse = util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, 2, directory);
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual(expectedResponse);
+
+            expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
+            expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, dsname, {volume});
+
+            expect(downloadDatasetSpy).toHaveBeenCalledTimes(2);
+            listApiResponse.items.forEach((mem) => {
+                expect(downloadDatasetSpy).toHaveBeenCalledWith(dummySession, `${dsname}(${mem.member})`, {
+                    volume,
+                    file: `${directory.slice(0, -1)}/${mem.member.toLowerCase()}${extension}`,
+                    binary
+                });
+            });
+        });
+
         it("should download all members specifying directory, volume, extension, and record mode", async () => {
             let response;
             let caughtError;
