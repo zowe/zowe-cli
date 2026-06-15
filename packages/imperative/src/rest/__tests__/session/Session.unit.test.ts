@@ -10,7 +10,8 @@
 */
 
 import { URL } from "url";
-import { Session } from "../../src/session/Session";
+import { Session, } from "../../src/session/Session";
+import * as SessConstants from "../../src/session/SessConstants";
 
 describe("Session tests", () => {
 
@@ -364,6 +365,28 @@ describe("Session tests", () => {
                 password: "pass",
                 type: "basic"
             });
+        });
+    });
+
+    describe("isUsingApiml", () => {
+        it("should return false if no basePath and no tokenType", () => {
+            const session = new Session({ hostname: "localhost" });
+            expect(session.isUsingApiml()).toBe(false);
+        });
+
+        it("should return false if no basePath and tokenType is not APIML", () => {
+            const session = new Session({ hostname: "localhost", tokenType: "Not-Apiml" });
+            expect(session.isUsingApiml()).toBe(false);
+        });
+
+        it("should return true if no basePath and tokenType is for APIML", () => {
+            const session = new Session({ hostname: "localhost", tokenType: SessConstants.TOKEN_TYPE_APIML });
+            expect(session.isUsingApiml()).toBe(true);
+        });
+
+        it("should return true if a basePath exists with no tokenType", () => {
+            const session = new Session({ hostname: "localhost", basePath: "/some/base/path" });
+            expect(session.isUsingApiml()).toBe(true);
         });
     });
 });
