@@ -200,6 +200,31 @@ describe("all tests", () => {
             expect(error.message).toBe("Invalid logon procedure.");
             expect(error.additionalDetails).toContain("IKJ56482I");
         });
+
+        it("should throw ImperativeError when z/OSMF returns an empty commandResponse", async () => {
+            jest.spyOn(CheckStatus, "isZosVersionAtLeast").mockReturnValue(
+                Promise.resolve(true) // we want the new API for this test
+            );
+            ZosmfRestClient.putExpectJSON = jest.fn(async (session: any, resource: string, headers: any[], body: any): Promise<any> => {
+                return { cmdResponse: [], tsoPromptReceived: "Y" };
+            });
+            let error: ImperativeError;
+            let response: ISendResponse;
+
+            try {
+                response = await IssueTso.issueTsoCmd(
+                    PRETEND_SESSION,
+                    "exec 'TESTUSER.FAKE.REXX(MEM)' 'TESTUSER.FAKE.REXX'",
+                    { useLegacyAPI: false }
+                );
+            } catch (thrownError) {
+                error = thrownError;
+            }
+            expect(response).not.toBeDefined();
+            expect(error).toBeDefined();
+            expect(error).toBeInstanceOf(ImperativeError);
+            expect(error.message).toBe("Did not receive output from the z/OSMF TSO API.");
+        });
     });
 
     describe("TsoIssue issueTsoCommand - Deprecated API", () => {
@@ -256,7 +281,58 @@ describe("all tests", () => {
             expect(error).not.toBeDefined();
             expect(response).toBeDefined();
         });
-
+        it("should succeed and use the deprecated API when useLegacyAPI param is passed", async () => {
+            jest.spyOn(CheckStatus, "isZosVersionAtLeast").mockReturnValue(
+                Promise.resolve(false)
+            );
+            (StartTso.start as any) = jest.fn(() => {
+                return new Promise((resolve) => {
+                    process.nextTick(() => {
+                        resolve(START_RESPONSE);
+                    });
+                });
+            });
+            (SendTso.getAllResponses as any) = jest.fn(() => {
+                return new Promise((resolve) => {
+                    process.nextTick(() => {
+                        resolve({});
+                    });
+                });
+            });
+            (SendTso.sendDataToTSOCollect as any) = jest.fn(() => {
+                return new Promise((resolve) => {
+                    process.nextTick(() => {
+                        resolve(SEND_RESPONSE);
+                    });
+                });
+            });
+            (StopTso.stop as any) = jest.fn(() => {
+                return new Promise((resolve) => {
+                    process.nextTick(() => {
+                        resolve(null);
+                    });
+                });
+            });
+            jest.spyOn(ImperativeConfig, "instance", "get").mockReturnValue({
+                config: {
+                    api: {
+                        profiles: { defaultGet: () => ({ account: "acc" }) },
+                    },
+                },
+            } as any);
+            let error: ImperativeError;
+            let response: ISendResponse;
+            try {
+                response = await IssueTso.issueTsoCmd(
+                    PRETEND_SESSION,
+                    "command", { useLegacyAPI: true, addressSpaceOptions: { account: "IZUACCT" } },
+                );
+            } catch (thrownError) {
+                error = thrownError;
+            }
+            expect(error).not.toBeDefined();
+            expect(response).toBeDefined();
+        });
         it("should succeed (with params)", async () => {
             (IssueTso.issueTsoCommand as any) = jest.fn(() => {
                 return new Promise((resolve) => {
@@ -285,6 +361,7 @@ describe("all tests", () => {
             expect(error).not.toBeDefined();
             expect(response).toBeDefined();
         });
+
     });
 
     describe("TsoIssue issueTsoCmd - Revised API", () => {
