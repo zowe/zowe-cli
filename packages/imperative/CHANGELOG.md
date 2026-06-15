@@ -4,8 +4,8 @@ All notable changes to the Imperative package will be documented in this file.
 
 ## Recent Changes
 
-- Enhancement: Added `containsPathSep`, `containsBacktrack`, and `evaluatesToDir` helper functions to the `IO` class. []()
-- BugFix: Added extra filesystem checks when downloading config files with the `zowe config import` command. []()
+- Enhancement: Added `containsPathSep`, `containsBacktrack`, and `evaluatesToDir` helper functions to the `IO` class. [#2747](https://github.com/zowe/zowe-cli/pull/2747)
+- BugFix: Added extra filesystem checks when downloading config files with the `zowe config import` command. [#2747](https://github.com/zowe/zowe-cli/pull/2747)
 
 ## `8.32.2`
 
