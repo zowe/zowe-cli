@@ -1207,12 +1207,11 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
+            const expectedResponse = cloneDeep(defaultResponse);
+            expectedResponse.apiResponse.destination = "my/test/path";
+
             expect(caughtError).toBeUndefined();
-            expect(response).toEqual({
-                success: true,
-                commandResponse: util.format(ZosFilesMessages.datasetDownloadedWithDestination.message, directory.slice(0, -1)),
-                apiResponse: listApiResponse
-            });
+            expect(response).toEqual(expectedResponse);
 
             expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
             expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, dsname, {volume});
