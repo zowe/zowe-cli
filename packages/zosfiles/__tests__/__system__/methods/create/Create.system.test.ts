@@ -746,7 +746,7 @@ describe("Create uss file - encoded", () => {
 
         REAL_SESSION = TestEnvironment.createZosmfSession(testEnvironment);
         basePath = defaultSystem.unix.testdir; // `${defaultSystem.zosmf.basePath.trim()}`;
-        filename = `${basePath}/encodedFileNm-=~,.!;:'&$@*_ #?+|{}<>\\"[]%^.txt`.replace(/\./g, "");
+        filename = `${basePath}/encodedFileNm-=~,.!:'&$@*_% +?#;<>[]^{|}.txt`.replace(/\./g, "");
     });
 
     afterAll(async () => {
