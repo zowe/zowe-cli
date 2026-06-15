@@ -6,6 +6,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 - Enhancement: Add a new `--legacy` option to the `zowe tso issue command` command, allowing the user to force the use of the previous TSO command functionality (where Zowe CLI creates and tears down the TSO address space via multiple API calls). This is useful for working around this issue that may occur when using the newer z/OSMF API: [#2738](https://github.com/zowe/zowe-cli/issues/2738)
 - Bug fix:  Improve the error message if z/OSMF fails to return any output when excuting a TSO command [#2738](https://github.com/zowe/zowe-cli/issues/2738)
+- **Breaking** BugFix: Updated the `zowe zos-files (ds/uss) edit` command to prompt the user to trust custom editors. [#2740](https://github.com/zowe/zowe-cli/pull/2740)
 
 ## `8.32.2`
 
