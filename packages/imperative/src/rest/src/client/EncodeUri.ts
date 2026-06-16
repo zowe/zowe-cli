@@ -36,7 +36,7 @@ export class EncodeUri {
         if (EncodeUri.shouldEncodeForApiml(session)) {
             // zosmf works with # encoded or unencoded, but
             // APIML fails with a 400 error unless # is encoded.
-            Logger.getImperativeLogger().info("Encoding a z/OS URI path for API-ML");
+            Logger.getImperativeLogger().info("Encoding '#' in a z/OS URI path for API-ML");
             return zosUriPath.replaceAll("#", "%23");
         }
         return zosUriPath;
@@ -62,54 +62,48 @@ export class EncodeUri {
      * @param {string} ussUriPath - the URI path to encode
      */
     public static encUriPathForUss(session: AbstractSession, ussUriPath: string) {
-        // eliminate // and /../
-        let encodedUriPath = path.posix.normalize(ussUriPath);
+        let encodedUriPath = "";
 
-        if (ussUriPath.includes("\\")) {
-            // Both encoded and unencoded backslash fail in REST requests
-            throw new ImperativeError({
-                msg: `The supplied USS path = '${ussUriPath}' contains a backslash \\ character. ` +
-                    `This request will not be processed. In both z/OSMF and API-ML the backslash is either ignored, ` +
-                    `or the request fails with an HTTP 400 or 500 error code.`
-            });
-        }
-        if (ussUriPath.includes('"')) {
-            // Both encoded and unencoded double-quote fail in REST requests
-            throw new ImperativeError({
-                msg: `The supplied USS path = '${ussUriPath}' contains a double-quote " character. ` +
-                    `This request will not be processed. In both z/OSMF and API-ML the double-quote ` +
-                    `fails with an HTTP 400 or 500 error code.`
-            });
-        }
+        // normalize will eliminate // and /../
+        for (const nextChar of path.posix.normalize(ussUriPath)) {
+            switch(nextChar) {
+                case "\\":
+                    // Both encoded and unencoded backslash fail in REST requests
+                    throw new ImperativeError({
+                        msg: `The supplied USS path = '${ussUriPath}' contains a backslash \\ character. ` +
+                            `This request will not be processed. In both z/OSMF and API-ML the backslash is either ignored, ` +
+                            `or the request fails with an HTTP 400 or 500 error code.`
+                    });
 
-        // Without encoding, % fails in both apiml and zosmf with an HTTP 400 error.
-        // This replacement must come first.
-        encodedUriPath = encodedUriPath.replaceAll("%", "%25");
+                case '"':
+                    // Both encoded and unencoded double-quote fail in REST requests
+                    throw new ImperativeError({
+                        msg: `The supplied USS path = '${ussUriPath}' contains a double-quote " character. ` +
+                            `This request will not be processed. In both z/OSMF and API-ML the double-quote ` +
+                            `fails with an HTTP 400 or 500 error code.`
+                    });
 
-        // Without encoding, space fails in both apiml and zosmf with the following error
-        // from node:_http_client. 'Request path contains unescaped characters'
-        encodedUriPath = encodedUriPath.replaceAll(" ", "%20");
-
-        // Without encoding, both apiml and zosmf replace + with a space in the file name.
-        encodedUriPath = encodedUriPath.replaceAll("+", "%2B");
-
-        // Without encoding, ? both apiml and zosmf truncates a file name at the location of the ?
-        encodedUriPath = encodedUriPath.replaceAll("?", "%3F");
-
-        if (EncodeUri.shouldEncodeForApiml(session)) {
-            // zosmf works with each of the following characters encoded or unencoded.
-            // However, APIML fails with an HTTP 400 error unless these characters are encoded.
-            Logger.getImperativeLogger().info("Encoding a USS URI path for API-ML");
-            encodedUriPath = encodedUriPath.replaceAll("#", "%23");
-            encodedUriPath = encodedUriPath.replaceAll(";", "%3B");
-            encodedUriPath = encodedUriPath.replaceAll("<", "%3C");
-            encodedUriPath = encodedUriPath.replaceAll(">", "%3E");
-            encodedUriPath = encodedUriPath.replaceAll("[", "%5B");
-            encodedUriPath = encodedUriPath.replaceAll("]", "%5D");
-            encodedUriPath = encodedUriPath.replaceAll("^", "%5E");
-            encodedUriPath = encodedUriPath.replaceAll("{", "%7B");
-            encodedUriPath = encodedUriPath.replaceAll("|", "%7C");
-            encodedUriPath = encodedUriPath.replaceAll("}", "%7D");
+                case " ":
+                    // Without encoding, a space fails in both apiml and zosmf with the following error
+                    // from node:_http_client. 'Request path contains unescaped characters'
+                    encodedUriPath += "%20";
+                    break;
+                case "%":
+                    // Without encoding, a % fails in both apiml and zosmf with an HTTP 400 error.
+                    encodedUriPath += "%25";
+                    break;
+                case "+":
+                    // Without encoding, a + will be replaced with a space in both apiml and zosmf
+                    encodedUriPath += "%2B";
+                    break;
+                case "?":
+                    // Without encoding, a ? truncates a file name at the location of the ? in both apiml and zosmf
+                    encodedUriPath += "%3F";
+                    break;
+                default:
+                    encodedUriPath += EncodeUri.encCharOnlyForApiml(nextChar, session);
+                    break;
+            }
         }
         return encodedUriPath;
     }
@@ -126,17 +120,73 @@ export class EncodeUri {
     }
 
     /**
-     * Determine if we should encode a URI path for APIML or not.
+     * Encode a character for a USS URI path when connecting to API-ML.
+     * API-ML fails with an HTTP 400 error unless these characters are encoded.
+     * None of these characters will be encoded for z/OSMF.
+     * This function relies on its caller to encode characters that must be
+     * encoded for both z/OSMF and API-ML (like %), and to not pass those
+     * characters to this function.
      *
-     * Use the higher-level of encoding permitted in URI query strings.
+     * @param {string} charToEncode - The character to encode.
+     * @param {string} session - The session used to connect to the server.
+     *
+     * @returns {string} - For API-ML, a URI-encoded character string.
+     *                     For z/OSMF, the unencoded character.
+     */
+    private static encCharOnlyForApiml(charToEncode: string, session: AbstractSession): string {
+        let encodedChar = charToEncode;
+        if (EncodeUri.shouldEncodeForApiml(session)) {
+            switch (charToEncode) {
+                case "#":
+                    encodedChar = "%23";
+                    break;
+                case ";":
+                    encodedChar = "%3B";
+                    break;
+                case "<":
+                    encodedChar = "%3C";
+                    break;
+                case ">":
+                    encodedChar = "%3E";
+                    break;
+                case "[":
+                    encodedChar = "%5B";
+                    break;
+                case "]":
+                    encodedChar = "%5D";
+                    break;
+                case "^":
+                    encodedChar = "%5E";
+                    break;
+                case "{":
+                    encodedChar = "%7B";
+                    break;
+                case "|":
+                    encodedChar = "%7C";
+                    break;
+                case "}":
+                    encodedChar = "%7D";
+                    break;
+            }
+        }
+        if (encodedChar[0] === "%") {
+            Logger.getImperativeLogger().info(`Encoded the '${charToEncode}' character for API-ML`);
+        }
+        return encodedChar;
+    }
+
+    /**
+     * Determine if we should encode a URI path for APIML or not.
      *
      * @param {string} session - The session used to connect to the server.
      *
      * @returns {boolean} - True if we must encode for APIML. False otherwise.
      */
     private static shouldEncodeForApiml(session: AbstractSession): boolean {
-        if (typeof session?.isUsingApiml === "function") {
-            return session.isUsingApiml();
+        if (session?.isUsingApiml ) {
+            if (typeof session?.isUsingApiml === "function") {
+                return session.isUsingApiml();
+            }
         }
         return false;
     }
