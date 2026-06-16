@@ -114,21 +114,7 @@ export class DaemonDecider {
 
             this.mServer.maxConnections = 1;
 
-            // On macOS and some BSDs, `chmod` has no effect on Unix domain sockets
-            // after they are created. The only way to secure the socket file is to
-            // set a restrictive umask before the `listen` (bind) call creates it.
-            let oldUmask: number | undefined;
-            if (process.platform !== "win32") {
-                oldUmask = process.umask(0o077);
-            }
-            // Slight concern that the umask will apply to other files being created
-            // by this process at the exact same milliseconds, but I this is acceptable.
             this.mServer.listen(this.mSocket, () => {
-                // Restore the original umask immediately after the socket is bound
-                if (oldUmask !== undefined) {
-                    process.umask(oldUmask);
-                }
-
                 // On POSIX systems the socket is a file on disk that is created with
                 // umask-derived permissions. Restrict it to the owner so that other
                 // local users cannot connect to our daemon and run commands as us.
