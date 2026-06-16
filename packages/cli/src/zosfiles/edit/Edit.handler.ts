@@ -21,6 +21,16 @@ import { EditUtilities as Utils, Prompt, ILocalFile } from "../edit/Edit.utils";
  */
 export default class EditHandler extends ZosFilesBaseHandler {
     public async processWithSession(commandParameters: IHandlerParameters, session: AbstractSession): Promise<IZosFilesResponse> {
+        if(commandParameters.arguments.editor){
+            const trustEditor = await Utils.promptUser(Prompt.trustEditor, false, [commandParameters.arguments.editor]);
+            if (!trustEditor){
+                throw new ImperativeError({
+                    msg: TextUtils.chalk.red(`User did not trust the editor. Command terminated.`),
+                    causeErrors: new Error(`User did not trust the editor.`)
+                });
+            }
+        }
+
         // Setup - build temp and check for stash
         let lfFile: ILocalFile = {
             tempPath: null,
