@@ -87,7 +87,7 @@ describe("IO tests", () => {
             }
         });
         skipOnPosix("should return true for posix on windows", () => {
-            expect(IO.isRootDir("/")).toEqual(false);
+            expect(IO.isRootDir("/")).toEqual(true);
         });
     });
 });
