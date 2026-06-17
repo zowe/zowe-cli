@@ -205,7 +205,7 @@ describe("all tests", () => {
             jest.spyOn(CheckStatus, "isZosVersionAtLeast").mockReturnValue(
                 Promise.resolve(true) // we want the new API for this test
             );
-            ZosmfRestClient.putExpectJSON = jest.fn(async (session: any, resource: string, headers: any[], body: any): Promise<any> => {
+            ZosmfRestClient.putExpectJSON = jest.fn(async (): Promise<any> => {
                 return { cmdResponse: [], tsoPromptReceived: "Y" };
             });
             let error: ImperativeError;
@@ -215,7 +215,7 @@ describe("all tests", () => {
                 response = await IssueTso.issueTsoCmd(
                     PRETEND_SESSION,
                     "exec 'TESTUSER.FAKE.REXX(MEM)' 'TESTUSER.FAKE.REXX'",
-                    { useLegacyAPI: false }
+                    { useLegacyApi: false }
                 );
             } catch (thrownError) {
                 error = thrownError;
@@ -281,7 +281,7 @@ describe("all tests", () => {
             expect(error).not.toBeDefined();
             expect(response).toBeDefined();
         });
-        it("should succeed and use the deprecated API when useLegacyAPI param is passed", async () => {
+        it("should succeed and use the deprecated API when useLegacyApi param is passed", async () => {
             jest.spyOn(CheckStatus, "isZosVersionAtLeast").mockReturnValue(
                 Promise.resolve(false)
             );
@@ -325,7 +325,7 @@ describe("all tests", () => {
             try {
                 response = await IssueTso.issueTsoCmd(
                     PRETEND_SESSION,
-                    "command", { useLegacyAPI: true, addressSpaceOptions: { account: "IZUACCT" } },
+                    "command", { useLegacyApi: true , addressSpaceOptions: {account: "IZUACCT"}},
                 );
             } catch (thrownError) {
                 error = thrownError;

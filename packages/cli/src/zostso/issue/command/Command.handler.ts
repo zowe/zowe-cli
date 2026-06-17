@@ -35,7 +35,7 @@ export default class Handler extends ZosTsoBaseHandler {
                 suppressStartupMessages:
                     params.arguments.suppressStartupMessages,
                 addressSpaceOptions: this.mTsoStart,
-                useLegacyAPI: params.arguments.legacy,
+                useLegacyApi: params.arguments.legacy,
             },
         );
     

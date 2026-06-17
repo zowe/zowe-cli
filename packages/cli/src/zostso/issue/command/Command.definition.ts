@@ -67,6 +67,7 @@ export const CommandDefinition: ICommandDefinition = {
                     " This is useful for working around an issue that might occur when using the newer z/OSMF API where an error " +
                     "reading 'Did not receive output from the z/OSMF TSO API' is thrown.",
                 defaultValue: false,
+                conflictsWith: ["stateful"]
             },
         ] as ICommandOptionDefinition[]
     ).concat(TsoProfileConstants.TSO_PROFILE_OPTIONS),

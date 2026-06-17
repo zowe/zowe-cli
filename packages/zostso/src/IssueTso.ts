@@ -39,10 +39,10 @@ export class IssueTso {
             session,
             ZosmfConstants.VERSIONS.V2R4,
         );
-        // if useLegacyAPI is true, it takes precedence over any of the inferences we 
+        // if useLegacyApi is true, it takes precedence over any of the inferences we
         // try to make based on the other options.
         const useNewApi =
-            !opts.useLegacyAPI && (opts.addressSpaceOptions == null ||
+            !opts.useLegacyApi && (opts.addressSpaceOptions == null ||
                 versionCheck && opts.suppressStartupMessages);
 
         if (useNewApi) {

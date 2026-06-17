@@ -44,5 +44,5 @@ export interface IIssueTsoCmdOpts {
      * @type {boolean}
      * @memberof IIssueTsoCmdOpts
      */
-    useLegacyAPI?: boolean;
+    useLegacyApi?: boolean;
 }

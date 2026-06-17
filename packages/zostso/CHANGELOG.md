@@ -4,7 +4,7 @@ All notable changes to the Zowe z/OS TSO SDK package will be documented in this 
 
 ## Recent Changes
 
-- Enhancement: Added a new optional boolean field `useLegacyAPI` to the `IIssueTsoCmdOpts` interface used to call the `IssueTso.issueTsoCmd` method. For more details, see [the CLI changelog](../cli/CHANGELOG.md). [#2738](https://github.com/zowe/zowe-cli/issues/2738)
+- Enhancement: Added a new optional boolean field `useLegacyApi` to the `IIssueTsoCmdOpts` interface used to call the `IssueTso.issueTsoCmd` method. For more details, see [the CLI changelog](../cli/CHANGELOG.md). [#2738](https://github.com/zowe/zowe-cli/issues/2738)
 
 ## `8.27.4`
 
