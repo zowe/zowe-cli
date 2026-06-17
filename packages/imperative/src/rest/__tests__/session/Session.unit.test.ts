@@ -10,7 +10,7 @@
 */
 
 import { URL } from "url";
-import { Session, } from "../../src/session/Session";
+import { Session } from "../../src/session/Session";
 import * as SessConstants from "../../src/session/SessConstants";
 
 describe("Session tests", () => {
