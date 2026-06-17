@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, EncodeUri, Headers, ImperativeExpect, IO, Logger } from "@zowe/imperative";
+import { AbstractSession, EncodeUri, Headers, ImperativeExpect, IO, Logger, ImperativeError } from "@zowe/imperative";
 import { JobsConstants } from "./JobsConstants";
 import { IDownloadAllSpoolContentParms } from "./doc/input/IDownloadAllSpoolContentParms";
 import { IJobFile } from "./doc/response/IJobFile";
@@ -148,6 +148,8 @@ export class DownloadJobs {
         this.log.trace("getSpoolDownloadFile called with jobFile %s, omitJobIDDirectory: %s, outDir: %s",
             JSON.stringify(jobFile), omitJobidDirectory + "", outDir);
         let directory: string = outDir;
+        const parentDirectory = directory;
+
         if (omitJobidDirectory == null || omitJobidDirectory === false) {
             directory += IO.FILE_DELIM + jobFile.jobid;
         }
@@ -160,7 +162,13 @@ export class DownloadJobs {
             directory += IO.FILE_DELIM + jobFile.stepname;
         }
 
-        return directory + IO.FILE_DELIM + jobFile.ddname + DownloadJobs.DEFAULT_JOBS_OUTPUT_FILE_EXT;
+        const finalPath = directory + IO.FILE_DELIM + jobFile.ddname + DownloadJobs.DEFAULT_JOBS_OUTPUT_FILE_EXT;
+
+        if (IO.containsBacktrack(finalPath) || !IO.isSubPath(parentDirectory, finalPath)) {
+            throw new ImperativeError({msg: "The generated file path contains illegal characters."});
+        }
+
+        return finalPath;
     }
 
     /**
@@ -175,6 +183,7 @@ export class DownloadJobs {
             JSON.stringify(parms.jobFile), parms.omitJobidDirectory + "", parms.outDir);
 
         let directory: string = parms.outDir ?? DownloadJobs.DEFAULT_JOBS_OUTPUT_DIR;
+        const parentDirectory = directory;
 
         if (parms.omitJobidDirectory == null || parms.omitJobidDirectory === false) {
             directory += IO.FILE_DELIM + parms.jobFile.jobid;
@@ -189,8 +198,13 @@ export class DownloadJobs {
         }
 
         const extension = parms.extension ?? DownloadJobs.DEFAULT_JOBS_OUTPUT_FILE_EXT;
+        const finalPath = directory + IO.FILE_DELIM + parms.jobFile.ddname + extension;
 
-        return directory + IO.FILE_DELIM + parms.jobFile.ddname + extension;
+        if (IO.containsBacktrack(finalPath) || !IO.isSubPath(parentDirectory, finalPath)) {
+            throw new ImperativeError({msg: "The generated file path contains illegal characters."});
+        }
+
+        return finalPath;
     }
 
     /**

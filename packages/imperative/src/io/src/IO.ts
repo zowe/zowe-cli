@@ -521,4 +521,23 @@ export class IO {
         }
         );
     }
+
+    public static isSubPath(parent: string, child: string): boolean {
+        let relativePathSegments: string[] = [];
+        const parentAbsPath = path.resolve(parent);
+        const childAbsPath = path.resolve(child);
+        const relativePath = path.relative(parentAbsPath, childAbsPath);
+        if (relativePath) { relativePathSegments = relativePath.split(path.sep); }
+        if (relativePathSegments.length === 0 || relativePathSegments.includes("..") || path.isAbsolute(relativePath)) { return false; }
+        return true;
+    }
+
+    public static containsBacktrack(element: string): boolean {
+        if (process.platform === "win32") { element = element.replaceAll("\\", "/"); }
+        return element.split("/")?.includes("..");
+    }
+
+    public static fileEvaluatesToDir(element: string): boolean {
+        return path.basename(element) !== element;
+    }
 }

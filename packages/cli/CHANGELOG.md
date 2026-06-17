@@ -2,6 +2,13 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Added extra filesystem checks when downloading config files with the `zowe config import` command. [#2741](https://github.com/zowe/zowe-cli/pull/2741)
+- BugFix: Added extra filesystem checks when downloading data sets and USS files. [#2741](https://github.com/zowe/zowe-cli/pull/2741)
+- BugFix: Added extra filesystem checks when downloading job spool. [#2741](https://github.com/zowe/zowe-cli/pull/2741)
+- **Breaking** BugFix: Updated the `zowe zos-files (ds/uss) edit` command to prompt the user to trust custom editors. [#2742](https://github.com/zowe/zowe-cli/pull/2742)
+
 ## `7.29.25`
 
 - BugFix: Updated the `lodash`, `brace-expansion`, and `diff` dependencies to resolve technical currency. [#2711](https://github.com/zowe/zowe-cli/pull/2711)

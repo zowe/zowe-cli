@@ -18,6 +18,7 @@ import { ImperativeError } from "../../../../../error";
 import { ImperativeConfig, TextUtils } from "../../../../../utilities";
 import { IConfig } from "../../../../../config";
 import { RestClient, Session, SessConstants } from "../../../../../rest";
+import { IO } from "../../../../../io";
 
 /**
  * Import config
@@ -55,7 +56,8 @@ export default class ImportHandler implements ICommandHandler {
         config.api.layers.set(configJson);
 
         let schemaImported = false;
-        if (configJson.$schema?.startsWith("./")) {  // Only import schema if relative path
+        // Only import schema if relative path and no backtracking
+        if (configJson.$schema && configJson.$schema.startsWith("./") && !IO.containsBacktrack(configJson.$schema)) {
             const schemaUri = new URL(configJson.$schema,
                 isConfigLocal ? pathToFileURL(configFilePath) : params.arguments.location);
             const schemaFilePath = path.resolve(path.dirname(layer.path), configJson.$schema);

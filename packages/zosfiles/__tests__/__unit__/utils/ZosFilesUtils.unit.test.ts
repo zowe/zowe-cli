@@ -45,6 +45,54 @@ describe("ZosFilesUtils", () => {
             expect(ZosFilesUtils.getDirsFromDataSet(testDs)).toEqual(expectedPath);
             expect(ZosFilesUtils.getDirsFromDataSet(testDsMember)).toEqual(expectedPathMember);
         });
+
+        it("should error on a path with a path seperator", () => {
+            const testDs = `USER.DATA${IO.FILE_DELIM}S.SET`;
+            const testDsMember = `USER.DATA.SET(ME${IO.FILE_DELIM}M)`;
+            let error1: Error;
+            let error2: Error;
+            let dirs1: string;
+            let dirs2: string;
+
+            try {
+                dirs1 = ZosFilesUtils.getDirsFromDataSet(testDs);
+            } catch (err) {
+                error1 = err;
+            }
+
+            try {
+                dirs2 = ZosFilesUtils.getDirsFromDataSet(testDsMember);
+            } catch (err) {
+                error2 = err;
+            }
+
+            expect(error1).toBeDefined();
+            expect(error2).toBeDefined();
+        });
+
+        it("should error on a path with backtracking", () => {
+            const testDs = "USER../.SET";
+            const testDsMember = "USER.DATA.SET(../MEM)";
+            let error1: Error;
+            let error2: Error;
+            let dirs1: string;
+            let dirs2: string;
+
+            try {
+                dirs1 = ZosFilesUtils.getDirsFromDataSet(testDs);
+            } catch (err) {
+                error1 = err;
+            }
+
+            try {
+                dirs2 = ZosFilesUtils.getDirsFromDataSet(testDsMember);
+            } catch (err) {
+                error2 = err;
+            }
+
+            expect(error1).toBeDefined();
+            expect(error2).toBeDefined();
+        });
     });
 
     describe("getFullPath", () => {

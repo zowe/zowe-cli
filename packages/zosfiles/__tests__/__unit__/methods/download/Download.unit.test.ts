@@ -687,6 +687,39 @@ describe("z/OS Files - Download", () => {
             expect(downloadDatasetSpy).not.toHaveBeenCalled();
         });
 
+        it("should fail to download all members due to backtracking", async () => {
+            let response;
+            let caughtError;
+
+            listAllMembersSpy.mockImplementation(async (): Promise<any> => {
+                return { apiResponse: {
+                    items: [
+                        {member: "M1"},
+                        {member: "M2"},
+                        {member: `..${IO.FILE_DELIM}M3`}
+                    ]}
+                };
+            });
+
+            try {
+                response = await Download.allMembers(dummySession, dsname);
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeDefined();
+            expect(caughtError.message).toEqual("The generated data set file path contains illegal characters.");
+            expect(response).toBeUndefined();
+            expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
+            expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, dsname, {});
+            expect(downloadDatasetSpy).toHaveBeenCalledTimes(2);
+            listApiResponse.items.forEach((mem) => {
+                expect(downloadDatasetSpy).toHaveBeenCalledWith(dummySession, `${dsname}(${mem.member})`, {
+                    file: `${dsFolder}/${mem.member.toLowerCase()}.txt`
+                });
+            });
+        });
+
         it("should download all members without any options", async () => {
             let response;
             let caughtError;
@@ -715,12 +748,47 @@ describe("z/OS Files - Download", () => {
             });
         });
 
-        it("should download all members specifying directory, volume, extension, and binary mode", async () => {
+        it("should download all members specifying directory, volume, extension, and binary mode 1", async () => {
             let response;
             let caughtError;
 
             const volume = "testVs";
             const directory = "my/test/path/";
+            const extension = ".xyz";
+            const binary = true;
+
+            try {
+                response = await Download.allMembers(dummySession, dsname, {volume, directory, extension, binary});
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: util.format(ZosFilesMessages.datasetDownloadedWithDestination.message, directory.slice(0, -1)),
+                apiResponse: listApiResponse
+            });
+
+            expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
+            expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, dsname, {volume});
+
+            expect(downloadDatasetSpy).toHaveBeenCalledTimes(2);
+            listApiResponse.items.forEach((mem) => {
+                expect(downloadDatasetSpy).toHaveBeenCalledWith(dummySession, `${dsname}(${mem.member})`, {
+                    volume,
+                    file: `${directory.slice(0, -1)}/${mem.member.toLowerCase()}${extension}`,
+                    binary
+                });
+            });
+        });
+
+        it("should download all members specifying directory, volume, extension, and binary mode 2", async () => {
+            let response;
+            let caughtError;
+
+            const volume = "testVs";
+            const directory = "my/test/path";
             const extension = ".xyz";
             const binary = true;
 
@@ -750,6 +818,41 @@ describe("z/OS Files - Download", () => {
             });
         });
 
+        it("should download all members specifying directory, volume, extension, and binary mode 3", async () => {
+            let response;
+            let caughtError;
+
+            const volume = "testVs";
+            const directory = "my/test/path\\";
+            const extension = ".xyz";
+            const binary = true;
+
+            try {
+                response = await Download.allMembers(dummySession, dsname, {volume, directory, extension, binary});
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual({
+                success: true,
+                commandResponse: util.format(ZosFilesMessages.datasetDownloadedWithDestination.message, directory.slice(0, -1)),
+                apiResponse: listApiResponse
+            });
+
+            expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
+            expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, dsname, {volume});
+
+            expect(downloadDatasetSpy).toHaveBeenCalledTimes(2);
+            listApiResponse.items.forEach((mem) => {
+                expect(downloadDatasetSpy).toHaveBeenCalledWith(dummySession, `${dsname}(${mem.member})`, {
+                    volume,
+                    file: `${directory.slice(0, -1)}/${mem.member.toLowerCase()}${extension}`,
+                    binary
+                });
+            });
+        });
+
         it("should download all members specifying directory, volume, extension, and record mode", async () => {
             let response;
             let caughtError;
@@ -768,7 +871,7 @@ describe("z/OS Files - Download", () => {
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
                 success: true,
-                commandResponse: util.format(ZosFilesMessages.datasetDownloadedWithDestination.message, directory),
+                commandResponse: util.format(ZosFilesMessages.datasetDownloadedWithDestination.message, directory.slice(0, -1)),
                 apiResponse: listApiResponse
             });
 
@@ -779,7 +882,7 @@ describe("z/OS Files - Download", () => {
             listApiResponse.items.forEach((mem) => {
                 expect(downloadDatasetSpy).toHaveBeenCalledWith(dummySession, `${dsname}(${mem.member})`, {
                     volume,
-                    file: `${directory}/${mem.member.toLowerCase()}${extension}`,
+                    file: `${directory.slice(0, -1)}/${mem.member.toLowerCase()}${extension}`,
                     record
                 });
             });
@@ -804,7 +907,7 @@ describe("z/OS Files - Download", () => {
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
                 success: true,
-                commandResponse: util.format(ZosFilesMessages.datasetDownloadedWithDestination.message, directory),
+                commandResponse: util.format(ZosFilesMessages.datasetDownloadedWithDestination.message, directory.slice(0, -1)),
                 apiResponse: listApiResponse
             });
 
@@ -815,7 +918,7 @@ describe("z/OS Files - Download", () => {
             listApiResponse.items.forEach((mem) => {
                 expect(downloadDatasetSpy).toHaveBeenCalledWith(dummySession, `${dsname}(${mem.member})`, {
                     volume,
-                    file: `${directory}/${mem.member.toLowerCase()}${extension}`,
+                    file: `${directory.slice(0, -1)}/${mem.member.toLowerCase()}${extension}`,
                     binary,
                     encoding: undefined,
                     responseTimeout
@@ -842,7 +945,7 @@ describe("z/OS Files - Download", () => {
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
                 success: true,
-                commandResponse: util.format(ZosFilesMessages.datasetDownloadedWithDestination.message, directory),
+                commandResponse: util.format(ZosFilesMessages.datasetDownloadedWithDestination.message, directory.slice(0, -1)),
                 apiResponse: listApiResponse
             });
 
@@ -853,7 +956,7 @@ describe("z/OS Files - Download", () => {
             listApiResponse.items.forEach((mem) => {
                 expect(downloadDatasetSpy).toHaveBeenCalledWith(dummySession, `${dsname}(${mem.member})`, {
                     volume,
-                    file: `${directory}/${mem.member.toLowerCase()}${extension}`,
+                    file: `${directory.slice(0, -1)}/${mem.member.toLowerCase()}${extension}`,
                     record,
                     encoding: undefined,
                     responseTimeout
@@ -879,7 +982,7 @@ describe("z/OS Files - Download", () => {
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
                 success: true,
-                commandResponse: util.format(ZosFilesMessages.datasetDownloadedWithDestination.message, directory),
+                commandResponse: util.format(ZosFilesMessages.datasetDownloadedWithDestination.message, directory.slice(0, -1)),
                 apiResponse: listApiResponse
             });
 
@@ -890,7 +993,7 @@ describe("z/OS Files - Download", () => {
             listApiResponse.items.forEach((mem) => {
                 expect(downloadDatasetSpy).toHaveBeenCalledWith(dummySession, `${dsname}(${mem.member})`, {
                     volume,
-                    file: `${directory}/${mem.member.toLowerCase()}${extension}`,
+                    file: `${directory.slice(0, -1)}/${mem.member.toLowerCase()}${extension}`,
                     encoding
                 });
             });
@@ -913,7 +1016,7 @@ describe("z/OS Files - Download", () => {
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
                 success: true,
-                commandResponse: util.format(ZosFilesMessages.datasetDownloadedWithDestination.message, directory),
+                commandResponse: util.format(ZosFilesMessages.datasetDownloadedWithDestination.message, directory.slice(0, -1)),
                 apiResponse: listApiResponse
             });
 
@@ -924,7 +1027,7 @@ describe("z/OS Files - Download", () => {
             listApiResponse.items.forEach((mem) => {
                 expect(downloadDatasetSpy).toHaveBeenCalledWith(dummySession, `${dsname}(${mem.member})`, {
                     volume,
-                    file: `${directory}/${mem.member.toLowerCase()}${extension}`
+                    file: `${directory.slice(0, -1)}/${mem.member.toLowerCase()}${extension}`
                 });
             });
         });
@@ -947,7 +1050,7 @@ describe("z/OS Files - Download", () => {
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
                 success: true,
-                commandResponse: util.format(ZosFilesMessages.datasetDownloadedWithDestination.message, directory),
+                commandResponse: util.format(ZosFilesMessages.datasetDownloadedWithDestination.message, directory.slice(0, -1)),
                 apiResponse: listApiResponse
             });
 
@@ -958,7 +1061,7 @@ describe("z/OS Files - Download", () => {
             listApiResponse.items.forEach((mem) => {
                 expect(downloadDatasetSpy).toHaveBeenCalledWith(dummySession, `${dsname}(${mem.member})`, {
                     volume,
-                    file: `${directory}/${mem.member.toLowerCase()}${extension}`,
+                    file: `${directory.slice(0, -1)}/${mem.member.toLowerCase()}${extension}`,
                     binary
                 });
             });
@@ -1157,6 +1260,46 @@ describe("z/OS Files - Download", () => {
 
             expect(downloadAllMembersSpy).toHaveBeenCalledTimes(1);
             expect(downloadAllMembersSpy).toHaveBeenCalledWith(dummySession, dataSetPO.dsname, {directory: "test/po/data/set"});
+        });
+
+        it("should fail to download all datasets with invalid characters 1", async () => {
+            let response;
+            let caughtError;
+
+            const localDataSetPS = {
+                dsname: `TEST.PS.${IO.FILE_DELIM}DATA.SET`,
+                dsorg: "PS"
+            };
+
+            try {
+                response = await Download.allDataSets(dummySession, [localDataSetPS] as any);
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeDefined();
+            expect(caughtError.message).toEqual("The data set name contains illegal characters.");
+            expect(response).toBeUndefined();
+        });
+
+        it("should fail to download all datasets with invalid characters 2", async () => {
+            let response;
+            let caughtError;
+
+            const localDataSetPO = {
+                dsname: "TEST.PO..DATA.SET",
+                dsorg: "PO"
+            };
+
+            try {
+                response = await Download.allDataSets(dummySession, [localDataSetPO] as any);
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeDefined();
+            expect(caughtError.message).toEqual("The generated data set file path contains illegal backtracking.");
+            expect(response).toBeUndefined();
         });
 
         it("should download all datasets specifying the directory, extension and binary mode", async () => {
@@ -1726,7 +1869,7 @@ describe("z/OS Files - Download", () => {
         it("should download datasets when pattern matches a partitioned dataset and directory is supplied", async () => {
             let response;
             let caughtError;
-            const directory = "my/test/path/";
+            const directory = "my/test/path";
 
             downloadAllMembersSpy.mockImplementation(async (): Promise<any> => {
                 return {
@@ -2280,6 +2423,62 @@ describe("z/OS Files - Download", () => {
 
             expect(mkdirPromiseSpy).toHaveBeenCalledTimes(1);
             expect(mkdirPromiseSpy).toHaveBeenCalledWith(join(process.cwd(), "folder1"), { recursive: true });
+        });
+
+        it("should fail to download USS directory with backtracking 1", async () => {
+            const fileOptions: IDownloadOptions = { includeHidden: true };
+            const listOptions: IUSSListOptions = { filesys: true };
+            let response;
+            let caughtError;
+
+            listFileListSpy.mockResolvedValueOnce({
+                apiResponse: {
+                    items: [
+                        { mode: "-", name: `file${IO.FILE_DELIM}..${IO.FILE_DELIM}1` }
+                    ]
+                }
+            } as any);
+
+            try {
+                response = await Download.ussDir(dummySession, ussDirName, fileOptions, listOptions);
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeDefined();
+            expect(caughtError.message).toEqual("The generated file path contains illegal backtracking.");
+            expect(response).not.toBeDefined();
+            expect(List.fileList).toHaveBeenCalledWith(dummySession, ussDirName,
+                { name: "*", ...listOptions });
+            expect(Download.ussFile).not.toHaveBeenCalled();
+        });
+
+        it("should fail to download USS directory with backtracking 2", async () => {
+            const fileOptions: IDownloadOptions = { includeHidden: true };
+            const listOptions: IUSSListOptions = { filesys: true };
+            let response;
+            let caughtError;
+
+            listFileListSpy.mockResolvedValueOnce({
+                apiResponse: {
+                    items: [
+                        { mode: "d", name: `dir${IO.FILE_DELIM}..${IO.FILE_DELIM}file1` }
+                    ]
+                }
+            } as any);
+
+            try {
+                response = await Download.ussDir(dummySession, ussDirName, fileOptions, listOptions);
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeDefined();
+            expect(caughtError.message).toEqual("The generated file path contains illegal backtracking.");
+            expect(response).not.toBeDefined();
+            expect(List.fileList).toHaveBeenCalledWith(dummySession, ussDirName,
+                { name: "*", ...listOptions });
+            expect(Download.ussFile).not.toHaveBeenCalled();
         });
 
         it("should download USS directory with download and list options", async () => {
