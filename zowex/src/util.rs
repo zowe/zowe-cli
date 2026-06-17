@@ -13,7 +13,7 @@
 
 use std::collections::HashMap;
 use std::env;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 extern crate home;
 use home::home_dir;
@@ -115,7 +115,91 @@ pub fn util_get_daemon_dir() -> Result<PathBuf, i32> {
         }
     }
 
+    // Restrict the daemon directory to the current user only, since it can hold
+    // sensitive runtime artifacts (pid file, socket, lock file). We do this for
+    // existing directories too, in case one was previously created with
+    // permissions that allow group/other access.
+    util_restrict_path_to_owner(&daemon_dir)?;
+
     Ok(daemon_dir)
+}
+
+/**
+ * Restrict the ~/.zowe/bin directory and the zowe executable within it so that
+ * only the current user has access. The running executable resides in that bin
+ * directory, so we derive both paths from our own executable path.
+ *
+ * This is best-effort: any failure is reported as a warning and ignored so that
+ * a daemon restart is never prevented by a permission-change error.
+ */
+pub fn util_restrict_zowe_bin_to_owner() {
+    let my_exe_path = match env::current_exe() {
+        Ok(ok_val) => ok_val,
+        Err(err_val) => {
+            eprintln!("Warning: unable to determine the path to the zowe executable.");
+            eprintln!("Reason = {}.", err_val);
+            return;
+        }
+    };
+
+    // restrict the zowe executable itself (owner-only, retains execute on POSIX)
+    let _ = util_restrict_path_to_owner(&my_exe_path);
+
+    // restrict the bin directory that contains the executable
+    if let Some(bin_dir) = my_exe_path.parent() {
+        let _ = util_restrict_path_to_owner(bin_dir);
+    }
+}
+
+/**
+ * Restrict access to a file or directory so that only the current user can
+ * access it. On POSIX systems this sets the mode to 0o700 (rwx for the owner,
+ * which retains execute access required for directories and executables). On
+ * Windows it uses icacls to grant full control to only the current user
+ * (best-effort).
+ *
+ * @param fs_path The path to the file or directory to secure.
+ *
+ * @returns Ok on success, or a failure exit code on a POSIX permission error.
+ */
+#[cfg(target_family = "unix")]
+pub(crate) fn util_restrict_path_to_owner(fs_path: &Path) -> Result<(), i32> {
+    use std::os::unix::fs::PermissionsExt;
+    if let Err(err_val) =
+        std::fs::set_permissions(fs_path, std::fs::Permissions::from_mode(0o700))
+    {
+        eprintln!(
+            "Unable to restrict access to path = {}.",
+            fs_path.display()
+        );
+        eprintln!("Reason = {}.", err_val);
+        return Err(EXIT_CODE_FILE_IO_ERROR);
+    }
+    Ok(())
+}
+
+#[cfg(target_family = "windows")]
+pub(crate) fn util_restrict_path_to_owner(fs_path: &Path) -> Result<(), i32> {
+    use std::process::Command;
+    // Best-effort: remove inherited permissions and grant full control only to the
+    // current user. We only warn on failure so that a missing/locked-down icacls
+    // does not prevent the daemon from functioning.
+    let grant_arg = format!("{}:(OI)(CI)F", util_get_username());
+    if let Err(err_val) = Command::new("icacls")
+        .arg(fs_path)
+        .arg("/inheritancelevel:r")
+        .arg("/grant:r")
+        .arg(grant_arg)
+        .arg("/c")
+        .output()
+    {
+        eprintln!(
+            "Warning: unable to restrict access to path = {}.",
+            fs_path.display()
+        );
+        eprintln!("Reason = {}.", err_val);
+    }
+    Ok(())
 }
 
 #[cfg(target_family = "unix")]

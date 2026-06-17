@@ -146,6 +146,57 @@ fn unit_test_get_zowe_env() {
     env::remove_var("FORCE_COLOR");
 }
 
+#[cfg(target_family = "unix")]
+#[test]
+fn unit_test_util_restrict_path_to_owner() {
+    use std::fs;
+    use std::os::unix::fs::PermissionsExt;
+
+    // create a temp directory with wide-open permissions
+    let mut test_dir = env::temp_dir();
+    test_dir.push(format!("zowe_restrict_test_{}", std::process::id()));
+    let _ = fs::remove_dir_all(&test_dir);
+    fs::create_dir_all(&test_dir).expect("failed to create test dir");
+    fs::set_permissions(&test_dir, fs::Permissions::from_mode(0o777))
+        .expect("failed to loosen test dir perms");
+
+    // create a file inside it with wide-open permissions
+    let mut test_file = test_dir.clone();
+    test_file.push("some_artifact");
+    fs::write(&test_file, b"data").expect("failed to write test file");
+    fs::set_permissions(&test_file, fs::Permissions::from_mode(0o666))
+        .expect("failed to loosen test file perms");
+
+    // restricting the directory should make it owner-only (0o700)
+    assert!(util_restrict_path_to_owner(&test_dir).is_ok());
+    let dir_mode = fs::metadata(&test_dir).unwrap().permissions().mode() & 0o777;
+    assert_eq!(dir_mode, 0o700, "directory should be restricted to 0o700");
+
+    // restricting the file should make it owner-only (0o700)
+    assert!(util_restrict_path_to_owner(&test_file).is_ok());
+    let file_mode = fs::metadata(&test_file).unwrap().permissions().mode() & 0o777;
+    assert_eq!(file_mode, 0o700, "file should be restricted to 0o700");
+
+    // cleanup
+    let _ = fs::remove_dir_all(&test_dir);
+}
+
+#[test]
+fn unit_test_util_restrict_zowe_bin_to_owner() {
+    // The running test executable stands in for the zowe binary that lives in
+    // ~/.zowe/bin. This is best-effort and returns no error, so we simply
+    // confirm that it completes without panicking and that our own executable
+    // (and the directory that contains it) are still accessible afterward.
+    util_restrict_zowe_bin_to_owner();
+
+    let my_exe = env::current_exe().expect("should be able to get current exe path");
+    assert!(my_exe.exists(), "the executable should still exist after restriction");
+    assert!(
+        my_exe.parent().unwrap().exists(),
+        "the bin directory should still exist after restriction"
+    );
+}
+
 #[tokio::test]
 // test daemon restart
 async fn integration_test_restart() {
