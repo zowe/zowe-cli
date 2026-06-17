@@ -64,7 +64,7 @@ export const CommandDefinition: ICommandDefinition = {
                 type: "boolean",
                 description: "Force the use of the previous TSO command functionality " +
                     "(where Zowe CLI creates and tears down the TSO address space via multiple API calls)." +
-                    " This is useful for working around an issue that may occur when using the newer z/OSMF API where an error " +
+                    " This is useful for working around an issue that might occur when using the newer z/OSMF API where an error " +
                     "reading 'Did not receive output from the z/OSMF TSO API' is thrown.",
                 defaultValue: false,
             },
