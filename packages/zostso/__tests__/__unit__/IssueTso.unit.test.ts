@@ -325,7 +325,7 @@ describe("all tests", () => {
             try {
                 response = await IssueTso.issueTsoCmd(
                     PRETEND_SESSION,
-                    "command", { useLegacyApi: true , addressSpaceOptions: {account: "IZUACCT"}},
+                    "command", { useLegacyApi: true, addressSpaceOptions: { account: "IZUACCT" } },
                 );
             } catch (thrownError) {
                 error = thrownError;
