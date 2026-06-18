@@ -10,7 +10,7 @@
 */
 
 import * as path from "path";
-import { AbstractSession, ImperativeExpect, IO, Logger, Headers} from "@zowe/imperative";
+import { AbstractSession, ImperativeExpect, ImperativeError, IO, Logger, Headers} from "@zowe/imperative";
 import { JobsConstants } from "./JobsConstants";
 import { IDownloadAllSpoolContentParms } from "./doc/input/IDownloadAllSpoolContentParms";
 import { IJobFile } from "./doc/response/IJobFile";
@@ -182,6 +182,7 @@ export class DownloadJobs {
             JSON.stringify(parms.jobFile), parms.omitJobidDirectory + "", parms.outDir);
 
         let directory: string = parms.outDir ?? DownloadJobs.DEFAULT_JOBS_OUTPUT_DIR;
+        const parentDirectory = directory;
 
         if (parms.omitJobidDirectory == null || parms.omitJobidDirectory === false) {
             directory += path.posix.sep + parms.jobFile.jobid;
@@ -196,8 +197,13 @@ export class DownloadJobs {
         }
 
         const extension = parms.extension ?? DownloadJobs.DEFAULT_JOBS_OUTPUT_FILE_EXT;
+        const finalPath = directory + path.posix.sep + parms.jobFile.ddname + extension;
 
-        return directory + path.posix.sep + parms.jobFile.ddname + extension;
+        if (IO.containsBacktrack(finalPath) || !IO.isSubPath(parentDirectory, finalPath)) {
+            throw new ImperativeError({msg: "The generated file path contains illegal characters."});
+        }
+
+        return finalPath;
     }
 
     /**

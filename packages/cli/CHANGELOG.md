@@ -4,6 +4,9 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## Recent Changes
 
+- BugFix: Added extra filesystem checks when downloading config files with the `zowe config import` command. [#2747](https://github.com/zowe/zowe-cli/pull/2747)
+- BugFix: Added extra filesystem checks when downloading data sets and USS files. [#2747](https://github.com/zowe/zowe-cli/pull/2747)
+- BugFix: Added extra filesystem checks when downloading job spool. [#2747](https://github.com/zowe/zowe-cli/pull/2747)
 - **Breaking** BugFix: Updated the `zowe zos-files (ds/uss) edit` command to prompt the user to trust custom editors. [#2740](https://github.com/zowe/zowe-cli/pull/2740)
 - BugFix: Restricted access to daemon-related files and directories to the current user only on all platforms. The daemon directory, `~/.zowe/bin` directory, the extracted native executable, the daemon PID file, and the Unix domain socket are now given owner-only permissions (`0o700`/`0o600` on POSIX, owner-only ACL on Windows) to prevent other local users from accessing them. The daemon directory, the `~/.zowe/bin` directory, and the native executable inside it are also re-restricted when they already exist, so that artifacts created before this fix with looser permissions are corrected on the next `zowe daemon enable` or `zowe daemon restart`. [#2743](https://github.com/zowe/zowe-cli/pull/2743)
 
