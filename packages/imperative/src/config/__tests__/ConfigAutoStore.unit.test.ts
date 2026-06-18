@@ -555,6 +555,12 @@ describe("ConfigAutoStore tests", () => {
     });
 
     it("should throw a secureSaveError when config.save() fails", async () => {
+        const handlerParams = {
+            arguments: { host: "example.com" },
+            response: {
+                console: { log: jest.fn() }
+            }
+        };
         await setupConfigToLoad({
             profiles: {
                 base: {
