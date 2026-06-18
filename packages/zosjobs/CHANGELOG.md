@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe z/OS jobs SDK package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Added extra filesystem checks when downloading job spool. [#2747](https://github.com/zowe/zowe-cli/pull/2747)
+
 ## `8.28.0`
 
 - Enhancement: Added `encoding` property to `GetJobs.getJclCommon` method for retrieving JCL with custom encoding. [Zowe Explorer #3826](https://github.com/zowe/zowe-explorer-vscode/issues/3826)
