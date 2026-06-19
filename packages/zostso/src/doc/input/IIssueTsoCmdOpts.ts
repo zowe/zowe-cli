@@ -37,4 +37,12 @@ export interface IIssueTsoCmdOpts {
      * @memberof IIssueTsoCmdOpts
      */
     suppressStartupMessages?: boolean;
+
+    /**
+     * Use the deprecated code for issuing TSO commands which avoids an issue
+     * with the newer z/OSMF API where sometimes no output is returned.
+     * @type {boolean}
+     * @memberof IIssueTsoCmdOpts
+     */
+    useLegacyApi?: boolean;
 }
