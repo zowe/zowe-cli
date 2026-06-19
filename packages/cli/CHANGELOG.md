@@ -4,6 +4,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## `8.32.3`
 
+- Enhancement: Standardized the help text to use `<The User Home Directory>/.zowe` instead of `~/.zowe`. [#2541](https://github.com/zowe/zowe-cli/issues/2541)
 - BugFix: Updated the `tar` dependency for technical currency. [#2752](https://github.com/zowe/zowe-cli/pull/2752)
 - BugFix: Added extra filesystem checks when downloading config files with the `zowe config import` command. [#2747](https://github.com/zowe/zowe-cli/pull/2747)
 - BugFix: Added extra filesystem checks when downloading data sets and USS files. [#2747](https://github.com/zowe/zowe-cli/pull/2747)
