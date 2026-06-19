@@ -53,7 +53,7 @@ describe("z/OS Files - Download", () => {
         const zosmfGetFullSpy = jest.spyOn(ZosmfRestClient, "getExpectFullResponse");
         const fakeResponseWithEtag = {
             data: Buffer.from(ussFileContent),
-            response: {headers: { etag: etagValue } }
+            response: { headers: { etag: etagValue } }
         };
 
         beforeEach(() => {
@@ -124,7 +124,7 @@ describe("z/OS Files - Download", () => {
             const destination = dsFolder + extension;
 
             try {
-                response = await Download.dataSet(dummySession, dsname, {volume, extension});
+                response = await Download.dataSet(dummySession, dsname, { volume, extension });
             } catch (e) {
                 caughtError = e;
             }
@@ -140,11 +140,13 @@ describe("z/OS Files - Download", () => {
 
 
             expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
-            expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
+            expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {
+                resource: endpoint,
                 reqHeaders: [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.TEXT_PLAIN],
                 responseStream: fakeWriteStream,
                 normalizeResponseNewLines: true,
-                task: undefined});
+                task: undefined
+            });
 
             expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);
             expect(ioCreateDirSpy).toHaveBeenCalledWith(destination);
@@ -160,7 +162,7 @@ describe("z/OS Files - Download", () => {
             const destination = dsFolder + extension;
 
             try {
-                response = await Download.dataSet(dummySession, dsname, {volume, extension});
+                response = await Download.dataSet(dummySession, dsname, { volume, extension });
             } catch (e) {
                 caughtError = e;
             }
@@ -176,11 +178,13 @@ describe("z/OS Files - Download", () => {
             });
 
             expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
-            expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
+            expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {
+                resource: endpoint,
                 reqHeaders: [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.TEXT_PLAIN],
                 responseStream: fakeWriteStream,
                 normalizeResponseNewLines: true,
-                task: undefined});
+                task: undefined
+            });
 
             expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);
             expect(ioCreateDirSpy).toHaveBeenCalledWith(destination);
@@ -195,7 +199,7 @@ describe("z/OS Files - Download", () => {
             const destination = dsFolder + ".txt";
 
             try {
-                response = await Download.dataSet(dummySession, dsname, {binary});
+                response = await Download.dataSet(dummySession, dsname, { binary });
             } catch (e) {
                 caughtError = e;
             }
@@ -210,13 +214,15 @@ describe("z/OS Files - Download", () => {
             });
 
             expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
-            expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
+            expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {
+                resource: endpoint,
                 // TODO:gzip
                 // reqHeaders: [ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.ACCEPT_ENCODING],
                 reqHeaders: [ZosmfHeaders.X_IBM_BINARY],
                 responseStream: fakeWriteStream,
                 normalizeResponseNewLines: false /* don't normalize newlines, binary mode*/,
-                task: undefined /* no progress task */});
+                task: undefined /* no progress task */
+            });
 
             expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);
             expect(ioCreateDirSpy).toHaveBeenCalledWith(destination);
@@ -231,7 +237,7 @@ describe("z/OS Files - Download", () => {
             const file = "my/test/file.xyz";
 
             try {
-                response = await Download.dataSet(dummySession, dsname, {binary, file});
+                response = await Download.dataSet(dummySession, dsname, { binary, file });
             } catch (e) {
                 caughtError = e;
             }
@@ -246,13 +252,15 @@ describe("z/OS Files - Download", () => {
             });
 
             expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
-            expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
+            expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {
+                resource: endpoint,
                 // TODO:gzip
                 // reqHeaders: [ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.ACCEPT_ENCODING],
                 reqHeaders: [ZosmfHeaders.X_IBM_BINARY],
                 responseStream: fakeWriteStream,
                 normalizeResponseNewLines: false, /* no normalizing new lines, binary mode*/
-                task: undefined /*no progress task*/});
+                task: undefined /*no progress task*/
+            });
 
             expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);
             expect(ioCreateDirSpy).toHaveBeenCalledWith(file);
@@ -269,7 +277,7 @@ describe("z/OS Files - Download", () => {
             const file = "my/test/file.xyz";
 
             try {
-                response = await Download.dataSet(dummySession, dsname, {binary, record, file});
+                response = await Download.dataSet(dummySession, dsname, { binary, record, file });
             } catch (e) {
                 caughtError = e;
             }
@@ -284,13 +292,15 @@ describe("z/OS Files - Download", () => {
             });
 
             expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
-            expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
+            expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {
+                resource: endpoint,
                 // TODO:gzip
                 // reqHeaders: [ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.ACCEPT_ENCODING],
                 reqHeaders: [ZosmfHeaders.X_IBM_BINARY],
                 responseStream: fakeWriteStream,
                 normalizeResponseNewLines: false, /* no normalizing new lines, binary mode*/
-                task: undefined /*no progress task*/});
+                task: undefined /*no progress task*/
+            });
 
             expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);
             expect(ioCreateDirSpy).toHaveBeenCalledWith(file);
@@ -306,7 +316,7 @@ describe("z/OS Files - Download", () => {
             const destination = dsFolder + ".txt";
 
             try {
-                response = await Download.dataSet(dummySession, dsname, {record});
+                response = await Download.dataSet(dummySession, dsname, { record });
             } catch (e) {
                 caughtError = e;
             }
@@ -321,13 +331,15 @@ describe("z/OS Files - Download", () => {
             });
 
             expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
-            expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
+            expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {
+                resource: endpoint,
                 // TODO:gzip
                 // reqHeaders: [ZosmfHeaders.X_IBM_RECORD, ZosmfHeaders.ACCEPT_ENCODING],
                 reqHeaders: [ZosmfHeaders.X_IBM_RECORD],
                 responseStream: fakeWriteStream,
                 normalizeResponseNewLines: false /* don't normalize newlines, record mode*/,
-                task: undefined /* no progress task */});
+                task: undefined /* no progress task */
+            });
 
             expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);
             expect(ioCreateDirSpy).toHaveBeenCalledWith(destination);
@@ -342,7 +354,7 @@ describe("z/OS Files - Download", () => {
             const file = "my/test/file.xyz";
 
             try {
-                response = await Download.dataSet(dummySession, dsname, {record, file});
+                response = await Download.dataSet(dummySession, dsname, { record, file });
             } catch (e) {
                 caughtError = e;
             }
@@ -357,13 +369,15 @@ describe("z/OS Files - Download", () => {
             });
 
             expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
-            expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
+            expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {
+                resource: endpoint,
                 // TODO:gzip
                 // reqHeaders: [ZosmfHeaders.X_IBM_RECORD, ZosmfHeaders.ACCEPT_ENCODING],
                 reqHeaders: [ZosmfHeaders.X_IBM_RECORD],
                 responseStream: fakeWriteStream,
                 normalizeResponseNewLines: false, /* no normalizing new lines, record mode*/
-                task: undefined /*no progress task*/});
+                task: undefined /*no progress task*/
+            });
 
             expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);
             expect(ioCreateDirSpy).toHaveBeenCalledWith(file);
@@ -393,11 +407,13 @@ describe("z/OS Files - Download", () => {
             });
 
             expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
-            expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
+            expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {
+                resource: endpoint,
                 reqHeaders: [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.TEXT_PLAIN],
                 responseStream: fakeWriteStream,
                 normalizeResponseNewLines: true,
-                task: undefined /* no progress task */});
+                task: undefined /* no progress task */
+            });
 
             expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);
             expect(ioCreateDirSpy).toHaveBeenCalledWith(destination);
@@ -412,7 +428,7 @@ describe("z/OS Files - Download", () => {
             const file = "my/test/file.xyz";
 
             try {
-                response = await Download.dataSet(dummySession, dsname, {encoding, file});
+                response = await Download.dataSet(dummySession, dsname, { encoding, file });
             } catch (e) {
                 caughtError = e;
             }
@@ -449,7 +465,7 @@ describe("z/OS Files - Download", () => {
             const destination = dsFolder + ".txt";
 
             try {
-                response = await Download.dataSet(dummySession, dsname, {responseTimeout});
+                response = await Download.dataSet(dummySession, dsname, { responseTimeout });
             } catch (e) {
                 caughtError = e;
             }
@@ -464,11 +480,13 @@ describe("z/OS Files - Download", () => {
             });
 
             expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
-            expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
+            expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {
+                resource: endpoint,
                 reqHeaders: [ZosmfHeaders.ACCEPT_ENCODING, { "X-IBM-Response-Timeout": "5" }, ZosmfHeaders.TEXT_PLAIN],
                 responseStream: fakeWriteStream,
                 normalizeResponseNewLines: true,
-                task: undefined /* no progress task */});
+                task: undefined /* no progress task */
+            });
 
             expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);
             expect(ioCreateDirSpy).toHaveBeenCalledWith(destination);
@@ -487,7 +505,7 @@ describe("z/OS Files - Download", () => {
 
 
             try {
-                response = await Download.dataSet(dummySession, dsname, {volume, extension, returnEtag: true});
+                response = await Download.dataSet(dummySession, dsname, { volume, extension, returnEtag: true });
             } catch (e) {
                 caughtError = e;
             }
@@ -497,17 +515,19 @@ describe("z/OS Files - Download", () => {
             expect(response).toEqual({
                 success: true,
                 commandResponse: util.format(ZosFilesMessages.datasetDownloadedWithDestination.message, destination),
-                apiResponse: {destination: "user/data/set.test", etag: etagValue}
+                apiResponse: { destination: "user/data/set.test", etag: etagValue }
             });
 
 
             expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
-            expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
+            expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {
+                resource: endpoint,
                 reqHeaders: [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.TEXT_PLAIN, ZosmfHeaders.X_IBM_RETURN_ETAG],
                 responseStream: fakeWriteStream,
                 normalizeResponseNewLines: true,
                 task: undefined,
-                dataToReturn: [CLIENT_PROPERTY.response]}); // import and use proper property
+                dataToReturn: [CLIENT_PROPERTY.response]
+            }); // import and use proper property
 
             expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);
             expect(ioCreateDirSpy).toHaveBeenCalledWith(destination);
@@ -539,11 +559,13 @@ describe("z/OS Files - Download", () => {
             expect(caughtError).toEqual(dummyError);
 
             expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
-            expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
+            expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {
+                resource: endpoint,
                 reqHeaders: [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.TEXT_PLAIN],
                 responseStream: fakeWriteStream,
                 normalizeResponseNewLines: true,
-                task: undefined /*no progress task*/});
+                task: undefined /*no progress task*/
+            });
 
         });
 
@@ -568,11 +590,13 @@ describe("z/OS Files - Download", () => {
             });
 
             expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
-            expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
+            expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {
+                resource: endpoint,
                 reqHeaders: [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.TEXT_PLAIN],
                 responseStream,
                 normalizeResponseNewLines: true,
-                task: undefined /*no progress task*/});
+                task: undefined /*no progress task*/
+            });
 
             expect(ioCreateDirSpy).not.toHaveBeenCalled();
             expect(ioWriteStreamSpy).not.toHaveBeenCalled();
@@ -599,11 +623,13 @@ describe("z/OS Files - Download", () => {
             });
 
             expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
-            expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
+            expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {
+                resource: endpoint,
                 reqHeaders: [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.TEXT_PLAIN],
                 responseStream: fakeWriteStream,
                 normalizeResponseNewLines: true,
-                task: undefined});
+                task: undefined
+            });
 
             expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);
             expect(ioCreateDirSpy).toHaveBeenCalledWith(destination);
@@ -897,6 +923,62 @@ describe("z/OS Files - Download", () => {
 
             ioDeleteSpy.mockRestore();
         });
+
+        it("should strip ANSI control character from column 1 when downloading FBA dataset", async () => {
+            let response;
+            let caughtError;
+            const file = "fba/test.txt";
+            const listDatasetSpy = jest.spyOn(List, "dataSet");
+            const fsReadFileSpy = jest.spyOn(fs, "readFileSync");
+            const fsWriteFileSpy = jest.spyOn(fs, "writeFileSync");
+
+            listDatasetSpy.mockImplementation(async (): Promise<any> => ({
+                apiResponse: { items: [{ recfm: "FBA" }] }
+            }));
+            fsReadFileSpy.mockReturnValue(" hello world\n another line\n");
+            fsWriteFileSpy.mockImplementation(() => null);
+
+            try {
+                response = await Download.dataSet(dummySession, dsname, { file });
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeUndefined();
+            expect(fsWriteFileSpy).toHaveBeenCalledWith(
+                file,
+                "hello world\nanother line\n",
+                "utf8"
+            );
+
+            listDatasetSpy.mockRestore();
+            fsReadFileSpy.mockRestore();
+            fsWriteFileSpy.mockRestore();
+        });
+
+        it("should not strip characters when downloading non-FBA dataset", async () => {
+            let response;
+            let caughtError;
+            const file = "fb/test.txt";
+            const listDatasetSpy = jest.spyOn(List, "dataSet");
+            const fsWriteFileSpy = jest.spyOn(fs, "writeFileSync");
+
+            listDatasetSpy.mockImplementation(async (): Promise<any> => ({
+                apiResponse: { items: [{ recfm: "FB" }] }
+            }));
+
+            try {
+                response = await Download.dataSet(dummySession, dsname, { file });
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeUndefined();
+            expect(fsWriteFileSpy).not.toHaveBeenCalled();
+
+            listDatasetSpy.mockRestore();
+            fsWriteFileSpy.mockRestore();
+        });
     });
 
     describe("allMembers", () => {
@@ -906,8 +988,8 @@ describe("z/OS Files - Download", () => {
 
         const listApiResponse = {
             items: [
-                {member: "M1"},
-                {member: "M2"}
+                { member: "M1" },
+                { member: "M2" }
             ]
         };
 
@@ -997,7 +1079,7 @@ describe("z/OS Files - Download", () => {
             expect(response).toEqual({
                 success: false,
                 commandResponse: ZosFilesMessages.noMembersFound.message,
-                apiResponse: {items: []}
+                apiResponse: { items: [] }
             });
 
             expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
@@ -1102,7 +1184,7 @@ describe("z/OS Files - Download", () => {
             defaultResponse.commandResponse = util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, 2, directory);
 
             try {
-                response = await Download.allMembers(dummySession, dsname, {volume, directory, extension, binary});
+                response = await Download.allMembers(dummySession, dsname, { volume, directory, extension, binary });
             } catch (e) {
                 caughtError = e;
             }
@@ -1114,7 +1196,7 @@ describe("z/OS Files - Download", () => {
             expect(response).toEqual(expectedResponse);
 
             expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
-            expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, dsname, {volume});
+            expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, dsname, { volume });
 
             expect(downloadDatasetSpy).toHaveBeenCalledTimes(2);
             listApiResponse.items.forEach((mem) => {
@@ -1138,7 +1220,7 @@ describe("z/OS Files - Download", () => {
             defaultResponse.commandResponse = util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, 2, directory);
 
             try {
-                response = await Download.allMembers(dummySession, dsname, {volume, directory, extension, record});
+                response = await Download.allMembers(dummySession, dsname, { volume, directory, extension, record });
             } catch (e) {
                 caughtError = e;
             }
@@ -1150,7 +1232,7 @@ describe("z/OS Files - Download", () => {
             expect(response).toEqual(expectedResponse);
 
             expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
-            expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, dsname, {volume});
+            expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, dsname, { volume });
 
             expect(downloadDatasetSpy).toHaveBeenCalledTimes(2);
             listApiResponse.items.forEach((mem) => {
@@ -1175,7 +1257,7 @@ describe("z/OS Files - Download", () => {
             defaultResponse.commandResponse = util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, 2, directory);
 
             try {
-                response = await Download.allMembers(dummySession, dsname, {volume, directory, extension, binary, responseTimeout});
+                response = await Download.allMembers(dummySession, dsname, { volume, directory, extension, binary, responseTimeout });
             } catch (e) {
                 caughtError = e;
             }
@@ -1187,7 +1269,7 @@ describe("z/OS Files - Download", () => {
             expect(response).toEqual(expectedResponse);
 
             expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
-            expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, dsname, {volume, responseTimeout});
+            expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, dsname, { volume, responseTimeout });
 
             expect(downloadDatasetSpy).toHaveBeenCalledTimes(2);
             listApiResponse.items.forEach((mem) => {
@@ -1214,7 +1296,7 @@ describe("z/OS Files - Download", () => {
             defaultResponse.commandResponse = util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, 2, directory);
 
             try {
-                response = await Download.allMembers(dummySession, dsname, {volume, directory, extension, record, responseTimeout});
+                response = await Download.allMembers(dummySession, dsname, { volume, directory, extension, record, responseTimeout });
             } catch (e) {
                 caughtError = e;
             }
@@ -1226,7 +1308,7 @@ describe("z/OS Files - Download", () => {
             expect(response).toEqual(expectedResponse);
 
             expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
-            expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, dsname, {volume, responseTimeout});
+            expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, dsname, { volume, responseTimeout });
 
             expect(downloadDatasetSpy).toHaveBeenCalledTimes(2);
             listApiResponse.items.forEach((mem) => {
@@ -1252,7 +1334,7 @@ describe("z/OS Files - Download", () => {
             defaultResponse.commandResponse = util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, 2, directory);
 
             try {
-                response = await Download.allMembers(dummySession, dsname, {volume, directory, extension, encoding});
+                response = await Download.allMembers(dummySession, dsname, { volume, directory, extension, encoding });
             } catch (e) {
                 caughtError = e;
             }
@@ -1264,7 +1346,7 @@ describe("z/OS Files - Download", () => {
             expect(response).toEqual(expectedResponse);
 
             expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
-            expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, dsname, {volume});
+            expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, dsname, { volume });
 
             expect(downloadDatasetSpy).toHaveBeenCalledTimes(2);
             listApiResponse.items.forEach((mem) => {
@@ -1287,7 +1369,7 @@ describe("z/OS Files - Download", () => {
             defaultResponse.commandResponse = util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, 2, directory);
 
             try {
-                response = await Download.allMembers(dummySession, dsname, {volume, directory, extension});
+                response = await Download.allMembers(dummySession, dsname, { volume, directory, extension });
             } catch (e) {
                 caughtError = e;
             }
@@ -1299,7 +1381,7 @@ describe("z/OS Files - Download", () => {
             expect(response).toEqual(expectedResponse);
 
             expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
-            expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, dsname, {volume});
+            expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, dsname, { volume });
 
             expect(downloadDatasetSpy).toHaveBeenCalledTimes(2);
             listApiResponse.items.forEach((mem) => {
@@ -1322,7 +1404,7 @@ describe("z/OS Files - Download", () => {
             defaultResponse.commandResponse = util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, 2, directory);
 
             try {
-                response = await Download.allMembers(dummySession, dsname, {volume, directory, extension, binary});
+                response = await Download.allMembers(dummySession, dsname, { volume, directory, extension, binary });
             } catch (e) {
                 caughtError = e;
             }
@@ -1334,7 +1416,7 @@ describe("z/OS Files - Download", () => {
             expect(response).toEqual(expectedResponse);
 
             expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
-            expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, dsname, {volume});
+            expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, dsname, { volume });
 
             expect(downloadDatasetSpy).toHaveBeenCalledTimes(2);
             listApiResponse.items.forEach((mem) => {
@@ -1437,7 +1519,7 @@ describe("z/OS Files - Download", () => {
             });
 
             try {
-                response = await Download.allMembers(dummySession, dsname, {failFast: false});
+                response = await Download.allMembers(dummySession, dsname, { failFast: false });
             } catch (e) {
                 caughtError = e;
             }
@@ -1961,7 +2043,7 @@ describe("z/OS Files - Download", () => {
             expect(caughtError.causeErrors).toEqual(dummyError);
 
             expect(downloadAllMembersSpy).toHaveBeenCalledTimes(1);
-            expect(downloadAllMembersSpy).toHaveBeenCalledWith(dummySession, dataSetPO.dsname, {directory: "test/po/data/set"});
+            expect(downloadAllMembersSpy).toHaveBeenCalledWith(dummySession, dataSetPO.dsname, { directory: "test/po/data/set" });
         });
 
         it("should stop downloading datasets when cancellation is requested", async () => {
@@ -2034,7 +2116,7 @@ describe("z/OS Files - Download", () => {
             });
 
             try {
-                response = await Download.allDataSets(dummySession, [dataSetPS] as any, {directory, extension, binary});
+                response = await Download.allDataSets(dummySession, [dataSetPS] as any, { directory, extension, binary });
             } catch (e) {
                 caughtError = e;
             }
@@ -2047,7 +2129,7 @@ describe("z/OS Files - Download", () => {
                     failedArchived: [],
                     failedUnsupported: [],
                     failedWithErrors: {}
-                }, {directory}),
+                }, { directory }),
                 apiResponse: [{ ...dataSetPS, status: "Data set downloaded" }]
             });
             expect(Download.dataSet).toHaveBeenCalledWith(dummySession, dataSetPS.dsname, {
@@ -2110,7 +2192,7 @@ describe("z/OS Files - Download", () => {
             });
 
             try {
-                response = await Download.allDataSets(dummySession, [dataSetPS] as any, {extension});
+                response = await Download.allDataSets(dummySession, [dataSetPS] as any, { extension });
             } catch (e) {
                 caughtError = e;
             }
@@ -2126,7 +2208,7 @@ describe("z/OS Files - Download", () => {
                 }, {}),
                 apiResponse: [{ ...dataSetPS, status: "Data set downloaded" }]
             });
-            expect(Download.dataSet).toHaveBeenCalledWith(dummySession, dataSetPS.dsname, {file: "test.ps.data.set.xyz", overwrite: true});
+            expect(Download.dataSet).toHaveBeenCalledWith(dummySession, dataSetPS.dsname, { file: "test.ps.data.set.xyz", overwrite: true });
         });
 
         it("should download all datasets with maxConcurrentRequests set to zero", async () => {
@@ -2145,7 +2227,7 @@ describe("z/OS Files - Download", () => {
             });
 
             try {
-                response = await Download.allDataSets(dummySession, [dataSetPS] as any, {maxConcurrentRequests});
+                response = await Download.allDataSets(dummySession, [dataSetPS] as any, { maxConcurrentRequests });
             } catch (e) {
                 caughtError = e;
             }
@@ -2185,7 +2267,7 @@ describe("z/OS Files - Download", () => {
             });
 
             try {
-                response = await Download.allDataSets(dummySession, [dataSetPS] as any, {directory, extension});
+                response = await Download.allDataSets(dummySession, [dataSetPS] as any, { directory, extension });
             } catch (e) {
                 caughtError = e;
             }
@@ -2198,7 +2280,7 @@ describe("z/OS Files - Download", () => {
                     failedArchived: [],
                     failedUnsupported: [],
                     failedWithErrors: {}
-                }, {directory}),
+                }, { directory }),
                 apiResponse: [{ ...dataSetPS, status: "Data set downloaded" }]
             });
             expect(Download.dataSet).toHaveBeenCalledWith(dummySession, dataSetPS.dsname, {
@@ -2211,7 +2293,7 @@ describe("z/OS Files - Download", () => {
             let caughtError;
 
             const directory = "My/Test/Path";
-            const extensionMap = {set: "file"};
+            const extensionMap = { set: "file" };
 
             Download.dataSet = jest.fn(async (): Promise<any> => {
                 return {
@@ -2223,7 +2305,7 @@ describe("z/OS Files - Download", () => {
             });
 
             try {
-                response = await Download.allDataSets(dummySession, [dataSetPS] as any, {directory, extensionMap});
+                response = await Download.allDataSets(dummySession, [dataSetPS] as any, { directory, extensionMap });
             } catch (e) {
                 caughtError = e;
             }
@@ -2236,7 +2318,7 @@ describe("z/OS Files - Download", () => {
                     failedArchived: [],
                     failedUnsupported: [],
                     failedWithErrors: {}
-                }, {directory}),
+                }, { directory }),
                 apiResponse: [{ ...dataSetPS, status: "Data set downloaded" }]
             });
             expect(Download.dataSet).toHaveBeenCalledWith(dummySession, dataSetPS.dsname, {
@@ -2251,7 +2333,7 @@ describe("z/OS Files - Download", () => {
             let caughtError;
 
             const directory = "my/test/path";
-            const extensionMap = {set: "file"};
+            const extensionMap = { set: "file" };
 
             Download.dataSet = jest.fn(async (): Promise<any> => {
                 return {
@@ -2263,7 +2345,7 @@ describe("z/OS Files - Download", () => {
             });
 
             try {
-                response = await Download.allDataSets(dummySession, [dataSetPS] as any, {directory, extensionMap});
+                response = await Download.allDataSets(dummySession, [dataSetPS] as any, { directory, extensionMap });
             } catch (e) {
                 caughtError = e;
             }
@@ -2276,7 +2358,7 @@ describe("z/OS Files - Download", () => {
                     failedArchived: [],
                     failedUnsupported: [],
                     failedWithErrors: {}
-                }, {directory}),
+                }, { directory }),
                 apiResponse: [{ ...dataSetPS, status: "Data set downloaded" }]
             });
             expect(Download.dataSet).toHaveBeenCalledWith(dummySession, dataSetPS.dsname, {
@@ -2291,7 +2373,7 @@ describe("z/OS Files - Download", () => {
             let caughtError;
 
             const directory = "my/test/path";
-            const extensionMap = {fake: "file"};
+            const extensionMap = { fake: "file" };
 
             Download.dataSet = jest.fn(async (): Promise<any> => {
                 return {
@@ -2303,7 +2385,7 @@ describe("z/OS Files - Download", () => {
             });
 
             try {
-                response = await Download.allDataSets(dummySession, [dataSetPS] as any, {directory, extensionMap});
+                response = await Download.allDataSets(dummySession, [dataSetPS] as any, { directory, extensionMap });
             } catch (e) {
                 caughtError = e;
             }
@@ -2316,7 +2398,7 @@ describe("z/OS Files - Download", () => {
                     failedArchived: [],
                     failedUnsupported: [],
                     failedWithErrors: {}
-                }, {directory}),
+                }, { directory }),
                 apiResponse: [{ ...dataSetPS, status: "Data set downloaded" }]
             });
             expect(Download.dataSet).toHaveBeenCalledWith(dummySession, dataSetPS.dsname, {
@@ -2631,7 +2713,7 @@ describe("z/OS Files - Download", () => {
             });
 
             try {
-                response = await Download.allDataSets(dummySession, [dataSetPO] as any, {directory});
+                response = await Download.allDataSets(dummySession, [dataSetPO] as any, { directory });
             } catch (e) {
                 caughtError = e;
             }
@@ -2644,7 +2726,7 @@ describe("z/OS Files - Download", () => {
                     failedArchived: [],
                     failedUnsupported: [],
                     failedWithErrors: {}
-                }, {directory}),
+                }, { directory }),
                 apiResponse: [{
                     ...dataSetPO,
                     status: util.format(ZosFilesMessages.datasetDownloadedWithDestination.message, directory) + "\nMembers: TESTDS"
@@ -2961,12 +3043,14 @@ describe("z/OS Files - Download", () => {
                 apiResponse: [
                     { ...dataSetPS, status: "Skipped: File already exists - test.ps.data.set.txt" },
                     { ...dataSetPS2, status: "Data set downloaded" },
-                    { ...dataSetPO, status:
-                        util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, 1, dsFolder) + "\n" +
-                        util.format(ZosFilesMessages.memberDownloadSkipped.message, 1) + "\nMembers: MEMBER1, MEMBER2"
+                    {
+                        ...dataSetPO, status:
+                            util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, 1, dsFolder) + "\n" +
+                            util.format(ZosFilesMessages.memberDownloadSkipped.message, 1) + "\nMembers: MEMBER1, MEMBER2"
                     },
-                    { ...dataSetPO2, status:
-                        util.format(ZosFilesMessages.memberDownloadSkipped.message, 2)  + "\nMembers: MEMBER3, MEMBER4"
+                    {
+                        ...dataSetPO2, status:
+                            util.format(ZosFilesMessages.memberDownloadSkipped.message, 2) + "\nMembers: MEMBER3, MEMBER4"
                     }
                 ]
             });
@@ -3077,7 +3161,7 @@ describe("z/OS Files - Download", () => {
         const ioCreateDirSpy = jest.spyOn(IO, "createDirsSyncFromFilePath");
         const ioWriteStreamSpy = jest.spyOn(IO, "createWriteStream");
         const existsSyncSpy = jest.spyOn(IO, "existsSync");
-        const fakeStream: any = {fakeStream: true};
+        const fakeStream: any = { fakeStream: true };
         const zosmfGetFullSpy = jest.spyOn(ZosmfRestClient, "getExpectFullResponse");
         const putUSSPayloadSpy = jest.spyOn(Utilities, "putUSSPayload");
         const fakeResponseWithEtag = {
@@ -3153,7 +3237,7 @@ describe("z/OS Files - Download", () => {
             let caughtError;
 
             try {
-                response = await Download.ussFile(dummySession, ussname, {record: true});
+                response = await Download.ussFile(dummySession, ussname, { record: true });
             } catch (e) {
                 caughtError = e;
             }
@@ -3184,7 +3268,8 @@ describe("z/OS Files - Download", () => {
 
             expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
             // expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, endpoint, [], fakeStream, true, undefined);
-            expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
+            expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {
+                resource: endpoint,
                 reqHeaders: [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.TEXT_PLAIN],
                 responseStream: fakeStream,
                 normalizeResponseNewLines: true
@@ -3202,7 +3287,7 @@ describe("z/OS Files - Download", () => {
             let caughtError;
             const destination = localFileName;
             try {
-                response = await Download.ussFile(dummySession, ussname, {binary: true});
+                response = await Download.ussFile(dummySession, ussname, { binary: true });
             } catch (e) {
                 caughtError = e;
             }
@@ -3220,13 +3305,15 @@ describe("z/OS Files - Download", () => {
             // expect(zosmfStreamSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_BINARY], fakeStream,
             //     false, /* don't normalize new lines in binary*/
             //     undefined /* no progress task */);
-            expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
+            expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {
+                resource: endpoint,
                 // TODO:gzip
                 // reqHeaders: [ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.ACCEPT_ENCODING],
                 reqHeaders: [ZosmfHeaders.X_IBM_BINARY],
                 responseStream: fakeStream,
                 normalizeResponseNewLines: false, /* don't normalize new lines in binary*/
-                task: undefined /* no progress task */});
+                task: undefined /* no progress task */
+            });
 
             expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);
             expect(ioCreateDirSpy).toHaveBeenCalledWith(destination);
@@ -3296,13 +3383,15 @@ describe("z/OS Files - Download", () => {
             // expect(zosmfStreamSpy).toHaveBeenCalledWith(dummySession, endpoint, [ZosmfHeaders.X_IBM_BINARY], fakeStream,
             //     false, /* don't normalize new lines in binary*/
             //     undefined /* no progress task */);
-            expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
+            expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {
+                resource: endpoint,
                 // TODO:gzip
                 // reqHeaders: [ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.ACCEPT_ENCODING],
                 reqHeaders: [ZosmfHeaders.X_IBM_BINARY],
                 responseStream: fakeStream,
                 normalizeResponseNewLines: false, /* don't normalize new lines in binary*/
-                task: undefined /* no progress task */});
+                task: undefined /* no progress task */
+            });
 
             expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);
             expect(ioCreateDirSpy).toHaveBeenCalledWith(destination);
@@ -3355,7 +3444,7 @@ describe("z/OS Files - Download", () => {
             const destination = localFileName;
             const responseTimeout = 5;
             try {
-                response = await Download.ussFile(dummySession, ussname, {responseTimeout});
+                response = await Download.ussFile(dummySession, ussname, { responseTimeout });
             } catch (e) {
                 caughtError = e;
             }
@@ -3370,11 +3459,13 @@ describe("z/OS Files - Download", () => {
             });
 
             expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
-            expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
+            expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {
+                resource: endpoint,
                 reqHeaders: [ZosmfHeaders.ACCEPT_ENCODING, { "X-IBM-Response-Timeout": "5" }, ZosmfHeaders.TEXT_PLAIN],
                 responseStream: fakeStream,
                 normalizeResponseNewLines: true,
-                task: undefined /* no progress task */});
+                task: undefined /* no progress task */
+            });
 
             expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);
             expect(ioCreateDirSpy).toHaveBeenCalledWith(destination);
@@ -3388,7 +3479,7 @@ describe("z/OS Files - Download", () => {
             let caughtError;
             const file = "a/xyz/test.txt";
             try {
-                response = await Download.ussFile(dummySession, ussname, {file, binary: true});
+                response = await Download.ussFile(dummySession, ussname, { file, binary: true });
             } catch (e) {
                 caughtError = e;
             }
@@ -3403,13 +3494,15 @@ describe("z/OS Files - Download", () => {
             });
 
             expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
-            expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
+            expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {
+                resource: endpoint,
                 // TODO:gzip
                 // reqHeaders: [ZosmfHeaders.X_IBM_BINARY, ZosmfHeaders.ACCEPT_ENCODING],
                 reqHeaders: [ZosmfHeaders.X_IBM_BINARY],
                 responseStream: fakeStream,
                 normalizeResponseNewLines: false, /* don't normalize new lines in binary */
-                task: undefined /* no progress task */});
+                task: undefined /* no progress task */
+            });
 
             expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);
             expect(ioCreateDirSpy).toHaveBeenCalledWith(file);
@@ -3424,7 +3517,7 @@ describe("z/OS Files - Download", () => {
             let caughtError;
             const destination = localFileName;
             try {
-                response = await Download.ussFile(dummySession, ussname, {returnEtag: true});
+                response = await Download.ussFile(dummySession, ussname, { returnEtag: true });
             } catch (e) {
                 caughtError = e;
             }
@@ -3439,11 +3532,13 @@ describe("z/OS Files - Download", () => {
             });
 
             expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
-            expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
+            expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {
+                resource: endpoint,
                 reqHeaders: [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.TEXT_PLAIN, ZosmfHeaders.X_IBM_RETURN_ETAG],
                 responseStream: fakeStream,
                 normalizeResponseNewLines: true,
-                dataToReturn: [CLIENT_PROPERTY.response]});
+                dataToReturn: [CLIENT_PROPERTY.response]
+            });
 
             expect(ioCreateDirSpy).toHaveBeenCalledTimes(1);
             expect(ioCreateDirSpy).toHaveBeenCalledWith(destination);
@@ -3473,11 +3568,13 @@ describe("z/OS Files - Download", () => {
             });
 
             expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
-            expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {resource: endpoint,
+            expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {
+                resource: endpoint,
                 reqHeaders: [ZosmfHeaders.ACCEPT_ENCODING, ZosmfHeaders.TEXT_PLAIN],
                 responseStream,
                 normalizeResponseNewLines: true,
-                task: undefined /* no progress task */});
+                task: undefined /* no progress task */
+            });
 
             expect(ioCreateDirSpy).not.toHaveBeenCalled();
             expect(ioWriteStreamSpy).not.toHaveBeenCalled();
@@ -3512,7 +3609,7 @@ describe("z/OS Files - Download", () => {
             expect(zosmfGetFullSpy).toHaveBeenCalledTimes(1);
             expect(zosmfGetFullSpy).toHaveBeenCalledWith(dummySession, {
                 resource: endpoint,
-                reqHeaders: [{ "X-IBM-Data-Type": "text;fileEncoding=IBM-1047" }, ZosmfHeaders.ACCEPT_ENCODING, {"Content-Type": "UTF-8"}],
+                reqHeaders: [{ "X-IBM-Data-Type": "text;fileEncoding=IBM-1047" }, ZosmfHeaders.ACCEPT_ENCODING, { "Content-Type": "UTF-8" }],
                 responseStream: fakeStream,
                 normalizeResponseNewLines: true,
                 task: undefined /* no progress task */
@@ -4144,7 +4241,7 @@ describe("z/OS Files - Download", () => {
             let response;
             let caughtError;
 
-            existsSyncSpy.mockImplementation((filepath) => basename(filepath.toString()) === "file2" );
+            existsSyncSpy.mockImplementation((filepath) => basename(filepath.toString()) === "file2");
             listFileListSpy.mockResolvedValueOnce({
                 apiResponse: {
                     items: [
@@ -4180,7 +4277,7 @@ describe("z/OS Files - Download", () => {
             let response;
             let caughtError;
 
-            existsSyncSpy.mockImplementation((filepath) => basename(filepath.toString()) === "file2" );
+            existsSyncSpy.mockImplementation((filepath) => basename(filepath.toString()) === "file2");
             listFileListSpy.mockResolvedValueOnce({
                 apiResponse: {
                     items: [
@@ -4191,7 +4288,7 @@ describe("z/OS Files - Download", () => {
             } as any);
 
             try {
-                response = await Download.ussDir(dummySession, ussDirName, {overwrite: true});
+                response = await Download.ussDir(dummySession, ussDirName, { overwrite: true });
             } catch (e) {
                 caughtError = e;
             }

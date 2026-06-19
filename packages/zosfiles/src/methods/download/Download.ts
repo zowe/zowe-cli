@@ -9,8 +9,10 @@
 *
 */
 
-import { AbstractSession, Headers, ImperativeExpect, IO, Logger, TaskProgress, ImperativeError,
-    TextUtils, IHeaderContent, IOptionsFullResponse, IRestClientResponse } from "@zowe/imperative";
+import {
+    AbstractSession, Headers, ImperativeExpect, IO, Logger, TaskProgress, ImperativeError,
+    TextUtils, IHeaderContent, IOptionsFullResponse, IRestClientResponse
+} from "@zowe/imperative";
 
 import { posix, join, relative } from "path";
 import * as fs from "fs";
@@ -100,6 +102,18 @@ export class Download {
                 endpoint += options.queryParams;
             }
 
+            // Check if dataset is FBA to handle ANSI control character on download
+            let isFBA = false;
+            if (!options.binary && !options.record) {
+                try {
+                    const dsInfo = await List.dataSet(session, dataSetName, { attributes: true });
+                    const recfm = dsInfo.apiResponse?.items?.[0]?.recfm ?? "";
+                    isFBA = recfm.toUpperCase().startsWith("FBA");
+                } catch {
+                    // If attributes cannot be fetched, proceed normally
+                }
+            }
+
             Logger.getAppLogger().debug(`Endpoint: ${endpoint}`);
 
             const reqHeaders: IHeaderContent[] = this.generateHeadersBasedOnOptions(options);
@@ -160,7 +174,7 @@ export class Download {
             };
 
             if (options.range) {
-                reqHeaders.push({ [ZosmfHeaders.X_IBM_RECORD_RANGE]: options.range});
+                reqHeaders.push({ [ZosmfHeaders.X_IBM_RECORD_RANGE]: options.range });
             }
 
             // If requestor needs etag, add header + get "response" back
@@ -176,6 +190,15 @@ export class Download {
             // Return Etag in apiResponse, if requested
             if (options.returnEtag) {
                 apiResponse.etag = request.response.headers.etag;
+            }
+
+            // Strip ANSI control character from column 1 for FBA datasets
+            if (isFBA && destination != null) {
+                const content = fs.readFileSync(destination, "utf8");
+                const stripped = content.split("\n")
+                    .map(line => line.length > 0 ? line.slice(1) : line)
+                    .join("\n");
+                fs.writeFileSync(destination, stripped, "utf8");
             }
 
             return {
@@ -679,10 +702,9 @@ export class Download {
 
             const writeStream = options.stream ?? IO.createWriteStream(destination);
 
-            if(options.attributes)
-            {
-                options = { ...options, ...this.parseAttributeOptions(ussFileName,options)};
-                if(options.binary) options.encoding = undefined;
+            if (options.attributes) {
+                options = { ...options, ...this.parseAttributeOptions(ussFileName, options) };
+                if (options.binary) options.encoding = undefined;
             }
 
             // If data type is not defined by user via encoding flag or attributes file, check for USS tags
@@ -707,7 +729,7 @@ export class Download {
             };
 
             if (options.range) {
-                reqHeaders.push({ [ZosmfHeaders.X_IBM_RECORD_RANGE]: options.range});
+                reqHeaders.push({ [ZosmfHeaders.X_IBM_RECORD_RANGE]: options.range });
             }
 
             // If requestor needs etag, add header + get "response" back
@@ -830,7 +852,7 @@ export class Download {
             const mutableOptions: IDownloadOptions = { ...fileOptions, task: undefined };
 
             // Populate list options
-            listOptions = {name: "*", ...listOptions};
+            listOptions = { name: "*", ...listOptions };
 
             // Get the directory listing from z/OSMF
             const list = (await List.fileList(session, ussDirName, listOptions)).apiResponse.items;
@@ -938,7 +960,7 @@ export class Download {
         if (result.downloaded.length > 0) {
             responseLines.push(
                 TextUtils.chalk.green(`${result.downloaded.length} data set(s) downloaded successfully to `) +
-                    (options.directory ?? "./"),
+                (options.directory ?? "./"),
                 ...result.downloaded.map(dsname => `    ${dsname}`)
             );
         }
