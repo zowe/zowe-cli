@@ -114,6 +114,17 @@ export class DaemonDecider {
 
             this.mServer.maxConnections = 1;
             this.mServer.listen(this.mSocket, () => {
+                // On POSIX systems the socket is a file on disk that is created with
+                // umask-derived permissions. Restrict it to the owner so that other
+                // local users cannot connect to our daemon and run commands as us.
+                // On Windows the socket is a named pipe (not a file), so this is skipped.
+                if (process.platform !== "win32") {
+                    try {
+                        IO.giveAccessOnlyToOwner(this.mSocket);
+                    } catch (err) {
+                        Imperative.api.appLogger.error(`Unable to restrict access to daemon socket ${this.mSocket}: ${err.message}`);
+                    }
+                }
                 Imperative.api.appLogger.debug(`daemon server bound ${this.mSocket}`);
                 new Console(`info`).info(`server bound ${this.mSocket}`);
             });
@@ -139,9 +150,12 @@ export class DaemonDecider {
         const pidForUserStr = JSON.stringify(pidForUser, null, 2);
 
         try {
-            fs.writeFileSync(pidFilePath, pidForUserStr);
-            const ownerReadWrite = 0o600;
-            fs.chmodSync(pidFilePath, ownerReadWrite);
+            // Create the file with owner-only permissions up front to avoid a brief
+            // window where it exists with default (umask-derived) permissions.
+            fs.writeFileSync(pidFilePath, pidForUserStr, { mode: 0o600 });
+            // Enforce owner-only access cross-platform (icacls on Windows, chmod on POSIX),
+            // and in case the file already existed with looser permissions.
+            IO.giveAccessOnlyToOwner(pidFilePath);
         } catch(err) {
             throw new Error("Failed to write file '" + pidFilePath + "'\nDetails = " + err.message);
         }

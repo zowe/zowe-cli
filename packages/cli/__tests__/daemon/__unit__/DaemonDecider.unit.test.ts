@@ -18,72 +18,26 @@ jest.mock("@zowe/imperative");
 import * as net from "net";
 import * as os from "os";
 import * as path from "path";
-import Mock = jest.Mock;
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Imperative, IO } from "@zowe/imperative";  // eslint-disable-line unused-imports/no-unused-imports
 import { DaemonDecider } from "../../../src/daemon/DaemonDecider";
 
 jest.mock("../../../src/daemon/DaemonClient");
 
 describe("DaemonDecider tests", () => {
-    afterEach(() => {
-        delete process.env.ZOWE_DAEMON_DIR;
-        delete process.env.ZOWE_DAEMON_PIPE;
-        jest.resetAllMocks();
-    });
+    let log: jest.Mock;
+    let on: jest.Mock;
+    let listen: jest.Mock;
+    let parse: jest.Mock;
+    let createServerMock: jest.Mock;
 
-    it("should call normal parse method if no daemon keyword", () => {
-
-        const log = jest.fn(() => {
-            // do nothing
-        });
-
-        const on = jest.fn((event, func) => {
-            // do nothing
-        });
-
-        const parse = jest.fn( (data, context) => {
+    beforeEach(() => {
+        log = jest.fn();
+        on = jest.fn();
+        listen = jest.fn();
+        parse = jest.fn((data, context) => {
             expect(data).toBe(undefined);
             expect(context).toBe(undefined);
-        });
-
-        (Imperative as any) = {
-            api: {
-                appLogger: {
-                    trace: log
-                }
-            },
-            parse
-        };
-        const fn = jest.mocked(net.createServer);
-        fn.mockImplementation((unusedclient, ...args: any[]): any => {
-            return {on};
-        });
-
-        const daemonDecider = new DaemonDecider(["--help"]);
-        daemonDecider.init();
-        expect(on).not.toHaveBeenCalled();
-        daemonDecider.runOrUseDaemon();
-        expect(parse).toHaveBeenCalled();
-    });
-
-    it("should start the server when daemon parm is passed", () => {
-
-        const log = jest.fn(() => {
-            // do nothing
-        });
-
-        const on = jest.fn((event, func) => {
-            // do nothing
-        });
-
-        const listen = jest.fn((socket, method) => {
-            // do nothing
-            method();
-        });
-
-        const parse = jest.fn( (data, context) => {
-            expect(data).toMatchSnapshot();
-            expect(context).toMatchSnapshot();
         });
 
         (Imperative as any) = {
@@ -99,10 +53,40 @@ describe("DaemonDecider tests", () => {
             },
             parse
         };
-        const fn = jest.mocked(net.createServer);
-        fn.mockImplementation((method: any, ...args: any[]): any => {
+
+        createServerMock = jest.mocked(net.createServer);
+        createServerMock.mockImplementation(() => {
+            return { on, listen };
+        });
+    });
+
+    afterEach(() => {
+        delete process.env.ZOWE_DAEMON_DIR;
+        delete process.env.ZOWE_DAEMON_PIPE;
+        jest.resetAllMocks();
+    });
+
+    it("should call normal parse method if no daemon keyword", () => {
+        const daemonDecider = new DaemonDecider(["--help"]);
+        daemonDecider.init();
+        expect(on).not.toHaveBeenCalled();
+        daemonDecider.runOrUseDaemon();
+        expect(parse).toHaveBeenCalled();
+    });
+
+    it("should start the server when daemon parm is passed", () => {
+        listen.mockImplementation((socket, method) => {
+            method();
+        });
+
+        parse.mockImplementation((data, context) => {
+            expect(data).toMatchSnapshot();
+            expect(context).toMatchSnapshot();
+        });
+
+        createServerMock.mockImplementation((method: any) => {
             method("fakeClient", "fakeServer");
-            return {on, listen};
+            return { on, listen };
         });
 
         const daemonDecider = new DaemonDecider(["some/file/path", "zowe", "--daemon"]);
@@ -122,24 +106,11 @@ describe("DaemonDecider tests", () => {
     });
 
     it("should set comm channel based on env variable", () => {
-
-        const log = jest.fn(() => {
-            // do nothing
-        });
-
-        (Imperative as any) = {
-            api: {
-                appLogger: {
-                    debug: log
-                }
-            }
-        };
-
         const daemonDecider = new DaemonDecider(["anything"]);
 
         const envWinPipeName = "MyWinPipeName";
         const envDaemonDir = path.normalize("./testOutput/daemonDir");
-        let expectedCommChannel: string = "NotAssignedYet";
+        let expectedCommChannel: string;
 
         if (process.platform === "win32") {
             process.env.ZOWE_DAEMON_PIPE = envWinPipeName;
@@ -155,42 +126,6 @@ describe("DaemonDecider tests", () => {
     });
 
     it("should not start a daemon", () => {
-        const log = jest.fn(() => {
-            // do nothing
-        });
-
-        const on = jest.fn((event, func) => {
-            // do nothing
-        });
-
-        const listen = jest.fn((event, func) => {
-            // do nothing
-        });
-
-        const parse = jest.fn( (data, context) => {
-            expect(data).toBe(undefined);
-            expect(context).toBe(undefined);
-        });
-
-        (Imperative as any) = {
-            api: {
-                appLogger: {
-                    trace: log,
-                    debug: log,
-                    error: log
-                }
-            },
-            console: {
-                info: log
-            },
-            parse
-        };
-
-        const fn = jest.mocked(net.createServer);
-        fn.mockImplementation((unusedclient, ...args: any[]): any => {
-            return {on, listen};
-        });
-
         const daemonDecider = new DaemonDecider(["node", "zowe", "--help"]);
         daemonDecider.init();
 
@@ -199,48 +134,12 @@ describe("DaemonDecider tests", () => {
     });
 
     it("should use the default comm channel location", () => {
-        const log = jest.fn(() => {
-            // do nothing
-        });
-
-        const on = jest.fn((event, func) => {
-            // do nothing
-        });
-
-        const listen = jest.fn((event, func) => {
-            // do nothing
-        });
-
-        const parse = jest.fn( (data, context) => {
-            expect(data).toBe(undefined);
-            expect(context).toBe(undefined);
-        });
-
-        (Imperative as any) = {
-            api: {
-                appLogger: {
-                    trace: log,
-                    debug: log,
-                    error: log
-                }
-            },
-            console: {
-                info: log
-            },
-            parse
-        };
-
-        const fn = jest.mocked(net.createServer);
-        fn.mockImplementation((unusedclient, ...args: any[]): any => {
-            return {on, listen};
-        });
-
         const daemonDecider = new DaemonDecider(["node", "zowe", "--daemon"]);
         daemonDecider.init();
 
-        let expectedCommChannel: string = "NotAssignedYet";
+        let expectedCommChannel: string;
         if (process.platform === "win32") {
-            expectedCommChannel = `\\\\.\\pipe\\${os.userInfo().username}\\ZoweDaemon`;
+            expectedCommChannel = `\\\\.\\pipe\\${os.userInfo().username.toLocaleLowerCase()}\\ZoweDaemon`;
         } else {
             expectedCommChannel = path.join(os.homedir(), ".zowe/daemon/daemon.sock");
         }
@@ -249,42 +148,6 @@ describe("DaemonDecider tests", () => {
     });
 
     it("should try to delete an existing socket on Posix", () => {
-        const log = jest.fn(() => {
-            // do nothing
-        });
-
-        const on = jest.fn((event, func) => {
-            // do nothing
-        });
-
-        const listen = jest.fn((event, func) => {
-            // do nothing
-        });
-
-        const parse = jest.fn( (data, context) => {
-            expect(data).toBe(undefined);
-            expect(context).toBe(undefined);
-        });
-
-        (Imperative as any) = {
-            api: {
-                appLogger: {
-                    trace: log,
-                    debug: log,
-                    error: log
-                }
-            },
-            console: {
-                info: log
-            },
-            parse
-        };
-
-        const fn = jest.mocked(net.createServer);
-        fn.mockImplementation((unusedclient, ...args: any[]): any => {
-            return {on, listen};
-        });
-
         process.env.ZOWE_DAEMON_DIR = path.normalize("./testOutput/daemonDir");
         const daemonDecider = new DaemonDecider(["node", "zowe", "--daemon"]);
 
@@ -321,7 +184,6 @@ describe("DaemonDecider tests", () => {
 
         let existTimes;
         if (process.platform === "win32") {
-            existsSyncSpy.mockImplementationOnce;
             existTimes = 2;
         } else {
             existTimes = 3;
@@ -333,43 +195,44 @@ describe("DaemonDecider tests", () => {
         writeFileSyncSpy.mockClear();
     });
 
+    it("should restrict access to the pid file and socket to the owner on Posix", () => {
+        // invoke the listen callback so the socket-restriction logic runs
+        listen.mockImplementation((_socket, method) => {
+            method();
+        });
+
+        parse.mockImplementation(() => {});
+
+        createServerMock.mockImplementation((method: any) => {
+            method("fakeClient", "fakeServer");
+            return { on, listen };
+        });
+
+        const daemonDir = path.normalize("./testOutput/daemonDir");
+        process.env.ZOWE_DAEMON_DIR = daemonDir;
+
+        // fool our function into thinking we are on a Posix system
+        const realPlatform = process.platform;
+        Object.defineProperty(process, "platform", { value: "linux" });
+
+        const giveAccessSpy = jest.spyOn(IO, "giveAccessOnlyToOwner").mockImplementation(() => {
+            return;
+        });
+        jest.spyOn(IO, "existsSync").mockReturnValue(false);
+
+        const daemonDecider = new DaemonDecider(["node", "zowe", "--daemon"]);
+        daemonDecider.init();
+        daemonDecider.runOrUseDaemon();
+
+        // restore our real platform
+        Object.defineProperty(process, "platform", { value: realPlatform });
+
+        const restrictedPaths = giveAccessSpy.mock.calls.map((call) => call[0]);
+        expect(restrictedPaths).toContain(path.join(daemonDir, "daemon_pid.json"));
+        expect(restrictedPaths).toContain(path.join(daemonDir, "daemon.sock"));
+    });
+
     it("should throw an error when it cannot write the process ID file", () => {
-        const log = jest.fn(() => {
-            // do nothing
-        });
-
-        const on = jest.fn((event, func) => {
-            // do nothing
-        });
-
-        const listen = jest.fn((event, func) => {
-            // do nothing
-        });
-
-        const parse = jest.fn( (data, context) => {
-            expect(data).toBe(undefined);
-            expect(context).toBe(undefined);
-        });
-
-        (Imperative as any) = {
-            api: {
-                appLogger: {
-                    trace: log,
-                    debug: log,
-                    error: log
-                }
-            },
-            console: {
-                info: log
-            },
-            parse
-        };
-
-        const fn = jest.mocked(net.createServer);
-        fn.mockImplementation((unusedclient, ...args: any[]): any => {
-            return {on, listen};
-        });
-
         process.env.ZOWE_DAEMON_DIR = path.normalize("./testOutput/daemonDir");
         const daemonDecider = new DaemonDecider(["node", "zowe", "--daemon"]);
 
@@ -396,42 +259,90 @@ describe("DaemonDecider tests", () => {
         writeFileSyncSpy.mockClear();
     });
 
+    it("should throw an error when it cannot restrict access to the process ID file", () => {
+        process.env.ZOWE_DAEMON_DIR = path.normalize("./testOutput/daemonDir");
+        const daemonDecider = new DaemonDecider(["node", "zowe", "--daemon"]);
+
+        const writeFileSyncSpy = jest.spyOn(fs, "writeFileSync").mockImplementation(() => { return; });
+        writeFileSyncSpy.mockClear();
+
+        const badStuffMsg = "Some bad stuff happened";
+        const giveAccessSpy = jest.spyOn(IO, "giveAccessOnlyToOwner");
+        giveAccessSpy.mockImplementation((filePath: string) => {
+            if (filePath.endsWith("daemon_pid.json")) {
+                throw new Error(badStuffMsg);
+            }
+        });
+
+        let error: Error;
+        try {
+            daemonDecider.init();
+        } catch (e) {
+            error = e;
+        }
+
+        expect(writeFileSyncSpy).toHaveBeenCalledTimes(1);
+        expect(giveAccessSpy).toHaveBeenCalled();
+        expect(error).toBeDefined();
+        expect(error.message).toContain("Failed to write file");
+        expect(error.message).toContain("daemon_pid.json");
+        expect(error.message).toContain(badStuffMsg);
+        writeFileSyncSpy.mockRestore();
+        giveAccessSpy.mockRestore();
+    });
+
+    it("should log an error when it cannot restrict access to the socket on Posix", () => {
+        let errorLogMsg = "";
+        const errorLog = jest.fn((msg) => {
+            errorLogMsg += msg;
+        });
+        (Imperative as any).api.appLogger.error = errorLog;
+
+        // invoke the listen callback so the socket-restriction logic runs
+        listen.mockImplementation((_socket, method) => {
+            method();
+        });
+
+        parse.mockImplementation(() => {});
+
+        createServerMock.mockImplementation((method: any) => {
+            method("fakeClient", "fakeServer");
+            return { on, listen };
+        });
+
+        const daemonDir = path.normalize("./testOutput/daemonDir");
+        process.env.ZOWE_DAEMON_DIR = daemonDir;
+
+        // fool our function into thinking we are on a Posix system
+        const realPlatform = process.platform;
+        Object.defineProperty(process, "platform", { value: "linux" });
+
+        const badStuffMsg = "Some bad stuff happened";
+        const giveAccessSpy = jest.spyOn(IO, "giveAccessOnlyToOwner").mockImplementation((filePath) => {
+            if (filePath.endsWith("daemon.sock")) {
+                throw new Error(badStuffMsg);
+            }
+            return;
+        });
+        jest.spyOn(IO, "existsSync").mockReturnValue(false);
+
+        const daemonDecider = new DaemonDecider(["node", "zowe", "--daemon"]);
+        daemonDecider.init();
+        daemonDecider.runOrUseDaemon();
+
+        // restore our real platform
+        Object.defineProperty(process, "platform", { value: realPlatform });
+
+        expect(errorLog).toHaveBeenCalled();
+        expect(errorLogMsg).toContain("Unable to restrict access to daemon socket");
+        expect(errorLogMsg).toContain(badStuffMsg);
+        giveAccessSpy.mockRestore();
+    });
+
     it("should form the path to a pipe on windows", () => {
-        let recordedLogMsg: string;
-        const log = jest.fn((logMsg) => {
-            recordedLogMsg += logMsg;
-        });
-
-        const on = jest.fn((event, func) => {
-            // do nothing
-        });
-
-        const listen = jest.fn((event, func) => {
-            // do nothing
-        });
-
-        const parse = jest.fn( (data, context) => {
-            expect(data).toBe(undefined);
-            expect(context).toBe(undefined);
-        });
-
-        (Imperative as any) = {
-            api: {
-                appLogger: {
-                    trace: log,
-                    debug: log,
-                    error: log
-                }
-            },
-            console: {
-                info: log
-            },
-            parse
-        };
-
-        const fn = jest.mocked(net.createServer);
-        fn.mockImplementation((unusedclient, ...args: any[]): any => {
-            return {on, listen};
+        let recordedLogMsg = "";
+        log.mockImplementation((logMsg) => {
+            if (logMsg) recordedLogMsg += logMsg;
         });
 
         process.env.ZOWE_DAEMON_DIR = path.normalize("./testOutput/daemonDir");
@@ -448,7 +359,7 @@ describe("DaemonDecider tests", () => {
         daemonDecider.init();
 
         expect(initialParseSpy).toHaveBeenCalledTimes(1);
-        expect(recordedLogMsg).toContain(`daemon server will listen on \\\\.\\pipe\\${os.userInfo().username}\\ZoweDaemon`);
+        expect(recordedLogMsg).toContain(`daemon server will listen on \\\\.\\pipe\\${os.userInfo().username.toLocaleLowerCase()}\\ZoweDaemon`);
 
         // use a custom pipe name
         const envWinPipeName = "MyWinPipeName";

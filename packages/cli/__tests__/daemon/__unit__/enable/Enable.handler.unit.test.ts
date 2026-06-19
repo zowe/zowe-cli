@@ -26,6 +26,7 @@ describe("Handler for daemon enable", () => {
     let preBldDir: string;
     let preBldTgzPath: string;
     let logMessage = "";
+    let createdPreBldDir = false; // Track if we created the directory
 
     beforeAll(() => {
         // instantiate our handler
@@ -59,17 +60,37 @@ describe("Handler for daemon enable", () => {
         preBldTgzPath = nodeJsPath.resolve(preBldDir, tgzFileName);
         if (!IO.existsSync(preBldDir)) {
             IO.createDirSync(preBldDir);
+            createdPreBldDir = true; // Mark that we created it
         }
         if (!IO.existsSync(preBldTgzPath)) {
             fs.copyFileSync(tgzResourcePath, preBldTgzPath);
         }
     });
 
+    let existsSyncSpy: any;
+    let isDirSpy: any;
+    let createDirSyncSpy: any;
+    let giveAccessOnlyToOwnerSpy: any;
+
     beforeEach(() => {
         // remove enableDaemon spy & mock between tests
         enableDaemonSpy?.mockRestore();
         unzipTgzSpy?.mockRestore();
         logMessage = "";
+
+        // Default IO mocks for most tests
+        existsSyncSpy = jest.spyOn(IO, "existsSync").mockReturnValue(true);
+        isDirSpy = jest.spyOn(IO, "isDir").mockReturnValue(true);
+        createDirSyncSpy = jest.spyOn(IO, "createDirSync").mockImplementation(() => { return; });
+
+        // Prevent real chmod/icacls calls against our fake (non-existent) paths.
+        giveAccessOnlyToOwnerSpy = jest.spyOn(IO, "giveAccessOnlyToOwner").mockImplementation(() => {
+            return;
+        });
+    });
+
+    afterEach(() => {
+        jest.restoreAllMocks();
     });
 
     afterAll(() => {
@@ -77,15 +98,18 @@ describe("Handler for daemon enable", () => {
         if (IO.existsSync(preBldTgzPath)) {
             IO.deleteFile(preBldTgzPath);
         }
-        if (IO.existsSync(preBldDir)) {
-            IO.deleteDir(preBldDir);
+        // Only delete the directory if we created it (and it's empty)
+        if (createdPreBldDir && IO.existsSync(preBldDir)) {
+            try {
+                IO.deleteDir(preBldDir);
+            } catch (err) {
+                // Ignore errors if directory is not empty (e.g., contains Rust binaries)
+            }
         }
     });
 
     describe("process method", () => {
         // command parms passed to process() by multiple tests
-        let apiMessage = "";
-        let jsonObj;
         const cmdParms = {
             arguments: {
                 $0: "fake",
@@ -93,11 +117,11 @@ describe("Handler for daemon enable", () => {
             },
             response: {
                 data: {
-                    setMessage: jest.fn((setMsgArgs) => {
-                        apiMessage = setMsgArgs;
+                    setMessage: jest.fn((_setMsgArgs) => {
+                        return;
                     }),
-                    setObj: jest.fn((setObjArgs) => {
-                        jsonObj = setObjArgs;
+                    setObj: jest.fn((_setObjArgs) => {
+                        return;
                     }),
                     setExitCode: jest.fn((exitCode) => {
                         return exitCode;
@@ -199,10 +223,7 @@ describe("Handler for daemon enable", () => {
         });
 
         it("should fail when the tgz file does not exist", async () => {
-            const existsSyncOrig = IO.existsSync;
-            IO.existsSync = jest.fn(() => {
-                return false;
-            });
+            existsSyncSpy.mockReturnValue(false);
 
             let error;
             try {
@@ -212,19 +233,10 @@ describe("Handler for daemon enable", () => {
             }
 
             expect(error.mMessage).toBe(`The archive for your OS executable does not exist: ${preBldTgzPath}`);
-            IO.existsSync = existsSyncOrig;
         });
 
         it("should fail when a bin file exists", async () => {
-            const existsSyncOrig = IO.existsSync;
-            IO.existsSync = jest.fn(() => {
-                return true;
-            });
-
-            const isDirOrig = IO.isDir;
-            IO.isDir = jest.fn(() => {
-                return false;
-            });
+            isDirSpy.mockReturnValue(false);
 
             let error;
             try {
@@ -234,20 +246,16 @@ describe("Handler for daemon enable", () => {
             }
 
             expect(error.mMessage).toContain("The existing file '" + zoweBinDirMock + "' must be a directory.");
-            IO.existsSync = existsSyncOrig;
-            IO.isDir = isDirOrig;
         });
 
         it("should fail if a we cannot create a bin directory", async () => {
             // Mock the IO functions to simulate a failure creating a directory
-            const existsSyncOrig = IO.existsSync;
-            IO.existsSync = jest.fn()
+            existsSyncSpy
                 .mockReturnValueOnce(true)      // for tgz file
                 .mockReturnValueOnce(false);    // for bin dir
 
             const awfulThrownErr = "Some awful directory creation error was thrown";
-            const createDirSyncOrig = IO.createDirSync;
-            IO.createDirSync = jest.fn(() => {
+            createDirSyncSpy.mockImplementation(() => {
                 throw awfulThrownErr;
             });
 
@@ -260,28 +268,12 @@ describe("Handler for daemon enable", () => {
 
             expect(error.mMessage).toContain(`Unable to create directory '${cliHomeDirMock}`);
             expect(error.mMessage).toContain(`Reason: ${awfulThrownErr}`);
-            IO.existsSync = existsSyncOrig;
-            IO.createDirSync = createDirSyncOrig;
         });
 
         it("should return a message that it cannot launch the EXE", async () => {
-            // Mock the IO functions to simulate stuff is working
-            const existsSyncOrig = IO.existsSync;
-            IO.existsSync = jest.fn(() => {
-                return true;
-            });
-
-            const isDirOrig = IO.isDir;
-            IO.isDir = jest.fn(() => {
-                return true;
-            });
-
-            const createDirSyncOrig = IO.createDirSync;
-            IO.createDirSync = jest.fn();
-
             // spy on our handler's private enableDaemon() function
             unzipTgzSpy = jest.spyOn(EnableDaemonHandler.prototype as any, "unzipTgz");
-            unzipTgzSpy.mockImplementation((tgzFile: string, toDir: string, fileToExtract: string) => {return;});
+            unzipTgzSpy.mockImplementation((_tgzFile: string, _toDir: string, _fileToExtract: string) => {return;});
 
             let error;
             let userInfoMsg: string;
@@ -296,34 +288,16 @@ describe("Handler for daemon enable", () => {
 
             // we set a bogus cliHome, so we know it cannot launch the executable
             expect(userInfoMsg).toContain("Zowe CLI native executable version = Failed to get version number");
-
-            IO.existsSync = existsSyncOrig;
-            IO.isDir = isDirOrig;
-            IO.createDirSync = createDirSyncOrig;
         });
 
         it("should return a message with the version number of the EXE", async () => {
-            // Mock the IO functions to simulate stuff is working
-            const existsSyncOrig = IO.existsSync;
-            IO.existsSync = jest.fn(() => {
-                return true;
-            });
-
-            const isDirOrig = IO.isDir;
-            IO.isDir = jest.fn(() => {
-                return true;
-            });
-
-            const createDirSyncOrig = IO.createDirSync;
-            IO.createDirSync = jest.fn();
-
             // This uses child_process from the __mocks__ directory
             const exeVerNumMock = "9.9.9";
             require("child_process").setSpawnSyncOutput(exeVerNumMock);
 
             // spy on our handler's private enableDaemon() function
             unzipTgzSpy = jest.spyOn(EnableDaemonHandler.prototype as any, "unzipTgz");
-            unzipTgzSpy.mockImplementation((tgzFile: string, toDir: string, fileToExtract: string) => {return;});
+            unzipTgzSpy.mockImplementation((_tgzFile: string, _toDir: string, _fileToExtract: string) => {return;});
 
             let error;
             let userInfoMsg: string;
@@ -336,33 +310,15 @@ describe("Handler for daemon enable", () => {
             expect(error).toBeUndefined();
             expect(unzipTgzSpy).toHaveBeenCalledTimes(1);
             expect(userInfoMsg).toContain("Zowe CLI native executable version = " + exeVerNumMock);
-
-            IO.existsSync = existsSyncOrig;
-            IO.isDir = isDirOrig;
-            IO.createDirSync = createDirSyncOrig;
         });
 
         it("should return a message to add our bin to your PATH", async () => {
-            // Mock the IO functions to simulate stuff is working
-            const existsSyncOrig = IO.existsSync;
-            IO.existsSync = jest.fn(() => {
-                return true;
-            });
-
-            const isDirOrig = IO.isDir;
-            IO.isDir = jest.fn(() => {
-                return true;
-            });
-
-            const createDirSyncOrig = IO.createDirSync;
-            IO.createDirSync = jest.fn();
-
             const pathOrig = process.env.PATH;
             process.env.PATH = "ThisPathDoesNotcontainOurBinDir";
 
             // spy on our handler's private enableDaemon() function
             unzipTgzSpy = jest.spyOn(EnableDaemonHandler.prototype as any, "unzipTgz");
-            unzipTgzSpy.mockImplementation((tgzFile: string, toDir: string, fileToExtract: string) => {return;});
+            unzipTgzSpy.mockImplementation((_tgzFile: string, _toDir: string, _fileToExtract: string) => {return;});
 
             let error;
             let userInfoMsg: string;
@@ -377,27 +333,10 @@ describe("Handler for daemon enable", () => {
             expect(userInfoMsg).toContain(`Manually add '${zoweBinDirMock}' to your PATH.`);
             expect(userInfoMsg).toContain("close this terminal and open a new terminal");
 
-            IO.existsSync = existsSyncOrig;
-            IO.isDir = isDirOrig;
-            IO.createDirSync = createDirSyncOrig;
             process.env.PATH = pathOrig;
         });
 
         it("should tell you to open new terminal on Linux even when PATH is set", async () => {
-            // Mock the IO functions to simulate stuff is working
-            const existsSyncOrig = IO.existsSync;
-            IO.existsSync = jest.fn(() => {
-                return true;
-            });
-
-            const isDirOrig = IO.isDir;
-            IO.isDir = jest.fn(() => {
-                return true;
-            });
-
-            const createDirSyncOrig = IO.createDirSync;
-            IO.createDirSync = jest.fn();
-
             const getBasicSystemInfoOrig = ProcessUtils.getBasicSystemInfo;
             ProcessUtils.getBasicSystemInfo = jest.fn(() => {
                 return {
@@ -413,7 +352,7 @@ describe("Handler for daemon enable", () => {
 
             // spy on our handler's private enableDaemon() function
             unzipTgzSpy = jest.spyOn(EnableDaemonHandler.prototype as any, "unzipTgz");
-            unzipTgzSpy.mockImplementation((tgzFile: string, toDir: string, fileToExtract: string) => {return;});
+            unzipTgzSpy.mockImplementation((_tgzFile: string, _toDir: string, _fileToExtract: string) => {return;});
 
             let error;
             let userInfoMsg: string;
@@ -427,28 +366,11 @@ describe("Handler for daemon enable", () => {
             expect(unzipTgzSpy).toHaveBeenCalledTimes(1);
             expect(userInfoMsg).toContain("close this terminal and open a new terminal");
 
-            IO.existsSync = existsSyncOrig;
-            IO.isDir = isDirOrig;
-            IO.createDirSync = createDirSyncOrig;
             ProcessUtils.getBasicSystemInfo = getBasicSystemInfoOrig;
             process.env.PATH = pathOrig;
         });
 
         it("should NOT tell you to open new terminal on Windows when PATH is set", async () => {
-            // Mock the IO functions to simulate stuff is working
-            const existsSyncOrig = IO.existsSync;
-            IO.existsSync = jest.fn(() => {
-                return true;
-            });
-
-            const isDirOrig = IO.isDir;
-            IO.isDir = jest.fn(() => {
-                return true;
-            });
-
-            const createDirSyncOrig = IO.createDirSync;
-            IO.createDirSync = jest.fn();
-
             const getBasicSystemInfoOrig = ProcessUtils.getBasicSystemInfo;
             ProcessUtils.getBasicSystemInfo = jest.fn(() => {
                 return {
@@ -464,7 +386,7 @@ describe("Handler for daemon enable", () => {
 
             // spy on our handler's private enableDaemon() function
             unzipTgzSpy = jest.spyOn(EnableDaemonHandler.prototype as any, "unzipTgz");
-            unzipTgzSpy.mockImplementation((tgzFile: string, toDir: string, fileToExtract: string) => {return;});
+            unzipTgzSpy.mockImplementation((_tgzFile: string, _toDir: string, _fileToExtract: string) => {return;});
 
             let error;
             let userInfoMsg: string;
@@ -478,31 +400,14 @@ describe("Handler for daemon enable", () => {
             expect(unzipTgzSpy).toHaveBeenCalledTimes(1);
             expect(userInfoMsg).not.toContain("close this terminal and open a new terminal");
 
-            IO.existsSync = existsSyncOrig;
-            IO.isDir = isDirOrig;
-            IO.createDirSync = createDirSyncOrig;
             ProcessUtils.getBasicSystemInfo = getBasicSystemInfoOrig;
             process.env.PATH = pathOrig;
         });
 
         it("should not mention ZOWE_USE_DAEMON if is unset", async () => {
-            // Mock the IO functions to simulate stuff is working
-            const existsSyncOrig = IO.existsSync;
-            IO.existsSync = jest.fn(() => {
-                return true;
-            });
-
-            const isDirOrig = IO.isDir;
-            IO.isDir = jest.fn(() => {
-                return true;
-            });
-
-            const createDirSyncOrig = IO.createDirSync;
-            IO.createDirSync = jest.fn();
-
             // spy on our handler's private enableDaemon() function
             unzipTgzSpy = jest.spyOn(EnableDaemonHandler.prototype as any, "unzipTgz");
-            unzipTgzSpy.mockImplementation((tgzFile: string, toDir: string, fileToExtract: string) => {return;});
+            unzipTgzSpy.mockImplementation((_tgzFile: string, _toDir: string, _fileToExtract: string) => {return;});
 
             let error;
             let userInfoMsg: string;
@@ -516,30 +421,12 @@ describe("Handler for daemon enable", () => {
             expect(unzipTgzSpy).toHaveBeenCalledTimes(1);
             expect(userInfoMsg).not.toContain("Your ZOWE_USE_DAEMON environment variable is set");
             expect(userInfoMsg).not.toContain("You must remove it, or set it to 'yes' to use daemon mode.");
-
-            IO.existsSync = existsSyncOrig;
-            IO.isDir = isDirOrig;
-            IO.createDirSync = createDirSyncOrig;
         });
 
         it("should instruct that ZOWE_USE_DAEMON should be removed", async () => {
-            // Mock the IO functions to simulate stuff is working
-            const existsSyncOrig = IO.existsSync;
-            IO.existsSync = jest.fn(() => {
-                return true;
-            });
-
-            const isDirOrig = IO.isDir;
-            IO.isDir = jest.fn(() => {
-                return true;
-            });
-
-            const createDirSyncOrig = IO.createDirSync;
-            IO.createDirSync = jest.fn();
-
             // spy on our handler's private enableDaemon() function
             unzipTgzSpy = jest.spyOn(EnableDaemonHandler.prototype as any, "unzipTgz");
-            unzipTgzSpy.mockImplementation((tgzFile: string, toDir: string, fileToExtract: string) => {return;});
+            unzipTgzSpy.mockImplementation((_tgzFile: string, _toDir: string, _fileToExtract: string) => {return;});
 
             // force the message to reset ZOWE_USE_DAEMON variable
             const noDaemonVal = "no";
@@ -557,10 +444,135 @@ describe("Handler for daemon enable", () => {
             expect(unzipTgzSpy).toHaveBeenCalledTimes(1);
             expect(userInfoMsg).toContain(`Your ZOWE_USE_DAEMON environment variable is set to '${noDaemonVal}'.`);
             expect(userInfoMsg).toContain("You must remove it, or set it to 'yes' to use daemon mode.");
+        });
 
-            IO.existsSync = existsSyncOrig;
-            IO.isDir = isDirOrig;
-            IO.createDirSync = createDirSyncOrig;
+        it("should restrict access to the extracted executable to the owner", async () => {
+            // spy on our handler's private enableDaemon() function
+            unzipTgzSpy = jest.spyOn(EnableDaemonHandler.prototype as any, "unzipTgz");
+            unzipTgzSpy.mockImplementation((_tgzFile: string, _toDir: string, _fileToExtract: string) => {return;});
+
+            let error;
+            try {
+                await enableHandler.enableDaemon(noAskNoAddPath);
+            } catch (e) {
+                error = e;
+            }
+
+            expect(error).toBeUndefined();
+            // the extracted executable should be restricted to the owner
+            const platform = ProcessUtils.getBasicSystemInfo().platform;
+            const exeName = platform === "win32" ? "zowe.exe" : "zowe";
+            const expectedExePath = nodeJsPath.resolve(zoweBinDirMock, exeName);
+            expect(giveAccessOnlyToOwnerSpy).toHaveBeenCalledWith(expectedExePath);
+        });
+
+        it("should restrict access to the bin directory when it is created", async () => {
+            // tgz file exists, bin dir does not exist, exe does not exist afterward
+            existsSyncSpy
+                .mockReturnValueOnce(true)      // for tgz file
+                .mockReturnValueOnce(false)     // for bin dir
+                .mockReturnValue(false);        // for exe existence check
+
+            // spy on our handler's private enableDaemon() function
+            unzipTgzSpy = jest.spyOn(EnableDaemonHandler.prototype as any, "unzipTgz");
+            unzipTgzSpy.mockImplementation((_tgzFile: string, _toDir: string, _fileToExtract: string) => {return;});
+
+            let error;
+            try {
+                await enableHandler.enableDaemon(noAskNoAddPath);
+            } catch (e) {
+                error = e;
+            }
+
+            expect(error).toBeUndefined();
+            expect(createDirSyncSpy).toHaveBeenCalledWith(zoweBinDirMock);
+            // the newly created bin directory should be restricted to the owner
+            expect(giveAccessOnlyToOwnerSpy).toHaveBeenCalledWith(zoweBinDirMock);
+        });
+
+        it("should fail when it cannot restrict access to an existing bin directory", async () => {
+            // tgz file exists, bin dir exists
+            existsSyncSpy.mockReturnValue(true);
+            isDirSpy.mockReturnValue(true);
+
+            const awfulThrownErr = "Some awful permission error was thrown";
+            giveAccessOnlyToOwnerSpy.mockImplementation(() => {
+                throw new Error(awfulThrownErr);
+            });
+
+            let error;
+            try {
+                await enableHandler.enableDaemon(noAskNoAddPath);
+            } catch (e) {
+                error = e;
+            }
+
+            expect(error.mMessage).toContain(`Unable to restrict access to directory '${zoweBinDirMock}`);
+            expect(error.mMessage).toContain(`Reason: Error: ${awfulThrownErr}`);
+        });
+
+        it("should fail when it cannot restrict access to a newly created bin directory", async () => {
+            // tgz file exists, bin dir does not exist
+            existsSyncSpy
+                .mockReturnValueOnce(true)      // for tgz file
+                .mockReturnValueOnce(false);    // for bin dir
+
+            const awfulThrownErr = "Some awful permission error was thrown";
+            giveAccessOnlyToOwnerSpy.mockImplementation(() => {
+                throw new Error(awfulThrownErr);
+            });
+
+            let error;
+            try {
+                await enableHandler.enableDaemon(noAskNoAddPath);
+            } catch (e) {
+                error = e;
+            }
+
+            expect(error.mMessage).toContain(`Unable to create directory '${zoweBinDirMock}`);
+            expect(error.mMessage).toContain(`Reason: Error: ${awfulThrownErr}`);
+        });
+
+        it("should fail when it cannot restrict access to the extracted executable", async () => {
+            // spy on our handler's private enableDaemon() function
+            unzipTgzSpy = jest.spyOn(EnableDaemonHandler.prototype as any, "unzipTgz");
+            unzipTgzSpy.mockImplementation((_tgzFile: string, _toDir: string, _fileToExtract: string) => {return;});
+
+            const awfulThrownErr = "Some awful permission error was thrown";
+            giveAccessOnlyToOwnerSpy.mockImplementation((filePath: string) => {
+                if (filePath.endsWith("zowe") || filePath.endsWith("zowe.exe")) {
+                    throw new Error(awfulThrownErr);
+                }
+                return;
+            });
+
+            let error;
+            try {
+                await enableHandler.enableDaemon(noAskNoAddPath);
+            } catch (e) {
+                error = e;
+            }
+
+            expect(error).toBeDefined();
+            expect(error.message).toContain(awfulThrownErr);
         });
     }); // end enableDaemon method
+
+    describe("unzipTgz method", () => {
+        // Simple test to try and get some coverage for the unzipTgz method
+        it("should reject with an error if the tgz file does not exist", async () => {
+            const nonExistentTgz = nodeJsPath.resolve(__dirname, "does-not-exist.tgz");
+            const tempDir = nodeJsPath.resolve(__dirname, "temp-unzip-test2");
+
+            let error;
+            try {
+                await (enableHandler as any).unzipTgz(nonExistentTgz, tempDir, "zowe");
+            } catch (e) {
+                error = e;
+            }
+
+            expect(error).toBeDefined();
+            expect(error instanceof ImperativeError).toBe(true);
+        });
+    }); // end unzipTgz method
 }); // end Handler
