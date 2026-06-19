@@ -2,7 +2,7 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
-## Recent Changes
+## `8.32.3`
 
 - BugFix: Updated `js-yaml` and `markdown-it` dependencies for technical currency. [#2752](https://github.com/zowe/zowe-cli/pull/2752)
 - Enhancement: Added `containsPathSep`, `containsBacktrack`, and `evaluatesToDir` helper functions to the `IO` class. [#2747](https://github.com/zowe/zowe-cli/pull/2747)
