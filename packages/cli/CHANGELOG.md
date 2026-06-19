@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `8.32.3`
 
 - Enhancement: Standardized the help text to use `<The User Home Directory>/.zowe` instead of `~/.zowe`. [#2541](https://github.com/zowe/zowe-cli/issues/2541)
 - BugFix: Updated the `tar` dependency for technical currency. [#2752](https://github.com/zowe/zowe-cli/pull/2752)
