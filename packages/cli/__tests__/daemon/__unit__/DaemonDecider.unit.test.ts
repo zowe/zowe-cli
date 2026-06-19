@@ -201,7 +201,9 @@ describe("DaemonDecider tests", () => {
             method();
         });
 
-        parse.mockImplementation(() => {});
+        parse.mockImplementation(() => {
+            // do nothing
+        });
 
         createServerMock.mockImplementation((method: any) => {
             method("fakeClient", "fakeServer");
@@ -303,7 +305,9 @@ describe("DaemonDecider tests", () => {
             method();
         });
 
-        parse.mockImplementation(() => {});
+        parse.mockImplementation(() => {
+            // do nothing
+        });
 
         createServerMock.mockImplementation((method: any) => {
             method("fakeClient", "fakeServer");
