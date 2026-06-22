@@ -4,6 +4,7 @@ All notable changes to the Zowe z/OS jobs SDK package will be documented in this
 
 ## Recent Changes
 
+- BugFix: Reduced the encoding of URIs to the minimum that still allows Zowe SDK operations to work successfully in the current z/OS environment. [#2750](https://github.com/zowe/zowe-cli/pull/2750)
 - BugFix: Added extra filesystem checks when downloading job spool. [#2741](https://github.com/zowe/zowe-cli/pull/2741)
 
 ## `7.29.13`

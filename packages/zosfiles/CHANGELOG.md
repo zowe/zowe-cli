@@ -4,6 +4,7 @@ All notable changes to the Zowe z/OS files SDK package will be documented in thi
 
 ## Recent Changes
 
+- BugFix: Reduced the encoding of URIs to the minimum that still allows Zowe SDK operations to work successfully in the current z/OS environment. [#2750](https://github.com/zowe/zowe-cli/pull/2750)
 - BugFix: Added extra filesystem checks when downloading data sets and USS files. [#2741](https://github.com/zowe/zowe-cli/pull/2741)
 
 
