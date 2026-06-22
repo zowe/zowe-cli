@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Reduced the encoding of URIs to the minimum that still allows Zowe SDK operations to work successfully in the current z/OS environment. [#2750](https://github.com/zowe/zowe-cli/pull/2750)
+
 ## `8.32.2`
 
 - BugFix: Updated the `NpmFunctions.installPackages` function to throw an error when a launched NPM program fails. [#2722](https://github.com/zowe/zowe-cli/pull/2722)
