@@ -71,16 +71,17 @@ export class EncodeUri {
                     // Both encoded and unencoded backslash fail in REST requests
                     throw new ImperativeError({
                         msg: `The supplied USS path = '${ussUriPath}' contains a backslash \\ character. ` +
-                            `This request will not be processed. In both z/OSMF and API-ML the backslash is either ignored, ` +
-                            `or the request fails with an HTTP 400 or 500 error code.`
+                            `When a backslash is present, both z/OSMF and API-ML servers fail with an ` +
+                            `HTTP 400 or 500 error code, or the backslash is ignored. Therefore, `+
+                            `this request was not sent.`
                     });
 
                 case '"':
                     // Both encoded and unencoded double-quote fail in REST requests
                     throw new ImperativeError({
                         msg: `The supplied USS path = '${ussUriPath}' contains a double-quote " character. ` +
-                            `This request will not be processed. In both z/OSMF and API-ML the double-quote ` +
-                            `fails with an HTTP 400 or 500 error code.`
+                            `When a double-quote is present, both z/OSMF and API-ML servers fail with an ` +
+                            `HTTP 400 or 500 error code. Therefore, this request was not sent.`
                     });
 
                 case " ":

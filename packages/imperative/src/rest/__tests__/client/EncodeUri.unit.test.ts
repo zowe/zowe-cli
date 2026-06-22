@@ -89,8 +89,8 @@ describe("EncodeUri tests", () => {
             expect(error).toBeDefined();
             expect(error.message).toEqual("The supplied USS path = " +
                 "'/zosmf/restfiles/fs/some//dir/with\\a/backslash/test.txt' contains a backslash \\ character. " +
-                "This request will not be processed. In both z/OSMF and API-ML the backslash is either ignored, " +
-                "or the request fails with an HTTP 400 or 500 error code."
+                "When a backslash is present, both z/OSMF and API-ML servers fail with an HTTP 400 or 500 error code, " +
+                "or the backslash is ignored. Therefore, this request was not sent."
             );
         });
 
@@ -107,8 +107,7 @@ describe("EncodeUri tests", () => {
             expect(error).toBeDefined();
             expect(error.message).toEqual("The supplied USS path = " +
                 "'/zosmf/restfiles/fs/some//dir/with\"a/doublequote/test.txt' contains a double-quote \" character. " +
-                "This request will not be processed. In both z/OSMF and API-ML the double-quote " +
-                "fails with an HTTP 400 or 500 error code."
+                "When a double-quote is present, both z/OSMF and API-ML servers fail with an HTTP 400 or 500 error code. " + "Therefore, this request was not sent."
             );
         });
     }); // end encUriPathForUss
