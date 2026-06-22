@@ -51,8 +51,8 @@ describe("imperative-test-cli config init", () => {
             `"imperative-test-cli.config.json" in the current working directory unless`,
             `otherwise specified.`,
             `Use "--user-config" to init "imperative-test-cli.config.user.json". Use`,
-            `"--global-config" to initialize the configuration files in your home "~/.zowe"`,
-            `directory.`,
+            `"--global-config" to initialize the configuration files in your home "<The User`,
+            `Home Directory>/.zowe" directory.`,
             `Use "--no-prompt" to skip prompting for values in a CI environment.`
         ];
         expectedLines.forEach((line: string) => expect(response.output.toString()).toContain(line));

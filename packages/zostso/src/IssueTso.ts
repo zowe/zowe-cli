@@ -30,18 +30,20 @@ export class IssueTso {
     public static async issueTsoCmd(
         session: AbstractSession,
         command: string,
-        opts?: IIssueTsoCmdOpts
+        opts?: IIssueTsoCmdOpts,
     ): Promise<IIssueResponse> {
         let version: string;
         opts = opts || {};
         opts.suppressStartupMessages = opts.suppressStartupMessages ?? true;
         const versionCheck = await CheckStatus.isZosVersionAtLeast(
             session,
-            ZosmfConstants.VERSIONS.V2R4
+            ZosmfConstants.VERSIONS.V2R4,
         );
+        // if useLegacyApi is true, it takes precedence over any of the inferences we
+        // try to make based on the other options.
         const useNewApi =
-            opts.addressSpaceOptions == null ||
-            versionCheck && opts.suppressStartupMessages;
+            !opts.useLegacyApi && (opts.addressSpaceOptions == null ||
+                versionCheck && opts.suppressStartupMessages);
 
         if (useNewApi) {
             version = "v1";
@@ -57,8 +59,13 @@ export class IssueTso {
                             cmdState: opts.isStateful
                                 ? "stateful"
                                 : "stateless",
-                        }
+                        },
                     );
+                if (!apiResponse.cmdResponse || apiResponse.cmdResponse.length == 0) {
+                    throw new ImperativeError({
+                        msg: "Did not receive output from the z/OSMF TSO API.",
+                    });
+                }
                 const response: IIssueResponse = {
                     success: true,
                     startReady:
@@ -77,16 +84,15 @@ export class IssueTso {
                 }
             }
         }
-
         // Deprecated API Behavior [former issueTsoCommand() behavior]
         TsoValidator.validateSession(session);
         TsoValidator.validateNotEmptyString(
             opts.addressSpaceOptions?.account,
-            noAccountNumber.message
+            noAccountNumber.message,
         );
         TsoValidator.validateNotEmptyString(
             command as string,
-            noCommandInput.message
+            noCommandInput.message,
         );
 
         const response: IIssueResponse = {
@@ -94,7 +100,7 @@ export class IssueTso {
             startResponse: await StartTso.start(
                 session,
                 opts.addressSpaceOptions?.account,
-                opts.addressSpaceOptions || {}
+                opts.addressSpaceOptions || {},
             ),
             startReady: false,
             zosmfResponse: null,
@@ -110,24 +116,24 @@ export class IssueTso {
             });
         }
 
-        if(response.startResponse.messages?.includes("IKJ56482I")) {
+        if (response.startResponse.messages?.includes("IKJ56482I")) {
             throw new ImperativeError({
                 msg: `Invalid logon procedure.`,
-                additionalDetails: response.startResponse.messages
+                additionalDetails: response.startResponse.messages,
             });
         }
 
         const sendResponse = await SendTso.sendDataToTSOCollect(
             session,
             response.startResponse.servletKey,
-            command as string
+            command as string,
         );
         response.success = sendResponse.success;
         response.zosmfResponse = sendResponse.zosmfResponse;
         response.commandResponse = sendResponse.commandResponse;
         response.stopResponse = await StopTso.stop(
             session,
-            response.startResponse.servletKey
+            response.startResponse.servletKey,
         );
         return response;
     }
@@ -146,7 +152,7 @@ export class IssueTso {
         session: AbstractSession,
         accountNumber: string,
         command: string,
-        startParams?: IStartTsoParms
+        startParams?: IStartTsoParms,
     ): Promise<IIssueResponse> {
         return await IssueTso.issueTsoCmd(session, command, {
             suppressStartupMessages: false,
@@ -164,7 +170,7 @@ export class IssueTso {
      */
     public static async issueTsoCommandCommon(
         session: AbstractSession,
-        commandParms: IIssueTsoParms
+        commandParms: IIssueTsoParms,
     ): Promise<IIssueResponse> {
         return await IssueTso.issueTsoCmd(session, commandParms.command, {
             suppressStartupMessages: false,
