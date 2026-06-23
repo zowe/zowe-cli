@@ -34,16 +34,22 @@ export default class Handler extends ZosTsoBaseHandler {
                 isStateful: params.arguments.stateful,
                 suppressStartupMessages:
                     params.arguments.suppressStartupMessages,
-                addressSpaceOptions: this.mTsoStart
-            }
+                addressSpaceOptions: this.mTsoStart,
+                useLegacyApi: params.arguments.legacy,
+            },
         );
+    
         const defProc = "IZUFPROC";
-        if (params.arguments.logonProcedure && params.arguments.logonProcedure !== defProc && params.arguments.suppressStartupMessages) {
+        if (
+            params.arguments.logonProcedure &&
+            params.arguments.logonProcedure !== defProc &&
+            params.arguments.suppressStartupMessages
+        ) {
             this.console.error(
                 chalk.yellow(
                     "Warning: The logon procedure specified is not used when issuing a TSO command with the " +
-                    "--suppress-startup-messages (--ssm) option set to true."
-                )
+                        "--suppress-startup-messages (--ssm) option set to true.",
+                ),
             );
         }
 
@@ -54,8 +60,10 @@ export default class Handler extends ZosTsoBaseHandler {
         ) {
             this.console.log(response.startResponse.messages);
         }
-        if(response. zosmfResponse?.[0]?.servletKey)
-            this.console.log(`${chalk.yellow("Servlet Key: ")}${response.zosmfResponse[0].servletKey}`);
+        if (response.zosmfResponse?.[0]?.servletKey)
+            this.console.log(
+                `${chalk.yellow("Servlet Key: ")}${response.zosmfResponse[0].servletKey}`,
+            );
 
         this.console.log(response.commandResponse);
         // Return as an object when using --response-format-json
