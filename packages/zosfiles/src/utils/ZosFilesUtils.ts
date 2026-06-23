@@ -11,7 +11,7 @@
 
 import * as path from "path";
 import * as fs from "fs";
-import { IO, Logger, IHeaderContent, EncodeUri, AbstractSession, ImperativeExpect, Headers } from "@zowe/imperative";
+import { IO, Logger, IHeaderContent, EncodeUri, AbstractSession, ImperativeExpect, Headers, ImperativeError } from "@zowe/imperative";
 import { ZosFilesConstants } from "../constants/ZosFiles.constants";
 import { ZosFilesMessages } from "../constants/ZosFiles.messages";
 import { IZosFilesResponse } from "../doc/IZosFilesResponse";
@@ -44,12 +44,19 @@ export class ZosFilesUtils {
      * Or:
      *  USER.WORK.PS to user/work/ps
      * @param  {string} dataSet - data set to break up into folders
+     * @throws {ImperativeError} - when a generated directory structure contains backtracking characters
      */
     public static getDirsFromDataSet(dataSet: string) {
+        if (IO.fileEvaluatesToDir(dataSet)) {
+            throw new ImperativeError({msg: "The data set name contains illegal characters."});
+        }
         let localDirectory = dataSet.replace(new RegExp(`\\${this.DSN_SEP}`, "g"), path.posix.sep).toLowerCase();
         if (localDirectory.indexOf("(") >= 0 && localDirectory.indexOf(")") >= 0) {
             localDirectory = localDirectory.replace(/\(/, path.posix.sep);
             localDirectory = localDirectory.slice(0, -1);
+        }
+        if (IO.containsBacktrack(localDirectory) || localDirectory.includes(path.posix.sep + path.posix.sep)) {
+            throw new ImperativeError({msg: "The generated data set file path contains illegal backtracking."});
         }
         return localDirectory;
     }

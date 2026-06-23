@@ -6,6 +6,12 @@ All notable changes to the Imperative package will be documented in this file.
 
 - BugFix: Reduced the encoding of URIs to the minimum that still allows Zowe SDK operations to work successfully in the current z/OS environment. [#2750](https://github.com/zowe/zowe-cli/pull/2750)
 
+## `8.32.3`
+
+- BugFix: Updated `js-yaml` and `markdown-it` dependencies for technical currency. [#2752](https://github.com/zowe/zowe-cli/pull/2752)
+- Enhancement: Added `containsPathSep`, `containsBacktrack`, and `evaluatesToDir` helper functions to the `IO` class. [#2747](https://github.com/zowe/zowe-cli/pull/2747)
+- BugFix: Added extra filesystem checks when downloading config files with the `zowe config import` command. [#2747](https://github.com/zowe/zowe-cli/pull/2747)
+
 ## `8.32.2`
 
 - BugFix: Updated the `NpmFunctions.installPackages` function to throw an error when a launched NPM program fails. [#2722](https://github.com/zowe/zowe-cli/pull/2722)

@@ -25,7 +25,7 @@ export const initDefinition: ICommandDefinition = {
     description: `Initialize config files. Defaults to initializing "${ImperativeConfig.instance.rootCommandName}.config.json" in the current ` +
         `working directory unless otherwise specified.\n\nUse "--user-config" to init ` +
         `"${ImperativeConfig.instance.rootCommandName}.config.user.json". Use "--global-config" to initialize the configuration files in your home ` +
-        `"~/.zowe" directory.\n\nUse "--no-prompt" to skip prompting for values in a CI environment.`,
+        `"<The User Home Directory>/.zowe" directory.\n\nUse "--no-prompt" to skip prompting for values in a CI environment.`,
     options: [
         {
             name: "global-config",
@@ -87,11 +87,11 @@ export const initDefinition: ICommandDefinition = {
     ],
     examples: [
         {
-            description: `Initialize configuration files in your home "~/.zowe" directory`,
+            description: `Initialize configuration files in your home "<The User Home Directory>/.zowe" directory`,
             options: "--global-config"
         },
         {
-            description: `Do a dry run of initializing configuration files in your home "~/.zowe" directory`,
+            description: `Do a dry run of initializing configuration files in your home "<The User Home Directory>/.zowe" directory`,
             options: "--global-config --dry-run"
         },
         {
