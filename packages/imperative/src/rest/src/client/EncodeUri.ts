@@ -9,7 +9,8 @@
 *
 */
 
-import * as path from "path";
+import * as path from "node:path";
+
 import { AbstractSession } from "../session/AbstractSession";
 import { ImperativeError } from "../../../error";
 import { Logger } from "../../../logger";
