@@ -130,8 +130,6 @@ export default class EnableDaemonHandler implements ICommandHandler {
             // create the directory
             try {
                 IO.createDirSync(pathToZoweBin);
-                // Restrict the bin directory to the current user only.
-                // On Windows this sets an owner-only ACL; on POSIX it sets mode 0o700.
                 IO.giveAccessOnlyToOwner(pathToZoweBin);
             }
             catch(err) {

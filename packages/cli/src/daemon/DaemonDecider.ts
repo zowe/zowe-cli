@@ -114,9 +114,7 @@ export class DaemonDecider {
 
             this.mServer.maxConnections = 1;
             this.mServer.listen(this.mSocket, () => {
-                // On POSIX systems the socket is a file on disk that is created with
-                // umask-derived permissions. Restrict it to the owner so that other
-                // local users cannot connect to our daemon and run commands as us.
+                // On POSIX systems the socket is a file on disk that is created with umask-derived permissions.
                 // On Windows the socket is a named pipe (not a file), so this is skipped.
                 if (process.platform !== "win32") {
                     try {
@@ -153,8 +151,6 @@ export class DaemonDecider {
             // Create the file with owner-only permissions up front to avoid a brief
             // window where it exists with default (umask-derived) permissions.
             fs.writeFileSync(pidFilePath, pidForUserStr, { mode: 0o600 });
-            // Enforce owner-only access cross-platform (icacls on Windows, chmod on POSIX),
-            // and in case the file already existed with looser permissions.
             IO.giveAccessOnlyToOwner(pidFilePath);
         } catch(err) {
             throw new Error("Failed to write file '" + pidFilePath + "'\nDetails = " + err.message);
