@@ -699,7 +699,7 @@ export class Upload {
                     return;
                 }
                 // Provide a more descriptive error message when directory creation fails
-                const errorMsg = err?.mDetails?.msg || err.message || "";
+                const errorMsg = err?.mDetails?.msg || err?.message || "";
                 let helpText = "Verify that the parent path exists and is a valid directory.";
 
                 // Check if error indicates a file exists where we're trying to create a directory
