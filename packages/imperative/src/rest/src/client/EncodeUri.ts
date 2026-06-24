@@ -63,6 +63,7 @@ export class EncodeUri {
      */
     public static encUriPathForUss(session: AbstractSession, ussUriPath: string) {
         let encodedUriPath = "";
+        const encodeForApiml: boolean = EncodeUri.shouldEncodeForApiml(session);
 
         // normalize will eliminate // and /../
         for (const nextChar of path.posix.normalize(ussUriPath)) {
@@ -102,7 +103,11 @@ export class EncodeUri {
                     encodedUriPath += "%3F";
                     break;
                 default:
-                    encodedUriPath += EncodeUri.encCharOnlyForApiml(nextChar, session);
+                    if (encodeForApiml) {
+                        encodedUriPath += EncodeUri.encCharOnlyForApiml(nextChar);
+                    } else {
+                        encodedUriPath += nextChar;
+                    }
                     break;
             }
         }
@@ -129,46 +134,43 @@ export class EncodeUri {
      * characters to this function.
      *
      * @param {string} charToEncode - The character to encode.
-     * @param {string} session - The session used to connect to the server.
      *
-     * @returns {string} - For API-ML, a URI-encoded character string.
-     *                     For z/OSMF, the unencoded character.
+     * @returns {string} - The value of charToEncode for most characters.
+     *                     The URI-encoded value of charToEncode where needed.
      */
-    private static encCharOnlyForApiml(charToEncode: string, session: AbstractSession): string {
+    private static encCharOnlyForApiml(charToEncode: string): string {
         let encodedChar = charToEncode;
-        if (EncodeUri.shouldEncodeForApiml(session)) {
-            switch (charToEncode) {
-                case "#":
-                    encodedChar = "%23";
-                    break;
-                case ";":
-                    encodedChar = "%3B";
-                    break;
-                case "<":
-                    encodedChar = "%3C";
-                    break;
-                case ">":
-                    encodedChar = "%3E";
-                    break;
-                case "[":
-                    encodedChar = "%5B";
-                    break;
-                case "]":
-                    encodedChar = "%5D";
-                    break;
-                case "^":
-                    encodedChar = "%5E";
-                    break;
-                case "{":
-                    encodedChar = "%7B";
-                    break;
-                case "|":
-                    encodedChar = "%7C";
-                    break;
-                case "}":
-                    encodedChar = "%7D";
-                    break;
-            }
+        switch (charToEncode) {
+            case "#":
+                encodedChar = "%23";
+                break;
+            case ";":
+                encodedChar = "%3B";
+                break;
+            case "<":
+                encodedChar = "%3C";
+                break;
+            case ">":
+                encodedChar = "%3E";
+                break;
+            case "[":
+                encodedChar = "%5B";
+                break;
+            case "]":
+                encodedChar = "%5D";
+                break;
+            case "^":
+                encodedChar = "%5E";
+                break;
+            case "{":
+                encodedChar = "%7B";
+                break;
+            case "|":
+                encodedChar = "%7C";
+                break;
+            case "}":
+                encodedChar = "%7D";
+                break;
         }
         if (encodedChar[0] === "%") {
             Logger.getImperativeLogger().info(`Encoded the '${charToEncode}' character for API-ML`);
@@ -184,11 +186,6 @@ export class EncodeUri {
      * @returns {boolean} - True if we must encode for APIML. False otherwise.
      */
     private static shouldEncodeForApiml(session: AbstractSession): boolean {
-        if (session?.isUsingApiml ) {
-            if (typeof session?.isUsingApiml === "function") {
-                return session.isUsingApiml();
-            }
-        }
-        return false;
+        return typeof session?.isUsingApiml === "function" && session.isUsingApiml();
     }
 }
