@@ -208,8 +208,9 @@ export class Services {
         const _genCommentsHelper = (key: string, elements: string[]): string => {
             if (elements == null || elements.length === 0) return "";
 
-            return elements.reduce((all, current: string, index) => {
-                return all.concat(key.includes("base") ? `\n//"${key}": "${current}"` : `\n//"${key}": "${current}",`);
+            return elements.reduce((all, current: string, _index) => {
+                const escapeCurrent = JSON.stringify(current).slice(1, -1);
+                return all.concat(key.includes("base") ? `\n//"${key}": "${escapeCurrent}"` : `\n//"${key}": "${escapeCurrent}",`);
             }, "");
         };
 
@@ -259,7 +260,7 @@ export class Services {
                     {
                         ${basePathConflicts.length > 0 ? basepathConflictMessage : noConflictMessage}
                         ${_genCommentsHelper("basePath", basePaths)}
-                        "basePath": "${defaultBasePath}"
+                        "basePath": ${JSON.stringify(defaultBasePath)}
                     }`
                 );
             }
@@ -284,7 +285,7 @@ export class Services {
                 }
                 jsonString += `
                     ${_genCommentsHelper(defaultKey, conflictingDefaults[defaultKey])}
-                    "${defaultKey}": "${trueDefault}"`;
+                    "${defaultKey}": ${JSON.stringify(trueDefault)}`;
                 // Terminate the JSON string
                 jsonString += '\n}';
                 configDefaults = JSONC.parse(jsonString);
