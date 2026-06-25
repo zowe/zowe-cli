@@ -13,3 +13,9 @@ export function findPassword(service: string): Promise<string | null>
 export function getPassword(service: string, account: string): Promise<string | null>
 export function setPassword(service: string, account: string, password: string, persistWin32?: number | undefined | null): Promise<void>
 export function createTlsPipe(remoteHost: string, remotePort: number, certAccount: string, rejectUnauthorized: boolean): Promise<string>
+/**
+ * Returns true when the process on the other end of the connection is owned by the same OS
+ * user as the current process. `handle` is the socket fd on POSIX (compared via SO_PEERCRED /
+ * getpeereid) or the named-pipe HANDLE on Windows (compared via the client token's SID).
+ */
+export function isPeerCurrentUser(handle: number): boolean

@@ -6,6 +6,7 @@ use workers::{
 
 extern crate secrets_core;
 
+mod peer_creds;
 mod workers;
 
 #[napi]

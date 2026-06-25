@@ -13,6 +13,7 @@ import * as net from "net";
 import * as path from "path";
 import { PassThrough, Readable } from "stream";
 import { DaemonRequest, IDaemonContext, IDaemonResponse, Imperative, ImperativeError, IO } from "@zowe/imperative";
+import { keyring } from "@zowe/secrets-for-zowe-sdk";
 import { DaemonUtil } from "./DaemonUtil";
 
 /**
@@ -93,6 +94,31 @@ export class DaemonClient {
 
         this.mClient.end();
         this.mServer.close();
+    }
+
+    /**
+     * Verify that the connecting process is owned by the same OS user as the daemon.
+     * On Linux this calls getsockopt(SO_PEERCRED); on macOS/BSD it calls getpeereid.
+     * On Windows the named-pipe path is already user-scoped and the OS ACL enforces
+     * the boundary, so the check is skipped and the method returns true.
+     * @private
+     * @memberof DaemonClient
+     */
+    private checkPeerCredentials(): boolean {
+        // On POSIX this is the socket file descriptor; on Windows it is the named-pipe HANDLE.
+        const handle: number = (this.mClient as any)?._handle?.fd;
+        if (handle == null || handle < 0) {
+            Imperative.api.appLogger.warn("Could not retrieve the socket handle for the OS peer credential check.");
+            return false;
+        }
+        try {
+            // The comparison is performed natively: POSIX compares the peer uid to ours,
+            // Windows compares the pipe client's token SID to our process token SID.
+            return keyring.isPeerCurrentUser(handle);
+        } catch (err) {
+            Imperative.api.appLogger.error("OS peer credential check failed: " + (err instanceof Error ? err.message : String(err)));
+            return false;
+        }
     }
 
     /**
@@ -184,6 +210,15 @@ export class DaemonClient {
             Imperative.api.appLogger.warn("The user '" + requestUser + "' attempted to connect.");
             const responsePayload: string = DaemonRequest.create({
                 stderr: "The user '" + requestUser + "' cannot use this daemon.\n",
+                exitCode: 1
+            });
+            this.mClient.write(responsePayload);
+            this.mClient.end();
+            return;
+        } else if (!this.checkPeerCredentials()) {
+            Imperative.api.appLogger.warn("OS-level peer credential check failed for daemon connection.");
+            const responsePayload: string = DaemonRequest.create({
+                stderr: "OS-level authentication failed for daemon connection.\n",
                 exitCode: 1
             });
             this.mClient.write(responsePayload);

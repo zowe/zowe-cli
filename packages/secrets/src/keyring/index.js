@@ -58,6 +58,7 @@ const {
     getPassword,
     setPassword,
     createTlsPipe,
+    isPeerCurrentUser,
 } = requireFn(binaryPath);
 
 module.exports.deletePassword = deletePassword;
@@ -66,3 +67,4 @@ module.exports.findPassword = findPassword;
 module.exports.getPassword = getPassword;
 module.exports.setPassword = setPassword;
 module.exports.createTlsPipe = createTlsPipe;
+module.exports.isPeerCurrentUser = isPeerCurrentUser;
