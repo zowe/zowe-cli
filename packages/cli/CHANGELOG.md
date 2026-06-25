@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Hardened daemon client authentication so that another local user cannot drive a daemon they do not own. The daemon now generates a random secret token at startup, stores it in the owner-only `daemon_pid.json` file, and requires every client request to echo it back (compared in constant time). Because only the owner can read that file, this closes a gap on Windows, where the named pipe can be opened by local users other than the owner and the previously self-asserted user name check was insufficient. [#2743](https://github.com/zowe/zowe-cli/pull/2743)
+
 ## `8.32.3`
 
 - Enhancement: Standardized the help text to use `<The User Home Directory>/.zowe` instead of `~/.zowe`. [#2541](https://github.com/zowe/zowe-cli/issues/2541)

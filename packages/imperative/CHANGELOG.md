@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Added an optional `token` property to the `IDaemonResponse` interface. The daemon client sends this secret token (read from the owner-only daemon PID file) so the daemon can authenticate the client as its owner. [#2743](https://github.com/zowe/zowe-cli/pull/2743)
+
 ## `8.32.3`
 
 - BugFix: Updated `js-yaml` and `markdown-it` dependencies for technical currency. [#2752](https://github.com/zowe/zowe-cli/pull/2752)
