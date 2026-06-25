@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe z/OS jobs SDK package will be documented in this file.
 
-## Recent Changes
+## `7.29.26`
 
 - BugFix: Added extra filesystem checks when downloading job spool. [#2741](https://github.com/zowe/zowe-cli/pull/2741)
 
