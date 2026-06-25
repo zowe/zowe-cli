@@ -23,6 +23,9 @@ Object {
     "user": "ZmFrZQ==",
   },
   "stream": Object {
+    "_handle": Object {
+      "fd": 3,
+    },
     "end": [MockFunction],
     "on": [MockFunction] {
       "calls": Array [
@@ -81,6 +84,9 @@ Object {
   },
   "stdinStream": Promise {},
   "stream": Object {
+    "_handle": Object {
+      "fd": 3,
+    },
     "end": [MockFunction],
     "on": [MockFunction] {
       "calls": Array [

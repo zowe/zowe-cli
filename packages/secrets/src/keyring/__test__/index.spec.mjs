@@ -5,7 +5,12 @@ import {
     findPassword,
     getPassword,
     setPassword,
+    isPeerCurrentUser,
 } from "../index.js";
+import net from "node:net";
+import os from "node:os";
+import path from "node:path";
+import fs from "node:fs";
 
 // generate a number in range [min, max)
 const randomInt = (min, max) => {
@@ -345,3 +350,68 @@ if (isWin32) {
         }
     );
 }
+
+// ---------------------------------------------------------------------------
+// isPeerCurrentUser: OS-level peer-credential check used by the Zowe daemon.
+// ---------------------------------------------------------------------------
+
+// Open a real connection (Unix domain socket on POSIX, named pipe on Windows) and
+// resolve with the server-side accepted socket plus a teardown function.
+const acceptOneConnection = () => {
+    const address = isWin32
+        ? `\\\\.\\pipe\\zowe-secrets-peer-${process.pid}`
+        : path.join(fs.mkdtempSync(path.join(os.tmpdir(), "zowe-secrets-peer-")), "s.sock");
+    return new Promise((resolve, reject) => {
+        const server = net.createServer();
+        let client;
+        server.on("error", reject);
+        server.on("connection", (serverSocket) => {
+            resolve({
+                serverSocket,
+                teardown: () => {
+                    serverSocket.destroy();
+                    client?.destroy();
+                    server.close();
+                    if (!isWin32) {
+                        try { fs.rmSync(path.dirname(address), { recursive: true, force: true }); } catch { /* best effort */ }
+                    }
+                },
+            });
+        });
+        server.listen(address, () => {
+            client = net.createConnection(address);
+            client.on("error", reject);
+        });
+    });
+};
+
+test.serial("isPeerCurrentUser returns true for a connection from the same OS user", async (t) => {
+    const { serverSocket, teardown } = await acceptOneConnection();
+    try {
+        const handle = serverSocket._handle?.fd;
+        t.is(typeof handle, "number", "expected the socket to expose a numeric handle");
+        // The client we connected with runs in this same process, so it is the same OS user.
+        t.is(isPeerCurrentUser(handle), true);
+    } finally {
+        teardown();
+    }
+});
+
+test.serial("isPeerCurrentUser throws when given a non-socket descriptor", (t) => {
+    // A regular file descriptor is not a socket; the native syscall must fail and surface
+    // as a thrown error rather than silently returning a (false) match.
+    const tmpFile = path.join(os.tmpdir(), `zowe-secrets-notasocket-${process.pid}`);
+    fs.writeFileSync(tmpFile, "x");
+    const fd = fs.openSync(tmpFile, "r");
+    try {
+        t.throws(() => isPeerCurrentUser(fd));
+    } finally {
+        fs.closeSync(fd);
+        fs.rmSync(tmpFile, { force: true });
+    }
+});
+
+test.serial("isPeerCurrentUser throws on an invalid handle", (t) => {
+    // -1 is the libuv "no fd" sentinel / INVALID_HANDLE_VALUE; it must never be accepted.
+    t.throws(() => isPeerCurrentUser(-1));
+});

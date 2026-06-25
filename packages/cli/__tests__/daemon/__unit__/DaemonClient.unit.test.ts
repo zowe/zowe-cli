@@ -11,11 +11,25 @@
 
 jest.mock("net");
 jest.mock("@zowe/imperative");
+jest.mock("@zowe/secrets-for-zowe-sdk", () => ({
+    keyring: {
+        isPeerCurrentUser: jest.fn().mockReturnValue(true)
+    }
+}));
 import * as net from "net";
 import * as stream from "stream";
 import { text } from "stream/consumers";
 import { DaemonClient } from "../../../src/daemon/DaemonClient";
 import { IDaemonResponse, Imperative, IO } from "@zowe/imperative";
+import { keyring } from "@zowe/secrets-for-zowe-sdk";
+
+// A socket handle that satisfies the OS peer-credential gate; individual tests
+// override keyring.isPeerCurrentUser to exercise rejection paths.
+const mockSocketHandle = { _handle: { fd: 3 } };
+
+beforeEach(() => {
+    (keyring.isPeerCurrentUser as jest.Mock).mockReset().mockReturnValue(true);
+});
 
 describe("DaemonClient tests", () => {
 
@@ -46,7 +60,8 @@ describe("DaemonClient tests", () => {
         const client = {
             on: jest.fn(),
             write: jest.fn(),
-            end: jest.fn()
+            end: jest.fn(),
+            ...mockSocketHandle
         };
 
         const daemonClient = new DaemonClient(client as any, server, "fake");
@@ -100,6 +115,7 @@ describe("DaemonClient tests", () => {
             end: jest.fn()
         };
 
+        Object.assign(client, mockSocketHandle);
         const daemonClient = new DaemonClient(client as any, server, "fake");
         const stdinData = String.fromCharCode(...Array(1024).keys());
         const daemonResponse: IDaemonResponse = {
@@ -196,6 +212,7 @@ describe("DaemonClient tests", () => {
             end: jest.fn()
         };
 
+        Object.assign(client, mockSocketHandle);
         const daemonClient = new DaemonClient(client as any, server, "fake");
 
         daemonClient.run();
@@ -243,7 +260,8 @@ describe("DaemonClient tests", () => {
         const client = {
             on: jest.fn(),
             write,
-            end: jest.fn()
+            end: jest.fn(),
+            ...mockSocketHandle
         };
 
         const daemonClient = new DaemonClient(client as any, server as any, "fake");
@@ -492,6 +510,97 @@ describe("DaemonClient tests", () => {
 
         expect(log).toHaveBeenCalledTimes(2);
         expect(log).toHaveBeenLastCalledWith("The user 'zF�' attempted to connect.");
+        expect(parse).not.toHaveBeenCalled();
+        expect(client.end).toHaveBeenCalled();
+    });
+
+    it("should reject the connection when the OS peer credential check fails", () => {
+        const log = jest.fn();
+        const parse = jest.fn();
+        (Imperative as any) = {
+            api: { appLogger: { trace: log, debug: log, warn: log, error: log } },
+            commandLine: "n/a",
+            parse
+        };
+
+        // The username matches the owner, but the OS-level peer check says otherwise.
+        (keyring.isPeerCurrentUser as jest.Mock).mockReturnValue(false);
+
+        const server: net.Server = undefined;
+        const write = jest.fn();
+        const client = { on: jest.fn(), write, end: jest.fn(), ...mockSocketHandle };
+
+        const daemonClient = new DaemonClient(client as any, server, "fake");
+        const daemonResponse: IDaemonResponse = {
+            argv: ["feed", "🐶"], cwd: "fake", env: {}, stdinLength: 0, stdin: null,
+            user: Buffer.from("fake").toString('base64')
+        };
+
+        daemonClient.run();
+        (daemonClient as any).data(Buffer.from(JSON.stringify(daemonResponse)));
+
+        expect(keyring.isPeerCurrentUser).toHaveBeenCalledWith(3);
+        expect(log).toHaveBeenLastCalledWith("OS-level peer credential check failed for daemon connection.");
+        expect(write).toHaveBeenCalled();
+        expect(parse).not.toHaveBeenCalled();
+        expect(client.end).toHaveBeenCalled();
+    });
+
+    it("should reject the connection when the socket handle is unavailable", () => {
+        const log = jest.fn();
+        const parse = jest.fn();
+        (Imperative as any) = {
+            api: { appLogger: { trace: log, debug: log, warn: log, error: log } },
+            commandLine: "n/a",
+            parse
+        };
+
+        const server: net.Server = undefined;
+        // No `_handle` on the client: the native call must not be attempted at all.
+        const client = { on: jest.fn(), write: jest.fn(), end: jest.fn() };
+
+        const daemonClient = new DaemonClient(client as any, server, "fake");
+        const daemonResponse: IDaemonResponse = {
+            argv: ["feed", "🐶"], cwd: "fake", env: {}, stdinLength: 0, stdin: null,
+            user: Buffer.from("fake").toString('base64')
+        };
+
+        daemonClient.run();
+        (daemonClient as any).data(Buffer.from(JSON.stringify(daemonResponse)));
+
+        expect(keyring.isPeerCurrentUser).not.toHaveBeenCalled();
+        expect(log).toHaveBeenCalledWith("Could not retrieve the socket handle for the OS peer credential check.");
+        expect(parse).not.toHaveBeenCalled();
+        expect(client.end).toHaveBeenCalled();
+    });
+
+    it("should reject the connection when the OS peer credential check throws", () => {
+        const log = jest.fn();
+        const parse = jest.fn();
+        (Imperative as any) = {
+            api: { appLogger: { trace: log, debug: log, warn: log, error: log } },
+            commandLine: "n/a",
+            parse
+        };
+
+        // The native addon failing (e.g. getsockopt error) must fail closed, not crash.
+        (keyring.isPeerCurrentUser as jest.Mock).mockImplementation(() => {
+            throw new Error("getsockopt SO_PEERCRED failed");
+        });
+
+        const server: net.Server = undefined;
+        const client = { on: jest.fn(), write: jest.fn(), end: jest.fn(), ...mockSocketHandle };
+
+        const daemonClient = new DaemonClient(client as any, server, "fake");
+        const daemonResponse: IDaemonResponse = {
+            argv: ["feed", "🐶"], cwd: "fake", env: {}, stdinLength: 0, stdin: null,
+            user: Buffer.from("fake").toString('base64')
+        };
+
+        daemonClient.run();
+        (daemonClient as any).data(Buffer.from(JSON.stringify(daemonResponse)));
+
+        expect(log).toHaveBeenCalledWith(expect.stringContaining("OS peer credential check failed: getsockopt SO_PEERCRED failed"));
         expect(parse).not.toHaveBeenCalled();
         expect(client.end).toHaveBeenCalled();
     });
