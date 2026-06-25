@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe Secrets SDK package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Added native `isPeerCurrentUser(handle)` function. On Linux it uses `getsockopt(SO_PEERCRED)`, on macOS/BSD it uses `getpeereid`, and on Windows it uses `GetNamedPipeClientProcessId` with a token SID comparison via `EqualSid`. Used by the Zowe daemon to perform OS-level peer identity verification on each incoming connection. [#2760](https://github.com/zowe/zowe-cli/pull/2760)
+
 ## `8.32.0`
 
 - Enhancement: Added native certificate authentication support for macOS and Windows platforms. Implemented certificate retrieval from system keystores (macOS Keychain and Windows Certificate Store), identity context caching for signing operations, and native HTTPS clients with client certificate authentication. The implementation supports both exportable and non-exportable private keys through platform-specific cryptographic APIs (macOS Security framework and Windows CNG). [#2325](https://github.com/zowe/zowe-cli/issues/2325)

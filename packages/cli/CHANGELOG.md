@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Added OS-level peer credential verification to the Zowe daemon. On Linux the daemon now calls `getsockopt(SO_PEERCRED)` and on macOS/BSD it calls `getpeereid` to confirm that the connecting process is owned by the same OS user as the daemon process. On Windows the connecting process token's SID is compared to the daemon's SID using `GetNamedPipeClientProcessId` and `EqualSid`. This check runs independently of the existing username comparison, preventing a local adversary from forging the base64-encoded username field in a daemon request. [#2760](https://github.com/zowe/zowe-cli/pull/2760)
+
 ## `8.32.3`
 
 - Enhancement: Standardized the help text to use `<The User Home Directory>/.zowe` instead of `~/.zowe`. [#2541](https://github.com/zowe/zowe-cli/issues/2541)
