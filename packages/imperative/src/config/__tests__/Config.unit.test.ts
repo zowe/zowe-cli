@@ -552,6 +552,26 @@ describe("Config tests", () => {
             expect(jsonText.match(/^{\s*"\$schema":/)).not.toBeNull();
         });
 
+        it("should not save schema to disk if $schema escapes the config directory via traversal", async () => {
+            const writeFileSpy = jest.spyOn(fs, "writeFileSync").mockImplementation(() => undefined);
+            const config = await Config.load(MY_APP);
+            const layer = (config as any).layerActive();
+            layer.properties.$schema = "./../../../../../../../../evil.schema.json";
+            config.setSchema({ title: "malicious" });
+            expect(writeFileSpy).not.toHaveBeenCalled();
+            writeFileSpy.mockRestore();
+        });
+
+        it("should not save schema to disk if $schema is an absolute path outside the config directory", async () => {
+            const writeFileSpy = jest.spyOn(fs, "writeFileSync").mockImplementation(() => undefined);
+            const config = await Config.load(MY_APP);
+            const layer = (config as any).layerActive();
+            layer.properties.$schema = path.resolve(path.sep, "evil.schema.json");
+            config.setSchema({ title: "malicious" });
+            expect(writeFileSpy).not.toHaveBeenCalled();
+            writeFileSpy.mockRestore();
+        });
+
         it("should add a new layer when one is specified in the set", async () => {
             const config = await Config.load(MY_APP);
             config.set("profiles.fruit.profiles.mango.properties.color", "orange");

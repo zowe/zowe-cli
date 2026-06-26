@@ -10,6 +10,7 @@
 */
 
 import * as fs from "fs";
+import * as path from "path";
 import * as url from "url";
 import * as jsonfile from "jsonfile";
 import * as lodash from "lodash";
@@ -52,6 +53,7 @@ import { IAddProfTypeResult, IExtenderTypeInfo, IExtendersJsonOpts } from "./doc
 import { IConfigLayer } from "..";
 import { Constants } from "../../constants";
 import { Censor } from "../../censor";
+import { IO } from "../../io";
 
 /**
  * This class provides functions to retrieve profile-related information.
@@ -1166,6 +1168,15 @@ export class ProfileInfo {
         this.mProfileSchemaCache.set(cacheKey, schema);
         const schemaUri = new url.URL(layer.properties.$schema, url.pathToFileURL(layer.path));
         const schemaPath = url.fileURLToPath(schemaUri);
+
+        // Refuse to write if the resolved schema path escapes the directory of the config file that
+        // declared it.
+        if (!IO.isSubPath(path.dirname(layer.path), schemaPath)) {
+            this.mImpLogger.trace(
+                "ProfileInfo.updateSchemaAtLayer returned false: the schema path escapes the config layer directory."
+            );
+            return false;
+        }
 
         if (!fs.existsSync(schemaPath)) {
             this.mImpLogger.trace(
