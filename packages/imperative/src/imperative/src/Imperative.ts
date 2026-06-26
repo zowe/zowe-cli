@@ -339,8 +339,7 @@ export class Imperative {
                 );
                 Logger.writeInMemoryMessages(debugFilePath);
                 if (error.report) {
-                    const {writeFileSync} = require("fs");
-                    writeFileSync(debugFilePath, error.report);
+                    fs.writeFileSync(debugFilePath, error.report);
                 }
                 if (!(error instanceof ImperativeError)) {
                     const oldError = error;
