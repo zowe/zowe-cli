@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated the WebDiffManager class's openDiffs function to better process input data. []()
+
 ## `5.27.17`
 
 - Enhancement: Added `isSubPath`, `containsBacktrack`, and `evaluatesToDir` helper functions to the `IO` class. [#2741](https://github.com/zowe/zowe-cli/pull/2741)
