@@ -511,6 +511,14 @@ export class Config {
 
         const schemaInfo = this.getSchemaInfo();
         if (schemaObj != null && (schemaInfo.local || schemaInfo.original.startsWith("./"))) {
+            const layerDir = path.dirname(this.layerActive().path);
+            if (!schemaInfo.resolved.startsWith(layerDir + path.sep) && schemaInfo.resolved !== layerDir) {
+                throw new ImperativeError({
+                    msg: `Schema path must resolve within the config directory.\n` +
+                        `  Schema resolved to: ${schemaInfo.resolved}\n` +
+                        `  Config directory:   ${layerDir}`
+                });
+            }
             fs.writeFileSync(schemaInfo.resolved, JSONC.stringify(schemaObj, null, ConfigConstants.INDENT));
         }
     }

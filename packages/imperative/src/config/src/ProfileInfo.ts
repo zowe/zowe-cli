@@ -1382,6 +1382,15 @@ export class ProfileInfo {
 
         // if profile type schema has changed or if it doesn't exist on-disk, rebuild schema and write to disk
         if (versionChanged || !sameSchemaExists) {
+            const layerDir = path.dirname(layer.path);
+            if (!schemaPath.startsWith(layerDir + path.sep) && schemaPath !== layerDir) {
+                throw new ProfInfoErr({
+                    errorCode: ProfInfoErr.SCHEMA_OUTSIDE_CONFIG_DIR,
+                    msg: `Schema path must resolve within the config directory.\n` +
+                        `  Schema resolved to: ${schemaPath}\n` +
+                        `  Config directory:   ${layerDir}`
+                });
+            }
             jsonfile.writeFileSync(schemaPath, this.buildSchema([], layer), { spaces: 4 });
         }
 
