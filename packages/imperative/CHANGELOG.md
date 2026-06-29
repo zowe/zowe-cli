@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated the WebDiffManager class's openDiffs function to better process input data. []()
+
 ## `8.32.3`
 
 - BugFix: Updated `js-yaml` and `markdown-it` dependencies for technical currency. [#2752](https://github.com/zowe/zowe-cli/pull/2752)
