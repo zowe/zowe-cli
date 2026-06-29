@@ -2,6 +2,12 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Removed environment variables from the log messages produced when an exception is caught during Imperative.init. [#2765](https://github.com/zowe/zowe-cli/pull/2765)
+
+- BugFix: Placed imperative_debug.log into the Zowe Home directory's logs subdirectory, (or as a fallback into the user's home directory) instead of the current directory. [#2765](https://github.com/zowe/zowe-cli/pull/2765)
+
 ## `5.27.17`
 
 - Enhancement: Added `isSubPath`, `containsBacktrack`, and `evaluatesToDir` helper functions to the `IO` class. [#2741](https://github.com/zowe/zowe-cli/pull/2741)
