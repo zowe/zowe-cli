@@ -2,6 +2,12 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Removed environment variables from the log messages produced when an exception is caught during Imperative.init. [#2764](https://github.com/zowe/zowe-cli/pull/2764)
+
+- BugFix: Placed imperative_debug.log into the Zowe Home directory's logs subdirectory, (or as a fallback into the user's home directory) instead of the current directory. [#2764](https://github.com/zowe/zowe-cli/pull/2764)
+
 ## `8.32.3`
 
 - BugFix: Updated `js-yaml` and `markdown-it` dependencies for technical currency. [#2752](https://github.com/zowe/zowe-cli/pull/2752)
