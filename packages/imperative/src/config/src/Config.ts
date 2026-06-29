@@ -31,6 +31,7 @@ import { ConfigUtils } from "./ConfigUtils";
 import { IConfigSchemaInfo } from "./doc/IConfigSchema";
 import { JsUtils } from "../../utilities/src/JsUtils";
 import { IConfigMergeOpts } from "./doc/IConfigMergeOpts";
+import { IO } from "../../io";
 
 /**
  * Enum used by Config class to maintain order of config layers
@@ -512,7 +513,7 @@ export class Config {
         const schemaInfo = this.getSchemaInfo();
         if (schemaObj != null && (schemaInfo.local || schemaInfo.original.startsWith("./"))) {
             const layerDir = path.dirname(this.layerActive().path);
-            if (!schemaInfo.resolved.startsWith(layerDir + path.sep) && schemaInfo.resolved !== layerDir) {
+            if (!IO.isSubPath(layerDir, schemaInfo.resolved) && schemaInfo.resolved !== layerDir) {
                 throw new ImperativeError({
                     msg: `Schema path must resolve within the config directory.\n` +
                         `  Schema resolved to: ${schemaInfo.resolved}\n` +
