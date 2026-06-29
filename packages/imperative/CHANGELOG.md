@@ -4,7 +4,7 @@ All notable changes to the Imperative package will be documented in this file.
 
 ## Recent Changes
 
-- BugFix: Updated the WebDiffManager class's openDiffs function to better process input data. []()
+- BugFix: Updated the WebDiffManager class's openDiffs function to better process input data. [#2770](https://github.com/zowe/zowe-cli/pull/2770)
 
 ## `5.27.17`
 
