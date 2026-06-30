@@ -168,6 +168,33 @@ export abstract class AbstractSession {
     }
 
     /**
+     * Detect if this session will connect to APIML.
+     *
+     * This detection is not foolproof. It is more like very, very likely APIML.
+     * Since this function is used for URI encoding choices, we will increase the
+     * encoding for APIML and minimize the encoding for z/OSMF. This should position
+     * Zowe for anticipated future restrictions on encoded characters in URIs.
+     * Previously, a high level of encoding was used for all connections. So, if some
+     * configuration is misinterpreted as APIML, it will get similar encoding
+     * as before these changes, so we do not expect any breaking changes as a result.
+     *
+     * In the future we may want to replace this implementation with a more certain
+     * confirmation that we are connecting to APIML.
+     *
+     * @returns {boolean} - True if connecting with APIML. False otherwise.
+     * @memberof AbstractSession
+     */
+    public isUsingApiml(): boolean {
+        if (this.ISession.tokenType === SessConstants.TOKEN_TYPE_APIML) {
+            return true;
+        }
+        if (this.ISession.basePath) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * Method to parse the requested token type
      * @param {*} cookie - cookie object from http(s) response
      * @memberof AbstractSession

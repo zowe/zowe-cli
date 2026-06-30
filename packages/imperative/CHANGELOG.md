@@ -4,6 +4,7 @@ All notable changes to the Imperative package will be documented in this file.
 
 ## Recent Changes
 
+- BugFix: Reduced the encoding of URIs to the minimum that still allows Zowe SDK operations to work successfully in the current z/OS environment. [#2750](https://github.com/zowe/zowe-cli/pull/2750)
 - BugFix: Updated the WebDiffManager class's openDiffs function to better process input data. [#2770](https://github.com/zowe/zowe-cli/pull/2770)
 
 ## `5.27.17`

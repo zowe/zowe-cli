@@ -9,9 +9,10 @@
 *
 */
 
-import { AbstractSession, ImperativeError, ImperativeExpect, ITaskWithStatus, Logger, Headers,
-    TaskStage } from "@zowe/imperative";
-import { posix } from "path";
+import {
+    AbstractSession, EncodeUri, ImperativeError, ImperativeExpect, ITaskWithStatus,
+    Logger, Headers, TaskStage
+} from "@zowe/imperative";
 
 import { Create, CreateDataSetTypeEnum, ICreateDataSetOptions } from "../create";
 import { Get } from "../get";
@@ -53,10 +54,9 @@ export class Copy {
         ImperativeExpect.toBeDefinedAndNonBlank(options["from-dataset"].dsn, "fromDataSetName");
         ImperativeExpect.toBeDefinedAndNonBlank(toDataSetName, "toDataSetName");
 
-        const endpoint: string = posix.join(
-            ZosFilesConstants.RESOURCE,
-            ZosFilesConstants.RES_DS_FILES,
-            encodeURIComponent(toMemberName == null ? toDataSetName : `${toDataSetName}(${toMemberName})`)
+        const endpoint: string = EncodeUri.encUriPathForZos(session,
+            ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" +
+            (toMemberName == null ? toDataSetName : `${toDataSetName}(${toMemberName})`)
         );
         Logger.getAppLogger().debug(`Endpoint: ${endpoint}`);
 

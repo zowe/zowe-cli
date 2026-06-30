@@ -11,7 +11,7 @@
 
 import { Create, CreateDataSetTypeEnum, Delete, IUploadOptions, IZosFilesResponse,
     Upload, ZosFilesMessages, Download, Get, ZosFilesConstants, IUploadMap, Utilities } from "../../../../src";
-import { Imperative, Session } from "@zowe/imperative";
+import { EncodeUri, Imperative, Session } from "@zowe/imperative";
 import { inspect } from "util";
 import { ITestEnvironment } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
@@ -891,7 +891,9 @@ describe("Upload USS file - encoded", () => {
         });
 
         afterEach(async () => {
-            const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + encodeURIComponent(ussname);
+            const endpoint: string = EncodeUri.encUriPathForUss(REAL_SESSION,
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + ussname
+            );
 
             try {
                 await ZosmfRestClient.deleteExpectString(REAL_SESSION, endpoint);
@@ -963,7 +965,9 @@ describe("Upload a local directory to USS directory", () => {
             await TestEnvironment.cleanUp(testEnvironment);
             try {
                 await ZosmfRestClient.deleteExpectString(REAL_SESSION,
-                    ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + encodeURIComponent(ussname + " space dir"),
+                    EncodeUri.encUriPathForUss(REAL_SESSION,
+                        ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + ussname + " space dir"
+                    ),
                     [{"X-IBM-Option": "recursive"}]);
             } catch (err) {
                 error = err;
@@ -972,7 +976,9 @@ describe("Upload a local directory to USS directory", () => {
 
         afterEach(async () => {
             let error;
-            const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + encodeURIComponent(ussname);
+            const endpoint: string = EncodeUri.encUriPathForUss(REAL_SESSION,
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + ussname
+            );
             try {
                 await ZosmfRestClient.deleteExpectString(REAL_SESSION, endpoint, [{"X-IBM-Option": "recursive"}]);
                 await delay(delayTime);
@@ -1353,7 +1359,9 @@ describe("Upload a local directory to USS directory - encoded", () => {
             await TestEnvironment.cleanUp(testEnvironment);
             try {
                 await ZosmfRestClient.deleteExpectString(REAL_SESSION,
-                    ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + encodeURIComponent(ussname + " space dir"),
+                    EncodeUri.encUriPathForUss(REAL_SESSION,
+                        ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + ussname + " space dir"
+                    ),
                     [{"X-IBM-Option": "recursive"}]);
             } catch (err) {
                 // Do nothing
@@ -1361,7 +1369,9 @@ describe("Upload a local directory to USS directory - encoded", () => {
         });
 
         afterEach(async () => {
-            const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + encodeURIComponent(ussname);
+            const endpoint: string = EncodeUri.encUriPathForUss(REAL_SESSION,
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + ussname
+            );
             try {
                 await ZosmfRestClient.deleteExpectString(REAL_SESSION, endpoint, [{"X-IBM-Option": "recursive"}]);
                 await delay(delayTime);

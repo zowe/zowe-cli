@@ -11,13 +11,12 @@
 
 import { IOptions } from "../../doc/IOptions";
 import { IZosFilesResponse } from "../../doc/IZosFilesResponse";
-import { AbstractSession, ImperativeExpect, Headers } from "@zowe/imperative";
+import { AbstractSession, EncodeUri, ImperativeExpect, Headers } from "@zowe/imperative";
 import { Tag } from "./doc/Tag";
 import { ZosFilesMessages } from "../../constants/ZosFiles.messages";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
 import { ZosmfRestClient, IHeaderContent, ZosmfHeaders } from "@zowe/core-for-zowe-sdk";
 import * as path from "path";
-import { ZosFilesUtils } from "../../utils/ZosFilesUtils";
 
 export class Utilities {
     /**
@@ -38,13 +37,13 @@ export class Utilities {
         ImperativeExpect.toNotBeEqual(USSFileName, "", ZosFilesMessages.missingUSSFileName.message);
         ImperativeExpect.toNotBeNullOrUndefined(payload, ZosFilesMessages.missingPayload.message);
         ImperativeExpect.toNotBeEqual(payload, {}, ZosFilesMessages.missingPayload.message);
-        USSFileName = path.posix.normalize(USSFileName);
+
         // Get a proper destination for the file to be downloaded
         // If the "file" is not provided, we create a folder structure similar to the uss file structure
-        USSFileName = ZosFilesUtils.formatUnixFilepath(USSFileName);
-        USSFileName = encodeURIComponent(USSFileName);
+        const endpoint = EncodeUri.encUriPathForUss(session,
+            ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + USSFileName
+        );
 
-        const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, USSFileName);
         const reqHeaders: IHeaderContent[] = [
             Headers.APPLICATION_JSON,
             { [Headers.CONTENT_LENGTH]: JSON.stringify(payload).length.toString() },
