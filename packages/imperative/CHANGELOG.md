@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Encoded diff content before embedding it in the inline script of the web diff page to prevent stored cross-site scripting.
+
 ## `5.27.21`
 
 - BugFix: Escaped regular-expression metacharacters in secure values before masking them in the `LoggerUtils.censorRawData` function. [#2800](https://github.com/zowe/zowe-cli/pull/2800)
