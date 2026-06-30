@@ -58,6 +58,7 @@ import { ConfigBuilder } from "./ConfigBuilder";
 import { IAddProfTypeResult, IExtenderTypeInfo, IExtendersJsonOpts } from "./doc/IExtenderOpts";
 import { IConfigLayer } from "..";
 import { Constants } from "../../constants";
+import { IO } from "../../io";
 
 /**
  * This class provides functions to retrieve profile-related information.
@@ -1382,6 +1383,15 @@ export class ProfileInfo {
 
         // if profile type schema has changed or if it doesn't exist on-disk, rebuild schema and write to disk
         if (versionChanged || !sameSchemaExists) {
+            const layerDir = path.dirname(layer.path);
+            if (!IO.isSubPath(layerDir, schemaPath) && schemaPath !== layerDir) {
+                throw new ProfInfoErr({
+                    errorCode: ProfInfoErr.SCHEMA_OUTSIDE_CONFIG_DIR,
+                    msg: `Schema path must resolve within the config directory.\n` +
+                        `  Schema resolved to: ${schemaPath}\n` +
+                        `  Config directory:   ${layerDir}`
+                });
+            }
             jsonfile.writeFileSync(schemaPath, this.buildSchema([], layer), { spaces: 4 });
         }
 
