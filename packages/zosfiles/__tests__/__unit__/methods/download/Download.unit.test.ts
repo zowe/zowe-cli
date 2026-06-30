@@ -11,7 +11,7 @@
 
 import * as fs from "fs";
 import { posix, join, basename } from "path";
-import { ImperativeError, IO, Session } from "@zowe/imperative";
+import { EncodeUri, ImperativeError, IO, Session } from "@zowe/imperative";
 import { IDownloadOptions, TransferMode, Utilities, ZosFilesAttributes, ZosFilesMessages } from "../../../../src";
 import { ZosmfHeaders, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { Download } from "../../../../src/methods/download/Download";
@@ -129,7 +129,9 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, `-(${volume})`, dsname);
+            const endpoint = EncodeUri.encUriPathForZos(dummySession,
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + `/-(${volume})/` + dsname
+            );
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -165,7 +167,9 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, `-(${volume})`, dsname);
+            const endpoint = EncodeUri.encUriPathForZos(dummySession,
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + `/-(${volume})/` + dsname
+            );
             IO.processNewlines(dsContent.toString());
 
             expect(caughtError).toBeUndefined();
@@ -200,7 +204,9 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
+            const endpoint = EncodeUri.encUriPathForZos(dummySession,
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname
+            );
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -236,7 +242,9 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
+            const endpoint = EncodeUri.encUriPathForZos(dummySession,
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname
+            );
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -274,7 +282,9 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
+            const endpoint = EncodeUri.encUriPathForZos(dummySession,
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname
+            );
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -311,7 +321,9 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
+            const endpoint = EncodeUri.encUriPathForZos(dummySession,
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname
+            );
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -347,7 +359,9 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
+            const endpoint = EncodeUri.encUriPathForZos(dummySession,
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname
+            );
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -383,7 +397,9 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
+            const endpoint = EncodeUri.encUriPathForZos(dummySession,
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname
+            );
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -417,7 +433,9 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
+            const endpoint = EncodeUri.encUriPathForZos(dummySession,
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname
+            );
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -454,7 +472,9 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
+            const endpoint = EncodeUri.encUriPathForZos(dummySession,
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname
+            );
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -491,7 +511,9 @@ describe("z/OS Files - Download", () => {
             } catch (e) {
                 caughtError = e;
             }
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, `-(${volume})`, dsname);
+            const endpoint = EncodeUri.encUriPathForZos(dummySession,
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + `/-(${volume})/` + dsname
+            );
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -533,7 +555,9 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
+            const endpoint = EncodeUri.encUriPathForZos(dummySession,
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname
+            );
 
             expect(response).toBeUndefined();
             expect(caughtError).toEqual(dummyError);
@@ -558,7 +582,9 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
+            const endpoint = EncodeUri.encUriPathForZos(dummySession,
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname
+            );
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -589,7 +615,9 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname + "?test=true");
+            const endpoint = EncodeUri.encUriPathForZos(dummySession,
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname + "?test=true"
+            );
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -651,7 +679,9 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
+            const endpoint = EncodeUri.encUriPathForZos(dummySession,
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname
+            );
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -719,7 +749,9 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
+            const endpoint = EncodeUri.encUriPathForZos(dummySession,
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname
+            );
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -757,7 +789,9 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
+            const endpoint = EncodeUri.encUriPathForZos(dummySession,
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname
+            );
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -807,7 +841,9 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
+            const endpoint = EncodeUri.encUriPathForZos(dummySession,
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname
+            );
 
             expect(caughtError).toBeUndefined();
 
@@ -1700,7 +1736,7 @@ describe("z/OS Files - Download", () => {
             const directory = "my/test/path/";
             // Map does not contain keys for M1 or M2
             const extensionMap = {
-                other: "zzz"
+                other: "xyz"
             };
 
             defaultResponse.commandResponse = util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, 2, directory.slice(0, -1));
@@ -3348,7 +3384,9 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
+            const endpoint = EncodeUri.encUriPathForUss(dummySession,
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + ussname
+            );
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -3382,7 +3420,9 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
+            const endpoint = EncodeUri.encUriPathForUss(dummySession,
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + ussname
+            );
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -3420,7 +3460,9 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
+            const endpoint = EncodeUri.encUriPathForUss(dummySession,
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + ussname
+            );
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -3458,7 +3500,9 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
+            const endpoint = EncodeUri.encUriPathForUss(dummySession,
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + ussname
+            );
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -3499,7 +3543,9 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
+            const endpoint = EncodeUri.encUriPathForUss(dummySession,
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + ussname
+            );
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -3535,7 +3581,9 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
+            const endpoint = EncodeUri.encUriPathForUss(dummySession,
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + ussname
+            );
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -3568,7 +3616,9 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
+            const endpoint = EncodeUri.encUriPathForUss(dummySession,
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + ussname
+            );
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -3604,7 +3654,9 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
+            const endpoint = EncodeUri.encUriPathForUss(dummySession,
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + ussname
+            );
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -3638,7 +3690,9 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
+            const endpoint = EncodeUri.encUriPathForUss(dummySession,
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + ussname
+            );
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -3675,7 +3729,9 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
+            const endpoint = EncodeUri.encUriPathForUss(dummySession,
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + ussname
+            );
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -3717,7 +3773,9 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
+            const endpoint = EncodeUri.encUriPathForUss(dummySession,
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + ussname
+            );
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -3783,7 +3841,9 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
+            const endpoint = EncodeUri.encUriPathForUss(dummySession,
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + ussname
+            );
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -3851,7 +3911,9 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
+            const endpoint = EncodeUri.encUriPathForUss(dummySession,
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + ussname
+            );
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -3888,7 +3950,9 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
+            const endpoint = EncodeUri.encUriPathForUss(dummySession,
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + ussname
+            );
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({

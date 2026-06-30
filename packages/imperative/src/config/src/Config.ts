@@ -30,6 +30,7 @@ import { ConfigLayers, ConfigPlugins, ConfigProfiles, ConfigSecure } from "./api
 import { ConfigUtils } from "./ConfigUtils";
 import { IConfigSchemaInfo } from "./doc/IConfigSchema";
 import { JsUtils } from "../../utilities/src/JsUtils";
+import { IO } from "../../io";
 import { IConfigMergeOpts } from "./doc/IConfigMergeOpts";
 import { ConfigEnvironmentVariables } from "./ConfigEnvironmentVariables";
 import { IConfigEnvVarManaged } from "./doc/IConfigEnvVarManaged";
@@ -566,7 +567,10 @@ export class Config {
         }
 
         const schemaInfo = this.getSchemaInfo();
-        if (schemaObj != null && (schemaInfo.local || schemaInfo.original.startsWith("./"))) {
+        // Only write the schema to disk if the resolved path is contained within the directory of the
+        // config file that declared it.
+        if (schemaObj != null && (schemaInfo.local || schemaInfo.original.startsWith("./")) &&
+            IO.isSubPath(path.dirname(layer.path), schemaInfo.resolved)) {
             fs.writeFileSync(schemaInfo.resolved, JSONC.stringify(schemaObj, null, ConfigConstants.INDENT));
         }
     }

@@ -133,4 +133,23 @@ describe("imperative-test-cli config update-schemas", () => {
         expect(response.stdout.toString()).toContain(globalPath);
         expect(response.stdout.toString()).toContain(`skipped: ${httpSchema}`);
     });
+
+    it("should not write a schema outside the config directory when $schema escapes the layer", () => {
+        runCliScript(__dirname + "/../init/__scripts__/init_config.sh", TEST_ENVIRONMENT.workingDir, ["--prompt false"]);
+
+        const projectPath = path.join(TEST_ENVIRONMENT.workingDir, "test", "imperative-test-cli.config.json");
+        const maliciousSchema = "../imperative-test-cli.evil.schema.json";
+        const maliciousTarget = path.join(TEST_ENVIRONMENT.workingDir, "imperative-test-cli.evil.schema.json");
+        fs.writeFileSync(projectPath,
+            JSON.stringify({ ...JSON.parse(fs.readFileSync(projectPath).toString()), ...{ $schema: maliciousSchema } }));
+
+        const response = runCliScript(__dirname + "/__scripts__/update-schemas.sh", TEST_ENVIRONMENT.workingDir, [""]);
+
+        expect(response.error).toBeFalsy();
+        expect(response.stderr.toString()).toEqual("");
+        expect(response.stdout.toString()).toContain("Configuration files found: 1");
+        expect(response.stdout.toString()).toContain(`skipped: ${maliciousSchema}`);
+        // The fix must prevent the schema from being written outside the config directory
+        expect(fs.existsSync(maliciousTarget)).toBe(false);
+    });
 });
