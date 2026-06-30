@@ -1621,6 +1621,27 @@ describe("TeamConfig ProfileInfo tests", () => {
                 (profInfo as any).updateSchemaAtLayer("dummy", {}, testCfgLayer);
                 expect(writeFileSyncMock).toHaveBeenCalled();
             });
+
+            // case 3: schema path resolves outside the config directory; throw and do not write
+            it("throws if schema path resolves outside the config directory", async () => {
+                const profInfo = createNewProfInfo(teamProjDir);
+                await profInfo.readProfilesFromDisk({ homeDir: teamHomeProjDir });
+                const escapingLayer = {
+                    ...testCfgLayer,
+                    properties: { ...testCfgLayer.properties, $schema: "../../bad/schema.json" },
+                };
+                jest.spyOn(fs, "existsSync").mockReturnValueOnce(true);
+                writeFileSyncMock.mockClear();
+                let caughtError: any;
+                try {
+                    (profInfo as any).updateSchemaAtLayer("dummy", {}, escapingLayer);
+                } catch (err) {
+                    caughtError = err;
+                }
+                expect(caughtError).toBeInstanceOf(ProfInfoErr);
+                expect(caughtError.errorCode).toBe(ProfInfoErr.SCHEMA_OUTSIDE_CONFIG_DIR);
+                expect(writeFileSyncMock).not.toHaveBeenCalled();
+            });
         });
 
         describe("addProfileToConfig", () => {

@@ -77,6 +77,11 @@ export class ProfInfoErr extends ImperativeError {
      */
     public static readonly PROF_NOT_FOUND: string = "ProfileNotFound";
 
+    /**
+     * The schema path resolved to a location outside the config directory.
+     */
+    public static readonly SCHEMA_OUTSIDE_CONFIG_DIR: string = "SchemaOutsideConfigDir";
+
     // _______________________________________________________________________
 
     /**
