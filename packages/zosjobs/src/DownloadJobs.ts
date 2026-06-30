@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, Headers, ImperativeExpect, IO, Logger, ImperativeError } from "@zowe/imperative";
+import { AbstractSession, EncodeUri, Headers, ImperativeExpect, IO, Logger, ImperativeError } from "@zowe/imperative";
 import { JobsConstants } from "./JobsConstants";
 import { IDownloadAllSpoolContentParms } from "./doc/input/IDownloadAllSpoolContentParms";
 import { IJobFile } from "./doc/response/IJobFile";
@@ -113,8 +113,10 @@ export class DownloadJobs {
 
         this.log.debug(debugMessage);
 
-        let parameters: string = "/" + encodeURIComponent(job.jobname) + "/" + encodeURIComponent(job.jobid) +
-            JobsConstants.RESOURCE_SPOOL_FILES + "/" + encodeURIComponent(job.id) + JobsConstants.RESOURCE_SPOOL_CONTENT;
+        let parameters: string = EncodeUri.encUriPathForZos(session,
+            JobsConstants.RESOURCE + "/" + job.jobname + "/" + job.jobid +
+            JobsConstants.RESOURCE_SPOOL_FILES + "/" + job.id + JobsConstants.RESOURCE_SPOOL_CONTENT
+        );
 
         if (parms.binary) {
             parameters += "?mode=binary";
@@ -128,7 +130,7 @@ export class DownloadJobs {
 
         const writeStream = parms.stream ?? IO.createWriteStream(file);
         const normalizeResponseNewLines = !(parms.binary || parms.record);
-        await ZosmfRestClient.getStreamed(session, JobsConstants.RESOURCE + parameters, [Headers.TEXT_PLAIN_UTF8], writeStream,
+        await ZosmfRestClient.getStreamed(session, parameters, [Headers.TEXT_PLAIN_UTF8], writeStream,
             normalizeResponseNewLines);
     }
 

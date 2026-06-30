@@ -852,21 +852,21 @@ describe("APIML Services unit tests", () => {
     });
 
     it("should escape newlines and quotes in comments", () => {
-            const testCase: IApimlProfileInfo[] = [{
-                profName: "test1",
-                profType: "type1",
-                basePaths: [
-                    "test1/v1",
-                    "test1/v2\n\"badProp\": \"badString\""
-                ],
-                pluginConfigs: new Set(),
-                gatewayUrlConflicts: {}
-            }];
-            const actualJson = JSONC.stringify(Services.convertApimlProfileInfoToProfileConfig(testCase), null, ConfigConstants.INDENT);
+        const testCase: IApimlProfileInfo[] = [{
+            profName: "test1",
+            profType: "type1",
+            basePaths: [
+                "test1/v1",
+                "test1/v2\n\"badProp\": \"badString\""
+            ],
+            pluginConfigs: new Set(),
+            gatewayUrlConflicts: {}
+        }];
+        const actualJson = JSONC.stringify(Services.convertApimlProfileInfoToProfileConfig(testCase), null, ConfigConstants.INDENT);
 
-            const parsed = JSONC.parse(actualJson) as any;
-            expect(parsed.profiles.test1.properties.badProp).toBeUndefined();
+        const parsed = JSONC.parse(actualJson) as any;
+        expect(parsed.profiles.test1.properties.badProp).toBeUndefined();
 
-            expect(actualJson).toContain("//\"basePath\": \"test1/v2\\n\\\"badProp\\\": \\\"badString\\\"\"");
-        });
+        expect(actualJson).toContain("//\"basePath\": \"test1/v2\\n\\\"badProp\\\": \\\"badString\\\"\"");
+    });
 });

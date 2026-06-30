@@ -11,7 +11,7 @@
 
 import { TEST_RESOURCES_DIR } from "./../__src__/ZosJobsTestConstants";
 import { DeleteJobs, GetJobs, IJob, MonitorJobs, SubmitJobs } from "../../src";
-import { ImperativeError, Session, TextUtils } from "@zowe/imperative";
+import { EncodeUri, ImperativeError, Session, TextUtils } from "@zowe/imperative";
 import * as fs from "fs";
 import { join } from "path";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
@@ -152,7 +152,9 @@ describe("System Tests - Monitor Jobs", () => {
                     // Change the jobclass after a period of time
                     setTimeout(() => {
                         new ZosmfRestClient(REAL_SESSION).request({
-                            resource: `/zosmf/restjobs/jobs/${encodeURIComponent(jobInfo.jobname)}/${encodeURIComponent(jobInfo.jobid)}`,
+                            resource: EncodeUri.encUriPathForZos(REAL_SESSION,
+                                `/zosmf/restjobs/jobs/${jobInfo.jobname}/${jobInfo.jobid}`
+                            ),
                             request: "PUT",
                             reqHeaders: [{"Content-Type": "application/json"}],
                             writeData: {
@@ -236,7 +238,9 @@ describe("System Tests - Monitor Jobs", () => {
                     // Release the job
                     setTimeout(() => {
                         new ZosmfRestClient(REAL_SESSION).request({
-                            resource: `/zosmf/restjobs/jobs/${encodeURIComponent(jobInfo.jobname)}/${encodeURIComponent(jobInfo.jobid)}`,
+                            resource: EncodeUri.encUriPathForZos(REAL_SESSION,
+                                `/zosmf/restjobs/jobs/${jobInfo.jobname}/${jobInfo.jobid}`
+                            ),
                             request: "PUT",
                             reqHeaders: [{"Content-Type": "application/json"}],
                             writeData: {
@@ -558,7 +562,9 @@ describe("System Tests - Monitor Jobs", () => {
                     // Change the jobclass after a period of time
                     setTimeout(() => {
                         new ZosmfRestClient(REAL_SESSION).request({
-                            resource: `/zosmf/restjobs/jobs/${encodeURIComponent(jobInfo.jobname)}/${encodeURIComponent(jobInfo.jobid)}`,
+                            resource: EncodeUri.encUriPathForZos(REAL_SESSION,
+                                `/zosmf/restjobs/jobs/${jobInfo.jobname}/${jobInfo.jobid}`
+                            ),
                             request: "PUT",
                             reqHeaders: [{"Content-Type": "application/json"}],
                             writeData: {
@@ -611,7 +617,9 @@ describe("System Tests - Monitor Jobs", () => {
                     // Change the jobclass after a period of time
                     setTimeout(() => {
                         new ZosmfRestClient(REAL_SESSION).request({
-                            resource: `/zosmf/restjobs/jobs/${encodeURIComponent(jobInfo.jobname)}/${encodeURIComponent(jobInfo.jobid)}`,
+                            resource: EncodeUri.encUriPathForZos(REAL_SESSION,
+                                `/zosmf/restjobs/jobs/${jobInfo.jobname}/${jobInfo.jobid}`
+                            ),
                             request: "PUT",
                             reqHeaders: [{"Content-Type": "application/json"}],
                             writeData: {
@@ -737,7 +745,9 @@ describe("System Tests - Monitor Jobs - Encoded", () => {
                     // Change the jobclass after a period of time
                     setTimeout(() => {
                         new ZosmfRestClient(REAL_SESSION).request({
-                            resource: `/zosmf/restjobs/jobs/${encodeURIComponent(jobInfo.jobname)}/${encodeURIComponent(jobInfo.jobid)}`,
+                            resource: EncodeUri.encUriPathForZos(REAL_SESSION,
+                                `/zosmf/restjobs/jobs/${jobInfo.jobname}/${jobInfo.jobid}`
+                            ),
                             request: "PUT",
                             reqHeaders: [{"Content-Type": "application/json"}],
                             writeData: {
@@ -796,7 +806,9 @@ describe("System Tests - Monitor Jobs - Encoded", () => {
                     // Release the job
                     setTimeout(() => {
                         new ZosmfRestClient(REAL_SESSION).request({
-                            resource: `/zosmf/restjobs/jobs/${encodeURIComponent(jobInfo.jobname)}/${encodeURIComponent(jobInfo.jobid)}`,
+                            resource: EncodeUri.encUriPathForZos(REAL_SESSION,
+                                `/zosmf/restjobs/jobs/${jobInfo.jobname}/${jobInfo.jobid}`
+                            ),
                             request: "PUT",
                             reqHeaders: [{"Content-Type": "application/json"}],
                             writeData: {
@@ -1054,7 +1066,9 @@ describe("System Tests - Monitor Jobs - Encoded", () => {
                     // Change the jobclass after a period of time
                     setTimeout(() => {
                         new ZosmfRestClient(REAL_SESSION).request({
-                            resource: `/zosmf/restjobs/jobs/${encodeURIComponent(jobInfo.jobname)}/${encodeURIComponent(jobInfo.jobid)}`,
+                            resource: EncodeUri.encUriPathForZos(REAL_SESSION,
+                                `/zosmf/restjobs/jobs/${jobInfo.jobname}/${jobInfo.jobid}`
+                            ),
                             request: "PUT",
                             reqHeaders: [{"Content-Type": "application/json"}],
                             writeData: {
@@ -1107,7 +1121,9 @@ describe("System Tests - Monitor Jobs - Encoded", () => {
                     // Change the jobclass after a period of time
                     setTimeout(() => {
                         new ZosmfRestClient(REAL_SESSION).request({
-                            resource: `/zosmf/restjobs/jobs/${encodeURIComponent(jobInfo.jobname)}/${encodeURIComponent(jobInfo.jobid)}`,
+                            resource: EncodeUri.encUriPathForZos(REAL_SESSION,
+                                `/zosmf/restjobs/jobs/${jobInfo.jobname}/${jobInfo.jobid}`
+                            ),
                             request: "PUT",
                             reqHeaders: [{"Content-Type": "application/json"}],
                             writeData: {

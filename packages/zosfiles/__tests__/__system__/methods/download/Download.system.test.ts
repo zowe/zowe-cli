@@ -27,7 +27,7 @@ import {
     Unmount,
     IUSSListOptions
 } from "../../../../src";
-import { Imperative, IO, Session } from "@zowe/imperative";
+import { EncodeUri, Imperative, IO, Session } from "@zowe/imperative";
 import { inspect } from "util";
 import { ITestEnvironment } from "@zowe/cli-test-utils";
 import { TestEnvironment } from "../../../../../../__tests__/__src__/environment/TestEnvironment";
@@ -1827,7 +1827,9 @@ describe("Download Data Set - encoded", () => {
     describe("Download USS File", () => {
         afterAll(async () => {
             // Delete created uss file
-            const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + encodeURIComponent(ussname);
+            const endpoint = EncodeUri.encUriPathForUss(REAL_SESSION,
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + ussname
+            );
 
             try {
                 (await ZosmfRestClient.deleteExpectString(REAL_SESSION, endpoint));

@@ -11,7 +11,7 @@
 
 import * as path from "path";
 import * as fs from "fs";
-import { IO, Logger, IHeaderContent, AbstractSession, ImperativeExpect, Headers, ImperativeError } from "@zowe/imperative";
+import { IO, Logger, IHeaderContent, EncodeUri, AbstractSession, ImperativeExpect, Headers, ImperativeError } from "@zowe/imperative";
 import { ZosFilesConstants } from "../constants/ZosFiles.constants";
 import { ZosFilesMessages } from "../constants/ZosFiles.messages";
 import { IZosFilesResponse } from "../doc/IZosFilesResponse";
@@ -208,17 +208,22 @@ export class ZosFilesUtils {
     }
 
     /**
-     * Normanize and URL-encode a USS path to be passed to z/OSMF
+     * Normalize and URL-encode a USS path to be passed to z/OSMF
+     * @deprecated - Use EncodeUri.encodeUriQueryForUss or EncodeUri.encodeUriPathForUss as appropriate.
      * @param ussPath path to sanitize
      */
     public static sanitizeUssPathForRestCall(ussPath: string): string {
         let sanitizedPath = path.posix.normalize(ussPath);
-        sanitizedPath = this.formatUnixFilepath(sanitizedPath);
+        if (sanitizedPath.charAt(0) === "/") {
+            // trim leading slash from unix files - API doesn't like it
+            sanitizedPath = sanitizedPath.substring(1);
+        }
         return encodeURIComponent(sanitizedPath);
     }
 
     /**
      * Format USS filepaths in the way that the APIs expect (no leading /)
+     * @deprecated - EncodeUri.encodeUriPathForUss should eliminate the need for this function.
      * @param {string} usspath - the path to format
      */
     public static formatUnixFilepath(usspath: string) {
@@ -248,7 +253,9 @@ export class ZosFilesUtils {
         ImperativeExpect.toNotBeEqual(dataSetName, "", ZosFilesMessages.missingDatasetName.message);
 
         try {
-            const endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, encodeURIComponent(dataSetName));
+            const endpoint = EncodeUri.encUriPathForZos(session,
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dataSetName
+            );
 
             Logger.getAppLogger().debug(`Endpoint: ${endpoint}`);
 
