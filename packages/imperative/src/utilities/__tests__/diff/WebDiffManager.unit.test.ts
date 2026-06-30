@@ -93,6 +93,36 @@ describe("WebDiffManager", () => {
 
             writeSpy.mockRestore();
         });
+
+        it("should escape JS line/paragraph separators in diff content", async () => {
+            // U+2028 (line separator) and U+2029 (paragraph separator) are valid in a string
+            // but illegal as raw characters inside a JS string literal, so they must be escaped.
+            const lineSep = String.fromCharCode(0x2028);
+            const paraSep = String.fromCharCode(0x2029);
+            const separatorPatchDiff = `before${lineSep}middle${paraSep}after`;
+            ProcessUtils.isGuiAvailable = jest.fn(() => GuiResult.GUI_AVAILABLE);
+            const generator = new WebDiffGenerator(ImperativeConfig.instance, webDiffDir);
+            generator.buildDiffDir = jest.fn();
+            jest.spyOn(ProcessUtils, "openInDefaultApp").mockImplementation(jest.fn());
+            jest.spyOn(diff2html, "html").mockImplementation(jest.fn(() => "rendered diff"));
+
+            let writtenHtml = "";
+            const writeSpy = jest.spyOn(fs, "writeFileSync").mockImplementation((_p, contents) => {
+                writtenHtml = contents.toString();
+            });
+
+            await WebDiffManager.instance.openDiffs(separatorPatchDiff);
+
+            expect(writeSpy).toHaveBeenCalledTimes(1);
+            // Raw separator characters must not survive in the generated page...
+            expect(writtenHtml).not.toContain(lineSep);
+            expect(writtenHtml).not.toContain(paraSep);
+            // ...only their escaped forms.
+            expect(writtenHtml).toContain("\\u2028");
+            expect(writtenHtml).toContain("\\u2029");
+
+            writeSpy.mockRestore();
+        });
     });
 
 });
