@@ -9,7 +9,6 @@
 *
 */
 
-import * as fs from "fs";
 import * as os from "os";
 import * as path from "path";
 import { IO } from "@zowe/imperative";
@@ -35,11 +34,20 @@ export class DaemonUtil {
             // our default location.
             daemonDir = path.join(os.homedir(), ".zowe", "daemon");
         }
-        if (!IO.existsSync(daemonDir)) {
+        if (IO.existsSync(daemonDir)) {
+            // The directory already exists. Re-restrict it to the current user in case
+            // it was previously created with permissions that allow group/other access.
+            try {
+                IO.giveAccessOnlyToOwner(daemonDir);
+            } catch(err) {
+                throw new Error("Failed to restrict access to directory '" + daemonDir + "'\nDetails = " + err.message);
+            }
+        } else {
             try {
                 IO.createDirSync(daemonDir);
-                const ownerReadWriteTraverse = 0o700;
-                fs.chmodSync(daemonDir, ownerReadWriteTraverse);
+                // Restrict access to the daemon directory to only the current user.
+                // On Windows this sets an owner-only ACL; on POSIX it sets mode 0o700.
+                IO.giveAccessOnlyToOwner(daemonDir);
             } catch(err) {
                 throw new Error("Failed to create directory '" + daemonDir + "'\nDetails = " + err.message);
             }
