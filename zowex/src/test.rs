@@ -111,6 +111,43 @@ fn unit_test_util_get_socket_string() {
 }
 
 #[test]
+fn unit_test_util_get_daemon_token() {
+    use std::fs;
+    use std::path::PathBuf;
+
+    // Use an isolated daemon dir and read it directly (not via ZOWE_DAEMON_DIR)
+    // so this test does not race with other tests that mutate that env variable.
+    let mut token_test_dir: PathBuf = env::temp_dir();
+    token_test_dir.push("zowe_daemon_token_test");
+    let _ = fs::remove_dir_all(&token_test_dir);
+    fs::create_dir_all(&token_test_dir).unwrap();
+
+    let mut pid_file_path = token_test_dir.clone();
+    pid_file_path.push("daemon_pid.json");
+
+    // when no pid file exists, we should get None (no token)
+    assert_eq!(util_get_daemon_token_from_dir(&token_test_dir), None);
+
+    // when the pid file contains a token, we should read it back exactly
+    fs::write(
+        &pid_file_path,
+        r#"{ "user": "fakeUser", "pid": 1234, "token": "abc123" }"#,
+    )
+    .unwrap();
+    assert_eq!(
+        util_get_daemon_token_from_dir(&token_test_dir),
+        Some("abc123".to_string())
+    );
+
+    // when the pid file omits the token (older daemon), we should get None
+    fs::write(&pid_file_path, r#"{ "user": "fakeUser", "pid": 1234 }"#).unwrap();
+    assert_eq!(util_get_daemon_token_from_dir(&token_test_dir), None);
+
+    // cleanup
+    let _ = fs::remove_dir_all(&token_test_dir);
+}
+
+#[test]
 fn unit_test_get_zowe_env() {
     let environment = util_get_zowe_env();
     assert_eq!(environment.get("ZOWE_EDITOR"), None);

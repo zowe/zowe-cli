@@ -1,5 +1,65 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`DaemonClient tests should process data when a valid token is supplied 1`] = `
+Array [
+  "feed",
+  "🐶",
+]
+`;
+
+exports[`DaemonClient tests should process data when a valid token is supplied 2`] = `
+Object {
+  "response": Object {
+    "argv": Array [
+      "feed",
+      "🐶",
+    ],
+    "cwd": "fake",
+    "env": Object {
+      "FORCE_COLOR": "0",
+    },
+    "stdin": null,
+    "stdinLength": 0,
+    "token": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "user": "ZmFrZQ==",
+  },
+  "stream": Object {
+    "end": [MockFunction],
+    "on": [MockFunction] {
+      "calls": Array [
+        Array [
+          "end",
+          [Function],
+        ],
+        Array [
+          "close",
+          [Function],
+        ],
+        Array [
+          "data",
+          [Function],
+        ],
+      ],
+      "results": Array [
+        Object {
+          "type": "return",
+          "value": undefined,
+        },
+        Object {
+          "type": "return",
+          "value": undefined,
+        },
+        Object {
+          "type": "return",
+          "value": undefined,
+        },
+      ],
+    },
+    "write": [MockFunction],
+  },
+}
+`;
+
 exports[`DaemonClient tests should process data when received 1`] = `
 Array [
   "feed",
@@ -20,6 +80,7 @@ Object {
     },
     "stdin": null,
     "stdinLength": 0,
+    "token": "fakeToken",
     "user": "ZmFrZQ==",
   },
   "stream": Object {
@@ -77,6 +138,7 @@ Object {
     "env": Object {},
     "stdin": null,
     "stdinLength": 1024,
+    "token": "fakeToken",
     "user": "ZmFrZQ==",
   },
   "stdinStream": Promise {},
