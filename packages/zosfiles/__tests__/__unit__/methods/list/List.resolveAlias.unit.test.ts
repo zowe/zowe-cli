@@ -32,12 +32,18 @@ describe("List.resolveAlias", () => {
             commandResponse: "AMS command executed successfully.",
             apiResponse: {
                 output: [
+                    "LISTCAT ENTRIES('MY.ALIAS.NAME') ALL",
                     "ALIAS --------- MY.ALIAS.NAME",
                     "     IN-CAT --- CATALOG.MASTER",
                     "     HISTORY",
-                    "       DATASET-OWNER-----(NULL)",
-                    "     ASSOCIATIONS",
-                    "       NONVSAM---REAL.DATASET.NAME"
+                    "       RELEASE----------2    CREATION-------2026.180",
+                    "     ENCRYPTION",
+                    "     DATA SET ENCRYPTION --- (NO)",
+                    "   ASSOCIATIONS",
+                    "     NONVSAM--- REAL.DATASET.NAME",
+                    "   THE NUMBER OF ENTRIES PROCESSED WAS:",
+                    "         NONVSAM ---------------0",
+                    "         TOTAL"
                 ]
             }
         });
@@ -65,8 +71,10 @@ describe("List.resolveAlias", () => {
                 output: [
                     "ALIAS --------- MY.VSAM.ALIAS",
                     "     IN-CAT --- CATALOG.MASTER",
-                    "     ASSOCIATIONS",
-                    "       VSAM---REAL.VSAM.CLUSTER"
+                    "   ASSOCIATIONS",
+                    "     VSAM--- REAL.VSAM.CLUSTER",
+                    "   THE NUMBER OF ENTRIES PROCESSED WAS:",
+                    "         NONVSAM ---------------0"
                 ]
             }
         });
@@ -84,8 +92,8 @@ describe("List.resolveAlias", () => {
             commandResponse: "AMS command executed successfully.",
             apiResponse: {
                 output: [
-                    "     ASSOCIATIONS",
-                    "       NONVSAM---TARGET.DS"
+                    "   ASSOCIATIONS",
+                    "     NONVSAM--- TARGET.DS"
                 ]
             }
         });
@@ -105,8 +113,8 @@ describe("List.resolveAlias", () => {
             commandResponse: "AMS command executed successfully.",
             apiResponse: {
                 output: [
-                    "     ASSOCIATIONS",
-                    "       NONVSAM---TARGET.DS"
+                    "   ASSOCIATIONS",
+                    "     NONVSAM--- TARGET.DS"
                 ]
             }
         });

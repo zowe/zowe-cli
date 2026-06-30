@@ -557,15 +557,15 @@ export class List {
             // Parse the AMS output to find the target data set name
             // LISTCAT output contains lines like:
             //   ASSOCIATIONS
-            //     NONVSAM---REAL.DATASET.NAME
-            // or  VSAM---REAL.DATASET.NAME
+            //     NONVSAM--- REAL.DATASET.NAME
+            // or  VSAM--- REAL.DATASET.NAME
             const outputLines: string[] = amsResponse.apiResponse?.output ?? [];
             let targetDsn: string | undefined;
 
             for (const line of outputLines) {
-                const match = line.match(/(?:NONVSAM|VSAM)\s*-{3,}\s*(\S+)/i);
-                if (match) {
-                    targetDsn = match[1].trim();
+                const match = line.match(/(NONVSAM|VSAM)-{2,}\s*(\S+)/i);
+                if (match && match[2]) {
+                    targetDsn = match[2].trim();
                     break;
                 }
             }
