@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `7.29.26`
 
 - BugFix: Added extra filesystem checks when downloading config files with the `zowe config import` command. [#2741](https://github.com/zowe/zowe-cli/pull/2741)
 - BugFix: Added extra filesystem checks when downloading data sets and USS files. [#2741](https://github.com/zowe/zowe-cli/pull/2741)
