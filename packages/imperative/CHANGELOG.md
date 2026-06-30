@@ -2,7 +2,7 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
-## Recent Changes
+## `5.27.18`
 
 - BugFix: Removed environment variables from the log messages produced when an exception is caught during Imperative.init. [#2765](https://github.com/zowe/zowe-cli/pull/2765)
 - BugFix: Placed imperative_debug.log into the Zowe Home directory's logs subdirectory, (or as a fallback into the user's home directory) instead of the current directory. [#2765](https://github.com/zowe/zowe-cli/pull/2765)
