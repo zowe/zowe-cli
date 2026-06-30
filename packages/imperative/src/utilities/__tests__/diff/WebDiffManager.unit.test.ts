@@ -70,6 +70,29 @@ describe("WebDiffManager", () => {
                 expect(ProcessUtils.openInDefaultApp).toHaveBeenCalledTimes(1);
             }
         });
+
+        it("should not allow diff content to break out of the inline script element", async () => {
+            const maliciousPatchDiff = "</script><img src=x onerror=alert(document.domain)>";
+            ProcessUtils.isGuiAvailable = jest.fn(() => GuiResult.GUI_AVAILABLE);
+            const generator = new WebDiffGenerator(ImperativeConfig.instance, webDiffDir);
+            generator.buildDiffDir = jest.fn();
+            jest.spyOn(ProcessUtils, "openInDefaultApp").mockImplementation(jest.fn());
+            jest.spyOn(diff2html, "html").mockImplementation(jest.fn(() => "rendered diff"));
+
+            let writtenHtml = "";
+            const writeSpy = jest.spyOn(fs, "writeFileSync").mockImplementation((_p, contents) => {
+                writtenHtml = contents.toString();
+            });
+
+            await WebDiffManager.instance.openDiffs(maliciousPatchDiff);
+
+            expect(writeSpy).toHaveBeenCalledTimes(1);
+            expect(writtenHtml).not.toContain("</script><img");
+            // The payload should survive only in its escaped form within the JS string literal.
+            expect(writtenHtml).toContain("\\u003c/script\\u003e");
+
+            writeSpy.mockRestore();
+        });
     });
 
 });

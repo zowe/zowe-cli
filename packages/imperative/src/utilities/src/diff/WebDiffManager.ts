@@ -111,6 +111,23 @@ export class WebDiffManager implements IWebDiffManager {
     }
 
     /**
+     * Encodes a string so it can be safely embedded inside an inline `<script>`
+     * element. `JSON.stringify` produces a valid JavaScript string literal, and
+     * the additional replacements prevent the value from terminating the script
+     * element (e.g. a `</script>` sequence in the diff content) or introducing
+     * line terminators that are illegal inside JS string literals (U+2028/U+2029).
+     * @private
+     * @param str - the raw string to embed in a script context
+     * @returns A safely-encoded JavaScript string literal
+     */
+    private encodeForScript(str: string): string {
+        return JSON.stringify(str)
+            .replace(/</g, "\\u003c")
+            .replace(/>/g, "\\u003e")
+            .replace(new RegExp("[\\u2028\\u2029]", "g"), (ch) => "\\u" + ch.charCodeAt(0).toString(16));
+    }
+
+    /**
      * Returns header HTML for web diff page
      * @private
      * @param htmlDiff - html diffs of the file changes
@@ -146,7 +163,7 @@ export class WebDiffManager implements IWebDiffManager {
                 })
 
                 fr.readAsText()
-            const diffString = ${unifiedStringDiff}
+            const diffString = ${this.encodeForScript(unifiedStringDiff)}
 
               document.addEventListener('DOMContentLoaded', function () {
                 var targetElement = document.getElementsByClassName('d2h-file-list-wrapper')[0];

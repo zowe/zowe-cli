@@ -4,6 +4,7 @@ All notable changes to the Imperative package will be documented in this file.
 
 ## Recent Changes
 
+- BugFix: Encoded diff content before embedding it in the inline script of the web diff page to prevent stored cross-site scripting.
 - BugFix: Added path sanitization checks to prevent writing the configuration schema to an invalid file path. [#2763](https://github.com/zowe/zowe-cli/pull/2763)
 
 ## `8.32.3`
