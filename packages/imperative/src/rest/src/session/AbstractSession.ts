@@ -192,7 +192,7 @@ export abstract class AbstractSession {
      * @memberof AbstractSession
      */
     public isUsingApiml(): boolean {
-        if (this.ISession.tokenType && this.ISession.tokenType === SessConstants.TOKEN_TYPE_APIML) {
+        if (this.ISession.tokenType === SessConstants.TOKEN_TYPE_APIML) {
             return true;
         }
         if (this.ISession.basePath) {
