@@ -333,8 +333,8 @@ export class Imperative {
                 imperativeLogger.fatal("Diagnostic information:\n" +
                     "Platform: '%s', Architecture: '%s', Process.argv: '%s'\n" +
                     "Node versions: '%s'",
-                    os.platform(), os.arch(), process.argv.join(" "),
-                    JSON.stringify(process.versions, null, 2)
+                os.platform(), os.arch(), process.argv.join(" "),
+                JSON.stringify(process.versions, null, 2)
                 );
                 Logger.writeInMemoryMessages(debugFilePath);
                 if (error.report) {

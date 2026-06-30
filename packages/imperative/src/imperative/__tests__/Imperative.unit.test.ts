@@ -502,7 +502,7 @@ describe("Imperative", () => {
         it("should place debug log in user home directory after catching error when no logs dir exists", async () => {
             const fakeErr = new Error("A fake error from defineCommands");
             (Imperative as any).defineCommands = jest.fn(() => {
-                throw fakeErr
+                throw fakeErr;
             });
 
             // loadedConfig is a getter of a property, so we mock the property.
