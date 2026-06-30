@@ -124,9 +124,9 @@ export class WebDiffManager implements IWebDiffManager {
      */
     private encodeForScript(str: string): string {
         return JSON.stringify(str)
-            .replace(/</g, "\\u003c")
-            .replace(/>/g, "\\u003e")
-            .replace(new RegExp("[\\u2028\\u2029]", "g"), (ch) => "\\u" + ch.charCodeAt(0).toString(16));
+            .replaceAll("<", "\\u003c")
+            .replaceAll(">", "\\u003e")
+            .replace(/[\u2028\u2029]/g, (ch) => "\\u" + ch.codePointAt(0)!.toString(16));
     }
 
     /**
