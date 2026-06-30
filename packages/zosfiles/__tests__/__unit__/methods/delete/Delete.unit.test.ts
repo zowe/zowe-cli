@@ -111,7 +111,7 @@ describe("Delete", () => {
             expect(deleteExpectStringSpy).toHaveBeenCalledTimes(1);
             expect(deleteExpectStringSpy).toHaveBeenLastCalledWith(
                 dummySession,
-                posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, `-(${options.volume})`, dataset),
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + `/-(${options.volume})/` + dataset,
                 [ZosmfHeaders.ACCEPT_ENCODING]
             );
         });
@@ -132,7 +132,7 @@ describe("Delete", () => {
             expect(deleteExpectStringSpy).toHaveBeenCalledTimes(1);
             expect(deleteExpectStringSpy).toHaveBeenLastCalledWith(
                 dummySession,
-                posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, `-(${options.volume})`, dataset),
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + `/-(${options.volume})/` + dataset,
                 [ZosmfHeaders.ACCEPT_ENCODING, {"X-IBM-Response-Timeout": "5"}]
             );
         });

@@ -9,8 +9,7 @@
 *
 */
 
-import * as path from "path";
-import { AbstractSession, ImperativeExpect, Logger } from "@zowe/imperative";
+import { AbstractSession, EncodeUri, ImperativeExpect, Logger } from "@zowe/imperative";
 import { JobsConstants } from "./JobsConstants";
 import { ZosmfHeaders, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { IJob } from "./doc/response/IJob";
@@ -76,8 +75,10 @@ export class DeleteJobs {
             headers.push(ZosmfHeaders.X_IBM_JOB_MODIFY_VERSION_2);
         }
 
-        const parameters: string = path.posix.sep + encodeURIComponent(parms.jobname) + path.posix.sep + encodeURIComponent(parms.jobid);
-        const responseJson = await ZosmfRestClient.deleteExpectJSON(session, JobsConstants.RESOURCE + parameters, headers);
+        const responseJson = await ZosmfRestClient.deleteExpectJSON(session,
+            EncodeUri.encUriPathForZos(session, JobsConstants.RESOURCE + "/" + parms.jobname + "/" + parms.jobid),
+            headers
+        );
 
         if (parms.modifyVersion === "1.0") {
             return undefined;
