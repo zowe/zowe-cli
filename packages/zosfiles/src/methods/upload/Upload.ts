@@ -9,8 +9,10 @@
 *
 */
 
-import { AbstractSession, Headers, ImperativeError, ImperativeExpect, IO, Logger,
-    TaskProgress, IHeaderContent, IOptionsFullResponse, IRestClientResponse } from "@zowe/imperative";
+import {
+    AbstractSession, EncodeUri, Headers, ImperativeError, ImperativeExpect, IO, Logger,
+    TaskProgress, IHeaderContent, IOptionsFullResponse, IRestClientResponse
+} from "@zowe/imperative";
 import * as fs from "fs";
 import * as path from "path";
 
@@ -157,11 +159,11 @@ export class Upload {
         ImperativeExpect.toNotBeNullOrUndefined(dataSetName, ZosFilesMessages.missingDatasetName.message);
 
         // Construct zOSMF REST endpoint.
-        let endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES);
+        let endpoint = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES;
         if (options.volume) {
-            endpoint = path.posix.join(endpoint, `-(${encodeURIComponent(options.volume)})`);
+            endpoint += `/-(${options.volume})`;
         }
-        endpoint = path.posix.join(endpoint, encodeURIComponent(dataSetName));
+        endpoint = EncodeUri.encUriPathForZos(session, endpoint + "/" + dataSetName);
 
         // Construct request header parameters
         const reqHeaders: IHeaderContent[] = this.generateHeadersBasedOnOptions(options);
@@ -227,11 +229,11 @@ export class Upload {
         ImperativeExpect.toNotBeNullOrUndefined(dataSetName, ZosFilesMessages.missingDatasetName.message);
 
         // Construct zOSMF REST endpoint.
-        let endpoint = path.posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES);
+        let endpoint = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES;
         if (options.volume) {
-            endpoint = path.posix.join(endpoint, `-(${encodeURIComponent(options.volume)})`);
+            endpoint += `/-(${options.volume})`;
         }
-        endpoint = path.posix.join(endpoint, encodeURIComponent(dataSetName));
+        endpoint = EncodeUri.encUriPathForZos(session, endpoint + "/" + dataSetName);
 
         // Construct request header parameters
         const reqHeaders: IHeaderContent[] = this.generateHeadersBasedOnOptions(options);
@@ -469,9 +471,6 @@ export class Upload {
         options.binary = options.binary ? options.binary : false;
         ImperativeExpect.toNotBeNullOrUndefined(ussname, ZosFilesMessages.missingUSSFileName.message);
         const origUssname = ussname;
-        ussname = ZosFilesUtils.sanitizeUssPathForRestCall(ussname);
-
-        const endpoint = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + ussname;
         const reqHeaders: IHeaderContent[] = this.generateHeadersBasedOnOptions(options, "buffer");
 
         if (!options.binary) {
@@ -480,7 +479,9 @@ export class Upload {
 
         // Options to use the buffer to write a file
         const requestOptions: IOptionsFullResponse = {
-            resource: endpoint,
+            resource: EncodeUri.encUriPathForUss(session,
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + ussname
+            ),
             reqHeaders,
             writeData: fileBuffer
         };
@@ -537,13 +538,13 @@ export class Upload {
         ImperativeExpect.toNotBeNullOrUndefined(ussname, ZosFilesMessages.missingUSSFileName.message);
         ImperativeExpect.toNotBeEqual(options.record, true, ZosFilesMessages.unsupportedDataType.message);
         const origUssname = ussname;
-        ussname = ZosFilesUtils.sanitizeUssPathForRestCall(ussname);
-        const parameters: string = ZosFilesConstants.RES_USS_FILES + "/" + ussname;
         const reqHeaders: IHeaderContent[] = this.generateHeadersBasedOnOptions(options, "stream");
 
         // Options to use the stream to write a file
         const restOptions: IOptionsFullResponse = {
-            resource: ZosFilesConstants.RESOURCE + parameters,
+            resource: EncodeUri.encUriPathForUss(session,
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + ussname
+            ),
             reqHeaders,
             requestStream: uploadStream,
             normalizeRequestNewLines: !options.binary /* only normalize newlines if we are not in binary mode*/
@@ -823,11 +824,12 @@ export class Upload {
      * @return {Promise<boolean>}
      */
     public static async isDirectoryExist(session: AbstractSession, ussname: string): Promise<boolean> {
-        ussname = ZosFilesUtils.sanitizeUssPathForRestCall(ussname);
-        const parameters: string = `${ZosFilesConstants.RES_USS_FILES}?path=${encodeURIComponent("/")}${ussname}`;
         try {
-            const response: any = await ZosmfRestClient.getExpectJSON(session, ZosFilesConstants.RESOURCE + parameters,
-                [ZosmfHeaders.ACCEPT_ENCODING]);
+            const response: any = await ZosmfRestClient.getExpectJSON(session,
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES +
+                `?path=${EncodeUri.encUriQueryForUss(ussname)}`,
+                [ZosmfHeaders.ACCEPT_ENCODING]
+            );
             if (response.items && response.items.length > 0) {
                 return response.items[0].mode?.startsWith("d") ?? false;
             }
