@@ -121,7 +121,7 @@ export default class SecureHandler implements ICommandHandler {
             }
             // Save the value in the config securely
             if (propValue) {
-                Logger.getAppLogger().trace(`Setting property ${propName} to ${propValue}`);
+                Logger.getAppLogger().trace(`Setting secure property ${propName}`);
                 config.set(propName, propValue, { secure: true });
             }
         }
