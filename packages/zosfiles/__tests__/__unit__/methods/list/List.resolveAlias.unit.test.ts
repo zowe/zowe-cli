@@ -52,7 +52,7 @@ describe("List.resolveAlias", () => {
         expect(amsSpy).toHaveBeenCalledTimes(1);
         expect(amsSpy).toHaveBeenCalledWith(
             dummySession,
-            ["LISTCAT ENTRIES('MY.ALIAS.NAME') ALIAS"],
+            ["LISTCAT ENTRIES('MY.ALIAS.NAME') ALL"],
             undefined
         );
     });
@@ -94,7 +94,7 @@ describe("List.resolveAlias", () => {
 
         expect(amsSpy).toHaveBeenCalledWith(
             dummySession,
-            ["LISTCAT ENTRIES('MY.LOWERCASE.ALIAS') ALIAS"],
+            ["LISTCAT ENTRIES('MY.LOWERCASE.ALIAS') ALL"],
             undefined
         );
     });
@@ -116,7 +116,7 @@ describe("List.resolveAlias", () => {
 
         expect(amsSpy).toHaveBeenCalledWith(
             dummySession,
-            ["LISTCAT ENTRIES('MY.ALIAS') ALIAS"],
+            ["LISTCAT ENTRIES('MY.ALIAS') ALL"],
             options
         );
     });

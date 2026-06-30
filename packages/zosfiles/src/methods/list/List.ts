@@ -549,7 +549,7 @@ export class List {
         ImperativeExpect.toNotBeEqual(aliasName, "", ZosFilesMessages.missingDatasetName.message);
 
         try {
-            const listcatStmt = `LISTCAT ENTRIES('${aliasName.toUpperCase()}') ALIAS`;
+            const listcatStmt = `LISTCAT ENTRIES('${aliasName.toUpperCase()}') ALL`;
             this.log.debug(`Resolving alias with AMS statement: ${listcatStmt}`);
 
             const amsResponse = await Invoke.ams(session, [listcatStmt], options);
