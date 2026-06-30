@@ -17,6 +17,7 @@ import { IProfileProperty, IProfileSchema, IProfileTypeConfiguration } from "../
 import { IConfigSchema, IConfigUpdateSchemaHelperOptions, IConfigUpdateSchemaOptions, IConfigUpdateSchemaPaths } from "./doc/IConfigSchema";
 import { ImperativeConfig } from "../../utilities/src/ImperativeConfig";
 import { Logger } from "../../logger/src/Logger";
+import { IO } from "../../io";
 import { Config } from "./Config";
 import { ImperativeError } from "../../error/src/ImperativeError";
 import { IConfig } from "./doc/IConfig";
@@ -161,7 +162,9 @@ export class ConfigSchema {
             // Get the schema information to gather a list of updated paths
             const schemaInfo = opts.config.getSchemaInfo();
 
-            updatedPaths = { [layer.path]: { schema: schemaInfo.original, updated: schemaInfo.local } };
+            // Only report as updated when the schema was actually written within the layer directory
+            const schemaUpdated = schemaInfo.local && IO.isSubPath(path.dirname(layer.path), schemaInfo.resolved);
+            updatedPaths = { [layer.path]: { schema: schemaInfo.original, updated: schemaUpdated } };
         }
         if (opts.config.layerExists(path.dirname(layer.path), !layer.user) && checkContrastingLayer) {
             opts.config.api.layers.activate(!layer.user, layer.global, path.dirname(layer.path));

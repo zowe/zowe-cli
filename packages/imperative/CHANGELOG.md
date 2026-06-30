@@ -4,7 +4,12 @@ All notable changes to the Imperative package will be documented in this file.
 
 ## Recent Changes
 
-- Enhancement: Added an optional `token` property to the `IDaemonResponse` interface. The daemon client sends this secret token (read from the owner-only daemon PID file) so the daemon can authenticate the client as its owner. [#2743](https://github.com/zowe/zowe-cli/pull/2743)
+- BugFix: Added an optional `token` property to the `IDaemonResponse` interface. The daemon client sends this secret token (read from the owner-only daemon PID file) so the daemon can authenticate the client as its owner. [#2743](https://github.com/zowe/zowe-cli/pull/2743)
+- BugFix: Removed environment variables from the log messages produced when an exception is caught during Imperative.init. [#2764](https://github.com/zowe/zowe-cli/pull/2764)
+- BugFix: Placed imperative_debug.log into the Zowe Home directory's logs subdirectory, (or as a fallback into the user's home directory) instead of the current directory. [#2764](https://github.com/zowe/zowe-cli/pull/2764)
+- BugFix: Reduced the encoding of URIs to the minimum that still allows Zowe SDK operations to work successfully in the current z/OS environment. [#2758](https://github.com/zowe/zowe-cli/pull/2758)
+- BugFix: Updated the WebDiffManager class's openDiffs function to better process input data. [#2769](https://github.com/zowe/zowe-cli/pull/2769)
+- BugFix: Added path sanitization checks to prevent writing the configuration schema to an invalid file path. [#2763](https://github.com/zowe/zowe-cli/pull/2763)
 
 ## `8.32.3`
 
