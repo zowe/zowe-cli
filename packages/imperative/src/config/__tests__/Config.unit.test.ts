@@ -397,6 +397,23 @@ describe("Config tests", () => {
             expect(jsonText.match(/^{\s*"\$schema":/)).not.toBeNull();
         });
 
+        it("should throw if schema object path resolves outside the config directory", async () => {
+            const config = await Config.load(MY_APP);
+            const layer = (config as any).layerActive();
+            // Pre-set $schema to a traversal path so setSchema(object) uses it as the write target
+            layer.properties.$schema = "../../outside-dir/schema.json";
+            let caughtError: Error;
+
+            try {
+                config.setSchema({ $schema: "fake-schema" });
+            } catch (error) {
+                caughtError = error;
+            }
+
+            expect(caughtError).toBeDefined();
+            expect(caughtError.message).toContain("Schema path must resolve within the config directory");
+        });
+
         it("should add a new layer when one is specified in the set", async () => {
             const config = await Config.load(MY_APP);
             config.set("profiles.fruit.profiles.mango.properties.color", "orange");
