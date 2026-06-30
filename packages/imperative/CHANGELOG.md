@@ -5,6 +5,7 @@ All notable changes to the Imperative package will be documented in this file.
 ## Recent Changes
 
 - BugFix: Updated the WebDiffManager class's openDiffs function to better process input data. [#2769](https://github.com/zowe/zowe-cli/pull/2769)
+- BugFix: Added path sanitization checks to prevent writing the configuration schema to an invalid file path. [#2763](https://github.com/zowe/zowe-cli/pull/2763)
 
 ## `8.32.3`
 
