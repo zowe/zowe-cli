@@ -178,9 +178,7 @@ export class DaemonDecider {
             throw new Error("Failed to write file '" + pidFilePath + "'\nDetails = " + err.message);
         }
 
-        Imperative.api.appLogger.trace("Recorded daemon process ID into " + pidFilePath +
-            "\n" + pidForUserStr
-        );
+        Imperative.api.appLogger.trace("Recorded daemon process ID into " + pidFilePath);
     }
 
     /**
