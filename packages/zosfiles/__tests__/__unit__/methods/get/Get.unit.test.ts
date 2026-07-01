@@ -288,8 +288,7 @@ describe("z/OS Files - View", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, `-(${options.volume})`, dsname);
-
+            const endpoint = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + `/-(${options.volume})/` + dsname;
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual(content);

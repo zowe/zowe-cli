@@ -11,7 +11,7 @@
 
 import * as fs from "fs";
 import { posix, join, basename } from "path";
-import { ImperativeError, IO, Session } from "@zowe/imperative";
+import { EncodeUri, ImperativeError, IO, Session } from "@zowe/imperative";
 import { IDownloadOptions, TransferMode, Utilities, ZosFilesAttributes, ZosFilesMessages } from "../../../../src";
 import { ZosmfHeaders, ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { Download } from "../../../../src/methods/download/Download";
@@ -129,7 +129,9 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, `-(${volume})`, dsname);
+            const endpoint = EncodeUri.encUriPathForZos(dummySession,
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + `/-(${volume})/` + dsname
+            );
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -165,7 +167,9 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, `-(${volume})`, dsname);
+            const endpoint = EncodeUri.encUriPathForZos(dummySession,
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + `/-(${volume})/` + dsname
+            );
             IO.processNewlines(dsContent.toString());
 
             expect(caughtError).toBeUndefined();
@@ -200,7 +204,9 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
+            const endpoint = EncodeUri.encUriPathForZos(dummySession,
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname
+            );
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -236,7 +242,9 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
+            const endpoint = EncodeUri.encUriPathForZos(dummySession,
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname
+            );
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -274,7 +282,9 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
+            const endpoint = EncodeUri.encUriPathForZos(dummySession,
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname
+            );
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -311,7 +321,9 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
+            const endpoint = EncodeUri.encUriPathForZos(dummySession,
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname
+            );
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -347,7 +359,9 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
+            const endpoint = EncodeUri.encUriPathForZos(dummySession,
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname
+            );
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -383,7 +397,9 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
+            const endpoint = EncodeUri.encUriPathForZos(dummySession,
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname
+            );
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -417,7 +433,9 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
+            const endpoint = EncodeUri.encUriPathForZos(dummySession,
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname
+            );
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -454,7 +472,9 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
+            const endpoint = EncodeUri.encUriPathForZos(dummySession,
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname
+            );
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -491,7 +511,9 @@ describe("z/OS Files - Download", () => {
             } catch (e) {
                 caughtError = e;
             }
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, `-(${volume})`, dsname);
+            const endpoint = EncodeUri.encUriPathForZos(dummySession,
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + `/-(${volume})/` + dsname
+            );
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -533,7 +555,9 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
+            const endpoint = EncodeUri.encUriPathForZos(dummySession,
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname
+            );
 
             expect(response).toBeUndefined();
             expect(caughtError).toEqual(dummyError);
@@ -558,7 +582,9 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
+            const endpoint = EncodeUri.encUriPathForZos(dummySession,
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname
+            );
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -589,7 +615,9 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname + "?test=true");
+            const endpoint = EncodeUri.encUriPathForZos(dummySession,
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname + "?test=true"
+            );
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -651,7 +679,9 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
+            const endpoint = EncodeUri.encUriPathForZos(dummySession,
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname
+            );
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -719,7 +749,9 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
+            const endpoint = EncodeUri.encUriPathForZos(dummySession,
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname
+            );
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -757,7 +789,9 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
+            const endpoint = EncodeUri.encUriPathForZos(dummySession,
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname
+            );
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -807,7 +841,9 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES, dsname);
+            const endpoint = EncodeUri.encUriPathForZos(dummySession,
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + dsname
+            );
 
             expect(caughtError).toBeUndefined();
 
@@ -1006,6 +1042,39 @@ describe("z/OS Files - Download", () => {
             expect(downloadDatasetSpy).not.toHaveBeenCalled();
         });
 
+        it("should fail to download all members due to backtracking", async () => {
+            let response;
+            let caughtError;
+
+            listAllMembersSpy.mockImplementation(async (): Promise<any> => {
+                return { apiResponse: {
+                    items: [
+                        {member: "M1"},
+                        {member: "M2"},
+                        {member: `../M3`}
+                    ]}
+                };
+            });
+
+            try {
+                response = await Download.allMembers(dummySession, dsname);
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeDefined();
+            expect(caughtError.message).toEqual("The generated data set file path contains illegal characters.");
+            expect(response).toBeUndefined();
+            expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
+            expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, dsname, {});
+            expect(downloadDatasetSpy).toHaveBeenCalledTimes(2);
+            listApiResponse.items.forEach((mem) => {
+                expect(downloadDatasetSpy).toHaveBeenCalledWith(dummySession, `${dsname}(${mem.member})`, {
+                    file: `${dsFolder}/${mem.member.toLowerCase()}.txt`
+                });
+            });
+        });
+
         it("should download all members without any options", async () => {
             let response;
             let caughtError;
@@ -1090,7 +1159,7 @@ describe("z/OS Files - Download", () => {
             });
         });
 
-        it("should download all members specifying directory, volume, extension, and binary mode", async () => {
+        it("should download all members specifying directory, volume, extension, and binary mode 1", async () => {
             let response;
             let caughtError;
 
@@ -1099,7 +1168,7 @@ describe("z/OS Files - Download", () => {
             const extension = ".xyz";
             const binary = true;
 
-            defaultResponse.commandResponse = util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, 2, directory);
+            defaultResponse.commandResponse = util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, 2, directory.slice(0, -1));
 
             try {
                 response = await Download.allMembers(dummySession, dsname, {volume, directory, extension, binary});
@@ -1108,7 +1177,40 @@ describe("z/OS Files - Download", () => {
             }
 
             const expectedResponse = cloneDeep(defaultResponse);
-            expectedResponse.apiResponse.destination = "my/test/path/";
+            expectedResponse.apiResponse.destination = "my/test/path";
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual(expectedResponse);
+            expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
+            expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, dsname, {volume});
+
+            expect(downloadDatasetSpy).toHaveBeenCalledTimes(2);
+            listApiResponse.items.forEach((mem) => {
+                expect(downloadDatasetSpy).toHaveBeenCalledWith(dummySession, `${dsname}(${mem.member})`, {
+                    volume,
+                    file: `${directory.slice(0, -1)}/${mem.member.toLowerCase()}${extension}`,
+                    binary
+                });
+            });
+        });
+
+        it("should download all members specifying directory, volume, extension, and binary mode 2", async () => {
+            let response;
+            let caughtError;
+
+            const volume = "testVs";
+            const directory = "my/test/path";
+            const extension = ".xyz";
+            const binary = true;
+
+            try {
+                response = await Download.allMembers(dummySession, dsname, {volume, directory, extension, binary});
+            } catch (e) {
+                caughtError = e;
+            }
+
+            const expectedResponse = cloneDeep(defaultResponse);
+            expectedResponse.apiResponse.destination = "my/test/path";
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual(expectedResponse);
@@ -1126,6 +1228,75 @@ describe("z/OS Files - Download", () => {
             });
         });
 
+        it("should download all members specifying directory, volume, extension, and binary mode 3", async () => {
+            let response;
+            let caughtError;
+
+            const volume = "testVs";
+            const directory = "my/test/path\\";
+            const extension = ".xyz";
+            const binary = true;
+
+            try {
+                response = await Download.allMembers(dummySession, dsname, {volume, directory, extension, binary});
+            } catch (e) {
+                caughtError = e;
+            }
+
+            const expectedResponse = cloneDeep(defaultResponse);
+            expectedResponse.apiResponse.destination = "my/test/path";
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual(expectedResponse);
+
+            expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
+            expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, dsname, {volume});
+
+            expect(downloadDatasetSpy).toHaveBeenCalledTimes(2);
+            listApiResponse.items.forEach((mem) => {
+                expect(downloadDatasetSpy).toHaveBeenCalledWith(dummySession, `${dsname}(${mem.member})`, {
+                    volume,
+                    file: `${directory.slice(0, -1)}/${mem.member.toLowerCase()}${extension}`,
+                    binary
+                });
+            });
+        });
+
+        it("should download all members specifying directory, volume, extension, and binary mode 4", async () => {
+            let response;
+            let caughtError;
+
+            const volume = "testVs";
+            const directory = "/";
+            const extension = ".xyz";
+            const binary = true;
+
+            try {
+                response = await Download.allMembers(dummySession, dsname, {volume, directory, extension, binary});
+            } catch (e) {
+                caughtError = e;
+            }
+
+            const expectedResponse = cloneDeep(defaultResponse);
+            expectedResponse.apiResponse.destination = "/";
+            expectedResponse.commandResponse = util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, 2, directory);
+
+            expect(caughtError).toBeUndefined();
+            expect(response).toEqual(expectedResponse);
+
+            expect(listAllMembersSpy).toHaveBeenCalledTimes(1);
+            expect(listAllMembersSpy).toHaveBeenCalledWith(dummySession, dsname, {volume});
+
+            expect(downloadDatasetSpy).toHaveBeenCalledTimes(2);
+            listApiResponse.items.forEach((mem) => {
+                expect(downloadDatasetSpy).toHaveBeenCalledWith(dummySession, `${dsname}(${mem.member})`, {
+                    volume,
+                    file: `${directory.slice(0, -1)}/${mem.member.toLowerCase()}${extension}`,
+                    binary
+                });
+            });
+        });
+
         it("should download all members specifying directory, volume, extension, and record mode", async () => {
             let response;
             let caughtError;
@@ -1135,7 +1306,7 @@ describe("z/OS Files - Download", () => {
             const extension = ".xyz";
             const record = true;
 
-            defaultResponse.commandResponse = util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, 2, directory);
+            defaultResponse.commandResponse = util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, 2, directory.slice(0, -1));
 
             try {
                 response = await Download.allMembers(dummySession, dsname, {volume, directory, extension, record});
@@ -1144,7 +1315,7 @@ describe("z/OS Files - Download", () => {
             }
 
             const expectedResponse = cloneDeep(defaultResponse);
-            expectedResponse.apiResponse.destination = "my/test/path/";
+            expectedResponse.apiResponse.destination = "my/test/path";
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual(expectedResponse);
@@ -1172,7 +1343,7 @@ describe("z/OS Files - Download", () => {
             const binary = true;
             const responseTimeout = 5;
 
-            defaultResponse.commandResponse = util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, 2, directory);
+            defaultResponse.commandResponse = util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, 2, directory.slice(0, -1));
 
             try {
                 response = await Download.allMembers(dummySession, dsname, {volume, directory, extension, binary, responseTimeout});
@@ -1181,7 +1352,7 @@ describe("z/OS Files - Download", () => {
             }
 
             const expectedResponse = cloneDeep(defaultResponse);
-            expectedResponse.apiResponse.destination = "my/test/path/";
+            expectedResponse.apiResponse.destination = "my/test/path";
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual(expectedResponse);
@@ -1211,7 +1382,7 @@ describe("z/OS Files - Download", () => {
             const record = true;
             const responseTimeout = 5;
 
-            defaultResponse.commandResponse = util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, 2, directory);
+            defaultResponse.commandResponse = util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, 2, directory.slice(0, -1));
 
             try {
                 response = await Download.allMembers(dummySession, dsname, {volume, directory, extension, record, responseTimeout});
@@ -1220,7 +1391,7 @@ describe("z/OS Files - Download", () => {
             }
 
             const expectedResponse = cloneDeep(defaultResponse);
-            expectedResponse.apiResponse.destination = "my/test/path/";
+            expectedResponse.apiResponse.destination = "my/test/path";
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual(expectedResponse);
@@ -1249,7 +1420,7 @@ describe("z/OS Files - Download", () => {
             const extension = ".xyz";
             const encoding = "285";
 
-            defaultResponse.commandResponse = util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, 2, directory);
+            defaultResponse.commandResponse = util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, 2, directory.slice(0, -1));
 
             try {
                 response = await Download.allMembers(dummySession, dsname, {volume, directory, extension, encoding});
@@ -1258,7 +1429,7 @@ describe("z/OS Files - Download", () => {
             }
 
             const expectedResponse = cloneDeep(defaultResponse);
-            expectedResponse.apiResponse.destination = "my/test/path/";
+            expectedResponse.apiResponse.destination = "my/test/path";
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual(expectedResponse);
@@ -1284,7 +1455,7 @@ describe("z/OS Files - Download", () => {
             const directory = "My/Test/Path/";
             const extension = ".xyz";
 
-            defaultResponse.commandResponse = util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, 2, directory);
+            defaultResponse.commandResponse = util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, 2, directory.slice(0, -1));
 
             try {
                 response = await Download.allMembers(dummySession, dsname, {volume, directory, extension});
@@ -1293,7 +1464,7 @@ describe("z/OS Files - Download", () => {
             }
 
             const expectedResponse = cloneDeep(defaultResponse);
-            expectedResponse.apiResponse.destination = "My/Test/Path/";
+            expectedResponse.apiResponse.destination = "My/Test/Path";
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual(expectedResponse);
@@ -1319,7 +1490,7 @@ describe("z/OS Files - Download", () => {
             const extension = "";
             const binary = true;
 
-            defaultResponse.commandResponse = util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, 2, directory);
+            defaultResponse.commandResponse = util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, 2, directory.slice(0, -1));
 
             try {
                 response = await Download.allMembers(dummySession, dsname, {volume, directory, extension, binary});
@@ -1328,7 +1499,7 @@ describe("z/OS Files - Download", () => {
             }
 
             const expectedResponse = cloneDeep(defaultResponse);
-            expectedResponse.apiResponse.destination = "my/test/path/";
+            expectedResponse.apiResponse.destination = "my/test/path";
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual(expectedResponse);
@@ -1473,7 +1644,7 @@ describe("z/OS Files - Download", () => {
                 m2: "def"
             };
 
-            defaultResponse.commandResponse = util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, 2, directory);
+            defaultResponse.commandResponse = util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, 2, directory.slice(0, -1));
 
             try {
                 response = await Download.allMembers(dummySession, dsname, { directory, extensionMap });
@@ -1482,7 +1653,7 @@ describe("z/OS Files - Download", () => {
             }
 
             const expectedResponse = cloneDeep(defaultResponse);
-            expectedResponse.apiResponse.destination = "my/test/path/";
+            expectedResponse.apiResponse.destination = "my/test/path";
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual(expectedResponse);
@@ -1521,7 +1692,7 @@ describe("z/OS Files - Download", () => {
                 M2: ".LOWER"
             };
 
-            defaultResponse.commandResponse = util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, 2, directory);
+            defaultResponse.commandResponse = util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, 2, directory.slice(0, -1));
 
             try {
                 response = await Download.allMembers(dummySession, dsname, { directory, extensionMap, preserveOriginalLetterCase: true });
@@ -1530,7 +1701,7 @@ describe("z/OS Files - Download", () => {
             }
 
             const expectedResponse = cloneDeep(defaultResponse);
-            expectedResponse.apiResponse.destination = "my/test/path/";
+            expectedResponse.apiResponse.destination = "my/test/path";
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual(expectedResponse);
@@ -1565,10 +1736,10 @@ describe("z/OS Files - Download", () => {
             const directory = "my/test/path/";
             // Map does not contain keys for M1 or M2
             const extensionMap = {
-                other: "zzz"
+                other: "xyz"
             };
 
-            defaultResponse.commandResponse = util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, 2, directory);
+            defaultResponse.commandResponse = util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, 2, directory.slice(0, -1));
 
             try {
                 response = await Download.allMembers(dummySession, dsname, { directory, extensionMap });
@@ -1577,7 +1748,7 @@ describe("z/OS Files - Download", () => {
             }
 
             const expectedResponse = cloneDeep(defaultResponse);
-            expectedResponse.apiResponse.destination = "my/test/path/";
+            expectedResponse.apiResponse.destination = "my/test/path";
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual(expectedResponse);
@@ -1757,12 +1928,12 @@ describe("z/OS Files - Download", () => {
             expect(response).toEqual({
                 success: true,
                 commandResponse:
-                    util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, downloaded, directory) +
+                    util.format(ZosFilesMessages.memberCountDownloadedWithDestination.message, downloaded, directory.slice(0, -1)) +
                     "\n" +
                     util.format(ZosFilesMessages.memberDownloadSkipped.message, skipped),
                 apiResponse: {
                     ...listApiResponse,
-                    destination: "my/test/path/",
+                    destination: "my/test/path",
                     downloadResult: {
                         downloaded,
                         skipped,
@@ -2014,6 +2185,46 @@ describe("z/OS Files - Download", () => {
                 overwrite: true
             }));
             expect(downloadAllMembersSpy).not.toHaveBeenCalled();
+        });
+
+        it("should fail to download all datasets with invalid characters 1", async () => {
+            let response;
+            let caughtError;
+
+            const localDataSetPS = {
+                dsname: `TEST.PS./DATA.SET`,
+                dsorg: "PS"
+            };
+
+            try {
+                response = await Download.allDataSets(dummySession, [localDataSetPS] as any);
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeDefined();
+            expect(caughtError.message).toEqual("The data set name contains illegal characters.");
+            expect(response).toBeUndefined();
+        });
+
+        it("should fail to download all datasets with invalid characters 2", async () => {
+            let response;
+            let caughtError;
+
+            const localDataSetPO = {
+                dsname: "TEST.PO..DATA.SET",
+                dsorg: "PO"
+            };
+
+            try {
+                response = await Download.allDataSets(dummySession, [localDataSetPO] as any);
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeDefined();
+            expect(caughtError.message).toEqual("The generated data set file path contains illegal backtracking.");
+            expect(response).toBeUndefined();
         });
 
         it("should download all datasets specifying the directory, extension and binary mode", async () => {
@@ -2607,7 +2818,7 @@ describe("z/OS Files - Download", () => {
         it("should download datasets when pattern matches a partitioned dataset and directory is supplied", async () => {
             let response;
             let caughtError;
-            const directory = "my/test/path/";
+            const directory = "my/test/path";
 
             downloadAllMembersSpy.mockImplementation(async (): Promise<any> => {
                 return {
@@ -3173,7 +3384,9 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
+            const endpoint = EncodeUri.encUriPathForUss(dummySession,
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + ussname
+            );
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -3207,7 +3420,9 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
+            const endpoint = EncodeUri.encUriPathForUss(dummySession,
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + ussname
+            );
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -3245,7 +3460,9 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
+            const endpoint = EncodeUri.encUriPathForUss(dummySession,
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + ussname
+            );
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -3283,7 +3500,9 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
+            const endpoint = EncodeUri.encUriPathForUss(dummySession,
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + ussname
+            );
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -3324,7 +3543,9 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
+            const endpoint = EncodeUri.encUriPathForUss(dummySession,
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + ussname
+            );
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -3360,7 +3581,9 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
+            const endpoint = EncodeUri.encUriPathForUss(dummySession,
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + ussname
+            );
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -3393,7 +3616,9 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
+            const endpoint = EncodeUri.encUriPathForUss(dummySession,
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + ussname
+            );
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -3429,7 +3654,9 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
+            const endpoint = EncodeUri.encUriPathForUss(dummySession,
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + ussname
+            );
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -3463,7 +3690,9 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
+            const endpoint = EncodeUri.encUriPathForUss(dummySession,
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + ussname
+            );
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -3500,7 +3729,9 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
+            const endpoint = EncodeUri.encUriPathForUss(dummySession,
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + ussname
+            );
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -3542,7 +3773,9 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
+            const endpoint = EncodeUri.encUriPathForUss(dummySession,
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + ussname
+            );
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -3608,7 +3841,9 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
+            const endpoint = EncodeUri.encUriPathForUss(dummySession,
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + ussname
+            );
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -3676,7 +3911,9 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
+            const endpoint = EncodeUri.encUriPathForUss(dummySession,
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + ussname
+            );
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -3713,7 +3950,9 @@ describe("z/OS Files - Download", () => {
                 caughtError = e;
             }
 
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, encodeURIComponent(ussname.substring(1)));
+            const endpoint = EncodeUri.encUriPathForUss(dummySession,
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + ussname
+            );
 
             expect(caughtError).toBeUndefined();
             expect(response).toEqual({
@@ -3833,6 +4072,62 @@ describe("z/OS Files - Download", () => {
 
             expect(mkdirPromiseSpy).toHaveBeenCalledTimes(1);
             expect(mkdirPromiseSpy).toHaveBeenCalledWith(join(process.cwd(), "folder1"), { recursive: true });
+        });
+
+        it("should fail to download USS directory with backtracking 1", async () => {
+            const fileOptions: IDownloadOptions = { includeHidden: true };
+            const listOptions: IUSSListOptions = { filesys: true };
+            let response;
+            let caughtError;
+
+            listFileListSpy.mockResolvedValueOnce({
+                apiResponse: {
+                    items: [
+                        { mode: "-", name: `file/../1` }
+                    ]
+                }
+            } as any);
+
+            try {
+                response = await Download.ussDir(dummySession, ussDirName, fileOptions, listOptions);
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeDefined();
+            expect(caughtError.message).toEqual("The generated file path contains illegal backtracking.");
+            expect(response).not.toBeDefined();
+            expect(List.fileList).toHaveBeenCalledWith(dummySession, ussDirName,
+                { name: "*", ...listOptions });
+            expect(Download.ussFile).not.toHaveBeenCalled();
+        });
+
+        it("should fail to download USS directory with backtracking 2", async () => {
+            const fileOptions: IDownloadOptions = { includeHidden: true };
+            const listOptions: IUSSListOptions = { filesys: true };
+            let response;
+            let caughtError;
+
+            listFileListSpy.mockResolvedValueOnce({
+                apiResponse: {
+                    items: [
+                        { mode: "d", name: `dir/../file1` }
+                    ]
+                }
+            } as any);
+
+            try {
+                response = await Download.ussDir(dummySession, ussDirName, fileOptions, listOptions);
+            } catch (e) {
+                caughtError = e;
+            }
+
+            expect(caughtError).toBeDefined();
+            expect(caughtError.message).toEqual("The generated file path contains illegal backtracking.");
+            expect(response).not.toBeDefined();
+            expect(List.fileList).toHaveBeenCalledWith(dummySession, ussDirName,
+                { name: "*", ...listOptions });
+            expect(Download.ussFile).not.toHaveBeenCalled();
         });
 
         it("should download USS directory with download and list options", async () => {

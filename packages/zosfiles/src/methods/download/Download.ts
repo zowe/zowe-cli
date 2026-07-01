@@ -9,10 +9,12 @@
 *
 */
 
-import { AbstractSession, Headers, ImperativeExpect, IO, Logger, TaskProgress, ImperativeError,
-    TextUtils, IHeaderContent, IOptionsFullResponse, IRestClientResponse } from "@zowe/imperative";
+import {
+    AbstractSession, EncodeUri, Headers, ImperativeExpect, IO, Logger, TaskProgress, ImperativeError,
+    TextUtils, IHeaderContent, IOptionsFullResponse, IRestClientResponse
+} from "@zowe/imperative";
 
-import { posix, join, relative } from "path";
+import { posix, win32, join, relative } from "path";
 import * as fs from "fs";
 import * as util from "util";
 
@@ -89,17 +91,14 @@ export class Download {
 
         try {
             // Format the endpoint to send the request to
-            let endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_DS_FILES);
-
+            let endpoint = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES;
             if (options.volume) {
-                endpoint = posix.join(endpoint, `-(${encodeURIComponent(options.volume)})`);
+                endpoint += `/-(${options.volume})`;
             }
-
-            endpoint = posix.join(endpoint, encodeURIComponent(dataSetName));
+            endpoint = EncodeUri.encUriPathForZos(session, endpoint + "/" + dataSetName);
             if (options.queryParams) {
                 endpoint += options.queryParams;
             }
-
             Logger.getAppLogger().debug(`Endpoint: ${endpoint}`);
 
             const reqHeaders: IHeaderContent[] = this.generateHeadersBasedOnOptions(options);
@@ -247,6 +246,10 @@ export class Download {
             // Otherwise use default directory generated from data set name.
             const baseDir = (() => {
                 if (options.directory) {
+                    // Prevent double slashes
+                    if ((options.directory.endsWith(posix.sep) || options.directory.endsWith(win32.sep)) && !IO.isRootDir(options.directory)) {
+                        return options.directory.slice(0, -1);
+                    }
                     return options.directory;
                 }
 
@@ -305,6 +308,9 @@ export class Download {
                 }
 
                 const memberFilePath = posix.join(baseDir, fileName + IO.normalizeExtension(extension));
+                if (!IO.isSubPath(baseDir, memberFilePath) || IO.fileEvaluatesToDir(mem.member)) {
+                    throw new ImperativeError({msg: "The generated data set file path contains illegal characters."});
+                }
                 const memberExistedBefore = IO.existsSync(memberFilePath);
 
                 // Check if file exists and should not be overwritten
@@ -444,6 +450,9 @@ export class Download {
             const mutableOptions: IDownloadOptions = { ...options, task: undefined };
 
             for (const dataSetObj of zosmfResponses) {
+                if (IO.fileEvaluatesToDir(dataSetObj.dsname)) {
+                    throw new ImperativeError({msg: "The data set name contains illegal characters."});
+                }
                 let llq = dataSetObj.dsname.substring(dataSetObj.dsname.lastIndexOf(".") + 1, dataSetObj.dsname.length);
                 if (!options.preserveOriginalLetterCase) {
                     llq = llq.toLowerCase();
@@ -692,8 +701,9 @@ export class Download {
 
             // Get a proper destination for the file to be downloaded
             // If the "file" is not provided, we create a folder structure similar to the uss file structure
-            ussFileName = ZosFilesUtils.sanitizeUssPathForRestCall(ussFileName);
-            const endpoint = posix.join(ZosFilesConstants.RESOURCE, ZosFilesConstants.RES_USS_FILES, ussFileName);
+            const endpoint = EncodeUri.encUriPathForUss(session,
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES + "/" + ussFileName
+            );
 
             const reqHeaders: IHeaderContent[] = this.generateHeadersBasedOnOptions(options);
 
@@ -846,6 +856,10 @@ export class Download {
                         // If .zosattributes says to ignore the file, skip it
                         continue;
                     }
+                    if (IO.containsBacktrack(item.name) ||
+                        !IO.isSubPath(workingDirectory, join(workingDirectory, item.name))) {
+                        throw new ImperativeError({msg: "The generated file path contains illegal backtracking."});
+                    }
                     mutableOptions.file = join(workingDirectory, item.name);
                     downloadTasks.push({
                         file: item.name,
@@ -856,6 +870,11 @@ export class Download {
                     });
                     downloadsTotal++;
                 } else if (item.mode.startsWith("d")) {
+                    if (IO.containsBacktrack(item.name) ||
+                        !IO.isSubPath(workingDirectory, join(workingDirectory, item.name))) {
+                        throw new ImperativeError({msg: "The generated file path contains illegal backtracking."});
+                    }
+
                     // If mode starts with d, the item is a directory, create it
                     downloadTasks.push({
                         dirName: join(workingDirectory, item.name),

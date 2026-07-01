@@ -5,6 +5,18 @@ All notable changes to the Imperative package will be documented in this file.
 ## Recent Changes
 
 - BugFix: Fixed inconsistent error messages when credentials fail to save by using the `secureSaveError` helper in `ConfigAutoStore` and `ConvertV1Profiles`. [#1907](https://github.com/zowe/zowe-cli/issues/1907)
+- BugFix: Encoded diff content before embedding it in the inline script of the web diff page to prevent stored cross-site scripting. [#2771](https://github.com/zowe/zowe-cli/pull/2771)
+- BugFix: Removed environment variables from the log messages produced when an exception is caught during Imperative.init. [#2764](https://github.com/zowe/zowe-cli/pull/2764)
+- BugFix: Placed imperative_debug.log into the Zowe Home directory's logs subdirectory, (or as a fallback into the user's home directory) instead of the current directory. [#2764](https://github.com/zowe/zowe-cli/pull/2764)
+- BugFix: Reduced the encoding of URIs to the minimum that still allows Zowe SDK operations to work successfully in the current z/OS environment. [#2758](https://github.com/zowe/zowe-cli/pull/2758)
+- BugFix: Updated the WebDiffManager class's openDiffs function to better process input data. [#2769](https://github.com/zowe/zowe-cli/pull/2769)
+- BugFix: Added path sanitization checks to prevent writing the configuration schema to an invalid file path. [#2763](https://github.com/zowe/zowe-cli/pull/2763)
+
+## `8.32.3`
+
+- BugFix: Updated `js-yaml` and `markdown-it` dependencies for technical currency. [#2752](https://github.com/zowe/zowe-cli/pull/2752)
+- Enhancement: Added `containsPathSep`, `containsBacktrack`, and `evaluatesToDir` helper functions to the `IO` class. [#2747](https://github.com/zowe/zowe-cli/pull/2747)
+- BugFix: Added extra filesystem checks when downloading config files with the `zowe config import` command. [#2747](https://github.com/zowe/zowe-cli/pull/2747)
 
 ## `8.32.2`
 

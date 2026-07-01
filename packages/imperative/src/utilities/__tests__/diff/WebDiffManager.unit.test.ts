@@ -11,17 +11,17 @@
 
 import * as  fs from 'fs';
 import * as path from 'path';
-
-import { WebDiffManager } from "../../src/diff/WebDiffManager";
 import * as diff2html from "diff2html";
 import { ImperativeConfig } from "../../src/ImperativeConfig";
-import WebDiffGenerator from "../../src/diff/WebDiffGenerator";
 import { IImperativeConfig } from '../../../imperative';
 import { Imperative } from '../../../imperative/src/Imperative';
 import { ProcessUtils, GuiResult } from '../../src/ProcessUtils';
+import { WebDiffManager } from "../../src/diff/WebDiffManager";
+import WebDiffGenerator from '../../src/diff/WebDiffGenerator';
+
+jest.mock("sanitize-html", () => jest.fn().mockImplementation((s: string) => { return s; }));
 
 describe("WebDiffManager", () => {
-
     describe("openDiffs", () => {
         const fakePatchDiff = "test";
         const cliHome: string = "packages/__tests__/fakeCliHome";
@@ -66,10 +66,64 @@ describe("WebDiffManager", () => {
             expect(ProcessUtils.isGuiAvailable).toHaveBeenCalledTimes(1);
             expect(ProcessUtils.isGuiAvailable).toHaveReturnedWith(GuiResult.GUI_AVAILABLE);
             expect(htmlSpy).toHaveBeenCalledTimes(1);
+            expect(jest.requireMock("sanitize-html")).toHaveBeenCalledTimes(1);
+            expect(jest.requireMock("sanitize-html")).toHaveBeenCalledWith(fakePatchDiff);
             if (htmlSpy != null) {
                 expect(ProcessUtils.openInDefaultApp).toHaveBeenCalledTimes(1);
             }
         });
-    });
 
+        it("should not allow diff content to break out of the inline script element", async () => {
+            const maliciousPatchDiff = "</script><img src=x onerror=alert(document.domain)>";
+            ProcessUtils.isGuiAvailable = jest.fn(() => GuiResult.GUI_AVAILABLE);
+            const generator = new WebDiffGenerator(ImperativeConfig.instance, webDiffDir);
+            generator.buildDiffDir = jest.fn();
+            jest.spyOn(ProcessUtils, "openInDefaultApp").mockImplementation(jest.fn());
+            jest.spyOn(diff2html, "html").mockImplementation(jest.fn(() => "rendered diff"));
+
+            let writtenHtml = "";
+            const writeSpy = jest.spyOn(fs, "writeFileSync").mockImplementation((_p, contents) => {
+                writtenHtml = contents.toString();
+            });
+
+            await WebDiffManager.instance.openDiffs(maliciousPatchDiff);
+
+            expect(writeSpy).toHaveBeenCalledTimes(1);
+            expect(writtenHtml).not.toContain("</script><img");
+            // The payload should survive only in its escaped form within the JS string literal.
+            expect(writtenHtml).toContain("\\u003c/script\\u003e");
+
+            writeSpy.mockRestore();
+        });
+
+        it("should escape JS line/paragraph separators in diff content", async () => {
+            // U+2028 (line separator) and U+2029 (paragraph separator) are valid in a string
+            // but illegal as raw characters inside a JS string literal, so they must be escaped.
+            const lineSep = String.fromCharCode(0x2028);
+            const paraSep = String.fromCharCode(0x2029);
+            const separatorPatchDiff = `before${lineSep}middle${paraSep}after`;
+            ProcessUtils.isGuiAvailable = jest.fn(() => GuiResult.GUI_AVAILABLE);
+            const generator = new WebDiffGenerator(ImperativeConfig.instance, webDiffDir);
+            generator.buildDiffDir = jest.fn();
+            jest.spyOn(ProcessUtils, "openInDefaultApp").mockImplementation(jest.fn());
+            jest.spyOn(diff2html, "html").mockImplementation(jest.fn(() => "rendered diff"));
+
+            let writtenHtml = "";
+            const writeSpy = jest.spyOn(fs, "writeFileSync").mockImplementation((_p, contents) => {
+                writtenHtml = contents.toString();
+            });
+
+            await WebDiffManager.instance.openDiffs(separatorPatchDiff);
+
+            expect(writeSpy).toHaveBeenCalledTimes(1);
+            // Raw separator characters must not survive in the generated page...
+            expect(writtenHtml).not.toContain(lineSep);
+            expect(writtenHtml).not.toContain(paraSep);
+            // ...only their escaped forms.
+            expect(writtenHtml).toContain("\\u2028");
+            expect(writtenHtml).toContain("\\u2029");
+
+            writeSpy.mockRestore();
+        });
+    });
 });

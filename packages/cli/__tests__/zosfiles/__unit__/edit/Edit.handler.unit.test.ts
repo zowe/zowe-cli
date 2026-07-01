@@ -157,7 +157,7 @@ describe("Files Edit Group Handler", () => {
                     }
                 }
             };
-            promptUserSpy.mockImplementation(async (prompt, conflict, promptTexts) => {
+            promptUserSpy.mockImplementation(async (prompt, _conflict, _promptTexts) => {
                 if (prompt === Prompt.trustEditor) {
                     return false;
                 }
@@ -198,7 +198,7 @@ describe("Files Edit Group Handler", () => {
                     }
                 }
             };
-            promptUserSpy.mockImplementation(async (prompt, conflict, promptTexts) => {
+            promptUserSpy.mockImplementation(async (prompt, _conflict, _promptTexts) => {
                 if (prompt === Prompt.trustEditor) {
                     return true;
                 }

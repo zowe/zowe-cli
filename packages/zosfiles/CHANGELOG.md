@@ -2,6 +2,14 @@
 
 All notable changes to the Zowe z/OS files SDK package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Reduced the encoding of URIs to the minimum that still allows Zowe SDK operations to work successfully in the current z/OS environment. [#2758](https://github.com/zowe/zowe-cli/pull/2758)
+
+## `8.32.3`
+
+- BugFix: Added extra filesystem checks when downloading data sets and USS files. [#2747](https://github.com/zowe/zowe-cli/pull/2747)
+
 ## `8.32.0`
 
 - Enhancement: Added `abortDownload` predicate to `IDownloadOptions` to allow downloads in `allMembers`, `allDataSets` and `ussDir` functions to be cancelled mid-way. [#2715](https://github.com/zowe/zowe-cli/pull/2715)
