@@ -17,6 +17,7 @@ import { IConfigLogging, ILog4jsConfig, Logger } from "../../logger";
 import { LoggerManager } from "../../logger/src/LoggerManager";
 
 import { ImperativeError } from "../../error";
+import { LoggerUtils } from "../src/LoggerUtils";
 
 import * as os from "os";
 import * as path from "path";
@@ -98,6 +99,24 @@ describe("Logger tests", () => {
         expect((logger as any).logService.warn).toBeCalled();
         expect((logger as any).logService.error).toBeCalled();
         expect((logger as any).logService.fatal).toBeCalled();
+    });
+
+    it("Should apply LoggerUtils.censorRawData to trace() just like every other log level", () => {
+        const config = LoggingConfigurer.configureLogger(fakeHome, {name});
+        const logger = Logger.initLogger(config);
+        (logger as any).logService.trace = jest.fn<string, any>((data: string) => data);
+
+        const sensitiveMessage = "password=s3cr3t";
+        const censoredMessage = "password=****";
+        const censorSpy = jest.spyOn(LoggerUtils, "censorRawData").mockReturnValue(censoredMessage);
+
+        const result = logger.trace(sensitiveMessage);
+
+        expect(censorSpy).toHaveBeenCalledWith(sensitiveMessage, (logger as any).category);
+        expect(result).toBe(censoredMessage);
+        expect((logger as any).logService.trace).toHaveBeenCalledWith(
+            expect.stringContaining(censoredMessage)
+        );
     });
 
     it("Should allow all service function to store message in memory", () => {
