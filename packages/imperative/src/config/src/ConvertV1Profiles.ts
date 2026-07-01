@@ -15,6 +15,7 @@ import { readFileSync } from "jsonfile";
 import stripAnsi = require("strip-ansi");
 import { V1ProfileRead, ProfilesConstants, ProfileUtils } from "../../profiles";
 import { Config } from "./Config";
+import { ConfigUtils } from "./ConfigUtils";
 import { IConfig } from "./doc/IConfig";
 import { CredentialManagerFactory } from "../../security";
 import { IConvertV1ProfOpts, ConvertMsg, ConvertMsgFmt, IConvertV1ProfResult } from "./doc/IConvertV1Profiles";
@@ -365,7 +366,11 @@ export class ConvertV1Profiles {
         newConfig.api.layers.merge(convertedConfig);
         ConvertV1Profiles.loadV1Schemas();
         ConfigSchema.updateSchema();
-        await newConfig.save();
+        try {
+            await newConfig.save();
+        } catch (err) {
+            throw ConfigUtils.secureSaveError();
+        }
         ConvertV1Profiles.putCfgFileNmInResult(newConfig);
 
         try {
@@ -443,7 +448,7 @@ export class ConvertV1Profiles {
         // Delete the profiles directory
         try {
             if (fs.existsSync(ConvertV1Profiles.oldProfilesDir)) {
-                fs.rmSync(ConvertV1Profiles.oldProfilesDir, {recursive: true});
+                fs.rmSync(ConvertV1Profiles.oldProfilesDir, { recursive: true });
                 ConvertV1Profiles.addToConvertMsgs(
                     ConvertMsgFmt.REPORT_LINE | ConvertMsgFmt.PARAGRAPH,
                     `Deleted the old profiles directory ${ConvertV1Profiles.oldProfilesDir}.`
@@ -579,7 +584,7 @@ export class ConvertV1Profiles {
                 } as any;
                 defaultSettings.overrides[ConvertV1Profiles.credMgrKey] = ConvertV1Profiles.builtInCredMgrNm;
                 AppSettings.initialize(settingsFile, defaultSettings);
-            } catch(error) {
+            } catch (error) {
                 currCredMgr = null;
                 ConvertV1Profiles.addExceptionToConvertMsgs(
                     `Failed to initialize AppSettings overrides from ${settingsFile}.`, error
@@ -590,7 +595,7 @@ export class ConvertV1Profiles {
         // get the current credMgr from AppSettings
         try {
             currCredMgr = AppSettings.instance.get("overrides", ConvertV1Profiles.credMgrKey);
-        } catch(error) {
+        } catch (error) {
             currCredMgr = null;
             ConvertV1Profiles.addExceptionToConvertMsgs(
                 `Failed trying to read '${ConvertV1Profiles.credMgrKey}' overrides.`, error
@@ -601,8 +606,7 @@ export class ConvertV1Profiles {
         if (typeof currCredMgr === "string") {
             // if any of the old SCS credMgr names are found, record that we want to replace the credMgr
             for (const oldOverrideName of [
-                ConvertV1Profiles.oldScsPluginNm, "KeytarCredentialManager", "Zowe-Plugin", "Broadcom-Plugin"])
-            {
+                ConvertV1Profiles.oldScsPluginNm, "KeytarCredentialManager", "Zowe-Plugin", "Broadcom-Plugin"]) {
                 if (currCredMgr.includes(oldOverrideName)) {
                     ConvertV1Profiles.oldScsPluginWasConfigured = true;
                     pluginInfo.overrides.push(ConvertV1Profiles.credMgrKey);

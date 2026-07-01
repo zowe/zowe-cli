@@ -200,7 +200,11 @@ export class ConfigAutoStore {
             });
         }
 
-        await config.save();
+        try {
+            await config.save();
+        } catch (err) {
+            throw ConfigUtils.secureSaveError();
+        }
         const storedMsg = `Stored properties in ${config.layerActive().path}: ${profileProps.join(", ")}`;
         if (opts.params) {
             opts.params.response.console.log(storedMsg);
