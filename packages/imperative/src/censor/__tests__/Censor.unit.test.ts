@@ -133,6 +133,58 @@ describe("Censor tests", () => {
         }
     });
 
+    describe("censorCommandLine", () => {
+        it("should censor a sensitive option supplied in the space-separated form", () => {
+            const result = Censor.censorCommandLine("zowe cmd --password secret --port 443");
+            expect(result).toContain(`--password ${Censor.CENSOR_RESPONSE}`);
+            expect(result).not.toContain("secret");
+            // non-secure option should be untouched
+            expect(result).toContain("--port 443");
+        });
+
+        it("should censor a sensitive option supplied in the equals-separated form", () => {
+            const result = Censor.censorCommandLine("zowe cmd --password=secret");
+            expect(result).toContain(`--password ${Censor.CENSOR_RESPONSE}`);
+            expect(result).not.toContain("secret");
+        });
+
+        it("should censor a sensitive short option supplied in the equals-separated form when its value is known", () => {
+            const result = Censor.censorCommandLine("zowe cmd -p=secret", { _: [], $0: "", password: "secret" });
+            expect(result).toContain(Censor.CENSOR_RESPONSE);
+            expect(result).not.toContain("secret");
+        });
+
+        it("should censor a sensitive value that contains embedded whitespace when the parsed args are supplied", () => {
+            const result = Censor.censorCommandLine("zowe cmd --password two words", { _: [], $0: "", password: "two words" });
+            expect(result).toContain(`--password ${Censor.CENSOR_RESPONSE}`);
+            expect(result).not.toContain("two words");
+            // the tail of the value must not leak
+            expect(result).not.toMatch(/\bwords\b/);
+        });
+
+        it("should not consume the boundary of a preceding argument", () => {
+            const result = Censor.censorCommandLine("zowe cmd --port 443 --password=secret");
+            expect(result).toContain("--port 443");
+            expect(result).toContain(`--password ${Censor.CENSOR_RESPONSE}`);
+        });
+
+        it("should not censor non-sensitive options", () => {
+            const commandLine = "zowe cmd --host example.com --port 443 --user fakeUser";
+            const result = Censor.censorCommandLine(commandLine);
+            expect(result).toEqual(commandLine);
+            expect(result).not.toContain(Censor.CENSOR_RESPONSE);
+        });
+
+        it("should ignore the reserved yargs keys ($0 and _) when censoring by value", () => {
+            const result = Censor.censorCommandLine("zowe cmd example", { _: ["cmd", "example"], $0: "zowe" });
+            expect(result).toEqual("zowe cmd example");
+        });
+
+        it.each([null, undefined, ""])("should return %p unchanged", (input) => {
+            expect(Censor.censorCommandLine(input as any)).toEqual(input);
+        });
+    });
+
     describe("censorSession", () => {
         const fakeUser = "fakeUser";
         const fakePassword = "fakePassword";
