@@ -1,0 +1,53 @@
+{
+    "$schema": "./zowe.schema.json",
+    "defaults": {
+        "zosmf": "apiml",
+        "tso": "tso",
+        "ssh": "ssh",
+        "base": "base"
+    },
+    "profiles": {
+        "base": {
+            "type": "base",
+            "properties": {
+                "host": "your.mainframe.host.com",
+                "user": "YourUserId",
+                "password": "YourPassword",
+                "rejectUnauthorized": true,
+                "responseFormatHeader": true
+            }
+        },
+        "zosmf": {
+            "type": "zosmf",
+            "properties": {
+                "port": 1234
+            },
+            "secure": []
+        },
+        "apiml": {
+            "type": "zosmf",
+            "properties": {
+                "port": 5678,
+                "basePath": "ibmzosmf/api/v1"
+            },
+            "secure": []
+        },
+        "tso": {
+            "type": "tso",
+            "properties": {
+                "account": "",
+                "codePage": "1047",
+                "logonProcedure": "IZUFPROC"
+            },
+            "secure": []
+        },
+        "ssh": {
+            "type": "ssh",
+            "properties": {
+                "port": 22
+            },
+            "secure": []
+        }
+    },
+    "autoStore": false
+}

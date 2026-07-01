@@ -1,6 +1,6 @@
 {
   "name": "@zowe/imperative",
-  "version": "8.33.0",
+  "version": "8.33.1",
   "description": "framework for building configurable CLIs",
   "author": "Zowe",
   "license": "EPL-2.0",
@@ -77,6 +77,7 @@
     "prettyjson": "^1.2.5",
     "progress": "^2.0.3",
     "read": "^3.0.1",
+    "sanitize-html": "^2.17.5",
     "semver": "^7.5.2",
     "stack-trace": "^0.0.10",
     "strip-ansi": "^6.0.1",
@@ -96,6 +97,7 @@
     "@types/mustache": "^4.2.5",
     "@types/npm-package-arg": "^6.1.4",
     "@types/progress": "^2.0.7",
+    "@types/sanitize-html": "^2.16.1",
     "@types/stack-trace": "^0.0.33",
     "@zowe/secrets-for-zowe-sdk": "8.32.0",
     "concurrently": "^8.0.0",

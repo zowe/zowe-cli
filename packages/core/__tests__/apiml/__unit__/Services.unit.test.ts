@@ -862,10 +862,10 @@ describe("APIML Services unit tests", () => {
                 gatewayUrlConflicts: {}
             }];
             const actualJson = JSONC.stringify(Services.convertApimlProfileInfoToProfileConfig(testCase), null, ConfigConstants.INDENT);
-            
+
             const parsed = JSONC.parse(actualJson) as any;
             expect(parsed.profiles.test1.properties.badProp).toBeUndefined();
-            
+
             expect(actualJson).toContain("//\"basePath\": \"test1/v2\\n\\\"badProp\\\": \\\"badString\\\"\"");
         });
     });

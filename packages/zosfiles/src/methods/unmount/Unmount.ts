@@ -9,7 +9,7 @@
 *
 */
 
-import { AbstractSession, ImperativeExpect } from "@zowe/imperative";
+import { AbstractSession, EncodeUri, ImperativeExpect } from "@zowe/imperative";
 
 import { ZosmfRestClient, ZosmfHeaders } from "@zowe/core-for-zowe-sdk";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
@@ -44,7 +44,9 @@ export class Unmount {
         ImperativeExpect.toNotBeNullOrUndefined(fileSystemName, ZosFilesMessages.missingFileSystemName.message);
         ImperativeExpect.toNotBeEqual(fileSystemName, "", ZosFilesMessages.missingFileSystemName.message);
 
-        const endpoint: string = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_MFS + "/" + encodeURIComponent(fileSystemName);
+        const endpoint: string = EncodeUri.encUriPathForZos(session,
+            ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_MFS + "/" + fileSystemName
+        );
 
         const jsonContent = JSON.stringify({action: "unmount"});
         const headers = [{"Content-Length": jsonContent.length}, ZosmfHeaders.ACCEPT_ENCODING];

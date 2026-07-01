@@ -9,8 +9,7 @@
 *
 */
 
-import { AbstractSession, ImperativeExpect, Logger, Headers, IHeaderContent } from "@zowe/imperative";
-import { posix } from "path";
+import { AbstractSession, EncodeUri, ImperativeExpect, Logger, Headers, IHeaderContent } from "@zowe/imperative";
 
 import { ZosmfRestClient, ZosmfHeaders } from "@zowe/core-for-zowe-sdk";
 import { ZosFilesConstants } from "../../constants/ZosFiles.constants";
@@ -86,10 +85,8 @@ export class Rename {
         { dsn: beforeDataSetName, member: beforeMemberName }: IDataSet,
         options?: IZosFilesOptions
     ): Promise<IZosFilesResponse> {
-        const endpoint: string = posix.join(
-            ZosFilesConstants.RESOURCE,
-            ZosFilesConstants.RES_DS_FILES,
-            encodeURIComponent(afterDataSetName)
+        const endpoint: string = EncodeUri.encUriPathForZos(session,
+            ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" + afterDataSetName
         );
         Logger.getAppLogger().debug(`Endpoint: ${endpoint}`);
 

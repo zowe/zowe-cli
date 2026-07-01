@@ -38,7 +38,7 @@ export default class Handler extends ZosTsoBaseHandler {
                 useLegacyApi: params.arguments.legacy,
             },
         );
-    
+
         const defProc = "IZUFPROC";
         if (
             params.arguments.logonProcedure &&

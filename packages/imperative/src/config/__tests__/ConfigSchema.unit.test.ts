@@ -432,7 +432,8 @@ describe("Config Schema", () => {
             it("should update the schema for the project config when no user config is found", () => {
                 spyConfigLayersExists.mockReturnValueOnce(true).mockReturnValue(false);
                 spyConfigLayerActive.mockReturnValue(fakeLayer);
-                spyConfigGetSchemaInfo.mockReturnValue({ original: fakeSchema, local: true });
+                spyConfigGetSchemaInfo.mockReturnValue(
+                    { original: fakeSchema, local: true, resolved: path.join(path.dirname(fakeProjPath), "fake.schema.json") });
 
                 const expectedUpdatedPaths = {
                     [fakeLayer.path]: { schema: fakeSchema, updated: true },
@@ -447,13 +448,27 @@ describe("Config Schema", () => {
 
             });
 
+            it("should report the schema as skipped when its resolved path escapes the layer directory", () => {
+                spyConfigLayersExists.mockReturnValueOnce(true).mockReturnValue(false);
+                spyConfigLayerActive.mockReturnValue(fakeLayer);
+                // A local $schema whose resolved path is outside the directory of the config file
+                spyConfigGetSchemaInfo.mockReturnValue(
+                    { original: "../fake.schema.json", local: true, resolved: path.resolve(path.dirname(fakeProjPath), "../fake.schema.json") });
+
+                const expectedUpdatedPaths = {
+                    [fakeLayer.path]: { schema: "../fake.schema.json", updated: false },
+                };
+                expect(anyConfigSchema._updateSchemaActive(helperOptions)).toEqual(expectedUpdatedPaths);
+            });
+
             it("should update the schema for both, project and user config", () => {
                 spyConfigLayersExists.mockReturnValue(true);
                 spyConfigLayerActive
                     .mockReturnValueOnce({ ...fakeLayer, ...{ path: fakeUserPath } })
                     .mockReturnValueOnce({ ...fakeLayer, ...{ path: fakeProjPath } });
                 spyConfigGetSchemaInfo
-                    .mockReturnValueOnce({ original: fakeSchema, local: true })
+                    .mockReturnValueOnce(
+                        { original: fakeSchema, local: true, resolved: path.join(path.dirname(fakeUserPath), "fake.schema.json") })
                     .mockReturnValueOnce({ original: fakeSchema, local: false });
 
                 const expectedUpdatedPaths = {
