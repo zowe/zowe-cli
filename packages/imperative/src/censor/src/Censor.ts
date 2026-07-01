@@ -362,9 +362,9 @@ export class Censor {
         // consuming the leading boundary, and normalizes the separator to a
         // space in the censored output.
         for (const secureArg of censoredOptions) {
-            const escapedArg = secureArg.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+            const escapedArg = secureArg.replace(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
             const dashes = secureArg.length > 1 ? "--" : "-";
-            const regex = new RegExp(`(?<=^|\\s)${dashes}${escapedArg}[=\\s]\\S+`, "gi");
+            const regex = new RegExp(String.raw`(?<=^|\s)${dashes}${escapedArg}[=\s]\S+`, "gi");
             censoredLine = censoredLine.replace(regex, `${dashes}${secureArg} ${this.CENSOR_RESPONSE}`);
         }
 
