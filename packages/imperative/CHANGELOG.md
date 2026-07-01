@@ -2,7 +2,7 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
-## Recent Changes
+## `8.33.1`
 
 - BugFix: Encoded diff content before embedding it in the inline script of the web diff page to prevent stored cross-site scripting. [#2771](https://github.com/zowe/zowe-cli/pull/2771)
 - BugFix: Removed environment variables from the log messages produced when an exception is caught during Imperative.init. [#2764](https://github.com/zowe/zowe-cli/pull/2764)
