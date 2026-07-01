@@ -22,6 +22,7 @@ import { importDefinition } from "./cmd/import/import.definition";
 import { convertProfilesDefinition } from "./cmd/convert-profiles/convert-profiles.definition";
 import { ReportEnvDefinition } from "./cmd/report-env/Report-env.definition";
 import { updateSchemasDefinition } from "./cmd/update-schemas/update-schemas.definition";
+import { exportRedactedDefinition } from "./cmd/exportRedacted/exportRedacted.definition";
 
 export class ConfigManagementFacility {
     private static mInstance: ConfigManagementFacility;
@@ -74,7 +75,8 @@ export class ConfigManagementFacility {
                 importDefinition,
                 convertProfilesDefinition,
                 ReportEnvDefinition,
-                updateSchemasDefinition
+                updateSchemasDefinition,
+                exportRedactedDefinition
             ]
         });
 
