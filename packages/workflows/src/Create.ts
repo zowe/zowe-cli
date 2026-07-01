@@ -207,7 +207,7 @@ export class CreateWorkflow{
      */
     public static async uploadTempFile(session: AbstractSession, localFile: string, remoteFile: string){
         try {
-            await Create.uss(session, remoteFile, "file", "700");
+            await Create.uss(session, remoteFile, "file", "rwx------");
             await Upload.fileToUssFile(session, localFile, remoteFile, { binary: true });
         } catch (error) {
             throw new ImperativeError({
