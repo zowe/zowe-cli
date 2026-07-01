@@ -9,9 +9,11 @@
 *
 */
 
-import { AbstractSession, IHeaderContent, ImperativeError, ImperativeExpect, JSONUtils, Logger, TaskProgress } from "@zowe/imperative";
+import {
+    AbstractSession, EncodeUri, IHeaderContent, ImperativeError, ImperativeExpect,
+    JSONUtils, Logger, TaskProgress
+} from "@zowe/imperative";
 
-import { posix } from "path";
 import * as util from "util";
 
 import { ZosmfRestClient, ZosmfHeaders, asyncPool } from "@zowe/core-for-zowe-sdk";
@@ -49,11 +51,10 @@ export class List {
 
         try {
             // Format the endpoint to send the request to
-            let endpoint = posix.join(
-                ZosFilesConstants.RESOURCE,
-                ZosFilesConstants.RES_DS_FILES,
-                encodeURIComponent(dataSetName),
-                ZosFilesConstants.RES_DS_MEMBERS);
+            let endpoint = EncodeUri.encUriPathForZos(session,
+                ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES + "/" +
+                dataSetName + ZosFilesConstants.RES_DS_MEMBERS
+            );
 
             if (options.pattern) {
                 endpoint += `?pattern=${encodeURIComponent(options.pattern)}`;
@@ -123,8 +124,8 @@ export class List {
         ImperativeExpect.toNotBeEqual(dataSetName, "", ZosFilesMessages.missingDatasetName.message);
 
         try {
-            let endpoint = posix.join(ZosFilesConstants.RESOURCE,
-                `${ZosFilesConstants.RES_DS_FILES}?${ZosFilesConstants.RES_DS_LEVEL}=${encodeURIComponent(dataSetName)}`);
+            let endpoint = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_DS_FILES +
+                `?${ZosFilesConstants.RES_DS_LEVEL}=${encodeURIComponent(dataSetName)}`;
             if (options.volume) {
                 endpoint = `${endpoint}&volser=${encodeURIComponent(options.volume)}`;
             }
@@ -203,8 +204,8 @@ export class List {
         if (path.trim().length > 1 && path.endsWith("/")) { path = path.slice(0, -1); }
 
         try {
-            let endpoint = posix.join(ZosFilesConstants.RESOURCE,
-                `${ZosFilesConstants.RES_USS_FILES}?${ZosFilesConstants.RES_PATH}=${encodeURIComponent(path)}`);
+            let endpoint = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_USS_FILES +
+                `?${ZosFilesConstants.RES_PATH}=${encodeURIComponent(path)}`;
 
             const reqHeaders: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING];
             if (options.maxLength) {
@@ -262,10 +263,9 @@ export class List {
      */
     public static async fs(session: AbstractSession, options: IFsOptions = {}): Promise<IZosFilesResponse> {
         try {
-            let endpoint = posix.join(ZosFilesConstants.RESOURCE,
-                `${ZosFilesConstants.RES_MFS}`);
+            let endpoint = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_MFS;
             if (options.fsname) {
-                endpoint = posix.join(endpoint, `?${ZosFilesConstants.RES_FSNAME}=${encodeURIComponent(options.fsname)}`);
+                endpoint += `/?${ZosFilesConstants.RES_FSNAME}=${encodeURIComponent(options.fsname)}`;
             }
 
             const reqHeaders: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING];
@@ -310,10 +310,9 @@ export class List {
 
     public static async fsWithPath(session: AbstractSession, options: IFsOptions = {}): Promise<IZosFilesResponse> {
         try {
-            let endpoint = posix.join(ZosFilesConstants.RESOURCE,
-                `${ZosFilesConstants.RES_MFS}`);
+            let endpoint = ZosFilesConstants.RESOURCE + ZosFilesConstants.RES_MFS;
             if (options.path) {
-                endpoint = posix.join(endpoint, `?${ZosFilesConstants.RES_PATH}=${encodeURIComponent(options.path)}`);
+                endpoint += `/?${ZosFilesConstants.RES_PATH}=${encodeURIComponent(options.path)}`;
             }
 
             const reqHeaders: IHeaderContent[] = [ZosmfHeaders.ACCEPT_ENCODING];

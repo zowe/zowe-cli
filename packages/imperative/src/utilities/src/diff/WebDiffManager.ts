@@ -11,6 +11,7 @@
 
 import * as fs from "fs";
 import * as path from "path";
+import sanitize = require("sanitize-html");
 
 import { Constants } from "../../../constants/src/Constants";
 import { ProcessUtils, GuiResult } from "../../../utilities/src/ProcessUtils";
@@ -55,6 +56,7 @@ export class WebDiffManager implements IWebDiffManager {
      * @memberof WebDiffManager
      */
     public async openDiffs(patchDiff: string) {
+        const sanitizedPatchDiff = sanitize(patchDiff);
         const doWeHaveGui = ProcessUtils.isGuiAvailable();
         if (doWeHaveGui !== GuiResult.GUI_AVAILABLE) {
             let errMsg = "You are running in an environment with no graphical interface." +
@@ -79,7 +81,7 @@ export class WebDiffManager implements IWebDiffManager {
 
         if (!fs.existsSync(this.webDiffDir)) await new WebDiffGenerator(ImperativeConfig.instance, this.webDiffDir).buildDiffDir();
 
-        const htmlDiff = html(patchDiff, {
+        const htmlDiff = html(sanitizedPatchDiff, {
             outputFormat: "side-by-side",
             matching: "lines",
             diffStyle: "char",

@@ -11,17 +11,17 @@
 
 import * as  fs from 'fs';
 import * as path from 'path';
-
-import { WebDiffManager } from "../../src/diff/WebDiffManager";
 import * as diff2html from "diff2html";
 import { ImperativeConfig } from "../../src/ImperativeConfig";
-import WebDiffGenerator from "../../src/diff/WebDiffGenerator";
 import { IImperativeConfig } from '../../../imperative';
 import { Imperative } from '../../../imperative/src/Imperative';
 import { ProcessUtils, GuiResult } from '../../src/ProcessUtils';
+import { WebDiffManager } from "../../src/diff/WebDiffManager";
+import WebDiffGenerator from '../../src/diff/WebDiffGenerator';
+
+jest.mock("sanitize-html", () => jest.fn().mockImplementation((s: string) => { return s; }));
 
 describe("WebDiffManager", () => {
-
     describe("openDiffs", () => {
         const fakePatchDiff = "test";
         const cliHome: string = "packages/__tests__/fakeCliHome";
@@ -75,10 +75,11 @@ describe("WebDiffManager", () => {
             expect(ProcessUtils.isGuiAvailable).toHaveBeenCalledTimes(1);
             expect(ProcessUtils.isGuiAvailable).toHaveReturnedWith(GuiResult.GUI_AVAILABLE);
             expect(htmlSpy).toHaveBeenCalledTimes(1);
+            expect(jest.requireMock("sanitize-html")).toHaveBeenCalledTimes(1);
+            expect(jest.requireMock("sanitize-html")).toHaveBeenCalledWith(fakePatchDiff);
             if (htmlSpy != null) {
                 expect(ProcessUtils.openInDefaultApp).toHaveBeenCalledTimes(1);
             }
         });
     });
-
 });
