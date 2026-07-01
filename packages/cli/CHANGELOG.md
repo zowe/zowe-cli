@@ -2,6 +2,10 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Updated the `zowe zos-files ds edit` command to store temp files in a dedicated subdirectory with owner-only permissions (`0o700`). [#2773](https://github.com/zowe/zowe-cli/pull/2773)
+
 ## `7.29.26`
 
 - BugFix: Added extra filesystem checks when downloading config files with the `zowe config import` command. [#2741](https://github.com/zowe/zowe-cli/pull/2741)
