@@ -23,7 +23,7 @@ import {
 import { ICreatedWorkflow } from "../../src/doc/ICreatedWorkflow";
 import { ICreateWorkflow } from "../../src/doc/ICreateWorkflow";
 import { IVariable } from "../../src/doc/IVariable";
-import { Upload, Delete } from "@zowe/zos-files-for-zowe-sdk";
+import { Upload, Delete, Create } from "@zowe/zos-files-for-zowe-sdk";
 
 const wfName = "Test-Workflow";
 const wfDefinitionFile = "/tmp/workflow.xml";
@@ -434,6 +434,13 @@ describe("Create workflow", () => {
 describe("Create workflow from local file", () => {
     describe("Successful scenarios", () => {
         it("Should succeed even with zOSMF version undefined (because of default value).", async () => {
+            (Create.uss as any) = jest.fn(() => {
+                return new Promise((resolve) => {
+                    process.nextTick(() => {
+                        resolve("success");
+                    });
+                });
+            });
             (Upload.fileToUssFile as any) = jest.fn(() => {
                 return new Promise((resolve) => {
                     process.nextTick(() => {
@@ -477,6 +484,13 @@ describe("Create workflow from local file", () => {
             expect((Delete.ussFile as any)).toHaveBeenCalledWith(PRETEND_SESSION, PRETEND_INPUT_PARMS.workflowDefinitionFile.slice(1));
         });
         it("Should succeed and keep files", async () => {
+            (Create.uss as any) = jest.fn(() => {
+                return new Promise((resolve) => {
+                    process.nextTick(() => {
+                        resolve("success");
+                    });
+                });
+            });
             (Upload.fileToUssFile as any) = jest.fn(() => {
                 return new Promise((resolve) => {
                     process.nextTick(() => {

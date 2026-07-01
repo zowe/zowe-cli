@@ -25,7 +25,7 @@ import {
     wrongOwner
 } from "../../../src/WorkflowConstants";
 import { ICreatedWorkflowLocal } from "../../../src/doc/ICreatedWorkflowLocal";
-import { Upload, ZosFilesConstants, Delete } from "@zowe/zos-files-for-zowe-sdk";
+import { Upload, ZosFilesConstants, Delete, List } from "@zowe/zos-files-for-zowe-sdk";
 import { ZosmfRestClient, nozOSMFVersion, noSession } from "@zowe/core-for-zowe-sdk";
 
 let REAL_SESSION: Session;
@@ -389,6 +389,41 @@ describe("Create workflow", () => {
             wfKey = response.workflowKey;
             tempDefFile = response.filesKept[0];
             tempVarFile = response.filesKept[1];
+        });
+        it("Should upload temp files with mode 700", async () => {
+            let error;
+            let response: ICreatedWorkflowLocal;
+
+            try {
+                response = await CreateWorkflow.createWorkflowLocal(REAL_SESSION, wfName, workflow, system, owner, vars, null, false, null,
+                    false, true);
+                Imperative.console.info("Response: " + inspect(response));
+            } catch (err) {
+                error = err;
+                Imperative.console.info("Error: " + inspect(error));
+            }
+            expect(error).not.toBeDefined();
+            expect(response).toBeDefined();
+            expect(response.filesKept).toHaveLength(2);
+            wfKey = response.workflowKey;
+            tempDefFile = response.filesKept[0];
+            tempVarFile = response.filesKept[1];
+
+            const defDir = tempDefFile.substring(0, tempDefFile.lastIndexOf("/"));
+            const defName = tempDefFile.substring(tempDefFile.lastIndexOf("/") + 1);
+            const varDir = tempVarFile.substring(0, tempVarFile.lastIndexOf("/"));
+            const varName = tempVarFile.substring(tempVarFile.lastIndexOf("/") + 1);
+
+            const defList = await List.fileList(REAL_SESSION, defDir);
+            const varList = await List.fileList(REAL_SESSION, varDir);
+
+            const defEntry = defList.apiResponse.items.find((f: any) => f.name === defName);
+            const varEntry = varList.apiResponse.items.find((f: any) => f.name === varName);
+
+            expect(defEntry).toBeDefined();
+            expect(varEntry).toBeDefined();
+            expect(defEntry.mode).toMatch(/^-rwx------/);
+            expect(varEntry.mode).toMatch(/^-rwx------/);
         });
     });
 });
