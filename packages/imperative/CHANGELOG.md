@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Masked sensitive command-line options that are supplied in the equals-separated form (e.g. `--user=example` or `-u=example`) before the command line is written to the log, and also mask secure values that contain embedded whitespace.
+
 ## `8.33.1`
 
 - BugFix: Encoded diff content before embedding it in the inline script of the web diff page to prevent stored cross-site scripting. [#2771](https://github.com/zowe/zowe-cli/pull/2771)
