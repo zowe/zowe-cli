@@ -2,9 +2,12 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
-## Recent Changes
+## `8.33.1`
 
 - BugFix: Updated `Logger.ts` to wrap the formatted message with `Censor.censorRawData`. [#2772] (https://github.com/zowe/zowe-cli/pull/2772)
+- BugFix: Encoded diff content before embedding it in the inline script of the web diff page to prevent stored cross-site scripting. [#2771](https://github.com/zowe/zowe-cli/pull/2771)
+- BugFix: Removed environment variables from the log messages produced when an exception is caught during Imperative.init. [#2764](https://github.com/zowe/zowe-cli/pull/2764)
+- BugFix: Placed imperative_debug.log into the Zowe Home directory's logs subdirectory, (or as a fallback into the user's home directory) instead of the current directory. [#2764](https://github.com/zowe/zowe-cli/pull/2764)
 - BugFix: Reduced the encoding of URIs to the minimum that still allows Zowe SDK operations to work successfully in the current z/OS environment. [#2758](https://github.com/zowe/zowe-cli/pull/2758)
 - BugFix: Updated the WebDiffManager class's openDiffs function to better process input data. [#2769](https://github.com/zowe/zowe-cli/pull/2769)
 - BugFix: Added path sanitization checks to prevent writing the configuration schema to an invalid file path. [#2763](https://github.com/zowe/zowe-cli/pull/2763)

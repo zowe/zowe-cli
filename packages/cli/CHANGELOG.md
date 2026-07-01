@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `8.33.1`
 
 - BugFix: Reduced the encoding of URIs to the minimum that still allows Zowe SDK operations to work successfully in the current z/OS environment. [#2758](https://github.com/zowe/zowe-cli/pull/2758)
 
