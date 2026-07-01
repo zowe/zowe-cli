@@ -9,7 +9,9 @@
 *
 */
 
-import { AbstractSession, Headers, ImperativeError, ImperativeExpect, Logger, RestClient } from "@zowe/imperative";
+import {
+    AbstractSession, EncodeUri, Headers, ImperativeError, ImperativeExpect, Logger, RestClient
+} from "@zowe/imperative";
 import { JobsConstants } from "./JobsConstants";
 import { ZosmfRestClient } from "@zowe/core-for-zowe-sdk";
 import { ICommonJobParms, IGetJobsParms, IJob, IJobFile } from "./";
@@ -247,10 +249,12 @@ export class GetJobs {
     public static async getStatusCommon(session: AbstractSession, parms: ICommonJobParms) {
         Logger.getAppLogger().trace("GetJobs.getStatusCommon()");
         ImperativeExpect.keysToBeDefinedAndNonBlank(parms, ["jobname", "jobid"]);
-        const parameters: string = "/" + encodeURIComponent(parms.jobname) + "/" + encodeURIComponent(parms.jobid);
-        // + Jobs.QUERY_ID + Jobs.STEP_DATA;
+        const parameters: string = EncodeUri.encUriPathForZos(session,
+            JobsConstants.RESOURCE + "/" + parms.jobname + "/" + parms.jobid
+            // + Jobs.QUERY_ID + Jobs.STEP_DATA;
+        );
         Logger.getAppLogger().info("GetJobs.getStatusCommon() parameters: " + parameters);
-        return ZosmfRestClient.getExpectJSON<IJob>(session, JobsConstants.RESOURCE + parameters);
+        return ZosmfRestClient.getExpectJSON<IJob>(session, parameters);
     }
 
     /**
@@ -293,10 +297,11 @@ export class GetJobs {
     public static async getSpoolFilesCommon(session: AbstractSession, parms: ICommonJobParms) {
         Logger.getAppLogger().trace("GetJobs.getSpoolFilesCommon()");
         ImperativeExpect.keysToBeDefinedAndNonBlank(parms, ["jobname", "jobid"]);
-        const parameters: string = "/" + encodeURIComponent(parms.jobname) + "/" + encodeURIComponent(parms.jobid) +
-            JobsConstants.RESOURCE_SPOOL_FILES;
+        const parameters: string = EncodeUri.encUriPathForZos(session,
+            JobsConstants.RESOURCE + "/" + parms.jobname + "/" + parms.jobid + JobsConstants.RESOURCE_SPOOL_FILES
+        );
         Logger.getAppLogger().info("GetJobs.getSpoolFilesCommon() parameters: " + parameters);
-        return ZosmfRestClient.getExpectJSON<IJobFile[]>(session, JobsConstants.RESOURCE + parameters);
+        return ZosmfRestClient.getExpectJSON<IJobFile[]>(session, parameters);
     }
 
     /**
@@ -339,8 +344,10 @@ export class GetJobs {
     public static async getJclCommon(session: AbstractSession, parms: IGetJclParms) {
         Logger.getAppLogger().trace("GetJobs.getJclCommon()");
         ImperativeExpect.keysToBeDefinedAndNonBlank(parms, ["jobname", "jobid"]);
-        let parameters: string = "/" + encodeURIComponent(parms.jobname) + "/" + encodeURIComponent(parms.jobid) +
-            JobsConstants.RESOURCE_SPOOL_FILES + JobsConstants.RESOURCE_JCL_CONTENT + JobsConstants.RESOURCE_SPOOL_CONTENT;
+        let parameters: string = EncodeUri.encUriPathForZos(session,
+            JobsConstants.RESOURCE + "/" + parms.jobname + "/" + parms.jobid + JobsConstants.RESOURCE_SPOOL_FILES +
+            JobsConstants.RESOURCE_JCL_CONTENT + JobsConstants.RESOURCE_SPOOL_CONTENT
+        );
 
         if (parms.binary) {
             parameters += "?mode=binary";
@@ -352,7 +359,7 @@ export class GetJobs {
 
         const headers = [Headers.TEXT_PLAIN_UTF8];
         Logger.getAppLogger().info("GetJobs.getJclCommon() parameters: " + parameters);
-        return ZosmfRestClient.getExpectString(session, JobsConstants.RESOURCE + parameters, headers);
+        return ZosmfRestClient.getExpectString(session, parameters, headers);
     }
 
     /**
@@ -384,13 +391,16 @@ export class GetJobs {
         ImperativeExpect.toNotBeNullOrUndefined(jobname, "Required parameter jobname must be defined");
         ImperativeExpect.toNotBeNullOrUndefined(jobid, "Required parameter jobid must be defined");
         ImperativeExpect.toNotBeNullOrUndefined(spoolId, "Required parameter spoolId must be defined");
-        let parameters: string = "/" + encodeURIComponent(jobname) + "/" + encodeURIComponent(jobid) +
-            JobsConstants.RESOURCE_SPOOL_FILES + "/" + encodeURIComponent(spoolId) + JobsConstants.RESOURCE_SPOOL_CONTENT;
+        let parameters: string = EncodeUri.encUriPathForZos(session,
+            JobsConstants.RESOURCE + "/" + jobname + "/" + jobid + JobsConstants.RESOURCE_SPOOL_FILES +
+            "/" + spoolId + JobsConstants.RESOURCE_SPOOL_CONTENT
+        );
+
         if (encoding != null && String(encoding).trim() !== "") {
             parameters += "?fileEncoding=" + encoding;
         }
         Logger.getAppLogger().info("GetJobs.getSpoolContentById() parameters: " + parameters);
-        return ZosmfRestClient.getExpectString(session, JobsConstants.RESOURCE + parameters, [Headers.TEXT_PLAIN_UTF8]);
+        return ZosmfRestClient.getExpectString(session, parameters, [Headers.TEXT_PLAIN_UTF8]);
     }
 
     /**
@@ -405,11 +415,13 @@ export class GetJobs {
     public static async getSpoolContentCommon(session: AbstractSession, jobFile: IJobFile, encoding?: string) {
         Logger.getAppLogger().trace("GetJobs.getSpoolContentCommon()");
         ImperativeExpect.toNotBeNullOrUndefined(jobFile, "Required job file object must be defined");
-        let parameters: string = "/" + encodeURIComponent(jobFile.jobname) + "/" + encodeURIComponent(jobFile.jobid) +
-            JobsConstants.RESOURCE_SPOOL_FILES + "/" + encodeURIComponent(jobFile.id) + JobsConstants.RESOURCE_SPOOL_CONTENT;
+        let parameters: string = EncodeUri.encUriPathForZos(session,
+            JobsConstants.RESOURCE + "/" + jobFile.jobname + "/" + jobFile.jobid + JobsConstants.RESOURCE_SPOOL_FILES +
+            "/" + jobFile.id + JobsConstants.RESOURCE_SPOOL_CONTENT
+        );
         if (encoding && encoding.trim() != "") {parameters += "?fileEncoding=" + encoding;}
         Logger.getAppLogger().info("GetJobs.getSpoolContentCommon() parameters: " + parameters);
-        return ZosmfRestClient.getExpectString(session, JobsConstants.RESOURCE + parameters, [Headers.TEXT_PLAIN_UTF8]);
+        return ZosmfRestClient.getExpectString(session, parameters, [Headers.TEXT_PLAIN_UTF8]);
     }
 
     private static filterResultsByStatuses(jobs: IJob[], params: IGetJobsParms | undefined): IJob[] {
