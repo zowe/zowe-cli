@@ -9,11 +9,18 @@
 *
 */
 
-export * from "./doc/IDsmListOptions";
-export * from "./doc/IFsOptions";
-export * from "./doc/IListOptions";
-export * from "./doc/IResolveAliasResponse";
-export * from "./doc/IUSSListOptions";
-export * from "./doc/IZosmfListResponse";
+/**
+ * This interface defines the response from resolving a data set alias
+ */
+export interface IResolveAliasResponse {
 
-export * from "./List";
+    /**
+     * The original alias name that was resolved
+     */
+    alias: string;
+
+    /**
+     * The target data set name that the alias points to
+     */
+    targetDsn: string;
+}
