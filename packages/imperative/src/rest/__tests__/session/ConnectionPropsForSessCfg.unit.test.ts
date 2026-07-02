@@ -1285,7 +1285,8 @@ describe("ConnectionPropsForSessCfg tests", () => {
             user: "FakeUser",
             password: "FakePassword",
             tokenType: SessConstants.TOKEN_TYPE_JWT,
-            tokenValue: "FakeToken"
+            tokenValue: "FakeToken",
+            base64EncodedAuth: Buffer.from("FakeUser:FakePassword").toString("base64")
         });
         getImperativeLoggerSpy.mockRestore();
         expect(mockLoggerDebug).toHaveBeenCalledTimes(1);
@@ -1294,6 +1295,46 @@ describe("ConnectionPropsForSessCfg tests", () => {
         expect(logOutput).not.toContain("FakeUser");
         expect(logOutput).not.toContain("FakePassword");
         expect(logOutput).not.toContain("FakeToken");
+    });
+
+    it("should not log base64EncodedAuth in the session config", async () => {
+        const mockLoggerDebug = jest.fn();
+        const getImperativeLoggerSpy = jest.spyOn(Logger, "getImperativeLogger")
+            .mockReturnValueOnce({ debug: mockLoggerDebug } as any);
+        // base64EncodedAuth is the trivially-reversible base64 of user:password
+        const base64EncodedAuth = Buffer.from("FakeUser:FakePassword").toString("base64");
+        (ConnectionPropsForSessCfg as any).logSessCfg({
+            host: "SomeHost",
+            port: 11,
+            base64EncodedAuth
+        });
+        getImperativeLoggerSpy.mockRestore();
+        expect(mockLoggerDebug).toHaveBeenCalledTimes(1);
+        const logOutput = mockLoggerDebug.mock.calls[0][0];
+        // the non-secret host should still be logged
+        expect(logOutput).toContain("SomeHost");
+        // the base64 credential must be masked, not leaked
+        expect(logOutput).not.toContain(base64EncodedAuth);
+        expect(logOutput).toContain("base64EncodedAuth_is_hidden");
+    });
+
+    it("should still log the non-secret cert/certKey file paths in the session config", async () => {
+        const mockLoggerDebug = jest.fn();
+        const getImperativeLoggerSpy = jest.spyOn(Logger, "getImperativeLogger")
+            .mockReturnValueOnce({ debug: mockLoggerDebug } as any);
+        // cert and certKey hold file paths (not inline key material), so they are not masked
+        (ConnectionPropsForSessCfg as any).logSessCfg({
+            host: "SomeHost",
+            port: 11,
+            cert: "/path/to/cert.pem",
+            certKey: "/path/to/certKey.pem"
+        });
+        getImperativeLoggerSpy.mockRestore();
+        expect(mockLoggerDebug).toHaveBeenCalledTimes(1);
+        const logOutput = mockLoggerDebug.mock.calls[0][0];
+        expect(logOutput).toContain("SomeHost");
+        expect(logOutput).toContain("/path/to/cert.pem");
+        expect(logOutput).toContain("/path/to/certKey.pem");
     });
 
     it("SSO CallBack with getValuesBack", async() => {
