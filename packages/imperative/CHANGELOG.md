@@ -2,6 +2,9 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+- BugFix: Updated `Logger.ts` to wrap the formatted message with `Censor.censorRawData`. [#2772] (https://github.com/zowe/zowe-cli/pull/2772)
+
 ## `8.33.1`
 
 - BugFix: Encoded diff content before embedding it in the inline script of the web diff page to prevent stored cross-site scripting. [#2771](https://github.com/zowe/zowe-cli/pull/2771)
