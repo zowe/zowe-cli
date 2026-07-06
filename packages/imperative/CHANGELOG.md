@@ -2,6 +2,10 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Added the `base64EncodedAuth` session property to the list of session properties redacted from Imperative debug logs. [#2780](https://github.com/zowe/zowe-cli/pull/2780)
+
 ## `5.27.18`
 
 - BugFix: Removed environment variables from the log messages produced when an exception is caught during Imperative.init. [#2765](https://github.com/zowe/zowe-cli/pull/2765)
