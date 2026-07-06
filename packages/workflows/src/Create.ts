@@ -25,8 +25,9 @@ import { ICreateWorkflow, accessT } from "./doc/ICreateWorkflow";
 import { ICreatedWorkflow } from "./doc/ICreatedWorkflow";
 import { ICreatedWorkflowLocal } from "./doc/ICreatedWorkflowLocal";
 import { IVariable } from "./doc/IVariable";
-import { Upload, Delete } from "@zowe/zos-files-for-zowe-sdk";
+import { Upload, Delete, Create } from "@zowe/zos-files-for-zowe-sdk";
 import { basename } from "path";
+import * as crypto from 'crypto';
 
 /**
  * Class to handle creation of zOSMF workflow instance
@@ -192,7 +193,7 @@ export class CreateWorkflow{
         if (customDir){
             remoteFile = customDir + "/" + basename(localFile);
         } else {
-            remoteFile = WorkflowConstants.tempPath + "/" + userId + Date.now().toString() + basename(localFile);
+            remoteFile = WorkflowConstants.tempPath + "/" + userId + crypto.randomBytes(8).toString('hex') + basename(localFile);
         }
         return remoteFile;
     }
@@ -206,6 +207,7 @@ export class CreateWorkflow{
      */
     public static async uploadTempFile(session: AbstractSession, localFile: string, remoteFile: string){
         try {
+            await Create.uss(session, remoteFile, "file", "rwx------");
             await Upload.fileToUssFile(session, localFile, remoteFile, { binary: true });
         } catch (error) {
             throw new ImperativeError({

@@ -13,7 +13,7 @@ import { Download, Upload, IZosFilesResponse, IDownloadOptions, IUploadOptions }
 import { AbstractSession, IHandlerParameters, ImperativeError, ProcessUtils, GuiResult,
     TextUtils, IDiffNameOptions, CliUtils } from "@zowe/imperative";
 import { CompareBaseHelper } from "../compare/CompareBaseHelper";
-import { existsSync, unlinkSync } from "fs";
+import { existsSync, lstatSync, mkdirSync, unlinkSync } from "fs";
 import { tmpdir } from "os";
 import * as path from "path";
 import LocalfileDatasetHandler from "../compare/lf-ds/LocalfileDataset.handler";
@@ -85,7 +85,16 @@ export class EditUtilities {
             hash = hash.slice(0, hashLen);
             return path.join(tmpdir(), path.parse(lfFile.fileName).name + '_' + hash + ext);
         }
-        return path.join(tmpdir(), lfFile.fileName + ext);
+        const dsDir = path.join(tmpdir(), "zowe-edit-ds");
+        if (existsSync(dsDir)) {
+            const st = lstatSync(dsDir);
+            if (!st.isDirectory() || (st.mode & 0o777) !== 0o700 || st.uid !== process.getuid?.()) {
+                throw new ImperativeError({ msg: `Unsafe temp directory detected at ${dsDir}` });
+            }
+        } else {
+            mkdirSync(dsDir, { recursive: true, mode: 0o700 });
+        }
+        return path.join(dsDir, lfFile.fileName + ext);
     }
 
     /**
