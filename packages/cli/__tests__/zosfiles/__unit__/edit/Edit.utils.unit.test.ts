@@ -99,6 +99,87 @@ describe("Files Edit Utilities", () => {
             const response = await EditUtilities.buildTempPath(localFileDS, commandParametersDs);
             expect(response).toContain(".txt");
         });
+        describe("temp dir checks", () => {
+            let existsSyncSpy: jest.SpyInstance;
+            let lstatSyncSpy: jest.SpyInstance;
+            let mkdirSyncSpy: jest.SpyInstance;
+
+            beforeEach(() => {
+                existsSyncSpy = jest.spyOn(fs, "existsSync");
+                lstatSyncSpy = jest.spyOn(fs, "lstatSync");
+                mkdirSyncSpy = jest.spyOn(fs, "mkdirSync").mockImplementation(jest.fn() as any);
+            });
+
+            it("should create temp dir with mode 0o700 when it does not exist", async () => {
+                existsSyncSpy.mockReturnValue(false);
+
+                await EditUtilities.buildTempPath(localFileDS, commandParametersDs);
+
+                expect(mkdirSyncSpy).toHaveBeenCalledWith(
+                    expect.stringContaining("zowe-edit-ds"),
+                    { recursive: true, mode: 0o700 }
+                );
+            });
+            it("should succeed when existing temp dir has correct permissions and owner", async () => {
+                existsSyncSpy.mockReturnValue(true);
+                lstatSyncSpy.mockReturnValue({
+                    isDirectory: () => true,
+                    mode: 0o700,
+                    uid: process.getuid?.()
+                } as any);
+
+                const response = await EditUtilities.buildTempPath(localFileDS, commandParametersDs);
+                expect(response).toContain("zowe-edit-ds");
+            });
+            it("should throw ImperativeError when temp dir path is not a directory", async () => {
+                existsSyncSpy.mockReturnValue(true);
+                lstatSyncSpy.mockReturnValue({
+                    isDirectory: () => false,
+                    mode: 0o700,
+                    uid: process.getuid?.()
+                } as any);
+
+                try {
+                    await EditUtilities.buildTempPath(localFileDS, commandParametersDs);
+                } catch(e) {
+                    caughtError = e;
+                }
+                expect(caughtError).toBeInstanceOf(ImperativeError);
+                expect(caughtError.message).toContain("Unsafe temp directory");
+            });
+            it("should throw ImperativeError when temp dir has unsafe permissions", async () => {
+                existsSyncSpy.mockReturnValue(true);
+                lstatSyncSpy.mockReturnValue({
+                    isDirectory: () => true,
+                    mode: 0o755,
+                    uid: process.getuid?.()
+                } as any);
+
+                try {
+                    await EditUtilities.buildTempPath(localFileDS, commandParametersDs);
+                } catch(e) {
+                    caughtError = e;
+                }
+                expect(caughtError).toBeInstanceOf(ImperativeError);
+                expect(caughtError.message).toContain("Unsafe temp directory");
+            });
+            it("should throw ImperativeError when temp dir is owned by a different user", async () => {
+                existsSyncSpy.mockReturnValue(true);
+                lstatSyncSpy.mockReturnValue({
+                    isDirectory: () => true,
+                    mode: 0o700,
+                    uid: (process.getuid?.() ?? 0) + 1
+                } as any);
+
+                try {
+                    await EditUtilities.buildTempPath(localFileDS, commandParametersDs);
+                } catch(e) {
+                    caughtError = e;
+                }
+                expect(caughtError).toBeInstanceOf(ImperativeError);
+                expect(caughtError.message).toContain("Unsafe temp directory");
+            });
+        });
     });
     describe("checkForStash()", () => {
         const existsSyncSpy = jest.spyOn(fs, "existsSync");
