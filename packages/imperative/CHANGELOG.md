@@ -2,7 +2,7 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
-## Recent Changes
+## `8.33.1`
 
 - BugFix: Fixed inconsistent error messages when credentials fail to save by using the `secureSaveError` helper in `ConfigAutoStore` and `ConvertV1Profiles`. [#1907](https://github.com/zowe/zowe-cli/issues/1907)
 - BugFix: Encoded diff content before embedding it in the inline script of the web diff page to prevent stored cross-site scripting. [#2771](https://github.com/zowe/zowe-cli/pull/2771)
