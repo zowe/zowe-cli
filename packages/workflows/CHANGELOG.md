@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe z/OS workflows SDK package will be documented in this file.
 
-## Recent Changes
+## `7.29.28`
 
 - BugFix: Updated temp file creation to use unpredictable file names, and set owner-only permissions (`0o700`) on uploaded USS temp files. [#2773](https://github.com/zowe/zowe-cli/pull/2773)
 

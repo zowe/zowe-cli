@@ -2,7 +2,7 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
-## Recent Changes
+## `7.29.28`
 
 - BugFix: Updated the `zowe zos-files ds edit` command to store temp files in a dedicated subdirectory with owner-only permissions (`0o700`). [#2773](https://github.com/zowe/zowe-cli/pull/2773)
 
