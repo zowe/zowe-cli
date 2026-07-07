@@ -1702,14 +1702,15 @@ export class ProfileInfo {
      */
     private loadSchema(profile: IProfAttrs): IProfileSchema | null {
         let schemaMapKey: string;
+        const profType = profile.profType === "ssh-config" ? "ssh" : profile.profType;
 
         if (profile.profLoc.osLoc != null) {
             // the profile exists, so use schema associated with its config JSON file
-            schemaMapKey = `${profile.profLoc.osLoc[0]}:${profile.profType}`;
+            schemaMapKey = `${profile.profLoc.osLoc[0]}:${profType}`;
         } else {
             // no profile exists, so loop through layers and use the first schema found
             for (const layer of this.mLoadedConfig.mLayers) {
-                const tempKey = `${layer.path}:${profile.profType}`;
+                const tempKey = `${layer.path}:${profType}`;
                 if (this.mProfileSchemaCache.has(tempKey)) {
                     schemaMapKey = tempKey;
                     break;
