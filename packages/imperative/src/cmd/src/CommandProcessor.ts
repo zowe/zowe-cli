@@ -955,7 +955,7 @@ export class CommandProcessor {
      * @memberof CommandProcessor
      */
     private shouldMergeBaseProfile(profileDef: ICommandProfile): boolean {
-        const profileTypes = [...(profileDef.required ?? []), ...(profileDef.optional ?? [])].filter((type) => type !== "base");
+        const profileTypes = [...profileDef.required ?? [], ...profileDef.optional ?? []].filter((type) => type !== "base");
         const profileTypeConfigs = ImperativeConfig.instance.loadedConfig?.profiles;
         return !profileTypes.some((type) => profileTypeConfigs?.find((p) => p.type === type)?.doNotMerge === true);
     }

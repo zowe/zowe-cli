@@ -577,7 +577,7 @@ export class ProfileInfo {
         // mergeOpts.doNotMerge takes precedence, since ImperativeConfig.instance.loadedConfig
         // may not be populated when ProfileInfo is used outside of an Imperative CLI application.
         const doNotMerge = mergeOpts.doNotMerge ??
-            (ImperativeConfig.instance.loadedConfig?.profiles?.find(p => p.type === profile.profType)?.doNotMerge === true);
+            ImperativeConfig.instance.loadedConfig?.profiles?.find(p => p.type === profile.profType)?.doNotMerge === true;
 
         const osLocInfo = this.getOsLocInfo(profile)?.[0];
         if (profile.profLoc.locType === ProfLocType.TEAM_CONFIG) {
