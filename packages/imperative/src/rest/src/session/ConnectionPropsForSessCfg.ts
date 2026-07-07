@@ -354,7 +354,7 @@ export class ConnectionPropsForSessCfg {
      * NOTE(Kelosky): redundant from LoggerUtils.SECURE_PROMPT_OPTIONS - leaving
      * for future date to consolidate
      */
-    private static secureSessCfgProps: Set<string> = new Set(["user", "password", "tokenValue", "passphrase"]);
+    private static secureSessCfgProps: Set<string> = new Set(["user", "password", "tokenValue", "passphrase", "base64EncodedAuth"]);
 
     /**
      * List of prompt messages that is used when the CLI prompts for session
