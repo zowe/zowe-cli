@@ -2,13 +2,16 @@
 
 All notable changes to the Zowe CLI package will be documented in this file.
 
+## Recent Changes
+
+- Enhancement: Added the ability to resolve data set aliases to their true target names using the `zowe zos-files list alias` command or the `List.resolveAlias` SDK method. [#2728](https://github.com/zowe/zowe-cli/issues/2728)
+
 ## `8.33.1`
 
 - BugFix: Reduced the encoding of URIs to the minimum that still allows Zowe SDK operations to work successfully in the current z/OS environment. [#2758](https://github.com/zowe/zowe-cli/pull/2758)
 
 ## `8.32.3`
 
-- Enhancement: Added the ability to resolve data set aliases to their true target names using the `zowe zos-files list alias` command or the `List.resolveAlias` SDK method. [#2728](https://github.com/zowe/zowe-cli/issues/2728)
 - Enhancement: Standardized the help text to use `<The User Home Directory>/.zowe` instead of `~/.zowe`. [#2541](https://github.com/zowe/zowe-cli/issues/2541)
 - BugFix: Updated the `tar` dependency for technical currency. [#2752](https://github.com/zowe/zowe-cli/pull/2752)
 - Enhancement: Added a new `--legacy` option to the `zowe tso issue command` command, allowing the user to force the use of the previous TSO command functionality (where Zowe CLI creates and tears down the TSO address space via multiple API calls). This is useful for working around an error reading "Did not receive output from the z/OSMF TSO API" that might occur with the newer TSO API. [#2738](https://github.com/zowe/zowe-cli/issues/2738)
