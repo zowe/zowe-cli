@@ -4,6 +4,7 @@ All notable changes to the Imperative package will be documented in this file.
 
 ## Recent Changes
 - BugFix: Updated `Logger.ts` to wrap the formatted message with `Censor.censorRawData`. [#2772] (https://github.com/zowe/zowe-cli/pull/2772)
+- BugFix: Redacted `cert`, `key` fields, and token value from logs in `AbstractRestClient`. [#2781](https://github.com/zowe/zowe-cli/pull/2781)
 
 ## `8.33.1`
 
