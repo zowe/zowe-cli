@@ -21,6 +21,7 @@ import { IPromptOptions } from "../../cmd/src/doc/response/api/handler/IPromptOp
 import { read } from "read";
 import { ICommandDefinition } from "../../cmd";
 import { Config } from "../../config";
+import { ImperativeConfig } from "./ImperativeConfig";
 
 /**
  * Cli Utils contains a set of static methods/helpers that are CLI related (forming options, censoring args, etc.)
@@ -134,9 +135,14 @@ export class CliUtils {
                 allTypes = allTypes.concat(profileDef.optional);
         }
 
+        // Look up whether each profile type has opted out (via "doNotMerge") of
+        // inheriting properties from its parent (nested) profiles
+        const profileTypeConfigs = ImperativeConfig.instance.loadedConfig?.profiles;
+
         // Build an object that contains all the options loaded from config
         let fromCnfg: any = {};
         for (const profileType of allTypes) {
+            const doNotMerge = profileTypeConfigs?.find((p) => p.type === profileType)?.doNotMerge === true;
             const opt = ProfileUtils.getProfileOptionAndAlias(profileType)[0];
             // If the config contains the requested profiles, then "remember"
             // that this type has been fulfilled - so that we do NOT load from
@@ -144,14 +150,14 @@ export class CliUtils {
             const profileTypePrefix = profileType + "_";
             let p: any = null;
             if (args[opt] != null && config.api.profiles.exists(args[opt])) {
-                p = config.api.profiles.get(args[opt]);
+                p = config.api.profiles.get(args[opt], true, !doNotMerge);
             } else if (args[opt] != null && !args[opt].startsWith(profileTypePrefix) &&
                 config.api.profiles.exists(profileTypePrefix + args[opt])) {
-                p = config.api.profiles.get(profileTypePrefix + args[opt]);
+                p = config.api.profiles.get(profileTypePrefix + args[opt], true, !doNotMerge);
             } else if (args[opt] == null &&
                 config.properties.defaults[profileType] != null &&
                 config.api.profiles.exists(config.properties.defaults[profileType])) {
-                p = config.api.profiles.defaultGet(profileType);
+                p = config.api.profiles.defaultGet(profileType, !doNotMerge);
             }
             if (p == null && profileDef?.required != null && profileDef?.required.indexOf(profileType) >= 0) {
                 throw new ImperativeError({

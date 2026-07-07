@@ -59,4 +59,12 @@ export interface IProfileTypeConfiguration {
      * @deprecated Only applies to V1 profiles. For team config, validate with JSON schema instead.
      */
     validationPlanModule?: string;
+    /**
+     * Specifies that when this profile is loaded, it should not inherit properties from a parent profile or merge its
+     * arguments with a base profile. This is experimental and should probably not be used.
+     *
+     * @type {boolean}
+     * @memberof IProfileTypeConfiguration
+     */
+    doNotMerge?: boolean;
 }

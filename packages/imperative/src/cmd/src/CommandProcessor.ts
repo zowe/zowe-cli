@@ -31,7 +31,7 @@ import * as nodePath from "path";
 import * as os from "os";
 import * as stream from "stream";
 import { ICommandHandlerRequire } from "./doc/handler/ICommandHandlerRequire";
-import { IHandlerParameters } from "../../cmd";
+import { ICommandProfile, IHandlerParameters } from "../../cmd";
 import { ChainedHandlerService } from "./ChainedHandlerUtils";
 import { Constants } from "../../constants";
 import { ICommandArguments } from "./doc/args/ICommandArguments";
@@ -913,7 +913,12 @@ export class CommandProcessor {
         // Build an object that contains all the options loaded from config
         if (this.mConfig != null) {
             // Merge the arguments from the config into the CLI args
-            const profArgs = CliUtils.getOptValuesFromConfig(this.mConfig, this.definition.profile, args, allOpts);
+            const profileDef = this.definition.profile;
+            if (profileDef != null && !this.shouldMergeBaseProfile(profileDef)) {
+                // A profile type in use has opted out of merging with the base profile
+                profileDef.optional = profileDef.optional?.filter((type) => type !== "base");
+            }
+            const profArgs = CliUtils.getOptValuesFromConfig(this.mConfig, profileDef, args, allOpts);
             this.log.trace(`Arguments extracted from the config:\n${inspect(profArgs)}`);
             args = CliUtils.mergeArguments(profArgs, args);
         }
@@ -937,6 +942,22 @@ export class CommandProcessor {
         // Log for debugging
         this.log.trace(`Full argument object constructed:\n${inspect(args)}`);
         return args;
+    }
+
+    /**
+     * Determine whether the base profile should be merged into the profile
+     * arguments loaded for this command. If any of the command's required or
+     * optional profile types (other than "base" itself) is configured with
+     * "doNotMerge", the base profile is excluded.
+     * @private
+     * @param {ICommandProfile} profileDef - the profile specification for the command
+     * @returns {boolean}
+     * @memberof CommandProcessor
+     */
+    private shouldMergeBaseProfile(profileDef: ICommandProfile): boolean {
+        const profileTypes = [...(profileDef.required ?? []), ...(profileDef.optional ?? [])].filter((type) => type !== "base");
+        const profileTypeConfigs = ImperativeConfig.instance.loadedConfig?.profiles;
+        return !profileTypes.some((type) => profileTypeConfigs?.find((p) => p.type === type)?.doNotMerge === true);
     }
 
     /**

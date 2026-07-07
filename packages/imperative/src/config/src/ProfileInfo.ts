@@ -572,12 +572,19 @@ export class ProfileInfo {
         };
         let configProperties: IConfig;
 
+        // A profile type configured with "doNotMerge" does not inherit properties
+        // from parent (nested) profiles, nor does it merge with the base profile.
+        // mergeOpts.doNotMerge takes precedence, since ImperativeConfig.instance.loadedConfig
+        // may not be populated when ProfileInfo is used outside of an Imperative CLI application.
+        const doNotMerge = mergeOpts.doNotMerge ??
+            (ImperativeConfig.instance.loadedConfig?.profiles?.find(p => p.type === profile.profType)?.doNotMerge === true);
+
         const osLocInfo = this.getOsLocInfo(profile)?.[0];
         if (profile.profLoc.locType === ProfLocType.TEAM_CONFIG) {
             configProperties = this.mLoadedConfig.mProperties;
             if (profile.profName != null) {
                 // Load args from service profile if one exists
-                const serviceProfile = this.mLoadedConfig.api.profiles.get(profile.profName, false);
+                const serviceProfile = this.mLoadedConfig.api.profiles.get(profile.profName, false, !doNotMerge);
                 for (const [propName, propVal] of Object.entries(serviceProfile)) {
                     const [argLoc, secure] = this.argTeamConfigLoc({ profileName: profile.profName, propName, osLocInfo, configProperties });
                     mergedArgs.knownArgs.push({
@@ -591,42 +598,44 @@ export class ProfileInfo {
                 }
             }
 
-            // if using global profile, make global base default for the operation below
-            const osLoc = (this.getOsLocInfo(profile) ?? []).find(p => p.name === profile.profName);
-            let baseProfile = this.mLoadedConfig.api.profiles.defaultGet("base");
-            let realBaseProfileName: string;
-            let layerProperties: IConfig;
-            if (osLoc?.global) {
-                layerProperties = this.mLoadedConfig.findLayer(osLoc.user, osLoc.global)?.properties;
-                realBaseProfileName = layerProperties?.defaults.base;
-                if (!realBaseProfileName && osLoc.user) {
-                    layerProperties = this.mLoadedConfig.findLayer(false, osLoc.global)?.properties;
+            if (!doNotMerge) {
+                // if using global profile, make global base default for the operation below
+                const osLoc = (this.getOsLocInfo(profile) ?? []).find(p => p.name === profile.profName);
+                let baseProfile = this.mLoadedConfig.api.profiles.defaultGet("base");
+                let realBaseProfileName: string;
+                let layerProperties: IConfig;
+                if (osLoc?.global) {
+                    layerProperties = this.mLoadedConfig.findLayer(osLoc.user, osLoc.global)?.properties;
                     realBaseProfileName = layerProperties?.defaults.base;
+                    if (!realBaseProfileName && osLoc.user) {
+                        layerProperties = this.mLoadedConfig.findLayer(false, osLoc.global)?.properties;
+                        realBaseProfileName = layerProperties?.defaults.base;
+                    }
+                    if (realBaseProfileName && !this.mLoadedConfig.api.profiles.exists(realBaseProfileName)) {
+                        realBaseProfileName = null;
+                    }
+                    if (realBaseProfileName) baseProfile = this.mLoadedConfig.api.profiles.buildProfile(realBaseProfileName, layerProperties?.profiles);
+                    else baseProfile = null;
                 }
-                if (realBaseProfileName && !this.mLoadedConfig.api.profiles.exists(realBaseProfileName)) {
-                    realBaseProfileName = null;
-                }
-                if (realBaseProfileName) baseProfile = this.mLoadedConfig.api.profiles.buildProfile(realBaseProfileName, layerProperties?.profiles);
-                else baseProfile = null;
-            }
-            if (baseProfile != null) {
-                // Load args from default base profile if one exists
-                const baseProfileName = realBaseProfileName ?? configProperties.defaults.base;
-                for (const [propName, propVal] of Object.entries(baseProfile)) {
-                    const argName = CliUtils.getOptionFormat(propName).camelCase;
-                    // Skip properties already loaded from service profile
-                    if (!mergedArgs.knownArgs.find((arg) => arg.argName === argName)) {
-                        const [argLoc, secure] = this.argTeamConfigLoc({
-                            profileName: baseProfileName, propName, osLocInfo, configProperties: layerProperties ?? configProperties
-                        });
-                        mergedArgs.knownArgs.push({
-                            argName,
-                            dataType: this.argDataType(typeof propVal),
-                            argValue: propVal,
-                            argLoc,
-                            secure,
-                            inSchema: false
-                        });
+                if (baseProfile != null) {
+                    // Load args from default base profile if one exists
+                    const baseProfileName = realBaseProfileName ?? configProperties.defaults.base;
+                    for (const [propName, propVal] of Object.entries(baseProfile)) {
+                        const argName = CliUtils.getOptionFormat(propName).camelCase;
+                        // Skip properties already loaded from service profile
+                        if (!mergedArgs.knownArgs.find((arg) => arg.argName === argName)) {
+                            const [argLoc, secure] = this.argTeamConfigLoc({
+                                profileName: baseProfileName, propName, osLocInfo, configProperties: layerProperties ?? configProperties
+                            });
+                            mergedArgs.knownArgs.push({
+                                argName,
+                                dataType: this.argDataType(typeof propVal),
+                                argValue: propVal,
+                                argLoc,
+                                secure,
+                                inSchema: false
+                            });
+                        }
                     }
                 }
             }
@@ -657,7 +666,7 @@ export class ProfileInfo {
                             });
                             argFound = true;
                         } catch (_argNotFoundInServiceProfile) {
-                            if (configProperties.defaults.base != null) {
+                            if (!doNotMerge && configProperties.defaults.base != null) {
                                 try {
                                     [argLoc, foundInSecureArray] = this.argTeamConfigLoc({
                                         profileName: configProperties.defaults.base, propName, osLocInfo, configProperties

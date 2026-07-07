@@ -51,12 +51,18 @@ export class ConfigProfiles extends ConfigApi {
      * @param path The dotted path of the location at which to set the profile.
      * @param mustExist If false, outer layer profile values will still be
      *        returned when the dotted path does not exist. Default is true.
+     * @param mergeParentProps If false, only the properties belonging to the
+     *        profile at the specified path are returned - properties of
+     *        parent (nested) profiles along the path are not merged in.
+     *        Default is true.
      */
-    public get(path: string, mustExist?: boolean): { [key: string]: string } {
+    public get(path: string, mustExist?: boolean, mergeParentProps: boolean = true): { [key: string]: string } {
         if (mustExist !== false && !this.exists(path))
             return null;
         // Typecasting because of this issue: https://github.com/kaelzhang/node-comment-json/issues/42
-        return JSONC.parse(JSONC.stringify(this.buildProfile(path, this.mConfig.mProperties.profiles), null, ConfigConstants.INDENT)) as any;
+        return JSONC.parse(
+            JSONC.stringify(this.buildProfile(path, this.mConfig.mProperties.profiles, mergeParentProps), null, ConfigConstants.INDENT)
+        ) as any;
     }
 
     // _______________________________________________________________________
@@ -89,13 +95,16 @@ export class ConfigProfiles extends ConfigApi {
      * of profile within the currently active layer.
      *
      * @param profileType The name of the desired type of profile (like zosmf).
+     * @param mergeParentProps If false, only the properties belonging to the
+     *        default profile itself are returned - properties of parent
+     *        (nested) profiles are not merged in. Default is true.
      *
      * @returns An object containing the desired profile,
      *          for example {"host": "lpar.your.domain.net", port: 1234}
      */
-    public defaultGet(profileType: string): { [key: string]: string } {
+    public defaultGet(profileType: string, mergeParentProps: boolean = true): { [key: string]: string } {
         const dflt = this.mConfig.mProperties.defaults[profileType];
-        return dflt != null ? this.get(dflt) : null;
+        return dflt != null ? this.get(dflt, true, mergeParentProps) : null;
     }
 
     // _______________________________________________________________________
@@ -140,18 +149,24 @@ export class ConfigProfiles extends ConfigApi {
      *
      * @param path The dotted path of desired location.
      * @param profiles A set of nested profile objects.
+     * @param mergeParentProps If false, only the properties belonging to the
+     *        profile at the end of the path are included - properties of
+     *        parent (nested) profiles along the path are not merged in.
+     *        Default is true.
      *
      * @returns The desired profile object. An empty object if profiles is empty.
      */
-    public buildProfile(path: string, profiles: { [key: string]: IConfigProfile }): { [key: string]: string } {
+    public buildProfile(path: string, profiles: { [key: string]: IConfigProfile }, mergeParentProps: boolean = true): { [key: string]: string } {
         const segments: string[] = path.split(".");
         let properties = {};
         for (const [n, p] of Object.entries(profiles)) {
             if (segments[0] === n) {
-                properties = { ...properties, ...p.properties };
+                if (mergeParentProps || segments.length === 1) {
+                    properties = { ...properties, ...p.properties };
+                }
                 if (segments.length > 1) {
                     segments.splice(0, 1);
-                    properties = { ...properties, ...this.buildProfile(segments.join("."), p.profiles) };
+                    properties = { ...properties, ...this.buildProfile(segments.join("."), p.profiles, mergeParentProps) };
                 }
                 break;
             }

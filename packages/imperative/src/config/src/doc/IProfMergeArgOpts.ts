@@ -26,4 +26,16 @@ export interface IProfMergeArgOpts {
      * The default is false.
      */
     getSecureVals?: boolean;
+
+    /**
+     * Indicates that properties should not be inherited from parent (nested)
+     * profiles, nor merged with the base profile.
+     * When specified, this value takes precedence over the "doNotMerge"
+     * property configured on the profile type's IProfileTypeConfiguration
+     * (which requires access to ImperativeConfig.instance.loadedConfig and
+     * may not be available in all contexts, e.g. when ProfileInfo is used
+     * outside of an Imperative CLI application).
+     * When left undefined, the profile type's own "doNotMerge" setting is used.
+     */
+    doNotMerge?: boolean;
 }
