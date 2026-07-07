@@ -34,6 +34,16 @@ export class LoggerUtils {
     public static SECURE_PROMPT_OPTIONS = ["user", "password", "tokenValue", "passphrase"];
 
     /**
+     * The set of secure options whose values must be masked when a raw command
+     * line is written to the log. This mirrors the options historically masked
+     * by CommandProcessor and includes every alias (long, short, camelCase and
+     * kebab-case) so that the value cannot leak regardless of how it is typed.
+     */
+    public static COMMAND_LINE_CENSORED_OPTIONS = ["user", "u",
+        "password", "pass", "pw", "token-value", "tokenValue", "tv",
+        "cert-key-file", "certKeyFile", "cert-file-passphrase", "certFilePassphrase"];
+
+    /**
      * Copy and censor any sensitive CLI arguments before logging/printing
      * @param {string[]} args
      * @returns {string[]}
@@ -72,6 +82,64 @@ export class LoggerUtils {
             }
         }
         return newArgs;
+    }
+
+    /**
+     * Copy and censor a raw command-line string before logging/printing.
+     *
+     * This is resilient to the different ways a user may supply a sensitive
+     * option on the command line:
+     *  - space separated (`--password secret`)
+     *  - equals separated (`--password=secret`)
+     *  - single-dash short form / aliases (`-p secret` / `-p=secret`)
+     *
+     * When the parsed command arguments are supplied, the literal value of
+     * every secure option is additionally masked wherever it appears in the
+     * string. This catches secure values that contain embedded whitespace
+     * (e.g. a quoted `--password "two words"`, which arrives here as
+     * `--password two words` once the shell has stripped the quotes) that a
+     * token-based regex cannot reliably match.
+     *
+     * @param {string} commandLine - The raw command-line string to censor
+     * @param {Arguments} args - The parsed command arguments, if available
+     * @returns {string} - The censored command-line string
+     */
+    public static censorCommandLine(commandLine: string, args?: Arguments): string {
+        if (commandLine == null || commandLine.length === 0) { return commandLine; }
+        let censoredLine = commandLine;
+        const censoredOptions = LoggerUtils.COMMAND_LINE_CENSORED_OPTIONS;
+
+        // Value-based censoring first, using the parsed arguments. Because we
+        // know the exact value, this reliably masks values containing embedded
+        // whitespace that the token-based regex below would otherwise truncate.
+        if (args) {
+            for (const optName of Object.keys(args)) {
+                if (optName === "_" || optName === "$0") { continue; }
+                if (censoredOptions.includes(optName)) {
+                    const value = args[optName];
+                    if (value != null && typeof value !== "object") {
+                        const strVal = `${value}`;
+                        if (strVal.length > 0 && strVal !== LoggerUtils.CENSOR_RESPONSE) {
+                            // String split/join performs a literal (non-regex) replacement of every occurrence
+                            censoredLine = censoredLine.split(strVal).join(LoggerUtils.CENSOR_RESPONSE);
+                        }
+                    }
+                }
+            }
+        }
+
+        // Option-name based censoring. Matches both the `--opt value` and
+        // `--opt=value` forms (and the single-dash short form) without
+        // consuming the leading boundary, and normalizes the separator to a
+        // space in the censored output.
+        for (const secureArg of censoredOptions) {
+            const escapedArg = secureArg.replace(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
+            const dashes = secureArg.length > 1 ? "--" : "-";
+            const regex = new RegExp(String.raw`(?<=^|\s)${dashes}${escapedArg}[=\s]\S+`, "gi");
+            censoredLine = censoredLine.replace(regex, `${dashes}${secureArg} ${LoggerUtils.CENSOR_RESPONSE}`);
+        }
+
+        return censoredLine;
     }
 
     /**

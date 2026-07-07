@@ -888,6 +888,85 @@ describe("Command Processor", () => {
         expect(logOutput).toContain("--user **** --password **** --token-value **** --cert-file-passphrase **** --cert-key-file ****");
     });
 
+    it("should mask sensitive CLI options supplied in the equals-separated form in log output", async () => {
+        // Allocate the command processor
+        const processor: CommandProcessor = new CommandProcessor({
+            envVariablePrefix: ENV_VAR_PREFIX,
+            fullDefinition: SAMPLE_COMPLEX_COMMAND,
+            definition: SAMPLE_COMMAND_DEFINITION,
+            helpGenerator: FAKE_HELP_GENERATOR,
+            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
+            rootCommandName: SAMPLE_ROOT_COMMAND,
+            commandLine: "--user fakeUser --password=fakePass --token-value=fakeToken " +
+                "--cert-file-passphrase=fakePassphrase --cert-key-file /fake/path",
+            promptPhrase: "dummydummy"
+        });
+
+        // Mock log.info call
+        let logOutput: string = "";
+        const mockLogInfo = jest.fn((line) => {
+            logOutput += line + "\n";
+        });
+        Object.defineProperty(processor, "log", {
+            get: () => ({
+                debug: jest.fn(),
+                error: jest.fn(),
+                info: mockLogInfo,
+                trace: jest.fn()
+            })
+        });
+
+        const parms: any = { arguments: { _: [], $0: "", syntaxThrow: true }, responseFormat: "json", silent: true };
+        await processor.invoke(parms);
+
+        expect(mockLogInfo).toHaveBeenCalled();
+        expect(logOutput).toContain("--user **** --password **** --token-value **** --cert-file-passphrase **** --cert-key-file ****");
+        expect(logOutput).not.toContain("fakeUser");
+        expect(logOutput).not.toContain("fakePass");
+        expect(logOutput).not.toContain("fakeToken");
+        expect(logOutput).not.toContain("fakePassphrase");
+    });
+
+    it("should mask a sensitive value containing embedded whitespace using the parsed arguments", async () => {
+        // Allocate the command processor
+        const processor: CommandProcessor = new CommandProcessor({
+            envVariablePrefix: ENV_VAR_PREFIX,
+            fullDefinition: SAMPLE_COMPLEX_COMMAND,
+            definition: SAMPLE_COMMAND_DEFINITION,
+            helpGenerator: FAKE_HELP_GENERATOR,
+            profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
+            rootCommandName: SAMPLE_ROOT_COMMAND,
+            commandLine: "--password two words",
+            promptPhrase: "dummydummy"
+        });
+
+        // Mock log.info call
+        let logOutput: string = "";
+        const mockLogInfo = jest.fn((line) => {
+            logOutput += line + "\n";
+        });
+        Object.defineProperty(processor, "log", {
+            get: () => ({
+                debug: jest.fn(),
+                error: jest.fn(),
+                info: mockLogInfo,
+                trace: jest.fn()
+            })
+        });
+
+        const parms: any = {
+            arguments: { _: [], $0: "", password: "two words", syntaxThrow: true },
+            responseFormat: "json",
+            silent: true
+        };
+        await processor.invoke(parms);
+
+        expect(mockLogInfo).toHaveBeenCalled();
+        expect(logOutput).toContain(`--password ${LoggerUtils.CENSOR_RESPONSE}`);
+        expect(logOutput).not.toContain("two words");
+        expect(logOutput).not.toMatch(/\bwords\b/);
+    });
+
     it("should handle an error thrown from the profile loader", async () => {
         // Allocate the command processor
         const processor: CommandProcessor = new CommandProcessor({
