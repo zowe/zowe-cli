@@ -336,15 +336,13 @@ export class Censor {
         if (commandLine == null || commandLine.length === 0) { return commandLine; }
         let censoredLine = commandLine;
         // Read the censored options once so both passes below operate on the same list
-        const censoredOptions = this.CENSORED_OPTIONS;
 
         // Value-based censoring first, using the parsed arguments. Because we
         // know the exact value, this reliably masks values containing embedded
         // whitespace that the token-based regex below would otherwise truncate.
         if (args) {
             for (const optName of Object.keys(args)) {
-                if (optName === "_" || optName === "$0") { continue; }
-                if (censoredOptions.includes(optName)) {
+                if (this.CENSORED_OPTIONS.includes(optName)) {
                     const value = args[optName];
                     if (value != null && typeof value !== "object") {
                         const strVal = `${value}`;
@@ -361,7 +359,7 @@ export class Censor {
         // `--opt=value` forms (and the single-dash short form) without
         // consuming the leading boundary, and normalizes the separator to a
         // space in the censored output.
-        for (const secureArg of censoredOptions) {
+        for (const secureArg of this.CENSORED_OPTIONS) {
             const escapedArg = secureArg.replace(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
             const dashes = secureArg.length > 1 ? "--" : "-";
             const regex = new RegExp(String.raw`(?<=^|\s)${dashes}${escapedArg}[=\s]\S+`, "gi");
