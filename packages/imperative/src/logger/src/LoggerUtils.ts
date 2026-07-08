@@ -113,7 +113,6 @@ export class LoggerUtils {
         // whitespace that the token-based regex below would otherwise truncate.
         if (args) {
             for (const optName of Object.keys(args)) {
-                if (optName === "_" || optName === "$0") { continue; }
                 if (LoggerUtils.COMMAND_LINE_CENSORED_OPTIONS.includes(optName)) {
                     const value = args[optName];
                     if (value != null && typeof value !== "object") {
