@@ -340,7 +340,6 @@ export class Censor {
         // whitespace that the token-based regex below would otherwise truncate.
         if (args) {
             for (const optName of Object.keys(args)) {
-                if (optName === "_" || optName === "$0") { continue; }
                 if (this.CENSORED_OPTIONS.includes(optName)) {
                     const value = args[optName];
                     if (value != null && typeof value !== "object") {
