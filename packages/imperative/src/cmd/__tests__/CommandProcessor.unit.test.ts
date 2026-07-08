@@ -823,7 +823,7 @@ describe("Command Processor", () => {
 
     it("should mask sensitive CLI options like user and password in log output 2", async () => {
         const realCensoredOptions = Censor.CENSORED_OPTIONS;
-        jest.spyOn(Censor, "CENSORED_OPTIONS", "get").mockReturnValueOnce([...realCensoredOptions, "u"]);
+        jest.spyOn(Censor, "CENSORED_OPTIONS", "get").mockReturnValue([...realCensoredOptions, "u"]);
 
         // Allocate the command processor
         const processor: CommandProcessor = new CommandProcessor({
