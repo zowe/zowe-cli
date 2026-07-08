@@ -335,13 +335,12 @@ export class Censor {
     public static censorCommandLine(commandLine: string, args?: ICommandArguments): string {
         if (commandLine == null || commandLine.length === 0) { return commandLine; }
         let censoredLine = commandLine;
-        // Read the censored options once so both passes below operate on the same list
-
         // Value-based censoring first, using the parsed arguments. Because we
         // know the exact value, this reliably masks values containing embedded
         // whitespace that the token-based regex below would otherwise truncate.
         if (args) {
             for (const optName of Object.keys(args)) {
+                if (optName === "_" || optName === "$0") { continue; }
                 if (this.CENSORED_OPTIONS.includes(optName)) {
                     const value = args[optName];
                     if (value != null && typeof value !== "object") {
