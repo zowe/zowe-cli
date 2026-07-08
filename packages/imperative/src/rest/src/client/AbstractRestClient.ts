@@ -993,9 +993,7 @@ export abstract class AbstractRestClient {
         if (!this.session.ISession.tokenValue) {
             return false;
         }
-        const logMessage = "Using cookie authentication with token" +
-            (Censor.isSecureValue("tokenType") ? "" : ` type ${this.session.ISession.tokenType}`);
-        this.log.trace(logMessage);
+        this.log.trace("Using cookie authentication with token type %s", this.session.ISession.tokenType);
         const headerKeys: string[] = Object.keys(Headers.COOKIE_AUTHORIZATION);
         const authentication: string = `${this.session.ISession.tokenType}=${this.session.ISession.tokenValue}`;
         headerKeys.forEach((property) => {
@@ -1404,6 +1402,9 @@ export abstract class AbstractRestClient {
         // structures that break the Censor's Object.entries() calls
         const optionsForLogging: any = { ...options };
         delete optionsForLogging.agent;
+
+        if (optionsForLogging.cert != null) { optionsForLogging.cert = Censor.CENSOR_RESPONSE; }
+        if (optionsForLogging.key  != null) { optionsForLogging.key  = Censor.CENSOR_RESPONSE; }
 
         this.log.trace("appendInputHeaders called with options on rest client %s",
             JSON.stringify(Censor.censorObject(optionsForLogging)), this.constructor.name);
