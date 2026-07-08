@@ -372,23 +372,10 @@ export class CommandProcessor {
             commandArguments: params.arguments
         });
 
-        let commandLine = ImperativeConfig.instance.commandLine || this.commandLine;
-
-        for (const secureArg of Censor.CENSORED_OPTIONS) {
-            let regex: RegExp;
-            if (secureArg.length > 1) {
-                regex = new RegExp(`--${secureArg} ([^\\s]+)`, "gi");
-            } else {
-                regex = new RegExp(`-${secureArg} ([^\\s]+)`, "gi");
-            }
-            if (commandLine.search(regex) >= 0) {
-                if (secureArg.length > 1) {
-                    commandLine = commandLine.replace(regex, `--${secureArg} ${Censor.CENSOR_RESPONSE}`);
-                } else {
-                    commandLine = commandLine.replace(regex, `-${secureArg} ${Censor.CENSOR_RESPONSE}`);
-                }
-            }
-        }
+        const commandLine = Censor.censorCommandLine(
+            ImperativeConfig.instance.commandLine || this.commandLine,
+            params.arguments
+        );
 
         // this.log.info(`post commandLine issued:\n\n${TextUtils.prettyJson(commandLine)}`);
         // Log the invoke
