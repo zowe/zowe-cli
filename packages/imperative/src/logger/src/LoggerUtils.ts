@@ -39,7 +39,7 @@ export class LoggerUtils {
      * by CommandProcessor and includes every alias (long, short, camelCase and
      * kebab-case) so that the value cannot leak regardless of how it is typed.
      */
-    public static COMMAND_LINE_CENSORED_OPTIONS = ["user", "u",
+    public static readonly COMMAND_LINE_CENSORED_OPTIONS = ["user", "u",
         "password", "pass", "pw", "token-value", "tokenValue", "tv",
         "cert-key-file", "certKeyFile", "cert-file-passphrase", "certFilePassphrase"];
 
