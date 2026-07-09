@@ -2819,9 +2819,8 @@ describe("Command Processor", () => {
             });
 
             const commandPrepared = await (processor as any).prepare(null, {});
-            // "editor" is not declared in the banana schema → must be dropped
             expect(commandPrepared.args.editor).toBeUndefined();
-            // "color" is declared in the schema → must still flow through
+
             expect(commandPrepared.args.color).toBe("green");
         });
 
