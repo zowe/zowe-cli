@@ -311,6 +311,8 @@ pub async fn run_daemon_command(
 
     #[cfg(target_family = "windows")]
     let mut locked = false;
+
+    let daemon_dir = util_get_daemon_dir()?;
     loop {
         #[cfg(target_family = "windows")]
         if !locked {
@@ -360,7 +362,7 @@ pub async fn run_daemon_command(
         // token from the owner-only pid file and include it in our request. We
         // (re)read and (re)serialize on every attempt so that a daemon restart
         // between retries still gets the correct token.
-        response.token = util_get_daemon_token();
+        response.token = util_get_daemon_token_from_dir(&daemon_dir);
         let mut request_bytes: Vec<u8> = match serde_json::to_vec(&response) {
             Ok(ok_val) => ok_val,
             Err(err_val) => {
