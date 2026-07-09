@@ -960,7 +960,14 @@ export class CommandProcessor {
                     fulfilled.push(profileType);
                     p = this.mConfig.api.profiles.defaultGet(profileType);
                 }
-                fromCnfg = { ...p, ...fromCnfg };
+                // Restrict profile properties to those declared in the profile type's
+                // schema so that an untrusted zowe.config.json cannot inject arbitrary
+                // command options (e.g. "editor") by placing them inside a profile.
+                const allowedProps = this.schemaPropsForProfileType(profileType);
+                const safeP = allowedProps != null
+                    ? Object.fromEntries(Object.entries(p).filter(([k]) => allowedProps.has(k)))
+                    : p;
+                fromCnfg = { ...safeP, ...fromCnfg };
             }
         }
 
@@ -1277,6 +1284,35 @@ export class CommandProcessor {
             response.console.error(`Contact the creator of handler:`);
             response.console.error(`"${handlerPath}"`);
             response.data.setObj(handlerErr);
+        }
+    }
+
+    /**
+     * Returns the set of property names declared in the given profile type's schema so that
+     * only schema-declared fields can be sourced from team-config profiles into command arguments.
+     * Both camelCase and kebab-case variants of every property name are included to match
+     * whichever key convention appears in the config file.
+     * Returns null when the schema is unavailable; the caller falls back to unfiltered behaviour.
+     * @private
+     */
+    private schemaPropsForProfileType(profileType: string): Set<string> | null {
+        try {
+            const manager = this.mProfileManagerFactory.getManager(profileType);
+            const typeConfig = manager.configurations.find(
+                (c) => c.type === profileType
+            ) as ICommandProfileTypeConfiguration | undefined;
+            const schemaProps = typeConfig?.schema?.properties;
+            if (schemaProps == null) {
+                return null;
+            }
+            const propSet = new Set<string>();
+            for (const propName of Object.keys(schemaProps)) {
+                propSet.add(propName);
+                propSet.add(CliUtils.getOptionFormat(propName).kebabCase);
+            }
+            return propSet;
+        } catch (e) {
+            return null;
         }
     }
 }

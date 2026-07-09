@@ -2,6 +2,9 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+- BugFix: Restricted profile properties sourced from team config to only those declared in the profile type's schema, preventing config injection of arbitrary command options.
+
 ## `5.27.20`
 
 - BugFix: Masked sensitive command-line options that are supplied in the equals-separated form (for example, `--user=example` or `-u=example`) before the command line is written to the log, and also mask secure values that contain embedded whitespace. [#2782](https://github.com/zowe/zowe-cli/pull/2782)

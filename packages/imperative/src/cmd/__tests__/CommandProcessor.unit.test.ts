@@ -110,6 +110,30 @@ const SAMPLE_COMMAND_REAL_HANDLER_WITH_OPT: ICommandDefinition = {
     }
 };
 
+// Command definition that declares both a schema-defined option ("color") and a
+// command-specific option ("editor") to exercise config injection protection.
+const SAMPLE_COMMAND_WITH_EDITOR_OPT: ICommandDefinition = {
+    name: "edit",
+    description: "The edit command",
+    type: "command",
+    handler: __dirname + "/__model__/TestArgHandler",
+    options: [
+        {
+            name: "color",
+            type: "string",
+            description: "The banana color.",
+        },
+        {
+            name: "editor",
+            type: "string",
+            description: "The editor to use.",
+        }
+    ],
+    profile: {
+        optional: ["banana"]
+    }
+};
+
 const SAMPLE_COMMAND_REAL_HANDLER_WITH_POS_OPT: ICommandDefinition = {
     name: "banana",
     description: "The banana command",
@@ -2703,7 +2727,7 @@ describe("Command Processor", () => {
                 envVariablePrefix: ENV_VAR_PREFIX,
                 definition: SAMPLE_COMMAND_REAL_HANDLER_WITH_OPT,
                 helpGenerator: FAKE_HELP_GENERATOR,
-                profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
+                profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY_WITH_PROPS,
                 rootCommandName: SAMPLE_ROOT_COMMAND,
                 commandLine: "",
                 promptPhrase: "dummydummy",
@@ -2728,6 +2752,96 @@ describe("Command Processor", () => {
         it("should find default profile that matches type", async () => {
             const commandPrepared = await (processor as any).prepare(null, {});
             expect(commandPrepared.args.color).toBe("green");
+        });
+    });
+
+    describe("profile config injection protection", () => {
+        it("should allow schema-declared properties to be sourced from team config", async () => {
+            await setupConfigToLoad({
+                profiles: {
+                    fresh: {
+                        type: "banana",
+                        properties: {
+                            color: "green",
+                            editor: "/path/to/malware"
+                        }
+                    }
+                },
+                defaults: { banana: "fresh" }
+            });
+
+            const processor = new CommandProcessor({
+                envVariablePrefix: ENV_VAR_PREFIX,
+                definition: SAMPLE_COMMAND_WITH_EDITOR_OPT,
+                helpGenerator: FAKE_HELP_GENERATOR,
+                profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY_WITH_PROPS,
+                rootCommandName: SAMPLE_ROOT_COMMAND,
+                commandLine: "",
+                promptPhrase: "dummydummy",
+                config: ImperativeConfig.instance.config
+            });
+
+            const commandPrepared = await (processor as any).prepare(null, {});
+            expect(commandPrepared.args.color).toBe("green");
+        });
+
+        it("should block non-schema properties injected via team config profile", async () => {
+            await setupConfigToLoad({
+                profiles: {
+                    fresh: {
+                        type: "banana",
+                        properties: {
+                            color: "green",
+                            editor: "/path/to/malware"
+                        }
+                    }
+                },
+                defaults: { banana: "fresh" }
+            });
+
+            const processor = new CommandProcessor({
+                envVariablePrefix: ENV_VAR_PREFIX,
+                definition: SAMPLE_COMMAND_WITH_EDITOR_OPT,
+                helpGenerator: FAKE_HELP_GENERATOR,
+                profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY_WITH_PROPS,
+                rootCommandName: SAMPLE_ROOT_COMMAND,
+                commandLine: "",
+                promptPhrase: "dummydummy",
+                config: ImperativeConfig.instance.config
+            });
+
+            const commandPrepared = await (processor as any).prepare(null, {});
+            // "editor" is not declared in the banana schema → must be dropped
+            expect(commandPrepared.args.editor).toBeUndefined();
+            // "color" is declared in the schema → must still flow through
+            expect(commandPrepared.args.color).toBe("green");
+        });
+
+        it("should fall back to unfiltered merge when schema is not available", async () => {
+            await setupConfigToLoad({
+                profiles: {
+                    fresh: {
+                        type: "banana",
+                        properties: { color: "green" }
+                    }
+                },
+                defaults: { banana: "fresh" }
+            });
+
+            const processor = new CommandProcessor({
+                envVariablePrefix: ENV_VAR_PREFIX,
+                definition: SAMPLE_COMMAND_WITH_EDITOR_OPT,
+                helpGenerator: FAKE_HELP_GENERATOR,
+                profileManagerFactory: FAKE_PROFILE_MANAGER_FACTORY,
+                rootCommandName: SAMPLE_ROOT_COMMAND,
+                commandLine: "",
+                promptPhrase: "dummydummy",
+                config: ImperativeConfig.instance.config
+            });
+
+            const commandPrepared = await (processor as any).prepare(null, {});
+            // Empty schema → nothing from the profile should be passed through
+            expect(commandPrepared.args.color).toBeUndefined();
         });
     });
 });
