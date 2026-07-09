@@ -2,12 +2,15 @@
 
 All notable changes to the Imperative package will be documented in this file.
 
+## Recent Changes
+
+- BugFix: Added an optional `token` property to the `IDaemonResponse` interface. The daemon client sends this secret token (read from the owner-only daemon PID file) so the daemon can authenticate the client as its owner. [#2743](https://github.com/zowe/zowe-cli/pull/2743)
+
 ## `8.33.2`
 
 - BugFix: Masked sensitive command-line options that are supplied in the equals-separated form (for example, `--user=example` or `-u=example`) before the command line is written to the log, and also mask secure values that contain embedded whitespace. [#2778](https://github.com/zowe/zowe-cli/pull/2778)
 - BugFix: Updated `Logger.ts` to wrap the formatted message with `Censor.censorRawData`. [#2772](https://github.com/zowe/zowe-cli/pull/2772)
 - BugFix: Redacted `cert`, `key` fields, and token value from logs in `AbstractRestClient`. [#2781](https://github.com/zowe/zowe-cli/pull/2781)
-- BugFix: Added an optional `token` property to the `IDaemonResponse` interface. The daemon client sends this secret token (read from the owner-only daemon PID file) so the daemon can authenticate the client as its owner. [#2743](https://github.com/zowe/zowe-cli/pull/2743)
 
 ## `8.33.1`
 
