@@ -1312,7 +1312,8 @@ export class CommandProcessor {
                 propSet.add(CliUtils.getOptionFormat(propName).kebabCase);
             }
             return propSet;
-        } catch (e) {
+        } catch (err) {
+            this.log.debug(err);
             return null;
         }
     }
