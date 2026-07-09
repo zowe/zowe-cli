@@ -1121,6 +1121,84 @@ describe("Command Processor", () => {
         expect(commandResponse.error?.additionalDetails).toEqual("More details!");
     });
 
+    it("should redact sensitive environment variables from the handler-error diagnostic log", async () => {
+        // Allocate the command processor
+        const processor: CommandProcessor = new CommandProcessor({
+            envVariablePrefix: ENV_VAR_PREFIX,
+            fullDefinition: SAMPLE_COMPLEX_COMMAND,
+            definition: SAMPLE_COMMAND_REAL_HANDLER,
+            helpGenerator: FAKE_HELP_GENERATOR,
+            rootCommandName: SAMPLE_ROOT_COMMAND,
+            commandLine: "",
+            promptPhrase: "dummydummy"
+        });
+
+        // Capture everything written at ERROR level (the diagnostic block uses printf-style args)
+        let errorOutput = "";
+        const mockLogError = jest.fn((...args) => { errorOutput += args.join(" ") + "\n"; });
+        Object.defineProperty(processor, "log", {
+            get: () => ({ debug: jest.fn(), error: mockLogError, info: jest.fn(), trace: jest.fn() })
+        });
+
+        process.env.ZOWE_OPT_PASSWORD = "superSecretPwd";
+        process.env.MY_DIAG_TEST_HOST = "visibleHostValue";
+        try {
+            const parms: any = {
+                arguments: { _: ["check", "for", "banana"], $0: "", valid: true, throwImperative: true },
+                responseFormat: "json",
+                silent: true
+            };
+            await processor.invoke(parms);
+
+            expect(errorOutput).toContain("Environmental variables:");
+            // Sensitive value must be redacted; non-sensitive value preserved
+            expect(errorOutput).not.toContain("superSecretPwd");
+            expect(errorOutput).toContain(Censor.CENSOR_RESPONSE);
+            expect(errorOutput).toContain("visibleHostValue");
+        } finally {
+            delete process.env.ZOWE_OPT_PASSWORD;
+            delete process.env.MY_DIAG_TEST_HOST;
+        }
+    });
+
+    it("should redact sensitive environment variables from the handler-load-failure diagnostic log", async () => {
+        // SAMPLE_COMMAND_DEFINITION points at a non-existent handler, exercising attemptHandlerLoad's error path
+        const processor: CommandProcessor = new CommandProcessor({
+            envVariablePrefix: ENV_VAR_PREFIX,
+            fullDefinition: SAMPLE_COMPLEX_COMMAND,
+            definition: SAMPLE_COMMAND_DEFINITION,
+            helpGenerator: FAKE_HELP_GENERATOR,
+            rootCommandName: SAMPLE_ROOT_COMMAND,
+            commandLine: "",
+            promptPhrase: "dummydummy"
+        });
+
+        let errorOutput = "";
+        const mockLogError = jest.fn((...args) => { errorOutput += args.join(" ") + "\n"; });
+        Object.defineProperty(processor, "log", {
+            get: () => ({ debug: jest.fn(), error: mockLogError, info: jest.fn(), trace: jest.fn() })
+        });
+
+        process.env.AWS_SECRET_ACCESS_KEY = "awsSuperSecret";
+        process.env.MY_DIAG_TEST_PORT = "visiblePortValue";
+        try {
+            const parms: any = {
+                arguments: { _: ["check", "for", "banana"], $0: "", valid: true },
+                responseFormat: "json",
+                silent: true
+            };
+            await processor.invoke(parms);
+
+            expect(errorOutput).toContain("Environmental variables:");
+            expect(errorOutput).not.toContain("awsSuperSecret");
+            expect(errorOutput).toContain(Censor.CENSOR_RESPONSE);
+            expect(errorOutput).toContain("visiblePortValue");
+        } finally {
+            delete process.env.AWS_SECRET_ACCESS_KEY;
+            delete process.env.MY_DIAG_TEST_PORT;
+        }
+    });
+
     it("should handle an imperative error with JSON causeErrors", async () => {
         // Allocate the command processor
         const processor: CommandProcessor = new CommandProcessor({
