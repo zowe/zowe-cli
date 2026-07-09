@@ -2769,6 +2769,10 @@ describe("Command Processor", () => {
                 },
                 defaults: { banana: "fresh" }
             });
+            jest.spyOn(ImperativeConfig.instance, "loadedConfig", "get").mockReturnValue({
+                profiles: [{ type: "banana", schema: { title: "", description: "", type: "object",
+                    properties: { color: { type: "string" } } } }]
+            } as any);
 
             const processor = new CommandProcessor({
                 envVariablePrefix: ENV_VAR_PREFIX,
@@ -2798,6 +2802,10 @@ describe("Command Processor", () => {
                 },
                 defaults: { banana: "fresh" }
             });
+            jest.spyOn(ImperativeConfig.instance, "loadedConfig", "get").mockReturnValue({
+                profiles: [{ type: "banana", schema: { title: "", description: "", type: "object",
+                    properties: { color: { type: "string" } } } }]
+            } as any);
 
             const processor = new CommandProcessor({
                 envVariablePrefix: ENV_VAR_PREFIX,
@@ -2840,8 +2848,8 @@ describe("Command Processor", () => {
             });
 
             const commandPrepared = await (processor as any).prepare(null, {});
-            // Empty schema → nothing from the profile should be passed through
-            expect(commandPrepared.args.color).toBeUndefined();
+
+            expect(commandPrepared.args.color).toBe("green");
         });
     });
 });

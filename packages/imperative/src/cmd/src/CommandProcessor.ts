@@ -1297,10 +1297,11 @@ export class CommandProcessor {
      */
     private schemaPropsForProfileType(profileType: string): Set<string> | null {
         try {
-            const manager = this.mProfileManagerFactory.getManager(profileType);
-            const typeConfig = manager.configurations.find(
-                (c) => c.type === profileType
-            ) as ICommandProfileTypeConfiguration | undefined;
+            const profiles = ImperativeConfig.instance.loadedConfig?.profiles;
+            if (profiles == null) {
+                return null;
+            }
+            const typeConfig = profiles.find((c) => c.type === profileType);
             const schemaProps = typeConfig?.schema?.properties;
             if (schemaProps == null) {
                 return null;
