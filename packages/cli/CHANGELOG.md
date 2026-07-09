@@ -4,7 +4,7 @@ All notable changes to the Zowe CLI package will be documented in this file.
 
 ## Recent Changes
 
-- BugFix: Censored sensitive connection properties (such as `password` and `tokenValue`) from the diagnostic details serialized into workflow and job submission command errors. [#TBD](https://github.com/zowe/zowe-cli/pull/TBD)
+- BugFix: Censored sensitive connection properties from the diagnostic details serialized into workflow and job submission command errors. [#2786](https://github.com/zowe/zowe-cli/pull/2786)
 
 ## `7.29.28`
 
