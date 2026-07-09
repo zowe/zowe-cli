@@ -9,7 +9,7 @@
 *
 */
 
-import { IHandlerParameters, ImperativeError } from "@zowe/imperative";
+import { LoggerUtils, IHandlerParameters, ImperativeError } from "@zowe/imperative";
 import {
     ListWorkflows,
     DeleteWorkflow,
@@ -184,7 +184,7 @@ export default class CreateCommonHandler extends ZosmfBaseHandler {
                     msg:
                         `Internal create error: Unable to determine the source of the definition file. ` +
                         `Please contact support.`,
-                    additionalDetails: JSON.stringify(params)
+                    additionalDetails: JSON.stringify(LoggerUtils.censorYargsArguments(params.arguments))
                 });
         }
     }
